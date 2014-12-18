@@ -34,6 +34,7 @@ import ec.tstoolkit.random.IRandomNumberGenerator;
 import ec.tstoolkit.random.JdkRNG;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaModelBuilder;
+import java.util.Random;
 
 /**
  * A TsData is a raw time series, containing only the actual data. TsData can
@@ -384,6 +385,29 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         return ts;
     }
     
+    /**
+     * Creates a random time series
+     * 
+     * @param freq
+     *            The frequency of the series.
+     * @param seed
+     * @return A time series with a random length (<600 observations), a random
+     *         starting period (between 1970 and 1990) and random observations
+     *         is generated
+     */
+    public static TsData random(TsFrequency freq, int seed) {
+        Random rnd=new Random(seed);
+        int beg = rnd.nextInt(240);
+        int count = rnd.nextInt(600);
+        TsData ts = new TsData(freq, beg, count);
+        double cur = rnd.nextDouble() + 100;
+        for (int i = 0; i < ts.getLength(); ++i) {
+            cur = cur + rnd.nextDouble() - .5;
+            ts.set(i, cur);
+        }
+        return ts;
+    }
+
     public void randomAirline(){
         SarimaModelBuilder sb=new SarimaModelBuilder();
         SarimaModel airline = sb.createAirlineModel(this.getFrequency().intValue(), -.6, -.8);
