@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright 2013 National Bank of Belgium
+
+Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+by the European Commission - subsequent versions of the EUPL (the "Licence");
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at:
+
+http://ec.europa.eu/idabc/eupl
+
+Unless required by applicable law or agreed to in writing, software 
+distributed under the Licence is distributed on an "AS IS" basis,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the Licence for the specific language governing permissions and 
+limitations under the Licence.
+-->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="ec/tss.core"
+            xmlns:tss="ec/tss.core"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+
+    <!--Enumerations and simple types-->
+
+    <xsd:simpleType name="frequency">
+        <xsd:annotation>
+            <xsd:documentation>
+                Acceptable annual frequencies (= number of equally-spaced observations by year)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:short">
+            <xsd:enumeration value="1" />
+            <xsd:enumeration value="2" />
+            <xsd:enumeration value="3" />
+            <xsd:enumeration value="4" />
+            <xsd:enumeration value="6" />
+            <xsd:enumeration value="12" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="month">
+        <xsd:annotation>
+            <xsd:documentation>
+                Months
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="January" />
+            <xsd:enumeration value="February" />
+            <xsd:enumeration value="March" />
+            <xsd:enumeration value="April" />
+            <xsd:enumeration value="May" />
+            <xsd:enumeration value="June" />
+            <xsd:enumeration value="July" />
+            <xsd:enumeration value="August" />
+            <xsd:enumeration value="September" />
+            <xsd:enumeration value="October" />
+            <xsd:enumeration value="November" />
+            <xsd:enumeration value="December" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="dayOfWeek">
+        <xsd:annotation>
+            <xsd:documentation>
+                Days of the week
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Sunday" />
+            <xsd:enumeration value="Monday" />
+            <xsd:enumeration value="Tuesday" />
+            <xsd:enumeration value="Wednesday" />
+            <xsd:enumeration value="Thursday" />
+            <xsd:enumeration value="Fryday" />
+            <xsd:enumeration value="Saturday" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="year">
+        <xsd:annotation>
+            <xsd:documentation>
+                Year (YYYY). Should be in the range[1000, 3000[
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:unsignedShort">
+            <xsd:minInclusive value="1000" />
+            <xsd:maxExclusive value="3000" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="day">
+        <xsd:annotation>
+            <xsd:documentation>
+                1-based position of the day in a month. Should be in the range [1, 31].
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:unsignedShort">
+            <xsd:minInclusive value="1" />
+            <xsd:maxInclusive value="31" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="period">
+        <xsd:annotation>
+            <xsd:documentation>
+                1-based position of a period in an year. Should be in the range [1, frequency] (with frequency .le. 12)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:unsignedShort">
+            <xsd:minInclusive value="1" />
+            <xsd:maxInclusive value="12" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="week">
+        <xsd:annotation>
+            <xsd:documentation>
+                1-based position of a week in a month. A week starts on Monday and finishes on Sunday.
+                The first week of the month may be incomplete. The first complete week and the last complete
+                week are identified by special values. The last week of the month is usually 5, but may
+                be 4 on some occasions February finishing by a Monday). It is also identified by a special value/
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="1"/>
+            <xsd:enumeration value="2"/>
+            <xsd:enumeration value="3"/>
+            <xsd:enumeration value="4"/>
+            <xsd:enumeration value="5"/>
+            <xsd:enumeration value="Last"/>
+            <xsd:enumeration value="FirstComplete"/>
+            <xsd:enumeration value="LastComplete"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="propertyType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Property represented by a string (value) and identified by a name
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+        </xsd:sequence>
+            <xsd:attribute name="name" type="xsd:string" />
+            <xsd:attribute name="value" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="metaDataType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Metadata defined as an (unordered) set of properties
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="property" type="tss:propertyType" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="doubles">
+        <xsd:annotation>
+            <xsd:documentation>
+                Array of doubles (concatenated in a list)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:list itemType="xsd:double" />
+    </xsd:simpleType>
+
+    <xsd:simpleType name="strings">
+        <xsd:annotation>
+            <xsd:documentation>
+                Array of strings without space (concatenated in a list)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:list itemType="xsd:NMTOKEN" />
+    </xsd:simpleType>
+
+    <xsd:simpleType name="ints">
+        <xsd:annotation>
+            <xsd:documentation>
+                Array of integers (concatenated in a list)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:list itemType="xsd:int" />
+    </xsd:simpleType>
+
+    <xsd:simpleType name="booleans">
+        <xsd:annotation>
+            <xsd:documentation>
+                Array of booleans (concatenated in a list)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:list itemType="xsd:boolean" />
+    </xsd:simpleType>
+
+    <xsd:simpleType name="uints">
+        <xsd:annotation>
+            <xsd:documentation>
+                Array of unsigned integers (concatenated in a list)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:list itemType="xsd:unsignedInt"/>
+    </xsd:simpleType>
+
+     <xsd:complexType name="booleansType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Array of booleans (concatenated in a list)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="data">
+                <xsd:simpleType>
+                    <xsd:list itemType="xsd:boolean" />
+                </xsd:simpleType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="intsType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Array of integers (concatenated in a list)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="data">
+                <xsd:simpleType>
+                    <xsd:list itemType="xsd:int" />
+                </xsd:simpleType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="uintsType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Array of unsigned integers (concatenated in a list)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="items" type="tss:uints"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="doublesType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Array of doubles (concatenated in a list)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="data" type="tss:doubles"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="stringsType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Array of strings (without spaces) (concatenated in a list)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="items" type="tss:strings"/>
+         </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="paramInfo">
+        <xsd:annotation>
+            <xsd:documentation>
+                Information on the way a parameter should be used or interpreted.
+                A fixed parameter is an "a priori" value, which doesn't result from an estimation procedure.
+                An initial parameter is a parameter that should be used as a starting value in estimation procedures.
+                An estimated parameter is the results of an estimation procedure.
+                A derived parameter has been computed from other (usually estimated)
+                parameters.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Undefined"/>
+            <xsd:enumeration value="Initial"/>
+            <xsd:enumeration value="Fixed"/>
+            <xsd:enumeration value="Estimated"/>
+            <xsd:enumeration value="Derived"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="paramType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Parameter, with (except for "Undefined" parameter) its value and the way it has to be interpreted.
+                Standard error and TStat of the parameter can be provided if the parameter has been
+                estimated or derived.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name ="value" type="xsd:double" minOccurs="0"/>
+            <xsd:element name ="stde" type="xsd:double" minOccurs="0"/>
+            <xsd:element name ="tstat" type="xsd:double" minOccurs="0"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string" use="optional"/>
+        <xsd:attribute name="type" type="tss:paramInfo" use="optional"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="paramsType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Array of parameters
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="coef" type="tss:paramType" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <!--Basic time series complex types-->
+  
+    <xsd:group name="startPeriod">
+        <xsd:sequence>
+            <xsd:element name="freq" type="tss:frequency" />
+            <xsd:element name="firstYear" type="tss:year" />
+            <xsd:element name="firstPeriod" type="tss:period" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:group>
+
+    <xsd:attributeGroup name="tsIdentifier">
+        <xsd:attribute name="source" type="xsd:string" use="optional" />
+        <xsd:attribute name="identifier" type="xsd:string" use="optional" />
+    </xsd:attributeGroup>
+
+    <xsd:group name="timeSpan">
+        <xsd:sequence>
+            <xsd:element name="start" type="xsd:date"/>
+            <xsd:element name="end" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:group>
+
+    <xsd:complexType name="periodSelectionType">
+        <xsd:annotation>
+            <xsd:documentation>
+                A period selection is a flexible way for selecting a part in a time domain.
+
+                The selection may be defined through start/end dates (FROM, TO, BETWEEN).
+                In that case only the periods that are completely after and/or before the given dates are selected;
+                only the date part is considered. For instance, if start=2 January, the first monthly period
+                is February; if end = 31 March, the last monthly period is March.
+
+                The period selection may also refer to the numbers of periods that should be selected (FIRST / LAST)
+                or excluded (EXCLUDING) in the selection.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice>
+            <xsd:element name="all" />
+            <xsd:element name="none" />
+            <xsd:element name="from" type="xsd:date" />
+            <xsd:element name="first" type="xsd:unsignedInt" />
+            <xsd:element name="to" type="xsd:date" />
+            <xsd:element name="last" type="xsd:unsignedInt" />
+            <xsd:group ref="tss:timeSpan" id="between"/>
+            <xsd:element name="excluding">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="nfirst" type="xsd:unsignedInt" />
+                        <xsd:element name="nlast" type="xsd:unsignedInt" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:choice>
+    </xsd:complexType>
+
+    <xsd:complexType name="tsPeriodType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Describes a regular time period
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="freq" type="tss:frequency">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Annual frequency of this type of regular period
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="year" type="tss:year">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Year of the period
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="period" type="tss:period" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Position of the period in its year. It is required when the frequency is .gt. 1.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+ 
+    <xsd:complexType name="tsDataType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Representation of a time series (data only). It is identified by the starting period
+                (frequency, first year, first period) and by its values. Missing values are identified by NaN.
+                A name (or description) may also be provided.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:group ref="tss:startPeriod" />
+            <xsd:element name="data" type="tss:doubles" minOccurs="0"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string" use="optional" />
+    </xsd:complexType>
+
+    <xsd:complexType name="tsDomainType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Represents a time domain, identified by the starting period and by a number of periods (length).
+                It corresponds to the domain of a time series
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:group ref="tss:startPeriod" />
+            <xsd:element name="length" type="xsd:unsignedInt" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="tsMonikerType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Univoque identifier of an information.
+                It is composed of a "source" and of an "id".
+                An optional name may be added. The name is not part of the actual identification key.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="source" type="xsd:string" minOccurs="0" />
+            <xsd:element name="id" type="xsd:string" minOccurs="0" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="tsType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Complete information of a time series. It extends a "tsdataType" (time series data)
+                with its identifier and with metadata.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tss:tsDataType">
+                <xsd:sequence>
+                    <xsd:element name="metaData" type="tss:metaDataType" minOccurs="0" />
+                </xsd:sequence>
+                <xsd:attribute name="source" use="optional"/>
+                <xsd:attribute name="id" use="optional"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="tsCollectionType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Ordered collection of time series.
+                The collection may have its own identifier and its own metadata.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="metaData" type="tss:metaDataType" minOccurs="0" />
+            <xsd:element name="data">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="ts" type="tss:tsType" minOccurs="0" maxOccurs="unbounded" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string" />
+        <xsd:attributeGroup ref="tss:tsIdentifier" />
+    </xsd:complexType>
+
+</xsd:schema>

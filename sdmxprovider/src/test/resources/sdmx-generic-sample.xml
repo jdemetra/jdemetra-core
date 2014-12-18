@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright SDMX 2005  -   www.sdmx.org -->
+<GenericData 
+	xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message" 
+	xmlns:common="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/common" 
+	xmlns:compact="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/compact" 
+	xmlns:cross="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/cross" 
+	xmlns:generic="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/generic" 
+	xmlns:query="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/query" 
+	xmlns:structure="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/structure" 
+	xmlns:utility="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/utility" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message SDMXMessage.xsd">
+	<Header>
+			<ID>JD014</ID>
+			<Test>true</Test>
+			<Truncated>false</Truncated>
+			<Name xml:lang="en">Trans46302</Name>
+			<Prepared>2001-03-11T09:30:47-05:00</Prepared>
+			<Sender id="BIS">
+				<Name xml:lang="en">Bank for International Settlements</Name>
+				<Contact>
+					<Name xml:lang="en">G.B. Smith</Name>
+					<Telephone>+000.000.0000</Telephone>
+				</Contact>
+			</Sender>
+			<Receiver id="ECB">
+				<Name xml:lang="en">European Central Bank</Name>
+				<Contact>
+					<Name xml:lang="en">B.S. Featherstone</Name>
+					<Department xml:lang="en">Statistics Division</Department>
+					<Telephone>+000.000.0001</Telephone>
+				</Contact>
+			</Receiver>
+			<DataSetAgency>BIS</DataSetAgency>
+			<DataSetID>BIS_JD_237</DataSetID>
+			<DataSetAction>Append</DataSetAction>
+			<Extracted>2001-03-11T09:30:47-05:00</Extracted>
+			<ReportingBegin>2000-01-01T00:00:00</ReportingBegin>
+			<ReportingEnd>2000-12-01T00:00:00</ReportingEnd>
+	</Header>
+	<DataSet>
+		<generic:KeyFamilyRef>BIS_JOINT_DEBT</generic:KeyFamilyRef>
+		<generic:Group type="SiblingGroup">
+			<generic:GroupKey>
+				<generic:Value concept="JD_TYPE" value="P"/>
+				<generic:Value concept="JD_CATEGORY" value="A"/>
+				<generic:Value concept="VIS_CTY" value="MX"/>
+			</generic:GroupKey>
+			
+			<generic:Attributes>
+				<generic:Value concept="AVAILABILITY" value="A"/>
+				<generic:Value concept="DECIMALS" value="2"/>
+				<generic:Value concept="BIS_UNIT" value="USD"/>
+				<generic:Value concept="UNIT_MULT" value="5"/>
+			</generic:Attributes>
+			<generic:Series>
+				<generic:SeriesKey>
+					<generic:Value concept="FREQ" value="M"/>
+					<generic:Value concept="JD_TYPE" value="P"/>
+					<generic:Value concept="JD_CATEGORY" value="A"/>
+					<generic:Value concept="VIS_CTY" value="MX"/>
+				</generic:SeriesKey>
+				<generic:Attributes>
+					<generic:Value concept="COLLECTION" value="B"/>
+					<generic:Value concept="TIME_FORMAT" value="P1M"/>
+				</generic:Attributes>
+				<generic:Obs>
+					<generic:Time>2000-01</generic:Time>
+					<generic:ObsValue  value="3.14"/>
+					<generic:Attributes>
+						<generic:Value concept="OBS_STATUS" value="A"/>
+					</generic:Attributes>
+				</generic:Obs>
+				
+				<generic:Obs>
+					<generic:Time>2000-02</generic:Time>
+					<generic:ObsValue  value="3.14"/>
+					<generic:Attributes>
+						<generic:Value concept="OBS_STATUS" value="A"/>
+					</generic:Attributes>
+				</generic:Obs>
+				<generic:Obs>
+					<generic:Time>2000-03</generic:Time>
+					<generic:ObsValue  value="4.29"/>
+					<generic:Attributes>
+						<generic:Value concept="OBS_STATUS" value="A"/>
+					</generic:Attributes>
+				</generic:Obs>
+				<generic:Obs>
+					<generic:Time>2000-04</generic:Time>
+					<generic:ObsValue  value="6.04"/>
+					<generic:Attributes>
+						<generic:Value concept="OBS_STATUS" value="A"/>
+					</generic:Attributes>
+				</generic:Obs>
+				<generic:Obs>
+					<generic:Time>2000-05</generic:Time>
+					<generic:ObsValue  value="5.18"/>
+					<generic:Attributes>
+						<generic:Value concept="OBS_STATUS" value="A"/>
+					</generic:Attributes>
+				</generic:Obs>
+				<generic:Obs>
+					<generic:Time>2000-06</generic:Time>
+					<generic:ObsValue  value="5.07"/>
+					<generic:Attributes>
+						<generic:Value concept="OBS_STATUS" value="A"/>
+					</generic:Attributes>
+				</generic:Obs>
+				<generic:Obs>
+					<generic:Time>2000-07</generic:Time>
+					<generic:ObsValue  value="3.13"/>
+					<generic:Attributes>
+						<generic:Value concept="OBS_STATUS" value="A"/>
+					</generic:Attributes>
+				</generic:Obs>
+				<generic:Obs>
+					<generic:Time>2000-08</generic:Time>
+					<generic:ObsValue  value="1.17"/>
+					<generic:Attributes>
+						<generic:Value concept="OBS_STATUS" value="A"/>
+					</generic:Attributes>
+				</generic:Obs>
+				<generic:Obs>
+					<generic:Time>2000-09</generic:Time>
+					<generic:ObsValue  value="1.14"/>
+					<generic:Attributes>
+						<generic:Value concept="OBS_STATUS" value="A"/>
+					</generic:Attributes>
+				</generic:Obs>
+				<generic:Obs>
+					<generic:Time>2000-10</generic:Time>
+					<generic:ObsValue  value="3.04"/>
+					<generic:Attributes>
+						<generic:Value concept="OBS_STATUS" value="A"/>
+					</generic:Attributes>
+				</generic:Obs>
+				<generic:Obs>
+					<generic:Time>2000-11</generic:Time>
+					<generic:ObsValue  value="1.14"/>
+					<generic:Attributes>
+						<generic:Value concept="OBS_STATUS" value="A"/>
+					</generic:Attributes>
+				</generic:Obs>
+				<generic:Obs>
+					<generic:Time>2000-12</generic:Time>
+					<generic:ObsValue  value="3.24"/>
+					<generic:Attributes>
+						<generic:Value concept="OBS_STATUS" value="A"/>
+					</generic:Attributes>
+				</generic:Obs>
+
+			</generic:Series>
+			<generic:Series>
+				<generic:SeriesKey>
+					<generic:Value concept="FREQ" value="A"/>
+					<generic:Value concept="JD_TYPE" value="P"/>
+					<generic:Value concept="JD_CATEGORY" value="A"/>
+					<generic:Value concept="VIS_CTY" value="MX"/>
+				</generic:SeriesKey>
+				<generic:Attributes>
+					<generic:Value concept="COLLECTION" value="B"/>
+					<generic:Value concept="TIME_FORMAT" value="P1Y"/>
+				</generic:Attributes>
+				<generic:Obs>
+					<generic:Time>2000-01</generic:Time>
+					<generic:ObsValue  value="3.14"/>
+					<generic:Attributes>
+						<generic:Value concept="OBS_STATUS" value="A"/>
+					</generic:Attributes>
+				</generic:Obs>
+			</generic:Series>			
+			
+			
+		</generic:Group>
+	</DataSet>
+	
+</GenericData>

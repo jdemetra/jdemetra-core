@@ -1,0 +1,28 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  
+    <modelVersion>4.0.0</modelVersion>
+  
+    <parent>
+        <groupId>eu.europa.ec.joinup.sat</groupId>
+        <artifactId>demetra-parent</artifactId>
+        <version>1.5.4</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+  
+    <artifactId>demetra-sdmx</artifactId>
+    <name>Demetra - SDMX</name>
+    <description>A TS Provider that handles SDMX files.</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>demetra-tss</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>demetra-utils</artifactId>
+        </dependency>
+    </dependencies>
+  
+</project>

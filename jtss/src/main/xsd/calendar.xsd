@@ -1,0 +1,238 @@
+<!--
+Copyright 2013 National Bank of Belgium
+
+Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+by the European Commission - subsequent versions of the EUPL (the "Licence");
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at:
+
+http://ec.europa.eu/idabc/eupl
+
+Unless required by applicable law or agreed to in writing, software 
+distributed under the Licence is distributed on an "AS IS" basis,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the Licence for the specific language governing permissions and 
+limitations under the Licence.
+-->
+
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="ec/tss.core"
+            xmlns:tss="ec/tss.core"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+    <xsd:include schemaLocation="tss_core.xsd"/>
+
+    <!--Utilities-->
+
+    <xsd:complexType name="validityPeriodType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Validity period for any concept. Defined by an optional start date and an optional end date.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="start" type="xsd:date" minOccurs="0" />
+            <xsd:element name="end" type="xsd:date" minOccurs="0" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="weightedItem">
+        <xsd:sequence>
+            <xsd:element name="item" type="xsd:string" />
+            <xsd:element name="weight" type="xsd:double" />
+        </xsd:sequence>
+        <xsd:attribute name="ref" type="xsd:IDREF"/>
+    </xsd:complexType>
+
+    <!--Calendars-->
+
+    <xsd:simpleType name="dayEvent">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="NewYear" />
+            <xsd:enumeration value="AshWednesday" />
+            <xsd:enumeration value="Easter" />
+            <xsd:enumeration value="EasterThursday" />
+            <xsd:enumeration value="EasterFryday" />
+            <xsd:enumeration value="EasterMonday" />
+            <xsd:enumeration value="Ascension" />
+            <xsd:enumeration value="Pentecost" />
+            <xsd:enumeration value="WhitMonday" />
+            <xsd:enumeration value="Assumption" />
+            <xsd:enumeration value="AllSaintsDay" />
+            <xsd:enumeration value="Christmas" />
+            <xsd:enumeration value="LaborDay" />
+            <xsd:enumeration value="Thanksgiving" />
+            <xsd:enumeration value="MayDay" />
+            <xsd:enumeration value="Halloween" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="fixedDayType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Fixed day in each year, identified by the month and the day in the month.
+                Example: 21th of July
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="weight" type="xsd:double" minOccurs="0"/> 
+            <xsd:element name="month" type="tss:month" />
+            <xsd:element name="day" type="xsd:int" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="fixedWeekDayType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Fixed week day, identified by the day if the week, the week of the month and the month.
+                Example: Labor Day, second tuesday of september.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="weight" type="xsd:double" minOccurs="0"/> 
+            <xsd:element name="month" type="tss:month" />
+            <xsd:element name="dayofWeek" type="tss:dayOfWeek" />
+            <xsd:element name="week" type="tss:week"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="easterRelatedDayType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Day identified by its position related to Easter.
+                Example: 20th day after Easter.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="weight" type="xsd:double" minOccurs="0"/> 
+            <xsd:element name="offset" type="xsd:short" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="specialCalendarDayType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Day identified by its position related to some prespecified days.
+                Example: 3 days after Christmas, 1 day before Labor Day...
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="weight" type="xsd:double" minOccurs="0"/> 
+            <xsd:element name="event" type="tss:dayEvent" />
+            <xsd:element name="offset" type="xsd:short" default="0" minOccurs="0" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:group name="specialDayGroup">
+        <xsd:annotation>
+            <xsd:documentation>
+                A special day is any day identified by a fixed day, a fixed week day or a pre-specified day
+                (an Easter related day being a special case of the latter).
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice>
+            <xsd:element name="fixedDay" type="tss:fixedDayType" />
+            <xsd:element name="fixedWeekDay" type="tss:fixedWeekDayType" />
+            <xsd:element name="easterRelatedDay" type="tss:easterRelatedDayType" />
+            <xsd:element name="specialCalendarDay" type="tss:specialCalendarDayType" />
+        </xsd:choice>
+    </xsd:group>
+
+    <xsd:complexType name="specialDayEventType">
+        <xsd:annotation>
+            <xsd:documentation>
+                A special day event is a special day, valid on a given time span.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:group ref="tss:specialDayGroup" />
+            <xsd:element name="validity" type="tss:validityPeriodType" minOccurs="0" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="abstractCalendarType" abstract="true">
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="nationalCalendarType">
+        <xsd:annotation>
+            <xsd:documentation>
+                A national calendar is defined by a list of special day events. It may have a name,
+                which may be used in derived calendars
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tss:abstractCalendarType">
+                <xsd:sequence>
+                    <xsd:element name="specialDayEvent" type="tss:specialDayEventType" maxOccurs="unbounded" />
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="compositeCalendarType">
+        <xsd:annotation>
+            <xsd:documentation>
+                A composite calendar is a weighted sum of other calendars, identified by their IDs.
+                Those calendars should be stored in a given dictionary.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tss:abstractCalendarType">
+                <xsd:sequence>
+                    <xsd:element name="wCalendar" type="tss:weightedItem" maxOccurs="unbounded" />
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="chainedCalendarType">
+        <xsd:annotation>
+            <xsd:documentation>
+                A chained calendar is a pair of calendars, which are paste from a given date.
+                More precisely, the first calendar is used up to the given date (excluded) and is replaced
+                by the second calendar from that date (included)
+                Both calendars should be stored in a given dictionary.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tss:abstractCalendarType">
+                <xsd:sequence>
+                    <xsd:element name="startCalendar" type="xsd:string" />
+                    <xsd:element name="endCalendar" type="xsd:string" />
+                    <xsd:element name="calendarBreak" type="xsd:date" />
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:group name ="calendarGroup">
+        <xsd:annotation>
+            <xsd:documentation>
+                A calendar can be either a national calendar, a composite calendar or a chained calendar.
+                Calendars are defined recursively.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice>
+            <xsd:element name="nationalCalendar" type="tss:nationalCalendarType" />
+            <xsd:element name="compositeCalendar" type="tss:compositeCalendarType"/>
+            <xsd:element name="chainedCalendar" type="tss:chainedCalendarType"/>
+        </xsd:choice>
+    </xsd:group>
+  
+    <xsd:complexType name="calendarsType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Collection of calendars.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:group ref="tss:calendarGroup" minOccurs="0" maxOccurs="unbounded"/>        
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="calendars" type="tss:calendarsType"/>
+
+</xsd:schema>

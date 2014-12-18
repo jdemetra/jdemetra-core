@@ -1,0 +1,329 @@
+/*
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
+package ec.tstoolkit.maths.linearfilters;
+
+import ec.tstoolkit.design.Development;
+import ec.tstoolkit.design.Immutable;
+import ec.tstoolkit.utilities.Arrays2;
+import ec.tstoolkit.maths.Complex;
+import ec.tstoolkit.maths.matrices.Householder;
+import ec.tstoolkit.maths.matrices.Matrix;
+import ec.tstoolkit.maths.matrices.MatrixException;
+import ec.tstoolkit.maths.polynomials.Polynomial;
+
+/**
+ *
+ * @author Jean Palate
+ */
+@Development(status = Development.Status.Alpha)
+@Immutable
+public class RationalFilter implements IRationalFilter {
+
+    /**
+     *
+     * @param bnum
+     * @param bdenom
+     * @return
+     */
+    public static RationalFilter RSFilter(BackFilter bnum, BackFilter bdenom) {
+        BackFilter.SimplifyingTool bsmp = new BackFilter.SimplifyingTool(true);
+        if (bsmp.simplify(bnum, bdenom)) {
+            bnum = bsmp.getLeft();
+            bdenom = bsmp.getRight();
+        }
+
+        SymmetricFilter n = SymmetricFilter.createFromFilter(bnum);
+        BackFilter g;
+        g = n.decompose(bdenom);
+        RationalFilter rf = new RationalFilter();
+        rf.m_rb = new RationalBackFilter(g, bdenom);
+        rf.m_rf = rf.m_rb.mirror();
+        rf.m_n = SymmetricFilter.createFromFilter(bnum);
+        rf.m_d = SymmetricFilter.createFromFilter(bdenom);
+        return rf;
+    }
+
+    private RationalBackFilter m_rb;
+
+    private RationalForeFilter m_rf;
+
+    private IFiniteFilter m_n, m_d;
+
+    RationalFilter() {
+    }
+
+    /**
+     * Creates the rational filter N1(B)N2(F)/(D1(B)D2(F))
+     *
+     * @param bnum Backward factor of the numerator
+     * @param bdenom Backward factor of the denominator
+     * @param fnum Forward factor of the numerator
+     * @param fdenom Forward factor of the denominator
+     */
+    public RationalFilter(final BackFilter bnum, final BackFilter bdenom,
+            final ForeFilter fnum, final ForeFilter fdenom) {
+        m_n = FiniteFilter.multiply(bnum, fnum);
+        m_d = FiniteFilter.multiply(bdenom, fdenom);
+        decompose(m_n, bdenom, fdenom);
+    }
+
+    /**
+     *
+     * @param num
+     * @param bdenom
+     * @param fdenom
+     */
+    public RationalFilter(final IFiniteFilter num, final BackFilter bdenom,
+            final ForeFilter fdenom) {
+        m_n = new FiniteFilter(num);
+        m_d = FiniteFilter.multiply(new FiniteFilter(bdenom), fdenom);
+        decompose(num, bdenom, fdenom);
+    }
+
+    /**
+     *
+     * @param rbf
+     * @param rff
+     */
+    public RationalFilter(final RationalBackFilter rbf, final RationalForeFilter rff) {
+        m_rb = rbf;
+        m_rf = rff;
+    }
+    /**
+     * Creates a rational filter that contains all information;
+     * we should have that rbf+rff = num/denom; 
+     * the coherence of the different inputs is not checked
+     * @param rbf 
+     * @param rff
+     * @param num
+     * @param denom
+     */
+    public RationalFilter(final RationalBackFilter rbf, final RationalForeFilter rff,
+            final IFiniteFilter num, final IFiniteFilter denom) {
+        m_rb = rbf;
+        m_rf = rff;
+        m_n=num;
+        m_d=denom;
+    }
+
+    /**
+     * We decompose the filter N(B,F)/(Db(B)Df(F) in Nb(B)/Db(B) + Nf(F)/Df(F)
+     *
+     * See Maravall, "Use and Misuses of Unobserved Components...", EUI 1993 or
+     * Bell, Martin, "Computation of Asymmetric Signal Extraction Filters and
+     * Mean Squared Error for ARIMA Component Models", Howard University,
+     * Research Report Series 2002.
+     *
+     * @param num
+     * @param bd
+     * @param fd
+     */
+    private void decompose(final IFiniteFilter num, final BackFilter bd,
+            final ForeFilter fd) {
+
+        int nnb0 = -num.getLowerBound();
+        int nnf0 = num.getUpperBound();
+        double[] nc = num.getWeights();
+        int nnb = nnb0;
+        if (nnb < 0) {
+            nnb = 0;
+        }
+        int nnf = nnf0;
+        if (nnf < 0) {
+            nnf = 0;
+        }
+
+        int ndb = -bd.getLowerBound();
+        int ndf = fd.getUpperBound();
+
+        int h = Math.max(nnf, ndf);
+        int k = Math.max(nnb, ndb);
+        int ne = h + k + 1;
+
+        // h+1 unknowns for the num in F,
+        // k+1 unknowns for the num in B.
+        // ne equations
+        if (nc.length != ne) {
+            double[] ntmp = new double[ne];
+            System.arraycopy(nc, 0, ntmp, k - nnb0, nc.length);
+            nc = ntmp;
+        }
+
+        double[] cnb = new double[k + 1];
+        double[] cnf = new double[h + 1];
+        cnf[0] = 0; // we suppress 1 unknown
+
+        double[] db = bd.getWeights(), df = fd.getWeights();
+
+        Matrix m = new Matrix(ne, ne);
+        // initialisation of the matrix
+        // left/up block [k+1]
+        for (int i = 0; i <= ndf; ++i) {
+            for (int j = 0; j <= k; ++j) {
+                m.set(i + j, j, df[i]);
+            }
+        }
+        // right/bottom block [h]
+        // first used row: -ndb+1+k
+        for (int i = -ndb + 1 + k, ii = 0; ii <= ndb; ++i, ++ii) {
+            for (int j = 0; j < h; ++j) {
+                m.set(i + j, j + k + 1, db[ii]);
+            }
+        }
+
+        Householder qr = new Householder(false);
+        qr.decompose(m);
+        try {
+            nc = qr.solve(nc);
+        } catch (MatrixException e) {
+            throw new LinearFilterException(
+                    "Invalid decomposition of rational filter",
+                    "RFilter.decompose");
+        }
+
+        for (int i = 0; i <= k; ++i) {
+            cnb[i] = nc[i];
+        }
+        for (int i = 1; i <= h; ++i) {
+            cnf[i] = nc[i + k];
+        }
+
+        Arrays2.reverse(cnb);
+
+        m_rb = new RationalBackFilter(BackFilter.of(cnb), bd);
+        m_rf = new RationalForeFilter(new ForeFilter(cnf), fd);
+    }
+
+    /**
+     *
+     * @param freq
+     * @return
+     */
+    @Override
+    public Complex frequencyResponse(final double freq) {
+        Complex nb = m_rb.frequencyResponse(freq);
+        Complex nf = m_rf.frequencyResponse(freq);
+        return nb.plus(nf);
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public IFiniteFilter getDenominator() {
+        if (m_d == null) {
+            FiniteFilter b = new FiniteFilter(m_rb.getDenominator());
+            FiniteFilter f = new FiniteFilter(m_rf.getDenominator());
+            FiniteFilter d = FiniteFilter.multiply(b, f);
+            d.smooth();
+        }
+        return m_d;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getLBound() {
+        return m_rb.getUBound();
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public IFiniteFilter getNumerator() {
+        if (m_n == null) {
+            FiniteFilter nb = new FiniteFilter(m_rb.getNumerator());
+            FiniteFilter nf = new FiniteFilter(m_rf.getNumerator());
+            FiniteFilter db = new FiniteFilter(m_rb.getDenominator());
+            FiniteFilter df = new FiniteFilter(m_rf.getDenominator());
+            FiniteFilter n = FiniteFilter.add(FiniteFilter.multiply(nb, df),
+                    FiniteFilter.multiply(nf, db));
+            n.smooth();
+            m_n = n;
+        }
+        return m_n;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public RationalBackFilter getRationalBackFilter() {
+        return m_rb;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public RationalForeFilter getRationalForeFilter() {
+        return m_rf;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getUBound() {
+        return m_rf.getUBound();
+    }
+
+    /**
+     *
+     * @param pos
+     * @return
+     */
+    @Override
+    public double getWeight(final int pos) {
+        double d = 0;
+        if (pos <= 0) {
+            d = m_rb.getWeight(pos);
+        }
+        if (pos >= 0) {
+            d += m_rf.getWeight(pos);
+        }
+        return d;
+    }
+
+    @Override
+    public boolean hasLowerBound() {
+        return m_rb.hasLowerBound();
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public boolean hasUpperBound() {
+        return m_rf.hasUpperBound();
+    }
+
+    /**
+     *
+     * @param n
+     * @param m
+     */
+    public void prepare(final int n, final int m) {
+        m_rb.prepare(n);
+        m_rf.prepare(m);
+    }
+}

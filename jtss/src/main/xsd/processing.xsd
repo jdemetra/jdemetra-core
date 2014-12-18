@@ -1,0 +1,286 @@
+<!--
+Copyright 2013 National Bank of Belgium
+
+Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+by the European Commission - subsequent versions of the EUPL (the "Licence");
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at:
+
+http://ec.europa.eu/idabc/eupl
+
+Unless required by applicable law or agreed to in writing, software 
+distributed under the Licence is distributed on an "AS IS" basis,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the Licence for the specific language governing permissions and 
+limitations under the Licence.
+-->
+
+
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="ec/tss.core"
+            xmlns:tss="ec/tss.core"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+    <xsd:include schemaLocation="tss_core.xsd"/>
+    <xsd:include schemaLocation="calendar.xsd"/>
+
+    <xsd:complexType name="algorithmType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Description of an algorithm
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="name" type="xsd:string"/>
+            <xsd:element name="family" type="xsd:string"/>
+        </xsd:sequence>
+        <xsd:attribute name="version" type="xsd:string" use="optional"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="matrixType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Matrix of doubles
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="data" type="tss:doubles"/>
+        </xsd:sequence>
+        <xsd:attribute name="nrows" type="xsd:int" use="required"/>
+        <xsd:attribute name="ncolumns" type="xsd:int" use="required"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="statisticalTestType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Standard statistical test
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="description" type="xsd:string"/>
+            <xsd:element name="value" type="xsd:double"/>
+            <xsd:element name="pvalue" type="xsd:double"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="regressionItemType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Result of a regression
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="description" type="xsd:string"/>
+            <xsd:element name="coefficient" type="xsd:double"/>
+            <xsd:element name="stderror" type="xsd:double"/>
+        </xsd:sequence>
+        <xsd:attribute name="prespecified" type="xsd:boolean"/>
+    </xsd:complexType>
+
+    <!-- Regression variables -->
+
+    <xsd:complexType name="rampType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Ramp
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:group ref="tss:timeSpan"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="interventionVariableType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Usual intervention variable
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:group ref="tss:timeSpan" id="sequence" maxOccurs="unbounded"/>
+            <xsd:element name="deltaFilter" type="xsd:double" minOccurs="0"/>
+            <xsd:element name="deltaSFilter" type="xsd:double" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="tsVariableType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Default static regression variable. Data must be available.
+                The name of the tsdata sub-item should be considered as a description, while the "name" attribute is the actual name of the variable
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="tsdata" type="tss:tsDataType"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type ="xsd:string"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="dynamicTsVariableType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Default dynamic regression variable. Identifier must be present.
+                The name of the tsdata sub-item should be considered as a description, while the "name" attribute is the actual name of the variable
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="tsdata" type="tss:tsDataType" minOccurs="0"/>
+            <xsd:element name="moniker" type="tss:tsMonikerType"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type ="xsd:string"/>
+    </xsd:complexType>
+
+    <xsd:group name="tsVariableGroup">
+        <xsd:annotation>
+            <xsd:documentation>
+                Ts Variable. Could be a dynamic ts variable or a static ts variable.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice>
+            <xsd:element name="tsVariable" type="tss:tsVariableType"/>
+            <xsd:element name="dynamicTsVariable" type ="tss:dynamicTsVariableType"/>
+        </xsd:choice>
+    </xsd:group>
+
+    <xsd:complexType name="tsVariablesType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Collection of Ts Variables
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:group ref="tss:tsVariableGroup" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="processingContextType">
+        <xsd:annotation>
+            <xsd:documentation>
+                A context contains information related to auxiliary time series and calendars used in regression models
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="calendars" type="tss:calendarsType" minOccurs="0"/>
+            <xsd:element name="variables">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="group" type="tss:tsVariablesType" minOccurs="0" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <!-- Information set -->
+
+    <xsd:complexType name="informationType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Generic information, using predefined atomic types
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice>
+            <xsd:element name="boolean" type="xsd:boolean"/>
+            <xsd:element name="double" type="xsd:double"/>
+            <xsd:element name="integer" type="xsd:int"/>
+            <xsd:element name="string" type="xsd:string"/>
+            <xsd:element name="integers" type="tss:intsType"/>
+            <xsd:element name="doubles" type="tss:doublesType"/>
+            <xsd:element name="booleans" type="tss:booleansType"/>
+            <xsd:element name="strings" type="tss:stringsType"/>
+            <xsd:element name="subset" type="tss:informationSetType"/>
+            <xsd:element name="tsdata" type="tss:tsDataType"/>
+            <xsd:element name="ts" type="tss:tsType"/>
+            <xsd:element name="tscollection" type="tss:tsCollectionType"/>
+            <xsd:element name="method" type="tss:algorithmType"/>
+            <xsd:element name="moniker" type="tss:tsMonikerType"/>
+            <xsd:element name="span" type="tss:periodSelectionType"/>
+            <xsd:element name="ramp" type="tss:rampType"/>
+            <xsd:element name="ivar" type="tss:interventionVariableType"/>
+            <xsd:element name="regitem" type="tss:regressionItemType"/>
+            <xsd:element name="param" type="tss:paramType"/>
+            <xsd:element name="params" type="tss:paramsType"/>
+            <xsd:element name="matrix" type="tss:matrixType"/>
+        </xsd:choice>
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="informationSetType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Generic information set, which is a collection of atomic information
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="item" type="tss:informationType" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <!-- Batch processing -->
+
+    <xsd:simpleType name="linkType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Types of link between processing steps. It indicates where
+                considered information should come from
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Input" />
+            <xsd:enumeration value="Output" />
+            <xsd:enumeration value="Result" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="batchLinkType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Links between different steps of a batch processing
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+        </xsd:sequence>
+        <xsd:attribute name="linktype" type="tss:linkType" use="required"/>
+        <xsd:attribute name="linkid" type="xsd:string" use="required"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="batchStepType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Step of a batch processing
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="link" type="tss:batchLinkType"/>
+            <xsd:element name="specification" type="tss:informationSetType"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string" use="required"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="batchType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Batch processing
+                A batch processing is defined by a context (optional),
+                an input, several steps and possible filters
+                Each step must be able to retrieve necessary information
+                for its processing either from the input or from a previous step
+                (through the "link" element).
+                The (optional) filters specify what information
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="context" type="tss:processingContextType"/>
+            <xsd:element name="input" type="tss:informationSetType" minOccurs="1"/>
+            <xsd:element name="step" type="tss:batchStepType" minOccurs="1" maxOccurs="unbounded"/>
+            <xsd:element name="filter" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string" use="required"/>
+    </xsd:complexType>
+    
+    <xsd:element name="tsVariables" type="tss:tsVariablesType"/>
+    <xsd:element name="informationSet" type="tss:informationSetType"/>
+    <xsd:element name="batch" type="tss:batchType"/>
+
+</xsd:schema>

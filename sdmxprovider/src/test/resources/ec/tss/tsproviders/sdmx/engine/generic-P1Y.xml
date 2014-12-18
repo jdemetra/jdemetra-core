@@ -1,0 +1,132 @@
+﻿<message:MessageGroup xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/generic" xmlns:common="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/common" xsi:schemaLocation="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/generic http://www.sdmx.org/docs/2_0/SDMXGenericData.xsd http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message http://www.sdmx.org/docs/2_0/SDMXMessage.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:message="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message">
+    <Header xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message">
+        <ID>none</ID>
+        <Test>false</Test>
+        <Truncated>false</Truncated>
+        <Prepared>2014-10-16T14:56:20</Prepared>
+        <Sender id="NBB">
+            <Name xml:lang="en">NBB</Name>
+            <Name xml:lang="fr">NBB</Name>
+        </Sender>
+    </Header>
+    <DataSet keyFamilyURI="http://stat.nbb.be/RestSDMX/sdmx.ashx/GetKeyFamily/NADET2008">
+        <KeyFamilyRef>NADET2008</KeyFamilyRef>
+        <Series>
+            <SeriesKey>
+                <Value concept="NADET2008_INDICATOR" value="B1G" />
+                <Value concept="NADET2008_BRANCH" value="A38_AA" />
+                <Value concept="NADET2008_SECTOR" value="S1" />
+                <Value concept="NADET2008_PRICE" value="L" />
+                <Value concept="FREQUENCY" value="A" />
+            </SeriesKey>
+            <Attributes>
+                <Value concept="TIME_FORMAT" value="P1Y" />
+            </Attributes>
+            <Obs>
+                <Time>2009</Time>
+                <ObsValue value="2722.8" />
+            </Obs>
+            <Obs>
+                <Time>2010</Time>
+                <ObsValue value="2911.5" />
+            </Obs>
+            <Obs>
+                <Time>2011</Time>
+                <ObsValue value="2836.2" />
+            </Obs>
+            <Obs>
+                <Time>2012</Time>
+                <ObsValue value="2708.5" />
+            </Obs>
+            <Obs>
+                <Time>2013</Time>
+                <ObsValue value="2797.7" />
+            </Obs>
+        </Series>
+        <Series>
+            <SeriesKey>
+                <Value concept="NADET2008_INDICATOR" value="B1G" />
+                <Value concept="NADET2008_BRANCH" value="A38_AA" />
+                <Value concept="NADET2008_SECTOR" value="S1" />
+                <Value concept="NADET2008_PRICE" value="V" />
+                <Value concept="FREQUENCY" value="A" />
+            </SeriesKey>
+            <Attributes>
+                <Value concept="TIME_FORMAT" value="P1Y" />
+            </Attributes>
+            <Obs>
+                <Time>2009</Time>
+                <ObsValue value="2339.9" />
+            </Obs>
+            <Obs>
+                <Time>2010</Time>
+                <ObsValue value="2871.2" />
+            </Obs>
+            <Obs>
+                <Time>2011</Time>
+                <ObsValue value="2369.3" />
+            </Obs>
+            <Obs>
+                <Time>2012</Time>
+                <ObsValue value="2708.5" />
+            </Obs>
+            <Obs>
+                <Time>2013</Time>
+                <ObsValue value="2930.6" />
+            </Obs>
+        </Series>
+        <Series>
+            <SeriesKey>
+                <Value concept="NADET2008_INDICATOR" value="B1G" />
+                <Value concept="NADET2008_BRANCH" value="A38_AA" />
+                <Value concept="NADET2008_SECTOR" value="S11" />
+                <Value concept="NADET2008_PRICE" value="V" />
+                <Value concept="FREQUENCY" value="A" />
+            </SeriesKey>
+            <Attributes>
+                <Value concept="TIME_FORMAT" value="P1Y" />
+            </Attributes>
+            <Obs>
+                <Time>2009</Time>
+                <ObsValue value="705.6" />
+            </Obs>
+            <Obs>
+                <Time>2010</Time>
+                <ObsValue value="815.8" />
+            </Obs>
+            <Obs>
+                <Time>2011</Time>
+                <ObsValue value="882.2" />
+            </Obs>
+            <Obs>
+                <Time>2012</Time>
+                <ObsValue value="960" />
+            </Obs>
+            <Obs>
+                <Time>2013</Time>
+                <ObsValue value="1199.4" />
+            </Obs>
+        </Series>
+        <Annotations>
+            <common:Annotation>
+                <common:AnnotationTitle>Copyright NBB - All rights reserved</common:AnnotationTitle>
+            </common:Annotation>
+            <common:Annotation>
+                <common:AnnotationTitle>Terms and Conditions</common:AnnotationTitle>
+                <common:AnnotationURL>http://www.nbb.be/pub/disclaimer/disclaimer.htm?l=nl&amp;t=ho</common:AnnotationURL>
+            </common:Annotation>
+            <common:Annotation>
+                <common:AnnotationTitle>Privacy Policy</common:AnnotationTitle>
+                <common:AnnotationURL>http://www.nbb.be/pub/disclaimer/disclaimer.htm?l=nl&amp;t=ho</common:AnnotationURL>
+            </common:Annotation>
+            <common:Annotation>
+                <common:AnnotationTitle>MyNBB</common:AnnotationTitle>
+                <common:AnnotationURL>http://www.nbb.be</common:AnnotationURL>
+            </common:Annotation>
+            <common:Annotation>
+                <common:AnnotationTitle>Contact Us</common:AnnotationTitle>
+                <common:AnnotationURL>http://www.nbb.be</common:AnnotationURL>
+            </common:Annotation>
+        </Annotations>
+    </DataSet>
+</message:MessageGroup>

@@ -1,0 +1,228 @@
+﻿<message:MessageGroup xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/generic" xmlns:common="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/common" xsi:schemaLocation="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/generic http://www.sdmx.org/docs/2_0/SDMXGenericData.xsd http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message http://www.sdmx.org/docs/2_0/SDMXMessage.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:message="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message">
+    <Header xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message">
+        <ID>none</ID>
+        <Test>false</Test>
+        <Truncated>false</Truncated>
+        <Prepared>2014-10-16T15:37:46</Prepared>
+        <Sender id="NBB">
+            <Name xml:lang="en">NBB</Name>
+            <Name xml:lang="fr">NBB</Name>
+        </Sender>
+    </Header>
+    <DataSet keyFamilyURI="http://stat.nbb.be/RestSDMX/sdmx.ashx/GetKeyFamily/CONSTRUCTION">
+        <KeyFamilyRef>CONSTRUCTION</KeyFamilyRef>
+        <Series>
+            <SeriesKey>
+                <Value concept="CONSTRUCTION_PERMIT" value="PE" />
+                <Value concept="CONSTRUCTION_TYPE" value="NR" />
+                <Value concept="CONSTRUCTION_GEO" value="BE" />
+                <Value concept="CONSTRUCTION_ITEM" value="BU" />
+                <Value concept="FREQUENCY" value="M" />
+            </SeriesKey>
+            <Attributes>
+                <Value concept="TIME_FORMAT" value="P1M" />
+            </Attributes>
+            <Obs>
+                <Time>2013M7</Time>
+                <ObsValue value="428" />
+            </Obs>
+            <Obs>
+                <Time>2013M8</Time>
+                <ObsValue value="384" />
+            </Obs>
+            <Obs>
+                <Time>2013M9</Time>
+                <ObsValue value="363" />
+            </Obs>
+            <Obs>
+                <Time>2013M10</Time>
+                <ObsValue value="406" />
+            </Obs>
+            <Obs>
+                <Time>2013M11</Time>
+                <ObsValue value="326" />
+            </Obs>
+            <Obs>
+                <Time>2013M12</Time>
+                <ObsValue value="332" />
+            </Obs>
+            <Obs>
+                <Time>2014M1</Time>
+                <ObsValue value="316" />
+            </Obs>
+            <Obs>
+                <Time>2014M2</Time>
+                <ObsValue value="353" />
+            </Obs>
+            <Obs>
+                <Time>2014M3</Time>
+                <ObsValue value="416" />
+            </Obs>
+            <Obs>
+                <Time>2014M4</Time>
+                <ObsValue value="452" />
+            </Obs>
+            <Obs>
+                <Time>2014M5</Time>
+                <ObsValue value="376" />
+            </Obs>
+            <Obs>
+                <Time>2014M6</Time>
+                <ObsValue value="380" />
+            </Obs>
+            <Obs>
+                <Time>2014M7</Time>
+                <ObsValue value="385" />
+            </Obs>
+        </Series>
+        <Series>
+            <SeriesKey>
+                <Value concept="CONSTRUCTION_PERMIT" value="PE" />
+                <Value concept="CONSTRUCTION_TYPE" value="NR" />
+                <Value concept="CONSTRUCTION_GEO" value="BE" />
+                <Value concept="CONSTRUCTION_ITEM" value="DW" />
+                <Value concept="FREQUENCY" value="M" />
+            </SeriesKey>
+            <Attributes>
+                <Value concept="TIME_FORMAT" value="P1M" />
+            </Attributes>
+            <Obs>
+                <Time>2013M7</Time>
+                <ObsValue value="182" />
+            </Obs>
+            <Obs>
+                <Time>2013M8</Time>
+                <ObsValue value="153" />
+            </Obs>
+            <Obs>
+                <Time>2013M9</Time>
+                <ObsValue value="142" />
+            </Obs>
+            <Obs>
+                <Time>2013M10</Time>
+                <ObsValue value="219" />
+            </Obs>
+            <Obs>
+                <Time>2013M11</Time>
+                <ObsValue value="133" />
+            </Obs>
+            <Obs>
+                <Time>2013M12</Time>
+                <ObsValue value="167" />
+            </Obs>
+            <Obs>
+                <Time>2014M1</Time>
+                <ObsValue value="64" />
+            </Obs>
+            <Obs>
+                <Time>2014M2</Time>
+                <ObsValue value="186" />
+            </Obs>
+            <Obs>
+                <Time>2014M3</Time>
+                <ObsValue value="244" />
+            </Obs>
+            <Obs>
+                <Time>2014M4</Time>
+                <ObsValue value="402" />
+            </Obs>
+            <Obs>
+                <Time>2014M5</Time>
+                <ObsValue value="210" />
+            </Obs>
+            <Obs>
+                <Time>2014M6</Time>
+                <ObsValue value="84" />
+            </Obs>
+            <Obs>
+                <Time>2014M7</Time>
+                <ObsValue value="105" />
+            </Obs>
+        </Series>
+        <Series>
+            <SeriesKey>
+                <Value concept="CONSTRUCTION_PERMIT" value="PE" />
+                <Value concept="CONSTRUCTION_TYPE" value="NR" />
+                <Value concept="CONSTRUCTION_GEO" value="BE" />
+                <Value concept="CONSTRUCTION_ITEM" value="HA" />
+                <Value concept="FREQUENCY" value="M" />
+            </SeriesKey>
+            <Attributes>
+                <Value concept="TIME_FORMAT" value="P1M" />
+            </Attributes>
+            <Obs>
+                <Time>2013M7</Time>
+                <ObsValue value="15751" />
+            </Obs>
+            <Obs>
+                <Time>2013M8</Time>
+                <ObsValue value="10044" />
+            </Obs>
+            <Obs>
+                <Time>2013M9</Time>
+                <ObsValue value="10736" />
+            </Obs>
+            <Obs>
+                <Time>2013M10</Time>
+                <ObsValue value="16715" />
+            </Obs>
+            <Obs>
+                <Time>2013M11</Time>
+                <ObsValue value="10715" />
+            </Obs>
+            <Obs>
+                <Time>2013M12</Time>
+                <ObsValue value="14230" />
+            </Obs>
+            <Obs>
+                <Time>2014M1</Time>
+                <ObsValue value="7000" />
+            </Obs>
+            <Obs>
+                <Time>2014M2</Time>
+                <ObsValue value="13929" />
+            </Obs>
+            <Obs>
+                <Time>2014M3</Time>
+                <ObsValue value="18914" />
+            </Obs>
+            <Obs>
+                <Time>2014M4</Time>
+                <ObsValue value="29070" />
+            </Obs>
+            <Obs>
+                <Time>2014M5</Time>
+                <ObsValue value="16233" />
+            </Obs>
+            <Obs>
+                <Time>2014M6</Time>
+                <ObsValue value="7265" />
+            </Obs>
+            <Obs>
+                <Time>2014M7</Time>
+                <ObsValue value="9871" />
+            </Obs>
+        </Series>
+        <Annotations>
+            <common:Annotation>
+                <common:AnnotationTitle>Copyright NBB - All rights reserved</common:AnnotationTitle>
+            </common:Annotation>
+            <common:Annotation>
+                <common:AnnotationTitle>Terms and Conditions</common:AnnotationTitle>
+                <common:AnnotationURL>http://www.nbb.be/pub/disclaimer/disclaimer.htm?l=nl&amp;t=ho</common:AnnotationURL>
+            </common:Annotation>
+            <common:Annotation>
+                <common:AnnotationTitle>Privacy Policy</common:AnnotationTitle>
+                <common:AnnotationURL>http://www.nbb.be/pub/disclaimer/disclaimer.htm?l=nl&amp;t=ho</common:AnnotationURL>
+            </common:Annotation>
+            <common:Annotation>
+                <common:AnnotationTitle>MyNBB</common:AnnotationTitle>
+                <common:AnnotationURL>http://www.nbb.be</common:AnnotationURL>
+            </common:Annotation>
+            <common:Annotation>
+                <common:AnnotationTitle>Contact Us</common:AnnotationTitle>
+                <common:AnnotationURL>http://www.nbb.be</common:AnnotationURL>
+            </common:Annotation>
+        </Annotations>
+    </DataSet>
+</message:MessageGroup>

@@ -1,0 +1,1130 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <Author>charphi</Author>
+  <LastAuthor>charphi</LastAuthor>
+  <Created>2011-11-28T14:07:13Z</Created>
+  <LastSaved>2012-01-16T09:42:17Z</LastSaved>
+  <Company>National Bank of Belgium</Company>
+  <Version>12.00</Version>
+ </DocumentProperties>
+ <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+  <WindowHeight>12270</WindowHeight>
+  <WindowWidth>19035</WindowWidth>
+  <WindowTopX>120</WindowTopX>
+  <WindowTopY>135</WindowTopY>
+  <ActiveSheet>2</ActiveSheet>
+  <ProtectStructure>False</ProtectStructure>
+  <ProtectWindows>False</ProtectWindows>
+ </ExcelWorkbook>
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Alignment ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font ss:FontName="Arial" x:Family="Swiss" ss:Color="#000000"/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+  <Style ss:ID="s16">
+   <NumberFormat ss:Format="Short Date"/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="Top 5 Browsers - Monthly">
+  <Names>
+   <NamedRange ss:Name="browser_ww_monthly_200807_201111_1"
+    ss:RefersTo="='Top 5 Browsers - Monthly'!R1C1:R42C7"/>
+  </Names>
+  <Table ss:ExpandedColumnCount="7" ss:ExpandedRowCount="42" x:FullColumns="1"
+   x:FullRows="1">
+   <Column ss:Index="2" ss:Width="31.5"/>
+   <Column ss:Width="34.5"/>
+   <Column ss:Width="39"/>
+   <Column ss:Width="30"/>
+   <Column ss:Width="31.5"/>
+   <Column ss:Width="29.25"/>
+   <Row>
+    <Cell ss:Index="2"><Data ss:Type="String">IE</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="String">Firefox</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="String">Chrome</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="String">Safari</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="String">Opera</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="String">Other</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2008-07-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">68.569999999999993</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">26.14</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">3.3</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.78</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.21</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2008-08-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">68.91</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">26.08</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.99</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.83</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.2</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2008-09-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">67.16</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">25.77</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.03</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">3</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.86</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.18</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2008-10-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">67.680000000000007</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">25.54</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.02</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.91</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.69</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.17</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2008-11-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">68.14</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">25.27</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.93</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.4900000000000002</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">3.01</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.16</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2008-12-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">67.84</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">25.23</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.21</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.41</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.83</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.48</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-01-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">65.41</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">27.03</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.38</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.57</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.92</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.7</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-02-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">64.430000000000007</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">27.85</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.52</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.59</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.95</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.67</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-03-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">62.52</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">29.4</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.73</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.73</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.94</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.68</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-04-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">61.88</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">29.67</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.0699999999999998</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.75</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.96</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.68</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-05-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">62.09</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">28.75</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.42</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.65</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">3.23</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.87</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-06-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">59.49</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">30.33</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.82</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.93</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">3.36</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.07</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-07-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">60.11</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">30.5</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">3.01</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">3.02</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.64</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.72</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-08-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">58.69</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">31.28</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">3.38</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">3.25</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.67</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.73</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-09-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">58.37</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">31.34</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">3.69</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">3.28</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.62</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.7</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-10-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">57.96</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">31.82</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">4.17</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">3.47</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.88</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.7</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-11-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">56.57</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">32.21</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">4.66</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">3.67</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.02</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.86</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-12-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">55.72</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">31.97</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">5.45</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">3.48</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.06</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.31</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2010-01-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">55.25</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">31.64</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">6.04</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">3.76</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.31</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2010-02-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">54.5</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">31.82</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">6.72</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">4.08</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.97</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.91</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2010-03-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">54.44</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">31.27</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">7.29</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">4.16</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.97</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.87</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2010-04-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">53.26</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">31.74</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">8.06</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">4.2300000000000004</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.82</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.89</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2010-05-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">52.77</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">31.64</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">8.61</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">4.1399999999999997</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.96</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.88</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2010-06-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">52.86</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">31.15</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">9.24</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">4.07</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.91</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.77</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2010-07-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">52.68</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">30.69</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">9.8800000000000008</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">4.09</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.91</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.74</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2010-08-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">51.34</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">31.09</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">10.76</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">4.2300000000000004</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.88</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.7</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2010-09-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">49.87</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">31.5</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">11.54</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">4.42</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.0299999999999998</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.63</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2010-10-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">49.21</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">31.24</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">12.39</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">4.5599999999999996</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.6</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2010-11-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">48.16</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">31.17</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">13.35</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">4.7</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.0099999999999998</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.6</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2010-12-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">46.94</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">30.76</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">14.85</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">4.79</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.0699999999999998</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.57999999999999996</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2011-01-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">46</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">30.68</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">15.68</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">5.09</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.55000000000000004</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2011-02-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">45.44</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">30.37</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">16.54</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">5.08</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">2</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.55000000000000004</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2011-03-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">45.11</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">29.98</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">17.37</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">5.0199999999999996</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.97</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.54</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2011-04-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">44.52</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">29.67</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">18.29</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">5.04</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.91</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.56999999999999995</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2011-05-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">43.87</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">29.29</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">19.36</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">5.01</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.84</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.63</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2011-06-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">43.58</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">28.34</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">20.65</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">5.07</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.74</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.61</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2011-07-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">42.45</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">27.95</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">22.14</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">5.17</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.66</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.63</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2011-08-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">41.89</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">27.49</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">23.16</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">5.19</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.67</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.61</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2011-09-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">41.66</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">26.79</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">23.61</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">5.6</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.72</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.62</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2011-10-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">40.18</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">26.39</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">25</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">5.93</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.81</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.69</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2011-11-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">40.479999999999997</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">25.21</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">25.65</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">5.9</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.83</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.93</Data><NamedCell
+      ss:Name="browser_ww_monthly_200807_201111_1"/></Cell>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <PageSetup>
+    <Header x:Margin="0.3"/>
+    <Footer x:Margin="0.3"/>
+    <PageMargins x:Bottom="0.75" x:Left="0.7" x:Right="0.7" x:Top="0.75"/>
+   </PageSetup>
+   <Print>
+    <ValidPrinterInfo/>
+    <PaperSizeIndex>9</PaperSizeIndex>
+    <HorizontalResolution>600</HorizontalResolution>
+    <VerticalResolution>600</VerticalResolution>
+   </Print>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+     <RangeSelection>R1C1:R11C7</RangeSelection>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+  <QueryTable xmlns="urn:schemas-microsoft-com:office:excel">
+   <Name>browser-ww-monthly-200807-201111_1</Name>
+   <AutoFormatFont/>
+   <AutoFormatPattern/>
+   <QuerySource>
+    <QueryType>Text</QueryType>
+    <TextWizardSettings>
+     <Name x:HRef="D:\Users\browser-ww-monthly-200807-201111.csv"/>
+     <StartRow>2</StartRow>
+     <Decimal>.</Decimal>
+     <ThousandSeparator>.</ThousandSeparator>
+     <TrailingMinusNumbers/>
+     <FormatSettings>
+      <FieldType>AutoFormat</FieldType>
+      <FieldType>AutoFormat</FieldType>
+      <FieldType>AutoFormat</FieldType>
+      <FieldType>AutoFormat</FieldType>
+      <FieldType>AutoFormat</FieldType>
+      <FieldType>AutoFormat</FieldType>
+      <FieldType>AutoFormat</FieldType>
+     </FormatSettings>
+     <Delimiters>
+      <Tab/>
+      <Comma/>
+     </Delimiters>
+    </TextWizardSettings>
+    <VersionLastEdit>3</VersionLastEdit>
+    <VersionLastRefresh>3</VersionLastRefresh>
+   </QuerySource>
+  </QueryTable>
+ </Worksheet>
+ <Worksheet ss:Name="Top 5 Browsers - Quarterly">
+  <Names>
+   <NamedRange ss:Name="browser_ww_quarterly_200803_201104_1"
+    ss:RefersTo="='Top 5 Browsers - Quarterly'!R1C1:R15C7"/>
+  </Names>
+  <Table ss:ExpandedColumnCount="42" ss:ExpandedRowCount="7" x:FullColumns="1"
+   x:FullRows="1">
+   <Row>
+    <Cell ss:Index="2" ss:StyleID="s16"><Data ss:Type="DateTime">2008-07-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2008-10-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-01-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-04-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-07-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-10-01T00:00:00.000</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2010-01-01T00:00:00.000</Data></Cell>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2010-04-01T00:00:00.000</Data></Cell>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2010-07-01T00:00:00.000</Data></Cell>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2010-10-01T00:00:00.000</Data></Cell>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2011-01-01T00:00:00.000</Data></Cell>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2011-04-01T00:00:00.000</Data></Cell>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2011-07-01T00:00:00.000</Data></Cell>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2011-10-01T00:00:00.000</Data></Cell>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+    <Cell ss:StyleID="s16"/>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">IE</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">67.989999999999995</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">67.900000000000006</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">64.040000000000006</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">61.12</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">59.03</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">56.73</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">54.67</Data></Cell>
+    <Cell><Data ss:Type="Number">52.96</Data></Cell>
+    <Cell><Data ss:Type="Number">51.35</Data></Cell>
+    <Cell><Data ss:Type="Number">48.1</Data></Cell>
+    <Cell><Data ss:Type="Number">45.51</Data></Cell>
+    <Cell><Data ss:Type="Number">44</Data></Cell>
+    <Cell><Data ss:Type="Number">42</Data></Cell>
+    <Cell><Data ss:Type="Number">40.32</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">Firefox</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">25.94</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">25.32</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">28.16</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">29.57</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">31.05</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">32</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">31.53</Data></Cell>
+    <Cell><Data ss:Type="Number">31.51</Data></Cell>
+    <Cell><Data ss:Type="Number">31.08</Data></Cell>
+    <Cell><Data ss:Type="Number">31.06</Data></Cell>
+    <Cell><Data ss:Type="Number">30.34</Data></Cell>
+    <Cell><Data ss:Type="Number">29.11</Data></Cell>
+    <Cell><Data ss:Type="Number">27.42</Data></Cell>
+    <Cell><Data ss:Type="Number">25.84</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">Chrome</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.51</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.07</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.55</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.4500000000000002</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">3.37</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">4.78</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">6.79</Data></Cell>
+    <Cell><Data ss:Type="Number">8.64</Data></Cell>
+    <Cell><Data ss:Type="Number">10.7</Data></Cell>
+    <Cell><Data ss:Type="Number">13.54</Data></Cell>
+    <Cell><Data ss:Type="Number">16.55</Data></Cell>
+    <Cell><Data ss:Type="Number">19.420000000000002</Data></Cell>
+    <Cell><Data ss:Type="Number">22.96</Data></Cell>
+    <Cell><Data ss:Type="Number">25.3</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">Safari</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">3.05</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.56</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.63</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.78</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">3.19</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">3.54</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">4.03</Data></Cell>
+    <Cell><Data ss:Type="Number">4.1500000000000004</Data></Cell>
+    <Cell><Data ss:Type="Number">4.24</Data></Cell>
+    <Cell><Data ss:Type="Number">4.6900000000000004</Data></Cell>
+    <Cell><Data ss:Type="Number">5.0599999999999996</Data></Cell>
+    <Cell><Data ss:Type="Number">5.04</Data></Cell>
+    <Cell><Data ss:Type="Number">5.31</Data></Cell>
+    <Cell><Data ss:Type="Number">5.92</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">Opera</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.33</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.85</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.94</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">3.19</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">2.65</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.99</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">1.98</Data></Cell>
+    <Cell><Data ss:Type="Number">1.89</Data></Cell>
+    <Cell><Data ss:Type="Number">1.94</Data></Cell>
+    <Cell><Data ss:Type="Number">2.0299999999999998</Data></Cell>
+    <Cell><Data ss:Type="Number">1.99</Data></Cell>
+    <Cell><Data ss:Type="Number">1.83</Data></Cell>
+    <Cell><Data ss:Type="Number">1.68</Data></Cell>
+    <Cell><Data ss:Type="Number">1.82</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">Other</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.19</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.3</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.68</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.88</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.71</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">0.97</Data><NamedCell
+      ss:Name="browser_ww_quarterly_200803_201104_1"/></Cell>
+    <Cell><Data ss:Type="Number">1</Data></Cell>
+    <Cell><Data ss:Type="Number">0.85</Data></Cell>
+    <Cell><Data ss:Type="Number">0.69</Data></Cell>
+    <Cell><Data ss:Type="Number">0.59</Data></Cell>
+    <Cell><Data ss:Type="Number">0.55000000000000004</Data></Cell>
+    <Cell><Data ss:Type="Number">0.6</Data></Cell>
+    <Cell><Data ss:Type="Number">0.62</Data></Cell>
+    <Cell><Data ss:Type="Number">0.8</Data></Cell>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <PageSetup>
+    <Header x:Margin="0.3"/>
+    <Footer x:Margin="0.3"/>
+    <PageMargins x:Bottom="0.75" x:Left="0.7" x:Right="0.7" x:Top="0.75"/>
+   </PageSetup>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+     <ActiveRow>4</ActiveRow>
+     <ActiveCol>2</ActiveCol>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+  <QueryTable xmlns="urn:schemas-microsoft-com:office:excel">
+   <Name>browser-ww-quarterly-200803-201104_1</Name>
+   <AutoFormatFont/>
+   <AutoFormatPattern/>
+   <QuerySource>
+    <QueryType>Text</QueryType>
+    <TextWizardSettings>
+     <Name x:HRef="D:\Users\browser-ww-quarterly-200803-201104.csv"/>
+     <StartRow>2</StartRow>
+     <Decimal>.</Decimal>
+     <ThousandSeparator>.</ThousandSeparator>
+     <TrailingMinusNumbers/>
+     <FormatSettings>
+      <FieldType>AutoFormat</FieldType>
+      <FieldType>AutoFormat</FieldType>
+      <FieldType>AutoFormat</FieldType>
+      <FieldType>AutoFormat</FieldType>
+      <FieldType>AutoFormat</FieldType>
+      <FieldType>AutoFormat</FieldType>
+      <FieldType>AutoFormat</FieldType>
+     </FormatSettings>
+     <Delimiters>
+      <Tab/>
+      <Comma/>
+     </Delimiters>
+    </TextWizardSettings>
+    <VersionLastEdit>3</VersionLastEdit>
+    <VersionLastRefresh>3</VersionLastRefresh>
+   </QuerySource>
+  </QueryTable>
+ </Worksheet>
+ <Worksheet ss:Name="DataTest">
+  <Table ss:ExpandedColumnCount="6" ss:ExpandedRowCount="11" x:FullColumns="1"
+   x:FullRows="1">
+   <Row>
+    <Cell ss:Index="2"><Data ss:Type="String">IE</Data></Cell>
+    <Cell><Data ss:Type="String">Firefox</Data></Cell>
+    <Cell><Data ss:Type="String">Chrome</Data></Cell>
+    <Cell><Data ss:Type="String">Safari</Data></Cell>
+    <Cell><Data ss:Type="String">Opera</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2008-07-01T00:00:00.000</Data></Cell>
+    <Cell ss:Index="3"><Data ss:Type="Number">26.14</Data></Cell>
+    <Cell><Data ss:Type="Number">0</Data></Cell>
+    <Cell><Data ss:Type="String">hello</Data></Cell>
+    <Cell><Data ss:Type="Number">1.78</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2008-08-01T00:00:00.000</Data></Cell>
+    <Cell ss:Index="3"><Data ss:Type="Number">26.08</Data></Cell>
+    <Cell><Data ss:Type="Number">0</Data></Cell>
+    <Cell><Data ss:Type="Number">2.99</Data></Cell>
+    <Cell><Data ss:Type="Number">1.83</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2008-09-01T00:00:00.000</Data></Cell>
+    <Cell><Data ss:Type="Number">67.16</Data></Cell>
+    <Cell><Data ss:Type="Number">25.77</Data></Cell>
+    <Cell><Data ss:Type="Number">1.03</Data></Cell>
+    <Cell><Data ss:Type="Number">3</Data></Cell>
+    <Cell><Data ss:Type="Number">2.86</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2008-10-01T00:00:00.000</Data></Cell>
+    <Cell><Data ss:Type="Number">67.680000000000007</Data></Cell>
+    <Cell><Data ss:Type="Number">25.54</Data></Cell>
+    <Cell ss:Index="5"><Data ss:Type="Number">2.91</Data></Cell>
+    <Cell><Data ss:Type="Number">2.69</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2008-11-01T00:00:00.000</Data></Cell>
+    <Cell><Data ss:Type="Number">68.14</Data></Cell>
+    <Cell><Data ss:Type="Number">25.27</Data></Cell>
+    <Cell><Data ss:Type="String">helloworld</Data></Cell>
+    <Cell><Data ss:Type="Number">2.4900000000000002</Data></Cell>
+    <Cell><Data ss:Type="Number">3.01</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2008-12-01T00:00:00.000</Data></Cell>
+    <Cell><Data ss:Type="Number">67.84</Data></Cell>
+    <Cell><Data ss:Type="Number">25.23</Data></Cell>
+    <Cell ss:Index="5"><Data ss:Type="Number">2.41</Data></Cell>
+    <Cell><Data ss:Type="Number">2.83</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-01-01T00:00:00.000</Data></Cell>
+    <Cell><Data ss:Type="Number">65.41</Data></Cell>
+    <Cell><Data ss:Type="Number">27.03</Data></Cell>
+    <Cell ss:Index="5"><Data ss:Type="Number">2.57</Data></Cell>
+    <Cell><Data ss:Type="Number">2.92</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-02-01T00:00:00.000</Data></Cell>
+    <Cell><Data ss:Type="Number">64.430000000000007</Data></Cell>
+    <Cell><Data ss:Type="Number">27.85</Data></Cell>
+    <Cell><Data ss:Type="Number">1.52</Data></Cell>
+    <Cell><Data ss:Type="Number">2.59</Data></Cell>
+    <Cell><Data ss:Type="Number">2.95</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-03-01T00:00:00.000</Data></Cell>
+    <Cell><Data ss:Type="Number">62.52</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="Number">1.73</Data></Cell>
+    <Cell><Data ss:Type="Number">2.73</Data></Cell>
+    <Cell><Data ss:Type="Number">2.94</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s16"><Data ss:Type="DateTime">2009-04-01T00:00:00.000</Data></Cell>
+    <Cell><Data ss:Type="Number">61.88</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="Number">2.0699999999999998</Data></Cell>
+    <Cell><Data ss:Type="Number">2.75</Data></Cell>
+    <Cell><Data ss:Type="String">world</Data></Cell>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <PageSetup>
+    <Header x:Margin="0.3"/>
+    <Footer x:Margin="0.3"/>
+    <PageMargins x:Bottom="0.75" x:Left="0.7" x:Right="0.7" x:Top="0.75"/>
+   </PageSetup>
+   <Print>
+    <ValidPrinterInfo/>
+    <PaperSizeIndex>9</PaperSizeIndex>
+    <HorizontalResolution>600</HorizontalResolution>
+    <VerticalResolution>600</VerticalResolution>
+   </Print>
+   <Selected/>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+     <ActiveRow>19</ActiveRow>
+     <ActiveCol>7</ActiveCol>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+</Workbook>
