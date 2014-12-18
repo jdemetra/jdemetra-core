@@ -86,18 +86,18 @@ public class AbstractModelControllerTest {
             LikelihoodStatistics lstat1 = cxt1.estimation.getStatistics();
             LikelihoodStatistics lstat2 = cxt2.estimation.getStatistics();
             
-            System.out.println("No TD");
-            System.out.println(stat0);
-            System.out.println("TD");
-            System.out.println(stat1);
-            System.out.println("WD");
-            System.out.println(stat2);
-            System.out.println("No TD");
-            System.out.println(lstat0);
-            System.out.println("TD");
-            System.out.println(lstat1);
-            System.out.println("WD");
-            System.out.println(lstat2);
+//            System.out.println("No TD");
+//            System.out.println(stat0);
+//            System.out.println("TD");
+//            System.out.println(stat1);
+//            System.out.println("WD");
+//            System.out.println(stat2);
+//            System.out.println("No TD");
+//            System.out.println(lstat0);
+//            System.out.println("TD");
+//            System.out.println(lstat1);
+//            System.out.println("WD");
+//            System.out.println(lstat2);
             
             // choose the right description
             //context.description=best.description;

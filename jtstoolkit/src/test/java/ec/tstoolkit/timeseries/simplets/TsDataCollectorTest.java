@@ -43,8 +43,8 @@ public class TsDataCollectorTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @Test
-    public void testCreation1() {
+//    @Test
+    public void demoCreation1() {
         
         TsDataCollector collector = new TsDataCollector();
         int n = 100;
@@ -67,7 +67,7 @@ public class TsDataCollectorTest {
     }
 
     //@Test
-    public void testCreation2() {
+    public void demoCreation2() {
         TsDataCollector collector = new TsDataCollector();
         int n = 10000;
         Day day = Day.toDay();

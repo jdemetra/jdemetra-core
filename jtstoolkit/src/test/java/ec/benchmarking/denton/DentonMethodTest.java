@@ -46,9 +46,9 @@ public class DentonMethodTest {
         DentonMethod denton = new DentonMethod();
         double[] process = denton.process(m, y);
         TsData mc0 = new TsData(m.getStart(), process, false);
-         TsDataTable table = new TsDataTable();
-         table.insert(-1, mc0);
-       TsDenton mdenton = new TsDenton();
+        TsDataTable table = new TsDataTable();
+        table.insert(-1, mc0);
+        TsDenton mdenton = new TsDenton();
         mdenton.setMultiplicative(true);
         TsData mc = mdenton.process(m, y);
         assertTrue(mc0.distance(mc) < 1e-6);
@@ -58,24 +58,24 @@ public class DentonMethodTest {
         mdenton.setMultiplicative(false);
         mc = mdenton.process(m, y);
         assertTrue(mc0.distance(mc) < 1e-6);
-        denton.setMultiplicative(true);
-        denton.setDifferencingOrder(2);
-        process = denton.process(m, y);
-        table.insert(-1, new TsData(m.getStart(), process, false));
-         denton.setDifferencingOrder(3);
-        process = denton.process(m, y);
-        table.insert(-1, new TsData(m.getStart(), process, false));
-       denton.setModifiedDenton(false);
-        denton.setDifferencingOrder(1);
-        process = denton.process(m, y);
-        table.insert(-1, new TsData(m.getStart(), process, false));
-        denton.setDifferencingOrder(2);
-        process = denton.process(m, y);
-        table.insert(-1, new TsData(m.getStart(), process, false));
-        denton.setDifferencingOrder(3);
-        process = denton.process(m, y);
-        table.insert(-1, new TsData(m.getStart(), process, false));
-        System.out.println(table);
+//        denton.setMultiplicative(true);
+//        denton.setDifferencingOrder(2);
+//        process = denton.process(m, y);
+//        table.insert(-1, new TsData(m.getStart(), process, false));
+//        denton.setDifferencingOrder(3);
+//        process = denton.process(m, y);
+//        table.insert(-1, new TsData(m.getStart(), process, false));
+//        denton.setModifiedDenton(false);
+//        denton.setDifferencingOrder(1);
+//        process = denton.process(m, y);
+//        table.insert(-1, new TsData(m.getStart(), process, false));
+//        denton.setDifferencingOrder(2);
+//        process = denton.process(m, y);
+//        table.insert(-1, new TsData(m.getStart(), process, false));
+//        denton.setDifferencingOrder(3);
+//        process = denton.process(m, y);
+//        table.insert(-1, new TsData(m.getStart(), process, false));
+//        System.out.println(table);
     }
 
 }

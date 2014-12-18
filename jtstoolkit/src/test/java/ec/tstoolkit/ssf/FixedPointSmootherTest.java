@@ -41,8 +41,8 @@ public class FixedPointSmootherTest {
     public FixedPointSmootherTest() {
     }
 
-    @Test
-    public void testSomeMethod() {
+//    @Test
+    public void demoSomeMethod() {
         int fpos=120, nrev=60;
         SsfUcarima ssf = new SsfUcarima(ucmAirline(-.6, -.4));
         FixedPointSmoother fsm = new FixedPointSmoother(ssf, fpos);

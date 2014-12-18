@@ -34,8 +34,8 @@ public class RegArimaEstimatorTest {
     public RegArimaEstimatorTest() {
     }
 
-    @Test
-    public void testAirline() {
+//    @Test
+    public void demoAirline() {
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline();
         SarimaModel model = new SarimaModel(spec);

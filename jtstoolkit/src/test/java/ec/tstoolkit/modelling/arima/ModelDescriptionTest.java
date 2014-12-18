@@ -52,7 +52,7 @@ public class ModelDescriptionTest {
     }
 
     //@Test
-    public void testModel() {
+    public void demoModel() {
         // Create a model for the series Data.X. The entire time domain of X is
         // modelled (second parameter setto null).
         ModelDescription model=new ModelDescription(Data.X, null);

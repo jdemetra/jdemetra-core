@@ -36,8 +36,8 @@ public class MixedFrequenciesModelDecompositionTest {
     public MixedFrequenciesModelDecompositionTest() {
     }
 
-    @Test
-    public void testSomeMethod() {
+    //@Test
+    public void demoSomeMethod() {
         MixedFrequenciesSpecification spec = new MixedFrequenciesSpecification();
         MixedFrequenciesMonitor monitor = new MixedFrequenciesMonitor();
         spec.getRegression().getTradingDays().setTradingDaysType(TradingDaysType.TradingDays);

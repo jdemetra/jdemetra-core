@@ -27,7 +27,9 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.Map;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
@@ -46,7 +48,7 @@ public class BatchProcessingTest {
     public static void tearDownClass() throws Exception {
     }
 
-    //@Test
+    @Test
     public void test() {
         /*
          * The test will chain a simple seasonal adjustment with denton benchmarking
@@ -86,12 +88,13 @@ public class BatchProcessingTest {
         CompositeResults rslt = batch.process(input);
         TsData xsa=rslt.getData("step0.sa", TsData.class);
         TsData xsabench=rslt.getData("step1.sa_bench", TsData.class);
-        System.out.println(xsa);
-        System.out.println(xsabench);
-        Map<String, Class> dictionary = rslt.getDictionary();
-        for (String s: dictionary.keySet()){
-            System.out.println(s);
-        }
+        assertTrue(xsa != null && xsabench != null);
+//        System.out.println(xsa);
+//        System.out.println(xsabench);
+//        Map<String, Class> dictionary = rslt.getDictionary();
+//        for (String s: dictionary.keySet()){
+//            System.out.println(s);
+//        }
     }
 }
 

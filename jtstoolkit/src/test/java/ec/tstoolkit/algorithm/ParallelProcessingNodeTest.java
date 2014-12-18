@@ -82,14 +82,14 @@ public class ParallelProcessingNodeTest {
         long s1 = System.currentTimeMillis();
         //System.out.println(s1 - s0);
 
-        CompositeResults process = null;
-        long t0 = System.currentTimeMillis();
-        for (int i = 0; i < 1000; ++i) {
-            process = all.process(M);
-        }
-        long t1 = System.currentTimeMillis();
-
-        //System.out.println(t1 - t0);
+        CompositeResults process = all.process(M);
+//        long t0 = System.currentTimeMillis();
+//        for (int i = 0; i < 100; ++i) {
+//            process = all.process(M);
+//        }
+//        long t1 = System.currentTimeMillis();
+//
+//        System.out.println(t1 - t0);
 
         // direct computation
         for (int i = 0; i < M.getColumnsCount(); ++i) {

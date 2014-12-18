@@ -30,8 +30,8 @@ public class TsAggregatorTest {
     public TsAggregatorTest() {
     }
 
-    @Test
-    public void stressTest() {
+//    @Test
+    public void demoTest() {
             int K = 100000;
             long t0 = System.currentTimeMillis();
             TsAggregator agg = new TsAggregator();

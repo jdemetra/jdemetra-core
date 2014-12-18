@@ -27,8 +27,8 @@ public class SingleRevisionAnalysisProcessorTest {
     public SingleRevisionAnalysisProcessorTest() {
     }
 
-    @Test
-    public void testDefaultRevisions() {
+//    @Test
+    public void demoDefaultRevisions() {
         RevisionAnalysisSpec spec = new RevisionAnalysisSpec();
         SingleRevisionAnalysisProcessor processor = new SingleRevisionAnalysisProcessor(spec, Data.P);
         processor.process();

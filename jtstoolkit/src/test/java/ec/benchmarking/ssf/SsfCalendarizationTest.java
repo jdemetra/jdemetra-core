@@ -71,8 +71,8 @@ public class SsfCalendarizationTest {
         }
     }
 
-    @Test
-    public void testSsfCalendarization() {
+//    @Test
+    public void demoSsfCalendarization() {
         // 
         double[] x = new double[134];
         for (int i = 0; i < x.length; ++i) {

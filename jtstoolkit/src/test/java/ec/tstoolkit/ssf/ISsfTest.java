@@ -48,7 +48,7 @@ public class ISsfTest {
     }
 
     //@Test
-    public void testComposite() {
+    public void demoComposite() {
         // we consider the following model
         // y(t) = u(t) + e(t)
         // u(t) = u(t-1) + n(t)
@@ -99,7 +99,7 @@ public class ISsfTest {
     }
 
    // @Test
-    public void testArima() {
+    public void demoArima() {
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline();
         SarimaModel sarima = new SarimaModel(spec);
@@ -131,8 +131,8 @@ public class ISsfTest {
         System.out.println(t1 - t0);
     }
 
-    @Test
-    public void testSsfArima() {
+//    @Test
+    public void demoSsfArima() {
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline();
         SarimaModel sarima = new SarimaModel(spec);

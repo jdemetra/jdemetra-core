@@ -44,7 +44,7 @@ public class TsDataVintagesTest {
     }
 
     //@Test
-    public void test() {
+    public void demo() {
         TsDataVintages<TsPeriod> vintages=new TsDataVintages<>();
         int nback=60;
         for (int i=0; i<=nback; ++i){

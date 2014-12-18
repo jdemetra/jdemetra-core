@@ -68,8 +68,8 @@ public class X13SpecificationTest {
         assertEquals(X13Specification.RSA5, nspec);
     }
 
-    @Test
-    public void testDictionay() {
+//    @Test
+    public void demoDictionay() {
         X13Specification spec = new X13Specification();
         InformationSet write = spec.write(true);
         for (String s : write.getDictionary()) {

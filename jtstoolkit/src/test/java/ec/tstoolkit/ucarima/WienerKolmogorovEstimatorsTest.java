@@ -31,8 +31,8 @@ public class WienerKolmogorovEstimatorsTest {
     public WienerKolmogorovEstimatorsTest() {
     }
 
-    @Test
-    public void testSRevisions() {
+//    @Test
+    public void demoSRevisions() {
         int n = 4;
         double h = -.2;
         double u = -.2;

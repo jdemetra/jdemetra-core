@@ -21,12 +21,12 @@ public class StabilityTestTest {
     @Test
     public void testZeroMean() {
         DataBlock x=new DataBlock(1000);
-        x.randomize();
+        x.randomize(0);
         StabilityTest test=new StabilityTest();
         test.process(x);
-        System.out.println(test.getFullMeanTest().getPValue());
-        System.out.println(test.getStartMeanTest().getPValue());
-        System.out.println(test.getEndMeanTest().getPValue());
+//        System.out.println(test.getFullMeanTest().getPValue());
+//        System.out.println(test.getStartMeanTest().getPValue());
+//        System.out.println(test.getEndMeanTest().getPValue());
         assertTrue(test.is0EndMean() && test.is0StartMean()  && test.isSameVariance() && test.isSameMean());
     }
     

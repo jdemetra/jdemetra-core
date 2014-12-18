@@ -56,7 +56,7 @@ public class UcarimaModelTest {
     }
 
     //@Test
-    public void testHodrickPrescott() {
+    public void demoHodrickPrescott() {
         CompositeResults rslt = TramoSeatsProcessingFactory.process(Data.X, TramoSeatsSpecification.RSA5);
         TsData trend=rslt.getData(ModellingDictionary.T, TsData.class);
         

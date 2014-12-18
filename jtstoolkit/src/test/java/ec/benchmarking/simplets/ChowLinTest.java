@@ -20,7 +20,6 @@
  */
 package ec.benchmarking.simplets;
 
-import ec.tstoolkit.arima.estimation.RegArimaEstimation;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
@@ -34,20 +33,15 @@ import ec.tstoolkit.maths.realfunctions.IFunctionInstance;
 import ec.tstoolkit.maths.realfunctions.IParametersDomain;
 import ec.tstoolkit.maths.realfunctions.NumericalDerivatives;
 import ec.tstoolkit.maths.realfunctions.SingleParameter;
-import ec.tstoolkit.maths.realfunctions.bfgs.Bfgs;
-import ec.tstoolkit.maths.realfunctions.riso.Lbfgs;
 import ec.tstoolkit.maths.realfunctions.riso.LbfgsMinimizer;
 import ec.tstoolkit.sarima.SarimaModel;
-import ec.tstoolkit.sarima.SarimaSpecification;
 import ec.tstoolkit.sarima.SarmaSpecification;
-import ec.tstoolkit.sarima.estimation.GlsSarimaMonitor;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.regression.TsVariable;
 import ec.tstoolkit.timeseries.regression.TsVariableList;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -88,14 +82,14 @@ public class ChowLinTest {
         cl.setConstant(true);
         cl.process(Y, vars);
 
-        System.out.println();
-        System.out.println("1");
-        System.out.println(cl.getRho());
-        System.out.println(cl.getDisaggregatedSeries());
+//        System.out.println();
+//        System.out.println("1");
+//        System.out.println(cl.getRho());
+//        System.out.println(cl.getDisaggregatedSeries());
     }
 
-    @Test
-    public void testModel2() {
+//    @Test
+    public void demoModel2() {
 //        long t0 = System.currentTimeMillis();
 //        for (int A = 0; A < 10; ++A) {
         TsData Y = new TsData(TsFrequency.Yearly, 1977, 0, PCRA, true);
@@ -170,8 +164,8 @@ public class ChowLinTest {
 //        System.out.println(t1 - t0);
     }
 
-    @Test
-    public void testModel2bis() {
+//    @Test
+    public void demotModel2bis() {
         long t0 = System.currentTimeMillis();
         for (int A = 0; A < 100; ++A) {
             TsData Y = new TsData(TsFrequency.Yearly, 1977, 0, PCRA, true);

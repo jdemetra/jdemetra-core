@@ -41,7 +41,7 @@ public class IPreprocessingModuleTest {
     }
 
     //@Test
-    public void testOutliersDetection() {
+    public void demoOutliersDetection() {
         ModelDescription desc=new ModelDescription(Data.X, null);
         desc.setAirline(true);
         ModellingContext context=new ModellingContext();

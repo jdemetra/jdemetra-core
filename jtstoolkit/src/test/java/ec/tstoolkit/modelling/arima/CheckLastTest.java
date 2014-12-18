@@ -53,7 +53,7 @@ public class CheckLastTest {
     }
 
     //@Test
-    public void test() {
+    public void demo() {
 
         CheckLast tramoTerror = new CheckLast(TramoSpecification.TR5.build());
         tramoTerror.check(Data.X);
@@ -67,7 +67,7 @@ public class CheckLastTest {
     }
 
     //@Test
-    public void testRandom() {
+    public void demoRandom() {
         int n = 1000;
         List<TsData> rndAirlines = Data.rndAirlines(n, 240, -.6, -.8);
         CheckLast terror = new CheckLast(TramoSpecification.TR0.build());
@@ -92,8 +92,8 @@ public class CheckLastTest {
         }
     }
 
-    @Test
-    public void testPR() {
+//    @Test
+    public void demoPR() {
 
         // time series creation
         // Method 1: add couples (date, value) in a "TsDataCollector" object

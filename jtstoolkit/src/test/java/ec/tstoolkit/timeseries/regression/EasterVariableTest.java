@@ -42,7 +42,7 @@ public class EasterVariableTest {
     }
 
     //@Test
-    public void testJulianEaster() {
+    public void demoJulianEaster() {
         TsVariableList X=new TsVariableList();
         X.add(new EasterVariable());
         X.add(new JulianEasterVariable());

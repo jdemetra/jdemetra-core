@@ -76,13 +76,13 @@ public class IArimaModelTest {
          
          // Aggregated model. The decomposition I2+N corresponds to the Hodrick-Prescott filter
          ArimaModel S=I2.plus(N);
-         System.out.println(S);
+         //System.out.println(S);
          
          Spectrum.Minimizer min =new Spectrum.Minimizer();
          min.minimize(S.getSpectrum());
          double nvar=min.getMinimum();
          ArimaModel Sc=S.minus(nvar);
-         System.out.println(Sc);
+         //System.out.println(Sc);
          
          // A small test to check the routines
          min.minimize(I2.getSpectrum());

@@ -56,8 +56,8 @@ public class SymmetricMatrixTest {
         assertTrue(D.nrm2() < 1e-9);
     }
     
-    @Test
-    public void testCholesky(){
+//    @Test
+    public void demoCholesky(){
         int n=10;
         Matrix X = new Matrix(n, n);
         X.randomize();
