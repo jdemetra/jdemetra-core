@@ -106,9 +106,10 @@ public class DefaultModelDecomposer implements IArimaDecomposer {
             } else {
                 arima = ArimaModel.create(sarima);
             }
-
+            int frequency = sarima.getSpecification().getFrequency();
             TrendCycleSelector tsel = new TrendCycleSelector(rmod);
-            SeasonalSelector ssel = new SeasonalSelector(sarima.getSpecification().getFrequency(), epsphi);
+            tsel.setDefaultLowFreqThreshold(frequency);
+            SeasonalSelector ssel = new SeasonalSelector(frequency, epsphi);
 
             ModelDecomposer decomposer = new ModelDecomposer();
             decomposer.add(tsel);

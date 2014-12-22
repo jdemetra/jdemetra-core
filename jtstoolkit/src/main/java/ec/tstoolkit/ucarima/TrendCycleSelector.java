@@ -30,6 +30,7 @@ import ec.tstoolkit.maths.polynomials.UnitRoots;
 public class TrendCycleSelector extends AbstractRootSelector {
 
     private double m_bound = 0.4;
+    private double m_lfreq = 0;
 
     /**
      *
@@ -45,6 +46,23 @@ public class TrendCycleSelector extends AbstractRootSelector {
         m_bound = bound;
     }
 
+    public double getLowFreqThreshold() {
+        return m_lfreq;
+    }
+
+    /**
+     *
+     * @param val Bound in degree
+     */
+    public void setLowFreqThreshold(final double val) {
+        // to gradians
+        m_lfreq = val * Math.PI / 180;
+    }
+
+    public void setDefaultLowFreqThreshold(int freq) {
+        m_lfreq = Math.PI / freq; // Two years !
+    }
+
     /**
      *
      * @param root
@@ -52,12 +70,16 @@ public class TrendCycleSelector extends AbstractRootSelector {
      */
     @Override
     public boolean accept(final Complex root) {
+        Complex iroot=root.inv();
         if (root.getIm() == 0) {
-            return 1 / root.getRe() >= m_bound;
+            return iroot.getRe() >= m_bound;
         } else {
-            double arg = Math.abs(root.arg());
-            // TO DO
-            
+            if (iroot.abs() >= m_bound) {
+                double arg = Math.abs(iroot.arg());
+                if (arg <= m_lfreq) {
+                    return true;
+                }
+            }
             return false;
         }
     }
