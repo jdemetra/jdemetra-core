@@ -149,6 +149,7 @@ public class TramoSpecification implements Cloneable, IRegArimaSpecification {
         automdl_ = new AutoModelSpec();
         outlier_ = new OutlierSpec();
         arima_ = new ArimaSpec();
+        arima_.setMean(true);
         regression_ = new RegressionSpec();
     }
 
