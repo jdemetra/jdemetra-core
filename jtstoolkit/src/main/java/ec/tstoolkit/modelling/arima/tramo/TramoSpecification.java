@@ -354,13 +354,13 @@ public class TramoSpecification implements Cloneable, IRegArimaSpecification {
             detector.setPc(am.getPc());
         }
         return detector;
-
     }
 
-    private FinalEstimator makeFinalEstimator(EstimateSpec estimate) {
+    private FinalEstimator makeFinalEstimator(EstimateSpec estimate, double tsig) {
         FinalEstimator estimator = new FinalEstimator();
         estimator.setEpsilon(estimate.getTol());
         estimator.setUr(estimate.getUbp());
+        estimator.setTsig(tsig);
         return estimator;
     }
 
@@ -567,7 +567,7 @@ public class TramoSpecification implements Cloneable, IRegArimaSpecification {
 //        if (td.getAutomaticMethod() != AutoMethod.Unused) {
 //            tramo.controllers.add(new TDController(td.getProbabibilityForFTest())); // NO EFFECT
 //        }
-        tramo.finalizer = makeFinalEstimator(estimate_);
+        tramo.finalizer = makeFinalEstimator(estimate_, automdl_.getTsig());
 
         initMainRoutine(tramo);
         return tramo;
