@@ -37,9 +37,7 @@ public interface IModelValidator {
      *
      * @param model
      * @param info
-     * @param context
      * @return
      */
-    ModelStatus validate(SarimaModel model, InformationSet info,
-	    SeatsContext context);
+    ModelStatus validate(SarimaModel model, InformationSet info);
 }

@@ -101,7 +101,7 @@ public class SeatsKernel implements ISeriesDecomposer {
     private void validate(SeatsModel model, InformationSet info,
             SeatsContext context) {
         IModelValidator validator = toolkit.getModelValidator();
-        ModelStatus status = validator.validate(model.getSarima(), info, context);
+        ModelStatus status = validator.validate(model.getSarima(), info);
         if (status == ModelStatus.Invalid) {
             throw new SeatsException(SeatsException.ERR_MODEL);
         } else if (status == ModelStatus.Changed) {
