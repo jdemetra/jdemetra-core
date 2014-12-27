@@ -21,45 +21,55 @@ package ec.satoolkit.seats;
 import ec.tstoolkit.design.Development;
 
 /**
+ * This interface describes the different modules that form the algorithm
+ * "Seats", for computing the canonical decomposition of an SarimaModel
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 public interface ISeatsToolkit {
 
+    /**
+     * "Seats" model builder (designed for generating the model that will be
+     * decomposed)
+     * @return 
+     */
     IModelBuilder getModelBuilder();
 
     /**
-     *
+     * Gets the bias corrector, which corrects biases that can appear in the
+     * case of log-transformations.
      * @return
      */
     IBiasCorrector getBiasCorrector();
 
     /**
-     *
+     * Gets the module that will compute the estimates
      * @return
      */
     IComponentsEstimator getComponentsEstimator();
 
     /**
-     *
+     * Gets the context of the computation
      * @return
      */
     SeatsContext getContext();
 
     /**
-     *
+     * Gets the module that can search for a similar model, when the current
+     * one is not decomposable
      * @return
      */
     IModelApproximator getModelApproximator();
 
     /**
-     *
+     * Gets the module that will process the canonical decomposition of the model 
      * @return
      */
     IArimaDecomposer getModelDecomposer();
 
     /**
-     *
+     * Gets the module that will validate the model being decomposed. Typically,
+     * such a module will take care of quasi-unit roots in the MA part of the model
      * @return
      */
     IModelValidator getModelValidator();

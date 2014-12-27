@@ -28,7 +28,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 /**
  * @author Jean Palate
  */
-@Development(status = Development.Status.Temporary)
+@Development(status = Development.Status.Release)
 public class DefaultModelBuilder implements IModelBuilder{
 
     private SarimaComponent arima;

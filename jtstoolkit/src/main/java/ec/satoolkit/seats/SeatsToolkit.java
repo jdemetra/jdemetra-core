@@ -20,9 +20,10 @@ import ec.satoolkit.seats.SeatsSpecification.ApproximationMode;
 import ec.tstoolkit.design.Development;
 
 /**
+ * Default implementation of the interface ISeatsToolkit
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
+@Development(status = Development.Status.Release)
 public class SeatsToolkit implements ISeatsToolkit {
 
     /**
