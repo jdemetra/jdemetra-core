@@ -37,8 +37,8 @@ public class CalendarizationTest {
     public CalendarizationTest() {
     }
 
-    @Test
-    public void testCalendarization() {
+    //@Test
+    public void demoCalendarization() {
         Calendarization cal = new Calendarization();
         // Day = year / month / 0-based day !!!
         // The observation spans may be non contiguous

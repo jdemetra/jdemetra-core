@@ -53,8 +53,8 @@ public class SingularValueDecompositionTest {
         assertTrue(del.nrm2() < 1e-9);
     }
 
-    @Test
-    public void testPca() {
+//    @Test
+    public void demoPca() {
         int n = 130, m = 13;
         Matrix M = new Matrix(n, m);
         M.randomize();

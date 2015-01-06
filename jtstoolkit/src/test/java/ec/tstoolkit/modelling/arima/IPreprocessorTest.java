@@ -41,8 +41,8 @@ public class IPreprocessorTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @Test
-    public void testHybrid() {
+//    @Test
+    public void demoHybrid() {
         // Default AMI of X13
         IPreprocessor processor = RegArimaSpecification.RG4.build();
         // Tramo outliers detection

@@ -95,7 +95,7 @@ public class DifferenceStationaryModelHelperTest {
     public void testMissings() {
         int n = 120;
         DataBlock k = new DataBlock(n);
-        k.randomize();
+        k.randomize(0);
         int m = 0;
         for (int i = 0; i < n - 5; i += n / 3) {
             k.set(i, Double.NaN);
@@ -145,11 +145,11 @@ public class DifferenceStationaryModelHelperTest {
         assertTrue(j.getRowsCount() == 2);
     }
 
-    @Test
-    public void test1() {
+ //   @Test
+    public void demo1() {
         int n = 24, k = 1;
         DataBlock y = new DataBlock(n);
-        y.randomize();
+        y.randomize(0);
         for (int i = 2; i < n; i += 6) {
             y.set(i, Double.NaN);
         }
@@ -171,8 +171,8 @@ public class DifferenceStationaryModelHelperTest {
         //System.out.println(t1 - t0);
     }
 
-    @Test
-    public void testAirline() {
+//    @Test
+    public void demoAirline() {
         DataBlock jy = new DataBlock(X.length);
         jy.product(J.rows(), new DataBlock(Y));
         assertTrue(new DataBlock(X).distance(jy) < 1e-12);
@@ -224,8 +224,8 @@ public class DifferenceStationaryModelHelperTest {
         System.out.println(dll.getLogDeterminant());
     }
 
-    @Test
-    public void testMissing() {
+//    @Test
+    public void demoMissing() {
         double th = .6, bth = -.99, phi = .3;
         SarimaModel arima = new SarimaModel(airline);
         arima.setTheta(1, th);
@@ -272,8 +272,8 @@ public class DifferenceStationaryModelHelperTest {
         System.out.println(dll.getLogDeterminant());
     }
 
-    @Test
-    public void testFull() {
+//    @Test
+    public void demoFull() {
         DataBlock jy = new DataBlock(X.length);
         jy.product(J.rows(), new DataBlock(Y));
         assertTrue(new DataBlock(X).distance(jy) < 1e-12);

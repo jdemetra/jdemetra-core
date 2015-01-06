@@ -46,8 +46,8 @@ public class TramoProcessorTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @Test
-    public void testOutliers() {
+//    @Test
+    public void demoOutliers() {
         TramoSpecification mySpec = TramoSpecification.TR4.clone();
         // Set a lower critical value to get more outliers
         mySpec.getOutliers().setCriticalValue(2.5);

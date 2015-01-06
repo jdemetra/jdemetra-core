@@ -31,8 +31,8 @@ public class RevisionAnalysisProcessorTest {
     public RevisionAnalysisProcessorTest() {
     }
 
-    @Test
-    public void testSomeMethod() {
+//   @Test
+    public void demo() {
         RevisionAnalysisProcessor proc = new RevisionAnalysisProcessor();
         RevisionAnalysisSpec spec = new RevisionAnalysisSpec();
         TramoSeatsSpecification trs = TramoSeatsSpecification.RSA5.clone();

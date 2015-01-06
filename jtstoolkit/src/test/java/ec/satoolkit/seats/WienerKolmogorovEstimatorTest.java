@@ -55,8 +55,8 @@ public class WienerKolmogorovEstimatorTest {
         DefaultModelDecomposer decomposer = new DefaultModelDecomposer(false);
         DescriptiveStatistics tstats = new DescriptiveStatistics(Data.X.getValues());
         double range = tstats.getMax() - tstats.getMin();
-        for (int i = 1; i <= 19; ++i) {
-            for (int j = 1; j <= 19; ++j) {
+        for (int i = 1; i <= 19; i+=2) {
+            for (int j = 1; j <= 19; j+=2) {
                 SarimaModel arima = new SarimaModelBuilder().createAirlineModel(12, i * .1 - 1, j * .1 - 1);
                 SeatsModel seats = new SeatsModel(Data.X, arima, false);
                 UcarimaModel ucm = decomposer.decompose(seats, null, null);

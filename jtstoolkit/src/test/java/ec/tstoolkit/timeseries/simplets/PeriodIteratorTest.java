@@ -71,7 +71,7 @@ public class PeriodIteratorTest {
     }
 
     //@Test
-    public void test() {
+    public void demo() {
 
         // Computes a few statistics by period
         PeriodIterator p = new PeriodIterator(Data.X);

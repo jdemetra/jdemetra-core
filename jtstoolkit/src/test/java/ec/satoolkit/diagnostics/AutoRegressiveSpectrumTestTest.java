@@ -65,7 +65,7 @@ public class AutoRegressiveSpectrumTestTest {
     }
 
     //@Test
-    public void testRandom() {
+    public void demoRandom() {
         ArimaModelBuilder builder = new ArimaModelBuilder();
         int n = 240, m = 1000;
         int tdp = 0, sp = 0;

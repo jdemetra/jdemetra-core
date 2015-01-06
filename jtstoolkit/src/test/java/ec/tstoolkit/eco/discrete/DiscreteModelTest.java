@@ -31,7 +31,7 @@ public class DiscreteModelTest {
     }
 
     //@Test
-    public void testSomeMethod() {
+    public void demoSomeMethod() {
         int n=10000;
         int[] y=new int[n];
         for (int i=0; i<y.length; ++i){

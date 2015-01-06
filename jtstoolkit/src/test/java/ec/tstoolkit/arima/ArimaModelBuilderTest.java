@@ -31,8 +31,8 @@ public class ArimaModelBuilderTest {
     public ArimaModelBuilderTest() {
     }
     
-    @Test
-    public void testStationary() {
+//    @Test
+    public void demoStationary() {
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.setP(3);
         spec.setBP(1);
@@ -47,8 +47,8 @@ public class ArimaModelBuilderTest {
         }
     }
     
-    @Test
-    public void testNonStationary() {
+//    @Test
+    public void demoNonStationary() {
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline();
 //        spec.setP(3);

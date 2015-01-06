@@ -79,7 +79,7 @@ public class ModellingContextTest {
     }
 
     //@Test
-    public void testTramo(){
+    public void demoTramo(){
         System.out.println("Tramo");
         ModellingContext context=new ModellingContext();
         context.description=reference.description.clone();
@@ -89,7 +89,7 @@ public class ModellingContextTest {
     }
 
     //@Test
-    public void testX13(){
+    public void demoX13(){
         System.out.println("RegArima (IGLS)");
         ModellingContext context=new ModellingContext();
         context.description=reference.description.clone();
@@ -99,7 +99,7 @@ public class ModellingContextTest {
     }
 
     //@Test
-    public void testCalModel(){
+    public void demoCalModel(){
         System.out.println("Tramo-CalModel");
         ModellingContext context=new ModellingContext();
         context.description=reference.description.clone();
@@ -111,7 +111,7 @@ public class ModellingContextTest {
     }
     
     //@Test
-    public void testNoTradingDays(){
+    public void demoNoTradingDays(){
         System.out.println("No trading days");
         ModellingContext context=new ModellingContext();
         context.description=reference.description.clone();
@@ -124,7 +124,7 @@ public class ModellingContextTest {
     }
     
     //@Test
-    public void testTradingDays(){
+    public void demoTradingDays(){
         System.out.println("Trading days");
         ModellingContext context=new ModellingContext();
         context.description=reference.description.clone();
@@ -143,7 +143,7 @@ public class ModellingContextTest {
     }
     
     //@Test
-    public void testWorkingDays(){
+    public void demoWorkingDays(){
         System.out.println("Working days");
         ModellingContext context=new ModellingContext();
         context.description=reference.description.clone();

@@ -191,9 +191,9 @@ public class SequentialProcessingTest {
         M.randomize();
         CompositeResults process = all.process(M);
 
-        for (String key : process.getDictionary().keySet()) {
-            System.out.println(key);
-        }
+//        for (String key : process.getDictionary().keySet()) {
+//            System.out.println(key);
+//        }
         
         // direct computation
         Matrix R=SymmetricMatrix.inverse(SymmetricMatrix.XtX(M));

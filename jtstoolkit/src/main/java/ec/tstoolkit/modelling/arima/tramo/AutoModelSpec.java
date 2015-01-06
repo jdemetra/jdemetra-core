@@ -82,6 +82,9 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
     }
 
     public void setPcr(double value) {
+        if (value < .8 || value > 1) {
+            throw new TramoException("PCR should belong to [0.8, 1.0]");
+        }
         pcr_ = value;
     }
 
@@ -90,6 +93,9 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
     }
 
     public void setUb1(double value) {
+        if (value < .8 || value > 1) {
+            throw new TramoException("UB1 should belong to [0.8, 1.0]");
+        }
         ub1_ = value;
     }
 
@@ -98,6 +104,9 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
     }
 
     public void setUb2(double value) {
+        if (value < .8 || value > 1) {
+            throw new TramoException("UB1 should belong to [0.8, 1.0]");
+        }
         ub2_ = value;
     }
 
@@ -106,6 +115,9 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
     }
 
     public void setCancel(double value) {
+        if (value < 0 || value > .3) {
+            throw new TramoException("UB1 should belong to [0, 0.3]");
+        }
         cancel_ = value;
     }
 
@@ -114,6 +126,9 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
     }
 
     public void setTsig(double value) {
+        if (value <= .5) {
+            throw new TramoException("TSIG should be higher than 0.5");
+        }
         tsig_ = value;
     }
 
@@ -122,6 +137,9 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
     }
 
     public void setPc(double value) {
+        if (value < .1 || value > 0.3) {
+            throw new TramoException("PC should belong to [0.1, 0.3]");
+        }
         pc_ = value;
     }
 

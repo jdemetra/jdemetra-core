@@ -61,15 +61,15 @@ public class X13ProcessingFactoryTest {
     }
 
     //@Test
-    public void testProcessing() {
+    public void demoProcessing() {
         TsData s = Data.X;
         process = X13ProcessingFactory.process(s, X13Specification.RSA5);
     }
 
     //@Test
-    public void testOutput() {
+    public void demoOutput() {
         if (process == null) {
-            testProcessing();
+            demoProcessing();
         }
         Map<String, Class> dictionary = process.getDictionary();
         for (Entry<String, Class> entry : dictionary.entrySet()) {
@@ -90,7 +90,7 @@ public class X13ProcessingFactoryTest {
     }
 
     //@Test
-    public void testGeneric() {
+    public void demoGeneric() {
         // Create the specifications          
         X13Specification mySpec = X13Specification.RSA4.clone();
         // Allow benchmarking
@@ -153,18 +153,17 @@ public class X13ProcessingFactoryTest {
         X11Results x11 = rslts.get(X13ProcessingFactory.DECOMPOSITION, X11Results.class);
         Mstatistics mstats = rslts.get(X13ProcessingFactory.MSTATISTICS, Mstatistics.class);
         assertTrue(x11 != null);
-        double q = mstats.getQ();
-        List<Information<TsData>> btables = x11.getInformation().deepSelect("b*", TsData.class);
-        for (Information<TsData> info : btables) {
-            System.out.println(info.name);
-            System.out.println(info.value);
-        }
+//        double q = mstats.getQ();
+//        List<Information<TsData>> btables = x11.getInformation().deepSelect("b*", TsData.class);
+//        for (Information<TsData> info : btables) {
+//            System.out.println(info.name);
+//            System.out.println(info.value);
+//        }
         ISeriesDecomposition finalDecomposition = rslts.get(GenericSaProcessingFactory.FINAL, ISeriesDecomposition.class);
         assertTrue(finalDecomposition != null);
         SaBenchmarkingResults bench = rslts.get(GenericSaProcessingFactory.BENCHMARKING, SaBenchmarkingResults.class);
         assertTrue(bench != null);
-        TsData target = bench.getTarget();
-
+//        TsData target = bench.getTarget();
     }
 
     public TsData seasadj() {
@@ -185,8 +184,8 @@ public class X13ProcessingFactoryTest {
         assertTrue(lb != null);
     }
 
-    @Test
-    public void testSeasAdj() {
+//    @Test
+    public void demoSeasAdj() {
         System.out.println(seasadj());
     }
 }

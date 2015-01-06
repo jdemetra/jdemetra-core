@@ -32,8 +32,8 @@ public class StatisticalTestTest {
     public StatisticalTestTest() {
     }
 
-    @Test
-    public void testToString() {
+//    @Test
+    public void demoToString() {
         StatisticalTest test=new StatisticalTest("test", 1.23, 3.45);
         System.out.println(test);
     }

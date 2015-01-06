@@ -18,7 +18,6 @@ package ec.benchmarking.simplets;
 
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.DataBlockIterator;
-import ec.tstoolkit.maths.matrices.Householder;
 import ec.tstoolkit.maths.matrices.HouseholderR;
 import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.maths.matrices.SubMatrix;
@@ -28,7 +27,6 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -47,8 +45,8 @@ public class TsDentonTest {
         }
     }
 
-    @Test
-    public void testSomeMethod() {
+//    @Test
+    public void demoMethod() {
         boolean mul = true;
         TsDenton denton = new TsDenton();
         denton.setMultiplicative(mul);

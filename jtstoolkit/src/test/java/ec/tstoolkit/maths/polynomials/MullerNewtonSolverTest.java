@@ -31,8 +31,8 @@ public class MullerNewtonSolverTest {
     public MullerNewtonSolverTest() {
     }
 
-    @Test
-    public void testSolver() {
+//    @Test
+    public void demoSolver() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 3; ++i) {
             DataBlock q = new DataBlock(200);

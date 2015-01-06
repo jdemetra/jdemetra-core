@@ -128,8 +128,8 @@ public class BlackmanTukeySpectrumTest {
 //        for (int i = 0; i < D.length; ++i) {
 //            System.out.println(1.0 / M * D[i]);
 //        }
-        System.out.println(m / M);
-        System.out.println(v);
-        System.out.println(2 * (tukey.getWindowLength() - 2.0) / (N * 12));
+//        System.out.println(m / M);
+//        System.out.println(v);
+//        System.out.println(2 * (tukey.getWindowLength() - 2.0) / (N * 12));
     }
 }

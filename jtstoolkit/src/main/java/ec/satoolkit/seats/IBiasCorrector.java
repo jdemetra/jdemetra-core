@@ -26,7 +26,7 @@ import ec.tstoolkit.information.InformationSet;
 /**
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 public interface IBiasCorrector {
 
     /**

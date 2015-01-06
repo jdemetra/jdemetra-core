@@ -36,15 +36,15 @@ public class AutoRegressiveSpectrumTest {
     public void testDurbin() {
         AutoRegressiveSpectrum ar=new AutoRegressiveSpectrum(Method.Durbin);
         ar.process(X, 30);
-        System.out.println(ar.getCoefficients());
-        System.out.println(ar.getSigma());
+//        System.out.println(ar.getCoefficients());
+//        System.out.println(ar.getSigma());
     }
     
     @Test
     public void testOls() {
         AutoRegressiveSpectrum ar=new AutoRegressiveSpectrum(Method.Ols);
         ar.process(X, 30);
-        System.out.println(ar.getCoefficients());
-        System.out.println(ar.getSigma());
+//        System.out.println(ar.getCoefficients());
+//        System.out.println(ar.getSigma());
     }
 }

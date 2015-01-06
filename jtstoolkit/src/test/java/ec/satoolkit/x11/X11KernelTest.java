@@ -1,39 +1,29 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.satoolkit.x11;
 
 import data.*;
 import ec.satoolkit.DecompositionMode;
-import ec.satoolkit.algorithm.implementation.X13ProcessingFactory;
-import ec.satoolkit.x13.X13Specification;
-import ec.tstoolkit.Parameter;
-import ec.tstoolkit.ParameterType;
-import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.maths.linearfilters.SymmetricFilter;
-import ec.tstoolkit.modelling.DefaultTransformationType;
-import ec.tstoolkit.modelling.arima.x13.ArimaSpec;
-import ec.tstoolkit.modelling.arima.x13.OutlierSpec;
-import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
-import ec.tstoolkit.modelling.arima.x13.TransformSpec;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -51,6 +41,7 @@ public class X11KernelTest {
         X11Kernel kernel = new X11Kernel();
         kernel.setToolkit(toolkit);
         X11Results rslt = kernel.process(Data.X);
+        assertTrue(rslt != null);
 //        System.out.println(rslt.getData("d-tables.d12", TsData.class));
 //        Map<String, Class> dictionary = rslt.getDictionary();
 //        for (Entry<String, Class> entry : dictionary.entrySet()){
@@ -59,7 +50,7 @@ public class X11KernelTest {
     }
 
     //@Test
-    public void testMyKernel() {
+    public void demotMyKernel() {
         X11Specification spec = new X11Specification();
         X11Toolkit toolkit = X11Toolkit.create(spec);
         toolkit.setTrendCycleFilterprovider(new MyDummyTrendCycleComputer());
@@ -78,12 +69,9 @@ public class X11KernelTest {
         X11Kernel kernel = new X11Kernel();
         kernel.setToolkit(toolkit);
         X11Results rslt = kernel.process(Data.X);
-        System.out.println("f5");
-        System.out.println("d-tables.d10a");
-        System.out.println(rslt.getData("d-tables.d10a", TsData.class));
+        assertTrue(null != rslt.getData("d-tables.d10a", TsData.class));
     }
 
-   
     @Test
     public void mixedFiltersWithStableTest1() {
 
@@ -103,31 +91,30 @@ public class X11KernelTest {
         filters[10] = SeasonalFilterOption.S3X3;
         filters[11] = SeasonalFilterOption.S3X3;
 
-         //barriers for the sigma are set so that no outliers are detected
+        //barriers for the sigma are set so that no outliers are detected
         spec.setSigma(5.0, 5.5);
-        spec.setHendersonFilterLength(13); 
+        spec.setHendersonFilterLength(13);
         spec.setMode(DecompositionMode.Additive);
-        spec.setForecastHorizon(0) ; // set as the default value only to be sure
+        spec.setForecastHorizon(0); // set as the default value only to be sure
         spec.setSeasonal(true);
         spec.setSeasonalFilters(filters);
-         
-         X11Toolkit toolkit = X11Toolkit.create(spec);
-        
+
+        X11Toolkit toolkit = X11Toolkit.create(spec);
+
         X11Kernel kernel = new X11Kernel();
         kernel.setToolkit(toolkit);
         X11Results rslt = kernel.process(Datax11.O);
-        System.out.println("d-tables.d10");
-     
-        System.out.println(rslt.getData("d-tables.d10", TsData.class));
+//        System.out.println("d-tables.d10");
+//
+//        System.out.println(rslt.getData("d-tables.d10", TsData.class));
 
         //equals for tsdata is defined for startdate and values
         assertEquals(rslt.getData("b-tables.b5", TsData.class).round(11), Datax11.B5.round(11));
-       assertEquals(rslt.getData("d-tables.d10", TsData.class).round(10), Datax11.D10.round(10));
-
+        assertEquals(rslt.getData("d-tables.d10", TsData.class).round(10), Datax11.D10.round(10));
 
     }
 
-     @Test
+    @Test
     public void mixedFiltersWithStableTest2() {
         //set specification
         //author C.Hofer
@@ -146,26 +133,25 @@ public class X11KernelTest {
         filters[10] = SeasonalFilterOption.S3X3;
         filters[11] = SeasonalFilterOption.S3X3;
 
-         //barriers for the sigma are set so that no outliers are detected
+        //barriers for the sigma are set so that no outliers are detected
         spec.setSigma(5.0, 5.5);
-        spec.setHendersonFilterLength(13); 
+        spec.setHendersonFilterLength(13);
         spec.setMode(DecompositionMode.Additive);
-        spec.setForecastHorizon(0) ; // set as the default value only to be sure
+        spec.setForecastHorizon(0); // set as the default value only to be sure
         spec.setSeasonal(true);
         spec.setSeasonalFilters(filters);
-         
-         X11Toolkit toolkit = X11Toolkit.create(spec);
 
-         X11Kernel kernel = new X11Kernel();
-         kernel.setToolkit(toolkit);
-         X11Results rslt = kernel.process(Datax11.O);
-         assertEquals(rslt.getData("b-tables.b5", TsData.class).round(11), Datax11.B5_2.round(11));
-         assertEquals(rslt.getData("d-tables.d10", TsData.class).round(10), Datax11.D10_2.round(10));
+        X11Toolkit toolkit = X11Toolkit.create(spec);
 
+        X11Kernel kernel = new X11Kernel();
+        kernel.setToolkit(toolkit);
+        X11Results rslt = kernel.process(Datax11.O);
+        assertEquals(rslt.getData("b-tables.b5", TsData.class).round(11), Datax11.B5_2.round(11));
+        assertEquals(rslt.getData("d-tables.d10", TsData.class).round(10), Datax11.D10_2.round(10));
 
     }
-    
-     @Test
+
+    @Test
     public void mixedFiltersWithStableTest3() {
         //set specification
         //author C.Hofer
@@ -184,28 +170,22 @@ public class X11KernelTest {
         filters[10] = SeasonalFilterOption.S3X3;
         filters[11] = SeasonalFilterOption.S3X3;
 
-         //barriers for the sigma are set so that no outliers are detected
+        //barriers for the sigma are set so that no outliers are detected
         spec.setSigma(5.0, 5.5);
-        spec.setHendersonFilterLength(13); 
+        spec.setHendersonFilterLength(13);
         spec.setMode(DecompositionMode.Additive);
-        spec.setForecastHorizon(0) ; // set as the default value only to be sure
+        spec.setForecastHorizon(0); // set as the default value only to be sure
         spec.setSeasonal(true);
         spec.setSeasonalFilters(filters);
-         
-         X11Toolkit toolkit = X11Toolkit.create(spec);
-        
+
+        X11Toolkit toolkit = X11Toolkit.create(spec);
+
         X11Kernel kernel = new X11Kernel();
         kernel.setToolkit(toolkit);
         X11Results rslt = kernel.process(Datax11.O_3);
         assertEquals(rslt.getData("b-tables.b5", TsData.class).round(11), Datax11.B5_3.round(11));
     }
-    
 
-
-    
-    
-    
-    
     @Test
     public void testFcasts105() {
         X11Specification spec = new X11Specification();
@@ -215,9 +195,10 @@ public class X11KernelTest {
         X11Kernel kernel = new X11Kernel();
         kernel.setToolkit(toolkit);
         X11Results rslt = kernel.process(Data.X);
-        System.out.println("f105");
-        System.out.println("d-tables.d10a");
-        System.out.println(rslt.getData("d-tables.d10a", TsData.class));
+//        System.out.println("f105");
+//        System.out.println("d-tables.d10a");
+//        System.out.println(rslt.getData("d-tables.d10a", TsData.class));
+        assertTrue(rslt.getData("d-tables.d10a", TsData.class) != null);
     }
 }
 

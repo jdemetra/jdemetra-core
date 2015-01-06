@@ -44,8 +44,8 @@ public class InformationSetHelperTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @Test
-    public void testOnX13() {
+//    @Test
+    public void demoOnX13() {
         TsData s = Data.X;
         CompositeResults process = X13ProcessingFactory.process(s, X13Specification.RSA5);
         InformationSet sel = InformationSetHelper.fromProcResults(process, TsData.class);

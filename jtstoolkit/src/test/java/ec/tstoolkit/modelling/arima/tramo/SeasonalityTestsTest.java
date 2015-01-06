@@ -22,7 +22,9 @@ import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
@@ -41,20 +43,22 @@ public class SeasonalityTestsTest {
     public static void tearDownClass() throws Exception {
     }
 
-    //@Test
-    public void testRandom() {
+    @Test
+    public void demoRandom() {
         int n=240;
         DataBlock rnd=new DataBlock(n);
-        rnd.randomize();
+        rnd.randomize(0);
         rnd.sub(rnd.sum()/rnd.getLength());
         SeasonalityTests rtest = SeasonalityTests.residualSeasonalityTest(rnd.getData(), TsFrequency.Monthly);
         int score=rtest.getScore();
+        assertTrue(score < 2);
     }
     
-    //@Test
-    public void test() {
+    @Test
+    public void demo() {
         TsData s=Data.X.log().delta(1);
         SeasonalityTests rtest = SeasonalityTests.residualSeasonalityTest(s.getValues().internalStorage(), TsFrequency.Monthly);
         int score=rtest.getScore();
+        assertTrue(score > 2);
     }
 }

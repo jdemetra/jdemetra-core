@@ -24,16 +24,11 @@ package ec.tstoolkit.data;
 import ec.tstoolkit.arima.estimation.FastArimaForecasts;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;
-import ec.tstoolkit.ssf.ExtendedSsfData;
-import ec.tstoolkit.ssf.Filter;
-import ec.tstoolkit.ssf.FilteringResults;
 import ec.tstoolkit.ssf.Smoother;
 import ec.tstoolkit.ssf.SmoothingResults;
-import ec.tstoolkit.ssf.SsfData;
 import ec.tstoolkit.ssf.SsfRefData;
 import ec.tstoolkit.ssf.arima.SsfArima;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

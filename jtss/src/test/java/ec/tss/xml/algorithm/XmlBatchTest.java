@@ -49,8 +49,8 @@ public class XmlBatchTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @Test
-    public void testTramoSeats() {
+//    @Test
+    public void demoTramoSeats() {
         InformationSet info = new InformationSet();
         info.set("series", Data.X);
 
