@@ -314,6 +314,9 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
         if (verbose || pcr_ != DEF_LJUNGBOX) {
             info.add(LJUNGBOXLIMIT, pcr_);
         }
+        if (verbose || tsig_ != DEF_TSIG) {
+            info.add(ARMALIMIT, tsig_);
+        }
         if (verbose || predcv_ != DEF_PREDCV) {
             info.add(REDUCECV, predcv_);
         }
@@ -322,6 +325,9 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
         }
         if (verbose || ub2_ != DEF_UB2) {
             info.add(UB2, ub2_);
+        }
+        if (verbose || ubfinal_ != DEF_UBFINAL) {
+            info.add(UBFINAL, ubfinal_);
         }
         if (verbose || cancel_ != DEF_CANCEL) {
             info.add(CANCEL, cancel_);
