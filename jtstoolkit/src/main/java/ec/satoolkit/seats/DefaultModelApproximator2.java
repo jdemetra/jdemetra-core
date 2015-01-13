@@ -16,15 +16,21 @@
  */
 package ec.satoolkit.seats;
 
+import ec.tstoolkit.design.Development;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.maths.Complex;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;
 
 /**
- *
- * @author Jean Palate
+ * This class is largely based on the program SEATS+ developed by Gianluca Caporello 
+ * and Agustin Maravall -with programming support from Domingo Perez and Roberto Lopez- 
+ * at the Bank of Spain, and on the program SEATS, previously developed by 
+ * Victor Gomez and Agustin Maravall.<br>It corresponds more especially to an older version of the
+ * routine <i>APPROXIMATE</i>
  */
+@Deprecated
+@Development(status = Development.Status.Temporary)
 public class DefaultModelApproximator2 implements IModelApproximator {
     
     private static final double DEF_RMODP = .7, DEF_BPHI = .3;

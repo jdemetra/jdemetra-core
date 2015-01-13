@@ -23,8 +23,12 @@ import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;
 
 /**
- *
- * @author Jean Palate
+ * This class is largely based on the program SEATS+ developed by Gianluca Caporello 
+ * and Agustin Maravall -with programming support from Domingo Perez and Roberto Lopez- 
+ * at the Bank of Spain, and on the program SEATS, previously developed by 
+ * Victor Gomez and Agustin Maravall.<br>It corresponds more especially to the
+ * routine <i>APPROXIMATE</i>
+ * @author 
  */
 public class DefaultModelApproximator3 implements IModelApproximator {
 

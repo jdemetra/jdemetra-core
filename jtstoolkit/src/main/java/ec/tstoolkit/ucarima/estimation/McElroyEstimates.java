@@ -23,6 +23,7 @@ import ec.tstoolkit.arima.estimation.AnsleyFilter;
 import ec.tstoolkit.arima.estimation.IArmaFilter;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
+import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.matrices.ElementaryTransformations;
 import ec.tstoolkit.maths.matrices.LowerTriangularMatrix;
 import ec.tstoolkit.maths.matrices.Matrix;
@@ -32,12 +33,13 @@ import ec.tstoolkit.maths.polynomials.RationalFunction;
 import ec.tstoolkit.ucarima.UcarimaModel;
 
 /**
- * Implementation based on the formulae proposed by McElroy See McElroy T.S.
- * (2008) Matrix formulae for non stationary ARIMA Signal Extraction.
- * "http://www.census.gov/ts/papers/matform3.pdf"
+ * Estimation of the components of an UCARIMA model using the formulae proposed by McElroy.
+ * <br><i>See McElroy T.S.(2008), Matrix formulae for non stationary ARIMA Signal Extraction, 
+ * <a href="http://www.census.gov/ts/papers/matform3.pdf"> http://www.census.gov/ts/papers/matform3.pdf</a></i>
  *
  * @author Jean Palate
  */
+@Development(status = Development.Status.Alpha)
 public class McElroyEstimates {
 
     private UcarimaModel ucm_;
