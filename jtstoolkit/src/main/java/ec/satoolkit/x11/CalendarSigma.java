@@ -18,13 +18,16 @@
 
 package ec.satoolkit.x11;
 
+import ec.tstoolkit.design.Development;
+
 /**
- *
- * @author Kristof Bayens
+ * Possible selections of calendarsigma
+ * @author Kristof Bayens, Christiane Hofer
  */
+@Development(status = Development.Status.Exploratory)
 public enum CalendarSigma {
     None,
-    Signif,
+   // Signif, //TODO CH: not supported jet, sigmavec is missing
     All,
     Select
 }
