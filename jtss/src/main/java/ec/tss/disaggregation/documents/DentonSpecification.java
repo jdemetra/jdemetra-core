@@ -20,6 +20,7 @@ import ec.tss.disaggregation.processors.DentonProcessor;
 import ec.tstoolkit.algorithm.IProcSpecification;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.timeseries.TsAggregationType;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.Map;
 import java.util.Objects;
 
@@ -29,19 +30,20 @@ import java.util.Objects;
  */
 public class DentonSpecification implements IProcSpecification, Cloneable {
 
-    public static final String MUL = "multiplicative", DIFF = "differencing", MOD = "modified", TYPE = "type";
+    public static final String MUL = "multiplicative", DIFF = "differencing", MOD = "modified", TYPE = "type", FREQ = "defaultfrequency";
 
     @Override
-    public String toString(){
-        StringBuilder builder=new StringBuilder();
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
         builder.append(mul_ ? "Mul. " : "Add. ").append("denton ");
         builder.append(" (D=").append(diff_).append(", mod=").append(mod_).append(')');
         return builder.toString();
     }
-    
+
     private boolean mul_ = true, mod_ = true;
     private int diff_ = 1;
     private TsAggregationType type_ = TsAggregationType.Average;
+    private TsFrequency defaultFrequency_ = TsFrequency.Quarterly;
 
     public boolean isMultiplicative() {
         return mul_;
@@ -73,6 +75,17 @@ public class DentonSpecification implements IProcSpecification, Cloneable {
 
     public void setAggregationType(TsAggregationType type) {
         type_ = type;
+    }
+
+    public TsFrequency getDefaultFrequency() {
+        return defaultFrequency_;
+    }
+
+    /**
+     * @param freq
+     */
+    public void setDefaultFrequency(TsFrequency freq) {
+        this.defaultFrequency_ = freq;
     }
 
     @Override
@@ -119,6 +132,13 @@ public class DentonSpecification implements IProcSpecification, Cloneable {
         if (type != null) {
             type_ = TsAggregationType.valueOf(type);
         }
+        String n = info.get(FREQ, String.class);
+        if (n != null) {
+            defaultFrequency_ = TsFrequency.valueOf(n);
+        }
+        if (defaultFrequency_ != TsFrequency.Quarterly) {
+            info.set(FREQ, defaultFrequency_.name());
+        }
         return true;
     }
 
@@ -138,7 +158,7 @@ public class DentonSpecification implements IProcSpecification, Cloneable {
     }
 
     public boolean equals(DentonSpecification spec) {
-        return spec.mod_ == mod_ && spec.mul_ == mul_ && spec.diff_ == diff_ && spec.type_ == type_;
+        return spec.mod_ == mod_ && spec.mul_ == mul_ && spec.diff_ == diff_ && spec.type_ == type_ && spec.defaultFrequency_ == defaultFrequency_;
     }
 
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
@@ -146,5 +166,6 @@ public class DentonSpecification implements IProcSpecification, Cloneable {
         dic.put(InformationSet.item(prefix, MOD), Boolean.class);
         dic.put(InformationSet.item(prefix, DIFF), Integer.class);
         dic.put(InformationSet.item(prefix, TYPE), String.class);
+        dic.put(InformationSet.item(prefix, FREQ), String.class);
     }
 }

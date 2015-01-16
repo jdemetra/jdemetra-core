@@ -143,6 +143,38 @@ public class DentonMethod {
         return rslt.getData();
     }
 
+    public double[] process(IReadDataBlock lowSeries) {
+        int ny = lowSeries.getLength();
+        int n = ny * conv_;
+
+        DataBlock x = new DataBlock(n), y = new DataBlock(lowSeries);
+        if (type_ == TsAggregationType.Average) {
+            y.mul(conv_);
+        }
+        if (mul_) {
+            x.set(1);
+        }
+        Matrix D = D(x);
+        Matrix A = new Matrix(n + ny, n + ny);
+
+        SymmetricMatrix.XtX(D.subMatrix(), A.subMatrix(0, n, 0, n));
+        J(A.subMatrix(n, n + ny, 0, n));
+        Matrix B = A.clone();
+        J(A.subMatrix(0, n, n, n + ny).transpose());
+        B.diagonal().drop(n, 0).set(1);
+
+        DataBlock q = new DataBlock(n + ny);
+        DataBlock q1 = q.range(n, n + ny);
+        q1.copy(y);
+        DataBlock z = new DataBlock(n + ny);
+        z.product(B.rows(), q);
+        Householder qr = new Householder(true);
+        qr.decompose(A);
+        qr.solve(z, q);
+        DataBlock rslt = q.range(0, n).deepClone();
+        return rslt.getData();
+    }
+
     public boolean isMultiplicative() {
         return mul_;
     }
