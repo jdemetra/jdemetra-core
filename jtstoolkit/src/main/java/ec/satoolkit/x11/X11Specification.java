@@ -42,7 +42,8 @@ public class X11Specification implements IProcSpecification, Cloneable {
             TRENDMA = "trendma",
             SEASONALMA = "seasonalma",
             FCASTS = "fcasts",
-            CALENDARSIGMA = "calendarsigma";
+            CALENDARSIGMA = "calendarsigma",
+            SIGMAVEC="sigmavec";
 
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, MODE), String.class);
@@ -52,6 +53,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
         dic.put(InformationSet.item(prefix, SEASONALMA), String[].class);
         dic.put(InformationSet.item(prefix, FCASTS), Integer.class);
         dic.put(InformationSet.item(prefix, CALENDARSIGMA), String.class);
+        dic.put(InformationSet.item(prefix, MODE), String.class);
     }
 
     private DecompositionMode mode_ = DecompositionMode.Undefined;
@@ -62,6 +64,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
     private int fcasts_ = DEF_FCASTS;
 
     private CalendarSigma calendarsigma_ = CalendarSigma.None;
+    private Sigmavec[] sigmavec_; 
 
     /**
      * Number of forecasts used in X11. By default, 0. When pre-processing is
@@ -93,7 +96,11 @@ public class X11Specification implements IProcSpecification, Cloneable {
     public CalendarSigma getCalendarSigma() {
         return calendarsigma_;
     }
-
+    
+    public Sigmavec[] getSigmavec(){
+        return sigmavec_ ;
+    }
+    
     public double getLowerSigma() {
         return lsigma_;
     }
@@ -141,6 +148,15 @@ public class X11Specification implements IProcSpecification, Cloneable {
                 }
             }
         }
+        
+        if (sigmavec_  != null){
+         for (int i = 0; i < sigmavec_.length; ++i) {
+                if (sigmavec_[i] != Sigmavec.group1){
+                    return false;
+                }
+            }
+        
+    }
         if (lsigma_ != DEF_LSIGMA) {
             return false;
         }
@@ -178,6 +194,10 @@ public class X11Specification implements IProcSpecification, Cloneable {
         calendarsigma_ = calendarsigma;
     }
 
+    public void setSigmavec(Sigmavec[] sigmavec){
+        sigmavec_= sigmavec.clone();
+    }
+            
     /**
      * Set the decomposition mode of X11
      *
@@ -267,7 +287,8 @@ public class X11Specification implements IProcSpecification, Cloneable {
                 && spec.lsigma_ == lsigma_
                 && spec.usigma_ == usigma_
                 && spec.mode_ == mode_
-                && spec.calendarsigma_ == calendarsigma_;
+                && spec.calendarsigma_ == calendarsigma_
+                && Arrays.deepEquals(spec.sigmavec_,sigmavec_);
     }
 
     @Override
