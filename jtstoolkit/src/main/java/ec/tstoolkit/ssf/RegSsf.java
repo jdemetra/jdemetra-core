@@ -64,6 +64,10 @@ public class RegSsf implements ISsf {
 	m_mr = essf.m_mr;
 	m_tmp = new DataBlock(m_r);
     }
+    
+    public ISsf getCoreSsf(){
+        return m_ssf;
+    }
 
     /**
      *
