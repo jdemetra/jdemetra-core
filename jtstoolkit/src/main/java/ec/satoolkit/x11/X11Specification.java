@@ -1,7 +1,7 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or â€“ as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
@@ -53,7 +53,9 @@ public class X11Specification implements IProcSpecification, Cloneable {
         dic.put(InformationSet.item(prefix, SEASONALMA), String[].class);
         dic.put(InformationSet.item(prefix, FCASTS), Integer.class);
         dic.put(InformationSet.item(prefix, CALENDARSIGMA), String.class);
-        dic.put(InformationSet.item(prefix, MODE), String.class);
+      //  dic.put(InformationSet.item(prefix, MODE), String.class);
+        dic.put(InformationSet.item(prefix, SIGMAVEC), String[].class);
+        
     }
 
     private DecompositionMode mode_ = DecompositionMode.Undefined;
@@ -62,9 +64,8 @@ public class X11Specification implements IProcSpecification, Cloneable {
     private double lsigma_ = DEF_LSIGMA, usigma_ = DEF_USIGMA;
     private int henderson_ = 0;
     private int fcasts_ = DEF_FCASTS;
-
     private CalendarSigma calendarsigma_ = CalendarSigma.None;
-    private Sigmavec[] sigmavec_; 
+    private SigmavecOption[] sigmavec_; 
 
     /**
      * Number of forecasts used in X11. By default, 0. When pre-processing is
@@ -97,7 +98,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
         return calendarsigma_;
     }
     
-    public Sigmavec[] getSigmavec(){
+    public SigmavecOption[] getSigmavec(){
         return sigmavec_ ;
     }
     
@@ -149,14 +150,13 @@ public class X11Specification implements IProcSpecification, Cloneable {
             }
         }
         
-        if (sigmavec_  != null){
-         for (int i = 0; i < sigmavec_.length; ++i) {
-                if (sigmavec_[i] != Sigmavec.group1){
+        if (sigmavec_ != null) {
+            for (int i = 0; i < sigmavec_.length; ++i) {
+                if (sigmavec_[i] != SigmavecOption.Group1) {
                     return false;
                 }
             }
-        
-    }
+        }
         if (lsigma_ != DEF_LSIGMA) {
             return false;
         }
@@ -194,10 +194,15 @@ public class X11Specification implements IProcSpecification, Cloneable {
         calendarsigma_ = calendarsigma;
     }
 
-    public void setSigmavec(Sigmavec[] sigmavec){
+    public void setSigmavec(SigmavecOption[] sigmavec){
         sigmavec_= sigmavec.clone();
     }
-            
+      
+ //    public void setSigmavec(Sigmavec sigmavec) { CH: Das war Quatsch
+ //      sigmavec_ = new Sigmavec[] {sigmavec};
+ //  }
+        
+        
     /**
      * Set the decomposition mode of X11
      *
@@ -268,6 +273,9 @@ public class X11Specification implements IProcSpecification, Cloneable {
             if (filters_ != null) {
                 cspec.filters_ = filters_.clone();
             }
+            if (sigmavec_ != null) {
+                cspec.sigmavec_ = sigmavec_.clone();
+            }
             return cspec;
         } catch (CloneNotSupportedException err) {
             throw new AssertionError();
@@ -282,13 +290,14 @@ public class X11Specification implements IProcSpecification, Cloneable {
     private boolean equals(X11Specification spec) {
         return spec.fcasts_ == fcasts_
                 && Arrays.deepEquals(spec.filters_, filters_)
+                && Arrays.deepEquals(spec.sigmavec_, sigmavec_)
                 && spec.seasonal_ == seasonal_
                 && spec.henderson_ == henderson_
                 && spec.lsigma_ == lsigma_
                 && spec.usigma_ == usigma_
                 && spec.mode_ == mode_
-                && spec.calendarsigma_ == calendarsigma_
-                && Arrays.deepEquals(spec.sigmavec_,sigmavec_);
+                && spec.calendarsigma_ == calendarsigma_;
+              
     }
 
     @Override
@@ -335,7 +344,13 @@ public class X11Specification implements IProcSpecification, Cloneable {
         if (verbose || calendarsigma_ != CalendarSigma.None) {
             info.add(CALENDARSIGMA, calendarsigma_.name());
         }
-
+        if (sigmavec_ != null) {
+            String[] sigmavec = new String[sigmavec_.length];
+            for (int i = 0; i < sigmavec.length; ++i) {
+                sigmavec[i] = filters_[i].name();
+            }
+            info.add(SIGMAVEC, sigmavec);
+        }
         return info;
     }
 
@@ -375,6 +390,14 @@ public class X11Specification implements IProcSpecification, Cloneable {
                 calendarsigma_ = CalendarSigma.valueOf(calendarsigma);
             }
 
+            String[] sigmavec = info.get(SIGMAVEC, String[].class);
+            if (sigmavec != null) {
+                sigmavec_ = new SigmavecOption[sigmavec.length];
+                for (int i = 0; i < sigmavec.length; ++i) {
+                    sigmavec_[i] = SigmavecOption.valueOf(sigmavec[i]);
+                }
+            }
+            
             return true;
         } catch (Exception err) {
             return false;
