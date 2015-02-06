@@ -18,6 +18,7 @@ package ec.tss.html.implementation;
 
 import ec.satoolkit.x11.Mstatistics;
 import ec.satoolkit.x11.SeriesEvolution;
+import ec.satoolkit.x11.SigmavecOption;
 import ec.tss.html.AbstractHtmlElement;
 import ec.tss.html.HtmlStream;
 import ec.tss.html.HtmlStyle;
@@ -47,6 +48,8 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
         writeF2E(stream);
         writeF2F(stream);
         writeF2G(stream);
+        writeF2H(stream);
+        
     }
 
     private void writeF2A(HtmlStream stream) throws IOException {
@@ -267,6 +270,30 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
         stream.close(HtmlTag.TABLE);
         stream.newLines(2);
     }
+    
+     private void writeF2H(HtmlStream stream) throws IOException {
+         stream.write(HtmlTag.HEADER2, h2, F2H_TITLE);
+         stream.write("Cochran Result:");
+         boolean testResultCochran = stats_.getCochranResult();
+         stream.write("CriticalValue: ");
+         stream.write(stats_.getCriticalValue());
+
+         if (testResultCochran) {
+             stream.write(" eaquals or greater than TestValue: ");
+         } else {
+             stream.write(" less than TestValue: ");
+         }
+         stream.write(Math.round(stats_.getTestValue() * 10000d) / 10000d);
+
+         if (testResultCochran) {
+             stream.write(" Nullhypothesis for identical variances of each period has to be rejected, and different variances should be used. ");
+         } else {
+             stream.write(" Nullhypothesis for identical variances of each period has to be rejected, and different variances can't be rejected. ");}
+
+
+         stream.newLines(2);
+    }
+    
     private static final String F2A_TITLE_MUL = "Average percent change without regard to sign over the indicated span",
             F2B_TITLE_MUL = "Relative contributions to the variance of the percent change in the components of the original series",
             F2C_TITLE_MUL = "Average percent change with regard to sign and standard deviation over indicated span",
@@ -276,7 +303,9 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
             F2D_TITLE = "Average duration of run",
             F2E_TITLE = "I/C Ratio for indicated span",
             F2F_TITLE = "Relative contribution of the components to the stationary portion of the variance in the original series",
-            F2G_TITLE = "Autocorrelation of the irregular";
+            F2G_TITLE = "Autocorrelation of the irregular",
+            F2H_TITLE = "Heteroscedasticity";
+        
     private static final String[] F2A_HEADERS = new String[]{
         "Span", "O", "CI", "I", "C", "S", "P", "TD&H", "Mod.O", "Mod.CI", "Mod.I"
     };

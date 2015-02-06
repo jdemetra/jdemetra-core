@@ -27,6 +27,7 @@ import ec.tstoolkit.eco.RegModel;
 import ec.tstoolkit.information.InformationMapper;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.stats.AutoCorrelations;
+import ec.tstoolkit.stats.CochranTest;
 import ec.tstoolkit.timeseries.simplets.PeriodIterator;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.Collections;
@@ -54,6 +55,7 @@ public final class Mstatistics implements IProcResults {
         InformationSet dtables = info.getSubSet(X11Kernel.D);
         InformationSet atables = info.getSubSet(X11Kernel.A);
         InformationSet etables = info.getSubSet(X11Kernel.E);
+        InformationSet btables=info.getSubSet(X11Kernel.B);
         if (dtables == null) {
             return null;
         }
@@ -123,7 +125,12 @@ public final class Mstatistics implements IProcResults {
             mstats.calcSNorm();
             mstats.calcEvolutions();
             mstats.calcM();
-            return mstats;
+  // TODO: CH: Welches Table muss hier rein?         
+            mstats.calcCochran(btables.get(X11Kernel.B3, TsData.class),mode, mstats);
+
+     
+     
+                    return mstats;
         } catch (RuntimeException err) {
             return null;
         }
@@ -234,6 +241,28 @@ public final class Mstatistics implements IProcResults {
     }
 
     /**
+     *
+     * @return CriticalValue for Cochran Test
+     */
+    public double getCriticalValue(){
+    return criticalvalue;
+    }
+
+    /**
+     *
+     * @return TestValue from Cochran Test
+     */
+    public double getTestValue(){
+        return testvalue;
+        
+    }
+    
+    public boolean getCochranResult()
+    {
+        return cochranTestResult;
+    }
+    
+    /**
      * Gets the average duration of run of CI
      *
      * @return
@@ -300,7 +329,13 @@ public final class Mstatistics implements IProcResults {
     private DecompositionMode mode;
     private static double[] wtFull = {10, 11, 10, 8, 11, 10, 18, 7, 7, 4, 4};
     private static double[] wtShort = {14, 15, 10, 8, 11, 10, 32};
+    
+    //Variables for Calendarsigma sigmavec  testvalue criticalvalue 
 
+    private double testvalue = 0;
+    private double criticalvalue = 0;
+    private boolean cochranTestResult = true; //Default Value of Cochran Test
+        
     private Mstatistics(DecompositionMode mode) {
         this.mode = mode;
         for (int i = 0; i < m.length; ++i) {
@@ -608,6 +643,17 @@ public final class Mstatistics implements IProcResults {
         varI /= varO;
     }
 
+    private void calcCochran(TsData ts, DecompositionMode mode, Mstatistics mstats){
+      // die folgenden müssen mit dem chochran Test in Abhängigkeit von den Sigmavec Einstellungen berechnet werden
+   
+        CochranTest cochranTest = new CochranTest(ts, mode);
+        cochranTest.calcCochranTest();
+        mstats.criticalvalue = cochranTest.getCriticalValue();
+        mstats.testvalue = cochranTest.getTestValue();
+        mstats.cochranTestResult = cochranTest.getTestResult();
+   //  mstats.testvalue=inf. ; 
+        
+    };
     public DecompositionMode getMode() {
         return this.mode;
     }

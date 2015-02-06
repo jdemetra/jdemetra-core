@@ -65,6 +65,7 @@ public class DataCochran {
         -6.09973296,9.845962955,9.671617204,14.8025957,20.21607764,12.65407241,21.77651433,20.94625442
     };
 
-    public static final TsData C = new TsData(TsFrequency.Monthly, 1995, 0, g_inputser, false);
+    public static final TsData CStartJan = new TsData(TsFrequency.Monthly, 1995, 0, g_inputser, false);
+   public static final TsData CStartAprl = new TsData(TsFrequency.Monthly, 1995, 3, g_inputser, false);
     public static final TsData C_D10_Default = new TsData(TsFrequency.Monthly, 1995, 0, g_C_D10_Default, false);
 }
