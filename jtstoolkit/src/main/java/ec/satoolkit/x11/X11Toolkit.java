@@ -73,10 +73,15 @@ public class X11Toolkit extends BaseX11Algorithm implements
                     spec.getHendersonFilterLength()));
         }
 
-        DefaultExtremeValuesCorrector xcorrector = new DefaultExtremeValuesCorrector();
-        xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
-        toolkit.setExtremeValuescorrector(xcorrector);
+        /* Define which ExtremeExtremeValuesCorrector hat to be used */
+        if (spec.getCalendarSigma().equals(CalendarSigma.None)) {
+            DefaultExtremeValuesCorrector xcorrector = new DefaultExtremeValuesCorrector();
+            xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
+            toolkit.setExtremeValuescorrector(xcorrector);
 
+        }
+        /*die anderen Settings für Calendarsigma fehlen nun auch noch ggf. müssen auch noch die Gruppen mit übergeben werden/
+        
         /*In Case that one or more and not all of the filters are stable the normalizer needs this information*/
         if (spec.isSeasonal()) {
             DefaultSeasonalNormalizer nprovider = new DefaultSeasonalNormalizer();
