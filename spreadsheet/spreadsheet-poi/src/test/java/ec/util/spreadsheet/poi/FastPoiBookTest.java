@@ -25,11 +25,11 @@ import ec.util.spreadsheet.poi.FastPoiBook.WorkbookData;
 import ec.util.spreadsheet.poi.FastPoiBook.WorkbookDataSax2EventHandler;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
@@ -38,25 +38,20 @@ import org.junit.Test;
  */
 public class FastPoiBookTest {
 
-    static final URL TOP5_URL = FastPoiBookTest.class.getResource("/Top5Browsers.xlsx");
-    static final URL WORKBOOK_URL = FastPoiBookTest.class.getResource("/workbook.xml");
-    static final URL REGULAR_URL = FastPoiBookTest.class.getResource("/RegularXlsxSheet.xml");
-    static final URL FORMULAS_URL = FastPoiBookTest.class.getResource("/FormulasXlsxSheet.xml");
-    static final URL SST_URL = FastPoiBookTest.class.getResource("/Sst.xml");
-    static final URL STYLES_URL = FastPoiBookTest.class.getResource("/styles.xml");
+    private static final ByteSource TOP5 = asByteSource("/Top5Browsers.xlsx");
+    private static final ByteSource WORKBOOK = asByteSource("/workbook.xml");
+    private static final ByteSource REGULAR = asByteSource("/RegularXlsxSheet.xml");
+    private static final ByteSource FORMULAS = asByteSource("/FormulasXlsxSheet.xml");
+    private static final ByteSource SST = asByteSource("/Sst.xml");
+    private static final ByteSource STYLES = asByteSource("/styles.xml");
 
-    private static FastPoiBook.ByteSource asByteSource(final URL url) {
-        return new FastPoiBook.ByteSource() {
-            @Override
-            public InputStream openStream() throws IOException {
-                return url.openStream();
-            }
-        };
+    private static ByteSource asByteSource(String name) {
+        return ByteSource.fromURL(FastPoiBookTest.class.getResource(name));
     }
 
     @Test
     public void testGetSheetCount() throws IOException, OpenXML4JException {
-        try (InputStream stream = TOP5_URL.openStream()) {
+        try (InputStream stream = TOP5.openStream()) {
             try (Book book = FastPoiBook.create(stream)) {
                 assertEquals(3, book.getSheetCount());
             }
@@ -65,7 +60,7 @@ public class FastPoiBookTest {
 
     @Test
     public void testGetSheet() throws IOException, OpenXML4JException {
-        try (InputStream stream = TOP5_URL.openStream()) {
+        try (InputStream stream = TOP5.openStream()) {
             try (Book book = FastPoiBook.create(stream)) {
                 assertNotNull(book.getSheet(0));
                 assertNotNull(book.getSheet(1));
@@ -76,48 +71,57 @@ public class FastPoiBookTest {
 
     @Test
     public void testWorkbookDataSax2EventHandler() throws IOException {
-        WorkbookData data = new WorkbookDataSax2EventHandler().parse(asByteSource(WORKBOOK_URL));
+        WorkbookData data = new WorkbookDataSax2EventHandler().parse(WORKBOOK);
         assertEquals("Top 5 Browsers - Monthly", data.sheets.get(0).name);
         assertEquals("rId1", data.sheets.get(0).relationId);
         assertEquals("Top 5 Browsers - Quarterly", data.sheets.get(1).name);
         assertEquals("rId2", data.sheets.get(1).relationId);
         assertFalse(data.date1904);
+
+        WorkbookData missing = new WorkbookDataSax2EventHandler().parse(ByteSource.noStream());
+        assertEquals(0, missing.sheets.size());
+        assertFalse(missing.date1904);
     }
 
     @Test
     public void testSheetSax2EventHandler() throws IOException {
-        FastPoiBook.SheetContext context = new FastPoiBook.SheetContext(
-                Arrays.asList("1", "2", "3", "4", "5", "6", "7"),
-                Arrays.asList(new FastPoiBook.Style(0, null), new FastPoiBook.Style(14, null)),
+        FastPoiContext context = new FastPoiContext(
+                new String[]{"1", "2", "3", "4", "5", "6", "7"},
+                new boolean[]{false, true},
                 true
         );
-        {
-            Sheet regular = new SheetSax2EventHandler("regular", context).parse(asByteSource(REGULAR_URL));
-            assertEquals("regular", regular.getName());
-            assertEquals(7, regular.getColumnCount());
-            assertEquals(42, regular.getRowCount());
-        }
-        {
-            Sheet formulas = new SheetSax2EventHandler("formulas", context).parse(asByteSource(FORMULAS_URL));
-            assertEquals("formulas", formulas.getName());
-            assertEquals(7, formulas.getColumnCount());
-            assertEquals(42, formulas.getRowCount());
-        }
+
+        Sheet regular = new SheetSax2EventHandler("regular", context).parse(REGULAR);
+        assertEquals("regular", regular.getName());
+        assertEquals(7, regular.getColumnCount());
+        assertEquals(42, regular.getRowCount());
+
+        Sheet formulas = new SheetSax2EventHandler("formulas", context).parse(FORMULAS);
+        assertEquals("formulas", formulas.getName());
+        assertEquals(7, formulas.getColumnCount());
+        assertEquals(42, formulas.getRowCount());
+
+        Sheet missing = new SheetSax2EventHandler("missing", context).parse(ByteSource.noStream());
+        assertEquals("missing", missing.getName());
+        assertEquals(0, missing.getColumnCount());
+        assertEquals(0, missing.getRowCount());
     }
 
     @Test
     public void testSharedStringsDataSax2EventHandler() throws IOException {
-        List<String> sharedStrings = new SharedStringsDataSax2EventHandler().parse(asByteSource(SST_URL));
-        assertArrayEquals(new String[]{"Cell A1", "Cell B1", "My Cell", "Cell A2", "Cell B2"}, sharedStrings.toArray());
+        String[] sharedStrings = new SharedStringsDataSax2EventHandler().parse(SST);
+        assertThat(sharedStrings).containsExactly("Cell A1", "Cell B1", "My Cell", "Cell A2", "Cell B2");
+
+        String[] missing = new SharedStringsDataSax2EventHandler().parse(ByteSource.noStream());
+        assertThat(missing).isEmpty();
     }
 
     @Test
-    public void test() throws IOException {
-        List<FastPoiBook.Style> styles = new StylesDataSax2EventHandler().parse(asByteSource(STYLES_URL));
-        assertEquals(2, styles.size());
-        assertEquals(0, styles.get(0).formatId);
-        assertNull(styles.get(0).formatString);
-        assertEquals(14, styles.get(1).formatId);
-        assertNull(styles.get(1).formatString);
+    public void testStylesDataSax2EventHandler() throws IOException {
+        boolean[] styles = new StylesDataSax2EventHandler().parse(STYLES);
+        assertThat(styles).containsExactly(false, true);
+
+        boolean[] missing = new StylesDataSax2EventHandler().parse(ByteSource.noStream());
+        assertThat(missing).isEmpty();
     }
 }
