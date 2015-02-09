@@ -1,19 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tss.tsproviders.legacy;
 
 import ec.tstoolkit.design.Immutable;
@@ -44,7 +44,6 @@ public final class LinearIdBuilder implements IIdBuilder {
     // <-
     private final IStringHandler stringHandler;
     private final String[] data;
-    private String cache;
 
     private LinearIdBuilder(IStringHandler stringHandler, String[] data) {
         this.stringHandler = stringHandler;
@@ -93,21 +92,18 @@ public final class LinearIdBuilder implements IIdBuilder {
 
     @Override
     public String toString() {
-        if (cache == null) {
-            cache = stringHandler.aggregate(data);
-        }
-        return cache;
+        return stringHandler.aggregate(data);
     }
 
     @Override
     public boolean equals(Object obj) {
         return this == obj || (obj instanceof LinearIdBuilder && equals((LinearIdBuilder) obj));
     }
-    
+
     private boolean equals(LinearIdBuilder other) {
         return this.toString().equals(other.toString());
     }
-    
+
     @Override
     public int hashCode() {
         return toString().hashCode();
