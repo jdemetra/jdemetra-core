@@ -40,9 +40,10 @@ public class TimeFormatTest {
     public void testP1Y() {
         Parser<Date> parser = TimeFormat.P1Y.getParser();
         assertEquals(D_2000_01_01, parser.parse("2000"));
+        assertEquals(D_2000_01_01, parser.parse("2000-01"));
         assertEquals(D_2000_01_01, parser.parse("2000-A1"));
-//        assertNull(parser.parse("2000-A0"));
-//        assertNull(parser.parse("2000-A2"));
+        assertNull(parser.parse("2000-A0"));
+        assertNull(parser.parse("2000-A2"));
         assertNull(parser.parse("hello"));
     }
 
@@ -84,6 +85,7 @@ public class TimeFormatTest {
         assertEquals(D_2000_02_01, parser.parse("2000-M2"));
         assertEquals(D_2000_01_01, parser.parse("2000M1"));
         assertEquals(D_2000_02_01, parser.parse("2000M2"));
+        assertNull(parser.parse("2000-01-01"));
         assertNull(parser.parse("2000-M0"));
         assertNull(parser.parse("2000-M13"));
         assertNull(parser.parse("hello"));
