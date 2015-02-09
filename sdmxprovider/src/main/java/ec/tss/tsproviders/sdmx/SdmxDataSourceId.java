@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tss.tsproviders.sdmx;
 
 import ec.tss.tsproviders.DataSource;
@@ -23,6 +22,7 @@ import ec.tss.tsproviders.legacy.LinearIdBuilder;
 import ec.tss.tsproviders.legacy.StringHandlers;
 import ec.tss.tsproviders.utils.Parsers;
 import ec.tss.tsproviders.utils.Parsers.Parser;
+import ec.tstoolkit.design.Immutable;
 import java.io.File;
 
 /**
@@ -30,6 +30,7 @@ import java.io.File;
  * @author Kristof Bayens
  */
 @Deprecated
+@Immutable
 public final class SdmxDataSourceId implements CharSequence {
 
     private static final IStringHandler SH = StringHandlers.BASE64;
@@ -100,6 +101,7 @@ public final class SdmxDataSourceId implements CharSequence {
     public CharSequence subSequence(int start, int end) {
         return id_.toString().subSequence(start, end);
     }
+
     static final String X_FACTORY = "factory";
     static final String X_URL = "url";
 

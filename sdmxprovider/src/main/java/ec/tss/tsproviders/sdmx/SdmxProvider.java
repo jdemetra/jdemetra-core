@@ -52,19 +52,27 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
 
     public static final String SOURCE = "TSProviders.Sdmx.SdmxProvider";
     public static final String VERSION = "20120106";
+
     static final IParam<DataSet, String> Y_GROUP = Params.onString("", "group");
     static final IParam<DataSet, String> Z_SERIES = Params.onString("", "series");
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SdmxProvider.class);
-    private final ISdmxSourceFactory[] factories = {new CunningPlanFactory()};
-    protected final Parsers.Parser<DataSource> legacyDataSourceParser;
-    protected final Parsers.Parser<DataSet> legacyDataSetParser;
+
+    private final ISdmxSourceFactory[] factories;
+    private final Parsers.Parser<DataSource> legacyDataSourceParser;
+    private final Parsers.Parser<DataSet> legacyDataSetParser;
+    private final Splitter.MapSplitter keyValueSplitter;
+    private final Joiner compactNamingJoiner;
     private boolean compactNaming;
     private boolean keysInMetaData;
 
     public SdmxProvider() {
         super(LOGGER, SOURCE, TsAsyncMode.None);
+        this.factories = new ISdmxSourceFactory[]{new CunningPlanFactory()};
         this.legacyDataSourceParser = SdmxLegacy.dataSourceParser();
         this.legacyDataSetParser = SdmxLegacy.dataSetParser();
+        this.keyValueSplitter = Splitter.on(',').trimResults().withKeyValueSeparator('=');
+        this.compactNamingJoiner = Joiner.on('.');
         this.compactNaming = false;
         this.keysInMetaData = false;
     }
@@ -75,9 +83,8 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
         if (result != null) {
             return result;
         }
-        synchronized (legacyDataSetParser) {
-            return legacyDataSetParser.parse(moniker.getId());
-        }
+        String id = moniker.getId();
+        return id != null ? legacyDataSetParser.parse(id) : null;
     }
 
     @Override
@@ -86,9 +93,8 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
         if (result != null) {
             return result;
         }
-        synchronized (legacyDataSourceParser) {
-            return legacyDataSourceParser.parse(moniker.getId());
-        }
+        String id = moniker.getId();
+        return id != null ? legacyDataSourceParser.parse(id) : null;
     }
 
     @Override
@@ -299,7 +305,7 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
     private String applyNaming(String input) {
         if (compactNaming) {
             try {
-                return Joiner.on(':').join(Splitter.on(',').trimResults().withKeyValueSeparator('=').split(input).values());
+                return compactNamingJoiner.join(keyValueSplitter.split(input).values());
             } catch (Exception ex) {
             }
         }
