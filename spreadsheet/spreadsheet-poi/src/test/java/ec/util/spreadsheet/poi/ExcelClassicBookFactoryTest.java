@@ -16,7 +16,6 @@
  */
 package ec.util.spreadsheet.poi;
 
-import ec.util.spreadsheet.poi.ExcelClassicBookFactory;
 import java.io.IOException;
 import org.junit.Test;
 

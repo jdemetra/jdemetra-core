@@ -18,6 +18,7 @@ package ec.util.spreadsheet.poi;
 
 import ec.util.spreadsheet.Book;
 import ec.util.spreadsheet.Sheet;
+import ec.util.spreadsheet.helpers.ArraySheet;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,12 +27,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -46,11 +47,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 final class FastPoiBook extends Book {
 
-    private final OPCPackage pkg;
-    private final XSSFReader reader;
-    private final List<SheetMeta> sheets;
-    private final SheetContext sheetContext;
-
     /**
      * Opens a book from a file.
      *
@@ -61,7 +57,7 @@ final class FastPoiBook extends Book {
      */
     @Nonnull
     public static FastPoiBook create(@Nonnull File file) throws IOException, OpenXML4JException {
-        return new FastPoiBook(OPCPackage.open(file.getPath(), PackageAccess.READ));
+        return create(OPCPackage.open(file.getPath(), PackageAccess.READ));
     }
 
     /**
@@ -78,19 +74,31 @@ final class FastPoiBook extends Book {
      */
     @Nonnull
     public static FastPoiBook create(@Nonnull InputStream stream) throws IOException, OpenXML4JException {
-        return new FastPoiBook(OPCPackage.open(stream));
+        return create(OPCPackage.open(stream));
     }
 
-    private FastPoiBook(OPCPackage pkg) throws IOException, OpenXML4JException {
-        this.pkg = pkg;
-        this.reader = new XSSFReader(pkg);
+    @Nonnull
+    private static FastPoiBook create(@Nonnull OPCPackage pkg) throws IOException, OpenXML4JException {
+        XSSFReader reader = new XSSFReader(pkg);
         WorkbookData workbookData = new WorkbookDataSax2EventHandler().parse(newWorkBookDataSupplier(reader));
-        this.sheets = workbookData.sheets;
-        this.sheetContext = new SheetContext(
+        FastPoiContext sheetContext = new FastPoiContext(
                 new SharedStringsDataSax2EventHandler().parse(newSharedStringsDataSupplier(reader)),
                 new StylesDataSax2EventHandler().parse(newStylesDataSupplier(reader)),
                 workbookData.date1904
         );
+        return new FastPoiBook(pkg, reader, workbookData.sheets, sheetContext);
+    }
+
+    private final OPCPackage pkg;
+    private final XSSFReader reader;
+    private final List<SheetMeta> sheets;
+    private final FastPoiContext sheetContext;
+
+    private FastPoiBook(OPCPackage pkg, XSSFReader reader, List<SheetMeta> sheets, FastPoiContext sheetContext) {
+        this.pkg = pkg;
+        this.reader = reader;
+        this.sheets = sheets;
+        this.sheetContext = sheetContext;
     }
 
     @Override
@@ -135,46 +143,9 @@ final class FastPoiBook extends Book {
             this.name = name;
         }
     }
-
-//    @VisibleForTesting
-    @Immutable
-    static final class Style {
-
-        public final int formatId;
-        @Nullable
-        public final String formatString;
-
-        public Style(int formatId, @Nullable String formatString) {
-            this.formatId = formatId;
-            this.formatString = formatString;
-        }
-    }
-
-//    @VisibleForTesting
-    @Immutable
-    static final class SheetContext {
-
-        @Nonnull
-        public final List<String> sharedStrings;
-        @Nonnull
-        public final List<Style> styles;
-        public final boolean date1904;
-
-        public SheetContext(List<String> sharedStrings, List<Style> styles, boolean date1904) {
-            this.sharedStrings = sharedStrings;
-            this.styles = styles;
-            this.date1904 = date1904;
-        }
-    }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="ByteSource suppliers">
-//    @VisibleForTesting
-    interface ByteSource {
-
-        InputStream openStream() throws IOException;
-    }
-
     private static ByteSource newWorkBookDataSupplier(final XSSFReader reader) {
         return new ByteSource() {
             @Override
@@ -304,7 +275,7 @@ final class FastPoiBook extends Book {
         //private static final String INLINE_STRING_TAG = "is";
         //
         private final String sheetName;
-        private final SheetContext sheetContext;
+        private final FastPoiContext sheetContext;
         private final SaxStringBuilder stringBuilder;
         //
         private String sheetBounds;
@@ -313,7 +284,7 @@ final class FastPoiBook extends Book {
         private String rawDataType;
         private String rawStyleIndex;
 
-        public SheetSax2EventHandler(String sheetName, SheetContext sheetContext) {
+        public SheetSax2EventHandler(String sheetName, FastPoiContext sheetContext) {
             this.sheetName = sheetName;
             this.sheetContext = sheetContext;
             this.stringBuilder = new SaxStringBuilder();
@@ -327,7 +298,7 @@ final class FastPoiBook extends Book {
 
         @Override
         public Sheet build() {
-            return sheetBuilder.build();
+            return sheetBuilder != null ? sheetBuilder.build() : ArraySheet.copyOf(sheetName, new Object[][]{});
         }
 
         @Override
@@ -405,7 +376,7 @@ final class FastPoiBook extends Book {
      * http://msdn.microsoft.com/en-us/library/office/gg278314.aspx
      */
 //    @VisibleForTesting
-    static final class SharedStringsDataSax2EventHandler extends FluentHandler<List<String>> {
+    static final class SharedStringsDataSax2EventHandler extends FluentHandler<String[]> {
 
         private static final String SHARED_STRING_ITEM_TAG = "si";
         private static final String TEXT_TAG = "t";
@@ -419,8 +390,8 @@ final class FastPoiBook extends Book {
         }
 
         @Override
-        public List<String> build() {
-            return new ArrayList<>(sharedStrings);
+        public String[] build() {
+            return sharedStrings.toArray(new String[sharedStrings.size()]);
         }
 
         @Override
@@ -454,7 +425,7 @@ final class FastPoiBook extends Book {
     }
 
 //    @VisibleForTesting
-    static final class StylesDataSax2EventHandler extends FluentHandler<List<Style>> {
+    static final class StylesDataSax2EventHandler extends FluentHandler<boolean[]> {
 
         private static final String CELL_FORMAT_TAG = "xf";
         private static final String CELL_FORMATS_TAG = "cellXfs";
@@ -473,11 +444,12 @@ final class FastPoiBook extends Book {
         }
 
         @Override
-        public List<Style> build() {
-            List<Style> result = new ArrayList<>();
+        public boolean[] build() {
+            boolean[] result = new boolean[orderedListOfIds.size()];
             // Style order matters! -> accessed by index in sheets
-            for (String formatId : orderedListOfIds) {
-                result.add(new Style(Integer.parseInt(formatId), numberFormats.get(formatId)));
+            for (int i = 0; i < result.length; i++) {
+                String formatId = orderedListOfIds.get(i);
+                result[i] = DateUtil.isADateFormat(Integer.parseInt(formatId), numberFormats.get(formatId));
             }
             return result;
         }
