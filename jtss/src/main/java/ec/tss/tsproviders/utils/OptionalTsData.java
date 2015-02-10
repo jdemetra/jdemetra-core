@@ -20,6 +20,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import ec.tstoolkit.design.IBuilder;
 import ec.tstoolkit.design.Immutable;
+import ec.tstoolkit.design.VisibleForTesting;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDataCollector;
@@ -231,6 +232,32 @@ public abstract class OptionalTsData {
             return cause.hashCode();
         }
     }
+
+    @VisibleForTesting
+    enum Cause {
+
+        NO_DATA, INVALID_AGGREGATION, GUESS_SINGLE, GUESS_DUPLICATION, DUPLICATION_WITHOUT_AGGREGATION, UNKNOWN;
+
+        @Nonnull
+        public String getMessage() {
+            switch (this) {
+                case NO_DATA:
+                    return "No data available";
+                case INVALID_AGGREGATION:
+                    return "Invalid aggregation mode";
+                case GUESS_SINGLE:
+                    return "Cannot guess frequency with a single observation";
+                case GUESS_DUPLICATION:
+                    return "Cannot guess frequency with duplicated periods";
+                case DUPLICATION_WITHOUT_AGGREGATION:
+                    return "Duplicated observations without aggregation";
+                case UNKNOWN:
+                    return "Unexpected error";
+                default:
+                    throw new RuntimeException();
+            }
+        }
+    }
     //</editor-fold>
 
     public static final class Builder implements IBuilder<OptionalTsData> {
@@ -278,14 +305,15 @@ public abstract class OptionalTsData {
         @Override
         public OptionalTsData build() {
             if (dc.getCount() == 0) {
-                return onFailure("No data available");
+                return onFailure(Cause.NO_DATA);
             }
-            if (freq == TsFrequency.Undefined && aggregation != TsAggregationType.None) {
-                return onFailure("Invalid aggregation mode");
+            if (!isValidAggregation(freq, aggregation)) {
+                return onFailure(Cause.INVALID_AGGREGATION);
             }
+
             TsData result;
             if (aggregation == TsAggregationType.None) {
-                result = dc.make(freq, aggregation);
+                result = dc.make(freq, TsAggregationType.None);
             } else {
                 result = dc.make(TsFrequency.Undefined, TsAggregationType.None);
                 if (result != null && (result.getFrequency().intValue() % freq.intValue() == 0)) {
@@ -300,22 +328,27 @@ public abstract class OptionalTsData {
                 switch (freq) {
                     case Undefined:
                         return dc.getCount() == 1
-                                ? onFailure("Cannot guess frequency with a single observation")
-                                : onFailure("Cannot guess frequency with duplicated periods");
+                                ? onFailure(Cause.GUESS_SINGLE)
+                                : onFailure(Cause.GUESS_DUPLICATION);
                     default:
-                    // TODO: if TsAggregationType.None
+                        return aggregation == TsAggregationType.None
+                                ? onFailure(Cause.DUPLICATION_WITHOUT_AGGREGATION)
+                                : onFailure(Cause.UNKNOWN);
                 }
-                return onFailure("Unexpected error");
             }
             return onSuccess(result);
         }
 
-        private OptionalTsData onSuccess(TsData tsData) {
+        private OptionalTsData onSuccess(@Nonnull TsData tsData) {
             return new Present(dc.getCount(), nbrUselessRows, tsData);
         }
 
-        private OptionalTsData onFailure(String cause) {
-            return new Absent(dc.getCount(), nbrUselessRows, cause);
+        private OptionalTsData onFailure(@Nonnull Cause cause) {
+            return new Absent(dc.getCount(), nbrUselessRows, cause.getMessage());
+        }
+
+        private static boolean isValidAggregation(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation) {
+            return freq != TsFrequency.Undefined || aggregation == TsAggregationType.None;
         }
 
         @Nonnull
