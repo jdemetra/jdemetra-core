@@ -26,7 +26,9 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -120,6 +122,20 @@ public final class Parsers {
             @Override
             protected T doParse(CharSequence input) throws Exception {
                 return (T) unmarshaller.unmarshal(new StringReader(input.toString()));
+            }
+        };
+    }
+
+    @Nonnull
+    public static Parsers.Parser<Date> onStrictDatePattern(@Nonnull String datePattern, @Nonnull Locale locale) {
+        final DateFormat dateFormat = new SimpleDateFormat(datePattern, locale);
+        dateFormat.setLenient(false);
+        return new Parsers.FailSafeParser<Date>() {
+            @Override
+            protected Date doParse(CharSequence input) throws Exception {
+                String inputAsString = input.toString();
+                Date result = dateFormat.parse(inputAsString);
+                return result != null && inputAsString.equals(dateFormat.format(result)) ? result : null;
             }
         };
     }

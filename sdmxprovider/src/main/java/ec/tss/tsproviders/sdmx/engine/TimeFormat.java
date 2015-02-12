@@ -21,8 +21,6 @@ import ec.tss.tsproviders.utils.Parsers.Parser;
 import static ec.tss.tsproviders.utils.StrangeParsers.yearFreqPosParser;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
@@ -41,8 +39,8 @@ public enum TimeFormat {
                 @Override
                 public Parser<Date> getParser() {
                     return onStrictDatePattern("yyyy")
-                            .or(onStrictDatePattern("yyyy'-01'"))
-                            .or(onStrictDatePattern("yyyy'-A1'"));
+                    .or(onStrictDatePattern("yyyy'-01'"))
+                    .or(onStrictDatePattern("yyyy'-A1'"));
                 }
             },
     /**
@@ -137,15 +135,6 @@ public enum TimeFormat {
     abstract public Parser<Date> getParser();
 
     private static Parsers.Parser<Date> onStrictDatePattern(String datePattern) {
-        final DateFormat dateFormat = new SimpleDateFormat(datePattern, Locale.ROOT);
-        dateFormat.setLenient(false);
-        return new Parsers.FailSafeParser<Date>() {
-            @Override
-            protected Date doParse(CharSequence input) throws Exception {
-                String inputAsString = input.toString();
-                Date result = dateFormat.parse(inputAsString);
-                return result != null && inputAsString.equals(dateFormat.format(result)) ? result : null;
-            }
-        };
+        return Parsers.onStrictDatePattern(datePattern, Locale.ROOT);
     }
 }
