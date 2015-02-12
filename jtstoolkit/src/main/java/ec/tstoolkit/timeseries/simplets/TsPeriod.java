@@ -43,35 +43,8 @@ public class TsPeriod implements Serializable, Cloneable, IPeriod,
      *
      */
     private static final long serialVersionUID = 7847770315060071968L;
-    private static String[] g_sm = {"jan", "feb", "mar", "apr", "may", "jun",
+    private static final String[] g_sm = {"jan", "feb", "mar", "apr", "may", "jun",
         "jul", "aug", "sep", "oct", "nov", "dec"};
-
-    private static long calcEndMonth(GregorianCalendar cal, final int year, final int month) {
-        int day = Day.getNumberOfDaysByMonth(year, month);
-        cal.set(Calendar.YEAR, year);
-        cal.set(Calendar.MONTH, month);
-        cal.set(Calendar.DAY_OF_MONTH, day);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        return cal.getTimeInMillis();
-    }
-
-    static int calcId(final int freq, final int year, final int placeinyear) {
-        return (year - 1970) * freq + placeinyear;
-    }
-
-    private static long calcStartMonth(GregorianCalendar cal, final int year, final int month) {
-        cal.set(Calendar.YEAR, year);
-        cal.set(Calendar.MONTH, month);
-        cal.set(Calendar.DAY_OF_MONTH, 1);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        return cal.getTimeInMillis();
-    }
 
     /**
      * Gets a  description (independent of the year) of the period
@@ -254,6 +227,10 @@ public class TsPeriod implements Serializable, Cloneable, IPeriod,
         throw new TsException(TsException.INCOMPATIBLE_FREQ);
     }
 
+    private boolean contains(long timeInMillis) {
+        return CalendarUtil.getInstance().calcTsPeriodId(m_freq, timeInMillis) == m_id;
+    }
+    
     /**
      * Verifies that a date belongs to the period.
      * 
@@ -263,7 +240,7 @@ public class TsPeriod implements Serializable, Cloneable, IPeriod,
      */
     @Override
     public boolean contains(final Date dt) {
-        return new TsPeriod(m_freq, dt).m_id == m_id;
+        return contains(dt.getTime());
     }
 
     /**
@@ -275,9 +252,7 @@ public class TsPeriod implements Serializable, Cloneable, IPeriod,
      *         last day), false otherwise.
      */
     public boolean contains(final Day day) {
-        TsPeriod tmp = new TsPeriod(m_freq);
-        tmp.set(day);
-        return tmp.m_id == m_id;
+        return contains(day.getTimeInMillis());
     }
 
     @Override
@@ -381,7 +356,10 @@ public class TsPeriod implements Serializable, Cloneable, IPeriod,
 
     int id() {
         return m_id;
-        // set { m_id = value; }
+    }
+    
+    static int calcId(final int freq, final int year, final int placeinyear) {
+        return (year - 1970) * freq + placeinyear;
     }
 
     /**
@@ -526,10 +504,7 @@ public class TsPeriod implements Serializable, Cloneable, IPeriod,
         int ifreq = m_freq.intValue();
         int c = 12 / ifreq;
         int y = getYear(), p = getPosition();
-        GregorianCalendar tmp = CALENDAR_THREAD_LOCAL.get();
-        long l0 = calcStartMonth(tmp, y, p * c);
-        long l1 = calcEndMonth(tmp, y, p * c + c - 1);
-        return new Date((l0 + l1) / 2);
+        return new Date(CalendarUtil.getInstance().calcMiddleInMillis(c, y, p));
     }
 
     /**
@@ -582,6 +557,10 @@ public class TsPeriod implements Serializable, Cloneable, IPeriod,
         return new TsPeriod(m_freq, m_id + nperiods);
     }
 
+    private void set(long timeInMillis) {
+        m_id = CalendarUtil.getInstance().calcTsPeriodId(m_freq, timeInMillis);
+    }
+    
     /**
      * Initialises a period of a given frequency with a date
      * 
@@ -589,11 +568,7 @@ public class TsPeriod implements Serializable, Cloneable, IPeriod,
      *            Date that the period must contain.
      */
     public final void set(final Date date) {
-        Calendar cal = CALENDAR_THREAD_LOCAL.get();
-        cal.setTime(date);
-        int ifreq = m_freq.intValue();
-        m_id = (cal.get(Calendar.YEAR) - 1970) * ifreq
-                + cal.get(Calendar.MONTH) / (12 / ifreq);
+        set(date.getTime());
     }
 
     /**
@@ -603,7 +578,7 @@ public class TsPeriod implements Serializable, Cloneable, IPeriod,
      *            Day that the period must contain.
      */
     public final void set(final Day day) {
-        set(day.getTime());
+        set(day.getTimeInMillis());
     }
 
     /**
@@ -664,14 +639,61 @@ public class TsPeriod implements Serializable, Cloneable, IPeriod,
     }
     
     /**
-     * Calendar.getInstance() creates a new instance of GregorianCalendar and its 
-     * constructor triggers a lot of internal synchronized code.
-     * => We use ThreadLocal to avoid this overhead
+     * Utility class that groups calendar-related methods.
      */
-    private static final ThreadLocal<GregorianCalendar> CALENDAR_THREAD_LOCAL = new ThreadLocal<GregorianCalendar>() {
-        @Override
-        protected GregorianCalendar initialValue() {
-            return new GregorianCalendar();
+    static final class CalendarUtil {
+        
+        /**
+         * Calendar.getInstance() creates a new instance of GregorianCalendar and its 
+         * constructor triggers a lot of internal synchronized code.
+         * => We use ThreadLocal to avoid this overhead
+         */
+        public static CalendarUtil getInstance() {
+            return THREAD_LOCAL.get();
         }
-    };
+
+        private static final ThreadLocal<CalendarUtil> THREAD_LOCAL = new ThreadLocal<CalendarUtil>() {
+            @Override
+            protected CalendarUtil initialValue() {
+                return new CalendarUtil();
+            }
+        };
+        
+        private final GregorianCalendar cal = new GregorianCalendar();
+
+        public int calcTsPeriodId(TsFrequency freq, long timeInMillis) {
+            int ifreq = freq.intValue();
+            cal.setTimeInMillis(timeInMillis);
+            return TsPeriod.calcId(ifreq, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) / (12 / ifreq));
+        }
+
+        public long calcMiddleInMillis(int c, int y, int p) {
+            long l0 = calcStartMonthInMillis(y, p * c);
+            long l1 = calcEndMonthInMillis(y, p * c + c - 1);
+            return (l0 + l1) / 2;
+        }
+        
+        private long calcEndMonthInMillis(int year, int month) {
+            int day = Day.getNumberOfDaysByMonth(year, month);
+            cal.set(Calendar.YEAR, year);
+            cal.set(Calendar.MONTH, month);
+            cal.set(Calendar.DAY_OF_MONTH, day);
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            return cal.getTimeInMillis();
+        }
+
+        private long calcStartMonthInMillis(int year, int month) {
+            cal.set(Calendar.YEAR, year);
+            cal.set(Calendar.MONTH, month);
+            cal.set(Calendar.DAY_OF_MONTH, 1);
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            return cal.getTimeInMillis();
+        }
+    }
 }
