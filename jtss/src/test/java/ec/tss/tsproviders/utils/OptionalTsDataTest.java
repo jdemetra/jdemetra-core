@@ -16,12 +16,12 @@
  */
 package ec.tss.tsproviders.utils;
 
-import ec.tss.tsproviders.utils.OptionalTsData.Cause;
-import static ec.tss.tsproviders.utils.OptionalTsData.Cause.INVALID_AGGREGATION;
-import static ec.tss.tsproviders.utils.OptionalTsData.Cause.DUPLICATION_WITHOUT_AGGREGATION;
-import static ec.tss.tsproviders.utils.OptionalTsData.Cause.GUESS_DUPLICATION;
-import static ec.tss.tsproviders.utils.OptionalTsData.Cause.GUESS_SINGLE;
-import static ec.tss.tsproviders.utils.OptionalTsData.Cause.NO_DATA;
+import ec.tss.tsproviders.utils.OptionalTsData.BuilderCause;
+import static ec.tss.tsproviders.utils.OptionalTsData.BuilderCause.INVALID_AGGREGATION;
+import static ec.tss.tsproviders.utils.OptionalTsData.BuilderCause.DUPLICATION_WITHOUT_AGGREGATION;
+import static ec.tss.tsproviders.utils.OptionalTsData.BuilderCause.GUESS_DUPLICATION;
+import static ec.tss.tsproviders.utils.OptionalTsData.BuilderCause.GUESS_SINGLE;
+import static ec.tss.tsproviders.utils.OptionalTsData.BuilderCause.NO_DATA;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import static ec.tstoolkit.timeseries.TsAggregationType.None;
 import ec.tstoolkit.timeseries.simplets.TsData;
@@ -35,6 +35,7 @@ import java.util.EnumSet;
 import static java.util.EnumSet.complementOf;
 import java.util.GregorianCalendar;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import org.junit.Test;
 
 /**
@@ -47,7 +48,7 @@ public class OptionalTsDataTest {
     private static final Date FEB2010 = new GregorianCalendar(2010, Calendar.FEBRUARY, 1).getTime();
     private static final Date APR2010 = new GregorianCalendar(2010, Calendar.APRIL, 1).getTime();
 
-    private static void assertCause(Cause expected, OptionalTsData actual) {
+    private static void assertCause(BuilderCause expected, OptionalTsData actual) {
         assertEquals(expected.getMessage(), actual.getCause());
     }
 
@@ -61,54 +62,80 @@ public class OptionalTsDataTest {
 
     @Test
     public void testPresent() {
-        OptionalTsData item;
-
-        for (TsFrequency freq : complementOf(EnumSet.of(Undefined))) {
-            item = new OptionalTsData.Builder(freq, None).add(JAN2010, 10).build();
-            assertData(data(freq, 2010, 0, 10), item);
-        }
-
-        item = new OptionalTsData.Builder(Monthly, None).add(JAN2010, 10).add(APR2010, 40).build();
-        assertData(data(Monthly, 2010, 0, 10, Double.NaN, Double.NaN, 40), item);
-
-        item = new OptionalTsData.Builder(Quarterly, None).add(JAN2010, 10).add(APR2010, 40).build();
-        assertData(data(Quarterly, 2010, 0, 10, 40), item);
-
-        item = new OptionalTsData.Builder(Undefined, None).add(JAN2010, 10).add(FEB2010, 20).build();
-        assertData(data(Monthly, 2010, 0, 10, 20), item);
-
-        item = new OptionalTsData.Builder(Undefined, None).add(JAN2010, 10).add(APR2010, 40).build();
-        assertData(data(Quarterly, 2010, 0, 10, 40), item);
-
-        for (TsFrequency freq : complementOf(EnumSet.of(Undefined))) {
-            item = new OptionalTsData.Builder(freq, TsAggregationType.Last).add(JAN2010, 10).add(JAN2010, 20).build();
-            assertData(data(freq, 2010, 0, 20), item);
-        }
+        assertData(data(Monthly, 2010, 0, 10), OptionalTsData.present(1, 1, data(Monthly, 2010, 0, 10)));
+        assertEquals(OptionalTsData.present(1, 1, data(Monthly, 2010, 0, 10)), OptionalTsData.present(1, 1, data(Monthly, 2010, 0, 10)));
+        assertNotEquals(OptionalTsData.present(1, 1, data(Monthly, 2010, 0, 10)), OptionalTsData.present(1, 1, data(Monthly, 2010, 0, 10, 20)));
+        assertNotEquals(OptionalTsData.present(1, 1, data(Monthly, 2010, 0, 10)), OptionalTsData.present(1, 1, data(Quarterly, 2010, 0, 10)));
     }
 
     @Test
     public void testAbsent() {
-        OptionalTsData item;
+        assertEquals("Some reason", OptionalTsData.absent(1, 1, "Some reason").getCause());
+        assertEquals(OptionalTsData.absent(1, 1, "Some reason"), OptionalTsData.absent(1, 1, "Some reason"));
+        assertNotEquals(OptionalTsData.absent(1, 1, "Some reason"), OptionalTsData.absent(1, 1, "Other"));
+    }
+
+    @Test
+    public void testBuilderPresent() {
+        OptionalTsData.Builder b;
+
+        for (TsFrequency freq : complementOf(EnumSet.of(Undefined))) {
+            b = new OptionalTsData.Builder(freq, None).add(JAN2010, 10);
+            assertData(data(freq, 2010, 0, 10), b.build());
+            assertEquals(b.build(), b.build());
+        }
+
+        b = new OptionalTsData.Builder(Monthly, None).add(JAN2010, 10).add(APR2010, 40);
+        assertData(data(Monthly, 2010, 0, 10, Double.NaN, Double.NaN, 40), b.build());
+        assertEquals(b.build(), b.build());
+
+        b = new OptionalTsData.Builder(Quarterly, None).add(JAN2010, 10).add(APR2010, 40);
+        assertData(data(Quarterly, 2010, 0, 10, 40), b.build());
+        assertEquals(b.build(), b.build());
+
+        b = new OptionalTsData.Builder(Undefined, None).add(JAN2010, 10).add(FEB2010, 20);
+        assertData(data(Monthly, 2010, 0, 10, 20), b.build());
+        assertEquals(b.build(), b.build());
+
+        b = new OptionalTsData.Builder(Undefined, None).add(JAN2010, 10).add(APR2010, 40);
+        assertData(data(Quarterly, 2010, 0, 10, 40), b.build());
+        assertEquals(b.build(), b.build());
+
+        for (TsFrequency freq : complementOf(EnumSet.of(Undefined))) {
+            b = new OptionalTsData.Builder(freq, TsAggregationType.Last).add(JAN2010, 10).add(JAN2010, 20);
+            assertData(data(freq, 2010, 0, 20), b.build());
+            assertEquals(b.build(), b.build());
+        }
+    }
+
+    @Test
+    public void testBuilderAbsent() {
+        OptionalTsData.Builder b;
 
         for (TsFrequency freq : TsFrequency.values()) {
-            item = new OptionalTsData.Builder(freq, None).build();
-            assertCause(NO_DATA, item);
+            b = new OptionalTsData.Builder(freq, None);
+            assertCause(NO_DATA, b.build());
+            assertEquals(b.build(), b.build());
         }
 
         for (TsAggregationType aggregation : complementOf(EnumSet.of(None))) {
-            item = new OptionalTsData.Builder(Undefined, aggregation).add(JAN2010, 10).build();
-            assertCause(INVALID_AGGREGATION, item);
+            b = new OptionalTsData.Builder(Undefined, aggregation).add(JAN2010, 10);
+            assertCause(INVALID_AGGREGATION, b.build());
+            assertEquals(b.build(), b.build());
         }
 
-        item = new OptionalTsData.Builder(Undefined, None).add(JAN2010, 10).build();
-        assertCause(GUESS_SINGLE, item);
+        b = new OptionalTsData.Builder(Undefined, None).add(JAN2010, 10);
+        assertCause(GUESS_SINGLE, b.build());
+        assertEquals(b.build(), b.build());
 
-        item = new OptionalTsData.Builder(Undefined, None).add(JAN2010, 10).add(JAN2010, 20).build();
-        assertCause(GUESS_DUPLICATION, item);
+        b = new OptionalTsData.Builder(Undefined, None).add(JAN2010, 10).add(JAN2010, 20);
+        assertCause(GUESS_DUPLICATION, b.build());
+        assertEquals(b.build(), b.build());
 
         for (TsFrequency freq : complementOf(EnumSet.of(Undefined))) {
-            item = new OptionalTsData.Builder(freq, None).add(JAN2010, 10).add(JAN2010, 20).build();
-            assertCause(DUPLICATION_WITHOUT_AGGREGATION, item);
+            b = new OptionalTsData.Builder(freq, None).add(JAN2010, 10).add(JAN2010, 20);
+            assertCause(DUPLICATION_WITHOUT_AGGREGATION, b.build());
+            assertEquals(b.build(), b.build());
         }
     }
 
