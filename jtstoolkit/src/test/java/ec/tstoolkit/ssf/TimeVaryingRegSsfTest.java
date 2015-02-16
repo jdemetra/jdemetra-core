@@ -14,6 +14,7 @@ import ec.tstoolkit.eco.DiffuseLikelihood;
 import ec.tstoolkit.maths.matrices.HouseholderC;
 import ec.tstoolkit.maths.matrices.LowerTriangularMatrix;
 import ec.tstoolkit.maths.matrices.Matrix;
+import ec.tstoolkit.maths.matrices.SubMatrix;
 import ec.tstoolkit.maths.matrices.SymmetricMatrix;
 import ec.tstoolkit.maths.realfunctions.IParametricMapping;
 import ec.tstoolkit.maths.realfunctions.ParamValidation;
@@ -145,13 +146,19 @@ public class TimeVaryingRegSsfTest {
         for (int i = ssf.getStateDim() - 6, j = 0; i < ssf.getStateDim(); ++i) {
             q.column(j++).copyFrom(rslts.component(i), 0);
         }
+        SubMatrix x = xfn.ssf.getX();
+        DataBlock z=new DataBlock(x.getRowsCount());
+        for (int i=0; i<z.getLength(); ++i){
+            z.set(i, x.row(i).dot(q.row(i)));
+        }
         System.out.println(q);
+        System.out.println(z);
     }
 
-   // @Test
+    @Test
     public void demoTDc() {
         DataBlock p = new DataBlock(new double[]{-.2, -.2, 1});
-        TDvarMapping mapping = new TDvarMapping(s.getDomain(), .001);
+        TDvarMapping mapping = new TDvarMapping(s.getDomain(), 0);
         TimeVaryingRegSsf ssf = mapping.map(p);
         SsfModel<TimeVaryingRegSsf> model = new SsfModel(ssf, new SsfData(s.getValues().internalStorage(), null), null, null);
         SsfFunction<TimeVaryingRegSsf> fn = new SsfFunction<>(
@@ -174,7 +181,13 @@ public class TimeVaryingRegSsfTest {
         for (int i = ssf.getStateDim() - 6, j = 0; i < ssf.getStateDim(); ++i) {
             q.column(j++).copyFrom(rslts.component(i), 0);
         }
+        SubMatrix x = xfn.ssf.getX();
+        DataBlock z=new DataBlock(x.getRowsCount());
+        for (int i=0; i<z.getLength(); ++i){
+            z.set(i, x.row(i).dot(q.row(i)));
+        }
         System.out.println(q);
+        System.out.println(z);
     }
 
     //@Test
@@ -246,11 +259,18 @@ public class TimeVaryingRegSsfTest {
         smoother.setSsf(ssf);
         SmoothingResults rslts = new SmoothingResults();
         smoother.process(new SsfData(s, null), rslts);
+        
         Matrix q = new Matrix(s.getLength(), 6);
         for (int i = ssf.getStateDim() - 6, j = 0; i < ssf.getStateDim(); ++i) {
             q.column(j++).copyFrom(rslts.component(i), 0);
         }
+        SubMatrix x = xfn.ssf.getX();
+        DataBlock z=new DataBlock(x.getRowsCount());
+        for (int i=0; i<z.getLength(); ++i){
+            z.set(i, x.row(i).dot(q.row(i)));
+        }
         System.out.println(q);
+        System.out.println(z);
     }
 
     //@Test
