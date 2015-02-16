@@ -73,6 +73,7 @@ public class X11Kernel implements ISeriesDecomposer {
     private TsData refSeries;
     //private TsData correctionFactors;
     private boolean uscbLike = true;
+    private IExtremeValuesCorrector ecorr;
 
     /**
      *
@@ -147,11 +148,11 @@ public class X11Kernel implements ISeriesDecomposer {
                 X11Step.B, b3, info);
         TsData b4anorm = toolkit.getSeasonalNormalizer().normalize(b4a, null);
         TsData b4d = toolkit.getContext().op(b3, b4anorm);
-
-        IExtremeValuesCorrector ecorr = toolkit.getExtremeValuesCorrector();
+            
+        ecorr = toolkit.getExtremeValuesCorrector();
         ecorr.analyse(b4d);
-
-        TsData b4 = ecorr.computeCorrections(b3);
+       
+        TsData b4 = ecorr.computeCorrections(b3);       
         TsData b4g = ecorr.applyCorrections(b3, b4);
 
         TsData b5a = toolkit.getSeasonalComputer().doInitialFiltering(
@@ -327,11 +328,25 @@ public class X11Kernel implements ISeriesDecomposer {
             toolkit.getUtilities().checkPositivity(d7);
         }
         TsData d8 = toolkit.getContext().op(refSeries, d7);
-        TsData d9bis = toolkit.getContext().op(d1, d7);
-        TsData d9 = toolkit.getUtilities().differences(d9bis, d8);
-        TsData d10bis = toolkit.getSeasonalComputer().doFinalFiltering(
-                X11Step.D, d9bis, info);
-        TsData d10 = toolkit.getSeasonalNormalizer().normalize(d10bis, null);
+      
+        
+        TsData d9,d10;
+        if (ecorr instanceof PeriodSpecificExtremeValuesCorrector) {
+            d9 = ecorr.computeCorrections(d8);
+            TsData d9g = ecorr.applyCorrections(d8, d9);
+            TsData d10a = toolkit.getSeasonalComputer().doFinalFiltering(X11Step.B,
+                    d9g, info);
+            d10 = toolkit.getSeasonalNormalizer().normalize(d10a, null);
+        }
+        else {
+            TsData d9bis = toolkit.getContext().op(d1, d7);
+            d9 = toolkit.getUtilities().differences(d9bis, d8);
+            TsData d10bis = toolkit.getSeasonalComputer().doFinalFiltering(
+                    X11Step.D, d9bis, info);
+            d10 = toolkit.getSeasonalNormalizer().normalize(d10bis, null);
+        }
+        
+ 
         TsData d11bis = toolkit.getContext().op(d1, d10);
         TsData d11 = toolkit.getContext().op(refSeries, d10);
 

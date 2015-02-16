@@ -24,7 +24,7 @@ public class CochranTestTest {
       
         DecompositionMode mode = DecompositionMode.Additive;
 
-        cochranTestTestStartJan = new CochranTest(DataCochran.CStartJan, mode);
+        cochranTestTestStartJan = new CochranTest(DataCochran.CStartJan, mode.isMultiplicative());
         cochranTestTestStartJan.calcCochranTest();
         assertEquals(true, cochranTestTestStartJan.getTestResult());
         System.out.println("Testvalue: " + cochranTestTestStartJan.getTestValue());
@@ -57,7 +57,7 @@ public class CochranTestTest {
            CochranTest cochranTestTestStartApril;
         DecompositionMode mode = DecompositionMode.Additive;
 
-        cochranTestTestStartApril = new CochranTest(DataCochran.CStartAprl, mode);
+        cochranTestTestStartApril = new CochranTest(DataCochran.CStartAprl, mode.isMultiplicative());
         cochranTestTestStartApril.calcCochranTest();
         assertEquals(true, cochranTestTestStartApril.getTestResult());
         System.out.println("Testvalue: " + cochranTestTestStartApril.getTestValue());

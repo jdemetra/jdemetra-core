@@ -17,14 +17,14 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 @Development(status = Development.Status.Exploratory)
 public class CochranTest {
     
-    public CochranTest(TsData tsData, DecompositionMode mode){
+    public CochranTest(TsData tsData, Boolean isMulti){
         ts_=tsData;
-        mode_= mode; 
+ //       mode_= mode; 
         
     };
     
     private final TsData ts_;
-    private final DecompositionMode mode_;
+    private final boolean isMulti_=false;
     private double[] s_;
     private double tw_;
     private double tt_;// critical vaule     
@@ -51,12 +51,7 @@ public class CochranTest {
     
     
     public void calcCochranTest() {
-// X,I1,Ib,Ie Was steht in diesen variablen, daher folgende Testbelegung
         int Ib = ts_.getStart().getPosition(); //Ib index of the first period //X conatins the values from the beginning to the end of the, 
-        int Ie;//index of the last period
-        int PSP = 5;// warum benötigt man den Wert und nimmt nicht Ny
-        double[] X;//array of the values of the time series, cant be usesd 
-
         int iPeriode; // is the concidered periode, with corresponds to the relevant periode
         int j; //counter for the periodes from 1,...4 or 12  
         int n1; //number of values in a periode eg. in January
@@ -71,21 +66,16 @@ public class CochranTest {
         int Ny = ts_.getFrequency().intValue(); //Observations per year 12 or 4 
         s_ = new double[Ny]; //original PSP first remains empty 0,...,Ny-1 
         //  Double X[],t[40],t4[40],s[PSP];
-//C-----------------------------------------------------------------------
-        // LOGICAL dpeq
-        // EXTERNAL dpeq
-//C-----------------------------------------------------------------------
 
-//
 //     This routine performs Cochran's test to determine if the months or quaters 
 //     are heteroskedastic.
-//C
-        tw_ = 0; //wird schon größer werden
+//
+        tw_ = 0; 
         smax = -10.0;
         nmin = 100;
 
         st = 1; //Additve 
-        if (mode_.isMultiplicative())//(Muladd.eq.1)// das muss hinterher im X11 anders getesetet werden
+       if (isMulti_)
         {
             st = 0;
         }
@@ -93,7 +83,7 @@ public class CochranTest {
         for (int i = 0; i <= Ny - 1; i++) { //each period is taken into accoutn
         
             n1 = 1;
-            j = i; //+IB hier später ggf. mit start und endperiode arbeiten
+            j = i; //
            iPeriode=i+Ib;
             if (iPeriode > Ny - 1) {
                 iPeriode = iPeriode - Ny;
@@ -107,8 +97,8 @@ public class CochranTest {
                 n1 = n1 + 1;//count values 
                 }
                 j = j + Ny; // for each year
-                if (j > ts_.getValues().getLength() - 1) { //IE keine Ahnung ob +1 oder nicht
-                    if (nmin > n1 - 3) {// fortran initilizes with zero
+                if (j > ts_.getValues().getLength() - 1) { 
+                    if (nmin > n1 - 3) {
                         nmin = n1 - 3;//      
                     }
                         //  s_[i] = s_[i] / (n1 - 1);

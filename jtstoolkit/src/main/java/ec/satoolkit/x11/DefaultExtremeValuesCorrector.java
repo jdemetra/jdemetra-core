@@ -51,9 +51,9 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
         }
         return outs;
     }
-    private double lsigma = 1.5, usigma = 2.5;
-    private double[] stdev;
-    private TsData scur, scorr, sweights;
+    protected double lsigma = 1.5, usigma = 2.5;
+    protected double[] stdev;
+    protected TsData scur, scorr, sweights;
 
  
     /**
@@ -100,7 +100,7 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
         return ns;
     }
 
-    private void calcStdev() {
+    protected void calcStdev() {
         // one value for each year
         TsPeriod start = scur.getStart(), end = scur.getLastPeriod();
         int y0 = start.getYear(), y1 = end.getYear();
@@ -163,7 +163,7 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
         }
     }
 
-    private double calcStdev(DataBlock data) {
+    protected double calcStdev(DataBlock data) {
         int n = data.getLength();
         int nm = 0;
         double e = 0;
@@ -264,7 +264,7 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
         return stdev;
     }
 
-    private int outliersDetection() {
+    protected int outliersDetection() {
         int nval = 0;
         sweights = new TsData(scur.getDomain());
         YearIterator iteri = new YearIterator(scur);

@@ -275,20 +275,20 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
          stream.write(HtmlTag.HEADER2, h2, F2H_TITLE);
          stream.write("Cochran Result:");
          boolean testResultCochran = stats_.getCochranResult();
-         stream.write("CriticalValue: ");
-         stream.write(stats_.getCriticalValue());
+         stream.write("Test Value(Teststatistic) : ");
+         stream.write(Math.round(stats_.getTestValue()* 10000d) / 10000d);
 
          if (testResultCochran) {
-             stream.write(" eaquals or greater than TestValue: ");
+             stream.write(" eaquals or less than the critical value: ");
          } else {
-             stream.write(" less than TestValue: ");
+             stream.write(" is greater than the critical value: ");
          }
-         stream.write(Math.round(stats_.getTestValue() * 10000d) / 10000d);
+         stream.write(Math.round(stats_.getCriticalValue()* 10000d) / 10000d);
 
          if (testResultCochran) {
-             stream.write(" Nullhypothesis for identical variances of each period has to be rejected, and different variances should be used. ");
+             stream.write(" the Nullhypothesis for identical variances of each period can't to be rejected, and a commen variance could be used. ");
          } else {
-             stream.write(" Nullhypothesis for identical variances of each period has to be rejected, and different variances can't be rejected. ");}
+             stream.write(" Nullhypothesis for identical variances of each period has to be rejected, and different variances should be used. ");}
 
 
          stream.newLines(2);

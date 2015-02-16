@@ -73,15 +73,29 @@ public class X11Toolkit extends BaseX11Algorithm implements
                     spec.getHendersonFilterLength()));
         }
 
-        /* Define which ExtremeExtremeValuesCorrector hat to be used */
-        if (spec.getCalendarSigma().equals(CalendarSigma.None)) {
-            DefaultExtremeValuesCorrector xcorrector = new DefaultExtremeValuesCorrector();
+        /* Define which ExtremeExtremeValuesCorrector has to be used */
+        if (spec.getCalendarSigma().equals(CalendarSigma.Select)){
+          GroupSpecificExtremeValuesCorrector xcorrector = new GroupSpecificExtremeValuesCorrector();
+            xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
+            xcorrector.setSigmavecOption(spec.getSigmavec());
+            toolkit.setExtremeValuescorrector(xcorrector);        
+        } 
+       else if (spec.getCalendarSigma().equals(CalendarSigma.All)) {
+            PeriodSpecificExtremeValuesCorrector xcorrector = new PeriodSpecificExtremeValuesCorrector();
+            xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
+            toolkit.setExtremeValuescorrector(xcorrector);        }
+       else if (spec.getCalendarSigma().equals(CalendarSigma.Signif)){
+            CochranDependentExtremeValuesCorrector xcorrector = new CochranDependentExtremeValuesCorrector();
             xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
             toolkit.setExtremeValuescorrector(xcorrector);
-
-        }
-        /*die anderen Settings für Calendarsigma fehlen nun auch noch ggf. müssen auch noch die Gruppen mit übergeben werden/
+       }
+       else {
+            DefaultExtremeValuesCorrector xcorrector = new DefaultExtremeValuesCorrector();
+            xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
+            toolkit.setExtremeValuescorrector(xcorrector);        }
+           
         
+         
         /*In Case that one or more and not all of the filters are stable the normalizer needs this information*/
         if (spec.isSeasonal()) {
             DefaultSeasonalNormalizer nprovider = new DefaultSeasonalNormalizer();

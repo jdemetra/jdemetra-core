@@ -646,7 +646,7 @@ public final class Mstatistics implements IProcResults {
     private void calcCochran(TsData ts, DecompositionMode mode, Mstatistics mstats){
       // die folgenden müssen mit dem chochran Test in Abhängigkeit von den Sigmavec Einstellungen berechnet werden
    
-        CochranTest cochranTest = new CochranTest(ts, mode);
+        CochranTest cochranTest = new CochranTest(ts, mode.isMultiplicative());
         cochranTest.calcCochranTest();
         mstats.criticalvalue = cochranTest.getCriticalValue();
         mstats.testvalue = cochranTest.getTestValue();
