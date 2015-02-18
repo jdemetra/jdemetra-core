@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tss.disaggregation.processors;
 
 import ec.benchmarking.simplets.TsCholette;
@@ -40,8 +39,8 @@ public class CholetteProcessor implements IProcessingFactory<UniCholetteSpecific
     public static final String FAMILY = "Benchmarking";
     public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, "Cholette", null);
 
-    public static final CholetteProcessor instance=new CholetteProcessor();
-    
+    public static final CholetteProcessor instance = new CholetteProcessor();
+
     protected CholetteProcessor() {
     }
 
@@ -70,17 +69,17 @@ public class CholetteProcessor implements IProcessingFactory<UniCholetteSpecific
 
     @Override
     public Map<String, Class> getSpecificationDictionary(Class<UniCholetteSpecification> specClass) {
-        Map<String, Class> dic=new HashMap<>();
+        Map<String, Class> dic = new HashMap<>();
         UniCholetteSpecification.fillDictionary(null, dic);
         return dic;
     }
 
     @Override
     public Map<String, Class> getOutputDictionary() {
-        Map<String, Class> dic=new HashMap<>();
+        Map<String, Class> dic = new HashMap<>();
         BenchmarkingResults.fillDictionary(null, dic);
         return dic;
-     }
+    }
 
     public static class DefaultProcessing implements IProcessing<TsData[], BenchmarkingResults> {
 
@@ -92,20 +91,23 @@ public class CholetteProcessor implements IProcessingFactory<UniCholetteSpecific
 
         @Override
         public BenchmarkingResults process(TsData[] input) {
-            TsCholette cholette = new TsCholette();
-            cholette.setRho(spec.getRho());
-            cholette.setLambda(spec.getLambda());
-            TsFrequency agg=spec.getAggregationFrequency();
-            TsData s=input[0];
-            if (agg != TsFrequency.Undefined && s.getFrequency().intValue()>agg.intValue())
-                s=s.changeFrequency(agg, spec.getAggregationType(), true);
-            cholette.setAggregationType(spec.getAggregationType());
-            TsData bench = cholette.process(s,input[1]);
-            // input
-            BenchmarkingResults rslts=new BenchmarkingResults();
-            rslts.set(s, input[1], bench);
-            return rslts;            
+            TsData s = input[0], c = input[1];
+            BenchmarkingResults rslts = new BenchmarkingResults();
+            if (s != null && c != null) {
+                TsCholette cholette = new TsCholette();
+                cholette.setRho(spec.getRho());
+                cholette.setLambda(spec.getLambda());
+                TsFrequency agg = spec.getAggregationFrequency();
+                if (agg != TsFrequency.Undefined && s.getFrequency().intValue() > agg.intValue()) {
+                    s = s.changeFrequency(agg, spec.getAggregationType(), true);
+                }
+                cholette.setAggregationType(spec.getAggregationType());
+                TsData bench = cholette.process(s, c);
+                // input
+                rslts.set(s, input[1], bench);
+            }
+            return rslts;
         }
 
-     }
+    }
 }

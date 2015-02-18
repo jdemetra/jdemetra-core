@@ -180,8 +180,8 @@ public class DisaggregationModel implements Cloneable {
         prepareY(data, yDom);
         if (!regressors_.isEmpty()) {
             prepareX(data, rescale);
-        } else if (rescale) {
-            data.scale(new AbsMeanNormalizer());
+        } else {
+            data.scale(rescale ? new AbsMeanNormalizer() : null);
         }
 
         return true;
