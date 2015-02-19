@@ -1,7 +1,7 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
@@ -115,10 +115,10 @@ public class OdbcProvider extends JdbcProvider<OdbcBean> implements IFileLoader 
     }
 
     private static boolean is64bit() {
-        return StandardSystemProperty.OS_ARCH.value().equals("amd64");
+        return "amd64".equals(StandardSystemProperty.OS_ARCH.value());
     }
 
-    private static class OdbcSupplier extends DriverBasedSupplier {
+    private static final class OdbcSupplier extends DriverBasedSupplier {
 
         @Override
         protected String getUrl(JdbcBean bean) {
@@ -131,7 +131,7 @@ public class OdbcProvider extends JdbcProvider<OdbcBean> implements IFileLoader 
                 Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
                 return true;
             } catch (ClassNotFoundException ex) {
-                LOGGER.info("Can't load Sun's odbc driver", ex);
+                LOGGER.info("Can't load Sun's odbc driver");
                 return false;
             }
         }
