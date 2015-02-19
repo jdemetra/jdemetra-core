@@ -113,7 +113,7 @@ public class AnsleyFilterTest {
     }
 
     //@Test
-    public void testWKFilter() {
+    public void demoWKFilter() {
         CompositeResults rslt = TramoSeatsProcessingFactory.process(Data.X, TramoSeatsSpecification.RSA3);
         ArimaModel tmodel = rslt.get("decomposition", SeatsResults.class).getUcarimaModel().getComponent(0);
         SarimaModel model = rslt.get("preprocessing", PreprocessingModel.class).estimation.getArima();
@@ -180,7 +180,7 @@ public class AnsleyFilterTest {
     }
 
     //@Test
-    public void testBurman() {
+    public void demoBurman() {
         CompositeResults rslt = TramoSeatsProcessingFactory.process(Data.X, TramoSeatsSpecification.RSA3);
         UcarimaModel ucm = rslt.get("decomposition", SeatsResults.class).getUcarimaModel();
         ArimaModel tmodel = rslt.get("decomposition", SeatsResults.class).getUcarimaModel().getComponent(0);
@@ -204,8 +204,8 @@ public class AnsleyFilterTest {
         System.out.println(t1 - t0);
     }
 
-    @Test
-    public void testKF() {
+    //@Test
+    public void demoKF() {
         CompositeResults rslt = TramoSeatsProcessingFactory.process(Data.X, TramoSeatsSpecification.RSA3);
         UcarimaModel ucm = rslt.get("decomposition", SeatsResults.class).getUcarimaModel();
         ArimaModel tmodel = rslt.get("decomposition", SeatsResults.class).getUcarimaModel().getComponent(0);

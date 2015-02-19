@@ -20,6 +20,7 @@ import ec.tstoolkit.design.Development;
 import ec.tstoolkit.random.IRandomNumberGenerator;
 import ec.tstoolkit.random.JdkRNG;
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * A DataBlock represents an array of equally spaced doubles. The "DataBlock" is
@@ -1645,6 +1646,13 @@ public final class DataBlock implements IDataBlock, Cloneable {
     public void randomize() {
         for (int i = beg_; i != end_; i += inc_) {
             x_[i] = RNG.nextDouble()-.5;
+        }
+    }
+
+    public void randomize(int seed) {
+        Random rnd=new Random(seed);
+        for (int i = beg_; i != end_; i += inc_) {
+            x_[i] = rnd.nextDouble()-.5;
         }
     }
 

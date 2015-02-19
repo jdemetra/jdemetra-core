@@ -47,7 +47,7 @@ public class SeasonalityTestTest {
     }
 
     //@Test
-    public void IBTest() {
+    public void demoIBTest() {
 
         TsData m1 = Data.M1;
         TsData m2 = Data.M2;

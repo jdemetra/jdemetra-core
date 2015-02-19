@@ -33,9 +33,14 @@ import ec.tstoolkit.maths.polynomials.Polynomial;
 import ec.tstoolkit.ucarima.UcarimaModel;
 
 /**
- *
- * @author Jean Palate
+ * Estimation of the components of an UCARIMA model using the
+ * Burman's algorithm.</br>This class is largely based on the program SEATS+ developed by Gianluca Caporello 
+ * and Agustin Maravall -with programming support from Domingo Perez and Roberto Lopez- 
+ * at the Bank of Spain, and on the program SEATS, previously developed by 
+ * Victor Gomez and Agustin Maravall.<br>It corresponds more especially to the
+ * routine <i>ESTBUR</i>
  */
+@Deprecated
 @Development(status = Development.Status.Temporary)
 public class BurmanEstimates
 {

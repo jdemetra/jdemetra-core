@@ -82,7 +82,7 @@ public class TsDataTest {
         boolean end = false;
         TsData s = X.clone();
         while (!s.isEmpty()) {
-            System.out.print(s.getLength());
+//            System.out.print(s.getLength());
             testIterators(s);
             if (end) {
                 end = false;
@@ -106,7 +106,7 @@ public class TsDataTest {
             y += yf.nextElement().data.sum();
         }
         assertTrue(p == y);
-        System.out.print(" ok");
+//        System.out.print(" ok");
         pf = new PeriodIterator(s);
         yf = new YearIterator(s);
         p = 0;
@@ -117,10 +117,10 @@ public class TsDataTest {
         while (yf.hasMoreElements()) {
             y += yf.nextElement().data.sum();
         }
-        System.out.print(" ");
-        System.out.print(y);
-        System.out.print(" ");
-        System.out.println(p);
+//        System.out.print(" ");
+//        System.out.print(y);
+//        System.out.print(" ");
+//        System.out.println(p);
         assertTrue(p == y);
     }
 
@@ -207,7 +207,7 @@ public class TsDataTest {
             // increase the index by the growth of this year
             idx *= val1 / val0;
         }
-        System.out.println(Qq);
+//        System.out.println(Qq);
 
         //////////////////////////////////////
         // Fixed year index is computed in a trivial way
@@ -216,7 +216,7 @@ public class TsDataTest {
         TsData Qb = QBq.times(PBy.get(ybase));
 
         TsData Qq2 = TsData.add(Qa, Qb).index(ybase, 100);
-        System.out.println(Qq2);
+//        System.out.println(Qq2);
 
     }
 

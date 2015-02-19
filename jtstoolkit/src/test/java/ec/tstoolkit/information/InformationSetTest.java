@@ -61,9 +61,9 @@ public class InformationSetTest {
 
         // show the dictionary
         assert (info.getDictionary().size() == 2);
-        for (String s : info.getDictionary()) {
-            System.out.println(s);
-        }
+//        for (String s : info.getDictionary()) {
+//            System.out.println(s);
+//        }
     }
 
     @Test

@@ -41,7 +41,7 @@ public class SeasonalDummiesTest {
     }
 
     //@Test
-    public void test() {
+    public void demo() {
         SeasonalDummies ds=new SeasonalDummies(TsFrequency.Monthly);
         TsDomain domain =new TsDomain(TsFrequency.Monthly, 1980, 3, 120);
         

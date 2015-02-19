@@ -28,7 +28,7 @@ import ec.tstoolkit.ucarima.UcarimaModel;
 /**
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 public class SeatsKernel implements ISeriesDecomposer {
 
     /**
@@ -101,7 +101,7 @@ public class SeatsKernel implements ISeriesDecomposer {
     private void validate(SeatsModel model, InformationSet info,
             SeatsContext context) {
         IModelValidator validator = toolkit.getModelValidator();
-        ModelStatus status = validator.validate(model.getSarima(), info, context);
+        ModelStatus status = validator.validate(model.getSarima(), info);
         if (status == ModelStatus.Invalid) {
             throw new SeatsException(SeatsException.ERR_MODEL);
         } else if (status == ModelStatus.Changed) {
@@ -119,5 +119,5 @@ public class SeatsKernel implements ISeriesDecomposer {
         }
     }
 
-    private final String NON_DECOMPOSABLE = "Non decomposable model", CUT_OFF = "Parametes cut off";
+    private final String NON_DECOMPOSABLE = "Non decomposable model", CUT_OFF = "Parameters cut off";
 }

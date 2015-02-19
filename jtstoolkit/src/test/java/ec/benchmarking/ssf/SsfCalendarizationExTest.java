@@ -17,14 +17,12 @@
 package ec.benchmarking.ssf;
 
 import ec.tstoolkit.data.DataBlock;
-import ec.tstoolkit.ssf.DisturbanceSmoother;
 import ec.tstoolkit.ssf.Smoother;
 import ec.tstoolkit.ssf.SmoothingResults;
 import ec.tstoolkit.ssf.SsfData;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.Month;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

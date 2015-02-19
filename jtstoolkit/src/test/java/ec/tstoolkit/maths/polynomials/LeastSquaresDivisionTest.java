@@ -34,16 +34,16 @@ public class LeastSquaresDivisionTest {
     public void testDivision() {
         int q=10, d=20;
         DataBlock Q=new DataBlock(q), D=new DataBlock(d);
-        Q.randomize();
-        D.randomize();
+        Q.randomize(0);
+        D.randomize(1);
         Polynomial pq=Polynomial.copyOf(Q.getData());
         Polynomial pd=Polynomial.copyOf(D.getData());
         Polynomial pn=pd.times(pq);
         LeastSquaresDivision div=new LeastSquaresDivision();
         div.divide(pn, pd);
-        if (div.isExact()){
-             DataBlock Q2=new DataBlock(div.getQuotient());
-             System.out.println(Q2.distance(Q));
-        }
+//        if (div.isExact()){
+//             DataBlock Q2=new DataBlock(div.getQuotient());
+//             System.out.println(Q2.distance(Q));
+//        }
     }
 }

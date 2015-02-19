@@ -39,12 +39,12 @@ public class BasicConfigurationTest {
     }
 
 //    @Test
-    public void testAllSeries() {
+    public void demoAllSeries() {
         for (String s : BasicConfiguration.allSeries)
             System.out.println(s);
     }
 //    @Test
-    public void testAllOutput() {
+    public void demoAllOutput() {
         for (String s : BasicConfiguration.allDetails)
             System.out.println(s);
     }

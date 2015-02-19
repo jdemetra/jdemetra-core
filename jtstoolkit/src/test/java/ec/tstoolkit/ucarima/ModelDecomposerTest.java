@@ -55,7 +55,7 @@ public class ModelDecomposerTest {
     }
 
     //@Test
-    public void testStochasticTD() {
+    public void demoStochasticTD() {
         TsData s = Data.X;
         // Tramo pre-processing without trading days
         PreprocessingModel rslt = TramoProcessingFactory.instance.generateProcessing(TramoSpecification.TR3, null).process(s);

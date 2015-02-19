@@ -30,8 +30,8 @@ public class SarimaModelBuilderTest {
     public SarimaModelBuilderTest() {
     }
 
-    @Test
-    public void testRandom() {
+//    @Test
+    public void demoRandom() {
         SarimaModelBuilder builder=new SarimaModelBuilder();
         SarimaModel arima=builder.createAirlineModel(12, -.8, -.9);
         for (int i=0; i<100; ++i){

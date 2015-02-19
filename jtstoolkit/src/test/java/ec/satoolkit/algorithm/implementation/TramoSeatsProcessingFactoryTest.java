@@ -33,7 +33,6 @@ import ec.tstoolkit.algorithm.SequentialProcessing;
 import ec.tstoolkit.algorithm.SingleTsData;
 import ec.tstoolkit.arima.Spectrum;
 import ec.tstoolkit.data.DescriptiveStatistics;
-import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.information.StatisticalTest;
 import ec.tstoolkit.modelling.TsVariableDescriptor;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
@@ -132,11 +131,14 @@ public class TramoSeatsProcessingFactoryTest {
         rslts = TramoSeatsProcessingFactory.process(input, mySpec);
 
         TsData sa = rslts.getData("sa", TsData.class);
-        System.out.println(sa);
+        assertTrue(sa != null);
+//        System.out.println(sa);
         TsData sabench = rslts.getData("benchmarking.result", TsData.class);
-        System.out.println(sabench);
+        assertTrue(sabench != null);
+//        System.out.println(sabench);
         StatisticalTest skewness = rslts.getData("residuals.skewness", StatisticalTest.class);
-        System.out.println(skewness);
+        assertTrue(skewness != null);
+//        System.out.println(skewness);
         // All the possible results are defined in the dictionary of "rslts"
 //        Map<String, Class> dictionary = rslts.getDictionary();
 //        for (Entry<String, Class> entry : dictionary.entrySet()) {

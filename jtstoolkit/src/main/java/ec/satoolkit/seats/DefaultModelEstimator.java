@@ -33,6 +33,12 @@ import ec.tstoolkit.sarima.estimation.SarimaMapping2;
  */
 @Development(status = Development.Status.Alpha)
 public class DefaultModelEstimator implements IModelEstimator {
+    
+    private final IModelValidator validator;
+    
+    public DefaultModelEstimator(IModelValidator validator){
+        this.validator=validator;
+    }
 
     /**
      *
@@ -54,8 +60,9 @@ public class DefaultModelEstimator implements IModelEstimator {
 	    return false;
 
         SarimaModel arima=estimation.model.getArima();
-        boolean stabilize = SarimaMapping2.stabilize(arima, 1, .985);
-	model.setModel(estimation.model.getArima());
+        if (validator != null && ModelStatus.Changed == validator.validate(arima, info))
+            arima=validator.getNewModel();
+	model.setModel(arima);
         LikelihoodStatistics stat = estimation.statistics(arima.getParametersCount(), 0);
         model.setSer(Math.sqrt(stat.SsqErr/(stat.effectiveObservationsCount-stat.estimatedParametersCount)));
 	info.subSet("gls").set("likelihood", estimation.likelihood);

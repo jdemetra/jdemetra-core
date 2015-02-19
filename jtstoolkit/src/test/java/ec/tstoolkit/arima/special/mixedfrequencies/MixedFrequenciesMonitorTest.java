@@ -39,7 +39,7 @@ public class MixedFrequenciesMonitorTest {
     }
 
     //@Test
-    public void testFlows() {
+    public void demoFlows() {
         MixedFrequenciesSpecification spec = new MixedFrequenciesSpecification();
         //spec.getArima().setP(3);
         //spec.getBasic().setLog(true);
@@ -64,7 +64,7 @@ public class MixedFrequenciesMonitorTest {
     }
 
     //@Test
-    public void testStocks() {
+    public void demoStocks() {
         MixedFrequenciesSpecification spec = new MixedFrequenciesSpecification();
         //spec.getArima().setP(3);
         spec.getBasic().setDataType(DataType.Stock);
@@ -88,8 +88,8 @@ public class MixedFrequenciesMonitorTest {
         }
     }
 
-    @Test
-    public void stressTest() {
+    //@Test
+    public void demoStressTest() {
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline();
         //spec.setP(3);

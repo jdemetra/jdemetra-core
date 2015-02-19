@@ -67,6 +67,9 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
     }
 
     public void setXlBoundary(double value) {
+        if (value < 0.9 || value > 1) {
+            throw new SeatsException("XL should belong to [0.9, 1]");
+        }
         xl_ = value;
     }
 
@@ -75,6 +78,9 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
     }
 
     public void setSeasTolerance(double value) {
+        if (value < 0 || value > 10) {
+            throw new SeatsException("EPSPHI (expressed in degrees) should belong to [0, 10]");
+        }
         epsPhi_ = value;
     }
 
@@ -83,6 +89,9 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
     }
 
     public void setTrendBoundary(double value) {
+        if (value < 0 || value > 1) {
+            throw new SeatsException("RMOD should belong to [0, 1]");
+        }
         rmod_ = value;
     }
 

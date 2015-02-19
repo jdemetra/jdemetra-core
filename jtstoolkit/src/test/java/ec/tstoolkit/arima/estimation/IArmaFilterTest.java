@@ -64,7 +64,7 @@ public class IArmaFilterTest {
 
         //try {
             DataBlock Y = new DataBlock(360);
-            Y.randomize();
+            Y.randomize(0);
             
             ArmaKF rf=new ArmaKF(sarima);
             Likelihood ll=new Likelihood();

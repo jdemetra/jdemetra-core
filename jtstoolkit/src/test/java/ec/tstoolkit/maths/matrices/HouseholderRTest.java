@@ -29,8 +29,8 @@ public class HouseholderRTest {
     public HouseholderRTest() {
     }
 
-    @Test
-    public void testDecomposition() {
+//    @Test
+    public void demoDecomposition() {
 
         int n = 200, p = 10, k = 10000;
         Matrix M = new Matrix(n, 2 * p);
@@ -62,8 +62,8 @@ public class HouseholderRTest {
         System.out.println();
     }
 
-    @Test
-    public void testQy() {
+ //   @Test
+    public void demoQy() {
 
         int n = 100, p = 10;
         Matrix M = new Matrix(n, p);
@@ -87,7 +87,7 @@ public class HouseholderRTest {
         hc.decompose(Mc);
 
         DataBlock y = new DataBlock(n);
-        y.randomize();
+        y.randomize(0);
         DataBlock yr = y.deepClone();
 
         DataBlock b = new DataBlock(h.getRank());

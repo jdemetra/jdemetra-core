@@ -82,31 +82,35 @@ public abstract class MultiTsDocument<S extends IProcSpecification, R extends IP
         if (input == null) {
             return null;
         }
-        for (int i = 0; i < input.length; ++i) {
-            if (input[i] == null) {
-                return null;
-            }
-        }
+//        for (int i = 0; i < input.length; ++i) {
+//            if (input[i] == null) {
+//                return null;
+//            }
+//        }
         TsData[] dinput = new TsData[input.length];
         for (int i = 0; i < input.length; ++i) {
             Ts s = input[i];
-            if (s.hasData() == TsStatus.Undefined) {
-                s.load(TsInformationType.Data);
-            }
-            TsData d = s.getTsData();
-            if (d == null) {
-                throw new TsException(s.getRawName() + ": No data");
+            if (s != null) {
+                if (s.hasData() == TsStatus.Undefined) {
+                    s.load(TsInformationType.Data);
+                }
+                TsData d = s.getTsData();
+                if (d == null) {
+                    throw new TsException(s.getRawName() + ": No data");
+                } else {
+                    dinput[i] = d;
+                }
             } else {
-                dinput[i] = d;
+                dinput[i] = null;
             }
         }
         IProcessing<TsData[], R> processing = factory_.generateProcessing(spec, getContext());
         return processing.process(dinput);
     }
-    
+
     @Override
-    public MultiTsDocument<S, R> clone(){
-        MultiTsDocument<S, R> cl=(MultiTsDocument<S, R>) super.clone();
+    public MultiTsDocument<S, R> clone() {
+        MultiTsDocument<S, R> cl = (MultiTsDocument<S, R>) super.clone();
         cl.setInput(clone(getInput()), true);
         return cl;
     }

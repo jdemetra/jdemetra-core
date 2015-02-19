@@ -158,7 +158,7 @@ public class XmlInformationSetTest {
         }
     }
 
-    //@Test
+//    @Test
     public void testTramoSpecSerialization() throws JAXBException, FileNotFoundException, IOException {
 
         InformationSet info = new InformationSet();
@@ -178,7 +178,7 @@ public class XmlInformationSetTest {
         }
     }
 
-    //@Test
+//   @Test
     public void testTramoSeatsSpecSerialization() throws JAXBException, FileNotFoundException, IOException {
 
         InformationSet info = new InformationSet();

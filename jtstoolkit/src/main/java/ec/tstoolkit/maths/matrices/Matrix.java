@@ -27,6 +27,7 @@ import ec.tstoolkit.random.JdkRNG;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Represents matrices of doubles. Data are arranged by columns, following the
@@ -654,6 +655,16 @@ public class Matrix implements Cloneable {
         }
     }
 
+   /**
+     * Fills the matrix with random numbers (in [0, 1[)
+     * @param seed
+     */
+    public void randomize(int seed) {
+        Random rnd=new Random(seed);
+        for (int i = 0; i < data_.length; ++i) {
+            data_[i] = rnd.nextDouble();
+        }
+    }
     /**
      * Returns a given row (as a data block)
      *

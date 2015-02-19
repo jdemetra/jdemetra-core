@@ -422,8 +422,13 @@ public final class Day implements IPeriod, Comparable<Day> {
      *
      * @return a <code>Date</code> representing the time value.
     */    
+    @NewObject
     public Date getTime() {
-        return toInternalCalendar().getTime();
+        return new Date(getTimeInMillis());
+    }
+
+    public long getTimeInMillis() {
+        return toInternalCalendar().getTimeInMillis();
     }
     
     /**

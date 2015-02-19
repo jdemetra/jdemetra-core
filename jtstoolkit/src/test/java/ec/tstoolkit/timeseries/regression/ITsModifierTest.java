@@ -49,7 +49,7 @@ public class ITsModifierTest {
     }
 
     @Test
-    public void testTramoExpander() {
+    public void demoTramoExpander() {
         TsData x = Data.X;
         TsDomain xdom = x.getDomain().extend(24, 60);
 

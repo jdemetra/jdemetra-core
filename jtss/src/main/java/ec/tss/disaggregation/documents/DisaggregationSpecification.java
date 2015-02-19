@@ -39,7 +39,8 @@ public class DisaggregationSpecification implements IProcSpecification, Cloneabl
         Wn,
         Ar1,
         Rw,
-        RwAr1;
+        RwAr1,
+        I2, I3;
 
         public boolean hasParameter() {
             return this == Ar1 || this == RwAr1;
@@ -52,7 +53,22 @@ public class DisaggregationSpecification implements IProcSpecification, Cloneabl
         public int getParametersCount() {
             return (this == Ar1 || this == RwAr1) ? 1 : 0;
         }
+        
+        public int getDifferencingOrder(){
+            switch (this){
+                case Rw:
+                case RwAr1:
+                    return 1;
+                case I2:
+                    return 2;
+                case I3:
+                    return 3;
+                default:
+                    return 0;                    
+            }
+        }
     }
+    
     public static final double DEF_EPS = 1e-5;
     private Model model = Model.Ar1;
     private boolean constant = true, trend;

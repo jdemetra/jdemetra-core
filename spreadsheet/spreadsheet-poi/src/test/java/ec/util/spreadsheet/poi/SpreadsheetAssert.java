@@ -30,8 +30,12 @@ import org.junit.Assert;
  *
  * @author Philippe Charles
  */
-public class SpreadsheetAssert {
+final class SpreadsheetAssert {
 
+    private SpreadsheetAssert() {
+        // static class
+    }
+    
     public static void assertContentEquals(Book l, Book r) throws IOException {
         Assert.assertEquals(l.getSheetCount(), r.getSheetCount());
         for (int s = 0; s < l.getSheetCount(); s++) {

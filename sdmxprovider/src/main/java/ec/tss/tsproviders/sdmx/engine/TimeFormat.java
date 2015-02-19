@@ -16,7 +16,6 @@
  */
 package ec.tss.tsproviders.sdmx.engine;
 
-import ec.tss.tsproviders.utils.DataFormat;
 import ec.tss.tsproviders.utils.Parsers;
 import ec.tss.tsproviders.utils.Parsers.Parser;
 import static ec.tss.tsproviders.utils.StrangeParsers.yearFreqPosParser;
@@ -39,7 +38,9 @@ public enum TimeFormat {
     P1Y(TsFrequency.Yearly, TsAggregationType.None) {
                 @Override
                 public Parser<Date> getParser() {
-                    return onDatePattern("yyyy");
+                    return onStrictDatePattern("yyyy")
+                    .or(onStrictDatePattern("yyyy'-01'"))
+                    .or(onStrictDatePattern("yyyy'-A1'"));
                 }
             },
     /**
@@ -48,7 +49,7 @@ public enum TimeFormat {
     P6M(TsFrequency.HalfYearly, TsAggregationType.None) {
                 @Override
                 public Parser<Date> getParser() {
-                    return yearFreqPosParser().or(onDatePattern("yyyy-MM"));
+                    return yearFreqPosParser().or(onStrictDatePattern("yyyy-MM"));
                 }
             },
     /**
@@ -57,7 +58,7 @@ public enum TimeFormat {
     P4M(TsFrequency.QuadriMonthly, TsAggregationType.None) {
                 @Override
                 public Parser<Date> getParser() {
-                    return yearFreqPosParser().or(onDatePattern("yyyy-MM"));
+                    return yearFreqPosParser().or(onStrictDatePattern("yyyy-MM"));
                 }
             },
     /**
@@ -66,7 +67,7 @@ public enum TimeFormat {
     P3M(TsFrequency.Quarterly, TsAggregationType.None) {
                 @Override
                 public Parser<Date> getParser() {
-                    return yearFreqPosParser().or(onDatePattern("yyyy-MM"));
+                    return yearFreqPosParser().or(onStrictDatePattern("yyyy-MM"));
                 }
             },
     /**
@@ -75,7 +76,7 @@ public enum TimeFormat {
     P1M(TsFrequency.Monthly, TsAggregationType.None) {
                 @Override
                 public Parser<Date> getParser() {
-                    return yearFreqPosParser().or(onDatePattern("yyyy-MM"));
+                    return yearFreqPosParser().or(onStrictDatePattern("yyyy-MM"));
                 }
             },
     /**
@@ -84,7 +85,7 @@ public enum TimeFormat {
     P7D(TsFrequency.Monthly, TsAggregationType.Last) {
                 @Override
                 public Parser<Date> getParser() {
-                    return onDatePattern("yyyy-MM-dd");
+                    return onStrictDatePattern("yyyy-MM-dd");
                 }
             },
     /**
@@ -93,7 +94,7 @@ public enum TimeFormat {
     P1D(TsFrequency.Monthly, TsAggregationType.Last) {
                 @Override
                 public Parser<Date> getParser() {
-                    return onDatePattern("yyyy-MM-dd");
+                    return onStrictDatePattern("yyyy-MM-dd");
                 }
             },
     /**
@@ -102,7 +103,7 @@ public enum TimeFormat {
     PT1M(TsFrequency.Monthly, TsAggregationType.Last) {
                 @Override
                 public Parser<Date> getParser() {
-                    return onDatePattern("yyyy-MM-dd");
+                    return onStrictDatePattern("yyyy-MM-dd");
                 }
             },
     /**
@@ -111,7 +112,7 @@ public enum TimeFormat {
     UNDEFINED(TsFrequency.Undefined, TsAggregationType.None) {
                 @Override
                 public Parser<Date> getParser() {
-                    return onDatePattern("yyyy-MM");
+                    return onStrictDatePattern("yyyy-MM");
                 }
             };
 
@@ -133,7 +134,7 @@ public enum TimeFormat {
 
     abstract public Parser<Date> getParser();
 
-    private static Parsers.Parser<Date> onDatePattern(String datePattern) {
-        return new DataFormat(Locale.ROOT, datePattern, null).dateParser();
+    private static Parsers.Parser<Date> onStrictDatePattern(String datePattern) {
+        return Parsers.onStrictDatePattern(datePattern, Locale.ROOT);
     }
 }

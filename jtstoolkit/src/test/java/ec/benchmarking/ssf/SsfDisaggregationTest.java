@@ -19,7 +19,6 @@ package ec.benchmarking.ssf;
 import data.Data;
 import ec.benchmarking.Cumulator;
 import ec.tstoolkit.arima.ArimaModel;
-import ec.tstoolkit.arima.IArimaModel;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.IDataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
@@ -63,7 +62,7 @@ public class SsfDisaggregationTest {
     }
 
     //@Test
-    public void testLLAirline() {
+    public void demoLLAirline() {
         SarimaModel sarima = new SarimaModelBuilder().createAirlineModel(12, -.5, -.4);
         SsfArima ssf = new SsfArima(sarima);
         SsfDisaggregation disagg = new SsfDisaggregation(3, ssf);
@@ -121,8 +120,8 @@ public class SsfDisaggregationTest {
 
     }
 
-    @Test
-    public void testAirlineDecomposition() {
+//    @Test
+    public void demoAirlineDecomposition() {
         Cumulator cumul = new Cumulator(3);
         TsData X = Data.P;
         double[] x = X.getValues().internalStorage().clone();

@@ -34,8 +34,8 @@ public class DefaultTimeInvariantMultivariateSsfTest {
     public DefaultTimeInvariantMultivariateSsfTest() {
     }
 
-    @Test
-    public void testVar() {
+    //@Test
+    public void demoVar() {
         int V = 5, N = 300;
         DefaultTimeInvariantMultivariateSsf ssf = new DefaultTimeInvariantMultivariateSsf();
         ssf.initialize(2 * V, V, 2 * V, 2 * V);

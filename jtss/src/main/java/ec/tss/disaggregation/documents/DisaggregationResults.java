@@ -27,6 +27,8 @@ import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.eco.DiffuseConcentratedLikelihood;
 import ec.tstoolkit.information.InformationMapper;
 import ec.tstoolkit.maths.matrices.Matrix;
+import ec.tstoolkit.maths.realfunctions.IFunction;
+import ec.tstoolkit.maths.realfunctions.IFunctionInstance;
 import ec.tstoolkit.maths.realfunctions.IParametricMapping;
 import ec.tstoolkit.ssf.ISsf;
 import ec.tstoolkit.timeseries.simplets.TsData;
@@ -62,6 +64,14 @@ public class DisaggregationResults implements IProcResults {
         DiffuseConcentratedLikelihood ll = result.getLikelihood();
         IParametricMapping<? extends ISsf> mapping = result.getMapping();
         return LikelihoodStatistics.create(ll, ll.getN(), mapping == null ? 0 : mapping.getDim(), 0);
+    }
+    
+    public IFunction getEstimationFunction(){
+        return result.getEstimationFunction();
+    }
+
+    public IFunctionInstance getMin(){
+        return result.getMin();
     }
 
     public Parameter getEstimatedParameter() {

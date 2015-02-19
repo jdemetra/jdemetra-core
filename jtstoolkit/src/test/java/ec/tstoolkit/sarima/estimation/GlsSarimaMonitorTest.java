@@ -29,8 +29,8 @@ public class GlsSarimaMonitorTest {
     public GlsSarimaMonitorTest() {
     }
 
-    @Test
-    public void test311011() {
+ //   @Test
+    public void demo311011() {
         process311011(1, data.Data.P.getValues().internalStorage());
         long span=process311011(100, data.Data.P.getValues().internalStorage());
         System.out.println(span);

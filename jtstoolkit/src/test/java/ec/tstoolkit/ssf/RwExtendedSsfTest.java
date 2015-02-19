@@ -55,7 +55,7 @@ public class RwExtendedSsfTest {
     }
 
     //@Test
-    public void test0() {
+    public void demo0() {
         TsData s = Data.X.log();
         double[] x = new double[]{0, 0};
 
@@ -66,7 +66,7 @@ public class RwExtendedSsfTest {
     }
 
     //@Test
-    public void test() {
+    public void demo1() {
         TsData s = Data.X.log();
         TestFunction fn = new TestFunction(s);
         ISsqFunctionMinimizer min = new ec.tstoolkit.maths.realfunctions.levmar.LevenbergMarquardtMethod();
@@ -82,7 +82,7 @@ public class RwExtendedSsfTest {
     }
 
     //@Test
-    public void testRnd0() {
+    public void demoRnd0() {
         TsData s = rnd;
         double[] x = new double[]{0};
 
@@ -93,13 +93,13 @@ public class RwExtendedSsfTest {
     }
 
     //@Test
-    public void testRnd() {
+    public void demoRnd1() {
         TsData s = rnd;
         TestFunction fn = new TestFunction(s);
         ISsqFunctionMinimizer min = new LevenbergMarquardtMethod();
         min.minimize(fn, new TestFunctionInstance(s));
         TestFunctionInstance rslt = (TestFunctionInstance) min.getResult();
-        System.out.println("Rnd");
+        System.out.println("Rnd1");
         printRslt(rslt);
     }
 
@@ -115,8 +115,8 @@ public class RwExtendedSsfTest {
     }
 
     // time-varying trading days
-    @Test
-    public void testTD() {
+    //@Test
+    public void demoTD() {
         TsData s = Data.X;
         CompositeResults rslts = TramoSeatsProcessingFactory.process(s, TramoSeatsSpecification.RSA5);
         PreprocessingModel regarima = rslts.get("preprocessing", PreprocessingModel.class);

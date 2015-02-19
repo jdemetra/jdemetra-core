@@ -129,12 +129,10 @@ public class DefaultModelValidator implements IModelValidator {
      *
      * @param model
      * @param info
-     * @param context
      * @return
      */
     @Override
-    public ModelStatus validate(SarimaModel model, InformationSet info,
-            SeatsContext context) {
+    public ModelStatus validate(SarimaModel model, InformationSet info) {
         newModel = model;
         ModelStatus smp = simplifyModel(info);
         ModelStatus ma = validateMA(info);

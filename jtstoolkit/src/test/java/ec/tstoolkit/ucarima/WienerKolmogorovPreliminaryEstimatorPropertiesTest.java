@@ -53,8 +53,8 @@ public class WienerKolmogorovPreliminaryEstimatorPropertiesTest {
         }
     }
 
-    @Test
-    public void testErrors() {
+//    @Test
+    public void demoErrors() {
         UcarimaModel ucm = ucmAirline(-.8, -.6);
         WienerKolmogorovEstimators wk = new WienerKolmogorovEstimators(ucm);
         WienerKolmogorovEstimator fe = wk.finalEstimator(0, true);
@@ -69,8 +69,8 @@ public class WienerKolmogorovPreliminaryEstimatorPropertiesTest {
         }
     }
 
-    @Test
-    public void testRevisions() {
+//    @Test
+    public void demoRevisions() {
         UcarimaModel ucm = ucmAirline(-.8, -.6);
         WienerKolmogorovEstimators wk = new WienerKolmogorovEstimators(ucm);
         WienerKolmogorovEstimator fe = wk.finalEstimator(0, true);
@@ -84,8 +84,8 @@ public class WienerKolmogorovPreliminaryEstimatorPropertiesTest {
         }
     }
 
-    @Test
-    public void testVariations() {
+//    @Test
+    public void demoVariations() {
         UcarimaModel ucm = ucmAirline(-.6, -.7);
         WienerKolmogorovEstimators wk = new WienerKolmogorovEstimators(ucm);
         System.out.println("variations revisions");

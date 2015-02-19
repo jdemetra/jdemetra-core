@@ -44,7 +44,7 @@ public class PeriodogramTestTest {
      * Test of compute method, of class PeriodogramTest.
      */
     //@Test
-    public void testCompute() {
+    public void demoCompute() {
         int N = 600, M = 100000;
         ArimaModelBuilder builder = new ArimaModelBuilder();
         double m=0, m2=0;

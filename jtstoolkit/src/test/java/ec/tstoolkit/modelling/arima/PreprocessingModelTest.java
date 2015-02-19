@@ -48,7 +48,7 @@ public class PreprocessingModelTest {
     }
 
     //@Test
-    public void testDictionary() {
+    public void demoDictionary() {
         Map<String, Class> dic = PreprocessingModel.dictionary();
         for (Entry<String, Class> o : dic.entrySet()) {
             System.out.print(o.getKey());
@@ -58,7 +58,7 @@ public class PreprocessingModelTest {
     }
 
     //@Test
-    public void testEstimation() {
+    public void demoEstimation() {
         // Create a model for the series Data.X. The entire time domain of X is
         // modelled (second parameter setto null).
         ModelDescription model = new ModelDescription(Data.X, null);
@@ -92,8 +92,8 @@ public class PreprocessingModelTest {
         System.out.println(iglsEstimation.statistics(1, 0));
     }
 
-    @Test
-    public void testLikelihoodFunction() {
+//   @Test
+    public void demoLikelihoodFunction() {
         ModelDescription model = new ModelDescription(Data.P, null);
         model.setTransformation(DefaultTransformationType.Log, PreadjustmentType.LengthOfPeriod);
         model.setAirline(true);
