@@ -117,8 +117,8 @@ public class CochranTest {
             tw_ = smax / tw_;
         }
 
-        if (nmin > 40) {
-            nmin = 40;
+        if (nmin > 39) {
+            nmin = 39;
         }
 
         tt_ = t[nmin];
