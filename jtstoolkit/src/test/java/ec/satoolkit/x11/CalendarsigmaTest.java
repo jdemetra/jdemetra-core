@@ -9,6 +9,10 @@ import org.junit.Test;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import data.*;
 import ec.satoolkit.DecompositionMode;
+import ec.satoolkit.x13.X13Specification;
+import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
+import java.util.HashSet;
+import java.util.Set;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -21,23 +25,189 @@ public class CalendarsigmaTest {
     }
 
     private static final Integer round = 4;
-    
-      @Test
-    public void TestCalendarsigmaDefaultMult() {
+
+    @Test
+    public void TestCalendarsigmaDefaultMultStartJan() {
         TsData TsInput;
         X11Kernel kernel;
         TsInput = DataCochran.CStartJan;
-        kernel = getX11Kernel(CalendarSigma.None,DecompositionMode.Multiplicative );
+        kernel = getX11Kernel(CalendarSigma.None, DecompositionMode.Multiplicative);
         X11Results rslt = kernel.process(TsInput);
 
-         for (int i = 0; i < 238; ++i) {
-         // System.out.println(DataCochran.C_D10_Default.getDomain().get(i) + " WinX13: " + DataCochran.C_D10_Default_Mult.get(i) + "; Calculated JD+: " + rslt.getData("d-tables.d10", TsData.class).getDomain().get(i) +" " +rslt.getData("d-tables.d10", TsData.class).get(i));
-               assertEquals(DataCochran.C_D10_Default_Mult.get(i), rslt.getData("d-tables.d10", TsData.class).get(i), 0.00001);
-               }
-}
-    
+        for (int i = 0; i < 238; ++i) {
+            // System.out.println(DataCochran.C_D10_Default.getDomain().get(i) + " WinX13: " + DataCochran.C_D10_Default_Mult.get(i) + "; Calculated JD+: " + rslt.getData("d-tables.d10", TsData.class).getDomain().get(i) +" " +rslt.getData("d-tables.d10", TsData.class).get(i));
+            assertEquals(DataCochran.C_D10_Default_Mult.get(i), rslt.getData("d-tables.d10", TsData.class).get(i), 0.00001);
+        }
+    }
+
     @Test
-    public void TestCalendarsigmaDefault() {
+    public void TestCalendarsigmaAllMultStartJan() {
+        TsData TsInput;
+        X11Kernel kernel;
+        TsInput = DataCochran.CStartJan;
+        kernel = getX11Kernel(CalendarSigma.All, DecompositionMode.Multiplicative);
+        X11Results rslt = kernel.process(TsInput);
+
+        for (int i = 0; i < 238; ++i) {
+            //System.out.println(DataCochran.C_D10_All_Mult.getDomain().get(i) + " WinX13: " + DataCochran.C_D10_All_Mult.get(i) + "; Calculated JD+: " + rslt.getData("d-tables.d10", TsData.class).getDomain().get(i) +" " +rslt.getData("d-tables.d10", TsData.class).get(i));
+            assertEquals(DataCochran.C_D10_All_Mult.get(i), rslt.getData("d-tables.d10", TsData.class).get(i), 0.00001);
+        }
+    }
+
+    @Test
+    public void TestCalendarsigmaAllMultStartApril() {
+        TsData TsInput;
+        X11Kernel kernel;
+        TsInput = DataCochran.CStartAprl;
+        kernel = getX11Kernel(CalendarSigma.All, DecompositionMode.Multiplicative);
+        X11Results rslt = kernel.process(TsInput);
+
+        for (int i = 0; i < 238; ++i) {
+            //System.out.println(DataCochran.C_D10_All_Mult.getDomain().get(i) + " WinX13: " + DataCochran.C_D10_All_Mult.get(i) + "; Calculated JD+: " + rslt.getData("d-tables.d10", TsData.class).getDomain().get(i) +" " +rslt.getData("d-tables.d10", TsData.class).get(i));
+            assertEquals(DataCochran.C_D10_All_Mult.get(i), rslt.getData("d-tables.d10", TsData.class).get(i), 0.00001);
+        }
+    }
+
+    @Test
+    public void TestCalendarsigmaAllMultFourthQuarterQuarterly() {
+        TsData TsInput;
+        X11Kernel kernel;
+        SigmavecOption[] sigmavec;
+        sigmavec = new SigmavecOption[1];
+        TsInput = DataCochran.CStartFourQuarter;
+        SeasonalFilterOption[] filters = new SeasonalFilterOption[4];
+
+        filters[0] = SeasonalFilterOption.S3X9;
+        filters[1] = SeasonalFilterOption.S3X9;
+        filters[2] = SeasonalFilterOption.S3X9;
+        filters[3] = SeasonalFilterOption.S3X9;
+        kernel = getX11Kernel(CalendarSigma.All, sigmavec, DecompositionMode.Multiplicative, filters);
+        X11Results rslt = kernel.process(TsInput);
+
+        for (int i = 0; i < 237; ++i) {
+            assertEquals(DataCochran.C_D10_All_Mult_StartForthQuarter.get(i), rslt.getData("d-tables.d10", TsData.class).get(i), 0.00001);
+        }
+    }
+
+    @Test
+    public void TestCalendarsigmaSignifMultFourthQuarterQuarterly() {
+        TsData TsInput;
+        X11Kernel kernel;
+        SigmavecOption[] sigmavec;
+        sigmavec = new SigmavecOption[1];
+        TsInput = DataCochran.CStartFourQuarter;
+        SeasonalFilterOption[] filters = new SeasonalFilterOption[4];
+
+        filters[0] = SeasonalFilterOption.S3X9;
+        filters[1] = SeasonalFilterOption.S3X9;
+        filters[2] = SeasonalFilterOption.S3X9;
+        filters[3] = SeasonalFilterOption.S3X9;
+        kernel = getX11Kernel(CalendarSigma.Signif, sigmavec, DecompositionMode.Multiplicative, filters);
+        X11Results rslt = kernel.process(TsInput);
+
+        for (int i = 0; i < 237; ++i) {
+            assertEquals(DataCochran.C_D10_Signif_Mult_StartForthQuarter.get(i), rslt.getData("d-tables.d10", TsData.class).get(i), 0.00001);
+        }
+    }
+
+    @Test
+    public void TestCalendarsigmaSignifMultFourthQuarterQuarterlyMixedFilter() {
+        TsData TsInput;
+        X11Kernel kernel;
+        SigmavecOption[] sigmavec;
+        sigmavec = new SigmavecOption[1];
+        TsInput = DataCochran.CStartFourQuarter;
+        SeasonalFilterOption[] filters = new SeasonalFilterOption[4];
+
+        filters[0] = SeasonalFilterOption.S3X9;
+        filters[1] = SeasonalFilterOption.Stable;
+        filters[2] = SeasonalFilterOption.S3X9;
+        filters[3] = SeasonalFilterOption.S3X9;
+        kernel = getX11Kernel(CalendarSigma.Signif, sigmavec, DecompositionMode.Multiplicative, filters);
+        X11Results rslt = kernel.process(TsInput);
+
+        for (int i = 0; i < 237; ++i) {
+            assertEquals(DataCochran.C_D10_Signif_Mult_StartForthQuarter_MixedFilters.get(i), rslt.getData("d-tables.d10", TsData.class).get(i), 0.00001);
+        }
+    }
+
+   
+
+    @Test
+    public void TestCalendarsigmaSignifMultStartJan() {
+        TsData TsInput;
+        X11Kernel kernel;
+        TsInput = DataCochran.CStartJan;
+        kernel = getX11Kernel(CalendarSigma.Signif, DecompositionMode.Multiplicative);
+        X11Results rslt = kernel.process(TsInput);
+
+        for (int i = 0; i < 238; ++i) {
+            //System.out.println(DataCochran.C_D10_ignif.getDomain().get(i) + " WinX13: " + DataCochran.C_D10_All_Signif.get(i) + "; Calculated JD+: " + rslt.getData("d-tables.d10", TsData.class).getDomain().get(i) +" " +rslt.getData("d-tables.d10", TsData.class).get(i));
+            assertEquals(DataCochran.C_D10_Signif_Mult.get(i), rslt.getData("d-tables.d10", TsData.class).get(i), 0.00001);
+        }
+    }
+
+    @Test
+    public void TestCalendarsigmaSelectMultStartJan() {
+        TsData TsInput;
+        X11Kernel kernel;
+        TsInput = DataCochran.CStartJan;
+        SigmavecOption[] sigmavec;
+
+        sigmavec = new SigmavecOption[12];
+        sigmavec[0] = SigmavecOption.Group1;
+        sigmavec[1] = SigmavecOption.Group1;
+        sigmavec[2] = SigmavecOption.Group2;
+        sigmavec[3] = SigmavecOption.Group2;
+        sigmavec[4] = SigmavecOption.Group2;
+        sigmavec[5] = SigmavecOption.Group2;
+        sigmavec[6] = SigmavecOption.Group2;
+        sigmavec[7] = SigmavecOption.Group2;
+        sigmavec[8] = SigmavecOption.Group2;
+        sigmavec[9] = SigmavecOption.Group2;
+        sigmavec[10] = SigmavecOption.Group2;
+        sigmavec[11] = SigmavecOption.Group1;
+        kernel = getX11Kernel(CalendarSigma.Select, sigmavec, DecompositionMode.Multiplicative);
+        X11Results rslt = kernel.process(TsInput);
+
+        for (int i = 0; i < 238; ++i) {
+
+            assertEquals(DataCochran.C_D10_Select_Mult.get(i), rslt.getData("d-tables.d10", TsData.class).get(i), 0.00001);
+        }
+    }
+
+    @Test
+    public void TestCalendarsigmaSelectMultStartApril() {
+        TsData TsInput;
+        X11Kernel kernel;
+        TsInput = DataCochran.CStartAprl;
+        SigmavecOption[] sigmavec;
+
+        sigmavec = new SigmavecOption[12];
+        sigmavec[0] = SigmavecOption.Group1;
+        sigmavec[1] = SigmavecOption.Group1;
+        sigmavec[2] = SigmavecOption.Group2;
+        sigmavec[3] = SigmavecOption.Group2;
+        sigmavec[4] = SigmavecOption.Group2;
+        sigmavec[5] = SigmavecOption.Group2;
+        sigmavec[6] = SigmavecOption.Group2;
+        sigmavec[7] = SigmavecOption.Group2;
+        sigmavec[8] = SigmavecOption.Group2;
+        sigmavec[9] = SigmavecOption.Group2;
+        sigmavec[10] = SigmavecOption.Group2;
+        sigmavec[11] = SigmavecOption.Group1;
+        kernel = getX11Kernel(CalendarSigma.Select, sigmavec, DecompositionMode.Multiplicative);
+        X11Results rslt = kernel.process(TsInput);
+
+        for (int i = 0; i < 238; ++i) {
+            System.out.println(DataCochran.C_D10_Select_Mult_StartApril.getDomain().get(i) + " WinX13: " + DataCochran.C_D10_Select_Mult_StartApril.get(i) + "; Calculated JD+: " + rslt.getData("d-tables.d10", TsData.class).getDomain().get(i) + " " + rslt.getData("d-tables.d10", TsData.class).get(i));
+
+            assertEquals(DataCochran.C_D10_Select_Mult_StartApril.get(i), rslt.getData("d-tables.d10", TsData.class).get(i), 0.00001);
+        }
+    }
+
+    @Test
+    public void TestCalendarsigmaDefaultAddStartJan() {
         TsData TsInput, TsOutD10Default, TsOutB4Default, TsOutB9Default, TsOutD9Default;
         X11Kernel kernel;
 
@@ -80,7 +250,7 @@ public class CalendarsigmaTest {
     }
 
     @Test
-    public void TestCalendarsigmaAll() {
+    public void TestCalendarsigmaAllAddStartJan() {
         TsData TsInput, TsOutB4All;
         X11Kernel kernel;
 
@@ -174,7 +344,7 @@ public class CalendarsigmaTest {
      * replacement in D9
      */
     @Test
-    public void TestCalendarsigmaSignif() {
+    public void TestCalendarsigmaSignifAddStartJan() {
 
         TsData TsInput;
         X11Kernel kernel;
@@ -232,12 +402,12 @@ public class CalendarsigmaTest {
      * Calendarsigme.none
      */
     @Test
-    public void TestCalendarsigmaSignifTrue() {
+    public void TestCalendarsigmaSignifTrueStartJan() {
         //ToDo CH: FindTestData which passes the Cochrantest for B4d or B9d and not for both
     }
 
     @Test
-    public void TestCalendarsigmaSelect() {
+    public void TestCalendarsigmaSelectAddStartJan() {
 
         TsData TsInput;
         X11Kernel kernel;
@@ -263,35 +433,29 @@ public class CalendarsigmaTest {
 
         System.out.println("Test Cochran Select: B3");
         for (int i = 0; i < 225; ++i) {
-         //   System.out.println(DataCochran.C_B3_Select.getDomain().get(i) + " WinX13: " + DataCochran.C_B3_Select.get(i) + "; Calculated JD+: " + rslt.getData("b-tables.b3", TsData.class).getDomain().get(i) +" " +rslt.getData("b-tables.b3", TsData.class).get(i));
+            //   System.out.println(DataCochran.C_B3_Select.getDomain().get(i) + " WinX13: " + DataCochran.C_B3_Select.get(i) + "; Calculated JD+: " + rslt.getData("b-tables.b3", TsData.class).getDomain().get(i) +" " +rslt.getData("b-tables.b3", TsData.class).get(i));
             assertEquals(DataCochran.C_B3_Select.get(i), rslt.getData("b-tables.b3", TsData.class).get(i), 0.00001);
         }
 
         System.out.println("Test Cochran Select: B4");
         for (int i = 0; i < 225; ++i) {
-            System.out.println(DataCochran.C_B4_Select.getDomain().get(i) + " WinX13: " + DataCochran.C_B4_Select.get(i) + "; Calculated JD+: " + rslt.getData("b-tables.b4", TsData.class).getDomain().get(i) +" " +rslt.getData("b-tables.b4", TsData.class).get(i));
-           assertEquals(DataCochran.C_B4_Select.get(i), rslt.getData("b-tables.b4", TsData.class).get(i), 0.00001);
+            System.out.println(DataCochran.C_B4_Select.getDomain().get(i) + " WinX13: " + DataCochran.C_B4_Select.get(i) + "; Calculated JD+: " + rslt.getData("b-tables.b4", TsData.class).getDomain().get(i) + " " + rslt.getData("b-tables.b4", TsData.class).get(i));
+            assertEquals(DataCochran.C_B4_Select.get(i), rslt.getData("b-tables.b4", TsData.class).get(i), 0.00001);
         }
-           System.out.println("Test Cochran Select: D9");
-           for (int i = 0; i < 237; ++i) {
-            System.out.println(DataCochran.C_D9_Select.getDomain().get(i) + " WinX13: " + DataCochran.C_D9_Select.get(i) + "; Calculated JD+: " + rslt.getData("d-tables.d9", TsData.class).getDomain().get(i) +" " +rslt.getData("d-tables.d9", TsData.class).get(i));
-           assertEquals(DataCochran.C_D9_Select.get(i), rslt.getData("d-tables.d9", TsData.class).get(i), 0.00001);
-        }  
+        System.out.println("Test Cochran Select: D9");
+        for (int i = 0; i < 237; ++i) {
+            System.out.println(DataCochran.C_D9_Select.getDomain().get(i) + " WinX13: " + DataCochran.C_D9_Select.get(i) + "; Calculated JD+: " + rslt.getData("d-tables.d9", TsData.class).getDomain().get(i) + " " + rslt.getData("d-tables.d9", TsData.class).get(i));
+            assertEquals(DataCochran.C_D9_Select.get(i), rslt.getData("d-tables.d9", TsData.class).get(i), 0.00001);
+        }
     }
 
-    private X11Kernel getX11Kernel(CalendarSigma calendarsigma, DecompositionMode mode ) {
+    private X11Kernel getX11Kernel(CalendarSigma calendarsigma, DecompositionMode mode) {
         SigmavecOption[] sigmavec;
         sigmavec = new SigmavecOption[1];
         return getX11Kernel(calendarsigma, sigmavec, mode);
     }
 
     private X11Kernel getX11Kernel(CalendarSigma calendarsigma, SigmavecOption[] sigmavec, DecompositionMode mode) {
-        X11Specification spec = new X11Specification();
-
-        spec.setCalendarSigma(calendarsigma);
-        if (calendarsigma.equals(CalendarSigma.Select)) {
-            spec.setSigmavec(sigmavec);
-        }
 
         SeasonalFilterOption[] filters = new SeasonalFilterOption[12];
 
@@ -307,6 +471,16 @@ public class CalendarsigmaTest {
         filters[9] = SeasonalFilterOption.S3X9;
         filters[10] = SeasonalFilterOption.S3X9;
         filters[11] = SeasonalFilterOption.S3X9;
+        return getX11Kernel(calendarsigma, sigmavec, mode, filters);
+    }
+
+    private X11Kernel getX11Kernel(CalendarSigma calendarsigma, SigmavecOption[] sigmavec, DecompositionMode mode, SeasonalFilterOption[] filters) {
+        X11Specification spec = new X11Specification();
+
+        spec.setCalendarSigma(calendarsigma);
+        if (calendarsigma.equals(CalendarSigma.Select)) {
+            spec.setSigmavec(sigmavec);
+        }
 
         spec.setSigma(1.5, 2.5);
         spec.setHendersonFilterLength(17);
