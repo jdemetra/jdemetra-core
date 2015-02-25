@@ -38,7 +38,14 @@ public class CochranDependentExtremeValuesCorrector extends DefaultX11Algorithm
      * @return The number of extreme values that have been detected (>= 0)
      */
     public int analyse(TsData s) {
-        if (s.getDomain().getFullYearsCount() < 6) {      // the hypothesis of identical month variances shouldn't be rejected for less than 6 years,
+
+        extremeValuesCorrector_.setContext(context);
+        extremeValuesCorrector_.setSigma(lsig_, usig_);
+        return extremeValuesCorrector_.analyse(s);
+    }
+
+    public void testCochran(TsData s){
+            if (s.getDomain().getFullYearsCount() < 6) {      // the hypothesis of identical month variances shouldn't be rejected for less than 6 years,
             //therefore the test isn't calculated
             extremeValuesCorrector_ = new DefaultExtremeValuesCorrector();
 
@@ -46,16 +53,13 @@ public class CochranDependentExtremeValuesCorrector extends DefaultX11Algorithm
             CochranTest cochranTest = new CochranTest(s, isMultiplicative());
             cochranTest.calcCochranTest();
             if (cochranTest.getTestResult()) {
-                extremeValuesCorrector_ = new DefaultExtremeValuesCorrector();
+                extremeValuesCorrector_ = new DefaultExtremeValuesCorrector();            
             } else {
                 extremeValuesCorrector_ = new PeriodSpecificExtremeValuesCorrector();
             }
         }
-        extremeValuesCorrector_.setContext(context);
-        extremeValuesCorrector_.setSigma(lsig_, usig_);
-        return extremeValuesCorrector_.analyse(s);
     }
-
+    
     @Override
     public TsData computeCorrections(TsData s) {
         return extremeValuesCorrector_.computeCorrections(s);

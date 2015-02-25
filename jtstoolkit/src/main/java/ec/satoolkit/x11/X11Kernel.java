@@ -150,6 +150,10 @@ public class X11Kernel implements ISeriesDecomposer {
         TsData b4d = toolkit.getContext().op(b3, b4anorm);
             
         ecorr = toolkit.getExtremeValuesCorrector();
+        if ( ecorr instanceof CochranDependentExtremeValuesCorrector)
+        { 
+            ((CochranDependentExtremeValuesCorrector) ecorr).testCochran(b4d);}
+        
         ecorr.analyse(b4d);
        
         TsData b4 = ecorr.computeCorrections(b3);       
@@ -173,6 +177,7 @@ public class X11Kernel implements ISeriesDecomposer {
                 b8, info);
         TsData b9c = toolkit.getSeasonalNormalizer().normalize(b9a, null);
         TsData b9d = toolkit.getContext().op(b8, b9c);
+  
         ecorr.analyse(b9d);
         TsData b9 = ecorr.computeCorrections(b8);
         TsData b9g = ecorr.applyCorrections(b8, b9);
@@ -206,6 +211,9 @@ public class X11Kernel implements ISeriesDecomposer {
          * "Adjustment Coefficients for trading day effects from the regression"
          * ); }
          */
+          if ( ecorr instanceof CochranDependentExtremeValuesCorrector)
+        { 
+            ((CochranDependentExtremeValuesCorrector) ecorr).testCochran(next);}
         ecorr.analyse(next);
         TsData b17 = ecorr.getObservationWeights();
         TsData b20 = ecorr.getCorrectionFactors();
@@ -340,7 +348,7 @@ public class X11Kernel implements ISeriesDecomposer {
         }
         else {
             TsData d9bis = toolkit.getContext().op(d1, d7);
-            d9 = toolkit.getUtilities().differences(d9bis, d8);
+            d9 = toolkit.getUtilities().differences(d9bis, d8); //
             TsData d10bis = toolkit.getSeasonalComputer().doFinalFiltering(
                     X11Step.D, d9bis, info);
             d10 = toolkit.getSeasonalNormalizer().normalize(d10bis, null);
