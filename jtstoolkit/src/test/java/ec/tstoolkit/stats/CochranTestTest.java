@@ -6,7 +6,7 @@
 
 package ec.tstoolkit.stats;
 
-import data.DataCochran;
+import data.DataCalendarSigmaX11;
 import ec.satoolkit.DecompositionMode;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class CochranTestTest {
       
         DecompositionMode mode = DecompositionMode.Additive;
 
-        cochranTestTestStartJan = new CochranTest(DataCochran.CStartJan, mode.isMultiplicative());
+        cochranTestTestStartJan = new CochranTest(DataCalendarSigmaX11.CStartJan, mode.isMultiplicative());
         cochranTestTestStartJan.calcCochranTest();
         assertEquals(true, cochranTestTestStartJan.getTestResult());
         System.out.println("Testvalue: " + cochranTestTestStartJan.getTestValue());
@@ -57,7 +57,7 @@ public class CochranTestTest {
            CochranTest cochranTestTestStartApril;
         DecompositionMode mode = DecompositionMode.Additive;
 
-        cochranTestTestStartApril = new CochranTest(DataCochran.CStartAprl, mode.isMultiplicative());
+        cochranTestTestStartApril = new CochranTest(DataCalendarSigmaX11.CStartAprl, mode.isMultiplicative());
         cochranTestTestStartApril.calcCochranTest();
         assertEquals(true, cochranTestTestStartApril.getTestResult());
         System.out.println("Testvalue: " + cochranTestTestStartApril.getTestValue());
