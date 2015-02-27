@@ -11,7 +11,7 @@
     <name>JDemetra+</name>
     <description>Seasonal Adjustment Toolkit</description>
     
-    <url>https://joinup.ec.europa.eu/software/sat/description</url>
+    <url>https://github.com/jdemetra/jdemetra-core</url>
     <licenses>
         <license>
             <name>European Union Public Licence (EUPL)</name>
