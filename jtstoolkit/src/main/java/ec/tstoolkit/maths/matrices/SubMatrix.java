@@ -83,6 +83,8 @@ public class SubMatrix implements Cloneable {
      * @param val
      */
     public void add(final double val) {
+        if (val == 0)
+            return;
         if (m_row_inc == 1) {
             for (int c = 0, ic = m_start; c < m_ncols; ++c, ic += m_col_inc) {
                 for (int r = 0, ir = ic; r < m_nrows; ++r, ++ir) {
@@ -119,6 +121,14 @@ public class SubMatrix implements Cloneable {
      * @param m
      */
     public void add(final SubMatrix m) {
+        // special handling of full matrices
+        if (isFull() && m.isFull()){
+            for (int i=0; i<m_data.length; ++i)
+                m_data[i]+=m.m_data[i];
+            return;
+        }
+            
+        
         // if (m_nrows != m.m_nrows || m_ncols != m.m_ncols)
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         DataBlockIterator iter, siter;
@@ -194,6 +204,12 @@ public class SubMatrix implements Cloneable {
      * @param src
      */
     public void copy(final SubMatrix src) {
+                // special handling of full matrices
+        if (isFull() && src.isFull()){
+            System.arraycopy(src.m_data, 0, m_data, 0, m_data.length);
+            return;
+        }
+
         // if (m_nrows != src.m_nrows || m_ncols != src.m_ncols)
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         DataBlockIterator iter, siter;
@@ -349,6 +365,8 @@ public class SubMatrix implements Cloneable {
      * @param Y
      */
     public void addAY(final double a, final SubMatrix Y) {
+        if (a == 0)
+            return;
         // if (m_nrows != Y.m_nrows || m_ncols != Y.m_ncols)
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         DataBlockIterator iter, siter;
@@ -667,6 +685,12 @@ public class SubMatrix implements Cloneable {
      * @param m
      */
     public void sub(final SubMatrix m) {
+        // special handling of full matrices
+        if (isFull() && m.isFull()){
+            for (int i=0; i<m_data.length; ++i)
+                m_data[i]-=m.m_data[i];
+            return;
+        }
         // if (m_nrows != m.m_nrows || m_ncols != m.m_ncols)
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         DataBlockIterator iter, siter;
@@ -812,6 +836,10 @@ public class SubMatrix implements Cloneable {
             }
         }
         return true;
+    }
+    
+    private boolean isFull(){
+        return m_nrows*m_ncols==m_data.length;
     }
 
     @Override
