@@ -155,7 +155,7 @@ public class TimeVaryingRegSsfTest {
         System.out.println(z);
     }
 
-    @Test
+    //@Test
     public void demoTDc() {
         DataBlock p = new DataBlock(new double[]{-.2, -.2, 1});
         TDvarMapping mapping = new TDvarMapping(s.getDomain(), 0);
@@ -220,7 +220,7 @@ public class TimeVaryingRegSsfTest {
     }
 
     @Test
-    public void testTD2Mapping() {
+    public void dTD2Mapping() {
         DataBlock p = new DataBlock(new double[]{-.2, -.2, 1, 1, 1, 1, 1, 1});
         TDvar2Mapping mapping = new TDvar2Mapping(s.getDomain());
         TimeVaryingRegSsf ssf = mapping.map(p);
