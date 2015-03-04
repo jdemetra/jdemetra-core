@@ -1,19 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tstoolkit.timeseries.simplets;
 
 import ec.tstoolkit.arima.ArimaModelBuilder;
@@ -42,7 +42,7 @@ import java.util.Random;
  * time decomposition of an year (frequency lower or equal to the monthly
  * frequency). Observations are represented by double values. Missing values are
  * allowed; they are represented by Double.NaN.
- * 
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
@@ -99,11 +99,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Returns the sum of a given value with a time series.
-     * 
-     * @param d
-     *            The double value
-     * @param ts
-     *            The time series
+     *
+     * @param d The double value
+     * @param ts The time series
      * @return A new time series is returned. T[i] = d + ts[i].
      * @see #plus(double)
      */
@@ -115,22 +113,19 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * Returns the sum of two time series. The time series must have the same
      * frequency, but not necessary the same time domain. The sum is computed on
      * the common time domain.
-     * 
-     * @param tsl
-     *            The left operand
-     * @param tsr
-     *            The right operand
+     *
+     * @param tsl The left operand
+     * @param tsr The right operand
      * @return A new time series, defined on the common time domain, is
-     *         returned. When the frequencies are not the same, null is
-     *         returned. When the frequencies are identical and the common time
-     *         domain is empty, a new empty (length=0) time series is returned.
+     * returned. When the frequencies are not the same, null is returned. When
+     * the frequencies are identical and the common time domain is empty, a new
+     * empty (length=0) time series is returned.
      * @see #plus(TsData)
      */
     public static TsData add(final TsData tsl, final TsData tsr) {
         if (tsr == null) {
             return tsl;
-        }
-        else if (tsl == null) {
+        } else if (tsl == null) {
             return tsr;
         }
 
@@ -164,11 +159,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Returns the division of a given value by a time series.
-     * 
-     * @param d
-     *            The double value
-     * @param ts
-     *            The time series
+     *
+     * @param d The double value
+     * @param ts The time series
      * @return A new time series is returned. T[i] = d /ts[i].
      * @see #times(double)
      */
@@ -180,15 +173,13 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * Returns the division of two time series. The time series must have the
      * same frequency, but not necessary the same time domain. The quotient is
      * computed on the common time domain.
-     * 
-     * @param tsl
-     *            The left operand
-     * @param tsr
-     *            The right operand
+     *
+     * @param tsl The left operand
+     * @param tsr The right operand
      * @return A new time series, defined on the common time domain, is
-     *         returned. When the frequencies are not the same, null is
-     *         returned. When the frequencies are identical and the common time
-     *         domain is empty, a new empty (length=0) time series is returned.
+     * returned. When the frequencies are not the same, null is returned. When
+     * the frequencies are identical and the common time domain is empty, a new
+     * empty (length=0) time series is returned.
      * @see #plus(TsData)
      */
     public static TsData divide(final TsData tsl, final TsData tsr) {
@@ -198,8 +189,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
          */
         if (tsr == null) {
             return tsl;
-        }
-        else if (tsl == null) {
+        } else if (tsl == null) {
             return tsr.inv();
         }
 
@@ -233,11 +223,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Returns the product of a given value by a time series.
-     * 
-     * @param d
-     *            The double value
-     * @param ts
-     *            The time series
+     *
+     * @param d The double value
+     * @param ts The time series
      * @return A new time series is returned. T[i] = d * ts[i].
      * @see #times(double)
      */
@@ -249,22 +237,19 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * Returns the product of two time series. The time series must have the
      * same frequency, but not necessary the same time domain. The product is
      * computed on the common time domain.
-     * 
-     * @param tsl
-     *            The left operand
-     * @param tsr
-     *            The right operand
+     *
+     * @param tsl The left operand
+     * @param tsr The right operand
      * @return A new time series, defined on the common time domain, is
-     *         returned. When the frequencies are not the same, null is
-     *         returned. When the frequencies are identical and the common time
-     *         domain is empty, a new empty (length=0) time series is returned.
+     * returned. When the frequencies are not the same, null is returned. When
+     * the frequencies are identical and the common time domain is empty, a new
+     * empty (length=0) time series is returned.
      * @see #plus(TsData)
      */
     public static TsData multiply(final TsData tsl, final TsData tsr) {
         if (tsr == null) {
             return tsl;
-        }
-        else if (tsl == null) {
+        } else if (tsl == null) {
             return tsr;
         }
 
@@ -298,11 +283,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Returns the difference between a given value and a time series.
-     * 
-     * @param d
-     *            The double value
-     * @param ts
-     *            The time series
+     *
+     * @param d The double value
+     * @param ts The time series
      * @return A new time series is returned. T[i] = d - ts[i].
      * @see #minus(double)
      */
@@ -314,22 +297,19 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * Returns the subtraction of two time series. The time series must have the
      * same frequency, but not necessary the same time domain. The difference is
      * computed on the common time domain.
-     * 
-     * @param tsl
-     *            The left operand
-     * @param tsr
-     *            The right operand
+     *
+     * @param tsl The left operand
+     * @param tsr The right operand
      * @return A new time series, defined on the common time domain, is
-     *         returned. When the frequencies are not the same, null is
-     *         returned. When the frequencies are identical and the common time
-     *         domain is empty, a new empty (length=0) time series is returned.
+     * returned. When the frequencies are not the same, null is returned. When
+     * the frequencies are identical and the common time domain is empty, a new
+     * empty (length=0) time series is returned.
      * @see #plus(TsData)
      */
     public static TsData subtract(final TsData tsl, final TsData tsr) {
         if (tsr == null) {
             return tsl;
-        }
-        else if (tsl == null) {
+        } else if (tsl == null) {
             return tsr.chs();
         }
 
@@ -366,12 +346,11 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Creates a random time series
-     * 
-     * @param freq
-     *            The frequency of the series.
+     *
+     * @param freq The frequency of the series.
      * @return A time series with a random length (<600 observations), a random
-     *         starting period (between 1970 and 1990) and random observations
-     *         is generated
+     * starting period (between 1970 and 1990) and random observations is
+     * generated
      */
     public static TsData random(TsFrequency freq) {
         int beg = RNG.nextInt(240);
@@ -384,19 +363,18 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         }
         return ts;
     }
-    
+
     /**
      * Creates a random time series
-     * 
-     * @param freq
-     *            The frequency of the series.
+     *
+     * @param freq The frequency of the series.
      * @param seed
      * @return A time series with a random length (<600 observations), a random
-     *         starting period (between 1970 and 1990) and random observations
-     *         is generated
+     * starting period (between 1970 and 1990) and random observations is
+     * generated
      */
     public static TsData random(TsFrequency freq, int seed) {
-        Random rnd=new Random(seed);
+        Random rnd = new Random(seed);
         int beg = rnd.nextInt(240);
         int count = rnd.nextInt(600);
         TsData ts = new TsData(freq, beg, count);
@@ -408,18 +386,19 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         return ts;
     }
 
-    public void randomAirline(){
-        SarimaModelBuilder sb=new SarimaModelBuilder();
+    public void randomAirline() {
+        SarimaModelBuilder sb = new SarimaModelBuilder();
         SarimaModel airline = sb.createAirlineModel(this.getFrequency().intValue(), -.6, -.8);
-        airline=sb.randomize(airline, .2);
-        m_vals.copyFrom(new ArimaModelBuilder().generate(airline, m_vals.getLength()),0);
+        airline = sb.randomize(airline, .2);
+        m_vals.copyFrom(new ArimaModelBuilder().generate(airline, m_vals.getLength()), 0);
     }
 
     /**
-     * Computes the average difference between to time series.
-     * It is defined as the root mean square of their differences.
+     * Computes the average difference between to time series. It is defined as
+     * the root mean square of their differences.
+     *
      * @param s The comparing time series
-     * @return 
+     * @return
      */
     public double distance(TsData s) {
         TsData del = this.minus(s);
@@ -432,9 +411,8 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     /**
      * Creates a new time series with the specified domain. All values are
      * Missing.
-     * 
-     * @param dom
-     *            The time domain of the series
+     *
+     * @param dom The time domain of the series
      */
     public TsData(final TsDomain dom) {
         m_start = dom.getStart();
@@ -448,13 +426,10 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Creates a new time series. All the data are missing
-     * 
-     * @param freq
-     *            Frequency of the time series
-     * @param beg
-     *            identifier of the starting period
-     * @param count
-     *            Length of the series
+     *
+     * @param freq Frequency of the time series
+     * @param beg identifier of the starting period
+     * @param count Length of the series
      */
     TsData(final TsFrequency freq, final int beg, final int count) {
         m_start = new TsPeriod(freq, beg);
@@ -463,19 +438,15 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Creates a new time series for a given array of observations.
-     * 
-     * @param freq
-     *            The frequency of the series
-     * @param firstyear
-     *            Year of the first period . .
-     * @param firstperiod
-     *            0-based Position of the first period in the first year.
-     * @param data
-     *            The given observations
-     * @param copydata
-     *            Indicates if the observations are copied or if the array is
-     *            taken as is in the internal state of the object. If copydata
-     *            is false, users should no longer use the given data array.
+     *
+     * @param freq The frequency of the series
+     * @param firstyear Year of the first period . .
+     * @param firstperiod 0-based Position of the first period in the first
+     * year.
+     * @param data The given observations
+     * @param copydata Indicates if the observations are copied or if the array
+     * is taken as is in the internal state of the object. If copydata is false,
+     * users should no longer use the given data array.
      */
     public TsData(final TsFrequency freq, final int firstyear,
             final int firstperiod, final double[] data, boolean copydata) {
@@ -485,16 +456,13 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Creates a new time series. All values are Missing.
-     * 
-     * @param freq
-     *            The frequency of the series
-     * @param firstyear
-     *            Year of the first period . .
-     * @param firstperiod
-     *            0-based Position of the first period in the first year.
-     * @param count
-     *            Number of periods. A positive integer. It is not checked that
-     *            all the periods are in the accepted range [1000, 3000].
+     *
+     * @param freq The frequency of the series
+     * @param firstyear Year of the first period . .
+     * @param firstperiod 0-based Position of the first period in the first
+     * year.
+     * @param count Number of periods. A positive integer. It is not checked
+     * that all the periods are in the accepted range [1000, 3000].
      */
     public TsData(final TsFrequency freq, final int firstyear,
             final int firstperiod, final int count) {
@@ -504,15 +472,12 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Creates a new time series for a given array of observations.
-     * 
-     * @param start
-     *            The starting period. The given object is copied.
-     * @param data
-     *            The given observations
-     * @param copydata
-     *            Indicates if the observations are copied or if the array is
-     *            taken as is in the internal state of the object. If copydata
-     *            is false, users should no longer use the given data array.
+     *
+     * @param start The starting period. The given object is copied.
+     * @param data The given observations
+     * @param copydata Indicates if the observations are copied or if the array
+     * is taken as is in the internal state of the object. If copydata is false,
+     * users should no longer use the given data array.
      */
     public TsData(final TsPeriod start, final double[] data, boolean copydata) {
         m_start = start.clone();
@@ -522,11 +487,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     /**
      * Creates a new time series starting from the specified period and with a
      * given length. All values are Missing.
-     * 
-     * @param start
-     *            The starting period. The given object is copied.
-     * @param count
-     *            The length of the series
+     *
+     * @param start The starting period. The given object is copied.
+     * @param count The length of the series
      */
     public TsData(final TsPeriod start, final int count) {
         m_start = start.clone();
@@ -534,8 +497,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     }
 
     /**
-     * Creates a new series from a starting period and a block of 
-     * data. The data are copied in a new internal buffer.
+     * Creates a new series from a starting period and a block of data. The data
+     * are copied in a new internal buffer.
+     *
      * @param start The starting period
      * @param vals The read only data
      */
@@ -545,8 +509,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     }
 
     /**
-     * Creates a new series from a starting period and a set of values. 
-     * The data are not copied (the values object is used as is.
+     * Creates a new series from a starting period and a set of values. The data
+     * are not copied (the values object is used as is.
+     *
      * @param start The starting period
      * @param vals The values
      */
@@ -568,9 +533,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     /**
      * Returns a new series containing the absolute values of the current
      * observations.
-     * 
+     *
      * @return A new time series (T) is returned. T[i] = |S[i]|, where S is the
-     *         current series.
+     * current series.
      */
     public TsData abs() {
         final Values vals = new Values(m_vals);
@@ -580,16 +545,12 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Makes a frequency change of this series.
-     * 
-     * @param newfreq
-     *            The new frequency. Must be la divisor of the present
-     *            frequency.
-     * @param conversion
-     *            Aggregation mode.
-     * @param complete
-     *            If true, the observation for a given period in the new series
-     *            is set to Missing if some data in the original series are
-     *            Missing.
+     *
+     * @param newfreq The new frequency. Must be la divisor of the present
+     * frequency.
+     * @param conversion Aggregation mode.
+     * @param complete If true, the observation for a given period in the new
+     * series is set to Missing if some data in the original series are Missing.
      * @return A new time series is returned.
      */
     public TsData changeFrequency(final TsFrequency newfreq,
@@ -606,17 +567,23 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         int z0 = 0;
         int beg = m_start.id();
 
-        // dï¿½but et fin
+        // start and end
         int nbeg = beg / nconv;
+        // nbeg is the first period in the new frequency
+        // z0 is the number of periods in the old frequency being dropped
         int n0 = nconv, n1 = nconv;
         if (beg % nconv != 0) {
             if (complete) {
+                // Attention! Different treatment if beg is negative 
+                // We always have that x = x/q + x%q
+                // but the integer division is rounded towards 0
                 if (beg > 0) {
                     ++nbeg;
+                    z0 = nconv - beg % nconv;
+                } else {
+                    z0 = - beg % nconv;
                 }
-                z0 = nconv - beg % nconv;
-            }
-            else {
+            } else {
                 if (beg < 0) {
                     --nbeg;
                 }
@@ -632,8 +599,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
                 if (end < 0) {
                     --nend;
                 }
-            }
-            else {
+            } else {
                 if (end > 0) {
                     ++nend;
                 }
@@ -648,8 +614,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
                 int nmax = nconv;
                 if (i == 0) {
                     nmax = n0;
-                }
-                else if (i == n - 1) {
+                } else if (i == n - 1) {
                     nmax = n1;
                 }
                 double d = 0;
@@ -698,9 +663,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     /**
      * Returns a new series containing the opposite values of the current
      * observations.
-     * 
+     *
      * @return A new time series (T) is returned. T[i] = -S[i], where S is the
-     *         current series.
+     * current series.
      */
     public TsData chs() {
         final Values vals = new Values(m_vals);
@@ -710,7 +675,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Erases the Missing values at the extremities of this series.
-     * 
+     *
      * @return A new series is returned.
      */
     public TsData cleanExtremities() {
@@ -749,9 +714,8 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     /**
      * Returns the differenced time series. The filter (1 - B^lag) is applied to
      * this series. y(t) = x(t) - x(t-lag).
-     * 
-     * @param lag
-     *            The lag of the differencing operator.
+     *
+     * @param lag The lag of the differencing operator.
      * @return A new time series is returned. May be empty, but not null.
      */
     public TsData delta(final int lag) {
@@ -776,11 +740,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     /**
      * Returns the differenced time series (at a given power). The filter (1 -
      * B^lag)**power is applied to this series.
-     * 
-     * @param lag
-     *            The lag of the differencing operator.
-     * @param power
-     *            The number of times the differencing operator is applied.
+     *
+     * @param lag The lag of the differencing operator.
+     * @param power The number of times the differencing operator is applied.
      * @return A new time series is returned. May be empty, but not null.
      */
     public TsData delta(final int lag, final int power) {
@@ -802,11 +764,10 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Returns the product of the series with a given value.
-     * 
-     * @param d
-     *            The multiplier
+     *
+     * @param d The multiplier
      * @return A new time series is returned. T[i] = S[i] * d, where S is the
-     *         current series.
+     * current series.
      * @see #multiply(double, TsData)
      */
     public TsData div(final double d) {
@@ -817,13 +778,12 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * Returns the division of two time series. The time series must have the
      * same frequency, but not necessary the same time domain. The division is
      * computed on the common time domain.
-     * 
-     * @param ts
-     *            The added time series
+     *
+     * @param ts The added time series
      * @return A new time series, defined on the common time domain, is
-     *         returned. When the frequencies are not the same, null is
-     *         returned. When the frequencies are identical and the common time
-     *         domain is empty, a new empty (length=0) time series is returned.
+     * returned. When the frequencies are not the same, null is returned. When
+     * the frequencies are identical and the common time domain is empty, a new
+     * empty (length=0) time series is returned.
      * @see #divide(TsData, TsData)
      */
     public TsData div(final TsData ts) {
@@ -833,15 +793,14 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     /**
      * Shortens/lengthens the times series, by removing/adding observations at
      * the beginning and/or at the end.
-     * 
-     * @param nfirst
-     *            Number of periods to drop at the beginning of the series. If
-     *            nfirst < 0, -nfirst periods are added (with Missing values).
-     * @param nlast
-     *            Number of periods to drop at the end of the series. If nlast <
-     *            0, -nlast periods are added (with Missing values).
-     * @return The returned time series may be empty, but the returned value is
-     *         never null.
+     *
+     * @param nfirst Number of periods to drop at the beginning of the series.
+     * If nfirst < 0, -nfirst periods are added (with Missing values). @param
+     * nlast Number of peri
+     * ods to drop at the end of the series. If nlast < 0, -nlast periods are
+     * added (with Missing values). @return The returned time series may be
+     * empty, but the returne
+     * d value is never null.
      * @see #extend(int, int)
      */
     public TsData drop(final int nfirst, final int nlast) {
@@ -849,29 +808,29 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         s.move(nfirst);
         return new TsData(s, m_vals.drop(nfirst, nlast));
     }
-    
-    public TsData fullYears(){
-        int pos=m_start.getPosition();
-        int beg= pos > 0 ? (this.m_start.getFrequency().intValue()-pos) : 0;
-            
+
+    public TsData fullYears() {
+        int pos = m_start.getPosition();
+        int beg = pos > 0 ? (this.m_start.getFrequency().intValue() - pos) : 0;
+
         return drop(beg, this.getEnd().getPosition());
     }
 
     /**
      * Returns a new series containing the exponentials of the current
      * observations.
-     * 
+     *
      * @return A new time series (T) is returned. T[i] = exp(S[i]), where S is
-     *         the current series. Missing observations can be generated when
-     *         the original values are too high
+     * the current series. Missing observations can be generated when the
+     * original values are too high
      */
     public TsData exp() {
         final Values vals = m_vals.clone();
         vals.exp();
         return new TsData(getStart(), vals);
     }
-    
-    public TsData round(int ndec){
+
+    public TsData round(int ndec) {
         final Values vals = m_vals.clone();
         vals.round(ndec);
         return new TsData(getStart(), vals);
@@ -880,16 +839,13 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     /**
      * Lengthens/shortens the times series, by adding/removing observations at
      * the beginning and/or at the end.
-     * 
-     * @param nbefore
-     *            Number of periods to add (with Missing values) at the
-     *            beginning of the series. If nbefore < 0, -nbefore periods are
-     *            removed .
-     * @param nafter
-     *            Number of periods to add (with Missing values) at the end of
-     *            the series. If nafter < 0, -nafter periods are removed.
-     * @return The returned time series may be empty, but the returned value is
-     *         never null.
+     *
+     * @param nbefore Number of periods to add (with Missing values) at the
+     * beginning of the series. If nbefore < 0, -nbefore periods are removed .
+     * @param nafter Number of per
+     * iods to add (with Missing values) at the end of the series. If nafter <
+     * 0, -nafter periods are removed. @return The returned time
+     * series may be empty, but the returned value is never null.
      * @see #extend(int, int)
      */
     public TsData extend(final int nbefore, final int nafter) {
@@ -897,24 +853,24 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         s.move((-nbefore));
         return new TsData(s, m_vals.extend(nbefore, nafter));
     }
-    
-    public TsData extendTo(final Day lastday){
-        TsPeriod s=new TsPeriod(m_start.getFrequency(), lastday);
-        if (! lastday.equals(s.lastday()) )
+
+    public TsData extendTo(final Day lastday) {
+        TsPeriod s = new TsPeriod(m_start.getFrequency(), lastday);
+        if (!lastday.equals(s.lastday())) {
             s.move(-1);
-        int n=s.minus(m_start)+1;
-        return new TsData(m_start, m_vals.extend(0, n-m_vals.getLength()));
+        }
+        int n = s.minus(m_start) + 1;
+        return new TsData(m_start, m_vals.extend(0, n - m_vals.getLength()));
     }
 
     /**
      * Extends the series to the specified domain. Missing values are added (or
      * some values are removed if necessary).
-     * 
-     * @param dom
-     *            The domain of the new series. Must have the same frequency
-     *            than the original series.
+     *
+     * @param dom The domain of the new series. Must have the same frequency
+     * than the original series.
      * @return A new (possibly empty) series is returned (or null if the domain
-     *         hasn't the right frequency.
+     * hasn't the right frequency.
      */
     public TsData fittoDomain(final TsDomain dom) {
         // if (dom == null)
@@ -932,32 +888,31 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Checks that a given observation is missing
-     * @param idx
-     *            0-based position of the series. Should be in the range [0,
-     *            getLength()[)
+     *
+     * @param idx 0-based position of the series. Should be in the range [0,
+     * getLength()[)
      * @return True if the idx-th observation is missing, false otherwise.
      */
-    public boolean isMissing(final int idx){
+    public boolean isMissing(final int idx) {
         return m_vals.isMissing(idx);
     }
-    
+
     /**
-     * Sets the idx-th observation to missing.
-     * Equivalent to set(idx, Double.NaN)
-     * @param idx 
-     *            0-based position of the series. Should be in the range [0,
-     *            getLength()[)
+     * Sets the idx-th observation to missing. Equivalent to set(idx,
+     * Double.NaN)
+     *
+     * @param idx 0-based position of the series. Should be in the range [0,
+     * getLength()[)
      */
-    public void setMissing(final int idx){
+    public void setMissing(final int idx) {
         m_vals.setMissing(idx);
     }
-    
+
     /**
      * Gets an observation of the series
-     * 
-     * @param idx
-     *            0-based position of the series. Should be in the range [0,
-     *            getLength()[)
+     *
+     * @param idx 0-based position of the series. Should be in the range [0,
+     * getLength()[)
      * @return The idx-th observation.
      */
     @Override
@@ -967,9 +922,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Gets the time domain of the series
-     * 
+     *
      * @return The domain of the series. Copy of the internal state. Can be
-     *         modified
+     * modified
      */
     @NewObject
     public TsDomain getDomain() {
@@ -979,9 +934,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     /**
      * Gets the first period after the end of the series. That period doesn't
      * belong to the time domain.
-     * 
+     *
      * @return The first period after the end of the series (=start + length).
-     *         New object that can be modified.
+     * New object that can be modified.
      */
     @NewObject
     public TsPeriod getEnd() {
@@ -990,7 +945,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Gets the frequency of the series.
-     * 
+     *
      * @return The frequency.
      */
     public TsFrequency getFrequency() {
@@ -1000,9 +955,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     /**
      * Gets the last period of the series. That period belongs to the time
      * domain.
-     * 
+     *
      * @return The last period of the series (=start + length-1) = end - 1). New
-     *         object that can be modified.
+     * object that can be modified.
      */
     @NewObject
     public TsPeriod getLastPeriod() {
@@ -1011,7 +966,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Gets the length of the series.
-     * 
+     *
      * @return The length of the series. Can be 0.
      */
     @Override
@@ -1022,7 +977,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     // TSObservations...
     /**
      * Number of actual (non missing) observations.
-     * 
+     *
      * @return The number of observations. Belongs to [0, getLength()]
      */
     public int getObsCount() {
@@ -1031,9 +986,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Gets the first period of the series
-     * 
+     *
      * @return The starting period of the series. Copy of the internal state.
-     *         Can be modified
+     * Can be modified
      */
     @NewObject
     public TsPeriod getStart() {
@@ -1043,7 +998,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     /**
      * Returns the values of this time series. Modifying the returned object
      * changes the current time series; this is the only way to modify it.
-     * 
+     *
      * @return The internal object is returned.
      */
     @Mutable
@@ -1053,15 +1008,13 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Returns an index calculated on this series.
-     * 
-     * @param refperiod
-     *            Period of reference.
-     * @param refvalue
-     *            Average value of the index on the reference period (usually
-     *            100).
+     *
+     * @param refperiod Period of reference.
+     * @param refvalue Average value of the index on the reference period
+     * (usually 100).
      * @return A new series is returned. The average of the new series on that
-     *         period equals the refvalue. null is returned if no period of this
-     *         series is inside the refperiod.
+     * period equals the refvalue. null is returned if no period of this series
+     * is inside the refperiod.
      */
     public TsData index(final TsPeriod refperiod, final double refvalue) {
         Day start = refperiod.firstday(), end = refperiod.lastday();
@@ -1100,10 +1053,10 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     /**
      * Returns a new series containing the inverse values of the current
      * observations.
-     * 
+     *
      * @return A new time series (T) is returned. T[i] = 1/S[i], where S is the
-     *         current series. Missing observations are generated when the
-     *         original values are 0.
+     * current series. Missing observations are generated when the original
+     * values are 0.
      */
     public TsData inv() {
         final Values vals = new Values(m_vals);
@@ -1112,7 +1065,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     }
 
     /**
-     * 
+     *
      * @return
      */
     public boolean isEmpty() {
@@ -1121,7 +1074,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Returns an iterator on the observations (non missing values)
-     * 
+     *
      * @return The iterator.
      */
     @Override
@@ -1131,10 +1084,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Returns this time series lagged by a given number of period.
-     * 
-     * @param nperiods
-     *            The number of periods. If nperiods is negative, the operation
-     *            correspond to lead.
+     *
+     * @param nperiods The number of periods. If nperiods is negative, the
+     * operation correspond to lead.
      * @return A new time series is returned.
      * @see #lead(int)
      */
@@ -1146,10 +1098,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Returns this time series led by a given number of period.
-     * 
-     * @param nperiods
-     *            The number of periods. If that number is negative, the
-     *            operation correspond to lag.
+     *
+     * @param nperiods The number of periods. If that number is negative, the
+     * operation correspond to lag.
      * @return A new time series is returned.
      * @see #lag(int)
      */
@@ -1161,10 +1112,10 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Returns a new series containing the logs of the current observations.
-     * 
+     *
      * @return A new time series (T) is returned. T[i] = log(S[i]), where S is
-     *         the current series. Missing observations are generated when the
-     *         original values are <=0.
+     * the current series. Missing observations are generated when the original
+     * values are <=0.
      */
     public TsData log() {
         final Values vals = new Values(m_vals);
@@ -1175,12 +1126,11 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     /**
      * Returns a new series containing the logs of the current observations in a
      * given base.
-     * 
-     * @param b
-     *            The base for the log. A strictly positive double.
+     *
+     * @param b The base for the log. A strictly positive double.
      * @return A new time series (T) is returned. T[i] = log b (S[i]), where S
-     *         is the current series and b is the base of the log. Missing
-     *         observations are generated when the original values are <=0.
+     * is the current series and b is the base of the log. Missing observations
+     * are generated when the original values are <=0.
      */
     public TsData log(final double b) {
         final Values vals = new Values(m_vals);
@@ -1189,11 +1139,12 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     }
 
     /**
-     * Returns a new series containing the square roots of the current observations.
-     * 
+     * Returns a new series containing the square roots of the current
+     * observations.
+     *
      * @return A new time series (T) is returned. T[i] = sqrt(S[i]), where S is
-     *         the current series. Missing observations are generated when the
-     *         original values are <0.
+     * the current series. Missing observations are generated when the original
+     * values are <0.
      */
     public TsData sqrt() {
         Values vals = new Values(m_vals);
@@ -1203,11 +1154,10 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Returns the difference of the series with a given value.
-     * 
-     * @param d
-     *            The subtracted value
+     *
+     * @param d The subtracted value
      * @return A new time series is returned. T[i] = S[i] - d, where S is the
-     *         current series.
+     * current series.
      * @see #subtract(double, TsData)
      */
     public TsData minus(final double d) {
@@ -1218,13 +1168,12 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * Returns the difference of two time series. The time series must have the
      * same frequency, but not necessary the same time domain. The difference is
      * computed on the common time domain.
-     * 
-     * @param ts
-     *            The added time series
+     *
+     * @param ts The added time series
      * @return A new time series, defined on the common time domain, is
-     *         returned. When the frequencies are not the same, null is
-     *         returned. When the frequencies are identical and the common time
-     *         domain is empty, a new empty (length=0) time series is returned.
+     * returned. When the frequencies are not the same, null is returned. When
+     * the frequencies are identical and the common time domain is empty, a new
+     * empty (length=0) time series is returned.
      * @see #subtract(TsData, TsData)
      */
     public TsData minus(final TsData ts) {
@@ -1233,17 +1182,14 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Returns a moving average of this time series.
-     * 
-     * @param weights
-     *            array of double.
-     * @param bcentred
-     *            true if the moving average is centred.
-     * @param bnormalized
-     *            if true, the sum of the weights is set to 1 (they are divided
-     *            by their sum, if it is not equal to 0).
+     *
+     * @param weights array of double.
+     * @param bcentred true if the moving average is centred.
+     * @param bnormalized if true, the sum of the weights is set to 1 (they are
+     * divided by their sum, if it is not equal to 0).
      * @return A new time series is returned. If the length of weight is lower
-     *         than 2, null is returned. If the moving average is centred and if
-     *         the number of weights is even, a null is also returned.
+     * than 2, null is returned. If the moving average is centred and if the
+     * number of weights is even, a null is also returned.
      */
     public TsData movingAverage(final double[] weights, final boolean bcentred,
             final boolean bnormalized) {
@@ -1271,8 +1217,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         if (bcentred) {
             int nw2 = (nw - 1) / 2;
             dout = dom.drop(nw - 1 - nw2, nw2);
-        }
-        else {
+        } else {
             dout = dom.drop(nw - 1, 0);
         }
 
@@ -1302,15 +1247,13 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * Returns a moving median of this time series. When the length of the
      * moving median is even, the smoothed value is the average of the two
      * central (sorted) values.
-     * 
-     * @param nperiods
-     *            Number of periods to take into account for the calculation of
-     *            the median.
-     * @param bcentred
-     *            true if the moving median is centred.
+     *
+     * @param nperiods Number of periods to take into account for the
+     * calculation of the median.
+     * @param bcentred true if the moving median is centred.
      * @return A new time series is returned. If the length of moving median is
-     *         lower than 2, null is returned. If the moving median is centred
-     *         and if is length is even, a null is also returned.
+     * lower than 2, null is returned. If the moving median is centred and if is
+     * length is even, a null is also returned.
      */
     public TsData movingMedian(final int nperiods, final boolean bcentred) {
         if (nperiods < 2 || (bcentred && nperiods % 2 == 0)) {
@@ -1321,8 +1264,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         TsDomain dom = getDomain();
         if (bcentred) {
             dout = dom.drop(nperiods - 1 - np2, np2);
-        }
-        else {
+        } else {
             dout = dom.drop(nperiods - 1, 0);
         }
 
@@ -1349,8 +1291,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
                 if (bPair) // moyenne des 2 valeurs centrales
                 {
                     rout.set(i, (tmp[np2] + tmp[np2 + 1]) / 2);
-                }
-                else {
+                } else {
                     rout.set(i, tmp[np2]);
                 }
             }
@@ -1361,9 +1302,8 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     /**
      * Returns the percentages of variation of this time series. y(t) = ( x(t) /
      * x(t-lag) - 1)* 100. *
-     * 
-     * @param lag
-     *            The lag of the differences.
+     *
+     * @param lag The lag of the differences.
      * @return A new time series is returned. May be empty, but not null.
      */
     public TsData pctVariation(final int lag) {
@@ -1387,11 +1327,10 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Returns the sum of the series with a given value.
-     * 
-     * @param d
-     *            The added value
+     *
+     * @param d The added value
      * @return A new time series is returned. T[i] = S[i] + d, where S is the
-     *         current series.
+     * current series.
      * @see #add(double,TsData)
      */
     public TsData plus(final double d) {
@@ -1402,13 +1341,12 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * Returns the sum of two time series. The time series must have the same
      * frequency, but not necessary the same time domain. The sum is computed on
      * the common time domain.
-     * 
-     * @param ts
-     *            The added time series
+     *
+     * @param ts The added time series
      * @return A new time series, defined on the common time domain, is
-     *         returned. When the frequencies are not the same, null is
-     *         returned. When the frequencies are identical and the common time
-     *         domain is empty, a new empty (length=0) time series is returned.
+     * returned. When the frequencies are not the same, null is returned. When
+     * the frequencies are identical and the common time domain is empty, a new
+     * empty (length=0) time series is returned.
      * @see #add(TsData, TsData)
      */
     public TsData plus(final TsData ts) {
@@ -1418,12 +1356,11 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     /**
      * Returns a new series containing the power of the current observations for
      * a given base.
-     * 
+     *
      * @param e
      * @return A new time series (T) is returned. T[i] = a ** (S[i]), where S is
-     *         the current series and b is the base of the log. Missing
-     *         observations can be generated when the original values are too
-     *         high
+     * the current series and b is the base of the log. Missing observations can
+     * be generated when the original values are too high
      */
     public TsData pow(final double e) {
         final Values vals = new Values(m_vals);
@@ -1433,11 +1370,10 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Selects a part in the current series.
-     * 
-     * @param ps
-     *            The period selector.
+     *
+     * @param ps The period selector.
      * @return The series corresponding to the selection. A new object is always
-     *         returned.
+     * returned.
      */
     public TsData select(final TsPeriodSelector ps) {
         if (ps == null) {
@@ -1454,12 +1390,10 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Sets an observation of the series
-     * 
-     * @param idx
-     *            0-based position of the series. Should be in the range [0,
-     *            getLength()[)
-     * @param value
-     *            The new observation (or Double.NaN for a missing value).
+     *
+     * @param idx 0-based position of the series. Should be in the range [0,
+     * getLength()[)
+     * @param value The new observation (or Double.NaN for a missing value).
      */
     public void set(final int idx, final double value) {
         m_vals.set(idx, value);
@@ -1467,11 +1401,10 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Returns the product of the series with a given value.
-     * 
-     * @param d
-     *            The multiplier
+     *
+     * @param d The multiplier
      * @return A new time series is returned. T[i] = S[i] * d, where S is the
-     *         current series.
+     * current series.
      * @see #multiply(double, TsData)
      */
     public TsData times(final double d) {
@@ -1482,13 +1415,12 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * Returns the product of two time series. The time series must have the
      * same frequency, but not necessary the same time domain. The product is
      * computed on the common time domain.
-     * 
-     * @param ts
-     *            The added time series
+     *
+     * @param ts The added time series
      * @return A new time series, defined on the common time domain, is
-     *         returned. When the frequencies are not the same, null is
-     *         returned. When the frequencies are identical and the common time
-     *         domain is empty, a new empty (length=0) time series is returned.
+     * returned. When the frequencies are not the same, null is returned. When
+     * the frequencies are identical and the common time domain is empty, a new
+     * empty (length=0) time series is returned.
      * @see #amultiply(TsData, TsData)
      */
     public TsData times(final TsData ts) {
@@ -1498,11 +1430,10 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     /**
      * Updates this series with the specified time series. The new series has as
      * domain the union of both domains.
-     * 
-     * @param ts
-     *            The updating series.
+     *
+     * @param ts The updating series.
      * @return The updated series. Null if the series don't have the same
-     *         frequency.
+     * frequency.
      */
     public TsData update(final TsData ts) {
         if (ts == null) {
@@ -1525,18 +1456,19 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         }
         return rslt;
     }
-    
-    public static TsData concatenate(TsData l, TsData r){
-        if (l == null)
+
+    public static TsData concatenate(TsData l, TsData r) {
+        if (l == null) {
             return r;
-        if (r == null)
+        }
+        if (r == null) {
             return l;
+        }
         return l.update(r);
     }
 
     /**
-     * Removes the mean of this time series
-     * ts=ts-m
+     * Removes the mean of this time series ts=ts-m
      */
     public void removeMean() {
         DescriptiveStatistics stats = new DescriptiveStatistics(m_vals);
@@ -1545,8 +1477,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     }
 
     /**
-     * Normalises this time series:
-     * ts=(ts-m)/stdev
+     * Normalises this time series: ts=(ts-m)/stdev
      */
     public void normalize() {
         DescriptiveStatistics stats = new DescriptiveStatistics(m_vals);
@@ -1557,27 +1488,32 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
             m_vals.div(e);
         }
     }
-    
-    /***
-     * Gets the data corresponding to a given period. The period should have the 
+
+    /**
+     * *
+     * Gets the data corresponding to a given period. The period should have the
      * same frequency of the time series, otherwise an exception will be thrown.
+     *
      * @param period The considered period.
-     * @return The corresponding data or Nan if the period doesn't belong to this time series
+     * @return The corresponding data or Nan if the period doesn't belong to
+     * this time series
      */
-    public double get(TsPeriod period){
-        int pos=period.minus(m_start);
-        return (pos<0 || pos >= m_vals.getLength()) ?  Double.NaN : m_vals.get(pos);
+    public double get(TsPeriod period) {
+        int pos = period.minus(m_start);
+        return (pos < 0 || pos >= m_vals.getLength()) ? Double.NaN : m_vals.get(pos);
     }
-    
-    /***
-     * Sets the data corresponding to a given period. The period should have the 
-     * same frequency of the time series and must belong to the domain of the series
-     * otherwise an exception will be thrown.
+
+    /**
+     * *
+     * Sets the data corresponding to a given period. The period should have the
+     * same frequency of the time series and must belong to the domain of the
+     * series otherwise an exception will be thrown.
+     *
      * @param period The considered period.
      * @param value The new observation.
      */
-    public void set(TsPeriod period, double value){
-        int pos=period.minus(m_start);
+    public void set(TsPeriod period, double value) {
+        int pos = period.minus(m_start);
         m_vals.set(pos, value);
     }
 
