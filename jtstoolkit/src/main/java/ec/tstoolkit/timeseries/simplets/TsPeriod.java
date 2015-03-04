@@ -181,7 +181,7 @@ public class TsPeriod implements Serializable, Cloneable, IPeriod,
      *            The frequency of the new object
      * @param p
      *            The period that is contained in the new object.
-     * @exception An exception is thrown when the frequencies are incompatible 
+     * @exception TsException An exception is thrown when the frequencies are incompatible 
      * (i.e. the new period can't contain the given period).
      */
     public TsPeriod(final TsFrequency frequency, final TsPeriod p) {
@@ -190,7 +190,11 @@ public class TsPeriod implements Serializable, Cloneable, IPeriod,
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
         m_freq = frequency;
-        m_id = p.m_id * freq / pfreq;
+        // Attention: integer division is 0-rounding
+        int q=p.m_id * freq;
+        m_id = q / pfreq;
+        if (q<0 && q%pfreq != 0)
+            --m_id;
     }
 
     @Override

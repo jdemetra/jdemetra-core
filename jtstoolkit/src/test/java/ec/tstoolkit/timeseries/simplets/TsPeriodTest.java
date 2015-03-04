@@ -111,4 +111,17 @@ public class TsPeriodTest {
         assertEquals(p.firstPeriod(TsFrequency.Monthly), new TsPeriod(TsFrequency.Monthly, p.firstday()));
         assertEquals(p.lastPeriod(TsFrequency.Monthly), new TsPeriod(TsFrequency.Monthly, p.lastday()));
     }
+    
+    @Test
+    public void testNewFreq(){
+        TsPeriod p=new TsPeriod(TsFrequency.Monthly, 1945, 0);
+        TsPeriod P=new TsPeriod(TsFrequency.Quarterly, p);
+        assertTrue(P.contains(p.firstday()));
+        p=new TsPeriod(TsFrequency.Monthly, 1945, 1);
+        P=new TsPeriod(TsFrequency.Quarterly, p);
+        assertTrue(P.contains(p.firstday()));
+        p=new TsPeriod(TsFrequency.Monthly, 1945, 2);
+        P=new TsPeriod(TsFrequency.Quarterly, p);
+        assertTrue(P.contains(p.firstday()));
+    }
 }
