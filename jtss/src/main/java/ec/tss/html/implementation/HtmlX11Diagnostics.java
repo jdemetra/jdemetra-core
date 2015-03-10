@@ -304,7 +304,7 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
             F2E_TITLE = "I/C Ratio for indicated span",
             F2F_TITLE = "Relative contribution of the components to the stationary portion of the variance in the original series",
             F2G_TITLE = "Autocorrelation of the irregular",
-            F2H_TITLE = "Heteroscedasticity";
+            F2H_TITLE = "Heteroskedasticity";
         
     private static final String[] F2A_HEADERS = new String[]{
         "Span", "O", "CI", "I", "C", "S", "P", "TD&H", "Mod.O", "Mod.CI", "Mod.I"
