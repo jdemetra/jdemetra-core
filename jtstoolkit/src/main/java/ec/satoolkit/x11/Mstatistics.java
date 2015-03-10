@@ -55,7 +55,7 @@ public final class Mstatistics implements IProcResults {
         InformationSet dtables = info.getSubSet(X11Kernel.D);
         InformationSet atables = info.getSubSet(X11Kernel.A);
         InformationSet etables = info.getSubSet(X11Kernel.E);
-        InformationSet btables=info.getSubSet(X11Kernel.B);
+        InformationSet ctables=info.getSubSet(X11Kernel.C);
         if (dtables == null) {
             return null;
         }
@@ -126,7 +126,7 @@ public final class Mstatistics implements IProcResults {
             mstats.calcEvolutions();
             mstats.calcM();
   // TODO: CH: Welches Table muss hier rein?         
-            mstats.calcCochran(btables.get(X11Kernel.B3, TsData.class),mode, mstats);
+            mstats.calcCochran(ctables.get(X11Kernel.C13, TsData.class),mode, mstats);
 
      
      
@@ -651,7 +651,8 @@ public final class Mstatistics implements IProcResults {
         mstats.criticalvalue = cochranTest.getCriticalValue();
         mstats.testvalue = cochranTest.getTestValue();
         mstats.cochranTestResult = cochranTest.getTestResult();
-   //  mstats.testvalue=inf. ; 
+  
+        //  mstats.testvalue=inf. ; 
         
     };
     public DecompositionMode getMode() {
