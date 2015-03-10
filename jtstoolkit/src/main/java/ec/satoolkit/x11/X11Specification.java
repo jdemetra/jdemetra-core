@@ -347,7 +347,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
         if (sigmavec_ != null) {
             String[] sigmavec = new String[sigmavec_.length];
             for (int i = 0; i < sigmavec.length; ++i) {
-                sigmavec[i] = filters_[i].name();
+                sigmavec[i] = sigmavec_[i].name();
             }
             info.add(SIGMAVEC, sigmavec);
         }
