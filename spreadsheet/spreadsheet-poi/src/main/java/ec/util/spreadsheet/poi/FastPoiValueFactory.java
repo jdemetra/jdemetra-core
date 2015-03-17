@@ -114,7 +114,7 @@ final class FastPoiValueFactory {
     private static Date getJavaDate(Calendar calendar, double date, boolean use1904windowing) {
         int wholeDays = (int) Math.floor(date);
         int millisecondsInDay = (int) ((date - wholeDays) * DateUtil.DAY_MILLISECONDS + 0.5);
-        DateUtil.setCalendar(calendar, wholeDays, millisecondsInDay, use1904windowing);
+        DateUtil.setCalendar(calendar, wholeDays, millisecondsInDay, use1904windowing, false);
         return calendar.getTime();
     }
 }
