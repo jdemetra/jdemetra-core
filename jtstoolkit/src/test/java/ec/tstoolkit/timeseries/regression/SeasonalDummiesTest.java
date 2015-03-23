@@ -22,6 +22,7 @@ import ec.tstoolkit.timeseries.simplets.TsDomain;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
@@ -40,7 +41,7 @@ public class SeasonalDummiesTest {
     public static void tearDownClass() throws Exception {
     }
 
-    //@Test
+    @Test
     public void demo() {
         SeasonalDummies ds=new SeasonalDummies(TsFrequency.Monthly);
         TsDomain domain =new TsDomain(TsFrequency.Monthly, 1980, 3, 120);
