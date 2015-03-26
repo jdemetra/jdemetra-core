@@ -19,12 +19,14 @@ public class CochranTest {
     
     public CochranTest(TsData tsData, Boolean isMulti){
         ts_=tsData;
+        isMulti_=isMulti;
+        
  //       mode_= mode; 
         
     };
     
     private final TsData ts_;
-    private final boolean isMulti_=false;
+    private  boolean isMulti_=false;
     private double[] s_;
     private double tw_;
     private double tt_;// critical vaule     
@@ -74,10 +76,10 @@ public class CochranTest {
         smax = -10.0;
         nmin = 100;
 
-        st = 1; //Additve 
+        st = 0; //Additve 
        if (isMulti_)
         {
-            st = 0;
+            st = 1;
         }
 
         for (int i = 0; i <= Ny - 1; i++) { //each period is taken into accoutn

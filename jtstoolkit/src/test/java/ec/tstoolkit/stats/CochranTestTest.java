@@ -22,7 +22,7 @@ public class CochranTestTest {
      CochranTest cochranTestTestStartJan;
         System.out.println("Cochran Test");
       
-        DecompositionMode mode = DecompositionMode.Additive;
+        DecompositionMode mode = DecompositionMode.Multiplicative;
 
         cochranTestTestStartJan = new CochranTest(DataCalendarSigmaX11.CStartJan, mode.isMultiplicative());
         cochranTestTestStartJan.calcCochranTest();
@@ -55,7 +55,8 @@ public class CochranTestTest {
     public void TestCochranTestStartAprl() {
         System.out.println("Cochran Test");
            CochranTest cochranTestTestStartApril;
-        DecompositionMode mode = DecompositionMode.Additive;
+        DecompositionMode mode = DecompositionMode.Multiplicative;
+        
 
         cochranTestTestStartApril = new CochranTest(DataCalendarSigmaX11.CStartAprl, mode.isMultiplicative());
         cochranTestTestStartApril.calcCochranTest();
