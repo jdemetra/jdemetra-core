@@ -22,6 +22,14 @@ public class SsfLocalLinearTrend implements ISsf {
         var_ = var;
         svar_ = svar;
     }
+    
+    public double getVariance(){
+        return var_;
+    }
+
+    public double getSlopeVariance(){
+        return svar_;
+    }
 
     @Override
     public void L(int pos, DataBlock k, SubMatrix lm) {

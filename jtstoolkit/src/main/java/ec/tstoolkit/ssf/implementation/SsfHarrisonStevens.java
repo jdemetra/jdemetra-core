@@ -41,6 +41,10 @@ public class SsfHarrisonStevens implements ISsf {
         Matrix D = Matrix.diagonal(var);
         V_ = SymmetricMatrix.quadraticFormT(D, C);
     }
+    
+    public double[] getVariances(){
+        return var_;
+    }
 
     @Override
     public void L(int pos, DataBlock k, SubMatrix lm) {

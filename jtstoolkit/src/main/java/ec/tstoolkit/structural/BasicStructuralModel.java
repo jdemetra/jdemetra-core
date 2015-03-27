@@ -384,9 +384,7 @@ public class BasicStructuralModel implements ISsf, Cloneable {
             ++i;
         }
         if (seasVar > 0) {
-            if (seasVar != 0) {
                 initQSeas(q.extract(i, i + freq - 1, i, i + freq - 1), seasVar);
-            }
         }
     }
 
