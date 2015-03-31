@@ -342,7 +342,7 @@ public class X11Kernel implements ISeriesDecomposer {
         if (ecorr instanceof PeriodSpecificExtremeValuesCorrector) {
             d9 = ecorr.computeCorrections(d8);
             TsData d9g = ecorr.applyCorrections(d8, d9);
-            TsData d10a = toolkit.getSeasonalComputer().doFinalFiltering(X11Step.B,
+            TsData d10a = toolkit.getSeasonalComputer().doFinalFiltering(X11Step.D,
                     d9g, info);
             d10 = toolkit.getSeasonalNormalizer().normalize(d10a, null);
         }
