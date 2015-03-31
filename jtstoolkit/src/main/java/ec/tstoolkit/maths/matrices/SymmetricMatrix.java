@@ -71,7 +71,7 @@ public final class SymmetricMatrix {
     public static void fromUpper(final Matrix m) {
         double[] data = m.data_;
         int n = m.nrows_;
-	// if (n != m.ncols_)
+        // if (n != m.ncols_)
         // throw new MatrixException(MatrixException.SquareOnly);
         for (int c = 0, id = 0; c < n; ++c, id += n + 1) {
             for (int r = c + 1, il = id, iu = id; r < n; ++r) {
@@ -110,7 +110,7 @@ public final class SymmetricMatrix {
      * @throws MatrixException
      */
     public static Matrix inverse(final Matrix s) throws MatrixException {
-	// if (s == null)
+        // if (s == null)
         // throw new ArgumentNullException("s");
         try {
             Matrix lower = s.clone();
@@ -196,7 +196,7 @@ public final class SymmetricMatrix {
     public static void lcholesky(final Matrix m) {
         double[] data = m.data_;
         int n = m.nrows_;
-	// if (n != m.ncols_)
+        // if (n != m.ncols_)
         // throw new MatrixException(MatrixException.SquareOnly);
 
         for (int i = 0, idiag = 0; i < n; ++i, idiag += n + 1) {
@@ -239,7 +239,7 @@ public final class SymmetricMatrix {
     public static void lcholesky(final Matrix m, double Zero) {
         double[] data = m.data_;
         int n = m.nrows_;
-	// if (n != m.ncols_)
+        // if (n != m.ncols_)
         // throw new MatrixException(MatrixException.SquareOnly);
 
         for (int i = 0, idiag = 0; i < n; ++i, idiag += n + 1) {
@@ -299,7 +299,7 @@ public final class SymmetricMatrix {
      * @throws MatrixException
      */
     public static Matrix LLt(final Matrix lower) throws MatrixException {
-	// if (lower == null)
+        // if (lower == null)
         // throw new ArgumentNullException("lower");
         int n = lower.getRowsCount();
         double[] pl = lower.data_;
@@ -328,7 +328,7 @@ public final class SymmetricMatrix {
          * if (s == null) throw new ArgumentNullException("s"); if (x == null)
          * throw new ArgumentNullException("x");
          */
-	// double n = s.RowsCount;
+        // double n = s.RowsCount;
         // if (x.Length != n)
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         double w = 0;
@@ -353,7 +353,7 @@ public final class SymmetricMatrix {
          * throw new ArgumentNullException("x");
          */
         double n = s.getRowsCount();
-	// if (x.Length != n)
+        // if (x.Length != n)
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         double w = 0;
         double[] data = s.data_;
@@ -404,7 +404,7 @@ public final class SymmetricMatrix {
          * if (s == null) throw new ArgumentNullException("s"); if (x == null)
          * throw new ArgumentNullException("x");
          */
-	// double n = s.RowsCount;
+        // double n = s.RowsCount;
         // if (x.Length != n)
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         double w = 0;
@@ -432,7 +432,7 @@ public final class SymmetricMatrix {
          * throw new ArgumentNullException("x");
          */
         int n = s.getRowsCount();
-	// if (x.RowsCount != n)
+        // if (x.RowsCount != n)
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         int nc = x.getColumnsCount();
         Matrix SX = new Matrix(n, nc);
@@ -483,7 +483,8 @@ public final class SymmetricMatrix {
     }
 
     /**
-     *
+     * Computes XSX'
+     *     
      * @param s
      * @param x
      * @return
@@ -491,13 +492,6 @@ public final class SymmetricMatrix {
      */
     public static Matrix quadraticFormT(final Matrix s, final Matrix x)
             throws MatrixException {
-        /*
-         * if (s == null) throw new ArgumentNullException("s"); if (x == null)
-         * throw new ArgumentNullException("x");
-         */
-	// int n = s.RowsCount;
-        // if (x.ColumnsCount != n)
-        // throw new MatrixException(MatrixException.IncompatibleDimensions);
         int nr = x.getRowsCount();
         Matrix XS = x.times(s);
         DataBlockIterator rows = XS.rows(), cols = x.rows();
@@ -517,7 +511,7 @@ public final class SymmetricMatrix {
     }
 
     /**
-     * XSX'
+     * Computes XSX'
      *
      * @param s
      * @param x
@@ -531,7 +525,7 @@ public final class SymmetricMatrix {
          * throw new ArgumentNullException("x");
          */
         int n = s.getRowsCount();
-	// if (x.ColumnsCount != n)
+        // if (x.ColumnsCount != n)
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         int nr = x.getRowsCount();
         Matrix XS = new Matrix(nr, n);
@@ -553,7 +547,7 @@ public final class SymmetricMatrix {
     }
 
     /**
-     *
+     * Computes X*S*X'
      * @param s
      * @param x
      * @param xsxt
@@ -741,11 +735,11 @@ public final class SymmetricMatrix {
      * @throws MatrixException
      */
     public static void ucholesky(final Matrix s) throws MatrixException {
-	// if (s == null)
+        // if (s == null)
         // throw new ArgumentNullException("s");
         double[] data = s.data_;
         int n = s.nrows_;
-	// if (n != s.ncols_)
+        // if (n != s.ncols_)
         // throw new MatrixException(MatrixException.SquareOnly);
 
         int ymax = data.length;
@@ -796,7 +790,7 @@ public final class SymmetricMatrix {
      * @return
      */
     public static Matrix UtU(final Matrix upper) {
-	// if (upper == null)
+        // if (upper == null)
         // throw new ArgumentNullException("upper");
         int n = upper.getRowsCount();
         double[] pu = upper.data_;
@@ -845,7 +839,7 @@ public final class SymmetricMatrix {
      * @throws MatrixException
      */
     public static Matrix XtX(final Matrix x) throws MatrixException {
-	// if (x == null)
+        // if (x == null)
         // throw new ArgumentNullException("x");
         int n = x.getColumnsCount();
         DataBlockIterator rows = x.columns(), cols = x.columns();
@@ -895,7 +889,7 @@ public final class SymmetricMatrix {
      * @throws MatrixException
      */
     public static Matrix XXt(final Matrix x) throws MatrixException {
-	// if (x == null)
+        // if (x == null)
         // throw new ArgumentNullException("x");
         int n = x.getRowsCount();
         DataBlockIterator rows = x.rows(), cols = x.rows();

@@ -85,6 +85,7 @@ public class PreprocessingSpecification implements Cloneable {
             spec.setOutliers(ospec);
         }
         spec.setUsingAutoModel(false);
+        spec.getArima().airline();
         return spec.build(context);
     }
 
@@ -124,6 +125,7 @@ public class PreprocessingSpecification implements Cloneable {
         }
 
         spec.setUsingAutoModel(false);
+        spec.getArima().airline();
         return spec.build(context);
 
     }
