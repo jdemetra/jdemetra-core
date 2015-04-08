@@ -23,7 +23,7 @@ import ec.tstoolkit.design.Development;
  */
 @Development(status = Development.Status.Alpha)
 final class ProbInvFinder {
-    private final static int maxiter = 1000;
+    private final static int maxiter = 100;
 
     /**
      * Given a continuous distribution cdist and a probability p, the method
@@ -101,13 +101,90 @@ final class ProbInvFinder {
 	    }
 	    fx = cdist.getProbability(x, ProbabilityType.Lower) - p;
 	}
-	if (niter < maxiter)
-	    return x;
-	else
-	    throw new DStatException(DStatException.ERR_ITER, cdist
-		    .getDescription());
+        return finish(p, x, xtol, cdist);
     }
 
+    private static double finish(final double p, final double x,
+            final double xtol, final IContinuousDistribution cdist) {
+        // search limits
+        double step = xtol;
+        double a = x;
+        double K = 4;
+        do {
+            double pcur = cdist.getProbability(a, ProbabilityType.Lower);
+            if (pcur == p) {
+                return a;
+            }
+            if (pcur < p) {
+                break;
+            }
+            a = remove(a, step, xtol, cdist);
+            step *= K;
+
+        } while (true);
+        step = xtol;
+        double b = x;
+        do {
+            double pcur = cdist.getProbability(b, ProbabilityType.Lower);
+            if (pcur == p) {
+                return b;
+            }
+            if (pcur > p) {
+                break;
+            }
+            b = add(b, step, xtol, cdist);
+            step *= K;
+
+        } while (true);
+
+        // simple bissection
+        double m;
+        do {
+            m = (b + a) / 2;
+            double pcur = cdist.getProbability(m, ProbabilityType.Lower);
+            if (pcur == p) {
+                return m;
+            } else if (pcur < p) {
+                a = m;
+            } else {
+                b = m;
+            }
+        } while (b - a > xtol);
+        return m;
+    }
+
+    private static double remove(final double x, final double d, final double xtol, final IContinuousDistribution cdist) {
+        double nx = x - d;
+        BoundaryType lb = cdist.hasLeftBound();
+        if (lb == BoundaryType.None) {
+            return nx;
+        }
+        double l = cdist.getLeftBound();
+        if (nx > l) {
+            return nx;
+        } else if (lb == BoundaryType.Asymptotical) {
+            return l + xtol;
+        } else {
+            return l;
+        }
+    }
+
+    private static double add(final double x, final double d, final double xtol, final IContinuousDistribution cdist) {
+        double nx = x + d;
+        BoundaryType rb = cdist.hasRightBound();
+        if (rb == BoundaryType.None) {
+            return nx;
+        }
+        double r = cdist.getRightBound();
+        if (nx < r) {
+            return nx;
+        } else if (rb == BoundaryType.Asymptotical) {
+            return r - xtol;
+        } else {
+            return r;
+        }
+    }
+    
     private ProbInvFinder() {
     }
 
