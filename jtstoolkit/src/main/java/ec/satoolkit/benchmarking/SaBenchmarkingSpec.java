@@ -52,11 +52,11 @@ public class SaBenchmarkingSpec implements IProcSpecification, Cloneable {
     }
 
     private boolean enabled_ = false, forecast_ = false;
-    private Target target_ = Target.Original;
+    private Target target_ = Target.CalendarAdjusted;
     private double rho_ = DEF_RHO;
     private double lambda_ = DEF_LAMBDA;
     private TsCholette.BiasCorrection bias_ = TsCholette.BiasCorrection.None;
-
+    
     public boolean isEnabled() {
         return enabled_;
     }
@@ -138,12 +138,14 @@ public class SaBenchmarkingSpec implements IProcSpecification, Cloneable {
         InformationSet info = new InformationSet();
         if (verbose || enabled_) {
             info.add(ENABLED, enabled_);
-        }
+        }else
+            return info;
         if (verbose || forecast_ )
             info.add(FORECAST, forecast_);
-        if (verbose || target_ != Target.Original) {
-            info.add(TARGET, target_.name());
-        }
+        //if (verbose || target_ != Target.Original) {
+        // The target is always specified
+        info.add(TARGET, target_.name());
+        //}
         if (verbose || lambda_ != DEF_LAMBDA) {
             info.add(LAMBDA, lambda_);
         }
@@ -163,6 +165,10 @@ public class SaBenchmarkingSpec implements IProcSpecification, Cloneable {
             if (enabled != null) {
                 enabled_ = enabled;
             }
+            // When the benchmarking is unused, we stop here. The other properties
+            // are the defaults
+            if (! enabled_)
+                return true;
             Boolean f = info.get(FORECAST, Boolean.class);
             if (f != null) {
                 forecast_ = f;
@@ -178,7 +184,12 @@ public class SaBenchmarkingSpec implements IProcSpecification, Cloneable {
             String target = info.get(TARGET, String.class);
             if (target != null) {
                 target_ = Target.valueOf(target);
+            }else{
+                // In old specs, the default was Original
+                // In new specs, the target will be specified
+                target_=Target.Original;
             }
+                
             String bias = info.get(BIAS, String.class);
             if (bias != null) {
                 bias_ = TsCholette.BiasCorrection.valueOf(bias);
