@@ -36,15 +36,15 @@ public class PeriodogramTest {
             double f = seasfreqs[i];
             int j = (int) (seasfreqs[i] / dstep);
             if (f-(j-1)*dstep<estep){
-                ++nf;
+                nf+=2;
                 xsum+=p[j-1];
             }
             if (f-j*dstep<estep){
-                ++nf;
+                nf+=2;
                 xsum+=p[j];
             }
             if ((j+1)*dstep-f<estep){
-                ++nf;
+                nf+=2;
                 xsum+=p[j+1];
             }
         }
@@ -53,7 +53,7 @@ public class PeriodogramTest {
             xsum += p[p.length - 1];
         }
         Chi2 chi2 = new Chi2();
-        chi2.setDegreesofFreedom(2 * nf);
+        chi2.setDegreesofFreedom(nf);
         return new StatisticalTest(chi2, xsum, TestType.Upper, true);
     }
 
