@@ -1,17 +1,17 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.tss.tsproviders;
@@ -57,8 +57,8 @@ public interface IDataSourceProvider extends ITsProvider {
      * @param dataSource
      * @return a list a DataSet; might be empty but never null.
      * @throws IllegalArgumentException if the DataSource doesn't belong to this
-     * provider.
-     * @throws IOException if an internal exception prevented data retrieval.
+     *                                  provider.
+     * @throws IOException              if an internal exception prevented data retrieval.
      */
     @Nonnull
     List<DataSet> children(@Nonnull DataSource dataSource) throws IllegalArgumentException, IOException;
@@ -69,8 +69,8 @@ public interface IDataSourceProvider extends ITsProvider {
      * @param parent
      * @return a list of DataSet; might be empty but never null.
      * @throws IllegalArgumentException if the DataSet doesn't belong to this
-     * provider.
-     * @throws IOException if an internal exception prevented data retrieval.
+     *                                  provider.
+     * @throws IOException              if an internal exception prevented data retrieval.
      */
     @Nonnull
     List<DataSet> children(@Nonnull DataSet parent) throws IllegalArgumentException, IOException;
@@ -82,7 +82,7 @@ public interface IDataSourceProvider extends ITsProvider {
      * @param dataSource
      * @return a non-null label.
      * @throws IllegalArgumentException if the DataSource doesn't belong to this
-     * provider.
+     *                                  provider.
      */
     @Nonnull
     String getDisplayName(@Nonnull DataSource dataSource) throws IllegalArgumentException;
@@ -95,7 +95,7 @@ public interface IDataSourceProvider extends ITsProvider {
      * @param dataSet
      * @return a non-null label.
      * @throws IllegalArgumentException if the DataSet doesn't belong to this
-     * provider.
+     *                                  provider.
      */
     @Nonnull
     String getDisplayName(@Nonnull DataSet dataSet) throws IllegalArgumentException;
@@ -108,7 +108,7 @@ public interface IDataSourceProvider extends ITsProvider {
      * @param dataSet
      * @return a non-null label.
      * @throws IllegalArgumentException if the DataSet doesn't belong to this
-     * provider.
+     *                                  provider.
      */
     @Nonnull
     String getDisplayNodeName(@Nonnull DataSet dataSet) throws IllegalArgumentException;
@@ -119,7 +119,7 @@ public interface IDataSourceProvider extends ITsProvider {
      * @param exception
      * @return a non-null label
      * @throws IllegalArgumentException if the exception doesn't belong to this
-     * provider.
+     *                                  provider.
      */
     @Nonnull
     String getDisplayName(@Nonnull IOException exception) throws IllegalArgumentException;
@@ -142,6 +142,8 @@ public interface IDataSourceProvider extends ITsProvider {
      */
     void removeDataSourceListener(@Nonnull IDataSourceListener listener);
 
+    void reload(DataSource dataSource);
+
     /**
      * Creates a moniker from a DataSource. The resulting moniker can be used to
      * retrieve data.
@@ -149,7 +151,7 @@ public interface IDataSourceProvider extends ITsProvider {
      * @param dataSource
      * @return a non-null moniker.
      * @throws IllegalArgumentException if the DataSource doesn't belong to this
-     * provider.
+     *                                  provider.
      */
     @Nonnull
     TsMoniker toMoniker(@Nonnull DataSource dataSource) throws IllegalArgumentException;
@@ -161,7 +163,7 @@ public interface IDataSourceProvider extends ITsProvider {
      * @param dataSet
      * @return a non-null moniker.
      * @throws IllegalArgumentException if the DataSet doesn't belong to this
-     * provider.
+     *                                  provider.
      */
     @Nonnull
     TsMoniker toMoniker(@Nonnull DataSet dataSet) throws IllegalArgumentException;
