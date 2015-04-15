@@ -216,8 +216,8 @@ public class SeasonalityTests {
             if (arPeaks == null || tPeaks == null) {
                 return null;
             }
-            int[] a = arPeaks != null ? arPeaks.seasonalPeaks(.90, .99) : null;
-            int[] t = tPeaks != null ? tPeaks.seasonalPeaks(.90, .99) : null;
+            int[] a = arPeaks.seasonalPeaks(.90, .99);
+            int[] t = tPeaks.seasonalPeaks(.90, .99);
             peaks = new SpectralPeaks[ifreq / 2];
             for (int i = 0; i < peaks.length; ++i) {
                 SpectralPeaks.AR ar = SpectralPeaks.AR.none;

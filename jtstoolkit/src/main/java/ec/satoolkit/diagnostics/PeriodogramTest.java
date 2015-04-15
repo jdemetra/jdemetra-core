@@ -21,7 +21,7 @@ import ec.tstoolkit.stats.StatisticalTest;
  */
 public class PeriodogramTest {
 
-    private static final double D = 1.01;
+    private static final double D = .01;
 
     public static StatisticalTest computeSum(IReadDataBlock data, int freq) {
         Periodogram periodogram = new Periodogram(data, false);
@@ -71,6 +71,17 @@ public class PeriodogramTest {
         }
     }
     
+    public static IReadDataBlock shrink(IReadDataBlock data, int freq){
+        int n=data.getLength();
+        if (n%freq == 0)
+            return data;
+        else{
+            int nc=n-n%freq;
+            double[] nd=new double[nc];
+            data.rextract(n-nc, nc).copyTo(nd, 0);
+            return new ReadDataBlock(nd);
+        }
+    }
     /**
      * Computes a F test
      * @param data
@@ -78,34 +89,16 @@ public class PeriodogramTest {
      * @return 
      */
     public static StatisticalTest computeSum2(IReadDataBlock data, int freq) {
-        data=expand(data, freq);
+        data=shrink(data, freq);
         Periodogram periodogram = new Periodogram(data, false);
-        double[] seasfreqs = new double[(freq - 1) / 2];
-        // seas freq in radians...
-        for (int i = 0; i < seasfreqs.length; ++i) {
-            seasfreqs[i] = (i + 1) * 2 * Math.PI / freq;
-        }
-
         double[] p = periodogram.getP();
         double xsum = 0;
-        double dstep = periodogram.getIntervalInRadians(), estep = dstep * D;
-        int nf = 0;
-        for (int i = 0; i < seasfreqs.length; ++i) {
-            double f = seasfreqs[i];
-            int j = (int) (seasfreqs[i] / dstep);
-            if (f-(j-1)*dstep<estep){
-                nf+=2;
-                xsum+=p[j-1];
-            }
-            if (f-j*dstep<estep){
-                nf+=2;
-                xsum+=p[j];
-            }
-            if ((j+1)*dstep-f<estep){
-                nf+=2;
-                xsum+=p[j+1];
-            }
-        }
+        int f2=(freq-1)/2;
+        int nf = 2*f2;
+        int m=data.getLength()/freq;
+        for (int i = 1; i <= f2; ++i) {
+                xsum+=p[i*m];
+         }
         if (freq % 2 == 0) {
             ++nf;
             xsum += p[p.length - 1];

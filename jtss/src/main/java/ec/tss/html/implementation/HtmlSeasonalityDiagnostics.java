@@ -203,16 +203,15 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
         }
 
         TsData ddata=tests.getDifferencing().differenced;
-        int ifreq = ddata.getFrequency().intValue();
+//        int ifreq = ddata.getFrequency().intValue();
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableCell("5. Periodogram ", 250));
         stream.write(getCellSummary(tests.getPeriodogramTest().getPValue(), 50));
         stream.close(HtmlTag.TABLEROW);
-        stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("5bis. Max Periodogram ", 250));
-        stream.write(getCellSummary(PeriodogramTest.computeMax(ddata, ifreq), 50));
-        stream.close(HtmlTag.TABLEROW);
-
+//        stream.open(HtmlTag.TABLEROW);
+//        stream.write(new HtmlTableCell("5bis. Max Periodogram ", 250));
+//        stream.write(getCellSummary(PeriodogramTest.computeMax(ddata, ifreq), 50));
+//        stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableCell("6. Seasonal dummies", 250));
         stream.write(getCellSummary(ftest.getFTest().getPValue(), 50));
