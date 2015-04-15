@@ -244,7 +244,7 @@ public class SeasonalityTests {
 
     public StatisticalTest getPeriodogramTest() {
         if (periodogram == null) {
-            periodogram = PeriodogramTest.computeSum(delta.differenced.getValues(), delta.differenced.getFrequency().intValue());
+            periodogram = PeriodogramTest.computeSum2(delta.differenced.getValues(), delta.differenced.getFrequency().intValue());
         }
         return periodogram;
     }
