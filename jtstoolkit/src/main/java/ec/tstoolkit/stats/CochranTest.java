@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package ec.tstoolkit.stats;
 
 import ec.satoolkit.DecompositionMode;
@@ -16,21 +15,23 @@ import ec.tstoolkit.timeseries.simplets.TsData;
  */
 @Development(status = Development.Status.Exploratory)
 public class CochranTest {
-    
-    public CochranTest(TsData tsData, Boolean isMulti){
-        ts_=tsData;
-        isMulti_=isMulti;
-        
+
+    public CochranTest(TsData tsData, Boolean isMulti) {
+        ts_ = tsData;
+        isMulti_ = isMulti;
+
  //       mode_= mode; 
-        
-    };
+    }
+    ;
     
     private final TsData ts_;
-    private  boolean isMulti_=false;
+    private boolean isMulti_ = false;
     private double[] s_;
     private double tw_;
     private double tt_;// critical vaule     
     boolean I1_ = true; //is the boolen that is true if the test has not be rejected
+    private int nminNumberOfYears=0;
+
 //  Critical values for monthly data  
     private static final double[] t = {0.5410, 0.3934, 0.3264, 0.2880, 0.2624, 0.2439, 0.2299, 0.2187,
         0.2098, 0.2020, 0.1980, 0.194, 0.186, 0.182, 0.178, 0.174, 0.17,
@@ -49,9 +50,6 @@ public class CochranTest {
     // of equal variances of the periodes has to be rejected and different standarddeviations should be used 
     //for outlier detection
 
-    
-    
-    
     public void calcCochranTest() {
         int Ib = ts_.getStart().getPosition(); //Ib index of the first period //X conatins the values from the beginning to the end of the, 
         int iPeriode; // is the concidered periode, with corresponds to the relevant periode
@@ -64,7 +62,7 @@ public class CochranTest {
         double smax; //max standarddeviation of periods
         double st;// theoretical mean 0 for multi and 1 for add
         // double tw;// teststatistik 
-        
+
         int Ny = ts_.getFrequency().intValue(); //Observations per year 12 or 4 
         s_ = new double[Ny]; //original PSP first remains empty 0,...,Ny-1 
         //  Double X[],t[40],t4[40],s[PSP];
@@ -72,38 +70,37 @@ public class CochranTest {
 //     This routine performs Cochran's test to determine if the months or quaters 
 //     are heteroskedastic.
 //
-        tw_ = 0; 
+        tw_ = 0;
         smax = -10.0;
         nmin = 100;
 
         st = 0; //Additve 
-       if (isMulti_)
-        {
+        if (isMulti_) {
             st = 1;
         }
 
         for (int i = 0; i <= Ny - 1; i++) { //each period is taken into accoutn
-        
+
             n1 = 1;
             j = i; //
-           iPeriode=i+Ib;
+            iPeriode = i + Ib;
             if (iPeriode > Ny - 1) {
                 iPeriode = iPeriode - Ny;
             }
             s_[iPeriode] = 0;//  s_[i] = 0;
             blngoto = true;
             do {
-                if (!Double.isNaN(ts_.getValues().get(j))){
-               // s_[i] = s_[i] + ((ts_.getValues().get(j) - st)*(ts_.getValues().get(j) - st));//
-                 s_[iPeriode] = s_[iPeriode] + ((ts_.getValues().get(j) - st)*(ts_.getValues().get(j) - st));//    
-                n1 = n1 + 1;//count values 
+                if (!Double.isNaN(ts_.getValues().get(j))) {
+                    // s_[i] = s_[i] + ((ts_.getValues().get(j) - st)*(ts_.getValues().get(j) - st));//
+                    s_[iPeriode] = s_[iPeriode] + ((ts_.getValues().get(j) - st) * (ts_.getValues().get(j) - st));//    
+                    n1 = n1 + 1;//count values 
                 }
                 j = j + Ny; // for each year
-                if (j > ts_.getValues().getLength() - 1) { 
+                if (j > ts_.getValues().getLength() - 1) {
                     if (nmin > n1 - 3) {
                         nmin = n1 - 3;//      
                     }
-                        //  s_[i] = s_[i] / (n1 - 1);
+                    //  s_[i] = s_[i] / (n1 - 1);
                     s_[iPeriode] = s_[iPeriode] / (n1 - 1);
                     if (smax < s_[iPeriode]) { //if (smax < s_[i])
                         smax = s_[iPeriode];          //   smax = s_[i];
@@ -118,7 +115,7 @@ public class CochranTest {
         if (!(tw_ == 0)) {
             tw_ = smax / tw_;
         }
-
+        nminNumberOfYears = nmin+1;
         if (nmin > 39) {
             nmin = 39;
         }
@@ -127,17 +124,18 @@ public class CochranTest {
         if (Ny == 4) {
             tt_ = t4[nmin];
         }
-      
+
         if (tw_ >= tt_) {
             I1_ = false;
         }
-      
-      
+
     }
-        
-       public double getCriticalValue() {
+
+    public double getCriticalValue() {
         return tt_;
-    };
+    }
+
+    ;
     
           public double getTestValue() {
         return tw_;
@@ -147,22 +145,27 @@ public class CochranTest {
      *
      * @return standardeviation for each period
      */
-    public double[] getS(){
-          return s_;
-                  }
-          
-          
-    /**
-     *
-     * @return true if CriticalValue > TestValue; Nullhypothesis for identical variances 
-     *                                            each period has to be rejected, and different variances should be used
-     */
-    public boolean getTestResult(){
-              return I1_;
-          }
+    public double[] getS() {
+        return s_;
     }
 
+    /**
+     *
+     * @return true if CriticalValue > TestValue; Nullhypothesis for identical
+     * variances each period has to be rejected, and different variances should
+     * be used
+     */
+    public boolean getTestResult() {
+        return I1_;
+    }
 
-    
-    
-
+    /**
+     *
+     * @return the minimumn numbers of yeas, this is the number of values per periode
+     * taken into account when the cochrantest ist calculated,
+     */
+    public int getMinNumberOfYearsPerPeriod() {
+        return nminNumberOfYears;
+    }
+;
+}

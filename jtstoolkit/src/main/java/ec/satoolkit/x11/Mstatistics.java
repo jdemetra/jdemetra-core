@@ -55,7 +55,7 @@ public final class Mstatistics implements IProcResults {
         InformationSet dtables = info.getSubSet(X11Kernel.D);
         InformationSet atables = info.getSubSet(X11Kernel.A);
         InformationSet etables = info.getSubSet(X11Kernel.E);
-        InformationSet ctables=info.getSubSet(X11Kernel.C);
+        InformationSet ctables = info.getSubSet(X11Kernel.C);
         if (dtables == null) {
             return null;
         }
@@ -125,12 +125,10 @@ public final class Mstatistics implements IProcResults {
             mstats.calcSNorm();
             mstats.calcEvolutions();
             mstats.calcM();
-  // TODO: CH: Welches Table muss hier rein?         
-            mstats.calcCochran(ctables.get(X11Kernel.C13, TsData.class),mode, mstats);
+            // TODO: CH: Welches Table muss hier rein?         
+            mstats.calcCochran(ctables.get(X11Kernel.C13, TsData.class), mode, mstats);
 
-     
-     
-                    return mstats;
+            return mstats;
         } catch (RuntimeException err) {
             return null;
         }
@@ -244,24 +242,28 @@ public final class Mstatistics implements IProcResults {
      *
      * @return CriticalValue for Cochran Test
      */
-    public double getCriticalValue(){
-    return criticalvalue;
+    public double getCriticalValue() {
+        return criticalvalue;
     }
 
     /**
      *
      * @return TestValue from Cochran Test
      */
-    public double getTestValue(){
+    public double getTestValue() {
         return testvalue;
-        
+
     }
-    
-    public boolean getCochranResult()
-    {
+
+    public boolean getCochranResult() {
         return cochranTestResult;
     }
-    
+
+    public int getminNumberOfYears() {
+        return minNumberOfYears;
+    }
+
+    ;
     /**
      * Gets the average duration of run of CI
      *
@@ -329,13 +331,13 @@ public final class Mstatistics implements IProcResults {
     private DecompositionMode mode;
     private static double[] wtFull = {10, 11, 10, 8, 11, 10, 18, 7, 7, 4, 4};
     private static double[] wtShort = {14, 15, 10, 8, 11, 10, 32};
-    
-    //Variables for Calendarsigma sigmavec  testvalue criticalvalue 
 
+    //Variables for Calendarsigma sigmavec  testvalue criticalvalue 
     private double testvalue = 0;
     private double criticalvalue = 0;
     private boolean cochranTestResult = true; //Default Value of Cochran Test
-        
+    private int minNumberOfYears = 0; //min Number of values per period
+
     private Mstatistics(DecompositionMode mode) {
         this.mode = mode;
         for (int i = 0; i < m.length; ++i) {
@@ -643,18 +645,20 @@ public final class Mstatistics implements IProcResults {
         varI /= varO;
     }
 
-    private void calcCochran(TsData ts, DecompositionMode mode, Mstatistics mstats){
+    private void calcCochran(TsData ts, DecompositionMode mode, Mstatistics mstats) {
       // die folgenden müssen mit dem chochran Test in Abhängigkeit von den Sigmavec Einstellungen berechnet werden
-   
+
         CochranTest cochranTest = new CochranTest(ts, mode.isMultiplicative());
         cochranTest.calcCochranTest();
         mstats.criticalvalue = cochranTest.getCriticalValue();
         mstats.testvalue = cochranTest.getTestValue();
         mstats.cochranTestResult = cochranTest.getTestResult();
-  
-        //  mstats.testvalue=inf. ; 
-        
-    };
+        mstats.minNumberOfYears = cochranTest.getMinNumberOfYearsPerPeriod();
+
+    
+    }
+
+    ;
     public DecompositionMode getMode() {
         return this.mode;
     }
@@ -780,7 +784,7 @@ public final class Mstatistics implements IProcResults {
     public List<ProcessingInformation> getProcessingInformation() {
         return Collections.EMPTY_LIST;
     }
-    
+
     public static final String M1 = "m1", M2 = "m2", M3 = "m3", M4 = "m4";
     public static final String M5 = "m5", M6 = "m6", M7 = "m7", M8 = "m8";
     public static final String M9 = "m9", M10 = "m10", M11 = "m11";

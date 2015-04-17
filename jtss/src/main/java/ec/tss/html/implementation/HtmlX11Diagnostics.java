@@ -273,23 +273,26 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
     
      private void writeF2H(HtmlStream stream) throws IOException {
          stream.write(HtmlTag.HEADER2, h2, F2H_TITLE);
-         stream.write("Cochran Result:");
+         stream.write("Cochran Test Result:");
          boolean testResultCochran = stats_.getCochranResult();
-         stream.write("Test Value(test statistic) : ");
+         stream.write(" The test statistic: ");
          stream.write(Math.round(stats_.getTestValue()* 10000d) / 10000d);
 
          if (testResultCochran) {
-             stream.write(" equals or less than the critical value: ");
+             stream.write(" is equal or less than the critical value: ");
          } else {
              stream.write(" is greater than the critical value: ");
          }
          stream.write(Math.round(stats_.getCriticalValue()* 10000d) / 10000d);
 
          if (testResultCochran) {
-             stream.write(" the Nullhypothesis for identical variances of each period can't to be rejected, and a commen variance could be used. ");
+             stream.write(" the null hypothesis for identical variances of each period with at least ");
+             stream.write(stats_.getminNumberOfYears());
+             stream.write(" observations, cannot be rejected at a 95% level of confidence and non period-specific variance should be used. ");
          } else {
-             stream.write(" Nullhypothesis for identical variances of each period has to be rejected, and different variances should be used. ");}
-
+             stream.write(" the null hypothesis for identical variances of each period with at least ");
+                stream.write(stats_.getminNumberOfYears());
+                stream.write(" observations, has to be rejected at a 95% level of confidence and periode-specific variances should be used. ");}
 
          stream.newLines(2);
     }
