@@ -474,7 +474,16 @@ public class TramoSpecification implements Cloneable, IRegArimaSpecification {
 
     public static enum Default {
 
-        TR0, TR1, TR2, TR3, TR4, TR5;
+        TR0, TR1, TR2, TR3, TR4, TR5, TRfull;
+        
+        public static Default valueOfIgnoreCase(String name){
+            if (name.equalsIgnoreCase("TRfull"))
+                return TRfull;
+            else{
+                String N=name.toUpperCase();
+                return valueOf(N);
+            }
+        }
     }
 
     /**
@@ -498,6 +507,8 @@ public class TramoSpecification implements Cloneable, IRegArimaSpecification {
                 return TR4.build();
             case TR5:
                 return TR5.build();
+            case TRfull:
+                return TRfull.build();
             default:
                 return null;
         }

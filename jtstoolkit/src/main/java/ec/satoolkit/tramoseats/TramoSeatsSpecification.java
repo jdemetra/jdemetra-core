@@ -356,6 +356,9 @@ public class TramoSeatsSpecification extends AbstractSaSpecification implements 
                 case TR5:
                     tramoSpec_ = TramoSpecification.TR5.clone();
                     return true;
+                case TRfull:
+                    tramoSpec_ = TramoSpecification.TRfull.clone();
+                    return true;
             }
         }
         return false;
