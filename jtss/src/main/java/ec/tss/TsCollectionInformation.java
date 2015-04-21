@@ -53,6 +53,11 @@ public final class TsCollectionInformation {
     public TsInformationType type;
 
     /**
+     * OUT
+     */
+    public String invalidDataCause;
+    
+    /**
      * 
      */
     public TsCollectionInformation()

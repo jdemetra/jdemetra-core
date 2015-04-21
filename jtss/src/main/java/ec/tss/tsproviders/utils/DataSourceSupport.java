@@ -21,6 +21,7 @@ import com.google.common.base.Throwables;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.UncheckedExecutionException;
+import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
 import ec.tss.TsMoniker;
 import ec.tss.tsproviders.DataSet;
@@ -294,6 +295,21 @@ public class DataSourceSupport {
             info.data = cleanExtremities && hasMissingValuesAtExtremities(tmp) ? tmp.cleanExtremities() : tmp;
             info.invalidDataCause = null;
         }
+        return info;
+    }
+
+    @Nonnull
+    public TsInformation fillSeries(@Nonnull TsInformation info, @Nonnull Exception exception) {
+        eventSupport.logger.error("While getting series", exception);
+        info.data = null;
+        info.invalidDataCause = exception.getMessage();
+        return info;
+    }
+
+    @Nonnull
+    public TsCollectionInformation fillCollection(@Nonnull TsCollectionInformation info, @Nonnull Exception exception) {
+        eventSupport.logger.error("While getting collection", exception);
+        info.invalidDataCause = exception.getMessage();
         return info;
     }
 
