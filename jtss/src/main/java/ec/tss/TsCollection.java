@@ -43,6 +43,7 @@ public final class TsCollection implements ITsIdentified, IDocumented,
     private final List<Ts> m_ts = new ArrayList<>();
     private volatile TsInformationType m_info;
     private volatile Set<TsMoniker> m_set;
+    private String m_invalidDataCause;
 
     TsCollection(String name) {
         m_name = Strings.nullToEmpty(name);
@@ -77,6 +78,14 @@ public final class TsCollection implements ITsIdentified, IDocumented,
         return m_name;
     }
 
+    public String getInvalidDataCause(){
+        return m_invalidDataCause;
+    }
+
+    public void setInvalidDataCause(String message) {
+        m_invalidDataCause = message;
+    }
+    
     /**
      *
      * @param ts
@@ -723,6 +732,7 @@ public final class TsCollection implements ITsIdentified, IDocumented,
                 updated = Collections.emptyList();
             }
             m_info = m_info.union(info.type);
+            m_invalidDataCause = info.invalidDataCause;
             return updated;
         }
     }

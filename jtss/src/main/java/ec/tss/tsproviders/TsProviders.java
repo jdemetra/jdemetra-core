@@ -244,7 +244,7 @@ public final class TsProviders {
         }
         String name = provider.getDisplayName(dataSource);
         TsMoniker moniker = provider.toMoniker(dataSource);
-        return Optional.fromNullable(TsFactory.instance.createTsCollection(name, moniker, type));
+        return Optional.of(TsFactory.instance.createTsCollection(name, moniker, type));
     }
 
     @Nonnull
@@ -257,15 +257,12 @@ public final class TsProviders {
         TsMoniker moniker = provider.toMoniker(dataSet);
         switch (dataSet.getKind()) {
             case COLLECTION:
-                return Optional.fromNullable(TsFactory.instance.createTsCollection(name, moniker, type));
+                return Optional.of(TsFactory.instance.createTsCollection(name, moniker, type));
             case DUMMY:
                 return Optional.of(TsFactory.instance.createTsCollection(name));
             case SERIES:
                 TsCollection result = TsFactory.instance.createTsCollection();
-                Ts ts = TsFactory.instance.createTs(name, moniker, type);
-                if (ts != null) {
-                    result.quietAdd(ts);
-                }
+                result.quietAdd(TsFactory.instance.createTs(name, moniker, type));
                 return Optional.of(result);
         }
         throw new RuntimeException("Not implemented");
@@ -282,7 +279,7 @@ public final class TsProviders {
         switch (dataSet.getKind()) {
             case SERIES:
                 Ts ts = TsFactory.instance.createTs(name, moniker, type);
-                return Optional.fromNullable(ts);
+                return Optional.of(ts);
         }
         throw new RuntimeException("Not implemented");
     }

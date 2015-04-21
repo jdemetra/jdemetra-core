@@ -19,8 +19,6 @@ package ec.tss.tsproviders.utils;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.util.concurrent.AbstractExecutionThreadService;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import ec.tss.TsAsyncMode;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsFactory;
@@ -32,9 +30,6 @@ import ec.tstoolkit.MetaData;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.LockSupport;
 import javax.annotation.Nonnull;
@@ -218,7 +213,7 @@ public abstract class AbstractDataSourceProvider<DATA> implements IDataSourcePro
                     fillCollection(info, dataSource);
                     return true;
                 } catch (Exception ex) {
-                    logger.error("While getting source", ex);
+                    support.fillCollection(info, ex);
                     return false;
                 }
             }
@@ -231,7 +226,7 @@ public abstract class AbstractDataSourceProvider<DATA> implements IDataSourcePro
                     fillCollection(info, dataSet);
                     return true;
                 } catch (Exception ex) {
-                    logger.error("While getting collection", ex);
+                    support.fillCollection(info, ex);
                     return false;
                 }
             }
@@ -249,7 +244,7 @@ public abstract class AbstractDataSourceProvider<DATA> implements IDataSourcePro
                     fillSeries(info, dataSet);
                     return true;
                 } catch (Exception ex) {
-                    logger.error("While getting series", ex);
+                    support.fillSeries(info, ex);
                     return false;
                 }
             }
@@ -285,43 +280,42 @@ public abstract class AbstractDataSourceProvider<DATA> implements IDataSourcePro
         return result;
     }
 
-    protected class RequestsHandler extends AbstractExecutionThreadService {
-
-        @Override
-        protected Executor executor() {
-            return Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setDaemon(true).setPriority(Thread.MIN_PRIORITY).build());
-        }
-
-        @Override
-        protected void run() throws Exception {
-            while (isRunning()) {
-                // step 1. process tsCollection
-                TsCollectionInformation crequest = asyncRequests.nextTsCollection();
-                if (crequest != null && TsFactory.instance.isTsCollectionAlive(crequest.moniker)) {
-                    if (process(crequest)) {
-                        TsFactory.instance.update(crequest);
-                    }
-                }
-                // step 2. process ts
-                TsInformation srequest = asyncRequests.nextTs();
-                if (srequest != null && TsFactory.instance.isTsAlive(srequest.moniker)) {
-                    if (process(srequest)) {
-                        TsFactory.instance.update(srequest);
-                    }
-                }
-                // step 3. sleep if queues are empty
-                if (srequest == null && crequest == null) {
-                    try {
-                        TimeUnit.SECONDS.sleep(3);
-                    } catch (InterruptedException ex) {
-                        Thread.currentThread().interrupt();
-                        // continue
-                    }
-                }
-            }
-        }
-    }
-
+//    protected class RequestsHandler extends AbstractExecutionThreadService {
+//
+//        @Override
+//        protected Executor executor() {
+//            return Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setDaemon(true).setPriority(Thread.MIN_PRIORITY).build());
+//        }
+//
+//        @Override
+//        protected void run() throws Exception {
+//            while (isRunning()) {
+//                // step 1. process tsCollection
+//                TsCollectionInformation crequest = asyncRequests.nextTsCollection();
+//                if (crequest != null && TsFactory.instance.isTsCollectionAlive(crequest.moniker)) {
+//                    if (process(crequest)) {
+//                        TsFactory.instance.update(crequest);
+//                    }
+//                }
+//                // step 2. process ts
+//                TsInformation srequest = asyncRequests.nextTs();
+//                if (srequest != null && TsFactory.instance.isTsAlive(srequest.moniker)) {
+//                    if (process(srequest)) {
+//                        TsFactory.instance.update(srequest);
+//                    }
+//                }
+//                // step 3. sleep if queues are empty
+//                if (srequest == null && crequest == null) {
+//                    try {
+//                        TimeUnit.SECONDS.sleep(3);
+//                    } catch (InterruptedException ex) {
+//                        Thread.currentThread().interrupt();
+//                        // continue
+//                    }
+//                }
+//            }
+//        }
+//    }
     protected class RequestsHandler2 implements Runnable {
 
         final Thread requestsThread;
@@ -338,16 +332,14 @@ public abstract class AbstractDataSourceProvider<DATA> implements IDataSourcePro
                 // step 1. process tsCollection
                 TsCollectionInformation crequest = asyncRequests.nextTsCollection();
                 if (crequest != null && TsFactory.instance.isTsCollectionAlive(crequest.moniker)) {
-                    if (process(crequest)) {
-                        TsFactory.instance.update(crequest);
-                    }
+                    process(crequest);
+                    TsFactory.instance.update(crequest);
                 }
                 // step 2. process ts
                 TsInformation srequest = asyncRequests.nextTs();
                 if (srequest != null && TsFactory.instance.isTsAlive(srequest.moniker)) {
-                    if (process(srequest)) {
-                        TsFactory.instance.update(srequest);
-                    }
+                    process(srequest);
+                    TsFactory.instance.update(srequest);
                 }
                 // step 3. sleep if queues are empty
                 if (srequest == null && crequest == null) {
@@ -368,11 +360,11 @@ public abstract class AbstractDataSourceProvider<DATA> implements IDataSourcePro
         }
 
         void unpark() {
-            LockSupport.unpark(requestsThread); //To change body of generated methods, choose Tools | Templates.
+            LockSupport.unpark(requestsThread);
         }
 
         void park() {
-            LockSupport.park(requestsThread); //To change body of generated methods, choose Tools | Templates.
+            LockSupport.park(requestsThread);
         }
     }
 }
