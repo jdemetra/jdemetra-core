@@ -39,7 +39,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
  * 2. x17=xtr.getObservationWeights();
  * 3. x20=xtr.getCorrectionsFactors();
  *
- * @author Frank Osaer, Jean Palate
+ * @author Frank Osaer, Jean Palate, Christiane Hofer
  */
 @Development(status = Development.Status.Release)
 public interface IExtremeValuesCorrector extends IX11Algorithm {
@@ -87,4 +87,14 @@ public interface IExtremeValuesCorrector extends IX11Algorithm {
      */
     @NewObject
     TsData getCorrectionFactors();
+    
+        /**
+     * Sets the limits for the detection of extreme values.
+     *
+     * @param lsig The low sigma value
+     * @param usig The high sigma value
+     * @throws An exception is thrown when the limits are invalid (usig <=
+     * lsig or lsig <= 0.5).
+     */
+    public void setSigma(double lsig, double usig);
 }
