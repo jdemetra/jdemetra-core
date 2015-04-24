@@ -18,6 +18,7 @@
 package ec.tstoolkit.algorithm;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,5 +42,9 @@ public abstract class AbstractProcResults implements IProcResults{
         return null;
     }
     
+    @Override
+    public List<ProcessingInformation> getProcessingInformation() {
+        return Collections.EMPTY_LIST;
+    }
     
 }
