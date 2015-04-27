@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or â€“ as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.satoolkit.x11;
 
 import ec.satoolkit.DecompositionMode;
@@ -35,30 +34,38 @@ import java.util.Objects;
 public class X11Specification implements IProcSpecification, Cloneable {
 
     public static final double DEF_LSIGMA = 1.5, DEF_USIGMA = 2.5;
-    public static final int DEF_FCASTS=-1;
+    public static final int DEF_FCASTS = -1;
 
     public static final String MODE = "mode",
             LSIGMA = "lsigma",
             USIGMA = "usigma",
             TRENDMA = "trendma",
             SEASONALMA = "seasonalma",
-            FCASTS = "fcasts";
+            FCASTS = "fcasts",
+            CALENDARSIGMA = "calendarsigma",
+            SIGMAVEC="sigmavec";
 
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
-       dic.put(InformationSet.item(prefix, MODE), String.class);
-       dic.put(InformationSet.item(prefix, LSIGMA), Double.class);
-       dic.put(InformationSet.item(prefix, USIGMA), Double.class);
-       dic.put(InformationSet.item(prefix, TRENDMA), Integer.class);
-       dic.put(InformationSet.item(prefix, SEASONALMA), String[].class);
-       dic.put(InformationSet.item(prefix, FCASTS), Integer.class);
-     }
-    
+        dic.put(InformationSet.item(prefix, MODE), String.class);
+        dic.put(InformationSet.item(prefix, LSIGMA), Double.class);
+        dic.put(InformationSet.item(prefix, USIGMA), Double.class);
+        dic.put(InformationSet.item(prefix, TRENDMA), Integer.class);
+        dic.put(InformationSet.item(prefix, SEASONALMA), String[].class);
+        dic.put(InformationSet.item(prefix, FCASTS), Integer.class);
+        dic.put(InformationSet.item(prefix, CALENDARSIGMA), String.class);
+      //  dic.put(InformationSet.item(prefix, MODE), String.class);
+        dic.put(InformationSet.item(prefix, SIGMAVEC), String[].class);
+        
+    }
+
     private DecompositionMode mode_ = DecompositionMode.Undefined;
     private boolean seasonal_ = true;
     private SeasonalFilterOption[] filters_;
     private double lsigma_ = DEF_LSIGMA, usigma_ = DEF_USIGMA;
     private int henderson_ = 0;
     private int fcasts_ = DEF_FCASTS;
+    private CalendarSigma calendarsigma_ = CalendarSigma.None;
+    private SigmavecOption[] sigmavec_; 
 
     /**
      * Number of forecasts used in X11. By default, 0. When pre-processing is
@@ -81,6 +88,20 @@ public class X11Specification implements IProcSpecification, Cloneable {
         return henderson_;
     }
 
+    /**
+     * Option of Calendarsigma[X12], specifies the calculation of the standard
+     * error calculation used for outlier detection in the X11 part
+     *
+     * @return
+     */
+    public CalendarSigma getCalendarSigma() {
+        return calendarsigma_;
+    }
+    
+    public SigmavecOption[] getSigmavec(){
+        return sigmavec_ ;
+    }
+    
     public double getLowerSigma() {
         return lsigma_;
     }
@@ -113,11 +134,25 @@ public class X11Specification implements IProcSpecification, Cloneable {
         if (!seasonal_ || mode_ != DecompositionMode.Multiplicative) {
             return false;
         }
-        if (fcasts_ != DEF_FCASTS)
+
+        if (calendarsigma_ != CalendarSigma.None) {
             return false;
+        }
+        
+        if (fcasts_ != DEF_FCASTS) {
+            return false;
+        }
         if (filters_ != null) {
             for (int i = 0; i < filters_.length; ++i) {
                 if (filters_[i] != SeasonalFilterOption.Msr) {
+                    return false;
+                }
+            }
+        }
+        
+        if (sigmavec_ != null) {
+            for (int i = 0; i < sigmavec_.length; ++i) {
+                if (sigmavec_[i] != SigmavecOption.Group1) {
                     return false;
                 }
             }
@@ -149,6 +184,25 @@ public class X11Specification implements IProcSpecification, Cloneable {
         this.fcasts_ = forecastsHorizon;
     }
 
+    /**
+     * Option of Calendarsigma[X12], specifies the calculation of the standard
+     * error calculation used for outlier detection in the X11 part
+     *
+     * @param calendarsigma
+     */
+    public void setCalendarSigma(CalendarSigma calendarsigma) {
+        calendarsigma_ = calendarsigma;
+    }
+
+    public void setSigmavec(SigmavecOption[] sigmavec){
+        sigmavec_= sigmavec.clone();
+    }
+      
+ //    public void setSigmavec(Sigmavec sigmavec) { CH: Das war Quatsch
+ //      sigmavec_ = new Sigmavec[] {sigmavec};
+ //  }
+        
+        
     /**
      * Set the decomposition mode of X11
      *
@@ -219,6 +273,9 @@ public class X11Specification implements IProcSpecification, Cloneable {
             if (filters_ != null) {
                 cspec.filters_ = filters_.clone();
             }
+            if (sigmavec_ != null) {
+                cspec.sigmavec_ = sigmavec_.clone();
+            }
             return cspec;
         } catch (CloneNotSupportedException err) {
             throw new AssertionError();
@@ -233,11 +290,14 @@ public class X11Specification implements IProcSpecification, Cloneable {
     private boolean equals(X11Specification spec) {
         return spec.fcasts_ == fcasts_
                 && Arrays.deepEquals(spec.filters_, filters_)
+                && Arrays.deepEquals(spec.sigmavec_, sigmavec_)
                 && spec.seasonal_ == seasonal_
                 && spec.henderson_ == henderson_
                 && spec.lsigma_ == lsigma_
                 && spec.usigma_ == usigma_
-                && spec.mode_ == mode_;
+                && spec.mode_ == mode_
+                && spec.calendarsigma_ == calendarsigma_;
+              
     }
 
     @Override
@@ -280,6 +340,17 @@ public class X11Specification implements IProcSpecification, Cloneable {
         if (verbose || fcasts_ != -1) {
             info.add(FCASTS, fcasts_);
         }
+
+        if (verbose || calendarsigma_ != CalendarSigma.None) {
+            info.add(CALENDARSIGMA, calendarsigma_.name());
+        }
+        if (sigmavec_ != null) {
+            String[] sigmavec = new String[sigmavec_.length];
+            for (int i = 0; i < sigmavec.length; ++i) {
+                sigmavec[i] = sigmavec_[i].name();
+            }
+            info.add(SIGMAVEC, sigmavec);
+        }
         return info;
     }
 
@@ -314,6 +385,19 @@ public class X11Specification implements IProcSpecification, Cloneable {
                 }
             }
 
+            String calendarsigma = info.get(CALENDARSIGMA, String.class);
+            if (calendarsigma != null) {
+                calendarsigma_ = CalendarSigma.valueOf(calendarsigma);
+            }
+
+            String[] sigmavec = info.get(SIGMAVEC, String[].class);
+            if (sigmavec != null) {
+                sigmavec_ = new SigmavecOption[sigmavec.length];
+                for (int i = 0; i < sigmavec.length; ++i) {
+                    sigmavec_[i] = SigmavecOption.valueOf(sigmavec[i]);
+                }
+            }
+            
             return true;
         } catch (Exception err) {
             return false;
