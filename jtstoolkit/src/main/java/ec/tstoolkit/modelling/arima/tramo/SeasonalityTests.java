@@ -34,7 +34,7 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
  */
 public class SeasonalityTests {
 
-    public static final int MSHORT = 80, SHORT = 60;
+    public static final int MSHORT = 80, SHORT = 60, SPEC_LENGTH=120;
 
     /**
      * This test corresponds to the OverResidSeasTest function of TRAMO
@@ -201,7 +201,11 @@ public class SeasonalityTests {
     public AutoRegressiveSpectrumTest getArPeaks() {
         if (arpeaks == null) {
             arpeaks = new AutoRegressiveSpectrumTest();
-            if (!arpeaks.test(delta.differenced)) {
+            TsData dlast=delta.differenced;
+            if (dlast.getLength()> SPEC_LENGTH){
+                dlast=dlast.drop(dlast.getLength()-SPEC_LENGTH, 0);
+            }
+            if (!arpeaks.test(dlast)) {
                 arpeaks = null;
             }
         }
