@@ -35,6 +35,7 @@ import java.util.List;
  *
  * @author Philippe Charles
  */
+@Deprecated
 abstract class Engine {
 
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">

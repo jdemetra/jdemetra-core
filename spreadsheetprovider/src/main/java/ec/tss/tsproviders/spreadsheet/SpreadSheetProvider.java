@@ -24,15 +24,18 @@ import ec.tss.TsInformationType;
 import ec.tss.TsMoniker;
 import ec.tss.tsproviders.*;
 import static ec.tss.tsproviders.spreadsheet.SpreadSheetBean.X_CLEAN_MISSING;
+import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetParser;
 import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection;
 import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetSeries;
 import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetSource;
 import ec.tss.tsproviders.utils.*;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
+import ec.util.spreadsheet.Book;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +84,13 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
     @Override
     protected SpreadSheetSource loadFromBean(SpreadSheetBean bean) throws Exception {
         File file = getRealFile(bean.getFile());
-        return SpreadSheetAccessor.INSTANCE.load(file, bean);
+        Book.Factory factory = getFactoryByFile(file);
+        if (factory != null) {
+            try (Book book = factory.load(file)) {
+                return SpreadSheetParser.getDefault().parse(book, bean.dataFormat.dateParser(), bean.dataFormat.numberParser(), bean.frequency, bean.aggregationType, bean.cleanMissing);
+            }
+        }
+        throw new RuntimeException("File type not supported");
     }
 
     @Override
@@ -275,11 +284,21 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
 
     @Override
     public boolean accept(File pathname) {
-        return SpreadSheetAccessor.INSTANCE.accept(pathname);
+        return getFactoryByFile(pathname) != null;
     }
 
     @Override
     public String getFileDescription() {
         return "Spreadsheet file";
+    }
+
+    @Nullable
+    private Book.Factory getFactoryByFile(@Nonnull File file) {
+        for (Book.Factory o : ServiceLoader.load(Book.Factory.class)) {
+            if (o.canLoad() && o.accept(file)) {
+                return o;
+            }
+        }
+        return null;
     }
 }

@@ -29,6 +29,7 @@ import javax.annotation.Nullable;
  * @author Philippe Charles
  */
 //@FacadePattern
+@Deprecated
 public abstract class Sheet {
 
     abstract public int getRowCount();

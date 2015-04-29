@@ -32,6 +32,7 @@ import javax.annotation.Nullable;
  * @author Demortier Jeremy
  * @author Philippe Charles
  */
+@Deprecated
 public final class SpreadSheetAccessor implements FileFilter {
 
     public static final SpreadSheetAccessor INSTANCE = new SpreadSheetAccessor();
