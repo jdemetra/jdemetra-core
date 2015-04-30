@@ -39,14 +39,16 @@ public final class ArraySheet extends Sheet implements Serializable {
     private final int columnCount;
     private final Serializable[] values;
     private final FlyweightCell flyweightCell;
+    private final boolean inv;
 
     // @VisibleForTesting
-    ArraySheet(@Nonnull String name, int rowCount, int columnCount, @Nonnull Serializable[] values) {
+    ArraySheet(@Nonnull String name, int rowCount, int columnCount, @Nonnull Serializable[] values, boolean inv) {
         this.name = Objects.requireNonNull(name);
         this.rowCount = rowCount;
         this.columnCount = columnCount;
         this.values = Objects.requireNonNull(values);
         this.flyweightCell = new FlyweightCell();
+        this.inv = inv;
     }
 
     @Override
@@ -61,7 +63,9 @@ public final class ArraySheet extends Sheet implements Serializable {
 
     @Override
     public Object getCellValue(int rowIndex, int columnIndex) throws IndexOutOfBoundsException {
-        return values[rowIndex * columnCount + columnIndex];
+        return !inv
+                ? values[rowIndex * columnCount + columnIndex]
+                : values[columnIndex * rowCount + rowIndex];
     }
 
     @Override
@@ -75,15 +79,20 @@ public final class ArraySheet extends Sheet implements Serializable {
         return name;
     }
 
+    @Override
+    public ArraySheet inv() {
+        return new ArraySheet(name, columnCount, rowCount, values, !inv);
+    }
+
     @Nonnull
     public ArraySheet rename(@Nonnull String name) {
-        return this.name.equals(name) ? this : new ArraySheet(name, rowCount, columnCount, values);
+        return this.name.equals(name) ? this : new ArraySheet(name, rowCount, columnCount, values, inv);
     }
 
     @Nonnull
     public ArraySheet copy() {
         // we need a cell by instance of sheet
-        return new ArraySheet(name, rowCount, columnCount, values);
+        return new ArraySheet(name, rowCount, columnCount, values, inv);
     }
 
     @Nonnull
@@ -95,7 +104,7 @@ public final class ArraySheet extends Sheet implements Serializable {
     public static ArraySheet copyOf(@Nonnull Sheet sheet) {
         return sheet instanceof ArraySheet
                 ? ((ArraySheet) sheet).copy()
-                : new ArraySheet(sheet.getName(), sheet.getRowCount(), sheet.getColumnCount(), copyValuesOf(sheet));
+                : new ArraySheet(sheet.getName(), sheet.getRowCount(), sheet.getColumnCount(), copyValuesOf(sheet), false);
     }
 
     @Nonnull
@@ -115,7 +124,7 @@ public final class ArraySheet extends Sheet implements Serializable {
                 }
             }
         }
-        return new ArraySheet(name, rowCount, columnCount, values);
+        return new ArraySheet(name, rowCount, columnCount, values, false);
     }
 
     @Nonnull
@@ -321,7 +330,7 @@ public final class ArraySheet extends Sheet implements Serializable {
 
         @Override
         public ArraySheet build() {
-            return new ArraySheet(name, rowCount, columnCount, values.clone());
+            return new ArraySheet(name, rowCount, columnCount, values.clone(), false);
         }
     }
 
@@ -400,7 +409,7 @@ public final class ArraySheet extends Sheet implements Serializable {
                 int index = rows.get(i) * columnCount + cols.get(i);
                 values[index] = valuesAsList.get(i);
             }
-            return new ArraySheet(name, rowCount, columnCount, values);
+            return new ArraySheet(name, rowCount, columnCount, values, false);
         }
     }
     //</editor-fold>
