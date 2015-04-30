@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -160,26 +161,67 @@ public final class ArraySheet extends Sheet implements Serializable {
         abstract public Builder clear();
 
         @Nonnull
-        abstract public Builder value(int rowIndex, int columnIndex, @Nullable Object value);
+        abstract public Builder value(int row, int column, @Nullable Object value) throws IndexOutOfBoundsException;
 
         @Nonnull
-        public Builder row(int rowIndex, int columnIndex, @Nonnull Object... row) {
-            return rowByValue(this, rowIndex, columnIndex, row);
+        public Builder value(int row, int column, @Nullable Cell value) throws IndexOutOfBoundsException {
+            Object tmp = value == null ? null : value.isDate() ? value.getDate() : value.isNumber() ? value.getNumber() : value.isString() ? value.getString() : null;
+            return value(row, column, (Object) tmp);
         }
 
         @Nonnull
-        public Builder column(int rowIndex, int columnIndex, @Nonnull Object... column) {
-            return columnByValue(this, rowIndex, columnIndex, column);
+        public Builder row(int row, int column, @Nonnull Object first, @Nonnull Object... rest) throws IndexOutOfBoundsException {
+            return value(row, column, first).row(row, column + 1, rest);
         }
 
         @Nonnull
-        public Builder table(int rowIndex, int columnIndex, @Nonnull Object[][] table) {
-            return tableByRow(this, rowIndex, columnIndex, table);
+        public Builder row(int row, int column, @Nonnull Object[] values) throws IndexOutOfBoundsException {
+            return row(row, column, Arrays.asList(values));
         }
 
         @Nonnull
-        public Builder map(int rowIndex, int columnIndex, @Nonnull Map<?, ?> map) {
-            return mapByRow(this, rowIndex, columnIndex, map);
+        public Builder row(int row, int column, @Nonnull Iterable<?> values) throws IndexOutOfBoundsException {
+            return row(row, column, values.iterator());
+        }
+
+        @Nonnull
+        public Builder row(int row, int column, @Nonnull Iterator<?> values) throws IndexOutOfBoundsException {
+            return rowByValue(this, row, column, values);
+        }
+
+        @Nonnull
+        public Builder column(int row, int column, @Nonnull Object first, @Nonnull Object... rest) throws IndexOutOfBoundsException {
+            return value(row, column, first).column(row + 1, column, rest);
+        }
+
+        @Nonnull
+        public Builder column(int row, int column, @Nonnull Object[] values) throws IndexOutOfBoundsException {
+            return column(row, column, Arrays.asList(values));
+        }
+
+        @Nonnull
+        public Builder column(int row, int column, @Nonnull Iterable<?> values) throws IndexOutOfBoundsException {
+            return column(row, column, values.iterator());
+        }
+
+        @Nonnull
+        public Builder column(int row, int column, @Nonnull Iterator<?> values) throws IndexOutOfBoundsException {
+            return columnByValue(this, row, column, values);
+        }
+
+        @Nonnull
+        public Builder table(int row, int column, @Nonnull Object[][] values) throws IndexOutOfBoundsException {
+            return tableByRow(this, row, column, values);
+        }
+
+        @Nonnull
+        public Builder table(int row, int column, @Nonnull Sheet values) throws IndexOutOfBoundsException {
+            return tableByValue(this, row, column, values);
+        }
+
+        @Nonnull
+        public Builder map(int row, int column, @Nonnull Map<?, ?> values) throws IndexOutOfBoundsException {
+            return mapByRow(this, row, column, values);
         }
 
         @Nonnull
@@ -247,24 +289,38 @@ public final class ArraySheet extends Sheet implements Serializable {
         }
     }
 
-    private static Builder rowByValue(Builder b, int rowIndex, int columnIndex, Object[] row) {
-        for (int j = 0; j < row.length; j++) {
-            b.value(rowIndex, columnIndex + j, row[j]);
+    private static Builder rowByValue(Builder b, int row, int column, Iterator<?> values) throws IndexOutOfBoundsException {
+        int j = 0;
+        while (values.hasNext()) {
+            b.value(row, column + j, values.next());
         }
         return b;
     }
 
-    private static Builder columnByValue(Builder b, int rowIndex, int columnIndex, Object[] column) {
-        for (int i = 0; i < column.length; i++) {
-            b.value(rowIndex + i, columnIndex, column[i]);
+    private static Builder columnByValue(Builder b, int row, int column, Iterator<?> values) throws IndexOutOfBoundsException {
+        int i = 0;
+        while (values.hasNext()) {
+            b.value(row + i, column, values.next());
         }
         return b;
     }
 
-    private static Builder tableByRow(Builder b, int rowIndex, int columnIndex, Object[][] table) {
-        for (int i = 0; i < table.length; i++) {
-            if (table[i] != null) {
-                b.row(rowIndex + i, columnIndex, table[i]);
+    private static Builder tableByRow(Builder b, int row, int column, Object[][] values) {
+        for (int i = 0; i < values.length; i++) {
+            Object[] tmp = values[i];
+            if (tmp != null) {
+                for (int j = 0; j < tmp.length; j++) {
+                    b.value(row + i, column + j, tmp[j]);
+                }
+            }
+        }
+        return b;
+    }
+
+    private static Builder tableByValue(Builder b, int row, int column, Sheet values) {
+        for (int i = 0; i < values.getRowCount(); i++) {
+            for (int j = 0; j < values.getColumnCount(); j++) {
+                b.value(row + i, column + j, values.getCellValue(i, j));
             }
         }
         return b;
