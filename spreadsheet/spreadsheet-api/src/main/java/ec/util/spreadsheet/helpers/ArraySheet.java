@@ -234,8 +234,8 @@ public final class ArraySheet extends Sheet implements Serializable {
         int rowCount = sheet.getRowCount();
         int columnCount = sheet.getColumnCount();
         Serializable[] result = new Serializable[rowCount * columnCount];
-        for (int i = 0; i < sheet.getRowCount(); i++) {
-            for (int j = 0; j < sheet.getColumnCount(); j++) {
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < columnCount; j++) {
                 result[i * columnCount + j] = (Serializable) sheet.getCellValue(i, j);
             }
         }
@@ -440,7 +440,7 @@ public final class ArraySheet extends Sheet implements Serializable {
         }
 
         @Override
-        public Builder row(int rowIndex, int columnIndex, Object... row) {
+        public Builder row(int rowIndex, int columnIndex, Object[] row) {
             if (maxRowIndex < rowIndex) {
                 maxRowIndex = rowIndex;
             }

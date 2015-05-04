@@ -52,7 +52,8 @@ public abstract class SpreadSheetParser {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
-    private static final class DefaultImpl extends SpreadSheetParser {
+    @VisibleForTesting
+    static final class DefaultImpl extends SpreadSheetParser {
 
         private static final DefaultImpl INSTANCE = new DefaultImpl();
 
@@ -64,6 +65,94 @@ public abstract class SpreadSheetParser {
                     CellParser.onNumberType().or(CellParser.fromParser(numberParser)),
                     freq, aggregation, clean);
             return parseSource(book, context);
+        }
+
+        @VisibleForTesting
+        static SpreadSheetSource parseSource(Book book, Context context) throws IOException {
+            int sheetCount = book.getSheetCount();
+            List<SpreadSheetCollection> result = new ArrayList<>(sheetCount);
+            for (int i = 0; i < sheetCount; i++) {
+                result.add(parseCollection(book.getSheet(i), i, context));
+            }
+            return new SpreadSheetSource(result, "?");
+        }
+
+        @VisibleForTesting
+        static SpreadSheetCollection parseCollection(Sheet sheet, int ordering, Context context) {
+            switch (parseAlignType(sheet, context.toName, context.toDate)) {
+                case VERTICAL:
+                    return loadVertically(SpreadSheetCollection.AlignType.VERTICAL, ordering, sheet, context);
+                case HORIZONTAL:
+                    return loadVertically(SpreadSheetCollection.AlignType.HORIZONTAL, ordering, sheet.inv(), context);
+                case UNKNOWN:
+                    return new SpreadSheetCollection(sheet.getName(), ordering, SpreadSheetCollection.AlignType.UNKNOWN, ImmutableList.<SpreadSheetSeries>of());
+            }
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @VisibleForTesting
+        static SpreadSheetCollection.AlignType parseAlignType(Sheet sheet, CellParser<String> toName, CellParser<Date> toDate) {
+            if (sheet.getRowCount() < 2 || sheet.getColumnCount() < 2) {
+                return SpreadSheetCollection.AlignType.UNKNOWN;
+            }
+
+            if (toName.tryParse(sheet, 0, 1).isPresent() && toDate.tryParse(sheet, 1, 0).isPresent()) {
+                return SpreadSheetCollection.AlignType.VERTICAL;
+            }
+
+            if (toDate.tryParse(sheet, 0, 1).isPresent() && toName.tryParse(sheet, 1, 0).isPresent()) {
+                return SpreadSheetCollection.AlignType.HORIZONTAL;
+            }
+
+            return SpreadSheetCollection.AlignType.UNKNOWN;
+        }
+
+        private static final int FIRST_DATA_ROW_IDX = 1;
+        private static final int FIRST_DATA_COL_IDX = 1;
+        private static final int DATE_COL_IDX = 0;
+        private static final int NAME_ROW_IDX = 0;
+
+        private static List<Date> getVerticalDates(Sheet sheet, CellParser<Date> toDate) {
+            List<Date> result = new ArrayList<>();
+            for (int rowIdx = FIRST_DATA_ROW_IDX; rowIdx < sheet.getRowCount(); rowIdx++) {
+                Date date = toDate.parse(sheet, rowIdx, DATE_COL_IDX);
+                if (date == null) {
+                    break;
+                }
+                result.add(date);
+            }
+            return result;
+        }
+
+        private static List<String> getHorizontalNames(Sheet sheet, CellParser<String> toName) {
+            List<String> result = new ArrayList<>();
+            for (int columnIdx = FIRST_DATA_COL_IDX; columnIdx < sheet.getColumnCount(); columnIdx++) {
+                String name = toName.parse(sheet, NAME_ROW_IDX, columnIdx);
+                if (name == null) {
+                    break;
+                }
+                result.add(name);
+            }
+            return result;
+        }
+
+        private static SpreadSheetCollection loadVertically(SpreadSheetCollection.AlignType alignType, int ordering, Sheet sheet, Context context) {
+            List<Date> dates = getVerticalDates(sheet, context.toDate);
+            List<String> names = getHorizontalNames(sheet, context.toName);
+
+            ImmutableList.Builder<SpreadSheetSeries> list = ImmutableList.builder();
+
+            OptionalTsData.Builder data = new OptionalTsData.Builder(context.frequency, context.aggregationType, context.clean);
+            for (int columnIdx = 0; columnIdx < names.size(); columnIdx++) {
+                for (int rowIdx = 0; rowIdx < dates.size(); rowIdx++) {
+                    Number value = context.toNumber.parse(sheet, rowIdx + FIRST_DATA_ROW_IDX, columnIdx + FIRST_DATA_COL_IDX);
+                    data.add(dates.get(rowIdx), value);
+                }
+                list.add(new SpreadSheetSeries(names.get(columnIdx), columnIdx, alignType, data.build()));
+                data.clear();
+            }
+
+            return new SpreadSheetCollection(sheet.getName(), ordering, alignType, list.build());
         }
     }
 
@@ -85,94 +174,6 @@ public abstract class SpreadSheetParser {
             this.aggregationType = aggregationType;
             this.clean = clean;
         }
-    }
-
-    @VisibleForTesting
-    static SpreadSheetSource parseSource(Book book, Context context) throws IOException {
-        int sheetCount = book.getSheetCount();
-        List<SpreadSheetCollection> result = new ArrayList<>(sheetCount);
-        for (int i = 0; i < sheetCount; i++) {
-            result.add(parseCollection(book.getSheet(i), i, context));
-        }
-        return new SpreadSheetSource(result, "?");
-    }
-
-    @VisibleForTesting
-    static SpreadSheetCollection parseCollection(Sheet sheet, int ordering, Context context) {
-        switch (parseAlignType(sheet, context.toName, context.toDate)) {
-            case VERTICAL:
-                return loadVertically(SpreadSheetCollection.AlignType.VERTICAL, ordering, sheet, context);
-            case HORIZONTAL:
-                return loadVertically(SpreadSheetCollection.AlignType.HORIZONTAL, ordering, sheet.inv(), context);
-            case UNKNOWN:
-                return new SpreadSheetCollection(sheet.getName(), ordering, SpreadSheetCollection.AlignType.UNKNOWN, ImmutableList.<SpreadSheetSeries>of());
-        }
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @VisibleForTesting
-    static SpreadSheetCollection.AlignType parseAlignType(Sheet sheet, CellParser<String> toName, CellParser<Date> toDate) {
-        if (sheet.getRowCount() < 2 || sheet.getColumnCount() < 2) {
-            return SpreadSheetCollection.AlignType.UNKNOWN;
-        }
-
-        if (toName.tryParse(sheet, 0, 1).isPresent() && toDate.tryParse(sheet, 1, 0).isPresent()) {
-            return SpreadSheetCollection.AlignType.VERTICAL;
-        }
-
-        if (toDate.tryParse(sheet, 0, 1).isPresent() && toName.tryParse(sheet, 1, 0).isPresent()) {
-            return SpreadSheetCollection.AlignType.HORIZONTAL;
-        }
-
-        return SpreadSheetCollection.AlignType.UNKNOWN;
-    }
-
-    private static final int FIRST_DATA_ROW_IDX = 1;
-    private static final int FIRST_DATA_COL_IDX = 1;
-    private static final int DATE_COL_IDX = 0;
-    private static final int NAME_ROW_IDX = 0;
-
-    private static List<Date> getVerticalDates(Sheet sheet, CellParser<Date> toDate) {
-        List<Date> result = new ArrayList<>();
-        for (int rowIdx = FIRST_DATA_ROW_IDX; rowIdx < sheet.getRowCount(); rowIdx++) {
-            Date date = toDate.parse(sheet, rowIdx, DATE_COL_IDX);
-            if (date == null) {
-                break;
-            }
-            result.add(date);
-        }
-        return result;
-    }
-
-    private static List<String> getHorizontalNames(Sheet sheet, CellParser<String> toName) {
-        List<String> result = new ArrayList<>();
-        for (int columnIdx = FIRST_DATA_COL_IDX; columnIdx < sheet.getColumnCount(); columnIdx++) {
-            String name = toName.parse(sheet, NAME_ROW_IDX, columnIdx);
-            if (name == null) {
-                break;
-            }
-            result.add(name);
-        }
-        return result;
-    }
-
-    private static SpreadSheetCollection loadVertically(SpreadSheetCollection.AlignType alignType, int ordering, Sheet sheet, Context context) {
-        List<Date> dates = getVerticalDates(sheet, context.toDate);
-        List<String> names = getHorizontalNames(sheet, context.toName);
-
-        ImmutableList.Builder<SpreadSheetSeries> list = ImmutableList.builder();
-
-        OptionalTsData.Builder data = new OptionalTsData.Builder(context.frequency, context.aggregationType, context.clean);
-        for (int columnIdx = 0; columnIdx < names.size(); columnIdx++) {
-            for (int rowIdx = 0; rowIdx < dates.size(); rowIdx++) {
-                Number value = context.toNumber.parse(sheet, rowIdx + FIRST_DATA_ROW_IDX, columnIdx + FIRST_DATA_COL_IDX);
-                data.add(dates.get(rowIdx), value);
-            }
-            list.add(new SpreadSheetSeries(names.get(columnIdx), columnIdx, alignType, data.build()));
-            data.clear();
-        }
-
-        return new SpreadSheetCollection(sheet.getName(), ordering, alignType, list.build());
     }
 
     @VisibleForTesting

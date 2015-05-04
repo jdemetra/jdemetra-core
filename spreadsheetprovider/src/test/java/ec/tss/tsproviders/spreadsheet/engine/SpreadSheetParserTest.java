@@ -16,14 +16,12 @@
  */
 package ec.tss.tsproviders.spreadsheet.engine;
 
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.HORIZONTAL;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.VERTICAL;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetParser.CellParser.onDateType;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetParser.CellParser.onNumberType;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetParser.CellParser.onStringType;
 import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetParser.Context;
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetParser.parseCollection;
 import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.date;
 import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.sheet;
 import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.top5Excel;
@@ -41,9 +39,9 @@ import ec.util.spreadsheet.poi.ExcelClassicBookFactory;
 import ec.util.spreadsheet.xmlss.XmlssBookFactory;
 import java.io.IOException;
 import java.net.URL;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollectionAssert.assertThat;
+import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetParser.DefaultImpl.parseCollection;
 import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.data;
 import static ec.tstoolkit.timeseries.TsAggregationType.None;
 import static ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly;
@@ -55,37 +53,52 @@ import static ec.tstoolkit.timeseries.simplets.TsFrequency.Undefined;
  */
 public class SpreadSheetParserTest {
 
-    private static AlignType parseAlignType(Object[][] table) {
-        return SpreadSheetParser.parseAlignType(sheet(table), onStringType(), onDateType());
-    }
-
     @Test
-    public void testParseAlignType() {
-        Object[][] horizontal = {
-            {null, date(2010, 1, 1)},
-            {"title", 3.14}
-        };
-        assertThat(parseAlignType(horizontal)).isEqualTo(HORIZONTAL);
-
-        Object[][] vertical = {
-            {null, "title"},
-            {date(2010, 1, 1), 3.14}
-        };
-        assertThat(parseAlignType(vertical)).isEqualTo(VERTICAL);
-    }
-
-    @Test
-    public void testParseCollection() {
+    public void testParseCollectionHorizontal() {
         Context context = new Context(onStringType(), onDateType(), onNumberType(), Undefined, None, true);
 
-        Object[][] vertical = {
-            {null, "title"},
+        Object[][] basic = {
+            {null, date(2010, 0, 1), date(2010, 1, 1), date(2010, 2, 1)},
+            {"S1", 3.14, 4.56, 7.89}
+        };
+
+        assertThat(parseCollection(sheet(basic), 0, context))
+                .hasAlignType(HORIZONTAL)
+                .containsExactly(data(Monthly, 2010, 0, 3.14, 4.56, 7.89));
+
+        Object[][] withDateTitle = {
+            {"Date", date(2010, 0, 1), date(2010, 1, 1), date(2010, 2, 1)},
+            {"S1", 3.14, 4.56, 7.89}
+        };
+
+        assertThat(parseCollection(sheet(withDateTitle), 0, context))
+                .hasAlignType(HORIZONTAL)
+                .containsExactly(data(Monthly, 2010, 0, 3.14, 4.56, 7.89));
+    }
+
+    @Test
+    public void testParseCollectionVertical() {
+        Context context = new Context(onStringType(), onDateType(), onNumberType(), Undefined, None, true);
+
+        Object[][] basic = {
+            {null, "S1"},
             {date(2010, 0, 1), 3.14},
             {date(2010, 1, 1), 4.56},
             {date(2010, 2, 1), 7.89}
         };
 
-        assertThat(parseCollection(sheet(vertical), 0, context))
+        assertThat(parseCollection(sheet(basic), 0, context))
+                .hasAlignType(VERTICAL)
+                .containsExactly(data(Monthly, 2010, 0, 3.14, 4.56, 7.89));
+
+        Object[][] withDateTitle = {
+            {"Date", "S1"},
+            {date(2010, 0, 1), 3.14},
+            {date(2010, 1, 1), 4.56},
+            {date(2010, 2, 1), 7.89}
+        };
+
+        assertThat(parseCollection(sheet(withDateTitle), 0, context))
                 .hasAlignType(VERTICAL)
                 .containsExactly(data(Monthly, 2010, 0, 3.14, 4.56, 7.89));
     }
