@@ -16,6 +16,7 @@
  */
 package ec.tss.tsproviders.spreadsheet.engine;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.HORIZONTAL;
@@ -79,73 +80,88 @@ public abstract class SpreadSheetParser {
 
         @VisibleForTesting
         static SpreadSheetCollection parseCollection(Sheet sheet, int ordering, Context context) {
-            switch (parseAlignType(sheet, context.toName, context.toDate)) {
-                case VERTICAL:
-                    return loadVertically(SpreadSheetCollection.AlignType.VERTICAL, ordering, sheet, context);
-                case HORIZONTAL:
-                    return loadVertically(SpreadSheetCollection.AlignType.HORIZONTAL, ordering, sheet.inv(), context);
-                case UNKNOWN:
-                    return new SpreadSheetCollection(sheet.getName(), ordering, SpreadSheetCollection.AlignType.UNKNOWN, ImmutableList.<SpreadSheetSeries>of());
+            DateHeader rowDates = new DateHeader(sheet.getRowCount());
+            for (int i = 0; i < sheet.getRowCount(); i++) {
+                rowDates.set(i, context.toDate.parse(sheet, i, 0));
             }
-            throw new UnsupportedOperationException("Not supported yet.");
+
+            DateHeader colDates = new DateHeader(sheet.getColumnCount());
+            for (int j = 0; j < sheet.getColumnCount(); j++) {
+                colDates.set(j, context.toDate.parse(sheet, 0, j));
+            }
+
+            if (rowDates.isBetter(colDates)) {
+                return loadVertically(VERTICAL, ordering, sheet, context, rowDates);
+            }
+
+            if (colDates.isBetter(rowDates)) {
+                return loadVertically(HORIZONTAL, ordering, sheet.inv(), context, colDates);
+            }
+
+            return new SpreadSheetCollection(sheet.getName(), ordering, UNKNOWN, ImmutableList.<SpreadSheetSeries>of());
         }
 
-        @VisibleForTesting
-        static SpreadSheetCollection.AlignType parseAlignType(Sheet sheet, CellParser<String> toName, CellParser<Date> toDate) {
-            if (sheet.getRowCount() < 2 || sheet.getColumnCount() < 2) {
-                return SpreadSheetCollection.AlignType.UNKNOWN;
-            }
-
-            if (toName.tryParse(sheet, 0, 1).isPresent() && toDate.tryParse(sheet, 1, 0).isPresent()) {
-                return SpreadSheetCollection.AlignType.VERTICAL;
-            }
-
-            if (toDate.tryParse(sheet, 0, 1).isPresent() && toName.tryParse(sheet, 1, 0).isPresent()) {
-                return SpreadSheetCollection.AlignType.HORIZONTAL;
-            }
-
-            return SpreadSheetCollection.AlignType.UNKNOWN;
-        }
-
-        private static final int FIRST_DATA_ROW_IDX = 1;
         private static final int FIRST_DATA_COL_IDX = 1;
-        private static final int DATE_COL_IDX = 0;
-        private static final int NAME_ROW_IDX = 0;
+        private static final Joiner NAME_JOINER = Joiner.on('\n').skipNulls();
 
-        private static List<Date> getVerticalDates(Sheet sheet, CellParser<Date> toDate) {
-            List<Date> result = new ArrayList<>();
-            for (int rowIdx = FIRST_DATA_ROW_IDX; rowIdx < sheet.getRowCount(); rowIdx++) {
-                Date date = toDate.parse(sheet, rowIdx, DATE_COL_IDX);
-                if (date == null) {
-                    break;
-                }
-                result.add(date);
-            }
-            return result;
-        }
-
-        private static List<String> getHorizontalNames(Sheet sheet, CellParser<String> toName) {
+        private static List<String> getHorizontalNames(Sheet sheet, Context context, int level) {
             List<String> result = new ArrayList<>();
-            for (int columnIdx = FIRST_DATA_COL_IDX; columnIdx < sheet.getColumnCount(); columnIdx++) {
-                String name = toName.parse(sheet, NAME_ROW_IDX, columnIdx);
-                if (name == null) {
+            switch (level) {
+                // no header
+                case 0: {
+                    for (int columnIdx = FIRST_DATA_COL_IDX; columnIdx < sheet.getColumnCount(); columnIdx++) {
+                        if (context.toNumber.parse(sheet, 0, columnIdx) == null) {
+                            break;
+                        }
+                        result.add("S" + columnIdx);
+                    }
                     break;
                 }
-                result.add(name);
+                // single header
+                case 1: {
+                    for (int columnIdx = FIRST_DATA_COL_IDX; columnIdx < sheet.getColumnCount(); columnIdx++) {
+                        String name = context.toName.parse(sheet, 0, columnIdx);
+                        if (name == null) {
+                            break;
+                        }
+                        result.add(name);
+                    }
+                    break;
+                }
+                // multiple headers
+                default: {
+                    String[] path = new String[level];
+                    for (int columnIdx = FIRST_DATA_COL_IDX; columnIdx < sheet.getColumnCount(); columnIdx++) {
+                        boolean hasHeader = false;
+                        for (int rowIdx = 0; rowIdx < path.length; rowIdx++) {
+                            String name = context.toName.parse(sheet, rowIdx, columnIdx);
+                            if (name != null) {
+                                hasHeader = true;
+                                path[rowIdx] = name;
+                            } else if (hasHeader) {
+                                path[rowIdx] = null;
+                            }
+                        }
+                        if (!hasHeader) {
+                            break;
+                        }
+                        result.add(NAME_JOINER.join(path));
+                    }
+                    break;
+                }
             }
             return result;
         }
 
-        private static SpreadSheetCollection loadVertically(SpreadSheetCollection.AlignType alignType, int ordering, Sheet sheet, Context context) {
-            List<Date> dates = getVerticalDates(sheet, context.toDate);
-            List<String> names = getHorizontalNames(sheet, context.toName);
+        private static SpreadSheetCollection loadVertically(SpreadSheetCollection.AlignType alignType, int ordering, Sheet sheet, Context context, DateHeader dates) {
+            List<String> names = getHorizontalNames(sheet, context, dates.minIndex);
 
             ImmutableList.Builder<SpreadSheetSeries> list = ImmutableList.builder();
 
             OptionalTsData.Builder data = new OptionalTsData.Builder(context.frequency, context.aggregationType, context.clean);
             for (int columnIdx = 0; columnIdx < names.size(); columnIdx++) {
-                for (int rowIdx = 0; rowIdx < dates.size(); rowIdx++) {
-                    Number value = context.toNumber.parse(sheet, rowIdx + FIRST_DATA_ROW_IDX, columnIdx + FIRST_DATA_COL_IDX);
+                for (int rowIdx = dates.getMinIndex(); rowIdx <= dates.getMaxIndex(); rowIdx++) {
+                    Number value = context.toNumber.parse(sheet, rowIdx, columnIdx + FIRST_DATA_COL_IDX);
                     data.add(dates.get(rowIdx), value);
                 }
                 list.add(new SpreadSheetSeries(names.get(columnIdx), columnIdx, alignType, data.build()));
@@ -293,6 +309,48 @@ public abstract class SpreadSheetParser {
             }
         }
         //</editor-fold>
+    }
+
+    private static final class DateHeader {
+
+        private final Date[] dates;
+        private int minIndex;
+        private int maxIndex;
+
+        public DateHeader(int maxSize) {
+            dates = new Date[maxSize];
+            minIndex = maxSize - 1;
+            maxIndex = 0;
+        }
+
+        public void set(int i, Date value) {
+            dates[i] = value;
+            if (value != null) {
+                if (i < minIndex) {
+                    minIndex = i;
+                }
+                if (i > maxIndex) {
+                    maxIndex = i;
+                }
+            }
+        }
+
+        public Date get(int i) {
+            return dates[i];
+        }
+
+        public int getMinIndex() {
+            return minIndex;
+        }
+
+        public int getMaxIndex() {
+            return maxIndex;
+        }
+
+        public boolean isBetter(DateHeader other) {
+            int count = maxIndex - minIndex + 1;
+            return count > 0 && count > (other.maxIndex - other.minIndex + 1);
+        }
     }
     //</editor-fold>
 }

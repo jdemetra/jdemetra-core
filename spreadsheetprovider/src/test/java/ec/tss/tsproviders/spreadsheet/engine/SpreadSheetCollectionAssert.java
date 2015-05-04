@@ -66,6 +66,13 @@ final class SpreadSheetCollectionAssert extends AbstractAssert<SpreadSheetCollec
         return this;
     }
 
+    public SpreadSheetCollectionAssert containsExactly(String... names) {
+        Assertions.assertThat(actual.series)
+                .extracting(ToName.INSTANCE)
+                .containsExactly(names);
+        return this;
+    }
+
     private enum ToData implements Extractor<SpreadSheetSeries, TsData> {
 
         INSTANCE;
@@ -73,6 +80,16 @@ final class SpreadSheetCollectionAssert extends AbstractAssert<SpreadSheetCollec
         @Override
         public TsData extract(SpreadSheetSeries input) {
             return input.data.get();
+        }
+    }
+
+    private enum ToName implements Extractor<SpreadSheetSeries, String> {
+
+        INSTANCE;
+
+        @Override
+        public String extract(SpreadSheetSeries input) {
+            return input.seriesName;
         }
     }
 }

@@ -113,7 +113,7 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
             case COLLECTION:
                 return Y_SHEETNAME.get(dataSet);
             case SERIES:
-                return Y_SHEETNAME.get(dataSet) + " - " + Z_SERIESNAME.get(dataSet);
+                return Y_SHEETNAME.get(dataSet) + "\n" + Z_SERIESNAME.get(dataSet);
         }
         throw new IllegalArgumentException(dataSet.getKind().name());
     }
