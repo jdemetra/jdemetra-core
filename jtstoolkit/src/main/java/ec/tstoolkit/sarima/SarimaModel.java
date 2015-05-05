@@ -51,7 +51,7 @@ public class SarimaModel extends AbstractArimaModel implements IArimaModel,
     /**
      *
      */
-    public SarimaModel() {
+    private SarimaModel() {
     }
 
     /**
