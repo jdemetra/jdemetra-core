@@ -30,6 +30,7 @@ import java.util.Date;
  *
  * @author Philippe Charles
  */
+@Deprecated
 public class BookFactoryAdapter extends Book.Factory {
 
     protected final ec.util.spreadsheet.Book.Factory adaptee;

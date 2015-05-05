@@ -22,6 +22,7 @@ import ec.tss.tsproviders.spreadsheet.facade.utils.BookFactoryAdapter;
  *
  * @author Philippe Charles
  */
+@Deprecated
 public class ExcelBookFactory extends BookFactoryAdapter {
 
     public ExcelBookFactory() {

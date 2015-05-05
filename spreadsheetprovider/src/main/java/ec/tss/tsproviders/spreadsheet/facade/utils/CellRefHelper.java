@@ -22,6 +22,7 @@ import javax.annotation.Nullable;
  *
  * @author Philippe Charles
  */
+@Deprecated
 public class CellRefHelper {
 
     private final ec.util.spreadsheet.helpers.CellRefHelper adaptee = new ec.util.spreadsheet.helpers.CellRefHelper();

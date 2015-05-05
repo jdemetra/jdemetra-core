@@ -31,6 +31,7 @@ import java.util.List;
  *
  * @author Philippe Charles
  */
+@Deprecated
 public class MemBook extends Book {
 
     private final List<ec.util.spreadsheet.Sheet> sheets;
