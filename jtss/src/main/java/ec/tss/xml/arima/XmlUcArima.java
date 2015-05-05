@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = XmlUcArima.NAME)
 public class XmlUcArima implements IXmlConverter<UcarimaModel> {
     static final String NAME = "ucarimaModelType";
-    static final String RNAME = "ucarimaModelType";
+    static final String RNAME = "ucarimaModel";
 
     @XmlElement
     public XmlArimaModel sum;

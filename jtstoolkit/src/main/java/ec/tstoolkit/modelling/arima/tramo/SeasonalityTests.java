@@ -34,7 +34,7 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
  */
 public class SeasonalityTests {
 
-    public static final int MSHORT = 80, SHORT = 60;
+    public static final int MSHORT = 80, SHORT = 60, SPEC_LENGTH=120;
 
     /**
      * This test corresponds to the OverResidSeasTest function of TRAMO
@@ -201,7 +201,11 @@ public class SeasonalityTests {
     public AutoRegressiveSpectrumTest getArPeaks() {
         if (arpeaks == null) {
             arpeaks = new AutoRegressiveSpectrumTest();
-            if (!arpeaks.test(delta.differenced)) {
+            TsData dlast=delta.differenced;
+            if (dlast.getLength()> SPEC_LENGTH){
+                dlast=dlast.drop(dlast.getLength()-SPEC_LENGTH, 0);
+            }
+            if (!arpeaks.test(dlast)) {
                 arpeaks = null;
             }
         }
@@ -216,8 +220,8 @@ public class SeasonalityTests {
             if (arPeaks == null || tPeaks == null) {
                 return null;
             }
-            int[] a = arPeaks != null ? arPeaks.seasonalPeaks(.90, .99) : null;
-            int[] t = tPeaks != null ? tPeaks.seasonalPeaks(.90, .99) : null;
+            int[] a = arPeaks.seasonalPeaks(.90, .99);
+            int[] t = tPeaks.seasonalPeaks(.90, .99);
             peaks = new SpectralPeaks[ifreq / 2];
             for (int i = 0; i < peaks.length; ++i) {
                 SpectralPeaks.AR ar = SpectralPeaks.AR.none;
@@ -244,7 +248,7 @@ public class SeasonalityTests {
 
     public StatisticalTest getPeriodogramTest() {
         if (periodogram == null) {
-            periodogram = PeriodogramTest.computeSum(delta.differenced.getValues(), delta.differenced.getFrequency().intValue());
+            periodogram = PeriodogramTest.computeSum2(delta.differenced.getValues(), delta.differenced.getFrequency().intValue());
         }
         return periodogram;
     }

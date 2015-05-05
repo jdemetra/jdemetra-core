@@ -14,10 +14,6 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-/**
- *
- * @author Jean Palate
- */
 package ec.tstoolkit.data;
 
 import ec.tstoolkit.BaseException;
@@ -25,7 +21,21 @@ import ec.tstoolkit.design.Development;
 import ec.tstoolkit.utilities.IntList;
 
 /**
- *
+ * Periodogram of a series of real-valued data
+ * The periodogram is defined at the Fourier frequencies:
+ * if we have n data, the Fourier frequencies f(j) are (2*pi)*j/n, j in [0,n[.
+ * p(k) is usually defined as (1/n)*|sum(x(j)*e(i*k*f(j))|^2
+ * As the x(j) are real-valued, we consider only the Fourier frequencies with j 
+ * in [0, n/2]
+ * We have:
+ * p(0) = (1/n)*|sum(x(j)|^2 = (1/n)*|sx|^2
+ * p(j) = (2/n)*|sum(x(j)*e(i*k*f(j))|^2
+ * if n is even, p(n/2) = (1/n)*|(-1)^k*sum(x(j)|^2
+ * This implementation will rescale the periodogram with the factor
+ * n/sum(x(j)^2)=n/sx2, so that we will have:
+ * p(0) = |sx|^2/sx2
+ * p(j) = 2*|sum(x(j)*e(i*k*f(j))|^2/sx2
+ * if n is even, p(n/2) = |(-1)^k*sum(x(j)|^2/sx2
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
@@ -71,6 +81,8 @@ public class Periodogram {
     /**
      *
      * @param data
+     * @param mean True if the periodogram is computed on the data corrected for mean,
+     * false otherwise.
      */
     public Periodogram(IReadDataBlock data, boolean mean) {
         calcwnd(1);
@@ -112,6 +124,10 @@ public class Periodogram {
 
     public boolean isMeanCorrection() {
         return m_mean;
+    }
+    
+    public double getSsq(){
+        return m_sy2;
     }
 
     private void calcp() {
