@@ -16,15 +16,11 @@
  */
 package ec.util.spreadsheet.helpers;
 
-import ec.util.spreadsheet.Sheet;
-import static ec.util.spreadsheet.junit.SheetMatcher.cellValueEqualTo;
-import static ec.util.spreadsheet.junit.SheetMatcher.dimensionEqualTo;
-import static ec.util.spreadsheet.junit.SheetMatcher.nameEqualTo;
+import static ec.util.spreadsheet.helpers.ArraySheetAssert.assertThat;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
-import static org.hamcrest.CoreMatchers.allOf;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 /**
@@ -36,50 +32,56 @@ public class ArraySheetBuilderTest {
     final String STRING = "a";
     final Date DATE = new Date(1234);
     final Number NUMBER = 12.34;
+    final Object UNKNOWN = new Object() {
+        @Override
+        public String toString() {
+            return STRING;
+        }
+    };
 
     @Test
     public void testUnboundedCell() throws IOException {
+        ArraySheet.Builder b = ArraySheet.builder();
+
         // 1. supported types
-        Sheet s1 = ArraySheet.builder()
-                .value(0, 0, STRING)
-                .value(0, 1, DATE)
-                .value(1, 0, NUMBER)
-                .value(1, 1, null)
-                .build();
-        assertThat(s1, dimensionEqualTo(2, 2));
-        assertThat(s1, cellValueEqualTo(0, 0, STRING));
-        assertThat(s1, cellValueEqualTo(0, 1, DATE));
-        assertThat(s1, cellValueEqualTo(1, 0, NUMBER));
-        assertNull(s1.getCell(1, 1));
+        assertThat(b.clear().value(0, 0, STRING).value(0, 1, DATE).value(1, 0, NUMBER).value(1, 1, null).build())
+                .hasRowCount(2)
+                .hasColumnCount(2)
+                .hasValue(0, 0, STRING)
+                .hasValue(0, 1, DATE)
+                .hasValue(1, 0, NUMBER)
+                .hasValue(1, 1, null);
+
         // 2. unknow type
-        Sheet s2 = ArraySheet.builder().value(0, 0, new Object() {
-            @Override
-            public String toString() {
-                return STRING;
-            }
-        }).build();
-        assertThat(s2, cellValueEqualTo(0, 0, STRING));
+        assertThat(b.clear().value(0, 0, UNKNOWN).build())
+                .hasValue(0, 0, UNKNOWN.toString());
+
         // 3. value overriding
-        Sheet s3 = ArraySheet.builder()
-                .value(0, 0, STRING)
-                .value(0, 0, DATE)
-                .build();
-        assertThat(s3, cellValueEqualTo(0, 0, DATE));
+        assertThat(b.clear().value(0, 0, STRING).value(0, 0, DATE).build())
+                .hasValue(0, 0, DATE);
     }
 
     @Test
     public void testUnboundedClear() {
         ArraySheet.Builder b = ArraySheet.builder();
-        b.name("hello").value(10, 10, STRING);
-        assertThat(b.build(), allOf(nameEqualTo("hello"), dimensionEqualTo(11, 11)));
-        b.clear();
-        assertThat(b.build(), allOf(nameEqualTo(""), dimensionEqualTo(0, 0)));
+
+        assertThat(b.clear().name("hello").value(10, 10, STRING).build())
+                .hasName("hello")
+                .hasRowCount(11)
+                .hasColumnCount(11);
+
+        assertThat(b.clear().build())
+                .hasName("")
+                .hasRowCount(0)
+                .hasColumnCount(0);
     }
 
     @Test
     public void testUnboundedName() {
-        assertThat(ArraySheet.builder().build(), nameEqualTo(""));
-        assertThat(ArraySheet.builder().name("hello").build(), nameEqualTo("hello"));
+        ArraySheet.Builder b = ArraySheet.builder();
+
+        assertThat(b.clear().build()).hasName("");
+        assertThat(b.clear().name("hello").build()).hasName("hello");
     }
 
     @Test(expected = NullPointerException.class)
@@ -88,4 +90,77 @@ public class ArraySheetBuilderTest {
         ArraySheet.builder().name(null);
     }
 
+    @Test
+    public void testRow() {
+        ArraySheet.Builder b = ArraySheet.builder();
+
+        assertThat(b.clear().row(1, 2, Arrays.asList("A", "B")).build())
+                .hasRowCount(2)
+                .hasColumnCount(4)
+                .hasValue(1, 2, "A")
+                .hasValue(1, 3, "B");
+
+        assertThat(b.clear().row(1, 2, Collections.emptyList()).build())
+                .hasRowCount(0)
+                .hasColumnCount(0);
+
+        assertThat(b.clear().row(1, 2, Arrays.asList("A", "B").iterator()).build())
+                .hasRowCount(2)
+                .hasColumnCount(4)
+                .hasValue(1, 2, "A")
+                .hasValue(1, 3, "B");
+
+        assertThat(b.clear().row(1, 2, new Object[]{"A", "B"}).build())
+                .hasRowCount(2)
+                .hasColumnCount(4)
+                .hasValue(1, 2, "A")
+                .hasValue(1, 3, "B");
+
+        assertThat(b.clear().row(1, 2, new Object[]{}).build())
+                .hasRowCount(0)
+                .hasColumnCount(0);
+
+        assertThat(b.clear().row(1, 2, "A", "B").build())
+                .hasRowCount(2)
+                .hasColumnCount(4)
+                .hasValue(1, 2, "A")
+                .hasValue(1, 3, "B");
+    }
+
+    @Test
+    public void testColumn() {
+        ArraySheet.Builder b = ArraySheet.builder();
+
+        assertThat(b.clear().column(1, 2, Arrays.asList("A", "B")).build())
+                .hasRowCount(3)
+                .hasColumnCount(3)
+                .hasValue(1, 2, "A")
+                .hasValue(2, 2, "B");
+
+        assertThat(b.clear().column(1, 2, Collections.emptyList()).build())
+                .hasRowCount(0)
+                .hasColumnCount(0);
+
+        assertThat(b.clear().column(1, 2, Arrays.asList("A", "B").iterator()).build())
+                .hasRowCount(3)
+                .hasColumnCount(3)
+                .hasValue(1, 2, "A")
+                .hasValue(2, 2, "B");
+
+        assertThat(b.clear().column(1, 2, new Object[]{"A", "B"}).build())
+                .hasRowCount(3)
+                .hasColumnCount(3)
+                .hasValue(1, 2, "A")
+                .hasValue(2, 2, "B");
+
+        assertThat(b.clear().column(1, 2, new Object[]{}).build())
+                .hasRowCount(0)
+                .hasColumnCount(0);
+
+        assertThat(b.clear().column(1, 2, "A", "B").build())
+                .hasRowCount(3)
+                .hasColumnCount(3)
+                .hasValue(1, 2, "A")
+                .hasValue(2, 2, "B");
+    }
 }

@@ -632,7 +632,7 @@ public class TsFactory {
     }
 
     private boolean doLoad(@Nonnull Ts.Master ts, @Nonnull TsInformationType type) {
-        if (ts.getInformationType().encompass(type)) {
+        if (ts.getInformationType().encompass(type) || ts.getMoniker().isAnonymous()) {
             return true;
         }
         TsInformation info = new TsInformation(ts.getName(), ts.getMoniker(), type);

@@ -293,6 +293,7 @@ public final class ArraySheet extends Sheet implements Serializable {
         int j = 0;
         while (values.hasNext()) {
             b.value(row, column + j, values.next());
+            j++;
         }
         return b;
     }
@@ -301,6 +302,7 @@ public final class ArraySheet extends Sheet implements Serializable {
         int i = 0;
         while (values.hasNext()) {
             b.value(row + i, column, values.next());
+            i++;
         }
         return b;
     }
@@ -441,10 +443,13 @@ public final class ArraySheet extends Sheet implements Serializable {
 
         @Override
         public Builder row(int rowIndex, int columnIndex, Object[] row) {
+            if (row.length == 0) {
+                return this;
+            }
             if (maxRowIndex < rowIndex) {
                 maxRowIndex = rowIndex;
             }
-            int lastColumnIndex = columnIndex + row.length;
+            int lastColumnIndex = columnIndex + row.length - 1;
             if (maxColumnIndex < lastColumnIndex) {
                 maxColumnIndex = lastColumnIndex;
             }
