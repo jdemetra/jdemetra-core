@@ -15,6 +15,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -46,6 +47,7 @@ public class PeriodogramTestTest {
      * Test of compute method, of class PeriodogramTest.
      */
     @Test
+    @Ignore
     public void demoCompute() {
         int N = 120, M = 10000000;
         ArimaModelBuilder builder = new ArimaModelBuilder();
