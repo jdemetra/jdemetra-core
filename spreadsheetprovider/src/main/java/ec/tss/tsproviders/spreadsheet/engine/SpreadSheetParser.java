@@ -23,6 +23,7 @@ import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignT
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.UNKNOWN;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.VERTICAL;
 import ec.tss.tsproviders.utils.IParser;
+import ec.tss.tsproviders.utils.MultiLineNameUtil;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tss.tsproviders.utils.Parsers.Parser;
 import ec.tstoolkit.design.VisibleForTesting;
@@ -102,7 +103,7 @@ public abstract class SpreadSheetParser {
         }
 
         private static final int FIRST_DATA_COL_IDX = 1;
-        private static final Joiner NAME_JOINER = Joiner.on('\n').skipNulls();
+        private static final Joiner NAME_JOINER = Joiner.on(MultiLineNameUtil.SEPARATOR).skipNulls();
 
         private static List<String> getHorizontalNames(Sheet sheet, Context context, int level) {
             List<String> result = new ArrayList<>();
