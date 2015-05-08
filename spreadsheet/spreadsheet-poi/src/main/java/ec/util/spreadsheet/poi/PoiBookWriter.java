@@ -66,6 +66,9 @@ final class PoiBookWriter {
                 }
             }
         }
+        for (int j = 0; j < source.getColumnCount(); j++) {
+            target.autoSizeColumn(j);
+        }
     }
 
     private void copy(ec.util.spreadsheet.Cell source, Cell target) throws IOException {
