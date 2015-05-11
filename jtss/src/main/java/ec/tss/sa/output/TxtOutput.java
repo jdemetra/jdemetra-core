@@ -18,6 +18,7 @@ package ec.tss.sa.output;
 
 import ec.satoolkit.ISaSpecification;
 import ec.tss.sa.documents.SaDocument;
+import ec.tss.tsproviders.utils.MultiLineNameUtil;
 import ec.tstoolkit.algorithm.IOutput;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.utilities.Paths;
@@ -82,20 +83,21 @@ public class TxtOutput extends BasicConfiguration implements IOutput<SaDocument<
         if (s == null) {
             return;
         }
+        sname=MultiLineNameUtil.join(sname, " * ");
         File file = new File(folder, Paths.changeExtension(name, "dta"));
-        try (OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.ISO_8859_1)) {
             w.write(sname);
-            w.write("\n");
-            w.write(s.getLength());
+            w.write("\r\n");
+            w.write(Integer.toString(s.getLength()));
             w.write(" ");
-            w.write(s.getStart().getYear());
+            w.write(Integer.toString(s.getStart().getYear()));
             w.write(" ");
-            w.write(s.getStart().getPosition() + 1);
+            w.write(Integer.toString(s.getStart().getPosition() + 1));
             w.write(" ");
-            w.write(s.getFrequency().intValue());
+            w.write(Integer.toString(s.getFrequency().intValue()));
 
             for (int i = 0; i < s.getLength(); ++i) {
-                w.write("\n");
+                w.write("\r\n");
                 double value = s.get(i);
                 w.write(Double.toString(Double.isNaN(value) ? -99999 : value));
             }
