@@ -19,6 +19,7 @@ package ec.tss.formatters;
 
 import ec.tss.TsMoniker;
 import ec.tss.sa.output.BasicConfiguration;
+import ec.tss.tsproviders.utils.MultiLineNameUtil;
 import ec.tstoolkit.Parameter;
 import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.ProcDiagnostic;
@@ -268,6 +269,7 @@ public class CsvInformationFormatter {
         if (txt == null) {
             return;
         }
+        txt=MultiLineNameUtil.join(txt, " * ");
         
         if (txt.indexOf(comma) >= 0) {
             if (txt.indexOf('\"') >= 0) {

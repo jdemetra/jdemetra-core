@@ -19,6 +19,7 @@ package ec.tss.sa.output;
 import com.google.common.collect.Iterables;
 import ec.satoolkit.ISaSpecification;
 import ec.tss.sa.documents.SaDocument;
+import ec.tss.tsproviders.utils.MultiLineNameUtil;
 import ec.tstoolkit.algorithm.IOutput;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDataTable;
@@ -85,7 +86,8 @@ public class SpreadsheetOutput implements IOutput<SaDocument<ISaSpecification>> 
                             } else {
                                 list = allData.get(keyValue.getKey());
                             }
-                            list.add(new NamedObject<>(summary.getName(), keyValue.getValue()));
+                            String name=MultiLineNameUtil.join(summary.getName(), " * ");
+                            list.add(new NamedObject<>(name, keyValue.getValue()));
                         }
                     }
                     for (Entry<String, List<NamedObject<TsData>>> keyValue : allData.entrySet()) {
@@ -114,7 +116,8 @@ public class SpreadsheetOutput implements IOutput<SaDocument<ISaSpecification>> 
                             bySeriesTable.insert(-1, keyValue.getValue());
                         }
                         //ADD SHEET
-                        XSSFHelper.addSheet(workbook, "Series" + Integer.toString(i), new String[]{summary.getName()}, componentHeaders, bySeriesTable, config_.isVerticalOrientation());
+                        String name=MultiLineNameUtil.join(summary.getName(), " * ");
+                        XSSFHelper.addSheet(workbook, "Series" + Integer.toString(i), new String[]{name}, componentHeaders, bySeriesTable, config_.isVerticalOrientation());
                     }
                     break;
                 }
@@ -124,7 +127,8 @@ public class SpreadsheetOutput implements IOutput<SaDocument<ISaSpecification>> 
                     TsDataTable oneSheetTable = new TsDataTable();
 
                     for (DefaultSummary summary : summaries_) {
-                        headers0.add(summary.getName());
+                        String name=MultiLineNameUtil.join(summary.getName(), " * ");
+                        headers0.add(name);
                         Map<String, TsData> data = summary.getAllSeries();
                         for (Entry<String, TsData> keyValue : data.entrySet()) {
                             headers1.add(keyValue.getKey());

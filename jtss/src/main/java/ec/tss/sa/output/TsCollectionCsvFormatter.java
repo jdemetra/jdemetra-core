@@ -16,6 +16,7 @@
  */
 package ec.tss.sa.output;
 
+import ec.tss.tsproviders.utils.MultiLineNameUtil;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import ec.tstoolkit.timeseries.simplets.TsDataTableInfo;
@@ -155,6 +156,7 @@ public class TsCollectionCsvFormatter {
         if (txt == null) {
             return;
         }
+        txt=MultiLineNameUtil.join(txt, " * ");
 
         if (txt.indexOf(comma) >= 0) {
             if (txt.indexOf('\"') >= 0) {
