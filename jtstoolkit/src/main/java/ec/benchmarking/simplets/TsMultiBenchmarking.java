@@ -393,8 +393,9 @@ public class TsMultiBenchmarking {
 
     public List<String> endogenous() {
         ArrayList<String> list = new ArrayList<>();
+        Set<String> bk = bench_.keySet();
         for (String s : inputs.keySet()) {
-            if (rcnt.contains(s)) {
+            if (bk.contains(s)) {
                 list.add(s);
             }
         }
@@ -432,6 +433,7 @@ public class TsMultiBenchmarking {
         if (cConstraints.isEmpty() && tConstraints.isEmpty()) {
             return false;
         }
+        bench_ = new HashMap<>();
         TsData[] bench;
         if (cConstraints.isEmpty()) {
             bench = computeUnivariate();
@@ -443,7 +445,6 @@ public class TsMultiBenchmarking {
         if (bench == null) {
             return false;
         }
-        bench_ = new HashMap<>();
         for (int i = 0; i < bench.length; ++i) {
             bench_.put(rcnt.get(i), bench[i]);
         }
@@ -639,7 +640,7 @@ public class TsMultiBenchmarking {
                     }
                     TsData b = cholette.process(q, a);
                     if (b != null) {
-                        inputs.put(s, b);
+                        bench_.put(s, b);
                     }
                 }
             }
