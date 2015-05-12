@@ -52,11 +52,11 @@ import java.util.Map;
 public class StmResults implements ISaResults {
 
     public static final String MODEL = "model";
-    public static final String SERIES = "series", LEVEL = "level", SLOPE = "slope", NOISE = "noise", SEASONAL = "seasonal";
+    public static final String SERIES = "series", LEVEL = "level", CYCLE="cycle", SLOPE = "slope", NOISE = "noise", SEASONAL = "seasonal";
     private final BsmMonitor monitor_;
     private final SmoothingResults srslts_;
     private final InformationSet info_ = new InformationSet();
-    private final TsData y_, t_, sa_, s_, i_;
+    private final TsData y_, t_, sa_, s_, i_, c_;
     private UcarimaModel reduced_;
     private double errFactor_;
     private WienerKolmogorovEstimators wk_;
@@ -82,25 +82,31 @@ public class StmResults implements ISaResults {
         InformationSet minfo = info_.subSet(MODEL);
         int[] cmps = model.getCmpPositions();
         int cur = 0;
-        TsData noise = null, level = null, slope = null, seasonal = null;
+        TsData noise = null, level = null, slope = null, seasonal = null, cycle=null;
         if (model.getSpecification().hasNoise()) {
             noise = new TsData(y.getStart(), srslts_.component(cmps[cur++]), false);
             minfo.add(NOISE, noise);
             i_ = noise;
         } else {
             i_ = new TsData(y.getDomain(), 0);
-
+        }
+        if (model.getSpecification().hasCycle()) {
+            cycle = new TsData(y.getStart(), srslts_.component(cmps[cur++]), false);
+            minfo.add(CYCLE, cycle);
+            c_ = cycle;
+        } else {
+            c_ = new TsData(y.getDomain(), 0);
         }
         if (model.getSpecification().hasLevel()) {
             level = new TsData(y.getStart(), srslts_.component(cmps[cur++]), false);
             minfo.add(LEVEL, level);
-            t_ = level;
+            t_ = TsData.add(level, cycle);
             if (model.getSpecification().hasSlope()) {
                 slope = new TsData(y.getStart(), srslts_.component(cmps[cur++]), false);
                 minfo.add(SLOPE, slope);
             }
         } else {
-            t_ = new TsData(y.getDomain(), 0);
+            t_ = c_; //new TsData(y.getDomain(), 0);
         }
         if (model.getSpecification().hasSeasonal()) {
             seasonal = new TsData(y.getStart(), srslts_.component(cmps[cur++]), false);

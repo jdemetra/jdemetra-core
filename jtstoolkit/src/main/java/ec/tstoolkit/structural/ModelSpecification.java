@@ -32,7 +32,6 @@ public class ModelSpecification implements IProcSpecification, Cloneable {
     public static final String LUSE="luse", SUSE="suse", CUSE="cuse", NUSE="nuse", SEASMODEL="seasmodel";
 
     ComponentUse lUse, sUse, cUse, nUse;
-
     SeasonalModel seasModel;
 
     /**
@@ -194,13 +193,9 @@ public class ModelSpecification implements IProcSpecification, Cloneable {
     }
 
     /**
-     * Sets the slope. Be sure to set the noise use before calling this method.
-     * 
      * @param value
      */
     public void useCycle(ComponentUse value) {
-	if (value != ComponentUse.Unused && nUse == ComponentUse.Unused)
-	    return;
 	cUse = value;
     }
 
@@ -222,8 +217,6 @@ public class ModelSpecification implements IProcSpecification, Cloneable {
     public void useNoise(ComponentUse value)
     {
 	nUse = value;
-	if (value == ComponentUse.Unused)
-	    cUse = ComponentUse.Unused;
     }
 
     /**
@@ -293,7 +286,9 @@ public class ModelSpecification implements IProcSpecification, Cloneable {
        if (sUse == ComponentUse.Free)
            ++n;
        if (cUse == ComponentUse.Free)
-           ++n;
+           n+=3;
+       else if (cUse == ComponentUse.Fixed)
+           n+=2;
        if (nUse == ComponentUse.Free)
            ++n;
        if (seasModel != SeasonalModel.Fixed && seasModel != SeasonalModel.Unused)

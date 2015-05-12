@@ -195,7 +195,8 @@ public class BsmMonitor {
         IReadDataBlock p = mapper.map(model);
         SsfFunctionInstance instance = new SsfFunctionInstance(fn, p);
         double ll = instance.getLikelihood().getLogLikelihood();
-        for (int i = 0; i < p.getLength(); ++i) {
+        int nvar=mapper.getVarsCount();
+        for (int i = 0; i < nvar; ++i) {
             if (p.get(i) < 1e-2) {
                 DataBlock np = new DataBlock(p);
                 np.set(i, 0);
@@ -300,10 +301,15 @@ public class BsmMonitor {
         double lmax = instance.getLikelihood().getLogLikelihood();
         IReadDataBlock p = fn.mapper.map(fn.model.ssf);
         int imax = -1;
-        for (int i = 0; i < p.getLength(); ++i) {
+        int nvars= mapper.getVarsCount();
+        for (int i = 0; i < nvars; ++i) {
             DataBlock np = new DataBlock(p);
             np.set(.5);
             np.set(i, 1);
+            if (nvars <p.getLength()){
+                np.set(nvars, .9);
+                np.set(nvars+1, 1);
+            }
             instance = new SsfFunctionInstance(fn, np);
             double nll = instance.getLikelihood().getLogLikelihood();
             if (nll > lmax) {
@@ -326,6 +332,10 @@ public class BsmMonitor {
             DataBlock np = new DataBlock(p);
             np.set(.1);
             np.set(imax, 1);
+            if (nvars <p.getLength()){
+                np.set(nvars, .9);
+                np.set(nvars+1, 1);
+            }
             return mapper.map(np);
         }
     }

@@ -19,7 +19,7 @@ public class PeriodogramTest {
 
     @Test
     public void testSum() {
-        for (int K = 12; K < 1200; ++K) {
+        for (int K = 12; K < 120; ++K) {
             DataBlock z = new DataBlock(K);
             z.randomize(0);
             Periodogram p = new Periodogram(z, false);

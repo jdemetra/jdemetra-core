@@ -17,6 +17,10 @@
 
 package ec.tstoolkit.structural;
 
+import ec.tstoolkit.data.DataBlock;
+import ec.tstoolkit.ssf.Smoother;
+import ec.tstoolkit.ssf.SmoothingResults;
+import ec.tstoolkit.ssf.SsfData;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -30,7 +34,23 @@ public class BsmMonitorTest {
     }
 
     @Test
-    public void testSomeMethod() {
-    }
+    public void testCycle() {
+        BsmMonitor monitor=new BsmMonitor();
+        ModelSpecification mspec=new ModelSpecification();
+        mspec.cUse=ComponentUse.Free;
+       // mspec.sUse=ComponentUse.Unused;
+        mspec.seasModel=SeasonalModel.Crude;
+        monitor.setSpecification(mspec);
+        double[]y=data.Data.X.getValues().internalStorage();
+        boolean ok = monitor.process(y, 12);
+        BasicStructuralModel model = monitor.getResult();
+        Smoother smoother = new Smoother();
+        smoother.setSsf(model);
+        SsfData data = new SsfData(y, null);
+        SmoothingResults srslts = new SmoothingResults();
+        smoother.process(data, srslts);
+        double[] cmp = srslts.component(1);
+        System.out.println(new DataBlock(cmp));
+   }
     
 }
