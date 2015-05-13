@@ -16,22 +16,33 @@
  */
 package ec.tss.tsproviders.spreadsheet.engine;
 
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+import ec.tss.Ts;
+import ec.tss.TsCollection;
+import ec.tss.TsFactory;
+import ec.tss.TsInformationType;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.HORIZONTAL;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.UNKNOWN;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.VERTICAL;
 import ec.tss.tsproviders.utils.IParser;
 import ec.tss.tsproviders.utils.MultiLineNameUtil;
 import ec.tss.tsproviders.utils.OptionalTsData;
-import ec.tss.tsproviders.utils.Parsers.Parser;
+import ec.tstoolkit.data.Table;
 import ec.tstoolkit.design.VisibleForTesting;
+import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.timeseries.TsAggregationType;
+import ec.tstoolkit.timeseries.simplets.TsDataTable;
+import ec.tstoolkit.timeseries.simplets.TsDataTableInfo;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
+import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import ec.util.spreadsheet.Book;
 import ec.util.spreadsheet.Cell;
 import ec.util.spreadsheet.Sheet;
+import ec.util.spreadsheet.helpers.ArraySheet;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,30 +54,125 @@ import javax.annotation.Nullable;
  *
  * @author Philippe Charles
  */
-public abstract class SpreadSheetParser {
+public abstract class SpreadSheetFactory {
 
     @Nonnull
-    abstract public SpreadSheetSource parse(Book book, Parser<Date> dateParser, Parser<Number> numberParser, TsFrequency freq, TsAggregationType aggregation, boolean clean) throws IOException;
+    abstract public SpreadSheetSource toSource(@Nonnull Book book, @Nonnull TsImportOptions options) throws IOException;
 
     @Nonnull
-    public static SpreadSheetParser getDefault() {
+    abstract public TsCollection toTsCollection(@Nonnull Sheet sheet, @Nonnull TsImportOptions options);
+
+    @Nonnull
+    abstract public Table<?> toTable(@Nonnull Sheet sheet);
+
+    @Nonnull
+    abstract public ArraySheet fromTsCollection(@Nonnull TsCollection col, @Nonnull TsExportOptions options);
+
+    @Nonnull
+    abstract public ArraySheet fromMatrix(@Nonnull Matrix matrix);
+
+    @Nonnull
+    abstract public ArraySheet fromTable(@Nonnull Table<?> table);
+
+    @Nonnull
+    public static SpreadSheetFactory getDefault() {
         return DefaultImpl.INSTANCE;
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
     @VisibleForTesting
-    static final class DefaultImpl extends SpreadSheetParser {
+    static final class DefaultImpl extends SpreadSheetFactory {
 
         private static final DefaultImpl INSTANCE = new DefaultImpl();
 
         @Override
-        public SpreadSheetSource parse(Book book, Parser<Date> dateParser, Parser<Number> numberParser, TsFrequency freq, TsAggregationType aggregation, boolean clean) throws IOException {
-            Context context = new Context(
-                    CellParser.onStringType(),
-                    CellParser.onDateType().or(CellParser.fromParser(dateParser)),
-                    CellParser.onNumberType().or(CellParser.fromParser(numberParser)),
-                    freq, aggregation, clean);
-            return parseSource(book, context);
+        public SpreadSheetSource toSource(Book book, TsImportOptions options) throws IOException {
+            return parseSource(book, Context.create(options));
+        }
+
+        @Override
+        public ArraySheet fromTsCollection(TsCollection col, TsExportOptions options) {
+            col.load(TsInformationType.Data);
+
+            TsDataTable table = new TsDataTable();
+            for (Ts o : col) {
+                table.insert(-1, o.getTsData());
+            }
+
+            if (table.getDomain() != null) {
+                ArraySheet.Builder builder = ArraySheet.builder().name("dnd");
+
+                if (options.isShowTitle()) {
+                    builder.row(0, options.isShowDates() ? 1 : 0, Iterables.transform(col, TO_NAME));
+                }
+
+                if (options.isShowDates()) {
+                    builder.column(options.isShowTitle() ? 1 : 0, 0, Iterables.transform(table.getDomain(), options.isBeginPeriod() ? TO_FIRST_DAY : TO_LAST_DAY));
+                }
+
+                int firstRow = options.isShowTitle() ? 1 : 0;
+                int firstColumn = options.isShowDates() ? 1 : 0;
+                int rowCount = table.getDomain().getLength();
+                int columnCount = col.getCount();
+                for (int i = 0; i < rowCount; ++i) {
+                    for (int j = 0; j < columnCount; ++j) {
+                        if (table.getDataInfo(i, j) == TsDataTableInfo.Valid) {
+                            builder.value(firstRow + i, firstColumn + j, table.getData(i, j));
+                        }
+                    }
+                }
+
+                ArraySheet sheet = builder.build();
+
+                if (!options.isVertical()) {
+                    sheet = sheet.inv();
+                }
+
+                return sheet;
+            }
+
+            return ArraySheet.builder().name("dnd").build();
+        }
+
+        @Override
+        public TsCollection toTsCollection(Sheet sheet, TsImportOptions options) {
+            TsCollection result = TsFactory.instance.createTsCollection();
+            for (SpreadSheetSeries s : parseCollection(sheet, 0, Context.create(options)).series) {
+                if (s.data.isPresent()) {
+                    result.add(TsFactory.instance.createTs(s.seriesName, null, s.data.get()));
+                }
+            }
+            return result;
+        }
+
+        @Override
+        public ArraySheet fromMatrix(Matrix matrix) {
+            return newArraySheet("dnd", matrix);
+        }
+
+        @Override
+        public Table<?> toTable(Sheet sheet) {
+            Table<Object> result = new Table<>(sheet.getRowCount(), sheet.getColumnCount());
+            for (int i = 0; i < sheet.getRowCount(); i++) {
+                for (int j = 0; j < sheet.getColumnCount(); j++) {
+                    Cell cell = sheet.getCell(i, j);
+                    if (cell != null) {
+                        if (cell.isDate()) {
+                            result.set(i, j, cell.getDate());
+                        } else if (cell.isNumber()) {
+                            result.set(i, j, cell.getNumber());
+                        } else if (cell.isString()) {
+                            result.set(i, j, cell.getString());
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        @Override
+        public ArraySheet fromTable(Table<?> table) {
+            return newArraySheet("dnd", table);
         }
 
         @VisibleForTesting
@@ -190,6 +296,14 @@ public abstract class SpreadSheetParser {
             this.frequency = frequency;
             this.aggregationType = aggregationType;
             this.clean = clean;
+        }
+
+        private static Context create(TsImportOptions options) {
+            return new Context(
+                    CellParser.onStringType(),
+                    CellParser.onDateType().or(CellParser.fromParser(options.getDataFormat().dateParser())),
+                    CellParser.onNumberType().or(CellParser.fromParser(options.getDataFormat().numberParser())),
+                    options.getFrequency(), options.getAggregationType(), options.isCleanMissing());
         }
     }
 
@@ -352,6 +466,47 @@ public abstract class SpreadSheetParser {
             int count = maxIndex - minIndex + 1;
             return count > 0 && count > (other.maxIndex - other.minIndex + 1);
         }
+    }
+
+    private static final Function<Ts, String> TO_NAME = new Function<Ts, String>() {
+        @Override
+        public String apply(Ts input) {
+            return input.getName();
+        }
+    };
+
+    private static final Function<TsPeriod, Date> TO_FIRST_DAY = new Function<TsPeriod, Date>() {
+        @Override
+        public Date apply(TsPeriod input) {
+            return input.firstday().getTime();
+        }
+    };
+
+    private static final Function<TsPeriod, Date> TO_LAST_DAY = new Function<TsPeriod, Date>() {
+        @Override
+        public Date apply(TsPeriod input) {
+            return input.lastday().getTime();
+        }
+    };
+
+    private static ArraySheet newArraySheet(String name, Matrix matrix) {
+        ArraySheet.Builder result = ArraySheet.builder(matrix.getRowsCount(), matrix.getColumnsCount()).name(name);
+        for (int i = 0; i < matrix.getRowsCount(); i++) {
+            for (int j = 0; j < matrix.getColumnsCount(); j++) {
+                result.value(i, j, matrix.get(i, j));
+            }
+        }
+        return result.build();
+    }
+
+    private static ArraySheet newArraySheet(String name, Table<?> table) {
+        ArraySheet.Builder result = ArraySheet.builder(table.getRowsCount(), table.getColumnsCount()).name(name);
+        for (int i = 0; i < table.getRowsCount(); i++) {
+            for (int j = 0; j < table.getColumnsCount(); j++) {
+                result.value(i, j, table.get(i, j));
+            }
+        }
+        return result.build();
     }
     //</editor-fold>
 }
