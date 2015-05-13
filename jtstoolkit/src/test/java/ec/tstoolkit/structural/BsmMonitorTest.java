@@ -14,13 +14,18 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-
 package ec.tstoolkit.structural;
 
 import ec.tstoolkit.data.DataBlock;
+import ec.tstoolkit.eco.DiffuseLikelihood;
+import ec.tstoolkit.ssf.DiffusePredictionErrorDecomposition;
+import ec.tstoolkit.ssf.Filter;
+import ec.tstoolkit.ssf.LikelihoodEvaluation;
 import ec.tstoolkit.ssf.Smoother;
 import ec.tstoolkit.ssf.SmoothingResults;
 import ec.tstoolkit.ssf.SsfData;
+import ec.tstoolkit.ssf.arima.SsfArima;
+import ec.tstoolkit.ucarima.UcarimaModel;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -29,28 +34,33 @@ import static org.junit.Assert.*;
  * @author Jean Palate
  */
 public class BsmMonitorTest {
-    
+
     public BsmMonitorTest() {
     }
 
     @Test
     public void testCycle() {
-        BsmMonitor monitor=new BsmMonitor();
-        ModelSpecification mspec=new ModelSpecification();
-        mspec.cUse=ComponentUse.Free;
-       // mspec.sUse=ComponentUse.Unused;
-        mspec.seasModel=SeasonalModel.Crude;
+        BsmMonitor monitor = new BsmMonitor();
+        ModelSpecification mspec = new ModelSpecification();
+        mspec.cUse = ComponentUse.Free;
+        mspec.lUse = ComponentUse.Free;
+        mspec.sUse =ComponentUse.Free;
+        mspec.seasModel = SeasonalModel.Dummy;
         monitor.setSpecification(mspec);
-        double[]y=data.Data.X.getValues().internalStorage();
+        double[] y = data.Data.P.getValues().internalStorage();
         boolean ok = monitor.process(y, 12);
         BasicStructuralModel model = monitor.getResult();
-        Smoother smoother = new Smoother();
-        smoother.setSsf(model);
-        SsfData data = new SsfData(y, null);
-        SmoothingResults srslts = new SmoothingResults();
-        smoother.process(data, srslts);
-        double[] cmp = srslts.component(1);
-        System.out.println(new DataBlock(cmp));
-   }
-    
+        UcarimaModel ucm = model.computeReducedModel(true);
+        double ll1 = monitor.getLikelihood().getUncorrectedLogLikelihood();
+ 
+        Filter filter = new Filter();
+        filter.setSsf(new SsfArima(ucm.sum()));
+        DiffusePredictionErrorDecomposition dp = new DiffusePredictionErrorDecomposition(false);
+        filter.process(new SsfData(y, null), dp);
+        DiffuseLikelihood ll = new DiffuseLikelihood();
+        LikelihoodEvaluation.evaluate(dp, ll);
+        double ll2 = ll.getUncorrectedLogLikelihood();
+       assertTrue(Math.abs(ll2-ll1)<1e-4);
+    }
+
 }
