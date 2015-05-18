@@ -76,10 +76,14 @@ public class JsoupBookReaderTest {
         assertThat(sheet.getCell(0, 0)).hasString("A1");
         assertThat(sheet.getCell(0, 2)).hasString("C1");
 
-        book = read("<table><tr><td rowspan=2>A1</td></tr><tr><td>B2</td>");
+        book = read("<table><tr><td>A1</td><td rowspan=2>B1</td></tr> <tr><td>A2</td></tr> <tr><td>A3</td><td>B3</td></tr>");
         sheet = book.getSheet(0);
-        assertThat(sheet).hasRowCount(2).hasColumnCount(2);
+        assertThat(sheet).hasRowCount(3).hasColumnCount(2);
         assertThat(sheet.getCell(0, 0)).hasString("A1");
-        assertThat(sheet.getCell(1, 1)).hasString("B2");
+        assertThat(sheet.getCell(0, 1)).hasString("B1");
+        assertThat(sheet.getCell(1, 0)).hasString("A2");
+        assertThat(sheet.getCell(1, 1)).isNull();
+        assertThat(sheet.getCell(2, 0)).hasString("A3");
+        assertThat(sheet.getCell(2, 1)).hasString("B3");
     }
 }

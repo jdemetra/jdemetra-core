@@ -48,7 +48,7 @@ final class JsoupBookReader {
                 if (!row.parent().tagName().equals("tfoot")) {
                     int j = 0;
                     for (Element cell : row.children().select("td, th")) {
-                        while (rowSpans.decrease(j)) {
+                        while (rowSpans.hasSpan(j)) {
                             j++;
                         }
                         String cellValue = cell.text();
@@ -58,6 +58,7 @@ final class JsoupBookReader {
                         rowSpans.increase(j, parseSpan(cell.attr("rowspan")));
                         j += parseSpan(cell.attr("colspan"));
                     }
+                    rowSpans.decrease();
                     i++;
                 }
             }
@@ -87,7 +88,7 @@ final class JsoupBookReader {
     private static int parseSpan(String value) {
         try {
             int result = Integer.parseInt(value);
-            return result > 0 ? result : 1;
+            return result > 0 ? result : 0;
         } catch (NumberFormatException ex) {
             return 1;
         }
@@ -106,22 +107,22 @@ final class JsoupBookReader {
         }
 
         public void increase(int columnIndex, int count) {
-            if (count > 1) {
+            if (count > 0) {
                 checkSize(columnIndex);
-                data[columnIndex] += (count - 1);
+                data[columnIndex] += count;
             }
         }
 
-        public boolean decrease(int columnIndex) {
-            if (data.length < columnIndex + 1) {
-                return false;
+        public boolean hasSpan(int columnIndex) {
+            return columnIndex < data.length && data[columnIndex] > 0;
+        }
+
+        public void decrease() {
+            for (int j = 0; j < data.length; j++) {
+                if (data[j] > 0) {
+                    data[j] = data[j] - 1;
+                }
             }
-            int value = data[columnIndex];
-            if (value > 0) {
-                data[columnIndex] = value - 1;
-                return true;
-            }
-            return false;
         }
 
         public void clear() {
