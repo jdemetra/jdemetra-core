@@ -25,19 +25,22 @@ import ec.tstoolkit.maths.polynomials.UnitRoots;
 import ec.tstoolkit.maths.polynomials.UnitRootsSolver;
 
 /**
- *
+ * Auxiliary class for computing the moving average process corresponding to
+ * a given auto-covariance function.
+ * This implementation is based on the procedure in the program SEATS and described
+ * in the paper of A. Maravall:
+ * 
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Beta)
 @Algorithm(entryPoint = "decompose")
 public class SymmetricFrequencyResponseDecomposer implements ISymmetricFilterDecomposer {
 
     private double m_var;
     private BackFilter m_bf;
     private int m_freq;
-    private double m_epsilon = 1e-4, m_repsilon = 1e-1;
-
-    ;
+    private double m_epsilon = 1e-4;
+    private final double m_repsilon = 1e-1;
 
     /**
      *
