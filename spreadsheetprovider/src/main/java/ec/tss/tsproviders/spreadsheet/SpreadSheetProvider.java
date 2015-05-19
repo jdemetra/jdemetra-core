@@ -24,10 +24,11 @@ import ec.tss.TsInformationType;
 import ec.tss.TsMoniker;
 import ec.tss.tsproviders.*;
 import static ec.tss.tsproviders.spreadsheet.SpreadSheetBean.X_CLEAN_MISSING;
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetParser;
+import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory;
 import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection;
 import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetSeries;
 import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetSource;
+import ec.tss.tsproviders.spreadsheet.engine.TsImportOptions;
 import ec.tss.tsproviders.utils.*;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.util.spreadsheet.Book;
@@ -87,7 +88,8 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
         Book.Factory factory = getFactoryByFile(file);
         if (factory != null) {
             try (Book book = factory.load(file)) {
-                return SpreadSheetParser.getDefault().parse(book, bean.dataFormat.dateParser(), bean.dataFormat.numberParser(), bean.frequency, bean.aggregationType, bean.cleanMissing);
+                TsImportOptions options = TsImportOptions.create(bean.getDataFormat(), bean.getFrequency(), bean.getAggregationType(), bean.isCleanMissing());
+                return SpreadSheetFactory.getDefault().toSource(book, options);
             }
         }
         throw new RuntimeException("File type not supported");

@@ -18,10 +18,10 @@ package ec.tss.tsproviders.spreadsheet.engine;
 
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.HORIZONTAL;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.VERTICAL;
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetParser.CellParser.onDateType;
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetParser.CellParser.onNumberType;
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetParser.CellParser.onStringType;
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetParser.Context;
+import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory.CellParser.onDateType;
+import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory.CellParser.onNumberType;
+import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory.CellParser.onStringType;
+import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory.Context;
 import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.date;
 import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.sheet;
 import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.top5Excel;
@@ -29,9 +29,6 @@ import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.top5ExcelClassic;
 import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.top5OpenDocument;
 import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.top5Xmlss;
 import static ec.tss.tsproviders.spreadsheet.engine.Top5BrowsersHelper.testContent;
-import ec.tss.tsproviders.utils.DataFormat;
-import ec.tstoolkit.timeseries.TsAggregationType;
-import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.util.spreadsheet.Book;
 import ec.util.spreadsheet.od.OpenDocumentBookFactory;
 import ec.util.spreadsheet.poi.ExcelBookFactory;
@@ -41,7 +38,7 @@ import java.io.IOException;
 import java.net.URL;
 import org.junit.Test;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollectionAssert.assertThat;
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetParser.DefaultImpl.parseCollection;
+import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory.DefaultImpl.parseCollection;
 import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.data;
 import static ec.tstoolkit.timeseries.TsAggregationType.None;
 import static ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly;
@@ -52,7 +49,7 @@ import java.util.Date;
  *
  * @author Philippe Charles
  */
-public class SpreadSheetParserTest {
+public class SpreadSheetFactoryTest {
 
     private final Date jan2010 = date(2010, 0, 1);
     private final Date feb2010 = date(2010, 1, 1);
@@ -167,8 +164,7 @@ public class SpreadSheetParserTest {
 
     private static void testFactory(Book.Factory bookFactory, URL url) throws IOException {
         try (Book book = bookFactory.load(url)) {
-            DataFormat df = DataFormat.DEFAULT;
-            testContent(SpreadSheetParser.getDefault().parse(book, df.dateParser(), df.numberParser(), TsFrequency.Undefined, TsAggregationType.None, true));
+            testContent(SpreadSheetFactory.getDefault().toSource(book, TsImportOptions.getDefault()));
         }
     }
 

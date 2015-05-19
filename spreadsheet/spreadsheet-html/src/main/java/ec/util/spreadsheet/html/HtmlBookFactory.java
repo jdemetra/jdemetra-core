@@ -29,6 +29,7 @@ import java.util.Locale;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import org.jsoup.Jsoup;
 
 /**
  *
@@ -36,14 +37,10 @@ import javax.xml.stream.XMLStreamWriter;
  */
 public class HtmlBookFactory extends Book.Factory {
 
-    private final HtmlBookWriter bookWriter;
+    private final XMLOutputFactory xof;
 
     public HtmlBookFactory() {
-        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.ROOT);
-        numberFormat.setMaximumFractionDigits(9);
-        numberFormat.setMaximumIntegerDigits(12);
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        this.bookWriter = new HtmlBookWriter(dateFormat, numberFormat);
+        this.xof = XMLOutputFactory.newInstance();
     }
 
     @Override
@@ -53,29 +50,44 @@ public class HtmlBookFactory extends Book.Factory {
 
     @Override
     public boolean canLoad() {
-        return false;
+        return true;
+    }
+
+    @Override
+    public Book load(File file) throws IOException {
+        return JsoupBookReader.read(Jsoup.parse(file, null));
     }
 
     @Override
     public Book load(InputStream stream) throws IOException {
-        throw new IOException("Not supported yet.");
+        return JsoupBookReader.read(Jsoup.parse(stream, null, ""));
     }
 
     @Override
     public boolean accept(File pathname) {
-        String tmp = pathname.getName().toLowerCase(Locale.ENGLISH);;
+        String tmp = pathname.getName().toLowerCase(Locale.ENGLISH);
         return tmp.endsWith(".html") || tmp.endsWith(".htm");
     }
 
     @Override
     public void store(OutputStream stream, Book book) throws IOException {
-        XMLOutputFactory xof = XMLOutputFactory.newInstance();
         try {
             XMLStreamWriter w = xof.createXMLStreamWriter(stream, StandardCharsets.UTF_8.name());
-            bookWriter.write(w, book);
+            XMLStreamBookWriter.write(w, book, getPeriodFormatter(), getValueFormatter());
             w.close();
         } catch (XMLStreamException ex) {
             throw new IOException(ex);
         }
+    }
+
+    private DateFormat getPeriodFormatter() {
+        return new SimpleDateFormat("yyyy-MM-dd");
+    }
+
+    private NumberFormat getValueFormatter() {
+        NumberFormat result = NumberFormat.getNumberInstance(Locale.ROOT);
+        result.setMaximumFractionDigits(9);
+        result.setMaximumIntegerDigits(12);
+        return result;
     }
 }
