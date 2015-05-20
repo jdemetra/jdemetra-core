@@ -36,12 +36,8 @@ public class GrantHitchinsSolver implements IRootsSolver {
      * 
      * @return
      */
-    public static double X02AJF() {
-	// RETURNS (1/2)*B**(1-P) IF ROUNDS IS .TRUE.
-	// RETURNS B**(1-P) OTHERWISE
-	// return 1.1102230246251565e-016;
+    public static double epsilon() {
 	return 1.1102230246251565e-016;
-	// check with Dlamch.eps !!!
     }
 
     private double m_x, m_y, m_r, m_j, m_rx, m_jx;
@@ -51,7 +47,7 @@ public class GrantHitchinsSolver implements IRootsSolver {
     // scaling factor
     private double m_fac;
     // tolerance
-    private static final double g_eps = X02AJF(), g_small = 1e-15,
+    private static final double g_eps = epsilon(), g_small = 1e-15,
 	    g_cmax = Math.sqrt(Double.MAX_VALUE);
     private static final double g_eps2 = g_eps * 1e4;
     private Polynomial m_remainder;
@@ -65,22 +61,14 @@ public class GrantHitchinsSolver implements IRootsSolver {
 	m_tol = g_eps;
     }
 
-    private boolean C02AEZ(double[] a, int n, double tol) {
-	// EVALUATES R,RX,J,JX AT THE POINT X+IY AND APPLIES THE ADAMS
-	// TEST.
-	// THE BOOLEAN VARIABLE SAT IS GIVEN THE VALUE TRUE IF THE TEST
-	// IS SATISFIED.
-	// .. Scalar Arguments ..
-	// In/Out Status: Read, Overwritten ..
-	// In/Out Status: Maybe Read, Not Written ..
-	// double precision a(n)
-	// In/Out Status: Read, Not Written ..
-	// double precision tol
-	// Data Declarations ..
-	// .. Data statements ..
-
-	// .. Executable Statements ..
-
+    /**
+     * Evaluates R,RX,J,JX at the point X+IY and applies the Adam's test.
+     * @param a
+     * @param n
+     * @param tol
+     * @return True if the test is satisfied
+     */
+    private boolean evaluate(double[] a, int n, double tol) {
 	double p = -TWO * m_x;
 	double q = m_x * m_x + m_y * m_y;
 	double t = Math.sqrt(q);
@@ -248,7 +236,7 @@ public class GrantHitchinsSolver implements IRootsSolver {
     private boolean isrealroot(double[] a, int n, double tol) {
 	double tmp = m_y;
 	m_y = ZERO;
-	boolean rslt = C02AEZ(a, n, tol);
+	boolean rslt = evaluate(a, n, tol);
 	// restore y
 	m_y = tmp;
 	return rslt;
@@ -287,7 +275,7 @@ public class GrantHitchinsSolver implements IRootsSolver {
     }
 
     private boolean search(double[] a, int n, double tol) {
-	C02AEZ(a, n, tol);
+	evaluate(a, n, tol);
 	double fun = m_r * m_r + m_j * m_j;
 	int j = 0;
 	double tol2 = Math.pow(m_tol, A1P5);
@@ -312,7 +300,7 @@ public class GrantHitchinsSolver implements IRootsSolver {
 	    double nfun = 0;
 	    int k = 0;
 	    while (++k < g_max) {
-		if (C02AEZ(a, n, tol))
+		if (evaluate(a, n, tol))
 		    return true;
 		nfun = m_r * m_r + m_j * m_j;
 		if (fun - nfun >= sig * fun)
