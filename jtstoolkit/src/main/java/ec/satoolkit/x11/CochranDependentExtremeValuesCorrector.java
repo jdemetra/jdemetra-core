@@ -7,10 +7,8 @@ package ec.satoolkit.x11;
 
 import ec.satoolkit.DecompositionMode;
 import ec.tstoolkit.design.Development;
-import ec.tstoolkit.stats.CochranTest;
+import ec.satoolkit.diagnostics.CochranTest;
 import ec.tstoolkit.timeseries.simplets.TsData;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * This Extremvalues Korrektor uses the Cochran Test to decide weather the
