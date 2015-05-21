@@ -110,6 +110,7 @@ public class BasicStructuralModel implements ISsf, Cloneable {
             Q.set(freq - 2, freq - 2, 1);
         } else if (sm == SeasonalModel.Crude) {
             Q.set(1);
+            //Q.set(0, 0, freq);
         } else if (sm == SeasonalModel.HarrisonStevens) {
             // HarrisonStevens
             double v = 1.0 / freq;
@@ -256,11 +257,14 @@ public class BasicStructuralModel implements ISsf, Cloneable {
                     Matrix O = new Matrix(freq, freq);
                     switch (seasModel) {
                         case Crude:
-                            O.subMatrix().set(1);
+                            int f=freq-1;
+                            O.set(1);
+                            O.row(0).mul(-f);
+                            O.column(0).mul(-f);
                             break;
 
                         case HarrisonStevens:
-                            O.subMatrix().set(-1.0 / freq);
+                            O.set(-1.0 / freq);
                             O.diagonal().add(1);
                             break;
                         case Trigonometric:
@@ -269,11 +273,10 @@ public class BasicStructuralModel implements ISsf, Cloneable {
                         default:
                             break;
                     }
-
                     double[] w = new double[freq - 1];
-                    for (int i = 0; i <= freq - 1; ++i) {
-                        for (int j = 1; j <= freq - 1 - i; ++j) {
-                            SubMatrix s = O.subMatrix(0, j, 0, j + i);
+                    for (int i = 0; i < freq - 1; ++i) {
+                        for (int j = i; j < freq - 1; ++j) {
+                            SubMatrix s = O.subMatrix(0, 1+j-i, 0, 1+j);
                             w[i] += s.sum();
                         }
                     }
@@ -335,7 +338,7 @@ public class BasicStructuralModel implements ISsf, Cloneable {
             ++j;
         }
         if (seasVar >= 0) {
-            m_cmps[i++] = j;
+            m_cmps[i] = j;
         }
     }
 
@@ -669,8 +672,8 @@ public class BasicStructuralModel implements ISsf, Cloneable {
     public int getTransitionResDim() {
         int nr = 0;
         if (seasVar > 0) {
-            if (seasModel == SeasonalModel.Dummy
-                    || seasModel == SeasonalModel.Crude) {
+            if (seasModel == SeasonalModel.Dummy) {
+//                    || seasModel == SeasonalModel.Crude) {
                 ++nr;
             } else {
                 nr += freq - 1;
@@ -746,7 +749,8 @@ public class BasicStructuralModel implements ISsf, Cloneable {
      */
     @Override
     public boolean hasW() {
-        return seasModel == SeasonalModel.Crude;
+        return false;
+//        return seasModel == SeasonalModel.Crude;
     }
 
     /**
@@ -757,9 +761,10 @@ public class BasicStructuralModel implements ISsf, Cloneable {
     protected void initQSeas(SubMatrix Q, double var) {
         // Dummy
         if (seasModel == SeasonalModel.Dummy) {
-            Q.set(0, 0, var);
+            Q.set(Q.getRowsCount() - 1, Q.getColumnsCount() - 1, var);
         } else if (seasModel == SeasonalModel.Crude) {
             Q.set(var);
+            //Q.set(0, 0, freq * var);
         } else if (seasModel == SeasonalModel.HarrisonStevens) {
             double v = var / freq;
             Q.set(-v);
@@ -924,8 +929,8 @@ public class BasicStructuralModel implements ISsf, Cloneable {
             ++i;
         }
         if (seasVar > 0) {
-            if (seasModel == SeasonalModel.Dummy
-                    || seasModel == SeasonalModel.Crude) {
+            if (seasModel == SeasonalModel.Dummy){
+//                    || seasModel == SeasonalModel.Crude) {
                 q.set(i, i, seasVar);
             } else {
                 initQSeas(q.extract(i, i + freq - 1, i, i + freq - 1), seasVar);
@@ -966,7 +971,7 @@ public class BasicStructuralModel implements ISsf, Cloneable {
         }
         if (seasVar > 0) {
             if (seasModel == SeasonalModel.Dummy) {
-                r.set(i, j);
+                r.set(i, j + freq - 2);
             } else {
                 for (int k = 1; k < freq; ++k) {
                     r.set(i++, j++);
@@ -1089,8 +1094,8 @@ public class BasicStructuralModel implements ISsf, Cloneable {
         }
         if (seasVar >= 0) {
             SubMatrix seas = tr.extract(i, i + freq - 1, i, i + freq - 1);
-            seas.row(0).set(-1);
-            seas.subDiagonal(-1).set(1);
+            seas.row(freq - 2).set(-1);
+            seas.subDiagonal(1).set(1);
         }
     }
 
@@ -1143,7 +1148,7 @@ public class BasicStructuralModel implements ISsf, Cloneable {
         }
         if (seasVar >= 0) {
             DataBlock ex = x.extract(i0, freq - 1, 1);
-            ex.fshift(DataBlock.ShiftOption.NegSum);
+            ex.bshift(DataBlock.ShiftOption.NegSum);
         }
     }
 
@@ -1180,39 +1185,32 @@ public class BasicStructuralModel implements ISsf, Cloneable {
      */
     @Override
     public void W(int pos, SubMatrix w) {
-        if (seasModel == SeasonalModel.Crude) {
-            int nr = 0, nc = 0;
-            if (nVar > 0) {
-                w.set(nr, nc, 1);
-                ++nr;
-                ++nc;
-            }
-            if (cVar > 0) {
-                w.set(nr, nc, 1);
-                ++nr;
-                ++nc;
-                w.set(nr, nc, 1);
-                ++nr;
-                ++nc;
-            }
-            if (lVar > 0) {
-                w.set(nr, nc, 1);
-                ++nr;
-                ++nc;
-            }
-            if (sVar > 0) {
-                w.set(nr, nc, 1);
-                ++nr;
-                ++nc;
-            }
-            if (seasVar > 0 && seasModel == SeasonalModel.Crude) {
-                for (int i = 0; i < freq - 1; ++i) {
-                    w.set(nr + i, nc, 1);
-                }
-            } else {
-                w.set(nr, nc, 1);
-            }
-        }
+//        if (seasModel == SeasonalModel.Crude) {
+//            int nr = 0;
+//            if (nVar > 0) {
+//                w.set(nr, nr, 1);
+//                ++nr;
+//            }
+//            if (cVar > 0) {
+//                w.set(nr, nr, 1);
+//                ++nr;
+//                w.set(nr, nr, 1);
+//                ++nr;
+//            }
+//            if (lVar > 0) {
+//                w.set(nr, nr, 1);
+//                ++nr;
+//            }
+//            if (sVar > 0) {
+//                w.set(nr, nr, 1);
+//                ++nr;
+//            }
+//            if (seasVar > 0) {
+//                for (int i = 0; i < freq - 1; ++i) {
+//                    w.set(nr + i, nr, 1);
+//                }
+//            }
+//    }
     }
 
     /**
@@ -1262,11 +1260,11 @@ public class BasicStructuralModel implements ISsf, Cloneable {
         }
         if (seasVar >= 0) {
             int imax = i0 + freq - 2;
-            double x0 = xin.get(i0);
-            for (int i = i0; i < imax; ++i) {
-                xin.set(i, xin.get(i + 1) - x0);
+            double xs = xin.get(imax);
+            for (int i = imax; i > i0; --i) {
+                xin.set(i, xin.get(i - 1) - xs);
             }
-            xin.set(imax, -x0);
+            xin.set(i0, -xs);
         }
     }
 

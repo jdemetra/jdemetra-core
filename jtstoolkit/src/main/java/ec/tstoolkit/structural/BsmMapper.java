@@ -81,8 +81,6 @@ public class BsmMapper implements IParametricMapping<BasicStructuralModel> {
         this.freq = freq;
     }
 
-    ;
-
     /**
      * 
      * @param spec
