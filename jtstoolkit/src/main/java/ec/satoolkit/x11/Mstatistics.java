@@ -27,7 +27,7 @@ import ec.tstoolkit.eco.RegModel;
 import ec.tstoolkit.information.InformationMapper;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.stats.AutoCorrelations;
-import ec.tstoolkit.stats.CochranTest;
+import ec.satoolkit.diagnostics.CochranTest;
 import ec.tstoolkit.timeseries.simplets.PeriodIterator;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.Collections;

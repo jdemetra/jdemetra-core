@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ec.tstoolkit.stats;
+package ec.satoolkit.diagnostics;
 
-import ec.satoolkit.DecompositionMode;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.simplets.TsData;
 

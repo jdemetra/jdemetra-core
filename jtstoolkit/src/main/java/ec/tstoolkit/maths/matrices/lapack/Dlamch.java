@@ -18,18 +18,9 @@
 package ec.tstoolkit.maths.matrices.lapack;
 
 /**
+ * Determines double precision machine parameters.
  * 
- * @author PCuser
- */
-/*
- * //DLAMCH determines double precision machine parameters. /**
- * 
- * //CMACH (input) CHARACTER*1 // Specifies the value to be returned by DLAMCH:
- * // = 'E' or 'e', DLAMCH := eps // = 'S' or 's , DLAMCH := sfmin // = 'B' or
- * 'b', DLAMCH := base // = 'P' or 'p', DLAMCH := eps*base // = 'N' or 'n',
- * DLAMCH := t // = 'R' or 'r', DLAMCH := rnd // = 'M' or 'm', DLAMCH := emin //
- * = 'U' or 'u', DLAMCH := rmin // = 'L' or 'l', DLAMCH := emax // = 'O' or 'o',
- * DLAMCH := rmax
+ * @author Jean Palate
  */
 public class Dlamch {
 

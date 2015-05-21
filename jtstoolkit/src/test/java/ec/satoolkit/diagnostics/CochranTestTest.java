@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package ec.tstoolkit.stats;
+package ec.satoolkit.diagnostics;
 
 import data.DataCalendarSigmaX11;
 import ec.satoolkit.DecompositionMode;
