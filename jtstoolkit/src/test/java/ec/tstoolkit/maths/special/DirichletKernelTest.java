@@ -27,14 +27,14 @@ public class DirichletKernelTest {
             double k=dk.fn(step*i);
             z+=k*k*step*Math.PI*2;
         }
-        double dn=N;
-        for (int i=20; i<N/2; ++i){
-            double k=dk.fn(step*i);
-            z+=k*k*step*Math.PI*2;
-            System.out.print(z);
-            System.out.print('\t');
-            System.out.println(i/dn);
-        }
+//        double dn=N;
+//        for (int i=20; i<N/2; ++i){
+//            double k=dk.fn(step*i);
+//            z+=k*k*step*Math.PI*2;
+//            System.out.print(z);
+//            System.out.print('\t');
+//            System.out.println(i/dn);
+//        }
     }
     
 }
