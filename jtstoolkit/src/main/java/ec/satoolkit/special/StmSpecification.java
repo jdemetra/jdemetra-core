@@ -16,6 +16,7 @@
  */
 package ec.satoolkit.special;
 
+import ec.satoolkit.GenericSaProcessingFactory;
 import ec.satoolkit.ISaSpecification;
 import ec.satoolkit.algorithm.implementation.StmProcessingFactory;
 import ec.satoolkit.benchmarking.SaBenchmarkingSpec;
@@ -26,6 +27,7 @@ import ec.tstoolkit.structural.BsmSpecification;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  *
@@ -90,18 +92,73 @@ public class StmSpecification implements ISaSpecification, Cloneable {
         }
     }
 
+    public boolean equals(StmSpecification other) {
+        return Objects.equals(preprocessingSpec, other.preprocessingSpec)
+                && Objects.equals(decompositionSpec, other.decompositionSpec)
+                && Objects.equals(benchmarkingSpec, other.benchmarkingSpec);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj || (obj instanceof StmSpecification && equals((StmSpecification) obj));
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + Objects.hashCode(this.preprocessingSpec);
+        hash = 97 * hash + Objects.hashCode(this.decompositionSpec);
+        return hash;
+    }
+
     @Override
     public InformationSet write(boolean verbose) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        InformationSet info = new InformationSet();
+        if (preprocessingSpec != null) {
+            InformationSet p = preprocessingSpec.write(verbose);
+            if (p != null) {
+                info.set(GenericSaProcessingFactory.PREPROCESSING, p);
+            }
+        }
+        if (decompositionSpec != null) {
+            InformationSet p = decompositionSpec.write(verbose);
+            if (p != null) {
+                info.set(GenericSaProcessingFactory.DECOMPOSITION, p);
+            }
+        }
+        if (benchmarkingSpec != null) {
+            InformationSet p = benchmarkingSpec.write(verbose);
+            if (p != null) {
+                info.set(GenericSaProcessingFactory.BENCHMARKING, p);
+            }
+        }
+        return info;
     }
 
     @Override
     public boolean read(InformationSet info) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        InformationSet p=info.getSubSet(GenericSaProcessingFactory.PREPROCESSING);
+        if  (p != null){
+            if (! preprocessingSpec.read(p))
+                return false;
+        }
+        InformationSet d=info.getSubSet(GenericSaProcessingFactory.DECOMPOSITION);
+        if  (d != null){
+            if (! decompositionSpec.read(d))
+                return false;
+        }
+        InformationSet b=info.getSubSet(GenericSaProcessingFactory.BENCHMARKING);
+        if  (b != null){
+            if (! benchmarkingSpec.read(b))
+                return false;
+        }
+        return true;
     }
 
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
-        // TODO Fill the dictionary
+        PreprocessingSpecification.fillDictionary(InformationSet.item(prefix, GenericSaProcessingFactory.PREPROCESSING), dic);
+        BsmSpecification.fillDictionary(InformationSet.item(prefix, GenericSaProcessingFactory.DECOMPOSITION), dic);
+        SaBenchmarkingSpec.fillDictionary(InformationSet.item(prefix, GenericSaProcessingFactory.BENCHMARKING), dic);
     }
 
     public IPreprocessor buildPreprocessor(ProcessingContext context) {

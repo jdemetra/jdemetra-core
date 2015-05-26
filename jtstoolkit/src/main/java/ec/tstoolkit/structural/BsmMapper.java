@@ -16,6 +16,7 @@
  */
 package ec.tstoolkit.structural;
 
+import ec.tstoolkit.Parameter;
 import ec.tstoolkit.data.IDataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.data.ReadDataBlock;
@@ -82,7 +83,7 @@ public class BsmMapper implements IParametricMapping<BasicStructuralModel> {
     }
 
     /**
-     * 
+     *
      * @param spec
      * @param freq
      * @param tr
@@ -113,12 +114,34 @@ public class BsmMapper implements IParametricMapping<BasicStructuralModel> {
         return n;
     }
 
+    public boolean hasCycleDumpingFactor() {
+        return spec.cUse != ComponentUse.Unused && (spec.getCyclicalDumpingFactor() == null
+                || !spec.getCyclicalDumpingFactor().isFixed());
+    }
+
+    public boolean hasCycleLength() {
+        return spec.cUse != ComponentUse.Unused && (spec.getCyclicalPeriod() == null
+                || !spec.getCyclicalPeriod().isFixed());
+    }
+
     boolean _hasLevel() {
         return spec.lUse == ComponentUse.Free && cFixed != Component.Level;
     }
 
     int _pCycle() {
-        return spec.cUse != ComponentUse.Unused ? 2 : 0;
+        if (spec.cUse == ComponentUse.Unused) {
+            return 0;
+        }
+        int n = 0;
+        Parameter p = spec.getCyclicalDumpingFactor();
+        if (p == null || !p.isFixed()) {
+            ++n;
+        }
+        p = spec.getCyclicalPeriod();
+        if (p == null || !p.isFixed()) {
+            ++n;
+        }
+        return n;
     }
 
     boolean _hasCycle() {
@@ -157,13 +180,17 @@ public class BsmMapper implements IParametricMapping<BasicStructuralModel> {
         }
         if (pc > 0) {
             // rho
-            double rho = p.get(nvar);
-            if (rho < RMIN || rho > RMAX) {
-                return false;
+            if (hasCycleDumpingFactor()) {
+                double rho = p.get(nvar++);
+                if (rho < RMIN || rho > RMAX) {
+                    return false;
+                }
             }
-            double period = p.get(nvar + 1);
-            if (period < PMIN || period > PMAX) {
-                return false;
+            if (hasCycleLength()) {
+                double period = p.get(nvar);
+                if (period < PMIN || period > PMAX) {
+                    return false;
+                }
             }
         }
         return true;
@@ -180,7 +207,7 @@ public class BsmMapper implements IParametricMapping<BasicStructuralModel> {
             } else {
                 return -STEP;
             }
-        } else if (idx == nvar) {
+        } else if (idx == nvar && hasCycleDumpingFactor()) {
             double x = p.get(idx);
             if (x < .5) {
                 return STEP;
@@ -301,10 +328,16 @@ public class BsmMapper implements IParametricMapping<BasicStructuralModel> {
         if (_hasCycle()) {
             p[idx++] = outparam(t.cVar);
         }
-        int pc = _pCycle();
-        if (pc > 0) {
-            p[idx] = t.getCyclicalDumpingFactor();
-            p[idx + 1] = t.getCyclicalPeriod()/(6*freq);
+        if (spec.cUse != ComponentUse.Unused) {
+            double cdump, clen;
+            Parameter pm = spec.getCyclicalDumpingFactor();
+            if (pm == null || !pm.isFixed()) {
+                p[idx++] = t.getCyclicalDumpingFactor();
+            }
+            pm = spec.getCyclicalPeriod();
+            if (pm == null || !pm.isFixed()) {
+                p[idx++] = t.getCyclicalPeriod() / (6 * freq);
+            }
         }
         return new ReadDataBlock(p);
     }
@@ -328,12 +361,24 @@ public class BsmMapper implements IParametricMapping<BasicStructuralModel> {
         if (_hasCycle()) {
             t.cVar = inparam(p.get(idx++));
         }
+        if (spec.cUse != ComponentUse.Unused) {
+            double cdump, clen;
+            Parameter pm = spec.getCyclicalDumpingFactor();
+            if (pm == null || !pm.isFixed()) {
+                cdump = p.get(idx++);
+            } else {
+                cdump = pm.getValue();
+            }
+            pm = spec.getCyclicalPeriod();
+            if (pm == null || !pm.isFixed()) {
+                clen = 6 * freq * p.get(idx);
+            } else {
+                clen = freq * pm.getValue();
+            }
+            t.setCycle(cdump, clen);
+        }
         if (cFixed != Component.Undefined) {
             t.setVariance(cFixed, 1);
-        }
-        int pc = _pCycle();
-        if (pc > 0) {
-            t.setCycle(p.get(idx), 6*freq*p.get(idx + 1));
         }
         return t;
     }
@@ -389,31 +434,44 @@ public class BsmMapper implements IParametricMapping<BasicStructuralModel> {
             }
         }
         if (pc > 0) {
-            double rho = ioparams.get(nvar);
-            if (rho < RMIN) {
-                ioparams.set(nvar, 0.1);
-                status = ParamValidation.Changed;
+            if (hasCycleDumpingFactor()) {
+                double rho = ioparams.get(nvar);
+                if (rho < RMIN) {
+                    ioparams.set(nvar, 0.1);
+                    status = ParamValidation.Changed;
+                }
+                if (rho > RMAX) {
+                    ioparams.set(nvar, .9);
+                    status = ParamValidation.Changed;
+                }
+                ++nvar;
             }
-            if (rho > RMAX) {
-                ioparams.set(nvar, .9);
-                status = ParamValidation.Changed;
-            }
-            double p = ioparams.get(nvar + 1);
-            if (p < PMIN) {
-                ioparams.set(nvar + 1, PMIN);
-                status = ParamValidation.Changed;
-            }
-            if (p > PMAX) {
-                ioparams.set(nvar + 1, PMAX);
-                status = ParamValidation.Changed;
+            if (hasCycleLength()) {
+                double p = ioparams.get(nvar);
+                if (p < PMIN) {
+                    ioparams.set(nvar , PMIN);
+                    status = ParamValidation.Changed;
+                }
+                if (p > PMAX) {
+                    ioparams.set(nvar, PMAX);
+                    status = ParamValidation.Changed;
+                }
             }
         }
         return status;
     }
 
     @Override
-    public String getDescription(int idx) {
-        return getComponent(idx).name() + " var.";
+    public String getDescription(final int idx) {
+        int n = getVarsCount();
+        if (idx < n) {
+            return getComponent(idx).name() + " var.";
+        }
+        if (idx == n && this.hasCycleDumpingFactor()) {
+            return "Cycle dumping factor";
+        } else {
+            return "Cycle length";
+        }
     }
 
 }
