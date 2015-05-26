@@ -182,6 +182,12 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
         return true;
     }
 
+    /**
+     * Checks that a parameter is defined. A parameter is defined if it is non 
+     * null and if its type is not undefined
+     * @param p
+     * @return 
+     */
     public static boolean isDefined(Parameter p) {
         return p != null && p.type_ != ParameterType.Undefined;
     }

@@ -72,14 +72,14 @@ public class XmlBatch implements IXmlConverter<BatchProcessingFactory> {
         step = new XmlBatchStep[nodes.size()];
         int cur = 0;
         for (BatchProcessingFactory.Node<? extends IProcSpecification> node : nodes) {
-            XmlBatchStep step = new XmlBatchStep();
-            step.name = node.name;
-            step.specification = new XmlInformationSet();
-            step.specification.copy(node.specification.write(false));
-            step.link = new XmlBatchLink();
-            step.link.linktype = node.linkType;
-            step.link.linkid = node.linkId;
-            this.step[cur++] = step;
+            XmlBatchStep bstep = new XmlBatchStep();
+            bstep.name = node.name;
+            bstep.specification = new XmlInformationSet();
+            bstep.specification.copy(node.specification.write(false));
+            bstep.link = new XmlBatchLink();
+            bstep.link.linktype = node.linkType;
+            bstep.link.linkid = node.linkId;
+            this.step[cur++] = bstep;
         }
     }
 

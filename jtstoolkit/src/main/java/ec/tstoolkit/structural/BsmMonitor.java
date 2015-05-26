@@ -306,9 +306,12 @@ public class BsmMonitor {
             DataBlock np = new DataBlock(p);
             np.set(.5);
             np.set(i, 1);
-            if (nvars <p.getLength()){
-                np.set(nvars, .9);
-                np.set(nvars+1, 1);
+            int ncur=nvars;
+            if (mapper.hasCycleDumpingFactor()){
+                np.set(ncur++, .9);
+            }
+            if (mapper.hasCycleLength()){
+                np.set(ncur, 1);
             }
             instance = new SsfFunctionInstance(fn, np);
             double nll = instance.getLikelihood().getLogLikelihood();
@@ -332,9 +335,11 @@ public class BsmMonitor {
             DataBlock np = new DataBlock(p);
             np.set(.1);
             np.set(imax, 1);
-            if (nvars <p.getLength()){
-                np.set(nvars, .9);
-                np.set(nvars+1, 1);
+            if (mapper.hasCycleDumpingFactor()){
+                np.set(nvars++, .9);
+            }
+            if  (mapper.hasCycleLength()){
+                np.set(nvars, 1);
             }
             return mapper.map(np);
         }
