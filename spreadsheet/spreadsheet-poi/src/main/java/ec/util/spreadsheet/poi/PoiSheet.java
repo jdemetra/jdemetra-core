@@ -16,6 +16,7 @@
  */
 package ec.util.spreadsheet.poi;
 
+import java.util.Iterator;
 import javax.annotation.Nonnull;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -29,25 +30,35 @@ final class PoiSheet extends ec.util.spreadsheet.Sheet {
 
     private final Sheet sheet;
     private final PoiCell flyweightCell;
+    private final int rowCount;
+    private final int columnCount;
 
     public PoiSheet(@Nonnull Sheet sheet) {
         this.sheet = sheet;
         this.flyweightCell = new PoiCell();
+        int maxRow = 0;
+        int maxColumn = 0;
+        Iterator<Row> rowIterator = sheet.rowIterator();
+        while (rowIterator.hasNext()) {
+            Row row = rowIterator.next();
+            maxRow = row.getRowNum() + 1;
+            short lastCellNum = row.getLastCellNum();
+            if (lastCellNum > maxColumn) {
+                maxColumn = lastCellNum;
+            }
+        }
+        this.rowCount = maxRow;
+        this.columnCount = maxColumn;
     }
 
     @Override
     public int getRowCount() {
-        return sheet.getRow(0) == null ? 0 : sheet.getLastRowNum() + 1;
+        return rowCount;
     }
 
     @Override
     public int getColumnCount() {
-        Row firstRow = sheet.getRow(0);
-        if (firstRow == null) {
-            return 0;
-        }
-        short lastCellNum = firstRow.getLastCellNum();
-        return lastCellNum == -1 ? 0 : lastCellNum;
+        return columnCount;
     }
 
     @Override
