@@ -21,9 +21,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import ec.tss.Ts;
-import ec.tss.TsCollection;
-import ec.tss.TsFactory;
+import ec.tss.TsCollectionInformation;
+import ec.tss.TsInformation;
 import ec.tss.TsInformationType;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.HORIZONTAL;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.UNKNOWN;
@@ -60,13 +59,13 @@ public abstract class SpreadSheetFactory {
     abstract public SpreadSheetSource toSource(@Nonnull Book book, @Nonnull TsImportOptions options) throws IOException;
 
     @Nonnull
-    abstract public TsCollection toTsCollection(@Nonnull Sheet sheet, @Nonnull TsImportOptions options);
+    abstract public TsCollectionInformation toTsCollectionInfo(@Nonnull Sheet sheet, @Nonnull TsImportOptions options);
 
     @Nonnull
     abstract public Table<?> toTable(@Nonnull Sheet sheet);
 
     @Nonnull
-    abstract public ArraySheet fromTsCollection(@Nonnull TsCollection col, @Nonnull TsExportOptions options);
+    abstract public ArraySheet fromTsCollectionInfo(@Nonnull TsCollectionInformation col, @Nonnull TsExportOptions options);
 
     @Nonnull
     abstract public ArraySheet fromMatrix(@Nonnull Matrix matrix);
@@ -91,19 +90,17 @@ public abstract class SpreadSheetFactory {
         }
 
         @Override
-        public ArraySheet fromTsCollection(TsCollection col, TsExportOptions options) {
-            col.load(TsInformationType.Data);
-
+        public ArraySheet fromTsCollectionInfo(TsCollectionInformation col, TsExportOptions options) {
             TsDataTable table = new TsDataTable();
-            for (Ts o : col) {
-                table.insert(-1, o.getTsData());
+            for (TsInformation o : col.items) {
+                table.insert(-1, o.data);
             }
 
             if (table.getDomain() != null) {
                 ArraySheet.Builder builder = ArraySheet.builder().name("dnd");
 
                 if (options.isShowTitle()) {
-                    builder.row(0, options.isShowDates() ? 1 : 0, Iterables.transform(col, TO_NAME));
+                    builder.row(0, options.isShowDates() ? 1 : 0, Iterables.transform(col.items, TO_NAME));
                 }
 
                 if (options.isShowDates()) {
@@ -113,7 +110,7 @@ public abstract class SpreadSheetFactory {
                 int firstRow = options.isShowTitle() ? 1 : 0;
                 int firstColumn = options.isShowDates() ? 1 : 0;
                 int rowCount = table.getDomain().getLength();
-                int columnCount = col.getCount();
+                int columnCount = col.items.size();
                 for (int i = 0; i < rowCount; ++i) {
                     for (int j = 0; j < columnCount; ++j) {
                         if (table.getDataInfo(i, j) == TsDataTableInfo.Valid) {
@@ -135,12 +132,22 @@ public abstract class SpreadSheetFactory {
         }
 
         @Override
-        public TsCollection toTsCollection(Sheet sheet, TsImportOptions options) {
-            TsCollection result = TsFactory.instance.createTsCollection();
+        public TsCollectionInformation toTsCollectionInfo(Sheet sheet, TsImportOptions options) {
+            TsCollectionInformation result = new TsCollectionInformation();
+            result.name = sheet.getName();
+            result.type = TsInformationType.All;
             for (SpreadSheetSeries s : parseCollection(sheet, 0, Context.create(options)).series) {
+                TsInformation tsInfo = new TsInformation();
+                tsInfo.name = s.seriesName;
+                tsInfo.type = TsInformationType.All;
                 if (s.data.isPresent()) {
-                    result.add(TsFactory.instance.createTs(s.seriesName, null, s.data.get()));
+                    tsInfo.data = s.data.get();
+                    tsInfo.invalidDataCause = null;
+                } else {
+                    tsInfo.data = null;
+                    tsInfo.invalidDataCause = s.data.getCause();
                 }
+                result.items.add(tsInfo);
             }
             return result;
         }
@@ -468,10 +475,10 @@ public abstract class SpreadSheetFactory {
         }
     }
 
-    private static final Function<Ts, String> TO_NAME = new Function<Ts, String>() {
+    private static final Function<TsInformation, String> TO_NAME = new Function<TsInformation, String>() {
         @Override
-        public String apply(Ts input) {
-            return input.getName();
+        public String apply(TsInformation input) {
+            return input.name;
         }
     };
 
