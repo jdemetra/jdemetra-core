@@ -134,7 +134,7 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
             ntspec.getArima().clearParameters();
         }
 
-        if (policy == EstimationPolicyType.Fixed) {
+        if (policy == EstimationPolicyType.FixedParameters) {
             ntspec.getArima().setParameterType(ParameterType.Fixed);
         }
 
