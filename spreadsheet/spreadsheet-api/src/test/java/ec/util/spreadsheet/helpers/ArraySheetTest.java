@@ -31,6 +31,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Date;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -184,5 +185,43 @@ public class ArraySheetTest {
         try (ObjectInputStream out = new ObjectInputStream(new ByteArrayInputStream(byteArray.toByteArray()))) {
             return (T) out.readObject();
         }
+    }
+
+    @Test
+    public void testEquals() {
+        ArraySheet.Builder b = ArraySheet.builder();
+
+        ArraySheetAssert.assertThat(b.clear().build())
+                .isEqualTo(b.clear().build())
+                .isNotEqualTo(b.clear().row(0, 0, "other").build())
+                .isNotEqualTo(b.clear().name("new name").build());
+
+        ArraySheetAssert.assertThat(b.clear().row(1, 2, STRING, 3.14, DATE).build())
+                .isEqualTo(b.clear().row(1, 2, STRING, 3.14, DATE).build())
+                .isNotEqualTo(b.clear().row(0, 0, "other").build())
+                .isNotEqualTo(b.clear().row(1, 2, STRING, 123, DATE).build())
+                .isNotEqualTo(b.clear().row(1, 2, STRING, 3.14, DATE).name("new name").build())
+                .isEqualTo(b.clear().column(2, 1, STRING, 3.14, DATE).build().inv());
+    }
+
+    @Test
+    public void testHashCode() {
+        ArraySheet.Builder b = ArraySheet.builder();
+
+        ArraySheet s;
+
+        s = b.clear().build();
+        assertEquals(s.hashCode(), s.copy().hashCode());
+        assertEquals(s.hashCode(), b.clear().build().hashCode());
+        assertNotEquals(s.hashCode(), b.clear().row(0, 0, "world").build().hashCode());
+        assertNotEquals(s.hashCode(), s.rename("new name").hashCode());
+
+        s = b.clear().row(1, 2, STRING, 3.14, DATE).build();
+        assertEquals(s.hashCode(), s.copy().hashCode());
+        assertEquals(s.hashCode(), b.clear().row(1, 2, STRING, 3.14, DATE).build().hashCode());
+        assertNotEquals(s.hashCode(), b.clear().row(0, 0, "other").build().hashCode());
+        assertNotEquals(s.hashCode(), b.clear().row(1, 2, STRING, 123, DATE).build().hashCode());
+        assertNotEquals(s.hashCode(), s.rename("new name").hashCode());
+        assertEquals(s.hashCode(), b.clear().column(2, 1, STRING, 3.14, DATE).build().inv().hashCode());
     }
 }
