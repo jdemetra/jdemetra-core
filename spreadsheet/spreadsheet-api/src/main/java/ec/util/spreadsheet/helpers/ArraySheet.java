@@ -345,7 +345,7 @@ public final class ArraySheet extends Sheet implements Serializable {
             return (Date) input;
         }
         if (input instanceof Number) {
-            return (Number) input;
+            return input instanceof Double ? (Double) input : ((Number) input).doubleValue();
         }
         if (input instanceof String) {
             return (String) input;
