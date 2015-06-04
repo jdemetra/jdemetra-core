@@ -16,6 +16,7 @@
  */
 package ec.util.spreadsheet.od;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,14 +32,17 @@ import org.jopendocument.dom.spreadsheet.SpreadSheet;
  * @author Philippe Charles
  */
 //@FlyweightPattern
-class OdCell extends ec.util.spreadsheet.Cell {
+final class OdCell extends ec.util.spreadsheet.Cell {
 
-    Cell<SpreadSheet> cell = null;
-    ODValueType valueType = null;
+    private Cell<SpreadSheet> cell = null;
+    private ODValueType valueType = null;
+    private String textValue = null;
 
     @Nullable
     OdCell withCell(@Nonnull Cell<SpreadSheet> cell) {
+        this.cell = null;
         this.valueType = cell.getValueType();
+        this.textValue = null;
         if (valueType != null) {
             switch (valueType) {
                 case DATE:
@@ -46,15 +50,19 @@ class OdCell extends ec.util.spreadsheet.Cell {
                 case STRING:
                     this.cell = cell;
                     return this;
+                default:
+                    return null;
             }
+        } else {
+            // a null valueType might still contains a string !
+            textValue = cell.getTextValue();
+            return textValue.isEmpty() ? null : this;
         }
-        this.cell = null;
-        return null;
     }
 
     @Override
     public String getString() {
-        return cell.getTextValue();
+        return textValue != null ? textValue : (String) cell.getValue();
     }
 
     @Override
@@ -64,7 +72,7 @@ class OdCell extends ec.util.spreadsheet.Cell {
 
     @Override
     public Number getNumber() {
-        return (Number) cell.getValue();
+        return ((BigDecimal) cell.getValue()).doubleValue();
     }
 
     @Override
@@ -74,7 +82,7 @@ class OdCell extends ec.util.spreadsheet.Cell {
 
     @Override
     public boolean isString() {
-        return ODValueType.STRING.equals(valueType);
+        return ODValueType.STRING.equals(valueType) || textValue != null;
     }
 
     @Override
