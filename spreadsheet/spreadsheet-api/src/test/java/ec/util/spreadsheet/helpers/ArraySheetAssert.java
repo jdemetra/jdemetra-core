@@ -16,6 +16,7 @@
  */
 package ec.util.spreadsheet.helpers;
 
+import java.util.Objects;
 import org.assertj.core.api.AbstractAssert;
 
 /**
@@ -58,7 +59,7 @@ final class ArraySheetAssert extends AbstractAssert<ArraySheetAssert, ArraySheet
 
     public ArraySheetAssert hasValue(int row, int column, Object value) {
         isNotNull();
-        if (actual.getCellValue(row, column) != value) {
+        if (!Objects.equals(actual.getCellValue(row, column), value)) {
             failWithMessage("Expected value to be <%s> but was <%s>", value, actual.getCellValue(row, column));
         }
         return this;

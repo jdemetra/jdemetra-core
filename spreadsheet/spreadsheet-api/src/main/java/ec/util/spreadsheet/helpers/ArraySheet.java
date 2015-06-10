@@ -28,11 +28,13 @@ import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  *
  * @author Philippe Charles
  */
+@NotThreadSafe
 public final class ArraySheet extends Sheet implements Serializable {
 
     private final String name;
@@ -99,6 +101,50 @@ public final class ArraySheet extends Sheet implements Serializable {
     @Nonnull
     public ArrayBook toBook() {
         return new ArrayBook(new ArraySheet[]{copy()});
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj || (obj instanceof ArraySheet && equals((ArraySheet) obj));
+    }
+
+    private boolean equals(ArraySheet that) {
+        return this.name.equals(that.name)
+                && this.rowCount == that.rowCount
+                && this.columnCount == that.columnCount
+                && valuesEquals(that);
+    }
+
+    private boolean valuesEquals(ArraySheet that) {
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < columnCount; j++) {
+                if (!Objects.equals(this.getCellValue(i, j), that.getCellValue(i, j))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(new int[]{name.hashCode(), rowCount, columnCount, valuesHashCode()});
+    }
+
+    private int valuesHashCode() {
+        int result = 1;
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < columnCount; j++) {
+                Object o = getCellValue(i, j);
+                result = 31 * result + (o == null ? 0 : o.hashCode());
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ArraySheet{" + name + "}[" + rowCount + "x" + columnCount + "]";
     }
 
     @Nonnull
@@ -345,7 +391,7 @@ public final class ArraySheet extends Sheet implements Serializable {
             return (Date) input;
         }
         if (input instanceof Number) {
-            return (Number) input;
+            return input instanceof Double ? (Double) input : ((Number) input).doubleValue();
         }
         if (input instanceof String) {
             return (String) input;

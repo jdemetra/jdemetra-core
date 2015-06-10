@@ -21,13 +21,16 @@ import ec.util.spreadsheet.Sheet;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  *
  * @author Philippe Charles
  */
+@NotThreadSafe
 public final class ArrayBook extends Book implements Serializable {
 
     private final ArraySheet[] sheets;
@@ -59,6 +62,25 @@ public final class ArrayBook extends Book implements Serializable {
             result[s] = getSheet(s).copy();
         }
         return new ArrayBook(result);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj || (obj instanceof ArrayBook && equals((ArrayBook) obj));
+    }
+
+    private boolean equals(ArrayBook that) {
+        return Arrays.equals(this.sheets, that.sheets);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(sheets);
+    }
+
+    @Override
+    public String toString() {
+        return "ArrayBook[" + sheets.length + "]";
     }
 
     @Nonnull
