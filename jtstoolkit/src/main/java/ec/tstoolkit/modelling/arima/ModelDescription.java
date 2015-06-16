@@ -398,6 +398,11 @@ public class ModelDescription implements Cloneable {
         return y_;
     }
 
+    /**
+     * Gets the transformed original series. The original may be transformed for leap year 
+     * correction and for log-transformation. It contains missing values
+     * @return 
+     */
     public TsData transformedOriginal() {
         TsData tmp = original_.clone();
         if (lp_ != LengthOfPeriodType.None) {

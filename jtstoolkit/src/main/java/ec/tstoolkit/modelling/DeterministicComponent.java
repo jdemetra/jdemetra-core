@@ -21,7 +21,6 @@ import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.information.InformationMapper;
-import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.modelling.arima.ModelEstimation;
 import static ec.tstoolkit.modelling.arima.PreprocessingModel.outlierTypes;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
