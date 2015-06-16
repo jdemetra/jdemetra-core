@@ -367,13 +367,13 @@ public class CalendarsigmaTest {
         // System.out.println("B4");
         for (int i = 0; i < 236; ++i) {
             //   System.out.println(DataCalendarSigmaX13.C_B4_Signif_Add_StartForthQuarter_MixedFiltersPrepro.getDomain().get(i) + " WinX13: " + DataCalendarSigmaX13.C_B4_Signif_Add_StartForthQuarter_MixedFiltersPrepro.get(i) + "; Calculated JD+: " + rslt.getData("b-tables.b4", TsData.class).getDomain().get(i) + " " + rslt.getData("b-tables.b4", TsData.class).get(i));
-            assertEquals(DataCalendarSigmaX13.C_B4_Signif_Add_StartForthQuarter_MixedFiltersPrepro.get(i), rslt.getData("b-tables.b4", TsData.class).get(i), 0.00001);
+            assertEquals(DataCalendarSigmaX13.C_B4_Signif_Add_StartForthQuarter_MixedFiltersPrepro.get(i), rslt.getData("decomposition.b-tables.b4", TsData.class).get(i), 0.00001);
         }
 
         //   System.out.println("B9");
         for (int i = 0; i < 236; ++i) {
             //     System.out.println(DataCalendarSigmaX13.C_B9_Signif_Add_StartForthQuarter_MixedFiltersPrepro.getDomain().get(i) + " WinX13: " + DataCalendarSigmaX13.C_B9_Signif_Add_StartForthQuarter_MixedFiltersPrepro.get(i) + "; Calculated JD+: " + rslt.getData("b-tables.b9", TsData.class).getDomain().get(i) + " " + rslt.getData("b-tables.b9", TsData.class).get(i));
-            assertEquals(DataCalendarSigmaX13.C_B9_Signif_Add_StartForthQuarter_MixedFiltersPrepro.get(i), rslt.getData("b-tables.b9", TsData.class).get(i), 0.00001);
+            assertEquals(DataCalendarSigmaX13.C_B9_Signif_Add_StartForthQuarter_MixedFiltersPrepro.get(i), rslt.getData("decomposition.b-tables.b9", TsData.class).get(i), 0.00001);
         }
 
         //  System.out.println("D10");
