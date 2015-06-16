@@ -18,12 +18,15 @@
 package ec.tss.sa.documents;
 
 import ec.satoolkit.GenericSaResults;
-import ec.satoolkit.special.StmResults;
+import ec.satoolkit.algorithm.implementation.StmProcessingFactory;
+import ec.satoolkit.special.StmDecomposition;
+import ec.satoolkit.special.StmEstimation;
 import ec.satoolkit.special.StmSpecification;
 import ec.tss.sa.SaManager;
 import ec.tss.sa.processors.StmProcessor;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.ProcessingContext;
+import ec.tstoolkit.modelling.DeterministicComponent;
 
 /**
  *
@@ -41,10 +44,20 @@ public class StmDocument extends SaDocument<StmSpecification> implements Cloneab
         setSpecification(new StmSpecification());
     }
     
-    @Override
-    public StmResults getDecompositionPart() {
+    public StmEstimation getEstimationPart(){
         CompositeResults rslts = getResults();
-        return GenericSaResults.getDecomposition(rslts, StmResults.class);
+        return rslts.get(StmProcessingFactory.ESTIMATION, StmEstimation.class);
+    }
+    
+    public DeterministicComponent getDeterministicPart(){
+        CompositeResults rslts = getResults();
+        return rslts.get(StmProcessingFactory.DETERMINISTIC, DeterministicComponent.class);
+    }
+    
+    @Override
+    public StmDecomposition getDecompositionPart() {
+        CompositeResults rslts = getResults();
+        return GenericSaResults.getDecomposition(rslts, StmDecomposition.class);
     }
 
     @Override

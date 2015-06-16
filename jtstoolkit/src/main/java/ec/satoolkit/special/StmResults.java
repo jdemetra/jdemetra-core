@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.satoolkit.special;
 
 import ec.satoolkit.DecompositionMode;
@@ -23,13 +22,15 @@ import ec.satoolkit.ISaResults;
 import ec.satoolkit.ISeriesDecomposition;
 import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.eco.DiffuseConcentratedLikelihood;
-import ec.tstoolkit.eco.DiffuseLikelihood;
 import ec.tstoolkit.information.InformationMapper;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.maths.realfunctions.IFunction;
 import ec.tstoolkit.maths.realfunctions.IFunctionInstance;
+import ec.tstoolkit.modelling.ComponentInformation;
 import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.ModellingDictionary;
+import ec.tstoolkit.modelling.SeriesInfo;
+import ec.tstoolkit.ssf.ExtendedSsfData;
 import ec.tstoolkit.ssf.Smoother;
 import ec.tstoolkit.ssf.SmoothingResults;
 import ec.tstoolkit.ssf.SsfData;
@@ -52,26 +53,27 @@ import java.util.Map;
 public class StmResults implements ISaResults {
 
     public static final String MODEL = "model";
-    public static final String SERIES = "series", LEVEL = "level", CYCLE="cycle", SLOPE = "slope", NOISE = "noise", SEASONAL = "seasonal";
+    public static final String SERIES = "series", LEVEL = "level", CYCLE = "cycle", SLOPE = "slope", NOISE = "noise", SEASONAL = "seasonal";
     private final BsmMonitor monitor_;
     private final SmoothingResults srslts_;
     private final InformationSet info_ = new InformationSet();
-    private final TsData y_, t_, sa_, s_, i_, c_;
+    private final TsData y_, yf_, t_, sa_, s_, i_, c_;
     private UcarimaModel reduced_;
     private double errFactor_;
     private WienerKolmogorovEstimators wk_;
     private final boolean mul_;
     private final TsVariableList x_;
 
-    public StmResults(TsData y,TsVariableList x, BsmMonitor monitor, boolean mul) {
+    public StmResults(TsData y, TsVariableList x, BsmMonitor monitor, boolean mul) {
         monitor_ = monitor;
         y_ = y;
-        x_=x;
+        x_ = x;
         mul_ = mul;
         BasicStructuralModel model = monitor.getResult();
         Smoother smoother = new Smoother();
         smoother.setSsf(model);
-        SsfData data = new SsfData(y.getValues().internalStorage(), null);
+        ExtendedSsfData data = new ExtendedSsfData(new SsfData(y.getValues().internalStorage(), null));
+        data.setForecastsCount(y.getFrequency().intValue());
         srslts_ = new SmoothingResults();
         smoother.process(data, srslts_);
 //        DisturbanceSmoother smoother = new DisturbanceSmoother();
@@ -82,7 +84,7 @@ public class StmResults implements ISaResults {
         InformationSet minfo = info_.subSet(MODEL);
         int[] cmps = model.getCmpPositions();
         int cur = 0;
-        TsData noise = null, level = null, slope = null, seasonal = null, cycle=null;
+        TsData noise, level, slope, seasonal = null, cycle = null;
         if (model.getSpecification().hasNoise()) {
             noise = new TsData(y.getStart(), srslts_.component(cmps[cur++]), false);
             minfo.add(NOISE, noise);
@@ -116,10 +118,14 @@ public class StmResults implements ISaResults {
             s_ = new TsData(y.getDomain(), 0);
         }
         minfo.add(SERIES, y);
-        sa_ = TsData.subtract(y, seasonal);
+        TsData all = TsData.add(t_, s_);
+        all = TsData.add(all, i_);
+        all = all.update(y_);
+        sa_ = TsData.subtract(all, seasonal);
+        yf_ = all.drop(y_.getLength(), 0);
     }
-    
-    public TsVariableList getX(){
+
+    public TsVariableList getX() {
         return x_;
     }
 
@@ -152,33 +158,40 @@ public class StmResults implements ISaResults {
     }
 
     public ISeriesDecomposition getComponents() {
-        DefaultSeriesDecomposition decomposition =
-                new DefaultSeriesDecomposition(DecompositionMode.Additive);
+        DefaultSeriesDecomposition decomposition
+                = new DefaultSeriesDecomposition(DecompositionMode.Additive);
+        TsDomain dom = y_.getDomain(), fdom = yf_.getDomain();
         decomposition.add(y_, ComponentType.Series);
-        decomposition.add(sa_, ComponentType.SeasonallyAdjusted);
-        decomposition.add(t_, ComponentType.Trend);
-        decomposition.add(s_, ComponentType.Seasonal);
-        decomposition.add(i_, ComponentType.Irregular);
+        decomposition.add(sa_.fittoDomain(dom), ComponentType.SeasonallyAdjusted);
+        decomposition.add(t_.fittoDomain(dom), ComponentType.Trend);
+        decomposition.add(s_.fittoDomain(dom), ComponentType.Seasonal);
+        decomposition.add(i_.fittoDomain(dom), ComponentType.Irregular);
+        decomposition.add(yf_, ComponentType.Series, ComponentInformation.Forecast);
+        decomposition.add(sa_.fittoDomain(fdom), ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
+        decomposition.add(t_.fittoDomain(fdom), ComponentType.Trend, ComponentInformation.Forecast);
+        decomposition.add(s_.fittoDomain(fdom), ComponentType.Seasonal, ComponentInformation.Forecast);
+        decomposition.add(i_.fittoDomain(fdom), ComponentType.Irregular, ComponentInformation.Forecast);
         return decomposition;
     }
 
     @Override
     public ISeriesDecomposition getSeriesDecomposition() {
-        DefaultSeriesDecomposition decomposition =
-                new DefaultSeriesDecomposition(mul_ ? DecompositionMode.Multiplicative : DecompositionMode.Additive);
-        if (mul_) {
-            decomposition.add(y_.exp(), ComponentType.Series);
-            decomposition.add(sa_.exp(), ComponentType.SeasonallyAdjusted);
-            decomposition.add(t_.exp(), ComponentType.Trend);
-            decomposition.add(s_.exp(), ComponentType.Seasonal);
-            decomposition.add(i_.exp(), ComponentType.Irregular);
-        } else {
-            decomposition.add(y_, ComponentType.Series);
-            decomposition.add(sa_, ComponentType.SeasonallyAdjusted);
-            decomposition.add(t_, ComponentType.Trend);
-            decomposition.add(s_, ComponentType.Seasonal);
-            decomposition.add(i_, ComponentType.Irregular);
+        if (!mul_) {
+            return getComponents();
         }
+        DefaultSeriesDecomposition decomposition
+                = new DefaultSeriesDecomposition(DecompositionMode.Multiplicative);
+        TsDomain dom = y_.getDomain(), fdom = yf_.getDomain();
+        decomposition.add(y_.exp(), ComponentType.Series);
+        decomposition.add(sa_.fittoDomain(dom).exp(), ComponentType.SeasonallyAdjusted);
+        decomposition.add(t_.fittoDomain(dom).exp(), ComponentType.Trend);
+        decomposition.add(s_.fittoDomain(dom).exp(), ComponentType.Seasonal);
+        decomposition.add(i_.fittoDomain(dom).exp(), ComponentType.Irregular);
+        decomposition.add(yf_.exp(), ComponentType.Series, ComponentInformation.Forecast);
+        decomposition.add(sa_.fittoDomain(fdom).exp(), ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
+        decomposition.add(t_.fittoDomain(fdom).exp(), ComponentType.Trend, ComponentInformation.Forecast);
+        decomposition.add(s_.fittoDomain(fdom).exp(), ComponentType.Seasonal, ComponentInformation.Forecast);
+        decomposition.add(i_.fittoDomain(fdom).exp(), ComponentType.Irregular, ComponentInformation.Forecast);
         return decomposition;
     }
 
@@ -250,19 +263,21 @@ public class StmResults implements ISaResults {
     public IFunctionInstance maxLikelihoodFunction() {
         return monitor_.maxLikelihoodFunction();
     }
-    
+
     @Override
     public InformationSet getInformation() {
         return info_;
     }
+
     // MAPPERS
-     public static <T> void addMapping(String name, InformationMapper.Mapper<StmResults, T> mapping) {
+
+    public static <T> void addMapping(String name, InformationMapper.Mapper<StmResults, T> mapping) {
         synchronized (mapper) {
             mapper.add(name, mapping);
         }
     }
 
-   private static final InformationMapper<StmResults> mapper = new InformationMapper<>();
+    private static final InformationMapper<StmResults> mapper = new InformationMapper<>();
 
     static {
         mapper.add(ModellingDictionary.Y_CMP, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
@@ -272,41 +287,90 @@ public class StmResults implements ISaResults {
                 return source.mul_ ? source.y_.exp() : source.y_;
             }
         });
+        mapper.add(ModellingDictionary.Y_CMP + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
+
+            @Override
+            public TsData retrieve(StmResults source) {
+                return source.mul_ ? source.yf_.exp() : source.yf_;
+            }
+        });
         mapper.add(ModellingDictionary.T_CMP, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
 
             @Override
             public TsData retrieve(StmResults source) {
-                return source.mul_ ? source.t_.exp() : source.t_;
+                TsData x = source.t_.fittoDomain(source.y_.getDomain());
+                return source.mul_ ? x.exp() : x;
+            }
+        });
+        mapper.add(ModellingDictionary.T_CMP + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
+
+            @Override
+            public TsData retrieve(StmResults source) {
+                TsData x = source.t_.fittoDomain(source.yf_.getDomain());
+                return source.mul_ ? x.exp() : x;
+            }
+        });
+        mapper.add(ModellingDictionary.T_CMP + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
+
+            @Override
+            public TsData retrieve(StmResults source) {
+                TsData x = source.t_.fittoDomain(source.yf_.getDomain());
+                return source.mul_ ? x.exp() : x;
             }
         });
         mapper.add(ModellingDictionary.SA_CMP, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
 
             @Override
             public TsData retrieve(StmResults source) {
-                return source.mul_ ? source.sa_.exp() : source.sa_;
+                TsData x = source.sa_.fittoDomain(source.y_.getDomain());
+                return source.mul_ ? x.exp() : x;
+            }
+        });
+        mapper.add(ModellingDictionary.SA_CMP + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
+
+            @Override
+            public TsData retrieve(StmResults source) {
+                TsData x = source.sa_.fittoDomain(source.yf_.getDomain());
+                return source.mul_ ? x.exp() : x;
             }
         });
         mapper.add(ModellingDictionary.S_CMP, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
 
             @Override
             public TsData retrieve(StmResults source) {
-                return source.mul_ ? source.s_.exp() : source.s_;
+                TsData x = source.s_.fittoDomain(source.y_.getDomain());
+                return source.mul_ ? x.exp() : x;
+            }
+        });
+        mapper.add(ModellingDictionary.S_CMP + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
+
+            @Override
+            public TsData retrieve(StmResults source) {
+                TsData x = source.s_.fittoDomain(source.yf_.getDomain());
+                return source.mul_ ? x.exp() : x;
             }
         });
         mapper.add(ModellingDictionary.I_CMP, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
 
             @Override
             public TsData retrieve(StmResults source) {
-                return source.mul_ ? source.i_.exp() : source.i_;
+                TsData x = source.i_.fittoDomain(source.y_.getDomain());
+                return source.mul_ ? x.exp() : x;
+            }
+        });
+        mapper.add(ModellingDictionary.I_CMP + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
+
+            @Override
+            public TsData retrieve(StmResults source) {
+                TsData x = source.i_.fittoDomain(source.yf_.getDomain());
+                return source.mul_ ? x.exp() : x;
             }
         });
         mapper.add(ModellingDictionary.SI_CMP, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
 
             @Override
             public TsData retrieve(StmResults source) {
-                TsData si=TsData.add(source.s_, source.i_);
-                if (si == null)
-                    return null;
+                TsData si = TsData.add(source.s_, source.i_);
                 return source.mul_ ? si.exp() : si;
             }
         });
@@ -317,32 +381,67 @@ public class StmResults implements ISaResults {
                 return source.y_;
             }
         });
+        mapper.add(ModellingDictionary.Y_LIN + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
+
+            @Override
+            public TsData retrieve(StmResults source) {
+                return source.yf_;
+            }
+        });
         mapper.add(ModellingDictionary.T_LIN, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
 
             @Override
             public TsData retrieve(StmResults source) {
-                return source.t_;
+                return source.t_.fittoDomain(source.y_.getDomain());
+            }
+        });
+        mapper.add(ModellingDictionary.T_LIN + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
+
+            @Override
+            public TsData retrieve(StmResults source) {
+                return source.t_.fittoDomain(source.yf_.getDomain());
             }
         });
         mapper.add(ModellingDictionary.SA_LIN, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
 
             @Override
             public TsData retrieve(StmResults source) {
-                return source.sa_;
+                return source.sa_.fittoDomain(source.y_.getDomain());
+            }
+        });
+        mapper.add(ModellingDictionary.SA_LIN + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
+
+            @Override
+            public TsData retrieve(StmResults source) {
+                return source.sa_.fittoDomain(source.yf_.getDomain());
             }
         });
         mapper.add(ModellingDictionary.S_LIN, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
 
             @Override
             public TsData retrieve(StmResults source) {
-                return source.s_;
+                return source.s_.fittoDomain(source.y_.getDomain());
+            }
+        });
+        mapper.add(ModellingDictionary.S_LIN + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
+
+            @Override
+            public TsData retrieve(StmResults source) {
+                return source.s_.fittoDomain(source.yf_.getDomain());
             }
         });
         mapper.add(ModellingDictionary.I_LIN, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
 
             @Override
             public TsData retrieve(StmResults source) {
-                return source.i_;
+                return source.i_.fittoDomain(source.y_.getDomain());
+            }
+        });
+        mapper.add(ModellingDictionary.I_LIN + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
+
+            @Override
+            public TsData retrieve(StmResults source) {
+                return source.i_.fittoDomain(source.yf_.getDomain());
             }
         });
         mapper.add("residuals", new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {

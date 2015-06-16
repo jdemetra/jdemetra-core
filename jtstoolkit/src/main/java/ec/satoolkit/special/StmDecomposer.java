@@ -72,7 +72,7 @@ public class StmDecomposer implements IDefaultSeriesDecomposer<StmResults> {
             //if (!monitor.process(y.getValues().internalStorage(), y.getFrequency().intValue())) {
             return false;
         } else {
-            results_ = new StmResults(y, model == null ? new TsVariableList(): model.description.buildRegressionVariables(), monitor,
+            results_ = new StmResults(y, model.description.buildRegressionVariables(), monitor,
                     model.description.getTransformation() == DefaultTransformationType.Log);
             return true;
         }
