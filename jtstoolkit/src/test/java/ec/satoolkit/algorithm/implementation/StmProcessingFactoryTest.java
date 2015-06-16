@@ -12,6 +12,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -23,6 +24,7 @@ public class StmProcessingFactoryTest {
     }
 
     @Test
+    @Ignore
     public void demoProcessing() {
         StmSpecification spec=new StmSpecification();
         //spec.getPreprocessingSpec().transform=DefaultTransformationType.None;

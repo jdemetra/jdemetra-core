@@ -19,6 +19,7 @@ package ec.satoolkit.algorithm.implementation;
 import ec.satoolkit.DecompositionMode;
 import ec.satoolkit.DefaultSeriesDecomposition;
 import ec.satoolkit.GenericSaProcessingFactory;
+import static ec.satoolkit.GenericSaProcessingFactory.PREPROCESSING;
 import ec.satoolkit.ISaResults;
 import ec.satoolkit.ISeriesDecomposition;
 import ec.satoolkit.benchmarking.SaBenchmarkingResults;
@@ -33,6 +34,7 @@ import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.modelling.ComponentInformation;
 import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.DeterministicComponent;
+import ec.tstoolkit.modelling.arima.IPreprocessor;
 import ec.tstoolkit.modelling.arima.Method;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.structural.BsmMonitor;
@@ -70,6 +72,10 @@ public class StmProcessingFactory extends GenericSaProcessingFactory implements 
             addBenchmarkingStep(bspec, processing);
         }
         return processing;
+    }
+    
+    protected static void addPreprocessingStep(IPreprocessor preprocessor, SequentialProcessing sproc) {
+        sproc.add(createPreprocessingStep(preprocessor, PREPROCESSING, PREPROCESSING));
     }
 
     public static final StmProcessingFactory instance = new StmProcessingFactory();
@@ -186,7 +192,7 @@ public class StmProcessingFactory extends GenericSaProcessingFactory implements 
 
             @Override
             public String getPrefix() {
-                return DETERMINISTIC;
+                return null;
             }
 
             @Override
