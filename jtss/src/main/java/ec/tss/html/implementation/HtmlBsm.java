@@ -96,6 +96,7 @@ public class HtmlBsm extends AbstractHtmlElement implements IHtmlElement {
         boolean first = true;
         first = !write(stream, first, "level", spec.getLevelUse());
         first = !write(stream, first, "slope", spec.getSlopeUse()) && first;
+        first = !write(stream, first, "cycle", spec.getCycleUse()) && first;
         first = !write(stream, first, "seasonal", spec.getSeasonalModel())
                 && first;
         write(stream, first, "noise", spec.getNoiseUse());

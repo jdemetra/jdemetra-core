@@ -55,6 +55,7 @@ public class StmDecomposition implements ISaResults{
         smoother.setSsf(model);
         ExtendedSsfData data = new ExtendedSsfData(new SsfData(ylin.getValues().internalStorage(), null));
         data.setForecastsCount(ylin.getFrequency().intValue());
+        TsDomain full=ylin.getDomain().extend(0, data.getForecastsCount());
         srslts_ = new SmoothingResults();
         smoother.process(data, srslts_);
 //        DisturbanceSmoother smoother = new DisturbanceSmoother();
@@ -71,14 +72,14 @@ public class StmDecomposition implements ISaResults{
             minfo.add(NOISE, noise);
             i_ = noise;
         } else {
-            i_ = new TsData(ylin.getDomain(), 0);
+            i_ = new TsData(full, 0);
         }
         if (model.getSpecification().hasCycle()) {
             cycle = new TsData(ylin.getStart(), srslts_.component(cmps[cur++]), false);
             minfo.add(CYCLE, cycle);
             c_ = cycle;
         } else {
-            c_ = new TsData(ylin.getDomain(), 0);
+            c_ = new TsData(full, 0);
         }
         if (model.getSpecification().hasLevel()) {
             level = new TsData(ylin.getStart(), srslts_.component(cmps[cur++]), false);
@@ -96,7 +97,7 @@ public class StmDecomposition implements ISaResults{
             minfo.add(SEASONAL, seasonal);
             s_ = seasonal;
         } else {
-            s_ = new TsData(ylin.getDomain(), 0);
+            s_ = new TsData(full, 0);
         }
         minfo.add(SERIES, ylin);
         TsData all = TsData.add(t_, s_);

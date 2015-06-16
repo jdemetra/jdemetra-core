@@ -395,7 +395,7 @@ public class StmProcessingFactory extends GenericSaProcessingFactory implements 
 
                     if (fdomain != null) {
                         TsData fy = op(mul, fdata, ndet);
-                        //               finals.add(fy, ComponentType.Series, ComponentInformation.Forecast);
+                        finals.add(fy, ComponentType.Series, ComponentInformation.Forecast);
                         TsData ftl = ldecomp.getSeries(ComponentType.Trend,
                                 ComponentInformation.Forecast);
                         if (ftl != null) {
