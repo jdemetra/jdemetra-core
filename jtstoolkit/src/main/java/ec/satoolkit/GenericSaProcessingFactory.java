@@ -22,7 +22,6 @@ import ec.satoolkit.benchmarking.SaBenchmarkingSpec;
 import ec.tstoolkit.algorithm.IProcessing.Status;
 import ec.tstoolkit.algorithm.*;
 import ec.tstoolkit.algorithm.SingleTsDataProcessing.Validation;
-import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.modelling.ComponentInformation;
 import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.ModellingDictionary;
@@ -433,7 +432,7 @@ public class GenericSaProcessingFactory {
         sproc.add(createBenchmarkingStep(spec));
     }
 
-    private static TsData op(boolean mul, TsData l, TsData r) {
+    protected static TsData op(boolean mul, TsData l, TsData r) {
         if (mul) {
             return TsData.multiply(l, r);
         } else {
@@ -441,7 +440,7 @@ public class GenericSaProcessingFactory {
         }
     }
 
-    private static TsData inv_op(boolean mul, TsData l, TsData r) {
+    protected static TsData inv_op(boolean mul, TsData l, TsData r) {
         if (mul) {
             return TsData.divide(l, r);
         } else {
