@@ -514,7 +514,7 @@ public class DeterministicComponent implements IProcResults {
         mapper.add(ModellingDictionary.Y_LIN, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
             @Override
             public TsData retrieve(DeterministicComponent source) {
-                return source.isMultiplicative() ? source.linearizedSeries().exp() : source.linearizedSeries();
+                return source.linearizedSeries();
             }
         });
         mapper.add(ModellingDictionary.L, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
@@ -604,18 +604,27 @@ public class DeterministicComponent implements IProcResults {
         mapper.add(ModellingDictionary.OMHE, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
             @Override
             public TsData retrieve(DeterministicComponent source) {
-                TsData cal = source.regressionEffect(source.domain(false), IMovingHolidayVariable.class);
-                TsData ee = source.regressionEffect(source.domain(false), EasterVariable.class);
-                source.backTransform(TsData.subtract(cal, ee), false, false);
+                 TsData cal = source.regressionEffect(source.domain(false), new TsVariableList.ISelector() {
+
+                    @Override
+                    public boolean accept(ITsVariable var) {
+                        return (var instanceof IMovingHolidayVariable) && !(var instanceof EasterVariable);
+                    }
+                });
+                source.backTransform(cal, false, false);
                 return cal;
             }
         });
         mapper.add(ModellingDictionary.OMHE + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
             @Override
             public TsData retrieve(DeterministicComponent source) {
-                TsData cal = source.regressionEffect(source.domain(true), IMovingHolidayVariable.class);
-                TsData ee = source.regressionEffect(source.domain(true), EasterVariable.class);
-                source.backTransform(TsData.subtract(cal, ee), false, false);
+                TsData cal = source.regressionEffect(source.domain(true), new TsVariableList.ISelector() {
+
+                    @Override
+                    public boolean accept(ITsVariable var) {
+                        return (var instanceof IMovingHolidayVariable) && !(var instanceof EasterVariable);
+                    }
+                });
                 source.backTransform(cal, false, false);
                 return cal;
             }
