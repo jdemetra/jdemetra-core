@@ -68,7 +68,7 @@ public class RegressionVariablesTest extends AbstractTramoModule implements IPre
         //RegStatus.ToRemove);
         boolean hasmh = model.getMovingHolidays() != null && !model.getMovingHolidays().isEmpty();
         boolean hasuser = model.getUserVariables() != null && !model.getUserVariables().isEmpty();
-        model.setPrespecifiedOutliers(null);
+//        model.setPrespecifiedOutliers(null);
         if (hastd || hasmh || hasuser || context.automodelling) {
             return model;
         } else {
