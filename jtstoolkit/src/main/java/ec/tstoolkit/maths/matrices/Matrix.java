@@ -533,6 +533,65 @@ public class Matrix implements Cloneable {
     }
 
     /**
+     * Checks that the matrix is (quasi-)diagonal
+     *
+     * @param eps A small value.
+     * @return True if all the elements are strictly smaller (in absolute value)
+     * than the given eps.
+     */
+    public boolean isDiagonal(double eps) {
+        if (ncols_ != nrows_) {
+            return false;
+        }
+        int n = data_.length;
+        int idx = 1;
+        while (idx < n) {
+            int end = idx + nrows_;
+
+            for (int i = idx; i < end; ++i) {
+                double d = data_[i];
+                if (d < -eps || d > eps) {
+                    return false;
+                }
+            }
+            idx = end + 1;
+        }
+        return true;
+    }
+
+    public boolean isZero() {
+        int n = data_.length;
+        for (int i = 0; i < n; ++i) {
+            if (data_[i] != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isDiagonal() {
+        if (ncols_ != nrows_) {
+            return false;
+        }
+        int n = data_.length;
+        int idx = 1;
+        while (idx < n) {
+            int end = idx + nrows_;
+            for (int i = idx; i < end; ++i) {
+                if (data_[i] != 0) {
+                    return false;
+                }
+            }
+            idx = end + 1;
+        }
+        return true;
+    }
+
+    public boolean isSquare() {
+        return ncols_ == nrows_;
+    }
+
+    /**
      * Y = X - r
      *
      * @param r The right operand
@@ -655,16 +714,18 @@ public class Matrix implements Cloneable {
         }
     }
 
-   /**
+    /**
      * Fills the matrix with random numbers (in [0, 1[)
+     *
      * @param seed
      */
     public void randomize(int seed) {
-        Random rnd=new Random(seed);
+        Random rnd = new Random(seed);
         for (int i = 0; i < data_.length; ++i) {
             data_[i] = rnd.nextDouble();
         }
     }
+
     /**
      * Returns a given row (as a data block)
      *
@@ -1092,4 +1153,5 @@ public class Matrix implements Cloneable {
     public void copy(Matrix C) {
         System.arraycopy(C.data_, 0, data_, 0, data_.length);
     }
+
 }
