@@ -24,6 +24,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 /**
  *
  * @author Jean Palate
+ * @param <R>
  */
 public interface IDefaultSeriesDecomposer <R extends ISaResults>{
     boolean decompose(TsData series);

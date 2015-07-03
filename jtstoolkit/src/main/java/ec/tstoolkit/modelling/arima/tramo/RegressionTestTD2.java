@@ -176,7 +176,7 @@ public class RegressionTestTD2 extends AbstractTramoModule implements IPreproces
         model.setAirline(context.hasseas);
         model.setMean(true);
         model.setOutliers(null);
-        model.setPrespecifiedOutliers(null);
+//        model.setPrespecifiedOutliers(null);
 // remove previous calendar effects 
         model.getCalendars().clear();
         if (td != TradingDaysType.None) {

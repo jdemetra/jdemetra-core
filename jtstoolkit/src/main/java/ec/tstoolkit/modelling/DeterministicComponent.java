@@ -21,12 +21,12 @@ import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.information.InformationMapper;
-import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.modelling.arima.ModelEstimation;
 import static ec.tstoolkit.modelling.arima.PreprocessingModel.outlierTypes;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.regression.Constant;
 import ec.tstoolkit.timeseries.regression.DiffConstant;
+import ec.tstoolkit.timeseries.regression.EasterVariable;
 import ec.tstoolkit.timeseries.regression.ICalendarVariable;
 import ec.tstoolkit.timeseries.regression.IMovingHolidayVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
@@ -54,16 +54,16 @@ import java.util.Map;
  * @author Jean Palate
  */
 public class DeterministicComponent implements IProcResults {
-
+    
     public static final int FCAST_YEAR = 1;
-
+    
     private TsData original_, y_;
     private LengthOfPeriodType lp_ = LengthOfPeriodType.None;
     private DefaultTransformationType function_ = DefaultTransformationType.None;
     private final TsVariableList x_ = new TsVariableList();
     private DataBlock b_;
     private double units_ = 1;
-
+    
     public DeterministicComponent() {
     }
 
@@ -73,58 +73,58 @@ public class DeterministicComponent implements IProcResults {
     public TsData getOriginal() {
         return original_.clone();
     }
-
+    
     public TsData getY() {
         return y_;
     }
-
+    
     public TsVariableList getX() {
         return x_.clone();
     }
-
+    
     public void setOriginal(TsData s) {
         original_ = s;
     }
-
+    
     public void setY(TsData s) {
         y_ = s;
     }
-
+    
     public void add(IOutlierVariable o) {
         x_.add(o);
     }
-
+    
     public void add(UserVariable user) {
         x_.add(user);
     }
-
+    
     public void add(Ramp ramp) {
         x_.add(ramp);
     }
-
+    
     public void add(InterventionVariable i) {
         x_.add(i);
     }
-
+    
     public void add(ICalendarVariable td) {
         x_.add(td);
     }
-
+    
     public void add(IMovingHolidayVariable mh) {
         x_.add(mh);
     }
-
+    
     public void clearX() {
         x_.clear();
     }
-
+    
     public void setCoefficients(IReadDataBlock coeff) {
         if (coeff.getLength() != x_.getVariablesCount()) {
             throw new IllegalArgumentException();
         }
         b_ = new DataBlock(coeff);
     }
-
+    
     public static ComponentType getType(IOutlierVariable var) {
         OutlierType ot = var.getOutlierType();
         switch (ot) {
@@ -140,7 +140,7 @@ public class DeterministicComponent implements IProcResults {
                 return ComponentType.Undefined;
         }
     }
-
+    
     public static ComponentType getType(InterventionVariable var) {
         if (var.getDeltaS() == 1) {
             return ComponentType.Seasonal;
@@ -150,7 +150,7 @@ public class DeterministicComponent implements IProcResults {
         }
         return ComponentType.Irregular;
     }
-
+    
     public static ComponentType getType(final ITsVariable var) {
 
         // outliers
@@ -179,9 +179,9 @@ public class DeterministicComponent implements IProcResults {
             ITsModifier m = (ITsModifier) var;
             return getType(m.getVariable());
         }
-
+        
         return ComponentType.Undefined;
-
+        
     }
 
     /**
@@ -197,31 +197,31 @@ public class DeterministicComponent implements IProcResults {
     public TsDomain getEstimationDomain() {
         return y_.getDomain();
     }
-
+    
     public int getFrequency() {
         return y_.getFrequency().intValue();
     }
-
+    
     public DefaultTransformationType getTransformation() {
         return function_;
     }
-
+    
     public LengthOfPeriodType getLengthOfPeriodAdjustment() {
         return lp_;
     }
-
+    
     public double getUnits() {
         return units_;
     }
-
+    
     public void setTransformation(DefaultTransformationType fn) {
         function_ = fn;
     }
-
+    
     public void setLengthOfPeriodAdjustment(LengthOfPeriodType lp) {
         lp_ = lp;
     }
-
+    
     public void setUnits(double u) {
         units_ = u;
     }
@@ -237,7 +237,7 @@ public class DeterministicComponent implements IProcResults {
      */
     public List<ITsDataTransformation> backTransformations(boolean T, boolean S) {
         ArrayList<ITsDataTransformation> tr = new ArrayList<>();
-
+        
         if (function_ == DefaultTransformationType.Log) {
             tr.add(new ExpTransformation());
         }
@@ -249,7 +249,7 @@ public class DeterministicComponent implements IProcResults {
         }
         return tr;
     }
-
+    
     public void backTransform(TsData s, boolean T, boolean S) {
         if (s == null) {
             return;
@@ -259,7 +259,7 @@ public class DeterministicComponent implements IProcResults {
             t.transform(s, null);
         }
     }
-
+    
     public TsData interpolatedSeries(boolean bTransformed) {
         TsData y = y_.clone();
         if (!bTransformed) {
@@ -267,7 +267,7 @@ public class DeterministicComponent implements IProcResults {
         }
         return y;
     }
-
+    
     public TsData linearizedSeries() {
         TsData interp = interpolatedSeries(true);
         TsData regs = regressionEffect(getSeriesDomain());
@@ -280,7 +280,7 @@ public class DeterministicComponent implements IProcResults {
             return new TsData(domain, 0);
         } else {
             DataBlock sum = x_.all().sum(b_, domain);
-
+            
             if (sum == null) {
                 sum = new DataBlock(domain.getLength());
             }
@@ -295,35 +295,35 @@ public class DeterministicComponent implements IProcResults {
         if (sel.isEmpty()) {
             return new TsData(domain, 0);
         }
-
+        
         DataBlock sum = sel.sum(b_, domain);
-
+        
         if (sum == null) {
             sum = new DataBlock(domain.getLength());
         }
         TsData rslt = new TsData(domain.getStart(), sum.getData(), false);
         return rslt;
     }
-
+    
     private TsData regressionEffect(TsDomain domain, TsVariableList.ISelector selector) {
         TsVariableSelection<ITsVariable> sel = x_.select(selector);
         if (sel.isEmpty()) {
             return new TsData(domain, 0);
         }
-
+        
         DataBlock sum = sel.sum(b_, domain);
-
+        
         if (sum == null) {
             sum = new DataBlock(domain.getLength());
         }
         TsData rslt = new TsData(domain.getStart(), sum.getData(), false);
         return rslt;
     }
-
+    
     public TsData outliersEffect(TsDomain domain) {
         return regressionEffect(domain, IOutlierVariable.class);
     }
-
+    
     public TsData outliersEffect(TsDomain domain, final ComponentType type) {
         if (type == ComponentType.Undefined) {
             return outliersEffect(domain);
@@ -333,18 +333,18 @@ public class DeterministicComponent implements IProcResults {
         for (int i = 0; i < types.length; ++i) {
             TsVariableSelection sel = x_.select(types[i]);
             if (!sel.isEmpty()) {
-
+                
                 DataBlock sum = sel.sum(b_, domain);
-
+                
                 if (sum != null) {
                     rslt = TsData.add(rslt, new TsData(domain.getStart(), sum.getData(), false));
                 }
             }
         }
         return rslt;
-
+        
     }
-
+    
     public List<TsData> regressors(TsDomain domain) {
         ArrayList<TsData> regs = new ArrayList<>();
         List<DataBlock> data = x_.all().data(domain);
@@ -355,7 +355,7 @@ public class DeterministicComponent implements IProcResults {
         }
         return regs;
     }
-
+    
     public TsData deterministicEffect(TsDomain domain, final ComponentType type) {
         TsVariableSelection<ITsVariable> sel = x_.select(
                 new TsVariableList.ISelector() {
@@ -364,20 +364,20 @@ public class DeterministicComponent implements IProcResults {
                         return getType(var) == type;
                     }
                 });
-
+        
         if (sel.isEmpty()) {
             return new TsData(domain, 0);
         }
-
+        
         DataBlock sum = sel.sum(b_, domain);
-
+        
         if (sum == null) {
             sum = new DataBlock(domain.getLength());
         }
         TsData rslt = new TsData(domain.getStart(), sum.getData(), false);
         return rslt;
     }
-
+    
     public TsData userEffect(TsDomain domain, final ComponentType type) {
         TsVariableSelection<ITsVariable> sel = x_.select(
                 new TsVariableList.ISelector() {
@@ -389,25 +389,25 @@ public class DeterministicComponent implements IProcResults {
                         return ((UserVariable) var).getType() == type;
                     }
                 });
-
+        
         if (sel.isEmpty()) {
             return new TsData(domain, 0);
         }
-
+        
         DataBlock sum = sel.sum(b_, domain);
-
+        
         if (sum == null) {
             sum = new DataBlock(domain.getLength());
         }
         TsData rslt = new TsData(domain.getStart(), sum.getData(), false);
         return rslt;
     }
-
+    
     @Override
     public Map<String, Class> getDictionary() {
         return dictionary();
     }
-
+    
     @Override
     public <T> T getData(String id, Class<T> tclass) {
         if (mapper.contains(id)) {
@@ -416,30 +416,30 @@ public class DeterministicComponent implements IProcResults {
             return null;
         }
     }
-
+    
     @Override
     public boolean contains(String id) {
         synchronized (mapper) {
             return mapper.contains(id);
         }
     }
-
+    
     @Override
     public List<ProcessingInformation> getProcessingInformation() {
         return Collections.EMPTY_LIST;
     }
-
+    
     public static void fillDictionary(String prefix, Map<String, Class> map) {
         mapper.fillDictionary(prefix, map);
         ModelEstimation.fillDictionary(prefix, map);
     }
-
+    
     public static Map<String, Class> dictionary() {
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
         fillDictionary(null, map);
         return map;
     }
-
+    
     private TsData op(TsData l, TsData r) {
         if (function_ == DefaultTransformationType.Log) {
             return TsData.multiply(l, r);
@@ -447,7 +447,7 @@ public class DeterministicComponent implements IProcResults {
             return TsData.add(l, r);
         }
     }
-
+    
     private TsData inv_op(TsData l, TsData r) {
         if (function_ == DefaultTransformationType.Log) {
             return TsData.divide(l, r);
@@ -455,11 +455,11 @@ public class DeterministicComponent implements IProcResults {
             return TsData.subtract(l, r);
         }
     }
-
+    
     private int getForecastCount() {
         return FCAST_YEAR * getFrequency();
     }
-
+    
     private TsDomain domain(boolean fcast) {
         if (fcast) {
             TsDomain dom = getSeriesDomain();
@@ -468,11 +468,11 @@ public class DeterministicComponent implements IProcResults {
             return getSeriesDomain();
         }
     }
-
+    
     public boolean isMultiplicative() {
         return function_ == DefaultTransformationType.Log;
     }
-
+    
     public static final String LOG = "log",
             ADJUST = "adjust",
             EASTER = "easter",
@@ -485,7 +485,7 @@ public class DeterministicComponent implements IProcResults {
         }
     }
     private static final InformationMapper<DeterministicComponent> mapper = new InformationMapper<>();
-
+    
     static {
         mapper.add(LOG, new InformationMapper.Mapper<DeterministicComponent, Boolean>(Boolean.class) {
             @Override
@@ -514,7 +514,7 @@ public class DeterministicComponent implements IProcResults {
         mapper.add(ModellingDictionary.Y_LIN, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
             @Override
             public TsData retrieve(DeterministicComponent source) {
-                return source.isMultiplicative() ? source.linearizedSeries().exp() : source.linearizedSeries();
+                return source.linearizedSeries();
             }
         });
         mapper.add(ModellingDictionary.L, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
@@ -582,6 +582,50 @@ public class DeterministicComponent implements IProcResults {
             public TsData retrieve(DeterministicComponent source) {
                 TsData cal = source.regressionEffect(source.domain(true), ICalendarVariable.class);
                 source.backTransform(cal, false, true);
+                return cal;
+            }
+        });
+        mapper.add(ModellingDictionary.EE, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
+            @Override
+            public TsData retrieve(DeterministicComponent source) {
+                TsData cal = source.regressionEffect(source.domain(false), EasterVariable.class);
+                source.backTransform(cal, false, false);
+                return cal;
+            }
+        });
+        mapper.add(ModellingDictionary.EE + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
+            @Override
+            public TsData retrieve(DeterministicComponent source) {
+                TsData cal = source.regressionEffect(source.domain(true), EasterVariable.class);
+                source.backTransform(cal, false, false);
+                return cal;
+            }
+        });
+        mapper.add(ModellingDictionary.OMHE, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
+            @Override
+            public TsData retrieve(DeterministicComponent source) {
+                 TsData cal = source.regressionEffect(source.domain(false), new TsVariableList.ISelector() {
+
+                    @Override
+                    public boolean accept(ITsVariable var) {
+                        return (var instanceof IMovingHolidayVariable) && !(var instanceof EasterVariable);
+                    }
+                });
+                source.backTransform(cal, false, false);
+                return cal;
+            }
+        });
+        mapper.add(ModellingDictionary.OMHE + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
+            @Override
+            public TsData retrieve(DeterministicComponent source) {
+                TsData cal = source.regressionEffect(source.domain(true), new TsVariableList.ISelector() {
+
+                    @Override
+                    public boolean accept(ITsVariable var) {
+                        return (var instanceof IMovingHolidayVariable) && !(var instanceof EasterVariable);
+                    }
+                });
+                source.backTransform(cal, false, false);
                 return cal;
             }
         });
@@ -761,7 +805,7 @@ public class DeterministicComponent implements IProcResults {
                 return r;
             }
         });
-
+        
         mapper.add(NTD, new InformationMapper.Mapper<DeterministicComponent, Integer>(Integer.class) {
             @Override
             public Integer retrieve(final DeterministicComponent source) {

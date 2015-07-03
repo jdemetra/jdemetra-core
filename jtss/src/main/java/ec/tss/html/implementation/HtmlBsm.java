@@ -16,7 +16,7 @@
  */
 package ec.tss.html.implementation;
 
-import ec.satoolkit.special.StmResults;
+import ec.satoolkit.special.StmEstimation;
 import ec.tss.html.AbstractHtmlElement;
 import ec.tss.html.HtmlStream;
 import ec.tss.html.HtmlStyle;
@@ -40,6 +40,7 @@ import ec.tstoolkit.timeseries.regression.ITsVariable;
 import ec.tstoolkit.timeseries.regression.IUserTsVariable;
 import ec.tstoolkit.timeseries.regression.InterventionVariable;
 import ec.tstoolkit.timeseries.regression.Ramp;
+import ec.tstoolkit.timeseries.regression.TsVariableList;
 import ec.tstoolkit.timeseries.regression.TsVariableSelection;
 import java.io.IOException;
 import java.util.Formatter;
@@ -95,6 +96,7 @@ public class HtmlBsm extends AbstractHtmlElement implements IHtmlElement {
         boolean first = true;
         first = !write(stream, first, "level", spec.getLevelUse());
         first = !write(stream, first, "slope", spec.getSlopeUse()) && first;
+        first = !write(stream, first, "cycle", spec.getCycleUse()) && first;
         first = !write(stream, first, "seasonal", spec.getSeasonalModel())
                 && first;
         write(stream, first, "noise", spec.getNoiseUse());
@@ -102,15 +104,17 @@ public class HtmlBsm extends AbstractHtmlElement implements IHtmlElement {
     }
 
     final BasicStructuralModel bsm;
-    final StmResults rslts;
+    final StmEstimation rslts;
+    final TsVariableList x;
 
     /**
      *
      * @param stm
      */
-    public HtmlBsm(StmResults stm) {
+    public HtmlBsm(StmEstimation stm) {
         this.rslts = stm;
         this.bsm = stm.getModel();
+        this.x=stm.getX();
     }
 
     /**
@@ -189,7 +193,7 @@ public class HtmlBsm extends AbstractHtmlElement implements IHtmlElement {
     }
 
     private void writeRegressionModel(HtmlStream stream) throws IOException {
-        if (!rslts.getX().isEmpty()) {
+        if (!x.isEmpty()) {
             stream.write(HtmlTag.HEADER2, h2, "Regression model");
             stream.newLine();
             writeRegressionItems(stream, "Trading days", ITradingDaysVariable.class);
@@ -204,7 +208,7 @@ public class HtmlBsm extends AbstractHtmlElement implements IHtmlElement {
     }
 
     private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, String title, Class<V> tclass) throws IOException {
-        TsVariableSelection<ITsVariable> regs = rslts.getX().selectCompatible(tclass);
+        TsVariableSelection<ITsVariable> regs = x.selectCompatible(tclass);
         if (regs.isEmpty()) {
             return;
         }

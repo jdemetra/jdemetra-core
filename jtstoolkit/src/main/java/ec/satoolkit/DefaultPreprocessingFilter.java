@@ -22,7 +22,6 @@ import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
-import ec.tstoolkit.timeseries.simplets.TsFrequency;
 
 /**
  *
@@ -84,7 +83,7 @@ public class DefaultPreprocessingFilter implements IPreprocessingFilter {
 
     @Override
     public TsData getCorrectedSeries(boolean transformed) {
-        TsData lin = null;
+        TsData lin;
         boolean mul = (!transformed) && model_.isMultiplicative();
         if (model_.estimation.getRegArima().getVarsCount() == 0) {
             lin = model_.interpolatedSeries(transformed);
