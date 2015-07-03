@@ -116,9 +116,9 @@ public class ModelDescription implements Cloneable {
     // [0. Mean correction]
     // 1. additive outliers_ for missing values
     // 2 users
-    // 3 calendars_
+    // 3 calendars
     // 4 moving holidays
-    // 5 outliers_
+    // 5 outliers, 5.1 pre-specified, 5.2 detected 
     private List<DataBlock> createX() {
         checkVariables();
         ArrayList<DataBlock> xdata = new ArrayList<>();
@@ -196,6 +196,15 @@ public class ModelDescription implements Cloneable {
         }
     }
 
+    /**
+     * Build the regression variables list. The regression variables are organized as follows:
+     * 1 users-defined variables (user variables - intervention variables - ramps)
+     * 2 calendars
+     * 3 moving holidays
+     * 4 pre-specified outliers
+     * 5 detected outliers
+     * @return The variables list. May be empty
+     */
     public TsVariableList buildRegressionVariables() {
         checkVariables();
         TsVariableList x = new TsVariableList();
