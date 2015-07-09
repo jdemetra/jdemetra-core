@@ -92,6 +92,18 @@ public abstract class Ts implements IDocumented, ITsIdentified {
     public abstract String getInvalidDataCause();
 
     public abstract void setInvalidDataCause(String message);
+    
+    @Override
+    public String toString(){
+        StringBuilder builder=new StringBuilder();
+        builder.append(getName());
+        TsData data=getTsData();
+        if (data != null){
+            builder.append("\r\n");
+            builder.append(data.toString());
+        }
+        return builder.toString();
+    }
 
     @Override
     public boolean equals(Object obj) {

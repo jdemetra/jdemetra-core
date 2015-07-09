@@ -19,6 +19,7 @@ package ec.tss;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import ec.tss.tsproviders.utils.MultiLineNameUtil;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,7 @@ import ec.tstoolkit.IDocumented;
 import ec.tstoolkit.MetaData;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.simplets.TsData;
+import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import java.util.*;
 
 /**
@@ -78,14 +80,14 @@ public final class TsCollection implements ITsIdentified, IDocumented,
         return m_name;
     }
 
-    public String getInvalidDataCause(){
+    public String getInvalidDataCause() {
         return m_invalidDataCause;
     }
 
     public void setInvalidDataCause(String message) {
         m_invalidDataCause = message;
     }
-    
+
     /**
      *
      * @param ts
@@ -734,6 +736,20 @@ public final class TsCollection implements ITsIdentified, IDocumented,
             m_info = m_info.union(info.type);
             m_invalidDataCause = info.invalidDataCause;
             return updated;
+        }
+    }
+
+    @Override
+    public String toString() {
+        synchronized (m_moniker) {
+            String[] headers = new String[m_ts.size()];
+            List<TsData> all = getAllData();
+            for (int i=0; i<headers.length; ++i){
+                headers[i]=MultiLineNameUtil.last(m_ts.get(i).getName());
+            }
+            TsDataTable table=new TsDataTable();
+            table.add(all);
+            return table.toString(headers);
         }
     }
 }
