@@ -139,6 +139,9 @@ public class TramoSpecification implements Cloneable, IRegArimaSpecification {
         TRfull.setUsingAutoModel(true);
     }
 
+    public static final TramoSpecification[] allSpecifications(){
+        return new TramoSpecification[]{TR0, TR1, TR2, TR3, TR4, TR5, TRfull};
+    }
     /**
      * Creates a new default specification. No transformation, no regression
      * variables, no outliers detection, default airline model (without mean).

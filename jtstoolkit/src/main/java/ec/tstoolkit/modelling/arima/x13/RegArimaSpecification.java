@@ -133,6 +133,9 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
     private ArimaSpec arima_;
     private EstimateSpec estimate_;
 
+    public static final RegArimaSpecification[] allSpecifications() {
+        return new RegArimaSpecification[]{RG0, RG1, RG2, RG3, RG4, RG5};
+    }
     public RegArimaSpecification() {
         basic_ = new BasicSpec();
         transform_ = new TransformSpec();

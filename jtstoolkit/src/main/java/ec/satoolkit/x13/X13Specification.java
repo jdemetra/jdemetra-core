@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.satoolkit.x13;
 
 import ec.satoolkit.AbstractSaSpecification;
@@ -39,18 +38,22 @@ import java.util.Objects;
 public class X13Specification extends AbstractSaSpecification implements ISaSpecification, Cloneable {
 
     public static final String REGARIMA = "regarima", X11 = "x11", BENCH = "benchmarking", RSA = "method";
-   private static final String SMETHOD = "X13";
-     
-    public static void fillDictionary(String prefix, Map<String, Class> dic){
+    private static final String SMETHOD = "X13";
+
+    public static void fillDictionary(String prefix, Map<String, Class> dic) {
         RegArimaSpecification.fillDictionary(InformationSet.item(prefix, REGARIMA), dic);
         X11Specification.fillDictionary(InformationSet.item(prefix, X11), dic);
         SaBenchmarkingSpec.fillDictionary(InformationSet.item(prefix, BENCH), dic);
     }
-    
+
     private RegArimaSpecification regSpec_;
     private X11Specification x11Spec_;
     private SaBenchmarkingSpec benchSpec_;
     public static final X13Specification RSAX11, RSA0, RSA1, RSA2, RSA3, RSA4, RSA5;
+
+    public static final X13Specification[] allSpecifications() {
+        return new X13Specification[]{RSAX11, RSA0, RSA1, RSA2, RSA3, RSA4, RSA5};
+    }
 
     static {
         X11Specification xdef = new X11Specification();
@@ -86,8 +89,7 @@ public class X13Specification extends AbstractSaSpecification implements ISaSpec
             spec.x11Spec_ = x11Spec_.clone();
             spec.benchSpec_ = benchSpec_.clone();
             return spec;
-        }
-        catch (CloneNotSupportedException ex) {
+        } catch (CloneNotSupportedException ex) {
             throw new AssertionError();
         }
     }
@@ -196,29 +198,21 @@ public class X13Specification extends AbstractSaSpecification implements ISaSpec
     public X13Specification matchSystem() {
         if (isSystem()) {
             return this;
-        }
-        else if (equals(RSAX11)) {
+        } else if (equals(RSAX11)) {
             return RSAX11;
-        }
-        else if (equals(RSA0)) {
+        } else if (equals(RSA0)) {
             return RSA0;
-        }
-        else if (equals(RSA1)) {
+        } else if (equals(RSA1)) {
             return RSA1;
-        }
-        else if (equals(RSA2)) {
+        } else if (equals(RSA2)) {
             return RSA2;
-        }
-        else if (equals(RSA3)) {
+        } else if (equals(RSA3)) {
             return RSA3;
-        }
-        else if (equals(RSA4)) {
+        } else if (equals(RSA4)) {
             return RSA4;
-        }
-        else if (equals(RSA5)) {
+        } else if (equals(RSA5)) {
             return RSA5;
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -275,8 +269,7 @@ public class X13Specification extends AbstractSaSpecification implements ISaSpec
         String s = toString();
         if (s.length() == 0) {
             return SMETHOD;
-        }
-        else {
+        } else {
             StringBuilder builder = new StringBuilder();
             builder.append("X13[").append(s).append(']');
             return builder.toString();
