@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tstoolkit.timeseries.simplets;
 
 import ec.tstoolkit.data.DescriptiveStatistics;
@@ -22,6 +21,7 @@ import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.TsException;
 import ec.tstoolkit.timeseries.TsPeriodSelector;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -50,8 +50,7 @@ public class TsDataTable {
         curid -= c - 1;
         if (curid % c != 0) {
             return Integer.MIN_VALUE;
-        }
-        else {
+        } else {
             return curid / c;
         }
     }
@@ -124,8 +123,7 @@ public class TsDataTable {
         double data = m_data.get(seriesId).get(id - m_ids[seriesId]);
         if (!DescriptiveStatistics.isFinite(data)) {
             return TsDataTableInfo.Missing;
-        }
-        else {
+        } else {
             return TsDataTableInfo.Valid;
         }
     }
@@ -164,9 +162,15 @@ public class TsDataTable {
         internalClear();
         if ((pos < 0) || (pos >= m_data.size())) {
             m_data.add(ts);
-        }
-        else {
+        } else {
             m_data.add(pos, ts);
+        }
+    }
+
+    public void add(final Iterable<TsData> ts) {
+        internalClear();
+        for (TsData s : ts) {
+            m_data.add(s);
         }
     }
 
@@ -234,7 +238,6 @@ public class TsDataTable {
         }
 
         // creation of the new domain:
-
         int c = m_curfreq / m_freqs[ifirst];
         int firstid = (m_ids[ifirst] + 1) * c - 1, lastid = firstid + (m_ns[ifirst] - 1) * c;	//	expressed in m_curfreq...
         for (int i = ifirst + 1; i < n; ++i) {
@@ -278,14 +281,26 @@ public class TsDataTable {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        TsDomain dom = this.getDomain();
-        if (dom == null || dom.isEmpty()) {
-            return "";
+        return toString(null);
+    }
+
+    public String toString(String[] headers) {
+        if (headers != null && headers.length != m_data.size()) {
+            throw new IllegalArgumentException("Incompatible headers for this TsDataTable");
         }
+        StringBuilder builder = new StringBuilder();
         // write headers
         for (int i = 0; i < m_data.size(); ++i) {
-            builder.append('\t').append("s").append(i + 1);
+            builder.append('\t');
+            if (headers == null) {
+                builder.append("s").append(i + 1);
+            } else {
+                builder.append(headers[i]);
+            }
+        }
+        TsDomain dom = this.getDomain();
+        if (dom == null || dom.isEmpty()) {
+            return builder.toString();
         }
         // write each rows
         for (int j = 0; j < dom.getLength(); ++j) {
@@ -294,15 +309,13 @@ public class TsDataTable {
                 TsDataTableInfo dataInfo = getDataInfo(j, i);
                 if (dataInfo == TsDataTableInfo.Valid) {
                     builder.append('\t').append(this.getData(j, i));
-                }
-                else if (dataInfo == TsDataTableInfo.Missing) {
+                } else if (dataInfo == TsDataTableInfo.Missing) {
                     builder.append("\t.");
-                }
-                else {
+                } else {
                     builder.append('\t');
                 }
-           }
-       }
+            }
+        }
         return builder.toString();
     }
 }

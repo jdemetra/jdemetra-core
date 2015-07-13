@@ -18,6 +18,8 @@ package ec.tstoolkit.timeseries.calendars;
 
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.Month;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -72,5 +74,49 @@ public class UtilitiesTest {
         Assert.assertEquals(Utilities.julianEaster(2009, true), new Day(2009, Month.April, 18));
         Assert.assertEquals(Utilities.julianEaster(2010, true), new Day(2010, Month.April, 3));
         Assert.assertEquals(Utilities.julianEaster(2011, true), new Day(2011, Month.April, 23));
+    }
+    
+    private static final int CYCLE=532;
+    private static final int[] PROB = new int[]
+    {
+        4,8,8,12,16,16,20,16,16,20,16,16,20,16,20,20,16,20,16,16,20,16,16,20,16,20,16,16,20,16,12,12,8,8,4
+    };
+
+    //@Test
+    public void computeJulianEasterMeanCorrections() {
+        
+//        // March
+        for (int i=15; i<29; ++i){
+            int n=0;
+            for (int j=0; j<PROB.length; ++j){
+                int d0=j-i, d1=-3;
+                if (d0<d1)
+                    n+=PROB[j]*(d1-d0);
+                               
+            }
+            System.out.println(n);
+        }
+        // April
+        for (int i=15; i<29; ++i){
+            int n=0;
+            for (int j=0; j<PROB.length; ++j){
+                int d0=Math.max(j-i, -3),d1=Math.min(j, 27);
+                if (d0<d1)
+                    n+=PROB[j]*(d1-d0);
+                               
+            }
+            System.out.println(n);
+        }
+        // May
+        for (int i=15; i<29; ++i){
+            int n=0;
+            for (int j=0; j<PROB.length; ++j){
+                int d0=Math.max(j-i, 27),d1=j;
+                if (d0<d1)
+                    n+=PROB[j]*(d1-d0);
+                               
+            }
+            System.out.println(n);
+        }
     }
 }

@@ -95,7 +95,7 @@ public class MatrixTest {
         Matrix m = Matrix.select(M.subMatrix(), rsel, csel);
         M2.subMatrix().copy(m.subMatrix(), rsel, csel);
         assertTrue(M2.equals(M));
-        
+
         mr = Matrix.selectRows(M.subMatrix(), irsel);
         M2.subMatrix().copyRows(mr.subMatrix(), irsel);
         assertTrue(M2.equals(M));
@@ -103,9 +103,23 @@ public class MatrixTest {
         mc = Matrix.selectColumns(M.subMatrix(), icsel);
         M2.subMatrix().copyColumns(mc.subMatrix(), icsel);
         assertTrue(M2.equals(M));
-        
+
         m = Matrix.select(M.subMatrix(), irsel, icsel);
         M2.subMatrix().copy(m.subMatrix(), irsel, icsel);
         assertTrue(M2.equals(M));
-}
+    }
+
+    @Test
+    public void testDiagonal() {
+        Matrix D = Matrix.square(20);
+        D.diagonal().randomize();
+        assertTrue(D.isDiagonal());
+        assertTrue(D.isDiagonal(.001));
+
+        D.set(18, 19, .001);
+        assertTrue(!D.isDiagonal());
+        assertTrue(D.isDiagonal(.001));
+        assertTrue(!D.isDiagonal(.000999));
+    }
+
 }
