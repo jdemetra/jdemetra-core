@@ -646,9 +646,9 @@ public final class TsCollection implements ITsIdentified, IDocumented,
     }
 
     /**
-     *
-     * @param name
-     * @return
+     * Search a series by its name
+     * @param name The name of the series
+     * @return The first series with the given name is returned
      */
     public Ts search(String name) {
         synchronized (m_moniker) {
