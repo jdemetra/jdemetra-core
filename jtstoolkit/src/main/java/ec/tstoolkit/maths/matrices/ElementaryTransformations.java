@@ -56,6 +56,46 @@ public class ElementaryTransformations {
         }
     }
 
+    public static boolean rawGivensTriangularize(final SubMatrix X) {
+        try {
+            int nr = X.m_nrows, nc = X.m_ncols, rinc = X.m_row_inc, cinc = X.m_col_inc, beg = X.m_start;
+            int dinc = rinc + cinc;
+            double[] x = X.m_data;
+            for (int r = 0, idiag = beg; r < nr; ++r, idiag += dinc) {
+                for (int c = r + 1, cur = idiag + cinc; c < nc; ++c, cur += cinc) {
+                    double a = x[idiag];
+                    double b = x[cur];
+                    if (b != 0) {
+                        // compute the rotation
+                        double h, ro, d;
+                        if (a != 0) {
+                            h = ElementaryTransformations.hypotenuse(a, b);
+                            ro = b / h;
+                            d = a / h;
+                        } else {
+                            d = 0;
+                            ro = 1;
+                            h = b;
+                        }
+                        x[cur] = 0;
+                        a = h;
+                        x[idiag] = a;
+                        // update the next rows
+                        for (int s = r + 1, sdiag = idiag + rinc, scur = cur + rinc; s < nr; ++s, sdiag += rinc, scur += rinc) {
+                            a = x[sdiag];
+                            b = x[scur];
+                            x[sdiag] = d * a + ro * b;
+                            x[scur] = -ro * a + d * b;
+                        }
+                    }
+                }
+            }
+            return true;
+        } catch (BaseException err) {
+            return false;
+        }
+    }
+
     public static boolean householderTriangularize(final SubMatrix X) {
         try {
             int r = X.getRowsCount(), c = X.getColumnsCount();
@@ -73,7 +113,6 @@ public class ElementaryTransformations {
     }
 
     // apply givens rotations on the first row and transform the next rows.
-
     public static void rowGivens(SubMatrix m) {
         givens(m.rows(), m.getColumnsCount());
 //        DataBlock r0=m.row(0);

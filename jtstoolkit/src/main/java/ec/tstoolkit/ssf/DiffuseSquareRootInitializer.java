@@ -115,7 +115,7 @@ public class DiffuseSquareRootInitializer implements ISsfInitializer<ISsf> {
         m_ssf.ZM(pos, state.P.subMatrix(), state.C);
         m_ssf.TX(pos, state.C);
         if (state.fi != 0) {
-            ElementaryTransformations.givensTriangularize(X_.subMatrix());
+            ElementaryTransformations.rawGivensTriangularize(X_.subMatrix());
             state.Ci.copy(X_.column(0).drop(1, 0));
             state.Ci.mul(X_.get(0, 0));
         }
