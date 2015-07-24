@@ -121,10 +121,11 @@ public class HouseholderReflection implements IVectorTransformation {
         for (int i = beg + inc; i != end; i += inc) {
             sig += v[i] * v[i];
         }
+        double x0 = v[beg];
         if (sig < EPS) {
+            mu_=Math.abs(x0);
             return; // nothing to do...
         }
-        double x0 = v[beg];
         mu_ = Math.sqrt(sig + x0 * x0);
 
         double v0;
