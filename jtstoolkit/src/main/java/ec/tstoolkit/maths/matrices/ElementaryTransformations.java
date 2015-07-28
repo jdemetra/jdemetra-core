@@ -72,6 +72,10 @@ public class ElementaryTransformations {
                             h = ElementaryTransformations.hypotenuse(a, b);
                             ro = b / h;
                             d = a / h;
+                        } else if (b < 0) {
+                            d = 0;
+                            ro = -1;
+                            h = -b;
                         } else {
                             d = 0;
                             ro = 1;
