@@ -246,10 +246,8 @@ public class DiffuseSquareRootInitializer implements ISsfInitializer<ISsf> {
             nextMissingDiffuse(pos, data, state);
         } else if (state.fi == 0) {
             nextDiffuse0(pos, data, state);
-        } else if (state.f == 0) {
-            nextDiffuse1(pos, data, state);
         } else {
-            nextDiffuse2(pos, data, state);
+            nextDiffuse1(pos, data, state);
         }
         if (m_saveDiffuseVariance) {
             SymmetricMatrix.XXt(X_.subMatrix(1, X_.getRowsCount(), 1, X_.getColumnsCount()), state.Pi.subMatrix());
@@ -290,7 +288,7 @@ public class DiffuseSquareRootInitializer implements ISsfInitializer<ISsf> {
         }
     }
 
-    private void nextDiffuse2(final int pos, final ISsfData data,
+    private void nextDiffuse1(final int pos, final ISsfData data,
             final DiffuseState state) {
         //state.f != 0, state.fi != 0
         // calc f0, f1, f2
@@ -338,43 +336,7 @@ public class DiffuseSquareRootInitializer implements ISsfInitializer<ISsf> {
         }
     }
 
-    private void nextDiffuse1(final int pos, final ISsfData data,
-            final DiffuseState state) {
-        //state.f == 0, state.fi != 0 -> f2=0
-        // calc f0, f1, f2
-        double f1 = 1 / state.fi;
-
-
-        // P = T P T' - f2*(TMi)(TMi)'-f1(TMi*TMf' + TMf*TMi')+RQR'
-        // m_Pf=m_Pf.quadraticForm(new TmpTranspose(m_T));
-        m_ssf.TVT(pos, state.P.subMatrix());
-
-        DataBlockIterator cols = state.P.columns();
-        DataBlock col = cols.getData();
-        int icol = 0;
-        do {
-            double c = f1 * state.Ci.get(icol);
-            if (icol > 0) {
-                col.drop(icol, 0).addAY(-c, state.C.drop(icol, 0));
-            } else {
-                col.addAY(-c, state.C);
-            }
-            ++icol;
-        } while (cols.next());
-        SymmetricMatrix.fromLower(state.P);
-        // Add RQR'
-        addQ(pos, state.P);
-
-        if (data.hasData()) {
-            // a0 = Ta0 + f1*TMi*v0. Reuse Mf as temporary buffer
-            m_ssf.TX(pos, state.A);
-            // prod(n, m_T, m_a0, m_tmp);
-            double q = f1 * state.e;
-            state.A.addAY(q, state.Ci);
-        }
-    }
-
-    private void nextMissingDiffuse(final int pos, final ISsfData data,
+     private void nextMissingDiffuse(final int pos, final ISsfData data,
             final DiffuseState state) {
         // variance
         m_ssf.TVT(pos, state.P.subMatrix());
