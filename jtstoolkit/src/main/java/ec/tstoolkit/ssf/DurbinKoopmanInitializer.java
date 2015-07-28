@@ -255,7 +255,7 @@ public class DurbinKoopmanInitializer implements ISsfInitializer<ISsf> {
         int icol = 0;
         do {
             double c = -state.C.get(icol) / state.f;
-            if (pos > 0) {
+            if (icol > 0) {
                 col.drop(icol, 0).addAY(c, state.C.drop(icol, 0));
             } else {
                 col.addAY(c, state.C);
@@ -291,7 +291,7 @@ public class DurbinKoopmanInitializer implements ISsfInitializer<ISsf> {
         int icol = 0;
         do {
             double c = -state.Ci.get(icol) * f1;
-            if (pos > 0) {
+            if (icol > 0) {
                 col.drop(icol, 0).addAY(c, state.Ci.drop(icol, 0));
             } else {
                 col.addAY(c, state.Ci);
@@ -309,7 +309,7 @@ public class DurbinKoopmanInitializer implements ISsfInitializer<ISsf> {
         icol = 0;
         do {
             double c = f2 * state.Ci.get(icol) + f1 * state.C.get(icol);
-            if (pos > 0) {
+            if (icol > 0) {
                 col.drop(icol, 0).addAY(-c, state.Ci.drop(icol, 0));
             } else {
                 col.addAY(-c, state.Ci);
@@ -320,7 +320,7 @@ public class DurbinKoopmanInitializer implements ISsfInitializer<ISsf> {
         icol = 0;
         do {
             double c = f1 * state.Ci.get(icol);
-            if (pos > 0) {
+            if (icol > 0) {
                 col.drop(icol, 0).addAY(-c, state.C.drop(icol, 0));
             } else {
                 col.addAY(-c, state.C);

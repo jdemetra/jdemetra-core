@@ -237,7 +237,7 @@ public class DiffuseSquareRootInitializer implements ISsfInitializer<ISsf> {
     }
 
     private boolean isNull(final SubMatrix P) {
-        return P.isNull(State.ZERO);
+        return P.isZero(State.ZERO);
     }
 
     private void nextDiffuse(final int pos, final ISsfData data,
