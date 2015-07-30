@@ -31,8 +31,8 @@ import java.util.Random;
  */
 @Development(status = Development.Status.Beta)
 public final class DataBlock implements IDataBlock, Cloneable {
-    
-    public static final DataBlock EMPTY=new DataBlock(null, 0,0,0);
+
+    public static final DataBlock EMPTY = new DataBlock(null, 0, 0, 0);
 
     /**
      * The option used by shift operations
@@ -325,7 +325,7 @@ public final class DataBlock implements IDataBlock, Cloneable {
             return;
         }
         if (inc_ == 1 && y.inc_ == 1) {
-            for (int i = beg_, j = y.beg_; i != end_; ++i, ++j) {
+            for (int i = beg_, j = y.beg_; i < end_; ++i, ++j) {
                 x_[i] = a * y.x_[j];
             }
         } else {
@@ -338,7 +338,7 @@ public final class DataBlock implements IDataBlock, Cloneable {
     private void bshift() {
         int imax = end_ - inc_;
         if (inc_ == 1) {
-            for (int i = beg_; i != imax; ++i) {
+            for (int i = beg_; i < imax; ++i) {
                 x_[i] = x_[i + 1];
             }
         } else {
@@ -569,8 +569,9 @@ public final class DataBlock implements IDataBlock, Cloneable {
      * @return The new object.
      */
     public DataBlock deepClone() {
-        if (this == EMPTY)
+        if (this == EMPTY) {
             return EMPTY;
+        }
         DataBlock rc = new DataBlock(getLength());
         copyTo(rc.x_, 0);
         return rc;
@@ -679,9 +680,9 @@ public final class DataBlock implements IDataBlock, Cloneable {
      * Computes the scalar product of two data blocks. r = this(0)*data(0) + ...
      * + this(n)*data(n)
      *
-     * @param data The second data block. data can be larger than this object.
+     * @param data The second data block. data can be smaller than this object.
      * In that case, only the first elements are considered (the size of the
-     * current object is preponderant).
+     * buffer (data) is preponderant).
      * @return The scalar product
      */
     public double dot(DataBlock data) {
@@ -698,6 +699,21 @@ public final class DataBlock implements IDataBlock, Cloneable {
         } else {
             for (int i = beg_, j = data.beg_; i != end_; i += inc_, j += data.inc_) {
                 r += x_[i] * data.x_[j];
+            }
+        }
+        return r;
+    }
+
+    public double dot(double[] data) {
+        double r = 0;
+        //
+        if (inc_ == 1 && beg_ == 0) {
+            for (int i = 0; i < data.length; ++i) {
+                r += x_[i] * data[i];
+            }
+        } else {
+            for (int i = beg_, j = 0; j < data.length; i += inc_, ++j) {
+                r += x_[i] * data[j];
             }
         }
         return r;
@@ -762,6 +778,52 @@ public final class DataBlock implements IDataBlock, Cloneable {
         return r;
     }
 
+    /**
+     * Computes the scalar product two data blocks, inverting the order of the
+     * second one. r = this(0)*data(n) + ... + this(n)*data(0).
+     *
+     * @param data The second data block. data can be smaller than this object.
+     * In that case, only the first elements of this and the last elements of
+     * data are considered.
+     * @return The scalar product
+     */
+    public double dotReverse(double[] data) {
+        double r = 0;
+        if (inc_ == 1) {
+            for (int i = beg_, j = data.length - 1; j >= 0; ++i, --j) {
+                r += x_[i] * data[j];
+            }
+        } else {
+            for (int i = beg_, j = data.length - 1; j >= 0; i += inc_, --j) {
+                r += x_[i] * data[j];
+            }
+        }
+        return r;
+    }
+
+    /**
+     * Computes the scalar product two data blocks, inverting the order of the
+     * two blocks. r = this(n)*data(m) + ... + this(n-m)*data(0).
+     *
+     * @param data The second data block. data can be smaller than this object.
+     * In that case, only the first elements of this and the last elements of
+     * data are considered.
+     * @return The scalar product
+     */
+    public double reverseDot(double[] data) {
+        double r = 0;
+        int m=data.length;
+        if (inc_ == 1) {
+            for (int i = end_-1, j = m - 1; j >= 0; --i, --j) {
+                r += x_[i] * data[j];
+            }
+        } else {
+            for (int i = end_-inc_, j = m - 1; j >= 0; i += inc_, --j) {
+                r += x_[i] * data[j];
+            }
+        }
+        return r;
+    }
     /**
      * Creates an extract of this data block by dropping ending elements. The
      * new data block refers to the same underlying physical data buffer.
@@ -1076,17 +1138,17 @@ public final class DataBlock implements IDataBlock, Cloneable {
         }
         return true;
     }
-    
+
     public int getMissingCount() {
-        int n=0;
+        int n = 0;
         for (int i = beg_; i != end_; i += inc_) {
-            if (! DescriptiveStatistics.isFinite(x_[i])) {
+            if (!DescriptiveStatistics.isFinite(x_[i])) {
                 ++n;
             }
         }
         return n;
     }
-    
+
     /**
      * Checks that the data block is empty. Occurs when getStartPosition() =
      * getendPosition().
@@ -1645,14 +1707,14 @@ public final class DataBlock implements IDataBlock, Cloneable {
      */
     public void randomize() {
         for (int i = beg_; i != end_; i += inc_) {
-            x_[i] = RNG.nextDouble()-.5;
+            x_[i] = RNG.nextDouble() - .5;
         }
     }
 
     public void randomize(int seed) {
-        Random rnd=new Random(seed);
+        Random rnd = new Random(seed);
         for (int i = beg_; i != end_; i += inc_) {
-            x_[i] = rnd.nextDouble()-.5;
+            x_[i] = rnd.nextDouble() - .5;
         }
     }
 
