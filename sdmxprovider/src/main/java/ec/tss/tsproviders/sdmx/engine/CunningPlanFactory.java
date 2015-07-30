@@ -40,9 +40,10 @@ public class CunningPlanFactory implements ISdmxSourceFactory {
 
     @Override
     public SdmxSource create(File file) throws Exception {
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        Document doc = dBuilder.parse(file);
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(file);
         doc.getDocumentElement().normalize();
         return find(doc).create(doc);
     }

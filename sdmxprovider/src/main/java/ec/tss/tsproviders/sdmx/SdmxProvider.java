@@ -18,6 +18,7 @@ package ec.tss.tsproviders.sdmx;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import ec.tss.TsAsyncMode;
 import ec.tss.TsCollectionInformation;
@@ -25,6 +26,7 @@ import ec.tss.TsInformation;
 import ec.tss.TsInformationType;
 import ec.tss.TsMoniker;
 import ec.tss.tsproviders.*;
+import static ec.tss.tsproviders.sdmx.SdmxBean.X_TITLE_ATTRIBUTE;
 import ec.tss.tsproviders.sdmx.engine.CunningPlanFactory;
 import ec.tss.tsproviders.sdmx.engine.ISdmxSourceFactory;
 import ec.tss.tsproviders.sdmx.model.SdmxGroup;
@@ -53,8 +55,8 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
     public static final String SOURCE = "TSProviders.Sdmx.SdmxProvider";
     public static final String VERSION = "20120106";
 
-    static final IParam<DataSet, String> Y_GROUP = Params.onString("", "group");
-    static final IParam<DataSet, String> Z_SERIES = Params.onString("", "series");
+    private static final IParam<DataSet, String> Y_GROUP_ID = Params.onString("", "group");
+    private static final IParam<DataSet, String> Z_SERIES_ID = Params.onString("", "series");
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SdmxProvider.class);
 
@@ -136,15 +138,15 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
         for (SdmxItem o : source.items) {
             if (o instanceof SdmxGroup) {
                 SdmxGroup group = ((SdmxGroup) o);
-                Y_GROUP.set(builder, group.id);
+                Y_GROUP_ID.set(builder, group.id);
                 for (SdmxSeries series : group.series) {
-                    Z_SERIES.set(builder, series.id);
+                    Z_SERIES_ID.set(builder, series.id);
                     info.items.add(newTsInformation(builder.build(), series));
                 }
             } else {
                 SdmxSeries series = (SdmxSeries) o;
-                Y_GROUP.set(builder, "");
-                Z_SERIES.set(builder, series.id);
+                Y_GROUP_ID.set(builder, "");
+                Z_SERIES_ID.set(builder, series.id);
                 info.items.add(newTsInformation(builder.build(), series));
             }
         }
@@ -156,8 +158,8 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
         info.type = TsInformationType.All;
         DataSet.Builder builder = DataSet.builder(dataSet, DataSet.Kind.SERIES);
         for (SdmxSeries series : group.series) {
-            Y_GROUP.set(builder, group.id);
-            Z_SERIES.set(builder, series.id);
+            Y_GROUP_ID.set(builder, group.id);
+            Z_SERIES_ID.set(builder, series.id);
             info.items.add(newTsInformation(builder.build(), series));
         }
     }
@@ -181,13 +183,13 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
         ImmutableList.Builder<DataSet> result = ImmutableList.builder();
         DataSet.Builder cBuilder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
         DataSet.Builder sBuilder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
-        Y_GROUP.set(sBuilder, "");
         for (SdmxItem o : getSource(dataSource).items) {
             if (o instanceof SdmxGroup) {
-                Y_GROUP.set(cBuilder, o.id);
+                Y_GROUP_ID.set(cBuilder, o.id);
                 result.add(cBuilder.build());
             } else {
-                Z_SERIES.set(sBuilder, o.id);
+                Y_GROUP_ID.set(sBuilder, "");
+                Z_SERIES_ID.set(sBuilder, o.id);
                 result.add(sBuilder.build());
             }
         }
@@ -199,10 +201,11 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
         support.check(dataSet);
         switch (dataSet.getKind()) {
             case COLLECTION:
-                return applyNaming(Y_GROUP.get(dataSet));
+                return getLabel(Y_GROUP_ID.get(dataSet), X_TITLE_ATTRIBUTE.get(dataSet.getDataSource()));
             case SERIES:
-                String prefix = Y_GROUP.get(dataSet).trim();
-                return applyNaming(prefix + (prefix.isEmpty() ? "" : ", ") + Z_SERIES.get(dataSet));
+                String prefix = Y_GROUP_ID.get(dataSet).trim();
+                String fullId = (prefix.isEmpty() ? "" : (prefix + ", ")) + Z_SERIES_ID.get(dataSet);
+                return getLabel(fullId, X_TITLE_ATTRIBUTE.get(dataSet.getDataSource()));
         }
         return "";
     }
@@ -213,7 +216,7 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
         ImmutableList.Builder<DataSet> result = ImmutableList.builder();
         DataSet.Builder builder = DataSet.builder(parent, DataSet.Kind.SERIES);
         for (SdmxSeries o : getGroup(parent).series) {
-            Z_SERIES.set(builder, o.id);
+            Z_SERIES_ID.set(builder, o.id);
             result.add(builder.build());
         }
         return result.build();
@@ -224,9 +227,9 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
         support.check(dataSet);
         switch (dataSet.getKind()) {
             case COLLECTION:
-                return applyNaming(Y_GROUP.get(dataSet));
+                return getLabel(Y_GROUP_ID.get(dataSet), X_TITLE_ATTRIBUTE.get(dataSet.getDataSource()));
             case SERIES:
-                return applyNaming(Z_SERIES.get(dataSet));
+                return getLabel(Z_SERIES_ID.get(dataSet), X_TITLE_ATTRIBUTE.get(dataSet.getDataSource()));
         }
         return "";
     }
@@ -261,7 +264,7 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
     }
 
     public SdmxGroup getGroup(DataSet dataSet) throws IOException {
-        String groupName = Y_GROUP.get(dataSet);
+        String groupName = Y_GROUP_ID.get(dataSet);
         for (SdmxItem o : getSource(dataSet.getDataSource()).items) {
             if (o instanceof SdmxGroup && o.id.equals(groupName)) {
                 return (SdmxGroup) o;
@@ -271,7 +274,7 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
     }
 
     public SdmxSeries getSeries(DataSet dataSet) throws IOException {
-        String seriesName = Z_SERIES.get(dataSet);
+        String seriesName = Z_SERIES_ID.get(dataSet);
         for (SdmxItem o : getSource(dataSet.getDataSource()).items) {
             if (o instanceof SdmxGroup) {
                 for (SdmxSeries s : ((SdmxGroup) o).series) {
@@ -302,13 +305,19 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
         this.keysInMetaData = keysInMetaData;
     }
 
-    private String applyNaming(String input) {
-        if (compactNaming) {
+    private String getLabel(String id, String titleAttribute) {
+        if (!titleAttribute.isEmpty()) {
             try {
-                return compactNamingJoiner.join(keyValueSplitter.split(input).values());
-            } catch (Exception ex) {
+                return Strings.nullToEmpty(keyValueSplitter.split(id).get(titleAttribute));
+            } catch (IllegalArgumentException ex) {
             }
         }
-        return input;
+        if (compactNaming) {
+            try {
+                return compactNamingJoiner.join(keyValueSplitter.split(id).values());
+            } catch (IllegalArgumentException ex) {
+            }
+        }
+        return id;
     }
 }

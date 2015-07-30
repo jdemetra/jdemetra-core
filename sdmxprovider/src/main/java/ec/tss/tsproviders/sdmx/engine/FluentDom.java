@@ -18,6 +18,7 @@ package ec.tss.tsproviders.sdmx.engine;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Maps;
 import java.util.AbstractList;
@@ -49,6 +50,7 @@ public final class FluentDom {
         return asIterable(node.getAttributes());
     }
 
+    @Deprecated
     public static Predicate<Node> nodeNameEndsWith(final String suffix) {
         return new Predicate<Node>() {
             @Override
@@ -59,12 +61,24 @@ public final class FluentDom {
         };
     }
 
+    public static Predicate<Node> nodeNameEqualTo(String nodeName) {
+        return Predicates.compose(Predicates.equalTo(nodeName), toNodeName());
+    }
+
+    public static Predicate<Node> localNameEqualTo(String localName) {
+        return Predicates.compose(Predicates.equalTo(localName), toLocalName());
+    }
+
     public static Function<Node, NamedNodeMap> toAttributes() {
         return TO_ATTRIBUTES;
     }
 
     public static Function<Node, String> toNodeName() {
         return TO_NODE_NAME;
+    }
+
+    public static Function<Node, String> toLocalName() {
+        return TO_LOCAL_NAME;
     }
 
     public static Function<Node, Map.Entry<String, String>> toMapEntry() {
@@ -111,6 +125,13 @@ public final class FluentDom {
         @Override
         public String apply(Node input) {
             return input.getNodeName();
+        }
+    };
+
+    private static final Function<Node, String> TO_LOCAL_NAME = new Function<Node, String>() {
+        @Override
+        public String apply(Node input) {
+            return input.getLocalName();
         }
     };
 
