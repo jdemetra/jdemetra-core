@@ -16,7 +16,6 @@
  */
 package ec.tss.tsproviders.sdmx.engine;
 
-import com.google.common.base.Enums;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -32,6 +31,7 @@ import ec.tss.tsproviders.utils.DataFormat;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tss.tsproviders.utils.Parsers.Parser;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import org.w3c.dom.Document;
@@ -119,14 +119,25 @@ public class GenericDocFactory extends AbstractDocumentFactory {
     }
 
     private static TimeFormat getTimeFormat(Node series) {
-        Optional<Node> attr = childNodes(series).firstMatch(IS_ATTRIBUTES);
-        if (attr.isPresent()) {
-            Optional<Concept> tf = childNodes(attr.get()).filter(IS_VALUE).transform(TO_VALUE_ENTRY).firstMatch(IS_TIME_FORMAT_ENTRY);
-            if (tf.isPresent()) {
-                String value = tf.get().getValue();
-                return Enums.getIfPresent(TimeFormat.class, value).or(TimeFormat.UNDEFINED);
+        Map<String, String> concepts = new HashMap<>();
+        for (Node o : childNodes(series).filter(Predicates.or(IS_SERIES_KEY, IS_ATTRIBUTES))) {
+            for (Concept concept : lookupConcepts(o)) {
+                concepts.put(concept.getKey(), concept.getValue());
             }
         }
+
+        String value;
+
+        value = concepts.get("TIME_FORMAT");
+        if (value != null) {
+            return TimeFormat.parseByTimeFormat(value);
+        }
+
+        value = concepts.get("FREQ");
+        if (value != null) {
+            return TimeFormat.parseByFrequencyCodeId(value);
+        }
+
         return TimeFormat.UNDEFINED;
     }
 
@@ -139,7 +150,7 @@ public class GenericDocFactory extends AbstractDocumentFactory {
     }
 
     private static FluentIterable<Concept> lookupConcepts(Node node) {
-        return childNodes(node).filter(IS_VALUE).transform(TO_VALUE_ENTRY);
+        return childNodes(node).filter(IS_VALUE).transform(TO_CONCEPT);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Resources">
@@ -158,14 +169,8 @@ public class GenericDocFactory extends AbstractDocumentFactory {
     private static final Predicate<Node> IS_OBS_VALUE = localNameEqualTo("ObsValue");
     private static final Predicate<Node> IS_ATTRIBUTES = localNameEqualTo("Attributes");
     private static final Predicate<Concept> ALL_CONCEPTS = Predicates.alwaysTrue();
-    private static final Predicate<Concept> IS_TIME_FORMAT_ENTRY = new Predicate<Concept>() {
-        @Override
-        public boolean apply(Concept input) {
-            return input.concept.equals("TIME_FORMAT");
-        }
-    };
 
-    private static final Function<Node, Concept> TO_VALUE_ENTRY = new Function<Node, Concept>() {
+    private static final Function<Node, Concept> TO_CONCEPT = new Function<Node, Concept>() {
         @Override
         public Concept apply(Node input) {
             NamedNodeMap attr = input.getAttributes();
