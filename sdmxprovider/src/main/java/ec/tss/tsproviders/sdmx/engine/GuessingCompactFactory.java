@@ -16,7 +16,6 @@
  */
 package ec.tss.tsproviders.sdmx.engine;
 
-import com.google.common.base.Enums;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -105,9 +104,20 @@ public class GuessingCompactFactory extends AbstractDocumentFactory {
     }
 
     private static TimeFormat getTimeFormat(Node seriesNode) {
-        Node node = seriesNode.getAttributes().getNamedItem(TIME_FORMAT_ATTRIBUTE);
-        String value = node != null ? node.getNodeValue() : "";
-        return Enums.getIfPresent(TimeFormat.class, value).or(TimeFormat.UNDEFINED);
+        NamedNodeMap attributes = seriesNode.getAttributes();
+        Node node;
+
+        node = attributes.getNamedItem(TIME_FORMAT_ATTRIBUTE);
+        if (node != null) {
+            return TimeFormat.parseByTimeFormat(node.getNodeValue());
+        }
+
+        node = attributes.getNamedItem(FREQ_ATTRIBUTE);
+        if (node != null) {
+            return TimeFormat.parseByFrequencyCodeId(node.getNodeValue());
+        }
+
+        return TimeFormat.UNDEFINED;
     }
 
     private static Optional<Node> lookupDataSetNode(Document doc) {
@@ -124,6 +134,7 @@ public class GuessingCompactFactory extends AbstractDocumentFactory {
 
     //<editor-fold defaultstate="collapsed" desc="Resources">    
     private static final String TIME_FORMAT_ATTRIBUTE = "TIME_FORMAT";
+    private static final String FREQ_ATTRIBUTE = "FREQ";
     private static final String TIME_PERIOD_ATTRIBUTE = "TIME_PERIOD";
     private static final String OBS_VALUE_ATTRIBUTE = "OBS_VALUE";
 

@@ -17,12 +17,12 @@
 package ec.tss.tsproviders.sdmx.engine;
 
 import ec.tss.tsproviders.utils.Parsers;
-import ec.tss.tsproviders.utils.Parsers.Parser;
 import static ec.tss.tsproviders.utils.StrangeParsers.yearFreqPosParser;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.Date;
 import java.util.Locale;
+import javax.annotation.Nonnull;
 
 /**
  * http://stats.oecd.org/SDMXWS/sdmx.asmx
@@ -35,86 +35,39 @@ public enum TimeFormat {
     /**
      * Annual
      */
-    P1Y(TsFrequency.Yearly, TsAggregationType.None) {
-                @Override
-                public Parser<Date> getParser() {
-                    return onStrictDatePattern("yyyy")
-                    .or(onStrictDatePattern("yyyy'-01'"))
-                    .or(onStrictDatePattern("yyyy'-A1'"));
-                }
-            },
+    P1Y(TsFrequency.Yearly, TsAggregationType.None),
     /**
      * Semi-annual
      */
-    P6M(TsFrequency.HalfYearly, TsAggregationType.None) {
-                @Override
-                public Parser<Date> getParser() {
-                    return yearFreqPosParser().or(onStrictDatePattern("yyyy-MM"));
-                }
-            },
+    P6M(TsFrequency.HalfYearly, TsAggregationType.None),
     /**
      * QuadriMonthly
      */
-    P4M(TsFrequency.QuadriMonthly, TsAggregationType.None) {
-                @Override
-                public Parser<Date> getParser() {
-                    return yearFreqPosParser().or(onStrictDatePattern("yyyy-MM"));
-                }
-            },
+    P4M(TsFrequency.QuadriMonthly, TsAggregationType.None),
     /**
      * Quarterly
      */
-    P3M(TsFrequency.Quarterly, TsAggregationType.None) {
-                @Override
-                public Parser<Date> getParser() {
-                    return yearFreqPosParser().or(onStrictDatePattern("yyyy-MM"));
-                }
-            },
+    P3M(TsFrequency.Quarterly, TsAggregationType.None),
     /**
      * Monthly
      */
-    P1M(TsFrequency.Monthly, TsAggregationType.None) {
-                @Override
-                public Parser<Date> getParser() {
-                    return yearFreqPosParser().or(onStrictDatePattern("yyyy-MM"));
-                }
-            },
+    P1M(TsFrequency.Monthly, TsAggregationType.None),
     /**
      * Weekly
      */
-    P7D(TsFrequency.Monthly, TsAggregationType.Last) {
-                @Override
-                public Parser<Date> getParser() {
-                    return onStrictDatePattern("yyyy-MM-dd");
-                }
-            },
+    P7D(TsFrequency.Monthly, TsAggregationType.Last),
     /**
      * Daily
      */
-    P1D(TsFrequency.Monthly, TsAggregationType.Last) {
-                @Override
-                public Parser<Date> getParser() {
-                    return onStrictDatePattern("yyyy-MM-dd");
-                }
-            },
+    P1D(TsFrequency.Monthly, TsAggregationType.Last),
     /**
      * Minutely
      */
-    PT1M(TsFrequency.Monthly, TsAggregationType.Last) {
-                @Override
-                public Parser<Date> getParser() {
-                    return onStrictDatePattern("yyyy-MM-dd");
-                }
-            },
+    PT1M(TsFrequency.Monthly, TsAggregationType.Last),
     /**
      * Fallback
      */
-    UNDEFINED(TsFrequency.Undefined, TsAggregationType.None) {
-                @Override
-                public Parser<Date> getParser() {
-                    return onStrictDatePattern("yyyy-MM");
-                }
-            };
+    UNDEFINED(TsFrequency.Undefined, TsAggregationType.None);
 
     private final TsFrequency frequency;
     private final TsAggregationType aggregationType;
@@ -132,9 +85,85 @@ public enum TimeFormat {
         return aggregationType;
     }
 
-    abstract public Parser<Date> getParser();
+    @Nonnull
+    public final Parsers.Parser<Date> getParser() {
+        switch (this) {
+            case P1Y:
+                return onStrictDatePattern("yyyy").or(onStrictDatePattern("yyyy'-01'")).or(onStrictDatePattern("yyyy'-A1'"));
+            case P6M:
+                return yearFreqPosParser().or(onStrictDatePattern("yyyy-MM"));
+            case P4M:
+                return yearFreqPosParser().or(onStrictDatePattern("yyyy-MM"));
+            case P3M:
+                return yearFreqPosParser().or(onStrictDatePattern("yyyy-MM"));
+            case P1M:
+                return yearFreqPosParser().or(onStrictDatePattern("yyyy-MM"));
+            case P7D:
+                return onStrictDatePattern("yyyy-MM-dd");
+            case P1D:
+                return onStrictDatePattern("yyyy-MM-dd");
+//            case HOURLY:
+//                return onStrictDatePattern("yyyy-MM-dd");
+            case PT1M:
+                return onStrictDatePattern("yyyy-MM-dd");
+            default:
+                return onStrictDatePattern("yyyy-MM");
+        }
+    }
 
     private static Parsers.Parser<Date> onStrictDatePattern(String datePattern) {
         return Parsers.onStrictDatePattern(datePattern, Locale.ROOT);
+    }
+
+    @Nonnull
+    public static TimeFormat parseByFrequencyCodeId(@Nonnull String input) {
+        switch (input) {
+            case "A":
+                return P1Y;
+            case "S":
+                return P6M;
+            case "T":
+                return P4M;
+            case "Q":
+                return P3M;
+            case "M":
+                return P1M;
+            case "W":
+                return P7D;
+            case "D":
+                return P1D;
+//            case "H":
+//                return HOURLY;
+            case "I":
+                return PT1M;
+            default:
+                return UNDEFINED;
+        }
+    }
+
+    @Nonnull
+    public static TimeFormat parseByTimeFormat(@Nonnull String input) {
+        switch (input) {
+            case "P1Y":
+                return P1Y;
+            case "P6M":
+                return P6M;
+            case "P4M":
+                return P4M;
+            case "P3M":
+                return P3M;
+            case "P1M":
+                return P1M;
+            case "P7D":
+                return P7D;
+            case "P1D":
+                return P1D;
+//            case "???":
+//                return HOURLY;
+            case "PT1M":
+                return PT1M;
+            default:
+                return UNDEFINED;
+        }
     }
 }
