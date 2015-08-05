@@ -838,8 +838,8 @@ public final class DataBlock implements IDataBlock, Cloneable {
 //	if (nbeg + nend >= getLength())
 //	    return null;
 //	else
-        return new DataBlock(x_, beg_ + nbeg * inc_, end_ - nend
-                * inc_, inc_);
+        return inc_ == 1 ? new DataBlock(x_, beg_ + nbeg, end_ - nend, 1)
+                : new DataBlock(x_, beg_ + nbeg * inc_, end_ - nend * inc_, inc_);
     }
 
     /**
