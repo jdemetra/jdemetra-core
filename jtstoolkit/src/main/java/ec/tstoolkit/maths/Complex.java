@@ -440,12 +440,12 @@ public final class Complex implements Serializable {
     /**
      *
      */
-    public final double re;
+    private final double re;
 
     /**
      *
      */
-    public final double im;
+    private final double im;
 
     // ///////////////////////////////////////////
 
