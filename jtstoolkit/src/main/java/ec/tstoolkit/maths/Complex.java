@@ -482,6 +482,10 @@ public final class Complex implements Serializable {
 	return ComplexMath.absSquare(re, im);
     }
 
+    public Complex sqrt() {
+	return ComplexMath.sqrt(re, im);
+    }
+    
     /**
      * Returns the argument of this complex number.
      * 

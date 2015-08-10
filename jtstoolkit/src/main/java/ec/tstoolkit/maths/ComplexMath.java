@@ -30,7 +30,9 @@ public final class ComplexMath {
      * |c| = sqrt(re*re + im*im) 
      * @param c
      * @return Absolute value
+     * @deprecated use {@link Complex#abs()} instead
      */
+    @Deprecated
     public static double abs(final Complex c)
     {
 	return abs(c.re, c.im);
@@ -569,7 +571,9 @@ public final class ComplexMath {
      * 
      * @param c
      * @return
+     * @deprecated use {@link Complex#sqrt()} instead
      */
+    @Deprecated
     public static Complex sqrt(final Complex c) {
 	return sqrt(c.re, c.im);
     }
@@ -659,5 +663,6 @@ public final class ComplexMath {
     }
 
     private ComplexMath() {
+        // static class
     }
 }

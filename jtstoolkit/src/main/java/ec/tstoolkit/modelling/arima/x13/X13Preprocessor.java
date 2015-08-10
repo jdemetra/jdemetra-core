@@ -19,7 +19,6 @@ package ec.tstoolkit.modelling.arima.x13;
 
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.Complex;
-import ec.tstoolkit.maths.ComplexMath;
 import ec.tstoolkit.maths.realfunctions.IParametricMapping;
 import ec.tstoolkit.modelling.arima.IModelBuilder;
 import ec.tstoolkit.modelling.arima.IModelEstimator;
@@ -492,7 +491,7 @@ public class X13Preprocessor implements IPreprocessor {
         int n = 0;
         for (int i = 0; i < r.length; ++i) {
             double cdim = Math.abs(r[i].getIm());
-            double vcur = ComplexMath.abs(r[i]);
+            double vcur = r[i].abs();
             if (vcur > ur_ && cdim <= 0.05 && r[i].getRe() > 0) {
                 ++n;
             }

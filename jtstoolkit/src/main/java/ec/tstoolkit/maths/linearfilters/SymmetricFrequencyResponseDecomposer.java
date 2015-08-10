@@ -19,7 +19,6 @@ package ec.tstoolkit.maths.linearfilters;
 import ec.tstoolkit.design.Algorithm;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.Complex;
-import ec.tstoolkit.maths.ComplexMath;
 import ec.tstoolkit.maths.polynomials.Polynomial;
 import ec.tstoolkit.maths.polynomials.UnitRoots;
 import ec.tstoolkit.maths.polynomials.UnitRootsSolver;
@@ -164,7 +163,7 @@ public class SymmetricFrequencyResponseDecomposer implements ISymmetricFilterDec
                             }
 //                        }
                     } else {
-                        Complex ro = ComplexMath.sqrt(r[i].times(r[i]).minus(1));
+                        Complex ro = r[i].times(r[i]).minus(1).sqrt();
                         Complex c0 = r[i].plus(ro);
                         Complex c1 = r[i].minus(ro);
                         if (c1.absSquare() < c0.absSquare()) {

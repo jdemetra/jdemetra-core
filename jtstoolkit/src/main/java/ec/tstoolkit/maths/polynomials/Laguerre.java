@@ -17,7 +17,6 @@
 package ec.tstoolkit.maths.polynomials;
 
 import ec.tstoolkit.design.Development;
-import static ec.tstoolkit.maths.ComplexMath.sqrt;
 import ec.tstoolkit.maths.Complex;
 
 /**
@@ -98,7 +97,7 @@ public class Laguerre implements IRootsSolver {
 	    // formula.
 	    Complex g2 = g.times(g);
 	    Complex h = g2.minus(f.div(b).times(2.0));
-	    Complex sq = sqrt(h.times(m).minus(g2).times(m - 1));
+	    Complex sq = h.times(m).minus(g2).times(m - 1).sqrt();
 	    Complex gp = g.plus(sq);
 	    Complex gm = g.minus(sq);
 	    double abp = gp.abs();
