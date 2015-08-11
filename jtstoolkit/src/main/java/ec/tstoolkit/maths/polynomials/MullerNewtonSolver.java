@@ -468,7 +468,8 @@ public class MullerNewtonSolver implements IRootsSolver {
                         epsilon.val, noise);
 
                 /* increase noise counter */
-                if (Math.abs(xb.val.abs() - x2.abs()) / xb.val.abs() < MNOISESTART) {
+                double xb_abs = xb.val.abs();
+                if (Math.abs(xb_abs - x2.abs()) / xb_abs < MNOISESTART) {
                     noise.val++;
                 }
             } while ((iter <= MITERMAX) && (!rootd.val)
@@ -688,21 +689,27 @@ public class MullerNewtonSolver implements IRootsSolver {
         /* A2 = q2(f2 - (1+q2)f1 + f0q2) */
         /* B2 = q2[q2(f0-f1) + 2(f2-f1)] + (f2-f1) */
         /* C2 = (1+q2)f[2] */
+
+        Complex f2_minus_f1 = f2.val.minus(f1.val);
+        Complex one_plus_q2 = q2.plus(1);
+        
         final Complex A2 = q2.times(f2.val.plus(q2.times(f0.val)).minus(
-                q2.plus(1).times(f1.val)));
-        final Complex B2 = f2.val.minus(f1.val).plus(
+                one_plus_q2.times(f1.val)));
+        final Complex B2 = f2_minus_f1.plus(
                 q2.times(q2.times(f0.val.minus(f1.val)).plus(
-                f2.val.minus(f1.val).times(2))));
-        final Complex C2 = q2.plus(1).times(f2.val);
+                f2_minus_f1.times(2))));
+        final Complex C2 = one_plus_q2.times(f2.val);
         /* discr = B2^2 - 4A2C2 */
         final Complex rdiscr = B2.times(B2).minus(A2.times(C2).times(4)).sqrt();
         /* denominators of q2 */
         final Complex N1 = B2.minus(rdiscr);
         final Complex N2 = B2.plus(rdiscr);
+        double N1_abs = N1.abs();
+        double N2_abs = N2.abs();
         /* choose denominater with largest modulus */
-        if ((N1.abs() > N2.abs()) && (N1.abs() > DBL_EPSILON)) {
+        if ((N1_abs > N2_abs) && (N1_abs > DBL_EPSILON)) {
             q2 = C2.times(-2).div(N1);
-        } else if (N2.abs() > DBL_EPSILON) {
+        } else if (N2_abs > DBL_EPSILON) {
             q2 = C2.times(-2).div(N2);
         } else {
             q2 = Complex.cart(Math.cos(iter), Math.sin(iter));
