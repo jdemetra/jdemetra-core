@@ -16,7 +16,6 @@
  */
 package ec.tstoolkit.modelling.arima.tramo;
 
-import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.arima.estimation.ArmaKF;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
@@ -462,6 +461,8 @@ public class ArmaModule implements IPreprocessingModule {
     }
 
     private SarmaSpecification getPreferredSpecification() {
+        if (m_hrs.length == 1)
+            return m_hrs[0].m_hr.getSpec().clone();
         int idx = 0;
         while (idx < m_hrs.length && m_hrs[idx].m_hr.getSpec().getParametersCount() == 0) {
             ++idx;
@@ -563,7 +564,7 @@ public class ArmaModule implements IPreprocessingModule {
             step2.merge(m_hrs);
         }
         if (!seas) {
-            if (m_hrs[0].getHR().getSpec().getParametersCount() == 0) {
+            if (m_hrs[1] != null && m_hrs[0].getHR().getSpec().getParametersCount() == 0) {
                 return m_hrs[1].getHR();
             } else {
                 return m_hrs[0].getHR();
