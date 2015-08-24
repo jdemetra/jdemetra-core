@@ -22,10 +22,21 @@ import ec.tstoolkit.design.Development;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.modelling.RegressionTestSpec;
-import ec.tstoolkit.modelling.arima.*;
+import ec.tstoolkit.modelling.arima.AICcComparator;
+import ec.tstoolkit.modelling.arima.IModelEstimator;
+import ec.tstoolkit.modelling.arima.IOutliersDetectionModule;
+import ec.tstoolkit.modelling.arima.IPreprocessingModule;
+import ec.tstoolkit.modelling.arima.IPreprocessor;
+import ec.tstoolkit.modelling.arima.IRegArimaSpecification;
+import ec.tstoolkit.modelling.arima.UnitSeriesScaling;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
-import ec.tstoolkit.timeseries.regression.*;
+import ec.tstoolkit.timeseries.regression.AdditiveOutlierFactory;
+import ec.tstoolkit.timeseries.regression.LevelShiftFactory;
+import ec.tstoolkit.timeseries.regression.OutlierType;
+import ec.tstoolkit.timeseries.regression.OutliersFactory;
+import ec.tstoolkit.timeseries.regression.SeasonalOutlierFactory;
+import ec.tstoolkit.timeseries.regression.TransitoryChangeFactory;
 import ec.tstoolkit.timeseries.simplets.ConstInterpolator;
 import java.util.Map;
 import java.util.Objects;
@@ -339,7 +350,7 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
         if (transform_.getFunction() != DefaultTransformationType.Auto) {
             return null;
         }
-        LogLevelTest ll = new LogLevelTest();
+        LogLevelTest ll = new LogLevelTest(transform_.getAICDiff());
         ll.setEpsilon(estimate_.getTol());
         // params
         return ll;
