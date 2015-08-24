@@ -484,7 +484,7 @@ public final class SymmetricMatrix {
 
     /**
      * Computes XSX'
-     *     
+     *
      * @param s
      * @param x
      * @return
@@ -548,6 +548,7 @@ public final class SymmetricMatrix {
 
     /**
      * Computes X*S*X'
+     *
      * @param s
      * @param x
      * @param xsxt
@@ -929,6 +930,49 @@ public final class SymmetricMatrix {
             } while (rows.next());
         } while (cols.next() && rcols.next());
         fromLower(pm);
+    }
+
+    /**
+     * Computes S=S+x*a*x'
+     *
+     * @param S
+     * @param a
+     * @param x
+     */
+    public static void addXaXt(Matrix S, double a, DataBlock x) {
+        if (a == 0) {
+            return;
+        }
+        double[] s = S.data_;
+        double[] z = x.getData();
+        int n = S.ncols_, beg = x.getStartPosition(), inc = x.getIncrement();
+        if (inc == 1) {
+            for (int c = 0, k = 0, l = beg; c < n; ++c, k += c, ++l) {
+                double x1 = z[l];
+                if (x1 != 0) {
+                    x1 *= a;
+                    for (int r = c, m = l; r < n; ++r, ++k, ++m) {
+                        s[k] += x1 * z[m];
+                    }
+                } else {
+                    k += n - c;
+                }
+            }
+
+        } else {
+            for (int c = 0, k = 0, l = beg; c < n; ++c, k += c, l += inc) {
+                double x1 = z[l];
+                if (x1 != 0) {
+                    x1 *= a;
+                    for (int r = c, m = l; r < n; ++r, ++k, m += inc) {
+                        s[k] += x1 * z[m];
+                    }
+                } else {
+                    k += n - c;
+                }
+            }
+        }
+        fromLower(S);
     }
 
     /**

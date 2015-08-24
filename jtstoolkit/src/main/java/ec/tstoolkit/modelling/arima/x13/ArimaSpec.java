@@ -19,7 +19,6 @@
 package ec.tstoolkit.modelling.arima.x13;
 
 import ec.tstoolkit.modelling.arima.DefaultArimaSpec;
-import java.util.Map;
 
 /**
  *
@@ -27,7 +26,7 @@ import java.util.Map;
  */
 public class ArimaSpec extends DefaultArimaSpec {
 
-    public static final int MAXP=4, MAXD=2, MAXQ=4, MAXBP=1, MAXBD=1, MAXBQ=1;
+    public static final int MAXP=6, MAXD=2, MAXQ=6, MAXBP=1, MAXBD=1, MAXBQ=1;
     
     public ArimaSpec() {
         airline();

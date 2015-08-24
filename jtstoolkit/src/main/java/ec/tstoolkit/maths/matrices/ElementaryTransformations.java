@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tstoolkit.maths.matrices;
 
 import ec.tstoolkit.BaseException;
@@ -23,7 +22,7 @@ import ec.tstoolkit.data.DataBlockIterator;
 import ec.tstoolkit.design.Development;
 
 /**
- * 
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Exploratory)
@@ -40,9 +39,9 @@ public class ElementaryTransformations {
         householder(m.rows());
     }
 
-     public static boolean givensTriangularize(final SubMatrix X) {
+    public static boolean givensTriangularize(final SubMatrix X) {
         try {
-            int r =X.getRowsCount(), c = X.getColumnsCount();
+            int r = X.getRowsCount(), c = X.getColumnsCount();
             SubMatrix L = X;
             do {
                 //ElementaryTransformations.rowHouseholder(L);
@@ -57,9 +56,53 @@ public class ElementaryTransformations {
         }
     }
 
-     public static boolean householderTriangularize(final SubMatrix X) {
+    public static boolean rawGivensTriangularize(final SubMatrix X) {
         try {
-            int r =X.getRowsCount(), c = X.getColumnsCount();
+            int nr = X.m_nrows, nc = X.m_ncols, rinc = X.m_row_inc, cinc = X.m_col_inc, beg = X.m_start;
+            int dinc = rinc + cinc;
+            double[] x = X.m_data;
+            for (int r = 0, idiag = beg; r < nr; ++r, idiag += dinc) {
+                for (int c = r + 1, cur = idiag + cinc; c < nc; ++c, cur += cinc) {
+                    double a = x[idiag];
+                    double b = x[cur];
+                    if (b != 0) {
+                        // compute the rotation
+                        double h, ro, d;
+                        if (a != 0) {
+                            h = ElementaryTransformations.hypotenuse(a, b);
+                            ro = b / h;
+                            d = a / h;
+                        } else if (b < 0) {
+                            d = 0;
+                            ro = -1;
+                            h = -b;
+                        } else {
+                            d = 0;
+                            ro = 1;
+                            h = b;
+                        }
+                        x[cur] = 0;
+                        a = h;
+                        x[idiag] = a;
+                        // update the next rows
+                        for (int s = r + 1, sdiag = idiag + rinc, scur = cur + rinc; s < nr; ++s, sdiag += rinc, scur += rinc) {
+                            a = x[sdiag];
+                            b = x[scur];
+                            x[sdiag] = d * a + ro * b;
+                            x[scur] = -ro * a + d * b;
+                        }
+                    }
+                }
+            }
+            return true;
+        } catch (BaseException err) {
+            return false;
+        }
+    }
+
+    public static boolean householderTriangularize(final SubMatrix X) {
+        try {
+            int r = X.getRowsCount(), c = X.getColumnsCount();
             SubMatrix L = X;
             do {
                 rowHouseholder(L);
@@ -72,6 +115,7 @@ public class ElementaryTransformations {
             return false;
         }
     }
+
     // apply givens rotations on the first row and transform the next rows.
     public static void rowGivens(SubMatrix m) {
         givens(m.rows(), m.getColumnsCount());
@@ -98,9 +142,9 @@ public class ElementaryTransformations {
     }
 
     private static void givens(DataBlockIterator vectors, int n) {
+        DataBlock cur = vectors.getData();
         for (int i = 1; i < n; ++i) {
             vectors.begin();
-            DataBlock cur = vectors.getData();
             if (cur.get(i) != 0) {
                 GivensRotation rotation = new GivensRotation(cur, i);
                 while (vectors.next()) {
@@ -112,6 +156,7 @@ public class ElementaryTransformations {
 
     /**
      * Returns sqrt(x**2+y**2), taking care not to cause unnecessary overflow.
+     *
      * @param x
      * @param y
      * @return

@@ -1,7 +1,7 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or â€“ as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
@@ -35,11 +35,28 @@ import ec.tstoolkit.information.RegressionItem;
 import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.maths.realfunctions.IFunction;
 import ec.tstoolkit.maths.realfunctions.IFunctionInstance;
-import ec.tstoolkit.modelling.*;
+import ec.tstoolkit.modelling.ComponentType;
+import ec.tstoolkit.modelling.DefaultTransformationType;
+import ec.tstoolkit.modelling.DeterministicComponent;
+import ec.tstoolkit.modelling.ModellingDictionary;
+import ec.tstoolkit.modelling.SeriesInfo;
+import ec.tstoolkit.modelling.UserVariable;
+import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.x13.UscbForecasts;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
-import ec.tstoolkit.timeseries.regression.*;
+import ec.tstoolkit.timeseries.regression.EasterVariable;
+import ec.tstoolkit.timeseries.regression.ICalendarVariable;
+import ec.tstoolkit.timeseries.regression.ILengthOfPeriodVariable;
+import ec.tstoolkit.timeseries.regression.IMovingHolidayVariable;
+import ec.tstoolkit.timeseries.regression.IOutlierVariable;
+import ec.tstoolkit.timeseries.regression.ITradingDaysVariable;
+import ec.tstoolkit.timeseries.regression.ITsVariable;
+import ec.tstoolkit.timeseries.regression.MissingValueEstimation;
+import ec.tstoolkit.timeseries.regression.OutlierEstimation;
+import ec.tstoolkit.timeseries.regression.OutlierType;
+import ec.tstoolkit.timeseries.regression.TsVariableList;
+import ec.tstoolkit.timeseries.regression.TsVariableSelection;
 import ec.tstoolkit.timeseries.regression.TsVariableSelection.Item;
 import ec.tstoolkit.timeseries.simplets.ITsDataTransformation;
 import ec.tstoolkit.timeseries.simplets.TsData;
@@ -47,7 +64,13 @@ import ec.tstoolkit.timeseries.simplets.TsDomain;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import ec.tstoolkit.utilities.Arrays2;
 import ec.tstoolkit.utilities.Jdk6;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -201,7 +224,7 @@ public class PreprocessingModel implements IProcResults {
         }
         return data;
     }
-    
+
     @Deprecated
     public TsData linearizedSeries() {
         return linearizedSeries(false);
@@ -342,9 +365,17 @@ public class PreprocessingModel implements IProcResults {
 
     }
 
+    private static final OutlierEstimation[] NO_OUTLIER = new OutlierEstimation[0];
+
     public OutlierEstimation[] outliersEstimation(boolean unbiased, boolean prespecified) {
         ConcentratedLikelihood ll = estimation.getLikelihood();
+        if (ll == null) {
+            return null; // BUG
+        }
         double[] b = ll.getB();
+        if (b == null) {
+            return NO_OUTLIER;
+        }
         int nhp = description.getArimaComponent().getFreeParametersCount();
         double[] se = ll.getBSer(unbiased, nhp);
         int istart = description.getRegressionVariablesStartingPosition();
@@ -358,7 +389,7 @@ public class PreprocessingModel implements IProcResults {
                 o.add(new OutlierEstimation(c, cur.variable));
             }
         }
-        return Jdk6.Collections.toArray(o, OutlierEstimation.class);
+        return o.isEmpty() ? NO_OUTLIER : Jdk6.Collections.toArray(o, OutlierEstimation.class);
     }
 
     public List<TsData> regressors(TsDomain domain) {
@@ -481,19 +512,19 @@ public class PreprocessingModel implements IProcResults {
     }
 
     public TsData linearizedForecast(int nf, boolean includeUndefinedReg) {
-        TsData s=linearizedForecast(nf);
-        if (includeUndefinedReg){
-            TsData reg=userEffect(s.getDomain(), ComponentType.Undefined);
-            s=TsData.add(s, reg);
+        TsData s = linearizedForecast(nf);
+        if (includeUndefinedReg) {
+            TsData reg = userEffect(s.getDomain(), ComponentType.Undefined);
+            s = TsData.add(s, reg);
         }
         return s;
     }
 
     public TsData linearizedBackcast(int nf, boolean includeUndefinedReg) {
-        TsData s=linearizedBackcast(nf);
-        if (includeUndefinedReg){
-            TsData reg=userEffect(s.getDomain(), ComponentType.Undefined);
-            s=TsData.add(s, reg);
+        TsData s = linearizedBackcast(nf);
+        if (includeUndefinedReg) {
+            TsData reg = userEffect(s.getDomain(), ComponentType.Undefined);
+            s = TsData.add(s, reg);
         }
         return s;
     }
@@ -1051,7 +1082,7 @@ public class PreprocessingModel implements IProcResults {
                 return source.linearizedSeries(true);
             }
         });
-        mapper.add(ModellingDictionary.Y_LIN+ SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
+        mapper.add(ModellingDictionary.Y_LIN + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
             @Override
             public TsData retrieve(PreprocessingModel source) {
                 return source.linearizedForecast(source.domain(true).getLength(), true);

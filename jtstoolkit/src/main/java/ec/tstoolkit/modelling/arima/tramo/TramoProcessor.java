@@ -16,36 +16,31 @@
  */
 package ec.tstoolkit.modelling.arima.tramo;
 
-import ec.tstoolkit.modelling.arima.ModelStatistics;
 import ec.tstoolkit.Parameter;
-import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.arima.estimation.RegArimaEstimation;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.data.ReadDataBlock;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.realfunctions.IParametricMapping;
-import ec.tstoolkit.modelling.DefaultTransformationType;
+import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.IModelBuilder;
+import ec.tstoolkit.modelling.arima.IModelController;
 import ec.tstoolkit.modelling.arima.IModelEstimator;
+import ec.tstoolkit.modelling.arima.IOutliersDetectionModule;
 import ec.tstoolkit.modelling.arima.IPreprocessingModule;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
 import ec.tstoolkit.modelling.arima.ISeriesScaling;
 import ec.tstoolkit.modelling.arima.ModelDescription;
 import ec.tstoolkit.modelling.arima.ModelEstimation;
+import ec.tstoolkit.modelling.arima.ModelStatistics;
 import ec.tstoolkit.modelling.arima.ModellingContext;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.modelling.arima.ProcessingResult;
-import ec.tstoolkit.modelling.Variable;
-import ec.tstoolkit.modelling.arima.IModelController;
-import ec.tstoolkit.modelling.arima.IOutliersDetectionModule;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;
 import ec.tstoolkit.stats.LjungBoxTest;
 import ec.tstoolkit.timeseries.TsPeriodSelector;
-import ec.tstoolkit.timeseries.regression.EasterVariable;
-import ec.tstoolkit.timeseries.regression.ILengthOfPeriodVariable;
-import ec.tstoolkit.timeseries.regression.ITradingDaysVariable;
 import ec.tstoolkit.timeseries.simplets.ITsDataInterpolator;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
@@ -148,6 +143,8 @@ public class TramoProcessor extends AbstractTramoModule implements IPreprocessor
             do {
                 ++iter;
             } while (iter < 10 && !iterate(context));
+            if(! update(context))
+                return null; // to be sure that the model has been estimated
             return context.current(true);
         } catch (Exception err) {
 

@@ -83,8 +83,9 @@ public class SubMatrix implements Cloneable {
      * @param val
      */
     public void add(final double val) {
-        if (val == 0)
+        if (val == 0) {
             return;
+        }
         if (m_row_inc == 1) {
             for (int c = 0, ic = m_start; c < m_ncols; ++c, ic += m_col_inc) {
                 for (int r = 0, ir = ic; r < m_nrows; ++r, ++ir) {
@@ -122,13 +123,13 @@ public class SubMatrix implements Cloneable {
      */
     public void add(final SubMatrix m) {
         // special handling of full matrices
-        if (isFull() && m.isFull()){
-            for (int i=0; i<m_data.length; ++i)
-                m_data[i]+=m.m_data[i];
+        if (isFull() && m.isFull()) {
+            for (int i = 0; i < m_data.length; ++i) {
+                m_data[i] += m.m_data[i];
+            }
             return;
         }
-            
-        
+
         // if (m_nrows != m.m_nrows || m_ncols != m.m_ncols)
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         DataBlockIterator iter, siter;
@@ -204,8 +205,8 @@ public class SubMatrix implements Cloneable {
      * @param src
      */
     public void copy(final SubMatrix src) {
-                // special handling of full matrices
-        if (isFull() && src.isFull()){
+        // special handling of full matrices
+        if (isFull() && src.isFull()) {
             System.arraycopy(src.m_data, 0, m_data, 0, m_data.length);
             return;
         }
@@ -365,8 +366,9 @@ public class SubMatrix implements Cloneable {
      * @param Y
      */
     public void addAY(final double a, final SubMatrix Y) {
-        if (a == 0)
+        if (a == 0) {
             return;
+        }
         // if (m_nrows != Y.m_nrows || m_ncols != Y.m_ncols)
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         DataBlockIterator iter, siter;
@@ -534,13 +536,13 @@ public class SubMatrix implements Cloneable {
      * @return
      */
     public double dot(final SubMatrix m) {
-        double p=0;
-        DataBlockIterator cols=columns(), mcols=m.columns();
-        DataBlock col=cols.getData(), mcol=mcols.getData();
-        do{
-            p+=col.dot(mcol);
-        }while (cols.next() && mcols.next());
-        return p;        
+        double p = 0;
+        DataBlockIterator cols = columns(), mcols = m.columns();
+        DataBlock col = cols.getData(), mcol = mcols.getData();
+        do {
+            p += col.dot(mcol);
+        } while (cols.next() && mcols.next());
+        return p;
     }
 
     /**
@@ -686,9 +688,10 @@ public class SubMatrix implements Cloneable {
      */
     public void sub(final SubMatrix m) {
         // special handling of full matrices
-        if (isFull() && m.isFull()){
-            for (int i=0; i<m_data.length; ++i)
-                m_data[i]-=m.m_data[i];
+        if (isFull() && m.isFull()) {
+            for (int i = 0; i < m_data.length; ++i) {
+                m_data[i] -= m.m_data[i];
+            }
             return;
         }
         // if (m_nrows != m.m_nrows || m_ncols != m.m_ncols)
@@ -801,21 +804,30 @@ public class SubMatrix implements Cloneable {
         return getColumnsCount() <= 0 || getRowsCount() <= 0;
     }
 
+    public boolean isZero(double zero) {
+        if (isFull()) {
+            return new DataBlock(m_data).isZero(zero);
+        } else {
+            DataBlockIterator cols = columns();
+            DataBlock col = cols.getData();
+            do {
+                if (!col.isZero(zero)) {
+                    return false;
+                }
+            } while (cols.next());
+            return true;
+        }
+    }
+
+    @Deprecated
     public boolean isNull(double zero) {
-        DataBlockIterator cols = columns();
-        DataBlock col = cols.getData();
-        do {
-            if (!col.isZero(zero)) {
-                return false;
-            }
-        } while (cols.next());
-        return true;
+        return isZero(zero);
     }
 
     public boolean isDiagonal() {
         return isLower() && isUpper();
     }
-    
+
     public boolean isIdentity() {
         return isDiagonal() && diagonal().isConstant(1);
     }
@@ -837,9 +849,9 @@ public class SubMatrix implements Cloneable {
         }
         return true;
     }
-    
-    private boolean isFull(){
-        return m_nrows*m_ncols==m_data.length;
+
+    private boolean isFull() {
+        return m_nrows * m_ncols == m_data.length;
     }
 
     @Override
@@ -907,4 +919,23 @@ public class SubMatrix implements Cloneable {
 
     }
 
+    /**
+     * The euclidian (frobenius) norm of the matrix
+     *
+     * @return sqrt(sum(x(i,j)*x(i,j))) is returned
+     */
+    public double nrm2() {
+        if (isFull()) {
+            return new DataBlock(m_data).nrm2();
+        } else {
+            DataBlockIterator columns = columns();
+            DataBlock column = columns.getData();
+            double n = column.nrm2();
+            while (columns.next()) {
+                DataBlock.hypot(n, column.nrm2());
+            }
+            return n;
+        }
+
+    }
 }

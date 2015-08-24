@@ -912,7 +912,7 @@ public class MixedFrequenciesMonitor {
             } while (rows.next());
 
             // triangularize by givens rotations
-            ec.tstoolkit.maths.matrices.ElementaryTransformations.givensTriangularize(Bt.subMatrix().transpose());
+            ec.tstoolkit.maths.matrices.ElementaryTransformations.rawGivensTriangularize(Bt.subMatrix().transpose());
             return new Matrix(Bt.subMatrix(0, m, 0, m).transpose());
         }
 
