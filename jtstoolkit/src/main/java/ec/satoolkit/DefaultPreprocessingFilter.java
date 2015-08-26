@@ -147,6 +147,12 @@ public class DefaultPreprocessingFilter implements IPreprocessingFilter {
                     model_.backTransform(sa, false, false);
                 }
                 return sa;
+            case Undefined:
+                TsData undef = model_.deterministicEffect(domain, type);
+                if (!transformed) {
+                    model_.backTransform(undef, false, false);
+                }
+                return undef;
             case Irregular:
                 TsData i = model_.deterministicEffect(domain, type);
                 if (!transformed) {

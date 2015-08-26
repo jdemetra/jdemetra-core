@@ -19,8 +19,15 @@ package ec.satoolkit;
 import ec.benchmarking.simplets.TsCholette;
 import ec.satoolkit.benchmarking.SaBenchmarkingResults;
 import ec.satoolkit.benchmarking.SaBenchmarkingSpec;
+import ec.tstoolkit.algorithm.CompositeResults;
+import ec.tstoolkit.algorithm.DefaultProcessingFactory;
+import ec.tstoolkit.algorithm.IProcDocument;
+import ec.tstoolkit.algorithm.IProcResults;
+import ec.tstoolkit.algorithm.IProcSpecification;
 import ec.tstoolkit.algorithm.IProcessing.Status;
-import ec.tstoolkit.algorithm.*;
+import ec.tstoolkit.algorithm.IProcessingNode;
+import ec.tstoolkit.algorithm.SequentialProcessing;
+import ec.tstoolkit.algorithm.SingleTsData;
 import ec.tstoolkit.algorithm.SingleTsDataProcessing.Validation;
 import ec.tstoolkit.modelling.ComponentInformation;
 import ec.tstoolkit.modelling.ComponentType;
@@ -294,11 +301,12 @@ public class GenericSaProcessingFactory {
                     TsData detS = filter.getCorrection(cdomain, ComponentType.Seasonal, false);
                     TsData detI = filter.getCorrection(cdomain, ComponentType.Irregular, false);
                     TsData detY = filter.getCorrection(cdomain, ComponentType.Series, false);
+                    TsData detSA = filter.getCorrection(cdomain, ComponentType.SeasonallyAdjusted, false);
+//                    TsData detU = filter.getCorrection(cdomain, ComponentType.Undefined, false);
 
                     DefaultSeriesDecomposition finals = new DefaultSeriesDecomposition(ldecomp.getMode());
-                    // ???
                     TsData y = inv_op(mul, orig, detY);
-                    finals.add(y, ComponentType.Series);
+                    finals.add(orig, ComponentType.Series);
                     TsData t = op(mul, detT, ldecomp.getSeries(ComponentType.Trend,
                             ComponentInformation.Value));
                     if (t != null && !domain.equals(t.getDomain())) {
@@ -320,16 +328,16 @@ public class GenericSaProcessingFactory {
                     finals.add(inv_op(mul, y, s), ComponentType.SeasonallyAdjusted);
 
                     // forecasts...
-                    TsData det = op(mul, detT, detS);
-                    det = op(mul, det, detI);
-
                     if (fdomain != null) {
-                        TsData fy = op(mul, fdata, det);
+                        TsData fy = op(mul, detSA, fdata);
+                        fy = op(mul, detT, fy);
+                        fy = op(mul, detS, fy);
+                        //fy = op(mul, detY, fy);
                         //               finals.add(fy, ComponentType.Series, ComponentInformation.Forecast);
                         TsData ftl = ldecomp.getSeries(ComponentType.Trend,
                                 ComponentInformation.Forecast);
-                        if (ftl != null) {
-                            TsData ft = op(mul, detT, ftl);
+                        TsData ft = op(mul, detT, ftl);
+                        if (ft != null) {
                             if (!fdomain.equals(ft.getDomain())) {
                                 ft = ft.fittoDomain(fdomain);
                             }
@@ -337,9 +345,8 @@ public class GenericSaProcessingFactory {
                         }
                         TsData fsl = ldecomp.getSeries(ComponentType.Seasonal,
                                 ComponentInformation.Forecast);
-                        TsData fs = null;
-                        if (fsl != null) {
-                            fs = op(mul, detS, fsl);
+                        TsData fs = op(mul, detS, fsl);
+                        if (fs != null) {
                             if (!fdomain.equals(fs.getDomain())) {
                                 fs = fs.fittoDomain(fdomain);
                             }
@@ -348,8 +355,8 @@ public class GenericSaProcessingFactory {
 
                         TsData fil = ldecomp.getSeries(ComponentType.Irregular,
                                 ComponentInformation.Forecast);
-                        if (fil != null) {
-                            TsData fi = op(mul, detI, fil);
+                        TsData fi = op(mul, detI, fil);
+                        if (fi != null) {
                             if (!fdomain.equals(fi.getDomain())) {
                                 fi = fi.fittoDomain(fdomain);
                             }

@@ -19,6 +19,7 @@ package ec.satoolkit.x11;
 
 import ec.satoolkit.IPreprocessingFilter;
 import ec.tstoolkit.information.InformationSet;
+import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.timeseries.regression.AdditiveOutlier;
 import ec.tstoolkit.timeseries.regression.LevelShift;
@@ -63,7 +64,7 @@ public class DefaultPreprocessor extends DefaultX11Algorithm implements
         InformationSet btables = info.subSet(X11Kernel.B);
         btables.set(X11Kernel.B1, sall);
         if (fs != null) {
-            atables.set(X11Kernel.A1a, model_.forecast(fs.getLength(), false));
+            atables.set(X11Kernel.A1a, model_.forecast(fs.getLength(), true));
         }
         // complete the information sets using the pre-processing model
         TsDomain domain = model_.description.getSeriesDomain();
@@ -83,6 +84,12 @@ public class DefaultPreprocessor extends DefaultX11Algorithm implements
         TsData ps = model_.regressionEffect(domain, SeasonalOutlier.class);
         TsData pa = model_.regressionEffect(domain, AdditiveOutlier.class);
         TsData pc = model_.regressionEffect(domain, TransitoryChange.class);
+        TsData ut = model_.userEffect(domain, ComponentType.Trend);
+        TsData ua = model_.userEffect(domain, ComponentType.Irregular);
+        TsData us = model_.userEffect(domain, ComponentType.Seasonal);
+        pt=TsData.add(pt, ut);
+        ps=TsData.add(ps, us);
+        pa=TsData.add(pa, ua);
         model_.backTransform(p, false, false);
         model_.backTransform(pt, false, false);
         model_.backTransform(ps, false, false);

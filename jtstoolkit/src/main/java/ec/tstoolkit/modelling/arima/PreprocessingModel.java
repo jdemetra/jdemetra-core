@@ -225,12 +225,7 @@ public class PreprocessingModel implements IProcResults {
         return data;
     }
 
-    @Deprecated
     public TsData linearizedSeries() {
-        return linearizedSeries(false);
-    }
-
-    public TsData linearizedSeries(boolean includeUndefinedReg) {
         if (lin_ != null) {
             return lin_.clone();
         }
@@ -239,12 +234,17 @@ public class PreprocessingModel implements IProcResults {
         }
         TsData interp = interpolatedSeries(true);
         TsData regs = regressionEffect(description.getSeriesDomain());
-        if (includeUndefinedReg) {
-            TsData uregs = userEffect(description.getSeriesDomain(), ComponentType.Undefined);
-            regs = TsData.subtract(regs, uregs);
-        }
         lin_ = TsData.subtract(interp, regs);
         return lin_.clone();
+    }
+
+    public TsData linearizedSeries(boolean includeUndefinedReg) {
+        TsData s = linearizedSeries();
+        if (includeUndefinedReg) {
+            TsData reg = userEffect(s.getDomain(), ComponentType.Undefined);
+            s = TsData.add(s, reg);
+        }
+        return s;
     }
 
     // cmp is used in back transformation
