@@ -412,9 +412,9 @@ public class RegArimaEstimator implements IRegArimaProcessor<SarimaModel> {
         Complex[] roots = p.roots();
         double rmax = 0;
         for (int i = 0; i < roots.length; ++i) {
-            if (roots[i].im == 0) {
-                if (rmax == 0 || Math.abs(roots[i].re) < Math.abs(rmax)) {
-                    rmax = roots[i].re;
+            if (roots[i].getIm() == 0) {
+                if (rmax == 0 || Math.abs(roots[i].getRe()) < Math.abs(rmax)) {
+                    rmax = roots[i].getRe();
                 }
             }
         }

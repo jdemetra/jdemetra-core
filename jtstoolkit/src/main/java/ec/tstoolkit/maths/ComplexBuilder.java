@@ -42,8 +42,8 @@ public final class ComplexBuilder implements IBuilder<Complex> {
      * @param c
      */
     public ComplexBuilder(final Complex c) {
-	re = c.re;
-	im = c.im;
+	re = c.getRe();
+	im = c.getIm();
     }
 
     /**
@@ -71,8 +71,8 @@ public final class ComplexBuilder implements IBuilder<Complex> {
      * @return This object is returned
      */
     public ComplexBuilder add(final Complex c) {
-	re += c.re;
-	im += c.im;
+	re += c.getRe();
+	im += c.getIm();
 	return this;
     }
 
@@ -102,7 +102,7 @@ public final class ComplexBuilder implements IBuilder<Complex> {
      * @return This object is returned
      */
     public ComplexBuilder div(final Complex c) {
-	return div(c.re, c.im);
+	return div(c.getRe(), c.getIm());
     }
 
     /**
@@ -171,7 +171,7 @@ public final class ComplexBuilder implements IBuilder<Complex> {
      * @return This object is returned
      */
     public ComplexBuilder mul(final Complex c) {
-	return mul(c.re, c.im);
+	return mul(c.getRe(), c.getIm());
     }
 
     /**
@@ -209,8 +209,8 @@ public final class ComplexBuilder implements IBuilder<Complex> {
      * @return This object is returned
      */
     public ComplexBuilder sub(final Complex c) {
-	re -= c.re;
-	im -= c.im;
+	re -= c.getRe();
+	im -= c.getIm();
 	return this;
     }
 

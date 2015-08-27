@@ -20,7 +20,6 @@ import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.Complex;
-import ec.tstoolkit.maths.ComplexMath;
 import ec.tstoolkit.maths.polynomials.Polynomial;
 import ec.tstoolkit.utilities.Ref;
 
@@ -51,7 +50,7 @@ public final class Utilities
 	if (roots == null)
 	    return true;
 	for (int i = 0; i < roots.length; ++i) {
-	    double n = (ComplexMath.abs(roots[i]));
+	    double n = (roots[i].abs());
 	    if (n < nmax)
 		return false;
 	}
@@ -250,7 +249,7 @@ public final class Utilities
 	    Complex[] roots = p.roots();
 	    for (int i = 0; i < roots.length; ++i) {
 		Complex root = roots[i];
-		double n = (ComplexMath.abs(roots[i]));
+		double n = (roots[i].abs());
 		if (n < 1 / rmax) {
 		    roots[i] = root.div(n * rmax);
 		    rslt = true;
@@ -276,7 +275,7 @@ public final class Utilities
 	    Complex[] roots = p.roots();
 	    for (int i = 0; i < roots.length; ++i) {
 		Complex root = roots[i];
-		double n = (ComplexMath.abs(roots[i]));
+		double n = (roots[i].abs());
 		if (n < 1)
 		    roots[i] = root.inv();
 	    }

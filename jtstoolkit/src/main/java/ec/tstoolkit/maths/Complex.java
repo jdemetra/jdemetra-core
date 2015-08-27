@@ -440,12 +440,12 @@ public final class Complex implements Serializable {
     /**
      *
      */
-    public final double re;
+    private final double re;
 
     /**
      *
      */
-    public final double im;
+    private final double im;
 
     // ///////////////////////////////////////////
 
@@ -482,6 +482,10 @@ public final class Complex implements Serializable {
 	return ComplexMath.absSquare(re, im);
     }
 
+    public Complex sqrt() {
+	return ComplexMath.sqrt(re, im);
+    }
+    
     /**
      * Returns the argument of this complex number.
      * 
