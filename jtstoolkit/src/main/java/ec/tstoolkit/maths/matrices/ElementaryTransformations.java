@@ -56,6 +56,48 @@ public class ElementaryTransformations {
         }
     }
 
+    public static boolean fastRowGivens(final SubMatrix X) {
+        try {
+            int nr = X.m_nrows, nc = X.m_ncols, rinc = X.m_row_inc, cinc = X.m_col_inc, beg = X.m_start;
+            double[] x = X.m_data;
+            for (int c = 1, cur = beg + cinc; c < nc; ++c, cur += cinc) {
+                double a = x[beg];
+                double b = x[cur];
+                if (b != 0) {
+                    // compute the rotation
+                    double h, ro, d;
+                    if (a != 0) {
+                        h = ElementaryTransformations.hypotenuse(a, b);
+                        ro = b / h;
+                        d = a / h;
+                    } else if (b < 0) {
+                        d = 0;
+                        ro = -1;
+                        h = -b;
+                    } else {
+                        d = 0;
+                        ro = 1;
+                        h = b;
+                    }
+                    x[cur] = 0;
+                    a = h;
+                    x[beg] = a;
+                    // update the next rows
+                    for (int s = 1, sdiag = beg + rinc, scur = cur + rinc; s < nr; ++s, sdiag += rinc, scur += rinc) {
+                        a = x[sdiag];
+                        b = x[scur];
+                        x[sdiag] = d * a + ro * b;
+                        x[scur] = -ro * a + d * b;
+                    }
+                }
+            }
+
+            return true;
+        } catch (BaseException err) {
+            return false;
+        }
+    }
+
     public static boolean rawGivensTriangularize(final SubMatrix X) {
         try {
             int nr = X.m_nrows, nc = X.m_ncols, rinc = X.m_row_inc, cinc = X.m_col_inc, beg = X.m_start;
