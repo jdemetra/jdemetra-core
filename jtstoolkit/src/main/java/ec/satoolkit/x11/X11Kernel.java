@@ -1,28 +1,30 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.satoolkit.x11;
 
 import ec.satoolkit.DecompositionMode;
 import ec.satoolkit.ISeriesDecomposer;
+import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * The task of an X11Kernel is the execution of the X11 algorithm, in
@@ -119,7 +121,16 @@ public class X11Kernel implements ISeriesDecomposer {
 
     private void stepA(InformationSet info) {
         if (toolkit.getPreprocessor() != null) {
-            toolkit.getPreprocessor().preprocess(info);
+            // setp A uses not log transformed series
+            if (toolkit.getContext().getMode() == DecompositionMode.LogAdditive) {
+                toolkit.getContext().setMode(DecompositionMode.Multiplicative);
+
+                toolkit.getPreprocessor().preprocess(info);
+                toolkit.getContext().setMode(DecompositionMode.LogAdditive);
+            } else {
+                toolkit.getPreprocessor().preprocess(info);
+            }
+
         } else {
             TsData a1 = info.subSet(A).get(A1, TsData.class);
             info.subSet(B).set(B1, a1);
@@ -148,15 +159,15 @@ public class X11Kernel implements ISeriesDecomposer {
                 X11Step.B, b3, info);
         TsData b4anorm = toolkit.getSeasonalNormalizer().normalize(b4a, null);
         TsData b4d = toolkit.getContext().op(b3, b4anorm);
-            
+
         ecorr = toolkit.getExtremeValuesCorrector();
-        if ( ecorr instanceof CochranDependentExtremeValuesCorrector)
-        { 
-            ((CochranDependentExtremeValuesCorrector) ecorr).testCochran(b4d);}
-        
+        if (ecorr instanceof CochranDependentExtremeValuesCorrector) {
+            ((CochranDependentExtremeValuesCorrector) ecorr).testCochran(b4d);
+        }
+
         ecorr.analyse(b4d);
-       
-        TsData b4 = ecorr.computeCorrections(b3);       
+
+        TsData b4 = ecorr.computeCorrections(b3);
         TsData b4g = ecorr.applyCorrections(b3, b4);
 
         TsData b5a = toolkit.getSeasonalComputer().doInitialFiltering(
@@ -177,7 +188,7 @@ public class X11Kernel implements ISeriesDecomposer {
                 b8, info);
         TsData b9c = toolkit.getSeasonalNormalizer().normalize(b9a, null);
         TsData b9d = toolkit.getContext().op(b8, b9c);
-  
+
         ecorr.analyse(b9d);
         TsData b9 = ecorr.computeCorrections(b8);
         TsData b9g = ecorr.applyCorrections(b8, b9);
@@ -211,9 +222,9 @@ public class X11Kernel implements ISeriesDecomposer {
          * "Adjustment Coefficients for trading day effects from the regression"
          * ); }
          */
-          if ( ecorr instanceof CochranDependentExtremeValuesCorrector)
-        { 
-            ((CochranDependentExtremeValuesCorrector) ecorr).testCochran(next);}
+        if (ecorr instanceof CochranDependentExtremeValuesCorrector) {
+            ((CochranDependentExtremeValuesCorrector) ecorr).testCochran(next);
+        }
         ecorr.analyse(next);
         TsData b17 = ecorr.getObservationWeights();
         TsData b20 = ecorr.getCorrectionFactors();
@@ -336,25 +347,22 @@ public class X11Kernel implements ISeriesDecomposer {
             toolkit.getUtilities().checkPositivity(d7);
         }
         TsData d8 = toolkit.getContext().op(refSeries, d7);
-      
-        
-        TsData d9,d10;
+
+        TsData d9, d10;
         if (ecorr instanceof PeriodSpecificExtremeValuesCorrector) {
             d9 = ecorr.computeCorrections(d8);
             TsData d9g = ecorr.applyCorrections(d8, d9);
             TsData d10a = toolkit.getSeasonalComputer().doFinalFiltering(X11Step.D,
                     d9g, info);
             d10 = toolkit.getSeasonalNormalizer().normalize(d10a, null);
-        }
-        else {
+        } else {
             TsData d9bis = toolkit.getContext().op(d1, d7);
             d9 = toolkit.getUtilities().differences(d9bis, d8); //
             TsData d10bis = toolkit.getSeasonalComputer().doFinalFiltering(
                     X11Step.D, d9bis, info);
             d10 = toolkit.getSeasonalNormalizer().normalize(d10bis, null);
         }
-        
- 
+
         TsData d11bis = toolkit.getContext().op(d1, d10);
         TsData d11 = toolkit.getContext().op(refSeries, d10);
 
@@ -393,10 +401,7 @@ public class X11Kernel implements ISeriesDecomposer {
             d13 = toolkit.getContext().op(d11, d12); // ???
         }
 
-
-
         TsDomain sdomain = toolkit.getContext().getEstimationDomain();
-
 
         dtables.set(D1, d1.fittoDomain(sdomain));
         dtables.set(D2, d2.fittoDomain(sdomain));
@@ -418,6 +423,23 @@ public class X11Kernel implements ISeriesDecomposer {
         TsData a8i = atables.get(A8i, TsData.class);
 
         // add pt to trend
+        //Preprocessor decomposition typ
+        boolean mul = false;
+        mul = toolkit.getLogtransformed();
+        DecompositionMode decoModeX11 = toolkit.getContext().getMode();
+        boolean changeMode = false;
+        // Wenn es das gleiche ist muss man nichts machen
+        // sonst das vom preprocessor verwenden
+        if (toolkit.getContext().isMultiplicative() == mul) {
+        } else {
+            changeMode = true;
+            if (mul) {
+                toolkit.getContext().setMode(DecompositionMode.Multiplicative);
+            } else {
+                toolkit.getContext().setMode(DecompositionMode.Additive);
+            }
+        }
+
         TsData d12c = toolkit.getContext().invOp(d12, a8t);
 
         // add pi to irregular
@@ -426,6 +448,11 @@ public class X11Kernel implements ISeriesDecomposer {
         // add pt, pi to d11
         TsData d11c = toolkit.getContext().invOp(d11, a8t);
         d11c = toolkit.getContext().invOp(d11c, a8i);
+
+        if (changeMode) {
+            toolkit.getContext().setMode(decoModeX11);
+        }
+
         TsData d16 = toolkit.getContext().op(a1, d11c);
 
         dtables.set(D11, d11c.fittoDomain(sdomain));
@@ -434,7 +461,7 @@ public class X11Kernel implements ISeriesDecomposer {
         dtables.set(D16, d16);
         dtables.set(D18, toolkit.getContext().op(d16, d10));
 
-        int nf= toolkit.getContext().getForecastHorizon();
+        int nf = toolkit.getContext().getForecastHorizon();
         if (nf > 0) {
             TsData a1a = atables.get(A1a, TsData.class);
             TsData d16a = toolkit.getContext().op(a1a, d11c);
@@ -454,10 +481,20 @@ public class X11Kernel implements ISeriesDecomposer {
             TsData a8s = atables.get(A8s, TsData.class);
             TsData a6 = atables.get(A6, TsData.class);
             TsData a7 = atables.get(A7, TsData.class);
-            TsData d16a = toolkit.getContext().invOp(d10a, a6);
-            d16a = toolkit.getContext().invOp(d16a, a7);
-            d16a = toolkit.getContext().invOp(d16a, a8s);
-            dtables.set(D16a, d16a);
+
+            if (changeMode) {
+                if (mul) {
+                    toolkit.getContext().setMode(DecompositionMode.Multiplicative);
+                } else {
+                    toolkit.getContext().setMode(DecompositionMode.Additive);
+                }
+                TsData d16a = toolkit.getContext().invOp(d10a, a6);
+                d16a = toolkit.getContext().invOp(d16a, a7);
+                d16a = toolkit.getContext().invOp(d16a, a8s);
+                dtables.set(D16a, d16a);
+                toolkit.getContext().setMode(decoModeX11);
+            }
+
         }
 
     }

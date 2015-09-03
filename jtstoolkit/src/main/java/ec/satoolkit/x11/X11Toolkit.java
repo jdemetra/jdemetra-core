@@ -74,28 +74,25 @@ public class X11Toolkit extends BaseX11Algorithm implements
         }
 
         /* Define which ExtremeExtremeValuesCorrector has to be used */
-        if (spec.getCalendarSigma().equals(CalendarSigma.Select)){
-          GroupSpecificExtremeValuesCorrector xcorrector = new GroupSpecificExtremeValuesCorrector();
+        if (spec.getCalendarSigma().equals(CalendarSigma.Select)) {
+            GroupSpecificExtremeValuesCorrector xcorrector = new GroupSpecificExtremeValuesCorrector();
             xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
             xcorrector.setSigmavecOption(spec.getSigmavec());
-            toolkit.setExtremeValuescorrector(xcorrector);        
-        } 
-       else if (spec.getCalendarSigma().equals(CalendarSigma.All)) {
+            toolkit.setExtremeValuescorrector(xcorrector);
+        } else if (spec.getCalendarSigma().equals(CalendarSigma.All)) {
             PeriodSpecificExtremeValuesCorrector xcorrector = new PeriodSpecificExtremeValuesCorrector();
             xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
-            toolkit.setExtremeValuescorrector(xcorrector);        }
-       else if (spec.getCalendarSigma().equals(CalendarSigma.Signif)){
+            toolkit.setExtremeValuescorrector(xcorrector);
+        } else if (spec.getCalendarSigma().equals(CalendarSigma.Signif)) {
             CochranDependentExtremeValuesCorrector xcorrector = new CochranDependentExtremeValuesCorrector();
             xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
             toolkit.setExtremeValuescorrector(xcorrector);
-       }
-       else {
+        } else {
             DefaultExtremeValuesCorrector xcorrector = new DefaultExtremeValuesCorrector();
             xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
-            toolkit.setExtremeValuescorrector(xcorrector);        }
-           
-        
-         
+            toolkit.setExtremeValuescorrector(xcorrector);
+        }
+
         /*In Case that one or more and not all of the filters are stable the normalizer needs this information*/
         if (spec.isSeasonal()) {
             DefaultSeasonalNormalizer nprovider = new DefaultSeasonalNormalizer();
@@ -118,6 +115,7 @@ public class X11Toolkit extends BaseX11Algorithm implements
     private IExtremeValuesCorrector xcorrector;
     private ISeasonalNormalizer snormalizer;
     private IX11Utilities utilities = new DefaultX11Utilities();
+    private boolean logtransformed;
 
     private X11Toolkit(X11Context context) {
         this.context = context;
@@ -201,6 +199,18 @@ public class X11Toolkit extends BaseX11Algorithm implements
         }
         this.preprocessor = preprocessor;
 
+    }
+
+      /**
+     * @param logtrafo the used transformation of the preprocessor
+     */
+    public void setLogTranformed(final boolean logtrafo) {
+        this.logtransformed = logtrafo;
+    }
+
+    
+    public boolean getLogtransformed() {
+        return this.logtransformed ;
     }
 
     /**
