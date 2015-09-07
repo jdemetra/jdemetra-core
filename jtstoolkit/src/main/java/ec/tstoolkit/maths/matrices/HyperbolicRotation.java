@@ -185,8 +185,8 @@ public class HyperbolicRotation implements IVectorTransformation {
      */
     public static boolean triangularize(final SubMatrix M, int npos) {
         int r = M.getRowsCount(), c = M.getColumnsCount();
-        ElementaryTransformations.rawGivensTriangularize(M.extract(0, r, 0, npos));
-        ElementaryTransformations.rawGivensTriangularize(M.extract(0, r, npos, c));
+        ElementaryTransformations.fastGivensTriangularize(M.extract(0, r, 0, npos));
+        ElementaryTransformations.fastGivensTriangularize(M.extract(0, r, npos, c));
         try {
             SubMatrix L = M;
             do {
