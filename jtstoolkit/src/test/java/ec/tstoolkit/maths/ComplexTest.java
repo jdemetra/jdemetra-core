@@ -27,7 +27,7 @@ import org.junit.Test;
  */
 public class ComplexTest {
 
-    private static void assertEquals(Complex expected, Complex actual, double delta) {
+    public static void assertEquals(Complex expected, Complex actual, double delta) {
         if (!expected.equals(actual, delta)) {
             Assert.fail("expected: " + expected + " but was: " + actual);
         }
