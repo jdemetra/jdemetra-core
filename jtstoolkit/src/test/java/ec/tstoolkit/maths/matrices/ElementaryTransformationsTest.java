@@ -42,15 +42,15 @@ public class ElementaryTransformationsTest {
     @Test
     public void testGivens() {
         Matrix M1 = M.clone(), M2 = M.clone();
-        ElementaryTransformations.rawGivensTriangularize(M1.subMatrix());
+        ElementaryTransformations.fastGivensTriangularize(M1.subMatrix());
         ElementaryTransformations.givensTriangularize(M2.subMatrix());
         assertTrue(M1.minus(M2).nrm2() < 1e-9);
         Matrix S1 = S.clone(), S2 = S.clone();
-        ElementaryTransformations.rawGivensTriangularize(S1.subMatrix());
+        ElementaryTransformations.fastGivensTriangularize(S1.subMatrix());
         ElementaryTransformations.givensTriangularize(S2.subMatrix());
         assertTrue(S1.minus(S2).nrm2() < 1e-9);
         Matrix T1 = T.clone(), T2 = T.clone();
-        ElementaryTransformations.rawGivensTriangularize(T1.subMatrix());
+        ElementaryTransformations.fastGivensTriangularize(T1.subMatrix());
         ElementaryTransformations.givensTriangularize(T2.subMatrix());
         assertTrue(T1.minus(T2).nrm2() < 1e-9);
     }
@@ -59,7 +59,7 @@ public class ElementaryTransformationsTest {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 1000000; ++i) {
             Matrix M1 = M.clone();
-            ElementaryTransformations.rawGivensTriangularize(M1.subMatrix());
+            ElementaryTransformations.fastGivensTriangularize(M1.subMatrix());
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
