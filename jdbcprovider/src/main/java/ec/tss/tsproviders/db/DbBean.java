@@ -176,7 +176,7 @@ public class DbBean implements IDataSourceBean {
     public String[] getDimArray() {
         return getDimArray(dimColumns);
     }
-    static final Splitter DIM_ARRAY_SPLITTER = Splitter.onPattern("\\W+").trimResults().omitEmptyStrings();
+    static final Splitter DIM_ARRAY_SPLITTER = Splitter.on(',').trimResults().omitEmptyStrings();
 
     static String[] getDimArray(String dimColumns) {
         return Iterables.toArray(DIM_ARRAY_SPLITTER.split(dimColumns), String.class);
