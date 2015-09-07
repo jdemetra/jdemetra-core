@@ -17,6 +17,7 @@
 package ec.tstoolkit.maths.polynomials;
 
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.design.VisibleForTesting;
 import ec.tstoolkit.maths.Complex;
 import ec.tstoolkit.utilities.Ref;
 import ec.tstoolkit.utilities.Ref.BooleanRef;
@@ -110,7 +111,7 @@ public class MullerNewtonSolver implements IRootsSolver {
      */
     private final static double NFVALUE = 1e36;
     private static final double ISQRT2 = 1.0 / Math.sqrt(2.0);
-
+    
     /**
      * *** fdvalue computes P(x0) and optional P'(x0) ****
      */
@@ -227,7 +228,7 @@ public class MullerNewtonSolver implements IRootsSolver {
                 h2 = h2.times(2);
             } else { /* otherwise: |q2| = 1 and */
                 /* h[2] = h[2]*q2 */
-                q2 = Complex.cart(Math.cos(iter), Math.sin(iter));
+                q2 = getComplexForIterationCounter(iter);
                 h2 = h2.times(q2);
             }
         } else if (f2absq < f2absqb.val) {
@@ -690,17 +691,13 @@ public class MullerNewtonSolver implements IRootsSolver {
         /* B2 = q2[q2(f0-f1) + 2(f2-f1)] + (f2-f1) */
         /* C2 = (1+q2)f[2] */
 
-        Complex f2_minus_f1 = f2.val.minus(f1.val);
-        Complex one_plus_q2 = q2.plus(1);
+        final Complex A2 = computeA2(q2, f2.val, f0.val, f1.val);
+        final Complex B2 = computeB2(f2.val, f1.val, q2, f0.val);
+        final Complex C2 = computeC2(q2, f2.val);
         
-        final Complex A2 = q2.times(f2.val.plus(q2.times(f0.val)).minus(
-                one_plus_q2.times(f1.val)));
-        final Complex B2 = f2_minus_f1.plus(
-                q2.times(q2.times(f0.val.minus(f1.val)).plus(
-                f2_minus_f1.times(2))));
-        final Complex C2 = one_plus_q2.times(f2.val);
         /* discr = B2^2 - 4A2C2 */
-        final Complex rdiscr = B2.times(B2).minus(A2.times(C2).times(4)).sqrt();
+        final Complex rdiscr = computeDiscr(B2, A2, C2).sqrt();
+
         /* denominators of q2 */
         final Complex N1 = B2.minus(rdiscr);
         final Complex N2 = B2.plus(rdiscr);
@@ -712,10 +709,141 @@ public class MullerNewtonSolver implements IRootsSolver {
         } else if (N2_abs > DBL_EPSILON) {
             q2 = C2.times(-2).div(N2);
         } else {
-            q2 = Complex.cart(Math.cos(iter), Math.sin(iter));
+            q2 = getComplexForIterationCounter(iter);
         }
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Generated code">
+    /**
+     * Computes: <code>q2 * ( f2 + ( q2 * f0 ) - ( 1 + q2 ) * f1 )</code><br>
+     * RPN: <code>q2 f2 q2 f0 * + 1 q2 + f1 * - *</code>
+     */
+    @VisibleForTesting
+    static Complex computeA2(Complex q2, Complex f2, Complex f0, Complex f1) {
+        double tmp;
+        double re0, re1, re2;
+        double im0, im1, im2;
+        /* { q2 } */
+        re0 = q2.getRe();
+        im0 = q2.getIm();
+        /* { f2 } */
+        re1 = f2.getRe();
+        im1 = f2.getIm();
+        /* { q2 f0 * } */
+        re2 = q2.getRe() * f0.getRe() - q2.getIm() * f0.getIm();
+        im2 = q2.getRe() * f0.getIm() + q2.getIm() * f0.getRe();
+        /* { + } */
+        re1 += re2;
+        im1 += im2;
+        /* { 1 q2 + } */
+        re2 = 1 + q2.getRe();
+        im2 = q2.getIm();
+        /* { f1 * } */
+        tmp = re2 * f1.getRe() - im2 * f1.getIm();
+        im2 = re2 * f1.getIm() + im2 * f1.getRe();
+        re2 = tmp;
+        /* { - } */
+        re1 -= re2;
+        im1 -= im2;
+        /* { * } */
+        tmp = re0 * re1 - im0 * im1;
+        im0 = re0 * im1 + im0 * re1;
+        re0 = tmp;
+        /* .build() */
+        return Complex.cart(re0, im0);
+    }
+
+    /**
+     * Computes:
+     * <code>f2 - f1 + q2 * ( q2 * ( f0 - f1 ) + ( f2 - f1 ) * 2 )</code><br>
+     * RPN: <code>f2 f1 - q2 q2 f0 f1 - * f2 f1 - 2 * + * +</code>
+     */
+    @VisibleForTesting
+    static Complex computeB2(Complex f2, Complex f1, Complex q2, Complex f0) {
+        double tmp;
+        double re0, re1, re2, re3;
+        double im0, im1, im2, im3;
+        /* { f2 f1 - } */
+        re0 = f2.getRe() - f1.getRe();
+        im0 = f2.getIm() - f1.getIm();
+        /* { q2 } */
+        re1 = q2.getRe();
+        im1 = q2.getIm();
+        /* { q2 } */
+        re2 = q2.getRe();
+        im2 = q2.getIm();
+        /* { f0 f1 - } */
+        re3 = f0.getRe() - f1.getRe();
+        im3 = f0.getIm() - f1.getIm();
+        /* { * } */
+        tmp = re2 * re3 - im2 * im3;
+        im2 = re2 * im3 + im2 * re3;
+        re2 = tmp;
+        /* { f2 f1 - } */
+        re3 = f2.getRe() - f1.getRe();
+        im3 = f2.getIm() - f1.getIm();
+        /* { 2 * } */
+        re3 *= 2;
+        im3 *= 2;
+        /* { + } */
+        re2 += re3;
+        im2 += im3;
+        /* { * } */
+        tmp = re1 * re2 - im1 * im2;
+        im1 = re1 * im2 + im1 * re2;
+        re1 = tmp;
+        /* { + } */
+        re0 += re1;
+        im0 += im1;
+        /* .build() */
+        return Complex.cart(re0, im0);
+    }
+
+    /**
+     * Computes: <code>( 1 + q2 ) * f2</code><br>
+     * RPN: <code>1 q2 + f2 *</code>
+     */
+    @VisibleForTesting
+    static Complex computeC2(Complex q2, Complex f2) {
+        double tmp;
+        double re0;
+        double im0;
+        /* { 1 q2 + } */
+        re0 = 1 + q2.getRe();
+        im0 = q2.getIm();
+        /* { f2 * } */
+        tmp = re0 * f2.getRe() - im0 * f2.getIm();
+        im0 = re0 * f2.getIm() + im0 * f2.getRe();
+        re0 = tmp;
+        /* .build() */
+        return Complex.cart(re0, im0);
+    }
+
+    /**
+     * Computes: <code>B2 * B2 - A2 * C2 * 4</code><br>
+     * RPN: <code>B2 B2 * A2 C2 * 4 * -</code>
+     */
+    @VisibleForTesting
+    static Complex computeDiscr(Complex B2, Complex A2, Complex C2) {
+        double re0, re1;
+        double im0, im1;
+        /* { B2 B2 * } */
+        re0 = B2.getRe() * B2.getRe() - B2.getIm() * B2.getIm();
+        im0 = B2.getRe() * B2.getIm() + B2.getIm() * B2.getRe();
+        /* { A2 C2 * } */
+        re1 = A2.getRe() * C2.getRe() - A2.getIm() * C2.getIm();
+        im1 = A2.getRe() * C2.getIm() + A2.getIm() * C2.getRe();
+        /* { 4 * } */
+        re1 *= 4;
+        im1 *= 4;
+        /* { - } */
+        re0 -= re1;
+        im0 -= im1;
+        /* .build() */
+        return Complex.cart(re0, im0);
+    }
+    //</editor-fold>
+    
     @Override
     public Complex[] roots() {
         return m_roots;
@@ -816,5 +944,30 @@ public class MullerNewtonSolver implements IRootsSolver {
     
     public void setLeastSquaresDivision(boolean lq){
         lqdiv=lq;
+    }
+
+    private static Complex getComplexForIterationCounter(int iter) {
+        return COMPLEX_FOR_ITER[iter];
+    }
+
+    private static Complex newComplexForIterationCounter(int iter) {
+        return Complex.cart(Math.cos(iter), Math.sin(iter));
+}
+    
+    // local cache for all possible values
+    private static final Complex[] COMPLEX_FOR_ITER = initComplexForIter(MITERMAX);
+
+    /**
+     * Computes all possible values for iter
+     *
+     * @param maxIter
+     * @return
+     */
+    private static Complex[] initComplexForIter(int maxIter) {
+        Complex[] result = new Complex[maxIter + 1];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = newComplexForIterationCounter(i);
+        }
+        return result;
     }
 }

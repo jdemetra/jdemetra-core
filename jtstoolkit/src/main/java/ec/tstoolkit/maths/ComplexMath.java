@@ -174,7 +174,7 @@ public final class ComplexMath {
 	ComplexBuilder tmp = new ComplexBuilder(cr + 1, ci);
 	tmp.div(cr - 1, ci);
 
-	double re = tmp.re, im = tmp.im;
+	double re = tmp.getRe(), im = tmp.getIm();
 	return Complex.cart(0.5 * Math.log(abs(re, im)), 0.5 * arg(re, im)); // principal
 									     // value
     }
@@ -295,7 +295,7 @@ public final class ComplexMath {
 	ComplexBuilder tmp = new ComplexBuilder(cr + 1, ci);
 	tmp.div(1 - cr, -ci);
 
-	double re = tmp.re, im = tmp.im;
+	double re = tmp.getRe(), im = tmp.getIm();
 	return Complex.cart(0.5 * Math.log(abs(re, im)), 0.5 * arg(re, im)); // principal
 									     // value
     }

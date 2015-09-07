@@ -31,11 +31,11 @@ public final class ComplexBuilder implements IBuilder<Complex> {
     /**
      * Real part
      */
-    double re;
+    private double re;
     /**
      * Imaginary part
      */
-    double im;
+    private double im;
 
     /**
      * Creates a new object from a complex number
@@ -63,6 +63,14 @@ public final class ComplexBuilder implements IBuilder<Complex> {
     public ComplexBuilder(final double re, final double im) {
 	this.re = re;
 	this.im = im;
+    }
+
+    public double getRe() {
+        return re;
+    }
+
+    public double getIm() {
+        return im;
     }
 
     /**

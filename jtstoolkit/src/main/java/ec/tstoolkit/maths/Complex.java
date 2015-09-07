@@ -139,9 +139,9 @@ public final class Complex implements Serializable {
     /**
      * Returns a Complex from real and imaginary parts.
      * 
-     * @param re
-     * @param im
-     * @return
+     * @param re the real part
+     * @param im the imaginary part
+     * @return a non-null complex
      */
     public static Complex cart(final double re, final double im) {
         // most used complexes
@@ -152,13 +152,14 @@ public final class Complex implements Serializable {
                 return Complex.ZERO;
             if (im == -1.0)
                 return Complex.NEG_I;
-        } 
-        if (re == 1.0 && im == 0.0) 
-            return Complex.ONE;
-        if (re == -1.0 && im == 0.0) 
-            return Complex.NEG_ONE;
-        if (re == -2.0 && im == 0.0) 
-            return Complex.NEG_TWO;
+        } else if (im == 0.0) {
+            if (re == 1.0) 
+                return Complex.ONE;
+            if (re == -1.0) 
+                return Complex.NEG_ONE;
+            if (re == -2.0) 
+                return Complex.NEG_TWO;
+        }
         // the real work
 	return new Complex(re, im);
     }
@@ -506,7 +507,7 @@ public final class Complex implements Serializable {
 
     /**
      * 
-     * @param b
+     * @param c
      * @return
      */
     public Complex div(final Complex c) {
@@ -705,7 +706,7 @@ public final class Complex implements Serializable {
 
 	if (im < 0.0)
 	    result.append(" - ").append(-im);
-	else if (im > 0.0)
+	else if (im == 0.0)
 	    result.append(" - ").append(0.0);
 	else
 	    result.append(" + ").append(+im);
