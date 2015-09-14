@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -139,7 +139,7 @@ public class TramoSeatsProcessingFactoryTest {
         StatisticalTest skewness = rslts.getData("residuals.skewness", StatisticalTest.class);
         assertTrue(skewness != null);
 //        System.out.println(skewness);
-        // All the possible results are defined in the dictionary of "rslts"
+            // All the possible results are defined in the dictionary of "rslts"
 //        Map<String, Class> dictionary = rslts.getDictionary();
 //        for (Entry<String, Class> entry : dictionary.entrySet()) {
 //            System.out.println(entry.getKey());

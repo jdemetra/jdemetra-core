@@ -159,6 +159,7 @@ public class ArmaModule implements IPreprocessingModule {
     private boolean m_bforced = false;
     private final int m_nmod;
     private static final int NMOD = 5;
+    private boolean acceptwn=false;
 
     @Override
     public ProcessingResult process(ModellingContext context) {
@@ -254,6 +255,14 @@ public class ArmaModule implements IPreprocessingModule {
     public void clear() {
         m_hrs = null;
         m_bforced = false;
+    }
+    
+    public void setAcceptingWhiteNoise(boolean wn){
+        this.acceptwn=wn;
+    }
+    
+    public boolean isAcceptingWhiteNoise(){
+        return this.acceptwn;
     }
 
     /**
@@ -564,7 +573,7 @@ public class ArmaModule implements IPreprocessingModule {
             step2.merge(m_hrs);
         }
         if (!seas) {
-            if (m_hrs[1] != null && m_hrs[0].getHR().getSpec().getParametersCount() == 0) {
+            if (m_hrs[1] != null && m_hrs[0].getHR().getSpec().getParametersCount() == 0 && !acceptwn) {
                 return m_hrs[1].getHR();
             } else {
                 return m_hrs[0].getHR();
