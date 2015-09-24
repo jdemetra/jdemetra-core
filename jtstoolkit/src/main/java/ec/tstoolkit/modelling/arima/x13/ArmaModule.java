@@ -48,7 +48,9 @@ public class ArmaModule {
 
         /**
          *
-         * @param hr
+         * @param data
+         * @param spec
+         * @param eps
          */
         public RegArmaBic(final DataBlock data, final SarmaSpecification spec, double eps) {
             GlsSarimaMonitor monitor = new GlsSarimaMonitor();
@@ -86,8 +88,8 @@ public class ArmaModule {
             return m_spec;
         }
     }
-    
-    private boolean balanced_;
+
+    private boolean balanced_, mixed_;
     private RegArmaBic[] m_est;
     private boolean m_bforced = false;
     private int m_nmod = 5;
@@ -100,13 +102,21 @@ public class ArmaModule {
     public void setEpsilon(double val) {
         eps_ = val;
     }
-    
-    public void setBalanced(boolean balanced){
-        balanced_=balanced;
+
+    public void setBalanced(boolean balanced) {
+        balanced_ = balanced;
     }
 
-    public boolean isBalanced(){
+    public boolean isBalanced() {
         return balanced_;
+    }
+
+    public void setMixed(boolean mixed) {
+        mixed_ = mixed;
+    }
+
+    public boolean isMixed() {
+        return mixed_;
     }
 
     /**
@@ -275,34 +285,34 @@ public class ArmaModule {
 
     }
 
-    /**
-     *
-     * @param maxspec
-     * @return
-     */
-    public void sort(final DataBlock data, final SarmaSpecification maxspec) {
-        int nspecs = (maxspec.getP() + 1) * (maxspec.getQ() + 1)
-                * (maxspec.getBP() + 1) * (maxspec.getBQ() + 1);
-        SarmaSpecification[] specs = new SarmaSpecification[nspecs];
-        for (int p = 0, i = 0; p <= maxspec.getP(); ++p) {
-            for (int q = 0; q <= maxspec.getQ(); ++q) {
-                for (int bp = 0; bp <= maxspec.getBP(); ++bp) {
-                    for (int bq = 0; bq <= maxspec.getBQ(); ++bq) {
-                        SarmaSpecification spec = new SarmaSpecification();
-                        spec.setFrequency(maxspec.getFrequency());
-                        spec.setP(p);
-                        spec.setQ(q);
-                        spec.setBP(bp);
-                        spec.setBQ(bq);
-                        specs[i++] = spec;
-                    }
-                }
-            }
-        }
-
-        sort(data, specs);
-    }
-
+//    /**
+//     *
+//     * @param maxspec
+//     * @return
+//     */
+//    public void sort(final DataBlock data, final SarmaSpecification maxspec) {
+//        int nspecs = (maxspec.getP() + 1) * (maxspec.getQ() + 1)
+//                * (maxspec.getBP() + 1) * (maxspec.getBQ() + 1);
+//        SarmaSpecification[] specs = new SarmaSpecification[nspecs];
+//        for (int p = 0, i = 0; p <= maxspec.getP(); ++p) {
+//            for (int q = 0; q <= maxspec.getQ(); ++q) {
+//                for (int bp = 0; bp <= maxspec.getBP(); ++bp) {
+//                    for (int bq = 0; bq <= maxspec.getBQ(); ++bq) {
+//                        SarmaSpecification spec = new SarmaSpecification();
+//                        spec.setFrequency(maxspec.getFrequency());
+//                        spec.setP(p);
+//                        spec.setQ(q);
+//                        spec.setBP(bp);
+//                        spec.setBQ(bq);
+//                        specs[i++] = spec;
+//                    }
+//                }
+//            }
+//        }
+//
+//        sort(data, specs);
+//    }
+//
     /**
      *
      * @param specs
@@ -353,9 +363,11 @@ public class ArmaModule {
         if (freq != 1) {
             for (int bp = 0, i = 0; bp <= smax; ++bp) {
                 for (int bq = 0; bq <= smax; ++bq) {
-                    spec.setBP(bp);
-                    spec.setBQ(bq);
-                    specs[i++] = spec.clone();
+                    if (mixed_ || (bp == 0 || bq == 0)) {
+                        spec.setBP(bp);
+                        spec.setBQ(bq);
+                        specs[i++] = spec.clone();
+                    }
                 }
             }
 
@@ -372,9 +384,11 @@ public class ArmaModule {
         specs = new SarmaSpecification[(rmax + 1) * (rmax + 1)];
         for (int p = 0, i = 0; p <= rmax; ++p) {
             for (int q = 0; q <= rmax; ++q) {
-                cur.setP(p);
-                cur.setQ(q);
-                specs[i++] = cur.clone();
+                if (mixed_ || (p == 0 || q == 0)) {
+                    cur.setP(p);
+                    cur.setQ(q);
+                    specs[i++] = cur.clone();
+                }
             }
         }
 
@@ -397,9 +411,11 @@ public class ArmaModule {
             specs = new SarmaSpecification[(spmax + 1) * (sqmax + 1)];
             for (int bp = 0, i = 0; bp <= spmax; ++bp) {
                 for (int bq = 0; bq <= sqmax; ++bq) {
-                    cur.setBP(bp);
-                    cur.setBQ(bq);
-                    specs[i++] = cur.clone();
+                    if (mixed_ || (bp == 0 || bq == 0)) {
+                        cur.setBP(bp);
+                        cur.setBQ(bq);
+                        specs[i++] = cur.clone();
+                    }
                 }
             }
 
