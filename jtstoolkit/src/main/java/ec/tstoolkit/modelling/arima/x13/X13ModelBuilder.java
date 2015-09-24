@@ -358,7 +358,7 @@ public class X13ModelBuilder implements IModelBuilder {
     }
 
     private void initializeStockTradingDays(ModelDescription model, TradingDaysSpec td) {
-        ITsVariable var = new StockTradingDaysVariables(td.getStockTradingDays() - 1);
+        ITsVariable var = new StockTradingDaysVariables(td.getStockTradingDays());
         Variable tvar = new Variable(var, ComponentType.CalendarEffect);
         if (td.getTest() == RegressionTestSpec.Add) {
             tvar.status = RegStatus.ToAdd;

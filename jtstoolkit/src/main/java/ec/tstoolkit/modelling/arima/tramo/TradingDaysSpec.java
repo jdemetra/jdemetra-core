@@ -131,7 +131,7 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
     }
 
     public boolean isStockTradingDays() {
-        return w_ > 0;
+        return w_ != 0;
     }
 
     public int getStockTradingDays() {

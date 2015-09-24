@@ -270,7 +270,7 @@ public class TramoModelBuilder implements IModelBuilder {
     }
 
     private void initializeStockTradingDays(ModelDescription model, TradingDaysSpec td) {
-        ITsVariable var = new StockTradingDaysVariables(td.getStockTradingDays() - 1);
+        ITsVariable var = new StockTradingDaysVariables(td.getStockTradingDays());
         Variable tvar = new Variable(var, ComponentType.CalendarEffect);
         tvar.status = td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified;
         model.getCalendars().add(tvar);
