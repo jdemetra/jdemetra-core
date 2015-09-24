@@ -386,6 +386,7 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
             AutoModel ami = new AutoModel();
             ami.setEpsilon(estimate_.getTol());
             ami.setBalanced(automdl.isBalanced());
+            ami.setMixed(automdl.isMixed());
             x13.autoModelling = ami;
             x13.setCheckMu(true);
             x13.setLjungBoxLimit(automdl.getLjungBoxLimit());

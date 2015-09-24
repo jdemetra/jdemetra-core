@@ -189,20 +189,22 @@ public class HtmlWienerKolmogorovDiagnostics extends AbstractHtmlElement impleme
                     for (int j = 0; j < i; ++j) {
                         if (diags_.getStationaryEstimate(j) != null) {
                             if (signals_[j]) {
-
-                                stream.open(HtmlTag.TABLEROW);
-                                StringBuilder builder = new StringBuilder();
-                                builder.append(desc_[j]).append("/").append(desc_[i]);
-                                stream.write(new HtmlTableCell(builder.toString()));
-                                double cc = diags_.getEstimatorCrossCorrelation(i, j);
-                                stream.write(new HtmlTableCell(
-                                        df4.format(cc), ccStyle(cc)));
-                                stream.write(new HtmlTableCell(
-                                        df4.format(diags_.getEstimateCrossCorrelation(i, j))));
-                                double pval = diags_.getPValue(i, j);
-                                stream.write(new HtmlTableCell(
-                                        df4.format(pval), valueStyle(pval)));
-                                stream.close(HtmlTag.TABLEROW);
+                                if (diags_.getStationaryComponentModel(i) != null
+                                        && diags_.getStationaryComponentModel(j) != null) {
+                                    stream.open(HtmlTag.TABLEROW);
+                                    StringBuilder builder = new StringBuilder();
+                                    builder.append(desc_[j]).append("/").append(desc_[i]);
+                                    stream.write(new HtmlTableCell(builder.toString()));
+                                    double cc = diags_.getEstimatorCrossCorrelation(i, j);
+                                    stream.write(new HtmlTableCell(
+                                            df4.format(cc), ccStyle(cc)));
+                                    stream.write(new HtmlTableCell(
+                                            df4.format(diags_.getEstimateCrossCorrelation(i, j))));
+                                    double pval = diags_.getPValue(i, j);
+                                    stream.write(new HtmlTableCell(
+                                            df4.format(pval), valueStyle(pval)));
+                                    stream.close(HtmlTag.TABLEROW);
+                                }
                             }
                         }
                     }

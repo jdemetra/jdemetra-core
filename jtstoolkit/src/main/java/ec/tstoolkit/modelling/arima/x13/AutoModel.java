@@ -51,6 +51,14 @@ public class AutoModel implements IPreprocessingModule {
         this.amdid.setBalanced(balanced);
     }
 
+    public boolean isMixed(){
+        return amdid.isMixed();
+    }
+
+    public void setMixed(boolean mixed) {
+        this.amdid.setMixed(mixed);
+    }
+
     public AutoModel() {
         iddiff = new DifferencingModule();
         amdid = new ArmaModule();
