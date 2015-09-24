@@ -74,9 +74,9 @@ public class HtmlMstatistics extends AbstractHtmlElement {
     private static final String[] M_DESC = new String[]{
         "The relative contribution of the irregular over three months span",
         "The relative contribution of the irregular component to the stationary portion of the variance",
-        "The amount of period to period change in the irregular component as compared to the amount of period to period change in the trend-cycle",
+        "The amount of period to period change in the irregular component as compared to the amount of period to period change in the trend",
         "The amount of autocorrelation in the irregular as described by the average duration of run",
-        "The number of periods it takes the change in the trend- cycle to surpass the amount of change in the irregular",
+        "The number of periods it takes the change in the trend to surpass the amount of change in the irregular",
         "The amount of year to year change in the irregular as compared to the amount of year to year change in the seasonal",
         "The amount of moving seasonality present relative to the amount of stable seasonality",
         "The size of the fluctuations in the seasonal component throughout the whole series",

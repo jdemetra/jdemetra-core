@@ -1,27 +1,32 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.satoolkit.diagnostics;
 
 import ec.tstoolkit.arima.estimation.RegArimaEstimation;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.data.DataBlock;
+import ec.tstoolkit.modelling.ComponentType;
+import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.JointRegressionTest;
 import ec.tstoolkit.modelling.arima.ModelDescription;
+import ec.tstoolkit.modelling.arima.ModelEstimation;
+import ec.tstoolkit.modelling.arima.ModellingContext;
+import ec.tstoolkit.modelling.arima.tramo.ArmaModule;
+import ec.tstoolkit.modelling.arima.tramo.DifferencingModule;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;
 import ec.tstoolkit.sarima.estimation.GlsSarimaMonitor;
@@ -41,7 +46,7 @@ public class FTest {
     private RegArimaModel<SarimaModel> regmodel_;
     private RegArimaEstimation<SarimaModel> seasonalModel_;
     private StatisticalTest f_;
-    private double sensibility_ = .01;
+    private double sensitivity_ = .01;
     private int nseas_;
 
     public FTest() {
@@ -69,18 +74,23 @@ public class FTest {
         return true;
     }
 
-    /**
-     * @return the sensibility_
-     */
-    public double getSensibility() {
-        return sensibility_;
+    public boolean testAMI(TsData s) {
+        clear();
+        return searchSeasonalModel(s);
     }
 
     /**
-     * @param sensibility_ the sensibility_ to set
+     * @return the sensibility_
      */
-    public void setSensibility(double sensibility) {
-        this.sensibility_ = sensibility;
+    public double getSensitivity() {
+        return sensitivity_;
+    }
+
+    /**
+     * @param sensitivity the sensitivity to set
+     */
+    public void setSensitivity(double sensitivity) {
+        this.sensitivity_ = sensitivity;
     }
 
     public RegArimaEstimation<SarimaModel> getEstimatedModel() {
@@ -117,7 +127,7 @@ public class FTest {
         for (DataBlock reg : regs) {
             regmodel_.addX(reg);
         }
-        nseas_=dummies.getDim();
+        nseas_ = dummies.getDim();
     }
 
     private boolean estimateModel() {
@@ -126,10 +136,17 @@ public class FTest {
         return seasonalModel_ != null;
     }
 
+    private boolean estimateContext(ModellingContext context) {
+        ModelDescription model = context.description;
+        context.estimation = new ModelEstimation(model.buildRegArima(), model.getLikelihoodCorrection());
+        GlsSarimaMonitor monitor = new GlsSarimaMonitor();
+        return context.estimation.compute(monitor, context.description.getArimaComponent().getFreeParametersCount());
+    }
+
     private void computeStatistics() {
-        JointRegressionTest test = new JointRegressionTest(sensibility_);
-        int nvars=regmodel_.getVarsCount();
-        test.accept(seasonalModel_.likelihood, regmodel_.getArma().getParametersCount(), nvars-nseas_, nseas_, null);
+        JointRegressionTest test = new JointRegressionTest(sensitivity_);
+        int nvars = regmodel_.getVarsCount();
+        test.accept(seasonalModel_.likelihood, regmodel_.getArma().getParametersCount(), nvars - nseas_, nseas_, null);
         f_ = test.getTest();
     }
 
@@ -137,5 +154,30 @@ public class FTest {
         regmodel_ = null;
         seasonalModel_ = null;
         f_ = null;
+    }
+
+    private boolean searchSeasonalModel(TsData s) {
+        ModellingContext context = new ModellingContext();
+        context.description = new ModelDescription(s, null);
+        context.description.setAirline(false);
+        context.hasseas = false;
+        SeasonalDummies dummies = new SeasonalDummies(s.getFrequency());
+        nseas_ = dummies.getDim();
+        context.description.getUserVariables().add(new Variable(dummies, ComponentType.Seasonal));
+        if (!estimateContext(context)) {
+            return false;
+        }
+        DifferencingModule diff = new DifferencingModule();
+        diff.process(context);
+        ArmaModule arma = new ArmaModule();
+        arma.setAcceptingWhiteNoise(true);
+        arma.process(context);
+        if (!estimateContext(context)) {
+            return false;
+        }
+        regmodel_ = context.estimation.getRegArima();
+        seasonalModel_ = new RegArimaEstimation<>(regmodel_, context.estimation.getLikelihood());
+        computeStatistics();
+        return true;
     }
 }

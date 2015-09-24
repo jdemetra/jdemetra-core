@@ -499,7 +499,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     }
 
     private void initializeStockTradingDays(TsVariableList regs) {
-        ITsVariable var = new StockTradingDaysVariables(td_.getStockTradingDays() - 1);
+        ITsVariable var = new StockTradingDaysVariables(td_.getStockTradingDays());
         regs.add(var);
     }
     
