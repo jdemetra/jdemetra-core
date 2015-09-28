@@ -189,9 +189,11 @@ public final class SymmetricMatrix {
     }
 
     /**
-     *
-     * @param m
-     * @throws MatrixException
+     * Compputes the lower Cholesky factor of a symmetric matrix.
+     * The initial matrix is modified in place
+     * @param m On entry, the given initial matrix. On exit,the Cholesky factor
+     * @throws MatrixException An exception is thrown when the matrix is not decomposable
+     * (not positive definite)
      */
     public static void lcholesky(final Matrix m) {
         double[] data = m.data_;
@@ -293,10 +295,10 @@ public final class SymmetricMatrix {
     }
 
     /**
-     *
-     * @param lower
-     * @return
-     * @throws MatrixException
+     * Computes L*L'
+     * @param lower The lower triangular matrix (L). The routine just use the 
+     * lower part of the input matrix.
+     * @return A new matrix is returned (M = L*L')
      */
     public static Matrix LLt(final Matrix lower) throws MatrixException {
         // if (lower == null)
@@ -695,10 +697,10 @@ public final class SymmetricMatrix {
     }
 
     /**
-     *
-     * @param m
-     * @throws MatrixException
-     */
+     * Reinforces the symmetry of a given matrix, which must be squared (not checked).
+     * the matrix is defined by x(i,j)=x(j,i)=0.5*(x(i,j)+x(j,i))
+     * @param m The input matrix
+    **/
     public static void reinforceSymmetry(final Matrix m) throws MatrixException {
         double[] data = m.data_;
         int n = m.nrows_;
@@ -716,11 +718,13 @@ public final class SymmetricMatrix {
         }
     }
 
-    public static void reinforceSymmetry(final SubMatrix m) throws MatrixException {
+    /**
+     * Reinforces the symmetry of a given sub-matrix, which must be squared (not checked).
+     * the matrix is defined by x(i,j)=x(j,i)=0.5*(x(i,j)+x(j,i))
+     * @param m The input matrix
+    **/
+    public static void reinforceSymmetry(final SubMatrix m) {
         int n = m.m_nrows;
-        if (n != m.m_ncols) {
-            throw new MatrixException(MatrixException.SquareOnly);
-        }
         for (int i = 0; i < n - 1; ++i) {
             DataBlock r = m.row(i).drop(i + 1, 0);
             DataBlock c = m.column(i).drop(i + 1, 0);
@@ -731,9 +735,11 @@ public final class SymmetricMatrix {
     }
 
     /**
-     *
-     * @param s
-     * @throws MatrixException
+     * Compputes the upper Cholesky factor of a symmetric matrix.
+     * The initial matrix is modified in place
+     * @param m On entry, the given initial matrix. On exit,the Cholesky factor
+     * @throws MatrixException An exception is thrown when the matrix is not decomposable
+     * (not positive definite)
      */
     public static void ucholesky(final Matrix s) throws MatrixException {
         // if (s == null)
@@ -775,24 +781,12 @@ public final class SymmetricMatrix {
     }
 
     /*
-     * [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming",
-     * "CA1706:ShortAcronymsShouldBeUppercase", MessageId = "Member")] public
-     * static Matrix LtL(Matrix lower) { //if (lower == null) // throw new
-     * ArgumentNullException("lower"); int n = lower.RowsCount; double[] pl =
-     * lower.data_; Matrix O = new Matrix(n, n); double[] po = O.data_; for
-     * (int i = 0, idiag = 0, omax = n; i < n; ++i, idiag += n + 1, omax += n) {
-     * for (int l = i; l <= idiag; l += n) { double x = pl[l]; for (int o =
-     * idiag, q = l; o < omax; ++o, ++q) po[o] += pl[q] * x; } } FromLower(O);
-     * return O; }
-     */
-    /**
-     *
-     * @param upper
-     * @return
+     * Computes U*U'
+     * @param upper The upper triangular matrix (U). The routine just use the 
+     * upper part of the input matrix.
+     * @return A new matrix is returned (M = U'*U)
      */
     public static Matrix UtU(final Matrix upper) {
-        // if (upper == null)
-        // throw new ArgumentNullException("upper");
         int n = upper.getRowsCount();
         double[] pu = upper.data_;
         Matrix O = new Matrix(n, n);
@@ -812,15 +806,14 @@ public final class SymmetricMatrix {
         return O;
     }
 
-    // X + X'
     /**
-     *
-     * @param m
-     * @return
+     * Computes x + x'
+     * @param x The squared input matrix
+     * @return A new matrix (same size as x) is returned.
      */
-    public static Matrix XpXt(final Matrix m) {
-        Matrix o = m.clone();
-        o.subMatrix().add(m.subMatrix().transpose());
+    public static Matrix XpXt(final Matrix x) {
+        Matrix o = x.clone();
+        o.subMatrix().add(x.subMatrix().transpose());
         return o;
     }
 
@@ -834,14 +827,11 @@ public final class SymmetricMatrix {
     }
 
     /**
-     *
-     * @param x
-     * @return
-     * @throws MatrixException
+     * Computes X'*X
+     * @param x The input matrix.
+     * @return A new matrix is returned (M = X'*X)
      */
     public static Matrix XtX(final Matrix x) throws MatrixException {
-        // if (x == null)
-        // throw new ArgumentNullException("x");
         int n = x.getColumnsCount();
         DataBlockIterator rows = x.columns(), cols = x.columns();
         Matrix o = new Matrix(n, n);
@@ -884,14 +874,11 @@ public final class SymmetricMatrix {
     }
 
     /**
-     *
-     * @param x
-     * @return
-     * @throws MatrixException
+     * Computes X*X'
+     * @param x The input matrix.
+     * @return A new matrix is returned (M = X*X')
      */
     public static Matrix XXt(final Matrix x) throws MatrixException {
-        // if (x == null)
-        // throw new ArgumentNullException("x");
         int n = x.getRowsCount();
         DataBlockIterator rows = x.rows(), cols = x.rows();
         Matrix o = new Matrix(n, n);
@@ -909,14 +896,14 @@ public final class SymmetricMatrix {
     }
 
     /**
+     * Computes XX' and stores the results in m. The routines doesn't verify the
+     * conditions on the dimensions of the sub-matrices.
      *
-     * @param x
-     * @param pm
-     * @throws MatrixException
+     * @param x r x c sub-matrix
+     * @param m r x r sub-matrix.
      */
-    public static void XXt(final SubMatrix x, final SubMatrix pm)
-            throws MatrixException {
-        DataBlockIterator rows = x.rows(), cols = x.rows(), rcols = pm
+    public static void XXt(final SubMatrix x, final SubMatrix m) {
+        DataBlockIterator rows = x.rows(), cols = x.rows(), rcols = m
                 .columns();
         int c = 0;
         DataBlock col = cols.getData();
@@ -929,7 +916,7 @@ public final class SymmetricMatrix {
                 rcol.set(idx++, cur.dot(col));
             } while (rows.next());
         } while (cols.next() && rcols.next());
-        fromLower(pm);
+        fromLower(m);
     }
 
     /**
@@ -1049,13 +1036,13 @@ public final class SymmetricMatrix {
      * Solves Sx=b, where S is a symmetric positive definite matrix.
      *
      * @param S The Symmetric matrix
-     * @param B In-out parameter. The right-hand side of the equation. It will
+     * @param b In-out parameter. The right-hand side of the equation. It will
      * contain the result at the end of the processing.
      * @param clone Indicates if the matrix S can be transformed (should be true
      * if the matrix S can't be modified). If S is transformed, it will contain
      * the lower Cholesky factor at the end of the processing.
      */
-    public static void rsolve(Matrix S, DataBlock x, boolean clone) {
+    public static void rsolve(Matrix S, DataBlock b, boolean clone) {
         Matrix Q = S;
         if (clone) {
             Q = Q.clone();
@@ -1063,17 +1050,17 @@ public final class SymmetricMatrix {
         lcholesky(Q);
         // LL'X = B
         // LY = B
-        LowerTriangularMatrix.rsolve(Q, x);
+        LowerTriangularMatrix.rsolve(Q, b);
         // L'X = Y
         // X'L = Y'
-        LowerTriangularMatrix.lsolve(Q, x);
+        LowerTriangularMatrix.lsolve(Q, b);
     }
 
     /**
      * Compute x * x'
      *
      * @param x column
-     * @return
+     * @return A new matrix is returned (M=x*x')
      */
     public static Matrix CCt(DataBlock x) {
         int n = x.getLength();
