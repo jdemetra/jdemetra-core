@@ -191,6 +191,13 @@ public class StationaryVarianceDecomposition {
         return varCal;
     }
 
+    /**
+     *
+     * @return
+     */
+    public double getVarTotal() {
+        return varC + varS + varI + varP + varCal;
+    }
     private static final String nl = "\r\n";
 
     @Override
