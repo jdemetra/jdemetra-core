@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tstoolkit.modelling.arima.tramo;
 
 import ec.tstoolkit.algorithm.ProcessingContext;
@@ -143,8 +142,7 @@ public class TramoModelBuilder implements IModelBuilder {
         }
         if (td.isStockTradingDays()) {
             initializeStockTradingDays(model, td);
-        }
-        if (td.getHolidays() != null) {
+        } else if (td.getHolidays() != null) {
             initializeHolidays(model, td);
         } else if (td.getUserVariables() != null) {
             initializeUserHolidays(model, td);
@@ -255,12 +253,12 @@ public class TramoModelBuilder implements IModelBuilder {
 
     private void initializeDefaultTradingDays(ModelDescription model, TradingDaysSpec td) {
         TradingDaysType tdType = td.getTradingDaysType();
-        ITsVariable var = GregorianCalendarVariables.getDefault(tdType);
-        Variable tvar = new Variable(var, ComponentType.CalendarEffect);
-        tvar.status = td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified;
-
-        model.getCalendars().add(tvar);
-
+        if (tdType != TradingDaysType.None) {
+            ITsVariable var = GregorianCalendarVariables.getDefault(tdType);
+            Variable tvar = new Variable(var, ComponentType.CalendarEffect);
+            tvar.status = td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified;
+            model.getCalendars().add(tvar);
+        }
         if (td.isLeapYear()) {
             LeapYearVariable lp = new LeapYearVariable(LengthOfPeriodType.LeapYear);
             Variable lvar = new Variable(lp, ComponentType.CalendarEffect);
