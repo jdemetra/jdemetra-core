@@ -1,19 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tstoolkit.sarima;
 
 import ec.tstoolkit.arima.*;
@@ -26,21 +26,21 @@ import ec.tstoolkit.maths.linearfilters.BackFilter;
 import ec.tstoolkit.maths.polynomials.Polynomial;
 
 /**
- * Box-Jenkins seasonal arima model
- * AR(B)* SAR(B)*D(B)*SD(B) y(t) = MA(B)*SMA(B)e(t), e~N(0, var)
- * AR(B) = 1+a(1)B+...+a(p)B^p, regular auto-regressive polynomial
- * SAR(B) = 1+b(1)B^s+...+b(bp)B^s*bp, seasonal auto-regressive polynomial
- * D(B) = 1+e(1)B+...+e(d)B^d, regula differencing polynomial
- * SD(B) = 1+f(1)B^s+...+f(bd)B^s*bd, seasonal differencing polynomial
- * MA(B) = 1+c(1)B+...+c(q)B^q, regular moving average polynomial
+ * Box-Jenkins seasonal arima model AR(B)* SAR(B)*D(B)*SD(B) y(t) =
+ * MA(B)*SMA(B)e(t), e~N(0, var) AR(B) = 1+a(1)B+...+a(p)B^p, regular
+ * auto-regressive polynomial SAR(B) = 1+b(1)B^s+...+b(bp)B^s*bp, seasonal
+ * auto-regressive polynomial D(B) = 1+e(1)B+...+e(d)B^d, regula differencing
+ * polynomial SD(B) = 1+f(1)B^s+...+f(bd)B^s*bd, seasonal differencing
+ * polynomial MA(B) = 1+c(1)B+...+c(q)B^q, regular moving average polynomial
  * SMA(B) = 1+d(1)B^s+...+d(bq)B^s*bq, seasonal moving average polynomial
+ *
  * @author Jeremy Demortier, Jean Palate
  */
 @Development(status = Development.Status.Alpha)
 public class SarimaModel extends AbstractArimaModel implements IArimaModel,
         Cloneable {
-    
-    private static final double EPS=1e-6;
+
+    private static final double EPS = 1e-6;
 
     private double[] params_;
 //    private double var_ = 1;
@@ -75,7 +75,6 @@ public class SarimaModel extends AbstractArimaModel implements IArimaModel,
 //        var_ = var;
 //        setDefault();
 //    }
-
     /**
      *
      * @param spec
@@ -107,7 +106,6 @@ public class SarimaModel extends AbstractArimaModel implements IArimaModel,
 //        }
 //        var_ = var;
 //    }
-
     /**
      *
      * @param spec
@@ -144,7 +142,7 @@ public class SarimaModel extends AbstractArimaModel implements IArimaModel,
         }
         int q = spec_.getQ();
         for (int i = q; i > 0; --i) {
-            if (Math.abs(theta(i)) <EPS) {
+            if (Math.abs(theta(i)) < EPS) {
                 --q;
                 rslt = true;
             } else {
@@ -228,58 +226,61 @@ public class SarimaModel extends AbstractArimaModel implements IArimaModel,
 
     @Override
     public BackFilter getAR() {
-        // compute the length...
-        int f = spec_.getFrequency();
-        int n = spec_.getP() + spec_.getD() + f
-                * (spec_.getBP() + spec_.getBD()) + 1;
-        double[] c = new double[n];
-        int d = 0;
-        c[0] = 1;
-        // regular part
-        if (spec_.getP() > 0) {
-            System.arraycopy(params_, 0, c, 1, spec_.getP());
-            d += spec_.getP();
-        }
-
-        // seasonal part
-        if (f > 1 && spec_.getBP() > 0) {
-            int p0 = spec_.getP();
-            if (spec_.getP() < f) {
-                for (int i = 0; i < spec_.getBP(); ++i) {
-                    double x = params_[p0 + i];
-                    for (int j = 0; j <= d; ++j) {
-                        c[(i + 1) * f + j] = c[j] * x;
-                    }
-                }
-            } else {
-                // we must use a buffer
-                double[] tmp = new double[spec_.getP()];
-                System.arraycopy(c, 0, tmp, 0, tmp.length);
-                for (int i = 0; i < spec_.getBP(); ++i) {
-                    double x = params_[p0 + i];
-                    for (int j = 0; j < tmp.length; ++j) {
-                        c[(i + 1) * f + j] += tmp[j] * x;
-                    }
-                }
-            }
-            d += f * spec_.getBP();
-        }
-
-        // times (1-B)^D
-        for (int i = 0; i < spec_.getD(); ++i, ++d) {
-            for (int j = d; j >= 0; --j) {
-                c[j + 1] -= c[j];
-            }
-        }
-        // times (1-B^freq)^D
-        for (int i = 0; i < spec_.getBD(); ++i, d += f) {
-            for (int j = d; j >= 0; --j) {
-                c[j + f] -= c[j];
-            }
-        }
-
-        return BackFilter.of(c);
-
+//        // compute the length...
+//        int f = spec_.getFrequency();
+//        int n = spec_.getP() + spec_.getD() + f
+//                * (spec_.getBP() + spec_.getBD()) + 1;
+//        double[] c = new double[n];
+//        int d = 0;
+//        c[0] = 1;
+//        // regular part
+//        if (spec_.getP() > 0) {
+//            System.arraycopy(params_, 0, c, 1, spec_.getP());
+//            d += spec_.getP();
+//        }
+//
+//        // seasonal part
+//        if (f > 1 && spec_.getBP() > 0) {
+//            int p0 = spec_.getP();
+//            if (spec_.getP() < f) {
+//                for (int i = 0; i < spec_.getBP(); ++i) {
+//                    double x = params_[p0 + i];
+//                    for (int j = 0; j <= d; ++j) {
+//                        c[(i + 1) * f + j] = c[j] * x;
+//                    }
+//                }
+//            } else {
+//                // we must use a buffer
+//                double[] tmp = new double[spec_.getP()];
+//                System.arraycopy(c, 0, tmp, 0, tmp.length);
+//                for (int i = 0; i < spec_.getBP(); ++i) {
+//                    double x = params_[p0 + i];
+//                    for (int j = 0; j < tmp.length; ++j) {
+//                        c[(i + 1) * f + j] += tmp[j] * x;
+//                    }
+//                }
+//            }
+//            d += f * spec_.getBP();
+//        }
+//
+//        // times (1-B)^D
+//        for (int i = 0; i < spec_.getD(); ++i, ++d) {
+//            for (int j = d; j >= 0; --j) {
+//                c[j + 1] -= c[j];
+//            }
+//        }
+//        // times (1-B^freq)^D
+//        for (int i = 0; i < spec_.getBD(); ++i, d += f) {
+//            for (int j = d; j >= 0; --j) {
+//                c[j + f] -= c[j];
+//            }
+//        }
+//
+//        return BackFilter.of(c);
+//
+        BackFilter df=spec_.getDifferencingFilter();
+        BackFilter st=this.getStationaryAR();
+        return df.times(st);
     }
 
     /**
@@ -327,42 +328,45 @@ public class SarimaModel extends AbstractArimaModel implements IArimaModel,
 
     @Override
     public BackFilter getMA() {
-        // compute the length...
-        int f = spec_.getFrequency();
-        int n = spec_.getQ() + f * (spec_.getBQ()) + 1;
-        double[] c = new double[n];
-        int d = 0;
-        c[0] = 1;
-        // regular part
-        int p0 = spec_.getP() + spec_.getBP();
-        for (int i = 0; i < spec_.getQ(); ++i) {
-            c[i + 1] = params_[p0 + i];
-        }
-        d += spec_.getQ();
-        // seasonal part
-        if (f > 1 && spec_.getBQ() > 0) {
-            p0 += spec_.getQ();
-            if (spec_.getQ() < f) {
-                for (int i = 0; i < spec_.getBQ(); ++i) {
-                    double x = params_[p0 + i];
-                    for (int j = 0; j <= d; ++j) {
-                        c[(i + 1) * f + j] = c[j] * x;
-                    }
-                }
-            } else {
-                // we must use a buffer
-                double[] tmp = new double[spec_.getQ() + 1];
-                System.arraycopy(c, 0, tmp, 0, tmp.length);
-                for (int i = 0; i < spec_.getBQ(); ++i) {
-                    double x = params_[p0 + i];
-                    for (int j = 0; j < tmp.length; ++j) {
-                        c[(i + 1) * f + j] += tmp[j] * x;
-                    }
-                }
-            }
-        }
-
-        return BackFilter.of(c);
+//        // compute the length...
+//        int f = spec_.getFrequency();
+//        int n = spec_.getQ() + f * (spec_.getBQ()) + 1;
+//        double[] c = new double[n];
+//        int d = 0;
+//        c[0] = 1;
+//        // regular part
+//        int p0 = spec_.getP() + spec_.getBP();
+//        for (int i = 0; i < spec_.getQ(); ++i) {
+//            c[i + 1] = params_[p0 + i];
+//        }
+//        d += spec_.getQ();
+//        // seasonal part
+//        if (f > 1 && spec_.getBQ() > 0) {
+//            p0 += spec_.getQ();
+//            if (spec_.getQ() < f) {
+//                for (int i = 0; i < spec_.getBQ(); ++i) {
+//                    double x = params_[p0 + i];
+//                    for (int j = 0; j <= d; ++j) {
+//                        c[(i + 1) * f + j] = c[j] * x;
+//                    }
+//                }
+//            } else {
+//                // we must use a buffer
+//                double[] tmp = new double[spec_.getQ() + 1];
+//                System.arraycopy(c, 0, tmp, 0, tmp.length);
+//                for (int i = 0; i < spec_.getBQ(); ++i) {
+//                    double x = params_[p0 + i];
+//                    for (int j = 0; j < tmp.length; ++j) {
+//                        c[(i + 1) * f + j] += tmp[j] * x;
+//                    }
+//                }
+//            }
+//        }
+//
+//        return BackFilter.of(c);
+        Polynomial pr = getRegularMA();
+        Polynomial ps = seasonalMA();
+        return new BackFilter(pr.times(ps, true));
     }
 
     /**
@@ -482,6 +486,42 @@ public class SarimaModel extends AbstractArimaModel implements IArimaModel,
         return Polynomial.of(p);
     }
 
+    private Polynomial seasonalAR() {
+        if (spec_.BP == 0) {
+            return Polynomial.ONE;
+        }
+        int i0 = spec_.P;
+        int freq = spec_.frequency;
+        if (spec_.BP == 1) {
+            return Polynomial.factor(-params_[i0], freq);
+        } else {
+            double[] p = Polynomial.Doubles.fromDegree(spec_.BP * freq);
+            p[0] = 1;
+            for (int i = freq, j = i0; i < spec_.BP; i += freq, ++j) {
+                p[i] = params_[j];
+            }
+            return Polynomial.of(p);
+        }
+    }
+
+    private Polynomial seasonalMA() {
+        if (spec_.BQ == 0) {
+            return Polynomial.ONE;
+        }
+        int i0 = spec_.P + spec_.BP + spec_.Q;
+        int freq = spec_.frequency;
+        if (spec_.BQ == 1) {
+            return Polynomial.factor(-params_[i0], freq);
+        } else {
+            double[] p = Polynomial.Doubles.fromDegree(spec_.BQ * freq);
+            p[0] = 1;
+            for (int i = freq, j = i0; i < spec_.BQ; i += freq, ++j) {
+                p[i] = params_[j];
+            }
+            return Polynomial.of(p);
+        }
+    }
+
     /**
      *
      * @return
@@ -527,42 +567,45 @@ public class SarimaModel extends AbstractArimaModel implements IArimaModel,
      */
     @Override
     public BackFilter getStationaryAR() {
-        // compute the length...
-        int f = spec_.getFrequency();
-        int n = spec_.getP() + f * (spec_.getBP()) + 1;
-        double[] c = new double[n];
-        int d = 0;
-        c[0] = 1;
-        // regular part
-        int p0 = 0;
-        for (int i = 0; i < spec_.getP(); ++i) {
-            c[i + 1] = params_[p0 + i];
-        }
-        d += spec_.getP();
-        // seasonal part
-        if (f > 1 && spec_.getBP() > 0) {
-            p0 += spec_.getP();
-            if (spec_.getP() < f) {
-                for (int i = 0; i < spec_.getBP(); ++i) {
-                    double x = params_[p0 + i];
-                    for (int j = 0; j <= d; ++j) {
-                        c[(i + 1) * f + j] = c[j] * x;
-                    }
-                }
-            } else {
-                // we must use a buffer
-                double[] tmp = new double[spec_.getP() + 1];
-                System.arraycopy(c, 0, tmp, 0, tmp.length);
-                for (int i = 0; i < spec_.getBP(); ++i) {
-                    double x = params_[p0 + i];
-                    for (int j = 0; j < tmp.length; ++j) {
-                        c[(i + 1) * f + j] += tmp[j] * x;
-                    }
-                }
-            }
-        }
-
-        return BackFilter.of(c);
+//        // compute the length...
+//        int f = spec_.getFrequency();
+//        int n = spec_.getP() + f * (spec_.getBP()) + 1;
+//        double[] c = new double[n];
+//        int d = 0;
+//        c[0] = 1;
+//        // regular part
+//        int p0 = 0;
+//        for (int i = 0; i < spec_.getP(); ++i) {
+//            c[i + 1] = params_[p0 + i];
+//        }
+//        d += spec_.getP();
+//        // seasonal part
+//        if (f > 1 && spec_.getBP() > 0) {
+//            p0 += spec_.getP();
+//            if (spec_.getP() < f) {
+//                for (int i = 0; i < spec_.getBP(); ++i) {
+//                    double x = params_[p0 + i];
+//                    for (int j = 0; j <= d; ++j) {
+//                        c[(i + 1) * f + j] = c[j] * x;
+//                    }
+//                }
+//            } else {
+//                // we must use a buffer
+//                double[] tmp = new double[spec_.getP() + 1];
+//                System.arraycopy(c, 0, tmp, 0, tmp.length);
+//                for (int i = 0; i < spec_.getBP(); ++i) {
+//                    double x = params_[p0 + i];
+//                    for (int j = 0; j < tmp.length; ++j) {
+//                        c[(i + 1) * f + j] += tmp[j] * x;
+//                    }
+//                }
+//            }
+//        }
+//
+//        return BackFilter.of(c);
+        Polynomial pr = getRegularAR();
+        Polynomial ps = seasonalAR();
+        return new BackFilter(pr.times(ps, true));
     }
 
     /**
@@ -673,7 +716,6 @@ public class SarimaModel extends AbstractArimaModel implements IArimaModel,
 //            clearCachedObjects();
 //        }
 //    }
-
     /**
      *
      * @param lag
