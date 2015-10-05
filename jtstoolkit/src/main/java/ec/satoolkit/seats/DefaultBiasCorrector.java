@@ -82,18 +82,34 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         TsData s = model.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
         if (s != null) {
             decomp.add(s, ComponentType.Seasonal);
+            TsData se = model.getSeries(ComponentType.Seasonal, ComponentInformation.Stdev);
+            if (se != null) {
+                decomp.add(se, ComponentType.Seasonal, ComponentInformation.Stdev);
+            }
         }
         TsData t = model.getSeries(ComponentType.Trend, ComponentInformation.Value);
         if (t != null) {
             decomp.add(t, ComponentType.Trend);
+            TsData te = model.getSeries(ComponentType.Trend, ComponentInformation.Stdev);
+            if (te != null) {
+                decomp.add(te, ComponentType.Trend, ComponentInformation.Stdev);
+            }
         }
 
         // correct SA =Y / S (-> *sbias)
         TsData sa = TsData.subtract(y, s);
         decomp.add(sa, ComponentType.SeasonallyAdjusted);
+        TsData sae = model.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
+        if (sae != null) {
+            decomp.add(sae, ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
+        }
 
         TsData i = TsData.subtract(sa, t);
         decomp.add(i, ComponentType.Irregular);
+        TsData ie = model.getSeries(ComponentType.Irregular, ComponentInformation.Stdev);
+        if (ie != null) {
+            decomp.add(ie, ComponentType.Irregular, ComponentInformation.Stdev);
+        }
 
         // idem forecasts
         TsData fy = model.getSeries(ComponentType.Series, ComponentInformation.Forecast);
@@ -140,107 +156,107 @@ public class DefaultBiasCorrector implements IBiasCorrector {
     }
 
     private DefaultSeriesDecomposition correctLogs(ISeriesDecomposition model) {
-            TsData y = model.getSeries(ComponentType.Series, ComponentInformation.Value);
-            if (y == null) {
-                return null;
-            }
-            y = y.exp();
-            DefaultSeriesDecomposition decomp = new DefaultSeriesDecomposition(
-                    DecompositionMode.Multiplicative);
-            decomp.add(y, ComponentType.Series);
+        TsData y = model.getSeries(ComponentType.Series, ComponentInformation.Value);
+        if (y == null) {
+            return null;
+        }
+        y = y.exp();
+        DefaultSeriesDecomposition decomp = new DefaultSeriesDecomposition(
+                DecompositionMode.Multiplicative);
+        decomp.add(y, ComponentType.Series);
 
-            int n = y.getLength();
-            int freq = y.getFrequency().intValue();
-            int ny = n - n % freq;
+        int n = y.getLength();
+        int freq = y.getFrequency().intValue();
+        int ny = n - n % freq;
 
-            double ibias = 1, sbias = 1;
-            TsData s = model.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
-            if (s != null) {
-                s = s.exp();
-                sbias = bias(s, ny);
-                s.getValues().div(sbias);
-                decomp.add(s, ComponentType.Seasonal);
-                TsData se = model.getSeries(ComponentType.Seasonal, ComponentInformation.Stdev);
-                if (se != null) {
-                    decomp.add(correctStdevForLog(se, s), ComponentType.Seasonal, ComponentInformation.Stdev);
-                }
+        double ibias = 1, sbias = 1;
+        TsData s = model.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
+        if (s != null) {
+            s = s.exp();
+            sbias = bias(s, ny);
+            s.getValues().div(sbias);
+            decomp.add(s, ComponentType.Seasonal);
+            TsData se = model.getSeries(ComponentType.Seasonal, ComponentInformation.Stdev);
+            if (se != null) {
+                decomp.add(correctStdevForLog(se, s), ComponentType.Seasonal, ComponentInformation.Stdev);
             }
-            TsData i = model.getSeries(ComponentType.Irregular, ComponentInformation.Value);
-            if (i != null) {
-                i = i.exp();
-                ibias = bias(i, i.getLength());
-                i.getValues().div(ibias);
-                TsData ie = model.getSeries(ComponentType.Irregular, ComponentInformation.Stdev);
-                if (ie != null) {
-                    decomp.add(correctStdevForLog(ie, i), ComponentType.Irregular, ComponentInformation.Stdev);
-                }
+        }
+        TsData i = model.getSeries(ComponentType.Irregular, ComponentInformation.Value);
+        if (i != null) {
+            i = i.exp();
+            ibias = bias(i, i.getLength());
+            i.getValues().div(ibias);
+            TsData ie = model.getSeries(ComponentType.Irregular, ComponentInformation.Stdev);
+            if (ie != null) {
+                decomp.add(correctStdevForLog(ie, i), ComponentType.Irregular, ComponentInformation.Stdev);
             }
-            // correct T = Y /S * I) (-> *sbias*ibias)
-            TsData t = model.getSeries(ComponentType.Trend, ComponentInformation.Value);
-            if (t != null) {
-                t = t.exp();
-                t.getValues().mul(sbias * ibias);
-                decomp.add(t, ComponentType.Trend);
-                TsData te = model.getSeries(ComponentType.Trend, ComponentInformation.Stdev);
-                if (te != null) {
-                    decomp.add(correctStdevForLog(te, t), ComponentType.Trend, ComponentInformation.Stdev);
-                }
+        }
+        // correct T = Y /S * I) (-> *sbias*ibias)
+        TsData t = model.getSeries(ComponentType.Trend, ComponentInformation.Value);
+        if (t != null) {
+            t = t.exp();
+            t.getValues().mul(sbias * ibias);
+            decomp.add(t, ComponentType.Trend);
+            TsData te = model.getSeries(ComponentType.Trend, ComponentInformation.Stdev);
+            if (te != null) {
+                decomp.add(correctStdevForLog(te, t), ComponentType.Trend, ComponentInformation.Stdev);
             }
+        }
 
-            // correct SA =Y / S (-> *sbias)
-            TsData sa = TsData.divide(y, s);
-            decomp.add(sa, ComponentType.SeasonallyAdjusted);
-            TsData sae = model.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
-            if (sae != null) {
-                decomp.add(correctStdevForLog(sae, sa), ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
-            }
+        // correct SA =Y / S (-> *sbias)
+        TsData sa = TsData.divide(y, s);
+        decomp.add(sa, ComponentType.SeasonallyAdjusted);
+        TsData sae = model.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
+        if (sae != null) {
+            decomp.add(correctStdevForLog(sae, sa), ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
+        }
 
-            i = TsData.divide(sa, t);
-            decomp.add(i, ComponentType.Irregular);
+        i = TsData.divide(sa, t);
+        decomp.add(i, ComponentType.Irregular);
 
-            // idem forecasts
-            TsData fy = model.getSeries(ComponentType.Series, ComponentInformation.Forecast);
-            if (fy != null) {
-                fy = fy.exp();
-                decomp.add(fy, ComponentType.Series, ComponentInformation.Forecast);
+        // idem forecasts
+        TsData fy = model.getSeries(ComponentType.Series, ComponentInformation.Forecast);
+        if (fy != null) {
+            fy = fy.exp();
+            decomp.add(fy, ComponentType.Series, ComponentInformation.Forecast);
+        }
+        TsData fs = model.getSeries(ComponentType.Seasonal, ComponentInformation.Forecast);
+        if (fs != null) {
+            fs = fs.exp();
+            fs.getValues().div(sbias);
+            decomp.add(fs, ComponentType.Seasonal, ComponentInformation.Forecast);
+            TsData fse = model.getSeries(ComponentType.Seasonal, ComponentInformation.StdevForecast);
+            if (fse != null) {
+                decomp.add(correctStdevForLog(fse, fs), ComponentType.Seasonal, ComponentInformation.StdevForecast);
             }
-            TsData fs = model.getSeries(ComponentType.Seasonal, ComponentInformation.Forecast);
-            if (fs != null) {
-                fs = fs.exp();
-                fs.getValues().div(sbias);
-                decomp.add(fs, ComponentType.Seasonal, ComponentInformation.Forecast);
-                TsData fse = model.getSeries(ComponentType.Seasonal, ComponentInformation.StdevForecast);
-                if (fse != null) {
-                    decomp.add(correctStdevForLog(fse, fs), ComponentType.Seasonal, ComponentInformation.StdevForecast);
-                }
-            }
+        }
 
-            // correct T = Y /S * I) (-> *sbias*ibias)
-            TsData ft = model.getSeries(ComponentType.Trend, ComponentInformation.Forecast);
-            if (ft != null) {
-                ft = ft.exp();
-                ft.getValues().mul(sbias * ibias);
-                decomp.add(ft, ComponentType.Trend, ComponentInformation.Forecast);
-                TsData fte = model.getSeries(ComponentType.Trend, ComponentInformation.StdevForecast);
-                if (fte != null) {
-                    decomp.add(correctStdevForLog(fte, ft), ComponentType.Trend, ComponentInformation.StdevForecast);
-                }
+        // correct T = Y /S * I) (-> *sbias*ibias)
+        TsData ft = model.getSeries(ComponentType.Trend, ComponentInformation.Forecast);
+        if (ft != null) {
+            ft = ft.exp();
+            ft.getValues().mul(sbias * ibias);
+            decomp.add(ft, ComponentType.Trend, ComponentInformation.Forecast);
+            TsData fte = model.getSeries(ComponentType.Trend, ComponentInformation.StdevForecast);
+            if (fte != null) {
+                decomp.add(correctStdevForLog(fte, ft), ComponentType.Trend, ComponentInformation.StdevForecast);
             }
+        }
 
-            // correct SA =Y / S (-> *sbias)
-            TsData fsa = TsData.divide(fy, fs);
-            decomp.add(fsa, ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
-            TsData fsae = model.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
-            if (fsae != null) {
-                decomp.add(correctStdevForLog(fsae, fsa), ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
-            }
+        // correct SA =Y / S (-> *sbias)
+        TsData fsa = TsData.divide(fy, fs);
+        decomp.add(fsa, ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
+        TsData fsae = model.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
+        if (fsae != null) {
+            decomp.add(correctStdevForLog(fsae, fsa), ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
+        }
 
-            TsData fi = TsData.divide(fsa, ft);
-            decomp.add(fi, ComponentType.Irregular, ComponentInformation.Forecast);
-            TsData fie = model.getSeries(ComponentType.Irregular, ComponentInformation.StdevForecast);
-            if (fie != null) {
-                decomp.add(correctStdevForLog(fie, fi), ComponentType.Irregular, ComponentInformation.StdevForecast);
-            }
-            return decomp;
+        TsData fi = TsData.divide(fsa, ft);
+        decomp.add(fi, ComponentType.Irregular, ComponentInformation.Forecast);
+        TsData fie = model.getSeries(ComponentType.Irregular, ComponentInformation.StdevForecast);
+        if (fie != null) {
+            decomp.add(correctStdevForLog(fie, fi), ComponentType.Irregular, ComponentInformation.StdevForecast);
+        }
+        return decomp;
     }
 }
