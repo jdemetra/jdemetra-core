@@ -28,6 +28,7 @@ import org.junit.AfterClass;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -77,6 +78,7 @@ public class FTestTest {
         assertTrue(Math.abs(ftest.getValue() - ptest.getValue()) < 1e-6);
     }
 
+    @Ignore
     @Test
     public void testAMI() {
         SarimaSpecification spec = new SarimaSpecification(12);
