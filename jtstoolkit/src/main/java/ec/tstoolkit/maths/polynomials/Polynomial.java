@@ -1,19 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tstoolkit.maths.polynomials;
 
 import ec.tstoolkit.data.IReadDataBlock;
@@ -22,6 +22,7 @@ import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.Immutable;
 import ec.tstoolkit.maths.Complex;
 import ec.tstoolkit.maths.ComplexBuilder;
+import ec.tstoolkit.maths.ComplexMath;
 import ec.tstoolkit.maths.Simplifying;
 import ec.tstoolkit.utilities.Arrays2;
 import java.util.Arrays;
@@ -262,9 +263,10 @@ public final class Polynomial implements IReadDataBlock {
         }
 
         private boolean simplifyExact(Polynomial left, Polynomial right) {
-            LeastSquaresDivision div=new LeastSquaresDivision();
-            if (! div.divide(left, right)|| !div.isExact())
+            LeastSquaresDivision div = new LeastSquaresDivision();
+            if (!div.divide(left, right) || !div.isExact()) {
                 return false;
+            }
             m_left = div.getQuotient();
             m_right = Polynomial.ONE;
             m_common = right;
@@ -348,10 +350,9 @@ public final class Polynomial implements IReadDataBlock {
     // Factory methods >>
     /**
      * Create a new Polynomial by using the specified coefficients. The
-     * polynomial will be of degree
-     * <code>coefficients.length-1</code> <br> Note that the array of doubles is
-     * used directly. If you need defensive copy, use
-     * {@link Polynomial#copyOf(double[])} instead.
+     * polynomial will be of degree <code>coefficients.length-1</code> <br> Note
+     * that the array of doubles is used directly. If you need defensive copy,
+     * use {@link Polynomial#copyOf(double[])} instead.
      *
      * @param coefficients
      * @return
@@ -368,10 +369,9 @@ public final class Polynomial implements IReadDataBlock {
 
     /**
      * Create a new Polynomial by using the specified coefficients. The
-     * polynomial will be of degree
-     * <code>coefficients.length-1</code> <br> Note that the array of doubles is
-     * copied. If you don't need defensive copy, use
-     * {@link Polynomial#of(double[])} instead.
+     * polynomial will be of degree <code>coefficients.length-1</code> <br> Note
+     * that the array of doubles is copied. If you don't need defensive copy,
+     * use {@link Polynomial#of(double[])} instead.
      *
      * @param coefficients
      * @throws IllegalArgumentException if {@code coefficients} is null or empty
@@ -386,9 +386,8 @@ public final class Polynomial implements IReadDataBlock {
     }
 
     /**
-     * Create a new Polynomial by using the specified coefficients, from start. The
-     * polynomial will be of degree
-     * <code>n-1</code> <br> 
+     * Create a new Polynomial by using the specified coefficients, from start.
+     * The polynomial will be of degree <code>n-1</code> <br>
      *
      * @param coefficients
      * @param start First position in the array
@@ -402,9 +401,9 @@ public final class Polynomial implements IReadDataBlock {
         double[] copy = Arrays.copyOfRange(coefficients, start, end);
         return Polynomial.of(copy);
     }
+
     /**
-     * Shortcut for
-     * <code>Polynomial.of(new double[] {...})</code>
+     * Shortcut for <code>Polynomial.of(new double[] {...})</code>
      *
      * @param firstCoefficient
      * @param nextCoefficients
@@ -463,13 +462,51 @@ public final class Polynomial implements IReadDataBlock {
             m_c[i] = p[i].getRe();
         }
 
-        return new Polynomial(m_c, Doubles.getUsedDegree(m_c));
+        Polynomial pol = new Polynomial(m_c, Doubles.getUsedDegree(m_c));
+        pol.roots = roots.clone();
+        return pol;
     }
 
     public static Polynomial fromData(IReadDataBlock data) {
         double[] d = new double[data.getLength()];
         data.copyTo(d, 0);
         return new Polynomial(d, Doubles.getUsedDegree(d));
+    }
+
+    /**
+     * The polynomial is equal to 1 - c*x^n
+     *
+     * @param c The coefficient. Should be strictly higher than 0
+     * @param n The degree of the polynomial
+     * @return The new polynomial. The roots of the polynomial are also computed
+     */
+    public static Polynomial factor(double c, int n) {
+        if (c == 0) {
+            return ONE;
+        }
+        double[] p = new double[n + 1];
+        p[0] = 1;
+        p[n] = -c;
+        Polynomial F = Polynomial.of(p);
+        Complex[] ur = Complex.unitRoots(n);
+        if (c > 0 || n % 2 == 1) {
+            double rc;
+            if (c > 0) {
+                rc = Math.pow(1 / c, 1.0 / n);
+            } else {
+                rc = -Math.pow(-1 / c, 1.0 / n);
+            }
+            for (int i = 0; i < ur.length; ++i) {
+                ur[i] = ur[i].times(rc);
+            }
+        } else {
+            Complex rc = ComplexMath.pow(Complex.cart(1 / c, 0) , 1.0 / n);
+            for (int i = 0; i < ur.length; ++i) {
+                ur[i] = ur[i].times(rc);
+            }
+        }
+        F.setRoots(ur);
+        return F;
     }
 
     // << Factory methods
@@ -500,6 +537,7 @@ public final class Polynomial implements IReadDataBlock {
     }
     private final double[] m_c;
     private final int degree;
+    private Complex[] roots; // caching the roots
     private static double EPSILON = 1e-9;
     /**
      * The static member defines the Root finding algorithm used to find the
@@ -842,7 +880,20 @@ public final class Polynomial implements IReadDataBlock {
      * @return
      */
     public Complex[] roots() {
-        return roots(g_defRootsSolver);
+        if (roots == null) {
+            roots = roots(g_defRootsSolver);
+        }
+        return roots;
+    }
+
+    /**
+     * To be used with caution. Be sure that the roots correspond to the current
+     * polynomial. No verification is done.
+     *
+     * @param roots
+     */
+    void setRoots(Complex[] roots) {
+        this.roots = roots;
     }
 
     /**
@@ -873,6 +924,8 @@ public final class Polynomial implements IReadDataBlock {
      * The method sets small coefficient values to zero. Small is defined as the
      * absolute value being smaller than some predefined value epsilon. This
      * method will create a new Polynomial.
+     *
+     * @return
      */
     public Polynomial smooth() {
         double[] result = getCoefficients();
@@ -916,6 +969,10 @@ public final class Polynomial implements IReadDataBlock {
      * @return The product of l and r
      */
     public Polynomial times(final Polynomial r) {
+        return times(r, false);
+    }
+
+    public Polynomial times(final Polynomial r, boolean computeroots) {
         if (r.isZero() || this.isZero()) {
             return Polynomial.ZERO;
         }
@@ -936,7 +993,13 @@ public final class Polynomial implements IReadDataBlock {
                 }
             }
         }
-        return Polynomial.of(result);
+        Polynomial prod = Polynomial.of(result);
+        if (roots != null && r.roots != null) {
+            prod.roots = Arrays2.concat(roots, r.roots);
+        } else if (computeroots) {
+            prod.roots = Arrays2.concat(roots(), r.roots());
+        }
+        return prod;
     }
 
     /**

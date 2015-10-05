@@ -41,90 +41,6 @@ public class UnitRoots implements Cloneable {
         public SimplifyingTool() {
         }
 
-        // START CHANGED 21/6/07. JP
-	/*
-         * @Override public boolean simplify(final UnitRoots left, final
-         * UnitRoots right) { m_left = left; m_right = right; m_common = new
-         * UnitRoots();
-         * 
-         * if ((left == null) || (right == null)) return false; if
-         * (!left.isValid() || !right.isValid()) return false; if
-         * (left.isIdentity() || right.isIdentity()) return false; m_left = new
-         * UnitRoots(left); m_right = new UnitRoots(right); // A || B
-         * 
-         * int ldiff = m_left.m_n.getSize() - m_left.m_d.getSize(), rdiff =
-         * m_right.m_n .getSize() - m_right.m_d.getSize();
-         * 
-         * searchnum(); searchdenom(); // if (m_common.IsIdentity) // return
-         * false;
-         * 
-         * m_right.simplify(); m_left.simplify();
-         * 
-         * step1();
-         * 
-         * m_left.simplify(); m_right.simplify();
-         * 
-         * step2();
-         * 
-         * m_left.simplify(); m_right.simplify();
-         * 
-         * step3(ldiff, rdiff); // finally, adjust for D1; if
-         * (!m_common.isIdentity()) return true; else return false; }
-         * 
-         * void searchnum() { int kl = 0, kr = 0; // search common factors in
-         * the Numerator while ((kl < m_left.m_n.getSize()) && (kr <
-         * m_right.m_n.getSize())) { int lu = m_left.m_n.get(kl), ru =
-         * m_right.m_n.get(kr); if ((lu == 1) || (ru == 1)) break; if (lu == ru)
-         * { m_common.add(lu); m_right.remove(lu); m_left.remove(lu); ++kl;
-         * ++kr; } else if (lu > ru) ++kl; else ++kr; } }
-         * 
-         * void searchdenom() { int kl = 0; int kr = 0; // search common factors
-         * in the Denominator while ((kl < m_left.m_d.getSize()) && (kr <
-         * m_right.m_d.getSize())) { int lu = m_left.m_d.get(kl), ru =
-         * m_right.m_d.get(kr); if ((lu == 1) || (ru == 1)) break; if (lu == ru)
-         * { m_common.remove(lu); m_right.add(lu); m_left.add(lu); ++kl; ++kr; }
-         * else if (lu > ru) ++kl; else ++kr; } }
-         * 
-         * private void step1() { // search pgcd factors in the Numerator
-         * 
-         * int[] lnmax = new int[m_left.m_n.getSize()], rnmax = new
-         * int[m_right.m_n .getSize()]; for (int i = 0; i < lnmax.length; ++i)
-         * lnmax[i] = m_left.m_n.get(i); for (int i = 0; i < rnmax.length; ++i)
-         * rnmax[i] = m_right.m_n.get(i);
-         * 
-         * for (int il = 0; il < m_left.m_n.getSize();) { if (m_left.m_n.get(il)
-         * == 1) break;
-         * 
-         * int irbest = -1; int pmax = 1; for (int ir = 0; ir <
-         * m_right.m_n.getSize(); ++ir) { if (m_right.m_n.get(ir) == 1) break;
-         * int pcur = IntUtilities.PGCD(lnmax[il], rnmax[ir]); if ((irbest ==
-         * -1) || (pcur >= pmax)) // always chose the // last // one... { pmax =
-         * pcur; irbest = ir; } } if (pmax > 1) { m_common.add(pmax);
-         * m_left.remove(pmax); m_right.remove(pmax); lnmax[il] =
-         * nextdiv(m_left.m_n.get(il), lnmax[il], pmax); rnmax[irbest] =
-         * nextdiv(m_right.m_n.get(irbest), rnmax[irbest], pmax); // don't
-         * increment il. Second pass } else ++il; } }
-         * 
-         * private void step2() { // add denominators without counterparts.
-         * 
-         * if (!m_left.calcmaps()) { int[] tmp = m_left.m_dp; for (int i = 0; i
-         * < tmp.length; ++i) { int u = m_left.m_d.get(i); if (u == 1) break; if
-         * (tmp[i] < 0) { m_common.remove(u); m_left.add(u); m_right.add(u); } }
-         * }
-         * 
-         * if (!m_right.calcmaps()) { int[] tmp = m_right.m_dp; for (int i = 0;
-         * i < tmp.length; ++i) { int u = m_right.m_d.get(i); if (u == 1) break;
-         * if ((tmp[i] < 0) && (u != 1)) { m_common.remove(u); m_left.add(u);
-         * m_right.add(u); } } } }
-         * 
-         * private void step3(final int ldiff, final int rdiff) { int cdiff =
-         * ldiff < rdiff ? ldiff : rdiff; int curdiff = m_common.m_n.getSize() -
-         * m_common.m_d.getSize(); if (curdiff < cdiff) // not enough ur in c {
-         * for (int i = curdiff; i < cdiff; ++i) { m_common.add(1);
-         * m_left.remove(1); m_right.remove(1); } } else if (curdiff > cdiff) {
-         * for (int i = cdiff; i < curdiff; ++i) { m_common.remove(1);
-         * m_left.add(1); m_right.add(1); } } }
-         */
         @Override
         public boolean simplify(final UnitRoots left, final UnitRoots right) {
             m_left = left;
@@ -240,12 +156,15 @@ public class UnitRoots implements Cloneable {
                 }
             }
         }
-        // END CHANGED 21/6/07. JP
     }
     /**
      * 1 - x
      */
     public static final Polynomial D1 = Polynomial.valueOf(1, -1);
+
+    static {
+        D1.setRoots(new Complex[]{Complex.ONE});
+    }
 
     /**
      * 1 - x^n
@@ -276,6 +195,16 @@ public class UnitRoots implements Cloneable {
         for (int i = 1; i < d; ++i) {
             D = D.times(P);
         }
+        // computes the roots...
+        int nroots = lag * d;
+        Complex[] roots = new Complex[nroots];
+        Complex[] ur = Complex.unitRoots(lag);
+        for (int i = 0, k = 0; i < d; ++i) {
+            for (int j = 0; j < lag; ++j, ++k) {
+                roots[k] = ur[j];
+            }
+        }
+        D.setRoots(roots);
         return D;
     }
 
@@ -408,7 +337,7 @@ public class UnitRoots implements Cloneable {
     /**
      * 1 + x^d + x^(2*d) + ... + x^(n*d) n=freq-1
      *
-     * @param n
+     * @param freq
      * @param d
      * @return
      */
@@ -417,14 +346,22 @@ public class UnitRoots implements Cloneable {
         for (int i = 0, j = 0; i < freq; ++i, j += d) {
             p[j] = 1;
         }
-        return Polynomial.of(p);
+        Polynomial P = Polynomial.of(p);
+        if (d == 1) {
+            Complex[] roots = Complex.unitRoots(freq);
+            Complex[] nroots=new Complex[roots.length-1];
+            System.arraycopy(roots, 1, nroots, 0, nroots.length);
+            P.setRoots(nroots);
+        }
+        return P;
     }
 
     /**
      * Computes (1 + x^d + x^(2*d) + ... + x^(n*d))^p
      *
      * @param freq
-     * @param d
+     * @param
+     * @param pd
      * @return
      */
     public static Polynomial S(final int freq, final int d, final int p) {
