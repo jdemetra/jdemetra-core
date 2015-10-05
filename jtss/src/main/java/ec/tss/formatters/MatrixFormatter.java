@@ -24,6 +24,7 @@ import ec.tstoolkit.algorithm.ProcDiagnostic;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.information.RegressionItem;
 import ec.tstoolkit.information.StatisticalTest;
+import ec.tstoolkit.maths.Complex;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import java.util.ArrayList;
@@ -56,6 +57,7 @@ public class MatrixFormatter {
         dictionary.put(RegressionItem.class, new RegressionItemFormatter());
         dictionary.put(StatisticalTest.class, new StatisticalTestFormatter());
         dictionary.put(ProcDiagnostic.class, new DiagnosticFormatter());
+        dictionary.put(Complex.class, new ComplexFormatter());
     }
 
     public String[] formatInformation(List<InformationSet> records, List<String> names, boolean shortname) {
