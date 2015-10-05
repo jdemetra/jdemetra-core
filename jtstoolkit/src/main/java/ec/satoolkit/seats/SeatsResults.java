@@ -399,6 +399,62 @@ public class SeatsResults implements ISaResults {
                 return source.finalComponents.getSeries(ComponentType.Irregular, ComponentInformation.Forecast);
             }
         });
+        mapper.add(ModellingDictionary.I_CMP + SeriesInfo.E_SUFFIX, new InformationMapper.Mapper<SeatsResults, TsData>(TsData.class) {
+
+            @Override
+            public TsData retrieve(SeatsResults source) {
+                return source.finalComponents.getSeries(ComponentType.Irregular, ComponentInformation.Stdev);
+            }
+        });
+        mapper.add(ModellingDictionary.T_CMP + SeriesInfo.E_SUFFIX, new InformationMapper.Mapper<SeatsResults, TsData>(TsData.class) {
+
+            @Override
+            public TsData retrieve(SeatsResults source) {
+                return source.finalComponents.getSeries(ComponentType.Trend, ComponentInformation.Stdev);
+            }
+        });
+        mapper.add(ModellingDictionary.S_CMP + SeriesInfo.E_SUFFIX, new InformationMapper.Mapper<SeatsResults, TsData>(TsData.class) {
+
+            @Override
+            public TsData retrieve(SeatsResults source) {
+                return source.finalComponents.getSeries(ComponentType.Seasonal, ComponentInformation.Stdev);
+            }
+        });
+        mapper.add(ModellingDictionary.SA_CMP + SeriesInfo.E_SUFFIX, new InformationMapper.Mapper<SeatsResults, TsData>(TsData.class) {
+
+            @Override
+            public TsData retrieve(SeatsResults source) {
+                return source.finalComponents.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
+            }
+        });
+        mapper.add(ModellingDictionary.I_CMP + SeriesInfo.EF_SUFFIX, new InformationMapper.Mapper<SeatsResults, TsData>(TsData.class) {
+
+            @Override
+            public TsData retrieve(SeatsResults source) {
+                return source.finalComponents.getSeries(ComponentType.Irregular, ComponentInformation.StdevForecast);
+            }
+        });
+        mapper.add(ModellingDictionary.T_CMP + SeriesInfo.EF_SUFFIX, new InformationMapper.Mapper<SeatsResults, TsData>(TsData.class) {
+
+            @Override
+            public TsData retrieve(SeatsResults source) {
+                return source.finalComponents.getSeries(ComponentType.Trend, ComponentInformation.StdevForecast);
+            }
+        });
+        mapper.add(ModellingDictionary.S_CMP + SeriesInfo.EF_SUFFIX, new InformationMapper.Mapper<SeatsResults, TsData>(TsData.class) {
+
+            @Override
+            public TsData retrieve(SeatsResults source) {
+                return source.finalComponents.getSeries(ComponentType.Seasonal, ComponentInformation.StdevForecast);
+            }
+        });
+        mapper.add(ModellingDictionary.SA_CMP + SeriesInfo.EF_SUFFIX, new InformationMapper.Mapper<SeatsResults, TsData>(TsData.class) {
+
+            @Override
+            public TsData retrieve(SeatsResults source) {
+                return source.finalComponents.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
+            }
+        });
         mapper.add(ModellingDictionary.SI_CMP, new InformationMapper.Mapper<SeatsResults, TsData>(TsData.class) {
 
             @Override
