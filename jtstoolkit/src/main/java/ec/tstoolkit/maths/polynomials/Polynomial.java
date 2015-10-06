@@ -27,6 +27,7 @@ import ec.tstoolkit.maths.Simplifying;
 import ec.tstoolkit.utilities.Arrays2;
 import java.util.Arrays;
 import java.util.Formatter;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  *
@@ -48,6 +49,7 @@ public final class Polynomial implements IReadDataBlock {
      *
      * @param num The numerator polynomial
      * @param denom The denominator polynomial
+     * @return 
      */
     public static Division divide(final Polynomial num, final Polynomial denom) {
         int n = num.getDegree(), nv = denom.getDegree();
@@ -374,6 +376,7 @@ public final class Polynomial implements IReadDataBlock {
      * use {@link Polynomial#of(double[])} instead.
      *
      * @param coefficients
+     * @return a non-null Polynomial
      * @throws IllegalArgumentException if {@code coefficients} is null or empty
      */
     public static Polynomial copyOf(double[] coefficients) {
@@ -392,6 +395,7 @@ public final class Polynomial implements IReadDataBlock {
      * @param coefficients
      * @param start First position in the array
      * @param end Las position in the array (excluded)
+     * @return a non-null Polynomial
      * @throws IllegalArgumentException if {@code coefficients} is null or empty
      */
     public static Polynomial copyOf(double[] coefficients, int start, int end) {
@@ -430,6 +434,7 @@ public final class Polynomial implements IReadDataBlock {
      * roots. The coefficient of the highest power = 1.0
      *
      * @param roots
+     * @return a non-null Polynomial
      */
     public static Polynomial fromComplexRoots(Complex[] roots) {
         return fromComplexRoots(roots, 1.0);
@@ -440,6 +445,7 @@ public final class Polynomial implements IReadDataBlock {
      *
      * @param roots
      * @param c
+     * @return a non-null Polynomial
      */
     public static Polynomial fromComplexRoots(final Complex[] roots, final double c) {
         if (Arrays2.isNullOrEmpty(roots)) {
@@ -463,7 +469,7 @@ public final class Polynomial implements IReadDataBlock {
         }
 
         Polynomial pol = new Polynomial(m_c, Doubles.getUsedDegree(m_c));
-        pol.roots = roots.clone();
+        pol.defRoots.set(roots.clone());
         return pol;
     }
 
@@ -537,7 +543,7 @@ public final class Polynomial implements IReadDataBlock {
     }
     private final double[] m_c;
     private final int degree;
-    private Complex[] roots; // caching the roots
+    private final AtomicReference<Complex[]> defRoots = new AtomicReference<>(); // caching the roots
     private static double EPSILON = 1e-9;
     /**
      * The static member defines the Root finding algorithm used to find the
@@ -582,6 +588,7 @@ public final class Polynomial implements IReadDataBlock {
     /**
      * Create a new Polynomial by decreasing the degree of the specified
      * polynomial by one until the highest non-zero coefficient is reached.
+     * @return a non-null Polynomial
      */
     public Polynomial adjustDegree() {
         int n = degree;
@@ -646,7 +653,6 @@ public final class Polynomial implements IReadDataBlock {
      * approximate. when this[i]-p[i] LE epsilon both coefficients are
      * considered equal.
      *
-     * @param other
      * @return
      */
     @Override
@@ -880,10 +886,12 @@ public final class Polynomial implements IReadDataBlock {
      * @return
      */
     public Complex[] roots() {
-        if (roots == null) {
-            roots = roots(g_defRootsSolver);
+        Complex[] result = defRoots.get();
+        if (result == null) {
+            result = roots(g_defRootsSolver);
+            defRoots.set(result);
         }
-        return roots;
+        return result;
     }
 
     /**
@@ -893,7 +901,7 @@ public final class Polynomial implements IReadDataBlock {
      * @param roots
      */
     void setRoots(Complex[] roots) {
-        this.roots = roots;
+        this.defRoots.set(roots);
     }
 
     /**
@@ -953,11 +961,13 @@ public final class Polynomial implements IReadDataBlock {
         if (d == 1d) {
             return this;
         }
-        double[] result = Doubles.fromDegree(degree);
+        double[] coefficients = Doubles.fromDegree(degree);
         for (int i = 0; i <= degree; ++i) {
-            result[i] = get(i) * d;
+            coefficients[i] = get(i) * d;
         }
-        return new Polynomial(result, degree);
+        Polynomial result = new Polynomial(coefficients, degree);
+        result.defRoots.set(defRoots.get());
+        return result;
     }
 
     /**
@@ -993,11 +1003,15 @@ public final class Polynomial implements IReadDataBlock {
                 }
             }
         }
-        Polynomial prod = Polynomial.of(result);
-        if (roots != null && r.roots != null) {
-            prod.roots = Arrays2.concat(roots, r.roots);
-        } else if (computeroots) {
-            prod.roots = Arrays2.concat(roots(), r.roots());
+        Polynomial prod = Polynomial.of(result); 
+        {
+            Complex[] lRoots = defRoots.get();
+            Complex[] rRoots = r.defRoots.get();
+            if (lRoots != null && rRoots != null) {
+                prod.defRoots.set(Arrays2.concat(lRoots, rRoots));
+            } else if (computeroots) {
+                prod.defRoots.set(Arrays2.concat(roots(), r.roots()));
+            }
         }
         return prod;
     }
