@@ -49,6 +49,7 @@ public final class Polynomial implements IReadDataBlock {
      *
      * @param num The numerator polynomial
      * @param denom The denominator polynomial
+     * @return 
      */
     public static Division divide(final Polynomial num, final Polynomial denom) {
         int n = num.getDegree(), nv = denom.getDegree();
@@ -375,6 +376,7 @@ public final class Polynomial implements IReadDataBlock {
      * use {@link Polynomial#of(double[])} instead.
      *
      * @param coefficients
+     * @return a non-null Polynomial
      * @throws IllegalArgumentException if {@code coefficients} is null or empty
      */
     public static Polynomial copyOf(double[] coefficients) {
@@ -393,6 +395,7 @@ public final class Polynomial implements IReadDataBlock {
      * @param coefficients
      * @param start First position in the array
      * @param end Las position in the array (excluded)
+     * @return a non-null Polynomial
      * @throws IllegalArgumentException if {@code coefficients} is null or empty
      */
     public static Polynomial copyOf(double[] coefficients, int start, int end) {
@@ -431,6 +434,7 @@ public final class Polynomial implements IReadDataBlock {
      * roots. The coefficient of the highest power = 1.0
      *
      * @param roots
+     * @return a non-null Polynomial
      */
     public static Polynomial fromComplexRoots(Complex[] roots) {
         return fromComplexRoots(roots, 1.0);
@@ -441,6 +445,7 @@ public final class Polynomial implements IReadDataBlock {
      *
      * @param roots
      * @param c
+     * @return a non-null Polynomial
      */
     public static Polynomial fromComplexRoots(final Complex[] roots, final double c) {
         if (Arrays2.isNullOrEmpty(roots)) {
@@ -583,6 +588,7 @@ public final class Polynomial implements IReadDataBlock {
     /**
      * Create a new Polynomial by decreasing the degree of the specified
      * polynomial by one until the highest non-zero coefficient is reached.
+     * @return a non-null Polynomial
      */
     public Polynomial adjustDegree() {
         int n = degree;
@@ -647,7 +653,6 @@ public final class Polynomial implements IReadDataBlock {
      * approximate. when this[i]-p[i] LE epsilon both coefficients are
      * considered equal.
      *
-     * @param other
      * @return
      */
     @Override
