@@ -18,6 +18,7 @@
  */
 package ec.satoolkit.diagnostics;
 
+import ec.businesscycle.simplets.TsHodrickPrescott;
 import ec.satoolkit.DecompositionMode;
 import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.data.DataBlock;
@@ -65,13 +66,57 @@ public class StationaryVarianceDecomposition {
             }
         }
 
+        @Override
+        public String toString() {
+            return "Linear trend computed by Ols";
+        }
+    }
+
+    public static class HPTrendComputer implements ILongTermTrendComputer {
+
+        private final double cyclelen;
+
+        public HPTrendComputer() {
+            cyclelen = 8;
+        }
+
+        public HPTrendComputer(double len) {
+            cyclelen = len;
+        }
+
+        @Override
+        public TsData calcLongTermTrend(TsData s) {
+            TsHodrickPrescott hp = new TsHodrickPrescott();
+            hp.setCycleLength(cyclelen);
+            if (hp.process(s)) {
+                return hp.getTrend();
+            } else {
+                return null;
+            }
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append("Trend computed by Hodrick-Prescott filter (cycle length = ")
+                    .append(cyclelen).append(')');
+            return builder.toString();
+        }
     }
 
     private double varC, varS, varI, varP, varCal;
     private final ILongTermTrendComputer trendComputer;
 
     public StationaryVarianceDecomposition() {
-        trendComputer = new LinearTrendComputer();
+        trendComputer = new HPTrendComputer();
+    }
+
+    public StationaryVarianceDecomposition(final ILongTermTrendComputer trendComputer) {
+        this.trendComputer = trendComputer;
+    }
+
+    public ILongTermTrendComputer getTrendComputer() {
+        return this.trendComputer;
     }
 
     /**
@@ -158,19 +203,19 @@ public class StationaryVarianceDecomposition {
         return true;
     }
 
-    public boolean process(IProcResults results){
-        TsData O=results.getData(ModellingDictionary.YC, TsData.class);
-        TsData T=results.getData(ModellingDictionary.T_CMP, TsData.class);
-        TsData S=results.getData(ModellingDictionary.S_CMP, TsData.class);
-        TsData I=results.getData(ModellingDictionary.I_CMP, TsData.class);
-        TsData Cal=results.getData(ModellingDictionary.CAL, TsData.class);
-        TsData D=results.getData(ModellingDictionary.DET, TsData.class);
-        DecompositionMode m=results.getData(ModellingDictionary.MODE, DecompositionMode.class);
-        boolean mul=m != null ? m != DecompositionMode.Additive : false;
-        TsData P=mul ? TsData.divide(D, Cal) : TsData.subtract(D, Cal);
-        return process(O, T, S, I, Cal,P, mul);
+    public boolean process(IProcResults results) {
+        TsData O = results.getData(ModellingDictionary.YC, TsData.class);
+        TsData T = results.getData(ModellingDictionary.T_CMP, TsData.class);
+        TsData S = results.getData(ModellingDictionary.S_CMP, TsData.class);
+        TsData I = results.getData(ModellingDictionary.I_CMP, TsData.class);
+        TsData Cal = results.getData(ModellingDictionary.CAL, TsData.class);
+        TsData D = results.getData(ModellingDictionary.DET, TsData.class);
+        DecompositionMode m = results.getData(ModellingDictionary.MODE, DecompositionMode.class);
+        boolean mul = m != null ? m != DecompositionMode.Additive : false;
+        TsData P = mul ? TsData.divide(D, Cal) : TsData.subtract(D, Cal);
+        return process(O, T, S, I, Cal, P, mul);
     }
-    
+
     public double getVarI() {
         return varI;
     }
