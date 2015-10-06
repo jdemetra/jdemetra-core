@@ -956,11 +956,13 @@ public final class Polynomial implements IReadDataBlock {
         if (d == 1d) {
             return this;
         }
-        double[] result = Doubles.fromDegree(degree);
+        double[] coefficients = Doubles.fromDegree(degree);
         for (int i = 0; i <= degree; ++i) {
-            result[i] = get(i) * d;
+            coefficients[i] = get(i) * d;
         }
-        return new Polynomial(result, degree);
+        Polynomial result = new Polynomial(coefficients, degree);
+        result.defRoots.set(defRoots.get());
+        return result;
     }
 
     /**
