@@ -27,6 +27,7 @@ import ec.tstoolkit.maths.Simplifying;
 import ec.tstoolkit.utilities.Arrays2;
 import java.util.Arrays;
 import java.util.Formatter;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  *
@@ -463,7 +464,7 @@ public final class Polynomial implements IReadDataBlock {
         }
 
         Polynomial pol = new Polynomial(m_c, Doubles.getUsedDegree(m_c));
-        pol.roots = roots.clone();
+        pol.defRoots.set(roots.clone());
         return pol;
     }
 
@@ -537,7 +538,7 @@ public final class Polynomial implements IReadDataBlock {
     }
     private final double[] m_c;
     private final int degree;
-    private Complex[] roots; // caching the roots
+    private final AtomicReference<Complex[]> defRoots = new AtomicReference<>(); // caching the roots
     private static double EPSILON = 1e-9;
     /**
      * The static member defines the Root finding algorithm used to find the
@@ -880,10 +881,12 @@ public final class Polynomial implements IReadDataBlock {
      * @return
      */
     public Complex[] roots() {
-        if (roots == null) {
-            roots = roots(g_defRootsSolver);
+        Complex[] result = defRoots.get();
+        if (result == null) {
+            result = roots(g_defRootsSolver);
+            defRoots.set(result);
         }
-        return roots;
+        return result;
     }
 
     /**
@@ -893,7 +896,7 @@ public final class Polynomial implements IReadDataBlock {
      * @param roots
      */
     void setRoots(Complex[] roots) {
-        this.roots = roots;
+        this.defRoots.set(roots);
     }
 
     /**
@@ -993,11 +996,15 @@ public final class Polynomial implements IReadDataBlock {
                 }
             }
         }
-        Polynomial prod = Polynomial.of(result);
-        if (roots != null && r.roots != null) {
-            prod.roots = Arrays2.concat(roots, r.roots);
-        } else if (computeroots) {
-            prod.roots = Arrays2.concat(roots(), r.roots());
+        Polynomial prod = Polynomial.of(result); 
+        {
+            Complex[] lRoots = defRoots.get();
+            Complex[] rRoots = r.defRoots.get();
+            if (lRoots != null && rRoots != null) {
+                prod.defRoots.set(Arrays2.concat(lRoots, rRoots));
+            } else if (computeroots) {
+                prod.defRoots.set(Arrays2.concat(roots(), r.roots()));
+            }
         }
         return prod;
     }
