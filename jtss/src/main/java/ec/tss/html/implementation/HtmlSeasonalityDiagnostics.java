@@ -34,7 +34,7 @@ import java.io.IOException;
 public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements IHtmlElement {
 
     private final SeasonalityTests tests;
-    private final FTest ftest;
+    private final FTest ftest, ftestAMI;
     private final boolean noSeasControl;
     private final KruskalWallisTest kwTest;
 
@@ -48,9 +48,12 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
         if (tests != null) {
             ftest = new FTest();
             ftest.test(tests.getDifferencing().original);
+            ftestAMI = new FTest();
+            ftestAMI.testAMI(tests.getDifferencing().original);
             kwTest = new KruskalWallisTest(tests.getDifferencing().differenced);
         } else {
             ftest = null;
+            ftestAMI=null;
             kwTest = null;
         }
 
@@ -66,6 +69,7 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
             writeSpectrum(stream);
             writePeriodogram(stream);
             writeFTest(stream);
+            writeFTestAMI(stream);
         } else {
             stream.write("Series can't be tested");
         }
@@ -110,6 +114,17 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
         stream.write(HtmlTag.LINEBREAK);
     }
 
+    public void writeFTestAMI(HtmlStream stream) throws IOException {
+        stream.write(HtmlTag.HEADER4, "6bis. Tests on regression with fixed seasonal dummies ").newLine();
+        stream.write("Regression model (on original series) with ARIMA automatically identified", HtmlStyle.Italic).newLine();
+        stream.write("model is: "+ftestAMI.getEstimatedModel().model.getArima().toString(), HtmlStyle.Italic).newLine();
+        writeSummary(stream, ftestAMI.getFTest().getPValue());
+        stream.newLines(2);
+        stream.write("Distribution: " + ftestAMI.getFTest().getDistribution().getDescription()).newLine();
+        stream.write("Value: " + df4.format(ftestAMI.getFTest().getValue())).newLine();
+        stream.write("PValue: " + df4.format(ftestAMI.getFTest().getPValue()));
+        stream.write(HtmlTag.LINEBREAK);
+    }
     public void writeFriedman(HtmlStream stream) throws IOException {
         stream.write(HtmlTag.HEADER4, "2. Non parametric (Friedman) test");
         stream.write("Based on the rank of the observations in each year", HtmlStyle.Italic).newLines(2);
@@ -215,6 +230,10 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableCell("6. Seasonal dummies", 250));
         stream.write(getCellSummary(ftest.getFTest().getPValue(), 50));
+        stream.close(HtmlTag.TABLEROW);
+        stream.open(HtmlTag.TABLEROW);
+        stream.write(new HtmlTableCell("6bis. Seasonal dummies (AMI)", 250));
+        stream.write(getCellSummary(ftestAMI.getFTest().getPValue(), 50));
         stream.close(HtmlTag.TABLEROW);
 
         stream.close(HtmlTag.TABLE);

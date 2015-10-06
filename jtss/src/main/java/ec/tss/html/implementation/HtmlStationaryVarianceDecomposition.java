@@ -41,26 +41,29 @@ public class HtmlStationaryVarianceDecomposition extends AbstractHtmlElement{
     @Override
     public void write(HtmlStream stream) throws IOException {
         stream.write(HtmlTag.HEADER2, h2, TITLE);
-        stream.open(new HtmlTable(0, 100));
+        stream.newLine();
+        stream.write(vdecomp.getTrendComputer().toString());
+        stream.newLine();
+        stream.open(new HtmlTable(0, 200));
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("C", 50));
-        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarC()), 50));
+        stream.write(new HtmlTableCell("Cycle", 100));
+        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarC()), 100));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("S", 50));
-        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarS()), 50));
+        stream.write(new HtmlTableCell("Seasonal", 100));
+        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarS()), 100));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("I", 50));
-        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarI()), 50));
+        stream.write(new HtmlTableCell("Irregular", 100));
+        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarI()), 100));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("TD&H", 50));
-        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarTD()), 50));
+        stream.write(new HtmlTableCell("TD & Hol.", 100));
+        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarTD()), 100));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("Others", 50));
-        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarP()), 50));
+        stream.write(new HtmlTableCell("Others", 100));
+        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarP()), 100));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableCell("Total", 50));
@@ -70,6 +73,6 @@ public class HtmlStationaryVarianceDecomposition extends AbstractHtmlElement{
         stream.newLine();
     }
 
-    private static final String TITLE = "Relative contribution of the components to the stationary portion of the variance in the original series";
+    private static final String TITLE = "Relative contribution of the components to the stationary portion of the variance in the original series, after the removal of the long term trend";
 
 }

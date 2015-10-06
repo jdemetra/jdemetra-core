@@ -67,4 +67,11 @@ public interface IInterval {
      * @param uBound
      */
     void setUBound(double uBound);
+    
+    /**
+     * Checks that the given point is in the interval
+     * @param pt
+     * @return 
+     */
+    boolean contains(double pt);
 }

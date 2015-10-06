@@ -80,5 +80,10 @@ public class Interval implements IInterval {
     public void setUBound(final double bound) {
 	r1_ = bound;
     }
+    
+    @Override
+    public boolean contains(final double pt){
+        return r0_<=pt && pt<=r1_;
+    }
 
 }

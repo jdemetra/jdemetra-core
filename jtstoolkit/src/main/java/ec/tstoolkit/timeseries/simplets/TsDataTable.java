@@ -167,6 +167,11 @@ public class TsDataTable {
         }
     }
 
+    public void add(final TsData ts) {
+        internalClear();
+        m_data.add(ts);
+    }
+
     public void add(final Iterable<TsData> ts) {
         internalClear();
         for (TsData s : ts) {
