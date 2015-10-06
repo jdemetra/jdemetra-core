@@ -78,7 +78,7 @@ public class FTestTest {
         assertTrue(Math.abs(ftest.getValue() - ptest.getValue()) < 1e-6);
     }
 
-    @Ignore
+    //@Ignore
     @Test
     public void testAMI() {
         SarimaSpecification spec = new SarimaSpecification(12);
@@ -92,7 +92,7 @@ public class FTestTest {
         ArimaModelBuilder builder = new ArimaModelBuilder();
         int m1 = 0, m2 = 0, m3 = 0;
         int M1 = 0, M2 = 0, M3 = 0;
-        int N = 10000;
+        int N = 1;
         for (int i = 0; i < N; ++i) {
             double[] x = builder.generate(arima, 240);
             TsData s = new TsData(TsFrequency.Monthly, 1980, 0, x, false);

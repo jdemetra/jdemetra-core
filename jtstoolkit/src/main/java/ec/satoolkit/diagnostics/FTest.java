@@ -167,8 +167,12 @@ public class FTest {
         if (!estimateContext(context)) {
             return false;
         }
+        context.description.setSpecification(
+                new SarimaSpecification(context.description.getFrequency()));
+
         DifferencingModule diff = new DifferencingModule();
         diff.process(context);
+        context.estimation=null;
         ArmaModule arma = new ArmaModule();
         arma.setAcceptingWhiteNoise(true);
         arma.process(context);
