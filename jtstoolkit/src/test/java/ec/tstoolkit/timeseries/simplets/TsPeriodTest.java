@@ -66,9 +66,9 @@ public class TsPeriodTest {
         cal.setTime(period_2001_03.middle());
         assertEquals(2001, cal.get(Calendar.YEAR));
         assertEquals(Calendar.MARCH, cal.get(Calendar.MONTH));
-        assertEquals(15, cal.get(Calendar.DAY_OF_MONTH));
-        assertEquals(23, cal.get(Calendar.HOUR_OF_DAY));
-        assertEquals(30, cal.get(Calendar.MINUTE));
+        assertEquals(16, cal.get(Calendar.DAY_OF_MONTH));
+        assertEquals(0, cal.get(Calendar.HOUR_OF_DAY));
+        assertEquals(0, cal.get(Calendar.MINUTE));
         assertEquals(0, cal.get(Calendar.SECOND));
         assertEquals(0, cal.get(Calendar.MILLISECOND));
 
@@ -76,7 +76,7 @@ public class TsPeriodTest {
         assertEquals(2001, cal.get(Calendar.YEAR));
         assertEquals(Calendar.APRIL, cal.get(Calendar.MONTH));
         assertEquals(15, cal.get(Calendar.DAY_OF_MONTH));
-        assertEquals(12, cal.get(Calendar.HOUR_OF_DAY));
+        assertEquals(0, cal.get(Calendar.HOUR_OF_DAY));
         assertEquals(0, cal.get(Calendar.MINUTE));
         assertEquals(0, cal.get(Calendar.SECOND));
         assertEquals(0, cal.get(Calendar.MILLISECOND));
