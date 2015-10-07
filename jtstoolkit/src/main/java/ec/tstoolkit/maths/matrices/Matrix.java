@@ -1154,4 +1154,13 @@ public class Matrix implements Cloneable {
         System.arraycopy(C.data_, 0, data_, 0, data_.length);
     }
 
+    /**
+     * Computes ||this-m||
+     * @param m The second matrix
+     * @return 
+     */
+    public double distance(Matrix m) {
+        return this.minus(m).nrm2();
+    }
+
 }
