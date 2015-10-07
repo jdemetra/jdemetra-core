@@ -665,38 +665,27 @@ public class TsPeriod implements Serializable, Cloneable, IPeriod,
         
         private final GregorianCalendar cal = new GregorianCalendar();
 
-        public int calcTsPeriodId(TsFrequency freq, long timeInMillis) {
-            int ifreq = freq.intValue();
-            cal.setTimeInMillis(timeInMillis);
-            return TsPeriod.calcId(ifreq, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) / (12 / ifreq));
-        }
-
-        public long calcMiddleInMillis(int c, int y, int p) {
-            long l0 = calcStartMonthInMillis(y, p * c);
-            long l1 = calcEndMonthInMillis(y, p * c + c - 1);
-            return (l0 + l1) / 2;
-        }
-        
-        private long calcEndMonthInMillis(int year, int month) {
-            int day = Day.getNumberOfDaysByMonth(year, month);
+        private void set(int year, int month, int day) {
             cal.set(Calendar.YEAR, year);
             cal.set(Calendar.MONTH, month);
             cal.set(Calendar.DAY_OF_MONTH, day);
             cal.set(Calendar.HOUR_OF_DAY, 0);
             cal.set(Calendar.MINUTE, 0);
             cal.set(Calendar.SECOND, 0);
-            cal.set(Calendar.MILLISECOND, 0);
-            return cal.getTimeInMillis();
+            cal.set(Calendar.MILLISECOND, 0);            
+        }
+        
+        public int calcTsPeriodId(TsFrequency freq, long timeInMillis) {
+            int ifreq = freq.intValue();
+            cal.setTimeInMillis(timeInMillis);
+            return TsPeriod.calcId(ifreq, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) / (12 / ifreq));
         }
 
-        private long calcStartMonthInMillis(int year, int month) {
-            cal.set(Calendar.YEAR, year);
-            cal.set(Calendar.MONTH, month);
-            cal.set(Calendar.DAY_OF_MONTH, 1);
-            cal.set(Calendar.HOUR_OF_DAY, 0);
-            cal.set(Calendar.MINUTE, 0);
-            cal.set(Calendar.SECOND, 0);
-            cal.set(Calendar.MILLISECOND, 0);
+        public long calcMiddleInMillis(int c, int year, int position) {
+            int month = position * c;
+            // mid date for a month should be 16th (not 15th)
+            int day = (int) Math.ceil(Day.getNumberOfDaysByMonth(year, month) / 2.0);
+            set(year, month, day);
             return cal.getTimeInMillis();
         }
     }
