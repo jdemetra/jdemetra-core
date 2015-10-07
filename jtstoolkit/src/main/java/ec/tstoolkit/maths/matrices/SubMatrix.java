@@ -148,6 +148,35 @@ public class SubMatrix implements Cloneable {
     }
 
     /**
+     * Adds the current submatrix to the submatrix given by its top/left position (i,j) in another submatrix
+     * @param i The row index
+     * @param j TheColumn index
+     * @param m The target submatrix
+     */
+    public void addTo(SubMatrix m, int i, int j) {
+        int scur=m_start, tcur=m.m_start + i * m.m_row_inc + j * m.m_col_inc;
+        for (int c=0; c<m_ncols; ++c, scur+=m_col_inc, tcur+=m.m_col_inc){
+            for (int r=0, sidx=scur, tidx=tcur; r<m_nrows; ++r, sidx+=m_row_inc, tidx+=m.m_row_inc){
+                m.m_data[tidx]+=m_data[sidx];
+            }
+        }
+    }
+
+    /**
+     * Adds the current submatrix to the submatrix given by its top/left position (i,j) in another submatrix
+     * @param i The row index
+     * @param j TheColumn index
+     * @param m The target submatrix
+     */
+    public void subTo(SubMatrix m, int i, int j) {
+        int scur=m_start, tcur=m.m_start + i * m.m_row_inc + j * m.m_col_inc;
+        for (int c=0; c<m_ncols; ++c, scur+=m_col_inc, tcur+=m.m_col_inc){
+            for (int r=0, sidx=scur, tidx=tcur; r<m_nrows; ++r, sidx+=m_row_inc, tidx+=m.m_row_inc){
+                m.m_data[tidx]-=m_data[sidx];
+            }
+        }
+    }
+    /**
      *
      */
     public void chs() {
@@ -202,30 +231,21 @@ public class SubMatrix implements Cloneable {
 
     /**
      *
-     * @param src
+     * @param m
      */
-    public void copy(final SubMatrix src) {
+    public void copy(final SubMatrix m) {
         // special handling of full matrices
-        if (isFull() && src.isFull()) {
-            System.arraycopy(src.m_data, 0, m_data, 0, m_data.length);
+        if (isFull() && m.isFull()) {
+            System.arraycopy(m.m_data, 0, m_data, 0, m_data.length);
             return;
         }
 
-        // if (m_nrows != src.m_nrows || m_ncols != src.m_ncols)
-        // throw new MatrixException(MatrixException.IncompatibleDimensions);
-        DataBlockIterator iter, siter;
-        if (m_row_inc == 1) {
-            iter = columns();
-            siter = src.columns();
-        } else {
-            iter = rows();
-            siter = src.rows();
+        int scur=m.m_start, tcur=m_start;
+        for (int c=0; c<m_ncols; ++c, scur+=m.m_col_inc, tcur+=m_col_inc){
+            for (int r=0, sidx=scur, tidx=tcur; r<m_nrows; ++r, sidx+=m.m_row_inc, tidx+=m_row_inc){
+                m_data[tidx]=m.m_data[sidx];
+            }
         }
-
-        DataBlock icur = iter.getData(), sicur = siter.getData();
-        do {
-            icur.copy(sicur);
-        } while (iter.next() && siter.next());
     }
 
     /**
@@ -335,6 +355,20 @@ public class SubMatrix implements Cloneable {
         }
     }
 
+    /**
+     * Copies the current submatrix at a given position (i,j) in another matrix
+     * @param i The row index
+     * @param j TheColumn index
+     * @param m The target submatrix
+     */
+    public void copyTo(SubMatrix m, int i, int j) {
+        int scur=m_start, tcur=m.m_start + i * m.m_row_inc + j * m.m_col_inc;
+        for (int c=0; c<m_ncols; ++c, scur+=m_col_inc, tcur+=m.m_col_inc){
+            for (int r=0, sidx=scur, tidx=tcur; r<m_nrows; ++r, sidx+=m_row_inc, tidx+=m.m_row_inc){
+                m.m_data[tidx]=m_data[sidx];
+            }
+        }
+    }
     /**
      * this = a * Y
      *
@@ -938,4 +972,5 @@ public class SubMatrix implements Cloneable {
         }
 
     }
+
 }

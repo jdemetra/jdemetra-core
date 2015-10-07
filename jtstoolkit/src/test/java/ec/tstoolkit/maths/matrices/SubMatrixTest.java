@@ -316,4 +316,46 @@ public class SubMatrixTest {
         Matrix d = m.minus(z);
         assertTrue(d.nrm2() < 1e-9);
     }
+    
+    @Test
+    public void testCopyTo(){
+        Matrix x = new Matrix(10, 10);
+        Matrix m = new Matrix(10, 10);
+        x.randomize();
+        m.randomize();
+        Matrix y=x.clone();
+        SubMatrix sx=x.subMatrix();
+        SubMatrix sy=y.subMatrix();
+        SubMatrix sm=m.subMatrix(3, 6, 2, 4);
+        
+        sx.extract(2,5,3,5).copy(sm);
+        sm.copyTo(sy, 2,3);
+
+        sx.extract(1,3,5,8).copy(sm.transpose());
+        sm.transpose().copyTo(sy, 1,5);
+
+        Matrix d = x.minus(y);
+        assertTrue(d.nrm2() < 1e-15);
+    }
+
+    @Test
+    public void testAddSubTo(){
+        Matrix x = new Matrix(10, 10);
+        Matrix m = new Matrix(10, 10);
+        x.randomize();
+        m.randomize();
+        Matrix y=x.clone();
+        SubMatrix sx=x.subMatrix();
+        SubMatrix sy=y.subMatrix();
+        SubMatrix sm=m.subMatrix(3, 6, 2, 4);
+        
+        sx.extract(2,5,3,5).add(sm);
+        sm.addTo(sy, 2,3);
+
+        sx.extract(1,3,5,8).sub(sm.transpose());
+        sm.transpose().subTo(sy, 1,5);
+
+        Matrix d = x.minus(y);
+        assertTrue(d.nrm2() < 1e-15);
+    }
 }
