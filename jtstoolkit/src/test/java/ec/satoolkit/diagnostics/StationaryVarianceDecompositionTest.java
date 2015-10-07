@@ -26,28 +26,32 @@ import ec.satoolkit.x13.X13Specification;
 import ec.tstoolkit.algorithm.CompositeResults;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
  * @author PCUser
  */
 public class StationaryVarianceDecompositionTest {
-    
+
     public StationaryVarianceDecompositionTest() {
     }
 
+    @Ignore
     @Test
     public void testTS() {
         CompositeResults rslts = TramoSeatsProcessingFactory.process(Data.X, TramoSeatsSpecification.RSAfull);
-        StationaryVarianceDecomposition var=new StationaryVarianceDecomposition();
+        StationaryVarianceDecomposition var = new StationaryVarianceDecomposition();
         var.process(rslts);
         System.out.println("Tramo-Seats");
         System.out.println(var);
     }
+
+    @Ignore
     @Test
     public void testX12() {
         CompositeResults rslts = X13ProcessingFactory.process(Data.X, X13Specification.RSA5);
-        StationaryVarianceDecomposition var=new StationaryVarianceDecomposition();
+        StationaryVarianceDecomposition var = new StationaryVarianceDecomposition();
         var.process(rslts);
         System.out.println("X12");
         System.out.println(var);
