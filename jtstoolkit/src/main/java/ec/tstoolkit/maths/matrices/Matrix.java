@@ -1156,11 +1156,30 @@ public class Matrix implements Cloneable {
 
     /**
      * Computes ||this-m||
+     *
      * @param m The second matrix
-     * @return 
+     * @return
      */
     public double distance(Matrix m) {
         return this.minus(m).nrm2();
+    }
+
+    public void smooth(double eps) {
+        double scale=1;
+        double q=Math.sqrt(eps);
+        
+        while (q<1){
+            scale*=10;
+            q*=10;
+        }
+            
+        for (int i = 0; i < data_.length; ++i) {
+            double c=data_[i];
+            double d=Math.round(c*scale)/scale;
+            if (Math.abs(d-c) < eps) {
+                data_[i] = d;
+            }
+        }
     }
 
 }
