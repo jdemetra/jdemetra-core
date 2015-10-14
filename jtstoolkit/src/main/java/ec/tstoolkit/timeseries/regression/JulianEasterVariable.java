@@ -32,14 +32,8 @@ import java.util.GregorianCalendar;
 @Development(status = Development.Status.Alpha)
 public class JulianEasterVariable extends AbstractSingleTsVariable implements IMovingHolidayVariable {
 
-    /**
-     * The probability that Easter falls on April,4 + K or (March, 22 + K) is
-     * defined by PROB[K]/CYCLE
-     */
+
     private static final int CYCLE = 532;
-    private static final int[] PROB = new int[]{
-        4, 8, 8, 12, 16, 16, 20, 16, 16, 20, 16, 16, 20, 16, 20, 20, 16, 20, 16, 16, 20, 16, 16, 20, 16, 20, 16, 16, 20, 16, 12, 12, 8, 8, 4
-    };
 
     private static final int[] C_MAR = new int[]{
         0, 0, 0, 4, 16, 36, 68, 116, 180, 264, 364, 480, 616, 768,

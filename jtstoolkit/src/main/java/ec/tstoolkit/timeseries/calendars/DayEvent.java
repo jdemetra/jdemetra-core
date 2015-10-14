@@ -28,7 +28,15 @@ public enum DayEvent {
      */
     NewYear,
     /**
-     * AshWednesday (39 days before Easter)
+     * Shrove Monday (48 days before Easter)
+     */
+    ShroveMonday,
+    /**
+     * Shrove Tuesday (47 days before Easter)
+     */
+    ShroveTuesday,
+    /**
+     * AshWednesday (46 days before Easter)
      */
     AshWednesday,
     /**
@@ -48,13 +56,17 @@ public enum DayEvent {
      */
     EasterMonday,
     /**
-     * Ascension (39 days after Easter)
+     * Ascension (40 days after Easter)
      */
     Ascension,
     /**
-     * Pentecost (49 days after Easter)
+     * Pentecost (50 days after Easter)
      */
     Pentecost,
+    /**
+     * Corpus Christi (60 days after Easter)
+     */
+    CorpusChristi,
     /**
      * First Monday after Pentecost (50 days after Easter)
      */

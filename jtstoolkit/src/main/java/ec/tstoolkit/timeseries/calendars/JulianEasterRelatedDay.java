@@ -32,24 +32,7 @@ import java.util.Map;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Beta)
-public class EasterRelatedDay implements ISpecialDay {
-    /*
-     * Raw estimation of the probability to get Easter at a specific date is defined below:
-     * 22/3 (1/7)*1/LUNARY
-     * 23/3 (2/7)*1/LUNARY
-     * ...
-     * 27/3 (6/7)*1/LUNARY
-     * 28/3 1/LUNARY
-     * ...
-     * 18/4 1/LUNARY
-     * 19/4 1/LUNARY + (1/7) * DEC_LUNARY/LUNARY = (7 + 1 * DEC_LUNARY)/(7 * LUNARY)
-     * 20/4 (6/7)*1/LUNARY + (1/7) * DEC_LUNARY/LUNARY= (6 + 1 * DEC_LUNARY)/(7 * LUNARY)
-     * 21/4 (5/7)*1/LUNARY + (1/7) * DEC_LUNARY/LUNARY
-     * 22/4 (4/7)*1/LUNARY + (1/7) * DEC_LUNARY/LUNARY
-     * 23/4 (3/7)*1/LUNARY + (1/7) * DEC_LUNARY/LUNARY
-     * 24/4 (2/7)*1/LUNARY + (1/7) * DEC_LUNARY/LUNARY
-     * 25/4 (1/7)*1/LUNARY + (1/7) *DEC_LUNARY/LUNARY
-     */
+public class JulianEasterRelatedDay implements ISpecialDay {
 
     private static final Map<Integer, Day> g_dic = new HashMap<>();
     private static final int[] g_days = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -59,60 +42,60 @@ public class EasterRelatedDay implements ISpecialDay {
     /**
      * Creates a new Easter related day, with 0 offset. Corresponds to easter
      */
-    public EasterRelatedDay() {
+    public JulianEasterRelatedDay() {
         this(0, 1);
     }
 
-    public EasterRelatedDay(int offset) {
+    public JulianEasterRelatedDay(int offset) {
         this(offset, 1);
     }
 
-    public EasterRelatedDay(int offset, double weight) {
+    public JulianEasterRelatedDay(int offset, double weight) {
         this.weight = weight;
         this.offset = offset;
     }
 
-    public EasterRelatedDay reweight(double nweight) {
+    public JulianEasterRelatedDay reweight(double nweight) {
         if (nweight == weight) {
             return this;
         }
-        return new EasterRelatedDay(offset, nweight);
+        return new JulianEasterRelatedDay(offset, nweight);
     }
 
-    public EasterRelatedDay plus(int ndays) {
-        return new EasterRelatedDay(offset + ndays, weight);
+    public JulianEasterRelatedDay plus(int ndays) {
+        return new JulianEasterRelatedDay(offset + ndays, weight);
     }
 
     @Override
     public double getWeight() {
         return weight;
     }
-    public static final EasterRelatedDay 
-            ShroveMonday = new EasterRelatedDay(-48),
-            ShroveTuesday = new EasterRelatedDay(-47),
-            AshWednesday = new EasterRelatedDay(-46),
-            Easter = new EasterRelatedDay(0),
-            EasterMonday = new EasterRelatedDay(1),
-            EasterFriday = new EasterRelatedDay(-2),
-            EasterThursday = new EasterRelatedDay(-3),
-            Ascension = new EasterRelatedDay(39),
-            Pentecost = new EasterRelatedDay(49),
-            PentecostMonday = new EasterRelatedDay(50),
-            CorpusChristi = new EasterRelatedDay(60);
+    public static final JulianEasterRelatedDay 
+            ShroveMonday = new JulianEasterRelatedDay(-48),
+            ShroveTuesday = new JulianEasterRelatedDay(-47),
+            AshWednesday = new JulianEasterRelatedDay(-46),
+            Easter = new JulianEasterRelatedDay(0),
+            EasterMonday = new JulianEasterRelatedDay(1),
+            EasterFriday = new JulianEasterRelatedDay(-2),
+            EasterThursday = new JulianEasterRelatedDay(-3),
+            Ascension = new JulianEasterRelatedDay(39),
+            Pentecost = new JulianEasterRelatedDay(49),
+            PentecostMonday = new JulianEasterRelatedDay(50),
+            CorpusChristi = new JulianEasterRelatedDay(60);
 
     public Day calcDay(int year) {
-        Day d = easter(year);
+        Day d = julianEaster(year);
         if (offset != 0) {
             d = d.plus(offset);
         }
         return d;
     }
 
-    private Day easter(int year) {
+    private Day julianEaster(int year) {
         synchronized (g_dic) {
             Day e = g_dic.get(year);
             if (e == null) {
-                e = Utilities.easter(year);
+                e = Utilities.julianEaster(year, true);
                 g_dic.put(year, e);
             }
             return e;
@@ -121,7 +104,7 @@ public class EasterRelatedDay implements ISpecialDay {
 
     @Override
     public Iterable<IDayInfo> getIterable(TsFrequency freq, Day start, Day end) {
-        return new EasterDayList(freq, offset, start, end);
+        return new JulianEasterDayList(freq, offset, start, end);
     }
 
     @Override
@@ -138,12 +121,11 @@ public class EasterRelatedDay implements ISpecialDay {
         // monday must be 0...
         --w;
 
-        // Easter always falls between March, 22 and April, 25 (inclusive). The probability to get a specific day is defined by probEaster.
-        // We don't take into account leap year. So, the solution is slightly wrong for offset
-        // <= -50.
+        // Easter always falls between April, 4 and May, 8 (inclusive). The probability to get a specific day is defined by probEaster.
         // The considered day falls between ...
-        // 31+28+21=80
-        int d0 = 80 + offset, d1 = 115 + offset; // d1 excluded
+        // 31+28+31+3=93
+        // 31+28+31+30+8=128
+        int d0 = 93 + offset, d1 = 128 + offset; // d1 excluded
 
         int ifreq = (int) freq;
         int c = 12 / ifreq;
@@ -159,7 +141,7 @@ public class EasterRelatedDay implements ISpecialDay {
                 double[] m = new double[7];
                 double x = 0;
                 for (int j = Math.max(d0, c0); j < Math.min(d1, c1); ++j) {
-                    x += Utilities.probEaster(j - d0);
+                    x += Utilities.probJulianEaster(j - d0);
                 }
                 m[w] = x * weight;
                 m[6] = -m[w];
@@ -178,10 +160,10 @@ public class EasterRelatedDay implements ISpecialDay {
 
     @Override
     public boolean equals(Object obj) {
-        return this == obj || (obj instanceof EasterRelatedDay && equals((EasterRelatedDay) obj));
+        return this == obj || (obj instanceof JulianEasterRelatedDay && equals((JulianEasterRelatedDay) obj));
     }
 
-    private boolean equals(EasterRelatedDay other) {
+    private boolean equals(JulianEasterRelatedDay other) {
         return other.offset == offset && other.weight == weight;
     }
 
@@ -195,11 +177,11 @@ public class EasterRelatedDay implements ISpecialDay {
     @Override
     public TsDomain getSignificantDomain(TsFrequency freq, Day start, Day end) {
         TsPeriod pstart = new TsPeriod(freq, start), pend = new TsPeriod(freq, end);
-        Day sday = Utilities.easter(pstart.getYear()).plus(offset);
+        Day sday = Utilities.julianEaster(pstart.getYear(), true).plus(offset);
         if (start.isAfter(sday)) {
             pstart.move(1);
         }
-        Day eday = Utilities.easter(pend.getYear()).plus(offset);
+        Day eday = Utilities.julianEaster(pend.getYear(), true).plus(offset);
         if (end.isBefore(eday)) {
             pend.move(-1);
         }
@@ -210,7 +192,7 @@ public class EasterRelatedDay implements ISpecialDay {
     static class EasterDayInfo implements IDayInfo {
 
         public EasterDayInfo(TsFrequency freq, int year, int offset) {
-            Day easter = Utilities.easter(year);
+            Day easter = Utilities.julianEaster(year, true);
             m_day = easter.plus(offset);
             m_freq = freq;
         }
@@ -235,12 +217,12 @@ public class EasterRelatedDay implements ISpecialDay {
         final TsFrequency m_freq;
     }
 
-    static class EasterDayList extends AbstractList<IDayInfo> {
+    static class JulianEasterDayList extends AbstractList<IDayInfo> {
 
-        public EasterDayList(TsFrequency freq, int offset, Day fstart, Day fend) {
+        public JulianEasterDayList(TsFrequency freq, int offset, Day fstart, Day fend) {
             int ystart = fstart.getYear(), yend = fend.getYear();
-            Day xday = Utilities.easter(ystart).plus(offset);
-            Day yday = Utilities.easter(yend).plus(offset);
+            Day xday = Utilities.julianEaster(ystart, true).plus(offset);
+            Day yday = Utilities.julianEaster(yend, true).plus(offset);
 
             if (xday.isBefore(fstart)) {
                 ++ystart;

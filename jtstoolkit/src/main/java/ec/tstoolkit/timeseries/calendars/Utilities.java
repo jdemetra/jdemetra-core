@@ -34,6 +34,7 @@ import ec.tstoolkit.timeseries.simplets.TsPeriod;
  */
 @Development(status = Development.Status.Alpha)
 public class Utilities {
+
     /**
      * 
      * @param domain
@@ -431,5 +432,58 @@ public class Utilities {
 		}
 	}
     }
+    
+    //<editor-fold defaultstate="collapsed" desc="Easter-related methods">
 
+    public static final double LUNARY = 29.53059, DEC_LUNARY = .53059;
+    /**
+     * The probability that Easter falls on April,4 + K (or March, 22 + K) is
+     * defined by PROB[K]/CYCLE
+     */
+    private static final int CYCLE = 532;
+    private static final int[] PROB = new int[]{
+        4, 8, 8, 12, 16, 16, 20, 16, 16, 20, 16, 16, 20, 16, 20, 20, 16, 20, 16, 16, 20, 16, 16, 20, 16, 20, 16, 16, 20, 16, 12, 12, 8, 8, 4
+    };
+    /**
+     * Computes the probability for a given Easter date, in the Gregorian calendar. 
+     *
+     * @param pos Pos is the position between 4/4 and 8/5 (from 0 to 35
+     * (excluded)
+     * @return The requested probability. For instance, probJulianEaster(0) gives 
+     * the probability that the Julian Easter falls on April, 4
+     */
+    public static double probJulianEaster(int pos) {
+        if (pos < 0 || pos >= 35) {
+            return 0;
+        }else{
+            double denom=CYCLE;
+            return PROB[pos]/denom;
+        }
+    }
+
+    /**
+     * Computes the probability for a given Easter date. The current
+     * implementation returns a raw estimation of that probability. It could be
+     * replaced by a more accurate estimation (for example computed by means of
+     * one of the available algorithms on a complete cycle of Easter calendar =
+     * 5700000 years). Anyway, the differences will be marginal.
+     *
+     * @param pos Pos is the position between 22/3 and 25/4 (from 0 to 35
+     * (excluded)
+     * @return
+     */
+    public static double probEaster(int pos) {
+        if (pos < 0 || pos >= 35) {
+            return 0;
+        }
+        if (pos < 6) {
+            return (pos + 1) / (7 * LUNARY);
+        } else if (pos < 28) {
+            return 1 / LUNARY;
+        } else {
+            return (35 - pos + DEC_LUNARY) / (7 * LUNARY);
+        }
+    }
+    
+    //</editor-fold>
 }

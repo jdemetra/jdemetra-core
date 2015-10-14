@@ -43,6 +43,10 @@ public class SpecialCalendarDay implements ISpecialDay {
  
     public ISpecialDay toSpecialDay() {
         switch (event) {
+            case ShroveMonday:
+                return EasterRelatedDay.ShroveMonday.reweight(weight).plus(offset);
+            case ShroveTuesday:
+                return EasterRelatedDay.ShroveTuesday.reweight(weight).plus(offset);
             case AshWednesday:
                 return EasterRelatedDay.AshWednesday.reweight(weight).plus(offset);
             case Easter:
