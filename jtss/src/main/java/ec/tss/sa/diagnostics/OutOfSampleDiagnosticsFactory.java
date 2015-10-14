@@ -48,12 +48,12 @@ public class OutOfSampleDiagnosticsFactory implements ISaDiagnosticsFactory {
 
     @Override
     public String getName() {
-        return "Outliers";
+        return "Out of Sample"; 
     }
 
     @Override
     public String getDescription() {
-        return "Relative number of outliers";
+        return "Out of Sample analysis";
     }
 
     @Override
