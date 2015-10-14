@@ -15,7 +15,7 @@
     <description>A TS Provider that handles ODBC datasources.</description>
 
     <properties>
-        <jna.version>3.5.2</jna.version>
+        <jna.version>4.2.0</jna.version>
     </properties>
 
     <dependencyManagement>
@@ -27,7 +27,7 @@
             </dependency>
             <dependency>
                 <groupId>net.java.dev.jna</groupId>
-                <artifactId>platform</artifactId>
+                <artifactId>jna-platform</artifactId>
                 <version>${jna.version}</version>
             </dependency>
         </dependencies>
@@ -44,7 +44,7 @@
         </dependency>
         <dependency>
             <groupId>net.java.dev.jna</groupId>
-            <artifactId>platform</artifactId>
+            <artifactId>jna-platform</artifactId>
         </dependency>
     </dependencies>
   
