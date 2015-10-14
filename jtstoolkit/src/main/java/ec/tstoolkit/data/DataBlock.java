@@ -913,7 +913,7 @@ public final class DataBlock implements IDataBlock, Cloneable {
             return true;
         }
     }
-
+    
     /**
      * Creates a new data block that is an extension of this one. The new data
      * block refers to the same underlying physical data buffer. We have that
@@ -1572,7 +1572,7 @@ public final class DataBlock implements IDataBlock, Cloneable {
     /**
      * Subtracts the data block r to this object. this(i) = this(i) - r(i)
      *
-     * @param r The subtracted data block. Its length must be &ge the length of
+     * @param data The subtracted data block. Its length must be &ge the length of
      * this object.
      */
     public void sub(DataBlock data) {
@@ -1733,4 +1733,62 @@ public final class DataBlock implements IDataBlock, Cloneable {
         }
         return true;
     }
+//<editor-fold defaultstate="collapsed" desc="iterator method">
+    
+    /**
+     * The following methods can be used to create fast iterations.
+     * They avoid the creation of unnecessary objects
+     * 
+     * example:
+     * 
+     * DataBlock data=...
+     * DataBlock cur=data.start();
+     * while (cur.getEndPosition() != data.getEndPosition()){
+     *    cur.next(z);
+     * }
+     */
+    
+    
+    /**
+     * Moves the current DataBlock to the right by a given number of items.
+     * The new starting position is the old ending position
+     * and the ending position is incremented by the given number.
+     * @param nitems The number of items in the block
+     */
+    public void next(int nitems){
+        beg_=end_;
+        end_+=inc_*nitems;
+    }
+
+    /**
+     * Moves the current DataBlock to the left by a given number of items.
+     * The new ending position is the old starting position
+     * and the starting position is decremented by the given number.
+     * @param nitems The number of items in the block
+     */
+    public void previous(int nitems){
+        end_=beg_;
+        beg_-=inc_*nitems;
+    }
+    
+    /**
+     * Creates an empty DataBlock positioned at the current start.
+     * To be used with next/previous
+     * @return The new DataBlock
+     */
+    public DataBlock start(){
+        return new DataBlock(x_, beg_, beg_, inc_);
+    }
+
+    /**
+     * Creates an empty DataBlock positioned at the current end.
+     * To be used with next/previous
+     * @return The new DataBlock
+     */
+    public DataBlock end(){
+        return new DataBlock(x_, end_, end_, inc_);
+    }
+
+//</editor-fold>
+
 }

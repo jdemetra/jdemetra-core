@@ -102,6 +102,7 @@ public class SsfUcarimaTest {
         et=new DataBlock(sr.componentStdev(0));
         System.out.println(t);
         System.out.println(et);
+        
     }
 
 }

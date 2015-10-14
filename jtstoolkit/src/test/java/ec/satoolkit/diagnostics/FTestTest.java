@@ -78,7 +78,7 @@ public class FTestTest {
         assertTrue(Math.abs(ftest.getValue() - ptest.getValue()) < 1e-6);
     }
 
-    //@Ignore
+    @Ignore
     @Test
     public void testAMI() {
         SarimaSpecification spec = new SarimaSpecification(12);

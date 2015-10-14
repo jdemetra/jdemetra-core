@@ -99,7 +99,7 @@ public class StationaryVarianceDecomposition {
         public String toString() {
             StringBuilder builder = new StringBuilder();
             builder.append("Trend computed by Hodrick-Prescott filter (cycle length = ")
-                    .append(cyclelen).append(')');
+                    .append(cyclelen).append(" years)");
             return builder.toString();
         }
     }

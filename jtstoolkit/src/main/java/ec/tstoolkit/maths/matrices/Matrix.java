@@ -1154,4 +1154,68 @@ public class Matrix implements Cloneable {
         System.arraycopy(C.data_, 0, data_, 0, data_.length);
     }
 
+    /**
+     * Computes ||this-m||
+     *
+     * @param m The second matrix
+     * @return
+     */
+    public double distance(Matrix m) {
+        return this.minus(m).nrm2();
+    }
+
+    public void smooth(double eps) {
+        double scale=1;
+        double q=Math.sqrt(eps);
+        
+        while (q<1){
+            scale*=10;
+            q*=10;
+        }
+            
+        for (int i = 0; i < data_.length; ++i) {
+            double c=data_[i];
+            double d=Math.round(c*scale)/scale;
+            if (Math.abs(d-c) < eps) {
+                data_[i] = d;
+            }
+        }
+    }
+
+    /**
+     * Top-left empty sub-matrix. To be used with next(a,b)
+     * @return An empty sub-matrix
+     */
+    public SubMatrix topLeft(){
+        return new SubMatrix(data_, 0, 0, 0, 1, nrows_);
+    }
+    
+    /**
+     * Top-left sub-matrix
+     * @param nr Number of rows. Could be 0.
+     * @param nc Number of columns. Could be 0. 
+     * @return A nr x nc sub-matrix
+     */
+    public SubMatrix topLeft(int nr, int nc){
+        return new SubMatrix(data_, 0, nr, nc, 1, nrows_);
+    }
+    
+    /**
+     * bottom-right sub-matrix (outside). 
+     * @return An empty sub-matrix
+     */
+    public SubMatrix bottomRight(){
+        return new SubMatrix(data_, data_.length, 0, 0, 1, nrows_);
+    }
+
+    /**
+     * Bottom-right sub-matrix 
+     * @param nr Number of rows. Could be 0.
+     * @param nc Number of columns. Could be 0. 
+     * @return A nr x nc sub-matrix
+     */
+    public SubMatrix bottomRight(int nr, int nc){
+        int start=data_.length-nr-nc*nrows_;
+        return new SubMatrix(data_, start, nr, nc, 1, nrows_);
+    }
 }
