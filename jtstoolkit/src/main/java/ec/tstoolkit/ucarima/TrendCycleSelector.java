@@ -29,7 +29,7 @@ import ec.tstoolkit.maths.polynomials.UnitRoots;
 @Development(status = Development.Status.Alpha)
 public class TrendCycleSelector extends AbstractRootSelector {
 
-    private double m_bound = 0.4;
+    private double m_bound = 0.5;
     private double m_lfreq = 0;
 
     /**

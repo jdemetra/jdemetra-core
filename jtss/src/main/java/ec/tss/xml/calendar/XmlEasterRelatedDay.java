@@ -19,6 +19,7 @@ package ec.tss.xml.calendar;
 
 import ec.tss.xml.IXmlConverter;
 import ec.tstoolkit.timeseries.calendars.EasterRelatedDay;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -32,16 +33,19 @@ public class XmlEasterRelatedDay extends AbstractXmlDay implements IXmlConverter
     static final String NAME = "easterRelatedDayType";
     @XmlElement
     public Integer offset;
+    @XmlAttribute
+    public Boolean julian;
 
     @Override
     public EasterRelatedDay create() {
-        return new EasterRelatedDay(getOffset(), getWeight());
+        return new EasterRelatedDay(getOffset(), getWeight(), isJulian());
     }
 
     @Override
     public void copy(EasterRelatedDay t) {
         setOffset(t.offset);
         setWeight(t.getWeight());
+        setJulian(t.isJulian());
     }
 
     private void setOffset(int val) {
@@ -52,6 +56,13 @@ public class XmlEasterRelatedDay extends AbstractXmlDay implements IXmlConverter
             offset = val;
         }
     }
+    
+    private void setJulian(boolean j){
+        if (j)
+            julian=true;
+        else
+            julian=null;
+    }
 
     private int getOffset() {
         if (offset == null) {
@@ -59,6 +70,15 @@ public class XmlEasterRelatedDay extends AbstractXmlDay implements IXmlConverter
         }
         else {
             return offset;
+        }
+    }
+    
+    private boolean isJulian() {
+        if (julian == null) {
+            return false;
+        }
+        else {
+            return julian;
         }
     }
 }

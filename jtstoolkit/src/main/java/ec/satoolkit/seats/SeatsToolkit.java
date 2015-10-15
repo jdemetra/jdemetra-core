@@ -50,6 +50,7 @@ public class SeatsToolkit implements ISeatsToolkit {
         DefaultModelDecomposer decomposer = new DefaultModelDecomposer(spec.getApproximationMode() == ApproximationMode.Noisy);
         decomposer.setEpsphi(spec.getSeasTolerance());
         decomposer.setRmod(spec.getTrendBoundary());
+        decomposer.setSmod(spec.getSeasBoundary());
         toolkit.modelDecomposer = decomposer;
 
         IComponentsEstimator cmpEstimator;
