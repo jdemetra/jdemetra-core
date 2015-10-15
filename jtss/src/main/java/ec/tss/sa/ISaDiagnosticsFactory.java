@@ -25,7 +25,7 @@ import java.util.Comparator;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 @ServiceDefinition
 public interface ISaDiagnosticsFactory
@@ -60,15 +60,15 @@ public interface ISaDiagnosticsFactory
         public int compare(ISaDiagnosticsFactory diag1, ISaDiagnosticsFactory diag2) {
             int s1=diag1.getScope().value, s2=diag2.getScope().value;
             if (s1 < s2)
-                return 1;
-            if (s1 > s2)
                 return -1;
+            if (s1 > s2)
+                return 1;
             // s1 == s2
             int o1=diag1.getOrder(), o2=diag2.getOrder();
             if (o1 < o2)
-                return 1;
-            if (o1 > o2)
                 return -1;
+            if (o1 > o2)
+                return 1;
             else
                 return 0;
         }

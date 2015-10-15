@@ -17,7 +17,10 @@
 
 package ec.tstoolkit.timeseries.calendars;
 
+import ec.tstoolkit.timeseries.Day;
+import ec.tstoolkit.timeseries.Month;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -58,10 +61,31 @@ public class EasterRelatedDayTest {
     public void testprobEaster() {
         double p = 0;
         for (int i = 0; i < 35; ++i) {
-            double q = EasterRelatedDay.probEaster(i);
+            double q = Utilities.probEaster(i);
             p += q;
         }
         org.junit.Assert.assertTrue(Math.abs(p - 1) < 1e-9);
+    }
+    
+    @Test
+    public void testprobJulianEaster() {
+        double p = 0;
+        for (int i = 0; i < 35; ++i) {
+            double q = Utilities.probJulianEaster(i);
+            p += q;
+        }
+        org.junit.Assert.assertTrue(Math.abs(p - 1) < 1e-9);
+    }
+    
+    @Test
+    public void testCorpusChristi() {
+        Day cc=EasterRelatedDay.CorpusChristi.calcDay(2015);
+        assertTrue(cc.equals(new Day(2015, Month.June, 3)));
+    }
 
+    @Test
+    public void testAshWednesday() {
+        Day cc=EasterRelatedDay.AshWednesday.calcDay(2016);
+        assertTrue(cc.equals(new Day(2016, Month.February, 9)));
     }
 }
