@@ -422,6 +422,36 @@ public class SubMatrix implements Cloneable {
     }
 
     /**
+     * M = M + X * a * X'
+     *
+     * @param a
+     * @param x
+     */
+    public void addXaXt(double a, DataBlock x) {
+        DataBlockIterator cols = columns();
+        DataBlock col = cols.getData();
+        do {
+            double z = a * x.get(cols.getPosition());
+            col.addAY(z, x);
+        } while (cols.next());
+    }
+
+    /**
+     * M = M + X * a * Y'
+     *
+     * @param a
+     * @param x
+     * @param y
+     */
+    public void addXaYt(double a, DataBlock x, DataBlock y) {
+        DataBlockIterator cols = columns();
+        DataBlock col = cols.getData();
+        do {
+            double z = a * y.get(cols.getPosition());
+            col.addAY(z, x);
+        } while (cols.next());
+    }
+    /**
      *
      * @return
      */
