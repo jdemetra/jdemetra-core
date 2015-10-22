@@ -643,11 +643,15 @@ public class TramoSpecification implements Cloneable, IRegArimaSpecification {
     }
 
     private boolean equals(TramoSpecification spec) {
+        if (isUsingAutoModel() != spec.isUsingAutoModel())
+            return false;
         if (!isUsingAutoModel() && !Objects.equals(spec.arima_, arima_)) {
             return false;
         }
+        if (isUsingAutoModel() && !Objects.equals(spec.automdl_, automdl_)) {
+            return false;
+        }
         return Objects.equals(spec.transform_, transform_)
-                && Objects.equals(spec.automdl_, automdl_)
                 && Objects.equals(spec.regression_, regression_)
                 && Objects.equals(spec.outlier_, outlier_)
                 && Objects.equals(spec.estimate_, estimate_);

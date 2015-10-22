@@ -241,6 +241,9 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
         if (verbose || amicompare_ != DEF_AMICOMPARE) {
             info.add(AMICOMPARE, amicompare_);
         }
+        if (verbose || tsig_ != DEF_TSIG) {
+            info.add(TSIG, tsig_);
+        }
         return info;
     }
 
@@ -271,6 +274,10 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
             Double pc = info.get(PC, Double.class);
             if (pc != null) {
                 pc_ = pc;
+            }
+            Double tsig = info.get(TSIG, Double.class);
+            if (tsig != null) {
+                tsig_ = tsig;
             }
             Boolean ami = info.get(AMICOMPARE, Boolean.class);
             if (ami != null) {

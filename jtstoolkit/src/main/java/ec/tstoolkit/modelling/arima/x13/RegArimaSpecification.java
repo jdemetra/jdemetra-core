@@ -466,12 +466,16 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
     }
 
     private boolean equals(RegArimaSpecification spec) {
+        if (isUsingAutoModel() != spec.isUsingAutoModel())
+            return false;
         if (!isUsingAutoModel() && !Objects.equals(spec.arima_, arima_)) {
+            return false;
+        }
+        if (isUsingAutoModel() && !Objects.equals(spec.automdl_, automdl_)) {
             return false;
         }
         return Objects.equals(spec.basic_, basic_)
                 && Objects.equals(spec.transform_, transform_)
-                && Objects.equals(spec.automdl_, automdl_)
                 && Objects.equals(spec.regression_, regression_)
                 && Objects.equals(spec.outliers_, outliers_)
                 && Objects.equals(spec.estimate_, estimate_);
