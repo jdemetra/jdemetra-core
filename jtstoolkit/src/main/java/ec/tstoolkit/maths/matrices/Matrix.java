@@ -1062,6 +1062,22 @@ public class Matrix implements Cloneable {
         } while (cols.next());
     }
 
+    /**
+     * M = M + X * a * Y'
+     *
+     * @param a
+     * @param x
+     * @param y
+     */
+    public void addXaYt(double a, DataBlock x, DataBlock y) {
+        DataBlockIterator cols = columns();
+        DataBlock col = cols.getData();
+        do {
+            double z = a * y.get(cols.getPosition());
+            col.addAY(z, x);
+        } while (cols.next());
+    }
+
     public boolean isEmpty() {
         return data_.length == 0;
     }

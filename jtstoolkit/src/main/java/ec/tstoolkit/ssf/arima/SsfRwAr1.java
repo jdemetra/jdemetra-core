@@ -167,7 +167,7 @@ public class SsfRwAr1 implements ISsf {
 
     /**
      *
-     * @param ro
+     * @param rho
      */
     public SsfRwAr1(double rho) {
         m_rho = rho;

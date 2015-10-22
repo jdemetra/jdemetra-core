@@ -1,7 +1,7 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or â€“ as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
@@ -37,6 +37,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
     public static final int DEF_FCASTS = -1;
 
     public static final String MODE = "mode",
+            SEASONAL = "seasonal",
             LSIGMA = "lsigma",
             USIGMA = "usigma",
             TRENDMA = "trendma",
@@ -47,6 +48,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
 
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, MODE), String.class);
+        dic.put(InformationSet.item(prefix, SEASONAL), Boolean.class);
         dic.put(InformationSet.item(prefix, LSIGMA), Double.class);
         dic.put(InformationSet.item(prefix, USIGMA), Double.class);
         dic.put(InformationSet.item(prefix, TRENDMA), Integer.class);
@@ -321,6 +323,9 @@ public class X11Specification implements IProcSpecification, Cloneable {
         if (verbose || mode_ != DecompositionMode.Undefined) {
             info.add(MODE, mode_.name());
         }
+        if (verbose || ! seasonal_) {
+            info.add(SEASONAL, seasonal_);
+        }
         if (verbose || lsigma_ != DEF_LSIGMA) {
             info.add(LSIGMA, lsigma_);
         }
@@ -361,6 +366,10 @@ public class X11Specification implements IProcSpecification, Cloneable {
             if (mode != null) {
                 mode_ = DecompositionMode.valueOf(mode);
             }
+            Boolean seasonal = info.get(SEASONAL, Boolean.class);
+            if (seasonal != null){
+                seasonal_=true;
+            }        
             Double lsig = info.get(LSIGMA, Double.class);
             if (lsig != null) {
                 lsigma_ = lsig;
