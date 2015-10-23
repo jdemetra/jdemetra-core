@@ -20,6 +20,7 @@ package ec.tss.xml.calendar;
 import ec.tss.xml.IXmlConverter;
 import ec.tstoolkit.timeseries.calendars.DayEvent;
 import ec.tstoolkit.timeseries.calendars.SpecialCalendarDay;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -35,10 +36,12 @@ public class XmlSpecialCalendarDay extends AbstractXmlDay implements IXmlConvert
     public DayEvent ev;
     @XmlElement
     public Integer offset;
+    @XmlAttribute
+    public Boolean julian;
 
     @Override
     public SpecialCalendarDay create() {
-        return new SpecialCalendarDay(ev, getOffset(), getWeight());
+        return new SpecialCalendarDay(ev, getOffset(), getWeight(), isJulian());
     }
 
     @Override
@@ -46,6 +49,7 @@ public class XmlSpecialCalendarDay extends AbstractXmlDay implements IXmlConvert
         ev=t.event;
         setOffset(t.offset);
         setWeight(t.getWeight());
+        setJulian(t.isJulianEaster());
     }
     
     private void setOffset(int val) {
@@ -64,4 +68,20 @@ public class XmlSpecialCalendarDay extends AbstractXmlDay implements IXmlConvert
         else {
             return offset;
         }
-    }}
+    }
+    
+    private void setJulian(boolean j) {
+        if (j)
+            julian = true;
+        else
+            julian = null;
+    }
+    
+    private boolean isJulian() {
+        if (julian == null) {
+            return false;
+        } else {
+            return julian;
+        }
+    }
+}

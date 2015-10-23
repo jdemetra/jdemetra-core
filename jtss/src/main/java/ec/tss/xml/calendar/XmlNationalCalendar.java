@@ -39,6 +39,8 @@ public class XmlNationalCalendar extends AbstractXmlCalendar {
     public XmlSpecialDayEvent[] sd;
     @XmlAttribute
     public Boolean meancorrection;
+    @XmlAttribute
+    public Boolean julianCal;
 
     private void setMean(boolean mean) {
         if (!mean) {
@@ -52,6 +54,18 @@ public class XmlNationalCalendar extends AbstractXmlCalendar {
         return meancorrection == null ? true : meancorrection.booleanValue();
     }
 
+    private void setJulian(boolean julian) {
+        if (julian) {
+            julianCal = julian;
+        } else {
+            julianCal = null;
+        }
+    }
+    
+    private boolean isJulian() {
+        return julianCal == null ? false : julianCal.booleanValue();
+    }
+    
     public XmlNationalCalendar() {
     }
 
@@ -65,6 +79,7 @@ public class XmlNationalCalendar extends AbstractXmlCalendar {
         XmlNationalCalendar xcal = new XmlNationalCalendar();
         xcal.name = code;
         xcal.setMean(t.isLongTermMeanCorrection());
+        xcal.setJulian(t.isJulianCalendar());
 
         int n = t.events().size();
         if (n > 0) {
@@ -107,6 +122,7 @@ public class XmlNationalCalendar extends AbstractXmlCalendar {
         }
         NationalCalendarProvider rslt = new NationalCalendarProvider(nc);
         rslt.setLongTermMeanCorrection(isMean());
+        rslt.setJulianCalendar(isJulian());
         if (name != null) {
             mgr.set(name, rslt);
             return true;
