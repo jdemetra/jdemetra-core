@@ -165,7 +165,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
         if (usigma_ != DEF_USIGMA) {
             return false;
         }
-        return true;
+        return isAutoHenderson();
     }
 
     public boolean isAutoHenderson() {
@@ -332,7 +332,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
         if (verbose || usigma_ != DEF_USIGMA) {
             info.add(USIGMA, usigma_);
         }
-        if (verbose || henderson_ != 0) {
+        if (verbose || !isAutoHenderson()) {
             info.add(TRENDMA, henderson_);
         }
         if (filters_ != null) {
