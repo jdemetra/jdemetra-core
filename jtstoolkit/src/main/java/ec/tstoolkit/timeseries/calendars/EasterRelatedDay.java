@@ -55,7 +55,7 @@ public class EasterRelatedDay implements ISpecialDay {
     private static final int[] g_days = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     public final int offset;
     private final double weight;
-    private final boolean julian;
+    private boolean julian;
 
     /**
      * Creates a new Easter related day, with 0 offset. Corresponds to easter
@@ -95,6 +95,10 @@ public class EasterRelatedDay implements ISpecialDay {
     
     public boolean isJulian(){
         return julian;
+    }
+    
+    public void setJulian(boolean julian) {
+        this.julian = julian;
     }
 
     @Override

@@ -30,7 +30,7 @@ public class SpecialCalendarDay implements ISpecialDay {
     public final DayEvent event;
     public final int offset;
     private final double weight;
-    private final boolean julianeaster;
+    private boolean julianeaster;
 
     public SpecialCalendarDay(DayEvent ev, int off) {
         this(ev, off, 1);
@@ -114,6 +114,10 @@ public class SpecialCalendarDay implements ISpecialDay {
     
     public boolean isJulianEaster(){
         return julianeaster;
+    }
+    
+    public void setJulianEaster(boolean julian) {
+        this.julianeaster = julian;
     }
 
     @Override
