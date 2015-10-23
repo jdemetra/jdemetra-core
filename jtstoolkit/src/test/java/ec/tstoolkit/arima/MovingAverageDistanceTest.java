@@ -18,7 +18,6 @@
  */
 package ec.tstoolkit.arima;
 
-import ec.tstoolkit.arima.estimation.Forecasts;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.DescriptiveStatistics;
 import ec.tstoolkit.modelling.arima.x13.UscbForecasts;
@@ -32,16 +31,17 @@ import static org.junit.Assert.*;
  *
  * @author PCUser
  */
-public class AutoRegressiveDistanceTest {
-
-    public AutoRegressiveDistanceTest() {
+public class MovingAverageDistanceTest {
+    
+    public MovingAverageDistanceTest() {
     }
 
-    @Test
+   @Test
     public void testDistance() {
         SarimaModelBuilder builder = new SarimaModelBuilder();
         SarimaModel tmp1 = builder.createAirlineModel(11, -.6, -1);
         SarimaModel tmp2 = builder.createAirlineModel(11, -.5, .5);
-        assertTrue(Math.abs(AutoRegressiveDistance.compute(tmp1, tmp2, 200) - AutoRegressiveDistance.compute2(tmp2, tmp1, 200)) < 1e-9);
+        assertTrue(Math.abs(MovingAverageDistance.compute(tmp1, tmp2, 200) - MovingAverageDistance.compute2(tmp2, tmp1, 200)) < 1e-9);
     }
+
 }
