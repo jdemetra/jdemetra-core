@@ -79,7 +79,7 @@ public class XmlNationalCalendar extends AbstractXmlCalendar {
         XmlNationalCalendar xcal = new XmlNationalCalendar();
         xcal.name = code;
         xcal.setMean(t.isLongTermMeanCorrection());
-        xcal.setJulian(t.isJulianCalendar());
+        xcal.setJulian(t.isJulianEaster());
 
         int n = t.events().size();
         if (n > 0) {
@@ -114,15 +114,13 @@ public class XmlNationalCalendar extends AbstractXmlCalendar {
 //    }
     @Override
     public boolean addTo(GregorianCalendarManager mgr) {
-        NationalCalendar nc = new NationalCalendar();
+        NationalCalendar nc = new NationalCalendar(isMean(), isJulian());
         if (sd != null) {
             for (int i = 0; i < sd.length; ++i) {
                 nc.add(sd[i].create());
             }
         }
         NationalCalendarProvider rslt = new NationalCalendarProvider(nc);
-        rslt.setLongTermMeanCorrection(isMean());
-        rslt.setJulianCalendar(isJulian());
         if (name != null) {
             mgr.set(name, rslt);
             return true;

@@ -28,6 +28,25 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
  */
 @Development(status = Development.Status.Preliminary)
 public interface ISpecialDay {
+    
+    public static class Context{
+        private final boolean mean;
+        private final boolean julian;
+        
+        public Context(boolean mean, boolean julian){
+            this.mean=mean;
+            this.julian=julian;
+        }
+        
+        public boolean isLongTermMeanCorrection(){
+            return mean;
+        }
+        
+        public boolean isJulianEaster(){
+            return julian;
+        }
+    }
+
     /**
      * Special Day for the given year
      * @param freq
@@ -57,4 +76,6 @@ public interface ISpecialDay {
     TsDomain getSignificantDomain(TsFrequency freq, Day start, Day end);
     
     double getWeight();
+    
+    boolean match(Context context);
 }

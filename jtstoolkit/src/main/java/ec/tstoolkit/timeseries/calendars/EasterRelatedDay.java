@@ -55,7 +55,7 @@ public class EasterRelatedDay implements ISpecialDay {
     private static final int[] g_days = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     public final int offset;
     private final double weight;
-    private boolean julian;
+    private final boolean julian;
 
     /**
      * Creates a new Easter related day, with 0 offset. Corresponds to easter
@@ -86,25 +86,27 @@ public class EasterRelatedDay implements ISpecialDay {
         if (nweight == weight) {
             return this;
         }
-        return new EasterRelatedDay(offset, nweight);
+        return new EasterRelatedDay(offset, nweight, julian);
     }
 
     public EasterRelatedDay plus(int ndays) {
-        return new EasterRelatedDay(offset + ndays, weight);
+        return new EasterRelatedDay(offset + ndays, weight, julian);
     }
     
     public boolean isJulian(){
         return julian;
     }
     
-    public void setJulian(boolean julian) {
-        this.julian = julian;
-    }
-
     @Override
     public double getWeight() {
         return weight;
     }
+    
+    @Override
+    public boolean match(Context context){
+        return context.isJulianEaster() == julian;
+    }
+    
     public static final EasterRelatedDay ShroveMonday = new EasterRelatedDay(-48),
             ShroveTuesday = new EasterRelatedDay(-47),
             AshWednesday = new EasterRelatedDay(-46),
@@ -288,6 +290,9 @@ public class EasterRelatedDay implements ISpecialDay {
     static class EasterDayList extends AbstractList<IDayInfo> {
 
         public EasterDayList(TsFrequency freq, int offset, Day fstart, Day fend, boolean julian) {
+            m_freq = freq;
+            m_offset = offset;
+            this.julian=julian;
             int ystart = fstart.getYear(), yend = fend.getYear();
             Day xday = easter(ystart, julian).plus(offset);
             Day yday = easter(yend, julian).plus(offset);
@@ -303,9 +308,6 @@ public class EasterRelatedDay implements ISpecialDay {
 
             m_n = yend - ystart;
             m_startyear = ystart;
-            m_freq = freq;
-            m_offset = offset;
-            this.julian=julian;
         }
         private final int m_startyear, m_n, m_offset;
         private final TsFrequency m_freq;

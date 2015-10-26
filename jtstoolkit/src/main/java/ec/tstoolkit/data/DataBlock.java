@@ -169,6 +169,15 @@ public final class DataBlock implements IDataBlock, Cloneable {
     public static DataBlock create(final double[] data, final int istart, final int len, final int inc) {
         return new DataBlock(data, istart, istart + len * inc, inc);
     }
+    
+    /**
+     * Safe creation of a datablock. Reuse of the EMPTY data block
+     * @param n
+     * @return 
+     */
+    public static DataBlock create(final int n){
+        return n <= 0 ? DataBlock.EMPTY : new DataBlock(n);
+    }
 
     public static DataBlock select(IReadDataBlock data, boolean[] sel) {
         int n = 0;
