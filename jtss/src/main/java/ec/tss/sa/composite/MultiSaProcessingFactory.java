@@ -37,7 +37,7 @@ import java.util.*;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class MultiSaProcessingFactory implements IProcessingFactory<MultiSaSpecification, TsCollection, CompositeResults> {
 

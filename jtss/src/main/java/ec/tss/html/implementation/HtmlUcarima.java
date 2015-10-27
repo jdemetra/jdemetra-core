@@ -25,7 +25,7 @@ import java.io.IOException;
 
 /**
  * 
- * @author pcuser & BAYENSK
+ * @author Jean Palate & BAYENSK
  */
 public class HtmlUcarima implements IHtmlElement {
 

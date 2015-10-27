@@ -25,7 +25,7 @@ import ec.tstoolkit.maths.matrices.MatrixException;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class LeastSquaresDivision {
 

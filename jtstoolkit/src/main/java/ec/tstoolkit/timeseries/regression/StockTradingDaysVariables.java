@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
 public class StockTradingDaysVariables implements ITradingDaysVariable, Cloneable {

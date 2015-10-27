@@ -20,7 +20,7 @@ import ec.tstoolkit.arima.estimation.Forecasts;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class LogForecasts {
 

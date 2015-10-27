@@ -22,7 +22,7 @@ import ec.tstoolkit.dstats.ProbabilityType;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class Probit implements ICumulativeDistributionFunction {
 

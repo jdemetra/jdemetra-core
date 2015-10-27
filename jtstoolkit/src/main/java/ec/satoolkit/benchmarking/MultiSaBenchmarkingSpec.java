@@ -22,7 +22,7 @@ import ec.tstoolkit.information.InformationSet;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class MultiSaBenchmarkingSpec implements IProcSpecification, Cloneable {
     

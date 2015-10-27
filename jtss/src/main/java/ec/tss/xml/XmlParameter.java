@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * 
- * @author pcuser
+ * @author Jean Palate
  */
 @XmlType(name = XmlParameter.NAME)
 public class XmlParameter implements IXmlConverter<Parameter> {

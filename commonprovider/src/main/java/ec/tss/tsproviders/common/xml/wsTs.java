@@ -26,7 +26,7 @@ import ec.tss.Ts;
 
 /**
  * 
- * @author PCuser
+ * @author Jean Palate
  */
 @XmlRootElement(name = "ts")
 @XmlType(name = "ts")

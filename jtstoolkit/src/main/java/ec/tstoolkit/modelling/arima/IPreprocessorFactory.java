@@ -22,7 +22,7 @@ import ec.tstoolkit.algorithm.ProcessingContext;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public interface IPreprocessorFactory<S extends IProcSpecification>{
     IPreprocessor create(S spec, ProcessingContext context);

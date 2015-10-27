@@ -16,7 +16,7 @@ import org.junit.Ignore;
 
 /**
  *
- * @author PCUser
+ * @author Jean Palate
  */
 public class StmProcessingFactoryTest {
     

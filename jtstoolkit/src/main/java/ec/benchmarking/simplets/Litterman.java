@@ -34,7 +34,7 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class Litterman {
 

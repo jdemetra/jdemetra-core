@@ -20,7 +20,7 @@ package ec.tstoolkit.data;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class ThousandNormalizer implements IDataNormalizer {
 

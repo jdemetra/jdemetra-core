@@ -28,7 +28,7 @@ import java.util.List;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class CoherenceDiagnosticsConfiguration implements Cloneable, IPropertyDescriptors {
 

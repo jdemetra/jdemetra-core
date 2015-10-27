@@ -23,7 +23,7 @@ import ec.tstoolkit.stats.StatisticalTest;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class BlackmanTukeySpectrum {
 

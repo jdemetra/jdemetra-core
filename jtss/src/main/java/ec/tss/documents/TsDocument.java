@@ -31,7 +31,7 @@ import java.util.Date;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class TsDocument<S extends IProcSpecification, R extends IProcResults> extends ActiveDocument<S, Ts, R> {
 

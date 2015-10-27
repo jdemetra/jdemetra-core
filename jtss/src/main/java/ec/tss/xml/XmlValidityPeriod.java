@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  *
- * @author PCuser
+ * @author Jean Palate
  */
 @XmlRootElement(name = "validityperiod")
 @XmlType(name = "validityperiod")

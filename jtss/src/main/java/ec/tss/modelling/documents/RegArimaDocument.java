@@ -25,7 +25,7 @@ import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class RegArimaDocument extends TsDocument<RegArimaSpecification, PreprocessingModel> implements Cloneable{
     public RegArimaDocument(){

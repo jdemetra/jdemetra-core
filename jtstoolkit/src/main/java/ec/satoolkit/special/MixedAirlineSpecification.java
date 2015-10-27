@@ -30,7 +30,7 @@ import java.util.Map;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class MixedAirlineSpecification implements ISaSpecification, Cloneable {
 

@@ -20,7 +20,7 @@ package ec.tstoolkit.modelling;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public enum DefaultTransformationType {
     None,

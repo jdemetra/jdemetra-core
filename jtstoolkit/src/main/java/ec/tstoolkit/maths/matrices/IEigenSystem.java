@@ -21,7 +21,7 @@ import ec.tstoolkit.maths.Complex;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public interface IEigenSystem {
     /// <summary>

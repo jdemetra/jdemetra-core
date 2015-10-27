@@ -33,7 +33,7 @@ import org.junit.Test;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class ITsModifierTest {
 

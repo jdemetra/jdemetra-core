@@ -20,7 +20,7 @@ package ec.tstoolkit.modelling.arima;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public enum Method {
     None,

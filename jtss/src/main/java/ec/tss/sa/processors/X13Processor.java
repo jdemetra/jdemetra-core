@@ -49,7 +49,7 @@ import java.util.Map;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class X13Processor implements ISaProcessingFactory<X13Specification> {
 

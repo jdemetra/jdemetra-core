@@ -29,7 +29,7 @@ import java.io.IOException;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class HtmlX11Diagnostics extends AbstractHtmlElement {
 

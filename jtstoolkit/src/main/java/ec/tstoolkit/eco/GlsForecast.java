@@ -18,7 +18,7 @@ package ec.tstoolkit.eco;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class GlsForecast
 {

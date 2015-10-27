@@ -19,7 +19,7 @@ package ec.tss.xml;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public interface IXmlMapper<O, X> {
 

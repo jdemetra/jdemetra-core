@@ -39,7 +39,7 @@ import java.util.Map;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class MixedAirlineProcessor implements ISaProcessingFactory<MixedAirlineSpecification> {
 

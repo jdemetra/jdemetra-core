@@ -29,7 +29,7 @@ import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class GeneralizedAirlineSpecification implements ISaSpecification, Cloneable {
 

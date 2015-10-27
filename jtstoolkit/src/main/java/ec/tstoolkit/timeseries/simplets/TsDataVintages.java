@@ -22,7 +22,7 @@ import java.util.*;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class TsDataVintages<T extends Comparable> {
 

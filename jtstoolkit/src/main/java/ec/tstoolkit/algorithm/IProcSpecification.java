@@ -22,7 +22,7 @@ import ec.tstoolkit.information.InformationSetSerializable;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public interface IProcSpecification extends InformationSetSerializable{
 

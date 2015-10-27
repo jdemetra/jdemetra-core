@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author PCUser
+ * @author Jean Palate
  */
 public class Chi2Test {
     

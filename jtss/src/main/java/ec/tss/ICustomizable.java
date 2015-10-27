@@ -20,7 +20,7 @@ package ec.tss;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public interface ICustomizable {
     public Object getProperties();

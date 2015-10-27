@@ -45,7 +45,7 @@ import java.util.Map;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class GenericSaProcessingFactory {
     // create series node

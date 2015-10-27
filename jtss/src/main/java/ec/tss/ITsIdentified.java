@@ -20,7 +20,7 @@ package ec.tss;
 
 /**
  * 
- * @author PCuser
+ * @author Jean Palate
  */
 public interface ITsIdentified {
     /**

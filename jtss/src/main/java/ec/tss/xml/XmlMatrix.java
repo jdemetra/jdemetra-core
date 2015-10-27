@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 @XmlType(name = XmlMatrix.NAME)
 public class XmlMatrix implements IXmlConverter<Matrix> {

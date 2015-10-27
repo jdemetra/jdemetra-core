@@ -20,7 +20,7 @@ package ec.tss.xml;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class StringMapper<O> implements IXmlMapper<O, String> {
 

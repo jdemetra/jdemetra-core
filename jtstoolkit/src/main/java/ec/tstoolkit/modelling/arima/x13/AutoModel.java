@@ -27,7 +27,7 @@ import ec.tstoolkit.sarima.SarmaSpecification;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class AutoModel implements IPreprocessingModule {
 

@@ -15,7 +15,7 @@ import ec.tstoolkit.ssf.ISsf;
 
 /**
  *
- * @author PCUser
+ * @author Jean Palate
  */
 public class SsfHarrisonStevens implements ISsf {
 

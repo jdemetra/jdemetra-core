@@ -21,7 +21,7 @@ import java.util.Map;
 
 /**
  *
- * @author PCUser
+ * @author Jean Palate
  */
 public abstract class HtmlConverters {
 

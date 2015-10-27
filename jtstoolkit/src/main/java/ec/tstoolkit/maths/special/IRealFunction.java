@@ -7,7 +7,7 @@ package ec.tstoolkit.maths.special;
 
 /**
  *
- * @author PCUser
+ * @author Jean Palate
  */
 public interface IRealFunction {
     double fn(double x);

@@ -26,7 +26,7 @@ import org.junit.Ignore;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class ILinearSystemSolverTest {
 

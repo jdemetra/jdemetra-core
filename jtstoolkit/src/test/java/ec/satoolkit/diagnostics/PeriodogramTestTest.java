@@ -20,7 +20,7 @@ import org.junit.Test;
 
 /**
  *
- * @author PCUser
+ * @author Jean Palate
  */
 public class PeriodogramTestTest {
 

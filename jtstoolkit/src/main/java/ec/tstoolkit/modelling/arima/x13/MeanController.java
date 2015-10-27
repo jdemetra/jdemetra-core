@@ -29,7 +29,7 @@ import ec.tstoolkit.sarima.SarimaModel;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class MeanController  implements IPreprocessingModule{
     

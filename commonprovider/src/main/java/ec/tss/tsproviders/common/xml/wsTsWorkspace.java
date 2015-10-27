@@ -19,7 +19,7 @@ package ec.tss.tsproviders.common.xml;
 
 /**
  *
- * @author PCuser
+ * @author Jean Palate
  */
 import ec.tss.TsWorkspace;
 import javax.xml.bind.annotation.XmlElement;

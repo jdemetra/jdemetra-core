@@ -31,7 +31,7 @@ import ec.tstoolkit.timeseries.simplets.TsDomain;
 /**
  * Extension of the series using information provided by a PreprocessingModel.
  * The actual computation is provided by the PreprocessingModel itself
- * @author pcuser
+ * @author Jean Palate
  */
 public class DefaultPreprocessor extends DefaultX11Algorithm implements
         IX11Preprocessor {

@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * 
- * @author pcuser
+ * @author Jean Palate
  */
 @XmlType(name = XmlTsPeriod.NAME)
 public class XmlTsPeriod implements IXmlConverter<TsPeriod> {

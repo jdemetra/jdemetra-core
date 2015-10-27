@@ -25,7 +25,7 @@ import java.util.Map;
 
 /**
  *
- * @author PCUser
+ * @author Jean Palate
  */
 public class StmEstimation implements IProcResults{
     

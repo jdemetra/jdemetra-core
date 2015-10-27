@@ -29,7 +29,7 @@ import ec.tstoolkit.algorithm.ProcessingContext;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class X13Document extends SaDocument<X13Specification> implements Cloneable {
 

@@ -25,7 +25,7 @@ import ec.tstoolkit.information.InformationSet;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class MultiSaDocument extends ActiveDocument<MultiSaSpecification, TsCollection, CompositeResults> {
 

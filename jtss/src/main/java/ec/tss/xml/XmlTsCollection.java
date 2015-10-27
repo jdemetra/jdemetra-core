@@ -35,7 +35,7 @@ import ec.tss.TsMoniker;
 
 /**
  * 
- * @author pcuser
+ * @author Jean Palate
  */
 @XmlRootElement(name = XmlTsCollection.RNAME)
 @XmlType(name = XmlTsCollection.NAME)

@@ -22,7 +22,7 @@ import ec.tstoolkit.maths.realfunctions.IFunctionDerivatives;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 class dllFn implements IFunctionDerivatives {
 

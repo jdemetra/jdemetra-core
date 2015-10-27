@@ -28,7 +28,7 @@ import java.util.List;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class NameManager<T> implements InformationSetSerializable, IModifiable {
 

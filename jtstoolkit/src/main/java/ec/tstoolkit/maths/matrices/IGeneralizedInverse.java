@@ -19,7 +19,7 @@ package ec.tstoolkit.maths.matrices;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public interface IGeneralizedInverse {
     Matrix inverse(Matrix m);

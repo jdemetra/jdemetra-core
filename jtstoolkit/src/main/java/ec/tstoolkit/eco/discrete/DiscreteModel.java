@@ -28,7 +28,7 @@ import ec.tstoolkit.maths.realfunctions.riso.LbfgsMinimizer;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class DiscreteModel {
 

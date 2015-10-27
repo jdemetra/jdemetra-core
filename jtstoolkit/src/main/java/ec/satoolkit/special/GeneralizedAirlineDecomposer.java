@@ -28,7 +28,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class GeneralizedAirlineDecomposer implements IDefaultSeriesDecomposer<GeneralizedAirlineResults>{
 

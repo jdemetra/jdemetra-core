@@ -25,7 +25,7 @@ import java.util.Set;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class CompositeSpecification implements IProcSpecification, Cloneable {
 

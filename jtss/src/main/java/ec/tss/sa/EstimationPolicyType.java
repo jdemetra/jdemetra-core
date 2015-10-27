@@ -21,7 +21,7 @@ import java.util.EnumSet;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public enum EstimationPolicyType implements IntValue{
 

@@ -28,7 +28,7 @@ import ec.tstoolkit.algorithm.ProcessingContext;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class TramoSeatsDocument extends SaDocument<TramoSeatsSpecification> implements Cloneable{
     public TramoSeatsDocument(){
