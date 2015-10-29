@@ -17,7 +17,7 @@ import ec.tstoolkit.stats.StatisticalTest;
 
 /**
  *
- * @author PCUser
+ * @author Jean Palate
  */
 public class PeriodogramTest {
 

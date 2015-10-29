@@ -33,7 +33,7 @@ import java.util.List;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public final class CoherenceDiagnostics implements IDiagnostics {
 

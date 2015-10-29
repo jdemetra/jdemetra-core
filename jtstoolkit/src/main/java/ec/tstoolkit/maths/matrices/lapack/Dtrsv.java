@@ -19,7 +19,7 @@ package ec.tstoolkit.maths.matrices.lapack;
 
 /**
  * 
- * @author PCuser
+ * @author Jean Palate
  */
 public class Dtrsv {
 

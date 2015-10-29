@@ -20,7 +20,7 @@ package ec.tss.xml;
 /**
  * 
  * @param <T>
- * @author pcuser
+ * @author Jean Palate
  */
 public interface IXmlConverter<T> extends IXmlInfoConverter<T> {
     // / <summary>

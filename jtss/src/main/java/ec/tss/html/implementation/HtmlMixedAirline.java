@@ -32,7 +32,7 @@ import java.util.List;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class HtmlMixedAirline extends AbstractHtmlElement implements IHtmlElement {
 

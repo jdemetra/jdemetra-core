@@ -19,7 +19,7 @@ package ec.tstoolkit.information;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public interface InformationSetSerializable {
     InformationSet write(boolean verbose);

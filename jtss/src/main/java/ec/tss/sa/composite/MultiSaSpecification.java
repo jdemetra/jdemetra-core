@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class MultiSaSpecification implements IProcSpecification, Cloneable {
 

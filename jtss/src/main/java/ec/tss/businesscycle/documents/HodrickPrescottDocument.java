@@ -25,7 +25,7 @@ import ec.tstoolkit.algorithm.ProcessingContext;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class HodrickPrescottDocument extends TsDocument<HodrickPrescottSpecification, CompositeResults> {
 

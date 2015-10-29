@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  *
- * @author PCuser
+ * @author Jean Palate
  */
 @XmlType(name = XmlSpecialDayEvent.NAME)
 public class XmlSpecialDayEvent implements IXmlConverter<SpecialDayEvent> {

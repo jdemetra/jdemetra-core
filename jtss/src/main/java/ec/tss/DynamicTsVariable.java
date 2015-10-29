@@ -26,7 +26,7 @@ import ec.tstoolkit.utilities.IDynamicObject;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class DynamicTsVariable extends TsVariable implements IDynamicObject {
 

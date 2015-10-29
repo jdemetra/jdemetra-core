@@ -33,7 +33,7 @@ import org.junit.BeforeClass;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class WienerKolmogorovEstimatorTest {
 

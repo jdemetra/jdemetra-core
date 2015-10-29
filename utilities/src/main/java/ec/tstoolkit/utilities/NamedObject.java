@@ -20,7 +20,7 @@ import com.google.common.base.Objects;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public final class NamedObject<T> implements Comparable<NamedObject<T>> {
 

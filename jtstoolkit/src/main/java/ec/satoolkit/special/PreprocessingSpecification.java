@@ -35,7 +35,7 @@ import java.util.Objects;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class PreprocessingSpecification implements IProcSpecification, Cloneable {
 

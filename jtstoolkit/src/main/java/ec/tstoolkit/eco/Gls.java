@@ -24,7 +24,7 @@ import ec.tstoolkit.maths.matrices.SymmetricMatrix;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class Gls {
 

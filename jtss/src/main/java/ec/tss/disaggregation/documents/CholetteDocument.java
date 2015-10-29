@@ -23,7 +23,7 @@ import ec.tstoolkit.algorithm.ProcessingContext;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class CholetteDocument extends MultiTsDocument<UniCholetteSpecification, BenchmarkingResults> {
 

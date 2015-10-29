@@ -24,7 +24,7 @@ import ec.tstoolkit.maths.realfunctions.IFunctionInstance;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class DiscreteModelEvaluation implements IFunctionInstance {
 

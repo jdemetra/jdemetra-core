@@ -22,7 +22,7 @@ import ec.tstoolkit.design.Immutable;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 @Immutable
 public class ComponentDescriptor {

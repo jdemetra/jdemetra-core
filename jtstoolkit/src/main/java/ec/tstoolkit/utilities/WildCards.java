@@ -19,7 +19,7 @@ package ec.tstoolkit.utilities;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class WildCards {
 

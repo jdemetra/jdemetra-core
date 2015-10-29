@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class BasicConfiguration {
 

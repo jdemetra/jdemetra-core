@@ -38,7 +38,7 @@ import java.util.Locale;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class TramoSeatsConverter {
 

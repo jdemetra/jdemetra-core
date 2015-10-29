@@ -9,7 +9,7 @@ import ec.tstoolkit.maths.matrices.SubMatrix;
 
 /**
  *
- * @author PCUser
+ * @author Jean Palate
  */
 public class DefaultTimeVaryingRegSsf extends AbstractTimeVaryingRegSsf {
 

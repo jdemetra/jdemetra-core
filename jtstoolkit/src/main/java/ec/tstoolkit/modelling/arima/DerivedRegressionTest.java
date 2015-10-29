@@ -23,7 +23,7 @@ import ec.tstoolkit.information.InformationSet;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class DerivedRegressionTest implements IRegressionTest {
 

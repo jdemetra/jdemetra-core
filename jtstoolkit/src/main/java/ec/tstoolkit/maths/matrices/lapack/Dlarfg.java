@@ -21,7 +21,7 @@ import ec.tstoolkit.maths.Constants;
 
 /**
  * 
- * @author PCuser
+ * @author Jean Palate
  */
 public class Dlarfg {
     private final static double ZERO = 0.0, ONE = 1.0;

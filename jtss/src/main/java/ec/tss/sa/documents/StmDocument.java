@@ -30,7 +30,7 @@ import ec.tstoolkit.modelling.DeterministicComponent;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class StmDocument extends SaDocument<StmSpecification> implements Cloneable {
 

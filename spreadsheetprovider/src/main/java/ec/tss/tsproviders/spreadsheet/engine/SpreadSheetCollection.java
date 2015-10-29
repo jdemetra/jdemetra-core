@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public final class SpreadSheetCollection implements Comparable<SpreadSheetCollection> {
 

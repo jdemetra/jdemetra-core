@@ -27,7 +27,7 @@ import ec.tstoolkit.utilities.NameManager;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public abstract class AbstractSaSpecification {
 

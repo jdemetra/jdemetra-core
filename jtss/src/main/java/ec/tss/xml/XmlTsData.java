@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * 
- * @author pcuser
+ * @author Jean Palate
  */
 @XmlRootElement(name = XmlTsData.RNAME)
 @XmlType(name = XmlTsData.NAME)

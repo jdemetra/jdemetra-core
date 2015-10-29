@@ -24,7 +24,7 @@ import java.util.Map.Entry;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class InformationMapper<S> {
 

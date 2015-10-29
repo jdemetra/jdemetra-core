@@ -35,7 +35,7 @@ import java.io.IOException;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class HtmlWienerKolmogorovDiagnostics extends AbstractHtmlElement implements IHtmlElement {
 

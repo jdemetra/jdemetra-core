@@ -21,7 +21,7 @@ import ec.tstoolkit.design.Development;
 
 /**
  * 
- * @author PCuser
+ * @author Jean Palate
  */
 @Development(status = Development.Status.Exploratory)
 public class Dgeqr2 {

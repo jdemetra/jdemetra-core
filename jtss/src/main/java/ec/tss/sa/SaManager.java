@@ -31,7 +31,7 @@ import java.util.List;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 @Singleton()
 public final class SaManager extends AlgorithmManager<ISaSpecification, TsData, CompositeResults, SaDocument<ISaSpecification>, ISaProcessingFactory<?>, ISaOutputFactory, ISaDiagnosticsFactory> {

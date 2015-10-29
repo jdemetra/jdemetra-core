@@ -32,7 +32,7 @@ import java.text.DecimalFormat;
 
 /**
  *
- * @author PCUser
+ * @author Jean Palate
  */
 public class StationaryVarianceDecomposition {
 

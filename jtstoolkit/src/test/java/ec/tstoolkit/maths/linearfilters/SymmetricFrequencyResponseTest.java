@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class SymmetricFrequencyResponseTest {
     

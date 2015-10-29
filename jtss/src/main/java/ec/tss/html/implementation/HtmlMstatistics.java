@@ -23,7 +23,7 @@ import java.io.IOException;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class HtmlMstatistics extends AbstractHtmlElement {
 

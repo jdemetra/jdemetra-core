@@ -12,7 +12,7 @@ import java.io.IOException;
 
 /**
  *
- * @author PCUser
+ * @author Jean Palate
  */
 public class HtmlModelComparison extends AbstractHtmlElement{
     

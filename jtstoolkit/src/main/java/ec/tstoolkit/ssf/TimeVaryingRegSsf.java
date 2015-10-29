@@ -11,7 +11,7 @@ import ec.tstoolkit.maths.matrices.SymmetricMatrix;
 
 /**
  *
- * @author PCUser
+ * @author Jean Palate
  */
 public class TimeVaryingRegSsf extends AbstractTimeVaryingRegSsf {
 

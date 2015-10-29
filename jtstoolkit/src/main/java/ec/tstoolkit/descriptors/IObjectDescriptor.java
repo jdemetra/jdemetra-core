@@ -20,7 +20,7 @@ package ec.tstoolkit.descriptors;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public interface IObjectDescriptor<T> extends IPropertyDescriptors {
 

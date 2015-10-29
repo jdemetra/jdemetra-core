@@ -24,7 +24,7 @@ import ec.tstoolkit.maths.matrices.SymmetricMatrix;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
 public class Summation implements ISummation {

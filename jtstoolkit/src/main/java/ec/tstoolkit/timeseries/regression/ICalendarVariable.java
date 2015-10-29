@@ -20,7 +20,7 @@ package ec.tstoolkit.timeseries.regression;
 
 /**
  * 
- * @author pcuser
+ * @author Jean Palate
  */
 public interface ICalendarVariable extends ITsVariable {
 

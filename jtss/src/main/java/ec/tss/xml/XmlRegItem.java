@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 @XmlType(name = XmlRegItem.NAME)
 public class XmlRegItem implements IXmlConverter<RegressionItem> {

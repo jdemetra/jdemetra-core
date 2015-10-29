@@ -26,7 +26,7 @@ import java.util.Objects;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
 

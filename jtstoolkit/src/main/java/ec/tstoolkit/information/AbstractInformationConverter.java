@@ -18,7 +18,7 @@ package ec.tstoolkit.information;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public abstract class AbstractInformationConverter<S extends InformationSetSerializable>
         implements InformationConverter<S> {

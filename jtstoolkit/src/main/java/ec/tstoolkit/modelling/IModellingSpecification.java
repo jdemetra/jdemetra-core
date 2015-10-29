@@ -21,7 +21,7 @@ import ec.tstoolkit.algorithm.IProcSpecification;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public interface IModellingSpecification extends IProcSpecification{
     

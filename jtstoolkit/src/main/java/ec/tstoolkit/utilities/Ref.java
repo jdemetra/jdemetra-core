@@ -22,7 +22,7 @@ import ec.tstoolkit.design.PrimitiveReplacementOf;
 /**
  *
  * @param <T>
- * @author PCuser
+ * @author Jean Palate
  */
 public final class Ref<T> {
 

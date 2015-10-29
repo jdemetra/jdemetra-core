@@ -32,7 +32,7 @@ import java.text.DecimalFormat;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class HtmlGeneralizedAirline extends AbstractHtmlElement implements IHtmlElement {
 

@@ -20,7 +20,7 @@ import java.util.*;
 
 /**
  *
- * @author Jean Palate
+ * @author Jean Palate, Philippe Charles
  */
 public final class Arrays2 {
 
@@ -174,6 +174,31 @@ public final class Arrays2 {
             destPos += o.length;
         }
         return result;
+    }
+    
+    /**
+     * Remove missing values (NaN) from an existing array
+     *
+     * @param array The considered array
+     * @return The same array is returned if it doesn't contain missing values
+     */
+    public static double[] compact(final double[] array) {
+        int nm = 0;
+        for (int i = 0; i < array.length; ++i) {
+            if (Double.isNaN(array[i])) {
+                ++nm;
+            }
+        }
+        if (nm == 0) {
+            return array;
+        }
+        double[] narray = new double[array.length - nm];
+        for (int i = 0, j = 0; i < array.length; ++i) {
+            if (!Double.isNaN(array[i])) {
+                narray[j++] = array[i];
+            }
+        }
+        return narray;
     }
 
     /**

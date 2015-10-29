@@ -60,7 +60,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 @XmlRootElement(name = XmlInformation.RNAME)
 @XmlType(name = XmlInformation.NAME)

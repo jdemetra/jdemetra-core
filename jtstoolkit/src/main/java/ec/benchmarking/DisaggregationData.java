@@ -27,7 +27,7 @@ import ec.tstoolkit.timeseries.simplets.TsDomain;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
 public class DisaggregationData {
