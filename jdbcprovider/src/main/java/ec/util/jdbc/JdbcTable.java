@@ -99,29 +99,29 @@ public final class JdbcTable implements Comparable<JdbcTable> {
     @Nonnull
     private static JdbcTable fromMap(@Nonnull Map<String, String> map) {
         return new JdbcTable(
-                map.get(TABLE_CAT_COLUMN),
-                map.get(TABLE_SCHEM_COLUMN),
-                map.get(TABLE_NAME_COLUMN),
-                map.get(TABLE_TYPE_COLUMN),
-                map.get(REMARKS_COLUMN),
-                map.get(TYPE_CAT_COLUMN),
-                map.get(TYPE_SCHEM_COLUMN),
-                map.get(TYPE_NAME_COLUMN),
-                map.get(SELF_REFERENCING_COL_NAME_COLUMN),
-                map.get(REF_GENERATION_COLUMN));
+                get(map, "TABLE_CAT", "TABLE_CATALOG"),
+                get(map, "TABLE_SCHEM", "TABLE_SCHEMA"),
+                get(map, "TABLE_NAME"),
+                get(map, "TABLE_TYPE"),
+                get(map, "REMARKS"),
+                get(map, "TYPE_CAT"),
+                get(map, "TYPE_SCHEM"),
+                get(map, "TYPE_NAME"),
+                get(map, "SELF_REFERENCING_COL_NAME"),
+                get(map, "REF_GENERATION"));
     }
-    //
-    private static final String TABLE_CAT_COLUMN = "TABLE_CAT";
-    private static final String TABLE_SCHEM_COLUMN = "TABLE_SCHEM";
-    private static final String TABLE_NAME_COLUMN = "TABLE_NAME";
-    private static final String TABLE_TYPE_COLUMN = "TABLE_TYPE";
-    private static final String REMARKS_COLUMN = "REMARKS";
-    private static final String TYPE_CAT_COLUMN = "TYPE_CAT";
-    private static final String TYPE_SCHEM_COLUMN = "TYPE_SCHEM";
-    private static final String TYPE_NAME_COLUMN = "TYPE_NAME";
-    private static final String SELF_REFERENCING_COL_NAME_COLUMN = "SELF_REFERENCING_COL_NAME";
-    private static final String REF_GENERATION_COLUMN = "REF_GENERATION";
-    //
+
+    @Nullable
+    private static String get(@Nonnull Map<String, String> map, String... keys) {
+        for (String key : keys) {
+            String result = map.get(key);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
+    }
+    
     private final String catalog;
     private final String schema;
     private final String name;
