@@ -88,4 +88,21 @@ public final class Files2 {
         }
         return false;
     }
+
+    /**
+     * Tries to get an existing file from a path
+     *
+     * @param path
+     * @return
+     */
+    @Nullable
+    public static File extractFile(@Nonnull String path) {
+        File file = new File(path);
+        if (file.isFile()) {
+            return file;
+        }
+        while ((file = file.getParentFile()) != null && !file.exists()) {
+        }
+        return file;
+    }
 }
