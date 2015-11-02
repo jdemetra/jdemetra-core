@@ -16,6 +16,7 @@
  */
 package ec.tstoolkit.utilities;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Set;
@@ -23,6 +24,7 @@ import java.util.Set;
 /**
  *
  * @author Philippe Charles
+ * @param <PRINTER>
  */
 public abstract class StackTracePrinter<PRINTER> {
 
@@ -159,7 +161,12 @@ public abstract class StackTracePrinter<PRINTER> {
 
         @Override
         protected void printMessage(StringBuilder sb, String message) {
-            sb.append("<span class='message'>").append(message).append("</span>");
+            File file = Files2.extractFile(message);
+            if (file != null) {
+                sb.append("<a class='message' href='").append(file.toURI()).append("'>").append(message).append("</a>");
+            } else {
+                sb.append("<span class='message'>").append(message).append("</span>");
+            }
         }
 
         @Override
