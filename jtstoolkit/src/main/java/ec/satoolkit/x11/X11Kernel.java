@@ -40,8 +40,8 @@ public class X11Kernel implements ISeriesDecomposer {
     public static final String A1 = "a1", A1a = "a1a",
             A6 = "a6", A7 = "a7",
             A8 = "a8", A8t = "a8t",
-            A8s = "a8s", A8i = "a8i";
-    public static final String[] ALL_A = {A1, A1a, A6, A7, A8, A8t, A8s, A8i};
+            A8s = "a8s", A8i = "a8i", A9= "a9", A9u="a9u", A9sa="a9sa";
+    public static final String[] ALL_A = {A1, A1a, A6, A7, A8, A8t, A8s, A8i, A9,A9sa,A9u};
     public static final String B1 = "b1", B2 = "b2", B3 = "b3",
             B3TEST = "b3-seasonalityTest", B4 = "b4", B5 = "b5", B6 = "b6",
             B7 = "b7", B7_IC = "b7-IC ratio", B8 = "b8", B9 = "b9",
@@ -448,7 +448,10 @@ public class X11Kernel implements ISeriesDecomposer {
         // add pt, pi to d11
         TsData d11c = toolkit.getContext().invOp(d11, a8t);
         d11c = toolkit.getContext().invOp(d11c, a8i);
-
+        TsData a9sa = atables.get(A9sa, TsData.class);
+        d11c = toolkit.getContext().invOp(d11c, a9sa);
+  
+   
         if (changeMode) {
             toolkit.getContext().setMode(decoModeX11);
         }
@@ -517,7 +520,7 @@ public class X11Kernel implements ISeriesDecomposer {
         // remove pre-specified outliers
         TsData a1c = toolkit.getContext().op(a1, a8i);
         TsData d11c = toolkit.getContext().op(d11, a8i);
-
+        
         TsData tmp = toolkit.getContext().invOp(d12, d16);
 //        tmp = toolkit.getContext().invOp(tmp, c16);
         TsData e1 = toolkit.getUtilities().correctSeries(a1c, c17, tmp);
