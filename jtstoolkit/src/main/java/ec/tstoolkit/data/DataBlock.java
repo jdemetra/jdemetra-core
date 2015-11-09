@@ -827,7 +827,7 @@ public final class DataBlock implements IDataBlock, Cloneable {
                 r += x_[i] * data[j];
             }
         } else {
-            for (int i = end_-inc_, j = m - 1; j >= 0; i += inc_, --j) {
+            for (int i = end_-inc_, j = m - 1; j >= 0; i -= inc_, --j) {
                 r += x_[i] * data[j];
             }
         }
