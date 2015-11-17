@@ -40,7 +40,10 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
             UB2 = "ub2",
             CANCEL = "cancel",
             ARMALIMIT = "armalimit",
-            UBFINAL = "ubfinal";
+            UBFINAL = "ubfinal",
+            PERCENTRSE = "percentRSE",
+            ARMA = "arma",
+            DIFF = "diff";
 
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, CANCEL), Double.class);
@@ -50,12 +53,15 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
         dic.put(InformationSet.item(prefix, UBFINAL), Double.class);
         dic.put(InformationSet.item(prefix, LJUNGBOXLIMIT), Double.class);
         dic.put(InformationSet.item(prefix, REDUCECV), Double.class);
+        dic.put(InformationSet.item(prefix, PERCENTRSE), Double.class);
         dic.put(InformationSet.item(prefix, ENABLED), Boolean.class);
         dic.put(InformationSet.item(prefix, ACCEPTDEFAULT), Boolean.class);
         dic.put(InformationSet.item(prefix, MIXED), Boolean.class);
         dic.put(InformationSet.item(prefix, CHECKMU), Boolean.class);
         dic.put(InformationSet.item(prefix, BALANCED), Boolean.class);
         dic.put(InformationSet.item(prefix, HR), Boolean.class);
+        OrderSpec.fillDictionary(InformationSet.item(prefix, ARMA), dic);
+        OrderSpec.fillDictionary(InformationSet.item(prefix, DIFF), dic);
     }
 
     private boolean enabled_ = false;
@@ -274,7 +280,7 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
     }
 
     public boolean isDefault() {
-        return enabled_ = true && !acceptdef_ && diff_ == null && order_ == null && tsig_ == DEF_TSIG && pcr_ == DEF_LJUNGBOX
+        return !enabled_ && !acceptdef_ && diff_ == null && order_ == null && tsig_ == DEF_TSIG && pcr_ == DEF_LJUNGBOX
                 && predcv_ == DEF_PREDCV && ubfinal_ == DEF_UBFINAL && checkmu_ && mixed_ && !balanced_
                 && cancel_ == DEF_CANCEL && fct_ == DEF_FCT && ub1_ == DEF_UB1 && ub2_ == DEF_UB2;
     }
@@ -315,7 +321,6 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
     @Override
     public InformationSet write(boolean verbose) {
         InformationSet info = new InformationSet();
-        // Unused: fct, diff, orders
         info.add(ENABLED, enabled_);
         if (verbose || acceptdef_ != DEF_ACCEPTDEF) {
             info.add(ACCEPTDEFAULT, acceptdef_);
@@ -353,6 +358,25 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
         if (verbose || ubfinal_ != DEF_UBFINAL) {
             info.add(UBFINAL, ubfinal_);
         }
+        if (verbose || fct_ != DEF_FCT) {
+            info.add(PERCENTRSE, fct_);
+        }
+        if (verbose || order_ != null) {
+            if (order_ != null) {
+                InformationSet osinfo = order_.write(verbose);
+                if (osinfo != null) {
+                    info.add(ARMA, osinfo);
+                }
+            }
+        }
+        if (verbose || diff_ != null) {
+            if (diff_ != null) {
+                InformationSet osinfo = diff_.write(verbose);
+                if (osinfo != null) {
+                    info.add(DIFF, osinfo);
+                }
+            }
+        }
         return info;
     }
 
@@ -360,7 +384,6 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
     public boolean read(InformationSet info) {
         try {
             reset();
-            // Unused: fct, diff, orders
             Boolean enabled = info.get(ENABLED, Boolean.class);
             if (enabled != null) {
                 enabled_ = enabled;
@@ -412,6 +435,24 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
             Double ubf = info.get(UBFINAL, Double.class);
             if (ubf != null) {
                 ubfinal_ = ubf;
+            }
+            Double fct = info.get(PERCENTRSE, Double.class);
+            if (fct != null) {
+                fct_ = fct;
+            }
+            InformationSet osinfo = info.getSubSet(ARMA);
+            if (osinfo != null) {
+                order_ = new OrderSpec(0, 0, OrderSpec.Type.Fixed);
+                if (!order_.read(osinfo)) {
+                    return false;
+                }
+            }
+            osinfo = info.getSubSet(DIFF);
+            if (osinfo != null) {
+                diff_ = new OrderSpec(0, 0, OrderSpec.Type.Fixed);
+                if (!diff_.read(osinfo)) {
+                    return false;
+                }
             }
             return true;
         } catch (Exception err) {

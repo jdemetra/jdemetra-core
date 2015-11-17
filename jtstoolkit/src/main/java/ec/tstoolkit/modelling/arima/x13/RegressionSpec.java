@@ -53,7 +53,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         MovingHolidaySpec.fillDictionary(InformationSet.item(prefix, MHS), dic);
         TradingDaysSpec.fillDictionary(InformationSet.item(prefix, TD), dic);
         InterventionVariable.fillDictionary(InformationSet.item(prefix, INTERVENTIONS), dic);
-   }
+    }
 
     private double aicdiff_ = DEF_AICCDIFF;
 //        private SinCosVariablesSpec m_sincos;
@@ -323,6 +323,9 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
             return null;
         }
         InformationSet specInfo = new InformationSet();
+        if (verbose || aicdiff_ != DEF_AICCDIFF) {
+            specInfo.add(AICDIFF, aicdiff_);
+        }
         if (verbose || td_.isUsed()) {
             InformationSet tdinfo = td_.write(verbose);
             if (tdinfo != null) {

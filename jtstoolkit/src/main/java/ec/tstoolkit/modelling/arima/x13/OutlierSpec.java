@@ -34,7 +34,8 @@ import java.util.Objects;
 public class OutlierSpec implements Cloneable, InformationSetSerializable {
 
     public static final String SPAN = "span",
-            AO = "ao", LS = "ls", TC = "tc", SO = "so",
+            AO = "ao", LS = "ls", TC = "tc", SO = "so", 
+            IO = "io", SLS = "sls", WO = "wo", TLS = "tls",
             DEFCV = "defcv",
             METHOD = "method",
             LSRUN = "lsrun",
@@ -47,6 +48,10 @@ public class OutlierSpec implements Cloneable, InformationSetSerializable {
         dic.put(InformationSet.item(prefix, LS), Boolean.class);
         dic.put(InformationSet.item(prefix, TC), Boolean.class);
         dic.put(InformationSet.item(prefix, SO), Boolean.class);
+        dic.put(InformationSet.item(prefix, IO), Boolean.class);
+        dic.put(InformationSet.item(prefix, SLS), Boolean.class);
+        dic.put(InformationSet.item(prefix, WO), Boolean.class);
+        dic.put(InformationSet.item(prefix, TLS), Boolean.class);
         dic.put(InformationSet.item(prefix, DEFCV), Double.class);
         dic.put(InformationSet.item(prefix, METHOD), String.class);
         dic.put(InformationSet.item(prefix, LSRUN), Integer.class);
@@ -154,7 +159,12 @@ public class OutlierSpec implements Cloneable, InformationSetSerializable {
         return nmax_;
     }
 
+    @Deprecated
     public void seMaxIter(int value) {
+        nmax_ = value;
+    }
+    
+    public void setMaxIter(int value) {
         nmax_ = value;
     }
 
@@ -287,6 +297,22 @@ public class OutlierSpec implements Cloneable, InformationSetSerializable {
             Double so = info.get(SO, Double.class);
             if (so != null) {
                 types_.add(new SingleOutlierSpec(OutlierType.SO, so));
+            }
+            Double io = info.get(IO, Double.class);
+            if (io != null) {
+                types_.add(new SingleOutlierSpec(OutlierType.IO, io));
+            }
+            Double sls = info.get(SLS, Double.class);
+            if (sls != null) {
+                types_.add(new SingleOutlierSpec(OutlierType.SLS, sls));
+            }
+            Double wo = info.get(WO, Double.class);
+            if (wo != null) {
+                types_.add(new SingleOutlierSpec(OutlierType.WO, wo));
+            }
+            Double tls = info.get(TLS, Double.class);
+            if (tls != null) {
+                types_.add(new SingleOutlierSpec(OutlierType.TLS, tls));
             }
 
             Double defcv = info.get(DEFCV, Double.class);

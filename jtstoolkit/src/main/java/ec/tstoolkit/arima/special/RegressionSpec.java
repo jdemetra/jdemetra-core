@@ -143,7 +143,8 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
 
     public boolean isDefault() {
         return !td_.isUsed() && !easter_.isUsed()&& users_.isEmpty()
-                && outliers_.isEmpty() && interventions_.isEmpty();
+                && outliers_.isEmpty() && interventions_.isEmpty()
+                && ramps_.isEmpty();
     }
 
     public void add(TsVariableDescriptor svar) {
