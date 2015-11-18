@@ -19,10 +19,6 @@
         </license>
     </licenses>
     
-    <scm>
-        <connection>scm:svn:https://joinup.ec.europa.eu/svn/sat/</connection>    
-    </scm>
-  
     <repositories>
         <repository>
             <id>joinup-thirdparty</id>
