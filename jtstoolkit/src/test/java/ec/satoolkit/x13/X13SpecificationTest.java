@@ -17,8 +17,13 @@
 
 package ec.satoolkit.x13;
 
+import ec.satoolkit.DecompositionMode;
+import ec.satoolkit.benchmarking.SaBenchmarkingSpec;
+import ec.satoolkit.x11.X11Specification;
 import ec.tstoolkit.information.InformationSet;
+import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
 import java.util.ArrayList;
+import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -66,6 +71,46 @@ public class X13SpecificationTest {
         nspec = new X13Specification();
         nspec.read(info);
         assertEquals(X13Specification.RSA5, nspec);
+    }
+    
+    @Test
+    public void setInformationSet() {
+        X13Specification expected = new X13Specification();
+        X13Specification actual = new X13Specification();
+        InformationSet info;
+        
+        
+        RegArimaSpecification raSpec = new RegArimaSpecification();
+        Assert.assertFalse(raSpec.isUsingAutoModel());
+        raSpec.setUsingAutoModel(true);
+        Assert.assertTrue(raSpec.isUsingAutoModel());
+        Assert.assertEquals(expected, actual);
+        expected.setRegArimaSpecification(raSpec);
+        Assert.assertNotEquals(expected, actual);
+        info = expected.write(true);
+        actual.read(info);
+        Assert.assertEquals(expected, actual);
+        Assert.assertTrue(actual.getRegArimaSpecification().isUsingAutoModel());
+        
+        X11Specification xSpec = new X11Specification();
+        xSpec.setMode(DecompositionMode.Additive);
+        expected.setX11Specification(xSpec);
+        Assert.assertNotEquals(expected, actual);
+        info = expected.write(true);
+        actual.read(info);
+        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(DecompositionMode.Additive, actual.getX11Specification().getMode());
+        
+        SaBenchmarkingSpec sbSpec = new SaBenchmarkingSpec();
+        sbSpec.setTarget(SaBenchmarkingSpec.Target.Original);
+        sbSpec.setEnabled(true);
+        expected.setBenchmarkingSpecification(sbSpec);
+        Assert.assertNotEquals(expected, actual);
+        info = expected.write(true);
+        actual.read(info);
+        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(SaBenchmarkingSpec.Target.Original, actual.getBenchmarkingSpecification().getTarget());
+        
     }
 
 //    @Test
