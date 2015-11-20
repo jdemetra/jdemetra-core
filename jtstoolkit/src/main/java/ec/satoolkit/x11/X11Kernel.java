@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.satoolkit.x11;
 
 import ec.satoolkit.DecompositionMode;
@@ -148,15 +147,16 @@ public class X11Kernel implements ISeriesDecomposer {
                 X11Step.B, b3, info);
         TsData b4anorm = toolkit.getSeasonalNormalizer().normalize(b4a, null);
         TsData b4d = toolkit.getContext().op(b3, b4anorm);
-            
+
         ecorr = toolkit.getExtremeValuesCorrector();
-        if ( ecorr instanceof CochranDependentExtremeValuesCorrector)
-        { 
-            ((CochranDependentExtremeValuesCorrector) ecorr).testCochran(b4d);}
-        
+        if (ecorr instanceof CochranDependentExtremeValuesCorrector) {
+           // ((CochranDependentExtremeValuesCorrector) ecorr).testCochran(b4d);
+        ((CochranDependentExtremeValuesCorrector) ecorr).testCochran(excludeforecast(b4d));
+        }
+
         ecorr.analyse(b4d);
-       
-        TsData b4 = ecorr.computeCorrections(b3);       
+
+        TsData b4 = ecorr.computeCorrections( b3);
         TsData b4g = ecorr.applyCorrections(b3, b4);
 
         TsData b5a = toolkit.getSeasonalComputer().doInitialFiltering(
@@ -177,9 +177,9 @@ public class X11Kernel implements ISeriesDecomposer {
                 b8, info);
         TsData b9c = toolkit.getSeasonalNormalizer().normalize(b9a, null);
         TsData b9d = toolkit.getContext().op(b8, b9c);
-  
-        ecorr.analyse(b9d);
-        TsData b9 = ecorr.computeCorrections(b8);
+
+        ecorr.analyse(excludeforecast(b9d));
+        TsData b9 = ecorr.computeCorrections(excludeforecast(b8));
         TsData b9g = ecorr.applyCorrections(b8, b9);
 
         TsData b10a = toolkit.getSeasonalComputer().doFinalFiltering(X11Step.B,
@@ -211,10 +211,10 @@ public class X11Kernel implements ISeriesDecomposer {
          * "Adjustment Coefficients for trading day effects from the regression"
          * ); }
          */
-          if ( ecorr instanceof CochranDependentExtremeValuesCorrector)
-        { 
-            ((CochranDependentExtremeValuesCorrector) ecorr).testCochran(next);}
-        ecorr.analyse(next);
+        if (ecorr instanceof CochranDependentExtremeValuesCorrector) {
+            ((CochranDependentExtremeValuesCorrector) ecorr).testCochran(excludeforecast(next));
+        }
+        ecorr.analyse((next));
         TsData b17 = ecorr.getObservationWeights();
         TsData b20 = ecorr.getCorrectionFactors();
 
@@ -336,25 +336,22 @@ public class X11Kernel implements ISeriesDecomposer {
             toolkit.getUtilities().checkPositivity(d7);
         }
         TsData d8 = toolkit.getContext().op(refSeries, d7);
-      
-        
-        TsData d9,d10;
+
+        TsData d9, d10;
         if (ecorr instanceof PeriodSpecificExtremeValuesCorrector) {
-            d9 = ecorr.computeCorrections(d8);
+            d9 = ecorr.computeCorrections(excludeforecast(d8));
             TsData d9g = ecorr.applyCorrections(d8, d9);
             TsData d10a = toolkit.getSeasonalComputer().doFinalFiltering(X11Step.D,
                     d9g, info);
             d10 = toolkit.getSeasonalNormalizer().normalize(d10a, null);
-        }
-        else {
+        } else {
             TsData d9bis = toolkit.getContext().op(d1, d7);
             d9 = toolkit.getUtilities().differences(d9bis, d8); //
             TsData d10bis = toolkit.getSeasonalComputer().doFinalFiltering(
                     X11Step.D, d9bis, info);
             d10 = toolkit.getSeasonalNormalizer().normalize(d10bis, null);
         }
-        
- 
+
         TsData d11bis = toolkit.getContext().op(d1, d10);
         TsData d11 = toolkit.getContext().op(refSeries, d10);
 
@@ -393,10 +390,7 @@ public class X11Kernel implements ISeriesDecomposer {
             d13 = toolkit.getContext().op(d11, d12); // ???
         }
 
-
-
         TsDomain sdomain = toolkit.getContext().getEstimationDomain();
-
 
         dtables.set(D1, d1.fittoDomain(sdomain));
         dtables.set(D2, d2.fittoDomain(sdomain));
@@ -434,7 +428,7 @@ public class X11Kernel implements ISeriesDecomposer {
         dtables.set(D16, d16);
         dtables.set(D18, toolkit.getContext().op(d16, d10));
 
-        int nf= toolkit.getContext().getForecastHorizon();
+        int nf = toolkit.getContext().getForecastHorizon();
         if (nf > 0) {
             TsData a1a = atables.get(A1a, TsData.class);
             TsData d16a = toolkit.getContext().op(a1a, d11c);
@@ -499,4 +493,16 @@ public class X11Kernel implements ISeriesDecomposer {
 
     private void stepF(InformationSet info) {
     }
+
+    private TsData excludeforecast(TsData tsWithForcast) {
+        TsData tsWithoutforCast;
+        if (toolkit.isExcludefcst()) {
+            toolkit.getContext().getForecastHorizon();
+            tsWithoutforCast = tsWithForcast.drop(0, toolkit.getContext().getForecastHorizon());
+            return tsWithoutforCast;
+        } else {
+            return tsWithForcast;
+        }
+    }
+
 }

@@ -17,6 +17,7 @@
 package ec.satoolkit.x11;
 
 import ec.tstoolkit.design.Development;
+import java.util.Set;
 
 /**
  * An X11Toolkit contains the different modules used during the execution of an
@@ -66,36 +67,36 @@ public class X11Toolkit extends BaseX11Algorithm implements
         }
         toolkit.setSeasonalFilterprovider(sprovider);
 
+    toolkit.setExcludefcas(spec.isExcludefcst());
+        
+        
         if (spec.isAutoHenderson()) {
             toolkit.setTrendCycleFilterprovider(new AutomaticTrendCycleComputer());
         } else {
             toolkit.setTrendCycleFilterprovider(new DefaultTrendCycleComputer(
                     spec.getHendersonFilterLength()));
         }
-
+        
         /* Define which ExtremeExtremeValuesCorrector has to be used */
-        if (spec.getCalendarSigma().equals(CalendarSigma.Select)){
-          GroupSpecificExtremeValuesCorrector xcorrector = new GroupSpecificExtremeValuesCorrector();
+        if (spec.getCalendarSigma().equals(CalendarSigma.Select)) {
+            GroupSpecificExtremeValuesCorrector xcorrector = new GroupSpecificExtremeValuesCorrector();
             xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
             xcorrector.setSigmavecOption(spec.getSigmavec());
-            toolkit.setExtremeValuescorrector(xcorrector);        
-        } 
-       else if (spec.getCalendarSigma().equals(CalendarSigma.All)) {
+            toolkit.setExtremeValuescorrector(xcorrector);
+        } else if (spec.getCalendarSigma().equals(CalendarSigma.All)) {
             PeriodSpecificExtremeValuesCorrector xcorrector = new PeriodSpecificExtremeValuesCorrector();
             xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
-            toolkit.setExtremeValuescorrector(xcorrector);        }
-       else if (spec.getCalendarSigma().equals(CalendarSigma.Signif)){
+            toolkit.setExtremeValuescorrector(xcorrector);
+        } else if (spec.getCalendarSigma().equals(CalendarSigma.Signif)) {
             CochranDependentExtremeValuesCorrector xcorrector = new CochranDependentExtremeValuesCorrector();
             xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
             toolkit.setExtremeValuescorrector(xcorrector);
-       }
-       else {
+        } else {
             DefaultExtremeValuesCorrector xcorrector = new DefaultExtremeValuesCorrector();
             xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
-            toolkit.setExtremeValuescorrector(xcorrector);        }
-           
-        
-         
+            toolkit.setExtremeValuescorrector(xcorrector);
+        }
+
         /*In Case that one or more and not all of the filters are stable the normalizer needs this information*/
         if (spec.isSeasonal()) {
             DefaultSeasonalNormalizer nprovider = new DefaultSeasonalNormalizer();
@@ -118,6 +119,7 @@ public class X11Toolkit extends BaseX11Algorithm implements
     private IExtremeValuesCorrector xcorrector;
     private ISeasonalNormalizer snormalizer;
     private IX11Utilities utilities = new DefaultX11Utilities();
+    private boolean excludefcst=false;
 
     private X11Toolkit(X11Context context) {
         this.context = context;
@@ -183,6 +185,11 @@ public class X11Toolkit extends BaseX11Algorithm implements
         return utilities;
     }
 
+    @Override
+    public boolean isExcludefcst() {
+        return excludefcst;
+    }
+
     /**
      *
      * @param context
@@ -241,6 +248,10 @@ public class X11Toolkit extends BaseX11Algorithm implements
             snormalizer.setContext(context);
         }
         this.snormalizer = snormalizer;
+    }
+
+    public void setExcludefcas(boolean excldudefcast) {
+        this.excludefcst = excldudefcast;
     }
 
     /**

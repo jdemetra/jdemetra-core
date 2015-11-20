@@ -63,4 +63,12 @@ public interface IX11Toolkit {
      * @return
      */
     IX11Utilities getUtilities();
+    
+    /**
+     *
+     * @return
+     */
+    boolean isExcludefcst();
+       
+    
 }
