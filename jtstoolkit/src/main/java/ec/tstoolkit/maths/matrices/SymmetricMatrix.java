@@ -189,11 +189,12 @@ public final class SymmetricMatrix {
     }
 
     /**
-     * Compputes the lower Cholesky factor of a symmetric matrix.
-     * The initial matrix is modified in place
+     * Compputes the lower Cholesky factor of a symmetric matrix. The initial
+     * matrix is modified in place
+     *
      * @param m On entry, the given initial matrix. On exit,the Cholesky factor
-     * @throws MatrixException An exception is thrown when the matrix is not decomposable
-     * (not positive definite)
+     * @throws MatrixException An exception is thrown when the matrix is not
+     * decomposable (not positive definite)
      */
     public static void lcholesky(final Matrix m) {
         double[] data = m.data_;
@@ -296,7 +297,8 @@ public final class SymmetricMatrix {
 
     /**
      * Computes L*L'
-     * @param lower The lower triangular matrix (L). The routine just use the 
+     *
+     * @param lower The lower triangular matrix (L). The routine just use the
      * lower part of the input matrix.
      * @return A new matrix is returned (M = L*L')
      */
@@ -320,27 +322,45 @@ public final class SymmetricMatrix {
     }
 
     /**
-     *
-     * @param s
+     * Compute xSx'
+     * @param S
      * @param x
      * @return
      */
-    public static double quadraticForm(final Matrix s, final DataBlock x) {
-        /*
-         * if (s == null) throw new ArgumentNullException("s"); if (x == null)
-         * throw new ArgumentNullException("x");
-         */
-        // double n = s.RowsCount;
-        // if (x.Length != n)
-        // throw new MatrixException(MatrixException.IncompatibleDimensions);
-        double w = 0;
-        DataBlockIterator cols = s.columns();
-        DataBlock col = cols.getData();
-        int pos = 0;
-        do {
-            w += x.get(pos++) * x.dot(col);
-        } while (cols.next());
-        return w;
+//    public static double quadraticForm(final Matrix s, final DataBlock x) {
+//        /*
+//         * if (s == null) throw new ArgumentNullException("s"); if (x == null)
+//         * throw new ArgumentNullException("x");
+//         */
+//        // double n = s.RowsCount;
+//        // if (x.Length != n)
+//        // throw new MatrixException(MatrixException.IncompatibleDimensions);
+//        double w = 0;
+//        DataBlockIterator cols = s.columns();
+//        DataBlock col = cols.getData();
+//        int pos = 0;
+//        do {
+//            w += x.get(pos++) * x.dot(col);
+//        } while (cols.next());
+//        return w;
+//    }
+//
+    public static double quadraticForm(final Matrix S, final DataBlock x) {
+        double[] pm = S.data_;
+        double[] px = x.getData();
+
+        int x0 = x.getStartPosition(), x1 = x.getEndPosition(), xinc = x.getIncrement();
+        int cinc = S.nrows_;
+        double s = 0;
+        for (int ic = 0, id = 0, ix = x0; ix != x1; ix += xinc, id += 1 + cinc, ic += cinc) {
+            double xi = px[ix];
+            double z = pm[id] * xi;
+            for (int ir = ic, jx = x0; jx < ix; ++ir, jx += xinc) {
+                z += 2 * pm[ir] * px[jx];
+            }
+            s += z * xi;
+        }
+        return s;
     }
 
     /**
@@ -401,22 +421,40 @@ public final class SymmetricMatrix {
      * @param x
      * @return
      */
-    public static double quadraticForm(final SubMatrix s, final DataBlock x) {
-        /*
-         * if (s == null) throw new ArgumentNullException("s"); if (x == null)
-         * throw new ArgumentNullException("x");
-         */
-        // double n = s.RowsCount;
-        // if (x.Length != n)
-        // throw new MatrixException(MatrixException.IncompatibleDimensions);
-        double w = 0;
-        DataBlockIterator cols = s.columns();
-        DataBlock col = cols.getData();
-        int pos = 0;
-        do {
-            w += x.get(pos++) * x.dot(col);
-        } while (cols.next());
-        return w;
+//    public static double quadraticForm(final SubMatrix s, final DataBlock x) {
+//        /*
+//         * if (s == null) throw new ArgumentNullException("s"); if (x == null)
+//         * throw new ArgumentNullException("x");
+//         */
+//        // double n = s.RowsCount;
+//        // if (x.Length != n)
+//        // throw new MatrixException(MatrixException.IncompatibleDimensions);
+//        double w = 0;
+//        DataBlockIterator cols = s.columns();
+//        DataBlock col = cols.getData();
+//        int pos = 0;
+//        do {
+//            w += x.get(pos++) * x.dot(col);
+//        } while (cols.next());
+//        return w;
+//    }
+//
+    public static double quadraticForm(final SubMatrix M, final DataBlock x) {
+        double[] pm = M.m_data;
+        double[] px = x.getData();
+
+        int x0 = x.getStartPosition(), x1 = x.getEndPosition(), xinc = x.getIncrement();
+        int m0 = M.m_start, rinc = M.m_row_inc, cinc = M.m_col_inc;
+        double s = 0;
+        for (int ic = m0, id = m0, ix = x0; ix != x1; ix += xinc, id += rinc + cinc, ic += cinc) {
+            double xi = px[ix];
+            double z = pm[id] * xi;
+            for (int ir = ic, jx = x0; jx < ix; ir += rinc, jx += xinc) {
+                z += 2 * pm[ir] * px[jx];
+            }
+            s += z * xi;
+        }
+        return s;
     }
 
     /**
@@ -697,10 +735,12 @@ public final class SymmetricMatrix {
     }
 
     /**
-     * Reinforces the symmetry of a given matrix, which must be squared (not checked).
-     * the matrix is defined by x(i,j)=x(j,i)=0.5*(x(i,j)+x(j,i))
+     * Reinforces the symmetry of a given matrix, which must be squared (not
+     * checked). the matrix is defined by x(i,j)=x(j,i)=0.5*(x(i,j)+x(j,i))
+     *
      * @param m The input matrix
-    **/
+    *
+     */
     public static void reinforceSymmetry(final Matrix m) throws MatrixException {
         double[] data = m.data_;
         int n = m.nrows_;
@@ -719,10 +759,12 @@ public final class SymmetricMatrix {
     }
 
     /**
-     * Reinforces the symmetry of a given sub-matrix, which must be squared (not checked).
-     * the matrix is defined by x(i,j)=x(j,i)=0.5*(x(i,j)+x(j,i))
+     * Reinforces the symmetry of a given sub-matrix, which must be squared (not
+     * checked). the matrix is defined by x(i,j)=x(j,i)=0.5*(x(i,j)+x(j,i))
+     *
      * @param m The input matrix
-    **/
+    *
+     */
     public static void reinforceSymmetry(final SubMatrix m) {
         int n = m.m_nrows;
         for (int i = 0; i < n - 1; ++i) {
@@ -735,11 +777,12 @@ public final class SymmetricMatrix {
     }
 
     /**
-     * Compputes the upper Cholesky factor of a symmetric matrix.
-     * The initial matrix is modified in place
+     * Compputes the upper Cholesky factor of a symmetric matrix. The initial
+     * matrix is modified in place
+     *
      * @param m On entry, the given initial matrix. On exit,the Cholesky factor
-     * @throws MatrixException An exception is thrown when the matrix is not decomposable
-     * (not positive definite)
+     * @throws MatrixException An exception is thrown when the matrix is not
+     * decomposable (not positive definite)
      */
     public static void ucholesky(final Matrix s) throws MatrixException {
         // if (s == null)
@@ -808,6 +851,7 @@ public final class SymmetricMatrix {
 
     /**
      * Computes x + x'
+     *
      * @param x The squared input matrix
      * @return A new matrix (same size as x) is returned.
      */
@@ -828,6 +872,7 @@ public final class SymmetricMatrix {
 
     /**
      * Computes X'*X
+     *
      * @param x The input matrix.
      * @return A new matrix is returned (M = X'*X)
      */
@@ -875,6 +920,7 @@ public final class SymmetricMatrix {
 
     /**
      * Computes X*X'
+     *
      * @param x The input matrix.
      * @return A new matrix is returned (M = X*X')
      */
