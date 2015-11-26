@@ -39,11 +39,12 @@ public class TsCollectionCsvFormatter {
     private static final String newLine = "\r\n";
     private final DecimalFormat fmt;
     private final NumberFormat ifmt;
+    private boolean fullName;
 
     public TsCollectionCsvFormatter() {
         ifmt = NumberFormat.getIntegerInstance();
         ifmt.setGroupingUsed(false);
-        comma=BasicConfiguration.getCsvSeparator();
+        comma = BasicConfiguration.getCsvSeparator();
         fmt = (DecimalFormat) DecimalFormat.getNumberInstance();
         fmt.setMaximumFractionDigits(BasicConfiguration.getFractionDigits());
         fmt.setGroupingUsed(false);
@@ -55,6 +56,10 @@ public class TsCollectionCsvFormatter {
 
     public void setPresentation(CsvLayout layout) {
         layout_ = layout;
+    }
+
+    public void setFullName(boolean fullName) {
+        this.fullName = fullName;
     }
 
     public boolean write(List<TsData> coll, List<String> names, Writer writer) throws IOException {
@@ -156,7 +161,11 @@ public class TsCollectionCsvFormatter {
         if (txt == null) {
             return;
         }
-        txt=MultiLineNameUtil.join(txt, " * ");
+        if (fullName) {
+            txt = MultiLineNameUtil.join(txt, " * ");
+        } else {
+            txt = MultiLineNameUtil.last(txt);
+        }
 
         if (txt.indexOf(comma) >= 0) {
             if (txt.indexOf('\"') >= 0) {

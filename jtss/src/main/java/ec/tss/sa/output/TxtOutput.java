@@ -54,7 +54,7 @@ public class TxtOutput extends BasicConfiguration implements IOutput<SaDocument<
         for (String item : config_.getSeries()) {
             TsData s = document.getResults().getData(item, TsData.class);
             if (s != null) {
-                write(folder, name + '_' + item, document.getTs().getName(), s);
+                write(folder, name + '_' + item, document.getInput().getName(), s, config_.isFullName());
             }
         }
     }
@@ -79,11 +79,16 @@ public class TxtOutput extends BasicConfiguration implements IOutput<SaDocument<
         return true;
     }
 
-    public static void write(File folder, String name, String sname, TsData s) throws Exception {
+    public static void write(File folder, String name, String sname, TsData s, boolean fullName) throws Exception {
         if (s == null) {
             return;
         }
-        sname=MultiLineNameUtil.join(sname, " * ");
+        if (fullName) {
+            sname=MultiLineNameUtil.join(sname, " * ");
+        } else {
+            sname = MultiLineNameUtil.last(sname);
+        }
+        
         File file = new File(folder, Paths.changeExtension(name, "dta"));
         try (OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.ISO_8859_1)) {
             w.write(sname);

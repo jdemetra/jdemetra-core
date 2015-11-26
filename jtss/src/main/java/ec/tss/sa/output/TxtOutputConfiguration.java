@@ -31,9 +31,11 @@ public class TxtOutputConfiguration extends BasicConfiguration implements Clonea
     public static final String[] defOutput = {"y", "t", "sa", "s", "i", "ycal"};
     private File folder_;
     private String[] series_;
+    private boolean fullName_;
 
     public TxtOutputConfiguration() {
         series_ = defOutput;
+        fullName_ = true;
     }
 
     public File getFolder() {
@@ -50,6 +52,14 @@ public class TxtOutputConfiguration extends BasicConfiguration implements Clonea
 
     public void setSeries(List<String> value) {
         series_ = Jdk6.Collections.toArray(value, String.class);
+    }
+
+    public boolean isFullName() {
+        return fullName_;
+    }
+
+    public void setFullName(boolean fullName) {
+        this.fullName_ = fullName;
     }
 
     @Override
