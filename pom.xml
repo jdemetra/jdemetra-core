@@ -19,17 +19,6 @@
         </license>
     </licenses>
     
-    <scm>
-        <connection>scm:svn:https://joinup.ec.europa.eu/svn/sat/</connection>    
-    </scm>
-  
-    <repositories>
-        <repository>
-            <id>joinup-thirdparty</id>
-            <url>https://joinup.ec.europa.eu/nexus/content/repositories/thirdparty/</url>
-        </repository>
-    </repositories>
-  
     <distributionManagement>
         <repository>
             <id>joinup-releases</id>
