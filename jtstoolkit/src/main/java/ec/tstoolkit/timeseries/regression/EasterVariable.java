@@ -30,7 +30,7 @@ import java.util.GregorianCalendar;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class EasterVariable extends AbstractSingleTsVariable implements IMovingHolidayVariable {
+public class EasterVariable extends AbstractSingleTsVariable implements IEasterVariable {
 
     public static enum Type {
 
@@ -60,10 +60,12 @@ public class EasterVariable extends AbstractSingleTsVariable implements IMovingH
     public EasterVariable() {
     }
 
+    @Override
     public int getDuration() {
         return dur_;
     }
 
+    @Override
     public void setDuration(int value) {
         dur_ = value;
     }

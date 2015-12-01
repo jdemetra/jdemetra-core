@@ -39,6 +39,7 @@ import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.regression.ITradingDaysVariable;
 import ec.tstoolkit.timeseries.regression.ITsVariable;
 import ec.tstoolkit.timeseries.regression.InterventionVariable;
+import ec.tstoolkit.timeseries.regression.JulianEasterVariable;
 import ec.tstoolkit.timeseries.regression.LaggedTsVariable;
 import ec.tstoolkit.timeseries.regression.LeapYearVariable;
 import ec.tstoolkit.timeseries.regression.OutlierDefinition;
@@ -318,7 +319,20 @@ public class X13ModelBuilder implements IModelBuilder {
                 }
                 model.getMovingHolidays().add(tvar);
             }
-        }
+            else if (mh[i].getType() == MovingHolidaySpec.Type.JulianEaster) {
+                JulianEasterVariable var = new JulianEasterVariable();
+                Variable tvar = new Variable(var, ComponentType.CalendarEffect);
+                var.setDuration(mh[i].getW());
+                if (mh[i].getTest() == RegressionTestSpec.Add) {
+                    tvar.status = RegStatus.ToAdd;
+                } else if (mh[i].getTest() == RegressionTestSpec.Remove) {
+                    tvar.status = RegStatus.ToRemove;
+                } else {
+                    tvar.status = RegStatus.Prespecified;
+                }
+                model.getMovingHolidays().add(tvar);
+            }
+       }
     }
 
     private void initializeDefaultTradingDays(ModelDescription model, TradingDaysSpec td) {

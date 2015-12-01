@@ -28,6 +28,7 @@ import ec.tstoolkit.timeseries.regression.Constant;
 import ec.tstoolkit.timeseries.regression.DiffConstant;
 import ec.tstoolkit.timeseries.regression.EasterVariable;
 import ec.tstoolkit.timeseries.regression.ICalendarVariable;
+import ec.tstoolkit.timeseries.regression.IEasterVariable;
 import ec.tstoolkit.timeseries.regression.IMovingHolidayVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.regression.ITsModifier;
@@ -588,7 +589,7 @@ public class DeterministicComponent implements IProcResults {
         mapper.add(ModellingDictionary.EE, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
             @Override
             public TsData retrieve(DeterministicComponent source) {
-                TsData cal = source.regressionEffect(source.domain(false), EasterVariable.class);
+                TsData cal = source.regressionEffect(source.domain(false), IEasterVariable.class);
                 source.backTransform(cal, false, false);
                 return cal;
             }
@@ -596,7 +597,7 @@ public class DeterministicComponent implements IProcResults {
         mapper.add(ModellingDictionary.EE + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
             @Override
             public TsData retrieve(DeterministicComponent source) {
-                TsData cal = source.regressionEffect(source.domain(true), EasterVariable.class);
+                TsData cal = source.regressionEffect(source.domain(true), IEasterVariable.class);
                 source.backTransform(cal, false, false);
                 return cal;
             }
@@ -608,7 +609,7 @@ public class DeterministicComponent implements IProcResults {
 
                     @Override
                     public boolean accept(ITsVariable var) {
-                        return (var instanceof IMovingHolidayVariable) && !(var instanceof EasterVariable);
+                        return (var instanceof IMovingHolidayVariable) && !(var instanceof IEasterVariable);
                     }
                 });
                 source.backTransform(cal, false, false);
@@ -622,7 +623,7 @@ public class DeterministicComponent implements IProcResults {
 
                     @Override
                     public boolean accept(ITsVariable var) {
-                        return (var instanceof IMovingHolidayVariable) && !(var instanceof EasterVariable);
+                        return (var instanceof IMovingHolidayVariable) && !(var instanceof IEasterVariable);
                     }
                 });
                 source.backTransform(cal, false, false);
