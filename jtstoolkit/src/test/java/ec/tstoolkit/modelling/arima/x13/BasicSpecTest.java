@@ -38,6 +38,14 @@ public class BasicSpecTest {
         assertEquals(expected, actual);
         assertFalse(actual.isPreprocessing());
         
+        expected.setPreliminaryCheck(false);
+        assertFalse(expected.isPreliminaryCheck());
+        assertNotEquals(expected, actual);
+        info = expected.write(true);
+        actual.read(info);
+        assertEquals(expected, actual);
+        assertFalse(actual.isPreliminaryCheck());
+        
         expected.reset();
         assertTrue(expected.isDefault());
         info = expected.write(true);

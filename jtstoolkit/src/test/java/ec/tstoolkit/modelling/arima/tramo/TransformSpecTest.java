@@ -53,6 +53,14 @@ public class TransformSpecTest {
         actual.read(info);
         assertEquals(expected, actual);
         assertEquals(1.0, actual.getFct(), 0.0);
+        
+        expected.setPreliminaryCheck(false);
+        assertFalse(expected.isPreliminaryCheck());
+        assertNotEquals(expected, actual);
+        info = expected.write(true);
+        actual.read(info);
+        assertEquals(expected, actual);
+        assertFalse(actual.isPreliminaryCheck());
 
         expected.reset();
         assertNotEquals(expected, actual);
