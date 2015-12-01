@@ -30,6 +30,7 @@ import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.regression.EasterVariable;
+import ec.tstoolkit.timeseries.regression.IEasterVariable;
 import ec.tstoolkit.timeseries.regression.ILengthOfPeriodVariable;
 import ec.tstoolkit.timeseries.regression.IMovingHolidayVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
@@ -100,12 +101,11 @@ public class HtmlRegArima extends AbstractHtmlElement {
         } else {
             stream.write("Trading days effects (").write(Integer.toString(ntd)).write(ntd > 1 ? " variables)" : " variable)").newLine();
         }
-        TsVariableSelection<EasterVariable> easter = x_.select(EasterVariable.class);
+        TsVariableSelection<IEasterVariable> easter = x_.select(IEasterVariable.class);
         if (easter.getVariablesCount() == 0) {
             stream.write("No easter effect").newLine();
         } else {
-            int dur = easter.get(0).variable.getDuration();
-            stream.write("Easter(").write(Integer.toString(dur)).write(") effect detected").newLine();
+            stream.write(easter.get(0).variable.getDescription()+" detected").newLine();
         }
         int no = model_.description.getOutliers().size();
         int npo = model_.description.getPrespecifiedOutliers().size();

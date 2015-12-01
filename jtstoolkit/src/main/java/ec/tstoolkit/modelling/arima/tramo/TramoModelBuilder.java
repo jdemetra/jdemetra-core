@@ -36,6 +36,7 @@ import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.regression.ITradingDaysVariable;
 import ec.tstoolkit.timeseries.regression.ITsVariable;
 import ec.tstoolkit.timeseries.regression.InterventionVariable;
+import ec.tstoolkit.timeseries.regression.JulianEasterVariable;
 import ec.tstoolkit.timeseries.regression.LaggedTsVariable;
 import ec.tstoolkit.timeseries.regression.LeapYearVariable;
 import ec.tstoolkit.timeseries.regression.OutlierDefinition;
@@ -155,14 +156,22 @@ public class TramoModelBuilder implements IModelBuilder {
         if (!easter.isUsed() || model.getFrequency() < 4) {
             return;
         }
-        EasterVariable var = new EasterVariable();
-        var.setDuration(easter.getDuration());
-        var.setType(EasterVariable.Type.Tramo);
-        var.includeEaster(easter.getOption().containsEaster());
-        var.includeEasterMonday(easter.getOption().containsEasterMonday());
-        Variable evar = new Variable(var, ComponentType.CalendarEffect);
-        evar.status = easter.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified;
-        model.getMovingHolidays().add(evar);
+        if (easter.isJulian()) {
+            JulianEasterVariable var = new JulianEasterVariable();
+            var.setDuration(easter.getDuration());
+            Variable evar = new Variable(var, ComponentType.CalendarEffect);
+            evar.status = easter.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified;
+            model.getMovingHolidays().add(evar);
+        } else {
+            EasterVariable var = new EasterVariable();
+            var.setDuration(easter.getDuration());
+            var.setType(EasterVariable.Type.Tramo);
+            var.includeEaster(easter.getOption().containsEaster());
+            var.includeEasterMonday(easter.getOption().containsEasterMonday());
+            Variable evar = new Variable(var, ComponentType.CalendarEffect);
+            evar.status = easter.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified;
+            model.getMovingHolidays().add(evar);
+        }
 
     }
 

@@ -39,9 +39,9 @@ import java.util.Map;
  * @author Kristof Bayens
  */
 public class RegArimaReport implements ISaReport {
-    private int freq_;
-    private DoubleList lb_ = new DoubleList();
-    private Map<SarimaSpecification, Integer> arima_ = new HashMap<>();
+    private final int freq_;
+    private final DoubleList lb_ = new DoubleList();
+    private final Map<SarimaSpecification, Integer> arima_ = new HashMap<>();
 
     public int Total;
     public int NUndecompsable;
@@ -162,7 +162,7 @@ public class RegArimaReport implements ISaReport {
                 ++TdCount;
             if (adjust != LengthOfPeriodType.None || vars.select(ILengthOfPeriodVariable.class).getItemsCount()> 0)
                     ++LpCount;
-           if (vars.select(EasterVariable.class).getItemsCount()> 0)
+           if (vars.select(IEasterVariable.class).getItemsCount()> 0)
                 ++EasterCount;
             
         }

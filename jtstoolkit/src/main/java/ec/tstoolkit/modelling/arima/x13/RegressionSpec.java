@@ -106,7 +106,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
 
     public MovingHolidaySpec getEaster() {
         for (MovingHolidaySpec mh : mh_) {
-            if (mh.getType() == MovingHolidaySpec.Type.Easter) {
+            if (mh.getType() == MovingHolidaySpec.Type.Easter || mh.getType() == MovingHolidaySpec.Type.JulianEaster) {
                 return mh;
             }
         }
