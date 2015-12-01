@@ -107,8 +107,8 @@ public class GenericSaProcessingFactory {
         };
     }
 
-    protected static IProcessingNode<TsData> createInitialStep(final TsPeriodSelector selector) {
-        return DefaultProcessingFactory.createInitialStep(selector, new Validation() {
+    protected static IProcessingNode<TsData> createInitialStep(final TsPeriodSelector selector, boolean validate) {
+        return (!validate) ? DefaultProcessingFactory.createInitialStep(selector) : DefaultProcessingFactory.createInitialStep(selector,  new Validation() {
             @Override
             public boolean validate(TsData s) {
                 testSeries(s);
@@ -150,8 +150,12 @@ public class GenericSaProcessingFactory {
         return (ISaResults) decomp;
     }
 
+    protected static void addInitialStep(TsPeriodSelector sel, boolean validation, SequentialProcessing sproc) {
+        sproc.add(createInitialStep(sel, validation));
+    }
+
     protected static void addInitialStep(TsPeriodSelector sel, SequentialProcessing sproc) {
-        sproc.add(createInitialStep(sel));
+        sproc.add(createInitialStep(sel, true));
     }
 
     protected static void addPreprocessingStep(IPreprocessor preprocessor, SequentialProcessing sproc) {
