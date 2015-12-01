@@ -43,7 +43,7 @@ public class MovingHolidaySpec implements Cloneable, InformationSetSerializable 
    }
    public static enum Type {
 
-        None, Easter, Thank, SCEaster, Labor
+        None, Easter, Thank, SCEaster, Labor, JulianEaster
     }
     private ChangeOfRegimeSpec changeofregime_;
     private int w_;
@@ -59,6 +59,15 @@ public class MovingHolidaySpec implements Cloneable, InformationSetSerializable 
         return easter;
     }
     
+    public static MovingHolidaySpec julianEasterSpec(boolean pretest) {
+        MovingHolidaySpec easter = new MovingHolidaySpec();
+        easter.test_ = RegressionTestSpec.Add;
+        easter.type_ = Type.JulianEaster;
+        easter.w_ = 8;
+        easter.test_ = pretest ? RegressionTestSpec.Add : RegressionTestSpec.None;
+        return easter;
+    }
+
     public MovingHolidaySpec() {
     }
     
