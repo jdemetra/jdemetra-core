@@ -47,6 +47,7 @@ public class UnitSeriesScaling implements ISeriesScaling{
 
     private final double dmax_, dmin_;
  
+    @Override
     public boolean process(ModellingContext context) {
         if (context.description.getUnits() != 1)
             return false;
@@ -70,6 +71,8 @@ public class UnitSeriesScaling implements ISeriesScaling{
             }
         }
         int k=0;
+        if (ymin == ymax)
+            return false;
         if (ymax < dmax_ && ymin > dmin_) {
             return true;
         }
