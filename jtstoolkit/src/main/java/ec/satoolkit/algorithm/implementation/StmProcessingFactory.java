@@ -158,8 +158,8 @@ public class StmProcessingFactory extends GenericSaProcessingFactory implements 
                     TsData y = model.description.transformedOriginal();
                     TsVariableList x = model.description.buildRegressionVariables();
                     if (x.isEmpty()) {
-                        if (monitor.process(input.getValues().internalStorage(), input.getFrequency().intValue())) {
-                            estimation = new StmEstimation(input, x, monitor);
+                        if (monitor.process(y.getValues().internalStorage(), input.getFrequency().intValue())) {
+                            estimation = new StmEstimation(y, x, monitor);
                         }
                     } else {
                         Matrix mx = x.all().matrix(y.getDomain());
