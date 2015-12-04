@@ -1,22 +1,23 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.satoolkit.x11;
 
 import ec.satoolkit.DecompositionMode;
+import ec.satoolkit.diagnostics.CochranTest;
 import ec.satoolkit.diagnostics.CombinedSeasonalityTest;
 import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.ProcessingInformation;
@@ -27,7 +28,6 @@ import ec.tstoolkit.eco.RegModel;
 import ec.tstoolkit.information.InformationMapper;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.stats.AutoCorrelations;
-import ec.satoolkit.diagnostics.CochranTest;
 import ec.tstoolkit.timeseries.simplets.PeriodIterator;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.Collections;
@@ -97,9 +97,9 @@ public final class Mstatistics implements IProcResults {
                 }
             }
 
-            MsrTable rms = dtables.get(X11Kernel.D9_RMS, MsrTable.class);
-            if (rms != null) {
-                mstats.m[5] = 0.4 * Math.abs(rms.getGlobalMsr() - 4.0);
+            mstats.rms = dtables.get(X11Kernel.D9_RMS, MsrTable.class);
+            if (mstats.rms != null) {
+                mstats.m[5] = 0.4 * Math.abs(mstats.rms.getGlobalMsr() - 4.0);
             }
             Integer slen = dtables.get(X11Kernel.D9_SLEN, Integer.class);
             Boolean sdef = dtables.get(X11Kernel.D9_DEFAULT, Boolean.class);
@@ -110,9 +110,9 @@ public final class Mstatistics implements IProcResults {
                 mstats.s3x5 = false;
             }
 
-            Double icr = dtables.get(X11Kernel.D12_IC, Double.class);
-            if (icr != null) {
-                mstats.m[2] = .5 * (icr - 1);
+            mstats.icr = dtables.get(X11Kernel.D12_IC, Double.class);
+            if (mstats.icr != null) {
+                mstats.m[2] = .5 * (mstats.icr - 1);
             }
 
             if (mstats.O.getLength() / mstats.O.getFrequency().intValue() < 6) // stable
@@ -125,7 +125,7 @@ public final class Mstatistics implements IProcResults {
             mstats.calcSNorm();
             mstats.calcEvolutions();
             mstats.calcM();
-            // TODO: CH: Welches Table muss hier rein?         
+            // TODO: CH: Welches Table muss hier rein?
             mstats.calcCochran(ctables.get(X11Kernel.C13, TsData.class), mode, mstats);
 
             return mstats;
@@ -321,6 +321,7 @@ public final class Mstatistics implements IProcResults {
     // Stationary
     private TsData stO, stC;
     private double varC, varS, varI, varP, varTD;
+    private Double icr;
     // For F.2.A
     private double[] /*
              * gO, gCI, gI, gC, gS,
@@ -332,7 +333,9 @@ public final class Mstatistics implements IProcResults {
     private static double[] wtFull = {10, 11, 10, 8, 11, 10, 18, 7, 7, 4, 4};
     private static double[] wtShort = {14, 15, 10, 8, 11, 10, 32};
 
-    //Variables for Calendarsigma sigmavec  testvalue criticalvalue 
+    private MsrTable rms;
+
+    //Variables for Calendarsigma sigmavec  testvalue criticalvalue
     private double testvalue = 0;
     private double criticalvalue = 0;
     private boolean cochranTestResult = true; //Default Value of Cochran Test
@@ -646,8 +649,6 @@ public final class Mstatistics implements IProcResults {
     }
 
     private void calcCochran(TsData ts, DecompositionMode mode, Mstatistics mstats) {
-      // die folgenden müssen mit dem chochran Test in Abhängigkeit von den Sigmavec Einstellungen berechnet werden
-
         CochranTest cochranTest = new CochranTest(ts, mode.isMultiplicative());
         cochranTest.calcCochranTest();
         mstats.criticalvalue = cochranTest.getCriticalValue();
@@ -655,10 +656,8 @@ public final class Mstatistics implements IProcResults {
         mstats.cochranTestResult = cochranTest.getTestResult();
         mstats.minNumberOfYears = cochranTest.getMinNumberOfYearsPerPeriod();
 
-    
     }
 
-    ;
     public DecompositionMode getMode() {
         return this.mode;
     }
@@ -721,6 +720,22 @@ public final class Mstatistics implements IProcResults {
             }
         }
         return q / wtot;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Double getIcr() {
+        return icr;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public MsrTable getRms() {
+        return rms;
     }
 
     /**
