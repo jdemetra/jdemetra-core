@@ -1,26 +1,28 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.satoolkit.x11;
 
 import ec.satoolkit.DecompositionMode;
+import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A X11Context contains general information about a given X11Processing.
@@ -33,6 +35,7 @@ public final class X11Context {
     private DecompositionMode mode;
     private TsDomain edomain;
     private int nfcasts;
+
 
     /**
      * Creates a new context
@@ -55,8 +58,8 @@ public final class X11Context {
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public int getForecastHorizon() {
         if (nfcasts >= 0) {
@@ -92,7 +95,6 @@ public final class X11Context {
         return mode;
     }
 
-
     /**
      *
      * @return
@@ -104,6 +106,7 @@ public final class X11Context {
     /**
      * Subtracts/divides two time series, following the decomposition mode.
      * (divides in the case of multiplicative decomposition)
+     *
      * @param l The left operand
      * @param r The right operand
      * @return A new time series is returned
@@ -135,11 +138,9 @@ public final class X11Context {
      *
      * @param s The considered time series
      * @throws A X11Exception is thrown if the series is invalid. Invalid series
-     * are:
-     * - Series with an annual frequency other than 4 or 12
-     * - Series with less than 3 years of observations
-     * - Series with negative values (in the case of non-additive decomposition)
-     * - Series with missing values
+     * are: - Series with an annual frequency other than 4 or 12 - Series with
+     * less than 3 years of observations - Series with negative values (in the
+     * case of non-additive decomposition) - Series with missing values
      */
     public void check(final TsData s) {
         edomain = s.getDomain();
@@ -154,7 +155,7 @@ public final class X11Context {
         if (s.getValues().hasMissingValues()) {
             throw new X11Exception(X11Exception.ERR_MISSING);
         }
-            
+
         if (mode != DecompositionMode.Additive) {
             double[] vals = s.getValues().internalStorage();
             for (int i = 0; i < vals.length; ++i) {
