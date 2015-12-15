@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 /**
  *
@@ -73,7 +73,7 @@ public class SpreadsheetOutput implements IOutput<SaDocument<ISaSpecification>> 
         file = Paths.changeExtension(file, "xlsx");
         File ssfile = new File(file);
         //File ssfile = new File("C:\\test.xls");
-        XSSFWorkbook workbook = new XSSFWorkbook();
+        SXSSFWorkbook workbook = new SXSSFWorkbook(null, 100, false, true);
 
         try (FileOutputStream stream = new FileOutputStream(ssfile)) {
             switch (config_.getLayout()) {
@@ -162,6 +162,8 @@ public class SpreadsheetOutput implements IOutput<SaDocument<ISaSpecification>> 
                 }
             }
             workbook.write(stream);
+        } finally {
+            workbook.dispose();            
         }
     }
 

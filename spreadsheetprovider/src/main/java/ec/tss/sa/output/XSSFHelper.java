@@ -18,8 +18,11 @@ package ec.tss.sa.output;
 
 import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import ec.tstoolkit.timeseries.simplets.TsDataTableInfo;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -32,10 +35,15 @@ public class XSSFHelper {
 //    public static XSSFCell setRowValues(XSSFCell cell, TsDomain domain) {
 //
 //    }
+    @Deprecated
     public static XSSFSheet addSheet(XSSFWorkbook curBook, String sheetName, String[] headers0, String[] headers1, TsDataTable table, boolean verticalOrientation) {
-        XSSFSheet sheet = curBook.createSheet(sheetName);
-        XSSFRow currentRow = null;
-        XSSFCell currentCell = null;
+        return (XSSFSheet) addSheet((Workbook) curBook, sheetName, headers0, headers1, table, verticalOrientation);
+    }
+
+    public static Sheet addSheet(Workbook curBook, String sheetName, String[] headers0, String[] headers1, TsDataTable table, boolean verticalOrientation) {
+        Sheet sheet = curBook.createSheet(sheetName);
+        Row currentRow = null;
+        Cell currentCell = null;
 
         if (verticalOrientation) {
             //headers0
@@ -90,7 +98,7 @@ public class XSSFHelper {
                     }
 
                     // Components + Data
-                    for (int i = currentData; i < currentData+nbComponents; i++) {
+                    for (int i = currentData; i < currentData + nbComponents; i++) {
                         currentRow = sheet.createRow(++rowNum);
                         currentCell = currentRow.createCell(0, XSSFCell.CELL_TYPE_STRING);
                         currentCell.setCellValue(headers1[i]);
@@ -104,8 +112,8 @@ public class XSSFHelper {
                             }
                         }
                     }
-                    
-                    rowNum+=2;
+
+                    rowNum += 2;
                 }
                 currentData++;
             }
@@ -119,12 +127,14 @@ public class XSSFHelper {
         if (headers0 == null || headers0.length == 0) {
             return 0;
         }
-        
+
         int count = 0;
         for (String h : headers0) {
-            if (!h.isEmpty()) count++;
+            if (!h.isEmpty()) {
+                count++;
+            }
         }
-        
+
         return count;
     }
 }

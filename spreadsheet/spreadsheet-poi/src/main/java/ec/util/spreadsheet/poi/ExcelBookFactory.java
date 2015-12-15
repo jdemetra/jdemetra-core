@@ -28,7 +28,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 /**
  *
@@ -84,9 +84,15 @@ public class ExcelBookFactory extends Book.Factory {
 
     @Override
     public void store(OutputStream stream, Book book) throws IOException {
-        XSSFWorkbook target = new XSSFWorkbook();
-        PoiBookWriter.copy(book, target);
-        target.write(stream);
+        // Currenty, inline string is not supported in FastPoiBook -> use of shared strings table
+        SXSSFWorkbook target = new SXSSFWorkbook(null, 100, false, true);
+        try {
+            PoiBookWriter.copy(book, target);
+            target.write(stream);
+        } finally {
+            // dispose of temporary files backing this workbook on disk
+            target.dispose();
+        }
     }
 
     @Nonnull
