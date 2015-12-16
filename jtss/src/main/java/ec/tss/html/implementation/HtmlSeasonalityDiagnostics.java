@@ -47,10 +47,10 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
         this.noSeasControl = noSeasControl;
         if (tests != null) {
             ftest = new FTest();
-            ftest.test(tests.getDifferencing().original);
+            ftest.test(tests.getDifferencing().getRestrictedOriginal());
             ftestAMI = new FTest();
-            ftestAMI.testAMI(tests.getDifferencing().original);
-            kwTest = new KruskalWallisTest(tests.getDifferencing().differenced);
+            ftestAMI.testAMI(tests.getDifferencing().getRestrictedOriginal());
+            kwTest = new KruskalWallisTest(tests.getDifferencing().getDifferenced());
         } else {
             ftest = null;
             ftestAMI=null;
@@ -76,12 +76,12 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
     }
 
     public void writeTransformation(HtmlStream stream) throws IOException {
-        if (tests.getDifferencing().mean && tests.getDifferencing().getDifferencingOrder() == 1) {
+        if (tests.getDifferencing().isMean() && tests.getDifferencing().getDifferencingOrder() == 1) {
             stream.write("Data have been differenced and corrected for mean", HtmlStyle.Italic).newLines(2);
         } else {
             if (tests.getDifferencing().getDifferencingOrder() > 0) {
                 stream.write("Data have been differenced " + tests.getDifferencing().getDifferencingOrder() + " times", HtmlStyle.Italic).newLine();
-                if (tests.getDifferencing().mean) {
+                if (tests.getDifferencing().isMean()) {
                     stream.write("Data have been corrected for mean", HtmlStyle.Italic).newLine();
                 }
                 stream.newLine();
@@ -93,8 +93,8 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
         stream.write(HtmlTag.HEADER4, "1. Tests on autocorrelations at seasonal lags").newLine();
         writeSummary(stream, tests.getQs().getPValue());
         stream.newLines(2);
-        AutoCorrelations ac = new AutoCorrelations(tests.getDifferencing().differenced);
-        int ifreq = tests.getDifferencing().original.getFrequency().intValue();
+        AutoCorrelations ac = new AutoCorrelations(tests.getDifferencing().getDifferenced());
+        int ifreq = tests.getDifferencing().getOriginal().getFrequency().intValue();
         stream.write("ac(").write(ifreq).write(")=").write(df4.format(ac.autoCorrelation(ifreq))).newLine();
         stream.write("ac(").write(2 * ifreq).write(")=").write(df4.format(ac.autoCorrelation(2 * ifreq))).newLines(2);
         stream.write("Distribution: " + tests.getQs().getDistribution().getDescription()).newLine();
@@ -217,7 +217,7 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
             stream.close(HtmlTag.TABLEROW);
         }
 
-        TsData ddata=tests.getDifferencing().differenced;
+        TsData ddata=tests.getDifferencing().getDifferenced();
 //        int ifreq = ddata.getFrequency().intValue();
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableCell("5. Periodogram ", 250));
