@@ -9,6 +9,8 @@ import ec.satoolkit.DecompositionMode;
 import ec.tstoolkit.design.Development;
 import ec.satoolkit.diagnostics.CochranTest;
 import ec.tstoolkit.timeseries.simplets.TsData;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This Extremvalues Korrektor uses the Cochran Test to decide weather the
@@ -24,6 +26,8 @@ public class CochranDependentExtremeValuesCorrector extends DefaultX11Algorithm
     private IExtremeValuesCorrector extremeValuesCorrector_;
     private DecompositionMode mode_;
     private double lsig_, usig_;
+    protected boolean isexcludefcast;
+    protected int forcasthorizont;
 
     @Override
     /**
@@ -39,11 +43,13 @@ public class CochranDependentExtremeValuesCorrector extends DefaultX11Algorithm
 
         extremeValuesCorrector_.setContext(context);
         extremeValuesCorrector_.setSigma(lsig_, usig_);
+        extremeValuesCorrector_.setExcludefcast(isexcludefcast);
+        extremeValuesCorrector_.setForecasthorizont(forcasthorizont);
         return extremeValuesCorrector_.analyse(s);
     }
 
-    public void testCochran(TsData s){
-            if (s.getDomain().getFullYearsCount() < 6) {      // the hypothesis of identical month variances shouldn't be rejected for less than 6 years,
+    public void testCochran(TsData s) {
+        if (s.getDomain().getFullYearsCount() < 6) {      // the hypothesis of identical month variances shouldn't be rejected for less than 6 years,
             //therefore the test isn't calculated
             extremeValuesCorrector_ = new DefaultExtremeValuesCorrector();
 
@@ -51,13 +57,13 @@ public class CochranDependentExtremeValuesCorrector extends DefaultX11Algorithm
             CochranTest cochranTest = new CochranTest(s, isMultiplicative());
             cochranTest.calcCochranTest();
             if (cochranTest.getTestResult()) {
-                extremeValuesCorrector_ = new DefaultExtremeValuesCorrector();            
+                extremeValuesCorrector_ = new DefaultExtremeValuesCorrector();
             } else {
                 extremeValuesCorrector_ = new PeriodSpecificExtremeValuesCorrector();
             }
         }
     }
-    
+
     @Override
     public TsData computeCorrections(TsData s) {
         return extremeValuesCorrector_.computeCorrections(s);
@@ -98,5 +104,25 @@ public class CochranDependentExtremeValuesCorrector extends DefaultX11Algorithm
      */
     public void setMode(DecompositionMode mode) {
         mode_ = mode;
+    }
+
+    @Override
+    public void setExcludefcast(boolean isExcludefcast) {
+        this.isexcludefcast = isExcludefcast;
+    }
+
+    @Override
+    public boolean getExcludefcast() {
+        return isexcludefcast;
+    }
+
+    @Override
+    public void setForecasthorizont(int forcasthorizont) {
+        this.forcasthorizont = forcasthorizont;
+    }
+
+    @Override
+    public int getForecasthorizont() {
+        return forcasthorizont;
     }
 }

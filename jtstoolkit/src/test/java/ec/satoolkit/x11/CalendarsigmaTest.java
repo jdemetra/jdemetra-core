@@ -349,7 +349,7 @@ public class CalendarsigmaTest {
         Parameter[] paraBTheta = Parameter.create(1);
         paraBTheta[0].setType(ParameterType.Fixed);
         paraBTheta[0].setValue(-1.0000);
-        arimaSpec.setBTheta(paraBTheta);
+        arimaSpec.setBTheta(paraBTheta);       
 //        
         regSpec.setArima(arimaSpec);
 

@@ -149,14 +149,14 @@ public class X11Kernel implements ISeriesDecomposer {
         TsData b4d = toolkit.getContext().op(b3, b4anorm);
 
         ecorr = toolkit.getExtremeValuesCorrector();
+        ecorr.setForecasthorizont(toolkit.getContext().getForecastHorizon());
         if (ecorr instanceof CochranDependentExtremeValuesCorrector) {
-           // ((CochranDependentExtremeValuesCorrector) ecorr).testCochran(b4d);
-        ((CochranDependentExtremeValuesCorrector) ecorr).testCochran(excludeforecast(b4d));
+            ((CochranDependentExtremeValuesCorrector) ecorr).testCochran(b4d);
         }
 
         ecorr.analyse(b4d);
 
-        TsData b4 = ecorr.computeCorrections( b3);
+        TsData b4 = ecorr.computeCorrections(b3);
         TsData b4g = ecorr.applyCorrections(b3, b4);
 
         TsData b5a = toolkit.getSeasonalComputer().doInitialFiltering(
@@ -178,8 +178,8 @@ public class X11Kernel implements ISeriesDecomposer {
         TsData b9c = toolkit.getSeasonalNormalizer().normalize(b9a, null);
         TsData b9d = toolkit.getContext().op(b8, b9c);
 
-        ecorr.analyse(excludeforecast(b9d));
-        TsData b9 = ecorr.computeCorrections(excludeforecast(b8));
+        ecorr.analyse(b9d);
+        TsData b9 = ecorr.computeCorrections(b8);
         TsData b9g = ecorr.applyCorrections(b8, b9);
 
         TsData b10a = toolkit.getSeasonalComputer().doFinalFiltering(X11Step.B,
@@ -212,7 +212,7 @@ public class X11Kernel implements ISeriesDecomposer {
          * ); }
          */
         if (ecorr instanceof CochranDependentExtremeValuesCorrector) {
-            ((CochranDependentExtremeValuesCorrector) ecorr).testCochran(excludeforecast(next));
+            ((CochranDependentExtremeValuesCorrector) ecorr).testCochran(next);
         }
         ecorr.analyse((next));
         TsData b17 = ecorr.getObservationWeights();
@@ -336,10 +336,11 @@ public class X11Kernel implements ISeriesDecomposer {
             toolkit.getUtilities().checkPositivity(d7);
         }
         TsData d8 = toolkit.getContext().op(refSeries, d7);
-
         TsData d9, d10;
         if (ecorr instanceof PeriodSpecificExtremeValuesCorrector) {
-            d9 = ecorr.computeCorrections(excludeforecast(d8));
+            d9 = ecorr.computeCorrections(d8.drop(0, toolkit.getContext().getForecastHorizon()));
+            d9.extend(0, toolkit.getContext().getForecastHorizon());
+
             TsData d9g = ecorr.applyCorrections(d8, d9);
             TsData d10a = toolkit.getSeasonalComputer().doFinalFiltering(X11Step.D,
                     d9g, info);
@@ -492,17 +493,6 @@ public class X11Kernel implements ISeriesDecomposer {
     }
 
     private void stepF(InformationSet info) {
-    }
-
-    private TsData excludeforecast(TsData tsWithForcast) {
-        TsData tsWithoutforCast;
-        if (toolkit.isExcludefcst()) {
-            toolkit.getContext().getForecastHorizon();
-            tsWithoutforCast = tsWithForcast.drop(0, toolkit.getContext().getForecastHorizon());
-            return tsWithoutforCast;
-        } else {
-            return tsWithForcast;
-        }
     }
 
 }

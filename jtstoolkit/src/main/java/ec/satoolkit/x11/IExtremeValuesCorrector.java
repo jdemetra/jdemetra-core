@@ -93,8 +93,34 @@ public interface IExtremeValuesCorrector extends IX11Algorithm {
      *
      * @param lsig The low sigma value
      * @param usig The high sigma value
-     * @throws An exception is thrown when the limits are invalid (usig <=
-     * lsig or lsig <= 0.5).
      */
     public void setSigma(double lsig, double usig);
+    
+    /**
+     *
+     * @param isExcludefcast true if the forcast should be excluded for the calculation 
+     * of the Standarddeviation of the outliers
+     */
+    void setExcludefcast(boolean isExcludefcast);
+   
+    /**
+     *
+     * @return true, if the forcast is excluded for the calculation 
+     * of the Standarddeviation of the outliers
+     */
+    boolean getExcludefcast();
+    
+    /**
+     *
+     * @param forcasthorizont in numnber of periods
+     */
+    void setForecasthorizont(int forcasthorizont);
+    
+    /**
+     *
+     * @return number of periods forecasted
+     */
+    int getForecasthorizont();
+    
+    
 }
