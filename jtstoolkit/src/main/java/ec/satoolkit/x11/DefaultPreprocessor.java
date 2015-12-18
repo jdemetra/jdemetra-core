@@ -87,6 +87,9 @@ public class DefaultPreprocessor extends DefaultX11Algorithm implements
         TsData ut = model_.userEffect(domain, ComponentType.Trend);
         TsData ua = model_.userEffect(domain, ComponentType.Irregular);
         TsData us = model_.userEffect(domain, ComponentType.Seasonal);
+        TsData usa=model_.userEffect(domain, ComponentType.SeasonallyAdjusted);
+        TsData uu=model_.userEffect(domain, ComponentType.Undefined);
+        
         pt=TsData.add(pt, ut);
         ps=TsData.add(ps, us);
         pa=TsData.add(pa, ua);
@@ -95,9 +98,14 @@ public class DefaultPreprocessor extends DefaultX11Algorithm implements
         model_.backTransform(ps, false, false);
         model_.backTransform(pa, false, false);
         model_.backTransform(pc, false, false);
+        model_.backTransform(usa, false, false);
+        model_.backTransform(uu, false, false);
         atables.add(X11Kernel.A8, p);
         atables.add(X11Kernel.A8t, pt);
         atables.add(X11Kernel.A8s, ps);
         atables.add(X11Kernel.A8i, invOp(pa, pc));
+        atables.add(X11Kernel.A9, invOp(usa, uu));
+        atables.add(X11Kernel.A9sa, usa);
+        atables.add(X11Kernel.A9u, uu);
     }
 }

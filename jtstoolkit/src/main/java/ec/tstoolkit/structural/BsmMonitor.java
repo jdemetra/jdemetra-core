@@ -138,15 +138,22 @@ public class BsmMonitor {
             }
         }
 
+        boolean ok=m_bconverged;
         if (fixsmallvariance(m_bsm))// bsm.FixSmallVariances(1e-4))
         {
             updateSpec(m_bsm);
-            return false;
+            // update the likelihood !
+            fn_ = buildFunction(m_bsm, null,
+                    true);
+            IReadDataBlock parameters = m_mapper.map(m_bsm);
+            fnmax_=(SsfFunctionInstance<BasicStructuralModel>) fn_.evaluate(parameters);
+            m_ll=fnmax_.getLikelihood();
+            ok=false;
         }
         if (m_factor != 1) {
             m_ll.rescale(m_factor);
         }
-        return m_bconverged;
+        return ok;
     }
 
     private SsfFunction<BasicStructuralModel> buildFunction(

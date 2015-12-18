@@ -195,12 +195,22 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
             }
         }
         if (espec != null && espec.getTest() != RegressionTestSpec.None) {
-            TsVariableSelection<EasterVariable> evar = vars.select(EasterVariable.class);
-            if (evar.isEmpty()) {
-                rspec.removeMovingHolidays(espec);
-            } else {
-                espec.setTest(RegressionTestSpec.None);
-                espec.setW(evar.get(0).variable.getDuration());
+            if (espec.getType() == MovingHolidaySpec.Type.Easter) {
+                TsVariableSelection<EasterVariable> evar = vars.select(EasterVariable.class);
+                if (evar.isEmpty()) {
+                    rspec.removeMovingHolidays(espec);
+                } else {
+                    espec.setTest(RegressionTestSpec.None);
+                    espec.setW(evar.get(0).variable.getDuration());
+                }
+            } else if (espec.getType() == MovingHolidaySpec.Type.JulianEaster) {
+                TsVariableSelection<JulianEasterVariable> evar = vars.select(JulianEasterVariable.class);
+                if (evar.isEmpty()) {
+                    rspec.removeMovingHolidays(espec);
+                } else {
+                    espec.setTest(RegressionTestSpec.None);
+                    espec.setW(evar.get(0).variable.getDuration());
+                }
             }
         }
         // outliers (if any)

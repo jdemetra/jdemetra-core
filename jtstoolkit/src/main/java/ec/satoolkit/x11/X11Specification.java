@@ -388,7 +388,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
             }
             Boolean seasonal = info.get(SEASONAL, Boolean.class);
             if (seasonal != null){
-                seasonal_=true;
+                seasonal_ = seasonal;
             }        
             Double lsig = info.get(LSIGMA, Double.class);
             if (lsig != null) {

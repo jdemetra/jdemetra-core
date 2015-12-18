@@ -29,6 +29,7 @@ import ec.tstoolkit.stats.NiidTests;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.regression.EasterVariable;
 import ec.tstoolkit.timeseries.regression.ICalendarVariable;
+import ec.tstoolkit.timeseries.regression.IEasterVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.regression.OutlierType;
 import ec.tstoolkit.timeseries.regression.Residuals;
@@ -235,7 +236,7 @@ public class RegArimaDictionary {
     }
 
     private static void fillEaster(TsVariableList vars, ModelEstimation estimation, InformationSet info, int start, int hpcount) {
-         TsVariableSelection<EasterVariable> easter = vars.select(EasterVariable.class);
+         TsVariableSelection<IEasterVariable> easter = vars.select(IEasterVariable.class);
            if (easter.isEmpty())
                 return;
             InformationSet cinfo = info.subSet(CAL);

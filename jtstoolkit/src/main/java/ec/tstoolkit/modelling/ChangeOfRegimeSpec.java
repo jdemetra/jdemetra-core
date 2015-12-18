@@ -113,6 +113,7 @@ public class ChangeOfRegimeSpec implements Cloneable {
         builder.append(StringFormatter.convert(day_));
         if (type_ == Type.Partial_ZeroEnd)
             builder.append('/');
+        builder.append('/');
         return builder.toString();        
     }
     
