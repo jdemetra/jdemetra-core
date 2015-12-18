@@ -138,6 +138,10 @@ public class FTest {
 
     private boolean estimateContext(ModellingContext context) {
         ModelDescription model = context.description;
+        // force mean correction when the model is stationary
+        if (model.getArimaComponent().getDifferencingOrder() == 0) {
+            model.setMean(true);
+        }
         context.estimation = new ModelEstimation(model.buildRegArima(), model.getLikelihoodCorrection());
         GlsSarimaMonitor monitor = new GlsSarimaMonitor();
         return context.estimation.compute(monitor, context.description.getArimaComponent().getFreeParametersCount());
@@ -172,7 +176,7 @@ public class FTest {
 
         DifferencingModule diff = new DifferencingModule();
         diff.process(context);
-        context.estimation=null;
+        context.estimation = null;
         ArmaModule arma = new ArmaModule();
         arma.setAcceptingWhiteNoise(true);
         arma.process(context);

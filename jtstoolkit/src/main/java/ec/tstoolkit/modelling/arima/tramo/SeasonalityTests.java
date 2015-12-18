@@ -57,7 +57,7 @@ public class SeasonalityTests {
         {
             tests.score++;
         }
-        int n = tests.getDifferencing().differenced.getLength();
+        int n = tests.getDifferencing().getDifferenced().getLength();
         if (n >= MSHORT || (freq != TsFrequency.Monthly && n >= SHORT)) {
             if (SpectralPeaks.hasSeasonalPeaks(tests.getSpectralPeaks())) {
                 tests.score++;
@@ -96,7 +96,7 @@ public class SeasonalityTests {
                 return tests;
             }
         }
-        int n = tests.getDifferencing().differenced.getLength();
+        int n = tests.getDifferencing().getDifferenced().getLength();
         if (n >= MSHORT || (s.getFrequency() != TsFrequency.Monthly && n >= SHORT)) {
             if (SpectralPeaks.hasSeasonalPeaks(tests.getSpectralPeaks())) {
                 tests.score++;
@@ -120,17 +120,17 @@ public class SeasonalityTests {
         clear();
     }
 
-    /**
-     * The differencing order and the mean correction are chosen by the
-     * algorithm.
-     *
-     * @param input Original series
-     * @return
-     */
-    private void test(TsData input) {
-        delta = DifferencingResults.create(input, -1, true);
-        clear();
-    }
+//    /**
+//     * The differencing order and the mean correction are chosen by the
+//     * algorithm.
+//     *
+//     * @param input Original series
+//     * @return
+//     */
+//    private void test(TsData input) {
+//        delta = DifferencingResults.create(input, -1, true);
+//        clear();
+//    }
 
     private void testResiduals(double[] res, TsFrequency freq) {
         // we create a "temporary" time series. Dates don't matter
@@ -167,7 +167,7 @@ public class SeasonalityTests {
     // Lazy evaulation
     public FriedmanTest getNonParametricTest() {
         if (nptest == null) {
-            nptest = new FriedmanTest(delta.differenced);
+            nptest = new FriedmanTest(delta.getDifferenced());
         }
         return nptest;
     }
@@ -175,7 +175,7 @@ public class SeasonalityTests {
     public TukeySpectrumPeaksTest getTukeyPeaks() {
         if (tpeaks == null) {
             tpeaks = new TukeySpectrumPeaksTest();
-            if (!tpeaks.test(delta.differenced)) {
+            if (!tpeaks.test(delta.getDifferenced())) {
                 tpeaks = null;
             }
         }
@@ -186,9 +186,9 @@ public class SeasonalityTests {
         if (btSpectrum == null) {
             btSpectrum = new BlackmanTukeySpectrum();
             btSpectrum.setWindowType(WindowType.Tukey);
-            btSpectrum.setData(delta.differenced.getValues().internalStorage());
-            int ifreq = delta.differenced.getFrequency().intValue();
-            int n = delta.differenced.getLength();
+            btSpectrum.setData(delta.getDifferenced().getValues().internalStorage());
+            int ifreq = delta.getDifferenced().getFrequency().intValue();
+            int n = delta.getDifferenced().getLength();
             int wlen = 3 * n / 4 / ifreq;
             if (wlen > 11) {
                 wlen = 11;
@@ -201,7 +201,7 @@ public class SeasonalityTests {
     public AutoRegressiveSpectrumTest getArPeaks() {
         if (arpeaks == null) {
             arpeaks = new AutoRegressiveSpectrumTest();
-            TsData dlast=delta.differenced;
+            TsData dlast=delta.getDifferenced();
             if (dlast.getLength()> SPEC_LENGTH){
                 dlast=dlast.drop(dlast.getLength()-SPEC_LENGTH, 0);
             }
@@ -214,7 +214,7 @@ public class SeasonalityTests {
 
     public SpectralPeaks[] getSpectralPeaks() {
         if (peaks == null) {
-            int ifreq = delta.original.getFrequency().intValue();
+            int ifreq = delta.getOriginal().getFrequency().intValue();
             AutoRegressiveSpectrumTest arPeaks = getArPeaks();
             TukeySpectrumPeaksTest tPeaks = getTukeyPeaks();
             if (arPeaks == null || tPeaks == null) {
@@ -241,14 +241,14 @@ public class SeasonalityTests {
 
     public StatisticalTest getQs() {
         if (qs == null) {
-            qs = QSTest.compute(delta.differenced.getValues().internalStorage(), delta.differenced.getFrequency().intValue(), nqs_);
+            qs = QSTest.compute(delta.getDifferenced().getValues().internalStorage(), delta.getDifferenced().getFrequency().intValue(), nqs_);
         }
         return qs;
     }
 
     public StatisticalTest getPeriodogramTest() {
         if (periodogram == null) {
-            periodogram = PeriodogramTest.computeSum2(delta.differenced.getValues(), delta.differenced.getFrequency().intValue());
+            periodogram = PeriodogramTest.computeSum2(delta.getDifferenced().getValues(), delta.getDifferenced().getFrequency().intValue());
         }
         return periodogram;
     }

@@ -72,7 +72,7 @@ public class SeasonalityController extends AbstractModelController {
     }
 
     private boolean hasSeasonality(ModellingContext context) {
-        TsFrequency freq = stests_.getDifferencing().original.getFrequency();
+        TsFrequency freq = stests_.getDifferencing().getOriginal().getFrequency();
         if (stests_ == null) {
             return false;
         }
@@ -86,7 +86,7 @@ public class SeasonalityController extends AbstractModelController {
         {
             ++score;
         }
-        int n = stests_.getDifferencing().differenced.getLength();
+        int n = stests_.getDifferencing().getDifferenced().getLength();
         if (n >= MSHORT || (freq != TsFrequency.Monthly && n >= SHORT)) {
             if (SpectralPeaks.hasSeasonalPeaks(stests_.getSpectralPeaks())) {
                 ++score;
