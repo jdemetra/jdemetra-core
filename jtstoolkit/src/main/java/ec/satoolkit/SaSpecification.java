@@ -21,6 +21,7 @@ import ec.satoolkit.x13.X13Specification;
 import ec.tstoolkit.information.InformationSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  *
@@ -77,6 +78,15 @@ public class SaSpecification implements ISaSpecification, Cloneable {
         return method == Method.None;
     }
 
+    public boolean equals(SaSpecification other) {
+         return Objects.equals(method, other.method) && Objects.equals(specification, other.specification);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj || (obj instanceof SaSpecification && equals((SaSpecification) obj));
+    }
+    
     @Override
     public SaSpecification clone() {
         try {
@@ -91,7 +101,7 @@ public class SaSpecification implements ISaSpecification, Cloneable {
         InformationSet info = new InformationSet();
         info.add(METHOD, method.name());
         if (specification != Spec.RSA0 || verbose) {
-            info.add(METHOD, method.name());
+            info.add(SPEC, specification.name());
         }
         return info;
     }

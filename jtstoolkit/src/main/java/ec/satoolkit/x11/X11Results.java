@@ -51,6 +51,8 @@ public class X11Results implements ISaResults {
         TsDomain cdom = d10.getDomain(), fdom = d10a.getDomain();
         decomposition.add(b1.fittoDomain(cdom), ComponentType.Series);
         TsData fb1 = b1.fittoDomain(fdom);
+        // avoid missing values when b1 is "smaller" than fdom
+        fb1=fb1.cleanExtremities();
         if (!fb1.isEmpty()) {
             decomposition.add(fb1, ComponentType.Series, ComponentInformation.Forecast);
         }
@@ -59,9 +61,9 @@ public class X11Results implements ISaResults {
         decomposition.add(info.subSet(X11Kernel.D).get(X11Kernel.D12L, TsData.class),
                 ComponentType.Trend);
         decomposition.add(d10, ComponentType.Seasonal);
+        decomposition.add(d10a, ComponentType.Seasonal, ComponentInformation.Forecast);
         decomposition.add(info.subSet(X11Kernel.D).get(X11Kernel.D12a, TsData.class),
                 ComponentType.Trend, ComponentInformation.Forecast);
-        decomposition.add(d10a, ComponentType.Seasonal, ComponentInformation.Forecast);
         decomposition.add(info.subSet(X11Kernel.D).get(X11Kernel.D13L, TsData.class),
                 ComponentType.Irregular);
     }

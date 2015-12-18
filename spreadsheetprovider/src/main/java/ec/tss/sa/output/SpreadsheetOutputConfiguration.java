@@ -37,7 +37,8 @@ public class SpreadsheetOutputConfiguration extends BasicConfiguration implement
     private File folder_ ;
     private String name_=NAME;
     private String[] series_;
-
+    private boolean fullName_;
+    
     public enum SpreadsheetLayout {
 
         BySeries,
@@ -50,6 +51,7 @@ public class SpreadsheetOutputConfiguration extends BasicConfiguration implement
         layout_ = SpreadsheetLayout.BySeries;
         verticalorientation_ = true;
         savemodel_ = false;
+        fullName_ = true;
     }
 
     public File getFolder() {
@@ -97,6 +99,14 @@ public class SpreadsheetOutputConfiguration extends BasicConfiguration implement
     }
     public void setFileName(String value) {
         name_ = value;
+    }
+
+    public boolean isFullName() {
+        return fullName_;
+    }
+
+    public void setFullName(boolean fullName) {
+        this.fullName_ = fullName;
     }
 
    @Override

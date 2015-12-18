@@ -37,8 +37,8 @@ public class X11Kernel implements ISeriesDecomposer {
     public static final String A1 = "a1", A1a = "a1a",
             A6 = "a6", A7 = "a7",
             A8 = "a8", A8t = "a8t",
-            A8s = "a8s", A8i = "a8i";
-    public static final String[] ALL_A = {A1, A1a, A6, A7, A8, A8t, A8s, A8i};
+            A8s = "a8s", A8i = "a8i", A9 = "a9", A9u = "a9u", A9sa = "a9sa";
+    public static final String[] ALL_A = {A1, A1a, A6, A7, A8, A8t, A8s, A8i, A9, A9sa, A9u};
     public static final String B1 = "b1", B2 = "b2", B3 = "b3",
             B3TEST = "b3-seasonalityTest", B4 = "b4", B5 = "b5", B6 = "b6",
             B7 = "b7", B7_IC = "b7-IC ratio", B8 = "b8", B9 = "b9",
@@ -46,7 +46,7 @@ public class X11Kernel implements ISeriesDecomposer {
             B15 = "b15", B16 = "b16", B17 = "b17", B18 = "b18", B19 = "b19",
             B20 = "b20";
     public static final String[] ALL_B = {B1, B2, B3, B4, B5, B6, B7, B8, B9,
-        B10, B11, B12, B13, B14, B15, B16, B17, B18, B19, B20};
+                                          B10, B11, B12, B13, B14, B15, B16, B17, B18, B19, B20};
     public static final String C1 = "c1", C2 = "c2", C3 = "c3",
             C3TEST = "c3-seasonalityTest", C4 = "c4", C5 = "c5", C6 = "c6",
             C7 = "c7", C7_IC = "c7-IC ratio", C8 = "c8", C9 = "c9",
@@ -54,7 +54,7 @@ public class X11Kernel implements ISeriesDecomposer {
             C15 = "c15", C16 = "c16", C17 = "c17", C18 = "c18", C19 = "c19",
             C20 = "c20";
     public static final String[] ALL_C = {C1, C2, C3, C4, C5, C6, C7, C8, C9, C10,
-        C11, C12, C13, C14, C15, C16, C17, C18, C19, C20};
+                                          C11, C12, C13, C14, C15, C16, C17, C18, C19, C20};
     public static final String D1 = "d1", D2 = "d2", D3 = "d3",
             D3TEST = "d3-seasonalityTest", D4 = "d4", D5 = "d5", D6 = "d6",
             D7 = "d7", D7_IC = "d7-IC ratio", D8 = "d8", D9 = "d9",
@@ -65,7 +65,7 @@ public class X11Kernel implements ISeriesDecomposer {
             D11L = "d11_lin", D12L = "d12_lin", D13L = "d13_lin",
             D9_DEFAULT = "s3x5default", D9_FILTER = "d9filter", D12_FILTER = "d12filter", D12_TLEN = "tlen";
     public static final String[] ALL_D = {D1, D2, D3, D4, D5, D6, D7, D8, D9,
-        D10, D10a, D11, D11a, D12, D12a, D13, D14, D15, D16, D16a, D18, D19, D20};
+                                          D10, D10a, D11, D11a, D12, D12a, D13, D14, D15, D16, D16a, D18, D19, D20};
     public static final String E1 = "e1", E2 = "e2", E3 = "e3", E11 = "e11";
     public static final String[] ALL_E = {E1, E2, E3, E11};
     private IX11Toolkit toolkit;
@@ -77,7 +77,7 @@ public class X11Kernel implements ISeriesDecomposer {
     /**
      *
      * @param s
-     * @param info
+     * @return
      */
     @Override
     public X11Results process(final TsData s) {
@@ -149,6 +149,7 @@ public class X11Kernel implements ISeriesDecomposer {
         TsData b4d = toolkit.getContext().op(b3, b4anorm);
 
         ecorr = toolkit.getExtremeValuesCorrector();
+        ecorr.setForecasthorizont(toolkit.getContext().getForecastHorizon());
         if (ecorr instanceof CochranDependentExtremeValuesCorrector) {
             ((CochranDependentExtremeValuesCorrector) ecorr).testCochran(b4d);
         }
@@ -335,10 +336,11 @@ public class X11Kernel implements ISeriesDecomposer {
             toolkit.getUtilities().checkPositivity(d7);
         }
         TsData d8 = toolkit.getContext().op(refSeries, d7);
-
         TsData d9, d10;
         if (ecorr instanceof PeriodSpecificExtremeValuesCorrector) {
-            d9 = ecorr.computeCorrections(d8);
+            d9 = ecorr.computeCorrections(d8.drop(0, toolkit.getContext().getForecastHorizon()));
+            d9.extend(0, toolkit.getContext().getForecastHorizon());
+
             TsData d9g = ecorr.applyCorrections(d8, d9);
             TsData d10a = toolkit.getSeasonalComputer().doFinalFiltering(X11Step.D,
                     d9g, info);
@@ -420,6 +422,9 @@ public class X11Kernel implements ISeriesDecomposer {
         // add pt, pi to d11
         TsData d11c = toolkit.getContext().invOp(d11, a8t);
         d11c = toolkit.getContext().invOp(d11c, a8i);
+        TsData a9sa = atables.get(A9sa, TsData.class);
+        d11c = toolkit.getContext().invOp(d11c, a9sa);
+
         TsData d16 = toolkit.getContext().op(a1, d11c);
 
         dtables.set(D11, d11c.fittoDomain(sdomain));
@@ -493,4 +498,5 @@ public class X11Kernel implements ISeriesDecomposer {
 
     private void stepF(InformationSet info) {
     }
+
 }

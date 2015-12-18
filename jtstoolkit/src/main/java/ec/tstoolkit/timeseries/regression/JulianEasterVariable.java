@@ -30,7 +30,7 @@ import java.util.GregorianCalendar;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class JulianEasterVariable extends AbstractSingleTsVariable implements IMovingHolidayVariable {
+public class JulianEasterVariable extends AbstractSingleTsVariable implements IEasterVariable {
 
 
     private static final int CYCLE = 532;
@@ -55,10 +55,12 @@ public class JulianEasterVariable extends AbstractSingleTsVariable implements IM
     public JulianEasterVariable() {
     }
 
+    @Override
     public int getDuration() {
         return dur_;
     }
 
+    @Override
     public void setDuration(int value) {
         if (value <= 0 || value >= 29) {
             throw new IllegalArgumentException();

@@ -112,25 +112,25 @@ public class MixedFrequenciesSpecification implements IRegArimaSpecification, Cl
     public boolean read(InformationSet info) {
         InformationSet cinfo = info.getSubSet(BASIC);
         if (cinfo != null) {
-            basic_.read(info);
+            basic_.read(cinfo);
         } else {
             basic_.reset();
         }
         cinfo = info.getSubSet(ARIMA);
         if (cinfo != null) {
-            arima_.read(info);
+            arima_.read(cinfo);
         } else {
             arima_.airline();
         }
         cinfo = info.getSubSet(REGRESSION);
         if (cinfo != null) {
-            regs_.read(info);
+            regs_.read(cinfo);
         } else {
             regs_.reset();
         }
        cinfo = info.getSubSet(ESTIMATE);
         if (cinfo != null) {
-            estimate_.read(info);
+            estimate_.read(cinfo);
         } else {
             estimate_.reset();
         }

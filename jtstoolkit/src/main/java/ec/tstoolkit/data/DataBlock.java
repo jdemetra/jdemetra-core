@@ -1390,6 +1390,23 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     /**
+     * Adds the product of a vector by a matrix to this data block 
+     * this += row * cols. We must have that 1. the length of
+     * this data block = the number of columns 2. the length of the vector = the
+     * length of each column. The iterator is changed !!!
+     *
+     * @param row The vector array
+     * @param cols The columns of the matrix
+     */
+    public void addProduct(DataBlock row, DataBlockIterator cols) {
+        int idx = beg_;
+        DataBlock cur = cols.getData();
+        do {
+            x_[idx] += row.dot(cur);
+            idx += inc_;
+        } while (cols.next());
+    }
+    /**
      * this = l * d. Product of a vector by a double. The results is stored in
      * this object
      *
@@ -1434,6 +1451,23 @@ public final class DataBlock implements IDataBlock, Cloneable {
         } while (rows.next());
     }
 
+    /**
+     * Adds the product of a matrix by a vector to this data block 
+     * this += rows * col. We must have that 1. the length of
+     * this data block = the number of rows 2. the length of the vector = the
+     * length of each row. The iterator is changed !!!
+     *
+     * @param rows The rows of the matrix.
+     * @param col The vector.
+     */
+    public void addProduct(DataBlockIterator rows, DataBlock col) {
+        int idx = beg_;
+        DataBlock cur = rows.getData();
+        do {
+            x_[idx] += cur.dot(col);
+            idx += inc_;
+        } while (rows.next());
+    }
     /**
      * Creates a new data block from this one
      *

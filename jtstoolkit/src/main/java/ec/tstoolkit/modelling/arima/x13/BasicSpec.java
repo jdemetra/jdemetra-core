@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.modelling.arima.x13;
 
 import ec.tstoolkit.information.InformationSet;
@@ -31,13 +30,15 @@ public class BasicSpec implements Cloneable, InformationSetSerializable {
 
     private TsPeriodSelector span_ = new TsPeriodSelector();
     private boolean preprocess_ = true;
+    private boolean preliminaryCheck_ = true;
 
     public BasicSpec() {
     }
-    
-    public void reset(){
+
+    public void reset() {
         span_ = new TsPeriodSelector();
         preprocess_ = true;
+        preliminaryCheck_ = true;
     }
 
     @Override
@@ -71,11 +72,19 @@ public class BasicSpec implements Cloneable, InformationSetSerializable {
         preprocess_ = value;
     }
 
+    public boolean isPreliminaryCheck() {
+        return preliminaryCheck_;
+    }
+
+    public void setPreliminaryCheck(boolean value) {
+        preliminaryCheck_ = value;
+    }
+
     public boolean isDefault() {
         if (span_.getType() != PeriodSelectorType.All) {
             return false;
         }
-        return preprocess_;
+        return preprocess_ && preliminaryCheck_;
     }
 
     @Override
@@ -90,9 +99,9 @@ public class BasicSpec implements Cloneable, InformationSetSerializable {
     public boolean equals(Object obj) {
         return this == obj || (obj instanceof BasicSpec && equals((BasicSpec) obj));
     }
-    
+
     private boolean equals(BasicSpec spec) {
-        return Objects.equals(spec.span_, span_) && preprocess_ == spec.preprocess_;
+        return Objects.equals(spec.span_, span_) && preprocess_ == spec.preprocess_ && preliminaryCheck_ == spec.preliminaryCheck_;
     }
 
     @Override
@@ -106,6 +115,9 @@ public class BasicSpec implements Cloneable, InformationSetSerializable {
         }
         if (verbose || !preprocess_) {
             info.add(PREPROCESS, preprocess_);
+        }
+        if (verbose || !preliminaryCheck_) {
+            info.add(PRELIMINARYCHECK, preliminaryCheck_);
         }
         return info;
     }
@@ -122,6 +134,10 @@ public class BasicSpec implements Cloneable, InformationSetSerializable {
             if (preprocess != null) {
                 preprocess_ = preprocess;
             }
+            Boolean preliminaryChecks = info.get(PRELIMINARYCHECK, Boolean.class);
+            if (preliminaryChecks != null) {
+                preliminaryCheck_ = preliminaryChecks;
+            }
             return true;
         } catch (Exception err) {
             return false;
@@ -135,8 +151,8 @@ public class BasicSpec implements Cloneable, InformationSetSerializable {
 //        }
 //    }
     /////////////////////////////////////////////////////////////////////////
-    public static final String SPAN = "span", PREPROCESS = "preprocess";
+    public static final String SPAN = "span", PREPROCESS = "preprocess", PRELIMINARYCHECK = "preliminarycheck";
     private static final String[] DICTIONARY = new String[]{
-        SPAN, PREPROCESS
+        SPAN, PREPROCESS, PRELIMINARYCHECK
     };
 }

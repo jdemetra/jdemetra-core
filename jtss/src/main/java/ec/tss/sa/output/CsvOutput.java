@@ -81,6 +81,7 @@ public class CsvOutput implements IOutput<SaDocument<ISaSpecification>> {
         try (FileOutputStream matrix = new FileOutputStream(file)) {
             try (OutputStreamWriter writer = new OutputStreamWriter(matrix, StandardCharsets.ISO_8859_1)) {
                 TsCollectionCsvFormatter fmt = new TsCollectionCsvFormatter();
+                fmt.setFullName(config_.isFullName());
                 fmt.setPresentation(config_.getPresentation());
                 fmt.write(s, names, writer);
             }

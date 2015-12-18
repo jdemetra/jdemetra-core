@@ -28,12 +28,13 @@ import java.util.Map;
 @Development(status = Development.Status.Preliminary)
 public class EasterSpec implements Cloneable, InformationSetSerializable {
 
-    public static final String DURATION = "duration", TYPE = "type", TEST = "test";
+    public static final String DURATION = "duration", TYPE = "type", TEST = "test", JULIAN="julian";
 
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, TYPE), String.class);
         dic.put(InformationSet.item(prefix, DURATION), Integer.class);
         dic.put(InformationSet.item(prefix, TEST), String.class);
+        dic.put(InformationSet.item(prefix, JULIAN), Boolean.class);
     }
 
     public static enum Type {
@@ -51,8 +52,11 @@ public class EasterSpec implements Cloneable, InformationSetSerializable {
     private boolean test_;
     private int duration_ = DEF_IDUR;
     private Type type_ = Type.Unused;
+    private boolean julian=DEF_JULIAN;
+    
     public static final int DEF_IDUR = 6;
-
+    public static boolean DEF_JULIAN=false;
+ 
     public EasterSpec() {
     }
 
@@ -93,6 +97,14 @@ public class EasterSpec implements Cloneable, InformationSetSerializable {
         type_ = type;
     }
 
+    public boolean isJulian(){
+        return julian;
+    }
+    
+    public void setJulian(boolean julian){
+        this.julian=julian;
+    }
+
     public boolean isDefault() {
         return type_ == Type.Unused;
     }
@@ -123,7 +135,7 @@ public class EasterSpec implements Cloneable, InformationSetSerializable {
 
     private boolean equals(EasterSpec other) {
         return duration_ == other.duration_ && test_ == other.test_
-                && type_ == other.type_;
+                && type_ == other.type_ && julian == other.julian;
     }
 
     @Override
@@ -149,6 +161,9 @@ public class EasterSpec implements Cloneable, InformationSetSerializable {
         if (verbose || test_) {
             info.add(TEST, test_);
         }
+         if (verbose || julian != DEF_JULIAN) {
+            info.add(JULIAN, julian);
+        }
         return info;
     }
 
@@ -167,6 +182,10 @@ public class EasterSpec implements Cloneable, InformationSetSerializable {
             Boolean test = info.get(TEST, Boolean.class);
             if (test != null) {
                 test_ = test;
+            }
+            Boolean jul = info.get(JULIAN, Boolean.class);
+            if (jul!= null){
+                julian=jul;
             }
             return true;
         } catch (Exception err) {

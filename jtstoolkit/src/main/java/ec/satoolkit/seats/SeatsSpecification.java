@@ -58,7 +58,7 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
         Burman, KalmanSmoother, McElroyMatrix
     }
 
-    private double xl_ = DEF_XL, rmod_ = DEF_RMOD, epsPhi_ = DEF_EPSPHI, smod = DEF_SMOD;
+    private double xl_ = DEF_XL, rmod_ = DEF_RMOD, epsPhi_ = DEF_EPSPHI, smod_ = DEF_SMOD;
     private ApproximationMode changeModel_ = ApproximationMode.Legacy;
     private EstimationMethod method_ = EstimationMethod.Burman;
     private boolean log = false;
@@ -98,18 +98,18 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
     }
 
     public double getSeasBoundary() {
-        return smod;
+        return smod_;
     }
 
     public void setSeasBoundary(double value) {
         if (value < 0 || value > 1) {
             throw new SeatsException("SMOD should belong to [0, 1]");
         }
-        smod = value;
+        smod_ = value;
     }
 
     public boolean isDefault() {
-        return epsPhi_ == DEF_EPSPHI && xl_ == DEF_XL && rmod_ == DEF_RMOD && smod == DEF_SMOD
+        return epsPhi_ == DEF_EPSPHI && xl_ == DEF_XL && rmod_ == DEF_RMOD && smod_ == DEF_SMOD
                 && changeModel_ == ApproximationMode.Legacy && method_ == EstimationMethod.Burman;
     }
 
@@ -135,7 +135,7 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
                 && Objects.equals(spec.getArima(), getArima())
                 && spec.epsPhi_ == epsPhi_
                 && spec.rmod_ == rmod_
-                && spec.smod == smod
+                && spec.smod_ == smod_
                 && spec.xl_ == xl_;
     }
 
@@ -219,8 +219,8 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
         if (verbose || rmod_ != DEF_RMOD) {
             info.add(RMOD, rmod_);
         }
-        if (verbose || smod != DEF_SMOD) {
-            info.add(SMOD, smod);
+        if (verbose || smod_ != DEF_SMOD) {
+            info.add(SMOD, smod_);
         }
         if (verbose || xl_ != DEF_XL) {
             info.add(XL, xl_);
@@ -247,7 +247,7 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
             }
             Double smod = info.get(SMOD, Double.class);
             if (smod != null) {
-                smod = smod;
+                smod_ = smod;
             }
             Double xl = info.get(XL, Double.class);
             if (xl != null) {

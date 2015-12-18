@@ -45,7 +45,7 @@ import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.x13.UscbForecasts;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
-import ec.tstoolkit.timeseries.regression.EasterVariable;
+import ec.tstoolkit.timeseries.regression.IEasterVariable;
 import ec.tstoolkit.timeseries.regression.ICalendarVariable;
 import ec.tstoolkit.timeseries.regression.ILengthOfPeriodVariable;
 import ec.tstoolkit.timeseries.regression.IMovingHolidayVariable;
@@ -850,7 +850,7 @@ public class PreprocessingModel implements IProcResults {
     }
 
     private TsData getEe(boolean fcast) {
-        TsData tmp = regressionEffect(domain(fcast), EasterVariable.class);
+        TsData tmp = regressionEffect(domain(fcast), IEasterVariable.class);
         if (tmp == null) {
             return null;
         }
@@ -1446,7 +1446,7 @@ public class PreprocessingModel implements IProcResults {
         mapper.add(InformationSet.item(REGRESSION, EASTER), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
             @Override
             public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(EasterVariable.class, 0);
+                return source.getRegressionItem(IEasterVariable.class, 0);
             }
         });
         mapper.add(InformationSet.item(REGRESSION, NOUT), new InformationMapper.Mapper<PreprocessingModel, Integer>(Integer.class) {

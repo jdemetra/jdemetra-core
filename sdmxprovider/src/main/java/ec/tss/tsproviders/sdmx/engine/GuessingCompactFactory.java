@@ -81,19 +81,21 @@ public class GuessingCompactFactory extends AbstractDocumentFactory {
         Parsers.Parser<Number> toValue = DEFAULT_DATA_FORMAT.numberParser();
         OptionalTsData.Builder result = new OptionalTsData.Builder(timeFormat.getFrequency(), timeFormat.getAggregationType());
         for (NamedNodeMap obs : lookupObservations(seriesNode)) {
-            Date period = toPeriod.parse(lookupPeriod(obs));
-            Number value = period != null ? toValue.parse(lookupValue(obs)) : null;
+            Date period = getPeriod(obs, toPeriod);
+            Number value = period != null ? getValue(obs, toValue) : null;
             result.add(period, value);
         }
         return result.build();
     }
 
-    private static String lookupPeriod(NamedNodeMap obs) {
-        return obs.getNamedItem(TIME_PERIOD_ATTRIBUTE).getNodeValue();
+    private static Date getPeriod(NamedNodeMap obs, Parsers.Parser<Date> toPeriod) {
+        Node tmp = obs.getNamedItem(TIME_PERIOD_ATTRIBUTE);
+        return tmp != null ? toPeriod.parse(tmp.getNodeValue()) : null;
     }
 
-    private static String lookupValue(NamedNodeMap obs) {
-        return obs.getNamedItem(OBS_VALUE_ATTRIBUTE).getNodeValue();
+    private static Number getValue(NamedNodeMap obs, Parsers.Parser<Number> toValue) {
+        Node tmp = obs.getNamedItem(OBS_VALUE_ATTRIBUTE);
+        return tmp != null ? toValue.parse(tmp.getNodeValue()) : null;
     }
 
     private static ImmutableList<Map.Entry<String, String>> getKey(Node seriesNode) {

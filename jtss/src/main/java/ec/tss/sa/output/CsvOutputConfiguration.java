@@ -35,9 +35,11 @@ public class CsvOutputConfiguration extends BasicConfiguration implements Clonea
     private File folder_ ;
     private String name_=NAME;
     private String[] series_;
+    private boolean fullName_;
 
     public CsvOutputConfiguration() {
         series_ = defOutput;
+        fullName_ = true;
     }
 
     public CsvLayout getPresentation() {
@@ -69,6 +71,14 @@ public class CsvOutputConfiguration extends BasicConfiguration implements Clonea
 
     public void setSeries(List<String> value) {
         series_ = Jdk6.Collections.toArray(value, String.class);
+    }
+
+    public boolean isFullName() {
+        return fullName_;
+    }
+
+    public void setFullName(boolean fullName) {
+        this.fullName_ = fullName;
     }
 
     @Override

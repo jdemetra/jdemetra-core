@@ -34,6 +34,7 @@ import ec.tstoolkit.algorithm.*;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
+import ec.tstoolkit.modelling.arima.x13.BasicSpec;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +58,8 @@ public class X13ProcessingFactory extends GenericSaProcessingFactory implements 
 
     private static SequentialProcessing<TsData> create(X13Specification xspec, ProcessingContext context) {
         SequentialProcessing processing = new SequentialProcessing();
-        addInitialStep(xspec.getRegArimaSpecification().getBasic().getSpan(), processing);
+        BasicSpec basic = xspec.getRegArimaSpecification().getBasic();
+        addInitialStep(basic.getSpan(), basic.isPreliminaryCheck(), processing);
         if (xspec.getRegArimaSpecification().getBasic().isPreprocessing()) {
             addPreprocessingStep(xspec.getRegArimaSpecification().build(context), processing);
         }

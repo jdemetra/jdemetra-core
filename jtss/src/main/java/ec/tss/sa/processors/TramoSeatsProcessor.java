@@ -41,12 +41,12 @@ import ec.tstoolkit.modelling.arima.tramo.RegressionSpec;
 import ec.tstoolkit.modelling.arima.tramo.TradingDaysSpec;
 import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
 import ec.tstoolkit.modelling.arima.tramo.TransformSpec;
-import ec.tstoolkit.timeseries.TsPeriodSelector;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
-import ec.tstoolkit.timeseries.regression.EasterVariable;
+import ec.tstoolkit.timeseries.regression.IEasterVariable;
 import ec.tstoolkit.timeseries.regression.ILengthOfPeriodVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.regression.ITradingDaysVariable;
+import ec.tstoolkit.timeseries.regression.JulianEasterVariable;
 import ec.tstoolkit.timeseries.regression.OutlierDefinition;
 import ec.tstoolkit.timeseries.regression.OutlierType;
 import ec.tstoolkit.timeseries.regression.TsVariableList;
@@ -202,7 +202,7 @@ public class TramoSeatsProcessor implements ISaProcessingFactory<TramoSeatsSpeci
             }
         }
         if (espec.isUsed() && espec.isTest()) {
-            if (vars.select(EasterVariable.class).isEmpty()) {
+            if (vars.select(IEasterVariable.class).isEmpty()) {
                 espec.setOption(EasterSpec.Type.Unused);
             } else {
                 espec.setTest(false);

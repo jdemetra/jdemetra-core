@@ -36,7 +36,8 @@ public class TransformSpec implements Cloneable, InformationSetSerializable {
     public static final String SPAN = "span",
             FN = "function",
             FCT = "fct",
-            UNITS = "units";
+            UNITS = "units",
+            PRELIMINARYCHECK = "preliminarycheck";
 
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, FN), String.class);
@@ -48,6 +49,7 @@ public class TransformSpec implements Cloneable, InformationSetSerializable {
     private TsPeriodSelector span_ = new TsPeriodSelector();
     private double fct_ = DEF_FCT;
     private boolean units_;
+    private boolean preliminaryCheck_ = true;
     private DefaultTransformationType fn_ = DefaultTransformationType.None;
     public static final double DEF_FCT = 0.95;
 
@@ -58,6 +60,7 @@ public class TransformSpec implements Cloneable, InformationSetSerializable {
         span_ = new TsPeriodSelector();
         fct_ = DEF_FCT;
         units_ = false;
+        preliminaryCheck_ = true;
         fn_ = DefaultTransformationType.None;
     }
 
@@ -96,10 +99,19 @@ public class TransformSpec implements Cloneable, InformationSetSerializable {
     public void setUnits(boolean value) {
         units_ = value;
     }
+    
+    public boolean isPreliminaryCheck() {
+        return preliminaryCheck_;
+    }
+    
+    public void setPreliminaryCheck(boolean value) {
+        preliminaryCheck_ = value;
+    }
 
     public boolean isDefault() {
         return units_ == false && fn_ == DefaultTransformationType.None
-                && fct_ == DEF_FCT && (span_ == null || span_.getType() == PeriodSelectorType.All);
+                && fct_ == DEF_FCT && (span_ == null || span_.getType() == PeriodSelectorType.All)
+                && preliminaryCheck_;
     }
 
     @Override
@@ -118,7 +130,7 @@ public class TransformSpec implements Cloneable, InformationSetSerializable {
             return isDefault();
         }
         return fct_ == other.fct_ && fn_ == other.fn_ && units_ == other.units_
-                && Objects.equals(span_, other.span_);
+                && Objects.equals(span_, other.span_) && preliminaryCheck_ == other.preliminaryCheck_;
     }
 
     @Override
@@ -155,6 +167,9 @@ public class TransformSpec implements Cloneable, InformationSetSerializable {
         if (verbose || units_) {
             info.add(UNITS, units_);
         }
+        if (verbose || !preliminaryCheck_) {
+            info.add(PRELIMINARYCHECK, preliminaryCheck_);
+        }
         return info;
     }
 
@@ -177,6 +192,10 @@ public class TransformSpec implements Cloneable, InformationSetSerializable {
             Boolean units = info.get(UNITS, Boolean.class);
             if (units != null) {
                 units_ = units;
+            }
+            Boolean preliminaryChecks = info.get(PRELIMINARYCHECK, Boolean.class);
+            if (preliminaryChecks != null) {
+                preliminaryCheck_ = preliminaryChecks;
             }
 
             return true;
