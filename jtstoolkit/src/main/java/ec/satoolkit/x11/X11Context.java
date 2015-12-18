@@ -1,28 +1,25 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.satoolkit.x11;
 
 import ec.satoolkit.DecompositionMode;
-import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A X11Context contains general information about a given X11Processing.
@@ -36,13 +33,12 @@ public final class X11Context {
     private TsDomain edomain;
     private int nfcasts;
 
-
     /**
      * Creates a new context
      *
-     * @param mode The decomposition mode used in the processing
+     * @param mode    The decomposition mode used in the processing
      * @param nfcasts The number of forecasts that will be used during the
-     * processing. Must be greater or equal to 0.
+     *                processing. Must be greater or equal to 0.
      */
     public X11Context(final DecompositionMode mode, final int nfcasts) {
         this.mode = mode;
@@ -72,6 +68,7 @@ public final class X11Context {
 
     /**
      * Gets the current annual frequency, as an integer
+     *
      * @return 4 or 12
      */
     public int getFrequency() {
@@ -81,6 +78,7 @@ public final class X11Context {
     /**
      * Gets the default mean values, which is 1 or 0, following the
      * decomposition mode (1 in the case of multiplicative decomposition).
+     *
      * @return 1 or 0.
      */
     public double getMean() {
@@ -89,6 +87,7 @@ public final class X11Context {
 
     /**
      * Gets the current decomposition mode
+     *
      * @return The decomposition mode.
      */
     public DecompositionMode getMode() {
@@ -122,6 +121,7 @@ public final class X11Context {
     /**
      * Adds/multiplies two time series, following the decomposition mode.
      * (multiplies in the case of multiplicative decomposition)
+     *
      * @param l The left operand
      * @param r The right operand
      * @return A new time series is returned
@@ -133,14 +133,15 @@ public final class X11Context {
             return TsData.multiply(l, r);
         }
     }
+
     /**
      * Controls that the given series can be processed by X11
      *
      * @param s The considered time series
-     * @throws A X11Exception is thrown if the series is invalid. Invalid series
-     * are: - Series with an annual frequency other than 4 or 12 - Series with
-     * less than 3 years of observations - Series with negative values (in the
-     * case of non-additive decomposition) - Series with missing values
+     * @throws X11Exception is thrown if the series is invalid. Invalid series
+     *                      are: - Series with an annual frequency other than 4 or 12 - Series with
+     *                      less than 3 years of observations - Series with negative values (in the
+     *                      case of non-additive decomposition) - Series with missing values
      */
     public void check(final TsData s) {
         edomain = s.getDomain();

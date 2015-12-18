@@ -44,7 +44,8 @@ public class X11Specification implements IProcSpecification, Cloneable {
             SEASONALMA = "seasonalma",
             FCASTS = "fcasts",
             CALENDARSIGMA = "calendarsigma",
-            SIGMAVEC="sigmavec";
+            SIGMAVEC="sigmavec",
+    EXCLUDEFCAST="excludeforcast";
 
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, MODE), String.class);
@@ -57,7 +58,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
         dic.put(InformationSet.item(prefix, CALENDARSIGMA), String.class);
       //  dic.put(InformationSet.item(prefix, MODE), String.class);
         dic.put(InformationSet.item(prefix, SIGMAVEC), String[].class);
-        
+        dic.put(InformationSet.item(prefix, EXCLUDEFCAST), String.class);  
     }
 
     private DecompositionMode mode_ = DecompositionMode.Undefined;
@@ -68,6 +69,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
     private int fcasts_ = DEF_FCASTS;
     private CalendarSigma calendarsigma_ = CalendarSigma.None;
     private SigmavecOption[] sigmavec_; 
+    private boolean excludefcast_= false;
 
     /**
      * Number of forecasts used in X11. By default, 0. When pre-processing is
@@ -131,6 +133,18 @@ public class X11Specification implements IProcSpecification, Cloneable {
     public void setSeasonal(boolean seas) {
         seasonal_ = seas;
     }
+    
+    public boolean isExcludefcst(){
+    return excludefcast_;
+    }
+    
+    /**
+     *
+     * @param excludefcst default is false; true then the forcasts are ignored for the extreme value calculation
+     */
+    public void setExcludefcst(boolean excludefcst){
+    excludefcast_=excludefcst;
+    }
 
     public boolean isDefault() {
         if (!seasonal_ || mode_ != DecompositionMode.Multiplicative) {
@@ -165,7 +179,13 @@ public class X11Specification implements IProcSpecification, Cloneable {
         if (usigma_ != DEF_USIGMA) {
             return false;
         }
+        
+        if (!excludefcast_){
+        return false;}
+        
         return isAutoHenderson();
+        
+        
     }
 
     public boolean isAutoHenderson() {
@@ -199,11 +219,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
     public void setSigmavec(SigmavecOption[] sigmavec){
         sigmavec_= sigmavec.clone();
     }
-      
- //    public void setSigmavec(Sigmavec sigmavec) { CH: Das war Quatsch
- //      sigmavec_ = new Sigmavec[] {sigmavec};
- //  }
-        
+              
         
     /**
      * Set the decomposition mode of X11
@@ -298,8 +314,8 @@ public class X11Specification implements IProcSpecification, Cloneable {
                 && spec.lsigma_ == lsigma_
                 && spec.usigma_ == usigma_
                 && spec.mode_ == mode_
-                && spec.calendarsigma_ == calendarsigma_;
-              
+                && spec.calendarsigma_ == calendarsigma_
+              && spec.excludefcast_== excludefcast_;
     }
 
     @Override
@@ -356,6 +372,10 @@ public class X11Specification implements IProcSpecification, Cloneable {
             }
             info.add(SIGMAVEC, sigmavec);
         }
+        
+       if (verbose || excludefcast_){
+            info.add(EXCLUDEFCAST, excludefcast_);
+       }
         return info;
     }
 
@@ -406,6 +426,11 @@ public class X11Specification implements IProcSpecification, Cloneable {
                     sigmavec_[i] = SigmavecOption.valueOf(sigmavec[i]);
                 }
             }
+            
+            Boolean excludefcst = info.get(EXCLUDEFCAST, Boolean.class);
+            if (excludefcst != null){
+                excludefcast_=excludefcst;
+            }        
             
             return true;
         } catch (Exception err) {

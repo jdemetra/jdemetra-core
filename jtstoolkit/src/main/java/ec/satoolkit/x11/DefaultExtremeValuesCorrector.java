@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.satoolkit.x11;
 
 import ec.tstoolkit.data.DataBlock;
@@ -54,8 +53,9 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
     protected double lsigma = 1.5, usigma = 2.5;
     protected double[] stdev;
     protected TsData scur, scorr, sweights;
+    protected boolean isexcludefcast;
+    protected int forcasthorizont;
 
- 
     /**
      * Searches the extreme values in a given series
      *
@@ -64,16 +64,24 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
      */
     @Override
     public int analyse(final TsData s) {
+        TsData scurwithfcast;
         scur = s;
         sweights = null;
         scorr = null;
         // compute standard deviations
+        scurwithfcast = scur;
+        scur = excludeforecast(scur);
         calcStdev();
+        scur = scurwithfcast;
+
         int noutliers = outliersDetection();
         if (noutliers > 0) {
             removeExtremes();
             scur = scorr;
+            scurwithfcast = scur;
+            scur = excludeforecast(scur);
             calcStdev();
+            scur = scurwithfcast;
             scur = s;
             noutliers = outliersDetection();
         }
@@ -122,7 +130,13 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
             --nfy;
         }
         DataBlock all = new DataBlock(scur.getValues().internalStorage());
-        stdev = new double[ny];
+        //stdev = new double[ny];
+        if (isexcludefcast) {
+            stdev = new double[ny + 1];
+        } else {
+            stdev = new double[ny];
+        }
+
         double e;
         if (nfy < 5) {
             e = calcStdev(all);
@@ -160,6 +174,10 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
 
         for (int i = ibeg; i < stdev.length; ++i) {
             stdev[i] = e;
+
+            //die nächste Zeile muss wieder gelöscht werden
+            // if(isexcludefcast){
+            //  stdev[ny]=stdev[ny-1];}
         }
     }
 
@@ -204,7 +222,17 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
             } else {
                 // correct value
                 double x = e * s.get(i);
-                int[] pos = searchPositionsForOutlierCorrection(i, freq);
+                //   int[] pos = searchPositionsForOutlierCorrection(i, freq);
+                int[] pos;
+                if (s.getLength() < sweights.getLength()) {
+                    TsData tempsweights = sweights.clone();
+                    sweights = sweights.drop(0, sweights.getLength() - s.getLength());
+                    pos = searchPositionsForOutlierCorrection(i, freq);
+                    sweights = tempsweights;
+                } else {
+                    pos = searchPositionsForOutlierCorrection(i, freq);
+                }
+
                 if (pos != null) {
                     for (int k = 0; k < 4; k++) {
                         x += s.get(pos[k]);
@@ -223,10 +251,10 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
     }
 
     /**
-     * Gets the correction factors. The correction factors are computed on 
-     * the original series, using the weights of each observation.
-     * The corrections will depend on the type of the decomposition (multiplicative 
-     * or not). 
+     * Gets the correction factors. The correction factors are computed on the
+     * original series, using the weights of each observation. The corrections
+     * will depend on the type of the decomposition (multiplicative or not).
+     *
      * @return A new series is always returned
      */
     @Override
@@ -371,8 +399,8 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
      *
      * @param lsig The low sigma value
      * @param usig The high sigma value
-     * @throws An exception is thrown when the limits are invalid (usig <=
-     * lsig or lsig <= 0.5).
+     * @throws An exception is thrown when the limits are invalid (usig <= lsig
+     * or lsig <= 0.5).
      */
     public void setSigma(double lsig, double usig) {
         if (usig <= lsig || lsig <= 0.5) {
@@ -380,5 +408,37 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
         }
         lsigma = lsig;
         usigma = usig;
+    }
+
+    private TsData excludeforecast(TsData tsWithForcast) {
+        TsData tsWithoutforCast;
+        if (isexcludefcast) {
+            tsWithoutforCast = tsWithForcast.drop(0, forcasthorizont);
+            return tsWithoutforCast;
+        } else {
+            return tsWithForcast;
+        }
+    }
+
+    @Override
+    public void setExcludefcast(boolean isExcludefcast) {
+        isexcludefcast = isExcludefcast;
+    }
+
+    @Override
+    public boolean getExcludefcast() {
+        return isexcludefcast;
+    }
+
+    @Override
+    public void setForecasthorizont(int forcasthorizont) {
+        this.forcasthorizont = forcasthorizont;
+
+    }
+
+    @Override
+    public int getForecasthorizont() {
+        return this.forcasthorizont;
+
     }
 }

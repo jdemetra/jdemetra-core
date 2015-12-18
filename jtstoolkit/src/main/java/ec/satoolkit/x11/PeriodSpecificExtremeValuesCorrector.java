@@ -39,7 +39,7 @@ public class PeriodSpecificExtremeValuesCorrector extends DefaultExtremeValuesCo
             while (iteri.hasMoreElements()) {
                 DataBlock dbi = iteri.nextElement().data;
                 stdev[i] = calcStdev(dbi);
-                i = i + 1;
+              i = i + 1;
             }
 
         }
