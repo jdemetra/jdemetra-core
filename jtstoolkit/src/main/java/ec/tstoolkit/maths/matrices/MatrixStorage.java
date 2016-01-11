@@ -24,7 +24,7 @@ import ec.tstoolkit.design.Development;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 public class MatrixStorage {
 
     private double[] m_data;
@@ -140,4 +140,16 @@ public class MatrixStorage {
         }
     }
 
+    /**
+     * Multiplies the current matrices by a given factor
+     * @param factor 
+     */
+    public void rescale(double factor) {
+        if (factor == 1)
+            return;
+        int n=m_size*m_nused;
+        for (int i=0; i<n; ++i){
+            m_data[i]*=factor;
+        }
+    }
 }
