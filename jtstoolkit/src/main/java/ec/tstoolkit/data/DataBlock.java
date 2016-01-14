@@ -668,8 +668,9 @@ public final class DataBlock implements IDataBlock, Cloneable {
             double scale = ZERO;
             double ssq = ONE;
             for (int ix = beg_, jx = data.beg_; ix != end_; ix += inc_, jx += data.inc_) {
-                double d = x_[ix] - data.x_[jx];
-                if (d != ZERO) {
+                double x=x_[ix], y=data.x_[jx];
+                if (Double.compare(x, y) != 0) {
+                    double d=x-y;
                     double absxi = Math.abs(d);
                     if (scale < absxi) {
                         double s = scale / absxi;
