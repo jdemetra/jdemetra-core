@@ -202,9 +202,9 @@ public class SeasonalityTests {
         if (arpeaks == null) {
             arpeaks = new AutoRegressiveSpectrumTest();
             TsData dlast=delta.getDifferenced();
-            if (dlast.getLength()> SPEC_LENGTH){
-                dlast=dlast.drop(dlast.getLength()-SPEC_LENGTH, 0);
-            }
+//            if (dlast.getLength()> SPEC_LENGTH){
+//                dlast=dlast.drop(dlast.getLength()-SPEC_LENGTH, 0);
+//            }
             if (!arpeaks.test(dlast)) {
                 arpeaks = null;
             }

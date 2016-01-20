@@ -51,6 +51,7 @@ public class SeatsToolkit implements ISeatsToolkit {
         decomposer.setEpsphi(spec.getSeasTolerance());
         decomposer.setRmod(spec.getTrendBoundary());
         decomposer.setSmod(spec.getSeasBoundary());
+        decomposer.setStationarySmod(spec.getStationarySeasBoundary());
         toolkit.modelDecomposer = decomposer;
 
         IComponentsEstimator cmpEstimator;

@@ -41,6 +41,7 @@ public class DefaultModelDecomposer implements IArimaDecomposer {
     private double epsphi = SeatsSpecification.DEF_EPSPHI;
     private double rmod = SeatsSpecification.DEF_RMOD;
     private double smod = SeatsSpecification.DEF_SMOD;
+    private double stsmod = SeatsSpecification.DEF_STSMOD;
     private boolean noisyModel = true;
 
     /**
@@ -111,7 +112,11 @@ public class DefaultModelDecomposer implements IArimaDecomposer {
             TrendCycleSelector tsel = new TrendCycleSelector(rmod);
             tsel.setDefaultLowFreqThreshold(frequency);
             SeasonalSelector ssel = new SeasonalSelector(frequency, epsphi);
-            ssel.setK(smod);
+            if (sarima.getSeasonalDifferenceOrder() == 0) {
+                ssel.setK(smod);
+            } else {
+                ssel.setK(stsmod);
+            }
 
             ModelDecomposer decomposer = new ModelDecomposer();
             decomposer.add(tsel);
@@ -156,6 +161,14 @@ public class DefaultModelDecomposer implements IArimaDecomposer {
     public double getSmod() {
         return smod;
     }
+
+    /**
+     * @return the smod
+     */
+    public double getStationarySmod() {
+        return stsmod;
+    }
+
     /**
      * @param epsphi the epsphi to set
      */
@@ -175,6 +188,13 @@ public class DefaultModelDecomposer implements IArimaDecomposer {
      */
     public void setSmod(double smod) {
         this.smod = smod;
+    }
+
+    /**
+     * @param smod the smod to set
+     */
+    public void setStationarySmod(double stsmod) {
+        this.stsmod = stsmod;
     }
 
     private UcarimaModel complete(int frequency, IArimaModel arima, UcarimaModel ucm, int rc, int sc) {
