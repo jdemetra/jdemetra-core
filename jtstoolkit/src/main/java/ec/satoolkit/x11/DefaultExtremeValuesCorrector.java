@@ -294,6 +294,7 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
 
     protected int outliersDetection() {
         int nval = 0;
+        double lv, uv;
         sweights = new TsData(scur.getDomain());
         YearIterator iteri = new YearIterator(scur);
         YearIterator itero = new YearIterator(sweights);
@@ -302,8 +303,13 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
         double xbar = getMean();
         int y = 0;
         while (iteri.hasMoreElements()) {
-            double lv = stdev[y] * lsigma;
-            double uv = stdev[y] * usigma;
+            if (y > stdev.length - 1) {
+                lv = stdev[stdev.length - 1] * lsigma;
+                uv = stdev[stdev.length - 1] * usigma;
+            } else {
+                lv = stdev[y] * lsigma;
+                uv = stdev[y] * usigma;
+            }
             DataBlock dbi = iteri.nextElement().data;
             DataBlock dbo = itero.nextElement().data;
 
