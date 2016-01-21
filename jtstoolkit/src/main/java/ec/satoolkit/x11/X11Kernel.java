@@ -177,7 +177,7 @@ public class X11Kernel implements ISeriesDecomposer {
                 b8, info);
         TsData b9c = toolkit.getSeasonalNormalizer().normalize(b9a, null);
         TsData b9d = toolkit.getContext().op(b8, b9c);
-
+ 
         ecorr.analyse(b9d);
         TsData b9 = ecorr.computeCorrections(b8);
         TsData b9g = ecorr.applyCorrections(b8, b9);
