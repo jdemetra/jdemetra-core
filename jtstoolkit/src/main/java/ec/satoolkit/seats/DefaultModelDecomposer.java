@@ -113,9 +113,9 @@ public class DefaultModelDecomposer implements IArimaDecomposer {
             tsel.setDefaultLowFreqThreshold(frequency);
             SeasonalSelector ssel = new SeasonalSelector(frequency, epsphi);
             if (sarima.getSeasonalDifferenceOrder() == 0) {
-                ssel.setK(smod);
-            } else {
                 ssel.setK(stsmod);
+            } else {
+                ssel.setK(smod);
             }
 
             ModelDecomposer decomposer = new ModelDecomposer();

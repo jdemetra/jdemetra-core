@@ -16,12 +16,22 @@
  */
 package ec.tstoolkit.arima;
 
+import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.design.Algorithm;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.Immutable;
 import ec.tstoolkit.maths.linearfilters.SymmetricFrequencyResponse;
 import ec.tstoolkit.maths.linearfilters.SymmetricFilter;
+import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.maths.polynomials.Polynomial;
+import ec.tstoolkit.maths.realfunctions.GridSearch;
+import ec.tstoolkit.maths.realfunctions.IFunction;
+import ec.tstoolkit.maths.realfunctions.IFunctionDerivatives;
+import ec.tstoolkit.maths.realfunctions.IFunctionInstance;
+import ec.tstoolkit.maths.realfunctions.IParametersDomain;
+import ec.tstoolkit.maths.realfunctions.NumericalDerivatives;
+import ec.tstoolkit.maths.realfunctions.ParametersRange;
+import ec.tstoolkit.maths.realfunctions.SingleParameter;
 
 /**
  * The (pseudo-)spectrum is the Fourier transform of the auto-covariance
@@ -29,16 +39,16 @@ import ec.tstoolkit.maths.polynomials.Polynomial;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 @Immutable
 public class Spectrum {
 
     /**
-     * The Minimizer class searches the minimum of the spectrum. The current
-     * implementation is based on an explicit computation of the zeroes of the
-     * derivative, using the "SymmetricFrequencyResponse" representation of the
-     * spectrum (i.e. representation of the spectrum as a rational function in
-     * cos(freq)).
+     * The Minimizer class searches the minimum of the spectrum. Since 2.1.0,
+     * the implementation is based on a simple grid search (instead of an
+     * explicit computation of the zeroes of the derivative, using the
+     * "SymmetricFrequencyResponse" representation of the spectrum (i.e.
+     * representation of the spectrum as a rational function in cos(freq))).
      */
     @Algorithm(entryPoint = "minimize")
     public static class Minimizer {
@@ -52,26 +62,124 @@ public class Spectrum {
         }
 
         /**
-         *
-         * @return
+         * Returns the variance that will made the model non invertible (= rescaled
+         * minimum of the pseudo-spectrum)
+         * @return The minimum of the spectrum multiplied by 2*pi. May be negative
          */
         public double getMinimum() {
             return m_min;
         }
 
         /**
-         *
-         * @return
+         * Returns the frequency corresponding to the minimum.
+         * @return A number in [0, PI]
          */
         public double getMinimumFrequency() {
             return m_x;
         }
 
+        private static class SpectrumFunctionInstance implements IFunctionInstance {
+
+            private final Spectrum spec;
+            private final double pt;
+
+            SpectrumFunctionInstance(Spectrum spec, double pt) {
+                this.spec = spec;
+                this.pt = pt;
+            }
+
+            @Override
+            public IReadDataBlock getParameters() {
+                return new SingleParameter(pt);
+            }
+
+            @Override
+            public double getValue() {
+                return SpectrumFunction.value(spec, pt);
+            }
+        }
+
+        private static class SpectrumFunction implements IFunction {
+
+            private final Spectrum spec;
+
+            static double value(Spectrum s, double x) {
+                double d = s.m_denom.frequencyResponse(x).getRe();
+                if (Math.abs(d) < g_epsilon2) {
+                    return Double.NaN;
+                }
+                double n = s.m_num.frequencyResponse(x).getRe();
+                return n / d;
+            }
+
+            SpectrumFunction(Spectrum spec) {
+                this.spec = spec;
+            }
+
+            @Override
+            public IFunctionInstance evaluate(IReadDataBlock parameters) {
+                return new SpectrumFunctionInstance(spec, parameters.get(0));
+            }
+
+            @Override
+            public IFunctionDerivatives getDerivatives(final IFunctionInstance point) {
+                return new NumericalDerivatives(this, point, true);
+            }
+
+            @Override
+            public IParametersDomain getDomain() {
+                return new ParametersRange(0, Math.PI, true);
+            }
+
+        }
+
         /**
-         *
-         * @param spectrum
+         * Computes the minimum of the spectrum by means of a grid search
+         * @param spectrum The spectrum being minimized
          */
         public void minimize(final Spectrum spectrum) {
+            m_x = 0;
+            m_min = Double.MAX_VALUE;
+            double y = SpectrumFunction.value(spectrum, 0);
+            if (!Double.isNaN(y)) {
+                // evaluates at 0
+                m_min = y;
+                m_x = 0;
+            }
+            // evaluates at pi
+            y = SpectrumFunction.value(spectrum, Math.PI);
+            if (!Double.isNaN(y) && y < m_min) {
+                m_min = y;
+                m_x = Math.PI;
+            }
+
+            GridSearch search = new GridSearch();
+            search.setBounds(0, Math.PI);
+            search.setMaxIter(1000);
+            int nd = spectrum.m_num.getDegree() + spectrum.m_denom.getDegree();
+            search.setInitialGridCount(4 * nd - 1);
+            search.setConvergenceCriterion(1e-9);
+            search.setPrecision(1e-7);
+            if (search.minimize(new SpectrumFunction(spectrum), new SpectrumFunctionInstance(spectrum, 0.1))) {
+                SpectrumFunctionInstance fmin = (SpectrumFunctionInstance) search.getResult();
+                double min = fmin.getValue();
+                if (min < m_min) {
+                    m_min = min;
+                    m_x = fmin.pt;
+                }
+            } else {
+                minimize2(spectrum);
+            }
+        }
+
+        /**
+         * Computes the minimum of the spectrum, by explicit computation of
+         * the roots of the derivative. This implementation can be instable in the case
+         * of complex models (MA and AR seasonal parameters)
+         * @param spectrum
+         */
+        @Deprecated
+        public void minimize2(final Spectrum spectrum) {
             SymmetricFrequencyResponse fnum = new SymmetricFrequencyResponse(spectrum.m_num),
                     fdenom = new SymmetricFrequencyResponse(spectrum.m_denom);
             double scale = fdenom.getIntegral();
