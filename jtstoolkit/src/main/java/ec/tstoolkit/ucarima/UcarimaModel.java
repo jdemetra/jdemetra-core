@@ -50,7 +50,7 @@ public class UcarimaModel implements Cloneable {
      *
      * @param model The aggregation model. Can be null. In that case, the
      * aggregation model will be automatically computed.
-     * @param cmps The list of the components. The constructor doesn't check 
+     * @param cmps The list of the components. The constructor doesn't check
      * that the model and the components are compatible.
      */
     public UcarimaModel(final IArimaModel model, final ArimaModel[] cmps) {
@@ -118,12 +118,12 @@ public class UcarimaModel implements Cloneable {
 
     /**
      * Compacts some components of this decomposition
+     *
      * @param istart The first component being used in the compacting operation
-     * @param count The number of components used in the compacting operation. 
-     * Should be strictly positive. Moreover, istart+count should be lesser or 
-     * equal to the number of components of the decomposition.
-     * At the end of the operation, the number of components is decreased by 
-     * count-1.
+     * @param count The number of components used in the compacting operation.
+     * Should be strictly positive. Moreover, istart+count should be lesser or
+     * equal to the number of components of the decomposition. At the end of the
+     * operation, the number of components is decreased by count-1.
      */
     public void compact(final int istart, final int count) {
         ArimaModel sum = m_cmps.get(istart);
@@ -137,14 +137,15 @@ public class UcarimaModel implements Cloneable {
     }
 
     /**
-     * Gets the complement of a given component. The complement is the difference
-     * between this component and the aggregated model.
+     * Gets the complement of a given component. The complement is the
+     * difference between this component and the aggregated model.
+     *
      * @param cmp The 0-based index of the considered component.
-     * @return A new Arima model is returned. We have that 
-     * complement(i) + component(i) = sum().
-     * The current implementation computes the complement by making the sum of
-     * all the other components. That solution is usually more stable than
-     * computing the complement by difference with the aggregated model.
+     * @return A new Arima model is returned. We have that complement(i) +
+     * component(i) = sum(). The current implementation computes the complement
+     * by making the sum of all the other components. That solution is usually
+     * more stable than computing the complement by difference with the
+     * aggregated model.
      */
     public ArimaModel getComplement(final int cmp) {
         if (m_cmps.size() <= 1) {
@@ -173,8 +174,9 @@ public class UcarimaModel implements Cloneable {
 
     /**
      * Gets the model of a given component
+     *
      * @param idx The 0-based position of the component.
-     * @return The (immutable) Arima  model
+     * @return The (immutable) Arima model
      */
     public ArimaModel getComponent(final int idx) {
         return m_cmps.get(idx);
@@ -182,6 +184,7 @@ public class UcarimaModel implements Cloneable {
 
     /**
      * Gets the number of components
+     *
      * @return The number of components. Can be 0 if the model is empty.
      */
     public int getComponentsCount() {
@@ -190,8 +193,9 @@ public class UcarimaModel implements Cloneable {
 
     /**
      * Gets the aggregated model.
-     * @return The aggregated model. If the model was not provided at the 
-     * creation of this object, the first call to this method will create it 
+     *
+     * @return The aggregated model. If the model was not provided at the
+     * creation of this object, the first call to this method will create it
      * automatically.
      */
     public IArimaModel getModel() {
@@ -203,6 +207,7 @@ public class UcarimaModel implements Cloneable {
 
     /**
      * Gets all the components of the decomposition
+     *
      * @return An array with all the components is returned.
      */
     public ArimaModel[] getComponents() {
@@ -223,8 +228,9 @@ public class UcarimaModel implements Cloneable {
     }
 
     /**
-     * Check that the current decomposition is valid (which means that all the 
+     * Check that the current decomposition is valid (which means that all the
      * models have a positive innovation variance.
+     *
      * @return
      */
     public boolean isValid() {
@@ -246,22 +252,28 @@ public class UcarimaModel implements Cloneable {
     }
 
     /**
-     * Makes the decomposition canonical. All the components (except the 
-     * component at position ncmp, if ncmp is greater than 0) are made non 
-     * invertible, which means that the maximum noise is removed from them. 
-     * The noises removed from all the components are then added to the 
-     * component ncmp. If ncmp is strictly negative, a new  one containing all
-     * the removed noises is created.
-     * @param ncmp The component that will contain the noises. It should be either
-     * lesser then the number of the components in the model or strictly
-     * negative (-1 by default). 
-     * @param adjustModel If the sum of the removed noises is negative and the 
-     * adjustModel parameter is true, the aggregated model is increased by the 
+     * Makes the decomposition canonical. All the components (except the
+     * component at position ncmp, if ncmp is greater than 0) are made non
+     * invertible, which means that the maximum noise is removed from them. The
+     * noises removed from all the components are then added to the component
+     * ncmp. If ncmp is strictly negative, a new one containing all the removed
+     * noises is created.
+     *
+     * @param ncmp The component that will contain the noises. It should be
+     * either lesser then the number of the components in the model or strictly
+     * negative (-1 by default).
+     * @param adjustModel If the sum of the removed noises is negative and the
+     * adjustModel parameter is true, the aggregated model is increased by the
      * opposite of that "negative noise". Otherwise, an exception is thrown.
-     * @return The sum of the removed noises (which is added to the component 
+     * @return The sum of the removed noises (which is added to the component
      * ncmp). May be negative if adjustModel is set to true.
      */
     public double setVarianceMax(int ncmp, boolean adjustModel) {
+        return setVarianceMax(ncmp, adjustModel, true);
+    }
+
+    @Deprecated
+    public double setVarianceMax(int ncmp, boolean adjustModel, boolean def) {
         double var = 0;
         if (m_cmps.isEmpty()) {
             return 0;
@@ -281,7 +293,11 @@ public class UcarimaModel implements Cloneable {
             if (i != ncmp) {
                 ArimaModel m = m_cmps.get(i);
                 if (m != null) {
-                    min.minimize(m.getSpectrum());
+                    if (def) {
+                        min.minimize(m.getSpectrum());
+                    } else {
+                        min.minimize2(m.getSpectrum());
+                    }
                     if (min.getMinimum() != 0) {
                         var += min.getMinimum();
                         m_cmps.set(i, m.minus(min.getMinimum()));
@@ -310,10 +326,11 @@ public class UcarimaModel implements Cloneable {
     }
 
     /**
-     * Computes the aggregated model, even if it has been provided at the creation
-     * of this object or if it has been created through the getModel method.
-     * This method can be used to check that the decomposition is coherent with
-     * the aggregated model.
+     * Computes the aggregated model, even if it has been provided at the
+     * creation of this object or if it has been created through the getModel
+     * method. This method can be used to check that the decomposition is
+     * coherent with the aggregated model.
+     *
      * @return A new Arima model is returned.
      */
     public final ArimaModel sum() {
@@ -329,10 +346,11 @@ public class UcarimaModel implements Cloneable {
     }
 
     /**
-     * Normalizes this decomposition. A normalized decomposition is such that 
+     * Normalizes this decomposition. A normalized decomposition is such that
      * variance of the innovations of the aggregated Arima model is equal to 1
-     * @return The factor used to normalize the decomposition. If it is equal
-     * to 1, the decomposition has not been modified.
+     *
+     * @return The factor used to normalize the decomposition. If it is equal to
+     * 1, the decomposition has not been modified.
      */
     public double normalize() {
         ArimaModel sum = ArimaModel.create(this.getModel());

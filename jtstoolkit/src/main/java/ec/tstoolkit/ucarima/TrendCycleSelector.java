@@ -60,7 +60,7 @@ public class TrendCycleSelector extends AbstractRootSelector {
     }
 
     public void setDefaultLowFreqThreshold(int freq) {
-        m_lfreq = Math.PI / freq; // Two years !
+        m_lfreq = Math.PI / freq - 1e-6; // Two years ( we want to exclude roots from seasonam polynomial! )
     }
 
     /**
@@ -70,7 +70,7 @@ public class TrendCycleSelector extends AbstractRootSelector {
      */
     @Override
     public boolean accept(final Complex root) {
-        Complex iroot=root.inv();
+        Complex iroot = root.inv();
         if (root.getIm() == 0) {
             return iroot.getRe() >= m_bound;
         } else {
