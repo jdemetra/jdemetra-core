@@ -1082,6 +1082,35 @@ public class Matrix implements Cloneable {
         return data_.length == 0;
     }
 
+    /**
+     * Swaps the given rows
+     *
+     * @param r0
+     * @param r1
+     */
+    public void swapRows(int r0, int r1) {
+        for (int j = r0, k = r1; j < data_.length; j += nrows_, k += nrows_) {
+            double tmp = data_[j];
+            data_[j] = data_[k];
+            data_[k] = tmp;
+        }
+    }
+
+    /**
+     * Swaps the given columns
+     *
+     * @param c0
+     * @param c1
+     */
+    public void swapColumns(int c0, int c1) {
+        int j0=c0*nrows_, j1=j0+nrows_;
+        for (int j = j0, k = c1*nrows_; j < j1; j++, k++) {
+            double tmp = data_[j];
+            data_[j] = data_[k];
+            data_[k] = tmp;
+        }
+    }
+
     @Override
     public String toString() {
         if (isEmpty()) {
@@ -1181,18 +1210,18 @@ public class Matrix implements Cloneable {
     }
 
     public void smooth(double eps) {
-        double scale=1;
-        double q=Math.sqrt(eps);
-        
-        while (q<1){
-            scale*=10;
-            q*=10;
+        double scale = 1;
+        double q = Math.sqrt(eps);
+
+        while (q < 1) {
+            scale *= 10;
+            q *= 10;
         }
-            
+
         for (int i = 0; i < data_.length; ++i) {
-            double c=data_[i];
-            double d=Math.round(c*scale)/scale;
-            if (Math.abs(d-c) < eps) {
+            double c = data_[i];
+            double d = Math.round(c * scale) / scale;
+            if (Math.abs(d - c) < eps) {
                 data_[i] = d;
             }
         }
@@ -1200,38 +1229,42 @@ public class Matrix implements Cloneable {
 
     /**
      * Top-left empty sub-matrix. To be used with next(a,b)
+     *
      * @return An empty sub-matrix
      */
-    public SubMatrix topLeft(){
+    public SubMatrix topLeft() {
         return new SubMatrix(data_, 0, 0, 0, 1, nrows_);
     }
-    
+
     /**
      * Top-left sub-matrix
+     *
      * @param nr Number of rows. Could be 0.
-     * @param nc Number of columns. Could be 0. 
+     * @param nc Number of columns. Could be 0.
      * @return A nr x nc sub-matrix
      */
-    public SubMatrix topLeft(int nr, int nc){
+    public SubMatrix topLeft(int nr, int nc) {
         return new SubMatrix(data_, 0, nr, nc, 1, nrows_);
     }
-    
+
     /**
-     * bottom-right sub-matrix (outside). 
+     * bottom-right sub-matrix (outside).
+     *
      * @return An empty sub-matrix
      */
-    public SubMatrix bottomRight(){
+    public SubMatrix bottomRight() {
         return new SubMatrix(data_, data_.length, 0, 0, 1, nrows_);
     }
 
     /**
-     * Bottom-right sub-matrix 
+     * Bottom-right sub-matrix
+     *
      * @param nr Number of rows. Could be 0.
-     * @param nc Number of columns. Could be 0. 
+     * @param nc Number of columns. Could be 0.
      * @return A nr x nc sub-matrix
      */
-    public SubMatrix bottomRight(int nr, int nc){
-        int start=data_.length-nr-nc*nrows_;
+    public SubMatrix bottomRight(int nr, int nc) {
+        int start = data_.length - nr - nc * nrows_;
         return new SubMatrix(data_, start, nr, nc, 1, nrows_);
     }
 }
