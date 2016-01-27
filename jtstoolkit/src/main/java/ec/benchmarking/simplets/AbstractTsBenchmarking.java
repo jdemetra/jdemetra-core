@@ -51,6 +51,8 @@ public abstract class AbstractTsBenchmarking {
      * @return
      */
     protected boolean checkConstraints(TsData s, TsData constraints) {
+        if (s == null)
+            return false;
         TsData del = constraints.minus(s.changeFrequency(constraints.getFrequency(), type_, true));
 
         DescriptiveStatistics stats = new DescriptiveStatistics(del.getValues());
@@ -68,6 +70,8 @@ public abstract class AbstractTsBenchmarking {
      * @return
      */
     protected TsData checkFrequencies(TsData s, TsData constraints) {
+        if (s == null)
+            return null;
         int lfreq = constraints.getFrequency().intValue(), hfreq = s.getFrequency().intValue();
         if (hfreq == lfreq) {
             return constraints;
@@ -141,7 +145,7 @@ public abstract class AbstractTsBenchmarking {
         }
         // normalize the data
         AbsMeanNormalizer normalizer = new AbsMeanNormalizer();
-        if (normalizer.process(s.getValues())) {
+        if (s != null && normalizer.process(s.getValues())) {
             TsData tmp = new TsData(s.getStart(), normalizer.getNormalizedData(), false);
             TsData btmp = benchmark(tmp, constraints.times(normalizer.getFactor()));
             if (btmp != null) {
