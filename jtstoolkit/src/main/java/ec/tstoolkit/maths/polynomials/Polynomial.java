@@ -704,7 +704,7 @@ public final class Polynomial implements IReadDataBlock {
         int i = getDegree();
         double f = get(i--);
         for (; i >= 0; --i) {
-            f = get(i) + (f * x);
+            f = m_c[i] + (f * x);
         }
         return f;
     }
@@ -719,7 +719,7 @@ public final class Polynomial implements IReadDataBlock {
     public Complex evaluateAtFrequency(final double w) {
         ComplexBuilder f = new ComplexBuilder(get(0));
         for (int i = 1; i <= degree; ++i) {
-            f.add(Complex.polar(get(i), w * i));
+            f.add(Complex.polar(m_c[i], w * i));
         }
         return f.build();
     }
