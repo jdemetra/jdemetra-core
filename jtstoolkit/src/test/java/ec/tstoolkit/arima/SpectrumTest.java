@@ -105,6 +105,7 @@ public class SpectrumTest {
         arima.setParameters(new DataBlock(p));
         Spectrum spectrum = arima.getSpectrum();
         Spectrum.Minimizer min = new Spectrum.Minimizer();
+        Spectrum.Minimizer min1 = new Spectrum.Minimizer();
         Spectrum.Minimizer min2 = new Spectrum.Minimizer();
 //        long t0 = System.currentTimeMillis();
 //        for (int i = 0; i < 100000; ++i) {
@@ -114,14 +115,23 @@ public class SpectrumTest {
 //        System.out.println(t1 - t0);
 //        t0 = System.currentTimeMillis();
 //        for (int i = 0; i < 100000; ++i) {
+            min1.minimize1(spectrum);
+//        }
+//        t1 = System.currentTimeMillis();
+//        System.out.println(t1 - t0);
+//        t0 = System.currentTimeMillis();
+//        for (int i = 0; i < 100000; ++i) {
             min2.minimize2(spectrum);
 //        }
 //        t1 = System.currentTimeMillis();
 //        System.out.println(t1 - t0);
 //        System.out.println(min.getMinimum());
+//        System.out.println(min1.getMinimum());
 //        System.out.println(min2.getMinimum());
 //        System.out.println(min.getMinimumFrequency());
+//        System.out.println(min1.getMinimumFrequency());
 //        System.out.println(min2.getMinimumFrequency());
         assertTrue(Math.abs(min.getMinimum() - min2.getMinimum()) < 1e-7);
+        assertTrue(Math.abs(min.getMinimum() - min1.getMinimum()) < 1e-7);
     }
 }
