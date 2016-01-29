@@ -39,6 +39,7 @@ import ec.tstoolkit.timeseries.regression.ITsVariable;
 import ec.tstoolkit.timeseries.regression.IUserTsVariable;
 import ec.tstoolkit.timeseries.regression.InterventionVariable;
 import ec.tstoolkit.timeseries.regression.MissingValueEstimation;
+import ec.tstoolkit.timeseries.regression.OutlierType;
 import ec.tstoolkit.timeseries.regression.Ramp;
 import ec.tstoolkit.timeseries.regression.TsVariableList;
 import ec.tstoolkit.timeseries.regression.TsVariableSelection;
@@ -107,8 +108,8 @@ public class HtmlRegArima extends AbstractHtmlElement {
         } else {
             stream.write(easter.get(0).variable.getDescription()+" detected").newLine();
         }
-        int no = model_.description.getOutliers().size();
-        int npo = model_.description.getPrespecifiedOutliers().size();
+        int no = x_.select(OutlierType.Undefined, false).getItemsCount();
+        int npo = x_.select(OutlierType.Undefined, true).getItemsCount();
 
         if (npo > 1) {
             stream.write(Integer.toString(npo)).write(" pre-specified outliers").newLine();

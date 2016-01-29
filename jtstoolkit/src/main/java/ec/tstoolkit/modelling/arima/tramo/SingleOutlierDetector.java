@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.modelling.arima.tramo;
 
 import ec.tstoolkit.arima.StationaryTransformation;
@@ -113,7 +112,9 @@ public class SingleOutlierDetector {
             return;
         }
         for (int i = 0; i < excl.length; ++i) {
-            m_excluded.add(excl[i]);
+            if (excl[i] >= 0 && excl[i] < m_domain.getLength()) {
+                m_excluded.add(excl[i]);
+            }
         }
     }
 
@@ -324,31 +325,30 @@ public class SingleOutlierDetector {
 //        DataBlock O = new DataBlock(o);
         IOutlierVariable outlier = getOutlierFactory(idx).create(
                 getDomain().getStart());
-        IOutlierVariable.FilterRepresentation representation=outlier.getFilterRepresentation(m_stmodel.getFrequency());
-        if (representation == null)
+        IOutlierVariable.FilterRepresentation representation = outlier.getFilterRepresentation(m_stmodel.getFrequency());
+        if (representation == null) {
             return;
+        }
         RationalBackFilter pi = m_model.getPiWeights();
-        double[] o =pi.times(representation.filter).getWeights(n);
-        double corr =0;
-        if (d == 0 && representation.correction != 0){
+        double[] o = pi.times(representation.filter).getWeights(n);
+        double corr = 0;
+        if (d == 0 && representation.correction != 0) {
             Polynomial ar = m_model.getAR().getPolynomial();
             Polynomial ma = m_model.getMA().getPolynomial();
-            corr = representation.correction*ar.evaluateAt(1) / ma.evaluateAt(1);
-            for (int i=0; i<n; ++i)
-                o[i]+=corr;
-         }
+            corr = representation.correction * ar.evaluateAt(1) / ma.evaluateAt(1);
+            for (int i = 0; i < n; ++i) {
+                o[i] += corr;
+            }
+        }
 
-        
         // o contains the filtered outlier
-
         // we start at the end
-
         //double maxval = 0;
         double sxx = 0;
         if (corr != 0) {
             sxx = corr * corr * nl;
         }
- 
+
         boolean[] ok = prepare(idx);
         for (int ix = 0; ix < n; ++ix) {
             double rmse = rmse(n - ix - 1 - d);
@@ -378,17 +378,17 @@ public class SingleOutlierDetector {
                 }
                 sxy += cxy * corr;
             }
-            int pos=n - 1 - ix;
-            if (pos >= m_lbound && pos < m_ubound){
-            double c = sxy / sxx;
-            double val = c * Math.sqrt(sxx) / rmse;
-            double aval = Math.abs(val);
-            if (aval > m_tmax) {
-                m_tmax = aval;
-                m_c = c;
-                m_posmax = n - 1 - ix;
-                m_omax = idx;
-            }
+            int pos = n - 1 - ix;
+            if (pos >= m_lbound && pos < m_ubound) {
+                double c = sxy / sxx;
+                double val = c * Math.sqrt(sxx) / rmse;
+                double aval = Math.abs(val);
+                if (aval > m_tmax) {
+                    m_tmax = aval;
+                    m_c = c;
+                    m_posmax = n - 1 - ix;
+                    m_omax = idx;
+                }
             }
         }
     }
