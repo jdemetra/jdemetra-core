@@ -30,14 +30,14 @@ import java.util.Objects;
 @Development(status = Development.Status.Preliminary)
 public class SeatsSpecification implements IProcSpecification, Cloneable {
 
-    public static final double DEF_EPSPHI = 2, DEF_RMOD = .5, DEF_STSMOD = .8, DEF_SMOD = .8, DEF_XL = .95;
+    public static final double DEF_EPSPHI = 2, DEF_RMOD = .5, DEF_SMOD1 = .8, DEF_SMOD = .8, DEF_XL = .95;
 
     public static final String ADMISS = "admiss",
             METHOD = "method",
             EPSPHI = "epsphi",
             RMOD = "rmod",
             SMOD = "smod",
-            STSMOD = "stsmod",
+            SMOD1 = "stsmod",
             XL = "xl";
 
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
@@ -46,7 +46,7 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
         dic.put(InformationSet.item(prefix, EPSPHI), Double.class);
         dic.put(InformationSet.item(prefix, RMOD), Double.class);
         dic.put(InformationSet.item(prefix, SMOD), Double.class);
-        dic.put(InformationSet.item(prefix, STSMOD), Double.class);
+        dic.put(InformationSet.item(prefix, SMOD1), Double.class);
         dic.put(InformationSet.item(prefix, XL), Double.class);
     }
 
@@ -61,7 +61,7 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
     }
 
     private double xl_ = DEF_XL, rmod_ = DEF_RMOD, epsPhi_ = DEF_EPSPHI
-            , smod_ = DEF_SMOD, stsmod_ = DEF_STSMOD;
+            , smod_ = DEF_SMOD, smod1_ = DEF_SMOD1;
     private ApproximationMode changeModel_ = ApproximationMode.Legacy;
     private EstimationMethod method_ = EstimationMethod.Burman;
     private boolean log = false;
@@ -111,19 +111,19 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
         smod_ = value;
     }
 
-    public double getStationarySeasBoundary() {
-        return stsmod_;
+    public double getSeasBoundary1() {
+        return smod1_;
     }
 
-    public void setStationarySeasBoundary(double value) {
+    public void setSeasBoundary1(double value) {
         if (value < 0 || value > 1) {
-            throw new SeatsException("STSMOD should belong to [0, 1]");
+            throw new SeatsException("SMOD1 should belong to [0, 1]");
         }
-        stsmod_ = value;
+        smod1_ = value;
     }
 
     public boolean isDefault() {
-        return epsPhi_ == DEF_EPSPHI && xl_ == DEF_XL && rmod_ == DEF_RMOD && smod_ == DEF_SMOD || stsmod_ == DEF_STSMOD
+        return epsPhi_ == DEF_EPSPHI && xl_ == DEF_XL && rmod_ == DEF_RMOD && smod_ == DEF_SMOD || smod1_ == DEF_SMOD1
                 && changeModel_ == ApproximationMode.Legacy && method_ == EstimationMethod.Burman;
     }
 
@@ -150,7 +150,7 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
                 && spec.epsPhi_ == epsPhi_
                 && spec.rmod_ == rmod_
                 && spec.smod_ == smod_
-                && spec.stsmod_ == stsmod_
+                && spec.smod1_ == smod1_
                 && spec.xl_ == xl_;
     }
 
@@ -237,8 +237,8 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
         if (verbose || smod_ != DEF_SMOD) {
             info.add(SMOD, smod_);
         }
-        if (verbose || stsmod_ != DEF_STSMOD) {
-            info.add(STSMOD, stsmod_);
+        if (verbose || smod1_ != DEF_SMOD1) {
+            info.add(SMOD1, smod1_);
         }
         if (verbose || xl_ != DEF_XL) {
             info.add(XL, xl_);
@@ -266,6 +266,10 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
             Double smod = info.get(SMOD, Double.class);
             if (smod != null) {
                 smod_ = smod;
+            }
+            Double smod1 = info.get(SMOD1, Double.class);
+            if (smod1 != null) {
+                smod1_ = smod1;
             }
             Double xl = info.get(XL, Double.class);
             if (xl != null) {
