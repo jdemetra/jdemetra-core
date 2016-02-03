@@ -44,6 +44,7 @@ import ec.tstoolkit.timeseries.regression.Ramp;
 import ec.tstoolkit.timeseries.regression.TsVariableList;
 import ec.tstoolkit.timeseries.regression.TsVariableSelection;
 import ec.tstoolkit.timeseries.simplets.TsData;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.IOException;
 
 /**
@@ -52,10 +53,10 @@ import java.io.IOException;
  */
 public class HtmlRegArima extends AbstractHtmlElement {
 
-    private PreprocessingModel model_;
-    private TsVariableList x_;
-    private ConcentratedLikelihood ll_;
-    private int nhp_;
+    private final PreprocessingModel model_;
+    private final TsVariableList x_;
+    private final ConcentratedLikelihood ll_;
+    private final int nhp_;
     boolean summary_;
     private boolean ml_;
 
@@ -106,7 +107,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
         if (easter.getVariablesCount() == 0) {
             stream.write("No easter effect").newLine();
         } else {
-            stream.write(easter.get(0).variable.getDescription()+" detected").newLine();
+            stream.write(easter.get(0).variable.getDescription() + " detected").newLine();
         }
         int no = x_.select(OutlierType.Undefined, false).getItemsCount();
         int npo = x_.select(OutlierType.Undefined, true).getItemsCount();
@@ -123,7 +124,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
         }
         stream.write(HtmlTag.LINEBREAK);
     }
-    
+
     public void writeDetails(HtmlStream stream) throws IOException {
         writeDetails(stream, true);
     }
@@ -243,8 +244,8 @@ public class HtmlRegArima extends AbstractHtmlElement {
             writeOutliers(stream, true);
             writeOutliers(stream, false);
         }
-        writeRegressionItems(stream, Ramp.class);
-        writeRegressionItems(stream, InterventionVariable.class);
+        writeRamps(stream);
+        writeInterventionVariables(stream);
         writeRegressionItems(stream, IUserTsVariable.class);
         writeMissing(stream);
     }
@@ -366,6 +367,74 @@ public class HtmlRegArima extends AbstractHtmlElement {
             }
             stream.newLines(2);
         }
+    }
+
+    private <V extends ITsVariable> void writeInterventionVariables(HtmlStream stream) throws IOException {
+        TsVariableSelection<InterventionVariable> regs = x_.select(InterventionVariable.class);
+        if (regs.isEmpty()) {
+            return;
+        }
+        T t = new T();
+        t.setDegreesofFreedom(ll_.getDegreesOfFreedom(true, nhp_));
+        double[] b = ll_.getB();
+        int start = model_.description.getRegressionVariablesStartingPosition();
+        stream.write(HtmlTag.HEADER3, h3, "Intervention variables");
+
+        stream.open(new HtmlTable(0, 400));
+        stream.open(HtmlTag.TABLEROW);
+        stream.write(new HtmlTableCell("", 100));
+        stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
+        stream.write(new HtmlTableCell("T-Stat", 100, HtmlStyle.Bold));
+        stream.write(new HtmlTableCell("P[|T| &gt t]", 100, HtmlStyle.Bold));
+        stream.close(HtmlTag.TABLEROW);
+
+        for (TsVariableSelection.Item<InterventionVariable> reg : regs.elements()) {
+            stream.open(HtmlTag.TABLEROW);
+            stream.write(new HtmlTableCell(reg.variable.toString(TsFrequency.valueOf(model_.description.getFrequency())), 100));
+            stream.write(new HtmlTableCell(df4.format(b[start + reg.position]), 100));
+            double tval = ll_.getTStat(start + reg.position, true, nhp_);
+            stream.write(new HtmlTableCell(formatT(tval), 100));
+            double prob = 1 - t.getProbabilityForInterval(-tval, tval);
+            stream.write(new HtmlTableCell(df4.format(prob), 100));
+            stream.close(HtmlTag.TABLEROW);
+        }
+
+        stream.close(HtmlTag.TABLE);
+        stream.newLine();
+    }
+
+    private <V extends ITsVariable> void writeRamps(HtmlStream stream) throws IOException {
+        TsVariableSelection<Ramp> regs = x_.select(Ramp.class);
+        if (regs.isEmpty()) {
+            return;
+        }
+        T t = new T();
+        t.setDegreesofFreedom(ll_.getDegreesOfFreedom(true, nhp_));
+        double[] b = ll_.getB();
+        int start = model_.description.getRegressionVariablesStartingPosition();
+        stream.write(HtmlTag.HEADER3, h3, "Ramps");
+
+        stream.open(new HtmlTable(0, 400));
+        stream.open(HtmlTag.TABLEROW);
+        stream.write(new HtmlTableCell("", 100));
+        stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
+        stream.write(new HtmlTableCell("T-Stat", 100, HtmlStyle.Bold));
+        stream.write(new HtmlTableCell("P[|T| &gt t]", 100, HtmlStyle.Bold));
+        stream.close(HtmlTag.TABLEROW);
+
+        for (TsVariableSelection.Item<Ramp> reg : regs.elements()) {
+            stream.open(HtmlTag.TABLEROW);
+            stream.write(new HtmlTableCell(reg.variable.toString(TsFrequency.valueOf(model_.description.getFrequency())), 100));
+            stream.write(new HtmlTableCell(df4.format(b[start + reg.position]), 100));
+            double tval = ll_.getTStat(start + reg.position, true, nhp_);
+            stream.write(new HtmlTableCell(formatT(tval), 100));
+            double prob = 1 - t.getProbabilityForInterval(-tval, tval);
+            stream.write(new HtmlTableCell(df4.format(prob), 100));
+            stream.close(HtmlTag.TABLEROW);
+        }
+
+        stream.close(HtmlTag.TABLE);
+        stream.newLine();
     }
 
     private void writeMissing(HtmlStream stream) throws IOException {

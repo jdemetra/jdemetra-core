@@ -53,6 +53,12 @@ public class SeatsSpecificationTest {
         assertEquals(expected, actual);
         assertEquals(.67, actual.getSeasBoundary(),.0);
         
+        expected.setSeasBoundary1(.67);
+        info = expected.write(true);
+        actual.read(info);
+        assertEquals(expected, actual);
+        assertEquals(.67, actual.getSeasBoundary1(),.0);
+
         expected.setApproximationMode(SeatsSpecification.ApproximationMode.Noisy);
         info = expected.write(true);
         actual.read(info);
