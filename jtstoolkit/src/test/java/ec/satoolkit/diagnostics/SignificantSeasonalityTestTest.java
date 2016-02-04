@@ -31,37 +31,37 @@ import static org.junit.Assert.*;
  * @author Jean Palate
  */
 public class SignificantSeasonalityTestTest {
-    
+
     public SignificantSeasonalityTestTest() {
     }
 
     @Test
     public void testSomeMethod() {
         CompositeResults process = TramoSeatsProcessingFactory.process(Data.M1, TramoSeatsSpecification.RSAfull);
-        int[] nsig=SignificantSeasonalityTest.test(process, .01);
-        System.out.println(".01");
-        for (int i=0; i<nsig.length; ++i){
- //           System.out.println(nsig[i]);
+        int[] nsig = SignificantSeasonalityTest.test(process, .01);
+        //       System.out.println(".01");
+        for (int i = 0; i < nsig.length; ++i) {
+            //           System.out.println(nsig[i]);
         }
-        int[] nsig1=SignificantSeasonalityTest.test(process, .05);
-        System.out.println(".05");
-        for (int i=0; i<nsig.length; ++i){
-            assertTrue(nsig1[i]>=nsig[i]);
+        int[] nsig1 = SignificantSeasonalityTest.test(process, .05);
+        //       System.out.println(".05");
+        for (int i = 0; i < nsig.length; ++i) {
+            assertTrue(nsig1[i] >= nsig[i]);
 //            System.out.println(nsig1[i]);
         }
         process = TramoSeatsProcessingFactory.process(process.getData("sa", TsData.class), TramoSeatsSpecification.RSA1);
-        nsig=SignificantSeasonalityTest.test(process, .01);
-        System.out.println(".01");
-        for (int i=0; i<nsig.length; ++i){
-            assertTrue(nsig[i]<2);
+        nsig = SignificantSeasonalityTest.test(process, .01);
+        //       System.out.println(".01");
+        for (int i = 0; i < nsig.length; ++i) {
+            assertTrue(nsig[i] < 2);
 //            System.out.println(nsig[i]);
         }
-        nsig1=SignificantSeasonalityTest.test(process, .05);
-        System.out.println(".05");
-        for (int i=0; i<nsig.length; ++i){
-//            assertTrue(nsig1[i]<2);
-            System.out.println(nsig1[i]);
+        nsig1 = SignificantSeasonalityTest.test(process, .05);
+        //       System.out.println(".05");
+        for (int i = 0; i < nsig.length; ++i) {
+            assertTrue(nsig1[i] < 2);
+            //           System.out.println(nsig1[i]);
         }
-   }
-    
+    }
+
 }
