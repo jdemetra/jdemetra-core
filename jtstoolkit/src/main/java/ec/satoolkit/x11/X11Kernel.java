@@ -459,6 +459,7 @@ public class X11Kernel implements ISeriesDecomposer {
                 d10a.set(i, (d10.get(k) * 3 - d10.get(k - freq)) / 2);
             }
             dtables.set(D10a, d10a);
+             dtables.set(D10aL, d10a);
            // TsData a8s = atables.get(A8s, TsData.class);
             TsData a6 = atables.get(A6, TsData.class);
             TsData a7 = atables.get(A7, TsData.class);
