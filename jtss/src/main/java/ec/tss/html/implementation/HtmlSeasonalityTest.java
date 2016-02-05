@@ -248,7 +248,7 @@ public class HtmlSeasonalityTest extends AbstractHtmlElement {
         stream.close(HtmlTag.TABLEROW);
 
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("Between months", 100,
+        stream.write(new HtmlTableCell("Between periods", 100,
                 HtmlStyle.Italic));
         stream.write(new HtmlTableCell(Double.toString(stest.getSSM()), 100));
         stream.write(new HtmlTableCell(Double
