@@ -62,6 +62,20 @@ import ec.tstoolkit.timeseries.simplets.TsPeriod;
 public class TsDisaggregation<S extends ISsf> {
 
     /**
+     * @return the eps_
+     */
+    public double getEpsilon() {
+        return eps_;
+    }
+
+    /**
+     * @param eps_ the eps_ to set
+     */
+    public void setEpsilon(double eps_) {
+        this.eps_ = eps_;
+    }
+
+    /**
      * Initial step of the Kalman filter. DKF and AKF_Diffuse should lead to the
      * same results
      */
@@ -85,6 +99,7 @@ public class TsDisaggregation<S extends ISsf> {
     private IFunctionInstance fnRslt_;
     private IParametricMapping<S> mapping_;
     private IFunctionMinimizer min_;
+    private double eps_=1e-7;
     private boolean converged_;
     private int ndiffuseRegressors_;
     private boolean calcVar_ = false, ml_ = true, noDisturbanceSmoother_;
@@ -654,14 +669,15 @@ public class TsDisaggregation<S extends ISsf> {
 
     private IFunctionMinimizer minimizer() {
         if (min_ != null) {
+            min_.setConvergenceCriterion(eps_);
             return min_;
         }
         if (mapping_ != null && mapping_.getDim() == 1) {
             double a = mapping_.lbound(0), b = mapping_.ubound(0);
             if (!Double.isInfinite(a) && !Double.isInfinite(b)) {
                 GridSearch search = new GridSearch();
-
                 search.setBounds(a, b);
+                search.setConvergenceCriterion(eps_);
                 return search;
             }
         }
