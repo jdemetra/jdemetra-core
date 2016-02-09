@@ -678,6 +678,7 @@ public class TsDisaggregation<S extends ISsf> {
                 GridSearch search = new GridSearch();
                 search.setBounds(a, b);
                 search.setConvergenceCriterion(eps_);
+                search.setPrecision(eps_);
                 return search;
             }
         }

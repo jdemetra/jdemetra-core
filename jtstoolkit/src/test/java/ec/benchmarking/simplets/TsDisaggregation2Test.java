@@ -6,6 +6,8 @@
 package ec.benchmarking.simplets;
 
 import data.Data;
+import ec.tstoolkit.Parameter;
+import ec.tstoolkit.ParameterType;
 import ec.tstoolkit.timeseries.regression.TsVariable;
 import ec.tstoolkit.timeseries.regression.TsVariableList;
 import ec.tstoolkit.timeseries.simplets.TsData;
@@ -32,22 +34,22 @@ public class TsDisaggregation2Test {
         vars.add(new TsVariable(Q));
 
         cl.setConstant(true);
+        cl.setPrecision(1e-12);
         cl.process(Y, vars);
-        cl.setPrecision(1e-9);
 
         TsDisaggregation2 disagg = new TsDisaggregation2();
         disagg.setConstant(true);
         disagg.setModel(TsDisaggregation2.Model.Ar1);
-        disagg.setEpsilon(1e-9);
+        disagg.setEpsilon(1e-12);
         disagg.process(Y, vars);
 
         TsData r1 = cl.getDisaggregatedSeries();
         TsData r2 = disagg.getDisaggregtedSeries();
-        TsDataTable table=new TsDataTable();
-        table.add(r1);
-        table.add(r2);
-        System.out.println(table);
-        assertTrue(r1.distance(r2) < 1e-2);
+//        TsDataTable table=new TsDataTable();
+//        table.add(r1);
+//        table.add(r2);
+//        System.out.println(table);
+        assertTrue(r1.distance(r2) < 1e-4);
     }
 
     @Test
@@ -64,6 +66,32 @@ public class TsDisaggregation2Test {
         TsDisaggregation2 disagg = new TsDisaggregation2();
         
         disagg.setModel(TsDisaggregation2.Model.Rw);
+        disagg.process(Y, vars);
+
+        TsData r1 = fn.getDisaggregatedSeries();
+        TsData r2 = disagg.getDisaggregtedSeries();
+        assertTrue(r1.distance(r2) < 1e-6);
+//        TsDataTable table=new TsDataTable();
+//        table.add(r1);
+//        table.add(r2);
+//        System.out.println(table);
+    }
+    
+    @Test
+    public void testLitterman() {
+        Litterman fn = new Litterman();
+        TsData Y = Data.Y;
+        TsData Q = Data.Q;
+
+        TsVariableList vars = new TsVariableList();
+        vars.add(new TsVariable(Q));
+        fn.setPrecision(1e-9);
+        fn.process(Y, vars);
+
+        TsDisaggregation2 disagg = new TsDisaggregation2();
+        
+        disagg.setModel(TsDisaggregation2.Model.RwAr1);
+        disagg.setEpsilon(1e-9);
         disagg.process(Y, vars);
 
         TsData r1 = fn.getDisaggregatedSeries();

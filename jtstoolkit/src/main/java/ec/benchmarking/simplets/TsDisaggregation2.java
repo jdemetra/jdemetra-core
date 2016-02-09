@@ -26,6 +26,7 @@ import ec.tstoolkit.eco.DiffuseConcentratedLikelihood;
 import ec.tstoolkit.maths.linearfilters.BackFilter;
 import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.maths.polynomials.UnitRoots;
+import ec.tstoolkit.maths.realfunctions.GridSearch;
 import ec.tstoolkit.maths.realfunctions.IFunction;
 import ec.tstoolkit.maths.realfunctions.IFunctionInstance;
 import ec.tstoolkit.maths.realfunctions.IParametricMapping;
@@ -388,13 +389,17 @@ public class TsDisaggregation2 {
         TsDisaggregation<SsfAr1> disagg = new TsDisaggregation<>();
         SsfAr1 ssf = new SsfAr1();
         Parameter p = getParameter();
+        GridSearch gsearch = new GridSearch();
+        gsearch.setPrecision(eps);
         if (p != null && p.isFixed()) {
             ssf.setRho(p.getValue());
         } else {
             disagg.setMapping(new SsfAr1.Mapping(isZeroInitialization(), getTruncatedRho(), 1));
+            gsearch.setBounds(getTruncatedRho(), 1);
         }
         ssf.useZeroInitialization(isZeroInitialization());
         disagg.setSsf(ssf);
+        disagg.setMinimizer(gsearch);
         return disagg;
     }
 
@@ -410,13 +415,17 @@ public class TsDisaggregation2 {
         TsDisaggregation<SsfRwAr1> disagg = new TsDisaggregation<>();
         SsfRwAr1 ssf = new SsfRwAr1();
         Parameter p = getParameter();
+        GridSearch gsearch = new GridSearch();
+        gsearch.setPrecision(eps);
         if (p != null && p.isFixed()) {
             ssf.setRho(p.getValue());
         } else {
             disagg.setMapping(new SsfRwAr1.Mapping(isZeroInitialization(), getTruncatedRho(), 1));
+            gsearch.setBounds(getTruncatedRho(), 1);
         }
         ssf.useZeroInitialization(isZeroInitialization());
         disagg.setSsf(ssf);
+        disagg.setMinimizer(gsearch);
         return disagg;
     }
 
