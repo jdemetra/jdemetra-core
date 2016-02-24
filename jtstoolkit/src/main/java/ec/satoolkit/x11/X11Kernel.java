@@ -37,7 +37,7 @@ public class X11Kernel implements ISeriesDecomposer {
     public static final String A1 = "a1", A1a = "a1a",
             A6 = "a6", A7 = "a7",
             A8 = "a8", A8t = "a8t",
-            A8s = "a8s", A8i = "a8i", A9 = "a9", A9u = "a9u", A9sa = "a9sa", A9ser = "A9ser";
+            A8s = "a8s", A8i = "a8i", A9 = "a9", A9u = "a9u", A9sa = "a9sa", A9ser = "a9ser";
     public static final String[] ALL_A = {A1, A1a, A6, A7, A8, A8t, A8s, A8i, A9, A9sa, A9u, A9ser};
     public static final String B1 = "b1", B2 = "b2", B3 = "b3",
             B3TEST = "b3-seasonalityTest", B4 = "b4", B5 = "b5", B6 = "b6",
@@ -403,7 +403,6 @@ public class X11Kernel implements ISeriesDecomposer {
         dtables.set(D7, d7.fittoDomain(sdomain));
         dtables.set(D8, d8.fittoDomain(sdomain));
         dtables.set(D9, d9.fittoDomain(sdomain));
-        dtables.set(D10, d10.fittoDomain(sdomain));// 
 
         dtables.set(D10L, d10.fittoDomain(sdomain));
         dtables.set(D11L, d11.fittoDomain(sdomain));
@@ -417,6 +416,10 @@ public class X11Kernel implements ISeriesDecomposer {
         TsData a8i = atables.get(A8i, TsData.class);
         TsData a8s = atables.get(A8s, TsData.class);
 
+        // add ps to d10
+        TsData d10c = toolkit.getContext().invOp(d10, a8s);
+        dtables.set(D10, d10c.fittoDomain(sdomain));//
+
         // add pt to trend
         TsData d12c = toolkit.getContext().invOp(d12, a8t);
 
@@ -426,10 +429,10 @@ public class X11Kernel implements ISeriesDecomposer {
         // add pt, pi to d11
         TsData d11c = toolkit.getContext().invOp(d11, a8t);
         d11c = toolkit.getContext().invOp(d11c, a8i);
-        d11c=toolkit.getContext().invOp(d11c, a8s);
-        TsData a9 = atables.get(A9, TsData.class);
+        //   d11c = toolkit.getContext().invOp(d11c, a8s);
+        TsData a9sa = atables.get(A9sa, TsData.class);
 
-        d11c = toolkit.getContext().invOp(d11c, a9);
+        d11c = toolkit.getContext().invOp(d11c, a9sa);
 
         TsData d16 = toolkit.getContext().op(a1, d11c);
 
@@ -444,7 +447,7 @@ public class X11Kernel implements ISeriesDecomposer {
             TsData a1a = atables.get(A1a, TsData.class);
             TsData d16a = toolkit.getContext().op(a1a, d11c);
             TsDomain fdomain = new TsDomain(sdomain.getEnd(), nf);
-            dtables.set(D10a, d10.fittoDomain(fdomain)); // never corrected
+            dtables.set(D10a, d10c.fittoDomain(fdomain)); 
             dtables.set(D10aL, d10.fittoDomain(fdomain));
             dtables.set(D11a, d11c.fittoDomain(fdomain));
             dtables.set(D11aL, d11.fittoDomain(fdomain));
@@ -459,8 +462,8 @@ public class X11Kernel implements ISeriesDecomposer {
                 d10a.set(i, (d10.get(k) * 3 - d10.get(k - freq)) / 2);
             }
             dtables.set(D10a, d10a);
-             dtables.set(D10aL, d10a);
-           // TsData a8s = atables.get(A8s, TsData.class);
+            dtables.set(D10aL, d10a);
+            // TsData a8s = atables.get(A8s, TsData.class);
             TsData a6 = atables.get(A6, TsData.class);
             TsData a7 = atables.get(A7, TsData.class);
             TsData d16a = toolkit.getContext().invOp(d10a, a6);

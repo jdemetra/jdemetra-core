@@ -336,7 +336,8 @@ public class GenericSaProcessingFactory {
                         TsData fy = op(mul, detSA, fdata);
                         fy = op(mul, detT, fy);
                         fy = op(mul, detS, fy);
-                        //fy = op(mul, detY, fy);
+                         fy = op(mul, detI, fy);
+                        //fy  fy = op(mul, detS, fy);= op(mul, detY, fy);
                         //               finals.add(fy, ComponentType.Series, ComponentInformation.Forecast);
                         TsData ftl = ldecomp.getSeries(ComponentType.Trend,
                                 ComponentInformation.Forecast);
