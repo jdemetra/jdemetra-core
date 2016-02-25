@@ -39,7 +39,7 @@ public class CalendarsigmaTest {
         TsInput = DataCalendarSigmaX11.CStartJan;
         kernel = getX11Kernel(CalendarSigma.None, DecompositionMode.Multiplicative);
         X11Results rslt = kernel.process(TsInput);
-
+        
         for (int i = 0; i < 238; ++i) {
             // System.out.println(DataCochran.C_D10_Default.getDomain().get(i) + " WinX13: " + DataCochran.C_D10_Default_Mult.get(i) + "; Calculated JD+: " + rslt.getData("d-tables.d10", TsData.class).getDomain().get(i) +" " +rslt.getData("d-tables.d10", TsData.class).get(i));
             assertEquals(DataCalendarSigmaX11.C_D10_Default_Mult.get(i), rslt.getData("d-tables.d10", TsData.class).get(i), 0.00001);

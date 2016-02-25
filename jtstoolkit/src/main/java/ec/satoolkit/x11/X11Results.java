@@ -45,8 +45,8 @@ public class X11Results implements ISaResults {
     public X11Results(DecompositionMode mode, InformationSet info) {
         info_ = info;
         decomposition = new DefaultSeriesDecomposition(mode);
-        TsData d10 = info.subSet(X11Kernel.D).get(X11Kernel.D10, TsData.class);
-        TsData d10a = info.subSet(X11Kernel.D).get(X11Kernel.D10a, TsData.class);
+        TsData d10 = info.subSet(X11Kernel.D).get(X11Kernel.D10L, TsData.class);
+        TsData d10a = info.subSet(X11Kernel.D).get(X11Kernel.D10aL, TsData.class);
         TsData b1 = info.subSet(X11Kernel.B).get(X11Kernel.B1, TsData.class);
         TsDomain cdom = d10.getDomain(), fdom = d10a.getDomain();
         decomposition.add(b1.fittoDomain(cdom), ComponentType.Series);
@@ -58,11 +58,13 @@ public class X11Results implements ISaResults {
         }
         decomposition.add(info.subSet(X11Kernel.D).get(X11Kernel.D11L, TsData.class),
                 ComponentType.SeasonallyAdjusted);
+        decomposition.add(info.subSet(X11Kernel.D).get(X11Kernel.D11aL, TsData.class),
+                ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
         decomposition.add(info.subSet(X11Kernel.D).get(X11Kernel.D12L, TsData.class),
                 ComponentType.Trend);
         decomposition.add(d10, ComponentType.Seasonal);
         decomposition.add(d10a, ComponentType.Seasonal, ComponentInformation.Forecast);
-        decomposition.add(info.subSet(X11Kernel.D).get(X11Kernel.D12a, TsData.class),
+        decomposition.add(info.subSet(X11Kernel.D).get(X11Kernel.D12aL, TsData.class),
                 ComponentType.Trend, ComponentInformation.Forecast);
         decomposition.add(info.subSet(X11Kernel.D).get(X11Kernel.D13L, TsData.class),
                 ComponentType.Irregular);
