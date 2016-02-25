@@ -33,6 +33,7 @@ import ec.tstoolkit.structural.ModelSpecification;
 import ec.tstoolkit.structural.SeasonalModel;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -74,6 +75,7 @@ public class SsfHarrisonStevensTest {
     }
 
     @Test
+    @Ignore
     public void testProd() {
         DataBlock p = new DataBlock(new double[]{.2, 0, 1, .003, .003});
         HSMapping mapping = new HSMapping(new int[]{2,6,11});

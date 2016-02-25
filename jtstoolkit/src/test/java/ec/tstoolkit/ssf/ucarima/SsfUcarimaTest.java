@@ -78,8 +78,8 @@ public class SsfUcarimaTest {
         smoother.process(data, sr);
         DataBlock t=new DataBlock(sr.component(0));
         DataBlock et=new DataBlock(sr.componentStdev(0));
-        System.out.println(t);
-        System.out.println(et);
+//        System.out.println(t);
+//        System.out.println(et);
         
         SsfArima xssf=new SsfArima(arima);
         smoother.setSsf(xssf);
@@ -100,8 +100,8 @@ public class SsfUcarimaTest {
         smoother.process(data, sr);
         t=new DataBlock(sr.component(0));
         et=new DataBlock(sr.componentStdev(0));
-        System.out.println(t);
-        System.out.println(et);
+//        System.out.println(t);
+//        System.out.println(et);
         
     }
 
