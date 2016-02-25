@@ -32,7 +32,7 @@ public class AutoRegressiveDistance {
     /**
      * @param a The first model
      * @param b The second model
-     * @param npi The number of pi-weights take into account (200 is more than
+     * @param npi The number of pi-weights taken into account (200 is more than
      * enough in most cases.
      * @return The distance between the models
      */
