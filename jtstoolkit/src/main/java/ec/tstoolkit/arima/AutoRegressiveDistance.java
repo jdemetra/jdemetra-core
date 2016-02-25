@@ -32,7 +32,7 @@ public class AutoRegressiveDistance {
     /**
      * @param a The first model
      * @param b The second model
-     * @param npi The number of pi-weights take into account (200 is more than
+     * @param npi The number of pi-weights taken into account (200 is more than
      * enough in most cases.
      * @return The distance between the models
      */
@@ -55,7 +55,7 @@ public class AutoRegressiveDistance {
      * Arima models", journal of time series analysis, 11, 2
      * @param a The first model
      * @param b The second model
-     * @param npi The number of pi-weights take into account
+     * @param npi The number of pi-weights taken into account
      * @return The distance between the models
      */
     public static double compute2(IArimaModel a, IArimaModel b, int npi){

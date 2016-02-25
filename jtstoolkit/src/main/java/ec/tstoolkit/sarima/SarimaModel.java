@@ -366,7 +366,7 @@ public class SarimaModel extends AbstractArimaModel implements IArimaModel,
 //        return BackFilter.of(c);
         Polynomial pr = getRegularMA();
         Polynomial ps = seasonalMA();
-        return new BackFilter(pr.times(ps, true));
+        return new BackFilter(pr.times(ps, false));
     }
 
     /**

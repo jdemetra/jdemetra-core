@@ -80,7 +80,7 @@ public class OutliersDetector implements IOutliersDetectionModule {
     @Override
     public ProcessingResult process(ModellingContext context) {
         clear();
-        List<OutlierDefinition> initial = OutlierDefinition.of(context.description.getOutliers()); 
+        List<OutlierDefinition> initial = OutlierDefinition.of(context.description.getOutliers());
         if (curcv_ == 0) {
             curcv_ = calcCv(context);
         }
@@ -204,15 +204,16 @@ public class OutliersDetector implements IOutliersDetectionModule {
             SarmaSpecification dspec = spec.doStationary();
             if (spec.getParametersCount() != 0) {
                 HannanRissanen hr = new HannanRissanen();
-                hr.process(res_, dspec);
-                SarimaModel stmodel = hr.getModel();
-                stable = !SarimaMapping.stabilize(stmodel);
-                if (stable || cmvx_ || round_ == 0) {
-                    sarima.setParameters(stmodel.getParameters());
-                    regarima_.setArima(sarima);
-                } else {
-                    rflag_ = true;
-                    stable = true;
+                if (hr.process(res_, dspec)) {
+                    SarimaModel stmodel = hr.getModel();
+                    stable = !SarimaMapping.stabilize(stmodel);
+                    if (stable || cmvx_ || round_ == 0) {
+                        sarima.setParameters(stmodel.getParameters());
+                        regarima_.setArima(sarima);
+                    } else {
+                        rflag_ = true;
+                        stable = true;
+                    }
                 }
             }
             if ((cmvx_ || !stable) && festim_) {
@@ -272,7 +273,7 @@ public class OutliersDetector implements IOutliersDetectionModule {
         res_ = null;
         coeff_ = null;
         tstats_ = null;
-        curcv_=0;
+        curcv_ = 0;
         // festim = true if the model has to be re-estimated
     }
 
@@ -560,11 +561,11 @@ public class OutliersDetector implements IOutliersDetectionModule {
     public void setSpan(TsPeriodSelector span) {
         span_ = span;
     }
-    
-    public TsPeriodSelector getSpan(){
+
+    public TsPeriodSelector getSpan() {
         return span_;
     }
-    
+
     private void addOutlierInfo(ModellingContext context, IOutlierVariable var, double t) {
 //        if (context.processingLog != null) {
 //            StringBuilder builder = new StringBuilder();
@@ -573,6 +574,7 @@ public class OutliersDetector implements IOutliersDetectionModule {
 //                    OutliersDetector.class.getName(), builder.toString(), null));
 //        }
     }
+
     private void removeOutlierInfo(ModellingContext context, IOutlierVariable var) {
 //        if (context.processingLog != null) {
 //            StringBuilder builder = new StringBuilder();
@@ -581,7 +583,7 @@ public class OutliersDetector implements IOutliersDetectionModule {
 //                    OutliersDetector.class.getName(), builder.toString(), null));
 //        }
     }
-    
+
     private void addVaInfo(ModellingContext context, double va) {
 //        if (context.processingLog != null) {
 //            StringBuilder builder = new StringBuilder();
@@ -591,8 +593,6 @@ public class OutliersDetector implements IOutliersDetectionModule {
 //        }
     }
 
-    private static final String OUTLIERS = "Outliers detection", OUT_ADD="Outlier added"
-            , OUT_REMOVE="Outlier removed", VA="Critical value";
-
+    private static final String OUTLIERS = "Outliers detection", OUT_ADD = "Outlier added", OUT_REMOVE = "Outlier removed", VA = "Critical value";
 
 }
