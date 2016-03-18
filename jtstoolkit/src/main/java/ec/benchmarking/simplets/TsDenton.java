@@ -51,7 +51,7 @@ public class TsDenton extends AbstractTsBenchmarking {
             del.getValues().mul(c);
         }
 
-        double[] y = expand(series.getDomain(), del);
+        double[] y = expand(series.getDomain(), del, getAggregationType());
 
         SsfDenton denton = new SsfDenton(c, null);
 //        WeightedSsfDisaggregation<SsfRw> denton=new WeightedSsfDisaggregation<SsfRw>(c, null, new SsfRw());
@@ -103,7 +103,7 @@ public class TsDenton extends AbstractTsBenchmarking {
             obj = obj.times(c);
         }
 
-        double[] y = expand(series.getDomain(), obj);
+        double[] y = expand(series.getDomain(), obj, getAggregationType());
 
         SsfDenton denton = new SsfDenton(c, series.getValues().internalStorage());
 //        WeightedSsfDisaggregation<SsfRw> denton=new WeightedSsfDisaggregation<SsfRw>(c, series.getValues().internalStorage(), new SsfRw());

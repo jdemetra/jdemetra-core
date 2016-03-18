@@ -161,7 +161,6 @@ public abstract class BaseSmoother {
             } while (ncols.next());
             SymmetricMatrix.reinforceSymmetry(m_Nf);
         }
-
     }
 
     /**
