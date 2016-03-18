@@ -91,4 +91,20 @@ public class BsmMonitorTest {
             assertTrue(Math.abs(ll2 - ll1) < 1e-3);
         }
     }
+
+    @Test
+    public void testNile() {
+        ModelSpecification mspec = new ModelSpecification();
+        mspec.seasModel = SeasonalModel.Unused;
+        double[] y = data.Data.Nile.getValues().internalStorage();
+        long t0 = System.currentTimeMillis();
+        for (int i = 0; i < 1000; ++i) {
+            BsmMonitor monitor = new BsmMonitor();
+            monitor.setPrecision(1e-6);
+            monitor.setSpecification(mspec);
+            boolean ok = monitor.process(y, 1);
+        }
+        long t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
+    }
 }
