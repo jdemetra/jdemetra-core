@@ -393,7 +393,8 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
             x13.setMixed(automdl.isMixed());
 
         } else {
-            x13.setCheckMu(automdl.isCheckMu());
+//            x13.setCheckMu(automdl.isCheckMu());
+            x13.setCheckMu(false);
         }
 
     }

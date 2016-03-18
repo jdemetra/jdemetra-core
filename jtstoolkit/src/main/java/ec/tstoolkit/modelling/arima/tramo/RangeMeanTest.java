@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tstoolkit.modelling.arima.tramo;
 
 import ec.tstoolkit.data.DataBlock;
@@ -32,13 +31,12 @@ import java.util.Arrays;
  *
  * @author Jean Palate
  */
-@Development(status=Development.Status.Preliminary)
-@Deprecated
+@Development(status = Development.Status.Preliminary)
 public class RangeMeanTest implements IPreprocessingModule {
 
     private PreprocessingModel model_;
     private boolean log_;
-    private double tlog_ = 2;
+    private double tlog_ = 2, t;
     private int isj_, itrim_;
 
     @Override
@@ -55,7 +53,7 @@ public class RangeMeanTest implements IPreprocessingModule {
         log_ = useLogs(ifreq, data);
 
         context.description.setTransformation(getTransformation());
-        context.estimation=null;
+        context.estimation = null;
         return ProcessingResult.Changed;
     }
 
@@ -108,16 +106,17 @@ public class RangeMeanTest implements IPreprocessingModule {
                 isj_ = 9;
                 itrim_ = 2;
             }
-        } else if (freq == 5) {
-            if (n > 165) {
-                isj_ = 5;
-            } else {
-                isj_ = 15;
-                itrim_ = 2;
-            }
         } else {
             isj_ = freq;
         }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public double getTStat() {
+        return t;
     }
 
     /**
@@ -173,9 +172,11 @@ public class RangeMeanTest implements IPreprocessingModule {
         model.setY(new DataBlock(range));
         model.addX(new DataBlock(smean));
         model.setMeanCorrection(true);
-        if (ols.process(model) && ols.getLikelihood().getTStats()[1] > tlog_) {
-            return true;
+        if (ols.process(model)) {
+            t = ols.getLikelihood().getTStats()[1];
+            return t > tlog_;
         } else {
+            t = 0;
             return false;
         }
     }
@@ -189,8 +190,8 @@ public class RangeMeanTest implements IPreprocessingModule {
     }
 
     public PreprocessingModel retrieveModel() {
-        PreprocessingModel model=model_;
-        model_=null;
+        PreprocessingModel model = model_;
+        model_ = null;
         return model;
     }
 }
