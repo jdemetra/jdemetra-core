@@ -110,7 +110,7 @@ public class TransformSpec implements Cloneable, InformationSetSerializable {
 
     public boolean isDefault() {
         return units_ == false && fn_ == DefaultTransformationType.None
-                && fct_ == DEF_FCT && (span_ == null || span_.getType() == PeriodSelectorType.All)
+                && fct_ == DEF_FCT && span_.getType() == PeriodSelectorType.All
                 && preliminaryCheck_;
     }
 
