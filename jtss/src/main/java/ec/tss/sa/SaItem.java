@@ -34,6 +34,7 @@ import ec.tstoolkit.information.ProxyResults;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.utilities.Arrays2;
 import ec.tstoolkit.utilities.NameManager;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -96,7 +97,7 @@ public class SaItem {
             n.warnings_ = warnings_;
             n.cacheResults_ = cacheResults_;
             n.metaData_ = metaData_ == null ? null : metaData_.clone();
-             return n;
+            return n;
         }
     }
 
@@ -433,7 +434,7 @@ public class SaItem {
         }
     }
 
-    boolean read(InformationSet info, NameManager<ISaSpecification> defaults) {
+    boolean read(InformationSet info, NameManager<ISaSpecification> defaults, HashMap<String, String> equivalence) {
         TsInformation tsinfo = info.get(TS, TsInformation.class);
         if (tsinfo == null) {
             return false;
@@ -449,7 +450,14 @@ public class SaItem {
         }
         dspec_ = defaults.get(dname);
         if (dspec_ == null) {
-            return false;
+            // search for an equivalence
+            String ename = equivalence.get(dname);
+            if (ename != null) {
+                dspec_ = defaults.get(ename);
+            }
+            if (dspec_ == null) {
+                return false;
+            }
         }
         InformationSet pspec = info.getSubSet(POINT_SPEC);
         if (pspec != null) {
@@ -471,9 +479,9 @@ public class SaItem {
         if (e != null) {
             estimation_ = EstimationPolicyType.valueOf(e);
         }
-        InformationSet md=info.getSubSet(METADATA);
-        if (md != null){
-            metaData_=new MetaData();
+        InformationSet md = info.getSubSet(METADATA);
+        if (md != null) {
+            metaData_ = new MetaData();
             InformationSetHelper.fillMetaData(md, metaData_);
         }
         return true;
@@ -511,7 +519,7 @@ public class SaItem {
         if (estimation_ != EstimationPolicyType.None) {
             info.set(POLICY, estimation_.name());
         }
-        if (! MetaData.isNullOrEmpty(metaData_)) {
+        if (!MetaData.isNullOrEmpty(metaData_)) {
             info.set(METADATA, InformationSetHelper.fromMetaData(metaData_));
         }
         return true;

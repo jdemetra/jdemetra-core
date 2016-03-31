@@ -20,6 +20,7 @@ public class ArimaSpecTest {
 
     @Test
     public void testInformationSet() {
+        boolean verbose=false;
         ArimaSpec expected = new ArimaSpec();
         ArimaSpec actual = new ArimaSpec();
         InformationSet info;
@@ -29,33 +30,33 @@ public class ArimaSpecTest {
         assertEquals(expected, actual);
         expected.setP(2);
         assertNotEquals(expected, actual);
-        info = expected.write(true);
+        info = expected.write(verbose);
         actual.read(info);
         assertEquals(expected, actual);
         assertEquals(2, actual.getP());
         
         expected.setD(1);
-        info = expected.write(true);
+        info = expected.write(verbose);
         actual.read(info);
         assertEquals(1, actual.getD());
         
         expected.setQ(1);
-        info = expected.write(true);
+        info = expected.write(verbose);
         actual.read(info);
         assertEquals(1, actual.getQ());
         
         expected.setBP(1);
-        info = expected.write(true);
+        info = expected.write(verbose);
         actual.read(info);
         assertEquals(1, actual.getBP());
         
         expected.setBD(1);
-        info = expected.write(true);
+        info = expected.write(verbose);
         actual.read(info);
         assertEquals(1, actual.getBD());
         
         expected.setBQ(1);
-        info = expected.write(true);
+        info = expected.write(verbose);
         actual.read(info);
         assertEquals(1, actual.getBQ());
     }

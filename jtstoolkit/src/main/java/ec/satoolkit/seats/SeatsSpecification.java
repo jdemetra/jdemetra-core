@@ -123,7 +123,7 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
     }
 
     public boolean isDefault() {
-        return epsPhi_ == DEF_EPSPHI && xl_ == DEF_XL && rmod_ == DEF_RMOD && smod_ == DEF_SMOD || smod1_ == DEF_SMOD1
+        return epsPhi_ == DEF_EPSPHI && xl_ == DEF_XL && rmod_ == DEF_RMOD && smod_ == DEF_SMOD && smod1_ == DEF_SMOD1
                 && changeModel_ == ApproximationMode.Legacy && method_ == EstimationMethod.Burman;
     }
 

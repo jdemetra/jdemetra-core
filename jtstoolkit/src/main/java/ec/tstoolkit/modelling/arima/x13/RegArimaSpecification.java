@@ -147,6 +147,7 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
     public static final RegArimaSpecification[] allSpecifications() {
         return new RegArimaSpecification[]{RG0, RG1, RG2, RG3, RG4, RG5};
     }
+
     public RegArimaSpecification() {
         basic_ = new BasicSpec();
         transform_ = new TransformSpec();
@@ -467,8 +468,9 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
     }
 
     private boolean equals(RegArimaSpecification spec) {
-        if (isUsingAutoModel() != spec.isUsingAutoModel())
+        if (isUsingAutoModel() != spec.isUsingAutoModel()) {
             return false;
+        }
         if (!isUsingAutoModel() && !Objects.equals(spec.arima_, arima_)) {
             return false;
         }
@@ -489,8 +491,11 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
         hash = 23 * hash + transform_.hashCode();
         hash = 23 * hash + regression_.hashCode();
         hash = 23 * hash + outliers_.hashCode();
-        hash = 23 * hash + automdl_.hashCode();
-        hash = 23 * hash + arima_.hashCode();
+        if (isUsingAutoModel()) {
+            hash = 23 * hash + automdl_.hashCode();
+        } else {
+            hash = 23 * hash + arima_.hashCode();
+        }
         hash = 23 * hash + estimate_.hashCode();
         return hash;
     }
