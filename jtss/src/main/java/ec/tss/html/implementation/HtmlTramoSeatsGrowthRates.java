@@ -43,7 +43,7 @@ public class HtmlTramoSeatsGrowthRates extends AbstractHtmlElement implements IH
     private static final String COMMENT1 = "The rate-of-growth of series Z(t) over the period (t1,t2) is expressed in percent points as [ (Z(t2) / Z(t1)) -1] * 100";
     private static final String TITLE_ADD = "Variations";
     private static final String COMMENT1_ADD = "The changes of series Z(t) over the period (t1,t2) is defined by [ (Z(t2) - Z(t1))]";
-    private static final String COMMENT2 = "All standard errors reported for the rates-of growth in the following tables are computed using linear approximation to the rates. When period-to-period changes are large, these standard errors should be interpretedas broad approximations, that will tend to UNDERESTIMATE the true values.";
+    private static final String COMMENT2 = "All standard errors reported for the rates-of growth in the following tables are computed using linear approximation to the rates. When period-to-period changes are large, these standard errors should be interpreted as broad approximations, that will tend to UNDERESTIMATE the true values.";
     private static final String COMMENT3 = "The error variances are based on the estimation error of the stochastic Trend and Sa series, and the errors in the parameter estimates are not considered.";
 
     private final PreprocessingModel preprocessing_;

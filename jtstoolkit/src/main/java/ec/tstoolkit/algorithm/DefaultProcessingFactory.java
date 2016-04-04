@@ -29,6 +29,32 @@ import java.util.Map;
  */
 public class DefaultProcessingFactory {
 
+        public static IProcessingNode<TsData> createInitialStep(final TsPeriodSelector selector) {
+        return new IProcessingNode<TsData>() {
+            @Override
+            public String getName() {
+                return IProcDocument.INPUT;
+            }
+
+            @Override
+            public String getPrefix() {
+                return null;
+            }
+
+            @Override
+            public Status process(TsData input, Map<String, IProcResults> results) {
+                SingleTsDataProcessing processing = new SingleTsDataProcessing(selector);
+                SingleTsData rslt = processing.process(input);
+                if (rslt != null) {
+                    results.put(IProcDocument.INPUT, rslt);
+                    return Status.Valid;
+                } else {
+                    return Status.Invalid;
+                }
+            }
+        };
+    }
+
     public static IProcessingNode<TsData> createInitialStep(final TsPeriodSelector selector, final SingleTsDataProcessing.Validation validation) {
         return new IProcessingNode<TsData>() {
             @Override

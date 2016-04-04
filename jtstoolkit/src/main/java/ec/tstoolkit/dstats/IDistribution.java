@@ -29,7 +29,9 @@ public interface IDistribution {
     /**
      *  Threshold for identifying quasi-zero values
      */
-    public static final double EPS = 1e-12;
+    @Deprecated
+    public static final double EPS=1e-12;
+    public static final double EPS_P = 1e-15, EPS_X=1e-9;
 
     /**
      * Gets the description of the distribution

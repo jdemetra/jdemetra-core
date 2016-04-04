@@ -105,7 +105,7 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
 
     public void setUb2(double value) {
         if (value < .8 || value > 1) {
-            throw new TramoException("UB1 should belong to [0.8, 1.0]");
+            throw new TramoException("UB2 should belong to [0.8, 1.0]");
         }
         ub2_ = value;
     }
@@ -116,7 +116,7 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
 
     public void setCancel(double value) {
         if (value < 0 || value > .3) {
-            throw new TramoException("UB1 should belong to [0, 0.3]");
+            throw new TramoException("Cancelation limit should belong to [0, 0.3]");
         }
         cancel_ = value;
     }
@@ -144,7 +144,7 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
     }
 
     public boolean isDefault() {
-        return enabled_ && !fal_ && cancel_ == DEF_CANCEL && pc_ == DEF_PC
+        return !enabled_ && !fal_ && cancel_ == DEF_CANCEL && pc_ == DEF_PC
                 && pcr_ == DEF_PCR && tsig_ == DEF_TSIG && ub1_ == DEF_UB1
                 && ub2_ == DEF_UB2 && !amicompare_;
     }
@@ -241,6 +241,9 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
         if (verbose || amicompare_ != DEF_AMICOMPARE) {
             info.add(AMICOMPARE, amicompare_);
         }
+        if (verbose || tsig_ != DEF_TSIG) {
+            info.add(TSIG, tsig_);
+        }
         return info;
     }
 
@@ -271,6 +274,10 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
             Double pc = info.get(PC, Double.class);
             if (pc != null) {
                 pc_ = pc;
+            }
+            Double tsig = info.get(TSIG, Double.class);
+            if (tsig != null) {
+                tsig_ = tsig;
             }
             Boolean ami = info.get(AMICOMPARE, Boolean.class);
             if (ami != null) {

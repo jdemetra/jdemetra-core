@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tstoolkit.ssf.arima;
 
 import ec.tstoolkit.data.DataBlock;
@@ -24,7 +23,19 @@ import ec.tstoolkit.maths.matrices.SubMatrix;
 import ec.tstoolkit.ssf.ISsf;
 
 /**
+ * State space form for a random walk y(t) = y(t-1) + e(t).
  * 
+ * The class is designed to handle models initialized by zero.
+ * State: a(t) = [y(t)]'
+ * Measurement: Z(t) = 1
+ * Transition: T(t) = | 1 |
+ * Innovations: V(t) = | 1 |
+ * Initialization: default:
+ * Pi0 = | 1 |
+ * Pf0 = | 1 |
+ * 0-initialization
+ * Pi0 = | 0 |
+ * Pf0 = | 1 |
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
@@ -32,14 +43,7 @@ public class SsfRw implements ISsf {
 
     private boolean m_zeroinit;
 
-    /**
-     * State space form for a random walk 
-     * w(t) = w(t-1) + e(t).
-     * 
-     * We take a(t) = ( w(t) )
-     */
-    public SsfRw()
-    {
+    public SsfRw() {
     }
 
     /**
@@ -48,7 +52,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public void diffuseConstraints(SubMatrix b) {
-	Pi0(b);
+        Pi0(b);
     }
 
     /**
@@ -58,7 +62,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public void fullQ(int pos, SubMatrix qm) {
-	qm.set(0, 0, 1);
+        qm.set(0, 0, 1);
     }
 
     /**
@@ -67,7 +71,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public int getNonStationaryDim() {
-	return m_zeroinit ? 0 : 1;
+        return m_zeroinit ? 0 : 1;
     }
 
     /**
@@ -76,7 +80,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public int getStateDim() {
-	return 1;
+        return 1;
     }
 
     /**
@@ -85,7 +89,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public int getTransitionResCount() {
-	return 1;
+        return 1;
     }
 
     /**
@@ -94,7 +98,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public int getTransitionResDim() {
-	return 1;
+        return 1;
     }
 
     /**
@@ -103,7 +107,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public boolean hasR() {
-	return false;
+        return false;
     }
 
     /**
@@ -113,7 +117,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public boolean hasTransitionRes(int pos) {
-	return true;
+        return true;
     }
 
     /**
@@ -122,7 +126,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public boolean hasW() {
-	return false;
+        return false;
     }
 
     /**
@@ -131,7 +135,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public boolean isDiffuse() {
-	return !m_zeroinit;
+        return !m_zeroinit;
     }
 
     /**
@@ -140,7 +144,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public boolean isMeasurementEquationTimeInvariant() {
-	return true;
+        return true;
     }
 
     /**
@@ -149,7 +153,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public boolean isTimeInvariant() {
-	return true;
+        return true;
     }
 
     /**
@@ -158,7 +162,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public boolean isTransitionEquationTimeInvariant() {
-	return true;
+        return true;
     }
 
     /**
@@ -167,16 +171,15 @@ public class SsfRw implements ISsf {
      */
     @Override
     public boolean isTransitionResidualTimeInvariant() {
-	return true;
+        return true;
     }
 
     /**
-     * 
+     *
      * @return
      */
-    public boolean isUsingZeroInitialization()
-    {
-	return m_zeroinit;
+    public boolean isUsingZeroInitialization() {
+        return m_zeroinit;
     }
 
     /**
@@ -185,7 +188,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public boolean isValid() {
-	return true;
+        return true;
     }
 
     /**
@@ -196,7 +199,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public void L(int pos, DataBlock k, SubMatrix lm) {
-	lm.set(0, 0, 1 - k.get(0));
+        lm.set(0, 0, 1 - k.get(0));
     }
 
     /**
@@ -205,7 +208,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public void Pf0(SubMatrix pf0) {
-	pf0.set(0, 0, 1);
+        pf0.set(0, 0, 1);
     }
 
     /**
@@ -214,9 +217,9 @@ public class SsfRw implements ISsf {
      */
     @Override
     public void Pi0(SubMatrix pi0) {
-	pi0.set(0);
-	if (!m_zeroinit)
-	    pi0.set(0, 0, 1);
+        if (!m_zeroinit) {
+            pi0.set(0, 0, 1);
+        }
     }
 
     /**
@@ -226,7 +229,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public void Q(int pos, SubMatrix qm) {
-	qm.set(0, 0, 1);
+        qm.set(0, 0, 1);
     }
 
     /**
@@ -245,7 +248,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public void T(int pos, SubMatrix tr) {
-	tr.set(0, 0, 1);
+        tr.set(0, 0, 1);
     }
 
     /**
@@ -267,12 +270,11 @@ public class SsfRw implements ISsf {
     }
 
     /**
-     * 
+     *
      * @param value
      */
-    public void useZeroInitialization(boolean value)
-    {
-	m_zeroinit = value;
+    public void useZeroInitialization(boolean value) {
+        m_zeroinit = value;
     }
 
     /**
@@ -283,7 +285,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public void VpZdZ(int pos, SubMatrix vm, double d) {
-	vm.add(d);
+        vm.add(d);
     }
 
     /**
@@ -303,7 +305,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public void XpZd(int pos, DataBlock x, double d) {
-	x.add(d);
+        x.add(d);
     }
 
     /**
@@ -322,7 +324,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public void Z(int pos, DataBlock x) {
-	x.set(0, 1);
+        x.set(0, 1);
     }
 
     /**
@@ -333,7 +335,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public void ZM(int pos, SubMatrix m, DataBlock x) {
-	x.set(0, m.get(0, 0));
+        x.set(0, m.get(0, 0));
     }
 
     /**
@@ -344,7 +346,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public double ZVZ(int pos, SubMatrix vm) {
-	return vm.get(0, 0);
+        return vm.get(0, 0);
     }
 
     /**
@@ -355,6 +357,6 @@ public class SsfRw implements ISsf {
      */
     @Override
     public double ZX(int pos, DataBlock x) {
-	return x.get(0);
+        return x.get(0);
     }
 }

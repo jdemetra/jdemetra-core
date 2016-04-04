@@ -19,7 +19,7 @@ package ec.satoolkit.x11;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 abstract class DefaultX11Algorithm extends BaseX11Algorithm implements IX11Algorithm {
 

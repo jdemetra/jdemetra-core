@@ -24,7 +24,7 @@ import ec.tstoolkit.algorithm.IDiagnostics;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class CoherenceDiagnosticsFactory implements ISaDiagnosticsFactory {
 

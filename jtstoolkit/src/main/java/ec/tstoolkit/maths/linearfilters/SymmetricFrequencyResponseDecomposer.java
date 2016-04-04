@@ -19,25 +19,27 @@ package ec.tstoolkit.maths.linearfilters;
 import ec.tstoolkit.design.Algorithm;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.Complex;
-import ec.tstoolkit.maths.ComplexMath;
 import ec.tstoolkit.maths.polynomials.Polynomial;
 import ec.tstoolkit.maths.polynomials.UnitRoots;
 import ec.tstoolkit.maths.polynomials.UnitRootsSolver;
 
 /**
- *
+ * Auxiliary class for computing the moving average process corresponding to
+ * a given auto-covariance function.
+ * This implementation is based on the procedure in the program SEATS and described
+ * in the paper of A. Maravall:
+ * 
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Beta)
 @Algorithm(entryPoint = "decompose")
 public class SymmetricFrequencyResponseDecomposer implements ISymmetricFilterDecomposer {
 
     private double m_var;
     private BackFilter m_bf;
     private int m_freq;
-    private double m_epsilon = 1e-4, m_repsilon = 1e-1;
-
-    ;
+    private double m_epsilon = 1e-4;
+    private final double m_repsilon = 1e-1;
 
     /**
      *
@@ -161,7 +163,7 @@ public class SymmetricFrequencyResponseDecomposer implements ISymmetricFilterDec
                             }
 //                        }
                     } else {
-                        Complex ro = ComplexMath.sqrt(r[i].times(r[i]).minus(1));
+                        Complex ro = r[i].times(r[i]).minus(1).sqrt();
                         Complex c0 = r[i].plus(ro);
                         Complex c1 = r[i].minus(ro);
                         if (c1.absSquare() < c0.absSquare()) {
@@ -214,34 +216,29 @@ public class SymmetricFrequencyResponseDecomposer implements ISymmetricFilterDec
         return m_bf;
     }
 
-    /**
-     *
-     * @return
-     */
+    @Override
     public double getFactor() {
         return m_var;
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public ForeFilter getFFilter() {
         return m_bf.mirror();
     }
 
     /**
-     *
-     * @return
+     * Gets the precision used in the search of conjugate roots of the 
+     * initial polynomial
+     * @return A strictly positive double. 1e-4 by default.
      */
     public double getPrecision() {
         return m_epsilon;
     }
 
     /**
-     *
-     * @return
+     * The algorithm will search first for some unit roots. There are specified
+     * by this parameter. See the class UnitRootsSolver for further explanations.
+     * @return The parameter of the UnitRootSolver used in the decomposition.
      */
     public int getStartingURValue() {
         return m_freq;
@@ -256,8 +253,10 @@ public class SymmetricFrequencyResponseDecomposer implements ISymmetricFilterDec
     }
 
     /**
-     *
-     * @param value
+     * The algorithm will search first for some unit roots. There are specified
+     * by this parameter. See the class UnitRootsSolver for further explanations.
+     * @param value The parameter of the UnitRootSolver used in the decomposition.
+     * 12 by default.
      */
     public void setStartingURValue(final int value) {
         m_freq = value;

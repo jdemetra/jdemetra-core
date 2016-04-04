@@ -26,7 +26,7 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class SeasonalUnderDifferencingTest2 extends AbstractModelController {
 

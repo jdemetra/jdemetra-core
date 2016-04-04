@@ -257,7 +257,7 @@ public class McElroyEstimates {
             z[i] = Q.row(j).drop(n - ds.getDegree(), 0).dot(yl);
         }
         // triangularize by means of Givens rotations
-        ElementaryTransformations.givensTriangularize(Q.subMatrix());
+        ElementaryTransformations.fastGivensTriangularize(Q.subMatrix());
         Matrix L = new Matrix(Q.subMatrix(0, n, 0, n));
         LowerTriangularMatrix.rsolve(L, z);
         LowerTriangularMatrix.lsolve(L, z);

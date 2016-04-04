@@ -30,35 +30,62 @@ public class SpecialCalendarDay implements ISpecialDay {
     public final DayEvent event;
     public final int offset;
     private final double weight;
+    private final boolean julian;
 
     public SpecialCalendarDay(DayEvent ev, int off) {
         this(ev, off, 1);
     }
 
     public SpecialCalendarDay(DayEvent ev, int off, double weight) {
+        this(ev, off, weight, false);
+    }
+ 
+    public SpecialCalendarDay(DayEvent ev, int off, boolean julianeaster) {
+        this(ev, off, 1, julianeaster);
+    }
+
+    public SpecialCalendarDay(DayEvent ev, int off, double weight, boolean julianeaster) {
         event = ev;
         offset = off;
         this.weight = weight;
+        this.julian=julianeaster;
     }
- 
+    
     public ISpecialDay toSpecialDay() {
         switch (event) {
+            case ShroveMonday:
+                return julian ? EasterRelatedDay.JulianShroveMonday.reweight(weight).plus(offset)
+                        : EasterRelatedDay.ShroveMonday.reweight(weight).plus(offset);
+            case ShroveTuesday:
+                return julian ? EasterRelatedDay.JulianShroveTuesday.reweight(weight).plus(offset)
+                        : EasterRelatedDay.ShroveTuesday.reweight(weight).plus(offset);
             case AshWednesday:
-                return EasterRelatedDay.AshWednesday.reweight(weight).plus(offset);
+                return julian ? EasterRelatedDay.JulianAshWednesday.reweight(weight).plus(offset)
+                        : EasterRelatedDay.AshWednesday.reweight(weight).plus(offset);
             case Easter:
-                return new EasterRelatedDay(offset, weight);
+                return julian ? EasterRelatedDay.JulianEaster.reweight(weight).plus(offset)
+                        : EasterRelatedDay.Easter.reweight(weight).plus(offset);
             case MaundyThursday:
-                return EasterRelatedDay.EasterThursday.reweight(weight).plus(offset);
+                return julian ? EasterRelatedDay.JulianEasterThursday.reweight(weight).plus(offset)
+                        : EasterRelatedDay.EasterThursday.reweight(weight).plus(offset);
             case GoodFriday:
-                return EasterRelatedDay.EasterFriday.reweight(weight).plus(offset);
+                return julian ? EasterRelatedDay.JulianEasterFriday.reweight(weight).plus(offset)
+                        : EasterRelatedDay.EasterFriday.reweight(weight).plus(offset);
             case EasterMonday:
-                return EasterRelatedDay.EasterMonday.reweight(weight).plus(offset);
+                return julian ? EasterRelatedDay.JulianEasterMonday.reweight(weight).plus(offset)
+                        : EasterRelatedDay.EasterMonday.reweight(weight).plus(offset);
             case Ascension:
-                return EasterRelatedDay.Ascension.reweight(weight).plus(offset);
+                return julian ? EasterRelatedDay.JulianAscension.reweight(weight).plus(offset)
+                        : EasterRelatedDay.Ascension.reweight(weight).plus(offset);
             case Pentecost:
-                return EasterRelatedDay.Pentecost.reweight(weight).plus(offset);
+                return julian ? EasterRelatedDay.JulianPentecost.reweight(weight).plus(offset)
+                        : EasterRelatedDay.Pentecost.reweight(weight).plus(offset);
             case WhitMonday:
-                return EasterRelatedDay.PentecostMonday.reweight(weight).plus(offset);
+                return julian ? EasterRelatedDay.JulianPentecostMonday.reweight(weight).plus(offset)
+                        : EasterRelatedDay.PentecostMonday.reweight(weight).plus(offset);
+            case CorpusChristi:
+                return julian ? EasterRelatedDay.JulianCorpusChristi.reweight(weight).plus(offset)
+                        : EasterRelatedDay.CorpusChristi.reweight(weight).plus(offset);
             case Assumption:
                 return FixedDay.Assumption.reweight(weight).plus(offset);
             case Christmas:
@@ -81,7 +108,11 @@ public class SpecialCalendarDay implements ISpecialDay {
                 return null;
         }
     }
-
+    
+    public boolean isJulianEaster(){
+        return julian;
+    }
+    
     @Override
     public Iterable<IDayInfo> getIterable(TsFrequency freq, Day start, Day end) {
         ISpecialDay sd = toSpecialDay();
@@ -116,4 +147,11 @@ public class SpecialCalendarDay implements ISpecialDay {
     public double getWeight() {
         return weight;
     }
+    
+        @Override
+    public boolean match(Context context){
+        return context.isJulianEaster() == julian;
+    }
+    
+
 }

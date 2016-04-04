@@ -1,17 +1,17 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.satoolkit.x11;
@@ -66,6 +66,8 @@ public class X11Toolkit extends BaseX11Algorithm implements
         }
         toolkit.setSeasonalFilterprovider(sprovider);
 
+        toolkit.setExcludefcas(spec.isExcludefcst());
+
         if (spec.isAutoHenderson()) {
             toolkit.setTrendCycleFilterprovider(new AutomaticTrendCycleComputer());
         } else {
@@ -73,9 +75,29 @@ public class X11Toolkit extends BaseX11Algorithm implements
                     spec.getHendersonFilterLength()));
         }
 
-        DefaultExtremeValuesCorrector xcorrector = new DefaultExtremeValuesCorrector();
-        xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
-        toolkit.setExtremeValuescorrector(xcorrector);
+        /* Define which ExtremeExtremeValuesCorrector has to be used */
+        if (spec.getCalendarSigma().equals(CalendarSigma.Select)) {
+            GroupSpecificExtremeValuesCorrector xcorrector = new GroupSpecificExtremeValuesCorrector();
+            xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
+            xcorrector.setSigmavecOption(spec.getSigmavec());
+            xcorrector.setExcludefcast(spec.isExcludefcst());
+            toolkit.setExtremeValuescorrector(xcorrector);
+        } else if (spec.getCalendarSigma().equals(CalendarSigma.All)) {
+            PeriodSpecificExtremeValuesCorrector xcorrector = new PeriodSpecificExtremeValuesCorrector();
+            xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
+            xcorrector.setExcludefcast(spec.isExcludefcst());
+            toolkit.setExtremeValuescorrector(xcorrector);
+        } else if (spec.getCalendarSigma().equals(CalendarSigma.Signif)) {
+            CochranDependentExtremeValuesCorrector xcorrector = new CochranDependentExtremeValuesCorrector();
+            xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
+            xcorrector.setExcludefcast(spec.isExcludefcst());
+            toolkit.setExtremeValuescorrector(xcorrector);
+        } else {
+            DefaultExtremeValuesCorrector xcorrector = new DefaultExtremeValuesCorrector();
+            xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
+            xcorrector.setExcludefcast(spec.isExcludefcst());
+            toolkit.setExtremeValuescorrector(xcorrector);
+        }
 
         /*In Case that one or more and not all of the filters are stable the normalizer needs this information*/
         if (spec.isSeasonal()) {
@@ -99,6 +121,7 @@ public class X11Toolkit extends BaseX11Algorithm implements
     private IExtremeValuesCorrector xcorrector;
     private ISeasonalNormalizer snormalizer;
     private IX11Utilities utilities = new DefaultX11Utilities();
+    private boolean excludefcst = false;
 
     private X11Toolkit(X11Context context) {
         this.context = context;
@@ -164,6 +187,11 @@ public class X11Toolkit extends BaseX11Algorithm implements
         return utilities;
     }
 
+    @Override
+    public boolean isExcludefcst() {
+        return excludefcst;
+    }
+
     /**
      *
      * @param context
@@ -222,6 +250,10 @@ public class X11Toolkit extends BaseX11Algorithm implements
             snormalizer.setContext(context);
         }
         this.snormalizer = snormalizer;
+    }
+
+    public void setExcludefcas(boolean excldudefcast) {
+        this.excludefcst = excldudefcast;
     }
 
     /**

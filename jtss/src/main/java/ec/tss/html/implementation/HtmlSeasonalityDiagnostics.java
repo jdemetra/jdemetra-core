@@ -34,7 +34,7 @@ import java.io.IOException;
 public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements IHtmlElement {
 
     private final SeasonalityTests tests;
-    private final FTest ftest;
+    private final FTest ftest, ftestAMI;
     private final boolean noSeasControl;
     private final KruskalWallisTest kwTest;
 
@@ -47,10 +47,13 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
         this.noSeasControl = noSeasControl;
         if (tests != null) {
             ftest = new FTest();
-            ftest.test(tests.getDifferencing().original);
-            kwTest = new KruskalWallisTest(tests.getDifferencing().differenced);
+            ftest.test(tests.getDifferencing().getRestrictedOriginal());
+            ftestAMI = new FTest();
+            ftestAMI.testAMI(tests.getDifferencing().getRestrictedOriginal());
+            kwTest = new KruskalWallisTest(tests.getDifferencing().getDifferenced());
         } else {
             ftest = null;
+            ftestAMI=null;
             kwTest = null;
         }
 
@@ -66,18 +69,19 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
             writeSpectrum(stream);
             writePeriodogram(stream);
             writeFTest(stream);
+            writeFTestAMI(stream);
         } else {
             stream.write("Series can't be tested");
         }
     }
 
     public void writeTransformation(HtmlStream stream) throws IOException {
-        if (tests.getDifferencing().mean && tests.getDifferencing().getDifferencingOrder() == 1) {
+        if (tests.getDifferencing().isMean() && tests.getDifferencing().getDifferencingOrder() == 1) {
             stream.write("Data have been differenced and corrected for mean", HtmlStyle.Italic).newLines(2);
         } else {
             if (tests.getDifferencing().getDifferencingOrder() > 0) {
                 stream.write("Data have been differenced " + tests.getDifferencing().getDifferencingOrder() + " times", HtmlStyle.Italic).newLine();
-                if (tests.getDifferencing().mean) {
+                if (tests.getDifferencing().isMean()) {
                     stream.write("Data have been corrected for mean", HtmlStyle.Italic).newLine();
                 }
                 stream.newLine();
@@ -89,8 +93,8 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
         stream.write(HtmlTag.HEADER4, "1. Tests on autocorrelations at seasonal lags").newLine();
         writeSummary(stream, tests.getQs().getPValue());
         stream.newLines(2);
-        AutoCorrelations ac = new AutoCorrelations(tests.getDifferencing().differenced);
-        int ifreq = tests.getDifferencing().original.getFrequency().intValue();
+        AutoCorrelations ac = new AutoCorrelations(tests.getDifferencing().getDifferenced());
+        int ifreq = tests.getDifferencing().getOriginal().getFrequency().intValue();
         stream.write("ac(").write(ifreq).write(")=").write(df4.format(ac.autoCorrelation(ifreq))).newLine();
         stream.write("ac(").write(2 * ifreq).write(")=").write(df4.format(ac.autoCorrelation(2 * ifreq))).newLines(2);
         stream.write("Distribution: " + tests.getQs().getDistribution().getDescription()).newLine();
@@ -110,6 +114,17 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
         stream.write(HtmlTag.LINEBREAK);
     }
 
+    public void writeFTestAMI(HtmlStream stream) throws IOException {
+        stream.write(HtmlTag.HEADER4, "6bis. Tests on regression with fixed seasonal dummies ").newLine();
+        stream.write("Regression model (on original series) with ARIMA automatically identified", HtmlStyle.Italic).newLine();
+        stream.write("model is: "+ftestAMI.getEstimatedModel().model.getArima().toString(), HtmlStyle.Italic).newLine();
+        writeSummary(stream, ftestAMI.getFTest().getPValue());
+        stream.newLines(2);
+        stream.write("Distribution: " + ftestAMI.getFTest().getDistribution().getDescription()).newLine();
+        stream.write("Value: " + df4.format(ftestAMI.getFTest().getValue())).newLine();
+        stream.write("PValue: " + df4.format(ftestAMI.getFTest().getPValue()));
+        stream.write(HtmlTag.LINEBREAK);
+    }
     public void writeFriedman(HtmlStream stream) throws IOException {
         stream.write(HtmlTag.HEADER4, "2. Non parametric (Friedman) test");
         stream.write("Based on the rank of the observations in each year", HtmlStyle.Italic).newLines(2);
@@ -202,20 +217,23 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
             stream.close(HtmlTag.TABLEROW);
         }
 
-        TsData ddata=tests.getDifferencing().differenced;
-        int ifreq = ddata.getFrequency().intValue();
+        TsData ddata=tests.getDifferencing().getDifferenced();
+//        int ifreq = ddata.getFrequency().intValue();
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableCell("5. Periodogram ", 250));
         stream.write(getCellSummary(tests.getPeriodogramTest().getPValue(), 50));
         stream.close(HtmlTag.TABLEROW);
-        stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("5bis. Max Periodogram ", 250));
-        stream.write(getCellSummary(PeriodogramTest.computeMax(ddata, ifreq), 50));
-        stream.close(HtmlTag.TABLEROW);
-
+//        stream.open(HtmlTag.TABLEROW);
+//        stream.write(new HtmlTableCell("5bis. Max Periodogram ", 250));
+//        stream.write(getCellSummary(PeriodogramTest.computeMax(ddata, ifreq), 50));
+//        stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableCell("6. Seasonal dummies", 250));
         stream.write(getCellSummary(ftest.getFTest().getPValue(), 50));
+        stream.close(HtmlTag.TABLEROW);
+        stream.open(HtmlTag.TABLEROW);
+        stream.write(new HtmlTableCell("6bis. Seasonal dummies (AMI)", 250));
+        stream.write(getCellSummary(ftestAMI.getFTest().getPValue(), 50));
         stream.close(HtmlTag.TABLEROW);
 
         stream.close(HtmlTag.TABLE);

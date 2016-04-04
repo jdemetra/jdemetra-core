@@ -16,36 +16,31 @@
  */
 package ec.tstoolkit.modelling.arima.tramo;
 
-import ec.tstoolkit.modelling.arima.ModelStatistics;
 import ec.tstoolkit.Parameter;
-import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.arima.estimation.RegArimaEstimation;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.data.ReadDataBlock;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.realfunctions.IParametricMapping;
-import ec.tstoolkit.modelling.DefaultTransformationType;
+import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.IModelBuilder;
+import ec.tstoolkit.modelling.arima.IModelController;
 import ec.tstoolkit.modelling.arima.IModelEstimator;
+import ec.tstoolkit.modelling.arima.IOutliersDetectionModule;
 import ec.tstoolkit.modelling.arima.IPreprocessingModule;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
 import ec.tstoolkit.modelling.arima.ISeriesScaling;
 import ec.tstoolkit.modelling.arima.ModelDescription;
 import ec.tstoolkit.modelling.arima.ModelEstimation;
+import ec.tstoolkit.modelling.arima.ModelStatistics;
 import ec.tstoolkit.modelling.arima.ModellingContext;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.modelling.arima.ProcessingResult;
-import ec.tstoolkit.modelling.Variable;
-import ec.tstoolkit.modelling.arima.IModelController;
-import ec.tstoolkit.modelling.arima.IOutliersDetectionModule;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;
 import ec.tstoolkit.stats.LjungBoxTest;
 import ec.tstoolkit.timeseries.TsPeriodSelector;
-import ec.tstoolkit.timeseries.regression.EasterVariable;
-import ec.tstoolkit.timeseries.regression.ILengthOfPeriodVariable;
-import ec.tstoolkit.timeseries.regression.ITradingDaysVariable;
 import ec.tstoolkit.timeseries.simplets.ITsDataInterpolator;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
@@ -148,6 +143,9 @@ public class TramoProcessor extends AbstractTramoModule implements IPreprocessor
             do {
                 ++iter;
             } while (iter < 10 && !iterate(context));
+            if (!update(context)) {
+                return null; // to be sure that the model has been estimated
+            }
             return context.current(true);
         } catch (Exception err) {
 
@@ -485,41 +483,46 @@ public class TramoProcessor extends AbstractTramoModule implements IPreprocessor
 
         PreprocessingModel cur = context.current(true);
         ModelStatistics stats = new ModelStatistics(cur);
-        double plbox0 = 1 - refstats_.ljungBoxPvalue;
-        double rvr0 = refstats_.se;
         double plbox = 1 - stats.ljungBoxPvalue;
         double rvr = stats.se;
+        if (reference_ != null) {
+            double plbox0 = 1 - refstats_.ljungBoxPvalue;
+            double rvr0 = refstats_.se;
 
-        addModelInfo(stats, context, false);
-        if (reference_.description.getOutliers().size()
-                <= context.description.getOutliers().size() && ((plbox < .95 && plbox0 < .75 && rvr0 < rvr)
-                // 1. the previous model was significantly better
-                || (pass_ == 1 && plbox >= .95 && plbox0 < .95)
-                // 2. no improvement
-                || (plbox < .95 && plbox0 < .75 && plbox0 < plbox && rvr0 < fct * rvr)
-                // 3.
-                || (plbox >= .95 && plbox0 < .95 && rvr0 < fct2 * rvr)
-                // 4. degradation
-                || (curspec.getD() == 0 && curspec.getBD() == 1 && curspec.getP() == 1
-                && curmodel.phi(1) <= -.82 && curspec.getQ() <= 1
-                && curspec.getBP() == 0 && curspec.getBQ() == 1)
-                //quasi airline model
-                || (curspec.getD() == 1 && curspec.getBD() == 0 && curspec.getP() == 0
-                && curspec.getQ() == 1 && curspec.getBP() == 1
-                && curmodel.getParameter(0) <= -.65 && curspec.getBQ() <= 1))) {
-            useprev = true;
-        }
-
-        if (!useprev) {
-            reference_ = cur;
-            refstats_ = stats;
+            addModelInfo(stats, context, false);
+            if (reference_.description.getOutliers().size()
+                    <= context.description.getOutliers().size() && ((plbox < .95 && plbox0 < .75 && rvr0 < rvr)
+                    // 1. the previous model was significantly better
+                    || (pass_ == 1 && plbox >= .95 && plbox0 < .95)
+                    // 2. no improvement
+                    || (plbox < .95 && plbox0 < .75 && plbox0 < plbox && rvr0 < fct * rvr)
+                    // 3.
+                    || (plbox >= .95 && plbox0 < .95 && rvr0 < fct2 * rvr)
+                    // 4. degradation
+                    || (curspec.getD() == 0 && curspec.getBD() == 1 && curspec.getP() == 1
+                    && curmodel.phi(1) <= -.82 && curspec.getQ() <= 1
+                    && curspec.getBP() == 0 && curspec.getBQ() == 1)
+                    //quasi airline model
+                    || (curspec.getD() == 1 && curspec.getBD() == 0 && curspec.getP() == 0
+                    && curspec.getQ() == 1 && curspec.getBP() == 1
+                    && curmodel.getParameter(0) <= -.65 && curspec.getBQ() <= 1))) {
+                useprev = true;
+            }
+            if (!useprev) {
+                reference_ = cur;
+                refstats_ = stats;
 //            if (outliers != null) {
 //                refsens_ = outliers.getSelectivity();
 //            }
+            } else {
+                restore(context);
+                plbox = plbox0;
+            }
         } else {
-            restore(context);
-            plbox = plbox0;
+            reference_ = cur;
+            refstats_ = stats;
         }
+
         if (pass_ == 1) {
             cpcr_ += .025;
         } else if (pass_ >= 2) {

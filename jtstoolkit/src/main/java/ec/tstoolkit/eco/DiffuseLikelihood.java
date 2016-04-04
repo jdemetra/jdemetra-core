@@ -91,6 +91,7 @@ public class DiffuseLikelihood implements ILikelihood {
 	return m_res;
     }
     
+    @Override
     public double getLogDeterminant(){
         return m_ldet;
     }

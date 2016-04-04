@@ -21,7 +21,7 @@ import ec.tstoolkit.algorithm.IProcSpecification;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public interface IDefaultDecomposerFactory<S extends IProcSpecification, R extends ISaResults>  {
     IDefaultSeriesDecomposer<R> create(S spec);

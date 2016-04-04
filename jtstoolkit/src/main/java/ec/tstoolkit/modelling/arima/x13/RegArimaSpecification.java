@@ -22,10 +22,21 @@ import ec.tstoolkit.design.Development;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.modelling.RegressionTestSpec;
-import ec.tstoolkit.modelling.arima.*;
+import ec.tstoolkit.modelling.arima.AICcComparator;
+import ec.tstoolkit.modelling.arima.IModelEstimator;
+import ec.tstoolkit.modelling.arima.IOutliersDetectionModule;
+import ec.tstoolkit.modelling.arima.IPreprocessingModule;
+import ec.tstoolkit.modelling.arima.IPreprocessor;
+import ec.tstoolkit.modelling.arima.IRegArimaSpecification;
+import ec.tstoolkit.modelling.arima.UnitSeriesScaling;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
-import ec.tstoolkit.timeseries.regression.*;
+import ec.tstoolkit.timeseries.regression.AdditiveOutlierFactory;
+import ec.tstoolkit.timeseries.regression.LevelShiftFactory;
+import ec.tstoolkit.timeseries.regression.OutlierType;
+import ec.tstoolkit.timeseries.regression.OutliersFactory;
+import ec.tstoolkit.timeseries.regression.SeasonalOutlierFactory;
+import ec.tstoolkit.timeseries.regression.TransitoryChangeFactory;
 import ec.tstoolkit.timeseries.simplets.ConstInterpolator;
 import java.util.Map;
 import java.util.Objects;
@@ -132,6 +143,10 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
     private AutoModelSpec automdl_;
     private ArimaSpec arima_;
     private EstimateSpec estimate_;
+
+    public static final RegArimaSpecification[] allSpecifications() {
+        return new RegArimaSpecification[]{RG0, RG1, RG2, RG3, RG4, RG5};
+    }
 
     public RegArimaSpecification() {
         basic_ = new BasicSpec();
@@ -336,7 +351,7 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
         if (transform_.getFunction() != DefaultTransformationType.Auto) {
             return null;
         }
-        LogLevelTest ll = new LogLevelTest();
+        LogLevelTest ll = new LogLevelTest(transform_.getAICDiff());
         ll.setEpsilon(estimate_.getTol());
         // params
         return ll;
@@ -372,13 +387,15 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
             AutoModel ami = new AutoModel();
             ami.setEpsilon(estimate_.getTol());
             ami.setBalanced(automdl.isBalanced());
+            ami.setMixed(automdl.isMixed());
             x13.autoModelling = ami;
             x13.setCheckMu(true);
             x13.setLjungBoxLimit(automdl.getLjungBoxLimit());
             x13.setMixed(automdl.isMixed());
 
         } else {
-            x13.setCheckMu(automdl.isCheckMu());
+//            x13.setCheckMu(automdl.isCheckMu());
+            x13.setCheckMu(false);
         }
 
     }
@@ -451,12 +468,17 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
     }
 
     private boolean equals(RegArimaSpecification spec) {
+        if (isUsingAutoModel() != spec.isUsingAutoModel()) {
+            return false;
+        }
         if (!isUsingAutoModel() && !Objects.equals(spec.arima_, arima_)) {
+            return false;
+        }
+        if (isUsingAutoModel() && !Objects.equals(spec.automdl_, automdl_)) {
             return false;
         }
         return Objects.equals(spec.basic_, basic_)
                 && Objects.equals(spec.transform_, transform_)
-                && Objects.equals(spec.automdl_, automdl_)
                 && Objects.equals(spec.regression_, regression_)
                 && Objects.equals(spec.outliers_, outliers_)
                 && Objects.equals(spec.estimate_, estimate_);
@@ -469,8 +491,11 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
         hash = 23 * hash + transform_.hashCode();
         hash = 23 * hash + regression_.hashCode();
         hash = 23 * hash + outliers_.hashCode();
-        hash = 23 * hash + automdl_.hashCode();
-        hash = 23 * hash + arima_.hashCode();
+        if (isUsingAutoModel()) {
+            hash = 23 * hash + automdl_.hashCode();
+        } else {
+            hash = 23 * hash + arima_.hashCode();
+        }
         hash = 23 * hash + estimate_.hashCode();
         return hash;
     }

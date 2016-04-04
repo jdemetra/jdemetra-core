@@ -100,6 +100,8 @@ public class T implements IContinuousDistribution {
     public double getProbability(final double x, final ProbabilityType pt) {
 	if (pt == ProbabilityType.Point)
 	    return 0;
+        if (x == 0)
+            return .5;
 
 	double res = SpecialFunctions.studentProbability(x, m_df);
 	if (pt == ProbabilityType.Upper)
@@ -120,10 +122,12 @@ public class T implements IContinuousDistribution {
     public double getProbabilityInverse(double p, final ProbabilityType pt) {
 	if (pt == ProbabilityType.Upper)
 	    p = 1.0 - p;
-	if (p < EPS || 1 - p < EPS)
+	if (p < EPS_P || 1 - p < EPS_P)
 	    throw new DStatException(DStatException.ERR_INV_SMALL);
+        if (Math.abs(p-.5)<EPS_P)
+            return 0;
 	double start = calcInitT(p, m_df);
-	return ProbInvFinder.find(p, start, EPS * .1, 1e-4, this);
+	return ProbInvFinder.find(p, start, EPS_P, EPS_X, this);
     }
 
     @Override

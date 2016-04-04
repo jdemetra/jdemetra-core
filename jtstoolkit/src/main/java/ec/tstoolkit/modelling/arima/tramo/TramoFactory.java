@@ -23,7 +23,7 @@ import ec.tstoolkit.modelling.arima.IPreprocessorFactory;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class TramoFactory implements IPreprocessorFactory<TramoSpecification>{
 

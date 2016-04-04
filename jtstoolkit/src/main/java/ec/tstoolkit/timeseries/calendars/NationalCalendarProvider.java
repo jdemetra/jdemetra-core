@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tstoolkit.timeseries.calendars;
 
 import ec.tstoolkit.data.DataBlock;
@@ -37,22 +36,30 @@ import java.util.Map;
 public class NationalCalendarProvider extends DefaultGregorianCalendarProvider {
 
     public NationalCalendarProvider() {
-        m_ncal = new NationalCalendar();
+        this(true, false);
+    }
+
+    public NationalCalendarProvider(boolean mean, boolean julian) {
+        ncal = new NationalCalendar(mean, julian);
     }
 
     public NationalCalendarProvider(Collection<SpecialDayEvent> sd) {
-        m_ncal = new NationalCalendar();
+        this(sd, true, false);
+    }
+
+    public NationalCalendarProvider(Collection<SpecialDayEvent> sd, boolean mean, boolean julian) {
+        ncal = new NationalCalendar(mean, julian);
         for (SpecialDayEvent d : sd) {
-            m_ncal.add(d);
+            ncal.add(d);
         }
     }
 
     public NationalCalendarProvider(NationalCalendar ncal) {
-        m_ncal = ncal.clone();
+        this.ncal = ncal.clone();
     }
-
+    
     public Collection<SpecialDayEvent> events() {
-        return m_ncal.elements();
+        return ncal.elements();
     }
 
     @Override
@@ -89,9 +96,9 @@ public class NationalCalendarProvider extends DefaultGregorianCalendarProvider {
             }
             wh[i] = d;
         }
-        if (m_mean) {
+        if (ncal.getContext().isLongTermMeanCorrection()) {
             int ifreq = domain.getFrequency().intValue();
-            for (SpecialDayEvent day : m_ncal.elements()) {
+            for (SpecialDayEvent day : ncal.elements()) {
                 Day start = day.getStart(), end = day.getEnd();
                 TsDomain xdomain = day.day.getSignificantDomain(domain.getFrequency(), start, end);
                 TsDomain cdomain = domain.intersection(xdomain);
@@ -174,10 +181,10 @@ public class NationalCalendarProvider extends DefaultGregorianCalendarProvider {
             tdh[i] = tmp;
         }
 
-        if (m_mean) {
+        if (ncal.getContext().isLongTermMeanCorrection()) {
             int ifreq = domain.getFrequency().intValue();
             // iterates through all days
-            for (SpecialDayEvent day : m_ncal.elements()) {
+            for (SpecialDayEvent day : ncal.elements()) {
                 Day start = day.getStart(), end = day.getEnd();
                 TsDomain xdomain = day.day.getSignificantDomain(domain.getFrequency(), start, end);
                 TsDomain cdomain = domain.intersection(xdomain);
@@ -230,7 +237,7 @@ public class NationalCalendarProvider extends DefaultGregorianCalendarProvider {
         Day dstart = domain.getStart().firstday();
         Day dend = domain.getLast().lastday();
         Map<Day, Double> used = new HashMap<>();
-        for (SpecialDayEvent ev : m_ncal.elements()) {
+        for (SpecialDayEvent ev : ncal.elements()) {
             Day start = ev.getStart(), end = ev.getEnd();
             if (start.isBefore(dstart)) {
                 start = dstart;
@@ -243,7 +250,7 @@ public class NationalCalendarProvider extends DefaultGregorianCalendarProvider {
                     Day curday = info.getDay();
                     Double Weight = used.get(curday);
                     double weight = ev.day.getWeight();
-                    if (Weight == null || weight > Weight.doubleValue()) {
+                    if (Weight == null || weight > Weight) {
                         used.put(curday, weight);
                         TsPeriod cur = info.getPeriod();
                         DayOfWeek w = info.getDayOfWeek();
@@ -251,7 +258,7 @@ public class NationalCalendarProvider extends DefaultGregorianCalendarProvider {
                             int pos = domain.search(cur);
                             if (pos >= 0) {
                                 int col = -1 + w.intValue();
-                                h[col][pos] += Weight == null ? weight : weight - Weight.doubleValue();
+                                h[col][pos] += Weight == null ? weight : weight - Weight;
                             }
                         }
                     }
@@ -305,31 +312,33 @@ public class NationalCalendarProvider extends DefaultGregorianCalendarProvider {
         m_locked = true;
     }
 
-    public void add(ISpecialDay day) {
+    public boolean add(ISpecialDay day) {
         if (!m_locked) {
-            m_ncal.add(day);
-        }
+            return ncal.add(day);
+        }else
+            return false;
     }
 
-    public void add(SpecialDayEvent evday) {
+    public boolean add(SpecialDayEvent evday) {
         if (!m_locked) {
-            m_ncal.add(evday);
-        }
+            return ncal.add(evday);
+        }else
+            return false;
     }
 
     public boolean isLongTermMeanCorrection() {
-        return m_mean;
+        return ncal.getContext().isLongTermMeanCorrection();
     }
 
-    public void setLongTermMeanCorrection(boolean value) {
-        m_mean = value;
+    public boolean isJulianEaster() {
+        return ncal.getContext().isJulianEaster();
     }
-    private boolean m_mean = true;
-    private NationalCalendar m_ncal;
+
+    private NationalCalendar ncal;
     private boolean m_locked;
     public static final double EPS = 1e-9;
 
     public boolean contentEquals(NationalCalendarProvider other) {
-        return m_ncal.contentEquals(other.m_ncal);
+        return ncal.contentEquals(other.ncal);
     }
 }

@@ -139,6 +139,10 @@ public class TramoSpecification implements Cloneable, IRegArimaSpecification {
         TRfull.setUsingAutoModel(true);
     }
 
+    public static final TramoSpecification[] allSpecifications() {
+        return new TramoSpecification[]{TR0, TR1, TR2, TR3, TR4, TR5, TRfull};
+    }
+
     /**
      * Creates a new default specification. No transformation, no regression
      * variables, no outliers detection, default airline model (without mean).
@@ -372,8 +376,9 @@ public class TramoSpecification implements Cloneable, IRegArimaSpecification {
             diff.setUB2(automdl.getUb2());
             tramo.controllers.add(new RegularUnderDifferencingTest());
             tramo.controllers.add(new SeasonalUnderDifferencingTest());
-            if (automdl.isAcceptDefault())
+            if (automdl.isAcceptDefault()) {
                 tramo.setFal(true);
+            }
             if (automdl.isAmiCompare()) {
                 tramo.controllers.add(new ModelBenchmarking());
             }
@@ -474,7 +479,16 @@ public class TramoSpecification implements Cloneable, IRegArimaSpecification {
 
     public static enum Default {
 
-        TR0, TR1, TR2, TR3, TR4, TR5;
+        TR0, TR1, TR2, TR3, TR4, TR5, TRfull;
+
+        public static Default valueOfIgnoreCase(String name) {
+            if (name.equalsIgnoreCase("TRfull")) {
+                return TRfull;
+            } else {
+                String N = name.toUpperCase();
+                return valueOf(N);
+            }
+        }
     }
 
     /**
@@ -498,6 +512,8 @@ public class TramoSpecification implements Cloneable, IRegArimaSpecification {
                 return TR4.build();
             case TR5:
                 return TR5.build();
+            case TRfull:
+                return TRfull.build();
             default:
                 return null;
         }
@@ -629,11 +645,16 @@ public class TramoSpecification implements Cloneable, IRegArimaSpecification {
     }
 
     private boolean equals(TramoSpecification spec) {
+        if (isUsingAutoModel() != spec.isUsingAutoModel()) {
+            return false;
+        }
         if (!isUsingAutoModel() && !Objects.equals(spec.arima_, arima_)) {
             return false;
         }
+        if (isUsingAutoModel() && !Objects.equals(spec.automdl_, automdl_)) {
+            return false;
+        }
         return Objects.equals(spec.transform_, transform_)
-                && Objects.equals(spec.automdl_, automdl_)
                 && Objects.equals(spec.regression_, regression_)
                 && Objects.equals(spec.outlier_, outlier_)
                 && Objects.equals(spec.estimate_, estimate_);
@@ -642,9 +663,12 @@ public class TramoSpecification implements Cloneable, IRegArimaSpecification {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 11 * hash + arima_.hashCode();
+        if (isUsingAutoModel()) {
+            hash = 11 * hash + automdl_.hashCode();
+        } else {
+            hash = 11 * hash + arima_.hashCode();
+        }
         hash = 11 * hash + transform_.hashCode();
-        hash = 11 * hash + automdl_.hashCode();
         hash = 11 * hash + estimate_.hashCode();
         hash = 11 * hash + outlier_.hashCode();
         hash = 11 * hash + regression_.hashCode();

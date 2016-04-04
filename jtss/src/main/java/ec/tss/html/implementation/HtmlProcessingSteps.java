@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class HtmlProcessingSteps extends AbstractHtmlElement implements IHtmlElement {
 

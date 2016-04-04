@@ -106,10 +106,10 @@ public class F implements IContinuousDistribution {
     public double getProbabilityInverse(double p, final ProbabilityType pt) {
 	if (pt == ProbabilityType.Upper)
 	    p = 1.0 - p;
-	if (p < EPS || 1 - p < EPS)
+	if (p < EPS_P || 1 - p < EPS_P)
 	    throw new DStatException(DStatException.ERR_INV_SMALL, "F");
 	double start = m_k2 <= 2 ? 1 : m_k2 / (m_k2 - 2.0);
-	return ProbInvFinder.find(p, start, EPS * .1, 1e-4, this);
+	return ProbInvFinder.find(p, start, EPS_P, EPS_X, this);
     }
 
     @Override

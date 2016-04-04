@@ -83,6 +83,7 @@ public class Likelihood implements ILikelihood {
 	m_n = 0;
     }
     
+    @Override
     public double getLogDeterminant(){
         return m_ldet;
     }

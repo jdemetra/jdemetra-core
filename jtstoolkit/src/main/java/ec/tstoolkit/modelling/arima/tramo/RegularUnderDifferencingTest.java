@@ -78,7 +78,7 @@ public class RegularUnderDifferencingTest extends AbstractModelController {
     private boolean hasQuasiUnitRoots(SarimaModel m) {
         Complex[] roots = m.getRegularAR().mirror().roots();
         for (int i = 0; i < roots.length; ++i) {
-            if (roots[i].re > 0 && Math.abs(roots[i].im) <= IM && roots[i].abs() >= MOD) {
+            if (roots[i].getRe() > 0 && Math.abs(roots[i].getIm()) <= IM && roots[i].abs() >= MOD) {
                 return true;
             }
         }

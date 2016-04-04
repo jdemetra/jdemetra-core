@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class BasicConfiguration {
 
@@ -126,6 +126,14 @@ public class BasicConfiguration {
         "decomposition.s_cmp_f",
         "decomposition.i_cmp",
         "decomposition.i_cmp_f",
+        "decomposition.t_cmp_e",
+        "decomposition.t_cmp_ef",
+        "decomposition.sa_cmp_e",
+        "decomposition.sa_cmp_ef",
+        "decomposition.s_cmp_e",
+        "decomposition.s_cmp_ef",
+        "decomposition.i_cmp_e",
+        "decomposition.i_cmp_ef",
         "decomposition.si_cmp",
         "benchmarking.target",
         "benchmarking.result"

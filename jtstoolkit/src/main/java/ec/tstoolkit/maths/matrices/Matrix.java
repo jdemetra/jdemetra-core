@@ -533,6 +533,65 @@ public class Matrix implements Cloneable {
     }
 
     /**
+     * Checks that the matrix is (quasi-)diagonal
+     *
+     * @param eps A small value.
+     * @return True if all the elements are strictly smaller (in absolute value)
+     * than the given eps.
+     */
+    public boolean isDiagonal(double eps) {
+        if (ncols_ != nrows_) {
+            return false;
+        }
+        int n = data_.length;
+        int idx = 1;
+        while (idx < n) {
+            int end = idx + nrows_;
+
+            for (int i = idx; i < end; ++i) {
+                double d = data_[i];
+                if (d < -eps || d > eps) {
+                    return false;
+                }
+            }
+            idx = end + 1;
+        }
+        return true;
+    }
+
+    public boolean isZero() {
+        int n = data_.length;
+        for (int i = 0; i < n; ++i) {
+            if (data_[i] != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isDiagonal() {
+        if (ncols_ != nrows_) {
+            return false;
+        }
+        int n = data_.length;
+        int idx = 1;
+        while (idx < n) {
+            int end = idx + nrows_;
+            for (int i = idx; i < end; ++i) {
+                if (data_[i] != 0) {
+                    return false;
+                }
+            }
+            idx = end + 1;
+        }
+        return true;
+    }
+
+    public boolean isSquare() {
+        return ncols_ == nrows_;
+    }
+
+    /**
      * Y = X - r
      *
      * @param r The right operand
@@ -655,16 +714,18 @@ public class Matrix implements Cloneable {
         }
     }
 
-   /**
+    /**
      * Fills the matrix with random numbers (in [0, 1[)
+     *
      * @param seed
      */
     public void randomize(int seed) {
-        Random rnd=new Random(seed);
+        Random rnd = new Random(seed);
         for (int i = 0; i < data_.length; ++i) {
             data_[i] = rnd.nextDouble();
         }
     }
+
     /**
      * Returns a given row (as a data block)
      *
@@ -1001,6 +1062,22 @@ public class Matrix implements Cloneable {
         } while (cols.next());
     }
 
+    /**
+     * M = M + X * a * Y'
+     *
+     * @param a
+     * @param x
+     * @param y
+     */
+    public void addXaYt(double a, DataBlock x, DataBlock y) {
+        DataBlockIterator cols = columns();
+        DataBlock col = cols.getData();
+        do {
+            double z = a * y.get(cols.getPosition());
+            col.addAY(z, x);
+        } while (cols.next());
+    }
+
     public boolean isEmpty() {
         return data_.length == 0;
     }
@@ -1091,5 +1168,70 @@ public class Matrix implements Cloneable {
      */
     public void copy(Matrix C) {
         System.arraycopy(C.data_, 0, data_, 0, data_.length);
+    }
+
+    /**
+     * Computes ||this-m||
+     *
+     * @param m The second matrix
+     * @return
+     */
+    public double distance(Matrix m) {
+        return this.minus(m).nrm2();
+    }
+
+    public void smooth(double eps) {
+        double scale=1;
+        double q=Math.sqrt(eps);
+        
+        while (q<1){
+            scale*=10;
+            q*=10;
+        }
+            
+        for (int i = 0; i < data_.length; ++i) {
+            double c=data_[i];
+            double d=Math.round(c*scale)/scale;
+            if (Math.abs(d-c) < eps) {
+                data_[i] = d;
+            }
+        }
+    }
+
+    /**
+     * Top-left empty sub-matrix. To be used with next(a,b)
+     * @return An empty sub-matrix
+     */
+    public SubMatrix topLeft(){
+        return new SubMatrix(data_, 0, 0, 0, 1, nrows_);
+    }
+    
+    /**
+     * Top-left sub-matrix
+     * @param nr Number of rows. Could be 0.
+     * @param nc Number of columns. Could be 0. 
+     * @return A nr x nc sub-matrix
+     */
+    public SubMatrix topLeft(int nr, int nc){
+        return new SubMatrix(data_, 0, nr, nc, 1, nrows_);
+    }
+    
+    /**
+     * bottom-right sub-matrix (outside). 
+     * @return An empty sub-matrix
+     */
+    public SubMatrix bottomRight(){
+        return new SubMatrix(data_, data_.length, 0, 0, 1, nrows_);
+    }
+
+    /**
+     * Bottom-right sub-matrix 
+     * @param nr Number of rows. Could be 0.
+     * @param nc Number of columns. Could be 0. 
+     * @return A nr x nc sub-matrix
+     */
+    public SubMatrix bottomRight(int nr, int nc){
+        int start=data_.length-nr-nc*nrows_;
+        return new SubMatrix(data_, start, nr, nc, 1, nrows_);
     }
 }

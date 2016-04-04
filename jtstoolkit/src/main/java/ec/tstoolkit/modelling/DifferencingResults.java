@@ -80,6 +80,33 @@ public class DifferencingResults{
     public int getDifferencingOrder() {
         return original.getLength() - differenced.getLength();
     }
-    public final TsData original, differenced;
-    public final boolean mean;
+    
+    public TsData getRestrictedOriginal(){
+        return original.fittoDomain(differenced.getDomain());
+    }
+    
+    private final TsData original;
+    private final TsData differenced;
+    private final boolean mean;
+
+    /**
+     * @return the original
+     */
+    public TsData getOriginal() {
+        return original;
+    }
+
+    /**
+     * @return the differenced
+     */
+    public TsData getDifferenced() {
+        return differenced;
+    }
+
+    /**
+     * @return the mean
+     */
+    public boolean isMean() {
+        return mean;
+    }
 }

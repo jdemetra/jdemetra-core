@@ -53,8 +53,8 @@ public class SymmetricFilter extends AbstractFiniteFilter {
 
     /**
      * Computes the symmetric filter defined by f*f.mirror()
-     * @param f
-     * @return
+     * @param f The initial filter
+     * @return f * f.mirror()
      */
     public static SymmetricFilter createFromFilter(IFiniteFilter f) {
         double[] w = f.getWeights();
@@ -138,26 +138,26 @@ public class SymmetricFilter extends AbstractFiniteFilter {
     }
 
     /**
-     * Returns G(B) such that S(F, B)= G(B)* Q(F) + G(F) * Q(B).<br> Cfr
+     * Returns G(B) such that S(F, B)= G(B)* Q(F) + G(F) * Q(B). Cfr
      * Burman/Wilson
      *
-     * @param qfilter
-     * @return
+     * @param Q(B)
+     * @return G(B)
      * @throws MatrixException
      */
-    public BackFilter decompose(final BackFilter qfilter) throws MatrixException {
-        if (qfilter.getLength() == 1) {
+    public BackFilter decompose(final BackFilter Q) throws MatrixException {
+        if (Q.getLength() == 1) {
             double[] data = m_p.getCoefficients();
             data[0] /= 2;
             Polynomial tmp = Polynomial.of(data);
-            double q0 = qfilter.get(0);
+            double q0 = Q.get(0);
             if (q0 != 1) {
                 tmp = tmp.divide(q0);
             }
             return new BackFilter(tmp);
         }
 
-        Polynomial q = qfilter.getPolynomial();
+        Polynomial q = Q.getPolynomial();
         Polynomial c = m_p;
 
         int nq = q.getDegree();

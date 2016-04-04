@@ -26,7 +26,7 @@ import java.io.IOException;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class HtmlOneStepAheadForecastingTest extends AbstractHtmlElement implements IHtmlElement {
 

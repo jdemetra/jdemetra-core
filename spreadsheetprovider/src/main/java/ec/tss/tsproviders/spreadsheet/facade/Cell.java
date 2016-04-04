@@ -29,6 +29,7 @@ import javax.annotation.Nonnull;
  * @author Philippe Charles
  */
 //@FacadePattern
+@Deprecated
 public abstract class Cell {
 
     @Nonnull

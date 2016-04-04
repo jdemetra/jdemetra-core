@@ -22,7 +22,7 @@ import ec.tstoolkit.maths.realfunctions.*;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 class llFn implements IFunction {
 

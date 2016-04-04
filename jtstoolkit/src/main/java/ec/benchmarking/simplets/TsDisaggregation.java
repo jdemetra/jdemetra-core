@@ -62,6 +62,20 @@ import ec.tstoolkit.timeseries.simplets.TsPeriod;
 public class TsDisaggregation<S extends ISsf> {
 
     /**
+     * @return the eps_
+     */
+    public double getEpsilon() {
+        return eps_;
+    }
+
+    /**
+     * @param eps_ the eps_ to set
+     */
+    public void setEpsilon(double eps_) {
+        this.eps_ = eps_;
+    }
+
+    /**
      * Initial step of the Kalman filter. DKF and AKF_Diffuse should lead to the
      * same results
      */
@@ -82,8 +96,10 @@ public class TsDisaggregation<S extends ISsf> {
     }
     private S ssf_, ssfRslt_;
     private IFunction fn_;
+    private IFunctionInstance fnRslt_;
     private IParametricMapping<S> mapping_;
     private IFunctionMinimizer min_;
+    private double eps_=1e-7;
     private boolean converged_;
     private int ndiffuseRegressors_;
     private boolean calcVar_ = false, ml_ = true, noDisturbanceSmoother_;
@@ -127,6 +143,7 @@ public class TsDisaggregation<S extends ISsf> {
             IFunctionMinimizer min = minimizer();
             converged_ = min.minimize(fn_, fn_.evaluate(mapping_.map(ssf_)));
             SsfFunctionInstance<S> rslt = (SsfFunctionInstance<S>) min.getResult();
+            fnRslt_=rslt;
             ssfRslt_ = rslt.ssf;
             ll_ = rslt.getLikelihood();
              computeInformation(fn, rslt);
@@ -379,6 +396,7 @@ public class TsDisaggregation<S extends ISsf> {
         vyl_ = null;
         information_ = null;
         score_ = null;
+        fnRslt_=null;
     }
 
     private DataBlock coeff() {
@@ -421,6 +439,7 @@ public class TsDisaggregation<S extends ISsf> {
             converged_ = min.minimize(fn_, fn_.evaluate(mapping_.map(ssf_)));
             SsfFunctionInstance<S> rslt = (SsfFunctionInstance<S>) min.getResult();
             ssfRslt_ = rslt.ssf;
+            fnRslt_=rslt;
             ll_ = rslt.getLikelihood();
             computeInformation(fn, rslt);
         } else {
@@ -540,6 +559,14 @@ public class TsDisaggregation<S extends ISsf> {
     public IFunctionMinimizer getMinimizer() {
         return min_;
     }
+    
+    public IFunction getObjectiveFunction(){
+        return fn_;
+    }
+    
+    public IFunctionInstance getMin(){
+        return fnRslt_;
+    }
 
     /**
      *
@@ -642,14 +669,16 @@ public class TsDisaggregation<S extends ISsf> {
 
     private IFunctionMinimizer minimizer() {
         if (min_ != null) {
+            min_.setConvergenceCriterion(eps_);
             return min_;
         }
         if (mapping_ != null && mapping_.getDim() == 1) {
             double a = mapping_.lbound(0), b = mapping_.ubound(0);
             if (!Double.isInfinite(a) && !Double.isInfinite(b)) {
                 GridSearch search = new GridSearch();
-
                 search.setBounds(a, b);
+                search.setConvergenceCriterion(eps_);
+                search.setPrecision(eps_);
                 return search;
             }
         }
@@ -666,7 +695,7 @@ public class TsDisaggregation<S extends ISsf> {
     public boolean process(DisaggregationModel model, TsDomain domain) {
         clearResults();
         model_ = model;
-        data_ = model.data(domain, true);
+        data_ = model.data(domain, false);
         if (data_ == null) {
             return false;
         }
@@ -718,6 +747,7 @@ public class TsDisaggregation<S extends ISsf> {
             IFunctionMinimizer min = minimizer();
             converged_ = min.minimize(fn_, fn_.evaluate(mapping_.map(ssf_)));
             SsfFunctionInstance<SsfDisaggregation<S>> rslt = (SsfFunctionInstance<SsfDisaggregation<S>>) min.getResult();
+            fnRslt_=rslt;
             ssfRslt_ = rslt.ssf.getInternalSsf();
             ll_ = rslt.getLikelihood();
             computeInformation(fn, rslt);
@@ -752,6 +782,7 @@ public class TsDisaggregation<S extends ISsf> {
             IFunctionMinimizer min = minimizer();
             converged_ = min.minimize(fn_, fn_.evaluate(mapping_.map(ssf_)));
             SsfFunctionInstance<SsfDisaggregation<S>> rslt = (SsfFunctionInstance<SsfDisaggregation<S>>) min.getResult();
+            fnRslt_=rslt;
             ssfRslt_ = rslt.ssf.getInternalSsf();
             ll_ = rslt.getLikelihood();
             computeInformation(fn, rslt);

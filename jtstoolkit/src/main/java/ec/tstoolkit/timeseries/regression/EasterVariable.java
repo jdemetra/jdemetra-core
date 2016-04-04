@@ -30,7 +30,7 @@ import java.util.GregorianCalendar;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class EasterVariable extends AbstractSingleTsVariable implements IMovingHolidayVariable {
+public class EasterVariable extends AbstractSingleTsVariable implements IEasterVariable {
 
     public static enum Type {
 
@@ -38,7 +38,6 @@ public class EasterVariable extends AbstractSingleTsVariable implements IMovingH
         Uscb,
         Theoretical
     }
-    public static final double LUNARY = 29.53059, DEC_LUNARY = .53059;
     private static final double[] EMeans_Feb = new double[]{0.00368E0, 0.002083333E0, 0.001130435E0, 0.0002727273E0, 0E0,
         0E0, 0E0, 0E0, 0E0, 0E0,
         0E0, 0E0, 0E0, 0E0, 0E0,
@@ -61,10 +60,12 @@ public class EasterVariable extends AbstractSingleTsVariable implements IMovingH
     public EasterVariable() {
     }
 
+    @Override
     public int getDuration() {
         return dur_;
     }
 
+    @Override
     public void setDuration(int value) {
         dur_ = value;
     }
@@ -203,7 +204,7 @@ public class EasterVariable extends AbstractSingleTsVariable implements IMovingH
                      * Relative part:
                      *   15 / (2* LUNARY)
                      */
-                    m_av = (15 + dur) / (2 * LUNARY);
+                    m_av = (15 + dur) / (2 * Utilities.LUNARY);
                     a_av = 1 - m_av;
                 }
                 if (month == 2) {

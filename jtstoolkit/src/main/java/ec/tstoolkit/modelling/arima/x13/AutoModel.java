@@ -27,7 +27,7 @@ import ec.tstoolkit.sarima.SarmaSpecification;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class AutoModel implements IPreprocessingModule {
 
@@ -49,6 +49,14 @@ public class AutoModel implements IPreprocessingModule {
 
     public void setBalanced(boolean balanced) {
         this.amdid.setBalanced(balanced);
+    }
+
+    public boolean isMixed(){
+        return amdid.isMixed();
+    }
+
+    public void setMixed(boolean mixed) {
+        this.amdid.setMixed(mixed);
     }
 
     public AutoModel() {

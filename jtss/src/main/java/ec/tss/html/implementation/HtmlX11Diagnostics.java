@@ -1,17 +1,17 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.tss.html.implementation;
@@ -28,7 +28,7 @@ import java.io.IOException;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class HtmlX11Diagnostics extends AbstractHtmlElement {
 
@@ -47,6 +47,9 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
         writeF2E(stream);
         writeF2F(stream);
         writeF2G(stream);
+        writeF2H(stream);
+        writeF2I(stream);
+
     }
 
     private void writeF2A(HtmlStream stream) throws IOException {
@@ -220,6 +223,8 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
             stream.close(HtmlTag.TABLEROW);
         }
         stream.close(HtmlTag.TABLE);
+        stream.newLine();
+        stream.write(F2E_TITLE2, HtmlStyle.Bold).write(df3.format(stats_.getIcr()));
         stream.newLines(2);
     }
 
@@ -267,6 +272,41 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
         stream.close(HtmlTag.TABLE);
         stream.newLines(2);
     }
+
+    private void writeF2H(HtmlStream stream) throws IOException {
+        stream.write(HtmlTag.HEADER2, h2, F2H_TITLE);
+        stream.write("Cochran Test Result:");
+        boolean testResultCochran = stats_.getCochranResult();
+        stream.write(" The test statistic: ");
+        stream.write(Math.round(stats_.getTestValue() * 10000d) / 10000d);
+
+        if (testResultCochran) {
+            stream.write(" is equal or less than the critical value: ");
+        } else {
+            stream.write(" is greater than the critical value: ");
+        }
+        stream.write(Math.round(stats_.getCriticalValue() * 10000d) / 10000d);
+
+        if (testResultCochran) {
+            stream.write(" the null hypothesis for identical variances of each period with at least ");
+            stream.write(stats_.getminNumberOfYears());
+            stream.write(" observations, cannot be rejected at a 95% level of confidence and non period-specific variance should be used. ");
+        } else {
+            stream.write(" the null hypothesis for identical variances of each period with at least ");
+            stream.write(stats_.getminNumberOfYears());
+            stream.write(" observations, has to be rejected at a 95% level of confidence and periode-specific variances should be used. ");
+        }
+
+        stream.newLines(2);
+    }
+
+    private void writeF2I(HtmlStream stream) throws IOException {
+        if (stats_.getRms() != null) {
+            HtmlMovingSeasonalityRatios hmsr = new HtmlMovingSeasonalityRatios(stats_.getRms());
+            hmsr.write(stream);
+        }
+    }
+
     private static final String F2A_TITLE_MUL = "Average percent change without regard to sign over the indicated span",
             F2B_TITLE_MUL = "Relative contributions to the variance of the percent change in the components of the original series",
             F2C_TITLE_MUL = "Average percent change with regard to sign and standard deviation over indicated span",
@@ -275,8 +315,11 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
             F2C_TITLE_ADD = "Average differences with regard to sign and standard deviation over indicated span",
             F2D_TITLE = "Average duration of run",
             F2E_TITLE = "I/C Ratio for indicated span",
+            F2E_TITLE2 = "I/C Ratio: ",
             F2F_TITLE = "Relative contribution of the components to the stationary portion of the variance in the original series",
-            F2G_TITLE = "Autocorrelation of the irregular";
+            F2G_TITLE = "Autocorrelation of the irregular",
+            F2H_TITLE = "Heteroskedasticity";
+
     private static final String[] F2A_HEADERS = new String[]{
         "Span", "O", "CI", "I", "C", "S", "P", "TD&H", "Mod.O", "Mod.CI", "Mod.I"
     };

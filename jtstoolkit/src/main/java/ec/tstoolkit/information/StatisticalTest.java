@@ -22,7 +22,7 @@ import java.util.Formatter;
 
 /**
  * 
- * @author pcuser
+ * @author Jean Palate
  */
 public class StatisticalTest {
     /**

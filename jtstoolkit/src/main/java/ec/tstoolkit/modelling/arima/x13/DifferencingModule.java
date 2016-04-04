@@ -418,11 +418,11 @@ public class DifferencingModule {
         int n = 0;
         double vmax = 0;
         for (int i = 0; i < r.length; ++i) {
-            double cdim = Math.abs(r[i].im);
+            double cdim = Math.abs(r[i].getIm());
             double vcur = (r[i].abs());
-            if (vcur >= val && cdim <= 0.05 && r[i].re > 0) {
+            if (vcur >= val && cdim <= 0.05 && r[i].getRe() > 0) {
                 ++n;
-            } else if (cdim <= 0.02 && r[i].re > 0 && vcur > vmax) {
+            } else if (cdim <= 0.02 && r[i].getRe() > 0 && vcur > vmax) {
                 vmax = vcur;
             }
         }

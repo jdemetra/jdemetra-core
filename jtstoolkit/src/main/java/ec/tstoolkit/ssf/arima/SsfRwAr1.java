@@ -28,21 +28,30 @@ import ec.tstoolkit.maths.realfunctions.SingleParameter;
 import ec.tstoolkit.ssf.ISsf;
 
 /**
- *
+ * Ssf for (1 1 0) ARIMA models.
+ * 
+ * y(t)-y(t-1) = rho*(y(t-1)-y(t-2)) + e(t) or
+ * y(t)=(1+rho)*y(t-1) - rho*y(t-2) + e(t)
+ * 
+ * The class is designed to handle models initialized by zero.
+ * State: a(t) = [y(t-1) y(t)-y(t-1)]'
+ * Measurement: Z(t) = 1 1
+ * Transition: T(t) = | 1 1  |
+ *                    | 0 rho|
+ * Innovations: V(t) = | 0 0 |
+ *                     | 0 1 |
+ * Initialization: default:
+ * Pi0 = | 1 0 |
+ *       | 0 0 |
+ * Pf0 = | 0 0            |
+ *       | 0 1/(1-rho*rho)|
+ * 0-initialization
+ * Pi0 = | 0 0 |
+ *       | 0 0 |
+ * Pf0 = | 0 0 |
+ *       | 0 1 |
  * @author Jean Palate
  */
-// / <summary>
-// / a(t) = [y(t-1) y(t)-y(t-1)]'
-// / Z(t) = 1 1
-// / T(t) = | 1 1 |
-// / | 0 r0|
-// / v(t) = | 0 0 |
-// / | 0 1 |
-// / Pi0 = | 1 0 |
-// / | 0 0 |
-// / Pf0 = | 0 0 |
-// / | 0 1/(1-ro*ro) |
-// / </summary>
 @Development(status = Development.Status.Alpha)
 public class SsfRwAr1 implements ISsf {
 
@@ -158,7 +167,7 @@ public class SsfRwAr1 implements ISsf {
 
     /**
      *
-     * @param ro
+     * @param rho
      */
     public SsfRwAr1(double rho) {
         m_rho = rho;

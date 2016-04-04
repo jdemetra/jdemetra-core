@@ -139,9 +139,9 @@ public final class Complex implements Serializable {
     /**
      * Returns a Complex from real and imaginary parts.
      * 
-     * @param re
-     * @param im
-     * @return
+     * @param re the real part
+     * @param im the imaginary part
+     * @return a non-null complex
      */
     public static Complex cart(final double re, final double im) {
         // most used complexes
@@ -152,13 +152,14 @@ public final class Complex implements Serializable {
                 return Complex.ZERO;
             if (im == -1.0)
                 return Complex.NEG_I;
-        } 
-        if (re == 1.0 && im == 0.0) 
-            return Complex.ONE;
-        if (re == -1.0 && im == 0.0) 
-            return Complex.NEG_ONE;
-        if (re == -2.0 && im == 0.0) 
-            return Complex.NEG_TWO;
+        } else if (im == 0.0) {
+            if (re == 1.0) 
+                return Complex.ONE;
+            if (re == -1.0) 
+                return Complex.NEG_ONE;
+            if (re == -2.0) 
+                return Complex.NEG_TWO;
+        }
         // the real work
 	return new Complex(re, im);
     }
@@ -293,10 +294,13 @@ public final class Complex implements Serializable {
     }
 
     /**
-     * Returns a Complex from a size and direction
+     * Returns a Complex from its norm and its argument
+     * if c = a + i*b
+     * r = sqrt(a*a + b*b)
+     * theta = atan(b/a)
      * 
-     * @param r
-     * @param theta
+     * @param r Norm of the complex number
+     * @param theta Argument of the complex number
      * @return
      */
     public static Complex polar(double r, double theta) {
@@ -394,6 +398,8 @@ public final class Complex implements Serializable {
 
 	return rslt;
     }
+    
+    private static final Complex[] mroots=ur(12), qroots=ur(4);
 
     /**
      * 
@@ -403,11 +409,20 @@ public final class Complex implements Serializable {
     public static Complex[] unitRoots(final int nRoots) {
 	if (nRoots <= 0)
 	    return null;
+        else if (nRoots==4)
+            return qroots.clone();
+        else if (nRoots == 12)
+            return mroots.clone();
+        else
+            return ur(nRoots);
+    }
+    
+   private static Complex[] ur(final int nRoots) {
 	Complex[] roots = new Complex[nRoots];
 	roots[0] = Complex.ONE;
 	if (nRoots == 2)
 	    roots[1] = Complex.NEG_ONE;
-	else if (nRoots == 2) {
+	else if (nRoots == 4) {
 	    roots[1] = Complex.I;
 	    roots[2] = Complex.NEG_ONE;
 	    roots[3] = Complex.NEG_I;
@@ -420,18 +435,20 @@ public final class Complex implements Serializable {
 	    // k=2 : 2*w*w - 1, 2w*sqrt(1-w*w)
 	    // k=3 : ...
 	    double v = 2 * Math.PI / nRoots;
-	    double z = Math.cos(v);
-	    double x0 = 1, x1 = z;
-	    double y0 = 0, y1 = Math.sin(v);
-	    roots[1] = Complex.cart(x1, y1);
-	    for (int q = 2; q < nRoots; ++q) {
-		double xtmp = 2 * z * x1 - x0;
-		double ytmp = 2 * z * y1 - y0;
-		roots[q] = Complex.cart(xtmp, ytmp);
-		x0 = x1;
-		y0 = y1;
-		x1 = xtmp;
-		y1 = ytmp;
+//	    double z = Math.cos(v);
+//	    double x0 = 1, x1 = z;
+//	    double y0 = 0, y1 = Math.sin(v);
+//	    roots[1] = Complex.cart(x1, y1);
+	    for (int q = 1; q < nRoots; ++q) {
+                double w=v*q;
+                roots[q]=Complex.cart(Math.cos(w), Math.sin(w));
+//		double xtmp = 2 * z * x1 - x0;
+//		double ytmp = 2 * z * y1 - y0;
+//		roots[q] = Complex.cart(xtmp, ytmp);
+//		x0 = x1;
+//		y0 = y1;
+//		x1 = xtmp;
+//		y1 = ytmp;
 	    }
 	}
 	return roots;
@@ -440,12 +457,12 @@ public final class Complex implements Serializable {
     /**
      *
      */
-    public final double re;
+    private final double re;
 
     /**
      *
      */
-    public final double im;
+    private final double im;
 
     // ///////////////////////////////////////////
 
@@ -482,6 +499,10 @@ public final class Complex implements Serializable {
 	return ComplexMath.absSquare(re, im);
     }
 
+    public Complex sqrt() {
+	return ComplexMath.sqrt(re, im);
+    }
+    
     /**
      * Returns the argument of this complex number.
      * 
@@ -502,7 +523,7 @@ public final class Complex implements Serializable {
 
     /**
      * 
-     * @param b
+     * @param c
      * @return
      */
     public Complex div(final Complex c) {
@@ -701,7 +722,7 @@ public final class Complex implements Serializable {
 
 	if (im < 0.0)
 	    result.append(" - ").append(-im);
-	else if (im > 0.0)
+	else if (im == 0.0)
 	    result.append(" - ").append(0.0);
 	else
 	    result.append(" + ").append(+im);

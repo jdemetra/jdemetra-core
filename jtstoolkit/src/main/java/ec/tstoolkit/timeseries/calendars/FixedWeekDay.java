@@ -58,6 +58,11 @@ public class FixedWeekDay implements ISpecialDay {
         return weight;
     }
 
+    @Override
+    public boolean match(Context context) {
+        return true;
+    }
+
     public Day calcDay(int year) {
         Day d = Utilities.firstWeekDay(dayOfWeek, year, month);
         if (week > 0) {

@@ -80,7 +80,7 @@ public class SpreadSheetProviderTest {
     public void testGetDisplayNameDataSet() throws Exception {
         DataSource dataSource = loadFile();
         DataSet o = provider.children(provider.children(dataSource).get(0)).get(2);
-        Assert.assertEquals("Top 5 Browsers - Monthly - Chrome", provider.getDisplayName(o));
+        Assert.assertEquals("Top 5 Browsers - Monthly\nChrome", provider.getDisplayName(o));
     }
 
     @Test

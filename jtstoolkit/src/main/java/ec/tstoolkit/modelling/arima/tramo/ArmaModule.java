@@ -16,7 +16,6 @@
  */
 package ec.tstoolkit.modelling.arima.tramo;
 
-import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.arima.estimation.ArmaKF;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
@@ -160,6 +159,7 @@ public class ArmaModule implements IPreprocessingModule {
     private boolean m_bforced = false;
     private final int m_nmod;
     private static final int NMOD = 5;
+    private boolean acceptwn = false;
 
     @Override
     public ProcessingResult process(ModellingContext context) {
@@ -176,7 +176,7 @@ public class ArmaModule implements IPreprocessingModule {
                 inic, curspec.getD(), curspec.getBD(), context.hasseas);
         DataBlock res = context.description.getOlsResiduals();
         HannanRissanen hr = tramo(res, maxspec.doStationary(), maxspec.getD(), maxspec.getBD(), context.hasseas);
-        for (int i=0; i<m_hrs.length; ++i){
+        for (int i = 0; i < m_hrs.length; ++i) {
             addModelInfo(context, m_hrs[i]);
         }
         if (hr == null) {
@@ -255,6 +255,14 @@ public class ArmaModule implements IPreprocessingModule {
     public void clear() {
         m_hrs = null;
         m_bforced = false;
+    }
+
+    public void setAcceptingWhiteNoise(boolean wn) {
+        this.acceptwn = wn;
+    }
+
+    public boolean isAcceptingWhiteNoise() {
+        return this.acceptwn;
     }
 
     /**
@@ -443,10 +451,12 @@ public class ArmaModule implements IPreprocessingModule {
         int n = 0;
         for (int i = 0; i < specs.length; ++i) {
             HannanRissanen hr = new HannanRissanen();
-            hr.process(data, specs[i]);
-            SarimaModel m = hr.getModel();
-            if (m.isStable(true)) {
-                hrs[n++] = new HRBic(hr);
+            if (hr.process(data, specs[i])) {
+                SarimaModel m = hr.getModel();
+                if (!m.adjustSpecification() && m.isStable(true)) {
+                    HRBic hrbic = new HRBic(hr);
+                    hrs[n++] = hrbic;
+                }
             }
         }
         if (n == 0) {
@@ -462,6 +472,9 @@ public class ArmaModule implements IPreprocessingModule {
     }
 
     private SarmaSpecification getPreferredSpecification() {
+        if (m_hrs.length == 1) {
+            return m_hrs[0].m_hr.getSpec().clone();
+        }
         int idx = 0;
         while (idx < m_hrs.length && m_hrs[idx].m_hr.getSpec().getParametersCount() == 0) {
             ++idx;
@@ -563,7 +576,7 @@ public class ArmaModule implements IPreprocessingModule {
             step2.merge(m_hrs);
         }
         if (!seas) {
-            if (m_hrs[0].getHR().getSpec().getParametersCount() == 0) {
+            if (m_hrs[1] != null && m_hrs[0].getHR().getSpec().getParametersCount() == 0 && !acceptwn) {
                 return m_hrs[1].getHR();
             } else {
                 return m_hrs[0].getHR();

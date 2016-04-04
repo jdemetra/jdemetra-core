@@ -26,7 +26,7 @@ import java.util.Map.Entry;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class CompositeResults implements IProcResults {
 
@@ -40,13 +40,13 @@ public class CompositeResults implements IProcResults {
         public final String prefix;
     }
     private final LinkedHashMap<String, Node> nodes = new LinkedHashMap<>();
-    private final List<ProcessingInformation> infos=new ArrayList<>();
+    private final List<ProcessingInformation> infos = new ArrayList<>();
 
     public CompositeResults() {
     }
-    
-    public boolean isSuccessful(){
-        return ! ProcessingInformation.hasErrors(infos);
+
+    public boolean isSuccessful() {
+        return !ProcessingInformation.hasErrors(infos);
     }
 
     public void put(String name, IProcResults rslts, String prefix) {
@@ -86,16 +86,16 @@ public class CompositeResults implements IProcResults {
             return node.results;
         }
     }
-    
-    public List<ProcessingInformation> getProcessingInformation(){
+
+    public List<ProcessingInformation> getProcessingInformation() {
         return Collections.unmodifiableList(infos);
     }
-    
-    public void addInformation(ProcessingInformation info){
+
+    public void addInformation(ProcessingInformation info) {
         infos.add(info);
     }
 
-    public void addInformation(List<ProcessingInformation> info){
+    public void addInformation(List<ProcessingInformation> info) {
         infos.addAll(info);
     }
 
@@ -131,6 +131,25 @@ public class CompositeResults implements IProcResults {
 
     @Override
     public <T> T getData(String id, Class<T> tclass) {
+        for (Entry<String, Node> entry : nodes.entrySet()) {
+            Node node = entry.getValue();
+            if (node.results != null) {
+                String cid = null;
+                if (node.prefix != null) {
+                    if (InformationSet.isPrefix(id, node.prefix)) {
+                        cid = InformationSet.removePrefix(id);
+                    }
+                } else {
+                    cid = id;
+                }
+                if (cid != null && node.results.contains(cid)) {
+                    return node.results.getData(cid, tclass);
+                }
+            }
+        }
+        // if it doesn't succeed, try another strategy, less strict:
+        // we search in all the sub-results for the first item corresponding to 
+        // the identification id
         for (Entry<String, Node> entry : nodes.entrySet()) {
             Node node = entry.getValue();
             if (node.results != null) {

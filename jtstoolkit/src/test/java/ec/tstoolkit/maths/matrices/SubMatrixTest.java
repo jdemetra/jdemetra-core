@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
  * @author Jean Palate
  */
 public class SubMatrixTest {
-
+    
     public SubMatrixTest() {
     }
 
@@ -289,7 +289,7 @@ public class SubMatrixTest {
         for (int i = 0; i < 10; ++i) {
             assertTrue(Math.abs(rowSum.get(i) - 55 - i * 10) < 1e-9);
         }
-
+        
     }
 
     /**
@@ -312,8 +312,89 @@ public class SubMatrixTest {
         y.randomize();
         Matrix z = x.times(m).times(y);
         m.subMatrix().xmy(x.subMatrix(), y.subMatrix());
-
+        
         Matrix d = m.minus(z);
         assertTrue(d.nrm2() < 1e-9);
     }
+    
+    @Test
+    public void testCopyTo() {
+        Matrix x = new Matrix(10, 10);
+        Matrix m = new Matrix(10, 10);
+        x.randomize();
+        m.randomize();
+        Matrix y = x.clone();
+        SubMatrix sx = x.subMatrix();
+        SubMatrix sy = y.subMatrix();
+        SubMatrix sm = m.subMatrix(3, 6, 2, 4);
+        
+        sx.extract(2, 5, 3, 5).copy(sm);
+        sm.copyTo(sy, 2, 3);
+        
+        sx.extract(1, 3, 5, 8).copy(sm.transpose());
+        sm.transpose().copyTo(sy, 1, 5);
+        
+        Matrix d = x.minus(y);
+        assertTrue(d.nrm2() < 1e-15);
+    }
+    
+    @Test
+    public void testAddSubTo() {
+        Matrix x = new Matrix(10, 10);
+        Matrix m = new Matrix(10, 10);
+        x.randomize();
+        m.randomize();
+        Matrix y = x.clone();
+        SubMatrix sx = x.subMatrix();
+        SubMatrix sy = y.subMatrix();
+        SubMatrix sm = m.subMatrix(3, 6, 2, 4);
+        
+        sx.extract(2, 5, 3, 5).add(sm);
+        sm.addTo(sy, 2, 3);
+        
+        sx.extract(1, 3, 5, 8).sub(sm.transpose());
+        sm.transpose().subTo(sy, 1, 5);
+        
+        Matrix d = x.minus(y);
+        assertTrue(d.nrm2() < 1e-15);
+    }
+    
+    @Test
+    public void testIterators() {
+        Matrix x = new Matrix(8, 8);
+        SubMatrix cur = x.topLeft();
+        for (int i = 0; i < 4; ++i) {
+            cur.next(2, 2);
+            cur.set(i + 1);
+        }
+        for (int i = 0; i < 4; ++i) {
+            cur.add(i-4);
+            cur.previous();
+        }
+        assertTrue(x.nrm2()<1e-9);
+        
+        SubMatrix y = x.subMatrix(2,4,0,8);
+        cur = y.topLeft(2, 0);
+        for (int i = 0; i < 4; ++i) {
+            cur.hnext(2);
+            cur.set(i + 1);
+        }
+        for (int i = 0; i < 4; ++i) {
+            cur.add(i-4);
+            cur.hprevious();
+        }
+        assertTrue(x.nrm2()<1e-9);
+        SubMatrix z = x.subMatrix(0,8,2,4);
+        cur = z.topLeft(0, 1);
+        for (int i = 0; i < 4; ++i) {
+            cur.vnext(2);
+            cur.set(i + 1);
+        }
+        for (int i = 0; i < 4; ++i) {
+            cur.add(i-4);
+            cur.vprevious();
+        }
+        assertTrue(x.nrm2()<1e-9);
+    }
+    
 }

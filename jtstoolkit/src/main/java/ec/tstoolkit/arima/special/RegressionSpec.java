@@ -143,7 +143,8 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
 
     public boolean isDefault() {
         return !td_.isUsed() && !easter_.isUsed()&& users_.isEmpty()
-                && outliers_.isEmpty() && interventions_.isEmpty();
+                && outliers_.isEmpty() && interventions_.isEmpty()
+                && ramps_.isEmpty();
     }
 
     public void add(TsVariableDescriptor svar) {
@@ -499,7 +500,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     }
 
     private void initializeStockTradingDays(TsVariableList regs) {
-        ITsVariable var = new StockTradingDaysVariables(td_.getStockTradingDays() - 1);
+        ITsVariable var = new StockTradingDaysVariables(td_.getStockTradingDays());
         regs.add(var);
     }
     

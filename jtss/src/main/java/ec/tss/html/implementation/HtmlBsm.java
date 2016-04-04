@@ -16,7 +16,7 @@
  */
 package ec.tss.html.implementation;
 
-import ec.satoolkit.special.StmResults;
+import ec.satoolkit.special.StmEstimation;
 import ec.tss.html.AbstractHtmlElement;
 import ec.tss.html.HtmlStream;
 import ec.tss.html.HtmlStyle;
@@ -24,12 +24,9 @@ import ec.tss.html.HtmlTable;
 import ec.tss.html.HtmlTableCell;
 import ec.tss.html.HtmlTag;
 import ec.tss.html.IHtmlElement;
-import ec.tstoolkit.arima.estimation.LikelihoodStatistics;
 import ec.tstoolkit.dstats.T;
 import ec.tstoolkit.eco.DiffuseConcentratedLikelihood;
-import ec.tstoolkit.eco.DiffuseLikelihood;
 import ec.tstoolkit.modelling.arima.JointRegressionTest;
-import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.structural.BasicStructuralModel;
 import ec.tstoolkit.structural.ModelSpecification;
 import ec.tstoolkit.structural.Component;
@@ -43,6 +40,7 @@ import ec.tstoolkit.timeseries.regression.ITsVariable;
 import ec.tstoolkit.timeseries.regression.IUserTsVariable;
 import ec.tstoolkit.timeseries.regression.InterventionVariable;
 import ec.tstoolkit.timeseries.regression.Ramp;
+import ec.tstoolkit.timeseries.regression.TsVariableList;
 import ec.tstoolkit.timeseries.regression.TsVariableSelection;
 import java.io.IOException;
 import java.util.Formatter;
@@ -98,6 +96,7 @@ public class HtmlBsm extends AbstractHtmlElement implements IHtmlElement {
         boolean first = true;
         first = !write(stream, first, "level", spec.getLevelUse());
         first = !write(stream, first, "slope", spec.getSlopeUse()) && first;
+        first = !write(stream, first, "cycle", spec.getCycleUse()) && first;
         first = !write(stream, first, "seasonal", spec.getSeasonalModel())
                 && first;
         write(stream, first, "noise", spec.getNoiseUse());
@@ -105,15 +104,17 @@ public class HtmlBsm extends AbstractHtmlElement implements IHtmlElement {
     }
 
     final BasicStructuralModel bsm;
-    final StmResults rslts;
+    final StmEstimation rslts;
+    final TsVariableList x;
 
     /**
      *
-     * @param bsm
+     * @param stm
      */
-    public HtmlBsm(StmResults stm) {
+    public HtmlBsm(StmEstimation stm) {
         this.rslts = stm;
         this.bsm = stm.getModel();
+        this.x=stm.getX();
     }
 
     /**
@@ -132,8 +133,7 @@ public class HtmlBsm extends AbstractHtmlElement implements IHtmlElement {
 
     private void writeModel(HtmlStream stream) throws IOException {
         stream.write(HtmlTag.HEADER2, h2, "Estimated variance of the components");
-        Component[] cmp = new Component[]{Component.Level, Component.Slope,
-            Component.Seasonal, Component.Noise};
+        Component[] cmp = bsm.getComponents();
         stream.open(new HtmlTable(0, 300));
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableCell("Component", 100, HtmlStyle.Bold));
@@ -145,8 +145,7 @@ public class HtmlBsm extends AbstractHtmlElement implements IHtmlElement {
         String fmt;
         if (sig > 10000) {
             fmt = "%.1f";
-        }
-        if (sig > 100) {
+        } else if (sig > 100) {
             fmt = "%.2f";
         } else if (sig > 1) {
             fmt = "%.4f";
@@ -157,14 +156,23 @@ public class HtmlBsm extends AbstractHtmlElement implements IHtmlElement {
         for (int i = 0; i < cmp.length; ++i) {
             double var = bsm.getVariance(cmp[i]);
             stream.open(HtmlTag.TABLEROW);
-            if (var >= 0) {
-                stream.write(new HtmlTableCell(cmp[i].name()));
-                stream.write(new HtmlTableCell(new Formatter().format(fmt, sig * var).toString()));
-                stream.write(new HtmlTableCell(new Formatter().format("%.4f", var).toString()));
-            }
+            stream.write(new HtmlTableCell(cmp[i].name()));
+            stream.write(new HtmlTableCell(new Formatter().format(fmt, sig * var).toString()));
+            stream.write(new HtmlTableCell(new Formatter().format("%.4f", var).toString()));
             stream.close(HtmlTag.TABLEROW);
         }
         stream.close(HtmlTag.TABLE);
+
+        if (bsm.getSpecification().hasCycle()) {
+            stream.newLine();
+            stream.write(HtmlTag.HEADER3, h3, "Cycle");
+            stream.write("Average length (in years): ");
+            double len=bsm.getCyclicalPeriod()/bsm.freq;
+            stream.write(new Formatter().format("%.1f", len).toString());
+            stream.newLine();
+            stream.write("Dumping factor: ");
+            stream.write(new Formatter().format("%.3f", bsm.getCyclicalDumpingFactor()).toString());
+        }
         stream.write(HtmlTag.LINEBREAK);
     }
 
@@ -185,7 +193,7 @@ public class HtmlBsm extends AbstractHtmlElement implements IHtmlElement {
     }
 
     private void writeRegressionModel(HtmlStream stream) throws IOException {
-        if (!rslts.getX().isEmpty()) {
+        if (!x.isEmpty()) {
             stream.write(HtmlTag.HEADER2, h2, "Regression model");
             stream.newLine();
             writeRegressionItems(stream, "Trading days", ITradingDaysVariable.class);
@@ -200,7 +208,7 @@ public class HtmlBsm extends AbstractHtmlElement implements IHtmlElement {
     }
 
     private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, String title, Class<V> tclass) throws IOException {
-        TsVariableSelection<ITsVariable> regs = rslts.getX().selectCompatible(tclass);
+        TsVariableSelection<ITsVariable> regs = x.selectCompatible(tclass);
         if (regs.isEmpty()) {
             return;
         }

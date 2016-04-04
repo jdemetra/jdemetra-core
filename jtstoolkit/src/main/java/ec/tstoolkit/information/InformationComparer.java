@@ -22,7 +22,7 @@ import java.io.Serializable;
 /**
  *
  * @param <S>
- * @author pcuser
+ * @author Jean Palate
  */
 public class InformationComparer<S> implements java.util.Comparator<Information<S>>, Serializable {
 

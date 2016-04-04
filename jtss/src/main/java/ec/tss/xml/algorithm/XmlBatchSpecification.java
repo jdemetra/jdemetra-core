@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 @XmlRootElement(name = XmlBatchSpecification.RNAME)
 @XmlType(name = XmlBatchSpecification.NAME)

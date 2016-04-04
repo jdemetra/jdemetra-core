@@ -19,7 +19,7 @@ package ec.tstoolkit.maths.matrices.lapack;
 
 /**
  * 
- * @author PCuser
+ * @author Jean Palate
  */
 public class Dgemv {
     private final static double ZERO = 0.0, ONE = 1.0;

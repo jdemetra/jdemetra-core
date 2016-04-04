@@ -16,9 +16,6 @@
  */
 package ec.tstoolkit.modelling.arima.x13;
 
-import ec.tstoolkit.algorithm.ProcessingInformation;
-import ec.tstoolkit.arima.estimation.LikelihoodStatistics;
-import ec.tstoolkit.modelling.arima.RegArimaEstimator;
 import ec.tstoolkit.data.DescriptiveStatistics;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.information.InformationSet;
@@ -30,8 +27,8 @@ import ec.tstoolkit.modelling.arima.IPreprocessingModule;
 import ec.tstoolkit.modelling.arima.ModelDescription;
 import ec.tstoolkit.modelling.arima.ModelEstimation;
 import ec.tstoolkit.modelling.arima.ModellingContext;
-import ec.tstoolkit.modelling.arima.PreprocessingDictionary;
 import ec.tstoolkit.modelling.arima.ProcessingResult;
+import ec.tstoolkit.modelling.arima.RegArimaEstimator;
 import ec.tstoolkit.sarima.SarimaModel;
 
 /**
@@ -41,7 +38,7 @@ import ec.tstoolkit.sarima.SarimaModel;
 @Development(status = Development.Status.Preliminary)
 public class LogLevelTest implements IPreprocessingModule {
 
-    private IModelComparator comparator_ = new AICcComparator(-2);
+    private final IModelComparator comparator_;
     private ModelEstimation level_, log_;
     private boolean adjust_ = true;
     private double eps_ = 1e-5;
@@ -58,6 +55,15 @@ public class LogLevelTest implements IPreprocessingModule {
      *
      */
     public LogLevelTest() {
+        comparator_ = new AICcComparator(-2);
+    }
+
+    /**
+     *
+     * @param aicdiff
+     */
+    public LogLevelTest(final double aicdiff) {
+        comparator_ = new AICcComparator(aicdiff);
     }
 
     /**
@@ -182,5 +188,19 @@ public class LogLevelTest implements IPreprocessingModule {
 
     private static final String LOG_LEVEL = "Log/level test",
             LOGS = "Logs chosen", LEVELS = "Levels chosen", LOGS_TITLE = "Likelihood statistics for model fit to logs", LEVELS_TITLE = "Likelihood statistics for model fit to levels";
+
+    /**
+     * @return the level_
+     */
+    public ModelEstimation getLevel() {
+        return level_;
+    }
+
+    /**
+     * @return the log_
+     */
+    public ModelEstimation getLog() {
+        return log_;
+    }
 
 }

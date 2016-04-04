@@ -79,7 +79,7 @@ public class OutOfSampleDiagnosticsConfiguration implements Cloneable, IProperty
     }
 
     public void check() {
-        if (bad_ < uncertain_ || uncertain_ < 0)
+        if (bad_ > uncertain_ || uncertain_ < 0)
                 throw new BaseException("Invalid settings in "+NAME);
     }
 

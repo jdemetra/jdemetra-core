@@ -31,7 +31,7 @@ import java.util.Locale;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public final class StringFormatter {
 

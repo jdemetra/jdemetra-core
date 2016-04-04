@@ -85,27 +85,39 @@ public class DentonProcessor implements IProcessingFactory<DentonSpecification, 
         @Override
         public BenchmarkingResults process(TsData[] input) {
             TsData q = input[0], Y = input[1];
-            DentonMethod denton = new DentonMethod();
-            denton.setAggregationType(spec.getAggregationType());
-            denton.setDifferencingOrder(spec.getDifferencingOrder());
-            denton.setMultiplicative(spec.isMultiplicative());
-            denton.setModifiedDenton(spec.isModifiedDenton());
-            int yfreq=Y.getFrequency().intValue(), qfreq=q.getFrequency().intValue();
-            if (qfreq%yfreq != 0)
-                return null;
-            denton.setConversionFactor(qfreq/yfreq);
-            // Y is limited to q !
-            TsPeriodSelector qsel = new TsPeriodSelector();
-            qsel.between(q.getStart().firstday(), q.getLastPeriod().lastday());
-            Y = Y.select(qsel);
-            TsPeriod q0 = q.getStart(), yq0 = new TsPeriod(q0.getFrequency());
-            yq0.set(Y.getStart().firstday());
-            denton.setOffset(yq0.minus(q0));
-            double[] r = denton.process(q, Y);
-            TsData tr = new TsData(q.getStart(), r, false);
-            // input
             BenchmarkingResults rslts = new BenchmarkingResults();
-            rslts.set(input[0], input[1], tr);
+            if (Y != null) {
+                DentonMethod denton = new DentonMethod();
+                denton.setAggregationType(spec.getAggregationType());
+                denton.setDifferencingOrder(spec.getDifferencingOrder());
+                denton.setMultiplicative(spec.isMultiplicative());
+                denton.setModifiedDenton(spec.isModifiedDenton());
+                int yfreq = Y.getFrequency().intValue();
+                int qfreq = q != null ? q.getFrequency().intValue() : spec.getDefaultFrequency().intValue();
+                if (qfreq % yfreq != 0) {
+                    return null;
+                }
+                denton.setConversionFactor(qfreq / yfreq);
+                TsData tr;
+                if (q != null) {
+                    // Y is limited to q !
+                    TsPeriodSelector qsel = new TsPeriodSelector();
+                    qsel.between(q.getStart().firstday(), q.getLastPeriod().lastday());
+                    Y = Y.select(qsel);
+                    TsPeriod q0 = q.getStart(), yq0 = new TsPeriod(q0.getFrequency());
+                    yq0.set(Y.getStart().firstday());
+                    denton.setOffset(yq0.minus(q0));
+                    double[] r = denton.process(q, Y);
+                    tr = new TsData(q.getStart(), r, false);
+                } else {
+                    TsPeriod qstart = Y.getStart().firstPeriod(spec.getDefaultFrequency());
+                    double[] r = denton.process(Y);
+                    tr = new TsData(qstart, r, false);
+
+                }
+                // input
+                rslts.set(input[0], input[1], tr);
+            }
             return rslts;
         }
 

@@ -1,24 +1,22 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.design.Development;
-import ec.tstoolkit.design.Immutable;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
@@ -33,23 +31,17 @@ import java.util.Objects;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@Immutable
-public class OutlierDefinition implements Comparable<OutlierDefinition> {
+public class OutlierDefinition implements Comparable<OutlierDefinition>, Cloneable {
 
-    /**
-     *
-     */
-    public final Day position;
-    /**
-     *
-     */
-    public final OutlierType type;
-    public final boolean prespecified;
+    public Day position;
+    public OutlierType type;
+    public boolean prespecified;
 
     /**
      *
      * @param period
      * @param type
+     * @param prespecified
      */
     public OutlierDefinition(TsPeriod period, OutlierType type, boolean prespecified) {
         position = period.firstday();
@@ -59,12 +51,45 @@ public class OutlierDefinition implements Comparable<OutlierDefinition> {
 
     /**
      *
-     * @param period
+     * @param pos
      * @param type
+     * @param prespecified
      */
     public OutlierDefinition(Day pos, OutlierType type, boolean prespecified) {
         position = pos;
         this.type = type;
+        this.prespecified = prespecified;
+    }
+    
+    public OutlierDefinition clone(){
+        try {
+            return (OutlierDefinition) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            throw new AssertionError();
+        }
+    }
+
+    public Day getPosition() {
+        return position;
+    }
+
+    public void setPosition(Day position) {
+        this.position = position;
+    }
+
+    public OutlierType getType() {
+        return type;
+    }
+
+    public void setType(OutlierType type) {
+        this.type = type;
+    }
+
+    public boolean isPrespecified() {
+        return prespecified;
+    }
+
+    public void setPrespecified(boolean prespecified) {
         this.prespecified = prespecified;
     }
 
@@ -130,7 +155,7 @@ public class OutlierDefinition implements Comparable<OutlierDefinition> {
         if (this.prespecified) {
             builder.append(InformationSet.SEP).append('f');
         }
-       return builder.toString();
+        return builder.toString();
     }
 
     public static OutlierDefinition fromString(String s) {
@@ -161,13 +186,13 @@ public class OutlierDefinition implements Comparable<OutlierDefinition> {
             return null;
         }
     }
-    
-    public static List<OutlierDefinition> of(List<IOutlierVariable>vars){
-        List<OutlierDefinition> defs=new ArrayList<>();
-        for (IOutlierVariable var : vars){
+
+    public static List<OutlierDefinition> of(List<IOutlierVariable> vars) {
+        List<OutlierDefinition> defs = new ArrayList<>();
+        for (IOutlierVariable var : vars) {
             defs.add(new OutlierDefinition(var.getPosition(), var.getOutlierType(), var.isPrespecified()));
         }
         return defs;
-    } 
-        
+    }
+
 }

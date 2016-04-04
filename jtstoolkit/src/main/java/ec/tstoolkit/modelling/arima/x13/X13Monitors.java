@@ -41,7 +41,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class X13Monitors {
 

@@ -27,6 +27,7 @@ import ec.tstoolkit.algorithm.*;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.Singleton;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
+import ec.tstoolkit.modelling.arima.tramo.TransformSpec;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +47,8 @@ public class TramoSeatsProcessingFactory extends GenericSaProcessingFactory impl
     private static SequentialProcessing<TsData> create(TramoSeatsSpecification xspec, ProcessingContext context) {
         SequentialProcessing processing = new SequentialProcessing();
         DefaultPreprocessingFilter filter = new DefaultPreprocessingFilter();
-        addInitialStep(xspec.getTramoSpecification().getTransform().getSpan(), processing);
+        TransformSpec transform = xspec.getTramoSpecification().getTransform();
+        addInitialStep(transform.getSpan(), transform.isPreliminaryCheck(), processing);
         addPreprocessingStep(xspec.getTramoSpecification().build(context), processing);
         addDecompositionStep(new SeatsDecomposer(xspec.getSeatsSpecification()), filter, processing);
         addFinalStep(filter, processing);

@@ -17,8 +17,7 @@
 package ec.tstoolkit.maths.polynomials;
 
 import ec.tstoolkit.design.Development;
-import static ec.tstoolkit.maths.ComplexMath.sqrt;
-import static ec.tstoolkit.maths.ComplexMath.abs;
+import ec.tstoolkit.design.VisibleForTesting;
 import ec.tstoolkit.maths.Complex;
 import ec.tstoolkit.utilities.Ref;
 import ec.tstoolkit.utilities.Ref.BooleanRef;
@@ -112,7 +111,7 @@ public class MullerNewtonSolver implements IRootsSolver {
      */
     private final static double NFVALUE = 1e36;
     private static final double ISQRT2 = 1.0 / Math.sqrt(2.0);
-
+    
     /**
      * *** fdvalue computes P(x0) and optional P'(x0) ****
      */
@@ -224,12 +223,12 @@ public class MullerNewtonSolver implements IRootsSolver {
             final double f1absq, final double f2absq, final double epsilon,
             final IntRef noise) /* Complex *xb; best x-value */ /* double *f2absqb, f2absqb |P(xb)|^2 */ /* f1absq, f1absq = |f1|^2 */ /* f2absq, f2absq = |f2|^2 */ /* epsilon; bound for |q2| */ /* int *rootd, *rootd = 1 => root determined */ /* *rootd = 0 => no root determined */ /* *noise; noisecounter */ {
         if ((f2absq <= (MBOUND1 * f1absq)) && (f2absq >= (MBOUND2 * f1absq))) /* function-value changes slowly */ {
-            if (abs(h2) < MBOUND3) { /* if |h[2]| is small enough => */
+            if (h2.abs() < MBOUND3) { /* if |h[2]| is small enough => */
                 q2 = q2.times(2); /* double q2 and h[2] */
                 h2 = h2.times(2);
             } else { /* otherwise: |q2| = 1 and */
                 /* h[2] = h[2]*q2 */
-                q2 = Complex.cart(Math.cos(iter), Math.sin(iter));
+                q2 = getComplexForIterationCounter(iter);
                 h2 = h2.times(q2);
             }
         } else if (f2absq < f2absqb.val) {
@@ -237,7 +236,7 @@ public class MullerNewtonSolver implements IRootsSolver {
             xb.val = x2; /* best approximation */
             noise.val = 0; /* reset noise counter */
             if ((Math.sqrt(f2absq) < epsilon)
-                    && (abs(x2.minus(x1).div(x2)) < epsilon)) {
+                    && (x2.minus(x1).div(x2).abs() < epsilon)) {
                 rootd.val = true; /* root determined */
             }
         }
@@ -284,7 +283,7 @@ public class MullerNewtonSolver implements IRootsSolver {
      */
     private void convergence_check(final IntRef overflow,
             final double f1absq, final double f2absq, final double epsilon) /* double f1absq, f1absq = |f1|^2 */ /* f2absq, f2absq = |f2|^2 */ /* epsilon; bound for |q2| */ /* int *overflow; *overflow = 1 => overflow occures */ /* *overflow = 0 => no overflow occures */ {
-        if ((f2absq > (MCONVERGENCE * f1absq)) && (abs(q2) > epsilon)
+        if ((f2absq > (MCONVERGENCE * f1absq)) && (q2.abs() > epsilon)
                 && (iter < MITERMAX)) {
             q2 = q2.times(.5); /* in case of overflow: */
             h2 = h2.times(.5); /* halve q2 and h2; compute new x2 */
@@ -360,7 +359,7 @@ public class MullerNewtonSolver implements IRootsSolver {
     private void iteration_equation(final DoubleRef h2abs) /* double *h2abs; Absolute value of the old distance */ {
         h2 = h2.times(q2);
         // distance between old and new x2
-        double h2absnew = abs(h2);
+        double h2absnew = h2.abs();
 
         if (h2absnew > h2abs.val * MMAXDIST) { /* maximum relative change */
             double help = MMAXDIST / h2absnew;
@@ -448,7 +447,7 @@ public class MullerNewtonSolver implements IRootsSolver {
                 /* store values for the next iteration */
                 x0 = x1;
                 x1 = x2;
-                h2abs.val = abs(h2); /*
+                h2abs.val = h2.abs(); /*
                  * distance between x2 and x1
                  */
 
@@ -470,7 +469,8 @@ public class MullerNewtonSolver implements IRootsSolver {
                         epsilon.val, noise);
 
                 /* increase noise counter */
-                if (Math.abs(abs(xb.val) - abs(x2)) / abs(xb.val) < MNOISESTART) {
+                double xb_abs = xb.val.abs();
+                if (Math.abs(xb_abs - x2.abs()) / xb_abs < MNOISESTART) {
                     noise.val++;
                 }
             } while ((iter <= MITERMAX) && (!rootd.val)
@@ -508,7 +508,7 @@ public class MullerNewtonSolver implements IRootsSolver {
         Complex dx = Complex.ONE; /*
          * initial value: P(xcur)/P'(xcur)=1+j*0
          */
-        dxabs.val = abs(dx); /*
+        dxabs.val = dx.abs(); /*
          * initial value: |P(xcur)/P'(xcur)|=1
          */
 
@@ -519,23 +519,23 @@ public class MullerNewtonSolver implements IRootsSolver {
              * f=P(xcur), df=P'(xcur)
              */
 
-            if (abs(f.val) < fabsmin) { /* the new xcur is a better */
+            if (f.val.abs() < fabsmin) { /* the new xcur is a better */
                 xmin = xcur; /* approximation than the old xmin */
-                fabsmin = abs(f.val); /* store new xmin and fabsmin */
+                fabsmin = f.val.abs(); /* store new xmin and fabsmin */
                 noise = 0; /* reset noise counter */
             }
 
-            if (abs(df.val) > eps) { /* calculate new dx */
+            if (df.val.abs() > eps) { /* calculate new dx */
                 final Complex dxh = f.val.div(df.val);
-                if (abs(dxh) < dxabs.val * NFACTOR) { /*
+                if (dxh.abs() < dxabs.val * NFACTOR) { /*
                      * new dx small enough?
                      */
                     dx = dxh; /* store new dx for next */
-                    dxabs.val = abs(dx); /* iteration */
+                    dxabs.val = dx.abs(); /* iteration */
                 }
             }
 
-            double axmin = abs(xmin);
+            double axmin = xmin.abs();
             if (axmin != 0) {
                 if ((dxabs.val / axmin < eps) || (noise == NNOISEMAX)) {
                     /* routine ends */
@@ -567,7 +567,7 @@ public class MullerNewtonSolver implements IRootsSolver {
 						   * part<BOUND
 						   */
         }
-        double axmin2 = abs(xmin);
+        double axmin2 = xmin.abs();
         if (axmin2 != 0) {
             dxabs.val /= axmin2; /* return relative error */
         }
@@ -667,7 +667,7 @@ public class MullerNewtonSolver implements IRootsSolver {
         if ((seconditer.val == 1) && (f2absqb > 0)) {
             // f2=P(x0), df=P'(x0)
             fdvalue(m_pred, m_idx, f2, df, xb);
-            if (abs(f2.val) / (abs(df.val) * abs(xb)) > MBOUND7) {
+            if (f2.val.abs() / (df.val.abs() * xb.abs()) > MBOUND7) {
                 /* start second iteration with new initial estimations */
                 x0 = Complex.ONE;
                 x1 = Complex.NEG_ONE;
@@ -690,27 +690,160 @@ public class MullerNewtonSolver implements IRootsSolver {
         /* A2 = q2(f2 - (1+q2)f1 + f0q2) */
         /* B2 = q2[q2(f0-f1) + 2(f2-f1)] + (f2-f1) */
         /* C2 = (1+q2)f[2] */
-        final Complex A2 = q2.times(f2.val.plus(q2.times(f0.val)).minus(
-                q2.plus(1).times(f1.val)));
-        final Complex B2 = f2.val.minus(f1.val).plus(
-                q2.times(q2.times(f0.val.minus(f1.val)).plus(
-                f2.val.minus(f1.val).times(2))));
-        final Complex C2 = q2.plus(1).times(f2.val);
+
+        final Complex A2 = computeA2(q2, f2.val, f0.val, f1.val);
+        final Complex B2 = computeB2(f2.val, f1.val, q2, f0.val);
+        final Complex C2 = computeC2(q2, f2.val);
+        
         /* discr = B2^2 - 4A2C2 */
-        final Complex rdiscr = sqrt(B2.times(B2).minus(A2.times(C2).times(4)));
+        final Complex rdiscr = computeDiscr(B2, A2, C2).sqrt();
+
         /* denominators of q2 */
         final Complex N1 = B2.minus(rdiscr);
         final Complex N2 = B2.plus(rdiscr);
+        double N1_abs = N1.abs();
+        double N2_abs = N2.abs();
         /* choose denominater with largest modulus */
-        if ((abs(N1) > abs(N2)) && (abs(N1) > DBL_EPSILON)) {
+        if ((N1_abs > N2_abs) && (N1_abs > DBL_EPSILON)) {
             q2 = C2.times(-2).div(N1);
-        } else if (abs(N2) > DBL_EPSILON) {
+        } else if (N2_abs > DBL_EPSILON) {
             q2 = C2.times(-2).div(N2);
         } else {
-            q2 = Complex.cart(Math.cos(iter), Math.sin(iter));
+            q2 = getComplexForIterationCounter(iter);
         }
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Generated code">
+    /**
+     * Computes: <code>q2 * ( f2 + ( q2 * f0 ) - ( 1 + q2 ) * f1 )</code><br>
+     * RPN: <code>q2 f2 q2 f0 * + 1 q2 + f1 * - *</code>
+     */
+    @VisibleForTesting
+    static Complex computeA2(Complex q2, Complex f2, Complex f0, Complex f1) {
+        double tmp;
+        double re0, re1, re2;
+        double im0, im1, im2;
+        /* { q2 } */
+        re0 = q2.getRe();
+        im0 = q2.getIm();
+        /* { f2 } */
+        re1 = f2.getRe();
+        im1 = f2.getIm();
+        /* { q2 f0 * } */
+        re2 = q2.getRe() * f0.getRe() - q2.getIm() * f0.getIm();
+        im2 = q2.getRe() * f0.getIm() + q2.getIm() * f0.getRe();
+        /* { + } */
+        re1 += re2;
+        im1 += im2;
+        /* { 1 q2 + } */
+        re2 = 1 + q2.getRe();
+        im2 = q2.getIm();
+        /* { f1 * } */
+        tmp = re2 * f1.getRe() - im2 * f1.getIm();
+        im2 = re2 * f1.getIm() + im2 * f1.getRe();
+        re2 = tmp;
+        /* { - } */
+        re1 -= re2;
+        im1 -= im2;
+        /* { * } */
+        tmp = re0 * re1 - im0 * im1;
+        im0 = re0 * im1 + im0 * re1;
+        re0 = tmp;
+        /* .build() */
+        return Complex.cart(re0, im0);
+    }
+
+    /**
+     * Computes:
+     * <code>f2 - f1 + q2 * ( q2 * ( f0 - f1 ) + ( f2 - f1 ) * 2 )</code><br>
+     * RPN: <code>f2 f1 - q2 q2 f0 f1 - * f2 f1 - 2 * + * +</code>
+     */
+    @VisibleForTesting
+    static Complex computeB2(Complex f2, Complex f1, Complex q2, Complex f0) {
+        double tmp;
+        double re0, re1, re2, re3;
+        double im0, im1, im2, im3;
+        /* { f2 f1 - } */
+        re0 = f2.getRe() - f1.getRe();
+        im0 = f2.getIm() - f1.getIm();
+        /* { q2 } */
+        re1 = q2.getRe();
+        im1 = q2.getIm();
+        /* { q2 } */
+        re2 = q2.getRe();
+        im2 = q2.getIm();
+        /* { f0 f1 - } */
+        re3 = f0.getRe() - f1.getRe();
+        im3 = f0.getIm() - f1.getIm();
+        /* { * } */
+        tmp = re2 * re3 - im2 * im3;
+        im2 = re2 * im3 + im2 * re3;
+        re2 = tmp;
+        /* { f2 f1 - } */
+        re3 = f2.getRe() - f1.getRe();
+        im3 = f2.getIm() - f1.getIm();
+        /* { 2 * } */
+        re3 *= 2;
+        im3 *= 2;
+        /* { + } */
+        re2 += re3;
+        im2 += im3;
+        /* { * } */
+        tmp = re1 * re2 - im1 * im2;
+        im1 = re1 * im2 + im1 * re2;
+        re1 = tmp;
+        /* { + } */
+        re0 += re1;
+        im0 += im1;
+        /* .build() */
+        return Complex.cart(re0, im0);
+    }
+
+    /**
+     * Computes: <code>( 1 + q2 ) * f2</code><br>
+     * RPN: <code>1 q2 + f2 *</code>
+     */
+    @VisibleForTesting
+    static Complex computeC2(Complex q2, Complex f2) {
+        double tmp;
+        double re0;
+        double im0;
+        /* { 1 q2 + } */
+        re0 = 1 + q2.getRe();
+        im0 = q2.getIm();
+        /* { f2 * } */
+        tmp = re0 * f2.getRe() - im0 * f2.getIm();
+        im0 = re0 * f2.getIm() + im0 * f2.getRe();
+        re0 = tmp;
+        /* .build() */
+        return Complex.cart(re0, im0);
+    }
+
+    /**
+     * Computes: <code>B2 * B2 - A2 * C2 * 4</code><br>
+     * RPN: <code>B2 B2 * A2 C2 * 4 * -</code>
+     */
+    @VisibleForTesting
+    static Complex computeDiscr(Complex B2, Complex A2, Complex C2) {
+        double re0, re1;
+        double im0, im1;
+        /* { B2 B2 * } */
+        re0 = B2.getRe() * B2.getRe() - B2.getIm() * B2.getIm();
+        im0 = B2.getRe() * B2.getIm() + B2.getIm() * B2.getRe();
+        /* { A2 C2 * } */
+        re1 = A2.getRe() * C2.getRe() - A2.getIm() * C2.getIm();
+        im1 = A2.getRe() * C2.getIm() + A2.getIm() * C2.getRe();
+        /* { 4 * } */
+        re1 *= 4;
+        im1 *= 4;
+        /* { - } */
+        re0 -= re1;
+        im0 -= im1;
+        /* .build() */
+        return Complex.cart(re0, im0);
+    }
+    //</editor-fold>
+    
     @Override
     public Complex[] roots() {
         return m_roots;
@@ -736,7 +869,7 @@ public class MullerNewtonSolver implements IRootsSolver {
         int kiter = 0; /* reset iteration counter */
         do {
             loop = false; /* initial estimation: no overflow */
-            final double help = abs(x2); /* help = |x2| */
+            final double help = x2.abs(); /* help = |x2| */
             if ((help > 1) && (Math.abs(nred * Math.log10(help)) > MBOUND6)) {
                 kiter++; /* if |x2|>1 and |x2|^nred>10^BOUND6 */
                 if (kiter < MKITERMAX) { /* then halve the distance between */
@@ -811,5 +944,30 @@ public class MullerNewtonSolver implements IRootsSolver {
     
     public void setLeastSquaresDivision(boolean lq){
         lqdiv=lq;
+    }
+
+    private static Complex getComplexForIterationCounter(int iter) {
+        return COMPLEX_FOR_ITER[iter];
+    }
+
+    private static Complex newComplexForIterationCounter(int iter) {
+        return Complex.cart(Math.cos(iter), Math.sin(iter));
+}
+    
+    // local cache for all possible values
+    private static final Complex[] COMPLEX_FOR_ITER = initComplexForIter(MITERMAX);
+
+    /**
+     * Computes all possible values for iter
+     *
+     * @param maxIter
+     * @return
+     */
+    private static Complex[] initComplexForIter(int maxIter) {
+        Complex[] result = new Complex[maxIter + 1];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = newComplexForIterationCounter(i);
+        }
+        return result;
     }
 }

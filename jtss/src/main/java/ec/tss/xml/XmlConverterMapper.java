@@ -19,7 +19,7 @@ package ec.tss.xml;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class XmlConverterMapper<O, X extends IXmlConverter<O>> implements IXmlMapper<O, X> {
 

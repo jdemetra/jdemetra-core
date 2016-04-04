@@ -19,7 +19,7 @@ package ec.tstoolkit.eco.discrete;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class Logit implements ICumulativeDistributionFunction {
 

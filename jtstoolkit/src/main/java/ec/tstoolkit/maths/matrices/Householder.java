@@ -236,14 +236,10 @@ public class Householder extends AbstractLinearSystemSolver implements
 	b.copyFrom(y, 0);
     }
 
-    // / <summary>
-    // / The method multiplyes an array of double by Q.
-    // / </summary>
-    // / <param name="b">An array of double. It contains the product at the
-    // return of the method</param>
     /**
-     * 
-     * @param b
+     * The method multiplies an array of double by Q.
+     * @param b The array of double. It contains the product at the
+    // return of the method
      */
     public void applyQ(double[] b) {
 	for (int k = m_n - 1; k >= 0; --k) {

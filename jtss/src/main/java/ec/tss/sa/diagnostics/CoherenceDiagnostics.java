@@ -20,10 +20,10 @@ import ec.satoolkit.DecompositionMode;
 import ec.satoolkit.GenericSaResults;
 import ec.satoolkit.ISeriesDecomposition;
 import ec.tstoolkit.algorithm.CompositeResults;
-import ec.tstoolkit.modelling.ModellingDictionary;
 import ec.tstoolkit.algorithm.IDiagnostics;
 import ec.tstoolkit.algorithm.ProcQuality;
 import ec.tstoolkit.data.DescriptiveStatistics;
+import ec.tstoolkit.modelling.ModellingDictionary;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDataBlock;
 import ec.tstoolkit.timeseries.simplets.YearIterator;
@@ -33,7 +33,7 @@ import java.util.List;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public final class CoherenceDiagnostics implements IDiagnostics {
 
@@ -109,9 +109,9 @@ public final class CoherenceDiagnostics implements IDiagnostics {
         ISeriesDecomposition decomposition = GenericSaResults.getFinalDecomposition(rslts);
         mul_ = decomposition.getMode() != DecompositionMode.Additive;
         // main constraints
-
+        TsData yc=inv_op(y, regy);
         // finals
-        TsData df0 = sub(inv_op(y, regy), op(t, s, i,regsa));
+        TsData df0 = sub(yc, op(t, s, i,regsa));
         TsData df1 = sub(sa, op(t, i, regsa));
         TsData df2 = sub(inv_op(y, regy), op(sa, s));
         TsData df3 = sub(s, op(cs, cal, regs, outs));
@@ -144,7 +144,7 @@ public final class CoherenceDiagnostics implements IDiagnostics {
             check(dl2);
         }
         // annual totals
-        YearIterator yiter = YearIterator.fullYears(y);
+        YearIterator yiter = YearIterator.fullYears(yc);
         YearIterator saiter = YearIterator.fullYears(sa);
 
         maxDA_ = 0;

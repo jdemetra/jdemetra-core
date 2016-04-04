@@ -20,7 +20,7 @@ import com.google.common.base.Strings;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class TsIdentifier implements ITsIdentified {
 

@@ -28,7 +28,7 @@ import java.util.Map;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class BenchmarkingResults implements IProcResults {
 

@@ -22,7 +22,6 @@ import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.Complex;
-import ec.tstoolkit.maths.ComplexMath;
 import ec.tstoolkit.maths.linearfilters.Utilities;
 import ec.tstoolkit.maths.realfunctions.IParametricMapping;
 import ec.tstoolkit.modelling.arima.IModelEstimator;
@@ -284,7 +283,7 @@ public class FinalEstimator implements IModelEstimator {
         int n = 0;
         for (int i = 0; i < r.length; ++i) {
             double cdim = Math.abs(r[i].getIm());
-            double vcur = ComplexMath.abs(r[i]);
+            double vcur = r[i].abs();
             if (vcur > ur_ && cdim <= 0.05 && r[i].getRe() > 0) {
                 ++n;
             }

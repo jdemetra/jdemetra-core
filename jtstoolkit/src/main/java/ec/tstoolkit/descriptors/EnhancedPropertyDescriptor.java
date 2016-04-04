@@ -21,7 +21,7 @@ import java.beans.PropertyDescriptor;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class EnhancedPropertyDescriptor {
 

@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tss.tsproviders.sdmx;
 
 import ec.tss.tsproviders.DataSource;
@@ -33,18 +32,22 @@ public class SdmxBean implements IFileBean, IDataSourceBean {
 
     static final IParam<DataSource, File> X_FILE = Params.onFile(new File(""), "url");
     static final IParam<DataSource, String> X_FACTORY = Params.onString(CunningPlanFactory.NAME, "factory");
-    //
+    static final IParam<DataSource, String> X_TITLE_ATTRIBUTE = Params.onString("", "titleAttribute");
+
     File file;
     String factory;
+    String titleAttribute;
 
     public SdmxBean() {
         this.file = X_FILE.defaultValue();
         this.factory = X_FACTORY.defaultValue();
+        this.titleAttribute = X_TITLE_ATTRIBUTE.defaultValue();
     }
 
     public SdmxBean(DataSource dataSource) {
         this.file = X_FILE.get(dataSource);
         this.factory = X_FACTORY.get(dataSource);
+        this.titleAttribute = X_TITLE_ATTRIBUTE.get(dataSource);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters/Setters">
@@ -65,6 +68,14 @@ public class SdmxBean implements IFileBean, IDataSourceBean {
     public void setFactory(String factory) {
         this.factory = factory;
     }
+
+    public String getTitleAttribute() {
+        return titleAttribute;
+    }
+
+    public void setTitleAttribute(String titleAttribute) {
+        this.titleAttribute = titleAttribute;
+    }
     //</editor-fold>
 
     @Override
@@ -72,6 +83,7 @@ public class SdmxBean implements IFileBean, IDataSourceBean {
         DataSource.Builder builder = DataSource.builder(providerName, version);
         X_FILE.set(builder, file);
         X_FACTORY.set(builder, factory);
+        X_TITLE_ATTRIBUTE.set(builder, titleAttribute);
         return builder.build();
     }
 

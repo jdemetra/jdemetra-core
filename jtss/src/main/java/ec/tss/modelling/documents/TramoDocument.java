@@ -25,7 +25,7 @@ import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class TramoDocument extends TsDocument<TramoSpecification, PreprocessingModel> implements Cloneable{
 

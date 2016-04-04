@@ -426,16 +426,23 @@ public final class SaProcessing extends ForwardingList<SaItem> implements IDocum
         }
         NameManager<ISaSpecification> dic = new NameManager(ISaSpecification.class, "spec", null);
         List<Information<InformationSet>> dspecs = defspec.select(InformationSet.class);
+        HashMap<String, String> equivalence = new HashMap<>();
         for (Information<InformationSet> dspec : dspecs) {
             ISaSpecification cur = SaManager.instance.createSpecification(dspec.value);
             if (cur != null) {
-                dic.set(dspec.name, cur);
+                // workaround to solve some old serialization problems
+                String cname = dic.get(cur);
+                if (cname != null) {
+                    equivalence.put(dspec.name, cname);
+                } else {
+                    dic.set(dspec.name, cur);
+                }
             }
         }
         List<Information<InformationSet>> sas = info.select("sa*", InformationSet.class);
         for (Information<InformationSet> sa : sas) {
             SaItem cur = new SaItem();
-            if (sa.value != null && cur.read(sa.value, dic)) {
+            if (sa.value != null && cur.read(sa.value, dic, equivalence)) {
                 cur.setKey(nextKey());
                 items_.add(cur);
             } else {
@@ -487,4 +494,5 @@ public final class SaProcessing extends ForwardingList<SaItem> implements IDocum
         }
         return reports;
     }
+
 }

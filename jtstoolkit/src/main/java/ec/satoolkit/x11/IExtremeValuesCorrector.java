@@ -39,7 +39,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
  * 2. x17=xtr.getObservationWeights();
  * 3. x20=xtr.getCorrectionsFactors();
  *
- * @author Frank Osaer, Jean Palate
+ * @author Frank Osaer, Jean Palate, Christiane Hofer
  */
 @Development(status = Development.Status.Release)
 public interface IExtremeValuesCorrector extends IX11Algorithm {
@@ -87,4 +87,40 @@ public interface IExtremeValuesCorrector extends IX11Algorithm {
      */
     @NewObject
     TsData getCorrectionFactors();
+    
+        /**
+     * Sets the limits for the detection of extreme values.
+     *
+     * @param lsig The low sigma value
+     * @param usig The high sigma value
+     */
+    public void setSigma(double lsig, double usig);
+    
+    /**
+     *
+     * @param isExcludefcast true if the forcast should be excluded for the calculation 
+     * of the Standarddeviation of the outliers
+     */
+    void setExcludefcast(boolean isExcludefcast);
+   
+    /**
+     *
+     * @return true, if the forcast is excluded for the calculation 
+     * of the Standarddeviation of the outliers
+     */
+    boolean getExcludefcast();
+    
+    /**
+     *
+     * @param forcasthorizont in numnber of periods
+     */
+    void setForecasthorizont(int forcasthorizont);
+    
+    /**
+     *
+     * @return number of periods forecasted
+     */
+    int getForecasthorizont();
+    
+    
 }

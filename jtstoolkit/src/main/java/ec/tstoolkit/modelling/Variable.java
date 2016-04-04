@@ -203,11 +203,7 @@ public class Variable implements Cloneable {
     }
     
     public static ComponentType searchType(InterventionVariable var){
-        if (var.getDeltaS() == 1)
-            return ComponentType.Seasonal;
-        if (var.getDelta() == 1)
-            return ComponentType.Trend;
-        return ComponentType.Irregular;
+        return DeterministicComponent.getType(var);
     }
     
     private ITsVariable variable;

@@ -455,10 +455,12 @@ public final class TsDomain implements IDomain, Serializable, Iterable<TsPeriod>
             int n0 = nconv, n1 = nconv;
             if (m_beg % nconv != 0) {
                 if (complete) {
-                    if (m_beg > 0) {
-                        ++nbeg;
-                    }
+                if (m_beg > 0) {
+                    ++nbeg;
                     z0 = nconv - m_beg % nconv;
+                } else {
+                    z0 = - m_beg % nconv;
+                }
                 } else {
                     if (m_beg < 0) {
                         --nbeg;

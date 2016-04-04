@@ -19,7 +19,7 @@ package ec.tstoolkit.utilities;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public abstract class DefaultInformationExtractor<S,T> implements InformationExtractor<S, T> {
     @Override

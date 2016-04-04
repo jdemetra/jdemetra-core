@@ -16,12 +16,10 @@
  */
 package ec.tss.tsproviders.sdmx.engine;
 
-import com.google.common.base.Enums;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import static com.google.common.base.Predicates.notNull;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import static ec.tss.tsproviders.sdmx.engine.FluentDom.*;
@@ -33,6 +31,7 @@ import ec.tss.tsproviders.utils.DataFormat;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tss.tsproviders.utils.Parsers.Parser;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import org.w3c.dom.Document;
@@ -67,23 +66,15 @@ public class GenericDocFactory extends AbstractDocumentFactory {
     }
 
     private static ImmutableList<SdmxItem> getSdmxItems(Node dataSetNode) {
-        return childNodes(dataSetNode).transform(TO_SDMX_ITEM).filter(notNull()).toList();
-    }
-
-    private static Function<Node, SdmxItem> TO_SDMX_ITEM = new Function<Node, SdmxItem>() {
-        @Override
-        public SdmxItem apply(Node input) {
-            return getSdmxItem(input);
+        ImmutableList.Builder<SdmxItem> result = ImmutableList.builder();
+        for (Node node : childNodes(dataSetNode)) {
+            if (IS_GROUP.apply(node)) {
+                result.add(getSdmxGroup(node));
+            } else if (IS_SERIES.apply(node)) {
+                result.add(getSdmxSeries(node, ALL_CONCEPTS));
+            }
         }
-    };
-
-    private static SdmxItem getSdmxItem(Node node) {
-        if (IS_GROUP.apply(node)) {
-            return getSdmxGroup(node);
-        } else if (IS_SERIES.apply(node)) {
-            return getSdmxSeries(node, Predicates.<Concept>alwaysTrue());
-        }
-        return null;
+        return result.build();
     }
 
     private static SdmxGroup getSdmxGroup(Node groupNode) {
@@ -124,18 +115,29 @@ public class GenericDocFactory extends AbstractDocumentFactory {
     }
 
     private static String lookupValue(Node obs) {
-        return childNodes(obs).firstMatch(IS_OBS_VALUE).get().getAttributes().getNamedItem("value").getNodeValue();
+        return childNodes(obs).firstMatch(IS_OBS_VALUE).get().getAttributes().getNamedItem(VALUE_ATTRIBUTE).getNodeValue();
     }
 
     private static TimeFormat getTimeFormat(Node series) {
-        Optional<Node> attr = childNodes(series).firstMatch(IS_ATTRIBUTES);
-        if (attr.isPresent()) {
-            Optional<Concept> tf = childNodes(attr.get()).filter(IS_VALUE).transform(TO_VALUE_ENTRY).firstMatch(IS_TIME_FORMAT_ENTRY);
-            if (tf.isPresent()) {
-                String value = tf.get().getValue();
-                return Enums.getIfPresent(TimeFormat.class, value).or(TimeFormat.UNDEFINED);
+        Map<String, String> concepts = new HashMap<>();
+        for (Node o : childNodes(series).filter(Predicates.or(IS_SERIES_KEY, IS_ATTRIBUTES))) {
+            for (Concept concept : lookupConcepts(o)) {
+                concepts.put(concept.getKey(), concept.getValue());
             }
         }
+
+        String value;
+
+        value = concepts.get("TIME_FORMAT");
+        if (value != null) {
+            return TimeFormat.parseByTimeFormat(value);
+        }
+
+        value = concepts.get("FREQ");
+        if (value != null) {
+            return TimeFormat.parseByFrequencyCodeId(value);
+        }
+
         return TimeFormat.UNDEFINED;
     }
 
@@ -148,36 +150,36 @@ public class GenericDocFactory extends AbstractDocumentFactory {
     }
 
     private static FluentIterable<Concept> lookupConcepts(Node node) {
-        return childNodes(node).filter(IS_VALUE).transform(TO_VALUE_ENTRY);
+        return childNodes(node).filter(IS_VALUE).transform(TO_CONCEPT);
     }
 
-    private static final Predicate<Node> IS_DATA_SET = nodeNameEndsWith("DataSet");
-    private static final Predicate<Node> IS_KEY_FAMILY_REF = nodeNameEndsWith("KeyFamilyRef");
-    private static final Predicate<Node> IS_GROUP = nodeNameEndsWith("Group");
-    private static final Predicate<Node> IS_SERIES = nodeNameEndsWith("Series");
-    private static final Predicate<Node> IS_GROUP_KEY = nodeNameEndsWith("GroupKey");
-    private static final Predicate<Node> IS_SERIES_KEY = nodeNameEndsWith("SeriesKey");
-    private static final Predicate<Node> IS_VALUE = nodeNameEndsWith("Value");
-    private static final Predicate<Node> IS_OBS = nodeNameEndsWith("Obs");
-    private static final Predicate<Node> IS_TIME = nodeNameEndsWith("Time");
-    private static final Predicate<Node> IS_OBS_VALUE = nodeNameEndsWith("ObsValue");
-    private static final Predicate<Node> IS_ATTRIBUTES = nodeNameEndsWith("Attributes");
-    private static final Predicate<Concept> IS_TIME_FORMAT_ENTRY = new Predicate<Concept>() {
-        @Override
-        public boolean apply(Concept input) {
-            return input.concept.equals("TIME_FORMAT");
-        }
-    };
+    //<editor-fold defaultstate="collapsed" desc="Resources">
+    private static final String CONCEPT_ATTRIBUTE = "concept";
+    private static final String VALUE_ATTRIBUTE = "value";
 
-    private static final Function<Node, Concept> TO_VALUE_ENTRY = new Function<Node, Concept>() {
+    private static final Predicate<Node> IS_DATA_SET = localNameEqualTo("DataSet");
+    private static final Predicate<Node> IS_KEY_FAMILY_REF = localNameEqualTo("KeyFamilyRef");
+    private static final Predicate<Node> IS_GROUP = localNameEqualTo("Group");
+    private static final Predicate<Node> IS_SERIES = localNameEqualTo("Series");
+    private static final Predicate<Node> IS_GROUP_KEY = localNameEqualTo("GroupKey");
+    private static final Predicate<Node> IS_SERIES_KEY = localNameEqualTo("SeriesKey");
+    private static final Predicate<Node> IS_VALUE = localNameEqualTo("Value");
+    private static final Predicate<Node> IS_OBS = localNameEqualTo("Obs");
+    private static final Predicate<Node> IS_TIME = localNameEqualTo("Time");
+    private static final Predicate<Node> IS_OBS_VALUE = localNameEqualTo("ObsValue");
+    private static final Predicate<Node> IS_ATTRIBUTES = localNameEqualTo("Attributes");
+    private static final Predicate<Concept> ALL_CONCEPTS = Predicates.alwaysTrue();
+
+    private static final Function<Node, Concept> TO_CONCEPT = new Function<Node, Concept>() {
         @Override
         public Concept apply(Node input) {
             NamedNodeMap attr = input.getAttributes();
-            return new Concept(attr.getNamedItem("concept").getNodeValue(), attr.getNamedItem("value").getNodeValue());
+            return new Concept(attr.getNamedItem(CONCEPT_ATTRIBUTE).getNodeValue(), attr.getNamedItem(VALUE_ATTRIBUTE).getNodeValue());
         }
     };
 
     private static final DataFormat DEFAULT_DATA_FORMAT = new DataFormat(Locale.ROOT, null, null);
+    //</editor-fold>
 
     private static final class Concept implements Map.Entry<String, String> {
 

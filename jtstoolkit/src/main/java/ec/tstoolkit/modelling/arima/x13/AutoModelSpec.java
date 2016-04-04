@@ -40,7 +40,10 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
             UB2 = "ub2",
             CANCEL = "cancel",
             ARMALIMIT = "armalimit",
-            UBFINAL = "ubfinal";
+            UBFINAL = "ubfinal",
+            PERCENTRSE = "percentRSE",
+            ARMA = "arma",
+            DIFF = "diff";
 
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, CANCEL), Double.class);
@@ -50,21 +53,26 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
         dic.put(InformationSet.item(prefix, UBFINAL), Double.class);
         dic.put(InformationSet.item(prefix, LJUNGBOXLIMIT), Double.class);
         dic.put(InformationSet.item(prefix, REDUCECV), Double.class);
+        dic.put(InformationSet.item(prefix, PERCENTRSE), Double.class);
         dic.put(InformationSet.item(prefix, ENABLED), Boolean.class);
         dic.put(InformationSet.item(prefix, ACCEPTDEFAULT), Boolean.class);
         dic.put(InformationSet.item(prefix, MIXED), Boolean.class);
         dic.put(InformationSet.item(prefix, CHECKMU), Boolean.class);
         dic.put(InformationSet.item(prefix, BALANCED), Boolean.class);
         dic.put(InformationSet.item(prefix, HR), Boolean.class);
+        OrderSpec.fillDictionary(InformationSet.item(prefix, ARMA), dic);
+        OrderSpec.fillDictionary(InformationSet.item(prefix, DIFF), dic);
     }
 
     private boolean enabled_ = false;
     private OrderSpec diff_, order_;
-    private boolean acceptdef_, checkmu_ = true, mixed_ = true, balanced_, hr_;
+    private boolean acceptdef_ = DEF_ACCEPTDEF, checkmu_ = DEF_CHECKMU, mixed_ = DEF_MIXED, balanced_ = DEF_BALANCED, hr_ = DEF_HR;
     private double cancel_ = DEF_CANCEL, fct_ = DEF_FCT, pcr_ = DEF_LJUNGBOX, predcv_ = DEF_PREDCV,
             tsig_ = DEF_TSIG, ub1_ = DEF_UB1, ub2_ = DEF_UB2, ubfinal_ = DEF_UBFINAL;
     public static final double DEF_LJUNGBOX = .95, DEF_TSIG = 1, DEF_PREDCV = .14286, DEF_UBFINAL = 1.05, DEF_UB1 = 1 / .96, DEF_UB2 = .88,
             DEF_CANCEL = 0.1, DEF_FCT = 1 / .9875;
+    private static final boolean DEF_ACCEPTDEF = false, DEF_CHECKMU = true, DEF_MIXED = true,
+            DEF_BALANCED = false, DEF_HR = false;
 
     public AutoModelSpec() {
     }
@@ -77,11 +85,11 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
         diff_ = null;
         order_ = null;
         enabled_ = false;
-        acceptdef_ = false;
-        checkmu_ = true;
-        mixed_ = true;
-        balanced_ = false;
-        hr_ = false;
+        acceptdef_ = DEF_ACCEPTDEF;
+        checkmu_ = DEF_CHECKMU;
+        mixed_ = DEF_MIXED;
+        balanced_ = DEF_BALANCED;
+        hr_ = DEF_HR;
         cancel_ = DEF_CANCEL;
         fct_ = DEF_FCT;
         pcr_ = DEF_LJUNGBOX;
@@ -272,7 +280,7 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
     }
 
     public boolean isDefault() {
-        return enabled_ = true && !acceptdef_ && diff_ == null && order_ == null && tsig_ == DEF_TSIG && pcr_ == DEF_LJUNGBOX
+        return !enabled_ && !acceptdef_ && diff_ == null && order_ == null && tsig_ == DEF_TSIG && pcr_ == DEF_LJUNGBOX
                 && predcv_ == DEF_PREDCV && ubfinal_ == DEF_UBFINAL && checkmu_ && mixed_ && !balanced_
                 && cancel_ == DEF_CANCEL && fct_ == DEF_FCT && ub1_ == DEF_UB1 && ub2_ == DEF_UB2;
     }
@@ -291,10 +299,13 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
     }
 
     private boolean equals(AutoModelSpec other) {
-        return acceptdef_ == other.acceptdef_ && tsig_ == other.tsig_ && balanced_ == other.balanced_
-                && checkmu_ == other.checkmu_ && Objects.equals(diff_, other.diff_) && enabled_ == other.enabled_
-                && hr_ == other.hr_ && pcr_ == other.pcr_ && mixed_ == other.mixed_ && Objects.equals(order_, other.order_)
-                && predcv_ == other.predcv_ && ubfinal_ == other.ubfinal_;
+        return enabled_ == other.enabled_ && acceptdef_ == other.acceptdef_
+                && Objects.equals(diff_, other.diff_) && Objects.equals(order_, other.order_)
+                && balanced_ == other.balanced_ && checkmu_ == other.checkmu_
+                && mixed_ == other.mixed_ && hr_ == other.hr_
+                && tsig_ == other.tsig_ && pcr_ == other.pcr_ && predcv_ == other.predcv_
+                && ub1_ == other.ub1_ && ub2_ == other.ub2_ && cancel_ == other.cancel_
+                && ubfinal_ == other.ubfinal_ && fct_ == other.fct_;
     }
 
     @Override
@@ -311,11 +322,23 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
     public InformationSet write(boolean verbose) {
         InformationSet info = new InformationSet();
         info.add(ENABLED, enabled_);
+        if (verbose || acceptdef_ != DEF_ACCEPTDEF) {
+            info.add(ACCEPTDEFAULT, acceptdef_);
+        }
+        if (verbose || mixed_ != DEF_MIXED) {
+            info.add(MIXED, mixed_);
+        }
+        if (verbose || balanced_ != DEF_BALANCED) {
+            info.add(BALANCED, balanced_);
+        }
+        if (verbose || hr_ != DEF_HR) {
+            info.add(HR, hr_);
+        }
+        if (verbose || checkmu_ != DEF_CHECKMU) {
+            info.add(CHECKMU, checkmu_);
+        }
         if (verbose || pcr_ != DEF_LJUNGBOX) {
             info.add(LJUNGBOXLIMIT, pcr_);
-        }
-        if (verbose || tsig_ != DEF_TSIG) {
-            info.add(ARMALIMIT, tsig_);
         }
         if (verbose || predcv_ != DEF_PREDCV) {
             info.add(REDUCECV, predcv_);
@@ -326,14 +349,33 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
         if (verbose || ub2_ != DEF_UB2) {
             info.add(UB2, ub2_);
         }
-        if (verbose || ubfinal_ != DEF_UBFINAL) {
-            info.add(UBFINAL, ubfinal_);
-        }
         if (verbose || cancel_ != DEF_CANCEL) {
             info.add(CANCEL, cancel_);
         }
-        if (verbose || acceptdef_) {
-            info.add(ACCEPTDEFAULT, acceptdef_);
+        if (verbose || tsig_ != DEF_TSIG) {
+            info.add(ARMALIMIT, tsig_);
+        }
+        if (verbose || ubfinal_ != DEF_UBFINAL) {
+            info.add(UBFINAL, ubfinal_);
+        }
+        if (verbose || fct_ != DEF_FCT) {
+            info.add(PERCENTRSE, fct_);
+        }
+        if (verbose || order_ != null) {
+            if (order_ != null) {
+                InformationSet osinfo = order_.write(verbose);
+                if (osinfo != null) {
+                    info.add(ARMA, osinfo);
+                }
+            }
+        }
+        if (verbose || diff_ != null) {
+            if (diff_ != null) {
+                InformationSet osinfo = diff_.write(verbose);
+                if (osinfo != null) {
+                    info.add(DIFF, osinfo);
+                }
+            }
         }
         return info;
     }
@@ -393,6 +435,24 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
             Double ubf = info.get(UBFINAL, Double.class);
             if (ubf != null) {
                 ubfinal_ = ubf;
+            }
+            Double fct = info.get(PERCENTRSE, Double.class);
+            if (fct != null) {
+                fct_ = fct;
+            }
+            InformationSet osinfo = info.getSubSet(ARMA);
+            if (osinfo != null) {
+                order_ = new OrderSpec(0, 0, OrderSpec.Type.Fixed);
+                if (!order_.read(osinfo)) {
+                    return false;
+                }
+            }
+            osinfo = info.getSubSet(DIFF);
+            if (osinfo != null) {
+                diff_ = new OrderSpec(0, 0, OrderSpec.Type.Fixed);
+                if (!diff_.read(osinfo)) {
+                    return false;
+                }
             }
             return true;
         } catch (Exception err) {

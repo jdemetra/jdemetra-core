@@ -22,7 +22,7 @@ import ec.tstoolkit.modelling.IModellingSpecification;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public interface IRegArimaSpecification extends IModellingSpecification{
     

@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlElement;
 
 /**
  *
- * @author PCuser
+ * @author Jean Palate
  */
 public abstract class AbstractXmlDay {
     

@@ -1,23 +1,18 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
-/**
+ * Copyright 2013 National Bank of Belgium
  *
- * @author Jean Palate
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package ec.tstoolkit.data;
 
@@ -26,7 +21,21 @@ import ec.tstoolkit.design.Development;
 import ec.tstoolkit.utilities.IntList;
 
 /**
- * 
+ * Periodogram of a series of real-valued data
+ * The periodogram is defined at the Fourier frequencies:
+ * if we have n data, the Fourier frequencies f(j) are (2*pi)*j/n, j in [0,n[.
+ * p(k) is usually defined as (1/n)*|sum(x(j)*e(i*k*f(j))|^2
+ * As the x(j) are real-valued, we consider only the Fourier frequencies with j 
+ * in [0, n/2]
+ * We have:
+ * p(0) = (1/n)*|sum(x(j)|^2 = (1/n)*|sx|^2
+ * p(j) = (2/n)*|sum(x(j)*e(i*k*f(j))|^2
+ * if n is even, p(n/2) = (1/n)*|(-1)^k*sum(x(j)|^2
+ * This implementation will rescale the periodogram with the factor
+ * n/sum(x(j)^2)=n/sx2, so that we will have:
+ * p(0) = |sx|^2/sx2
+ * p(j) = 2*|sum(x(j)*e(i*k*f(j))|^2/sx2
+ * if n is even, p(n/2) = |(-1)^k*sum(x(j)|^2/sx2
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
@@ -41,7 +50,7 @@ public class Periodogram {
     }
 
     /**
-     * 
+     *
      * @param freq
      * @return
      */
@@ -53,49 +62,72 @@ public class Periodogram {
         }
         if (freq == 12) {
             return new double[]{f}; // , 2 * Math.PI * 0.432 };
-        }
-        else if (freq == 4) {
+        } else if (freq == 4) {
             return new double[]{f, 1.292, 1.850, 2.128};
-        }
-        else {
+        } else {
             return new double[]{f};
         }
     }
-    private double m_y2;
+    private double m_sy, m_sy2;
     private int m_n;
     private int[] m_w;
     private double[] m_data, m_p, m_s;
+    private final boolean m_mean;
+
+    public Periodogram(IReadDataBlock data) {
+        this(data, true);
+    }
 
     /**
-     * 
+     *
      * @param data
+     * @param mean True if the periodogram is computed on the data corrected for mean,
+     * false otherwise.
      */
-    public Periodogram(IReadDataBlock data) {
+    public Periodogram(IReadDataBlock data, boolean mean) {
         calcwnd(1);
         m_data = new double[data.getLength()];
         data.copyTo(m_data, 0);
-        // Start 4/5/2007
+        m_mean = mean;
         // remove mean;
-        double s = 0;
-        m_n = 0;
-        for (int i = 0; i < m_data.length; ++i) {
-            if (!Double.isNaN(m_data[i])) {
-                ++m_n;
-                s += m_data[i];
-            }
-        }
-        if (m_n > 0) {
-            s /= m_n;
-            m_y2 = 0;
+        if (m_mean) {
+            m_sy = 0;
+            m_n = 0;
             for (int i = 0; i < m_data.length; ++i) {
                 if (!Double.isNaN(m_data[i])) {
-                    m_data[i] -= s;
-                    m_y2 += m_data[i] * m_data[i];
+                    ++m_n;
+                    m_sy += m_data[i];
                 }
             }
-            m_y2 /= m_n;
+            if (m_n > 0) {
+                m_sy /= m_n;
+                m_sy2 = 0;
+                for (int i = 0; i < m_data.length; ++i) {
+                    if (!Double.isNaN(m_data[i])) {
+                        m_data[i] -= m_sy;
+                        m_sy2 += m_data[i] * m_data[i];
+                    }
+                }
+            }
+        } else {
+            m_n = 0;
+            m_sy2 = 0;
+            for (int i = 0; i < m_data.length; ++i) {
+                if (!Double.isNaN(m_data[i])) {
+                    ++m_n;
+                    m_sy += m_data[i];
+                    m_sy2 += m_data[i] * m_data[i];
+                }
+            }
         }
-        // End 4/5/2007
+    }
+
+    public boolean isMeanCorrection() {
+        return m_mean;
+    }
+    
+    public double getSsq(){
+        return m_sy2;
     }
 
     private void calcp() {
@@ -105,16 +137,20 @@ public class Periodogram {
         // p(l(j)) = a(j)*a(j) + b(j)*b(j)
         // l(j) = 2*pi*j / T, where T = m_data.Length
         // a(j) = (1/sqrt(T))
-        int T = m_data.length, T2 = (T + 1) / 2;
+        int T = m_data.length, T1 = (1 + T) / 2, T2 = 1 + T / 2;
         m_p = new double[T2];
         double l = 2 * Math.PI / T;
         double cosl = Math.cos(l), sinl = Math.sin(l);
         double cos = 1, sin = 0; // current cos and sin...
 
         // the mean has been removed
-        m_p[0] = 0;
+        if (m_mean) {
+            m_p[0] = 0;
+        } else {
+            m_p[0] = m_sy * m_sy / m_sy2;
+        }
         double a = 0, b = 0;
-        for (int i = 1; i < T / 2; ++i) {
+        for (int i = 1; i < T1; ++i) {
             // compute next cos, sin
             double ctmp = cos, stmp = sin;
             sin = cosl * stmp + sinl * ctmp;
@@ -134,23 +170,22 @@ public class Periodogram {
                     b += s * m_data[j];
                 }
             }
-            m_p[i] = (a * a + b * b) * 2 / (m_n * m_y2);
+            m_p[i] = 2 * (a * a + b * b) / m_sy2;
         }
 
-        if (T + 1 == 2 * T2) // T odd
+        if (T1 != T2) // T even
         {
             a = 0;
             for (int i = 0; i < T; ++i) {
                 if (!Double.isNaN(m_data[i])) {
                     if (i % 2 == 0) {
                         a += m_data[i];
-                    }
-                    else {
+                    } else {
                         a -= m_data[i];
                     }
                 }
             }
-            m_p[T2 - 1] = a * a / (m_n * m_y2);
+            m_p[T2 - 1] = a * a / m_sy2;
         }
     }
 
@@ -201,11 +236,9 @@ public class Periodogram {
     private void calcwnd(int n) {
         if (n < 1) {
             throw new BaseException("Invalid Window length");
-        }
-        else if (n == 1) {
+        } else if (n == 1) {
             m_w = new int[]{1};
-        }
-        else {
+        } else {
 
             m_w = new int[n];
             m_w[n - 1] = 1;
@@ -227,7 +260,7 @@ public class Periodogram {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public double[] getData() {
@@ -235,7 +268,7 @@ public class Periodogram {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public double getIntervalInRadians() {
@@ -243,7 +276,7 @@ public class Periodogram {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public double[] getP() {
@@ -252,7 +285,7 @@ public class Periodogram {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public double[] getS() {
@@ -261,7 +294,7 @@ public class Periodogram {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public int getWindowLength() {
@@ -275,7 +308,7 @@ public class Periodogram {
     // / <param name="smoothed"></param>
     // / <returns></returns>
     /**
-     * 
+     *
      * @param dMin
      * @param smoothed
      * @return
@@ -290,8 +323,7 @@ public class Periodogram {
                 }
             }
             return peaks.toArray();
-        }
-        else {
+        } else {
             calcs();
             IntList peaks = new IntList(m_s.length);
             for (int i = 0; i < m_s.length; ++i) {
@@ -304,7 +336,7 @@ public class Periodogram {
     }
 
     /**
-     * 
+     *
      * @param value
      */
     public void setWindowLength(int value) {

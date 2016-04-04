@@ -129,7 +129,7 @@ public class Normal implements IContinuousDistribution {
 	if (pt == ProbabilityType.Upper)
 	    p = 1 - p;
 
-	if (p < EPS || 1 - p < EPS)
+	if (p < EPS_P || 1 - p < EPS_P)
 	    throw new DStatException(DStatException.ERR_INV_SMALL, "Normal");
 
 	calcProbDelegate cb = new calcProbDelegate() {

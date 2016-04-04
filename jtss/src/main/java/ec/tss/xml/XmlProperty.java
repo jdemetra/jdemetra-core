@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * 
- * @author pcuser
+ * @author Jean Palate
  */
 @XmlType(name = XmlProperty.NAME)
 public class XmlProperty {

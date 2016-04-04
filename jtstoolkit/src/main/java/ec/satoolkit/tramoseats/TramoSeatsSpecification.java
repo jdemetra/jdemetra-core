@@ -59,6 +59,10 @@ public class TramoSeatsSpecification extends AbstractSaSpecification implements 
         RSA5 = new TramoSeatsSpecification(TramoSpecification.TR5, sdef);
         RSAfull = new TramoSeatsSpecification(TramoSpecification.TRfull, sdef);
     }
+    
+    public static final TramoSeatsSpecification[] allSpecifications(){
+        return new TramoSeatsSpecification[]{RSA0, RSA1, RSA2, RSA3, RSA4, RSA5, RSAfull};
+    }
 
     public TramoSeatsSpecification() {
         tramoSpec_ = new TramoSpecification();
@@ -355,6 +359,9 @@ public class TramoSeatsSpecification extends AbstractSaSpecification implements 
                     return true;
                 case TR5:
                     tramoSpec_ = TramoSpecification.TR5.clone();
+                    return true;
+                case TRfull:
+                    tramoSpec_ = TramoSpecification.TRfull.clone();
                     return true;
             }
         }

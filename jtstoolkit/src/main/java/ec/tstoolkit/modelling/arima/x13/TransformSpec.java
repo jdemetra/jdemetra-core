@@ -51,8 +51,8 @@ public class TransformSpec implements Cloneable, InformationSetSerializable {
     }
 
     public void reset() {
-        DefaultTransformationType fn_ = DefaultTransformationType.None;
-        LengthOfPeriodType adjust_ = LengthOfPeriodType.None;
+        fn_ = DefaultTransformationType.None;
+        adjust_ = LengthOfPeriodType.None;
         aicdiff_ = DEF_AICDIFF;
         const_ = 0;
     }

@@ -23,49 +23,61 @@ import ec.tstoolkit.maths.Complex;
 import ec.tstoolkit.maths.matrices.Householder;
 import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.maths.matrices.MatrixException;
-import ec.tstoolkit.maths.polynomials.Polynomial;
 
 /**
- *
+ * Rational filters are the ratio of two filters. They are defined in different 
+ * ways:
+ * 1. as the ratio of two generic filters: R(F,B) = [V(B,F)]/[W(B, F)]
+ * (roots larger than 1 are associated to the backward operator, roots smaller
+ * than 1 are associated to the forward operator and roots equal to 1 are split 
+ * in backward and forward operator, the last ones, if any, must be double roots) 
+ * 2. as the sum of a rational filter in the backward operator and of a 
+ * rational filter in the forward operator: R(F,B) = V(B)/W(B) + X(F)/Y(F)
+ * 3. as the ratio of the products of backward/forward filters:
+ * R(F,B) = [V(B) * W(F)]/[X(B) * Y(F)]
+ * 4. as the ratio of a generic filter and the product of a backward and 
+ * of a forward filter: R(F,B) = [V(B,F)]/[X(B) * Y(F)]
+ * Objects of this class store the representation 1 and 2 together
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
 public class RationalFilter implements IRationalFilter {
 
+    private RationalBackFilter m_rb;
+    private RationalForeFilter m_rf;
+    private IFiniteFilter m_n, m_d;
+
+    private RationalFilter() {
+    }
+    
     /**
-     *
-     * @param bnum
-     * @param bdenom
+     * Creates the filter defined by N(B)N(F) / D(B)D(F)
+     * @param N The polynomial at the numerator
+     * @param D The polynomial at the denominator
      * @return
      */
-    public static RationalFilter RSFilter(BackFilter bnum, BackFilter bdenom) {
+    public static RationalFilter RationalSymmetricFilter(BackFilter N, BackFilter D) {
         BackFilter.SimplifyingTool bsmp = new BackFilter.SimplifyingTool(true);
-        if (bsmp.simplify(bnum, bdenom)) {
-            bnum = bsmp.getLeft();
-            bdenom = bsmp.getRight();
+        if (bsmp.simplify(N, D)) {
+            N = bsmp.getLeft();
+            D = bsmp.getRight();
         }
 
-        SymmetricFilter n = SymmetricFilter.createFromFilter(bnum);
-        BackFilter g;
-        g = n.decompose(bdenom);
+        SymmetricFilter n = SymmetricFilter.createFromFilter(N);
+        BackFilter g = n.decompose(D);
         RationalFilter rf = new RationalFilter();
-        rf.m_rb = new RationalBackFilter(g, bdenom);
+        rf.m_rb = new RationalBackFilter(g, D);
         rf.m_rf = rf.m_rb.mirror();
-        rf.m_n = SymmetricFilter.createFromFilter(bnum);
-        rf.m_d = SymmetricFilter.createFromFilter(bdenom);
+        rf.m_n = SymmetricFilter.createFromFilter(N);
+        rf.m_d = SymmetricFilter.createFromFilter(D);
         return rf;
     }
 
-    private RationalBackFilter m_rb;
-
-    private RationalForeFilter m_rf;
-
-    private IFiniteFilter m_n, m_d;
-
-    RationalFilter() {
+    @Deprecated
+    public static RationalFilter RSFilter(BackFilter bnum, BackFilter bdenom) {
+        return RationalSymmetricFilter(bnum, bdenom);
     }
-
     /**
      * Creates the rational filter N1(B)N2(F)/(D1(B)D2(F))
      *
@@ -82,16 +94,16 @@ public class RationalFilter implements IRationalFilter {
     }
 
     /**
-     *
-     * @param num
-     * @param bdenom
-     * @param fdenom
+     * Computes N / DB*DF
+     * @param N The numerator
+     * @param DB The back filter of the denominator
+     * @param DF The forward filter of the denominator
      */
-    public RationalFilter(final IFiniteFilter num, final BackFilter bdenom,
-            final ForeFilter fdenom) {
-        m_n = new FiniteFilter(num);
-        m_d = FiniteFilter.multiply(new FiniteFilter(bdenom), fdenom);
-        decompose(num, bdenom, fdenom);
+    public RationalFilter(final IFiniteFilter N, final BackFilter DB,
+            final ForeFilter DF) {
+        m_n = new FiniteFilter(N);
+        m_d = FiniteFilter.multiply(new FiniteFilter(DB), DF);
+        decompose(N, DB, DF);
     }
 
     /**
@@ -209,9 +221,9 @@ public class RationalFilter implements IRationalFilter {
     }
 
     /**
-     *
-     * @param freq
-     * @return
+     * Computes the frequency response of the filter at a given frequency
+     * @param freq The frequency (in radians)
+     * @return The frequency response
      */
     @Override
     public Complex frequencyResponse(final double freq) {
@@ -221,8 +233,8 @@ public class RationalFilter implements IRationalFilter {
     }
 
     /**
-     *
-     * @return
+     * Gets the denominator of the filter (see representation 1)
+     * @return The denominator.
      */
     @Override
     public IFiniteFilter getDenominator() {
@@ -231,6 +243,7 @@ public class RationalFilter implements IRationalFilter {
             FiniteFilter f = new FiniteFilter(m_rf.getDenominator());
             FiniteFilter d = FiniteFilter.multiply(b, f);
             d.smooth();
+            m_d=d;
         }
         return m_d;
     }

@@ -27,7 +27,7 @@ import ec.tstoolkit.maths.polynomials.UnitRoots;
  */
 public class SeasonalSelector extends AbstractRootSelector {
 
-    private double m_k = 0.8;
+    private double m_k = 0.5;
 
     private double m_epsphi = Math.PI / 90; // (== 2 degrees)
 

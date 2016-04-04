@@ -20,7 +20,7 @@ package ec.tstoolkit.ssf;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public interface ICompositeModel {
     int getComponentsCount();

@@ -1,7 +1,7 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or â€“ as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -21,6 +21,7 @@
 package ec.tstoolkit.ssf;
 
 import ec.tstoolkit.arima.ArimaModel;
+import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaModelBuilder;
 import ec.tstoolkit.ssf.ucarima.SsfUcarima;
@@ -41,25 +42,53 @@ public class FixedPointSmootherTest {
     public FixedPointSmootherTest() {
     }
 
-//    @Test
+    //@Test
     public void demoSomeMethod() {
-        int fpos=120, nrev=60;
+         System.out.println("Fixed point");
+       int fpos = 120, nrev = 60;
         SsfUcarima ssf = new SsfUcarima(ucmAirline(-.6, -.4));
         FixedPointSmoother fsm = new FixedPointSmoother(ssf, fpos);
-        SsfNoData data = new SsfNoData(fpos+nrev);
+        SsfNoData data = new SsfNoData(fpos + nrev);
         fsm.process(data);
         int spos = ssf.cmpPos(1);
         WienerKolmogorovEstimators wk = new WienerKolmogorovEstimators(ssf.getUCModel());
         double[] wkv = wk.totalErrorVariance(1, true, 0, nrev);
         double[] wkrev = wk.relativeRevisionVariance(1, true, 0, nrev);
-        double p0=fsm.P(0).get(spos, spos);
+        double p0 = fsm.P(0).get(spos, spos);
         for (int i = 0; i < nrev; ++i) {
             double p = fsm.P(i).get(spos, spos);
             System.out.print(p);
             System.out.print('\t');
             System.out.print(wkv[i]);
             System.out.print('\t');
-             System.out.print(p0-p);
+            System.out.print(p0 - p);
+            System.out.print('\t');
+            System.out.println(wkrev[i]);
+        }
+    }
+
+    //@Test
+    public void demoMSomeMethod() {
+        System.out.println("M fixed point");
+        int fpos = 120, nrev = 60;
+        SsfUcarima ssf = new SsfUcarima(ucmAirline(-.6, -.4));
+        int spos = ssf.cmpPos(1), dim = ssf.getStateDim();
+        Matrix M = new Matrix(1, dim);
+        M.set(0, spos, 1);
+        FixedPointSmoother fsm = new FixedPointSmoother(ssf, fpos, M);
+        SsfNoData data = new SsfNoData(fpos + nrev);
+        fsm.process(data);
+        WienerKolmogorovEstimators wk = new WienerKolmogorovEstimators(ssf.getUCModel());
+        double[] wkv = wk.totalErrorVariance(1, true, 0, nrev);
+        double[] wkrev = wk.relativeRevisionVariance(1, true, 0, nrev);
+        double p0 = fsm.P(0).get(0, 0);
+        for (int i = 0; i < nrev; ++i) {
+            double p = fsm.P(i).get(0, 0);
+            System.out.print(p);
+            System.out.print('\t');
+            System.out.print(wkv[i]);
+            System.out.print('\t');
+            System.out.print(p0 - p);
             System.out.print('\t');
             System.out.println(wkrev[i]);
         }

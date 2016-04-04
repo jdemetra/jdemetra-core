@@ -20,10 +20,14 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import ec.tstoolkit.design.IBuilder;
 import ec.tstoolkit.design.Immutable;
+import ec.tstoolkit.design.NewObject;
+import ec.tstoolkit.design.VisibleForTesting;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDataCollector;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
+import ec.tstoolkit.timeseries.simplets.TsPeriod;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 import javax.annotation.Nonnegative;
@@ -31,16 +35,19 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * An immutable object that may contain a non-null reference to a TsData object.
- * Each instance of this type either contains a non-null reference, or contains
- * a message explaining why the reference is "absent"; it is never said to
- * "contain {@code null}".
+ * An immutable object that may contain some time series data. Each instance of
+ * this type either contains a non-null data, or contains a message explaining
+ * why the data is "absent"; it is never said to "contain {@code null}".
  *
  * <p>
- * A non-null {@code OptionalTsData} reference can be used as a replacement for
- * a nullable {@code TsData} reference. It allows you to represent "a
- * {@code TsData} that must be present" and a "{@code TsData} that might be
+ * A non-null {@link OptionalTsData} reference can be used as a replacement for
+ * a nullable {@link TsData} reference. It allows you to represent "a
+ * {@code TsData} that must be present" and a "{@link TsData} that might be
  * absent" as two distinct types in your program, which can aid clarity.
+ *
+ * <p>
+ * Note that, since {@link TsData} is mutable, this class create a new TsData at
+ * every call of {@link  #get} in order to guarantee its immutability.
  *
  * @author Philippe Charles
  * @see Optional
@@ -48,15 +55,31 @@ import javax.annotation.Nullable;
 @Immutable
 public abstract class OptionalTsData {
 
+    /**
+     * Creates an OptionalTsData that contains times series data.
+     *
+     * @param nbrRows
+     * @param nbrUselessRows
+     * @param data
+     * @return non-null OptionalTsData
+     */
     @Nonnull
-    public static OptionalTsData present(int nbrRows, int nbrUselessRows, @Nonnull TsData data) {
+    public static OptionalTsData present(@Nonnegative int nbrRows, @Nonnegative int nbrUselessRows, @Nonnull TsData data) {
         Objects.requireNonNull(data);
         Preconditions.checkArgument(nbrRows >= nbrUselessRows && nbrUselessRows >= 0);
         return new Present(nbrRows, nbrUselessRows, data);
     }
 
+    /**
+     * Creates an empty OptionalTsData.
+     *
+     * @param nbrRows
+     * @param nbrUselessRows
+     * @param cause
+     * @return non-null OptionalTsData
+     */
     @Nonnull
-    public static OptionalTsData absent(int nbrRows, int nbrUselessRows, @Nonnull String cause) {
+    public static OptionalTsData absent(@Nonnegative int nbrRows, @Nonnegative int nbrUselessRows, @Nonnull String cause) {
         Objects.requireNonNull(cause);
         Preconditions.checkArgument(nbrRows >= nbrUselessRows && nbrUselessRows >= 0);
         return new Absent(nbrRows, nbrUselessRows, cause);
@@ -92,31 +115,31 @@ public abstract class OptionalTsData {
     }
 
     /**
-     * Returns {@code true} if this holder contains a (non-null) instance of
-     * TsData.
+     * Returns {@code true} if this holder contains some time series data.
      *
-     * @return
+     * @return true if not empty, false otherwise
      */
     abstract public boolean isPresent();
 
     /**
-     * Returns the contained instance, which must be present. If the instance
-     * might be absent, use {@link #or(TsData)} or {@link #orNull} instead.
+     * Returns the time series data, which must be present. If the data might be
+     * absent, use {@link #or(TsData)} or {@link #orNull} instead.
      *
-     * @return a non-null TsData
-     * @throws IllegalStateException if the instance is absent
+     * @return a new non-null TsData
+     * @throws IllegalStateException if the time series data is absent
      * ({@link #isPresent} returns {@code false})
      */
     @Nonnull
+    @NewObject
     abstract public TsData get() throws IllegalStateException;
 
     /**
-     * Returns the contained instance if it is present; {@code defaultValue}
-     * otherwise. If no default value should be required because the instance is
+     * Returns the time series data if it is present; {@code defaultValue}
+     * otherwise. If no default value should be required because the data is
      * known to be present, use {@link #get()} instead. For a default value of
      * {@code null}, use {@link #orNull}.
      *
-     * @param defaultValue a non-null default value if the instance is absent
+     * @param defaultValue a non-null default value if the data is absent
      * @return a non-null TsData
      */
     @Nonnull
@@ -126,8 +149,8 @@ public abstract class OptionalTsData {
     }
 
     /**
-     * Returns the contained instance if it is present; {@code null} otherwise.
-     * If the instance is known to be present, use {@link #get()} instead.
+     * Returns the time series data if it is present; {@code null} otherwise. If
+     * the data is known to be present, use {@link #get()} instead.
      *
      * @return a TsData if present, null otherwise
      */
@@ -135,10 +158,10 @@ public abstract class OptionalTsData {
     abstract public TsData orNull();
 
     /**
-     * Returns a message explaining why the reference is "absent".
+     * Returns a message explaining why the time series data is "absent".
      *
-     * @return
-     * @throws IllegalStateException if the instance id present
+     * @return non-null message
+     * @throws IllegalStateException if the data is present
      */
     @Nonnull
     abstract public String getCause() throws IllegalStateException;
@@ -146,11 +169,23 @@ public abstract class OptionalTsData {
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
     private static final class Present extends OptionalTsData {
 
-        private final TsData data;
+        // Converter retreived only once at loading time of this class to avoid: 
+        // - incompatible formats if changed later on
+        // - overhead of synchronous code
+        private static final ByteArrayConverter CONVERTER = ByteArrayConverter.getInstance();
 
-        private Present(int nbrRows, int nbrUselessRows, @Nonnull TsData data) {
+        private final int freq;
+        private final int year;
+        private final int position;
+        private final byte[] data;
+
+        private Present(int nbrRows, int nbrUselessRows, TsData data) {
             super(nbrRows, nbrUselessRows);
-            this.data = data;
+            TsPeriod start = data.getStart();
+            this.freq = start.getFrequency().intValue();
+            this.year = start.getYear();
+            this.position = start.getPosition();
+            this.data = CONVERTER.fromDoubleArray(data.getValues().internalStorage());
         }
 
         @Override
@@ -160,12 +195,12 @@ public abstract class OptionalTsData {
 
         @Override
         public TsData get() {
-            return data;
+            return new TsData(TsFrequency.valueOf(freq), year, position, CONVERTER.toDoubleArray(data), false);
         }
 
         @Override
         public TsData orNull() {
-            return data;
+            return get();
         }
 
         @Override
@@ -179,12 +214,13 @@ public abstract class OptionalTsData {
         }
 
         private boolean equals(Present that) {
-            return this.data.equals(that.data);
+            return this.freq == that.freq && this.year == that.year && this.position == that.position
+                    && Arrays.equals(this.data, that.data);
         }
 
         @Override
         public int hashCode() {
-            return data.hashCode();
+            return Objects.hash(freq, year, position, data);
         }
     }
 
@@ -192,7 +228,7 @@ public abstract class OptionalTsData {
 
         private final String cause;
 
-        private Absent(int nbrRows, int nbrUselessRows, @Nonnull String cause) {
+        private Absent(int nbrRows, int nbrUselessRows, String cause) {
             super(nbrRows, nbrUselessRows);
             this.cause = cause;
         }
@@ -231,9 +267,84 @@ public abstract class OptionalTsData {
             return cause.hashCode();
         }
     }
+
+    private static final class BuilderAbsent extends OptionalTsData {
+
+        private final BuilderCause cause;
+
+        private BuilderAbsent(int nbrRows, int nbrUselessRows, BuilderCause cause) {
+            super(nbrRows, nbrUselessRows);
+            this.cause = cause;
+        }
+
+        @Override
+        public boolean isPresent() {
+            return false;
+        }
+
+        @Override
+        public TsData get() throws IllegalStateException {
+            throw new IllegalStateException(cause.getMessage());
+        }
+
+        @Override
+        public TsData orNull() {
+            return null;
+        }
+
+        @Override
+        public String getCause() {
+            return cause.getMessage();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return this == obj || (obj instanceof BuilderAbsent && equals((BuilderAbsent) obj));
+        }
+
+        private boolean equals(BuilderAbsent that) {
+            return this.cause == that.cause;
+        }
+
+        @Override
+        public int hashCode() {
+            return cause.hashCode();
+        }
+    }
+
+    @VisibleForTesting
+    enum BuilderCause {
+
+        NO_DATA, INVALID_AGGREGATION, GUESS_SINGLE, GUESS_DUPLICATION, DUPLICATION_WITHOUT_AGGREGATION, UNKNOWN;
+
+        @Nonnull
+        public String getMessage() {
+            switch (this) {
+                case NO_DATA:
+                    return "No data available";
+                case INVALID_AGGREGATION:
+                    return "Invalid aggregation mode";
+                case GUESS_SINGLE:
+                    return "Cannot guess frequency with a single observation";
+                case GUESS_DUPLICATION:
+                    return "Cannot guess frequency with duplicated periods";
+                case DUPLICATION_WITHOUT_AGGREGATION:
+                    return "Duplicated observations without aggregation";
+                case UNKNOWN:
+                    return "Unexpected error";
+                default:
+                    throw new RuntimeException();
+            }
+        }
+    }
     //</editor-fold>
 
     public static final class Builder implements IBuilder<OptionalTsData> {
+
+        @Nonnull
+        public static String toString(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation) {
+            return "(" + freq + "/" + aggregation + ")";
+        }
 
         private final TsDataCollector dc;
         private final TsFrequency freq;
@@ -278,14 +389,15 @@ public abstract class OptionalTsData {
         @Override
         public OptionalTsData build() {
             if (dc.getCount() == 0) {
-                return onFailure("No data available");
+                return onFailure(BuilderCause.NO_DATA);
             }
-            if (freq == TsFrequency.Undefined && aggregation != TsAggregationType.None) {
-                return onFailure("Invalid aggregation mode");
+            if (!isValidAggregation(freq, aggregation)) {
+                return onFailure(BuilderCause.INVALID_AGGREGATION);
             }
+
             TsData result;
             if (aggregation == TsAggregationType.None) {
-                result = dc.make(freq, aggregation);
+                result = dc.make(freq, TsAggregationType.None);
             } else {
                 result = dc.make(TsFrequency.Undefined, TsAggregationType.None);
                 if (result != null && (result.getFrequency().intValue() % freq.intValue() == 0)) {
@@ -300,27 +412,27 @@ public abstract class OptionalTsData {
                 switch (freq) {
                     case Undefined:
                         return dc.getCount() == 1
-                                ? onFailure("Cannot guess frequency with a single observation")
-                                : onFailure("Cannot guess frequency with duplicated periods");
+                                ? onFailure(BuilderCause.GUESS_SINGLE)
+                                : onFailure(BuilderCause.GUESS_DUPLICATION);
                     default:
-                    // TODO: if TsAggregationType.None
+                        return aggregation == TsAggregationType.None
+                                ? onFailure(BuilderCause.DUPLICATION_WITHOUT_AGGREGATION)
+                                : onFailure(BuilderCause.UNKNOWN);
                 }
-                return onFailure("Unexpected error");
             }
             return onSuccess(result);
         }
 
-        private OptionalTsData onSuccess(TsData tsData) {
+        private OptionalTsData onSuccess(@Nonnull TsData tsData) {
             return new Present(dc.getCount(), nbrUselessRows, tsData);
         }
 
-        private OptionalTsData onFailure(String cause) {
-            return new Absent(dc.getCount(), nbrUselessRows, cause);
+        private OptionalTsData onFailure(@Nonnull BuilderCause cause) {
+            return new BuilderAbsent(dc.getCount(), nbrUselessRows, cause);
         }
 
-        @Nonnull
-        public static String toString(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation) {
-            return "(" + freq + "/" + aggregation + ")";
+        private static boolean isValidAggregation(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation) {
+            return freq != TsFrequency.Undefined || aggregation == TsAggregationType.None;
         }
     }
 }

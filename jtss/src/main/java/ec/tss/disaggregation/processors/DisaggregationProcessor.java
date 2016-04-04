@@ -26,8 +26,12 @@ import ec.tstoolkit.algorithm.IProcSpecification;
 import ec.tstoolkit.algorithm.IProcessing;
 import ec.tstoolkit.algorithm.IProcessingFactory;
 import ec.tstoolkit.algorithm.ProcessingContext;
+import ec.tstoolkit.arima.ArimaModel;
+import ec.tstoolkit.maths.linearfilters.BackFilter;
+import ec.tstoolkit.maths.polynomials.UnitRoots;
 import ec.tstoolkit.ssf.ISsf;
 import ec.tstoolkit.ssf.arima.SsfAr1;
+import ec.tstoolkit.ssf.arima.SsfArima;
 import ec.tstoolkit.ssf.arima.SsfRw;
 import ec.tstoolkit.ssf.arima.SsfRwAr1;
 import ec.tstoolkit.timeseries.regression.Constant;
@@ -105,9 +109,12 @@ public class DisaggregationProcessor implements ITemporalDisaggregationProcessin
                 disagg = initOLS();
             } else if (spec.getModel() == DisaggregationSpecification.Model.RwAr1) {
                 disagg = initLitterman();
-            } else {
+            } else if (spec.getModel() == DisaggregationSpecification.Model.Rw) {
                 disagg = initFernandez();
+            }else{
+                disagg = initI(spec.getModel().getDifferencingOrder());
             }
+                
             disagg.useML(spec.isML());
             disagg.calculateVariance(true);
             disagg.setSsfOption(spec.getOption());
@@ -170,6 +177,14 @@ public class DisaggregationProcessor implements ITemporalDisaggregationProcessin
             TsDisaggregation<SsfRw> disagg = new TsDisaggregation<>();
             SsfRw ssf = new SsfRw();
             ssf.useZeroInitialization(spec.isZeroInitialization());
+            disagg.setSsf(ssf);
+            return disagg;
+        }
+
+        private TsDisaggregation<SsfArima> initI(int diff) {
+            TsDisaggregation<SsfArima> disagg = new TsDisaggregation<>();
+            ArimaModel sarima = new ArimaModel(null, new BackFilter(UnitRoots.D(1, diff)), null, 1);
+            SsfArima ssf = new SsfArima(sarima);
             disagg.setSsf(ssf);
             return disagg;
         }

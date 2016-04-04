@@ -21,8 +21,8 @@ import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.design.Development;
 
 /**
- * A Householder reflection is a matrix of the form H = I - 2/(v'v) * vv' v is
- * called the householder vector. 
+ * A Householder reflection is represented by a matrix of the form H = I - 2/(v'v) * vv' 
+ * v is called the householder vector. 
  *
  * This implementation always uses a transformation that projects x on (|x|,
  * 0...0)
@@ -43,8 +43,9 @@ public class HouseholderReflection implements IVectorTransformation {
      * Creates a new Householder reflection that transform the given array to 
      * [a 0...0]
      *
-     * @param vector The vector used to compute the transformation. The vector
+     * @param v The vector used to compute the transformation. The vector
      * is unmodified.
+     * @return 
      */
     public static HouseholderReflection from(DataBlock v) {
         HouseholderReflection reflection = new HouseholderReflection();
@@ -121,10 +122,11 @@ public class HouseholderReflection implements IVectorTransformation {
         for (int i = beg + inc; i != end; i += inc) {
             sig += v[i] * v[i];
         }
+        double x0 = v[beg];
         if (sig < EPS) {
+            mu_=Math.abs(x0);
             return; // nothing to do...
         }
-        double x0 = v[beg];
         mu_ = Math.sqrt(sig + x0 * x0);
 
         double v0;

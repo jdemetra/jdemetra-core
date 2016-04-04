@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  *
- * @author PCUser
+ * @author Jean Palate
  */
 public class TDController extends AbstractModelController {
 

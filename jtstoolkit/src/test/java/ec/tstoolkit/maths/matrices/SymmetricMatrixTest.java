@@ -16,8 +16,10 @@
  */
 package ec.tstoolkit.maths.matrices;
 
+import ec.tstoolkit.data.DataBlock;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -27,6 +29,39 @@ public class SymmetricMatrixTest {
 
     public SymmetricMatrixTest() {
     }
+
+    @Test
+    public void testQuadraticForm() {
+        Matrix X = new Matrix(5, 8);
+        X.randomize();
+        Matrix S = SymmetricMatrix.XXt(X);
+        DataBlock x = new DataBlock(S.getRowsCount());
+        x.randomize();
+        assertEquals(SymmetricMatrix.quadraticForm(S, x.getData()), SymmetricMatrix.quadraticForm(S, x), 1e-9);
+    }
+    
+    @Test
+    @Ignore
+    public void stressTestQuadraticForm() {
+        Matrix X = new Matrix(1000, 1000);
+        X.randomize();
+        Matrix S = SymmetricMatrix.XXt(X);
+        DataBlock x = new DataBlock(S.getRowsCount());
+        x.randomize();
+        long t0=System.currentTimeMillis();
+        for (int i=0; i<5000; ++i){
+            SymmetricMatrix.quadraticForm(S, x);
+        }
+        long t1=System.currentTimeMillis();
+        System.out.println(t1-t0);
+        t0=System.currentTimeMillis();
+        for (int i=0; i<5000; ++i){
+            SymmetricMatrix.quadraticForm(S, x.getData());
+        }
+        t1=System.currentTimeMillis();
+        System.out.println(t1-t0);
+    }
+    
 
     @Test
     public void testLSolve() {
@@ -55,24 +90,24 @@ public class SymmetricMatrixTest {
         Matrix D = B1.minus(B2);
         assertTrue(D.nrm2() < 1e-9);
     }
-    
+
 //    @Test
-    public void demoCholesky(){
-        int n=10;
+    public void demoCholesky() {
+        int n = 10;
         Matrix X = new Matrix(n, n);
         X.randomize();
-        Matrix S=Matrix.lsolve(X.subMatrix(), Matrix.identity(X.getRowsCount()).subMatrix());
+        Matrix S = Matrix.lsolve(X.subMatrix(), Matrix.identity(X.getRowsCount()).subMatrix());
         S = SymmetricMatrix.XtX(S);
-        for (int i=0; i<S.getColumnsCount(); ++i){
-            Matrix T=new Matrix(S.subMatrix(0, i+1, 0, i+1));
+        for (int i = 0; i < S.getColumnsCount(); ++i) {
+            Matrix T = new Matrix(S.subMatrix(0, i + 1, 0, i + 1));
             SymmetricMatrix.lcholesky(T);
             System.out.println(T.diagonal());
         }
-        X.set(3,6,10);
-        S=Matrix.lsolve(X.subMatrix(), Matrix.identity(X.getRowsCount()).subMatrix());
+        X.set(3, 6, 10);
+        S = Matrix.lsolve(X.subMatrix(), Matrix.identity(X.getRowsCount()).subMatrix());
         S = SymmetricMatrix.XtX(S);
-        for (int i=0; i<S.getColumnsCount(); ++i){
-            Matrix T=new Matrix(S.subMatrix(0, i+1, 0, i+1));
+        for (int i = 0; i < S.getColumnsCount(); ++i) {
+            Matrix T = new Matrix(S.subMatrix(0, i + 1, 0, i + 1));
             SymmetricMatrix.lcholesky(T);
             System.out.println(T);
         }

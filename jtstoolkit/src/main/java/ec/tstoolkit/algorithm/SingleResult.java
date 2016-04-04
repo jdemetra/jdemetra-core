@@ -23,7 +23,7 @@ import java.util.Map;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class SingleResult<T>  implements IProcResults {
     

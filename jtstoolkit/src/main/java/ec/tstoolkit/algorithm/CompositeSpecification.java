@@ -17,16 +17,19 @@
 
 package ec.tstoolkit.algorithm;
 
+import ec.tstoolkit.design.Development;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.utilities.Jdk6;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
+@Development (status = Development.Status.Exploratory)
 public class CompositeSpecification implements IProcSpecification, Cloneable {
 
     public static class Node {
@@ -123,7 +126,15 @@ public class CompositeSpecification implements IProcSpecification, Cloneable {
         }
         return ok;
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj || (obj instanceof CompositeSpecification && equals((CompositeSpecification) obj));
+    }
 
+    private boolean equals(CompositeSpecification spec) {
+        return Objects.equals(spec.nodes_, nodes_);
+    }
 //    @Override
 //    public void fillDictionary(String prefix, List<String> dic) {
 //        for (Node cur : nodes_.values()) {

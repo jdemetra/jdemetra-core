@@ -18,7 +18,7 @@ package ec.tstoolkit.information;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public interface InformationConverter<T> {
     /**

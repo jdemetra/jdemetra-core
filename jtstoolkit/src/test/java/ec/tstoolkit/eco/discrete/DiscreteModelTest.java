@@ -23,7 +23,7 @@ import ec.tstoolkit.maths.matrices.Matrix;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class DiscreteModelTest {
     

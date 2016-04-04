@@ -25,32 +25,6 @@ import ec.tstoolkit.data.DescriptiveStatistics;
 import ec.tstoolkit.design.NewObject;
 import ec.tstoolkit.design.Development;
 
-class DateObs {
-
-    Date date;
-
-    double value;
-
-    DateObs(Date d) {
-	date = d;
-	value = Double.NaN;
-    }
-
-    DateObs(Date d, double v) {
-	date = d;
-	value = v;
-    }
-}
-
-enum DateObsComparer implements java.util.Comparator<DateObs> {
-
-    INSTANCE;
-    @Override
-    public int compare(DateObs o1, DateObs o2) {
-	return o1.date.compareTo(o2.date);
-    }
-}
-
 /**
  * A TSDataCollecor collects time observations (identified by pairs of
  * date-double) to create simple time series. Time series can be created
@@ -62,15 +36,17 @@ enum DateObsComparer implements java.util.Comparator<DateObs> {
 @Development(status = Development.Status.Alpha)
 public class TsDataCollector {
 
-    private double missing = -99999;
-    private ArrayList<DateObs> m_obs = new ArrayList<>();
-
+    private final ArrayList<DateObs> m_obs;
+    private double missing;
     private boolean m_bIsSorted;
 
     /**
      * Creates a new TSData Collector.
      */
     public TsDataCollector() {
+        this.missing = -99999;
+        this.m_obs = new ArrayList<>();
+        this.m_bIsSorted = false;
     }
 
     /**
@@ -82,7 +58,7 @@ public class TsDataCollector {
      *
      */
     public void addMissingValue(Date date) {
-	m_obs.add(new DateObs(date));
+	m_obs.add(new DateObs(date.getTime()));
 	m_bIsSorted = false;
     }
 
@@ -91,13 +67,13 @@ public class TsDataCollector {
      * 
      * @param date Date that corresponds to the observation. The date has just
      * to belong to the considered period (it is not retained in the final time series.
-     * @param Value Value of the observation
+     * @param value Value of the observation
      */
-    public void addObservation(Date date, double Value) {
-	if (Double.isNaN(Value) || Value == missing)
-	    m_obs.add(new DateObs(date));
+    public void addObservation(Date date, double value) {
+	if (Double.isNaN(value) || value == missing)
+	    m_obs.add(new DateObs(date.getTime()));
 	else
-	    m_obs.add(new DateObs(date, Value));
+	    m_obs.add(new DateObs(date.getTime(), value));
 	m_bIsSorted = false;
     }
 
@@ -180,17 +156,16 @@ public class TsDataCollector {
 	double[] vals = new double[n];
 	int[] ids = new int[n];
 
-	TsPeriod p0 = new TsPeriod(frequency, m_obs.get(0).date);
-	int ids0 = p0.id();
-	TsPeriod p1 = new TsPeriod(frequency, m_obs.get(n - 1).date);
-	int ids1 = p1.id();
+        TsPeriod.CalendarUtil util = TsPeriod.CalendarUtil.getInstance();
+        
+	int ids0 = util.calcTsPeriodId(frequency, m_obs.get(0).date);
+	int ids1 = util.calcTsPeriodId(frequency, m_obs.get(n - 1).date);
 
 	int avn = 0;
 	int ncur = -1;
 	for (int i = 0; i < n; ++i) {
 	    DateObs o = m_obs.get(i);
-	    TsPeriod p = new TsPeriod(frequency, o.date);
-	    int curid = p.id();
+	    int curid = util.calcTsPeriodId(frequency, o.date);
 	    switch (convMode) {
 	    case Average: {
 		if (!DescriptiveStatistics.isFinite(o.value))
@@ -281,6 +256,8 @@ public class TsDataCollector {
 	if (convMode == TsAggregationType.Average && ncur >= 0)
 	    vals[ncur] /= avn;
 
+	TsPeriod p0 = new TsPeriod(frequency, ids0);
+        
 	// check if the series is continuous and complete.
 	int l = ids1 - ids0 + 1;
 	if (l == n && ncur + 1 == n)
@@ -324,11 +301,10 @@ public class TsDataCollector {
     }
 
     private boolean makeIdsFromFrequency(TsFrequency frequency, int[] ids) {
-	TsPeriod p = new TsPeriod(frequency, (m_obs.get(0)).date);
-	ids[0] = p.id();
+        TsPeriod.CalendarUtil util = TsPeriod.CalendarUtil.getInstance();
+	ids[0] = util.calcTsPeriodId(frequency, m_obs.get(0).date);
 	for (int i = 1; i < ids.length; ++i) {
-	    p = new TsPeriod(frequency, m_obs.get(i).date);
-	    ids[i] = p.id();
+	    ids[i] = util.calcTsPeriodId(frequency, m_obs.get(i).date);
 	    if (ids[i] == ids[i - 1])
 		return false;
 	}
@@ -351,5 +327,32 @@ public class TsDataCollector {
 	    java.util.Collections.sort(m_obs, DateObsComparer.INSTANCE);
 	    m_bIsSorted = true;
 	}
+    }
+    
+    private static final class DateObs {
+
+        public final long date;
+
+        public final double value;
+
+        public DateObs(long d) {
+            date = d;
+            value = Double.NaN;
+        }
+
+        public DateObs(long d, double v) {
+            date = d;
+            value = v;
+        }
+    }
+
+    private enum DateObsComparer implements java.util.Comparator<DateObs> {
+
+        INSTANCE;
+
+        @Override
+        public int compare(DateObs l, DateObs r) {
+            return Long.compare(l.date, r.date);
+        }
     }
 }

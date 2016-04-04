@@ -20,7 +20,7 @@ package ec.tstoolkit.modelling.arima;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public interface IOutliersDetectionModule extends IPreprocessingModule{
     boolean reduceSelectivity();

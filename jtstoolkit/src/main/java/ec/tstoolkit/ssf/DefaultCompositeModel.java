@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class DefaultCompositeModel implements ICompositeModel {
 

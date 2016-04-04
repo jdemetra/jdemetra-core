@@ -21,6 +21,7 @@ import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.timeseries.regression.EasterVariable;
+import ec.tstoolkit.timeseries.regression.JulianEasterVariable;
 
 /**
  *
@@ -74,6 +75,28 @@ public class PreprocessingModelBuilder {
                         if (old.getDuration() != duration) {
                             EasterVariable easter = new EasterVariable();
                             easter.setType(old.getType());
+                            easter.setDuration(duration);
+                            mh.setVariable(easter);
+                            mh.status = RegStatus.Accepted;
+                            changed = true;
+                        } else {
+                            changed = !mh.status.isSelected();
+                        }
+                        mh.status = RegStatus.Accepted;
+                    }
+                }
+            }
+            else if (mh.status.needTesting() && mh.getVariable() instanceof JulianEasterVariable) {
+                if (duration == 0) {
+                    if (mh.status.isSelected()) {
+                        changed = true;
+                    }
+                    mh.status = RegStatus.Rejected;
+                } else {
+                    JulianEasterVariable old = (JulianEasterVariable) mh.getVariable();
+                    if (old != null) {
+                        if (old.getDuration() != duration) {
+                            JulianEasterVariable easter = new JulianEasterVariable();
                             easter.setDuration(duration);
                             mh.setVariable(easter);
                             mh.status = RegStatus.Accepted;

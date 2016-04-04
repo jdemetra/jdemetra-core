@@ -28,8 +28,9 @@ import ec.tstoolkit.design.NewObject;
 @Development(status = Development.Status.Alpha)
 public class SubMatrix implements Cloneable {
 
-    double[] m_data;
-    int m_start, m_nrows, m_ncols, m_row_inc, m_col_inc;
+    final double[] m_data;
+    final int m_row_inc, m_col_inc;
+    int m_start, m_nrows, m_ncols;
 
     /**
      * Creates a new instance of SubMatrix
@@ -83,6 +84,9 @@ public class SubMatrix implements Cloneable {
      * @param val
      */
     public void add(final double val) {
+        if (val == 0) {
+            return;
+        }
         if (m_row_inc == 1) {
             for (int c = 0, ic = m_start; c < m_ncols; ++c, ic += m_col_inc) {
                 for (int r = 0, ir = ic; r < m_nrows; ++r, ++ir) {
@@ -119,6 +123,14 @@ public class SubMatrix implements Cloneable {
      * @param m
      */
     public void add(final SubMatrix m) {
+        // special handling of full matrices
+        if (isFull() && m.isFull()) {
+            for (int i = 0; i < m_data.length; ++i) {
+                m_data[i] += m.m_data[i];
+            }
+            return;
+        }
+
         // if (m_nrows != m.m_nrows || m_ncols != m.m_ncols)
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         DataBlockIterator iter, siter;
@@ -136,6 +148,35 @@ public class SubMatrix implements Cloneable {
         } while (iter.next() && siter.next());
     }
 
+    /**
+     * Adds the current submatrix to the submatrix given by its top/left position (i,j) in another submatrix
+     * @param i The row index
+     * @param j TheColumn index
+     * @param m The target submatrix
+     */
+    public void addTo(SubMatrix m, int i, int j) {
+        int scur=m_start, tcur=m.m_start + i * m.m_row_inc + j * m.m_col_inc;
+        for (int c=0; c<m_ncols; ++c, scur+=m_col_inc, tcur+=m.m_col_inc){
+            for (int r=0, sidx=scur, tidx=tcur; r<m_nrows; ++r, sidx+=m_row_inc, tidx+=m.m_row_inc){
+                m.m_data[tidx]+=m_data[sidx];
+            }
+        }
+    }
+
+    /**
+     * Adds the current submatrix to the submatrix given by its top/left position (i,j) in another submatrix
+     * @param i The row index
+     * @param j TheColumn index
+     * @param m The target submatrix
+     */
+    public void subTo(SubMatrix m, int i, int j) {
+        int scur=m_start, tcur=m.m_start + i * m.m_row_inc + j * m.m_col_inc;
+        for (int c=0; c<m_ncols; ++c, scur+=m_col_inc, tcur+=m.m_col_inc){
+            for (int r=0, sidx=scur, tidx=tcur; r<m_nrows; ++r, sidx+=m_row_inc, tidx+=m.m_row_inc){
+                m.m_data[tidx]-=m_data[sidx];
+            }
+        }
+    }
     /**
      *
      */
@@ -191,24 +232,21 @@ public class SubMatrix implements Cloneable {
 
     /**
      *
-     * @param src
+     * @param m
      */
-    public void copy(final SubMatrix src) {
-        // if (m_nrows != src.m_nrows || m_ncols != src.m_ncols)
-        // throw new MatrixException(MatrixException.IncompatibleDimensions);
-        DataBlockIterator iter, siter;
-        if (m_row_inc == 1) {
-            iter = columns();
-            siter = src.columns();
-        } else {
-            iter = rows();
-            siter = src.rows();
+    public void copy(final SubMatrix m) {
+        // special handling of full matrices
+        if (isFull() && m.isFull()) {
+            System.arraycopy(m.m_data, 0, m_data, 0, m_data.length);
+            return;
         }
 
-        DataBlock icur = iter.getData(), sicur = siter.getData();
-        do {
-            icur.copy(sicur);
-        } while (iter.next() && siter.next());
+        int scur=m.m_start, tcur=m_start;
+        for (int c=0; c<m_ncols; ++c, scur+=m.m_col_inc, tcur+=m_col_inc){
+            for (int r=0, sidx=scur, tidx=tcur; r<m_nrows; ++r, sidx+=m.m_row_inc, tidx+=m_row_inc){
+                m_data[tidx]=m.m_data[sidx];
+            }
+        }
     }
 
     /**
@@ -319,6 +357,20 @@ public class SubMatrix implements Cloneable {
     }
 
     /**
+     * Copies the current submatrix at a given position (i,j) in another matrix
+     * @param i The row index
+     * @param j TheColumn index
+     * @param m The target submatrix
+     */
+    public void copyTo(SubMatrix m, int i, int j) {
+        int scur=m_start, tcur=m.m_start + i * m.m_row_inc + j * m.m_col_inc;
+        for (int c=0; c<m_ncols; ++c, scur+=m_col_inc, tcur+=m.m_col_inc){
+            for (int r=0, sidx=scur, tidx=tcur; r<m_nrows; ++r, sidx+=m_row_inc, tidx+=m.m_row_inc){
+                m.m_data[tidx]=m_data[sidx];
+            }
+        }
+    }
+    /**
      * this = a * Y
      *
      * @param a
@@ -349,6 +401,9 @@ public class SubMatrix implements Cloneable {
      * @param Y
      */
     public void addAY(final double a, final SubMatrix Y) {
+        if (a == 0) {
+            return;
+        }
         // if (m_nrows != Y.m_nrows || m_ncols != Y.m_ncols)
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         DataBlockIterator iter, siter;
@@ -366,6 +421,36 @@ public class SubMatrix implements Cloneable {
         } while (iter.next() && siter.next());
     }
 
+    /**
+     * M = M + X * a * X'
+     *
+     * @param a
+     * @param x
+     */
+    public void addXaXt(double a, DataBlock x) {
+        DataBlockIterator cols = columns();
+        DataBlock col = cols.getData();
+        do {
+            double z = a * x.get(cols.getPosition());
+            col.addAY(z, x);
+        } while (cols.next());
+    }
+
+    /**
+     * M = M + X * a * Y'
+     *
+     * @param a
+     * @param x
+     * @param y
+     */
+    public void addXaYt(double a, DataBlock x, DataBlock y) {
+        DataBlockIterator cols = columns();
+        DataBlock col = cols.getData();
+        do {
+            double z = a * y.get(cols.getPosition());
+            col.addAY(z, x);
+        } while (cols.next());
+    }
     /**
      *
      * @return
@@ -516,13 +601,13 @@ public class SubMatrix implements Cloneable {
      * @return
      */
     public double dot(final SubMatrix m) {
-        double p=0;
-        DataBlockIterator cols=columns(), mcols=m.columns();
-        DataBlock col=cols.getData(), mcol=mcols.getData();
-        do{
-            p+=col.dot(mcol);
-        }while (cols.next() && mcols.next());
-        return p;        
+        double p = 0;
+        DataBlockIterator cols = columns(), mcols = m.columns();
+        DataBlock col = cols.getData(), mcol = mcols.getData();
+        do {
+            p += col.dot(mcol);
+        } while (cols.next() && mcols.next());
+        return p;
     }
 
     /**
@@ -667,6 +752,13 @@ public class SubMatrix implements Cloneable {
      * @param m
      */
     public void sub(final SubMatrix m) {
+        // special handling of full matrices
+        if (isFull() && m.isFull()) {
+            for (int i = 0; i < m_data.length; ++i) {
+                m_data[i] -= m.m_data[i];
+            }
+            return;
+        }
         // if (m_nrows != m.m_nrows || m_ncols != m.m_ncols)
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         DataBlockIterator iter, siter;
@@ -777,21 +869,30 @@ public class SubMatrix implements Cloneable {
         return getColumnsCount() <= 0 || getRowsCount() <= 0;
     }
 
+    public boolean isZero(double zero) {
+        if (isFull()) {
+            return new DataBlock(m_data).isZero(zero);
+        } else {
+            DataBlockIterator cols = columns();
+            DataBlock col = cols.getData();
+            do {
+                if (!col.isZero(zero)) {
+                    return false;
+                }
+            } while (cols.next());
+            return true;
+        }
+    }
+
+    @Deprecated
     public boolean isNull(double zero) {
-        DataBlockIterator cols = columns();
-        DataBlock col = cols.getData();
-        do {
-            if (!col.isZero(zero)) {
-                return false;
-            }
-        } while (cols.next());
-        return true;
+        return isZero(zero);
     }
 
     public boolean isDiagonal() {
         return isLower() && isUpper();
     }
-    
+
     public boolean isIdentity() {
         return isDiagonal() && diagonal().isConstant(1);
     }
@@ -812,6 +913,10 @@ public class SubMatrix implements Cloneable {
             }
         }
         return true;
+    }
+
+    private boolean isFull() {
+        return m_nrows * m_ncols == m_data.length;
     }
 
     @Override
@@ -878,5 +983,187 @@ public class SubMatrix implements Cloneable {
         } while (mcols.next());
 
     }
+
+    /**
+     * The euclidian (frobenius) norm of the matrix
+     *
+     * @return sqrt(sum(x(i,j)*x(i,j))) is returned
+     */
+    public double nrm2() {
+        if (isFull()) {
+            return new DataBlock(m_data).nrm2();
+        } else {
+            DataBlockIterator columns = columns();
+            DataBlock column = columns.getData();
+            double n = column.nrm2();
+            while (columns.next()) {
+                DataBlock.hypot(n, column.nrm2());
+            }
+            return n;
+        }
+
+    }
+
+//<editor-fold defaultstate="collapsed" desc="iterator method">
+    
+    /**
+     * The following methods can be used to create fast iterations.
+     * They avoid the creation of unnecessary objects
+     * 
+     * example:
+     * 
+     * (Sub)Matrix data=...
+     * SubMatrix cur=data.topLeft();
+     * while (cur){
+     *    cur.next(r,c);
+     * }
+     */
+    
+    
+    /**
+     * Takes the bottom-right of the current submatrix as the new starting position
+     * and updates the number of rows/columns
+     * @param nrows The number of rows in the submatrix
+     * @param ncols The number of columns in the submatrix
+     */
+    public void next(int nrows, int ncols){
+        m_start+=m_nrows*m_row_inc+m_ncols*m_col_inc;
+        m_nrows=nrows;
+        m_ncols=ncols;
+    }
+
+    /**
+     * Takes the bottom-right of the current submatrix as the new starting position
+      */
+    public void next(){
+        m_start+=m_nrows*m_row_inc+m_ncols*m_col_inc;
+    }
+
+    /**
+     * Takes the top-right of the current submatrix as the new starting position
+     * and updates the number of columns
+     * @param ncols The number of columns in the submatrix
+     */
+    public void hnext(int ncols){
+        m_start+=m_ncols*m_col_inc;
+        m_ncols=ncols;
+    }
+
+    /**
+     * Takes the top-right of the current submatrix as the new starting position
+     */
+    public void hnext(){
+        m_start+=m_ncols*m_col_inc;
+    }
+    
+    /**
+     * Takes the bottom-left of the current submatrix as the new starting position
+     * and updates the number of rows
+     * @param nrows The number of rows in the submatrix
+     */
+    public void vnext(int nrows){
+        m_start+=m_nrows*m_row_inc;
+        m_nrows=nrows;
+    }
+
+    /**
+     * Takes the bottom-left of the current submatrix as the new starting position
+     */
+    public void vnext(){
+        m_start+=m_nrows*m_row_inc;
+    }
+    
+    /**
+     * Takes the top-left of the current submatrix as the new ending position
+     * and updates the number of rows/columns
+     * @param nrows The number of rows in the submatrix
+     * @param ncols The number of columns in the submatrix
+     */
+    public void previous(int nrows, int ncols){
+        m_start-=nrows*m_row_inc+ncols*m_col_inc;
+        m_nrows=nrows;
+        m_ncols=ncols;
+    }
+
+    /**
+     * Takes the top-left of the current submatrix as the new ending position
+     */
+    public void previous(){
+        m_start-=m_nrows*m_row_inc+m_ncols*m_col_inc;
+    }
+
+    /**
+     * Takes the bottom-left of the current submatrix as the new ending position
+     * and updates the number of columns
+     * @param ncols The number of columns in the submatrix
+     */
+    public void hprevious(int ncols){
+        m_start-=ncols*m_col_inc;
+        m_ncols=ncols;
+    }
+
+    /**
+     * Takes the bottom-left of the current submatrix as the new ending position
+     */
+    public void hprevious(){
+        m_start-=m_ncols*m_col_inc;
+    }
+    
+    /**
+     * Takes the top-right of the current submatrix as the new ending position
+     * and updates the number of rows
+     * @param nrows The number of rows in the submatrix
+     */
+    public void vprevious(int nrows){
+        m_start-=nrows*m_row_inc;
+        m_nrows=nrows;
+    }
+
+    /**
+     * Takes the top-right of the current submatrix as the new ending position
+     */
+    public void vprevious(){
+        m_start-=m_nrows*m_row_inc;
+    }
+    
+    /**
+     * Top-left empty sub-matrix. To be used with next(a,b)
+     * @return An empty sub-matrix
+     */
+    public SubMatrix topLeft(){
+        return new SubMatrix(m_data, m_start, 0, 0, m_row_inc, m_col_inc);
+    }
+    
+    /**
+     * Top-left sub-matrix
+     * @param nr Number of rows. Could be 0.
+     * @param nc Number of columns. Could be 0. 
+     * @return A nr x nc sub-matrix
+     */
+    public SubMatrix topLeft(int nr, int nc){
+        return new SubMatrix(m_data, m_start, nr, nc, m_row_inc, m_col_inc);
+    }
+    
+    /**
+     * bottom-right  sub-matrix. 
+     * @return An empty sub-matrix
+     */
+    public SubMatrix bottomRight(){
+        int start=m_nrows*m_row_inc+m_ncols*m_col_inc;
+        return new SubMatrix(m_data, start, 0, 0, m_row_inc, m_col_inc);
+    }
+
+    /**
+     * Bottom-right sub-matrix
+     * @param nr Number of rows. Could be 0.
+     * @param nc Number of columns. Could be 0. 
+     * @return A nr x nc sub-matrix
+     */
+    public SubMatrix bottomRight(int nr, int nc){
+        int start=(m_nrows-nr)*m_row_inc+(m_ncols-nc)*m_col_inc;
+        return new SubMatrix(m_data, start, nr, nc, m_row_inc, m_col_inc);
+    }
+    
+//</editor-fold>
 
 }

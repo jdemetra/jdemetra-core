@@ -21,7 +21,7 @@ import ec.tstoolkit.data.DataBlock;
 /**
  * Householder transformation with partial pivoting. R-like
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class HouseholderR extends AbstractLinearSystemSolver implements
         IQrDecomposition {

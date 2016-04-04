@@ -27,7 +27,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class MixedAirlineDecomposer implements IDefaultSeriesDecomposer<MixedAirlineResults> {
 

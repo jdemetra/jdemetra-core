@@ -22,7 +22,7 @@ import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public enum PreadjustmentType {
     None,

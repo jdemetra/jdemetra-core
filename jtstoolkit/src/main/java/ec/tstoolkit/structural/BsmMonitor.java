@@ -138,15 +138,22 @@ public class BsmMonitor {
             }
         }
 
+        boolean ok=m_bconverged;
         if (fixsmallvariance(m_bsm))// bsm.FixSmallVariances(1e-4))
         {
             updateSpec(m_bsm);
-            return false;
+            // update the likelihood !
+            fn_ = buildFunction(m_bsm, null,
+                    true);
+            IReadDataBlock parameters = m_mapper.map(m_bsm);
+            fnmax_=(SsfFunctionInstance<BasicStructuralModel>) fn_.evaluate(parameters);
+            m_ll=fnmax_.getLikelihood();
+            ok=false;
         }
         if (m_factor != 1) {
             m_ll.rescale(m_factor);
         }
-        return m_bconverged;
+        return ok;
     }
 
     private SsfFunction<BasicStructuralModel> buildFunction(
@@ -195,7 +202,8 @@ public class BsmMonitor {
         IReadDataBlock p = mapper.map(model);
         SsfFunctionInstance instance = new SsfFunctionInstance(fn, p);
         double ll = instance.getLikelihood().getLogLikelihood();
-        for (int i = 0; i < p.getLength(); ++i) {
+        int nvar=mapper.getVarsCount();
+        for (int i = 0; i < nvar; ++i) {
             if (p.get(i) < 1e-2) {
                 DataBlock np = new DataBlock(p);
                 np.set(i, 0);
@@ -300,10 +308,18 @@ public class BsmMonitor {
         double lmax = instance.getLikelihood().getLogLikelihood();
         IReadDataBlock p = fn.mapper.map(fn.model.ssf);
         int imax = -1;
-        for (int i = 0; i < p.getLength(); ++i) {
+        int nvars= mapper.getVarsCount();
+        for (int i = 0; i < nvars; ++i) {
             DataBlock np = new DataBlock(p);
             np.set(.5);
             np.set(i, 1);
+            int ncur=nvars;
+            if (mapper.hasCycleDumpingFactor()){
+                np.set(ncur++, .9);
+            }
+            if (mapper.hasCycleLength()){
+                np.set(ncur, 1);
+            }
             instance = new SsfFunctionInstance(fn, np);
             double nll = instance.getLikelihood().getLogLikelihood();
             if (nll > lmax) {
@@ -326,6 +342,12 @@ public class BsmMonitor {
             DataBlock np = new DataBlock(p);
             np.set(.1);
             np.set(imax, 1);
+            if (mapper.hasCycleDumpingFactor()){
+                np.set(nvars++, .9);
+            }
+            if  (mapper.hasCycleLength()){
+                np.set(nvars, 1);
+            }
             return mapper.map(np);
         }
     }

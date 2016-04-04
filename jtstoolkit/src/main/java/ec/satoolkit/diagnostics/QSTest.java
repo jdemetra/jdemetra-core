@@ -21,6 +21,7 @@ import ec.tstoolkit.dstats.Chi2;
 import ec.tstoolkit.dstats.TestType;
 import ec.tstoolkit.stats.LjungBoxTest;
 import ec.tstoolkit.stats.StatisticalTest;
+import ec.tstoolkit.timeseries.simplets.TsData;
 
 /**
  *
@@ -29,6 +30,10 @@ import ec.tstoolkit.stats.StatisticalTest;
 public class QSTest  {
 
     private QSTest() {
+    }
+    
+    public static StatisticalTest test(TsData data) {
+        return compute(data.getValues().internalStorage(), data.getFrequency().intValue(),2);
     }
 
     public static StatisticalTest compute(double[] data, int lag, int k) {

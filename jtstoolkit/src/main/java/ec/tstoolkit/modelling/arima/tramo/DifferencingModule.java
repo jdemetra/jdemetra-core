@@ -1,7 +1,7 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or â€“ as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
@@ -481,11 +481,11 @@ public class DifferencingModule extends AbstractTramoModule implements IPreproce
         int n = 0;
         double vmax = 0;
         for (int i = 0; i < r.length; ++i) {
-            double cdim = Math.abs(r[i].im);
+            double cdim = Math.abs(r[i].getIm());
             double vcur = (r[i].abs());
-            if (vcur >= val && cdim <= 0.05 && r[i].re > 0) {
+            if (vcur >= val && cdim <= 0.05 && r[i].getRe() > 0) {
                 ++n;
-            } else if (cdim <= 0.02 && r[i].re > 0 && vcur > vmax) {
+            } else if (cdim <= 0.02 && r[i].getRe() > 0 && vcur > vmax) {
                 vmax = vcur;
             }
         }

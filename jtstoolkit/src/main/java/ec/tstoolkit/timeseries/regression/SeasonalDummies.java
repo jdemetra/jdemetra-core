@@ -23,8 +23,10 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.List;
 
 /**
- *
- * @author gianluca
+ * The seasonal dummies are in fact seasonal contrasts. The contrasting
+ * period is by design the last period of the year.
+ * The regression variables generated that way are linearly independent.
+ * @author Gianluca Caporello
  */
 public class SeasonalDummies implements ITsVariable {
 

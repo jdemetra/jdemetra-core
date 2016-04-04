@@ -26,7 +26,7 @@ import ec.tstoolkit.utilities.IDynamicObject;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class DynamicTsVariable extends TsVariable implements IDynamicObject {
 
@@ -34,10 +34,10 @@ public class DynamicTsVariable extends TsVariable implements IDynamicObject {
 
     private static TsData fromMoniker(TsMoniker moniker) {
         Ts s = TsFactory.instance.createTs(null, moniker, TsInformationType.Data);
-        if (s != null && s.hasData() == TsStatus.Undefined) {
+        if (s.hasData() == TsStatus.Undefined) {
             s.load(TsInformationType.Data);
         }
-        return s != null ? s.getTsData() : null;
+        return s.getTsData();
 
     }
 

@@ -24,7 +24,7 @@ import ec.tstoolkit.timeseries.simplets.TsDomain;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class TsDocumentProcessing<R extends IProcResults> implements ITsProcessing<R> {
 

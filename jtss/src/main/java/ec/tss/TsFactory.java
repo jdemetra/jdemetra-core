@@ -337,35 +337,43 @@ public class TsFactory {
      * Gets or creates a time series and loads its data from a provider if
      * required by the information type.
      *
+     * @param name
      * @param moniker [FIXME: null triggers an NPE if type != None]
      * @param type
-     * @return a time series if it already exists or if a provider can provide
-     * it, null otherwise
+     * @return a non-null time series
      */
-    @Nullable
+    @Nonnull
     public Ts createTs(@Nullable String name, @Nonnull TsMoniker moniker, @Nonnull TsInformationType type) {
         synchronized (m_ts) {
-            Ts.Master ts = (Ts.Master) getTs(moniker);
-            if (ts == null) {
-                // add series...
-                ts = new Ts.Master(name, moniker);
+            Ts.Master result = (Ts.Master) getTs(moniker);
+            if (result == null) {
+                result = new Ts.Master(name, moniker);
                 if (type != TsInformationType.None) {
-                    ITsProvider provider = getProvider(moniker.getSource());
-                    if (provider == null) {
-                        return null;
-                    }
-                    TsInformation tsinfo = new TsInformation(name, moniker, type);
-                    if (!provider.get(tsinfo)) {
-                        return null;
-                    }
-                    ts.update(tsinfo);
+                    TsInformation info = new TsInformation(name, moniker, type);
+                    fill(info);
+                    result.update(info);
                 }
-                m_ts.put(moniker, new WeakReference<>(ts));
+                m_ts.put(moniker, new WeakReference<>(result));
             } else {
-                ts.load(type);
+                result.load(type);
             }
-            return ts;
+            return result;
         }
+    }
+
+    private boolean fill(TsInformation info) {
+        ITsProvider provider = getProvider(info.moniker.getSource());
+        if (provider == null) {
+            info.invalidDataCause = "Missing provider";
+            return false;
+        }
+        if (!provider.get(info)) {
+            if (info.invalidDataCause == null) {
+                info.invalidDataCause = "Unknown error";
+            }
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -400,6 +408,7 @@ public class TsFactory {
      * Gets or creates a collection from its moniker. [FIXME: Iterable<Ts>
      * ignored if TsCollection referenced by moniker already exists]
      *
+     * @param name
      * @param moniker
      * @param md
      * @param ts
@@ -433,43 +442,48 @@ public class TsFactory {
      * Gets or creates a collection and loads its data from a provider if
      * required by the information type.
      *
+     * @param name
      * @param moniker [FIXME: null triggers an NPE]
      * @param type
-     * @return a collection if it already exists or if a provider can provide
-     * it, null otherwise
+     * @return a collection
      */
-    @Nullable
+    @Nonnull
     public TsCollection createTsCollection(@Nullable String name, @Nonnull TsMoniker moniker,
             @Nonnull TsInformationType type) {
         // Search collection
-
         synchronized (m_collections) {
-            TsCollection collection = getTsCollection(moniker);
-            if (collection == null) {
-                ITsProvider provider = getProvider(moniker.getSource());
-                if (provider == null) {
-                    return null;
-                }
-                TsCollectionInformation cinfo = new TsCollectionInformation(
-                        moniker, type);
-                if (!provider.get(cinfo)) {
-                    return null;
-                }
-
-                collection = new TsCollection(name, moniker);
+            TsCollection result = getTsCollection(moniker);
+            if (result == null) {
+                result = new TsCollection(name, moniker);
+                TsCollectionInformation info = new TsCollectionInformation(moniker, type);
+                fill(info);
                 // add collection
-                m_collections.put(moniker, new WeakReference<>(
-                        collection));
+                m_collections.put(moniker, new WeakReference<>(result));
                 // set data
-                List<Ts> updated = collection.update(cinfo);
+                List<Ts> updated = result.update(info);
                 for (Ts s : updated) {
-                    notify(s, type, collection);
+                    notify(s, type, result);
                 }
             } else {
-                collection.load(type);
+                result.load(type);
             }
-            return collection;
+            return result;
         }
+    }
+
+    private boolean fill(TsCollectionInformation info) {
+        ITsProvider provider = getProvider(info.moniker.getSource());
+        if (provider == null) {
+            info.invalidDataCause = "Missing provider";
+            return false;
+        }
+        if (!provider.get(info)) {
+            if (info.invalidDataCause == null) {
+                info.invalidDataCause = "Unknown error";
+            }
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -617,34 +631,29 @@ public class TsFactory {
         return m_useSynchronousNotifications;
     }
 
-    private boolean load(ITsProvider provider, Ts.Master ts, TsInformationType type) {
-        if (ts.getInformationType().encompass(type)) {
+    private boolean doLoad(@Nonnull Ts.Master ts, @Nonnull TsInformationType type) {
+        if (ts.getInformationType().encompass(type) || ts.getMoniker().isAnonymous()) {
             return true;
         }
-        TsInformation tsinfo = new TsInformation(ts.getName(), ts.getMoniker(), type);
-        if (!provider.get(tsinfo)) {
-            return false;
-        }
-        ts.update(tsinfo);
-        notify(ts, tsinfo.type, this);
-        return true;
+        TsInformation info = new TsInformation(ts.getName(), ts.getMoniker(), type);
+        boolean result = fill(info);
+        ts.update(info);
+        notify(ts, info.type, this);
+        return result;
     }
 
-    private boolean load(ITsProvider provider, TsCollection c,
-            TsInformationType type) {
+    private boolean doLoad(@Nonnull TsCollection c, @Nonnull TsInformationType type) {
         if (c.getInformationType().encompass(type)) {
             return true;
         }
-        TsCollectionInformation cinfo = new TsCollectionInformation(c.getMoniker(), type);
-        if (!provider.get(cinfo)) {
-            return false;
-        }
-        List<Ts> updated = c.update(cinfo);
-        notify(c, cinfo.type, this);
+        TsCollectionInformation info = new TsCollectionInformation(c.getMoniker(), type);
+        boolean result = fill(info);
+        List<Ts> updated = c.update(info);
+        notify(c, info.type, this);
         for (Ts s : updated) {
-            notify(s, cinfo.type, c);
+            notify(s, info.type, c);
         }
-        return true;
+        return result;
     }
 
     /**
@@ -657,12 +666,7 @@ public class TsFactory {
      * @return true if the data is loaded; false otherwise
      */
     public boolean load(@Nonnull Ts ts, @Nonnull TsInformationType type) {
-        ITsProvider provider = getProvider(ts.getMoniker().getSource());
-        if (provider == null) {
-            return false;
-        } else {
-            return load(provider, ts.getMaster(), type);
-        }
+        return doLoad(ts.getMaster(), type);
     }
 
     /**
@@ -695,9 +699,8 @@ public class TsFactory {
         ITsProvider provider = getProvider(c.getMoniker().getSource());
         if (provider == null) {
             return load(c.toArray(), type);
-        } else {
-            return load(provider, c, type);
         }
+        return doLoad(c, type);
     }
 
     /**
@@ -761,12 +764,9 @@ public class TsFactory {
             return false;
         }
         synchronized (m_ts) {
-            if (provider.getAsyncMode() == TsAsyncMode.None) {
-                load(provider, s.getMaster(), type);
-            } else {
-                provider.queryTs(s.getMoniker(), type);
-            }
-            return true;
+            return provider.getAsyncMode() == TsAsyncMode.None
+                    ? doLoad(s.getMaster(), type)
+                    : provider.queryTs(s.getMoniker(), type);
         }
     }
 
@@ -786,21 +786,17 @@ public class TsFactory {
             return true;
         }
         ITsProvider provider = getProvider(c.getMoniker().getSource());
-        if (provider != null) {
-            synchronized (m_collections) {
-                if (provider.getAsyncMode() == TsAsyncMode.None) {
-                    load(provider, c, type);
-                } else {
-                    provider.queryTsCollection(c.getMoniker(), type);
-                }
-                return true;
-            }
-        } else {
+        if (provider == null) {
             Ts[] s = c.toArray();
             for (int i = 0; i < s.length; ++i) {
                 query(s[i], type);
             }
             return true;
+        }
+        synchronized (m_collections) {
+            return provider.getAsyncMode() == TsAsyncMode.None
+                    ? doLoad(c, type)
+                    : provider.queryTsCollection(c.getMoniker(), type);
         }
     }
 
@@ -812,7 +808,6 @@ public class TsFactory {
      */
     public ITsProvider register(String module, String providerclass) {
         try {
-
             ITsProvider iprovider = (ITsProvider) InterfaceLoader.create(
                     module, Class.forName("ec.tstoolkit.timeseries.ts.ITSProvider"),
                     providerclass);

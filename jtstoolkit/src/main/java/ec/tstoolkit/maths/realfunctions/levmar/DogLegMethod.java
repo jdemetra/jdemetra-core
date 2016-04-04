@@ -30,7 +30,7 @@ import ec.tstoolkit.maths.realfunctions.ISsqFunctionMinimizer;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class DogLegMethod implements ISsqFunctionMinimizer {
 

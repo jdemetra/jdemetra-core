@@ -34,11 +34,13 @@ import java.util.Arrays;
 
 /**
  * Estimation of the components of an UCARIMA model using a variant of the
- * Burman's algorithm.</br>This class is based on the program SEATS+ developed by Gianluca Caporello 
- * and Agustin Maravall -with programming support from Domingo Perez and Roberto Lopez- 
- * at the Bank of Spain, and on the program SEATS, previously developed by 
- * Victor Gomez and Agustin Maravall.<br>It corresponds more especially to a modified version of the
- * routine <i>ESTBUR</i>
+ * Burman's algorithm.</br>This class is based on the program SEATS+ developed
+ * by Gianluca Caporello and Agustin Maravall -with programming support from
+ * Domingo Perez and Roberto Lopez- at the Bank of Spain, and on the program
+ * SEATS, previously developed by Victor Gomez and Agustin Maravall.<br>It
+ * corresponds more especially to a modified version of the routine
+ * <i>ESTBUR</i>
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
@@ -462,6 +464,10 @@ public class BurmanEstimatesC {
         m_g = new Polynomial[ncmps];
 
         m_ma = model.getMA().getPolynomial();
+        double v = model.getInnovationVariance();
+        if (v != 1) {
+            m_ma = m_ma.times(Math.sqrt(v));
+        }
         m_ar = model.getAR().getPolynomial();
 
         for (int i = 0; i < ncmps; ++i) {

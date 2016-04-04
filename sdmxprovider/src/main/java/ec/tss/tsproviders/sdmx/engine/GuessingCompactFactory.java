@@ -16,7 +16,6 @@
  */
 package ec.tss.tsproviders.sdmx.engine;
 
-import com.google.common.base.Enums;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -63,11 +62,11 @@ public class GuessingCompactFactory extends AbstractDocumentFactory {
     }
 
     private static ImmutableList<SdmxItem> getSdmxItems(Node dataSetNode) {
-        ImmutableList.Builder<SdmxItem> items = ImmutableList.builder();
+        ImmutableList.Builder<SdmxItem> result = ImmutableList.builder();
         for (Node seriesNode : lookupSeriesNodes(dataSetNode)) {
-            items.add(getSdmxSeries(seriesNode));
+            result.add(getSdmxSeries(seriesNode));
         }
-        return items.build();
+        return result.build();
     }
 
     private static SdmxSeries getSdmxSeries(Node seriesNode) {
@@ -82,19 +81,21 @@ public class GuessingCompactFactory extends AbstractDocumentFactory {
         Parsers.Parser<Number> toValue = DEFAULT_DATA_FORMAT.numberParser();
         OptionalTsData.Builder result = new OptionalTsData.Builder(timeFormat.getFrequency(), timeFormat.getAggregationType());
         for (NamedNodeMap obs : lookupObservations(seriesNode)) {
-            Date period = toPeriod.parse(lookupPeriod(obs));
-            Number value = period != null ? toValue.parse(lookupValue(obs)) : null;
+            Date period = getPeriod(obs, toPeriod);
+            Number value = period != null ? getValue(obs, toValue) : null;
             result.add(period, value);
         }
         return result.build();
     }
 
-    private static String lookupPeriod(NamedNodeMap obs) {
-        return obs.getNamedItem("TIME_PERIOD").getNodeValue();
+    private static Date getPeriod(NamedNodeMap obs, Parsers.Parser<Date> toPeriod) {
+        Node tmp = obs.getNamedItem(TIME_PERIOD_ATTRIBUTE);
+        return tmp != null ? toPeriod.parse(tmp.getNodeValue()) : null;
     }
 
-    private static String lookupValue(NamedNodeMap obs) {
-        return obs.getNamedItem("OBS_VALUE").getNodeValue();
+    private static Number getValue(NamedNodeMap obs, Parsers.Parser<Number> toValue) {
+        Node tmp = obs.getNamedItem(OBS_VALUE_ATTRIBUTE);
+        return tmp != null ? toValue.parse(tmp.getNodeValue()) : null;
     }
 
     private static ImmutableList<Map.Entry<String, String>> getKey(Node seriesNode) {
@@ -105,9 +106,20 @@ public class GuessingCompactFactory extends AbstractDocumentFactory {
     }
 
     private static TimeFormat getTimeFormat(Node seriesNode) {
-        Node node = seriesNode.getAttributes().getNamedItem("TIME_FORMAT");
-        String value = node != null ? node.getNodeValue() : "";
-        return Enums.getIfPresent(TimeFormat.class, value).or(TimeFormat.UNDEFINED);
+        NamedNodeMap attributes = seriesNode.getAttributes();
+        Node node;
+
+        node = attributes.getNamedItem(TIME_FORMAT_ATTRIBUTE);
+        if (node != null) {
+            return TimeFormat.parseByTimeFormat(node.getNodeValue());
+        }
+
+        node = attributes.getNamedItem(FREQ_ATTRIBUTE);
+        if (node != null) {
+            return TimeFormat.parseByFrequencyCodeId(node.getNodeValue());
+        }
+
+        return TimeFormat.UNDEFINED;
     }
 
     private static Optional<Node> lookupDataSetNode(Document doc) {
@@ -122,13 +134,20 @@ public class GuessingCompactFactory extends AbstractDocumentFactory {
         return childNodes(seriesNode).filter(IS_OBS).transform(toAttributes());
     }
 
-    private static final Predicate<Node> IS_DATA_SET = nodeNameEndsWith("DataSet");
-    private static final Predicate<Node> IS_KEY_FAMILY_REF = nodeNameEndsWith("KeyFamilyRef");
-    private static final Predicate<Node> IS_SERIES = nodeNameEndsWith("Series");
-    private static final Predicate<Node> IS_OBS = nodeNameEndsWith("Obs");
-    private static final Predicate<Node> IS_TIME_FORMAT = Predicates.compose(Predicates.equalTo("TIME_FORMAT"), toNodeName());
+    //<editor-fold defaultstate="collapsed" desc="Resources">    
+    private static final String TIME_FORMAT_ATTRIBUTE = "TIME_FORMAT";
+    private static final String FREQ_ATTRIBUTE = "FREQ";
+    private static final String TIME_PERIOD_ATTRIBUTE = "TIME_PERIOD";
+    private static final String OBS_VALUE_ATTRIBUTE = "OBS_VALUE";
+
+    private static final Predicate<Node> IS_DATA_SET = localNameEqualTo("DataSet");
+    private static final Predicate<Node> IS_KEY_FAMILY_REF = localNameEqualTo("KeyFamilyRef");
+    private static final Predicate<Node> IS_SERIES = localNameEqualTo("Series");
+    private static final Predicate<Node> IS_OBS = localNameEqualTo("Obs");
+    private static final Predicate<Node> IS_TIME_FORMAT = nodeNameEqualTo(TIME_FORMAT_ATTRIBUTE);
 
     private static final DataFormat DEFAULT_DATA_FORMAT = new DataFormat(Locale.ROOT, null, null);
 
     private static final ImmutableList<Map.Entry<String, String>> NO_ATTRIBUTES = ImmutableList.of();
+    //</editor-fold>
 }

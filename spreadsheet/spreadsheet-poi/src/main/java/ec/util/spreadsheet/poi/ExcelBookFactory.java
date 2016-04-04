@@ -21,10 +21,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.FileSystemException;
+import java.nio.file.NoSuchFileException;
 import java.util.Locale;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import javax.annotation.Nonnull;
+import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 /**
  *
@@ -61,11 +65,10 @@ public class ExcelBookFactory extends Book.Factory {
 
     @Override
     public Book load(File file) throws IOException {
+        checkFile(file);
         try {
             return fast ? FastPoiBook.create(file) : PoiBook.create(file);
-        } catch (InvalidFormatException ex) {
-            throw new IOException(ex);
-        } catch (OpenXML4JException ex) {
+        } catch (OpenXML4JException | InvalidOperationException ex) {
             throw new IOException(ex);
         }
     }
@@ -74,8 +77,6 @@ public class ExcelBookFactory extends Book.Factory {
     public Book load(InputStream stream) throws IOException {
         try {
             return fast ? FastPoiBook.create(stream) : PoiBook.create(stream);
-        } catch (InvalidFormatException ex) {
-            throw new IOException(ex);
         } catch (OpenXML4JException ex) {
             throw new IOException(ex);
         }
@@ -83,8 +84,25 @@ public class ExcelBookFactory extends Book.Factory {
 
     @Override
     public void store(OutputStream stream, Book book) throws IOException {
-        XSSFWorkbook target = new XSSFWorkbook();
-        PoiBookWriter.copy(book, target);
-        target.write(stream);
+        // Currenty, inline string is not supported in FastPoiBook -> use of shared strings table
+        SXSSFWorkbook target = new SXSSFWorkbook(null, 100, false, true);
+        try {
+            PoiBookWriter.copy(book, target);
+            target.write(stream);
+        } finally {
+            // dispose of temporary files backing this workbook on disk
+            target.dispose();
+        }
+    }
+
+    @Nonnull
+    private static File checkFile(@Nonnull File file) throws FileSystemException {
+        if (!file.exists() || file.isDirectory()) {
+            throw new NoSuchFileException(file.getPath());
+        }
+        if (!file.canRead()) {
+            throw new AccessDeniedException(file.getPath());
+        }
+        return file;
     }
 }

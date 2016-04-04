@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class HttpPox<S, T> {
 

@@ -143,7 +143,7 @@ public class CheckLast {
     /**
      * Gets the values of the (transformed) series. More especially, if the
      * chosen model implies a log-transformation, the values are obtained after
-     * a log-transformation. Other transformation, such leap year corrections or
+     * a log-transformation. Other transformations, such leap year corrections or
      * length-of periods corrections may also be used.
      *
      * @return An array with the (transformed) data at the end of the series.

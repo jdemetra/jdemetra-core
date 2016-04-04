@@ -17,7 +17,6 @@
 package ec.tstoolkit.maths.polynomials;
 
 import ec.tstoolkit.design.Development;
-import static ec.tstoolkit.maths.ComplexMath.sqrt;
 import ec.tstoolkit.maths.Complex;
 import ec.tstoolkit.utilities.Arrays2;
 
@@ -139,7 +138,7 @@ public class Laguerre2 implements IRootsSolver {
 	    H = G2.minus(d2v.div(pv));
 	    delta = N1.times((N.times(H)).minus(G2));
 	    // choose a denominator larger in magnitude
-	    Complex deltaSqrt = sqrt(delta);
+	    Complex deltaSqrt = delta.sqrt();
 	    Complex dplus = G.plus(deltaSqrt);
 	    Complex dminus = G.minus(deltaSqrt);
 	    denominator = dplus.abs() > dminus.abs() ? dplus : dminus;

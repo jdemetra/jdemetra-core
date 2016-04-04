@@ -17,17 +17,17 @@
 
 package ec.satoolkit.tramoseats;
 
+import ec.satoolkit.benchmarking.SaBenchmarkingSpec;
 import ec.tstoolkit.information.InformationSet;
-import static ec.tstoolkit.modelling.arima.PreprocessingModel.dictionary;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import static org.junit.Assert.assertEquals;
+import ec.tstoolkit.modelling.arima.tramo.AutoModelSpec;
+import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
+import ec.satoolkit.seats.SeatsSpecification;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class TramoSeatsSpecificationTest {
     
@@ -67,6 +67,44 @@ public class TramoSeatsSpecificationTest {
         assertEquals(TramoSeatsSpecification.RSA5, nspec);
     }
     
+    @Test
+    public void testInformationSet(){
+        TramoSeatsSpecification expected = new TramoSeatsSpecification();
+        TramoSeatsSpecification actual = new TramoSeatsSpecification();
+        InformationSet info;
+        assertEquals(expected, actual);
+        TramoSpecification tSpec = new TramoSpecification();
+        tSpec.setAutoModel(new AutoModelSpec(true));
+        expected.setTramoSpecification(tSpec);
+        assertNotEquals(expected, actual);
+        info = expected.write(true);
+        actual.read(info);
+        assertEquals(expected, actual);
+        
+        expected = new TramoSeatsSpecification();
+        actual = new TramoSeatsSpecification();
+        assertEquals(expected, actual);
+        SeatsSpecification sSpec = new SeatsSpecification();
+        sSpec.setMethod(SeatsSpecification.EstimationMethod.McElroyMatrix);
+        expected.setSeatsSpecification(sSpec);
+        assertNotEquals(expected, actual);
+        info = expected.write(true);
+        actual.read(info);
+        assertEquals(expected, actual);
+        
+        expected = new TramoSeatsSpecification();
+        actual = new TramoSeatsSpecification();
+        assertEquals(expected, actual);
+        SaBenchmarkingSpec bSpec = new SaBenchmarkingSpec();
+        bSpec.setLambda(2.0);
+        bSpec.setEnabled(true);
+        expected.setBenchmarkingSpecification(bSpec);
+        assertNotEquals(expected, actual);
+        info = expected.write(true);
+        actual.read(info);
+        assertEquals(expected, actual);
+        
+    }
 //    @Test
 //    public void testUpdate(){
 //        InformationSet info = TramoSeatsSpecification.RSA5.write(false);

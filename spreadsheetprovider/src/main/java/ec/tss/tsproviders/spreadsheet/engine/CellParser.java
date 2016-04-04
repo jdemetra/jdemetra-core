@@ -30,6 +30,7 @@ import javax.annotation.Nullable;
  * @author Philippe Charles
  * @param <T>
  */
+@Deprecated
 public abstract class CellParser<T> {
 
     @Nullable

@@ -19,6 +19,7 @@ package ec.tss;
 
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.ServiceDefinition;
+import javax.annotation.Nonnull;
 
 /**
  * Generic interface for providers of time series.
@@ -42,32 +43,25 @@ public interface ITsProvider {
 
     /**
      * Synchronous query of the information about a tscollection (with or
-     * without data)
-     * 
-     * @param collection
-     * @return
-     * @see TSCollectionInformation
+     * without data). Note that if an exception happened during the execution of
+     * the query, a message describing the cause should be added to the
+     * TsCollectionInformation.
+     *
+     * @param info The requested information
+     * @return true if the query run without exception, false otherwise
      */
-    boolean get(TsCollectionInformation collection);
+    boolean get(@Nonnull TsCollectionInformation info);
 
-    // / <summary>
-    // /
-    // / </summary>
-    // / <param name="identifier">Identifier of the series</param>
-    // / <returns>The kind of information returned by the provider</returns>
     /**
-     * Synchronous query of the information about a ts (with or without data)
-     * 
-     * @param tsinfo
-     *            The requested information. This object is used as input
-     * @return
-     * @see TSInformation
+     * Synchronous query of the information about a ts (with or without data).
+     * Note that if an exception happened during the execution of the query, a
+     * message describing the cause should be added to the TsInformation.
+     *
+     * @param info The requested information
+     * @return true if the query run without exception, false otherwise
      */
-    boolean get(TsInformation tsinfo);
+    boolean get(@Nonnull TsInformation info);
 
-    // / <summary>
-    // / Asynchronous mode
-    // / </summary>
     /**
      * Gets the asynchronous mode of the provider.
      * 

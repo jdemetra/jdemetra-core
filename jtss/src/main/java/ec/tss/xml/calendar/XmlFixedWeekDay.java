@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  *
- * @author PCuser
+ * @author Jean Palate
  */
 @XmlType(name = XmlFixedWeekDay.NAME)
 public class XmlFixedWeekDay extends AbstractXmlDay implements IXmlConverter<FixedWeekDay> {

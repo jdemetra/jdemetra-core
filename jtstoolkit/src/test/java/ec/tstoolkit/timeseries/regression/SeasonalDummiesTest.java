@@ -21,7 +21,9 @@ import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
@@ -40,14 +42,14 @@ public class SeasonalDummiesTest {
     public static void tearDownClass() throws Exception {
     }
 
-    //@Test
-    public void demo() {
+    @Test
+    public void tesSum() {
         SeasonalDummies ds=new SeasonalDummies(TsFrequency.Monthly);
         TsDomain domain =new TsDomain(TsFrequency.Monthly, 1980, 3, 120);
         
         Matrix M=new Matrix(120, 11);
         ds.data(domain, M.columnList());
-        System.out.println(M);
+        assertTrue(Math.abs(M.sum())<1e-9 );
         
     }
 }

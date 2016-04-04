@@ -34,7 +34,7 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class Litterman {
 
@@ -120,7 +120,8 @@ public class Litterman {
         TsDisaggregation<SsfRwAr1> disagg = new TsDisaggregation<>();
         disagg.setSsf(rwar1);
         GridSearch gsearch = new GridSearch();
-        gsearch.setConvergenceCriterion(m_precision);
+        gsearch.setPrecision(m_precision);
+        disagg.setEpsilon(m_precision);
         disagg.setMinimizer(gsearch);
         disagg.setMapping(new SsfRwAr1.Mapping(m_zinit));
         disagg.calculateVariance(true);

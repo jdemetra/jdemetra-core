@@ -23,7 +23,7 @@ import ec.tstoolkit.design.Development;
  * 
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
+@Development(status = Development.Status.Alpha)
 public enum Component {
     /**
      *
@@ -39,6 +39,10 @@ public enum Component {
     Seasonal,
     /**
      * 
+     */
+    Cycle,
+    /**
+     *
      */
     Noise,
     /**

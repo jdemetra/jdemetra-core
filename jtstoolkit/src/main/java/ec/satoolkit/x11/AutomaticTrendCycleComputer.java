@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
+ */
 package ec.satoolkit.x11;
 
 import ec.tstoolkit.data.DataBlock;
@@ -63,10 +62,6 @@ class AutomaticTrendCycleComputer extends DefaultX11Algorithm implements
         if (freq == 4) {
             icr *= 3.0;
         }
-        if (step == X11Step.D) {
-            InformationSet dtables = info.subSet(X11Kernel.D);
-            dtables.set(X11Kernel.D12_IC, icr);
-        }
         filterLength = this.selectFilter(step, icr, freq);
         // double D = 4.0 / (Math.PI * curIC * curIC);
         if (filterLength == trendFilter.getLength()) {
@@ -84,14 +79,13 @@ class AutomaticTrendCycleComputer extends DefaultX11Algorithm implements
                 info.subSet(X11Kernel.D).set(X11Kernel.D12_TLEN, filterLength);
             }
             return sc;
-        }
-        else {
+        } else {
             trendFilter = TrendCycleFilterFactory.makeHendersonFilter(filterLength);
             AsymmetricEndPoints iep = new AsymmetricEndPoints(
                     MusgraveFilterFactory.makeFilters(trendFilter, curIC/*
                      * D
                      */));
-            strategy = new DefaultTrendFilteringStrategy(trendFilter, iep, filterLength+"-Henderson");
+            strategy = new DefaultTrendFilteringStrategy(trendFilter, iep, filterLength + "-Henderson");
             if (step == X11Step.D) {
                 info.subSet(X11Kernel.D).set(X11Kernel.D12_FILTER, strategy.getDescription());
                 info.subSet(X11Kernel.D).set(X11Kernel.D12_TLEN, filterLength);
@@ -122,12 +116,10 @@ class AutomaticTrendCycleComputer extends DefaultX11Algorithm implements
             if (freq == 12) {
                 curIC = 1;
                 return 9;
-            }
-            else {
+            } else {
                 return 5;
             }
-        }
-        else // icr >= 4.5
+        } else // icr >= 4.5
         {
             curIC = 4.5;
             return freq == 12 ? 23 : 7;

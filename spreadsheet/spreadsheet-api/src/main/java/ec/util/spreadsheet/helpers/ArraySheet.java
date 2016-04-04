@@ -22,16 +22,19 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  *
  * @author Philippe Charles
  */
+@NotThreadSafe
 public final class ArraySheet extends Sheet implements Serializable {
 
     private final String name;
@@ -39,14 +42,16 @@ public final class ArraySheet extends Sheet implements Serializable {
     private final int columnCount;
     private final Serializable[] values;
     private final FlyweightCell flyweightCell;
+    private final boolean inv;
 
     // @VisibleForTesting
-    ArraySheet(@Nonnull String name, int rowCount, int columnCount, @Nonnull Serializable[] values) {
+    ArraySheet(@Nonnull String name, int rowCount, int columnCount, @Nonnull Serializable[] values, boolean inv) {
         this.name = Objects.requireNonNull(name);
         this.rowCount = rowCount;
         this.columnCount = columnCount;
         this.values = Objects.requireNonNull(values);
         this.flyweightCell = new FlyweightCell();
+        this.inv = inv;
     }
 
     @Override
@@ -61,7 +66,9 @@ public final class ArraySheet extends Sheet implements Serializable {
 
     @Override
     public Object getCellValue(int rowIndex, int columnIndex) throws IndexOutOfBoundsException {
-        return values[rowIndex * columnCount + columnIndex];
+        return !inv
+                ? values[rowIndex * columnCount + columnIndex]
+                : values[columnIndex * rowCount + rowIndex];
     }
 
     @Override
@@ -75,15 +82,20 @@ public final class ArraySheet extends Sheet implements Serializable {
         return name;
     }
 
+    @Override
+    public ArraySheet inv() {
+        return new ArraySheet(name, columnCount, rowCount, values, !inv);
+    }
+
     @Nonnull
     public ArraySheet rename(@Nonnull String name) {
-        return this.name.equals(name) ? this : new ArraySheet(name, rowCount, columnCount, values);
+        return this.name.equals(name) ? this : new ArraySheet(name, rowCount, columnCount, values, inv);
     }
 
     @Nonnull
     public ArraySheet copy() {
         // we need a cell by instance of sheet
-        return new ArraySheet(name, rowCount, columnCount, values);
+        return new ArraySheet(name, rowCount, columnCount, values, inv);
     }
 
     @Nonnull
@@ -91,11 +103,55 @@ public final class ArraySheet extends Sheet implements Serializable {
         return new ArrayBook(new ArraySheet[]{copy()});
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj || (obj instanceof ArraySheet && equals((ArraySheet) obj));
+    }
+
+    private boolean equals(ArraySheet that) {
+        return this.name.equals(that.name)
+                && this.rowCount == that.rowCount
+                && this.columnCount == that.columnCount
+                && valuesEquals(that);
+    }
+
+    private boolean valuesEquals(ArraySheet that) {
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < columnCount; j++) {
+                if (!Objects.equals(this.getCellValue(i, j), that.getCellValue(i, j))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(new int[]{name.hashCode(), rowCount, columnCount, valuesHashCode()});
+    }
+
+    private int valuesHashCode() {
+        int result = 1;
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < columnCount; j++) {
+                Object o = getCellValue(i, j);
+                result = 31 * result + (o == null ? 0 : o.hashCode());
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ArraySheet{" + name + "}[" + rowCount + "x" + columnCount + "]";
+    }
+
     @Nonnull
     public static ArraySheet copyOf(@Nonnull Sheet sheet) {
         return sheet instanceof ArraySheet
                 ? ((ArraySheet) sheet).copy()
-                : new ArraySheet(sheet.getName(), sheet.getRowCount(), sheet.getColumnCount(), copyValuesOf(sheet));
+                : new ArraySheet(sheet.getName(), sheet.getRowCount(), sheet.getColumnCount(), copyValuesOf(sheet), false);
     }
 
     @Nonnull
@@ -115,7 +171,7 @@ public final class ArraySheet extends Sheet implements Serializable {
                 }
             }
         }
-        return new ArraySheet(name, rowCount, columnCount, values);
+        return new ArraySheet(name, rowCount, columnCount, values, false);
     }
 
     @Nonnull
@@ -151,26 +207,67 @@ public final class ArraySheet extends Sheet implements Serializable {
         abstract public Builder clear();
 
         @Nonnull
-        abstract public Builder value(int rowIndex, int columnIndex, @Nullable Object value);
+        abstract public Builder value(int row, int column, @Nullable Object value) throws IndexOutOfBoundsException;
 
         @Nonnull
-        public Builder row(int rowIndex, int columnIndex, @Nonnull Object... row) {
-            return rowByValue(this, rowIndex, columnIndex, row);
+        public Builder value(int row, int column, @Nullable Cell value) throws IndexOutOfBoundsException {
+            Object tmp = value == null ? null : value.isDate() ? value.getDate() : value.isNumber() ? value.getNumber() : value.isString() ? value.getString() : null;
+            return value(row, column, (Object) tmp);
         }
 
         @Nonnull
-        public Builder column(int rowIndex, int columnIndex, @Nonnull Object... column) {
-            return columnByValue(this, rowIndex, columnIndex, column);
+        public Builder row(int row, int column, @Nonnull Object first, @Nonnull Object... rest) throws IndexOutOfBoundsException {
+            return value(row, column, first).row(row, column + 1, rest);
         }
 
         @Nonnull
-        public Builder table(int rowIndex, int columnIndex, @Nonnull Object[][] table) {
-            return tableByRow(this, rowIndex, columnIndex, table);
+        public Builder row(int row, int column, @Nonnull Object[] values) throws IndexOutOfBoundsException {
+            return row(row, column, Arrays.asList(values));
         }
 
         @Nonnull
-        public Builder map(int rowIndex, int columnIndex, @Nonnull Map<?, ?> map) {
-            return mapByRow(this, rowIndex, columnIndex, map);
+        public Builder row(int row, int column, @Nonnull Iterable<?> values) throws IndexOutOfBoundsException {
+            return row(row, column, values.iterator());
+        }
+
+        @Nonnull
+        public Builder row(int row, int column, @Nonnull Iterator<?> values) throws IndexOutOfBoundsException {
+            return rowByValue(this, row, column, values);
+        }
+
+        @Nonnull
+        public Builder column(int row, int column, @Nonnull Object first, @Nonnull Object... rest) throws IndexOutOfBoundsException {
+            return value(row, column, first).column(row + 1, column, rest);
+        }
+
+        @Nonnull
+        public Builder column(int row, int column, @Nonnull Object[] values) throws IndexOutOfBoundsException {
+            return column(row, column, Arrays.asList(values));
+        }
+
+        @Nonnull
+        public Builder column(int row, int column, @Nonnull Iterable<?> values) throws IndexOutOfBoundsException {
+            return column(row, column, values.iterator());
+        }
+
+        @Nonnull
+        public Builder column(int row, int column, @Nonnull Iterator<?> values) throws IndexOutOfBoundsException {
+            return columnByValue(this, row, column, values);
+        }
+
+        @Nonnull
+        public Builder table(int row, int column, @Nonnull Object[][] values) throws IndexOutOfBoundsException {
+            return tableByRow(this, row, column, values);
+        }
+
+        @Nonnull
+        public Builder table(int row, int column, @Nonnull Sheet values) throws IndexOutOfBoundsException {
+            return tableByValue(this, row, column, values);
+        }
+
+        @Nonnull
+        public Builder map(int row, int column, @Nonnull Map<?, ?> values) throws IndexOutOfBoundsException {
+            return mapByRow(this, row, column, values);
         }
 
         @Nonnull
@@ -183,8 +280,8 @@ public final class ArraySheet extends Sheet implements Serializable {
         int rowCount = sheet.getRowCount();
         int columnCount = sheet.getColumnCount();
         Serializable[] result = new Serializable[rowCount * columnCount];
-        for (int i = 0; i < sheet.getRowCount(); i++) {
-            for (int j = 0; j < sheet.getColumnCount(); j++) {
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < columnCount; j++) {
                 result[i * columnCount + j] = (Serializable) sheet.getCellValue(i, j);
             }
         }
@@ -238,24 +335,40 @@ public final class ArraySheet extends Sheet implements Serializable {
         }
     }
 
-    private static Builder rowByValue(Builder b, int rowIndex, int columnIndex, Object[] row) {
-        for (int j = 0; j < row.length; j++) {
-            b.value(rowIndex, columnIndex + j, row[j]);
+    private static Builder rowByValue(Builder b, int row, int column, Iterator<?> values) throws IndexOutOfBoundsException {
+        int j = 0;
+        while (values.hasNext()) {
+            b.value(row, column + j, values.next());
+            j++;
         }
         return b;
     }
 
-    private static Builder columnByValue(Builder b, int rowIndex, int columnIndex, Object[] column) {
-        for (int i = 0; i < column.length; i++) {
-            b.value(rowIndex + i, columnIndex, column[i]);
+    private static Builder columnByValue(Builder b, int row, int column, Iterator<?> values) throws IndexOutOfBoundsException {
+        int i = 0;
+        while (values.hasNext()) {
+            b.value(row + i, column, values.next());
+            i++;
         }
         return b;
     }
 
-    private static Builder tableByRow(Builder b, int rowIndex, int columnIndex, Object[][] table) {
-        for (int i = 0; i < table.length; i++) {
-            if (table[i] != null) {
-                b.row(rowIndex + i, columnIndex, table[i]);
+    private static Builder tableByRow(Builder b, int row, int column, Object[][] values) {
+        for (int i = 0; i < values.length; i++) {
+            Object[] tmp = values[i];
+            if (tmp != null) {
+                for (int j = 0; j < tmp.length; j++) {
+                    b.value(row + i, column + j, tmp[j]);
+                }
+            }
+        }
+        return b;
+    }
+
+    private static Builder tableByValue(Builder b, int row, int column, Sheet values) {
+        for (int i = 0; i < values.getRowCount(); i++) {
+            for (int j = 0; j < values.getColumnCount(); j++) {
+                b.value(row + i, column + j, values.getCellValue(i, j));
             }
         }
         return b;
@@ -278,7 +391,7 @@ public final class ArraySheet extends Sheet implements Serializable {
             return (Date) input;
         }
         if (input instanceof Number) {
-            return (Number) input;
+            return input instanceof Double ? (Double) input : ((Number) input).doubleValue();
         }
         if (input instanceof String) {
             return (String) input;
@@ -321,7 +434,7 @@ public final class ArraySheet extends Sheet implements Serializable {
 
         @Override
         public ArraySheet build() {
-            return new ArraySheet(name, rowCount, columnCount, values.clone());
+            return new ArraySheet(name, rowCount, columnCount, values.clone(), false);
         }
     }
 
@@ -375,11 +488,14 @@ public final class ArraySheet extends Sheet implements Serializable {
         }
 
         @Override
-        public Builder row(int rowIndex, int columnIndex, Object... row) {
+        public Builder row(int rowIndex, int columnIndex, Object[] row) {
+            if (row.length == 0) {
+                return this;
+            }
             if (maxRowIndex < rowIndex) {
                 maxRowIndex = rowIndex;
             }
-            int lastColumnIndex = columnIndex + row.length;
+            int lastColumnIndex = columnIndex + row.length - 1;
             if (maxColumnIndex < lastColumnIndex) {
                 maxColumnIndex = lastColumnIndex;
             }
@@ -400,7 +516,7 @@ public final class ArraySheet extends Sheet implements Serializable {
                 int index = rows.get(i) * columnCount + cols.get(i);
                 values[index] = valuesAsList.get(i);
             }
-            return new ArraySheet(name, rowCount, columnCount, values);
+            return new ArraySheet(name, rowCount, columnCount, values, false);
         }
     }
     //</editor-fold>

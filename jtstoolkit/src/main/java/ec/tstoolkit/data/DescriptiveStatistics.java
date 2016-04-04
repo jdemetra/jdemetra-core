@@ -21,7 +21,7 @@ import ec.tstoolkit.design.Development;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
 public class DescriptiveStatistics {

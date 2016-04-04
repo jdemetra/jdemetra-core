@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
 public class StockTradingDaysVariables implements ITradingDaysVariable, Cloneable {
@@ -39,7 +39,9 @@ public class StockTradingDaysVariables implements ITradingDaysVariable, Cloneabl
 
     /**
      * Creates a new set of StockTradingDays variables
-     * @param w The wth day of the month is considered. 0-based day (the last day is 30)
+     * @param w The wth day of the month is considered. When w is negative, 
+     * the (-w) day before the end of the month is considered
+     * 
      */
     public StockTradingDaysVariables(int w) {
         w_=w;
@@ -68,7 +70,7 @@ public class StockTradingDaysVariables implements ITradingDaysVariable, Cloneabl
     @Override
     public String getDescription() {
         StringBuilder builder=new StringBuilder();
-        builder.append("TD Stock [").append(w_+1).append(']');
+        builder.append("TD Stock [").append(w_).append(']');
         return builder.toString();
      }
 
@@ -101,11 +103,9 @@ public class StockTradingDaysVariables implements ITradingDaysVariable, Cloneabl
         int[] begin = new int[n + 1];
         TsPeriod month = new TsPeriod(TsFrequency.Monthly);
         month.set(d0.getYear(), d0.getPosition()*conv);
-         //
-        // Due to the 0-based period have to re-arrange the month.
-       //
         month.move(conv - 1);
         for (int i = 0; i < begin.length; ++i) {
+            // begin contains the first day of the last month of each period
             begin[i] = Day.calc(month.getYear(), month.getPosition(), 0);
             month.move(conv);
         }
@@ -132,16 +132,16 @@ public class StockTradingDaysVariables implements ITradingDaysVariable, Cloneabl
             // .............
             //
             if (this.w_ >= 0) {
-                if (this.w_ < monthlen - 1) {
+                if (this.w_ < monthlen) {
                     monthlen = this.w_;
                 }
             } else {
                 monthlen += this.w_;
-                if (monthlen < 0) {
-                    monthlen = 0;
+                if (monthlen <= 0) {
+                    monthlen = 1;
                 }
             }
-            int Lastdayofweek = (dayofweek + monthlen) % 7;
+            int Lastdayofweek = (dayofweek + (monthlen-1)) % 7;
             z0[Lastdayofweek] = 1.0d;
             for (int i = 0; i < 6; ++i) {
                 DataBlock x = data.get(i);

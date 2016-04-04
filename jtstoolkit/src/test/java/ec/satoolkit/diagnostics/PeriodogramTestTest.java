@@ -7,17 +7,20 @@ package ec.satoolkit.diagnostics;
 
 import ec.tstoolkit.arima.ArimaModelBuilder;
 import ec.tstoolkit.data.DataBlock;
+import ec.tstoolkit.dstats.Normal;
 import ec.tstoolkit.maths.polynomials.Polynomial;
+import ec.tstoolkit.random.MersenneTwister;
 import ec.tstoolkit.stats.StatisticalTest;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  *
- * @author PCUser
+ * @author Jean Palate
  */
 public class PeriodogramTestTest {
 
@@ -43,14 +46,20 @@ public class PeriodogramTestTest {
     /**
      * Test of compute method, of class PeriodogramTest.
      */
-    //@Test
+    @Test
+    @Ignore
     public void demoCompute() {
-        int N = 600, M = 100000;
+        int N = 120, M = 10000000;
         ArimaModelBuilder builder = new ArimaModelBuilder();
         double m=0, m2=0;
+		Normal n=new Normal();
+		MersenneTwister rng=MersenneTwister.fromSystemNanoTime();
         for (int i = 0; i < M; ++i) {
-            double[] x = builder.generate(builder.createModel(Polynomial.ONE, Polynomial.ONE, 1), N);
-            StatisticalTest test = PeriodogramTest.computeSum(new DataBlock(x), 4);
+            //double[] x = builder.generate(builder.createModel(Polynomial.ONE, Polynomial.ONE, 1), N);
+ 			double[] x=new double[N];
+			for (int j=0; j<N; ++j)
+				x[j]=n.random(rng);
+           StatisticalTest test = PeriodogramTest.computeSum2(new DataBlock(x), 12);
             m+=test.getValue();
             m2+=test.getValue()*test.getValue();
         }

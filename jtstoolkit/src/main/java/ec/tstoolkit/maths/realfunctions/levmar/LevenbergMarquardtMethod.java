@@ -30,7 +30,7 @@ import ec.tstoolkit.maths.realfunctions.ParamValidation;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class LevenbergMarquardtMethod extends ProcessingHookProvider<LevenbergMarquardtMethod, ISsqFunctionInstance> implements ISsqFunctionMinimizer {
 

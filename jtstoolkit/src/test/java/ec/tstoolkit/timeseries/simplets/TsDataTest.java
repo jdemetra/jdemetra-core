@@ -1,7 +1,7 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
@@ -16,6 +16,7 @@
  */
 package ec.tstoolkit.timeseries.simplets;
 
+import data.Data;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.Month;
 import ec.tstoolkit.timeseries.TsAggregationType;
@@ -27,7 +28,7 @@ import org.junit.Test;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class TsDataTest {
 
@@ -240,5 +241,18 @@ public class TsDataTest {
         assertTrue(s.extendTo(d1).getLastPeriod().lastday().isBefore(d1));
         Day d2 = new Day(1981, Month.January, 1);
         assertTrue(s.extendTo(d2).getLastPeriod().lastday().equals(d0));
+    }
+    
+    @Test
+    public void testChangeFreq(){
+        TsData s = new TsData(TsFrequency.Monthly, 1946, 5, 825);
+        s.randomAirline();
+        for (int i=0; i<12; ++i){
+            TsData l=s.drop(i, 0).changeFrequency(TsFrequency.Quarterly, TsAggregationType.Last, true);
+            for (int j=0; j<l.getLength(); ++j){
+                TsPeriod q=l.getDomain().get(j);
+                assertTrue(l.get(j) == s.get(q.lastPeriod(TsFrequency.Monthly)));
+            }
+        }
     }
 }

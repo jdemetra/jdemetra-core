@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public interface IAlgorithmManager<S extends IProcSpecification, I, R extends IProcResults, P extends IProcessingFactory<? extends S, I, R>> {
 

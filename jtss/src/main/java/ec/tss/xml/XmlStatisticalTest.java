@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 @XmlType(name = XmlStatisticalTest.NAME)
 public class XmlStatisticalTest implements IXmlConverter<StatisticalTest> {

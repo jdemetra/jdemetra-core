@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * 
- * @author pcuser
+ * @author Jean Palate
  */
 @XmlType(name = XmlTsDomain.NAME)
 public class XmlTsDomain implements IXmlConverter<TsDomain> {

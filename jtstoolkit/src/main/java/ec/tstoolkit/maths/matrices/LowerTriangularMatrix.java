@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2013-2015 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -21,7 +21,11 @@ import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.design.Development;
 
 /**
- *
+ * Collections of static methods to be applied on lower triangular matrices
+ * It should be stressed that lower triangular matrices are represented by normal
+ * matrices. The algorithms of this class never check that the considered matrices 
+ * are actually lower triangular. In fact, they don't need to be lower triangular,
+ * but just their lower part will be taken into account.
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
@@ -29,36 +33,42 @@ public final class LowerTriangularMatrix {
 
 
     /**
-     *
-     * @param lower
-     * @return
-     * @throws MatrixException
+     * Computes the inverse of a triangular matrix
+     * R = L^-1
+     * @param L The triangular matrix being inverted 
+     * @return The inverse
+     * @throws MatrixException when the matrix is non invertible (some elements 
+     * of the diagonal are 0).
      */
-    public static Matrix inverse(final Matrix lower) throws MatrixException {
-        int n = lower.ncols_;
+    public static Matrix inverse(final Matrix L) throws MatrixException {
+        int n = L.ncols_;
         Matrix rslt = Matrix.identity(n);
         DataBlockIterator cols = rslt.columns();
         DataBlock cur = cols.getData();
         do {
-            rsolve(lower, cur);
+            rsolve(L, cur);
         } while (cols.next());
         return rslt;
     }
 
     /**
-     * Computes l = l*L
+     * Left-multiplies the matrix by a vector. The multiplier is modified in place.
+     * 
+     * 
+     * left = left*L
      *
-     * @param L
-     * @param b
+     * @param L The lower triangular matrix
+     * @param left The array (in/out parameter). Its Length  must be equal or 
+     * less than the number of rows of the matrix. 
      */
-    public static void lmul(final Matrix L, final DataBlock l) {
+    public static void lmul(final Matrix L, final DataBlock left) {
         int n = L.nrows_;
         double[] data = L.data_;
 
-        double[] x = l.getData();
-        int xinc = l.getIncrement();
-        int xbeg = l.getStartPosition();
-        int xend = l.getEndPosition();
+        double[] x = left.getData();
+        int xinc = left.getIncrement();
+        int xbeg = left.getStartPosition();
+        int xend = left.getEndPosition();
         if (xinc == 1) {
             for (int xi = xbeg, idx = 0; xi < xend; ++xi, idx += n + 1) {
                 double t = 0.0;
@@ -78,6 +88,17 @@ public final class LowerTriangularMatrix {
         }
     }
 
+    /**
+     * Left-multiplies the matrix by a vector. The multiplier is modified in place.
+     * Unoptimised form
+     * 
+     * left = left*L
+     *
+     * @param L The lower triangular matrix
+     * @param left The array (in/out parameter). Its Length  must be equal or 
+     * less than the number of rows of the matrix. 
+     */
+    @Deprecated
     public static void lmul2(final Matrix L, final DataBlock left) {
         int n = L.nrows_;
         double[] data = L.data_;
@@ -93,47 +114,75 @@ public final class LowerTriangularMatrix {
     }
 
     /**
-     * The method left-multiplies the matrix with a vector. The Length of the
-     * vector must be equal or less than the number of rows of the matrix. The
-     * multiplier is modified in place.<br>
+     * Left-multiplies the matrix by a vector. The multiplier is modified in place.
+     * The DataBlock form should be preferred
+     * 
+     * left = left*L
      *
-     * @param lower
-     * @param left An array of double
+     * @param L The lower triangular matrix
+     * @param left The array (in/out parameter). Its Length  must be equal or 
+     * less than the number of rows of the matrix. 
      */
-    public static void lmul(final Matrix lower, final double[] left) {
-        lmul(lower, new DataBlock(left));
+    @Deprecated
+    public static void lmul(final Matrix L, final double[] left) {
+        lmul(L, new DataBlock(left));
     }
 
-    /**
+     /**
+     * Left-multiplies the matrix by a sub-matrix. The sub-matrix is modified in place.
+     * 
+     * left = left*L
      *
-     * @param lower
-     * @param left
+     * @param L The lower triangular matrix
+     * @param left The sub-matrix (in/out parameter). Its number of rows must be equal or 
+     * less than the number of rows of the triangular matrix. 
      */
-    public static void lmul(final Matrix lower, final SubMatrix left) {
-        // if (left == null)
-        // throw new ArgumentNullException("left");
+    public static void lmul(final Matrix L, final SubMatrix left) {
         DataBlockIterator rows = left.rows();
         DataBlock cur = rows.getData();
         do {
-            lmul(lower, cur);
+            lmul(L, cur);
         } while (rows.next());
     }
     
+    /**
+     * Solves the set of equations x*L = b
+     * Forward substitution, row version.
+     * @param L The lower triangular matrix
+     * @param b In-Out parameter. On entry, it contains b. On exit, it contains x.
+     * @throws MatrixException The exception is thrown when the system cannot be solved
+     */
     public static void lsolve(final Matrix L, final DataBlock b)
             throws MatrixException {
         lsolve(L, b, 0);
     }
 
+    /**
+     * Solves the set of equations x*L = b
+     * Forward substitution, column version.
+     * @param L The lower triangular matrix
+     * @param b In-Out parameter. On entry, it contains b. On exit, it contains x.
+     * @throws MatrixException The exception is thrown when the system cannot be solved
+     */
+    @Deprecated
     public static void lsolve2(final Matrix L, final DataBlock b)
             throws MatrixException {
         lsolve2(L, b, 0);
     }
+    
     /**
      * Solves the set of equations x*L = b
-     *
-     * @param L
-     * @param b
-     * @throws MatrixException
+     * Forward substitution, column version.
+     * 
+     * When L contains zeroes on the diagonal, the system is either unsolvable or
+     * under-determined. Unsolvable systems will throw exceptions.
+     * In the case of under-determined systems, the x corresponding to the 0 in the diagonal
+     * is set to 0.
+     * 
+     * @param L The lower triangular matrix
+     * @param b In-Out parameter. On entry, it contains b. On exit, it contains x.
+     * @param zero Small positive value identifying 0. Can be 0.
+     * @throws MatrixException The exception is thrown when the system cannot be solved
      */
     public static void lsolve(final Matrix L, final DataBlock b, double zero)
             throws MatrixException {
@@ -163,22 +212,18 @@ public final class LowerTriangularMatrix {
 
     /**
      * Solves the set of equations x*L = b
-     *
-     * @param lower
-     * @param b
-     * @throws MatrixException
+     * Forward substitution, row version.
+     * @param L The lower triangular matrix
+     * @param b In-Out parameter. On entry, it contains b. On exit, it contains x.
+     * @param zero Small positive value identifying 0. Can be 0.
+     * @throws MatrixException The exception is thrown when the system cannot be solved
      */
-    public static void lsolve2(final Matrix lower, final DataBlock b, double zero)
+    @Deprecated
+    public static void lsolve2(final Matrix L, final DataBlock b, double zero)
             throws MatrixException {
-        /*
-         * if (lower == null) throw new ArgumentNullException("lower"); if (b ==
-         * null) throw new ArgumentNullException("b");
-         */
-        int n = lower.ncols_;
-        double[] data = lower.data_;
+        int n = L.ncols_;
+        double[] data = L.data_;
         int nb = b.getLength();
-        // if (nb > n)
-        // throw new MatrixException(MatrixException.IncompatibleDimensions);
 
         for (int i = nb - 1, idx = (n + 1) * i; i >= 0; --i, idx -= n + 1) {
             int idx2 = idx + 1;
@@ -204,23 +249,26 @@ public final class LowerTriangularMatrix {
      * solution is returned in place i.e. the solution x replaces the right hand
      * side b.
      *
-     * @param lower
+     * @param L The lower triangular matrix
      * @param b On entry the left hand side of the equation. Contains the
      * solution x on returning.
      * @throws MatrixException Thrown when the Length of b is larger than the
      * number of rows of the matrix.
      */
-    public static void lsolve(final Matrix lower, final double[] b)
+    public static void lsolve(final Matrix L, final double[] b)
             throws MatrixException {
-        lsolve(lower, new DataBlock(b));
+        lsolve(L, new DataBlock(b));
     }
 
     /**
-     * Solves the set of equations x*L = B
+     * Solves the set of equations X*L = B
      *
-     * @param L
-     * @param B
-     * @throws MatrixException
+     * @param L The lower triangular matrix
+     * @param B On entry the left hand side of the equation. Contains the
+     * solution x on returning.
+     * @param zero Small positive value identifying 0. Can be 0.
+     * @throws MatrixException Thrown when the Length of b is larger than the
+     * number of rows of the matrix.
      */
     public static void lsolve(final Matrix L, final SubMatrix B, double zero)
             throws MatrixException {
@@ -233,17 +281,29 @@ public final class LowerTriangularMatrix {
         } while (rows.next());
     }
 
+    /**
+     * Solves the set of equations X*L = B
+     *
+     * @param L The Lower triangular matrix
+     * @param B in/out parameter. Contains B on entry, X on exit.
+     * @throws MatrixException
+     */
     public static void lsolve(final Matrix L, final SubMatrix B)
             throws MatrixException {
         lsolve(L, B, 0);
     }
 
-     /**
-     * Computes r = L * r
+    /**
+     * Computes r = L*r
+     * The method right-multiplies the matrix by a vector. The Length of the
+     * vector must be equal or less than the number of rows of the matrix. The
+     * multiplier is modified in place.
+     * Column version
      *
-     * @param L
-     * @param r
+     * @param L The lower triangular matrix
+     * @param r An array of double
      */
+    @Deprecated
     public static void rmul2(final Matrix L, final DataBlock r) {
         int nb = r.getLength();
         int n = L.ncols_;
@@ -264,6 +324,16 @@ public final class LowerTriangularMatrix {
         }
     }
 
+    /**
+     * Computes r = L*r
+     * The method right-multiplies the matrix by a vector. The Length of the
+     * vector must be equal or less than the number of rows of the matrix. The
+     * multiplier is modified in place.
+     * Column version
+     *
+     * @param L The lower triangular matrix
+     * @param r An array of double
+     */
     public static void rmul(final Matrix L, final DataBlock r) {
         int nb = r.getLength();
         int nr = L.nrows_;
@@ -295,58 +365,36 @@ public final class LowerTriangularMatrix {
                 }
             }
         }
-//	int nb = r.getLength();
-//	int n = L.ncols_;
-//        DataBlockIterator cols;
-//        if (n==nb)
-//            cols=L.columns();
-//        else
-//            cols=L.subMatrix(0, nb, 0, nb).columns();
-//        DataBlock x=r.clone();
-//        cols.end();
-//        DataBlock col=cols.getCurrent();
-//        x.shrink(nb, 0);
-//        col.shrink(nb, 0);
-//        do
-//        {
-//            x.expand(1, 0);
-//            col.expand(1, 0);
-//            double z=x.get(0);
-//            x.set(0, 0);
-//            x.addAY(z, col);
-//        }
-//        while (cols.previous());
     }
 
     /**
-     * The method right-multiplies the matrix with a vector. The Length of the
+     * Computes r = L*r
+     * The method right-multiplies the matrix by a vector. The Length of the
      * vector must be equal or less than the number of rows of the matrix. The
-     * multiplier is modified in place<br> IncompatibleDimensionsException
-     * Thrown when the Length of the vector exceeds the number of rows of the
-     * matrix
+     * multiplier is modified in place.
+     * Column version
      *
-     * @param lower
+     * @param L The lower triangular matrix
      * @param r An array of double
      */
-    public static void rmul(final Matrix lower, final double[] r) {
-        // if (r == null)
-        // throw new ArgumentNullException("r");
-
-        rmul(lower, new DataBlock(r));
+    public static void rmul(final Matrix L, final double[] r) {
+        rmul(L, new DataBlock(r));
     }
 
     /**
+     * Computes R = L*R
+     * The method right-multiplies the matrix by a sub-matrix. The
+     * multiplier is modified in place.
+     * Column version
      *
-     * @param lower
-     * @param rightmatrix
+     * @param L The lower triangular matrix
+     * @param R The sub-matrix (in/out parameter)
      */
-    public static void rmul(final Matrix lower, final SubMatrix rightmatrix) {
-        // if (rightmatrix == null)
-        // throw new ArgumentNullException("rightmatrix");
-        DataBlockIterator cols = rightmatrix.columns();
+    public static void rmul(final Matrix L, final SubMatrix R) {
+        DataBlockIterator cols = R.columns();
         DataBlock cur = cols.getData();
         do {
-            rmul(lower, cur);
+            rmul(L, cur);
         } while (cols.next());
     }
 
@@ -354,20 +402,16 @@ public final class LowerTriangularMatrix {
      * Solves the set of equations Lx = b where x and b are vectors with a
      * Length less than or equal to the number of rows of the matrix. The
      * solution is returned in place i.e. the solution x replaces the right hand
-     * side b.
+     * side b. Row version
      *
-     * @param lower L. Lower triangular matrix
+     * @param L L. Lower triangular matrix
      * @param b On entry the right hand side of the equation. Contains the
      * solution x on returning.
-     * @throws MatrixException Thrown when the Length of b is larger than the
-     * number of rows of the matrix.
+     * @param zero Small positive value identifying 0. Can be 0.
+     * @throws MatrixException Thrown when the system cannot be solved
      */
     public static void rsolve2(final Matrix L, final DataBlock b, double zero)
             throws MatrixException {
-        /*
-         * if (lower == null) throw new ArgumentNullException("lower"); if (b ==
-         * null) throw new ArgumentNullException("b");
-         */
         int n = L.nrows_;
         double[] data = L.data_;
 
@@ -392,14 +436,48 @@ public final class LowerTriangularMatrix {
         }
     }
     
+    /**
+     * Solves the set of equations Lx = b where x and b are vectors with a
+     * Length less than or equal to the number of rows of the matrix. The
+     * solution is returned in place i.e. the solution x replaces the right hand
+     * side b. Column version
+     *
+     * @param L L. Lower triangular matrix
+     * @param b On entry the right hand side of the equation. Contains the
+     * solution x on returning.
+     * @throws MatrixException Thrown when the system cannot be solved
+     */
     public static void rsolve(final Matrix L, final DataBlock b){
         rsolve(L, b, 0);
     }
 
+    /**
+     * Solves the set of equations Lx = b where x and b are vectors with a
+     * Length less than or equal to the number of rows of the matrix. The
+     * solution is returned in place i.e. the solution x replaces the right hand
+     * side b. Row version
+     *
+     * @param L L. Lower triangular matrix
+     * @param b On entry the right hand side of the equation. Contains the
+     * solution x on returning.
+     * @throws MatrixException Thrown when the system cannot be solved
+     */
     public static void rsolve2(final Matrix L, final DataBlock b){
         rsolve2(L, b, 0);
     }
 
+    /**
+     * Solves the set of equations Lx = b where x and b are vectors with a
+     * Length less than or equal to the number of rows of the matrix. The
+     * solution is returned in place i.e. the solution x replaces the right hand
+     * side b. Column version
+     *
+     * @param L L. Lower triangular matrix
+     * @param b On entry the right hand side of the equation. Contains the
+     * solution x on returning.
+     * @param zero Small positive value identifying 0. Can be 0.
+     * @throws MatrixException Thrown when the system cannot be solved
+     */
     public static void rsolve(final Matrix L, final DataBlock b, double zero)
             throws MatrixException {
         int n = L.nrows_;
@@ -465,18 +543,31 @@ public final class LowerTriangularMatrix {
      * number of rows less than or equal to the number of columns of L. The
      * solution is returned in place i.e. the solution X replaces the right hand
      * side B.
+     * Column version
      *
      * @param L L. Lower triangular matrix
-     * @param b On entry the right hand side of the equation. Contains the
+     * @param B On entry the right hand side of the equation. Contains the
      * solution X on returning.
-     * @throws MatrixException Thrown when the number of rows of B is larger
-     * than the number of columns of the matrix.
+     * @throws MatrixException Thrown when the system cannot be solved.
      */
     public static void rsolve(final Matrix L, final SubMatrix B)
             throws MatrixException {
         rsolve(L, B, 0);
     }
     
+    /**
+     * Solves the set of equations LX = B where X and B are matrices with a
+     * number of rows less than or equal to the number of columns of L. The
+     * solution is returned in place i.e. the solution X replaces the right hand
+     * side B.
+     * Column version
+     *
+     * @param L L. Lower triangular matrix
+     * @param B On entry the right hand side of the equation. Contains the
+     * solution X on returning.
+     * @param zero Small positive value identifying 0. Can be 0.
+     * @throws MatrixException Thrown when the system cannot be solved.
+     */
     public static void rsolve(final Matrix L, final SubMatrix B, final double zero)
             throws MatrixException {
         // if (B == null)
@@ -487,6 +578,49 @@ public final class LowerTriangularMatrix {
             rsolve(L, cur, zero);
         } while (cols.next());
     }
+    
+        /**
+     * Computes S=S+x*a*x'
+     *
+     * @param S
+     * @param a
+     * @param x
+     */
+    public static void addXaXt(Matrix S, double a, DataBlock x) {
+        if (a == 0) {
+            return;
+        }
+        double[] s = S.data_;
+        double[] z = x.getData();
+        int n = S.ncols_, beg = x.getStartPosition(), inc = x.getIncrement();
+        if (inc == 1) {
+            for (int c = 0, k = 0, l = beg; c < n; ++c, k += c, ++l) {
+                double x1 = z[l];
+                if (x1 != 0) {
+                    x1 *= a;
+                    for (int r = c, m = l; r < n; ++r, ++k, ++m) {
+                        s[k] += x1 * z[m];
+                    }
+                } else {
+                    k += n - c;
+                }
+            }
+
+        } else {
+            for (int c = 0, k = 0, l = beg; c < n; ++c, k += c, l += inc) {
+                double x1 = z[l];
+                if (x1 != 0) {
+                    x1 *= a;
+                    for (int r = c, m = l; r < n; ++r, ++k, m += inc) {
+                        s[k] += x1 * z[m];
+                    }
+                } else {
+                    k += n - c;
+                }
+            }
+        }
+    }
+
 
     private LowerTriangularMatrix() {
     }

@@ -19,19 +19,12 @@ package ec.util.spreadsheet.poi;
 import ec.util.spreadsheet.Sheet;
 import ec.util.spreadsheet.helpers.ArraySheet;
 import ec.util.spreadsheet.helpers.CellRefHelper;
-import ec.util.spreadsheet.poi.FastPoiBook.SheetContext;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.apache.poi.ss.usermodel.DateUtil;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,24 +41,26 @@ abstract class FastPoiSheetBuilder {
     @Nonnull
     abstract public Sheet build();
 
-    private static final int CORES = Runtime.getRuntime().availableProcessors();
-
     @Nonnull
-    public static FastPoiSheetBuilder create(@Nonnull String name, @Nonnull FastPoiBook.SheetContext sheetContext, @Nullable String sheetBounds) {
-        return CORES > 1 ? new MultiThreadedBuilder(name, sheetContext, sheetBounds) : new Builder(name, sheetContext, sheetBounds);
+    public static FastPoiSheetBuilder create(@Nonnull String name, @Nonnull FastPoiContext sheetContext, @Nullable String sheetBounds) {
+        ArraySheet.Builder arraySheetBuilder = ArraySheet.builder(sheetBounds).name(name);
+        FastPoiValueFactory valueFactory = new FastPoiValueFactory(sheetContext);
+        return CORES > 1 ? new MultiThreadedBuilder(arraySheetBuilder, valueFactory) : new Builder(arraySheetBuilder, valueFactory);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
+    private static final int CORES = Runtime.getRuntime().availableProcessors();
+
     private static class Builder extends FastPoiSheetBuilder {
 
-        private final ArraySheet.Builder valuesBuilder;
+        private final ArraySheet.Builder arraySheetBuilder;
+        private final FastPoiValueFactory valueFactory;
         private final CellRefHelper refHelper;
-        private final CellValueFactory valueFactory;
 
-        public Builder(@Nonnull String name, @Nonnull FastPoiBook.SheetContext sheetContext, @Nullable String sheetBounds) {
-            this.valuesBuilder = ArraySheet.builder(sheetBounds).name(name);
+        public Builder(ArraySheet.Builder arraySheetBuilder, FastPoiValueFactory valueFactory) {
+            this.arraySheetBuilder = arraySheetBuilder;
+            this.valueFactory = valueFactory;
             this.refHelper = new CellRefHelper();
-            this.valueFactory = new CellValueFactory(sheetContext);
         }
 
         @Override
@@ -79,12 +74,12 @@ abstract class FastPoiSheetBuilder {
             if (cellValue == null || !refHelper.parse(ref)) {
                 return;
             }
-            valuesBuilder.value(refHelper.getRowIndex(), refHelper.getColumnIndex(), cellValue);
+            arraySheetBuilder.value(refHelper.getRowIndex(), refHelper.getColumnIndex(), cellValue);
         }
 
         @Override
         public Sheet build() {
-            return valuesBuilder.build();
+            return arraySheetBuilder.build();
         }
     }
 
@@ -95,8 +90,8 @@ abstract class FastPoiSheetBuilder {
         private final Consumer singleConsumer;
 //        int outOfCapacity = 0;
 
-        public MultiThreadedBuilder(@Nonnull String name, @Nonnull FastPoiBook.SheetContext sheetContext, @Nullable String sheetBounds) {
-            super(name, sheetContext, sheetBounds);
+        public MultiThreadedBuilder(ArraySheet.Builder arraySheetBuilder, FastPoiValueFactory valueFactory) {
+            super(arraySheetBuilder, valueFactory);
             this.executor = Executors.newSingleThreadExecutor();
             this.queue = new P1C1QueueOriginal3<>(1000);
             this.singleConsumer = new Consumer<QueueItem>(queue) {
@@ -191,89 +186,6 @@ abstract class FastPoiSheetBuilder {
         @SuppressWarnings("CallToThreadYield")
         private static void threadYield() {
             Thread.yield();
-        }
-    }
-
-    private static final class CellValueFactory {
-
-        // http://openxmldeveloper.org/blog/b/openxmldeveloper/archive/2012/03/08/dates-in-strict-spreadsheetml-files.aspx
-        private static final String ISO_DATE_FORMAT = "yyyy-MM-dd";
-        // http://msdn.microsoft.com/en-us/library/documentformat.openxml.spreadsheet.cellvalues.aspx
-        private static final String BOOLEAN = "b";
-        private static final String NUMBER = "n";
-        private static final String ERROR = "e";
-        private static final String SHARED_STRING = "s";
-        private static final String STRING = "str";
-        private static final String INLINE_STRING = "inlineStr";
-        private static final String DATE = "d";
-        //
-        private final SheetContext context;
-        //
-        private final Calendar calendar;
-        private final DateFormat isoDateFormat;
-
-        public CellValueFactory(SheetContext context) {
-            this.context = context;
-            // using default time-zone
-            this.calendar = new GregorianCalendar();
-            this.isoDateFormat = new SimpleDateFormat(ISO_DATE_FORMAT);
-        }
-
-        private boolean isDateStyle(@Nullable String rawStyleIndex) {
-            if (rawStyleIndex == null) {
-                return false;
-            }
-            int styleIndex = Integer.parseInt(rawStyleIndex);
-            FastPoiBook.Style style = context.styles.get(styleIndex);
-            return DateUtil.isADateFormat(style.formatId, style.formatString);
-        }
-
-        @Nullable
-        private Number parseNumber(@Nonnull String rawValue) {
-            try {
-                return Double.valueOf(rawValue);
-            } catch (NumberFormatException ex) {
-                return null;
-            }
-        }
-
-        @Nullable
-        private Object getNumberOrDate(@Nonnull String rawValue, @Nullable String rawStyleIndex) {
-            Number number = parseNumber(rawValue);
-            if (number != null && isDateStyle(rawStyleIndex)) {
-                double tmp = number.doubleValue();
-                if (DateUtil.isValidExcelDate(tmp)) {
-                    return DateUtil2.getJavaDate(calendar, tmp, context.date1904);
-                }
-            }
-            return number;
-        }
-
-        @Nullable
-        public Object getValue(@Nonnull String rawValue, @Nullable String rawDataType, @Nullable String rawStyleIndex) {
-            if (rawDataType == null) {
-                return getNumberOrDate(rawValue, rawStyleIndex);
-            }
-            switch (rawDataType) {
-                case NUMBER:
-                    return getNumberOrDate(rawValue, rawStyleIndex);
-                case SHARED_STRING:
-                    return context.sharedStrings.get(Integer.parseInt(rawValue));
-                case STRING:
-                    return rawValue;
-                case INLINE_STRING:
-                    // TODO: rawValue might contain rich text
-                    return rawValue;
-                case DATE:
-                    try {
-                        return isoDateFormat.parse(rawValue);
-                    } catch (ParseException ex) {
-                        return null;
-                    }
-                default:
-                    // BOOLEAN or ERROR or default
-                    return null;
-            }
         }
     }
     //</editor-fold>

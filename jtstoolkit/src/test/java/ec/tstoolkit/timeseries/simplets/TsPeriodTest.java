@@ -66,9 +66,9 @@ public class TsPeriodTest {
         cal.setTime(period_2001_03.middle());
         assertEquals(2001, cal.get(Calendar.YEAR));
         assertEquals(Calendar.MARCH, cal.get(Calendar.MONTH));
-        assertEquals(15, cal.get(Calendar.DAY_OF_MONTH));
-        assertEquals(23, cal.get(Calendar.HOUR_OF_DAY));
-        assertEquals(30, cal.get(Calendar.MINUTE));
+        assertEquals(16, cal.get(Calendar.DAY_OF_MONTH));
+        assertEquals(0, cal.get(Calendar.HOUR_OF_DAY));
+        assertEquals(0, cal.get(Calendar.MINUTE));
         assertEquals(0, cal.get(Calendar.SECOND));
         assertEquals(0, cal.get(Calendar.MILLISECOND));
 
@@ -76,7 +76,7 @@ public class TsPeriodTest {
         assertEquals(2001, cal.get(Calendar.YEAR));
         assertEquals(Calendar.APRIL, cal.get(Calendar.MONTH));
         assertEquals(15, cal.get(Calendar.DAY_OF_MONTH));
-        assertEquals(12, cal.get(Calendar.HOUR_OF_DAY));
+        assertEquals(0, cal.get(Calendar.HOUR_OF_DAY));
         assertEquals(0, cal.get(Calendar.MINUTE));
         assertEquals(0, cal.get(Calendar.SECOND));
         assertEquals(0, cal.get(Calendar.MILLISECOND));
@@ -110,5 +110,18 @@ public class TsPeriodTest {
         p.move(1);
         assertEquals(p.firstPeriod(TsFrequency.Monthly), new TsPeriod(TsFrequency.Monthly, p.firstday()));
         assertEquals(p.lastPeriod(TsFrequency.Monthly), new TsPeriod(TsFrequency.Monthly, p.lastday()));
+    }
+    
+    @Test
+    public void testNewFreq(){
+        TsPeriod p=new TsPeriod(TsFrequency.Monthly, 1945, 0);
+        TsPeriod P=new TsPeriod(TsFrequency.Quarterly, p);
+        assertTrue(P.contains(p.firstday()));
+        p=new TsPeriod(TsFrequency.Monthly, 1945, 1);
+        P=new TsPeriod(TsFrequency.Quarterly, p);
+        assertTrue(P.contains(p.firstday()));
+        p=new TsPeriod(TsFrequency.Monthly, 1945, 2);
+        P=new TsPeriod(TsFrequency.Quarterly, p);
+        assertTrue(P.contains(p.firstday()));
     }
 }

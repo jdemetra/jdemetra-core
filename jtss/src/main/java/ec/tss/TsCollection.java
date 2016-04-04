@@ -19,6 +19,7 @@ package ec.tss;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import ec.tss.tsproviders.utils.MultiLineNameUtil;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,7 @@ import ec.tstoolkit.IDocumented;
 import ec.tstoolkit.MetaData;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.simplets.TsData;
+import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import java.util.*;
 
 /**
@@ -43,6 +45,7 @@ public final class TsCollection implements ITsIdentified, IDocumented,
     private final List<Ts> m_ts = new ArrayList<>();
     private volatile TsInformationType m_info;
     private volatile Set<TsMoniker> m_set;
+    private String m_invalidDataCause;
 
     TsCollection(String name) {
         m_name = Strings.nullToEmpty(name);
@@ -75,6 +78,14 @@ public final class TsCollection implements ITsIdentified, IDocumented,
     @Override
     public String getName() {
         return m_name;
+    }
+
+    public String getInvalidDataCause() {
+        return m_invalidDataCause;
+    }
+
+    public void setInvalidDataCause(String message) {
+        m_invalidDataCause = message;
     }
 
     /**
@@ -635,9 +646,9 @@ public final class TsCollection implements ITsIdentified, IDocumented,
     }
 
     /**
-     *
-     * @param name
-     * @return
+     * Search a series by its name
+     * @param name The name of the series
+     * @return The first series with the given name is returned
      */
     public Ts search(String name) {
         synchronized (m_moniker) {
@@ -723,7 +734,22 @@ public final class TsCollection implements ITsIdentified, IDocumented,
                 updated = Collections.emptyList();
             }
             m_info = m_info.union(info.type);
+            m_invalidDataCause = info.invalidDataCause;
             return updated;
+        }
+    }
+
+    @Override
+    public String toString() {
+        synchronized (m_moniker) {
+            String[] headers = new String[m_ts.size()];
+            List<TsData> all = getAllData();
+            for (int i=0; i<headers.length; ++i){
+                headers[i]=MultiLineNameUtil.last(m_ts.get(i).getName());
+            }
+            TsDataTable table=new TsDataTable();
+            table.add(all);
+            return table.toString(headers);
         }
     }
 }

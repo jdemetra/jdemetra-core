@@ -35,11 +35,13 @@ import javax.annotation.Nonnull;
  */
 public final class SpreadSheetSource {
 
+    @Deprecated
     @Nonnull
     public static SpreadSheetSource load(@Nonnull Book book, @Nonnull DataFormat df, @Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean clean) throws IOException {
         return Engine.parseSource(book, df, freq, aggregation, clean);
     }
 
+    @Deprecated
     @Nonnull
     public static SpreadSheetSource load(@Nonnull Book book, @Nonnull Parsers.Parser<Date> dateParser, @Nonnull Parsers.Parser<Number> numberParser, @Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean clean) throws IOException {
         return Engine.parseSource(book, dateParser, numberParser, freq, aggregation, clean);

@@ -24,7 +24,7 @@ import ec.tstoolkit.maths.matrices.SubMatrix;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class SsfComposite implements ISsf {
 

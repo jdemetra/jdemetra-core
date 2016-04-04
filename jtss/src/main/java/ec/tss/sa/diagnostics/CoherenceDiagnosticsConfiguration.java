@@ -28,7 +28,7 @@ import java.util.List;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class CoherenceDiagnosticsConfiguration implements Cloneable, IPropertyDescriptors {
 
@@ -64,8 +64,8 @@ public class CoherenceDiagnosticsConfiguration implements Cloneable, IPropertyDe
     }
 
     public void setTolerance(double value) {
-        if (value <= 0 || value > 0.0001) {
-            throw new BaseException("Should be in ]0, 0.0001]");
+        if (value <= 0 || value > 0.1) {
+            throw new BaseException("Should be in ]0, 0.1]");
         }
         m_Tolerance = value;
     }

@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.satoolkit.x11;
 
 import ec.satoolkit.DecompositionMode;
@@ -35,30 +34,42 @@ import java.util.Objects;
 public class X11Specification implements IProcSpecification, Cloneable {
 
     public static final double DEF_LSIGMA = 1.5, DEF_USIGMA = 2.5;
-    public static final int DEF_FCASTS=-1;
+    public static final int DEF_FCASTS = -1;
 
     public static final String MODE = "mode",
+            SEASONAL = "seasonal",
             LSIGMA = "lsigma",
             USIGMA = "usigma",
             TRENDMA = "trendma",
             SEASONALMA = "seasonalma",
-            FCASTS = "fcasts";
+            FCASTS = "fcasts",
+            CALENDARSIGMA = "calendarsigma",
+            SIGMAVEC="sigmavec",
+    EXCLUDEFCAST="excludeforcast";
 
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
-       dic.put(InformationSet.item(prefix, MODE), String.class);
-       dic.put(InformationSet.item(prefix, LSIGMA), Double.class);
-       dic.put(InformationSet.item(prefix, USIGMA), Double.class);
-       dic.put(InformationSet.item(prefix, TRENDMA), Integer.class);
-       dic.put(InformationSet.item(prefix, SEASONALMA), String[].class);
-       dic.put(InformationSet.item(prefix, FCASTS), Integer.class);
-     }
-    
+        dic.put(InformationSet.item(prefix, MODE), String.class);
+        dic.put(InformationSet.item(prefix, SEASONAL), Boolean.class);
+        dic.put(InformationSet.item(prefix, LSIGMA), Double.class);
+        dic.put(InformationSet.item(prefix, USIGMA), Double.class);
+        dic.put(InformationSet.item(prefix, TRENDMA), Integer.class);
+        dic.put(InformationSet.item(prefix, SEASONALMA), String[].class);
+        dic.put(InformationSet.item(prefix, FCASTS), Integer.class);
+        dic.put(InformationSet.item(prefix, CALENDARSIGMA), String.class);
+      //  dic.put(InformationSet.item(prefix, MODE), String.class);
+        dic.put(InformationSet.item(prefix, SIGMAVEC), String[].class);
+        dic.put(InformationSet.item(prefix, EXCLUDEFCAST), String.class);  
+    }
+
     private DecompositionMode mode_ = DecompositionMode.Undefined;
     private boolean seasonal_ = true;
     private SeasonalFilterOption[] filters_;
     private double lsigma_ = DEF_LSIGMA, usigma_ = DEF_USIGMA;
     private int henderson_ = 0;
     private int fcasts_ = DEF_FCASTS;
+    private CalendarSigma calendarsigma_ = CalendarSigma.None;
+    private SigmavecOption[] sigmavec_; 
+    private boolean excludefcast_= false;
 
     /**
      * Number of forecasts used in X11. By default, 0. When pre-processing is
@@ -81,6 +92,20 @@ public class X11Specification implements IProcSpecification, Cloneable {
         return henderson_;
     }
 
+    /**
+     * Option of Calendarsigma[X12], specifies the calculation of the standard
+     * error calculation used for outlier detection in the X11 part
+     *
+     * @return
+     */
+    public CalendarSigma getCalendarSigma() {
+        return calendarsigma_;
+    }
+    
+    public SigmavecOption[] getSigmavec(){
+        return sigmavec_ ;
+    }
+    
     public double getLowerSigma() {
         return lsigma_;
     }
@@ -108,16 +133,42 @@ public class X11Specification implements IProcSpecification, Cloneable {
     public void setSeasonal(boolean seas) {
         seasonal_ = seas;
     }
+    
+    public boolean isExcludefcst(){
+    return excludefcast_;
+    }
+    
+    /**
+     *
+     * @param excludefcst default is false; true then the forcasts are ignored for the extreme value calculation
+     */
+    public void setExcludefcst(boolean excludefcst){
+    excludefcast_=excludefcst;
+    }
 
     public boolean isDefault() {
         if (!seasonal_ || mode_ != DecompositionMode.Multiplicative) {
             return false;
         }
-        if (fcasts_ != DEF_FCASTS)
+
+        if (calendarsigma_ != CalendarSigma.None) {
             return false;
+        }
+        
+        if (fcasts_ != DEF_FCASTS) {
+            return false;
+        }
         if (filters_ != null) {
             for (int i = 0; i < filters_.length; ++i) {
                 if (filters_[i] != SeasonalFilterOption.Msr) {
+                    return false;
+                }
+            }
+        }
+        
+        if (sigmavec_ != null) {
+            for (int i = 0; i < sigmavec_.length; ++i) {
+                if (sigmavec_[i] != SigmavecOption.Group1) {
                     return false;
                 }
             }
@@ -128,7 +179,13 @@ public class X11Specification implements IProcSpecification, Cloneable {
         if (usigma_ != DEF_USIGMA) {
             return false;
         }
-        return true;
+        
+        if (!excludefcast_){
+        return false;}
+        
+        return isAutoHenderson();
+        
+        
     }
 
     public boolean isAutoHenderson() {
@@ -149,6 +206,21 @@ public class X11Specification implements IProcSpecification, Cloneable {
         this.fcasts_ = forecastsHorizon;
     }
 
+    /**
+     * Option of Calendarsigma[X12], specifies the calculation of the standard
+     * error calculation used for outlier detection in the X11 part
+     *
+     * @param calendarsigma
+     */
+    public void setCalendarSigma(CalendarSigma calendarsigma) {
+        calendarsigma_ = calendarsigma;
+    }
+
+    public void setSigmavec(SigmavecOption[] sigmavec){
+        sigmavec_= sigmavec.clone();
+    }
+              
+        
     /**
      * Set the decomposition mode of X11
      *
@@ -219,6 +291,9 @@ public class X11Specification implements IProcSpecification, Cloneable {
             if (filters_ != null) {
                 cspec.filters_ = filters_.clone();
             }
+            if (sigmavec_ != null) {
+                cspec.sigmavec_ = sigmavec_.clone();
+            }
             return cspec;
         } catch (CloneNotSupportedException err) {
             throw new AssertionError();
@@ -233,11 +308,14 @@ public class X11Specification implements IProcSpecification, Cloneable {
     private boolean equals(X11Specification spec) {
         return spec.fcasts_ == fcasts_
                 && Arrays.deepEquals(spec.filters_, filters_)
+                && Arrays.deepEquals(spec.sigmavec_, sigmavec_)
                 && spec.seasonal_ == seasonal_
                 && spec.henderson_ == henderson_
                 && spec.lsigma_ == lsigma_
                 && spec.usigma_ == usigma_
-                && spec.mode_ == mode_;
+                && spec.mode_ == mode_
+                && spec.calendarsigma_ == calendarsigma_
+              && spec.excludefcast_== excludefcast_;
     }
 
     @Override
@@ -261,13 +339,16 @@ public class X11Specification implements IProcSpecification, Cloneable {
         if (verbose || mode_ != DecompositionMode.Undefined) {
             info.add(MODE, mode_.name());
         }
+        if (verbose || ! seasonal_) {
+            info.add(SEASONAL, seasonal_);
+        }
         if (verbose || lsigma_ != DEF_LSIGMA) {
             info.add(LSIGMA, lsigma_);
         }
         if (verbose || usigma_ != DEF_USIGMA) {
             info.add(USIGMA, usigma_);
         }
-        if (verbose || henderson_ != 0) {
+        if (verbose || !isAutoHenderson()) {
             info.add(TRENDMA, henderson_);
         }
         if (filters_ != null) {
@@ -280,6 +361,21 @@ public class X11Specification implements IProcSpecification, Cloneable {
         if (verbose || fcasts_ != -1) {
             info.add(FCASTS, fcasts_);
         }
+
+        if (verbose || calendarsigma_ != CalendarSigma.None) {
+            info.add(CALENDARSIGMA, calendarsigma_.name());
+        }
+        if (sigmavec_ != null) {
+            String[] sigmavec = new String[sigmavec_.length];
+            for (int i = 0; i < sigmavec.length; ++i) {
+                sigmavec[i] = sigmavec_[i].name();
+            }
+            info.add(SIGMAVEC, sigmavec);
+        }
+        
+       if (verbose || excludefcast_){
+            info.add(EXCLUDEFCAST, excludefcast_);
+       }
         return info;
     }
 
@@ -290,6 +386,10 @@ public class X11Specification implements IProcSpecification, Cloneable {
             if (mode != null) {
                 mode_ = DecompositionMode.valueOf(mode);
             }
+            Boolean seasonal = info.get(SEASONAL, Boolean.class);
+            if (seasonal != null){
+                seasonal_ = seasonal;
+            }        
             Double lsig = info.get(LSIGMA, Double.class);
             if (lsig != null) {
                 lsigma_ = lsig;
@@ -314,6 +414,24 @@ public class X11Specification implements IProcSpecification, Cloneable {
                 }
             }
 
+            String calendarsigma = info.get(CALENDARSIGMA, String.class);
+            if (calendarsigma != null) {
+                calendarsigma_ = CalendarSigma.valueOf(calendarsigma);
+            }
+
+            String[] sigmavec = info.get(SIGMAVEC, String[].class);
+            if (sigmavec != null) {
+                sigmavec_ = new SigmavecOption[sigmavec.length];
+                for (int i = 0; i < sigmavec.length; ++i) {
+                    sigmavec_[i] = SigmavecOption.valueOf(sigmavec[i]);
+                }
+            }
+            
+            Boolean excludefcst = info.get(EXCLUDEFCAST, Boolean.class);
+            if (excludefcst != null){
+                excludefcast_=excludefcst;
+            }        
+            
             return true;
         } catch (Exception err) {
             return false;

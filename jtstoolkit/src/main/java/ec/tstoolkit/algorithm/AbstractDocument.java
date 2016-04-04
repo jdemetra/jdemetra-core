@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
 public abstract class AbstractDocument<S extends IProcSpecification, I, R extends IProcResults> implements IProcDocument<S, I, R>, IModifiable {

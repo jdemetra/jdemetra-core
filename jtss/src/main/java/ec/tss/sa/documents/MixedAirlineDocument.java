@@ -26,7 +26,7 @@ import ec.tstoolkit.algorithm.ProcessingContext;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class MixedAirlineDocument extends SaDocument<MixedAirlineSpecification> implements Cloneable{
 

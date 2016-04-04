@@ -34,7 +34,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public abstract class SaDocument<S extends ISaSpecification> extends TsDocument<S, CompositeResults> {
 

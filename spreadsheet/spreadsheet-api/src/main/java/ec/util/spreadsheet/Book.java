@@ -25,6 +25,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
@@ -76,7 +79,7 @@ public abstract class Book implements Closeable {
     /**
      * Factory used to store/load books in/from spreadsheets.
      */
-    public abstract static class Factory implements FileFilter {
+    public abstract static class Factory implements FileFilter, DirectoryStream.Filter<Path> {
 
         /**
          * Returns a unique identifier of this factory.
@@ -94,6 +97,25 @@ public abstract class Book implements Closeable {
          */
         public boolean canLoad() {
             return true;
+        }
+
+        /**
+         * Loads a book from a Path.
+         *
+         * @param file a non-null spreadsheet file
+         * @return a non-null book
+         * @throws IOException if something goes wrong during the loading.
+         */
+        @Nonnull
+        public Book load(@Nonnull Path file) throws IOException {
+            try {
+                return load(file.toFile());
+            } catch (UnsupportedOperationException ex) {
+                // if this Path is not associated with the default provider 
+                try (InputStream stream = Files.newInputStream(file)) {
+                    return load(stream);
+                }
+            }
         }
 
         /**
@@ -153,6 +175,24 @@ public abstract class Book implements Closeable {
          * @param book the data to be stored
          * @throws IOException if something goes wrong during the storing.
          */
+        public void store(@Nonnull Path file, @Nonnull Book book) throws IOException {
+            try {
+                store(file.toFile(), book);
+            } catch (UnsupportedOperationException ex) {
+                // if this Path is not associated with the default provider 
+                try (OutputStream stream = Files.newOutputStream(file)) {
+                    store(stream, book);
+                }
+            }
+        }
+
+        /**
+         * Stores a book in a file.
+         *
+         * @param file a non-null spreadsheet file
+         * @param book the data to be stored
+         * @throws IOException if something goes wrong during the storing.
+         */
         public void store(@Nonnull File file, @Nonnull Book book) throws IOException {
             try (OutputStream stream = new FileOutputStream(file, false)) {
                 store(stream, book);
@@ -169,5 +209,15 @@ public abstract class Book implements Closeable {
          */
         abstract public void store(@Nonnull OutputStream stream, @Nonnull Book book) throws IOException;
         //</editor-fold>
+
+        @Override
+        public boolean accept(Path entry) throws IOException {
+            try {
+                return accept(entry.toFile());
+            } catch (UnsupportedOperationException ex) {
+                // if this Path is not associated with the default provider 
+                return false;
+            }
+        }
     }
 }

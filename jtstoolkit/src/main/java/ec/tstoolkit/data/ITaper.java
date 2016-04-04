@@ -19,7 +19,7 @@ package ec.tstoolkit.data;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public interface ITaper {
 

@@ -32,6 +32,7 @@ import javax.annotation.Nullable;
  * @author Demortier Jeremy
  * @author Philippe Charles
  */
+@Deprecated
 public final class SpreadSheetAccessor implements FileFilter {
 
     public static final SpreadSheetAccessor INSTANCE = new SpreadSheetAccessor();
@@ -72,7 +73,7 @@ public final class SpreadSheetAccessor implements FileFilter {
         Book.Factory factory = getFactoryByFile(file);
         if (factory != null) {
             try (Book book = factory.load(file)) {
-                return SpreadSheetSource.load(book, bean.dataFormat, bean.frequency, bean.aggregationType, bean.cleanMissing);
+                return SpreadSheetSource.load(book, bean.getDataFormat(), bean.getFrequency(), bean.getAggregationType(), bean.isCleanMissing());
             }
         }
         throw new RuntimeException("File type not supported");

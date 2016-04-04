@@ -39,7 +39,7 @@ import org.junit.BeforeClass;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class ModelDecomposerTest {
 
@@ -117,11 +117,11 @@ class FrequencySelector extends AbstractRootSelector {
      */
     @Override
     public boolean accept(final Complex root) {
-        if (root.im == 0) {
+        if (root.getIm() == 0) {
             return false;
         }
         Complex iroot = root.inv();
-        double r = iroot.re, n = iroot.absSquare();
+        double r = iroot.getRe(), n = iroot.absSquare();
         double f = Math.acos(r * (1 + n) / (2 * n));
         return Math.abs(f - freq_) < eps_;
     }

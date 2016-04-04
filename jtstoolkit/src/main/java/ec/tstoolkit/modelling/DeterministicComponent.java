@@ -21,13 +21,14 @@ import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.information.InformationMapper;
-import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.modelling.arima.ModelEstimation;
 import static ec.tstoolkit.modelling.arima.PreprocessingModel.outlierTypes;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.regression.Constant;
 import ec.tstoolkit.timeseries.regression.DiffConstant;
+import ec.tstoolkit.timeseries.regression.EasterVariable;
 import ec.tstoolkit.timeseries.regression.ICalendarVariable;
+import ec.tstoolkit.timeseries.regression.IEasterVariable;
 import ec.tstoolkit.timeseries.regression.IMovingHolidayVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.regression.ITsModifier;
@@ -35,6 +36,7 @@ import ec.tstoolkit.timeseries.regression.ITsVariable;
 import ec.tstoolkit.timeseries.regression.InterventionVariable;
 import ec.tstoolkit.timeseries.regression.OutlierType;
 import ec.tstoolkit.timeseries.regression.Ramp;
+import ec.tstoolkit.timeseries.regression.Sequence;
 import ec.tstoolkit.timeseries.regression.TsVariableList;
 import ec.tstoolkit.timeseries.regression.TsVariableSelection;
 import ec.tstoolkit.timeseries.simplets.ConstTransformation;
@@ -142,10 +144,24 @@ public class DeterministicComponent implements IProcResults {
     }
 
     public static ComponentType getType(InterventionVariable var) {
-        if (var.getDeltaS() == 1) {
+        if (var.getDeltaS() > 0 && var.getDelta() > 0) {
+            return ComponentType.Undefined;
+        }
+        Sequence[] sequences = var.getSequences();
+        int maxseq = 0;
+        for (int i = 0; i < sequences.length; ++i) {
+            int len = sequences[i].end.difference(sequences[i].start) / 365;
+            if (len > maxseq) {
+                maxseq = len;
+            }
+        }
+        if (maxseq > 0) {
+            return var.getDeltaS() == 0 ? ComponentType.Trend : ComponentType.Undefined;
+        }
+        if (var.getDeltaS() > 0) {
             return ComponentType.Seasonal;
         }
-        if (var.getDelta() == 1) {
+        if (var.getDelta() > .8) {
             return ComponentType.Trend;
         }
         return ComponentType.Irregular;
@@ -514,7 +530,7 @@ public class DeterministicComponent implements IProcResults {
         mapper.add(ModellingDictionary.Y_LIN, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
             @Override
             public TsData retrieve(DeterministicComponent source) {
-                return source.isMultiplicative() ? source.linearizedSeries().exp() : source.linearizedSeries();
+                return source.linearizedSeries();
             }
         });
         mapper.add(ModellingDictionary.L, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
@@ -582,6 +598,50 @@ public class DeterministicComponent implements IProcResults {
             public TsData retrieve(DeterministicComponent source) {
                 TsData cal = source.regressionEffect(source.domain(true), ICalendarVariable.class);
                 source.backTransform(cal, false, true);
+                return cal;
+            }
+        });
+        mapper.add(ModellingDictionary.EE, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
+            @Override
+            public TsData retrieve(DeterministicComponent source) {
+                TsData cal = source.regressionEffect(source.domain(false), IEasterVariable.class);
+                source.backTransform(cal, false, false);
+                return cal;
+            }
+        });
+        mapper.add(ModellingDictionary.EE + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
+            @Override
+            public TsData retrieve(DeterministicComponent source) {
+                TsData cal = source.regressionEffect(source.domain(true), IEasterVariable.class);
+                source.backTransform(cal, false, false);
+                return cal;
+            }
+        });
+        mapper.add(ModellingDictionary.OMHE, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
+            @Override
+            public TsData retrieve(DeterministicComponent source) {
+                TsData cal = source.regressionEffect(source.domain(false), new TsVariableList.ISelector() {
+
+                    @Override
+                    public boolean accept(ITsVariable var) {
+                        return (var instanceof IMovingHolidayVariable) && !(var instanceof IEasterVariable);
+                    }
+                });
+                source.backTransform(cal, false, false);
+                return cal;
+            }
+        });
+        mapper.add(ModellingDictionary.OMHE + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
+            @Override
+            public TsData retrieve(DeterministicComponent source) {
+                TsData cal = source.regressionEffect(source.domain(true), new TsVariableList.ISelector() {
+
+                    @Override
+                    public boolean accept(ITsVariable var) {
+                        return (var instanceof IMovingHolidayVariable) && !(var instanceof IEasterVariable);
+                    }
+                });
+                source.backTransform(cal, false, false);
                 return cal;
             }
         });

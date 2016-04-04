@@ -30,6 +30,22 @@ public class TsDomainTest {
 
     @Test
     public void testChangeFreq() {
+        TsPeriod lstart = new TsPeriod(TsFrequency.Quarterly, 1960, 0),
+                hstart = new TsPeriod(TsFrequency.Monthly, 1960, 2);
+        TsDomain ldom = new TsDomain(lstart, 4);
+        TsDomain hdom = new TsDomain(hstart, 16);
+        TsDomain hdomc = ldom.changeFrequency(hdom.getFrequency(), true);
+        TsDomain ldomc = hdom.changeFrequency(ldom.getFrequency(), true);
+//        System.out.println(ldom);
+//        System.out.println(hdomc);
+//        System.out.println(hdom);
+//        System.out.println(ldomc);
+        assertTrue(hdom.contains(ldomc.changeFrequency(hdom.getFrequency(), true)));
+        assertTrue(ldom.contains(hdomc.changeFrequency(ldom.getFrequency(), true)));
+    }
+
+    @Test
+    public void testChangeFreqBis() {
         TsPeriod lstart = new TsPeriod(TsFrequency.Quarterly, 1980, 0),
                 hstart = new TsPeriod(TsFrequency.Monthly, 1980, 2);
         TsDomain ldom = new TsDomain(lstart, 4);
@@ -43,5 +59,4 @@ public class TsDomainTest {
         assertTrue(hdom.contains(ldomc.changeFrequency(hdom.getFrequency(), true)));
         assertTrue(ldom.contains(hdomc.changeFrequency(ldom.getFrequency(), true)));
     }
-
 }

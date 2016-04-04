@@ -165,8 +165,9 @@ public class ChowLin {
         TsDisaggregation<SsfAr1> disagg = new TsDisaggregation<>();
         disagg.setSsf(ar1);
         GridSearch gsearch = new GridSearch();
-        gsearch.setConvergenceCriterion(eps_);
+        gsearch.setPrecision(eps_);
         disagg.setMinimizer(gsearch);
+        disagg.setEpsilon(eps_);
         disagg.setMapping(new SsfAr1.Mapping(m_zinit));
         disagg.calculateVariance(true);
         disagg.useML(ml_);

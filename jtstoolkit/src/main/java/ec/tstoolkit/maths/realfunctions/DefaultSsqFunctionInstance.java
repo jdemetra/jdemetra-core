@@ -22,7 +22,7 @@ import ec.tstoolkit.data.IReadDataBlock;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public class DefaultSsqFunctionInstance implements IFunctionInstance, ISsqFunctionInstance {
 

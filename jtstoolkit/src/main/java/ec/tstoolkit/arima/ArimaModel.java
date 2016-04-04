@@ -66,7 +66,15 @@ public class ArimaModel extends AbstractArimaModel implements IArimaModel {
     }
 
     /**
-     * Adds two Arima models, considering that their innovations are independent
+     * Adds two Arima models, considering that their innovations are independent.
+     * The sum of two Arima models is computed as follows:
+     * The auto-regressive parts (stationary and non stationary of the aggregated
+     * model are the smaller common multiple of the corresponding polynomials of
+     * the components. The sum of the acf of the modified moving average 
+     * polynomials is then computed and factorized, to get the moving average
+     * polynomial and innovation variance of the sum. See the class 
+     * ec.tstoolkit.maths.linearfilters.SymmetricFrequencyResponseDecomposer for
+     * the factorization of the aggregated acf.
      *
      * @param l The left operand. May be any generic IArimaModel.
      * @param r The right operand. Must be a standard ArimaModel object

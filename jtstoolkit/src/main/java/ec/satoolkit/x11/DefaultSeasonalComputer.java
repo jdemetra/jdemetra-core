@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
+ */
 package ec.satoolkit.x11;
 
 import ec.tstoolkit.design.Development;
@@ -61,6 +60,7 @@ class DefaultSeasonalComputer extends DefaultX11Algorithm implements
         } else {
             filtering = selectMsr(s, info);
         }
+        generateMsr(s, info);
         if (step == X11Step.D) {
             SymmetricFilter c = filtering.getCentralFilter();
             if (c != null) {
@@ -89,23 +89,14 @@ class DefaultSeasonalComputer extends DefaultX11Algorithm implements
         SymmetricFilter f7 = FilterFactory.makeSymmetricFilter(7);
         DefaultSeasonalFilteringStrategy fseas = new DefaultSeasonalFilteringStrategy(
                 f7, new FilteredMeanEndPoints(f7));
-        TsData s1 = fseas.process(s, rdomain);
-        TsData s2 = op(s, s1);
-
-        // int len = d9bis.getLength();
-        MsrTable rms = MsrTable.create(s1, s2, isMultiplicative());
+        MsrTable rms = calculateMsr(fseas, rdomain, s);
         double grms = rms.getGlobalMsr();
         InformationSet dtables = info.subSet(X11Kernel.D);
-        dtables.set(X11Kernel.D9_RMS, rms);
 
         int ndrop = rdomain.getEnd().getPosition();
         if (ndrop != 0) {
             rdomain = rdomain.drop(0, ndrop);
-            s1 = fseas.process(s, rdomain);
-            s2 = op(s, s1);
-
-            // int len = d9bis.getLength();
-            rms = MsrTable.create(s1, s2, isMultiplicative());
+            rms = calculateMsr(fseas, rdomain, s);
             grms = rms.getGlobalMsr();
         }
 
@@ -119,9 +110,7 @@ class DefaultSeasonalComputer extends DefaultX11Algorithm implements
         while (finalSeasonalFilter == null && rdomain.getLength() / freq >= 6) {
             ++rmsrounds;
             rdomain = rdomain.drop(0, freq);
-            s1 = fseas.process(s, rdomain);
-            s2 = op(s, s1);
-            rms = MsrTable.create(s1, s2, isMultiplicative());
+            rms = calculateMsr(fseas, rdomain, s);
             grms = rms.getGlobalMsr();
             finalSeasonalFilter = SeasonalFilterFactory.getFilteringStrategyForGlobalRMS(grms);
         }
@@ -216,5 +205,21 @@ class DefaultSeasonalComputer extends DefaultX11Algorithm implements
         useMsr = false;
         initialFilter = SeasonalFilterFactory.getDefaultFilteringStrategy(SeasonalFilterOption.S3X3);
         finalFilter = SeasonalFilterFactory.getDefaultFilteringStrategy(SeasonalFilterOption.S3X5);
+    }
+
+    private MsrTable calculateMsr(DefaultSeasonalFilteringStrategy fseas, TsDomain rdomain, TsData s) {
+        TsData s1 = fseas.process(s, rdomain);
+        TsData s2 = op(s, s1);
+        return MsrTable.create(s1, s2, isMultiplicative());
+    }
+
+    private void generateMsr(TsData s, InformationSet info) {
+        TsDomain rdomain = s.getDomain().drop(0, context.getForecastHorizon());
+        SymmetricFilter f7 = FilterFactory.makeSymmetricFilter(7);
+        DefaultSeasonalFilteringStrategy fseas = new DefaultSeasonalFilteringStrategy(
+                f7, new FilteredMeanEndPoints(f7));
+        MsrTable rms = calculateMsr(fseas, rdomain, s);
+        InformationSet dtables = info.subSet(X11Kernel.D);
+        dtables.set(X11Kernel.D9_RMS, rms);
     }
 }

@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 
 /**
  *
- * @author pcuser
+ * @author Jean Palate
  */
 public final class TreeOfIds {
 
