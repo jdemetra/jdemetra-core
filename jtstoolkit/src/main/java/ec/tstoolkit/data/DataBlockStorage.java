@@ -192,7 +192,7 @@ public class DataBlockStorage {
         return new SubMatrix(m_data, 0, m_dim, m_nused, 1,
                 m_dim);
     }
-    
+
     /**
      * Multiplies the current data blocks by a given factor
      * @param factor 
@@ -205,5 +205,4 @@ public class DataBlockStorage {
             m_data[i]*=factor;
         }
     }
-
 }

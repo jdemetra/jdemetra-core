@@ -22,7 +22,6 @@ import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.arima.estimation.LikelihoodStatistics;
 import ec.tstoolkit.data.DataBlock;
-import ec.tstoolkit.eco.CoefficientEstimation;
 import ec.tstoolkit.eco.ConcentratedLikelihood;
 import ec.tstoolkit.information.InformationMapper;
 import ec.tstoolkit.information.InformationSet;
@@ -31,10 +30,7 @@ import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.DeterministicComponent;
 import ec.tstoolkit.modelling.ModellingDictionary;
 import ec.tstoolkit.modelling.SeriesInfo;
-import ec.tstoolkit.modelling.UserVariable;
-import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.LogForecasts;
-import static ec.tstoolkit.modelling.arima.PreprocessingModel.outlierComponent;
 import static ec.tstoolkit.modelling.arima.PreprocessingModel.outlierTypes;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.stats.NiidTests;
@@ -44,17 +40,13 @@ import ec.tstoolkit.timeseries.regression.DiffConstant;
 import ec.tstoolkit.timeseries.regression.ICalendarVariable;
 import ec.tstoolkit.timeseries.regression.IMovingHolidayVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
-import ec.tstoolkit.timeseries.regression.ITsModifier;
 import ec.tstoolkit.timeseries.regression.ITsVariable;
-import ec.tstoolkit.timeseries.regression.InterventionVariable;
-import ec.tstoolkit.timeseries.regression.OutlierEstimation;
 import ec.tstoolkit.timeseries.regression.OutlierType;
 import ec.tstoolkit.timeseries.regression.TsVariableList;
 import ec.tstoolkit.timeseries.regression.TsVariableList.ISelector;
 import ec.tstoolkit.timeseries.regression.TsVariableSelection;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
-import ec.tstoolkit.utilities.Jdk6;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -216,7 +208,7 @@ public class MixedFrequenciesModelEstimation implements IProcResults {
             } else {
                 sregs = sregs.changeFrequency(l0.getFrequency(), TsAggregationType.Sum, true);
                 if (log) {
-                    sregs.getValues().div(edomain.getFrequency().ratio(l0.getFrequency()));
+                    sregs.apply(x->x/edomain.getFrequency().ratio(l0.getFrequency()));
                 }
             }
         }

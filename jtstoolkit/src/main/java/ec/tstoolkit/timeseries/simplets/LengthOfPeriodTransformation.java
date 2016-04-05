@@ -16,6 +16,7 @@
 */
 
 package ec.tstoolkit.timeseries.simplets;
+import ec.tstoolkit.timeseries.simplets.ITsDataTransformation;
 
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;

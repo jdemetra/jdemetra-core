@@ -70,14 +70,14 @@ public class MoorePenrose implements IGeneralizedInverse{
         // A =L(LL')^-1 or A * (KK') = L 
         // A*K) * K' = L  or B * K' = L
         // K * B' = L' or B' = rsolbve(K, L')
-        LowerTriangularMatrix.rsolve(K, L.subMatrix().transpose());
+        LowerTriangularMatrix.rsolve(K, L.all().transpose());
         // L' contains B' or L contains B
         // A * K = B or A= lsolve B
-        LowerTriangularMatrix.lsolve(K, L.subMatrix());
+        LowerTriangularMatrix.lsolve(K, L.all());
         // L contains now A
 
         Matrix I = new Matrix(n, m);
-        I.subMatrix().product(SymmetricMatrix.XXt(L).subMatrix(), G.subMatrix().transpose());
+        I.all().product(SymmetricMatrix.XXt(L).all(), G.all().transpose());
         I.clean(zero);
         return I;
     }

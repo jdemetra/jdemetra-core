@@ -932,6 +932,21 @@ public class SubMatrix implements Cloneable {
         return builder.toString();
     }
 
+    public String toString(String fmt) {
+        if (isEmpty()) {
+            return "";
+        }
+        StringBuilder builder = new StringBuilder();
+        DataBlockIterator rows = this.rows();
+        do {
+            if (rows.getPosition() > 0) {
+                builder.append("\r\n");
+            }
+            builder.append(rows.getData().toString(fmt));
+        } while (rows.next());
+        return builder.toString();
+    }
+    
     /**
      * Computes the sum of the rows
      *
@@ -953,8 +968,8 @@ public class SubMatrix implements Cloneable {
     }
 
     /**
-     * Computes in place x*this*y. The result is stored in this object. x,y and
-     * this object must be square matrices with the same dimensions
+     * Computes in place src*this*y. The result is stored in this object. src,y and
+ this object must be square matrices with the same dimensions
      *
      * @param x
      * @param y
@@ -965,7 +980,7 @@ public class SubMatrix implements Cloneable {
             throw new MatrixException(MatrixException.IncompatibleDimensions);
         }
         // computes my.
-        // rows mi of m are replaced by mi * x
+        // rows mi of m are replaced by mi * src
         DataBlock tmp = new DataBlock(m_nrows);
         DataBlockIterator mrows = rows();
         DataBlock mrow = mrows.getData();
@@ -974,7 +989,7 @@ public class SubMatrix implements Cloneable {
             mrow.product(tmp, y.columns());
         } while (mrows.next());
 
-        // computes x m. 
+        // computes src m. 
         DataBlockIterator mcols = columns();
         DataBlock mcol = mcols.getData();
         do {
@@ -987,7 +1002,7 @@ public class SubMatrix implements Cloneable {
     /**
      * The euclidian (frobenius) norm of the matrix
      *
-     * @return sqrt(sum(x(i,j)*x(i,j))) is returned
+     * @return sqrt(sum(src(i,j)*src(i,j))) is returned
      */
     public double nrm2() {
         if (isFull()) {
@@ -1138,10 +1153,28 @@ public class SubMatrix implements Cloneable {
      * Top-left sub-matrix
      * @param nr Number of rows. Could be 0.
      * @param nc Number of columns. Could be 0. 
-     * @return A nr x nc sub-matrix
+     * @return A nr src nc sub-matrix
      */
     public SubMatrix topLeft(int nr, int nc){
         return new SubMatrix(m_data, m_start, nr, nc, m_row_inc, m_col_inc);
+    }
+    
+    /**
+     * Top-left sub-matrix
+     * @param nr Number of rows. Could be 0.
+     * @return A nr src nc sub-matrix
+     */
+    public SubMatrix top(int nr){
+        return new SubMatrix(m_data, m_start, nr, m_ncols, m_row_inc, m_col_inc);
+    }
+
+    /**
+     * Top-left sub-matrix
+     * @param nc Number of columns. Could be 0.
+     * @return A nr src nc sub-matrix
+     */
+    public SubMatrix left(int nc){
+        return new SubMatrix(m_data, m_start, m_nrows, nc, m_row_inc, m_col_inc);
     }
     
     /**
@@ -1157,13 +1190,33 @@ public class SubMatrix implements Cloneable {
      * Bottom-right sub-matrix
      * @param nr Number of rows. Could be 0.
      * @param nc Number of columns. Could be 0. 
-     * @return A nr x nc sub-matrix
+     * @return A nr src nc sub-matrix
      */
     public SubMatrix bottomRight(int nr, int nc){
         int start=(m_nrows-nr)*m_row_inc+(m_ncols-nc)*m_col_inc;
         return new SubMatrix(m_data, start, nr, nc, m_row_inc, m_col_inc);
     }
     
+    /**
+     * Bottom sub-matrix
+     *
+     * @param nr Number of rows. Could be 0.
+     * @return The last n rows
+     */
+    public SubMatrix bottom(int nr) {
+        return new SubMatrix(m_data, m_start + m_nrows - nr, nr, m_ncols, m_row_inc, m_col_inc);
+    }
+
+
+    /**
+     * right sub-matrix
+     *
+     * @param nc Number of columns. Could be 0.
+     * @return The nc right columns
+     */
+    public SubMatrix right(int nc) {
+        return new SubMatrix(m_data, m_start + (m_ncols - nc) * m_col_inc, m_nrows, nc, m_row_inc, m_col_inc);
+    }
 //</editor-fold>
 
 }

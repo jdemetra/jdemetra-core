@@ -94,7 +94,7 @@ public class DurbinAlgorithm {
         double sum = 0;
         int nm = 0;
         for (int i = 0; i < x_.length; ++i) {
-            if (!DescriptiveStatistics.isFinite(x_[i])) {
+            if (!Double.isFinite(x_[i])) {
                 ++nm;
             } else if (mean_) {
                 sum += x_[i];
@@ -106,7 +106,7 @@ public class DurbinAlgorithm {
         if (sum != 0) {
             sum /= (x_.length - nm);
             for (int i = 0; i < x_.length; ++i) {
-                if (DescriptiveStatistics.isFinite(x_[i])) {
+                if (Double.isFinite(x_[i])) {
                     x_[i] -= sum;
                 }
             }

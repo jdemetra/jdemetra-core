@@ -73,7 +73,7 @@ public class MixedAirlineResults implements ISaResults {
         ISsf ssf = model.makeSsf();
         smoother.setSsf(ssf);
         smoother.setCalcVar(true);
-        SsfData data = new SsfData(y_.getValues().internalStorage(), null);
+        SsfData data = new SsfData(y_.internalStorage(), null);
         srslts_ = new SmoothingResults(true, true);
         smoother.process(data, srslts_);
         noise_ = new TsData(y_.getStart(), srslts_.component(ssf.getStateDim() - 1), false);

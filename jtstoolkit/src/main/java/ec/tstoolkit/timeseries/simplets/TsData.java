@@ -16,25 +16,25 @@
  */
 package ec.tstoolkit.timeseries.simplets;
 
-import ec.tstoolkit.arima.ArimaModelBuilder;
-import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.DescriptiveStatistics;
 import ec.tstoolkit.data.IReadDataBlock;
+import ec.tstoolkit.data.ReadDataBlock;
 import java.util.Arrays;
 import java.util.Iterator;
-
-import ec.tstoolkit.data.Values;
-import ec.tstoolkit.design.Mutable;
 import ec.tstoolkit.design.NewObject;
+import ec.tstoolkit.design.Unsafe;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.TsPeriodSelector;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.random.IRandomNumberGenerator;
 import ec.tstoolkit.random.JdkRNG;
-import ec.tstoolkit.sarima.SarimaModel;
-import ec.tstoolkit.sarima.SarimaModelBuilder;
 import java.util.Random;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoublePredicate;
+import java.util.function.DoubleSupplier;
+import java.util.function.DoubleUnaryOperator;
+import java.util.function.IntToDoubleFunction;
 
 /**
  * A TsData is a raw time series, containing only the actual data. TsData can
@@ -48,15 +48,15 @@ import java.util.Random;
 @Development(status = Development.Status.Alpha)
 public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBlock {
 
-    private static final class TSIterator implements Iterator<TsObservation> {
+    private static final class TsIterator implements Iterator<TsObservation> {
 
         private final double[] m_vals;
         private final TsPeriod m_start;
         private int m_cur = -1;
 
-        TSIterator(final TsData ts) {
-            m_start = ts.m_start;
-            m_vals = ts.getValues().internalStorage();
+        TsIterator(final TsData ts) {
+            m_start = ts.start;
+            m_vals = ts.vals;
         }
 
         @Override
@@ -65,7 +65,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
                 return false;
             }
             for (int i = m_cur + 1; i < m_vals.length; i++) {
-                if (DescriptiveStatistics.isFinite(m_vals[i])) {
+                if (Double.isFinite(m_vals[i])) {
                     return true;
                 }
             }
@@ -90,7 +90,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         //
         private void searchNext() {
             for (; m_cur < m_vals.length; ++m_cur) {
-                if (DescriptiveStatistics.isFinite(m_vals[m_cur])) {
+                if (Double.isFinite(m_vals[m_cur])) {
                     break;
                 }
             }
@@ -128,33 +128,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         } else if (tsl == null) {
             return tsr;
         }
-
-        TsDomain rDomain = tsr.getDomain();
-        TsDomain lDomain = tsl.getDomain();
-        Values lValues = tsl.getValues();
-        Values rValues = tsr.getValues();
-        TsDomain iDomain = lDomain.intersection(rDomain);
-        if (iDomain == null) {
-            return null;
-        }
-        int ni = iDomain.getLength();
-        TsData rslt = new TsData(iDomain);
-        if (ni == 0) {
-            return rslt;
-        }
-        Values vrslt = rslt.getValues();
-        int rbeg = rDomain.firstid(), lbeg = tsl.m_start.id(), ibeg = iDomain.firstid();
-        int li = ibeg - lbeg, ri = ibeg - rbeg;
-        double[] pl = lValues.internalStorage(), pr = rValues.internalStorage(),
-                po = vrslt.internalStorage();
-        for (int i = 0; i < ni; ++i, ++li, ++ri) {
-            double ld = pl[li], rd = pr[ri];
-            if (DescriptiveStatistics.isFinite(ld)
-                    && DescriptiveStatistics.isFinite(rd)) {
-                po[i] = ld + rd;
-            }
-        }
-        return rslt;
+        return computeOnIntersection((a, b) -> a + b, tsl, tsr);
     }
 
     /**
@@ -166,7 +140,13 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @see #times(double)
      */
     public static TsData divide(final double d, final TsData ts) {
-        return new TsData(ts.getStart(), Values.divide(d, ts.m_vals));
+        TsData s = ts.clone();
+        if (d != 0) {
+            s.apply(a -> d / a);
+        } else {
+            s.set(() -> 0);
+        }
+        return s;
     }
 
     /**
@@ -192,33 +172,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         } else if (tsl == null) {
             return tsr.inv();
         }
-
-        TsDomain rDomain = tsr.getDomain();
-        TsDomain lDomain = tsl.getDomain();
-        Values lValues = tsl.getValues();
-        Values rValues = tsr.getValues();
-        TsDomain iDomain = lDomain.intersection(rDomain);
-        if (iDomain == null) {
-            return null;
-        }
-        int ni = iDomain.getLength();
-        TsData rslt = new TsData(iDomain);
-        if (ni == 0) {
-            return rslt;
-        }
-        Values vrslt = rslt.getValues();
-        int rbeg = rDomain.firstid(), lbeg = tsl.m_start.id(), ibeg = iDomain.firstid();
-        int li = ibeg - lbeg, ri = ibeg - rbeg;
-        double[] pl = lValues.internalStorage(), pr = rValues.internalStorage(),
-                po = vrslt.internalStorage();
-        for (int i = 0; i < ni; ++i, ++li, ++ri) {
-            double ld = pl[li], rd = pr[ri];
-            if (DescriptiveStatistics.isFinite(ld)
-                    && DescriptiveStatistics.isFinite(rd) && (rd != 0)) {
-                po[i] = ld / rd;
-            }
-        }
-        return rslt;
+        return computeOnIntersection((a, b) -> a / b, tsl, tsr);
     }
 
     /**
@@ -253,32 +207,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
             return tsr;
         }
 
-        TsDomain rDomain = tsr.getDomain();
-        TsDomain lDomain = tsl.getDomain();
-        Values lValues = tsl.getValues();
-        Values rValues = tsr.getValues();
-        TsDomain iDomain = lDomain.intersection(rDomain);
-        if (iDomain == null) {
-            return null;
-        }
-        int ni = iDomain.getLength();
-        TsData rslt = new TsData(iDomain);
-        if (ni == 0) {
-            return rslt;
-        }
-        Values vrslt = rslt.getValues();
-        int rbeg = rDomain.firstid(), lbeg = tsl.m_start.id(), ibeg = iDomain.firstid();
-        int li = ibeg - lbeg, ri = ibeg - rbeg;
-        double[] pl = lValues.internalStorage(), pr = rValues.internalStorage(),
-                po = vrslt.internalStorage();
-        for (int i = 0; i < ni; ++i, ++li, ++ri) {
-            double ld = pl[li], rd = pr[ri];
-            if (DescriptiveStatistics.isFinite(ld)
-                    && DescriptiveStatistics.isFinite(rd)) {
-                po[i] = ld * rd;
-            }
-        }
-        return rslt;
+        return computeOnIntersection((a, b) -> a * b, tsl, tsr);
     }
 
     /**
@@ -313,35 +242,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
             return tsr.chs();
         }
 
-        TsDomain rDomain = tsr.getDomain();
-        TsDomain lDomain = tsl.getDomain();
-        Values lValues = tsl.getValues();
-        Values rValues = tsr.getValues();
-        TsDomain iDomain = lDomain.intersection(rDomain);
-        if (iDomain == null) {
-            return null;
-        }
-        int ni = iDomain.getLength();
-        TsData rslt = new TsData(iDomain);
-        if (ni == 0) {
-            return rslt;
-        }
-        Values vrslt = rslt.getValues();
-        int rbeg = rDomain.firstid(), lbeg = tsl.m_start.id(), ibeg = iDomain.firstid();
-        int li = ibeg - lbeg, ri = ibeg - rbeg;
-        double[] pl = lValues.internalStorage(), pr = rValues.internalStorage(),
-                po = vrslt.internalStorage();
-        for (int i = 0; i < ni; ++i, ++li, ++ri) {
-            double ld = pl[li], rd = pr[ri];
-            if (DescriptiveStatistics.isFinite(ld)
-                    && DescriptiveStatistics.isFinite(rd)) {
-                po[i] = ld - rd;
-            }
-        }
-        return rslt;
+        return computeOnIntersection((a, b) -> a - b, tsl, tsr);
     }
-    private TsPeriod m_start;
-    private Values m_vals;
+
     private static final IRandomNumberGenerator RNG = JdkRNG.newRandom();
 
     /**
@@ -386,13 +289,6 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         return ts;
     }
 
-    public void randomAirline() {
-        SarimaModelBuilder sb = new SarimaModelBuilder();
-        SarimaModel airline = sb.createAirlineModel(this.getFrequency().intValue(), -.6, -.8);
-        airline = sb.randomize(airline, .2);
-        m_vals.copyFrom(new ArimaModelBuilder().generate(airline, m_vals.getLength()), 0);
-    }
-
     /**
      * Computes the average difference between to time series. It is defined as
      * the root mean square of their differences.
@@ -403,10 +299,12 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     public double distance(TsData s) {
         TsData del = this.minus(s);
         int n = del.getObsCount();
-        del.getValues().setMissingValues(0);
-        double ssq = new DataBlock(del.getValues().internalStorage()).ssq();
-        return Math.sqrt(ssq / del.getLength());
+        double ssq = del.ssq();
+        return Math.sqrt(ssq / n);
     }
+
+    private TsPeriod start;
+    private double[] vals;
 
     /**
      * Creates a new time series with the specified domain. All values are
@@ -415,13 +313,16 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @param dom The time domain of the series
      */
     public TsData(final TsDomain dom) {
-        m_start = dom.getStart();
-        m_vals = new Values(dom.getLength());
+        start = dom.getStart();
+        vals = new double[dom.getLength()];
     }
 
     public TsData(final TsDomain dom, double val) {
-        m_start = dom.getStart();
-        m_vals = new Values(dom.getLength(), val);
+        start = dom.getStart();
+        vals = new double[dom.getLength()];
+        for (int i = 0; i < vals.length; ++i) {
+            vals[i] = val;
+        }
     }
 
     /**
@@ -432,8 +333,8 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @param count Length of the series
      */
     TsData(final TsFrequency freq, final int beg, final int count) {
-        m_start = new TsPeriod(freq, beg);
-        m_vals = new Values(count);
+        start = new TsPeriod(freq, beg);
+        vals = new double[count];
     }
 
     /**
@@ -450,8 +351,8 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      */
     public TsData(final TsFrequency freq, final int firstyear,
             final int firstperiod, final double[] data, boolean copydata) {
-        m_start = new TsPeriod(freq, firstyear, firstperiod);
-        m_vals = new Values(data, copydata);
+        start = new TsPeriod(freq, firstyear, firstperiod);
+        vals = copydata ? data.clone() : data;
     }
 
     /**
@@ -466,8 +367,8 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      */
     public TsData(final TsFrequency freq, final int firstyear,
             final int firstperiod, final int count) {
-        m_start = new TsPeriod(freq, firstyear, firstperiod);
-        m_vals = new Values(count);
+        start = new TsPeriod(freq, firstyear, firstperiod);
+        vals = new double[count];
     }
 
     /**
@@ -480,8 +381,8 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * users should no longer use the given data array.
      */
     public TsData(final TsPeriod start, final double[] data, boolean copydata) {
-        m_start = start.clone();
-        m_vals = new Values(data, copydata);
+        this.start = start.clone();
+        vals = copydata ? data.clone() : data;
     }
 
     /**
@@ -492,8 +393,8 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @param count The length of the series
      */
     public TsData(final TsPeriod start, final int count) {
-        m_start = start.clone();
-        m_vals = new Values(count);
+        this.start = start.clone();
+        vals = new double[count];
     }
 
     /**
@@ -504,30 +405,19 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @param vals The read only data
      */
     public TsData(final TsPeriod start, final IReadDataBlock vals) {
-        m_start = start;
-        m_vals = new Values(vals);
-    }
-
-    /**
-     * Creates a new series from a starting period and a set of values. The data
-     * are not copied (the values object is used as is.
-     *
-     * @param start The starting period
-     * @param vals The values
-     */
-    private TsData(final TsPeriod start, final Values vals) {
-        m_start = start;
-        m_vals = vals;
+        this.start = start;
+        this.vals = new double[vals.getLength()];
+        vals.copyTo(this.vals, 0);
     }
 
     @Override
     public void copyTo(double[] buffer, int start) {
-        m_vals.copyTo(buffer, start);
+        System.arraycopy(vals, 0, buffer, start, vals.length);
     }
 
     @Override
     public IReadDataBlock rextract(int start, int length) {
-        return m_vals.rextract(start, length);
+        return new ReadDataBlock(vals, start, length);
     }
 
     /**
@@ -538,9 +428,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * current series.
      */
     public TsData abs() {
-        final Values vals = new Values(m_vals);
-        vals.abs();
-        return new TsData(getStart(), vals);
+        return transformFinite(x -> Math.abs(x));
     }
 
     /**
@@ -555,7 +443,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      */
     public TsData changeFrequency(final TsFrequency newfreq,
             final TsAggregationType conversion, final boolean complete) {
-        int freq = m_start.getFrequency().intValue(), nfreq = newfreq.intValue();
+        int freq = start.getFrequency().intValue(), nfreq = newfreq.intValue();
         if (freq % nfreq != 0) {
             return null;
         }
@@ -565,9 +453,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         int nconv = freq / nfreq;
         int c = getLength();
         int z0 = 0;
-        int beg = m_start.id();
+        int beg = start.id();
 
-        // start and end
+        // d0 and d1
         int nbeg = beg / nconv;
         // nbeg is the first period in the new frequency
         // z0 is the number of periods in the old frequency being dropped
@@ -581,7 +469,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
                     ++nbeg;
                     z0 = nconv - beg % nconv;
                 } else {
-                    z0 = - beg % nconv;
+                    z0 = -beg % nconv;
                 }
             } else {
                 if (beg < 0) {
@@ -608,7 +496,6 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         }
         int n = nend - nbeg;
         TsData tmp = new TsData(newfreq, nbeg, n);
-        Values vtmp = tmp.getValues();
         if (n > 0) {
             for (int i = 0, j = z0; i < n; ++i) {
                 int nmax = nconv;
@@ -621,8 +508,8 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
                 int ncur = 0;
 
                 for (int k = 0; k < nmax; ++k, ++j) {
-                    double dcur = m_vals.get(j);
-                    if (DescriptiveStatistics.isFinite(dcur)) {
+                    double dcur = vals[j];
+                    if (Double.isFinite(dcur)) {
                         switch (conversion) {
                             case Last:
                                 d = dcur;
@@ -653,7 +540,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
                     if (conversion == TsAggregationType.Average) {
                         d /= ncur;
                     }
-                    vtmp.set(i, d);
+                    tmp.vals[i] = d;
                 }
             }
         }
@@ -668,9 +555,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * current series.
      */
     public TsData chs() {
-        final Values vals = new Values(m_vals);
-        vals.chs();
-        return new TsData(getStart(), vals);
+        return transformFinite(x -> -x);
     }
 
     /**
@@ -679,19 +564,19 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @return A new series is returned.
      */
     public TsData cleanExtremities() {
-        int n = m_vals.getLength(), nm = m_vals.getMissingValuesCount();
+        int n = vals.length, nm = getMissingValuesCount();
         if (n == nm) {
             return drop(0, n);
         }
         int nf = 0, nl = 0;
         while (nf < n) {
-            if (DescriptiveStatistics.isFinite(m_vals.get(nf))) {
+            if (Double.isFinite(vals[nf])) {
                 break;
             }
             ++nf;
         }
         while (nl < n) {
-            if (DescriptiveStatistics.isFinite(m_vals.get(n - nl - 1))) {
+            if (Double.isFinite(vals[n - nl - 1])) {
                 break;
             }
             ++nl;
@@ -703,8 +588,8 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     public TsData clone() {
         try {
             TsData data = (TsData) super.clone();
-            data.m_start = m_start.clone();
-            data.m_vals = m_vals.clone();
+            data.start = start.clone();
+            data.vals = vals.clone();
             return data;
         } catch (CloneNotSupportedException err) {
             throw new AssertionError();
@@ -719,22 +604,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @return A new time series is returned. May be empty, but not null.
      */
     public TsData delta(final int lag) {
-        TsDomain dout = getDomain().drop(lag, 0);
-        TsData rslt = new TsData(dout);
-        int n = dout.getLength();
-        if (n == 0) {
-            return rslt;
-        }
-        Values rout = rslt.getValues();
-
-        for (int i = 0; i < n; ++i) {
-            double d0 = m_vals.get(i), d1 = m_vals.get(i + lag);
-            if (DescriptiveStatistics.isFinite(d0)
-                    && DescriptiveStatistics.isFinite(d1)) {
-                rout.set(i, d1 - d0);
-            }
-        }
-        return rslt;
+        return autoTransform((x1, x0) -> x1 - x0, lag);
     }
 
     /**
@@ -771,7 +641,14 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @see #multiply(double, TsData)
      */
     public TsData div(final double d) {
-        return new TsData(getStart(), Values.divide(m_vals, d));
+        if (d == 1) {
+            return clone();
+        } else if (d == -1) {
+            return chs();
+        } else if (d == 0) {
+            return new TsData(new TsDomain(start, vals.length), Double.NaN);
+        }
+        return transformFinite(x -> x / d);
     }
 
     /**
@@ -792,26 +669,38 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     /**
      * Shortens/lengthens the times series, by removing/adding observations at
-     * the beginning and/or at the end.
+     * the beginning and/or at the d1.
      *
      * @param nfirst Number of periods to drop at the beginning of the series.
      * If nfirst < 0, -nfirst periods are added (with Missing values). @param
-     * nlast Number of peri
-     * ods to drop at the end of the series. If nlast < 0, -nlast periods are
-     * added (with Missing values). @return The returned time series may be
-     * empty, but the returne
-     * d value is never null.
-     * @see #extend(int, int)
+     * nlast Number of peri ods to drop at th e d1 of the series. If nlast < 0,
+     * -nlast periods are added (with Missing values). @return The returned time
+     * series may be empty, but the returne d value is never null. @see
+     * #extend(int, int)
      */
     public TsData drop(final int nfirst, final int nlast) {
         TsPeriod s = getStart();
         s.move(nfirst);
-        return new TsData(s, m_vals.drop(nfirst, nlast));
+        int n = vals.length - nfirst - nlast;
+        if (n < 0) {
+            n = 0;
+        }
+        TsData nts = new TsData(s, n);
+        if (n == 0) {
+            return nts;
+        }
+        nts.set(() -> Double.NaN);
+        if (nfirst >= 0) {
+            System.arraycopy(vals, nfirst, nts.vals, 0, n);
+        } else {
+            System.arraycopy(vals, 0, nts.vals, nfirst, n);
+        }
+        return nts;
     }
 
     public TsData fullYears() {
-        int pos = m_start.getPosition();
-        int beg = pos > 0 ? (this.m_start.getFrequency().intValue() - pos) : 0;
+        int pos = start.getPosition();
+        int beg = pos > 0 ? (this.start.getFrequency().intValue() - pos) : 0;
 
         return drop(beg, this.getEnd().getPosition());
     }
@@ -825,42 +714,35 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * original values are too high
      */
     public TsData exp() {
-        final Values vals = m_vals.clone();
-        vals.exp();
-        return new TsData(getStart(), vals);
+        return transformFinite(x -> Math.exp(x));
     }
 
     public TsData round(int ndec) {
-        final Values vals = m_vals.clone();
-        vals.round(ndec);
-        return new TsData(getStart(), vals);
+        return transformFinite(x -> IReadDataBlock.round(x, ndec));
     }
 
     /**
      * Lengthens/shortens the times series, by adding/removing observations at
-     * the beginning and/or at the end.
+     * the beginning and/or at the d1.
      *
      * @param nbefore Number of periods to add (with Missing values) at the
      * beginning of the series. If nbefore < 0, -nbefore periods are removed .
      * @param nafter Number of per
-     * iods to add (with Missing values) at the end of the series. If nafter <
-     * 0, -nafter periods are removed. @return The returned time
-     * series may be empty, but the returned value is never null.
-     * @see #extend(int, int)
+     * iods to add (with Missing values) at the d1 of the series. If nafter < 0,
+     * -nafter periods are removed. @return The returned time series may be
+     * empty, but the returned value is never null. @see #extend(int, int)
      */
     public TsData extend(final int nbefore, final int nafter) {
-        TsPeriod s = getStart();
-        s.move((-nbefore));
-        return new TsData(s, m_vals.extend(nbefore, nafter));
+        return drop(-nbefore, -nafter);
     }
 
     public TsData extendTo(final Day lastday) {
-        TsPeriod s = new TsPeriod(m_start.getFrequency(), lastday);
+        TsPeriod s = new TsPeriod(start.getFrequency(), lastday);
         if (!lastday.equals(s.lastday())) {
             s.move(-1);
         }
-        int n = s.minus(m_start) + 1;
-        return new TsData(m_start, m_vals.extend(0, n - m_vals.getLength()));
+        int n = s.minus(start) + 1;
+        return extend(0, n - vals.length);
     }
 
     /**
@@ -875,14 +757,14 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     public TsData fittoDomain(final TsDomain dom) {
         // if (dom == null)
         // throw new ArgumentNullException("dom");
-        TsFrequency freq = m_start.getFrequency();
+        TsFrequency freq = start.getFrequency();
         if (dom.getFrequency() != freq) {
             return null;
         }
         int firstid = dom.firstid();
         int n = dom.getLength();
-        int beg = m_start.id();
-        int count = m_vals.getLength();
+        int beg = start.id();
+        int count = vals.length;
         return extend(beg - firstid, firstid + n - beg - count);
     }
 
@@ -894,7 +776,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @return True if the idx-th observation is missing, false otherwise.
      */
     public boolean isMissing(final int idx) {
-        return m_vals.isMissing(idx);
+        return !Double.isFinite(vals[idx]);
     }
 
     /**
@@ -905,7 +787,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * getLength()[)
      */
     public void setMissing(final int idx) {
-        m_vals.setMissing(idx);
+        vals[idx] = Double.NaN;
     }
 
     /**
@@ -917,7 +799,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      */
     @Override
     public double get(final int idx) {
-        return m_vals.get(idx);
+        return vals[idx];
     }
 
     /**
@@ -928,19 +810,19 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      */
     @NewObject
     public TsDomain getDomain() {
-        return new TsDomain(m_start, m_vals.getLength());
+        return new TsDomain(start, vals.length);
     }
 
     /**
-     * Gets the first period after the end of the series. That period doesn't
+     * Gets the first period after the d1 of the series. That period doesn't
      * belong to the time domain.
      *
-     * @return The first period after the end of the series (=start + length).
-     * New object that can be modified.
+     * @return The first period after the d1 of the series (=d0 + length). New
+     * object that can be modified.
      */
     @NewObject
     public TsPeriod getEnd() {
-        return m_start.plus(m_vals.getLength());
+        return start.plus(vals.length);
     }
 
     /**
@@ -949,19 +831,19 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @return The frequency.
      */
     public TsFrequency getFrequency() {
-        return m_start.getFrequency();
+        return start.getFrequency();
     }
 
     /**
      * Gets the last period of the series. That period belongs to the time
      * domain.
      *
-     * @return The last period of the series (=start + length-1) = end - 1). New
+     * @return The last period of the series (=d0 + length-1) = d1 - 1). New
      * object that can be modified.
      */
     @NewObject
     public TsPeriod getLastPeriod() {
-        return m_start.plus(m_vals.getLength() - 1);
+        return start.plus(vals.length - 1);
     }
 
     /**
@@ -971,7 +853,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      */
     @Override
     public int getLength() {
-        return m_vals.getLength();
+        return vals.length;
     }
 
     // TSObservations...
@@ -981,7 +863,15 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @return The number of observations. Belongs to [0, getLength()]
      */
     public int getObsCount() {
-        return m_vals == null ? 0 : m_vals.getObsCount();
+        return count(x -> Double.isFinite(x));
+    }
+
+    public int getMissingValuesCount() {
+        return count(x -> !Double.isFinite(x));
+    }
+    
+    public boolean hasMissingValues(){
+        return !check(x->Double.isFinite(x));
     }
 
     /**
@@ -992,18 +882,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      */
     @NewObject
     public TsPeriod getStart() {
-        return m_start.clone();
-    }
-
-    /**
-     * Returns the values of this time series. Modifying the returned object
-     * changes the current time series; this is the only way to modify it.
-     *
-     * @return The internal object is returned.
-     */
-    @Mutable
-    public Values getValues() {
-        return m_vals;
+        return start.clone();
     }
 
     /**
@@ -1017,9 +896,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * is inside the refperiod.
      */
     public TsData index(final TsPeriod refperiod, final double refvalue) {
-        Day start = refperiod.firstday(), end = refperiod.lastday();
+        Day d0 = refperiod.firstday(), d1 = refperiod.lastday();
         TsDomain dom = getDomain();
-        int i0 = dom.search(start), i1 = dom.search(end);
+        int i0 = dom.search(d0), i1 = dom.search(d1);
 
         if (i0 < 0) {
             i0 = -1 - i0;
@@ -1037,8 +916,8 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         double s = 0;
         n = 0;
         for (int i = i0; i <= i1; ++i) {
-            double d = m_vals.get(i);
-            if (DescriptiveStatistics.isFinite(d)) {
+            double d = vals[i];
+            if (Double.isFinite(d)) {
                 s += d;
                 ++n;
             }
@@ -1059,9 +938,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * values are 0.
      */
     public TsData inv() {
-        final Values vals = new Values(m_vals);
-        vals.inv();
-        return new TsData(getStart(), vals);
+        return transformFinite(x -> x == 0 ? Double.NaN : 1 / x);
     }
 
     /**
@@ -1069,7 +946,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @return
      */
     public boolean isEmpty() {
-        return m_vals.isEmpty();
+        return vals.length == 0;
     }
 
     /**
@@ -1079,7 +956,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      */
     @Override
     public Iterator<TsObservation> iterator() {
-        return new TSIterator(this);
+        return new TsIterator(this);
     }
 
     /**
@@ -1093,7 +970,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     public TsData lag(int nperiods) {
         TsPeriod s = getStart();
         s.move(-nperiods);
-        return new TsData(s, new Values(m_vals));
+        return new TsData(s, vals, true);
     }
 
     /**
@@ -1107,7 +984,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     public TsData lead(final int nperiods) {
         TsPeriod s = getStart();
         s.move(nperiods);
-        return new TsData(s, new Values(m_vals));
+        return new TsData(s, vals, true);
     }
 
     /**
@@ -1118,9 +995,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * values are <=0.
      */
     public TsData log() {
-        final Values vals = new Values(m_vals);
-        vals.log();
-        return new TsData(getStart(), vals);
+        return transformFinite(x -> Math.log(x));
     }
 
     /**
@@ -1133,9 +1008,8 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * are generated when the original values are <=0.
      */
     public TsData log(final double b) {
-        final Values vals = new Values(m_vals);
-        vals.log(b);
-        return new TsData(m_start, vals);
+        final double c = Math.log(b);
+        return transformFinite(x -> Math.log(x) / c);
     }
 
     /**
@@ -1147,9 +1021,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * values are <0.
      */
     public TsData sqrt() {
-        Values vals = new Values(m_vals);
-        vals.sqrt();
-        return new TsData(m_start, vals);
+        return transformFinite(x -> Math.sqrt(x));
     }
 
     /**
@@ -1161,7 +1033,10 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @see #subtract(double, TsData)
      */
     public TsData minus(final double d) {
-        return new TsData(getStart(), Values.subtract(m_vals, d));
+        if (d == 0) {
+            return clone();
+        }
+        return transformFinite(x -> x - d);
     }
 
     /**
@@ -1226,18 +1101,17 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         if (n == 0) {
             return rslt;
         }
-        Values rout = rslt.getValues();
         for (int i = 0; i < n; ++i) {
             double wval = 0;
             int j = 0;
             for (; j < nw; ++j) {
-                double tmp = m_vals.get(i + j);
-                if (DescriptiveStatistics.isFinite(tmp)) {
+                double tmp = vals[i + j];
+                if (Double.isFinite(tmp)) {
                     wval += w[j] * tmp;
                 }
             }
             if (j == nw) {
-                rout.set(i, wval);
+                rslt.vals[i] = wval;
             }
         }
         return rslt;
@@ -1273,14 +1147,13 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         if (n == 0) {
             return rslt;
         }
-        Values rout = rslt.getValues();
         double[] tmp = new double[nperiods];
         boolean bPair = (nperiods % 2) == 0;
         for (int i = 0; i < n; ++i) {
             boolean bmissing = false;
             for (int j = 0; j < nperiods; ++j) {
-                double x = m_vals.get(i + j);
-                if (!DescriptiveStatistics.isFinite(x)) {
+                double x = vals[i + j];
+                if (!Double.isFinite(x)) {
                     bmissing = true;
                     break;
                 }
@@ -1290,9 +1163,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
                 Arrays.sort(tmp);
                 if (bPair) // moyenne des 2 valeurs centrales
                 {
-                    rout.set(i, (tmp[np2] + tmp[np2 + 1]) / 2);
+                    rslt.vals[i] = (tmp[np2] + tmp[np2 + 1]) / 2;
                 } else {
-                    rout.set(i, tmp[np2]);
+                    rslt.vals[i] = tmp[np2];
                 }
             }
         }
@@ -1307,22 +1180,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @return A new time series is returned. May be empty, but not null.
      */
     public TsData pctVariation(final int lag) {
-        TsDomain dout = getDomain().drop(lag, 0);
-        TsData rslt = new TsData(dout);
-        int n = dout.getLength();
-        if (n == 0) {
-            return rslt;
-        }
-        Values rout = rslt.getValues();
-
-        for (int i = 0; i < n; ++i) {
-            double d0 = m_vals.get(i), d1 = m_vals.get(i + lag);
-            if (DescriptiveStatistics.isFinite(d0)
-                    && DescriptiveStatistics.isFinite(d1) && (d0 != 0)) {
-                rout.set(i, (d1 / d0 - 1) * 100);
-            }
-        }
-        return rslt;
+        return autoTransform((x1, x0) -> (x1 / x0 - 1) * 100, lag);
     }
 
     /**
@@ -1334,7 +1192,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @see #add(double,TsData)
      */
     public TsData plus(final double d) {
-        return new TsData(getStart(), Values.add(m_vals, d));
+        return transformFinite(x -> x - d);
     }
 
     /**
@@ -1363,9 +1221,13 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * be generated when the original values are too high
      */
     public TsData pow(final double e) {
-        final Values vals = new Values(m_vals);
-        vals.pow(e);
-        return new TsData(getStart(), vals);
+        if (e == 1) {
+            return clone();
+        } else if (e == 2) {
+            return transformFinite(x -> x * x);
+        } else {
+            return transformFinite(x -> Math.pow(x, e));
+        }
     }
 
     /**
@@ -1381,10 +1243,8 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         }
         TsDomain domain = getDomain().select(ps);
         TsData rslt = new TsData(domain);
-        int diff = domain.firstid() - m_start.id();
-        for (int i = 0; i < domain.getLength(); ++i) {
-            rslt.m_vals.set(i, m_vals.get(i + diff));
-        }
+        int diff = domain.firstid() - start.id();
+        System.arraycopy(vals, diff, rslt.vals, 0, domain.getLength());
         return rslt;
     }
 
@@ -1396,7 +1256,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @param value The new observation (or Double.NaN for a missing value).
      */
     public void set(final int idx, final double value) {
-        m_vals.set(idx, value);
+        vals[idx] = value;
     }
 
     /**
@@ -1408,7 +1268,15 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @see #multiply(double, TsData)
      */
     public TsData times(final double d) {
-        return new TsData(getStart(), Values.multiply(m_vals, d));
+        if (d == 0) {
+            return new TsData(start, vals.length);
+        }
+        TsData s = clone();
+        if (d == 1) {
+            return s;
+        }
+        s.applyOnFinite(x -> x * d);
+        return s;
     }
 
     /**
@@ -1448,12 +1316,8 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         int r0 = rdom.firstid(), u0 = uDomain.firstid();
 
         TsData rslt = fittoDomain(uDomain);
-        Values uValues = rslt.getValues();
-
         int d0 = r0 - u0;
-        for (int l = 0; l < rn; ++l) {
-            uValues.set(d0 + l, ts.m_vals.get(l));
-        }
+        System.arraycopy(ts.vals, 0, rslt.vals, d0, rn);
         return rslt;
     }
 
@@ -1471,22 +1335,19 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * Removes the mean of this time series ts=ts-m
      */
     public void removeMean() {
-        DescriptiveStatistics stats = new DescriptiveStatistics(m_vals);
+        DescriptiveStatistics stats = new DescriptiveStatistics(vals);
         double m = stats.getAverage();
-        m_vals.sub(m);
+        applyOnFinite(x -> x - m);
     }
 
     /**
      * Normalises this time series: ts=(ts-m)/stdev
      */
     public void normalize() {
-        DescriptiveStatistics stats = new DescriptiveStatistics(m_vals);
+        DescriptiveStatistics stats = new DescriptiveStatistics(vals);
         double m = stats.getAverage();
         double e = stats.getStdev();
-        m_vals.sub(m);
-        if (e != 0) {
-            m_vals.div(e);
-        }
+        applyOnFinite(x -> (x - m) / e);
     }
 
     /**
@@ -1499,8 +1360,8 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * this time series
      */
     public double get(TsPeriod period) {
-        int pos = period.minus(m_start);
-        return (pos < 0 || pos >= m_vals.getLength()) ? Double.NaN : m_vals.get(pos);
+        int pos = period.minus(start);
+        return (pos < 0 || pos >= vals.length) ? Double.NaN : vals[pos];
     }
 
     /**
@@ -1513,8 +1374,13 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @param value The new observation.
      */
     public void set(TsPeriod period, double value) {
-        int pos = period.minus(m_start);
-        m_vals.set(pos, value);
+        int pos = period.minus(start);
+        vals[pos] = value;
+    }
+
+    @Unsafe
+    public double[] internalStorage() {
+        return vals;
     }
 
     @Override
@@ -1530,7 +1396,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 73 * hash + (this.m_start != null ? this.m_start.hashCode() : 0);
+        hash = 73 * hash + (this.start != null ? this.start.hashCode() : 0);
         return hash;
     }
 
@@ -1540,9 +1406,193 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     }
 
     public boolean equals(TsData other) {
-        if (!m_start.equals(other.m_start)) {
+        if (!start.equals(other.start)) {
             return false;
         }
-        return m_vals.equals(other.m_vals);
+        return Arrays.equals(vals, other.vals);
     }
+
+    //<editor-fold defaultstate="collapsed" desc="functional methods">
+    @Override
+    public double computeRecursively(DoubleBinaryOperator fn, final double initial) {
+        double cur = initial;
+        for (int i = 0; i < vals.length; i++) {
+            cur = fn.applyAsDouble(cur, vals[i]);
+        }
+        return cur;
+    }
+
+    public void apply(DoubleUnaryOperator fn) {
+        for (int i = 0; i < vals.length; i++) {
+            vals[i] = fn.applyAsDouble(vals[i]);
+        }
+    }
+
+    public void applyIf(DoublePredicate pred, DoubleUnaryOperator fn) {
+        for (int i = 0; i < vals.length; i++) {
+            double cur = vals[i];
+            if (pred.test(cur)) {
+                vals[i] = fn.applyAsDouble(cur);
+            }
+        }
+    }
+
+    public void applyOnFinite(DoubleUnaryOperator fn) {
+        applyIf(x -> Double.isFinite(x), fn);
+    }
+
+    public void applyRecursively(DoubleBinaryOperator fn, final double initial) {
+        double cur = initial;
+        for (int i = 0; i < vals.length; i++) {
+            cur = fn.applyAsDouble(cur, vals[i]);
+            vals[i] = cur;
+        }
+    }
+
+    @Override
+    public boolean check(DoublePredicate pred) {
+        for (int i = 0; i < vals.length; i++) {
+            if (!pred.test(vals[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int count(DoublePredicate pred) {
+        int n = 0;
+        for (int i = 0; i < vals.length; i++) {
+            if (pred.test(vals[i])) {
+                n++;
+            }
+        }
+        return n;
+    }
+
+    @Override
+    public int first(DoublePredicate pred) {
+        for (int i = 0; i < vals.length; i++) {
+            if (pred.test(vals[i])) {
+                return i;
+            }
+        }
+        return vals.length;
+    }
+
+    @Override
+    public int last(DoublePredicate pred) {
+        for (int i = 0; i < vals.length; i++) {
+            if (pred.test(vals[i])) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public TsData transform(DoubleUnaryOperator fn) {
+        TsData ns = new TsData(start, vals.length);
+        for (int i = 0; i < vals.length; i++) {
+            ns.vals[i] = fn.applyAsDouble(vals[i]);
+        }
+        return ns;
+    }
+
+    public TsData transformFinite(DoubleUnaryOperator fn) {
+        TsData ns = new TsData(start, vals.length);
+        for (int i = 0; i < vals.length; i++) {
+            double cur = vals[i];
+            if (Double.isFinite(cur)) {
+                ns.vals[i] = fn.applyAsDouble(cur);
+            } else {
+                ns.vals[i] = Double.NaN;
+            }
+        }
+        return ns;
+    }
+
+    public TsData autoTransform(DoubleBinaryOperator fn, int lag) {
+        int n = vals.length - lag;
+        if (n <= 0) {
+            return null;
+        }
+        TsData ns = new TsData(start.plus(lag), n);
+        for (int i = 0; i < n; i++) {
+            double d0 = vals[i], d1 = vals[i + lag];
+            if (Double.isFinite(d0) && Double.isFinite(d1)) {
+                ns.vals[i] = fn.applyAsDouble(d1, d0);
+            } else {
+                ns.vals[i] = Double.NaN;
+            }
+        }
+        return ns;
+    }
+
+    public void apply(DoubleBinaryOperator fn, IReadDataBlock x) {
+        for (int i = 0; i < vals.length; i++) {
+            vals[i] = fn.applyAsDouble(vals[i], x.get(i));
+        }
+    }
+
+    public void set(DoubleSupplier fn) {
+        for (int i = 0; i < vals.length; i++) {
+            vals[i] = fn.getAsDouble();
+        }
+    }
+
+    public void setIf(DoublePredicate pred, DoubleSupplier fn) {
+        for (int i = 0; i < vals.length; i++) {
+            if (pred.test(vals[i])) {
+                vals[i] = fn.getAsDouble();
+            }
+        }
+    }
+
+    public void set(IntToDoubleFunction fn) {
+        for (int i = 0; i < vals.length; i++) {
+            vals[i] = fn.applyAsDouble(i);
+        }
+    }
+
+    public void set(DoubleUnaryOperator fn, IReadDataBlock x) {
+        for (int i = 0; i < vals.length; i++) {
+            vals[i] = fn.applyAsDouble(x.get(i));
+        }
+    }
+
+    public void set(DoubleBinaryOperator fn, IReadDataBlock x, IReadDataBlock y) {
+        for (int i = 0; i < vals.length; i++) {
+            vals[i] = fn.applyAsDouble(x.get(i), y.get(i));
+        }
+    }
+
+    public static TsData computeOnIntersection(final DoubleBinaryOperator fn, final TsData tsl, final TsData tsr) {
+
+        TsDomain rDomain = tsr.getDomain();
+        TsDomain lDomain = tsl.getDomain();
+        TsDomain iDomain = lDomain.intersection(rDomain);
+        if (iDomain == null) {
+            return null;
+        }
+        int ni = iDomain.getLength();
+        TsData rslt = new TsData(iDomain);
+        if (ni == 0) {
+            return rslt;
+        }
+
+        int rbeg = rDomain.firstid(), lbeg = tsl.start.id(), ibeg = iDomain.firstid();
+        int li = ibeg - lbeg, ri = ibeg - rbeg;
+        rslt.set(
+                (a, b) -> {
+                    if (Double.isFinite(a) && Double.isFinite(b)) {
+                        return fn.applyAsDouble(a, b);
+                    } else {
+                        return Double.NaN;
+                    }
+                },
+                tsl.rextract(li, ni), tsr.rextract(ri, ni));
+        return rslt;
+    }
+
+//</editor-fold>
 }

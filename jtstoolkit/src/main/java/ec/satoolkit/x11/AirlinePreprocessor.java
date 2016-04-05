@@ -52,7 +52,7 @@ class AirlinePreprocessor extends DefaultX11Algorithm implements
     }
 
     private void addfcasts(TsData s, InformationSet info, int nf) {
-        DataBlock data = new DataBlock(s.getValues().internalStorage());
+        DataBlock data = new DataBlock(s.internalStorage());
         SarimaSpecification spec = new SarimaSpecification(context.getFrequency());
         spec.airline();
         RegArimaModel<SarimaModel> regarima = new RegArimaModel<>(
@@ -73,7 +73,7 @@ class AirlinePreprocessor extends DefaultX11Algorithm implements
 
     private void mulfcasts(TsData s, InformationSet info, int nf) {
         TsData ls = s.log();
-        DataBlock data = new DataBlock(ls.getValues().internalStorage());
+        DataBlock data = new DataBlock(ls.internalStorage());
         SarimaSpecification spec = new SarimaSpecification(context.getFrequency());
         spec.airline();
         RegArimaModel<SarimaModel> regarima = new RegArimaModel<>(

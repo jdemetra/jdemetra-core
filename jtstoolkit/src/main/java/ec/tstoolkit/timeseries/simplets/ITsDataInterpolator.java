@@ -17,7 +17,8 @@
 
 package ec.tstoolkit.timeseries.simplets;
 
-import ec.tstoolkit.design.Development;
+import ec.tstoolkit.design.Development;import ec.tstoolkit.timeseries.simplets.TsData;
+
 import ec.tstoolkit.utilities.IntList;
 
 /**

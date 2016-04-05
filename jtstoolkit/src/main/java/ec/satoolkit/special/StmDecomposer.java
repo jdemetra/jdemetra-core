@@ -82,7 +82,7 @@ public class StmDecomposer implements IDefaultSeriesDecomposer<StmResults> {
     public boolean decompose(TsData y) {
         BsmMonitor monitor = new BsmMonitor();
         monitor.setSpecification(spec_);
-        if (!monitor.process(y.getValues().internalStorage(), y.getFrequency().intValue())) {
+        if (!monitor.process(y.internalStorage(), y.getFrequency().intValue())) {
             return false;
         } else {
             results_ = new StmResults(y,new TsVariableList(), monitor, false);

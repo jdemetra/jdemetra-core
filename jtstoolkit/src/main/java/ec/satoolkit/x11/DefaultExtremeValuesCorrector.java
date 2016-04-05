@@ -129,7 +129,7 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
         } else {
             --nfy;
         }
-        DataBlock all = new DataBlock(scur.getValues().internalStorage());
+        DataBlock all = new DataBlock(scur.internalStorage());
         //stdev = new double[ny];
         if (isexcludefcast) {
             stdev = new double[ny + 1];
@@ -261,7 +261,7 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
     @NewObject
     public TsData getCorrectionFactors() {
         TsData ns = new TsData(scur.getDomain());
-        ns.getValues().set(context.getMean());
+        ns.set(()->context.getMean());
         for (int i = 0; i < sweights.getLength(); ++i) {
             double x = sweights.get(i);
             if (x < 1) {
@@ -298,7 +298,7 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
         sweights = new TsData(scur.getDomain());
         YearIterator iteri = new YearIterator(scur);
         YearIterator itero = new YearIterator(sweights);
-        sweights.getValues().set(1);
+        sweights.set(()->1);
 
         double xbar = getMean();
         int y = 0;

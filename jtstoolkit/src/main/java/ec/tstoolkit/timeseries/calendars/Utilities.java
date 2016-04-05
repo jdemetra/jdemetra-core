@@ -435,7 +435,7 @@ public class Utilities {
         if (kind == LengthOfPeriodType.LengthOfPeriod) {
             int[] ndays = daysCount(tsdata.getDomain());
             double m = 365.25 / tsdata.getFrequency().intValue();
-            double[] data = tsdata.getValues().internalStorage();
+            double[] data = tsdata.internalStorage();
             if (back) {
                 for (int i = 0; i < ndays.length; ++i) {
                     data[i] *= ndays[i] / m;
@@ -467,7 +467,7 @@ public class Utilities {
             }
             double leap = (ndays + 1) / (ndays + .25);
             double nleap = ndays / (ndays + .25);
-            double[] data = tsdata.getValues().internalStorage();
+            double[] data = tsdata.internalStorage();
             if (back) {
                 while (idx < domain.getLength()) {
                     if (Day.isLeap(domain.get(idx).getYear())) {

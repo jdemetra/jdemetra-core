@@ -144,7 +144,7 @@ public class LevenbergMarquardtMethod extends ProcessingHookProvider<LevenbergMa
 
     protected boolean iterate() {
         // Step 1: Initialize e, J)
-        if (!DescriptiveStatistics.isFinite(Fcur_)) {
+        if (!Double.isFinite(Fcur_)) {
             stop = 7;
             return false;
         }
@@ -197,7 +197,7 @@ public class LevenbergMarquardtMethod extends ProcessingHookProvider<LevenbergMa
             } catch (Exception ex) {
             }
             if (solved) {
-                if (!DescriptiveStatistics.isFinite(dp.ssq())) {
+                if (!Double.isFinite(dp.ssq())) {
                     stop = 7;
                     return false;
                 }

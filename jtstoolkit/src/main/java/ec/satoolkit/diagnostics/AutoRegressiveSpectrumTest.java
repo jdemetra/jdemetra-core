@@ -228,7 +228,7 @@ public class AutoRegressiveSpectrumTest {
             return false;
         }
         ar = new AutoRegressiveSpectrum(AutoRegressiveSpectrum.Method.Ols);
-        return ar.process(data.getValues(), nar);
+        return ar.process(data, nar);
     }
 
     private void computeFrequencies(int freq) {

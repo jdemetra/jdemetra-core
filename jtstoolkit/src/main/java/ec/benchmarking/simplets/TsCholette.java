@@ -103,7 +103,7 @@ public class TsCholette extends AbstractTsBenchmarking {
 
         double[] w = null;
         if (lambda_ == 1) {
-            w = s.getValues().internalStorage();
+            w = s.internalStorage();
         } else {
             w = new double[s.getLength()];
             TsDataBlock.all(s).data.copyTo(w, 0);
@@ -169,7 +169,7 @@ public class TsCholette extends AbstractTsBenchmarking {
 
         double[] w = null;
         if (lambda_ == 1) {
-            w = s.getValues().internalStorage();
+            w = s.internalStorage();
         } else {
             w = new double[s.getLength()];
             TsDataBlock.all(s).data.copyTo(w, 0);

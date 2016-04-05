@@ -53,7 +53,7 @@ public class StmDecomposition implements ISaResults{
         model_=model;
         Smoother smoother = new Smoother();
         smoother.setSsf(model);
-        ExtendedSsfData data = new ExtendedSsfData(new SsfData(ylin.getValues().internalStorage(), null));
+        ExtendedSsfData data = new ExtendedSsfData(new SsfData(ylin.internalStorage(), null));
         data.setForecastsCount(ylin.getFrequency().intValue());
         TsDomain full=ylin.getDomain().extend(0, data.getForecastsCount());
         srslts_ = new SmoothingResults();

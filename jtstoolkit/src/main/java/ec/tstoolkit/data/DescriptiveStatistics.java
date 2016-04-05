@@ -17,6 +17,7 @@
 
 package ec.tstoolkit.data;
 
+import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.design.Development;
 
 /**
@@ -66,7 +67,7 @@ public class DescriptiveStatistics {
         for (int i = 0; i < n; ++i) {
             double xcur = x[i];
             double ycur = y[i + t];
-            if (isFinite(xcur) && isFinite(ycur)) {
+            if (Double.isFinite(xcur) && Double.isFinite(ycur)) {
                 v += xcur * ycur;
             }
             else {
@@ -97,7 +98,7 @@ public class DescriptiveStatistics {
         for (int i = 0; i < n; ++i) {
             double xcur = x[i + sx];
             double ycur = y[i + sy];
-            if (isFinite(xcur) && isFinite(ycur)) {
+            if (Double.isFinite(xcur) && Double.isFinite(ycur)) {
                 v += xcur * ycur;
             }
             else {
@@ -121,16 +122,7 @@ public class DescriptiveStatistics {
         return cov(data, data, k);
     }
 
-    /**
-     * Checks if a double is finite.
-     * @param d The tested value
-     * @return True if the number is different of Double.NaN and of Double.Positive/NegativeInfinity
-     */
-    public static boolean isFinite(double d) {
-//        return !(Double.isNaN(d) || Double.isInfinite(d));
-        return Double.NEGATIVE_INFINITY < d && d < Double.POSITIVE_INFINITY;
-    }
-    
+     
     public static final double DELTA=3.834e-20;
      
     public static boolean isSmall(double val){
@@ -200,7 +192,7 @@ public class DescriptiveStatistics {
         int nm = 0;
         for (int i = 0; i < n; ++i) {
             double xcur = x[i + sx];
-            if (isFinite(xcur)) {
+            if (Double.isFinite(xcur)) {
                 v += xcur * xcur;
             }
             else {
@@ -255,7 +247,7 @@ public class DescriptiveStatistics {
         double stdev3 = stdev * stdev * stdev;
         for (int i = 0; i < n; i++) {
             double cur = m_data[i];
-            if (isFinite(cur)) {
+            if (Double.isFinite(cur)) {
                 double m3 = (cur - avg) * (cur - avg) * (cur - avg);
                 m_sk += m3;
                 m_kr += m3 * (cur - avg);
@@ -296,7 +288,7 @@ public class DescriptiveStatistics {
             int m = 0;
             for (int i = 0; i < n; i++) {
                 double v = m_data[i];
-                if (isFinite(v) && v >= a && v < b) {
+                if (Double.isFinite(v) && v >= a && v < b) {
                     m++;
                 }
             }
@@ -354,7 +346,7 @@ public class DescriptiveStatistics {
             double sent = -Double.MAX_VALUE;
             for (int i = 0; i < n; i++) {
                 double v = m_data[i];
-                if (isFinite(v) && v > sent) {
+                if (Double.isFinite(v) && v > sent) {
                     sent = v;
                 }
             }
@@ -402,7 +394,7 @@ public class DescriptiveStatistics {
             double sent = Double.MAX_VALUE;
             for (int i = 0; i < n; i++) {
                 double v = m_data[i];
-                if (isFinite(v) && v < sent) {
+                if (Double.isFinite(v) && v < sent) {
                     sent = v;
                 }
             }
@@ -518,7 +510,7 @@ public class DescriptiveStatistics {
         double m=m_sx/n;
         for (int i = 0; i < m_data.length; i++) {
             double v = m_data[i];
-            if (isFinite(v)) {
+            if (Double.isFinite(v)) {
                 double e=v-m;
                  sxx += e*e;
             }
@@ -565,7 +557,7 @@ public class DescriptiveStatistics {
         }
         for (int i = 0; i < m_data.length; i++) {
             double v = m_data[i];
-            if (isFinite(v) && v == 0) {
+            if (Double.isFinite(v) && v == 0) {
                 return true;
             }
         }
@@ -576,7 +568,7 @@ public class DescriptiveStatistics {
         m_sxx = 0;
         for (int i = 0; i < m_data.length; i++) {
             double v = m_data[i];
-            if (!isFinite(v)) {
+            if (!Double.isFinite(v)) {
                 ++m_nm;
             }
             else {
@@ -613,7 +605,7 @@ public class DescriptiveStatistics {
             double sent = Double.NaN;
             for (int i = 0; i < m_data.length; i++) {
                 double v = m_data[i];
-                if (isFinite(v)) {
+                if (Double.isFinite(v)) {
                     if (Double.isNaN(sent)) {
                         sent = v;
                     }
@@ -642,7 +634,7 @@ public class DescriptiveStatistics {
         else {
             for (int i = 0; i < m_data.length; i++) {
                 double v = m_data[i];
-                if (isFinite(v) && v <= val) {
+                if (Double.isFinite(v) && v <= val) {
                     return false;
                 }
             }
@@ -666,7 +658,7 @@ public class DescriptiveStatistics {
         else {
             for (int i = 0; i < m_data.length; i++) {
                 double v = m_data[i];
-                if (isFinite(v) && v < val) {
+                if (Double.isFinite(v) && v < val) {
                     return false;
                 }
             }
@@ -743,7 +735,7 @@ public class DescriptiveStatistics {
         else {
             for (int i = 0; i < m_data.length; i++) {
                 double v = m_data[i];
-                if (isFinite(v) && v >= val) {
+                if (Double.isFinite(v) && v >= val) {
                     return false;
                 }
             }
@@ -767,7 +759,7 @@ public class DescriptiveStatistics {
         else {
             for (int i = 0; i < m_data.length; i++) {
                 double v = m_data[i];
-                if (isFinite(v) && v > val) {
+                if (Double.isFinite(v) && v > val) {
                     return false;
                 }
             }
@@ -791,7 +783,7 @@ public class DescriptiveStatistics {
         else {
             for (int i = 0; i < m_data.length; i++) {
                 double v = m_data[i];
-                if (isFinite(v) && Math.abs(v) > eps) {
+                if (Double.isFinite(v) && Math.abs(v) > eps) {
                     return false;
                 }
             }
@@ -815,7 +807,7 @@ public class DescriptiveStatistics {
                 m_obs = new double[m_data.length - m_nm];
                 for (int i = 0, j = 0; i < m_data.length; ++i) {
                     double x = m_data[i];
-                    if (isFinite(x)) {
+                    if (Double.isFinite(x)) {
                         m_obs[j++] = x;
                     }
                 }

@@ -55,7 +55,7 @@ public class DifferenceStationaryModelHelper {
         int n = data.getLength();
         IntList m = new IntList();
         for (int i = 0; i < n; ++i) {
-            if (!DescriptiveStatistics.isFinite(data.get(i))) {
+            if (!Double.isFinite(data.get(i))) {
                 m.add(i);
             }
         }
@@ -139,7 +139,7 @@ public class DifferenceStationaryModelHelper {
         for (int i = 0; i < n - d; ++i) {
             int j = 0;
             for (; j < d; ++j) {
-                if (!DescriptiveStatistics.isFinite(y.get(i + j))) {
+                if (!Double.isFinite(y.get(i + j))) {
                     break;
                 }
             }

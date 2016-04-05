@@ -84,7 +84,7 @@ public class KalmanEstimator implements IComponentsEstimator {
         ucm.simplify();
 
         // add forecasts
-        ec.tstoolkit.ssf.SsfData sdata = new ec.tstoolkit.ssf.SsfData(s.getValues().internalStorage(), null);
+        ec.tstoolkit.ssf.SsfData sdata = new ec.tstoolkit.ssf.SsfData(s.internalStorage(), null);
         ec.tstoolkit.ssf.ExtendedSsfData xsdata = new ec.tstoolkit.ssf.ExtendedSsfData(sdata);
         xsdata.setForecastsCount(nf);
 

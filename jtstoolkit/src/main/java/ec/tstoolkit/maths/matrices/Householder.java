@@ -1,31 +1,31 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tstoolkit.maths.matrices;
 
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.design.Development;
 
 /**
- * 
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
 public class Householder extends AbstractLinearSystemSolver implements
-	IQrDecomposition {
+        IQrDecomposition {
 
     private double[] m_qr, m_rdiag;
 
@@ -39,11 +39,11 @@ public class Householder extends AbstractLinearSystemSolver implements
     // / default constructor
     // / </summary>
     /**
-     * 
+     *
      * @param clone
      */
     public Householder(boolean clone) {
-	m_bclone = clone;
+        m_bclone = clone;
     }
 
     // / <summary>
@@ -54,16 +54,17 @@ public class Householder extends AbstractLinearSystemSolver implements
     // / </summary>
     // / <param name="m">A matrix interface pointer to a m x n matrix</param>
     /**
-     * 
+     *
      * @param m
      */
     @Override
     public void decompose(Matrix m) {
-	if (m_bclone)
-	    init(m.clone());
-	else
-	    init(m);
-	householder();
+        if (m_bclone) {
+            init(m.clone());
+        } else {
+            init(m);
+        }
+        householder();
     }
 
     // / <summary>
@@ -75,13 +76,13 @@ public class Householder extends AbstractLinearSystemSolver implements
     // / <param name="m">A matrix interface pointer to a m x n matrix</param>
     @Override
     public void decompose(SubMatrix m) {
-	init(new Matrix(m));
-	householder();
+        init(new Matrix(m));
+        householder();
     }
 
     @Override
     public int getEquationsCount() {
-	return m_m;
+        return m_m;
     }
 
     // / <summary>
@@ -92,105 +93,111 @@ public class Householder extends AbstractLinearSystemSolver implements
     // / </summary>
     @Override
     public Matrix getR() {
-	Matrix r = new Matrix(m_n, m_n);
-	double[] data = r.data_;
-	for (int i = 0, k = 0, l = 0; i < m_n; ++i, k += m_n, l += m_m) {
-	    for (int j = 0; j < i; ++j)
-		data[k + j] = m_qr[l + j];
-	    data[k + i] = m_rdiag[i];
-	}
-	return r;
+        Matrix r = new Matrix(m_n, m_n);
+        double[] data = r.data_;
+        for (int i = 0, k = 0, l = 0; i < m_n; ++i, k += m_n, l += m_m) {
+            for (int j = 0; j < i; ++j) {
+                data[k + j] = m_qr[l + j];
+            }
+            data[k + i] = m_rdiag[i];
+        }
+        return r;
     }
 
     /**
-     * 
+     *
      * @return
      */
     public int getRank() {
-	return m_n;
+        return m_n;
     }
 
     @Override
     public DataBlock getRDiagonal() {
-	return new DataBlock(m_rdiag);
+        return new DataBlock(m_rdiag);
     }
 
     @Override
     public int getUnknownsCount() {
-	return m_norig;
+        return m_norig;
     }
 
     /**
-     * 
+     *
      * @return
      */
     public int[] getUnused() {
-	return m_unused;
+        return m_unused;
     }
 
     private void householder() {
-	int[] unused = new int[m_norig];
-	int nunused = 0, nrdiag = 0;
-	// Main loop.
-	double eps = getEpsilon();
-        int len=m_qr.length;
-	for (int l = 0, k = 0, km = 0; k < m_n; ++k) {
-	    // Compute 2-norm of k-th column .
-	    DataBlock col = new DataBlock(m_qr, km + l, km + m_m, 1);
-	    double nrm = col.nrm2();
+        int[] unused = new int[m_norig];
+        int nunused = 0, nrdiag = 0;
+        // Main loop.
+        double eps = getEpsilon();
+        int len = m_qr.length;
+        for (int l = 0, k = 0, km = 0; k < m_n; ++k) {
+            // Compute 2-norm of k-th column .
+            DataBlock col = new DataBlock(m_qr, km + l, km + m_m, 1);
+            double nrm = col.nrm2();
 
-	    if (nrm > eps) {
-		// Form k-th Householder vector. v(k)=x(k)+/-norm(x)
-		if (m_qr[l + km] < -eps)
-		    nrm = -nrm;
-		for (int i = l; i < m_m; ++i)
-		    m_qr[i + km] /= nrm;
-		m_qr[l + km] += 1.0;
-		// rdiag contains the main diagonal of the R matrix
-		m_rdiag[nrdiag++] = -nrm;
+            if (nrm > eps) {
+                // Form k-th Householder vector. v(k)=x(k)+/-norm(x)
+                if (m_qr[l + km] < -eps) {
+                    nrm = -nrm;
+                }
+                for (int i = l; i < m_m; ++i) {
+                    m_qr[i + km] /= nrm;
+                }
+                m_qr[l + km] += 1.0;
+                // rdiag contains the main diagonal of the R matrix
+                m_rdiag[nrdiag++] = -nrm;
 		// in this implementation:
-		// if a(k,k) < 0 then a(k,k) = -(a(k,k) - nrm) / nrm, else
-		// a(k,k)=( a(k,k) + nrm) / nrm
+                // if a(k,k) < 0 then a(k,k) = -(a(k,k) - nrm) / nrm, else
+                // a(k,k)=( a(k,k) + nrm) / nrm
 
-		// Apply transformation to remaining columns.
-		for (int jm = km + m_m; jm < len; jm += m_m) {
-		    double s = 0.0;
-		    for (int i = l; i < m_m; ++i)
-			s += m_qr[i + km] * m_qr[i + jm];
-		    s /= -m_qr[l + km];
-		    for (int i = l; i < m_m; ++i)
-			m_qr[i + jm] += s * m_qr[i + km];
-		}
-		km += m_m;
-		++l;
-	    } else{
-		unused[nunused++] = k;
+                // Apply transformation to remaining columns.
+                for (int jm = km + m_m; jm < len; jm += m_m) {
+                    double s = 0.0;
+                    for (int i = l; i < m_m; ++i) {
+                        s += m_qr[i + km] * m_qr[i + jm];
+                    }
+                    s /= -m_qr[l + km];
+                    for (int i = l; i < m_m; ++i) {
+                        m_qr[i + jm] += s * m_qr[i + km];
+                    }
+                }
+                km += m_m;
+                ++l;
+            } else {
+                unused[nunused++] = k;
                 // move all the data to the left
-                len-=m_m;
-                System.arraycopy(m_qr, km+m_m, m_qr, km, len-km);
+                len -= m_m;
+                System.arraycopy(m_qr, km + m_m, m_qr, km, len - km);
             }
-	}
+        }
 
-	if (nunused > 0) {
-	    m_unused = new int[nunused];
-	    System.arraycopy(unused, 0, m_unused, 0, nunused);
+        if (nunused > 0) {
+            m_unused = new int[nunused];
+            System.arraycopy(unused, 0, m_unused, 0, nunused);
             // shift the columns to the left 
-            for (int i=0; i<m_unused.length; ++i){
-                int j=m_unused[i];
-                
+            for (int i = 0; i < m_unused.length; ++i) {
+                int j = m_unused[i];
+
             }
-	    m_n -= nunused;
-	} else
-	    m_unused = null;
+            m_n -= nunused;
+        } else {
+            m_unused = null;
+        }
     }
 
     private void init(Matrix m) {
-	m_m = m.getRowsCount();
-	m_norig = m_n = m.getColumnsCount();
-	// if (m_m < m_n)
-	// throw new MatrixException(MatrixException.IncompatibleDimensions);
-	m_qr = m.data_;
-	m_rdiag = new double[m_n];
+        m_m = m.getRowsCount();
+        m_norig = m_n = m.getColumnsCount();
+        // if (m_m < m_n)
+        // throw new MatrixException(MatrixException.IncompatibleDimensions);
+        m_qr = m.data_;
+        m_rdiag = new double[m_n];
     }
 
     // / <summary>
@@ -202,7 +209,7 @@ public class Householder extends AbstractLinearSystemSolver implements
     // / </summary>
     @Override
     public boolean isFullRank() {
-	return m_n == m_norig;
+        return m_n == m_norig;
     }
 
     // / <summary>
@@ -216,40 +223,57 @@ public class Householder extends AbstractLinearSystemSolver implements
     @Override
     public void leastSquares(DataBlock x, DataBlock b, DataBlock res) {
 	// if (x.Length != m_m)
-	// throw new MatrixException(MatrixException.IncompatibleDimensions);
-	// if (!IsFullRank)
-	// throw new MatrixException(MatrixException.RankError);
+        // throw new MatrixException(MatrixException.IncompatibleDimensions);
+        // if (!IsFullRank)
+        // throw new MatrixException(MatrixException.RankError);
 
-	// Compute Y = transpose(Q)*B
-	// copy b
-	double[] y = new double[x.getLength()];
-	x.copyTo(y, 0);
-	applyQt(y);
-	if (res != null)
-	    res.copyFrom(y, m_n);
-	// Solve R*X = Y;
-	for (int k = m_n - 1; k >= 0; --k) {
-	    y[k] /= m_rdiag[k];
-	    for (int i = 0; i < k; ++i)
-		y[i] -= y[k] * m_qr[i + k * m_m];
-	}
-	b.copyFrom(y, 0);
+        // Compute Y = transpose(Q)*B
+        // copy b
+        double[] y = new double[x.getLength()];
+        x.copyTo(y, 0);
+        applyQt(y);
+        if (res != null) {
+            res.copyFrom(y, m_n);
+        }
+        // Solve R*X = Y;
+        double eps = getEpsilon() * 1000;
+        for (int k = m_n - 1; k >= 0; --k) {
+            double dk = m_rdiag[k];
+            if (Math.abs(dk) > eps) {
+                y[k] /= dk;
+                for (int i = 0; i < k; ++i) {
+                    y[i] -= y[k] * m_qr[i + k * m_m];
+                }
+            } else {
+                for (int i = 0; i < k; ++i) {
+                    double xcur = m_qr[i + k * m_m];
+                    if (Math.abs(xcur) > eps) {
+                        throw new MatrixException(MatrixException.RankError);
+                    }
+                }
+            }
+            // Solve R*X = Y;
+        }
+        b.copyFrom(y, 0);
     }
 
     /**
      * The method multiplies an array of double by Q.
-     * @param b The array of double. It contains the product at the
-    // return of the method
+     *
+     * @param b The array of double. It contains the product at the // return of
+     * the method
      */
     public void applyQ(double[] b) {
-	for (int k = m_n - 1; k >= 0; --k) {
-	    double s = 0.0;
-	    for (int i = k; i < m_m; ++i)
-		s += m_qr[k * m_m + i] * b[i];
-	    s = -s / m_qr[k * m_m + k];
-	    for (int i = k; i < m_m; ++i)
-		b[i] += s * m_qr[k * m_m + i];
-	}
+        for (int k = m_n - 1; k >= 0; --k) {
+            double s = 0.0;
+            for (int i = k; i < m_m; ++i) {
+                s += m_qr[k * m_m + i] * b[i];
+            }
+            s = -s / m_qr[k * m_m + k];
+            for (int i = k; i < m_m; ++i) {
+                b[i] += s * m_qr[k * m_m + i];
+            }
+        }
     }
 
     // / <summary>
@@ -259,40 +283,45 @@ public class Householder extends AbstractLinearSystemSolver implements
     // / <param name="b">An array of double. It contains the product at the
     // return of the method</param>
     /**
-     * 
+     *
      * @param b
      */
     public void applyQt(double[] b) {
-	for (int k = 0, km = 0; k < m_n; k++, km += m_m) {
-	    double s = 0.0;
-	    for (int i = k; i < m_m; ++i)
-		s += m_qr[km + i] * b[i];
-	    s = -s / m_qr[km + k];
-	    for (int i = k; i < m_m; ++i)
-		b[i] += s * m_qr[km + i];
-	}
+        for (int k = 0, km = 0; k < m_n; k++, km += m_m) {
+            double s = 0.0;
+            for (int i = k; i < m_m; ++i) {
+                s += m_qr[km + i] * b[i];
+            }
+            if (s != 0) {
+                s = -s / m_qr[km + k];
+                for (int i = k; i < m_m; ++i) {
+                    b[i] += s * m_qr[km + i];
+                }
+            }
+        }
     }
 
     /**
-     * 
+     *
      * @param xin
      * @param xout
      */
     @Override
     public void solve(DataBlock xin, DataBlock xout) {
-	leastSquares(xin, xout, null);
+        leastSquares(xin, xout, null);
     }
 
     /**
-     * 
+     *
      * @param x
      * @return
      */
     public double[] solve(double[] x) {
-	if (m_norig != m_n)
-	    throw new MatrixException(MatrixException.Singular);
-	double[] b = new double[m_n];
-	leastSquares(new DataBlock(x), new DataBlock(b), null);
-	return b;
+        if (m_norig != m_n) {
+            throw new MatrixException(MatrixException.Singular);
+        }
+        double[] b = new double[m_n];
+        leastSquares(new DataBlock(x), new DataBlock(b), null);
+        return b;
     }
 }

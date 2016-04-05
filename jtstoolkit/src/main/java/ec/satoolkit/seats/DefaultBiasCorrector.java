@@ -57,7 +57,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
     }
 
     private double bias(TsData s, int n) {
-        DataBlock d = new DataBlock(s.getValues().internalStorage(), 0, n, 1);
+        DataBlock d = new DataBlock(s.internalStorage(), 0, n, 1);
         return d.sum() / n;
     }
 
@@ -174,7 +174,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         if (s != null) {
             s = s.exp();
             sbias = bias(s, ny);
-            s.getValues().div(sbias);
+            s.apply(x->x/sbias);
             decomp.add(s, ComponentType.Seasonal);
             TsData se = model.getSeries(ComponentType.Seasonal, ComponentInformation.Stdev);
             if (se != null) {
@@ -185,7 +185,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         if (i != null) {
             i = i.exp();
             ibias = bias(i, i.getLength());
-            i.getValues().div(ibias);
+            i.apply(x->x/ibias);
             TsData ie = model.getSeries(ComponentType.Irregular, ComponentInformation.Stdev);
             if (ie != null) {
                 decomp.add(correctStdevForLog(ie, i), ComponentType.Irregular, ComponentInformation.Stdev);
@@ -195,7 +195,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         TsData t = model.getSeries(ComponentType.Trend, ComponentInformation.Value);
         if (t != null) {
             t = t.exp();
-            t.getValues().mul(sbias * ibias);
+            t.apply(x->x*sbias * ibias);
             decomp.add(t, ComponentType.Trend);
             TsData te = model.getSeries(ComponentType.Trend, ComponentInformation.Stdev);
             if (te != null) {
@@ -223,7 +223,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         TsData fs = model.getSeries(ComponentType.Seasonal, ComponentInformation.Forecast);
         if (fs != null) {
             fs = fs.exp();
-            fs.getValues().div(sbias);
+            fs.apply(x->x/sbias);
             decomp.add(fs, ComponentType.Seasonal, ComponentInformation.Forecast);
             TsData fse = model.getSeries(ComponentType.Seasonal, ComponentInformation.StdevForecast);
             if (fse != null) {
@@ -235,7 +235,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         TsData ft = model.getSeries(ComponentType.Trend, ComponentInformation.Forecast);
         if (ft != null) {
             ft = ft.exp();
-            ft.getValues().mul(sbias * ibias);
+            ft.apply(x->x*sbias * ibias);
             decomp.add(ft, ComponentType.Trend, ComponentInformation.Forecast);
             TsData fte = model.getSeries(ComponentType.Trend, ComponentInformation.StdevForecast);
             if (fte != null) {

@@ -27,7 +27,7 @@ import ec.tstoolkit.design.NewObject;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Deprecated
 public class AutoCorrelations
 {
 
@@ -81,7 +81,7 @@ public class AutoCorrelations
 	    int n = tmp.length;
 	    double m = stats.getAverage();
 	    for (int i = 0; i < n; ++i)
-		if (DescriptiveStatistics.isFinite(tmp[i]))
+		if (Double.isFinite(tmp[i]))
 		    tmp[i] -= m;
 	    m_auto = DescriptiveStatistics.ac(m_kmax, tmp);
 	} else
@@ -143,7 +143,7 @@ public class AutoCorrelations
 	for (int i = 1; i < n; i++) {
 	    double cur = data[i];
 	    double prev = data[i - 1];
-	    if (DescriptiveStatistics.isFinite(cur))
+	    if (Double.isFinite(cur))
 		nom += (cur - prev) * (cur - prev);
 	}
 	return nom / stats.getSumSquare();

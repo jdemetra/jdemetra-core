@@ -67,7 +67,7 @@ public class MaxAbsNormalizer implements IDataNormalizer {
 	double max = 0;
 	for (int i = 0; i < m_data.length; ++i) {
 	    double d = m_data[i];
-	    if (DescriptiveStatistics.isFinite(d)) {
+	    if (Double.isFinite(d)) {
 		d = Math.abs(d);
 		if (d > max)
 		    max = d;
@@ -78,7 +78,7 @@ public class MaxAbsNormalizer implements IDataNormalizer {
 	m_c = m_max / max;
 
 	for (int i = 0; i < m_data.length; ++i)
-	    if (DescriptiveStatistics.isFinite(m_data[i]))
+	    if (Double.isFinite(m_data[i]))
 		m_data[i] *= m_c;
 	return true;
 

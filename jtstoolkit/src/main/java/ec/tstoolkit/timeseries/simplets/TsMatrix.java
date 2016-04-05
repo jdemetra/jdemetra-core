@@ -135,7 +135,7 @@ public class TsMatrix implements Cloneable {
         double[] x = data.getData();
         int beg = data.getStartPosition(), end = data.getEndPosition(), inc = data.getIncrement();
         while (beg != end) {
-            if (DescriptiveStatistics.isFinite(x[beg])) {
+            if (Double.isFinite(x[beg])) {
                 break;
             }
             else {
@@ -146,7 +146,7 @@ public class TsMatrix implements Cloneable {
             return new DataBlock(0);
         }
         while (beg != end) {
-            if (DescriptiveStatistics.isFinite(x[end - inc])) {
+            if (Double.isFinite(x[end - inc])) {
                 break;
             }
             else {
@@ -211,7 +211,7 @@ public class TsMatrix implements Cloneable {
     public TsMatrix expand(final int nperiods, final int ncolumns) {
         Matrix m = new Matrix(matrix_.getRowsCount() + nperiods, matrix_.getColumnsCount() + ncolumns);
         m.set(Double.NaN);
-        m.subMatrix(0, matrix_.getRowsCount(), 0, matrix_.getColumnsCount()).copy(matrix_.subMatrix());
+        m.subMatrix(0, matrix_.getRowsCount(), 0, matrix_.getColumnsCount()).copy(matrix_.all());
         return new TsMatrix(start_, m, false);
     }
 
@@ -228,7 +228,7 @@ public class TsMatrix implements Cloneable {
         }
         Matrix m = new Matrix(sdomain.getLength(), matrix_.getColumnsCount());
         int r0 = sdomain.getStart().minus(start_);
-        m.subMatrix().copy(matrix_.subMatrix(r0, r0 + matrix_.getRowsCount(), 0, matrix_.getColumnsCount()));
+        m.all().copy(matrix_.subMatrix(r0, r0 + matrix_.getRowsCount(), 0, matrix_.getColumnsCount()));
         return new TsMatrix(start_, m, false);
     }
 

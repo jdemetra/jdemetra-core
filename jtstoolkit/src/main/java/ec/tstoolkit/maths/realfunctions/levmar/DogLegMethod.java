@@ -128,7 +128,7 @@ public class DogLegMethod implements ISsqFunctionMinimizer {
     }
 
     private boolean iterate() {
-        if (!DescriptiveStatistics.isFinite(Fcur_)) {
+        if (!Double.isFinite(Fcur_)) {
             stop = 7;
             return false;
         }
@@ -222,7 +222,7 @@ public class DogLegMethod implements ISsqFunctionMinimizer {
             }
 
 
-            if (!DescriptiveStatistics.isFinite(hdl.ssq())) {
+            if (!Double.isFinite(hdl.ssq())) {
                 stop = 7;
                 return false;
             }

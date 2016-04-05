@@ -33,7 +33,7 @@ public class QSTest  {
     }
     
     public static StatisticalTest test(TsData data) {
-        return compute(data.getValues().internalStorage(), data.getFrequency().intValue(),2);
+        return compute(data.internalStorage(), data.getFrequency().intValue(),2);
     }
 
     public static StatisticalTest compute(double[] data, int lag, int k) {

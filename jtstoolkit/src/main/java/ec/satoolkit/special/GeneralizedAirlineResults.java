@@ -73,9 +73,9 @@ public class GeneralizedAirlineResults implements ISaResults {
                 filter.setSsf(ssf);
                 DiffuseFilteringResults frslts = new DiffuseFilteringResults(true);
 
-                filter.process(new ec.tstoolkit.ssf.SsfData(y_.getValues().internalStorage(), null), frslts);
+                filter.process(new ec.tstoolkit.ssf.SsfData(y_.internalStorage(), null), frslts);
 
-                smoother.process(new ec.tstoolkit.ssf.SsfData(y_.getValues().internalStorage(), null), frslts);
+                smoother.process(new ec.tstoolkit.ssf.SsfData(y_.internalStorage(), null), frslts);
                 ec.tstoolkit.ssf.SmoothingResults srslts = smoother.calcSmoothedStates();
 
                 // ec.tstoolkit.ssf.Smoother smoother = new ec.tstoolkit.ssf.Smoother();

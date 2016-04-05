@@ -41,7 +41,7 @@ public class KruskalWallisTest extends StatisticalTest {
 	if (freq <= 1)
 	    return;
 	int pos = tsdata.getStart().getPosition();
-	double[] data = tsdata.getValues().internalStorage();
+	double[] data = tsdata.internalStorage();
 
 	Item[] items = new Item[data.length];
 	int N = 0;
@@ -50,7 +50,7 @@ public class KruskalWallisTest extends StatisticalTest {
 	for (int i = 0; i < items.length; ++i) {
 	    //
 	    double d = data[i];
-	    if (DescriptiveStatistics.isFinite(d)) {
+	    if (Double.isFinite(d)) {
 		int k = (pos + i) % freq;
 		items[j++] = new Item(k, d);
 		nk[k]++;

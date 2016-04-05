@@ -240,14 +240,14 @@ public class TsAggregator {
         } else if (nts == 1) {
             return witem(0);
         }
-        TsDomain dom = null;
+        TsDomain dom;
         if (zero_ || normalize_) {
             dom = getUnionDomain();
         } else {
             dom = getIntersectionDomain();
         }
         TsData total = new TsData(dom);
-        total.getValues().set(0);
+        total.set(()->0);
 
         if (normalize_) {
             nwsum(total);
@@ -260,19 +260,17 @@ public class TsAggregator {
 
     private void sum(TsData total) {
         TsDomain dom = total.getDomain();
-        double[] x = total.getValues().internalStorage();
-        for (WeightedItem<TsData> w : items_) {
-            if (w.weight != 0) {
-                TsDomain wdom = w.item.getDomain();
-                TsDomain idom = wdom.intersection(dom);
-                int wstart = idom.getStart().minus(wdom.getStart());
-                int tstart = idom.getStart().minus(dom.getStart());
-                int n = idom.getLength();
-                new DataBlock(x, tstart, tstart + n, 1).addAY(w.weight,
-                        new DataBlock(w.item.getValues().internalStorage(),
-                                wstart, wstart + n, 1));
-            }
-        }
+        double[] x = total.internalStorage();
+        items_.stream().filter((w) -> (w.weight != 0)).forEach((w) -> {
+            TsDomain wdom = w.item.getDomain();
+            TsDomain idom = wdom.intersection(dom);
+            int wstart = idom.getStart().minus(wdom.getStart());
+            int tstart = idom.getStart().minus(dom.getStart());
+            int n = idom.getLength();
+            new DataBlock(x, tstart, tstart + n, 1).addAY(w.weight,
+                    new DataBlock(w.item.internalStorage(),
+                            wstart, wstart + n, 1));
+        });
     }
 
     private TsData witem(int idx) {

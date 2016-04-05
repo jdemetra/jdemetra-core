@@ -52,7 +52,7 @@ public abstract class AbstractTsBenchmarking {
     protected boolean checkConstraints(TsData s, TsData constraints) {
         TsData del = constraints.minus(s.changeFrequency(constraints.getFrequency(), type_, true));
 
-        DescriptiveStatistics stats = new DescriptiveStatistics(del.getValues());
+        DescriptiveStatistics stats = new DescriptiveStatistics(del);
         if (stats.isZero(eps_ * stats.getStdev())) {
             return true;
         }
@@ -141,11 +141,11 @@ public abstract class AbstractTsBenchmarking {
         }
         // normalize the data
         AbsMeanNormalizer normalizer = new AbsMeanNormalizer();
-        if (normalizer.process(s.getValues())) {
+        if (normalizer.process(s)) {
             TsData tmp = new TsData(s.getStart(), normalizer.getNormalizedData(), false);
             TsData btmp = benchmark(tmp, constraints.times(normalizer.getFactor()));
             if (btmp != null) {
-                btmp.getValues().div(normalizer.getFactor());
+                btmp.apply((x)->x/normalizer.getFactor());
             }
             return btmp;
         } else {

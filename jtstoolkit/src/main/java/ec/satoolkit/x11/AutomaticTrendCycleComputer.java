@@ -72,8 +72,8 @@ class AutomaticTrendCycleComputer extends DefaultX11Algorithm implements
                     MusgraveFilterFactory.makeFilters(trendFilter, curIC/*
                      * D
                      */));
-            iep.process(new DataBlock(s.getValues().internalStorage()),
-                    new DataBlock(sc.getValues().internalStorage()));
+            iep.process(new DataBlock(s.internalStorage()),
+                    new DataBlock(sc.internalStorage()));
             if (step == X11Step.D) {
                 info.subSet(X11Kernel.D).set(X11Kernel.D12_FILTER, strategy.getDescription());
                 info.subSet(X11Kernel.D).set(X11Kernel.D12_TLEN, filterLength);

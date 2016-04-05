@@ -493,7 +493,7 @@ public class TsMultiBenchmarking {
             if (tConstraints.containsKey(rcnt.get(i))) {
                 TsData a = tcntData.get(rcnt.get(i));
                 DataBlock b = M.row(i).extract(c - 1, a.getLength(), c);
-                b.copy(a.getValues());
+                b.copy(a);
             }
         }
         for (int i = 0; i < ncnts; ++i) {
@@ -614,7 +614,7 @@ public class TsMultiBenchmarking {
             ContemporaneousConstraintDescriptor desc = cConstraints.get(i);
             if (!Jdk6.isNullOrEmpty(desc.constraint)) {
                 TsData s = getInput(desc.constraint);
-                lcntData[i] = s.getValues().internalStorage().clone();
+                lcntData[i] = s.internalStorage().clone();
             } else {
                 lcntData[i] = new double[]{desc.constant};
             }
@@ -666,7 +666,7 @@ public class TsMultiBenchmarking {
         rcntData = new double[rcnt.size()][];
         for (int i = 0; i < rcnt.size(); ++i) {
             TsData s = getInput(rcnt.get(i)).fittoDomain(idomain_);
-            rcntData[i] = s.getValues().internalStorage();
+            rcntData[i] = s.internalStorage();
         }
     }
 

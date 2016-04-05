@@ -210,7 +210,7 @@ public class MixedAirlineMonitor {
 
     private SsfFunction<ISsf> buildFunction(
             MixedAirlineModel model, MixedAirlineMapper mapper) {
-        SsfData data = new SsfData(m_series.getValues().internalStorage(), null);
+        SsfData data = new SsfData(m_series.internalStorage(), null);
         SsfAlgorithm<ISsf> alg = new SsfAlgorithm<>();
         // alg.useSsq(ssq);
         SsfFunction<ISsf> eval = new SsfFunction<>(
