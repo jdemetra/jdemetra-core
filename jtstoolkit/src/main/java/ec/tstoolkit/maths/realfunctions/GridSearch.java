@@ -16,7 +16,6 @@
  */
 package ec.tstoolkit.maths.realfunctions;
 
-import ec.tstoolkit.BaseException;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.matrices.Matrix;
 
@@ -90,7 +89,7 @@ public class GridSearch implements IFunctionMinimizer {
         return m_nsteps1;
     }
 
-    public int getInitinitalGridCount() {
+    public int getInitialGridCount() {
         return m_nsteps0;
     }
 
@@ -195,7 +194,7 @@ public class GridSearch implements IFunctionMinimizer {
         m_va = evaluate(m_a);
         m_vb = evaluate(m_b);
         niter = 0;
-        while (niter++ < maxIter && m_b - m_a > m_deps && m_dfn > m_eps) {
+        while (niter++ < maxIter && m_b - m_a > m_deps && (Double.isNaN(m_dfn )||m_dfn > m_eps) ){
             if (!iterate(niter == 1 ? m_nsteps0 : m_nsteps1)) {
                 return false;
             }
@@ -231,6 +230,9 @@ public class GridSearch implements IFunctionMinimizer {
         m_eps = value;
     }
 
+    public void setPrecision(double value) {
+        m_deps = value;
+    }
     /**
      *
      * @param value

@@ -1,27 +1,28 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tstoolkit.modelling.arima;
 
 import ec.tstoolkit.arima.estimation.IRegArimaProcessor;
 import ec.tstoolkit.arima.estimation.RegArimaEstimation;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.data.DataBlock;
+import ec.tstoolkit.data.DescriptiveStatistics;
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.eco.Ols;
 import ec.tstoolkit.maths.Complex;
 import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.maths.matrices.SymmetricMatrix;
@@ -34,6 +35,7 @@ import ec.tstoolkit.maths.realfunctions.ProxyMinimizer;
 import ec.tstoolkit.maths.realfunctions.levmar.LevenbergMarquardtMethod;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;
+import ec.tstoolkit.sarima.SarmaSpecification;
 import ec.tstoolkit.sarima.estimation.GlsSarimaMonitor;
 import ec.tstoolkit.sarima.estimation.SarimaFixedMapping;
 import ec.tstoolkit.sarima.estimation.SarimaInitializer;
@@ -46,7 +48,6 @@ import ec.tstoolkit.sarima.estimation.SarimaInitializer;
 public class RegArimaEstimator implements IRegArimaProcessor<SarimaModel> {
 
     public static final String SCORE = "score", OPTIMIZATION = "optimization";
-
     public static enum StartingPoint {
 
         Zero,
@@ -56,7 +57,7 @@ public class RegArimaEstimator implements IRegArimaProcessor<SarimaModel> {
     }
     public static final double DEF_EPS = 1e-7, DEF_INTERNAL_EPS = 1e-4;
     protected double eps_ = DEF_EPS, feps_;
-    protected boolean ml_ = true, logll_=false, fml_;
+    protected boolean ml_ = true, logll_ = false, fml_;
     protected StartingPoint start_ = StartingPoint.Multiple;
     protected Matrix pcov_;
     protected double[] score_;
@@ -71,6 +72,7 @@ public class RegArimaEstimator implements IRegArimaProcessor<SarimaModel> {
     public boolean isLogLikelihood() {
         return logll_;
     }
+
     public StartingPoint getStartingPoint() {
         return start_;
     }
@@ -86,7 +88,7 @@ public class RegArimaEstimator implements IRegArimaProcessor<SarimaModel> {
     public void setLogLikelihood(boolean logll) {
         logll_ = logll;
     }
-    
+
     public RegArimaEstimator(IParametricMapping<SarimaModel> mapper) {
         mapping_ = mapper;
     }
@@ -106,7 +108,7 @@ public class RegArimaEstimator implements IRegArimaProcessor<SarimaModel> {
     @Override
     public RegArimaEstimation<SarimaModel> process(RegArimaModel<SarimaModel> regs) {
 
-        if (mapping_.getDim() == 0) {
+        if (mapping_.getDim() == 0 ) {
             return new RegArimaEstimation<>(regs, regs.computeLikelihood());
         }
         SarimaModel start;
@@ -114,7 +116,6 @@ public class RegArimaEstimator implements IRegArimaProcessor<SarimaModel> {
             SarimaInitializer initializer = new SarimaInitializer();
             initializer.useDefaultIfFailed(true);
             SarimaModel starthr = initializer.initialize(regs);
-
 
             SarimaSpecification spec = starthr.getSpecification();
             start = starthr;
@@ -228,7 +229,7 @@ public class RegArimaEstimator implements IRegArimaProcessor<SarimaModel> {
             do {
                 feps_ *= 10;
                 monitor_.setPrecision(feps_);
-                rslt=monitor_.optimize(regs, rslt.model.getArma());
+                rslt = monitor_.optimize(regs, rslt.model.getArma());
             } while (rslt == null && ++iter < 3);
             if (rslt == null) {
                 return null;

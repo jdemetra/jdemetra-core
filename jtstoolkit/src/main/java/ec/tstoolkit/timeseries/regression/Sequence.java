@@ -18,6 +18,8 @@ package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.timeseries.Day;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
+import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import ec.tstoolkit.utilities.StringFormatter;
 import java.util.Objects;
 
@@ -30,8 +32,20 @@ public class Sequence implements Cloneable {
 
     @Override
     public String toString() {
+        if (start.equals(end))
+            return start.toString();
         StringBuilder builder = new StringBuilder();
         builder.append(StringFormatter.convert(start)).append(InformationSet.SEP).append(StringFormatter.convert(end));
+        return builder.toString();
+    }
+    
+    public String toString(TsFrequency freq){
+        TsPeriod pstart=new TsPeriod(freq, start);
+        TsPeriod pend=new TsPeriod(freq, end);
+        if (pend.equals(pstart))
+            return pstart.toString();
+        StringBuilder builder = new StringBuilder();
+        builder.append(pstart).append(InformationSet.SEP).append(pend);
         return builder.toString();
     }
     

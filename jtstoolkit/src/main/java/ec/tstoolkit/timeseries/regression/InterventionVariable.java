@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.data.DataBlock;
@@ -29,6 +28,7 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import ec.tstoolkit.utilities.Comparator;
 import ec.tstoolkit.utilities.Jdk6;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,25 +40,24 @@ import java.util.Map;
  */
 @Development(status = Development.Status.Alpha)
 public class InterventionVariable extends AbstractSingleTsVariable implements Cloneable, InformationSetSerializable {
-    
-     public static final String
-            NAME = "name",
+
+    public static final String NAME = "name",
             DELTA = "delta",
             DELTAS = "deltas",
             SEQS = "sequences";
-   
+
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, SEQS), String[].class);
-         dic.put(InformationSet.item(prefix, NAME), String.class);
-         dic.put(InformationSet.item(prefix, DELTA), Double.class);
-         dic.put(InformationSet.item(prefix, DELTAS), Double.class);
+        dic.put(InformationSet.item(prefix, NAME), String.class);
+        dic.put(InformationSet.item(prefix, DELTA), Double.class);
+        dic.put(InformationSet.item(prefix, DELTAS), Double.class);
     }
 
     private static final String DESC = "Intervention variable";
     private String desc_ = DESC;
     private double delta_, deltas_;
     private ArrayList<Sequence> seqs_ = new ArrayList<>();
-    
+
     @Override
     public InterventionVariable clone() {
         try {
@@ -72,7 +71,7 @@ public class InterventionVariable extends AbstractSingleTsVariable implements Cl
             throw new AssertionError();
         }
     }
-    
+
     @Override
     public void data(TsPeriod start, DataBlock data) {
         int dcount = data.getLength();
@@ -87,7 +86,7 @@ public class InterventionVariable extends AbstractSingleTsVariable implements Cl
         // search the Start / End of the sequences
         pstart.set(seqs_.get(0).start);
         pend.set(seqs_.get(0).end);
-        
+
         for (int i = 1; i < seqs_.size(); ++i) {
             if (pstart.isAfter(seqs_.get(i).start)) {
                 pstart.set(seqs_.get(i).start);
@@ -102,14 +101,14 @@ public class InterventionVariable extends AbstractSingleTsVariable implements Cl
         if (n < 0) {
             return;
         }
-        
+
         double[] tmp = new double[n];
         TsPeriod curstart = new TsPeriod(start.getFrequency()), curend = new TsPeriod(
                 start.getFrequency());
         for (int i = 0; i < seqs_.size(); ++i) {
             curstart.set(seqs_.get(i).start);
             curend.set(seqs_.get(i).end);
-            
+
             int istart = curstart.minus(pstart);
             int iend = 1 + curend.minus(pstart);
             if (iend > n) {
@@ -119,7 +118,7 @@ public class InterventionVariable extends AbstractSingleTsVariable implements Cl
                 tmp[j] += 1;
             }
         }
-        
+
         if (delta_ != 0 || deltas_ != 0) {
             // construct the filter
             Polynomial num = Polynomial.ONE;
@@ -148,17 +147,16 @@ public class InterventionVariable extends AbstractSingleTsVariable implements Cl
         int di = pstart.minus(start);
         if (di > 0) {
             data.drop(di, 0).copyFrom(tmp, 0);
-        }
-        else {
+        } else {
             data.copyFrom(tmp, -di);
         }
     }
-    
+
     @Override
     public String getDescription() {
         return desc_ == null ? toString() : desc_;
     }
-    
+
     @Override
     public boolean isSignificant(TsDomain domain) {
         // TODO
@@ -167,86 +165,75 @@ public class InterventionVariable extends AbstractSingleTsVariable implements Cl
         data(domain.getStart(), s);
         return !s.isConstant();
     }
-    
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("I:");
-        for (Sequence seq : seqs_) {
-            builder.append(seq.toString()).append("; ");
-        }
-        return builder.toString();
-    }
-    
+
     public void add(Day start, Day end) {
         seqs_.add(new Sequence(start, end));
     }
-    
+
     public void clear() {
         seqs_.clear();
     }
-    
+
     public int getCount() {
         return seqs_.size();
     }
-    
+
     public Sequence getSequence(int idx) {
         return seqs_.get(idx);
     }
-    
+
     public double getDelta() {
         return delta_;
     }
-    
+
     public void setDelta(double value) {
         delta_ = value;
     }
-    
+
     public double getDeltaS() {
         return deltas_;
     }
-    
+
     public void setDeltaS(double value) {
         deltas_ = value;
     }
-    
+
     public boolean getD1DS() {
         return delta_ == 1 && deltas_ == 1;
     }
-    
+
     public void setD1DS(boolean value) {
         if (value) {
             delta_ = 1;
             deltas_ = 1;
-        }
-        else {
+        } else {
             delta_ = 0;
             deltas_ = 0;
         }
     }
-    
+
     public Sequence[] getSequences() {
         return Jdk6.Collections.toArray(seqs_, Sequence.class);
     }
-    
+
     public void setSequences(Sequence[] seqs) {
         seqs_.clear();
-        
+
         if (seqs != null) {
             Collections.addAll(seqs_, seqs);
         }
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         return this == obj || (obj instanceof InterventionVariable && equals((InterventionVariable) obj));
     }
-    
+
     private boolean equals(InterventionVariable other) {
         return other.delta_ == delta_ && other.deltas_ == deltas_
                 && Comparator.equals(other.seqs_, seqs_);
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 3;
@@ -255,7 +242,7 @@ public class InterventionVariable extends AbstractSingleTsVariable implements Cl
         hash = 71 * hash + Arrays.hashCode(this.seqs_.toArray());
         return hash;
     }
-    
+
     @Override
     public InformationSet write(boolean verbose) {
         InformationSet info = new InformationSet();
@@ -275,7 +262,7 @@ public class InterventionVariable extends AbstractSingleTsVariable implements Cl
         info.add(SEQS, seqs);
         return info;
     }
-    
+
     @Override
     public boolean read(InformationSet info) {
         try {
@@ -302,9 +289,61 @@ public class InterventionVariable extends AbstractSingleTsVariable implements Cl
                 }
             }
             return true;
-        }
-        catch (Exception err) {
+        } catch (Exception err) {
             return false;
         }
+    }
+
+    @Override
+    public String toString() {
+        if (seqs_.isEmpty()) {
+            return "I:{}";
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.append("I:");
+        builder.append('{');
+        builder.append(seqs_.get(0));
+        for (int i = 1; i < seqs_.size(); ++i) {
+            builder.append(';').append(seqs_.get(i));
+        }
+        builder.append('}');
+        appendDetails(builder);
+        return builder.toString();
+    }
+
+    private void appendDetails(StringBuilder builder) {
+        int nd = (delta_ == 0 ? 0 : 1) + (deltas_ == 0 ? 0 : 1);
+        if (nd > 0) {
+            DecimalFormat fmt = new DecimalFormat();
+            fmt.setMaximumFractionDigits(2);
+            builder.append('(');
+            if (delta_ != 0) {
+                builder.append("delta=").append(fmt.format(delta_));
+                if (nd == 2) {
+                    builder.append(", ");
+                }
+            }
+            if (deltas_ != 0) {
+                builder.append("deltas=").append(fmt.format(deltas_));
+            }
+            builder.append(')');
+        }
+
+    }
+
+    public String toString(TsFrequency freq) {
+        if (seqs_.isEmpty()) {
+            return "I:{}";
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.append("I:");
+        builder.append('{');
+        builder.append(seqs_.get(0).toString(freq));
+        for (int i = 1; i < seqs_.size(); ++i) {
+            builder.append(';').append(seqs_.get(i).toString(freq));
+        }
+        builder.append('}');
+        appendDetails(builder);
+        return builder.toString();
     }
 }

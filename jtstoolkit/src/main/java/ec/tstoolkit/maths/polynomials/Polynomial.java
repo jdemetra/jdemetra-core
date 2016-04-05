@@ -49,7 +49,7 @@ public final class Polynomial implements IReadDataBlock {
      *
      * @param num The numerator polynomial
      * @param denom The denominator polynomial
-     * @return 
+     * @return
      */
     public static Division divide(final Polynomial num, final Polynomial denom) {
         int n = num.getDegree(), nv = denom.getDegree();
@@ -506,7 +506,7 @@ public final class Polynomial implements IReadDataBlock {
                 ur[i] = ur[i].times(rc);
             }
         } else {
-            Complex rc = ComplexMath.pow(Complex.cart(1 / c, 0) , 1.0 / n);
+            Complex rc = ComplexMath.pow(Complex.cart(1 / c, 0), 1.0 / n);
             for (int i = 0; i < ur.length; ++i) {
                 ur[i] = ur[i].times(rc);
             }
@@ -588,6 +588,7 @@ public final class Polynomial implements IReadDataBlock {
     /**
      * Create a new Polynomial by decreasing the degree of the specified
      * polynomial by one until the highest non-zero coefficient is reached.
+     *
      * @return a non-null Polynomial
      */
     public Polynomial adjustDegree() {
@@ -704,7 +705,7 @@ public final class Polynomial implements IReadDataBlock {
         int i = getDegree();
         double f = get(i--);
         for (; i >= 0; --i) {
-            f = get(i) + (f * x);
+            f = m_c[i] + (f * x);
         }
         return f;
     }
@@ -719,7 +720,7 @@ public final class Polynomial implements IReadDataBlock {
     public Complex evaluateAtFrequency(final double w) {
         ComplexBuilder f = new ComplexBuilder(get(0));
         for (int i = 1; i <= degree; ++i) {
-            f.add(Complex.polar(get(i), w * i));
+            f.add(Complex.polar(m_c[i], w * i));
         }
         return f.build();
     }
@@ -911,13 +912,16 @@ public final class Polynomial implements IReadDataBlock {
      */
     public Complex[] roots(IRootsSolver searcher) {
         if (getDegree() == 0) {
-            return null;
+            return new Complex[0];
         }
         if (searcher == null) {
             searcher = g_defRootsSolver;
         }
         synchronized (searcher) {
             final Polynomial tmp = this.adjustDegree();
+            if (tmp.getDegree() == 0) {
+                return new Complex[0];
+            }
             if (searcher.factorize(tmp)) {
                 Complex[] roots = searcher.roots();
                 searcher.clear();
@@ -1003,7 +1007,7 @@ public final class Polynomial implements IReadDataBlock {
                 }
             }
         }
-        Polynomial prod = Polynomial.of(result); 
+        Polynomial prod = Polynomial.of(result);
         {
             Complex[] lRoots = defRoots.get();
             Complex[] rRoots = r.defRoots.get();

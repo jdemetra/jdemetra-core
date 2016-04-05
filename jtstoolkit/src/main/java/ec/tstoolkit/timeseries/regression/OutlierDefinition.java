@@ -31,7 +31,7 @@ import java.util.Objects;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class OutlierDefinition implements Comparable<OutlierDefinition> {
+public class OutlierDefinition implements Comparable<OutlierDefinition>, Cloneable {
 
     public Day position;
     public OutlierType type;
@@ -41,6 +41,7 @@ public class OutlierDefinition implements Comparable<OutlierDefinition> {
      *
      * @param period
      * @param type
+     * @param prespecified
      */
     public OutlierDefinition(TsPeriod period, OutlierType type, boolean prespecified) {
         position = period.firstday();
@@ -50,13 +51,22 @@ public class OutlierDefinition implements Comparable<OutlierDefinition> {
 
     /**
      *
-     * @param period
+     * @param pos
      * @param type
+     * @param prespecified
      */
     public OutlierDefinition(Day pos, OutlierType type, boolean prespecified) {
         position = pos;
         this.type = type;
         this.prespecified = prespecified;
+    }
+    
+    public OutlierDefinition clone(){
+        try {
+            return (OutlierDefinition) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            throw new AssertionError();
+        }
     }
 
     public Day getPosition() {

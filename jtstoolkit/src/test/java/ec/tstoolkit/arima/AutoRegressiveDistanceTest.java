@@ -40,7 +40,7 @@ public class AutoRegressiveDistanceTest {
     @Test
     public void testDistance() {
         SarimaModelBuilder builder = new SarimaModelBuilder();
-        SarimaModel tmp1 = builder.createAirlineModel(11, -.6, -1);
+        SarimaModel tmp1 = builder.createAirlineModel(11, -.6, -.1);
         SarimaModel tmp2 = builder.createAirlineModel(11, -.5, .5);
         assertTrue(Math.abs(AutoRegressiveDistance.compute(tmp1, tmp2, 200) - AutoRegressiveDistance.compute2(tmp2, tmp1, 200)) < 1e-9);
     }

@@ -189,4 +189,18 @@ public class LogLevelTest implements IPreprocessingModule {
     private static final String LOG_LEVEL = "Log/level test",
             LOGS = "Logs chosen", LEVELS = "Levels chosen", LOGS_TITLE = "Likelihood statistics for model fit to logs", LEVELS_TITLE = "Likelihood statistics for model fit to levels";
 
+    /**
+     * @return the level_
+     */
+    public ModelEstimation getLevel() {
+        return level_;
+    }
+
+    /**
+     * @return the log_
+     */
+    public ModelEstimation getLog() {
+        return log_;
+    }
+
 }

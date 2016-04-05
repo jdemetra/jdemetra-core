@@ -20,6 +20,7 @@ public class AutoModelSpecTest {
 
     @Test
     public void testInformationSet() {
+        boolean verbose=false;
         AutoModelSpec expected = new AutoModelSpec();
         AutoModelSpec actual = new AutoModelSpec(true);
         InformationSet info;
@@ -29,55 +30,55 @@ public class AutoModelSpecTest {
         assertNotEquals(expected, actual);
         
         expected.setPcr(.95);
-        info = expected.write(true);
+        info = expected.write(verbose);
         actual.read(info);
         assertEquals(expected, actual);
         assertEquals(.95, actual.getPcr(),0.0);
         
         expected.setUb1(.9);
-        info = expected.write(true);
+        info = expected.write(verbose);
         actual.read(info);
         assertEquals(expected, actual);
         assertEquals(.9, actual.getUb1(),0.0);
         
         expected.setUb2(.9);
-        info = expected.write(true);
+        info = expected.write(verbose);
         actual.read(info);
         assertEquals(expected, actual);
         assertEquals(.9, actual.getUb2(),0.0);
         
         expected.setCancel(.06);
-        info = expected.write(true);
+        info = expected.write(verbose);
         actual.read(info);
         assertEquals(expected, actual);
         assertEquals(.06, actual.getCancel(),0.0);
         
         expected.setTsig(.6);
-        info = expected.write(true);
+        info = expected.write(verbose);
         actual.read(info);
         assertEquals(expected, actual);
         assertEquals(.6, actual.getTsig(),0.0);
         
         expected.setPc(.25);
-        info = expected.write(true);
+        info = expected.write(verbose);
         actual.read(info);
         assertEquals(expected, actual);
         assertEquals(.25, actual.getPc(),0.0);
         
         expected.setEnabled(true);
-        info = expected.write(true);
+        info = expected.write(verbose);
         actual.read(info);
         assertEquals(expected, actual);
         assertTrue(actual.isEnabled());
         
         expected.setAmiCompare(true);
-        info = expected.write(true);
+        info = expected.write(verbose);
         actual.read(info);
         assertEquals(expected, actual);
         assertTrue(actual.isAmiCompare());
         
         expected.setAcceptDefault(true);
-        info = expected.write(true);
+        info = expected.write(verbose);
         actual.read(info);
         assertEquals(expected, actual);
         assertTrue(actual.isAcceptDefault());
@@ -85,7 +86,7 @@ public class AutoModelSpecTest {
         AutoModelSpec clone;
         clone = expected.clone();
         clone.setPc(.28);
-        info = clone.write(true);
+        info = clone.write(verbose);
         actual.read(info);
         assertNotEquals(expected, clone);
         assertEquals(clone, actual);
@@ -94,7 +95,7 @@ public class AutoModelSpecTest {
         
         expected.reset();
         assertTrue(expected.isDefault());
-        info = expected.write(true);
+        info = expected.write(verbose);
         actual.read(info);
         assertTrue(actual.isDefault());
     }

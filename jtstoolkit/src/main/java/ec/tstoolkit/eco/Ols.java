@@ -13,7 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
+ */
 package ec.tstoolkit.eco;
 
 import ec.tstoolkit.BaseException;
@@ -89,12 +89,17 @@ public class Ols {
                 for (int i = 0; i < res.length; ++i) {
                     ssqerr += res[i] * res[i];
                 }
-                Matrix u = UpperTriangularMatrix.inverse(qr.getR());
 
                 // initializing the results...
                 double sig = ssqerr / n;
-                Matrix bvar = SymmetricMatrix.XXt(u);
-                bvar.mul(sig);
+                Matrix bvar;
+                if (qr.getRank() > 0) {
+                    Matrix u = UpperTriangularMatrix.inverse(qr.getR());
+                    bvar = SymmetricMatrix.XXt(u);
+                    bvar.mul(sig);
+                } else {
+                    bvar = null;
+                }
                 m_ll.set(ssqerr, 0, n);
                 m_ll.setRes(res);
                 // if some variable are unused, we expand here the array of the

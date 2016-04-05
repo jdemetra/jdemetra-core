@@ -20,19 +20,12 @@ public class CochranTestTest {
     @Test
     public void TestCochranTestStartJan() {
      CochranTest cochranTestTestStartJan;
-        System.out.println("Cochran Test");
-      
         DecompositionMode mode = DecompositionMode.Multiplicative;
 
         cochranTestTestStartJan = new CochranTest(DataCalendarSigmaX11.CStartJan, mode.isMultiplicative());
         cochranTestTestStartJan.calcCochranTest();
         assertEquals(true, cochranTestTestStartJan.getTestResult());
-        System.out.println("Testvalue: " + cochranTestTestStartJan.getTestValue());
-        System.out.println("Criticalvalue: " + cochranTestTestStartJan.getCriticalValue());
-
-        for (int i = 0; i <= cochranTestTestStartJan.getS().length - 1; i++) {
-            System.out.println("Standarddeviation of period(" + i + ") = " + cochranTestTestStartJan.getS()[i]);
-        }
+ 
         assertEquals(3535.889, cochranTestTestStartJan.getS()[0], 0.0001);
         assertEquals(4465.5955, cochranTestTestStartJan.getS()[1], 0.0001);
         assertEquals(9870.1095, cochranTestTestStartJan.getS()[2], 0.0001);
@@ -61,12 +54,7 @@ public class CochranTestTest {
         cochranTestTestStartApril = new CochranTest(DataCalendarSigmaX11.CStartAprl, mode.isMultiplicative());
         cochranTestTestStartApril.calcCochranTest();
         assertEquals(true, cochranTestTestStartApril.getTestResult());
-        System.out.println("Testvalue: " + cochranTestTestStartApril.getTestValue());
-        System.out.println("Criticalvalue: " + cochranTestTestStartApril.getCriticalValue());
-
-        for (int i = 0; i <= cochranTestTestStartApril.getS().length - 1; i++) {
-            System.out.println("Standarddeviation of period(" + i + ") = " + cochranTestTestStartApril.getS()[i]);
-        }
+  
         assertEquals(16839.1775, cochranTestTestStartApril.getS()[0], 0.0001);
         assertEquals(15099.7847, cochranTestTestStartApril.getS()[1], 0.0001);
         assertEquals(6722.4789, cochranTestTestStartApril.getS()[2], 0.0001);        
