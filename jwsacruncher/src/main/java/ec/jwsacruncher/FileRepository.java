@@ -23,6 +23,7 @@ import ec.jwsacruncher.xml.XmlWorkspace;
 import ec.jwsacruncher.xml.XmlWorkspaceItem;
 import ec.satoolkit.GenericSaProcessingFactory;
 import ec.tss.sa.SaProcessing;
+import ec.tss.xml.IXmlConverter;
 import ec.tss.xml.sa.XmlSaProcessing;
 import ec.tstoolkit.algorithm.ProcessingContext;
 import ec.tstoolkit.timeseries.calendars.GregorianCalendarManager;
@@ -76,8 +77,10 @@ public class FileRepository {
 
     public static boolean loadCalendars(String file, boolean legacy) {
         GregorianCalendarManager activeMgr = ProcessingContext.getActiveContext().getGregorianCalendars();
-        GregorianCalendarManager mgr = ItemRepository.loadLegacy(file, legacy ? ec.tss.xml.legacy.XmlCalendars.class
-                : ec.tss.xml.calendar.XmlCalendars.class);
+        Class<? extends IXmlConverter<GregorianCalendarManager>> clazz = legacy 
+                ? ec.tss.xml.legacy.XmlCalendars.class
+                : ec.tss.xml.calendar.XmlCalendars.class;
+        GregorianCalendarManager mgr = ItemRepository.loadLegacy(file, clazz);
         if (mgr != null) {
             for (String s : mgr.getNames()) {
                 if (!activeMgr.contains(s)) {
