@@ -16,13 +16,8 @@
  */
 package ec.tss.tsproviders.sdmx.engine;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
-import static ec.tss.tsproviders.sdmx.engine.FluentDom.*;
+import static ec.tss.tsproviders.sdmx.engine.FluentDom.asStream;
 import ec.tss.tsproviders.sdmx.model.SdmxGroup;
 import ec.tss.tsproviders.sdmx.model.SdmxItem;
 import ec.tss.tsproviders.sdmx.model.SdmxSeries;
@@ -30,10 +25,14 @@ import ec.tss.tsproviders.sdmx.model.SdmxSource;
 import ec.tss.tsproviders.utils.DataFormat;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tss.tsproviders.utils.Parsers.Parser;
+import static ec.tstoolkit.utilities.GuavaCollectors.toImmutableList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -62,69 +61,101 @@ public class GenericDocFactory extends AbstractDocumentFactory {
     }
 
     private static boolean hasKeyFamilyRef(Node dataSetNode) {
-        return childNodes(dataSetNode).anyMatch(IS_KEY_FAMILY_REF);
+        return asStream(dataSetNode.getChildNodes())
+                .anyMatch(o -> "KeyFamilyRef".equals(o.getLocalName()));
     }
 
     private static ImmutableList<SdmxItem> getSdmxItems(Node dataSetNode) {
-        ImmutableList.Builder<SdmxItem> result = ImmutableList.builder();
-        for (Node node : childNodes(dataSetNode)) {
-            if (IS_GROUP.apply(node)) {
-                result.add(getSdmxGroup(node));
-            } else if (IS_SERIES.apply(node)) {
-                result.add(getSdmxSeries(node, ALL_CONCEPTS));
-            }
-        }
-        return result.build();
+        Predicate<Concept> keyFilter = o -> true;
+        return asStream(dataSetNode.getChildNodes())
+                .map(o -> "Group".equals(o.getLocalName()) ? getSdmxGroup(o) : "Series".equals(o.getLocalName()) ? getSdmxSeries(o, keyFilter) : null)
+                .filter(o -> o != null)
+                .collect(toImmutableList());
     }
 
     private static SdmxGroup getSdmxGroup(Node groupNode) {
-        FluentIterable<Node> children = childNodes(groupNode);
-        ImmutableList<Concept> key = lookupConcepts(children.firstMatch(IS_GROUP_KEY).get()).toList();
-        ImmutableList<Concept> attributes = lookupConcepts(children.firstMatch(IS_ATTRIBUTES).get()).toList();
-        Predicate<Concept> keyFilter = Predicates.not(Predicates.in(key));
-        ImmutableList.Builder<SdmxSeries> tss = ImmutableList.builder();
-        for (Node series : children.filter(IS_SERIES)) {
-            tss.add(getSdmxSeries(series, keyFilter));
-        }
-        return new SdmxGroup(key, attributes, tss.build());
+        ImmutableList<Concept> key = getGroupKeyNode(groupNode)
+                .map(GenericDocFactory::lookupConcepts)
+                .get()
+                .collect(toImmutableList());
+        ImmutableList<Concept> attributes = getAttributeNode(groupNode)
+                .map(GenericDocFactory::lookupConcepts)
+                .get()
+                .collect(toImmutableList());
+        ImmutableList<SdmxSeries> tss = asStream(groupNode.getChildNodes())
+                .filter(o -> "Series".equals(o.getLocalName()))
+                .map(o -> getSdmxSeries(o, x -> !key.contains(x)))
+                .collect(toImmutableList());
+        return new SdmxGroup(key, attributes, tss);
+    }
+
+    private static Optional<Node> getGroupKeyNode(Node node) {
+        return asStream(node.getChildNodes())
+                .filter(o -> "GroupKey".equals(o.getLocalName()))
+                .findFirst();
+    }
+
+    private static Optional<Node> getAttributeNode(Node node) {
+        return asStream(node.getChildNodes())
+                .filter(o -> "Attributes".equals(o.getLocalName()))
+                .findFirst();
     }
 
     private static SdmxSeries getSdmxSeries(Node seriesNode, Predicate<Concept> keyFilter) {
-        FluentIterable<Node> children = childNodes(seriesNode);
-        ImmutableList<Concept> key = lookupConcepts(children.firstMatch(IS_SERIES_KEY).get()).filter(keyFilter).toList();
-        ImmutableList<Concept> attributes = lookupConcepts(children.firstMatch(IS_ATTRIBUTES).get()).filter(keyFilter).toList();
+        ImmutableList<Concept> key = getSeriesKeyNode(seriesNode)
+                .map(GenericDocFactory::lookupConcepts)
+                .get()
+                .filter(keyFilter)
+                .collect(toImmutableList());
+        ImmutableList<Concept> attributes = getAttributeNode(seriesNode)
+                .map(GenericDocFactory::lookupConcepts)
+                .get()
+                .filter(keyFilter)
+                .collect(toImmutableList());
         TimeFormat timeFormat = getTimeFormat(seriesNode);
         OptionalTsData data = getData(seriesNode, timeFormat);
         return new SdmxSeries(key, attributes, timeFormat, data);
+    }
+
+    private static Optional<Node> getSeriesKeyNode(Node node) {
+        return asStream(node.getChildNodes())
+                .filter(o -> "SeriesKey".equals(o.getLocalName()))
+                .findFirst();
     }
 
     private static OptionalTsData getData(Node seriesNode, TimeFormat timeFormat) {
         Parser<Date> toPeriod = timeFormat.getParser();
         Parser<Number> toValue = DEFAULT_DATA_FORMAT.numberParser();
         OptionalTsData.Builder result = new OptionalTsData.Builder(timeFormat.getFrequency(), timeFormat.getAggregationType());
-        for (Node obs : lookupObservations(seriesNode)) {
-            Date period = toPeriod.parse(lookupPeriod(obs));
-            Number value = period != null ? toValue.parse(lookupValue(obs)) : null;
+        lookupObservations(seriesNode).forEach(o -> {
+            Date period = toPeriod.parse(getPeriod(o));
+            Number value = period != null ? toValue.parse(getValue(o)) : null;
             result.add(period, value);
-        }
+        });
         return result.build();
     }
 
-    private static String lookupPeriod(Node obs) {
-        return childNodes(obs).firstMatch(IS_TIME).get().getTextContent();
+    private static String getPeriod(Node obs) {
+        return asStream(obs.getChildNodes())
+                .filter(o -> "Time".equals(o.getLocalName()))
+                .map(Node::getTextContent)
+                .findFirst()
+                .get();
     }
 
-    private static String lookupValue(Node obs) {
-        return childNodes(obs).firstMatch(IS_OBS_VALUE).get().getAttributes().getNamedItem(VALUE_ATTRIBUTE).getNodeValue();
+    private static String getValue(Node obs) {
+        return asStream(obs.getChildNodes())
+                .filter(o -> "ObsValue".equals(o.getLocalName()))
+                .map(o -> o.getAttributes().getNamedItem(VALUE_ATTRIBUTE).getNodeValue())
+                .findFirst()
+                .get();
     }
 
     private static TimeFormat getTimeFormat(Node series) {
-        Map<String, String> concepts = new HashMap<>();
-        for (Node o : childNodes(series).filter(Predicates.or(IS_SERIES_KEY, IS_ATTRIBUTES))) {
-            for (Concept concept : lookupConcepts(o)) {
-                concepts.put(concept.getKey(), concept.getValue());
-            }
-        }
+        Map<String, String> concepts = asStream(series.getChildNodes())
+                .filter(o -> "SeriesKey".equals(o.getLocalName()) || "Attributes".equals(o.getLocalName()))
+                .flatMap(GenericDocFactory::lookupConcepts)
+                .collect(Collectors.toMap(Concept::getKey, Concept::getValue));
 
         String value;
 
@@ -142,41 +173,30 @@ public class GenericDocFactory extends AbstractDocumentFactory {
     }
 
     private static Optional<Node> lookupDataSetNode(Document doc) {
-        return childNodes(doc.getDocumentElement()).firstMatch(IS_DATA_SET);
+        return asStream(doc.getDocumentElement().getChildNodes())
+                .filter(o -> "DataSet".equals(o.getLocalName()))
+                .findFirst();
     }
 
-    private static Iterable<Node> lookupObservations(Node seriesNode) {
-        return childNodes(seriesNode).filter(IS_OBS);
+    private static Stream<Node> lookupObservations(Node seriesNode) {
+        return asStream(seriesNode.getChildNodes())
+                .filter(o -> "Obs".equals(o.getLocalName()));
     }
 
-    private static FluentIterable<Concept> lookupConcepts(Node node) {
-        return childNodes(node).filter(IS_VALUE).transform(TO_CONCEPT);
+    private static Stream<Concept> lookupConcepts(Node node) {
+        return asStream(node.getChildNodes())
+                .filter(o -> "Value".equals(o.getLocalName()))
+                .map(GenericDocFactory::toConcept);
+    }
+
+    private static Concept toConcept(Node node) {
+        NamedNodeMap attr = node.getAttributes();
+        return new Concept(attr.getNamedItem(CONCEPT_ATTRIBUTE).getNodeValue(), attr.getNamedItem(VALUE_ATTRIBUTE).getNodeValue());
     }
 
     //<editor-fold defaultstate="collapsed" desc="Resources">
     private static final String CONCEPT_ATTRIBUTE = "concept";
     private static final String VALUE_ATTRIBUTE = "value";
-
-    private static final Predicate<Node> IS_DATA_SET = localNameEqualTo("DataSet");
-    private static final Predicate<Node> IS_KEY_FAMILY_REF = localNameEqualTo("KeyFamilyRef");
-    private static final Predicate<Node> IS_GROUP = localNameEqualTo("Group");
-    private static final Predicate<Node> IS_SERIES = localNameEqualTo("Series");
-    private static final Predicate<Node> IS_GROUP_KEY = localNameEqualTo("GroupKey");
-    private static final Predicate<Node> IS_SERIES_KEY = localNameEqualTo("SeriesKey");
-    private static final Predicate<Node> IS_VALUE = localNameEqualTo("Value");
-    private static final Predicate<Node> IS_OBS = localNameEqualTo("Obs");
-    private static final Predicate<Node> IS_TIME = localNameEqualTo("Time");
-    private static final Predicate<Node> IS_OBS_VALUE = localNameEqualTo("ObsValue");
-    private static final Predicate<Node> IS_ATTRIBUTES = localNameEqualTo("Attributes");
-    private static final Predicate<Concept> ALL_CONCEPTS = Predicates.alwaysTrue();
-
-    private static final Function<Node, Concept> TO_CONCEPT = new Function<Node, Concept>() {
-        @Override
-        public Concept apply(Node input) {
-            NamedNodeMap attr = input.getAttributes();
-            return new Concept(attr.getNamedItem(CONCEPT_ATTRIBUTE).getNodeValue(), attr.getNamedItem(VALUE_ATTRIBUTE).getNodeValue());
-        }
-    };
 
     private static final DataFormat DEFAULT_DATA_FORMAT = new DataFormat(Locale.ROOT, null, null);
     //</editor-fold>

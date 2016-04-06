@@ -16,7 +16,6 @@
  */
 package ec.tss.sa;
 
-import com.google.common.collect.Iterables;
 import ec.satoolkit.GenericSaProcessingFactory;
 import ec.satoolkit.ISaSpecification;
 import ec.tss.Ts;
@@ -332,7 +331,7 @@ public class SaItem {
             if (quality_ != ProcQuality.Accepted) {
                 quality_ = ProcDiagnostic.summary(qsummary_);
             }
-            warnings_ = Iterables.toArray(qsummary_.warnings(), String.class);
+            warnings_ = qsummary_.warnings().stream().toArray(String[]::new);
             rslts_.put(DIAGNOSTICS_INTERNAL, new ProxyResults(qsummary_, null), DIAGNOSTICS);
         } else {
             status_ = Status.Invalid;

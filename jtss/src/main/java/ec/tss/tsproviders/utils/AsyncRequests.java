@@ -17,12 +17,12 @@
 
 package ec.tss.tsproviders.utils;
 
-import com.google.common.collect.Lists;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
 import ec.tss.TsInformationType;
 import ec.tss.TsMoniker;
 import java.util.Deque;
+import java.util.LinkedList;
 
 /**
  *
@@ -30,8 +30,8 @@ import java.util.Deque;
  */
 public class AsyncRequests {
 
-    private final Deque<TsInformation> m_srequests = Lists.newLinkedList();
-    private final Deque<TsCollectionInformation> m_crequests = Lists.newLinkedList();
+    private final Deque<TsInformation> m_srequests = new LinkedList<>();
+    private final Deque<TsCollectionInformation> m_crequests = new LinkedList<>();
 
     public void clear() {
         synchronized (m_crequests) {

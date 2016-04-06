@@ -13,17 +13,14 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.db;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.Iterables;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
 
 /**
@@ -66,37 +63,26 @@ public final class DbSeries {
     }
 
     @Nonnull
-    public static DbSeries findById(@Nonnull Iterable<DbSeries> iterable, @Nonnull DbSetId id) {
-        return Iterables.find(iterable, Predicates.compose(Predicates.equalTo(id), DbSeries.TO_ID));
+    public static DbSeries findById(@Nonnull Iterable<DbSeries> iterable, @Nonnull DbSetId id) throws NoSuchElementException {
+        return StreamSupport.stream(iterable.spliterator(), false)
+                .filter(o -> (o != null) ? id.equals(o.getId()) : false)
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
     }
 
     @Nonnull
     public static List<DbSeries> filterByAncestor(@Nonnull Iterable<DbSeries> iterable, @Nonnull DbSetId ancestor) {
-        return FluentIterable.from(iterable).filter(Predicates.compose(isDescendant(ancestor), DbSeries.TO_ID)).toList();
+        return StreamSupport.stream(iterable.spliterator(), false)
+                .filter(o -> (o != null) ? isDescendant(ancestor, o.getId()) : false)
+                .collect(Collectors.toList());
     }
-    //
-    private static final Function<DbSeries, DbSetId> TO_ID = new Function<DbSeries, DbSetId>() {
-        @Override
-        public DbSetId apply(DbSeries input) {
-            return input != null ? input.getId() : null;
-        }
-    };
 
-    @Nonnull
-    private static Predicate<DbSetId> isDescendant(@Nonnull final DbSetId ancestor) {
-        return new Predicate<DbSetId>() {
-            @Override
-            public boolean apply(DbSetId input) {
-//                if (input.getLevel() <= ancestor.getLevel() || !Arrays.equals(input.dimColumns, input.dimColumns)) {
-//                    return false;
-//                }
-                for (int i = ancestor.getLevel() - 1; i >= 0; i--) {
-                    if (!input.getValue(i).equals(ancestor.getValue(i))) {
-                        return false;
-                    }
-                }
-                return true;
+    private static boolean isDescendant(@Nonnull DbSetId ancestor, @Nonnull DbSetId o) {
+        for (int i = ancestor.getLevel() - 1; i >= 0; i--) {
+            if (!o.getValue(i).equals(ancestor.getValue(i))) {
+                return false;
             }
-        };
+        }
+        return true;
     }
 }

@@ -30,7 +30,7 @@ public abstract class AbstractConfigBuilder<THIS extends AbstractConfigBuilder, 
     protected final Map<String, String> params;
 
     protected AbstractConfigBuilder() {
-        this(new HashMap<String, String>());
+        this(new HashMap<>());
     }
 
     protected AbstractConfigBuilder(Map<String, String> params) {

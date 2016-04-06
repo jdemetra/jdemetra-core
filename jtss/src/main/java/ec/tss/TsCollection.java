@@ -17,8 +17,6 @@
 package ec.tss;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import ec.tss.tsproviders.utils.MultiLineNameUtil;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -30,6 +28,7 @@ import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import java.util.*;
+import java.util.stream.StreamSupport;
 
 /**
  *
@@ -177,7 +176,7 @@ public final class TsCollection implements ITsIdentified, IDocumented,
      */
     public TsCollection clean(boolean empty) {
         synchronized (m_moniker) {
-            List<Ts> list = Lists.newArrayListWithCapacity(m_ts.size());
+            List<Ts> list = new ArrayList(m_ts.size());
             for (Ts s : m_ts) {
                 if (s.hasData() == TsStatus.Valid) {
                     list.add(s);
@@ -204,7 +203,7 @@ public final class TsCollection implements ITsIdentified, IDocumented,
      */
     public TsCollection clean(double cntVal, boolean empty) {
         synchronized (m_moniker) {
-            List<Ts> list = Lists.newArrayListWithCapacity(m_ts.size());
+            List<Ts> list = new ArrayList(m_ts.size());
             for (Ts s : m_ts) {
                 if (s.hasData() == TsStatus.Undefined) {
                     s.load(TsInformationType.Data);
@@ -267,13 +266,9 @@ public final class TsCollection implements ITsIdentified, IDocumented,
                 if (m_set == null) {
                     buildSet();
                 }
-                List<Ts> tmp = Lists.newArrayList();
-                for (Ts s : all) {
-                    if (m_set.contains(s.getMoniker())) {
-                        tmp.add(s);
-                    }
-                }
-                return Iterables.toArray(tmp, Ts.class);
+                return StreamSupport.stream(all.spliterator(), false)
+                        .filter(o -> m_set.contains(o.getMoniker()))
+                        .toArray(Ts[]::new);
             }
         }
     }
@@ -284,7 +279,7 @@ public final class TsCollection implements ITsIdentified, IDocumented,
      */
     public Ts[] toArray() {
         synchronized (m_moniker) {
-            return Iterables.toArray(m_ts, Ts.class);
+            return m_ts.toArray(new Ts[m_ts.size()]);
         }
     }
 
@@ -714,7 +709,7 @@ public final class TsCollection implements ITsIdentified, IDocumented,
                 // load the series...
                 m_ts.clear();
                 if (!info.items.isEmpty()) {
-                    updated = Lists.newArrayListWithCapacity(info.items.size());
+                    updated = new ArrayList(info.items.size());
                     for (TsInformation sinfo : info.items) {
                         Ts s = TsFactory.instance.getTs(sinfo.moniker);
                         if (s != null) {

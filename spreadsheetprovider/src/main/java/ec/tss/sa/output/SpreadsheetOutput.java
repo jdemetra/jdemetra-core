@@ -16,7 +16,6 @@
  */
 package ec.tss.sa.output;
 
-import com.google.common.collect.Iterables;
 import ec.satoolkit.ISaSpecification;
 import ec.tss.sa.documents.SaDocument;
 import ec.tss.tsproviders.utils.MultiLineNameUtil;
@@ -157,7 +156,7 @@ public class SpreadsheetOutput implements IOutput<SaDocument<ISaSpecification>> 
                         }
                     }
                     //ADD SHEET
-                    XSSFHelper.addSheet(workbook, "Series", Iterables.toArray(headers0, String.class), Iterables.toArray(headers1, String.class), oneSheetTable, config_.isVerticalOrientation());
+                    XSSFHelper.addSheet(workbook, "Series", headers0.stream().toArray(String[]::new), headers1.stream().toArray(String[]::new), oneSheetTable, config_.isVerticalOrientation());
                     break;
                 }
             }

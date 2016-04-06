@@ -322,17 +322,21 @@ public class ModelEstimation implements IProcResults {
         public Parameter retrieve(ModelEstimation source) {
             SarimaModel arima = source.getArima();
             int pos = -1;
-            if (name_.equals(ARIMA_PHI)) {
-                pos = arima.getPhiPosition(lag_);
-            }
-            else if (name_.equals(ARIMA_BPHI)) {
-                pos = arima.getBPhiPosition(lag_);
-            }
-            else if (name_.equals(ARIMA_TH)) {
-                pos = arima.getThetaPosition(lag_);
-            }
-            else if (name_.equals(ARIMA_BTH)) {
-                pos = arima.getBThetaPosition(lag_);
+            switch (name_) {
+                case ARIMA_PHI:
+                    pos = arima.getPhiPosition(lag_);
+                    break;
+                case ARIMA_BPHI:
+                    pos = arima.getBPhiPosition(lag_);
+                    break;
+                case ARIMA_TH:
+                    pos = arima.getThetaPosition(lag_);
+                    break;
+                case ARIMA_BTH:
+                    pos = arima.getBThetaPosition(lag_);
+                    break;
+                default:
+                    break;
             }
             if (pos < 0) {
                 return null;

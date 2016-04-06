@@ -18,7 +18,6 @@
 
 package ec.tss.sa;
 
-import com.google.common.collect.Iterables;
 import ec.satoolkit.GenericSaResults;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
@@ -61,7 +60,7 @@ public class RegArimaReport implements ISaReport {
     }
 
     public SarimaSpecification[] getModels() {
-        SarimaSpecification[] m = Iterables.toArray(arima_.keySet(), SarimaSpecification.class);
+        SarimaSpecification[] m = arima_.keySet().stream().toArray(SarimaSpecification[]::new);
         //Arrays.sort(m, null);
         return m;
     }

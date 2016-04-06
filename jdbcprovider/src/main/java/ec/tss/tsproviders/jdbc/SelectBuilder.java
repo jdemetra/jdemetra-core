@@ -16,16 +16,14 @@
  */
 package ec.tss.tsproviders.jdbc;
 
-import com.google.common.base.Function;
-import com.google.common.base.Functions;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
 import ec.tstoolkit.design.IBuilder;
 import ec.util.jdbc.SqlIdentifierQuoter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 
 /**
@@ -38,7 +36,7 @@ class SelectBuilder implements IBuilder<String> {
     public static SelectBuilder from(@Nonnull String table) {
         return new SelectBuilder(table);
     }
-    //
+
     private static final Joiner COMMA_JOINER = Joiner.on(',');
     private final String table;
     private final List<String> select;
@@ -95,20 +93,22 @@ class SelectBuilder implements IBuilder<String> {
 
     @Override
     public String build() {
-        Function<String, String> toQuotedIdentifier = getIdentifierQuotingFunc();
+        Function<String, String> toQuotedIdentifier = identifierQuoter != null
+                ? (o -> identifierQuoter.quote(o, false))
+                : (o -> o);
         StringBuilder result = new StringBuilder();
         // SELECT
         result.append("SELECT ");
         if (distinct) {
             result.append("DISTINCT ");
         }
-        COMMA_JOINER.appendTo(result, Iterables.transform(select, toQuotedIdentifier));
+        COMMA_JOINER.appendTo(result, select.stream().map(toQuotedIdentifier).iterator());
         // FROM
         result.append(" FROM ").append(toQuotedIdentifier.apply(table));
         // WHERE
         if (!filter.isEmpty()) {
             result.append(" WHERE ");
-            Iterator<String> iter = Iterables.transform(filter, toQuotedIdentifier).iterator();
+            Iterator<String> iter = filter.stream().map(toQuotedIdentifier).iterator();
             result.append(iter.next()).append("=?");
             while (iter.hasNext()) {
                 result.append(" AND ").append(iter.next()).append("=?");
@@ -117,26 +117,8 @@ class SelectBuilder implements IBuilder<String> {
         // ORDER BY
         if (!order.isEmpty()) {
             result.append(" ORDER BY ");
-            COMMA_JOINER.appendTo(result, Iterables.transform(order, toQuotedIdentifier));
+            COMMA_JOINER.appendTo(result, order.stream().map(toQuotedIdentifier).iterator());
         }
         return result.toString();
-    }
-
-    private Function<String, String> getIdentifierQuotingFunc() {
-        return identifierQuoter != null ? new IdentifierQuotingFunc(identifierQuoter) : Functions.<String>identity();
-    }
-
-    private static final class IdentifierQuotingFunc implements Function<String, String> {
-
-        private final SqlIdentifierQuoter identifierQuoter;
-
-        public IdentifierQuotingFunc(@Nonnull SqlIdentifierQuoter identifierQuoter) {
-            this.identifierQuoter = identifierQuoter;
-        }
-
-        @Override
-        public String apply(String identifier) {
-            return identifierQuoter.quote(identifier, false);
-        }
     }
 }
