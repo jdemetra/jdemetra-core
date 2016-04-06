@@ -17,6 +17,8 @@
 package ec.tstoolkit.maths.linearfilters;
 
 import ec.tstoolkit.data.DataBlock;
+import ec.tstoolkit.data.IDataBlock;
+import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.design.Development;
 
 /**
@@ -28,7 +30,10 @@ public interface ILinearProcess {
     /**
      * 
      * @param in
+     * @param out
      * @return
      */
-    double[] transform(DataBlock in);
+    boolean transform(IReadDataBlock in, IDataBlock out);
+    
+    int getOutputLength(int inputLength);
 }

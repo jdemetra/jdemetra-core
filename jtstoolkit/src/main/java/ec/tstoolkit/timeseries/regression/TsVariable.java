@@ -84,7 +84,7 @@ public class TsVariable extends AbstractSingleTsVariable implements
         }
 
         data.range(jstart, jend).copy(
-                new DataBlock(tsdata_.getValues().internalStorage(), istart,
+                new DataBlock(tsdata_.internalStorage(), istart,
                 iend, 1));
     }
 
@@ -125,7 +125,7 @@ public class TsVariable extends AbstractSingleTsVariable implements
             return false;
         }
         int start = idom.getStart().minus(tsdata_.getStart());
-        return !new DataBlock(tsdata_.getValues().internalStorage(), start,
+        return !new DataBlock(tsdata_.internalStorage(), start,
                 start + idom.getLength(), 1).isZero();
     }
 

@@ -64,11 +64,11 @@ public class GenericSaProcessingFactory {
         if (nz < Math.max(8, 3 * ifreq)) {
             throw new SaException("Not enough data");
         }
-        int nrepeat = y.getValues().getRepeatCount();
+        int nrepeat = y.getRepeatCount();
         if (nrepeat > MAX_REPEAT_COUNT * nz / 100) {
             throw new SaException("Too many identical values");
         }
-        int nm = y.getValues().getMissingValuesCount();
+        int nm = y.getMissingValuesCount();
         if (nm > MAX_MISSING_COUNT * nz / 100) {
             throw new SaException("Too many missing values");
         }

@@ -161,7 +161,7 @@ public interface IReadDataBlock {
             if (Double.isFinite(cur)) {
                 s += cur;
             } else {
-                m--;
+                m++;
             }
         }
         return s / (n - m);
@@ -198,6 +198,10 @@ public interface IReadDataBlock {
             }
         }
         return scale * Math.sqrt(ssq);
+    }
+    
+    default boolean isMissing(int idx){
+        return ! Double.isFinite(get(idx));
     }
 
     public static double round(double r, final int ndec) {

@@ -121,11 +121,11 @@ public class OverSeasTest2 {
         double SNPVal = 0.0;
         TsData diffS = serie.delta(1);
         if (type == SerType.Xlin) {
-            DescriptiveStatistics bs = new DescriptiveStatistics(diffS.getValues());
+            DescriptiveStatistics bs = new DescriptiveStatistics(diffS);
             TsData targetS = diffS.minus(bs.getAverage());
             SNPVal = OverSeasTest.Kendalls(targetS);
         } else {
-            DescriptiveStatistics bs = new DescriptiveStatistics(serie.getValues());
+            DescriptiveStatistics bs = new DescriptiveStatistics(serie);
             TsData targetS = serie.minus(bs.getAverage());
             SNPVal = OverSeasTest.Kendalls(targetS);
         }
@@ -138,7 +138,7 @@ public class OverSeasTest2 {
         for (int i = 0; i < nLag; i++) {
             diffS = diffS.delta(1);
         }
-        DescriptiveStatistics bs = new DescriptiveStatistics(diffS.getValues());
+        DescriptiveStatistics bs = new DescriptiveStatistics(diffS);
         TsData targetS = diffS.minus(bs.getAverage());
         double QS = OverSeasTest.CalcQs(targetS);
         if (QS > 9.21) {

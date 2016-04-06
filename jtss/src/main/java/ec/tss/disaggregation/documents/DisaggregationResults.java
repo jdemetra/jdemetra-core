@@ -154,7 +154,7 @@ public class DisaggregationResults implements IProcResults {
             public TsData retrieve(DisaggregationResults source) {
                 TsData s = source.result.getSmoothedSeries();
                 TsData e = source.result.getSmoothedSeriesVariance().sqrt();
-                e.getValues().mul(-2);
+                e.apply(x->-2*x);
                 return TsData.add(s, e);
             }
         });
@@ -164,7 +164,7 @@ public class DisaggregationResults implements IProcResults {
             public TsData retrieve(DisaggregationResults source) {
                 TsData s = source.result.getSmoothedSeries();
                 TsData e = source.result.getSmoothedSeriesVariance().sqrt();
-                e.getValues().mul(2);
+                e.apply(x->2*x);
                 return TsData.add(s, e);
             }
         });

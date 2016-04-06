@@ -74,13 +74,14 @@ public class XmlTsData implements IXmlConverter<TsData> {
 	    firstPeriod = start.getPosition() + 1;
 	else
 	    firstPeriod = null;
-	data = t.getValues().internalStorage();
+	data = t.internalStorage();
     }
 
     /**
      * 
      * @return
      */
+    @Override
     public TsData create()
     {
 	int firstperiod = firstPeriod != null ? firstPeriod - 1 : 0;

@@ -240,7 +240,7 @@ public class HodrickPrescottProcessingFactory implements IProcessingFactory<Hodr
                         lambda = defaultLambda(spec.getCycleLength(), s.getFrequency().intValue());
                     }
                     hp.setLambda(lambda);
-                    if (!hp.process(input.getValues().internalStorage())) {
+                    if (!hp.process(input.internalStorage())) {
                         return IProcessing.Status.Invalid;
                     } else {
                         TsData t = new TsData(s.getStart(), hp.getSignal(), false);
@@ -277,7 +277,7 @@ public class HodrickPrescottProcessingFactory implements IProcessingFactory<Hodr
         if (nz < Math.max(8, 3 * ifreq)) {
             throw new BaseException("Not enough data");
         }
-        int nrepeat = y.getValues().getRepeatCount();
+        int nrepeat = y.getRepeatCount();
         if (nrepeat > MAX_REPEAT_COUNT * nz / 100) {
             throw new BaseException("Too many identical values");
         }

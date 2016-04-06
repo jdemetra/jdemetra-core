@@ -147,7 +147,7 @@ public class RegArimaReport implements ISaReport {
                     LjungBoxTest lb = new LjungBoxTest();
                     lb.setHyperParametersCount(np);
                     lb.setK(TramoProcessor.calcLBLength(freq_));
-                    lb.test(residuals.getValues());
+                    lb.test(residuals);
                     if (lb.isValid()){
                             this.lb_.add(lb.getValue());
                     }

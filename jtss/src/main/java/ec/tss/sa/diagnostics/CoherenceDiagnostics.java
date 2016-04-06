@@ -156,7 +156,7 @@ public final class CoherenceDiagnostics implements IDiagnostics {
                 maxDA_ = dcur;
             }
         }
-        DescriptiveStatistics stats = new DescriptiveStatistics(y.getValues());
+        DescriptiveStatistics stats = new DescriptiveStatistics(y);
         double q = stats.getRmse();
         maxDA_ /= y.getFrequency().intValue() * q;
     }
@@ -280,7 +280,7 @@ public final class CoherenceDiagnostics implements IDiagnostics {
         if (d == null) {
             return;
         }
-        DescriptiveStatistics stats = new DescriptiveStatistics(d.getValues());
+        DescriptiveStatistics stats = new DescriptiveStatistics(d);
         double dmax = Math.max(Math.abs(stats.getMax()), Math.abs(stats.getMin()));
         if (Double.isNaN(maxDDef_) || dmax > maxDDef_) {
             maxDDef_ = dmax;

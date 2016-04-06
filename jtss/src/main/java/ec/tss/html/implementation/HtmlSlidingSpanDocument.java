@@ -62,10 +62,10 @@ public class HtmlSlidingSpanDocument extends AbstractHtmlElement implements IHtm
     @Override
     public void write(HtmlStream stream) throws IOException {
         TsData s = slidingspans_.Statistics(name_, info_);
-        if (s == null || s.getValues().getMissingValuesCount() == s.getValues().getLength())
+        if (s == null || s.getMissingValuesCount() == s.getLength())
             return;
 
-        DescriptiveStatistics stats = new DescriptiveStatistics(new DataBlock(s.getValues().internalStorage()));
+        DescriptiveStatistics stats = new DescriptiveStatistics(new DataBlock(s.internalStorage()));
         if (stats.getMax() == stats.getMin() || stats.getMax() == 0)
             return;
 

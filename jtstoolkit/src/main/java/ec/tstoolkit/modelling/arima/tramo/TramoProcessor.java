@@ -1015,7 +1015,7 @@ public class TramoProcessor extends AbstractTramoModule implements IPreprocessor
         LjungBoxTest lb = new LjungBoxTest();
         lb.setLag(ifreq);
         lb.setK(k);
-        lb.test(delta.getValues());
+        lb.test(delta);
         lb.setSignificanceThreshold(.1);
         return !lb.isValid() || lb.isSignificant();
     }

@@ -16,9 +16,11 @@
  */
 package ec.tstoolkit.timeseries.simplets;
 
+import ec.tstoolkit.arima.ArimaModelBuilder;
 import ec.tstoolkit.data.DescriptiveStatistics;
 import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.data.ReadDataBlock;
+import ec.tstoolkit.data.Values;
 import java.util.Arrays;
 import java.util.Iterator;
 import ec.tstoolkit.design.NewObject;
@@ -29,6 +31,8 @@ import ec.tstoolkit.timeseries.TsPeriodSelector;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.random.IRandomNumberGenerator;
 import ec.tstoolkit.random.JdkRNG;
+import ec.tstoolkit.sarima.SarimaModel;
+import ec.tstoolkit.sarima.SarimaModelBuilder;
 import java.util.Random;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoublePredicate;
@@ -289,6 +293,13 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         return ts;
     }
 
+    public void randomAirline() {
+        SarimaModelBuilder sb = new SarimaModelBuilder();
+        SarimaModel airline = sb.createAirlineModel(this.getFrequency().intValue(), -.6, -.8);
+        airline = sb.randomize(airline, .2);
+        vals = new ArimaModelBuilder().generate(airline, vals.length);
+    }
+
     /**
      * Computes the average difference between to time series. It is defined as
      * the root mean square of their differences.
@@ -315,6 +326,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     public TsData(final TsDomain dom) {
         start = dom.getStart();
         vals = new double[dom.getLength()];
+        Arrays.fill(vals, Double.NaN);
     }
 
     public TsData(final TsDomain dom, double val) {
@@ -676,7 +688,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * nlast Number of peri ods to drop at th e d1 of the series. If nlast < 0,
      * -nlast periods are added (with Missing values). @return The returned time
      * series may be empty, but the returne d value is never null. @see
-     * #extend(int, int)
+     * #extend(int, int) @param nlast @return
      */
     public TsData drop(final int nfirst, final int nlast) {
         TsPeriod s = getStart();
@@ -689,11 +701,23 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         if (n == 0) {
             return nts;
         }
-        nts.set(() -> Double.NaN);
-        if (nfirst >= 0) {
-            System.arraycopy(vals, nfirst, nts.vals, 0, n);
+        int nc = n;
+        int s0, t0;
+        if (nfirst < 0) {
+            nc += nfirst;
+            t0 = -nfirst;
+            s0 = 0;
+            Arrays.fill(nts.vals, 0, -nfirst, Double.NaN);
         } else {
-            System.arraycopy(vals, 0, nts.vals, nfirst, n);
+            s0 = nfirst;
+            t0 = 0;
+        }
+        if (nlast < 0) {
+            nc += nlast;
+            Arrays.fill(nts.vals, nts.vals.length + nlast, nts.vals.length, Double.NaN);
+        }
+        if (nc > 0) {
+            System.arraycopy(vals, s0, nts.vals, t0, nc);
         }
         return nts;
     }
@@ -813,6 +837,10 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         return new TsDomain(start, vals.length);
     }
 
+    @Deprecated
+    public Values getValues(){
+        return new Values(vals, false);
+    }
     /**
      * Gets the first period after the d1 of the series. That period doesn't
      * belong to the time domain.
@@ -869,9 +897,9 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     public int getMissingValuesCount() {
         return count(x -> !Double.isFinite(x));
     }
-    
-    public boolean hasMissingValues(){
-        return !check(x->Double.isFinite(x));
+
+    public boolean hasMissingValues() {
+        return !check(x -> Double.isFinite(x));
     }
 
     /**

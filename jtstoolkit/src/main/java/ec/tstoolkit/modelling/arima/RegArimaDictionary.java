@@ -176,7 +176,7 @@ public class RegArimaDictionary {
 
         Residuals res = new Residuals();
         res.setDomain(fullResiduals.getDomain());
-        res.setValues(fullResiduals.getValues().internalStorage());
+        res.setValues(fullResiduals.internalStorage());
         res.setType(Residuals.Type.FullResiduals);
         if (!res.calc(nhp, nx)) {
             return;

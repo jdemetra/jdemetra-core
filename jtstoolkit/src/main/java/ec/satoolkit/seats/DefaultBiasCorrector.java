@@ -169,7 +169,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         int freq = y.getFrequency().intValue();
         int ny = n - n % freq;
 
-        double ibias = 1, sbias = 1;
+        double ibias, sbias;
         TsData s = model.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
         if (s != null) {
             s = s.exp();
@@ -180,7 +180,8 @@ public class DefaultBiasCorrector implements IBiasCorrector {
             if (se != null) {
                 decomp.add(correctStdevForLog(se, s), ComponentType.Seasonal, ComponentInformation.Stdev);
             }
-        }
+        }else
+            sbias=1;
         TsData i = model.getSeries(ComponentType.Irregular, ComponentInformation.Value);
         if (i != null) {
             i = i.exp();
@@ -190,7 +191,8 @@ public class DefaultBiasCorrector implements IBiasCorrector {
             if (ie != null) {
                 decomp.add(correctStdevForLog(ie, i), ComponentType.Irregular, ComponentInformation.Stdev);
             }
-        }
+        }else
+            ibias=1;
         // correct T = Y /S * I) (-> *sbias*ibias)
         TsData t = model.getSeries(ComponentType.Trend, ComponentInformation.Value);
         if (t != null) {

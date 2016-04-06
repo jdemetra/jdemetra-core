@@ -38,7 +38,7 @@ public class Spect {
         double prob2 = 0.95;
         if (serie.getLength() >= 80 || (serie.getFrequency() != TsFrequency.Monthly && serie.getLength() >= 60)) {
             Peaks pkar = new Peaks(serie, 120, false);
-            DescriptiveStatistics bs = new DescriptiveStatistics(serie.getValues());
+            DescriptiveStatistics bs = new DescriptiveStatistics(serie);
             TsData targetS = serie.minus(bs.getAverage());
             TPeaks pkt = new TPeaks(targetS);
             if (pkar.getTDPeaks()[0] >= prob1) {

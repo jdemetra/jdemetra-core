@@ -50,7 +50,7 @@ class wsTsData {
 	frequency = start.getFrequency().intValue();
 	firstyear = start.getYear();
 	firstperiod = start.getPosition() + 1;
-	data = t.getValues().internalStorage();
+	data = t.internalStorage();
     }
 
     TsData create() {

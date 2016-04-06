@@ -41,7 +41,7 @@ public class DefaultX11Utilities extends DefaultX11Algorithm implements IX11Util
      */
     @Override
     public boolean checkPositivity(TsData s) {
-        double[] stc = s.getValues().internalStorage();
+        double[] stc = s.internalStorage();
         int n = s.getLength();
         boolean changed = false;
         for (int i = 0; i < n; ++i) {
@@ -125,8 +125,8 @@ public class DefaultX11Utilities extends DefaultX11Algorithm implements IX11Util
      */
     @Override
     public TsData correctTrendBias(TsData t, TsData s, TsData i) {
-        double sig = new DataBlock(i.getValues().internalStorage()).ssq();
-        sig = Math.exp(sig / (2 * i.getLength()));
+        double issq = i.ssq();
+        double sig = Math.exp(issq / (2 * i.getLength()));
         int ifreq = t.getFrequency().intValue();
         int length = 2 * ifreq - 1;
         SymmetricFilter smoother = TrendCycleFilterFactory
@@ -136,7 +136,7 @@ public class DefaultX11Utilities extends DefaultX11Algorithm implements IX11Util
                 .makeFilters(smoother, 4.5)));
 
         TsData hs = filter.process(s, null);
-        hs.getValues().mul(sig);
+        hs.applyOnFinite(x->x*sig);
 
         return t.times(hs);
     }

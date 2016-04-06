@@ -99,14 +99,14 @@ public class Peaks {
     }
 
     static public void crosco(TsData x, TsData y, double[] Cxx) {
-        DescriptiveStatistics bs = new DescriptiveStatistics(x.getValues());
+        DescriptiveStatistics bs = new DescriptiveStatistics(x);
         double an = x.getLength() - bs.getMissingValuesCount();
         double bn = 1.0 / an;
         double ct0 = 0.0;
         for (int i = 0; i < Cxx.length; i++) {
             double t = ct0;
             for (int j = 0; j < y.getLength() - i; j++) {
-                if (!x.getValues().isMissing(i + j) && !y.getValues().isMissing(j)) {
+                if (!x.isMissing(i + j) && !y.isMissing(j)) {
                     t += x.get(i + j) * y.get(j);
                 }
             }
@@ -123,7 +123,7 @@ public class Peaks {
 
     private boolean satutco(TsData x, double[] Cxx, double R) {
         boolean good = true;
-        DescriptiveStatistics bs = new DescriptiveStatistics(x.getValues());
+        DescriptiveStatistics bs = new DescriptiveStatistics(x);
         x = x.minus(bs.getAverage());
         if (R > 0.0) {
             taper(x, R);
@@ -434,7 +434,7 @@ public class Peaks {
         if (delta) {
             diff = serie.delta(1);
         }
-        DescriptiveStatistics bs = new DescriptiveStatistics(diff.getValues());
+        DescriptiveStatistics bs = new DescriptiveStatistics(diff);
         double va = bs.getVar();
         computePeaks1(diff);
         for (int i = 0; i < Spect.length; i++) {

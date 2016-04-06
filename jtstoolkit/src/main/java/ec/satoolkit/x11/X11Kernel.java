@@ -359,9 +359,9 @@ public class X11Kernel implements ISeriesDecomposer {
 
         DecompositionMode curMode = toolkit.getContext().getMode();
         if (curMode == DecompositionMode.LogAdditive) {
-            d1.getValues().exp();
+            d1.applyOnFinite(x->Math.exp(x));
             // d9bis.getValues().exp(); ???
-            d10.getValues().exp();
+            d1.applyOnFinite(x->Math.exp(x));
             toolkit.getContext().setMode(DecompositionMode.Multiplicative);
         }
 
@@ -380,7 +380,7 @@ public class X11Kernel implements ISeriesDecomposer {
         // m_params.getData());
         if (toolkit.getContext().getMode() == DecompositionMode.LogAdditive) {
             TsData b1 = info.subSet(B).get(B1, TsData.class); // (m_params.isTradingDayRegression()
-            d12.getValues().exp();
+            d12.applyOnFinite(x->Math.exp(x));
             toolkit.getContext().setMode(DecompositionMode.Multiplicative);
             if (uscbLike) {
                 TsData c13 = info.subSet(C).get(C13, TsData.class);

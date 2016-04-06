@@ -107,8 +107,8 @@ public class UcarimaModelTest {
          TsData E1=new TsData(trend.getStart(), e1, false);
          TsData E2=new TsData(trend.getStart(), e2, false);
          TsData E3=new TsData(trend.getStart(), e3, false);
-         E1.getValues().mul(sr.getStandardError());
-         E2.getValues().mul(sr.getStandardError());
+         E1.apply(x->x*sr.getStandardError());
+         E2.apply(x->x*sr.getStandardError());
          
          assertTrue(C1.distance(C3) < 1e-3 && C1.distance(C2)<1e-3 && C2.distance(C3)<1e-3);
          assertTrue(E2.distance(E3)<1e-6);

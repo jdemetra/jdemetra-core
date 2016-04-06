@@ -521,8 +521,8 @@ public final class Mstatistics implements IProcResults {
         }
         int ifreq = O.getFrequency().intValue();
         TsData s = Snorm.delta(ifreq);
-        s.getValues().abs();
-        DescriptiveStatistics stats = new DescriptiveStatistics(s.getValues());
+        s.applyOnFinite(x->Math.abs(x));
+        DescriptiveStatistics stats = new DescriptiveStatistics(s);
         m[7] = 10 * stats.getSum() / s.getLength();
     }
 
@@ -545,10 +545,10 @@ public final class Mstatistics implements IProcResults {
     private void calcSNorm() {
         double stde = 0;
         if (mode != DecompositionMode.Additive) {
-            DescriptiveStatistics stat = new DescriptiveStatistics(Sc.minus(1).getValues());
+            DescriptiveStatistics stat = new DescriptiveStatistics(Sc.minus(1));
             stde = Math.sqrt(stat.getSumSquare() / stat.getObservationsCount());
         } else {
-            DescriptiveStatistics stat = new DescriptiveStatistics(Sc.getValues());
+            DescriptiveStatistics stat = new DescriptiveStatistics(Sc);
             stde = Math.sqrt(stat.getSumSquare() / stat.getObservationsCount());
         }
         Snorm = Sc.div(stde);
@@ -566,8 +566,8 @@ public final class Mstatistics implements IProcResults {
             Ols ols = new Ols();
             RegModel model = new RegModel();
             //
-            stC.getValues().log();
-            model.setY(new DataBlock(stC.getValues().internalStorage()));
+            stC.applyOnFinite(x->Math.log(x));
+            model.setY(new DataBlock(stC.internalStorage()));
             model.setMeanCorrection(true);
             model.addX(new DataBlock(line));
             if (!ols.process(model)) {
@@ -576,10 +576,10 @@ public final class Mstatistics implements IProcResults {
 
             double[] b = ols.getLikelihood().getB();
             TsData lt = new TsData(stC.getStart(), line, false).times(b[1]);
-            lt.getValues().add(b[0]);
+            lt.applyOnFinite(x->x+b[0]);
 
             stC = stC.minus(lt);
-            stO.getValues().log();
+            stO.applyOnFinite(x->Math.log(x));
             stO = stO.minus(lt);
 
         } else {
@@ -587,7 +587,7 @@ public final class Mstatistics implements IProcResults {
             RegModel model = new RegModel();
 
             //
-            model.setY(new DataBlock(stC.getValues().internalStorage()));
+            model.setY(new DataBlock(stC.internalStorage()));
             model.setMeanCorrection(true);
             model.addX(new DataBlock(line));
             if (!ols.process(model)) {
@@ -596,47 +596,47 @@ public final class Mstatistics implements IProcResults {
 
             double[] b = ols.getLikelihood().getB();
             TsData lt = new TsData(stC.getStart(), line, false).times(b[1]);
-            lt.getValues().add(b[0]);
+            lt.applyOnFinite(x->x+b[0]);
 
             stC = stC.minus(lt);
             stO = stO.minus(lt);
         }
 
         //
-        DescriptiveStatistics stats = new DescriptiveStatistics(stO.getValues());
+        DescriptiveStatistics stats = new DescriptiveStatistics(stO);
         double varO = stats.getVar();
 
-        stats = new DescriptiveStatistics(stC.getValues());
+        stats = new DescriptiveStatistics(stC);
         varC = stats.getVar();
 
         if (mode != DecompositionMode.Additive) {
-            stats = new DescriptiveStatistics(Sc.log().getValues());
+            stats = new DescriptiveStatistics(Sc.log());
         } else {
-            stats = new DescriptiveStatistics(Sc.getValues());
+            stats = new DescriptiveStatistics(Sc);
         }
         varS = stats.getSumSquare() / stats.getObservationsCount();
 
         if (mode != DecompositionMode.Additive) {
-            stats = new DescriptiveStatistics(Imod.log().getValues());
+            stats = new DescriptiveStatistics(Imod.log());
         } else {
-            stats = new DescriptiveStatistics(Imod.getValues());
+            stats = new DescriptiveStatistics(Imod);
         }
         varI = stats.getSumSquare() / stats.getObservationsCount();
 
         if (P != null) {
             if (mode != DecompositionMode.Additive) {
-                stats = new DescriptiveStatistics(P.log().getValues());
+                stats = new DescriptiveStatistics(P.log());
             } else {
-                stats = new DescriptiveStatistics(P.getValues());
+                stats = new DescriptiveStatistics(P);
             }
 
             varP = stats.getVar();
         }
         if (TD != null) {
             if (mode != DecompositionMode.Additive) {
-                stats = new DescriptiveStatistics(TD.log().getValues());
+                stats = new DescriptiveStatistics(TD.log());
             } else {
-                stats = new DescriptiveStatistics(TD.getValues());
+                stats = new DescriptiveStatistics(TD);
             }
             varTD = stats.getSumSquare() / stats.getObservationsCount();
         }

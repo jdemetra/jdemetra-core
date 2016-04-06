@@ -97,7 +97,7 @@ public class XmlTs implements IXmlConverter<TsInformation> {
 	    freq = start.getFrequency().intValue();
 	    firstYear = start.getYear();
 	    firstPeriod = start.getPosition() + 1;
-	    data = tsdata.getValues().internalStorage();
+	    data = tsdata.internalStorage();
 	}
 	source = t.moniker.getSource();
 	identifier = t.moniker.getId();

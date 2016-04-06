@@ -95,10 +95,10 @@ public class SeatsDiagnostics implements IDiagnostics {
         TsData sa = decomposition.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value);
 
         double[][] data = new double[][]{
-            t == null ? null : t.getValues().internalStorage(),
-            s == null ? null : sa.getValues().internalStorage(),
-            s == null ? null : s.getValues().internalStorage(),
-            i == null ? null : i.getValues().internalStorage()
+            t == null ? null : t.internalStorage(),
+            s == null ? null : sa.internalStorage(),
+            s == null ? null : s.internalStorage(),
+            i == null ? null : i.internalStorage()
         };
 
         diags_ = WienerKolmogorovDiagnostics.make(ucm, err, data, cmps);
