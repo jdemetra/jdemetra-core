@@ -1,34 +1,45 @@
-
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  
     <modelVersion>4.0.0</modelVersion>
   
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
         <artifactId>demetra-parent</artifactId>
         <version>2.2.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
   
     <artifactId>demetra-jdbc</artifactId>
+
     <name>Demetra - JDBC</name>
     <description>A TS Provider that handles JDBC sources such as Oracle and MySql.</description>
 
+    <properties>
+        <hsqldb.version>2.3.3</hsqldb.version>
+    </properties>
+
     <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>demetra-tss</artifactId>
-        </dependency>
+        <!-- compile only -->
         <dependency>     
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
-        </dependency>        
+            <scope>provided</scope>
+        </dependency>
+        <!-- compile and runtime -->
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-tss</artifactId>
+        </dependency>
+        <!-- test only -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>     
             <groupId>org.hsqldb</groupId>     
             <artifactId>hsqldb</artifactId>     
-            <version>2.3.3</version> 
+            <version>${hsqldb.version}</version> 
             <scope>test</scope>
         </dependency> 
     </dependencies>
-  
 </project>

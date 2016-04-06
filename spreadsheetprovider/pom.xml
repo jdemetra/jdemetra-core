@@ -1,23 +1,22 @@
-
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  
     <modelVersion>4.0.0</modelVersion>
   
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
         <artifactId>demetra-parent</artifactId>
         <version>2.2.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
   
     <artifactId>demetra-spreadsheet</artifactId>
+    
     <name>Demetra - Spreadsheet</name>
     <description>A TS Provider that handles Excel and OpenDocument spreadsheets.</description>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>spreadsheet-parent</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>
@@ -27,42 +26,51 @@
     </dependencyManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>spreadsheet-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>spreadsheet-html</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>spreadsheet-od</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>spreadsheet-poi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>spreadsheet-xmlss</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>demetra-tss</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>demetra-utils</artifactId>
-        </dependency>
+        <!-- compile only -->
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
-        </dependency>        
+            <scope>provided</scope>
+        </dependency>
+        <!-- compile and runtime -->
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>spreadsheet-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>spreadsheet-html</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>spreadsheet-od</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>spreadsheet-poi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>spreadsheet-xmlss</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-tss</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-utils</artifactId>
+        </dependency>
+        <!-- test only -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
         </dependency>
-    </dependencies>
-  
+    </dependencies>  
 </project>
