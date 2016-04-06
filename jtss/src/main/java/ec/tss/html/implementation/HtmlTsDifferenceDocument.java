@@ -46,7 +46,7 @@ public class HtmlTsDifferenceDocument extends AbstractHtmlElement implements IHt
 
     @Override
     public void write(HtmlStream stream) throws IOException {
-        DescriptiveStatistics stats = new DescriptiveStatistics(diff_.getValues());
+        DescriptiveStatistics stats = new DescriptiveStatistics(diff_);
         stream.write(mul_ ? "Relative differences" : "Differences", HtmlStyle.Bold, HtmlStyle.Underline).newLines(2);
         stream.write("Max :").write(stats.getMax()).newLines(1);
         stream.write("Min :").write(stats.getMin()).newLines(1);

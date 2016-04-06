@@ -53,7 +53,7 @@ public class UnitSeriesScaling implements ISeriesScaling{
             return false;
          double[] data=context.description.getY();
        int i = 0;
-         while (i < data.length && !DescriptiveStatistics.isFinite(data[i])) {
+         while (i < data.length && !Double.isFinite(data[i])) {
             ++i;
         }
         if (i == data.length) {
@@ -61,7 +61,7 @@ public class UnitSeriesScaling implements ISeriesScaling{
         }
         double ymax = data[i++], ymin = ymax;
         for (; i < data.length; ++i) {
-            if (DescriptiveStatistics.isFinite(data[i])) {
+            if (Double.isFinite(data[i])) {
                 double ycur = Math.abs(data[i]);
                 if (ycur < ymin) {
                     ymin = ycur;

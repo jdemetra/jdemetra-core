@@ -125,13 +125,13 @@ public class JdbcAccessorTest {
         List<DbSeries> data = A2.getAllSeriesWithData();
         assertEquals(4, data.size());
         assertEquals(A2.getRoot().child("Industry", "Belgium"), data.get(0).getId());
-        assertArrayEquals(D2[0], data.get(0).getData().get().getValues().internalStorage(), 0);
+        assertArrayEquals(D2[0], data.get(0).getData().get().internalStorage(), 0);
         assertEquals(A2.getRoot().child("Industry", "Europe"), data.get(1).getId());
-        assertArrayEquals(D2[1], data.get(1).getData().get().getValues().internalStorage(), 0);
+        assertArrayEquals(D2[1], data.get(1).getData().get().internalStorage(), 0);
         assertEquals(A2.getRoot().child("Other", "Belgium"), data.get(2).getId());
-        assertArrayEquals(D2[2], data.get(2).getData().get().getValues().internalStorage(), 0);
+        assertArrayEquals(D2[2], data.get(2).getData().get().internalStorage(), 0);
         assertEquals(A2.getRoot().child("Other", "Europe"), data.get(3).getId());
-        assertArrayEquals(D2[3], data.get(3).getData().get().getValues().internalStorage(), 0);
+        assertArrayEquals(D2[3], data.get(3).getData().get().internalStorage(), 0);
     }
 
     @Test
@@ -139,9 +139,9 @@ public class JdbcAccessorTest {
         List<DbSeries> data = A2.getAllSeriesWithData("Industry");
         assertEquals(2, data.size());
         assertEquals(A2.getRoot().child("Industry", "Belgium"), data.get(0).getId());
-        assertArrayEquals(D2[0], data.get(0).getData().get().getValues().internalStorage(), 0);
+        assertArrayEquals(D2[0], data.get(0).getData().get().internalStorage(), 0);
         assertEquals(A2.getRoot().child("Industry", "Europe"), data.get(1).getId());
-        assertArrayEquals(D2[1], data.get(1).getData().get().getValues().internalStorage(), 0);
+        assertArrayEquals(D2[1], data.get(1).getData().get().internalStorage(), 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -153,7 +153,7 @@ public class JdbcAccessorTest {
     public void testSeriesWithData_Val0Dim0() throws Exception {
         DbSeries data = A0.getSeriesWithData();
         assertEquals(A0.getRoot(), data.getId());
-        assertArrayEquals(D0[0], data.getData().get().getValues().internalStorage(), 0);
+        assertArrayEquals(D0[0], data.getData().get().internalStorage(), 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -170,7 +170,7 @@ public class JdbcAccessorTest {
     public void testSeriesWithData_Val2Dim2() throws Exception {
         DbSeries data = A2.getSeriesWithData("Industry", "Belgium");
         assertEquals(A2.getRoot().child("Industry", "Belgium"), data.getId());
-        assertArrayEquals(D2[0], data.getData().get().getValues().internalStorage(), 0);
+        assertArrayEquals(D2[0], data.getData().get().internalStorage(), 0);
     }
 
     @Test

@@ -72,7 +72,7 @@ public class StmResults implements ISaResults {
         BasicStructuralModel model = monitor.getResult();
         Smoother smoother = new Smoother();
         smoother.setSsf(model);
-        ExtendedSsfData data = new ExtendedSsfData(new SsfData(y.getValues().internalStorage(), null));
+        ExtendedSsfData data = new ExtendedSsfData(new SsfData(y.internalStorage(), null));
         data.setForecastsCount(y.getFrequency().intValue());
         srslts_ = new SmoothingResults();
         smoother.process(data, srslts_);

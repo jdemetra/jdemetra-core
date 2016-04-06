@@ -71,7 +71,7 @@ public class DefaultPreprocessingFilter implements IPreprocessingFilter {
         }
 
         int mq = freq, nyr = (n / mq) * mq;
-        DataBlock data = new DataBlock(corr.getValues().internalStorage(), 0, nyr, 1);
+        DataBlock data = new DataBlock(corr.internalStorage(), 0, nyr, 1);
         double m = data.sum();
         m /= nyr;
         if (Math.abs(m) < EPS) {
@@ -113,7 +113,7 @@ public class DefaultPreprocessingFilter implements IPreprocessingFilter {
         int nf = forecastLength(model_.description.getFrequency());
         TsData f = model_.linearizedForecast(nf, true);
         if ((!transformed) && model_.isMultiplicative()) {
-            f.getValues().exp();
+            f.apply(x->Math.exp(x));
         }
         return f;
     }

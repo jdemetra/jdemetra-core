@@ -106,7 +106,7 @@ public class FTest {
         rspec.airline(false);
         SarimaModel arima = new SarimaModel(rspec);
         regmodel_ = new RegArimaModel<>(arima);
-        regmodel_.setY(new DataBlock(input.getValues().internalStorage()));
+        regmodel_.setY(new DataBlock(input.internalStorage()));
         regmodel_.setMeanCorrection(true);
     }
 

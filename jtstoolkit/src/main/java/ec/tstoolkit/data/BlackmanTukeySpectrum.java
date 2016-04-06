@@ -208,7 +208,7 @@ public class BlackmanTukeySpectrum {
         double m = ds.getAverage();
         if (m != 0) {
             for (int i = 0; i < data_.length; ++i) {
-                if (DescriptiveStatistics.isFinite(data_[i])) {
+                if (Double.isFinite(data_[i])) {
                     data_[i] -= m;
                 }
             }

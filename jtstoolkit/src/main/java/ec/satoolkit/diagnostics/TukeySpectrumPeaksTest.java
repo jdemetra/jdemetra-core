@@ -218,7 +218,7 @@ public class TukeySpectrumPeaksTest {
 
     public boolean test(TsData s) {
         clear();
-        tukey.setData(s.getValues().internalStorage());
+        tukey.setData(s.internalStorage());
         int freq = s.getFrequency().intValue();
         tukey.setWindowLength(windowLength(s));
         if (!tukey.isValid()) {

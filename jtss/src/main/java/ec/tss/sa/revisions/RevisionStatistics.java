@@ -300,7 +300,7 @@ public class RevisionStatistics implements IProcResults {
         if (s == null) {
             return true;
         }
-        double[] d = s.getValues().internalStorage();
+        double[] d = s.internalStorage();
         for (int i = 1; i < s.getLength(); ++i) {
             if (d[i] != d[0]) {
                 return false;

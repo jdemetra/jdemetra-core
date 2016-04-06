@@ -185,7 +185,7 @@ public abstract class OptionalTsData {
             this.freq = start.getFrequency().intValue();
             this.year = start.getYear();
             this.position = start.getPosition();
-            this.data = CONVERTER.fromDoubleArray(data.getValues().internalStorage());
+            this.data = CONVERTER.fromDoubleArray(data.internalStorage());
         }
 
         @Override

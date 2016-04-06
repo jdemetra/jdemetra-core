@@ -262,7 +262,7 @@ public class GeneralizedAirlineMonitor {
         }
         GeneralizedAirlineModel model = new GeneralizedAirlineModel(m_series.getFrequency().intValue(),
                 np, c);
-        RegArimaModel<GeneralizedAirlineModel> regModel = new RegArimaModel<>(model, new DataBlock(m_series.getValues().internalStorage()));
+        RegArimaModel<GeneralizedAirlineModel> regModel = new RegArimaModel<>(model, new DataBlock(m_series.internalStorage()));
         regModel.setMeanCorrection(m_mean);
         if (m_regs != null) {
             List<DataBlock> X = m_regs.all().data(m_series.getDomain());

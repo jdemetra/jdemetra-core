@@ -21,7 +21,6 @@ import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.TsException;
 import java.util.ArrayList;
 import java.util.Date;
-import ec.tstoolkit.data.DescriptiveStatistics;
 import ec.tstoolkit.design.NewObject;
 import ec.tstoolkit.design.Development;
 
@@ -137,8 +136,6 @@ public class TsDataCollector {
      * series corresponding to the observation and to the parameters 
      * (for example if there are several observation for a given month and 
      * if the aggregation mode is none), a null is returned (no exception).
-     * @exception A TsException is thrown if the frequency and the aggregation mode
-     * are incompatible (frequency is none and aggregation mode is not none).
      */
     public TsData make(TsFrequency frequency, TsAggregationType convMode) {
 	if (frequency == TsFrequency.Undefined) {
@@ -168,7 +165,7 @@ public class TsDataCollector {
 	    int curid = util.calcTsPeriodId(frequency, o.date);
 	    switch (convMode) {
 	    case Average: {
-		if (!DescriptiveStatistics.isFinite(o.value))
+		if (!Double.isFinite(o.value))
 		    continue;
 		if (ncur < 0 || curid != ids[ncur]) {
 		    if (ncur >= 0)
@@ -184,7 +181,7 @@ public class TsDataCollector {
 		break;
 
 	    case Sum: {
-		if (!DescriptiveStatistics.isFinite(o.value))
+		if (!Double.isFinite(o.value))
 		    continue;
 		if (ncur < 0 || curid != ids[ncur]) {
 		    vals[++ncur] = o.value;
@@ -195,7 +192,7 @@ public class TsDataCollector {
 		break;
 
 	    case First: {
-		if (!DescriptiveStatistics.isFinite(o.value))
+		if (!Double.isFinite(o.value))
 		    continue;
 		if (ncur < 0 || curid != ids[ncur]) {
 		    vals[++ncur] = o.value;
@@ -205,7 +202,7 @@ public class TsDataCollector {
 		break;
 
 	    case Last: {
-		if (!DescriptiveStatistics.isFinite(o.value))
+		if (!Double.isFinite(o.value))
 		    continue;
 		if (ncur < 0 || curid != ids[ncur])
 		    ids[++ncur] = curid;
@@ -214,7 +211,7 @@ public class TsDataCollector {
 		break;
 
 	    case Max: {
-		if (!DescriptiveStatistics.isFinite(o.value))
+		if (!Double.isFinite(o.value))
 		    continue;
 		if (ncur < 0 || curid != ids[ncur]) {
 		    vals[++ncur] = o.value;
@@ -228,7 +225,7 @@ public class TsDataCollector {
 		break;
 
 	    case Min: {
-		if (!DescriptiveStatistics.isFinite(o.value))
+		if (!Double.isFinite(o.value))
 		    continue;
 		if (ncur < 0 || curid != ids[ncur]) {
 		    vals[++ncur] = o.value;

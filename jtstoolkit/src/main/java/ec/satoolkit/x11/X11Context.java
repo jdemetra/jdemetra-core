@@ -153,12 +153,12 @@ public final class X11Context {
         if (s.getLength() < 3 * freq) {
             throw new X11Exception(X11Exception.ERR_LENGTH);
         }
-        if (s.getValues().hasMissingValues()) {
+        if (s.hasMissingValues()) {
             throw new X11Exception(X11Exception.ERR_MISSING);
         }
 
         if (mode != DecompositionMode.Additive) {
-            double[] vals = s.getValues().internalStorage();
+            double[] vals = s.internalStorage();
             for (int i = 0; i < vals.length; ++i) {
                 if (vals[i] <= 0) {
                     throw new X11Exception(X11Exception.ERR_NEG);

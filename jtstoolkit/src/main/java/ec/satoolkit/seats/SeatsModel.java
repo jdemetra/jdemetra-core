@@ -87,7 +87,7 @@ public class SeatsModel {
      */
     public RegArimaModel<SarimaModel> getRegarima() {
         RegArimaModel<SarimaModel> regarima = new RegArimaModel<>(
-                model, new DataBlock(series.getValues().internalStorage()));
+                model, new DataBlock(series.internalStorage()));
         regarima.setMeanCorrection(meanCorrection);
         return regarima;
     }
@@ -177,7 +177,7 @@ public class SeatsModel {
         }
         else {
             RegArimaModel<IArimaModel> regarima = new RegArimaModel<>(
-                    noisyModel, new DataBlock(series.getValues().internalStorage()));
+                    noisyModel, new DataBlock(series.internalStorage()));
             regarima.setMeanCorrection(meanCorrection);
             ConcentratedLikelihood ll = regarima.computeLikelihood();
             RegArimaEstimation<IArimaModel> est = new RegArimaEstimation<>(regarima, ll);

@@ -146,7 +146,7 @@ public class SeatsDecomposer implements IDefaultSeriesDecomposer<SeatsResults> {
         FastArimaML m1 = new FastArimaML();
         m1.setMeanCorrection(mean);
         m1.setModel(arima);
-        DataBlock data = new DataBlock(lin.getValues());
+        DataBlock data = new DataBlock(lin);
         if (m1.process(data)) {
             return ljungBox(m1.getResiduals(), nlb);
         } else {
@@ -159,48 +159,50 @@ public class SeatsDecomposer implements IDefaultSeriesDecomposer<SeatsResults> {
         if (bias == 0) {
             return;
         }
-        y.getValues().add(bias);
+        y.apply(x->x+bias);
     }
 
     private void correctBias(DefaultSeriesDecomposition decomposition, IPreprocessingFilter filter) {
-        double bias = filter.getBiasCorrection(ComponentType.Series);
-        if (bias == 0) {
+        double corr = filter.getBiasCorrection(ComponentType.Series);
+        if (corr == 0) {
             return;
         }
         boolean mul = decomposition.getMode() != DecompositionMode.Additive;
+        final double bias;
         if (mul) {
-            bias = Math.exp(bias);
-        }
+            bias = Math.exp(corr);
+        }else
+            bias=corr;
         TsData s = decomposition.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
         if (s != null) {
             if (mul) {
-                s.getValues().div(bias);
+                s.apply((x)->x/bias);
             } else {
-                s.getValues().sub(bias);
+                s.apply((x)->x-bias);
             }
         }
         s = decomposition.getSeries(ComponentType.Seasonal, ComponentInformation.Forecast);
         if (s != null) {
             if (mul) {
-                s.getValues().div(bias);
+                s.apply((x)->x/bias);
             } else {
-                s.getValues().sub(bias);
+                s.apply((x)->x-bias);
             }
         }
         s = decomposition.getSeries(ComponentType.Series, ComponentInformation.Value);
         if (s != null) {
             if (mul) {
-                s.getValues().div(bias);
+                s.apply((x)->x/bias);
             } else {
-                s.getValues().sub(bias);
+                s.apply((x)->x-bias);
             }
         }
         s = decomposition.getSeries(ComponentType.Series, ComponentInformation.Forecast);
         if (s != null) {
             if (mul) {
-                s.getValues().div(bias);
+                s.apply((x)->x/bias);
             } else {
-                s.getValues().sub(bias);
+                s.apply((x)->x-bias);
             }
         }
     }

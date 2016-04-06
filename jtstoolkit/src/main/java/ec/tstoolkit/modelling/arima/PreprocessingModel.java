@@ -500,7 +500,7 @@ public class PreprocessingModel implements IProcResults {
             return fcast_.drop(0, fcast_.getLength() - nf);
         }
         TsData s = linearizedSeries(false);
-        DataBlock data = new DataBlock(s.getValues().internalStorage());
+        DataBlock data = new DataBlock(s.internalStorage());
         // FastArimaForecasts fcast = new FastArimaForecasts(model, false);
         double mean = description.isMean() ? estimation.getLikelihood().getB()[0]
                 : 0;
@@ -547,7 +547,7 @@ public class PreprocessingModel implements IProcResults {
             return bcast_.drop(bcast_.getLength() - nb, 0);
         }
         TsData s = linearizedSeries(false);
-        DataBlock data = new DataBlock(s.getValues().internalStorage()).reverse();
+        DataBlock data = new DataBlock(s.internalStorage()).reverse();
         // FastArimaForecasts fcast = new FastArimaForecasts(model, false);
         double mean = description.isMean() ? estimation.getLikelihood().getB()[0]
                 : 0;

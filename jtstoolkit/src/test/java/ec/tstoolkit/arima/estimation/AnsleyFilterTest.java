@@ -153,7 +153,7 @@ public class AnsleyFilterTest {
             for (int i = 0; i < n; ++i) {
                 N.filter(DN.column(i), Q.row(n - i - 1).drop(n - ds.getDegree(), 0));
             }
-            double[] y = Data.X.getValues().internalStorage();
+            double[] y = Data.X.internalStorage();
             DataBlock yd = new DataBlock(y.length - dn.getDegree());
             noise.getNonStationaryAR().filter(new DataBlock(y), yd);
             DataBlock yl = new DataBlock(yd.getLength());
@@ -215,7 +215,7 @@ public class AnsleyFilterTest {
         long t0 = System.currentTimeMillis();
         for (int a = 0; a < 1000; ++a) {
             // add forecasts
-            ec.tstoolkit.ssf.SsfData sdata = new ec.tstoolkit.ssf.SsfData(Data.X.getValues().internalStorage(), null);
+            ec.tstoolkit.ssf.SsfData sdata = new ec.tstoolkit.ssf.SsfData(Data.X.internalStorage(), null);
 
             SsfUcarima ssf = new SsfUcarima(ucm);
             // compute KS
@@ -226,7 +226,7 @@ public class AnsleyFilterTest {
             DiffuseFilteringResults frslts = new DiffuseFilteringResults(true);
             filter.process(sdata, frslts);
 
-            smoother.process(new ec.tstoolkit.ssf.SsfData(Data.X.getValues().internalStorage(), null), frslts);
+            smoother.process(new ec.tstoolkit.ssf.SsfData(Data.X.internalStorage(), null), frslts);
             ec.tstoolkit.ssf.SmoothingResults srslts = smoother.calcSmoothedStates();
             double[] z = srslts.component(0);
             if (a == 0) {

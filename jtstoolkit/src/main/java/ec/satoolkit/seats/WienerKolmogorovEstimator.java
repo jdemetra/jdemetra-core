@@ -68,7 +68,7 @@ public class WienerKolmogorovEstimator implements IComponentsEstimator {
         } else {
             burman.setUcarimaModel(ucmc);
         }
-        burman.setData(s.getValues());
+        burman.setData(s);
         burman.setSer(model.getSer());
         int ncmps = ucmc.getComponentsCount();
 

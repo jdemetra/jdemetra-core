@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2016 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -19,8 +19,14 @@ package ec.tstoolkit.data;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.random.IRandomNumberGenerator;
 import ec.tstoolkit.random.JdkRNG;
+import ec.tstoolkit.utilities.DoubleList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoublePredicate;
+import java.util.function.DoubleSupplier;
+import java.util.function.DoubleUnaryOperator;
+import java.util.function.IntToDoubleFunction;
 
 /**
  * A DataBlock represents an array of equally spaced doubles. The "DataBlock" is
@@ -65,10 +71,10 @@ public final class DataBlock implements IDataBlock, Cloneable {
     private static final IRandomNumberGenerator RNG = JdkRNG.newRandom();
 
     /**
-     * Creates a data block with random numbers
+     * Creates a src block with random numbers
      *
-     * @param len The length of the data block
-     * @return A new data block with len random numbers
+     * @param len The length of the src block
+     * @return A new src block with len random numbers
      */
     public static DataBlock random(final int len) {
         double[] d = new double[len];
@@ -77,9 +83,9 @@ public final class DataBlock implements IDataBlock, Cloneable {
         }
         return new DataBlock(d);
     }
-    final double[] x_;
-    final int inc_;
-    int beg_, end_;
+    final double[] src;
+    final int inc;
+    int beg, end;
     /**
      * 0
      */
@@ -94,67 +100,66 @@ public final class DataBlock implements IDataBlock, Cloneable {
     public static final double EPSILON = 1e-15;
 
     /**
-     * Creates a new data block with a given array of doubles. The data are not
-     * copied; the data block is just a wrapper around the array.
+     * Creates a new src block with a given array of doubles. The src are not
+     * copied; the src block is just a wrapper around the array.
      *
-     * @param data The array of data
+     * @param data The array of src
      */
     public DataBlock(final double[] data) {
-        x_ = data;
-        beg_ = 0;
-        inc_ = 1;
+        this.src = data;
+        beg = 0;
+        inc = 1;
         if (data != null) {
-            end_ = data.length;
+            end = data.length;
         } else {
-            end_ = 0;
+            end = 0;
         }
     }
 
     /**
-     * Creates a new data block with a given array of doubles. The data are not
-     * copied. We must have that end = beg + n * inc for some n. That
+     * Creates a new src block with a given array of doubles. The src are not
+     * copied. We must have that end = beg + n * linc for some n. That
      * relationship is not verified. If it is not respected, the result of some
      * methods could be unpredictable.
      *
-     * @param data The array of data
+     * @param data The array of src
      * @param beg The position in the original array of the first element
      * @param end The position in the original array of the last element
      * (excluded).
-     * @param inc The increment of two successive elements of the data block.
-     * Can be negative.
+     * @param inc The increment of two successive elements of the src block. Can
+     * be negative.
      */
     public DataBlock(final double[] data, final int beg, final int end, final int inc) {
-        x_ = data;
-        beg_ = beg;
-        end_ = end;
-        inc_ = inc;
+        this.src = data;
+        this.beg = beg;
+        this.end = end;
+        this.inc = inc;
     }
 
     /**
-     * Creates a new data block with n items (equal to 0). The underlying buffer
+     * Creates a new src block with n items (equal to 0). The underlying buffer
      * is automatically allocated.
      *
-     * @param n The number of elements in the new data block. Should be
-     * positive.
+     * @param n The number of elements in the new src block. Should be positive.
      */
     public DataBlock(final int n) {
-        x_ = new double[n];
-        beg_ = 0;
-        end_ = n;
-        inc_ = 1;
+        src = new double[n];
+        beg = 0;
+        end = n;
+        inc = 1;
     }
 
     /**
-     * Creates a new data block from a read only data block. The data a copied
+     * Creates a new src block from a read only src block. The src a copied
      *
-     * @param data The data being copied
+     * @param data The src being copied
      */
     public DataBlock(final IReadDataBlock data) {
-        x_ = new double[data.getLength()];
-        data.copyTo(x_, 0);
-        beg_ = 0;
-        end_ = x_.length;
-        inc_ = 1;
+        this.src = new double[data.getLength()];
+        data.copyTo(this.src, 0);
+        beg = 0;
+        end = this.src.length;
+        inc = 1;
     }
 
     /**
@@ -169,13 +174,14 @@ public final class DataBlock implements IDataBlock, Cloneable {
     public static DataBlock create(final double[] data, final int istart, final int len, final int inc) {
         return new DataBlock(data, istart, istart + len * inc, inc);
     }
-    
+
     /**
-     * Safe creation of a datablock. Reuse of the EMPTY data block
+     * Safe creation of a datablock. Reuse of the EMPTY src block
+     *
      * @param n
-     * @return 
+     * @return
      */
-    public static DataBlock create(final int n){
+    public static DataBlock create(final int n) {
         return n <= 0 ? DataBlock.EMPTY : new DataBlock(n);
     }
 
@@ -189,7 +195,7 @@ public final class DataBlock implements IDataBlock, Cloneable {
         DataBlock d = new DataBlock(n);
         for (int i = 0, j = 0; i < sel.length; ++i) {
             if (sel[i]) {
-                d.x_[j++] = data.get(i);
+                d.src[j++] = data.get(i);
             }
         }
         return d;
@@ -199,7 +205,7 @@ public final class DataBlock implements IDataBlock, Cloneable {
         int n = isel.length;
         DataBlock d = new DataBlock(n);
         for (int i = 0; i < n; ++i) {
-            d.x_[i] = data.get(isel[i]);
+            d.src[i] = data.get(isel[i]);
         }
         return d;
     }
@@ -217,25 +223,25 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     /**
-     * Adds the data block r to this object. this(i) = this(i) + r(i)
+     * Adds the src block r to this object. this(i) = this(i) + r(i)
      *
-     * @param r The added data block. Its length must be &ge the length of this
+     * @param r The added src block. Its length must be &ge the length of this
      * object.
      */
     public void add(final DataBlock r) {
-        if (inc_ == 1 && r.inc_ == 1) {
-            for (int i = beg_, j = r.beg_; i != end_; ++i, ++j) {
-                x_[i] += r.x_[j];
+        if (inc == 1 && r.inc == 1) {
+            for (int i = beg, j = r.beg; i != end; ++i, ++j) {
+                src[i] += r.src[j];
             }
         } else {
-            for (int i = beg_, j = r.beg_; i != end_; i += inc_, j += r.inc_) {
-                x_[i] += r.x_[j];
+            for (int i = beg, j = r.beg; i != end; i += inc, j += r.inc) {
+                src[i] += r.src[j];
             }
         }
     }
 
     /**
-     * Adds d to all the elements of this data block this(i) = this(i) + d
+     * Adds d to all the elements of this src block this(i) = this(i) + d
      *
      * @param d
      */
@@ -243,13 +249,13 @@ public final class DataBlock implements IDataBlock, Cloneable {
         if (d == 0) {
             return;
         }
-        if (inc_ == 1) {
-            for (int i = beg_; i != end_; ++i) {
-                x_[i] += d;
+        if (inc == 1) {
+            for (int i = beg; i != end; ++i) {
+                src[i] += d;
             }
         } else {
-            for (int i = beg_; i != end_; i += inc_) {
-                x_[i] += d;
+            for (int i = beg; i != end; i += inc) {
+                src[i] += d;
             }
         }
     }
@@ -261,14 +267,14 @@ public final class DataBlock implements IDataBlock, Cloneable {
      * @param d The added value
      */
     public void add(int idx, double d) {
-        x_[beg_ + idx * inc_] += d;
+        src[beg + idx * inc] += d;
     }
 
     /**
-     * Adds a rescaled data block. this(i) = this(i) +a * y(i)
+     * Adds a rescaled src block. this(i) = this(i) +a * y(i)
      *
      * @param a The scaling factor
-     * @param y The added data block. Its length must be &ge the length of this
+     * @param y The added src block. Its length must be &ge the length of this
      * object.
      */
     public void addAY(double a, DataBlock y) {
@@ -279,19 +285,19 @@ public final class DataBlock implements IDataBlock, Cloneable {
             add(y);
         } else if (a == -1) {
             sub(y);
-        } else if (inc_ == 1 && y.inc_ == 1) {
-            for (int i = beg_, j = y.beg_; i != end_; ++i, ++j) {
-                x_[i] += a * y.x_[j];
+        } else if (inc == 1 && y.inc == 1) {
+            for (int i = beg, j = y.beg; i != end; ++i, ++j) {
+                src[i] += a * y.src[j];
             }
         } else {
-            for (int i = beg_, j = y.beg_; i != end_; i += inc_, j += y.inc_) {
-                x_[i] += a * y.x_[j];
+            for (int i = beg, j = y.beg; i != end; i += inc, j += y.inc) {
+                src[i] += a * y.src[j];
             }
         }
     }
 
     /**
-     * Adds a rescaled product of data blocks. this(i) = this(i) +a * x(i)*y(i)
+     * Adds a rescaled product of src blocks. this(i) = this(i) +a * src(i)*y(i)
      *
      * @param a The scaling factor
      * @param x The left hand of the added product. Its length must be &ge the
@@ -304,25 +310,25 @@ public final class DataBlock implements IDataBlock, Cloneable {
             return;
         }
         if (a == 1) {
-            for (int i = beg_, j = x.beg_, k = y.beg_; i != end_; i += inc_, j += x.inc_, k += y.inc_) {
-                x_[i] += x.x_[j] * y.x_[k];
+            for (int i = beg, j = x.beg, k = y.beg; i != end; i += inc, j += x.inc, k += y.inc) {
+                this.src[i] += x.src[j] * y.src[k];
             }
         } else if (a == -1) {
-            for (int i = beg_, j = x.beg_, k = y.beg_; i != end_; i += inc_, j += x.inc_, k += y.inc_) {
-                x_[i] -= x.x_[j] * y.x_[k];
+            for (int i = beg, j = x.beg, k = y.beg; i != end; i += inc, j += x.inc, k += y.inc) {
+                this.src[i] -= x.src[j] * y.src[k];
             }
         } else {
-            for (int i = beg_, j = x.beg_, k = y.beg_; i != end_; i += inc_, j += x.inc_, k += y.inc_) {
-                x_[i] += a * x.x_[j] * y.x_[k];
+            for (int i = beg, j = x.beg, k = y.beg; i != end; i += inc, j += x.inc, k += y.inc) {
+                this.src[i] += a * x.src[j] * y.src[k];
             }
         }
     }
 
     /**
-     * Copies a re-scaled data block. this(i) = a * y(i)
+     * Copies a re-scaled src block. this(i) = a * y(i)
      *
      * @param a The scaling factor
-     * @param y The data whose re-scaled version is copied. Unmodified
+     * @param y The src whose re-scaled version is copied. Unmodified
      */
     public void setAY(double a, DataBlock y) {
         if (a == 0) {
@@ -333,26 +339,26 @@ public final class DataBlock implements IDataBlock, Cloneable {
             copy(y);
             return;
         }
-        if (inc_ == 1 && y.inc_ == 1) {
-            for (int i = beg_, j = y.beg_; i < end_; ++i, ++j) {
-                x_[i] = a * y.x_[j];
+        if (inc == 1 && y.inc == 1) {
+            for (int i = beg, j = y.beg; i < end; ++i, ++j) {
+                src[i] = a * y.src[j];
             }
         } else {
-            for (int i = beg_, j = y.beg_; i != end_; i += inc_, j += y.inc_) {
-                x_[i] = a * y.x_[j];
+            for (int i = beg, j = y.beg; i != end; i += inc, j += y.inc) {
+                src[i] = a * y.src[j];
             }
         }
     }
 
     private void bshift() {
-        int imax = end_ - inc_;
-        if (inc_ == 1) {
-            for (int i = beg_; i < imax; ++i) {
-                x_[i] = x_[i + 1];
+        int imax = end - inc;
+        if (inc == 1) {
+            for (int i = beg; i < imax; ++i) {
+                src[i] = src[i + 1];
             }
         } else {
-            for (int i = beg_; i != imax; i += inc_) {
-                x_[i] = x_[i + inc_];
+            for (int i = beg; i != imax; i += inc) {
+                src[i] = src[i + inc];
             }
         }
     }
@@ -364,22 +370,22 @@ public final class DataBlock implements IDataBlock, Cloneable {
      * @param option Specifies the way the last element is updated
      */
     public void bshift(ShiftOption option) {
-        int imax = end_ - inc_;
+        int imax = end - inc;
         switch (option) {
             case Rotate:
-                double first = x_[beg_];
+                double first = src[beg];
                 bshift();
-                x_[imax] = first;
+                src[imax] = first;
                 break;
             case Zero:
                 bshift();
-                x_[imax] = 0;
+                src[imax] = 0;
                 break;
             case Sum:
-                x_[imax] = sbshift();
+                src[imax] = sbshift();
                 break;
             case NegSum:
-                x_[imax] = -sbshift();
+                src[imax] = -sbshift();
                 break;
             default:
                 bshift();
@@ -388,63 +394,63 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     /**
-     * Changes the sign of this data block this(i) = - this(i)
+     * Changes the sign of this src block this(i) = - this(i)
      */
     public void chs() {
-        if (inc_ == 1) {
-            for (int i = beg_; i != end_; ++i) {
-                x_[i] = -x_[i];
+        if (inc == 1) {
+            for (int i = beg; i != end; ++i) {
+                src[i] = -src[i];
             }
         } else {
-            for (int i = beg_; i != end_; i += inc_) {
-                x_[i] = -x_[i];
+            for (int i = beg; i != end; i += inc) {
+                src[i] = -src[i];
             }
         }
     }
 
     /**
-     * Changes the sign of this data block this(i) = - this(i)
+     * Changes the sign of this src block this(i) = - this(i)
      */
     public void sqrt() {
-        if (inc_ == 1) {
-            for (int i = beg_; i != end_; ++i) {
-                if (x_[i] > 0) {
-                    x_[i] = Math.sqrt(x_[i]);
+        if (inc == 1) {
+            for (int i = beg; i != end; ++i) {
+                if (src[i] > 0) {
+                    src[i] = Math.sqrt(src[i]);
                 } else {
-                    x_[i] = 0;
+                    src[i] = 0;
                 }
             }
         } else {
-            for (int i = beg_; i != end_; i += inc_) {
-                if (x_[i] > 0) {
-                    x_[i] = Math.sqrt(x_[i]);
+            for (int i = beg; i != end; i += inc) {
+                if (src[i] > 0) {
+                    src[i] = Math.sqrt(src[i]);
                 } else {
-                    x_[i] = 0;
+                    src[i] = 0;
                 }
             }
         }
     }
 
     public void inv() {
-        if (inc_ == 1) {
-            for (int i = beg_; i != end_; ++i) {
-                x_[i] = 1 / x_[i];
+        if (inc == 1) {
+            for (int i = beg; i != end; ++i) {
+                src[i] = 1 / src[i];
             }
         } else {
-            for (int i = beg_; i != end_; i += inc_) {
-                x_[i] = 1 / x_[i];
+            for (int i = beg; i != end; i += inc) {
+                src[i] = 1 / src[i];
             }
         }
     }
 
     public void square() {
-        if (inc_ == 1) {
-            for (int i = beg_; i != end_; ++i) {
-                x_[i] = x_[i] * x_[i];
+        if (inc == 1) {
+            for (int i = beg; i != end; ++i) {
+                src[i] = src[i] * src[i];
             }
         } else {
-            for (int i = beg_; i != end_; i += inc_) {
-                x_[i] = x_[i] * x_[i];
+            for (int i = beg; i != end; i += inc) {
+                src[i] = src[i] * src[i];
             }
         }
     }
@@ -460,52 +466,52 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     /**
-     * Copies a given data block
+     * Copies a given src block
      *
-     * @param data The data being copied. Its length must be smaller or equal
+     * @param data The src being copied. Its length must be smaller or equal
      * than the length of this object.
      */
     public void copy(DataBlock data) {
-        if (inc_ == 1 && data.inc_ == 1) {
-            System.arraycopy(data.x_, data.beg_, x_, beg_, data.getLength());
+        if (inc == 1 && data.inc == 1) {
+            System.arraycopy(data.src, data.beg, this.src, beg, data.getLength());
         } else {
-            for (int i = beg_, j = data.beg_; j != data.end_; i += inc_, j += data.inc_) {
-                x_[i] = data.x_[j];
+            for (int i = beg, j = data.beg; j != data.end; i += inc, j += data.inc) {
+                this.src[i] = data.src[j];
             }
         }
     }
 
     /**
-     * Copies a generic (read only) data block
+     * Copies a generic (read only) src block
      *
-     * @param data The data being copied. Its length must be smaller or equal
+     * @param data The src being copied. Its length must be smaller or equal
      * than the length of this object.
      */
     public void copy(IReadDataBlock data) {
         int n = data.getLength();
-        for (int i = beg_, j = 0; j < n; i += inc_, ++j) {
-            x_[i] = data.get(j);
+        for (int i = beg, j = 0; j < n; i += inc, ++j) {
+            this.src[i] = data.get(j);
         }
     }
 
     @Override
     public void copyFrom(double[] buffer, int start) {
-        if (inc_ == 1) {
-            System.arraycopy(buffer, start, x_, beg_, end_ - beg_);
+        if (inc == 1) {
+            System.arraycopy(buffer, start, src, beg, end - beg);
         } else {
-            for (int t = beg_, s = start; t != end_; t += inc_, ++s) {
-                x_[t] = buffer[s];
+            for (int t = beg, s = start; t != end; t += inc, ++s) {
+                src[t] = buffer[s];
             }
         }
     }
 
     @Override
     public void copyTo(double[] buffer, int start) {
-        if (inc_ == 1) {
-            System.arraycopy(x_, beg_, buffer, start, end_ - beg_);
+        if (inc == 1) {
+            System.arraycopy(src, beg, buffer, start, end - beg);
         } else {
-            for (int s = beg_, t = start; s != end_; s += inc_, ++t) {
-                buffer[t] = x_[s];
+            for (int s = beg, t = start; s != end; s += inc, ++t) {
+                buffer[t] = src[s];
             }
         }
     }
@@ -515,65 +521,65 @@ public final class DataBlock implements IDataBlock, Cloneable {
      * sum(this(0...t))
      */
     public void cumul() {
-        int cur = beg_;
-        double s = x_[cur];
-        cur += inc_;
-        while (cur != end_) {
-            s += x_[cur];
-            x_[cur] = s;
-            cur += inc_;
+        int cur = beg;
+        double s = src[cur];
+        cur += inc;
+        while (cur != end) {
+            s += src[cur];
+            src[cur] = s;
+            cur += inc;
         }
     }
 
     /**
      * Transforms this object into its cumulative sum, with an dumping
-     * coefficient. If x is the initial data block and if y is the final data
-     * block, we have: y(0) = x(0), y(t) = x(t) + c * y(t-1)
+     * coefficient. If src is the initial src block and if y is the final src
+     * block, we have: y(0) = src(0), y(t) = src(t) + c * y(t-1)
      *
      * @param c The dumping factor
      */
     public void cumul(double c) {
-        int cur = beg_;
-        double s = x_[cur];
-        cur += inc_;
-        while (cur != end_) {
-            s = c * s + x_[cur];
-            x_[cur] = s;
-            cur += inc_;
+        int cur = beg;
+        double s = src[cur];
+        cur += inc;
+        while (cur != end) {
+            s = c * s + src[cur];
+            src[cur] = s;
+            cur += inc;
         }
     }
 
     /**
      * Transforms this object to its cumulative sum, with an dumping coefficient
-     * and a given lag.. If x is the initial data block and if y is the final
-     * data block, we have: y(i) = x(i) where i &lt lag, y(t) = x(t) + c *
+     * and a given lag.. If src is the initial src block and if y is the final
+     * src block, we have: y(i) = src(i) where i &lt lag, y(t) = src(t) + c *
      * y(t-lag)
      *
      * @param c The dumping factor
      * @param lag The lag
      */
     public void cumul(double c, int lag) {
-        int inc = lag * inc_;
+        int linc = lag * this.inc;
         if (getLength() < lag) {
             return;
         }
-        int cur = beg_ + inc;
+        int cur = beg + linc;
         if (c == 1) {
-            while (cur != end_) {
-                x_[cur] += x_[cur - inc];
-                cur += inc_;
+            while (cur != end) {
+                src[cur] += src[cur - linc];
+                cur += this.inc;
             }
         } else {
-            while (cur != end_) {
-                x_[cur] += c * x_[cur - inc];
-                cur += inc_;
+            while (cur != end) {
+                src[cur] += c * src[cur - linc];
+                cur += this.inc;
             }
         }
     }
 
     /**
-     * Creates a deep clone of this object. The underlying data a copied in a
-     * new buffer
+     * Creates a deep clone of this object. The underlying src a copied in a new
+     * buffer
      *
      * @return The new object.
      */
@@ -582,7 +588,7 @@ public final class DataBlock implements IDataBlock, Cloneable {
             return EMPTY;
         }
         DataBlock rc = new DataBlock(getLength());
-        copyTo(rc.x_, 0);
+        copyTo(rc.src, 0);
         return rc;
     }
 
@@ -594,15 +600,15 @@ public final class DataBlock implements IDataBlock, Cloneable {
         if (getLength() <= 1) {
             return;
         }
-        int cur = end_ - inc_;
+        int cur = end - inc;
         do {
-            cur -= inc_;
-            x_[cur + inc_] -= x_[cur];
-        } while (cur != beg_);
+            cur -= inc;
+            src[cur + inc] -= src[cur];
+        } while (cur != beg);
     }
 
     /**
-     * Computes the difference of two data blocks. The results are put in this
+     * Computes the difference of two src blocks. The results are put in this
      * object. this(i) = l(i) - r(i). Length(this) &le min(length(l), length(r))
      * If this object is smaller than the operands, only the first items are
      * considered.
@@ -611,8 +617,8 @@ public final class DataBlock implements IDataBlock, Cloneable {
      * @param r right operand
      */
     public void difference(DataBlock l, DataBlock r) {
-        for (int i = beg_, j = l.beg_, k = r.beg_; i != end_; i += inc_, j += l.inc_, k += r.inc_) {
-            x_[i] = l.x_[j] - r.x_[k];
+        for (int i = beg, j = l.beg, k = r.beg; i != end; i += inc, j += l.inc, k += r.inc) {
+            src[i] = l.src[j] - r.src[k];
         }
     }
 
@@ -626,11 +632,11 @@ public final class DataBlock implements IDataBlock, Cloneable {
         if (getLength() <= 1) {
             return;
         }
-        int cur = end_ - inc_;
+        int cur = end - inc;
         do {
-            cur -= inc_;
-            x_[cur + inc_] -= lag * x_[cur];
-        } while (cur != beg_);
+            cur -= inc;
+            src[cur + inc] -= lag * src[cur];
+        } while (cur != beg);
     }
 
     /**
@@ -645,40 +651,42 @@ public final class DataBlock implements IDataBlock, Cloneable {
         if (getLength() <= lag) {
             return;
         }
-        int inc = inc_ * lag;
-        int cur = end_ - inc;
+        int linc = this.inc * lag;
+        int cur = end - linc;
         do {
-            cur -= inc_;
-            x_[cur + inc] -= c * x_[cur];
-        } while (cur != beg_);
+            cur -= this.inc;
+            src[cur + linc] -= c * src[cur];
+        } while (cur != beg);
     }
 
     /**
-     * Return the euclidian norm of the differences between two data blocks
+     * Return the euclidian norm of the differences between two src blocks
      *
-     * @param data The comparison data block.
+     * @param data The comparison src block.
      * @return The euclidian norm
      */
     public double distance(DataBlock data) {
-        if (beg_ == end_) {
+        if (beg == end) {
             return 0;
-        } else if (beg_ + inc_ == end_) {
-            return Math.abs(x_[beg_] - data.x_[data.beg_]);
+        } else if (beg + inc == end) {
+            return Math.abs(src[beg] - data.src[data.beg]);
         } else {
             double scale = ZERO;
             double ssq = ONE;
-            for (int ix = beg_, jx = data.beg_; ix != end_; ix += inc_, jx += data.inc_) {
-                double x=x_[ix], y=data.x_[jx];
+            for (int ix = beg, jx = data.beg; ix != end; ix += inc, jx += data.inc) {
+                double x = src[ix], y = data.src[jx];
                 if (Double.compare(x, y) != 0) {
-                    double d=x-y;
-                    double absxi = Math.abs(d);
-                    if (scale < absxi) {
-                        double s = scale / absxi;
-                        ssq = ONE + ssq * s * s;
-                        scale = absxi;
-                    } else {
-                        double s = absxi / scale;
-                        ssq += s * s;
+                    double d = x - y;
+                    if (d != ZERO) {
+                        double absxi = Math.abs(d);
+                        if (scale < absxi) {
+                            double s = scale / absxi;
+                            ssq = ONE + ssq * s * s;
+                            scale = absxi;
+                        } else {
+                            double s = absxi / scale;
+                            ssq += s * s;
+                        }
                     }
                 }
             }
@@ -687,28 +695,28 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     /**
-     * Computes the scalar product of two data blocks. r = this(0)*data(0) + ...
-     * + this(n)*data(n)
+     * Computes the scalar product of two src blocks. r = this(0)*src(0) + ... +
+     * this(n)*src(n)
      *
-     * @param data The second data block. data can be smaller than this object.
-     * In that case, only the first elements are considered (the size of the
-     * buffer (data) is preponderant).
+     * @param data The second src block. src can be smaller than this object. In
+     * that case, only the first elements are considered (the size of the buffer
+     * (src) is preponderant).
      * @return The scalar product
      */
     public double dot(DataBlock data) {
         double r = 0;
         //
-        if (inc_ == 1 && data.inc_ == 1) {
-            for (int i = beg_, j = data.beg_; i != end_; ++i, ++j) {
-                r += x_[i] * data.x_[j];
+        if (inc == 1 && data.inc == 1) {
+            for (int i = beg, j = data.beg; i != end; ++i, ++j) {
+                r += this.src[i] * data.src[j];
             }
-        } else if (inc_ == -1 && data.inc_ == -1) {
-            for (int i = beg_, j = data.beg_; i != end_; --i, --j) {
-                r += x_[i] * data.x_[j];
+        } else if (inc == -1 && data.inc == -1) {
+            for (int i = beg, j = data.beg; i != end; --i, --j) {
+                r += this.src[i] * data.src[j];
             }
         } else {
-            for (int i = beg_, j = data.beg_; i != end_; i += inc_, j += data.inc_) {
-                r += x_[i] * data.x_[j];
+            for (int i = beg, j = data.beg; i != end; i += inc, j += data.inc) {
+                r += this.src[i] * data.src[j];
             }
         }
         return r;
@@ -717,150 +725,150 @@ public final class DataBlock implements IDataBlock, Cloneable {
     public double dot(double[] data) {
         double r = 0;
         //
-        if (inc_ == 1 && beg_ == 0) {
+        if (inc == 1 && beg == 0) {
             for (int i = 0; i < data.length; ++i) {
-                r += x_[i] * data[i];
+                r += this.src[i] * data[i];
             }
         } else {
-            for (int i = beg_, j = 0; j < data.length; i += inc_, ++j) {
-                r += x_[i] * data[j];
+            for (int i = beg, j = 0; j < data.length; i += inc, ++j) {
+                r += this.src[i] * data[j];
             }
         }
         return r;
     }
 
     /**
-     * Computes the scalar product of two data blocks using the J-norm. r =
-     * this(0)*data(0) + ...this(p-1)*data(p-1) - this(p)*data(p) - ... -
-     * this(n)*data(n)
+     * Computes the scalar product of two src blocks using the J-norm. r =
+     * this(0)*src(0) + ...this(p-1)*src(p-1) - this(p)*src(p) - ... -
+     * this(n)*src(n)
      *
-     * @param data The second data block. data can be larger than this object.
-     * In that case, only the first elements are considered.
+     * @param data The second src block. src can be larger than this object. In
+     * that case, only the first elements are considered.
      * @param p The number of (leading) positive terms in the norm
      * @return The scalar product
      */
     public double jdot(int p, DataBlock data) {
         double r = 0;
-        int pend = beg_ + p * inc_;
+        int pend = beg + p * inc;
         //
-        if (inc_ == 1 && data.inc_ == 1) {
-            int i = beg_, j = data.beg_;
+        if (inc == 1 && data.inc == 1) {
+            int i = beg, j = data.beg;
             for (; i != pend; ++i, ++j) {
-                r += x_[i] * data.x_[j];
+                r += this.src[i] * data.src[j];
             }
-            for (; i != end_; ++i, ++j) {
-                r -= x_[i] * data.x_[j];
+            for (; i != end; ++i, ++j) {
+                r -= this.src[i] * data.src[j];
             }
-        } else if (inc_ == -1 && data.inc_ == -1) {
-            int i = beg_, j = data.beg_;
+        } else if (inc == -1 && data.inc == -1) {
+            int i = beg, j = data.beg;
             for (; i != pend; --i, --j) {
-                r += x_[i] * data.x_[j];
+                r += this.src[i] * data.src[j];
             }
-            for (; i != end_; --i, --j) {
-                r -= x_[i] * data.x_[j];
+            for (; i != end; --i, --j) {
+                r -= this.src[i] * data.src[j];
             }
         } else {
-            int i = beg_, j = data.beg_;
-            for (; i != pend; i += inc_, j += data.inc_) {
-                r += x_[i] * data.x_[j];
+            int i = beg, j = data.beg;
+            for (; i != pend; i += inc, j += data.inc) {
+                r += this.src[i] * data.src[j];
             }
-            for (; i != end_; i += inc_, j += data.inc_) {
-                r += x_[i] * data.x_[j];
+            for (; i != end; i += inc, j += data.inc) {
+                r += this.src[i] * data.src[j];
             }
         }
         return r;
     }
 
     /**
-     * Computes the scalar product two data blocks, inverting the order of the
-     * second one. r = this(0)*data(n) + ... + this(n)*data(0).
+     * Computes the scalar product two src blocks, inverting the order of the
+     * second one. r = this(0)*src(n) + ... + this(n)*src(0).
      *
-     * @param data The second data block. data can be larger than this object.
-     * In that case, only the first elements of this and the last elements of
-     * data are considered.
+     * @param data The second src block. src can be larger than this object. In
+     * that case, only the first elements of this and the last elements of src
+     * are considered.
      * @return The scalar product
      */
     public double dotReverse(DataBlock data) {
         double r = 0;
-        for (int i = beg_, j = data.end_ - data.inc_; i != end_; i += inc_, j -= data.inc_) {
-            r += x_[i] * data.x_[j];
+        for (int i = beg, j = data.end - data.inc; i != end; i += inc, j -= data.inc) {
+            r += this.src[i] * data.src[j];
         }
         return r;
     }
 
     /**
-     * Computes the scalar product two data blocks, inverting the order of the
-     * second one. r = this(0)*data(n) + ... + this(n)*data(0).
+     * Computes the scalar product two src blocks, inverting the order of the
+     * second one. r = this(0)*src(n) + ... + this(n)*src(0).
      *
-     * @param data The second data block. data can be smaller than this object.
-     * In that case, only the first elements of this and the last elements of
-     * data are considered.
+     * @param data The second src block. src can be smaller than this object. In
+     * that case, only the first elements of this and the last elements of src
+     * are considered.
      * @return The scalar product
      */
     public double dotReverse(double[] data) {
         double r = 0;
-        if (inc_ == 1) {
-            for (int i = beg_, j = data.length - 1; j >= 0; ++i, --j) {
-                r += x_[i] * data[j];
+        if (inc == 1) {
+            for (int i = beg, j = data.length - 1; j >= 0; ++i, --j) {
+                r += this.src[i] * data[j];
             }
         } else {
-            for (int i = beg_, j = data.length - 1; j >= 0; i += inc_, --j) {
-                r += x_[i] * data[j];
+            for (int i = beg, j = data.length - 1; j >= 0; i += inc, --j) {
+                r += this.src[i] * data[j];
             }
         }
         return r;
     }
 
     /**
-     * Computes the scalar product two data blocks, inverting the order of the
-     * two blocks. r = this(n)*data(m) + ... + this(n-m)*data(0).
+     * Computes the scalar product two src blocks, inverting the order of the
+     * two blocks. r = this(n)*src(m) + ... + this(n-m)*src(0).
      *
-     * @param data The second data block. data can be smaller than this object.
-     * In that case, only the first elements of this and the last elements of
-     * data are considered.
+     * @param data The second src block. src can be smaller than this object. In
+     * that case, only the first elements of this and the last elements of src
+     * are considered.
      * @return The scalar product
      */
     public double reverseDot(double[] data) {
         double r = 0;
-        int m=data.length;
-        if (inc_ == 1) {
-            for (int i = end_-1, j = m - 1; j >= 0; --i, --j) {
-                r += x_[i] * data[j];
+        int m = data.length;
+        if (inc == 1) {
+            for (int i = end - 1, j = m - 1; j >= 0; --i, --j) {
+                r += this.src[i] * data[j];
             }
         } else {
-            for (int i = end_-inc_, j = m - 1; j >= 0; i -= inc_, --j) {
-                r += x_[i] * data[j];
+            for (int i = end - inc, j = m - 1; j >= 0; i -= inc, --j) {
+                r += this.src[i] * data[j];
             }
         }
         return r;
     }
+
     /**
-     * Creates an extract of this data block by dropping ending elements. The
-     * new data block refers to the same underlying physical data buffer.
+     * Creates an extract of this src block by dropping ending elements. The new
+     * src block refers to the same underlying physical src buffer.
      *
      * @param nbeg The number of elements dropped at the beginning of this
      * object. Should be positive.
      * @param nend The number of elements dropped at the end of this object.
      * Should be positive.
-     * @return The new data block. Can be empty (but not null)
+     * @return The new src block. Can be empty (but not null)
      */
     public DataBlock drop(int nbeg, int nend) {
 //	if (nbeg + nend >= getLength())
 //	    return null;
 //	else
-        return inc_ == 1 ? new DataBlock(x_, beg_ + nbeg, end_ - nend, 1)
-                : new DataBlock(x_, beg_ + nbeg * inc_, end_ - nend * inc_, inc_);
+        return inc == 1 ? new DataBlock(src, beg + nbeg, end - nend, 1)
+                : new DataBlock(src, beg + nbeg * inc, end - nend * inc, inc);
     }
 
     /**
-     * Shrinks the data block by 1 data at the beginning of the block
+     * Shrinks the src block by 1 src at the beginning of the block
      *
-     * @return true if the data block has been correctly shrunk, false
-     * otherwise.
+     * @return true if the src block has been correctly shrunk, false otherwise.
      */
     public boolean bshrink() {
-        if (beg_ != end_) {
-            beg_ += inc_;
+        if (beg != end) {
+            beg += inc;
             return true;
         } else {
             return false;
@@ -868,14 +876,13 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     /**
-     * Shrinks the data block by 1 data at the end of the block
+     * Shrinks the src block by 1 src at the end of the block
      *
-     * @return true if the data block has been correctly shrunk, false
-     * otherwise.
+     * @return true if the src block has been correctly shrunk, false otherwise.
      */
     public boolean eshrink() {
-        if (beg_ != end_) {
-            end_ -= inc_;
+        if (beg != end) {
+            end -= inc;
             return true;
         } else {
             return false;
@@ -883,19 +890,17 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     /**
-     * Shrinks the current data block by removing data at the beginning and at
-     * the end of the data block.
+     * Shrinks the current src block by removing src at the beginning and at the
+     * end of the src block.
      *
-     * @param nbeg Number of elements removed at the beginning of this data
-     * block
-     * @param nend Number of elements removed at the end of this data block
-     * @return true if the data block has been correctly shrunk, false
-     * otherwise.
+     * @param nbeg Number of elements removed at the beginning of this src block
+     * @param nend Number of elements removed at the end of this src block
+     * @return true if the src block has been correctly shrunk, false otherwise.
      */
     public boolean shrink(int nbeg, int nend) {
         if (nbeg + nend <= getLength()) {
-            beg_ += inc_ * nbeg;
-            end_ -= inc_ * nend;
+            beg += inc * nbeg;
+            end -= inc * nend;
             return true;
         } else {
             return false;
@@ -903,42 +908,42 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     /**
-     * Expands the current data block by adding data at the beginning or at the
-     * end of the data block. The buffer must be larger enough.
+     * Expands the current src block by adding src at the beginning or at the
+     * end of the src block. The buffer must be larger enough.
      *
-     * @param nbeg Number of elements added at the beginning of this data block
-     * @param nend Number of elements added at the end of this data block
-     * @return true if the data block has been correctly expanded, false
+     * @param nbeg Number of elements added at the beginning of this src block
+     * @param nend Number of elements added at the end of this src block
+     * @return true if the src block has been correctly expanded, false
      * otherwise.
      */
     public boolean expand(int nbeg, int nend) {
-        int xbeg = beg_ - nbeg * inc_;
-        int xend = end_ + nend * inc_;
+        int xbeg = beg - nbeg * inc;
+        int xend = end + nend * inc;
 
-        if (xbeg < 0 || xbeg > x_.length) {
+        if (xbeg < 0 || xbeg > src.length) {
             return false;
         } else {
-            beg_ = xbeg;
-            end_ = xend;
+            beg = xbeg;
+            end = xend;
             return true;
         }
     }
-    
+
     /**
-     * Creates a new data block that is an extension of this one. The new data
-     * block refers to the same underlying physical data buffer. We have that
-     * x.clone().expand(n, m) is equivalent to
+     * Creates a new src block that is an extension of this one. The new src
+     * block refers to the same underlying physical src buffer. We have that
+     * src.clone().expand(n, m) is equivalent to
      *
      * @param nbeg The number of elements added at the beginning of this object.
      * Should be positive.
      * @param nend The number of elements added at the end of this object.
      * Should be positive.
-     * @return The new data block. The method doesn't check that the operation
-     * is valid (i.e. that the buffer is large enough).
+     * @return The new src block. The method doesn't check that the operation is
+     * valid (i.e. that the buffer is large enough).
      */
     public DataBlock extend(int nbeg, int nend) {
-        return new DataBlock(x_, beg_ - nbeg * inc_,
-                end_ + nend * inc_, inc_);
+        return new DataBlock(src, beg - nbeg * inc,
+                end + nend * inc, inc);
     }
 
     @Override
@@ -947,55 +952,55 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     /**
-     * Creates a new data block from the given one. The increment and the
+     * Creates a new src block from the given one. The increment and the
      * starting position are relative to the existing one. More precisely, if
-     * the increment in the current data block is inc0 and if its starting
-     * position (in the underlying buffer) is start0, The new data block will
+     * the increment in the current src block is inc0 and if its starting
+     * position (in the underlying buffer) is start0, The new src block will
      * start at position start0 + start*inc0 and its increment will be
      * inc0*inc1.
      *
-     * @param start The starting position (in the current data block).
+     * @param start The starting position (in the current src block).
      * @param count The number of items in the selection. If count is -1, the
      * largest extract is returned.
      * @param inc The increment of the selection.
-     * @return A new data block is returned.
+     * @return A new src block is returned.
      */
     public DataBlock extract(int start, int count, int inc) {
         int i0, i1, ninc;
-        if (inc_ == 1) {
-            i0 = beg_ + start;
+        if (this.inc == 1) {
+            i0 = beg + start;
             ninc = inc;
         } else {
-            i0 = beg_ + start * inc_;
-            ninc = inc * inc_;
+            i0 = beg + start * this.inc;
+            ninc = inc * this.inc;
         }
         if (count == -1) {
             // not optimized. We go from i0 to i1 by step of ninc (i1 = i0 + n*ninc)
-            // (i1-ninc) must be <= (end-inc) if ninc > 0 or >= end-inc if ninc <0
-            // case inc > 0 : n = 1 + (end - inc - i0) / ninc
+            // (i1-ninc) must be <= (end-linc) if ninc > 0 or >= end-linc if ninc <0
+            // case linc > 0 : n = 1 + (end - linc - i0) / ninc
             int n = 0;
-            if ((inc_ > 0 && i0 <= end_ - inc_) || (inc_ < 0 && i0 >= end_ - inc_)) {
+            if ((this.inc > 0 && i0 <= end - this.inc) || (this.inc < 0 && i0 >= end - this.inc)) {
                 if (inc > 0) {
-                    n = 1 + (end_ - inc_ - i0) / ninc;
+                    n = 1 + (end - this.inc - i0) / ninc;
                 } else {
-                    n = 1 + (beg_ - i0) / ninc;
+                    n = 1 + (beg - i0) / ninc;
                 }
             }
             i1 = i0 + n * ninc;
         } else {
             i1 = i0 + ninc * count;
         }
-        return new DataBlock(x_, i0, i1, ninc);
+        return new DataBlock(src, i0, i1, ninc);
     }
 
     private void fshift() {
-        if (inc_ == 1) {
-            for (int i = end_ - 1; i != beg_; --i) {
-                x_[i] = x_[i - 1];
+        if (inc == 1) {
+            for (int i = end - 1; i != beg; --i) {
+                src[i] = src[i - 1];
             }
         } else {
-            for (int i = end_ - inc_; i != beg_; i -= inc_) {
-                x_[i] = x_[i - inc_];
+            for (int i = end - inc; i != beg; i -= inc) {
+                src[i] = src[i - inc];
             }
         }
     }
@@ -1008,19 +1013,19 @@ public final class DataBlock implements IDataBlock, Cloneable {
     public void fshift(ShiftOption option) {
         switch (option) {
             case Rotate:
-                double last = x_[end_ - inc_];
+                double last = src[end - inc];
                 fshift();
-                x_[beg_] = last;
+                src[beg] = last;
                 break;
             case Zero:
                 fshift();
-                x_[beg_] = 0;
+                src[beg] = 0;
                 break;
             case Sum:
-                x_[beg_] = sfshift();
+                src[beg] = sfshift();
                 break;
             case NegSum:
-                x_[beg_] = -sfshift();
+                src[beg] = -sfshift();
                 break;
             default:
                 fshift();
@@ -1029,65 +1034,65 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     /**
-     * Return the idx-th element of the data block
+     * Return the idx-th element of the src block
      *
-     * @param idx 0-base position of the element in the data block. Should
-     * belong to [0, length[. Not checked
+     * @param idx 0-base position of the element in the src block. Should belong
+     * to [0, length[. Not checked
      * @return The required element. Unpredictable result when the index is
      * invalid.
      */
     @Override
     public double get(int idx) {
-        return x_[beg_ + inc_ * idx];
+        return src[beg + inc * idx];
     }
 
     /**
-     * Returns the underlying buffer. This method, which breaks down the data
+     * Returns the underlying buffer. This method, which breaks down the src
      * encapsulation principle, is provided for optimisation reason only.
      *
      * @return The underlying buffer.
      */
     public double[] getData() {
-        return x_;
+        return src;
     }
 
     /**
-     * Return the end position of the data block in the underlying array. The
-     * end position doesn't belong to the data block. It should be noted that
+     * Return the end position of the src block in the underlying array. The end
+     * position doesn't belong to the src block. It should be noted that
      * endPosition can be &lt startPosition (in the case of negative increment)
      *
      * @return The end position.
      */
     public int getEndPosition() {
-        return end_;
+        return end;
     }
 
     /**
-     * Return the last position of the data block in the underlying array. The
-     * last position belongs to the data block.
+     * Return the last position of the src block in the underlying array. The
+     * last position belongs to the src block.
      *
      * @return The last position.
      */
     public int getLastPosition() {
-        return end_ - inc_;
+        return end - inc;
     }
 
     /**
-     * Return the last valid index that can be applied on this data block
+     * Return the last valid index that can be applied on this src block
      *
      * @return The last position.
      */
     public int getLastIndex() {
-        return inc_ == 1 ? end_ - beg_ - 1 : (end_ - beg_) / inc_ - 1;
+        return inc == 1 ? end - beg - 1 : (end - beg) / inc - 1;
     }
 
     /**
-     * Return the first invalid index for this data block
+     * Return the first invalid index for this src block
      *
      * @return The last position.
      */
     public int getEndIndex() {
-        return inc_ == 1 ? end_ - beg_ : (end_ - beg_) / inc_;
+        return inc == 1 ? end - beg : (end - beg) / inc;
     }
 
     /**
@@ -1096,38 +1101,38 @@ public final class DataBlock implements IDataBlock, Cloneable {
      * @return The increment. Can be &lt 0.
      */
     public int getIncrement() {
-        return inc_;
+        return inc;
     }
 
     @Override
     public int getLength() {
-        if (beg_ == end_) {
+        if (beg == end) {
             return 0;
-        } else if (inc_ == 1) {
-            return end_ - beg_;
+        } else if (inc == 1) {
+            return end - beg;
         } else {
-            return (end_ - beg_) / inc_;
+            return (end - beg) / inc;
         }
     }
 
     /**
-     * Return the start position of the data block in the underlying array.
+     * Return the start position of the src block in the underlying array.
      *
      * @return The start position.
      */
     public int getStartPosition() {
-        return beg_;
+        return beg;
     }
 
     /**
-     * Checks that all the data of the block are identical
+     * Checks that all the src of the block are identical
      *
-     * @return true if all the data are identical, false otherwise
+     * @return true if all the src are identical, false otherwise
      */
     public boolean isConstant() {
-        double d = x_[beg_];
-        for (int i = beg_ + inc_; i != end_; i += inc_) {
-            if (x_[i] != d) {
+        double d = src[beg];
+        for (int i = beg + inc; i != end; i += inc) {
+            if (src[i] != d) {
                 return false;
             }
         }
@@ -1135,14 +1140,14 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     /**
-     * Checks that all the data of the block are equal to a given value
+     * Checks that all the src of the block are equal to a given value
      *
      * @param c The constant value
-     * @return true if all the data are equal to c, false otherwise
+     * @return true if all the src are equal to c, false otherwise
      */
     public boolean isConstant(double c) {
-        for (int i = beg_; i != end_; i += inc_) {
-            if (x_[i] != c) {
+        for (int i = beg; i != end; i += inc) {
+            if (src[i] != c) {
                 return false;
             }
         }
@@ -1151,8 +1156,8 @@ public final class DataBlock implements IDataBlock, Cloneable {
 
     public int getMissingCount() {
         int n = 0;
-        for (int i = beg_; i != end_; i += inc_) {
-            if (!DescriptiveStatistics.isFinite(x_[i])) {
+        for (int i = beg; i != end; i += inc) {
+            if (!Double.isFinite(src[i])) {
                 ++n;
             }
         }
@@ -1160,21 +1165,21 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     /**
-     * Checks that the data block is empty. Occurs when getStartPosition() =
+     * Checks that the src block is empty. Occurs when getStartPosition() =
      * getendPosition().
      *
-     * @return true if the data block is empty, false otherwise.
+     * @return true if the src block is empty, false otherwise.
      */
     public boolean isEmpty() {
-        return beg_ == end_;
+        return beg == end;
     }
 
     /**
-     * Checks that all the data in the block are (nearly) 0. Equivalent to
+     * Checks that all the src in the block are (nearly) 0. Equivalent to
      * isZero(EPSILON);
      *
-     * @return true if all the data in the block are &lt or = EPSILON in
-     * absolute value, false otherwise.
+     * @return true if all the src in the block are &lt or = EPSILON in absolute
+     * value, false otherwise.
      */
     public boolean isZero() {
         return isZero(EPSILON);
@@ -1188,15 +1193,15 @@ public final class DataBlock implements IDataBlock, Cloneable {
      * the current selection are moved by del*increment.
      */
     public void move(int del) {
-        if (inc_ != 1) {
-            del *= inc_;
+        if (inc != 1) {
+            del *= inc;
         }
-        beg_ += del;
-        end_ += del;
+        beg += del;
+        end += del;
     }
 
     /**
-     * Multiplies the elements of this data block by a given value
+     * Multiplies the elements of this src block by a given value
      * this(i)=this(i)*d
      *
      * @param d The multiplier.
@@ -1205,51 +1210,51 @@ public final class DataBlock implements IDataBlock, Cloneable {
         if (d == 1) {
         } else if (d == 0) {
             set(0);
-        } else if (inc_ == 1) {
-            for (int i = beg_; i != end_; ++i) {
-                x_[i] *= d;
+        } else if (inc == 1) {
+            for (int i = beg; i != end; ++i) {
+                src[i] *= d;
             }
         } else {
-            for (int i = beg_; i != end_; i += inc_) {
-                x_[i] *= d;
+            for (int i = beg; i != end; i += inc) {
+                src[i] *= d;
             }
         }
     }
 
     /**
-     * Multiply the elements of this object by the element of another data block
+     * Multiply the elements of this object by the element of another src block
      * this(i) = this(i) * r(i)
      *
-     * @param data The other data block. Its length must be &ge the length of
+     * @param data The other src block. Its length must be &ge the length of
      * this object.
      */
     public void mul(DataBlock data) {
-        if (inc_ == 1 && data.inc_ == 1) {
-            for (int i = beg_, j = data.beg_; i != end_; ++i, ++j) {
-                x_[i] *= data.x_[j];
+        if (inc == 1 && data.inc == 1) {
+            for (int i = beg, j = data.beg; i != end; ++i, ++j) {
+                this.src[i] *= data.src[j];
             }
         } else {
-            for (int i = beg_, j = data.beg_; i != end_; i += inc_, j += data.inc_) {
-                x_[i] *= data.x_[j];
+            for (int i = beg, j = data.beg; i != end; i += inc, j += data.inc) {
+                this.src[i] *= data.src[j];
             }
         }
     }
 
     /**
-     * Divide the elements of this object by the element of another data block
+     * Divide the elements of this object by the element of another src block
      * this(i) = this(i) / r(i)
      *
-     * @param data The other data block. Its length must be &ge the length of
+     * @param data The other src block. Its length must be &ge the length of
      * this object.
      */
     public void div(DataBlock data) {
-        if (inc_ == 1 && data.inc_ == 1) {
-            for (int i = beg_, j = data.beg_; i != end_; ++i, ++j) {
-                x_[i] /= data.x_[j];
+        if (inc == 1 && data.inc == 1) {
+            for (int i = beg, j = data.beg; i != end; ++i, ++j) {
+                this.src[i] /= data.src[j];
             }
         } else {
-            for (int i = beg_, j = data.beg_; i != end_; i += inc_, j += data.inc_) {
-                x_[i] /= data.x_[j];
+            for (int i = beg, j = data.beg; i != end; i += inc, j += data.inc) {
+                this.src[i] /= data.src[j];
             }
         }
     }
@@ -1265,26 +1270,26 @@ public final class DataBlock implements IDataBlock, Cloneable {
      * @param d The multiplier.
      */
     public void mul(int idx, double d) {
-        x_[beg_ + idx * inc_] *= d;
+        src[beg + idx * inc] *= d;
     }
 
     /**
-     * Computes the euclidian norm of the data block. Based on the "dnrm2"
-     * Lapack function.
+     * Computes the euclidian norm of the src block. Based on the "dnrm2" Lapack
+     * function.
      *
      * @return The euclidian norm (&gt=0).
      */
     public double nrm2() {
-        if (beg_ == end_) {
+        if (beg == end) {
             return 0;
-        } else if (beg_ + inc_ == end_) {
-            return Math.abs(x_[beg_]);
+        } else if (beg + inc == end) {
+            return Math.abs(src[beg]);
         } else {
             double scale = ZERO;
             double ssq = ONE;
-            for (int ix = beg_; ix != end_; ix += inc_) {
-                if (x_[ix] != ZERO) {
-                    double absxi = Math.abs(x_[ix]);
+            for (int ix = beg; ix != end; ix += inc) {
+                if (src[ix] != ZERO) {
+                    double absxi = Math.abs(src[ix]);
                     if (scale < absxi) {
                         double s = scale / absxi;
                         ssq = ONE + ssq * s * s;
@@ -1300,17 +1305,17 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     /**
-     * Computes the infinite-norm of this data block
+     * Computes the infinite-norm of this src block
      *
-     * @return Returns min{|x(i)|}
+     * @return Returns min{|src(i)|}
      */
     public double nrmInf() {
-        if (beg_ == end_) {
+        if (beg == end) {
             return 0;
         } else {
-            double nrm = Math.abs(x_[beg_]);
-            for (int ix = beg_ + inc_; ix != end_; ix += inc_) {
-                double tmp = Math.abs(x_[ix]);
+            double nrm = Math.abs(src[beg]);
+            for (int ix = beg + inc; ix != end; ix += inc) {
+                double tmp = Math.abs(src[ix]);
                 if (tmp > nrm) {
                     nrm = tmp;
                 }
@@ -1320,17 +1325,17 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     /**
-     * Computes the minimum of this data block
+     * Computes the minimum of this src block
      *
-     * @return Returns min{x(i)}
+     * @return Returns min{src(i)}
      */
     public double min() {
-        if (beg_ == end_) {
+        if (beg == end) {
             return 0;
         } else {
-            double nrm = x_[beg_];
-            for (int ix = beg_ + inc_; ix != end_; ix += inc_) {
-                double tmp = x_[ix];
+            double nrm = src[beg];
+            for (int ix = beg + inc; ix != end; ix += inc) {
+                double tmp = src[ix];
                 if (tmp < nrm) {
                     nrm = tmp;
                 }
@@ -1340,17 +1345,17 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     /**
-     * Computes the maximum of this data block
+     * Computes the maximum of this src block
      *
-     * @return Returns max{x(i)}
+     * @return Returns max{src(i)}
      */
     public double max() {
-        if (beg_ == end_) {
+        if (beg == end) {
             return 0;
         } else {
-            double nrm = x_[beg_];
-            for (int ix = beg_ + inc_; ix != end_; ix += inc_) {
-                double tmp = x_[ix];
+            double nrm = src[beg];
+            for (int ix = beg + inc; ix != end; ix += inc) {
+                double tmp = src[ix];
                 if (tmp > nrm) {
                     nrm = tmp;
                 }
@@ -1360,58 +1365,59 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     /**
-     * Computes the product of the element of the data block/
+     * Computes the product of the element of the src block/
      *
-     * @return The product of the elements or 1 if the data block is empty.
+     * @return The product of the elements or 1 if the src block is empty.
      */
     public double product() {
         double s = 1;
-        for (int i = beg_; i != end_; i += inc_) {
-            s *= x_[i];
+        for (int i = beg; i != end; i += inc) {
+            s *= src[i];
         }
         return s;
     }
 
     /**
      * Computes the product of a vector by a matrix and stores the result in
-     * this data block this = row * cols. We must have that 1. the length of
-     * this data block = the number of columns 2. the length of the vector = the
+     * this src block this = row * cols. We must have that 1. the length of this
+     * src block = the number of columns 2. the length of the vector = the
      * length of each column. The iterator is changed !!!
      *
      * @param row The vector array
      * @param cols The columns of the matrix
      */
     public void product(DataBlock row, DataBlockIterator cols) {
-        int idx = beg_;
+        int idx = beg;
         DataBlock cur = cols.getData();
         do {
-            x_[idx] = row.dot(cur);
-            idx += inc_;
+            src[idx] = row.dot(cur);
+            idx += inc;
         } while (cols.next());
     }
 
     /**
-     * Adds the product of a vector by a matrix to this data block 
-     * this += row * cols. We must have that 1. the length of
-     * this data block = the number of columns 2. the length of the vector = the
-     * length of each column. The iterator is changed !!!
+     * Adds the product of a vector by a matrix to this src block this += row *
+     * cols. We must have that 1. the length of this src block = the number of
+     * columns 2. the length of the vector = the length of each column. The
+     * iterator is changed !!!
      *
      * @param row The vector array
      * @param cols The columns of the matrix
      */
     public void addProduct(DataBlock row, DataBlockIterator cols) {
-        int idx = beg_;
+        int idx = beg;
         DataBlock cur = cols.getData();
         do {
-            x_[idx] += row.dot(cur);
-            idx += inc_;
+            src[idx] += row.dot(cur);
+            idx += inc;
         } while (cols.next());
     }
+
     /**
      * this = l * d. Product of a vector by a double. The results is stored in
      * this object
      *
-     * @param l The vector (same length as this data block)
+     * @param l The vector (same length as this src block)
      * @param d The double
      */
     public void product(DataBlock l, double d) {
@@ -1419,80 +1425,81 @@ public final class DataBlock implements IDataBlock, Cloneable {
             set(0);
         } else if (d == 1) {
             copy(l);
-        } else if (inc_ == 1 && l.inc_ == 1) {
-            for (int i = beg_, j = l.beg_; i != end_; ++i, ++j) {
-                x_[i] = l.x_[j] * d;
+        } else if (inc == 1 && l.inc == 1) {
+            for (int i = beg, j = l.beg; i != end; ++i, ++j) {
+                src[i] = l.src[j] * d;
             }
-        } else if (inc_ == -1 && l.inc_ == -1) {
-            for (int i = beg_, j = l.beg_; i != end_; --i, --j) {
-                x_[i] = l.x_[j] * d;
+        } else if (inc == -1 && l.inc == -1) {
+            for (int i = beg, j = l.beg; i != end; --i, --j) {
+                src[i] = l.src[j] * d;
             }
         } else {
-            for (int i = beg_, j = l.beg_; i != end_; i += inc_, j += l.inc_) {
-                x_[i] = l.x_[j] * d;
+            for (int i = beg, j = l.beg; i != end; i += inc, j += l.inc) {
+                src[i] = l.src[j] * d;
             }
         }
     }
 
     /**
      * Computes the product of a matrix by a vector and stores the result in
-     * this data block this = rows * col. We must have that 1. the length of
-     * this data block = the number of rows 2. the length of the vector = the
-     * length of each row. The iterator is changed !!!
+     * this src block this = rows * col. We must have that 1. the length of this
+     * src block = the number of rows 2. the length of the vector = the length
+     * of each row. The iterator is changed !!!
      *
      * @param rows The rows of the matrix.
      * @param col The vector.
      */
     public void product(DataBlockIterator rows, DataBlock col) {
-        int idx = beg_;
+        int idx = beg;
         DataBlock cur = rows.getData();
         do {
-            x_[idx] = cur.dot(col);
-            idx += inc_;
+            src[idx] = cur.dot(col);
+            idx += inc;
         } while (rows.next());
     }
 
     /**
-     * Adds the product of a matrix by a vector to this data block 
-     * this += rows * col. We must have that 1. the length of
-     * this data block = the number of rows 2. the length of the vector = the
-     * length of each row. The iterator is changed !!!
+     * Adds the product of a matrix by a vector to this src block this += rows *
+     * col. We must have that 1. the length of this src block = the number of
+     * rows 2. the length of the vector = the length of each row. The iterator
+     * is changed !!!
      *
      * @param rows The rows of the matrix.
      * @param col The vector.
      */
     public void addProduct(DataBlockIterator rows, DataBlock col) {
-        int idx = beg_;
+        int idx = beg;
         DataBlock cur = rows.getData();
         do {
-            x_[idx] += cur.dot(col);
-            idx += inc_;
+            src[idx] += cur.dot(col);
+            idx += inc;
         } while (rows.next());
     }
+
     /**
-     * Creates a new data block from this one
+     * Creates a new src block from this one
      *
      * @param c0 The first item of the selection (included)
      * @param c1 The last item of the selection (excluded)
-     * @return The new data block
+     * @return The new src block
      */
     public DataBlock range(int c0, int c1) {
-        if (inc_ == 1) {
-            return new DataBlock(x_, beg_ + c0, beg_ + c1, 1);
+        if (inc == 1) {
+            return new DataBlock(src, beg + c0, beg + c1, 1);
         } else {
-            return new DataBlock(x_, beg_ + inc_ * c0,
-                    beg_ + inc_ * c1, inc_);
+            return new DataBlock(src, beg + inc * c0,
+                    beg + inc * c1, inc);
         }
     }
 
     /**
-     * Reverses the order of the data block (from the last item to the first
+     * Reverses the order of the src block (from the last item to the first
      * item);
      *
-     * @return A new data block (the current object is not modified).
+     * @return A new src block (the current object is not modified).
      */
     public DataBlock reverse() {
-        return new DataBlock(x_, end_ - inc_, beg_ - inc_, -inc_);
+        return new DataBlock(src, end - inc, beg - inc, -inc);
     }
 
     @Override
@@ -1501,74 +1508,74 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     private double sbshift() {
-        int imax = end_ - inc_;
-        double s = x_[beg_];
-        if (inc_ == 1) {
-            for (int i = beg_; i != imax; ++i) {
-                x_[i] = x_[i + 1];
-                s += x_[i];
+        int imax = end - inc;
+        double s = src[beg];
+        if (inc == 1) {
+            for (int i = beg; i != imax; ++i) {
+                src[i] = src[i + 1];
+                s += src[i];
             }
         } else {
-            for (int i = beg_; i < imax; i += inc_) {
-                x_[i] = x_[i + inc_];
-                s += x_[i];
+            for (int i = beg; i < imax; i += inc) {
+                src[i] = src[i + inc];
+                s += src[i];
             }
         }
         return s;
     }
 
     /**
-     * Sets all the data of the block to a given value.
+     * Sets all the src of the block to a given value.
      *
      * @param d The value to be set.
      */
     public void set(double d) {
-        if (inc_ == 1) {
-            Arrays.fill(x_, beg_, end_, d);
+        if (inc == 1) {
+            Arrays.fill(src, beg, end, d);
         } else {
-            for (int i = beg_; i != end_; i += inc_) {
-                x_[i] = d;
+            for (int i = beg; i != end; i += inc) {
+                src[i] = d;
             }
         }
     }
 
     /**
-     * Sets the data at the idx-th position to a given value.
+     * Sets the src at the idx-th position to a given value.
      *
-     * @param idx The position of the data being changed
+     * @param idx The position of the src being changed
      * @param value The new value.
      */
     @Override
     public void set(int idx, double value) {
-        x_[beg_ + inc_ * idx] = value;
+        src[beg + inc * idx] = value;
     }
 
     private double sfshift() {
-        double s = x_[beg_];
-        if (inc_ == 1) {
-            for (int i = end_ - 1; i != beg_; --i) {
-                s += x_[i];
-                x_[i] = x_[i - 1];
+        double s = src[beg];
+        if (inc == 1) {
+            for (int i = end - 1; i != beg; --i) {
+                s += src[i];
+                src[i] = src[i - 1];
             }
         } else {
-            for (int i = end_ - inc_; i != beg_; i -= inc_) {
-                s += x_[i];
-                x_[i] = x_[i - inc_];
+            for (int i = end - inc; i != beg; i -= inc) {
+                s += src[i];
+                src[i] = src[i - inc];
             }
         }
         return s;
     }
 
     /**
-     * Moves the current data block by del cells. If the "move" method takes
-     * into account the increment of the data block, this method is actually a
-     * move on the physical buffer (without considering the increment)
+     * Moves the current src block by del cells. If the "move" method takes into
+     * account the increment of the src block, this method is actually a move on
+     * the physical buffer (without considering the increment)
      *
      * @param del The length of the sliding.
      */
     public void slide(int del) {
-        beg_ += del;
-        end_ += del;
+        beg += del;
+        end += del;
     }
 
     /**
@@ -1576,15 +1583,16 @@ public final class DataBlock implements IDataBlock, Cloneable {
      *
      * @return The sum of the squares.
      */
+    @Override
     public double ssq() {
-        if (beg_ == end_) {
+        if (beg == end) {
             return 0;
-        } else if (beg_ + inc_ == end_) {
-            return x_[beg_] * x_[beg_];
+        } else if (beg + inc == end) {
+            return src[beg] * src[beg];
         } else {
             double ssq = ZERO;
-            for (int ix = beg_; ix != end_; ix += inc_) {
-                double x = x_[ix];
+            for (int ix = beg; ix != end; ix += inc) {
+                double x = this.src[ix];
                 ssq += x * x;
             }
             return ssq;
@@ -1592,21 +1600,21 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     /**
-     * Computes sum([x(i)-m]^2
+     * Computes sum([src(i)-m]^2
      *
      * @param m The correction parameter
-     * @return sum([x(i)-m]^2
+     * @return sum([src(i)-m]^2
      */
     public double ssqc(double m) {
-        if (beg_ == end_) {
+        if (beg == end) {
             return 0;
-        } else if (beg_ + inc_ == end_) {
-            double xc = x_[beg_] - m;
+        } else if (beg + inc == end) {
+            double xc = src[beg] - m;
             return xc * xc;
         } else {
             double ssq = ZERO;
-            for (int ix = beg_; ix != end_; ix += inc_) {
-                double x = x_[ix] - m;
+            for (int ix = beg; ix != end; ix += inc) {
+                double x = this.src[ix] - m;
                 ssq += x * x;
             }
             return ssq;
@@ -1614,25 +1622,25 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     /**
-     * Subtracts the data block r to this object. this(i) = this(i) - r(i)
+     * Subtracts the src block r to this object. this(i) = this(i) - r(i)
      *
-     * @param data The subtracted data block. Its length must be &ge the length of
-     * this object.
+     * @param data The subtracted src block. Its length must be &ge the length
+     * of this object.
      */
     public void sub(DataBlock data) {
-        if (inc_ == 1 && data.inc_ == 1) {
-            for (int i = beg_, j = data.beg_; i != end_; ++i, ++j) {
-                x_[i] -= data.x_[j];
+        if (inc == 1 && data.inc == 1) {
+            for (int i = beg, j = data.beg; i != end; ++i, ++j) {
+                this.src[i] -= data.src[j];
             }
         } else {
-            for (int i = beg_, j = data.beg_; i != end_; i += inc_, j += data.inc_) {
-                x_[i] -= data.x_[j];
+            for (int i = beg, j = data.beg; i != end; i += inc, j += data.inc) {
+                this.src[i] -= data.src[j];
             }
         }
     }
 
     /**
-     * Subtracts d to all the elements of this data block this(i) = this(i) - d
+     * Subtracts d to all the elements of this src block this(i) = this(i) - d
      *
      * @param d. The subtracted value.
      */
@@ -1640,45 +1648,46 @@ public final class DataBlock implements IDataBlock, Cloneable {
         if (d == 0) {
             return;
         }
-        if (inc_ == 1) {
-            for (int i = beg_; i != end_; ++i) {
-                x_[i] -= d;
+        if (inc == 1) {
+            for (int i = beg; i != end; ++i) {
+                src[i] -= d;
             }
         } else {
-            for (int i = beg_; i != end_; i += inc_) {
-                x_[i] -= d;
+            for (int i = beg; i != end; i += inc) {
+                src[i] -= d;
             }
         }
     }
 
     /**
-     * Computes the sum of the data in the block.
+     * Computes the sum of the src in the block.
      *
-     * @return The sum of the data block
+     * @return The sum of the src block
      */
+    @Override
     public double sum() {
         double s = 0;
-        for (int i = beg_; i != end_; i += inc_) {
-            s += x_[i];
+        for (int i = beg; i != end; i += inc) {
+            s += src[i];
         }
         return s;
     }
 
     /**
-     * Computes the sum of two data blocks. The results are stored in this
+     * Computes the sum of two src blocks. The results are stored in this
      * object. this[i] = l[i] + r[i]
      *
      * @param l The left operand.
      * @param r The right operand.
      */
     public void sum(DataBlock l, DataBlock r) {
-        for (int i = beg_, j = l.beg_, k = r.beg_; i != end_; i += inc_, j += l.inc_, k += r.inc_) {
-            x_[i] = l.x_[j] + r.x_[k];
+        for (int i = beg, j = l.beg, k = r.beg; i != end; i += inc, j += l.inc, k += r.inc) {
+            src[i] = l.src[j] + r.src[k];
         }
     }
 
     /**
-     * Computes the product of the items of this data block, under a log (and
+     * Computes the product of the items of this src block, under a log (and
      * sign) form. Returns
      *
      * @return The log and signed result of the product.
@@ -1687,8 +1696,8 @@ public final class DataBlock implements IDataBlock, Cloneable {
         LogSign ls = new LogSign();
         ls.value = 0;
         ls.pos = true;
-        for (int i = beg_; i != end_; i += inc_) {
-            double x = x_[i];
+        for (int i = beg; i != end; i += inc) {
+            double x = this.src[i];
             if (x < 0) {
                 ls.pos = !ls.pos;
                 x = -x;
@@ -1732,107 +1741,366 @@ public final class DataBlock implements IDataBlock, Cloneable {
         for (int i = 0; i < ndec; ++i) {
             f *= 10;
         }
-        for (int i = beg_; i != end_; i += inc_) {
+        for (int i = beg; i != end; i += inc) {
             if (ndec > 0) {
-                x_[i] = Math.round(x_[i] * f) / f;
+                src[i] = Math.round(src[i] * f) / f;
             } else {
-                x_[i] = Math.round(x_[i]);
+                src[i] = Math.round(src[i]);
             }
         }
     }
 
     @Override
     public String toString() {
-        return ReadDataBlock.convert(this);
+        return ReadDataBlock.toString(this);
+    }
+
+    public String toString(String fmt) {
+        return ReadDataBlock.toString(this, fmt);
     }
 
     /**
-     * Sets random numbers in this data block
+     * Sets random numbers in this src block
      */
     public void randomize() {
-        for (int i = beg_; i != end_; i += inc_) {
-            x_[i] = RNG.nextDouble() - .5;
+        for (int i = beg; i != end; i += inc) {
+            src[i] = RNG.nextDouble() - .5;
         }
     }
 
     public void randomize(int seed) {
         Random rnd = new Random(seed);
-        for (int i = beg_; i != end_; i += inc_) {
-            x_[i] = rnd.nextDouble() - .5;
+        for (int i = beg; i != end; i += inc) {
+            src[i] = rnd.nextDouble() - .5;
         }
     }
 
     /**
-     * Checks that all the data in the block are (nearly) 0.
+     * Checks that all the src in the block are (nearly) 0.
      *
      * @param zero A given zero
-     * @return false if some data in the block are &gt zero in absolute value,
+     * @return false if some src in the block are &gt zero in absolute value,
      * true otherwise.
      */
     public boolean isZero(double zero) {
-        for (int i = beg_; i != end_; i += inc_) {
-            if (Math.abs(x_[i]) > zero) {
+        for (int i = beg; i != end; i += inc) {
+            if (Math.abs(src[i]) > zero) {
                 return false;
             }
         }
         return true;
     }
 //<editor-fold defaultstate="collapsed" desc="iterator method">
-    
+
     /**
-     * The following methods can be used to create fast iterations.
-     * They avoid the creation of unnecessary objects
-     * 
+     * The following methods can be used to create fast iterations. They avoid
+     * the creation of unnecessary objects
+     *
      * example:
-     * 
-     * DataBlock data=...
-     * DataBlock cur=data.start();
-     * while (cur.getEndPosition() != data.getEndPosition()){
-     *    cur.next(z);
-     * }
+     *
+     * DataBlock data=... DataBlock cur=data.start(); while
+     * (cur.getEndPosition() != data.getEndPosition()){ cur.next(z); } /** The
+     * following methods can be used to create fast iterations. They avoid the
+     * creation of unnecessary objects
+     *
+     * example:
+     *
+     * DataBlock data=... DataBlock cur=data.start(); while
+     * (cur.getEndPosition() != data.getEndPosition()){ cur.next(z); } /** The
+     * following methods can be used to create fast iterations. They avoid the
+     * creation of unnecessary objects
+     *
+     * example:
+     *
+     * DataBlock data=... DataBlock cur=data.start(); while
+     * (cur.getEndPosition() != data.getEndPosition()){ cur.next(z); } /** The
+     * following methods can be used to create fast iterations. They avoid the
+     * creation of unnecessary objects
+     *
+     * example:
+     *
+     * DataBlock data=... DataBlock cur=data.start(); while
+     * (cur.getEndPosition() != data.getEndPosition()){ cur.next(z); } /** The
+     * following methods can be used to create fast iterations. They avoid the
+     * creation of unnecessary objects
+     *
+     * example:
+     *
+     * DataBlock data=... DataBlock cur=data.start(); while
+     * (cur.getEndPosition() != data.getEndPosition()){ cur.next(z); } /** The
+     * following methods can be used to create fast iterations. They avoid the
+     * creation of unnecessary objects
+     *
+     * example:
+     *
+     * DataBlock data=... DataBlock cur=data.start(); while
+     * (cur.getEndPosition() != data.getEndPosition()){ cur.next(z); } /** The
+     * following methods can be used to create fast iterations. They avoid the
+     * creation of unnecessary objects
+     *
+     * example:
+     *
+     * DataBlock data=... DataBlock cur=data.start(); while
+     * (cur.getEndPosition() != data.getEndPosition()){ cur.next(z); } /** The
+     * following methods can be used to create fast iterations. They avoid the
+     * creation of unnecessary objects
+     *
+     * example:
+     *
+     * DataBlock data=... DataBlock cur=data.start(); while
+     * (cur.getEndPosition() != data.getEndPosition()){ cur.next(z); } /** The
+     * following methods can be used to create fast iterations. They avoid the
+     * creation of unnecessary objects
+     *
+     * example:
+     *
+     * DataBlock data=... DataBlock cur=data.start(); while
+     * (cur.getEndPosition() != data.getEndPosition()){ cur.next(z); } /** The
+     * following methods can be used to create fast iterations. They avoid the
+     * creation of unnecessary objects
+     *
+     * example:
+     *
+     * DataBlock data=... DataBlock cur=data.start(); while
+     * (cur.getEndPosition() != data.getEndPosition()){ cur.next(z); } /** The
+     * following methods can be used to create fast iterations. They avoid the
+     * creation of unnecessary objects
+     *
+     * example:
+     *
+     * DataBlock data=... DataBlock cur=data.start(); while
+     * (cur.getEndPosition() != data.getEndPosition()){ cur.next(z); } /** The
+     * following methods can be used to create fast iterations. They avoid the
+     * creation of unnecessary objects
+     *
+     * example:
+     *
+     * DataBlock data=... DataBlock cur=data.start(); while
+     * (cur.getEndPosition() != data.getEndPosition()){ cur.next(z); } /** The
+     * following methods can be used to create fast iterations. They avoid the
+     * creation of unnecessary objects
+     *
+     * example:
+     *
+     * DataBlock data=... DataBlock cur=data.start(); while
+     * (cur.getEndPosition() != data.getEndPosition()){ cur.next(z); } /** The
+     * following methods can be used to create fast iterations. They avoid the
+     * creation of unnecessary objects
+     *
+     * example:
+     *
+     * DataBlock data=... DataBlock cur=data.start(); while
+     * (cur.getEndPosition() != data.getEndPosition()){ cur.next(z); } /** The
+     * following methods can be used to create fast iterations. They avoid the
+     * creation of unnecessary objects
+     *
+     * example:
+     *
+     * DataBlock data=... DataBlock cur=data.start(); while
+     * (cur.getEndPosition() != data.getEndPosition()){ cur.next(z); } /** The
+     * following methods can be used to create fast iterations. They avoid the
+     * creation of unnecessary objects
+     *
+     * example:
+     *
+     * DataBlock data=... DataBlock cur=data.start(); while
+     * (cur.getEndPosition() != data.getEndPosition()){ cur.next(z); }
      */
-    
-    
     /**
-     * Moves the current DataBlock to the right by a given number of items.
-     * The new starting position is the old ending position
-     * and the ending position is incremented by the given number.
+     * Moves the current DataBlock to the right by a given number of items. The
+     * new starting position is the old ending position and the ending position
+     * is incremented by the given number.
+     *
      * @param nitems The number of items in the block
      */
-    public void next(int nitems){
-        beg_=end_;
-        end_+=inc_*nitems;
+    public void next(int nitems) {
+        beg = end;
+        end += inc * nitems;
     }
 
     /**
-     * Moves the current DataBlock to the left by a given number of items.
-     * The new ending position is the old starting position
-     * and the starting position is decremented by the given number.
+     * Moves the current DataBlock to the left by a given number of items. The
+     * new ending position is the old starting position and the starting
+     * position is decremented by the given number.
+     *
      * @param nitems The number of items in the block
      */
-    public void previous(int nitems){
-        end_=beg_;
-        beg_-=inc_*nitems;
-    }
-    
-    /**
-     * Creates an empty DataBlock positioned at the current start.
-     * To be used with next/previous
-     * @return The new DataBlock
-     */
-    public DataBlock start(){
-        return new DataBlock(x_, beg_, beg_, inc_);
+    public void previous(int nitems) {
+        end = beg;
+        beg -= inc * nitems;
     }
 
     /**
-     * Creates an empty DataBlock positioned at the current end.
-     * To be used with next/previous
+     * Creates an empty DataBlock positioned at the current start. To be used
+     * with next/previous
+     *
      * @return The new DataBlock
      */
-    public DataBlock end(){
-        return new DataBlock(x_, end_, end_, inc_);
+    public DataBlock start() {
+        return new DataBlock(src, beg, beg, inc);
     }
 
+    /**
+     * Creates an empty DataBlock positioned at the current end. To be used with
+     * next/previous
+     *
+     * @return The new DataBlock
+     */
+    public DataBlock end() {
+        return new DataBlock(src, end, end, inc);
+    }
+
+//</editor-fold>
+//<editor-fold defaultstate="collapsed" desc="functional methods">
+    @Override
+    public double computeRecursively(DoubleBinaryOperator fn, final double initial) {
+        double cur = initial;
+        for (int i = beg; i != end; i += inc) {
+            cur = fn.applyAsDouble(cur, src[i]);
+        }
+        return cur;
+    }
+
+    @Override
+    public void apply(DoubleUnaryOperator fn) {
+        for (int i = beg; i != end; i += inc) {
+            src[i] = fn.applyAsDouble(src[i]);
+        }
+    }
+
+    @Override
+    public void applyIf(DoublePredicate pred, DoubleUnaryOperator fn) {
+        for (int i = beg; i != end; i += inc) {
+            double cur = src[i];
+            if (pred.test(cur)) {
+                src[i] = fn.applyAsDouble(cur);
+            }
+        }
+    }
+
+    @Override
+    public void applyRecursively(DoubleBinaryOperator fn, final double initial) {
+        double cur = initial;
+        for (int i = beg; i != end; i += inc) {
+            cur = fn.applyAsDouble(cur, src[i]);
+            src[i] = cur;
+        }
+    }
+
+    @Override
+    public boolean check(DoublePredicate pred) {
+        for (int i = beg; i != end; i += inc) {
+            if (!pred.test(src[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int count(DoublePredicate pred) {
+        int n = 0;
+        for (int i = beg; i != end; i += inc) {
+            if (pred.test(src[i])) {
+                n++;
+            }
+        }
+        return n;
+    }
+
+    @Override
+    public int first(DoublePredicate pred) {
+        for (int i = beg; i != end; i += inc) {
+            if (pred.test(src[i])) {
+                return (i - beg) / inc;
+            }
+        }
+        return getLength();
+    }
+
+    @Override
+    public int last(DoublePredicate pred) {
+        for (int i = end - inc; i != beg - inc; i -= inc) {
+            if (pred.test(src[i])) {
+                return (i - beg) / inc;
+            }
+        }
+        return -1;
+    }
+
+    public void apply(DoubleBinaryOperator fn, DataBlock x) {
+        for (int i = beg, j = x.beg; i != end; i += inc, j += inc) {
+            src[i] = fn.applyAsDouble(src[i], x.src[j]);
+        }
+    }
+
+    @Override
+    public void apply(DoubleBinaryOperator fn, IReadDataBlock x) {
+        for (int i = beg, j = 0; i != end; i += inc, j++) {
+            src[i] = fn.applyAsDouble(src[i], x.get(j));
+        }
+    }
+
+    @Override
+    public void set(DoubleSupplier fn) {
+        for (int i = beg; i != end; i += inc) {
+            src[i] = fn.getAsDouble();
+        }
+    }
+
+    @Override
+    public void set(IntToDoubleFunction fn) {
+        for (int i = beg, j = 0; i != end; i += inc) {
+            src[i] = fn.applyAsDouble(j++);
+        }
+    }
+
+    public void set(DoubleUnaryOperator fn, DataBlock x) {
+        for (int i = beg, j = x.beg; i != end; i += inc, j += x.inc) {
+            src[i] = fn.applyAsDouble(x.src[j]);
+        }
+    }
+
+    @Override
+    public void set(DoubleUnaryOperator fn, IReadDataBlock x) {
+        for (int i = beg, j = 0; i != end; i += inc, j++) {
+            src[i] = fn.applyAsDouble(x.get(j));
+        }
+    }
+
+    @Override
+    public void setIf(DoublePredicate pred, DoubleSupplier fn) {
+        for (int i = beg, j = 0; i != end; i += inc, j++) {
+            if (pred.test(src[i])) {
+                src[i] = fn.getAsDouble();
+            }
+        }
+
+    }
+
+    public void set(DoubleBinaryOperator fn, DataBlock x, DataBlock y) {
+        for (int i = beg, j = x.beg, k = y.beg; i != end; i += inc, j += x.inc, k += y.inc) {
+            src[i] = fn.applyAsDouble(x.src[j], y.src[k]);
+        }
+    }
+
+    @Override
+    public void set(DoubleBinaryOperator fn, IReadDataBlock x, IReadDataBlock y) {
+        for (int i = beg, j = 0; i != end; i += inc, j++) {
+            src[i] = fn.applyAsDouble(x.get(j), y.get(j));
+        }
+    }
+
+    public DataBlock select(DoublePredicate pred) {
+        DoubleList list = new DoubleList();
+        for (int i = beg; i != end; i += inc) {
+            double cur = src[i];
+            if (pred.test(cur)) {
+                list.add(cur);
+            }
+        }
+        return new DataBlock(list.toArray());
+    }
 //</editor-fold>
 
 }

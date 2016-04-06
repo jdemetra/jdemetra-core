@@ -16,12 +16,10 @@
  */
 package ec.tstoolkit.timeseries.simplets;
 
-import ec.tstoolkit.data.DescriptiveStatistics;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.TsException;
 import ec.tstoolkit.timeseries.TsPeriodSelector;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -121,7 +119,7 @@ public class TsDataTable {
             return TsDataTableInfo.Empty;
         }
         double data = m_data.get(seriesId).get(id - m_ids[seriesId]);
-        if (!DescriptiveStatistics.isFinite(data)) {
+        if (!Double.isFinite(data)) {
             return TsDataTableInfo.Missing;
         } else {
             return TsDataTableInfo.Valid;

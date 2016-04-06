@@ -31,6 +31,7 @@ import ec.tstoolkit.design.Development;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
+@Deprecated
 public interface IDataNormalizer {
     /**
      * Returns the scaling factor

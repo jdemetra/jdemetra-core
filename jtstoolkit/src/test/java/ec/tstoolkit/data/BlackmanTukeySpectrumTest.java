@@ -81,7 +81,7 @@ public class BlackmanTukeySpectrumTest {
 
         TsData ts = new TsData(TsFrequency.Monthly, 1995, 0, g_exports, true);
         ts = ts.delta(1);
-        DescriptiveStatistics ds = new DescriptiveStatistics(ts.getValues());
+        DescriptiveStatistics ds = new DescriptiveStatistics(ts);
         ts = ts.minus(ds.getAverage());
         TPeaks tpeaks = new TPeaks(ts);
 //        for (int i = 0; i < spectrum.length; ++i) {

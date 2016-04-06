@@ -151,19 +151,19 @@ public class StmProcessingFactory extends GenericSaProcessingFactory implements 
                 BsmMonitor monitor = new BsmMonitor();
                 monitor.setSpecification(decompositionSpec);
                 if (model == null) {
-                    if (monitor.process(input.getValues().internalStorage(), input.getFrequency().intValue())) {
+                    if (monitor.process(input.internalStorage(), input.getFrequency().intValue())) {
                         estimation = new StmEstimation(input, new TsVariableList(), monitor);
                     }
                 } else {
                     TsData y = model.description.transformedOriginal();
                     TsVariableList x = model.description.buildRegressionVariables();
                     if (x.isEmpty()) {
-                        if (monitor.process(y.getValues().internalStorage(), input.getFrequency().intValue())) {
+                        if (monitor.process(y.internalStorage(), input.getFrequency().intValue())) {
                             estimation = new StmEstimation(y, x, monitor);
                         }
                     } else {
                         Matrix mx = x.all().matrix(y.getDomain());
-                        if (monitor.process(y.getValues().internalStorage(), mx.subMatrix(), y.getFrequency().intValue())) {
+                        if (monitor.process(y.internalStorage(), mx.subMatrix(), y.getFrequency().intValue())) {
                             estimation = new StmEstimation(y, x, monitor);
                         }
                     }

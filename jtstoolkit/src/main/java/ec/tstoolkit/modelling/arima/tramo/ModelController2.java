@@ -280,7 +280,7 @@ public class ModelController2 implements IPreprocessingModule {
         try {
             ModelDescription md = context.description;
             TsData lin = new TsData(context.description.getEstimationDomain());
-            context.estimation.getRegArima().getY().copyTo(lin.getValues().internalStorage(), 0);
+            context.estimation.getRegArima().getY().copyTo(lin.internalStorage(), 0);
             TsData dlin = lin.delta(1);
             PeaksEnum[] peaks = Spect.SpectrumComputation(dlin);
             int d = md.getSpecification().getD();

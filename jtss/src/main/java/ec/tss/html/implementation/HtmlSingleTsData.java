@@ -126,7 +126,7 @@ public class HtmlSingleTsData implements IHtmlElement {
                 stream.write(HtmlTag.TABLECELL);
             }
             for (int i = 0; i < n; ++i) {
-                if (DescriptiveStatistics.isFinite(block.data.get(i))) {
+                if (Double.isFinite(block.data.get(i))) {
                     Formatter formatter = new Formatter();
                     formatter.format(fmt, block.data.get(i));
                     stream.write(HtmlTag.TABLECELL, formatter.toString());

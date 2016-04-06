@@ -110,7 +110,7 @@ public class MultiCholetteProcessor implements IProcessingFactory<MultiCholetteS
                 if (var.getDefinitionFrequency() != TsFrequency.Undefined && var.getDim() == 1){
                     TsDomain dom=domains.get(var.getDefinitionFrequency());
                     TsData data=new TsData(dom);
-                    List<DataBlock> singletonList = Collections.singletonList(new DataBlock(data.getValues().internalStorage()));
+                    List<DataBlock> singletonList = Collections.singletonList(new DataBlock(data.internalStorage()));
                     var.data(dom, singletonList);
                     bench.addInput(input.get(var), data);
                 }

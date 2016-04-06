@@ -1,5 +1,5 @@
 /*
-* Copyright 2013 National Bank of Belgium
+* Copyright 2016 National Bank of Belgium
 *
 * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
 * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -18,6 +18,7 @@
 package ec.tstoolkit.data;
 
 import ec.tstoolkit.design.Development;
+import java.text.DecimalFormat;
 
 /**
  *
@@ -90,16 +91,28 @@ public class ReadDataBlock implements IReadDataBlock {
 
     @Override
     public String toString() {
-        return convert(this);
+        return toString(this);
     }
     
-    public static String convert(IReadDataBlock rd){
+    public static String toString(IReadDataBlock rd){
         StringBuilder builder = new StringBuilder();
         int n=rd.getLength();
         if (n>0) {
             builder.append(rd.get(0));
             for (int i = 1; i <n; ++i) {
                 builder.append('\t').append(rd.get(i));
+           }
+        }
+        return builder.toString();
+    }
+    
+    public static String toString(IReadDataBlock rd, String fmt){
+        StringBuilder builder = new StringBuilder();
+        int n=rd.getLength();
+        if (n>0) {
+            builder.append(new DecimalFormat(fmt).format(rd.get(0)));
+            for (int i = 1; i <n; ++i) {
+                builder.append('\t').append(new DecimalFormat(fmt).format(rd.get(i)));
            }
         }
         return builder.toString();

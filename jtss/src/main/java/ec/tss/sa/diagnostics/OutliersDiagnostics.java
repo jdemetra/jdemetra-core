@@ -74,7 +74,7 @@ public final class OutliersDiagnostics implements IDiagnostics {
         TsData y = rslts.description.getOriginal();
         if (y == null)
             return;
-        n_ = y.getValues().getObsCount();
+        n_ = y.getObsCount();
         p_ = rslts.description.getPrespecifiedOutliers().size();
         o_ = rslts.description.getOutliers().size();
     }

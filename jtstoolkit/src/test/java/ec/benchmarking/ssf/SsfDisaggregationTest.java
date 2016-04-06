@@ -67,7 +67,7 @@ public class SsfDisaggregationTest {
         SsfArima ssf = new SsfArima(sarima);
         SsfDisaggregation disagg = new SsfDisaggregation(3, ssf);
         Cumulator cumul = new Cumulator(3);
-        double[] x = Data.P.getValues().internalStorage().clone();
+        double[] x = Data.P.internalStorage().clone();
         cumul.transform(x);
         for (int i = 0; i < x.length / 2; ++i) {
             if (i % 3 != 2) {
@@ -124,7 +124,7 @@ public class SsfDisaggregationTest {
     public void demoAirlineDecomposition() {
         Cumulator cumul = new Cumulator(3);
         TsData X = Data.P;
-        double[] x = X.getValues().internalStorage().clone();
+        double[] x = X.internalStorage().clone();
         cumul.transform(x);
         for (int i = 0; i < x.length; ++i) {
             if (i < x.length / 4 && i % 3 != 2) {

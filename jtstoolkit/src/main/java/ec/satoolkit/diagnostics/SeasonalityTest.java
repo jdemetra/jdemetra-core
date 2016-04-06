@@ -61,7 +61,7 @@ public class SeasonalityTest extends StatisticalTest {
 	double[] tmp = new double[yy * freq];
 	int f = cur.start.minus(ts.getStart());
 
-	double[] pdata = ts.getValues().internalStorage();
+	double[] pdata = ts.internalStorage();
 
 	for (int i = 0; i < tmp.length; i++)
 	    tmp[i] = Math.abs(pdata[f++] - xbar);
@@ -107,7 +107,7 @@ public class SeasonalityTest extends StatisticalTest {
      */
     public static SeasonalityTest stableSeasonality(TsData ts)
     {
-	double[] pdata = ts.getValues().internalStorage();
+	double[] pdata = ts.internalStorage();
 	// compute mean
 	double mm = 0;
 	for (int i = 0; i < pdata.length; i++)

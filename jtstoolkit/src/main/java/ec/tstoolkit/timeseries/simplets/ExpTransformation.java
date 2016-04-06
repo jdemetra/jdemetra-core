@@ -18,7 +18,8 @@
 package ec.tstoolkit.timeseries.simplets;
 
 import ec.tstoolkit.data.DataBlock;
-import ec.tstoolkit.design.Development;
+import ec.tstoolkit.design.Development;import ec.tstoolkit.timeseries.simplets.TsData;
+
 
 /**
  *
@@ -32,6 +33,7 @@ public class ExpTransformation implements ITsDataTransformation
      * 
      * @return
      */
+    @Override
     public ITsDataTransformation converse()
     {
 	return new LogTransformation();
@@ -43,11 +45,12 @@ public class ExpTransformation implements ITsDataTransformation
      * @param ljacobian
      * @return
      */
+    @Override
     public boolean transform(TsData data, LogJacobian ljacobian)
     {
-	data.getValues().exp();
+	data.apply(x->Math.exp(x));
 	if (ljacobian != null) {
-	    DataBlock rc = new DataBlock(data.getValues().internalStorage())
+	    DataBlock rc = new DataBlock(data.internalStorage())
 		    .range(ljacobian.start, ljacobian.end);
 	    ljacobian.value += rc.sum();
 	}

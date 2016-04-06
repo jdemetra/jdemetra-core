@@ -49,23 +49,17 @@ public class LinearProcessFiniteProperties {
 	if (m_lp == null || m_ff != null)
 	    return;
 	m_ff = new FiniteFilter[m_n];
-	double[][] ff = new double[m_n][];
-	for (int i = 0; i < m_n; ++i)
-	    ff[i] = new double[m_n];
+        int nc=m_lp.getOutputLength(m_n);
 
 	for (int i = 0; i < m_n; ++i) {
-	    double[] data = new double[m_n];
-	    data[i] = 1;
-	    double[] datac = m_lp.transform(new DataBlock(data));
-	    for (int j = 0; j < m_n; ++j)
-		ff[j][i] = datac[j];
+	    DataBlock data = new DataBlock(m_n);
+	    data.set(i, 1);
+            DataBlock datac=new DataBlock(nc);
+	    m_lp.transform(data, datac);
+            m_ff[i] = new FiniteFilter(datac.getData(), -i);
 	}
 
-	for (int i = 0; i < m_n; ++i) {
-	    // ff[i][i]+=1;
-	    m_ff[i] = new FiniteFilter(ff[i], -i);
-	}
-    }
+   }
 
     private void clear() {
 	m_ff = null;

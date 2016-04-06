@@ -82,7 +82,7 @@ public class X11Decomposer implements IDefaultSeriesDecomposer<X11Results> {
 
     private X11Specification prepareSpec(TsData s) {
         X11Specification spec = spec_.clone();
-        DescriptiveStatistics stats = new DescriptiveStatistics(s.getValues());
+        DescriptiveStatistics stats = new DescriptiveStatistics(s);
         boolean add = stats.isNegativeOrNull();
         if (add) {
             spec.setMode(DecompositionMode.Additive);

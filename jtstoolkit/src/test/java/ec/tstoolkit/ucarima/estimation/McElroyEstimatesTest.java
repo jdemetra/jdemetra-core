@@ -156,7 +156,7 @@ public class McElroyEstimatesTest {
         //        }
 
         // add forecasts
-        ec.tstoolkit.ssf.SsfData sdata = new ec.tstoolkit.ssf.SsfData(lin.getValues().internalStorage(), null);
+        ec.tstoolkit.ssf.SsfData sdata = new ec.tstoolkit.ssf.SsfData(lin.internalStorage(), null);
         ec.tstoolkit.ssf.ExtendedSsfData xsdata = new ec.tstoolkit.ssf.ExtendedSsfData(sdata);
         xsdata.setForecastsCount(nf);
 

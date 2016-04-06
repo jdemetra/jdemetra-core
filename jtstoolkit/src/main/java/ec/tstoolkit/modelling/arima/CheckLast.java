@@ -150,7 +150,7 @@ public class CheckLast {
      * The number of data depends on the "backCount" property
      */
     public double[] getValues() {
-        return fy_.getValues().internalStorage();
+        return fy_.internalStorage();
     }
 
     /**
@@ -160,7 +160,7 @@ public class CheckLast {
      * number of data depends on the "backCount" property
      */
     public double[] getActualValues() {
-        return y_.getValues().internalStorage();
+        return y_.internalStorage();
     }
 
     /**
@@ -170,7 +170,7 @@ public class CheckLast {
      * of data depends on the "backCount" property
      */
     public double[] getForecastsValues() {
-        return ofcasts_.getValues().internalStorage();
+        return ofcasts_.internalStorage();
     }
 
     /**
@@ -256,11 +256,11 @@ public class CheckLast {
         if (nz < Math.max(8, 3 * ifreq)) {
             return false;
         }
-        int nrepeat = y.getValues().getRepeatCount();
+        int nrepeat = y.getRepeatCount();
         if (nrepeat > MAX_REPEAT_COUNT * nz / 100) {
             return false;
         }
-        int nm = y.getValues().getMissingValuesCount();
+        int nm = y.getMissingValuesCount();
         if (nm > MAX_MISSING_COUNT * nz / 100) {
             return false;
         }

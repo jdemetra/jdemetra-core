@@ -106,7 +106,7 @@ public class NiidTests {
 	double[] d2 = new double[data.length];
 	for (int i = 0; i < d2.length; ++i) {
 	    double cur = data[i];
-	    if (DescriptiveStatistics.isFinite(cur))
+	    if (Double.isFinite(cur))
 		d2[i] = cur * cur;
 	    else
 		d2[i] = Double.NaN;

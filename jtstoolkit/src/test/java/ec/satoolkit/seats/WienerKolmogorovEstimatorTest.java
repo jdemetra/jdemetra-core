@@ -53,7 +53,7 @@ public class WienerKolmogorovEstimatorTest {
     @Test
     public void testAirline() {
         DefaultModelDecomposer decomposer = new DefaultModelDecomposer(false);
-        DescriptiveStatistics tstats = new DescriptiveStatistics(Data.X.getValues());
+        DescriptiveStatistics tstats = new DescriptiveStatistics(Data.X);
         double range = tstats.getMax() - tstats.getMin();
         for (int i = 1; i <= 19; i+=2) {
             for (int j = 1; j <= 19; j+=2) {

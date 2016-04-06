@@ -56,7 +56,7 @@ public class SeasonalityDetector2 implements ISeasonalityDetector {
         if (nlag >= n)
             return false;
         
-        double[] x=dy.getValues().internalStorage();
+        double[] x=dy.internalStorage();
         
         double c0=DescriptiveStatistics.cov(0, x);
         if (c0 == 0)

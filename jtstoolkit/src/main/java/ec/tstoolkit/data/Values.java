@@ -16,10 +16,8 @@
  */
 package ec.tstoolkit.data;
 
-import ec.tstoolkit.design.Development;
 import ec.tstoolkit.utilities.IntList;
 import java.util.Arrays;
-import static ec.tstoolkit.data.DescriptiveStatistics.isFinite;
 import ec.tstoolkit.utilities.Arrays2;
 
 /**
@@ -30,7 +28,7 @@ import ec.tstoolkit.utilities.Arrays2;
  * @author Jean Palate, Philippe Charles
  *
  */
-@Development(status = Development.Status.Alpha)
+@Deprecated
 public class Values implements IReadDataBlock, Cloneable {
     // / <summary>d + vals</summary>
     // / <returns>A new Values object (= d + vals).</returns>
@@ -56,7 +54,7 @@ public class Values implements IReadDataBlock, Cloneable {
     public static Values add(final Values vals, final double d) {
         Values nvals = new Values(vals.getLength());
         for (int i = 0; i < vals.getLength(); ++i) {
-            if (isFinite(vals.get(i))) {
+            if (Double.isFinite(vals.get(i))) {
                 nvals.set(i, vals.get(i) + d);
             }
         }
@@ -75,7 +73,7 @@ public class Values implements IReadDataBlock, Cloneable {
     public static Values divide(final double d, final Values vals) {
         Values nvals = new Values(vals.getLength());
         for (int i = 0; i < vals.getLength(); ++i) {
-            if (isFinite(vals.get(i)) && (vals.get(i) != 0)) {
+            if (Double.isFinite(vals.get(i)) && (vals.get(i) != 0)) {
                 nvals.set(i, d / vals.get(i));
             }
         }
@@ -94,7 +92,7 @@ public class Values implements IReadDataBlock, Cloneable {
         Values nvals = new Values(vals.getLength());
         if (d != 0) {
             for (int i = 0; i < vals.getLength(); ++i) {
-                if (isFinite(vals.get(i))) {
+                if (Double.isFinite(vals.get(i))) {
                     nvals.set(i, vals.get(i) / d);
                 }
             }
@@ -125,7 +123,7 @@ public class Values implements IReadDataBlock, Cloneable {
     public static Values multiply(final Values vals, final double d) {
         Values nvals = new Values(vals.getLength());
         for (int i = 0; i < vals.getLength(); ++i) {
-            if (isFinite(vals.get(i))) {
+            if (Double.isFinite(vals.get(i))) {
                 nvals.set(i, vals.get(i) * d);
             }
         }
@@ -141,7 +139,7 @@ public class Values implements IReadDataBlock, Cloneable {
     public static Values subtract(final double d, final Values vals) {
         Values nvals = new Values(vals.getLength());
         for (int i = 0; i < vals.getLength(); ++i) {
-            if (isFinite(vals.get(i))) {
+            if (Double.isFinite(vals.get(i))) {
                 nvals.set(i, d - vals.get(i));
             }
         }
@@ -159,7 +157,7 @@ public class Values implements IReadDataBlock, Cloneable {
     public static Values subtract(final Values vals, final double d) {
         Values nvals = new Values(vals.getLength());
         for (int i = 0; i < vals.getLength(); ++i) {
-            if (isFinite(vals.get(i))) {
+            if (Double.isFinite(vals.get(i))) {
                 nvals.set(i, vals.get(i) - d);
             }
         }
@@ -233,7 +231,7 @@ public class Values implements IReadDataBlock, Cloneable {
      */
     public void abs() {
         for (int i = 0; i < m_vals.length; ++i) {
-            if (isFinite(m_vals[i])) {
+            if (Double.isFinite(m_vals[i])) {
                 m_vals[i] = Math.abs(m_vals[i]);
             }
         }
@@ -250,7 +248,7 @@ public class Values implements IReadDataBlock, Cloneable {
             return;
         }
         for (int i = 0; i < m_vals.length; ++i) {
-            if (isFinite(m_vals[i])) {
+            if (Double.isFinite(m_vals[i])) {
                 m_vals[i] += d;
             }
         }
@@ -262,7 +260,7 @@ public class Values implements IReadDataBlock, Cloneable {
      * @param d
      */
     public void add(final int pos, final double d) {
-        if (isFinite(m_vals[pos])) {
+        if (Double.isFinite(m_vals[pos])) {
             m_vals[pos] += d;
         }
     }
@@ -273,7 +271,7 @@ public class Values implements IReadDataBlock, Cloneable {
      */
     public void chs() {
         for (int i = 0; i < m_vals.length; ++i) {
-            if (isFinite(m_vals[i])) {
+            if (Double.isFinite(m_vals[i])) {
                 m_vals[i] = -m_vals[i];
             }
         }
@@ -358,7 +356,7 @@ public class Values implements IReadDataBlock, Cloneable {
             return;
         }
         for (int i = 0; i < m_vals.length; ++i) {
-            if (isFinite(m_vals[i])) {
+            if (Double.isFinite(m_vals[i])) {
                 m_vals[i] /= d;
             }
         }
@@ -385,7 +383,7 @@ public class Values implements IReadDataBlock, Cloneable {
     public void exp() {
         m_nm = -1;
         for (int i = 0; i < m_vals.length; ++i) {
-            if (isFinite(m_vals[i])) {
+            if (Double.isFinite(m_vals[i])) {
                 m_vals[i] = Math.exp(m_vals[i]);
             }
         }
@@ -451,7 +449,7 @@ public class Values implements IReadDataBlock, Cloneable {
         if (m_nm < 0) {
             m_nm = 0;
             for (double element : m_vals) {
-                if (!isFinite(element)) {
+                if (!Double.isFinite(element)) {
                     ++m_nm;
                 }
             }
@@ -475,7 +473,7 @@ public class Values implements IReadDataBlock, Cloneable {
      */
     public int getRepeatCount() {
         int i = 0;
-        while ((i < m_vals.length) && !isFinite(m_vals[i])) {
+        while ((i < m_vals.length) && !Double.isFinite(m_vals[i])) {
             ++i;
         }
         if (i == m_vals.length) {
@@ -485,7 +483,7 @@ public class Values implements IReadDataBlock, Cloneable {
         double prev = m_vals[i++];
         for (; i < m_vals.length; ++i) {
             double cur = m_vals[i];
-            if (isFinite(cur)) {
+            if (Double.isFinite(cur)) {
                 if (cur == prev) {
                     ++c;
                 } else {
@@ -521,7 +519,7 @@ public class Values implements IReadDataBlock, Cloneable {
     public void inv() {
         m_nm = -1;
         for (int i = 0; i < m_vals.length; ++i) {
-            if (isFinite(m_vals[i])) {
+            if (Double.isFinite(m_vals[i])) {
                 if (m_vals[i] != 0) {
                     m_vals[i] = 1 / m_vals[i];
                 } else {
@@ -548,7 +546,7 @@ public class Values implements IReadDataBlock, Cloneable {
      * @return
      */
     public boolean isMissing(final int i) {
-        return !isFinite(m_vals[i]);
+        return !Double.isFinite(m_vals[i]);
     }
 
     // / <summary>X=log(X)</summary>
@@ -559,7 +557,7 @@ public class Values implements IReadDataBlock, Cloneable {
     public void log() {
         m_nm = -1;
         for (int i = 0; i < m_vals.length; ++i) {
-            if (isFinite(m_vals[i])) {
+            if (Double.isFinite(m_vals[i])) {
                 if (m_vals[i] > 0) {
                     m_vals[i] = Math.log(m_vals[i]);
                 } else {
@@ -583,7 +581,7 @@ public class Values implements IReadDataBlock, Cloneable {
         m_nm = -1;
         double c = Math.log(b);
         for (int i = 0; i < m_vals.length; ++i) {
-            if (isFinite(m_vals[i])) {
+            if (Double.isFinite(m_vals[i])) {
                 if (m_vals[i] > 0) {
                     m_vals[i] = Math.log(m_vals[i]) / c;
                 } else {
@@ -601,7 +599,7 @@ public class Values implements IReadDataBlock, Cloneable {
      */
     public int[] maxIndexes() {
         int i = 0;
-        while ((i < m_vals.length) && !isFinite(m_vals[i])) {
+        while ((i < m_vals.length) && !Double.isFinite(m_vals[i])) {
             ++i;
         }
         if (i == m_vals.length) {
@@ -612,7 +610,7 @@ public class Values implements IReadDataBlock, Cloneable {
         double curmax = m_vals[i++];
         indexes.add(i);
         for (; i < m_vals.length; ++i) {
-            if (!isFinite(m_vals[i])) {
+            if (!Double.isFinite(m_vals[i])) {
                 continue;
             }
             if (m_vals[i] > curmax) {
@@ -635,7 +633,7 @@ public class Values implements IReadDataBlock, Cloneable {
      */
     public int[] minIndexes() {
         int i = 0;
-        while ((i < m_vals.length) && !isFinite(m_vals[i])) {
+        while ((i < m_vals.length) && !Double.isFinite(m_vals[i])) {
             ++i;
         }
         if (i == m_vals.length) {
@@ -646,7 +644,7 @@ public class Values implements IReadDataBlock, Cloneable {
         double curmin = m_vals[i++];
         indexes.add(i);
         for (; i < m_vals.length; ++i) {
-            if (!isFinite(m_vals[i])) {
+            if (!Double.isFinite(m_vals[i])) {
                 continue;
             }
             if (m_vals[i] < curmin) {
@@ -672,7 +670,7 @@ public class Values implements IReadDataBlock, Cloneable {
             return;
         }
         for (int i = 0; i < m_vals.length; ++i) {
-            if (isFinite(m_vals[i])) {
+            if (Double.isFinite(m_vals[i])) {
                 m_vals[i] *= d;
             }
         }
@@ -684,7 +682,7 @@ public class Values implements IReadDataBlock, Cloneable {
      * @param d
      */
     public void mul(final int pos, final double d) {
-        if (isFinite(m_vals[pos])) {
+        if (Double.isFinite(m_vals[pos])) {
             m_vals[pos] *= d;
         }
     }
@@ -699,7 +697,7 @@ public class Values implements IReadDataBlock, Cloneable {
     public void pow(final double e) {
         m_nm = -1;
         for (int i = 0; i < m_vals.length; ++i) {
-            if (isFinite(m_vals[i])) {
+            if (Double.isFinite(m_vals[i])) {
                 m_vals[i] = Math.pow(m_vals[i], e);
             }
         }
@@ -714,7 +712,7 @@ public class Values implements IReadDataBlock, Cloneable {
             f *= 10;
         }
         for (int i = 0; i < m_vals.length; ++i) {
-            if (isFinite(m_vals[i])) {
+            if (Double.isFinite(m_vals[i])) {
                 double v = m_vals[i];
                 if (ndec > 0) {
                     m_vals[i] = Math.round(v * f) / f;
@@ -746,19 +744,19 @@ public class Values implements IReadDataBlock, Cloneable {
     public void scale(final double a, final double b) {
         if ((a != 1) && (b != 0)) {
             for (int i = 0; i < m_vals.length; ++i) {
-                if (isFinite(m_vals[i])) {
+                if (Double.isFinite(m_vals[i])) {
                     m_vals[i] = a * m_vals[i] + b;
                 }
             }
         } else if (b == 0) {
             for (int i = 0; i < m_vals.length; ++i) {
-                if (isFinite(m_vals[i])) {
+                if (Double.isFinite(m_vals[i])) {
                     m_vals[i] *= a;
                 }
             }
         } else {
             for (int i = 0; i < m_vals.length; ++i) {
-                if (isFinite(m_vals[i])) {
+                if (Double.isFinite(m_vals[i])) {
                     m_vals[i] += b;
                 }
             }
@@ -808,11 +806,11 @@ public class Values implements IReadDataBlock, Cloneable {
     public void setMissingValues(final double nv) {
         if (hasMissingValues()) {
             for (int i = 0; i < m_vals.length; ++i) {
-                if (!isFinite(m_vals[i])) {
+                if (!Double.isFinite(m_vals[i])) {
                     m_vals[i] = nv;
                 }
             }
-            if (isFinite(nv)) {
+            if (Double.isFinite(nv)) {
                 m_nm = 0;
             }
         }
@@ -829,7 +827,7 @@ public class Values implements IReadDataBlock, Cloneable {
             return;
         }
         for (int i = 0; i < m_vals.length; ++i) {
-            if (isFinite(m_vals[i])) {
+            if (Double.isFinite(m_vals[i])) {
                 m_vals[i] -= d;
             }
         }
@@ -841,7 +839,7 @@ public class Values implements IReadDataBlock, Cloneable {
     public void sqrt() {
         m_nm = -1;
         for (int i = 0; i < m_vals.length; ++i) {
-            if (DescriptiveStatistics.isFinite(m_vals[i])) {
+            if (Double.isFinite(m_vals[i])) {
                 if (m_vals[i] >= 0) {
                     m_vals[i] = Math.sqrt(m_vals[i]);
                 } else {
@@ -853,7 +851,7 @@ public class Values implements IReadDataBlock, Cloneable {
 
     @Override
     public String toString() {
-        return ReadDataBlock.convert(this);
+        return ReadDataBlock.toString(this);
     }
 
     @Override

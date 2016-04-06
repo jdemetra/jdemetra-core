@@ -78,7 +78,7 @@ public class ModelDescription implements Cloneable {
         } else {
             estimationDomain_ = original_.getDomain().intersection(eDomain);
         }
-        y0_ = original_.fittoDomain(estimationDomain_).getValues().internalStorage();
+        y0_ = original_.fittoDomain(estimationDomain_).internalStorage();
     }
 
     @Override
@@ -542,7 +542,7 @@ public class ModelDescription implements Cloneable {
         }
 
         logtransform_ = lj.value + logtransform0_;
-        y_ = tmp.getValues().internalStorage();
+        y_ = tmp.internalStorage();
     }
 
     public void setUnit(double unit) {
@@ -553,7 +553,7 @@ public class ModelDescription implements Cloneable {
             LogJacobian lj = new LogJacobian(diff, len);
             ConstTransformation.unit(units_).transform(tmp, lj);
             logtransform0_ = lj.value;
-            y0_ = tmp.getValues().internalStorage();
+            y0_ = tmp.internalStorage();
             invalidateData();
         }
     }
