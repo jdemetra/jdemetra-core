@@ -51,7 +51,7 @@ public final class SpreadSheetCollection implements Comparable<SpreadSheetCollec
     private final Map<String, Integer> map;
 
     public SpreadSheetCollection(@Nonnull String sheetName, int ordering, @Nonnull AlignType alignType, @Nonnull ImmutableList<SpreadSheetSeries> series) {
-        this(sheetName, ordering, alignType, series, new HashMap<String, Integer>());
+        this(sheetName, ordering, alignType, series, new HashMap<>());
     }
 
     private SpreadSheetCollection(String sheetName, int ordering, AlignType alignType, ImmutableList<SpreadSheetSeries> series, Map<String, Integer> map) {

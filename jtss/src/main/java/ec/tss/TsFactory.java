@@ -16,7 +16,6 @@
  */
 package ec.tss;
 
-import com.google.common.collect.Iterables;
 import ec.tstoolkit.MetaData;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.InterfaceLoader;
@@ -527,7 +526,7 @@ public class TsFactory {
      */
     @Nonnull
     public String[] getProviders() {
-        return Iterables.toArray(m_providers.keySet(), String.class);
+        return m_providers.keySet().stream().toArray(String[]::new);
     }
 
     /**

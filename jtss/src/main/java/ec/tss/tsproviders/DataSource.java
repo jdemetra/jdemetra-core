@@ -16,7 +16,6 @@
  */
 package ec.tss.tsproviders;
 
-import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
@@ -263,22 +262,10 @@ public final class DataSource implements IConfig, Serializable {
                 throw Throwables.propagate(ex);
             }
         }
-        final static Function<DataSourceBean, DataSource> FROM_BEAN = new Function<DataSourceBean, DataSource>() {
-            @Override
-            public DataSource apply(DataSourceBean input) {
-                return input.toId();
-            }
-        };
-        final static Function<DataSource, DataSourceBean> TO_BEAN = new Function<DataSource, DataSourceBean>() {
-            @Override
-            public DataSourceBean apply(DataSource input) {
-                return input.toBean();
-            }
-        };
 
-        final Parsers.Parser<DataSource> defaultParser = Parsers.<DataSourceBean>onJAXB(BEAN_CONTEXT).compose(FROM_BEAN);
-        final Formatters.Formatter<DataSource> defaultFormatter = Formatters.<DataSourceBean>onJAXB(BEAN_CONTEXT, false).compose(TO_BEAN);
-        final Formatters.Formatter<DataSource> formattedOutputFormatter = Formatters.<DataSourceBean>onJAXB(BEAN_CONTEXT, true).compose(TO_BEAN);
+        final Parsers.Parser<DataSource> defaultParser = Parsers.<DataSourceBean>onJAXB(BEAN_CONTEXT).compose(DataSourceBean::toId);
+        final Formatters.Formatter<DataSource> defaultFormatter = Formatters.<DataSourceBean>onJAXB(BEAN_CONTEXT, false).compose(DataSource::toBean);
+        final Formatters.Formatter<DataSource> formattedOutputFormatter = Formatters.<DataSourceBean>onJAXB(BEAN_CONTEXT, true).compose(DataSource::toBean);
     }
 
     private static final String SCHEME = "demetra";

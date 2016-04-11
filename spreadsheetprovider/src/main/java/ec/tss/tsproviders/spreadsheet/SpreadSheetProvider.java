@@ -16,7 +16,6 @@
  */
 package ec.tss.tsproviders.spreadsheet;
 
-import com.google.common.collect.Ordering;
 import ec.tss.TsAsyncMode;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
@@ -128,12 +127,12 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
             return Collections.emptyList();
         }
 
-        List<SpreadSheetCollection> tmp = Ordering.natural().sortedCopy(ws.collections.values());
+        SpreadSheetCollection[] tmp = ws.collections.values().stream().sorted().toArray(SpreadSheetCollection[]::new);
 
-        DataSet[] children = new DataSet[tmp.size()];
+        DataSet[] children = new DataSet[tmp.length];
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
         for (int i = 0; i < children.length; i++) {
-            Y_SHEETNAME.set(builder, tmp.get(i).sheetName);
+            Y_SHEETNAME.set(builder, tmp[i].sheetName);
             children[i] = builder.build();
         }
         return Arrays.asList(children);
@@ -160,12 +159,12 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
             return Collections.emptyList();
         }
 
-        List<SpreadSheetSeries> tmp = Ordering.natural().sortedCopy(col.series);
+        SpreadSheetSeries[] tmp = col.series.stream().sorted().toArray(SpreadSheetSeries[]::new);
 
-        DataSet[] children = new DataSet[tmp.size()];
+        DataSet[] children = new DataSet[tmp.length];
         DataSet.Builder builder = DataSet.builder(parent, DataSet.Kind.SERIES);
         for (int i = 0; i < children.length; i++) {
-            Z_SERIESNAME.set(builder, tmp.get(i).seriesName);
+            Z_SERIESNAME.set(builder, tmp[i].seriesName);
             children[i] = builder.build();
         }
         return Arrays.asList(children);
@@ -177,10 +176,12 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
         //info.moniker.setName();
         info.type = TsInformationType.All;
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
-        for (SpreadSheetCollection o : Ordering.natural().sortedCopy(source.collections.values())) {
-            Y_SHEETNAME.set(builder, o.sheetName);
-            info.items.addAll(getAll(builder.build(), o));
-        }
+        source.collections.values().stream()
+                .sorted()
+                .forEach(o -> {
+                    Y_SHEETNAME.set(builder, o.sheetName);
+                    info.items.addAll(getAll(builder.build(), o));
+                });
     }
 
     @Override

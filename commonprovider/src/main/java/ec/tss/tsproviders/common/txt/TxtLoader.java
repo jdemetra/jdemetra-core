@@ -18,10 +18,10 @@ package ec.tss.tsproviders.common.txt;
 
 import au.com.bytecode.opencsv.CSVParser;
 import au.com.bytecode.opencsv.CSVReader;
-import com.google.common.collect.ImmutableList;
 import ec.tss.tsproviders.common.txt.TxtBean.Delimiter;
 import ec.tss.tsproviders.common.txt.TxtBean.TextQualifier;
 import ec.tss.tsproviders.utils.DataFormat;
+import ec.tss.tsproviders.utils.IParser;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tss.tsproviders.utils.Parsers;
 import java.io.File;
@@ -134,11 +134,11 @@ final class TxtLoader {
     private static final ThreadLocal<Parsers.Parser<Date>> FALLBACK_PARSER = new ThreadLocal<Parsers.Parser<Date>>() {
         @Override
         protected Parsers.Parser<Date> initialValue() {
-            ImmutableList.Builder<Parsers.Parser<Date>> list = ImmutableList.builder();
-            for (String o : FALLBACK_FORMATS) {
-                list.add(new DataFormat(Locale.ROOT, o, null).dateParser());
+            IParser<Date>[] list = new IParser[FALLBACK_FORMATS.length];
+            for (int i = 0; i < list.length; i++) {
+                list[i] = new DataFormat(Locale.ROOT, FALLBACK_FORMATS[i], null).dateParser();
             }
-            return Parsers.firstNotNull(list.build());
+            return Parsers.firstNotNull(list);
         }
     };
     // fallback formats; order matters!

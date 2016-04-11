@@ -16,7 +16,6 @@
  */
 package ec.tss.tsproviders.common.tsw;
 
-import com.google.common.collect.ImmutableList;
 import ec.tss.TsAsyncMode;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
@@ -30,6 +29,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,13 +116,13 @@ public class TswProvider extends AbstractFileLoader<TswSource, TswBean> {
     public List<DataSet> children(DataSource dataSource) throws IllegalArgumentException, IOException {
         support.check(dataSource);
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
-        ImmutableList.Builder<DataSet> result = ImmutableList.builder();
-        for (TswSeries series : getSource(dataSource).items) {
-            Z_FILENAME.set(builder, series.fileName);
-            Z_NAME.set(builder, series.name);
-            result.add(builder.build());
-        }
-        return result.build();
+        return getSource(dataSource).items.stream()
+                .map(o -> {
+                    Z_FILENAME.set(builder, o.fileName);
+                    Z_NAME.set(builder, o.name);
+                    return builder.build();
+                })
+                .collect(Collectors.toList());
     }
 
     @Override

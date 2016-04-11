@@ -36,13 +36,12 @@ public final class TypeNames {
     @Nonnull
     public static Map<Integer, String> getTypeNames() {
         Map<Integer, String> result = new HashMap<>();
-        Field[] fields = java.sql.Types.class.getFields();
-        for (int i = 0; i < fields.length; i++) {
+        for (Field field : java.sql.Types.class.getFields()) {
             try {
-                String name = fields[i].getName();
-                Integer value = (Integer) fields[i].get(null);
+                String name = field.getName();
+                Integer value = (Integer) field.get(null);
                 result.put(value, name);
-            } catch (IllegalAccessException ex) {
+            }catch (IllegalAccessException ex) {
                 // do nothing
             }
         }

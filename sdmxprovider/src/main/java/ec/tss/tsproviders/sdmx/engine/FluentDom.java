@@ -18,11 +18,13 @@ package ec.tss.tsproviders.sdmx.engine;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Maps;
 import java.util.AbstractList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
+import javax.annotation.Nonnull;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -38,56 +40,73 @@ public final class FluentDom {
         // static class
     }
 
+    @Nonnull
+    public static Stream<Node> asStream(@Nonnull NodeList list) {
+        return asList(list).stream();
+    }
+
+    @Nonnull
+    public static Stream<Node> asStream(@Nonnull NamedNodeMap map) {
+        return asList(map).stream();
+    }
+
+    @Deprecated
     public static FluentIterable<Node> elementsByTagName(Document doc, String tagname) {
-        return asIterable(doc.getElementsByTagName(tagname));
+        return FluentIterable.from(asList(doc.getElementsByTagName(tagname)));
     }
 
+    @Deprecated
     public static FluentIterable<Node> childNodes(Node node) {
-        return asIterable(node.getChildNodes());
+        return FluentIterable.from(asList(node.getChildNodes()));
     }
 
+    @Deprecated
     public static FluentIterable<Node> attributes(Node node) {
-        return asIterable(node.getAttributes());
+        return FluentIterable.from(asList(node.getAttributes()));
     }
 
     @Deprecated
     public static Predicate<Node> nodeNameEndsWith(final String suffix) {
-        return new Predicate<Node>() {
-            @Override
-            public boolean apply(Node input) {
-                String name = input.getNodeName();
-                return name.endsWith(suffix);
-            }
-        };
+        return o -> o.getNodeName().endsWith(suffix);
     }
 
+    @Deprecated
     public static Predicate<Node> nodeNameEqualTo(String nodeName) {
-        return Predicates.compose(Predicates.equalTo(nodeName), toNodeName());
+        return nodeName != null
+                ? o -> nodeName.equals(o.getNodeName())
+                : o -> o == null;
     }
 
+    @Deprecated
     public static Predicate<Node> localNameEqualTo(String localName) {
-        return Predicates.compose(Predicates.equalTo(localName), toLocalName());
+        return localName != null
+                ? o -> localName.equals(o.getLocalName())
+                : o -> o == null;
     }
 
+    @Deprecated
     public static Function<Node, NamedNodeMap> toAttributes() {
-        return TO_ATTRIBUTES;
+        return Node::getAttributes;
     }
 
+    @Deprecated
     public static Function<Node, String> toNodeName() {
-        return TO_NODE_NAME;
+        return Node::getNodeName;
     }
 
+    @Deprecated
     public static Function<Node, String> toLocalName() {
-        return TO_LOCAL_NAME;
+        return Node::getLocalName;
     }
 
+    @Deprecated
     public static Function<Node, Map.Entry<String, String>> toMapEntry() {
-        return TO_MAP_ENTRY;
+        return o -> Maps.immutableEntry(o.getNodeName(), o.getNodeValue());
     }
 
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
-    private static FluentIterable<Node> asIterable(final NodeList list) {
-        return FluentIterable.from(new AbstractList<Node>() {
+    private static List<Node> asList(NodeList list) {
+        return new AbstractList<Node>() {
             @Override
             public Node get(int index) {
                 return list.item(index);
@@ -97,11 +116,11 @@ public final class FluentDom {
             public int size() {
                 return list.getLength();
             }
-        });
+        };
     }
 
-    private static FluentIterable<Node> asIterable(final NamedNodeMap map) {
-        return FluentIterable.from(new AbstractList<Node>() {
+    private static List<Node> asList(NamedNodeMap map) {
+        return new AbstractList<Node>() {
             @Override
             public Node get(int index) {
                 return map.item(index);
@@ -111,35 +130,7 @@ public final class FluentDom {
             public int size() {
                 return map.getLength();
             }
-        });
+        };
     }
-
-    private static final Function<Node, NamedNodeMap> TO_ATTRIBUTES = new Function<Node, NamedNodeMap>() {
-        @Override
-        public NamedNodeMap apply(Node input) {
-            return input.getAttributes();
-        }
-    };
-
-    private static final Function<Node, String> TO_NODE_NAME = new Function<Node, String>() {
-        @Override
-        public String apply(Node input) {
-            return input.getNodeName();
-        }
-    };
-
-    private static final Function<Node, String> TO_LOCAL_NAME = new Function<Node, String>() {
-        @Override
-        public String apply(Node input) {
-            return input.getLocalName();
-        }
-    };
-
-    private static final Function<Node, Map.Entry<String, String>> TO_MAP_ENTRY = new Function<Node, Map.Entry<String, String>>() {
-        @Override
-        public Map.Entry<String, String> apply(Node o) {
-            return Maps.immutableEntry(o.getNodeName(), o.getNodeValue());
-        }
-    };
     //</editor-fold>
 }

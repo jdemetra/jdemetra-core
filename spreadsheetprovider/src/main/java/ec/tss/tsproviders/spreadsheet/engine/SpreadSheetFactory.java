@@ -16,11 +16,9 @@
  */
 package ec.tss.tsproviders.spreadsheet.engine;
 
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
 import ec.tss.TsInformationType;
@@ -37,7 +35,6 @@ import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import ec.tstoolkit.timeseries.simplets.TsDataTableInfo;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
-import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import ec.util.spreadsheet.Book;
 import ec.util.spreadsheet.Cell;
 import ec.util.spreadsheet.Sheet;
@@ -46,6 +43,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -100,11 +98,11 @@ public abstract class SpreadSheetFactory {
                 ArraySheet.Builder builder = ArraySheet.builder().name("dnd");
 
                 if (options.isShowTitle()) {
-                    builder.row(0, options.isShowDates() ? 1 : 0, Iterables.transform(col.items, TO_NAME));
+                    builder.row(0, options.isShowDates() ? 1 : 0, col.items.stream().map(o -> o.name).iterator());
                 }
 
                 if (options.isShowDates()) {
-                    builder.column(options.isShowTitle() ? 1 : 0, 0, Iterables.transform(table.getDomain(), options.isBeginPeriod() ? TO_FIRST_DAY : TO_LAST_DAY));
+                    builder.column(options.isShowTitle() ? 1 : 0, 0, StreamSupport.stream(table.getDomain().spliterator(), false).map(options.isBeginPeriod() ? o -> o.firstday().getTime() : o -> o.lastday().getTime()).iterator());
                 }
 
                 int firstRow = options.isShowTitle() ? 1 : 0;
@@ -474,27 +472,6 @@ public abstract class SpreadSheetFactory {
             return count > 0 && count > (other.maxIndex - other.minIndex + 1);
         }
     }
-
-    private static final Function<TsInformation, String> TO_NAME = new Function<TsInformation, String>() {
-        @Override
-        public String apply(TsInformation input) {
-            return input.name;
-        }
-    };
-
-    private static final Function<TsPeriod, Date> TO_FIRST_DAY = new Function<TsPeriod, Date>() {
-        @Override
-        public Date apply(TsPeriod input) {
-            return input.firstday().getTime();
-        }
-    };
-
-    private static final Function<TsPeriod, Date> TO_LAST_DAY = new Function<TsPeriod, Date>() {
-        @Override
-        public Date apply(TsPeriod input) {
-            return input.lastday().getTime();
-        }
-    };
 
     private static ArraySheet newArraySheet(String name, Matrix matrix) {
         ArraySheet.Builder result = ArraySheet.builder(matrix.getRowsCount(), matrix.getColumnsCount()).name(name);

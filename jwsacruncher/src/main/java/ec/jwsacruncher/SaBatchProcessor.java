@@ -16,10 +16,10 @@
  */
 package ec.jwsacruncher;
 
-import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import ec.tss.sa.SaItem;
 import ec.tstoolkit.algorithm.CompositeResults;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -85,7 +85,7 @@ public class SaBatchProcessor {
     }
 
     private List<Callable<String>> createTasks(Collection<SaItem> items) {
-        List<Callable<String>> result = Lists.newArrayListWithCapacity(items.size());
+        List<Callable<String>> result = new ArrayList(items.size());
         if (!items.isEmpty()) {
             for (final SaItem o : items) {
                 result.add(new Callable<String>() {

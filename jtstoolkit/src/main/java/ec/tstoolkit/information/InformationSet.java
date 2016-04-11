@@ -1016,12 +1016,15 @@ public final class InformationSet implements Cloneable {
                     }
                 } else {
                     // merge warnings and errors
-                    if (kv.getKey().equals(WARNINGS)) {
-                        this.addMessages(WARNINGS, (String[]) kv.getValue().obj);
-                    } else if (kv.getKey().equals(ERRORS)) {
-                        this.addMessages(ERRORS, (String[]) kv.getValue().obj);
-                    } else {
-                        return false;
+                    switch (kv.getKey()) {
+                        case WARNINGS:
+                            this.addMessages(WARNINGS, (String[]) kv.getValue().obj);
+                            break;
+                        case ERRORS:
+                            this.addMessages(ERRORS, (String[]) kv.getValue().obj);
+                            break;
+                        default:
+                            return false;
                     }
                 }
             }

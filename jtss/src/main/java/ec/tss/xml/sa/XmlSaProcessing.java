@@ -18,7 +18,6 @@
 
 package ec.tss.xml.sa;
 
-import com.google.common.collect.Iterables;
 import ec.satoolkit.ISaSpecification;
 import ec.tss.Ts;
 import ec.tss.TsFactory;
@@ -153,7 +152,7 @@ public class XmlSaProcessing implements IXmlConverter<SaProcessing> {
                 xitems[i++] = xitem;
             }
             items = xitems;
-            defaultMethods = Iterables.toArray(xdspecs, AbstractXmlSaSpecification.class);
+            defaultMethods = xdspecs.stream().toArray(AbstractXmlSaSpecification[]::new);
         }
     }
 }

@@ -449,14 +449,21 @@ public class MixedFrequenciesModelEstimation implements IProcResults {
         public Parameter retrieve(MixedFrequenciesModelEstimation source) {
             SarimaModel arima = source.getArima();
             int pos = -1;
-            if (name_.equals(ARIMA_PHI)) {
-                pos = arima.getPhiPosition(lag_);
-            } else if (name_.equals(ARIMA_BPHI)) {
-                pos = arima.getBPhiPosition(lag_);
-            } else if (name_.equals(ARIMA_TH)) {
-                pos = arima.getThetaPosition(lag_);
-            } else if (name_.equals(ARIMA_BTH)) {
-                pos = arima.getBThetaPosition(lag_);
+            switch (name_) {
+                case ARIMA_PHI:
+                    pos = arima.getPhiPosition(lag_);
+                    break;
+                case ARIMA_BPHI:
+                    pos = arima.getBPhiPosition(lag_);
+                    break;
+                case ARIMA_TH:
+                    pos = arima.getThetaPosition(lag_);
+                    break;
+                case ARIMA_BTH:
+                    pos = arima.getBThetaPosition(lag_);
+                    break;
+                default:
+                    break;
             }
             if (pos < 0) {
                 return null;

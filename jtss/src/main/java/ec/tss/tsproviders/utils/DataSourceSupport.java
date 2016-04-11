@@ -19,7 +19,6 @@ package ec.tss.tsproviders.utils;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
@@ -32,6 +31,7 @@ import ec.tstoolkit.utilities.Files2;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -49,7 +49,7 @@ public class DataSourceSupport {
 
     @Nonnull
     public static DataSourceSupport create(@Nonnull String providerName, @Nonnull Logger logger) {
-        return new DataSourceSupport(providerName, new LinkedHashSet<DataSource>(), DataSourceEventSupport.create(logger));
+        return new DataSourceSupport(providerName, new LinkedHashSet<>(), DataSourceEventSupport.create(logger));
     }
     protected final String providerName;
     protected final Set<DataSource> dataSources;
@@ -61,7 +61,7 @@ public class DataSourceSupport {
     public DataSourceSupport(@Nonnull String providerName, @Nonnull Set<DataSource> dataSources, @Nonnull DataSourceEventSupport eventSupport) {
         this.providerName = providerName;
         this.dataSources = dataSources;
-        this.dataSourcesAsList = Lists.newArrayList(dataSources);
+        this.dataSourcesAsList = new ArrayList(dataSources);
         this.eventSupport = eventSupport;
         this.providerNameConstraint = onProviderName(providerName);
         this.paths = new File[0];

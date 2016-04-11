@@ -16,7 +16,6 @@
  */
 package ec.tss.tsproviders.spreadsheet.engine;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import ec.tss.tsproviders.spreadsheet.facade.Book;
@@ -57,19 +56,7 @@ public final class SpreadSheetSource {
 
     @Deprecated
     public SpreadSheetSource(List<SpreadSheetCollection> list, String factoryName) {
-        this.collections = Maps.uniqueIndex(list, ToSheetName.INSTANCE);
+        this.collections = Maps.uniqueIndex(list, o -> o != null ? o.sheetName : null);
         this.factoryName = factoryName;
     }
-
-    //<editor-fold defaultstate="collapsed" desc="Internal implementation">
-    private static final class ToSheetName implements Function<SpreadSheetCollection, String> {
-
-        private static final ToSheetName INSTANCE = new ToSheetName();
-
-        @Override
-        public String apply(SpreadSheetCollection input) {
-            return input != null ? input.sheetName : null;
-        }
-    }
-    //</editor-fold>
 }

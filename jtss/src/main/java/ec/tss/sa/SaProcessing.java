@@ -17,7 +17,6 @@
 package ec.tss.sa;
 
 import com.google.common.collect.ForwardingList;
-import com.google.common.collect.Iterables;
 import ec.satoolkit.ISaSpecification;
 import ec.tss.Ts;
 import ec.tss.TsStatus;
@@ -150,7 +149,7 @@ public final class SaProcessing extends ForwardingList<SaItem> implements IDocum
 
     @Override
     public SaItem[] toArray() {
-        return Iterables.toArray(items_, SaItem.class);
+        return items_.stream().toArray(SaItem[]::new);
     }
 
     int nextKey() {

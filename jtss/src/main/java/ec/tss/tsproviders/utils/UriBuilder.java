@@ -13,16 +13,13 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.utils;
 
-import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
-import com.google.common.collect.FluentIterable;
 import ec.tstoolkit.design.IBuilder;
 import ec.tstoolkit.utilities.URLEncoder2;
 import java.io.UnsupportedEncodingException;
@@ -35,6 +32,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SortedMap;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -46,24 +44,15 @@ import javax.annotation.Nullable;
  */
 public final class UriBuilder implements IBuilder<URI> {
 
-    static final Splitter PATH_SLITTER = Splitter.on('/');
-    static final Splitter.MapSplitter KEY_VALUE_SPLITTER = Splitter.on('&').withKeyValueSeparator("=");
-    static final Function<String, String> URL_DECODER = new Function<String, String>() {
-        @Override
-        public String apply(String input) {
-            try {
-                return URLDecoder.decode(input, StandardCharsets.UTF_8.name());
-            } catch (UnsupportedEncodingException ex) {
-                throw Throwables.propagate(ex);
-            }
-        }
-    };
+    private static final Splitter PATH_SLITTER = Splitter.on('/');
+    private static final Splitter.MapSplitter KEY_VALUE_SPLITTER = Splitter.on('&').withKeyValueSeparator("=");
+
     // PROPERTIES
-    final String scheme;
-    final String host;
-    String[] path;
-    SortedMap<String, String> query;
-    SortedMap<String, String> fragment;
+    private final String scheme;
+    private final String host;
+    private String[] path;
+    private SortedMap<String, String> query;
+    private SortedMap<String, String> fragment;
 
     public UriBuilder(@Nonnull String scheme, @Nonnull String host) {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(scheme), "scheme can't be null or empty");
@@ -120,18 +109,18 @@ public final class UriBuilder implements IBuilder<URI> {
     @Override
     public URI build() {
         return URI.create(buildString());
-//        try {
-//            String pathString = path != null ? appendArray(new StringBuilder("/"), path, '/').toString() : null;
-//            String queryString = query != null ? appendMap(new StringBuilder(), query, '&', '=').toString() : null;
-//            String fragmentString = fragment != null ? appendMap(new StringBuilder(), fragment, '&', '=').toString() : null;
-//            return new URI(scheme, host, pathString, queryString, fragmentString);
-//        } catch (URISyntaxException ex) {
-//            throw new RuntimeException(ex);
-//        }
+    }
+
+    private static String decodeUrlUtf8(String o) {
+        try {
+            return URLDecoder.decode(o, StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException ex) {
+            throw Throwables.propagate(ex);
+        }
     }
 
     @Nonnull
-    static StringBuilder appendEntry(@Nonnull StringBuilder sb, @Nonnull Entry<String, String> o, char sep) {
+    private static StringBuilder appendEntry(@Nonnull StringBuilder sb, @Nonnull Entry<String, String> o, char sep) {
         URLEncoder2.encode(sb, o.getKey(), StandardCharsets.UTF_8);
         sb.append(sep);
         URLEncoder2.encode(sb, o.getValue(), StandardCharsets.UTF_8);
@@ -139,7 +128,7 @@ public final class UriBuilder implements IBuilder<URI> {
     }
 
     @Nonnull
-    static StringBuilder appendMap(@Nonnull StringBuilder sb, @Nonnull Map<String, String> keyValues, char sep1, char sep2) {
+    private static StringBuilder appendMap(@Nonnull StringBuilder sb, @Nonnull Map<String, String> keyValues, char sep1, char sep2) {
         if (!keyValues.isEmpty()) {
             Iterator<Entry<String, String>> iterator = keyValues.entrySet().iterator();
             appendEntry(sb, iterator.next(), sep2);
@@ -151,7 +140,7 @@ public final class UriBuilder implements IBuilder<URI> {
     }
 
     @Nonnull
-    static StringBuilder appendArray(@Nonnull StringBuilder sb, @Nonnull String[] array, char sep) {
+    private static StringBuilder appendArray(@Nonnull StringBuilder sb, @Nonnull String[] array, char sep) {
         if (array.length > 0) {
             int i = 0;
             URLEncoder2.encode(sb, array[i], StandardCharsets.UTF_8);
@@ -163,7 +152,7 @@ public final class UriBuilder implements IBuilder<URI> {
     }
 
     @Nonnull
-    static Map<String, String> transformKeyValues(@Nonnull Map<String, String> keyValues, @Nonnull Function<String, String> func) {
+    private static Map<String, String> transformKeyValues(@Nonnull Map<String, String> keyValues, @Nonnull Function<String, String> func) {
         Map<String, String> result = new HashMap<>();
         for (Entry<String, String> o : keyValues.entrySet()) {
             result.put(func.apply(o.getKey()), func.apply(o.getValue()));
@@ -174,18 +163,18 @@ public final class UriBuilder implements IBuilder<URI> {
     @Nullable
     public static String[] getPathArray(@Nonnull URI uri) {
         String path = uri.getRawPath();
-        return path != null && !path.isEmpty() ? FluentIterable.from(PATH_SLITTER.split(path.substring(1))).transform(URL_DECODER).toArray(String.class) : null;
+        return path != null && !path.isEmpty() ? PATH_SLITTER.splitToList(path.substring(1)).stream().map(UriBuilder::decodeUrlUtf8).toArray(String[]::new) : null;
     }
 
     @Nullable
     public static Map<String, String> getQueryMap(@Nonnull URI uri) {
         String query = uri.getRawQuery();
-        return query != null ? (query.isEmpty() ? Collections.<String, String>emptyMap() : transformKeyValues(KEY_VALUE_SPLITTER.split(query), URL_DECODER)) : null;
+        return query != null ? (query.isEmpty() ? Collections.emptyMap() : transformKeyValues(KEY_VALUE_SPLITTER.split(query), UriBuilder::decodeUrlUtf8)) : null;
     }
 
     @Nullable
     public static Map<String, String> getFragmentMap(@Nonnull URI uri) {
         String fragment = uri.getRawFragment();
-        return fragment != null ? (fragment.isEmpty() ? Collections.<String, String>emptyMap() : transformKeyValues(KEY_VALUE_SPLITTER.split(fragment), URL_DECODER)) : null;
+        return fragment != null ? (fragment.isEmpty() ? Collections.emptyMap() : transformKeyValues(KEY_VALUE_SPLITTER.split(fragment), UriBuilder::decodeUrlUtf8)) : null;
     }
 }

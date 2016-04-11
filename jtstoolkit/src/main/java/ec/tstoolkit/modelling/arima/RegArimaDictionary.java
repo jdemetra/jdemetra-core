@@ -27,7 +27,6 @@ import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.sarima.SarimaComponent;
 import ec.tstoolkit.stats.NiidTests;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
-import ec.tstoolkit.timeseries.regression.EasterVariable;
 import ec.tstoolkit.timeseries.regression.ICalendarVariable;
 import ec.tstoolkit.timeseries.regression.IEasterVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
@@ -124,7 +123,7 @@ public class RegArimaDictionary {
             return;
         }
         InformationSet linfo = info.subSet(LL);
-        linfo.set(BIC, Double.valueOf(statistics.BICC));
+        linfo.set(BIC, statistics.BICC);
     }
 
     private static void fill(SarimaComponent sarima, InformationSet info) {

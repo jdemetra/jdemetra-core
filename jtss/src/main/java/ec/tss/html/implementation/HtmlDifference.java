@@ -56,8 +56,9 @@ public class HtmlDifference extends AbstractHtmlElement implements IHtmlElement 
         stream.open(new HtmlTable(0, 630));
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableCell("", 150));
-        for (int i=0; i<names_.length; i++)
-            stream.write(new HtmlTableCell(names_[i], 40));
+        for (String names_1 : names_) {
+            stream.write(new HtmlTableCell(names_1, 40));
+        }
         stream.close(HtmlTag.TABLEROW);
 
         TsData data = diff_.getDifference(type_);

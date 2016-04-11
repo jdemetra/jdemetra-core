@@ -16,7 +16,6 @@
  */
 package ec.tss.tsproviders;
 
-import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSortedMap;
@@ -282,22 +281,10 @@ public final class DataSet implements IConfig, Serializable {
                 throw Throwables.propagate(ex);
             }
         }
-        final static Function<DataSetBean, DataSet> FROM_BEAN = new Function<DataSetBean, DataSet>() {
-            @Override
-            public DataSet apply(DataSetBean input) {
-                return input.toId();
-            }
-        };
-        final static Function<DataSet, DataSetBean> TO_BEAN = new Function<DataSet, DataSetBean>() {
-            @Override
-            public DataSetBean apply(DataSet input) {
-                return input.toBean();
-            }
-        };
 
-        final Parsers.Parser<DataSet> defaultParser = Parsers.<DataSetBean>onJAXB(BEAN_CONTEXT).compose(FROM_BEAN);
-        final Formatters.Formatter<DataSet> defaultFormatter = Formatters.<DataSetBean>onJAXB(BEAN_CONTEXT, false).compose(TO_BEAN);
-        final Formatters.Formatter<DataSet> formattedOutputFormatter = Formatters.<DataSetBean>onJAXB(BEAN_CONTEXT, true).compose(TO_BEAN);
+        final Parsers.Parser<DataSet> defaultParser = Parsers.<DataSetBean>onJAXB(BEAN_CONTEXT).compose(DataSetBean::toId);
+        final Formatters.Formatter<DataSet> defaultFormatter = Formatters.<DataSetBean>onJAXB(BEAN_CONTEXT, false).compose(DataSet::toBean);
+        final Formatters.Formatter<DataSet> formattedOutputFormatter = Formatters.<DataSetBean>onJAXB(BEAN_CONTEXT, true).compose(DataSet::toBean);
     }
 
     private static final String SCHEME = "demetra";
