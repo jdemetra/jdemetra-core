@@ -28,7 +28,9 @@ import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import java.util.*;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import javax.annotation.Nonnull;
 
 /**
  *
@@ -410,6 +412,11 @@ public final class TsCollection implements ITsIdentified, IDocumented,
     @Override
     public Iterator<Ts> iterator() {
         return m_ts.iterator();
+    }
+
+    @Nonnull
+    public Stream<Ts> stream() {
+        return m_ts.stream();
     }
 
     /**

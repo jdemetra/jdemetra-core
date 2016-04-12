@@ -39,6 +39,8 @@ import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * A TsData is a raw time series, containing only the actual data. TsData can
@@ -81,11 +83,6 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
             ++m_cur;
             searchNext();
             return new TsObservation(m_start.plus(m_cur), m_vals[m_cur]);
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
         }
 
         // Search the next non Missing value, from the current position
@@ -987,6 +984,10 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         return new TsIterator(this);
     }
 
+    public Stream<TsObservation> stream() {
+        return StreamSupport.stream(spliterator(), false);
+    }
+    
     /**
      * Returns this time series lagged by a given number of period.
      *

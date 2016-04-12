@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import ec.tstoolkit.design.Development;
+import java.util.stream.Stream;
 
 /**
  * 
@@ -166,8 +167,13 @@ public class TsWorkspace implements Iterable<TsCollection> {
 	return m_bRead;
     }
 
+    @Override
     public Iterator<TsCollection> iterator() {
 	return m_tsdata.iterator();
+    }
+    
+    public Stream<TsCollection> stream() {
+        return m_tsdata.stream();
     }
 
     /**
