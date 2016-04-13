@@ -17,6 +17,7 @@
 package ec.tss;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import ec.tss.tsproviders.utils.MultiLineNameUtil;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,49 +32,51 @@ import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public final class TsCollection implements ITsIdentified, IDocumented,
-        Iterable<Ts> {
+public final class TsCollection implements ITsIdentified, IDocumented, Iterable<Ts> {
 
     private final TsMoniker m_moniker;
     private final String m_name;
     private MetaData m_metadata;
-    private final List<Ts> m_ts = new ArrayList<>();
+    private final List<Ts> m_ts;
     private volatile TsInformationType m_info;
     private volatile Set<TsMoniker> m_set;
     private String m_invalidDataCause;
 
-    TsCollection(String name) {
+    TsCollection(@Nullable String name) {
         m_name = Strings.nullToEmpty(name);
         m_moniker = new TsMoniker();
+        m_metadata = null;
+        m_ts = new ArrayList<>();
         m_info = TsInformationType.UserDefined;
+        m_set = null;
+        m_invalidDataCause = null;
     }
 
-    TsCollection(String name, TsMoniker moniker) {
-        m_name = name;
+    TsCollection(@Nullable String name, @Nonnull TsMoniker moniker) {
+        m_name = Strings.nullToEmpty(name);
         m_moniker = moniker;
-        if (m_moniker.getSource() == null) {
-            m_info = TsInformationType.UserDefined;
-        } else {
-            m_info = TsInformationType.None;
-        }
+        m_metadata = null;
+        m_ts = new ArrayList<>();
+        m_info = m_moniker.getSource() == null ? TsInformationType.UserDefined : TsInformationType.None;
+        m_set = null;
+        m_invalidDataCause = null;
     }
 
-    TsCollection(String name, TsMoniker moniker, MetaData md, Iterable<Ts> ts) {
-        m_name = name;
+    TsCollection(@Nullable String name, @Nonnull TsMoniker moniker, @Nullable MetaData md, @Nullable Iterable<Ts> ts) {
+        m_name = Strings.nullToEmpty(name);
         m_moniker = moniker;
         m_metadata = md;
-        if (ts != null) {
-            for (Ts s : ts) {
-                m_ts.add(s);
-            }
-        }
+        m_ts = ts != null ? Lists.newArrayList(ts) : new ArrayList<>();
         m_info = TsInformationType.UserDefined;
+        m_set = null;
+        m_invalidDataCause = null;
     }
 
     @Override
@@ -649,6 +652,7 @@ public final class TsCollection implements ITsIdentified, IDocumented,
 
     /**
      * Search a series by its name
+     *
      * @param name The name of the series
      * @return The first series with the given name is returned
      */
@@ -746,10 +750,10 @@ public final class TsCollection implements ITsIdentified, IDocumented,
         synchronized (m_moniker) {
             String[] headers = new String[m_ts.size()];
             List<TsData> all = getAllData();
-            for (int i=0; i<headers.length; ++i){
-                headers[i]=MultiLineNameUtil.last(m_ts.get(i).getName());
+            for (int i = 0; i < headers.length; ++i) {
+                headers[i] = MultiLineNameUtil.last(m_ts.get(i).getName());
             }
-            TsDataTable table=new TsDataTable();
+            TsDataTable table = new TsDataTable();
             table.add(all);
             return table.toString(headers);
         }

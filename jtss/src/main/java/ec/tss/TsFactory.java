@@ -416,6 +416,9 @@ public class TsFactory {
     @Nonnull
     public TsCollection createTsCollection(@Nullable String name, @Nullable TsMoniker moniker, @Nullable MetaData md,
             @Nullable Iterable<Ts> ts) {
+        if (moniker == null) {
+            moniker = new TsMoniker();
+        }
         synchronized (m_collections) {
             WeakReference<TsCollection> wref = m_collections.get(moniker);
             if (wref != null) {
@@ -424,14 +427,12 @@ public class TsFactory {
                     return c;
                 } else {
                     c = new TsCollection(name, moniker, md, ts);
-                    m_collections.put(moniker, new WeakReference<>(
-                            c));
+                    m_collections.put(moniker, new WeakReference<>(c));
                     return c;
                 }
             } else {
                 TsCollection c = new TsCollection(name, moniker, md, ts);
-                m_collections.put(c.getMoniker(),
-                        new WeakReference<>(c));
+                m_collections.put(c.getMoniker(), new WeakReference<>(c));
                 return c;
             }
         }
