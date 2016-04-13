@@ -13,21 +13,20 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
-
+ */
 package ec.tss;
 
+import javax.annotation.Nonnull;
+
 /**
- * 
+ *
  * @author Jean Palate
  */
 public interface ITsIdentified {
-    /**
-     * 
-     * @return
-     */
 
+    @Nonnull
     public TsMoniker getMoniker();
+
+    @Nonnull
     public String getName();
 }
