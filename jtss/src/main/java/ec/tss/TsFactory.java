@@ -26,6 +26,7 @@ import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.LockSupport;
+import java.util.stream.Collector;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -206,11 +207,11 @@ public class TsFactory {
     private void cleanTSCollection() {
         synchronized (m_collections) {
             HashMap<TsMoniker, WeakReference<TsCollection>> tmp = new HashMap<>();
-            for (Entry<TsMoniker, WeakReference<TsCollection>> r : m_collections.entrySet()) {
-                if (r.getValue().get() != null) {
-                    tmp.put(r.getKey(), r.getValue());
+            m_collections.forEach((k, v) -> {
+                if (v.get() != null) {
+                    tmp.put(k, v);
                 }
-            }
+            });
             m_collections.clear();
             m_collections.putAll(tmp);
         }
@@ -220,10 +221,7 @@ public class TsFactory {
      *
      */
     public void clear() {
-        for (ITsProvider provider : m_providers.values()) {
-            provider.dispose();
-        }
-
+        m_providers.forEach((k, v) -> v.dispose());
         m_providers.clear();
     }
 
@@ -231,9 +229,7 @@ public class TsFactory {
      *
      */
     public void clearCache() {
-        for (ITsProvider provider : m_providers.values()) {
-            provider.clearCache();
-        }
+        m_providers.forEach((k, v) -> v.clearCache());
         cleanTSCollection();
         cleanTS();
     }
@@ -416,24 +412,27 @@ public class TsFactory {
     @Nonnull
     public TsCollection createTsCollection(@Nullable String name, @Nullable TsMoniker moniker, @Nullable MetaData md,
             @Nullable Iterable<Ts> ts) {
-        if (moniker == null) {
-            moniker = new TsMoniker();
-        }
         synchronized (m_collections) {
-            WeakReference<TsCollection> wref = m_collections.get(moniker);
-            if (wref != null) {
-                TsCollection c = wref.get();
-                if (c != null) {
-                    return c;
-                } else {
-                    c = new TsCollection(name, moniker, md, ts);
-                    m_collections.put(moniker, new WeakReference<>(c));
-                    return c;
-                }
-            } else {
-                TsCollection c = new TsCollection(name, moniker, md, ts);
+            if (moniker == null) {
+                TsCollection c = new TsCollection(name, new TsMoniker(), md, ts);
                 m_collections.put(c.getMoniker(), new WeakReference<>(c));
                 return c;
+            } else {
+                WeakReference<TsCollection> wref = m_collections.get(moniker);
+                if (wref != null) {
+                    TsCollection c = wref.get();
+                    if (c != null) {
+                        return c;
+                    } else {
+                        c = new TsCollection(name, moniker, md, ts);
+                        m_collections.put(c.getMoniker(), new WeakReference<>(c));
+                        return c;
+                    }
+                } else {
+                    TsCollection c = new TsCollection(name, moniker, md, ts);
+                    m_collections.put(c.getMoniker(), new WeakReference<>(c));
+                    return c;
+                }
             }
         }
     }
@@ -499,9 +498,7 @@ public class TsFactory {
      */
     public void dispose() {
         m_close = true;
-        for (ITsProvider provider : m_providers.values()) {
-            provider.dispose();
-        }
+        m_providers.forEach((k, v) -> v.dispose());
         cleaner.interrupt();
         notifications.notificationThread.interrupt();
     }
@@ -900,5 +897,13 @@ public class TsFactory {
      */
     public void useSynchronousNotifications(boolean value) {
         m_useSynchronousNotifications = value;
+    }
+
+    @Nonnull
+    public static Collector<Ts, ?, TsCollection> toTsCollection() {
+        return Collector.<Ts, List<Ts>, TsCollection>of(ArrayList::new, List::add, (l, r) -> {
+            l.addAll(r);
+            return l;
+        }, o -> TsFactory.instance.createTsCollection(null, null, null, o));
     }
 }

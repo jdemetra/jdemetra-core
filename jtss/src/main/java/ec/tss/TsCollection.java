@@ -19,7 +19,6 @@ package ec.tss;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import ec.tss.tsproviders.utils.MultiLineNameUtil;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,6 +28,7 @@ import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
@@ -168,10 +168,9 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
     }
 
     private void buildSet() {
-        m_set = new HashSet<>(m_ts.size());
-        for (Ts s : m_ts) {
-            m_set.add(s.getMoniker());
-        }
+        m_set = m_ts.stream()
+                .map(Ts::getMoniker)
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -488,9 +487,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
                 }
             }
             if (!tmp.isEmpty()) {
-                for (Ts s : tmp) {
-                    m_ts.remove(s);
-                }
+                m_ts.removeAll(tmp);
                 m_set = null;
                 rslt = tmp.size();
             }
@@ -725,9 +722,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
                         Ts s = TsFactory.instance.getTs(sinfo.moniker);
                         if (s != null) {
                             s.getMaster().update(sinfo);
-                            if (updated != null) {
-                                updated.add(s);
-                            }
+                            updated.add(s);
                         } else {
                             s = TsFactory.instance.createTs(sinfo);
                         }
