@@ -44,6 +44,7 @@ import java.util.Map;
  *
  * @author Jean Palate
  */
+@Deprecated
 public class MixedFrequenciesArimaProcessor implements IProcessingFactory<MixedFrequenciesSpecification, TsData[], CompositeResults> {
 
     public static final String FAMILY = GenericSaProcessingFactory.FAMILY;

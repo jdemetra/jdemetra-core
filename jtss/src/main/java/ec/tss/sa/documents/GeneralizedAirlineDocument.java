@@ -29,6 +29,7 @@ import ec.tstoolkit.algorithm.ProcessingContext;
  *
  * @author Jean Palate
  */
+@Deprecated
 public class GeneralizedAirlineDocument extends SaDocument<GeneralizedAirlineSpecification> implements Cloneable {
 
     public GeneralizedAirlineDocument() {

@@ -51,7 +51,7 @@ import java.util.Map;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Deprecated
 public class StmProcessingFactory extends GenericSaProcessingFactory implements IProcessingFactory<StmSpecification, TsData, CompositeResults> {
 
     public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, "Structural model", null);

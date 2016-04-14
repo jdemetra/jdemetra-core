@@ -37,7 +37,7 @@ import java.util.Map;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Deprecated
 public class MixedAirlineProcessingFactory extends GenericSaProcessingFactory implements IProcessingFactory<MixedAirlineSpecification, TsData, CompositeResults> {
     
     public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, "Mixed airline model", null);
