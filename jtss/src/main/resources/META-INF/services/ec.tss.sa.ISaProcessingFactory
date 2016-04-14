@@ -1,5 +1,2 @@
 ec.tss.sa.processors.TramoSeatsProcessor
 ec.tss.sa.processors.X13Processor
-ec.tss.sa.processors.StmProcessor
-ec.tss.sa.processors.GeneralizedAirlineProcessor
-ec.tss.sa.processors.MixedAirlineProcessor

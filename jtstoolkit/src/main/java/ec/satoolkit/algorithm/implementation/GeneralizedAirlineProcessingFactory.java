@@ -37,7 +37,7 @@ import java.util.Map;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Deprecated
 public class GeneralizedAirlineProcessingFactory extends GenericSaProcessingFactory implements IProcessingFactory<GeneralizedAirlineSpecification, TsData, CompositeResults> {
 
     public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, "Generalized airline model", null);

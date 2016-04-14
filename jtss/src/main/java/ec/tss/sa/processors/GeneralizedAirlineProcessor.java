@@ -40,6 +40,7 @@ import java.util.Map;
  *
  * @author Jean Palate
  */
+@Deprecated
 public class GeneralizedAirlineProcessor implements ISaProcessingFactory<GeneralizedAirlineSpecification> {
 
     public static final AlgorithmDescriptor DESCRIPTOR=GeneralizedAirlineProcessingFactory.DESCRIPTOR;

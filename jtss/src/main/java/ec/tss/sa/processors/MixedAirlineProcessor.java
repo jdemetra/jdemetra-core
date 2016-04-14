@@ -41,6 +41,7 @@ import java.util.Map;
  *
  * @author Jean Palate
  */
+@Deprecated
 public class MixedAirlineProcessor implements ISaProcessingFactory<MixedAirlineSpecification> {
 
     public static final AlgorithmDescriptor DESCRIPTOR=MixedAirlineProcessingFactory.DESCRIPTOR;

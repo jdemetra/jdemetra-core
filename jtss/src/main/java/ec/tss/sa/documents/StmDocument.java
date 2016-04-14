@@ -32,6 +32,7 @@ import ec.tstoolkit.modelling.DeterministicComponent;
  *
  * @author Jean Palate
  */
+@Deprecated
 public class StmDocument extends SaDocument<StmSpecification> implements Cloneable {
 
     public StmDocument() {

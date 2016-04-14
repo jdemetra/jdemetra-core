@@ -18,14 +18,12 @@
 package ec.tstoolkit.modelling.arima.tramo;
 import ec.tstoolkit.modelling.arima.ModelStatistics;
 
-import ec.tstoolkit.design.Development;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import java.util.Comparator;
 
 /**
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
 @Deprecated
 public class ModelComparator2 implements Comparator<PreprocessingModel> {
 
