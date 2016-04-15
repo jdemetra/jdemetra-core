@@ -41,10 +41,10 @@ public class RevisionAnalysisProcessorTest {
         spec.setOutOfSample(true);
         spec.setTargetFinal(false);
         TsCollection coll = TsFactory.instance.createTsCollection();
-        coll.add(TsFactory.instance.createTs("P", null, Data.P));
-        coll.add(TsFactory.instance.createTs("M1", null, Data.M1));
-        coll.add(TsFactory.instance.createTs("M2", null, Data.M2));
-        coll.add(TsFactory.instance.createTs("M3", null, Data.M3));
+        coll.quietAdd(TsFactory.instance.createTs("P", null, Data.P));
+        coll.quietAdd(TsFactory.instance.createTs("M1", null, Data.M1));
+        coll.quietAdd(TsFactory.instance.createTs("M2", null, Data.M2));
+        coll.quietAdd(TsFactory.instance.createTs("M3", null, Data.M3));
         IProcessing<TsCollection, CompositeResults> p = proc.generateProcessing(spec, null);
         CompositeResults rslt = p.process(coll);
 
