@@ -158,20 +158,7 @@ public abstract class SpreadSheetFactory {
         @Override
         public Table<?> toTable(Sheet sheet) {
             Table<Object> result = new Table<>(sheet.getRowCount(), sheet.getColumnCount());
-            for (int i = 0; i < sheet.getRowCount(); i++) {
-                for (int j = 0; j < sheet.getColumnCount(); j++) {
-                    Cell cell = sheet.getCell(i, j);
-                    if (cell != null) {
-                        if (cell.isDate()) {
-                            result.set(i, j, cell.getDate());
-                        } else if (cell.isNumber()) {
-                            result.set(i, j, cell.getNumber());
-                        } else if (cell.isString()) {
-                            result.set(i, j, cell.getString());
-                        }
-                    }
-                }
-            }
+            sheet.forEachValue(result::set);
             return result;
         }
 
@@ -184,9 +171,7 @@ public abstract class SpreadSheetFactory {
         static SpreadSheetSource parseSource(Book book, Context context) throws IOException {
             int sheetCount = book.getSheetCount();
             List<SpreadSheetCollection> result = new ArrayList<>(sheetCount);
-            for (int i = 0; i < sheetCount; i++) {
-                result.add(parseCollection(book.getSheet(i), i, context));
-            }
+            book.forEach((sheet, i) -> result.add(parseCollection(sheet, i, context)));
             return new SpreadSheetSource(result, "?");
         }
 

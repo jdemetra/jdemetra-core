@@ -18,6 +18,7 @@ package ec.util.spreadsheet.poi;
 
 import java.util.Date;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 
@@ -29,54 +30,77 @@ import org.apache.poi.ss.usermodel.DateUtil;
 final class PoiCell extends ec.util.spreadsheet.Cell {
 
     private Cell cell = null;
+    private Type type;
 
-    @Nonnull
+    @Nullable
     PoiCell withCell(@Nonnull Cell cell) {
         this.cell = cell;
-        return this;
+        this.type = getType(cell);
+        return type != null ? this : null;
     }
 
     @Override
     public String getString() {
+        if (!isString()) {
+            throw new UnsupportedOperationException();
+        }
         return cell.getStringCellValue();
     }
 
     @Override
     public Date getDate() {
+        if (!isDate()) {
+            throw new UnsupportedOperationException();
+        }
         return cell.getDateCellValue();
     }
 
     @Override
     public Number getNumber() {
-        return cell.getNumericCellValue();
-    }
-
-    private int getFinalType() {
-        int result = cell.getCellType();
-        return result != Cell.CELL_TYPE_FORMULA ? result : cell.getCachedFormulaResultType();
+        return getDouble();
     }
 
     @Override
     public boolean isNumber() {
-        return Cell.CELL_TYPE_NUMERIC == getFinalType();
+        return type == Type.NUMBER;
     }
 
     @Override
     public boolean isString() {
-        return Cell.CELL_TYPE_STRING == getFinalType();
+        return type == Type.STRING;
     }
 
     @Override
     public boolean isDate() {
-        switch (getFinalType()) {
-            case Cell.CELL_TYPE_STRING:
-                // would have thrown IllegalStateException in DateUtil#isCellDateFormatted(Cell)
-                return false;
-            case Cell.CELL_TYPE_BLANK:
-                // would have thrown NullPointerException in Cell#getDateCellValue()
-                return false;
-            default:
-                return DateUtil.isCellDateFormatted(cell);
+        return type == Type.DATE;
+    }
+
+    @Override
+    public Type getType() {
+        return type;
+    }
+
+    @Override
+    public double getDouble() throws UnsupportedOperationException {
+        if (!isNumber()) {
+            throw new UnsupportedOperationException();
         }
+        return cell.getNumericCellValue();
+    }
+
+    private static Type getType(Cell cell) {
+        switch (getFinalType(cell)) {
+            case Cell.CELL_TYPE_STRING:
+                return Type.STRING;
+            case Cell.CELL_TYPE_NUMERIC:
+                return DateUtil.isCellDateFormatted(cell) ? Type.DATE : Type.NUMBER;
+            default:
+                return null;
+        }
+    }
+
+    private static int getFinalType(Cell cell) {
+        int result = cell.getCellType();
+        return result != Cell.CELL_TYPE_FORMULA ? result : cell.getCachedFormulaResultType();
     }
 }

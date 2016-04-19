@@ -18,11 +18,6 @@ package ec.util.spreadsheet.helpers;
 
 import ec.util.spreadsheet.Cell;
 import ec.util.spreadsheet.Sheet;
-import static ec.util.spreadsheet.junit.CellMatcher.valueEqualTo;
-import static ec.util.spreadsheet.junit.SheetMatcher.nameEqualTo;
-import static ec.util.spreadsheet.junit.SheetMatcher.sameDimensionAs;
-import static ec.util.spreadsheet.junit.SpreadsheetAssert.assertCellValueEquals;
-import static ec.util.spreadsheet.junit.SpreadsheetAssert.assertSheetEquals;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,12 +25,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Date;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 /**
@@ -44,15 +39,15 @@ import org.junit.Test;
  */
 public class ArraySheetTest {
 
-    final String STRING = "a";
-    final Date DATE = new Date(1234);
-    final Number NUMBER = 12.34;
+    static final String STRING = "a";
+    static final Date DATE = new Date(1234);
+    static final Number NUMBER = 12.34;
 
-    Serializable[] sample() {
+    static Serializable[] sample() {
         return new Serializable[]{STRING, DATE, NUMBER, null};
     }
 
-    Serializable[] empty() {
+    static Serializable[] empty() {
         return new Serializable[]{};
     }
 
@@ -70,39 +65,33 @@ public class ArraySheetTest {
 
     @Test
     public void testGetName() {
-        assertThat(new ArraySheet("", 0, 0, empty(), false), nameEqualTo(""));
-        assertThat(new ArraySheet("hello", 2, 4, empty(), false), nameEqualTo("hello"));
+        assertThat(new ArraySheet("", 0, 0, empty(), false).getName()).isEqualTo("");
+        assertThat(new ArraySheet("hello", 2, 4, empty(), false).getName()).isEqualTo("hello");
     }
 
     @Test
     public void testGetCell() {
         ArraySheet sheet = new ArraySheet("hello", 2, 2, sample(), false);
-        assertThat(sheet.getCell(0, 0), valueEqualTo(STRING));
-        assertThat(sheet.getCell(0, 1), valueEqualTo(DATE));
-        assertThat(sheet.getCell(1, 0), valueEqualTo(NUMBER));
-        assertNull(sheet.getCell(1, 1));
-    }
-
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testGetCellIndexOutOfBoundsException() {
-        new ArraySheet("hello", 2, 2, sample(), false).getCell(2, 2);
+        assertThat(sheet.getCell(0, 0).getString()).isEqualTo(STRING);
+        assertThat(sheet.getCell(0, 1).getDate()).isEqualTo(DATE);
+        assertThat(sheet.getCell(1, 0).getNumber()).isEqualTo(NUMBER);
+        assertThat(sheet.getCell(1, 1)).isNull();
+        assertThatThrownBy(() -> sheet.getCell(-1, -1)).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> sheet.getCell(2, 2)).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
     public void testGetCellValue() {
         ArraySheet sheet = new ArraySheet("hello", 2, 2, sample(), false);
-        assertEquals(STRING, sheet.getCellValue(0, 0));
-        assertEquals(DATE, sheet.getCellValue(0, 1));
-        assertEquals(NUMBER, sheet.getCellValue(1, 0));
-        assertNull(sheet.getCellValue(1, 1));
+        assertThat(sheet.getCellValue(0, 0)).isEqualTo(STRING);
+        assertThat(sheet.getCellValue(0, 1)).isEqualTo(DATE);
+        assertThat(sheet.getCellValue(1, 0)).isEqualTo(NUMBER);
+        assertThat(sheet.getCellValue(1, 1)).isNull();
+        assertThatThrownBy(() -> sheet.getCellValue(-1, -1)).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> sheet.getCellValue(2, 2)).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testGetCellValueIndexOutOfBoundsException() {
-        ArraySheet sheet = new ArraySheet("hello", 2, 2, sample(), false);
-        sheet.getCellValue(2, 2);
-    }
-
+    @SuppressWarnings("null")
     @Test
     public void testRename() {
         ArraySheet sheet = new ArraySheet("hello", 2, 2, sample(), false);
@@ -110,25 +99,22 @@ public class ArraySheetTest {
         assertSame(sheet, sheet.rename("hello"));
         // new name
         ArraySheet other = sheet.rename("world");
-        assertThat(sheet, nameEqualTo("hello"));
-        assertThat(other, nameEqualTo("world"));
-        assertThat(other, sameDimensionAs(sheet));
+        assertThat(sheet.getName()).isEqualTo("hello");
+        assertThat(other.getName()).isEqualTo("world");
+        assertThat(other.getColumnCount()).isEqualTo(sheet.getColumnCount());
+        assertThat(other.getRowCount()).isEqualTo(sheet.getRowCount());
         assertCellValueEquals(sheet, other);
-    }
-
-    @Test(expected = NullPointerException.class)
-    @SuppressWarnings("null")
-    public void testRenameNullPointerException() {
-        new ArraySheet("hello", 2, 2, sample(), false).rename(null);
+        // null name
+        assertThatThrownBy(() -> sheet.rename(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
     public void testInv() {
         ArraySheet sheet = new ArraySheet("hello", 2, 2, sample(), false).inv();
-        assertThat(sheet.getCell(0, 0), valueEqualTo(STRING));
-        assertThat(sheet.getCell(1, 0), valueEqualTo(DATE));
-        assertThat(sheet.getCell(0, 1), valueEqualTo(NUMBER));
-        assertNull(sheet.getCell(1, 1));
+        assertThat(sheet.getCell(0, 0).getString()).isEqualTo(STRING);
+        assertThat(sheet.getCell(1, 0).getDate()).isEqualTo(DATE);
+        assertThat(sheet.getCell(0, 1).getNumber()).isEqualTo(NUMBER);
+        assertThat(sheet.getCell(1, 1)).isNull();
         assertSheetEquals(sheet, sheet.inv().inv());
     }
 
@@ -139,32 +125,7 @@ public class ArraySheetTest {
         assertNotSame(s1, ArraySheet.copyOf(s1));
         assertSheetEquals(s1, ArraySheet.copyOf(s1));
         // 2. copy of some other impl
-        Sheet s2 = new Sheet() {
-
-            final ArraySheet.FlyweightCell cell = new ArraySheet.FlyweightCell();
-            final Object[] values = sample();
-
-            @Override
-            public int getRowCount() {
-                return 2;
-            }
-
-            @Override
-            public int getColumnCount() {
-                return 2;
-            }
-
-            @Override
-            public Cell getCell(int rowIdx, int columnIdx) throws IndexOutOfBoundsException {
-                Object value = values[rowIdx * getColumnCount() + columnIdx];
-                return value != null ? cell.withValue(value) : null;
-            }
-
-            @Override
-            public String getName() {
-                return "fake";
-            }
-        };
+        Sheet s2 = new FakeSheet();
         assertNotSame(s2, ArraySheet.copyOf(s2));
         assertSheetEquals(s2, ArraySheet.copyOf(s2));
     }
@@ -223,5 +184,44 @@ public class ArraySheetTest {
         assertNotEquals(s.hashCode(), b.clear().row(1, 2, STRING, 123, DATE).build().hashCode());
         assertNotEquals(s.hashCode(), s.rename("new name").hashCode());
         assertEquals(s.hashCode(), b.clear().column(2, 1, STRING, 3.14, DATE).build().inv().hashCode());
+    }
+
+    private static void assertCellValueEquals(Sheet expected, Sheet actual) {
+        expected.forEachValue((i, j, v) -> assertEquals(CellRefHelper.getCellRef(i, j), v, actual.getCellValue(i, j)));
+        actual.forEachValue((i, j, v) -> assertEquals(CellRefHelper.getCellRef(i, j), v, expected.getCellValue(i, j)));
+    }
+
+    private static void assertSheetEquals(Sheet expected, Sheet actual) {
+        assertThat(actual.getName()).isEqualTo(expected.getName());
+        assertThat(actual.getColumnCount()).isEqualTo(expected.getColumnCount());
+        assertThat(actual.getRowCount()).isEqualTo(expected.getRowCount());
+        assertCellValueEquals(expected, actual);
+    }
+
+    private static final class FakeSheet extends Sheet {
+
+        private final ArraySheet.FlyweightCell cell = new ArraySheet.FlyweightCell();
+        private final Object[] values = sample();
+
+        @Override
+        public int getRowCount() {
+            return 2;
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 2;
+        }
+
+        @Override
+        public Cell getCell(int rowIdx, int columnIdx) throws IndexOutOfBoundsException {
+            Object value = values[rowIdx * getColumnCount() + columnIdx];
+            return value != null ? cell.withValue(value) : null;
+        }
+
+        @Override
+        public String getName() {
+            return "fake";
+        }
     }
 }

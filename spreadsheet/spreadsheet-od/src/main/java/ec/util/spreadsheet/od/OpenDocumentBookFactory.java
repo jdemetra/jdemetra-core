@@ -17,7 +17,6 @@
 package ec.util.spreadsheet.od;
 
 import ec.util.spreadsheet.Book;
-import ec.util.spreadsheet.Sheet;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,17 +69,12 @@ public class OpenDocumentBookFactory extends Book.Factory {
 
     private static SpreadSheet toOdSpreadSheet(Book book) throws IOException {
         SpreadSheet result = SpreadSheet.createEmpty(new DefaultTableModel());
-        for (int s = 0; s < book.getSheetCount(); s++) {
-            Sheet sheet = book.getSheet(s);
+        book.forEach((sheet, index) -> {
             org.jopendocument.dom.spreadsheet.Sheet odSheet = result.addSheet(sheet.getName());
             odSheet.setRowCount(sheet.getRowCount());
             odSheet.setColumnCount(sheet.getColumnCount());
-            for (int i = 0; i < sheet.getRowCount(); i++) {
-                for (int j = 0; j < sheet.getColumnCount(); j++) {
-                    odSheet.setValueAt(sheet.getCellValue(i, j), j, i);
-                }
-            }
-        }
+            sheet.forEachValue((i, j, v) -> odSheet.setValueAt(v, j, i));
+        });
         result.getSheet(0).detach();
         return result;
     }

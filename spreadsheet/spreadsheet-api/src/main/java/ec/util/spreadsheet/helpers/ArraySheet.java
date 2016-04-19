@@ -18,6 +18,7 @@ package ec.util.spreadsheet.helpers;
 
 import ec.util.spreadsheet.Cell;
 import ec.util.spreadsheet.Sheet;
+import ec.util.spreadsheet.SheetConsumer;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,6 +76,32 @@ public final class ArraySheet extends Sheet implements Serializable {
     public Cell getCell(int rowIndex, int columnIndex) throws IndexOutOfBoundsException {
         Object value = getCellValue(rowIndex, columnIndex);
         return value != null ? flyweightCell.withValue(value) : null;
+    }
+
+    @Override
+    public void forEach(SheetConsumer<? super Cell> action) {
+        Objects.requireNonNull(action);
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < columnCount; j++) {
+                Object value = getCellValue(i, j);
+                if (value != null) {
+                    action.accept(i, j, flyweightCell.withValue(value));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void forEachValue(SheetConsumer<? super Object> action) {
+        Objects.requireNonNull(action);
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < columnCount; j++) {
+                Object value = getCellValue(i, j);
+                if (value != null) {
+                    action.accept(i, j, value);
+                }
+            }
+        }
     }
 
     @Override
@@ -211,7 +238,7 @@ public final class ArraySheet extends Sheet implements Serializable {
 
         @Nonnull
         public Builder value(int row, int column, @Nullable Cell value) throws IndexOutOfBoundsException {
-            Object tmp = value == null ? null : value.isDate() ? value.getDate() : value.isNumber() ? value.getNumber() : value.isString() ? value.getString() : null;
+            Object tmp = value == null ? null : value.getValue();
             return value(row, column, (Object) tmp);
         }
 
@@ -280,11 +307,7 @@ public final class ArraySheet extends Sheet implements Serializable {
         int rowCount = sheet.getRowCount();
         int columnCount = sheet.getColumnCount();
         Serializable[] result = new Serializable[rowCount * columnCount];
-        for (int i = 0; i < rowCount; i++) {
-            for (int j = 0; j < columnCount; j++) {
-                result[i * columnCount + j] = (Serializable) sheet.getCellValue(i, j);
-            }
-        }
+        sheet.forEachValue((i, j, v) -> result[i * columnCount + j] = (Serializable) v);
         return result;
     }
 
@@ -316,17 +339,29 @@ public final class ArraySheet extends Sheet implements Serializable {
 
         @Override
         public Date getDate() {
-            return (Date) value;
+            try {
+                return (Date) value;
+            } catch (ClassCastException ex) {
+                throw new UnsupportedOperationException(ex);
+            }
         }
 
         @Override
         public Number getNumber() {
-            return (Number) value;
+            try {
+                return (Number) value;
+            } catch (ClassCastException ex) {
+                throw new UnsupportedOperationException(ex);
+            }
         }
 
         @Override
         public String getString() {
-            return (String) value;
+            try {
+                return (String) value;
+            } catch (ClassCastException ex) {
+                throw new UnsupportedOperationException(ex);
+            }
         }
 
         @Override

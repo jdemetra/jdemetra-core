@@ -16,7 +16,9 @@
  */
 package ec.util.spreadsheet.poi;
 
+import ec.util.spreadsheet.SheetConsumer;
 import java.util.Iterator;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -64,15 +66,61 @@ final class PoiSheet extends ec.util.spreadsheet.Sheet {
     @Override
     public ec.util.spreadsheet.Cell getCell(int rowIdx, int columnIdx) {
         Row row = sheet.getRow(rowIdx);
-        if (row == null) {
+        if (row != null) {
+            ec.util.spreadsheet.Cell result = lookupCell(row, columnIdx);
+            if (result != null) {
+                return result;
+            }
+            if (columnIdx < 0 || columnIdx >= columnCount) {
+                throw new IndexOutOfBoundsException();
+            }
             return null;
         }
-        Cell cell = row.getCell(columnIdx);
-        return cell != null ? flyweightCell.withCell(cell) : null;
+        if (rowIdx < 0 || rowIdx >= rowCount) {
+            throw new IndexOutOfBoundsException();
+        }
+        return null;
+    }
+
+    @Override
+    public void forEach(SheetConsumer<? super ec.util.spreadsheet.Cell> action) {
+        Objects.requireNonNull(action);
+        for (int i = 0; i < rowCount; i++) {
+            Row row = sheet.getRow(i);
+            if (row != null) {
+                for (int j = 0; j < columnCount; j++) {
+                    ec.util.spreadsheet.Cell cell = lookupCell(row, j);
+                    if (cell != null) {
+                        action.accept(i, j, cell);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void forEachValue(SheetConsumer<? super Object> action) {
+        Objects.requireNonNull(action);
+        for (int i = 0; i < rowCount; i++) {
+            Row row = sheet.getRow(i);
+            if (row != null) {
+                for (int j = 0; j < columnCount; j++) {
+                    ec.util.spreadsheet.Cell cell = lookupCell(row, j);
+                    if (cell != null) {
+                        action.accept(i, j, cell.getValue());
+                    }
+                }
+            }
+        }
     }
 
     @Override
     public String getName() {
         return sheet.getSheetName();
+    }
+
+    private ec.util.spreadsheet.Cell lookupCell(Row row, int j) {
+        Cell cell = row.getCell(j);
+        return cell != null ? flyweightCell.withCell(cell) : null;
     }
 }

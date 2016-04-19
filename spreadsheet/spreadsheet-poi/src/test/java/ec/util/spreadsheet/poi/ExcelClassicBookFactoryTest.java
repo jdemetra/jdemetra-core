@@ -16,8 +16,15 @@
  */
 package ec.util.spreadsheet.poi;
 
+import static ec.util.spreadsheet.Assertions.assertThat;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
  *
@@ -25,9 +32,20 @@ import org.junit.Test;
  */
 public class ExcelClassicBookFactoryTest {
 
+    @Rule
+    public TemporaryFolder temp = new TemporaryFolder();
+
     @Test
-    public void testLoadStore() throws IOException {
-        ExcelClassicBookFactory factory = new ExcelClassicBookFactory();
-        SpreadsheetAssert.assertLoadStore(factory, ExcelClassicBookFactoryTest.class.getResource("/Top5Browsers.xls"));
+    public void testCompliance() throws IOException {
+        File valid = createContent(temp.newFile("valid.xls"));
+        File invalid = temp.newFile("invalid.xls");
+        assertThat(new ExcelClassicBookFactory()).isCompliant(valid, invalid);
+    }
+
+    private static File createContent(File file) throws IOException {
+        try (InputStream stream = ExcelClassicBookFactoryTest.class.getResource("/Top5Browsers.xls").openStream()) {
+            Files.copy(stream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+        return file;
     }
 }

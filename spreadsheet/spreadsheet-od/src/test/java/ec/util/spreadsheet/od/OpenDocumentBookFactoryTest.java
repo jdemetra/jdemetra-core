@@ -16,7 +16,7 @@
  */
 package ec.util.spreadsheet.od;
 
-import ec.util.spreadsheet.Book;
+import static ec.util.spreadsheet.Assertions.assertThat;
 import ec.util.spreadsheet.helpers.ArrayBook;
 import ec.util.spreadsheet.helpers.ArraySheet;
 import java.io.File;
@@ -25,7 +25,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
@@ -36,13 +35,16 @@ import org.junit.rules.TemporaryFolder;
 public class OpenDocumentBookFactoryTest {
 
     @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    public TemporaryFolder temp = new TemporaryFolder();
 
     @Test
-    public void testStoreLoad2File() throws IOException {
+    public void testCompliance() throws IOException {
+        File valid = createContent(temp.newFile("valid.ods"));
+        File invalid = temp.newFile("invalid.ods");
+        assertThat(new OpenDocumentBookFactory()).isCompliant(valid, invalid);
+    }
 
-        File tmp = folder.newFile("test.ods");
-
+    private static File createContent(File file) throws IOException {
         Date jan2012 = new GregorianCalendar(2012, Calendar.JANUARY, 1).getTime();
 
         ArraySheet.Builder sheetBuilder = ArraySheet.builder();
@@ -52,10 +54,7 @@ public class OpenDocumentBookFactoryTest {
                 .sheet(sheetBuilder.clear().name("second").row(3, 0, "world", 123, jan2012).build())
                 .build();
 
-        OpenDocumentBookFactory factory = new OpenDocumentBookFactory();
-        factory.store(tmp, input);
-        try (Book output = factory.load(tmp)) {
-            assertEquals(input, ArrayBook.copyOf(output));
-        }
+        new OpenDocumentBookFactory().store(file, input);
+        return file;
     }
 }

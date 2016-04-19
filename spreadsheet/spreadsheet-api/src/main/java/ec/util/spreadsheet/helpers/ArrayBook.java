@@ -23,6 +23,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.ObjIntConsumer;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -48,6 +50,14 @@ public final class ArrayBook extends Book implements Serializable {
     @Override
     public ArraySheet getSheet(int sheetIndex) {
         return sheets[sheetIndex];
+    }
+
+    @Override
+    public void forEach(ObjIntConsumer<? super Sheet> action) {
+        Objects.requireNonNull(action);
+        for (int index = 0; index < getSheetCount(); index++) {
+            action.accept(getSheet(index), index);
+        }
     }
 
     @Override

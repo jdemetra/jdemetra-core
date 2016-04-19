@@ -20,13 +20,12 @@ import static ec.util.spreadsheet.Assertions.*;
 import ec.util.spreadsheet.helpers.ArrayBook;
 import ec.util.spreadsheet.helpers.ArraySheet;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.Optional;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
-import org.jsoup.Jsoup;
 import org.junit.Test;
 
 /**
@@ -37,26 +36,11 @@ public class XMLStreamBookWriterTest {
 
     @Test
     public void test() throws XMLStreamException, IOException {
-        ArrayBook book;
-        ArraySheet sheet;
+        XMLStreamBookWriter writer = new XMLStreamBookWriter(XMLOutputFactory.newInstance(), new SimpleDateFormat(), NumberFormat.getInstance(), StandardCharsets.UTF_8);
+        JsoupBookReader reader = new JsoupBookReader(Optional.empty(), "");
 
         ArrayBook input = ArraySheet.builder().name("hello").table(0, 0, new Object[][]{{"A1", "B1", "C1"}, {"A2", "B2"}}).build().toBook();
 
-        StringWriter html = new StringWriter();
-        XMLOutputFactory xof = XMLOutputFactory.newInstance();
-        XMLStreamWriter x = xof.createXMLStreamWriter(html);
-        XMLStreamBookWriter.write(x, input, new SimpleDateFormat(), NumberFormat.getInstance());
-
-        book = JsoupBookReader.read(Jsoup.parse(html.toString()));
-        assertThat(book).hasSheetCount(1);
-
-        sheet = book.getSheet(0);
-        assertThat(sheet).hasRowCount(2).hasColumnCount(3).hasName("hello");
-        assertThat(sheet.getCell(0, 0)).isString().hasString("A1");
-        assertThat(sheet.getCell(0, 1)).isString().hasString("B1");
-        assertThat(sheet.getCell(0, 2)).isString().hasString("C1");
-        assertThat(sheet.getCell(1, 0)).isString().hasString("A2");
-        assertThat(sheet.getCell(1, 1)).isString().hasString("B2");
-        assertThat(sheet.getCell(1, 2)).isNull();
+        assertThat(reader.read(writer.write(input))).hasSameContentAs(input, true);
     }
 }

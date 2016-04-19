@@ -18,10 +18,8 @@ package ec.util.spreadsheet.html;
 
 import static ec.util.spreadsheet.Assertions.*;
 import ec.util.spreadsheet.helpers.ArrayBook;
-import ec.util.spreadsheet.helpers.ArraySheet;
 import java.io.IOException;
-import javax.annotation.Nonnull;
-import org.jsoup.Jsoup;
+import java.util.Optional;
 import org.junit.Test;
 
 /**
@@ -30,60 +28,61 @@ import org.junit.Test;
  */
 public class JsoupBookReaderTest {
 
-    private static ArrayBook read(@Nonnull String html) {
-        return JsoupBookReader.read(Jsoup.parse(html));
-    }
-
     @Test
     public void testRead() throws IOException {
-        ArrayBook book;
-        ArraySheet sheet;
+        JsoupBookReader reader = new JsoupBookReader(Optional.empty(), "");
 
-        book = read("<html><body>");
+        ArrayBook book;
+
+        book = reader.read("<html><body>");
         assertThat(book).hasSheetCount(0);
 
-        book = read("<table>");
+        book = reader.read("<table>");
         assertThat(book).hasSheetCount(1);
 
-        book = read("<table></table><table>");
+        book = reader.read("<table></table><table>");
         assertThat(book).hasSheetCount(2);
 
-        book = read("<table><tr><td>A1</td>");
-        sheet = book.getSheet(0);
-        assertThat(sheet).hasRowCount(1).hasColumnCount(1);
+        book = reader.read("<table><tr><td>A1</td>");
+        assertThat(book.getSheet(0)).hasRowCount(1).hasColumnCount(1);
 
-        book = read("<table><tr><td>A1</td><td>B1</td>");
-        sheet = book.getSheet(0);
-        assertThat(sheet).hasRowCount(1).hasColumnCount(2);
-        assertThat(sheet.getCell(0, 0)).hasString("A1");
-        assertThat(sheet.getCell(0, 1)).hasString("B1");
+        book = reader.read("<table><tr><td>A1</td><td>B1</td>");
+        assertThat(book.getSheet(0))
+                .hasRowCount(1)
+                .hasColumnCount(2)
+                .hasCellValue(0, 0, "A1")
+                .hasCellValue(0, 1, "B1");
 
-        book = read("<table><tr><td>A1</td></tr><tr><td>A2</td>");
-        sheet = book.getSheet(0);
-        assertThat(sheet).hasRowCount(2).hasColumnCount(1);
-        assertThat(sheet.getCell(0, 0)).hasString("A1");
-        assertThat(sheet.getCell(1, 0)).hasString("A2");
+        book = reader.read("<table><tr><td>A1</td></tr><tr><td>A2</td>");
+        assertThat(book.getSheet(0))
+                .hasRowCount(2)
+                .hasColumnCount(1)
+                .hasCellValue(0, 0, "A1")
+                .hasCellValue(1, 0, "A2");
 
-        book = read("<table><tr><td></td></tr><tr><td>A2</td>");
-        sheet = book.getSheet(0);
-        assertThat(sheet).hasRowCount(2).hasColumnCount(1);
-        assertThat(sheet.getCell(0, 0)).isNull();
-        assertThat(sheet.getCell(1, 0)).hasString("A2");
+        book = reader.read("<table><tr><td></td></tr><tr><td>A2</td>");
+        assertThat(book.getSheet(0))
+                .hasRowCount(2)
+                .hasColumnCount(1)
+                .hasCellValue(0, 0, null)
+                .hasCellValue(1, 0, "A2");
 
-        book = read("<table><tr><td colspan=2>A1</td><td>C1</td>");
-        sheet = book.getSheet(0);
-        assertThat(sheet).hasRowCount(1).hasColumnCount(3);
-        assertThat(sheet.getCell(0, 0)).hasString("A1");
-        assertThat(sheet.getCell(0, 2)).hasString("C1");
+        book = reader.read("<table><tr><td colspan=2>A1</td><td>C1</td>");
+        assertThat(book.getSheet(0))
+                .hasRowCount(1)
+                .hasColumnCount(3)
+                .hasCellValue(0, 0, "A1")
+                .hasCellValue(0, 2, "C1");
 
-        book = read("<table><tr><td>A1</td><td rowspan=2>B1</td></tr> <tr><td>A2</td></tr> <tr><td>A3</td><td>B3</td></tr>");
-        sheet = book.getSheet(0);
-        assertThat(sheet).hasRowCount(3).hasColumnCount(2);
-        assertThat(sheet.getCell(0, 0)).hasString("A1");
-        assertThat(sheet.getCell(0, 1)).hasString("B1");
-        assertThat(sheet.getCell(1, 0)).hasString("A2");
-        assertThat(sheet.getCell(1, 1)).isNull();
-        assertThat(sheet.getCell(2, 0)).hasString("A3");
-        assertThat(sheet.getCell(2, 1)).hasString("B3");
+        book = reader.read("<table><tr><td>A1</td><td rowspan=2>B1</td></tr> <tr><td>A2</td></tr> <tr><td>A3</td><td>B3</td></tr>");
+        assertThat(book.getSheet(0))
+                .hasRowCount(3)
+                .hasColumnCount(2)
+                .hasCellValue(0, 0, "A1")
+                .hasCellValue(0, 1, "B1")
+                .hasCellValue(1, 0, "A2")
+                .hasCellValue(1, 1, null)
+                .hasCellValue(2, 0, "A3")
+                .hasCellValue(2, 1, "B3");
     }
 }

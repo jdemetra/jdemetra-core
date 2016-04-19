@@ -22,13 +22,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import javax.annotation.Nonnull;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  *
@@ -36,17 +37,22 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 final class XmlssBook extends Book {
 
-    private final List<Sheet> sheets;
-
-    public XmlssBook(InputStream stream) throws IOException {
+    @Nonnull
+    public static XmlssBook create(@Nonnull XMLReader reader, @Nonnull InputStream stream) throws IOException {
+        Objects.requireNonNull(stream);
         BookSax2EventHandler handler = new BookSax2EventHandler();
-        parse(handler, stream);
-        this.sheets = handler.build();
+        parse(reader, handler, stream);
+        return new XmlssBook(handler.build());
     }
 
-    private static void parse(ContentHandler handler, InputStream stream) throws IOException {
+    private final List<Sheet> sheets;
+
+    private XmlssBook(List<Sheet> sheets) {
+        this.sheets = sheets;
+    }
+
+    private static void parse(XMLReader reader, ContentHandler handler, InputStream stream) throws IOException {
         try {
-            XMLReader reader = XMLReaderFactory.createXMLReader();
             reader.setContentHandler(handler);
             reader.parse(new InputSource(stream));
         } catch (SAXException ex) {
@@ -72,7 +78,7 @@ final class XmlssBook extends Book {
         private static final String ROW_TAG = "Row";
         private static final String CELL_TAG = "Cell";
         private static final String DATA_TAG = "Data";
-        //
+
         private final List<Sheet> sheets;
         private int rowNum;
         private int colNum;

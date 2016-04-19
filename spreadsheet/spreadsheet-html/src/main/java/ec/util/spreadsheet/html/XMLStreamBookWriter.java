@@ -19,12 +19,18 @@ package ec.util.spreadsheet.html;
 import ec.util.spreadsheet.Book;
 import ec.util.spreadsheet.Cell;
 import ec.util.spreadsheet.Sheet;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.CharBuffer;
+import java.io.OutputStream;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -34,13 +40,50 @@ import javax.xml.stream.XMLStreamWriter;
  */
 final class XMLStreamBookWriter {
 
-    private XMLStreamBookWriter() {
-        // static class
-    }
-
     private static final String STYLE = getStyleContent();
 
-    public static void write(XMLStreamWriter w, Book book, DateFormat periodFormatter, NumberFormat valueFormatter) throws IOException, XMLStreamException {
+    private final XMLOutputFactory xof;
+    private final DateFormat periodFormatter;
+    private final NumberFormat valueFormatter;
+    private final Charset charset;
+
+    public XMLStreamBookWriter(@Nonnull XMLOutputFactory xof, @Nonnull DateFormat periodFormatter, @Nonnull NumberFormat valueFormatter, @Nonnull Charset charset) {
+        this.xof = xof;
+        this.periodFormatter = periodFormatter;
+        this.valueFormatter = valueFormatter;
+        this.charset = charset;
+    }
+
+    public void write(@Nonnull OutputStream stream, @Nonnull Book book) throws IOException {
+        try {
+            XMLStreamWriter writer = xof.createXMLStreamWriter(stream, charset.name());
+            try {
+                XMLStreamBookWriter.this.write(writer, book);
+            } finally {
+                writer.close();
+            }
+        } catch (XMLStreamException ex) {
+            throw new IOException(ex);
+        }
+    }
+
+    @Nonnull
+    public String write(@Nonnull Book book) throws IOException {
+        StringWriter result = new StringWriter();
+        try {
+            XMLStreamWriter writer = xof.createXMLStreamWriter(result);
+            try {
+                XMLStreamBookWriter.this.write(writer, book);
+            } finally {
+                writer.close();
+            }
+        } catch (XMLStreamException ex) {
+            throw new IOException(ex);
+        }
+        return result.toString();
+    }
+
+    private void write(XMLStreamWriter w, Book book) throws IOException, XMLStreamException {
         BasicHtmlWriter f = new BasicHtmlWriter(w);
         f.beginHtml();
         f.beginHead();
@@ -62,7 +105,7 @@ final class XMLStreamBookWriter {
                         if (cell.isDate()) {
                             f.writeCell(periodFormatter.format(cell.getDate()), false, "type-date");
                         } else if (cell.isNumber()) {
-                            f.writeCell(valueFormatter.format(cell.getNumber()), false, "type-number");
+                            f.writeCell(valueFormatter.format(cell.getDouble()), false, "type-number");
                         } else if (cell.isString()) {
                             f.writeCell(cell.getString(), false, "");
                         }
@@ -80,18 +123,11 @@ final class XMLStreamBookWriter {
 
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
     private static String getStyleContent() {
-        StringBuilder result = new StringBuilder();
-        try (InputStreamReader reader = new InputStreamReader(XMLStreamBookWriter.class.getResourceAsStream("/BasicStyle.css"), StandardCharsets.UTF_8)) {
-            CharBuffer buf = CharBuffer.allocate(0x800);
-            while (reader.read(buf) != -1) {
-                buf.flip();
-                result.append(buf);
-                buf.clear();
-            }
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(XMLStreamBookWriter.class.getResourceAsStream("/BasicStyle.css"), StandardCharsets.UTF_8))) {
+            return buffer.lines().collect(Collectors.joining("\n"));
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
-        return result.toString();
     }
 
     private static final class BasicHtmlWriter {

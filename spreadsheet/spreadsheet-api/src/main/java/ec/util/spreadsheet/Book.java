@@ -28,6 +28,8 @@ import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
+import java.util.function.ObjIntConsumer;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
@@ -66,6 +68,30 @@ public abstract class Book implements Closeable {
      */
     @Nonnull
     abstract public Sheet getSheet(@Nonnegative int index) throws IOException, IndexOutOfBoundsException;
+
+    /**
+     * Performs the given action for each sheet of the book until all sheets
+     * have been processed or an exception has been thrown.
+     *
+     * @implSpec
+     * <p>
+     * The default implementation behaves as if:<pre>{@code
+     *     for (int index = 0; index < getSheetCount(); index++) {
+     *         action.accept(getSheet(index), index);
+     *     }
+     * }</pre>
+     *
+     * @param action The action to be performed for each sheet
+     * @throws NullPointerException if the specified action is null
+     * @throws IOException if something goes wrong during loading
+     * @since 2.2.0
+     */
+    public void forEach(@Nonnull ObjIntConsumer<? super Sheet> action) throws IOException {
+        Objects.requireNonNull(action);
+        for (int index = 0; index < getSheetCount(); index++) {
+            action.accept(getSheet(index), index);
+        }
+    }
 
     /**
      * Closes this book and releases any resources associated with it.

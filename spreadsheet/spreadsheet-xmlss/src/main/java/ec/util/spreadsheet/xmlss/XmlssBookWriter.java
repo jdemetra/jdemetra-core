@@ -20,7 +20,12 @@ import ec.util.spreadsheet.Book;
 import ec.util.spreadsheet.Cell;
 import ec.util.spreadsheet.Sheet;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+import javax.annotation.Nonnull;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 /**
  *
@@ -28,11 +33,29 @@ import javax.xml.stream.XMLStreamException;
  */
 final class XmlssBookWriter {
 
-    private XmlssBookWriter() {
-        // static class
+    private final XMLOutputFactory xof;
+    private final Charset charset;
+
+    public XmlssBookWriter(@Nonnull XMLOutputFactory xof, @Nonnull Charset charset) {
+        this.xof = xof;
+        this.charset = charset;
     }
 
-    public static void write(BasicXmlssWriter f, Book book) throws IOException, XMLStreamException {
+    public void write(@Nonnull OutputStream stream, @Nonnull Book book) throws IOException {
+        try {
+            XMLStreamWriter w = xof.createXMLStreamWriter(stream, charset.name());
+            try {
+                write(new BasicXmlssWriter(w), book);
+            } finally {
+                w.close();
+            }
+        } catch (XMLStreamException ex) {
+            throw new IOException(ex);
+        }
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="Implementation details">
+    private static void write(BasicXmlssWriter f, Book book) throws IOException, XMLStreamException {
         f.beginWorkbook();
         int sheetCount = book.getSheetCount();
         for (int s = 0; s < sheetCount; s++) {
@@ -41,7 +64,7 @@ final class XmlssBookWriter {
         f.endWorkbook();
     }
 
-    public static void write(BasicXmlssWriter f, Sheet sheet) throws XMLStreamException {
+    private static void write(BasicXmlssWriter f, Sheet sheet) throws XMLStreamException {
         f.beginWorksheet(sheet.getName());
         f.beginTable();
         int rowCount = sheet.getRowCount();
@@ -57,12 +80,12 @@ final class XmlssBookWriter {
         f.endWorksheet();
     }
 
-    public static void write(BasicXmlssWriter f, Cell cell) throws XMLStreamException {
+    private static void write(BasicXmlssWriter f, Cell cell) throws XMLStreamException {
         if (cell != null) {
             if (cell.isDate()) {
                 f.writeCell(cell.getDate());
             } else if (cell.isNumber()) {
-                f.writeCell(cell.getNumber().doubleValue());
+                f.writeCell(cell.getDouble());
             } else if (cell.isString()) {
                 f.writeCell(cell.getString());
             }
@@ -70,4 +93,5 @@ final class XmlssBookWriter {
             f.writeCell();
         }
     }
+    //</editor-fold>
 }

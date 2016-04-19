@@ -50,13 +50,10 @@ final class PoiBookWriter {
     }
 
     private void copy(ec.util.spreadsheet.Book source) throws IOException {
-        for (int s = 0; s < source.getSheetCount(); s++) {
-            ec.util.spreadsheet.Sheet sheet = source.getSheet(s);
-            copy(sheet, workbook.createSheet(sheet.getName()));
-        }
+        source.forEach((sheet, index) -> copy(sheet, workbook.createSheet(sheet.getName())));
     }
 
-    private void copy(ec.util.spreadsheet.Sheet source, Sheet target) throws IOException {
+    private void copy(ec.util.spreadsheet.Sheet source, Sheet target) {
         for (int i = 0; i < source.getRowCount(); i++) {
             Row row = target.createRow(i);
             for (int j = 0; j < source.getColumnCount(); j++) {
@@ -71,12 +68,12 @@ final class PoiBookWriter {
         }
     }
 
-    private void copy(ec.util.spreadsheet.Cell source, Cell target) throws IOException {
+    private void copy(ec.util.spreadsheet.Cell source, Cell target) {
         if (source.isDate()) {
             target.setCellValue(source.getDate());
             target.setCellStyle(dateStyle);
         } else if (source.isNumber()) {
-            target.setCellValue(source.getNumber().doubleValue());
+            target.setCellValue(source.getDouble());
         } else if (source.isString()) {
             target.setCellValue(source.getString());
         }
