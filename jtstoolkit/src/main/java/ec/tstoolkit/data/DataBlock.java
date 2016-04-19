@@ -83,6 +83,20 @@ public final class DataBlock implements IDataBlock, Cloneable {
         }
         return new DataBlock(d);
     }
+    
+    /**
+     * Creates a copy of the given read only data.
+     * @param data The data being copied. May be null or empty.
+     * @return A new DataBlock is always returned. May be EMPTY
+     */
+    public static DataBlock of(IReadDataBlock data){
+        if (data == null || data.getLength() == 0)
+            return EMPTY;
+        else{
+            return new DataBlock(data);
+        }
+    }
+    
     final double[] src;
     final int inc;
     int beg, end;
@@ -105,7 +119,7 @@ public final class DataBlock implements IDataBlock, Cloneable {
      *
      * @param data The array of src
      */
-    public DataBlock(final double[] data) {
+     public DataBlock(final double[] data) {
         this.src = data;
         beg = 0;
         inc = 1;
@@ -2101,6 +2115,19 @@ public final class DataBlock implements IDataBlock, Cloneable {
         }
         return new DataBlock(list.toArray());
     }
+    
+    public static DataBlock select(IReadDataBlock data, DoublePredicate pred) {
+        DoubleList list = new DoubleList();
+        int n=data.getLength();
+        for (int i = 0; i<n; ++i) {
+            double cur = data.get(i);
+            if (pred.test(cur)) {
+                list.add(cur);
+            }
+        }
+        return new DataBlock(list.toArray());
+    }
+
 //</editor-fold>
 
 }
