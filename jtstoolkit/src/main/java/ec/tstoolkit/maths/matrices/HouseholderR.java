@@ -17,6 +17,8 @@
 package ec.tstoolkit.maths.matrices;
 
 import ec.tstoolkit.data.DataBlock;
+import ec.tstoolkit.data.IDataBlock;
+import ec.tstoolkit.data.IReadDataBlock;
 
 /**
  * Householder transformation with partial pivoting. R-like
@@ -300,7 +302,7 @@ public class HouseholderR extends AbstractLinearSystemSolver implements
     }
 
     @Override
-    public void leastSquares(DataBlock x, DataBlock b, DataBlock res) throws MatrixException {
+    public void leastSquares(IReadDataBlock x, IDataBlock b, IDataBlock res) {
         double[] x_ = m_.data_;
         double[] y = new double[x.getLength()];
         x.copyTo(y, 0);

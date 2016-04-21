@@ -17,6 +17,8 @@
 package ec.tstoolkit.maths.matrices;
 
 import ec.tstoolkit.data.DataBlock;
+import ec.tstoolkit.data.IDataBlock;
+import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.design.Development;
 
 /**
@@ -221,7 +223,7 @@ public class Householder extends AbstractLinearSystemSolver implements
     // / <returns>The solution b as an array of double</returns>
     // /
     @Override
-    public void leastSquares(DataBlock x, DataBlock b, DataBlock res) {
+    public void leastSquares(IReadDataBlock x, IDataBlock b, IDataBlock res) {
 	// if (x.Length != m_m)
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         // if (!IsFullRank)
