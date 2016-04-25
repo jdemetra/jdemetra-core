@@ -25,10 +25,14 @@ import java.nio.file.AccessDeniedException;
 import java.nio.file.FileSystemException;
 import java.nio.file.NoSuchFileException;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nonnull;
 import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  *
@@ -36,19 +40,19 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
  */
 public class ExcelBookFactory extends Book.Factory {
 
-    private boolean fast;
+    private final AtomicBoolean fast;
 
     public ExcelBookFactory() {
-        this.fast = true;
+        this.fast = new AtomicBoolean(true);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters/Setters">
     public void setFast(boolean fast) {
-        this.fast = fast;
+        this.fast.set(fast);
     }
 
     public boolean isFast() {
-        return fast;
+        return fast.get();
     }
     //</editor-fold>
 
@@ -67,7 +71,7 @@ public class ExcelBookFactory extends Book.Factory {
     public Book load(File file) throws IOException {
         checkFile(file);
         try {
-            return fast ? FastPoiBook.create(file) : PoiBook.create(file);
+            return fast.get() ? FastPoiBook.create(createXMLReader(), file) : PoiBook.create(file);
         } catch (OpenXML4JException | InvalidOperationException ex) {
             throw new IOException(ex);
         }
@@ -76,7 +80,7 @@ public class ExcelBookFactory extends Book.Factory {
     @Override
     public Book load(InputStream stream) throws IOException {
         try {
-            return fast ? FastPoiBook.create(stream) : PoiBook.create(stream);
+            return fast.get() ? FastPoiBook.create(createXMLReader(), stream) : PoiBook.create(stream);
         } catch (OpenXML4JException ex) {
             throw new IOException(ex);
         }
@@ -104,5 +108,14 @@ public class ExcelBookFactory extends Book.Factory {
             throw new AccessDeniedException(file.getPath());
         }
         return file;
+    }
+
+    @Nonnull
+    private static XMLReader createXMLReader() throws IOException {
+        try {
+            return XMLReaderFactory.createXMLReader();
+        } catch (SAXException ex) {
+            throw new IOException("While creating XmlReader", ex);
+        }
     }
 }

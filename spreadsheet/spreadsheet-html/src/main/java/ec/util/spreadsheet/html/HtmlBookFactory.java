@@ -26,10 +26,8 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.Optional;
 import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
-import org.jsoup.Jsoup;
 
 /**
  *
@@ -55,12 +53,12 @@ public class HtmlBookFactory extends Book.Factory {
 
     @Override
     public Book load(File file) throws IOException {
-        return JsoupBookReader.read(Jsoup.parse(file, null));
+        return newReader().read(file);
     }
 
     @Override
     public Book load(InputStream stream) throws IOException {
-        return JsoupBookReader.read(Jsoup.parse(stream, null, ""));
+        return newReader().read(stream);
     }
 
     @Override
@@ -71,23 +69,20 @@ public class HtmlBookFactory extends Book.Factory {
 
     @Override
     public void store(OutputStream stream, Book book) throws IOException {
-        try {
-            XMLStreamWriter w = xof.createXMLStreamWriter(stream, StandardCharsets.UTF_8.name());
-            XMLStreamBookWriter.write(w, book, getPeriodFormatter(), getValueFormatter());
-            w.close();
-        } catch (XMLStreamException ex) {
-            throw new IOException(ex);
-        }
+        newWriter().write(stream, book);
     }
 
-    private DateFormat getPeriodFormatter() {
-        return new SimpleDateFormat("yyyy-MM-dd");
+    //<editor-fold defaultstate="collapsed" desc="Internal implementation">
+    private JsoupBookReader newReader() {
+        return new JsoupBookReader(Optional.empty(), "");
     }
 
-    private NumberFormat getValueFormatter() {
-        NumberFormat result = NumberFormat.getNumberInstance(Locale.ROOT);
-        result.setMaximumFractionDigits(9);
-        result.setMaximumIntegerDigits(12);
-        return result;
+    private XMLStreamBookWriter newWriter() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.ROOT);
+        numberFormat.setMaximumFractionDigits(9);
+        numberFormat.setMaximumIntegerDigits(12);
+        return new XMLStreamBookWriter(xof, dateFormat, numberFormat, StandardCharsets.UTF_8);
     }
+    //</editor-fold>
 }

@@ -16,6 +16,7 @@
  */
 package ec.util.spreadsheet;
 
+import java.util.Objects;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,20 +33,83 @@ import javax.annotation.Nullable;
 //@FacadePattern
 public abstract class Sheet {
 
+    /**
+     * Returns the number of rows contained in this sheet.
+     *
+     * @return a row count
+     */
     @Nonnegative
     abstract public int getRowCount();
 
+    /**
+     * Returns the number of columns contained in this sheet.
+     *
+     * @return a column count
+     */
     @Nonnegative
     abstract public int getColumnCount();
 
+    /**
+     * Returns the cell located at the specified position.
+     *
+     * @param rowIdx a zero-based row index
+     * @param columnIdx a zero-based column index
+     * @return a cell if available, null otherwise
+     * @throws IndexOutOfBoundsException if the position is out of bounds
+     */
     @Nullable
     abstract public Cell getCell(@Nonnegative int rowIdx, @Nonnegative int columnIdx) throws IndexOutOfBoundsException;
 
+    /**
+     * Returns the cell value located at the specified position.
+     *
+     * @param rowIdx a zero-based row index
+     * @param columnIdx a zero-based column index
+     * @return a value if available, null otherwise
+     * @throws IndexOutOfBoundsException if the position is out of bounds
+     */
     @Nullable
     public Object getCellValue(@Nonnegative int rowIdx, @Nonnegative int columnIdx) throws IndexOutOfBoundsException {
         return getCellValueFromCell(this, rowIdx, columnIdx);
     }
 
+    /**
+     * Performs the given action for each non-null cell of the sheet until all
+     * cells have been processed or an exception has been thrown.
+     *
+     * @implSpec
+     * <p>
+     * The default implementation parses the content by row.
+     *
+     * @param action The action to be performed for each cell
+     * @throws NullPointerException if the specified action is null
+     * @since 2.2.0
+     */
+    public void forEach(@Nonnull SheetConsumer<? super Cell> action) {
+        forEachByRow(this, action);
+    }
+
+    /**
+     * Performs the given action for each non-null cell value of the sheet until
+     * all cell values have been processed or an exception has been thrown.
+     *
+     * @implSpec
+     * <p>
+     * The default implementation parses the content by row.
+     *
+     * @param action The action to be performed for each cell
+     * @throws NullPointerException if the specified action is null
+     * @since 2.2.0
+     */
+    public void forEachValue(@Nonnull SheetConsumer<? super Object> action) {
+        forEachValueByRow(this, action);
+    }
+
+    /**
+     * Returns the sheet name.
+     *
+     * @return a non-null name
+     */
     @Nonnull
     abstract public String getName();
 
@@ -55,22 +119,38 @@ public abstract class Sheet {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation">
+    private static void forEachByRow(@Nonnull Sheet sheet, @Nonnull SheetConsumer<? super Cell> action) {
+        Objects.requireNonNull(action);
+        int rowCount = sheet.getRowCount();
+        int columnCount = sheet.getColumnCount();
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < columnCount; j++) {
+                Cell cell = sheet.getCell(i, j);
+                if (cell != null) {
+                    action.accept(i, j, cell);
+                }
+            }
+        }
+    }
+
+    private static void forEachValueByRow(@Nonnull Sheet sheet, @Nonnull SheetConsumer<? super Object> action) {
+        Objects.requireNonNull(action);
+        int rowCount = sheet.getRowCount();
+        int columnCount = sheet.getColumnCount();
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < columnCount; j++) {
+                Object value = sheet.getCellValue(i, j);
+                if (value != null) {
+                    action.accept(i, j, value);
+                }
+            }
+        }
+    }
+
     @Nullable
     private static Object getCellValueFromCell(@Nonnull Sheet sheet, int rowIdx, int columnIdx) {
         Cell cell = sheet.getCell(rowIdx, columnIdx);
-        if (cell == null) {
-            return null;
-        }
-        if (cell.isDate()) {
-            return cell.getDate();
-        }
-        if (cell.isNumber()) {
-            return cell.getNumber();
-        }
-        if (cell.isString()) {
-            return cell.getString();
-        }
-        return null;
+        return cell != null ? cell.getValue() : null;
     }
 
     @Nonnull
@@ -104,6 +184,16 @@ public abstract class Sheet {
         @Override
         public Object getCellValue(int rowIdx, int columnIdx) throws IndexOutOfBoundsException {
             return sheet.getCellValue(columnIdx, rowIdx);
+        }
+
+        @Override
+        public void forEach(SheetConsumer<? super Cell> action) {
+            sheet.forEach((i, j, c) -> action.accept(j, i, c));
+        }
+
+        @Override
+        public void forEachValue(SheetConsumer<? super Object> action) {
+            sheet.forEachValue((i, j, v) -> action.accept(j, i, v));
         }
 
         @Override

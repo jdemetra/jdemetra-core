@@ -35,20 +35,24 @@ import org.jopendocument.dom.spreadsheet.SpreadSheet;
 final class OdCell extends ec.util.spreadsheet.Cell {
 
     private Cell<SpreadSheet> cell = null;
-    private ODValueType valueType = null;
+    private Type type = null;
     private String textValue = null;
 
     @Nullable
     OdCell withCell(@Nonnull Cell<SpreadSheet> cell) {
-        this.cell = null;
-        this.valueType = cell.getValueType();
+        this.cell = cell;
+        ODValueType valueType = cell.getValueType();
         this.textValue = null;
         if (valueType != null) {
             switch (valueType) {
                 case DATE:
+                    type = Type.DATE;
+                    return this;
                 case FLOAT:
+                    type = Type.NUMBER;
+                    return this;
                 case STRING:
-                    this.cell = cell;
+                    type = Type.STRING;
                     return this;
                 default:
                     return null;
@@ -56,37 +60,52 @@ final class OdCell extends ec.util.spreadsheet.Cell {
         } else {
             // a null valueType might still contains a string !
             textValue = cell.getTextValue();
+            type = Type.STRING;
             return textValue.isEmpty() ? null : this;
         }
     }
 
     @Override
     public String getString() {
+        if (!isString()) {
+            throw new UnsupportedOperationException();
+        }
         return textValue != null ? textValue : (String) cell.getValue();
     }
 
     @Override
     public Date getDate() {
+        if (!isDate()) {
+            throw new UnsupportedOperationException();
+        }
         return (Date) cell.getValue();
     }
 
     @Override
     public Number getNumber() {
-        return ((BigDecimal) cell.getValue()).doubleValue();
+        return getDouble();
     }
 
     @Override
     public boolean isNumber() {
-        return ODValueType.FLOAT.equals(valueType);
+        return type == Type.NUMBER;
     }
 
     @Override
     public boolean isString() {
-        return ODValueType.STRING.equals(valueType) || textValue != null;
+        return type == Type.STRING;
     }
 
     @Override
     public boolean isDate() {
-        return ODValueType.DATE.equals(valueType);
+        return type == Type.DATE;
+    }
+
+    @Override
+    public double getDouble() throws UnsupportedOperationException {
+        if (!isNumber()) {
+            throw new UnsupportedOperationException();
+        }
+        return ((BigDecimal) cell.getValue()).doubleValue();
     }
 }

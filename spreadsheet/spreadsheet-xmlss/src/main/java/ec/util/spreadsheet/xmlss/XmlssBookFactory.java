@@ -23,15 +23,23 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
+import javax.annotation.Nonnull;
 import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  *
  * @author Philippe Charles
  */
 public class XmlssBookFactory extends Book.Factory {
+
+    private final XMLOutputFactory xof;
+
+    public XmlssBookFactory() {
+        this.xof = XMLOutputFactory.newInstance();
+    }
 
     @Override
     public String getName() {
@@ -45,18 +53,24 @@ public class XmlssBookFactory extends Book.Factory {
 
     @Override
     public Book load(InputStream stream) throws IOException {
-        return new XmlssBook(stream);
+        return XmlssBook.create(createXMLReader(), stream);
     }
 
     @Override
     public void store(OutputStream stream, Book book) throws IOException {
-        XMLOutputFactory xof = XMLOutputFactory.newInstance();
+        newWriter().write(stream, book);
+    }
+
+    private XmlssBookWriter newWriter() {
+        return new XmlssBookWriter(xof, StandardCharsets.UTF_8);
+    }
+
+    @Nonnull
+    private static XMLReader createXMLReader() throws IOException {
         try {
-            XMLStreamWriter w = xof.createXMLStreamWriter(stream, StandardCharsets.UTF_8.name());
-            XmlssBookWriter.write(new BasicXmlssWriter(w), book);
-            w.close();
-        } catch (XMLStreamException ex) {
-            throw new IOException(ex);
+            return XMLReaderFactory.createXMLReader();
+        } catch (SAXException ex) {
+            throw new IOException("While creating XmlReader", ex);
         }
     }
 }

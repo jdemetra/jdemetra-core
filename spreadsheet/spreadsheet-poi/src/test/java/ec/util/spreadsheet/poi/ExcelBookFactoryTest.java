@@ -18,11 +18,14 @@ package ec.util.spreadsheet.poi;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.Objects;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static ec.util.spreadsheet.Assertions.assertThat;
 
 /**
  *
@@ -30,31 +33,28 @@ import org.junit.Test;
  */
 public class ExcelBookFactoryTest {
 
-    private static URL TOP5;
-
-    private static URL BAD_URL;
-    private static File BAD_FILE;
+    private static File VALID_FILE;
+    private static File EMPTY_FILE;
     private static File MISSING_FILE;
-    private static URL MISSING_URL;
 
     private static ExcelBookFactory FAST_FACTORY;
     private static ExcelBookFactory NORMAL_FACTORY;
 
     @BeforeClass
     public static void beforeClass() throws IOException {
-        TOP5 = ExcelBookFactoryTest.class.getResource("/Top5Browsers.xlsx");
-        Objects.requireNonNull(TOP5);
+        Path top5 = Files.createTempFile("top5", ".xlsx");
+        try (InputStream stream = ExcelBookFactoryTest.class.getResource("/Top5Browsers.xlsx").openStream()) {
+            Files.copy(stream, top5, StandardCopyOption.REPLACE_EXISTING);
+        }
 
-        BAD_URL = ExcelBookFactoryTest.class.getResource("/InvalidZipFile.xlsx");
-        Objects.requireNonNull(BAD_URL);
+        VALID_FILE = top5.toFile();
+        VALID_FILE.deleteOnExit();
 
-        BAD_FILE = Files.createTempFile("Empty", ".xlsx").toFile();
-        BAD_FILE.deleteOnExit();
+        EMPTY_FILE = Files.createTempFile("Empty", ".xlsx").toFile();
+        EMPTY_FILE.deleteOnExit();
 
         MISSING_FILE = Files.createTempFile("Missing", ".xlsx").toFile();
         MISSING_FILE.delete();
-
-        MISSING_URL = MISSING_FILE.toURI().toURL();
 
         FAST_FACTORY = new ExcelBookFactory();
         FAST_FACTORY.setFast(true);
@@ -64,48 +64,16 @@ public class ExcelBookFactoryTest {
     }
 
     @Test
-    public void testLoadStore() throws IOException {
-        SpreadsheetAssert.assertLoadStore(FAST_FACTORY, TOP5);
-        SpreadsheetAssert.assertLoadStore(NORMAL_FACTORY, TOP5);
+    public void testCompliance() throws IOException {
+        assertThat(FAST_FACTORY).isCompliant(VALID_FILE, EMPTY_FILE);
+        assertThat(NORMAL_FACTORY).isCompliant(VALID_FILE, EMPTY_FILE);
     }
 
-    @Test(expected = IOException.class)
-    public void testFastLoadBadUrl() throws IOException {
-        FAST_FACTORY.load(BAD_URL);
-    }
-
-    @Test(expected = IOException.class)
-    public void testLoadBadUrl() throws IOException {
-        NORMAL_FACTORY.load(BAD_URL);
-    }
-
-    @Test(expected = IOException.class)
-    public void testFastLoadBadFile() throws IOException {
-        FAST_FACTORY.load(BAD_FILE);
-    }
-
-    @Test(expected = IOException.class)
-    public void testLoadBadFile() throws IOException {
-        NORMAL_FACTORY.load(BAD_FILE);
-    }
-
-    @Test(expected = IOException.class)
-    public void testFastLoadMissingFile() throws IOException {
-        FAST_FACTORY.load(MISSING_FILE);
-    }
-
-    @Test(expected = IOException.class)
-    public void testLoadMissingFile() throws IOException {
-        NORMAL_FACTORY.load(MISSING_FILE);
-    }
-
-    @Test(expected = IOException.class)
-    public void testFastLoadMissingUrl() throws IOException {
-        FAST_FACTORY.load(MISSING_URL);
-    }
-
-    @Test(expected = IOException.class)
-    public void testLoadMissingUrl() throws IOException {
-        NORMAL_FACTORY.load(MISSING_URL);
+    @Test
+    public void testLoadEmptyAndMissing() {
+        assertThatThrownBy(() -> FAST_FACTORY.load(EMPTY_FILE)).isInstanceOf(IOException.class);
+        assertThatThrownBy(() -> NORMAL_FACTORY.load(EMPTY_FILE)).isInstanceOf(IOException.class);
+        assertThatThrownBy(() -> FAST_FACTORY.load(MISSING_FILE)).isInstanceOf(IOException.class);
+        assertThatThrownBy(() -> NORMAL_FACTORY.load(MISSING_FILE)).isInstanceOf(IOException.class);
     }
 }

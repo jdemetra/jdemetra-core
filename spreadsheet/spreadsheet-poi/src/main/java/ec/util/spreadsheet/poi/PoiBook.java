@@ -19,13 +19,14 @@ package ec.util.spreadsheet.poi;
 import ec.util.spreadsheet.Book;
 import ec.util.spreadsheet.Sheet;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.annotation.Nonnull;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -33,45 +34,31 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  *
  * @author Philippe Charles
  */
-class PoiBook extends Book {
+final class PoiBook extends Book {
 
     private final Workbook workbook;
 
-    public static PoiBook create(File file) throws IOException, InvalidFormatException {
-        final OPCPackage pkg = OPCPackage.open(file.getPath(), PackageAccess.READ);
-        return new PoiBook(new XSSFWorkbook(pkg)) {
-            @Override
-            public void close() throws IOException {
-                pkg.close();
-            }
-        };
+    @Nonnull
+    public static PoiBook create(@Nonnull File file) throws IOException, InvalidFormatException {
+        return new PoiBook(new XSSFWorkbook(OPCPackage.open(file.getPath(), PackageAccess.READ)));
     }
 
-    public static PoiBook create(InputStream stream) throws IOException, InvalidFormatException {
-        final OPCPackage pkg = OPCPackage.open(stream);
-        return new PoiBook(new XSSFWorkbook(pkg)) {
-            @Override
-            public void close() throws IOException {
-                pkg.close();
-            }
-        };
+    @Nonnull
+    public static PoiBook create(@Nonnull InputStream stream) throws IOException, InvalidFormatException {
+        return new PoiBook(new XSSFWorkbook(OPCPackage.open(stream)));
     }
 
-    public static PoiBook createClassic(File file) throws IOException {
-        final FileInputStream stream = new FileInputStream(file);
-        return new PoiBook(new HSSFWorkbook(stream)) {
-            @Override
-            public void close() throws IOException {
-                stream.close();
-            }
-        };
+    @Nonnull
+    public static PoiBook createClassic(@Nonnull File file) throws IOException {
+        return new PoiBook(new HSSFWorkbook(new POIFSFileSystem(file)));
     }
 
-    public static PoiBook createClassic(InputStream stream) throws IOException {
-        return new PoiBook(new HSSFWorkbook(stream));
+    @Nonnull
+    public static PoiBook createClassic(@Nonnull InputStream stream) throws IOException {
+        return new PoiBook(new HSSFWorkbook(new POIFSFileSystem(stream)));
     }
 
-    PoiBook(Workbook workbook) throws IOException {
+    private PoiBook(Workbook workbook) {
         this.workbook = workbook;
     }
 
@@ -82,6 +69,15 @@ class PoiBook extends Book {
 
     @Override
     public Sheet getSheet(int index) {
-        return new PoiSheet(workbook.getSheetAt(index));
+        try {
+            return new PoiSheet(workbook.getSheetAt(index));
+        } catch (IllegalArgumentException ex) {
+            throw index < 0 || index >= getSheetCount() ? new IndexOutOfBoundsException(ex.getMessage()) : ex;
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        workbook.close();
     }
 }

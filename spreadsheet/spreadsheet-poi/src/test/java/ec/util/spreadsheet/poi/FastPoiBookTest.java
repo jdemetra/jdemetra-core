@@ -17,20 +17,25 @@
 package ec.util.spreadsheet.poi;
 
 import ec.util.spreadsheet.Book;
-import ec.util.spreadsheet.Sheet;
 import ec.util.spreadsheet.poi.FastPoiBook.SharedStringsDataSax2EventHandler;
 import ec.util.spreadsheet.poi.FastPoiBook.SheetSax2EventHandler;
 import ec.util.spreadsheet.poi.FastPoiBook.StylesDataSax2EventHandler;
 import ec.util.spreadsheet.poi.FastPoiBook.WorkbookData;
 import ec.util.spreadsheet.poi.FastPoiBook.WorkbookDataSax2EventHandler;
+import static ec.util.spreadsheet.Assertions.assertThat;
 import java.io.IOException;
 import java.io.InputStream;
-import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
+import java.util.concurrent.Callable;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  *
@@ -38,47 +43,54 @@ import org.junit.Test;
  */
 public class FastPoiBookTest {
 
-    private static final ByteSource TOP5 = asByteSource("/Top5Browsers.xlsx");
-    private static final ByteSource WORKBOOK = asByteSource("/workbook.xml");
-    private static final ByteSource REGULAR = asByteSource("/RegularXlsxSheet.xml");
-    private static final ByteSource FORMULAS = asByteSource("/FormulasXlsxSheet.xml");
-    private static final ByteSource SST = asByteSource("/Sst.xml");
-    private static final ByteSource STYLES = asByteSource("/styles.xml");
+    private static final Callable<InputStream> TOP5 = asByteSource("/Top5Browsers.xlsx");
+    private static final Callable<InputStream> WORKBOOK = asByteSource("/workbook.xml");
+    private static final Callable<InputStream> REGULAR = asByteSource("/RegularXlsxSheet.xml");
+    private static final Callable<InputStream> FORMULAS = asByteSource("/FormulasXlsxSheet.xml");
+    private static final Callable<InputStream> SST = asByteSource("/Sst.xml");
+    private static final Callable<InputStream> STYLES = asByteSource("/styles.xml");
+    private static final Callable<InputStream> NO_STREAM = () -> null;
 
-    private static ByteSource asByteSource(String name) {
-        return ByteSource.fromURL(FastPoiBookTest.class.getResource(name));
+    private static Callable<InputStream> asByteSource(String name) {
+        return FastPoiBookTest.class.getResource(name)::openStream;
+    }
+
+    private static XMLReader XML_READER;
+
+    @BeforeClass
+    public static void beforeClass() throws SAXException {
+        XML_READER = XMLReaderFactory.createXMLReader();
     }
 
     @Test
-    public void testGetSheetCount() throws IOException, OpenXML4JException {
-        try (InputStream stream = TOP5.openStream()) {
-            try (Book book = FastPoiBook.create(stream)) {
+    public void testGetSheetCount() throws Exception {
+        try (InputStream stream = TOP5.call()) {
+            try (Book book = FastPoiBook.create(XML_READER, stream)) {
                 assertEquals(3, book.getSheetCount());
             }
         }
     }
 
     @Test
-    public void testGetSheet() throws IOException, OpenXML4JException {
-        try (InputStream stream = TOP5.openStream()) {
-            try (Book book = FastPoiBook.create(stream)) {
-                assertNotNull(book.getSheet(0));
-                assertNotNull(book.getSheet(1));
-                assertNotNull(book.getSheet(2));
+    public void testGetSheet() throws Exception {
+        try (InputStream stream = TOP5.call()) {
+            try (Book book = FastPoiBook.create(XML_READER, stream)) {
+                book.forEach((sheet, index) -> assertNotNull(sheet));
             }
         }
     }
 
     @Test
     public void testWorkbookDataSax2EventHandler() throws IOException {
-        WorkbookData data = new WorkbookDataSax2EventHandler().parse(WORKBOOK);
-        assertEquals("Top 5 Browsers - Monthly", data.sheets.get(0).name);
-        assertEquals("rId1", data.sheets.get(0).relationId);
-        assertEquals("Top 5 Browsers - Quarterly", data.sheets.get(1).name);
-        assertEquals("rId2", data.sheets.get(1).relationId);
+        WorkbookData data = new WorkbookDataSax2EventHandler().parse(XML_READER, WORKBOOK);
+        assertThat(data.sheets)
+                .extracting("name", "relationId")
+                .containsExactly(
+                        tuple("Top 5 Browsers - Monthly", "rId1"),
+                        tuple("Top 5 Browsers - Quarterly", "rId2"));
         assertFalse(data.date1904);
 
-        WorkbookData missing = new WorkbookDataSax2EventHandler().parse(ByteSource.noStream());
+        WorkbookData missing = new WorkbookDataSax2EventHandler().parse(XML_READER, NO_STREAM);
         assertEquals(0, missing.sheets.size());
         assertFalse(missing.date1904);
     }
@@ -91,37 +103,37 @@ public class FastPoiBookTest {
                 true
         );
 
-        Sheet regular = new SheetSax2EventHandler("regular", context).parse(REGULAR);
-        assertEquals("regular", regular.getName());
-        assertEquals(7, regular.getColumnCount());
-        assertEquals(42, regular.getRowCount());
+        assertThat(new SheetSax2EventHandler("regular", context).parse(XML_READER, REGULAR))
+                .hasName("regular")
+                .hasColumnCount(7)
+                .hasRowCount(42);
 
-        Sheet formulas = new SheetSax2EventHandler("formulas", context).parse(FORMULAS);
-        assertEquals("formulas", formulas.getName());
-        assertEquals(7, formulas.getColumnCount());
-        assertEquals(42, formulas.getRowCount());
+        assertThat(new SheetSax2EventHandler("formulas", context).parse(XML_READER, FORMULAS))
+                .hasName("formulas")
+                .hasColumnCount(7)
+                .hasRowCount(42);
 
-        Sheet missing = new SheetSax2EventHandler("missing", context).parse(ByteSource.noStream());
-        assertEquals("missing", missing.getName());
-        assertEquals(0, missing.getColumnCount());
-        assertEquals(0, missing.getRowCount());
+        assertThat(new SheetSax2EventHandler("missing", context).parse(XML_READER, NO_STREAM))
+                .hasName("missing")
+                .hasColumnCount(0)
+                .hasRowCount(0);
     }
 
     @Test
     public void testSharedStringsDataSax2EventHandler() throws IOException {
-        String[] sharedStrings = new SharedStringsDataSax2EventHandler().parse(SST);
+        String[] sharedStrings = new SharedStringsDataSax2EventHandler().parse(XML_READER, SST);
         assertThat(sharedStrings).containsExactly("Cell A1", "Cell B1", "My Cell", "Cell A2", "Cell B2");
 
-        String[] missing = new SharedStringsDataSax2EventHandler().parse(ByteSource.noStream());
+        String[] missing = new SharedStringsDataSax2EventHandler().parse(XML_READER, NO_STREAM);
         assertThat(missing).isEmpty();
     }
 
     @Test
     public void testStylesDataSax2EventHandler() throws IOException {
-        boolean[] styles = new StylesDataSax2EventHandler().parse(STYLES);
+        boolean[] styles = new StylesDataSax2EventHandler().parse(XML_READER, STYLES);
         assertThat(styles).containsExactly(false, true);
 
-        boolean[] missing = new StylesDataSax2EventHandler().parse(ByteSource.noStream());
+        boolean[] missing = new StylesDataSax2EventHandler().parse(XML_READER, NO_STREAM);
         assertThat(missing).isEmpty();
     }
 }

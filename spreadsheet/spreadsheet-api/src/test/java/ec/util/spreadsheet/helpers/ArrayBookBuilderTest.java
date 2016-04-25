@@ -28,8 +28,8 @@ import org.junit.Test;
  */
 public class ArrayBookBuilderTest {
 
-    final Sheet emptySheet  = ArraySheet.builder().name("test").build();
-    
+    final Sheet emptySheet = ArraySheet.builder().name("test").build();
+
     @Test
     public void testEmptyBuilder() {
         Book book = ArrayBook.builder().build();
@@ -51,28 +51,4 @@ public class ArrayBookBuilderTest {
         Book book = ArrayBook.builder().sheet(emptySheet).clear().build();
         Assert.assertEquals(0, book.getSheetCount());
     }
-
-
-//    @Test
-//    public void testMatrix() {
-//        Matrix m = new Matrix(5, 4);
-//        {
-//            Random random = new Random();
-//            for (int i = 0; i < m.getRowsCount(); i++) {
-//                for (int j = 0; j < m.getColumnsCount(); j++) {
-//                    m.set(i, j, random.nextDouble());
-//                }
-//            }
-//        }
-//
-//        Book book = BookBuilder.create().sheet("t1").matrix(1, 3, m).add().build();
-//        Sheet sheet = book.getSheet(0);
-//        Assert.assertEquals(6, sheet.getRowCount());
-//        Assert.assertEquals(7, sheet.getColumnCount());
-//        for (int i = 0; i < m.getRowsCount(); i++) {
-//            for (int j = 0; j < m.getColumnsCount(); j++) {
-//                Assert.assertEquals(m.get(i, j), sheet.getCell(1 + i, 3 + j).getNumber().doubleValue(), 0);
-//            }
-//        }
-//    }
 }

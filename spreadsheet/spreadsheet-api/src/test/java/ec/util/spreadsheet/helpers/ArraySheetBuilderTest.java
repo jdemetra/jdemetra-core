@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 
 /**
@@ -29,10 +30,10 @@ import org.junit.Test;
  */
 public class ArraySheetBuilderTest {
 
-    final String STRING = "a";
-    final Date DATE = new Date(1234);
-    final Number NUMBER = 12.34;
-    final Object UNKNOWN = new Object() {
+    static final String STRING = "a";
+    static final Date DATE = new Date(1234);
+    static final Number NUMBER = 12.34;
+    static final Object UNKNOWN = new Object() {
         @Override
         public String toString() {
             return STRING;
@@ -76,18 +77,14 @@ public class ArraySheetBuilderTest {
                 .hasColumnCount(0);
     }
 
+    @SuppressWarnings("null")
     @Test
     public void testUnboundedName() {
         ArraySheet.Builder b = ArraySheet.builder();
 
         assertThat(b.clear().build()).hasName("");
         assertThat(b.clear().name("hello").build()).hasName("hello");
-    }
-
-    @Test(expected = NullPointerException.class)
-    @SuppressWarnings("null")
-    public void testUnboundedNameNullPointerException() {
-        ArraySheet.builder().name(null);
+        assertThatThrownBy(() -> b.clear().name(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test

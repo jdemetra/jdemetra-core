@@ -26,20 +26,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  *
@@ -56,8 +56,8 @@ final class FastPoiBook extends Book {
      * @throws OpenXML4JException
      */
     @Nonnull
-    public static FastPoiBook create(@Nonnull File file) throws IOException, OpenXML4JException {
-        return create(OPCPackage.open(file.getPath(), PackageAccess.READ));
+    public static FastPoiBook create(@Nonnull XMLReader xmlReader, @Nonnull File file) throws IOException, OpenXML4JException {
+        return create(xmlReader, OPCPackage.open(file.getPath(), PackageAccess.READ));
     }
 
     /**
@@ -73,30 +73,32 @@ final class FastPoiBook extends Book {
      * @throws OpenXML4JException
      */
     @Nonnull
-    public static FastPoiBook create(@Nonnull InputStream stream) throws IOException, OpenXML4JException {
-        return create(OPCPackage.open(stream));
+    public static FastPoiBook create(@Nonnull XMLReader xmlReader, @Nonnull InputStream stream) throws IOException, OpenXML4JException {
+        return create(xmlReader, OPCPackage.open(stream));
     }
 
     @Nonnull
-    private static FastPoiBook create(@Nonnull OPCPackage pkg) throws IOException, OpenXML4JException {
-        XSSFReader reader = new XSSFReader(pkg);
-        WorkbookData workbookData = new WorkbookDataSax2EventHandler().parse(newWorkBookDataSupplier(reader));
+    private static FastPoiBook create(@Nonnull XMLReader xmlReader, @Nonnull OPCPackage pkg) throws IOException, OpenXML4JException {
+        XSSFReader xssfReader = new XSSFReader(pkg);
+        WorkbookData workbookData = new WorkbookDataSax2EventHandler().parse(xmlReader, xssfReader::getWorkbookData);
         FastPoiContext sheetContext = new FastPoiContext(
-                new SharedStringsDataSax2EventHandler().parse(newSharedStringsDataSupplier(reader)),
-                new StylesDataSax2EventHandler().parse(newStylesDataSupplier(reader)),
+                new SharedStringsDataSax2EventHandler().parse(xmlReader, xssfReader::getSharedStringsData),
+                new StylesDataSax2EventHandler().parse(xmlReader, xssfReader::getStylesData),
                 workbookData.date1904
         );
-        return new FastPoiBook(pkg, reader, workbookData.sheets, sheetContext);
+        return new FastPoiBook(pkg, xmlReader, xssfReader, workbookData.sheets, sheetContext);
     }
 
     private final OPCPackage pkg;
-    private final XSSFReader reader;
+    private final XMLReader xmlReader;
+    private final XSSFReader xssfReader;
     private final List<SheetMeta> sheets;
     private final FastPoiContext sheetContext;
 
-    private FastPoiBook(OPCPackage pkg, XSSFReader reader, List<SheetMeta> sheets, FastPoiContext sheetContext) {
+    private FastPoiBook(OPCPackage pkg, XMLReader xmlReader, XSSFReader xssfReader, List<SheetMeta> sheets, FastPoiContext sheetContext) {
         this.pkg = pkg;
-        this.reader = reader;
+        this.xssfReader = xssfReader;
+        this.xmlReader = xmlReader;
         this.sheets = sheets;
         this.sheetContext = sheetContext;
     }
@@ -114,7 +116,7 @@ final class FastPoiBook extends Book {
     @Override
     public Sheet getSheet(int index) throws IOException {
         SheetMeta sheetMeta = sheets.get(index);
-        return new SheetSax2EventHandler(sheetMeta.name, sheetContext).parse(newSheetSupplier(reader, sheetMeta.relationId));
+        return new SheetSax2EventHandler(sheetMeta.name, sheetContext).parse(xmlReader, () -> xssfReader.getSheet(sheetMeta.relationId));
     }
 
     //<editor-fold defaultstate="collapsed" desc="Local structures">
@@ -145,77 +147,37 @@ final class FastPoiBook extends Book {
     }
     //</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="ByteSource suppliers">
-    private static ByteSource newWorkBookDataSupplier(final XSSFReader reader) {
-        return new ByteSource() {
-            @Override
-            public InputStream openStream() throws IOException {
-                try {
-                    return reader.getWorkbookData();
-                } catch (InvalidFormatException ex) {
-                    throw new IOException(ex);
-                }
-            }
-        };
-    }
-
-    private static ByteSource newSharedStringsDataSupplier(final XSSFReader reader) {
-        return new ByteSource() {
-            @Override
-            public InputStream openStream() throws IOException {
-                try {
-                    return reader.getSharedStringsData();
-                } catch (InvalidFormatException ex) {
-                    throw new IOException(ex);
-                }
-            }
-        };
-    }
-
-    private static ByteSource newStylesDataSupplier(final XSSFReader reader) {
-        return new ByteSource() {
-            @Override
-            public InputStream openStream() throws IOException {
-                try {
-                    return reader.getStylesData();
-                } catch (InvalidFormatException ex) {
-                    throw new IOException(ex);
-                }
-            }
-        };
-    }
-
-    private static ByteSource newSheetSupplier(final XSSFReader reader, final String relationId) {
-        return new ByteSource() {
-            @Override
-            public InputStream openStream() throws IOException {
-                try {
-                    return reader.getSheet(relationId);
-                } catch (InvalidFormatException ex) {
-                    throw new IOException(ex);
-                }
-            }
-        };
-    }
-    //</editor-fold>
-
     //<editor-fold defaultstate="collapsed" desc="Sax2 event handlers">
 //    @VisibleForTesting
     static abstract class FluentHandler<T> extends DefaultHandler /*implements IBuilder<T>*/ {
 
-        public final T parse(ByteSource byteSource) throws IOException {
-            try (InputStream stream = byteSource.openStream()) {
+        public final T parse(XMLReader reader, Callable<? extends InputStream> byteSource) throws IOException {
+            try (InputStream stream = open(byteSource)) {
                 if (stream != null) {
-                    try {
-                        XMLReader reader = XMLReaderFactory.createXMLReader();
-                        reader.setContentHandler(this);
-                        reader.parse(new InputSource(stream));
-                    } catch (SAXException ex) {
-                        throw new RuntimeException("While parsing xml", ex);
-                    }
+                    parse(reader, stream, this);
                 }
+                return build();
             }
-            return build();
+        }
+
+        private static InputStream open(Callable<? extends InputStream> byteSource) throws IOException {
+            try {
+                return byteSource.call();
+            } catch (Exception ex) {
+                if (ex instanceof IOException) {
+                    throw (IOException) ex;
+                }
+                throw new IOException("While opening xml", ex);
+            }
+        }
+
+        private static void parse(XMLReader reader, InputStream stream, ContentHandler handler) throws IOException {
+            try {
+                reader.setContentHandler(handler);
+                reader.parse(new InputSource(stream));
+            } catch (SAXException ex) {
+                throw new IOException("While parsing xml", ex);
+            }
         }
 
         abstract public T build();

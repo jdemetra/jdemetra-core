@@ -18,8 +18,14 @@ package ec.util.spreadsheet.html;
 
 import ec.util.spreadsheet.helpers.ArrayBook;
 import ec.util.spreadsheet.helpers.ArraySheet;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Optional;
 import javax.annotation.Nonnull;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -29,12 +35,30 @@ import org.jsoup.nodes.Element;
  */
 final class JsoupBookReader {
 
-    private JsoupBookReader() {
-        // static class
+    private final Optional<Charset> charset;
+    private final String baseUri;
+
+    public JsoupBookReader(@Nonnull Optional<Charset> charset, @Nonnull String baseUri) {
+        this.charset = charset;
+        this.baseUri = baseUri;
     }
 
     @Nonnull
-    public static ArrayBook read(@Nonnull Document doc) {
+    public ArrayBook read(@Nonnull String html) throws IOException {
+        return read(Jsoup.parse(html, baseUri));
+    }
+
+    @Nonnull
+    public ArrayBook read(@Nonnull File file) throws IOException {
+        return read(Jsoup.parse(file, charset.map(Charset::name).orElse(null), baseUri));
+    }
+
+    @Nonnull
+    public ArrayBook read(@Nonnull InputStream stream) throws IOException {
+        return read(Jsoup.parse(stream, charset.map(Charset::name).orElse(null), baseUri));
+    }
+
+    private static ArrayBook read(Document doc) {
         ArrayBook.Builder bookBuilder = ArrayBook.builder();
         ArraySheet.Builder sheetBuilder = ArraySheet.builder();
         RowSpans rowSpans = new RowSpans();

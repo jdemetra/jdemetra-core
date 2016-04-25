@@ -16,8 +16,15 @@
  */
 package ec.util.spreadsheet.xmlss;
 
+import static ec.util.spreadsheet.Assertions.assertThat;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
  *
@@ -25,9 +32,20 @@ import org.junit.Test;
  */
 public class XmlssBookFactoryTest {
 
+    @Rule
+    public TemporaryFolder temp = new TemporaryFolder();
+
     @Test
-    public void testLoadStore() throws IOException {
-        XmlssBookFactory factory = new XmlssBookFactory();
-        SpreadsheetAssert.assertLoadStore(factory, XmlssBookFactoryTest.class.getResource("/Top5Browsers.xml"));
+    public void testCompliance() throws IOException {
+        File valid = createContent(temp.newFile("valid.xml"));
+        File invalid = temp.newFile("invalid.xml");
+        assertThat(new XmlssBookFactory()).isCompliant(valid, invalid);
+    }
+
+    private static File createContent(File file) throws IOException {
+        try (InputStream stream = XmlssBookFactoryTest.class.getResource("/Top5Browsers.xml").openStream()) {
+            Files.copy(stream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+        return file;
     }
 }

@@ -51,17 +51,17 @@ public class BookFactoryAdapter extends Book.Factory {
 
     @Override
     public Book load(File file) throws IOException {
-        return toBook(adaptee.load(file), adaptee.getName());
+        return new ToBookAdapter(adaptee.load(file), adaptee.getName());
     }
 
     @Override
     public Book load(URL url) throws IOException {
-        return toBook(adaptee.load(url), adaptee.getName());
+        return new ToBookAdapter(adaptee.load(url), adaptee.getName());
     }
 
     @Override
     public Book load(InputStream stream) throws IOException {
-        return toBook(adaptee.load(stream), adaptee.getName());
+        return new ToBookAdapter(adaptee.load(stream), adaptee.getName());
     }
 
     @Override
@@ -71,12 +71,12 @@ public class BookFactoryAdapter extends Book.Factory {
 
     @Override
     public void store(File file, Book book) throws IOException {
-        adaptee.store(file, fromBook(book));
+        adaptee.store(file, new FromBookAdapter(book));
     }
 
     @Override
     public void store(OutputStream stream, Book book) throws IOException {
-        adaptee.store(stream, fromBook(book));
+        adaptee.store(stream, new FromBookAdapter(book));
     }
 
     @Override
@@ -84,111 +84,7 @@ public class BookFactoryAdapter extends Book.Factory {
         return adaptee.accept(pathname);
     }
 
-    static Book toBook(final ec.util.spreadsheet.Book adaptee, final String factoryName) {
-        return new Book() {
-            @Override
-            public int getSheetCount() {
-                return adaptee.getSheetCount();
-            }
-
-            @Override
-            public Sheet getSheet(int index) throws IOException, IndexOutOfBoundsException {
-                return toSheet(adaptee.getSheet(index));
-            }
-
-            @Override
-            public String getFactoryName() {
-                return factoryName;
-            }
-
-            @Override
-            public void close() throws IOException {
-                adaptee.close();
-            }
-        };
-    }
-
-    static ec.util.spreadsheet.Book fromBook(final Book adaptee) {
-        return new ec.util.spreadsheet.Book() {
-
-            @Override
-            public int getSheetCount() {
-                return adaptee.getSheetCount();
-            }
-
-            @Override
-            public ec.util.spreadsheet.Sheet getSheet(int index) throws IOException, IndexOutOfBoundsException {
-                return fromSheet(adaptee.getSheet(index));
-            }
-
-            @Override
-            public void close() throws IOException {
-                adaptee.close();
-            }
-        };
-    }
-
-    static Sheet toSheet(final ec.util.spreadsheet.Sheet adaptee) {
-        return new Sheet() {
-
-            private final ToCellAdapter flyweightCell = new ToCellAdapter();
-
-            @Override
-            public int getRowCount() {
-                return adaptee.getRowCount();
-            }
-
-            @Override
-            public int getColumnCount() {
-                return adaptee.getColumnCount();
-            }
-
-            @Override
-            public Cell getCell(int rowIdx, int columnIdx) throws IndexOutOfBoundsException {
-                ec.util.spreadsheet.Cell cell = adaptee.getCell(rowIdx, columnIdx);
-                return cell != null ? flyweightCell.withCell(cell) : null;
-            }
-
-            @Override
-            public String getName() {
-                return adaptee.getName();
-            }
-
-            @Override
-            public Sheet memoize() {
-                return this;
-            }
-        };
-    }
-
-    static ec.util.spreadsheet.Sheet fromSheet(final Sheet adaptee) {
-        return new ec.util.spreadsheet.Sheet() {
-
-            private final FromCellAdapter flyweightCell = new FromCellAdapter();
-
-            @Override
-            public int getRowCount() {
-                return adaptee.getRowCount();
-            }
-
-            @Override
-            public int getColumnCount() {
-                return adaptee.getColumnCount();
-            }
-
-            @Override
-            public ec.util.spreadsheet.Cell getCell(int rowIdx, int columnIdx) throws IndexOutOfBoundsException {
-                Cell cell = adaptee.getCell(rowIdx, columnIdx);
-                return cell != null ? flyweightCell.withCell(cell) : null;
-            }
-
-            @Override
-            public String getName() {
-                return adaptee.getName();
-            }
-        };
-    }
-
+    //<editor-fold defaultstate="collapsed" desc="Implementation details">
     private static final class ToCellAdapter extends Cell {
 
         private ec.util.spreadsheet.Cell adaptee = null;
@@ -268,4 +164,127 @@ public class BookFactoryAdapter extends Book.Factory {
             return adaptee.isDate();
         }
     }
+
+    static final class ToSheetAdapter extends Sheet {
+
+        private final ec.util.spreadsheet.Sheet adaptee;
+        private final ToCellAdapter flyweightCell = new ToCellAdapter();
+
+        public ToSheetAdapter(ec.util.spreadsheet.Sheet adaptee) {
+            this.adaptee = adaptee;
+        }
+
+        @Override
+        public int getRowCount() {
+            return adaptee.getRowCount();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return adaptee.getColumnCount();
+        }
+
+        @Override
+        public Cell getCell(int rowIdx, int columnIdx) throws IndexOutOfBoundsException {
+            ec.util.spreadsheet.Cell cell = adaptee.getCell(rowIdx, columnIdx);
+            return cell != null ? flyweightCell.withCell(cell) : null;
+        }
+
+        @Override
+        public String getName() {
+            return adaptee.getName();
+        }
+
+        @Override
+        public Sheet memoize() {
+            return this;
+        }
+    }
+
+    private static final class ToBookAdapter extends Book {
+
+        private final ec.util.spreadsheet.Book adaptee;
+        private final String factoryName;
+
+        public ToBookAdapter(ec.util.spreadsheet.Book adaptee, String factoryName) {
+            this.adaptee = adaptee;
+            this.factoryName = factoryName;
+        }
+
+        @Override
+        public int getSheetCount() {
+            return adaptee.getSheetCount();
+        }
+
+        @Override
+        public Sheet getSheet(int index) throws IOException, IndexOutOfBoundsException {
+            return new ToSheetAdapter(adaptee.getSheet(index));
+        }
+
+        @Override
+        public String getFactoryName() {
+            return factoryName;
+        }
+
+        @Override
+        public void close() throws IOException {
+            adaptee.close();
+        }
+    }
+
+    private static final class FromBookAdapter extends ec.util.spreadsheet.Book {
+
+        private final Book adaptee;
+
+        public FromBookAdapter(Book adaptee) {
+            this.adaptee = adaptee;
+        }
+
+        @Override
+        public int getSheetCount() {
+            return adaptee.getSheetCount();
+        }
+
+        @Override
+        public ec.util.spreadsheet.Sheet getSheet(int index) throws IOException, IndexOutOfBoundsException {
+            return new FromSheetAdapter(adaptee.getSheet(index));
+        }
+
+        @Override
+        public void close() throws IOException {
+            adaptee.close();
+        }
+    }
+
+    private static final class FromSheetAdapter extends ec.util.spreadsheet.Sheet {
+
+        private final Sheet adaptee;
+        private final FromCellAdapter flyweightCell = new FromCellAdapter();
+
+        public FromSheetAdapter(Sheet adaptee) {
+            this.adaptee = adaptee;
+        }
+
+        @Override
+        public int getRowCount() {
+            return adaptee.getRowCount();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return adaptee.getColumnCount();
+        }
+
+        @Override
+        public ec.util.spreadsheet.Cell getCell(int rowIdx, int columnIdx) throws IndexOutOfBoundsException {
+            Cell cell = adaptee.getCell(rowIdx, columnIdx);
+            return cell != null ? flyweightCell.withCell(cell) : null;
+        }
+
+        @Override
+        public String getName() {
+            return adaptee.getName();
+        }
+    }
+    //</editor-fold>
 }
