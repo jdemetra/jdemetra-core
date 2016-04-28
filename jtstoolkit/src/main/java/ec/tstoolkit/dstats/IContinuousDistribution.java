@@ -48,7 +48,12 @@ public interface IContinuousDistribution extends IDistribution {
      * @return P(X in [x,y]). Belongs to [0, 1].
      * @throws DStatException
      */
-    double getProbabilityForInterval(double x, double y) throws DStatException;
+    default double getProbabilityForInterval(double x, double y) throws DStatException{
+        double py = getProbability(y, ProbabilityType.Lower);
+        double px = getProbability(x, ProbabilityType.Lower);
+
+        return y > x ? py - px : px - py;
+    }
 
     /**
      * Returns the right bound. 

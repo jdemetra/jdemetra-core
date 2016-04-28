@@ -103,15 +103,6 @@ public class Uniform implements IContinuousDistribution {
     }
 
     @Override
-    public double getProbabilityForInterval(final double x, final double y)
-	    throws DStatException {
-	double px = getProbability(x, ProbabilityType.Lower);
-	double py = getProbability(y, ProbabilityType.Lower);
-
-	return x < y ? py - px : px - py;
-    }
-
-    @Override
     public double getProbabilityInverse(double p, final ProbabilityType pt)
 	    throws DStatException {
 	if (p < 0.0 || p > 1.0)

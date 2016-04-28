@@ -123,4 +123,20 @@ public class DataBlockTest {
         assertTrue(Math.abs(A.ssq()-ssq2)<1e-12);
 
     }
+    
+    @Test
+    public void testFshift(){
+        DataBlock x=new DataBlock(10);
+        x.set(i->i+1);
+        x.fshift(3);
+        assertTrue(x.get(9)==7 && x.get(3)==1);
+    }
+    
+    @Test
+    public void testBshift(){
+        DataBlock x=new DataBlock(10);
+        x.set(i->i+1);
+        x.bshift(3);
+        assertTrue(x.get(6)==10 && x.get(0)==4);
+    }
 }

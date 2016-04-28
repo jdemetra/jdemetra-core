@@ -28,6 +28,7 @@ import ec.tstoolkit.utilities.Arrays2;
 import java.util.Arrays;
 import java.util.Formatter;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.IntToDoubleFunction;
 
 /**
  *
@@ -708,6 +709,57 @@ public final class Polynomial implements IReadDataBlock {
             f = m_c[i] + (f * x);
         }
         return f;
+    }
+    
+    /**
+     * Evaluates a polynomial defined by given coefficients at a given point.
+     * The coefficients are stored in reverse order (the first coefficient corresponds
+     * to the highest power and the last one to the constant)
+     * @param c The coefficients. Should contain at least one element (not checked)
+     * @param x The evaluation point;
+     * @return the value of p(x)
+     */
+    public static double revaluate(final double[] c, final double x){
+        int d = c.length;
+        int p = 0;
+        double y = c[p++];
+        for (; p < d; ++p) {
+            y = c[p] + y * x;
+        }
+        return y;
+    }
+
+    /**
+     * Evaluates a polynomial defined by given coefficients at a given point.
+     * The coefficients are stored in normal order (the first coefficient corresponds
+     * to the constant and the last one to the highest power)
+     * @param c The coefficients. Should contain at least one element (not checked)
+     * @param x The evaluation point;
+     * @return the value of p(x)
+     */
+    public static double evaluate(final double[] c, final double x){
+        int p = c.length-1;
+        double y = c[p--];
+        for (; p >= 0; --p) {
+            y = c[p] + (y * x);
+        }
+        return y;
+    }
+
+    /**
+     * Evaluates a polynomial with coefficients defined by a give function at a given point.
+     * @param degree The degree of the polynomial
+     * @param fn The function defining the coefficients. fn(i) is the coefficient corresponding to the power i
+     * @param x The evaluation point;
+     * @return the value of p(x)
+     */
+    public static double evaluate(final int degree, IntToDoubleFunction fn, final double x){
+        int p = degree;
+        double y = fn.applyAsDouble(p--);
+        for (; p >= 0; --p) {
+            y = fn.applyAsDouble(p) + (y * x);
+        }
+        return y;
     }
 
     /**
