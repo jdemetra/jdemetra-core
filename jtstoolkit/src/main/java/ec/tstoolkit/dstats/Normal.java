@@ -114,14 +114,6 @@ public class Normal implements IContinuousDistribution {
     }
 
     @Override
-    public double getProbabilityForInterval(final double x, final double y) {
-	double py = getProbability(y, ProbabilityType.Lower);
-	double px = getProbability(x, ProbabilityType.Lower);
-
-	return y > x ? py - px : px - py;
-    }
-
-    @Override
     public double getProbabilityInverse(double p, final ProbabilityType pt) {
 	if (pt == ProbabilityType.Point)
 	    return Double.NaN;

@@ -17,6 +17,7 @@
 
 package ec.tstoolkit.maths.polynomials;
 
+import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.maths.polynomials.Polynomial.Division;
 import ec.tstoolkit.maths.polynomials.Polynomial.Doubles;
 import static ec.tstoolkit.maths.polynomials.Polynomial.valueOf;
@@ -258,5 +259,38 @@ public class PolynomialTest {
         assertTrue(Doubles.equals(666, 666 - EPS, EPS));
         assertFalse(Doubles.equals(666, 666 + EPS * 2, EPS));
         assertFalse(Doubles.equals(666, 666 - EPS * 2, EPS));
+    }
+    
+    @Test
+    public void testEvaluate() {
+        double[] x=new double[20];
+        DataBlock X=new DataBlock(x);
+        X.randomize();
+        double y0 = Polynomial.evaluate(x, .25);
+        Polynomial p = Polynomial.of(x);
+        double y1 = p.evaluateAt(.25);
+        assertEquals(y0, y1, EPS);
+    }
+    
+    @Test
+    public void testRevaluate() {
+        double[] x=new double[20];
+        DataBlock X=new DataBlock(x);
+        X.randomize();
+        double y0 = Polynomial.revaluate(x, .25);
+        Polynomial p = Polynomial.fromData(X.reverse());
+        double y1 = p.evaluateAt(.25);
+        assertEquals(y0, y1, EPS);
+    }
+    
+    @Test
+    public void testFnEvaluate() {
+        final double[] x=new double[20];
+        DataBlock X=new DataBlock(x);
+        X.randomize();
+        double y0 = Polynomial.evaluate(x.length-1, i->x[i], .25);
+        Polynomial p = Polynomial.of(x);
+        double y1 = p.evaluateAt(.25);
+        assertEquals(y0, y1, EPS);
     }
 }
