@@ -21,6 +21,7 @@ package ec.tstoolkit.maths.matrices.lapack;
  * 
  * @author Jean Palate
  */
+@Deprecated
 public class Ddot {
 
     /**

@@ -18,13 +18,11 @@
 
 package ec.tstoolkit.maths.matrices.lapack;
 
-import ec.tstoolkit.design.Development;
-
 /**
  * 
  * @author Jean Palate
  */
-@Development(status = Development.Status.Exploratory)
+@Deprecated
 public class Xerbla extends java.lang.RuntimeException {
     /**
 	 * 

@@ -22,6 +22,7 @@ package ec.tstoolkit.maths.matrices.lapack;
  * 
  * @author Jean Palate
  */
+@Deprecated
 public class Dtrsm {
     /*
      * SUBROUTINE DTRSM ( SIDE, UPLO, TRANSA, DIAG, M, N, ALPHA, A, LDA, $ B,
