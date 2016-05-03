@@ -21,6 +21,7 @@ package ec.tstoolkit.maths.matrices.lapack;
  * 
  * @author Jean Palate
  */
+@Deprecated
 public class Dger {
 
     private final static double ZERO = 0.0;

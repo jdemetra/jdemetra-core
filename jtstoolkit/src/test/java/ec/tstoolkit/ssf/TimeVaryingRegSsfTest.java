@@ -8,10 +8,7 @@ package ec.tstoolkit.ssf;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.IDataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
-import ec.tstoolkit.eco.DefaultLikelihoodEvaluation;
 import ec.tstoolkit.eco.DiffuseConcentratedLikelihood;
-import ec.tstoolkit.eco.DiffuseLikelihood;
-import ec.tstoolkit.maths.matrices.HouseholderC;
 import ec.tstoolkit.maths.matrices.LowerTriangularMatrix;
 import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.maths.matrices.SubMatrix;
@@ -28,7 +25,6 @@ import ec.tstoolkit.timeseries.regression.GregorianCalendarVariables;
 import ec.tstoolkit.timeseries.regression.RegressionUtilities;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
-import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 

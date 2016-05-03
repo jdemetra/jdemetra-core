@@ -17,13 +17,11 @@
 
 package ec.tstoolkit.maths.matrices.lapack;
 
-import ec.tstoolkit.design.Development;
-
 /**
  * 
  * @author Jean Palate
  */
-@Development(status = Development.Status.Exploratory)
+@Deprecated
 public class Dlarf {
 
     private final static double ZERO = 0.0, ONE = 1.0;

@@ -14,6 +14,12 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
+
+/**
+ * The current implementation is a slightly modified version of the Gamma distribution
+ * (and related functions) developed in the colt library.
+ * Copyright (c) 1999 CERN - European Organization for Nuclear Research.
+ */
 package ec.tstoolkit.dstats;
 
 import ec.tstoolkit.maths.Constants;

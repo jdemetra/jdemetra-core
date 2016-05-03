@@ -22,6 +22,7 @@ package ec.tstoolkit.maths.matrices.lapack;
  * 
  * @author Jean Palate
  */
+@Deprecated
 public class Dlamch {
 
     private final static double ZERO = 0.0, ONE = 1.0;
