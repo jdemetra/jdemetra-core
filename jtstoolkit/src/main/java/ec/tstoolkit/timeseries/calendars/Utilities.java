@@ -379,15 +379,11 @@ public class Utilities {
         return lj;
     }
 
-    // / <summary>
-    // / Arrays with the number of monday, ..., sunday
-    // / </summary>
-    // / <param name="domain"></param>
-    // / <returns></returns>
-    /**
+     /**
      *
      * @param domain
-     * @return
+     * @return Arrays with the number of Mondays, ..., Sundays
+     * td[0][k] is the number of Mondays in the period k
      */
     public static int[][] tradingDays(TsDomain domain) {
         int[][] rslt = new int[7][];

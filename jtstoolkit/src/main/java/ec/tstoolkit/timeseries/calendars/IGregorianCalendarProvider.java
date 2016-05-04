@@ -26,13 +26,12 @@ import java.util.List;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 public interface IGregorianCalendarProvider {
 
     /**
      *
      * @param dtype
-     * @param ltype
      * @param domain
      * @param buffer
      * @param start
