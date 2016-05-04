@@ -98,14 +98,25 @@ public class ElementaryTransformations {
         }
     }
 
+    public static void rowHouseholder(final DataBlock row, final SubMatrix X) {
+        DataBlockIterator rows = X.rows();
+        DataBlock cur = rows.getData();
+
+        HouseholderReflection reflection = HouseholderReflection.from(row);
+        do {
+            reflection.transform(cur);
+        } while (rows.next());
+
+    }
+
     public static boolean fastRowGivens(final DataBlock row, final SubMatrix X) {
         try {
             int nr = X.m_nrows, rinc = X.m_row_inc, cinc = X.m_col_inc, beg = X.m_start;
             double[] x = X.m_data;
-            double[] z=row.getData();
-            int zbeg=row.getStartPosition(), zend=row.getEndPosition(), zinc=row.getIncrement();
-            
-            for (int zcur=zbeg+zinc, mbeg=beg+cinc; zcur != zend; zcur+=zinc, mbeg+=cinc) {
+            double[] z = row.getData();
+            int zbeg = row.getStartPosition(), zend = row.getEndPosition(), zinc = row.getIncrement();
+
+            for (int zcur = zbeg + zinc, mbeg = beg + cinc; zcur != zend; zcur += zinc, mbeg += cinc) {
                 double a = z[zbeg];
                 double b = z[zcur];
                 if (b != 0) {
@@ -227,94 +238,85 @@ public class ElementaryTransformations {
             reflection.transform(cur);
         }
     }
-    
 
-     /**
-     * Decomposes L0.V0.L0' + X.W.X' = L.V.L'
-     * L0 and L are lower triangular matrices
-     * V, W are diagonal matrices that can contain infinite values
-     * See Snijder and Saligari (1996). "Initialization of the Kalman Filter with
+    /**
+     * Decomposes L0.V0.L0' + X.W.X' = L.V.L' L0 and L are lower triangular
+     * matrices V, W are diagonal matrices that can contain infinite values See
+     * Snijder and Saligari (1996). "Initialization of the Kalman Filter with
      * Partially Diffuse Initial Conditions", Journal of Time Series analysis,
-     * 17/4, pages 409-424. 
-     * @param X Contains the X disturbance matrix (not necessary lower triangular)
+     * 17/4, pages 409-424.
+     *
+     * @param X Contains the X disturbance matrix (not necessary lower
+     * triangular)
      * @param W Contains the diagonal of the disturbance matrix
-     * @param L On entry, contains the initial lower L0 matrix. On exit, contains the 
-     * final L matrix
-     * @param V On entry, contains the initial V0 diagonal. On exit, contains the 
-     * final V diagonal
+     * @param L On entry, contains the initial lower L0 matrix. On exit,
+     * contains the final L matrix
+     * @param V On entry, contains the initial V0 diagonal. On exit, contains
+     * the final V diagonal
      * @return true if the decomposition was successful, false otherwise.
-     */    
-    public static boolean extendedGivensTriangularize(Matrix X, DataBlock W, Matrix L, DataBlock V)
-        {
+     */
+    public static boolean extendedGivensTriangularize(Matrix X, DataBlock W, Matrix L, DataBlock V) {
 
-            int nc = X.getColumnsCount(), nr = X.getRowsCount();
-            double one = 1.0;
-            double[] pl = L.data_, px = X.data_;
-            
-            for (int i = 0, j = 0; j < nr; ++j, i += nr + 1)
-                pl[i] = one;
+        int nc = X.getColumnsCount(), nr = X.getRowsCount();
+        double one = 1.0;
+        double[] pl = L.data_, px = X.data_;
 
-            for (int i = 0; i < nc; ++i)
-            {
-                double w = W.get(i);
-                if (w == 0)
-                    continue;
-                for (int j = 0; j < nr; ++j)
-                {
-                    double xj = X.get(j, i);
-                    if (xj == 0)
-                        continue;
-                    double v = V.get(j);
-                    if (v == 0)
-                    {
-                        for (int k = j + 1, il = k + j * nr, ix = k + i * nr; k < nr; ++k, ++ix, ++il)
-                            pl[il] = px[ix] / xj;
-                        if (Double.isInfinite(w))
-                            V.set(j, Double.POSITIVE_INFINITY);
-                        else
-                            V.set(j, w * xj * xj);
-                        break;
-                    }
-                    else if (Double.isInfinite(v))
-                    {
-                        for (int k = j + 1, il = k + j * nr, ix = k + i * nr; k < nr; ++k, ++ix, ++il)
-                            //X.Add(k, i, -L[k, j]*xj);
-                            px[ix] -= pl[il] * xj;
-                    }
-                    else
-                    {
-                        if (Double.isInfinite(w))
-                        {
-                            for (int k = j + 1, il = k + j * nr, ix = k + i * nr; k < nr; ++k, ++ix, ++il)
-                            {
-                                double l = pl[il];
-                                pl[il] = px[ix] / xj;
-                                px[ix] -= l * xj;
-                            }
-
-                            w = v / (xj * xj);
-                            V.set(j, Double.POSITIVE_INFINITY);
-                        }
-                        else // normal case
-                        {
-                            double nv = v + xj * xj * w;
-                            double z = v / nv;
-                            for (int k = j + 1, il = k + j * nr, ix = k + i * nr; k < nr; ++k, ++il, ++ix)
-                            {
-                                double l = pl[il];
-                                pl[il] = z * l + w * xj / nv * px[ix];
-                                px[ix] -= l * xj;
-                            }
-                            w *= z;
-                            V.set(j, nv);
-                        }
-                    }
-                }
-                W.set(i, w);
-            }
-            return true;
+        for (int i = 0, j = 0; j < nr; ++j, i += nr + 1) {
+            pl[i] = one;
         }
- 
+
+        for (int i = 0; i < nc; ++i) {
+            double w = W.get(i);
+            if (w == 0) {
+                continue;
+            }
+            for (int j = 0; j < nr; ++j) {
+                double xj = X.get(j, i);
+                if (xj == 0) {
+                    continue;
+                }
+                double v = V.get(j);
+                if (v == 0) {
+                    for (int k = j + 1, il = k + j * nr, ix = k + i * nr; k < nr; ++k, ++ix, ++il) {
+                        pl[il] = px[ix] / xj;
+                    }
+                    if (Double.isInfinite(w)) {
+                        V.set(j, Double.POSITIVE_INFINITY);
+                    } else {
+                        V.set(j, w * xj * xj);
+                    }
+                    break;
+                } else if (Double.isInfinite(v)) {
+                    for (int k = j + 1, il = k + j * nr, ix = k + i * nr; k < nr; ++k, ++ix, ++il) //X.Add(k, i, -L[k, j]*xj);
+                    {
+                        px[ix] -= pl[il] * xj;
+                    }
+                } else if (Double.isInfinite(w)) {
+                    for (int k = j + 1, il = k + j * nr, ix = k + i * nr; k < nr; ++k, ++ix, ++il) {
+                        double l = pl[il];
+                        pl[il] = px[ix] / xj;
+                        px[ix] -= l * xj;
+                    }
+
+                    w = v / (xj * xj);
+                    V.set(j, Double.POSITIVE_INFINITY);
+                } else // normal case
+                {
+                    double nv = v + xj * xj * w;
+                    double z = v / nv;
+                    for (int k = j + 1, il = k + j * nr, ix = k + i * nr; k < nr; ++k, ++il, ++ix) {
+                        double l = pl[il];
+                        pl[il] = z * l + w * xj / nv * px[ix];
+                        px[ix] -= l * xj;
+                    }
+                    w *= z;
+                    V.set(j, nv);
+                }
+            }
+            W.set(i, w);
+        }
+        return true;
+    }
 
     private static void givens(DataBlockIterator vectors, int n) {
         DataBlock cur = vectors.getData();
