@@ -39,7 +39,7 @@ public class Utilities {
      * @return
      */
     public static int[] daysCount(TsDomain domain) {
-	// if (domain == null)
+        // if (domain == null)
         // throw new ArgumentNullException("domain");
         int n = domain.getLength();
         int[] rslt = new int[n];
@@ -182,17 +182,17 @@ public class Utilities {
         int c = year % 7;
         int d = (19 * a + 15) % 30;
         int e = (2 * b + 4 * c + 6 * d + 6) % 7;
-        int z=4+d+e;
-        int month, day; 
-        int de=d+e;
-        if (de<10){
-            month=3; 
-            day=22+de;
-        }else{
-            month=4;
-            day=de-9;
+        int z = 4 + d + e;
+        int month, day;
+        int de = d + e;
+        if (de < 10) {
+            month = 3;
+            day = 22 + de;
+        } else {
+            month = 4;
+            day = de - 9;
         }
-        Day easter = new Day(year, Month.valueOf(month-1), day-1);
+        Day easter = new Day(year, Month.valueOf(month - 1), day - 1);
         if (gregorian) {
             return easter.plus(13);
         } else {
@@ -302,10 +302,8 @@ public class Utilities {
      */
     public static void lengthofPeriod(TsPeriod start, DataBlock buffer) {
         int[] ndays = daysCount(new TsDomain(start, buffer.getLength()));
-        double m = 365.25 / start.getFrequency().intValue();
-        for (int i = 0; i < ndays.length; ++i) {
-            buffer.set(i, ndays[i] - m);
-        }
+        final double m = 365.25 / start.getFrequency().intValue();
+        buffer.set(i -> ndays[i] - m);
     }
 
     /**
@@ -379,12 +377,13 @@ public class Utilities {
         return lj;
     }
 
-     /**
+    /**
      *
      * @param domain
-     * @return Arrays with the number of Mondays, ..., Sundays
-     * td[0][k] is the number of Mondays in the period k
+     * @return Arrays with the number of Mondays, ..., Sundays td[0][k] is the
+     * number of Mondays in the period k
      */
+    @Deprecated
     public static int[][] tradingDays(TsDomain domain) {
         int[][] rslt = new int[7][];
 
@@ -406,6 +405,47 @@ public class Utilities {
         for (int i = 0; i < n; ++i) {
             int dw0 = (start[i] - 4) % 7;
             int ni = start[i + 1] - start[i];
+            if (dw0 < 0) {
+                dw0 += 7;
+            }
+            for (int j = 0; j < 7; ++j) {
+                int j0 = j - dw0;
+                if (j0 < 0) {
+                    j0 += 7;
+                }
+                rslt[j][i] = 1 + (ni - 1 - j0) / 7;
+            }
+        }
+        return rslt;
+    }
+
+    /**
+     *
+     * @param domain
+     * @return Arrays with the number of Sundays, ..., Saturdays.
+     * td[0][k] is the number of Sundays in the period k.
+     */
+    public static int[][] tdCount(TsDomain domain) {
+        int[][] rslt = new int[7][];
+
+        int n = domain.getLength();
+        int[] start = new int[n + 1]; // id of the first day for each period
+        TsPeriod d0 = domain.getStart();
+        int conv = 12 / d0.getFrequency().intValue();
+        TsPeriod month = new TsPeriod(TsFrequency.Monthly);
+        month.set(d0.getYear(), d0.getPosition() * conv);
+        for (int i = 0; i < start.length; ++i) {
+            start[i] = Day.calc(month.getYear(), month.getPosition(), 0);
+            month.move(conv);
+        }
+
+        for (int j = 0; j < 7; ++j) {
+            rslt[j] = new int[n];
+        }
+
+        for (int i = 0; i < n; ++i) {
+            int ni = start[i + 1] - start[i];
+            int dw0 = (start[i] - Day.DAY_OF_WEEK_T0) % 7;
             if (dw0 < 0) {
                 dw0 += 7;
             }
