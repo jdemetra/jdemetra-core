@@ -40,7 +40,7 @@ public final class Day implements IPeriod, Comparable<Day> {
      * constant identifying the first Monday in 1970. 1/1/1970 is a Thursday (0
      * = Thursday, 3=Sunday)
      */
-    static final int dayofweek_start = 3;
+    public static final int DAY_OF_WEEK_T0 = 3;
     /**
      * Number of days by month (if no leap year)
      */
@@ -306,7 +306,7 @@ public final class Day implements IPeriod, Comparable<Day> {
      * @return
      */
     public DayOfWeek getDayOfWeek() {
-        int d = (day_ - dayofweek_start) % 7;
+        int d = (day_ - DAY_OF_WEEK_T0) % 7;
         if (d < 0) {
             d += 7;
         }
@@ -385,11 +385,11 @@ public final class Day implements IPeriod, Comparable<Day> {
      * @return
      */
     public boolean isWorkingDay() {
-        int d = (day_ - dayofweek_start) % 7;
+        int d = (day_ - DAY_OF_WEEK_T0) % 7;
         if (d < 0) {
             d += 7;
         }
-        return (d != 5) && (d != 6);
+        return d<5;
     }
 
     @Override

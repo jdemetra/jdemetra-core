@@ -78,4 +78,22 @@ public class GenericTradingDaysTest {
         gtd.data(md, M.columnList());
         System.out.println(M);
     }
+    
+    @Test
+    //@Ignore
+    public void testDisplayNoContrasts() {
+        TsDomain md = new TsDomain(TsFrequency.Monthly, 1980, 0, 28*12);
+        Matrix M = new Matrix(md.getLength(), 2);
+        GenericTradingDays gtd = GenericTradingDays.of(DayClustering.TD2);
+        gtd.data(md, M.columnList());
+        System.out.println(M);
+        M = new Matrix(md.getLength(), 3);
+        gtd = GenericTradingDays.of(DayClustering.TD3);
+        gtd.data(md, M.columnList());
+        System.out.println(M);
+        M = new Matrix(md.getLength(), 7);
+        gtd = GenericTradingDays.of(DayClustering.TD7);
+        gtd.data(md, M.columnList());
+        System.out.println(M);
+    }
 }
