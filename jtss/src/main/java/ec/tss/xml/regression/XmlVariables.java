@@ -36,6 +36,5 @@ public class XmlVariables {
     
     @XmlElement(name="var")
     @XmlElementWrapper(name = "variables")
-//    @XmlElementRef
     List<XmlVariable> vars=new ArrayList<>();
 }

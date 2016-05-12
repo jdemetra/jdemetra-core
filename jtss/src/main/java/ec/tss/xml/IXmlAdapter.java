@@ -14,18 +14,13 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.tss.xml.regression;
-
-import ec.tss.xml.IXmlAdapter;
-import ec.tstoolkit.timeseries.regression.ITsVariable;
+package ec.tss.xml;
 
 /**
  *
  * @author Jean Palate
- * @param <V>
- * @param <X>
  */
-public interface ITsVariableAdapter<X extends XmlVariable, V extends ITsVariable> extends IXmlAdapter<X, V>{
-    public abstract Class<V> getValueType();
-    public abstract Class<X> getXmlType();
+public interface IXmlAdapter <X, V>{
+    X encode(V v) throws Exception ;
+    V decode(X x) throws Exception ;
 }

@@ -18,10 +18,7 @@ package ec.tss.xml.regression;
 
 import ec.tss.xml.XmlDayAdapter;
 import ec.tstoolkit.timeseries.Day;
-import ec.tstoolkit.timeseries.regression.AbstractOutlierVariable;
-import ec.tstoolkit.timeseries.regression.AdditiveOutlier;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
-import ec.tstoolkit.timeseries.regression.ITsVariable;
 import ec.tstoolkit.timeseries.regression.OutlierDefinition;
 import ec.tstoolkit.timeseries.regression.OutlierType;
 import ec.tstoolkit.timeseries.regression.OutliersFactory;
@@ -30,20 +27,19 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  *
  * @author Jean Palate
  */
-//@XmlJavaTypeAdapter(XmlOutlier.Adapter.class)
-//@XmlRootElement(name = XmlOutlier.NAME)
+@XmlRootElement(name = XmlOutlier.RNAME)
+@XmlType(name=XmlOutlier.NAME)
 public class XmlOutlier extends XmlVariable {
     
-    static final String NAME="outlier";
+    static final String RNAME="outlier", NAME=RNAME+"Type";
 
-    static class Adapter extends TsVariableAdapter<XmlOutlier, IOutlierVariable> {
+    static class Adapter implements ITsVariableAdapter<XmlOutlier, IOutlierVariable> {
 
         @Override
         public Class<IOutlierVariable> getValueType() {
@@ -56,13 +52,13 @@ public class XmlOutlier extends XmlVariable {
         }
 
         @Override
-        public IOutlierVariable unmarshal(XmlOutlier v) throws Exception {
+        public IOutlierVariable decode(XmlOutlier v) throws Exception {
             OutlierDefinition odef = new OutlierDefinition(v.position, v.type, v.prespecified);
             return OutliersFactory.defaultFactory.make(odef, TsFrequency.Monthly);
         }
 
         @Override
-        public XmlOutlier marshal(IOutlierVariable v) throws Exception {
+        public XmlOutlier encode(IOutlierVariable v) throws Exception {
             XmlOutlier xml = new XmlOutlier();
             xml.position = v.getPosition().firstday();
             xml.type=v.getOutlierType();

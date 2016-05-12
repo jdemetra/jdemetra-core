@@ -29,13 +29,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *
  * @author Jean Palate
  */
-//@XmlJavaTypeAdapter(XmlGenericTradingDays.Adapter.class)
-//@XmlRootElement(name = XmlGenericTradingDays.NAME)
+@XmlRootElement(name = XmlGenericTradingDays.NAME)
+@XmlType(name=XmlGenericTradingDays.NAME)
 public class XmlGenericTradingDays extends XmlVariable{
     
-    static final String NAME="genericTradingDays";
+    static final String RNAME="genericTradingDays", NAME=RNAME+"Type";
 
-    static class Adapter extends TsVariableAdapter<XmlGenericTradingDays, GregorianCalendarVariables> {
+    static class Adapter implements ITsVariableAdapter<XmlGenericTradingDays, GregorianCalendarVariables> {
 
         @Override
         public Class<XmlGenericTradingDays> getXmlType() {
@@ -48,12 +48,12 @@ public class XmlGenericTradingDays extends XmlVariable{
         }
 
         @Override
-        public GregorianCalendarVariables unmarshal(XmlGenericTradingDays v) throws Exception {
+        public GregorianCalendarVariables decode(XmlGenericTradingDays v) throws Exception {
             return GregorianCalendarVariables.getDefault(TradingDaysType.TradingDays);
         }
 
         @Override
-        public XmlGenericTradingDays marshal(GregorianCalendarVariables v) throws Exception {
+        public XmlGenericTradingDays encode(GregorianCalendarVariables v) throws Exception {
             return new XmlGenericTradingDays();
         }
 

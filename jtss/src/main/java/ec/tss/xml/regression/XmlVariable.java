@@ -30,14 +30,14 @@ import javax.xml.bind.annotation.XmlAttribute;
  */
 public abstract class XmlVariable {
 
-    private static final List<TsVariableAdapter> adapters = new ArrayList<>();
+    private static final List<ITsVariableAdapter> adapters = new ArrayList<>();
 
-    public static void register(final TsVariableAdapter... nadapters) {
+    public static void register(final ITsVariableAdapter... nadapters) {
         synchronized (adapters) {
             for (int i = 0; i < nadapters.length; ++i) {
-                final TsVariableAdapter cur = nadapters[i];
-                Optional<TsVariableAdapter> first = adapters.stream().filter(
-                        (TsVariableAdapter z) -> z.getValueType().equals(cur.getValueType())).findFirst();
+                final ITsVariableAdapter cur = nadapters[i];
+                Optional<ITsVariableAdapter> first = adapters.stream().filter(
+                        (ITsVariableAdapter z) -> z.getValueType().equals(cur.getValueType())).findFirst();
                 if (first.isPresent()) {
                     adapters.remove(first.get());
                 }
@@ -48,10 +48,10 @@ public abstract class XmlVariable {
 
     public static ITsVariable unmarshal(XmlVariable var) throws Exception {
         synchronized (adapters) {
-            Optional<TsVariableAdapter> first = adapters.stream().
-                    filter((TsVariableAdapter z) -> z.getXmlType().isInstance(var)).findFirst();
+            Optional<ITsVariableAdapter> first = adapters.stream().
+                    filter((ITsVariableAdapter z) -> z.getXmlType().isInstance(var)).findFirst();
             if (first.isPresent()) {
-                return (ITsVariable) first.get().unmarshal(var);
+                return (ITsVariable) first.get().decode(var);
             } else {
                 return null;
             }
@@ -66,10 +66,10 @@ public abstract class XmlVariable {
 
     public static XmlVariable marshal(ITsVariable var) throws Exception {
         synchronized (adapters) {
-            Optional<TsVariableAdapter> first = adapters.stream().
-                    filter((TsVariableAdapter z) -> z.getValueType().isInstance(var)).findFirst();
+            Optional<ITsVariableAdapter> first = adapters.stream().
+                    filter((ITsVariableAdapter z) -> z.getValueType().isInstance(var)).findFirst();
             if (first.isPresent()) {
-                return (XmlVariable) first.get().marshal(var);
+                return (XmlVariable) first.get().encode(var);
             } else {
                 return null;
             }
