@@ -37,12 +37,6 @@ public class SeasonalDummies implements ITsVariable {
     }
 
     @Override
-    @Deprecated
-    public void data(TsDomain domain, List<DataBlock> data, int start) {
-        data(domain, data.subList(start, start+freq_.intValue() - 1));
-    }
-    
-    @Override
     public void data(TsDomain domain, List<DataBlock> data) {
         int pstart = domain.getStart().getPosition();
         int ifreq = domain.getFrequency().intValue();

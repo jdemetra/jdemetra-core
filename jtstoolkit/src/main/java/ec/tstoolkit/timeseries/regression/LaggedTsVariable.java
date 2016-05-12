@@ -65,15 +65,6 @@ public class LaggedTsVariable implements ITsModifier {
     }
 
     @Override
-    @Deprecated
-    public void data(TsDomain domain, List<DataBlock> data, int start) {
-        int nvar = var.getDim();
-        for (int i = m_firstlag, k = start; i <= m_lastlag; ++i, k+=nvar) {
-            var.data(domain.move(-i), data.subList(k, k+nvar));
-        }
-    }
-
-    @Override
     public TsDomain getDefinitionDomain() {
         TsDomain dom = var.getDefinitionDomain();
         if (dom == null) {
