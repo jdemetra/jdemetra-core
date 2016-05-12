@@ -215,6 +215,18 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
     /**
      *
      * @param pos
+     * @param ioutlier
+     */
+    public void allow(int pos, int ioutlier) {
+        // avoid outliers outside the current range
+        if (pos >= 0 && pos < m_bT.getRowsCount()) {
+            m_bT.set(pos, ioutlier, true);
+            m_T.set(pos, ioutlier, 0);
+        }
+    }
+    /**
+     *
+     * @param pos
      */
     public void exclude(int[] pos) {
         if (pos == null) {
@@ -242,6 +254,20 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
         }
     }
 
+    /**
+     *
+     * @param o
+     */
+    public void allow(IOutlierVariable o) {
+        for (int i = 0; i < m_o.size(); ++i) {
+            IOutlierFactory exemplar = m_o.get(i);
+            if (exemplar.getOutlierType().equals(o.getOutlierType())) {
+                int pos = o.getPosition().minus(m_domain.getStart());
+                allow(pos, i);
+                break;
+            }
+        }
+    }
     /**
      *
      * @param outliers
