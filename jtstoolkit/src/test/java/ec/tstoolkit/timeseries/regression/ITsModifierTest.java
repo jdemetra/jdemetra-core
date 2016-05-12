@@ -102,11 +102,6 @@ class TramoExpander implements ITsModifier {
 
     @Override
     public void data(TsDomain domain, List<DataBlock> data) {
-        data(domain, data,0);
-    }
-    
-    @Override
-    public void data(TsDomain domain, List<DataBlock> data, int start) {
         TsData s = of(var);
         TsDomain vdom = s.getDomain();
         int nb = vdom.getStart().minus(domain.getStart());
@@ -126,7 +121,7 @@ class TramoExpander implements ITsModifier {
         if (f != null) {
             s = s.update(f);
         }
-        data.get(start).copy(s);
+        data.get(0).copy(s);
     }
 
     @Override

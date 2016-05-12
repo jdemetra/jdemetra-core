@@ -39,7 +39,7 @@ public class GenericTradingDaysTest {
         Matrix M1 = new Matrix(md.getLength(), 6);
         DefaultGregorianCalendarProvider.instance.calendarData(TradingDaysType.TradingDays, md, M1.columnList());
 
-        Matrix M2 = new Matrix(md.getLength(), 7);
+        Matrix M2 = new Matrix(md.getLength(), 6);
         GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD7);
         gtd.data(md, M2.columnList());
 
@@ -54,26 +54,25 @@ public class GenericTradingDaysTest {
         Matrix M1 = new Matrix(md.getLength(), 1);
         DefaultGregorianCalendarProvider.instance.calendarData(TradingDaysType.WorkingDays, md, M1.columnList());
 
-        Matrix M2 = new Matrix(md.getLength(), 2);
+        Matrix M2 = new Matrix(md.getLength(), 1);
         GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD2);
         gtd.data(md, M2.columnList());
-        M2.column(0).mul(5);
         assertTrue(M1.column(0).distance(M2.column(0)) < 1e-9);
     }
     
     @Test
-    @Ignore
+    //@Ignore
     public void testDisplay() {
         TsDomain md = new TsDomain(TsFrequency.Monthly, 1980, 0, 28*12);
-        Matrix M = new Matrix(md.getLength(), 2);
+        Matrix M = new Matrix(md.getLength(), 1);
         GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD2);
         gtd.data(md, M.columnList());
         System.out.println(M);
-        M = new Matrix(md.getLength(), 3);
+        M = new Matrix(md.getLength(), 2);
         gtd = GenericTradingDays.contrasts(DayClustering.TD3);
         gtd.data(md, M.columnList());
         System.out.println(M);
-        M = new Matrix(md.getLength(), 7);
+        M = new Matrix(md.getLength(), 6);
         gtd = GenericTradingDays.contrasts(DayClustering.TD7);
         gtd.data(md, M.columnList());
         System.out.println(M);

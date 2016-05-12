@@ -14,18 +14,13 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.tss.xml.regression;
-
-import ec.tstoolkit.timeseries.regression.ITsVariable;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+package ec.tss.xml;
 
 /**
  *
  * @author Jean Palate
- * @param <V>
- * @param <X>
  */
-public abstract class TsVariableAdapter<X extends XmlVariable, V extends ITsVariable> extends XmlAdapter<X, V>{
-    public abstract Class<V> getValueType();
-    public abstract Class<X> getXmlType();
+public interface IXmlAdapter <X, V>{
+    X encode(V v) throws Exception ;
+    V decode(X x) throws Exception ;
 }

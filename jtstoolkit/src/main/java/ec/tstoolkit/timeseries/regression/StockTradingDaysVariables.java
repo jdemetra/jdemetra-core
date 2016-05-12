@@ -90,12 +90,6 @@ public class StockTradingDaysVariables implements ITradingDaysVariable, Cloneabl
     }
 
     @Override
-    @Deprecated
-    public void data(TsDomain domain, List<DataBlock> data, int start) {
-        data(domain, data.subList(start, start+getDim()));
-    }
-    
-    @Override
     public void data(TsDomain domain, List<DataBlock> data) {
         int n = domain.getLength();
         TsPeriod d0 = domain.getStart();

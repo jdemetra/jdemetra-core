@@ -56,15 +56,6 @@ public class TsVariableGroup implements IUserTsVariable {
     }
     
     @Override
-    public void data(TsDomain domain, List<DataBlock> data, int start) {
-        for (int i=0, n0=start; i<vars_.length; ++i){
-            int n1=n0+vars_[i].getDim();
-            vars_[i].data(domain, data.subList(n0, n1));
-            n0=n1;
-        }
-    }
-
-    @Override
     public TsDomain getDefinitionDomain() {
         TsDomain domain=null;
         for (int i=0; i<vars_.length; ++i){

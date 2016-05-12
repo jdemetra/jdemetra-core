@@ -114,17 +114,17 @@ public class GenericTradingDays {
                     sum += days[group[ip]][i];
                 }
                 double dsum = sum;
-                dsum /= np;
-                buffer.get(ig).set(i, dsum - dcsum);
+                buffer.get(ig).set(i, dsum - np*dcsum);
             }
         }
-        int[] ndays = Utilities.daysCount(domain);
-        DataBlock nb = buffer.get(ng);
-        nb.set(i -> ndays[i]);
+//        int[] ndays = Utilities.daysCount(domain);
+//        DataBlock nb = buffer.get(ng);
+//        nb.set(i -> ndays[i]);
     }
 
     public int getCount() {
-        return clustering.getGroupsCount();
+        int n=clustering.getGroupsCount();
+        return contrastGroup>= 0 ? n-1 : n;
     }
 
     public String getDescription(int idx) {

@@ -16,25 +16,16 @@
  */
 package ec.tss.xml.regression;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import ec.tss.xml.IXmlAdapter;
+import ec.tstoolkit.timeseries.regression.ITsVariable;
 
 /**
  *
  * @author Jean Palate
+ * @param <V>
+ * @param <X>
  */
-@XmlRootElement(name = XmlVariables.RNAME)
-@XmlType(name = XmlVariables.NAME)
-public class XmlVariables {
-    static final String NAME = "variablesType";
-    static final String RNAME = "variables";
-    
-    @XmlElement(name="var")
-    @XmlElementWrapper(name = "variables")
-    List<XmlVariable> vars=new ArrayList<>();
+public interface ITsVariableAdapter<X extends XmlVariable, V extends ITsVariable> extends IXmlAdapter<X, V>{
+    public abstract Class<V> getValueType();
+    public abstract Class<X> getXmlType();
 }

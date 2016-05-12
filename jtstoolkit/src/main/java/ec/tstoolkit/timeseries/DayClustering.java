@@ -153,6 +153,9 @@ public class DayClustering {
         if (Arrays.equals(groups, TD3_IDX)) {
             return "TD3";
         }
+        if (Arrays.equals(groups, TD4_IDX)) {
+            return "TD4";
+        }
         StringBuilder builder = new StringBuilder();
         int ng = getGroupsCount();
         for (int i = 0; i < ng; ++i) {
@@ -171,10 +174,15 @@ public class DayClustering {
         return builder.toString();
     }
 
-    private static final int[] TD7_IDX = new int[]{0, 1, 2, 3, 4, 5, 6}, TD2_IDX = new int[]{0, 1, 1, 1, 1, 1, 0}, TD3_IDX = new int[]{0, 2, 2, 2, 2, 2, 1};
+    private static final int[] TD7_IDX = new int[]{0, 1, 2, 3, 4, 5, 6}, 
+            TD2_IDX = new int[]{0, 1, 1, 1, 1, 1, 0}, 
+            TD3_IDX = new int[]{0, 2, 2, 2, 2, 2, 1},
+            TD4_IDX = new int[]{0, 3, 3, 3, 3, 2, 1}
+            ;
 
     private static final String[] SHORTNAMES = new String[]{"sun", "mon", "tue", "wed", "thu", "fri", "sat"};
 
-    public static final DayClustering TD2 = new DayClustering(TD2_IDX), TD3 = new DayClustering(TD3_IDX), TD7 = new DayClustering(TD7_IDX);
+    public static final DayClustering TD2 = new DayClustering(TD2_IDX), TD3 = new DayClustering(TD3_IDX)
+            , TD4 = new DayClustering(TD4_IDX), TD7 = new DayClustering(TD7_IDX);
 
 }

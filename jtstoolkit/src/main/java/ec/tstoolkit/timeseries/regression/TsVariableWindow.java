@@ -46,12 +46,6 @@ public class TsVariableWindow implements ITsModifier {
     }
 
     @Override
-    @Deprecated
-    public void data(TsDomain domain, List<DataBlock> data, int start) {
-        data(domain, data.subList(start, start + getDim()));
-    }
-
-    @Override
     public void data(TsDomain domain, List<DataBlock> data) {
         TsPeriodSelector sel=new TsPeriodSelector();
         sel.between(start, end);
