@@ -14,8 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.tstoolkit.modelling.arima.tramo;
+package ec.tstoolkit.modelling.arima.demetra;
 
+import ec.tstoolkit.modelling.arima.tramo.*;
 import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.arima.estimation.LikelihoodStatistics;
 import ec.tstoolkit.dstats.F;
@@ -25,6 +26,8 @@ import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.*;
+import ec.tstoolkit.timeseries.DayClustering;
+import ec.tstoolkit.timeseries.calendars.GenericTradingDays;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import ec.tstoolkit.timeseries.regression.*;
@@ -34,137 +37,137 @@ import java.util.List;
  * * @author gianluca, jean Correction 22/7/2014. pre-specified Easter effect
  * was not handled with auto-td
  */
-public class RegressionTestTD extends AbstractTramoModule implements IPreprocessingModule {
+public class TradingDaysSelectionModule extends DemetraModule implements IPreprocessingModule {
 
     private static final String REGS = "Regression variables";
 
     private static final double DEF_MODEL_EPS = .01, DEF_CONSTRAINT_EPS = .03;
-    private PreprocessingModel tdModel, td6Model;
-    private LikelihoodStatistics ntdStats, td1Stats, td6Stats;
-    private final double pftd_, pfwd_;
-    private double pdel, pwd, ptd;//, pdel2;
+    private static final GenericTradingDays[] DEF_TD
+            = new GenericTradingDays[]{
+                GenericTradingDays.contrasts(DayClustering.TD7),
+                GenericTradingDays.contrasts(DayClustering.TD4),
+                GenericTradingDays.contrasts(DayClustering.TD3),
+                GenericTradingDays.contrasts(DayClustering.TD2)
+            };
+    private final GenericTradingDays[] tdVars;
+    private PreprocessingModel tdModel;
+    private LikelihoodStatistics ntdStats;
+    private LikelihoodStatistics[] tdStats;
+    private final double pftd, pfdel;
+    private double[] pdel, ptd, bic;
     private double sigma;
     private static final double DEF_TVAL = 1.96;
-    private double tval_ = DEF_TVAL;
+    private double tval = DEF_TVAL;
+    private int choice;
 
-    public RegressionTestTD(double pftd) {
-        pftd_ = pftd;
-        pfwd_ = pftd;
+    public TradingDaysSelectionModule(final double pftd, final double pfdel) {
+        this.pftd = pftd;
+        this.pfdel = pfdel;
+        tdVars = DEF_TD;
     }
 
-    public RegressionTestTD(double pftd, double pfwd) {
-        pftd_ = pftd;
-        pfwd_ = pfwd;
+    public TradingDaysSelectionModule(final double pftd, final double pfdel, final GenericTradingDays[] td) {
+        this.pftd = pftd;
+        this.pfdel = pfdel;
+        tdVars = td;
     }
 
     public double getPftd() {
-        return pftd_;
-    }
-
-    public double getPfwd() {
-        return pfwd_;
+        return pftd;
     }
 
     public double getTValue() {
-        return tval_;
+        return tval;
     }
 
     public void setTvalue(double tval) {
-        tval_ = tval;
+        this.tval = tval;
     }
 
     @Override
     public ProcessingResult process(ModellingContext context) {
-        // Step 1: choose between TD and WD
-        td6Model = createModel(context, TradingDaysType.TradingDays, LengthOfPeriodType.None);
-        if (td6Model == null) {
+        tdStats = new LikelihoodStatistics[tdVars.length];
+        // Computes the more general model, the parameters are kept in more restrivitve models
+        PreprocessingModel tdm = createModel(context, tdVars[0], LengthOfPeriodType.None);
+        if (tdm == null) {
             return ProcessingResult.Failed;
         }
-        ConcentratedLikelihood ll = td6Model.estimation.getLikelihood();
-        td6Stats = td6Model.estimation.getStatistics();
-        int nhp = td6Model.description.getArimaComponent().getFreeParametersCount();
+        tdModel = tdm;
+        ConcentratedLikelihood ll = tdm.estimation.getLikelihood();
+        tdStats[0] = tdm.estimation.getStatistics();
+        int nhp = tdm.description.getArimaComponent().getFreeParametersCount();
         int df = ll.getN() - ll.getNx() - nhp;
         sigma = ll.getSsqErr() / df;
+        ntdStats = check(null, LengthOfPeriodType.LeapYear);
 
-        GregorianCalendarVariables vars = tdvars(context);
-        td1Stats = check(vars, TradingDaysType.WorkingDays, LengthOfPeriodType.None);
-        ntdStats = check(vars, TradingDaysType.None, LengthOfPeriodType.None);
+        // compute the other models
+        for (int i = 1; i < tdVars.length; ++i) {
+            tdStats[i] = check(tdVars[i], LengthOfPeriodType.None);
+        }
+
         calcProb();
-        TradingDaysType td = TradingDaysType.None;
-        LengthOfPeriodType lp = LengthOfPeriodType.LeapYear;
 
         int sel = 0;
-        if (pdel < pfwd_ && ptd < pftd_) {// Prefer TD
-            td = TradingDaysType.TradingDays;
-            sel = 6;
-        } // Prefer WD
-        else if (pwd < pftd_) {
-            td = TradingDaysType.WorkingDays;
-            sel = 1;
-        } else {
-            td = TradingDaysType.None;
-            lp = LengthOfPeriodType.None;
+        choice = -1;
+        for (int i = 0; i < pdel.length; ++i) {
+            if (pdel[i] < pfdel && ptd[i] < pftd) {
+                choice = i;
+                break;
+            }
+        }
+        if (choice < 0 && ptd[pdel.length] < pftd) {// Prefer TD
+            choice = pdel.length;
+
         }
 //        addTDInfo(context, 1 - pwd, 1 - ptd, 1 - pdel, sel);
-
-        tdModel = createModel(context, td, lp);
-        if (td == TradingDaysType.None || !checkLY(tdModel)) {
+        GenericTradingDays best = choice < 0 ? null : tdVars[choice];
+        tdModel = createModel(context, best, LengthOfPeriodType.LeapYear);
+        if (best == null || !checkLY(tdModel)) {
             boolean mean = Math.abs(tdModel.estimation.getLikelihood().getTStats(true, 2)[0]) > 1.96;
-            context.description = backModel(context, td, LengthOfPeriodType.None, checkEE(tdModel), mean);
+            context.description = backModel(context, best, LengthOfPeriodType.None, mean);
         } else {
             boolean mean = Math.abs(tdModel.estimation.getLikelihood().getTStats(true, 2)[0]) > 1.96;
-            context.description = backModel(context, td, LengthOfPeriodType.LeapYear, checkEE(tdModel), mean);
+            context.description = backModel(context, best, LengthOfPeriodType.LeapYear, mean);
         }
         context.estimation = null;
-        transferLogs(tdModel, context);
         return ProcessingResult.Changed;
     }
 
     private void calcProb() {
         F fstat = new F();
-        pdel = 1;
-        ptd = 1;
-        pwd = 1;
+        pdel = new double[tdVars.length - 1];
+        ptd = new double[tdVars.length];
+        bic = new double[tdVars.length + 1];
 
-        int nhp = td6Model.description.getArimaComponent().getFreeParametersCount();
-        ConcentratedLikelihood ll = td6Model.estimation.getLikelihood();
+        int nhp = tdModel.description.getArimaComponent().getFreeParametersCount();
+        ConcentratedLikelihood ll = tdModel.estimation.getLikelihood();
         int df = ll.getN() - ll.getNx() - nhp;
         fstat.setDFDenom(df);
-        if (td6Stats != null && td1Stats != null) {
-            double fdel = (td1Stats.SsqErr - td6Stats.SsqErr) / (5 * sigma);
-            if (fdel > 0) {
-                fstat.setDFNum(5);
-                pdel = fstat.getProbability(fdel, ProbabilityType.Upper);
-            }
+        int nall=tdVars[0].getCount();
+        double ftd = (ntdStats.SsqErr - tdStats[0].SsqErr) / ( nall * sigma);
+        if (ftd > 0) {
+            fstat.setDFNum(nall);
+            ptd[0] = fstat.getProbability(ftd, ProbabilityType.Upper);
         }
-        if (ntdStats == null) {
-            if (td6Stats != null) {
-                ptd = 0;
+        bic[0] = tdStats[0].BICC;
+        bic[tdVars.length] = ntdStats.BICC;
+        for (int i = 1; i < ptd.length; ++i) {
+            bic[i] = tdStats[i].BICC;
+            int ncur = tdVars[i].getCount(), nprev=tdVars[i-1].getCount(), ndel = nprev - ncur;
+            double fdel = (tdStats[i].SsqErr - tdStats[i-1].SsqErr) / (ndel * sigma);
+            if (fdel > 0) {
+                fstat.setDFNum(ndel);
+                pdel[i - 1] = fstat.getProbability(fdel, ProbabilityType.Upper);
             }
-            if (td1Stats != null) {
-                pwd = 0;
-            }
-        } else {
-
-            if (td6Stats != null) {
-                double ftd = (ntdStats.SsqErr - td6Stats.SsqErr) / (6 * sigma);
-                if (ftd > 0) {
-                    fstat.setDFNum(6);
-                    ptd = fstat.getProbability(ftd, ProbabilityType.Upper);
-                }
-            }
-
-            if (td1Stats != null) {
-                double fwd = (ntdStats.SsqErr - td1Stats.SsqErr) / sigma;
-                if (fwd > 0) {
-                    fstat.setDFNum(1);
-                    pwd = fstat.getProbability(fwd, ProbabilityType.Upper);
-                }
+            double fcur = (ntdStats.SsqErr - tdStats[i].SsqErr) / (ncur * sigma);
+            if (fcur > 0) {
+                fstat.setDFNum(ncur);
+                ptd[i] = fstat.getProbability(fcur, ProbabilityType.Upper);
             }
         }
     }
 
-    private PreprocessingModel createModel(ModellingContext context, TradingDaysType td, LengthOfPeriodType lp) {
+    private PreprocessingModel createModel(ModellingContext context, GenericTradingDays td, LengthOfPeriodType lp) {
         ModelDescription model = context.description.clone();
         model.setAirline(context.hasseas);
         model.setMean(true);
@@ -172,9 +175,8 @@ public class RegressionTestTD extends AbstractTramoModule implements IPreprocess
 
         // remove previous calendar effects 
         model.getCalendars().clear();
-        if (td != TradingDaysType.None) {
-            GregorianCalendarVariables vars = tdvars(context);
-            vars.setDayOfWeek(td);
+        if (td != null) {
+            GenericTradingDaysVariables vars = new GenericTradingDaysVariables(td);
             model.getCalendars().add(new Variable(vars, ComponentType.CalendarEffect, RegStatus.Accepted));
         }
         if (lp != LengthOfPeriodType.None) {
@@ -189,54 +191,14 @@ public class RegressionTestTD extends AbstractTramoModule implements IPreprocess
         return cxt.current(true);
     }
 
-//    private PreprocessingModel createWdModel(ModellingContext context) {
-//        ModelDescription model = context.description.clone();
-//        model.setAirline(context.hasseas);
-//        model.setMean(true);
-//        model.setOutliers(null);
-//
-//        // remove previous calendar effects 
-//        GregorianCalendarVariables vars = tdvars(context);
-//        vars.setDayOfWeek(TradingDaysType.WorkingDays);
-//        model.getCalendars().clear();
-//        model.getCalendars().add(new Variable(vars, ComponentType.CalendarEffect, RegStatus.Accepted));
-//        model.getCalendars().add(new Variable(new LeapYearVariable(LengthOfPeriodType.LeapYear), ComponentType.CalendarEffect, RegStatus.Accepted));
-//
-//        ModellingContext cxt = new ModellingContext();
-//        cxt.description = model;
-//        ModelEstimation estimation = new ModelEstimation(model.buildRegArima());
-//        int nhp = model.getArimaComponent().getFreeParametersCount();
-//        estimation.compute(getMonitor(), nhp);
-//        cxt.estimation = estimation;
-//        return cxt.current(true);
-//    }
-//    
-//    private PreprocessingModel createNtdModel(ModellingContext context) {
-//        ModelDescription model = context.description.clone();
-//        model.setAirline(context.hasseas);
-//        model.setMean(true);
-//        model.setOutliers(null);
-//
-//        // remove previous calendar effects 
-//        model.getCalendars().clear();
-//
-//        ModellingContext cxt = new ModellingContext();
-//        cxt.description = model;
-//        ModelEstimation estimation = new ModelEstimation(model.buildRegArima());
-//        int nhp = model.getArimaComponent().getFreeParametersCount();
-//        estimation.compute(getMonitor(), nhp);
-//        cxt.estimation = estimation;
-//        return cxt.current(true);
-//    }
-//
-    private LikelihoodStatistics check(GregorianCalendarVariables tdvar, TradingDaysType td, LengthOfPeriodType lp) {
-        ModelDescription model = td6Model.description.clone();
+    private LikelihoodStatistics check(GenericTradingDays td, LengthOfPeriodType lp) {
+        ModelDescription model = tdModel.description.clone();
 
         // remove previous calendar effects 
         model.getCalendars().clear();
-        if (td != TradingDaysType.None) {
-            tdvar.setDayOfWeek(td);
-            model.getCalendars().add(new Variable(tdvar, ComponentType.CalendarEffect, RegStatus.Accepted));
+        if (td != null) {
+            GenericTradingDaysVariables vars = new GenericTradingDaysVariables(td);
+            model.getCalendars().add(new Variable(vars, ComponentType.CalendarEffect, RegStatus.Accepted));
         }
         if (lp != LengthOfPeriodType.None) {
             model.getCalendars().add(new Variable(new LeapYearVariable(lp), ComponentType.CalendarEffect, RegStatus.Accepted));
@@ -247,29 +209,15 @@ public class RegressionTestTD extends AbstractTramoModule implements IPreprocess
         return estimation.getStatistics();
     }
 
-    private ModelDescription backModel(ModellingContext context, TradingDaysType td, LengthOfPeriodType lp, boolean Ee, boolean mean) {
+    private ModelDescription backModel(ModellingContext context, GenericTradingDays td, LengthOfPeriodType lp, boolean mean) {
         ModelDescription model = context.description.clone();
         if (context.automodelling) {
             model.setMean(mean);
         }
         model.setOutliers(null);
         model.getCalendars().clear();
-        if (!Ee) {
-            model.getMovingHolidays().clear();
-        } else {
-            TsVariableList x = model.buildRegressionVariables();
-            TsVariableSelection sel = x.selectCompatible(IMovingHolidayVariable.class);
-            TsVariableSelection.Item<ITsVariable>[] items = sel.elements();
-            for (int i = 0; i < items.length; ++i) {
-                Variable search = Variable.search(model.getMovingHolidays(), items[i].variable);
-                if (search.status.needTesting()) {
-                    search.status = RegStatus.Accepted;
-                }
-            }
-        }
-        if (td != TradingDaysType.None) {
-            GregorianCalendarVariables vars = tdvars(context);
-            vars.setDayOfWeek(td);
+        if (td != null) {
+            GenericTradingDaysVariables vars = new GenericTradingDaysVariables(td);
             model.getCalendars().add(new Variable(vars, ComponentType.CalendarEffect, RegStatus.Accepted));
         }
         if (lp != LengthOfPeriodType.None) {
@@ -287,7 +235,7 @@ public class RegressionTestTD extends AbstractTramoModule implements IPreprocess
         TsVariableSelection.Item<ITsVariable>[] items = sel.elements();
         double[] Tstat = ll.getTStats(true, 2);//airline
         double t = Tstat[start + items[items.length - 1].position];
-        if (Math.abs(t) < tval_) {
+        if (Math.abs(t) < tval) {
             addLPInfo(model, t);
             retval = false;
         }
@@ -320,16 +268,6 @@ public class RegressionTestTD extends AbstractTramoModule implements IPreprocess
         return retval;
     }
 
-    private GregorianCalendarVariables tdvars(ModellingContext context) {
-        List<Variable> calendars = context.description.getCalendars();
-        for (Variable var : calendars) {
-            if (var.isCompatible(GregorianCalendarVariables.class)) {
-                return ((GregorianCalendarVariables) var.getVariable()).clone();
-            }
-        }
-        return GregorianCalendarVariables.getDefault(TradingDaysType.None);
-    }
-
     private void addLPInfo(PreprocessingModel model, double tstat) {
 //        StringBuilder builder = new StringBuilder();
 //        builder.append("Mean not significant (T=").append(tstat).append(')');
@@ -342,7 +280,7 @@ public class RegressionTestTD extends AbstractTramoModule implements IPreprocess
 //            builder.append("Easter not significant (T=").append(tstat).append(')');
 //            model.addProcessingInformation(ProcessingInformation.info(REGS,
 //                    RegressionTestTD.class.getName(), builder.toString(), null));
-     }
+    }
 
     private void addTDInfo(ModellingContext context, double pwd, double ptd, double pdel, int sel) {
 //        if (context.processingLog != null) {
@@ -373,5 +311,40 @@ public class RegressionTestTD extends AbstractTramoModule implements IPreprocess
 //            context.processingLog.add(ProcessingInformation.info(REGS,
 //                    RegressionTestTD.class.getName(), msg, null));
 //        }
+    }
+
+    /**
+     * @return the tdStats
+     */
+    public LikelihoodStatistics[] getTdStats() {
+        return tdStats;
+    }
+
+    /**
+     * @return the pdel
+     */
+    public double[] getPdel() {
+        return pdel;
+    }
+
+    /**
+     * @return the ptd
+     */
+    public double[] getPtd() {
+        return ptd;
+    }
+
+    /**
+     * @return the choice
+     */
+    public int getChoice() {
+        return choice;
+    }
+
+    /**
+     * @return the bic
+     */
+    public double[] getBic() {
+        return bic;
     }
 }

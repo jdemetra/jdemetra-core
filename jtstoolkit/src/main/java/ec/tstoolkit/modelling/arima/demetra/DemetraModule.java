@@ -14,8 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.tstoolkit.modelling.arima.tramo;
+package ec.tstoolkit.modelling.arima.demetra;
 
+import ec.tstoolkit.modelling.arima.tramo.*;
 import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.realfunctions.IFunctionMinimizer;
@@ -30,15 +31,13 @@ import ec.tstoolkit.sarima.estimation.SarimaInitializer;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public abstract class AbstractTramoModule {
+public abstract class DemetraModule {
 
     protected IFunctionMinimizer minimizer;
 
-    protected AbstractTramoModule() {
-        //minimizer = new ProxyMinimizer(new TramoMarquardt());
+    protected DemetraModule() {
         minimizer = new ProxyMinimizer(new LevenbergMarquardtMethod());
         minimizer.setConvergenceCriterion(1e-5);
-        //minimizer = new ProxyMinimizer(new DogLegMethod());
     }
 
     /**
@@ -72,15 +71,4 @@ public abstract class AbstractTramoModule {
         minimizer.setConvergenceCriterion(eps);
     }
     
-    public static void transferLogs(ModellingContext cxt, ModellingContext context) {
-        if (context.processingLog != null && cxt.processingLog != null && !cxt.processingLog.isEmpty()) {
-            context.processingLog.addAll(cxt.processingLog);
-        }
-    }
-
-    public static void transferLogs(IProcResults rslts, ModellingContext context) {
-        if (context.processingLog != null) {
-            context.processingLog.addAll(rslts.getProcessingInformation());
-        }
-    }
 }
