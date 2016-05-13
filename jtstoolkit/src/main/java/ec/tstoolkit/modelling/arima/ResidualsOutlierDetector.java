@@ -30,6 +30,7 @@ import ec.tstoolkit.eco.RegModel;
 import ec.tstoolkit.maths.matrices.Householder;
 import ec.tstoolkit.maths.matrices.LowerTriangularMatrix;
 import ec.tstoolkit.maths.matrices.Matrix;
+import ec.tstoolkit.timeseries.regression.AbstractOutlierVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 
@@ -87,7 +88,7 @@ public class ResidualsOutlierDetector<T extends IArimaModel> extends AbstractSin
                 return false;
             }
             m_el = estimation.getResiduals();
-            calcMAD(new ReadDataBlock(m_el));
+            setMAD(AbstractOutlierVariable.mad(m_el, true));
             return true;
         } catch (Exception ex) {
             return false;
@@ -129,6 +130,7 @@ public class ResidualsOutlierDetector<T extends IArimaModel> extends AbstractSin
                     exclude(i, idx);
                 } else {
                     setT(i, idx, (xy / (Math.sqrt(xx)) / getMAD()));
+                    setCoefficient(i, idx, xy/xx);
                 }
             }
             OL.move(-1);
@@ -145,7 +147,7 @@ public class ResidualsOutlierDetector<T extends IArimaModel> extends AbstractSin
     }
 
     @Override
-    protected void clear() {
-        super.clear();
+    protected void clear(boolean all) {
+        super.clear(all);
     }
 }

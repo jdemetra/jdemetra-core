@@ -195,8 +195,8 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
     }
 
     @Override
-    protected void clear() {
-        super.clear();
+    protected void clear(boolean all) {
+        super.clear(all);
         m_L = null;
         m_X = null;
         m_b = null;

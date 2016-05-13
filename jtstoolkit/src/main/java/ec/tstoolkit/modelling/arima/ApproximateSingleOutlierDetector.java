@@ -67,10 +67,11 @@ public class ApproximateSingleOutlierDetector<T extends IArimaModel> extends
 
     /**
      *
+     * @param all
      */
     @Override
-    protected void clear() {
-	super.clear();
+    protected void clear(boolean all) {
+	super.clear(all);
 	m_el = null;
 	m_c = 0;
 	m_tmax = 0;
@@ -95,21 +96,6 @@ public class ApproximateSingleOutlierDetector<T extends IArimaModel> extends
 	DataBlock EL = new DataBlock(m_el);
 	setMAD(AbstractOutlierVariable.mad(EL, true));
 	m_ss = EL.ssq();
-	// alternative implementation
-	/*
-	 * ConcentratedLikelihoodEstimation estimation = new
-	 * ConcentratedLikelihoodEstimation(new KalmanFilter(true)); if
-	 * (!estimation.estimate(getModel())) return false; DataBlock res =
-	 * null; if (getModel().getVarsCount() > 0) res =
-	 * getModel().getDModel().calcRes(new
-	 * DataBlock(estimation.getLikelihood().getB())); else res =
-	 * getModel().getDModel().getY(); int n = res.getLength(); double[] tmp
-	 * = new double[n]; DataBlock T = new DataBlock(tmp); // OL = PHI(B)*O
-	 * getModel().getArima().getStationaryAR().filter(res, T); // TH(B) O =
-	 * OL; getModel().getArima().getMA().solve(T.getData(), res.getData());
-	 * m_el = res.getData(); setMAD(AbstractOutlierVariable.mad(res, true));
-	 * m_ss = res.ssq();
-	 */
 	return true;
     }
 
