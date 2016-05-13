@@ -18,6 +18,7 @@ package ec.tstoolkit.modelling.arima.demetra;
 
 import ec.tstoolkit.modelling.arima.tramo.*;
 import ec.tstoolkit.algorithm.ProcessingInformation;
+import ec.tstoolkit.arima.estimation.KalmanFilter;
 import ec.tstoolkit.arima.estimation.RegArimaEstimation;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.data.DataBlock;
@@ -28,11 +29,14 @@ import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.maths.realfunctions.IFunctionMinimizer;
 import ec.tstoolkit.maths.realfunctions.ProxyMinimizer;
 import ec.tstoolkit.maths.realfunctions.levmar.LevenbergMarquardtMethod;
+import ec.tstoolkit.modelling.arima.AbstractSingleOutlierDetector;
+import ec.tstoolkit.modelling.arima.ExactSingleOutlierDetector;
 import ec.tstoolkit.modelling.arima.IOutliersDetectionModule;
 import ec.tstoolkit.modelling.arima.ModelDescription;
 import ec.tstoolkit.modelling.arima.ModellingContext;
 import ec.tstoolkit.modelling.arima.PreprocessingDictionary;
 import ec.tstoolkit.modelling.arima.ProcessingResult;
+import ec.tstoolkit.modelling.arima.ResidualsOutlierDetector;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;
 import ec.tstoolkit.sarima.SarmaSpecification;
@@ -52,6 +56,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Simplified version of the solution used in Tramo. We don't use
+ * Hannan-Rissanen (which is often misleading)
  *
  * @author Jean Palate
  */
@@ -62,17 +68,16 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
     private static final int MAXROUND = 50, MAXOUTLIERS = 24;
     private RegArimaModel<SarimaModel> regarima_;
     private final ArrayList<IOutlierVariable> outliers_ = new ArrayList<>();
-    private final SingleOutlierDetector sod_ = new SingleOutlierDetector();
-    private double[] coeff_, tstats_;
+    private final AbstractSingleOutlierDetector sod_ = new ExactSingleOutlierDetector(null);
+    private double[] tstats_;
     private int nhp_;
     private int round_;
     // festim = true if the model has to be re-estimated
-    private boolean rflag_, backw_, exit_, festim_;
+    private boolean exit_;
     private IOutlierVariable lastremoved_;
-    private DataBlock res_;
+
     private TsPeriodSelector span_;
-    //
-    private boolean mvx_, cmvx_;
+
     private int selectivity_;
     private double cv_, curcv_;
     private double pc_ = 0.12;
@@ -86,14 +91,7 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
             curcv_ = calcCv(context);
         }
         addVaInfo(context, curcv_);
-        int test = comatip(context.description);
-        if (test < 0) {
-            return ProcessingResult.Unprocessed;
-        } else if (test > 0) {
-            cmvx_ = true;
-        } else {
-            cmvx_ = false;
-        }
+
         TsDomain edomain = context.description.getEstimationDomain();
         sod_.prepare(edomain, span_ == null ? null : edomain.select(span_));
         // exclude missing and previous outliers
@@ -105,56 +103,59 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
         regarima_ = context.description.buildRegArima();
         nhp_ = regarima_.getArima().getParametersCount();
         double max = 0;
+        if (!estimateModel(true)) {
+            return ProcessingResult.Failed;
+        }
         try {
+            exit_ = false;
             do {
-                if (!estimateModel()) {
-                    return ProcessingResult.Failed;
+                if (!sod_.process(regarima_)) {
+                    break;
                 }
-                boolean search = true;
-                if (backw_) {
-                    search = verifyModel(context);
-                    if (exit_) {
+                round_++;
+                max = sod_.getMaxTStat();
+                if (Math.abs(max) < curcv_) {
+                    break;
+                }
+                IOutlierVariable o = sod_.getMaxOutlier();
+                boolean bok = true;
+                for (int i = 0; i < outliers_.size(); ++i) {
+                    if (o.getPosition().equals(outliers_.get(i).getPosition())) {
+                        bok = false;
                         break;
                     }
                 }
-                if (search) {
-                    if (!sod_.process(regarima_.getArima(), res_)) {
-                        break;
-                    }
-                    round_++;
-                    max = sod_.getMaxTStat();
-                    if (Math.abs(max) < curcv_) {
-                        break;
-                    }
-                    IOutlierVariable o = sod_.getMaxOutlier();
-                    boolean bok = true;
-                    for (int i = 0; i < outliers_.size(); ++i) {
-                        if (o.getPosition().equals(outliers_.get(i).getPosition())) {
-                            bok = false;
+                if (bok) {
+                    addOutlier(o);
+                    addOutlierInfo(context, o, max);
+                    estimateModel(false);
+
+                    while (!verifyModel(context)) {
+                        if (exit_) {
                             break;
                         }
+                        estimateModel(false);
+//                        updateLikelihood(regarima_.computeLikelihood());
                     }
-                    if (bok) {
-                        //estim = true;
-                        addOutlier(o, sod_.getMaxCoefficient());
-                        addOutlierInfo(context, o, max);
-                        if (outliers_.size() == MAXOUTLIERS) {
-                            break;
-                        }
-                    } else {
-                        break;// no outliers to remove...
+
+                    if (outliers_.size() == MAXOUTLIERS) {
+                        break;
                     }
+
+                } else {
+                    break;
                 }
+
             } while (round_ < MAXROUND);
 
             // we should remove non signigicant outlier (witouht re-estimation)
             if (round_ == MAXROUND || outliers_.size() == MAXOUTLIERS) {
-                estimateModel();
+                estimateModel(false);
             }
-            festim_ = false;
 
             while (!verifyModel(context)) {
-                estimateModel();
+//                updateLikelihood(regarima_.computeLikelihood());
+                estimateModel(false);
             }
             if (!ec.tstoolkit.utilities.Comparator.equals(initial, OutlierDefinition.of(outliers_))) {
                 context.description.setOutliers(outliers_);
@@ -169,110 +170,25 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
         }
     }
 
-    private GlsSarimaMonitor makeMonitor() {
-        //IFunctionMinimizer minimizer = new ProxyMinimizer(new TramoMarquardt());
-        IFunctionMinimizer minimizer = new ProxyMinimizer(new LevenbergMarquardtMethod());
-        GlsSarimaMonitor monitor = new GlsSarimaMonitor();
-        monitor.setMinimizer(minimizer);
-        monitor.setPrecision(EPS);
-        return monitor;
-    }
+    private boolean estimateModel(boolean full) {
+        GlsSarimaMonitor monitor = this.getMonitor();
 
-    private boolean estimateModel() {
-        // step 1 Initial values by OLS
-        SarimaModel sarima = regarima_.getArima().clone();
-        SarimaSpecification spec = sarima.getSpecification();
-        if (rflag_) {
-            if (regarima_.getDModel().getVarsCount() > 0) {
-                Ols ols = new Ols();
-                if (!ols.process(regarima_.getDModel())) {
-                    return false;
-                }
-                res_ = ols.getResiduals();
-            } else {
-                res_ = regarima_.getDModel().getY().deepClone();
-            }
-
-        } else if (coeff_ != null) {
-            res_ = regarima_.getDModel().calcRes(new DataBlock(coeff_));
-        } else {
-            res_ = regarima_.getDModel().getY();
-        }
-        boolean stable = true;
-        rflag_ = false;
-
-        if (festim_) {
-            SarmaSpecification dspec = spec.doStationary();
-            if (spec.getParametersCount() != 0) {
-                HannanRissanen hr = new HannanRissanen();
-                if (hr.process(res_, dspec)) {
-                    SarimaModel stmodel = hr.getModel();
-                    stable = !SarimaMapping.stabilize(stmodel);
-                    if (stable || cmvx_ || round_ == 0) {
-                        sarima.setParameters(stmodel.getParameters());
-                        regarima_.setArima(sarima);
-                    } else {
-                        rflag_ = true;
-                        stable = true;
-                    }
-                }
-            }
-            if ((cmvx_ || !stable) && festim_) {
-                if (!optimizeModel()) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        }
-        if (regarima_.getVarsCount() > 0) {
-            updateLikelihood(regarima_.computeLikelihood());
-        }
-
-        return true;
-    }
-
-    private boolean optimizeModel() {
-        GlsSarimaMonitor monitor = makeMonitor();
-        RegArimaEstimation<SarimaModel> estimation = monitor.optimize(regarima_);
-        if (!monitor.hasConverged()) {
-            int iter = 0;
-            monitor.useMaximumLikelihood(false);
-            double tol = EPS;
-            do {
-                tol *= 10;
-                monitor.setPrecision(tol);
-                estimation = monitor.optimize(regarima_);
-                if (monitor.hasConverged()) {
-                    break;
-                }
-            } while (iter++ < 3);
-            if (iter == 3) {
-                return false;
-            }
-        }
+//        System.out.println(outliers());
+        RegArimaEstimation<SarimaModel> estimation = full ? monitor.process(regarima_) : monitor.optimize(regarima_);
         regarima_ = estimation.model;
         updateLikelihood(estimation.likelihood);
         return true;
     }
 
     private void updateLikelihood(ConcentratedLikelihood likelihood) {
-        coeff_ = likelihood.getB();
         tstats_ = likelihood.getTStats(true, nhp_);
-        res_ = regarima_.getDModel().calcRes(new DataBlock(coeff_));
     }
 
     private void clear() {
-        rflag_ = true;
         nhp_ = 0;
         outliers_.clear();
-        festim_ = true;
-        backw_ = false;
-        exit_ = false;
         round_ = 0;
         lastremoved_ = null;
-        res_ = null;
-        coeff_ = null;
         tstats_ = null;
         curcv_ = 0;
         // festim = true if the model has to be re-estimated
@@ -285,7 +201,6 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
      * @return True means that the model was not modified
      */
     private boolean verifyModel(ModellingContext context) {
-        festim_ = true;
         if (outliers_.isEmpty()) {
             return true;
         }
@@ -302,8 +217,6 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
         if (Math.abs(tstats_[nx0 + imin]) >= curcv_) {
             return true;
         }
-        backw_ = false;
-        festim_ = false;
         IOutlierVariable toremove = outliers_.get(imin);
         sod_.allow(toremove);
         removeOutlier(imin);
@@ -327,22 +240,6 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
         sod_.exclude(o);
     }
 
-    private void addOutlier(IOutlierVariable o, double c) {
-        addOutlier(o);
-        double[] tmp;
-        if (coeff_ == null) {
-            coeff_ = new double[]{c};
-        } else {
-            tmp = new double[coeff_.length + 1];
-            for (int i = 0; i < coeff_.length; ++i) {
-                tmp[i] = coeff_[i];
-            }
-            tmp[coeff_.length] = c;
-            coeff_ = tmp;
-        }
-        backw_ = true;
-    }
-
     /**
      *
      * @param model
@@ -353,22 +250,6 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
         int opos = regarima_.getXCount() - outliers_.size() + idx;
         regarima_.removeX(opos);
         outliers_.remove(idx);
-        double[] tmp;
-        if (coeff_.length == 1) {
-            coeff_ = null;
-        } else {
-            if (regarima_.isMeanCorrection()) {
-                ++opos;
-            }
-            tmp = new double[coeff_.length - 1];
-            for (int i = 0; i < opos; ++i) {
-                tmp[i] = coeff_[i];
-            }
-            for (int i = opos + 1; i < coeff_.length; ++i) {
-                tmp[i - 1] = coeff_[i];
-            }
-            coeff_ = tmp;
-        }
     }
 
     /**
@@ -422,26 +303,6 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
         curcv_ = 0;
     }
 
-    /**
-     *
-     * @return
-     */
-    public boolean isEML() {
-        return mvx_;
-    }
-
-    public boolean hasUsedEML() {
-        return cmvx_;
-    }
-
-    /**
-     *
-     * @param value
-     */
-    public void useEML(boolean value) {
-        mvx_ = value;
-    }
-
     public void setCriticalValue(double value) {
         cv_ = value;
     }
@@ -461,41 +322,6 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
     private void addInfo(ModelDescription desc, InformationSet information) {
         InformationSet subset = information.subSet(PreprocessingDictionary.OUTLIERS);
         subset.set("count", desc.getOutliers().size());
-    }
-
-    private int comatip(ModelDescription desc) {
-        // int rslt = ml ? 1 : 0;
-        int n = desc.getY().length;
-        if (desc.getMissingValues() != null) {
-            n -= desc.getMissingValues().length;
-        }
-        // first, check if od is possible
-        SarimaSpecification spec = desc.getSpecification().clone();
-        int nparm = Math.max(spec.getD() + spec.getP() + spec.getFrequency()
-                * (spec.getBD() + spec.getBP()), spec.getQ()
-                + spec.getFrequency() * spec.getBQ())
-                + (desc.isMean() ? 1 : 0)
-                + (15 * n) / 100 + spec.getFrequency();
-        if (n - nparm <= 0) {
-            return -1;
-        }
-        if (mvx_) {
-            return 1;
-        }
-//        int ndf1 = TramoProcessor.autlar(n, spec);
-//        int ndf2 = 0;
-//        if (spec.getP() + spec.getBP() > 0 && spec.getQ() + spec.getBQ() > 0) {
-//            n -= spec.getP() + spec.getFrequency() * spec.getBP();
-//            spec.setP(0);
-//            spec.setBP(0);
-//            ndf2 = TramoProcessor.autlar(n, spec);
-//        }
-//        if (ndf1 < 0 || ndf2 < 0) {
-//            return 1;
-//        } else {
-//            return 0;
-//        }
-        return 0;
     }
 
     @Override
@@ -595,6 +421,13 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
 //        }
     }
 
+//    private String outliers(){
+//        StringBuilder builder=new StringBuilder();
+//        for (int i=0; i<this.outliers_.size(); ++i){
+//            builder.append(outliers_.get(i)).append('\t');
+//        }
+//        return builder.toString();
+//    }
     private static final String OUTLIERS = "Outliers detection", OUT_ADD = "Outlier added", OUT_REMOVE = "Outlier removed", VA = "Critical value";
 
 }

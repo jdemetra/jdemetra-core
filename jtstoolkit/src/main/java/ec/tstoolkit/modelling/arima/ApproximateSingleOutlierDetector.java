@@ -145,12 +145,8 @@ public class ApproximateSingleOutlierDetector<T extends IArimaModel> extends
 		sxy += m_el[ek] * o[ix - k];
 	    double c = sxy / sxx;
 	    double val = c * Math.sqrt(sxx) / rmse;
-	    double aval = Math.abs(val);
-	    if (aval > m_tmax) {
-		m_tmax = aval;
-		m_c = c;
-	    }
-	    this.setT(ub - ix, idx, val);
+	    setT(ub - ix, idx, val);
+            setCoefficient(ub - ix, idx, c);
 	}
     }
 

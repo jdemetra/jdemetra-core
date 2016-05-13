@@ -32,7 +32,6 @@ import ec.tstoolkit.modelling.arima.ModelDescription;
 import ec.tstoolkit.modelling.arima.ModellingContext;
 import ec.tstoolkit.modelling.arima.PreprocessingDictionary;
 import ec.tstoolkit.modelling.arima.ProcessingResult;
-import ec.tstoolkit.modelling.arima.ResidualsOutlierDetector;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;
 import ec.tstoolkit.sarima.SarmaSpecification;
@@ -62,8 +61,7 @@ public class OutliersDetector implements IOutliersDetectionModule {
     private static final int MAXROUND = 50, MAXOUTLIERS = 24;
     private RegArimaModel<SarimaModel> regarima_;
     private final ArrayList<IOutlierVariable> outliers_ = new ArrayList<>();
-//    private final SingleOutlierDetector sod_ = new SingleOutlierDetector();
-    private final ResidualsOutlierDetector sod_ = new ResidualsOutlierDetector(null);
+    private final SingleOutlierDetector sod_ = new SingleOutlierDetector();
     private double[] coeff_, tstats_;
     private int nhp_;
     private int round_;
@@ -119,7 +117,7 @@ public class OutliersDetector implements IOutliersDetectionModule {
                     }
                 }
                 if (search) {
-                    if (!sod_.process(regarima_)) {
+                    if (!sod_.process(regarima_.getArima(), res_)) {
                         break;
                     }
                     round_++;
@@ -137,7 +135,7 @@ public class OutliersDetector implements IOutliersDetectionModule {
                     }
                     if (bok) {
                         //estim = true;
-                        addOutlier(o, sod_.coeff(sod_.getMaxPosition(), sod_.getMaxOutlierType()));
+                        addOutlier(o, sod_.getMaxCoefficient());
                         addOutlierInfo(context, o, max);
                         if (outliers_.size() == MAXOUTLIERS) {
                             break;

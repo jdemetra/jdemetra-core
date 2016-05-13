@@ -86,8 +86,8 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
 
             Matrix regs = model.variables();
             if (regs == null) {
-//		calcMAD(YL);
-                calcMAD(filter(model.getY()));
+		calcMAD(YL);
+//                calcMAD(filter(model.getY()));
                 return true;
             }
 

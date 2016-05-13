@@ -82,8 +82,7 @@ public class ResidualsOutlierDetector<T extends IArimaModel> extends AbstractSin
      */
     protected boolean initialize(RegModel model) {
         try {
-            ConcentratedLikelihoodEstimation estimation = new ConcentratedLikelihoodEstimation(
-                    new KalmanFilter(true));
+            ConcentratedLikelihoodEstimation estimation = new ConcentratedLikelihoodEstimation();
             if (!estimation.estimate(getModel())) {
                 return false;
             }
