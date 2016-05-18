@@ -64,11 +64,82 @@ import java.util.List;
 @Development(status = Development.Status.Preliminary)
 public class OutliersDetectionModule extends DemetraModule implements IOutliersDetectionModule {
 
+    /**
+     * @return the MAXROUND
+     */
+    public static int getMAXROUND() {
+        return MAXROUND;
+    }
+
+    /**
+     * @param aMAXROUND the MAXROUND to set
+     */
+    public static void setMAXROUND(int aMAXROUND) {
+        MAXROUND = aMAXROUND;
+    }
+
+    /**
+     * @return the MAXOUTLIERS
+     */
+    public static int getMAXOUTLIERS() {
+        return MAXOUTLIERS;
+    }
+
+    /**
+     * @param aMAXOUTLIERS the MAXOUTLIERS to set
+     */
+    public static void setMAXOUTLIERS(int aMAXOUTLIERS) {
+        MAXOUTLIERS = aMAXOUTLIERS;
+    }
+
+    /**
+     * @return the estimation
+     */
+    public Estimation getEstimation() {
+        return estimation;
+    }
+
+    /**
+     * @param estimation the estimation to set
+     */
+    public void setEstimation(Estimation estimation) {
+        this.estimation = estimation;
+    }
+
+    /**
+     * @return the method
+     */
+    public Method getMethod() {
+        return method;
+    }
+
+    /**
+     * @param method the method to set
+     */
+    public void setMethod(Method method) {
+        this.method = method;
+    }
+
+    public static enum Method {
+
+        Tramo,
+        X13,
+        Demetra1
+    }
+
+    public static enum Estimation {
+
+        Approximate,
+        ExactIterative,
+        ExactFixed
+    }
+
     private static final double EPS = 1e-5;
-    private static final int MAXROUND = 50, MAXOUTLIERS = 24;
+    private static int MAXROUND = 50;
+    private static int MAXOUTLIERS = 24;
     private RegArimaModel<SarimaModel> regarima_;
     private final ArrayList<IOutlierVariable> outliers_ = new ArrayList<>();
-    private final AbstractSingleOutlierDetector sod_ = new ExactSingleOutlierDetector(null);
+    private AbstractSingleOutlierDetector sod;
     private double[] tstats_;
     private int nhp_;
     private int round_;
@@ -77,11 +148,20 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
     private IOutlierVariable lastremoved_;
 
     private TsPeriodSelector span_;
-
+    private Estimation estimation = Estimation.ExactIterative;
+    private Method method = Method.Tramo;
     private int selectivity_;
     private double cv_, curcv_;
     private double pc_ = 0.12;
     public static final double MINCV = 2.0;
+
+    public OutliersDetectionModule() {
+        sod = new ExactSingleOutlierDetector(null);
+    }
+
+    public OutliersDetectionModule(AbstractSingleOutlierDetector sod) {
+        this.sod = sod;
+    }
 
     @Override
     public ProcessingResult process(ModellingContext context) {
@@ -93,69 +173,23 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
         addVaInfo(context, curcv_);
 
         TsDomain edomain = context.description.getEstimationDomain();
-        sod_.prepare(edomain, span_ == null ? null : edomain.select(span_));
+        sod.prepare(edomain, span_ == null ? null : edomain.select(span_));
         // exclude missing and previous outliers
-        sod_.exclude(context.description.getMissingValues());
-        sod_.exclude(context.description.getOutliersPosition(true));
-        sod_.exclude(context.description.getOutliersPosition(false));
+        sod.exclude(context.description.getMissingValues());
+        sod.exclude(context.description.getOutliersPosition(true));
+        sod.exclude(context.description.getOutliersPosition(false));
         outliers_.addAll(context.description.getOutliers());
 
         regarima_ = context.description.buildRegArima();
         nhp_ = regarima_.getArima().getParametersCount();
-        double max = 0;
         if (!estimateModel(true)) {
             return ProcessingResult.Failed;
         }
         try {
-            exit_ = false;
-            do {
-                if (!sod_.process(regarima_)) {
-                    break;
-                }
-                round_++;
-                max = sod_.getMaxTStat();
-                if (Math.abs(max) < curcv_) {
-                    break;
-                }
-                IOutlierVariable o = sod_.getMaxOutlier();
-                boolean bok = true;
-                for (int i = 0; i < outliers_.size(); ++i) {
-                    if (o.getPosition().equals(outliers_.get(i).getPosition())) {
-                        bok = false;
-                        break;
-                    }
-                }
-                if (bok) {
-                    addOutlier(o);
-                    addOutlierInfo(context, o, max);
-                    estimateModel(false);
-
-                    while (!verifyModel(context)) {
-                        if (exit_) {
-                            break;
-                        }
-                        estimateModel(false);
-//                        updateLikelihood(regarima_.computeLikelihood());
-                    }
-
-                    if (outliers_.size() == MAXOUTLIERS) {
-                        break;
-                    }
-
-                } else {
-                    break;
-                }
-
-            } while (round_ < MAXROUND);
-
-            // we should remove non signigicant outlier (witouht re-estimation)
-            if (round_ == MAXROUND || outliers_.size() == MAXOUTLIERS) {
-                estimateModel(false);
-            }
-
-            while (!verifyModel(context)) {
-//                updateLikelihood(regarima_.computeLikelihood());
-                estimateModel(false);
+            switch (method){
+                case Tramo:calcTramo(context); break;
+                case X13:calcX13(context); break;
+                case Demetra1:calcDemetra1(context); break;
             }
             if (!ec.tstoolkit.utilities.Comparator.equals(initial, OutlierDefinition.of(outliers_))) {
                 context.description.setOutliers(outliers_);
@@ -170,8 +204,105 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
         }
     }
 
+    private void calcTramo(ModellingContext context) {
+        double max = 0;
+        exit_ = false;
+        do {
+            if (!sod.process(regarima_)) {
+                break;
+            }
+            round_++;
+            max = sod.getMaxTStat();
+            if (Math.abs(max) < curcv_) {
+                break;
+            }
+            IOutlierVariable o = sod.getMaxOutlier();
+            boolean bok = true;
+            for (int i = 0; i < outliers_.size(); ++i) {
+                if (o.getPosition().equals(outliers_.get(i).getPosition())) {
+                    bok = false;
+                    break;
+                }
+            }
+            if (bok) {
+                addOutlier(o);
+                addOutlierInfo(context, o, max);
+                estimateModel(false);
+
+                while (!verifyModel(context)) {
+                    if (exit_) {
+                        break;
+                    }
+//                    estimateModel(false);
+                    updateLikelihood(regarima_.computeLikelihood());
+                }
+                if (exit_ || outliers_.size() == MAXOUTLIERS) {
+                    break;
+                }
+            } else {
+                break;
+            }
+        } while (round_ < MAXROUND);
+
+        while (!verifyModel(context)) {
+//                updateLikelihood(regarima_.computeLikelihood());
+            estimateModel(false);
+        }
+    }
+
+    private void calcX13(ModellingContext context) {
+        double max = 0;
+        do {
+            if (!sod.process(regarima_)) {
+                break;
+            }
+            round_++;
+            max = sod.getMaxTStat();
+            if (Math.abs(max) < curcv_) {
+                break;
+            }
+            IOutlierVariable o = sod.getMaxOutlier();
+            addOutlier(o);
+            addOutlierInfo(context, o, max);
+            estimateModel(false);
+
+            if (outliers_.size() == MAXOUTLIERS) {
+                break;
+            }
+        } while (round_ < MAXROUND);
+
+        while (!verifyModel(context)) {
+            estimateModel(false);
+        }
+    }
+
+    private void calcDemetra1(ModellingContext context) {
+        double max = 0;
+        do {
+            if (!sod.process(regarima_)) {
+                break;
+            }
+            round_++;
+            max = sod.getMaxTStat();
+            if (Math.abs(max) < curcv_) {
+                break;
+            }
+            IOutlierVariable o = sod.getMaxOutlier();
+            addOutlier(o);
+            addOutlierInfo(context, o, max);
+            if (outliers_.size() == MAXOUTLIERS) {
+                break;
+            }
+        } while (round_ < MAXROUND);
+
+        while (!verifyModel(context)) {
+            estimateModel(false);
+        }
+    }
+
     private boolean estimateModel(boolean full) {
-        GlsSarimaMonitor monitor = this.getMonitor();
+        GlsSarimaMonitor monitor = this.monitor();
+        monitor.setPrecision(1e-4);
 
 //        System.out.println(outliers());
         RegArimaEstimation<SarimaModel> estimation = full ? monitor.process(regarima_) : monitor.optimize(regarima_);
@@ -218,7 +349,7 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
             return true;
         }
         IOutlierVariable toremove = outliers_.get(imin);
-        sod_.allow(toremove);
+        sod.allow(toremove);
         removeOutlier(imin);
         removeOutlierInfo(context, toremove);
         if (lastremoved_ != null) {
@@ -235,9 +366,9 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
         outliers_.add(o);
         double[] xo = new double[regarima_.getObsCount()];
         DataBlock XO = new DataBlock(xo);
-        o.data(sod_.getDomain().getStart(), XO);
+        o.data(sod.getDomain().getStart(), XO);
         regarima_.addX(XO);
-        sod_.exclude(o);
+        sod.exclude(o);
     }
 
     /**
@@ -257,14 +388,14 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
      * @param o
      */
     public void addOutlierFactory(IOutlierFactory o) {
-        sod_.addOutlierFactory(o);
+        sod.addOutlierFactory(o);
     }
 
     /**
      *
      */
     public void clearOutlierFactories() {
-        sod_.clearOutlierFactories();
+        sod.clearOutlierFactories();
     }
 
     /**
@@ -288,7 +419,7 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
      * @return
      */
     public int getOutlierFactoriesCount() {
-        return sod_.getOutlierFactoriesCount();
+        return sod.getOutlierFactoriesCount();
     }
 
     /**
@@ -378,7 +509,7 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
     private double calcCv(ModellingContext context) {
         double cv = cv_;
         if (cv == 0) {
-            cv = calcDefaultCriticalValue(context.description.getY().length);
+            cv = AbstractSingleOutlierDetector.calcVA(context.description.getEstimationDomain().getLength());
         }
         for (int i = 0; i < -selectivity_; ++i) {
             cv *= (1 - pc_);

@@ -95,7 +95,7 @@ public class SarimaModelBuilder {
     }
 
     public synchronized double next(double e) {
-        return StochasticRandomizer.normal(RNG, 0, e);
+        return StochasticRandomizer.normal(rng, 0, e);
     }
 
     public SarimaModel randomize(SarimaModel spec, double stdev) {

@@ -186,7 +186,7 @@ public class TradingDaysSelectionModule extends DemetraModule implements IPrepro
         cxt.description = model;
         ModelEstimation estimation = new ModelEstimation(model.buildRegArima());
         int nhp = model.getArimaComponent().getFreeParametersCount();
-        estimation.compute(getMonitor(), nhp);
+        estimation.compute(monitor(), nhp);
         cxt.estimation = estimation;
         return cxt.current(true);
     }

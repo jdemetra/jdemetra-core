@@ -47,7 +47,7 @@ public abstract class DemetraModule {
         return minimizer;
     }
 
-    public GlsSarimaMonitor getMonitor() {
+    public GlsSarimaMonitor monitor() {
         GlsSarimaMonitor monitor = new GlsSarimaMonitor();
         monitor.setMinimizer(minimizer.exemplar());
         return monitor;
