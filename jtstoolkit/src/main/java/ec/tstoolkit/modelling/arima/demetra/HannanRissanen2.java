@@ -16,6 +16,8 @@
  */
 package ec.tstoolkit.modelling.arima.demetra;
 
+import ec.tstoolkit.data.AbsMeanNormalizer;
+import ec.tstoolkit.data.BurgAlgorithm;
 import ec.tstoolkit.sarima.estimation.*;
 import ec.tstoolkit.data.DescriptiveStatistics;
 import ec.tstoolkit.data.DataBlock;
@@ -39,20 +41,96 @@ import ec.tstoolkit.sarima.SarmaSpecification;
 @Development(status = Development.Status.Alpha)
 public class HannanRissanen2 {
 
+    /**
+     * @return the biascorrection
+     */
+    public boolean isBiasCorrection() {
+        return biascorrection;
+    }
+
+    /**
+     * @param biascorrection the biascorrection to set
+     */
+    public void setBiasCorrection(boolean biascorrection) {
+        this.biascorrection = biascorrection;
+    }
+
+    /**
+     * @return the finalcorrection
+     */
+    public boolean isFinalCorrection() {
+        return finalcorrection;
+    }
+
+    /**
+     * @param finalcorrection the finalcorrection to set
+     */
+    public void setFinalCorrection(boolean finalcorrection) {
+        this.finalcorrection = finalcorrection;
+    }
+
+    /**
+     * @return the initialization
+     */
+    public Initialization getInitialization() {
+        return initialization;
+    }
+
+    /**
+     * @param initialization the initialization to set
+     */
+    public void setInitialization(Initialization initialization) {
+        this.initialization = initialization;
+    }
+
+    public static enum Initialization {
+
+        Ols,
+        Durbin,
+        Burg
+    }
+
     private SarimaModel m_model;
     private SarmaSpecification m_spec = new SarmaSpecification();
 
-    private boolean m_ok;
+    private boolean biascorrection = true, finalcorrection = true;
+    private Initialization initialization = Initialization.Burg;
 
     private double[] m_data, m_a, m_pi;
+    private IReadDataBlock m_odata;
 
     private static final int MAXNPI = 50;
-    private static final double OVERFLOW = 1e16, EPS = 1e-9;
+    private static final double OVERFLOW = 1e16, EPS = 1e-6;
 
     /**
      *
      */
     public HannanRissanen2() {
+    }
+
+    private double[] ls(Matrix m, double[] y) {
+        Householder qr = new Householder(false);
+        qr.setEpsilon(EPS);
+        qr.decompose(m);
+        int nx = m.getColumnsCount();
+        if (qr.getRank() == 0) {
+            return new double[nx];
+        }
+        double[] pi = qr.solve(y);
+        int[] unused = qr.getUnused();
+        if (unused == null) {
+            return pi;
+        } else {
+            double[] pic = new double[nx];
+            for (int i = 0, j = 0, k = 0; i < nx; ++i) {
+                if (k < unused.length && i == unused[k]) {
+                    ++k;
+                } else {
+                    pic[i] = pi[j];
+                }
+            }
+            return pic;
+        }
     }
 
     private void biascorrection() {
@@ -123,7 +201,6 @@ public class HannanRissanen2 {
                 }
             }
             if (Math.abs(sum) > OVERFLOW) {
-                m_ok = false;
                 return;
             }
             res[i] = sum;
@@ -131,33 +208,13 @@ public class HannanRissanen2 {
             a2[i] = sum2 + sum;
 
         }
-
-        Householder qr = new Householder(false);
-        qr.decompose(mat);
-        qr.setEpsilon(EPS);
-        if (qr.getRank() == 0) {
-            return;
-        }
-        double[] dpi = qr.solve(res);
-        int[] unused = qr.getUnused();
-        if (unused == null) {
-            for (int i = 0; i < dpi.length; ++i) {
-                m_pi[i] += dpi[i];
-
-            }
-        } else {
-            for (int i = 0, j = 0, k = 0; i < np; ++i) {
-                if (k < unused.length && i == unused[k]) {
-                    ++k;
-                } else {
-                    m_pi[i] += dpi[j];
-                }
-            }
+        double[] dpi = ls(mat, res);
+        for (int i = 0; i < dpi.length; ++i) {
+            m_pi[i] += dpi[i];
         }
     }
 
     private boolean calc() {
-        m_ok = true;
         m_model = new SarimaModel(m_spec);
         int p = m_spec.getP() + m_spec.getFrequency() * m_spec.getBP();
         int q = m_spec.getQ() + m_spec.getFrequency() * m_spec.getBQ();
@@ -168,18 +225,39 @@ public class HannanRissanen2 {
         if (q > 0) {
             initialize();
         }
-        minspq(false);
-	if (q > 0)
-	    biascorrection();
+        minspq();
+        if (q > 0 && biascorrection) {
+            biascorrection();
+        }
 
         updatemodel();
+        if (q > 0 && p > 0 && finalcorrection) {
+            finalcorrection();
+        }
         return true;
+    }
+
+    private void finalcorrection() {
+        BackFilter ar = m_model.getAR();
+        DataBlock ndata = new DataBlock(m_data.length - ar.getDegree());
+        ar.filter(new DataBlock(m_data), ndata);
+        HannanRissanen2 hr = new HannanRissanen2();
+        hr.setBiasCorrection(biascorrection);
+        SarmaSpecification nspec = m_spec.clone();
+        nspec.setP(0);
+        nspec.setBP(0);
+        if (!hr.process(ndata, nspec)) {
+            return;
+        }
+        for (int i = hr.m_pi.length - 1, j = m_pi.length - 1; i >= 0; --i, --j) {
+            m_pi[j] = hr.m_pi[i];
+        }
+        updatemodel();
     }
 
     private void clear() {
         m_model = null;
         m_a = null;
-        m_ok = false;
     }
 
     /**
@@ -187,7 +265,7 @@ public class HannanRissanen2 {
      * @return
      */
     public IReadDataBlock getData() {
-        return new ReadDataBlock(m_data);
+        return m_odata;
     }
 
     /**
@@ -206,26 +284,74 @@ public class HannanRissanen2 {
         return m_spec;
     }
 
-    // step 0 of the process...
-    private double[] initac() {
+    private int npi() {
         int q = m_spec.getQ() + m_spec.getFrequency() * m_spec.getBQ();
         int p = m_spec.getP() + m_spec.getFrequency() * m_spec.getBP();
         int n = m_data.length;
 
         double ln = Math.log(n);
-        int npi = Math.max((int) (ln * ln), Math.max(p, 4 * q));
+        int npi = Math.max((int) (ln * ln), Math.max(p, 2 * q));
         if (npi >= n) {
             npi = n - n / 4;
         }
         if (npi > MAXNPI) {
             npi = MAXNPI;
         }
+        return npi;
+    }
 
-        return DescriptiveStatistics.ac(npi, m_data);
+    // step 0 of the process...
+    private double[] initac() {
+        return DescriptiveStatistics.ac(npi(), m_data);
+    }
+
+    private void initialize() {
+        switch (initialization) {
+            case Durbin:
+                durbin();
+                break;
+            case Ols:
+                ols();
+                break;
+            case Burg:
+                burg();
+                break;
+        }
+    }
+
+    private void ols() {
+        int n = m_data.length;
+        int nar = npi();
+        Matrix M = new Matrix(n, nar);
+        DataBlockIterator cols = M.columns();
+        DataBlock col = cols.getData();
+        int cur = 0;
+        do {
+            col.drop(++cur, 0).copyFrom(m_data, 0);
+        } while (cols.next());
+
+        double[] pi = ls(M, m_data);
+        m_a = new double[n];
+        for (int i = 0; i < n; ++i) {
+            double e = m_data[i];
+            int jmax = pi.length > i ? i : pi.length;
+            for (int j = 1; j <= jmax; ++j) {
+                e -= pi[j - 1] * m_data[i - j];
+            }
+            m_a[i] = e;
+        }
+    }
+
+    private void burg() {
+         int n = m_data.length;
+        m_a = new double[n];
+        BurgAlgorithm bg = new BurgAlgorithm();
+        bg.solve(new ReadDataBlock(m_data), npi());
+        m_a = bg.residuals();
     }
 
     // compute estimates of innovations
-    private void initialize() {
+    private void durbin() {
         int n = m_data.length;
         m_a = new double[n];
         double[] ac = initac();
@@ -243,7 +369,7 @@ public class HannanRissanen2 {
     }
 
     // regression (with lags of y and e)
-    private void minspq(boolean nres) {
+    private void minspq() {
         int p = m_spec.getP() + m_spec.getFrequency() * m_spec.getBP();
         int q = m_spec.getQ() + m_spec.getFrequency() * m_spec.getBQ();
         int n = m_data.length;
@@ -281,28 +407,9 @@ public class HannanRissanen2 {
                 System.arraycopy(m_a, m - i - k, dmat, ccur, nc);
             }
         }
-        Householder qr = new Householder(false);
-        qr.setEpsilon(EPS);
-        qr.decompose(mat);
-        if (qr.getRank() == 0) {
-            return;
-        }
-        double[] pi = qr.solve(data);
-        int[] unused = qr.getUnused();
-        if (unused == null) {
-            m_pi = pi;
-        } else {
-            m_pi = new double[np + nq];
-            for (int i = 0, j = 0, k = 0; i < np; ++i) {
-                if (k < unused.length && i == unused[k]) {
-                    ++k;
-                } else {
-                    m_pi[i] = pi[j];
-                }
-            }
-        }
+        m_pi = ls(mat, data);
         for (int i = 0; i < np; ++i) {
-            m_pi[i] = -pi[i];
+            m_pi[i] = -m_pi[i];
         }
     }
 
@@ -314,9 +421,13 @@ public class HannanRissanen2 {
      */
     public boolean process(final IReadDataBlock value, SarmaSpecification spec) {
         clear();
-        m_data = new double[value.getLength()];
         m_spec = spec.clone();
-        value.copyTo(m_data, 0);
+        AbsMeanNormalizer normalizer = new AbsMeanNormalizer();
+        if (!normalizer.process(value)) {
+            return false;
+        }
+        m_data = normalizer.getNormalizedData();
+        m_odata = value;
         return calc();
     }
 

@@ -16,19 +16,12 @@
  */
 package ec.tstoolkit.modelling.arima.demetra;
 
-import ec.tstoolkit.modelling.arima.tramo.*;
-import ec.tstoolkit.algorithm.ProcessingInformation;
-import ec.tstoolkit.arima.estimation.KalmanFilter;
 import ec.tstoolkit.arima.estimation.RegArimaEstimation;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.eco.ConcentratedLikelihood;
-import ec.tstoolkit.eco.Ols;
 import ec.tstoolkit.information.InformationSet;
-import ec.tstoolkit.maths.realfunctions.IFunctionMinimizer;
-import ec.tstoolkit.maths.realfunctions.ProxyMinimizer;
-import ec.tstoolkit.maths.realfunctions.levmar.LevenbergMarquardtMethod;
 import ec.tstoolkit.modelling.arima.AbstractSingleOutlierDetector;
 import ec.tstoolkit.modelling.arima.ExactSingleOutlierDetector;
 import ec.tstoolkit.modelling.arima.IOutliersDetectionModule;
@@ -36,13 +29,8 @@ import ec.tstoolkit.modelling.arima.ModelDescription;
 import ec.tstoolkit.modelling.arima.ModellingContext;
 import ec.tstoolkit.modelling.arima.PreprocessingDictionary;
 import ec.tstoolkit.modelling.arima.ProcessingResult;
-import ec.tstoolkit.modelling.arima.ResidualsOutlierDetector;
 import ec.tstoolkit.sarima.SarimaModel;
-import ec.tstoolkit.sarima.SarimaSpecification;
-import ec.tstoolkit.sarima.SarmaSpecification;
 import ec.tstoolkit.sarima.estimation.GlsSarimaMonitor;
-import ec.tstoolkit.sarima.estimation.HannanRissanen;
-import ec.tstoolkit.sarima.estimation.SarimaMapping;
 import ec.tstoolkit.timeseries.TsPeriodSelector;
 import ec.tstoolkit.timeseries.regression.AdditiveOutlierFactory;
 import ec.tstoolkit.timeseries.regression.IOutlierFactory;
@@ -139,7 +127,7 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
     private static int MAXOUTLIERS = 24;
     private RegArimaModel<SarimaModel> regarima_;
     private final ArrayList<IOutlierVariable> outliers_ = new ArrayList<>();
-    private AbstractSingleOutlierDetector sod;
+    private final AbstractSingleOutlierDetector sod;
     private double[] tstats_;
     private int nhp_;
     private int round_;
@@ -205,7 +193,7 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
     }
 
     private void calcTramo(ModellingContext context) {
-        double max = 0;
+        double max;
         exit_ = false;
         do {
             if (!sod.process(regarima_)) {
@@ -251,7 +239,7 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
     }
 
     private void calcX13(ModellingContext context) {
-        double max = 0;
+        double max;
         do {
             if (!sod.process(regarima_)) {
                 break;
@@ -277,7 +265,7 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
     }
 
     private void calcDemetra1(ModellingContext context) {
-        double max = 0;
+        double max;
         do {
             if (!sod.process(regarima_)) {
                 break;
@@ -305,9 +293,9 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
         monitor.setPrecision(1e-4);
 
 //        System.out.println(outliers());
-        RegArimaEstimation<SarimaModel> estimation = full ? monitor.process(regarima_) : monitor.optimize(regarima_);
-        regarima_ = estimation.model;
-        updateLikelihood(estimation.likelihood);
+        RegArimaEstimation<SarimaModel> est = full ? monitor.process(regarima_) : monitor.optimize(regarima_);
+        regarima_ = est.model;
+        updateLikelihood(est.likelihood);
         return true;
     }
 
@@ -488,7 +476,7 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
      * @return
      */
     public static double calcDefaultCriticalValue(int n) {
-        double cv = 0;
+        double cv;
 //        if (n < 50) {
 //            cv = 3;
 //        } else if (n < 450) {

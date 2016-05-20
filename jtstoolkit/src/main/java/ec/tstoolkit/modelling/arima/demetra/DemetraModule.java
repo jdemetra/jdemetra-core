@@ -20,9 +20,12 @@ import ec.tstoolkit.modelling.arima.tramo.*;
 import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.realfunctions.IFunctionMinimizer;
+import ec.tstoolkit.maths.realfunctions.IParametricMapping;
 import ec.tstoolkit.maths.realfunctions.ProxyMinimizer;
 import ec.tstoolkit.maths.realfunctions.levmar.LevenbergMarquardtMethod;
 import ec.tstoolkit.modelling.arima.ModellingContext;
+import ec.tstoolkit.modelling.arima.RegArimaEstimator;
+import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.estimation.GlsSarimaMonitor;
 import ec.tstoolkit.sarima.estimation.SarimaInitializer;
 
@@ -53,13 +56,19 @@ public abstract class DemetraModule {
         return monitor;
     }
 
-    public GlsSarimaMonitor getMonitor(SarimaInitializer initializer)
+    public GlsSarimaMonitor monitor(SarimaInitializer initializer)
      {
         GlsSarimaMonitor monitor = new GlsSarimaMonitor(initializer);
         monitor.setMinimizer(minimizer.exemplar());
          return monitor;
     }
 
+    public RegArimaEstimator estimator(IParametricMapping<SarimaModel> mapping)
+     {
+        RegArimaEstimator monitor = new RegArimaEstimator(mapping);
+        monitor.setMinimizer(minimizer.exemplar());
+        return monitor;
+    }
     /**
      * @param minimizer the minimizer to set
      */
