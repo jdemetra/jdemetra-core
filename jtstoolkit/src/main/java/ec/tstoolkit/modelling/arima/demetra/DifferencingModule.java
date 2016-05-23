@@ -18,6 +18,8 @@ package ec.tstoolkit.modelling.arima.demetra;
 
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.maths.linearfilters.BackFilter;
+import ec.tstoolkit.maths.polynomials.Polynomial;
+import ec.tstoolkit.maths.polynomials.UnitRoots;
 import ec.tstoolkit.modelling.arima.IPreprocessingModule;
 import ec.tstoolkit.modelling.arima.ModellingContext;
 import ec.tstoolkit.modelling.arima.ProcessingResult;
@@ -31,9 +33,11 @@ public class DifferencingModule extends DemetraModule implements IPreprocessingM
 
     public static final int MAXD = 2, MAXBD = 1;
     public static final double EPS = 1e-5;
-    
-    private int d, bd;
-    private boolean mean;
+
+    private int d, bd, freq;
+    private double tmean;
+    private double k = 1;
+    private double tstat = 1;
 
     private static double removeMean(DataBlock data) {
         int n = data.getLength();
@@ -50,18 +54,15 @@ public class DifferencingModule extends DemetraModule implements IPreprocessingM
     public DifferencingModule() {
     }
 
-    private void calc() {
-        if (data_ == null ) {
-            return;
-        }
-     }
-
     /**
      *
      */
-    public void clear() {
+    private void clear() {
         data_ = null;
-     }
+        freq=0;
+        d=0;
+        bd=0;
+    }
 
     /**
      *
@@ -72,7 +73,7 @@ public class DifferencingModule extends DemetraModule implements IPreprocessingM
     }
 
     public boolean isMean() {
-        return mean;
+        return Math.abs(tmean) > tstat;
     }
 
     /**
@@ -88,7 +89,9 @@ public class DifferencingModule extends DemetraModule implements IPreprocessingM
      * @return
      */
     public BackFilter getDifferencingFilter() {
-        return null;
+        Polynomial D = UnitRoots.D(1, d);
+        Polynomial BD = UnitRoots.D(freq, bd);
+        return BackFilter.of(D.times(BD).getCoefficients());
     }
 
     /**
@@ -98,15 +101,21 @@ public class DifferencingModule extends DemetraModule implements IPreprocessingM
      */
     @Override
     public ProcessingResult process(ModellingContext context) {
-        try{
+        try {
+            clear();
             // correct data for estimated outliers...
-            int xcount = context.estimation.getRegArima().getXCount();
-            int xout = context.description.getOutliers().size();
+            DataBlock res;
+            if (context.estimation != null) {
+                int xcount = context.estimation.getRegArima().getXCount();
+                int xout = context.description.getOutliers().size();
 
-            DataBlock res = context.estimation.getCorrectedData(xcount - xout, xcount);
+                res = context.estimation.getCorrectedData(xcount - xout, xcount);
+            }else{
+                res=new DataBlock(context.description.transformedOriginal());
+            }
             SarimaSpecification nspec = context.description.getSpecification();
-           // get residuals
-            int freq=nspec.getFrequency();
+            // get residuals
+            freq = context.description.getFrequency();
             process(freq, res, nspec.getD(), nspec.getBD());
             boolean changed = false;
             if (nspec.getD() != d || nspec.getBD() != bd) {
@@ -117,9 +126,9 @@ public class DifferencingModule extends DemetraModule implements IPreprocessingM
                 context.description.setSpecification(cspec);
                 context.estimation = null;
             }
-            if (mean != context.description.isMean()) {
+            if (isMean() != context.description.isMean()) {
                 changed = true;
-                context.description.setMean(mean);
+                context.description.setMean(isMean());
                 context.estimation = null;
             }
 //            addDifferencingInfo(context, d, bd, mean);
@@ -130,11 +139,93 @@ public class DifferencingModule extends DemetraModule implements IPreprocessingM
             context.estimation = null;
             return ProcessingResult.Failed;
         }
-     }
-
-    private void process(int freq, DataBlock res, int d, int bd) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-   private static final String DIFFERENCING = "Differencing";
+    private void process(int freq, final DataBlock res, int curd, int curbd) {
+        // try alternatively to make regular/seasonal differencing
+        // stop when differencing increases the variance of the series
+        d = curd;
+        bd = curbd;
+        DataBlock z = res.deepClone();
+        for (int i = 0; i < curd; ++i) {
+            z.difference();
+            z.shrink(1, 0);
+        }
+        for (int i = 0; i < curbd; ++i) {
+            z.difference(1.0, freq);
+            z.shrink(freq, 0);
+        }
+        double refvar = z.ssqc(z.sum() / z.getLength());
+        boolean ok;
+        do {
+            ok=false;
+            DataBlock tmp = z.deepClone();
+            tmp.difference();
+            tmp.shrink(1, 0);
+            double var = tmp.ssqc(tmp.sum() / tmp.getLength());
+            if (var < refvar * k) {
+                z = tmp;
+                refvar = var;
+                ++d;
+                ok = true;
+            }
+
+            tmp = z.deepClone();
+            tmp.difference(1.0, freq);
+            tmp.shrink(freq, 0);
+            var = tmp.ssqc(tmp.sum() / tmp.getLength());
+            if (var < refvar * k) {
+                refvar = var;
+                z = tmp;
+                ++bd;
+                ok = true;
+            }
+
+        } while (ok);
+
+        testMean(z);
+    }
+
+    private static final String DIFFERENCING = "Differencing";
+
+    private void testMean(DataBlock z) {
+        double s = z.sum(), s2 = z.ssq();
+        int n = z.getLength();
+        tmean = s / Math.sqrt((s2 * n - s * s) / n);
+    }
+
+    /**
+     * @return the tmean
+     */
+    public double getTmean() {
+        return tmean;
+    }
+
+    /**
+     * @return the k
+     */
+    public double getK() {
+        return k;
+    }
+
+    /**
+     * @param k the k to set
+     */
+    public void setK(double k) {
+        this.k = k;
+    }
+
+    /**
+     * @return the tstat
+     */
+    public double getTstat() {
+        return tstat;
+    }
+
+    /**
+     * @param tstat the tstat to set
+     */
+    public void setTstat(double tstat) {
+        this.tstat = tstat;
+    }
 }
