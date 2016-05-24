@@ -25,6 +25,7 @@ import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.Complex;
 import ec.tstoolkit.maths.linearfilters.BackFilter;
+import ec.tstoolkit.modelling.arima.IDifferencingModule;
 import ec.tstoolkit.modelling.arima.IPreprocessingModule;
 import ec.tstoolkit.modelling.arima.ModellingContext;
 import ec.tstoolkit.modelling.arima.ProcessingResult;
@@ -39,7 +40,7 @@ import ec.tstoolkit.sarima.estimation.SarimaMapping;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class DifferencingModule extends AbstractTramoModule implements IPreprocessingModule {
+public class DifferencingModule extends AbstractTramoModule implements IDifferencingModule, IPreprocessingModule {
 
     public static final int MAXD = 2, MAXBD = 1;
     public static final double EPS = 1e-5;
@@ -71,6 +72,7 @@ public class DifferencingModule extends AbstractTramoModule implements IPreproce
     private int iter_;
     private boolean ml_, useml_, mlused_, bcalc_;
     private double tmean_;
+    private int maxd=MAXD, maxbd=MAXBD;
 
     /**
      *
@@ -200,12 +202,12 @@ public class DifferencingModule extends AbstractTramoModule implements IPreproce
             }
         }
 
-        if (spec_.getD() == 3) {
-            spec_.setD(2);
+        if (spec_.getD() > maxd) {
+            spec_.setD(maxd);
             icon = 0;
         }
-        if (spec_.getBD() == 2) {
-            spec_.setBD(1);
+        if (spec_.getBD() > maxbd) {
+            spec_.setBD(maxbd);
             icon = 0;
         }
         return icon;
@@ -215,6 +217,7 @@ public class DifferencingModule extends AbstractTramoModule implements IPreproce
      *
      * @return
      */
+    @Override
     public int getBD() {
         return spec_.getBD();
     }
@@ -227,6 +230,7 @@ public class DifferencingModule extends AbstractTramoModule implements IPreproce
      *
      * @return
      */
+    @Override
     public int getD() {
         return spec_.getD();
     }
@@ -239,8 +243,14 @@ public class DifferencingModule extends AbstractTramoModule implements IPreproce
         return spec_.getDifferencingFilter();
     }
 
-    public boolean isMean() {
+    @Override
+    public boolean isMeanCorrection() {
         return TramoProcessor.meantest(data_.getLength(), tmean_);
+    }
+
+    @Deprecated
+    public boolean isMean() {
+        return isMeanCorrection();
     }
 
     /**
@@ -257,6 +267,14 @@ public class DifferencingModule extends AbstractTramoModule implements IPreproce
      */
     public double getUB2() {
         return ub2_;
+    }
+    
+    public boolean hasSeas(){
+        return seas_;
+    }
+    
+    public void setSeas(boolean seas){
+        seas_=seas;
     }
 
     /**
@@ -340,7 +358,7 @@ public class DifferencingModule extends AbstractTramoModule implements IPreproce
     public boolean isUsingML() {
         return ml_;
     }
-
+    
     private int maincondition() {
         double ar = lastModel_.phi(1), ma = lastModel_.theta(1), sar = 0, sma = 0;
         if (seas_) {
@@ -431,10 +449,10 @@ public class DifferencingModule extends AbstractTramoModule implements IPreproce
             DataBlock res = context.estimation.getCorrectedData(xcount - xout, xcount);
             SarimaSpecification nspec = context.description.getSpecification();
             // get residuals
-            process(freq, res, nspec.getD(), nspec.getBD());
+            process(res, freq, nspec.getD(), nspec.getBD());
             int nd = spec_.getD(), nbd = spec_.getBD();
             boolean changed = false;
-            boolean nmean = isMean();
+            boolean nmean = isMeanCorrection();
             if (nspec.getD() != nd || nspec.getBD() != nbd) {
                 changed = true;
                 SarimaSpecification cspec = new SarimaSpecification(freq);
@@ -460,12 +478,13 @@ public class DifferencingModule extends AbstractTramoModule implements IPreproce
 
     /**
      *
-     * @param freq
      * @param data
+     * @param freq
      * @param d
      * @param bd
      */
-    private void process(int freq, IReadDataBlock data, int d, int bd) {
+    @Override
+    public void process(IReadDataBlock data, int freq, int d, int bd) {
         clear();
         data_ = new DataBlock(data);
         spec_.setFrequency(freq);
@@ -586,5 +605,11 @@ public class DifferencingModule extends AbstractTramoModule implements IPreproce
 //
     }
     private static final String DIFFERENCING = "Differencing";
+
+    @Override
+    public void setLimits(int maxd, int maxbd) {
+        this.maxd=maxd;
+        this.maxbd=maxbd;
+    }
 
 }
