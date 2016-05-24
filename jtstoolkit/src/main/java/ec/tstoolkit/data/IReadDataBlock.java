@@ -152,6 +152,18 @@ public interface IReadDataBlock {
         return s;
     }
 
+    default double ssqc(double mean) {
+        int n = getLength();
+        double s = 0;
+        for (int i = 0; i < n; i++) {
+            double cur = get(i)-mean;
+            if (Double.isFinite(cur)) {
+                s += cur * cur;
+            }
+        }
+        return s;
+    }
+
     default double average() {
         int n = getLength();
         int m = 0;

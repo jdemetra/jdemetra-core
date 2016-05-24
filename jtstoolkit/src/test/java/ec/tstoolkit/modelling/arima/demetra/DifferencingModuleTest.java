@@ -30,30 +30,35 @@ public class DifferencingModuleTest {
         ModellingContext context = new ModellingContext();
         context.automodelling = true;
         context.hasseas = true;
-        context.description = new ModelDescription(Data.M3, null);
+        context.description = new ModelDescription(Data.P, null);
  //       context.description.setAirline(true);
         context.description.setTransformation(DefaultTransformationType.Log);
         DifferencingModule diff=new DifferencingModule();
         diff.process(context);
-        System.out.println(diff.getD());
-        System.out.println(diff.getBD());
-        System.out.println(diff.getTmean());
-        System.out.println(diff.isMeanCorrection());
+//        System.out.println(diff.getD());
+//        System.out.println(diff.getBD());
+//        System.out.println(diff.getTmean());
+//        System.out.println(diff.isMeanCorrection());
     }
     
     @Test
     public void testBAR() {
         SarimaSpecification xspec=new SarimaSpecification(12);
+        xspec.setP(1);
         xspec.setBP(1);
         SarimaModel model=new SarimaModel(xspec);
-        model.setBPhi(1, -.7);
+        model.setPhi(1, -.8);
+        model.setBPhi(1, -.9);
         ArimaModelBuilder builder=new ArimaModelBuilder();
-        double[] data = builder.generate(model, 240);
+        double[] data = builder.generate(model, 2400);
         DifferencingModule diff=new DifferencingModule();
+        diff.setRegularFirst(false);
         diff.process(new ReadDataBlock(data), 12);
-        System.out.println(diff.getD());
-        System.out.println(diff.getBD());
-        System.out.println(diff.getTmean());
-        System.out.println(diff.isMeanCorrection());
+        assertTrue(diff.getBD() == 1);
+        assertTrue(diff.getD() == 1);
+//        System.out.println(diff.getD());
+//        System.out.println(diff.getBD());
+//        System.out.println(diff.getTmean());
+//        System.out.println(diff.isMeanCorrection());
     }
 }

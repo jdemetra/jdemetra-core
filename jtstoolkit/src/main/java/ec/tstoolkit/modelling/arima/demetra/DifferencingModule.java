@@ -26,6 +26,7 @@ import ec.tstoolkit.modelling.arima.IPreprocessingModule;
 import ec.tstoolkit.modelling.arima.ModellingContext;
 import ec.tstoolkit.modelling.arima.ProcessingResult;
 import ec.tstoolkit.sarima.SarimaSpecification;
+import ec.tstoolkit.timeseries.regression.AbstractOutlierVariable;
 
 /**
  *
@@ -38,12 +39,11 @@ public class DifferencingModule extends DemetraModule implements IDifferencingMo
 
     private int d, bd, freq;
     private double tmean;
-    private double k = 1;
-    private double tstat = 1;
+    private double k = 1.2;
+    private double tstat = 1.96;
     private int maxd = MAXD, maxbd = MAXBD;
     private boolean regularFirst = false;
-
-    private DataBlock data_ = null;
+    private boolean mad = false;
 
     /**
      *
@@ -55,7 +55,6 @@ public class DifferencingModule extends DemetraModule implements IDifferencingMo
      *
      */
     private void clear() {
-        data_ = null;
         freq = 0;
         d = 0;
         bd = 0;
@@ -65,10 +64,12 @@ public class DifferencingModule extends DemetraModule implements IDifferencingMo
      *
      * @return
      */
+    @Override
     public int getBD() {
         return bd;
     }
 
+    @Override
     public boolean isMeanCorrection() {
         return Math.abs(tmean) > tstat;
     }
@@ -77,6 +78,7 @@ public class DifferencingModule extends DemetraModule implements IDifferencingMo
      *
      * @return
      */
+    @Override
     public int getD() {
         return d;
     }
@@ -89,6 +91,14 @@ public class DifferencingModule extends DemetraModule implements IDifferencingMo
         Polynomial D = UnitRoots.D(1, d);
         Polynomial BD = UnitRoots.D(freq, bd);
         return BackFilter.of(D.times(BD).getCoefficients());
+    }
+
+    private double std(IReadDataBlock z) {
+        if (!mad) {
+            return Math.sqrt(z.ssqc(z.average()) / z.getLength());
+        } else {
+            return AbstractOutlierVariable.mad(z, true);
+        }
     }
 
     /**
@@ -137,6 +147,7 @@ public class DifferencingModule extends DemetraModule implements IDifferencingMo
         }
     }
 
+    @Override
     public void process(final IReadDataBlock res, int freq, int curd, int curbd) {
         clear();
         // try alternatively to make regular/seasonal differencing
@@ -152,54 +163,60 @@ public class DifferencingModule extends DemetraModule implements IDifferencingMo
             z.difference(1.0, freq);
             z.shrink(freq, 0);
         }
-        double refvar = z.ssqc(z.sum() / z.getLength());
-        boolean ok;
+        double refe = std(z);
+        boolean ok = d < maxd, bok = bd < maxbd;
         do {
-            ok = false;
             DataBlock tmp;
-            double var;
-            if (regularFirst && d < maxd) {
+            double e;
+            if (regularFirst && d < maxd && ok) {
                 tmp = z.deepClone();
                 tmp.difference();
                 tmp.shrink(1, 0);
-                var = tmp.ssqc(tmp.sum() / tmp.getLength());
-                if (var < refvar * k) {
+                e = std(tmp);
+                if (e < refe * k) {
                     z = tmp;
-                    refvar = var;
+                    refe = e;
                     ++d;
-                    ok = true;
+                    ok = d < maxd;
+                    bok = bd < maxbd;
+                } else {
+                    ok = false;
                 }
             }
-            if (bd < maxbd) {
+            if (bd < maxbd && bok) {
                 tmp = z.deepClone();
                 tmp.difference(1.0, freq);
                 tmp.shrink(freq, 0);
-                var = tmp.ssqc(tmp.sum() / tmp.getLength());
-                if (var < refvar * k) {
-                    refvar = var;
+                e = std(tmp);
+                if (e < refe * k) {
+                    refe = e;
                     z = tmp;
                     ++bd;
-                    ok = true;
+                    bok = bd < maxbd;
+                    ok = d < maxd;
+                } else {
+                    bok = false;
                 }
             }
-            if (!regularFirst && d < maxd) {
+            if (!regularFirst && d < maxd && ok) {
                 tmp = z.deepClone();
                 tmp.difference();
                 tmp.shrink(1, 0);
-                var = tmp.ssqc(tmp.sum() / tmp.getLength());
-                if (var < refvar * k) {
+                e = std(tmp);
+                if (e < refe * k) {
                     z = tmp;
-                    refvar = var;
+                    refe = e;
                     ++d;
-                    ok = true;
+                    ok = d < maxd;
+                    bok = bd < maxbd;
+                } else {
+                    ok = false;
                 }
             }
-        } while (ok);
+        } while (ok || bok);
 
         testMean(z);
     }
-
-    private static final String DIFFERENCING = "Differencing";
 
     private void testMean(DataBlock z) {
         double s = z.sum(), s2 = z.ssq();
@@ -260,6 +277,20 @@ public class DifferencingModule extends DemetraModule implements IDifferencingMo
      */
     public void setRegularFirst(boolean regularFirst) {
         this.regularFirst = regularFirst;
+    }
+
+    /**
+     * @return the mad
+     */
+    public boolean isMad() {
+        return mad;
+    }
+
+    /**
+     * @param mad the mad to set
+     */
+    public void setMad(boolean mad) {
+        this.mad = mad;
     }
 
 }
