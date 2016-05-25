@@ -83,6 +83,13 @@ public class HannanRissanen2 {
         this.initialization = initialization;
     }
 
+    /**
+     * @return the ssq
+     */
+    public double getBic() {
+        return bic;
+    }
+
     public static enum Initialization {
 
         Ols,
@@ -98,6 +105,7 @@ public class HannanRissanen2 {
 
     private double[] m_data, m_a, m_pi;
     private IReadDataBlock m_odata;
+    private double bic;
 
     private static final int MAXNPI = 50;
     private static final double OVERFLOW = 1e16, EPS = 1e-6;
@@ -108,15 +116,22 @@ public class HannanRissanen2 {
     public HannanRissanen2() {
     }
 
-    private double[] ls(Matrix m, double[] y) {
+    private double[] ls(Matrix mat, double[] y, boolean bbic) {
         Householder qr = new Householder(false);
         qr.setEpsilon(EPS);
-        qr.decompose(m);
-        int nx = m.getColumnsCount();
+        qr.decompose(mat);
+        int nx = mat.getColumnsCount();
         if (qr.getRank() == 0) {
             return new double[nx];
         }
-        double[] pi = qr.solve(y);
+        DataBlock b = new DataBlock(qr.getRank());
+        int n = y.length, m = qr.getRank();
+        DataBlock res = new DataBlock(n - m);
+        qr.leastSquares(new DataBlock(y), b, res);
+        if (bbic) {
+            bic = Math.log(res.ssq() / n) + Math.log(n) * m / n;
+        }
+        double[] pi = b.getData();
         int[] unused = qr.getUnused();
         if (unused == null) {
             return pi;
@@ -208,7 +223,7 @@ public class HannanRissanen2 {
             a2[i] = sum2 + sum;
 
         }
-        double[] dpi = ls(mat, res);
+        double[] dpi = ls(mat, res, false);
         for (int i = 0; i < dpi.length; ++i) {
             m_pi[i] += dpi[i];
         }
@@ -219,6 +234,7 @@ public class HannanRissanen2 {
         int p = m_spec.getP() + m_spec.getFrequency() * m_spec.getBP();
         int q = m_spec.getQ() + m_spec.getFrequency() * m_spec.getBQ();
         if (p == 0 && q == 0) {
+            bic = Math.log(new ReadDataBlock(m_data).ssq() / m_data.length);
             return true;
         }
 
@@ -330,7 +346,7 @@ public class HannanRissanen2 {
             col.drop(++cur, 0).copyFrom(m_data, 0);
         } while (cols.next());
 
-        double[] pi = ls(M, m_data);
+        double[] pi = ls(M, m_data, false);
         m_a = new double[n];
         for (int i = 0; i < n; ++i) {
             double e = m_data[i];
@@ -343,7 +359,7 @@ public class HannanRissanen2 {
     }
 
     private void burg() {
-         int n = m_data.length;
+        int n = m_data.length;
         m_a = new double[n];
         BurgAlgorithm bg = new BurgAlgorithm();
         bg.solve(new ReadDataBlock(m_data), npi());
@@ -407,7 +423,7 @@ public class HannanRissanen2 {
                 System.arraycopy(m_a, m - i - k, dmat, ccur, nc);
             }
         }
-        m_pi = ls(mat, data);
+        m_pi = ls(mat, data, true);
         for (int i = 0; i < np; ++i) {
             m_pi[i] = -m_pi[i];
         }
