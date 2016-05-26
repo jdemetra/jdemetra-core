@@ -3,10 +3,12 @@ On Error Resume Next
 
 Const en_US = 1033
 Const adVarChar = 200
+Const adModeRead = 1
 
 SetLocale(en_US)
 
 Dim conn : Set conn = CreateObject("ADODB.Connection")
+conn.Mode = adModeRead
 conn.Open Wscript.Arguments.Item(0)
 CheckErr()
 
@@ -21,19 +23,27 @@ Sub PrintProperties(properties)
   Dim x
   If Wscript.Arguments.Count = 1 Then
     For Each x In properties
-      Wscript.StdOut.WriteLine x.Name & vbTab & x.Value
+      PrintProperty(x)
     Next
   Else
-    Dim i : For i = 1 to Wscript.Arguments.Count - 1
-      Set x = properties.Item(Wscript.Arguments(i))
-      Wscript.StdOut.WriteLine x.Name & vbTab & x.Value
+    For Each x In properties
+      Dim i : For i = 1 to Wscript.Arguments.Count - 1
+        If StrComp(x.Name, Wscript.Arguments(i)) = 0 Then
+          PrintProperty(x)
+          Exit For
+        End If
+      Next
     Next
   End If
 End Sub
 
+Sub PrintProperty(x)
+  Wscript.StdOut.WriteLine x.Name & vbTab & x.Value
+End Sub
+
 Sub CheckErr()
   If Err.Number <> 0 Then
-    WScript.StdOut.WriteLine Err.Number & ">>>" & Err.Description
+    WScript.StdOut.WriteLine vbCrLf & Err.Number & vbTab & Err.Description
     Wscript.quit(1)
   End If
 End Sub

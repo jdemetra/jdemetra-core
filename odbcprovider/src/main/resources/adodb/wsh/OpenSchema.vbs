@@ -3,10 +3,12 @@ On Error Resume Next
 
 Const en_US = 1033
 Const adSchemaTables = 20
+Const adModeRead = 1
 
 SetLocale(en_US)
 
 Dim conn : Set conn = CreateObject("ADODB.Connection")
+conn.Mode = adModeRead
 conn.Open Wscript.Arguments.Item(0)
 CheckErr()
 
@@ -80,7 +82,7 @@ End Function
 
 Sub CheckErr()
   If Err.Number <> 0 Then
-    WScript.StdOut.WriteLine Err.Number & ">>>" & Err.Description
+    WScript.StdOut.WriteLine vbCrLf & Err.Number & vbTab & Err.Description
     Wscript.quit(1)
   End If
 End Sub

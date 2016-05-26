@@ -16,45 +16,66 @@
  */
 package adodb.wsh;
 
+import static adodb.wsh.AdoContext.SPECIAL_CHARACTERS;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import javax.annotation.Nonnull;
+import static java.lang.String.format;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  *
  * @author Philippe Charles
+ * @since 2.1.0
  */
 final class AdoDatabaseMetaData extends _DatabaseMetaData {
 
-    // https://msdn.microsoft.com/en-us/library/ms676695%28v=vs.85%29.aspx
-    public static final String CURRENT_CATALOG = "Current Catalog";
-    public static final String SPECIAL_CHARACTERS = "Special Characters";
+    @Nonnull
+    static AdoDatabaseMetaData of(@Nonnull AdoConnection conn) {
+        return new AdoDatabaseMetaData(Objects.requireNonNull(conn));
+    }
 
-    private final Wsh wsh;
-    private final String connectionString;
-    private Map<String, String> properties;
+    private final AdoConnection conn;
 
-    AdoDatabaseMetaData(Wsh wsh, String connectionString) {
-        this.wsh = wsh;
-        this.connectionString = connectionString;
-        this.properties = null;
+    private AdoDatabaseMetaData(AdoConnection conn) {
+        this.conn = conn;
     }
 
     @Override
     public boolean storesUpperCaseIdentifiers() throws SQLException {
-        return false;
+        try {
+            return conn.getContext().getIdentifierCaseType() == AdoContext.IdentifierCaseType.UPPER;
+        } catch (IOException ex) {
+            throw ex instanceof TsvReader.Err
+                    ? new SQLException(ex.getMessage(), "", ((TsvReader.Err) ex).getNumber())
+                    : new SQLException(format("Failed to get identifier case type of '%s'", conn.getContext().getConnectionString()), ex);
+        }
     }
 
     @Override
     public boolean storesLowerCaseIdentifiers() throws SQLException {
-        return false;
+        try {
+            return conn.getContext().getIdentifierCaseType() == AdoContext.IdentifierCaseType.LOWER;
+        } catch (IOException ex) {
+            throw ex instanceof TsvReader.Err
+                    ? new SQLException(ex.getMessage(), "", ((TsvReader.Err) ex).getNumber())
+                    : new SQLException(format("Failed to get identifier case type of '%s'", conn.getContext().getConnectionString()), ex);
+        }
     }
 
     @Override
     public boolean storesMixedCaseIdentifiers() throws SQLException {
-        return true;
+        try {
+            return conn.getContext().getIdentifierCaseType() == AdoContext.IdentifierCaseType.MIXED;
+        } catch (IOException ex) {
+            throw ex instanceof TsvReader.Err
+                    ? new SQLException(ex.getMessage(), "", ((TsvReader.Err) ex).getNumber())
+                    : new SQLException(format("Failed to get identifier case type of '%s'", conn.getContext().getConnectionString()), ex);
+        }
     }
 
     @Override
@@ -69,49 +90,47 @@ final class AdoDatabaseMetaData extends _DatabaseMetaData {
 
     @Override
     public String getStringFunctions() throws SQLException {
-        return null;
+        try {
+            return conn.getContext().getStringFunctions()
+                    .map(o -> o.getLabel())
+                    .sorted()
+                    .collect(Collectors.joining(","));
+        } catch (IOException ex) {
+            throw ex instanceof TsvReader.Err
+                    ? new SQLException(ex.getMessage(), "", ((TsvReader.Err) ex).getNumber())
+                    : new SQLException(format("Failed to get string functions of '%s'", conn.getContext().getConnectionString()), ex);
+        }
     }
 
     @Override
     public String getExtraNameCharacters() throws SQLException {
-        return getProperty(SPECIAL_CHARACTERS);
+        try {
+            return conn.getContext().getProperty(SPECIAL_CHARACTERS);
+        } catch (IOException ex) {
+            throw ex instanceof TsvReader.Err
+                    ? new SQLException(ex.getMessage(), "", ((TsvReader.Err) ex).getNumber())
+                    : new SQLException(format("Failed to get extra name chars of '%s'", conn.getContext().getConnectionString()), ex);
+        }
     }
 
     @Override
     public ResultSet getTables(String catalog, String schemaPattern, String tableNamePattern, String[] types) throws SQLException {
         try {
-            String[] args = new String[4 + (types != null ? types.length : 0)];
-            args[0] = connectionString;
-            args[1] = catalog != null ? catalog : "\"\"";
-            args[2] = schemaPattern != null && !schemaPattern.equals("%") ? schemaPattern : "\"\"";
-            args[3] = tableNamePattern != null && !tableNamePattern.equals("%") ? tableNamePattern : "\"\"";
-            for (int i = 4; i < args.length; i++) {
-                args[i] = types[i - 4];
-            }
-            return new AdoResultSet(wsh.exec("OpenSchema", args));
+            return AdoResultSet.of(conn.getContext().openSchema(catalog, schemaPattern, tableNamePattern, types));
         } catch (IOException ex) {
-            throw new SQLException("While executing query", ex);
+            throw ex instanceof TsvReader.Err
+                    ? new SQLException(ex.getMessage(), "", ((TsvReader.Err) ex).getNumber())
+                    : new SQLException(format("Failed to list tables with catalog='%s', schemaPattern='%s', tableNamePattern='%s', types='%s'", catalog, schemaPattern, tableNamePattern, types != null ? Arrays.toString(types) : null), ex);
         }
     }
 
-    String getProperty(String name) throws SQLException {
-        if (properties == null) {
-            properties = loadProperties();
-        }
-        return properties.get(name);
+    @Override
+    public Connection getConnection() throws SQLException {
+        return conn;
     }
 
-    private Map<String, String> loadProperties() throws SQLException {
-        try {
-            try (ResultSet rs = new AdoResultSet(wsh.exec("DbProperties", connectionString, CURRENT_CATALOG, SPECIAL_CHARACTERS))) {
-                Map<String, String> result = new HashMap<>();
-                while (rs.next()) {
-                    result.put(rs.getString(1), rs.getString(2));
-                }
-                return result;
-            }
-        } catch (IOException ex) {
-            throw new SQLException("While loading properties", ex);
-        }
+    @Override
+    public boolean isReadOnly() throws SQLException {
+        return conn.isReadOnly();
     }
 }

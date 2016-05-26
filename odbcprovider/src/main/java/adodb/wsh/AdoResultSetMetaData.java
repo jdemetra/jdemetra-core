@@ -16,75 +16,70 @@
  */
 package adodb.wsh;
 
-import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Arrays;
+import javax.annotation.Nonnull;
 
 /**
  *
  * @author Philippe Charles
+ * @since 2.1.0
  */
 final class AdoResultSetMetaData extends _ResultSetMetaData {
 
-    private final AdoColumn[] columns;
-
-    AdoResultSetMetaData(String[] columnNames, int[] columnValues) {
-        this.columns = new AdoColumn[columnNames.length];
-        for (int i = 0; i < columns.length; i++) {
-            this.columns[i] = new AdoColumn(columnNames[i], DataTypeEnum.parse(columnValues[i]));
+    @Nonnull
+    static AdoResultSetMetaData of(@Nonnull String[] names, @Nonnull String[] dataTypes) throws IllegalArgumentException {
+        if (names.length != dataTypes.length) {
+            throw new IllegalArgumentException(String.format("Invalid data type length: expected '%s', found '%s'", names.length, dataTypes.length));
         }
+        return new AdoResultSetMetaData(names, Arrays.stream(dataTypes).mapToInt(Integer::parseInt).mapToObj(DataTypeEnum::parse).toArray(DataTypeEnum[]::new));
+    }
+
+    private final String[] names;
+    private final DataTypeEnum[] types;
+
+    private AdoResultSetMetaData(String[] names, DataTypeEnum[] types) {
+        this.names = names;
+        this.types = types;
     }
 
     @Override
-    public int getColumnCount() throws SQLException {
-        return columns.length;
+    public int getColumnCount() {
+        return names.length;
     }
 
     @Override
-    public String getColumnName(int column) throws SQLException {
-        return getColumn(column).name;
+    public String getColumnName(int column) {
+        return names[column - 1];
     }
 
     @Override
-    public int getColumnType(int column) throws SQLException {
-        return getColumn(column).type.sqlType;
+    public int getColumnType(int column) {
+        return types[column - 1].sqlType;
     }
 
     @Override
-    public String getColumnClassName(int column) throws SQLException {
+    public String getColumnClassName(int column) {
+        // FIXME: potential bug?
         return String.class.getName();
     }
 
     @Override
-    public int getColumnDisplaySize(int column) throws SQLException {
+    public int getColumnDisplaySize(int column) {
         return -1;
     }
 
     @Override
-    public String getColumnLabel(int column) throws SQLException {
+    public String getColumnLabel(int column) {
         return getColumnName(column);
     }
 
     @Override
-    public String getColumnTypeName(int column) throws SQLException {
-        return getColumn(column).type.name();
+    public String getColumnTypeName(int column) {
+        return types[column - 1].name();
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
-    private AdoColumn getColumn(int column) {
-        return columns[column - 1];
-    }
-
-    private static final class AdoColumn {
-
-        final String name;
-        final DataTypeEnum type;
-
-        public AdoColumn(String name, DataTypeEnum type) {
-            this.name = name;
-            this.type = type;
-        }
-    }
-
     private enum DataTypeEnum {
 
         adEmpty(0, Types.OTHER),
