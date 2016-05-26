@@ -69,10 +69,9 @@ public class GenericTradingDays {
 
     private void dataNoContrast(TsDomain domain, List<DataBlock> buffer) {
         int n = domain.getLength();
-        int[][] days = Utilities.tradingDays(domain);
+        int[][] days = Utilities.tdCount(domain);
 
         int[][] groups = clustering.allPositions();
-        rotate(groups);
         int ng = groups.length;
         for (int i = 0; i < n; ++i) {
             for (int ig = 0; ig < ng; ++ig) {
@@ -93,7 +92,7 @@ public class GenericTradingDays {
 
     private void dataContrasts(TsDomain domain, List<DataBlock> buffer) {
         int n = domain.getLength();
-        int[][] days = Utilities.tradingDays(domain);
+        int[][] days = Utilities.tdCount(domain);
 
         int[][] groups = clustering.allPositions();
         rotate(groups);
@@ -115,17 +114,17 @@ public class GenericTradingDays {
                     sum += days[group[ip]][i];
                 }
                 double dsum = sum;
-                dsum /= np;
-                buffer.get(ig).set(i, dsum - dcsum);
+                buffer.get(ig).set(i, dsum - np*dcsum);
             }
         }
-        int[] ndays = Utilities.daysCount(domain);
-        DataBlock nb = buffer.get(ng);
-        nb.set(i -> ndays[i]);
+//        int[] ndays = Utilities.daysCount(domain);
+//        DataBlock nb = buffer.get(ng);
+//        nb.set(i -> ndays[i]);
     }
 
     public int getCount() {
-        return clustering.getGroupsCount();
+        int n=clustering.getGroupsCount();
+        return contrastGroup>= 0 ? n-1 : n;
     }
 
     public String getDescription(int idx) {
@@ -147,16 +146,6 @@ public class GenericTradingDays {
     }
 
     private void rotate(int[][] groups) {
-        for (int i = 0; i < groups.length; ++i) {
-            int[] group = groups[i];
-            for (int j = 0; j < group.length; ++j) {
-                if (group[j] == 0) {
-                    group[j] = 6;
-                } else {
-                    group[j]--;
-                }
-            }
-        }
         if (contrastGroup >= 0) {
             // we put the contrast group at the end
             int[] cgroup = groups[contrastGroup];

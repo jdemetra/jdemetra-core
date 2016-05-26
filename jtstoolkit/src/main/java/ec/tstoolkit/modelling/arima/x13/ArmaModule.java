@@ -26,7 +26,9 @@ import ec.tstoolkit.maths.realfunctions.levmar.LevenbergMarquardtMethod;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarmaSpecification;
 import ec.tstoolkit.sarima.estimation.GlsSarimaMonitor;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -89,7 +91,7 @@ public class ArmaModule {
         }
     }
 
-    private boolean balanced_, mixed_;
+    private boolean balanced_, mixed_ = true;
     private RegArmaBic[] m_est;
     private boolean m_bforced = false;
     private int m_nmod = 5;
@@ -347,8 +349,6 @@ public class ArmaModule {
         clear();
         // step I
 
-        SarmaSpecification[] specs = new SarmaSpecification[(smax + 1)
-                * (smax + 1)];
         SarmaSpecification spec = new SarmaSpecification();
         SarmaSpecification cur = new SarmaSpecification();
 
@@ -359,20 +359,21 @@ public class ArmaModule {
         spec.setQ(0);
 
         int nmax = 0;
-
+        List<SarmaSpecification> lspecs0 = new ArrayList<>();
         if (freq != 1) {
             for (int bp = 0, i = 0; bp <= smax; ++bp) {
                 for (int bq = 0; bq <= smax; ++bq) {
                     if (mixed_ || (bp == 0 || bq == 0)) {
                         spec.setBP(bp);
                         spec.setBQ(bq);
-                        specs[i++] = spec.clone();
+                        lspecs0.add(spec.clone());
                     }
                 }
             }
+            SarmaSpecification[] specs0 = lspecs0.toArray(new SarmaSpecification[lspecs0.size()]);
 
             ArmaModule step0 = new ArmaModule();
-            nmax = step0.sort(data, specs);
+            nmax = step0.sort(data, specs0);
             if (0 == nmax) {
                 return null;
             }
@@ -381,19 +382,20 @@ public class ArmaModule {
             cur = spec.clone();
         }
 
-        specs = new SarmaSpecification[(rmax + 1) * (rmax + 1)];
+        List<SarmaSpecification> lspecs1 = new ArrayList<>();
         for (int p = 0, i = 0; p <= rmax; ++p) {
             for (int q = 0; q <= rmax; ++q) {
                 if (mixed_ || (p == 0 || q == 0)) {
                     cur.setP(p);
                     cur.setQ(q);
-                    specs[i++] = cur.clone();
+                    lspecs1.add(cur.clone());
                 }
             }
         }
+        SarmaSpecification[] specs1 = lspecs1.toArray(new SarmaSpecification[lspecs1.size()]);
 
         ArmaModule step1 = new ArmaModule();
-        nmax = step1.sort(data, specs);
+        nmax = step1.sort(data, specs1);
         if (0 == nmax) {
             return null;
         }
@@ -408,19 +410,20 @@ public class ArmaModule {
             spmax = 0;
         }
         if (freq != 1) {
-            specs = new SarmaSpecification[(spmax + 1) * (sqmax + 1)];
+            List<SarmaSpecification> lspecs2 = new ArrayList<>();
             for (int bp = 0, i = 0; bp <= spmax; ++bp) {
                 for (int bq = 0; bq <= sqmax; ++bq) {
                     if (mixed_ || (bp == 0 || bq == 0)) {
                         cur.setBP(bp);
                         cur.setBQ(bq);
-                        specs[i++] = cur.clone();
+                        lspecs2.add(cur.clone());
                     }
                 }
             }
+            SarmaSpecification[] specs2 = lspecs2.toArray(new SarmaSpecification[lspecs2.size()]);
 
             step2 = new ArmaModule();
-            if (0 == step2.sort(data, specs)) {
+            if (0 == step2.sort(data, specs2)) {
                 return null;
             }
             step2.merge(m_est);

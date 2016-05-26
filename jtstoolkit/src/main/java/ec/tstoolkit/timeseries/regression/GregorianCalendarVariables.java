@@ -58,12 +58,6 @@ public class GregorianCalendarVariables implements ITradingDaysVariable, Cloneab
      }
 
     @Override
-    @Deprecated
-    public void data(TsDomain domain, List<DataBlock> data, int start) {
-        m_provider.calendarData(m_dkind, domain, data, start);
-    }
-
-    @Override
     public void data(TsDomain domain, List<DataBlock> data) {
         m_provider.calendarData(m_dkind, domain, data);
     }

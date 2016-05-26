@@ -291,6 +291,9 @@ public abstract class AbstractRegArimaModel {
         return m_y;
     }
 
+    public void insertX(final int pos, final IReadDataBlock x) {
+        insertX(pos, new DataBlock(x));
+    }
     /**
      * 
      * @param pos
@@ -367,6 +370,9 @@ public abstract class AbstractRegArimaModel {
         m_dregs = null;
     }
 
+    public void setY(final IReadDataBlock value) {
+        setY(new DataBlock(value));
+    }
     /**
      * 
      * @param value

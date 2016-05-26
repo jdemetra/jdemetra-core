@@ -28,8 +28,7 @@ import javax.xml.bind.annotation.XmlType;
  *
  * @author Kristof Bayens
  */
-@XmlType(name = XmlTsVariable.NAME)
-public class XmlTsVariable extends XmlNamedObject implements IXmlConverter<TsVariable> {
+ public class XmlTsVariable extends XmlNamedObject implements IXmlConverter<TsVariable> {
     static final String NAME = "TsVariableType";
     @XmlElement
     public XmlTsData tsdata;

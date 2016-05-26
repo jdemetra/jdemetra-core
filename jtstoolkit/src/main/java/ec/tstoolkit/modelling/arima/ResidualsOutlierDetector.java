@@ -1,33 +1,36 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tstoolkit.modelling.arima;
 
 import ec.tstoolkit.arima.IArimaModel;
 import ec.tstoolkit.arima.estimation.AnsleyFilter;
+import ec.tstoolkit.arima.estimation.ConcentratedLikelihoodEstimation;
 import ec.tstoolkit.arima.estimation.IArmaFilter;
+import ec.tstoolkit.arima.estimation.KalmanFilter;
 import ec.tstoolkit.arima.estimation.ModifiedLjungBoxFilter;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.DataBlockIterator;
+import ec.tstoolkit.data.ReadDataBlock;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.eco.RegModel;
 import ec.tstoolkit.maths.matrices.Householder;
 import ec.tstoolkit.maths.matrices.LowerTriangularMatrix;
 import ec.tstoolkit.maths.matrices.Matrix;
+import ec.tstoolkit.timeseries.regression.AbstractOutlierVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 
@@ -36,19 +39,18 @@ import ec.tstoolkit.timeseries.simplets.TsPeriod;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractSingleOutlierDetector<T> {
+public class ResidualsOutlierDetector<T extends IArimaModel> extends AbstractSingleOutlierDetector<T> {
 
     private IArmaFilter m_filter;
-    private Matrix m_L, m_X;
-    private double[] m_yl, m_b, m_w;
+    private double[] m_el;
     private int m_n;
 
     // EChol^-1 * dy
     /**
-     * 
+     *
      * @param filter
      */
-    public ExactSingleOutlierDetector(IArmaFilter filter) {
+    public ResidualsOutlierDetector(IArmaFilter filter) {
         if (filter == null) {
             m_filter = new AnsleyFilter();
         } else {
@@ -74,47 +76,18 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
     }
 
     /**
-     * 
+     *
      * @param model
      * @return
      */
     protected boolean initialize(RegModel model) {
         try {
-            m_yl = new double[m_n];
-            DataBlock YL = new DataBlock(m_yl);
-            m_filter.filter(model.getY(), YL);
-
-            Matrix regs = model.variables();
-            if (regs == null) {
-		calcMAD(YL);
-//                calcMAD(filter(model.getY()));
-                return true;
+            ConcentratedLikelihoodEstimation estimation = new ConcentratedLikelihoodEstimation();
+            if (!estimation.estimate(getModel())) {
+                return false;
             }
-
-            m_X = new Matrix(m_n, regs.getColumnsCount());
-            DataBlockIterator rcols = regs.columns(), drcols = m_X.columns();
-            DataBlock rcol = rcols.getData(), drcol = drcols.getData();
-            do {
-                m_filter.filter(rcol, drcol);
-            } while (rcols.next() && drcols.next());
-
-            Householder qr = new Householder(true);
-            qr.decompose(m_X);
-            int nx = m_X.getColumnsCount();
-            m_b = qr.solve(m_yl);
-            m_w = new double[nx];
-            m_L = qr.getR().transpose();
-
-            DataBlock e = model.calcRes(new DataBlock(m_b));
-            calcMAD(filter(e));
-//	    DataBlock E = YL.deepClone();
-            drcols.begin();
-            do {
-//		E.addAY(-m_b[drcols.getPosition()], drcol);
-                m_w[drcols.getPosition()] = drcol.dot(YL);
-            } while (drcols.next());
-
-//	    calcMAD(E);
+            m_el = estimation.getResiduals();
+            setMAD(AbstractOutlierVariable.mad(m_el, true));
             return true;
         } catch (Exception ex) {
             return false;
@@ -122,7 +95,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
     }
 
     /**
-     * 
+     *
      * @param idx
      */
     protected void processOutlier(int idx) {
@@ -149,36 +122,14 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
                 double xx = 0, xy = 0;
                 for (int j = 0; j < u.length; ++j) {
                     xx += u[j] * u[j];
-                    xy += u[j] * m_yl[j];
+                    xy += u[j] * m_el[j];
                 }
 
-                if (m_L != null) {
-                    double[] l = new double[m_b.length];
-                    DataBlockIterator xcols = m_X.columns();
-                    DataBlock xcol = xcols.getData();
-                    do {
-                        l[xcols.getPosition()] = xcol.dot(U);
-                    } while (xcols.next());
-                    DataBlock L = new DataBlock(l);
-                    // K=A^-1*L
-                    // lA * lA' * K = L
-                    // l'AA^-1l = |l' * lA'^-1|
-                    LowerTriangularMatrix.rsolve(m_L, l);
-                    // q = l'A^-1l
-                    double q = L.dot(L);
-                    //
-                    double c = xx - q;
-                    if (c <= 0) {
-                        exclude(i, idx);
-                    } else {
-                        LowerTriangularMatrix.lsolve(m_L, l);
-                        setT(i, idx, (xy - new DataBlock(m_w).dot(L))
-                                / (Math.sqrt(c)) / getMAD());
-                    }
-                } else if (xx <= 0) {
+                if (xx <= 0) {
                     exclude(i, idx);
                 } else {
                     setT(i, idx, (xy / (Math.sqrt(xx)) / getMAD()));
+                    setCoefficient(i, idx, xy/xx);
                 }
             }
             OL.move(-1);
@@ -197,9 +148,5 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
     @Override
     protected void clear(boolean all) {
         super.clear(all);
-        m_L = null;
-        m_X = null;
-        m_b = null;
-        m_w = null;
     }
 }

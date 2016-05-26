@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -51,6 +52,7 @@ public class X13SpecExcludefcastTest {
     private CompositeResults comprest;
 
     @Test
+    @Ignore
     public void CalendarSigmaSelect4Test() {
         setInputData4();
 
@@ -63,7 +65,7 @@ public class X13SpecExcludefcastTest {
         sigmavecOption[3] = SigmavecOption.Group2;
         x13spec.getX11Specification().setSigmavec(sigmavecOption);
         comprest = X13ProcessingFactory.process(tsInput, x13spec);
-
+        
         double[] d9s4
                 = {101.24854, Double.NaN, 99.56373, Double.NaN, 100.67665, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 100.75421, 99.98503, 99.01279, Double.NaN, 101.28807, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 99.73893, Double.NaN, Double.NaN, 99.943, 99.18735, 99.16893, Double.NaN, 100.71319, 99.79349, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 100.4726, 99.75503, Double.NaN, 99.63666, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 100.24218, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 100.25458, Double.NaN, Double.NaN, 99.45497, 99.57245, Double.NaN, 100.0898, 100.00716, 99.63573, 100.35026, Double.NaN, Double.NaN, Double.NaN, 100.39815, 98.96781, Double.NaN, 100.81696, 100.94803, Double.NaN, Double.NaN, 100.07831, Double.NaN, Double.NaN, Double.NaN, 100.70552, 100.86139, Double.NaN, 99.35791, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 100.30196, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN};
         TsData tsd9s4 = new TsData(TsFrequency.Quarterly, 2002, 1, d9s4, false);

@@ -29,6 +29,7 @@ import ec.tstoolkit.modelling.arima.IPreprocessingModule;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
 import ec.tstoolkit.modelling.arima.IRegArimaSpecification;
 import ec.tstoolkit.modelling.arima.UnitSeriesScaling;
+import ec.tstoolkit.modelling.arima.demetra.OutliersDetectionModule;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import ec.tstoolkit.timeseries.regression.AdditiveOutlierFactory;
@@ -362,8 +363,8 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
             return null;
         }
         SingleOutlierSpec[] types = o.getTypes();
-        OutliersDetector detector = new OutliersDetector();
-        detector.setEpsilon(estimate_.getTol());
+        OutliersDetectionModule detector = new OutliersDetectionModule();
+        //detector.setEpsilon(estimate_.getTol());
         detector.setSpan(o.getSpan());
         for (int i = 0; i < types.length; ++i) {
             detector.addOutlierFactory(fac.getFactory(types[i].getType()));
@@ -372,7 +373,7 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
             detector.setPc(automdl_.getPercentReductionCV());
         }
         detector.setCriticalValue(o.getDefaultCriticalValue());
-        detector.setMaxIter(o.getMaxIter());
+        //detector.setMaxIter(o.getMaxIter());
         return detector;
     }
 

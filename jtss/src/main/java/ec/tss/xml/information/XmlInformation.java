@@ -190,6 +190,7 @@ public class XmlInformation {
         toXmlMap.put(Matrix.class, matrixMapper);
         
     }
+    
     @XmlAttribute
     public String name;
     @XmlElements(value = {

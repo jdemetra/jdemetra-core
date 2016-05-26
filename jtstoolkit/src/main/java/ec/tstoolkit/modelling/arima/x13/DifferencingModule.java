@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.modelling.arima.x13;
 
 import ec.tstoolkit.arima.estimation.RegArimaEstimation;
@@ -26,6 +25,7 @@ import ec.tstoolkit.maths.Complex;
 import ec.tstoolkit.maths.linearfilters.BackFilter;
 import ec.tstoolkit.maths.realfunctions.ProxyMinimizer;
 import ec.tstoolkit.maths.realfunctions.levmar.LevenbergMarquardtMethod;
+import ec.tstoolkit.modelling.arima.IDifferencingModule;
 import ec.tstoolkit.modelling.arima.RegArimaEstimator;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;
@@ -38,17 +38,17 @@ import ec.tstoolkit.sarima.estimation.SarimaMapping;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class DifferencingModule {
+public class DifferencingModule implements IDifferencingModule {
 
     public static final int MAXD = 2, MAXBD = 1;
-   private double eps_=1e-5;
+    private double eps_ = 1e-5;
 
-    public double getEpsilon(){
+    public double getEpsilon() {
         return eps_;
     }
 
-    public void setEpsilon(double val){
-        eps_=val;
+    public void setEpsilon(double val) {
+        eps_ = val;
     }
 
     private static double removeMean(DataBlock data) {
@@ -66,6 +66,7 @@ public class DifferencingModule {
     private double cancel_ = 0.1;
     private int iter_;
     private boolean ml_, useml_, mlused_, bcalc_;
+    private int maxd = MAXD, maxbd = MAXBD;
 
     /**
      *
@@ -78,7 +79,7 @@ public class DifferencingModule {
             return;
         }
         double ar = lastModel_.phi(1);
-        if (spec_.getFrequency() == 1) {
+        if (! hasSeas()) {
             if (Math.abs(ar + 1) <= 0.15) {
                 spec_.setD(spec_.getD() + 1);
             }
@@ -135,12 +136,12 @@ public class DifferencingModule {
 
         // spec_.D == 0 and spec_.BD == 0 and iround == 2 (cfr TRAMO)
         double ar = lastModel_.phi(1), ma = lastModel_.theta(1), sar = 0, sma = 0;
-        if (spec_.getFrequency() > 1) {
+        if (hasSeas()) {
             sar = lastModel_.bphi(1);
             sma = lastModel_.btheta(1);
         }
         // if cancelation ..., but big initial roots
-        if ((Math.abs(ar - ma) < c_ || (spec_.getFrequency() > 1 && Math.abs(sar - sma) < c_))
+        if ((Math.abs(ar - ma) < c_ || (hasSeas() && Math.abs(sar - sma) < c_))
                 && (rmax_ >= 0.9 || rsmax_ >= 0.9)) {
             if (useml_ && icon == 1) {
                 useml_ = false;
@@ -153,8 +154,8 @@ public class DifferencingModule {
                 spec_.setBD(spec_.getBD() + 1);
             }
         } // if big initial roots and coef near -1
-        else if (((Math.abs(ar + 1) <= 0.15 || (spec_.getFrequency() != 1 && Math.abs(sar + 1) <= 0.16)) && (rmax_ >= 0.9 || rsmax_ >= 0.88))
-                || ((Math.abs(ar + 1) <= 0.16 || (spec_.getFrequency() != 1 && Math.abs(sar + 1) <= 0.17)) && (rmax_ >= 0.91 || rsmax_ >= 0.89))) {
+        else if (((Math.abs(ar + 1) <= 0.15 || (hasSeas() && Math.abs(sar + 1) <= 0.16)) && (rmax_ >= 0.9 || rsmax_ >= 0.88))
+                || ((Math.abs(ar + 1) <= 0.16 || (hasSeas() && Math.abs(sar + 1) <= 0.17)) && (rmax_ >= 0.91 || rsmax_ >= 0.89))) {
             if (useml_ && icon == 1) {
                 useml_ = false;
             } else {
@@ -182,21 +183,21 @@ public class DifferencingModule {
                     spec_.setBD(spec_.getBD() + 1);
                 }
             } else // use the values stored in the first step
-            if (rmax_ > rsmax_) {
-                if (rmax_ > 0) {
-                    spec_.setD(spec_.getD() + 1);
+             if (rmax_ > rsmax_) {
+                    if (rmax_ > 0) {
+                        spec_.setD(spec_.getD() + 1);
+                    }
+                } else if (rsmax_ > 0) {
+                    spec_.setBD(spec_.getBD() + 1);
                 }
-            } else if (rsmax_ > 0) {
-                spec_.setBD(spec_.getBD() + 1);
-            }
         }
 
-        if (spec_.getD() == 3) {
-            spec_.setD(2);
+        if (spec_.getD() > maxd) {
+            spec_.setD(maxd);
             icon = 0;
         }
-        if (spec_.getBD() == 2) {
-            spec_.setBD(1);
+        if (spec_.getBD() > maxbd) {
+            spec_.setBD(maxbd);
             icon = 0;
         }
         return icon;
@@ -245,6 +246,10 @@ public class DifferencingModule {
     public double getCancel() {
         return cancel_;
     }
+    
+    private boolean hasSeas(){
+        return maxbd > 0 && spec_.getFrequency() > 1;
+    }
 
     private void initstep(boolean bstart) {
         if (spec_.getD() == 0 && spec_.getBD() == 0 && bstart) {
@@ -255,7 +260,7 @@ public class DifferencingModule {
             }
             spec_.setQ(0);
             spec_.setBQ(0);
-            if (spec_.getFrequency() > 1) {
+            if (hasSeas()) {
                 spec_.setBP(1);
             }
         } else {
@@ -267,14 +272,14 @@ public class DifferencingModule {
             }
         }
 
-        BackFilter ur=spec_.getDifferencingFilter();
-        
+        BackFilter ur = spec_.getDifferencingFilter();
+
         DataBlock data;
-        if (ur.getDegree() > 0){
-            data=new DataBlock(data_.getLength()-ur.getDegree());
+        if (ur.getDegree() > 0) {
+            data = new DataBlock(data_.getLength() - ur.getDegree());
             ur.filter(data_, data);
-        }else{
-            data=data_.deepClone();
+        } else {
+            data = data_.deepClone();
         }
         removeMean(data);
 
@@ -304,8 +309,8 @@ public class DifferencingModule {
             GlsSarimaMonitor monitor = new GlsSarimaMonitor();
             monitor.setPrecision(eps_);
             //monitor.setMinimizer(new ProxyMinimizer(new QRMarquardt()));
-            RegArimaModel<SarimaModel> model= new RegArimaModel<>(
-                new SarimaModel(spec_), data_);
+            RegArimaModel<SarimaModel> model = new RegArimaModel<>(
+                    new SarimaModel(spec_), data_);
             // model.setMeanCorrection(true);
             //monitor.useMaximumLikelihood(!(bstart && spec_.getD() == 0 && spec_.getBD() == 0));
             RegArimaEstimation<SarimaModel> rslt = monitor.optimize(
@@ -362,7 +367,7 @@ public class DifferencingModule {
             icon = 1;
             useml_ = true;
         }
-        if (spec_.getFrequency() > 1) {
+        if (hasSeas()) {
             if (Math.abs(sar + 1) <= .19) {
                 if (-sar > 1.02) {
                     useml_ = true;
@@ -402,7 +407,7 @@ public class DifferencingModule {
      * @param d
      * @param bd
      */
-    public void process(int freq, IReadDataBlock data, int d, int bd) {
+    public void process(IReadDataBlock data, int freq, int d, int bd) {
         clear();
         data_ = new DataBlock(data);
         spec_.setFrequency(freq);
@@ -471,7 +476,7 @@ public class DifferencingModule {
 
         Complex[] rar = lastModel_.getRegularAR().mirror().roots();
         spec_.setD(spec_.getD() + searchur(rar, ub1_, true));
-        if (spec_.getFrequency() != 1) {
+        if (hasSeas()) {
             Complex[] rsar = lastModel_.getSeasonalAR().mirror().roots();
             spec_.setBD(spec_.getBD() + searchur(rsar, ub1_, false));
         }
@@ -486,7 +491,7 @@ public class DifferencingModule {
         clear();
     }
 
-    public boolean isMean() {
+    public boolean isMeanCorrection() {
         if (spec_.getDifferenceOrder() == 0) {
             return isStMean();
         } else {
@@ -515,8 +520,8 @@ public class DifferencingModule {
         // compute regression model with mean
         //GlsSarimaMonitor monitor = new GlsSarimaMonitor();
         //monitor.setMinimizer(new ProxyMinimizer(new LevenbergMarquardtMethod()));
-        SarimaSpecification spec=spec_.clone();
-        RegArimaEstimator monitor=new RegArimaEstimator(new SarimaMapping(spec, true));
+        SarimaSpecification spec = spec_.clone();
+        RegArimaEstimator monitor = new RegArimaEstimator(new SarimaMapping(spec, true));
         monitor.setPrecision(1e-4);
 //        spec.setP(0);
 //        spec.setBP(0);
@@ -545,4 +550,11 @@ public class DifferencingModule {
         }
         return Math.abs(t) > vct;
     }
+
+    @Override
+    public void setLimits(int maxd, int maxbd) {
+        this.maxd = maxd;
+        this.maxbd = maxbd;
+    }
+
 }

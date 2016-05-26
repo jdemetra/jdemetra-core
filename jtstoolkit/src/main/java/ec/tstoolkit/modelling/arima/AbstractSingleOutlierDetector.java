@@ -29,6 +29,7 @@ import ec.tstoolkit.timeseries.regression.IOutlierFactory;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
+import ec.tstoolkit.utilities.DoubleList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -104,6 +105,7 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
     }
 
     private ArrayList<IOutlierFactory> m_o = new ArrayList<>();
+    private DoubleList m_ow = new DoubleList();
 
     private RegArimaModel<T> m_model;
 
@@ -113,7 +115,7 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
 
     private int m_lbound, m_ubound;
 
-    private Matrix m_T;
+    private Matrix m_T, m_c;
 
     private TableOfBoolean m_bT;
 
@@ -133,7 +135,19 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      */
     public void addOutlierFactory(IOutlierFactory o) {
         m_o.add(o);
-        clear();
+        m_ow.add(1);
+        clear(true);
+    }
+
+    /**
+     *
+     * @param o
+     * @param weight
+     */
+    public void addOutlierFactory(IOutlierFactory o, double weight) {
+        m_o.add(o);
+        m_ow.add(weight);
+        clear(true);
     }
 
     /**
@@ -171,13 +185,18 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
     /**
      *
      */
-    protected void clear() {
+    protected void clear(boolean all) {
         m_model = null;
         m_mad = 0;
         m_omax = -1;
         m_posmax = -1;
-        if (m_T != null) {
+        if (all){
+            m_T=null;
+            m_c=null;
+            m_bT=null;
+        }else if (m_T != null) {
             m_T.clear();
+            m_c.clear();
         }
     }
 
@@ -186,7 +205,8 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      */
     public void clearOutlierFactories() {
         m_o.clear();
-        clear();
+        m_ow.clear();
+        clear(true);
     }
 
     /**
@@ -196,7 +216,7 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      * @return
      */
     public double coeff(int pos, int outlier) {
-        return m_T.get(pos, outlier) * m_mad;
+        return m_c.get(pos, outlier);
     }
 
     /**
@@ -208,6 +228,19 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
         // avoid outliers outside the current range
         if (pos >= 0 && pos < m_bT.getRowsCount()) {
             m_bT.set(pos, ioutlier, false);
+            m_T.set(pos, ioutlier, 0);
+        }
+    }
+
+    /**
+     *
+     * @param pos
+     * @param ioutlier
+     */
+    public void allow(int pos, int ioutlier) {
+        // avoid outliers outside the current range
+        if (pos >= 0 && pos < m_bT.getRowsCount()) {
+            m_bT.set(pos, ioutlier, true);
             m_T.set(pos, ioutlier, 0);
         }
     }
@@ -237,6 +270,21 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
             if (exemplar.getOutlierType().equals(o.getOutlierType())) {
                 int pos = o.getPosition().minus(m_domain.getStart());
                 exclude(pos, i);
+                break;
+            }
+        }
+    }
+
+    /**
+     *
+     * @param o
+     */
+    public void allow(IOutlierVariable o) {
+        for (int i = 0; i < m_o.size(); ++i) {
+            IOutlierFactory exemplar = m_o.get(i);
+            if (exemplar.getOutlierType().equals(o.getOutlierType())) {
+                int pos = o.getPosition().minus(m_domain.getStart());
+                allow(pos, i);
                 break;
             }
         }
@@ -414,6 +462,7 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      */
     protected void prepareT(int n) {
         m_T = new Matrix(n, m_o.size());
+        m_c = new Matrix(n, m_o.size());
         m_bT = new TableOfBoolean(n, m_o.size());
         for (int i = 0; i < m_o.size(); ++i) {
             IOutlierFactory fac = getOutlierFactory(i);
@@ -421,7 +470,7 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
             int jstart = Math.max(m_lbound, dom.getStart().minus(m_domain.getStart()));
             int jend = Math.min(m_ubound, dom.getEnd().minus(m_domain.getStart()));
             for (int j = jstart; j < jend; ++j) {
-                m_bT.set(j, i, Boolean.TRUE);
+                m_bT.set(j, i, true);
             }
         }
     }
@@ -432,7 +481,7 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      * @return
      */
     public boolean process(RegArimaModel<T> model) {
-        clear();
+        clear(false);
         m_model = model.clone();
         return calc();
     }
@@ -444,15 +493,19 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
         double max = 0;
         int imax = -1;
         double[] T = m_T.internalStorage();
-        for (int i = 0; i < T.length; ++i) {
-            double cur = Math.abs(T[i]);
-            if (cur > max) {
-                imax = i;
-                max = cur;
+        for (int i = 0, c = 0; c < m_T.getColumnsCount(); ++c) {
+            double w = m_ow.get(c);
+
+            for (int r = 0; r < m_T.getRowsCount(); ++r, ++i) {
+                double cur = Math.abs(T[i]) * w;
+                if (cur > max) {
+                    imax = i;
+                    max = cur;
+                }
             }
-        }
-        if (imax == -1) {
-            return;
+            if (imax == -1) {
+                return;
+            }
         }
         m_posmax = imax % m_T.getRowsCount();
         m_omax = imax / m_T.getRowsCount();
@@ -474,6 +527,16 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      */
     protected void setT(int pos, int outlier, double val) {
         m_T.set(pos, outlier, val);
+    }
+
+    /**
+     *
+     * @param pos
+     * @param outlier
+     * @param val
+     */
+    protected void setCoefficient(int pos, int outlier, double val) {
+        m_c.set(pos, outlier, val);
     }
 
     /**

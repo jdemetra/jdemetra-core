@@ -638,19 +638,19 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     /**
-     * Differences this object with a given lag. this(i) = this(i) -
-     * this(i-lag). The first elements are unchanged
+     * Differences this object with mulyiplication. this(i) = this(i) -
+     * this(i-1)*delta. The first elements are unchanged
      *
-     * @param lag The lag.
+     * @param delta 
      */
-    public void difference(double lag) {
+    public void difference(double delta) {
         if (getLength() <= 1) {
             return;
         }
         int cur = end - inc;
         do {
             cur -= inc;
-            src[cur + inc] -= lag * src[cur];
+            src[cur + inc] -= delta * src[cur];
         } while (cur != beg);
     }
 
