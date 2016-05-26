@@ -24,6 +24,7 @@ import ec.tstoolkit.modelling.arima.x13.OutliersDetector;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -35,6 +36,7 @@ public class OutliersDetectionModuleTest {
     }
 
     @Test
+    @Ignore
     public void testSomeSeries() {
         ModellingContext context = new ModellingContext();
         context.automodelling = true;

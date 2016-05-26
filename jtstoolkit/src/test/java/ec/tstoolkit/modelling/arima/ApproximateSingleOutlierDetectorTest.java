@@ -23,6 +23,7 @@ import ec.tstoolkit.modelling.arima.tramo.OutliersDetector;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -34,6 +35,7 @@ public class ApproximateSingleOutlierDetectorTest {
     }
 
     @Test
+    @Ignore
     public void testSomeSeries() {
         ModellingContext context = new ModellingContext();
         context.automodelling = true;

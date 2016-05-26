@@ -61,7 +61,7 @@ public class GenericTradingDaysTest {
     }
     
     @Test
-    //@Ignore
+    @Ignore
     public void testDisplay() {
         TsDomain md = new TsDomain(TsFrequency.Monthly, 1980, 0, 28*12);
         Matrix M = new Matrix(md.getLength(), 1);
@@ -79,7 +79,7 @@ public class GenericTradingDaysTest {
     }
     
     @Test
-    //@Ignore
+    @Ignore
     public void testDisplayNoContrasts() {
         TsDomain md = new TsDomain(TsFrequency.Monthly, 1980, 0, 28*12);
         Matrix M = new Matrix(md.getLength(), 2);

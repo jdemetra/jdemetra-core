@@ -20,6 +20,7 @@ import ec.tstoolkit.arima.ArimaModelBuilder;
 import ec.tstoolkit.maths.polynomials.Polynomial;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -43,6 +44,7 @@ public class BurgAlgorithmTest {
     }
 
     @Test
+    @Ignore
     public void testCompare() {
         ArimaModelBuilder builder = new ArimaModelBuilder();
         int n = 240;

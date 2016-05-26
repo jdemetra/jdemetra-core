@@ -32,6 +32,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -43,6 +44,7 @@ public class XmlVariablesTest {
     }
 
     @Test
+    @Ignore
     public void testMarshal() throws FileNotFoundException, JAXBException, IOException {
         JAXBContext jaxb = JAXBContext.newInstance(XmlVariables.class, XmlGenericTradingDays.class, XmlOutlier.class);
         
