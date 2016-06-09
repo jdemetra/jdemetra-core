@@ -16,7 +16,6 @@
  */
 package adodb.wsh;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -28,25 +27,35 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import javax.annotation.Nonnull;
 
 /**
  *
  * @author Philippe Charles
+ * @since 2.1.0
  */
 final class AdoResultSet extends _ResultSet {
 
-    private static final String DELIMITER = "\t";
+    @Nonnull
+    static AdoResultSet of(@Nonnull TsvReader tsv) throws IOException {
+        try {
+            return new AdoResultSet(tsv, AdoResultSetMetaData.of(tsv.getHeader(0), tsv.getHeader(1)));
+        } catch (IllegalArgumentException ex) {
+            throw new IOException("Invalid header", ex);
+        }
+    }
+
     private static final Locale EN_US = new Locale("en", "us");
 
-    private final BufferedReader reader;
+    private final TsvReader reader;
     private final AdoResultSetMetaData metaData;
     private final DateFormat dateFormat;
     private final NumberFormat numberFormat;
     private final String[] currentRow;
 
-    AdoResultSet(BufferedReader reader) throws IOException, SQLException {
+    private AdoResultSet(TsvReader reader, AdoResultSetMetaData metaData) {
         this.reader = reader;
-        this.metaData = createMetaData(reader);
+        this.metaData = metaData;
         this.dateFormat = new SimpleDateFormat("MM/dd/yyyy", EN_US);
         dateFormat.setLenient(false);
         this.numberFormat = NumberFormat.getInstance(EN_US);
@@ -56,14 +65,11 @@ final class AdoResultSet extends _ResultSet {
     @Override
     public boolean next() throws SQLException {
         try {
-            String line = reader.readLine();
-            if (line != null) {
-                splitInto(line, currentRow);
-                return true;
-            }
-            return false;
+            return reader.readNextInto(currentRow);
         } catch (IOException ex) {
-            throw new SQLException("While reading next row", ex);
+            throw ex instanceof TsvReader.Err
+                    ? new SQLException(ex.getMessage(), "", ((TsvReader.Err) ex).getNumber())
+                    : new SQLException("While reading next row", ex);
         }
     }
 
@@ -83,12 +89,12 @@ final class AdoResultSet extends _ResultSet {
 
     @Override
     public Object getObject(int columnIndex) throws SQLException {
-        return getItem(columnIndex);
+        return currentRow[columnIndex - 1];
     }
 
     @Override
     public String getString(int columnIndex) throws SQLException {
-        return getItem(columnIndex);
+        return currentRow[columnIndex - 1];
     }
 
     @Override
@@ -128,61 +134,24 @@ final class AdoResultSet extends _ResultSet {
 
     @Override
     public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
-        return new BigDecimal(getItem(columnIndex));
+        return new BigDecimal(currentRow[columnIndex - 1]);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
-    private String getItem(int columnIndex) throws IndexOutOfBoundsException {
-        return currentRow[columnIndex - 1];
-    }
-
     private java.util.Date parseDate(int columnIndex) throws SQLException {
         try {
-            return dateFormat.parse(getItem(columnIndex));
+            return dateFormat.parse(currentRow[columnIndex - 1]);
         } catch (ParseException ex) {
-            throw new SQLException(ex);
+            throw new SQLException("While parsing date", ex);
         }
     }
 
     private Number parseNumber(int columnIndex) throws SQLException {
         try {
-            return numberFormat.parse(getItem(columnIndex));
+            return numberFormat.parse(currentRow[columnIndex - 1]);
         } catch (ParseException ex) {
-            throw new SQLException(ex);
+            throw new SQLException("While parsing number", ex);
         }
-    }
-
-    private static String[] split(String line) {
-        return line.split(DELIMITER, -1);
-    }
-
-    private static void splitInto(String line, String[] array) {
-        int start = 0;
-        for (int i = 0; i < array.length - 1; i++) {
-            int stop = line.indexOf(DELIMITER, start);
-            array[i] = line.substring(start, stop);
-            start = stop + DELIMITER.length();
-        }
-        array[array.length - 1] = line.substring(start);
-    }
-
-    private static AdoResultSetMetaData createMetaData(BufferedReader reader) throws IOException {
-        String line;
-        if ((line = reader.readLine()) == null) {
-            throw new IOException("Missing column names");
-        }
-        String[] columnsNames = split(line);
-
-        if ((line = reader.readLine()) == null) {
-            throw new IOException("Missing column types");
-        }
-        String[] tmp = split(line);
-        int[] columnsValues = new int[tmp.length];
-        for (int i = 0; i < columnsValues.length; i++) {
-            columnsValues[i] = Integer.parseInt(tmp[i]);
-        }
-
-        return new AdoResultSetMetaData(columnsNames, columnsValues);
     }
     //</editor-fold>
 }
