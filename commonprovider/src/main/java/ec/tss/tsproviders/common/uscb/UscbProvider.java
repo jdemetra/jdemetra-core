@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +49,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Kristof Bayens
  */
+@ServiceProvider(service = ITsProvider.class)
 public class UscbProvider implements ITsProvider, IDataSourceProvider {
 
     public static final String SOURCE = "USCB";

@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.openide.util.lookup.ServiceProvider;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -38,6 +39,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  *
  * @author Philippe Charles
  */
+@ServiceProvider(service = Book.Factory.class)
 public class ExcelBookFactory extends Book.Factory {
 
     private final AtomicBoolean fast;

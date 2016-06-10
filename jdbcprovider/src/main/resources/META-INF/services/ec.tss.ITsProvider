@@ -1,3 +1,0 @@
-ec.tss.tsproviders.jdbc.oracle.OracleProvider
-ec.tss.tsproviders.jdbc.mysql.MysqlProvider
-ec.tss.tsproviders.jdbc.jndi.JndiJdbcProvider

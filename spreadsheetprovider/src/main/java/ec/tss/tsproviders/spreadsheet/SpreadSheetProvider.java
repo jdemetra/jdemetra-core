@@ -16,6 +16,7 @@
  */
 package ec.tss.tsproviders.spreadsheet;
 
+import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
@@ -36,6 +37,7 @@ import java.io.IOException;
 import java.util.*;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +45,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Demortier Jeremy
  */
+@ServiceProvider(service = ITsProvider.class)
 public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, SpreadSheetBean> {
 
     public static final String SOURCE = "XCLPRVDR";

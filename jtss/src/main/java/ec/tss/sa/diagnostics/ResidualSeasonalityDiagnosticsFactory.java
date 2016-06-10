@@ -21,11 +21,13 @@ package ec.tss.sa.diagnostics;
 import ec.tss.sa.ISaDiagnosticsFactory;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.IDiagnostics;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Kristof Bayens
  */
+@ServiceProvider(service = ISaDiagnosticsFactory.class)
 public class ResidualSeasonalityDiagnosticsFactory implements ISaDiagnosticsFactory {
     private ResidualSeasonalityDiagnosticsConfiguration config_;
     //public static final ResidualSeasonalityDiagnosticsFactory Default = new ResidualSeasonalityDiagnosticsFactory();

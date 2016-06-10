@@ -16,6 +16,7 @@
  */
 package ec.tss.tsproviders.common.tsw;
 
+import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
@@ -30,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +39,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Kristof Bayens
  */
+@ServiceProvider(service = ITsProvider.class)
 public class TswProvider extends AbstractFileLoader<TswSource, TswBean> {
 
     public static final String SOURCE = "TSW";

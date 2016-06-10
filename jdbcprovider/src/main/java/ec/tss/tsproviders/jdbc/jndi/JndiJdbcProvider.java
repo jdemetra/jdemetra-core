@@ -16,6 +16,7 @@
  */
 package ec.tss.tsproviders.jdbc.jndi;
 
+import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;
 import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.db.DbAccessor;
@@ -30,6 +31,7 @@ import javax.annotation.Nullable;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +47,7 @@ import org.slf4j.LoggerFactory;
  * @see javax.sql.DataSource
  * @see Context#lookup(java.lang.String)
  */
+@ServiceProvider(service = ITsProvider.class)
 public class JndiJdbcProvider extends JdbcProvider<JdbcBean> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JndiJdbcProvider.class);

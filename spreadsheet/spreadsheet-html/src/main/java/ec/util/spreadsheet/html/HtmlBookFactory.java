@@ -28,11 +28,13 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Optional;
 import javax.xml.stream.XMLOutputFactory;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Philippe Charles
  */
+@ServiceProvider(service = Book.Factory.class)
 public class HtmlBookFactory extends Book.Factory {
 
     private final XMLOutputFactory xof;

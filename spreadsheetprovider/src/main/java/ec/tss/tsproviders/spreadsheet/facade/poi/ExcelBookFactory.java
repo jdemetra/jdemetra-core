@@ -16,13 +16,16 @@
  */
 package ec.tss.tsproviders.spreadsheet.facade.poi;
 
+import ec.tss.tsproviders.spreadsheet.facade.Book;
 import ec.tss.tsproviders.spreadsheet.facade.utils.BookFactoryAdapter;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Philippe Charles
  */
 @Deprecated
+@ServiceProvider(service = Book.Factory.class)
 public class ExcelBookFactory extends BookFactoryAdapter {
 
     public ExcelBookFactory() {

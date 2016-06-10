@@ -23,11 +23,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Locale;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Philippe Charles
  */
+@ServiceProvider(service = Book.Factory.class)
 public class ExcelClassicBookFactory extends Book.Factory {
 
     @Override
