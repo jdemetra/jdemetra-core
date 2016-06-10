@@ -19,6 +19,14 @@
         </license>
     </licenses>
     
+    <repositories>
+        <repository>
+            <id>netbeans</id>
+            <name>NetBeans</name>
+            <url>http://bits.netbeans.org/nexus/content/groups/netbeans/</url>
+        </repository>
+    </repositories>
+    
     <distributionManagement>
         <repository>
             <id>joinup-releases</id>
