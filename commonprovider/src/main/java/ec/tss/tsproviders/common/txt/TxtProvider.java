@@ -16,6 +16,7 @@
 */
 package ec.tss.tsproviders.common.txt;
 
+import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
@@ -35,9 +36,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@ServiceProvider(service = ITsProvider.class)
 public class TxtProvider extends AbstractFileLoader<TxtSource, TxtBean> {
 
     public static final String SOURCE = "Txt";

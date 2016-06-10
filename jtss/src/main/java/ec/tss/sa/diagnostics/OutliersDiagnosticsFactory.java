@@ -22,11 +22,13 @@ import ec.satoolkit.IRegArimaSaResults;
 import ec.tss.sa.ISaDiagnosticsFactory;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.IDiagnostics;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Kristof Bayens
  */
+@ServiceProvider(service = ISaDiagnosticsFactory.class)
 public class OutliersDiagnosticsFactory implements ISaDiagnosticsFactory {
 
     //public static final OutliersDiagnosticsFactory Default = new OutliersDiagnosticsFactory();

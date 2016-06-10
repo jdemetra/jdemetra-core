@@ -1,8 +1,0 @@
-ec.tss.sa.diagnostics.CoherenceDiagnosticsFactory
-ec.tss.sa.diagnostics.OutliersDiagnosticsFactory
-ec.tss.sa.diagnostics.MDiagnosticsFactory
-ec.tss.sa.diagnostics.ResidualSeasonalityDiagnosticsFactory
-ec.tss.sa.diagnostics.ResidualsDiagnosticsFactory
-ec.tss.sa.diagnostics.SpectralDiagnosticsFactory
-ec.tss.sa.diagnostics.OutOfSampleDiagnosticsFactory
-ec.tss.sa.diagnostics.SeatsDiagnosticsFactory

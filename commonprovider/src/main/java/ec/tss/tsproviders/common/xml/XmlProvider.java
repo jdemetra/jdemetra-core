@@ -18,6 +18,7 @@ package ec.tss.tsproviders.common.xml;
 
 import com.google.common.base.Throwables;
 import com.google.common.io.Files;
+import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
@@ -39,9 +40,11 @@ import java.util.Locale;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@ServiceProvider(service = ITsProvider.class)
 public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
 
     public static final String SOURCE = "Xml";

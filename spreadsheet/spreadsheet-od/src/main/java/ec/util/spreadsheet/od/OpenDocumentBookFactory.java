@@ -25,11 +25,13 @@ import java.util.Locale;
 import javax.swing.table.DefaultTableModel;
 import org.jopendocument.dom.ODPackage;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Philippe Charles
  */
+@ServiceProvider(service = Book.Factory.class)
 public class OpenDocumentBookFactory extends Book.Factory {
 
     @Override
