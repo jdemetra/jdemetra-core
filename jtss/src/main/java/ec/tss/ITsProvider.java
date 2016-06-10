@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
  * Generic interface for providers of time series.
  * 
  * @author Jean Palate
+ * @since 1.0.0
  */
 @Development(status = Development.Status.Alpha)
 @ServiceDefinition

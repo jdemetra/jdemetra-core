@@ -26,6 +26,7 @@ import java.util.Comparator;
 /**
  *
  * @author Jean Palate
+ * @since 1.4.1
  */
 @ServiceDefinition
 public interface ISaDiagnosticsFactory
