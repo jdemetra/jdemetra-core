@@ -145,4 +145,32 @@ public class ADFTest {
     public double getT() {
         return t;
     }
+
+    /**
+     * @return the cnt
+     */
+    public boolean isConstant() {
+        return cnt;
+    }
+
+    /**
+     * @param cnt the cnt to set
+     */
+    public void setConstant(boolean cnt) {
+        this.cnt = cnt;
+    }
+
+    /**
+     * @return the trend
+     */
+    public boolean isTrend() {
+        return trend;
+    }
+
+    /**
+     * @param trend the trend to set
+     */
+    public void setTrend(boolean trend) {
+        this.trend = trend;
+    }
 }
