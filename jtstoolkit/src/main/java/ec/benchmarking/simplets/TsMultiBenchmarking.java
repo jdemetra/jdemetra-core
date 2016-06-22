@@ -72,8 +72,8 @@ public class TsMultiBenchmarking {
             constant = d;
             constraint = s;
         }
-        
-        public void add(String cmp, double w){
+
+        public void add(String cmp, double w) {
             this.components.add(new WeightedItem<>(cmp, w));
         }
 
@@ -101,8 +101,8 @@ public class TsMultiBenchmarking {
         }
         public final double constant;
         public final String constraint;
-        public final List<WeightedItem<String>> components =
-                new ArrayList<>();
+        public final List<WeightedItem<String>> components
+                = new ArrayList<>();
 
         public boolean hasWildCards() {
             for (WeightedItem<String> ws : components) {
@@ -311,19 +311,19 @@ public class TsMultiBenchmarking {
         }
     }
     private double rho_ = 0, lambda_ = 0;
-    private LinkedHashMap<String, String> tConstraints =
-            new LinkedHashMap<>();
-    private ArrayList<ContemporaneousConstraintDescriptor> cConstraints =
-            new ArrayList<>();
-    private LinkedHashMap<String, TsData> inputs = new LinkedHashMap<>();
-    private ArrayList<String> lcnt = new ArrayList<>();
-    private ArrayList<String> rcnt = new ArrayList<>();
+    private final LinkedHashMap<String, String> tConstraints
+            = new LinkedHashMap<>();
+    private final ArrayList<ContemporaneousConstraintDescriptor> cConstraints
+            = new ArrayList<>();
+    private final LinkedHashMap<String, TsData> inputs = new LinkedHashMap<>();
+    private final ArrayList<String> lcnt = new ArrayList<>();
+    private final ArrayList<String> rcnt = new ArrayList<>();
     private double[][] lcntData, rcntData, weights;
-    private HashMap<String, TsData> tcntData;
-    private ArrayList<Constraint> cs = new ArrayList<>();
+    private final HashMap<String, TsData> tcntData=new HashMap<>();
+    private final ArrayList<Constraint> cs = new ArrayList<>();
     private TsDomain idomain_;
     private TsFrequency tfreq_ = TsFrequency.Undefined;
-    private HashMap<String, TsData> bench_;
+    private final HashMap<String, TsData> bench_=new HashMap();
 
     public boolean addInput(String name, TsData s) {
         if (inputs.containsKey(name)) {
@@ -346,6 +346,7 @@ public class TsMultiBenchmarking {
             }
         }
         cConstraints.add(cnt);
+        clear();
         return true;
     }
 
@@ -365,6 +366,7 @@ public class TsMultiBenchmarking {
                     return false;
                 }
             }
+            clear();
             return true;
         } else {
             return false;
@@ -401,6 +403,7 @@ public class TsMultiBenchmarking {
         }
         return list;
     }
+
     public Set<String> input() {
         return inputs.keySet();
     }
@@ -422,7 +425,7 @@ public class TsMultiBenchmarking {
      * @return
      */
     public TsData getResult(String s) {
-        return bench_ == null ? null : bench_.get(s);
+        return bench_.get(s);
     }
 
     /**
@@ -433,7 +436,6 @@ public class TsMultiBenchmarking {
         if (cConstraints.isEmpty() && tConstraints.isEmpty()) {
             return false;
         }
-        bench_ = new HashMap<>();
         TsData[] bench;
         if (cConstraints.isEmpty()) {
             bench = computeUnivariate();
@@ -481,8 +483,8 @@ public class TsMultiBenchmarking {
 
         // build the observations
         ec.tstoolkit.ssf.multivariate.FullM2uMap map = new ec.tstoolkit.ssf.multivariate.FullM2uMap(rcnt.size() + cs.size());
-        ec.tstoolkit.ssf.multivariate.M2uSsfAdapter adapter =
-                new ec.tstoolkit.ssf.multivariate.M2uSsfAdapter(ssf, map);
+        ec.tstoolkit.ssf.multivariate.M2uSsfAdapter adapter
+                = new ec.tstoolkit.ssf.multivariate.M2uSsfAdapter(ssf, map);
         int len = idomain_.getLength();
         int nvars = rcnt.size(), ncnts = cs.size();
         Matrix M = new Matrix(nvars + ncnts, len);
@@ -529,8 +531,6 @@ public class TsMultiBenchmarking {
             states = dsmoother.calcSmoothedStates();
         }
 
-
-
         int neq = nvars + ncnts;
         TsData[] y = new TsData[rcnt.size()];
         for (int i = 0; i < y.length; ++i) {
@@ -543,6 +543,22 @@ public class TsMultiBenchmarking {
             }
         }
         return y;
+    }
+    
+    private void clear(){
+        if (bench_.isEmpty())
+            return;
+   lcnt.clear();
+    rcnt.clear();
+    lcntData=null;
+    rcntData=null;
+    weights=null;
+    tcntData.clear();
+    cs.clear();
+    idomain_=null;
+   tfreq_ = TsFrequency.Undefined;
+    bench_.clear();
+        
     }
 
     private boolean hasTemporalConstraint(ContemporaneousConstraintDescriptor cnt) {
@@ -701,7 +717,6 @@ public class TsMultiBenchmarking {
     }
 
     private void buildTemporalConstraints() {
-        tcntData = new HashMap<>();
         TsDomain tdom = idomain_.changeFrequency(tfreq_, true);
         for (int i = 0; i < rcnt.size(); ++i) {
             String n = rcnt.get(i);
@@ -745,8 +760,8 @@ public class TsMultiBenchmarking {
 
         // build the observations
         ec.tstoolkit.ssf.multivariate.FullM2uMap map = new ec.tstoolkit.ssf.multivariate.FullM2uMap(cs.size());
-        ec.tstoolkit.ssf.multivariate.M2uSsfAdapter adapter =
-                new ec.tstoolkit.ssf.multivariate.M2uSsfAdapter(ssf, map);
+        ec.tstoolkit.ssf.multivariate.M2uSsfAdapter adapter
+                = new ec.tstoolkit.ssf.multivariate.M2uSsfAdapter(ssf, map);
         ec.tstoolkit.ssf.multivariate.M2uData data = new ec.tstoolkit.ssf.multivariate.M2uData(lcntData, null);
         ec.tstoolkit.ssf.DisturbanceSmoother dsmoother = new ec.tstoolkit.ssf.DisturbanceSmoother();
         dsmoother.setSsf(adapter);

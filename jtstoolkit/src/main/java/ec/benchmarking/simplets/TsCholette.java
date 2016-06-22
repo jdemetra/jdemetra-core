@@ -46,21 +46,25 @@ public class TsCholette extends AbstractTsBenchmarking {
     private double rho_ = .9, lambda_;
 
     private TsData correctBias(TsData s, TsData target) {
-        if (bias_ == BiasCorrection.None) {
+        // No bias correction when we use pure interpolation
+        TsAggregationType agg=getAggregationType();
+        if (bias_ == BiasCorrection.None || 
+                (agg != TsAggregationType.Average && agg != TsAggregationType.Sum)) {
             return s;
         }
-        TsData sy = s.changeFrequency(TsFrequency.Yearly, TsAggregationType.Sum, true);
+        TsData sy = s.changeFrequency(target.getFrequency(), getAggregationType(), true);
         sy = sy.fittoDomain(target.getDomain());
+        // TsDataBlock.all(target).data.sum() is the sum of the aggregation constraints
+        //  TsDataBlock.all(sy).data.sum() is the sum of the averages or sums of the original series 
         if (bias_ == BiasCorrection.Multiplicative) {
             return s.times(TsDataBlock.all(target).data.sum() / TsDataBlock.all(sy).data.sum());
         } else {
-            double b = TsDataBlock.all(target).data.sum() - TsDataBlock.all(sy).data.sum();
-            if (getAggregationType() != TsAggregationType.Sum) {
-                return s.times(b * target.getLength());
+            double b = (TsDataBlock.all(target).data.sum() - TsDataBlock.all(sy).data.sum())/target.getLength();
+            if (agg == TsAggregationType.Average){
+                int hfreq=s.getFrequency().intValue(), lfreq=target.getFrequency().intValue();
+                b*=hfreq/lfreq;
             }
-
-            int hfreq = s.getFrequency().intValue(), lfreq = target.getFrequency().intValue();
-            return s.times(b * target.getLength() * hfreq / lfreq);
+            return s.plus(b);
         }
     }
 

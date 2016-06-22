@@ -120,6 +120,7 @@ public class ADFTestTest {
     }
 
     @Test
+    @Ignore
     public void testSurfaceToFile() throws IOException {
         int M = 30;
         int[] L = new int[M];

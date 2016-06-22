@@ -30,6 +30,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
+@Deprecated
 public class TsDenton extends AbstractTsBenchmarking {
 
     private boolean mul_ = true;
