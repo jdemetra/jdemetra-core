@@ -17,33 +17,49 @@
 package adodb.wsh;
 
 import java.io.IOException;
+import static java.lang.String.format;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Objects;
+import javax.annotation.Nonnull;
 
 /**
  *
  * @author Philippe Charles
+ * @since 2.1.0
  */
 final class AdoStatement extends _Statement {
 
-    private final Wsh wsh;
-    private final String connectionString;
+    @Nonnull
+    static AdoStatement of(@Nonnull AdoConnection conn) {
+        return new AdoStatement(Objects.requireNonNull(conn));
+    }
 
-    AdoStatement(Wsh wsh, String connectionString) {
-        this.wsh = wsh;
-        this.connectionString = connectionString;
+    private final AdoConnection conn;
+
+    private AdoStatement(AdoConnection conn) {
+        this.conn = conn;
     }
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
         try {
-            return new AdoResultSet(wsh.exec("PreparedStatement", connectionString, sql));
+            return AdoResultSet.of(conn.getContext().preparedStatement(sql, Collections.emptyList()));
         } catch (IOException ex) {
-            throw new SQLException(ex);
+            throw ex instanceof TsvReader.Err
+                    ? new SQLException(ex.getMessage(), "", ((TsvReader.Err) ex).getNumber())
+                    : new SQLException(format("Failed to execute query '%s'", sql), ex);
         }
     }
 
     @Override
     public void close() throws SQLException {
+    }
+
+    @Override
+    public Connection getConnection() throws SQLException {
+        return conn;
     }
 }

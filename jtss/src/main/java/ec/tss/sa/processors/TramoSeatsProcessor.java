@@ -46,7 +46,6 @@ import ec.tstoolkit.timeseries.regression.IEasterVariable;
 import ec.tstoolkit.timeseries.regression.ILengthOfPeriodVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.regression.ITradingDaysVariable;
-import ec.tstoolkit.timeseries.regression.JulianEasterVariable;
 import ec.tstoolkit.timeseries.regression.OutlierDefinition;
 import ec.tstoolkit.timeseries.regression.OutlierType;
 import ec.tstoolkit.timeseries.regression.TsVariableList;
@@ -56,11 +55,13 @@ import ec.tstoolkit.timeseries.simplets.TsDomain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
+@ServiceProvider(service = ISaProcessingFactory.class)
 public class TramoSeatsProcessor implements ISaProcessingFactory<TramoSeatsSpecification> {
 
     public static final AlgorithmDescriptor DESCRIPTOR = TramoSeatsProcessingFactory.DESCRIPTOR;

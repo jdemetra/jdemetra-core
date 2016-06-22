@@ -16,57 +16,100 @@
  */
 package adodb.wsh;
 
+import static adodb.wsh.AdoContext.CURRENT_CATALOG;
+import java.io.IOException;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Map;
+import javax.annotation.Nonnull;
+import static java.lang.String.format;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  *
  * @author Philippe Charles
+ * @since 2.1.0
  */
 final class AdoConnection extends _Connection {
 
-    private final Wsh wsh;
-    private final String connectionString;
-    private final Map<String, AdoConnection> connectionPool;
-    private final AdoDatabaseMetaData metaData;
+    @Nonnull
+    static AdoConnection of(@Nonnull AdoContext context, @Nonnull Consumer<AdoContext> onClose) {
+        return new AdoConnection(Objects.requireNonNull(context), Objects.requireNonNull(onClose));
+    }
 
-    AdoConnection(Wsh wsh, String connectionString, Map<String, AdoConnection> connectionPool) {
-        this.wsh = wsh;
-        this.connectionString = connectionString;
-        this.connectionPool = connectionPool;
-        this.metaData = new AdoDatabaseMetaData(wsh, connectionString);
+    private final AdoContext context;
+    private final Consumer<AdoContext> onClose;
+    private boolean closed;
+
+    private AdoConnection(AdoContext context, Consumer<AdoContext> onClose) {
+        this.context = context;
+        this.onClose = onClose;
+        this.closed = false;
     }
 
     @Override
     public void close() throws SQLException {
-        connectionPool.put(connectionString, this);
+        if (!closed) {
+            onClose.accept(context);
+            closed = true;
+        }
     }
 
     @Override
     public DatabaseMetaData getMetaData() throws SQLException {
-        return metaData;
+        return AdoDatabaseMetaData.of(checkState());
     }
 
     @Override
     public String getCatalog() throws SQLException {
-        return metaData.getProperty(AdoDatabaseMetaData.CURRENT_CATALOG);
+        checkState();
+        try {
+            return context.getProperty(CURRENT_CATALOG);
+        } catch (IOException ex) {
+            throw ex instanceof TsvReader.Err
+                    ? new SQLException(ex.getMessage(), "", ((TsvReader.Err) ex).getNumber())
+                    : new SQLException(format("Failed to get catalog name of '%s'", context.getConnectionString()), ex);
+        }
     }
 
     @Override
     public String getSchema() throws SQLException {
+        checkState();
         return null;
     }
 
     @Override
     public Statement createStatement() throws SQLException {
-        return new AdoStatement(wsh, connectionString);
+        return AdoStatement.of(checkState());
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException {
-        return new AdoPreparedStatement(wsh, connectionString, sql);
+        return AdoPreparedStatement.of(checkState(), sql);
+    }
+
+    @Override
+    public boolean isReadOnly() throws SQLException {
+        checkState();
+        return true;
+    }
+
+    @Override
+    public boolean isClosed() throws SQLException {
+        return closed;
+    }
+
+    @Nonnull
+    AdoContext getContext() {
+        return context;
+    }
+
+    private AdoConnection checkState() throws SQLException {
+        if (closed) {
+            throw new SQLException(format("Connection '%s' closed", context.getConnectionString()));
+        }
+        return this;
     }
 }

@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.xml.stream.XMLOutputFactory;
+import org.openide.util.lookup.ServiceProvider;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -33,6 +34,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  *
  * @author Philippe Charles
  */
+@ServiceProvider(service = Book.Factory.class)
 public class XmlssBookFactory extends Book.Factory {
 
     private final XMLOutputFactory xof;

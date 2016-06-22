@@ -21,11 +21,13 @@ package ec.tss.sa.diagnostics;
 import ec.tss.sa.ISaDiagnosticsFactory;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.IDiagnostics;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
+@ServiceProvider(service = ISaDiagnosticsFactory.class)
 public class CoherenceDiagnosticsFactory implements ISaDiagnosticsFactory {
 
 //    public static final CoherenceDiagnosticsFactory Default = new CoherenceDiagnosticsFactory();
