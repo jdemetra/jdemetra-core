@@ -296,10 +296,7 @@ public final class Arrays2 {
         private final E[] a;
 
         UnmodifiableList(E[] array) {
-            if (array == null) {
-                throw new NullPointerException();
-            }
-            a = array;
+            this.a = java.util.Objects.requireNonNull(array);
         }
 
         @Override
