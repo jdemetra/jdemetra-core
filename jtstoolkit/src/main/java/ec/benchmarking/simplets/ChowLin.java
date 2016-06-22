@@ -45,6 +45,7 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
+@Deprecated
 public class ChowLin {
 
     private TsData m_res;

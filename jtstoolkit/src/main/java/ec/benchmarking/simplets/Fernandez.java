@@ -35,6 +35,7 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
+@Deprecated
 public class Fernandez {
 
     public Fernandez() {
