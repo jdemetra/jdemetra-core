@@ -29,6 +29,7 @@ import javax.annotation.Nonnull;
 /**
  *
  * @author Philippe Charles
+ * @since 2.2.0
  */
 public final class GuavaCollectors {
 
