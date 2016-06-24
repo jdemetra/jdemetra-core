@@ -12,62 +12,49 @@
     <name>jwsacruncher</name>
 
     <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
+        <!-- compile and runtime -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.13</version>
             <!--<scope>runtime</scope>-->
         </dependency>
-        <!-- JDemetra libraries -->
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-tss</artifactId>
-        </dependency>
-
-        <!-- TS Providers -->
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-spreadsheet</artifactId>
-        </dependency>
-        <!--dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>demetra-odbc</artifactId>
-        </dependency-->
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-jdbc</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-common</artifactId>
         </dependency>
+        <!-- runtime only -->
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-spreadsheet</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!--dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>demetra-odbc</artifactId>
+            <scope>runtime</scope>
+        </dependency-->
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-jdbc</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>demetra-sdmx</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- test only -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
-    
-    <build>
-        <plugins>
-            <!--            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>dependency</classpathPrefix>
-                            <mainClass>ec.jwsacruncher.App</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>-->
-        </plugins>
-    </build>
     
     <profiles>
         <profile>
