@@ -13,56 +13,16 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.utils;
 
-import ec.tss.tsproviders.DataSet;
-import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.IProviderVisitor;
-import java.io.IOException;
 
 /**
  *
  * @author Philippe Charles
  */
+@Deprecated
 public class DefaultProviderVisitor<P> implements IProviderVisitor<P> {
 
-    @Override
-    public boolean preVisitSource(P provider, DataSource dataSource) {
-        return true;
-    }
-
-    @Override
-    public boolean postVisitSource(P provider, DataSource dataSource,
-            IOException ex) throws IOException {
-        if (ex != null) {
-            throw ex;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean preVisitCollection(P provider, DataSet dataSet, int level) {
-        return true;
-    }
-
-    @Override
-    public boolean postVisitCollection(P provider, DataSet dataSet,
-            int level, IOException ex) throws IOException {
-        if (ex != null) {
-            throw ex;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean visitDummy(P provider, DataSet dataSet, int level) {
-        return true;
-    }
-
-    @Override
-    public boolean visitSeries(P provider, DataSet dataSet, int level) {
-        return true;
-    }
 }

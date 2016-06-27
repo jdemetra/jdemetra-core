@@ -13,16 +13,17 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders;
 
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * Defines a provider whose content can be changed programmatically.<br>
  * DataSource & DataSet being read-only and generic, a provider will handle its
- * specific configuration by using beans.<p> Typical use is:<br>
+ * specific configuration by using beans.<p>
+ * Typical use is:<br>
  * <code>
  * Object bean = loader.newBean();<br>
  * // use it through reflection<br>
@@ -32,6 +33,7 @@ import javax.annotation.Nonnull;
  *
  * @author Philippe Charles
  */
+@ThreadSafe
 public interface IDataSourceLoader extends IDataSourceProvider {
 
     /**
@@ -59,7 +61,9 @@ public interface IDataSourceLoader extends IDataSourceProvider {
     /**
      * Removes all the DataSources from this provider.
      */
-    void closeAll();
+    default void closeAll() {
+        getDataSources().forEach(this::close);
+    }
 
     /**
      * Creates a provider-specific bean that can be used to configure a

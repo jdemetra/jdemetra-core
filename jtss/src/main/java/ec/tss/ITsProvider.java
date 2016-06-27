@@ -13,23 +13,24 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss;
 
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.ServiceDefinition;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * Generic interface for providers of time series.
- * 
+ *
  * @author Jean Palate
  * @since 1.0.0
  */
 @Development(status = Development.Status.Alpha)
 @ServiceDefinition
-public interface ITsProvider {
+@ThreadSafe
+public interface ITsProvider extends AutoCloseable {
 
     /**
      * Requests to the provider to clear any cached information.
@@ -41,6 +42,14 @@ public interface ITsProvider {
      * release any used resources.
      */
     void dispose();
+
+    /**
+     * @since 2.2.0
+     */
+    @Override
+    default void close() {
+        dispose();
+    }
 
     /**
      * Synchronous query of the information about a tscollection (with or
@@ -65,35 +74,37 @@ public interface ITsProvider {
 
     /**
      * Gets the asynchronous mode of the provider.
-     * 
+     *
      * @return The way the provider might handle asynchronous calls. If the
-     *         provider doesn't support asynchronous calls, the returned value
-     *         is TSAsyncMode.None
+     * provider doesn't support asynchronous calls, the returned value is
+     * TSAsyncMode.None
      * @see TSAsyncMode
      */
     TsAsyncMode getAsyncMode();
 
     /**
      * Gets the identifier of the source.
-     * 
+     *
      * @return A unique identifier for the provider. The source is used as first
-     *         string in the moniker of a series provided by this provider.
+     * string in the moniker of a series provided by this provider.
      */
     String getSource();
 
     /**
      * Checks if the provider is able to provide information.
-     * 
+     *
      * @return True if the provider is available, false otherwise (missing
-     *         modules, missing or unavailable resources...)
+     * modules, missing or unavailable resources...)
      */
-    boolean isAvailable();
+    default boolean isAvailable() {
+        return true;
+    }
 
     /**
      * Asynchronous query of a ts (metadata and tsdata) When the ts is
      * available, the provider must use the services of the tseventmanager to
      * dispatch information, through a "TSEvent".
-     * 
+     *
      * @param ts
      * @param type
      * @return
@@ -106,11 +117,11 @@ public interface ITsProvider {
      * without data). When the tscollection is available, the provider must use
      * the services of the tseventmanager to dispatch information, through a
      * "TSCollectionEvent".
-     * 
+     *
      * @param collection
      * @param info
      * @return
-     * 
+     *
      * @see TSInformationType
      */
     boolean queryTsCollection(TsMoniker collection, TsInformationType info);

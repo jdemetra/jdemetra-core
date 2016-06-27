@@ -16,6 +16,7 @@
  */
 package ec.tss.tsproviders;
 
+import com.google.common.base.Strings;
 import ec.tss.ITsProvider;
 import ec.tss.TsMoniker;
 import java.io.IOException;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.WeakHashMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * Defines a provider that is used to discover and browse DataSources and
@@ -32,6 +34,7 @@ import javax.annotation.Nullable;
  * @author Demortier Jeremy
  * @author Philippe Charles
  */
+@ThreadSafe
 public interface IDataSourceProvider extends ITsProvider {
 
     /**
@@ -41,7 +44,9 @@ public interface IDataSourceProvider extends ITsProvider {
      * @return a non-null label.
      */
     @Nonnull
-    String getDisplayName();
+    default String getDisplayName() {
+        return getSource();
+    }
 
     /**
      * Gets the DataSources loaded by this provider.
@@ -111,7 +116,9 @@ public interface IDataSourceProvider extends ITsProvider {
      * provider.
      */
     @Nonnull
-    String getDisplayNodeName(@Nonnull DataSet dataSet) throws IllegalArgumentException;
+    default String getDisplayNodeName(@Nonnull DataSet dataSet) throws IllegalArgumentException {
+        return getDisplayName(dataSet);
+    }
 
     /**
      * Gets a label for an exception thrown by this provider.
@@ -122,7 +129,10 @@ public interface IDataSourceProvider extends ITsProvider {
      * provider.
      */
     @Nonnull
-    String getDisplayName(@Nonnull IOException exception) throws IllegalArgumentException;
+    default String getDisplayName(@Nonnull IOException exception) throws IllegalArgumentException {
+        String message = exception.getMessage();
+        return !Strings.isNullOrEmpty(message) ? message : exception.getClass().getSimpleName();
+    }
 
     /**
      * Adds a listener to the provider in order to receive change
