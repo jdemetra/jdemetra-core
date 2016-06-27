@@ -21,12 +21,14 @@ import java.io.File;
 import java.io.FileFilter;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * Defines a specialized provider whose source is a file.
  *
  * @author Philippe Charles
  */
+@ThreadSafe
 public interface IFileLoader extends IDataSourceLoader, FileFilter {
 
     @Override
