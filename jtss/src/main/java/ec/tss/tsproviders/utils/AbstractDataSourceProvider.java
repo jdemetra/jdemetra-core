@@ -29,6 +29,7 @@ import ec.tstoolkit.MetaData;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.slf4j.Logger;
@@ -113,11 +114,15 @@ public abstract class AbstractDataSourceProvider<DATA> extends AbstractTsProvide
 
     @Override
     public boolean queryTsCollection(TsMoniker moniker, TsInformationType type) {
+        Objects.requireNonNull(moniker, "Moniker cannot be null");
+        Objects.requireNonNull(type, "Type cannot be null");
         return support.checkQuietly(moniker) && super.queryTsCollection(moniker, type);
     }
 
     @Override
     public boolean queryTs(TsMoniker moniker, TsInformationType type) {
+        Objects.requireNonNull(moniker, "Moniker cannot be null");
+        Objects.requireNonNull(type, "Type cannot be null");
         return support.checkQuietly(moniker) && super.queryTs(moniker, type);
     }
 

@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
@@ -64,12 +65,16 @@ public class TswProvider extends AbstractFileLoader<TswSource, TswBean> {
 
     @Override
     public DataSource encodeBean(Object bean) throws IllegalArgumentException {
-        return ((TswBean) bean).toDataSource(SOURCE, VERSION);
+        try {
+            return ((TswBean) bean).toDataSource(SOURCE, VERSION);
+        } catch (ClassCastException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     @Override
     public TswBean decodeBean(DataSource dataSource) {
-        return new TswBean(dataSource);
+        return new TswBean(support.check(dataSource));
     }
 
     @Override
@@ -84,7 +89,8 @@ public class TswProvider extends AbstractFileLoader<TswSource, TswBean> {
 
     @Override
     public List<DataSet> children(DataSet parent) throws IllegalArgumentException, IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Objects.requireNonNull(parent);
+        throw new IllegalArgumentException("Not supported yet.");
     }
 
     @Override

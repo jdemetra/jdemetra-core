@@ -13,22 +13,20 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.jdbc;
 
 import ec.tss.tsproviders.db.DbAccessor;
 import ec.tss.tsproviders.db.DbSeries;
 import ec.tss.tsproviders.db.DbSetId;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import static ec.tss.tsproviders.jdbc.JdbcSamples.mydbConnectionSupplier;
 import java.util.List;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.helpers.NOPLogger;
+import static ec.tss.tsproviders.jdbc.JdbcSamples.mydbNoDimsBean;
+import static ec.tss.tsproviders.jdbc.JdbcSamples.mydbTwoDimsBean;
+import static org.slf4j.helpers.NOPLogger.NOP_LOGGER;
 
 /**
  *
@@ -36,14 +34,6 @@ import org.slf4j.helpers.NOPLogger;
  */
 public class JdbcAccessorTest {
 
-    static final Logger LOGGER = NOPLogger.NOP_LOGGER;
-    static final ConnectionSupplier SUPPLIER = new ConnectionSupplier() {
-        @Override
-        public Connection getConnection(JdbcBean bean) throws SQLException {
-            return DriverManager.getConnection("jdbc:hsqldb:res:mydb", "sa", "");
-        }
-    };
-    //
     static final double[][] D0 = {{1.2, 2.3}};
     static final double[][] D2 = {{1.2, 2.3}, {3.4, 4.5}, {5.6, 6.7}, {7.8, 8.9}};
     static JdbcAccessor A0;
@@ -51,20 +41,8 @@ public class JdbcAccessorTest {
 
     @BeforeClass
     public static void beforeClass() {
-        JdbcBean bean0 = new JdbcBean();
-        bean0.setDbName("mydb");
-        bean0.setTableName("Table0");
-        bean0.setDimColumns("");
-        bean0.setPeriodColumn("Period");
-        bean0.setValueColumn("Rate");
-        A0 = new JdbcAccessor(LOGGER, bean0, SUPPLIER);
-        JdbcBean bean2 = new JdbcBean();
-        bean2.setDbName("mydb");
-        bean2.setTableName("Table2");
-        bean2.setDimColumns("Sector, Region");
-        bean2.setPeriodColumn("Period");
-        bean2.setValueColumn("Rate");
-        A2 = new JdbcAccessor(LOGGER, bean2, SUPPLIER);
+        A0 = new JdbcAccessor(NOP_LOGGER, mydbNoDimsBean(), mydbConnectionSupplier());
+        A2 = new JdbcAccessor(NOP_LOGGER, mydbTwoDimsBean(), mydbConnectionSupplier());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -175,28 +153,18 @@ public class JdbcAccessorTest {
 
     @Test
     public void testCache() throws Exception {
-        JdbcBean b2c1 = new JdbcBean();
-        b2c1.setDbName("mydb");
-        b2c1.setTableName("Table2");
-        b2c1.setDimColumns("Sector, Region");
-        b2c1.setPeriodColumn("Period");
-        b2c1.setValueColumn("Rate");
+        JdbcBean b2c1 = mydbTwoDimsBean();
         b2c1.setCacheDepth(1);
-        DbAccessor a2c1 = new JdbcAccessor(LOGGER, b2c1, SUPPLIER).memoize();
+        DbAccessor a2c1 = new JdbcAccessor(NOP_LOGGER, b2c1, mydbConnectionSupplier()).memoize();
         DbSeries a2c1_first = a2c1.getSeriesWithData("Industry", "Belgium");
         DbSeries a2c1_second = a2c1.getSeriesWithData("Industry", "Belgium");
 
         assertEquals(a2c1_first, a2c1_second);
         assertSame(a2c1_first, a2c1_second);
 
-        JdbcBean b2c2 = new JdbcBean();
-        b2c2.setDbName("mydb");
-        b2c2.setTableName("Table2");
-        b2c2.setDimColumns("Sector, Region");
-        b2c2.setPeriodColumn("Period");
-        b2c2.setValueColumn("Rate");
+        JdbcBean b2c2 = mydbTwoDimsBean();
         b2c2.setCacheDepth(2);
-        DbAccessor a2c2 = new JdbcAccessor(LOGGER, b2c2, SUPPLIER).memoize();
+        DbAccessor a2c2 = new JdbcAccessor(NOP_LOGGER, b2c2, mydbConnectionSupplier()).memoize();
         DbSeries a2c2_first = a2c2.getSeriesWithData("Industry", "Belgium");
         DbSeries a2c2_second = a2c2.getSeriesWithData("Industry", "Belgium");
 

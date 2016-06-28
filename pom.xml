@@ -57,6 +57,7 @@
         <module>jtstoolkit</module>
         <module>jtss</module>  
         <module>utilities</module>
+        <module>demetra-tck</module>
 	
         <!-- I/O modules -->
         <module>odbcprovider</module>

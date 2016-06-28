@@ -13,20 +13,17 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.spreadsheet;
 
 import ec.tss.tsproviders.DataSet;
 import ec.tss.tsproviders.DataSource;
-import java.io.File;
-import java.net.URISyntaxException;
+import ec.tss.tsproviders.IFileLoaderAssert;
 import java.net.URL;
 import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -36,12 +33,7 @@ import org.junit.Test;
 public class SpreadSheetProviderTest {
 
     static final URL dataUrl = SpreadSheetProviderTest.class.getResource("/Top5Browsers.ods");
-    static File file;
 
-    @BeforeClass
-    public static void beforeClass() throws URISyntaxException {
-        file = new File(dataUrl.toURI());
-    }
     SpreadSheetProvider provider;
 
     @Before
@@ -50,21 +42,13 @@ public class SpreadSheetProviderTest {
     }
 
     @After
-    public void afterClass() {
+    public void after() {
         provider.dispose();
-    }
-
-    DataSource loadFile() {
-        SpreadSheetBean bean = provider.newBean();
-        bean.setFile(file);
-        DataSource dataSource = provider.encodeBean(bean);
-        Assert.assertTrue(provider.open(dataSource));
-        return dataSource;
     }
 
     @Test
     public void testGetDataSources() {
-        DataSource dataSource = loadFile();
+        DataSource dataSource = loadFile(provider);
         List<DataSource> dataSources = provider.getDataSources();
         Assert.assertEquals(1, dataSources.size());
         Assert.assertEquals(dataSource, dataSources.get(0));
@@ -72,21 +56,38 @@ public class SpreadSheetProviderTest {
 
     @Test
     public void testGetDisplayNameDataSource() {
-        DataSource dataSource = loadFile();
-        Assert.assertEquals(file.getPath(), provider.getDisplayName(dataSource));
+        DataSource dataSource = loadFile(provider);
+        Assert.assertEquals(IFileLoaderAssert.urlAsFile(dataUrl).getPath(), provider.getDisplayName(dataSource));
     }
 
     @Test
     public void testGetDisplayNameDataSet() throws Exception {
-        DataSource dataSource = loadFile();
+        DataSource dataSource = loadFile(provider);
         DataSet o = provider.children(provider.children(dataSource).get(0)).get(2);
         Assert.assertEquals("Top 5 Browsers - Monthly\nChrome", provider.getDisplayName(o));
     }
 
     @Test
     public void testGetDisplayNodeName() throws Exception {
-        DataSource dataSource = loadFile();
+        DataSource dataSource = loadFile(provider);
         DataSet o = provider.children(provider.children(dataSource).get(0)).get(2);
         Assert.assertEquals("Chrome", provider.getDisplayNodeName(o));
+    }
+
+    @Test
+    public void testCompliance() {
+        IFileLoaderAssert.assertCompliance(SpreadSheetProvider::new, o -> getSampleBean(o));
+    }
+
+    private static SpreadSheetBean getSampleBean(SpreadSheetProvider p) {
+        SpreadSheetBean bean = p.newBean();
+        bean.setFile(IFileLoaderAssert.urlAsFile(dataUrl));
+        return bean;
+    }
+
+    private static DataSource loadFile(SpreadSheetProvider p) {
+        DataSource dataSource = p.encodeBean(getSampleBean(p));
+        Assert.assertTrue(p.open(dataSource));
+        return dataSource;
     }
 }

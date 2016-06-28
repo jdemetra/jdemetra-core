@@ -45,6 +45,7 @@ public interface ITsProvider extends AutoCloseable {
 
     /**
      * @since 2.2.0
+     * @see #dispose()
      */
     @Override
     default void close() {
@@ -80,14 +81,17 @@ public interface ITsProvider extends AutoCloseable {
      * TSAsyncMode.None
      * @see TSAsyncMode
      */
+    @Nonnull
     TsAsyncMode getAsyncMode();
 
     /**
      * Gets the identifier of the source.
      *
-     * @return A unique identifier for the provider. The source is used as first
-     * string in the moniker of a series provided by this provider.
+     * @return A non-empty unique identifier for the provider. The source is
+     * used as first string in the moniker of a series provided by this
+     * provider.
      */
+    @Nonnull
     String getSource();
 
     /**
@@ -110,7 +114,7 @@ public interface ITsProvider extends AutoCloseable {
      * @return
      * @see TSCollectionInformation
      */
-    boolean queryTs(TsMoniker ts, TsInformationType type);
+    boolean queryTs(@Nonnull TsMoniker ts, @Nonnull TsInformationType type);
 
     /**
      * Asynchronous query of the information about a tscollection (with or
@@ -124,5 +128,5 @@ public interface ITsProvider extends AutoCloseable {
      *
      * @see TSInformationType
      */
-    boolean queryTsCollection(TsMoniker collection, TsInformationType info);
+    boolean queryTsCollection(@Nonnull TsMoniker collection, @Nonnull TsInformationType info);
 }

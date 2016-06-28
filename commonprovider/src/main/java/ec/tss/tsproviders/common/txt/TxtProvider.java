@@ -13,7 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
+ */
 package ec.tss.tsproviders.common.txt;
 
 import ec.tss.ITsProvider;
@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,12 +165,16 @@ public class TxtProvider extends AbstractFileLoader<TxtSource, TxtBean> {
 
     @Override
     public DataSource encodeBean(Object bean) throws IllegalArgumentException {
-        return ((TxtBean) bean).toDataSource(SOURCE, VERSION);
+        try {
+            return ((TxtBean) bean).toDataSource(SOURCE, VERSION);
+        } catch (ClassCastException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     @Override
     public TxtBean decodeBean(DataSource dataSource) {
-        return new TxtBean(dataSource);
+        return new TxtBean(support.check(dataSource));
     }
 
     @Override
@@ -185,7 +190,8 @@ public class TxtProvider extends AbstractFileLoader<TxtSource, TxtBean> {
 
     @Override
     public List<DataSet> children(DataSet parent) throws IllegalArgumentException, IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Objects.requireNonNull(parent);
+        throw new IllegalArgumentException("Not supported yet.");
     }
 
     @Override

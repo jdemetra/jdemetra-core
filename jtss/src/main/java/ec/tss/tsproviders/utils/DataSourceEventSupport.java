@@ -20,6 +20,7 @@ package ec.tss.tsproviders.utils;
 import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.IDataSourceListener;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 import javax.annotation.Nonnull;
@@ -63,11 +64,11 @@ public class DataSourceEventSupport {
     }
 
     public void add(@Nonnull IDataSourceListener listener) {
-        listeners.add(listener);
+        listeners.add(Objects.requireNonNull(listener));
     }
 
     public void remove(@Nonnull IDataSourceListener listener) {
-        listeners.remove(listener);
+        listeners.remove(Objects.requireNonNull(listener));
     }
 
     public void fireOpened(@Nonnull DataSource dataSource) {

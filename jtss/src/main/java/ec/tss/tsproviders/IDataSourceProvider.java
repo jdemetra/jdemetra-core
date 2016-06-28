@@ -41,7 +41,7 @@ public interface IDataSourceProvider extends ITsProvider {
      * Gets a label for this provider.<br>Note that the result might change
      * according to the configuration of the provider.
      *
-     * @return a non-null label.
+     * @return a non-empty label.
      */
     @Nonnull
     default String getDisplayName() {
@@ -85,7 +85,7 @@ public interface IDataSourceProvider extends ITsProvider {
      * change according to the configuration of the provider.
      *
      * @param dataSource
-     * @return a non-null label.
+     * @return a non-empty label.
      * @throws IllegalArgumentException if the DataSource doesn't belong to this
      * provider.
      */
@@ -98,7 +98,7 @@ public interface IDataSourceProvider extends ITsProvider {
      * of the provider.
      *
      * @param dataSet
-     * @return a non-null label.
+     * @return a non-empty label.
      * @throws IllegalArgumentException if the DataSet doesn't belong to this
      * provider.
      */
@@ -111,7 +111,7 @@ public interface IDataSourceProvider extends ITsProvider {
      * of the provider.
      *
      * @param dataSet
-     * @return a non-null label.
+     * @return a non-empty label.
      * @throws IllegalArgumentException if the DataSet doesn't belong to this
      * provider.
      */
@@ -124,7 +124,7 @@ public interface IDataSourceProvider extends ITsProvider {
      * Gets a label for an exception thrown by this provider.
      *
      * @param exception
-     * @return a non-null label
+     * @return a non-empty label
      * @throws IllegalArgumentException if the exception doesn't belong to this
      * provider.
      */

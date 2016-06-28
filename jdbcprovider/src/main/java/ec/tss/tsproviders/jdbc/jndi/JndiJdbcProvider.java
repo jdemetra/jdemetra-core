@@ -36,8 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A generic Jdbc provider that uses Jndi as a connection supplier. <p>Note that
- * you can supply you own connection supplier by using
+ * A generic Jdbc provider that uses Jndi as a connection supplier.
+ * <p>
+ * Note that you can supply you own connection supplier by using
  * {@link #setConnectionSupplier(ec.tss.tsproviders.jdbc.ConnectionSupplier)}
  * method. It is useful when running under JavaSE since Jndi is not available by
  * default in this environment.
@@ -74,7 +75,7 @@ public class JndiJdbcProvider extends JdbcProvider<JdbcBean> {
 
     @Override
     public JdbcBean decodeBean(DataSource dataSource) throws IllegalArgumentException {
-        return new JdbcBean(dataSource);
+        return new JdbcBean(support.check(dataSource));
     }
 
     @Override
