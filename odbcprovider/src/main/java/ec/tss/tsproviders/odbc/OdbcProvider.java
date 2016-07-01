@@ -30,7 +30,6 @@ import ec.tss.tsproviders.jdbc.JdbcProvider;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.File;
-import java.io.FileFilter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -96,12 +95,7 @@ public class OdbcProvider extends JdbcProvider<OdbcBean> implements IFileLoader 
 
     @Override
     public boolean accept(File pathname) {
-        for (FileFilter o : OdbcBean.FILE_FILTERS) {
-            if (o.accept(pathname)) {
-                return true;
-            }
-        }
-        return false;
+        return OdbcBean.FILE_FILTERS.stream().anyMatch(o -> (o.accept(pathname)));
     }
 
     @Override

@@ -13,12 +13,12 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.common.random;
 
 import ec.tss.*;
 import ec.tss.tsproviders.DataSource;
+import ec.tss.tsproviders.IDataSourceLoaderAssert;
 import ec.tss.tsproviders.TsProviders;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
@@ -52,5 +52,10 @@ public class RandomProviderTest {
         for (Ts s : collection) {
             assertTrue(s.hasData() == TsStatus.Valid);
         }
+    }
+
+    @Test
+    public void testCompliance() {
+        IDataSourceLoaderAssert.assertCompliance(RandomProvider::new, o -> o.newBean());
     }
 }

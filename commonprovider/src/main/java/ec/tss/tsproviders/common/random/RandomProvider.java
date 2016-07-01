@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.common.random;
 
 import ec.tss.*;
@@ -31,6 +30,7 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,6 +83,7 @@ public class RandomProvider extends AbstractDataSourceLoader<double[][], RandomB
 
     @Override
     public List<DataSet> children(DataSet parent) throws IllegalArgumentException {
+        Objects.requireNonNull(parent);
         throw new IllegalArgumentException("No hierarchy");
     }
 
@@ -142,11 +143,15 @@ public class RandomProvider extends AbstractDataSourceLoader<double[][], RandomB
 
     @Override
     public DataSource encodeBean(Object bean) throws IllegalArgumentException {
-        return ((RandomBean) bean).toDataSource(SOURCE, VERSION);
+        try {
+            return ((RandomBean) bean).toDataSource(SOURCE, VERSION);
+        } catch (ClassCastException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     @Override
     public RandomBean decodeBean(DataSource dataSource) throws IllegalArgumentException {
-        return new RandomBean(dataSource);
+        return new RandomBean(support.check(dataSource));
     }
 }

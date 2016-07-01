@@ -280,12 +280,16 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
 
     @Override
     public DataSource encodeBean(Object bean) throws IllegalArgumentException {
-        return ((SpreadSheetBean) bean).toDataSource(SOURCE, VERSION);
+        try {
+            return ((SpreadSheetBean) bean).toDataSource(SOURCE, VERSION);
+        } catch (ClassCastException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     @Override
     public SpreadSheetBean decodeBean(DataSource dataSource) {
-        return new SpreadSheetBean(dataSource);
+        return new SpreadSheetBean(support.check(dataSource));
     }
 
     @Override

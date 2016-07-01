@@ -244,12 +244,16 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
 
     @Override
     public DataSource encodeBean(Object bean) throws IllegalArgumentException {
-        return ((SdmxBean) bean).toDataSource(SOURCE, VERSION);
+        try {
+            return ((SdmxBean) bean).toDataSource(SOURCE, VERSION);
+        } catch (ClassCastException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     @Override
     public SdmxBean decodeBean(DataSource dataSource) {
-        return new SdmxBean(dataSource);
+        return new SdmxBean(support.check(dataSource));
     }
 
     @Override

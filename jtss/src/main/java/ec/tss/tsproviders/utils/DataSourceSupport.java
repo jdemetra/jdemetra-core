@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import javax.annotation.Nonnull;
@@ -138,6 +139,7 @@ public class DataSourceSupport {
 
     @Nonnull
     public <T> T checkBean(@Nonnull Object bean, final Class<T> clazz) {
+        Objects.requireNonNull(bean);
         doCheck(new IConstraint<Object>() {
             @Override
             public String check(Object t) {
