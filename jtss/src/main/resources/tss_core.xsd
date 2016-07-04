@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright 2016 National Bank of Belgium
+
+Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+by the European Commission - subsequent versions of the EUPL (the "Licence");
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at:
+
+http://ec.europa.eu/idabc/eupl
+
+Unless required by applicable law or agreed to in writing, software 
+distributed under the Licence is distributed on an "AS IS" basis,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the Licence for the specific language governing permissions and 
+limitations under the Licence.
+-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="ec/tss.core"
+            xmlns:tss="ec/tss.core"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+
+    <!--Enumerations and simple types-->
+
+    <xs:simpleType name="frequency">
+        <xs:annotation>
+            <xs:documentation>
+                Acceptable annual frequencies (= number of equally-spaced observations by year)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:short">
+            <xs:enumeration value="1" />
+            <xs:enumeration value="2" />
+            <xs:enumeration value="3" />
+            <xs:enumeration value="4" />
+            <xs:enumeration value="6" />
+            <xs:enumeration value="12" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="month">
+        <xs:annotation>
+            <xs:documentation>
+                Months
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="January" />
+            <xs:enumeration value="February" />
+            <xs:enumeration value="March" />
+            <xs:enumeration value="April" />
+            <xs:enumeration value="May" />
+            <xs:enumeration value="June" />
+            <xs:enumeration value="July" />
+            <xs:enumeration value="August" />
+            <xs:enumeration value="September" />
+            <xs:enumeration value="October" />
+            <xs:enumeration value="November" />
+            <xs:enumeration value="December" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="dayOfWeek">
+        <xs:annotation>
+            <xs:documentation>
+                Days of the week
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Sunday" />
+            <xs:enumeration value="Monday" />
+            <xs:enumeration value="Tuesday" />
+            <xs:enumeration value="Wednesday" />
+            <xs:enumeration value="Thursday" />
+            <xs:enumeration value="Fryday" />
+            <xs:enumeration value="Saturday" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="year">
+        <xs:annotation>
+            <xs:documentation>
+                Year (YYYY). Should be in the range[1000, 3000[
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:unsignedShort">
+            <xs:minInclusive value="1000" />
+            <xs:maxExclusive value="3000" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="day">
+        <xs:annotation>
+            <xs:documentation>
+                1-based position of the day in a month. Should be in the range [1, 31].
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:unsignedShort">
+            <xs:minInclusive value="1" />
+            <xs:maxInclusive value="31" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="period">
+        <xs:annotation>
+            <xs:documentation>
+                1-based position of a period in an year. Should be in the range [1, frequency] (with frequency .le. 12)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:unsignedShort">
+            <xs:minInclusive value="1" />
+            <xs:maxInclusive value="12" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="week">
+        <xs:annotation>
+            <xs:documentation>
+                1-based position of a week in a month. A week starts on Monday and finishes on Sunday.
+                The first week of the month may be incomplete. The first complete week and the last complete
+                week are identified by special values. The last week of the month is usually 5, but may
+                be 4 on some occasions February finishing by a Monday). It is also identified by a special value/
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="1"/>
+            <xs:enumeration value="2"/>
+            <xs:enumeration value="3"/>
+            <xs:enumeration value="4"/>
+            <xs:enumeration value="5"/>
+            <xs:enumeration value="Last"/>
+            <xs:enumeration value="FirstComplete"/>
+            <xs:enumeration value="LastComplete"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="propertyType">
+        <xs:annotation>
+            <xs:documentation>
+                Property represented by a string (value) and identified by a name
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+        </xs:sequence>
+            <xs:attribute name="name" type="xs:string" />
+            <xs:attribute name="value" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="metaDataType">
+        <xs:annotation>
+            <xs:documentation>
+                Metadata defined as an (unordered) set of properties
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="property" type="tss:propertyType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="doubles">
+        <xs:annotation>
+            <xs:documentation>
+                Array of doubles (concatenated in a list)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:list itemType="xs:double" />
+    </xs:simpleType>
+
+    <xs:simpleType name="strings">
+        <xs:annotation>
+            <xs:documentation>
+                Array of strings without space (concatenated in a list)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:list itemType="xs:NMTOKEN" />
+    </xs:simpleType>
+
+    <xs:simpleType name="ints">
+        <xs:annotation>
+            <xs:documentation>
+                Array of integers (concatenated in a list)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:list itemType="xs:int" />
+    </xs:simpleType>
+
+    <xs:simpleType name="booleans">
+        <xs:annotation>
+            <xs:documentation>
+                Array of booleans (concatenated in a list)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:list itemType="xs:boolean" />
+    </xs:simpleType>
+
+    <xs:simpleType name="uints">
+        <xs:annotation>
+            <xs:documentation>
+                Array of unsigned integers (concatenated in a list)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:list itemType="xs:unsignedInt"/>
+    </xs:simpleType>
+
+     <xs:complexType name="booleansType">
+        <xs:annotation>
+            <xs:documentation>
+                Array of booleans (concatenated in a list)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="data">
+                <xs:simpleType>
+                    <xs:list itemType="xs:boolean" />
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="intsType">
+        <xs:annotation>
+            <xs:documentation>
+                Array of integers (concatenated in a list)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="data">
+                <xs:simpleType>
+                    <xs:list itemType="xs:int" />
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="uintsType">
+        <xs:annotation>
+            <xs:documentation>
+                Array of unsigned integers (concatenated in a list)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="items" type="tss:uints"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="doublesType">
+        <xs:annotation>
+            <xs:documentation>
+                Array of doubles (concatenated in a list)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="data" type="tss:doubles"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="stringsType">
+        <xs:annotation>
+            <xs:documentation>
+                Array of strings (without spaces) (concatenated in a list)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="items" type="tss:strings"/>
+         </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="paramInfo">
+        <xs:annotation>
+            <xs:documentation>
+                Information on the way a parameter should be used or interpreted.
+                A fixed parameter is an "a priori" value, which doesn't result from an estimation procedure.
+                An initial parameter is a parameter that should be used as a starting value in estimation procedures.
+                An estimated parameter is the results of an estimation procedure.
+                A derived parameter has been computed from other (usually estimated)
+                parameters.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Undefined"/>
+            <xs:enumeration value="Initial"/>
+            <xs:enumeration value="Fixed"/>
+            <xs:enumeration value="Estimated"/>
+            <xs:enumeration value="Derived"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="paramType">
+        <xs:annotation>
+            <xs:documentation>
+                Parameter, with (except for "Undefined" parameter) its value and the way it has to be interpreted.
+                Standard error and TStat of the parameter can be provided if the parameter has been
+                estimated or derived.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name ="value" type="xs:double" minOccurs="0"/>
+            <xs:element name ="stde" type="xs:double" minOccurs="0"/>
+            <xs:element name ="tstat" type="xs:double" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="optional"/>
+        <xs:attribute name="type" type="tss:paramInfo" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="paramsType">
+        <xs:annotation>
+            <xs:documentation>
+                Array of parameters
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="coef" type="tss:paramType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <!--Basic time series complex types-->
+  
+    <xs:group name="startPeriod">
+        <xs:sequence>
+            <xs:element name="freq" type="tss:frequency" />
+            <xs:element name="firstYear" type="tss:year" />
+            <xs:element name="firstPeriod" type="tss:period" minOccurs="0"/>
+        </xs:sequence>
+    </xs:group>
+
+    <xs:attributeGroup name="tsIdentifier">
+        <xs:attribute name="source" type="xs:string" use="optional" />
+        <xs:attribute name="identifier" type="xs:string" use="optional" />
+    </xs:attributeGroup>
+
+    <xs:group name="timeSpan">
+        <xs:sequence>
+            <xs:element name="start" type="xs:date"/>
+            <xs:element name="end" type="xs:date"/>
+        </xs:sequence>
+    </xs:group>
+
+    <xs:complexType name="periodSelectionType">
+        <xs:annotation>
+            <xs:documentation>
+                A period selection is a flexible way for selecting a part in a time domain.
+
+                The selection may be defined through start/end dates (FROM, TO, BETWEEN).
+                In that case only the periods that are completely after and/or before the given dates are selected;
+                only the date part is considered. For instance, if start=2 January, the first monthly period
+                is February; if end = 31 March, the last monthly period is March.
+
+                The period selection may also refer to the numbers of periods that should be selected (FIRST / LAST)
+                or excluded (EXCLUDING) in the selection.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="all" />
+            <xs:element name="none" />
+            <xs:element name="from" type="xs:date" />
+            <xs:element name="first" type="xs:unsignedInt" />
+            <xs:element name="to" type="xs:date" />
+            <xs:element name="last" type="xs:unsignedInt" />
+            <xs:group ref="tss:timeSpan" id="between"/>
+            <xs:element name="excluding">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="nfirst" type="xs:unsignedInt" />
+                        <xs:element name="nlast" type="xs:unsignedInt" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="tsPeriodType">
+        <xs:annotation>
+            <xs:documentation>
+                Describes a regular time period
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="freq" type="tss:frequency">
+                <xs:annotation>
+                    <xs:documentation>
+                        Annual frequency of this type of regular period
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="year" type="tss:year">
+                <xs:annotation>
+                    <xs:documentation>
+                        Year of the period
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="period" type="tss:period" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Position of the period in its year. It is required when the frequency is .gt. 1.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+ 
+    <xs:complexType name="tsDataType">
+        <xs:annotation>
+            <xs:documentation>
+                Representation of a time series (data only). It is identified by the starting period
+                (frequency, first year, first period) and by its values. Missing values are identified by NaN.
+                A name (or description) may also be provided.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:group ref="tss:startPeriod" />
+            <xs:element name="data" type="tss:doubles" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="optional" />
+    </xs:complexType>
+
+    <xs:complexType name="tsDomainType">
+        <xs:annotation>
+            <xs:documentation>
+                Represents a time domain, identified by the starting period and by a number of periods (length).
+                It corresponds to the domain of a time series
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:group ref="tss:startPeriod" />
+            <xs:element name="length" type="xs:unsignedInt" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="tsMonikerType">
+        <xs:annotation>
+            <xs:documentation>
+                Univoque identifier of an information.
+                It is composed of a "source" and of an "id".
+                An optional name may be added. The name is not part of the actual identification key.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="source" type="xs:string" minOccurs="0" />
+            <xs:element name="id" type="xs:string" minOccurs="0" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="tsType">
+        <xs:annotation>
+            <xs:documentation>
+                Complete information of a time series. It extends a "tsdataType" (time series data)
+                with its identifier and with metadata.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:tsDataType">
+                <xs:sequence>
+                    <xs:element name="metaData" type="tss:metaDataType" minOccurs="0" />
+                </xs:sequence>
+                <xs:attribute name="source" use="optional"/>
+                <xs:attribute name="id" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="tsCollectionType">
+        <xs:annotation>
+            <xs:documentation>
+                Ordered collection of time series.
+                The collection may have its own identifier and its own metadata.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="metaData" type="tss:metaDataType" minOccurs="0" />
+            <xs:element name="data">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="ts" type="tss:tsType" minOccurs="0" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" />
+        <xs:attributeGroup ref="tss:tsIdentifier" />
+    </xs:complexType>
+
+</xs:schema>

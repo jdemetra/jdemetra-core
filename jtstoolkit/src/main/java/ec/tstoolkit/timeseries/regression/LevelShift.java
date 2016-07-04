@@ -21,6 +21,7 @@ import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.linearfilters.BackFilter;
 import ec.tstoolkit.maths.linearfilters.RationalBackFilter;
+import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 
@@ -30,6 +31,8 @@ import ec.tstoolkit.timeseries.simplets.TsPeriod;
  */
 @Development(status = Development.Status.Alpha)
 public class LevelShift extends AbstractOutlierVariable {
+    
+    public static final String CODE="LS";
 
     boolean zeroEnded = true;
 
@@ -37,7 +40,7 @@ public class LevelShift extends AbstractOutlierVariable {
      * 
      * @param p
      */
-    public LevelShift(TsPeriod p) {
+    public LevelShift(Day p) {
         super(p);
     }
 
@@ -45,7 +48,8 @@ public class LevelShift extends AbstractOutlierVariable {
     public void data(TsPeriod start, DataBlock data) {
         int n = data.getLength();
         double Zero = zeroEnded ? -1 : 0, One = zeroEnded ? 0 : 1;
-        int xpos = position.minus(start);
+        TsPeriod pstart=new TsPeriod(start.getFrequency(), position);
+        int xpos = pstart.minus(start);
         if (xpos <= 0) {
             data.set(One);
         } else if (xpos >= n) {
@@ -60,12 +64,14 @@ public class LevelShift extends AbstractOutlierVariable {
     public OutlierType getOutlierType() {
         return OutlierType.LS;
     }
+    
+    @Override
+    public String getCode(){
+        return CODE;
+    }
 
     @Override
     public boolean isSignificant(TsDomain domain) {
-        if (domain.getFrequency() != position.getFrequency()) {
-            return false;
-        }
         return domain.search(position) > 0;
     }
 

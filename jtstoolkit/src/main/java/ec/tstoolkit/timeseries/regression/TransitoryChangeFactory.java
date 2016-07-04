@@ -18,7 +18,9 @@
 package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 
 /**
@@ -29,7 +31,7 @@ import ec.tstoolkit.timeseries.simplets.TsPeriod;
 public class TransitoryChangeFactory implements IOutlierFactory {
 
     private double coefficient = DEF_TCRATE;
-    private boolean monthlyCoeff;
+    private boolean monthlyCoefficient;
 
     /**
      *
@@ -37,11 +39,11 @@ public class TransitoryChangeFactory implements IOutlierFactory {
     public static final double DEF_TCRATE = .7;
     
     public boolean isMonthlyCoefficient(){
-        return monthlyCoeff;
+        return monthlyCoefficient;
     }
     
     public void setMonthlyCoefficient(boolean mc){
-        this.monthlyCoeff=mc;
+        this.monthlyCoefficient=mc;
     }
 
     /**
@@ -50,15 +52,8 @@ public class TransitoryChangeFactory implements IOutlierFactory {
      * @return
      */
     @Override
-    public TransitoryChange create(TsPeriod position) {
-        double c=coefficient;
-        if (monthlyCoeff){
-            int r=12/position.getFrequency().intValue();
-            if (r > 1) {
-                c=Math.pow(c, r);
-            }
-        }
-	return new TransitoryChange(position, c);
+    public TransitoryChange create(Day position) {
+	return new TransitoryChange(position, coefficient, monthlyCoefficient);
     }
 
     /**

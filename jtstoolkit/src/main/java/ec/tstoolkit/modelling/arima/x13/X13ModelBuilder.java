@@ -181,8 +181,8 @@ public class X13ModelBuilder implements IModelBuilder {
         ArrayList<IOutlierVariable> var = new ArrayList<>();
         ArrayList<IOutlierVariable> pvar = new ArrayList<>();
         for (int i = 0; i < outliers.length; ++i) {
-            IOutlierVariable v = RegArimaSpecification.fac.make(outliers[i], model.getEstimationDomain().getFrequency());
-            if (outliers[i].prespecified) {
+            IOutlierVariable v = RegArimaSpecification.fac.make(outliers[i]);
+            if (outliers[i].isPrespecified()) {
                 pvar.add(v);
             } else {
                 var.add(v);

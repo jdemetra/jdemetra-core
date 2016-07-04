@@ -29,7 +29,7 @@ import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.eco.CoefficientEstimation;
 import ec.tstoolkit.eco.ConcentratedLikelihood;
-import ec.tstoolkit.information.InformationMapper;
+import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.information.RegressionItem;
 import ec.tstoolkit.maths.matrices.Matrix;
@@ -61,6 +61,7 @@ import ec.tstoolkit.timeseries.regression.TsVariableSelection.Item;
 import ec.tstoolkit.timeseries.simplets.ITsDataTransformation;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import ec.tstoolkit.utilities.Arrays2;
 import ec.tstoolkit.utilities.Jdk6;
@@ -71,6 +72,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  *
@@ -386,7 +388,7 @@ public class PreprocessingModel implements IProcResults {
             if (cur.variable.isPrespecified() == prespecified) {
                 int rpos = cur.position + istart;
                 CoefficientEstimation c = new CoefficientEstimation(b[rpos], se[rpos]);
-                o.add(new OutlierEstimation(c, cur.variable));
+                o.add(new OutlierEstimation(c, cur.variable, description.getEstimationDomain().getFrequency()));
             }
         }
         return o.isEmpty() ? NO_OUTLIER : Jdk6.Collections.toArray(o, OutlierEstimation.class);
@@ -414,11 +416,11 @@ public class PreprocessingModel implements IProcResults {
         }
         TsVariableSelection<ITsVariable> sel = list.select(
                 new TsVariableList.ISelector() {
-                    @Override
-                    public boolean accept(ITsVariable var) {
-                        return description.getType(var) == type;
-                    }
-                });
+            @Override
+            public boolean accept(ITsVariable var) {
+                return description.getType(var) == type;
+            }
+        });
 
         if (sel.isEmpty()) {
             return new TsData(domain, 0);
@@ -442,13 +444,13 @@ public class PreprocessingModel implements IProcResults {
         }
         TsVariableSelection<ITsVariable> sel = list.select(
                 new TsVariableList.ISelector() {
-                    @Override
-                    public boolean accept(ITsVariable var) {
-                        Variable x = Variable.search(description.getUserVariables(),
-                                var);
-                        return x != null && x.type == type;
-                    }
-                });
+            @Override
+            public boolean accept(ITsVariable var) {
+                Variable x = Variable.search(description.getUserVariables(),
+                        var);
+                return x != null && x.type == type;
+            }
+        });
 
         if (sel.isEmpty()) {
             return new TsData(domain, 0);
@@ -472,13 +474,13 @@ public class PreprocessingModel implements IProcResults {
         }
         TsVariableSelection<ITsVariable> sel = list.select(
                 new TsVariableList.ISelector() {
-                    @Override
-                    public boolean accept(ITsVariable var) {
-                        Variable x = Variable.search(description.getUserVariables(),
-                                var);
-                        return x != null;
-                    }
-                });
+            @Override
+            public boolean accept(ITsVariable var) {
+                Variable x = Variable.search(description.getUserVariables(),
+                        var);
+                return x != null;
+            }
+        });
 
         if (sel.isEmpty()) {
             return new TsData(domain, 0);
@@ -919,6 +921,10 @@ public class PreprocessingModel implements IProcResults {
         return description.getTransformation() == DefaultTransformationType.Log;
     }
 
+    public TsFrequency getFrequency() {
+        return description.getEstimationDomain().getFrequency();
+    }
+
     public <T extends ITsVariable> RegressionItem getRegressionItem(Class<T> tclass, int vpos) {
         TsVariableSelection<T> sel = vars().select(tclass);
         if (sel.isEmpty()) {
@@ -938,10 +944,11 @@ public class PreprocessingModel implements IProcResults {
                 return null;
             }
             Item<T> item = sel.get(cur);
+            TsFrequency context = description.getEstimationDomain().getFrequency();
             int pos = description.getRegressionVariablesStartingPosition() + item.position + vpos;
             double c = estimation.getLikelihood().getB()[pos];
             double e = estimation.getLikelihood().getBSer(pos, true, description.getArimaComponent().getFreeParametersCount());
-            return new RegressionItem(item.variable.getItemDescription(vpos), false, c, e);
+            return new RegressionItem(item.variable.getItemDescription(vpos, context), false, c, e);
         }
     }
     // some caching...
@@ -962,9 +969,9 @@ public class PreprocessingModel implements IProcResults {
             LIN_FCASTS = "lin_fcasts",
             LIN_BCASTS = "lin_bcasts",
             NTD = "ntd", NMH = "nmh",
-            TD1 = "td(1)", TD2 = "td(2)", TD3 = "td(3)", TD4 = "td(4)", TD5 = "td(5)", TD6 = "td(6)", TD7 = "td(7)",
+            TD="td", TD1 = "td(1)", TD2 = "td(2)", TD3 = "td(3)", TD4 = "td(4)", TD5 = "td(5)", TD6 = "td(6)", TD7 = "td(7)",
             TD8 = "td(8)", TD9 = "td(9)", TD10 = "td(10)", TD11 = "td(11)", TD12 = "td(12)", TD13 = "td(13)", TD14 = "td(14)",
-            LP = "lp", OUT1 = "out(1)", OUT2 = "out(2)", OUT3 = "out(3)", OUT4 = "out(4)", OUT5 = "out(5)", OUT6 = "out(6)", OUT7 = "out(7)",
+            LP = "lp", OUT="out", OUT1 = "out(1)", OUT2 = "out(2)", OUT3 = "out(3)", OUT4 = "out(4)", OUT5 = "out(5)", OUT6 = "out(6)", OUT7 = "out(7)",
             NOUT = "nout", NOUTAO = "noutao", NOUTLS = "noutls", NOUTTC = "nouttc", NOUTSO = "noutso",
             OUT8 = "out(8)", OUT9 = "out(9)", OUT10 = "out(10)", OUT11 = "out(11)", OUT12 = "out(12)", OUT13 = "out(13)", OUT14 = "out(14)",
             OUT15 = "out(15)", OUT16 = "out(16)", OUT17 = "out(17)", OUT18 = "out(18)", OUT19 = "out(19)", OUT20 = "out(20)",
@@ -975,687 +982,163 @@ public class PreprocessingModel implements IProcResults {
     ;
     // MAPPERS
 
-    public static <T> void addMapping(String name, InformationMapper.Mapper<PreprocessingModel, T> mapping) {
+    public static <T> void setMapping(String name, Class<T> tclass, Function<PreprocessingModel, T> extractor) {
         synchronized (mapper) {
-            mapper.add(name, mapping);
+            mapper.set(name, tclass, extractor);
         }
     }
-    private static final InformationMapper<PreprocessingModel> mapper = new InformationMapper<>();
+
+    public static <T> void setTsData(String name, Function<PreprocessingModel, TsData> extractor) {
+        synchronized (mapper) {
+            mapper.set(name, extractor);
+        }
+    }
+
+    private static final InformationMapping<PreprocessingModel> mapper = new InformationMapping<>();
 
     static {
-        mapper.add(InformationSet.item(SPAN, START), new InformationMapper.Mapper<PreprocessingModel, TsPeriod>(TsPeriod.class) {
-            @Override
-            public TsPeriod retrieve(PreprocessingModel source) {
-                return source.description.getSeriesDomain().getStart();
-            }
-        });
-        mapper.add(InformationSet.item(SPAN, END), new InformationMapper.Mapper<PreprocessingModel, TsPeriod>(TsPeriod.class) {
-            @Override
-            public TsPeriod retrieve(PreprocessingModel source) {
-                return source.description.getSeriesDomain().getLast();
-            }
-        });
-        mapper.add(InformationSet.item(SPAN, N), new InformationMapper.Mapper<PreprocessingModel, Integer>(Integer.class) {
-            @Override
-            public Integer retrieve(PreprocessingModel source) {
-                return source.description.getSeriesDomain().getLength();
-            }
-        });
-        mapper.add(InformationSet.item(ESPAN, START), new InformationMapper.Mapper<PreprocessingModel, TsPeriod>(TsPeriod.class) {
-            @Override
-            public TsPeriod retrieve(PreprocessingModel source) {
-                return source.description.getEstimationDomain().getStart();
-            }
-        });
-        mapper.add(InformationSet.item(ESPAN, END), new InformationMapper.Mapper<PreprocessingModel, TsPeriod>(TsPeriod.class) {
-            @Override
-            public TsPeriod retrieve(PreprocessingModel source) {
-                return source.description.getEstimationDomain().getLast();
-            }
-        });
-        mapper.add(InformationSet.item(ESPAN, N), new InformationMapper.Mapper<PreprocessingModel, Integer>(Integer.class) {
-            @Override
-            public Integer retrieve(PreprocessingModel source) {
-                return source.description.getEstimationDomain().getLength();
-            }
-        });
-        mapper.add(LOG, new InformationMapper.Mapper<PreprocessingModel, Boolean>(Boolean.class) {
-            @Override
-            public Boolean retrieve(PreprocessingModel source) {
-                return source.isMultiplicative();
-            }
-        });
-        mapper.add(ADJUST, new InformationMapper.Mapper<PreprocessingModel, Boolean>(Boolean.class) {
-            @Override
-            public Boolean retrieve(PreprocessingModel source) {
-                if (source.description.getPreadjustmentType() == PreadjustmentType.None) {
-                    return null;
-                }
+        mapper.set(InformationSet.item(SPAN, START), TsPeriod.class, source -> source.description.getSeriesDomain().getStart());
+        mapper.set(InformationSet.item(SPAN, END), TsPeriod.class, source -> source.description.getSeriesDomain().getLast());
+        mapper.set(InformationSet.item(SPAN, N), Integer.class, source -> source.description.getSeriesDomain().getLength());
+        mapper.set(InformationSet.item(ESPAN, START), TsPeriod.class, source -> source.description.getEstimationDomain().getStart());
+        mapper.set(InformationSet.item(ESPAN, END), TsPeriod.class, source -> source.description.getEstimationDomain().getLast());
+        mapper.set(InformationSet.item(ESPAN, N), Integer.class, source -> source.description.getEstimationDomain().getLength());
+        mapper.set(LOG, Boolean.class, source -> source.isMultiplicative());
+        mapper.set(ADJUST, Boolean.class, source -> {
+            if (source.description.getPreadjustmentType() == PreadjustmentType.None) {
+                return null;
+            } else {
                 return source.description.getLengthOfPeriodType() != LengthOfPeriodType.None;
             }
         });
-        mapper.add(ModellingDictionary.Y, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.description.getOriginal();
-            }
-        });
-        mapper.add(ModellingDictionary.Y + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.forecast(FCAST_YEAR * source.description.getFrequency(), false);
-            }
-        });
-        mapper.add(ModellingDictionary.Y + SeriesInfo.EF_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getForecastError();
-            }
-        });
-        mapper.add(ModellingDictionary.YC, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.interpolatedSeries(false);
-            }
-        });
-        mapper.add(ModellingDictionary.YC + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.forecast(FCAST_YEAR * source.description.getFrequency(), false);
-            }
-        });
-        mapper.add(ModellingDictionary.YC + SeriesInfo.EF_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getForecastError();
-            }
-        });
-        mapper.add(ModellingDictionary.L, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.linearizedSeries(false);
-            }
-        });
-        mapper.add(ModellingDictionary.Y_LIN, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.linearizedSeries(true);
-            }
-        });
-        mapper.add(ModellingDictionary.Y_LIN + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.linearizedForecast(source.domain(true).getLength(), true);
-            }
-        });
-        mapper.add(ModellingDictionary.YCAL, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getYcal(false);
-            }
-        });
-        mapper.add(ModellingDictionary.YCAL + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getYcal(true);
-            }
-        });
-        mapper.add(ModellingDictionary.DET, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getDet(false);
-            }
-        });
-        mapper.add(ModellingDictionary.DET + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getDet(true);
-            }
-        });
-        mapper.add(ModellingDictionary.L + SeriesInfo.F_SUFFIX,
-                new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-                    @Override
-                    public TsData retrieve(PreprocessingModel source) {
-                        return source.linearizedForecast(FCAST_YEAR * source.description.getFrequency());
-                    }
-                });
-        mapper.add(ModellingDictionary.L + SeriesInfo.B_SUFFIX,
-                new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-                    @Override
-                    public TsData retrieve(PreprocessingModel source) {
-                        return source.linearizedBackcast(source.description.getFrequency());
-                    }
-                });
-        mapper.add(ModellingDictionary.CAL, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getCal(false);
-            }
-        });
-        mapper.add(ModellingDictionary.CAL + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getCal(true);
-            }
-        });
-        mapper.add(ModellingDictionary.TDE, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getTde(false);
-            }
-        });
-        mapper.add(ModellingDictionary.TDE + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getTde(true);
-            }
-        });
-        mapper.add(ModellingDictionary.MHE, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getMhe(false);
-            }
-        });
-        mapper.add(ModellingDictionary.MHE + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getMhe(true);
-            }
-        });
-        mapper.add(ModellingDictionary.EE, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getEe(false);
-            }
-        });
-        mapper.add(ModellingDictionary.EE + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getEe(true);
-            }
-        });
-        mapper.add(ModellingDictionary.OMHE, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getOmhe(false);
-            }
-        });
-        mapper.add(ModellingDictionary.OMHE + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getOmhe(true);
-            }
-        });
-        mapper.add(ModellingDictionary.OUT, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getOutlier(ComponentType.Undefined, false);
-            }
-        });
-        mapper.add(ModellingDictionary.OUT + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getOutlier(ComponentType.Undefined, true);
-            }
-        });
-        mapper.add(ModellingDictionary.OUT_I, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getOutlier(ComponentType.Irregular, false);
-            }
-        });
-        mapper.add(ModellingDictionary.OUT_I + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getOutlier(ComponentType.Irregular, true);
-            }
-        });
-        mapper.add(ModellingDictionary.OUT_T, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getOutlier(ComponentType.Trend, false);
-            }
-        });
-        mapper.add(ModellingDictionary.OUT_T + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getOutlier(ComponentType.Trend, true);
-            }
-        });
-        mapper.add(ModellingDictionary.OUT_S, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getOutlier(ComponentType.Seasonal, false);
-            }
-        });
-        mapper.add(ModellingDictionary.OUT_S + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getOutlier(ComponentType.Seasonal, true);
-            }
-        });
-        mapper.add(ModellingDictionary.REG, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getReg(false);
-            }
-        });
-        mapper.add(ModellingDictionary.REG + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getReg(true);
-            }
-        });
-        mapper.add(ModellingDictionary.REG_T, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getReg(ComponentType.Trend, false);
-            }
-        });
-        mapper.add(ModellingDictionary.REG_T + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getReg(ComponentType.Trend, true);
-            }
-        });
-        mapper.add(ModellingDictionary.REG_S, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getReg(ComponentType.Seasonal, false);
-            }
-        });
-        mapper.add(ModellingDictionary.REG_S + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getReg(ComponentType.Seasonal, true);
-            }
-        });
-        mapper.add(ModellingDictionary.REG_I, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getReg(ComponentType.Irregular, false);
-            }
-        });
-        mapper.add(ModellingDictionary.REG_I + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getReg(ComponentType.Irregular, true);
-            }
-        });
-        mapper.add(ModellingDictionary.REG_SA, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getReg(ComponentType.SeasonallyAdjusted, false);
-            }
-        });
-        mapper.add(ModellingDictionary.REG_SA + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getReg(ComponentType.SeasonallyAdjusted, true);
-            }
-        });
-        mapper.add(ModellingDictionary.REG_Y, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getReg(ComponentType.Series, false);
-            }
-        });
-        mapper.add(ModellingDictionary.REG_Y + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getReg(ComponentType.Series, true);
-            }
-        });
-        mapper.add(ModellingDictionary.REG_U, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getReg(ComponentType.Undefined, false);
-            }
-        });
-        mapper.add(ModellingDictionary.REG_U + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getReg(ComponentType.Undefined, true);
-            }
-        });
-
-        mapper.add(FULLRES, new InformationMapper.Mapper<PreprocessingModel, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(PreprocessingModel source) {
-                return source.getFullResiduals();
-            }
-        });
-
-        mapper.add(InformationSet.item(REGRESSION, LP), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(ILengthOfPeriodVariable.class, 0);
-            }
-        });
-
-        mapper.add(InformationSet.item(REGRESSION, NTD), new InformationMapper.Mapper<PreprocessingModel, Integer>(Integer.class) {
-            @Override
-            public Integer retrieve(final PreprocessingModel source) {
-                TsVariableList vars = source.vars();
-                TsVariableSelection<ITsVariable> sel = vars.select(new TsVariableList.ISelector() {
-                    @Override
-                    public boolean accept(ITsVariable var) {
-                        return Variable.search(source.description.getCalendars(), var) != null;
-                    }
-                });
-                return sel.getVariablesCount();
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, NMH), new InformationMapper.Mapper<PreprocessingModel, Integer>(Integer.class) {
-            @Override
-            public Integer retrieve(final PreprocessingModel source) {
-                TsVariableList vars = source.vars();
-                TsVariableSelection<ITsVariable> sel = vars.select(new TsVariableList.ISelector() {
-                    @Override
-                    public boolean accept(ITsVariable var) {
-                        return Variable.search(source.description.getMovingHolidays(), var) != null;
-                    }
-                });
-                return sel.getVariablesCount();
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, TD1), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(ITradingDaysVariable.class, 0);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, TD2), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(ITradingDaysVariable.class, 1);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, TD3), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(ITradingDaysVariable.class, 2);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, TD4), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(ITradingDaysVariable.class, 3);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, TD5), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(ITradingDaysVariable.class, 4);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, TD6), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(ITradingDaysVariable.class, 5);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, TD7), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(ITradingDaysVariable.class, 6);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, TD8), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(ITradingDaysVariable.class, 7);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, TD9), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(ITradingDaysVariable.class, 8);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, TD10), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(ITradingDaysVariable.class, 9);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, TD11), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(ITradingDaysVariable.class, 10);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, TD12), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(ITradingDaysVariable.class, 11);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, TD13), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(ITradingDaysVariable.class, 12);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, TD14), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(ITradingDaysVariable.class, 13);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, EASTER), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IEasterVariable.class, 0);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, NOUT), new InformationMapper.Mapper<PreprocessingModel, Integer>(Integer.class) {
-            @Override
-            public Integer retrieve(PreprocessingModel source) {
-                return source.description.getOutliers().size() + source.description.getPrespecifiedOutliers().size();
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, NOUTAO), new InformationMapper.Mapper<PreprocessingModel, Integer>(Integer.class) {
-            @Override
-            public Integer retrieve(PreprocessingModel source) {
-                TsVariableList vars = source.vars();
-                return vars.select(OutlierType.AO).getItemsCount();
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, NOUTLS), new InformationMapper.Mapper<PreprocessingModel, Integer>(Integer.class) {
-            @Override
-            public Integer retrieve(PreprocessingModel source) {
-                TsVariableList vars = source.vars();
-                return vars.select(OutlierType.LS).getItemsCount();
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, NOUTTC), new InformationMapper.Mapper<PreprocessingModel, Integer>(Integer.class) {
-            @Override
-            public Integer retrieve(PreprocessingModel source) {
-                TsVariableList vars = source.vars();
-                return vars.select(OutlierType.TC).getItemsCount();
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, NOUTSO), new InformationMapper.Mapper<PreprocessingModel, Integer>(Integer.class) {
-            @Override
-            public Integer retrieve(PreprocessingModel source) {
-                TsVariableList vars = source.vars();
-                return vars.select(OutlierType.SO).getItemsCount();
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT1), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 0);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT2), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 1);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT3), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 2);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT4), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 3);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT5), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 4);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT6), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 5);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT7), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 6);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT8), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 7);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT9), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 8);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT10), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 9);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT11), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 10);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT12), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 11);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT13), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 12);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT14), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 13);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT15), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 14);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT16), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 15);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT17), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 16);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT18), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 17);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT19), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 18);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, OUT20), new InformationMapper.Mapper<PreprocessingModel, RegressionItem>(RegressionItem.class) {
-            @Override
-            public RegressionItem retrieve(PreprocessingModel source) {
-                return source.getRegressionItem(IOutlierVariable.class, 19);
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, COEFF), new InformationMapper.Mapper<PreprocessingModel, Parameter[]>(Parameter[].class) {
-            @Override
-            public Parameter[] retrieve(PreprocessingModel source) {
-                double[] c = source.estimation.getLikelihood().getB();
-                if (c == null) {
-                    return new Parameter[0];
+        mapper.set(ModellingDictionary.Y, source -> source.description.getOriginal());
+        mapper.set(ModellingDictionary.Y + SeriesInfo.F_SUFFIX, source -> source.forecast(FCAST_YEAR * source.description.getFrequency(), false));
+        mapper.set(ModellingDictionary.Y + SeriesInfo.EF_SUFFIX, source -> source.getForecastError());
+        mapper.set(ModellingDictionary.YC, source -> source.interpolatedSeries(false));
+        mapper.set(ModellingDictionary.YC + SeriesInfo.F_SUFFIX, source -> source.forecast(FCAST_YEAR * source.description.getFrequency(), false));
+        mapper.set(ModellingDictionary.YC + SeriesInfo.EF_SUFFIX, source -> source.getForecastError());
+        mapper.set(ModellingDictionary.L, source -> source.linearizedSeries(false));
+        mapper.set(ModellingDictionary.Y_LIN, source -> source.linearizedSeries(true));
+        mapper.set(ModellingDictionary.Y_LIN + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(source.domain(true).getLength(), true));
+        mapper.set(ModellingDictionary.YCAL, source -> source.getYcal(false));
+        mapper.set(ModellingDictionary.YCAL + SeriesInfo.F_SUFFIX, source -> source.getYcal(true));
+        mapper.set(ModellingDictionary.DET, source -> source.getDet(false));
+        mapper.set(ModellingDictionary.DET + SeriesInfo.F_SUFFIX, source -> source.getDet(true));
+        mapper.set(ModellingDictionary.L + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(FCAST_YEAR * source.description.getFrequency()));
+        mapper.set(ModellingDictionary.L + SeriesInfo.B_SUFFIX, source -> source.linearizedBackcast(source.description.getFrequency()));
+        mapper.set(ModellingDictionary.CAL, source -> source.getCal(false));
+        mapper.set(ModellingDictionary.CAL + SeriesInfo.F_SUFFIX, source -> source.getCal(true));
+        mapper.set(ModellingDictionary.TDE, source -> source.getTde(false));
+        mapper.set(ModellingDictionary.TDE + SeriesInfo.F_SUFFIX, source -> source.getTde(true));
+        mapper.set(ModellingDictionary.MHE, source -> source.getMhe(false));
+        mapper.set(ModellingDictionary.MHE + SeriesInfo.F_SUFFIX, source -> source.getMhe(true));
+        mapper.set(ModellingDictionary.EE, source -> source.getEe(false));
+        mapper.set(ModellingDictionary.EE + SeriesInfo.F_SUFFIX, source -> source.getEe(true));
+        mapper.set(ModellingDictionary.OMHE, source -> source.getOmhe(false));
+        mapper.set(ModellingDictionary.OMHE + SeriesInfo.F_SUFFIX, source -> source.getOmhe(true));
+        mapper.set(ModellingDictionary.OUT, source -> source.getOutlier(ComponentType.Undefined, false));
+        mapper.set(ModellingDictionary.OUT + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Undefined, true));
+        mapper.set(ModellingDictionary.OUT_I, source -> source.getOutlier(ComponentType.Irregular, false));
+        mapper.set(ModellingDictionary.OUT_I + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Irregular, true));
+        mapper.set(ModellingDictionary.OUT_T, source -> source.getOutlier(ComponentType.Trend, false));
+        mapper.set(ModellingDictionary.OUT_T + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Trend, true));
+        mapper.set(ModellingDictionary.OUT_S, source -> source.getOutlier(ComponentType.Seasonal, false));
+        mapper.set(ModellingDictionary.OUT_S + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Seasonal, true));
+        mapper.set(ModellingDictionary.REG, source -> source.getReg(false));
+        mapper.set(ModellingDictionary.REG + SeriesInfo.F_SUFFIX, source -> source.getReg(true));
+        mapper.set(ModellingDictionary.REG_T, source -> source.getReg(ComponentType.Trend, false));
+        mapper.set(ModellingDictionary.REG_T + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Trend, true));
+        mapper.set(ModellingDictionary.REG_S, source -> source.getReg(ComponentType.Seasonal, false));
+        mapper.set(ModellingDictionary.REG_S + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Seasonal, true));
+        mapper.set(ModellingDictionary.REG_I, source -> source.getReg(ComponentType.Irregular, false));
+        mapper.set(ModellingDictionary.REG_I + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Irregular, true));
+        mapper.set(ModellingDictionary.REG_SA, source -> source.getReg(ComponentType.SeasonallyAdjusted, false));
+        mapper.set(ModellingDictionary.REG_SA + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.SeasonallyAdjusted, true));
+        mapper.set(ModellingDictionary.REG_Y, source -> source.getReg(ComponentType.Series, false));
+        mapper.set(ModellingDictionary.REG_Y + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Series, true));
+        mapper.set(ModellingDictionary.REG_U, source -> source.getReg(ComponentType.Undefined, false));
+        mapper.set(ModellingDictionary.REG_U + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Undefined, true));
+        mapper.set(FULLRES, source -> source.getFullResiduals());
+        mapper.set(InformationSet.item(REGRESSION, LP), RegressionItem.class, source -> source.getRegressionItem(ILengthOfPeriodVariable.class, 0));
+        mapper.set(InformationSet.item(REGRESSION, NTD), Integer.class, source -> {
+            TsVariableList vars = source.vars();
+            TsVariableSelection<ITsVariable> sel = vars.select(new TsVariableList.ISelector() {
+                @Override
+                public boolean accept(ITsVariable var) {
+                    return Variable.search(source.description.getCalendars(), var) != null;
                 }
-                Parameter[] C = new Parameter[c.length];
-                double[] e = source.estimation.getLikelihood().getBSer(true, source.description.getArimaComponent().getFreeParametersCount());
-                for (int i = 0; i < C.length; ++i) {
-                    Parameter p = new Parameter(c[i], ParameterType.Estimated);
-                    p.setStde(e[i]);
-                    C[i] = p;
-                }
-                return C;
-            }
+            });
+            return sel.getVariablesCount();
         });
-        mapper.add(InformationSet.item(REGRESSION, COEFFDESC), new InformationMapper.Mapper<PreprocessingModel, String[]>(String[].class) {
-            @Override
-            public String[] retrieve(PreprocessingModel source) {
-                ArrayList<String> str = new ArrayList<>();
-                if (source.description.isMean()) {
-                    str.add("Mean");
+        mapper.set(InformationSet.item(REGRESSION, NMH), Integer.class, source -> {
+            TsVariableList vars = source.vars();
+            TsVariableSelection<ITsVariable> sel = vars.select(new TsVariableList.ISelector() {
+                @Override
+                public boolean accept(ITsVariable var) {
+                    return Variable.search(source.description.getMovingHolidays(), var) != null;
                 }
-                int[] missings = source.description.getMissingValues();
-                if (missings != null) {
-                    for (int i = 0; i < missings.length; ++i) {
-                        int pos = missings[i];
-                        TsPeriod period = source.description.getEstimationDomain().get(pos);
-                        str.add("Missing: " + period.toString());
-                    }
+            });
+            return sel.getVariablesCount();
+        });
+        mapper.setList(InformationSet.item(REGRESSION, TD), 1, 14, RegressionItem.class, (source, i) -> source.getRegressionItem(ITradingDaysVariable.class, i-1));
+        mapper.set(InformationSet.item(REGRESSION, EASTER), RegressionItem.class, source -> source.getRegressionItem(IEasterVariable.class, 0));
+        mapper.set(InformationSet.item(REGRESSION, NOUT), Integer.class, source -> source.description.getOutliers().size() + source.description.getPrespecifiedOutliers().size());
+        mapper.set(InformationSet.item(REGRESSION, NOUTAO), Integer.class, source -> {
+            TsVariableList vars = source.vars();
+            return vars.select(OutlierType.AO).getItemsCount();
+        });
+        mapper.set(InformationSet.item(REGRESSION, NOUTLS), Integer.class, source -> {
+            TsVariableList vars = source.vars();
+            return vars.select(OutlierType.LS).getItemsCount();
+        });
+        mapper.set(InformationSet.item(REGRESSION, NOUTTC), Integer.class, source -> {
+            TsVariableList vars = source.vars();
+            return vars.select(OutlierType.TC).getItemsCount();
+        });
+        mapper.set(InformationSet.item(REGRESSION, NOUTSO), Integer.class, source -> {
+            TsVariableList vars = source.vars();
+            return vars.select(OutlierType.SO).getItemsCount();
+        });
+        mapper.setList(InformationSet.item(REGRESSION, OUT), 1, 50, RegressionItem.class, (source, i) -> source.getRegressionItem(IOutlierVariable.class, i-1));
+        mapper.set(InformationSet.item(REGRESSION, COEFF), Parameter[].class, source -> {
+            double[] c = source.estimation.getLikelihood().getB();
+            if (c == null) {
+                return new Parameter[0];
+            }
+            Parameter[] C = new Parameter[c.length];
+            double[] e = source.estimation.getLikelihood().getBSer(true, source.description.getArimaComponent().getFreeParametersCount());
+            for (int i = 0; i < C.length; ++i) {
+                Parameter p = new Parameter(c[i], ParameterType.Estimated);
+                p.setStde(e[i]);
+                C[i] = p;
+            }
+            return C;
+        });
+        mapper.set(InformationSet.item(REGRESSION, COEFFDESC), String[].class, source -> {
+            ArrayList<String> str = new ArrayList<>();
+            if (source.description.isMean()) {
+                str.add("Mean");
+            }
+            int[] missings = source.description.getMissingValues();
+            if (missings != null) {
+                for (int i = 0; i < missings.length; ++i) {
+                    int pos = missings[i];
+                    TsPeriod period = source.description.getEstimationDomain().get(pos);
+                    str.add("Missing: " + period.toString());
                 }
-                ITsVariable[] items = source.vars().items();
-                for (ITsVariable var : items) {
-                    for (int j = 0; j < var.getDim(); ++j) {
-                        str.add(var.getItemDescription(j));
-                    }
+            }
+            ITsVariable[] items = source.vars().items();
+            TsFrequency context = source.description.getEstimationDomain().getFrequency();
+            for (ITsVariable var : items) {
+                for (int j = 0; j < var.getDim(); ++j) {
+                    str.add(var.getItemDescription(j, context));
                 }
-                String[] desc = new String[str.size()];
-                return str.toArray(desc);
             }
+            String[] desc = new String[str.size()];
+            return str.toArray(desc);
         });
-        mapper.add(InformationSet.item(REGRESSION, COVAR), new InformationMapper.Mapper<PreprocessingModel, Matrix>(Matrix.class) {
-            @Override
-            public Matrix retrieve(PreprocessingModel source) {
-                return source.estimation.getLikelihood().getBVar(true, source.description.getArimaComponent().getFreeParametersCount());
-            }
-        });
-        mapper.add(InformationSet.item(REGRESSION, PCOVAR), new InformationMapper.Mapper<PreprocessingModel, Matrix>(Matrix.class) {
-            @Override
-            public Matrix retrieve(PreprocessingModel source) {
-                return source.estimation.getParametersCovariance();
-            }
-        });
+        mapper.set(InformationSet.item(REGRESSION, COVAR), Matrix.class,
+                source -> source.estimation.getLikelihood().getBVar(true, source.description.getArimaComponent().getFreeParametersCount()));
+        mapper.set(InformationSet.item(REGRESSION, PCOVAR), Matrix.class, source -> source.estimation.getParametersCovariance());
     }
 }

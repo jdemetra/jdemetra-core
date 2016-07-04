@@ -50,7 +50,7 @@ public class GenericTradingDaysVariables implements ITradingDaysVariable {
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         return td.toString();
     }
 
@@ -60,7 +60,7 @@ public class GenericTradingDaysVariables implements ITradingDaysVariable {
     }
 
     @Override
-    public String getItemDescription(int idx) {
+    public String getItemDescription(int idx, TsFrequency context) {
         return td.getDescription(idx);
     }
 

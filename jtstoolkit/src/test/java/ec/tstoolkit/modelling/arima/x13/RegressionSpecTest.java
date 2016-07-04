@@ -63,7 +63,7 @@ public class RegressionSpecTest {
         info = expected.write(true);
         actual.read(info);
         assertEquals(1, actual.getOutliers().length);
-        assertEquals(OutlierType.AO, actual.getOutliers()[0].type);
+        assertEquals(OutlierType.AO, actual.getOutliers()[0].getType());
         
         InterventionVariable intvar = new InterventionVariable();
         intvar.setDelta(1.0);

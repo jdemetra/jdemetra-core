@@ -17,6 +17,7 @@
 package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.design.Immutable;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
@@ -30,12 +31,13 @@ import java.util.Objects;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
-public class OutlierDefinition implements Comparable<OutlierDefinition>, Cloneable {
+@Development(status = Development.Status.Release)
+@Immutable
+public class OutlierDefinition implements Comparable<OutlierDefinition> {
 
-    public Day position;
-    public OutlierType type;
-    public boolean prespecified;
+    private final Day position;
+    private final String code;
+    private final boolean prespecified;
 
     /**
      *
@@ -45,7 +47,7 @@ public class OutlierDefinition implements Comparable<OutlierDefinition>, Cloneab
      */
     public OutlierDefinition(TsPeriod period, OutlierType type, boolean prespecified) {
         position = period.firstday();
-        this.type = type;
+        this.code = type.name();
         this.prespecified = prespecified;
     }
 
@@ -57,47 +59,59 @@ public class OutlierDefinition implements Comparable<OutlierDefinition>, Cloneab
      */
     public OutlierDefinition(Day pos, OutlierType type, boolean prespecified) {
         position = pos;
-        this.type = type;
+        this.code = type.name();
         this.prespecified = prespecified;
     }
-    
-    public OutlierDefinition clone(){
-        try {
-            return (OutlierDefinition) super.clone();
-        } catch (CloneNotSupportedException ex) {
-            throw new AssertionError();
-        }
+
+    /**
+     *
+     * @param period
+     * @param type
+     * @param prespecified
+     */
+    public OutlierDefinition(TsPeriod period, String code, boolean prespecified) {
+        position = period.firstday();
+        this.code = code;
+        this.prespecified = prespecified;
+    }
+
+    /**
+     *
+     * @param pos
+     * @param type
+     * @param prespecified
+     */
+    public OutlierDefinition(Day pos, String code, boolean prespecified) {
+        position = pos;
+        this.code = code;
+        this.prespecified = prespecified;
     }
 
     public Day getPosition() {
         return position;
     }
 
-    public void setPosition(Day position) {
-        this.position = position;
-    }
-
     public OutlierType getType() {
-        return type;
+        try {
+            return OutlierType.valueOf(code);
+        } catch (IllegalArgumentException ex) {
+            return OutlierType.Undefined;
+        }
     }
 
-    public void setType(OutlierType type) {
-        this.type = type;
+    public String getCode() {
+        return code;
     }
 
     public boolean isPrespecified() {
         return prespecified;
     }
 
-    public void setPrespecified(boolean prespecified) {
-        this.prespecified = prespecified;
-    }
-
     public OutlierDefinition prespecify(boolean val) {
         if (val == prespecified) {
             return this;
         } else {
-            return new OutlierDefinition(position, type, val);
+            return new OutlierDefinition(position, code, val);
         }
     }
 
@@ -115,10 +129,10 @@ public class OutlierDefinition implements Comparable<OutlierDefinition>, Cloneab
 
     @Override
     public int compareTo(OutlierDefinition o) {
-        if (type == o.type) {
+        if (code.equals(o.code)) {
             return position.compareTo(o.position);
         } else {
-            return type.compareTo(o.type);
+            return code.compareTo(o.code);
         }
     }
 
@@ -128,21 +142,21 @@ public class OutlierDefinition implements Comparable<OutlierDefinition>, Cloneab
     }
 
     private boolean equals(OutlierDefinition other) {
-        return other.position.equals(position) && other.type.equals(type);
+        return other.position.equals(position) && other.code.equals(code);
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
         hash = 19 * hash + Objects.hashCode(this.position);
-        hash = 19 * hash + Objects.hashCode(this.type);
+        hash = 19 * hash + Objects.hashCode(this.code);
         return hash;
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(type).append(InformationSet.SEP).append(StringFormatter.convert(position));
+        builder.append(code).append(InformationSet.SEP).append(StringFormatter.convert(position));
         if (this.prespecified) {
             builder.append(InformationSet.SEP).append('f');
         }
@@ -151,7 +165,7 @@ public class OutlierDefinition implements Comparable<OutlierDefinition>, Cloneab
 
     public String toString(TsFrequency freq) {
         StringBuilder builder = new StringBuilder();
-        builder.append(type).append(InformationSet.SEP).append(StringFormatter.write(new TsPeriod(freq, position)));
+        builder.append(code).append(InformationSet.SEP).append(StringFormatter.write(new TsPeriod(freq, position)));
         if (this.prespecified) {
             builder.append(InformationSet.SEP).append('f');
         }

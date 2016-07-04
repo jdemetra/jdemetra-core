@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tstoolkit.modelling.arima.tramo;
 
 import ec.tstoolkit.arima.StationaryTransformation;
@@ -121,11 +120,13 @@ public class SingleOutlierDetector2 {
      * @param o
      */
     public void exclude(IOutlierVariable o) {
-        m_excluded.add(o.getPosition().minus(m_domain.getStart()));
+        TsPeriod ostart = new TsPeriod(m_domain.getFrequency(), o.getPosition());
+        m_excluded.add(ostart.minus(m_domain.getStart()));
     }
 
     public void allow(IOutlierVariable o) {
-        int pos = o.getPosition().minus(m_domain.getStart());
+        TsPeriod ostart=new TsPeriod(m_domain.getFrequency(), o.getPosition());
+        int pos = ostart.minus(m_domain.getStart());
         int xpos = -1;
         for (int i = 0; i < m_excluded.size(); ++i) {
             if (m_excluded.get(i) == pos) {
@@ -333,9 +334,7 @@ public class SingleOutlierDetector2 {
         m_model.getMA().solve(ol, o);
 
         // o contains the filtered outlier
-
         // we start at the end
-
         int xstart = 0, xend = o.length;
         for (int i = 0; i < o.length; ++i) {
             if (o[i] != 0) {
@@ -356,7 +355,6 @@ public class SingleOutlierDetector2 {
         }
 
         //int imax = Math.min(n, ub) - lb;
-
         boolean[] ok = prepare(idx);
         for (int ix = 0; ix < n; ++ix) {
             double rmse = rmse(n - ix - 1 - d);
@@ -366,7 +364,7 @@ public class SingleOutlierDetector2 {
                 // ek goes from 0 to nl
                 // if (ix == 0 (last position : n-1)), ok goes from d to n
                 // in general, ok goes from d+ix to n+ix (in the range [xstart, xend[)
-                int kstart = Math.max(xstart, d + ix), kend = Math.min(n+ix, xend);
+                int kstart = Math.max(xstart, d + ix), kend = Math.min(n + ix, xend);
                 for (int k = kstart; k < kend; ++k) {
                     sxy += o[k] * m_el[k - d - ix];
                 }
@@ -381,13 +379,15 @@ public class SingleOutlierDetector2 {
                 }
             }
             // update sxx
-            if (ix < n-1){
-                int z=n+ix;
-                if (z < xend)
-                    sxx+=o[z]*o[z];
-                z-=nl;
-                if (z >= xstart)
-                    sxx-=o[z]*o[z];
+            if (ix < n - 1) {
+                int z = n + ix;
+                if (z < xend) {
+                    sxx += o[z] * o[z];
+                }
+                z -= nl;
+                if (z >= xstart) {
+                    sxx -= o[z] * o[z];
+                }
             }
         }
     }

@@ -68,7 +68,7 @@ public class StockTradingDaysVariables implements ITradingDaysVariable, Cloneabl
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         StringBuilder builder=new StringBuilder();
         builder.append("TD Stock [").append(w_).append(']');
         return builder.toString();
@@ -80,7 +80,7 @@ public class StockTradingDaysVariables implements ITradingDaysVariable, Cloneabl
     }
 
     @Override
-    public String getItemDescription(int idx) {
+    public String getItemDescription(int idx, TsFrequency context) {
         return DayOfWeek.valueOf(idx+1).toString();
     }
 

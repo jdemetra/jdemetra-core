@@ -25,6 +25,7 @@ import java.util.Map.Entry;
  *
  * @author Jean Palate
  */
+@Deprecated
 public class InformationMapper<S> {
 
     static public abstract class Mapper<S, T> implements InformationExtractor<S, T> {

@@ -18,7 +18,9 @@
 package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 
 /**
@@ -30,11 +32,20 @@ public interface IOutlierFactory {
 
     /**
      *
+     * @param freq
      * @param position
      * @return
      */
-    IOutlierVariable create(TsPeriod position);
+    IOutlierVariable create(Day position);
 
+    /**
+     *
+     * @param p
+      * @return
+     */
+    default IOutlierVariable create(TsPeriod p){
+        return create(p.firstday());
+    }
     /**
      *
      * @param tsdomain

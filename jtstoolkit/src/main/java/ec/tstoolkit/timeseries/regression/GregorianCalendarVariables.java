@@ -73,7 +73,7 @@ public class GregorianCalendarVariables implements ITradingDaysVariable, Cloneab
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         switch (m_dkind) {
             case WorkingDays:
                 return "Working days";
@@ -90,7 +90,7 @@ public class GregorianCalendarVariables implements ITradingDaysVariable, Cloneab
     }
 
     @Override
-    public String getItemDescription(int idx) {
+    public String getItemDescription(int idx, TsFrequency context) {
         int ntd = m_provider.count(m_dkind);
         if (idx < ntd) {
             return m_provider.getDescription(m_dkind, idx);

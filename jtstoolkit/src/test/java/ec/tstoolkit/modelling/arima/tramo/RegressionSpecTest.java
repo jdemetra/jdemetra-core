@@ -51,7 +51,7 @@ public class RegressionSpecTest {
         info = expected.write(true);
         actual.read(info);
         assertEquals(1, actual.getOutliers().length);
-        assertEquals(OutlierType.AO, actual.getOutlier(0).type);
+        assertEquals(OutlierType.AO, actual.getOutlier(0).getType());
 
         TsVariableDescriptor vardesc = new TsVariableDescriptor("test");
         vardesc.setEffect(TsVariableDescriptor.UserComponentType.Seasonal);

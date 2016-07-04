@@ -83,7 +83,7 @@ public class JulianEasterVariable extends AbstractSingleTsVariable implements IE
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         StringBuilder builder = new StringBuilder();
         builder.append("Julian Easter [").append(dur_).append(']');
         return builder.toString();

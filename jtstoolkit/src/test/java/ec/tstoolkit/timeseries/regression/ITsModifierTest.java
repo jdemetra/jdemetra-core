@@ -135,8 +135,8 @@ class TramoExpander implements ITsModifier {
     }
 
     @Override
-    public String getDescription() {
-        return var.getDescription();
+    public String getDescription(TsFrequency context) {
+        return var.getDescription(context);
     }
 
     @Override
@@ -145,8 +145,8 @@ class TramoExpander implements ITsModifier {
     }
 
     @Override
-    public String getItemDescription(int idx) {
-        return var.getItemDescription(idx);
+    public String getItemDescription(int idx, TsFrequency context) {
+        return var.getItemDescription(idx, context);
     }
 
     @Override

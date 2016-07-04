@@ -80,9 +80,9 @@ public class LaggedTsVariable implements ITsModifier {
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         StringBuilder builder = new StringBuilder();
-        builder.append(var.getDescription());
+        builder.append(var.getDescription(context));
         if (m_firstlag > 0) {
             builder.append("[-").append(m_firstlag).append(" : ");
         }
@@ -112,13 +112,13 @@ public class LaggedTsVariable implements ITsModifier {
     }
 
     @Override
-    public String getItemDescription(int idx) {
+    public String getItemDescription(int idx, TsFrequency context) {
         int nvar = var.getDim();
 
         int lag = m_firstlag + idx / nvar;
 
         StringBuilder builder = new StringBuilder();
-        builder.append(var.getItemDescription(idx % nvar));
+        builder.append(var.getItemDescription(idx % nvar, context));
         if (lag > 0) {
             builder.append(" [-").append(lag).append(']');
         }

@@ -86,6 +86,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
     }
 
     private void writeSummary(HtmlStream stream) throws IOException {
+        TsFrequency context=model_.getFrequency();
         stream.write(HtmlTag.HEADER1, h1, "Summary").newLine();
         stream.write("Estimation span: [").write(model_.description.getEstimationDomain().getStart().toString());
         stream.write(" - ").write(model_.description.getEstimationDomain().getLast().toString()).write(']').newLine();
@@ -107,7 +108,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
         if (easter.getVariablesCount() == 0) {
             stream.write("No easter effect").newLine();
         } else {
-            stream.write(easter.get(0).variable.getDescription() + " detected").newLine();
+            stream.write(easter.get(0).variable.getDescription(context) + " detected").newLine();
         }
         int no = x_.select(OutlierType.Undefined, false).getItemsCount();
         int npo = x_.select(OutlierType.Undefined, true).getItemsCount();
@@ -237,16 +238,17 @@ public class HtmlRegArima extends AbstractHtmlElement {
     public void writeRegression(HtmlStream stream, boolean outliers) throws IOException {
         RegArimaModel<SarimaModel> regarima = model_.estimation.getRegArima();
         writeMean(stream, regarima);
-        writeRegressionItems(stream, ITradingDaysVariable.class);
-        writeRegressionItems(stream, ILengthOfPeriodVariable.class);
-        writeRegressionItems(stream, IMovingHolidayVariable.class);
+        TsFrequency context=context();
+        writeRegressionItems(stream, ITradingDaysVariable.class, context);
+        writeRegressionItems(stream, ILengthOfPeriodVariable.class, context);
+        writeRegressionItems(stream, IMovingHolidayVariable.class, context);
         if (outliers) {
-            writeOutliers(stream, true);
-            writeOutliers(stream, false);
+            writeOutliers(stream, true, context);
+            writeOutliers(stream, false, context);
         }
         writeRamps(stream);
         writeInterventionVariables(stream);
-        writeRegressionItems(stream, IUserTsVariable.class);
+        writeRegressionItems(stream, IUserTsVariable.class, context);
         writeMissing(stream);
     }
 
@@ -277,7 +279,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
         stream.newLine();
     }
 
-    private void writeOutliers(HtmlStream stream, boolean prespecified) throws IOException {
+    private void writeOutliers(HtmlStream stream, boolean prespecified, TsFrequency context) throws IOException {
         TsVariableSelection<IOutlierVariable> regs = x_.select(IOutlierVariable.class);
         boolean found = false;
         for (TsVariableSelection.Item<IOutlierVariable> reg : regs.elements()) {
@@ -304,7 +306,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
         for (TsVariableSelection.Item<IOutlierVariable> reg : regs.elements()) {
             if (reg.variable.isPrespecified() == prespecified) {
                 stream.open(HtmlTag.TABLEROW);
-                stream.write(new HtmlTableCell(reg.variable.getDescription(), 100));
+                stream.write(new HtmlTableCell(reg.variable.getDescription(context), 100));
                 stream.write(new HtmlTableCell(df4.format(b[start + reg.position]), 100));
                 double tval = ll_.getTStat(start + reg.position, true, nhp_);
                 stream.write(new HtmlTableCell(formatT(tval), 100));
@@ -317,7 +319,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
         stream.newLine();
     }
 
-    private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, Class<V> tclass) throws IOException {
+    private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, Class<V> tclass, TsFrequency context) throws IOException {
         TsVariableSelection<ITsVariable> regs = x_.selectCompatible(tclass);
         if (regs.isEmpty()) {
             return;
@@ -327,7 +329,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
         double[] b = ll_.getB();
         int start = model_.description.getRegressionVariablesStartingPosition();
         for (TsVariableSelection.Item<ITsVariable> reg : regs.elements()) {
-            stream.write(HtmlTag.HEADER3, h3, reg.variable.getDescription());
+            stream.write(HtmlTag.HEADER3, h3, reg.variable.getDescription(context));
             stream.open(new HtmlTable(0, 400));
             stream.open(HtmlTag.TABLEROW);
             stream.write(new HtmlTableCell("", 100));
@@ -338,7 +340,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
             for (int j = 0; j < reg.variable.getDim(); ++j) {
                 stream.open(HtmlTag.TABLEROW);
                 if (reg.variable.getDim() > 1) {
-                    stream.write(new HtmlTableCell(reg.variable.getItemDescription(j), 100));
+                    stream.write(new HtmlTableCell(reg.variable.getItemDescription(j, context), 100));
                 } else {
                     stream.write(new HtmlTableCell("", 100));
                 }
@@ -463,6 +465,10 @@ public class HtmlRegArima extends AbstractHtmlElement {
         stream.close(HtmlTag.TABLE);
         stream.newLines(2);
 
+    }
+
+    private TsFrequency context() {
+        return model_.description.getEstimationDomain().getFrequency();
     }
 
     private void writeScore(HtmlStream stream) throws IOException {

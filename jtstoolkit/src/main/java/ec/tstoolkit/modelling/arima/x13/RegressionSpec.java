@@ -168,7 +168,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     public OutlierDefinition[] search(OutlierType type) {
         ArrayList<OutlierDefinition> desc = new ArrayList<>();
         for (OutlierDefinition o : outliers_) {
-            if (o.type == type) {
+            if (o.getType() == type) {
                 desc.add(o);
             }
         }

@@ -115,7 +115,7 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
             if (frozen != null && o != null) {
                 for (int j = 0; j < o.length; ++j) {
                     OutlierDefinition cur = o[j];
-                    if (frozen.search(cur.position) >= 0 && !drspec.contains(cur)) {
+                    if (frozen.search(cur.getPosition()) >= 0 && !drspec.contains(cur)) {
                         nrspec.add(cur.prespecify(true));
                     }
                 }

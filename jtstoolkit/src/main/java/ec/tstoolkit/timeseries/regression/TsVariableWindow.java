@@ -17,6 +17,7 @@
 package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.data.DataBlock;
+import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.TsPeriodSelector;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
@@ -28,6 +29,7 @@ import java.util.List;
  *
  * @author Jean Palate
  */
+@Development(status = Development.Status.Release)
 public class TsVariableWindow implements ITsModifier {
 
     private final Day start, end;
@@ -97,8 +99,8 @@ public class TsVariableWindow implements ITsModifier {
     }
 
     @Override
-    public String getDescription() {
-        return description(var.getDescription()+getDescription());
+    public String getDescription(TsFrequency context) {
+        return description(var.getDescription(context)+getDescription(context));
     }
 
     @Override
@@ -107,8 +109,8 @@ public class TsVariableWindow implements ITsModifier {
     }
 
     @Override
-    public String getItemDescription(int idx) {
-        return description(var.getItemDescription(idx));
+    public String getItemDescription(int idx, TsFrequency context) {
+        return description(var.getItemDescription(idx, context));
     }
 
  

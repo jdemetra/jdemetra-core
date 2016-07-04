@@ -140,7 +140,7 @@ public class TsDataTable {
      * @return
      */
     public TsPeriodSelector getSelector() {
-        return new TsPeriodSelector(m_periodselector);
+        return m_periodselector.clone();
     }
 
     /**
@@ -278,7 +278,7 @@ public class TsDataTable {
      * @param periodSelector
      */
     public void setSelector(final TsPeriodSelector periodSelector) {
-        m_periodselector = new TsPeriodSelector(periodSelector);
+        m_periodselector = periodSelector.clone();
         internalClear();
     }
 

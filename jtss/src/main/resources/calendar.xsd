@@ -1,0 +1,238 @@
+<!--
+Copyright 2016 National Bank of Belgium
+
+Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+by the European Commission - subsequent versions of the EUPL (the "Licence");
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at:
+
+http://ec.europa.eu/idabc/eupl
+
+Unless required by applicable law or agreed to in writing, software 
+distributed under the Licence is distributed on an "AS IS" basis,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the Licence for the specific language governing permissions and 
+limitations under the Licence.
+-->
+
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="ec/tss.core"
+            xmlns:tss="ec/tss.core"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+    <xs:include schemaLocation="tss_core.xsd"/>
+
+    <!--Utilities-->
+
+    <xs:complexType name="validityPeriodType">
+        <xs:annotation>
+            <xs:documentation>
+                Validity period for any concept. Defined by an optional start date and an optional end date.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="start" type="xs:date" minOccurs="0" />
+            <xs:element name="end" type="xs:date" minOccurs="0" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="weightedItem">
+        <xs:sequence>
+            <xs:element name="item" type="xs:string" />
+            <xs:element name="weight" type="xs:double" />
+        </xs:sequence>
+        <xs:attribute name="ref" type="xs:IDREF"/>
+    </xs:complexType>
+
+    <!--Calendars-->
+
+    <xs:simpleType name="dayEvent">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="NewYear" />
+            <xs:enumeration value="AshWednesday" />
+            <xs:enumeration value="Easter" />
+            <xs:enumeration value="EasterThursday" />
+            <xs:enumeration value="EasterFryday" />
+            <xs:enumeration value="EasterMonday" />
+            <xs:enumeration value="Ascension" />
+            <xs:enumeration value="Pentecost" />
+            <xs:enumeration value="WhitMonday" />
+            <xs:enumeration value="Assumption" />
+            <xs:enumeration value="AllSaintsDay" />
+            <xs:enumeration value="Christmas" />
+            <xs:enumeration value="LaborDay" />
+            <xs:enumeration value="Thanksgiving" />
+            <xs:enumeration value="MayDay" />
+            <xs:enumeration value="Halloween" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="fixedDayType">
+        <xs:annotation>
+            <xs:documentation>
+                Fixed day in each year, identified by the month and the day in the month.
+                Example: 21th of July
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="weight" type="xs:double" minOccurs="0"/> 
+            <xs:element name="month" type="tss:month" />
+            <xs:element name="day" type="xs:int" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="fixedWeekDayType">
+        <xs:annotation>
+            <xs:documentation>
+                Fixed week day, identified by the day if the week, the week of the month and the month.
+                Example: Labor Day, second tuesday of september.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="weight" type="xs:double" minOccurs="0"/> 
+            <xs:element name="month" type="tss:month" />
+            <xs:element name="dayofWeek" type="tss:dayOfWeek" />
+            <xs:element name="week" type="tss:week"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="easterRelatedDayType">
+        <xs:annotation>
+            <xs:documentation>
+                Day identified by its position related to Easter.
+                Example: 20th day after Easter.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="weight" type="xs:double" minOccurs="0"/> 
+            <xs:element name="offset" type="xs:short" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="specialCalendarDayType">
+        <xs:annotation>
+            <xs:documentation>
+                Day identified by its position related to some prespecified days.
+                Example: 3 days after Christmas, 1 day before Labor Day...
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="weight" type="xs:double" minOccurs="0"/> 
+            <xs:element name="event" type="tss:dayEvent" />
+            <xs:element name="offset" type="xs:short" default="0" minOccurs="0" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:group name="specialDayGroup">
+        <xs:annotation>
+            <xs:documentation>
+                A special day is any day identified by a fixed day, a fixed week day or a pre-specified day
+                (an Easter related day being a special case of the latter).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="fixedDay" type="tss:fixedDayType" />
+            <xs:element name="fixedWeekDay" type="tss:fixedWeekDayType" />
+            <xs:element name="easterRelatedDay" type="tss:easterRelatedDayType" />
+            <xs:element name="specialCalendarDay" type="tss:specialCalendarDayType" />
+        </xs:choice>
+    </xs:group>
+
+    <xs:complexType name="specialDayEventType">
+        <xs:annotation>
+            <xs:documentation>
+                A special day event is a special day, valid on a given time span.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:group ref="tss:specialDayGroup" />
+            <xs:element name="validity" type="tss:validityPeriodType" minOccurs="0" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="abstractCalendarType" abstract="true">
+        <xs:attribute name="name" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="nationalCalendarType">
+        <xs:annotation>
+            <xs:documentation>
+                A national calendar is defined by a list of special day events. It may have a name,
+                which may be used in derived calendars
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:abstractCalendarType">
+                <xs:sequence>
+                    <xs:element name="specialDayEvent" type="tss:specialDayEventType" maxOccurs="unbounded" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="compositeCalendarType">
+        <xs:annotation>
+            <xs:documentation>
+                A composite calendar is a weighted sum of other calendars, identified by their IDs.
+                Those calendars should be stored in a given dictionary.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:abstractCalendarType">
+                <xs:sequence>
+                    <xs:element name="wCalendar" type="tss:weightedItem" maxOccurs="unbounded" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="chainedCalendarType">
+        <xs:annotation>
+            <xs:documentation>
+                A chained calendar is a pair of calendars, which are paste from a given date.
+                More precisely, the first calendar is used up to the given date (excluded) and is replaced
+                by the second calendar from that date (included)
+                Both calendars should be stored in a given dictionary.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:abstractCalendarType">
+                <xs:sequence>
+                    <xs:element name="startCalendar" type="xs:string" />
+                    <xs:element name="endCalendar" type="xs:string" />
+                    <xs:element name="calendarBreak" type="xs:date" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:group name ="calendarGroup">
+        <xs:annotation>
+            <xs:documentation>
+                A calendar can be either a national calendar, a composite calendar or a chained calendar.
+                Calendars are defined recursively.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="nationalCalendar" type="tss:nationalCalendarType" />
+            <xs:element name="compositeCalendar" type="tss:compositeCalendarType"/>
+            <xs:element name="chainedCalendar" type="tss:chainedCalendarType"/>
+        </xs:choice>
+    </xs:group>
+  
+    <xs:complexType name="calendarsType">
+        <xs:annotation>
+            <xs:documentation>
+                Collection of calendars.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:group ref="tss:calendarGroup" minOccurs="0" maxOccurs="unbounded"/>        
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="calendars" type="tss:calendarsType"/>
+
+</xs:schema>

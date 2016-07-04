@@ -37,8 +37,8 @@ import ec.tss.xml.XmlTs;
 import ec.tss.xml.XmlTsCollection;
 import ec.tss.xml.XmlTsData;
 import ec.tss.xml.XmlTsMoniker;
-import ec.tss.xml.regression.XmlInterventionVariable;
-import ec.tss.xml.regression.XmlRamp;
+import ec.demetra.xml.regression.XmlInterventionVariable;
+import ec.demetra.xml.regression.XmlRamp;
 import ec.tstoolkit.Parameter;
 import ec.tstoolkit.algorithm.AlgorithmDescriptor;
 import ec.tstoolkit.information.Information;
@@ -172,16 +172,16 @@ public class XmlInformation {
 
         fromXmlMap.put(XmlStatisticalTest.class, statsMapper);
         toXmlMap.put(StatisticalTest.class, statsMapper);
-        XmlConverterMapper<InterventionVariable, XmlInterventionVariable> ivarMapper =
-                new XmlConverterMapper<>(XmlInterventionVariable.class);
-
-        fromXmlMap.put(XmlInterventionVariable.class, ivarMapper);
-        toXmlMap.put(InterventionVariable.class, ivarMapper);
-        XmlConverterMapper<Ramp, XmlRamp> rampMapper =
-                new XmlConverterMapper<>(XmlRamp.class);
-
-        fromXmlMap.put(XmlRamp.class, rampMapper);
-        toXmlMap.put(Ramp.class, rampMapper);
+//        XmlConverterMapper<InterventionVariable, XmlInterventionVariable> ivarMapper =
+//                new XmlConverterMapper<>(XmlInterventionVariable.class);
+//
+//        fromXmlMap.put(XmlInterventionVariable.class, ivarMapper);
+//        toXmlMap.put(InterventionVariable.class, ivarMapper);
+//        XmlConverterMapper<Ramp, XmlRamp> rampMapper =
+//                new XmlConverterMapper<>(XmlRamp.class);
+//
+//        fromXmlMap.put(XmlRamp.class, rampMapper);
+//        toXmlMap.put(Ramp.class, rampMapper);
         
         XmlConverterMapper<Matrix, XmlMatrix> matrixMapper =
                 new XmlConverterMapper<>(XmlMatrix.class);
@@ -210,8 +210,8 @@ public class XmlInformation {
         @XmlElement(type = XmlTsCollection.class, name = "tscollection"),
         @XmlElement(type = XmlPeriodSelection.class, name = "span"),
         @XmlElement(type = XmlStatisticalTest.class, name = "test"),
-        @XmlElement(type = XmlInterventionVariable.class, name = "ivar"),
-        @XmlElement(type = XmlRamp.class, name = "ramp"),
+//        @XmlElement(type = XmlInterventionVariable.class, name = "ivar"),
+//        @XmlElement(type = XmlRamp.class, name = "ramp"),
         @XmlElement(type = XmlRegItem.class, name = "regitem"),
         @XmlElement(type = XmlParameter.class, name = "param"),
         @XmlElement(type = XmlParameters.class, name = "params"),       

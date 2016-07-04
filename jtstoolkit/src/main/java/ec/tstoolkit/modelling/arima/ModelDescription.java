@@ -491,7 +491,8 @@ public class ModelDescription implements Cloneable {
         int[] pos = new int[vars.size()];
         TsPeriod start = estimationDomain_.getStart();
         for (int i = 0; i < pos.length; ++i) {
-            pos[i] = vars.get(i).getPosition().minus(start);
+            TsPeriod ostart=new TsPeriod(estimationDomain_.getFrequency(), vars.get(i).getPosition());
+            pos[i] = ostart.minus(start);
         }
         return pos;
     }

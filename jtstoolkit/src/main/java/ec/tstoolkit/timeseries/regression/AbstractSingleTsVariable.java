@@ -64,13 +64,8 @@ public abstract class AbstractSingleTsVariable implements ITsVariable {
     }
 
     @Override
-    public String getItemDescription(int item) {
-        return getDescription();
-    }
-
-    @Override
-    public String toString() {
-        return getDescription();
+    public String getItemDescription(int item, TsFrequency context) {
+        return getDescription(context);
     }
 
 }

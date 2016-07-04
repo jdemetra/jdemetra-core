@@ -14,29 +14,27 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.tss.xml.regression;
+package ec.demetra.xml.regression;
 
-import ec.tstoolkit.timeseries.regression.AdditiveOutlier;
-import ec.tstoolkit.timeseries.simplets.TsFrequency;
-import ec.tstoolkit.timeseries.simplets.TsPeriod;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import ec.tstoolkit.modelling.ComponentType;
+import ec.tstoolkit.timeseries.regression.ITsVariable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import javax.xml.bind.annotation.XmlAttribute;
 
 /**
  *
  * @author Jean Palate
  */
-public class XmlVariableTest {
-    
-    public XmlVariableTest() {
-        XmlVariable.register(new XmlGenericTradingDays.Adapter());
-        XmlVariable.register(new XmlOutlier.Adapter());
-    }
+public abstract class XmlVariable {
 
-    @Test
-    public void testMarshalling() throws Exception {
-        AdditiveOutlier ao=new AdditiveOutlier(new TsPeriod(TsFrequency.Monthly, 1980, 2));
-        XmlVariable xml = XmlVariable.marshal(ao);
-    }
-    
+
+    @XmlAttribute
+    public String name;
+
+    @XmlAttribute
+    public ComponentType effect;
+
 }

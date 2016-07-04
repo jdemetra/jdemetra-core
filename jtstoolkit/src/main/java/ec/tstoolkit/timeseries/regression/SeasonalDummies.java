@@ -77,7 +77,7 @@ public class SeasonalDummies implements ITsVariable {
      * @return
      */
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         StringBuilder builder = new StringBuilder();
         builder.append("Seasonal dummies");
         return builder.toString();
@@ -98,7 +98,7 @@ public class SeasonalDummies implements ITsVariable {
      * @return
      */
     @Override
-    public String getItemDescription(int idx) {
+    public String getItemDescription(int idx, TsFrequency context) {
         StringBuilder builder = new StringBuilder();
         builder.append("Seasonal dummy [").append(idx + 1).append(']');
         return builder.toString();

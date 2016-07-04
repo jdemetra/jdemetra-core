@@ -185,4 +185,11 @@ public class DayClustering {
     public static final DayClustering TD2 = new DayClustering(TD2_IDX), TD3 = new DayClustering(TD3_IDX)
             , TD4 = new DayClustering(TD4_IDX), TD7 = new DayClustering(TD7_IDX);
 
+    /**
+     * @return the groups
+     */
+    public int[] getGroupsDefinition() {
+        return groups;
+    }
+
 }

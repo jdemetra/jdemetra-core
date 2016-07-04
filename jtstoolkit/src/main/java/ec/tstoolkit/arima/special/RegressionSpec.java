@@ -427,7 +427,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         ArrayList<IOutlierVariable> var = new ArrayList<>();
         ArrayList<IOutlierVariable> pvar = new ArrayList<>();
         for (OutlierDefinition outlier : outliers_) {
-            IOutlierVariable v = fac.make(outlier, freq);
+            IOutlierVariable v = fac.make(outlier);
             regs.add(v);
         }
     }

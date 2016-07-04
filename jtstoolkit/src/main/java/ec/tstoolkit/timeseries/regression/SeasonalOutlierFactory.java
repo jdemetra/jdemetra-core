@@ -19,7 +19,9 @@
 package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 
 /**
@@ -43,7 +45,7 @@ public class SeasonalOutlierFactory implements IOutlierFactory {
      * @return
      */
     @Override
-    public SeasonalOutlier create(TsPeriod position) {
+    public SeasonalOutlier create(Day position) {
 	SeasonalOutlier so = new SeasonalOutlier(position);
 	so.zeroEnded = zeroEnded;
 	return so;

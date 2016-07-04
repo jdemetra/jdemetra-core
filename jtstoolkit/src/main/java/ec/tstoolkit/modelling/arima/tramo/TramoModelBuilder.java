@@ -179,8 +179,8 @@ public class TramoModelBuilder implements IModelBuilder {
         ArrayList<IOutlierVariable> var = new ArrayList<>();
         ArrayList<IOutlierVariable> pvar = new ArrayList<>();
         for (int i = 0; i < outliers.length; ++i) {
-            IOutlierVariable v = TramoSpecification.fac.make(outliers[i], model.getEstimationDomain().getFrequency());
-            if (outliers[i].prespecified) {
+            IOutlierVariable v = TramoSpecification.fac.make(outliers[i]);
+            if (outliers[i].isPrespecified()) {
                 pvar.add(v);
             } else {
                 var.add(v);

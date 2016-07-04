@@ -20,6 +20,7 @@ package ec.tstoolkit.timeseries.regression;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.linearfilters.RationalBackFilter;
+import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 
 /**
@@ -51,13 +52,19 @@ public interface IOutlierVariable extends ITsVariable {
      * 
      * @return
      */
+    @Deprecated
     OutlierType getOutlierType();
 
     /**
      * 
      * @return
      */
-    TsPeriod getPosition();
+    String getCode();
+    /**
+     * 
+     * @return
+     */
+    Day getPosition();
 
     /**
      *

@@ -66,18 +66,18 @@ public abstract class AbstractXmlOutlierDefinition {
     
     public static AbstractXmlOutlierDefinition create(OutlierDefinition def) {
         AbstractXmlOutlierDefinition x = null;
-        if (def.type == OutlierType.AO) {
+        if (def.getType() == OutlierType.AO) {
             x = new XmlAoDefinition();
-        } else if (def.type == OutlierType.LS) {
+        } else if (def.getType() == OutlierType.LS) {
             x = new XmlLsDefinition();
-        } else if (def.type == OutlierType.TC) {
+        } else if (def.getType() == OutlierType.TC) {
             x = new XmlTcDefinition();
-        } else if (def.type == OutlierType.SO) {
+        } else if (def.getType() == OutlierType.SO) {
             x = new XmlSoDefinition();
         }
         if (x != null) {
-            x.period = StringFormatter.convert(def.position);
-            x.setPrespecifiedOutlier(def.prespecified);
+            x.period = StringFormatter.convert(def.getPosition());
+            x.setPrespecifiedOutlier(def.isPrespecified());
         }
         return x;
     }

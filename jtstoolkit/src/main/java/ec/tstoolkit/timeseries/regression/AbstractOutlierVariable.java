@@ -19,6 +19,9 @@ package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.timeseries.Day;
+import ec.tstoolkit.timeseries.simplets.TsDomain;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import java.util.Arrays;
 
@@ -79,28 +82,35 @@ public abstract class AbstractOutlierVariable extends AbstractSingleTsVariable
         }
         return 1.483 * median;
     }
-    TsPeriod position;
-    boolean prespecified;
+    
+    protected Day position;
+    protected boolean prespecified;
 
     /**
      *
      * @param p
      */
-    protected AbstractOutlierVariable(TsPeriod p) {
-        position = p.clone();
+    protected AbstractOutlierVariable(Day pos) {
+        position = pos;
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         StringBuilder builder = new StringBuilder();
-        builder.append(getOutlierType()).append(" (").append(position).append(
-                ')');
+        builder.append(getCode()).append(" (");
+        if (context == null)
+            builder.append(position);
+        else{
+            TsPeriod p=new TsPeriod(context, position);
+            builder.append(p);
+        }
+        builder.append(')');
         return builder.toString();
     }
 
     // / <summary>Position of the outlier</summary>
     @Override
-    public TsPeriod getPosition() {
+    public Day getPosition() {
         return position;
     }
 
