@@ -29,7 +29,6 @@ import ec.tstoolkit.utilities.WildCards;
  * @param <S>
  * @since 2.2.0
  * @author Jean Palate
- * @param <S>
  */
 public class InformationMapping<S> {
 
