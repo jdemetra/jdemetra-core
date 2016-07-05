@@ -20,7 +20,6 @@ import ec.tss.xml.XmlDayAdapter;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.regression.ChangeOfRegime;
 import ec.tstoolkit.timeseries.regression.ChangeOfRegimeType;
-import ec.tstoolkit.timeseries.regression.TsVariableWindow;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -39,11 +38,11 @@ public class XmlChangeOfRegime extends XmlTsModifier {
 
     @XmlElement
     @XmlJavaTypeAdapter(XmlDayAdapter.class)
-    public Day start;
+    public Day Start;
 
     @XmlElement
     @XmlJavaTypeAdapter(XmlDayAdapter.class)
-    public Day end;
+    public Day End;
 
     @ServiceProvider(service = ITsVariableAdapter.class)
     public static class Adapter implements ITsVariableAdapter<XmlChangeOfRegime, ChangeOfRegime> {
@@ -62,25 +61,25 @@ public class XmlChangeOfRegime extends XmlTsModifier {
         public ChangeOfRegime decode(XmlChangeOfRegime v) throws Exception {
             ChangeOfRegimeType type;
             Day day;
-            if (v.start != null) {
+            if (v.Start != null) {
                 type = ChangeOfRegimeType.ZeroStarted;
-                day = v.start;
+                day = v.Start;
             } else {
                 type = ChangeOfRegimeType.ZeroEnded;
-                day = v.end;
+                day = v.End;
             }
-            return new ChangeOfRegime(TsVariableAdapters.getDefault().decode(v.core), type, day);
+            return new ChangeOfRegime(TsVariableAdapters.getDefault().decode(v.Core), type, day);
         }
 
         @Override
         public XmlChangeOfRegime encode(ChangeOfRegime v) throws Exception {
             XmlChangeOfRegime xml = new XmlChangeOfRegime();
             if (v.getRegime() == ChangeOfRegimeType.ZeroStarted) {
-                xml.start = v.getDay();
+                xml.Start = v.getDay();
             } else {
-                xml.end = v.getDay();
+                xml.End = v.getDay();
             }
-            xml.core = TsVariableAdapters.getDefault().encode(v.getVariable());
+            xml.Core = TsVariableAdapters.getDefault().encode(v.getVariable());
             return xml;
         }
     }

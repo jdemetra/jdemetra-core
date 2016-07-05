@@ -18,154 +18,104 @@ limitations under the Licence.
 
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-            targetNamespace="ec/tss.core"
-            xmlns:tss="ec/tss.core"
-            elementFormDefault="qualified"
-            attributeFormDefault="unqualified">
+           targetNamespace="ec:eurostat:jdemetra:3"
+           xmlns:jd3="ec:eurostat:jdemetra:3">
 
-    <xs:include schemaLocation="tss_core.xsd"/>
+    <xs:include schemaLocation="core.xsd"/>
     <xs:include schemaLocation="calendar.xsd"/>
+    <xs:include schemaLocation="regression.xsd"/>
 
-    <xs:complexType name="algorithmType">
+    <xs:complexType name="AlgorithmType">
         <xs:annotation>
             <xs:documentation>
                 Description of an algorithm
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="name" type="xs:string"/>
-            <xs:element name="family" type="xs:string"/>
+            <xs:element name="Name" type="xs:string"/>
+            <xs:element name="Family" type="xs:string"/>
         </xs:sequence>
         <xs:attribute name="version" type="xs:string" use="optional"/>
     </xs:complexType>
 
-    <xs:complexType name="matrixType">
+    <xs:complexType name="MatrixType">
         <xs:annotation>
             <xs:documentation>
                 Matrix of doubles
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="data" type="tss:doubles"/>
+            <xs:element name="Data" type="jd3:DoublesType"/>
         </xs:sequence>
-        <xs:attribute name="nrows" type="xs:int" use="required"/>
-        <xs:attribute name="ncolumns" type="xs:int" use="required"/>
+        <xs:attribute name="rowsCount" type="xs:int" use="required"/>
+        <xs:attribute name="columnsCount" type="xs:int" use="required"/>
     </xs:complexType>
 
-    <xs:complexType name="statisticalTestType">
+    <xs:complexType name="StatisticalTestType">
         <xs:annotation>
             <xs:documentation>
                 Standard statistical test
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="description" type="xs:string"/>
-            <xs:element name="value" type="xs:double"/>
-            <xs:element name="pvalue" type="xs:double"/>
+            <xs:element name="Description" type="xs:string"/>
+            <xs:element name="Value" type="xs:double"/>
+            <xs:element name="Pvalue" type="xs:double"/>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="regressionItemType">
+    <xs:complexType name="RegressionItemType">
         <xs:annotation>
             <xs:documentation>
                 Result of a regression
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="description" type="xs:string"/>
-            <xs:element name="coefficient" type="xs:double"/>
-            <xs:element name="stderror" type="xs:double"/>
+            <xs:element name="Description" type="xs:string"/>
+            <xs:element name="Coefficient" type="xs:double"/>
+            <xs:element name="Stde" type="xs:double"/>
         </xs:sequence>
         <xs:attribute name="prespecified" type="xs:boolean"/>
     </xs:complexType>
 
     <!-- Regression variables -->
 
-    <xs:complexType name="rampType">
-        <xs:annotation>
-            <xs:documentation>
-                Ramp
-            </xs:documentation>
-        </xs:annotation>
-        <xs:group ref="tss:timeSpan"/>
-    </xs:complexType>
-
-    <xs:complexType name="interventionVariableType">
-        <xs:annotation>
-            <xs:documentation>
-                Usual intervention variable
-            </xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:group ref="tss:timeSpan" id="sequence" maxOccurs="unbounded"/>
-            <xs:element name="deltaFilter" type="xs:double" minOccurs="0"/>
-            <xs:element name="deltaSFilter" type="xs:double" minOccurs="0"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="tsVariableType">
-        <xs:annotation>
-            <xs:documentation>
-                Default static regression variable. Data must be available.
-                The name of the tsdata sub-item should be considered as a description, while the "name" attribute is the actual name of the variable
-            </xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:element name="tsdata" type="tss:tsDataType"/>
-        </xs:sequence>
-        <xs:attribute name="name" type ="xs:string"/>
-    </xs:complexType>
-
-    <xs:complexType name="dynamicTsVariableType">
-        <xs:annotation>
-            <xs:documentation>
-                Default dynamic regression variable. Identifier must be present.
-                The name of the tsdata sub-item should be considered as a description, while the "name" attribute is the actual name of the variable
-            </xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:element name="tsdata" type="tss:tsDataType" minOccurs="0"/>
-            <xs:element name="moniker" type="tss:tsMonikerType"/>
-        </xs:sequence>
-        <xs:attribute name="name" type ="xs:string"/>
-    </xs:complexType>
-
-    <xs:group name="tsVariableGroup">
+    <xs:group name="TsVariableGroup">
         <xs:annotation>
             <xs:documentation>
                 Ts Variable. Could be a dynamic ts variable or a static ts variable.
             </xs:documentation>
         </xs:annotation>
         <xs:choice>
-            <xs:element name="tsVariable" type="tss:tsVariableType"/>
-            <xs:element name="dynamicTsVariable" type ="tss:dynamicTsVariableType"/>
+            <xs:element name="TsVariable" type="jd3:TsVariableGroup"/>
+            <xs:element name="DynamicTsVariable" type ="jd3:DynamicTsVariableType"/>
         </xs:choice>
     </xs:group>
-
-    <xs:complexType name="tsVariablesType">
+    
+    <xs:complexType name="TsVariablesType">
         <xs:annotation>
             <xs:documentation>
-                Collection of Ts Variables
+                Collection of ts variables (static or dynamic).
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:group ref="tss:tsVariableGroup" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:group ref="jd3:TsVariableGroup" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="name" type="xs:string"/>
     </xs:complexType>
 
-    <xs:complexType name="processingContextType">
+    <xs:complexType name="ProcessingContextType">
         <xs:annotation>
             <xs:documentation>
                 A context contains information related to auxiliary time series and calendars used in regression models
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="calendars" type="tss:calendarsType" minOccurs="0"/>
-            <xs:element name="variables">
+            <xs:element name="Calendars" type="jd3:CalendarsType" minOccurs="0"/>
+            <xs:element name="Variables">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="group" type="tss:tsVariablesType" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="group" type="jd3:TsVariablesType" minOccurs="0" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -174,7 +124,7 @@ limitations under the Licence.
 
     <!-- Information set -->
 
-    <xs:complexType name="informationType">
+    <xs:complexType name="InformationType">
         <xs:annotation>
             <xs:documentation>
                 Generic information, using predefined atomic types
@@ -185,35 +135,33 @@ limitations under the Licence.
             <xs:element name="double" type="xs:double"/>
             <xs:element name="integer" type="xs:int"/>
             <xs:element name="string" type="xs:string"/>
-            <xs:element name="integers" type="tss:intsType"/>
-            <xs:element name="doubles" type="tss:doublesType"/>
-            <xs:element name="booleans" type="tss:booleansType"/>
-            <xs:element name="strings" type="tss:stringsType"/>
-            <xs:element name="subset" type="tss:informationSetType"/>
-            <xs:element name="tsdata" type="tss:tsDataType"/>
-            <xs:element name="ts" type="tss:tsType"/>
-            <xs:element name="tscollection" type="tss:tsCollectionType"/>
-            <xs:element name="method" type="tss:algorithmType"/>
-            <xs:element name="moniker" type="tss:tsMonikerType"/>
-            <xs:element name="span" type="tss:periodSelectionType"/>
-            <xs:element name="ramp" type="tss:rampType"/>
-            <xs:element name="ivar" type="tss:interventionVariableType"/>
-            <xs:element name="regitem" type="tss:regressionItemType"/>
-            <xs:element name="param" type="tss:paramType"/>
-            <xs:element name="params" type="tss:paramsType"/>
-            <xs:element name="matrix" type="tss:matrixType"/>
+            <xs:element name="integers" type="jd3:IntsType"/>
+            <xs:element name="doubles" type="jd3:DoublesType"/>
+            <xs:element name="booleans" type="jd3:BooleansType"/>
+            <xs:element name="strings" type="jd3:TokensType"/>
+            <xs:element name="subset" type="jd3:InformationSetType"/>
+            <xs:element name="tsdata" type="jd3:TsDataType"/>
+            <xs:element name="ts" type="jd3:TsType"/>
+            <xs:element name="tscollection" type="jd3:TsCollectionType"/>
+            <xs:element name="method" type="jd3:AlgorithmType"/>
+            <xs:element name="moniker" type="jd3:TsMonikerType"/>
+            <xs:element name="span" type="jd3:PeriodSelectionType"/>
+            <xs:element name="regitem" type="jd3:RegressionItemType"/>
+            <xs:element name="param" type="jd3:ParamType"/>
+            <xs:element name="params" type="jd3:ParamsType"/>
+            <xs:element name="matrix" type="jd3:MatrixType"/>
         </xs:choice>
         <xs:attribute name="name" type="xs:string" use="required" />
     </xs:complexType>
 
-    <xs:complexType name="informationSetType">
+    <xs:complexType name="InformationSetType">
         <xs:annotation>
             <xs:documentation>
                 Generic information set, which is a collection of atomic information
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="item" type="tss:informationType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="Item" type="jd3:InformationType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -241,7 +189,7 @@ limitations under the Licence.
         </xs:annotation>
         <xs:sequence>
         </xs:sequence>
-        <xs:attribute name="linktype" type="tss:linkType" use="required"/>
+        <xs:attribute name="linktype" type="jd3:linkType" use="required"/>
         <xs:attribute name="linkid" type="xs:string" use="required"/>
     </xs:complexType>
 
@@ -252,8 +200,8 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="link" type="tss:batchLinkType"/>
-            <xs:element name="specification" type="tss:informationSetType"/>
+            <xs:element name="link" type="jd3:batchLinkType"/>
+            <xs:element name="specification" type="jd3:informationSetType"/>
         </xs:sequence>
         <xs:attribute name="name" type="xs:string" use="required"/>
     </xs:complexType>
@@ -271,16 +219,16 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="context" type="tss:processingContextType"/>
-            <xs:element name="input" type="tss:informationSetType" minOccurs="1"/>
-            <xs:element name="step" type="tss:batchStepType" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="context" type="jd3:processingContextType"/>
+            <xs:element name="input" type="jd3:informationSetType" minOccurs="1"/>
+            <xs:element name="step" type="jd3:batchStepType" minOccurs="1" maxOccurs="unbounded"/>
             <xs:element name="filter" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="name" type="xs:string" use="required"/>
     </xs:complexType>
     
-    <xs:element name="tsVariables" type="tss:tsVariablesType"/>
-    <xs:element name="informationSet" type="tss:informationSetType"/>
-    <xs:element name="batch" type="tss:batchType"/>
+    <xs:element name="tsVariables" type="jd3:tsVariablesType"/>
+    <xs:element name="informationSet" type="jd3:informationSetType"/>
+    <xs:element name="batch" type="jd3:batchType"/>
 
 </xs:schema>

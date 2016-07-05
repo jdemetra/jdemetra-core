@@ -54,7 +54,7 @@ public class XmlTC extends XmlOutlier {
 
         @Override
         public TransitoryChange decode(XmlTC v) throws Exception {
-            TransitoryChange o = new TransitoryChange(v.position, v.factor, v.monthlyFactor);
+            TransitoryChange o = new TransitoryChange(v.Position, v.factor, v.monthlyFactor);
             o.setPrespecified(v.prespecified);
              return o;
         }
@@ -62,7 +62,7 @@ public class XmlTC extends XmlOutlier {
         @Override
         public XmlTC encode(TransitoryChange v) throws Exception {
             XmlTC xml = new XmlTC();
-            xml.position = v.getPosition();
+            xml.Position = v.getPosition();
             xml.prespecified=v.isPrespecified();
             xml.factor=v.getCoefficient();
             xml.monthlyFactor=v.isMonthlyCoefficient();

@@ -38,11 +38,11 @@ public class XmlRamp extends XmlVariable implements IXmlConverter<Ramp>{
 
     @XmlElement
     @XmlJavaTypeAdapter(XmlDayAdapter.class)
-    public Day start;
+    public Day Start;
 
     @XmlElement
     @XmlJavaTypeAdapter(XmlDayAdapter.class)
-    public Day end;
+    public Day End;
 
     public XmlRamp() {
     }
@@ -62,27 +62,27 @@ public class XmlRamp extends XmlVariable implements IXmlConverter<Ramp>{
 
         @Override
         public Ramp decode(XmlRamp v) throws Exception {
-            Ramp o = new Ramp(v.start, v.end);
+            Ramp o = new Ramp(v.Start, v.End);
             return o;
         }
 
         @Override
         public XmlRamp encode(Ramp v) throws Exception {
             XmlRamp xml = new XmlRamp();
-            xml.start = v.getStart();
-            xml.end = v.getEnd();
+            xml.Start = v.getStart();
+            xml.End = v.getEnd();
             return xml;
         }
     }
     
     @Override
     public Ramp create() {
-        return new Ramp(start, end);
+        return new Ramp(Start, End);
     }
 
     @Override
     public void copy(Ramp t) {
-        start =t.getStart();
-        end = t.getEnd();
+        Start =t.getStart();
+        End = t.getEnd();
     }
 }

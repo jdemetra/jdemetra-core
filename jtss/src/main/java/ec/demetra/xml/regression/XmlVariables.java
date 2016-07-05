@@ -36,8 +36,7 @@ import javax.xml.bind.annotation.XmlType;
 public class XmlVariables implements IXmlConverter<TsVariables> {
 
     static final String RNAME = "Variables", NAME = RNAME + "vType";
-    @XmlElement(name = "var")
-    @XmlElementWrapper(name = "variables")
+    @XmlElement(name = "Variable")
     List<XmlVariable> vars = new ArrayList<>();
 
     @Override

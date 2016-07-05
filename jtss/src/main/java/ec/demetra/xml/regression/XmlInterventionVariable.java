@@ -35,46 +35,46 @@ import org.openide.util.lookup.ServiceProvider;
 public class XmlInterventionVariable extends XmlVariable implements IXmlConverter<InterventionVariable> {
     static final String RNAME = "intervention", NAME=RNAME+"Type";
 
-    @XmlElement(name="sequence")
-    public XmlSeq[] sequence;
+    @XmlElement(name="Sequence")
+    public XmlSeq[] Sequence;
     @XmlElement
-    public Double deltafilter;
+    public Double DeltaFilter;
     public boolean isDeltaFilterSpecified() {
-        return deltafilter != null;
+        return DeltaFilter != null;
     }
     @XmlElement
-    public Double deltasfilter;
+    public Double DeltaSeasonalFilter;
     public boolean isDeltaSFilterSpecified() {
-        return deltasfilter != null;
+        return DeltaSeasonalFilter != null;
     }
 
     public XmlInterventionVariable() { }
 
     @Override
     public void copy(InterventionVariable t) {
-        deltafilter = t.getDelta();
-        deltasfilter = t.getDeltaS();
+        DeltaFilter = t.getDelta();
+        DeltaSeasonalFilter = t.getDeltaS();
 
         int n = t.getCount();
-        sequence = new XmlSeq[n];
+        Sequence = new XmlSeq[n];
         for (int i = 0; i < n; ++i) {
-            sequence[i].start = StringFormatter.yearMonth(t.getSequence(i).start);
-            sequence[i].end = StringFormatter.yearMonth(t.getSequence(i).end);
+            Sequence[i].Start = StringFormatter.yearMonth(t.getSequence(i).start);
+            Sequence[i].End = StringFormatter.yearMonth(t.getSequence(i).end);
         }
     }
 
     @Override
     public InterventionVariable create() {
-        if (sequence == null)
+        if (Sequence == null)
             return null;
         InterventionVariable ivar = new InterventionVariable();
         if (isDeltaFilterSpecified())
-            ivar.setDelta(deltafilter);
+            ivar.setDelta(DeltaFilter);
         if (isDeltaSFilterSpecified())
-            ivar.setDeltaS(deltasfilter);
-        for (int i = 0; i < sequence.length; ++i)
-            ivar.add(StringFormatter.yearMonth(sequence[i].start),
-                StringFormatter.yearMonth(sequence[i].end));
+            ivar.setDeltaS(DeltaSeasonalFilter);
+        for (int i = 0; i < Sequence.length; ++i)
+            ivar.add(StringFormatter.yearMonth(Sequence[i].Start),
+                StringFormatter.yearMonth(Sequence[i].End));
         return ivar;
     }
     

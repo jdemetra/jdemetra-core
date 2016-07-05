@@ -21,12 +21,9 @@ limitations under the Licence.
 <xs:schema version="1.0"
            targetNamespace="ec:eurostat:jdemetra:3"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns:jd="ec:eurostat:jdemetra:3"
-           xmlns:tss="ec/tss.core"
-           elementFormDefault="qualified"
-           attributeFormDefault="unqualified">
+           xmlns:jd3="ec:eurostat:jdemetra:3">
 
-    <xs:include schemaLocation="tss_core.xsd"/>
+    <xs:include schemaLocation="core.xsd"/>
     <xs:include schemaLocation="calendar.xsd"/>
 
     <xs:simpleType name="ComponentType">
@@ -243,7 +240,7 @@ limitations under the Licence.
         <xs:complexContent>
             <xs:extension base="VariableType">
                 <xs:sequence>
-                    <xs:group ref="tss:timeSpan" minOccurs="1" maxOccurs="unbounded"/>
+                    <xs:group ref="jd3:timeSpan" minOccurs="1" maxOccurs="unbounded"/>
                     <xs:element name="DeltaFilter" minOccurs="0" type="xs:double"/>
                     <xs:element name="DeltaSeasonalFilter" minOccurs="0" type="xs:double"/>
                 </xs:sequence>
@@ -314,6 +311,40 @@ limitations under the Licence.
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
+
+    <xs:complexType name="TsVariableType">
+        <xs:annotation>
+            <xs:documentation>
+                Default static regression variable. Data must be available.
+                The name of the tsdata sub-item should be considered as a description, while the "name" attribute is the actual name of the variable
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="jd3:VariableType">
+                <xs:sequence>
+                    <xs:element name="TsData" type="jd3:TsDataType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DynamicTsVariableType">
+        <xs:annotation>
+            <xs:documentation>
+                Default dynamic regression variable. Identifier must be present.
+                The name of the tsdata sub-item should be considered as a description, while the "name" attribute is the actual name of the variable
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="jd3:VariableType">
+                <xs:sequence>
+                    <xs:element name="Tsdata" type="jd3:TsDataType" minOccurs="0"/>
+                    <xs:element name="Moniker" type="jd3:TsMonikerType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
 
 </xs:schema>
 

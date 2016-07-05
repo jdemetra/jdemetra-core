@@ -1,7 +1,7 @@
 /*
 * Copyright 2016 National Bank of Belgium
 *
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+* Licensed under the EUPL, Version 1.1 or â€“ as soon they will be approved 
 * by the European Commission - subsequent versions of the EUPL (the "Licence");
 * You may not use this work except in compliance with the Licence.
 * You may obtain a copy of the Licence at:
@@ -16,8 +16,8 @@
 */
 
 
-@XmlSchema(namespace = "ec:eurostat:jdemetra:3", elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
-        xmlns = { @XmlNs(prefix = "jd", namespaceURI = "ec:eurostat:jdemetra:3"), @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema-instance") })
+@XmlSchema(namespace = "ec:eurostat:jdemetra:3"/*, elementFormDefault = XmlNsForm.UNQUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED*/, 
+        xmlns = { @XmlNs(prefix = "jd3", namespaceURI = "ec:eurostat:jdemetra:3"), @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema-instance") })
 package ec.demetra.xml.regression;
 
 import javax.xml.bind.annotation.XmlNs;

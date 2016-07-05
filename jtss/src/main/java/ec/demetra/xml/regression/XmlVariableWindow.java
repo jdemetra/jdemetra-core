@@ -37,11 +37,11 @@ public class XmlVariableWindow extends XmlTsModifier{
 
     @XmlElement
     @XmlJavaTypeAdapter(XmlDayAdapter.class)
-    public Day start;
+    public Day Start;
     
     @XmlElement
     @XmlJavaTypeAdapter(XmlDayAdapter.class)
-    public Day end;
+    public Day End;
 
     @ServiceProvider(service = ITsVariableAdapter.class)
     public static class Adapter implements ITsVariableAdapter<XmlVariableWindow, TsVariableWindow> {
@@ -58,16 +58,16 @@ public class XmlVariableWindow extends XmlTsModifier{
 
         @Override
         public TsVariableWindow decode(XmlVariableWindow v) throws Exception {
-            TsVariableWindow o = new TsVariableWindow(TsVariableAdapters.getDefault().decode(v.core), v.start, v.end);
+            TsVariableWindow o = new TsVariableWindow(TsVariableAdapters.getDefault().decode(v.Core), v.Start, v.End);
             return o;
         }
 
         @Override
         public XmlVariableWindow encode(TsVariableWindow v) throws Exception {
             XmlVariableWindow xml = new XmlVariableWindow();
-            xml.start = v.getStart();
-            xml.end=v.getEnd();
-            xml.core=TsVariableAdapters.getDefault().encode(v.getVariable());
+            xml.Start = v.getStart();
+            xml.End=v.getEnd();
+            xml.Core=TsVariableAdapters.getDefault().encode(v.getVariable());
             return xml;
         }
     }

@@ -53,7 +53,7 @@ public class XmlVariablesTest {
         JAXBContext jaxb = JAXBContext.newInstance(XmlVariables.class, XmlGenericTradingDays.class, XmlOutlier.class);
 
         XmlAO xout = new XmlAO();
-        xout.position = Day.toDay();
+        xout.Position = Day.toDay();
         xout.prespecified = true;
 
         XmlGenericTradingDays xtd = new XmlGenericTradingDays();
@@ -87,22 +87,22 @@ public class XmlVariablesTest {
         JAXBContext jaxb = JAXBContext.newInstance(xmlClasses.toArray(new Class[xmlClasses.size()]));
 
         XmlAO xout = new XmlAO();
-        xout.position = Day.toDay();
+        xout.Position = Day.toDay();
         xout.prespecified = true;
 
         XmlGenericTradingDays xtd = new XmlGenericTradingDays();
         xtd.contrasts = true;
-        xtd.dayClustering = DayClustering.TD4.getGroupsDefinition();
+        xtd.DayClustering = DayClustering.TD4.getGroupsDefinition();
         XmlVariables xvar = new XmlVariables();
         xvar.vars.add(xout);
         xvar.vars.add(xtd);
         XmlVariableWindow xwnd=new XmlVariableWindow();
-        xwnd.core=xtd;
-        xwnd.start=new TsPeriod(TsFrequency.Yearly, 2000, 0).firstday();
-        xwnd.end=new TsPeriod(TsFrequency.Yearly, 2010, 0).lastday();
+        xwnd.Core=xtd;
+        xwnd.Start=new TsPeriod(TsFrequency.Yearly, 2000, 0).firstday();
+        xwnd.End=new TsPeriod(TsFrequency.Yearly, 2010, 0).lastday();
         XmlChangeOfRegime xcr=new XmlChangeOfRegime();
-        xcr.start=new TsPeriod(TsFrequency.Yearly, 2005, 0).firstday();
-        xcr.core=xwnd;
+        xcr.Start=new TsPeriod(TsFrequency.Yearly, 2005, 0).firstday();
+        xcr.Core=xwnd;
         xvar.vars.add(xwnd);
         xvar.vars.add(xcr);
         

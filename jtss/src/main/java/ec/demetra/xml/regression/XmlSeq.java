@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlElement;
  */
 public class XmlSeq {
     @XmlElement
-    public String start;
+    public String Start;
     @XmlElement
-    public String end;
+    public String End;
 }

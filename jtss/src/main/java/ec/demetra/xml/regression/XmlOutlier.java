@@ -30,7 +30,7 @@ public abstract class XmlOutlier extends XmlVariable {
 
     @XmlElement
     @XmlJavaTypeAdapter(XmlDayAdapter.class)
-    public Day position;
+    public Day Position;
 
     @XmlAttribute
     public boolean prespecified;

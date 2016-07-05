@@ -14,5 +14,5 @@ import javax.xml.bind.annotation.XmlElement;
 public class XmlTsModifier extends XmlVariable{
         
     @XmlElement
-    public XmlVariable core;
+    public XmlVariable Core;
 }

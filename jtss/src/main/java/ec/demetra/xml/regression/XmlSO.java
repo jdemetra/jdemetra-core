@@ -50,7 +50,7 @@ public class XmlSO extends XmlOutlier {
 
         @Override
         public SeasonalOutlier decode(XmlSO v) throws Exception {
-            SeasonalOutlier o = new SeasonalOutlier(v.position);
+            SeasonalOutlier o = new SeasonalOutlier(v.Position);
             o.setPrespecified(v.prespecified);
             o.setZeroEnded(v.zeroEnded);
             return o;
@@ -59,7 +59,7 @@ public class XmlSO extends XmlOutlier {
         @Override
         public XmlSO encode(SeasonalOutlier v) throws Exception {
             XmlSO xml = new XmlSO();
-            xml.position = v.getPosition();
+            xml.Position = v.getPosition();
             xml.prespecified=v.isPrespecified();
             xml.zeroEnded=v.isZeroEnded();
             return xml;

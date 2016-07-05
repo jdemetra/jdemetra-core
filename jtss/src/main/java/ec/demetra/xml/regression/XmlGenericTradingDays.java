@@ -38,7 +38,7 @@ public class XmlGenericTradingDays extends XmlVariable {
 
     @XmlElement
     @XmlList
-    public int[] dayClustering;
+    public int[] DayClustering;
 
     @XmlAttribute
     public boolean contrasts;
@@ -58,7 +58,7 @@ public class XmlGenericTradingDays extends XmlVariable {
 
         @Override
         public GenericTradingDaysVariables decode(XmlGenericTradingDays v) throws Exception {
-            DayClustering clustering = DayClustering.create(v.dayClustering);
+            ec.tstoolkit.timeseries.DayClustering clustering = ec.tstoolkit.timeseries.DayClustering.create(v.DayClustering);
             
             GenericTradingDays gtd;
             if (v.contrasts)
@@ -72,7 +72,7 @@ public class XmlGenericTradingDays extends XmlVariable {
         public XmlGenericTradingDays encode(GenericTradingDaysVariables v) throws Exception {
             XmlGenericTradingDays xml = new XmlGenericTradingDays();
             xml.contrasts=v.getCore().getContrastGroup()>=0;
-            xml.dayClustering=v.getCore().getClustering().getGroupsDefinition();
+            xml.DayClustering=v.getCore().getClustering().getGroupsDefinition();
             return xml;
         }
 

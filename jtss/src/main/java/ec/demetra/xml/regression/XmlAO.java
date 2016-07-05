@@ -47,7 +47,7 @@ public class XmlAO extends XmlOutlier {
 
         @Override
         public AdditiveOutlier decode(XmlAO v) throws Exception {
-            AdditiveOutlier o = new AdditiveOutlier(v.position);
+            AdditiveOutlier o = new AdditiveOutlier(v.Position);
             o.setPrespecified(v.prespecified);
             return o;
         }
@@ -55,7 +55,7 @@ public class XmlAO extends XmlOutlier {
         @Override
         public XmlAO encode(AdditiveOutlier v) throws Exception {
             XmlAO xml = new XmlAO();
-            xml.position = v.getPosition();
+            xml.Position = v.getPosition();
             xml.prespecified=v.isPrespecified();
             return xml;
         }

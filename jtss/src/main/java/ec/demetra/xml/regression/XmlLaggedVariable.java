@@ -33,10 +33,10 @@ public class XmlLaggedVariable extends XmlTsModifier{
     static final String RNAME = "LaggedVariable", NAME = RNAME + "Type";
 
     @XmlElement
-    public int firstLag;
+    public int FirstLag;
     
     @XmlElement
-    public int lastLag;
+    public int LastLag;
 
     @ServiceProvider(service = ITsVariableAdapter.class)
     public static class Adapter implements ITsVariableAdapter<XmlLaggedVariable, LaggedTsVariable> {
@@ -53,16 +53,16 @@ public class XmlLaggedVariable extends XmlTsModifier{
 
         @Override
         public LaggedTsVariable decode(XmlLaggedVariable v) throws Exception {
-            LaggedTsVariable o = new LaggedTsVariable(TsVariableAdapters.getDefault().decode(v.core), v.firstLag, v.lastLag);
+            LaggedTsVariable o = new LaggedTsVariable(TsVariableAdapters.getDefault().decode(v.Core), v.FirstLag, v.LastLag);
             return o;
         }
 
         @Override
         public XmlLaggedVariable encode(LaggedTsVariable v) throws Exception {
             XmlLaggedVariable xml = new XmlLaggedVariable();
-            xml.firstLag = v.getFirstLag();
-            xml.lastLag=v.getLastLag();
-            xml.core=TsVariableAdapters.getDefault().encode(v.getVariable());
+            xml.FirstLag = v.getFirstLag();
+            xml.LastLag=v.getLastLag();
+            xml.Core=TsVariableAdapters.getDefault().encode(v.getVariable());
             return xml;
         }
     }

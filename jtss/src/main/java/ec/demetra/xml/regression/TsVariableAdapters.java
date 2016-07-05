@@ -18,7 +18,6 @@ package ec.demetra.xml.regression;
 
 import ec.tstoolkit.design.GlobalServiceProvider;
 import ec.tstoolkit.timeseries.regression.ITsVariable;
-import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
