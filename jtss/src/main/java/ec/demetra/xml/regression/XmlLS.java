@@ -51,7 +51,6 @@ public class XmlLS extends XmlOutlier {
         @Override
         public LevelShift decode(XmlLS v) throws Exception {
             LevelShift o = new LevelShift(v.Position);
-            o.setPrespecified(v.prespecified);
             o.setZeroEnded(v.zeroEnded);
             return o;
         }
@@ -60,7 +59,6 @@ public class XmlLS extends XmlOutlier {
         public XmlLS encode(LevelShift v) throws Exception {
             XmlLS xml = new XmlLS();
             xml.Position = v.getPosition();
-            xml.prespecified=v.isPrespecified();
             xml.zeroEnded=v.isZeroEnded();
             return xml;
         }

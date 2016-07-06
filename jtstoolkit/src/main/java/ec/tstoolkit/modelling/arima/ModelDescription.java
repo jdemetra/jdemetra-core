@@ -241,6 +241,10 @@ public class ModelDescription implements Cloneable {
         }
         return x;
     }
+    
+    public boolean isPrespecified(IOutlierVariable var){
+        return poutliers_.contains(var);
+    }
 
     public ComponentType getType(IOutlierVariable var) {
         return DeterministicComponent.getType(var);
@@ -645,9 +649,6 @@ public class ModelDescription implements Cloneable {
     public void setOutliers(List<IOutlierVariable> outliers) {
         outliers_.clear();
         if (outliers != null) {
-            for (IOutlierVariable xvar : outliers) {
-                xvar.setPrespecified(false);
-            }
             outliers_.addAll(outliers);
         }
     }
@@ -656,18 +657,12 @@ public class ModelDescription implements Cloneable {
         if (outliers == null || outliers.isEmpty()) {
             return;
         }
-        for (IOutlierVariable xvar : outliers) {
-            xvar.setPrespecified(false);
-        }
         outliers_.addAll(outliers);
     }
 
     public void setPrespecifiedOutliers(List<IOutlierVariable> outliers) {
         poutliers_.clear();
         if (outliers != null) {
-            for (IOutlierVariable xvar : outliers) {
-                xvar.setPrespecified(true);
-            }
             poutliers_.addAll(outliers);
         }
     }
@@ -675,9 +670,6 @@ public class ModelDescription implements Cloneable {
     public void addPrespecifiedOutliers(List<IOutlierVariable> outliers) {
         if (outliers == null || outliers.isEmpty()) {
             return;
-        }
-        for (IOutlierVariable xvar : outliers) {
-            xvar.setPrespecified(true);
         }
         poutliers_.addAll(outliers);
     }

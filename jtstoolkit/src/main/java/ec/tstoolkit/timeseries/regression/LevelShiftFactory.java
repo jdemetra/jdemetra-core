@@ -20,8 +20,6 @@ package ec.tstoolkit.timeseries.regression;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
-import ec.tstoolkit.timeseries.simplets.TsFrequency;
-import ec.tstoolkit.timeseries.simplets.TsPeriod;
 
 /**
  *
@@ -79,6 +77,10 @@ public class LevelShiftFactory implements IOutlierFactory {
 	return OutlierType.LS;
     }
 
+    @Override
+    public String getOutlierCode() {
+        return LevelShift.CODE;
+    }
     /**
      * 
      * @return

@@ -56,7 +56,7 @@ public class RegressionSpecTest {
         expected.clearMovingHolidays();
         assertTrue(expected.getMovingHolidays().length == 0);
         
-        OutlierDefinition outDef = new OutlierDefinition(Day.BEG, OutlierType.AO, true);
+        OutlierDefinition outDef = new OutlierDefinition(Day.BEG, OutlierType.AO);
         OutlierDefinition[] outliers_ = new OutlierDefinition[]{outDef};
         expected.setOutliers(outliers_);
         assertNotEquals(expected, actual);

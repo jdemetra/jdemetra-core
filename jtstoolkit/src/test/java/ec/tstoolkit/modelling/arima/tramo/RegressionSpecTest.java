@@ -45,7 +45,7 @@ public class RegressionSpecTest {
         actual.read(info);
         assertEquals(3, actual.getCalendar().getEaster().getDuration());
 
-        OutlierDefinition outDef = new OutlierDefinition(Day.BEG, OutlierType.AO, true);
+        OutlierDefinition outDef = new OutlierDefinition(Day.BEG, OutlierType.AO);
         OutlierDefinition[] outliers_ = new OutlierDefinition[]{outDef};
         expected.setOutliers(outliers_);
         info = expected.write(true);

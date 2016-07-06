@@ -385,7 +385,7 @@ public class PreprocessingModel implements IProcResults {
         TsVariableSelection<IOutlierVariable> sel = vars().select(IOutlierVariable.class);
         ArrayList<OutlierEstimation> o = new ArrayList<>();
         for (TsVariableSelection.Item<IOutlierVariable> cur : sel.elements()) {
-            if (cur.variable.isPrespecified() == prespecified) {
+            if (prespecified == description.isPrespecified(cur.variable)) {
                 int rpos = cur.position + istart;
                 CoefficientEstimation c = new CoefficientEstimation(b[rpos], se[rpos]);
                 o.add(new OutlierEstimation(c, cur.variable, description.getEstimationDomain().getFrequency()));
@@ -948,7 +948,7 @@ public class PreprocessingModel implements IProcResults {
             int pos = description.getRegressionVariablesStartingPosition() + item.position + vpos;
             double c = estimation.getLikelihood().getB()[pos];
             double e = estimation.getLikelihood().getBSer(pos, true, description.getArimaComponent().getFreeParametersCount());
-            return new RegressionItem(item.variable.getItemDescription(vpos, context), false, c, e);
+            return new RegressionItem(item.variable.getItemDescription(vpos, context), c, e);
         }
     }
     // some caching...

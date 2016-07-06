@@ -54,7 +54,6 @@ public class XmlVariablesTest {
 
         XmlAO xout = new XmlAO();
         xout.Position = Day.toDay();
-        xout.prespecified = true;
 
         XmlGenericTradingDays xtd = new XmlGenericTradingDays();
 
@@ -88,7 +87,6 @@ public class XmlVariablesTest {
 
         XmlAO xout = new XmlAO();
         xout.Position = Day.toDay();
-        xout.prespecified = true;
 
         XmlGenericTradingDays xtd = new XmlGenericTradingDays();
         xtd.contrasts = true;

@@ -75,7 +75,6 @@ public final class OutliersFactory {
 	for (IOutlierFactory fac : factories)
 	    if (fac.getOutlierType() == def.getType()){
 		IOutlierVariable o=fac.create(def.getPosition());
-                o.setPrespecified(def.isPrespecified());
                 return o;
             }
 	return null;

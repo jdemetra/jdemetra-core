@@ -110,8 +110,8 @@ public class HtmlRegArima extends AbstractHtmlElement {
         } else {
             stream.write(easter.get(0).variable.getDescription(context) + " detected").newLine();
         }
-        int no = x_.select(OutlierType.Undefined, false).getItemsCount();
-        int npo = x_.select(OutlierType.Undefined, true).getItemsCount();
+        int no = model_.description.getOutliers().size();
+        int npo = model_.description.getPrespecifiedOutliers().size();
 
         if (npo > 1) {
             stream.write(Integer.toString(npo)).write(" pre-specified outliers").newLine();
@@ -283,7 +283,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
         TsVariableSelection<IOutlierVariable> regs = x_.select(IOutlierVariable.class);
         boolean found = false;
         for (TsVariableSelection.Item<IOutlierVariable> reg : regs.elements()) {
-            if (reg.variable.isPrespecified() == prespecified) {
+            if (model_.description.isPrespecified(reg.variable) == prespecified) {
                 found = true;
                 break;
             }
@@ -304,7 +304,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
         stream.close(HtmlTag.TABLEROW);
         int start = model_.description.getRegressionVariablesStartingPosition();
         for (TsVariableSelection.Item<IOutlierVariable> reg : regs.elements()) {
-            if (reg.variable.isPrespecified() == prespecified) {
+            if (model_.description.isPrespecified(reg.variable) == prespecified) {
                 stream.open(HtmlTag.TABLEROW);
                 stream.write(new HtmlTableCell(reg.variable.getDescription(context), 100));
                 stream.write(new HtmlTableCell(df4.format(b[start + reg.position]), 100));

@@ -180,7 +180,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     }
 
     public void add(IOutlierVariable item) {
-        outliers_.add(new OutlierDefinition(item.getPosition(), item.getOutlierType(), item.isPrespecified()));
+        outliers_.add(new OutlierDefinition(item.getPosition(), item.getCode()));
     }
 
     public boolean contains(OutlierDefinition outlier) {

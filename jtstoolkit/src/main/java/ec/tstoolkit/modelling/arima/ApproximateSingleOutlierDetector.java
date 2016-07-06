@@ -17,15 +17,10 @@
 package ec.tstoolkit.modelling.arima;
 
 import ec.tstoolkit.arima.IArimaModel;
-import ec.tstoolkit.arima.StationaryTransformation;
-import ec.tstoolkit.arima.estimation.ArmaKF;
 import ec.tstoolkit.arima.estimation.ConcentratedLikelihoodEstimation;
-import ec.tstoolkit.arima.estimation.KalmanFilter;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.data.DataBlock;
-import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.design.Development;
-import ec.tstoolkit.eco.Likelihood;
 import ec.tstoolkit.maths.linearfilters.BackFilter;
 import ec.tstoolkit.maths.linearfilters.RationalBackFilter;
 import ec.tstoolkit.maths.polynomials.Polynomial;
@@ -111,7 +106,7 @@ public class ApproximateSingleOutlierDetector<T extends IArimaModel> extends
 //        double[] o = new double[n];
 //        DataBlock O = new DataBlock(o);
         IOutlierVariable outlier = getOutlierFactory(idx).create(
-                getDomain().getStart());
+                getDomain().getStart().firstday());
         IOutlierVariable.FilterRepresentation representation = outlier.getFilterRepresentation(m_stmodel.getFrequency());
         if (representation == null) {
             return;

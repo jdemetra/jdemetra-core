@@ -34,11 +34,11 @@ public class XmlTC extends XmlOutlier {
     static final String RNAME = "tc", NAME = RNAME + "Type";
 
     @XmlAttribute
-    public double factor=0.7;
+    public double factor = 0.7;
 
     @XmlAttribute
-    public boolean monthlyFactor=false;
-    
+    public boolean monthlyFactor = false;
+
     @ServiceProvider(service = ITsVariableAdapter.class)
     public static class Adapter implements ITsVariableAdapter<XmlTC, TransitoryChange> {
 
@@ -55,17 +55,15 @@ public class XmlTC extends XmlOutlier {
         @Override
         public TransitoryChange decode(XmlTC v) throws Exception {
             TransitoryChange o = new TransitoryChange(v.Position, v.factor, v.monthlyFactor);
-            o.setPrespecified(v.prespecified);
-             return o;
+            return o;
         }
 
         @Override
         public XmlTC encode(TransitoryChange v) throws Exception {
             XmlTC xml = new XmlTC();
             xml.Position = v.getPosition();
-            xml.prespecified=v.isPrespecified();
-            xml.factor=v.getCoefficient();
-            xml.monthlyFactor=v.isMonthlyCoefficient();
+            xml.factor = v.getCoefficient();
+            xml.monthlyFactor = v.isMonthlyCoefficient();
             return xml;
         }
 

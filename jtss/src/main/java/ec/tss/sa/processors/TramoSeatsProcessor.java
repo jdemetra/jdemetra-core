@@ -63,12 +63,12 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ISaProcessingFactory.class)
 public class TramoSeatsProcessor implements ISaProcessingFactory<TramoSeatsSpecification> {
-
+    
     public static final AlgorithmDescriptor DESCRIPTOR = TramoSeatsProcessingFactory.DESCRIPTOR;
-
+    
     public TramoSeatsProcessor() {
     }
-
+    
     @Override
     public ISaSpecification createSpecification(InformationSet info) {
         TramoSeatsSpecification spec = new TramoSeatsSpecification();
@@ -78,10 +78,11 @@ public class TramoSeatsProcessor implements ISaProcessingFactory<TramoSeatsSpeci
             return null;
         }
     }
-
+    
     @Override
     public ISaSpecification createSpecification(SaItem doc, TsDomain frozen, EstimationPolicyType policy, boolean nospan) {
         TramoSeatsSpecification spec = (TramoSeatsSpecification) doc.getPointSpecification();
+        TramoSeatsSpecification espec=(TramoSeatsSpecification) doc.getEstimationSpecification();
         TramoSeatsSpecification defspec = (TramoSeatsSpecification) doc.getDomainSpecification();
         if (policy == EstimationPolicyType.Complete || spec == null) {
             TramoSeatsSpecification nspec = defspec.clone();
@@ -90,9 +91,9 @@ public class TramoSeatsProcessor implements ISaProcessingFactory<TramoSeatsSpeci
             }
             return nspec;
         }
-
+        
         TramoSeatsSpecification newspec = spec.clone();
-
+        
         TramoSpecification ntspec = newspec.getTramoSpecification(),
                 dtspec = defspec.getTramoSpecification();
         if (nospan) {
@@ -112,19 +113,19 @@ public class TramoSeatsProcessor implements ISaProcessingFactory<TramoSeatsSpeci
         if (policy == EstimationPolicyType.Outliers_StochasticComponent || policy == EstimationPolicyType.Outliers) {
             ntspec.setOutliers(dtspec.getOutliers().clone());
             // reset the default outliers detection and the default pre-specified outliers, if any
-            nrspec.setOutliers(OutlierDefinition.prespecify(drspec.getOutliers(), true));
+            nrspec.setOutliers(drspec.getOutliers());
         }
 
         // frozen outliers
         if (policy == EstimationPolicyType.LastOutliers) {
             OutlierDefinition[] o = nrspec.getOutliers();
             // reset the default outliers detection an the default pre-specified outliers, if any
-            nrspec.setOutliers(OutlierDefinition.prespecify(drspec.getOutliers(), true));
+            nrspec.setOutliers(drspec.getOutliers());
             if (frozen != null && o != null) {
                 for (int j = 0; j < o.length; ++j) {
                     OutlierDefinition cur = o[j];
                     if (frozen.search(cur.getPosition()) >= 0 && !drspec.contains(cur)) {
-                        nrspec.add(cur.prespecify(true));
+                        nrspec.add(cur);
                     }
                 }
             }
@@ -136,21 +137,21 @@ public class TramoSeatsProcessor implements ISaProcessingFactory<TramoSeatsSpeci
         }
         if (policy == EstimationPolicyType.FixedParameters || policy == EstimationPolicyType.FreeParameters) {
             // pre-specify all outliers
-            nrspec.setOutliers(OutlierDefinition.prespecify(nrspec.getOutliers(), true));
+            nrspec.setOutliers(nrspec.getOutliers());
         }
 
         // parameters of the regarima model
         if (policy == EstimationPolicyType.Outliers || policy == EstimationPolicyType.LastOutliers || policy == EstimationPolicyType.FreeParameters) {
             ntspec.getArima().clearParameters();
         }
-
+        
         if (policy == EstimationPolicyType.FixedParameters) {
             ntspec.getArima().setParameterType(ParameterType.Fixed);
         }
-
+        
         return newspec;
     }
-
+    
     @Override
     public boolean updatePointSpecification(SaItem item) {
         if (item.getStatus() != SaItem.Status.Valid) {
@@ -174,7 +175,7 @@ public class TramoSeatsProcessor implements ISaProcessingFactory<TramoSeatsSpeci
         TradingDaysSpec tdspec = cspec.getTradingDays();
         EasterSpec espec = cspec.getEaster();
         TsVariableList vars = regarima.description.buildRegressionVariables();
-
+        
         if (tdspec.isUsed() && (tdspec.isTest() || tdspec.isAutomatic())) {
             // leap year
             boolean used = false;
@@ -199,7 +200,7 @@ public class TramoSeatsProcessor implements ISaProcessingFactory<TramoSeatsSpeci
                 tdspec.setTest(false);
             } else {
                 tdspec.disable();
-
+                
             }
         }
         if (espec.isUsed() && espec.isTest()) {
@@ -212,10 +213,12 @@ public class TramoSeatsProcessor implements ISaProcessingFactory<TramoSeatsSpeci
         // outliers (if any)
         OutlierSpec ospec = tspec.getOutliers();
         if (ospec.isUsed()) {
-            TsVariableSelection<IOutlierVariable> sel = vars.select(OutlierType.Undefined, false);
+            TsVariableSelection<IOutlierVariable> sel = vars.select(OutlierType.Undefined);
             if (!sel.isEmpty()) {
                 for (TsVariableSelection.Item<IOutlierVariable> o : sel.elements()) {
-                    rspec.add(o.variable);
+                    if (!regarima.description.isPrespecified(o.variable)) {
+                        rspec.add(o.variable);
+                    }
                 }
             }
             ospec.clearTypes();
@@ -237,7 +240,7 @@ public class TramoSeatsProcessor implements ISaProcessingFactory<TramoSeatsSpeci
     public SaDocument<?> createDocument() {
         return new TramoSeatsDocument();
     }
-
+    
     @Override
     public List<ISaSpecification> defaultSpecifications() {
         ArrayList<ISaSpecification> specs = new ArrayList<>();
@@ -250,31 +253,31 @@ public class TramoSeatsProcessor implements ISaProcessingFactory<TramoSeatsSpeci
         specs.add(TramoSeatsSpecification.RSAfull);
         return specs;
     }
-
+    
     @Override
     public void dispose() {
     }
-
+    
     @Override
     public AlgorithmDescriptor getInformation() {
         return TramoSeatsProcessingFactory.instance.getInformation();
     }
-
+    
     @Override
     public boolean canHandle(IProcSpecification spec) {
         return TramoSeatsProcessingFactory.instance.canHandle(spec);
     }
-
+    
     @Override
     public IProcessing<TsData, CompositeResults> generateProcessing(TramoSeatsSpecification specification, ProcessingContext context) {
         return TramoSeatsProcessingFactory.instance.generateProcessing(specification, context);
     }
-
+    
     @Override
     public Map<String, Class> getSpecificationDictionary(Class<TramoSeatsSpecification> specClass) {
         return TramoSeatsProcessingFactory.instance.getSpecificationDictionary(specClass);
     }
-
+    
     @Override
     public Map<String, Class> getOutputDictionary() {
         return TramoSeatsProcessingFactory.instance.getOutputDictionary();

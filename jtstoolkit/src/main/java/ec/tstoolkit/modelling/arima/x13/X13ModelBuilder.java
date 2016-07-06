@@ -178,17 +178,11 @@ public class X13ModelBuilder implements IModelBuilder {
 //
 //    }
     private void initializeOutliers(ModelDescription model, OutlierDefinition[] outliers) {
-        ArrayList<IOutlierVariable> var = new ArrayList<>();
         ArrayList<IOutlierVariable> pvar = new ArrayList<>();
         for (int i = 0; i < outliers.length; ++i) {
             IOutlierVariable v = RegArimaSpecification.fac.make(outliers[i]);
-            if (outliers[i].isPrespecified()) {
-                pvar.add(v);
-            } else {
-                var.add(v);
-            }
+            pvar.add(v);
         }
-        model.addOutliers(var);
         model.addPrespecifiedOutliers(pvar);
 
     }
@@ -318,8 +312,7 @@ public class X13ModelBuilder implements IModelBuilder {
                     tvar.status = RegStatus.Prespecified;
                 }
                 model.getMovingHolidays().add(tvar);
-            }
-            else if (mh[i].getType() == MovingHolidaySpec.Type.JulianEaster) {
+            } else if (mh[i].getType() == MovingHolidaySpec.Type.JulianEaster) {
                 JulianEasterVariable var = new JulianEasterVariable();
                 Variable tvar = new Variable(var, ComponentType.CalendarEffect);
                 var.setDuration(mh[i].getW());
@@ -332,7 +325,7 @@ public class X13ModelBuilder implements IModelBuilder {
                 }
                 model.getMovingHolidays().add(tvar);
             }
-       }
+        }
     }
 
     private void initializeDefaultTradingDays(ModelDescription model, TradingDaysSpec td) {

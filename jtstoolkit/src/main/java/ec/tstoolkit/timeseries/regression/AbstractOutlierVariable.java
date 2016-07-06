@@ -83,12 +83,11 @@ public abstract class AbstractOutlierVariable extends AbstractSingleTsVariable
         return 1.483 * median;
     }
     
-    protected Day position;
-    protected boolean prespecified;
+    protected final Day position;
 
     /**
      *
-     * @param p
+     * @param pos
      */
     protected AbstractOutlierVariable(Day pos) {
         position = pos;
@@ -112,20 +111,6 @@ public abstract class AbstractOutlierVariable extends AbstractSingleTsVariable
     @Override
     public Day getPosition() {
         return position;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public boolean isPrespecified() {
-        return prespecified;
-    }
-
-    @Override
-    public void setPrespecified(boolean value) {
-        prespecified = value;
     }
 
 }

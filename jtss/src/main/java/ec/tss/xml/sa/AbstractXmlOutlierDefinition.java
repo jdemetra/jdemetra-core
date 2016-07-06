@@ -52,12 +52,12 @@ public abstract class AbstractXmlOutlierDefinition {
     public OutlierDefinition getDefinition() {
         Day p = StringFormatter.convertDay(period);
         if (p != null) {
-            return new OutlierDefinition(p, getType(), isPrespecifiedOutlier());
+            return new OutlierDefinition(p, getType());
         } else {
             // for compatibility issues
             TsPeriod pos = StringFormatter.readPeriod(period);
             if (pos != null) {
-                return new OutlierDefinition(pos, getType(), isPrespecifiedOutlier());
+                return new OutlierDefinition(pos, getType());
             } else {
                 return null;
             }
@@ -77,7 +77,6 @@ public abstract class AbstractXmlOutlierDefinition {
         }
         if (x != null) {
             x.period = StringFormatter.convert(def.getPosition());
-            x.setPrespecifiedOutlier(def.isPrespecified());
         }
         return x;
     }

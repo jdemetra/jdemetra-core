@@ -37,54 +37,45 @@ public class OutlierDefinition implements Comparable<OutlierDefinition> {
 
     private final Day position;
     private final String code;
-    private final boolean prespecified;
 
     /**
      *
      * @param period
      * @param type
-     * @param prespecified
      */
-    public OutlierDefinition(TsPeriod period, OutlierType type, boolean prespecified) {
+    public OutlierDefinition(TsPeriod period, OutlierType type) {
         position = period.firstday();
         this.code = type.name();
-        this.prespecified = prespecified;
     }
 
     /**
      *
      * @param pos
      * @param type
-     * @param prespecified
      */
-    public OutlierDefinition(Day pos, OutlierType type, boolean prespecified) {
+    public OutlierDefinition(Day pos, OutlierType type) {
         position = pos;
         this.code = type.name();
-        this.prespecified = prespecified;
     }
 
     /**
      *
      * @param period
      * @param type
-     * @param prespecified
      */
-    public OutlierDefinition(TsPeriod period, String code, boolean prespecified) {
+    public OutlierDefinition(TsPeriod period, String code) {
         position = period.firstday();
         this.code = code;
-        this.prespecified = prespecified;
     }
 
     /**
      *
      * @param pos
      * @param type
-     * @param prespecified
      */
-    public OutlierDefinition(Day pos, String code, boolean prespecified) {
+    public OutlierDefinition(Day pos, String code) {
         position = pos;
         this.code = code;
-        this.prespecified = prespecified;
     }
 
     public Day getPosition() {
@@ -101,30 +92,6 @@ public class OutlierDefinition implements Comparable<OutlierDefinition> {
 
     public String getCode() {
         return code;
-    }
-
-    public boolean isPrespecified() {
-        return prespecified;
-    }
-
-    public OutlierDefinition prespecify(boolean val) {
-        if (val == prespecified) {
-            return this;
-        } else {
-            return new OutlierDefinition(position, code, val);
-        }
-    }
-
-    public static OutlierDefinition[] prespecify(OutlierDefinition[] o, boolean val) {
-        if (o == null || o.length == 0) {
-            return o;
-        }
-        OutlierDefinition[] no = new OutlierDefinition[o.length];
-
-        for (int i = 0; i < no.length; ++i) {
-            no[i] = o[i].prespecify(val);
-        }
-        return no;
     }
 
     @Override
@@ -157,18 +124,12 @@ public class OutlierDefinition implements Comparable<OutlierDefinition> {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(code).append(InformationSet.SEP).append(StringFormatter.convert(position));
-        if (this.prespecified) {
-            builder.append(InformationSet.SEP).append('f');
-        }
         return builder.toString();
     }
 
     public String toString(TsFrequency freq) {
         StringBuilder builder = new StringBuilder();
         builder.append(code).append(InformationSet.SEP).append(StringFormatter.write(new TsPeriod(freq, position)));
-        if (this.prespecified) {
-            builder.append(InformationSet.SEP).append('f');
-        }
         return builder.toString();
     }
 
@@ -191,11 +152,11 @@ public class OutlierDefinition implements Comparable<OutlierDefinition> {
         }
         Day day = StringFormatter.convertDay(ss[1]);
         if (day != null) {
-            return new OutlierDefinition(day, type, p);
+            return new OutlierDefinition(day, type);
         }
         TsPeriod period = StringFormatter.readPeriod(ss[1]);
         if (period != null) {
-            return new OutlierDefinition(period, type, p);
+            return new OutlierDefinition(period, type);
         } else {
             return null;
         }
@@ -204,7 +165,7 @@ public class OutlierDefinition implements Comparable<OutlierDefinition> {
     public static List<OutlierDefinition> of(List<IOutlierVariable> vars) {
         List<OutlierDefinition> defs = new ArrayList<>();
         for (IOutlierVariable var : vars) {
-            defs.add(new OutlierDefinition(var.getPosition(), var.getOutlierType(), var.isPrespecified()));
+            defs.add(new OutlierDefinition(var.getPosition(), var.getOutlierType()));
         }
         return defs;
     }

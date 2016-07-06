@@ -222,7 +222,7 @@ public class RegArimaDictionary {
         int icur = 0;
         for (TsVariableSelection.Item<ICalendarVariable> var : td.elements()) {
             for (int j = 0; j < var.variable.getDim(); ++j) {
-                RegressionItem reg = new RegressionItem(null, false, c[start + var.position + j], e[start + var.position + j]);
+                RegressionItem reg = new RegressionItem(null, c[start + var.position + j], e[start + var.position + j]);
                 if (icur < tdmax) {
                     cinfo.set(TD_LIST[icur++], reg);
                 }
@@ -246,7 +246,7 @@ public class RegArimaDictionary {
             int dur = easter.get(0).variable.getDuration();
             StringBuilder builder = new StringBuilder();
             builder.append(EASTER).append('(').append(dur).append(')');
-            RegressionItem reg = new RegressionItem(builder.toString(), false, c[pos], e[pos]);
+            RegressionItem reg = new RegressionItem(builder.toString(), c[pos], e[pos]);
             cinfo.set(EASTER, reg);
    }
 
@@ -266,7 +266,7 @@ public class RegArimaDictionary {
                 builder.append("out(").append(++icur).append(')');
                 name = builder.toString();
             }
-            RegressionItem reg = new RegressionItem(cur.variable.getDescription(freq), cur.variable.isPrespecified(), b[start + cur.position], e[start + cur.position]);
+            RegressionItem reg = new RegressionItem(cur.variable.getDescription(freq), b[start + cur.position], e[start + cur.position]);
             oinfo.set(name, reg);
         }
     }

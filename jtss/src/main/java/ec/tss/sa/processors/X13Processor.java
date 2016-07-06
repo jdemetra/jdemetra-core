@@ -104,19 +104,19 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
         if (policy == EstimationPolicyType.Outliers_StochasticComponent || policy == EstimationPolicyType.Outliers) {
             ntspec.setOutliers(dtspec.getOutliers().clone());
             // reset the default outliers detection an the default pre-specified outliers, if any
-            nrspec.setOutliers(OutlierDefinition.prespecify(drspec.getOutliers(), true));
+            nrspec.setOutliers(drspec.getOutliers());
         }
 
         // frozen outliers
         if (policy == EstimationPolicyType.LastOutliers) {
             OutlierDefinition[] o = nrspec.getOutliers();
             // reset the default outliers detection an the default pre-specified outliers, if any
-            nrspec.setOutliers(OutlierDefinition.prespecify(drspec.getOutliers(), true));
+            nrspec.setOutliers(drspec.getOutliers());
             if (frozen != null && o != null) {
                 for (int j = 0; j < o.length; ++j) {
                     OutlierDefinition cur = o[j];
                     if (frozen.search(cur.getPosition()) >= 0 && !drspec.contains(cur)) {
-                        nrspec.add(cur.prespecify(true));
+                        nrspec.add(cur);
                     }
                 }
             }
@@ -128,7 +128,7 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
         }
         if (policy == EstimationPolicyType.FixedParameters || policy == EstimationPolicyType.FreeParameters) {
             // pre-specify all outliers
-            nrspec.setOutliers(OutlierDefinition.prespecify(nrspec.getOutliers(), true));
+            nrspec.setOutliers(nrspec.getOutliers());
         }
 
         // parameters of the regarima model
@@ -218,10 +218,12 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
         // outliers (if any)
         OutlierSpec ospec = tspec.getOutliers();
         if (ospec.isUsed()) {
-            TsVariableSelection<IOutlierVariable> sel = vars.select(OutlierType.Undefined, false);
+            TsVariableSelection<IOutlierVariable> sel = vars.select(OutlierType.Undefined);
             if (!sel.isEmpty()) {
                 for (TsVariableSelection.Item<IOutlierVariable> o : sel.elements()) {
-                    rspec.add(o.variable);
+                    if (!regarima.description.isPrespecified(o.variable)) {
+                        rspec.add(o.variable);
+                    }
                 }
             }
             ospec.clearTypes();
