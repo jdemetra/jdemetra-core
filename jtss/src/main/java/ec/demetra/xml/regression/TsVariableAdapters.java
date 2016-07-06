@@ -18,8 +18,10 @@ package ec.demetra.xml.regression;
 
 import ec.tstoolkit.design.GlobalServiceProvider;
 import ec.tstoolkit.timeseries.regression.ITsVariable;
+import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import org.openide.util.Lookup;
 
@@ -29,48 +31,57 @@ import org.openide.util.Lookup;
  */
 @GlobalServiceProvider
 public class TsVariableAdapters {
-    
-    private static TsVariableAdapters defadapters;
-    
-    public static final synchronized TsVariableAdapters getDefault(){
-        if (defadapters == null){
-            defadapters=new TsVariableAdapters();
-            defadapters.load();
-            // load all the current classes
-        }
-        return defadapters;
+
+    private static final AtomicReference<TsVariableAdapters> defadapters= new AtomicReference<>();
+
+
+    public static final TsVariableAdapters getDefault() {
+        defadapters.compareAndSet(null, make());
+        return defadapters.get();
+    }
+
+    public static final void setDefault(TsVariableAdapters adapters) {
+        defadapters.set(adapters);
     }
     
-    private final List<ITsVariableAdapter> adapters=new ArrayList<>();
-    
-    public void load(){
+    private static TsVariableAdapters make(){
+        TsVariableAdapters adapters=new TsVariableAdapters();
+        adapters.load();
+        return adapters;
+    }
+
+    private final List<ITsVariableAdapter> adapters = new ArrayList<>();
+
+    public void load() {
         Lookup.Result<ITsVariableAdapter> all = Lookup.getDefault().lookupResult(ITsVariableAdapter.class);
         adapters.addAll(all.allInstances());
     }
-    
-    public List<Class> getXmlClasses(){
-        return adapters.stream().map(adapter->adapter.getXmlType()).collect(Collectors.toList());
-     }
-    
-    public ITsVariable decode(XmlVariable xvar){
-        for (ITsVariableAdapter adapter: adapters ){
-            if (adapter.getXmlType().isInstance(xvar))
+
+    public List<Class> getXmlClasses() {
+        return adapters.stream().map(adapter -> adapter.getXmlType()).collect(Collectors.toList());
+    }
+
+    public ITsVariable decode(XmlVariable xvar) {
+        for (ITsVariableAdapter adapter : adapters) {
+            if (adapter.getXmlType().isInstance(xvar)) {
                 try {
                     return (ITsVariable) adapter.decode(xvar);
-            } catch (Exception ex) {
-                return null;
+                } catch (Exception ex) {
+                    return null;
+                }
             }
         }
         return null;
     }
 
-    public XmlVariable encode(ITsVariable ivar){
-        for (ITsVariableAdapter adapter: adapters ){
-            if (adapter.getValueType().isInstance(ivar))
+    public XmlVariable encode(ITsVariable ivar) {
+        for (ITsVariableAdapter adapter : adapters) {
+            if (adapter.getValueType().isInstance(ivar)) {
                 try {
                     return (XmlVariable) adapter.encode(ivar);
-            } catch (Exception ex) {
-                return null;
+                } catch (Exception ex) {
+                    return null;
+                }
             }
         }
         return null;
