@@ -18,10 +18,13 @@
 
 package ec.tstoolkit.modelling.arima;
 
+import ec.tstoolkit.design.AlgorithmDefinition;
+
 /**
  *
  * @author Jean Palate
  */
+@AlgorithmDefinition
 public interface IOutliersDetectionModule extends IPreprocessingModule{
     boolean reduceSelectivity();
     void setSelectivity(int level);

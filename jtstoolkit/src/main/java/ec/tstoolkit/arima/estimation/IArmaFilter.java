@@ -21,14 +21,14 @@ package ec.tstoolkit.arima.estimation;
 import ec.tstoolkit.arima.*;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
+import ec.tstoolkit.design.AlgorithmDefinition;
 import ec.tstoolkit.design.Development;
-import ec.tstoolkit.design.ServiceDefinition;
 
 /**
  * This interface defines methods used to compute the likelihood of data generated
  * by an arma model.
  * Suppose that y follows an ARMA model with covariance matrix V.
- * For computing the likelihood of y, we need to compute log|V| and to compute the ssq of
+ * For computing the likelihood of y, we need log|V| and the ssq of
  * z=Ay, where A'A=V^-1 
  * 
  * The class defines the transformation z=A'y (filter),
@@ -38,7 +38,7 @@ import ec.tstoolkit.design.ServiceDefinition;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-@ServiceDefinition
+@AlgorithmDefinition
 public interface IArmaFilter {
 
     /**
