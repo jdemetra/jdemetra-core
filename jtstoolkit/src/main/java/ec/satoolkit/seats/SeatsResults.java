@@ -146,38 +146,34 @@ public class SeatsResults implements ISaResults {
 
     @Override
     public boolean contains(String id) {
-        synchronized (mapping) {
-            if (mapping.contains(id)) {
-                return true;
-            }
-            if (info_ != null) {
-                if (!id.contains(InformationSet.STRSEP)) {
-                    return info_.deepSearch(id, Object.class) != null;
-                } else {
-                    return info_.search(id, Object.class) != null;
-                }
-
+        if (mapping.contains(id)) {
+            return true;
+        }
+        if (info_ != null) {
+            if (!id.contains(InformationSet.STRSEP)) {
+                return info_.deepSearch(id, Object.class) != null;
             } else {
-                return false;
+                return info_.search(id, Object.class) != null;
             }
+
+        } else {
+            return false;
         }
     }
 
     @Override
     public <T> T getData(String id, Class<T> tclass) {
-        synchronized (mapping) {
-            if (mapping.contains(id)) {
-                return mapping.getData(this, id, tclass);
-            }
-            if (info_ != null) {
-                if (!id.contains(InformationSet.STRSEP)) {
-                    return info_.deepSearch(id, tclass);
-                } else {
-                    return info_.search(id, tclass);
-                }
+        if (mapping.contains(id)) {
+            return mapping.getData(this, id, tclass);
+        }
+        if (info_ != null) {
+            if (!id.contains(InformationSet.STRSEP)) {
+                return info_.deepSearch(id, tclass);
             } else {
-                return null;
+                return info_.search(id, tclass);
             }
+        } else {
+            return null;
         }
     }
 
@@ -192,15 +188,15 @@ public class SeatsResults implements ISaResults {
 
     // MAPPERS
     public static <T> void setMapping(String name, Class<T> tclass, Function<SeatsResults, T> extractor) {
-        synchronized (mapping) {
-            mapping.set(name, tclass, extractor);
-        }
+        mapping.set(name, tclass, extractor);
+    }
+
+    public static InformationMapping<SeatsResults> getMapping() {
+        return mapping;
     }
 
     public static <T> void set(String name, Function<SeatsResults, TsData> extractor) {
-        synchronized (mapping) {
-            mapping.set(name, extractor);
-        }
+        mapping.set(name, extractor);
     }
     private static final InformationMapping<SeatsResults> mapping = new InformationMapping<>();
 
