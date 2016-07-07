@@ -20,14 +20,13 @@ import ec.satoolkit.*;
 import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.arima.ArimaModel;
 import ec.tstoolkit.design.Development;
-import ec.tstoolkit.information.InformationMapper;
+import ec.tstoolkit.information.Information;
 import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.modelling.ComponentInformation;
 import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.ModellingDictionary;
 import ec.tstoolkit.modelling.SeriesInfo;
-import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.ucarima.UcarimaModel;
 import ec.tstoolkit.ucarima.WienerKolmogorovEstimators;
@@ -178,6 +177,18 @@ public class SeatsResults implements ISaResults {
     }
 
     @Override
+    public <T> Map<String, T> searchAll(String wc, Class<T> tclass) {
+        Map<String, T> all = mapping.searchAll(this, wc, tclass);
+        if (info_ != null) {
+            List<Information<T>> sel = info_.select(wc, tclass);
+            for (Information<T> info: sel){
+                all.put(info.name, info.value);
+            }
+        } 
+        return all;
+    }
+    
+    @Override
     public List<ProcessingInformation> getProcessingInformation() {
         return log_ == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(log_);
     }
@@ -198,7 +209,8 @@ public class SeatsResults implements ISaResults {
     public static <T> void set(String name, Function<SeatsResults, TsData> extractor) {
         mapping.set(name, extractor);
     }
-    private static final InformationMapping<SeatsResults> mapping = new InformationMapping<>();
+    
+    private static final InformationMapping<SeatsResults> mapping = new InformationMapping<>(SeatsResults.class);
 
     static {
         mapping.set(ModellingDictionary.Y_LIN, source -> source.initialComponents.getSeries(ComponentType.Series, ComponentInformation.Value));

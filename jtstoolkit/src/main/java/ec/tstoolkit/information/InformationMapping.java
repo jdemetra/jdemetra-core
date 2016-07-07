@@ -23,8 +23,14 @@ import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import ec.tstoolkit.utilities.WildCards;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.ServiceLoader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -33,9 +39,9 @@ import java.util.List;
  * @author Jean Palate
  */
 public class InformationMapping<S> {
-    
+
     public static final String LSTART = "(", LEND = ")";
-    
+
     public static String listKey(String prefix, int item) {
         StringBuilder builder = new StringBuilder();
         builder.append(prefix);
@@ -48,7 +54,7 @@ public class InformationMapping<S> {
         }
         return builder.toString();
     }
-    
+
     public static int listItem(String prefix, String key) {
         if (!key.startsWith(prefix)) {
             return -1;
@@ -71,13 +77,13 @@ public class InformationMapping<S> {
             return -1;
         }
     }
-    
+
     private static class TListFunction<S, T> {
-        
+
         final Class<T> targetClass;
         final BiFunction<S, Integer, T> extractor;
         final int start, end;
-        
+
         TListFunction(Class<T> tclass, int start, int end, BiFunction<S, Integer, T> extractor) {
             this.targetClass = tclass;
             this.extractor = extractor;
@@ -85,45 +91,98 @@ public class InformationMapping<S> {
             this.end = end;
         }
     }
-    
+
     private static class TFunction<S, T> {
-        
+
         final Class<T> targetClass;
         final Function<S, T> extractor;
-        
+
         TFunction(Class<T> tclass, Function<S, T> extractor) {
             this.targetClass = tclass;
             this.extractor = extractor;
         }
     }
-    
+
     private final LinkedHashMap<String, TFunction<S, ?>> map = new LinkedHashMap<>();
     private final LinkedHashMap<String, TListFunction<S, ?>> lmap = new LinkedHashMap<>();
-    
+    private final Class<S> sourceClass;
+
+    public InformationMapping(Class<S> sourceClass) {
+        this.sourceClass = sourceClass;
+    }
+
+    public static void updateAll(ClassLoader loader) {
+        if (loader == null) {
+            loader = ClassLoader.getSystemClassLoader();
+        }
+        ServiceLoader<InformationMappingExtension> services = ServiceLoader.load(InformationMappingExtension.class, loader);
+        HashSet<Class> set = new HashSet<>();
+        for (InformationMappingExtension extension : services) {
+            set.add(extension.getSourceClass());
+        }
+        for (Class sclass : set) {
+            update(sclass, loader);
+        }
+    }
+
+    public static boolean update(Class sourceClass, ClassLoader loader) {
+        try {
+            Method method = sourceClass.getMethod("getMapping");
+            if (method == null) {
+                return false;
+            }
+            InformationMapping rslt = (InformationMapping) method.invoke(null);
+            if (!rslt.sourceClass.equals(sourceClass)) {
+                return false;
+            }
+            rslt.update(loader);
+            return true;
+
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    public void update() {
+        update(null);
+    }
+
+    public void update(ClassLoader loader) {
+        if (loader == null) {
+            loader = ClassLoader.getSystemClassLoader();
+        }
+        ServiceLoader<InformationMappingExtension> services = ServiceLoader.load(InformationMappingExtension.class, loader);
+        for (InformationMappingExtension extension : services) {
+            if (extension.getSourceClass().equals(sourceClass)) {
+                extension.updateExtractors(this);
+            }
+        }
+    }
+
     public <T> void set(String name, Class<T> tclass, Function<S, T> extractor) {
         synchronized (map) {
             map.put(name, new TFunction(tclass, extractor));
         }
     }
-    
+
     public <T> void set(String name, Function<S, TsData> extractor) {
         synchronized (lmap) {
             map.put(name, new TFunction(TsData.class, extractor));
         }
     }
-    
+
     public <T> void setList(String prefix, int start, int end, Class<T> tclass, BiFunction<S, Integer, T> extractor) {
         synchronized (lmap) {
             lmap.put(prefix, new TListFunction(tclass, start, end, extractor));
         }
     }
-    
+
     public <T> void setList(String prefix, int start, int end, BiFunction<S, Integer, TsData> extractor) {
         synchronized (lmap) {
             lmap.put(prefix, new TListFunction(TsData.class, start, end, extractor));
         }
     }
-    
+
     public void fillDictionary(String prefix, Map<String, Class> dic) {
         synchronized (map) {
             for (Entry<String, TFunction<S, ?>> entry : map.entrySet()) {
@@ -136,11 +195,11 @@ public class InformationMapping<S> {
             }
         }
     }
-    
+
     private int lmapsize() {
         return lmap.entrySet().stream().map(x -> 1 + x.getValue().end - x.getValue().start).reduce(0, Integer::sum);
     }
-    
+
     public String[] keys() {
         List<String> k = new ArrayList<>();
         synchronized (map) {
@@ -155,7 +214,7 @@ public class InformationMapping<S> {
         }
         return k.toArray(new String[k.size()]);
     }
-    
+
     public boolean contains(String id) {
         synchronized (map) {
             if (map.containsKey(id)) {
@@ -172,7 +231,7 @@ public class InformationMapping<S> {
             return false;
         }
     }
-    
+
     public <T> T getData(S source, String id, Class<T> tclass) {
         synchronized (map) {
             TFunction<S, ?> fn = map.get(id);
@@ -198,7 +257,7 @@ public class InformationMapping<S> {
         }
         return null;
     }
-    
+
     public <T> Map<String, T> searchAll(S source, String pattern, Class<T> tclass) {
         LinkedHashMap<String, T> list = new LinkedHashMap<>();
         WildCards wc = new WildCards(pattern);

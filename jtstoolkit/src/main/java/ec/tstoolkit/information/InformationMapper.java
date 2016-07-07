@@ -17,6 +17,7 @@
 package ec.tstoolkit.information;
 
 import ec.tstoolkit.utilities.InformationExtractor;
+import ec.tstoolkit.utilities.WildCards;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -56,12 +57,12 @@ public class InformationMapper<S> {
             dic.put(InformationSet.item(prefix, entry.getKey()), entry.getValue().target());
         }
     }
-    
-    public String[] keys(){
-        String[] k=new String[map_.size()];
-        int i=0;
-        for (String s : map_.keySet()){
-            k[i++]=s;
+
+    public String[] keys() {
+        String[] k = new String[map_.size()];
+        int i = 0;
+        for (String s : map_.keySet()) {
+            k[i++] = s;
         }
         return k;
     }
@@ -79,4 +80,17 @@ public class InformationMapper<S> {
         }
     }
 
+    public <T> Map<String, T> searchAll(S source, String pattern, Class<T> tclass) {
+        LinkedHashMap<String, T> list = new LinkedHashMap<>();
+        WildCards wc = new WildCards(pattern);
+        for (Entry<String, Mapper<S, ?>> x : map_.entrySet()) {
+            if (wc.match(x.getKey())) {
+                Mapper<S, ?> fn = x.getValue();
+                if (tclass.isAssignableFrom(fn.tclass_)) {
+                    list.put(x.getKey(), (T) fn.retrieve(source));
+                }
+            }
+        }
+        return list;
+    }
 }

@@ -29,6 +29,7 @@ import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.eco.CoefficientEstimation;
 import ec.tstoolkit.eco.ConcentratedLikelihood;
+import ec.tstoolkit.information.Information;
 import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.information.RegressionItem;
@@ -647,8 +648,8 @@ public class PreprocessingModel implements IProcResults {
 
     @Override
     public <T> T getData(String id, Class<T> tclass) {
-        if (mapper.contains(id)) {
-            return mapper.getData(this, id, tclass);
+        if (mapping.contains(id)) {
+            return mapping.getData(this, id, tclass);
         }
         if (estimation.contains(id)) {
             return estimation.getData(id, tclass);
@@ -665,9 +666,23 @@ public class PreprocessingModel implements IProcResults {
     }
 
     @Override
+    public <T> Map<String, T> searchAll(String wc, Class<T> tclass) {
+        Map<String, T> all = mapping.searchAll(this, wc, tclass);
+        if (info_ != null) {
+            List<Information<T>> sel = info_.select(wc, tclass);
+            for (Information<T> info: sel){
+                all.put(info.name, info.value);
+            }
+        } 
+        Map<String, T> eall = estimation.searchAll(wc, tclass);
+        all.putAll(eall);
+        return all;
+    }
+    
+    @Override
     public boolean contains(String id) {
-        synchronized (mapper) {
-            if (mapper.contains(id)) {
+        synchronized (mapping) {
+            if (mapping.contains(id)) {
                 return true;
             }
             if (estimation.contains(id)) {
@@ -692,7 +707,7 @@ public class PreprocessingModel implements IProcResults {
     }
 
     public static void fillDictionary(String prefix, Map<String, Class> map) {
-        mapper.fillDictionary(prefix, map);
+        mapping.fillDictionary(prefix, map);
         ModelEstimation.fillDictionary(prefix, map);
     }
 
@@ -981,86 +996,89 @@ public class PreprocessingModel implements IProcResults {
 
     ;
     // MAPPERS
+    public static InformationMapping<PreprocessingModel> getMapping(){
+        return mapping;
+    }
 
     public static <T> void setMapping(String name, Class<T> tclass, Function<PreprocessingModel, T> extractor) {
-        synchronized (mapper) {
-            mapper.set(name, tclass, extractor);
+        synchronized (mapping) {
+            mapping.set(name, tclass, extractor);
         }
     }
 
     public static <T> void setTsData(String name, Function<PreprocessingModel, TsData> extractor) {
-        synchronized (mapper) {
-            mapper.set(name, extractor);
+        synchronized (mapping) {
+            mapping.set(name, extractor);
         }
     }
 
-    private static final InformationMapping<PreprocessingModel> mapper = new InformationMapping<>();
+    private static final InformationMapping<PreprocessingModel> mapping = new InformationMapping<>(PreprocessingModel.class);
 
     static {
-        mapper.set(InformationSet.item(SPAN, START), TsPeriod.class, source -> source.description.getSeriesDomain().getStart());
-        mapper.set(InformationSet.item(SPAN, END), TsPeriod.class, source -> source.description.getSeriesDomain().getLast());
-        mapper.set(InformationSet.item(SPAN, N), Integer.class, source -> source.description.getSeriesDomain().getLength());
-        mapper.set(InformationSet.item(ESPAN, START), TsPeriod.class, source -> source.description.getEstimationDomain().getStart());
-        mapper.set(InformationSet.item(ESPAN, END), TsPeriod.class, source -> source.description.getEstimationDomain().getLast());
-        mapper.set(InformationSet.item(ESPAN, N), Integer.class, source -> source.description.getEstimationDomain().getLength());
-        mapper.set(LOG, Boolean.class, source -> source.isMultiplicative());
-        mapper.set(ADJUST, Boolean.class, source -> {
+        mapping.set(InformationSet.item(SPAN, START), TsPeriod.class, source -> source.description.getSeriesDomain().getStart());
+        mapping.set(InformationSet.item(SPAN, END), TsPeriod.class, source -> source.description.getSeriesDomain().getLast());
+        mapping.set(InformationSet.item(SPAN, N), Integer.class, source -> source.description.getSeriesDomain().getLength());
+        mapping.set(InformationSet.item(ESPAN, START), TsPeriod.class, source -> source.description.getEstimationDomain().getStart());
+        mapping.set(InformationSet.item(ESPAN, END), TsPeriod.class, source -> source.description.getEstimationDomain().getLast());
+        mapping.set(InformationSet.item(ESPAN, N), Integer.class, source -> source.description.getEstimationDomain().getLength());
+        mapping.set(LOG, Boolean.class, source -> source.isMultiplicative());
+        mapping.set(ADJUST, Boolean.class, source -> {
             if (source.description.getPreadjustmentType() == PreadjustmentType.None) {
                 return null;
             } else {
                 return source.description.getLengthOfPeriodType() != LengthOfPeriodType.None;
             }
         });
-        mapper.set(ModellingDictionary.Y, source -> source.description.getOriginal());
-        mapper.set(ModellingDictionary.Y + SeriesInfo.F_SUFFIX, source -> source.forecast(FCAST_YEAR * source.description.getFrequency(), false));
-        mapper.set(ModellingDictionary.Y + SeriesInfo.EF_SUFFIX, source -> source.getForecastError());
-        mapper.set(ModellingDictionary.YC, source -> source.interpolatedSeries(false));
-        mapper.set(ModellingDictionary.YC + SeriesInfo.F_SUFFIX, source -> source.forecast(FCAST_YEAR * source.description.getFrequency(), false));
-        mapper.set(ModellingDictionary.YC + SeriesInfo.EF_SUFFIX, source -> source.getForecastError());
-        mapper.set(ModellingDictionary.L, source -> source.linearizedSeries(false));
-        mapper.set(ModellingDictionary.Y_LIN, source -> source.linearizedSeries(true));
-        mapper.set(ModellingDictionary.Y_LIN + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(source.domain(true).getLength(), true));
-        mapper.set(ModellingDictionary.YCAL, source -> source.getYcal(false));
-        mapper.set(ModellingDictionary.YCAL + SeriesInfo.F_SUFFIX, source -> source.getYcal(true));
-        mapper.set(ModellingDictionary.DET, source -> source.getDet(false));
-        mapper.set(ModellingDictionary.DET + SeriesInfo.F_SUFFIX, source -> source.getDet(true));
-        mapper.set(ModellingDictionary.L + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(FCAST_YEAR * source.description.getFrequency()));
-        mapper.set(ModellingDictionary.L + SeriesInfo.B_SUFFIX, source -> source.linearizedBackcast(source.description.getFrequency()));
-        mapper.set(ModellingDictionary.CAL, source -> source.getCal(false));
-        mapper.set(ModellingDictionary.CAL + SeriesInfo.F_SUFFIX, source -> source.getCal(true));
-        mapper.set(ModellingDictionary.TDE, source -> source.getTde(false));
-        mapper.set(ModellingDictionary.TDE + SeriesInfo.F_SUFFIX, source -> source.getTde(true));
-        mapper.set(ModellingDictionary.MHE, source -> source.getMhe(false));
-        mapper.set(ModellingDictionary.MHE + SeriesInfo.F_SUFFIX, source -> source.getMhe(true));
-        mapper.set(ModellingDictionary.EE, source -> source.getEe(false));
-        mapper.set(ModellingDictionary.EE + SeriesInfo.F_SUFFIX, source -> source.getEe(true));
-        mapper.set(ModellingDictionary.OMHE, source -> source.getOmhe(false));
-        mapper.set(ModellingDictionary.OMHE + SeriesInfo.F_SUFFIX, source -> source.getOmhe(true));
-        mapper.set(ModellingDictionary.OUT, source -> source.getOutlier(ComponentType.Undefined, false));
-        mapper.set(ModellingDictionary.OUT + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Undefined, true));
-        mapper.set(ModellingDictionary.OUT_I, source -> source.getOutlier(ComponentType.Irregular, false));
-        mapper.set(ModellingDictionary.OUT_I + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Irregular, true));
-        mapper.set(ModellingDictionary.OUT_T, source -> source.getOutlier(ComponentType.Trend, false));
-        mapper.set(ModellingDictionary.OUT_T + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Trend, true));
-        mapper.set(ModellingDictionary.OUT_S, source -> source.getOutlier(ComponentType.Seasonal, false));
-        mapper.set(ModellingDictionary.OUT_S + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Seasonal, true));
-        mapper.set(ModellingDictionary.REG, source -> source.getReg(false));
-        mapper.set(ModellingDictionary.REG + SeriesInfo.F_SUFFIX, source -> source.getReg(true));
-        mapper.set(ModellingDictionary.REG_T, source -> source.getReg(ComponentType.Trend, false));
-        mapper.set(ModellingDictionary.REG_T + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Trend, true));
-        mapper.set(ModellingDictionary.REG_S, source -> source.getReg(ComponentType.Seasonal, false));
-        mapper.set(ModellingDictionary.REG_S + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Seasonal, true));
-        mapper.set(ModellingDictionary.REG_I, source -> source.getReg(ComponentType.Irregular, false));
-        mapper.set(ModellingDictionary.REG_I + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Irregular, true));
-        mapper.set(ModellingDictionary.REG_SA, source -> source.getReg(ComponentType.SeasonallyAdjusted, false));
-        mapper.set(ModellingDictionary.REG_SA + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.SeasonallyAdjusted, true));
-        mapper.set(ModellingDictionary.REG_Y, source -> source.getReg(ComponentType.Series, false));
-        mapper.set(ModellingDictionary.REG_Y + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Series, true));
-        mapper.set(ModellingDictionary.REG_U, source -> source.getReg(ComponentType.Undefined, false));
-        mapper.set(ModellingDictionary.REG_U + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Undefined, true));
-        mapper.set(FULLRES, source -> source.getFullResiduals());
-        mapper.set(InformationSet.item(REGRESSION, LP), RegressionItem.class, source -> source.getRegressionItem(ILengthOfPeriodVariable.class, 0));
-        mapper.set(InformationSet.item(REGRESSION, NTD), Integer.class, source -> {
+        mapping.set(ModellingDictionary.Y, source -> source.description.getOriginal());
+        mapping.set(ModellingDictionary.Y + SeriesInfo.F_SUFFIX, source -> source.forecast(FCAST_YEAR * source.description.getFrequency(), false));
+        mapping.set(ModellingDictionary.Y + SeriesInfo.EF_SUFFIX, source -> source.getForecastError());
+        mapping.set(ModellingDictionary.YC, source -> source.interpolatedSeries(false));
+        mapping.set(ModellingDictionary.YC + SeriesInfo.F_SUFFIX, source -> source.forecast(FCAST_YEAR * source.description.getFrequency(), false));
+        mapping.set(ModellingDictionary.YC + SeriesInfo.EF_SUFFIX, source -> source.getForecastError());
+        mapping.set(ModellingDictionary.L, source -> source.linearizedSeries(false));
+        mapping.set(ModellingDictionary.Y_LIN, source -> source.linearizedSeries(true));
+        mapping.set(ModellingDictionary.Y_LIN + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(source.domain(true).getLength(), true));
+        mapping.set(ModellingDictionary.YCAL, source -> source.getYcal(false));
+        mapping.set(ModellingDictionary.YCAL + SeriesInfo.F_SUFFIX, source -> source.getYcal(true));
+        mapping.set(ModellingDictionary.DET, source -> source.getDet(false));
+        mapping.set(ModellingDictionary.DET + SeriesInfo.F_SUFFIX, source -> source.getDet(true));
+        mapping.set(ModellingDictionary.L + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(FCAST_YEAR * source.description.getFrequency()));
+        mapping.set(ModellingDictionary.L + SeriesInfo.B_SUFFIX, source -> source.linearizedBackcast(source.description.getFrequency()));
+        mapping.set(ModellingDictionary.CAL, source -> source.getCal(false));
+        mapping.set(ModellingDictionary.CAL + SeriesInfo.F_SUFFIX, source -> source.getCal(true));
+        mapping.set(ModellingDictionary.TDE, source -> source.getTde(false));
+        mapping.set(ModellingDictionary.TDE + SeriesInfo.F_SUFFIX, source -> source.getTde(true));
+        mapping.set(ModellingDictionary.MHE, source -> source.getMhe(false));
+        mapping.set(ModellingDictionary.MHE + SeriesInfo.F_SUFFIX, source -> source.getMhe(true));
+        mapping.set(ModellingDictionary.EE, source -> source.getEe(false));
+        mapping.set(ModellingDictionary.EE + SeriesInfo.F_SUFFIX, source -> source.getEe(true));
+        mapping.set(ModellingDictionary.OMHE, source -> source.getOmhe(false));
+        mapping.set(ModellingDictionary.OMHE + SeriesInfo.F_SUFFIX, source -> source.getOmhe(true));
+        mapping.set(ModellingDictionary.OUT, source -> source.getOutlier(ComponentType.Undefined, false));
+        mapping.set(ModellingDictionary.OUT + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Undefined, true));
+        mapping.set(ModellingDictionary.OUT_I, source -> source.getOutlier(ComponentType.Irregular, false));
+        mapping.set(ModellingDictionary.OUT_I + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Irregular, true));
+        mapping.set(ModellingDictionary.OUT_T, source -> source.getOutlier(ComponentType.Trend, false));
+        mapping.set(ModellingDictionary.OUT_T + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Trend, true));
+        mapping.set(ModellingDictionary.OUT_S, source -> source.getOutlier(ComponentType.Seasonal, false));
+        mapping.set(ModellingDictionary.OUT_S + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Seasonal, true));
+        mapping.set(ModellingDictionary.REG, source -> source.getReg(false));
+        mapping.set(ModellingDictionary.REG + SeriesInfo.F_SUFFIX, source -> source.getReg(true));
+        mapping.set(ModellingDictionary.REG_T, source -> source.getReg(ComponentType.Trend, false));
+        mapping.set(ModellingDictionary.REG_T + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Trend, true));
+        mapping.set(ModellingDictionary.REG_S, source -> source.getReg(ComponentType.Seasonal, false));
+        mapping.set(ModellingDictionary.REG_S + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Seasonal, true));
+        mapping.set(ModellingDictionary.REG_I, source -> source.getReg(ComponentType.Irregular, false));
+        mapping.set(ModellingDictionary.REG_I + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Irregular, true));
+        mapping.set(ModellingDictionary.REG_SA, source -> source.getReg(ComponentType.SeasonallyAdjusted, false));
+        mapping.set(ModellingDictionary.REG_SA + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.SeasonallyAdjusted, true));
+        mapping.set(ModellingDictionary.REG_Y, source -> source.getReg(ComponentType.Series, false));
+        mapping.set(ModellingDictionary.REG_Y + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Series, true));
+        mapping.set(ModellingDictionary.REG_U, source -> source.getReg(ComponentType.Undefined, false));
+        mapping.set(ModellingDictionary.REG_U + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Undefined, true));
+        mapping.set(FULLRES, source -> source.getFullResiduals());
+        mapping.set(InformationSet.item(REGRESSION, LP), RegressionItem.class, source -> source.getRegressionItem(ILengthOfPeriodVariable.class, 0));
+        mapping.set(InformationSet.item(REGRESSION, NTD), Integer.class, source -> {
             TsVariableList vars = source.vars();
             TsVariableSelection<ITsVariable> sel = vars.select(new TsVariableList.ISelector() {
                 @Override
@@ -1070,7 +1088,7 @@ public class PreprocessingModel implements IProcResults {
             });
             return sel.getVariablesCount();
         });
-        mapper.set(InformationSet.item(REGRESSION, NMH), Integer.class, source -> {
+        mapping.set(InformationSet.item(REGRESSION, NMH), Integer.class, source -> {
             TsVariableList vars = source.vars();
             TsVariableSelection<ITsVariable> sel = vars.select(new TsVariableList.ISelector() {
                 @Override
@@ -1080,27 +1098,27 @@ public class PreprocessingModel implements IProcResults {
             });
             return sel.getVariablesCount();
         });
-        mapper.setList(InformationSet.item(REGRESSION, TD), 1, 14, RegressionItem.class, (source, i) -> source.getRegressionItem(ITradingDaysVariable.class, i-1));
-        mapper.set(InformationSet.item(REGRESSION, EASTER), RegressionItem.class, source -> source.getRegressionItem(IEasterVariable.class, 0));
-        mapper.set(InformationSet.item(REGRESSION, NOUT), Integer.class, source -> source.description.getOutliers().size() + source.description.getPrespecifiedOutliers().size());
-        mapper.set(InformationSet.item(REGRESSION, NOUTAO), Integer.class, source -> {
+        mapping.setList(InformationSet.item(REGRESSION, TD), 1, 14, RegressionItem.class, (source, i) -> source.getRegressionItem(ITradingDaysVariable.class, i-1));
+        mapping.set(InformationSet.item(REGRESSION, EASTER), RegressionItem.class, source -> source.getRegressionItem(IEasterVariable.class, 0));
+        mapping.set(InformationSet.item(REGRESSION, NOUT), Integer.class, source -> source.description.getOutliers().size() + source.description.getPrespecifiedOutliers().size());
+        mapping.set(InformationSet.item(REGRESSION, NOUTAO), Integer.class, source -> {
             TsVariableList vars = source.vars();
             return vars.select(OutlierType.AO).getItemsCount();
         });
-        mapper.set(InformationSet.item(REGRESSION, NOUTLS), Integer.class, source -> {
+        mapping.set(InformationSet.item(REGRESSION, NOUTLS), Integer.class, source -> {
             TsVariableList vars = source.vars();
             return vars.select(OutlierType.LS).getItemsCount();
         });
-        mapper.set(InformationSet.item(REGRESSION, NOUTTC), Integer.class, source -> {
+        mapping.set(InformationSet.item(REGRESSION, NOUTTC), Integer.class, source -> {
             TsVariableList vars = source.vars();
             return vars.select(OutlierType.TC).getItemsCount();
         });
-        mapper.set(InformationSet.item(REGRESSION, NOUTSO), Integer.class, source -> {
+        mapping.set(InformationSet.item(REGRESSION, NOUTSO), Integer.class, source -> {
             TsVariableList vars = source.vars();
             return vars.select(OutlierType.SO).getItemsCount();
         });
-        mapper.setList(InformationSet.item(REGRESSION, OUT), 1, 50, RegressionItem.class, (source, i) -> source.getRegressionItem(IOutlierVariable.class, i-1));
-        mapper.set(InformationSet.item(REGRESSION, COEFF), Parameter[].class, source -> {
+        mapping.setList(InformationSet.item(REGRESSION, OUT), 1, 50, RegressionItem.class, (source, i) -> source.getRegressionItem(IOutlierVariable.class, i-1));
+        mapping.set(InformationSet.item(REGRESSION, COEFF), Parameter[].class, source -> {
             double[] c = source.estimation.getLikelihood().getB();
             if (c == null) {
                 return new Parameter[0];
@@ -1114,7 +1132,7 @@ public class PreprocessingModel implements IProcResults {
             }
             return C;
         });
-        mapper.set(InformationSet.item(REGRESSION, COEFFDESC), String[].class, source -> {
+        mapping.set(InformationSet.item(REGRESSION, COEFFDESC), String[].class, source -> {
             ArrayList<String> str = new ArrayList<>();
             if (source.description.isMean()) {
                 str.add("Mean");
@@ -1137,8 +1155,8 @@ public class PreprocessingModel implements IProcResults {
             String[] desc = new String[str.size()];
             return str.toArray(desc);
         });
-        mapper.set(InformationSet.item(REGRESSION, COVAR), Matrix.class,
+        mapping.set(InformationSet.item(REGRESSION, COVAR), Matrix.class,
                 source -> source.estimation.getLikelihood().getBVar(true, source.description.getArimaComponent().getFreeParametersCount()));
-        mapper.set(InformationSet.item(REGRESSION, PCOVAR), Matrix.class, source -> source.estimation.getParametersCovariance());
+        mapping.set(InformationSet.item(REGRESSION, PCOVAR), Matrix.class, source -> source.estimation.getParametersCovariance());
     }
 }

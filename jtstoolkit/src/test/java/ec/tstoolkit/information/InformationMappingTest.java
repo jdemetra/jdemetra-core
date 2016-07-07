@@ -18,7 +18,7 @@ import org.junit.Ignore;
  */
 public class InformationMappingTest {
 
-    static final InformationMapping<Integer> mapping = new InformationMapping<>();
+    static final InformationMapping<Integer> mapping = new InformationMapping<>(Integer.class);
 
     static {
         mapping.set("convert", Double.class, i -> (double) i);
