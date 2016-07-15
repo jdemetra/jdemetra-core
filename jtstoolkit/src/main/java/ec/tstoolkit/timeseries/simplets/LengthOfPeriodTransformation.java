@@ -46,6 +46,7 @@ public class LengthOfPeriodTransformation implements ITsDataTransformation {
      * 
      * @return
      */
+    @Override
     public ITsDataTransformation converse()
     {
 	LengthOfPeriodTransformation transform = new LengthOfPeriodTransformation(
@@ -60,6 +61,7 @@ public class LengthOfPeriodTransformation implements ITsDataTransformation {
      * @param ljacobian
      * @return
      */
+    @Override
     public boolean transform(TsData data, LogJacobian ljacobian)
     {
 	ec.tstoolkit.timeseries.calendars.Utilities.transform(type, data,

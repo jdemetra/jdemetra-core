@@ -20,7 +20,6 @@ import ec.satoolkit.DecompositionMode;
 import ec.satoolkit.GenericSaProcessingFactory;
 import ec.tss.Ts;
 import ec.tss.TsCollection;
-import ec.tss.disaggregation.documents.CalendarizationResults;
 import ec.tstoolkit.algorithm.AlgorithmDescriptor;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.IProcResults;

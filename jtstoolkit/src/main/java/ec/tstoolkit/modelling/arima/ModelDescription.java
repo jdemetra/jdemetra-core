@@ -536,7 +536,6 @@ public class ModelDescription implements Cloneable {
             new LengthOfPeriodTransformation(lp_).transform(tmp, lj);
         }
         if (function_ == DefaultTransformationType.Log) {
-            TsDataBlock lts = TsDataBlock.all(tmp);
             LogTransformation tlog = new LogTransformation();
             if (tlog.canTransform(tmp)) {
                 tlog.transform(tmp, lj);

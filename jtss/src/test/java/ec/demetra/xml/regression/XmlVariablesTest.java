@@ -78,7 +78,7 @@ public class XmlVariablesTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void testMarshalAuto() throws FileNotFoundException, JAXBException, IOException {
 
         List<Class> xmlClasses = TsVariableAdapters.getDefault().getXmlClasses();
