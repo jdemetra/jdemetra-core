@@ -17,6 +17,7 @@
 package ec.tss.tsproviders.utils;
 
 import java.util.zip.Deflater;
+import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -62,4 +63,30 @@ public class ByteArrayConverterTest {
         Assert.assertNotSame(input2, converter.toDoubleArray(converter.fromDoubleArray(input2)));
     }
 
+    @Test
+    @SuppressWarnings("null")
+    public void testInstance() {
+        Assertions.assertThatThrownBy(() -> ByteArrayConverter.setInstance(null))
+                .isInstanceOf(NullPointerException.class);
+
+        ByteArrayConverter c1 = new ByteArrayConverter() {
+            @Override
+            public byte[] fromDoubleArray(double[] input) {
+                throw new RuntimeException();
+            }
+        };
+        Assertions.assertThatThrownBy(() -> ByteArrayConverter.setInstance(c1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasCauseInstanceOf(RuntimeException.class);
+
+        ByteArrayConverter c2 = new ByteArrayConverter() {
+            @Override
+            public double[] toDoubleArray(byte[] input) {
+                return new double[0];
+            }
+        };
+        Assertions.assertThatThrownBy(() -> ByteArrayConverter.setInstance(c2))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasNoCause();
+    }
 }
