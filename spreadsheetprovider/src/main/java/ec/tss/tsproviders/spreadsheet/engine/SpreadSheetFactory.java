@@ -255,7 +255,7 @@ public abstract class SpreadSheetFactory {
 
             ImmutableList.Builder<SpreadSheetSeries> list = ImmutableList.builder();
 
-            OptionalTsData.Builder data = new OptionalTsData.Builder(context.frequency, context.aggregationType, context.clean);
+            OptionalTsData.Builder2 data = OptionalTsData.builder(context.frequency, context.aggregationType, context.clean);
             for (int columnIdx = 0; columnIdx < names.size(); columnIdx++) {
                 for (int rowIdx = dates.getMinIndex(); rowIdx <= dates.getMaxIndex(); rowIdx++) {
                     Number value = context.toNumber.parse(sheet, rowIdx, columnIdx + FIRST_DATA_COL_IDX);

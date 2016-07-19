@@ -126,13 +126,9 @@ public class GenericDocFactory extends AbstractDocumentFactory {
     private static OptionalTsData getData(Node seriesNode, TimeFormat timeFormat) {
         Parser<Date> toPeriod = timeFormat.getParser();
         Parser<Number> toValue = DEFAULT_DATA_FORMAT.numberParser();
-        OptionalTsData.Builder result = new OptionalTsData.Builder(timeFormat.getFrequency(), timeFormat.getAggregationType());
-        lookupObservations(seriesNode).forEach(o -> {
-            Date period = toPeriod.parse(getPeriod(o));
-            Number value = period != null ? toValue.parse(getValue(o)) : null;
-            result.add(period, value);
-        });
-        return result.build();
+        return OptionalTsData.builder(timeFormat.getFrequency(), timeFormat.getAggregationType(), false)
+                .addAll(lookupObservations(seriesNode), o -> toPeriod.parse(getPeriod(o)), o -> toValue.parse(getValue(o)))
+                .build();
     }
 
     private static String getPeriod(Node obs) {

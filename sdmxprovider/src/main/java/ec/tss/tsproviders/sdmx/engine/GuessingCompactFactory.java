@@ -80,13 +80,9 @@ public class GuessingCompactFactory extends AbstractDocumentFactory {
     private static OptionalTsData getData(Node seriesNode, TimeFormat timeFormat) {
         Parsers.Parser<Date> toPeriod = timeFormat.getParser();
         Parsers.Parser<Number> toValue = DEFAULT_DATA_FORMAT.numberParser();
-        OptionalTsData.Builder result = new OptionalTsData.Builder(timeFormat.getFrequency(), timeFormat.getAggregationType());
-        lookupObservations(seriesNode).forEach(o -> {
-            Date period = getPeriod(o, toPeriod);
-            Number value = period != null ? getValue(o, toValue) : null;
-            result.add(period, value);
-        });
-        return result.build();
+        return OptionalTsData.builder(timeFormat.getFrequency(), timeFormat.getAggregationType(), false)
+                .addAll(lookupObservations(seriesNode), o -> getPeriod(o, toPeriod), o -> getValue(o, toValue))
+                .build();
     }
 
     private static Date getPeriod(NamedNodeMap obs, Parsers.Parser<Date> toPeriod) {
