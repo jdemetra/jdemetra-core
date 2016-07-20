@@ -126,15 +126,25 @@ public final class ArimaModelBuilder {
     }
 
     /**
+     * 
+     * @param arima
+     * @param n
+     * @return 
+     */
+    public double[] generate(final IArimaModel arima, final int n) {
+        return generate(arima, 0, n);
+    }
+   /**
      *
      * @param arima
+     * @param mean
      * @param n
      * @return
      */
-    public double[] generate(final IArimaModel arima, final int n) {
-        try {
+    public double[] generate(final IArimaModel arima, final double mean, final int n) {
+         try {
             StationaryTransformation stm = arima.stationaryTransformation();
-            double[] tmp = generateStationary((IArimaModel) stm.stationaryModel, n + m_ndrop);
+            double[] tmp = generateStationary((IArimaModel) stm.stationaryModel, mean, n + m_ndrop);
             double[] w;
             if (m_ndrop == 0) {
                 w = tmp;
@@ -178,6 +188,11 @@ public final class ArimaModelBuilder {
     }
 
     public double[] generateStationary(final IArimaModel starima, final int n) {
+        return generateStationary(starima, 0, n);
+    }
+    
+    public double[] generateStationary(final IArimaModel starima, final double mean,final int n) {
+    
         BackFilter ar = starima.getAR(), ma = starima.getMA();
         int p = ar.getDegree(), q = ma.getDegree();
         double[] y = new double[p], e = new double[q];
@@ -226,7 +241,7 @@ public final class ArimaModelBuilder {
         Polynomial theta = ma.getPolynomial(), phi = ar.getPolynomial();
         for (int i = 0; i < n; ++i) {
             double u = m_dist.random(rng)*std;
-            double t = u * theta.get(0);
+            double t = mean + u * theta.get(0);
             for (int j = 1; j <= q; ++j) {
                 t += e[j - 1] * theta.get(j);
             }
