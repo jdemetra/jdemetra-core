@@ -303,16 +303,16 @@ public class TramoSeatsConverter {
         write(Item.NSER, spec.length);
         if (m_fmt == Format.TramoSeats) {
             for (int i = 0; i < spec.length; ++i) {
-                m_builder.append((new TsPeriod(domain.getFrequency(), spec[i].position).minus(domain.getStart())) + 1).append(m_sep).append(spec[i].type);
+                m_builder.append((new TsPeriod(domain.getFrequency(), spec[i].getPosition()).minus(domain.getStart())) + 1).append(m_sep).append(spec[i].getType());
                 if (i < spec.length - 1) {
                     m_builder.append(m_sep);
                 }
             }
         } else {
             for (int i = 0; i < spec.length; ++i) {
-                TsPeriod p = new TsPeriod(domain.getFrequency(), spec[i].position);
+                TsPeriod p = new TsPeriod(domain.getFrequency(), spec[i].getPosition());
                 m_builder.append(Item.pos).append('(').append(i + 1).append(")=").append(p.getYear()).append('.').append(new Formatter().format("D2", p.getPosition() + 1));
-                m_builder.append(m_sep).append(Item.type).append('(').append(i + 1).append(")=").append(spec[i].type.name().toLowerCase());
+                m_builder.append(m_sep).append(Item.type).append('(').append(i + 1).append(")=").append(spec[i].getCode().toLowerCase());
                 if (i < spec.length - 1) {
                     m_builder.append(m_sep);
                 }

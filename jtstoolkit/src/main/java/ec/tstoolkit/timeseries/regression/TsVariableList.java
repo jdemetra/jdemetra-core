@@ -285,23 +285,6 @@ public class TsVariableList implements Cloneable {
         return sel;
     }
 
-    public TsVariableSelection<IOutlierVariable> select(OutlierType type, boolean prespecified) {
-        int cur = 0;
-        TsVariableSelection<IOutlierVariable> sel = new TsVariableSelection<>();
-        for (ITsVariable group : vars_) {
-            if (group instanceof IOutlierVariable) {
-                IOutlierVariable o = (IOutlierVariable) group;
-                if ((type == OutlierType.Undefined || o.getOutlierType() == type)
-                        && prespecified == o.isPrespecified()) {
-                    sel.add(o, cur);
-                }
-            }
-            cur += group.getDim();
-        }
-
-        return sel;
-    }
-
     public void clear() {
         vars_.clear();
     }

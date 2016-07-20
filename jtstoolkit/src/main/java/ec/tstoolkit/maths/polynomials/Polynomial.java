@@ -553,15 +553,14 @@ public final class Polynomial implements IReadDataBlock {
      * interface.
      *
      */
-    //private static IRootsSolver g_defRootsSolver = new GrantHitchinsSolver();
-    private static IRootsSolver g_defRootsSolver = new MullerNewtonSolver();
+    private static final AtomicReference<IRootsSolver> defSolver= new AtomicReference<>(new MullerNewtonSolver());
 
     /**
      *
      * @return
      */
     public static IRootsSolver getDefRootsSearcher() {
-        return Polynomial.g_defRootsSolver;
+        return defSolver.get().exemplar();
     }
 
     /**
@@ -569,7 +568,7 @@ public final class Polynomial implements IReadDataBlock {
      * @param value
      */
     public static void setDefRootsSearcher(final IRootsSolver value) {
-        Polynomial.g_defRootsSolver = value;
+        defSolver.set(value);
     }
 
     /**
@@ -941,7 +940,7 @@ public final class Polynomial implements IReadDataBlock {
     public Complex[] roots() {
         Complex[] result = defRoots.get();
         if (result == null) {
-            result = roots(g_defRootsSolver);
+            result = roots(getDefRootsSearcher());
             defRoots.set(result);
         }
         return result;
@@ -966,21 +965,19 @@ public final class Polynomial implements IReadDataBlock {
         if (getDegree() == 0) {
             return new Complex[0];
         }
-        if (searcher == null) {
-            searcher = g_defRootsSolver;
+        final Polynomial tmp = this.adjustDegree();
+        if (tmp.getDegree() == 0) {
+            return new Complex[0];
         }
-        synchronized (searcher) {
-            final Polynomial tmp = this.adjustDegree();
-            if (tmp.getDegree() == 0) {
-                return new Complex[0];
-            }
-            if (searcher.factorize(tmp)) {
-                Complex[] roots = searcher.roots();
-                searcher.clear();
-                return roots;
-            } else {
-                return null;
-            }
+        if (searcher == null) {
+            searcher = getDefRootsSearcher();
+        }
+        if (searcher.factorize(tmp)) {
+            Complex[] roots = searcher.roots();
+            searcher.clear();
+            return roots;
+        } else {
+            return null;
         }
     }
 

@@ -101,7 +101,7 @@ public class EasterVariable extends AbstractSingleTsVariable implements IEasterV
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         StringBuilder builder = new StringBuilder();
         builder.append("Easter [").append(dur_).append(']');
         return builder.toString();

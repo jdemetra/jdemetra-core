@@ -24,7 +24,6 @@ import ec.tss.xml.XmlNamedObject;
 import ec.tss.xml.XmlTsData;
 import ec.tss.xml.XmlTsMoniker;
 import ec.tstoolkit.timeseries.simplets.TsData;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 

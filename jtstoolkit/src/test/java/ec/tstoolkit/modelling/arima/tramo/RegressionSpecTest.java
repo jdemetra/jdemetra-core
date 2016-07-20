@@ -45,13 +45,13 @@ public class RegressionSpecTest {
         actual.read(info);
         assertEquals(3, actual.getCalendar().getEaster().getDuration());
 
-        OutlierDefinition outDef = new OutlierDefinition(Day.BEG, OutlierType.AO, true);
+        OutlierDefinition outDef = new OutlierDefinition(Day.BEG, OutlierType.AO);
         OutlierDefinition[] outliers_ = new OutlierDefinition[]{outDef};
         expected.setOutliers(outliers_);
         info = expected.write(true);
         actual.read(info);
         assertEquals(1, actual.getOutliers().length);
-        assertEquals(OutlierType.AO, actual.getOutlier(0).type);
+        assertEquals(OutlierType.AO, actual.getOutlier(0).getType());
 
         TsVariableDescriptor vardesc = new TsVariableDescriptor("test");
         vardesc.setEffect(TsVariableDescriptor.UserComponentType.Seasonal);

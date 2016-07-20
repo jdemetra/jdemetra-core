@@ -24,6 +24,7 @@ import ec.tstoolkit.maths.polynomials.Polynomial;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.TsException;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 
 /**
@@ -84,7 +85,7 @@ public class DiffConstant extends AbstractSingleTsVariable {
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         StringBuilder builder = new StringBuilder();
         builder.append("Polynomial trend (").append(m_ur.getDegree()).append(
                 ')');

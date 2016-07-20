@@ -24,6 +24,7 @@ import ec.satoolkit.ISeriesDecomposition;
 import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.modelling.ModellingDictionary;
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.information.Information;
 import ec.tstoolkit.information.InformationMapper;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.modelling.ComponentType;
@@ -133,7 +134,19 @@ public class X11Results implements ISaResults {
         }
     }
     
-    @Override
+     @Override
+    public <T> Map<String, T> searchAll(String wc, Class<T> tclass) {
+        Map<String, T> all = mapper.searchAll(this, wc, tclass);
+        if (info_ != null) {
+            List<Information<T>> sel = info_.select(wc, tclass);
+            for (Information<T> info: sel){
+                all.put(info.name, info.value);
+            }
+        } 
+        return all;
+    }
+    
+   @Override
     public List<ProcessingInformation> getProcessingInformation() {
         return Collections.EMPTY_LIST;
     }

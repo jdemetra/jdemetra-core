@@ -20,10 +20,10 @@ import ec.tstoolkit.design.Development;
 import java.util.Objects;
 
 /**
- *
+ * Defines selection in a time domain
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 public class TsPeriodSelector implements Cloneable {
 
     public boolean equals(TsPeriodSelector ps) {
@@ -73,7 +73,7 @@ public class TsPeriodSelector implements Cloneable {
     private int n0_, n1_;
 
     /**
-     *
+     * Default period selector. By default, it selects all the periods of a domain
      */
     public TsPeriodSelector() {
     }
@@ -82,6 +82,7 @@ public class TsPeriodSelector implements Cloneable {
      *
      * @param p
      */
+    @Deprecated
     public TsPeriodSelector(final TsPeriodSelector p) {
         type_ = p.type_;
         n0_ = p.n0_;
@@ -90,29 +91,18 @@ public class TsPeriodSelector implements Cloneable {
         d1_ = p.d1_;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#all()
-     */
     /**
-     *
+     * Select all the periods
      */
     public void all() {
         doClear();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * be.nbb.timeseries.simplets.IPeriodSelector#between(be.nbb.timeseries.Day,
-     * be.nbb.timeseries.Day)
-     */
     /**
-     *
-     * @param d0
-     * @param d1
+     * Select all the periods between two days. The way incomplete periods are considered
+     * is left to the classes that use the selector.
+     * @param d0 The starting day
+     * @param d1 The ending day
      */
     public void between(final Day d0, final Day d1) {
         doClear();
@@ -150,15 +140,10 @@ public class TsPeriodSelector implements Cloneable {
     }
 
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#last(int)
-     */
     /**
-     *
-     * @param n0
-     * @param n1
+     * Excludes some periods at the beginning and/or at the end of a time domain
+     * @param n0 Number of periods excluded at the beginning of the time domain. Greater or equal to 0.
+     * @param n1 Number of periods excluded at the end of the time domain. Greater or equal to 0.
      */
     public void excluding(final int n0, final int n1) {
         doClear();
@@ -167,20 +152,9 @@ public class TsPeriodSelector implements Cloneable {
         n1_ = n1;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#none()
-     */
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#first(int)
-     */
     /**
-     *
-     * @param n
+     * Select a given number of periods at the beginning of a time domain
+     * @param n The number of selected periods
      */
     public void first(final int n) {
         doClear();
@@ -188,15 +162,10 @@ public class TsPeriodSelector implements Cloneable {
         n0_ = n;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * be.nbb.timeseries.simplets.IPeriodSelector#from(be.nbb.timeseries.Day)
-     */
     /**
-     *
-     * @param d0
+     * Select the periods after a given date. The way incomplete periods are considered
+     * is left to the classes that use the selector.
+     * @param d0 The date for the selection
      */
     public void from(final Day d0) {
         doClear();
@@ -205,99 +174,73 @@ public class TsPeriodSelector implements Cloneable {
     }
 
     /**
-     *
+     * The starting day of the selector. Its interpretation depends on on the type of the selector
      * @return
      */
     public Day getD0() {
         return d0_;
     }
 
+    @Deprecated
     public void setD0(Day d) {
         d0_ = d;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#getD1()
-     */
     /**
-     *
+     * The ending day of the selector. Its interpretation depends on on the type of the selector. May be unused
      * @return
      */
     public Day getD1() {
         return d1_;
     }
 
+    @Deprecated
     public void setD1(Day d) {
         d1_ = d;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#getN()
-     */
     /**
-     *
+     * The number of starting periods defined by the selector. Its interpretation depends on on the type of the selector. May be unused
      * @return
      */
     public int getN0() {
         return n0_;
     }
 
+    @Deprecated
     public void setN0(int i) {
         n0_ = i;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#getN()
-     */
     /**
-     *
+     * The number of ending periods defined by the selector. Its interpretation depends on on the type of the selector. May be unused
      * @return
      */
     public int getN1() {
         return n1_;
     }
 
+    @Deprecated
     public void setN1(int i) {
         n1_ = i;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#getD0()
-     */
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#getKind()
-     */
     /**
-     *
+     * The type of the selector
      * @return
      */
     public PeriodSelectorType getType() {
         return type_;
     }
 
+    @Deprecated
     public void setType(PeriodSelectorType type) {
         type_ = type;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#last(int)
-     */
     /**
-     *
-     * @param n
+     * Select a given number of periods at the end of a time domain
+     * @param n The number of selected periods
      */
     public void last(final int n) {
         doClear();
@@ -306,21 +249,17 @@ public class TsPeriodSelector implements Cloneable {
     }
 
     /**
-     *
+     * Select nothing
      */
     public void none() {
         doClear();
         type_ = PeriodSelectorType.None;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#to(be.nbb.timeseries.Day)
-     */
     /**
-     *
-     * @param d1
+     * Select the periods up to a given date. The way incomplete periods are considered
+     * is left to the classes that use the selector.
+     * @param d1 The date for the selection
      */
     public void to(final Day d1) {
         doClear();

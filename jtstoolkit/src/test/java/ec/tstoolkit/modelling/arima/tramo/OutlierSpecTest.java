@@ -54,8 +54,7 @@ public class OutlierSpecTest {
         assertEquals(.5, actual.getDeltaTC(),0.0);
         
         TsPeriodSelector span = new TsPeriodSelector();
-        span.setType(PeriodSelectorType.From);
-        span.setD0(Day.BEG);
+        span.from(Day.BEG);
         expected.reset();
         expected.setSpan(span);
         info = expected.write(true);

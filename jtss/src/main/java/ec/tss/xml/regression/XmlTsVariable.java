@@ -22,7 +22,6 @@ import ec.tss.xml.XmlNamedObject;
 import ec.tss.xml.XmlTsData;
 import ec.tstoolkit.timeseries.regression.TsVariable;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 
 /**
  *

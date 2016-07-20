@@ -36,6 +36,7 @@ import ec.tstoolkit.timeseries.regression.TsVariableList;
 import ec.tstoolkit.timeseries.regression.TsVariableSelection;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 
 /**
  *
@@ -97,7 +98,7 @@ public class RegArimaDictionary {
                 int nhp = sarima.getFreeParametersCount();
                 fillTD(vars, preprocessing.estimation, info, start, nhp);
                 fillEaster(vars, preprocessing.estimation, info, start, nhp);
-                fillOutliers(vars, preprocessing.estimation, info, start, nhp);
+                fillOutliers(vars, preprocessing.estimation, info, start, nhp, domain.getFrequency());
 
                 info.set(OUTLIERSCOUNT, vars.select(OutlierType.Undefined).getItemsCount());
             }
@@ -221,7 +222,7 @@ public class RegArimaDictionary {
         int icur = 0;
         for (TsVariableSelection.Item<ICalendarVariable> var : td.elements()) {
             for (int j = 0; j < var.variable.getDim(); ++j) {
-                RegressionItem reg = new RegressionItem(null, false, c[start + var.position + j], e[start + var.position + j]);
+                RegressionItem reg = new RegressionItem(null, c[start + var.position + j], e[start + var.position + j]);
                 if (icur < tdmax) {
                     cinfo.set(TD_LIST[icur++], reg);
                 }
@@ -245,11 +246,11 @@ public class RegArimaDictionary {
             int dur = easter.get(0).variable.getDuration();
             StringBuilder builder = new StringBuilder();
             builder.append(EASTER).append('(').append(dur).append(')');
-            RegressionItem reg = new RegressionItem(builder.toString(), false, c[pos], e[pos]);
+            RegressionItem reg = new RegressionItem(builder.toString(), c[pos], e[pos]);
             cinfo.set(EASTER, reg);
    }
 
-    private static void fillOutliers(TsVariableList vars, ModelEstimation estimation, InformationSet info, int start, int hpcount) {
+    private static void fillOutliers(TsVariableList vars, ModelEstimation estimation, InformationSet info, int start, int hpcount, TsFrequency freq) {
         InformationSet oinfo = info.subSet(OUTLIERS);
         int icur = 0;
         double[] b = estimation.getLikelihood().getB();
@@ -265,7 +266,7 @@ public class RegArimaDictionary {
                 builder.append("out(").append(++icur).append(')');
                 name = builder.toString();
             }
-            RegressionItem reg = new RegressionItem(cur.variable.getDescription(), cur.variable.isPrespecified(), b[start + cur.position], e[start + cur.position]);
+            RegressionItem reg = new RegressionItem(cur.variable.getDescription(freq), b[start + cur.position], e[start + cur.position]);
             oinfo.set(name, reg);
         }
     }

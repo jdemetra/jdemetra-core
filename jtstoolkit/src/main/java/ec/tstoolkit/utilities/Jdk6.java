@@ -16,7 +16,6 @@
  */
 package ec.tstoolkit.utilities;
 
-import ec.tstoolkit.dstats.T;
 import java.lang.reflect.Array;
 import java.util.*;
 

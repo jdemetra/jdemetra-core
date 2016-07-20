@@ -32,10 +32,6 @@ public class RegressionItem {
     /**
      *
      */
-    public final boolean prespecified;
-    /**
-     *
-     */
     public final double coefficient;
     /**
      *
@@ -45,14 +41,12 @@ public class RegressionItem {
     /**
      *
      * @param desc
-     * @param prespecified
      * @param coeff
      * @param err
      */
-    public RegressionItem(String desc, boolean prespecified, double coeff,
+    public RegressionItem(String desc, double coeff,
 	    double err) {
 	this.description = desc;
-	this.prespecified = prespecified;
 	this.coefficient = coeff;
 	this.stdError = err;
     }

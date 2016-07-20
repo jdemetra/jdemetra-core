@@ -50,7 +50,7 @@ public class MetaData implements Map<String, String>, Cloneable, IModifiable {
      *
      */
     public MetaData() {
-        this(new HashMap<String, String>());
+        this(new HashMap<>());
     }
 
     /**

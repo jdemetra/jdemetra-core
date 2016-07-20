@@ -94,7 +94,7 @@ public class TsVariable extends AbstractSingleTsVariable implements
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         return desc_;
     }
 

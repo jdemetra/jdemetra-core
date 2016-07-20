@@ -167,6 +167,24 @@ public class CompositeResults implements IProcResults {
         return null;
     }
 
+    @Override
+    public <T> Map<String, T> searchAll(String id, Class<T> tclass) {
+        Map<String, T> all=new LinkedHashMap<>();
+        for (Entry<String, Node> entry : nodes.entrySet()) {
+            Node node = entry.getValue();
+            if (node.results != null) {
+                if (node.prefix != null) {
+                    if (InformationSet.isPrefix(id, node.prefix)) {
+                        all.putAll(node.results.searchAll(InformationSet.removePrefix(id), tclass));
+                    }
+                }else{
+                     all.putAll(node.results.searchAll(id, tclass));
+                }
+            }
+        }
+        return all;
+    }
+
     public static <T> T searchData(Map<String, IProcResults> results, String id, Class<T> tclass) {
         for (Entry<String, IProcResults> entry : results.entrySet()) {
             if (entry.getValue() != null && entry.getValue().contains(id)) {

@@ -19,6 +19,7 @@ package ec.tstoolkit.information;
 /**
  *
  * @author Jean Palate
+ * @param <T>
  */
 public interface InformationConverter<T> {
     /**

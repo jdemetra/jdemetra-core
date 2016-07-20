@@ -1,18 +1,18 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package ec.tstoolkit.modelling.arima;
 
@@ -190,11 +190,11 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
         m_mad = 0;
         m_omax = -1;
         m_posmax = -1;
-        if (all){
-            m_T=null;
-            m_c=null;
-            m_bT=null;
-        }else if (m_T != null) {
+        if (all) {
+            m_T = null;
+            m_c = null;
+            m_bT = null;
+        } else if (m_T != null) {
             m_T.clear();
             m_c.clear();
         }
@@ -267,8 +267,9 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
     public void exclude(IOutlierVariable o) {
         for (int i = 0; i < m_o.size(); ++i) {
             IOutlierFactory exemplar = m_o.get(i);
+            TsPeriod start = new TsPeriod(m_domain.getFrequency(), o.getPosition());
             if (exemplar.getOutlierType().equals(o.getOutlierType())) {
-                int pos = o.getPosition().minus(m_domain.getStart());
+                int pos = start.minus(m_domain.getStart());
                 exclude(pos, i);
                 break;
             }
@@ -282,8 +283,9 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
     public void allow(IOutlierVariable o) {
         for (int i = 0; i < m_o.size(); ++i) {
             IOutlierFactory exemplar = m_o.get(i);
+            TsPeriod start = new TsPeriod(m_domain.getFrequency(), o.getPosition());
             if (exemplar.getOutlierType().equals(o.getOutlierType())) {
-                int pos = o.getPosition().minus(m_domain.getStart());
+                int pos = start.minus(m_domain.getStart());
                 allow(pos, i);
                 break;
             }

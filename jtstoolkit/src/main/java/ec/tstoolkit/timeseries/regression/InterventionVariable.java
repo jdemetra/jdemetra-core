@@ -153,7 +153,7 @@ public class InterventionVariable extends AbstractSingleTsVariable implements Cl
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         return desc_ == null ? toString() : desc_;
     }
 

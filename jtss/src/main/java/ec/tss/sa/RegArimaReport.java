@@ -167,10 +167,10 @@ public class RegArimaReport implements ISaReport {
         }
 
      private void addOutliers(TsVariableList vars) {
-        AoCount+=vars.select(OutlierType.AO, false).getItemsCount();
-        LsCount+=vars.select(OutlierType.LS, false).getItemsCount();
-        TcCount+=vars.select(OutlierType.TC, false).getItemsCount();
-        SoCount+=vars.select(OutlierType.SO, false).getItemsCount();
+        AoCount+=vars.select(OutlierType.AO).getItemsCount();
+        LsCount+=vars.select(OutlierType.LS).getItemsCount();
+        TcCount+=vars.select(OutlierType.TC).getItemsCount();
+        SoCount+=vars.select(OutlierType.SO).getItemsCount();
     }
 
     private void addTransform(boolean multiplicative) {

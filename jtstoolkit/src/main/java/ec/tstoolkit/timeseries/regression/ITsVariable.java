@@ -79,8 +79,18 @@ public interface ITsVariable {
      *
      * @return Short description of this variable. Should never be null.
      */
-    String getDescription();
+    @Deprecated
+    default String getDescription(){
+        return getDescription(TsFrequency.Undefined);
+    };
 
+    /**
+     * Description of this variable
+     *
+     * @param context Domain of definition of the variable. Could be null
+     * @return Short description of this variable. Should never be null.
+     */
+    String getDescription(TsFrequency context);
     /**
      * Dimension (number of actual regression variables) of this variable
      * (group).
@@ -94,12 +104,25 @@ public interface ITsVariable {
      * Description of a variable of this variable group.
      *
      * @param idx. The index of the variable. Must belong to [0, getDim()[.
+     * @param context Context of the variable. Could be null
      * @return The description of the considered regression variable. When
      * getDim() = 1, getDescription and getItemDescription(0) will often return
      * the same description.
      */
-    String getItemDescription(int idx);
+    String getItemDescription(int idx, TsFrequency context);
 
+    /**
+     * Description of a variable of this variable group.
+     *
+     * @param idx. The index of the variable. Must belong to [0, getDim()[.
+     * @return The description of the considered regression variable. When
+     * getDim() = 1, getDescription and getItemDescription(0) will often return
+     * the same description.
+     */
+    @Deprecated
+    default String getItemDescription(int idx){
+        return getItemDescription(idx, TsFrequency.Undefined);
+    }
     /**
      * Checks that this regression variable may be used for a given domain. The
      * exact meaning of this condition is left to the implementor. Usually, a

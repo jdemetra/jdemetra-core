@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.xml.tramoseats;
 
 import ec.satoolkit.tramoseats.TramoSeatsSpecification;
@@ -101,8 +100,7 @@ public class XmlTramoSeatsSpecification extends AbstractXmlSaSpecification imple
         TramoSeatsSpecification s = spec.matchSystem();
         if (s != null) {
             return s;
-        }
-        else {
+        } else {
             return spec;
         }
     }

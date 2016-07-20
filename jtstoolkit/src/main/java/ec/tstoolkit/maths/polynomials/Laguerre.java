@@ -129,6 +129,12 @@ public class Laguerre implements IRootsSolver {
     public Complex[] roots() {
 	return m_roots;
     }
+    
+    @Override
+    public Laguerre exemplar(){
+        Laguerre solver=new Laguerre();
+        return solver;
+    }
 
     void zroots(final Complex[] a, final Complex[] roots, final boolean polish) {
 	// Given the degree m and the m+1 Complex coefficients a[0..m] of the

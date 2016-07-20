@@ -86,7 +86,7 @@ public class TsVariableGroup implements IUserTsVariable {
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         return desc_ == null ? "" : desc_; //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -100,12 +100,12 @@ public class TsVariableGroup implements IUserTsVariable {
     }
 
     @Override
-    public String getItemDescription(int idx) {
+    public String getItemDescription(int idx, TsFrequency context) {
         int cur=idx;
         for (int i=0; i<vars_.length; ++i){
             int dim=vars_[i].getDim();
             if (cur < dim)
-                return vars_[i].getItemDescription(cur);
+                return vars_[i].getItemDescription(cur, context);
             cur-=dim;
         }
         return "";

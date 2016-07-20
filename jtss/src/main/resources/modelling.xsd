@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<xs:schema version="0.1.0"
+           targetNamespace="ec/eurostat/jdemetra/modelling"
+           xmlns:tss="ec/eurostat/jdemetra/core"
+           xmlns:modelling="ec/eurostat/jdemetra/modelling"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+    
+    <xs:import schemaLocation="core.xsd" namespace="ec/eurostat/jdemetra/core"/>
+    <xs:import schemaLocation="regression.xsd" namespace="ec/eurostat/jdemetra/core"/>
+
+    <xs:simpleType name="ComponentEnum">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="Undefined"/>
+            <xs:enumeration value="Series"/>
+            <xs:enumeration value="Trend"/>
+            <xs:enumeration value="Cycle"/>
+            <xs:enumeration value="Seasonal"/>
+            <xs:enumeration value="Calendar"/>
+            <xs:enumeration value="Irregular"/>
+            <xs:enumeration value="SeasonallyAdjusted"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="TransformationSpecType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>
+                Transformation of the original series
+            </xs:documentation>
+        </xs:annotation>
+    </xs:complexType>
+    
+    <xs:complexType name="RegressionSpecType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>
+                Description of the regression model
+            </xs:documentation>
+        </xs:annotation>
+    </xs:complexType>
+
+    <xs:complexType name="OutlierDetectionSpecType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>
+                Automatic detection of outliers
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Span" type="tss:PeriodSelectionType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Defines the time domain over which outliers have to be searched.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="CalendarSpecType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>
+                Automatic estimation of calendar effects
+            </xs:documentation>
+        </xs:annotation>
+    </xs:complexType>
+
+    <xs:complexType name="EstimationSpecType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>
+                Estimation of the model
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Span" type="tss:PeriodSelectionType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Defines the time domain over which the model is estimated.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Precision" type="xs:double"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="AutomaticModellingSpecType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>
+                Automatic modelling
+            </xs:documentation>
+        </xs:annotation>
+    </xs:complexType>
+
+    <xs:complexType name="ModellingSpecType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>
+                Stochastic modelling
+            </xs:documentation>
+        </xs:annotation>
+    </xs:complexType>
+    
+    <xs:complexType name="SeriesTransformationType" abstract="true"/>
+     
+    <xs:complexType name="LogTransformationType">
+        <xs:complexContent>
+            <xs:extension base="modelling:SeriesTransformationType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="BoxCoxTransformationType">
+        <xs:complexContent>
+            <xs:extension base="modelling:SeriesTransformationType">
+                <xs:sequence>
+                    <xs:element name="Lambda" type="xs:double"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+      
+    <xs:complexType name="LengthOfPeriodTransformationType">
+        <xs:complexContent>
+            <xs:extension base="modelling:SeriesTransformationType">
+                <xs:attribute name="correction" type="tss:LengthOfPeriodEnum" use="optional" default="LeapYear"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+      
+    <xs:complexType name="SeriesType">
+        <xs:sequence>
+            <xs:element name="Series" type="tss:TsDataType"/>
+            <xs:element name="Transformation" type="modelling:SeriesTransformationType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="RegressionVariableType">
+        <xs:annotation>
+            <xs:documentation>
+                Regression variable with its coefficient(s)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Variable" type="tss:VariableType"/>
+            <xs:choice>
+                <xs:element name="Coefficient" type="tss:ParameterType" minOccurs="0"/>
+                <xs:element name="Coefficients" type="tss:ParametersType" minOccurs="0"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+
+</xs:schema>

@@ -247,6 +247,13 @@ public class MullerNewtonSolver implements IRootsSolver {
         m_roots = null;
         m_remainder = null;
     }
+    
+    @Override
+    public MullerNewtonSolver exemplar(){
+        MullerNewtonSolver solver = new MullerNewtonSolver();
+        solver.setLeastSquaresDivision(lqdiv);
+        return solver;
+    }
 
     /**
      * *** compute P(x2) and make some checks ****

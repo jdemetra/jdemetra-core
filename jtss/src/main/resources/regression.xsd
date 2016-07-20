@@ -1,0 +1,316 @@
+<?xml version="1.0"?>
+<!--
+Copyright 2016 National Bank of Belgium
+
+Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+by the European Commission - subsequent versions of the EUPL (the "Licence");
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at:
+
+http://ec.europa.eu/idabc/eupl
+
+Unless required by applicable law or agreed to in writing, software 
+distributed under the Licence is distributed on an "AS IS" basis,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the Licence for the specific language governing permissions and 
+limitations under the Licence.
+-->
+
+
+
+<xs:schema version="0.1.0"
+           targetNamespace="ec/eurostat/jdemetra/core"
+           xmlns:tss="ec/eurostat/jdemetra/core"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+    <xs:include schemaLocation="core.xsd"/>
+    <xs:include schemaLocation="calendar.xsd"/>
+
+    <xs:complexType name="VariableType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>
+                Base type for any regression variable
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="name" type="xs:string" use="optional" />
+    </xs:complexType>
+    
+    
+    <!--Outliers-->
+
+    <xs:complexType name="OutlierType" abstract="true">
+        <xs:complexContent>
+            <xs:extension base="tss:VariableType">
+                <xs:sequence>
+                    <xs:element name="Position" type="xs:date"/>
+                </xs:sequence>
+                <xs:attribute name="prespecified" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="AdditiveOutlierType">
+        <xs:annotation>
+            <xs:documentation>
+                Additive outlier
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:OutlierType"/>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="LevelShiftType">
+        <xs:annotation>
+            <xs:documentation>
+                Level shift
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:OutlierType">
+                <xs:attribute name="zeroEnded" type="xs:boolean" use="optional" default="true"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="SeasonalOutlierType">
+        <xs:annotation>
+            <xs:documentation>
+                Seasonal outlier
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:OutlierType">
+                <xs:attribute name="zeroEnded" type="xs:boolean" use="optional" default="true"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="TransitoryChangeType">
+        <xs:annotation>
+            <xs:documentation>
+                Transitory change. 
+                The damping factor and the way it should be interpreted can be specified
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:OutlierType">
+                <xs:attribute name="factor" type="xs:double" use="optional" default="0.7"/>
+                <xs:attribute name="monthlyFactor" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <!-- Calendar variables -->
+    <!-- ****************** -->
+    
+    <!-- Trading days -->
+    
+    <xs:simpleType name="LengthOfPeriodEnum">
+        <xs:annotation>
+            <xs:documentation>
+                Leap year or equivalent
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="LeapYear" />
+            <xs:enumeration value="LengthOfPeriod" />
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="TradingDaysEnum">
+        <xs:annotation>
+            <xs:documentation>
+                Trading days or equivalent
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="TradingDays" />
+            <xs:enumeration value="WorkingDays" />
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:complexType name="DefaulTradingdaysType">
+        <xs:complexContent>
+            <xs:extension base="tss:VariableType">
+                <xs:attribute name="td" type="tss:TradingDaysEnum" use="optional"/>
+                <xs:attribute name="lp" type="tss:LengthOfPeriodEnum" use="optional"/> 
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="GenericTradingDaysType">
+        <xs:complexContent>
+            <xs:extension base="tss:VariableType">
+                <xs:sequence>
+                    <xs:element name="DayClustering" type="tss:UnsignedIntsType"/>
+                </xs:sequence>
+                <xs:attribute name="contrasts" type="xs:boolean" use="optional"/> 
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <!-- Easter -->
+    
+    <xs:simpleType name="EasterCorrectionEnum">
+        <xs:annotation>
+            <xs:documentation>
+                Long term mean correction applied on the Easter variables.
+                "Simple" means Tramo-like, "PreComputed" means X12/X13-like and "Theoretical" is based on approximated theoretical considerations 
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="Simple" />
+            <xs:enumeration value="PreComputed" />
+            <xs:enumeration value="Theoretical" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="EasterVariableType">
+        <xs:complexContent>
+            <xs:extension base="tss:VariableType">
+                <xs:sequence>
+                    <xs:element name="Before" type="xs:int"/>
+                    <xs:element name="After" type="xs:int" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="correction" type="tss:EasterCorrectionEnum" use="optional" default="Theoretical"/>
+                <xs:attribute name="julian" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- Other variables -->
+    <!-- ****************** -->
+        
+    <xs:complexType name="RampType" >
+        <xs:annotation>
+            <xs:documentation>
+                Ramp variable.
+                A ramp is defined by two days: the first day is the starting point of the ramp and the last day is the end point of the ramp.
+                The variable is -1 before the starting day (included), 0 after the ending day (included) and increases linearly between the two days.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:VariableType">
+                <xs:sequence>
+                    <xs:group ref="tss:TimeSpan"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="InterventionVariableType" >
+        <xs:annotation>
+            <xs:documentation>
+                Intervention variable.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:VariableType">
+                <xs:sequence>
+                    <xs:group ref="tss:TimeSpan" minOccurs="1" maxOccurs="unbounded"/>
+                    <xs:element name="DeltaFilter" minOccurs="0" type="xs:double"/>
+                    <xs:element name="DeltaSeasonalFilter" minOccurs="0" type="xs:double"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    
+    
+    <!-- Modifiers -->
+    <!-- ********* -->
+    
+    <xs:complexType name="TsModifierType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:VariableType">
+                <xs:sequence>
+                    <xs:element name="Core" type="tss:VariableType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="VariableWindowType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:TsModifierType">
+                <xs:group ref="tss:TimeSpan" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="LaggedVariableType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:TsModifierType">
+                <xs:sequence>
+                    <xs:element name="FirstLag" type="xs:int"/>
+                    <xs:element name="LastLag" type="xs:int"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ChangeOfRegimeType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:TsModifierType">
+                <xs:choice>
+                    <xs:element name="Start" type="xs:date"/>
+                    <xs:element name="End" type="xs:date"/>
+                </xs:choice>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="TsVariableType">
+        <xs:annotation>
+            <xs:documentation>
+                Default static regression variable. Data must be available.
+                The name of the tsdata sub-item should be considered as a description, while the "name" attribute is the actual name of the variable
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:VariableType">
+                <xs:sequence>
+                    <xs:element name="TsData" type="tss:TsDataType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DynamicTsVariableType">
+        <xs:annotation>
+            <xs:documentation>
+                Default dynamic regression variable. Identifier must be present.
+                The name of the tsdata sub-item should be considered as a description, while the "name" attribute is the actual name of the variable
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:VariableType">
+                <xs:sequence>
+                    <xs:element name="Tsdata" type="tss:TsDataType" minOccurs="0"/>
+                    <xs:element name="Moniker" type="tss:TsMonikerType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+</xs:schema>
+

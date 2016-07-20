@@ -21,6 +21,7 @@ import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.linearfilters.BackFilter;
 import ec.tstoolkit.maths.linearfilters.RationalBackFilter;
+import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 
@@ -31,17 +32,19 @@ import ec.tstoolkit.timeseries.simplets.TsPeriod;
 @Development(status = Development.Status.Alpha)
 public class AdditiveOutlier extends AbstractOutlierVariable {
 
+    public static final String CODE="AO";
     /**
      *
      * @param p
      */
-    public AdditiveOutlier(TsPeriod p) {
-        super(p);
+    public AdditiveOutlier(Day pos) {
+        super(pos);
     }
 
     @Override
     public void data(TsPeriod start, DataBlock data) {
-        int pos = position.minus(start);
+        TsPeriod pstart=new TsPeriod(start.getFrequency(), position);
+        int pos = pstart.minus(start);
         data.set(0);
         if (pos >= 0 && pos < data.getLength()) {
             data.set(pos, 1);
@@ -55,9 +58,6 @@ public class AdditiveOutlier extends AbstractOutlierVariable {
 
     @Override
     public boolean isSignificant(TsDomain domain) {
-        if (domain.getFrequency() != position.getFrequency()) {
-            return false;
-        }
         return domain.search(position) >= 0;
     }
 
@@ -67,5 +67,10 @@ public class AdditiveOutlier extends AbstractOutlierVariable {
         return new FilterRepresentation(new RationalBackFilter(
                 BackFilter.ONE, BackFilter.ONE), 0);
     }
+
+    @Override
+    public String getCode() {
+        return CODE;
+     }
 
 }

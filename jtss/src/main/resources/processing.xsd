@@ -1,0 +1,221 @@
+<!--
+Copyright 2013 National Bank of Belgium
+
+Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+by the European Commission - subsequent versions of the EUPL (the "Licence");
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at:
+
+http://ec.europa.eu/idabc/eupl
+
+Unless required by applicable law or agreed to in writing, software 
+distributed under the Licence is distributed on an "AS IS" basis,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the Licence for the specific language governing permissions and 
+limitations under the Licence.
+-->
+
+
+
+<xs:schema version="0.1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="ec/eurostat/jdemetra/core"
+           xmlns:tss="ec/eurostat/jdemetra/core"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+    <xs:include schemaLocation="core.xsd"/>
+    <xs:include schemaLocation="calendar.xsd"/>
+    <xs:include schemaLocation="regression.xsd"/>
+
+    <xs:complexType name="AlgorithmDescriptionType">
+        <xs:annotation>
+            <xs:documentation>
+                Description of an algorithm
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Name" type="xs:string"/>
+            <xs:element name="Family" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="version" type="xs:string" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="StatisticalTestType">
+        <xs:annotation>
+            <xs:documentation>
+                Standard statistical test
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Description" type="xs:string"/>
+            <xs:element name="Value" type="xs:double"/>
+            <xs:element name="Pvalue" type="xs:double"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="RegressionItemType">
+        <xs:annotation>
+            <xs:documentation>
+                Result of a regression
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Description" type="xs:string"/>
+            <xs:element name="Coefficient" type="xs:double"/>
+            <xs:element name="Stde" type="xs:double"/>
+        </xs:sequence>
+        <xs:attribute name="prespecified" type="xs:boolean"/>
+    </xs:complexType>
+
+    <!-- Regression variables -->
+
+    <xs:group name="TsVariableGroup">
+        <xs:annotation>
+            <xs:documentation>
+                Ts Variable. Could be a dynamic ts variable or a static ts variable.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="TsVariable" type="tss:TsVariableType"/>
+            <xs:element name="DynamicTsVariable" type ="tss:DynamicTsVariableType"/>
+        </xs:choice>
+    </xs:group>
+    
+    <xs:complexType name="TsVariablesType">
+        <xs:annotation>
+            <xs:documentation>
+                Collection of ts variables (static or dynamic).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:group ref="tss:TsVariableGroup" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="ProcessingContextType">
+        <xs:annotation>
+            <xs:documentation>
+                A context contains information related to auxiliary time series and calendars used in regression models
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Calendars" type="tss:CalendarsType" minOccurs="0"/>
+            <xs:element name="Variables">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="group" type="tss:TsVariablesType" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Information set -->
+
+    <xs:complexType name="InformationType">
+        <xs:annotation>
+            <xs:documentation>
+                Generic information, using predefined atomic types
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="boolean" type="xs:boolean"/>
+            <xs:element name="double" type="xs:double"/>
+            <xs:element name="integer" type="xs:int"/>
+            <xs:element name="string" type="xs:string"/>
+            <xs:element name="integers" type="tss:IntsType"/>
+            <xs:element name="doubles" type="tss:DoublesType"/>
+            <xs:element name="booleans" type="tss:BooleansType"/>
+            <xs:element name="strings" type="tss:TokensType"/>
+            <xs:element name="subset" type="tss:InformationSetType"/>
+            <xs:element name="tsdata" type="tss:TsDataType"/>
+            <xs:element name="ts" type="tss:TsType"/>
+            <xs:element name="tscollection" type="tss:TsCollectionType"/>
+            <xs:element name="regitem" type="tss:RegressionItemType"/>
+            <xs:element name="param" type="tss:ParameterType"/>
+            <xs:element name="params" type="tss:ParametersType"/>
+            <xs:element name="matrix" type="tss:MatrixType"/>
+        </xs:choice>
+        <xs:attribute name="name" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="InformationSetType">
+        <xs:annotation>
+            <xs:documentation>
+                Generic information set, which is a collection of atomic information
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Item" type="tss:InformationType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Batch processing -->
+
+    <xs:simpleType name="linkType">
+        <xs:annotation>
+            <xs:documentation>
+                Types of link between processing steps. It indicates where
+                considered information should come from
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Input" />
+            <xs:enumeration value="Output" />
+            <xs:enumeration value="Result" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="batchLinkType">
+        <xs:annotation>
+            <xs:documentation>
+                Links between different steps of a batch processing
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+        </xs:sequence>
+        <xs:attribute name="linktype" type="tss:linkType" use="required"/>
+        <xs:attribute name="linkid" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="batchStepType">
+        <xs:annotation>
+            <xs:documentation>
+                Step of a batch processing
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="link" type="tss:batchLinkType"/>
+            <xs:element name="specification" type="tss:InformationSetType"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="batchType">
+        <xs:annotation>
+            <xs:documentation>
+                Batch processing
+                A batch processing is defined by a context (optional),
+                an input, several steps and possible filters
+                Each step must be able to retrieve necessary information
+                for its processing either from the input or from a previous step
+                (through the "link" element).
+                The (optional) filters specify what information
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="context" type="tss:ProcessingContextType"/>
+            <xs:element name="input" type="tss:InformationSetType" minOccurs="1"/>
+            <xs:element name="step" type="tss:batchStepType" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="filter" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+    
+    <xs:element name="TsVariables" type="tss:TsVariablesType"/>
+    <xs:element name="InformationSet" type="tss:InformationSetType"/>
+    <xs:element name="Batch" type="tss:batchType"/>
+
+</xs:schema>

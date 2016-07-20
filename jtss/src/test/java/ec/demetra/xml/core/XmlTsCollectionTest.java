@@ -14,11 +14,12 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.tss.xml.regression;
+package ec.demetra.xml.core;
 
-import ec.tss.xml.information.XmlInformationSet;
-import ec.tstoolkit.timeseries.Day;
-import ec.tstoolkit.timeseries.regression.OutlierType;
+import data.Data;
+import ec.tss.TsCollection;
+import ec.tss.TsFactory;
+import ec.tstoolkit.MetaData;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -30,6 +31,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.validation.Schema;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -38,40 +40,43 @@ import org.junit.Ignore;
  *
  * @author Jean Palate
  */
-public class XmlVariablesTest {
+public class XmlTsCollectionTest {
     
-    public XmlVariablesTest() {
+    private static final String FILE="c:\\localdata\\tscollection.xml";
+
+    public XmlTsCollectionTest() {
     }
 
     @Test
     @Ignore
     public void testMarshal() throws FileNotFoundException, JAXBException, IOException {
-        JAXBContext jaxb = JAXBContext.newInstance(XmlVariables.class, XmlGenericTradingDays.class, XmlOutlier.class);
-        
-        XmlOutlier xout=new XmlOutlier();
-        xout.position=Day.toDay();
-        xout.prespecified=true;
-        xout.type=OutlierType.AO;
-        
-        XmlGenericTradingDays xtd=new XmlGenericTradingDays();
-         
-        XmlVariables xvar=new XmlVariables();
-        xvar.vars.add(xout);
-        xvar.vars.add(xtd);
-        
-        FileOutputStream ostream = new FileOutputStream("c:\\localdata\\test.xml");
+
+        JAXBContext jaxb = JAXBContext.newInstance(XmlTsCollection.class);
+        XmlTsCollection xcoll = new XmlTsCollection();
+        TsCollection collection=TsFactory.instance.createTsCollection("test");
+        MetaData md=new MetaData();
+        md.put("test", "10");
+        collection.set(md);
+        collection.add(TsFactory.instance.createTs("p", null, Data.P));
+        collection.add(TsFactory.instance.createTs("x", null, Data.X));
+        xcoll.copyTsCollection(collection);
+        FileOutputStream ostream = new FileOutputStream(FILE);
         try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(xvar, writer);
+            marshaller.marshal(xcoll, writer);
             writer.flush();
         }
-         
-        XmlVariables rslt = null;
-        FileInputStream istream = new FileInputStream("c:\\localdata\\test.xml");
+
+        XmlTsCollection rslt = null;
+        FileInputStream istream = new FileInputStream(FILE);
         try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-            rslt = (XmlVariables) unmarshaller.unmarshal(reader);
+            rslt = (XmlTsCollection) unmarshaller.unmarshal(reader);
+            TsCollection ncoll = rslt.createTsCollection();
+            assertTrue(ncoll.getCount()==collection.getCount());
         }
     }
+
+    
 }

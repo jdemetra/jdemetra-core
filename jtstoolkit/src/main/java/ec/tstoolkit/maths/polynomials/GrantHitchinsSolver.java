@@ -19,6 +19,7 @@ package ec.tstoolkit.maths.polynomials;
 
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.Complex;
+import ec.tstoolkit.maths.Constants;
 
 /**
  * 
@@ -32,14 +33,6 @@ public class GrantHitchinsSolver implements IRootsSolver {
 	    P2Z1 = 0.001, P1 = 0.1, P3Z2 = 0.0002, FOUR = 4.0;
     private static final int g_max = 100;
 
-    /**
-     * 
-     * @return
-     */
-    public static double epsilon() {
-	return 1.1102230246251565e-016;
-    }
-
     private double m_x, m_y, m_r, m_j, m_rx, m_jx;
     private double m_tol;
     // temporary buffers
@@ -47,7 +40,7 @@ public class GrantHitchinsSolver implements IRootsSolver {
     // scaling factor
     private double m_fac;
     // tolerance
-    private static final double g_eps = epsilon(), g_small = 1e-15,
+    private static final double g_eps = Constants.getEpsilon(), g_small = 1e-15,
 	    g_cmax = Math.sqrt(Double.MAX_VALUE);
     private static final double g_eps2 = g_eps * 1e4;
     private Polynomial m_remainder;
@@ -245,6 +238,13 @@ public class GrantHitchinsSolver implements IRootsSolver {
     @Override
     public Polynomial remainder() {
 	return m_remainder;
+    }
+    
+    @Override
+    public GrantHitchinsSolver exemplar(){
+        GrantHitchinsSolver solver=new GrantHitchinsSolver();
+        solver.setTol(m_tol);
+        return solver;
     }
 
     private void rescale_a(double[] a, int n) {

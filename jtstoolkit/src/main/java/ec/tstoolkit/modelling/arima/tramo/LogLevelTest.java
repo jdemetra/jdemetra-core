@@ -138,10 +138,18 @@ public class LogLevelTest extends AbstractTramoModule implements IPreprocessingM
     public void setLogPreference(double value) {
         logpreference_ = value;
     }
+    
+    /**
+     * 
+     * @return 
+     * @since 2.2
+     */
+    public double getLogCorrection(){
+        return slog_;
+    }
 
     /**
-     *
-     * @param model
+     * @param context
      * @return
      */
     @Override

@@ -19,11 +19,15 @@ package ec.tstoolkit.modelling.arima;
 
 import ec.tstoolkit.algorithm.IProcSpecification;
 import ec.tstoolkit.algorithm.ProcessingContext;
+import ec.tstoolkit.design.ServiceDefinition;
 
 /**
  *
  * @author Jean Palate
+ * @param <S>
  */
+
+@ServiceDefinition
 public interface IPreprocessorFactory<S extends IProcSpecification>{
     IPreprocessor create(S spec, ProcessingContext context);
 }

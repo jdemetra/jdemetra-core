@@ -30,6 +30,7 @@ import ec.tstoolkit.timeseries.regression.AbstractOutlierVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierFactory;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
+import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import ec.tstoolkit.utilities.IntList;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -123,11 +124,13 @@ public class SingleOutlierDetector {
      * @param o
      */
     public void exclude(IOutlierVariable o) {
-        m_excluded.add(o.getPosition().minus(m_domain.getStart()));
+        TsPeriod ostart=new TsPeriod(m_domain.getFrequency(), o.getPosition());
+        m_excluded.add(ostart.minus(m_domain.getStart()));
     }
 
     public void allow(IOutlierVariable o) {
-        int pos = o.getPosition().minus(m_domain.getStart());
+        TsPeriod ostart=new TsPeriod(m_domain.getFrequency(), o.getPosition());
+        int pos = ostart.minus(m_domain.getStart());
         int xpos = -1;
         for (int i = 0; i < m_excluded.size(); ++i) {
             if (m_excluded.get(i) == pos) {

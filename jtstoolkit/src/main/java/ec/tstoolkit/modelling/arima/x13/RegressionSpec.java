@@ -168,7 +168,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     public OutlierDefinition[] search(OutlierType type) {
         ArrayList<OutlierDefinition> desc = new ArrayList<>();
         for (OutlierDefinition o : outliers_) {
-            if (o.type == type) {
+            if (o.getType() == type) {
                 desc.add(o);
             }
         }
@@ -180,7 +180,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     }
 
     public void add(IOutlierVariable item) {
-        outliers_.add(new OutlierDefinition(item.getPosition(), item.getOutlierType(), item.isPrespecified()));
+        outliers_.add(new OutlierDefinition(item.getPosition(), item.getCode()));
     }
 
     public boolean contains(OutlierDefinition outlier) {

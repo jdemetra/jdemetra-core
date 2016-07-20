@@ -16,6 +16,7 @@
  */
 package ec.tstoolkit.maths.linearfilters;
 
+import ec.tstoolkit.design.AlgorithmDefinition;
 import ec.tstoolkit.design.Development;
 
 /**
@@ -26,6 +27,7 @@ import ec.tstoolkit.design.Development;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
+@AlgorithmDefinition
 public interface ISymmetricFilterDecomposer {
 
     /**

@@ -131,7 +131,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
         double[] o = new double[2 * n];
         DataBlock O = new DataBlock(o);
         TsPeriod start = getDomain().getStart();
-        IOutlierVariable outlier = getOutlierFactory(idx).create(start);
+        IOutlierVariable outlier = getOutlierFactory(idx).create(start.firstday());
         outlier.data(start.minus(n), O);
         double[] od = new double[o.length - d];
         DataBlock OD = new DataBlock(od);

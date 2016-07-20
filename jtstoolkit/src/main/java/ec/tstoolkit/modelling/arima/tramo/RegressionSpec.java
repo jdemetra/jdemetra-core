@@ -131,7 +131,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     }
 
     public void add(IOutlierVariable outlier) {
-        outliers_.add(new OutlierDefinition(outlier.getPosition(), outlier.getOutlierType(), outlier.isPrespecified()));
+        outliers_.add(new OutlierDefinition(outlier.getPosition(), outlier.getCode()));
     }
 
     public void add(InterventionVariable ivar) {

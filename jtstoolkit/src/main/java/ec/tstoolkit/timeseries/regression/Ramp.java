@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.data.DataBlock;
@@ -94,8 +93,8 @@ public class Ramp extends AbstractSingleTsVariable implements Cloneable {
      */
     @Override
     public void data(TsPeriod pstart, DataBlock data) {
-        int t0 = new TsPeriod(pstart.getFrequency(), start).minus(pstart);
-        int t1 = new TsPeriod(pstart.getFrequency(), end).minus(pstart);
+        int t0 = new TsPeriod(pstart.getFrequency(), start.minus(1)).minus(pstart);
+        int t1 = new TsPeriod(pstart.getFrequency(), end.plus(1)).minus(pstart);
         int len = data.getLength();
         if (t1 == t0) {
             data.set(0);
@@ -129,9 +128,13 @@ public class Ramp extends AbstractSingleTsVariable implements Cloneable {
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         StringBuilder builder = new StringBuilder();
-        builder.append("rp:").append(start).append(" - ").append(end);
+        if (context != TsFrequency.Undefined) {
+            builder.append("rp:").append(new TsPeriod(context, start.minus(1))).append(" - ").append(new TsPeriod(context, end.plus(1)));
+        } else {
+            builder.append("rp:").append(start).append(" - ").append(end);
+        }
         return builder.toString();
     }
 
@@ -170,8 +173,8 @@ public class Ramp extends AbstractSingleTsVariable implements Cloneable {
     public String toString(TsFrequency freq) {
         StringBuilder builder = new StringBuilder();
         builder.append(PREFIX)
-                .append(InformationSet.SEP).append(StringFormatter.write(new TsPeriod(freq, start)))
-                .append(InformationSet.SEP).append(StringFormatter.write(new TsPeriod(freq, end)));
+                .append(InformationSet.SEP).append(StringFormatter.write(new TsPeriod(freq, start.minus(1))))
+                .append(InformationSet.SEP).append(StringFormatter.write(new TsPeriod(freq, end.plus(1))));
         return builder.toString();
     }
 

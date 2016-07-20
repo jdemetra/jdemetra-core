@@ -165,7 +165,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     }
 
     public void add(IOutlierVariable outlier) {
-        outliers_.add(new OutlierDefinition(outlier.getPosition(), outlier.getOutlierType(), outlier.isPrespecified()));
+        outliers_.add(new OutlierDefinition(outlier.getPosition(), outlier.getCode()));
     }
 
     public void add(InterventionVariable ivar) {
@@ -427,7 +427,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         ArrayList<IOutlierVariable> var = new ArrayList<>();
         ArrayList<IOutlierVariable> pvar = new ArrayList<>();
         for (OutlierDefinition outlier : outliers_) {
-            IOutlierVariable v = fac.make(outlier, freq);
+            IOutlierVariable v = fac.make(outlier);
             regs.add(v);
         }
     }
