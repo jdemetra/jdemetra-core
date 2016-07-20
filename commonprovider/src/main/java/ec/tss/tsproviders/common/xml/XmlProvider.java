@@ -238,7 +238,7 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
         for (int i = 0; i < result.length; ++i) {
             wsTs s = collection.tslist[i];
             Z_SERIESINDEX.set(builder, i);
-            OptionalTsData data = s.tsdata != null ? OptionalTsData.present(0, 0, s.tsdata.create()) : OptionalTsData.absent(0, 0, "No data");
+            OptionalTsData data = s.tsdata != null ? OptionalTsData.present(s.tsdata.create()) : OptionalTsData.absent("No data");
             result[i] = support.fillSeries(newTsInformation(builder.build(), TsInformationType.All), data, true);
         }
         return Arrays.asList(result);

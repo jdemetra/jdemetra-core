@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import ec.tstoolkit.design.NewObject;
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.design.VisibleForTesting;
+import java.util.Arrays;
+import java.util.function.ToIntFunction;
 
 /**
  * A TSDataCollecor collects time observations (identified by pairs of
@@ -45,9 +48,20 @@ public class TsDataCollector {
     public TsDataCollector() {
         this.missing = -99999;
         this.m_obs = new ArrayList<>();
-        this.m_bIsSorted = false;
+        this.m_bIsSorted = true;
     }
 
+    /**
+     * Check if the list is still sorted after an add to avoid sort overhead.
+     *
+     * @return
+     */
+    @VisibleForTesting
+    boolean isStillSortedAfterAdd() {
+        int size = m_obs.size();
+        return size <= 1 || (m_bIsSorted && m_obs.get(size - 2).date <= m_obs.get(size - 1).date);
+    }
+    
     /**
      * Adds a missing value. Adding a missing value is usually unnecessary.
      * This method should be used only if we want to give the series a precise
@@ -58,7 +72,7 @@ public class TsDataCollector {
      */
     public void addMissingValue(Date date) {
 	m_obs.add(new DateObs(date.getTime()));
-	m_bIsSorted = false;
+	m_bIsSorted = isStillSortedAfterAdd();
     }
 
     /**
@@ -73,7 +87,7 @@ public class TsDataCollector {
 	    m_obs.add(new DateObs(date.getTime()));
 	else
 	    m_obs.add(new DateObs(date.getTime(), value));
-	m_bIsSorted = false;
+	m_bIsSorted = isStillSortedAfterAdd();
     }
 
     /**
@@ -81,6 +95,7 @@ public class TsDataCollector {
      */
     public void clear() {
 	m_obs.clear();
+        m_bIsSorted = true;
     }
 
     /**
@@ -150,125 +165,139 @@ public class TsDataCollector {
 
 	sort();
 
+        ToIntFunction<DateObs> tsPeriodIdFunc = getTsPeriodIdFunc(frequency);
+        
 	double[] vals = new double[n];
 	int[] ids = new int[n];
-
-        TsPeriod.CalendarUtil util = TsPeriod.CalendarUtil.getInstance();
-        
-	int ids0 = util.calcTsPeriodId(frequency, m_obs.get(0).date);
-	int ids1 = util.calcTsPeriodId(frequency, m_obs.get(n - 1).date);
+	int ncur = -1;
 
 	int avn = 0;
-	int ncur = -1;
-	for (int i = 0; i < n; ++i) {
-	    DateObs o = m_obs.get(i);
-	    int curid = util.calcTsPeriodId(frequency, o.date);
-	    switch (convMode) {
-	    case Average: {
-		if (!Double.isFinite(o.value))
-		    continue;
-		if (ncur < 0 || curid != ids[ncur]) {
-		    if (ncur >= 0)
-			vals[ncur] /= avn;
-		    vals[++ncur] = o.value;
-		    ids[ncur] = curid;
-		    avn = 1;
-		} else {
-		    vals[ncur] += o.value;
-		    ++avn;
-		}
-	    }
-		break;
-
-	    case Sum: {
-		if (!Double.isFinite(o.value))
-		    continue;
-		if (ncur < 0 || curid != ids[ncur]) {
-		    vals[++ncur] = o.value;
-		    ids[ncur] = curid;
-		} else
-		    vals[ncur] += o.value;
-	    }
-		break;
-
-	    case First: {
-		if (!Double.isFinite(o.value))
-		    continue;
-		if (ncur < 0 || curid != ids[ncur]) {
-		    vals[++ncur] = o.value;
-		    ids[ncur] = curid;
-		}
-	    }
-		break;
-
-	    case Last: {
-		if (!Double.isFinite(o.value))
-		    continue;
-		if (ncur < 0 || curid != ids[ncur])
-		    ids[++ncur] = curid;
-		vals[ncur] = o.value;
-	    }
-		break;
-
-	    case Max: {
-		if (!Double.isFinite(o.value))
-		    continue;
-		if (ncur < 0 || curid != ids[ncur]) {
-		    vals[++ncur] = o.value;
-		    ids[ncur] = curid;
-		} else {
-		    double dcur = o.value;
-		    if (dcur > vals[ncur])
-			vals[ncur] = dcur;
-		}
-	    }
-		break;
-
-	    case Min: {
-		if (!Double.isFinite(o.value))
-		    continue;
-		if (ncur < 0 || curid != ids[ncur]) {
-		    vals[++ncur] = o.value;
-		    ids[ncur] = curid;
-		} else {
-		    double dcur = o.value;
-		    if (dcur < vals[ncur])
-			vals[ncur] = dcur;
-		}
-	    }
-		break;
-
-	    default: // none
-	    {
-		if (ncur >= 0 && curid == ids[ncur])
-		    return null;
-		vals[++ncur] = o.value;
-		ids[ncur] = curid;
-	    }
-		break;
-	    }
-	}
+        for (int i = 0; i < n; ++i) {
+            DateObs o = m_obs.get(i);
+            int curid = tsPeriodIdFunc.applyAsInt(o);
+            switch (convMode) {
+                case Average: {
+                    if (!Double.isFinite(o.value)) {
+                        continue;
+                    }
+                    if (isNewPeriod(ncur, curid, ids)) {
+                        if (ncur >= 0) {
+                            vals[ncur] /= avn;
+                        }
+                        vals[++ncur] = o.value;
+                        ids[ncur] = curid;
+                        avn = 1;
+                    } else {
+                        vals[ncur] += o.value;
+                        ++avn;
+                    }
+                    break;
+                }
+                case Sum: {
+                    if (!Double.isFinite(o.value)) {
+                        continue;
+                    }
+                    if (isNewPeriod(ncur, curid, ids)) {
+                        vals[++ncur] = o.value;
+                        ids[ncur] = curid;
+                    } else {
+                        vals[ncur] += o.value;
+                    }
+                    break;
+                }
+                case First: {
+                    if (!Double.isFinite(o.value)) {
+                        continue;
+                    }
+                    if (isNewPeriod(ncur, curid, ids)) {
+                        vals[++ncur] = o.value;
+                        ids[ncur] = curid;
+                    }
+                    break;
+                }
+                case Last: {
+                    if (!Double.isFinite(o.value)) {
+                        continue;
+                    }
+                    if (isNewPeriod(ncur, curid, ids)) {
+                        ids[++ncur] = curid;
+                    }
+                    vals[ncur] = o.value;
+                    break;
+                }
+                case Max: {
+                    if (!Double.isFinite(o.value)) {
+                        continue;
+                    }
+                    if (isNewPeriod(ncur, curid, ids)) {
+                        vals[++ncur] = o.value;
+                        ids[ncur] = curid;
+                    } else {
+                        double dcur = o.value;
+                        if (dcur > vals[ncur]) {
+                            vals[ncur] = dcur;
+                        }
+                    }
+                    break;
+                }
+                case Min: {
+                    if (!Double.isFinite(o.value)) {
+                        continue;
+                    }
+                    if (isNewPeriod(ncur, curid, ids)) {
+                        vals[++ncur] = o.value;
+                        ids[ncur] = curid;
+                    } else {
+                        double dcur = o.value;
+                        if (dcur < vals[ncur]) {
+                            vals[ncur] = dcur;
+                        }
+                    }
+                    break;
+                }
+                default: // none
+                {
+                    if (!isNewPeriod(ncur, curid, ids)) {
+                        return null;
+                    }
+                    vals[++ncur] = o.value;
+                    ids[ncur] = curid;
+                    break;
+                }
+            }
+        }
 	// }
 	// correction pour le dernier cas
 	if (convMode == TsAggregationType.Average && ncur >= 0)
 	    vals[ncur] /= avn;
 
-	TsPeriod p0 = new TsPeriod(frequency, ids0);
+	int firstId = tsPeriodIdFunc.applyAsInt(m_obs.get(0));
+	int lastId = tsPeriodIdFunc.applyAsInt(m_obs.get(n - 1));
+        
+	TsPeriod start = new TsPeriod(frequency, firstId);
         
 	// check if the series is continuous and complete.
-	int l = ids1 - ids0 + 1;
+	int l = lastId - firstId + 1;
 	if (l == n && ncur + 1 == n)
-	    return new TsData(p0, vals, false);
+	    return new TsData(start, vals, false);
 	else {
 	    double[] valsc = new double[l];
-	    for (int j = 0; j < l; ++j)
-		valsc[j] = Double.NaN;
+            Arrays.fill(valsc, Double.NaN);
 	    for (int j = 0; j <= ncur; ++j)
-		valsc[ids[j] - ids0] = vals[j];
-	    return new TsData(p0, valsc, false);
+		valsc[ids[j] - firstId] = vals[j];
+	    return new TsData(start, valsc, false);
 	}
     }
 
+    private static ToIntFunction<DateObs> getTsPeriodIdFunc(TsFrequency frequency) {
+        TsPeriod.CalendarUtil util = TsPeriod.CalendarUtil.getInstance();
+        return o -> util.calcTsPeriodId(frequency, o.date);
+    }
+    
+    private static boolean isNewPeriod(int ncur, int curid, int[] ids) {
+        return ncur < 0 || curid != ids[ncur];
+    }
+    
     private TsData makeFromUnknownFrequency() {
 	int n = m_obs.size();
 	if (n < 2)
@@ -285,23 +314,25 @@ public class TsDataCollector {
 	if (s == freqs.length)
 	    return null;
 
-	TsPeriod start = new TsPeriod(freqs[s], ids[0]);
+        int firstId = ids[0];
+        int lastId = ids[n - 1];
+        
+	TsPeriod start = new TsPeriod(freqs[s], firstId);
 
-	double[] vtmp = new double[ids[n - 1] - ids[0] + 1];
-	for (int i = 0; i < vtmp.length; ++i)
-	    vtmp[i] = Double.NaN;
+	double[] vtmp = new double[lastId - firstId + 1];
+        Arrays.fill(vtmp, Double.NaN);
 	for (int i = 0; i < n; ++i) {
 	    DateObs o = m_obs.get(i);
-	    vtmp[ids[i] - ids[0]] = o.value;
+	    vtmp[ids[i] - firstId] = o.value;
 	}
 	return new TsData(start, vtmp, false);
     }
 
     private boolean makeIdsFromFrequency(TsFrequency frequency, int[] ids) {
-        TsPeriod.CalendarUtil util = TsPeriod.CalendarUtil.getInstance();
-	ids[0] = util.calcTsPeriodId(frequency, m_obs.get(0).date);
+        ToIntFunction<DateObs> tsPeriodIdFunc = getTsPeriodIdFunc(frequency);
+	ids[0] = tsPeriodIdFunc.applyAsInt(m_obs.get(0));
 	for (int i = 1; i < ids.length; ++i) {
-	    ids[i] = util.calcTsPeriodId(frequency, m_obs.get(i).date);
+	    ids[i] = tsPeriodIdFunc.applyAsInt(m_obs.get(i));
 	    if (ids[i] == ids[i - 1])
 		return false;
 	}
@@ -321,7 +352,7 @@ public class TsDataCollector {
 
     private void sort() {
 	if (!m_bIsSorted) {
-	    java.util.Collections.sort(m_obs, DateObsComparer.INSTANCE);
+	    java.util.Collections.sort(m_obs, (l, r) -> Long.compare(l.date, r.date));
 	    m_bIsSorted = true;
 	}
     }
@@ -340,16 +371,6 @@ public class TsDataCollector {
         public DateObs(long d, double v) {
             date = d;
             value = v;
-        }
-    }
-
-    private enum DateObsComparer implements java.util.Comparator<DateObs> {
-
-        INSTANCE;
-
-        @Override
-        public int compare(DateObs l, DateObs r) {
-            return Long.compare(l.date, r.date);
         }
     }
 }

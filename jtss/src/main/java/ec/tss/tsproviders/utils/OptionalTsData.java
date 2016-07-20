@@ -16,7 +16,6 @@
  */
 package ec.tss.tsproviders.utils;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import ec.tstoolkit.design.IBuilder;
 import ec.tstoolkit.design.Immutable;
@@ -30,9 +29,13 @@ import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * An immutable object that may contain some time series data. Each instance of
@@ -55,52 +58,58 @@ import javax.annotation.Nullable;
 @Immutable
 public abstract class OptionalTsData {
 
+    //<editor-fold defaultstate="collapsed" desc="Factories">
     /**
      * Creates an OptionalTsData that contains times series data.
      *
-     * @param nbrRows
-     * @param nbrUselessRows
      * @param data
      * @return non-null OptionalTsData
      */
     @Nonnull
+    public static OptionalTsData present(@Nonnull TsData data) {
+        return new Present(Objects.requireNonNull(data));
+    }
+
+    @Deprecated
+    @Nonnull
     public static OptionalTsData present(@Nonnegative int nbrRows, @Nonnegative int nbrUselessRows, @Nonnull TsData data) {
-        Objects.requireNonNull(data);
         Preconditions.checkArgument(nbrRows >= nbrUselessRows && nbrUselessRows >= 0);
-        return new Present(nbrRows, nbrUselessRows, data);
+        return present(data);
     }
 
     /**
      * Creates an empty OptionalTsData.
      *
-     * @param nbrRows
-     * @param nbrUselessRows
      * @param cause
      * @return non-null OptionalTsData
      */
     @Nonnull
+    public static OptionalTsData absent(@Nonnull String cause) {
+        return new Absent(Objects.requireNonNull(cause));
+    }
+
+    @Deprecated
+    @Nonnull
     public static OptionalTsData absent(@Nonnegative int nbrRows, @Nonnegative int nbrUselessRows, @Nonnull String cause) {
-        Objects.requireNonNull(cause);
         Preconditions.checkArgument(nbrRows >= nbrUselessRows && nbrUselessRows >= 0);
-        return new Absent(nbrRows, nbrUselessRows, cause);
+        return absent(cause);
     }
 
-    private final int nbrRows;
-    private final int nbrUselessRows;
-
-    private OptionalTsData(int nbrRows, int nbrUselessRows) {
-        this.nbrRows = nbrRows;
-        this.nbrUselessRows = nbrUselessRows;
+    @Nonnull
+    public static Builder2 builder(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean skipMissingValues) {
+        return new GenericBuilder(freq, aggregation, skipMissingValues);
     }
+    //</editor-fold>
 
     /**
      * Returns the number of rows that were read while creating this data.
      *
      * @return a non-negative number of rows
      */
+    @Deprecated
     @Nonnegative
     public int getNbrRows() {
-        return nbrRows;
+        return 0;
     }
 
     /**
@@ -109,9 +118,10 @@ public abstract class OptionalTsData {
      *
      * @return a non-negative number of rows
      */
+    @Deprecated
     @Nonnegative
     public int getNbrUselessRows() {
-        return nbrUselessRows;
+        return 0;
     }
 
     /**
@@ -166,6 +176,77 @@ public abstract class OptionalTsData {
     @Nonnull
     abstract public String getCause() throws IllegalStateException;
 
+    /**
+     * Builder that collects observations in order to create an OptionalTsData.
+     */
+    @NotThreadSafe
+    public interface Builder2 extends IBuilder<OptionalTsData> {
+
+        /**
+         * Removes all observations.
+         *
+         * @return this builder
+         */
+        @Nonnull
+        Builder2 clear();
+
+        /**
+         * Adds an observation. Observation with null date is ignored.
+         * Observation with non-null date but null value is considered as
+         * missing value.
+         *
+         * @param period an optional date. This date has just to belong to the
+         * considered period (it is not retained in the final time series).
+         * @param value an optional value
+         * @return this builder
+         */
+        @Nonnull
+        Builder2 add(@Nullable Date period, @Nullable Number value);
+
+        /**
+         * Adds an observation.
+         *
+         * @param <X> the observation type
+         * @param obs the non-null observation to add
+         * @param toPeriod a non-null function that retrieves a date from an
+         * observation
+         * @param toValue a non-null function that retrieves a value from an
+         * observation
+         * @return this builder
+         */
+        @Nonnull
+        default <X> Builder2 add(X obs, Function<? super X, ? extends Date> toPeriod, Function<? super X, ? extends Number> toValue) {
+            Date date = toPeriod.apply(obs);
+            return add(date, date != null ? toValue.apply(obs) : null);
+        }
+
+        /**
+         * Adds a stream of observations.
+         *
+         * @param <X> the observation type
+         * @param stream the non-null stream to add
+         * @param toPeriod a non-null function that retrieves a date from an
+         * observation
+         * @param toValue a non-null function that retrieves a value from an
+         * observation
+         * @return this builder
+         */
+        @Nonnull
+        default <X> Builder2 addAll(Stream<X> stream, Function<? super X, ? extends Date> toPeriod, Function<? super X, ? extends Number> toValue) {
+            stream.forEach(o -> add(o, toPeriod, toValue));
+            return this;
+        }
+
+        /**
+         * Creates an OptionalTsData from the collected observations.
+         *
+         * @return a non-null OptionalTsData
+         */
+        @Nonnull
+        @Override
+        OptionalTsData build();
+    }
+
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
     private static final class Present extends OptionalTsData {
 
@@ -179,8 +260,7 @@ public abstract class OptionalTsData {
         private final int position;
         private final byte[] data;
 
-        private Present(int nbrRows, int nbrUselessRows, TsData data) {
-            super(nbrRows, nbrUselessRows);
+        private Present(TsData data) {
             TsPeriod start = data.getStart();
             this.freq = start.getFrequency().intValue();
             this.year = start.getYear();
@@ -228,8 +308,7 @@ public abstract class OptionalTsData {
 
         private final String cause;
 
-        private Absent(int nbrRows, int nbrUselessRows, String cause) {
-            super(nbrRows, nbrUselessRows);
+        private Absent(String cause) {
             this.cause = cause;
         }
 
@@ -268,131 +347,58 @@ public abstract class OptionalTsData {
         }
     }
 
-    private static final class BuilderAbsent extends OptionalTsData {
-
-        private final BuilderCause cause;
-
-        private BuilderAbsent(int nbrRows, int nbrUselessRows, BuilderCause cause) {
-            super(nbrRows, nbrUselessRows);
-            this.cause = cause;
-        }
-
-        @Override
-        public boolean isPresent() {
-            return false;
-        }
-
-        @Override
-        public TsData get() throws IllegalStateException {
-            throw new IllegalStateException(cause.getMessage());
-        }
-
-        @Override
-        public TsData orNull() {
-            return null;
-        }
-
-        @Override
-        public String getCause() {
-            return cause.getMessage();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return this == obj || (obj instanceof BuilderAbsent && equals((BuilderAbsent) obj));
-        }
-
-        private boolean equals(BuilderAbsent that) {
-            return this.cause == that.cause;
-        }
-
-        @Override
-        public int hashCode() {
-            return cause.hashCode();
-        }
-    }
-
     @VisibleForTesting
-    enum BuilderCause {
+    static final OptionalTsData NO_DATA = new Absent("No data available");
+    @VisibleForTesting
+    static final OptionalTsData INVALID_AGGREGATION = new Absent("Invalid aggregation mode");
+    @VisibleForTesting
+    static final OptionalTsData GUESS_SINGLE = new Absent("Cannot guess frequency with a single observation");
+    @VisibleForTesting
+    static final OptionalTsData GUESS_DUPLICATION = new Absent("Cannot guess frequency with duplicated periods");
+    @VisibleForTesting
+    static final OptionalTsData DUPLICATION_WITHOUT_AGGREGATION = new Absent("Duplicated observations without aggregation");
+    @VisibleForTesting
+    static final OptionalTsData UNKNOWN = new Absent("Unexpected error");
 
-        NO_DATA, INVALID_AGGREGATION, GUESS_SINGLE, GUESS_DUPLICATION, DUPLICATION_WITHOUT_AGGREGATION, UNKNOWN;
-
-        @Nonnull
-        public String getMessage() {
-            switch (this) {
-                case NO_DATA:
-                    return "No data available";
-                case INVALID_AGGREGATION:
-                    return "Invalid aggregation mode";
-                case GUESS_SINGLE:
-                    return "Cannot guess frequency with a single observation";
-                case GUESS_DUPLICATION:
-                    return "Cannot guess frequency with duplicated periods";
-                case DUPLICATION_WITHOUT_AGGREGATION:
-                    return "Duplicated observations without aggregation";
-                case UNKNOWN:
-                    return "Unexpected error";
-                default:
-                    throw new RuntimeException();
-            }
-        }
-    }
-    //</editor-fold>
-
-    public static final class Builder implements IBuilder<OptionalTsData> {
-
-        @Nonnull
-        public static String toString(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation) {
-            return "(" + freq + "/" + aggregation + ")";
-        }
+    private static final class GenericBuilder implements Builder2 {
 
         private final TsDataCollector dc;
         private final TsFrequency freq;
         private final TsAggregationType aggregation;
         private final boolean skipMissingValues;
-        private int nbrUselessRows;
 
-        public Builder(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation) {
-            this(freq, aggregation, false);
-        }
-
-        public Builder(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean skipMissingValues) {
+        private GenericBuilder(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean skipMissingValues) {
             this.dc = new TsDataCollector();
             this.freq = Objects.requireNonNull(freq);
             this.aggregation = Objects.requireNonNull(aggregation);
             this.skipMissingValues = skipMissingValues;
-            this.nbrUselessRows = 0;
         }
 
-        @Nonnull
-        public Builder clear() {
+        @Override
+        public Builder2 clear() {
             dc.clear();
-            nbrUselessRows = 0;
             return this;
         }
 
-        @Nonnull
-        public Builder add(@Nullable Date period, @Nullable Number value) {
+        @Override
+        public Builder2 add(Date period, Number value) {
             if (period != null) {
                 if (value != null) {
                     dc.addObservation(period, value.doubleValue());
                 } else if (!skipMissingValues) {
                     dc.addMissingValue(period);
                 }
-            } else {
-                nbrUselessRows++;
             }
             return this;
         }
 
-        @Nonnull
         @Override
         public OptionalTsData build() {
             if (dc.getCount() == 0) {
-                return onFailure(BuilderCause.NO_DATA);
+                return NO_DATA;
             }
             if (!isValidAggregation(freq, aggregation)) {
-                return onFailure(BuilderCause.INVALID_AGGREGATION);
+                return INVALID_AGGREGATION;
             }
 
             TsData result;
@@ -412,27 +418,57 @@ public abstract class OptionalTsData {
                 switch (freq) {
                     case Undefined:
                         return dc.getCount() == 1
-                                ? onFailure(BuilderCause.GUESS_SINGLE)
-                                : onFailure(BuilderCause.GUESS_DUPLICATION);
+                                ? GUESS_SINGLE
+                                : GUESS_DUPLICATION;
                     default:
                         return aggregation == TsAggregationType.None
-                                ? onFailure(BuilderCause.DUPLICATION_WITHOUT_AGGREGATION)
-                                : onFailure(BuilderCause.UNKNOWN);
+                                ? DUPLICATION_WITHOUT_AGGREGATION
+                                : UNKNOWN;
                 }
             }
-            return onSuccess(result);
-        }
-
-        private OptionalTsData onSuccess(@Nonnull TsData tsData) {
-            return new Present(dc.getCount(), nbrUselessRows, tsData);
-        }
-
-        private OptionalTsData onFailure(@Nonnull BuilderCause cause) {
-            return new BuilderAbsent(dc.getCount(), nbrUselessRows, cause);
+            return new Present(result);
         }
 
         private static boolean isValidAggregation(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation) {
             return freq != TsFrequency.Undefined || aggregation == TsAggregationType.None;
+        }
+    }
+    //</editor-fold>
+
+    @Deprecated
+    public static final class Builder implements IBuilder<OptionalTsData> {
+
+        @Nonnull
+        public static String toString(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation) {
+            return "(" + freq + "/" + aggregation + ")";
+        }
+
+        private final Builder2 delegate;
+
+        public Builder(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation) {
+            this.delegate = new GenericBuilder(freq, aggregation, false);
+        }
+
+        public Builder(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean skipMissingValues) {
+            this.delegate = new GenericBuilder(freq, aggregation, skipMissingValues);
+        }
+
+        @Nonnull
+        public Builder clear() {
+            delegate.clear();
+            return this;
+        }
+
+        @Nonnull
+        public Builder add(@Nullable Date period, @Nullable Number value) {
+            delegate.add(period, value);
+            return this;
+        }
+
+        @Nonnull
+        @Override
+        public OptionalTsData build() {
+            return delegate.build();
         }
     }
 }

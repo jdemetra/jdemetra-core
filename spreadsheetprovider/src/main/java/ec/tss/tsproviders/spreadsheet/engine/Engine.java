@@ -128,7 +128,7 @@ abstract class Engine {
 
         ImmutableList.Builder<SpreadSheetSeries> list = ImmutableList.builder();
 
-        OptionalTsData.Builder data = new OptionalTsData.Builder(frequency, aggregationType, clean);
+        OptionalTsData.Builder2 data = OptionalTsData.builder(frequency, aggregationType, clean);
         for (int columnIdx = 0; columnIdx < names.size(); columnIdx++) {
             for (int rowIdx = 0; rowIdx < dates.size(); rowIdx++) {
                 Number value = toNumber.parse(sheet, rowIdx + FIRST_DATA_ROW_IDX, columnIdx + FIRST_DATA_COL_IDX);
