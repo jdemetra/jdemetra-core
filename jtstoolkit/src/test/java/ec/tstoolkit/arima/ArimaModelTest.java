@@ -38,4 +38,15 @@ public class ArimaModelTest {
         m.simplifyUr();
         assertTrue(ArimaModel.same(m, tmp2, 1e-6));
     }
+
+    @Test
+    public void testVariance() {
+        SarimaModelBuilder builder = new SarimaModelBuilder();
+        SarimaModel tmp1 = builder.createAirlineModel(11, -.36, -.4);
+        ArimaModel arima = ArimaModel.create((IArimaModel) tmp1.stationaryTransformation().stationaryModel);
+        double var = arima.getAutoCovarianceFunction().get(0);
+        ArimaModel narima = arima.scaleVariance(1 / var);
+        double nvar = narima.getAutoCovarianceFunction().get(0);
+        assertEquals(nvar, 1, 1e-9);
+    }
 }

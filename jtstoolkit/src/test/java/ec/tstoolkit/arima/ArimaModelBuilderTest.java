@@ -80,7 +80,7 @@ public class ArimaModelBuilderTest {
         arima.setBTheta(1, -.9);
         arima.setTheta(1, -.6);
         ArimaModelBuilder builder = new ArimaModelBuilder();
-        builder.setDistribution(new T());
+ //       builder.setDistribution(new T());
         double[] x = builder.generate(arima, 0.05, 300);
         GlsSarimaMonitor monitor = new GlsSarimaMonitor(null);
         RegArimaModel reg = new RegArimaModel(arima, new DataBlock(x));

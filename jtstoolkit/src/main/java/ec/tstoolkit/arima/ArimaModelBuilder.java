@@ -191,7 +191,7 @@ public final class ArimaModelBuilder {
         return generateStationary(starima, 0, n);
     }
     
-    public double[] generateStationary(final IArimaModel starima, final double mean,final int n) {
+    public double[] generateStationary(final IArimaModel starima, final double mean, final int n) {
     
         BackFilter ar = starima.getAR(), ma = starima.getMA();
         int p = ar.getDegree(), q = ma.getDegree();
