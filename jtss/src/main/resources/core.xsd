@@ -17,8 +17,10 @@ limitations under the Licence.
 -->
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="ec:eurostat:jdemetra:3"
-           xmlns:jd3="ec:eurostat:jdemetra:3">
+           targetNamespace="ec:eurostat:jdemetra:core:3"
+           xmlns:tss="ec:eurostat:jdemetra:core:3"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
 
 
     <!--Enumerations and simple types-->
@@ -45,7 +47,7 @@ limitations under the Licence.
                 Months
             </xs:documentation>
         </xs:annotation>
-        <xs:restriction base="xs:string">
+        <xs:restriction base="xs:NMTOKEN">
             <xs:enumeration value="January" />
             <xs:enumeration value="February" />
             <xs:enumeration value="March" />
@@ -67,7 +69,7 @@ limitations under the Licence.
                 Days of the week
             </xs:documentation>
         </xs:annotation>
-        <xs:restriction base="xs:string">
+        <xs:restriction base="xs:NMTOKEN">
             <xs:enumeration value="Sunday" />
             <xs:enumeration value="Monday" />
             <xs:enumeration value="Tuesday" />
@@ -75,30 +77,6 @@ limitations under the Licence.
             <xs:enumeration value="Thursday" />
             <xs:enumeration value="Fryday" />
             <xs:enumeration value="Saturday" />
-        </xs:restriction>
-    </xs:simpleType>
-
-    <xs:simpleType name="Year">
-        <xs:annotation>
-            <xs:documentation>
-                Year (YYYY). Should be in the range[1000, 3000[
-            </xs:documentation>
-        </xs:annotation>
-        <xs:restriction base="xs:unsignedShort">
-            <xs:minInclusive value="1000" />
-            <xs:maxExclusive value="3000" />
-        </xs:restriction>
-    </xs:simpleType>
-
-    <xs:simpleType name="Day">
-        <xs:annotation>
-            <xs:documentation>
-                1-based position of the day in a month. Should be in the range [1, 31].
-            </xs:documentation>
-        </xs:annotation>
-        <xs:restriction base="xs:unsignedShort">
-            <xs:minInclusive value="1" />
-            <xs:maxInclusive value="31" />
         </xs:restriction>
     </xs:simpleType>
 
@@ -123,7 +101,7 @@ limitations under the Licence.
                 be 4 on some occasions February finishing by a Monday). It is also identified by a special value/
             </xs:documentation>
         </xs:annotation>
-        <xs:restriction base="xs:string">
+        <xs:restriction base="xs:NMTOKEN">
             <xs:enumeration value="1"/>
             <xs:enumeration value="2"/>
             <xs:enumeration value="3"/>
@@ -154,11 +132,11 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="Property" type="jd3:propertyType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="Property" type="tss:PropertyType" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
-    <xs:simpleType name="ParamInfo">
+    <xs:simpleType name="ParameterInfo">
         <xs:annotation>
             <xs:documentation>
                 Information on the way a parameter should be used or interpreted.
@@ -169,7 +147,7 @@ limitations under the Licence.
                 parameters.
             </xs:documentation>
         </xs:annotation>
-        <xs:restriction base="xs:string">
+        <xs:restriction base="xs:NMTOKEN">
             <xs:enumeration value="Undefined"/>
             <xs:enumeration value="Initial"/>
             <xs:enumeration value="Fixed"/>
@@ -178,7 +156,7 @@ limitations under the Licence.
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:complexType name="ParamType">
+    <xs:complexType name="ParameterType">
         <xs:annotation>
             <xs:documentation>
                 Parameter, with (except for "Undefined" parameter) its value and the way it has to be interpreted.
@@ -192,17 +170,17 @@ limitations under the Licence.
             <xs:element name ="Tstat" type="xs:double" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="name" type="xs:string" use="optional"/>
-        <xs:attribute name="type" type="jd3:paramInfo" use="optional"/>
+        <xs:attribute name="type" type="tss:ParameterInfo" use="required"/>
     </xs:complexType>
 
-    <xs:complexType name="ParamsType">
+    <xs:complexType name="ParametersType">
         <xs:annotation>
             <xs:documentation>
                 Array of parameters
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="Coefficient" type="jd3:ParamType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="Coefficient" type="tss:ParameterType" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
     
@@ -214,6 +192,10 @@ limitations under the Licence.
         <xs:list itemType="xs:int"/>
     </xs:simpleType>
 
+    <xs:simpleType name="UnsignedIntsType">
+        <xs:list itemType="xs:unsignedInt"/>
+    </xs:simpleType>
+
     <xs:simpleType name="BooleansType">
         <xs:list itemType="xs:boolean"/>
     </xs:simpleType>
@@ -222,16 +204,27 @@ limitations under the Licence.
         <xs:list itemType="xs:NMTOKEN"/>
     </xs:simpleType>
 
+    <xs:complexType name="MatrixType">
+        <xs:annotation>
+            <xs:documentation>
+                Matrix of doubles
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Dimensions" type="tss:UnsignedIntsType"/>
+            <xs:element name="Data" type="tss:DoublesType"/>
+        </xs:sequence>
+    </xs:complexType>
+
     <!--Basic time series complex types-->
   
     <xs:group name="StartPeriod">
         <xs:sequence>
-            <xs:element name="Frequency" type="jd3:Frequency" />
-            <xs:element name="FirstYear" type="jd3:Year" />
-            <xs:element name="FirstPeriod" type="jd3:Period" minOccurs="0"/>
+            <xs:element name="Frequency" type="tss:Frequency" />
+            <xs:element name="FirstYear" type="xs:gYear" />
+            <xs:element name="FirstPeriod" type="tss:Period" minOccurs="0"/>
         </xs:sequence>
     </xs:group>
-
 
     <xs:group name="TimeSpan">
         <xs:sequence>
@@ -261,7 +254,7 @@ limitations under the Licence.
             <xs:element name="First" type="xs:unsignedInt" />
             <xs:element name="To" type="xs:date" />
             <xs:element name="Last" type="xs:unsignedInt" />
-            <xs:group ref="jd3:TimeSpan" id="Between"/>
+            <xs:group ref="tss:TimeSpan" id="Between"/>
             <xs:element name="Excluding">
                 <xs:complexType>
                     <xs:sequence>
@@ -272,6 +265,10 @@ limitations under the Licence.
             </xs:element>
         </xs:choice>
     </xs:complexType>
+    
+    <xs:complexType name="TimePeriodType" abstract="true"/>
+    <xs:complexType name="TimeDomainType" abstract="true"/>
+    <xs:complexType name="TimeSeriesType" abstract="true"/>
 
     <xs:complexType name="TsPeriodType">
         <xs:annotation>
@@ -279,32 +276,35 @@ limitations under the Licence.
                 Describes a regular time period
             </xs:documentation>
         </xs:annotation>
-        <xs:sequence>
-            <xs:element name="Frequency" type="jd3:Frequency">
-                <xs:annotation>
-                    <xs:documentation>
-                        Annual frequency of this type of regular period
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="Year" type="jd3:Year">
-                <xs:annotation>
-                    <xs:documentation>
-                        Year of the period
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="Period" type="jd3:Period" minOccurs="0">
-                <xs:annotation>
-                    <xs:documentation>
-                        Position of the period in its year. It is required when the frequency is .gt. 1.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-        </xs:sequence>
+        <xs:complexContent>
+            <xs:extension base="tss:TimePeriodType">
+                <xs:sequence>
+                    <xs:element name="Frequency" type="tss:Frequency">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Annual frequency of this type of regular period
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="Year" type="xs:gYear">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Year of the period
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="Period" type="tss:Period" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Position of the period in its year. It is required when the frequency is .gt. 1.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
- 
     <xs:complexType name="TsDataType">
         <xs:annotation>
             <xs:documentation>
@@ -313,11 +313,15 @@ limitations under the Licence.
                 A name (or description) may also be provided.
             </xs:documentation>
         </xs:annotation>
-        <xs:sequence>
-            <xs:group ref="jd3:StartPeriod" />
-            <xs:element name="Data" type="jd3:DoublesType"/>
-        </xs:sequence>
-        <xs:attribute name="name" type="xs:string" use="optional" />
+        <xs:complexContent>
+            <xs:extension base="tss:TimeSeriesType">
+                <xs:sequence>
+                    <xs:group ref="tss:StartPeriod" />
+                    <xs:element name="Values" type="tss:DoublesType"/>
+                </xs:sequence>
+                <xs:attribute name="name" type="xs:string" use="optional" />
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="TsDomainType">
@@ -327,10 +331,14 @@ limitations under the Licence.
                 It corresponds to the domain of a time series
             </xs:documentation>
         </xs:annotation>
-        <xs:sequence>
-            <xs:group ref="jd3:StartPeriod" />
-            <xs:element name="Length" type="xs:unsignedInt" />
-        </xs:sequence>
+        <xs:complexContent>
+            <xs:extension base="tss:TimeDomainType">
+                <xs:sequence>
+                    <xs:group ref="tss:StartPeriod" />
+                    <xs:element name="Length" type="xs:unsignedInt" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="TsMonikerType">
@@ -348,23 +356,23 @@ limitations under the Licence.
     </xs:complexType>
  
     <xs:attributeGroup name="TsIdentifier">
-        <xs:attribute name="Source" type="xs:string" use="optional" />
-        <xs:attribute name="Identifier" type="xs:string" use="optional" />
+        <xs:attribute name="source" type="xs:string" use="optional" />
+        <xs:attribute name="identifier" type="xs:string" use="optional" />
     </xs:attributeGroup>
 
     <xs:complexType name="TsType">
         <xs:annotation>
             <xs:documentation>
-                Complete information of a time series. It extends a "tsdataType" (time series data)
+                Complete information of a time series. It extends a "TsDataType" (time series data)
                 with its identifier and with metadata.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="jd3:TsDataType">
+            <xs:extension base="tss:TsDataType">
                 <xs:sequence>
-                    <xs:element name="MetaData" type="jd3:MetaDataType" minOccurs="0" />
+                    <xs:element name="MetaData" type="tss:MetaDataType" minOccurs="0" />
                 </xs:sequence>
-                <xs:attributeGroup ref="jd3:TsIdentifier" />
+                <xs:attributeGroup ref="tss:TsIdentifier" />
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -377,34 +385,22 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="MetaData" type="jd3:MetaDataType" minOccurs="0" />
+            <xs:element name="MetaData" type="tss:MetaDataType" minOccurs="0" />
             <xs:element name="Data">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="Ts" type="jd3:TsType" minOccurs="0" maxOccurs="unbounded" />
+                        <xs:element name="Ts" type="tss:TsType" minOccurs="0" maxOccurs="unbounded" />
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
         <xs:attribute name="name" type="xs:string" />
-        <xs:attributeGroup ref="jd3:TsIdentifier" />
+        <xs:attributeGroup ref="tss:TsIdentifier" />
     </xs:complexType>
 
-    <xs:simpleType name="ComponentType">
-        <xs:annotation>
-            <xs:documentation>
-            </xs:documentation>
-        </xs:annotation>
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="Undefined"/>
-            <xs:enumeration value="Series"/>
-            <xs:enumeration value="Trend"/>
-            <xs:enumeration value="Seasonal"/>
-            <xs:enumeration value="Irregular"/>
-            <xs:enumeration value="Calendar"/>
-            <xs:enumeration value="SeasonallyAdjusted"/>
-            <xs:enumeration value="Cycle"/>
-        </xs:restriction>
-    </xs:simpleType>
+    <xs:element name="TsData" type="tss:TsDataType"/>
+    <xs:element name="MetaData" type="tss:MetaDataType"/>
+    <xs:element name="Ts" type="tss:TsType"/>
+    <xs:element name="TsCollection" type="tss:TsCollectionType"/>
 
 </xs:schema>

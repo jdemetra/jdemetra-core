@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="ec:eurostat:jdemetra:core:3"
+           xmlns:tss="ec:eurostat:jdemetra:core:3"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+    <xs:include schemaLocation="core.xsd"/>
+
+    <xs:complexType name="ArimaModelType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>
+                Arima model.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="name" type="xs:string" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="DefaultArimaModelType">
+        <xs:annotation>
+            <xs:documentation>
+                Description of an Arima model, defined by auto-regressive polynomials (stationary and non stationary)
+                and moving average polynmials.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:ArimaModelType">
+                <xs:sequence>
+                    <xs:element name="AR" type="tss:ParametersType" minOccurs="0"/>
+                    <xs:element name="D" type="tss:ParametersType" minOccurs="0"/>
+                    <xs:element name="MA" type="tss:ParametersType" minOccurs="0"/>
+                    <xs:element name="InnovationVariance" type="xs:double" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SarimaModelType">
+        <xs:annotation>
+            <xs:documentation>
+                Description of a Box and Jenkins seasonal Arima model, defined by auto-regressive (stationary and non stationary)
+                and moving average regular and seasonal polynmials.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:ArimaModelType">
+                <xs:sequence>
+                    <xs:element name="Phi" type="tss:ParametersType" minOccurs="0"/>
+                    <xs:element name="D" type="xs:unsignedInt" minOccurs="0"/>
+                    <xs:element name="Theta" type="tss:ParametersType" minOccurs="0"/>
+                    <xs:element name="S" type="xs:unsignedInt" minOccurs="0"/>
+                    <xs:element name="BPhi" type="tss:ParametersType" minOccurs="0"/>
+                    <xs:element name="BD" type="xs:unsignedInt" minOccurs="0"/>
+                    <xs:element name="BTheta" type="tss:ParametersType" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="UcarimaModelType">
+        <xs:annotation>
+            <xs:documentation>
+                An UCARIMA model is a list of arima models with independent innovation variances.
+                The sum of the models may be added.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Sum" type="tss:ArimaModelType" minOccurs="0"/>
+            <xs:element name="Component" type="tss:ArimaModelType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

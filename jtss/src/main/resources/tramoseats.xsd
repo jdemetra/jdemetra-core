@@ -1,0 +1,588 @@
+<?xml version="1.0"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<xs:schema version="1.0"
+           targetNamespace="ec:eurostat:jdemetra:sa:tramoseats:3"
+           xmlns:tss="ec:eurostat:jdemetra:core:3"
+           xmlns:sa="ec:eurostat:jdemetra:sa:core:3"
+           xmlns:trs="ec:eurostat:jdemetra:sa:tramoseats:3"
+           xmlns:modelling="ec:eurostat:jdemetra:modelling:core:3"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+    
+    <xs:import schemaLocation="core.xsd" namespace="ec:eurostat:jdemetra:core:3"/>
+    <xs:import schemaLocation="sacore.xsd" namespace="ec:eurostat:jdemetra:sa:core:3"/>
+    <xs:import schemaLocation="modelling.xsd" namespace="ec:eurostat:jdemetra:modelling:core:3"/>
+    <xs:import schemaLocation="regarima.xsd" namespace="ec:eurostat:jdemetra:modelling:regarima:3"/>
+    
+    <xs:complexType name="AutoTransformationSpecType">
+        <xs:sequence>
+            <xs:element name="Fct" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Controls the bias in the log/level pretest.
+                        Greater than 1 favors levels; lesser than 1 favors logs.
+                        Default value is 1.
+                        Fct should be in the range [0.5, 2].
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:double">
+                        <xs:minInclusive value="0.5" />
+                        <xs:maxInclusive value="2.0" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>  
+    </xs:complexType>
+
+    <xs:group name="TransformationSpecGroup">
+        <xs:choice>
+            <xs:element name="Log">
+                <xs:annotation>
+                    <xs:documentation>
+                        Corresponds to LAM=0.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Level">
+                <xs:annotation>
+                    <xs:documentation>
+                        Corresponds to LAM=1.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Auto" type ="trs:AutoTransformationSpecType">
+                <xs:annotation>
+                    <xs:documentation>
+                        Corresponds to LAM=-1.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:choice>
+    </xs:group>
+
+    <xs:complexType name="TransformationSpecType">
+        <xs:complexContent>
+            <xs:extension base="modelling:TransformationSpecType">
+                <xs:sequence>
+                    <xs:group ref="trs:TransformationSpecGroup"/>
+                </xs:sequence>  
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+  
+    <!--Arima modelling-->
+  
+    <xs:complexType name="AutoModellingSpecType">
+        <xs:complexContent>
+            <xs:extension base="modelling:AutomaticModellingSpecType">
+                <xs:sequence>
+                    <xs:element name="Pcr" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Level of significance for the Ljung-Box Q-test used in automatic model identification.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:double">
+                                <xs:minInclusive value="0.8" />
+                                <xs:maxExclusive value="1" />
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="Ub1" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                If one of the roots in the “AR(2)xARs(1) plus mean” estimation
+                                (in the first step of the automatic identification of the differencing polynomial)
+                                is larger than ub1, in modulus, it is set equal to unity.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:double">
+                                <xs:minInclusive value="0.8" />
+                                <xs:maxExclusive value="1" />
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="Ub2" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                If one of the roots in the “ARMA(1,1)xARMAs(1,1) plus mean” estimation
+                                (in the second step of the automatic model identification)
+                                is larger than ub2, in modulus, it is set equal to unity.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:double">
+                                <xs:minInclusive value="0.7" />
+                                <xs:maxExclusive value="1" />
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="Cancel" default="0.1" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                If the difference in moduli of an AR and an MA root
+                                (when estimating Arma(1,1) x Arma s(1,1) models in
+                                the second step of the automatic identifcation of the
+                                differencing polynomial) is smaller than "cancel", the
+                                two roots cancel out.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:double">
+                                <xs:minExclusive value="0.0" />
+                                <xs:maxInclusive value="0.2" />
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="tsig" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Minimum t for significant mean.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:double">
+                                <xs:minExclusive value="0.0" />
+                                <xs:maxInclusive value="2.0" />
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="Pc" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Percentage by which va is reduced in the second round
+                                (when outliers detection is enabled)
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:double">
+                                <xs:minInclusive value="1.1" />
+                                <xs:maxInclusive value="1.5" />
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="arimaOrderType">
+        <xs:sequence>
+            <xs:element name="p">
+                <xs:annotation>
+                    <xs:documentation>
+                        Regular auto-regressive order. Should be in {0,1,2,3}
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:unsignedShort">
+                        <xs:maxInclusive value="3"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="d">
+                <xs:annotation>
+                    <xs:documentation>
+                        Regular differencing order. Should be in {0,1,2}
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:unsignedShort">
+                        <xs:maxInclusive value="2"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="q">
+                <xs:annotation>
+                    <xs:documentation>
+                        Regular moving average order. Should be in {0,1,2,3}
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:unsignedShort">
+                        <xs:maxInclusive value="3"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="bp">
+                <xs:annotation>
+                    <xs:documentation>
+                        Seasonal auto-regressive order. Should be 0 or 1.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:unsignedShort">
+                        <xs:maxInclusive value="1"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="bd">
+                <xs:annotation>
+                    <xs:documentation>
+                        Seasonal auto-regressive order. Should be 0 or 1
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:unsignedShort">
+                        <xs:maxInclusive value="1"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="bq">
+                <xs:annotation>
+                    <xs:documentation>
+                        Seasonal moving average order. Should be 0 or 1
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:unsignedShort">
+                        <xs:maxInclusive value="1"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="arimaPolynomialsType">
+        <xs:sequence>
+            <xs:element name="phi" type="tss:DoublesType"/>
+            <xs:element name="d">
+                <xs:simpleType>
+                    <xs:restriction base="xs:unsignedShort">
+                        <xs:maxInclusive value="2"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="th" type="tss:DoublesType"/>
+            <xs:element name="bphi" type="tss:DoublesType"/>
+            <xs:element name="bd">
+                <xs:simpleType>
+                    <xs:restriction base="xs:unsignedShort">
+                        <xs:maxInclusive value="1"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="bth" type="tss:DoublesType"/>
+        </xs:sequence>
+        <xs:attribute name="type" type="tss:ParameterInfo"/>
+    </xs:complexType>
+
+    <xs:complexType name="arimaSpecType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="mean" minOccurs="0"/>
+            <xs:choice>
+                <xs:element name="spec" type="trs:arimaOrderType"/>
+                <xs:element name="model" type="trs:arimaPolynomialsType"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:group name ="modelSpecGroup">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="autoModelSpec" type="trs:autoModelSpecType"/>
+            <xs:element name="arimaSpec" type="trs:arimaSpecType"/>
+        </xs:choice>
+    </xs:group>
+
+    <!--CalendarSpec-->
+
+    <xs:simpleType name="tdType">
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="None"/>
+            <xs:enumeration value="TradingDays"/>
+            <xs:enumeration value="WorkingDays"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="lpType">
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="None"/>
+            <xs:enumeration value="LeapYear"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="tradingDaysSpecType">
+        <xs:choice>
+            <xs:sequence>
+                <xs:element name="calendar" type="xs:string" minOccurs="0"/>
+                <xs:element name="tdOption" type="trs:tdType"/>
+                <xs:element name="lpOption" type="trs:lpType" minOccurs="0"/>
+            </xs:sequence>
+            <xs:element name="userVariables">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="string" type="xs:string" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+        <xs:attribute name="pretest" type="xs:boolean" use="optional"/>
+    </xs:complexType>
+  
+    <xs:complexType name="easterSpecType">
+        <xs:sequence>
+            <xs:element name="duration" minOccurs="0">
+                <xs:simpleType>
+                    <xs:list>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedShort">
+                                <xs:minInclusive value="1"/>
+                                <xs:maxInclusive value="15"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:list>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="pretest" type="xs:boolean"/>
+    </xs:complexType>
+
+    <xs:complexType name="movingHolidaysSpecType">
+        <xs:annotation>
+            <xs:documentation>
+                Moving holidays specification could be extended in the future to take into account other kind of holidays.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="easter" type="trs:easterSpecType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="calendarSpecType">
+        <xs:sequence>
+            <xs:element name="tradingDays" type="trs:tradingDaysSpecType" minOccurs="0"/>
+            <xs:element name="movingHolidays" type="trs:movingHolidaysSpecType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+  <!--
+  RegressionSpec
+  -->
+
+
+  <!--OutlierSpec-->
+
+  <!--xs:simpleType name="outliers">
+    <xs:list itemType="tss:OutlierType"/>
+  </xs:simpleType>
+
+  <xs:complexType name="outlierSpecType">
+    <xs:sequence>
+      <xs:element name="span" type="tss:periodSelectionType" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>
+            Tramo codes INT1 and INT2. It can be used to define the time domain over which outliers have to be searched.
+            INT1 and INT2 are dynamically identified for each series.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="types" type="trs:outliers">
+        <xs:annotation>
+          <xs:documentation>
+            Tramo Code AIO. Types of outliers that are considered.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="va" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>
+            Tramo code: VA. It is used to set the critical value for outlier
+            detection
+          </xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:double">
+            <xs:minInclusive value="2" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="imvx" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>
+            Tramo code: IMVX. 0 : the fast method of Hannan{Rissanen is used for parameter
+            estimation in the automatic detection and
+            correction of outliers.
+            1 : maximum likelihood estimation is used for parameter
+            estimation in the automatic detection and correction
+            of outliers
+          </xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedShort">
+            <xs:enumeration value="0" />
+            <xs:enumeration value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="tcrate" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>
+            Tramo code: DELTATC. It affects only the TC outlier, which is equal to an
+            impulse divided by (1 - tcrate B).
+          </xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:double">
+            <xs:minExclusive value="0" />
+            <xs:maxExclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+    <xs:complexType name="estimateSpecType">
+      <xs:sequence>
+        <xs:element name="eml" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>
+              Corresponds to the "TYPE" parameter. O for eml=true, 1 for eml=false.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="tol" type="sa:precision">
+          <xs:annotation>
+            <xs:documentation>
+              Corresponds to the TOL parameter. Precision in the estimation procedutre.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="ubp">
+          <xs:annotation>
+            <xs:documentation>
+              Corresponds to the UBP parameter. 
+            </xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="xs:double">
+              <xs:minExclusive value="0.5" />
+              <xs:maxExclusive value="1.0" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType-->
+
+    <!--Seats modelling-->
+    <xs:complexType name="SeatsSpecType">
+        <xs:complexContent>
+            <xs:extension base="sa:DecompositionSpecType">
+                <xs:sequence>
+                    <xs:element name="epsphi" minOccurs="0" default="3.0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Seats code EPSPHI. When the regular AR polynomial contains a
+                                complex root, this root is allocated to the seasonal if its frequency
+                                differs from one of the seasonal frequencies by less than EPSPHI
+                                (measured in degrees). Otherwise, it goes to the transitory
+                                component.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:double">
+                                <xs:minInclusive value="0" />
+                                <xs:maxInclusive value="5.0" />
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="rmod" minOccurs="0" default="0.5">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Cutting point for the modulus of an AR real root.
+                                If modulus lesser than k it goes to the transitory component, else it goes to the
+                                trend-cycle (positive roots) or to the seasonal component (negative roots).
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:double">
+                                <xs:minExclusive value="0.0" />
+                                <xs:maxExclusive value="1.0" />
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="xl" minOccurs="0" default="0.99">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Seats code: XL. When the modulus of an estimated root falls in the range
+                                (XL,1), SEATS sets it equal to 1 if root is in AR polynomial. If root is in
+                                MA polynomial, it is set equal to XL.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:double">
+                                <xs:minExclusive value="0.5" />
+                                <xs:maxExclusive value="1.0" />
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="forceModel" type="xs:boolean" minOccurs="0" default="true">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Corresponds to the Seats code: NOADMISS. When the model does not accept an admissible decomposition,
+                                no approximation is made if forceModel equals false, otherwise it is automatically replaced with a decomposable one.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+  
+    <!-- TramoSeats specification-->
+
+    <!--xs:complexType name="tramoseatsSpecType">
+      <xs:annotation>
+        <xs:documentation>
+          Specification for TramoSeats. Contains all the parameters except the series itself.
+        </xs:documentation>
+      </xs:annotation>
+      <xs:sequence>
+        <xs:group ref="trs:modelSpecGroup"/>
+        <xs:element name="transformSpec" type ="trs:transformSpecType" minOccurs="0"/>
+        <>xs:element name="outlierSpec" type ="trs:outlierSpecType" minOccurs="0"/>
+        <xs:choice minOccurs="0">
+          <xs:element name="autoModelSpec" type="trs:autoModelSpecType"/>
+          <xs:element name="arimaSpec" type="trs:arimaSpecType"/>
+        </xs:choice>
+        <xs:element name="calendarSpec" type ="trs:calendarSpecType" minOccurs="0"/>
+        <xs:element name="regressionSpec" type ="sa:regressionSpecType" minOccurs="0"/>
+        <xs:element name="estimateSpec" type ="trs:estimateSpecType" minOccurs="0"/>
+        <xs:element name="decompositionSpec" type ="trs:seatsSpecType" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType-->
+  
+  
+    <xs:complexType name="TramoSeatsSpecificationType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="sa:SaSpecificationType">
+                <xs:sequence>
+                    <xs:element name="Transformation" type="trs:TransformationSpecType" minOccurs="0"/>
+                    <xs:element name="Decomposition" type="trs:SeatsSpecType" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="TramoSeatsSpecification" type="trs:TramoSeatsSpecificationType"/>
+  
+</xs:schema>

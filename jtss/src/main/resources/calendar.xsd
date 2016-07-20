@@ -17,8 +17,10 @@ limitations under the Licence.
 
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="ec/jd3.core"
-           xmlns:jd3="ec:eurostat:jdemetra:3">
+           targetNamespace="ec:eurostat:jdemetra:core:3"
+           xmlns:tss="ec:eurostat:jdemetra:core:3"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
 
     <xs:include schemaLocation="core.xsd"/>
 
@@ -65,10 +67,10 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="jd3:DayType">
+            <xs:extension base="tss:DayType">
                 <xs:sequence>
                     <xs:element name="Weight" type="xs:double" minOccurs="0"/> 
-                    <xs:element name="Month" type="jd3:Month" />
+                    <xs:element name="Month" type="tss:Month" />
                     <xs:element name="Day" type="xs:int" />
                 </xs:sequence>
             </xs:extension>
@@ -83,11 +85,11 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="jd3:DayType">
+            <xs:extension base="tss:DayType">
                 <xs:sequence>
-                    <xs:element name="Month" type="jd3:Month" />
-                    <xs:element name="DayofWeek" type="jd3:DayOfWeek" />
-                    <xs:element name="Week" type="jd3:Week"/>
+                    <xs:element name="Month" type="tss:Month" />
+                    <xs:element name="DayofWeek" type="tss:DayOfWeek" />
+                    <xs:element name="Week" type="tss:Week"/>
                     <xs:element name="Weight" type="xs:double" minOccurs="0"/> 
                 </xs:sequence>
             </xs:extension>
@@ -102,7 +104,7 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="jd3:DayType">
+            <xs:extension base="tss:DayType">
                 <xs:sequence>
                     <xs:element name="Offset" type="xs:short" />
                     <xs:element name="Weight" type="xs:double" minOccurs="0"/> 
@@ -120,7 +122,7 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="Event" type="jd3:DayEvent" />
+            <xs:element name="Event" type="tss:DayEvent" />
             <xs:element name="Offset" type="xs:short" default="0" minOccurs="0" />
             <xs:element name="Weight" type="xs:double" minOccurs="0"/> 
         </xs:sequence>
@@ -133,8 +135,8 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="Day" type="jd3:DayType"/>
-            <xs:element name="Validity" type="jd3:TimeSpan" minOccurs="0" />
+            <xs:element name="Day" type="tss:DayType"/>
+            <xs:group ref="tss:TimeSpan" id="Validity" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -150,9 +152,9 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="jd3:AbstractCalendarType">
+            <xs:extension base="tss:AbstractCalendarType">
                 <xs:sequence>
-                    <xs:element name="SpecialDayEvent" type="jd3:SpecialDayEventType" maxOccurs="unbounded" />
+                    <xs:element name="SpecialDayEvent" type="tss:SpecialDayEventType" maxOccurs="unbounded" />
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -166,9 +168,9 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="jd3:AbstractCalendarType">
+            <xs:extension base="tss:AbstractCalendarType">
                 <xs:sequence>
-                    <xs:element name="WeightedCalendar" type="jd3:WeightedItem" maxOccurs="unbounded" />
+                    <xs:element name="WeightedCalendar" type="tss:WeightedItem" maxOccurs="unbounded" />
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -184,7 +186,7 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="jd3:AbstractCalendarType">
+            <xs:extension base="tss:AbstractCalendarType">
                 <xs:sequence>
                     <xs:element name="StartCalendar" type="xs:string" />
                     <xs:element name="EndCalendar" type="xs:string" />
@@ -202,10 +204,10 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="Calendar" type="jd3:AbstractCalendarType" minOccurs="0" maxOccurs="unbounded"/>        
+            <xs:element name="Calendar" type="tss:AbstractCalendarType" minOccurs="0" maxOccurs="unbounded"/>        
         </xs:sequence>
     </xs:complexType>
 
-    <xs:element name="Calendars" type="jd3:CalendarsType"/>
+    <xs:element name="Calendars" type="tss:CalendarsType"/>
 
 </xs:schema>

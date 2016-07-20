@@ -19,29 +19,14 @@ limitations under the Licence.
 
 
 <xs:schema version="1.0"
-           targetNamespace="ec:eurostat:jdemetra:3"
+           targetNamespace="ec:eurostat:jdemetra:core:3"
+           xmlns:tss="ec:eurostat:jdemetra:core:3"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns:jd3="ec:eurostat:jdemetra:3">
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
 
     <xs:include schemaLocation="core.xsd"/>
     <xs:include schemaLocation="calendar.xsd"/>
-
-    <xs:simpleType name="ComponentType">
-        <xs:annotation>
-            <xs:documentation>
-            </xs:documentation>
-        </xs:annotation>
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="Undefined"/>
-            <xs:enumeration value="Series"/>
-            <xs:enumeration value="Trend"/>
-            <xs:enumeration value="Seasonal"/>
-            <xs:enumeration value="Irregular"/>
-            <xs:enumeration value="Calendar"/>
-            <xs:enumeration value="SeasonallyAdjusted"/>
-            <xs:enumeration value="Cycle"/>
-        </xs:restriction>
-    </xs:simpleType>
 
     <xs:complexType name="VariableType" abstract="true">
         <xs:annotation>
@@ -50,29 +35,14 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:attribute name="name" type="xs:string" use="optional" />
-        <xs:attribute name="component" type="ComponentType" use="optional" />
     </xs:complexType>
     
-    <xs:complexType name="RegressionVariableType">
-        <xs:annotation>
-            <xs:documentation>
-                Regression variable with its coefficient(s) (could be missing)
-            </xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:element name="Variable" type="VariableType"/>
-            <xs:choice>
-                <xs:element name="Coefficient" type="ParamType" minOccurs="0"/>
-                <xs:element name="Coefficients" type="ParamsType" minOccurs="0"/>
-            </xs:choice>
-        </xs:sequence>
-    </xs:complexType>
     
     <!--Outliers-->
 
     <xs:complexType name="OutlierType" abstract="true">
         <xs:complexContent>
-            <xs:extension base="VariableType">
+            <xs:extension base="tss:VariableType">
                 <xs:sequence>
                     <xs:element name="Position" type="xs:date"/>
                 </xs:sequence>
@@ -81,44 +51,44 @@ limitations under the Licence.
         </xs:complexContent>
     </xs:complexType>
     
-    <xs:complexType name="AOType">
+    <xs:complexType name="AdditiveOutlierType">
         <xs:annotation>
             <xs:documentation>
                 Additive outlier
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="OutlierType"/>
+            <xs:extension base="tss:OutlierType"/>
         </xs:complexContent>
     </xs:complexType>
     
-    <xs:complexType name="LSType">
+    <xs:complexType name="LevelShiftType">
         <xs:annotation>
             <xs:documentation>
                 Level shift
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="OutlierType">
+            <xs:extension base="tss:OutlierType">
                 <xs:attribute name="zeroEnded" type="xs:boolean" use="optional" default="true"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
     
-    <xs:complexType name="SOType">
+    <xs:complexType name="SeasonalOutlierType">
         <xs:annotation>
             <xs:documentation>
                 Seasonal outlier
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="OutlierType">
+            <xs:extension base="tss:OutlierType">
                 <xs:attribute name="zeroEnded" type="xs:boolean" use="optional" default="true"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
 
-    <xs:complexType name="TCType">
+    <xs:complexType name="TransitoryChangeType">
         <xs:annotation>
             <xs:documentation>
                 Transitory change. 
@@ -126,7 +96,7 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="OutlierType">
+            <xs:extension base="tss:OutlierType">
                 <xs:attribute name="factor" type="xs:double" use="optional" default="0.7"/>
                 <xs:attribute name="monthlyFactor" type="xs:boolean" use="optional" default="false"/>
             </xs:extension>
@@ -138,7 +108,7 @@ limitations under the Licence.
     
     <!-- Trading days -->
     
-    <xs:simpleType name="LPType">
+    <xs:simpleType name="LengthOfPeriodType">
         <xs:annotation>
             <xs:documentation>
                 Leap year or equivalent
@@ -150,7 +120,7 @@ limitations under the Licence.
         </xs:restriction>
     </xs:simpleType>
     
-    <xs:simpleType name="TDType">
+    <xs:simpleType name="TradingDaysType">
         <xs:annotation>
             <xs:documentation>
                 Trading days or equivalent
@@ -164,18 +134,18 @@ limitations under the Licence.
     
     <xs:complexType name="DefaulTradingdaysType">
         <xs:complexContent>
-            <xs:extension base="VariableType">
-                <xs:attribute name="td" type="TDType" use="optional"/>
-                <xs:attribute name="lp" type="LPType" use="optional"/> 
+            <xs:extension base="tss:VariableType">
+                <xs:attribute name="td" type="tss:TradingDaysType" use="optional"/>
+                <xs:attribute name="lp" type="tss:LengthOfPeriodType" use="optional"/> 
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="GenericTradingDaysType">
         <xs:complexContent>
-            <xs:extension base="VariableType">
+            <xs:extension base="tss:VariableType">
                 <xs:sequence>
-                    <xs:element name="DaysClustering" type="uints"/>
+                    <xs:element name="DayClustering" type="tss:UnsignedIntsType"/>
                 </xs:sequence>
                 <xs:attribute name="contrasts" type="xs:boolean" use="optional"/> 
             </xs:extension>
@@ -200,12 +170,12 @@ limitations under the Licence.
 
     <xs:complexType name="EasterVariableType">
         <xs:complexContent>
-            <xs:extension base="VariableType">
+            <xs:extension base="tss:VariableType">
                 <xs:sequence>
                     <xs:element name="Before" type="xs:int"/>
                     <xs:element name="After" type="xs:int" minOccurs="0"/>
                 </xs:sequence>
-                <xs:attribute name="correction" type="EasterCorrectionType" use="optional" default="Theoretical"/>
+                <xs:attribute name="correction" type="tss:EasterCorrectionType" use="optional" default="Theoretical"/>
                 <xs:attribute name="julian" type="xs:boolean" use="optional" default="false"/>
             </xs:extension>
         </xs:complexContent>
@@ -222,10 +192,9 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="VariableType">
+            <xs:extension base="tss:VariableType">
                 <xs:sequence>
-                    <xs:element name="Start" type="xs:date"/>
-                    <xs:element name="End" type="xs:date"/>
+                    <xs:group ref="tss:TimeSpan"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -238,9 +207,9 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="VariableType">
+            <xs:extension base="tss:VariableType">
                 <xs:sequence>
-                    <xs:group ref="jd3:timeSpan" minOccurs="1" maxOccurs="unbounded"/>
+                    <xs:group ref="tss:TimeSpan" minOccurs="1" maxOccurs="unbounded"/>
                     <xs:element name="DeltaFilter" minOccurs="0" type="xs:double"/>
                     <xs:element name="DeltaSeasonalFilter" minOccurs="0" type="xs:double"/>
                 </xs:sequence>
@@ -259,9 +228,9 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="VariableType">
+            <xs:extension base="tss:VariableType">
                 <xs:sequence>
-                    <xs:element name="Core" type="VariableType"/>
+                    <xs:element name="Core" type="tss:VariableType"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -273,11 +242,8 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="TsModifierType">
-                <xs:sequence>
-                    <xs:element name="Start" type="xs:date" minOccurs="0"/>
-                    <xs:element name="End" type="xs:date"  minOccurs="0"/>
-                </xs:sequence>
+            <xs:extension base="tss:TsModifierType">
+                <xs:group ref="tss:TimeSpan" />
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -288,7 +254,7 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="TsModifierType">
+            <xs:extension base="tss:TsModifierType">
                 <xs:sequence>
                     <xs:element name="FirstLag" type="xs:int"/>
                     <xs:element name="LastLag" type="xs:int"/>
@@ -303,7 +269,7 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="TsModifierType">
+            <xs:extension base="tss:TsModifierType">
                 <xs:choice>
                     <xs:element name="Start" type="xs:date"/>
                     <xs:element name="End" type="xs:date"/>
@@ -320,9 +286,9 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="jd3:VariableType">
+            <xs:extension base="tss:VariableType">
                 <xs:sequence>
-                    <xs:element name="TsData" type="jd3:TsDataType"/>
+                    <xs:element name="TsData" type="tss:TsDataType"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -336,10 +302,10 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="jd3:VariableType">
+            <xs:extension base="tss:VariableType">
                 <xs:sequence>
-                    <xs:element name="Tsdata" type="jd3:TsDataType" minOccurs="0"/>
-                    <xs:element name="Moniker" type="jd3:TsMonikerType"/>
+                    <xs:element name="Tsdata" type="tss:TsDataType" minOccurs="0"/>
+                    <xs:element name="Moniker" type="tss:TsMonikerType"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
