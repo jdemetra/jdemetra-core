@@ -15,8 +15,8 @@
  * limitations under the Licence.
  */
 
-@XmlSchema(namespace = "ec:eurostat:jdemetra:core:3", elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
-        xmlns = { @XmlNs(prefix = "tss", namespaceURI = "ec:eurostat:jdemetra:core:3")})//, @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema") })
+@XmlSchema(namespace = "ec/eurostat/jdemetra/core", elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
+        xmlns = { @XmlNs(prefix = "tss", namespaceURI = "ec/eurostat/jdemetra/core")})//, @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema") })
 package ec.demetra.xml.core;
 
 import javax.xml.bind.annotation.XmlNs;

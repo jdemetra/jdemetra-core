@@ -16,8 +16,8 @@
 */
 
 
-@XmlSchema(namespace = "ec:eurostat:jdemetra:3"/*, elementFormDefault = XmlNsForm.UNQUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED*/, 
-        xmlns = { @XmlNs(prefix = "jd3", namespaceURI = "ec:eurostat:jdemetra:3"), @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema-instance") })
+@XmlSchema(namespace = "ec/eurostat/jdemetra/core"/*, elementFormDefault = XmlNsForm.UNQUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED*/, 
+        xmlns = { @XmlNs(prefix = "tss", namespaceURI = "ec/eurostat/jdemetra/core"), @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema-instance") })
 package ec.demetra.xml.regression;
 
 import javax.xml.bind.annotation.XmlNs;

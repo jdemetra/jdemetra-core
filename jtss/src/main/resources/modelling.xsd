@@ -5,17 +5,17 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 
-<xs:schema version="1.0"
-           targetNamespace="ec:eurostat:jdemetra:modelling:core:3"
-           xmlns:tss="ec:eurostat:jdemetra:core:3"
-           xmlns:modelling="ec:eurostat:jdemetra:modelling:core:3"
+<xs:schema version="0.1.0"
+           targetNamespace="ec/eurostat/jdemetra/modelling"
+           xmlns:tss="ec/eurostat/jdemetra/core"
+           xmlns:modelling="ec/eurostat/jdemetra/modelling"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified">
     
-    <xs:import schemaLocation="core.xsd" namespace="ec:eurostat:jdemetra:core:3"/>
-    <xs:import schemaLocation="regression.xsd" namespace="ec:eurostat:jdemetra:core:3"/>
+    <xs:import schemaLocation="core.xsd" namespace="ec/eurostat/jdemetra/core"/>
+    <xs:import schemaLocation="regression.xsd" namespace="ec/eurostat/jdemetra/core"/>
 
-    <xs:simpleType name="ComponentEffect">
+    <xs:simpleType name="ComponentEnum">
         <xs:annotation>
             <xs:documentation>
             </xs:documentation>
@@ -128,7 +128,7 @@ and open the template in the editor.
     <xs:complexType name="LengthOfPeriodTransformationType">
         <xs:complexContent>
             <xs:extension base="modelling:SeriesTransformationType">
-                <xs:attribute name="correction" type="tss:LengthOfPeriodType" use="optional" default="LeapYear"/>
+                <xs:attribute name="correction" type="tss:LengthOfPeriodEnum" use="optional" default="LeapYear"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>

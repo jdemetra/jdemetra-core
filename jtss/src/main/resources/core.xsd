@@ -16,22 +16,23 @@ See the Licence for the specific language governing permissions and
 limitations under the Licence.
 -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="ec:eurostat:jdemetra:core:3"
-           xmlns:tss="ec:eurostat:jdemetra:core:3"
+<xs:schema version="0.1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="ec/eurostat/jdemetra/core"
+           xmlns:tss="ec/eurostat/jdemetra/core"
            elementFormDefault="qualified"
-           attributeFormDefault="unqualified">
+           attributeFormDefault="unqualified" >
 
 
     <!--Enumerations and simple types-->
 
-    <xs:simpleType name="Frequency">
+    <xs:simpleType name="FrequencyEnum">
         <xs:annotation>
             <xs:documentation>
                 Acceptable annual frequencies (= number of equally-spaced observations by year)
             </xs:documentation>
         </xs:annotation>
-        <xs:restriction base="xs:short">
+        <xs:restriction base="xs:unsignedShort">
             <xs:enumeration value="1" />
             <xs:enumeration value="2" />
             <xs:enumeration value="3" />
@@ -41,7 +42,7 @@ limitations under the Licence.
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="Month">
+    <xs:simpleType name="MonthEnum">
         <xs:annotation>
             <xs:documentation>
                 Months
@@ -63,7 +64,7 @@ limitations under the Licence.
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="DayOfWeek">
+    <xs:simpleType name="DayOfWeekEnum">
         <xs:annotation>
             <xs:documentation>
                 Days of the week
@@ -92,7 +93,7 @@ limitations under the Licence.
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="Week">
+    <xs:simpleType name="WeekEnum">
         <xs:annotation>
             <xs:documentation>
                 1-based position of a week in a month. A week starts on Monday and finishes on Sunday.
@@ -136,7 +137,7 @@ limitations under the Licence.
         </xs:sequence>
     </xs:complexType>
 
-    <xs:simpleType name="ParameterInfo">
+    <xs:simpleType name="ParameterInfoEnum">
         <xs:annotation>
             <xs:documentation>
                 Information on the way a parameter should be used or interpreted.
@@ -170,7 +171,7 @@ limitations under the Licence.
             <xs:element name ="Tstat" type="xs:double" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="name" type="xs:string" use="optional"/>
-        <xs:attribute name="type" type="tss:ParameterInfo" use="required"/>
+        <xs:attribute name="type" type="tss:ParameterInfoEnum" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="ParametersType">
@@ -220,7 +221,7 @@ limitations under the Licence.
   
     <xs:group name="StartPeriod">
         <xs:sequence>
-            <xs:element name="Frequency" type="tss:Frequency" />
+            <xs:element name="Frequency" type="tss:FrequencyEnum" />
             <xs:element name="FirstYear" type="xs:gYear" />
             <xs:element name="FirstPeriod" type="tss:Period" minOccurs="0"/>
         </xs:sequence>
@@ -279,7 +280,7 @@ limitations under the Licence.
         <xs:complexContent>
             <xs:extension base="tss:TimePeriodType">
                 <xs:sequence>
-                    <xs:element name="Frequency" type="tss:Frequency">
+                    <xs:element name="Frequency" type="tss:FrequencyEnum">
                         <xs:annotation>
                             <xs:documentation>
                                 Annual frequency of this type of regular period

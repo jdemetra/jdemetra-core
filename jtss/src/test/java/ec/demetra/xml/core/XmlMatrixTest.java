@@ -16,10 +16,7 @@
  */
 package ec.demetra.xml.core;
 
-import data.Data;
-import ec.tss.TsCollection;
-import ec.tss.TsFactory;
-import ec.tstoolkit.MetaData;
+import ec.tstoolkit.maths.matrices.Matrix;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -31,7 +28,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.validation.Schema;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -40,43 +36,38 @@ import org.junit.Ignore;
  *
  * @author Jean Palate
  */
-public class XmlTsCollectionTest {
+public class XmlMatrixTest {
     
-    private static final String FILE="c:\\localdata\\tscollection.xml";
-
-    public XmlTsCollectionTest() {
+    private static final String FILE="c:\\localdata\\matrix.xml";
+    
+    public XmlMatrixTest() {
     }
 
     @Test
     @Ignore
     public void testMarshal() throws FileNotFoundException, JAXBException, IOException {
 
-        JAXBContext jaxb = JAXBContext.newInstance(XmlTsCollection.class);
-        XmlTsCollection xcoll = new XmlTsCollection();
-        TsCollection collection=TsFactory.instance.createTsCollection("test");
-        MetaData md=new MetaData();
-        md.put("test", "10");
-        collection.set(md);
-        collection.add(TsFactory.instance.createTs("p", null, Data.P));
-        collection.add(TsFactory.instance.createTs("x", null, Data.X));
-        xcoll.copyTsCollection(collection);
+        JAXBContext jaxb = JAXBContext.newInstance(XmlMatrix.class);
+        XmlMatrix xmat = new XmlMatrix();
+        Matrix m=new Matrix(5,8);
+        m.set((r,c)->(r+1)*(c+1));
+        xmat.copy(m);
         FileOutputStream ostream = new FileOutputStream(FILE);
         try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(xcoll, writer);
+            marshaller.marshal(xmat, writer);
             writer.flush();
         }
 
-        XmlTsCollection rslt = null;
+        XmlMatrix rslt = null;
         FileInputStream istream = new FileInputStream(FILE);
         try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-            rslt = (XmlTsCollection) unmarshaller.unmarshal(reader);
-            TsCollection ncoll = rslt.createTsCollection();
-            assertTrue(ncoll.getCount()==collection.getCount());
+            rslt = (XmlMatrix) unmarshaller.unmarshal(reader);
+            Matrix m2=rslt.create();
+            assertTrue(m.equals(m2, 1e-6));
         }
     }
-
     
 }

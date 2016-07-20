@@ -5,19 +5,19 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 
-<xs:schema version="1.0"
-           targetNamespace="ec:eurostat:jdemetra:sa:tramoseats:3"
-           xmlns:tss="ec:eurostat:jdemetra:core:3"
-           xmlns:sa="ec:eurostat:jdemetra:sa:core:3"
-           xmlns:trs="ec:eurostat:jdemetra:sa:tramoseats:3"
-           xmlns:modelling="ec:eurostat:jdemetra:modelling:core:3"
+<xs:schema version="0.1.0"
+           targetNamespace="ec/eurostat/jdemetra/sa/tramoseats"
+           xmlns:tss="ec/eurostat/jdemetra/core"
+           xmlns:sa="ec/eurostat/jdemetra/sa"
+           xmlns:trs="ec/eurostat/jdemetra/sa/tramoseats"
+           xmlns:modelling="ec/eurostat/jdemetra/modelling"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified">
     
-    <xs:import schemaLocation="core.xsd" namespace="ec:eurostat:jdemetra:core:3"/>
-    <xs:import schemaLocation="sacore.xsd" namespace="ec:eurostat:jdemetra:sa:core:3"/>
-    <xs:import schemaLocation="modelling.xsd" namespace="ec:eurostat:jdemetra:modelling:core:3"/>
-    <xs:import schemaLocation="regarima.xsd" namespace="ec:eurostat:jdemetra:modelling:regarima:3"/>
+    <xs:import schemaLocation="core.xsd" namespace="ec/eurostat/jdemetra/core"/>
+    <xs:import schemaLocation="sacore.xsd" namespace="ec/eurostat/jdemetra/sa"/>
+    <xs:import schemaLocation="modelling.xsd" namespace="ec/eurostat/jdemetra/modelling"/>
+    <xs:import schemaLocation="regarima.xsd" namespace="ec/eurostat/jdemetra/modelling/regarima"/>
     
     <xs:complexType name="AutoTransformationSpecType">
         <xs:sequence>
@@ -272,7 +272,7 @@ and open the template in the editor.
             </xs:element>
             <xs:element name="bth" type="tss:DoublesType"/>
         </xs:sequence>
-        <xs:attribute name="type" type="tss:ParameterInfo"/>
+        <xs:attribute name="type" type="tss:ParameterInfoEnum"/>
     </xs:complexType>
 
     <xs:complexType name="arimaSpecType">
@@ -302,7 +302,7 @@ and open the template in the editor.
 
     <!--CalendarSpec-->
 
-    <xs:simpleType name="tdType">
+    <xs:simpleType name="TdEnum">
         <xs:restriction base="xs:NMTOKEN">
             <xs:enumeration value="None"/>
             <xs:enumeration value="TradingDays"/>
@@ -310,7 +310,7 @@ and open the template in the editor.
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="lpType">
+    <xs:simpleType name="LpEnum">
         <xs:restriction base="xs:NMTOKEN">
             <xs:enumeration value="None"/>
             <xs:enumeration value="LeapYear"/>
@@ -321,8 +321,8 @@ and open the template in the editor.
         <xs:choice>
             <xs:sequence>
                 <xs:element name="calendar" type="xs:string" minOccurs="0"/>
-                <xs:element name="tdOption" type="trs:tdType"/>
-                <xs:element name="lpOption" type="trs:lpType" minOccurs="0"/>
+                <xs:element name="tdOption" type="trs:TdEnum"/>
+                <xs:element name="lpOption" type="trs:LpEnum" minOccurs="0"/>
             </xs:sequence>
             <xs:element name="userVariables">
                 <xs:complexType>

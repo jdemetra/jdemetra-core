@@ -16,7 +16,7 @@
  */
 
 @XmlSchema(namespace = "ec:eurostat:jdemetra:3", elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
-        xmlns = { @XmlNs(prefix = "", namespaceURI = "ec:eurostat:jdemetra:3"), @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema") })
+        xmlns = { @XmlNs(prefix = "tss", namespaceURI = "ec/eurostat/jdemetra/core"), @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema") })
 package ec.demetra.xml;
 
 import javax.xml.bind.annotation.XmlNs;

@@ -17,9 +17,10 @@ limitations under the Licence.
 
 
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="ec:eurostat:jdemetra:core:3"
-           xmlns:tss="ec:eurostat:jdemetra:core:3"
+<xs:schema version="0.1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="ec/eurostat/jdemetra/core"
+           xmlns:tss="ec/eurostat/jdemetra/core"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
 
@@ -133,8 +134,8 @@ limitations under the Licence.
             <xs:element name="ts" type="tss:TsType"/>
             <xs:element name="tscollection" type="tss:TsCollectionType"/>
             <xs:element name="regitem" type="tss:RegressionItemType"/>
-            <xs:element name="param" type="tss:ParamType"/>
-            <xs:element name="params" type="tss:ParamsType"/>
+            <xs:element name="param" type="tss:ParameterType"/>
+            <xs:element name="params" type="tss:ParametersType"/>
             <xs:element name="matrix" type="tss:MatrixType"/>
         </xs:choice>
         <xs:attribute name="name" type="xs:string" use="required" />

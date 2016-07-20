@@ -16,9 +16,10 @@ limitations under the Licence.
 -->
 
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="ec:eurostat:jdemetra:core:3"
-           xmlns:tss="ec:eurostat:jdemetra:core:3"
+<xs:schema version="0.1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="ec/eurostat/jdemetra/core"
+           xmlns:tss="ec/eurostat/jdemetra/core"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
 
@@ -57,7 +58,9 @@ limitations under the Licence.
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:complexType name="DayType" abstract="true"/>
+  <xs:complexType name="DayType" abstract="true">
+      <xs:attribute name="Weight" type="xs:double" use="optional"/>
+   </xs:complexType>
     
     <xs:complexType name="FixedDayType">
         <xs:annotation>
@@ -69,8 +72,7 @@ limitations under the Licence.
         <xs:complexContent>
             <xs:extension base="tss:DayType">
                 <xs:sequence>
-                    <xs:element name="Weight" type="xs:double" minOccurs="0"/> 
-                    <xs:element name="Month" type="tss:Month" />
+                     <xs:element name="Month" type="tss:MonthEnum" />
                     <xs:element name="Day" type="xs:int" />
                 </xs:sequence>
             </xs:extension>
@@ -87,10 +89,9 @@ limitations under the Licence.
         <xs:complexContent>
             <xs:extension base="tss:DayType">
                 <xs:sequence>
-                    <xs:element name="Month" type="tss:Month" />
-                    <xs:element name="DayofWeek" type="tss:DayOfWeek" />
-                    <xs:element name="Week" type="tss:Week"/>
-                    <xs:element name="Weight" type="xs:double" minOccurs="0"/> 
+                    <xs:element name="Month" type="tss:MonthEnum" />
+                    <xs:element name="DayofWeek" type="tss:DayOfWeekEnum" />
+                    <xs:element name="Week" type="tss:WeekEnum"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -107,7 +108,6 @@ limitations under the Licence.
             <xs:extension base="tss:DayType">
                 <xs:sequence>
                     <xs:element name="Offset" type="xs:short" />
-                    <xs:element name="Weight" type="xs:double" minOccurs="0"/> 
                 </xs:sequence>
                 <xs:attribute name="julian" type="xs:boolean" use="optional" default="false"/>
             </xs:extension>
@@ -124,8 +124,7 @@ limitations under the Licence.
         <xs:sequence>
             <xs:element name="Event" type="tss:DayEvent" />
             <xs:element name="Offset" type="xs:short" default="0" minOccurs="0" />
-            <xs:element name="Weight" type="xs:double" minOccurs="0"/> 
-        </xs:sequence>
+         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="SpecialDayEventType">

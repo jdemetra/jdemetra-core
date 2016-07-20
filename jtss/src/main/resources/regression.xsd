@@ -18,9 +18,9 @@ limitations under the Licence.
 
 
 
-<xs:schema version="1.0"
-           targetNamespace="ec:eurostat:jdemetra:core:3"
-           xmlns:tss="ec:eurostat:jdemetra:core:3"
+<xs:schema version="0.1.0"
+           targetNamespace="ec/eurostat/jdemetra/core"
+           xmlns:tss="ec/eurostat/jdemetra/core"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
@@ -108,25 +108,25 @@ limitations under the Licence.
     
     <!-- Trading days -->
     
-    <xs:simpleType name="LengthOfPeriodType">
+    <xs:simpleType name="LengthOfPeriodEnum">
         <xs:annotation>
             <xs:documentation>
                 Leap year or equivalent
             </xs:documentation>
         </xs:annotation>
-        <xs:restriction base="xs:string">
+        <xs:restriction base="xs:NMTOKEN">
             <xs:enumeration value="LeapYear" />
             <xs:enumeration value="LengthOfPeriod" />
         </xs:restriction>
     </xs:simpleType>
     
-    <xs:simpleType name="TradingDaysType">
+    <xs:simpleType name="TradingDaysEnum">
         <xs:annotation>
             <xs:documentation>
                 Trading days or equivalent
             </xs:documentation>
         </xs:annotation>
-        <xs:restriction base="xs:string">
+        <xs:restriction base="xs:NMTOKEN">
             <xs:enumeration value="TradingDays" />
             <xs:enumeration value="WorkingDays" />
         </xs:restriction>
@@ -135,8 +135,8 @@ limitations under the Licence.
     <xs:complexType name="DefaulTradingdaysType">
         <xs:complexContent>
             <xs:extension base="tss:VariableType">
-                <xs:attribute name="td" type="tss:TradingDaysType" use="optional"/>
-                <xs:attribute name="lp" type="tss:LengthOfPeriodType" use="optional"/> 
+                <xs:attribute name="td" type="tss:TradingDaysEnum" use="optional"/>
+                <xs:attribute name="lp" type="tss:LengthOfPeriodEnum" use="optional"/> 
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -154,14 +154,14 @@ limitations under the Licence.
     
     <!-- Easter -->
     
-    <xs:simpleType name="EasterCorrectionType">
+    <xs:simpleType name="EasterCorrectionEnum">
         <xs:annotation>
             <xs:documentation>
                 Long term mean correction applied on the Easter variables.
                 "Simple" means Tramo-like, "PreComputed" means X12/X13-like and "Theoretical" is based on approximated theoretical considerations 
             </xs:documentation>
         </xs:annotation>
-        <xs:restriction base="xs:string">
+        <xs:restriction base="xs:NMTOKEN">
             <xs:enumeration value="Simple" />
             <xs:enumeration value="PreComputed" />
             <xs:enumeration value="Theoretical" />
@@ -175,7 +175,7 @@ limitations under the Licence.
                     <xs:element name="Before" type="xs:int"/>
                     <xs:element name="After" type="xs:int" minOccurs="0"/>
                 </xs:sequence>
-                <xs:attribute name="correction" type="tss:EasterCorrectionType" use="optional" default="Theoretical"/>
+                <xs:attribute name="correction" type="tss:EasterCorrectionEnum" use="optional" default="Theoretical"/>
                 <xs:attribute name="julian" type="xs:boolean" use="optional" default="false"/>
             </xs:extension>
         </xs:complexContent>

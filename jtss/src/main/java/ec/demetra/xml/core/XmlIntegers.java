@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 National Bank of Belgium
+ * Copyright 2013 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -15,10 +15,33 @@
  * limitations under the Licence.
  */
 
-@XmlSchema(namespace = "ec/eurostat/jdemetra/sa", elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
-        xmlns = { @XmlNs(prefix = "sa", namespaceURI = "ec/eurostat/jdemetra/sa")})//, @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema") })
-package ec.demetra.xml.sa;
+package ec.demetra.xml.core;
 
-import javax.xml.bind.annotation.XmlNs;
-import javax.xml.bind.annotation.XmlNsForm;
-import javax.xml.bind.annotation.XmlSchema;
+import ec.tss.xml.IXmlConverter;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlList;
+import javax.xml.bind.annotation.XmlType;
+
+/**
+ *
+ * @author Jean Palate
+ */
+@XmlType(name = XmlIntegers.NAME)
+public class XmlIntegers implements IXmlConverter<int[]> {
+
+    static final String NAME = "IntegersType";
+    
+    @XmlElement(name="Values")
+    @XmlList
+    public int[] items;
+
+    @Override
+    public int[] create() {
+        return items;
+    }
+
+    @Override
+    public void copy(int[] t) {
+        items=t;
+    }
+}

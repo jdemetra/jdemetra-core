@@ -5,17 +5,17 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 
-<xs:schema version="1.0"
-           targetNamespace="ec:eurostat:jdemetra:sa:core:3"
-           xmlns:tss="ec:eurostat:jdemetra:core:3"
-           xmlns:sa="ec:eurostat:jdemetra:sa:core:3"
+<xs:schema version="0.1.0"
+           targetNamespace="ec/eurostat/jdemetra/sa"
+           xmlns:tss="ec/eurostat/jdemetra/core"
+           xmlns:sa="ec/eurostat/jdemetra/sa"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified">
     
-    <xs:import schemaLocation="core.xsd" namespace="ec:eurostat:jdemetra:core:3"/>
-    <xs:import schemaLocation="regression.xsd" namespace="ec:eurostat:jdemetra:core:3"/>
+    <xs:import schemaLocation="core.xsd" namespace="ec/eurostat/jdemetra/core"/>
+    <xs:import schemaLocation="regression.xsd" namespace="ec/eurostat/jdemetra/core"/>
 
-    <xs:simpleType name="Component">
+    <xs:simpleType name="SaComponentEnum">
         <xs:annotation>
             <xs:documentation>
                 Type of the components used in seasonal adjustment
@@ -46,7 +46,7 @@ and open the template in the editor.
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="DecompositionMode">
+    <xs:simpleType name="DecompositionEnum">
         <xs:annotation>
             <xs:documentation>
                 Undefined: the decomposition will be chosen by the algorithm. Used in specs only.
@@ -89,7 +89,7 @@ and open the template in the editor.
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="DecompositionMode"  type="sa:DecompositionMode"/>
+            <xs:element name="DecompositionMode"  type="sa:DecompositionEnum"/>
             <xs:element name="Trend" type="sa:ComponentEstimationType"/>
             <xs:element name="Seasonal" type="sa:ComponentEstimationType"/>
             <xs:element name="Irregular" type="sa:ComponentEstimationType"/>
@@ -136,7 +136,7 @@ and open the template in the editor.
         <xs:complexContent>
             <xs:extension base="sa:SaModelType">
                 <xs:sequence>
-                    <xs:element name="Mode" type="sa:DecompositionMode"/>
+                    <xs:element name="Mode" type="sa:DecompositionEnum"/>
                     <xs:element name="Seasonal" type="tss:TsDataType"/>
                     <xs:element name="Calendar" type="tss:TsDataType"/>
                 </xs:sequence>

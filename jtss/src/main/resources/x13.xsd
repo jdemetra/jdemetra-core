@@ -5,17 +5,17 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 
-<xs:schema version="1.0"
-           targetNamespace="ec:eurostat:jdemetra:sa:x13:3"
-           xmlns:tss="ec:eurostat:jdemetra:core:3"
-           xmlns:sa="ec:eurostat:jdemetra:sa:core:3"
-           xmlns:x13="ec:eurostat:jdemetra:sa:x13:3"
+<xs:schema version="0.1.0"
+           targetNamespace="ec/eurostat/jdemetra/sa/x13"
+           xmlns:tss="ec/eurostat/jdemetra/core"
+           xmlns:sa="ec/eurostat/jdemetra/sa"
+           xmlns:x13="ec/eurostat/jdemetra/sa/x13"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified">
     
-    <xs:import schemaLocation="core.xsd" namespace="ec:eurostat:jdemetra:core:3"/>
-    <xs:import schemaLocation="sacore.xsd" namespace="ec:eurostat:jdemetra:sa:core:3"/>
-    <xs:import schemaLocation="regarima.xsd" namespace="ec:eurostat:jdemetra:modelling:regarima:3"/>
+    <xs:import schemaLocation="core.xsd" namespace="ec/eurostat/jdemetra/core"/>
+    <xs:import schemaLocation="sacore.xsd" namespace="ec/eurostat/jdemetra/sa"/>
+    <xs:import schemaLocation="regarima.xsd" namespace="ec/eurostat/jdemetra/modelling/regarima"/>
     
     <xs:complexType name="X13SpecificationType">
         <xs:annotation>

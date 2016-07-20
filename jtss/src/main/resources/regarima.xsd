@@ -5,16 +5,16 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 
-<xs:schema version="1.0"
-           targetNamespace="ec:eurostat:jdemetra:modelling:regarima:3"
-           xmlns:tss="ec:eurostat:jdemetra:core:3"
-           xmlns:modelling="ec:eurostat:jdemetra:modelling:core:3"
-           xmlns:regarima="ec:eurostat:jdemetra:modelling:regarima:3"
+<xs:schema version="0.1.0"
+           targetNamespace="ec/eurostat/jdemetra/modelling/regarima"
+           xmlns:tss="ec/eurostat/jdemetra/core"
+           xmlns:modelling="ec/eurostat/jdemetra/modelling"
+           xmlns:regarima="ec/eurostat/jdemetra/modelling/regarima"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified">
     
-    <xs:import schemaLocation="core.xsd" namespace="ec:eurostat:jdemetra:core:3"/>
-    <xs:import schemaLocation="modelling.xsd" namespace="ec:eurostat:jdemetra:modelling:core:3"/>
+    <xs:import schemaLocation="core.xsd" namespace="ec/eurostat/jdemetra/core"/>
+    <xs:import schemaLocation="modelling.xsd" namespace="ec/eurostat/jdemetra/modelling"/>
 
 <xs:complexType name="RegArimaModelType">
     <xs:annotation>

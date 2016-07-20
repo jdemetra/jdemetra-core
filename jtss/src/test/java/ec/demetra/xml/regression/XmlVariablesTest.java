@@ -43,6 +43,8 @@ import org.junit.Ignore;
  */
 public class XmlVariablesTest {
     
+    private static final String FILE="c:\\localdata\\variables.xml";
+
     public XmlVariablesTest() {
     }
 
@@ -61,7 +63,7 @@ public class XmlVariablesTest {
         xvar.vars.add(xout);
         xvar.vars.add(xtd);
 
-        FileOutputStream ostream = new FileOutputStream("c:\\localdata\\test.xml");
+        FileOutputStream ostream = new FileOutputStream(FILE);
         try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -70,7 +72,7 @@ public class XmlVariablesTest {
         }
 
         XmlVariables rslt = null;
-        FileInputStream istream = new FileInputStream("c:\\localdata\\test.xml");
+        FileInputStream istream = new FileInputStream(FILE);
         try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
             rslt = (XmlVariables) unmarshaller.unmarshal(reader);

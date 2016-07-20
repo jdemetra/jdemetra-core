@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="ec:eurostat:jdemetra:core:3"
-           xmlns:tss="ec:eurostat:jdemetra:core:3"
+<xs:schema version="0.1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="ec/eurostat/jdemetra/core"
+           xmlns:tss="ec/eurostat/jdemetra/core"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
 
