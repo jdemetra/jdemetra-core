@@ -202,6 +202,114 @@ public class SubMatrix implements Cloneable {
         }
     }
 
+    /**
+     * x(i,j) = fn(i,j)
+     * @param fn The given function
+     * @since 2.2
+     */
+    public void set(final Matrix.MatrixFunction fn) {
+        if (m_row_inc == 1) {
+            for (int c = 0, ic = m_start; c < m_ncols; ++c, ic += m_col_inc) {
+                for (int r = 0, ir = ic; r < m_nrows; ++r, ++ir) {
+                    m_data[ir] = fn.apply(r, c);
+                }
+            }
+        } else if (m_col_inc == 1) {
+            for (int r = 0, ir = m_start; r < m_nrows; ++r, ir += m_row_inc) {
+                for (int c = 0, ic = ir; c < m_ncols; ++c, ++ic) {
+                    m_data[ic] = fn.apply(r, c);
+                }
+            }
+        } else {
+            for (int c = 0, ic = m_start; c < m_ncols; ++c, ic += m_col_inc) {
+                for (int r = 0, ir = ic; r < m_nrows; ++r, ir += m_row_inc) {
+                    m_data[ir] = fn.apply(r, c);
+                }
+            }
+        }
+    }
+    
+    /**
+     * x(i,j) = x(i,j) + fn(i,j)
+     * @param fn The given function
+     * @since 2.2
+     */
+    public void add(final Matrix.MatrixFunction fn) {
+        if (m_row_inc == 1) {
+            for (int c = 0, ic = m_start; c < m_ncols; ++c, ic += m_col_inc) {
+                for (int r = 0, ir = ic; r < m_nrows; ++r, ++ir) {
+                    m_data[ir] += fn.apply(r, c);
+                }
+            }
+        } else if (m_col_inc == 1) {
+            for (int r = 0, ir = m_start; r < m_nrows; ++r, ir += m_row_inc) {
+                for (int c = 0, ic = ir; c < m_ncols; ++c, ++ic) {
+                    m_data[ic] += fn.apply(r, c);
+                }
+            }
+        } else {
+            for (int c = 0, ic = m_start; c < m_ncols; ++c, ic += m_col_inc) {
+                for (int r = 0, ir = ic; r < m_nrows; ++r, ir += m_row_inc) {
+                    m_data[ir] += fn.apply(r, c);
+                }
+            }
+        }
+    }
+
+    /**
+     * x(i,j) = fn(i,j,x(i,j))
+     * @param fn The given function
+     * @since 2.2
+     */
+    public void set(final Matrix.MatrixRelativeFunction fn) {
+        if (m_row_inc == 1) {
+            for (int c = 0, ic = m_start; c < m_ncols; ++c, ic += m_col_inc) {
+                for (int r = 0, ir = ic; r < m_nrows; ++r, ++ir) {
+                    m_data[ir] = fn.apply(r, c, m_data[ir]);
+                }
+            }
+        } else if (m_col_inc == 1) {
+            for (int r = 0, ir = m_start; r < m_nrows; ++r, ir += m_row_inc) {
+                for (int c = 0, ic = ir; c < m_ncols; ++c, ++ic) {
+                    m_data[ic] = fn.apply(r, c, m_data[ic]);
+                }
+            }
+        } else {
+            for (int c = 0, ic = m_start; c < m_ncols; ++c, ic += m_col_inc) {
+                for (int r = 0, ir = ic; r < m_nrows; ++r, ir += m_row_inc) {
+                    m_data[ir] = fn.apply(r, c, m_data[ir]);
+                }
+            }
+        }
+    }
+    
+    /**
+     * x(i,j) = x(i,j) + fn(i,j,x(i,j))
+     * @param fn The given function
+     * @since 2.2
+     */
+    public void add(final Matrix.MatrixRelativeFunction fn) {
+        if (m_row_inc == 1) {
+            for (int c = 0, ic = m_start; c < m_ncols; ++c, ic += m_col_inc) {
+                for (int r = 0, ir = ic; r < m_nrows; ++r, ++ir) {
+                    m_data[ir] += fn.apply(r, c, m_data[ir]);
+                }
+            }
+        } else if (m_col_inc == 1) {
+            for (int r = 0, ir = m_start; r < m_nrows; ++r, ir += m_row_inc) {
+                for (int c = 0, ic = ir; c < m_ncols; ++c, ++ic) {
+                    m_data[ic] += fn.apply(r, c, m_data[ic]);
+                }
+            }
+        } else {
+            for (int c = 0, ic = m_start; c < m_ncols; ++c, ic += m_col_inc) {
+                for (int r = 0, ir = ic; r < m_nrows; ++r, ir += m_row_inc) {
+                    m_data[ir] += fn.apply(r, c, m_data[ir]);
+                }
+            }
+        }
+    }
+
     @Override
     public SubMatrix clone() {
         try {

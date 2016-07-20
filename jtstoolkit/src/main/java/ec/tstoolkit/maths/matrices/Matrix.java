@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.function.IntToDoubleFunction;
 
 /**
  * Represents matrices of doubles. Data are arranged by columns, following the
@@ -38,6 +39,38 @@ import java.util.Random;
 @Development(status = Development.Status.Alpha)
 public class Matrix implements Cloneable {
 
+    /**
+     * @since 2.2
+     */
+    @FunctionalInterface
+    public static interface MatrixFunction {
+
+        /**
+         * Applies this function to the given arguments.
+         *
+         * @param row
+         * @param column
+         * @return the function result
+         */
+        double apply(int row, int column);
+    }
+
+    /**
+     * @since 2.2
+     */
+    @FunctionalInterface
+    public static interface MatrixRelativeFunction {
+
+        /**
+         * Applies this function to the given arguments.
+         *
+         * @param row The row position
+         * @param column The column position
+         * @param cur The current value
+         * @return the function result
+         */
+        double apply(int row, int column, double cur);
+    }
     /**
      * Creates a diagonal matrix
      *
@@ -784,10 +817,63 @@ public class Matrix implements Cloneable {
     }
 
     /**
+     * x(i,j) = fn(i,j)
+     * @param fn The given function
+     * @since 2.2
+     */
+    public void set(MatrixFunction fn) {
+        for (int c = 0, i = 0; c < ncols_; ++c) {
+            for (int r = 0; r < nrows_; ++r, ++i) {
+                data_[i] = fn.apply(r, c);
+            }
+        }
+    }
+
+    /**
+     * x(i,j) = fn(i,j,x(i,j))
+     * @param fn The given function
+     * @since 2.2
+     */
+    public void set(MatrixRelativeFunction fn) {
+        for (int c = 0, i = 0; c < ncols_; ++c) {
+            for (int r = 0; r < nrows_; ++r, ++i) {
+                data_[i] = fn.apply(r, c, data_[i]);
+            }
+        }
+    }
+    
+    /**
+     * x(i,j) = x(i,j) + fn(i,j)
+     * @param fn The given function
+     * @since 2.2
+     */
+    public void add(MatrixFunction fn) {
+        for (int c = 0, i = 0; c < ncols_; ++c) {
+            for (int r = 0; r < nrows_; ++r, ++i) {
+                data_[i] += fn.apply(r, c);
+            }
+        }
+    }
+
+    /**
+     * x(i,j) = x(i,j) + fn(i,j,x(i,j))
+     * @param fn The given function
+     * @since 2.2
+     */
+    public void add(MatrixRelativeFunction fn) {
+        for (int c = 0, i = 0; c < ncols_; ++c) {
+            for (int r = 0; r < nrows_; ++r, ++i) {
+                data_[i] += fn.apply(r, c, data_[i]);
+            }
+        }
+    }
+
+    /**
      * Computes the sum of all the squared cells
      *
      * @return sum( X(i,j)*X(i,j) )
      */
+
     public double ssq() {
         double s = 0;
         for (int i = 0; i < data_.length; ++i) {
@@ -1100,7 +1186,7 @@ public class Matrix implements Cloneable {
             return "";
         }
         return all().toString(fmt);
-     }
+    }
 
     @Override
     public boolean equals(Object obj) {
