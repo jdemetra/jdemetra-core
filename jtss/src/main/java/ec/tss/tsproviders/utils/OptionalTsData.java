@@ -26,11 +26,14 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDataCollector;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -64,6 +67,7 @@ public abstract class OptionalTsData {
      *
      * @param data
      * @return non-null OptionalTsData
+     * @since 2.2.0
      */
     @Nonnull
     public static OptionalTsData present(@Nonnull TsData data) {
@@ -82,6 +86,7 @@ public abstract class OptionalTsData {
      *
      * @param cause
      * @return non-null OptionalTsData
+     * @since 2.2.0
      */
     @Nonnull
     public static OptionalTsData absent(@Nonnull String cause) {
@@ -95,9 +100,42 @@ public abstract class OptionalTsData {
         return absent(cause);
     }
 
+    /**
+     * Creates an OptionalTsData builder that collects {@link Date} values.
+     *
+     * @param freq
+     * @param aggregation
+     * @param skipMissingValues
+     * @return non-null builder
+     * @since 2.2.0
+     */
     @Nonnull
-    public static Builder2 builder(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean skipMissingValues) {
-        return new GenericBuilder(freq, aggregation, skipMissingValues);
+    public static Builder2<Date> builderByDate(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean skipMissingValues) {
+        if (freq == TsFrequency.Undefined) {
+            if (aggregation != TsAggregationType.None) {
+                return new InvalidAggregationBuilder<>();
+            }
+        }
+        return new GenericBuilder<>(Date::getTime, freq, aggregation, skipMissingValues);
+    }
+
+    /**
+     * Creates an OptionalTsData builder that collects {@link LocalDate} values.
+     *
+     * @param freq
+     * @param aggregation
+     * @param skipMissingValues
+     * @return non-null builder
+     * @since 2.2.0
+     */
+    @Nonnull
+    public static Builder2<LocalDate> builderByLocalDate(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean skipMissingValues) {
+        if (freq == TsFrequency.Undefined) {
+            if (aggregation != TsAggregationType.None) {
+                return new InvalidAggregationBuilder<>();
+            }
+        }
+        return new GenericBuilder<>(OptionalTsData::toTimeInMillis, freq, aggregation, skipMissingValues);
     }
     //</editor-fold>
 
@@ -178,9 +216,12 @@ public abstract class OptionalTsData {
 
     /**
      * Builder that collects observations in order to create an OptionalTsData.
+     *
+     * @param <T>
+     * @since 2.2.0
      */
     @NotThreadSafe
-    public interface Builder2 extends IBuilder<OptionalTsData> {
+    public interface Builder2<T> extends IBuilder<OptionalTsData> {
 
         /**
          * Removes all observations.
@@ -188,52 +229,53 @@ public abstract class OptionalTsData {
          * @return this builder
          */
         @Nonnull
-        Builder2 clear();
+        Builder2<T> clear();
 
         /**
-         * Adds an observation. Observation with null date is ignored.
-         * Observation with non-null date but null value is considered as
-         * missing value.
-         *
-         * @param period an optional date. This date has just to belong to the
+         * Adds an observation by using a date. This date belongs to the
          * considered period (it is not retained in the final time series).
+         * <p>
+         * An observation with <code>null</code> date is ignored and
+         * <code>null</code> value is considered as missing.
+         *
+         * @param date an optional date
          * @param value an optional value
          * @return this builder
          */
         @Nonnull
-        Builder2 add(@Nullable Date period, @Nullable Number value);
+        Builder2<T> add(@Nullable T date, @Nullable Number value);
 
         /**
-         * Adds an observation.
+         * Adds an observation by using a date.
          *
          * @param <X> the observation type
          * @param obs the non-null observation to add
-         * @param toPeriod a non-null function that retrieves a date from an
+         * @param dateFunc a non-null function that retrieves a date from an
          * observation
-         * @param toValue a non-null function that retrieves a value from an
+         * @param valueFunc a non-null function that retrieves a value from an
          * observation
          * @return this builder
          */
         @Nonnull
-        default <X> Builder2 add(X obs, Function<? super X, ? extends Date> toPeriod, Function<? super X, ? extends Number> toValue) {
-            Date date = toPeriod.apply(obs);
-            return add(date, date != null ? toValue.apply(obs) : null);
+        default <X> Builder2<T> add(X obs, Function<? super X, ? extends T> dateFunc, Function<? super X, ? extends Number> valueFunc) {
+            T date = dateFunc.apply(obs);
+            return Builder2.this.add(date, date != null ? valueFunc.apply(obs) : null);
         }
 
         /**
-         * Adds a stream of observations.
+         * Adds a stream of observations by using a date.
          *
          * @param <X> the observation type
          * @param stream the non-null stream to add
-         * @param toPeriod a non-null function that retrieves a date from an
+         * @param dateFunc a non-null function that retrieves a date from an
          * observation
-         * @param toValue a non-null function that retrieves a value from an
+         * @param valueFunc a non-null function that retrieves a value from an
          * observation
          * @return this builder
          */
         @Nonnull
-        default <X> Builder2 addAll(Stream<X> stream, Function<? super X, ? extends Date> toPeriod, Function<? super X, ? extends Number> toValue) {
-            stream.forEach(o -> add(o, toPeriod, toValue));
+        default <X> Builder2<T> addAll(Stream<X> stream, Function<? super X, ? extends T> dateFunc, Function<? super X, ? extends Number> valueFunc) {
+            stream.forEach(o -> add(o, dateFunc, valueFunc));
             return this;
         }
 
@@ -360,36 +402,40 @@ public abstract class OptionalTsData {
     @VisibleForTesting
     static final OptionalTsData UNKNOWN = new Absent("Unexpected error");
 
-    private static final class GenericBuilder implements Builder2 {
+    private static final class GenericBuilder<T> implements Builder2<T> {
 
+        private final ToLongFunction<T> timeInMillisFunc;
         private final TsDataCollector dc;
         private final TsFrequency freq;
         private final TsAggregationType aggregation;
         private final boolean skipMissingValues;
 
-        private GenericBuilder(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean skipMissingValues) {
+        private GenericBuilder(ToLongFunction<T> timeInMillisFunc, TsFrequency freq, TsAggregationType aggregation, boolean skipMissingValues) {
+            this.timeInMillisFunc = timeInMillisFunc;
             this.dc = new TsDataCollector();
             this.freq = Objects.requireNonNull(freq);
             this.aggregation = Objects.requireNonNull(aggregation);
             this.skipMissingValues = skipMissingValues;
         }
 
+        private Builder2<T> add(long timeInMillis, Number value) {
+            if (value != null) {
+                dc.addObservation(timeInMillis, value.doubleValue());
+            } else if (!skipMissingValues) {
+                dc.addMissingValue(timeInMillis);
+            }
+            return this;
+        }
+
         @Override
-        public Builder2 clear() {
+        public Builder2<T> clear() {
             dc.clear();
             return this;
         }
 
         @Override
-        public Builder2 add(Date period, Number value) {
-            if (period != null) {
-                if (value != null) {
-                    dc.addObservation(period, value.doubleValue());
-                } else if (!skipMissingValues) {
-                    dc.addMissingValue(period);
-                }
-            }
-            return this;
+        public Builder2<T> add(T date, Number value) {
+            return date != null ? add(timeInMillisFunc.applyAsLong(date), value) : this;
         }
 
         @Override
@@ -433,6 +479,28 @@ public abstract class OptionalTsData {
             return freq != TsFrequency.Undefined || aggregation == TsAggregationType.None;
         }
     }
+
+    private static final class InvalidAggregationBuilder<T> implements Builder2<T> {
+
+        @Override
+        public Builder2<T> clear() {
+            return this;
+        }
+
+        @Override
+        public Builder2<T> add(T date, Number value) {
+            return this;
+        }
+
+        @Override
+        public OptionalTsData build() {
+            return INVALID_AGGREGATION;
+        }
+    }
+
+    private static long toTimeInMillis(LocalDate date) {
+        return date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    }
     //</editor-fold>
 
     @Deprecated
@@ -443,14 +511,14 @@ public abstract class OptionalTsData {
             return "(" + freq + "/" + aggregation + ")";
         }
 
-        private final Builder2 delegate;
+        private final Builder2<Date> delegate;
 
         public Builder(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation) {
-            this.delegate = new GenericBuilder(freq, aggregation, false);
+            this.delegate = new GenericBuilder<>(Date::getTime, freq, aggregation, false);
         }
 
         public Builder(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean skipMissingValues) {
-            this.delegate = new GenericBuilder(freq, aggregation, skipMissingValues);
+            this.delegate = new GenericBuilder<>(Date::getTime, freq, aggregation, skipMissingValues);
         }
 
         @Nonnull

@@ -73,7 +73,7 @@ public final class DbUtil {
     @Nonnull
     public static <T extends Exception> List<DbSeries> getAllSeriesWithData(@Nonnull AllSeriesWithDataCursor<T> cursor, @Nonnull DbSetId ref, @Nonnull TsFrequency frequency, @Nonnull TsAggregationType aggregationType) throws T {
         ImmutableList.Builder<DbSeries> result = ImmutableList.builder();
-        OptionalTsData.Builder2 data = OptionalTsData.builder(frequency, aggregationType, false);
+        OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(frequency, aggregationType, false);
         boolean t0 = cursor.next();
         while (t0) {
             String[] dimValues = cursor.dimValues;
@@ -104,7 +104,7 @@ public final class DbUtil {
 
     @Nonnull
     public static <T extends Exception> DbSeries getSeriesWithData(@Nonnull SeriesWithDataCursor<T> cursor, @Nonnull DbSetId ref, @Nonnull TsFrequency frequency, @Nonnull TsAggregationType aggregationType) throws T {
-        OptionalTsData.Builder2 data = OptionalTsData.builder(frequency, aggregationType, false);
+        OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(frequency, aggregationType, false);
         boolean t0 = cursor.next();
         if (t0) {
             Date latestPeriod = cursor.period;
