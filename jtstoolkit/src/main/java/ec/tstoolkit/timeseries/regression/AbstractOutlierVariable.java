@@ -97,7 +97,7 @@ public abstract class AbstractOutlierVariable extends AbstractSingleTsVariable
     public String getDescription(TsFrequency context) {
         StringBuilder builder = new StringBuilder();
         builder.append(getCode()).append(" (");
-        if (context == null)
+        if (context == TsFrequency.Undefined)
             builder.append(position);
         else{
             TsPeriod p=new TsPeriod(context, position);
