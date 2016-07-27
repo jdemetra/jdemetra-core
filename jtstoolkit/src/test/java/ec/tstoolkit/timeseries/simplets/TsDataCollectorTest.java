@@ -54,6 +54,7 @@ public class TsDataCollectorTest {
     private static final Date JAN2010 = new GregorianCalendar(2010, Calendar.JANUARY, 1).getTime();
     private static final Date FEB2010 = new GregorianCalendar(2010, Calendar.FEBRUARY, 1).getTime();
     private static final Date APR2010 = new GregorianCalendar(2010, Calendar.APRIL, 1).getTime();
+    private static final Date MAY2010 = new GregorianCalendar(2010, Calendar.MAY, 1).getTime();
 
     private static Date asDate(LocalDate localDate) {
         return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
@@ -90,6 +91,13 @@ public class TsDataCollectorTest {
         dc.addObservation(JAN2010, 10);
         dc.addObservation(FEB2010, 20);
         assertThat(dc.make(Undefined, None)).isEqualTo(data(Monthly, 2010, 0, 10, 20));
+
+        // undefined to monthly with missing values
+        dc.clear();
+        dc.addObservation(JAN2010, 10);
+        dc.addObservation(FEB2010, 20);
+        dc.addObservation(MAY2010, 50);
+        assertThat(dc.make(Undefined, None)).isEqualTo(data(Monthly, 2010, 0, 10, 20, Double.NaN, Double.NaN, 50));
 
         // undefined to quarterly
         dc.clear();
@@ -159,26 +167,6 @@ public class TsDataCollectorTest {
         dc.addObservation(JAN2010, 10);
         complementOf(of(Undefined))
                 .forEach(o -> assertThat(dc.make(o, None)));
-    }
-
-    @Test
-    public void testIsStillSortedAfterAdd() {
-        TsDataCollector dc = new TsDataCollector();
-
-        dc.addObservation(FEB2010, 20);
-        assertThat(dc.isStillSortedAfterAdd()).isTrue();
-        dc.addObservation(APR2010, 20);
-        assertThat(dc.isStillSortedAfterAdd()).isTrue();
-        dc.addObservation(APR2010, 20);
-        assertThat(dc.isStillSortedAfterAdd()).isTrue();
-        dc.addObservation(JAN2010, 20);
-        assertThat(dc.isStillSortedAfterAdd()).isFalse();
-        dc.addObservation(FEB2010, 20);
-        assertThat(dc.isStillSortedAfterAdd()).isFalse();
-
-        dc.clear();
-        dc.addObservation(JAN2010, 20);
-        assertThat(dc.isStillSortedAfterAdd()).isTrue();
     }
 
 //    @Test
