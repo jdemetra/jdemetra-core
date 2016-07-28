@@ -66,6 +66,7 @@ final class TxtLoader {
         String[] titles = new String[0];
         Parsers.Parser<Date> dateParser = bean.dataFormat.dateParser().or(FALLBACK_PARSER.get());
         Parsers.Parser<Number> numberParser = bean.dataFormat.numberParser();
+        GregorianCalendar cal = new GregorianCalendar();
         List<OptionalTsData.Builder2<Date>> dataCollectors = new ArrayList<>();
 
         String[] line;
@@ -73,7 +74,7 @@ final class TxtLoader {
             if (nbrRows == 0) {
                 titles = bean.headers ? line : generateHeaders(line.length);
                 for (int i = 1; i < titles.length; i++) {
-                    dataCollectors.add(OptionalTsData.builderByDate(bean.frequency, bean.aggregationType, false));
+                    dataCollectors.add(OptionalTsData.builderByDate(bean.frequency, bean.aggregationType, false, false, cal));
                 }
             }
             if (!(nbrRows == 0 && bean.headers)) {
