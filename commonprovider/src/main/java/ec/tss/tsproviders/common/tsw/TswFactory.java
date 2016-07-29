@@ -179,7 +179,7 @@ abstract class TswFactory {
                 if (values.size() < domain.getLength()) {
                     Number value = valueParser.parse(token);
                     if (value == null) {
-                        return new TswSeries(fileName, name, OptionalTsData.absent(values.size(), 0, "Cannot parse value at line " + (values.size() + 2)));
+                        return new TswSeries(fileName, name, OptionalTsData.absent("Cannot parse value at line " + (values.size() + 2)));
                     }
                     double tmp = value.doubleValue();
                     values.add(tmp == TSW_NAN ? Double.NaN : tmp);
@@ -188,7 +188,7 @@ abstract class TswFactory {
         }
 
         TsData result = new TsData(domain.getStart(), values.toArray(), false);
-        return new TswSeries(fileName, name, OptionalTsData.present(values.size(), 0, result));
+        return new TswSeries(fileName, name, OptionalTsData.present(result));
     }
 
     private static final Charset TSW_CHARSET = StandardCharsets.US_ASCII;

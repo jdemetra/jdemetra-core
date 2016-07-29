@@ -26,7 +26,9 @@ import ec.tss.tsproviders.utils.DataFormat;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tss.tsproviders.utils.Parsers.Parser;
 import static ec.tstoolkit.utilities.GuavaCollectors.toImmutableList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -57,7 +59,7 @@ public class GenericDocFactory extends AbstractDocumentFactory {
     @Override
     public SdmxSource create(Document doc) {
         Optional<Node> dataSetNode = lookupDataSetNode(doc);
-        return new SdmxSource(SdmxSource.Type.GENERIC, getSdmxItems(dataSetNode.get()));
+        return new SdmxSource(SdmxSource.Type.GENERIC, getSdmxItems(dataSetNode.get(), new GregorianCalendar()));
     }
 
     private static boolean hasKeyFamilyRef(Node dataSetNode) {
@@ -65,15 +67,15 @@ public class GenericDocFactory extends AbstractDocumentFactory {
                 .anyMatch(o -> "KeyFamilyRef".equals(o.getLocalName()));
     }
 
-    private static ImmutableList<SdmxItem> getSdmxItems(Node dataSetNode) {
+    private static ImmutableList<SdmxItem> getSdmxItems(Node dataSetNode, Calendar cal) {
         Predicate<Concept> keyFilter = o -> true;
         return asStream(dataSetNode.getChildNodes())
-                .map(o -> "Group".equals(o.getLocalName()) ? getSdmxGroup(o) : "Series".equals(o.getLocalName()) ? getSdmxSeries(o, keyFilter) : null)
+                .map(o -> "Group".equals(o.getLocalName()) ? getSdmxGroup(o, cal) : "Series".equals(o.getLocalName()) ? getSdmxSeries(o, keyFilter, cal) : null)
                 .filter(o -> o != null)
                 .collect(toImmutableList());
     }
 
-    private static SdmxGroup getSdmxGroup(Node groupNode) {
+    private static SdmxGroup getSdmxGroup(Node groupNode, Calendar cal) {
         ImmutableList<Concept> key = getGroupKeyNode(groupNode)
                 .map(GenericDocFactory::lookupConcepts)
                 .get()
@@ -84,7 +86,7 @@ public class GenericDocFactory extends AbstractDocumentFactory {
                 .collect(toImmutableList());
         ImmutableList<SdmxSeries> tss = asStream(groupNode.getChildNodes())
                 .filter(o -> "Series".equals(o.getLocalName()))
-                .map(o -> getSdmxSeries(o, x -> !key.contains(x)))
+                .map(o -> getSdmxSeries(o, x -> !key.contains(x), cal))
                 .collect(toImmutableList());
         return new SdmxGroup(key, attributes, tss);
     }
@@ -101,7 +103,7 @@ public class GenericDocFactory extends AbstractDocumentFactory {
                 .findFirst();
     }
 
-    private static SdmxSeries getSdmxSeries(Node seriesNode, Predicate<Concept> keyFilter) {
+    private static SdmxSeries getSdmxSeries(Node seriesNode, Predicate<Concept> keyFilter, Calendar cal) {
         ImmutableList<Concept> key = getSeriesKeyNode(seriesNode)
                 .map(GenericDocFactory::lookupConcepts)
                 .get()
@@ -113,7 +115,7 @@ public class GenericDocFactory extends AbstractDocumentFactory {
                 .filter(keyFilter)
                 .collect(toImmutableList());
         TimeFormat timeFormat = getTimeFormat(seriesNode);
-        OptionalTsData data = getData(seriesNode, timeFormat);
+        OptionalTsData data = getData(seriesNode, timeFormat, cal);
         return new SdmxSeries(key, attributes, timeFormat, data);
     }
 
@@ -123,16 +125,12 @@ public class GenericDocFactory extends AbstractDocumentFactory {
                 .findFirst();
     }
 
-    private static OptionalTsData getData(Node seriesNode, TimeFormat timeFormat) {
+    private static OptionalTsData getData(Node seriesNode, TimeFormat timeFormat, Calendar cal) {
         Parser<Date> toPeriod = timeFormat.getParser();
         Parser<Number> toValue = DEFAULT_DATA_FORMAT.numberParser();
-        OptionalTsData.Builder result = new OptionalTsData.Builder(timeFormat.getFrequency(), timeFormat.getAggregationType());
-        lookupObservations(seriesNode).forEach(o -> {
-            Date period = toPeriod.parse(getPeriod(o));
-            Number value = period != null ? toValue.parse(getValue(o)) : null;
-            result.add(period, value);
-        });
-        return result.build();
+        return OptionalTsData.builderByDate(timeFormat.getFrequency(), timeFormat.getAggregationType(), false, false, cal)
+                .addAll(lookupObservations(seriesNode), o -> toPeriod.parse(getPeriod(o)), o -> toValue.parse(getValue(o)))
+                .build();
     }
 
     private static String getPeriod(Node obs) {

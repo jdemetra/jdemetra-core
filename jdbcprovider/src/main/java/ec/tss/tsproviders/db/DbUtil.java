@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.db;
 
 import com.google.common.base.Objects;
@@ -24,6 +23,7 @@ import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -73,7 +73,7 @@ public final class DbUtil {
     @Nonnull
     public static <T extends Exception> List<DbSeries> getAllSeriesWithData(@Nonnull AllSeriesWithDataCursor<T> cursor, @Nonnull DbSetId ref, @Nonnull TsFrequency frequency, @Nonnull TsAggregationType aggregationType) throws T {
         ImmutableList.Builder<DbSeries> result = ImmutableList.builder();
-        OptionalTsData.Builder data = new OptionalTsData.Builder(frequency, aggregationType);
+        OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(frequency, aggregationType, false, true, new GregorianCalendar());
         boolean t0 = cursor.next();
         while (t0) {
             String[] dimValues = cursor.dimValues;
@@ -104,7 +104,7 @@ public final class DbUtil {
 
     @Nonnull
     public static <T extends Exception> DbSeries getSeriesWithData(@Nonnull SeriesWithDataCursor<T> cursor, @Nonnull DbSetId ref, @Nonnull TsFrequency frequency, @Nonnull TsAggregationType aggregationType) throws T {
-        OptionalTsData.Builder data = new OptionalTsData.Builder(frequency, aggregationType);
+        OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(frequency, aggregationType, false, true, new GregorianCalendar());
         boolean t0 = cursor.next();
         if (t0) {
             Date latestPeriod = cursor.period;

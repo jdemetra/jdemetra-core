@@ -66,14 +66,15 @@ final class TxtLoader {
         String[] titles = new String[0];
         Parsers.Parser<Date> dateParser = bean.dataFormat.dateParser().or(FALLBACK_PARSER.get());
         Parsers.Parser<Number> numberParser = bean.dataFormat.numberParser();
-        List<OptionalTsData.Builder> dataCollectors = new ArrayList<>();
+        GregorianCalendar cal = new GregorianCalendar();
+        List<OptionalTsData.Builder2<Date>> dataCollectors = new ArrayList<>();
 
         String[] line;
         while ((line = reader.readNext()) != null) {
             if (nbrRows == 0) {
                 titles = bean.headers ? line : generateHeaders(line.length);
                 for (int i = 1; i < titles.length; i++) {
-                    dataCollectors.add(new OptionalTsData.Builder(bean.frequency, bean.aggregationType));
+                    dataCollectors.add(OptionalTsData.builderByDate(bean.frequency, bean.aggregationType, false, false, cal));
                 }
             }
             if (!(nbrRows == 0 && bean.headers)) {

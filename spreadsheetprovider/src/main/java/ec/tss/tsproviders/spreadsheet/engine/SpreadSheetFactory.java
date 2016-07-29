@@ -41,7 +41,9 @@ import ec.util.spreadsheet.Sheet;
 import ec.util.spreadsheet.helpers.ArraySheet;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
@@ -255,7 +257,7 @@ public abstract class SpreadSheetFactory {
 
             ImmutableList.Builder<SpreadSheetSeries> list = ImmutableList.builder();
 
-            OptionalTsData.Builder data = new OptionalTsData.Builder(context.frequency, context.aggregationType, context.clean);
+            OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(context.frequency, context.aggregationType, context.clean, false, context.cal);
             for (int columnIdx = 0; columnIdx < names.size(); columnIdx++) {
                 for (int rowIdx = dates.getMinIndex(); rowIdx <= dates.getMaxIndex(); rowIdx++) {
                     Number value = context.toNumber.parse(sheet, rowIdx, columnIdx + FIRST_DATA_COL_IDX);
@@ -278,6 +280,7 @@ public abstract class SpreadSheetFactory {
         public final TsFrequency frequency;
         public final TsAggregationType aggregationType;
         public final boolean clean;
+        public final Calendar cal;
 
         public Context(CellParser<String> toName, CellParser<Date> toDate, CellParser<Number> toNumber, TsFrequency frequency, TsAggregationType aggregationType, boolean clean) {
             this.toName = toName;
@@ -286,6 +289,7 @@ public abstract class SpreadSheetFactory {
             this.frequency = frequency;
             this.aggregationType = aggregationType;
             this.clean = clean;
+            this.cal = new GregorianCalendar();
         }
 
         private static Context create(TsImportOptions options) {
