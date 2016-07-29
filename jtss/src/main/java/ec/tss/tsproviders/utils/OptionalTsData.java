@@ -26,10 +26,13 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDataCollector;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
+import ec.tstoolkit.utilities.ObjLongToIntFunction;
+import ec.tstoolkit.timeseries.simplets.ObsList.LongObsList;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -39,6 +42,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
+import ec.tstoolkit.timeseries.simplets.ObsList;
 
 /**
  * An immutable object that may contain some time series data. Each instance of
@@ -103,39 +107,38 @@ public abstract class OptionalTsData {
     /**
      * Creates an OptionalTsData builder that collects {@link Date} values.
      *
-     * @param freq
-     * @param aggregation
-     * @param skipMissingValues
+     * @param freq non-null frequency
+     * @param aggregation non-null aggregation type
+     * @param skipMissingValues specifies if missing values are to be skipped
+     * @param preSorted specifies if observations are already sorted
+     * @param calendar non-null resource used to handle dates quirks such as
+     * time zones
      * @return non-null builder
      * @since 2.2.0
      */
     @Nonnull
-    public static Builder2<Date> builderByDate(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean skipMissingValues) {
-        if (freq == TsFrequency.Undefined) {
-            if (aggregation != TsAggregationType.None) {
-                return new InvalidAggregationBuilder<>();
-            }
-        }
-        return new GenericBuilder<>(Date::getTime, freq, aggregation, skipMissingValues);
+    public static Builder2<Date> builderByDate(
+            @Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation,
+            boolean skipMissingValues, boolean preSorted,
+            @Nonnull Calendar calendar) {
+        return builder(freq, aggregation, skipMissingValues, preSorted, Date::getTime, (f, p) -> getIdFromTimeInMillis(calendar, f, p));
     }
 
     /**
      * Creates an OptionalTsData builder that collects {@link LocalDate} values.
      *
-     * @param freq
-     * @param aggregation
-     * @param skipMissingValues
+     * @param freq non-null frequency
+     * @param aggregation non-null aggregation type
+     * @param skipMissingValues specifies if missing values are to be skipped
+     * @param preSorted specifies if observations are already sorted
      * @return non-null builder
      * @since 2.2.0
      */
     @Nonnull
-    public static Builder2<LocalDate> builderByLocalDate(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean skipMissingValues) {
-        if (freq == TsFrequency.Undefined) {
-            if (aggregation != TsAggregationType.None) {
-                return new InvalidAggregationBuilder<>();
-            }
-        }
-        return new GenericBuilder<>(OptionalTsData::toTimeInMillis, freq, aggregation, skipMissingValues);
+    public static Builder2<LocalDate> builderByLocalDate(
+            @Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation,
+            boolean skipMissingValues, boolean preSorted) {
+        return builder(freq, aggregation, skipMissingValues, preSorted, OptionalTsData::getYearMonthDay, OptionalTsData::getIdFromYearMonthDay);
     }
     //</editor-fold>
 
@@ -344,6 +347,11 @@ public abstract class OptionalTsData {
         public int hashCode() {
             return Objects.hash(freq, year, position, data);
         }
+
+        @Override
+        public String toString() {
+            return "Present: " + freq + "@" + year + "/" + position + " " + Arrays.toString(data);
+        }
     }
 
     private static final class Absent extends OptionalTsData {
@@ -387,6 +395,11 @@ public abstract class OptionalTsData {
         public int hashCode() {
             return cause.hashCode();
         }
+
+        @Override
+        public String toString() {
+            return "Absent: " + cause;
+        }
     }
 
     @VisibleForTesting
@@ -402,85 +415,7 @@ public abstract class OptionalTsData {
     @VisibleForTesting
     static final OptionalTsData UNKNOWN = new Absent("Unexpected error");
 
-    private static final class GenericBuilder<T> implements Builder2<T> {
-
-        private final ToLongFunction<T> timeInMillisFunc;
-        private final TsDataCollector dc;
-        private final TsFrequency freq;
-        private final TsAggregationType aggregation;
-        private final boolean skipMissingValues;
-
-        private GenericBuilder(ToLongFunction<T> timeInMillisFunc, TsFrequency freq, TsAggregationType aggregation, boolean skipMissingValues) {
-            this.timeInMillisFunc = timeInMillisFunc;
-            this.dc = new TsDataCollector();
-            this.freq = Objects.requireNonNull(freq);
-            this.aggregation = Objects.requireNonNull(aggregation);
-            this.skipMissingValues = skipMissingValues;
-        }
-
-        private Builder2<T> add(long timeInMillis, Number value) {
-            if (value != null) {
-                dc.addObservation(timeInMillis, value.doubleValue());
-            } else if (!skipMissingValues) {
-                dc.addMissingValue(timeInMillis);
-            }
-            return this;
-        }
-
-        @Override
-        public Builder2<T> clear() {
-            dc.clear();
-            return this;
-        }
-
-        @Override
-        public Builder2<T> add(T date, Number value) {
-            return date != null ? add(timeInMillisFunc.applyAsLong(date), value) : this;
-        }
-
-        @Override
-        public OptionalTsData build() {
-            if (dc.getCount() == 0) {
-                return NO_DATA;
-            }
-            if (!isValidAggregation(freq, aggregation)) {
-                return INVALID_AGGREGATION;
-            }
-
-            TsData result;
-            if (aggregation == TsAggregationType.None) {
-                result = dc.make(freq, TsAggregationType.None);
-            } else {
-                result = dc.make(TsFrequency.Undefined, TsAggregationType.None);
-                if (result != null && (result.getFrequency().intValue() % freq.intValue() == 0)) {
-                    // should succeed
-                    result = result.changeFrequency(freq, aggregation, true);
-                } else {
-                    result = dc.make(freq, aggregation);
-                }
-            }
-
-            if (result == null) {
-                switch (freq) {
-                    case Undefined:
-                        return dc.getCount() == 1
-                                ? GUESS_SINGLE
-                                : GUESS_DUPLICATION;
-                    default:
-                        return aggregation == TsAggregationType.None
-                                ? DUPLICATION_WITHOUT_AGGREGATION
-                                : UNKNOWN;
-                }
-            }
-            return new Present(result);
-        }
-
-        private static boolean isValidAggregation(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation) {
-            return freq != TsFrequency.Undefined || aggregation == TsAggregationType.None;
-        }
-    }
-
-    private static final class InvalidAggregationBuilder<T> implements Builder2<T> {
+    private static final class UndefinedWithAggregation<T> implements Builder2<T> {
 
         @Override
         public Builder2<T> clear() {
@@ -498,8 +433,130 @@ public abstract class OptionalTsData {
         }
     }
 
-    private static long toTimeInMillis(LocalDate date) {
-        return date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    private static final class BuilderSupport<T> implements Builder2<T> {
+
+        private final LongObsList obs;
+        private final ToLongFunction<T> periodFunc;
+        private final boolean skipMissingValues;
+        private final Function<ObsList, OptionalTsData> maker;
+
+        BuilderSupport(
+                LongObsList obs,
+                ToLongFunction<T> periodFunc,
+                boolean skipMissingValues,
+                Function<ObsList, OptionalTsData> maker) {
+            this.obs = obs;
+            this.periodFunc = periodFunc;
+            this.skipMissingValues = skipMissingValues;
+            this.maker = maker;
+        }
+
+        @Override
+        public Builder2<T> clear() {
+            obs.clear();
+            return this;
+        }
+
+        @Override
+        public Builder2<T> add(T date, Number value) {
+            if (date != null) {
+                if (value != null) {
+                    obs.add(periodFunc.applyAsLong(date), value.doubleValue());
+                } else if (!skipMissingValues) {
+                    obs.add(periodFunc.applyAsLong(date), Double.NaN);
+                }
+            }
+            return this;
+        }
+
+        @Override
+        public OptionalTsData build() {
+            return maker.apply(obs);
+        }
+    }
+
+    private static <T> Builder2<T> builder(
+            TsFrequency freq, TsAggregationType aggr,
+            boolean skip, boolean preSorted,
+            ToLongFunction<T> periodFunc, ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc) {
+        if (freq == TsFrequency.Undefined) {
+            if (aggr != TsAggregationType.None) {
+                return new UndefinedWithAggregation<>();
+            }
+            return new BuilderSupport<>(
+                    ObsList.newLongObsList(preSorted, tsPeriodIdFunc),
+                    periodFunc,
+                    skip,
+                    o -> makeFromUnknownFrequency(o));
+        }
+        if (aggr != TsAggregationType.None) {
+            return new BuilderSupport<>(
+                    ObsList.newLongObsList(preSorted, tsPeriodIdFunc),
+                    periodFunc,
+                    skip,
+                    o -> makeWithAggregation(o, freq, aggr));
+        }
+        return new BuilderSupport<>(
+                ObsList.newLongObsList(preSorted, tsPeriodIdFunc),
+                periodFunc,
+                skip,
+                o -> makeWithoutAggregation(o, freq));
+    }
+
+    private static OptionalTsData makeFromUnknownFrequency(ObsList obs) {
+        switch (obs.size()) {
+            case 0:
+                return NO_DATA;
+            case 1:
+                return GUESS_SINGLE;
+            default:
+                TsData result = TsDataCollector.makeFromUnknownFrequency(obs);
+                return result != null ? present(result) : GUESS_DUPLICATION;
+        }
+    }
+
+    private static OptionalTsData makeWithoutAggregation(ObsList obs, TsFrequency freq) {
+        switch (obs.size()) {
+            case 0:
+                return NO_DATA;
+            default:
+                TsData result = TsDataCollector.makeWithoutAggregation(obs, freq);
+                return result != null ? present(result) : DUPLICATION_WITHOUT_AGGREGATION;
+        }
+    }
+
+    private static OptionalTsData makeWithAggregation(ObsList obs, TsFrequency freq, TsAggregationType convMode) {
+        switch (obs.size()) {
+            case 0:
+                return NO_DATA;
+            default:
+                TsData result = TsDataCollector.makeFromUnknownFrequency(obs);
+                if (result != null && (result.getFrequency().intValue() % freq.intValue() == 0)) {
+                    // should succeed
+                    result = result.changeFrequency(freq, convMode, true);
+                } else {
+                    result = TsDataCollector.makeWithAggregation(obs, freq, convMode);
+                }
+                return result != null ? present(result) : UNKNOWN;
+        }
+    }
+
+    private static int getIdFromTimeInMillis(Calendar cal, TsFrequency freq, long period) {
+        cal.setTimeInMillis(period);
+        return calcTsPeriodId(freq.intValue(), cal.get(Calendar.YEAR), cal.get(Calendar.MONTH));
+    }
+
+    private static long getYearMonthDay(LocalDate date) {
+        return (long) (date.getYear() * 100 + date.getMonthValue()) * 100 + date.getDayOfMonth();
+    }
+
+    private static int getIdFromYearMonthDay(TsFrequency freq, long period) {
+        period = period / 100;
+        return calcTsPeriodId(freq.intValue(), (int) (period / 100), (int) (period % 100 - 1));
+    }
+
+    private static int calcTsPeriodId(int freq, int year, int month) {
+        return (year - 1970) * freq + month / (12 / freq);
     }
     //</editor-fold>
 
@@ -514,11 +571,11 @@ public abstract class OptionalTsData {
         private final Builder2<Date> delegate;
 
         public Builder(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation) {
-            this.delegate = new GenericBuilder<>(Date::getTime, freq, aggregation, false);
+            this(freq, aggregation, false);
         }
 
         public Builder(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean skipMissingValues) {
-            this.delegate = new GenericBuilder<>(Date::getTime, freq, aggregation, skipMissingValues);
+            this.delegate = builderByDate(freq, aggregation, skipMissingValues, false, new GregorianCalendar());
         }
 
         @Nonnull

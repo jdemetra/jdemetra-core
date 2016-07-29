@@ -26,7 +26,9 @@ import ec.tss.tsproviders.utils.DataFormat;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tss.tsproviders.utils.Parsers;
 import static ec.tstoolkit.utilities.GuavaCollectors.toImmutableList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -55,7 +57,7 @@ public class GuessingCompactFactory extends AbstractDocumentFactory {
     @Override
     public SdmxSource create(Document doc) {
         Optional<Node> dataSetNode = lookupDataSetNode(doc);
-        return new SdmxSource(SdmxSource.Type.COMPACT, getSdmxItems(dataSetNode.get()));
+        return new SdmxSource(SdmxSource.Type.COMPACT, getSdmxItems(dataSetNode.get(), new GregorianCalendar()));
     }
 
     private static boolean hasKeyFamilyRef(Node dataSetNode) {
@@ -63,24 +65,24 @@ public class GuessingCompactFactory extends AbstractDocumentFactory {
                 .anyMatch(o -> "KeyFamilyRef".equals(o.getLocalName()));
     }
 
-    private static ImmutableList<SdmxItem> getSdmxItems(Node dataSetNode) {
+    private static ImmutableList<SdmxItem> getSdmxItems(Node dataSetNode, Calendar cal) {
         return asStream(dataSetNode.getChildNodes())
                 .filter(o -> "Series".equals(o.getLocalName()))
-                .map(GuessingCompactFactory::getSdmxSeries)
+                .map(o -> getSdmxSeries(o, cal))
                 .collect(toImmutableList());
     }
 
-    private static SdmxSeries getSdmxSeries(Node seriesNode) {
+    private static SdmxSeries getSdmxSeries(Node seriesNode, Calendar cal) {
         ImmutableList<Map.Entry<String, String>> key = getKey(seriesNode);
         TimeFormat timeFormat = getTimeFormat(seriesNode);
-        OptionalTsData data = getData(seriesNode, timeFormat);
+        OptionalTsData data = getData(seriesNode, timeFormat, cal);
         return new SdmxSeries(key, ImmutableList.of(), timeFormat, data);
     }
 
-    private static OptionalTsData getData(Node seriesNode, TimeFormat timeFormat) {
+    private static OptionalTsData getData(Node seriesNode, TimeFormat timeFormat, Calendar cal) {
         Parsers.Parser<Date> toPeriod = timeFormat.getParser();
         Parsers.Parser<Number> toValue = DEFAULT_DATA_FORMAT.numberParser();
-        return OptionalTsData.builderByDate(timeFormat.getFrequency(), timeFormat.getAggregationType(), false)
+        return OptionalTsData.builderByDate(timeFormat.getFrequency(), timeFormat.getAggregationType(), false, false, cal)
                 .addAll(lookupObservations(seriesNode), o -> getPeriod(o, toPeriod), o -> getValue(o, toValue))
                 .build();
     }

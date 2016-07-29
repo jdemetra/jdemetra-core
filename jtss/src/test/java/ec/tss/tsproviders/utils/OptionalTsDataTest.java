@@ -102,7 +102,7 @@ public class OptionalTsDataTest {
         CustomFactory<Date> factory = new CustomFactory<Date>() {
             @Override
             public Builder2<Date> builderOf(TsFrequency freq, TsAggregationType aggregation, boolean skipMissingValues) {
-                return builderByDate(freq, aggregation, skipMissingValues);
+                return builderByDate(freq, aggregation, skipMissingValues, false, new GregorianCalendar());
             }
 
             @Override
@@ -120,7 +120,7 @@ public class OptionalTsDataTest {
         CustomFactory<LocalDate> factory = new CustomFactory<LocalDate>() {
             @Override
             public Builder2<LocalDate> builderOf(TsFrequency freq, TsAggregationType aggregation, boolean skipMissingValues) {
-                return builderByLocalDate(freq, aggregation, skipMissingValues);
+                return builderByLocalDate(freq, aggregation, skipMissingValues, false);
             }
 
             @Override
