@@ -15,23 +15,6 @@ and open the template in the editor.
     <xs:import schemaLocation="core.xsd" namespace="ec/eurostat/jdemetra/core"/>
     <xs:import schemaLocation="regression.xsd" namespace="ec/eurostat/jdemetra/core"/>
 
-    <xs:simpleType name="ComponentEnum">
-        <xs:annotation>
-            <xs:documentation>
-            </xs:documentation>
-        </xs:annotation>
-        <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="Undefined"/>
-            <xs:enumeration value="Series"/>
-            <xs:enumeration value="Trend"/>
-            <xs:enumeration value="Cycle"/>
-            <xs:enumeration value="Seasonal"/>
-            <xs:enumeration value="Calendar"/>
-            <xs:enumeration value="Irregular"/>
-            <xs:enumeration value="SeasonallyAdjusted"/>
-        </xs:restriction>
-    </xs:simpleType>
-
     <xs:complexType name="TransformationSpecType" abstract="true">
         <xs:annotation>
             <xs:documentation>

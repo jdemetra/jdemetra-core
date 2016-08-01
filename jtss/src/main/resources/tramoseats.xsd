@@ -142,7 +142,7 @@ and open the template in the editor.
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="tsig" minOccurs="0">
+                    <xs:element name="Tsig" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>
                                 Minimum t for significant mean.
@@ -174,9 +174,9 @@ and open the template in the editor.
         </xs:complexContent>
     </xs:complexType>
 
-    <xs:complexType name="arimaOrderType">
+    <xs:complexType name="ArimaOrderType">
         <xs:sequence>
-            <xs:element name="p">
+            <xs:element name="P">
                 <xs:annotation>
                     <xs:documentation>
                         Regular auto-regressive order. Should be in {0,1,2,3}
@@ -188,7 +188,7 @@ and open the template in the editor.
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="d">
+            <xs:element name="D">
                 <xs:annotation>
                     <xs:documentation>
                         Regular differencing order. Should be in {0,1,2}
@@ -200,7 +200,7 @@ and open the template in the editor.
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="q">
+            <xs:element name="Q">
                 <xs:annotation>
                     <xs:documentation>
                         Regular moving average order. Should be in {0,1,2,3}
@@ -212,7 +212,7 @@ and open the template in the editor.
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="bp">
+            <xs:element name="BP">
                 <xs:annotation>
                     <xs:documentation>
                         Seasonal auto-regressive order. Should be 0 or 1.
@@ -224,7 +224,7 @@ and open the template in the editor.
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="bd">
+            <xs:element name="BD">
                 <xs:annotation>
                     <xs:documentation>
                         Seasonal auto-regressive order. Should be 0 or 1
@@ -236,7 +236,7 @@ and open the template in the editor.
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="bq">
+            <xs:element name="BQ">
                 <xs:annotation>
                     <xs:documentation>
                         Seasonal moving average order. Should be 0 or 1
@@ -251,52 +251,52 @@ and open the template in the editor.
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="arimaPolynomialsType">
+    <xs:complexType name="ArimaPolynomialsType">
         <xs:sequence>
-            <xs:element name="phi" type="tss:DoublesType"/>
-            <xs:element name="d">
+            <xs:element name="Phi" type="tss:DoublesType"/>
+            <xs:element name="D">
                 <xs:simpleType>
                     <xs:restriction base="xs:unsignedShort">
                         <xs:maxInclusive value="2"/>
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="th" type="tss:DoublesType"/>
-            <xs:element name="bphi" type="tss:DoublesType"/>
-            <xs:element name="bd">
+            <xs:element name="Theta" type="tss:DoublesType"/>
+            <xs:element name="BPhi" type="tss:DoublesType"/>
+            <xs:element name="BD">
                 <xs:simpleType>
                     <xs:restriction base="xs:unsignedShort">
                         <xs:maxInclusive value="1"/>
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="bth" type="tss:DoublesType"/>
+            <xs:element name="BTheta" type="tss:DoublesType"/>
         </xs:sequence>
         <xs:attribute name="type" type="tss:ParameterInfoEnum"/>
     </xs:complexType>
 
-    <xs:complexType name="arimaSpecType">
+    <xs:complexType name="ArimaSpecType">
         <xs:annotation>
             <xs:documentation>
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="mean" minOccurs="0"/>
+            <xs:element name="Mean" minOccurs="0"/>
             <xs:choice>
-                <xs:element name="spec" type="trs:arimaOrderType"/>
-                <xs:element name="model" type="trs:arimaPolynomialsType"/>
+                <xs:element name="Spec" type="trs:ArimaOrderType"/>
+                <xs:element name="Model" type="trs:ArimaPolynomialsType"/>
             </xs:choice>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:group name ="modelSpecGroup">
+    <xs:group name ="ModelSpecGroup">
         <xs:annotation>
             <xs:documentation>
             </xs:documentation>
         </xs:annotation>
         <xs:choice>
-            <xs:element name="autoModelSpec" type="trs:autoModelSpecType"/>
-            <xs:element name="arimaSpec" type="trs:arimaSpecType"/>
+            <xs:element name="AutoModelSpec" type="trs:AutoModelSpecType"/>
+            <xs:element name="ArimaSpec" type="trs:ArimaSpecType"/>
         </xs:choice>
     </xs:group>
 
@@ -317,27 +317,27 @@ and open the template in the editor.
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:complexType name="tradingDaysSpecType">
+    <xs:complexType name="TradingDaysSpecType">
         <xs:choice>
             <xs:sequence>
-                <xs:element name="calendar" type="xs:string" minOccurs="0"/>
-                <xs:element name="tdOption" type="trs:TdEnum"/>
-                <xs:element name="lpOption" type="trs:LpEnum" minOccurs="0"/>
+                <xs:element name="Calendar" type="xs:string" minOccurs="0"/>
+                <xs:element name="TdOption" type="trs:TdEnum"/>
+                <xs:element name="LpOption" type="trs:LpEnum" minOccurs="0"/>
             </xs:sequence>
             <xs:element name="userVariables">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="string" type="xs:string" maxOccurs="unbounded"/>
+                        <xs:element name="Variable" type="xs:string" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
         </xs:choice>
-        <xs:attribute name="pretest" type="xs:boolean" use="optional"/>
+        <xs:attribute name="Pretest" type="xs:boolean" use="optional"/>
     </xs:complexType>
   
-    <xs:complexType name="easterSpecType">
+    <xs:complexType name="EasterSpecType">
         <xs:sequence>
-            <xs:element name="duration" minOccurs="0">
+            <xs:element name="Duration" minOccurs="0">
                 <xs:simpleType>
                     <xs:list>
                         <xs:simpleType>
@@ -350,24 +350,24 @@ and open the template in the editor.
                 </xs:simpleType>
             </xs:element>
         </xs:sequence>
-        <xs:attribute name="pretest" type="xs:boolean"/>
+        <xs:attribute name="Pretest" type="xs:boolean"/>
     </xs:complexType>
 
-    <xs:complexType name="movingHolidaysSpecType">
+    <xs:complexType name="MovingHolidaysSpecType">
         <xs:annotation>
             <xs:documentation>
                 Moving holidays specification could be extended in the future to take into account other kind of holidays.
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="easter" type="trs:easterSpecType"/>
+            <xs:element name="Easter" type="trs:EasterSpecType"/>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="calendarSpecType">
+    <xs:complexType name="CalendarSpecType">
         <xs:sequence>
-            <xs:element name="tradingDays" type="trs:tradingDaysSpecType" minOccurs="0"/>
-            <xs:element name="movingHolidays" type="trs:movingHolidaysSpecType" minOccurs="0"/>
+            <xs:element name="TradingDays" type="trs:TradingDaysSpecType" minOccurs="0"/>
+            <xs:element name="MovingHolidays" type="trs:MovingHolidaysSpecType" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
