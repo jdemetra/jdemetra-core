@@ -58,6 +58,30 @@ limitations under the Licence.
         </xs:restriction>
     </xs:simpleType>
 
+  <xs:simpleType name="LengthOfPeriodEnum">
+    <xs:annotation>
+      <xs:documentation>
+        Leap year or equivalent
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="LeapYear" />
+      <xs:enumeration value="LengthOfPeriod" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="TradingDaysEnum">
+    <xs:annotation>
+      <xs:documentation>
+        Trading days or equivalent
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="TradingDays" />
+      <xs:enumeration value="WorkingDays" />
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:complexType name="DayType" abstract="true">
       <xs:attribute name="Weight" type="xs:double" use="optional"/>
    </xs:complexType>
