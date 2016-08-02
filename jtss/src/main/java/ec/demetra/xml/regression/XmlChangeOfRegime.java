@@ -44,8 +44,8 @@ public class XmlChangeOfRegime extends XmlTsModifier {
     @XmlJavaTypeAdapter(XmlDayAdapter.class)
     public Day End;
 
-    @ServiceProvider(service = ITsVariableAdapter.class)
-    public static class Adapter implements ITsVariableAdapter<XmlChangeOfRegime, ChangeOfRegime> {
+    @ServiceProvider(service = TsVariableAdapter.class)
+    public static class Adapter extends TsVariableAdapter<XmlChangeOfRegime, ChangeOfRegime> {
 
         @Override
         public Class<ChangeOfRegime> getValueType() {
@@ -57,8 +57,8 @@ public class XmlChangeOfRegime extends XmlTsModifier {
             return XmlChangeOfRegime.class;
         }
 
-        @Override
-        public ChangeOfRegime decode(XmlChangeOfRegime v) throws Exception {
+         @Override
+        public ChangeOfRegime unmarshal(XmlChangeOfRegime v) throws Exception {
             ChangeOfRegimeType type;
             Day day;
             if (v.Start != null) {
@@ -72,8 +72,8 @@ public class XmlChangeOfRegime extends XmlTsModifier {
         }
 
         @Override
-        public XmlChangeOfRegime encode(ChangeOfRegime v) throws Exception {
-            XmlChangeOfRegime xml = new XmlChangeOfRegime();
+        public XmlChangeOfRegime marshal(ChangeOfRegime v) throws Exception {
+           XmlChangeOfRegime xml = new XmlChangeOfRegime();
             if (v.getRegime() == ChangeOfRegimeType.ZeroStarted) {
                 xml.Start = v.getDay();
             } else {

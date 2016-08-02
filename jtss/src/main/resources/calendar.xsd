@@ -29,10 +29,9 @@ limitations under the Licence.
 
     <xs:complexType name="WeightedItem">
         <xs:sequence>
-            <xs:element name="Item" type="xs:string" />
+            <xs:element name="Item" type="xs:IDREF" />
             <xs:element name="Weight" type="xs:double" />
         </xs:sequence>
-        <xs:attribute name="ref" type="xs:IDREF"/>
     </xs:complexType>
 
     <!--Calendars-->
@@ -164,7 +163,7 @@ limitations under the Licence.
     </xs:complexType>
 
     <xs:complexType name="AbstractCalendarType" abstract="true">
-        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="name" type="xs:ID" use="required" />
     </xs:complexType>
 
     <xs:complexType name="NationalCalendarType">
@@ -211,8 +210,8 @@ limitations under the Licence.
         <xs:complexContent>
             <xs:extension base="tss:AbstractCalendarType">
                 <xs:sequence>
-                    <xs:element name="StartCalendar" type="xs:string" />
-                    <xs:element name="EndCalendar" type="xs:string" />
+                    <xs:element name="StartCalendar" type="xs:IDREF" />
+                    <xs:element name="EndCalendar" type="xs:IDREF" />
                     <xs:element name="CalendarBreak" type="xs:date" />
                 </xs:sequence>
             </xs:extension>

@@ -19,6 +19,8 @@ package ec.tss.xml;
 /**
  *
  * @author Jean Palate
+ * @param <X> Xml class
+ * @param <V> Value class
  */
 public interface IXmlAdapter <X, V>{
     X encode(V v) throws Exception ;

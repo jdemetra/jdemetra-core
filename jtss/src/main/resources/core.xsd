@@ -114,24 +114,24 @@ limitations under the Licence.
         </xs:restriction>
     </xs:simpleType>
 
-  <xs:simpleType name="ComponentEnum">
-    <xs:annotation>
-      <xs:documentation>
-      </xs:documentation>
-    </xs:annotation>
-    <xs:restriction base="xs:NMTOKEN">
-      <xs:enumeration value="Undefined"/>
-      <xs:enumeration value="Series"/>
-      <xs:enumeration value="Trend"/>
-      <xs:enumeration value="Cycle"/>
-      <xs:enumeration value="Seasonal"/>
-      <xs:enumeration value="Calendar"/>
-      <xs:enumeration value="Irregular"/>
-      <xs:enumeration value="SeasonallyAdjusted"/>
-    </xs:restriction>
-  </xs:simpleType>
+    <xs:simpleType name="ComponentEnum">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="Undefined"/>
+            <xs:enumeration value="Series"/>
+            <xs:enumeration value="Trend"/>
+            <xs:enumeration value="Cycle"/>
+            <xs:enumeration value="Seasonal"/>
+            <xs:enumeration value="Calendar"/>
+            <xs:enumeration value="Irregular"/>
+            <xs:enumeration value="SeasonallyAdjusted"/>
+        </xs:restriction>
+    </xs:simpleType>
 
-  <xs:complexType name="PropertyType">
+    <xs:complexType name="PropertyType">
         <xs:annotation>
             <xs:documentation>
                 Property represented by a string (value) and identified by a name
@@ -191,35 +191,50 @@ limitations under the Licence.
         <xs:attribute name="type" type="tss:ParameterInfoEnum" use="required"/>
     </xs:complexType>
 
+    <xs:complexType name="IndexedParameterType">
+        <xs:complexContent>
+            <xs:extension base="tss:ParameterType">
+                <xs:attribute name="index" type="xs:integer" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
     <xs:complexType name="ParametersType">
         <xs:annotation>
             <xs:documentation>
-                Array of parameters
+                Array of parameters.
+                When all the coefficients are unspecified, the order can be used
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="Coefficient" type="tss:ParameterType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:choice>
+                <xs:element name="Coefficient" type="tss:IndexedParameterType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="Order" type="xs:unsignedInt"/>
+            </xs:choice>
         </xs:sequence>
     </xs:complexType>
-    
-    <xs:simpleType name="DoublesType">
+
+    <xs:simpleType name="Doubles">
         <xs:list itemType="xs:double"/>
     </xs:simpleType>
 
-    <xs:simpleType name="IntsType">
+    <xs:simpleType name="Ints">
         <xs:list itemType="xs:int"/>
     </xs:simpleType>
 
-    <xs:simpleType name="UnsignedIntsType">
+    <xs:simpleType name="UnsignedInts">
         <xs:list itemType="xs:unsignedInt"/>
     </xs:simpleType>
 
-    <xs:simpleType name="BooleansType">
+    <xs:simpleType name="Booleans">
         <xs:list itemType="xs:boolean"/>
     </xs:simpleType>
-    
-    <xs:simpleType name="TokensType">
-        <xs:list itemType="xs:NMTOKEN"/>
+
+    <xs:simpleType name="Probability">
+        <xs:restriction base="xs:double">
+            <xs:minExclusive value="0"/>
+            <xs:maxExclusive value="1"/>
+        </xs:restriction>
     </xs:simpleType>
 
     <xs:complexType name="MatrixType">
@@ -229,13 +244,13 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="Dimensions" type="tss:UnsignedIntsType"/>
-            <xs:element name="Data" type="tss:DoublesType"/>
+            <xs:element name="Dimensions" type="tss:UnsignedInts"/>
+            <xs:element name="Data" type="tss:Doubles"/>
         </xs:sequence>
     </xs:complexType>
 
     <!--Basic time series complex types-->
-  
+
     <xs:group name="StartPeriod">
         <xs:sequence>
             <xs:element name="Frequency" type="tss:FrequencyEnum" />
@@ -251,14 +266,21 @@ limitations under the Licence.
         </xs:sequence>
     </xs:group>
 
-  <xs:group name="Range">
-    <xs:sequence>
-      <xs:element name="First" type="xs:unsignedInt" minOccurs="0"/>
-      <xs:element name="Last" type="xs:unsignedInt" minOccurs="0"/>
-    </xs:sequence>
-  </xs:group>
+    <xs:group name="Range">
+        <xs:sequence>
+            <xs:element name="From" type="xs:unsignedInt" minOccurs="0"/>
+            <xs:element name="To" type="xs:unsignedInt" minOccurs="0"/>
+        </xs:sequence>
+    </xs:group>
 
-  <xs:complexType name="PeriodSelectionType">
+    <xs:group name="Exclusion">
+        <xs:sequence>
+            <xs:element name="First" type="xs:unsignedInt" minOccurs="0"/>
+            <xs:element name="Last" type="xs:unsignedInt" minOccurs="0"/>
+        </xs:sequence>
+    </xs:group>
+
+    <xs:complexType name="PeriodSelectionType">
         <xs:annotation>
             <xs:documentation>
                 A period selection is a flexible way for selecting a part in a time domain.
@@ -276,11 +298,11 @@ limitations under the Licence.
             <xs:element name="All" />
             <xs:element name="None" />
             <xs:group ref="tss:TimeSpan" id="Span"/>
-          <xs:group ref="tss:Range" id="Range"/>
-          <xs:group ref="tss:Range" id="Excluding"/>
+            <xs:group ref="tss:Range"/>
+            <xs:group ref="tss:Exclusion"/>
         </xs:choice>
     </xs:complexType>
-    
+
     <xs:complexType name="TimePeriodType" abstract="true"/>
     <xs:complexType name="TimeDomainType" abstract="true"/>
     <xs:complexType name="TimeSeriesType" abstract="true"/>
@@ -332,7 +354,7 @@ limitations under the Licence.
             <xs:extension base="tss:TimeSeriesType">
                 <xs:sequence>
                     <xs:group ref="tss:StartPeriod" />
-                    <xs:element name="Values" type="tss:DoublesType"/>
+                    <xs:element name="Values" type="tss:Doubles"/>
                 </xs:sequence>
                 <xs:attribute name="name" type="xs:string" use="optional" />
             </xs:extension>
@@ -369,7 +391,7 @@ limitations under the Licence.
             <xs:element name="Id" type="xs:string" minOccurs="0" />
         </xs:sequence>
     </xs:complexType>
- 
+
     <xs:attributeGroup name="TsIdentifier">
         <xs:attribute name="source" type="xs:string" use="optional" />
         <xs:attribute name="identifier" type="xs:string" use="optional" />
@@ -413,61 +435,61 @@ limitations under the Licence.
         <xs:attributeGroup ref="tss:TsIdentifier" />
     </xs:complexType>
 
-  <xs:complexType name="TsVariableType" abstract="true">
-    <xs:annotation>
-      <xs:documentation>
-      </xs:documentation>
-    </xs:annotation>
-    <xs:attribute name="name" type="xs:ID" use="required"/>
-  </xs:complexType>
+    <xs:complexType name="TsVariableType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="name" type="xs:ID" use="required"/>
+    </xs:complexType>
 
-  <xs:complexType name="StaticTsVariableType">
-    <xs:annotation>
-      <xs:documentation>
-        Default static regression variable. Data must be available.
-        The name of the tsdata sub-item should be considered as a description, while the "name" attribute is the actual name of the variable
-      </xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="tss:TsVariableType">
+    <xs:complexType name="StaticTsVariableType">
+        <xs:annotation>
+            <xs:documentation>
+                Default static regression variable. Data must be available.
+                The name of the tsdata sub-item should be considered as a description, while the "name" attribute is the actual name of the variable
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:TsVariableType">
+                <xs:sequence>
+                    <xs:element name="TsData" type="tss:TsDataType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DynamicTsVariableType">
+        <xs:annotation>
+            <xs:documentation>
+                Default dynamic regression variable. Identifier must be present.
+                The name of the tsdata sub-item should be considered as a description, while the "name" attribute is the actual name of the variable
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:TsVariableType">
+                <xs:sequence>
+                    <xs:element name="Moniker" type="tss:TsMonikerType"/>
+                    <xs:element name="Tsdata" type="tss:TsDataType" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="TsVariablesType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
         <xs:sequence>
-          <xs:element name="TsData" type="tss:TsDataType"/>
+            <xs:element name="Variable" type="tss:TsVariableType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
+    </xs:complexType>
 
-  <xs:complexType name="DynamicTsVariableType">
-    <xs:annotation>
-      <xs:documentation>
-        Default dynamic regression variable. Identifier must be present.
-        The name of the tsdata sub-item should be considered as a description, while the "name" attribute is the actual name of the variable
-      </xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="tss:TsVariableType">
-        <xs:sequence>
-          <xs:element name="Moniker" type="tss:TsMonikerType"/>
-          <xs:element name="Tsdata" type="tss:TsDataType" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="VariablesDictionaryType">
-    <xs:annotation>
-      <xs:documentation>
-      </xs:documentation>
-    </xs:annotation>
-    <xs:sequence>
-      <xs:element name="Variable" type="tss:TsVariableType" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:element name="TsData" type="tss:TsDataType"/>
+    <xs:element name="TsData" type="tss:TsDataType"/>
     <xs:element name="MetaData" type="tss:MetaDataType"/>
     <xs:element name="Ts" type="tss:TsType"/>
     <xs:element name="TsCollection" type="tss:TsCollectionType"/>
-  <xs:element name="VariablesDictionary" type="tss:VariablesDictionaryType"/>
+    <xs:element name="VariablesDictionary" type="tss:TsVariablesType"/>
 
 </xs:schema>

@@ -38,9 +38,23 @@ limitations under the Licence.
             <xs:element name="Name" type="xs:string"/>
             <xs:element name="Family" type="xs:string"/>
         </xs:sequence>
-        <xs:attribute name="version" type="xs:string" use="optional"/>
+        <xs:attribute name="version" type="xs:NMTOKEN" use="optional"/>
     </xs:complexType>
 
+    <xs:complexType name ="ProcessingContextType">
+        <xs:annotation>
+            <xs:documentation>
+
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Variables" type="tss:TsVariablesType"/>
+            <xs:element name="Calendars" type="tss:CalendarsType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="ProcessingContext" type="tss:ProcessingContextType"/>    
+    
     <xs:complexType name="StatisticalTestType">
         <xs:annotation>
             <xs:documentation>
@@ -68,50 +82,6 @@ limitations under the Licence.
         <xs:attribute name="prespecified" type="xs:boolean"/>
     </xs:complexType>
 
-    <!-- Regression variables -->
-
-    <xs:group name="TsVariableGroup">
-        <xs:annotation>
-            <xs:documentation>
-                Ts Variable. Could be a dynamic ts variable or a static ts variable.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:choice>
-            <xs:element name="TsVariable" type="tss:TsVariableType"/>
-            <xs:element name="DynamicTsVariable" type ="tss:DynamicTsVariableType"/>
-        </xs:choice>
-    </xs:group>
-    
-    <xs:complexType name="TsVariablesType">
-        <xs:annotation>
-            <xs:documentation>
-                Collection of ts variables (static or dynamic).
-            </xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:group ref="tss:TsVariableGroup" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="name" type="xs:string"/>
-    </xs:complexType>
-
-    <xs:complexType name="ProcessingContextType">
-        <xs:annotation>
-            <xs:documentation>
-                A context contains information related to auxiliary time series and calendars used in regression models
-            </xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:element name="Calendars" type="tss:CalendarsType" minOccurs="0"/>
-            <xs:element name="Variables">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="group" type="tss:TsVariablesType" minOccurs="0" maxOccurs="unbounded"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
     <!-- Information set -->
 
     <xs:complexType name="InformationType">
@@ -121,22 +91,23 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:choice>
-            <xs:element name="boolean" type="xs:boolean"/>
-            <xs:element name="double" type="xs:double"/>
-            <xs:element name="integer" type="xs:int"/>
-            <xs:element name="string" type="xs:string"/>
-            <xs:element name="integers" type="tss:IntsType"/>
-            <xs:element name="doubles" type="tss:DoublesType"/>
-            <xs:element name="booleans" type="tss:BooleansType"/>
-            <xs:element name="strings" type="tss:TokensType"/>
-            <xs:element name="subset" type="tss:InformationSetType"/>
-            <xs:element name="tsdata" type="tss:TsDataType"/>
-            <xs:element name="ts" type="tss:TsType"/>
-            <xs:element name="tscollection" type="tss:TsCollectionType"/>
-            <xs:element name="regitem" type="tss:RegressionItemType"/>
-            <xs:element name="param" type="tss:ParameterType"/>
-            <xs:element name="params" type="tss:ParametersType"/>
-            <xs:element name="matrix" type="tss:MatrixType"/>
+            <xs:element name="Boolean" type="xs:boolean"/>
+            <xs:element name="Double" type="xs:double"/>
+            <xs:element name="Integer" type="xs:int"/>
+            <xs:element name="String" type="xs:string"/>
+            <xs:element name="Integers" type="tss:Ints"/>
+            <xs:element name="Doubles" type="tss:Doubles"/>
+            <xs:element name="Booleans" type="tss:Booleans"/>
+            <xs:element name="Strings" type="xs:NMTOKENS"/>
+            <xs:element name="Subset" type="tss:InformationSetType"/>
+            <xs:element name="TsData" type="tss:TsDataType"/>
+            <xs:element name="Ts" type="tss:TsType"/>
+            <xs:element name="TsCollection" type="tss:TsCollectionType"/>
+            <xs:element name="RegressionItem" type="tss:RegressionItemType"/>
+            <xs:element name="StatisticalTest" type="tss:StatisticalTestType"/>
+            <xs:element name="Parameter" type="tss:ParameterType"/>
+            <xs:element name="Parameters" type="tss:ParametersType"/>
+            <xs:element name="Matrix" type="tss:MatrixType"/>
         </xs:choice>
         <xs:attribute name="name" type="xs:string" use="required" />
     </xs:complexType>
@@ -154,7 +125,7 @@ limitations under the Licence.
 
     <!-- Batch processing -->
 
-    <xs:simpleType name="linkType">
+    <xs:simpleType name="LinkType">
         <xs:annotation>
             <xs:documentation>
                 Types of link between processing steps. It indicates where
@@ -168,7 +139,7 @@ limitations under the Licence.
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:complexType name="batchLinkType">
+    <xs:complexType name="BatchLinkType">
         <xs:annotation>
             <xs:documentation>
                 Links between different steps of a batch processing
@@ -176,24 +147,24 @@ limitations under the Licence.
         </xs:annotation>
         <xs:sequence>
         </xs:sequence>
-        <xs:attribute name="linktype" type="tss:linkType" use="required"/>
+        <xs:attribute name="linktype" type="tss:LinkType" use="required"/>
         <xs:attribute name="linkid" type="xs:string" use="required"/>
     </xs:complexType>
 
-    <xs:complexType name="batchStepType">
+    <xs:complexType name="BatchStepType">
         <xs:annotation>
             <xs:documentation>
                 Step of a batch processing
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="link" type="tss:batchLinkType"/>
-            <xs:element name="specification" type="tss:InformationSetType"/>
+            <xs:element name="Link" type="tss:BatchLinkType"/>
+            <xs:element name="Specification" type="tss:InformationSetType"/>
         </xs:sequence>
         <xs:attribute name="name" type="xs:string" use="required"/>
     </xs:complexType>
 
-    <xs:complexType name="batchType">
+    <xs:complexType name="BatchType">
         <xs:annotation>
             <xs:documentation>
                 Batch processing
@@ -206,16 +177,16 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="context" type="tss:ProcessingContextType"/>
-            <xs:element name="input" type="tss:InformationSetType" minOccurs="1"/>
-            <xs:element name="step" type="tss:batchStepType" minOccurs="1" maxOccurs="unbounded"/>
-            <xs:element name="filter" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="Context" type="tss:ProcessingContextType"/>
+            <xs:element name="Input" type="tss:InformationSetType" minOccurs="1"/>
+            <xs:element name="Step" type="tss:BatchStepType" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="Filter" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="name" type="xs:string" use="required"/>
     </xs:complexType>
     
     <xs:element name="TsVariables" type="tss:TsVariablesType"/>
     <xs:element name="InformationSet" type="tss:InformationSetType"/>
-    <xs:element name="Batch" type="tss:batchType"/>
+    <xs:element name="Batch" type="tss:BatchType"/>
 
 </xs:schema>

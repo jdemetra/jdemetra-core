@@ -32,8 +32,8 @@ public class XmlAO extends XmlOutlier {
 
     static final String RNAME = "ao", NAME = RNAME + "Type";
 
-    @ServiceProvider(service = ITsVariableAdapter.class)
-    public static class Adapter implements ITsVariableAdapter<XmlAO, AdditiveOutlier> {
+    @ServiceProvider(service = TsVariableAdapter.class)
+    public static class Adapter extends TsVariableAdapter<XmlAO, AdditiveOutlier> {
 
         @Override
         public Class<AdditiveOutlier> getValueType() {
@@ -45,14 +45,14 @@ public class XmlAO extends XmlOutlier {
             return XmlAO.class;
         }
 
-        @Override
-        public AdditiveOutlier decode(XmlAO v) throws Exception {
+         @Override
+        public AdditiveOutlier unmarshal(XmlAO v) throws Exception {
             AdditiveOutlier o = new AdditiveOutlier(v.Position);
             return o;
         }
 
         @Override
-        public XmlAO encode(AdditiveOutlier v) throws Exception {
+        public XmlAO marshal(AdditiveOutlier v) throws Exception {
             XmlAO xml = new XmlAO();
             xml.Position = v.getPosition();
             return xml;

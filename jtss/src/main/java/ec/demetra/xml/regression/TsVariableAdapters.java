@@ -50,10 +50,10 @@ public class TsVariableAdapters {
         return adapters;
     }
 
-    private final List<ITsVariableAdapter> adapters = new ArrayList<>();
+    private final List<TsVariableAdapter> adapters = new ArrayList<>();
 
     public void load() {
-        Lookup.Result<ITsVariableAdapter> all = Lookup.getDefault().lookupResult(ITsVariableAdapter.class);
+        Lookup.Result<TsVariableAdapter> all = Lookup.getDefault().lookupResult(TsVariableAdapter.class);
         adapters.addAll(all.allInstances());
     }
 
@@ -62,10 +62,10 @@ public class TsVariableAdapters {
     }
 
     public ITsVariable decode(XmlVariable xvar) {
-        for (ITsVariableAdapter adapter : adapters) {
+        for (TsVariableAdapter adapter : adapters) {
             if (adapter.getXmlType().isInstance(xvar)) {
                 try {
-                    return (ITsVariable) adapter.decode(xvar);
+                    return (ITsVariable) adapter.unmarshal(xvar);
                 } catch (Exception ex) {
                     return null;
                 }
@@ -75,10 +75,10 @@ public class TsVariableAdapters {
     }
 
     public XmlVariable encode(ITsVariable ivar) {
-        for (ITsVariableAdapter adapter : adapters) {
+        for (TsVariableAdapter adapter : adapters) {
             if (adapter.getValueType().isInstance(ivar)) {
                 try {
-                    return (XmlVariable) adapter.encode(ivar);
+                    return (XmlVariable) adapter.marshal(ivar);
                 } catch (Exception ex) {
                     return null;
                 }

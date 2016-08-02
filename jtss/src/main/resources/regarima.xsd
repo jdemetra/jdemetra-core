@@ -12,15 +12,34 @@ and open the template in the editor.
            xmlns:regarima="ec/eurostat/jdemetra/modelling/regarima"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified">
-    
+
     <xs:import schemaLocation="core.xsd" namespace="ec/eurostat/jdemetra/core"/>
+    <xs:import schemaLocation="arima.xsd" namespace="ec/eurostat/jdemetra/modelling"/>
     <xs:import schemaLocation="modelling.xsd" namespace="ec/eurostat/jdemetra/modelling"/>
 
-<xs:complexType name="RegArimaModelType">
-    <xs:annotation>
-        <xs:documentation>
-        </xs:documentation>
-    </xs:annotation>
-</xs:complexType>
+    <xs:complexType name="RegArimaModelType">
+        <xs:annotation>
+            <xs:documentation>
+                Usual RegArima model, where the arima model is a usual Box-Jenkins seasonal model.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Transformations" type="modelling:SeriesTransformationsType" minOccurs="0"/>
+            <xs:element name="Regression" type="modelling:RegressionType" minOccurs="0"/>
+            <xs:element name ="Arima" type="modelling:SARIMA_ModelType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GenericRegArimaModelType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Transformations" type="modelling:SeriesTransformationsType" minOccurs="0"/>
+            <xs:element name="Regression" type="modelling:RegressionType" minOccurs="0"/>
+            <xs:element name ="Arima" type="modelling:ARIMA_ModelType"/>
+        </xs:sequence>
+    </xs:complexType>
 
 </xs:schema>

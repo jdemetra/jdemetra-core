@@ -35,8 +35,8 @@ public class XmlSO extends XmlOutlier {
     @XmlAttribute
     public boolean zeroEnded=true;
     
-    @ServiceProvider(service = ITsVariableAdapter.class)
-    public static class Adapter implements ITsVariableAdapter<XmlSO, SeasonalOutlier> {
+    @ServiceProvider(service = TsVariableAdapter.class)
+    public static class Adapter extends TsVariableAdapter<XmlSO, SeasonalOutlier> {
 
         @Override
         public Class<SeasonalOutlier> getValueType() {
@@ -49,14 +49,14 @@ public class XmlSO extends XmlOutlier {
         }
 
         @Override
-        public SeasonalOutlier decode(XmlSO v) throws Exception {
+        public SeasonalOutlier unmarshal(XmlSO v) throws Exception {
             SeasonalOutlier o = new SeasonalOutlier(v.Position);
             o.setZeroEnded(v.zeroEnded);
             return o;
         }
 
         @Override
-        public XmlSO encode(SeasonalOutlier v) throws Exception {
+        public XmlSO marshal(SeasonalOutlier v) throws Exception {
             XmlSO xml = new XmlSO();
             xml.Position = v.getPosition();
             xml.zeroEnded=v.isZeroEnded();

@@ -47,8 +47,8 @@ public class XmlRamp extends XmlVariable implements IXmlConverter<Ramp>{
     public XmlRamp() {
     }
 
-    @ServiceProvider(service = ITsVariableAdapter.class)
-    public static class Adapter implements ITsVariableAdapter<XmlRamp, Ramp> {
+    @ServiceProvider(service = TsVariableAdapter.class)
+    public static class Adapter extends TsVariableAdapter<XmlRamp, Ramp> {
 
         @Override
         public Class<Ramp> getValueType() {
@@ -61,13 +61,13 @@ public class XmlRamp extends XmlVariable implements IXmlConverter<Ramp>{
         }
 
         @Override
-        public Ramp decode(XmlRamp v) throws Exception {
+        public Ramp unmarshal(XmlRamp v) throws Exception {
             Ramp o = new Ramp(v.Start, v.End);
             return o;
         }
 
         @Override
-        public XmlRamp encode(Ramp v) throws Exception {
+        public XmlRamp marshal(Ramp v) throws Exception {
             XmlRamp xml = new XmlRamp();
             xml.Start = v.getStart();
             xml.End = v.getEnd();

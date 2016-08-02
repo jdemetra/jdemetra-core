@@ -17,7 +17,6 @@ limitations under the Licence.
 -->
 
 
-
 <xs:schema version="0.1.0"
            targetNamespace="ec/eurostat/jdemetra/core"
            xmlns:tss="ec/eurostat/jdemetra/core"
@@ -28,52 +27,6 @@ limitations under the Licence.
     <xs:include schemaLocation="core.xsd"/>
     <xs:include schemaLocation="calendar.xsd"/>
 
-
-  <xs:complexType name="TransformationType" abstract="true">
-    <xs:annotation>
-      <xs:documentation>
-        Base type for the transformation of a time series
-      </xs:documentation>
-    </xs:annotation>
-  </xs:complexType>
-
-  <xs:complexType name ="LogTransformationType">
-    <xs:annotation>
-      <xs:documentation>
-        Log transformation
-      </xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="tss:TransformationType">
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name ="LengthOfPeriodAdjustmentType">
-    <xs:annotation>
-      <xs:documentation>
-        Pre-adjustment for length of period / leap year effect
-      </xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="tss:TransformationType">
-          <xs:attribute name="Type" type="tss:LengthOfPeriodEnum" use="optional" default="LeapYear"/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name ="BoxCoxTransformationType">
-    <xs:annotation>
-      <xs:documentation>
-        Box-Cox transformation
-      </xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="tss:TransformationType">
-        <xs:attribute name="Lambda" type="xs:double" use="required"/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
 
   <xs:complexType name="RegressionVariableModifierType" abstract="true">
     <xs:annotation>
@@ -178,13 +131,16 @@ limitations under the Licence.
     <!-- ****************** -->
     
     <!-- Trading days -->
-    
-    
-    <xs:complexType name="DefaulTradingdaysType">
+
+
+    <xs:complexType name="DefaulTradingDaysType">
         <xs:complexContent>
             <xs:extension base="tss:ModifiableRegressionVariableType">
-                <xs:attribute name="td" type="tss:TradingDaysEnum" use="optional"/>
-                <xs:attribute name="lp" type="tss:LengthOfPeriodEnum" use="optional"/> 
+                <xs:sequence>
+                    <xs:element name="TradingDays" type="tss:TradingDaysEnum" minOccurs="0"/>
+                    <xs:element name="LengthOfPeriod" type="tss:LengthOfPeriodEnum" minOccurs="0"/>
+                    <xs:element name="Calendar" type="xs:IDREF" minOccurs="0"/>
+                </xs:sequence>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -193,7 +149,8 @@ limitations under the Licence.
         <xs:complexContent>
             <xs:extension base="tss:ModifiableRegressionVariableType">
                 <xs:sequence>
-                    <xs:element name="DayClustering" type="tss:UnsignedIntsType"/>
+                    <xs:element name="DayClustering" type="tss:UnsignedInts"/>
+                    <xs:element name="Calendar" type="xs:IDREF" minOccurs="0"/>
                 </xs:sequence>
                 <xs:attribute name="contrasts" type="xs:boolean" use="optional"/> 
             </xs:extension>

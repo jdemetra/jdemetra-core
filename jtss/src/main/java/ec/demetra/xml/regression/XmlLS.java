@@ -35,8 +35,8 @@ public class XmlLS extends XmlOutlier {
     @XmlAttribute
     public boolean zeroEnded=true;
     
-    @ServiceProvider(service = ITsVariableAdapter.class)
-    public static class Adapter implements ITsVariableAdapter<XmlLS, LevelShift> {
+    @ServiceProvider(service = TsVariableAdapter.class)
+    public static class Adapter extends TsVariableAdapter<XmlLS, LevelShift> {
 
         @Override
         public Class<LevelShift> getValueType() {
@@ -49,14 +49,14 @@ public class XmlLS extends XmlOutlier {
         }
 
         @Override
-        public LevelShift decode(XmlLS v) throws Exception {
+        public LevelShift unmarshal(XmlLS v) throws Exception {
             LevelShift o = new LevelShift(v.Position);
             o.setZeroEnded(v.zeroEnded);
             return o;
         }
 
         @Override
-        public XmlLS encode(LevelShift v) throws Exception {
+        public XmlLS marshal(LevelShift v) throws Exception {
             XmlLS xml = new XmlLS();
             xml.Position = v.getPosition();
             xml.zeroEnded=v.isZeroEnded();

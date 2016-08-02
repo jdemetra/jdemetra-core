@@ -39,8 +39,8 @@ public class XmlTC extends XmlOutlier {
     @XmlAttribute
     public boolean monthlyFactor = false;
 
-    @ServiceProvider(service = ITsVariableAdapter.class)
-    public static class Adapter implements ITsVariableAdapter<XmlTC, TransitoryChange> {
+    @ServiceProvider(service = TsVariableAdapter.class)
+    public static class Adapter extends TsVariableAdapter<XmlTC, TransitoryChange> {
 
         @Override
         public Class<TransitoryChange> getValueType() {
@@ -53,13 +53,13 @@ public class XmlTC extends XmlOutlier {
         }
 
         @Override
-        public TransitoryChange decode(XmlTC v) throws Exception {
+        public TransitoryChange unmarshal(XmlTC v) throws Exception {
             TransitoryChange o = new TransitoryChange(v.Position, v.factor, v.monthlyFactor);
             return o;
         }
 
         @Override
-        public XmlTC encode(TransitoryChange v) throws Exception {
+        public XmlTC marshal(TransitoryChange v) throws Exception {
             XmlTC xml = new XmlTC();
             xml.Position = v.getPosition();
             xml.factor = v.getCoefficient();

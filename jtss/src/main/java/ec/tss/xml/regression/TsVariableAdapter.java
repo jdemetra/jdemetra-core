@@ -16,8 +16,8 @@
  */
 package ec.tss.xml.regression;
 
-import ec.tss.xml.IXmlAdapter;
 import ec.tstoolkit.timeseries.regression.ITsVariable;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  *
@@ -25,7 +25,7 @@ import ec.tstoolkit.timeseries.regression.ITsVariable;
  * @param <V>
  * @param <X>
  */
-public interface ITsVariableAdapter<X extends XmlVariable, V extends ITsVariable> extends IXmlAdapter<X, V>{
+public abstract class TsVariableAdapter<X extends XmlVariable, V extends ITsVariable> extends XmlAdapter<X, V>{
     public abstract Class<V> getValueType();
     public abstract Class<X> getXmlType();
 }
