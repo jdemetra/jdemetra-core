@@ -1,17 +1,17 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.tss.sa;
@@ -26,7 +26,10 @@ import ec.tss.TsMoniker;
 import ec.tss.TsStatus;
 import ec.tss.sa.documents.SaDocument;
 import ec.tstoolkit.MetaData;
-import ec.tstoolkit.algorithm.*;
+import ec.tstoolkit.algorithm.AlgorithmDescriptor;
+import ec.tstoolkit.algorithm.CompositeResults;
+import ec.tstoolkit.algorithm.ProcDiagnostic;
+import ec.tstoolkit.algorithm.ProcQuality;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.information.InformationSetHelper;
 import ec.tstoolkit.information.ProxyResults;
@@ -131,21 +134,12 @@ public class SaItem {
             nitem.estimation_ = EstimationPolicyType.Complete;
         }
         nitem.priority_ = priority_;
+        nitem.metaData_ = metaData_;
         return nitem;
     }
 
     public SaItem newSpecification(ISaSpecification espec, EstimationPolicyType policy) {
-        SaItem nitem = new SaItem();
-        nitem.dspec_ = dspec_;
-        nitem.ts_ = ts_;
-        if (espec != null) {
-            nitem.espec_ = espec;
-            nitem.estimation_ = policy;
-        } else {
-            nitem.estimation_ = EstimationPolicyType.Complete;
-        }
-        nitem.priority_ = priority_;
-        return nitem;
+        return newSpecification(ts_, espec, policy);
     }
 
     @Override
@@ -252,19 +246,6 @@ public class SaItem {
         }
     }
 
-//        public void SetContext(TSContext context)
-//        {
-//            lock (m_id)
-//            {
-//
-//                if (dspec_ != null)
-//                    dspec_.Context = context;
-//                if (espec_ != null)
-//                    espec_.Context = context;
-//                if (pspec_ != null)
-//                    pspec_.Context = context;
-//            }
-//        }
     public ISaSpecification getEstimationSpecification() {
         return espec_ != null ? espec_ : dspec_;
     }
@@ -405,6 +386,8 @@ public class SaItem {
     public boolean fillDocument(SaDocument<?> doc) {
         if (!MetaData.isNullOrEmpty(metaData_)) {
             doc.getMetaData().copy(metaData_);
+        } else {
+            doc.getMetaData().clear();
         }
         return doc.unsafeFill(getTs(), getEstimationSpecification(), process());
     }
@@ -416,6 +399,8 @@ public class SaItem {
         if (doc.unsafeFill(getTs(), xspec, process())) {
             if (!MetaData.isNullOrEmpty(metaData_)) {
                 doc.getMetaData().copy(metaData_);
+            } else {
+                doc.getMetaData().clear();
             }
             return doc;
         } else {
