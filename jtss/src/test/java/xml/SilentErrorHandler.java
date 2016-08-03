@@ -14,21 +14,31 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.demetra.xml.regression;
+package xml;
 
-import ec.tss.xml.XmlDayAdapter;
-import ec.tstoolkit.timeseries.Day;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  *
  * @author Jean Palate
  */
-public abstract class XmlOutlier extends XmlRegressionVariable {
+public class SilentErrorHandler implements ErrorHandler {
 
-    @XmlElement
-    @XmlJavaTypeAdapter(XmlDayAdapter.class)
-    public Day Position;
+    @Override
+    public void warning(SAXParseException exception) throws SAXException {
+    }
 
+    @Override
+    public void error(SAXParseException exception) throws SAXException {
+    }
+
+    @Override
+    public void fatalError(SAXParseException exception) throws SAXException {
+        System.out.println("\nFATAL ERROR");
+        System.out.println(exception.getMessage());
+        System.out.println(exception.getLineNumber());
+        System.out.println();
+    }
 }

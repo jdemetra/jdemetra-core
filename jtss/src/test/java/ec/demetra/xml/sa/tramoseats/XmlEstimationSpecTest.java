@@ -14,13 +14,12 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.demetra.xml.core;
+package ec.demetra.xml.sa.tramoseats;
 
-import data.Data;
-import ec.tss.TsCollection;
-import ec.tss.TsFactory;
-import ec.tstoolkit.MetaData;
-import ec.tstoolkit.maths.matrices.Matrix;
+import ec.tstoolkit.modelling.arima.tramo.EstimateSpec;
+import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
+import ec.tstoolkit.modelling.arima.tramo.TransformSpec;
+import ec.tstoolkit.timeseries.TsPeriodSelector;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -33,7 +32,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.util.JAXBSource;
-import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -45,60 +43,60 @@ import xml.Schemas;
  *
  * @author Jean Palate
  */
-public class XmlTsCollectionTest {
+public class XmlEstimationSpecTest {
     
-    private static final String FILE="c:\\localdata\\tscollection.xml";
+    private static final String FILE = "c:\\localdata\\trs_estimationspec.xml";
 
-    public XmlTsCollectionTest() {
+    public XmlEstimationSpecTest() {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void testMarshal() throws FileNotFoundException, JAXBException, IOException {
 
-        JAXBContext jaxb = JAXBContext.newInstance(XmlTsCollection.class);
-        XmlTsCollection xcoll = new XmlTsCollection();
-        TsCollection collection=TsFactory.instance.createTsCollection("test");
-        MetaData md=new MetaData();
-        md.put("test", "10");
-        collection.set(md);
-        collection.add(TsFactory.instance.createTs("p", null, Data.P));
-        collection.add(TsFactory.instance.createTs("x", null, Data.X));
-        xcoll.copyTsCollection(collection);
+        TramoSpecification spec = TramoSpecification.TRfull;
+        EstimateSpec espec = spec.getEstimate().clone();
+        espec.setUbp(1);
+        TsPeriodSelector sel=new TsPeriodSelector();
+        sel.last(120);
+        espec.setSpan(sel);
+        XmlEstimationSpec xspec = new XmlEstimationSpec();
+        xspec.copy(espec);
+        JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
         FileOutputStream ostream = new FileOutputStream(FILE);
         try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(xcoll, writer);
+            marshaller.marshal(xspec, writer);
             writer.flush();
         }
 
-        XmlTsCollection rslt = null;
+        XmlEstimationSpec rslt = null;
         FileInputStream istream = new FileInputStream(FILE);
         try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-            rslt = (XmlTsCollection) unmarshaller.unmarshal(reader);
-            TsCollection ncoll = rslt.createTsCollection();
-            assertTrue(ncoll.getCount()==collection.getCount());
+            rslt = (XmlEstimationSpec) unmarshaller.unmarshal(reader);
+
+            assertTrue(rslt.create().equals(espec));
         }
     }
 
     @Test
     public void testValidation() throws FileNotFoundException, JAXBException, IOException, SAXException {
 
-        JAXBContext jaxb = JAXBContext.newInstance(XmlTsCollection.class);
-        XmlTsCollection xcoll = new XmlTsCollection();
-        TsCollection collection=TsFactory.instance.createTsCollection("test");
-        MetaData md=new MetaData();
-        md.put("test", "10");
-        collection.set(md);
-        collection.add(TsFactory.instance.createTs("p", null, Data.P));
-        collection.add(TsFactory.instance.createTs("x", null, Data.X));
-        xcoll.copyTsCollection(collection);
-        JAXBSource source = new JAXBSource(jaxb, xcoll);
-        Validator validator = Schemas.Core.newValidator();
+        TramoSpecification spec = TramoSpecification.TRfull;
+        EstimateSpec espec = spec.getEstimate().clone();
+        espec.setUbp(1);
+        TsPeriodSelector sel=new TsPeriodSelector();
+        sel.last(120);
+        espec.setSpan(sel);
+        XmlEstimationSpec xspec = new XmlEstimationSpec();
+        xspec.copy(espec);
+        JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
+        JAXBSource source = new JAXBSource(jaxb, xspec);
+        Validator validator = Schemas.TramoSeats.newValidator();
         //validator.setErrorHandler(new TestErrorHandler());
         validator.validate(source);
     }
-    
+
 }

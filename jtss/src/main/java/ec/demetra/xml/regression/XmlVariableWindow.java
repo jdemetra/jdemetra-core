@@ -31,7 +31,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @XmlRootElement(name = XmlVariableWindow.NAME)
 @XmlType(name = XmlVariableWindow.NAME)
-public class XmlVariableWindow extends XmlTsModifier{
+public class XmlVariableWindow extends XmlRegressionVariableModifier{
     
     static final String RNAME = "VariableWindow", NAME = RNAME + "Type";
 
@@ -43,8 +43,8 @@ public class XmlVariableWindow extends XmlTsModifier{
     @XmlJavaTypeAdapter(XmlDayAdapter.class)
     public Day End;
 
-    @ServiceProvider(service = TsVariableAdapter.class)
-    public static class Adapter extends TsVariableAdapter<XmlVariableWindow, TsVariableWindow> {
+    @ServiceProvider(service = TsModifierAdapter.class)
+    public static class Adapter extends TsModifierAdapter<XmlVariableWindow, TsVariableWindow> {
 
         @Override
         public Class<TsVariableWindow> getValueType() {
@@ -58,7 +58,7 @@ public class XmlVariableWindow extends XmlTsModifier{
 
         @Override
         public TsVariableWindow unmarshal(XmlVariableWindow v) throws Exception {
-            TsVariableWindow o = new TsVariableWindow(TsVariableAdapters.getDefault().decode(v.Core), v.Start, v.End);
+            TsVariableWindow o = new TsVariableWindow(null, v.Start, v.End);
             return o;
         }
 
@@ -67,7 +67,6 @@ public class XmlVariableWindow extends XmlTsModifier{
             XmlVariableWindow xml = new XmlVariableWindow();
             xml.Start = v.getStart();
             xml.End=v.getEnd();
-            xml.Core=TsVariableAdapters.getDefault().encode(v.getVariable());
             return xml;
         }
     }

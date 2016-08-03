@@ -6,16 +6,14 @@ and open the template in the editor.
 -->
 
 <xs:schema version="0.1.0"
-           targetNamespace="ec/eurostat/jdemetra/modelling/regarima"
+           targetNamespace="ec/eurostat/jdemetra/core"
            xmlns:tss="ec/eurostat/jdemetra/core"
-           xmlns:modelling="ec/eurostat/jdemetra/modelling"
-           xmlns:regarima="ec/eurostat/jdemetra/modelling/regarima"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified">
 
-    <xs:import schemaLocation="core.xsd" namespace="ec/eurostat/jdemetra/core"/>
-    <xs:import schemaLocation="arima.xsd" namespace="ec/eurostat/jdemetra/modelling"/>
-    <xs:import schemaLocation="modelling.xsd" namespace="ec/eurostat/jdemetra/modelling"/>
+    <xs:include schemaLocation="core.xsd"/>
+    <xs:include schemaLocation="arima.xsd"/>
+    <xs:include schemaLocation="regression.xsd"/>
 
     <xs:complexType name="RegArimaModelType">
         <xs:annotation>
@@ -24,9 +22,9 @@ and open the template in the editor.
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="Transformations" type="modelling:SeriesTransformationsType" minOccurs="0"/>
-            <xs:element name="Regression" type="modelling:RegressionType" minOccurs="0"/>
-            <xs:element name ="Arima" type="modelling:SARIMA_ModelType"/>
+            <xs:element name="Transformations" type="tss:SeriesTransformationsType" minOccurs="0"/>
+            <xs:element name="Regression" type="tss:RegressionType" minOccurs="0"/>
+            <xs:element name ="Arima" type="tss:SARIMA_ModelType"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -36,9 +34,9 @@ and open the template in the editor.
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="Transformations" type="modelling:SeriesTransformationsType" minOccurs="0"/>
-            <xs:element name="Regression" type="modelling:RegressionType" minOccurs="0"/>
-            <xs:element name ="Arima" type="modelling:ARIMA_ModelType"/>
+            <xs:element name="Transformations" type="tss:SeriesTransformationsType" minOccurs="0"/>
+            <xs:element name="Regression" type="tss:RegressionType" minOccurs="0"/>
+            <xs:element name ="Arima" type="tss:ARIMA_ModelType"/>
         </xs:sequence>
     </xs:complexType>
 

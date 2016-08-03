@@ -11,20 +11,17 @@ and open the template in the editor.
            xmlns:sa="ec/eurostat/jdemetra/sa"
            xmlns:x13="ec/eurostat/jdemetra/sa/x13"
            xmlns:modelling="ec/eurostat/jdemetra/modelling"
-           xmlns:regarima="ec/eurostat/jdemetra/modelling/regarima"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified">
 
-    <xs:import schemaLocation="core.xsd" namespace="ec/eurostat/jdemetra/core"/>
-    <xs:import schemaLocation="regarima.xsd" namespace="ec/eurostat/jdemetra/modelling/regarima"/>
     <xs:import schemaLocation="processing.xsd" namespace="ec/eurostat/jdemetra/core"/>
+    <xs:import schemaLocation="regarima.xsd" namespace="ec/eurostat/jdemetra/core"/>
     <xs:import schemaLocation="sacore.xsd" namespace="ec/eurostat/jdemetra/sa"/>
     <xs:import schemaLocation="modelling.xsd" namespace="ec/eurostat/jdemetra/modelling"/>
-    <xs:import schemaLocation="regarima.xsd" namespace="ec/eurostat/jdemetra/modelling/regarima"/>
 
 
     <!--Enums-->
-    
+
     <xs:simpleType name="OutliersDetectionMethodEnum">
         <xs:annotation>
             <xs:documentation>
@@ -83,7 +80,7 @@ and open the template in the editor.
         <xs:choice>
             <xs:element name="Log"/>
             <xs:element name="Auto" type ="x13:AutoTransformationSpecType"/>
-         </xs:choice>
+        </xs:choice>
     </xs:group>
 
     <xs:complexType name="TransformationSpecType">
@@ -144,7 +141,6 @@ and open the template in the editor.
         <xs:complexContent>
             <xs:extension base="modelling:RegressionSpecType">
                 <xs:sequence>
-                    <xs:element name="Variables" type="modelling:RegressionType"/>
                     <xs:group ref="x13:RegressionTestGroup" id="Test" maxOccurs="unbounded"/>
                 </xs:sequence>
             </xs:extension>
@@ -418,8 +414,8 @@ and open the template in the editor.
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    
-<!--X11-->
+
+    <!--X11-->
 
     <xs:complexType name="X11SpecType">
         <xs:annotation>

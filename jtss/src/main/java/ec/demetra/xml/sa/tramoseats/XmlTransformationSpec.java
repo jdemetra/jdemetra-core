@@ -21,11 +21,8 @@ import ec.tss.xml.XmlEmptyElement;
 import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.modelling.arima.tramo.TransformSpec;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  *
@@ -44,7 +41,7 @@ public class XmlTransformationSpec implements IXmlConverter<TransformSpec> {
     @XmlElement
     public XmlEmptyElement Log;
 
-    @XmlElement
+    @XmlElement(name="Auto")
     public XmlAuto Auto;
 
     static final String RNAME = "TransformationSpec", NAME = RNAME + "Type";

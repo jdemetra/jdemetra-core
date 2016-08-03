@@ -277,6 +277,65 @@ limitations under the Licence.
         </xs:complexContent>
     </xs:complexType>
 
+    <xs:complexType name="SeriesTransformationType" abstract="true"/>
+
+    <xs:complexType name="LogTransformationType">
+        <xs:complexContent>
+            <xs:extension base="tss:SeriesTransformationType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="BoxCoxTransformationType">
+        <xs:complexContent>
+            <xs:extension base="tss:SeriesTransformationType">
+                <xs:sequence>
+                    <xs:element name="Lambda" type="xs:double"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="LengthOfPeriodAdjustmentType">
+        <xs:complexContent>
+            <xs:extension base="tss:SeriesTransformationType">
+                <xs:attribute name="correction" type="tss:LengthOfPeriodEnum" use="optional" default="LeapYear"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SeriesTransformationsType">
+        <xs:sequence>
+            <xs:element name="Transformation" type="tss:SeriesTransformationType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="RegressionItemType">
+        <xs:annotation>
+            <xs:documentation>
+                Regression variable with its coefficient(s). The number of coefficients should correspond to the regression variable
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Variable" type="tss:RegressionVariableType"/>
+            <xs:choice minOccurs="0">
+                <xs:element name="Coefficient" type="tss:ParameterType"/>
+                <xs:element name="Coefficients" type="tss:ParametersType"/>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:NMTOKEN" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="RegressionType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Item" type="tss:RegressionItemType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="Regression" type="tss:RegressionType"/>
 
 </xs:schema>
 

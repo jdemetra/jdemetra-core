@@ -16,7 +16,8 @@
  */
 package ec.demetra.xml.regression;
 
-import ec.tstoolkit.timeseries.regression.AdditiveOutlier;
+import ec.tstoolkit.timeseries.regression.LevelShift;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import org.openide.util.lookup.ServiceProvider;
@@ -25,36 +26,40 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Jean Palate
  */
-@XmlRootElement(name = XmlAO.RNAME)
-@XmlType(name = XmlAO.NAME)
+@XmlRootElement(name = XmlLevelShift.RNAME)
+@XmlType(name = XmlLevelShift.NAME)
+public class XmlLevelShift extends XmlOutlier {
 
-public class XmlAO extends XmlOutlier {
+    static final String RNAME = "LevelShift", NAME = RNAME + "Type";
 
-    static final String RNAME = "ao", NAME = RNAME + "Type";
-
+    @XmlAttribute
+    public boolean zeroEnded=true;
+    
     @ServiceProvider(service = TsVariableAdapter.class)
-    public static class Adapter extends TsVariableAdapter<XmlAO, AdditiveOutlier> {
+    public static class Adapter extends TsVariableAdapter<XmlLevelShift, LevelShift> {
 
         @Override
-        public Class<AdditiveOutlier> getValueType() {
-            return AdditiveOutlier.class;
+        public Class<LevelShift> getValueType() {
+            return LevelShift.class;
         }
 
         @Override
-        public Class<XmlAO> getXmlType() {
-            return XmlAO.class;
+        public Class<XmlLevelShift> getXmlType() {
+            return XmlLevelShift.class;
         }
 
-         @Override
-        public AdditiveOutlier unmarshal(XmlAO v) throws Exception {
-            AdditiveOutlier o = new AdditiveOutlier(v.Position);
+        @Override
+        public LevelShift unmarshal(XmlLevelShift v) throws Exception {
+            LevelShift o = new LevelShift(v.Position);
+            o.setZeroEnded(v.zeroEnded);
             return o;
         }
 
         @Override
-        public XmlAO marshal(AdditiveOutlier v) throws Exception {
-            XmlAO xml = new XmlAO();
+        public XmlLevelShift marshal(LevelShift v) throws Exception {
+            XmlLevelShift xml = new XmlLevelShift();
             xml.Position = v.getPosition();
+            xml.zeroEnded=v.isZeroEnded();
             return xml;
         }
 

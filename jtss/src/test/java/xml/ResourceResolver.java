@@ -14,21 +14,27 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.demetra.xml.regression;
+package xml;
 
-import ec.tss.xml.XmlDayAdapter;
-import ec.tstoolkit.timeseries.Day;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import ec.demetra.xml.core.XmlTsData;
+import java.io.InputStream;
+import org.w3c.dom.ls.LSInput;
+import org.w3c.dom.ls.LSResourceResolver;
 
 /**
  *
  * @author Jean Palate
  */
-public abstract class XmlOutlier extends XmlRegressionVariable {
+public class ResourceResolver  implements LSResourceResolver {
 
-    @XmlElement
-    @XmlJavaTypeAdapter(XmlDayAdapter.class)
-    public Day Position;
+@Override
+public LSInput resolveResource(String type, String namespaceURI,
+        String publicId, String systemId, String baseURI) {
 
+     // note: in this sample, the XSD's are expected to be in the root of the classpath
+    InputStream resourceAsStream = XmlTsData.class.getClassLoader()
+            .getResourceAsStream(systemId);
+    return new Input(publicId, systemId, resourceAsStream);
 }
+
+ }

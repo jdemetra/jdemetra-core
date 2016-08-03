@@ -29,7 +29,7 @@ import java.util.List;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class LaggedTsVariable implements ITsModifier {
+public class LaggedTsVariable extends AbstractTsModifier {
     // / <summary>
     // / firstlag less then lastlag !!!
     // / positive lags mean past, negative lags mean future !!!
@@ -39,8 +39,7 @@ public class LaggedTsVariable implements ITsModifier {
     // / <param name="lastlag">Last lag</param>
 
     private final int m_firstlag, m_lastlag;
-    private ITsVariable var;
-
+ 
     /**
      * 
      * @param var
@@ -48,10 +47,10 @@ public class LaggedTsVariable implements ITsModifier {
      * @param lastlag
      */
     public LaggedTsVariable(ITsVariable var, int firstlag, int lastlag) {
+        super(var);
         if (lastlag < firstlag) {
             throw new TsException("Invalid lags");
         }
-        this.var = var;
         m_firstlag = firstlag;
         m_lastlag = lastlag;
     }

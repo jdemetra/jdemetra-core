@@ -68,7 +68,7 @@ limitations under the Licence.
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="RegressionItemType">
+    <xs:complexType name="RegressionEstimateType">
         <xs:annotation>
             <xs:documentation>
                 Result of a regression
@@ -103,7 +103,7 @@ limitations under the Licence.
             <xs:element name="TsData" type="tss:TsDataType"/>
             <xs:element name="Ts" type="tss:TsType"/>
             <xs:element name="TsCollection" type="tss:TsCollectionType"/>
-            <xs:element name="RegressionItem" type="tss:RegressionItemType"/>
+            <xs:element name="RegressionEstimate" type="tss:RegressionEstimateType"/>
             <xs:element name="StatisticalTest" type="tss:StatisticalTestType"/>
             <xs:element name="Parameter" type="tss:ParameterType"/>
             <xs:element name="Parameters" type="tss:ParametersType"/>

@@ -49,45 +49,16 @@ public class XmlVariablesTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void testMarshal() throws FileNotFoundException, JAXBException, IOException {
 
-        JAXBContext jaxb = JAXBContext.newInstance(XmlVariables.class, XmlGenericTradingDays.class, XmlOutlier.class);
-
-        XmlAO xout = new XmlAO();
-        xout.Position = Day.toDay();
-
-        XmlGenericTradingDays xtd = new XmlGenericTradingDays();
-
-        XmlVariables xvar = new XmlVariables();
-        xvar.vars.add(xout);
-        xvar.vars.add(xtd);
-
-        FileOutputStream ostream = new FileOutputStream(FILE);
-        try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
-            Marshaller marshaller = jaxb.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(xvar, writer);
-            writer.flush();
-        }
-
-        XmlVariables rslt = null;
-        FileInputStream istream = new FileInputStream(FILE);
-        try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
-            Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-            rslt = (XmlVariables) unmarshaller.unmarshal(reader);
-        }
-    }
-
-    @Test
-    //@Ignore
-    public void testMarshalAuto() throws FileNotFoundException, JAXBException, IOException {
-
         List<Class> xmlClasses = TsVariableAdapters.getDefault().getXmlClasses();
+        List<Class> xmlClasses2 = TsModifierAdapters.getDefault().getXmlClasses();
+        xmlClasses.addAll(xmlClasses2);
         xmlClasses.add(XmlVariables.class);
         JAXBContext jaxb = JAXBContext.newInstance(xmlClasses.toArray(new Class[xmlClasses.size()]));
 
-        XmlAO xout = new XmlAO();
+        XmlAdditiveOutlier xout = new XmlAdditiveOutlier();
         xout.Position = Day.toDay();
 
         XmlGenericTradingDays xtd = new XmlGenericTradingDays();
@@ -97,16 +68,14 @@ public class XmlVariablesTest {
         xvar.vars.add(xout);
         xvar.vars.add(xtd);
         XmlVariableWindow xwnd=new XmlVariableWindow();
-        xwnd.Core=xtd;
         xwnd.Start=new TsPeriod(TsFrequency.Yearly, 2000, 0).firstday();
         xwnd.End=new TsPeriod(TsFrequency.Yearly, 2010, 0).lastday();
         XmlChangeOfRegime xcr=new XmlChangeOfRegime();
         xcr.Start=new TsPeriod(TsFrequency.Yearly, 2005, 0).firstday();
-        xcr.Core=xwnd;
-        xvar.vars.add(xwnd);
-        xvar.vars.add(xcr);
+        xtd.modifiers.add(xwnd);
+        xtd.modifiers.add(xcr);
         
-        FileOutputStream ostream = new FileOutputStream("c:\\localdata\\test.xml");
+        FileOutputStream ostream = new FileOutputStream(FILE);
         try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);

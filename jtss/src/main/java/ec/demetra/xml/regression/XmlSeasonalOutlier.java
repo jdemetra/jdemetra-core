@@ -16,7 +16,7 @@
  */
 package ec.demetra.xml.regression;
 
-import ec.tstoolkit.timeseries.regression.LevelShift;
+import ec.tstoolkit.timeseries.regression.SeasonalOutlier;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -26,38 +26,38 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Jean Palate
  */
-@XmlRootElement(name = XmlLS.RNAME)
-@XmlType(name = XmlLS.NAME)
-public class XmlLS extends XmlOutlier {
+@XmlRootElement(name = XmlSeasonalOutlier.RNAME)
+@XmlType(name = XmlSeasonalOutlier.NAME)
+public class XmlSeasonalOutlier extends XmlOutlier {
 
-    static final String RNAME = "ls", NAME = RNAME + "Type";
+    static final String RNAME = "SeasonalOutlier", NAME = RNAME + "Type";
 
     @XmlAttribute
     public boolean zeroEnded=true;
     
     @ServiceProvider(service = TsVariableAdapter.class)
-    public static class Adapter extends TsVariableAdapter<XmlLS, LevelShift> {
+    public static class Adapter extends TsVariableAdapter<XmlSeasonalOutlier, SeasonalOutlier> {
 
         @Override
-        public Class<LevelShift> getValueType() {
-            return LevelShift.class;
+        public Class<SeasonalOutlier> getValueType() {
+            return SeasonalOutlier.class;
         }
 
         @Override
-        public Class<XmlLS> getXmlType() {
-            return XmlLS.class;
+        public Class<XmlSeasonalOutlier> getXmlType() {
+            return XmlSeasonalOutlier.class;
         }
 
         @Override
-        public LevelShift unmarshal(XmlLS v) throws Exception {
-            LevelShift o = new LevelShift(v.Position);
+        public SeasonalOutlier unmarshal(XmlSeasonalOutlier v) throws Exception {
+            SeasonalOutlier o = new SeasonalOutlier(v.Position);
             o.setZeroEnded(v.zeroEnded);
             return o;
         }
 
         @Override
-        public XmlLS marshal(LevelShift v) throws Exception {
-            XmlLS xml = new XmlLS();
+        public XmlSeasonalOutlier marshal(SeasonalOutlier v) throws Exception {
+            XmlSeasonalOutlier xml = new XmlSeasonalOutlier();
             xml.Position = v.getPosition();
             xml.zeroEnded=v.isZeroEnded();
             return xml;

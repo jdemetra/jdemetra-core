@@ -16,16 +16,31 @@
  */
 package ec.demetra.xml.regression;
 
+import ec.tstoolkit.modelling.ComponentType;
+import ec.tstoolkit.timeseries.regression.ITsModifier;
 import ec.tstoolkit.timeseries.regression.ITsVariable;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import java.util.List;
+import javax.xml.bind.annotation.XmlAttribute;
 
 /**
  *
  * @author Jean Palate
- * @param <V>
- * @param <X>
  */
-public abstract class TsVariableAdapter<X extends XmlRegressionVariable, V extends ITsVariable> extends XmlAdapter<X, V>{
-    public abstract Class<V> getValueType();
-    public abstract Class<X> getXmlType();
+public abstract class XmlRegressionVariable {
+
+    public static XmlRegressionVariable toXml(ITsVariable var){
+        if (var instanceof ITsModifier){
+            return XmlModifiableRegressionVariable.toXml((ITsModifier)var);
+        }else{
+            return TsVariableAdapters.getDefault().encode(var);
+        }
+    }
+    
+    public static List<Class> xmlClasses(){
+        List<Class> xmlclvar = TsVariableAdapters.getDefault().getXmlClasses();
+        List<Class> xmlclmod = TsModifierAdapters.getDefault().getXmlClasses();
+        xmlclvar.addAll(xmlclmod);
+        return xmlclvar;
+        
+    }
 }

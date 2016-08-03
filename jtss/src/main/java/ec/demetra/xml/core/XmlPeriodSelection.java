@@ -54,12 +54,12 @@ public class XmlPeriodSelection implements IXmlConverter<TsPeriodSelector> {
             int last = Excluding.Last == null ? 0 : Excluding.Last;
             tssel.excluding(first, last);
         } else if (Range != null) {
-            int first = Excluding.First == null ? -1 : Range.First;
-            int last = Excluding.Last == null ? -1 : Range.Last;
-            if (first > 0) {
+            int first = Range.First == null ? -1 : Range.First;
+            int last = Range.Last == null ? -1 : Range.Last;
+            if (first >= 0) {
                 tssel.first(first);
             } else if (last >= 0) {
-                tssel.last(first);
+                tssel.last(last);
             }
             // else not supported
         } else if (Span != null) {

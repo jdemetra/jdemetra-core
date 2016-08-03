@@ -26,40 +26,39 @@ import java.util.List;
  *
  * @author Jean Palate
  */
-public class DecoratedTsVariable implements ITsModifier {
+public class DecoratedTsVariable extends AbstractTsModifier {
     
     private final String name;
-    private final ITsVariable variable;
 
     public DecoratedTsVariable(final ITsVariable var, final String name) {
-        variable = var;
+        super(var);
         this.name = name;
     }
     
     @Override
     public ITsVariable getVariable() {
-        return variable;
+        return var;
     }
     
     @Override
     @Deprecated
     public void data(TsDomain domain, List<DataBlock> data, int start) {
-        variable.data(domain, data, start);
+        var.data(domain, data, start);
     }
     
     @Override
     public void data(TsDomain domain, List<DataBlock> data) {
-        variable.data(domain, data);
+        var.data(domain, data);
     }
 
     @Override
     public TsDomain getDefinitionDomain() {
-        return variable.getDefinitionDomain();
+        return var.getDefinitionDomain();
     }
     
     @Override
     public TsFrequency getDefinitionFrequency() {
-        return variable.getDefinitionFrequency();
+        return var.getDefinitionFrequency();
     }
     
     @Override
@@ -69,12 +68,12 @@ public class DecoratedTsVariable implements ITsModifier {
     
     @Override
     public int getDim() {
-        return variable.getDim();
+        return var.getDim();
     }
     
     @Override
     public String getItemDescription(int idx, TsFrequency context) {
-        if (variable.getDim() == 1) {
+        if (var.getDim() == 1) {
             return name;
         }
         StringBuilder builder = new StringBuilder();
@@ -84,6 +83,6 @@ public class DecoratedTsVariable implements ITsModifier {
     
     @Override
     public boolean isSignificant(TsDomain domain) {
-        return variable.isSignificant(domain);
+        return var.isSignificant(domain);
     }
 }

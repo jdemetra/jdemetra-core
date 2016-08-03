@@ -32,7 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @XmlRootElement(name = XmlChangeOfRegime.NAME)
 @XmlType(name = XmlChangeOfRegime.NAME)
-public class XmlChangeOfRegime extends XmlTsModifier {
+public class XmlChangeOfRegime extends XmlRegressionVariableModifier {
 
     static final String RNAME = "ChangeOfRegime", NAME = RNAME + "Type";
 
@@ -44,8 +44,8 @@ public class XmlChangeOfRegime extends XmlTsModifier {
     @XmlJavaTypeAdapter(XmlDayAdapter.class)
     public Day End;
 
-    @ServiceProvider(service = TsVariableAdapter.class)
-    public static class Adapter extends TsVariableAdapter<XmlChangeOfRegime, ChangeOfRegime> {
+    @ServiceProvider(service = TsModifierAdapter.class)
+    public static class Adapter extends TsModifierAdapter<XmlChangeOfRegime, ChangeOfRegime> {
 
         @Override
         public Class<ChangeOfRegime> getValueType() {
@@ -68,7 +68,7 @@ public class XmlChangeOfRegime extends XmlTsModifier {
                 type = ChangeOfRegimeType.ZeroEnded;
                 day = v.End;
             }
-            return new ChangeOfRegime(TsVariableAdapters.getDefault().decode(v.Core), type, day);
+            return new ChangeOfRegime(null, type, day);
         }
 
         @Override
@@ -79,7 +79,6 @@ public class XmlChangeOfRegime extends XmlTsModifier {
             } else {
                 xml.End = v.getDay();
             }
-            xml.Core = TsVariableAdapters.getDefault().encode(v.getVariable());
             return xml;
         }
     }

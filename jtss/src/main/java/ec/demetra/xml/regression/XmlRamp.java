@@ -32,7 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @XmlRootElement(name = XmlRamp.RNAME)
 @XmlType(name = XmlRamp.NAME)
-public class XmlRamp extends XmlVariable implements IXmlConverter<Ramp>{
+public class XmlRamp extends XmlRegressionVariable implements IXmlConverter<Ramp>{
 
     static final String RNAME = "ramp", NAME = RNAME + "Type";
 

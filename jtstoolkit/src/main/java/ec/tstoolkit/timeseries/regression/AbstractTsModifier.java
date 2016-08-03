@@ -14,21 +14,31 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.demetra.xml.regression;
+package ec.tstoolkit.timeseries.regression;
 
-import ec.tss.xml.XmlDayAdapter;
-import ec.tstoolkit.timeseries.Day;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import ec.tstoolkit.timeseries.TsException;
 
 /**
  *
  * @author Jean Palate
  */
-public abstract class XmlOutlier extends XmlRegressionVariable {
-
-    @XmlElement
-    @XmlJavaTypeAdapter(XmlDayAdapter.class)
-    public Day Position;
-
+public abstract class AbstractTsModifier implements ITsModifier{
+    
+    protected ITsVariable var;
+    
+    protected AbstractTsModifier(ITsVariable var){
+        this.var=var;
+    }
+    
+    @Override
+    public void setVariable(ITsVariable var){
+        if (this.dependsOn(var))
+            throw new TsException("Cycle in modifiers");
+        this.var=var;
+    }
+    
+    @Override
+    public ITsVariable getVariable(){
+        return var;
+    }
 }

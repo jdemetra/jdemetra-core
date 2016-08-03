@@ -16,19 +16,28 @@
  */
 package ec.demetra.xml.regression;
 
-import ec.tss.xml.XmlDayAdapter;
-import ec.tstoolkit.timeseries.Day;
+import ec.demetra.xml.core.XmlParameter;
+import ec.demetra.xml.core.XmlParameters;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  *
  * @author Jean Palate
  */
-public abstract class XmlOutlier extends XmlRegressionVariable {
+@XmlRootElement(name = XmlRegressionItem.RNAME)
+@XmlType(name = XmlRegressionItem.NAME)
+public class XmlRegressionItem {
 
-    @XmlElement
-    @XmlJavaTypeAdapter(XmlDayAdapter.class)
-    public Day Position;
-
+    static final String RNAME = "RegressionItem", NAME = RNAME + "Type";
+    
+    @XmlElement(name="Variable")
+    public XmlRegressionVariable variable;
+    
+    @XmlElement(name="Coefficient")
+    public XmlParameter scoeff;
+    
+    @XmlElement(name="Coefficients")
+    public XmlParameters mcoeff;
 }

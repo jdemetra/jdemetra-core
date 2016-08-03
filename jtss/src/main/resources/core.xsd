@@ -245,7 +245,7 @@ limitations under the Licence.
         </xs:annotation>
         <xs:sequence>
             <xs:element name="Dimensions" type="tss:UnsignedInts"/>
-            <xs:element name="Data" type="tss:Doubles"/>
+            <xs:element name="Values" type="tss:Doubles"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -486,6 +486,7 @@ limitations under the Licence.
         </xs:sequence>
     </xs:complexType>
 
+    <xs:element name="Matrix" type="tss:MatrixType"/>
     <xs:element name="TsData" type="tss:TsDataType"/>
     <xs:element name="MetaData" type="tss:MetaDataType"/>
     <xs:element name="Ts" type="tss:TsType"/>

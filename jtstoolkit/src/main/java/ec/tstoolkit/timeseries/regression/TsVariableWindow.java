@@ -30,10 +30,9 @@ import java.util.List;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-public class TsVariableWindow implements ITsModifier {
+public class TsVariableWindow extends AbstractTsModifier {
 
     private final Day start, end;
-    private final ITsVariable var;
 
     /**
      *
@@ -42,7 +41,7 @@ public class TsVariableWindow implements ITsModifier {
      * @param end
      */
     public TsVariableWindow(final ITsVariable var, final Day start, final Day end) {
-        this.var = var;
+        super(var);
         this.start = start;
         this.end = end;
     }

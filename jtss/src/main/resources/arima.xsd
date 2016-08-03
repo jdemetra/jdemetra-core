@@ -2,13 +2,12 @@
 
 <xs:schema version="0.1.0"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="ec/eurostat/jdemetra/modelling"
+           targetNamespace="ec/eurostat/jdemetra/core"
            xmlns:tss="ec/eurostat/jdemetra/core"
-           xmlns:modelling="ec/eurostat/jdemetra/modelling"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
 
-    <xs:import schemaLocation="core.xsd" namespace="ec/eurostat/jdemetra/core"/>
+    <xs:include schemaLocation="core.xsd"/>
 
 
     <xs:complexType name="ARIMA_ModelType" abstract="true">
@@ -28,7 +27,7 @@
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="modelling:ARIMA_ModelType">
+            <xs:extension base="tss:ARIMA_ModelType">
                 <xs:sequence>
                     <xs:element name="AR" type="tss:ParametersType" minOccurs="0"/>
                     <xs:element name="D" type="tss:ParametersType" minOccurs="0"/>
@@ -94,7 +93,7 @@
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="modelling:ARIMA_ModelType">
+            <xs:extension base="tss:ARIMA_ModelType">
                 <xs:sequence>
                     <xs:element name="AR" type="tss:ParametersType" minOccurs="0"/>
                     <xs:element name="D" type="xs:unsignedInt" minOccurs="0"/>
@@ -116,13 +115,13 @@
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="Sum" type="modelling:ARIMA_ModelType" minOccurs="0"/>
-            <xs:element name="Component" type="modelling:ARIMA_ModelType" maxOccurs="unbounded"/>
+            <xs:element name="Sum" type="tss:ARIMA_ModelType" minOccurs="0"/>
+            <xs:element name="Component" type="tss:ARIMA_ModelType" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:element name="Arima" type="modelling:Default_ARIMA_ModelType"/>
-    <xs:element name="Sarima" type="modelling:SARIMA_ModelType"/>
-    <xs:element name="Ucarima" type="modelling:UCARIMA_ModelType"/>
+    <xs:element name="Arima" type="tss:Default_ARIMA_ModelType"/>
+    <xs:element name="Sarima" type="tss:SARIMA_ModelType"/>
+    <xs:element name="Ucarima" type="tss:UCARIMA_ModelType"/>
 
 </xs:schema>

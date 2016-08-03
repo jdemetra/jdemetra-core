@@ -33,12 +33,11 @@ import java.util.List;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-public class ChangeOfRegime implements ITsModifier {
+public class ChangeOfRegime extends AbstractTsModifier {
 
     private final ChangeOfRegimeType regime;
     private final Day day;
-    private final ITsVariable var;
-
+ 
     /**
      * Creates a new "change of regime" variable
      * @param var The modified variable
@@ -47,7 +46,7 @@ public class ChangeOfRegime implements ITsModifier {
      */
     public ChangeOfRegime(final ITsVariable var,
             final ChangeOfRegimeType regime, final Day day) {
-        this.var = var;
+        super(var);
         this.regime = regime;
         this.day = day;
     }

@@ -36,15 +36,19 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.util.JAXBSource;
 import javax.xml.transform.Source;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
+import xml.Schemas;
+import xml.TestErrorHandler;
 
 /**
  *
@@ -53,25 +57,12 @@ import org.xml.sax.SAXException;
 public class XmlTransformationSpecTest {
 
     private static final String FILE = "c:\\localdata\\trs_transformationspec.xml";
-    private static final Schema schema;
-
-    static {
-        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema core = null;
-        try {
-            URL resource = XmlTransformationSpec.class.getResource("/modelling.xsd");
-            core = factory.newSchema(resource);
-        } catch (SAXException ex) {
-            Logger.getLogger(XmlTransformationSpecTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        schema = core;
-    }
 
     public XmlTransformationSpecTest() {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void testMarshal() throws FileNotFoundException, JAXBException, IOException {
 
         TramoSpecification spec = TramoSpecification.TRfull;
@@ -95,6 +86,20 @@ public class XmlTransformationSpecTest {
 
             assertTrue(rslt.create().equals(tspec));
         }
+    }
+
+    @Test
+    public void testValidation() throws FileNotFoundException, JAXBException, IOException, SAXException {
+
+        TramoSpecification spec = TramoSpecification.TRfull;
+        TransformSpec tspec = spec.getTransform().clone();
+        XmlTransformationSpec xspec = new XmlTransformationSpec();
+        xspec.copy(tspec);
+        JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
+        JAXBSource source = new JAXBSource(jaxb, xspec);
+        Validator validator = Schemas.TramoSeats.newValidator();
+        //validator.setErrorHandler(new TestErrorHandler());
+        validator.validate(source);
     }
 
 }

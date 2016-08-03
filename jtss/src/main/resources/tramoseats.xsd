@@ -15,13 +15,11 @@ and open the template in the editor.
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified">
 
-    <xs:import schemaLocation="core.xsd" namespace="ec/eurostat/jdemetra/core"/>
-    <xs:import schemaLocation="regarima.xsd" namespace="ec/eurostat/jdemetra/modelling/regarima"/>
+    <xs:import schemaLocation="regarima.xsd" namespace="ec/eurostat/jdemetra/core"/>
     <xs:import schemaLocation="processing.xsd" namespace="ec/eurostat/jdemetra/core"/>
     <xs:import schemaLocation="sacore.xsd" namespace="ec/eurostat/jdemetra/sa"/>
     <xs:import schemaLocation="modelling.xsd" namespace="ec/eurostat/jdemetra/modelling"/>
-    <xs:import schemaLocation="regarima.xsd" namespace="ec/eurostat/jdemetra/modelling/regarima"/>
-
+ 
     <!--Transformation-->
     
     <xs:complexType name="AutoTransformationSpecType">
@@ -80,14 +78,14 @@ and open the template in the editor.
         <xs:complexContent>
             <xs:extension base="modelling:EstimationSpecType">
                 <xs:sequence>
-                    <xs:element name="EML" type="xs:boolean">
+                    <xs:element name="EML" type="xs:boolean" minOccurs="0" default="true">
                         <xs:annotation>
                             <xs:documentation>
                                 Corresponds to the "TYPE" parameter. O for eml=true, 1 for eml=false.
                             </xs:documentation>
                         </xs:annotation>
                     </xs:element>
-                    <xs:element name="UBP">
+                    <xs:element name="UBP" minOccurs="0" default="0.96">
                         <xs:annotation>
                             <xs:documentation>
                                 Corresponds to the UBP parameter.
@@ -96,7 +94,7 @@ and open the template in the editor.
                         <xs:simpleType>
                             <xs:restriction base="xs:double">
                                 <xs:minExclusive value="0.5" />
-                                <xs:maxExclusive value="1.0" />
+                                <xs:maxInclusive value="1.0" />
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
@@ -110,9 +108,6 @@ and open the template in the editor.
     <xs:complexType name="RegressionSpecType">
         <xs:complexContent>
             <xs:extension base="modelling:RegressionSpecType">
-                <xs:sequence>
-                    <xs:element name="Variables" type="modelling:RegressionType"/>
-                </xs:sequence>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -565,6 +560,9 @@ and open the template in the editor.
         </xs:sequence>
     </xs:complexType>
 
+    <xs:element name="TransformationSpec" type="trs:TransformationSpecType"/>
+    <xs:element name="EstimationSpec" type="trs:EstimationSpecType"/>
+    <xs:element name="RegressionSpec" type="trs:RegressionSpecType"/>
     <xs:element name="TramoSeatsSpecification" type="trs:TramoSeatsSpecificationType"/>
     <xs:element name="TramoSeatsRequest" type="trs:TramoSeatsRequestType"/>
     <xs:element name="TramoSeatsRequests" type="trs:TramoSeatsRequestsType"/>

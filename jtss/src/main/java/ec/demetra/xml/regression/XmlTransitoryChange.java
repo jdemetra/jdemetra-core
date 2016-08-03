@@ -16,7 +16,7 @@
  */
 package ec.demetra.xml.regression;
 
-import ec.tstoolkit.timeseries.regression.SeasonalOutlier;
+import ec.tstoolkit.timeseries.regression.TransitoryChange;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -26,40 +26,44 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Jean Palate
  */
-@XmlRootElement(name = XmlSO.RNAME)
-@XmlType(name = XmlSO.NAME)
-public class XmlSO extends XmlOutlier {
+@XmlRootElement(name = XmlTransitoryChange.NAME)
+@XmlType(name = XmlTransitoryChange.NAME)
 
-    static final String RNAME = "so", NAME = RNAME + "Type";
+public class XmlTransitoryChange extends XmlOutlier {
+
+    static final String RNAME = "TransitoryChange", NAME = RNAME + "Type";
 
     @XmlAttribute
-    public boolean zeroEnded=true;
-    
+    public double factor = 0.7;
+
+    @XmlAttribute
+    public boolean monthlyFactor = false;
+
     @ServiceProvider(service = TsVariableAdapter.class)
-    public static class Adapter extends TsVariableAdapter<XmlSO, SeasonalOutlier> {
+    public static class Adapter extends TsVariableAdapter<XmlTransitoryChange, TransitoryChange> {
 
         @Override
-        public Class<SeasonalOutlier> getValueType() {
-            return SeasonalOutlier.class;
+        public Class<TransitoryChange> getValueType() {
+            return TransitoryChange.class;
         }
 
         @Override
-        public Class<XmlSO> getXmlType() {
-            return XmlSO.class;
+        public Class<XmlTransitoryChange> getXmlType() {
+            return XmlTransitoryChange.class;
         }
 
         @Override
-        public SeasonalOutlier unmarshal(XmlSO v) throws Exception {
-            SeasonalOutlier o = new SeasonalOutlier(v.Position);
-            o.setZeroEnded(v.zeroEnded);
+        public TransitoryChange unmarshal(XmlTransitoryChange v) throws Exception {
+            TransitoryChange o = new TransitoryChange(v.Position, v.factor, v.monthlyFactor);
             return o;
         }
 
         @Override
-        public XmlSO marshal(SeasonalOutlier v) throws Exception {
-            XmlSO xml = new XmlSO();
+        public XmlTransitoryChange marshal(TransitoryChange v) throws Exception {
+            XmlTransitoryChange xml = new XmlTransitoryChange();
             xml.Position = v.getPosition();
-            xml.zeroEnded=v.isZeroEnded();
+            xml.factor = v.getCoefficient();
+            xml.monthlyFactor = v.isMonthlyCoefficient();
             return xml;
         }
 

@@ -17,8 +17,7 @@
 package ec.demetra.xml.regression;
 
 import ec.tstoolkit.design.GlobalServiceProvider;
-import ec.tstoolkit.timeseries.regression.ITsVariable;
-import java.lang.ref.Reference;
+import ec.tstoolkit.timeseries.regression.ITsModifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -30,30 +29,30 @@ import org.openide.util.Lookup;
  * @author Jean Palate
  */
 @GlobalServiceProvider
-public class TsVariableAdapters {
+public class TsModifierAdapters {
 
-    private static final AtomicReference<TsVariableAdapters> defadapters= new AtomicReference<>();
+    private static final AtomicReference<TsModifierAdapters> defadapters= new AtomicReference<>();
 
 
-    public static final TsVariableAdapters getDefault() {
+    public static final TsModifierAdapters getDefault() {
         defadapters.compareAndSet(null, make());
         return defadapters.get();
     }
 
-    public static final void setDefault(TsVariableAdapters adapters) {
+    public static final void setDefault(TsModifierAdapters adapters) {
         defadapters.set(adapters);
     }
     
-    private static TsVariableAdapters make(){
-        TsVariableAdapters adapters=new TsVariableAdapters();
+    private static TsModifierAdapters make(){
+        TsModifierAdapters adapters=new TsModifierAdapters();
         adapters.load();
         return adapters;
     }
 
-    private final List<TsVariableAdapter> adapters = new ArrayList<>();
+    private final List<TsModifierAdapter> adapters = new ArrayList<>();
 
     public void load() {
-        Lookup.Result<TsVariableAdapter> all = Lookup.getDefault().lookupResult(TsVariableAdapter.class);
+        Lookup.Result<TsModifierAdapter> all = Lookup.getDefault().lookupResult(TsModifierAdapter.class);
         adapters.addAll(all.allInstances());
     }
 
@@ -61,11 +60,11 @@ public class TsVariableAdapters {
         return adapters.stream().map(adapter -> adapter.getXmlType()).collect(Collectors.toList());
     }
 
-    public ITsVariable decode(XmlRegressionVariable xvar) {
-        for (TsVariableAdapter adapter : adapters) {
+    public ITsModifier decode(XmlRegressionVariableModifier xvar) {
+        for (TsModifierAdapter adapter : adapters) {
             if (adapter.getXmlType().isInstance(xvar)) {
                 try {
-                    return (ITsVariable) adapter.unmarshal(xvar);
+                    return (ITsModifier) adapter.unmarshal(xvar);
                 } catch (Exception ex) {
                     return null;
                 }
@@ -74,11 +73,11 @@ public class TsVariableAdapters {
         return null;
     }
 
-    public XmlRegressionVariable encode(ITsVariable ivar) {
-        for (TsVariableAdapter adapter : adapters) {
+    public XmlRegressionVariableModifier encode(ITsModifier ivar) {
+        for (TsModifierAdapter adapter : adapters) {
             if (adapter.getValueType().isInstance(ivar)) {
                 try {
-                    return (XmlRegressionVariable) adapter.marshal(ivar);
+                    return (XmlRegressionVariableModifier) adapter.marshal(ivar);
                 } catch (Exception ex) {
                     return null;
                 }

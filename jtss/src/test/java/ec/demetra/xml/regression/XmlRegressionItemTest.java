@@ -16,19 +16,20 @@
  */
 package ec.demetra.xml.regression;
 
-import ec.tss.xml.XmlDayAdapter;
-import ec.tstoolkit.timeseries.Day;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author Jean Palate
  */
-public abstract class XmlOutlier extends XmlRegressionVariable {
+public class XmlRegressionItemTest {
+    
+    public XmlRegressionItemTest() {
+    }
 
-    @XmlElement
-    @XmlJavaTypeAdapter(XmlDayAdapter.class)
-    public Day Position;
-
+    @Test
+    public void testSomeMethod() {
+    }
+    
 }

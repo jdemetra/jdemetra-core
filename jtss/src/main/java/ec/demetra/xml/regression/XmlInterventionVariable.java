@@ -30,7 +30,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @XmlRootElement(name = XmlInterventionVariable.RNAME)
 @XmlType(name = XmlInterventionVariable.NAME)
-public class XmlInterventionVariable extends XmlVariable implements IXmlConverter<InterventionVariable> {
+public class XmlInterventionVariable extends XmlRegressionVariable implements IXmlConverter<InterventionVariable> {
 
     static final String RNAME = "intervention", NAME = RNAME + "Type";
 

@@ -12,7 +12,6 @@ and open the template in the editor.
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified">
     
-    <xs:import schemaLocation="core.xsd" namespace="ec/eurostat/jdemetra/core"/>
     <xs:import schemaLocation="regression.xsd" namespace="ec/eurostat/jdemetra/core"/>
 
     <xs:complexType name="TransformationSpecType" abstract="true">
@@ -59,9 +58,12 @@ and open the template in the editor.
     <xs:complexType name="RegressionSpecType" abstract="true">
         <xs:annotation>
             <xs:documentation>
-                Tests on regression variables
+                Regression variables
             </xs:documentation>
         </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Variables" type="tss:RegressionType"/>
+        </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="EstimationSpecType" abstract="true">
@@ -78,7 +80,7 @@ and open the template in the editor.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="Precision" type="xs:double"/>
+            <xs:element name="Precision" type="xs:double" minOccurs="0" default="0.0000001"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -105,64 +107,6 @@ and open the template in the editor.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="SeriesTransformationType" abstract="true"/>
-     
-    <xs:complexType name="LogTransformationType">
-        <xs:complexContent>
-            <xs:extension base="modelling:SeriesTransformationType"/>
-        </xs:complexContent>
-    </xs:complexType>
-
-    <xs:complexType name="BoxCoxTransformationType">
-        <xs:complexContent>
-            <xs:extension base="modelling:SeriesTransformationType">
-                <xs:sequence>
-                    <xs:element name="Lambda" type="xs:double"/>
-                </xs:sequence>
-            </xs:extension>
-        </xs:complexContent>
-    </xs:complexType>
-      
-    <xs:complexType name="LengthOfPeriodAdjustmentType">
-        <xs:complexContent>
-            <xs:extension base="modelling:SeriesTransformationType">
-                <xs:attribute name="correction" type="tss:LengthOfPeriodEnum" use="optional" default="LeapYear"/>
-            </xs:extension>
-        </xs:complexContent>
-    </xs:complexType>
-      
-    <xs:complexType name="SeriesTransformationsType">
-        <xs:sequence>
-            <xs:element name="Transformation" type="modelling:SeriesTransformationType" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="RegressionItemType">
-        <xs:annotation>
-            <xs:documentation>
-                Regression variable with its coefficient(s). The number of coefficients should correspond to the regression variable 
-            </xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:element name="Variable" type="tss:RegressionVariableType"/>
-            <xs:choice>
-                <xs:element name="Coefficient" type="tss:ParameterType" minOccurs="0"/>
-                <xs:element name="Coefficients" type="tss:ParametersType" minOccurs="0"/>
-            </xs:choice>
-        </xs:sequence>
-        <xs:attribute name="name" type="xs:NMTOKEN" use="optional"/>
-    </xs:complexType>
-
-    <xs:complexType name="RegressionType">
-        <xs:annotation>
-            <xs:documentation>
-            </xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:element name="Item" type="modelling:RegressionItemType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
