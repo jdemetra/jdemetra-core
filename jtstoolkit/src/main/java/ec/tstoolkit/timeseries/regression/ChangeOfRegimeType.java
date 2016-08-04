@@ -22,7 +22,9 @@ import ec.tstoolkit.design.Development;
 /**
  *
  * @author Jean Palate
+ * @deprecated Since 2.2.0 Use TsVariableWindow
  */
+@Deprecated
 @Development(status = Development.Status.Release)
 public enum ChangeOfRegimeType {
     /**

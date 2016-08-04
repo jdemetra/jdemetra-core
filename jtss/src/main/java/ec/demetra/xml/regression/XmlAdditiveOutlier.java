@@ -16,8 +16,7 @@
  */
 package ec.demetra.xml.regression;
 
-import ec.tstoolkit.timeseries.regression.TransitoryChange;
-import javax.xml.bind.annotation.XmlAttribute;
+import ec.tstoolkit.timeseries.regression.AdditiveOutlier;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import org.openide.util.lookup.ServiceProvider;
@@ -26,44 +25,36 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Jean Palate
  */
-@XmlRootElement(name = XmlTC.NAME)
-@XmlType(name = XmlTC.NAME)
+@XmlRootElement(name = XmlAdditiveOutlier.RNAME)
+@XmlType(name = XmlAdditiveOutlier.NAME)
 
-public class XmlTC extends XmlOutlier {
+public class XmlAdditiveOutlier extends XmlOutlier {
 
-    static final String RNAME = "tc", NAME = RNAME + "Type";
+    static final String RNAME = "AdditiveOutlier", NAME = RNAME + "Type";
 
-    @XmlAttribute
-    public double factor = 0.7;
-
-    @XmlAttribute
-    public boolean monthlyFactor = false;
-
-    @ServiceProvider(service = ITsVariableAdapter.class)
-    public static class Adapter implements ITsVariableAdapter<XmlTC, TransitoryChange> {
+    @ServiceProvider(service = TsVariableAdapter.class)
+    public static class Adapter extends TsVariableAdapter<XmlAdditiveOutlier, AdditiveOutlier> {
 
         @Override
-        public Class<TransitoryChange> getValueType() {
-            return TransitoryChange.class;
+        public Class<AdditiveOutlier> getValueType() {
+            return AdditiveOutlier.class;
         }
 
         @Override
-        public Class<XmlTC> getXmlType() {
-            return XmlTC.class;
+        public Class<XmlAdditiveOutlier> getXmlType() {
+            return XmlAdditiveOutlier.class;
         }
 
-        @Override
-        public TransitoryChange decode(XmlTC v) throws Exception {
-            TransitoryChange o = new TransitoryChange(v.Position, v.factor, v.monthlyFactor);
+         @Override
+        public AdditiveOutlier unmarshal(XmlAdditiveOutlier v) throws Exception {
+            AdditiveOutlier o = new AdditiveOutlier(v.Position);
             return o;
         }
 
         @Override
-        public XmlTC encode(TransitoryChange v) throws Exception {
-            XmlTC xml = new XmlTC();
+        public XmlAdditiveOutlier marshal(AdditiveOutlier v) throws Exception {
+            XmlAdditiveOutlier xml = new XmlAdditiveOutlier();
             xml.Position = v.getPosition();
-            xml.factor = v.getCoefficient();
-            xml.monthlyFactor = v.isMonthlyCoefficient();
             return xml;
         }
 

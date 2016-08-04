@@ -19,18 +19,19 @@ package ec.tss.xml.legacy;
 
 import ec.tss.DynamicTsVariable;
 import ec.tss.xml.IXmlConverter;
-import ec.tss.xml.IXmlMapper;
-import ec.tss.xml.XmlConverterMapper;
+import ec.tss.xml.XmlConverterAdapter;
 import ec.tss.xml.XmlNamedObject;
 import ec.tstoolkit.timeseries.regression.ITsVariable;
 import ec.tstoolkit.timeseries.regression.TsVariable;
 import ec.tstoolkit.timeseries.regression.TsVariables;
 import ec.tstoolkit.utilities.Arrays2;
 import java.util.HashMap;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  *
@@ -42,22 +43,22 @@ public class XmlTsVariables implements IXmlConverter<TsVariables> {
 
     static final String NAME = "tsVariablesType";
     static final String RNAME = "tsVariables";
-    static final HashMap<Class<? extends XmlNamedObject>, IXmlMapper<? extends ITsVariable, ? extends XmlNamedObject>> fromXmlMap = new HashMap<>();
-    static final HashMap<Class<? extends ITsVariable>, IXmlMapper<? extends ITsVariable, ? extends XmlNamedObject>> toXmlMap = new HashMap<>();
+    static final HashMap<Class<? extends XmlNamedObject>, XmlAdapter<? extends XmlNamedObject, ? extends ITsVariable>> fromXmlMap = new HashMap<>();
+    static final HashMap<Class<? extends ITsVariable>, XmlAdapter<? extends XmlNamedObject, ? extends ITsVariable>> toXmlMap = new HashMap<>();
 
     static <S extends ITsVariable, X extends XmlNamedObject & IXmlConverter<S>> void register(Class<S> sclass, Class<X> xclass) {
-        XmlConverterMapper<S, X> mapper = new XmlConverterMapper<>(xclass);
+        XmlConverterAdapter<X, S> mapper = new XmlConverterAdapter<>(xclass);
         fromXmlMap.put(xclass, mapper);
         toXmlMap.put(sclass, mapper);
     }
 
     static {
-        register(TsVariable.class, XmlTsVariable.class);
-        register(DynamicTsVariable.class, XmlDynamicTsVariable.class);
+        register(TsVariable.class, ec.tss.xml.regression.XmlTsVariable.class);
+        register(DynamicTsVariable.class, ec.tss.xml.regression.XmlDynamicTsVariable.class);
     }
     @XmlElements({
-        @XmlElement(name = "staticTSVariable", type = XmlTsVariable.class),
-        @XmlElement(name = "dynamicTSVariable", type = XmlDynamicTsVariable.class)
+        @XmlElement(name = "tsVariable", type = ec.tss.xml.regression.XmlTsVariable.class),
+        @XmlElement(name = "dynamicTsVariable", type = ec.tss.xml.regression.XmlDynamicTsVariable.class)
     })
     public XmlNamedObject[] vars;
 
@@ -71,10 +72,14 @@ public class XmlTsVariables implements IXmlConverter<TsVariables> {
         if (!isEmpty()) {
             for (int i = 0; i < vars.length; ++i) {
                 if (vars[i] != null) {
-                    IXmlMapper mapper = fromXmlMap.get(vars[i].getClass());
-                    if (mapper != null) {
-                        ITsVariable v = (ITsVariable) mapper.fromXml(vars[i]);
-                        nvars.set(vars[i].name, v);
+                    XmlAdapter adapter = fromXmlMap.get(vars[i].getClass());
+                    if (adapter != null) {
+                        try {
+                            ITsVariable v = (ITsVariable) adapter.unmarshal(vars[i]);
+                            nvars.set(vars[i].name, v);
+                        } catch (Exception ex) {
+                            return null;
+                        }
                     }
                 }
             }
@@ -92,10 +97,13 @@ public class XmlTsVariables implements IXmlConverter<TsVariables> {
         vars = new XmlNamedObject[n.length];
         for (int i = 0; i < n.length; ++i) {
             ITsVariable v = t.get(n[i]);
-            IXmlMapper mapper = toXmlMap.get(v.getClass());
-            if (mapper != null) {
-                vars[i] = (XmlNamedObject) mapper.toXml(v);
-                vars[i].name = n[i];
+            XmlAdapter adapter = toXmlMap.get(v.getClass());
+            if (adapter != null) {
+                try {
+                    vars[i] = (XmlNamedObject) adapter.marshal(v);
+                    vars[i].name = n[i];
+                } catch (Exception ex) {
+                }
             }
         }
     }

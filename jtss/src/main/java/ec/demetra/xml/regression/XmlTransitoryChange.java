@@ -16,7 +16,7 @@
  */
 package ec.demetra.xml.regression;
 
-import ec.tstoolkit.timeseries.regression.LevelShift;
+import ec.tstoolkit.timeseries.regression.TransitoryChange;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -26,40 +26,44 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Jean Palate
  */
-@XmlRootElement(name = XmlLS.RNAME)
-@XmlType(name = XmlLS.NAME)
-public class XmlLS extends XmlOutlier {
+@XmlRootElement(name = XmlTransitoryChange.NAME)
+@XmlType(name = XmlTransitoryChange.NAME)
 
-    static final String RNAME = "ls", NAME = RNAME + "Type";
+public class XmlTransitoryChange extends XmlOutlier {
+
+    static final String RNAME = "TransitoryChange", NAME = RNAME + "Type";
 
     @XmlAttribute
-    public boolean zeroEnded=true;
-    
-    @ServiceProvider(service = ITsVariableAdapter.class)
-    public static class Adapter implements ITsVariableAdapter<XmlLS, LevelShift> {
+    public double factor = 0.7;
+
+    @XmlAttribute
+    public boolean monthlyFactor = false;
+
+    @ServiceProvider(service = TsVariableAdapter.class)
+    public static class Adapter extends TsVariableAdapter<XmlTransitoryChange, TransitoryChange> {
 
         @Override
-        public Class<LevelShift> getValueType() {
-            return LevelShift.class;
+        public Class<TransitoryChange> getValueType() {
+            return TransitoryChange.class;
         }
 
         @Override
-        public Class<XmlLS> getXmlType() {
-            return XmlLS.class;
+        public Class<XmlTransitoryChange> getXmlType() {
+            return XmlTransitoryChange.class;
         }
 
         @Override
-        public LevelShift decode(XmlLS v) throws Exception {
-            LevelShift o = new LevelShift(v.Position);
-            o.setZeroEnded(v.zeroEnded);
+        public TransitoryChange unmarshal(XmlTransitoryChange v) throws Exception {
+            TransitoryChange o = new TransitoryChange(v.Position, v.factor, v.monthlyFactor);
             return o;
         }
 
         @Override
-        public XmlLS encode(LevelShift v) throws Exception {
-            XmlLS xml = new XmlLS();
+        public XmlTransitoryChange marshal(TransitoryChange v) throws Exception {
+            XmlTransitoryChange xml = new XmlTransitoryChange();
             xml.Position = v.getPosition();
-            xml.zeroEnded=v.isZeroEnded();
+            xml.factor = v.getCoefficient();
+            xml.monthlyFactor = v.isMonthlyCoefficient();
             return xml;
         }
 

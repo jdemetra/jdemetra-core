@@ -41,8 +41,9 @@ public class XmlParameters implements IXmlConverter<Parameter[]> {
             int n = parameters.length;
             Parameter[] p = new Parameter[n];
             for (int i = 0; i < n; ++i)
-                if (parameters[i] != null)
+                if (parameters[i] != null){
                     p[i] = parameters[i].create();
+                }
             return p;
     }
 
@@ -59,6 +60,7 @@ public class XmlParameters implements IXmlConverter<Parameter[]> {
             {
                 parameters[i] = new XmlParameter();
                 parameters[i].copy(t[i]);
+                parameters[i].index=i+1;
             }
     }
 }

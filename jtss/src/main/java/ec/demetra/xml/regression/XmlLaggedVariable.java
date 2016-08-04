@@ -28,7 +28,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @XmlRootElement(name = XmlLaggedVariable.RNAME)
 @XmlType(name = XmlLaggedVariable.NAME)
-public class XmlLaggedVariable extends XmlTsModifier{
+public class XmlLaggedVariable extends XmlRegressionVariableModifier{
     
     static final String RNAME = "LaggedVariable", NAME = RNAME + "Type";
 
@@ -38,8 +38,8 @@ public class XmlLaggedVariable extends XmlTsModifier{
     @XmlElement
     public int LastLag;
 
-    @ServiceProvider(service = ITsVariableAdapter.class)
-    public static class Adapter implements ITsVariableAdapter<XmlLaggedVariable, LaggedTsVariable> {
+    @ServiceProvider(service = TsModifierAdapter.class)
+    public static class Adapter extends TsModifierAdapter<XmlLaggedVariable, LaggedTsVariable> {
 
         @Override
         public Class<LaggedTsVariable> getValueType() {
@@ -52,17 +52,16 @@ public class XmlLaggedVariable extends XmlTsModifier{
         }
 
         @Override
-        public LaggedTsVariable decode(XmlLaggedVariable v) throws Exception {
-            LaggedTsVariable o = new LaggedTsVariable(TsVariableAdapters.getDefault().decode(v.Core), v.FirstLag, v.LastLag);
+        public LaggedTsVariable unmarshal(XmlLaggedVariable v) throws Exception {
+            LaggedTsVariable o = new LaggedTsVariable(null, v.FirstLag, v.LastLag);
             return o;
         }
 
         @Override
-        public XmlLaggedVariable encode(LaggedTsVariable v) throws Exception {
+        public XmlLaggedVariable marshal(LaggedTsVariable v) throws Exception {
             XmlLaggedVariable xml = new XmlLaggedVariable();
             xml.FirstLag = v.getFirstLag();
             xml.LastLag=v.getLastLag();
-            xml.Core=TsVariableAdapters.getDefault().encode(v.getVariable());
             return xml;
         }
     }

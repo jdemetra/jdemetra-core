@@ -14,20 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.demetra.xml.regression;
 
-import ec.tss.xml.IXmlAdapter;
-import ec.tstoolkit.design.ServiceDefinition;
-import ec.tstoolkit.timeseries.regression.ITsVariable;
+@XmlSchema(namespace = "ec/eurostat/jdemetra/sa/x13", elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
+        xmlns = { @XmlNs(prefix = "sa", namespaceURI = "ec/eurostat/jdemetra/sa"), @XmlNs(prefix = "x13", namespaceURI = "ec/eurostat/jdemetra/sa/x13") })
+package ec.demetra.xml.sa.x13;
 
-/**
- *
- * @author Jean Palate
- * @param <V>
- * @param <X>
- */
-@ServiceDefinition
-public interface ITsVariableAdapter<X extends XmlVariable, V extends ITsVariable> extends IXmlAdapter<X, V>{
-    public abstract Class<V> getValueType();
-    public abstract Class<X> getXmlType();
-}
+import javax.xml.bind.annotation.XmlNs;
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlSchema;

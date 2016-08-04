@@ -110,6 +110,7 @@ and open the template in the editor.
             <xs:documentation>
             </xs:documentation>
         </xs:annotation>
+        <xs:attribute name="name" type="xs:ID" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="SaModelType" abstract="true">

@@ -1,21 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.demetra.xml.regression;
 
 import ec.tss.xml.IXmlConverter;
@@ -32,23 +30,27 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @XmlRootElement(name = XmlInterventionVariable.RNAME)
 @XmlType(name = XmlInterventionVariable.NAME)
-public class XmlInterventionVariable extends XmlVariable implements IXmlConverter<InterventionVariable> {
-    static final String RNAME = "intervention", NAME=RNAME+"Type";
+public class XmlInterventionVariable extends XmlRegressionVariable implements IXmlConverter<InterventionVariable> {
 
-    @XmlElement(name="Sequence")
+    static final String RNAME = "intervention", NAME = RNAME + "Type";
+
+    @XmlElement(name = "Sequence")
     public XmlSeq[] Sequence;
     @XmlElement
     public Double DeltaFilter;
+
     public boolean isDeltaFilterSpecified() {
         return DeltaFilter != null;
     }
     @XmlElement
     public Double DeltaSeasonalFilter;
+
     public boolean isDeltaSFilterSpecified() {
         return DeltaSeasonalFilter != null;
     }
 
-    public XmlInterventionVariable() { }
+    public XmlInterventionVariable() {
+    }
 
     @Override
     public void copy(InterventionVariable t) {
@@ -65,21 +67,25 @@ public class XmlInterventionVariable extends XmlVariable implements IXmlConverte
 
     @Override
     public InterventionVariable create() {
-        if (Sequence == null)
+        if (Sequence == null) {
             return null;
+        }
         InterventionVariable ivar = new InterventionVariable();
-        if (isDeltaFilterSpecified())
+        if (isDeltaFilterSpecified()) {
             ivar.setDelta(DeltaFilter);
-        if (isDeltaSFilterSpecified())
+        }
+        if (isDeltaSFilterSpecified()) {
             ivar.setDeltaS(DeltaSeasonalFilter);
-        for (int i = 0; i < Sequence.length; ++i)
+        }
+        for (int i = 0; i < Sequence.length; ++i) {
             ivar.add(StringFormatter.yearMonth(Sequence[i].Start),
-                StringFormatter.yearMonth(Sequence[i].End));
+                    StringFormatter.yearMonth(Sequence[i].End));
+        }
         return ivar;
     }
-    
-        @ServiceProvider(service = ITsVariableAdapter.class)
-    public static class Adapter implements ITsVariableAdapter<XmlInterventionVariable, InterventionVariable> {
+
+    @ServiceProvider(service = TsVariableAdapter.class)
+    public static class Adapter extends TsVariableAdapter<XmlInterventionVariable, InterventionVariable> {
 
         @Override
         public Class<InterventionVariable> getValueType() {
@@ -92,12 +98,12 @@ public class XmlInterventionVariable extends XmlVariable implements IXmlConverte
         }
 
         @Override
-        public InterventionVariable decode(XmlInterventionVariable v) throws Exception {
+        public InterventionVariable unmarshal(XmlInterventionVariable v) throws Exception {
             return v.create();
         }
 
         @Override
-        public XmlInterventionVariable encode(InterventionVariable v) throws Exception {
+        public XmlInterventionVariable marshal(InterventionVariable v) throws Exception {
             XmlInterventionVariable xml = new XmlInterventionVariable();
             xml.copy(v);
             return xml;

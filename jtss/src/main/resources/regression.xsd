@@ -17,7 +17,6 @@ limitations under the Licence.
 -->
 
 
-
 <xs:schema version="0.1.0"
            targetNamespace="ec/eurostat/jdemetra/core"
            xmlns:tss="ec/eurostat/jdemetra/core"
@@ -28,25 +27,50 @@ limitations under the Licence.
     <xs:include schemaLocation="core.xsd"/>
     <xs:include schemaLocation="calendar.xsd"/>
 
-    <xs:complexType name="VariableType" abstract="true">
+
+  <xs:complexType name="RegressionVariableModifierType" abstract="true">
+    <xs:annotation>
+      <xs:documentation>
+        Regression variable modifiers are entities that modify the meaning of a modifiable regression variable
+        Examples: leads/lags, data window, (seasonal) mean corrections...
+      </xs:documentation>
+    </xs:annotation>
+  </xs:complexType>
+
+  <xs:complexType name="RegressionVariableType" abstract="true">
+    <xs:annotation>
+      <xs:documentation>
+        Base type for any regression variable. 
+      </xs:documentation>
+    </xs:annotation>
+  </xs:complexType>
+  
+  <xs:complexType name="ModifiableRegressionVariableType" abstract="true">
         <xs:annotation>
             <xs:documentation>
-                Base type for any regression variable
+                Base type for any modifiable regression variable. By design we can decide that some variables
+                should not be modifiable (for instance outliers)
             </xs:documentation>
         </xs:annotation>
-        <xs:attribute name="name" type="xs:string" use="optional" />
+    <xs:complexContent>
+      <xs:extension base="tss:RegressionVariableType">
+        <xs:sequence>
+          <xs:element name="Modifier" type="tss:RegressionVariableModifierType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
     </xs:complexType>
-    
-    
-    <!--Outliers-->
+
+
+  <!--Outliers-->
 
     <xs:complexType name="OutlierType" abstract="true">
         <xs:complexContent>
-            <xs:extension base="tss:VariableType">
+            <xs:extension base="tss:RegressionVariableType">
                 <xs:sequence>
                     <xs:element name="Position" type="xs:date"/>
                 </xs:sequence>
-                <xs:attribute name="prespecified" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="preSpecified" type="xs:boolean" use="optional" default="false"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -107,45 +131,26 @@ limitations under the Licence.
     <!-- ****************** -->
     
     <!-- Trading days -->
-    
-    <xs:simpleType name="LengthOfPeriodEnum">
-        <xs:annotation>
-            <xs:documentation>
-                Leap year or equivalent
-            </xs:documentation>
-        </xs:annotation>
-        <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="LeapYear" />
-            <xs:enumeration value="LengthOfPeriod" />
-        </xs:restriction>
-    </xs:simpleType>
-    
-    <xs:simpleType name="TradingDaysEnum">
-        <xs:annotation>
-            <xs:documentation>
-                Trading days or equivalent
-            </xs:documentation>
-        </xs:annotation>
-        <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="TradingDays" />
-            <xs:enumeration value="WorkingDays" />
-        </xs:restriction>
-    </xs:simpleType>
-    
-    <xs:complexType name="DefaulTradingdaysType">
+
+
+    <xs:complexType name="DefaulTradingDaysType">
         <xs:complexContent>
-            <xs:extension base="tss:VariableType">
-                <xs:attribute name="td" type="tss:TradingDaysEnum" use="optional"/>
-                <xs:attribute name="lp" type="tss:LengthOfPeriodEnum" use="optional"/> 
+            <xs:extension base="tss:ModifiableRegressionVariableType">
+                <xs:sequence>
+                    <xs:element name="TradingDays" type="tss:TradingDaysEnum" minOccurs="0"/>
+                    <xs:element name="LengthOfPeriod" type="tss:LengthOfPeriodEnum" minOccurs="0"/>
+                    <xs:element name="Calendar" type="xs:IDREF" minOccurs="0"/>
+                </xs:sequence>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="GenericTradingDaysType">
         <xs:complexContent>
-            <xs:extension base="tss:VariableType">
+            <xs:extension base="tss:ModifiableRegressionVariableType">
                 <xs:sequence>
-                    <xs:element name="DayClustering" type="tss:UnsignedIntsType"/>
+                    <xs:element name="DayClustering" type="tss:UnsignedInts"/>
+                    <xs:element name="Calendar" type="xs:IDREF" minOccurs="0"/>
                 </xs:sequence>
                 <xs:attribute name="contrasts" type="xs:boolean" use="optional"/> 
             </xs:extension>
@@ -170,7 +175,7 @@ limitations under the Licence.
 
     <xs:complexType name="EasterVariableType">
         <xs:complexContent>
-            <xs:extension base="tss:VariableType">
+            <xs:extension base="tss:ModifiableRegressionVariableType">
                 <xs:sequence>
                     <xs:element name="Before" type="xs:int"/>
                     <xs:element name="After" type="xs:int" minOccurs="0"/>
@@ -192,7 +197,7 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="tss:VariableType">
+            <xs:extension base="tss:RegressionVariableType">
                 <xs:sequence>
                     <xs:group ref="tss:TimeSpan"/>
                 </xs:sequence>
@@ -207,7 +212,7 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="tss:VariableType">
+            <xs:extension base="tss:RegressionVariableType">
                 <xs:sequence>
                     <xs:group ref="tss:TimeSpan" minOccurs="1" maxOccurs="unbounded"/>
                     <xs:element name="DeltaFilter" minOccurs="0" type="xs:double"/>
@@ -216,25 +221,34 @@ limitations under the Licence.
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    
-    
-    
-    <!-- Modifiers -->
+
+
+ 
+  <xs:complexType name="UserVariableType" abstract = "true">
+    <xs:complexContent>
+      <xs:extension base="tss:ModifiableRegressionVariableType">
+        <xs:sequence>
+          <xs:element name="Variable" type="xs:IDREF"/>
+        </xs:sequence>
+        <xs:attribute name="effect" type="tss:ComponentEnum" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="UserVariablesType" abstract = "true">
+    <xs:complexContent>
+      <xs:extension base="tss:ModifiableRegressionVariableType">
+        <xs:sequence>
+          <xs:element name="Variable" type="xs:IDREFS"/>
+        </xs:sequence>
+        <xs:attribute name="effect" type="tss:ComponentEnum" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- Modifiers -->
     <!-- ********* -->
     
-    <xs:complexType name="TsModifierType" abstract="true">
-        <xs:annotation>
-            <xs:documentation>
-            </xs:documentation>
-        </xs:annotation>
-        <xs:complexContent>
-            <xs:extension base="tss:VariableType">
-                <xs:sequence>
-                    <xs:element name="Core" type="tss:VariableType"/>
-                </xs:sequence>
-            </xs:extension>
-        </xs:complexContent>
-    </xs:complexType>
     
     <xs:complexType name="VariableWindowType">
         <xs:annotation>
@@ -242,7 +256,7 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="tss:TsModifierType">
+            <xs:extension base="tss:RegressionVariableModifierType">
                 <xs:group ref="tss:TimeSpan" />
             </xs:extension>
         </xs:complexContent>
@@ -254,7 +268,7 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="tss:TsModifierType">
+            <xs:extension base="tss:RegressionVariableModifierType">
                 <xs:sequence>
                     <xs:element name="FirstLag" type="xs:int"/>
                     <xs:element name="LastLag" type="xs:int"/>
@@ -263,54 +277,65 @@ limitations under the Licence.
         </xs:complexContent>
     </xs:complexType>
 
-    <xs:complexType name="ChangeOfRegimeType">
-        <xs:annotation>
-            <xs:documentation>
-            </xs:documentation>
-        </xs:annotation>
+    <xs:complexType name="SeriesTransformationType" abstract="true"/>
+
+    <xs:complexType name="LogTransformationType">
         <xs:complexContent>
-            <xs:extension base="tss:TsModifierType">
-                <xs:choice>
-                    <xs:element name="Start" type="xs:date"/>
-                    <xs:element name="End" type="xs:date"/>
-                </xs:choice>
-            </xs:extension>
+            <xs:extension base="tss:SeriesTransformationType"/>
         </xs:complexContent>
     </xs:complexType>
 
-    <xs:complexType name="TsVariableType">
-        <xs:annotation>
-            <xs:documentation>
-                Default static regression variable. Data must be available.
-                The name of the tsdata sub-item should be considered as a description, while the "name" attribute is the actual name of the variable
-            </xs:documentation>
-        </xs:annotation>
+    <xs:complexType name="BoxCoxTransformationType">
         <xs:complexContent>
-            <xs:extension base="tss:VariableType">
+            <xs:extension base="tss:SeriesTransformationType">
                 <xs:sequence>
-                    <xs:element name="TsData" type="tss:TsDataType"/>
+                    <xs:element name="Lambda" type="xs:double"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
 
-    <xs:complexType name="DynamicTsVariableType">
-        <xs:annotation>
-            <xs:documentation>
-                Default dynamic regression variable. Identifier must be present.
-                The name of the tsdata sub-item should be considered as a description, while the "name" attribute is the actual name of the variable
-            </xs:documentation>
-        </xs:annotation>
+    <xs:complexType name="LengthOfPeriodAdjustmentType">
         <xs:complexContent>
-            <xs:extension base="tss:VariableType">
-                <xs:sequence>
-                    <xs:element name="Tsdata" type="tss:TsDataType" minOccurs="0"/>
-                    <xs:element name="Moniker" type="tss:TsMonikerType"/>
-                </xs:sequence>
+            <xs:extension base="tss:SeriesTransformationType">
+                <xs:attribute name="correction" type="tss:LengthOfPeriodEnum" use="optional" default="LeapYear"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
 
+    <xs:complexType name="SeriesTransformationsType">
+        <xs:sequence>
+            <xs:element name="Transformation" type="tss:SeriesTransformationType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="RegressionItemType">
+        <xs:annotation>
+            <xs:documentation>
+                Regression variable with its coefficient(s). The number of coefficients should correspond to the regression variable
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Variable" type="tss:RegressionVariableType"/>
+            <xs:choice minOccurs="0">
+                <xs:element name="Coefficient" type="tss:ParameterType"/>
+                <xs:element name="Coefficients" type="tss:ParametersType"/>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:NMTOKEN" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="RegressionType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Item" type="tss:RegressionItemType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="Regression" type="tss:RegressionType"/>
 
 </xs:schema>
 
