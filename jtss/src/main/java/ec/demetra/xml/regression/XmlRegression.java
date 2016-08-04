@@ -18,6 +18,8 @@ package ec.demetra.xml.regression;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -35,4 +37,18 @@ public class XmlRegression {
     @XmlElement(name="Item")
     public List<XmlRegressionItem> variables=new ArrayList<>();
     
+    public static List<Class> xmlClasses(){
+        List<Class> xmlclvar = TsVariableAdapters.getDefault().getXmlClasses();
+        List<Class> xmlclmod = TsModifierAdapters.getDefault().getXmlClasses();
+        xmlclvar.addAll(xmlclmod);
+        return xmlclvar;
+    }
+    
+    public static synchronized JAXBContext context() throws JAXBException{ 
+    
+        List<Class> xmlClasses = xmlClasses();
+        xmlClasses.add(XmlRegression.class);
+        JAXBContext jaxb = JAXBContext.newInstance(xmlClasses.toArray(new Class[xmlClasses.size()]));
+        return jaxb;
+    }
 }

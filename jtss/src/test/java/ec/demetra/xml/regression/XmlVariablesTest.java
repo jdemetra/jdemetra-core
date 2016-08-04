@@ -70,10 +70,7 @@ public class XmlVariablesTest {
         XmlVariableWindow xwnd=new XmlVariableWindow();
         xwnd.Start=new TsPeriod(TsFrequency.Yearly, 2000, 0).firstday();
         xwnd.End=new TsPeriod(TsFrequency.Yearly, 2010, 0).lastday();
-        XmlChangeOfRegime xcr=new XmlChangeOfRegime();
-        xcr.Start=new TsPeriod(TsFrequency.Yearly, 2005, 0).firstday();
         xtd.modifiers.add(xwnd);
-        xtd.modifiers.add(xcr);
         
         FileOutputStream ostream = new FileOutputStream(FILE);
         try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {

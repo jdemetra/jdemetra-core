@@ -253,8 +253,8 @@ and open the template in the editor.
                 <xs:element name="Mean" type="tss:ParameterType"/>
             </xs:choice>
             <xs:choice>
-                <xs:element name="Orders" type="modelling:SARIMA_OrderType"/>
-                <xs:element name="Model" type="modelling:SARIMA_ModelType"/>
+                <xs:element name="Orders" type="tss:SARIMA_OrderType"/>
+                <xs:element name="Model" type="tss:SARIMA_ModelType"/>
             </xs:choice>
         </xs:sequence>
     </xs:complexType>

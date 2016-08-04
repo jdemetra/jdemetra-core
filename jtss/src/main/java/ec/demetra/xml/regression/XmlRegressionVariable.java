@@ -36,11 +36,7 @@ public abstract class XmlRegressionVariable {
         }
     }
     
-    public static List<Class> xmlClasses(){
-        List<Class> xmlclvar = TsVariableAdapters.getDefault().getXmlClasses();
-        List<Class> xmlclmod = TsModifierAdapters.getDefault().getXmlClasses();
-        xmlclvar.addAll(xmlclmod);
-        return xmlclvar;
-        
+    public ITsVariable toTsVariable(){
+        return TsVariableAdapters.getDefault().decode(this);
     }
 }

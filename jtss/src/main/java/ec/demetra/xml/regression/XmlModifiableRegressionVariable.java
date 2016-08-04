@@ -48,4 +48,15 @@ public abstract class XmlModifiableRegressionVariable extends XmlRegressionVaria
         return mxml;
     }
 
+    @Override
+    public ITsVariable toTsVariable(){
+        ITsVariable var=TsVariableAdapters.getDefault().decode(this);
+        for (int i=modifiers.size()-1; i>=0; --i){
+            XmlRegressionVariableModifier m =modifiers.get(i);
+            ITsModifier tsm = TsModifierAdapters.getDefault().decode(m);
+            tsm.setVariable(var);
+            var=tsm;
+        }
+        return var;
+    }
 }

@@ -30,9 +30,12 @@ import java.util.List;
  * That modifier generates a new variable, which is equivalent to the original up or to a given date,
  * an is set to 0 for the other periods.
  * See the ChangeOfRegimeType enumeration for further details.
+ * 
+ * @deprecated Since 2.2.0 Use TsVariableWindow
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
+@Deprecated
 public class ChangeOfRegime extends AbstractTsModifier {
 
     private final ChangeOfRegimeType regime;

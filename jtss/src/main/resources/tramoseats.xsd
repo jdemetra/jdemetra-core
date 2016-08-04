@@ -20,6 +20,33 @@ and open the template in the editor.
     <xs:import schemaLocation="sacore.xsd" namespace="ec/eurostat/jdemetra/sa"/>
     <xs:import schemaLocation="modelling.xsd" namespace="ec/eurostat/jdemetra/modelling"/>
  
+    <!--Enums-->
+
+    <xs:simpleType name="ApproximationModeEnum">
+        <xs:annotation>
+            <xs:documentation>
+                Actions in case of non-decomposable models
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="None" />
+            <xs:enumeration value="Legacy" />
+            <xs:enumeration value="Noisy" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="SeatsEstimationMethodEnum">
+        <xs:annotation>
+            <xs:documentation>
+                Method used to estimate the components in SEATS
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="Burman" />
+            <xs:enumeration value="KalmanSmoother" />
+            <xs:enumeration value="Matrix" />
+        </xs:restriction>
+    </xs:simpleType>
     <!--Transformation-->
     
     <xs:complexType name="AutoTransformationSpecType">
@@ -116,7 +143,7 @@ and open the template in the editor.
 
     <xs:complexType name="AutoModellingSpecType">
         <xs:sequence>
-            <xs:element name="Pcr" minOccurs="0">
+            <xs:element name="PCR" minOccurs="0">
                 <xs:annotation>
                     <xs:documentation>
                         Level of significance for the Ljung-Box Q-test used in automatic model identification.
@@ -129,7 +156,7 @@ and open the template in the editor.
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="Ub1" minOccurs="0">
+            <xs:element name="UB1" minOccurs="0">
                 <xs:annotation>
                     <xs:documentation>
                         If one of the roots in the “AR(2)xARs(1) plus mean” estimation
@@ -144,7 +171,7 @@ and open the template in the editor.
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="Ub2" minOccurs="0">
+            <xs:element name="UB2" minOccurs="0">
                 <xs:annotation>
                     <xs:documentation>
                         If one of the roots in the “ARMA(1,1)xARMAs(1,1) plus mean” estimation
@@ -189,7 +216,7 @@ and open the template in the editor.
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="Pc" minOccurs="0">
+            <xs:element name="PC" minOccurs="0">
                 <xs:annotation>
                     <xs:documentation>
                         Percentage by which va is reduced in the second round
@@ -218,8 +245,8 @@ and open the template in the editor.
                 <xs:element name="Mean" type="tss:ParameterType"/>
             </xs:choice>
             <xs:choice>
-                <xs:element name="Orders" type="modelling:SARIMA_OrderType"/>
-                <xs:element name="Model" type="modelling:SARIMA_ModelType"/>
+                <xs:element name="Orders" type="tss:SARIMA_OrderType"/>
+                <xs:element name="Model" type="tss:SARIMA_ModelType"/>
             </xs:choice>
         </xs:sequence>
     </xs:complexType>
@@ -290,7 +317,7 @@ and open the template in the editor.
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="ML" type="xs:boolean" default="false" minOccurs="0">
+                    <xs:element name="EML" type="xs:boolean" default="false" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>
                                 Tramo code: IMVX. 0 : the fast method of Hannan{Rissanen is used for parameter
@@ -358,7 +385,37 @@ and open the template in the editor.
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="Xl" minOccurs="0" default="0.95">
+                  <xs:element name="SMod" minOccurs="0" default="0.8">
+                    <xs:annotation>
+                      <xs:documentation>
+                        Cutting point for the modulus of a Seasonal AR root.
+                        If modulus lesser than k, it goes to the irregular component, else it goes to the
+                        to the seasonal component.
+                      </xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                      <xs:restriction base="xs:double">
+                        <xs:minExclusive value="0.0" />
+                        <xs:maxExclusive value="1.0" />
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:element>
+                  <xs:element name="StSMod" minOccurs="0" default="0.8">
+                    <xs:annotation>
+                      <xs:documentation>
+                        Cutting point for the modulus of an AR real root.
+                        If modulus lesser than k it goes to the transitory component, else it goes to the
+                        trend-cycle (positive roots) or to the seasonal component (negative roots).
+                      </xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                      <xs:restriction base="xs:double">
+                        <xs:minExclusive value="0.0" />
+                        <xs:maxExclusive value="1.0" />
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:element>
+                  <xs:element name="XL" minOccurs="0" default="0.95">
                         <xs:annotation>
                             <xs:documentation>
                                 Seats code: XL. When the modulus of an estimated root falls in the range
@@ -373,11 +430,21 @@ and open the template in the editor.
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="ForceModel" type="xs:boolean" minOccurs="0" default="true">
+                    <xs:element name="ForceModel" type="trs:ApproximationModeEnum" minOccurs="0" default="Legacy">
                         <xs:annotation>
                             <xs:documentation>
                                 Corresponds to the Seats code: NOADMISS. When the model does not accept an admissible decomposition,
-                                no approximation is made if forceModel equals false, otherwise it is automatically replaced with a decomposable one.
+                                no approximation is made if forceModel equals None, otherwise it is automatically replaced with a decomposable one.
+                                Legacy is the old solution, Noisy will add noise into the model
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name ="Method" type ="trs:SeatsEstimationMethodEnum" minOccurs="0" default="Burman">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Estimation method of the components. Burman is the original method. The Kalman smoother
+                                should be preferred when the model contain quasi-unit roots in its MA part. Matrix is based 
+                                on a paper of McElroy.
                             </xs:documentation>
                         </xs:annotation>
                     </xs:element>

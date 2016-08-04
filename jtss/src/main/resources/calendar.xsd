@@ -25,15 +25,6 @@ limitations under the Licence.
 
     <xs:include schemaLocation="core.xsd"/>
 
-    <!--Utilities-->
-
-    <xs:complexType name="WeightedItem">
-        <xs:sequence>
-            <xs:element name="Item" type="xs:IDREF" />
-            <xs:element name="Weight" type="xs:double" />
-        </xs:sequence>
-    </xs:complexType>
-
     <!--Calendars-->
 
     <xs:simpleType name="DayEvent">

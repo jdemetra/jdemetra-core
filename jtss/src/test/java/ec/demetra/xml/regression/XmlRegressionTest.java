@@ -21,6 +21,7 @@ import ec.tstoolkit.Parameter;
 import ec.tstoolkit.ParameterType;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.DayClustering;
+import ec.tstoolkit.timeseries.regression.ITsVariable;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import java.io.FileInputStream;
@@ -42,6 +43,7 @@ import static org.junit.Assert.*;
 import org.junit.Ignore;
 import org.xml.sax.SAXException;
 import xml.Schemas;
+import xml.TestErrorHandler;
 import xml.TestValidationEventHandler;
 
 /**
@@ -61,17 +63,6 @@ public class XmlRegressionTest {
         XmlSeasonalOutlier xso = new XmlSeasonalOutlier();
         xso.Position = Day.toDay().minus(5000);
 
-//        XmlGenericTradingDays xtd = new XmlGenericTradingDays();
-//        xtd.contrasts = true;
-//        xtd.DayClustering = DayClustering.TD4.getGroupsDefinition();
-//        
-//        XmlVariableWindow xwnd=new XmlVariableWindow();
-//        xwnd.Core=xtd;
-//        xwnd.Start=new TsPeriod(TsFrequency.Yearly, 2000, 0).firstday();
-//        xwnd.End=new TsPeriod(TsFrequency.Yearly, 2010, 0).lastday();
-//        XmlChangeOfRegime xcr=new XmlChangeOfRegime();
-//        xcr.Start=new TsPeriod(TsFrequency.Yearly, 2005, 0).firstday();
-//        xcr.Core=xwnd;
         reg = new XmlRegression();
         XmlRegressionItem ao = new XmlRegressionItem();
         ao.variable = xao;
@@ -81,15 +72,25 @@ public class XmlRegressionTest {
         XmlRegressionItem so = new XmlRegressionItem();
         so.variable = xso;
         reg.variables.add(so);
+
+        XmlGenericTradingDays xtd = new XmlGenericTradingDays();
+        xtd.contrasts = true;
+        xtd.DayClustering = DayClustering.TD4.getGroupsDefinition();
+        XmlVariableWindow xwnd = new XmlVariableWindow();
+        xwnd.Start = new TsPeriod(TsFrequency.Yearly, 2000, 0).firstday();
+        xwnd.End = new TsPeriod(TsFrequency.Yearly, 2010, 0).lastday();
+        xtd.modifiers.add(xwnd);
+
+        XmlRegressionItem td = new XmlRegressionItem();
+        td.variable = xtd;
+        reg.variables.add(td);
     }
 
     @Test
     //@Ignore
     public void testMarshal() throws FileNotFoundException, JAXBException, IOException {
 
-        List<Class> xmlClasses = TsVariableAdapters.getDefault().getXmlClasses();
-        xmlClasses.add(XmlRegression.class);
-        JAXBContext jaxb = JAXBContext.newInstance(xmlClasses.toArray(new Class[xmlClasses.size()]));
+        JAXBContext jaxb = XmlRegression.context();
         FileOutputStream ostream = new FileOutputStream(FILE);
         try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
@@ -105,18 +106,20 @@ public class XmlRegressionTest {
             unmarshaller.setSchema(Schemas.Modelling);
             unmarshaller.setEventHandler(new TestValidationEventHandler());
             rslt = (XmlRegression) unmarshaller.unmarshal(reader);
+            for (XmlRegressionItem item : rslt.variables){
+                ITsVariable tsvar = item.variable.toTsVariable();
+                assertTrue(tsvar != null);
+            }
         }
     }
 
     @Test
     public void testValidation() throws FileNotFoundException, JAXBException, IOException, SAXException {
 
-        List<Class> xmlClasses = TsVariableAdapters.getDefault().getXmlClasses();
-        xmlClasses.add(XmlRegression.class);
-        JAXBContext jaxb = JAXBContext.newInstance(xmlClasses.toArray(new Class[xmlClasses.size()]));
+        JAXBContext jaxb = XmlRegression.context();
         JAXBSource source = new JAXBSource(jaxb, reg);
         Validator validator = Schemas.Modelling.newValidator();
-        //validator.setErrorHandler(new TestErrorHandler());
+        validator.setErrorHandler(new TestErrorHandler());
         validator.validate(source);
     }
 }
