@@ -38,6 +38,7 @@ import static org.junit.Assert.*;
 import org.junit.Ignore;
 import org.xml.sax.SAXException;
 import xml.Schemas;
+import xml.TestErrorHandler;
 
 /**
  *
@@ -51,7 +52,7 @@ public class XmlEstimationSpecTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void testMarshal() throws FileNotFoundException, JAXBException, IOException {
 
         TramoSpecification spec = TramoSpecification.TRfull;

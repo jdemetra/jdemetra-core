@@ -17,10 +17,12 @@
 package ec.demetra.xml.core;
 
 import ec.tss.xml.*;
+import ec.tstoolkit.timeseries.Day;
 
 import ec.tstoolkit.timeseries.TsPeriodSelector;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  *
@@ -33,14 +35,20 @@ public class XmlPeriodSelection implements IXmlConverter<TsPeriodSelector> {
 
     @XmlElement
     public XmlEmptyElement All;
-    @XmlElement(name = "None")
+    @XmlElement
     public XmlEmptyElement None;
+    @XmlJavaTypeAdapter(XmlDayAdapter.class)
+    public Day From;
+    @XmlJavaTypeAdapter(XmlDayAdapter.class)
+    public Day To;
     @XmlElement
-    public XmlRange Range;
+    public Integer First;
     @XmlElement
-    public XmlRange Excluding;
+    public Integer Last;
     @XmlElement
-    public XmlTimeSpan Span;
+    public Integer ExcludeFirst;
+    @XmlElement
+    public Integer ExcludeLast;
 
     @Override
     public TsPeriodSelector create() {
@@ -49,26 +57,21 @@ public class XmlPeriodSelection implements IXmlConverter<TsPeriodSelector> {
             tssel.all();
         } else if (None != null) {
             tssel.none();
-        } else if (Excluding != null) {
-            int first = Excluding.First == null ? 0 : Excluding.First;
-            int last = Excluding.Last == null ? 0 : Excluding.Last;
+        } else if (ExcludeFirst != null || ExcludeLast != null) {
+            int first = ExcludeFirst == null ? 0 : ExcludeFirst;
+            int last = ExcludeLast == null ? 0 : ExcludeLast;
             tssel.excluding(first, last);
-        } else if (Range != null) {
-            int first = Range.First == null ? -1 : Range.First;
-            int last = Range.Last == null ? -1 : Range.Last;
-            if (first >= 0) {
-                tssel.first(first);
-            } else if (last >= 0) {
-                tssel.last(last);
-            }
-            // else not supported
-        } else if (Span != null) {
-            if (Span.Start != null && Span.End != null) {
-                tssel.between(Span.Start, Span.End);
-            } else if (Span.Start != null) {
-                tssel.from(Span.Start);
-            } else if (Span.End != null) {
-                tssel.to(Span.End);
+        } else if (First != null) {
+            tssel.first(First);
+        } else if (Last != null) {
+            tssel.last(Last);
+        } else if (From != null || To != null) {
+            if (From != null && To != null) {
+                tssel.between(From, To);
+            } else if (From != null) {
+                tssel.from(From);
+            } else {
+                tssel.to(To);
             }
         }
         return tssel;
@@ -77,38 +80,32 @@ public class XmlPeriodSelection implements IXmlConverter<TsPeriodSelector> {
     @Override
     public void copy(TsPeriodSelector t
     ) {
-        switch (t.getType()){
+        switch (t.getType()) {
             case All:
-                All=new XmlEmptyElement();
+                All = new XmlEmptyElement();
                 return;
-           case None:
-                All=new XmlEmptyElement();
+            case None:
+                All = new XmlEmptyElement();
                 return;
-           case From:
-               Span=new XmlTimeSpan();
-               Span.Start=t.getD0();
-               return;
-           case To:
-               Span=new XmlTimeSpan();
-               Span.End=t.getD1();
-               return;
-           case Between:
-               Span=new XmlTimeSpan();
-               Span.Start=t.getD0();
-               Span.End=t.getD1();
-               return;
-           case First:
-               Range=new XmlRange();
-               Range.First=t.getN0();
-               return;
-           case Last:
-               Range=new XmlRange();
-               Range.Last=t.getN1();
-               return;
-           case Excluding:
-               Excluding=new XmlRange();
-               Excluding.First=t.getN0();
-               Excluding.Last=t.getN1();
+            case From:
+                From = t.getD0();
+                return;
+            case To:
+                To = t.getD1();
+                return;
+            case Between:
+                From = t.getD0();
+                To = t.getD1();
+                return;
+            case First:
+                First = t.getN0();
+                return;
+            case Last:
+                Last = t.getN1();
+                return;
+            case Excluding:
+                ExcludeFirst = t.getN0();
+                ExcludeLast = t.getN1();
         }
     }
 }

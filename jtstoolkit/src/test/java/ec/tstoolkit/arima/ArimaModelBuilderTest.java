@@ -72,7 +72,7 @@ public class ArimaModelBuilderTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void testMeanNonStationary() {
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline();

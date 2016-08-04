@@ -16,6 +16,7 @@
  */
 package ec.demetra.xml.sa.tramoseats;
 
+import ec.demetra.xml.Constants;
 import ec.demetra.xml.core.XmlPeriodSelection;
 import ec.tss.xml.IXmlConverter;
 import ec.tstoolkit.modelling.arima.tramo.EstimateSpec;
@@ -33,10 +34,10 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = XmlEstimationSpec.NAME)
 public class XmlEstimationSpec implements IXmlConverter<EstimateSpec> {
 
-    @XmlElement(name = "Span")
+    @XmlElement(name = "Span", namespace=Constants.MODELLING)
     public XmlPeriodSelection span;
 
-    @XmlElement(name = "Precision")
+    @XmlElement(name = "Precision", namespace=Constants.MODELLING)
     public Double tol;
 
     @XmlElement(name = "EML")

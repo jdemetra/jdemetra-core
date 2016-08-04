@@ -14,16 +14,18 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
+package ec.demetra.xml;
 
-@XmlSchema(namespace = "ec/eurostat/jdemetra/sa/tramoseats", elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
-        xmlns = { @XmlNs(prefix = "sa", namespaceURI = Constants.SA), 
-                @XmlNs(prefix = "trs", namespaceURI = Constants.TRAMOSEATS), 
-                @XmlNs(prefix = "modelling", namespaceURI = Constants.MODELLING) })
-package ec.demetra.xml.sa.tramoseats;
-
-import ec.demetra.xml.Constants;
-import javax.xml.bind.annotation.XmlNs;
-import javax.xml.bind.annotation.XmlNsForm;
-import javax.xml.bind.annotation.XmlSchema;
-
-
+/**
+ *
+ * @author Jean Palate
+ */
+public class Constants {
+    public static final String AUTHORITY="ec/eurostat",
+            CORE=AUTHORITY+"/jdemetra/core",
+            MODELLING=AUTHORITY+"/jdemetra/modelling",
+            SA=AUTHORITY+"jdemetra/sa", 
+            TRAMOSEATS=SA+"/tramoseats",
+            X13=SA+"/x13";
+            
+}

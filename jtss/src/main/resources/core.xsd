@@ -261,22 +261,22 @@ limitations under the Licence.
 
     <xs:group name="TimeSpan">
         <xs:sequence>
-            <xs:element name="Start" type="xs:date" minOccurs="0"/>
-            <xs:element name="End" type="xs:date" minOccurs="0"/>
+            <xs:element name="From" type="xs:date" minOccurs="0"/>
+            <xs:element name="To" type="xs:date" minOccurs="0"/>
         </xs:sequence>
     </xs:group>
 
     <xs:group name="Range">
         <xs:sequence>
-            <xs:element name="From" type="xs:unsignedInt" minOccurs="0"/>
-            <xs:element name="To" type="xs:unsignedInt" minOccurs="0"/>
+            <xs:element name="First" type="xs:unsignedInt" minOccurs="0"/>
+            <xs:element name="Last" type="xs:unsignedInt" minOccurs="0"/>
         </xs:sequence>
     </xs:group>
 
     <xs:group name="Exclusion">
         <xs:sequence>
-            <xs:element name="First" type="xs:unsignedInt" minOccurs="0"/>
-            <xs:element name="Last" type="xs:unsignedInt" minOccurs="0"/>
+            <xs:element name="ExcludeFirst" type="xs:unsignedInt" minOccurs="0"/>
+            <xs:element name="ExcludeLast" type="xs:unsignedInt" minOccurs="0"/>
         </xs:sequence>
     </xs:group>
 
