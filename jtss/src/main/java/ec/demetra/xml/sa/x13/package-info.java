@@ -14,22 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.demetra.xml.regression;
 
-import ec.tstoolkit.modelling.ComponentType;
-import javax.xml.bind.annotation.XmlAttribute;
+@XmlSchema(namespace = "ec/eurostat/jdemetra/sa/x13", elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
+        xmlns = { @XmlNs(prefix = "sa", namespaceURI = "ec/eurostat/jdemetra/sa"), @XmlNs(prefix = "x13", namespaceURI = "ec/eurostat/jdemetra/sa/x13") })
+package ec.demetra.xml.sa.x13;
 
-/**
- *
- * @author Jean Palate
- */
-public abstract class XmlVariable {
-
-
-    @XmlAttribute
-    public String name;
-
-    @XmlAttribute
-    public ComponentType effect;
-
-}
+import javax.xml.bind.annotation.XmlNs;
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlSchema;

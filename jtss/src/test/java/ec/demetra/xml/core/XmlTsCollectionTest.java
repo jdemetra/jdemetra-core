@@ -20,6 +20,7 @@ import data.Data;
 import ec.tss.TsCollection;
 import ec.tss.TsFactory;
 import ec.tstoolkit.MetaData;
+import ec.tstoolkit.maths.matrices.Matrix;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -31,10 +32,14 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.util.JAXBSource;
 import javax.xml.validation.Schema;
+import javax.xml.validation.Validator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
+import org.xml.sax.SAXException;
+import xml.Schemas;
 
 /**
  *
@@ -78,5 +83,22 @@ public class XmlTsCollectionTest {
         }
     }
 
+    @Test
+    public void testValidation() throws FileNotFoundException, JAXBException, IOException, SAXException {
+
+        JAXBContext jaxb = JAXBContext.newInstance(XmlTsCollection.class);
+        XmlTsCollection xcoll = new XmlTsCollection();
+        TsCollection collection=TsFactory.instance.createTsCollection("test");
+        MetaData md=new MetaData();
+        md.put("test", "10");
+        collection.set(md);
+        collection.add(TsFactory.instance.createTs("p", null, Data.P));
+        collection.add(TsFactory.instance.createTs("x", null, Data.X));
+        xcoll.copyTsCollection(collection);
+        JAXBSource source = new JAXBSource(jaxb, xcoll);
+        Validator validator = Schemas.Core.newValidator();
+        //validator.setErrorHandler(new TestErrorHandler());
+        validator.validate(source);
+    }
     
 }

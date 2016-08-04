@@ -26,17 +26,17 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Jean Palate
  */
-@XmlRootElement(name = XmlSO.RNAME)
-@XmlType(name = XmlSO.NAME)
-public class XmlSO extends XmlOutlier {
+@XmlRootElement(name = XmlSeasonalOutlier.RNAME)
+@XmlType(name = XmlSeasonalOutlier.NAME)
+public class XmlSeasonalOutlier extends XmlOutlier {
 
-    static final String RNAME = "so", NAME = RNAME + "Type";
+    static final String RNAME = "SeasonalOutlier", NAME = RNAME + "Type";
 
     @XmlAttribute
     public boolean zeroEnded=true;
     
-    @ServiceProvider(service = ITsVariableAdapter.class)
-    public static class Adapter implements ITsVariableAdapter<XmlSO, SeasonalOutlier> {
+    @ServiceProvider(service = TsVariableAdapter.class)
+    public static class Adapter extends TsVariableAdapter<XmlSeasonalOutlier, SeasonalOutlier> {
 
         @Override
         public Class<SeasonalOutlier> getValueType() {
@@ -44,20 +44,20 @@ public class XmlSO extends XmlOutlier {
         }
 
         @Override
-        public Class<XmlSO> getXmlType() {
-            return XmlSO.class;
+        public Class<XmlSeasonalOutlier> getXmlType() {
+            return XmlSeasonalOutlier.class;
         }
 
         @Override
-        public SeasonalOutlier decode(XmlSO v) throws Exception {
+        public SeasonalOutlier unmarshal(XmlSeasonalOutlier v) throws Exception {
             SeasonalOutlier o = new SeasonalOutlier(v.Position);
             o.setZeroEnded(v.zeroEnded);
             return o;
         }
 
         @Override
-        public XmlSO encode(SeasonalOutlier v) throws Exception {
-            XmlSO xml = new XmlSO();
+        public XmlSeasonalOutlier marshal(SeasonalOutlier v) throws Exception {
+            XmlSeasonalOutlier xml = new XmlSeasonalOutlier();
             xml.Position = v.getPosition();
             xml.zeroEnded=v.isZeroEnded();
             return xml;

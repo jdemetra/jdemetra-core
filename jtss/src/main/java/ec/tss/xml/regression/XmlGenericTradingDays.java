@@ -16,26 +16,22 @@
  */
 package ec.tss.xml.regression;
 
-import ec.tstoolkit.timeseries.DayClustering;
-import ec.tstoolkit.timeseries.calendars.GenericTradingDays;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import ec.tstoolkit.timeseries.regression.GregorianCalendarVariables;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  *
  * @author Jean Palate
  */
 @XmlRootElement(name = XmlGenericTradingDays.NAME)
-@XmlType(name=XmlGenericTradingDays.NAME)
-public class XmlGenericTradingDays extends XmlVariable{
-    
-    static final String RNAME="genericTradingDays", NAME=RNAME+"Type";
+@XmlType(name = XmlGenericTradingDays.NAME)
+public class XmlGenericTradingDays extends XmlVariable {
 
-    static class Adapter implements ITsVariableAdapter<XmlGenericTradingDays, GregorianCalendarVariables> {
+    static final String RNAME = "genericTradingDays", NAME = RNAME + "Type";
+
+    static class Adapter extends TsVariableAdapter<XmlGenericTradingDays, GregorianCalendarVariables> {
 
         @Override
         public Class<XmlGenericTradingDays> getXmlType() {
@@ -48,15 +44,14 @@ public class XmlGenericTradingDays extends XmlVariable{
         }
 
         @Override
-        public GregorianCalendarVariables decode(XmlGenericTradingDays v) throws Exception {
+        public GregorianCalendarVariables unmarshal(XmlGenericTradingDays v) throws Exception {
             return GregorianCalendarVariables.getDefault(TradingDaysType.TradingDays);
         }
 
         @Override
-        public XmlGenericTradingDays encode(GregorianCalendarVariables v) throws Exception {
+        public XmlGenericTradingDays marshal(GregorianCalendarVariables v) throws Exception {
             return new XmlGenericTradingDays();
         }
-
 
     }
 }

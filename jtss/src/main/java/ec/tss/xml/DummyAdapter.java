@@ -15,15 +15,25 @@
 * limitations under the Licence.
 */
 
+
 package ec.tss.xml;
+
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  *
  * @author Jean Palate
  */
-public interface IXmlMapper<O, X> {
+public class DummyAdapter <O> extends XmlAdapter<O, O> {
 
-    O fromXml(X xml);
+    @Override
+    public O unmarshal(O v) throws Exception {
+        return v;
+    }
 
-    X toXml(O impl);
+    @Override
+    public O marshal(O v) throws Exception {
+        return v;
+    }
+
 }

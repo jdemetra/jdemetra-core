@@ -1052,7 +1052,7 @@ public final class InformationSet implements Cloneable {
     public boolean update(InformationSet info) {
         for (Entry<String, IndexedObject<?>> kv : info.information_.entrySet()) {
             if (kv.getValue().obj instanceof InformationSet) {
-                InformationSet subset = getSubSet(kv.getKey());
+                InformationSet subset = subSet(kv.getKey());
                 if (subset == null) {
                     return false;
                 } else {

@@ -25,16 +25,6 @@ limitations under the Licence.
 
     <xs:include schemaLocation="core.xsd"/>
 
-    <!--Utilities-->
-
-    <xs:complexType name="WeightedItem">
-        <xs:sequence>
-            <xs:element name="Item" type="xs:string" />
-            <xs:element name="Weight" type="xs:double" />
-        </xs:sequence>
-        <xs:attribute name="ref" type="xs:IDREF"/>
-    </xs:complexType>
-
     <!--Calendars-->
 
     <xs:simpleType name="DayEvent">
@@ -57,6 +47,30 @@ limitations under the Licence.
             <xs:enumeration value="Halloween" />
         </xs:restriction>
     </xs:simpleType>
+
+  <xs:simpleType name="LengthOfPeriodEnum">
+    <xs:annotation>
+      <xs:documentation>
+        Leap year or equivalent
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="LeapYear" />
+      <xs:enumeration value="LengthOfPeriod" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="TradingDaysEnum">
+    <xs:annotation>
+      <xs:documentation>
+        Trading days or equivalent
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="TradingDays" />
+      <xs:enumeration value="WorkingDays" />
+    </xs:restriction>
+  </xs:simpleType>
 
   <xs:complexType name="DayType" abstract="true">
       <xs:attribute name="Weight" type="xs:double" use="optional"/>
@@ -140,7 +154,7 @@ limitations under the Licence.
     </xs:complexType>
 
     <xs:complexType name="AbstractCalendarType" abstract="true">
-        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="name" type="xs:ID" use="required" />
     </xs:complexType>
 
     <xs:complexType name="NationalCalendarType">
@@ -187,8 +201,8 @@ limitations under the Licence.
         <xs:complexContent>
             <xs:extension base="tss:AbstractCalendarType">
                 <xs:sequence>
-                    <xs:element name="StartCalendar" type="xs:string" />
-                    <xs:element name="EndCalendar" type="xs:string" />
+                    <xs:element name="StartCalendar" type="xs:IDREF" />
+                    <xs:element name="EndCalendar" type="xs:IDREF" />
                     <xs:element name="CalendarBreak" type="xs:date" />
                 </xs:sequence>
             </xs:extension>

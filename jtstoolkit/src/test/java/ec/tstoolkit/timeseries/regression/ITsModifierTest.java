@@ -63,9 +63,8 @@ public class ITsModifierTest {
     }
 }
 
-class TramoExpander implements ITsModifier {
+class TramoExpander extends AbstractTsModifier {
 
-    private final ITsVariable var;
     private final PreprocessingModel model;
 
     static TsData of(ITsVariable v) {
@@ -82,6 +81,7 @@ class TramoExpander implements ITsModifier {
     }
 
     TramoExpander(ITsVariable var, TramoSpecification spec) {
+        super(var);
         TsData s = of(var);
         if (s == null) {
             throw new IllegalArgumentException();
@@ -91,13 +91,8 @@ class TramoExpander implements ITsModifier {
     }
 
     TramoExpander(TsData s, TramoSpecification spec) {
-        var = new TsVariable(s);
+        super(new TsVariable(s));
         model = spec.build().process(s, new ModellingContext());
-    }
-
-    @Override
-    public ITsVariable getVariable() {
-        return var;
     }
 
     @Override

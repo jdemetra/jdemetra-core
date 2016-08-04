@@ -45,6 +45,9 @@ public class XmlParameter implements IXmlConverter<Parameter> {
     /**
      *
      */
+    @XmlAttribute
+    public Integer index;
+    
     @XmlElement
     public Double Value;
     /**

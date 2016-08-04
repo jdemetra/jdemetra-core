@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *
  * @author Jean Palate
  */
-public abstract class XmlOutlier extends XmlVariable {
+public abstract class XmlOutlier extends XmlRegressionVariable {
 
     @XmlElement
     @XmlJavaTypeAdapter(XmlDayAdapter.class)

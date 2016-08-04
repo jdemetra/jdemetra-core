@@ -16,7 +16,6 @@
  */
 package ec.demetra.xml.regression;
 
-import ec.tstoolkit.timeseries.DayClustering;
 import ec.tstoolkit.timeseries.calendars.GenericTradingDays;
 import ec.tstoolkit.timeseries.regression.GenericTradingDaysVariables;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -32,7 +31,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @XmlRootElement(name = XmlGenericTradingDays.RNAME)
 @XmlType(name = XmlGenericTradingDays.NAME)
-public class XmlGenericTradingDays extends XmlVariable {
+public class XmlGenericTradingDays extends XmlModifiableRegressionVariable {
 
     static final String RNAME = "GenericTradingDays", NAME = RNAME + "Type";
 
@@ -43,8 +42,8 @@ public class XmlGenericTradingDays extends XmlVariable {
     @XmlAttribute
     public boolean contrasts;
 
-    @ServiceProvider(service = ITsVariableAdapter.class)
-    public static class Adapter implements ITsVariableAdapter<XmlGenericTradingDays, GenericTradingDaysVariables> {
+    @ServiceProvider(service = TsVariableAdapter.class)
+    public static class Adapter extends TsVariableAdapter<XmlGenericTradingDays, GenericTradingDaysVariables> {
 
         @Override
         public Class<XmlGenericTradingDays> getXmlType() {
@@ -57,7 +56,7 @@ public class XmlGenericTradingDays extends XmlVariable {
         }
 
         @Override
-        public GenericTradingDaysVariables decode(XmlGenericTradingDays v) throws Exception {
+        public GenericTradingDaysVariables unmarshal(XmlGenericTradingDays v) throws Exception {
             ec.tstoolkit.timeseries.DayClustering clustering = ec.tstoolkit.timeseries.DayClustering.create(v.DayClustering);
             
             GenericTradingDays gtd;
@@ -69,7 +68,7 @@ public class XmlGenericTradingDays extends XmlVariable {
         }
 
         @Override
-        public XmlGenericTradingDays encode(GenericTradingDaysVariables v) throws Exception {
+        public XmlGenericTradingDays marshal(GenericTradingDaysVariables v) throws Exception {
             XmlGenericTradingDays xml = new XmlGenericTradingDays();
             xml.contrasts=v.getCore().getContrastGroup()>=0;
             xml.DayClustering=v.getCore().getClustering().getGroupsDefinition();

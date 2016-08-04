@@ -16,18 +16,10 @@
  */
 package ec.demetra.xml.regression;
 
-import ec.tss.xml.IXmlAdapter;
-import ec.tstoolkit.design.ServiceDefinition;
-import ec.tstoolkit.timeseries.regression.ITsVariable;
-
 /**
  *
  * @author Jean Palate
- * @param <V>
- * @param <X>
  */
-@ServiceDefinition
-public interface ITsVariableAdapter<X extends XmlVariable, V extends ITsVariable> extends IXmlAdapter<X, V>{
-    public abstract Class<V> getValueType();
-    public abstract Class<X> getXmlType();
+public class XmlRegressionVariableModifier {
+    
 }

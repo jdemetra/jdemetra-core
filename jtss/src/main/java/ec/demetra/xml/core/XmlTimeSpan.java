@@ -16,21 +16,27 @@
 */
 
 
-package ec.tss.xml;
+package ec.demetra.xml.core;
+
+
+import ec.tss.xml.XmlDayAdapter;
+import ec.tstoolkit.timeseries.Day;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  *
- * @author Jean Palate
+ * @author Kristof Bayens
  */
-public class StringMapper<O> implements IXmlMapper<O, String> {
-
-    @Override
-    public O fromXml(String xml) {
-        return null;
-    }
-
-    @Override
-    public String toXml(O impl) {
-        return impl.toString();
-    }
+@XmlType
+public class XmlTimeSpan {
+    @XmlElement
+    @XmlJavaTypeAdapter(XmlDayAdapter.class)
+    public Day Start;
+    
+    @XmlElement
+    @XmlJavaTypeAdapter(XmlDayAdapter.class)
+    public Day End;
+    
 }

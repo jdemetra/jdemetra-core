@@ -16,21 +16,20 @@
 */
 
 
-package ec.tss.xml;
+package ec.demetra.xml.core;import ec.tss.xml.*;
+
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  *
- * @author Jean Palate
+ * @author Kristof Bayens
  */
-public class DummyMapper <O> implements IXmlMapper<O, O> {
-
-    @Override
-    public O fromXml(O xml) {
-        return xml;
-    }
-
-    @Override
-    public O toXml(O impl) {
-        return impl;
-    }
+@XmlType
+public class XmlRange {
+    @XmlElement
+    public Integer First;
+    @XmlElement
+    public Integer Last;
 }
