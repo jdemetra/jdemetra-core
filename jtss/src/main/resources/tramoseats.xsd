@@ -9,6 +9,7 @@ and open the template in the editor.
            targetNamespace="ec/eurostat/jdemetra/sa/tramoseats"
            xmlns:tss="ec/eurostat/jdemetra/core"
            xmlns:sa="ec/eurostat/jdemetra/sa"
+           xmlns:sabench="ec/eurostat/jdemetra/sa/benchmarking"
            xmlns:trs="ec/eurostat/jdemetra/sa/tramoseats"
            xmlns:modelling="ec/eurostat/jdemetra/modelling"
            xmlns:regarima="ec/eurostat/jdemetra/modelling/regarima"
@@ -18,9 +19,33 @@ and open the template in the editor.
     <xs:import schemaLocation="regarima.xsd" namespace="ec/eurostat/jdemetra/core"/>
     <xs:import schemaLocation="processing.xsd" namespace="ec/eurostat/jdemetra/core"/>
     <xs:import schemaLocation="sacore.xsd" namespace="ec/eurostat/jdemetra/sa"/>
+    <xs:import schemaLocation="sabenchmarking.xsd" namespace="ec/eurostat/jdemetra/sa/benchmarking"/>
     <xs:import schemaLocation="modelling.xsd" namespace="ec/eurostat/jdemetra/modelling"/>
  
     <!--Enums-->
+
+    <xs:simpleType name="TradingDaysTestEnum">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="JointF"/>
+            <xs:enumeration value="T"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="EasterHolidayEnum">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="Standard"/>
+            <xs:enumeration value="IncludeEaster"/>
+            <xs:enumeration value="IncludeEasterMonday"/>
+        </xs:restriction>
+    </xs:simpleType>
 
     <xs:simpleType name="ApproximationModeEnum">
         <xs:annotation>
@@ -89,6 +114,17 @@ and open the template in the editor.
         </xs:choice>
     </xs:group>
 
+    <xs:complexType name="SeriesSpecType">
+        <xs:complexContent>
+            <xs:extension base="modelling:SeriesSpecType">
+                <xs:sequence>
+                    <xs:element name="PreliminaryChecks" type="xs:boolean" default="true" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
     <xs:complexType name="TransformationSpecType">
         <xs:complexContent>
             <xs:extension base="modelling:TransformationSpecType">
@@ -105,6 +141,14 @@ and open the template in the editor.
         <xs:complexContent>
             <xs:extension base="modelling:EstimationSpecType">
                 <xs:sequence>
+                    <xs:element name="Span" type="tss:PeriodSelectionType" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Defines the time domain over which the model is estimated.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="Precision" type="xs:double" minOccurs="0" default="0.0000001"/>
                     <xs:element name="EML" type="xs:boolean" minOccurs="0" default="true">
                         <xs:annotation>
                             <xs:documentation>
@@ -230,52 +274,83 @@ and open the template in the editor.
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
+            <xs:element name="AmiCompare" type="xs:boolean" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="AcceptDefault" type="xs:boolean" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
         </xs:sequence>
     </xs:complexType>
 
-
-    <xs:complexType name="ArimaSpecType">
-        <xs:annotation>
-            <xs:documentation>
-            </xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:choice minOccurs="0">
-                <xs:element name="MeanCorrection" type="xs:boolean"/>
-                <xs:element name="Mean" type="tss:ParameterType"/>
-            </xs:choice>
-            <xs:choice>
-                <xs:element name="Orders" type="tss:SARIMA_OrderType"/>
-                <xs:element name="Model" type="tss:SARIMA_ModelType"/>
-            </xs:choice>
-        </xs:sequence>
-    </xs:complexType>
 
     <!--CalendarSpec-->
 
-    <xs:complexType name="TradingDaysSpecType">
+    <xs:complexType name="WaldTradingDaysSelectionType">
+        <xs:attribute name="ftest" type="tss:Probability" default="0.01" use="optional"/>
+        <xs:attribute name="dftest" type="xs:double" default="1.96" use="optional"/>
+        <xs:attribute name="lptest" type="xs:double" default="1.96" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="FTradingDaysSelectionType">
+        <xs:attribute name="ftest" type="tss:Probability" default="0.01" use="optional"/>
+        <xs:attribute name="lptest" type="xs:double" default="1.96" use="optional"/>
+    </xs:complexType>
+    
+    <xs:complexType name="AutomaticTradingDaysSpecType">
         <xs:sequence>
-            <xs:element name="Calendar" type="xs:string" minOccurs="0"/>
-            <xs:element name="TdOption" type="tss:TradingDaysEnum"/>
-            <xs:element name="LpOption" type="tss:LengthOfPeriodEnum" minOccurs="0"/>
+            <xs:element name="Calendar" type="xs:IDREF" minOccurs="0"/>
+            <xs:choice>
+                <xs:element name="WaldTest" type="trs:WaldTradingDaysSelectionType"/>
+                <xs:element name="FTest" type="trs:FTradingDaysSelectionType"/>
+            </xs:choice>
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="DefaultTradingDaysSpecType">
+        <xs:complexContent>
+            <xs:extension base="modelling:DefaultTradingDaysSpecType">
+                <xs:sequence>
+                    <xs:element name ="Test" type="trs:TradingDaysTestEnum" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="StockTradingDaysSpecType">
+        <xs:complexContent>
+            <xs:extension base="modelling:StockTradingDaysSpecType">
+                <xs:sequence>
+                    <xs:element name ="Test" type="trs:TradingDaysTestEnum" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="TradingDaysSpecType">
+        <xs:choice>
+            <xs:element name="Automatic" type="trs:AutomaticTradingDaysSpecType"/>
+            <xs:element name="Default" type="trs:DefaultTradingDaysSpecType"/>
+            <xs:element name="Stock" type="trs:StockTradingDaysSpecType"/>
+            <xs:element name="User" type="modelling:UserTradingDaysSpecType"/>
+        </xs:choice>
+    </xs:complexType>
+
     <xs:complexType name="EasterSpecType">
-        <xs:sequence>
-            <xs:element name="Duration" minOccurs="0">
-                <xs:simpleType>
-                    <xs:list>
-                        <xs:simpleType>
-                            <xs:restriction base="xs:unsignedShort">
-                                <xs:minInclusive value="1"/>
-                                <xs:maxInclusive value="15"/>
-                            </xs:restriction>
-                        </xs:simpleType>
-                    </xs:list>
-                </xs:simpleType>
-            </xs:element>
-        </xs:sequence>
+        <xs:complexContent>
+            <xs:extension base="modelling:EasterSpecType">
+                <xs:sequence>
+                    <xs:element name="Test" type="xs:boolean" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="option" type="trs:EasterHolidayEnum" default="IncludeEaster" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
 
@@ -300,7 +375,7 @@ and open the template in the editor.
                     <xs:element name="Types" type="xs:NMTOKENS">
                         <xs:annotation>
                             <xs:documentation>
-                                Tramo Code AIO. Types of outliers that are considered.
+                                Types of outliers that are considered.
                             </xs:documentation>
                         </xs:annotation>
                     </xs:element>
@@ -463,13 +538,14 @@ and open the template in the editor.
         <xs:complexContent>
             <xs:extension base="modelling:ModellingSpecificationType">
                 <xs:sequence>
+                    <xs:element name="Series" type="trs:SeriesSpecType" minOccurs="0"/>
                     <xs:element name="Transformation" type="trs:TransformationSpecType" minOccurs="0"/>
                     <xs:element name="Estimation" type="trs:EstimationSpecType" minOccurs="0"/>
                     <xs:element name="Regression" type="trs:RegressionSpecType" minOccurs="0"/>
                     <xs:element name="Calendar" type="trs:CalendarSpecType" minOccurs="0"/>
                     <xs:element name="Outliers" type="trs:OutlierSpecType" minOccurs="0"/>
                     <xs:choice>
-                        <xs:element name="Arima" type="trs:ArimaSpecType" minOccurs="0"/>
+                        <xs:element name="Arima" type="modelling:ArimaSpecType" minOccurs="0"/>
                         <xs:element name="AutoModelling" type="trs:AutoModellingSpecType" minOccurs="0"/>
                     </xs:choice>
                 </xs:sequence>
@@ -551,9 +627,11 @@ and open the template in the editor.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="trs:TramoSpecificationType">
+            <xs:extension base="sa:SaSpecificationType">
                 <xs:sequence>
-                    <xs:element name="Seats" type="trs:SeatsSpecType" minOccurs="0"/>
+                    <xs:element name="Preprocessing" type="trs:TramoSpecificationType" minOccurs="0"/>
+                    <xs:element name="Decomposition" type="trs:SeatsSpecType"/>
+                    <xs:element name="Benchmarking" type="sabench:CholetteType" minOccurs="0"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

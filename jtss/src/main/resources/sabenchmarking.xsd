@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<xs:schema version="0.1.0"
+           targetNamespace="ec/eurostat/jdemetra/sa/benchmarking"
+           xmlns:tss="ec/eurostat/jdemetra/core"
+           xmlns:sa="ec/eurostat/jdemetra/sa"
+           xmlns:bench="ec/eurostat/jdemetra/benchmarking"
+           xmlns:sabench="ec/eurostat/jdemetra/sa/benchmarking"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+    
+    <xs:import schemaLocation="sacore.xsd" namespace="ec/eurostat/jdemetra/sa"/>
+    <xs:import schemaLocation="benchmarking.xsd" namespace="ec/eurostat/jdemetra/benchmarking"/>
+
+
+    <xs:simpleType name="BenchmarkingTargetEnum">
+        <xs:annotation>
+            <xs:documentation>
+             </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base ="xs:NMTOKEN">
+            <xs:enumeration value="Series"/>
+            <xs:enumeration value="CalendarAdjustedSeries"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="TargetEnum">
+        <xs:restriction base="sa:SaComponentEnum">
+            <xs:enumeration value="Series"/>
+            <xs:enumeration value="CalendarAdjusted"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="BenchmarkingType" abstract="true">
+        <xs:sequence>
+            <xs:choice>
+                <xs:element name="Target" type="sabench:TargetEnum"/>
+                <xs:element name="UserTarget" type="xs:IDREF"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="CholetteType">
+        <xs:complexContent>
+            <xs:extension base="sabench:BenchmarkingType">
+                <xs:sequence>
+                    <xs:element name="Method" type="bench:UnivariateCholetteMethodType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+</xs:schema>

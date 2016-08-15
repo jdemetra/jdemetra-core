@@ -24,7 +24,7 @@ public class Constants {
     public static final String AUTHORITY="ec/eurostat",
             CORE=AUTHORITY+"/jdemetra/core",
             MODELLING=AUTHORITY+"/jdemetra/modelling",
-            SA=AUTHORITY+"jdemetra/sa", 
+            SA=AUTHORITY+"/jdemetra/sa", 
             TRAMOSEATS=SA+"/tramoseats",
             X13=SA+"/x13";
             
