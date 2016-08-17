@@ -37,11 +37,11 @@ public class XmlVariableWindow extends XmlRegressionVariableModifier{
 
     @XmlElement
     @XmlJavaTypeAdapter(XmlDayAdapter.class)
-    public Day Start;
+    public Day From;
     
     @XmlElement
     @XmlJavaTypeAdapter(XmlDayAdapter.class)
-    public Day End;
+    public Day To;
 
     @ServiceProvider(service = TsModifierAdapter.class)
     public static class Adapter extends TsModifierAdapter<XmlVariableWindow, TsVariableWindow> {
@@ -58,15 +58,15 @@ public class XmlVariableWindow extends XmlRegressionVariableModifier{
 
         @Override
         public TsVariableWindow unmarshal(XmlVariableWindow v) throws Exception {
-            TsVariableWindow o = new TsVariableWindow(null, v.Start, v.End);
+            TsVariableWindow o = new TsVariableWindow(null, v.From, v.To);
             return o;
         }
 
         @Override
         public XmlVariableWindow marshal(TsVariableWindow v) throws Exception {
             XmlVariableWindow xml = new XmlVariableWindow();
-            xml.Start = v.getStart();
-            xml.End=v.getEnd();
+            xml.From = v.getStart();
+            xml.To=v.getEnd();
             return xml;
         }
     }

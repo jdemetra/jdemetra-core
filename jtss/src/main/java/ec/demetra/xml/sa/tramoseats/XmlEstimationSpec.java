@@ -34,10 +34,10 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = XmlEstimationSpec.NAME)
 public class XmlEstimationSpec implements IXmlConverter<EstimateSpec> {
 
-    @XmlElement(name = "Span", namespace=Constants.MODELLING)
+    @XmlElement(name = "Span")
     public XmlPeriodSelection span;
 
-    @XmlElement(name = "Precision", namespace=Constants.MODELLING)
+    @XmlElement(name = "Precision")
     public Double tol;
 
     @XmlElement(name = "EML")

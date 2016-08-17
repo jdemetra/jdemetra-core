@@ -68,8 +68,8 @@ public class XmlVariablesTest {
         xvar.vars.add(xout);
         xvar.vars.add(xtd);
         XmlVariableWindow xwnd=new XmlVariableWindow();
-        xwnd.Start=new TsPeriod(TsFrequency.Yearly, 2000, 0).firstday();
-        xwnd.End=new TsPeriod(TsFrequency.Yearly, 2010, 0).lastday();
+        xwnd.From=new TsPeriod(TsFrequency.Yearly, 2000, 0).firstday();
+        xwnd.To=new TsPeriod(TsFrequency.Yearly, 2010, 0).lastday();
         xtd.modifiers.add(xwnd);
         
         FileOutputStream ostream = new FileOutputStream(FILE);

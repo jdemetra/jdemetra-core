@@ -13,6 +13,15 @@ and open the template in the editor.
            elementFormDefault="qualified">
     
     <xs:import schemaLocation="regression.xsd" namespace="ec/eurostat/jdemetra/core"/>
+    <xs:import schemaLocation="arima.xsd" namespace="ec/eurostat/jdemetra/core"/>
+
+    <xs:complexType name="SeriesSpecType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>
+                Estimation of the model
+            </xs:documentation>
+        </xs:annotation>
+    </xs:complexType>
 
     <xs:complexType name="TransformationSpecType" abstract="true">
         <xs:annotation>
@@ -72,16 +81,6 @@ and open the template in the editor.
                 Estimation of the model
             </xs:documentation>
         </xs:annotation>
-        <xs:sequence>
-            <xs:element name="Span" type="tss:PeriodSelectionType" minOccurs="0">
-                <xs:annotation>
-                    <xs:documentation>
-                        Defines the time domain over which the model is estimated.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="Precision" type="xs:double" minOccurs="0" default="0.0000001"/>
-        </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ModellingSpecificationType" abstract="true">
@@ -110,5 +109,136 @@ and open the template in the editor.
         </xs:sequence>
     </xs:complexType>
 
+    <!--Selection tests-->
+    
+    <xs:complexType name="AicTestType">
+        <xs:sequence>
+             <xs:choice minOccurs="0">
+                <xs:element name="AicDiff" type="xs:double"/>
+                <xs:element name="PValue" type="tss:Probability"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="DistributionEnum">
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="Normal"/>
+            <xs:enumeration value="T"/>
+            <xs:enumeration value="Chi2"/>
+            <xs:enumeration value="F"/>
+            <xs:enumeration value="LogNormal"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="TestEnum">
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="TwoSided"/>
+            <xs:enumeration value="Lower"/>
+            <xs:enumeration value="Upper"/>
+            <xs:enumeration value="Point"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="TestType">
+        <xs:sequence>
+            <xs:element name="Distribution" type="modelling:DistributionEnum"/>
+            <xs:choice minOccurs="0">
+                <xs:element name="PValue" type="tss:Probability"/>
+                <xs:element name="Value" type="xs:double"/>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="TestType" type="modelling:TestEnum" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="FTestType">
+        <xs:complexContent>
+            <xs:restriction base="modelling:TestType">
+                <xs:sequence>
+                    <xs:element name="Distribution" type="modelling:DistributionEnum" fixed="F"/>
+                </xs:sequence>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="TTestType">
+        <xs:complexContent>
+            <xs:restriction base="modelling:TestType">
+                <xs:sequence>
+                    <xs:element name="Distribution" type="modelling:DistributionEnum" fixed="T"/>
+                </xs:sequence>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="Chi2TestType">
+        <xs:complexContent>
+            <xs:restriction base="modelling:TestType">
+                <xs:sequence>
+                    <xs:element name="Distribution" type="modelling:DistributionEnum" fixed="Chi2"/>
+                </xs:sequence>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="MeanCorrectionType">
+        <xs:sequence>
+            <xs:choice minOccurs="0">
+                <xs:element name="Value" type="tss:ParameterType"/>
+                <xs:element name="Test"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ArimaSpecType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Mean" type="modelling:MeanCorrectionType"/>
+            <xs:choice>
+                <xs:element name="Orders" type="tss:SARIMA_OrderType"/>
+                <xs:element name="Model" type="tss:SARIMA_ModelType"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <!--Calendar effects-->
+
+    <xs:complexType name="UserTradingDaysSpecType">
+        <xs:sequence>
+            <xs:element name="Variables" type="xs:IDREFS"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="StockTradingDaysSpecType">
+        <xs:sequence>
+            <xs:element name="Calendar" type="xs:IDREF" minOccurs="0"/>
+            <xs:element name="W" type="xs:unsignedShort"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DefaultTradingDaysSpecType">
+        <xs:sequence>
+            <xs:element name="Calendar" type="xs:IDREF" minOccurs="0"/>
+            <xs:element name="TdOption" type="tss:TradingDaysEnum"/>
+            <xs:element name="LpOption" type="tss:LengthOfPeriodEnum" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="EasterSpecType">
+        <xs:sequence>
+            <xs:element name="Duration" minOccurs="0">
+                <xs:simpleType>
+                    <xs:restriction base="xs:unsignedShort">
+                        <xs:minInclusive value="1"/>
+                        <xs:maxInclusive value="15"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="julian" type="xs:boolean" default="false" use="optional"/>
+    </xs:complexType>
 
 </xs:schema>
