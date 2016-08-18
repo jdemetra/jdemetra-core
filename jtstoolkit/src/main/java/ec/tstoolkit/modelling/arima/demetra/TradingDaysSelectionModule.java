@@ -16,8 +16,6 @@
  */
 package ec.tstoolkit.modelling.arima.demetra;
 
-import ec.tstoolkit.modelling.arima.tramo.*;
-import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.arima.estimation.LikelihoodStatistics;
 import ec.tstoolkit.dstats.F;
 import ec.tstoolkit.dstats.ProbabilityType;
@@ -29,19 +27,16 @@ import ec.tstoolkit.modelling.arima.*;
 import ec.tstoolkit.timeseries.DayClustering;
 import ec.tstoolkit.timeseries.calendars.GenericTradingDays;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
-import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import ec.tstoolkit.timeseries.regression.*;
-import java.util.List;
 
 /**
- * * @author gianluca, jean Correction 22/7/2014. pre-specified Easter effect
- * was not handled with auto-td
+ *
  */
 public class TradingDaysSelectionModule extends DemetraModule implements IPreprocessingModule {
 
     private static final String REGS = "Regression variables";
 
-    private static final double DEF_MODEL_EPS = .01, DEF_CONSTRAINT_EPS = .03;
+    private static final double DEF_MODEL_EPS = .01, DEF_CONSTRAINT_EPS = .01;
     private static final GenericTradingDays[] DEF_TD
             = new GenericTradingDays[]{
                 GenericTradingDays.contrasts(DayClustering.TD7),
@@ -88,7 +83,7 @@ public class TradingDaysSelectionModule extends DemetraModule implements IPrepro
     public ProcessingResult process(ModellingContext context) {
         tdStats = new LikelihoodStatistics[tdVars.length];
         // Computes the more general model, the parameters are kept in more restrivitve models
-        PreprocessingModel tdm = createModel(context, tdVars[0], LengthOfPeriodType.None);
+        PreprocessingModel tdm = createModel(context, tdVars[0], LengthOfPeriodType.LeapYear);
         if (tdm == null) {
             return ProcessingResult.Failed;
         }
@@ -102,7 +97,7 @@ public class TradingDaysSelectionModule extends DemetraModule implements IPrepro
 
         // compute the other models
         for (int i = 1; i < tdVars.length; ++i) {
-            tdStats[i] = check(tdVars[i], LengthOfPeriodType.None);
+            tdStats[i] = check(tdVars[i], LengthOfPeriodType.LeapYear);
         }
 
         calcProb();
@@ -143,8 +138,8 @@ public class TradingDaysSelectionModule extends DemetraModule implements IPrepro
         ConcentratedLikelihood ll = tdModel.estimation.getLikelihood();
         int df = ll.getN() - ll.getNx() - nhp;
         fstat.setDFDenom(df);
-        int nall=tdVars[0].getCount();
-        double ftd = (ntdStats.SsqErr - tdStats[0].SsqErr) / ( nall * sigma);
+        int nall = tdVars[0].getCount();
+        double ftd = (ntdStats.SsqErr - tdStats[0].SsqErr) / (nall * sigma);
         if (ftd > 0) {
             fstat.setDFNum(nall);
             ptd[0] = fstat.getProbability(ftd, ProbabilityType.Upper);
@@ -153,8 +148,8 @@ public class TradingDaysSelectionModule extends DemetraModule implements IPrepro
         bic[tdVars.length] = ntdStats.BICC;
         for (int i = 1; i < ptd.length; ++i) {
             bic[i] = tdStats[i].BICC;
-            int ncur = tdVars[i].getCount(), nprev=tdVars[i-1].getCount(), ndel = nprev - ncur;
-            double fdel = (tdStats[i].SsqErr - tdStats[i-1].SsqErr) / (ndel * sigma);
+            int ncur = tdVars[i].getCount(), nprev = tdVars[i - 1].getCount(), ndel = nprev - ncur;
+            double fdel = (tdStats[i].SsqErr - tdStats[i - 1].SsqErr) / (ndel * sigma);
             if (fdel > 0) {
                 fstat.setDFNum(ndel);
                 pdel[i - 1] = fstat.getProbability(fdel, ProbabilityType.Upper);
@@ -346,5 +341,26 @@ public class TradingDaysSelectionModule extends DemetraModule implements IPrepro
      */
     public double[] getBic() {
         return bic;
+    }
+
+    /**
+     * @return the tdVars
+     */
+    public GenericTradingDays[] getTdVars() {
+        return tdVars;
+    }
+
+    /**
+     * @return the tdModel
+     */
+    public PreprocessingModel getTdModel() {
+        return tdModel;
+    }
+
+    /**
+     * @return the ntdStats
+     */
+    public LikelihoodStatistics getNtdStats() {
+        return ntdStats;
     }
 }
