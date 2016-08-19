@@ -17,13 +17,13 @@
 package ec.tstoolkit.modelling.arima.demetra;
 
 import ec.tstoolkit.arima.estimation.LikelihoodStatistics;
-import ec.tstoolkit.dstats.F;
-import ec.tstoolkit.dstats.ProbabilityType;
+import ec.tstoolkit.arima.estimation.RegArimaEstimation;
 import ec.tstoolkit.eco.ConcentratedLikelihood;
 import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.*;
+import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.timeseries.DayClustering;
 import ec.tstoolkit.timeseries.calendars.GenericTradingDays;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
@@ -50,6 +50,7 @@ public class TradingDaysSelectionModule2 extends DemetraModule implements IPrepr
             };
     private static final double DEF_TVAL = 1.96;
 
+    private final boolean fix;
     private final GenericTradingDays[] tdVars;
     private PreprocessingModel[] models;
     private Comparator<PreprocessingModel> comparator;
@@ -57,16 +58,19 @@ public class TradingDaysSelectionModule2 extends DemetraModule implements IPrepr
     private int choice;
 
     public TradingDaysSelectionModule2() {
+        fix = false;
         tdVars = DEF_TD;
         comparator = (PreprocessingModel l1, PreprocessingModel l2) -> Double.compare(-l1.estimation.getStatistics().AIC, -l2.estimation.getStatistics().AIC);
     }
 
-    public TradingDaysSelectionModule2(Comparator<PreprocessingModel> comparator) {
+    public TradingDaysSelectionModule2(boolean fix, Comparator<PreprocessingModel> comparator) {
+        this.fix = fix;
         tdVars = DEF_TD;
         this.comparator = comparator;
     }
 
-    public TradingDaysSelectionModule2(final GenericTradingDays[] td, Comparator<PreprocessingModel> comparator) {
+    public TradingDaysSelectionModule2(boolean fix, final GenericTradingDays[] td, Comparator<PreprocessingModel> comparator) {
+        this.fix = fix;
         tdVars = td;
         this.comparator = comparator;
     }
@@ -83,27 +87,27 @@ public class TradingDaysSelectionModule2 extends DemetraModule implements IPrepr
     public ProcessingResult process(ModellingContext context) {
         models = new PreprocessingModel[tdVars.length + 1];
         // Computes the more general model, the parameters are kept in more restrivitve models
-        for (int i = 0; i < tdVars.length; ++i) {
-            models[i] = createModel(context, tdVars[i], LengthOfPeriodType.LeapYear);
+        models[0] = refModel(context, tdVars[0], LengthOfPeriodType.LeapYear);
+        for (int i = 1; i < tdVars.length; ++i) {
+            models[i] = model(tdVars[i], LengthOfPeriodType.LeapYear);
         }
-        models[tdVars.length] = createModel(context, null, LengthOfPeriodType.LeapYear);
+        models[tdVars.length] = model(null, LengthOfPeriodType.LeapYear);
         Optional<PreprocessingModel> max = Arrays.stream(models).max(comparator);
-       for (int i=0; i<models.length; ++i){
-           if (models[i]== max.get()){
-               choice=i;
-               break;
-           }
-       }
-        
+        for (int i = 0; i < models.length; ++i) {
+            if (models[i] == max.get()) {
+                choice = i;
+                break;
+            }
+        }
+
 //        addTDInfo(context, 1 - pwd, 1 - ptd, 1 - pdel, sel);
         GenericTradingDays best = choice == tdVars.length ? null : tdVars[choice];
-        context.description=backModel(context, best, checkLY(max.get())? LengthOfPeriodType.LeapYear : LengthOfPeriodType.None);
+        context.description = backModel(context, best, checkLY(max.get()) ? LengthOfPeriodType.LeapYear : LengthOfPeriodType.None);
         context.estimation = null;
         return ProcessingResult.Changed;
     }
 
- 
-    private PreprocessingModel createModel(ModellingContext context, GenericTradingDays td, LengthOfPeriodType lp) {
+    private PreprocessingModel refModel(ModellingContext context, GenericTradingDays td, LengthOfPeriodType lp) {
         ModelDescription model = context.description.clone();
         model.setAirline(context.hasseas);
         model.setMean(true);
@@ -124,6 +128,35 @@ public class TradingDaysSelectionModule2 extends DemetraModule implements IPrepr
         int nhp = model.getArimaComponent().getFreeParametersCount();
         estimation.compute(monitor(), nhp);
         cxt.estimation = estimation;
+        return cxt.current(true);
+    }
+
+    private PreprocessingModel model(GenericTradingDays td, LengthOfPeriodType lp) {
+        ModelDescription model = models[0].description.clone();
+
+        // remove previous calendar effects 
+        model.getCalendars().clear();
+        if (td != null) {
+            GenericTradingDaysVariables vars = new GenericTradingDaysVariables(td);
+            model.getCalendars().add(new Variable(vars, ComponentType.CalendarEffect, RegStatus.Accepted));
+        }
+        if (lp != LengthOfPeriodType.None) {
+            model.getCalendars().add(new Variable(new LeapYearVariable(lp), ComponentType.CalendarEffect, RegStatus.Accepted));
+        }
+        ModellingContext cxt = new ModellingContext();
+        cxt.description = model;
+        int nhp = model.getArimaComponent().getFreeParametersCount();
+        if (fix) {
+            ModelEstimation estimation = new ModelEstimation(model.buildRegArima());
+            estimation.computeLikelihood(nhp);
+            cxt.estimation = estimation;
+        } else {
+            RegArimaEstimation<SarimaModel> nmodel = monitor().optimize(model.buildRegArima());
+            ModelEstimation estimation = new ModelEstimation(nmodel.model);
+            estimation.computeLikelihood(nhp);
+            cxt.estimation = estimation;
+
+        }
         return cxt.current(true);
     }
 
@@ -159,7 +192,6 @@ public class TradingDaysSelectionModule2 extends DemetraModule implements IPrepr
         return retval;
     }
 
-
     /**
      * @return the choice
      */
@@ -177,11 +209,11 @@ public class TradingDaysSelectionModule2 extends DemetraModule implements IPrepr
     public PreprocessingModel[] getModels() {
         return models;
     }
-    
-    public LikelihoodStatistics[] statistics(){
-        LikelihoodStatistics[] stats=new LikelihoodStatistics[models.length];
-        for (int i=0; i<models.length; ++i){
-            stats[i]=models[i] != null ? models[i].estimation.getStatistics() : null;
+
+    public LikelihoodStatistics[] statistics() {
+        LikelihoodStatistics[] stats = new LikelihoodStatistics[models.length];
+        for (int i = 0; i < models.length; ++i) {
+            stats[i] = models[i] != null ? models[i].estimation.getStatistics() : null;
         }
         return stats;
     }
