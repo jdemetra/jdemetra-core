@@ -18,20 +18,16 @@ package ec.tstoolkit.modelling.arima;
 
 import ec.tstoolkit.arima.IArimaModel;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
-import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.data.TableOfBoolean;
 import ec.tstoolkit.design.Development;
-import ec.tstoolkit.dstats.Normal;
-import ec.tstoolkit.dstats.ProbabilityType;
-import ec.tstoolkit.maths.matrices.Householder;
 import ec.tstoolkit.maths.matrices.Matrix;
+import ec.tstoolkit.modelling.IRobustStandardDeviationComputer;
 import ec.tstoolkit.timeseries.regression.IOutlierFactory;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import ec.tstoolkit.utilities.DoubleList;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -43,90 +39,30 @@ import java.util.Iterator;
 public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
 
     /**
-     *
-     * @param nval
-     * @return
+     * @return the sdevComputer
      */
-    public static double calcVA(int nval) {
-        return calcVA(nval, 0.05);
+    public IRobustStandardDeviationComputer getStandardDeviationComputer() {
+        return sdevComputer;
     }
 
-    /**
-     *
-     * @param nvals
-     * @param alpha
-     * @return
-     */
-    public static double calcVA(int nvals, double alpha) {
-        Normal normal = new Normal();
-        if (nvals == 1) {
-            return normal.getProbabilityInverse(alpha / 2,
-                    ProbabilityType.Upper);
-        }
-        double n = nvals;
-        double[] y = new double[3];
-        int[] x = new int[]{2, 100, 200};
-        Matrix X = new Matrix(3, 3);
-
-        for (int i = 0; i < 3; ++i) {
-            X.set(i, 0, 1);
-            X.set(i, 2, Math.sqrt(2 * Math.log(x[i])));
-            X.set(i, 1, (Math.log(Math.log(x[i])) + Math.log(4 * Math.PI))
-                    / (2 * X.get(i, 2)));
-        }
-
-        y[0] = normal.getProbabilityInverse((1 + Math.sqrt(1 - alpha)) / 2,
-                ProbabilityType.Lower);
-        for (int i = 1; i < 3; ++i) {
-            y[i] = calcVAL(x[i], alpha);
-        }
-        // solve X b = y
-        Householder qr = new Householder(false);
-        qr.decompose(X);
-        double[] b = qr.solve(y);
-
-        double acv = Math.sqrt(2 * Math.log(n));
-        double bcv = (Math.log(Math.log(n)) + Math.log(4 * Math.PI))
-                / (2 * acv);
-        return b[0] + b[1] * bcv + b[2] * acv;
-    }
-
-    private static double calcVAL(int nvals, double alpha) {
-        if (nvals == 1) {
-            return 1.96; // normal distribution
-        }
-        double n = nvals;
-        double pmod = 2 - Math.sqrt(1 + alpha);
-        double acv = Math.sqrt(2 * Math.log(n));
-        double bcv = acv - (Math.log(Math.log(n)) + Math.log(4 * Math.PI))
-                / (2 * acv);
-        double xcv = -Math.log(-.5 * Math.log(pmod));
-        return xcv / acv + bcv;
-    }
-
-    private ArrayList<IOutlierFactory> m_o = new ArrayList<>();
-    private DoubleList m_ow = new DoubleList();
-
+    protected final IRobustStandardDeviationComputer sdevComputer;
+    private final ArrayList<IOutlierFactory> m_o = new ArrayList<>();
+    private final DoubleList m_ow = new DoubleList();
     private RegArimaModel<T> m_model;
-
     private TsDomain m_domain;
-
-    private double m_mad;
-
     private int m_lbound, m_ubound;
-
     private Matrix m_T, m_c;
 
     private TableOfBoolean m_bT;
 
     private int m_posmax = -1, m_omax = -1;
 
-    private int m_centile = 50;
-
     /**
      *
+     * @param sdevComputer
      */
-    public AbstractSingleOutlierDetector() {
+    public AbstractSingleOutlierDetector(IRobustStandardDeviationComputer sdevComputer) {
+        this.sdevComputer=sdevComputer;
     }
 
     /**
@@ -156,38 +92,14 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      */
     protected abstract boolean calc();
 
-    /**
-     *
-     * @param e
-     */
-    protected void calcMAD(IReadDataBlock e) {
-        int n = e.getLength();
-        double[] a = new double[n];
-        e.copyTo(a, 0);
-        for (int i = 0; i < n; ++i) {
-            a[i] = Math.abs(a[i]);
-        }
-        Arrays.sort(a);
-        double m = 0;
-        int nm = n * m_centile / 100;
-        if (n % 2 == 0) // n even
-        {
-            m = (a[nm - 1] + a[nm]) / 2;
-        } else {
-            m = a[nm];
-        }
-        Normal normal = new Normal();
-        double l = normal.getProbabilityInverse(0.5 + .005 * m_centile,
-                ProbabilityType.Lower);
-        m_mad = m / l;
-    }
 
     /**
      *
+     * @param all
      */
     protected void clear(boolean all) {
+        sdevComputer.reset();
         m_model = null;
-        m_mad = 0;
         m_omax = -1;
         m_posmax = -1;
         if (all) {
@@ -345,7 +257,7 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      * @return
      */
     public double getMAD() {
-        return m_mad;
+        return sdevComputer.get();
     }
 
     /**
@@ -513,14 +425,7 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
         m_omax = imax / m_T.getRowsCount();
     }
 
-    /**
-     *
-     * @param value
-     */
-    public void setMAD(double value) {
-        m_mad = value;
-    }
-
+ 
     /**
      *
      * @param pos

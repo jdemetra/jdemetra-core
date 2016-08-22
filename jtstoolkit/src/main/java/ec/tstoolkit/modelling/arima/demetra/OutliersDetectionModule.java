@@ -53,34 +53,6 @@ import java.util.List;
 public class OutliersDetectionModule extends DemetraModule implements IOutliersDetectionModule {
 
     /**
-     * @return the MAXROUND
-     */
-    public static int getMAXROUND() {
-        return MAXROUND;
-    }
-
-    /**
-     * @param aMAXROUND the MAXROUND to set
-     */
-    public static void setMAXROUND(int aMAXROUND) {
-        MAXROUND = aMAXROUND;
-    }
-
-    /**
-     * @return the MAXOUTLIERS
-     */
-    public static int getMAXOUTLIERS() {
-        return MAXOUTLIERS;
-    }
-
-    /**
-     * @param aMAXOUTLIERS the MAXOUTLIERS to set
-     */
-    public static void setMAXOUTLIERS(int aMAXOUTLIERS) {
-        MAXOUTLIERS = aMAXOUTLIERS;
-    }
-
-    /**
      * @return the estimation
      */
     public Estimation getEstimation() {
@@ -144,7 +116,7 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
     public static final double MINCV = 2.0;
 
     public OutliersDetectionModule() {
-        sod = new ExactSingleOutlierDetector(null);
+        sod = new ExactSingleOutlierDetector();
     }
 
     public OutliersDetectionModule(AbstractSingleOutlierDetector sod) {
@@ -174,10 +146,16 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
             return ProcessingResult.Failed;
         }
         try {
-            switch (method){
-                case Tramo:calcTramo(context); break;
-                case X13:calcX13(context); break;
-                case Demetra1:calcDemetra1(context); break;
+            switch (method) {
+                case Tramo:
+                    calcTramo(context);
+                    break;
+                case X13:
+                    calcX13(context);
+                    break;
+                case Demetra1:
+                    calcDemetra1(context);
+                    break;
             }
             if (!ec.tstoolkit.utilities.Comparator.equals(initial, OutlierDefinition.of(outliers_))) {
                 context.description.setOutliers(outliers_);
@@ -438,6 +416,17 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
         pc_ = pc;
     }
 
+    private double calcCv(ModellingContext context) {
+        double cv = cv_;
+        if (cv == 0) {
+            cv = ICriticalValueComputer.defaultComputer().compute(context.description.getY().length);
+        }
+        for (int i = 0; i < -selectivity_; ++i) {
+            cv *= (1 - pc_);
+        }
+        return Math.max(cv, MINCV);
+    }
+
     private void addInfo(ModelDescription desc, InformationSet information) {
         InformationSet subset = information.subSet(PreprocessingDictionary.OUTLIERS);
         subset.set("count", desc.getOutliers().size());
@@ -468,41 +457,6 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
     @Override
     public int getSelectivity() {
         return selectivity_;
-    }
-
-    /**
-     *
-     * @param n
-     * @return
-     */
-    public static double calcDefaultCriticalValue(int n) {
-        double cv;
-//        if (n < 50) {
-//            cv = 3;
-//        } else if (n < 450) {
-//            cv = 3 + 0.0025 * (n - 50);
-//        } else {
-//            cv = 4;
-//        }
-        if (n <= 50) {
-            cv = 3.3;
-        } else if (n < 450) {
-            cv = 3.3 + 0.0025 * (n - 50);
-        } else {
-            cv = 4.3;
-        }
-        return cv;
-    }
-
-    private double calcCv(ModellingContext context) {
-        double cv = cv_;
-        if (cv == 0) {
-            cv = AbstractSingleOutlierDetector.calcVA(context.description.getEstimationDomain().getLength());
-        }
-        for (int i = 0; i < -selectivity_; ++i) {
-            cv *= (1 - pc_);
-        }
-        return Math.max(cv, MINCV);
     }
 
     public void setSpan(TsPeriodSelector span) {

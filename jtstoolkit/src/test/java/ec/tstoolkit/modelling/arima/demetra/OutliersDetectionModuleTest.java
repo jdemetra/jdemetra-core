@@ -18,6 +18,7 @@ package ec.tstoolkit.modelling.arima.demetra;
 
 import data.Data;
 import ec.tstoolkit.modelling.DefaultTransformationType;
+import ec.tstoolkit.modelling.arima.ApproximateSingleOutlierDetector;
 import ec.tstoolkit.modelling.arima.ModelDescription;
 import ec.tstoolkit.modelling.arima.ModellingContext;
 import ec.tstoolkit.modelling.arima.x13.OutliersDetector;
@@ -36,7 +37,7 @@ public class OutliersDetectionModuleTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void testSomeSeries() {
         ModellingContext context = new ModellingContext();
         context.automodelling = true;
@@ -44,9 +45,10 @@ public class OutliersDetectionModuleTest {
         context.description = new ModelDescription(Data.M2, null);
         context.description.setAirline(true);
         context.description.setTransformation(DefaultTransformationType.Log);
-        OutliersDetectionModule om = new OutliersDetectionModule();
-        om.setCriticalValue(2.8);
+        OutliersDetectionModule om = new OutliersDetectionModule(new ApproximateSingleOutlierDetector());
         om.setDefault();
+        om.setCriticalValue(2.8);
+        om.setMethod(OutliersDetectionModule.Method.X13);
         int K=1000;
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < K; ++i) {

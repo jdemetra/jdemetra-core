@@ -28,6 +28,7 @@ import ec.tstoolkit.eco.RegModel;
 import ec.tstoolkit.maths.matrices.Householder;
 import ec.tstoolkit.maths.matrices.LowerTriangularMatrix;
 import ec.tstoolkit.maths.matrices.Matrix;
+import ec.tstoolkit.modelling.IRobustStandardDeviationComputer;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 
@@ -43,12 +44,20 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
     private double[] m_yl, m_b, m_w;
     private int m_n;
 
-    // EChol^-1 * dy
+    public ExactSingleOutlierDetector() {
+        this(IRobustStandardDeviationComputer.mad());
+    }
+
+    public ExactSingleOutlierDetector(IRobustStandardDeviationComputer computer) {
+        this(computer, null);
+    }
     /**
      * 
+     * @param computer
      * @param filter
      */
-    public ExactSingleOutlierDetector(IArmaFilter filter) {
+    public ExactSingleOutlierDetector(IRobustStandardDeviationComputer computer, IArmaFilter filter) {
+        super(computer);
         if (filter == null) {
             m_filter = new AnsleyFilter();
         } else {
@@ -86,8 +95,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
 
             Matrix regs = model.variables();
             if (regs == null) {
-//		calcMAD(YL);
-                calcMAD(filter(model.getY()));
+                getStandardDeviationComputer().compute(filter(model.getY()));
                 return true;
             }
 
@@ -106,7 +114,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
             m_L = qr.getR().transpose();
 
             DataBlock e = model.calcRes(new DataBlock(m_b));
-            calcMAD(filter(e));
+            getStandardDeviationComputer().compute((filter(e)));
 //	    DataBlock E = YL.deepClone();
             drcols.begin();
             do {

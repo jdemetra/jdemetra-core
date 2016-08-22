@@ -27,6 +27,7 @@ import ec.tstoolkit.eco.ConcentratedLikelihood;
 import ec.tstoolkit.eco.EcoException;
 import ec.tstoolkit.eco.Ols;
 import ec.tstoolkit.eco.RegModel;
+import ec.tstoolkit.modelling.IRobustStandardDeviationComputer;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.estimation.GlsSarimaMonitor;
 import ec.tstoolkit.sarima.estimation.HannanRissanen;
@@ -92,7 +93,7 @@ public class GeneralOutliersDetector
      */
     public GeneralOutliersDetector()
     {
-	m_sod = new ExactSingleOutlierDetector<>(null);// TrenchSingleOutlierDetector();
+	m_sod = new ExactSingleOutlierDetector(IRobustStandardDeviationComputer.mad(50, true));// TrenchSingleOutlierDetector();
     }
 
     /**

@@ -41,17 +41,20 @@ public abstract class AbstractOutlierVariable extends AbstractSingleTsVariable
      * @param medcorrection
      * @return
      */
+    @Deprecated
     public static double mad(double[] data, boolean medcorrection) {
         double[] e = data.clone();
         return calcmad(e, medcorrection);
     }
     
+    @Deprecated
     public static double mad(IReadDataBlock data, boolean medcorrection) {
         double[] e = new double[data.getLength()];
         data.copyTo(e, 0);
         return calcmad(e, medcorrection);
     }
     
+    @Deprecated
     private static double calcmad(double[] e, boolean medcorrection) {
         Arrays.sort(e);
         int n = e.length;
