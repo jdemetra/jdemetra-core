@@ -141,6 +141,7 @@ public class PredictionErrorDecomposition extends ResidualsCumulator implements
      * @param t
      * @param state
      */
+    @Override
     public void save(final int t, final ArrayState state)
     {
 	if (!state.isMissing()) {
@@ -157,6 +158,7 @@ public class PredictionErrorDecomposition extends ResidualsCumulator implements
      * @param t
      * @param state
      */
+    @Override
     public void save(final int t, final FastArrayState state)
     {
 	add(state.e, state.r * state.r);
@@ -171,6 +173,7 @@ public class PredictionErrorDecomposition extends ResidualsCumulator implements
      * @param t
      * @param state
      */
+    @Override
     public void save(final int t, final FastState state)
     {
 	add(state.e, state.f);
@@ -185,6 +188,7 @@ public class PredictionErrorDecomposition extends ResidualsCumulator implements
      * @param t
      * @param state
      */
+    @Override
     public void save(final int t, final State state)
     {
 	if (!state.isMissing()) {

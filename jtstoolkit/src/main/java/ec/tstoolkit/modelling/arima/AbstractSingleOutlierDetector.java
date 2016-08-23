@@ -38,13 +38,6 @@ import java.util.Iterator;
 @Development(status = Development.Status.Beta)
 public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
 
-    /**
-     * @return the sdevComputer
-     */
-    public IRobustStandardDeviationComputer getStandardDeviationComputer() {
-        return sdevComputer;
-    }
-
     protected final IRobustStandardDeviationComputer sdevComputer;
     private final ArrayList<IOutlierFactory> m_o = new ArrayList<>();
     private final DoubleList m_ow = new DoubleList();
@@ -62,7 +55,7 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      * @param sdevComputer
      */
     public AbstractSingleOutlierDetector(IRobustStandardDeviationComputer sdevComputer) {
-        this.sdevComputer=sdevComputer;
+        this.sdevComputer = sdevComputer;
     }
 
     /**
@@ -87,11 +80,17 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
     }
 
     /**
+     * @return the sdevComputer
+     */
+    public IRobustStandardDeviationComputer getStandardDeviationComputer() {
+        return sdevComputer;
+    }
+
+    /**
      *
      * @return
      */
     protected abstract boolean calc();
-
 
     /**
      *
@@ -169,6 +168,31 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
             for (int j = 0; j < m_o.size(); ++j) {
                 exclude(pos[i], j);
             }
+        }
+    }
+
+    /**
+     *
+     * @param pos
+     */
+    public void allow(int[] pos) {
+        if (pos == null) {
+            return;
+        }
+        for (int i = 0; i < pos.length; ++i) {
+            for (int j = 0; j < m_o.size(); ++j) {
+                allow(pos[i], j);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param pos
+     */
+    public void exclude(int pos) {
+        for (int j = 0; j < m_o.size(); ++j) {
+            exclude(pos, j);
         }
     }
 
@@ -425,7 +449,6 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
         m_omax = imax / m_T.getRowsCount();
     }
 
- 
     /**
      *
      * @param pos

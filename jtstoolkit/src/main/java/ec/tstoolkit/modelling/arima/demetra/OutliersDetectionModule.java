@@ -260,7 +260,7 @@ public class OutliersDetectionModule extends DemetraModule implements IOutliersD
                 break;
             }
         } while (round_ < MAXROUND);
-
+        estimateModel(true);
         while (!verifyModel(context)) {
             estimateModel(false);
         }

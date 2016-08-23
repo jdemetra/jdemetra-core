@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or â€“ as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or â€“ as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tstoolkit.arima.estimation;
 
 import ec.tstoolkit.arima.*;
@@ -38,9 +37,9 @@ public class AnsleyFilter implements IArmaFilter {
 
     private Matrix m_bL;
     private Polynomial m_ar, m_ma;
-    
+
     @Override
-    public AnsleyFilter  exemplar(){
+    public AnsleyFilter exemplar() {
         return new AnsleyFilter();
     }
 
@@ -53,12 +52,18 @@ public class AnsleyFilter implements IArmaFilter {
         double[] e = new double[y.getLength()];
         y.copyTo(e, 0);
         int p = m_ar.getDegree();
-        for (int i = e.length - 1; i >= p; --i) {
-            double s = 0;
-            for (int j = 1; j <= p; ++j) {
-                s += m_ar.get(j) * e[i - j];
+        int q = m_ma.getDegree();
+        if (p == 0 && q == 0) {
+            return e;
+        }
+        if (p > 0) {
+            for (int i = e.length - 1; i >= p; --i) {
+                double s = 0;
+                for (int j = 1; j <= p; ++j) {
+                    s += m_ar.get(j) * e[i - j];
+                }
+                e[i] += s;
             }
-            e[i] += s;
         }
 
         rsolve(e);
@@ -73,7 +78,7 @@ public class AnsleyFilter implements IArmaFilter {
     @Override
     public void filter(IReadDataBlock y, DataBlock yf) {
         double[] e = filter(y);
-        yf.copy(new DataBlock(e));
+        yf.copyFrom(e, 0);
     }
 
     @Override
@@ -134,8 +139,7 @@ public class AnsleyFilter implements IArmaFilter {
             if (sma.get(rows.getPosition()) != 0) {
                 row.set(sma.get(rows.getPosition()));
             }
-        }
-        while (rows.next());
+        } while (rows.next());
 
         lcholesky();
         return n;
@@ -152,8 +156,7 @@ public class AnsleyFilter implements IArmaFilter {
                 }
                 data[i] = Math.sqrt(data[i]);
             }
-        }
-        else {
+        } else {
             // The diagonal item is the first row !
             int dr = r - 1, drr = dr * dr;
             for (int i = 0, idiag = 0; i < n; ++i, idiag += r) {
@@ -229,8 +232,8 @@ public class AnsleyFilter implements IArmaFilter {
             b[i] = t;
         }
     }
-    
-    public Matrix getCholeskyFactor(){
+
+    public Matrix getCholeskyFactor() {
         return m_bL;
     }
 }
