@@ -68,12 +68,12 @@ public class X13SpecExcludefcastTest {
         x13spec.getX11Specification().setSigmavec(sigmavecOption);
 
         OutlierDefinition[] out = new OutlierDefinition[6];
-        out[0] = new OutlierDefinition(new TsPeriod(TsFrequency.Quarterly, 2008, 1), OutlierType.LS, true);
-        out[1] = new OutlierDefinition(new TsPeriod(TsFrequency.Quarterly, 2011, 1), OutlierType.AO, true);
-        out[2] = new OutlierDefinition(new TsPeriod(TsFrequency.Quarterly, 2014, 1), OutlierType.AO, true);
-        out[3] = new OutlierDefinition(new TsPeriod(TsFrequency.Quarterly, 2017, 1), OutlierType.AO, true);
-        out[4] = new OutlierDefinition(new TsPeriod(TsFrequency.Quarterly, 2020, 1), OutlierType.LS, true);
-        out[5] = new OutlierDefinition(new TsPeriod(TsFrequency.Quarterly, 2023, 1), OutlierType.AO, true);
+        out[0] = new OutlierDefinition(new TsPeriod(TsFrequency.Quarterly, 2008, 1), OutlierType.LS);
+        out[1] = new OutlierDefinition(new TsPeriod(TsFrequency.Quarterly, 2011, 1), OutlierType.AO);
+        out[2] = new OutlierDefinition(new TsPeriod(TsFrequency.Quarterly, 2014, 1), OutlierType.AO);
+        out[3] = new OutlierDefinition(new TsPeriod(TsFrequency.Quarterly, 2017, 1), OutlierType.AO);
+        out[4] = new OutlierDefinition(new TsPeriod(TsFrequency.Quarterly, 2020, 1), OutlierType.LS);
+        out[5] = new OutlierDefinition(new TsPeriod(TsFrequency.Quarterly, 2023, 1), OutlierType.AO);
         x13spec.getRegArimaSpecification().getRegression().setOutliers(out);
 
         comprest = X13ProcessingFactory.process(tsInput, x13spec);
