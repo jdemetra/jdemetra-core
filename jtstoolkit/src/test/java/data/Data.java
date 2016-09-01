@@ -134,6 +134,47 @@ public class Data {
         649, 846, 812, 742, 801, 1040, 860, 874, 848, 890, 744, 749, 838, 1050, 918, 986, 797, 923,
         975, 815, 1020, 906, 901, 1170, 912, 746, 919, 718, 714, 740};
 
+    private static final double[] us_unempl = new double[]{
+        4.4, 3.77, 3.63, 3.27,
+        5.47, 5.83, 6.4, 5.93,
+        7.53, 5.63, 4.47, 3.67,
+        4.13, 3.17, 3.07, 2.97,
+        3.6, 3.03, 3.03, 2.47,
+        3.17, 2.67, 2.57, 3.3,
+        6.13, 5.83, 5.47, 4.77,
+        5.57, 4.5, 3.77, 3.7,
+        4.73, 4.33, 3.83, 3.67,
+        4.63, 4.17, 3.83, 4.4,
+        7.4, 7.4, 6.7, 5.7,
+        6.8, 4.87, 4.9, 5.03,
+        5.97, 5.27, 5.13, 5.67,
+        7.83, 6.97, 6.3, 5.63,
+        6.47, 5.5, 5.17, 5.03,
+        6.6, 5.77, 5.2, 5.1,
+        6.17, 5.07, 4.73, 4.53,
+        5.43, 4.77, 4.17, 3.73,
+        4.2, 3.97, 3.6, 3.37,
+        4.1, 3.77, 3.83, 3.67,
+        4, 3.53, 3.6, 3.2,
+        3.63, 3.4, 3.67, 3.33,
+        4.5, 4.67, 5.17, 5.4,
+        6.5, 5.83, 5.97, 5.53,
+        6.3, 5.6, 5.57, 4.9,
+        5.43, 4.83, 4.8, 4.4,
+        5.53, 5.07, 5.53, 6.13,
+        9.07, 8.67, 8.33, 7.8,
+        8.53, 7.37, 7.6, 7.33,
+        8.23, 6.93, 6.8, 6.27,
+        6.83, 5.83, 5.9, 5.53,
+        6.2, 5.57, 5.77, 5.6,
+        6.73, 7.13, 7.5, 7.03,
+        7.97, 7.27, 7.27, 7.9,
+        9.5, 9.37, 9.7, 10.27,
+        11.17, 10, 9.13, 8.17,
+        8.43, 7.4, 7.3, 6.97,
+        7.77, 7.2, 7.07, 6.73
+    };
+
     public static final TsData X = new TsData(TsFrequency.Monthly, 1995, 0, g_exports, false);
     public static final TsData P = new TsData(TsFrequency.Monthly, 1967, 0, g_prod, false);
     public static final TsData M1 = new TsData(TsFrequency.Monthly, 1995, 0, g_m1, false);
@@ -142,6 +183,7 @@ public class Data {
     public static final TsData Y = new TsData(TsFrequency.Yearly, 1977, 0, PCRA, true);
     public static final TsData Q = new TsData(TsFrequency.Quarterly, 1977, 0, IND_PCR, true);
     public static final TsData Nile = new TsData(TsFrequency.Yearly, 1871, 0, g_nile, false);
+    public static final TsData US_UNEMPL = new TsData(TsFrequency.Quarterly, 1948, 0, us_unempl, false);
 
     /**
      * *

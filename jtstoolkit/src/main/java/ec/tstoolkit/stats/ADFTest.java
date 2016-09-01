@@ -32,6 +32,16 @@ import ec.tstoolkit.maths.matrices.UpperTriangularMatrix;
  */
 public class ADFTest {
 
+    private static final double[] tnc_01 = new double[]{-2.56574, -2.2358, -3.627};
+    private static final double[] tnc_05 = new double[]{-1.94100, -0.2686, -3.365, 31.223};
+    private static final double[] tnc_10 = new double[]{-1.61682, 0.2656, -2.714, 25.364};
+    private static final double[] tc_01 = new double[]{-3.43035, -6.5393, -16.786, -79.433};
+    private static final double[] tc_05 = new double[]{-2.86154, -2.8903, -4.234, -40.040};
+    private static final double[] tc_10 = new double[]{-2.56677, -1.5384, -2.809};
+    private static final double[] lt_01 = new double[]{-3.95877, -9.0531, -28.428, -134.155};
+    private static final double[] lt_05 = new double[]{-3.41049, -4.3904, -9.036, -45.374};
+    private static final double[] lt_10 = new double[]{-3.12705, -2.5856, -3.925, -22.380};
+
     private int k = 1; // number of lags. 
     private boolean cnt, trend;
     private Matrix x;
@@ -43,19 +53,21 @@ public class ADFTest {
         Householder qr = new Householder(true);
         qr.decompose(x);
         qr.leastSquares(y, b, e);
-        int nlast=b.getLength()-1;
+        int nlast = b.getLength() - 1;
         double ssq = e.ssq();
         double val = b.get(nlast);
-        double std =   Math.abs(Math.sqrt(ssq / e.getLength())/qr.getRDiagonal().get(nlast));
+        double std = Math.abs(Math.sqrt(ssq / e.getLength()) / qr.getRDiagonal().get(nlast));
         t = val / std;
+    }
 
-        // for testing purposes
-        double sig = ssq / e.getLength();
-        Matrix bvar;
-        Matrix u = UpperTriangularMatrix.inverse(qr.getR());
-        bvar = SymmetricMatrix.XXt(u);
-        bvar.mul(sig);
-        double std2 = Math.sqrt(bvar.get(nlast, nlast));
+    public boolean isSignificant(double eps) {
+        if (!cnt && !trend) {
+            return sign00(eps);
+        } else if (!trend) {
+            return sign10(eps);
+        } else {
+            return sign11(eps);
+        }
     }
 
     /**
@@ -172,5 +184,83 @@ public class ADFTest {
      */
     public void setTrend(boolean trend) {
         this.trend = trend;
+    }
+
+    public static double thresholdnc(double eps, int n) {
+        double[] w = null;
+        if (eps == 0.01) {
+            w = tnc_01;
+        } else if (eps == 0.05) {
+            w = tnc_05;
+        } else if (eps == 0.1) {
+            w = tnc_10;
+        }
+        if (w == null) {
+            return Double.NaN;
+        }
+        double q = n;
+        double s = w[0] + w[1] / q;
+        for (int i = 2; i < w.length; ++i) {
+            q *= n;
+            s += w[i] / q;
+        }
+        return s;
+    }
+
+    public static double thresholdc(double eps, int n) {
+        double[] w = null;
+        if (eps == 0.01) {
+            w = tc_01;
+        } else if (eps == 0.05) {
+            w = tc_05;
+        } else if (eps == 0.1) {
+            w = tc_10;
+        }
+        if (w == null) {
+            return Double.NaN;
+        }
+        double q = n;
+        double s = w[0] + w[1] / q;
+        for (int i = 2; i < w.length; ++i) {
+            q *= n;
+            s += w[i] / q;
+        }
+        return s;
+    }
+
+    public static double thresholdt(double eps, int n) {
+        double[] w = null;
+        if (eps == 0.01) {
+            w = lt_01;
+        } else if (eps == 0.05) {
+            w = lt_05;
+        } else if (eps == 0.1) {
+            w = lt_10;
+        }
+        if (w == null) {
+            return Double.NaN;
+        }
+        double q = n;
+        double s = w[0] + w[1] / q;
+        for (int i = 2; i < w.length; ++i) {
+            q *= n;
+            s += w[i] / q;
+        }
+        return s;
+    }
+
+    private boolean sign10(double eps) {
+        double th = thresholdc(eps, e.getLength());
+        return t <= th;
+    }
+
+    private boolean sign00(double eps) {
+        double th = thresholdnc(eps, e.getLength());
+        return t <= th;
+    }
+
+    private boolean sign11(double eps) {
+        double th = thresholdt(eps, e.getLength());
+        return t <= th;
     }
 }
