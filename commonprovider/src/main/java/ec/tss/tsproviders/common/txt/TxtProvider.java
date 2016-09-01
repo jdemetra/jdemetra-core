@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
@@ -48,11 +47,14 @@ public class TxtProvider extends AbstractFileLoader<TxtSource, TxtBean> {
     public static final String VERSION = "20111201";
     static final IParam<DataSet, Integer> Z_SERIESINDEX = Params.onInteger(-1, "seriesIndex");
     private static final Logger LOGGER = LoggerFactory.getLogger(TxtProvider.class);
+
+    private final TxtFileFilter fileFilter;
     protected final Parsers.Parser<DataSource> legacyDataSourceParser;
     protected final Parsers.Parser<DataSet> legacyDataSetParser;
 
     public TxtProvider() {
         super(LOGGER, SOURCE, TsAsyncMode.None);
+        this.fileFilter = new TxtFileFilter();
         this.legacyDataSourceParser = TxtLegacy.dataSourceParser();
         this.legacyDataSetParser = TxtLegacy.dataSetParser();
     }
@@ -179,13 +181,12 @@ public class TxtProvider extends AbstractFileLoader<TxtSource, TxtBean> {
 
     @Override
     public boolean accept(File pathname) {
-        String tmp = pathname.getPath().toLowerCase(Locale.ENGLISH);
-        return tmp.endsWith(".txt") || tmp.endsWith(".csv") || tmp.endsWith(".tsv");
+        return fileFilter.accept(pathname);
     }
 
     @Override
     public String getFileDescription() {
-        return "Text file";
+        return fileFilter.getDescription();
     }
 
     @Override
