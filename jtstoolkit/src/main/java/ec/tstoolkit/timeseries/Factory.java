@@ -44,8 +44,8 @@ public final class Factory {
      * @param domain
      * @return
      */
-    public static GeneralTSData makeTS(final IDomain domain) {
-	return new GeneralTSData(domain);
+    public static GeneralTsData makeTS(final IDomain domain) {
+	return new GeneralTsData(domain);
     }
 
     /**

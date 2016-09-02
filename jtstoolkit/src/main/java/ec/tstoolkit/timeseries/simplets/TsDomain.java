@@ -221,6 +221,14 @@ public final class TsDomain implements IDomain, Serializable, Iterable<TsPeriod>
     public TsPeriod getStart() {
         return new TsPeriod(m_freq, m_beg);
     }
+    
+    /**
+     * Id of the starting period
+     * @return 
+     */
+    public int startId(){
+        return m_beg;
+    }
 
     @Override
     public int hashCode() {

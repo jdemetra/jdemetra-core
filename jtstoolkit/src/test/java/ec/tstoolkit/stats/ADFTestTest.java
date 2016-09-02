@@ -185,4 +185,23 @@ public class ADFTestTest {
             (T[n10] + T[n10 - 1]) / 2};
         return pct;
     }
+
+    @Test
+    public void tesTable() {
+        IReadDataBlock data = test(600);
+        ADFTest adf = new ADFTest();
+        adf.setK(1);
+        adf.setConstant(true);
+        adf.setTrend(true);
+        adf.test(data);
+        boolean b0 = adf.isSignificant(.01);
+        boolean b1 = adf.isSignificant(.05);
+        boolean b2 = adf.isSignificant(.1);
+        assertTrue(b1 || !b0);
+        assertTrue(b2 || !b1);
+        System.out.println(ADFTest.thresholdc(.01, 100));
+        System.out.println(ADFTest.thresholdc(.05, 100));
+        System.out.println(ADFTest.thresholdc(.1, 100));
+    }
+
 }

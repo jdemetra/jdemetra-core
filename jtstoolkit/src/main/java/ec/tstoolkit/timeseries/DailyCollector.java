@@ -113,12 +113,12 @@ public class DailyCollector {
      * 
      * @return
      */
-    public GeneralTSData makeSeries()
+    public GeneralTsData makeSeries()
     {
 	if (m_n == 0)
 	    return null;
 	Days days = new Days(m_ids, 0, m_n);
-	GeneralTSData ts = new GeneralTSData(days);
+	GeneralTsData ts = new GeneralTsData(days);
 	for (int i = 0; i < m_n; ++i)
 	    ts.set(i, m_vals[i]);
 	return ts;
