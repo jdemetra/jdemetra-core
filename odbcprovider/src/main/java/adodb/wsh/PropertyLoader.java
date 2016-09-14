@@ -17,7 +17,6 @@
 package adodb.wsh;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -30,6 +29,7 @@ import javax.annotation.Nullable;
  * @author Philippe Charles
  * @since 2.2.0
  */
+@FunctionalInterface
 interface PropertyLoader {
 
     @Nullable
@@ -41,63 +41,12 @@ interface PropertyLoader {
     Map<String, String> loadAll() throws IOException;
 
     @Nonnull
-    default public PropertyLoader memoize() {
-        return new MemoizingPropertyLoader(this);
+    default PropertyLoader memoize() {
+        return new PropertyLoaders.MemoizingPropertyLoader(this);
     }
 
     @Nonnull
-    default public PropertyLoader memoizeWithExpiration(long duration, @Nonnull TimeUnit unit, @Nonnull LongSupplier clock) {
-        return new ExpiringMemoizingPropertyLoader(this, unit.toNanos(duration), clock);
+    default PropertyLoader memoizeWithExpiration(long duration, @Nonnull TimeUnit unit, @Nonnull LongSupplier clock) {
+        return new PropertyLoaders.ExpiringMemoizingPropertyLoader(this, unit.toNanos(duration), clock);
     }
-
-    //<editor-fold defaultstate="collapsed" desc="Implementation details">
-    static final class MemoizingPropertyLoader implements PropertyLoader {
-
-        private final PropertyLoader loader;
-        private Map<String, String> properties;
-
-        MemoizingPropertyLoader(PropertyLoader loader) {
-            this.loader = loader;
-            this.properties = null;
-        }
-
-        @Override
-        public Map<String, String> loadAll() throws IOException {
-            if (properties == null) {
-                properties = Collections.unmodifiableMap(loader.loadAll());
-            }
-            return properties;
-        }
-    }
-
-    static final class ExpiringMemoizingPropertyLoader implements PropertyLoader {
-
-        private final PropertyLoader loader;
-        private final long durationNano;
-        private final LongSupplier clock;
-        private Map<String, String> properties;
-        private long expiration;
-
-        ExpiringMemoizingPropertyLoader(PropertyLoader loader, long durationNano, LongSupplier clock) {
-            this.loader = loader;
-            this.durationNano = durationNano;
-            this.clock = clock;
-            this.properties = null;
-            this.expiration = 0;
-        }
-
-        @Override
-        public Map<String, String> loadAll() throws IOException {
-            if (properties == null) {
-                properties = Collections.unmodifiableMap(loader.loadAll());
-                expiration = clock.getAsLong() + durationNano;
-            } else if (expiration <= clock.getAsLong()) {
-                properties = null;
-                expiration = 0;
-                return loadAll();
-            }
-            return properties;
-        }
-    }
-    //</editor-fold>
 }

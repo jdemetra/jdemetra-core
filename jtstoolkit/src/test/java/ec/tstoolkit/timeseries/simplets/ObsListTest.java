@@ -16,9 +16,9 @@
  */
 package ec.tstoolkit.timeseries.simplets;
 
-import ec.tstoolkit.timeseries.simplets.ObsList.PreSortedLongObsList;
+import ec.tstoolkit.timeseries.simplets.ObsLists.PreSortedLongObsList;
+import ec.tstoolkit.timeseries.simplets.ObsLists.SortableLongObsList;
 import static ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly;
-import ec.tstoolkit.timeseries.simplets.ObsList.SortableLongObsList;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 

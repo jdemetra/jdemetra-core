@@ -18,11 +18,7 @@ package ec.tstoolkit.timeseries.simplets;
 
 import ec.tstoolkit.design.Internal;
 import ec.tstoolkit.design.NewObject;
-import ec.tstoolkit.design.VisibleForTesting;
 import ec.tstoolkit.utilities.ObjLongToIntFunction;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * INTERNAL USE ONLY
@@ -59,139 +55,9 @@ public interface ObsList {
     }
 
     @NewObject
-    public static LongObsList newLongObsList(boolean preSorted, ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc) {
-        return preSorted ? new PreSortedLongObsList(tsPeriodIdFunc, 32) : new SortableLongObsList(tsPeriodIdFunc);
+    static LongObsList newLongObsList(boolean preSorted, ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc) {
+        return preSorted
+                ? new ObsLists.PreSortedLongObsList(tsPeriodIdFunc, 32)
+                : new ObsLists.SortableLongObsList(tsPeriodIdFunc);
     }
-
-    //<editor-fold defaultstate="collapsed" desc="Implementation details">
-    static final class SortableLongObsList implements LongObsList {
-
-        private final ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc;
-        private final List<LongObs> list = new ArrayList<>();
-        private boolean sorted = true;
-        private long latestPeriod = Long.MIN_VALUE;
-
-        @VisibleForTesting
-        SortableLongObsList(ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc) {
-            this.tsPeriodIdFunc = tsPeriodIdFunc;
-        }
-
-        @VisibleForTesting
-        boolean isSorted() {
-            return sorted;
-        }
-
-        @Override
-        public void clear() {
-            list.clear();
-            sorted = true;
-            latestPeriod = Long.MIN_VALUE;
-        }
-
-        @Override
-        public void add(long period, double value) {
-            list.add(new LongObs(period, value));
-            sorted = sorted && latestPeriod <= period;
-            latestPeriod = period;
-        }
-
-        @Override
-        public int size() {
-            return list.size();
-        }
-
-        @Override
-        public double getValue(int index) {
-            return list.get(index).value;
-        }
-
-        @Override
-        public int getPeriodId(TsFrequency frequency, int index) {
-            return tsPeriodIdFunc.applyAsInt(frequency, list.get(index).period);
-        }
-
-        @Override
-        public void sortByPeriod() {
-            if (!sorted) {
-                list.sort((l, r) -> Long.compare(l.period, r.period));
-                sorted = true;
-                latestPeriod = list.get(list.size() - 1).period;
-            }
-        }
-
-        private static final class LongObs {
-
-            final long period;
-            final double value;
-
-            private LongObs(long period, double value) {
-                this.period = period;
-                this.value = value;
-            }
-        }
-    }
-
-    static final class PreSortedLongObsList implements LongObsList {
-
-        private final ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc;
-        private long[] periods;
-        private double[] values;
-        private int size;
-
-        @VisibleForTesting
-        PreSortedLongObsList(ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc, int initialCapacity) {
-            this.tsPeriodIdFunc = tsPeriodIdFunc;
-            this.periods = new long[initialCapacity];
-            this.values = new double[initialCapacity];
-            this.size = 0;
-        }
-
-        private void grow() {
-            int oldCapacity = periods.length;
-            int newCapacity = Math.min(oldCapacity * 2, Integer.MAX_VALUE);
-            periods = Arrays.copyOf(periods, newCapacity);
-            values = Arrays.copyOf(values, newCapacity);
-        }
-
-        @Override
-        public void clear() {
-            size = 0;
-        }
-
-        @Override
-        public void add(long period, double value) {
-            if (size + 1 == periods.length) {
-                grow();
-            }
-            periods[size] = period;
-            values[size] = value;
-            size++;
-        }
-
-        @Override
-        public int size() {
-            return size;
-        }
-
-        @Override
-        public double getValue(int index) {
-            return values[index];
-        }
-
-        @Override
-        public int getPeriodId(TsFrequency frequency, int index) {
-            return tsPeriodIdFunc.applyAsInt(frequency, periods[index]);
-        }
-
-        @Override
-        public void sortByPeriod() {
-            // do nothing
-        }
-
-        @Override
-        public double[] getValues() {
-            return Arrays.copyOf(values, size);
-        }
-    }
-    //</editor-fold>
 }
