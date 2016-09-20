@@ -154,9 +154,9 @@ public final class UriBuilder implements IBuilder<URI> {
     @Nonnull
     private static Map<String, String> transformKeyValues(@Nonnull Map<String, String> keyValues, @Nonnull Function<String, String> func) {
         Map<String, String> result = new HashMap<>();
-        for (Entry<String, String> o : keyValues.entrySet()) {
-            result.put(func.apply(o.getKey()), func.apply(o.getValue()));
-        }
+        keyValues.forEach((k, v) -> {
+            result.put(func.apply(k), func.apply(v));
+        });
         return result;
     }
 

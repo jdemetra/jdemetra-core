@@ -13,11 +13,11 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.utils;
 
 import ec.tstoolkit.design.IBuilder;
+import java.util.Map;
 import java.util.SortedMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,5 +45,26 @@ public interface IConfig {
          */
         @Nonnull
         THIS put(@Nonnull String key, @Nonnull String value);
+
+        @Nonnull
+        default THIS put(@Nonnull String key, int value) {
+            return put(key, String.valueOf(value));
+        }
+
+        @Nonnull
+        default THIS put(@Nonnull String key, boolean value) {
+            return put(key, String.valueOf(value));
+        }
+
+        @Nonnull
+        default THIS put(@Nonnull Map.Entry<String, String> entry) {
+            return put(entry.getKey(), entry.getValue());
+        }
+
+        @Nonnull
+        default THIS putAll(@Nonnull Map<String, String> map) {
+            map.forEach(this::put);
+            return (THIS) this;
+        }
     }
 }
