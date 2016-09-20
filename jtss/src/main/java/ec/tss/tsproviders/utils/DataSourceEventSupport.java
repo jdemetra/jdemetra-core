@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.utils;
 
 import ec.tss.tsproviders.DataSource;
@@ -72,42 +71,42 @@ public class DataSourceEventSupport {
     }
 
     public void fireOpened(@Nonnull DataSource dataSource) {
-        for (IDataSourceListener o : listeners) {
+        listeners.forEach((o) -> {
             try {
                 o.opened(dataSource);
             } catch (Exception ex) {
                 logger.warn("While sending open event", ex);
             }
-        }
+        });
     }
 
     public void fireClosed(@Nonnull DataSource dataSource) {
-        for (IDataSourceListener o : listeners) {
+        listeners.forEach((o) -> {
             try {
                 o.closed(dataSource);
             } catch (Exception ex) {
                 logger.warn("While sending close event", ex);
             }
-        }
+        });
     }
 
     public void fireAllClosed(@Nonnull String providerName) {
-        for (IDataSourceListener o : listeners) {
+        listeners.forEach((o) -> {
             try {
                 o.allClosed(providerName);
             } catch (Exception ex) {
                 logger.warn("While sending closeall event", ex);
             }
-        }
+        });
     }
 
     public void fireChanged(@Nonnull DataSource dataSource) {
-        for (IDataSourceListener o : listeners) {
+        listeners.forEach((o) -> {
             try {
                 o.changed(dataSource);
             } catch (Exception ex) {
                 logger.warn("While sending change event", ex);
             }
-        }
+        });
     }
 }

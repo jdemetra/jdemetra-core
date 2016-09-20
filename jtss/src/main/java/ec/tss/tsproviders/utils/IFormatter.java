@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
  * pattern.
  *
  * @author Philippe Charles
- * @param <Y> The type of the object to be formatted
+ * @param <T> The type of the object to be formatted
  * @see IParser
  */
 public interface IFormatter<T> {
@@ -38,7 +38,7 @@ public interface IFormatter<T> {
     /**
      * Format an object into a CharSequence.
      *
-     * @param input the input used to create the CharSequence
+     * @param value the input used to create the CharSequence
      * @return a new CharSequence if possible, {@code null} otherwise
      * @throws NullPointerException if input is null
      */
