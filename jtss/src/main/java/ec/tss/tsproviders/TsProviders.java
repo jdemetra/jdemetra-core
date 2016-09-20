@@ -176,6 +176,7 @@ public final class TsProviders {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Walk provider tree">
+    @Deprecated
     public static <P extends IDataSourceProvider> P walkProviderTree(P provider, IProviderVisitor<? super P> visitor) throws Exception {
         for (DataSource o : provider.getDataSources()) {
             if (!walkProviderTree(provider, visitor, o)) {
