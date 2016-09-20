@@ -13,14 +13,11 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders;
 
-import java.io.File;
 import java.io.FileFilter;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
@@ -29,7 +26,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * @author Philippe Charles
  */
 @ThreadSafe
-public interface IFileLoader extends IDataSourceLoader, FileFilter {
+public interface IFileLoader extends IDataSourceLoader, FileFilter, HasFilePaths {
 
     @Override
     IFileBean newBean();
@@ -39,9 +36,4 @@ public interface IFileLoader extends IDataSourceLoader, FileFilter {
 
     @Nonnull
     String getFileDescription();
-
-    void setPaths(@Nullable File[] paths);
-
-    @Nonnull
-    File[] getPaths();
 }
