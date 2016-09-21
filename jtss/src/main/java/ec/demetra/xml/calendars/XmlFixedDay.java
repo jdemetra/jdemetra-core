@@ -71,16 +71,16 @@ public class XmlFixedDay
 
          @Override
         public FixedDay unmarshal(XmlFixedDay v) throws Exception {
-            FixedDay o = new FixedDay(v.day-1, v.month, v.weight);
+            FixedDay o = new FixedDay(v.getDay()-1, v.getMonth(), v.getWeight());
             return o;
         }
 
         @Override
         public XmlFixedDay marshal(FixedDay v) throws Exception {
             XmlFixedDay xml = new XmlFixedDay();
-            xml.day=v.day+1;
-            xml.month=v.month;
-            xml.weight=v.getWeight();
+            xml.setDay(v.day+1);
+            xml.setMonth(v.month);
+            xml.setWeight(v.getWeight());
             return xml;
         }
 

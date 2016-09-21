@@ -52,11 +52,11 @@ public class XmlEasterRelatedDay
         }
     }
 
-    public void setJulian(boolean value) {
-        if (value) {
-            this.julian = value;
-        } else {
+    public void setJulian(Boolean value) {
+        if (value != null && !value) {
             this.julian = null;
+        } else {
+            this.julian = value;
         }
     }
 
@@ -75,16 +75,16 @@ public class XmlEasterRelatedDay
 
         @Override
         public EasterRelatedDay unmarshal(XmlEasterRelatedDay v) throws Exception {
-            EasterRelatedDay o = new EasterRelatedDay(v.offset, v.weight, v.julian);
+            EasterRelatedDay o = new EasterRelatedDay(v.getOffset(), v.getWeight(), v.isJulian());
             return o;
         }
 
         @Override
         public XmlEasterRelatedDay marshal(EasterRelatedDay v) throws Exception {
             XmlEasterRelatedDay xml = new XmlEasterRelatedDay();
-            xml.offset = (short) v.offset;
-            xml.julian = v.isJulian();
-            xml.weight = v.getWeight();
+            xml.setOffset ((short) v.offset);
+            xml.setJulian(v.isJulian());
+            xml.setWeight(v.getWeight());
             return xml;
         }
 

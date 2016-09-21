@@ -88,7 +88,7 @@ public class XmlInterventionVariable extends XmlRegressionVariable implements IX
     public static class Adapter extends TsVariableAdapter<XmlInterventionVariable, InterventionVariable> {
 
         @Override
-        public Class<InterventionVariable> getValueType() {
+        public Class<InterventionVariable> getImplementationType() {
             return InterventionVariable.class;
         }
 

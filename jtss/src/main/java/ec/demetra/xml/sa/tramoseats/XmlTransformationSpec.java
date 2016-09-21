@@ -16,60 +16,118 @@
  */
 package ec.demetra.xml.sa.tramoseats;
 
-import ec.tss.xml.IXmlConverter;
-import ec.tss.xml.XmlEmptyElement;
+import ec.demetra.xml.XmlEmptyElement;
+import ec.tss.xml.InPlaceXmlMarshaller;
+import ec.tss.xml.InPlaceXmlUnmarshaller;
 import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.modelling.arima.tramo.TransformSpec;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- *
- * @author Jean Palate
+ * <p>Java class for TransformationSpecType complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="TransformationSpecType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;extension base="{ec/eurostat/jdemetra/modelling}TransformationSpecType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;group ref="{ec/eurostat/jdemetra/sa/tramoseats}TransformationSpecGroup" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/extension&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
  */
-@XmlRootElement(name = XmlTransformationSpec.RNAME)
-@XmlType(name = XmlTransformationSpec.NAME)
-public class XmlTransformationSpec implements IXmlConverter<TransformSpec> {
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "TransformationSpecType", propOrder = {
+    "log",
+    "auto"
+})
+public class XmlTransformationSpec
+{
 
-    public static class XmlAuto {
+    @XmlElement(name = "Log")
+    protected XmlEmptyElement log;
+    @XmlElement(name = "Auto")
+    protected XmlAutoTransformationSpec auto;
 
-        @XmlElement
-        public Double Fct;
+    /**
+     * Gets the value of the log property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Object }
+     *     
+     */
+    public XmlEmptyElement getLog() {
+        return log;
     }
 
-    @XmlElement
-    public XmlEmptyElement Log;
-
-    @XmlElement(name="Auto")
-    public XmlAuto Auto;
-
-    static final String RNAME = "TransformationSpec", NAME = RNAME + "Type";
-
-    @Override
-    public TransformSpec create() {
-        TransformSpec spec = new TransformSpec();
-        if (Log != null) {
-            spec.setFunction(DefaultTransformationType.Log);
-        } else if (Auto != null) {
-            spec.setFunction(DefaultTransformationType.Auto);
-            spec.setFct(Auto.Fct);
-        } else {
-            spec.setFunction(DefaultTransformationType.None);
-        }
-        return spec;
+    /**
+     * Sets the value of the log property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Object }
+     *     
+     */
+    public void setLog(XmlEmptyElement value) {
+        this.log = value;
     }
 
-    @Override
-    public void copy(TransformSpec v) {
-        switch (v.getFunction()) {
+    /**
+     * Gets the value of the auto property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link AutoTransformationSpecType }
+     *     
+     */
+    public XmlAutoTransformationSpec getAuto() {
+        return auto;
+    }
+
+    /**
+     * Sets the value of the auto property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link AutoTransformationSpecType }
+     *     
+     */
+    public void setAuto(XmlAutoTransformationSpec value) {
+        this.auto = value;
+    }
+    
+    public static final InPlaceXmlUnmarshaller<XmlTransformationSpec, TransformSpec> UNMARSHALLER=(XmlTransformationSpec xml, TransformSpec v) -> {
+        if (xml.log != null){
+            v.setFunction(DefaultTransformationType.Log);
+        }else if (xml.auto != null){
+            XmlAutoTransformationSpec.UNMARSHALLER.unmarshal(xml.auto, v);
+        }else{
+            v.setFunction(DefaultTransformationType.None);
+         }
+        return true;
+    };
+
+    public static final InPlaceXmlMarshaller<XmlTransformationSpec, TransformSpec> MARSHALLER=(TransformSpec v, XmlTransformationSpec xml) -> {
+        switch (v.getFunction()){
             case Log:
-                this.Log = new XmlEmptyElement();
+                xml.setLog(new XmlEmptyElement());
                 break;
             case Auto:
-                this.Auto = new XmlAuto();
-                this.Auto.Fct = v.getFct();
+                XmlAutoTransformationSpec xauto=new XmlAutoTransformationSpec();
+                XmlAutoTransformationSpec.MARSHALLER.marshal(v, xauto);
+                xml.setAuto(xauto);
+                break;
         }
-    }
-
+        return true;
+    };
 }

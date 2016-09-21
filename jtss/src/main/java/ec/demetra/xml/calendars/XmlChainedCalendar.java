@@ -45,7 +45,7 @@ public class XmlChainedCalendar
     @XmlJavaTypeAdapter(XmlDayAdapter.class)
     protected Day calendarBreak;
 
-    public Object getStartCalendar() {
+    public String getStartCalendar() {
         return startCalendar;
     }
 
@@ -53,7 +53,7 @@ public class XmlChainedCalendar
         this.startCalendar = value;
     }
 
-    public Object getEndCalendar() {
+    public String getEndCalendar() {
         return endCalendar;
     }
 

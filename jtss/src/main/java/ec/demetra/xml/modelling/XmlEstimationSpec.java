@@ -14,33 +14,37 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.demetra.xml.calendars;
+package ec.demetra.xml.modelling;
 
-import ec.demetra.xml.core.XmlWeightedItem;
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 
+/**
+ * 
+ *                 Estimation of the model
+ *             
+ * 
+ * <p>Java class for EstimationSpecType complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="EstimationSpecType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CompositeCalendarType", propOrder = {
-    "weightedCalendar"
+@XmlType(name = "EstimationSpecType")
+@XmlSeeAlso({
 })
-public class XmlCompositeCalendar
-    extends XmlCalendar
-{
-
-    @XmlElement(name = "WeightedCalendar", required = true)
-    protected List<XmlWeightedItem> weightedCalendar;
-
-    public List<XmlWeightedItem> getWeightedCalendar() {
-        if (weightedCalendar == null) {
-            weightedCalendar = new ArrayList<>();
-        }
-        return this.weightedCalendar;
-    }
-
+public abstract class XmlEstimationSpec {
 }

@@ -27,11 +27,11 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CalendarType")
-//@XmlSeeAlso({
-//    XmlNationalCalendar.class,
-//    XmlCompositeCalendar.class,
-//    XmlChainedCalendar.class
-//})
+@XmlSeeAlso({
+    XmlNationalCalendar.class,
+    XmlCompositeCalendar.class,
+    XmlChainedCalendar.class
+})
 public abstract class XmlCalendar {
 
     @XmlAttribute(name = "name", required = true)

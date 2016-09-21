@@ -51,7 +51,7 @@ public class XmlSeasonalOutlier extends XmlOutlier {
     public static class Adapter extends TsVariableAdapter<XmlSeasonalOutlier, SeasonalOutlier> {
 
         @Override
-        public Class<SeasonalOutlier> getValueType() {
+        public Class<SeasonalOutlier> getImplementationType() {
             return SeasonalOutlier.class;
         }
 

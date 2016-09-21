@@ -76,7 +76,7 @@ public class TsVariableAdapters {
 
     public XmlRegressionVariable encode(ITsVariable ivar) {
         for (TsVariableAdapter adapter : adapters) {
-            if (adapter.getValueType().isInstance(ivar)) {
+            if (adapter.getImplementationType().isInstance(ivar)) {
                 try {
                     return (XmlRegressionVariable) adapter.marshal(ivar);
                 } catch (Exception ex) {

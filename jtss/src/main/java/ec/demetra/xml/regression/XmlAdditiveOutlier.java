@@ -35,7 +35,7 @@ public class XmlAdditiveOutlier extends XmlOutlier {
     public static class Adapter extends TsVariableAdapter<XmlAdditiveOutlier, AdditiveOutlier> {
 
         @Override
-        public Class<AdditiveOutlier> getValueType() {
+        public Class<AdditiveOutlier> getImplementationType() {
             return AdditiveOutlier.class;
         }
 

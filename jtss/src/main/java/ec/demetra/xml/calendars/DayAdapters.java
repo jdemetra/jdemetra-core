@@ -16,10 +16,8 @@
  */
 package ec.demetra.xml.calendars;
 
-import ec.demetra.xml.regression.*;
 import ec.tstoolkit.design.GlobalServiceProvider;
 import ec.tstoolkit.timeseries.calendars.ISpecialDay;
-import ec.tstoolkit.timeseries.regression.ITsVariable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -62,7 +60,7 @@ public class DayAdapters {
         return adapters.stream().map(adapter -> adapter.getXmlType()).collect(Collectors.toList());
     }
 
-    public ISpecialDay decode(XmlDay xvar) {
+    public ISpecialDay unmarshal(XmlDay xvar) {
         for (DayAdapter adapter : adapters) {
             if (adapter.getXmlType().isInstance(xvar)) {
                 try {
@@ -75,7 +73,7 @@ public class DayAdapters {
         return null;
     }
 
-    public XmlDay encode(ISpecialDay ivar) {
+    public XmlDay marshal(ISpecialDay ivar) {
         for (DayAdapter adapter : adapters) {
             if (adapter.getValueType().isInstance(ivar)) {
                 try {

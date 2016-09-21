@@ -51,7 +51,7 @@ public class XmlRamp extends XmlRegressionVariable implements IXmlConverter<Ramp
     public static class Adapter extends TsVariableAdapter<XmlRamp, Ramp> {
 
         @Override
-        public Class<Ramp> getValueType() {
+        public Class<Ramp> getImplementationType() {
             return Ramp.class;
         }
 

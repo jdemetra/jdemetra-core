@@ -177,8 +177,6 @@ limitations under the Licence.
                 <xs:sequence>
                     <xs:element name="SpecialDayEvent" type="tss:SpecialDayEventType" maxOccurs="unbounded" />
                 </xs:sequence>
-                <xs:attribute name="meanCorrection" type="xs:boolean" use="optional" default="true"/>
-                <xs:attribute name="julian" type="xs:boolean" use="optional" default="false"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>

@@ -73,7 +73,7 @@ public class XmlSpecialDayEvent {
 
         @Override
         public SpecialDayEvent unmarshal(XmlSpecialDayEvent v) throws Exception {
-            ISpecialDay sday = DayAdapters.getDefault().decode(v.day);
+            ISpecialDay sday = DayAdapters.getDefault().unmarshal(v.day);
             SpecialDayEvent sev = new SpecialDayEvent(sday);
             Day from = v.from, to = v.to;
             if (from != null || to != null) {
@@ -85,7 +85,7 @@ public class XmlSpecialDayEvent {
         @Override
         public XmlSpecialDayEvent marshal(SpecialDayEvent v) throws Exception {
             XmlSpecialDayEvent xse = new XmlSpecialDayEvent();
-            xse.day = DayAdapters.getDefault().encode(v.day);
+            xse.day = DayAdapters.getDefault().marshal(v.day);
             if (v.getValidityPeriod() != null && v.getValidityPeriod().isStartSpecified()) {
                 xse.from = v.getStart();
             }

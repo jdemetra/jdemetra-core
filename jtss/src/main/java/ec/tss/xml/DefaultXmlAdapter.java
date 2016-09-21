@@ -21,25 +21,56 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 /**
  *
  * @author Jean Palate
- * @param <ValueType> The type that JAXB knows how to handle 
- * @param <BoundType> The type that JAXB doesn't know how to handle (pure java class)
+ * @param <X> The type that JAXB knows how to handle
+ * @param <V> The type that JAXB doesn't know how to handle (pure java class)
  */
-public class DefaultXmlAdapter<ValueType, BoundType> extends XmlAdapter<ValueType, BoundType>{
-    private final IXmlMarshaller<ValueType, BoundType> marshaller;
-    private final IXmlUnmarshaller<ValueType, BoundType> unmarshaller;
-    public DefaultXmlAdapter(final IXmlMarshaller<ValueType, BoundType> marshaller, final IXmlUnmarshaller<ValueType, BoundType> unmarshaller){
-        this.marshaller=marshaller;
-        this.unmarshaller=unmarshaller;
+public class DefaultXmlAdapter<X, V> extends ExtendedXmlAdapter<X, V> {
+
+    private final XmlAdapter<X, V> adapter;
+    private final Class<X> xclass;
+    private final Class<V> vclass;
+    //private ;
+
+    public DefaultXmlAdapter(final Class<X> xclass, final Class<V> vclass, final XmlAdapter<X, V> adapter) {
+        this.adapter = adapter;
+        this.vclass = vclass;
+        this.xclass = xclass;
+    }
+
+    public DefaultXmlAdapter(final Class<X> xclass, final Class<V> vclass, final IXmlMarshaller<X, V> marshaller, final IXmlUnmarshaller<X, V> unmarshaller) {
+        this.adapter = new XmlAdapter<X, V>() {
+
+            @Override
+            public V unmarshal(X x) throws Exception {
+                return unmarshaller.unmarshal(x);
+            }
+
+            @Override
+            public X marshal(V v) throws Exception {
+                return marshaller.marshal(v);
+            }
+        };
+        this.vclass = vclass;
+        this.xclass = xclass;
     }
 
     @Override
-    public BoundType unmarshal(ValueType v) throws Exception {
-        return unmarshaller.unmarshal(v);
+    public V unmarshal(X v) throws Exception {
+        return adapter.unmarshal(v);
     }
 
     @Override
-    public ValueType marshal(BoundType v) throws Exception {
-        return marshaller.marshal(v);
+    public X marshal(V v) throws Exception {
+        return adapter.marshal(v);
     }
-    
+
+    @Override
+    public Class<X> getXmlType() {
+        return xclass;
+    }
+
+    @Override
+    public Class<V> getImplementationType() {
+        return vclass;
+    }
 }

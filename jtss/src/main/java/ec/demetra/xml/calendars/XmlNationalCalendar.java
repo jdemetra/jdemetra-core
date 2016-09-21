@@ -6,7 +6,6 @@
 //
 package ec.demetra.xml.calendars;
 
-import ec.tstoolkit.timeseries.calendars.GregorianCalendarManager;
 import ec.tstoolkit.timeseries.calendars.NationalCalendar;
 import ec.tstoolkit.timeseries.calendars.NationalCalendarProvider;
 import ec.tstoolkit.timeseries.calendars.SpecialDayEvent;
@@ -28,42 +27,10 @@ import org.openide.util.lookup.ServiceProvider;
 public class XmlNationalCalendar
         extends XmlCalendar {
 
-    @XmlAttribute(name = "meanCorrection")
-    protected Boolean meanCorrection;
-
-    @XmlAttribute(name = "julian")
-    protected Boolean julian;
 
     @XmlElement(name = "SpecialDayEvent", required = true)
     protected List<XmlSpecialDayEvent> specialDayEvent;
 
-    public void setMeanCorrection(boolean val) {
-        if (val) {
-            meanCorrection = null;
-        } else {
-            meanCorrection = val;
-        }
-    }
-
-    public void setJulian(boolean j) {
-        if (j) {
-            julian = j;
-        } else {
-            julian = null;
-        }
-    }
-
-    public boolean isMeanCorrection() {
-        return meanCorrection == null ? true : meanCorrection;
-    }
-
-    public boolean isJulian() {
-        if (julian == null) {
-            return false;
-        } else {
-            return julian;
-        }
-    }
 
     public List<XmlSpecialDayEvent> getSpecialDayEvent() {
         if (specialDayEvent == null) {
@@ -87,7 +54,7 @@ public class XmlNationalCalendar
 
         @Override
         public NationalCalendarProvider unmarshal(XmlNationalCalendar v) throws Exception {
-            NationalCalendar nc = new NationalCalendar(v.isMeanCorrection(), v.isJulian());
+            NationalCalendar nc = new NationalCalendar();
             for (XmlSpecialDayEvent s : v.getSpecialDayEvent()) {
                 nc.add(XmlSpecialDayEvent.getAdapter().unmarshal(s));
             }
@@ -97,8 +64,6 @@ public class XmlNationalCalendar
         @Override
         public XmlNationalCalendar marshal(NationalCalendarProvider v) throws Exception {
             XmlNationalCalendar xcal = new XmlNationalCalendar();
-            xcal.setMeanCorrection(v.isLongTermMeanCorrection());
-            xcal.setJulian(v.isJulianEaster());
 
             for (SpecialDayEvent s : v.events()) {
                 XmlSpecialDayEvent xday = XmlSpecialDayEvent.getAdapter().marshal(s);

@@ -165,7 +165,7 @@ public class TramoModelBuilder implements IModelBuilder {
         } else {
             EasterVariable var = new EasterVariable();
             var.setDuration(easter.getDuration());
-            var.setType(EasterVariable.Type.Tramo);
+            var.setType(EasterVariable.Correction.Simple);
             var.includeEaster(easter.getOption().containsEaster());
             var.includeEasterMonday(easter.getOption().containsEasterMonday());
             Variable evar = new Variable(var, ComponentType.CalendarEffect);

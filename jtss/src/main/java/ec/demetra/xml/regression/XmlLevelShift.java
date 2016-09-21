@@ -51,7 +51,7 @@ public class XmlLevelShift extends XmlOutlier {
     public static class Adapter extends TsVariableAdapter<XmlLevelShift, LevelShift> {
 
         @Override
-        public Class<LevelShift> getValueType() {
+        public Class<LevelShift> getImplementationType() {
             return LevelShift.class;
         }
 

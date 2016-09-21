@@ -65,7 +65,7 @@ public class XmlTransitoryChange extends XmlOutlier {
     public static class Adapter extends TsVariableAdapter<XmlTransitoryChange, TransitoryChange> {
 
         @Override
-        public Class<TransitoryChange> getValueType() {
+        public Class<TransitoryChange> getImplementationType() {
             return TransitoryChange.class;
         }
 

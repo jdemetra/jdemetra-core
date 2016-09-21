@@ -25,30 +25,22 @@ import ec.tstoolkit.timeseries.calendars.FixedWeekDay;
 import ec.tstoolkit.timeseries.calendars.NationalCalendar;
 import ec.tstoolkit.timeseries.calendars.NationalCalendarProvider;
 import ec.tstoolkit.timeseries.calendars.SpecialCalendarDay;
-import ec.tstoolkit.timeseries.calendars.SpecialDayEvent;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.util.JAXBSource;
-import javax.xml.namespace.QName;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Validator;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.xml.sax.SAXException;
 import xml.Schemas;
-import xml.TestErrorHandler;
 
 /**
  *
@@ -56,7 +48,7 @@ import xml.TestErrorHandler;
  */
 public class XmlNationalCalendarTest {
 
-    public static final String FILE = "c:\\localdata\\calendars.xml";
+    public static final String FILE = "c:\\localdata\\calendar.xml";
 
     public XmlNationalCalendarTest() {
     }
@@ -65,9 +57,7 @@ public class XmlNationalCalendarTest {
     public void testValidation() throws JAXBException, SAXException, IOException {
 
         XmlNationalCalendar xcal = new XmlNationalCalendar();
-        xcal.setName("test");
-        xcal.setJulian(false);
-        xcal.setMeanCorrection(true);
+        xcal.setName("calendar.test");
         XmlFixedDay fday = new XmlFixedDay();
         fday.setMonth(Month.March);
         fday.setDay(21);
@@ -83,7 +73,7 @@ public class XmlNationalCalendarTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void testFile() throws JAXBException, SAXException, IOException, Exception {
 
         NationalCalendar cal = new NationalCalendar();
@@ -94,9 +84,7 @@ public class XmlNationalCalendarTest {
         NationalCalendarProvider provider=new NationalCalendarProvider(cal);
         
         XmlNationalCalendar xcal = XmlNationalCalendar.getAdapter().marshal(provider);
-        xcal.setName("test");
-        xcal.setJulian(true);
-        xcal.setMeanCorrection(true);
+        xcal.setName("calendar.test");
         XmlFixedDay fday = new XmlFixedDay();
         fday.setMonth(Month.March);
         fday.setDay(21);
@@ -113,7 +101,7 @@ public class XmlNationalCalendarTest {
             writer.flush();
         }
 
-        ec.demetra.xml.calendars.XmlNationalCalendar rslt = null;
+        ec.demetra.xml.calendars.XmlNationalCalendar rslt;
         FileInputStream istream = new FileInputStream(FILE);
         try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
 //            Source source = new StreamSource(reader);

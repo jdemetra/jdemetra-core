@@ -45,24 +45,24 @@ import xml.TestErrorHandler;
  * @author Jean Palate
  */
 public class XmlEstimationSpecTest {
-    
+
     private static final String FILE = "c:\\localdata\\trs_estimationspec.xml";
 
     public XmlEstimationSpecTest() {
     }
 
     @Test
-    @Ignore
-    public void testMarshal() throws FileNotFoundException, JAXBException, IOException {
+    //@Ignore
+    public void testMarshal() throws FileNotFoundException, JAXBException, IOException, Exception {
 
         TramoSpecification spec = TramoSpecification.TRfull;
         EstimateSpec espec = spec.getEstimate().clone();
         espec.setUbp(1);
-        TsPeriodSelector sel=new TsPeriodSelector();
+        TsPeriodSelector sel = new TsPeriodSelector();
         sel.last(120);
         espec.setSpan(sel);
         XmlEstimationSpec xspec = new XmlEstimationSpec();
-        xspec.copy(espec);
+        XmlEstimationSpec.MARSHALLER.marshal(espec, xspec);
         JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
         FileOutputStream ostream = new FileOutputStream(FILE);
         try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
@@ -72,27 +72,29 @@ public class XmlEstimationSpecTest {
             writer.flush();
         }
 
-        XmlEstimationSpec rslt = null;
+        XmlEstimationSpec rslt;
         FileInputStream istream = new FileInputStream(FILE);
         try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
             rslt = (XmlEstimationSpec) unmarshaller.unmarshal(reader);
-
-            assertTrue(rslt.create().equals(espec));
+            EstimateSpec nspec = new EstimateSpec();
+            XmlEstimationSpec.UNMARSHALLER.unmarshal(rslt, nspec);
+            assertTrue(nspec.equals(espec));
         }
     }
 
     @Test
-    public void testValidation() throws FileNotFoundException, JAXBException, IOException, SAXException {
+    @Ignore
+    public void testValidation() throws FileNotFoundException, JAXBException, IOException, SAXException, Exception {
 
         TramoSpecification spec = TramoSpecification.TRfull;
         EstimateSpec espec = spec.getEstimate().clone();
         espec.setUbp(1);
-        TsPeriodSelector sel=new TsPeriodSelector();
+        TsPeriodSelector sel = new TsPeriodSelector();
         sel.last(120);
         espec.setSpan(sel);
         XmlEstimationSpec xspec = new XmlEstimationSpec();
-        xspec.copy(espec);
+        XmlEstimationSpec.MARSHALLER.marshal(espec, xspec);
         JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
         JAXBSource source = new JAXBSource(jaxb, xspec);
         Validator validator = Schemas.TramoSeats.newValidator();

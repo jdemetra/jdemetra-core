@@ -14,16 +14,15 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.demetra.xml.regression;
+package ec.tss.xml;
 
-import ec.tss.xml.ExtendedXmlAdapter;
-import ec.tstoolkit.timeseries.regression.ITsVariable;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  *
  * @author Jean Palate
- * @param <V>
- * @param <X>
  */
-public abstract class TsVariableAdapter<X extends XmlRegressionVariable, V extends ITsVariable> extends ExtendedXmlAdapter<X, V>{
+public abstract class ExtendedXmlAdapter<X,V> extends XmlAdapter<X,V>{
+       public abstract Class<X> getXmlType();
+       public abstract Class<V> getImplementationType();
 }

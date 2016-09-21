@@ -101,11 +101,9 @@ public class XmlInformation {
         fromXmlMap.put(XmlTsData.class, tsdataMapper);
         toXmlMap.put(TsData.class, tsdataMapper);
 
-        XmlConverterAdapter<XmlPeriodSelection, TsPeriodSelector> pselMapper =
-                new XmlConverterAdapter<>(XmlPeriodSelection.class);
 
-        fromXmlMap.put(XmlPeriodSelection.class, pselMapper);
-        toXmlMap.put(TsPeriodSelector.class, pselMapper);
+        fromXmlMap.put(XmlPeriodSelection.class, XmlPeriodSelection.getAdapter());
+        toXmlMap.put(TsPeriodSelector.class, XmlPeriodSelection.getAdapter());
 
         XmlConverterAdapter<XmlParameters, Parameter[]> paramsMapper =
                 new XmlConverterAdapter<>(XmlParameters.class);

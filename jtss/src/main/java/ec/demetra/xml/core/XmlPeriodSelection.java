@@ -20,92 +20,335 @@ import ec.tss.xml.*;
 import ec.tstoolkit.timeseries.Day;
 
 import ec.tstoolkit.timeseries.TsPeriodSelector;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  *
- * @author Kristof Bayens
+ * A period selection is a flexible way for selecting a part in a time domain.
+ *
+ * The selection may be defined through start/end dates (FROM, TO, BETWEEN). In
+ * that case only the periods that are completely after and/or before the given
+ * dates are selected; only the date part is considered. For instance, if
+ * start=2 January, the first monthly period is February; if end = 31 March, the
+ * last monthly period is March.
+ *
+ * The period selection may also refer to the numbers of periods that should be
+ * selected (FIRST / LAST) or excluded (EXCLUDING) in the selection.
+ *
+ *
+ * <p>
+ * Java class for PeriodSelectionType complex type.
+ *
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ *
+ * <pre>
+ * &lt;complexType name="PeriodSelectionType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;choice&gt;
+ *         &lt;element name="All" type="{http://www.w3.org/2001/XMLSchema}anyType"/&gt;
+ *         &lt;element name="None" type="{http://www.w3.org/2001/XMLSchema}anyType"/&gt;
+ *         &lt;group ref="{ec/eurostat/jdemetra/core}TimeSpan"/&gt;
+ *         &lt;group ref="{ec/eurostat/jdemetra/core}Range"/&gt;
+ *         &lt;group ref="{ec/eurostat/jdemetra/core}Exclusion"/&gt;
+ *       &lt;/choice&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ *
+ *
  */
-@XmlType(name = XmlPeriodSelection.NAME)
-public class XmlPeriodSelection implements IXmlConverter<TsPeriodSelector> {
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "PeriodSelectionType", propOrder = {
+    "all",
+    "none",
+    "from",
+    "to",
+    "first",
+    "last",
+    "excludeFirst",
+    "excludeLast"
+})
+public class XmlPeriodSelection {
 
-    static final String NAME = "PeriodSelectionType";
-
-    @XmlElement
-    public XmlEmptyElement All;
-    @XmlElement
-    public XmlEmptyElement None;
+    @XmlElement(name = "All")
+    protected XmlEmptyElement all;
+    @XmlElement(name = "None")
+    protected XmlEmptyElement none;
+    @XmlElement(name = "From")
     @XmlJavaTypeAdapter(XmlDayAdapter.class)
-    public Day From;
+    protected Day from;
+    @XmlElement(name = "To")
     @XmlJavaTypeAdapter(XmlDayAdapter.class)
-    public Day To;
-    @XmlElement
-    public Integer First;
-    @XmlElement
-    public Integer Last;
-    @XmlElement
-    public Integer ExcludeFirst;
-    @XmlElement
-    public Integer ExcludeLast;
+    protected Day to;
+    @XmlElement(name = "First")
+    @XmlSchemaType(name = "unsignedInt")
+    protected Integer first;
+    @XmlElement(name = "Last")
+    @XmlSchemaType(name = "unsignedInt")
+    protected Integer last;
+    @XmlElement(name = "ExcludeFirst")
+    @XmlSchemaType(name = "unsignedInt")
+    protected Integer excludeFirst;
+    @XmlElement(name = "ExcludeLast")
+    @XmlSchemaType(name = "unsignedInt")
+    protected Integer excludeLast;
 
-    @Override
-    public TsPeriodSelector create() {
-        TsPeriodSelector tssel = new TsPeriodSelector();
-        if (All != null) {
-            tssel.all();
-        } else if (None != null) {
-            tssel.none();
-        } else if (ExcludeFirst != null || ExcludeLast != null) {
-            int first = ExcludeFirst == null ? 0 : ExcludeFirst;
-            int last = ExcludeLast == null ? 0 : ExcludeLast;
-            tssel.excluding(first, last);
-        } else if (First != null) {
-            tssel.first(First);
-        } else if (Last != null) {
-            tssel.last(Last);
-        } else if (From != null || To != null) {
-            if (From != null && To != null) {
-                tssel.between(From, To);
-            } else if (From != null) {
-                tssel.from(From);
-            } else {
-                tssel.to(To);
-            }
-        }
-        return tssel;
+    /**
+     * Gets the value of the all property.
+     *
+     * @return possible object is {@link Object }
+     *
+     */
+    public XmlEmptyElement getAll() {
+        return all;
     }
 
-    @Override
-    public void copy(TsPeriodSelector t
-    ) {
-        switch (t.getType()) {
+    /**
+     * Sets the value of the all property.
+     *
+     * @param value allowed object is {@link Object }
+     *
+     */
+    public void setAll(XmlEmptyElement value) {
+        this.all = value;
+    }
+
+    /**
+     * Gets the value of the none property.
+     *
+     * @return possible object is {@link Object }
+     *
+     */
+    public XmlEmptyElement getNone() {
+        return none;
+    }
+
+    /**
+     * Sets the value of the none property.
+     *
+     * @param value allowed object is {@link Object }
+     *
+     */
+    public void setNone(XmlEmptyElement value) {
+        this.none = value;
+    }
+
+    /**
+     * Gets the value of the from property.
+     *
+     * @return possible object is {@link XMLGregorianCalendar }
+     *
+     */
+    public Day getFrom() {
+        return from;
+    }
+
+    /**
+     * Sets the value of the from property.
+     *
+     * @param value allowed object is {@link XMLGregorianCalendar }
+     *
+     */
+    public void setFrom(Day value) {
+        this.from = value;
+    }
+
+    /**
+     * Gets the value of the to property.
+     *
+     * @return possible object is {@link XMLGregorianCalendar }
+     *
+     */
+    public Day getTo() {
+        return to;
+    }
+
+    /**
+     * Sets the value of the to property.
+     *
+     * @param value allowed object is {@link XMLGregorianCalendar }
+     *
+     */
+    public void setTo(Day value) {
+        this.to = value;
+    }
+
+    /**
+     * Gets the value of the first property.
+     *
+     * @return possible object is {@link Long }
+     *
+     */
+    public Integer getFirst() {
+        return first;
+    }
+
+    /**
+     * Sets the value of the first property.
+     *
+     * @param value allowed object is {@link Long }
+     *
+     */
+    public void setFirst(Integer value) {
+        this.first = value;
+    }
+
+    /**
+     * Gets the value of the last property.
+     *
+     * @return possible object is {@link Long }
+     *
+     */
+    public Integer getLast() {
+        return last;
+    }
+
+    /**
+     * Sets the value of the last property.
+     *
+     * @param value allowed object is {@link Long }
+     *
+     */
+    public void setLast(Integer value) {
+        this.last = value;
+    }
+
+    /**
+     * Gets the value of the excludeFirst property.
+     *
+     * @return possible object is {@link Long }
+     *
+     */
+    public Integer getExcludeFirst() {
+        return excludeFirst;
+    }
+
+    /**
+     * Sets the value of the excludeFirst property.
+     *
+     * @param value allowed object is {@link Long }
+     *
+     */
+    public void setExcludeFirst(Integer value) {
+        this.excludeFirst = value;
+    }
+
+    /**
+     * Gets the value of the excludeLast property.
+     *
+     * @return possible object is {@link Long }
+     *
+     */
+    public Integer getExcludeLast() {
+        return excludeLast;
+    }
+
+    /**
+     * Sets the value of the excludeLast property.
+     *
+     * @param value allowed object is {@link Long }
+     *
+     */
+    public void setExcludeLast(Integer value) {
+        this.excludeLast = value;
+    }
+
+    private void clear() {
+        all = null;
+        none = null;
+        from = null;
+        to = null;
+        first = null;
+        last = null;
+        excludeFirst = null;
+        excludeLast = null;
+    }
+
+    public static class Adapter extends XmlAdapter<XmlPeriodSelection, TsPeriodSelector> {
+
+        @Override
+        public TsPeriodSelector unmarshal(XmlPeriodSelection xml) throws Exception {
+            TsPeriodSelector v = new TsPeriodSelector();
+            UNMARSHALLER.unmarshal(xml, v);
+            return v;
+        }
+
+        @Override
+        public XmlPeriodSelection marshal(TsPeriodSelector v) throws Exception {
+            XmlPeriodSelection xml = new XmlPeriodSelection();
+            MARSHALLER.marshal(v, xml);
+            return xml;
+        }
+    }
+    
+    private static final Adapter ADAPTER = new Adapter();
+
+    public static Adapter getAdapter() {
+        return ADAPTER;
+    }
+
+    public static final InPlaceXmlUnmarshaller<XmlPeriodSelection, TsPeriodSelector> UNMARSHALLER = (XmlPeriodSelection xml, TsPeriodSelector v) -> {
+        if (xml.all != null) {
+            v.all();
+        } else if (xml.none != null) {
+            v.none();
+        } else if (xml.from != null && xml.to != null) {
+            v.between(xml.from, xml.to);
+        } else if (xml.from != null) {
+            v.from(xml.from);
+        } else if (xml.to != null) {
+            v.from(xml.to);
+        } else if (xml.first != null) {
+            v.first(xml.first);
+        } else if (xml.last != null) {
+            v.last(xml.last);
+        } else {
+            v.excluding(xml.excludeFirst == null ? 0 : xml.excludeFirst, xml.excludeLast == null ? 0 : xml.excludeLast);
+        }
+        return true;
+    };
+
+    public static final InPlaceXmlMarshaller<XmlPeriodSelection, TsPeriodSelector> MARSHALLER = (TsPeriodSelector v, XmlPeriodSelection xml) -> {
+        xml.clear();
+        switch (v.getType()) {
             case All:
-                All = new XmlEmptyElement();
-                return;
+                xml.all = new XmlEmptyElement();
+                break;
             case None:
-                All = new XmlEmptyElement();
-                return;
-            case From:
-                From = t.getD0();
-                return;
-            case To:
-                To = t.getD1();
-                return;
+                xml.none = new XmlEmptyElement();
+                break;
             case Between:
-                From = t.getD0();
-                To = t.getD1();
-                return;
+                xml.from = v.getD0();
+                xml.to = v.getD1();
+                break;
+            case From:
+                xml.from = v.getD0();
+                break;
+            case To:
+                xml.to = v.getD0();
+                break;
             case First:
-                First = t.getN0();
-                return;
+                xml.first = v.getN0();
+                break;
             case Last:
-                Last = t.getN1();
-                return;
+                xml.last = v.getN1();
+                break;
             case Excluding:
-                ExcludeFirst = t.getN0();
-                ExcludeLast = t.getN1();
+                xml.excludeFirst = v.getN0();
+                xml.excludeLast = v.getN1();
+                break;
         }
-    }
+        return true;
+    };
+
 }

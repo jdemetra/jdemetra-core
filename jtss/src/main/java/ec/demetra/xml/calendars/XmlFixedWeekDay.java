@@ -26,7 +26,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import org.openide.util.lookup.ServiceProvider;
 
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FixedWeekDayType", propOrder = {
     "month",
@@ -34,8 +33,7 @@ import org.openide.util.lookup.ServiceProvider;
     "week"
 })
 public class XmlFixedWeekDay
-    extends XmlDay
-{
+        extends XmlDay {
 
     @XmlElement(name = "Month", required = true)
     @XmlSchemaType(name = "NMTOKEN")
@@ -84,19 +82,19 @@ public class XmlFixedWeekDay
             return XmlFixedWeekDay.class;
         }
 
-         @Override
+        @Override
         public FixedWeekDay unmarshal(XmlFixedWeekDay v) throws Exception {
-            FixedWeekDay o = new FixedWeekDay(v.week, v.dayofWeek, v.month, v.weight);
+            FixedWeekDay o = new FixedWeekDay(v.getWeek(), v.getDayofWeek(), v.getMonth(), v.getWeight());
             return o;
         }
 
         @Override
         public XmlFixedWeekDay marshal(FixedWeekDay v) throws Exception {
             XmlFixedWeekDay xml = new XmlFixedWeekDay();
-            xml.dayofWeek=v.dayOfWeek;
-            xml.week=v.week;
-            xml.month=v.month;
-            xml.weight=v.getWeight();
+            xml.setDayofWeek(v.dayOfWeek);
+            xml.setWeek(v.week);
+            xml.setMonth(v.month);
+            xml.setWeight(v.getWeight());
             return xml;
         }
 

@@ -31,7 +31,7 @@ import org.openide.util.lookup.ServiceProvider;
     "event",
     "offset"
 })
-public class XmlSpecialCalendarDay extends XmlDay{
+public class XmlSpecialCalendarDay extends XmlDay {
 
     @XmlElement(name = "Event", required = true)
     @XmlSchemaType(name = "string")
@@ -47,15 +47,19 @@ public class XmlSpecialCalendarDay extends XmlDay{
         this.event = value;
     }
 
-    public Short getOffset() {
-        return offset;
+    public short getOffset() {
+        return offset == null ? 0 : offset;
     }
 
     public void setOffset(Short value) {
-        this.offset = value;
+        if (value != null && value == 0) {
+            offset = null;
+        } else {
+            this.offset = value;
+        }
     }
 
-        @ServiceProvider(service = DayAdapter.class)
+    @ServiceProvider(service = DayAdapter.class)
     public static class Adapter extends DayAdapter<XmlSpecialCalendarDay, SpecialCalendarDay> {
 
         @Override
@@ -68,18 +72,18 @@ public class XmlSpecialCalendarDay extends XmlDay{
             return XmlSpecialCalendarDay.class;
         }
 
-         @Override
+        @Override
         public SpecialCalendarDay unmarshal(XmlSpecialCalendarDay v) throws Exception {
-            SpecialCalendarDay o = new SpecialCalendarDay(v.event, v.offset, v.weight);
+            SpecialCalendarDay o = new SpecialCalendarDay(v.getEvent(), v.getOffset(), v.getWeight());
             return o;
         }
 
         @Override
         public XmlSpecialCalendarDay marshal(SpecialCalendarDay v) throws Exception {
             XmlSpecialCalendarDay xml = new XmlSpecialCalendarDay();
-            xml.event=v.event;
-            xml.offset=(short)v.offset;
-            xml.weight=v.getWeight();
+            xml.setEvent(v.event);
+            xml.setOffset((short) v.offset);
+            xml.setWeight(v.getWeight());
             return xml;
         }
 
