@@ -199,9 +199,9 @@ public class ADFTestTest {
         boolean b2 = adf.isSignificant(.1);
         assertTrue(b1 || !b0);
         assertTrue(b2 || !b1);
-        System.out.println(ADFTest.thresholdc(.01, 100));
-        System.out.println(ADFTest.thresholdc(.05, 100));
-        System.out.println(ADFTest.thresholdc(.1, 100));
+//        System.out.println(ADFTest.thresholdc(.01, 100));
+//        System.out.println(ADFTest.thresholdc(.05, 100));
+//        System.out.println(ADFTest.thresholdc(.1, 100));
     }
 
 }

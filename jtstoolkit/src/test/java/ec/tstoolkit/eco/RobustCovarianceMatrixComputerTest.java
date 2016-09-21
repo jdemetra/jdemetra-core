@@ -12,6 +12,7 @@ import ec.tstoolkit.data.TrigonometricSeries;
 import ec.tstoolkit.data.WindowType;
 import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.maths.matrices.SymmetricMatrix;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -38,16 +39,19 @@ public class RobustCovarianceMatrixComputerTest {
         ols.process(model);
         DataBlock e = ols.getResiduals();
         RobustCovarianceMatrixComputer har = new RobustCovarianceMatrixComputer();
-        Matrix rvar = har.compute(m.all(), e);
-        System.out.println(rvar);
+        har.compute(m.all(), e);
+        Matrix rvar = har.getRobustCovariance();
+//        System.out.println("trig");
+//        System.out.println(rvar);
+//        System.out.println(ols.getLikelihood().getBVar());
     }
 
     @Test
     public void testDummies() {
-        DataBlock y = new DataBlock(Data.US_UNEMPL);
+        DataBlock y = new DataBlock(Data.US_UNEMPL.delta(1));
         RegModel model = new RegModel();
         model.setY(y.drop(1, 0));
-        model.addX(y.drop(0, 1));
+        //model.addX(y.drop(0, 1));
         PeriodicDummies vars = new PeriodicDummies(4, 1);
 
         Matrix m = vars.matrix(y.getLength() - 1);
@@ -59,7 +63,12 @@ public class RobustCovarianceMatrixComputerTest {
         DataBlock e = ols.getResiduals();
         RobustCovarianceMatrixComputer har = new RobustCovarianceMatrixComputer();
         har.setWindowType(WindowType.Bartlett);
-        Matrix rvar = har.compute(m.all(), e);
-        System.out.println(rvar);
+        har.setTruncationLag(4);
+        har.compute(m.all(), e);
+        Matrix rvar = har.getRobustCovariance();
+//        System.out.println("dummies");
+//        System.out.println(rvar);
+//        System.out.println(ols.getLikelihood().getBVar());
+        
     }
 }

@@ -22,7 +22,7 @@ public class RobustCovarianceMatrixComputer {
 
     private WindowType winType = WindowType.Bartlett;
     private int truncationLag = 12;
-    private Matrix xe;
+    private Matrix xe, s, xx, v;
 
     /**
      * Computes a robust covariance estimate of x'e, following the Newey-West
@@ -32,23 +32,28 @@ public class RobustCovarianceMatrixComputer {
      * @param e Residuals
      * @return
      */
-    public Matrix compute(SubMatrix x, IReadDataBlock e) {
+    public void compute(SubMatrix x, IReadDataBlock e) {
+        s = null;
+        xx = null;
+        v = null;
         // compute x*f
         xe = xe(x, e);
         int n = x.getRowsCount(), nx = x.getColumnsCount();
-        double[] w = winType.window(truncationLag+1);
-        Matrix O = SymmetricMatrix.XtX(xe);
-        O.mul(w[0]);
+        double[] w = winType.window(truncationLag + 1);
+        xx = Matrix.square(nx);
+        SymmetricMatrix.XtX(x, xx.all());
+        Matrix xex = SymmetricMatrix.XtX(xe);
+        s = xex.clone();
+        s.mul(w[0]);
         SubMatrix ol = Matrix.square(nx).all();
         for (int l = 1; l <= truncationLag; ++l) {
             SubMatrix m = xe.subMatrix(0, n - l, 0, nx);
             SubMatrix ml = xe.subMatrix(l, n, 0, nx);
             ol.product(m.transpose(), ml);
-            O.all().addAY(w[l], ol);
-            O.all().addAY(w[l], ol.transpose());
+            s.all().addAY(w[l], ol);
+            s.all().addAY(w[l], ol.transpose());
         }
-        O.mul(1.0/n);
-        return O;
+        s.mul(1.0 / n);
     }
 
     // compute x*f
@@ -61,9 +66,27 @@ public class RobustCovarianceMatrixComputer {
         } while (columns.next());
         return xe;
     }
-    
-    public Matrix getXe(){
+
+    public Matrix getXe() {
         return xe;
+    }
+
+    public Matrix getOmega() {
+        return s;
+    }
+
+    public Matrix getRobustCovariance() {
+
+        Matrix Lo = s.clone();
+        SymmetricMatrix.lcholesky(Lo);
+        Matrix Lx = xx.clone();
+        SymmetricMatrix.lcholesky(Lx);
+        LowerTriangularMatrix.rsolve(Lx, Lo.all());
+        LowerTriangularMatrix.lsolve(Lx, Lo.all().transpose());
+
+        Matrix XXt = SymmetricMatrix.XXt(Lo);
+        XXt.mul(xe.getRowsCount());
+        return XXt;
     }
 
     /**
