@@ -17,6 +17,8 @@
 package ec.demetra.xml.regression;
 
 import ec.tstoolkit.timeseries.regression.AdditiveOutlier;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import org.openide.util.lookup.ServiceProvider;
@@ -25,12 +27,9 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Jean Palate
  */
-@XmlRootElement(name = XmlAdditiveOutlier.RNAME)
-@XmlType(name = XmlAdditiveOutlier.NAME)
-
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "AdditiveOutlierType")
 public class XmlAdditiveOutlier extends XmlOutlier {
-
-    static final String RNAME = "AdditiveOutlier", NAME = RNAME + "Type";
 
     @ServiceProvider(service = TsVariableAdapter.class)
     public static class Adapter extends TsVariableAdapter<XmlAdditiveOutlier, AdditiveOutlier> {
@@ -47,14 +46,14 @@ public class XmlAdditiveOutlier extends XmlOutlier {
 
          @Override
         public AdditiveOutlier unmarshal(XmlAdditiveOutlier v) throws Exception {
-            AdditiveOutlier o = new AdditiveOutlier(v.Position);
+            AdditiveOutlier o = new AdditiveOutlier(v.position);
             return o;
         }
 
         @Override
         public XmlAdditiveOutlier marshal(AdditiveOutlier v) throws Exception {
             XmlAdditiveOutlier xml = new XmlAdditiveOutlier();
-            xml.Position = v.getPosition();
+            xml.position=v.getPosition();
             return xml;
         }
 

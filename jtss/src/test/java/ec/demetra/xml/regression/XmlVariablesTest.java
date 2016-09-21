@@ -59,7 +59,7 @@ public class XmlVariablesTest {
         JAXBContext jaxb = JAXBContext.newInstance(xmlClasses.toArray(new Class[xmlClasses.size()]));
 
         XmlAdditiveOutlier xout = new XmlAdditiveOutlier();
-        xout.Position = Day.toDay();
+        xout.setPosition(Day.toDay());
 
         XmlGenericTradingDays xtd = new XmlGenericTradingDays();
         xtd.contrasts = true;
@@ -81,7 +81,7 @@ public class XmlVariablesTest {
         }
 
         XmlVariables rslt = null;
-        FileInputStream istream = new FileInputStream("c:\\localdata\\test.xml");
+        FileInputStream istream = new FileInputStream(FILE);
         try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
             rslt = (XmlVariables) unmarshaller.unmarshal(reader);

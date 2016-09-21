@@ -15,9 +15,10 @@
  * limitations under the Licence.
  */
 
-@XmlSchema(namespace = "ec/eurostat/jdemetra/sa/tramoseats", elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
+@XmlSchema(namespace = Constants.TRAMOSEATS, elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
         xmlns = { @XmlNs(prefix = "sa", namespaceURI = Constants.SA), 
                 @XmlNs(prefix = "trs", namespaceURI = Constants.TRAMOSEATS), 
+                @XmlNs(prefix = "tss", namespaceURI = Constants.CORE), 
                 @XmlNs(prefix = "modelling", namespaceURI = Constants.MODELLING) })
 package ec.demetra.xml.sa.tramoseats;
 

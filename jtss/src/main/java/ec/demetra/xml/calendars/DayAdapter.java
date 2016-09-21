@@ -14,19 +14,19 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.demetra.xml;
+package ec.demetra.xml.calendars;
+
+import ec.tstoolkit.timeseries.calendars.ISpecialDay;
+import ec.tstoolkit.timeseries.regression.ITsVariable;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  *
  * @author Jean Palate
+ * @param <V>
+ * @param <X>
  */
-public class Constants {
-    public static final String AUTHORITY="ec/eurostat",
-            CORE=AUTHORITY+"/jdemetra/core",
-            MODELLING=AUTHORITY+"/jdemetra/modelling",
-            BECNHMARKING=AUTHORITY+"/jdemetra/benchmarking",
-            SA=AUTHORITY+"/jdemetra/sa", 
-            TRAMOSEATS=SA+"/tramoseats",
-            X13=SA+"/x13";
-            
+public abstract class DayAdapter<X extends XmlDay, V extends ISpecialDay> extends XmlAdapter<X, V>{
+    public abstract Class<V> getValueType();
+    public abstract Class<X> getXmlType();
 }

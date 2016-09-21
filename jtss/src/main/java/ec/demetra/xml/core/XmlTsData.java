@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement(name = XmlTsData.RNAME)
 @XmlType(name = XmlTsData.NAME)
-public class XmlTsData implements IXmlConverter<TsData> {
+public class XmlTsData extends XmlTimeSeries implements IXmlConverter<TsData> {
 
     static final String RNAME = "TsData", NAME = RNAME + "Type";
     /**

@@ -14,60 +14,59 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.demetra.xml.regression;
+package ec.demetra.xml.calendars;
 
 import ec.tss.xml.XmlDayAdapter;
 import ec.tstoolkit.timeseries.Day;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-/**
- *
- * @author Jean Palate
- */
+
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "OutlierType", propOrder = {
-    "position"
+@XmlRootElement(name="ChainedCalendar")
+@XmlType(name = "ChainedCalendarType", propOrder = {
+    "startCalendar",
+    "endCalendar",
+    "calendarBreak"
 })
-public abstract class XmlOutlier extends XmlRegressionVariable {
+public class XmlChainedCalendar
+    extends XmlCalendar
+{
 
-    @XmlElement(name = "Position", required = true)
+    @XmlElement(name = "StartCalendar", required = true)
+    protected String startCalendar;
+    @XmlElement(name = "EndCalendar", required = true)
+    protected String endCalendar;
+    @XmlElement(name = "CalendarBreak", required = true)
     @XmlJavaTypeAdapter(XmlDayAdapter.class)
-    protected Day position;
+    protected Day calendarBreak;
 
-    @XmlAttribute(name = "preSpecified")
-    protected Boolean preSpecified;
-
-    /**
-     * @return the position
-     */
-    public Day getPosition() {
-        return position;
+    public Object getStartCalendar() {
+        return startCalendar;
     }
 
-    /**
-     * @param position the position to set
-     */
-    public void setPosition(Day position) {
-        this.position = position;
+    public void setStartCalendar(String value) {
+        this.startCalendar = value;
     }
 
-    public boolean isPreSpecified() {
-        if (preSpecified == null) {
-            return false;
-        } else {
-            return preSpecified;
-        }
+    public Object getEndCalendar() {
+        return endCalendar;
     }
 
-    /**
-     * @param preSpecified the preSpecified to set
-     */
-    public void setPreSpecified(Boolean preSpecified) {
-        this.preSpecified = preSpecified;
+    public void setEndCalendar(String value) {
+        this.endCalendar = value;
     }
+
+    public Day getCalendarBreak() {
+        return calendarBreak;
+    }
+
+    public void setCalendarBreak(Day value) {
+        this.calendarBreak = value;
+    }
+
 }

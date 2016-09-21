@@ -14,19 +14,15 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.demetra.xml;
 
-/**
- *
- * @author Jean Palate
- */
-public class Constants {
-    public static final String AUTHORITY="ec/eurostat",
-            CORE=AUTHORITY+"/jdemetra/core",
-            MODELLING=AUTHORITY+"/jdemetra/modelling",
-            BECNHMARKING=AUTHORITY+"/jdemetra/benchmarking",
-            SA=AUTHORITY+"/jdemetra/sa", 
-            TRAMOSEATS=SA+"/tramoseats",
-            X13=SA+"/x13";
-            
-}
+@XmlSchema(namespace = Constants.CORE, elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
+        xmlns = { 
+            @XmlNs(prefix = "tss", namespaceURI = Constants.CORE), 
+            @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema") 
+        })
+package ec.demetra.xml.calendars;
+
+import ec.demetra.xml.Constants;
+import javax.xml.bind.annotation.XmlNs;
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlSchema;

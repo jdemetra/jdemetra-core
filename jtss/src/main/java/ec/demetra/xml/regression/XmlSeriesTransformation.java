@@ -14,11 +14,22 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
+package ec.demetra.xml.regression;
 
-@XmlSchema(namespace = "ec:eurostat:jdemetra:3", elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
-        xmlns = { @XmlNs(prefix = "tss", namespaceURI = "ec/eurostat/jdemetra/core"), @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema") })
-package ec.demetra.xml;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlType;
 
-import javax.xml.bind.annotation.XmlNs;
-import javax.xml.bind.annotation.XmlNsForm;
-import javax.xml.bind.annotation.XmlSchema;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "SeriesTransformationType")
+@XmlSeeAlso({
+    XmlLogTransformation.class,
+    XmlBoxCoxTransformation.class,
+    XmlLengthOfPeriodAdjustment.class
+})
+public abstract class XmlSeriesTransformation {
+
+
+}

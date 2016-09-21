@@ -14,19 +14,21 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.demetra.xml;
+package ec.tss.xml;
 
 /**
  *
  * @author Jean Palate
+ * @param <X> Xml class
+ * @param <J> pure Java class
  */
-public class Constants {
-    public static final String AUTHORITY="ec/eurostat",
-            CORE=AUTHORITY+"/jdemetra/core",
-            MODELLING=AUTHORITY+"/jdemetra/modelling",
-            BECNHMARKING=AUTHORITY+"/jdemetra/benchmarking",
-            SA=AUTHORITY+"/jdemetra/sa", 
-            TRAMOSEATS=SA+"/tramoseats",
-            X13=SA+"/x13";
-            
+public interface InPlaceXmlUnmarshaller <X, J>{
+    /**
+     * Reads an xml object an put its information in a Java object
+     * @param xml The xml being read
+     * @param v The object being initialised
+     * @return
+     * @throws Exception 
+     */
+    boolean unmarshal(X xml, J v) throws Exception ;
 }

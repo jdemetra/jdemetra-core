@@ -16,10 +16,14 @@
 */
 
 
-@XmlSchema(namespace = "ec/eurostat/jdemetra/core", elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
-        xmlns = { @XmlNs(prefix = "tss", namespaceURI = "ec/eurostat/jdemetra/core"), @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema-instance") })
+@XmlSchema(namespace = Constants.CORE, elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
+        xmlns = { 
+            @XmlNs(prefix = "tss", namespaceURI = Constants.CORE), 
+            @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema") 
+        })
 package ec.demetra.xml.regression;
 
+import ec.demetra.xml.Constants;
 import javax.xml.bind.annotation.XmlNs;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlSchema;

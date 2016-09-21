@@ -14,19 +14,20 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.demetra.xml;
+package ec.demetra.xml.benchmarking;
 
-/**
- *
- * @author Jean Palate
- */
-public class Constants {
-    public static final String AUTHORITY="ec/eurostat",
-            CORE=AUTHORITY+"/jdemetra/core",
-            MODELLING=AUTHORITY+"/jdemetra/modelling",
-            BECNHMARKING=AUTHORITY+"/jdemetra/benchmarking",
-            SA=AUTHORITY+"/jdemetra/sa", 
-            TRAMOSEATS=SA+"/tramoseats",
-            X13=SA+"/x13";
-            
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlType;
+
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "BenchmarkingMethodType")
+@XmlSeeAlso({
+    XmlUnivariateCholetteMethod.class
+})
+public abstract class XmlBenchmarkingMethod {
+
+
 }

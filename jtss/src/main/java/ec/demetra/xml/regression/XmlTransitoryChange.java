@@ -17,6 +17,8 @@
 package ec.demetra.xml.regression;
 
 import ec.tstoolkit.timeseries.regression.TransitoryChange;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -26,19 +28,39 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Jean Palate
  */
-@XmlRootElement(name = XmlTransitoryChange.NAME)
-@XmlType(name = XmlTransitoryChange.NAME)
-
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "TransitoryChangeType")
 public class XmlTransitoryChange extends XmlOutlier {
 
-    static final String RNAME = "TransitoryChange", NAME = RNAME + "Type";
+    @XmlAttribute(name = "factor")
+    protected Double factor;
+    @XmlAttribute(name = "monthlyFactor")
+    protected Boolean monthlyFactor;
 
-    @XmlAttribute
-    public double factor = 0.7;
+    public double getFactor() {
+        if (factor == null) {
+            return  0.7D;
+        } else {
+            return factor;
+        }
+    }
 
-    @XmlAttribute
-    public boolean monthlyFactor = false;
+    public void setFactor(Double value) {
+        this.factor = value;
+    }
 
+    public boolean isMonthlyFactor() {
+        if (monthlyFactor == null) {
+            return false;
+        } else {
+            return monthlyFactor;
+        }
+    }
+
+    public void setMonthlyFactor(Boolean value) {
+        this.monthlyFactor = value;
+    }
+    
     @ServiceProvider(service = TsVariableAdapter.class)
     public static class Adapter extends TsVariableAdapter<XmlTransitoryChange, TransitoryChange> {
 
@@ -54,14 +76,14 @@ public class XmlTransitoryChange extends XmlOutlier {
 
         @Override
         public TransitoryChange unmarshal(XmlTransitoryChange v) throws Exception {
-            TransitoryChange o = new TransitoryChange(v.Position, v.factor, v.monthlyFactor);
+            TransitoryChange o = new TransitoryChange(v.position, v.factor, v.monthlyFactor);
             return o;
         }
 
         @Override
         public XmlTransitoryChange marshal(TransitoryChange v) throws Exception {
             XmlTransitoryChange xml = new XmlTransitoryChange();
-            xml.Position = v.getPosition();
+            xml.position = v.getPosition();
             xml.factor = v.getCoefficient();
             xml.monthlyFactor = v.isMonthlyCoefficient();
             return xml;

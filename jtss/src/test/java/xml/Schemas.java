@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
  * @author Jean Palate
  */
 public class Schemas {
-    public static final Schema Core, Modelling, TramoSeats, X13;
+    public static final Schema Core, Calendars, Modelling, TramoSeats, X13;
     
     static{
         SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -40,6 +40,13 @@ public class Schemas {
         } catch (SAXException ex) {
         }
         Core = core;
+        Schema calendars = null;
+        try {
+            URL resource = Schemas.class.getResource("/calendar.xsd");
+            calendars = factory.newSchema(resource);
+        } catch (SAXException ex) {
+        }
+        Calendars = calendars;
         Schema modelling = null;
         try {
             URL resource = XmlTsData.class.getResource("/regarima.xsd");

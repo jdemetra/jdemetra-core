@@ -59,9 +59,9 @@ public class XmlRegressionTest {
     public XmlRegressionTest() {
         // create the regression
         XmlAdditiveOutlier xao = new XmlAdditiveOutlier();
-        xao.Position = Day.toDay();
+        xao.setPosition(Day.toDay());
         XmlSeasonalOutlier xso = new XmlSeasonalOutlier();
-        xso.Position = Day.toDay().minus(5000);
+        xso.setPosition(Day.toDay().minus(5000));
 
         reg = new XmlRegression();
         XmlRegressionItem ao = new XmlRegressionItem();
