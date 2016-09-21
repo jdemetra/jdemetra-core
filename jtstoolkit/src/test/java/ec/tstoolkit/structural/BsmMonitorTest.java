@@ -24,6 +24,7 @@ import ec.tstoolkit.ssf.SsfData;
 import ec.tstoolkit.ssf.arima.SsfArima;
 import ec.tstoolkit.ucarima.UcarimaModel;
 import static org.junit.Assert.assertTrue;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -93,6 +94,7 @@ public class BsmMonitorTest {
     }
 
     @Test
+    @Ignore
     public void testNile() {
         ModelSpecification mspec = new ModelSpecification();
         mspec.seasModel = SeasonalModel.Unused;

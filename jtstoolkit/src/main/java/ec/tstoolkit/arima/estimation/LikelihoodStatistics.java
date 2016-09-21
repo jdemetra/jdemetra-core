@@ -81,7 +81,7 @@ public class LikelihoodStatistics {
         AICC = -2 * (ll - (n * np) / (n - np - 1));
         BIC = -2 * ll + np * Math.log(n);
         BIC2 = (-2 * nll + np * Math.log(n)) / n;
-        BICC = Math.log(SsqErr / n) + (np - 1) * Math.log(n) / n;
+        BICC = Math.log(SsqErr / n) + (np - 1) * Math.log(n) / n; // TRAMO-like
     }
 
     @Override

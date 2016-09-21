@@ -43,6 +43,14 @@ public class SpecialDayEvent {
     public void setValidityPeriod(ValidityPeriod value) {
         validity_ = value;
     }
+    
+    public boolean isStartSpecified(){
+        return validity_!=null && validity_.isStartSpecified();
+    }
+
+    public boolean isEndSpecified(){
+        return validity_!=null && validity_.isEndSpecified();
+    }
 
     public Day getStart() {
         return validity_ == null ? Day.BEG : validity_.getStart();

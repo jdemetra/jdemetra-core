@@ -29,16 +29,19 @@ public class WindowFunctionTest {
     }
 
     @Test
+    
     public void testParzenMethod() {
         for (int len = 1; len < 12; ++len) {
-            System.out.println(new WindowFunction(WindowType.Parzen, len).compute(i -> fn.get(Math.abs(i))));
+//            System.out.println(new WindowFunction(WindowType.Parzen, len).compute(i -> fn.get(Math.abs(i))));
+            new WindowFunction(WindowType.Parzen, len).compute(i -> fn.get(Math.abs(i)));
         }
     }
 
    @Test
     public void testBartlettMethod() {
         for (int len = 1; len < 12; ++len) {
-            System.out.println(new WindowFunction(WindowType.Bartlett, len).compute(i -> fn.get(Math.abs(i))));
+//            System.out.println(new WindowFunction(WindowType.Bartlett, len).compute(i -> fn.get(Math.abs(i))));
+            new WindowFunction(WindowType.Bartlett, len).compute(i -> fn.get(Math.abs(i)));
         }
     }
 }

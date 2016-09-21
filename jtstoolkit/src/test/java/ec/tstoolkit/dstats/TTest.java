@@ -21,7 +21,7 @@ public class TTest {
     public void testProbinverse() {
         T dist = new T();
         dist.setDegreesofFreedom(20);
-        double step = 0.00001;
+        double step = 0.001;
         for (double p = step; p <= 1 - step; p += step) {
             double x = dist.getProbabilityInverse(p, ProbabilityType.Lower);
             double np = dist.getProbability(x, ProbabilityType.Lower);

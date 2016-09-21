@@ -36,7 +36,7 @@ public class ApproximateSingleOutlierDetectorTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void testSomeSeries() {
         ModellingContext context = new ModellingContext();
         context.automodelling = true;

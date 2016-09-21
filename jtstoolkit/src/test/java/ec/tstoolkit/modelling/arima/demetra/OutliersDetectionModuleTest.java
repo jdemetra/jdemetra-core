@@ -87,7 +87,7 @@ public class OutliersDetectionModuleTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void testMethods() {
         ModellingContext context = new ModellingContext();
         context.automodelling = true;

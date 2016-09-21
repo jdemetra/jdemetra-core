@@ -32,10 +32,10 @@ public class DifferencingModuleTest {
         DifferencingModule diff=new DifferencingModule();
         diff.setSeas(true);
         diff.process(new ReadDataBlock(data), 12);
-        System.out.println(diff.getD());
-        System.out.println(diff.getBD());
-        System.out.println(diff.getTMean());
-        System.out.println(diff.isMeanCorrection());
+//        System.out.println(diff.getD());
+//        System.out.println(diff.getBD());
+//        System.out.println(diff.getTMean());
+//        System.out.println(diff.isMeanCorrection());
     }
     
 }
