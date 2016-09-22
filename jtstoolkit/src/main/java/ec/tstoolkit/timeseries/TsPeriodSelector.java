@@ -346,4 +346,12 @@ public class TsPeriodSelector implements Cloneable {
                 return "";
         }
     }
+    
+    public boolean isAll(){
+        return type_ == PeriodSelectorType.All;
+    }
+    
+    public boolean isNone(){
+         return type_ == PeriodSelectorType.None;
+    }
 }
