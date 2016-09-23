@@ -47,6 +47,7 @@ public class TsVariable extends AbstractSingleTsVariable implements
 
     /**
      *
+     * @param desc
      * @param tsdata
      */
     public TsVariable(String desc, TsData tsdata) {
@@ -61,6 +62,10 @@ public class TsVariable extends AbstractSingleTsVariable implements
      */
     @Override
     public void data(TsPeriod start, DataBlock data) {
+        if (tsdata_ == null) {
+            // should data be cleared?
+            return;
+        }
         TsDomain domain = tsdata_.getDomain();
         // position of the first data (in m_ts)
         int istart = start.minus(domain.getStart());
@@ -85,12 +90,12 @@ public class TsVariable extends AbstractSingleTsVariable implements
 
         data.range(jstart, jend).copy(
                 new DataBlock(tsdata_.internalStorage(), istart,
-                iend, 1));
+                        iend, 1));
     }
 
     @Override
     public TsFrequency getDefinitionFrequency() {
-        return tsdata_.getFrequency();
+        return tsdata_ != null ? tsdata_.getFrequency() : null;
     }
 
     @Override
@@ -104,7 +109,7 @@ public class TsVariable extends AbstractSingleTsVariable implements
      */
     @Override
     public TsDomain getDefinitionDomain() {
-        return tsdata_.getDomain();
+        return tsdata_ != null ? tsdata_.getDomain() : null;
     }
 
     /**
@@ -117,6 +122,9 @@ public class TsVariable extends AbstractSingleTsVariable implements
 
     @Override
     public boolean isSignificant(TsDomain domain) {
+        if (tsdata_ == null) {
+            return false;
+        }
         if (domain.getFrequency() != tsdata_.getFrequency()) {
             return false;
         }
@@ -169,7 +177,7 @@ public class TsVariable extends AbstractSingleTsVariable implements
         }
         static final String TYPE = "static time series", DATA = "data", DESC = "description";
     };
-    
+
     private static final InformationConverter<TsVariable> tsvar = new TsVariableConverter();
 
     public static void register() {

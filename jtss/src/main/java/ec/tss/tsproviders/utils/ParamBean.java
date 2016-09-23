@@ -79,9 +79,9 @@ public class ParamBean {
     @Nullable
     public static ParamBean[] fromProperties(@Nonnull Properties properties) {
         SortedMap<String, String> result = new TreeMap<>();
-        for (String o : properties.stringPropertyNames()) {
+        properties.stringPropertyNames().forEach((o) -> {
             result.put(o, properties.getProperty(o));
-        }
+        });
         return fromSortedMap(result);
     }
 }

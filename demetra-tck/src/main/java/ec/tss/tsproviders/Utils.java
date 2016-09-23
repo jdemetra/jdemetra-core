@@ -56,24 +56,24 @@ final class Utils {
     //<editor-fold defaultstate="collapsed" desc="Equivalence implementation">
     static void assertFileLoaderEquivalence(SoftAssertions s, IFileLoader actual, IFileLoader expected, DataSource dataSource) throws IOException {
         assertDataSourceLoaderEquivalence(s, actual, expected, dataSource);
-        s.assertThat(expected.getFileDescription()).isEqualTo(actual.getFileDescription());
+        s.assertThat(actual.getFileDescription()).isEqualTo(expected.getFileDescription());
     }
 
     static void assertDataSourceLoaderEquivalence(SoftAssertions s, IDataSourceLoader actual, IDataSourceLoader expected, DataSource dataSource) throws IOException {
-        s.assertThat(expected.getSource()).isEqualTo(actual.getSource());
-        s.assertThat(expected.getDisplayName()).isEqualTo(actual.getDisplayName());
+        s.assertThat(actual.getSource()).isEqualTo(expected.getSource());
+        s.assertThat(actual.getDisplayName()).isEqualTo(expected.getDisplayName());
 
-        s.assertThat(expected.open(dataSource)).isTrue();
         s.assertThat(actual.open(dataSource)).isTrue();
+        s.assertThat(expected.open(dataSource)).isTrue();
 
-        s.assertThat(expected.getDataSources()).containsExactlyElementsOf(actual.getDataSources());
+        s.assertThat(actual.getDataSources()).containsExactlyElementsOf(expected.getDataSources());
 
-        s.assertThat(expected.toMoniker(dataSource)).isEqualTo(actual.toMoniker(dataSource));
-        s.assertThat(expected.getDisplayName(dataSource)).isEqualTo(actual.getDisplayName(dataSource));
-        s.assertThat(expected.toDataSource(expected.toMoniker(dataSource))).isEqualTo(actual.toDataSource(actual.toMoniker(dataSource)));
-        s.assertThat(expected.children(dataSource)).containsExactlyElementsOf(actual.children(dataSource));
+        s.assertThat(actual.toMoniker(dataSource)).isEqualTo(expected.toMoniker(dataSource));
+        s.assertThat(actual.getDisplayName(dataSource)).isEqualTo(expected.getDisplayName(dataSource));
+        s.assertThat(actual.toDataSource(actual.toMoniker(dataSource))).isEqualTo(expected.toDataSource(expected.toMoniker(dataSource)));
+        s.assertThat(actual.children(dataSource)).containsExactlyElementsOf(expected.children(dataSource));
 
-        for (DataSet o : expected.children(dataSource)) {
+        for (DataSet o : actual.children(dataSource)) {
             assertEquivalent(s, actual, expected, o);
         }
     }
@@ -81,21 +81,21 @@ final class Utils {
     private static void assertEquivalent(SoftAssertions s, IDataSourceLoader actual, IDataSourceLoader expected, DataSet dataSet) throws IOException {
         switch (dataSet.getKind()) {
             case COLLECTION:
-                s.assertThat(expected.toMoniker(dataSet)).isEqualTo(actual.toMoniker(dataSet));
-                s.assertThat(expected.getDisplayName(dataSet)).isEqualTo(actual.getDisplayName(dataSet));
-                s.assertThat(expected.getDisplayNodeName(dataSet)).isEqualTo(actual.getDisplayNodeName(dataSet));
-                s.assertThat(expected.toDataSet(expected.toMoniker(dataSet))).isEqualTo(actual.toDataSet(actual.toMoniker(dataSet)));
-                s.assertThat(expected.children(dataSet)).containsExactlyElementsOf(actual.children(dataSet));
-                for (DataSet o : expected.children(dataSet)) {
+                s.assertThat(actual.toMoniker(dataSet)).isEqualTo(expected.toMoniker(dataSet));
+                s.assertThat(actual.getDisplayName(dataSet)).isEqualTo(expected.getDisplayName(dataSet));
+                s.assertThat(actual.getDisplayNodeName(dataSet)).isEqualTo(expected.getDisplayNodeName(dataSet));
+                s.assertThat(actual.toDataSet(actual.toMoniker(dataSet))).isEqualTo(expected.toDataSet(expected.toMoniker(dataSet)));
+                s.assertThat(actual.children(dataSet)).containsExactlyElementsOf(expected.children(dataSet));
+                for (DataSet o : actual.children(dataSet)) {
                     assertEquivalent(s, actual, expected, o);
                 }
                 break;
             case SERIES:
                 s.assertThat(dataSet).isEqualTo(dataSet);
-                s.assertThat(expected.toMoniker(dataSet)).isEqualTo(actual.toMoniker(dataSet));
-                s.assertThat(expected.getDisplayName(dataSet)).isEqualTo(actual.getDisplayName(dataSet));
-                s.assertThat(expected.getDisplayNodeName(dataSet)).isEqualTo(actual.getDisplayNodeName(dataSet));
-                s.assertThat(expected.toDataSet(expected.toMoniker(dataSet))).isEqualTo(actual.toDataSet(actual.toMoniker(dataSet)));
+                s.assertThat(actual.toMoniker(dataSet)).isEqualTo(expected.toMoniker(dataSet));
+                s.assertThat(actual.getDisplayName(dataSet)).isEqualTo(expected.getDisplayName(dataSet));
+                s.assertThat(actual.getDisplayNodeName(dataSet)).isEqualTo(expected.getDisplayNodeName(dataSet));
+                s.assertThat(actual.toDataSet(actual.toMoniker(dataSet))).isEqualTo(expected.toDataSet(expected.toMoniker(dataSet)));
                 s.assertThat(getTsInformation(actual, dataSet)).isEqualToIgnoringNullFields(getTsInformation(expected, dataSet));
                 break;
         }

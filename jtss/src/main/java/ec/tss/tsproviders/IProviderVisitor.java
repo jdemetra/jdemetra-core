@@ -23,6 +23,7 @@ import java.io.IOException;
  * @author Philippe Charles
  * @param <P>
  */
+@Deprecated
 public interface IProviderVisitor<P> {
 
     default boolean preVisitSource(P provider, DataSource dataSource) throws IOException {

@@ -33,7 +33,6 @@ import ec.tstoolkit.design.VisibleForTesting;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.SortedMap;
 import javax.annotation.Nonnull;
@@ -108,9 +107,7 @@ public final class DataSource implements IConfig, Serializable {
     @Override
     public String toString() {
         MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper(providerName + "(" + version + ")");
-        for (Entry<String, String> o : params.entrySet()) {
-            helper.add(o.getKey(), o.getValue());
-        }
+        params.forEach(helper::add);
         return helper.toString();
     }
 
