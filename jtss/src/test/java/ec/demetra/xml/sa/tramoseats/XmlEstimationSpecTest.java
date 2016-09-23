@@ -52,7 +52,7 @@ public class XmlEstimationSpecTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void testMarshal() throws FileNotFoundException, JAXBException, IOException, Exception {
 
         TramoSpecification spec = TramoSpecification.TRfull;

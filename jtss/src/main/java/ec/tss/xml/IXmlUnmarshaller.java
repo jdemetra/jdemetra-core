@@ -27,7 +27,6 @@ public interface IXmlUnmarshaller <X, J>{
      * Reads an xml object an creates the corresponding Java object
      * @param xml The xml being read
      * @return the Java object
-     * @throws Exception 
      */
-    J unmarshal(X xml) throws Exception ;
+    J unmarshal(X xml) ;
 }

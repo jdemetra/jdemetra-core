@@ -16,36 +16,25 @@
  */
 package ec.demetra.xml.sa.tramoseats;
 
+import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
 import ec.tstoolkit.modelling.arima.tramo.TransformSpec;
-import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.util.JAXBSource;
-import javax.xml.transform.Source;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
-import org.w3c.dom.ls.LSInput;
-import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
 import xml.Schemas;
 import xml.TestErrorHandler;
@@ -67,8 +56,10 @@ public class XmlTransformationSpecTest {
 
         TramoSpecification spec = TramoSpecification.TRfull;
         TransformSpec tspec = spec.getTransform().clone();
-        XmlTransformationSpec xspec = new XmlTransformationSpec();
-        xspec.copy(tspec);
+        tspec.setFunction(DefaultTransformationType.Auto);
+        tspec.setFct(1);
+        
+        XmlTransformationSpec xspec=XmlTransformationSpec.MARSHALLER.marshal(tspec);
         JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
         FileOutputStream ostream = new FileOutputStream(FILE);
         try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
@@ -83,8 +74,10 @@ public class XmlTransformationSpecTest {
         try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
             rslt = (XmlTransformationSpec) unmarshaller.unmarshal(reader);
+            TransformSpec nspec = new TransformSpec();
+            XmlTransformationSpec.UNMARSHALLER.unmarshal(rslt, nspec);
 
-            assertTrue(rslt.create().equals(tspec));
+            assertTrue(nspec.equals(tspec));
         }
     }
 
@@ -93,12 +86,11 @@ public class XmlTransformationSpecTest {
 
         TramoSpecification spec = TramoSpecification.TRfull;
         TransformSpec tspec = spec.getTransform().clone();
-        XmlTransformationSpec xspec = new XmlTransformationSpec();
-        xspec.copy(tspec);
+        XmlTransformationSpec xspec=XmlTransformationSpec.MARSHALLER.marshal(tspec);
         JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
         JAXBSource source = new JAXBSource(jaxb, xspec);
         Validator validator = Schemas.TramoSeats.newValidator();
-        //validator.setErrorHandler(new TestErrorHandler());
+        validator.setErrorHandler(new TestErrorHandler());
         validator.validate(source);
     }
 

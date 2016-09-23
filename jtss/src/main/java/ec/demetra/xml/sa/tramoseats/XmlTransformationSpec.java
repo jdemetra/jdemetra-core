@@ -17,6 +17,7 @@
 package ec.demetra.xml.sa.tramoseats;
 
 import ec.demetra.xml.XmlEmptyElement;
+import ec.tss.xml.IXmlMarshaller;
 import ec.tss.xml.InPlaceXmlMarshaller;
 import ec.tss.xml.InPlaceXmlUnmarshaller;
 import ec.tstoolkit.modelling.DefaultTransformationType;
@@ -24,6 +25,7 @@ import ec.tstoolkit.modelling.arima.tramo.TransformSpec;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -46,6 +48,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name="TransformationSpec")
 @XmlType(name = "TransformationSpecType", propOrder = {
     "log",
     "auto"
@@ -117,7 +120,10 @@ public class XmlTransformationSpec
         return true;
     };
 
-    public static final InPlaceXmlMarshaller<XmlTransformationSpec, TransformSpec> MARSHALLER=(TransformSpec v, XmlTransformationSpec xml) -> {
+    public static final IXmlMarshaller<XmlTransformationSpec, TransformSpec> MARSHALLER=(TransformSpec v) -> {
+        if (v.getFunction() ==  DefaultTransformationType.None)
+            return null;
+        XmlTransformationSpec xml=new XmlTransformationSpec();
         switch (v.getFunction()){
             case Log:
                 xml.setLog(new XmlEmptyElement());
@@ -128,6 +134,6 @@ public class XmlTransformationSpec
                 xml.setAuto(xauto);
                 break;
         }
-        return true;
+        return xml;
     };
 }

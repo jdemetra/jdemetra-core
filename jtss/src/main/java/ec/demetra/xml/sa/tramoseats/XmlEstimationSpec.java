@@ -65,7 +65,6 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "EstimationSpec")
 @XmlType(name = "EstimationSpecType", propOrder = {
-    "span",
     "precision",
     "eml",
     "ubp"
@@ -73,34 +72,12 @@ import javax.xml.bind.annotation.XmlType;
 public class XmlEstimationSpec
         extends ec.demetra.xml.modelling.XmlEstimationSpec {
 
-    @XmlElement(name = "Span")
-    protected XmlPeriodSelection span;
     @XmlElement(name = "Precision", defaultValue = "0.0000001")
     protected Double precision;
     @XmlElement(name = "EML", defaultValue = "true")
     protected Boolean eml;
     @XmlElement(name = "UBP", defaultValue = "0.96")
     protected Double ubp;
-
-    /**
-     * Gets the value of the span property.
-     *
-     * @return possible object is {@link PeriodSelectionType }
-     *
-     */
-    public XmlPeriodSelection getSpan() {
-        return span;
-    }
-
-    /**
-     * Sets the value of the span property.
-     *
-     * @param value allowed object is {@link PeriodSelectionType }
-     *
-     */
-    public void setSpan(XmlPeriodSelection value) {
-        this.span = value;
-    }
 
     /**
      * Gets the value of the precision property.

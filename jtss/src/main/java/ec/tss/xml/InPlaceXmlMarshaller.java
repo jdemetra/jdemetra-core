@@ -30,7 +30,6 @@ public interface InPlaceXmlMarshaller<X, J> {
      * @param v The object being read
      * @param xml The xml being encoded
      * @return
-     * @throws Exception
-     */
-    boolean marshal(J v, X xml) throws Exception;
+      */
+    boolean marshal(J v, X xml);
 }

@@ -36,7 +36,7 @@ and open the template in the editor.
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:complexType name="BenchmarkingType" abstract="true">
+    <xs:complexType name="BenchmarkingSpecType" abstract="true">
         <xs:sequence>
             <xs:choice>
                 <xs:element name="Target" type="sabench:TargetEnum"/>
@@ -45,9 +45,9 @@ and open the template in the editor.
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="CholetteType">
+    <xs:complexType name="CholetteSpecType">
         <xs:complexContent>
-            <xs:extension base="sabench:BenchmarkingType">
+            <xs:extension base="sabench:BenchmarkingSpecType">
                 <xs:sequence>
                     <xs:element name="Method" type="bench:UnivariateCholetteMethodType"/>
                 </xs:sequence>

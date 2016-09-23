@@ -127,13 +127,6 @@ and open the template in the editor.
         <xs:complexContent>
             <xs:extension base="modelling:EstimationSpecType">
                 <xs:sequence>
-                    <xs:element name="Span" type="tss:PeriodSelectionType" minOccurs="0">
-                        <xs:annotation>
-                            <xs:documentation>
-                                Defines the time domain over which the model is estimated.
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:element>
                     <xs:element name="Precision" type="xs:double" minOccurs="0" default="0.0000001"/>
                 </xs:sequence>
             </xs:extension>

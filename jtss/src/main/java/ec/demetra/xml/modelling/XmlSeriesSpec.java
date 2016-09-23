@@ -16,15 +16,17 @@
  */
 package ec.demetra.xml.modelling;
 
+import ec.demetra.xml.core.XmlPeriodSelection;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
  * 
- *                 Estimation of the model
+ *                 Series of the model
  *             
  * 
  * <p>Java class for SeriesSpecType complex type.
@@ -47,6 +49,33 @@ import javax.xml.bind.annotation.XmlType;
 @XmlSeeAlso({
 })
 public abstract class XmlSeriesSpec {
+
+    @XmlElement(name = "Span")
+    protected XmlPeriodSelection span;
+
+    /**
+     * Gets the value of the span property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link PeriodSelectionType }
+     *     
+     */
+    public XmlPeriodSelection getSpan() {
+        return span;
+    }
+
+    /**
+     * Sets the value of the span property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link PeriodSelectionType }
+     *     
+     */
+    public void setSpan(XmlPeriodSelection value) {
+        this.span = value;
+    }
 
 
 }

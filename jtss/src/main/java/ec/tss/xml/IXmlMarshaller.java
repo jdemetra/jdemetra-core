@@ -29,7 +29,6 @@ public interface IXmlMarshaller<X, J> {
      *
      * @param v The object being read
      * @return The xml being encoded
-     * @throws Exception
      */
-    X marshal(J v) throws Exception;
+    X marshal(J v);
 }

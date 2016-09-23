@@ -16,8 +16,10 @@
  */
 package ec.demetra.xml.modelling;
 
+import ec.demetra.xml.core.XmlPeriodSelection;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
@@ -47,4 +49,31 @@ import javax.xml.bind.annotation.XmlType;
 @XmlSeeAlso({
 })
 public abstract class XmlEstimationSpec {
+    @XmlElement(name = "Span")
+    protected XmlPeriodSelection span;
+
+    /**
+     * Gets the value of the span property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link PeriodSelectionType }
+     *     
+     */
+    public XmlPeriodSelection getSpan() {
+        return span;
+    }
+
+    /**
+     * Sets the value of the span property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link PeriodSelectionType }
+     *     
+     */
+    public void setSpan(XmlPeriodSelection value) {
+        this.span = value;
+    }
+
 }

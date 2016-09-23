@@ -66,8 +66,7 @@ public class XmlRegressionTest {
         reg = new XmlRegression();
         XmlRegressionItem ao = new XmlRegressionItem();
         ao.variable = xao;
-        ao.scoeff = new XmlParameter();
-        ao.scoeff.copy(new Parameter(1000, ParameterType.Fixed));
+        ao.scoeff = new XmlParameter(1000, ParameterType.Fixed);
         reg.variables.add(ao);
         XmlRegressionItem so = new XmlRegressionItem();
         so.variable = xso;

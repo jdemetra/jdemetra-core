@@ -16,8 +16,9 @@
  */
 package ec.demetra.xml.sa.tramoseats;
 
+import ec.tss.xml.InPlaceXmlMarshaller;
+import ec.tss.xml.InPlaceXmlUnmarshaller;
 import ec.tstoolkit.modelling.arima.tramo.EasterSpec;
-import ec.tstoolkit.timeseries.regression.EasterVariable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -90,11 +91,7 @@ public class XmlEasterSpec
      *
      */
     public EasterSpec.Type getOption() {
-        if (option == null) {
-            return EasterSpec.Type.IncludeEaster;
-        } else {
-            return option;
-        }
+        return option;
     }
 
     /**
@@ -104,8 +101,40 @@ public class XmlEasterSpec
      *
      */
     public void setOption(EasterSpec.Type value) {
-        this.option = value;
+        if (value == EasterSpec.Type.IncludeEaster) {
+            option = null;
+        } else {
+            this.option = value;
+        }
     }
 
-    
+    public static final InPlaceXmlMarshaller<XmlEasterSpec, EasterSpec> MARSHALLER = (EasterSpec v, XmlEasterSpec xml) -> {
+        if (v.isDefault()) {
+            return true;
+        }
+        if (v.getDuration() != EasterSpec.DEF_IDUR) {
+            xml.setDuration(v.getDuration());
+        }
+        xml.setJulian(v.isJulian());
+        xml.setTest(v.isTest());
+        xml.setOption(v.getOption());
+        return true;
+    };
+
+    public static final InPlaceXmlUnmarshaller<XmlEasterSpec, EasterSpec> UNMARSHALLER = (XmlEasterSpec xml, EasterSpec v) -> {
+        if (xml.julian != null) {
+            v.setJulian(xml.julian);
+        }
+        if (xml.test != null) {
+            v.setTest(xml.test);
+        }
+        if (xml.duration != null) {
+            v.setDuration(xml.duration);
+        }
+        if (xml.option != null) {
+            v.setOption(xml.option);
+        }
+        return true;
+    };
+
 }

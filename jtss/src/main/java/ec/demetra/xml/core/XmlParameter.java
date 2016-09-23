@@ -13,86 +13,229 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.demetra.xml.core;
 
 import ec.tss.xml.IXmlConverter;
+import ec.tss.xml.InPlaceXmlMarshaller;
+import ec.tss.xml.InPlaceXmlUnmarshaller;
 import ec.tstoolkit.Parameter;
 import ec.tstoolkit.ParameterType;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
- * 
- * @author Jean Palate
+ *
+ * Parameter, with (except for "Undefined" parameter) its value and the way it
+ * has to be interpreted. Standard error and TStat of the parameter can be
+ * provided if the parameter has been estimated or derived.
+ *
+ *
+ * <p>
+ * Java class for ParameterType complex type.
+ *
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ *
+ * <pre>
+ * &lt;complexType name="ParameterType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="Value" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="0"/&gt;
+ *         &lt;element name="Stde" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="0"/&gt;
+ *         &lt;element name="Tstat" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+ *       &lt;attribute name="type" use="required" type="{ec/eurostat/jdemetra/core}ParameterInfoEnum" /&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ *
+ *
  */
-@XmlType(name = XmlParameter.NAME)
-public class XmlParameter implements IXmlConverter<Parameter> {
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "ParameterType", propOrder = {
+    "value",
+    "stde",
+    "tstat"
+})
+@XmlSeeAlso({})
+public class XmlParameter {
 
-    static final String NAME = "ParameterType";
-    /**
-     *
-     */
-    @XmlAttribute
-    public String name;
-    /**
-     *
-     */
-    @XmlAttribute
-    public ParameterType type;
-    /**
-     *
-     */
-    @XmlAttribute
-    public Integer index;
+    @XmlElement(name = "Value")
+    protected Double value;
+    @XmlElement(name = "Stde")
+    protected Double stde;
+    @XmlElement(name = "Tstat")
+    protected Double tstat;
+    @XmlAttribute(name = "name")
+    protected String name;
+    @XmlAttribute(name = "type", required = true)
+    protected ParameterType type;
     
-    @XmlElement
-    public Double Value;
-    /**
-     *
-     */
-    @XmlElement
-    public Double Stde;
-    /**
-     *
-     */
-    @XmlElement
-    public Double Tstat;
-
-    /**
-     *
-     * @param t
-     */
-    @Override
-    public void copy(Parameter t) {
-	if (t.getType() == ParameterType.Undefined)
-	    return;
-	type = t.getType();
-	Value = t.getValue();
-	double dstde = 0;
-	if (type == ParameterType.Estimated || type == ParameterType.Derived)
-	    dstde = t.getStde();
-	if (dstde != 0) {
-	    Stde = dstde;
-	    Tstat = Value / dstde;
-	}
+    public XmlParameter(){}
+    
+    public XmlParameter(double val, ParameterType type){
+        this.value=val;
+        this.type=type;
     }
 
     /**
+     * Gets the value of the value property.
      *
-     * @return
+     * @return possible object is {@link Double }
+     *
      */
-    @Override
-    public Parameter create() {
-	Parameter p = new Parameter();
-	if (Value != null)
-	    p.setValue(Value);
-	if (Stde != null)
-	    p.setStde(Stde);
-	if (type != null)
-	    p.setType(type);
-	return p;
+    public Double getValue() {
+        return value;
+    }
+
+    /**
+     * Sets the value of the value property.
+     *
+     * @param value allowed object is {@link Double }
+     *
+     */
+    public void setValue(Double value) {
+        this.value = value;
+    }
+
+    /**
+     * Gets the value of the stde property.
+     *
+     * @return possible object is {@link Double }
+     *
+     */
+    public Double getStde() {
+        return stde;
+    }
+
+    /**
+     * Sets the value of the stde property.
+     *
+     * @param value allowed object is {@link Double }
+     *
+     */
+    public void setStde(Double value) {
+        if (value != null && value == 0D) {
+            this.stde = 0D;
+        } else {
+            this.stde = value;
+        }
+    }
+
+    /**
+     * Gets the value of the tstat property.
+     *
+     * @return possible object is {@link Double }
+     *
+     */
+    public Double getTstat() {
+        return tstat;
+    }
+
+    /**
+     * Sets the value of the tstat property.
+     *
+     * @param value allowed object is {@link Double }
+     *
+     */
+    public void setTstat(Double value) {
+        this.tstat = value;
+    }
+
+    /**
+     * Gets the value of the name property.
+     *
+     * @return possible object is {@link String }
+     *
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the value of the name property.
+     *
+     * @param value allowed object is {@link String }
+     *
+     */
+    public void setName(String value) {
+        this.name = value;
+    }
+
+    /**
+     * Gets the value of the type property.
+     *
+     * @return possible object is {@link ParameterInfoEnum }
+     *
+     */
+    public ParameterType getType() {
+        return type;
+    }
+
+    /**
+     * Sets the value of the type property.
+     *
+     * @param value allowed object is {@link ParameterInfoEnum }
+     *
+     */
+    public void setType(ParameterType value) {
+        this.type = value;
+    }
+    
+    public static final InPlaceXmlMarshaller<XmlParameter, Parameter> MARSHALLER = (Parameter v, XmlParameter xml) -> {
+        if (Parameter.isDefault(v)) {
+            xml.type = ParameterType.Undefined;
+            return true;
+        } else {
+            xml.type = v.getType();
+            xml.value = v.getValue();
+            if (v.getType() == ParameterType.Estimated || v.getType() == ParameterType.Derived) {
+                xml.setStde(v.getStde());
+            }
+            return true;
+        }
+    };
+
+    public static final InPlaceXmlUnmarshaller<XmlParameter, Parameter> UNMARSHALLER = (XmlParameter xml, Parameter v) -> {
+        if (xml.value != null) {
+            v.setValue(xml.value);
+        }
+        if (xml.stde != null) {
+            v.setStde(xml.stde);
+        }
+        v.setType(xml.type);
+        return true;
+    };
+    
+    public static class Adapter extends XmlAdapter<XmlParameter, Parameter>{
+        @Override
+        public Parameter unmarshal(XmlParameter v) throws Exception {
+            Parameter p=new Parameter();
+            UNMARSHALLER.unmarshal(v, p);
+            return p;
+        }
+
+        @Override
+        public XmlParameter marshal(Parameter v) throws Exception {
+            XmlParameter x=new XmlParameter();
+            MARSHALLER.marshal(v, x);
+            return x;
+        }
+    };
+    
+     private final static Adapter ADAPTER=new Adapter() ;
+    
+    public static Adapter getAdapter(){
+        return ADAPTER;
     }
 }

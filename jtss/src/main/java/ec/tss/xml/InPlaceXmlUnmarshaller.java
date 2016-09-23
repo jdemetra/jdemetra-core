@@ -28,7 +28,6 @@ public interface InPlaceXmlUnmarshaller <X, J>{
      * @param xml The xml being read
      * @param v The object being initialised
      * @return
-     * @throws Exception 
      */
-    boolean unmarshal(X xml, J v) throws Exception ;
+    boolean unmarshal(X xml, J v);
 }
