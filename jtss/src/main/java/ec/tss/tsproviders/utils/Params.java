@@ -16,9 +16,13 @@
  */
 package ec.tss.tsproviders.utils;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import ec.tstoolkit.design.UtilityClass;
 import java.io.File;
 import java.nio.charset.Charset;
+import java.util.List;
 import javax.annotation.Nonnull;
 
 /**
@@ -90,8 +94,8 @@ public final class Params {
     }
 
     @Nonnull
-    public static <S extends IConfig, P> IParam<S, P> onParserAndFormatter(@Nonnull P defaultValue, @Nonnull String key, @Nonnull IParser<P> parser, @Nonnull IFormatter<P> formatter) {
-        return new SingleParam<>(defaultValue, key, parser, formatter);
+    public static <S extends IConfig> IParam<S, List<String>> onStringList(@Nonnull List<String> defaultValue, @Nonnull String key, @Nonnull Splitter splitter, @Nonnull Joiner joiner) {
+        return new SingleParam<>(ImmutableList.copyOf(defaultValue), key, Parsers.onSplitter(splitter), Formatters.onJoiner(joiner));
     }
 
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
