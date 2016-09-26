@@ -44,7 +44,7 @@ public class XmlAdditiveOutlier extends XmlOutlier {
             return XmlAdditiveOutlier.class;
         }
 
-         @Override
+        @Override
         public AdditiveOutlier unmarshal(XmlAdditiveOutlier v) throws Exception {
             AdditiveOutlier o = new AdditiveOutlier(v.position);
             return o;

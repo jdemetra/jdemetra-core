@@ -18,6 +18,7 @@ package ec.demetra.xml.sa.tramoseats;
 
 import ec.tss.xml.IXmlMarshaller;
 import ec.tss.xml.InPlaceXmlMarshaller;
+import ec.tss.xml.InPlaceXmlUnmarshaller;
 import ec.tstoolkit.modelling.arima.tramo.CalendarSpec;
 import ec.tstoolkit.modelling.arima.tramo.TradingDaysSpec;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -105,18 +106,28 @@ public class XmlCalendarSpec
         if (!v.isUsed()) {
             return null;
         }
-        
+
         XmlCalendarSpec xml = new XmlCalendarSpec();
-        if (v.getTradingDays().isUsed()){
-            XmlTradingDaysSpec xtd=new XmlTradingDaysSpec();
+        if (v.getTradingDays().isUsed()) {
+            XmlTradingDaysSpec xtd = new XmlTradingDaysSpec();
             XmlTradingDaysSpec.MARSHALLER.marshal(v.getTradingDays(), xtd);
-            xml.tradingDays=xtd;
+            xml.tradingDays = xtd;
         }
-        if (v.getEaster().isUsed()){
-            XmlEasterSpec xe=new XmlEasterSpec();
+        if (v.getEaster().isUsed()) {
+            XmlEasterSpec xe = new XmlEasterSpec();
             XmlEasterSpec.MARSHALLER.marshal(v.getEaster(), xe);
-            xml.easter=xe;
+            xml.easter = xe;
         }
         return xml;
+    };
+
+    public static final InPlaceXmlUnmarshaller<XmlCalendarSpec, CalendarSpec> UNMARSHALLER = (XmlCalendarSpec xml, CalendarSpec v) -> {
+        if (xml.tradingDays != null){
+            XmlTradingDaysSpec.UNMARSHALLER.unmarshal(xml.tradingDays, v.getTradingDays());
+        }
+        if (xml.easter != null){
+            XmlEasterSpec.UNMARSHALLER.unmarshal(xml.easter, v.getEaster());
+        }
+        return true;
     };
 }

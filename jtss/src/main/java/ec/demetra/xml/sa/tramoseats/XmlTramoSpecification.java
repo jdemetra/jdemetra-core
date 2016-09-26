@@ -276,8 +276,8 @@ public class XmlTramoSpecification
             XmlTransformationSpec.UNMARSHALLER.unmarshal(xml.transformation, v.getTransform());
         if (xml.estimation != null)
             XmlEstimationSpec.UNMARSHALLER.unmarshal(xml.estimation, v.getEstimate());
-//        if (xml.calendar != null)
-//            XmlCalendarSpec.UNMARSHALLER.unmarshal(xml.arima, v.getRegression());
+        if (xml.calendar != null)
+            XmlCalendarSpec.UNMARSHALLER.unmarshal(xml.calendar, v.getRegression().getCalendar());
 //        if (xml.regression != null)
 //            XmlRegressionSpec.UNMARSHALLER.unmarshal(xml.regression, v.getRegression());
         if (xml.arima != null)
@@ -293,6 +293,7 @@ public class XmlTramoSpecification
     public static final InPlaceXmlMarshaller<XmlTramoSpecification, TramoSpecification> MARSHALLER=(TramoSpecification v, XmlTramoSpecification xml) -> {
         xml.series=XmlSeriesSpec.MARSHALLER.marshal(v);
         xml.transformation=XmlTransformationSpec.MARSHALLER.marshal(v.getTransform());
+        xml.estimation=XmlEstimationSpec.MARSHALLER.marshal(v.getEstimate());
         xml.calendar=XmlCalendarSpec.MARSHALLER.marshal(v.getRegression().getCalendar());
         xml.outliers=XmlOutliersSpec.MARSHALLER.marshal(v.getOutliers());
         

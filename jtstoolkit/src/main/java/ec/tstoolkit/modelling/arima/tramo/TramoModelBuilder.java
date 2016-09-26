@@ -178,7 +178,7 @@ public class TramoModelBuilder implements IModelBuilder {
     private void initializeOutliers(ModelDescription model, OutlierDefinition[] outliers) {
         ArrayList<IOutlierVariable> pvar = new ArrayList<>();
         for (int i = 0; i < outliers.length; ++i) {
-            IOutlierVariable v = TramoSpecification.fac.make(outliers[i]);
+            IOutlierVariable v = TramoSpecification.getOutliersFactory().make(outliers[i]);
             pvar.add(v);
         }
         model.addPrespecifiedOutliers(pvar);

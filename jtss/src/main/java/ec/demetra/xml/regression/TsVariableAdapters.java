@@ -32,27 +32,30 @@ import org.openide.util.Lookup;
 @GlobalServiceProvider
 public class TsVariableAdapters {
 
-    private static final AtomicReference<TsVariableAdapters> defadapters= new AtomicReference<>();
-
+    private static final AtomicReference<TsVariableAdapters> defadapters = new AtomicReference<>();
 
     public static final TsVariableAdapters getDefault() {
-        defadapters.compareAndSet(null, make());
+        defadapters.compareAndSet(null, new TsVariableAdapters());
         return defadapters.get();
     }
 
     public static final void setDefault(TsVariableAdapters adapters) {
         defadapters.set(adapters);
     }
-    
-    private static TsVariableAdapters make(){
-        TsVariableAdapters adapters=new TsVariableAdapters();
-        adapters.load();
-        return adapters;
-    }
 
     private final List<TsVariableAdapter> adapters = new ArrayList<>();
 
-    public void load() {
+    public TsVariableAdapters() {
+        load();
+    }
+
+    public TsVariableAdapters(TsVariableAdapter... adapters) {
+        for (int i = 0; i < adapters.length; ++i) {
+            this.adapters.add(adapters[i]);
+        }
+    }
+
+    private void load() {
         Lookup.Result<TsVariableAdapter> all = Lookup.getDefault().lookupResult(TsVariableAdapter.class);
         adapters.addAll(all.allInstances());
     }
@@ -61,7 +64,7 @@ public class TsVariableAdapters {
         return adapters.stream().map(adapter -> adapter.getXmlType()).collect(Collectors.toList());
     }
 
-    public ITsVariable decode(XmlRegressionVariable xvar) {
+    public ITsVariable unmarshal(XmlRegressionVariable xvar) {
         for (TsVariableAdapter adapter : adapters) {
             if (adapter.getXmlType().isInstance(xvar)) {
                 try {
@@ -74,7 +77,7 @@ public class TsVariableAdapters {
         return null;
     }
 
-    public XmlRegressionVariable encode(ITsVariable ivar) {
+    public XmlRegressionVariable marshal(ITsVariable ivar) {
         for (TsVariableAdapter adapter : adapters) {
             if (adapter.getImplementationType().isInstance(ivar)) {
                 try {

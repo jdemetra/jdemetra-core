@@ -228,6 +228,7 @@ limitations under the Licence.
         </xs:complexContent>
     </xs:complexType>
     
+    
     <xs:complexType name="InterventionVariableType" >
         <xs:annotation>
             <xs:documentation>
@@ -237,7 +238,11 @@ limitations under the Licence.
         <xs:complexContent>
             <xs:extension base="tss:RegressionVariableType">
                 <xs:sequence>
-                    <xs:group ref="tss:TimeSpan" minOccurs="1" maxOccurs="unbounded"/>
+                    <xs:element name="Sequence" minOccurs="1" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:group ref="tss:TimeSpan"/>
+                        </xs:complexType>
+                    </xs:element>
                     <xs:element name="DeltaFilter" minOccurs="0" type="xs:double"/>
                     <xs:element name="DeltaSeasonalFilter" minOccurs="0" type="xs:double"/>
                 </xs:sequence>
@@ -245,24 +250,30 @@ limitations under the Licence.
         </xs:complexContent>
     </xs:complexType>
 
-
+    <xs:element name="InterventionVariable" type="tss:InterventionVariableType"/>
  
-    <xs:complexType name="UserVariableType" abstract = "true">
+    <xs:complexType name="UserVariableType">
         <xs:complexContent>
             <xs:extension base="tss:ModifiableRegressionVariableType">
                 <xs:sequence>
-                    <xs:element name="Variable" type="xs:IDREF"/>
+                    <xs:choice>
+                        <xs:element name="Variable" type="xs:IDREF"/>
+                        <xs:element name="Data" type="tss:TsDataType"/>
+                    </xs:choice>
                 </xs:sequence>
                 <xs:attribute name="effect" type="tss:ComponentEnum" use="required"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
 
-    <xs:complexType name="UserVariablesType" abstract = "true">
+    <xs:complexType name="UserVariablesType">
         <xs:complexContent>
             <xs:extension base="tss:ModifiableRegressionVariableType">
                 <xs:sequence>
-                    <xs:element name="Variable" type="xs:IDREFS"/>
+                    <xs:choice>
+                        <xs:element name="Variables" type="xs:IDREFS"/>
+                        <xs:element name="Data" type="tss:TsDataListType"/>
+                    </xs:choice>
                 </xs:sequence>
                 <xs:attribute name="effect" type="tss:ComponentEnum" use="required"/>
             </xs:extension>

@@ -44,18 +44,18 @@ import xml.TestErrorHandler;
  * @author Jean Palate
  */
 public class XmlTramoSpecificationTest {
-    
+
     private static final String FILE = "c:\\localdata\\tramo.xml";
 
     public XmlTramoSpecificationTest() {
     }
 
     @Test
-    @Ignore
-    public void testMarshal() throws FileNotFoundException, JAXBException, IOException {
+    //@Ignore
+    public void testFile() throws FileNotFoundException, JAXBException, IOException {
 
-        TramoSpecification spec = TramoSpecification.TR0;
-        XmlTramoSpecification xspec=new XmlTramoSpecification();
+        TramoSpecification spec = TramoSpecification.TRfull;
+        XmlTramoSpecification xspec = new XmlTramoSpecification();
         XmlTramoSpecification.MARSHALLER.marshal(spec, xspec);
         JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
         FileOutputStream ostream = new FileOutputStream(FILE);
@@ -80,8 +80,8 @@ public class XmlTramoSpecificationTest {
     @Test
     public void testValidation() throws FileNotFoundException, JAXBException, IOException, SAXException {
 
-       TramoSpecification spec = TramoSpecification.TR0;
-        XmlTramoSpecification xspec=new XmlTramoSpecification();
+        TramoSpecification spec = TramoSpecification.TRfull;
+        XmlTramoSpecification xspec = new XmlTramoSpecification();
         XmlTramoSpecification.MARSHALLER.marshal(spec, xspec);
         JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
         JAXBSource source = new JAXBSource(jaxb, xspec);

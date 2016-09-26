@@ -61,8 +61,7 @@ public class XmlEstimationSpecTest {
         TsPeriodSelector sel = new TsPeriodSelector();
         sel.last(120);
         espec.setSpan(sel);
-        XmlEstimationSpec xspec = new XmlEstimationSpec();
-        XmlEstimationSpec.MARSHALLER.marshal(espec, xspec);
+        XmlEstimationSpec xspec = XmlEstimationSpec.MARSHALLER.marshal(espec);
         JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
         FileOutputStream ostream = new FileOutputStream(FILE);
         try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
@@ -93,8 +92,7 @@ public class XmlEstimationSpecTest {
         TsPeriodSelector sel = new TsPeriodSelector();
         sel.last(120);
         espec.setSpan(sel);
-        XmlEstimationSpec xspec = new XmlEstimationSpec();
-        XmlEstimationSpec.MARSHALLER.marshal(espec, xspec);
+        XmlEstimationSpec xspec = XmlEstimationSpec.MARSHALLER.marshal(espec);
         JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
         JAXBSource source = new JAXBSource(jaxb, xspec);
         Validator validator = Schemas.TramoSeats.newValidator();

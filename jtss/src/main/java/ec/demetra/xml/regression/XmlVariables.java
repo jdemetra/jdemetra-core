@@ -46,7 +46,7 @@ public class XmlVariables implements IXmlConverter<TsVariables> {
             int idx = 1;
             TsVariableAdapters adapters = TsVariableAdapters.getDefault();
             for (XmlRegressionVariable var : vars) {
-                ITsVariable v = adapters.decode(var);
+                ITsVariable v = adapters.unmarshal(var);
              }
         }
         return nvars;
@@ -61,7 +61,7 @@ public class XmlVariables implements IXmlConverter<TsVariables> {
         TsVariableAdapters adapters = TsVariableAdapters.getDefault();
         for (int i = 0; i < n.length; ++i) {
             ITsVariable v = t.get(n[i]);
-            XmlRegressionVariable xv = adapters.encode(v);
+            XmlRegressionVariable xv = adapters.marshal(v);
             vars.add(xv);
         }
     }

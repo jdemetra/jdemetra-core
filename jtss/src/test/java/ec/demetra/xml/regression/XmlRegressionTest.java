@@ -66,11 +66,11 @@ public class XmlRegressionTest {
         reg = new XmlRegression();
         XmlRegressionItem ao = new XmlRegressionItem();
         ao.variable = xao;
-        ao.scoeff = new XmlParameter(1000, ParameterType.Fixed);
-        reg.variables.add(ao);
+        ao.coefficient= new XmlParameter(1000, ParameterType.Fixed);
+        reg.getItems().add(ao);
         XmlRegressionItem so = new XmlRegressionItem();
         so.variable = xso;
-        reg.variables.add(so);
+        reg.getItems().add(so);
 
         XmlGenericTradingDays xtd = new XmlGenericTradingDays();
         xtd.contrasts = true;
@@ -78,11 +78,11 @@ public class XmlRegressionTest {
         XmlVariableWindow xwnd = new XmlVariableWindow();
         xwnd.From = new TsPeriod(TsFrequency.Yearly, 2000, 0).firstday();
         xwnd.To = new TsPeriod(TsFrequency.Yearly, 2010, 0).lastday();
-        xtd.modifiers.add(xwnd);
+        xtd.getModifiers().add(xwnd);
 
         XmlRegressionItem td = new XmlRegressionItem();
         td.variable = xtd;
-        reg.variables.add(td);
+        reg.getItems().add(td);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class XmlRegressionTest {
             unmarshaller.setSchema(Schemas.Modelling);
             unmarshaller.setEventHandler(new TestValidationEventHandler());
             rslt = (XmlRegression) unmarshaller.unmarshal(reader);
-            for (XmlRegressionItem item : rslt.variables){
+            for (XmlRegressionItem item : rslt.getItems()){
                 ITsVariable tsvar = item.variable.toTsVariable();
                 assertTrue(tsvar != null);
             }

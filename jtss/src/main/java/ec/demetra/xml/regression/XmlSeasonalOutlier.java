@@ -63,14 +63,16 @@ public class XmlSeasonalOutlier extends XmlOutlier {
         @Override
         public SeasonalOutlier unmarshal(XmlSeasonalOutlier v) throws Exception {
             SeasonalOutlier o = new SeasonalOutlier(v.position);
-            o.setZeroEnded(v.zeroEnded);
+            if (v.zeroEnded != null) {
+                o.setZeroEnded(v.zeroEnded);
+            }
             return o;
         }
 
         @Override
         public XmlSeasonalOutlier marshal(SeasonalOutlier v) throws Exception {
             XmlSeasonalOutlier xml = new XmlSeasonalOutlier();
-            xml.position=v.getPosition();
+            xml.position = v.getPosition();
             xml.zeroEnded = v.isZeroEnded();
             return xml;
         }

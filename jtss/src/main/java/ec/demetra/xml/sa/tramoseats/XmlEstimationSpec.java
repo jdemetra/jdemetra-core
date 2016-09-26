@@ -16,14 +16,11 @@
  */
 package ec.demetra.xml.sa.tramoseats;
 
-import ec.demetra.xml.Constants;
 import ec.demetra.xml.core.XmlPeriodSelection;
-import ec.tss.xml.IXmlConverter;
-import ec.tss.xml.InPlaceXmlMarshaller;
+import ec.tss.xml.IXmlMarshaller;
 import ec.tss.xml.InPlaceXmlUnmarshaller;
 import ec.tstoolkit.modelling.arima.tramo.EstimateSpec;
 import ec.tstoolkit.timeseries.PeriodSelectorType;
-import ec.tstoolkit.timeseries.TsPeriodSelector;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -169,17 +166,18 @@ public class XmlEstimationSpec
         return true;
     };
 
-    public static final InPlaceXmlMarshaller<XmlEstimationSpec, EstimateSpec> MARSHALLER = (EstimateSpec v, XmlEstimationSpec xml) -> {
+    public static final IXmlMarshaller<XmlEstimationSpec, EstimateSpec> MARSHALLER = (EstimateSpec v) -> {
         if (v.isDefault()) {
-            return true;
+            return null;
         }
-        if (v.getSpan().getType() != PeriodSelectorType.All) {
+        XmlEstimationSpec xml=new XmlEstimationSpec();
+        if (!v.getSpan().isAll()) {
             xml.span = new XmlPeriodSelection();
             XmlPeriodSelection.MARSHALLER.marshal(v.getSpan(), xml.span);
         }
         xml.setEML(v.isEML());
         xml.setPrecision(v.getTol());
         xml.setUBP(v.getUbp());
-        return true;
+        return xml;
     };
 }

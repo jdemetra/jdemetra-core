@@ -61,7 +61,7 @@ public class CalendarAdapters {
         return adapters.stream().map(adapter -> adapter.getXmlType()).collect(Collectors.toList());
     }
 
-    public IGregorianCalendarProvider decode(XmlCalendar xvar) {
+    public IGregorianCalendarProvider unmarshal(XmlCalendar xvar) {
         for (CalendarAdapter adapter : adapters) {
             if (adapter.getXmlType().isInstance(xvar)) {
                 try {
@@ -74,7 +74,7 @@ public class CalendarAdapters {
         return null;
     }
 
-    public XmlCalendar encode(IGregorianCalendarProvider ivar) {
+    public XmlCalendar marshal(IGregorianCalendarProvider ivar) {
         for (CalendarAdapter adapter : adapters) {
             if (adapter.getValueType().isInstance(ivar)) {
                 try {
