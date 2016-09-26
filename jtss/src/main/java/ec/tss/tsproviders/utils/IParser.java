@@ -13,7 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
+ */
 package ec.tss.tsproviders.utils;
 
 import javax.annotation.Nonnull;
@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
  * @param <Y> The type of the object to be created
  * @see IFormatter
  */
+@FunctionalInterface
 public interface IParser<Y> {
 
     /**
@@ -41,5 +42,5 @@ public interface IParser<Y> {
      * @throws NullPointerException if input is null
      */
     @Nullable
-    Y parse(@Nonnull CharSequence input) throws NullPointerException;
+    Y parse(@Nonnull CharSequence input);
 }

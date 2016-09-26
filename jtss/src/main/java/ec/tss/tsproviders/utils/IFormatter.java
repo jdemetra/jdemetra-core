@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.utils;
 
 import javax.annotation.Nonnull;
@@ -33,6 +32,7 @@ import javax.annotation.Nullable;
  * @param <T> The type of the object to be formatted
  * @see IParser
  */
+@FunctionalInterface
 public interface IFormatter<T> {
 
     /**
@@ -43,5 +43,18 @@ public interface IFormatter<T> {
      * @throws NullPointerException if input is null
      */
     @Nullable
-    CharSequence format(@Nonnull T value) throws NullPointerException;
+    CharSequence format(@Nonnull T value);
+
+    /**
+     * Format an object into a String.
+     *
+     * @param value the non-null input used to create the String
+     * @return a new String if possible, {@code null} otherwise
+     * @throws NullPointerException if input is null
+     */
+    @Nullable
+    default String formatAsString(@Nonnull T value) {
+        CharSequence result = format(value);
+        return result != null ? result.toString() : null;
+    }
 }

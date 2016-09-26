@@ -17,6 +17,7 @@
 package ec.tss.tsproviders.utils;
 
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
@@ -28,6 +29,7 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -220,6 +222,16 @@ public final class Formatters {
         return TO_STRING_FORMATTER;
     }
 
+    @Nonnull
+    public static Formatter<List<String>> onJoiner(@Nonnull Joiner joiner) {
+        return new FailSafeFormatter<List<String>>() {
+            @Override
+            protected CharSequence doFormat(List<String> value) throws Exception {
+                return joiner.join(value);
+            }
+        };
+    }
+
     /**
      * An abstract formatter that contains convenient methods.
      *
@@ -253,19 +265,6 @@ public final class Formatters {
         @Nonnull
         public <Y> Formatter<Y> compose(@Nonnull Function<Y, T> func) {
             return Formatters.<T, Y>compose(this, func);
-        }
-
-        /**
-         * Format an object into a String.
-         *
-         * @param value the input used to create the String
-         * @return a new String if possible, {@code null} otherwise
-         * @throws NullPointerException if input is null
-         */
-        @Nullable
-        public String formatAsString(T value) throws NullPointerException {
-            CharSequence result = format(value);
-            return result != null ? result.toString() : null;
         }
 
         /**
