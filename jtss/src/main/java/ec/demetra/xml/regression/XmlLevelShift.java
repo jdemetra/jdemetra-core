@@ -17,6 +17,8 @@
 package ec.demetra.xml.regression;
 
 import ec.tstoolkit.timeseries.regression.LevelShift;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -26,20 +28,30 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Jean Palate
  */
-@XmlRootElement(name = XmlLevelShift.RNAME)
-@XmlType(name = XmlLevelShift.NAME)
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "LevelShiftType")
 public class XmlLevelShift extends XmlOutlier {
 
-    static final String RNAME = "LevelShift", NAME = RNAME + "Type";
-
-    @XmlAttribute
-    public boolean zeroEnded=true;
+    @XmlAttribute(name = "zeroEnded")
+    protected Boolean zeroEnded;
     
+    public boolean isZeroEnded() {
+        if (zeroEnded == null) {
+            return true;
+        } else {
+            return zeroEnded;
+        }
+    }
+
+    public void setZeroEnded(Boolean value) {
+        this.zeroEnded = value;
+    }
+
     @ServiceProvider(service = TsVariableAdapter.class)
     public static class Adapter extends TsVariableAdapter<XmlLevelShift, LevelShift> {
 
         @Override
-        public Class<LevelShift> getValueType() {
+        public Class<LevelShift> getImplementationType() {
             return LevelShift.class;
         }
 
@@ -50,7 +62,7 @@ public class XmlLevelShift extends XmlOutlier {
 
         @Override
         public LevelShift unmarshal(XmlLevelShift v) throws Exception {
-            LevelShift o = new LevelShift(v.Position);
+            LevelShift o = new LevelShift(v.getPosition());
             o.setZeroEnded(v.zeroEnded);
             return o;
         }
@@ -58,7 +70,7 @@ public class XmlLevelShift extends XmlOutlier {
         @Override
         public XmlLevelShift marshal(LevelShift v) throws Exception {
             XmlLevelShift xml = new XmlLevelShift();
-            xml.Position = v.getPosition();
+            xml.position=v.getPosition();
             xml.zeroEnded=v.isZeroEnded();
             return xml;
         }

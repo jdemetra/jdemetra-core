@@ -43,9 +43,9 @@ public class TradingDaysSelectionModuleTest {
         context.description.setAirline(true);
         context.description.setTransformation(DefaultTransformationType.Log);
         tdm.process(context);
-        System.out.println(new DataBlock(tdm.getPdel()));
-        System.out.println(new DataBlock(tdm.getPtd()));
-        System.out.println(tdm.getChoice());
+//        System.out.println(new DataBlock(tdm.getPdel()));
+//        System.out.println(new DataBlock(tdm.getPtd()));
+//        System.out.println(tdm.getChoice());
     }
     
 }

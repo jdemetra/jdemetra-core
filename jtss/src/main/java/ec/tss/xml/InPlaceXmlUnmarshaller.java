@@ -20,9 +20,14 @@ package ec.tss.xml;
  *
  * @author Jean Palate
  * @param <X> Xml class
- * @param <V> Value class
+ * @param <J> pure Java class
  */
-public interface IXmlAdapter <X, V>{
-    X encode(V v) throws Exception ;
-    V decode(X x) throws Exception ;
+public interface InPlaceXmlUnmarshaller <X, J>{
+    /**
+     * Reads an xml object an put its information in a Java object
+     * @param xml The xml being read
+     * @param v The object being initialised
+     * @return
+     */
+    boolean unmarshal(X xml, J v);
 }

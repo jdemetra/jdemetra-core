@@ -51,7 +51,7 @@ public class XmlGenericTradingDays extends XmlModifiableRegressionVariable {
         }
 
         @Override
-        public Class<GenericTradingDaysVariables> getValueType() {
+        public Class<GenericTradingDaysVariables> getImplementationType() {
             return GenericTradingDaysVariables.class;
         }
 

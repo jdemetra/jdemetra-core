@@ -47,7 +47,7 @@ public class X13Monitors {
 
     static void addEaster(ModelDescription desc) {
         EasterVariable easter = new EasterVariable();
-        easter.setType(EasterVariable.Type.Uscb);
+        easter.setType(EasterVariable.Correction.PreComputed);
         desc.getMovingHolidays().add(new Variable(easter, ComponentType.CalendarEffect, RegStatus.ToAdd));
     }
 

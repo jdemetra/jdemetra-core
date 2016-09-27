@@ -17,6 +17,8 @@
 package ec.demetra.xml.regression;
 
 import ec.tstoolkit.timeseries.regression.SeasonalOutlier;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -26,20 +28,30 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Jean Palate
  */
-@XmlRootElement(name = XmlSeasonalOutlier.RNAME)
-@XmlType(name = XmlSeasonalOutlier.NAME)
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "SeasonalOutlierType")
 public class XmlSeasonalOutlier extends XmlOutlier {
 
-    static final String RNAME = "SeasonalOutlier", NAME = RNAME + "Type";
+    @XmlAttribute(name = "zeroEnded")
+    protected Boolean zeroEnded;
 
-    @XmlAttribute
-    public boolean zeroEnded=true;
-    
+    public boolean isZeroEnded() {
+        if (zeroEnded == null) {
+            return true;
+        } else {
+            return zeroEnded;
+        }
+    }
+
+    public void setZeroEnded(Boolean value) {
+        this.zeroEnded = value;
+    }
+
     @ServiceProvider(service = TsVariableAdapter.class)
     public static class Adapter extends TsVariableAdapter<XmlSeasonalOutlier, SeasonalOutlier> {
 
         @Override
-        public Class<SeasonalOutlier> getValueType() {
+        public Class<SeasonalOutlier> getImplementationType() {
             return SeasonalOutlier.class;
         }
 
@@ -50,16 +62,18 @@ public class XmlSeasonalOutlier extends XmlOutlier {
 
         @Override
         public SeasonalOutlier unmarshal(XmlSeasonalOutlier v) throws Exception {
-            SeasonalOutlier o = new SeasonalOutlier(v.Position);
-            o.setZeroEnded(v.zeroEnded);
+            SeasonalOutlier o = new SeasonalOutlier(v.position);
+            if (v.zeroEnded != null) {
+                o.setZeroEnded(v.zeroEnded);
+            }
             return o;
         }
 
         @Override
         public XmlSeasonalOutlier marshal(SeasonalOutlier v) throws Exception {
             XmlSeasonalOutlier xml = new XmlSeasonalOutlier();
-            xml.Position = v.getPosition();
-            xml.zeroEnded=v.isZeroEnded();
+            xml.position = v.getPosition();
+            xml.zeroEnded = v.isZeroEnded();
             return xml;
         }
 

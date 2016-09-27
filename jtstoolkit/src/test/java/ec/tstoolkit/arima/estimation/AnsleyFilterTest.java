@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tstoolkit.arima.estimation;
 
 import data.Data;
@@ -238,5 +237,25 @@ public class AnsleyFilterTest {
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
+    }
+
+    @Test
+    public void testWN() {
+        ArimaModel wn = new ArimaModel(.5);
+        AnsleyFilter filter = new AnsleyFilter();
+        filter.initialize(wn, 10);
+        System.out.println(filter.getLogDeterminant());
+        System.out.println(filter.getCholeskyFactor());
+        DataBlock in = new DataBlock(10);
+        in.set(i -> i + 1);
+        DataBlock out = new DataBlock(10);
+        filter.filter(in, out);
+        System.out.println(out);
+        filter.setOptimizedForWhiteNoise(false);
+        filter.initialize(wn, 10);
+        System.out.println(filter.getLogDeterminant());
+        System.out.println(filter.getCholeskyFactor());
+        filter.filter(in, out);
+        System.out.println(out);
     }
 }

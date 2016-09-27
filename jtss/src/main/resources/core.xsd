@@ -360,6 +360,12 @@ limitations under the Licence.
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
+    
+    <xs:complexType name="TsDataListType">
+         <xs:sequence>
+            <xs:element name="Series" type="tss:TsDataType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:complexType name="TsDomainType">
         <xs:annotation>

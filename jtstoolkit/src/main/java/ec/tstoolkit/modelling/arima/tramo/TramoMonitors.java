@@ -49,7 +49,7 @@ public class TramoMonitors {
         EasterVariable easter = new EasterVariable();
         easter.setDuration(6);
         easter.includeEaster(true);
-        easter.setType(EasterVariable.Type.Tramo);
+        easter.setType(EasterVariable.Correction.Simple);
         desc.getMovingHolidays().add(new Variable(easter, ComponentType.CalendarEffect, RegStatus.ToRemove));
     }
 

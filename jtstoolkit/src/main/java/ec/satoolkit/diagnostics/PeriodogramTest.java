@@ -84,9 +84,9 @@ public class PeriodogramTest {
     }
     /**
      * Computes a F test
-     * @param data
-     * @param freq
-     * @return 
+     * @param data The data 
+     * @param freq The annual frequency of the data
+     * @return F test
      */
     public static StatisticalTest computeSum2(IReadDataBlock data, int freq) {
         data=shrink(data, freq);

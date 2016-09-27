@@ -16,8 +16,8 @@
  */
 package ec.demetra.xml.regression;
 
+import ec.tss.xml.ExtendedXmlAdapter;
 import ec.tstoolkit.timeseries.regression.ITsVariable;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  *
@@ -25,7 +25,5 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  * @param <V>
  * @param <X>
  */
-public abstract class TsVariableAdapter<X extends XmlRegressionVariable, V extends ITsVariable> extends XmlAdapter<X, V>{
-    public abstract Class<V> getValueType();
-    public abstract Class<X> getXmlType();
+public abstract class TsVariableAdapter<X extends XmlRegressionVariable, V extends ITsVariable> extends ExtendedXmlAdapter<X, V>{
 }

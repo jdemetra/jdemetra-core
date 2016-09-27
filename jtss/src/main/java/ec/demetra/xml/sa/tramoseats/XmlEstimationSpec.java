@@ -16,76 +16,168 @@
  */
 package ec.demetra.xml.sa.tramoseats;
 
-import ec.demetra.xml.Constants;
 import ec.demetra.xml.core.XmlPeriodSelection;
-import ec.tss.xml.IXmlConverter;
+import ec.tss.xml.IXmlMarshaller;
+import ec.tss.xml.InPlaceXmlUnmarshaller;
 import ec.tstoolkit.modelling.arima.tramo.EstimateSpec;
 import ec.tstoolkit.timeseries.PeriodSelectorType;
-import ec.tstoolkit.timeseries.TsPeriodSelector;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
+ * <p>
+ * Java class for EstimationSpecType complex type.
  *
- * @author Jean Palate
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ *
+ * <pre>
+ * &lt;complexType name="EstimationSpecType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;extension base="{ec/eurostat/jdemetra/modelling}EstimationSpecType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="Span" type="{ec/eurostat/jdemetra/core}PeriodSelectionType" minOccurs="0"/&gt;
+ *         &lt;element name="Precision" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="0"/&gt;
+ *         &lt;element name="EML" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
+ *         &lt;element name="UBP" minOccurs="0"&gt;
+ *           &lt;simpleType&gt;
+ *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}double"&gt;
+ *               &lt;minExclusive value="0.5"/&gt;
+ *               &lt;maxInclusive value="1.0"/&gt;
+ *             &lt;/restriction&gt;
+ *           &lt;/simpleType&gt;
+ *         &lt;/element&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/extension&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ *
+ *
  */
-@XmlRootElement(name = XmlEstimationSpec.RNAME)
-@XmlType(name = XmlEstimationSpec.NAME)
-public class XmlEstimationSpec implements IXmlConverter<EstimateSpec> {
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "EstimationSpec")
+@XmlType(name = "EstimationSpecType", propOrder = {
+    "precision",
+    "eml",
+    "ubp"
+})
+public class XmlEstimationSpec
+        extends ec.demetra.xml.modelling.XmlEstimationSpec {
 
-    @XmlElement(name = "Span")
-    public XmlPeriodSelection span;
+    @XmlElement(name = "Precision", defaultValue = "0.0000001")
+    protected Double precision;
+    @XmlElement(name = "EML", defaultValue = "true")
+    protected Boolean eml;
+    @XmlElement(name = "UBP", defaultValue = "0.96")
+    protected Double ubp;
 
-    @XmlElement(name = "Precision")
-    public Double tol;
-
-    @XmlElement(name = "EML")
-    public Boolean eml;
-
-    @XmlElement(name = "UBP")
-    public Double ubp;
-
-    static final String RNAME = "EstimationSpec", NAME = RNAME + "Type";
-
-    @Override
-    public EstimateSpec create() {
-        EstimateSpec spec = new EstimateSpec();
-        if (span != null)
-            spec.setSpan(span.create());
-        if (tol != null)
-            spec.setTol(tol);
-        if (eml != null)
-            spec.setEML(eml);
-        if (ubp != null)
-            spec.setUbp(ubp);
-        return spec;
+    /**
+     * Gets the value of the precision property.
+     *
+     * @return possible object is {@link Double }
+     *
+     */
+    public Double getPrecision() {
+        return precision == null ? EstimateSpec.DEF_TOL : precision;
     }
 
-    @Override
-    public void copy(EstimateSpec v) {
-        TsPeriodSelector vspan = v.getSpan();
-        if (vspan != null && vspan.getType() != PeriodSelectorType.All) {
-            span = new XmlPeriodSelection();
-            span.copy(vspan);
+    /**
+     * Sets the value of the precision property.
+     *
+     * @param value allowed object is {@link Double }
+     *
+     */
+    public void setPrecision(Double value) {
+        if (value != null && value == EstimateSpec.DEF_TOL) {
+            precision = null;
         } else {
-            span = null;
+            precision = value;
         }
-        if (v.getTol() != EstimateSpec.DEF_TOL) {
-            tol = v.getTol();
-        } else {
-            tol = null;
-        }
-        if (!v.isEML()) {
-            eml = false;
-        } else {
+    }
+
+    /**
+     * Gets the value of the eml property.
+     *
+     * @return possible object is {@link Boolean }
+     *
+     */
+    public boolean isEML() {
+        return eml == null ? true : eml;
+    }
+
+    /**
+     * Sets the value of the eml property.
+     *
+     * @param value allowed object is {@link Boolean }
+     *
+     */
+    public void setEML(Boolean value) {
+        if (value != null && value) {
             eml = null;
-        }
-        if (v.getUbp() != EstimateSpec.DEF_UBP) {
-            ubp = v.getUbp();
         } else {
-            ubp = null;
+            eml = value;
         }
     }
 
+    /**
+     * Gets the value of the ubp property.
+     *
+     * @return possible object is {@link Double }
+     *
+     */
+    public Double getUBP() {
+        return ubp == null ? EstimateSpec.DEF_UBP : ubp;
+    }
+
+    /**
+     * Sets the value of the ubp property.
+     *
+     * @param value allowed object is {@link Double }
+     *
+     */
+    public void setUBP(Double value) {
+        if (value != null && value == EstimateSpec.DEF_UBP) {
+            ubp = null;
+        } else {
+            ubp = value;
+        }
+    }
+
+    public static final InPlaceXmlUnmarshaller<XmlEstimationSpec, EstimateSpec> UNMARSHALLER = (XmlEstimationSpec xml, EstimateSpec v) -> {
+        if (xml.span != null) {
+            XmlPeriodSelection.UNMARSHALLER.unmarshal(xml.span, v.getSpan());
+        } else {
+            v.getSpan().all();
+        }
+        if (xml.eml != null) {
+            v.setEML(xml.eml);
+        }
+        if (xml.precision != null) {
+            v.setTol(xml.precision);
+        }
+        if (xml.ubp != null) {
+            v.setUbp(xml.ubp);
+        }
+        return true;
+    };
+
+    public static final IXmlMarshaller<XmlEstimationSpec, EstimateSpec> MARSHALLER = (EstimateSpec v) -> {
+        if (v.isDefault()) {
+            return null;
+        }
+        XmlEstimationSpec xml=new XmlEstimationSpec();
+        if (!v.getSpan().isAll()) {
+            xml.span = new XmlPeriodSelection();
+            XmlPeriodSelection.MARSHALLER.marshal(v.getSpan(), xml.span);
+        }
+        xml.setEML(v.isEML());
+        xml.setPrecision(v.getTol());
+        xml.setUBP(v.getUbp());
+        return xml;
+    };
 }

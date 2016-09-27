@@ -19,9 +19,11 @@ package ec.tstoolkit.modelling.arima;
 
 import ec.tstoolkit.arima.IArimaModel;
 import ec.tstoolkit.arima.estimation.ConcentratedLikelihoodEstimation;
+import ec.tstoolkit.arima.estimation.IArmaFilter;
 import ec.tstoolkit.arima.estimation.ModifiedLjungBoxFilter;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.modelling.IRobustStandardDeviationComputer;
 import ec.tstoolkit.timeseries.regression.IOutlierFactory;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.regression.LevelShiftFactory;
@@ -39,6 +41,14 @@ public class TrenchSingleOutlierDetector<T extends IArimaModel> extends Abstract
     private TrenchSolver m_solver;
 
     private double m_threshold = 1e-6;
+
+     public TrenchSingleOutlierDetector() {
+        super(IRobustStandardDeviationComputer.mad());
+    }
+
+    public TrenchSingleOutlierDetector(IRobustStandardDeviationComputer computer) {
+        super(computer);
+    }
 
     /**
      *
@@ -64,7 +74,7 @@ public class TrenchSingleOutlierDetector<T extends IArimaModel> extends Abstract
 	ConcentratedLikelihoodEstimation estimator = new ConcentratedLikelihoodEstimation(
 		new ModifiedLjungBoxFilter());
 	estimator.estimate(getModel());
-	calcMAD(new DataBlock(estimator.getResiduals(), getModel().getArma()
+	getStandardDeviationComputer().compute(new DataBlock(estimator.getResiduals(), getModel().getArma()
 		.getARCount()
 		+ getModel().getArma().getMACount(),
 		estimator.getResiduals().length, 1));

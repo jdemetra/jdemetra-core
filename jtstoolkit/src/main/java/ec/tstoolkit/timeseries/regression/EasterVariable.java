@@ -32,10 +32,9 @@ import java.util.GregorianCalendar;
 @Development(status = Development.Status.Alpha)
 public class EasterVariable extends AbstractSingleTsVariable implements IEasterVariable {
 
-    public static enum Type {
-
-        Tramo,
-        Uscb,
+    public static enum Correction {
+        Simple,
+        PreComputed,
         Theoretical
     }
     private static final double[] EMeans_Feb = new double[]{0.00368E0, 0.002083333E0, 0.001130435E0, 0.0002727273E0, 0E0,
@@ -54,7 +53,7 @@ public class EasterVariable extends AbstractSingleTsVariable implements IEasterV
         0.5864E0, 0.6024444E0, 0.618E0, 0.6345714E0, 0.6516667E0,
         0.6696E0, 0.6875E0, 0.7033333E0, 0.719E0, 0.734E0};
     private int dur_ = 6;
-    private Type type_ = Type.Tramo;
+    private Correction type_ = Correction.Simple;
     private boolean m_e, m_m;
 
     public EasterVariable() {
@@ -70,11 +69,11 @@ public class EasterVariable extends AbstractSingleTsVariable implements IEasterV
         dur_ = value;
     }
 
-    public Type getType() {
+    public Correction getType() {
         return type_;
     }
 
-    public void setType(Type value) {
+    public void setType(Correction value) {
         type_ = value;
     }
 
@@ -150,7 +149,7 @@ public class EasterVariable extends AbstractSingleTsVariable implements IEasterV
 
             // MONTH is 0-based
             double m = 0, a = 0;
-            if (type_ == Type.Tramo) {
+            if (type_ == Correction.Simple) {
                 if (month == 2 || day == 0) {
                     m = .5;
                     a = -.5;
@@ -166,7 +165,7 @@ public class EasterVariable extends AbstractSingleTsVariable implements IEasterV
             // included in the holiday
             {
                 double m_av = 0, a_av = 0;
-                if (type_ == Type.Uscb) {
+                if (type_ == Correction.PreComputed) {
                     m_av = EMeans_Mar[25 - dur_]; //(21 + dur) / 70.0;
                     a_av = EMeans_Apr[25 - dur_];//(49 - dur) / 70.0;
                 } else {

@@ -417,7 +417,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         }
         EasterVariable var = new EasterVariable();
         var.setDuration(easter_.getDuration());
-        var.setType(EasterVariable.Type.Tramo);
+        var.setType(EasterVariable.Correction.Simple);
         var.includeEaster(easter_.getOption().containsEaster());
         var.includeEasterMonday(easter_.getOption().containsEasterMonday());
         regs.add(var);

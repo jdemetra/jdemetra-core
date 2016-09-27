@@ -141,13 +141,6 @@ and open the template in the editor.
         <xs:complexContent>
             <xs:extension base="modelling:EstimationSpecType">
                 <xs:sequence>
-                    <xs:element name="Span" type="tss:PeriodSelectionType" minOccurs="0">
-                        <xs:annotation>
-                            <xs:documentation>
-                                Defines the time domain over which the model is estimated.
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:element>
                     <xs:element name="Precision" type="xs:double" minOccurs="0" default="0.0000001"/>
                     <xs:element name="EML" type="xs:boolean" minOccurs="0" default="true">
                         <xs:annotation>
@@ -544,9 +537,9 @@ and open the template in the editor.
                     <xs:element name="Regression" type="trs:RegressionSpecType" minOccurs="0"/>
                     <xs:element name="Calendar" type="trs:CalendarSpecType" minOccurs="0"/>
                     <xs:element name="Outliers" type="trs:OutlierSpecType" minOccurs="0"/>
-                    <xs:choice>
-                        <xs:element name="Arima" type="modelling:ArimaSpecType" minOccurs="0"/>
-                        <xs:element name="AutoModelling" type="trs:AutoModellingSpecType" minOccurs="0"/>
+                    <xs:choice minOccurs="0">
+                        <xs:element name="Arima" type="modelling:ArimaSpecType"/>
+                        <xs:element name="AutoModelling" type="trs:AutoModellingSpecType"/>
                     </xs:choice>
                 </xs:sequence>
             </xs:extension>

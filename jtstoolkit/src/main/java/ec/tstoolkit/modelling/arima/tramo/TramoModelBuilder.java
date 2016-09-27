@@ -165,7 +165,7 @@ public class TramoModelBuilder implements IModelBuilder {
         } else {
             EasterVariable var = new EasterVariable();
             var.setDuration(easter.getDuration());
-            var.setType(EasterVariable.Type.Tramo);
+            var.setType(EasterVariable.Correction.Simple);
             var.includeEaster(easter.getOption().containsEaster());
             var.includeEasterMonday(easter.getOption().containsEasterMonday());
             Variable evar = new Variable(var, ComponentType.CalendarEffect);
@@ -178,7 +178,7 @@ public class TramoModelBuilder implements IModelBuilder {
     private void initializeOutliers(ModelDescription model, OutlierDefinition[] outliers) {
         ArrayList<IOutlierVariable> pvar = new ArrayList<>();
         for (int i = 0; i < outliers.length; ++i) {
-            IOutlierVariable v = TramoSpecification.fac.make(outliers[i]);
+            IOutlierVariable v = TramoSpecification.getOutliersFactory().make(outliers[i]);
             pvar.add(v);
         }
         model.addPrespecifiedOutliers(pvar);

@@ -22,8 +22,10 @@ import ec.tstoolkit.arima.estimation.ConcentratedLikelihoodEstimation;
 import ec.tstoolkit.arima.estimation.IArmaFilter;
 import ec.tstoolkit.arima.estimation.ModifiedLjungBoxFilter;
 import ec.tstoolkit.data.DataBlock;
+import ec.tstoolkit.data.ReadDataBlock;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.eco.RegModel;
+import ec.tstoolkit.modelling.IRobustStandardDeviationComputer;
 import ec.tstoolkit.timeseries.regression.AbstractOutlierVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
@@ -44,7 +46,20 @@ public class ResidualsOutlierDetector<T extends IArimaModel> extends AbstractSin
      *
      * @param filter
      */
-    public ResidualsOutlierDetector(IArmaFilter filter) {
+    public ResidualsOutlierDetector() {
+        this(IRobustStandardDeviationComputer.mad());
+    }
+
+    public ResidualsOutlierDetector(IRobustStandardDeviationComputer computer) {
+        this(computer, null);
+    }
+    /**
+     * 
+     * @param computer
+     * @param filter
+     */
+    public ResidualsOutlierDetector(IRobustStandardDeviationComputer computer, IArmaFilter filter) {
+        super(computer);
         if (filter == null) {
             m_filter = new AnsleyFilter();
         } else {
@@ -81,7 +96,7 @@ public class ResidualsOutlierDetector<T extends IArimaModel> extends AbstractSin
                 return false;
             }
             m_el = estimation.getResiduals();
-            setMAD(AbstractOutlierVariable.mad(m_el, true));
+            getStandardDeviationComputer().compute(new ReadDataBlock(m_el));
             return true;
         } catch (Exception ex) {
             return false;

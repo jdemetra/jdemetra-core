@@ -24,8 +24,8 @@ import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.linearfilters.BackFilter;
 import ec.tstoolkit.maths.linearfilters.RationalBackFilter;
 import ec.tstoolkit.maths.polynomials.Polynomial;
+import ec.tstoolkit.modelling.IRobustStandardDeviationComputer;
 import ec.tstoolkit.sarima.SarimaModel;
-import ec.tstoolkit.timeseries.regression.AbstractOutlierVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 
 /**
@@ -40,14 +40,17 @@ public class ApproximateSingleOutlierDetector<T extends IArimaModel> extends
     private double[] m_el;
     private SarimaModel m_stmodel;
     private BackFilter m_ur;
-    private double m_ss;
 
-    private boolean m_bmad = true;
 
+    public ApproximateSingleOutlierDetector() {
+        this(IRobustStandardDeviationComputer.mad());
+    }
     /**
      *
+     * @param computer
      */
-    public ApproximateSingleOutlierDetector() {
+    public ApproximateSingleOutlierDetector(IRobustStandardDeviationComputer computer) {
+        super(computer);
     }
 
     /**
@@ -86,17 +89,8 @@ public class ApproximateSingleOutlierDetector<T extends IArimaModel> extends
         }
         m_el = estimation.getResiduals();
         DataBlock EL = new DataBlock(m_el);
-        setMAD(AbstractOutlierVariable.mad(EL, true));
-        m_ss = EL.ssq();
+        getStandardDeviationComputer().compute(EL);
         return true;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean isUsingMAD() {
-        return m_bmad;
     }
 
     private void processOutlier(int idx) {
@@ -134,7 +128,7 @@ public class ApproximateSingleOutlierDetector<T extends IArimaModel> extends
 
         int lbound=getLBound(), ubound=getUBound();
         for (int ix = 0; ix < n; ++ix) {
-            double rmse = rmse(n - ix - 1 - d);
+            double rmse = getStandardDeviationComputer().get(n - ix - 1 - d);
             sxx += o[ix] * o[ix];
             if (corr != 0) {
                 sxx -= corr * corr;
@@ -167,21 +161,4 @@ public class ApproximateSingleOutlierDetector<T extends IArimaModel> extends
             }
         }
     }
-    /**
-     *
-     * @param i
-     * @return
-     */
-    protected double rmse(int i) {
-        if (m_bmad) {
-            return getMAD();
-        } else if (i >= 0) {
-            double ss = (m_ss - m_el[i] * m_el[i]) / (m_el.length - 1);
-            return Math.sqrt(ss);
-        } else {
-            return Math.sqrt(m_ss / (m_el.length - 1));
-        }
-
-    }
-
 }

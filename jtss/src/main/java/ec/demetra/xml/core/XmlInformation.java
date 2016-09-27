@@ -95,53 +95,26 @@ public class XmlInformation {
         fromXmlMap.put(XmlAlgorithm.class, algMapper);
         toXmlMap.put(AlgorithmDescriptor.class, algMapper);
 
-        XmlConverterAdapter<XmlTsData, TsData> tsdataMapper =
-                new XmlConverterAdapter<>(XmlTsData.class);
+        fromXmlMap.put(XmlTsData.class, XmlTsData.getAdapter());
+        toXmlMap.put(TsData.class, XmlTsData.getAdapter());
 
-        fromXmlMap.put(XmlTsData.class, tsdataMapper);
-        toXmlMap.put(TsData.class, tsdataMapper);
+        fromXmlMap.put(XmlPeriodSelection.class, XmlPeriodSelection.getAdapter());
+        toXmlMap.put(TsPeriodSelector.class, XmlPeriodSelection.getAdapter());
 
-        XmlConverterAdapter<XmlPeriodSelection, TsPeriodSelector> pselMapper =
-                new XmlConverterAdapter<>(XmlPeriodSelection.class);
+        fromXmlMap.put(XmlParameters.class, XmlParameters.getAdapter());
+        toXmlMap.put(Parameter[].class, XmlParameters.getAdapter());
 
-        fromXmlMap.put(XmlPeriodSelection.class, pselMapper);
-        toXmlMap.put(TsPeriodSelector.class, pselMapper);
+        fromXmlMap.put(XmlParameter.class, XmlParameter.getAdapter());
+        toXmlMap.put(Parameter.class, XmlParameter.getAdapter());
 
-        XmlConverterAdapter<XmlParameters, Parameter[]> paramsMapper =
-                new XmlConverterAdapter<>(XmlParameters.class);
+        fromXmlMap.put(XmlTsMoniker.class, XmlTsMoniker.getAdapter());
+        toXmlMap.put(TsMoniker.class, XmlTsMoniker.getAdapter());
 
-        fromXmlMap.put(XmlParameters.class, paramsMapper);
-        toXmlMap.put(Parameter[].class, paramsMapper);
-
-        XmlConverterAdapter<XmlParameter, Parameter> paramMapper =
-                new XmlConverterAdapter<>(XmlParameter.class);
-
-        fromXmlMap.put(XmlParameter.class, paramMapper);
-        toXmlMap.put(Parameter.class, paramMapper);
-
-        //XmlConverterMapper<XmlDiagnostic, SADiagnostic> diagsMapper
-        //     = new XmlConverterMapper<XmlDiagnostic, SADiagnostic>();
-
-        //fromXmlMap.put(XmlDiagnostic.class, diagsMapper);
-        //toXmlMap.put(SeasonalAdjustmentDiagnostic.class, diagsMapper);
-
-        XmlConverterAdapter<XmlTsMoniker, TsMoniker> monikerMapper =
-                new XmlConverterAdapter<>(XmlTsMoniker.class);
-
-        fromXmlMap.put(XmlTsMoniker.class, monikerMapper);
-        toXmlMap.put(TsMoniker.class, monikerMapper);
-
-        XmlConverterAdapter<XmlTs, TsInformation> tsMapper =
-                new XmlConverterAdapter<>(XmlTs.class);
-
-        fromXmlMap.put(XmlTs.class, tsMapper);
-        toXmlMap.put(TsInformation.class, tsMapper);
+        fromXmlMap.put(XmlTs.class, XmlTs.getTsAdapter());
+        toXmlMap.put(TsInformation.class, XmlTs.getTsAdapter());
         
-        XmlConverterAdapter<XmlTsCollection, TsCollectionInformation> tsCollectionMapper =
-                new XmlConverterAdapter<>(XmlTsCollection.class);
-
-        fromXmlMap.put(XmlTsCollection.class, tsCollectionMapper);
-        toXmlMap.put(TsCollectionInformation.class, tsCollectionMapper);
+        fromXmlMap.put(XmlTsCollection.class, XmlTsCollection.getTsAdapter());
+        toXmlMap.put(TsCollectionInformation.class, XmlTsCollection.getTsAdapter());
 
         XmlConverterAdapter<XmlRegItem, RegressionItem> regitemMapper =
                 new XmlConverterAdapter<>(XmlRegItem.class);
@@ -154,22 +127,9 @@ public class XmlInformation {
 
         fromXmlMap.put(XmlStatisticalTest.class, statsMapper);
         toXmlMap.put(StatisticalTest.class, statsMapper);
-//        XmlConverterMapper<InterventionVariable, XmlInterventionVariable> ivarMapper =
-//                new XmlConverterMapper<>(XmlInterventionVariable.class);
-//
-//        fromXmlMap.put(XmlInterventionVariable.class, ivarMapper);
-//        toXmlMap.put(InterventionVariable.class, ivarMapper);
-//        XmlConverterMapper<Ramp, XmlRamp> rampMapper =
-//                new XmlConverterMapper<>(XmlRamp.class);
-//
-//        fromXmlMap.put(XmlRamp.class, rampMapper);
-//        toXmlMap.put(Ramp.class, rampMapper);
         
-        XmlConverterAdapter<XmlMatrix, Matrix> matrixMapper =
-                new XmlConverterAdapter<>(XmlMatrix.class);
-
-        fromXmlMap.put(XmlMatrix.class, matrixMapper);
-        toXmlMap.put(Matrix.class, matrixMapper);
+        fromXmlMap.put(XmlMatrix.class, XmlMatrix.getAdapter());
+        toXmlMap.put(Matrix.class, XmlMatrix.getAdapter());
         
     }
     

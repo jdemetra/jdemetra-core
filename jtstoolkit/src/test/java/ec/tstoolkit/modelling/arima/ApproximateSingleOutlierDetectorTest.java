@@ -21,6 +21,7 @@ import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.modelling.arima.demetra.OutliersDetectionModule;
 import ec.tstoolkit.modelling.arima.tramo.OutliersDetector;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -30,7 +31,7 @@ import org.junit.Ignore;
  * @author Jean Palate
  */
 public class ApproximateSingleOutlierDetectorTest {
-    
+
     public ApproximateSingleOutlierDetectorTest() {
     }
 
@@ -43,17 +44,17 @@ public class ApproximateSingleOutlierDetectorTest {
         context.description = new ModelDescription(Data.P, null);
         context.description.setAirline(true);
         context.description.setTransformation(DefaultTransformationType.Log);
-        OutliersDetectionModule om = new OutliersDetectionModule(new ApproximateSingleOutlierDetector());
-        om.setCriticalValue(2.8);
-        om.setDefault();
-        int K=1000;
+        int K = 1000;
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < K; ++i) {
             context.description.getOutliers().clear();
             context.estimation = null;
+            OutliersDetectionModule om = new OutliersDetectionModule(new ApproximateSingleOutlierDetector());
+            om.setCriticalValue(2.8);
+            om.setDefault();
             om.process(context);
 //            for (IOutlierVariable o : context.description.getOutliers()) {
-//                System.out.println(o);
+//                System.out.println(o.getDescription(TsFrequency.Monthly));
 //            }
         }
         long t1 = System.currentTimeMillis();
@@ -65,10 +66,10 @@ public class ApproximateSingleOutlierDetectorTest {
             OutliersDetector om2 = new OutliersDetector();
             om2.setDefault();
             om2.setCriticalValue(2.8);
-//            om2.useEML(true);
+            om2.useEML(true);
             om2.process(context);
 //            for (IOutlierVariable o : context.description.getOutliers()) {
-//                System.out.println(o);
+//                System.out.println(o.getDescription(TsFrequency.Monthly));
 //            }
         }
         System.out.println("");

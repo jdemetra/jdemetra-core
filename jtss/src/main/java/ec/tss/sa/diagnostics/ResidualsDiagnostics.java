@@ -86,7 +86,7 @@ public class ResidualsDiagnostics implements IDiagnostics {
         try {
             TsData res = regarima.getFullResiduals();
             freq_ = res.getFrequency().intValue();
-            stats_ = new NiidTests(res, freq_, 0, true);
+            stats_ = new NiidTests(res, freq_, regarima.description.getArimaComponent().getFreeParametersCount(), true);
             periodogram_ = new Periodogram(res);
             return true;
         }

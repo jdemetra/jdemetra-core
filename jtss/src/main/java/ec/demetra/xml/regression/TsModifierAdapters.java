@@ -60,7 +60,7 @@ public class TsModifierAdapters {
         return adapters.stream().map(adapter -> adapter.getXmlType()).collect(Collectors.toList());
     }
 
-    public ITsModifier decode(XmlRegressionVariableModifier xvar) {
+    public ITsModifier unmarshal(XmlRegressionVariableModifier xvar) {
         for (TsModifierAdapter adapter : adapters) {
             if (adapter.getXmlType().isInstance(xvar)) {
                 try {
@@ -73,7 +73,7 @@ public class TsModifierAdapters {
         return null;
     }
 
-    public XmlRegressionVariableModifier encode(ITsModifier ivar) {
+    public XmlRegressionVariableModifier marshal(ITsModifier ivar) {
         for (TsModifierAdapter adapter : adapters) {
             if (adapter.getValueType().isInstance(ivar)) {
                 try {

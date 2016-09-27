@@ -16,7 +16,10 @@
  */
 
 @XmlSchema(namespace = "ec/eurostat/jdemetra/sa/x13", elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
-        xmlns = { @XmlNs(prefix = "sa", namespaceURI = "ec/eurostat/jdemetra/sa"), @XmlNs(prefix = "x13", namespaceURI = "ec/eurostat/jdemetra/sa/x13") })
+        xmlns = { @XmlNs(prefix = "sa", namespaceURI = "ec/eurostat/jdemetra/sa"), 
+            @XmlNs(prefix = "x13", namespaceURI = "ec/eurostat/jdemetra/sa/x13"),
+            @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema") 
+})
 package ec.demetra.xml.sa.x13;
 
 import javax.xml.bind.annotation.XmlNs;

@@ -42,7 +42,7 @@ public class FTest {
         F dist = new F();
         dist.setDFNum(5);
         dist.setDFDenom(100);
-        double step = 0.00001;
+        double step = 0.001;
         for (double p = step; p <= 1 - step; p += step) {
             double x = dist.getProbabilityInverse(p, ProbabilityType.Lower);
             double np = dist.getProbability(x, ProbabilityType.Lower);

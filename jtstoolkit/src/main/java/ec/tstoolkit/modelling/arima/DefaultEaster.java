@@ -47,6 +47,6 @@ public class DefaultEaster implements IVariableDescriptor {
 
     public boolean hasEaster, hasEasterMonday;
     public int duration=6;
-    public EasterVariable.Type type = EasterVariable.Type.Theoretical;
+    public EasterVariable.Correction type = EasterVariable.Correction.Theoretical;
     public RegStatus status = RegStatus.Prespecified;
 }

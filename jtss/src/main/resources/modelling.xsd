@@ -21,6 +21,15 @@ and open the template in the editor.
                 Estimation of the model
             </xs:documentation>
         </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Span" type="tss:PeriodSelectionType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Defines the part of the series taken into account
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="TransformationSpecType" abstract="true">
@@ -34,7 +43,7 @@ and open the template in the editor.
     <xs:complexType name="ModellingSpecType" abstract="true">
         <xs:annotation>
             <xs:documentation>
-                Automatic transformation of a series
+                Automatic modelling of a series
             </xs:documentation>
         </xs:annotation>
     </xs:complexType>
@@ -81,6 +90,15 @@ and open the template in the editor.
                 Estimation of the model
             </xs:documentation>
         </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Span" type="tss:PeriodSelectionType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Defines the time domain over which the model is estimated.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ModellingSpecificationType" abstract="true">
@@ -195,10 +213,10 @@ and open the template in the editor.
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="Mean" type="modelling:MeanCorrectionType"/>
+            <xs:element name="Mean" type="modelling:MeanCorrectionType" minOccurs="0"/>
             <xs:choice>
-                <xs:element name="Orders" type="tss:SARIMA_OrderType"/>
-                <xs:element name="Model" type="tss:SARIMA_ModelType"/>
+                <xs:element name="Orders" type="tss:SARIMA_OrdersType"/>
+                <xs:element name="Polynomials" type="tss:SARIMA_PolynomialsType"/>
             </xs:choice>
         </xs:sequence>
     </xs:complexType>
@@ -214,14 +232,14 @@ and open the template in the editor.
 
     <xs:complexType name="StockTradingDaysSpecType">
         <xs:sequence>
-            <xs:element name="Calendar" type="xs:IDREF" minOccurs="0"/>
+            <xs:element name="Calendar" type="xs:NMTOKEN" minOccurs="0"/>
             <xs:element name="W" type="xs:unsignedShort"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="DefaultTradingDaysSpecType">
         <xs:sequence>
-            <xs:element name="Calendar" type="xs:IDREF" minOccurs="0"/>
+            <xs:element name="Calendar" type="xs:NMTOKEN" minOccurs="0"/>
             <xs:element name="TdOption" type="tss:TradingDaysEnum"/>
             <xs:element name="LpOption" type="tss:LengthOfPeriodEnum" minOccurs="0"/>
         </xs:sequence>

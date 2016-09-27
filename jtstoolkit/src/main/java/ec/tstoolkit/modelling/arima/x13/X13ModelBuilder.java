@@ -301,7 +301,7 @@ public class X13ModelBuilder implements IModelBuilder {
         for (int i = 0; i < mh.length; ++i) {
             if (mh[i].getType() == MovingHolidaySpec.Type.Easter) {
                 EasterVariable var = new EasterVariable();
-                var.setType(EasterVariable.Type.Uscb);
+                var.setType(EasterVariable.Correction.PreComputed);
                 Variable tvar = new Variable(var, ComponentType.CalendarEffect);
                 var.setDuration(mh[i].getW());
                 if (mh[i].getTest() == RegressionTestSpec.Add) {

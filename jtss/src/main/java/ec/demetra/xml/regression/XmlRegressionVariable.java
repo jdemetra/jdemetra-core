@@ -20,23 +20,51 @@ import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.timeseries.regression.ITsModifier;
 import ec.tstoolkit.timeseries.regression.ITsVariable;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlType;
 
 /**
- *
- * @author Jean Palate
+ * 
+ *                 Base type for any regression variable. 
+ *             
+ * 
+ * <p>Java class for RegressionVariableType complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="RegressionVariableType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "RegressionVariableType")
+@XmlSeeAlso({
+    XmlModifiableRegressionVariable.class,
+    XmlOutlier.class,
+    XmlRamp.class,
+    XmlInterventionVariable.class
+})
 public abstract class XmlRegressionVariable {
 
     public static XmlRegressionVariable toXml(ITsVariable var){
         if (var instanceof ITsModifier){
             return XmlModifiableRegressionVariable.toXml((ITsModifier)var);
         }else{
-            return TsVariableAdapters.getDefault().encode(var);
+            return TsVariableAdapters.getDefault().marshal(var);
         }
     }
     
     public ITsVariable toTsVariable(){
-        return TsVariableAdapters.getDefault().decode(this);
+        return TsVariableAdapters.getDefault().unmarshal(this);
     }
 }

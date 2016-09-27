@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.data;
 
 import ec.tstoolkit.design.IntValue;
@@ -55,7 +54,7 @@ public enum WindowType implements IntValue {
     public int intValue() {
         return value;
     }
-    
+
     private static double parzen(int idx, int size) {
         double tmp = idx / (double) size;
         if (idx <= size / 2) {
@@ -66,30 +65,31 @@ public enum WindowType implements IntValue {
     }
 
     public double[] window(int winSize) {
-        double[] window = new double[winSize+1];
+        double[] window = new double[winSize];
+        double dsize = winSize;
         switch (this) {
             case Welch:
-                for (int i = 0; i <= winSize; i++) {
-                    window[i] = 1.0 - (i / (double) winSize) * (i / (double) winSize);
+                for (int i = 0; i < winSize; i++) {
+                    window[i] = 1.0 - (i / (double) winSize) * (i / dsize);
                 }
                 break;
             case Tukey:
-                for (int i = 0; i <= winSize; i++) {
-                    window[i] = 0.5 * (1 + Math.cos(Math.PI * i / (double) winSize));
+                for (int i = 0; i < winSize; i++) {
+                    window[i] = 0.5 * (1 + Math.cos(Math.PI * i / dsize));
                 }
                 break;
             case Bartlett:
-                for (int i = 0; i <= winSize; i++) {
-                    window[i] = 1.0 - i / (double) winSize;
+                for (int i = 0; i < winSize; i++) {
+                    window[i] = 1.0 - i / dsize;
                 }
                 break;
             case Hamming:
-                for (int i = 0; i <= winSize; i++) {
-                    window[i] = 0.54 + 0.46 * Math.cos(Math.PI * i / (double) winSize);
+                for (int i = 0; i < winSize; i++) {
+                    window[i] = 0.54 + 0.46 * Math.cos(Math.PI * i / dsize);
                 }
                 break;
             case Parzen:
-                for (int i = 0; i <= winSize; i++) {
+                for (int i = 0; i < winSize; i++) {
                     window[i] = parzen(i, winSize);
                 }
                 break;
@@ -101,4 +101,5 @@ public enum WindowType implements IntValue {
         }
         return window;
     }
+
 }

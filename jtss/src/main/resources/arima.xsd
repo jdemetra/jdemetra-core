@@ -38,7 +38,7 @@
         </xs:complexContent>
     </xs:complexType>
 
-    <xs:complexType name="SARIMA_OrderType">
+    <xs:complexType name="SARIMA_OrdersType">
         <xs:sequence>
             <xs:element name="P" type="xs:unsignedShort">
                 <xs:annotation>
@@ -84,7 +84,31 @@
             </xs:element>
         </xs:sequence>
     </xs:complexType>
+    
+    <xs:group name="SARIMA_Polynomials">
+        <xs:sequence>
+            <xs:element name="AR" type="tss:ParametersType" minOccurs="0"/>
+            <xs:element name="D" type="xs:unsignedInt" minOccurs="0"/>
+            <xs:element name="MA" type="tss:ParametersType" minOccurs="0"/>
+            <xs:element name="BAR" type="tss:ParametersType" minOccurs="0"/>
+            <xs:element name="BD" type="xs:unsignedInt" minOccurs="0"/>
+            <xs:element name="BMA" type="tss:ParametersType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:group>
 
+    <xs:complexType name="SARIMA_PolynomialsType">
+        <xs:annotation>
+            <xs:documentation>
+                Description of the polynomials of a Box and Jenkins seasonal Arima model:
+                auto-regressive (stationary and non stationary)
+                and moving average regular and seasonal polynmials (+ differencing orders).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:group ref="tss:SARIMA_Polynomials"/>
+        </xs:sequence>
+    </xs:complexType>
+    
     <xs:complexType name="SARIMA_ModelType">
         <xs:annotation>
             <xs:documentation>
@@ -95,13 +119,8 @@
         <xs:complexContent>
             <xs:extension base="tss:ARIMA_ModelType">
                 <xs:sequence>
-                    <xs:element name="AR" type="tss:ParametersType" minOccurs="0"/>
-                    <xs:element name="D" type="xs:unsignedInt" minOccurs="0"/>
-                    <xs:element name="MA" type="tss:ParametersType" minOccurs="0"/>
-                    <xs:element name="S" type="xs:unsignedInt" minOccurs="0"/>
-                    <xs:element name="SAR" type="tss:ParametersType" minOccurs="0"/>
-                    <xs:element name="SD" type="xs:unsignedInt" minOccurs="0"/>
-                    <xs:element name="SMA" type="tss:ParametersType" minOccurs="0"/>
+                    <xs:element name="S" type="xs:unsignedInt"/>
+                    <xs:group ref="tss:SARIMA_Polynomials"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

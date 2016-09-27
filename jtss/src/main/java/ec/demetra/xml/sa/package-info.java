@@ -15,10 +15,12 @@
  * limitations under the Licence.
  */
 
-@XmlSchema(namespace = "ec/eurostat/jdemetra/sa", elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
-        xmlns = { @XmlNs(prefix = "sa", namespaceURI = "ec/eurostat/jdemetra/sa")})//, @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema") })
+@XmlSchema(namespace = Constants.SA, elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
+        xmlns = { @XmlNs(prefix = "sa", namespaceURI = Constants.SA), 
+            @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema") })
 package ec.demetra.xml.sa;
 
+import ec.demetra.xml.Constants;
 import javax.xml.bind.annotation.XmlNs;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlSchema;

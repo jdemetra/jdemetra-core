@@ -59,7 +59,7 @@ public class XmlVariablesTest {
         JAXBContext jaxb = JAXBContext.newInstance(xmlClasses.toArray(new Class[xmlClasses.size()]));
 
         XmlAdditiveOutlier xout = new XmlAdditiveOutlier();
-        xout.Position = Day.toDay();
+        xout.setPosition(Day.toDay());
 
         XmlGenericTradingDays xtd = new XmlGenericTradingDays();
         xtd.contrasts = true;
@@ -70,7 +70,7 @@ public class XmlVariablesTest {
         XmlVariableWindow xwnd=new XmlVariableWindow();
         xwnd.From=new TsPeriod(TsFrequency.Yearly, 2000, 0).firstday();
         xwnd.To=new TsPeriod(TsFrequency.Yearly, 2010, 0).lastday();
-        xtd.modifiers.add(xwnd);
+        xtd.getModifiers().add(xwnd);
         
         FileOutputStream ostream = new FileOutputStream(FILE);
         try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
@@ -81,7 +81,7 @@ public class XmlVariablesTest {
         }
 
         XmlVariables rslt = null;
-        FileInputStream istream = new FileInputStream("c:\\localdata\\test.xml");
+        FileInputStream istream = new FileInputStream(FILE);
         try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
             rslt = (XmlVariables) unmarshaller.unmarshal(reader);

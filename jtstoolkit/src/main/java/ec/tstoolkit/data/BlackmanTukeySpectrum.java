@@ -155,12 +155,12 @@ public class BlackmanTukeySpectrum {
         double[] cwnd = window();
         int nspect_ = 1 + winLen_ / 2;
         spect_ = new double[nspect_];
-        for (int i = 0; i <= winLen_; i++) {
+        for (int i = 0; i < winLen_; i++) {
             cwnd[i] *= cov_[i];
         }
         for (int i = 0; i < nspect_; i++) {
             double s = cwnd[0];
-            for (int j = 1; j <= winLen_; j++) {
+            for (int j = 1; j < winLen_; j++) {
                 s += 2 * cwnd[j] * Math.cos(Math.PI * 2.0 * i * j / winLen_);
             }
             if (s < 0) {
@@ -190,9 +190,9 @@ public class BlackmanTukeySpectrum {
             cov_ = tmp;
         } else {
             lstart = 0;
-            cov_ = new double[winLen_ + 1];
+            cov_ = new double[winLen_];
         }
-        for (int i = lstart; i <= winLen_; i++) {
+        for (int i = lstart; i < winLen_; i++) {
             cov_[i] = DescriptiveStatistics.cov(i, data_);
         }
     }

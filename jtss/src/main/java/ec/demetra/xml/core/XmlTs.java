@@ -17,137 +17,188 @@
 package ec.demetra.xml.core;
 
 import ec.tss.Ts;
-import ec.tss.TsFactory;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import ec.tss.TsInformation;
 import ec.tss.TsInformationType;
 import ec.tss.TsMoniker;
-import ec.tss.xml.IXmlConverter;
+import ec.tss.TsStatus;
+import ec.tss.xml.IXmlUnmarshaller;
+import ec.tss.xml.InPlaceXmlMarshaller;
 import ec.tstoolkit.MetaData;
-import ec.tstoolkit.timeseries.simplets.TsData;
-import ec.tstoolkit.timeseries.simplets.TsFrequency;
-import ec.tstoolkit.timeseries.simplets.TsPeriod;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  *
  * @author Jean Palate
  */
-@XmlRootElement(name = XmlTs.RNAME)
-@XmlType(name = XmlTs.NAME)
-public class XmlTs implements IXmlConverter<TsInformation> {
+/**
+ *
+ * Complete information of a time series. It extends a "TsDataType" (time series
+ * data) with its identifier and with metadata.
+ *
+ *
+ * <p>
+ * Java class for TsType complex type.
+ *
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ *
+ * <pre>
+ * &lt;complexType name="TsType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;extension base="{ec/eurostat/jdemetra/core}TsDataType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="MetaData" type="{ec/eurostat/jdemetra/core}MetaDataType" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *       &lt;attGroup ref="{ec/eurostat/jdemetra/core}TsIdentifier"/&gt;
+ *     &lt;/extension&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ *
+ *
+ */
+@XmlRootElement(name = "Ts")
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "TsType", propOrder = {
+    "metaData"
+})
+public class XmlTs
+        extends XmlTsData {
 
-    static final String RNAME = "Ts", NAME = RNAME + "Type";
-
-    @XmlElement(name = "Frequency")
-    public int freq;
-    /**
-     *
-     */
-    @XmlElement(name = "FirstYear")
-    public int firstYear;
-    /**
-     *
-     */
-    @XmlElement(name = "FirstPeriod")
-    public Integer firstPeriod;
-    /**
-     *
-     */
-    @XmlElement(name = "Values")
-    @XmlList
-    public double[] data;
-
-    /**
-     *
-     */
     @XmlElement(name = "MetaData")
-    public XmlMetaData metaData;
+    @XmlJavaTypeAdapter(XmlMetaData.Adapter.class)
+    protected MetaData metaData;
+    @XmlAttribute(name = "source")
+    protected String source;
+    @XmlAttribute(name = "identifier")
+    protected String identifier;
 
     /**
+     * Gets the value of the metaData property.
+     *
+     * @return possible object is {@link MetaDataType }
      *
      */
-    @XmlAttribute
-    public String name;
-    /**
-     *
-     */
-    @XmlAttribute
-    public String source;
-    /**
-     *
-     */
-    @XmlAttribute
-    public String identifier;
-
-    /**
-     *
-     * @param t
-     */
-    @Override
-    public void copy(TsInformation t) {
-        TsData tsdata = t.data;
-        if (tsdata != null) {
-            TsPeriod start = tsdata.getStart();
-            freq = start.getFrequency().intValue();
-            firstYear = start.getYear();
-            firstPeriod = start.getPosition() + 1;
-            data = tsdata.internalStorage();
-        }
-        source = t.moniker.getSource();
-        identifier = t.moniker.getId();
-        name = t.name;
-        if (t.metaData != null && !t.metaData.isEmpty()) {
-            metaData = new XmlMetaData();
-            metaData.copy(t.metaData);
-        }
-    }
-
-    public void copyTs(Ts t) {
-        TsData tsdata = t.getTsData();
-        if (tsdata != null) {
-            TsPeriod start = tsdata.getStart();
-            freq = start.getFrequency().intValue();
-            firstYear = start.getYear();
-            firstPeriod = start.getPosition() + 1;
-            data = tsdata.internalStorage();
-        }
-        source = t.getMoniker().getSource();
-        identifier = t.getMoniker().getId();
-        name = t.getName();
-        if (t.getMetaData() != null && !t.getMetaData().isEmpty()) {
-            metaData = new XmlMetaData();
-            metaData.copy(t.getMetaData());
-        }
+    public MetaData getMetaData() {
+        return metaData;
     }
 
     /**
+     * Sets the value of the metaData property.
      *
-     * @return
+     * @param value allowed object is {@link MetaDataType }
+     *
      */
-    @Override
-    public TsInformation create() {
-        TsMoniker moniker = TsMoniker.create(source, identifier);
-        TsInformation info = new TsInformation(name, moniker, data != null
+    public void setMetaData(MetaData value) {
+        this.metaData = value;
+    }
+
+    /**
+     * Gets the value of the source property.
+     *
+     * @return possible object is {@link String }
+     *
+     */
+    public String getSource() {
+        return source;
+    }
+
+    /**
+     * Sets the value of the source property.
+     *
+     * @param value allowed object is {@link String }
+     *
+     */
+    public void setSource(String value) {
+        this.source = value;
+    }
+
+    /**
+     * Gets the value of the identifier property.
+     *
+     * @return possible object is {@link String }
+     *
+     */
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    /**
+     * Sets the value of the identifier property.
+     *
+     * @param value allowed object is {@link String }
+     *
+     */
+    public void setIdentifier(String value) {
+        this.identifier = value;
+    }
+
+    public static final IXmlUnmarshaller<XmlTs, TsInformation> INFO_UNMARSHALLER = (XmlTs xml) -> {
+        TsMoniker moniker = TsMoniker.create(xml.source, xml.identifier);
+        TsInformation info = new TsInformation(xml.name, moniker, xml.values != null
                 ? TsInformationType.UserDefined : TsInformationType.None);
-        if (metaData != null) {
-            info.metaData = metaData.create();
+        if (xml.metaData != null) {
+            info.metaData = xml.metaData;
         }
-        if (data != null) {
-            info.data = new TsData(TsFrequency.valueOf(freq), firstYear,
-                    firstPeriod - 1, data, false);
+        if (xml.values != null) {
+            info.data = XmlTsData.UNMARSHALLER.unmarshal(xml);
         }
         return info;
+    };
+
+    public static final InPlaceXmlMarshaller<XmlTs, TsInformation> INFO_MARSHALLER = (TsInformation v, XmlTs xml) -> {
+        if (v.data != null) {
+            XmlTsData.MARSHALLER.marshal(v.data, xml);
+        }
+        xml.source = v.moniker.getSource();
+        xml.identifier = v.moniker.getId();
+        xml.name = v.name;
+        if (v.metaData != null && !v.metaData.isEmpty()) {
+            xml.metaData = v.metaData;
+        }
+        return true;
+    };
+
+    public static final InPlaceXmlMarshaller<XmlTs, Ts> MARSHALLER = (Ts v, XmlTs xml) -> {
+        if (v.hasData() == TsStatus.Valid) {
+            XmlTsData.MARSHALLER.marshal(v.getTsData(), xml);
+        }
+        xml.source = v.getMoniker().getSource();
+        xml.identifier = v.getMoniker().getId();
+        xml.name = v.getName();
+        xml.metaData = v.getMetaData();
+
+        return true;
+    };
+
+    public static class Adapter extends XmlAdapter<XmlTs, TsInformation> {
+
+        @Override
+        public TsInformation unmarshal(XmlTs v) throws Exception {
+            return INFO_UNMARSHALLER.unmarshal(v);
+        }
+
+        @Override
+        public XmlTs marshal(TsInformation v) throws Exception {
+            XmlTs xml = new XmlTs();
+            INFO_MARSHALLER.marshal(v, xml);
+            return xml;
+        }
     }
 
-    public Ts createTs() {
-        TsMoniker moniker = TsMoniker.create(source, identifier);
-        MetaData md = metaData != null ? metaData.create() : null;
-        TsData s = data != null ? new TsData(TsFrequency.valueOf(freq), firstYear, firstPeriod - 1, data, false) : null;
-        return TsFactory.instance.createTs(name, moniker, md, s);
+    private static final Adapter ADAPTER = new Adapter();
+
+    public static XmlAdapter<XmlTs, TsInformation> getTsAdapter() {
+        return ADAPTER;
     }
+
 }

@@ -17,11 +17,18 @@
 package ec.tstoolkit.modelling.arima.demetra;
 
 import data.Data;
+import ec.tstoolkit.arima.estimation.AnsleyFilter;
 import ec.tstoolkit.modelling.DefaultTransformationType;
+import ec.tstoolkit.modelling.IRobustStandardDeviationComputer;
+import ec.tstoolkit.modelling.arima.ApproximateSingleOutlierDetector;
+import ec.tstoolkit.modelling.arima.ExactSingleOutlierDetector;
+import ec.tstoolkit.modelling.arima.IResidualsComputer;
 import ec.tstoolkit.modelling.arima.ModelDescription;
 import ec.tstoolkit.modelling.arima.ModellingContext;
+import ec.tstoolkit.modelling.arima.ResidualsOutlierDetector;
 import ec.tstoolkit.modelling.arima.x13.OutliersDetector;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -44,10 +51,11 @@ public class OutliersDetectionModuleTest {
         context.description = new ModelDescription(Data.M2, null);
         context.description.setAirline(true);
         context.description.setTransformation(DefaultTransformationType.Log);
-        OutliersDetectionModule om = new OutliersDetectionModule();
-        om.setCriticalValue(2.8);
+        OutliersDetectionModule om = new OutliersDetectionModule(new ApproximateSingleOutlierDetector());
         om.setDefault();
-        int K=1000;
+        om.setCriticalValue(2.8);
+        om.setMethod(OutliersDetectionModule.Method.X13);
+        int K = 1;
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < K; ++i) {
             context.description.getOutliers().clear();
@@ -78,4 +86,60 @@ public class OutliersDetectionModuleTest {
 
     }
 
+    @Test
+    @Ignore
+    public void testMethods() {
+        ModellingContext context = new ModellingContext();
+        context.automodelling = true;
+        context.hasseas = true;
+        context.description = new ModelDescription(Data.M3, null);
+        context.description.setAirline(true);
+        context.description.setTransformation(DefaultTransformationType.Log);
+        OutliersDetectionModule om = new OutliersDetectionModule(new ApproximateSingleOutlierDetector());
+        om.setDefault();
+        om.setCriticalValue(2.5);
+        om.setMethod(OutliersDetectionModule.Method.X13);
+        int K = 1;
+        long t0 = System.currentTimeMillis();
+        for (int i = 0; i < K; ++i) {
+            context.description.getOutliers().clear();
+            context.estimation = null;
+            om.process(context);
+            for (IOutlierVariable o : context.description.getOutliers()) {
+                System.out.println(o.getDescription(TsFrequency.Monthly));
+            }
+        }
+        long t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
+        t0 = System.currentTimeMillis();
+        om.setMethod(OutliersDetectionModule.Method.Tramo);
+        for (int i = 0; i < K; ++i) {
+            context.description.getOutliers().clear();
+            context.estimation = null;
+            om.process(context);
+            for (IOutlierVariable o : context.description.getOutliers()) {
+                System.out.println(o.getDescription(TsFrequency.Monthly));
+            }
+        }
+        System.out.println("");
+        t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
+        t0 = System.currentTimeMillis();
+        om = new OutliersDetectionModule(new ResidualsOutlierDetector());
+        om.setDefault();
+        om.setCriticalValue(2.5);
+        om.setMethod(OutliersDetectionModule.Method.Demetra1);
+        for (int i = 0; i < K; ++i) {
+            context.description.getOutliers().clear();
+            context.estimation = null;
+            om.process(context);
+            for (IOutlierVariable o : context.description.getOutliers()) {
+                System.out.println(o.getDescription(TsFrequency.Monthly));
+            }
+        }
+        System.out.println("");
+        t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
+
+    }
 }

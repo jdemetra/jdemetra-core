@@ -56,6 +56,7 @@ import java.util.List;
  */
 @Development(status = Development.Status.Preliminary)
 public class OutliersDetector implements IOutliersDetectionModule {
+    
 
     private static final double EPS = 1e-5;
     private static final int MAXROUND = 50, MAXOUTLIERS = 24;
@@ -528,6 +529,7 @@ public class OutliersDetector implements IOutliersDetectionModule {
      * @param n
      * @return
      */
+    @Deprecated
     public static double calcDefaultCriticalValue(int n) {
         double cv = 0;
 //        if (n < 50) {
@@ -550,7 +552,8 @@ public class OutliersDetector implements IOutliersDetectionModule {
     private double calcCv(ModellingContext context) {
         double cv = cv_;
         if (cv == 0) {
-            cv = calcDefaultCriticalValue(context.description.getY().length);
+            cv = ICriticalValueComputer.defaultComputer().compute(context.description.getY().length);
+            //cv=calcDefaultCriticalValue(context.description.getY().length);
         }
         for (int i = 0; i < -selectivity_; ++i) {
             cv *= (1 - pc_);
