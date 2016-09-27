@@ -17,10 +17,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * <p>Java class for TramoSpecificationType complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
+ * Java class for TramoSpecificationType complex type.
+ *
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ *
  * <pre>
  * &lt;complexType name="TramoSpecificationType"&gt;
  *   &lt;complexContent&gt;
@@ -41,11 +44,11 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name="TramoSpecification")
+@XmlRootElement(name = "TramoSpecification")
 @XmlType(name = "TramoSpecificationType", propOrder = {
     "series",
     "transformation",
@@ -57,8 +60,7 @@ import javax.xml.bind.annotation.XmlType;
     "autoModelling"
 })
 public class XmlTramoSpecification
-    extends XmlModellingSpecification
-{
+        extends XmlModellingSpecification {
 
     @XmlElement(name = "Series")
     protected XmlSeriesSpec series;
@@ -79,11 +81,9 @@ public class XmlTramoSpecification
 
     /**
      * Gets the value of the series property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XmlSeriesSpec }
-     *     
+     *
+     * @return possible object is {@link XmlSeriesSpec }
+     *
      */
     public XmlSeriesSpec getSeries() {
         return series;
@@ -91,11 +91,9 @@ public class XmlTramoSpecification
 
     /**
      * Sets the value of the series property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XmlSeriesSpec }
-     *     
+     *
+     * @param value allowed object is {@link XmlSeriesSpec }
+     *
      */
     public void setSeries(XmlSeriesSpec value) {
         this.series = value;
@@ -103,11 +101,9 @@ public class XmlTramoSpecification
 
     /**
      * Gets the value of the transformation property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XmlTransformationSpec }
-     *     
+     *
+     * @return possible object is {@link XmlTransformationSpec }
+     *
      */
     public XmlTransformationSpec getTransformation() {
         return transformation;
@@ -115,11 +111,9 @@ public class XmlTramoSpecification
 
     /**
      * Sets the value of the transformation property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XmlTransformationSpec }
-     *     
+     *
+     * @param value allowed object is {@link XmlTransformationSpec }
+     *
      */
     public void setTransformation(XmlTransformationSpec value) {
         this.transformation = value;
@@ -127,11 +121,9 @@ public class XmlTramoSpecification
 
     /**
      * Gets the value of the estimation property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XmlEstimationSpec }
-     *     
+     *
+     * @return possible object is {@link XmlEstimationSpec }
+     *
      */
     public XmlEstimationSpec getEstimation() {
         return estimation;
@@ -139,11 +131,9 @@ public class XmlTramoSpecification
 
     /**
      * Sets the value of the estimation property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XmlEstimationSpec }
-     *     
+     *
+     * @param value allowed object is {@link XmlEstimationSpec }
+     *
      */
     public void setEstimation(XmlEstimationSpec value) {
         this.estimation = value;
@@ -151,11 +141,9 @@ public class XmlTramoSpecification
 
     /**
      * Gets the value of the regression property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XmlRegressionSpec }
-     *     
+     *
+     * @return possible object is {@link XmlRegressionSpec }
+     *
      */
     public XmlRegressionSpec getRegression() {
         return regression;
@@ -163,11 +151,9 @@ public class XmlTramoSpecification
 
     /**
      * Sets the value of the regression property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XmlRegressionSpec }
-     *     
+     *
+     * @param value allowed object is {@link XmlRegressionSpec }
+     *
      */
     public void setRegression(XmlRegressionSpec value) {
         this.regression = value;
@@ -175,11 +161,9 @@ public class XmlTramoSpecification
 
     /**
      * Gets the value of the calendar property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XmlCalendarSpec }
-     *     
+     *
+     * @return possible object is {@link XmlCalendarSpec }
+     *
      */
     public XmlCalendarSpec getCalendar() {
         return calendar;
@@ -187,11 +171,9 @@ public class XmlTramoSpecification
 
     /**
      * Sets the value of the calendar property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XmlCalendarSpec }
-     *     
+     *
+     * @param value allowed object is {@link XmlCalendarSpec }
+     *
      */
     public void setCalendar(XmlCalendarSpec value) {
         this.calendar = value;
@@ -199,11 +181,9 @@ public class XmlTramoSpecification
 
     /**
      * Gets the value of the outliers property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XmlOutliersSpec }
-     *     
+     *
+     * @return possible object is {@link XmlOutliersSpec }
+     *
      */
     public XmlOutliersSpec getOutliers() {
         return outliers;
@@ -211,11 +191,9 @@ public class XmlTramoSpecification
 
     /**
      * Sets the value of the outliers property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XmlOutliersSpec }
-     *     
+     *
+     * @param value allowed object is {@link XmlOutliersSpec }
+     *
      */
     public void setOutliers(XmlOutliersSpec value) {
         this.outliers = value;
@@ -223,11 +201,9 @@ public class XmlTramoSpecification
 
     /**
      * Gets the value of the arima property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XmlArimaSpec }
-     *     
+     *
+     * @return possible object is {@link XmlArimaSpec }
+     *
      */
     public XmlArimaSpec getArima() {
         return arima;
@@ -235,11 +211,9 @@ public class XmlTramoSpecification
 
     /**
      * Sets the value of the arima property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XmlArimaSpec }
-     *     
+     *
+     * @param value allowed object is {@link XmlArimaSpec }
+     *
      */
     public void setArima(XmlArimaSpec value) {
         this.arima = value;
@@ -247,11 +221,9 @@ public class XmlTramoSpecification
 
     /**
      * Gets the value of the autoModelling property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XmlAutoModellingSpec }
-     *     
+     *
+     * @return possible object is {@link XmlAutoModellingSpec }
+     *
      */
     public XmlAutoModellingSpec getAutoModelling() {
         return autoModelling;
@@ -259,49 +231,56 @@ public class XmlTramoSpecification
 
     /**
      * Sets the value of the autoModelling property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XmlAutoModellingSpec }
-     *     
+     *
+     * @param value allowed object is {@link XmlAutoModellingSpec }
+     *
      */
     public void setAutoModelling(XmlAutoModellingSpec value) {
         this.autoModelling = value;
     }
-    
-    public static final InPlaceXmlUnmarshaller<XmlTramoSpecification, TramoSpecification> UNMARSHALLER=(XmlTramoSpecification xml, TramoSpecification v) -> {
-        if (xml.series != null)
+
+    public static final InPlaceXmlUnmarshaller<XmlTramoSpecification, TramoSpecification> UNMARSHALLER = (XmlTramoSpecification xml, TramoSpecification v) -> {
+        if (xml.series != null) {
             XmlSeriesSpec.UNMARSHALLER.unmarshal(xml.series, v);
-        if (xml.transformation != null)
+        }
+        if (xml.transformation != null) {
             XmlTransformationSpec.UNMARSHALLER.unmarshal(xml.transformation, v.getTransform());
-        if (xml.estimation != null)
+        }
+        if (xml.estimation != null) {
             XmlEstimationSpec.UNMARSHALLER.unmarshal(xml.estimation, v.getEstimate());
-        if (xml.calendar != null)
+        }
+        if (xml.calendar != null) {
             XmlCalendarSpec.UNMARSHALLER.unmarshal(xml.calendar, v.getRegression().getCalendar());
-//        if (xml.regression != null)
-//            XmlRegressionSpec.UNMARSHALLER.unmarshal(xml.regression, v.getRegression());
-        if (xml.arima != null)
+        }
+        if (xml.regression != null) {
+            XmlRegressionSpec.UNMARSHALLER.unmarshal(xml.regression, v.getRegression());
+        }
+        if (xml.arima != null) {
             XmlArimaSpec.UNMARSHALLER.unmarshal(xml.arima, v.getArima());
-        if (xml.autoModelling != null)
+        }
+        if (xml.autoModelling != null) {
             XmlAutoModellingSpec.UNMARSHALLER.unmarshal(xml.autoModelling, v.getAutoModel());
-        if (xml.outliers != null)
+        }
+        if (xml.outliers != null) {
             XmlOutliersSpec.UNMARSHALLER.unmarshal(xml.outliers, v.getOutliers());
+        }
 
         return true;
     };
 
-    public static final InPlaceXmlMarshaller<XmlTramoSpecification, TramoSpecification> MARSHALLER=(TramoSpecification v, XmlTramoSpecification xml) -> {
-        xml.series=XmlSeriesSpec.MARSHALLER.marshal(v);
-        xml.transformation=XmlTransformationSpec.MARSHALLER.marshal(v.getTransform());
-        xml.estimation=XmlEstimationSpec.MARSHALLER.marshal(v.getEstimate());
-        xml.calendar=XmlCalendarSpec.MARSHALLER.marshal(v.getRegression().getCalendar());
-        xml.outliers=XmlOutliersSpec.MARSHALLER.marshal(v.getOutliers());
-        
-        if (v.isUsingAutoModel()){
-            xml.autoModelling=new XmlAutoModellingSpec();
+    public static final InPlaceXmlMarshaller<XmlTramoSpecification, TramoSpecification> MARSHALLER = (TramoSpecification v, XmlTramoSpecification xml) -> {
+        xml.series = XmlSeriesSpec.MARSHALLER.marshal(v);
+        xml.transformation = XmlTransformationSpec.MARSHALLER.marshal(v.getTransform());
+        xml.estimation = XmlEstimationSpec.MARSHALLER.marshal(v.getEstimate());
+        xml.calendar = XmlCalendarSpec.MARSHALLER.marshal(v.getRegression().getCalendar());
+        xml.regression = XmlRegressionSpec.MARSHALLER.marshal(v.getRegression());
+        xml.outliers = XmlOutliersSpec.MARSHALLER.marshal(v.getOutliers());
+
+        if (v.isUsingAutoModel()) {
+            xml.autoModelling = new XmlAutoModellingSpec();
             XmlAutoModellingSpec.MARSHALLER.marshal(v.getAutoModel(), xml.autoModelling);
-        }else{
-            xml.arima=new XmlArimaSpec();
+        } else {
+            xml.arima = new XmlArimaSpec();
             XmlArimaSpec.MARSHALLER.marshal(v.getArima(), xml.arima);
         }
         return true;

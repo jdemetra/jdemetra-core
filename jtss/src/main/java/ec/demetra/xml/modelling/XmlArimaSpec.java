@@ -181,10 +181,10 @@ public class XmlArimaSpec {
             v.setBPhi(xml.polynomials.getBAR());
             v.setBTheta(xml.polynomials.getBMA());
         }
-        if (v.isMean()) {
-            XmlMeanCorrection xmean = new XmlMeanCorrection();
-            xml.setMean(xmean);
-        }
+        if (xml.mean != null) {
+            v.setMean(true);
+        }else
+            v.setMean(false);
         return true;
     };
 

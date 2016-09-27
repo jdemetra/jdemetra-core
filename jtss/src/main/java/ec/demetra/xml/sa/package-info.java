@@ -16,7 +16,8 @@
  */
 
 @XmlSchema(namespace = Constants.SA, elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
-        xmlns = { @XmlNs(prefix = "sa", namespaceURI = Constants.SA)})//, @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema") })
+        xmlns = { @XmlNs(prefix = "sa", namespaceURI = Constants.SA), 
+            @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema") })
 package ec.demetra.xml.sa;
 
 import ec.demetra.xml.Constants;

@@ -57,7 +57,7 @@ import javax.xml.bind.annotation.XmlType;
 public class XmlDefaultTradingDaysSpec {
 
     @XmlElement(name = "Calendar")
-    @XmlSchemaType(name = "IDREF")
+    @XmlSchemaType(name = "NMTOKEN")
     protected String calendar;
     @XmlElement(name = "TdOption", required = true)
     @XmlSchemaType(name = "NMTOKEN")

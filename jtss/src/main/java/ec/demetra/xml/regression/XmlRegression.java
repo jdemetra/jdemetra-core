@@ -85,7 +85,7 @@ public class XmlRegression {
     }
     
     public boolean isEmpty(){
-        return item == null && item.isEmpty();
+        return item == null || item.isEmpty();
     }
 
    public static List<Class> xmlClasses(){

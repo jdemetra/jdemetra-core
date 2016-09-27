@@ -17,16 +17,12 @@
 package ec.demetra.xml.sa.tramoseats;
 
 import ec.demetra.xml.regression.TsVariableAdapters;
-import ec.demetra.xml.regression.XmlAdditiveOutlier;
 import ec.demetra.xml.regression.XmlInterventionVariable;
-import ec.demetra.xml.regression.XmlLevelShift;
 import ec.demetra.xml.regression.XmlOutlier;
 import ec.demetra.xml.regression.XmlRamp;
 import ec.demetra.xml.regression.XmlRegression;
 import ec.demetra.xml.regression.XmlRegressionItem;
 import ec.demetra.xml.regression.XmlRegressionVariable;
-import ec.demetra.xml.regression.XmlSeasonalOutlier;
-import ec.demetra.xml.regression.XmlTransitoryChange;
 import ec.demetra.xml.regression.XmlUserVariable;
 import ec.tss.xml.IXmlMarshaller;
 import ec.tss.xml.InPlaceXmlUnmarshaller;
@@ -34,7 +30,6 @@ import ec.tstoolkit.modelling.TsVariableDescriptor;
 import ec.tstoolkit.modelling.arima.tramo.RegressionSpec;
 import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
-import ec.tstoolkit.timeseries.regression.ITsVariable;
 import ec.tstoolkit.timeseries.regression.InterventionVariable;
 import ec.tstoolkit.timeseries.regression.OutlierDefinition;
 import ec.tstoolkit.timeseries.regression.Ramp;
@@ -75,13 +70,19 @@ public class XmlRegressionSpec
         if (v.getOutliersCount() > 0) {
             OutlierDefinition[] outliers = v.getOutliers();
             for (int i = 0; i < outliers.length; ++i) {
-                IOutlierVariable var = TramoSpecification.getOutliersFactory().make(outliers[i]);
-                XmlRegressionVariable xvar = TsVariableAdapters.getDefault().marshal(var);
+                XmlOutlier xvar=XmlOutlier.LEGACY_MARSHALLER.marshal(outliers[i]);
                 if (xvar != null) {
                     XmlRegressionItem xcur = new XmlRegressionItem();
                     xcur.setVariable(xvar);
                     xml.variables.getItems().add(xcur);
                 }
+//                IOutlierVariable var = TramoSpecification.getOutliersFactory().make(outliers[i]);
+//                XmlRegressionVariable xvar = TsVariableAdapters.getDefault().marshal(var);
+//                if (xvar != null) {
+//                    XmlRegressionItem xcur = new XmlRegressionItem();
+//                    xcur.setVariable(xvar);
+//                    xml.variables.getItems().add(xcur);
+//                }
             }
         }
         if (v.getRampsCount() > 0) {
@@ -129,8 +130,10 @@ public class XmlRegressionSpec
         for (XmlRegressionItem item : xml.variables.getItems()){
             XmlRegressionVariable cur = item.getVariable();
             if (cur instanceof XmlOutlier){
-                IOutlierVariable outlier=(IOutlierVariable) TsVariableAdapters.getDefault().unmarshal(cur);
-                v.add(outlier);
+//                IOutlierVariable outlier=(IOutlierVariable) TsVariableAdapters.getDefault().unmarshal(cur);
+//                v.add(outlier);
+                OutlierDefinition od = XmlOutlier.LEGACY_UNMARSHALLER.unmarshal((XmlOutlier) cur);
+                v.add(od);
             }else if (cur instanceof XmlRamp){
                 Ramp ramp=XmlRamp.getAdapter().unmarshal((XmlRamp)cur);
                 v.add(ramp);

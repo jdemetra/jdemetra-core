@@ -32,6 +32,7 @@ public class XmlAutoModellingSpecTest {
     @Test
     public void testMarshaller() {
         AutoModelSpec spec=new AutoModelSpec();
+        spec.setEnabled(true);
         spec.setAcceptDefault(true);
         spec.setAmiCompare(true);
         spec.setPc(.1);

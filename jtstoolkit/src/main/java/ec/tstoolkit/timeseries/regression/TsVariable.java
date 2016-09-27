@@ -32,7 +32,7 @@ import ec.tstoolkit.timeseries.simplets.TsPeriod;
  */
 @Development(status = Development.Status.Alpha)
 public class TsVariable extends AbstractSingleTsVariable implements
-        IUserTsVariable {
+        IUserSource {
 
     private String desc_ = "";
     private TsData tsdata_;

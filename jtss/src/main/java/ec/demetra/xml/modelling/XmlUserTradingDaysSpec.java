@@ -52,7 +52,7 @@ public class XmlUserTradingDaysSpec {
 
     @XmlList
     @XmlElement(name = "Variables", required = true)
-    @XmlSchemaType(name = "IDREFS")
+    @XmlSchemaType(name = "NMTOKENS")
     protected List<String> variables;
 
     /**

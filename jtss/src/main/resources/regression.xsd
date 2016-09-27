@@ -139,7 +139,7 @@ limitations under the Licence.
                 <xs:sequence>
                     <xs:element name="TradingDays" type="tss:TradingDaysEnum" minOccurs="0"/>
                     <xs:element name="LengthOfPeriod" type="tss:LengthOfPeriodEnum" minOccurs="0"/>
-                    <xs:element name="Calendar" type="xs:IDREF" minOccurs="0"/>
+                    <xs:element name="Calendar" type="xs:NMTOKEN" minOccurs="0"/>
                 </xs:sequence>
                 <xs:attribute name="longTermMeanCorrection" type="xs:boolean" use="optional" default="true">
                     <xs:annotation>
@@ -158,7 +158,7 @@ limitations under the Licence.
             <xs:extension base="tss:ModifiableRegressionVariableType">
                 <xs:sequence>
                     <xs:element name="DayClustering" type="tss:UnsignedInts"/>
-                    <xs:element name="Calendar" type="xs:IDREF" minOccurs="0"/>
+                    <xs:element name="Calendar" type="xs:NMTOKEN" minOccurs="0"/>
                 </xs:sequence>
                 <xs:attribute name="contrasts" type="xs:boolean" use="optional" default="true">
                     <xs:annotation>
@@ -257,7 +257,7 @@ limitations under the Licence.
             <xs:extension base="tss:ModifiableRegressionVariableType">
                 <xs:sequence>
                     <xs:choice>
-                        <xs:element name="Variable" type="xs:IDREF"/>
+                        <xs:element name="Variable" type="xs:NMTOKEN"/>
                         <xs:element name="Data" type="tss:TsDataType"/>
                     </xs:choice>
                 </xs:sequence>

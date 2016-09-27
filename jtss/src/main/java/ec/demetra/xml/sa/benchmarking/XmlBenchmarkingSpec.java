@@ -20,7 +20,6 @@ import ec.satoolkit.benchmarking.SaBenchmarkingSpec;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
@@ -60,7 +59,7 @@ public abstract class XmlBenchmarkingSpec {
     @XmlSchemaType(name = "NMTOKEN")
     protected SaBenchmarkingSpec.Target target;
     @XmlElement(name = "UserTarget")
-    @XmlSchemaType(name = "IDREF")
+    @XmlSchemaType(name = "NMTOKEN")
     protected String userTarget;
 
     /**

@@ -322,6 +322,7 @@ public class XmlAutoModellingSpec {
     };
 
     public static final InPlaceXmlUnmarshaller<XmlAutoModellingSpec, AutoModelSpec> UNMARSHALLER = (XmlAutoModellingSpec xml, AutoModelSpec v) -> {
+        v.setEnabled(true);
         if (xml.acceptDefault != null) {
             v.setAcceptDefault(xml.acceptDefault);
         }

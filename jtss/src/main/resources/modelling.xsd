@@ -232,14 +232,14 @@ and open the template in the editor.
 
     <xs:complexType name="StockTradingDaysSpecType">
         <xs:sequence>
-            <xs:element name="Calendar" type="xs:IDREF" minOccurs="0"/>
+            <xs:element name="Calendar" type="xs:NMTOKEN" minOccurs="0"/>
             <xs:element name="W" type="xs:unsignedShort"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="DefaultTradingDaysSpecType">
         <xs:sequence>
-            <xs:element name="Calendar" type="xs:IDREF" minOccurs="0"/>
+            <xs:element name="Calendar" type="xs:NMTOKEN" minOccurs="0"/>
             <xs:element name="TdOption" type="tss:TradingDaysEnum"/>
             <xs:element name="LpOption" type="tss:LengthOfPeriodEnum" minOccurs="0"/>
         </xs:sequence>

@@ -133,7 +133,8 @@ public class XmlEasterSpec
         }
         if (xml.option != null) {
             v.setOption(xml.option);
-        }
+        }else
+            v.setOption(EasterSpec.Type.IncludeEaster);
         return true;
     };
 

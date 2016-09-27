@@ -5,7 +5,6 @@
  */
 package ec.demetra.xml.regression;
 
-import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.TsVariableDescriptor;
 import ec.tstoolkit.modelling.TsVariableDescriptor.UserComponentType;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -47,7 +46,7 @@ public class XmlUserVariable
         extends XmlModifiableRegressionVariable {
 
     @XmlElement(name = "Variable", required = true)
-    @XmlSchemaType(name = "IDREF")
+    @XmlSchemaType(name = "NMTOKEN")
     protected String variable;
     @XmlAttribute(name = "effect", required = true)
     protected UserComponentType effect;

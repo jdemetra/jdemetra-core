@@ -110,7 +110,7 @@ public abstract class XmlModifiableRegressionVariable
         List<XmlRegressionVariableModifier> mod=new ArrayList<>();
         while (cur instanceof ITsModifier){
             ITsModifier m=(ITsModifier) cur;
-            mod.add(TsModifierAdapters.getDefault().encode(m));
+            mod.add(TsModifierAdapters.getDefault().marshal(m));
             cur=m.getVariable();
         }
         XmlRegressionVariable xml=TsVariableAdapters.getDefault().marshal(cur);
@@ -126,7 +126,7 @@ public abstract class XmlModifiableRegressionVariable
         ITsVariable var=TsVariableAdapters.getDefault().unmarshal(this);
         for (int i=size()-1; i>=0; --i){
             XmlRegressionVariableModifier m =getModifiers().get(i);
-            ITsModifier tsm = TsModifierAdapters.getDefault().decode(m);
+            ITsModifier tsm = TsModifierAdapters.getDefault().unmarshal(m);
             tsm.setVariable(var);
             var=tsm;
         }

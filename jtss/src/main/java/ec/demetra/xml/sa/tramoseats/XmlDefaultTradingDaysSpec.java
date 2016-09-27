@@ -21,6 +21,7 @@ import ec.tss.xml.InPlaceXmlUnmarshaller;
 import ec.tstoolkit.modelling.RegressionTestType;
 import ec.tstoolkit.modelling.arima.tramo.TradingDaysSpec;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
+import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -84,8 +85,9 @@ public class XmlDefaultTradingDaysSpec
         xml.setCalendar(v.getHolidays());
         xml.setTdOption(v.getTradingDaysType());
         xml.setLpOption(v.isLeapYear() ? LengthOfPeriodType.LeapYear : LengthOfPeriodType.None);
-        if (v.isTest())
+        if (v.isTest()) {
             xml.setTest(v.getRegressionTestType());
+        }
         return true;
     };
     
@@ -95,12 +97,13 @@ public class XmlDefaultTradingDaysSpec
         }
         if (xml.tdOption != null) {
             v.setTradingDaysType(xml.tdOption);
-        }
+        } 
         if (xml.lpOption != null) {
             v.setLeapYear(xml.lpOption != LengthOfPeriodType.None);
-        }
-        if (xml.test != null)
+        } 
+        if (xml.test != null) {
             v.setRegressionTestType(xml.test);
+        }
         return true;
     };
 }

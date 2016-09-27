@@ -61,7 +61,7 @@ import javax.xml.bind.annotation.XmlType;
 public class XmlAutomaticTradingDaysSpec {
     
     @XmlElement(name = "Calendar")
-    @XmlSchemaType(name = "IDREF")
+    @XmlSchemaType(name = "NMTOKEN")
     protected String calendar;
     @XmlElement(name = "WaldTest")
     protected WaldSelection waldTest;

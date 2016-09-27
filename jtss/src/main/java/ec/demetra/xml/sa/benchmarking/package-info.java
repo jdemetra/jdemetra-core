@@ -15,14 +15,14 @@
  * limitations under the Licence.
  */
 
-@XmlSchema(namespace = Constants.TRAMOSEATS, elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
-        xmlns = { @XmlNs(prefix = "sa", namespaceURI = Constants.SA), 
-                @XmlNs(prefix = "trs", namespaceURI = Constants.TRAMOSEATS), 
+@XmlSchema(namespace = Constants.BECNHMARKING, elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
+        xmlns = {
                 @XmlNs(prefix = "tss", namespaceURI = Constants.CORE), 
-                @XmlNs(prefix = "modelling", namespaceURI = Constants.MODELLING),
+                @XmlNs(prefix = "bench", namespaceURI = Constants.BECNHMARKING),
                 @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema") 
         })
-package ec.demetra.xml.sa.tramoseats;
+
+package ec.demetra.xml.sa.benchmarking;
 
 import ec.demetra.xml.Constants;
 import javax.xml.bind.annotation.XmlNs;

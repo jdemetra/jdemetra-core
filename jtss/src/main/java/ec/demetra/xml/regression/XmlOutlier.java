@@ -16,12 +16,16 @@
  */
 package ec.demetra.xml.regression;
 
+import ec.tss.xml.IXmlMarshaller;
+import ec.tss.xml.IXmlUnmarshaller;
 import ec.tss.xml.XmlDayAdapter;
 import ec.tstoolkit.timeseries.Day;
+import ec.tstoolkit.timeseries.regression.OutlierDefinition;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -33,7 +37,48 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlType(name = "OutlierType", propOrder = {
     "position"
 })
+@XmlSeeAlso({
+    XmlAdditiveOutlier.class, XmlLevelShift.class, XmlTransitoryChange.class, XmlSeasonalOutlier.class
+})
 public abstract class XmlOutlier extends XmlRegressionVariable {
+
+    public static final IXmlUnmarshaller<XmlOutlier, OutlierDefinition> LEGACY_UNMARSHALLER = (XmlOutlier xml) -> {
+        String code = null;
+        if (xml instanceof XmlAdditiveOutlier) {
+            code = "AO";
+        } else if (xml instanceof XmlLevelShift) {
+            code = "LS";
+        } else if (xml instanceof XmlTransitoryChange) {
+            code = "TC";
+        } else if (xml instanceof XmlSeasonalOutlier) {
+            code = "SO";
+        } else {
+            return null;
+        }
+        return new OutlierDefinition(xml.position, code);
+    };
+
+    public static final IXmlMarshaller<XmlOutlier, OutlierDefinition> LEGACY_MARSHALLER = (OutlierDefinition v) -> {
+        XmlOutlier xml = null;
+        switch (v.getCode()) {
+            case "AO":
+                xml = new XmlAdditiveOutlier();
+                break;
+            case "LS":
+                xml = new XmlLevelShift();
+                break;
+            case "TC":
+                xml = new XmlTransitoryChange();
+                break;
+            case "SO":
+                xml = new XmlSeasonalOutlier();
+                break;
+        }
+        if (xml != null) {
+            xml.position = v.getPosition();
+        }
+        return xml;
+    };
 
     @XmlElement(name = "Position", required = true)
     @XmlJavaTypeAdapter(XmlDayAdapter.class)
@@ -70,4 +115,5 @@ public abstract class XmlOutlier extends XmlRegressionVariable {
     public void setPreSpecified(Boolean preSpecified) {
         this.preSpecified = preSpecified;
     }
+
 }
