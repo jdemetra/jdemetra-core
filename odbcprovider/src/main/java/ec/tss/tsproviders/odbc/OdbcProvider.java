@@ -28,6 +28,7 @@ import ec.tss.tsproviders.jdbc.JdbcAccessor;
 import ec.tss.tsproviders.jdbc.JdbcBean;
 import ec.tss.tsproviders.jdbc.JdbcProvider;
 import ec.tss.tsproviders.utils.OptionalTsData;
+import ec.tstoolkit.design.VisibleForTesting;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.File;
 import java.sql.Connection;
@@ -51,8 +52,13 @@ public class OdbcProvider extends JdbcProvider<OdbcBean> implements IFileLoader 
     protected final DriverBasedSupplier connectionSupplier;
 
     public OdbcProvider() {
+        this(new OdbcSupplier());
+    }
+
+    @VisibleForTesting
+    OdbcProvider(DriverBasedSupplier connectionSupplier) {
         super(SOURCE, VERSION, LOGGER, TsAsyncMode.Once);
-        connectionSupplier = new OdbcSupplier();
+        this.connectionSupplier = connectionSupplier;
     }
 
     @Override

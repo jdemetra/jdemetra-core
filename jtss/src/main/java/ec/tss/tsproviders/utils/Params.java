@@ -16,11 +16,13 @@
  */
 package ec.tss.tsproviders.utils;
 
-import ec.tss.tsproviders.utils.Formatters.Formatter;
-import ec.tss.tsproviders.utils.Parsers.Parser;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import ec.tstoolkit.design.UtilityClass;
 import java.io.File;
 import java.nio.charset.Charset;
+import java.util.List;
 import javax.annotation.Nonnull;
 
 /**
@@ -91,15 +93,20 @@ public final class Params {
         return new SingleParam<>(defaultValues, key, Parsers.doubleArrayParser(), Formatters.doubleArrayFormatter());
     }
 
+    @Nonnull
+    public static <S extends IConfig> IParam<S, List<String>> onStringList(@Nonnull List<String> defaultValue, @Nonnull String key, @Nonnull Splitter splitter, @Nonnull Joiner joiner) {
+        return new SingleParam<>(ImmutableList.copyOf(defaultValue), key, Parsers.onSplitter(splitter), Formatters.onJoiner(joiner));
+    }
+
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
     private static final class SingleParam<S extends IConfig, P> implements IParam<S, P> {
 
         private final P defaultValue;
         private final String key;
-        private final Parser<P> parser;
-        private final Formatter<P> formatter;
+        private final IParser<P> parser;
+        private final IFormatter<P> formatter;
 
-        public SingleParam(@Nonnull P defaultValue, @Nonnull String key, @Nonnull Parser<P> parser, @Nonnull Formatter<P> formatter) {
+        private SingleParam(@Nonnull P defaultValue, @Nonnull String key, @Nonnull IParser<P> parser, @Nonnull IFormatter<P> formatter) {
             this.defaultValue = defaultValue;
             this.key = key;
             this.parser = parser;

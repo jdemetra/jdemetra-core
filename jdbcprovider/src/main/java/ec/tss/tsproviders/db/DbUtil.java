@@ -18,6 +18,8 @@ package ec.tss.tsproviders.db;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import ec.tss.tsproviders.utils.ObsCharacteristics;
+import ec.tss.tsproviders.utils.ObsGathering;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
@@ -73,7 +75,8 @@ public final class DbUtil {
     @Nonnull
     public static <T extends Exception> List<DbSeries> getAllSeriesWithData(@Nonnull AllSeriesWithDataCursor<T> cursor, @Nonnull DbSetId ref, @Nonnull TsFrequency frequency, @Nonnull TsAggregationType aggregationType) throws T {
         ImmutableList.Builder<DbSeries> result = ImmutableList.builder();
-        OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(frequency, aggregationType, false, true, new GregorianCalendar());
+        ObsGathering gathering = ObsGathering.includingMissingValues(frequency, aggregationType);
+        OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(new GregorianCalendar(), gathering, ObsCharacteristics.ORDERED);
         boolean t0 = cursor.next();
         while (t0) {
             String[] dimValues = cursor.dimValues;
@@ -104,7 +107,8 @@ public final class DbUtil {
 
     @Nonnull
     public static <T extends Exception> DbSeries getSeriesWithData(@Nonnull SeriesWithDataCursor<T> cursor, @Nonnull DbSetId ref, @Nonnull TsFrequency frequency, @Nonnull TsAggregationType aggregationType) throws T {
-        OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(frequency, aggregationType, false, true, new GregorianCalendar());
+        ObsGathering gathering = ObsGathering.includingMissingValues(frequency, aggregationType);
+        OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(new GregorianCalendar(), gathering, ObsCharacteristics.ORDERED);
         boolean t0 = cursor.next();
         if (t0) {
             Date latestPeriod = cursor.period;

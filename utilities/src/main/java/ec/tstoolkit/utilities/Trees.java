@@ -18,13 +18,17 @@ package ec.tstoolkit.utilities;
 
 import com.google.common.collect.Iterators;
 import com.google.common.collect.UnmodifiableIterator;
+import java.io.PrintStream;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Stack;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 /**
@@ -80,6 +84,22 @@ public final class Trees {
             @Nonnull T root,
             @Nonnull Function<? super T, ? extends Stream<? extends T>> children) {
         return StreamSupport.stream(depthFirstIterable(root, children).spliterator(), false);
+    }
+
+    @Nonnull
+    public static <T> void prettyPrint(
+            @Nonnull T root,
+            @Nonnull Function<? super T, ? extends Stream<? extends T>> children,
+            @Nonnegative int maxLevel,
+            @Nonnull PrintStream printStream,
+            @Nonnull Function<? super T, ? extends CharSequence> toString) {
+        printStream.println(toString.apply(root));
+        List<?> list = children.apply(root).collect(Collectors.toList());
+        if (maxLevel > 0) {
+            for (int i = 0; i < list.size(); i++) {
+                prettyPrint((T) list.get(i), children, maxLevel - 1, printStream, toString, "", i == list.size() - 1);
+            }
+        }
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
@@ -147,6 +167,31 @@ public final class Trees {
                     return result;
                 }
             };
+        }
+    }
+
+    private static <T> void prettyPrint(
+            @Nonnull T item,
+            @Nonnull Function<? super T, ? extends Stream<? extends T>> children,
+            @Nonnegative int maxLevel,
+            @Nonnull PrintStream printStream,
+            @Nonnull Function<? super T, ? extends CharSequence> toString,
+            @Nonnull String prefix,
+            boolean last) {
+        printStream.append(prefix);
+        if (last) {
+            printStream.append("`-");
+            prefix += "   ";
+        } else {
+            printStream.append("|-");
+            prefix += "|  ";
+        }
+        printStream.println(toString.apply(item));
+        if (maxLevel > 0) {
+            List<?> list = children.apply(item).collect(Collectors.toList());
+            for (int i = 0; i < list.size(); i++) {
+                prettyPrint((T) list.get(i), children, maxLevel - 1, printStream, toString, prefix, i == list.size() - 1);
+            }
         }
     }
     //</editor-fold>

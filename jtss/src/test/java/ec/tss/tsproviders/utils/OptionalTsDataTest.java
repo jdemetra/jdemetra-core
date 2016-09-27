@@ -46,13 +46,13 @@ import java.time.LocalDate;
 import static java.util.EnumSet.complementOf;
 import java.util.function.BiFunction;
 import static ec.tss.tsproviders.utils.OptionalTsData.builderByDate;
-import static ec.tss.tsproviders.utils.OptionalTsData.absent;
 import static ec.tss.tsproviders.utils.OptionalTsData.builderByLocalDate;
-import static ec.tss.tsproviders.utils.OptionalTsData.present;
 import static ec.tstoolkit.timeseries.TsAggregationType.None;
 import static java.util.EnumSet.allOf;
-import static java.util.EnumSet.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static ec.tss.tsproviders.utils.OptionalTsData.absent;
+import static ec.tss.tsproviders.utils.OptionalTsData.present;
+import static java.util.EnumSet.of;
 
 /**
  *
@@ -101,8 +101,8 @@ public class OptionalTsDataTest {
     public void testBuilderByDate() {
         CustomFactory<Date> factory = new CustomFactory<Date>() {
             @Override
-            public Builder2<Date> builderOf(TsFrequency freq, TsAggregationType aggregation, boolean skipMissingValues) {
-                return builderByDate(freq, aggregation, skipMissingValues, false, new GregorianCalendar());
+            public Builder2<Date> builderOf(ObsGathering gathering) {
+                return builderByDate(new GregorianCalendar(), gathering);
             }
 
             @Override
@@ -119,8 +119,8 @@ public class OptionalTsDataTest {
     public void testBuilderByLocalDate() {
         CustomFactory<LocalDate> factory = new CustomFactory<LocalDate>() {
             @Override
-            public Builder2<LocalDate> builderOf(TsFrequency freq, TsAggregationType aggregation, boolean skipMissingValues) {
-                return builderByLocalDate(freq, aggregation, skipMissingValues, false);
+            public Builder2<LocalDate> builderOf(ObsGathering gathering) {
+                return builderByLocalDate(gathering);
             }
 
             @Override
@@ -291,7 +291,14 @@ public class OptionalTsDataTest {
 
     private interface CustomFactory<T> {
 
-        Builder2<T> builderOf(TsFrequency freq, TsAggregationType aggregation, boolean skipMissingValues);
+        Builder2<T> builderOf(ObsGathering gathering);
+
+        default Builder2<T> builderOf(TsFrequency freq, TsAggregationType aggregation, boolean skipMissingValues) {
+            ObsGathering gathering = skipMissingValues
+                    ? ObsGathering.excludingMissingValues(freq, aggregation)
+                    : ObsGathering.includingMissingValues(freq, aggregation);
+            return builderOf(gathering);
+        }
 
         T dateOf(int year, int month, int dayOfMonth);
     }

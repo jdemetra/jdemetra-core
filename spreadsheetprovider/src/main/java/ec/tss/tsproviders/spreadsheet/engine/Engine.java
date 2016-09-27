@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableList;
 import ec.tss.tsproviders.spreadsheet.facade.Book;
 import ec.tss.tsproviders.spreadsheet.facade.Sheet;
 import ec.tss.tsproviders.utils.DataFormat;
+import ec.tss.tsproviders.utils.ObsGathering;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tss.tsproviders.utils.Parsers;
 import ec.tstoolkit.design.VisibleForTesting;
@@ -129,7 +130,10 @@ abstract class Engine {
 
         ImmutableList.Builder<SpreadSheetSeries> list = ImmutableList.builder();
 
-        OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(frequency, aggregationType, clean, false, new GregorianCalendar());
+        ObsGathering gathering = clean
+                ? ObsGathering.excludingMissingValues(frequency, aggregationType)
+                : ObsGathering.includingMissingValues(frequency, aggregationType);
+        OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(new GregorianCalendar(), gathering);
         for (int columnIdx = 0; columnIdx < names.size(); columnIdx++) {
             for (int rowIdx = 0; rowIdx < dates.size(); rowIdx++) {
                 Number value = toNumber.parse(sheet, rowIdx + FIRST_DATA_ROW_IDX, columnIdx + FIRST_DATA_COL_IDX);
