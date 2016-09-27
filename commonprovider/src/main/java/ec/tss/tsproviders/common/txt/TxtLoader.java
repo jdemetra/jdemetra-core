@@ -22,6 +22,7 @@ import ec.tss.tsproviders.common.txt.TxtBean.Delimiter;
 import ec.tss.tsproviders.common.txt.TxtBean.TextQualifier;
 import ec.tss.tsproviders.utils.DataFormat;
 import ec.tss.tsproviders.utils.IParser;
+import ec.tss.tsproviders.utils.ObsGathering;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tss.tsproviders.utils.Parsers;
 import java.io.File;
@@ -73,8 +74,11 @@ final class TxtLoader {
         while ((line = reader.readNext()) != null) {
             if (nbrRows == 0) {
                 titles = bean.headers ? line : generateHeaders(line.length);
+                ObsGathering gathering = bean.cleanMissing
+                        ? ObsGathering.excludingMissingValues(bean.frequency, bean.aggregationType)
+                        : ObsGathering.includingMissingValues(bean.frequency, bean.aggregationType);
                 for (int i = 1; i < titles.length; i++) {
-                    dataCollectors.add(OptionalTsData.builderByDate(bean.frequency, bean.aggregationType, false, false, cal));
+                    dataCollectors.add(OptionalTsData.builderByDate(cal, gathering));
                 }
             }
             if (!(nbrRows == 0 && bean.headers)) {

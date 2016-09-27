@@ -18,11 +18,11 @@ package ec.tss.tsproviders.sdmx.engine;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
-import static ec.tss.tsproviders.sdmx.engine.FluentDom.asStream;
 import ec.tss.tsproviders.sdmx.model.SdmxItem;
 import ec.tss.tsproviders.sdmx.model.SdmxSeries;
 import ec.tss.tsproviders.sdmx.model.SdmxSource;
 import ec.tss.tsproviders.utils.DataFormat;
+import ec.tss.tsproviders.utils.ObsGathering;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tss.tsproviders.utils.Parsers;
 import static ec.tstoolkit.utilities.GuavaCollectors.toImmutableList;
@@ -36,6 +36,7 @@ import java.util.stream.Stream;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import static ec.tss.tsproviders.sdmx.engine.FluentDom.asStream;
 
 /**
  *
@@ -82,7 +83,8 @@ public class GuessingCompactFactory extends AbstractDocumentFactory {
     private static OptionalTsData getData(Node seriesNode, TimeFormat timeFormat, Calendar cal) {
         Parsers.Parser<Date> toPeriod = timeFormat.getParser();
         Parsers.Parser<Number> toValue = DEFAULT_DATA_FORMAT.numberParser();
-        return OptionalTsData.builderByDate(timeFormat.getFrequency(), timeFormat.getAggregationType(), false, false, cal)
+        ObsGathering gathering = ObsGathering.includingMissingValues(timeFormat.getFrequency(), timeFormat.getAggregationType());
+        return OptionalTsData.builderByDate(cal, gathering)
                 .addAll(lookupObservations(seriesNode), o -> getPeriod(o, toPeriod), o -> getValue(o, toValue))
                 .build();
     }
