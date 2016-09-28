@@ -27,14 +27,13 @@ import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignT
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.VERTICAL;
 import ec.tss.tsproviders.utils.IParser;
 import ec.tss.tsproviders.utils.MultiLineNameUtil;
+import ec.tss.tsproviders.utils.ObsGathering;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tstoolkit.data.Table;
 import ec.tstoolkit.design.VisibleForTesting;
 import ec.tstoolkit.maths.matrices.Matrix;
-import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import ec.tstoolkit.timeseries.simplets.TsDataTableInfo;
-import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.util.spreadsheet.Book;
 import ec.util.spreadsheet.Cell;
 import ec.util.spreadsheet.Sheet;
@@ -257,7 +256,7 @@ public abstract class SpreadSheetFactory {
 
             ImmutableList.Builder<SpreadSheetSeries> list = ImmutableList.builder();
 
-            OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(context.frequency, context.aggregationType, context.clean, false, context.cal);
+            OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(context.cal, context.gathering);
             for (int columnIdx = 0; columnIdx < names.size(); columnIdx++) {
                 for (int rowIdx = dates.getMinIndex(); rowIdx <= dates.getMaxIndex(); rowIdx++) {
                     Number value = context.toNumber.parse(sheet, rowIdx, columnIdx + FIRST_DATA_COL_IDX);
@@ -277,18 +276,14 @@ public abstract class SpreadSheetFactory {
         public final CellParser<String> toName;
         public final CellParser<Date> toDate;
         public final CellParser<Number> toNumber;
-        public final TsFrequency frequency;
-        public final TsAggregationType aggregationType;
-        public final boolean clean;
+        public final ObsGathering gathering;
         public final Calendar cal;
 
-        public Context(CellParser<String> toName, CellParser<Date> toDate, CellParser<Number> toNumber, TsFrequency frequency, TsAggregationType aggregationType, boolean clean) {
+        public Context(CellParser<String> toName, CellParser<Date> toDate, CellParser<Number> toNumber, ObsGathering gathering) {
             this.toName = toName;
             this.toDate = toDate;
             this.toNumber = toNumber;
-            this.frequency = frequency;
-            this.aggregationType = aggregationType;
-            this.clean = clean;
+            this.gathering = gathering;
             this.cal = new GregorianCalendar();
         }
 
@@ -297,7 +292,7 @@ public abstract class SpreadSheetFactory {
                     CellParser.onStringType(),
                     CellParser.onDateType().or(CellParser.fromParser(options.getDataFormat().dateParser())),
                     CellParser.onNumberType().or(CellParser.fromParser(options.getDataFormat().numberParser())),
-                    options.getFrequency(), options.getAggregationType(), options.isCleanMissing());
+                    options.getObsGathering());
         }
     }
 

@@ -43,6 +43,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
 import ec.tstoolkit.timeseries.simplets.ObsList;
+import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * An immutable object that may contain some time series data. Each instance of
@@ -107,38 +109,29 @@ public abstract class OptionalTsData {
     /**
      * Creates an OptionalTsData builder that collects {@link Date} values.
      *
-     * @param freq non-null frequency
-     * @param aggregation non-null aggregation type
-     * @param skipMissingValues specifies if missing values are to be skipped
-     * @param preSorted specifies if observations are already sorted
-     * @param calendar non-null resource used to handle dates quirks such as
+     * @param resource non-null resource used to handle dates quirks such as
      * time zones
+     * @param gathering non-null observation collection parameters
+     * @param characteristics non-null observations characteristics
      * @return non-null builder
      * @since 2.2.0
      */
     @Nonnull
-    public static Builder2<Date> builderByDate(
-            @Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation,
-            boolean skipMissingValues, boolean preSorted,
-            @Nonnull Calendar calendar) {
-        return builder(freq, aggregation, skipMissingValues, preSorted, Date::getTime, (f, p) -> getIdFromTimeInMillis(calendar, f, p));
+    public static Builder2<Date> builderByDate(@Nonnull Calendar resource, @Nonnull ObsGathering gathering, @Nonnull ObsCharacteristics... characteristics) {
+        return builder(gathering, toEnumSet(characteristics), Date::getTime, (f, p) -> getIdFromTimeInMillis(resource, f, p));
     }
 
     /**
      * Creates an OptionalTsData builder that collects {@link LocalDate} values.
      *
-     * @param freq non-null frequency
-     * @param aggregation non-null aggregation type
-     * @param skipMissingValues specifies if missing values are to be skipped
-     * @param preSorted specifies if observations are already sorted
+     * @param gathering non-null observation collection parameters
+     * @param characteristics non-null observations characteristics
      * @return non-null builder
      * @since 2.2.0
      */
     @Nonnull
-    public static Builder2<LocalDate> builderByLocalDate(
-            @Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation,
-            boolean skipMissingValues, boolean preSorted) {
-        return builder(freq, aggregation, skipMissingValues, preSorted, OptionalTsData::getYearMonthDay, OptionalTsData::getIdFromYearMonthDay);
+    public static Builder2<LocalDate> builderByLocalDate(@Nonnull ObsGathering gathering, @Nonnull ObsCharacteristics... characteristics) {
+        return builder(gathering, toEnumSet(characteristics), OptionalTsData::getYearMonthDay, OptionalTsData::getIdFromYearMonthDay);
     }
     //</editor-fold>
 
@@ -476,31 +469,31 @@ public abstract class OptionalTsData {
     }
 
     private static <T> Builder2<T> builder(
-            TsFrequency freq, TsAggregationType aggr,
-            boolean skip, boolean preSorted,
+            ObsGathering gathering, @Nonnull Set<ObsCharacteristics> characteristics,
             ToLongFunction<T> periodFunc, ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc) {
-        if (freq == TsFrequency.Undefined) {
-            if (aggr != TsAggregationType.None) {
+        boolean ordered = characteristics.contains(ObsCharacteristics.ORDERED);
+        if (gathering.getFrequency() == TsFrequency.Undefined) {
+            if (gathering.getAggregationType() != TsAggregationType.None) {
                 return new UndefinedWithAggregation<>();
             }
             return new BuilderSupport<>(
-                    ObsList.newLongObsList(preSorted, tsPeriodIdFunc),
+                    ObsList.newLongObsList(ordered, tsPeriodIdFunc),
                     periodFunc,
-                    skip,
+                    gathering.isSkipMissingValues(),
                     o -> makeFromUnknownFrequency(o));
         }
-        if (aggr != TsAggregationType.None) {
+        if (gathering.getAggregationType() != TsAggregationType.None) {
             return new BuilderSupport<>(
-                    ObsList.newLongObsList(preSorted, tsPeriodIdFunc),
+                    ObsList.newLongObsList(ordered, tsPeriodIdFunc),
                     periodFunc,
-                    skip,
-                    o -> makeWithAggregation(o, freq, aggr));
+                    gathering.isSkipMissingValues(),
+                    o -> makeWithAggregation(o, gathering.getFrequency(), gathering.getAggregationType()));
         }
         return new BuilderSupport<>(
-                ObsList.newLongObsList(preSorted, tsPeriodIdFunc),
+                ObsList.newLongObsList(ordered, tsPeriodIdFunc),
                 periodFunc,
-                skip,
-                o -> makeWithoutAggregation(o, freq));
+                gathering.isSkipMissingValues(),
+                o -> makeWithoutAggregation(o, gathering.getFrequency()));
     }
 
     private static OptionalTsData makeFromUnknownFrequency(ObsList obs) {
@@ -558,6 +551,17 @@ public abstract class OptionalTsData {
     private static int calcTsPeriodId(int freq, int year, int month) {
         return (year - 1970) * freq + month / (12 / freq);
     }
+
+    private static EnumSet<ObsCharacteristics> toEnumSet(ObsCharacteristics[] items) {
+        switch (items.length) {
+            case 0:
+                return EnumSet.noneOf(ObsCharacteristics.class);
+            case 1:
+                return EnumSet.of(items[0]);
+            default:
+                return EnumSet.copyOf(Arrays.asList(items));
+        }
+    }
     //</editor-fold>
 
     @Deprecated
@@ -575,7 +579,10 @@ public abstract class OptionalTsData {
         }
 
         public Builder(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean skipMissingValues) {
-            this.delegate = builderByDate(freq, aggregation, skipMissingValues, false, new GregorianCalendar());
+            ObsGathering gathering = skipMissingValues
+                    ? ObsGathering.excludingMissingValues(freq, aggregation)
+                    : ObsGathering.includingMissingValues(freq, aggregation);
+            this.delegate = builderByDate(new GregorianCalendar(), gathering);
         }
 
         @Nonnull

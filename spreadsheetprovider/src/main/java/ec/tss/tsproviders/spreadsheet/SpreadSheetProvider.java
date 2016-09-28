@@ -90,7 +90,10 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
         Book.Factory factory = getFactoryByFile(file);
         if (factory != null) {
             try (Book book = factory.load(file)) {
-                TsImportOptions options = TsImportOptions.create(bean.getDataFormat(), bean.getFrequency(), bean.getAggregationType(), bean.isCleanMissing());
+                ObsGathering gathering = bean.isCleanMissing()
+                        ? ObsGathering.excludingMissingValues(bean.getFrequency(), bean.getAggregationType())
+                        : ObsGathering.includingMissingValues(bean.getFrequency(), bean.getAggregationType());
+                TsImportOptions options = TsImportOptions.create(bean.getDataFormat(), gathering);
                 return SpreadSheetFactory.getDefault().toSource(book, options);
             }
         }

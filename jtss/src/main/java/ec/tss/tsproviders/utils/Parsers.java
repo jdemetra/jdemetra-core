@@ -18,6 +18,7 @@ package ec.tss.tsproviders.utils;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Splitter;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import ec.tstoolkit.design.UtilityClass;
@@ -28,6 +29,7 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -244,6 +246,16 @@ public final class Parsers {
         };
     }
 
+    @Nonnull
+    public static Parser<List<String>> onSplitter(@Nonnull Splitter splitter) {
+        return new FailSafeParser<List<String>>() {
+            @Override
+            protected List<String> doParse(CharSequence input) throws Exception {
+                return splitter.splitToList(input);
+            }
+        };
+    }
+
     public static abstract class Parser<T> implements IParser<T> {
 
         /**
@@ -327,8 +339,8 @@ public final class Parsers {
             return tmp.equalsIgnoreCase("true")
                     ? Boolean.TRUE
                     : tmp.equalsIgnoreCase("false")
-                            ? Boolean.FALSE
-                            : null;
+                    ? Boolean.FALSE
+                    : null;
         }
     };
     private static final Parser<Charset> CHARSET_PARSER = new FailSafeParser<Charset>() {

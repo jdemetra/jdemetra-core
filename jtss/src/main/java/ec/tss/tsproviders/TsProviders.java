@@ -25,10 +25,16 @@ import ec.tss.TsFactory;
 import ec.tss.TsInformationType;
 import ec.tss.TsMoniker;
 import ec.tstoolkit.utilities.Files2;
+import ec.tstoolkit.utilities.Trees;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.UncheckedIOException;
 import java.util.AbstractList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 /**
@@ -283,5 +289,33 @@ public final class TsProviders {
                 return Optional.of(ts);
         }
         throw new RuntimeException("Not implemented");
+    }
+
+    public static void prettyPrintTree(
+            @Nonnull IDataSourceProvider provider,
+            @Nonnull DataSource dataSource,
+            @Nonnegative int maxLevel,
+            @Nonnull PrintStream printStream,
+            boolean displayName) throws IOException {
+
+        Function<Object, String> toString = displayName
+                ? o -> o instanceof DataSource ? provider.getDisplayName((DataSource) o) : " " + provider.getDisplayNodeName((DataSet) o)
+                : o -> o instanceof DataSource ? provider.toMoniker((DataSource) o).getId() : " " + provider.toMoniker((DataSet) o).getId();
+
+        Function<Object, Stream<? extends Object>> children = o -> {
+            try {
+                return o instanceof DataSource
+                        ? provider.children((DataSource) o).stream()
+                        : ((DataSet) o).getKind() == DataSet.Kind.COLLECTION ? provider.children((DataSet) o).stream() : Stream.empty();
+            } catch (IOException ex) {
+                throw new UncheckedIOException(ex);
+            }
+        };
+
+        try {
+            Trees.prettyPrint((Object) dataSource, children, maxLevel, printStream, toString);
+        } catch (UncheckedIOException ex) {
+            throw ex.getCause();
+        }
     }
 }

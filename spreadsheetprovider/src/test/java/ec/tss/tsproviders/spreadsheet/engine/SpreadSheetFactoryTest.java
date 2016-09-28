@@ -40,6 +40,7 @@ import org.junit.Test;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollectionAssert.assertThat;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory.DefaultImpl.parseCollection;
 import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.data;
+import ec.tss.tsproviders.utils.ObsGathering;
 import static ec.tstoolkit.timeseries.TsAggregationType.None;
 import static ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly;
 import static ec.tstoolkit.timeseries.simplets.TsFrequency.Undefined;
@@ -57,7 +58,7 @@ public class SpreadSheetFactoryTest {
 
     @Test
     public void testParseCollectionHorizontal() {
-        Context context = new Context(onStringType(), onDateType(), onNumberType(), Undefined, None, true);
+        Context context = new Context(onStringType(), onDateType(), onNumberType(), ObsGathering.excludingMissingValues(Undefined, None));
 
         Object[][] basic = {
             {null, jan2010, feb2010, mar2010},
@@ -109,7 +110,7 @@ public class SpreadSheetFactoryTest {
 
     @Test
     public void testParseCollectionVertical() {
-        Context context = new Context(onStringType(), onDateType(), onNumberType(), Undefined, None, true);
+        Context context = new Context(onStringType(), onDateType(), onNumberType(), ObsGathering.excludingMissingValues(Undefined, None));
 
         Object[][] basic = {
             {null, "S1"},
