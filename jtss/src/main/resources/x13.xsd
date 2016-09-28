@@ -377,8 +377,9 @@ and open the template in the editor.
                             <xs:element name="CriticalValue" minOccurs="0">
                                 <xs:annotation>
                                     <xs:documentation>
-                                        Tramo code: VA. It is used to set the critical value for outlier
-                                        detection
+                                        It is used to set the critical value for outlier
+                                        detection. If defined, the critical values of the single outlier specification
+                                        are unused.
                                     </xs:documentation>
                                 </xs:annotation>
                                 <xs:simpleType>

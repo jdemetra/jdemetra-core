@@ -16,17 +16,24 @@
  */
 package ec.demetra.xml.sa.x13;
 
-import ec.demetra.xml.sa.tramoseats.*;
+import ec.tss.xml.IXmlMarshaller;
+import ec.tss.xml.InPlaceXmlUnmarshaller;
+import ec.tstoolkit.modelling.arima.x13.MovingHolidaySpec;
+import ec.tstoolkit.modelling.arima.x13.RegressionSpec;
+import ec.tstoolkit.modelling.arima.x13.TradingDaysSpec;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * <p>Java class for CalendarSpecType complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
+ * Java class for CalendarSpecType complex type.
+ *
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ *
  * <pre>
  * &lt;complexType name="CalendarSpecType"&gt;
  *   &lt;complexContent&gt;
@@ -39,8 +46,8 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CalendarSpecType", propOrder = {
@@ -48,8 +55,7 @@ import javax.xml.bind.annotation.XmlType;
     "easter"
 })
 public class XmlCalendarSpec
-    extends ec.demetra.xml.modelling.XmlCalendarSpec
-{
+        extends ec.demetra.xml.modelling.XmlCalendarSpec {
 
     @XmlElement(name = "TradingDays")
     protected XmlTradingDaysSpec tradingDays;
@@ -58,11 +64,9 @@ public class XmlCalendarSpec
 
     /**
      * Gets the value of the tradingDays property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XmlTradingDaysSpec }
-     *     
+     *
+     * @return possible object is {@link XmlTradingDaysSpec }
+     *
      */
     public XmlTradingDaysSpec getTradingDays() {
         return tradingDays;
@@ -70,11 +74,9 @@ public class XmlCalendarSpec
 
     /**
      * Sets the value of the tradingDays property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XmlTradingDaysSpec }
-     *     
+     *
+     * @param value allowed object is {@link XmlTradingDaysSpec }
+     *
      */
     public void setTradingDays(XmlTradingDaysSpec value) {
         this.tradingDays = value;
@@ -82,11 +84,9 @@ public class XmlCalendarSpec
 
     /**
      * Gets the value of the easter property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XmlEasterSpec }
-     *     
+     *
+     * @return possible object is {@link XmlEasterSpec }
+     *
      */
     public XmlEasterSpec getEaster() {
         return easter;
@@ -94,14 +94,47 @@ public class XmlCalendarSpec
 
     /**
      * Sets the value of the easter property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XmlEasterSpec }
-     *     
+     *
+     * @param value allowed object is {@link XmlEasterSpec }
+     *
      */
     public void setEaster(XmlEasterSpec value) {
         this.easter = value;
     }
 
+    public static final IXmlMarshaller<XmlCalendarSpec, RegressionSpec> MARSHALLER = (RegressionSpec v) -> {
+        if (!v.isUsed()) {
+            return null;
+        }
+        MovingHolidaySpec ee = v.getEaster();
+        TradingDaysSpec tde = v.getTradingDays();
+        if (! tde.isUsed() && ee == null){
+            return null;
+        }
+ 
+        XmlCalendarSpec xml = new XmlCalendarSpec();
+        if (tde.isUsed()) {
+            XmlTradingDaysSpec xtd = new XmlTradingDaysSpec();
+            XmlTradingDaysSpec.MARSHALLER.marshal(tde, xtd);
+            xml.tradingDays = xtd;
+        }
+        if (ee != null) {
+            XmlEasterSpec xe = new XmlEasterSpec();
+            XmlEasterSpec.MARSHALLER.marshal(ee, xe);
+            xml.easter = xe;
+        }
+        return xml;
+    };
+
+    public static final InPlaceXmlUnmarshaller<XmlCalendarSpec, RegressionSpec> UNMARSHALLER = (XmlCalendarSpec xml, RegressionSpec v) -> {
+        if (xml.tradingDays != null){
+            XmlTradingDaysSpec.UNMARSHALLER.unmarshal(xml.tradingDays, v.getTradingDays());
+        }
+        if (xml.easter != null){
+            MovingHolidaySpec mh=new MovingHolidaySpec();
+            XmlEasterSpec.UNMARSHALLER.unmarshal(xml.easter, mh);
+            v.setMovingHolidays(new MovingHolidaySpec[]{mh});
+        }
+        return true;
+    };
 }
