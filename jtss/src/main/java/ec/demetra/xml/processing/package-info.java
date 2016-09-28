@@ -14,21 +14,15 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.demetra.xml.calendars;
 
-import ec.tstoolkit.timeseries.calendars.GregorianCalendarManager;
-import ec.tstoolkit.timeseries.calendars.IGregorianCalendarProvider;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+@XmlSchema(namespace = Constants.CORE, elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
+        xmlns = { 
+            @XmlNs(prefix = "tss", namespaceURI = Constants.CORE), 
+            @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema") 
+        })
+package ec.demetra.xml.processing;
 
-/**
- *
- * @author Jean Palate
- * @param <V>
- * @param <X>
- */
-public abstract class CalendarAdapter<X extends XmlCalendar, V extends IGregorianCalendarProvider> extends XmlAdapter<X, V>{
-    public abstract Class<V> getValueType();
-    public abstract Class<X> getXmlType();
-    
-    public abstract V unmarshal(X x, GregorianCalendarManager mgr);
-}
+import ec.demetra.xml.Constants;
+import javax.xml.bind.annotation.XmlNs;
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlSchema;

@@ -295,7 +295,7 @@ public class XmlSeatsSpec
         if (xml.sMod != null)
             v.setSeasBoundary(xml.sMod);
         if (xml.stSMod != null)
-            v.setSeasBoundary1(xml.sMod);
+            v.setSeasBoundary1(xml.stSMod);
         if (xml.xl != null)
             v.setXlBoundary(xml.xl);
         if (xml.forceModel != null)

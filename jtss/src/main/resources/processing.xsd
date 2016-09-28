@@ -48,8 +48,14 @@ limitations under the Licence.
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="Variables" type="tss:TsVariablesType"/>
-            <xs:element name="Calendars" type="tss:CalendarsType"/>
+            <xs:element name="Variables" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Group" type="tss:TsVariablesType" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Calendars" type="tss:CalendarsType" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -98,7 +104,7 @@ limitations under the Licence.
             <xs:element name="Integers" type="tss:Ints"/>
             <xs:element name="Doubles" type="tss:Doubles"/>
             <xs:element name="Booleans" type="tss:Booleans"/>
-            <xs:element name="Strings" type="xs:NMTOKENS"/>
+            <xs:element name="Strings" type="tss:Tokens"/>
             <xs:element name="Subset" type="tss:InformationSetType"/>
             <xs:element name="TsData" type="tss:TsDataType"/>
             <xs:element name="Ts" type="tss:TsType"/>

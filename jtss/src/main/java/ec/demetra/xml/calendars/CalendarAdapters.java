@@ -17,8 +17,8 @@
 package ec.demetra.xml.calendars;
 
 import ec.tstoolkit.design.GlobalServiceProvider;
+import ec.tstoolkit.timeseries.calendars.GregorianCalendarManager;
 import ec.tstoolkit.timeseries.calendars.IGregorianCalendarProvider;
-import ec.tstoolkit.timeseries.calendars.ISpecialDay;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -32,27 +32,29 @@ import org.openide.util.Lookup;
 @GlobalServiceProvider
 public class CalendarAdapters {
 
-    private static final AtomicReference<CalendarAdapters> defadapters= new AtomicReference<>();
-
+    private static final AtomicReference<CalendarAdapters> defadapters = new AtomicReference<>();
 
     public static final CalendarAdapters getDefault() {
         defadapters.compareAndSet(null, make());
         return defadapters.get();
     }
 
+    public CalendarAdapters() {
+        load();
+    }
+
     public static final void setDefault(CalendarAdapters adapters) {
         defadapters.set(adapters);
     }
-    
-    private static CalendarAdapters make(){
-        CalendarAdapters adapters=new CalendarAdapters();
-        adapters.load();
+
+    private static CalendarAdapters make() {
+        CalendarAdapters adapters = new CalendarAdapters();
         return adapters;
     }
 
     private final List<CalendarAdapter> adapters = new ArrayList<>();
 
-    public void load() {
+    private void load() {
         Lookup.Result<CalendarAdapter> all = Lookup.getDefault().lookupResult(CalendarAdapter.class);
         adapters.addAll(all.allInstances());
     }
@@ -66,6 +68,19 @@ public class CalendarAdapters {
             if (adapter.getXmlType().isInstance(xvar)) {
                 try {
                     return (IGregorianCalendarProvider) adapter.unmarshal(xvar);
+                } catch (Exception ex) {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
+    public IGregorianCalendarProvider unmarshal(XmlCalendar xvar, GregorianCalendarManager mgr) {
+        for (CalendarAdapter adapter : adapters) {
+            if (adapter.getXmlType().isInstance(xvar)) {
+                try {
+                    return (IGregorianCalendarProvider) adapter.unmarshal(xvar, mgr);
                 } catch (Exception ex) {
                     return null;
                 }

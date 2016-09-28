@@ -39,6 +39,8 @@ import ec.tstoolkit.ssf.ucarima.SsfUcarima;
 import ec.tstoolkit.ucarima.UcarimaModel;
 import ec.tstoolkit.ucarima.estimation.BurmanEstimatesC;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.BeforeClass;
 
@@ -244,18 +246,18 @@ public class AnsleyFilterTest {
         ArimaModel wn = new ArimaModel(.5);
         AnsleyFilter filter = new AnsleyFilter();
         filter.initialize(wn, 10);
-        System.out.println(filter.getLogDeterminant());
-        System.out.println(filter.getCholeskyFactor());
         DataBlock in = new DataBlock(10);
         in.set(i -> i + 1);
         DataBlock out = new DataBlock(10);
         filter.filter(in, out);
-        System.out.println(out);
-        filter.setOptimizedForWhiteNoise(false);
-        filter.initialize(wn, 10);
-        System.out.println(filter.getLogDeterminant());
-        System.out.println(filter.getCholeskyFactor());
-        filter.filter(in, out);
-        System.out.println(out);
+        AnsleyFilter filter2 = new AnsleyFilter();
+        DataBlock out2 = new DataBlock(10);
+        filter2.setOptimizedForWhiteNoise(false);
+        filter2.initialize(wn, 10);
+        filter2.filter(in, out2);
+        assertTrue(filter.getCholeskyFactor().distance(filter2.getCholeskyFactor())<1.e-9);
+        assertTrue(out.distance(out2)<1e-9);
+        assertEquals(filter.getLogDeterminant(), filter2.getLogDeterminant(), 1e-9);
+        
     }
 }

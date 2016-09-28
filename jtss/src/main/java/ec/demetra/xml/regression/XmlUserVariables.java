@@ -5,6 +5,7 @@
  */
 package ec.demetra.xml.regression;
 
+import ec.demetra.xml.core.XmlTsDataList;
 import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.TsVariableDescriptor.UserComponentType;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -37,6 +38,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "UserVariablesType", propOrder = {
+    "data",
     "variables"
 })
 public abstract class XmlUserVariables
@@ -44,18 +46,34 @@ public abstract class XmlUserVariables
 {
 
     @XmlList
-    @XmlElement(name = "Variables", required = true)
-    @XmlSchemaType(name = "IDREFS")
+    @XmlElement(name = "Variables")
+    @XmlSchemaType(name = "NMTOKENS")
     protected String[] variables;
+    @XmlElement(name = "Data")
+    private XmlTsDataList data;
     @XmlAttribute(name = "effect", required = true)
     protected UserComponentType effect;
+
+    public String[] getVariables() {
+        return this.variables;
+    }
 
     public void setVariables(String[] value){
         variables=value;
     }
  
-    public String[] getVariables() {
-        return this.variables;
+    /**
+     * @return the data
+     */
+    public XmlTsDataList getData() {
+        return data;
+    }
+
+    /**
+     * @param data the data to set
+     */
+    public void setData(XmlTsDataList data) {
+        this.data = data;
     }
 
     /**

@@ -594,7 +594,8 @@ and open the template in the editor.
                     <xs:element name="Context" type="tss:ProcessingContextType"/>
                     <xs:element name="OutputFilter" type="xs:NMTOKENS"/>
                 </xs:sequence>
-            </xs:extension>
+         <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
+           </xs:extension>
         </xs:complexContent>
     </xs:complexType>
 
@@ -608,6 +609,8 @@ and open the template in the editor.
             <xs:element name="Context" type="tss:ProcessingContextType"/>
             <xs:element name="OutputFilter" type="xs:NMTOKENS"/>
         </xs:sequence>
+        <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="parallelProcessing" type="xs:boolean" use="optional" default="true"/>
     </xs:complexType>
 
     <xs:element name="RegArimaSpecification" type="x13:RegArimaSpecificationType"/>
@@ -683,6 +686,7 @@ and open the template in the editor.
                     <xs:element name="Context" type="tss:ProcessingContextType"/>
                     <xs:element name="OutputFilter" type="xs:NMTOKENS"/>
                 </xs:sequence>
+        <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -697,6 +701,8 @@ and open the template in the editor.
             <xs:element name="Context" type="tss:ProcessingContextType"/>
             <xs:element name="OutputFilter" type="xs:NMTOKENS"/>
         </xs:sequence>
+        <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="parallelProcessing" type="xs:boolean" use="optional" default="true"/>
     </xs:complexType>
 
     <xs:element name="TransformationSpec" type="x13:TransformationSpecType"/>

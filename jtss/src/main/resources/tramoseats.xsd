@@ -453,37 +453,37 @@ and open the template in the editor.
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
-                  <xs:element name="SMod" minOccurs="0" default="0.8">
-                    <xs:annotation>
-                      <xs:documentation>
-                        Cutting point for the modulus of a Seasonal AR root.
-                        If modulus lesser than k, it goes to the irregular component, else it goes to the
-                        to the seasonal component.
-                      </xs:documentation>
-                    </xs:annotation>
-                    <xs:simpleType>
-                      <xs:restriction base="xs:double">
-                        <xs:minExclusive value="0.0" />
-                        <xs:maxExclusive value="1.0" />
-                      </xs:restriction>
-                    </xs:simpleType>
-                  </xs:element>
-                  <xs:element name="StSMod" minOccurs="0" default="0.8">
-                    <xs:annotation>
-                      <xs:documentation>
-                        Cutting point for the modulus of an AR real root.
-                        If modulus lesser than k it goes to the transitory component, else it goes to the
-                        trend-cycle (positive roots) or to the seasonal component (negative roots).
-                      </xs:documentation>
-                    </xs:annotation>
-                    <xs:simpleType>
-                      <xs:restriction base="xs:double">
-                        <xs:minExclusive value="0.0" />
-                        <xs:maxExclusive value="1.0" />
-                      </xs:restriction>
-                    </xs:simpleType>
-                  </xs:element>
-                  <xs:element name="XL" minOccurs="0" default="0.95">
+                    <xs:element name="SMod" minOccurs="0" default="0.8">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Cutting point for the modulus of a Seasonal AR root.
+                                If modulus lesser than k, it goes to the irregular component, else it goes to the
+                                to the seasonal component.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:double">
+                                <xs:minExclusive value="0.0" />
+                                <xs:maxExclusive value="1.0" />
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="StSMod" minOccurs="0" default="0.8">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Cutting point for the modulus of an AR real root.
+                                If modulus lesser than k it goes to the transitory component, else it goes to the
+                                trend-cycle (positive roots) or to the seasonal component (negative roots).
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:double">
+                                <xs:minExclusive value="0.0" />
+                                <xs:maxExclusive value="1.0" />
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="XL" minOccurs="0" default="0.95">
                         <xs:annotation>
                             <xs:documentation>
                                 Seats code: XL. When the modulus of an estimated root falls in the range
@@ -589,9 +589,10 @@ and open the template in the editor.
         <xs:complexContent>
             <xs:extension base="trs:TramoAtomicRequestType">
                 <xs:sequence>
-                    <xs:element name="Context" type="tss:ProcessingContextType"/>
-                    <xs:element name="OutputFilter" type="xs:NMTOKENS"/>
+                    <xs:element name="Context" type="tss:ProcessingContextType" minOccurs="0"/>
+                    <xs:element name="OutputFilter" type="tss:Tokens"/>
                 </xs:sequence>
+                <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -603,9 +604,11 @@ and open the template in the editor.
         </xs:annotation>
         <xs:sequence>
             <xs:element name="Item" type="trs:TramoAtomicRequestType" maxOccurs="unbounded"/>
-            <xs:element name="Context" type="tss:ProcessingContextType"/>
-            <xs:element name="OutputFilter" type="xs:NMTOKENS"/>
+            <xs:element name="Context" type="tss:ProcessingContextType" minOccurs="0"/>
+            <xs:element name="OutputFilter" type="tss:Tokens"/>
         </xs:sequence>
+        <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="parallelProcessing" type="xs:boolean" use="optional" default="true"/>
     </xs:complexType>
 
     <xs:element name="TramoSpecification" type="trs:TramoSpecificationType"/>
@@ -679,9 +682,10 @@ and open the template in the editor.
         <xs:complexContent>
             <xs:extension base="trs:TramoSeatsAtomicRequestType">
                 <xs:sequence>
-                    <xs:element name="Context" type="tss:ProcessingContextType"/>
-                    <xs:element name="OutputFilter" type="xs:NMTOKENS"/>
+                    <xs:element name="Context" type="tss:ProcessingContextType" minOccurs="0"/>
+                    <xs:element name="OutputFilter" type="tss:Tokens" minOccurs="0"/>
                 </xs:sequence>
+                <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -693,9 +697,11 @@ and open the template in the editor.
         </xs:annotation>
         <xs:sequence>
             <xs:element name="Item" type="trs:TramoSeatsAtomicRequestType" maxOccurs="unbounded"/>
-            <xs:element name="Context" type="tss:ProcessingContextType"/>
-            <xs:element name="OutputFilter" type="xs:NMTOKENS"/>
+            <xs:element name="Context" type="tss:ProcessingContextType" minOccurs="0"/>
+            <xs:element name="OutputFilter" type="tss:Tokens" minOccurs="0"/>
         </xs:sequence>
+        <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="parallelProcessing" type="xs:boolean" use="optional" default="true"/>
     </xs:complexType>
 
     <xs:element name="TransformationSpec" type="trs:TransformationSpecType"/>

@@ -6,6 +6,7 @@
 //
 package ec.demetra.xml.calendars;
 
+import ec.tstoolkit.timeseries.calendars.GregorianCalendarManager;
 import ec.tstoolkit.timeseries.calendars.NationalCalendar;
 import ec.tstoolkit.timeseries.calendars.NationalCalendarProvider;
 import ec.tstoolkit.timeseries.calendars.SpecialDayEvent;
@@ -53,7 +54,7 @@ public class XmlNationalCalendar
         }
 
         @Override
-        public NationalCalendarProvider unmarshal(XmlNationalCalendar v) throws Exception {
+        public NationalCalendarProvider unmarshal(XmlNationalCalendar v) {
             NationalCalendar nc = new NationalCalendar();
             for (XmlSpecialDayEvent s : v.getSpecialDayEvent()) {
                 nc.add(XmlSpecialDayEvent.getAdapter().unmarshal(s));
@@ -62,7 +63,13 @@ public class XmlNationalCalendar
         }
 
         @Override
-        public XmlNationalCalendar marshal(NationalCalendarProvider v) throws Exception {
+        public NationalCalendarProvider unmarshal(XmlNationalCalendar v, GregorianCalendarManager mgr) {
+           return unmarshal(v);
+        }
+        
+
+        @Override
+        public XmlNationalCalendar marshal(NationalCalendarProvider v) {
             XmlNationalCalendar xcal = new XmlNationalCalendar();
 
             for (SpecialDayEvent s : v.events()) {

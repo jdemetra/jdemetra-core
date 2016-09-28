@@ -200,11 +200,15 @@ public class XmlTsData
 
         @Override
         public TsData unmarshal(XmlTsData v) throws Exception {
+            if (v == null)
+                return null;
             return UNMARSHALLER.unmarshal(v);
         }
 
         @Override
         public XmlTsData marshal(TsData v) throws Exception {
+            if (v == null)
+                return null;
             XmlTsData xml = new XmlTsData();
             MARSHALLER.marshal(v, xml);
             return xml;

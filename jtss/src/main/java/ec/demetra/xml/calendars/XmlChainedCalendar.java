@@ -18,12 +18,15 @@ package ec.demetra.xml.calendars;
 
 import ec.tss.xml.XmlDayAdapter;
 import ec.tstoolkit.timeseries.Day;
+import ec.tstoolkit.timeseries.calendars.ChainedGregorianCalendarProvider;
+import ec.tstoolkit.timeseries.calendars.GregorianCalendarManager;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import org.openide.util.lookup.ServiceProvider;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -69,4 +72,43 @@ public class XmlChainedCalendar
         this.calendarBreak = value;
     }
 
+    @ServiceProvider(service = CalendarAdapter.class)
+    public static class Adapter extends CalendarAdapter<XmlChainedCalendar, ChainedGregorianCalendarProvider> {
+
+        @Override
+        public Class<ChainedGregorianCalendarProvider> getValueType() {
+            return ChainedGregorianCalendarProvider.class;
+        }
+
+        @Override
+        public Class<XmlChainedCalendar> getXmlType() {
+            return XmlChainedCalendar.class;
+        }
+
+        @Override
+        public ChainedGregorianCalendarProvider unmarshal(XmlChainedCalendar v){
+            return new ChainedGregorianCalendarProvider(v.startCalendar, v.calendarBreak, v.endCalendar);
+        }
+
+        @Override
+        public ChainedGregorianCalendarProvider unmarshal(XmlChainedCalendar v, GregorianCalendarManager mgr) {
+            return new ChainedGregorianCalendarProvider(mgr, v.startCalendar, v.calendarBreak, v.endCalendar);
+        }
+        
+        @Override
+        public XmlChainedCalendar marshal(ChainedGregorianCalendarProvider v){
+            XmlChainedCalendar xcal=new XmlChainedCalendar();
+            xcal.startCalendar=v.first;
+            xcal.endCalendar=v.second;
+            xcal.calendarBreak=v.breakDay;
+            return xcal;
+        }
+    }
+    
+    private static final Adapter ADAPTER = new Adapter();
+
+    public static Adapter getAdapter() {
+        return ADAPTER;
+    }
+    
 }

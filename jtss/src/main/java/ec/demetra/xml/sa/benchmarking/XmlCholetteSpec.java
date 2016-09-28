@@ -17,16 +17,22 @@
 package ec.demetra.xml.sa.benchmarking;
 
 import ec.demetra.xml.benchmarking.XmlUnivariateCholetteMethod;
+import ec.satoolkit.benchmarking.SaBenchmarkingSpec;
+import ec.tss.xml.IXmlMarshaller;
+import ec.tss.xml.InPlaceXmlUnmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * <p>Java class for CholetteType complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
+ * Java class for CholetteType complex type.
+ *
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ *
  * <pre>
  * &lt;complexType name="CholetteType"&gt;
  *   &lt;complexContent&gt;
@@ -38,27 +44,24 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CholetteType", propOrder = {
     "method"
 })
 public class XmlCholetteSpec
-    extends XmlBenchmarkingSpec
-{
-
+        extends XmlBenchmarkingSpec {
+    
     @XmlElement(name = "Method", required = true)
     protected XmlUnivariateCholetteMethod method;
 
     /**
      * Gets the value of the method property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link UnivariateCholetteMethodType }
-     *     
+     *
+     * @return possible object is {@link UnivariateCholetteMethodType }
+     *
      */
     public XmlUnivariateCholetteMethod getMethod() {
         return method;
@@ -66,15 +69,43 @@ public class XmlCholetteSpec
 
     /**
      * Sets the value of the method property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link UnivariateCholetteMethodType }
-     *     
+     *
+     * @param value allowed object is {@link UnivariateCholetteMethodType }
+     *
      */
     public void setMethod(XmlUnivariateCholetteMethod value) {
         this.method = value;
     }
-
     
+    public static final InPlaceXmlUnmarshaller<XmlCholetteSpec, SaBenchmarkingSpec> UNMARSHALLER = (XmlCholetteSpec xml, SaBenchmarkingSpec v) -> {
+        if (xml == null){
+            v.setEnabled(false);
+            return true;
+        }
+        v.setEnabled(true);
+        if (xml.method != null) {
+            if (xml.method.getBiasCorrection() != null) {
+                v.setBias(xml.method.getBiasCorrection());
+            }
+            v.setLambda(xml.method.getLambda());
+            v.setRho(xml.method.getRho());
+         }
+        if (xml.target != null)
+            v.setTarget(xml.target);
+        return true;
+    };
+    
+    public static final IXmlMarshaller<XmlCholetteSpec, SaBenchmarkingSpec> MARSHALLER = (SaBenchmarkingSpec v) -> {
+        if (!v.isEnabled()) {
+            return null;
+        }
+        XmlCholetteSpec xml = new XmlCholetteSpec();
+        XmlUnivariateCholetteMethod xc = new XmlUnivariateCholetteMethod();
+        xc.setBiasCorrection(v.getBias());
+        xc.setLambda(v.getLambda());
+        xc.setRho(v.getRho());
+        xml.setMethod(xc);
+        xml.setTarget(v.getTarget());
+        return xml;
+    };
 }
