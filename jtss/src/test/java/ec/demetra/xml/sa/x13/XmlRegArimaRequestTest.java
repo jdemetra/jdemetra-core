@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.demetra.xml.sa.tramoseats;
+package ec.demetra.xml.sa.x13;
 
 import data.Data;
 import ec.demetra.xml.core.XmlTs;
@@ -35,17 +35,17 @@ import xml.TestErrorHandler;
  *
  * @author Jean Palate
  */
-public class XmlTramoSeatsRequestTest {
-
-    public XmlTramoSeatsRequestTest() {
+public class XmlRegArimaRequestTest {
+    
+    public XmlRegArimaRequestTest() {
     }
 
-    @Test
+     @Test
     public void testValidation() throws FileNotFoundException, JAXBException, IOException, SAXException {
 
-        XmlTramoSeatsRequest request = new XmlTramoSeatsRequest();
-        request.defaultSpecification = "RSAfull";
-        request.series = new XmlTs();
+         XmlRegArimaRequest request=new XmlRegArimaRequest();
+        request.defaultSpecification="RG5c";
+        request.series=new XmlTs();
         XmlTsData.MARSHALLER.marshal(Data.X, request.series);
         request.getOutputFilter().add("arima.*");
         request.getOutputFilter().add("likelihood.*");
@@ -53,27 +53,9 @@ public class XmlTramoSeatsRequestTest {
         request.getOutputFilter().add("*_f");
         JAXBContext jaxb = JAXBContext.newInstance(request.getClass());
         JAXBSource source = new JAXBSource(jaxb, request);
-        Validator validator = Schemas.TramoSeats.newValidator();
+        Validator validator = Schemas.X13.newValidator();
         //validator.setErrorHandler(new TestErrorHandler());
         validator.validate(source);
     }
-
-    @Test
-    public void testAdvancedValidation() throws FileNotFoundException, JAXBException, IOException, SAXException {
-
-        XmlTramoSeatsRequest request = new XmlTramoSeatsRequest();
-        request.specification = TramoSeatsXmlProcessorTest.advanced();
-        request.context=TramoSeatsXmlProcessorTest.context();
-        request.series = new XmlTs();
-        XmlTsData.MARSHALLER.marshal(Data.X, request.series);
-        request.getOutputFilter().add("arima.*");
-        request.getOutputFilter().add("likelihood.*");
-        request.getOutputFilter().add("residuals.*");
-        request.getOutputFilter().add("*_f");
-        JAXBContext jaxb = JAXBContext.newInstance(request.getClass());
-        JAXBSource source = new JAXBSource(jaxb, request);
-        Validator validator = Schemas.TramoSeats.newValidator();
-        //validator.setErrorHandler(new TestErrorHandler());
-        validator.validate(source);
-    }
+    
 }

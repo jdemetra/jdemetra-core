@@ -7,7 +7,7 @@ and open the template in the editor.
 
 <xs:schema version="0.1.0"
            targetNamespace="ec/eurostat/jdemetra/sa/x13"
-            xmlns:tss="ec/eurostat/jdemetra/core"
+           xmlns:tss="ec/eurostat/jdemetra/core"
            xmlns:sa="ec/eurostat/jdemetra/sa"
            xmlns:sabench="ec/eurostat/jdemetra/sa/benchmarking"
            xmlns:x13="ec/eurostat/jdemetra/sa/x13"
@@ -115,7 +115,7 @@ and open the template in the editor.
             <xs:extension base="modelling:TransformationSpecType">
                 <xs:sequence>
                     <xs:group ref="x13:TransformationSpecGroup" minOccurs="0"/>
-                    <xs:element name="Adjust" type="tss:LengthOfPeriodEnum"/>
+                    <xs:element name="Adjust" type="tss:LengthOfPeriodEnum" minOccurs="0"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -143,13 +143,19 @@ and open the template in the editor.
             <xs:element name="T" type="modelling:TTestType"/>
         </xs:choice>
     </xs:group>
+    
+    <xs:complexType name="RegressionVariablesTest">
+        <xs:sequence>
+            <xs:element name="Variables" type="xs:NMTOKENS"/>
+            <xs:group ref="x13:RegressionTestGroup" id="Test"/>
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:complexType name="RegressionSpecType">
         <xs:complexContent>
             <xs:extension base="modelling:RegressionSpecType">
                 <xs:sequence>
-                    <xs:element name="Variables" type="xs:NMTOKENS"/>
-                    <xs:group ref="x13:RegressionTestGroup" id="Test" maxOccurs="unbounded"/>
+                    <xs:element name="Test" type="x13:RegressionVariablesTest" minOccurs="0" maxOccurs="unbounded"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -391,7 +397,7 @@ and open the template in the editor.
                         </xs:sequence>
                         <xs:element name="Outlier" type="x13:SingleOutlierSpecType" maxOccurs="unbounded"/>
                     </xs:choice>
-                     <xs:element name="DeltaTC" default="0.7" minOccurs="0">
+                    <xs:element name="DeltaTC" default="0.7" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>
                                 Tramo code: DELTATC. It affects only the TC outlier, which is equal to an
@@ -452,10 +458,10 @@ and open the template in the editor.
         <xs:restriction base="xs:NMTOKEN">
             <xs:enumeration value="RG0"/>
             <xs:enumeration value="RG1"/>
-            <xs:enumeration value="RG2"/>
+            <xs:enumeration value="RG2c"/>
             <xs:enumeration value="RG3"/>
-            <xs:enumeration value="RG4"/>
-            <xs:enumeration value="RG5"/>
+            <xs:enumeration value="RG4c"/>
+            <xs:enumeration value="RG5c"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -592,11 +598,11 @@ and open the template in the editor.
         <xs:complexContent>
             <xs:extension base="x13:RegArimaAtomicRequestType">
                 <xs:sequence>
-                    <xs:element name="Context" type="tss:ProcessingContextType"/>
+                    <xs:element name="Context" type="tss:ProcessingContextType" minOccurs="0"/>
                     <xs:element name="OutputFilter" type="tss:Tokens"/>
                 </xs:sequence>
-         <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
-           </xs:extension>
+                <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
         </xs:complexContent>
     </xs:complexType>
 
@@ -607,7 +613,7 @@ and open the template in the editor.
         </xs:annotation>
         <xs:sequence>
             <xs:element name="Item" type="x13:RegArimaAtomicRequestType" maxOccurs="unbounded"/>
-            <xs:element name="Context" type="tss:ProcessingContextType"/>
+            <xs:element name="Context" type="tss:ProcessingContextType" minOccurs="0"/>
             <xs:element name="OutputFilter" type="tss:Tokens"/>
         </xs:sequence>
         <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
@@ -650,10 +656,10 @@ and open the template in the editor.
         <xs:restriction base="xs:NMTOKEN">
             <xs:enumeration value="RSA0"/>
             <xs:enumeration value="RSA1"/>
-            <xs:enumeration value="RSA2"/>
+            <xs:enumeration value="RSA2c"/>
             <xs:enumeration value="RSA3"/>
-            <xs:enumeration value="RSA4"/>
-            <xs:enumeration value="RSA5"/>
+            <xs:enumeration value="RSA4c"/>
+            <xs:enumeration value="RSA5c"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -684,10 +690,10 @@ and open the template in the editor.
         <xs:complexContent>
             <xs:extension base="x13:X13AtomicRequestType">
                 <xs:sequence>
-                    <xs:element name="Context" type="tss:ProcessingContextType"/>
-                    <xs:element name="OutputFilter" type="tss:Tokens"/>
+                    <xs:element name="Context" type="tss:ProcessingContextType" minOccurs="0"/>
+                    <xs:element name="OutputFilter" type="tss:Tokens" minOccurs="0"/>
                 </xs:sequence>
-        <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -699,8 +705,8 @@ and open the template in the editor.
         </xs:annotation>
         <xs:sequence>
             <xs:element name="Item" type="x13:X13AtomicRequestType" maxOccurs="unbounded"/>
-            <xs:element name="Context" type="tss:ProcessingContextType"/>
-            <xs:element name="OutputFilter" type="tss:Tokens"/>
+            <xs:element name="Context" type="tss:ProcessingContextType" minOccurs="0"/>
+            <xs:element name="OutputFilter" type="tss:Tokens" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
         <xs:attribute name="parallelProcessing" type="xs:boolean" use="optional" default="true"/>

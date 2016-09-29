@@ -44,7 +44,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "StockTradingDaysSpecType", propOrder = {
-    "test"
 })
 public class XmlStockTradingDaysSpec
     extends ec.demetra.xml.modelling.XmlStockTradingDaysSpec

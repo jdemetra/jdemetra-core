@@ -81,6 +81,7 @@ import javax.xml.bind.annotation.XmlType;
 public class XmlOutliersSpec
         extends ec.demetra.xml.modelling.XmlOutlierSpec {
 
+    @XmlList
     @XmlElement(name = "Types", required = true)
     @XmlSchemaType(name = "NMTOKENS")
     protected List<String> types;

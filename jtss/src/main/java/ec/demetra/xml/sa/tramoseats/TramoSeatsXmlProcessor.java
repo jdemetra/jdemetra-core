@@ -51,10 +51,13 @@ public class TramoSeatsXmlProcessor {
         // specification
         TramoSpecification spec = specification(request);
         Ts s = XmlTs.TS_UNMARSHALLER.unmarshal(request.series);
+        if (s == null) {
+            return null;
+        }
         if (s.hasData() == TsStatus.Undefined) {
             s.load(TsInformationType.Data);
         }
-        if (spec == null || s == null || s.getTsData() == null) {
+        if (spec == null || s.getTsData() == null) {
             return null;
         }
         ProcessingContext ctx = context(request.context);
@@ -77,10 +80,13 @@ public class TramoSeatsXmlProcessor {
         // specification
         TramoSeatsSpecification spec = specification(request);
         Ts s = XmlTs.TS_UNMARSHALLER.unmarshal(request.series);
+        if (s == null) {
+            return null;
+        }
         if (s.hasData() == TsStatus.Undefined) {
             s.load(TsInformationType.Data);
         }
-        if (spec == null || s == null || s.getTsData() == null) {
+        if (spec == null || s.getTsData() == null) {
             return null;
         }
         ProcessingContext ctx = context(request.context);
@@ -107,13 +113,16 @@ public class TramoSeatsXmlProcessor {
 
     public XmlInformationSet process(final XmlTramoRequests request) {
         ProcessingContext ctx = context(request.context);
-        Stream<XmlTramoAtomicRequest> stream = request.getParallelProcessing() ? 
-                request.getItems().parallelStream(): request.getItems().stream();
+        Stream<XmlTramoAtomicRequest> stream = request.getParallelProcessing()
+                ? request.getItems().parallelStream() : request.getItems().stream();
         List<PreprocessingModel> models = stream.map(
                 o -> {
                     try {
                         TramoSpecification spec = specification(o);
                         Ts s = XmlTs.TS_UNMARSHALLER.unmarshal(o.series);
+                        if (s == null) {
+                            return null;
+                        }
                         if (s.hasData() == TsStatus.Undefined) {
                             s.load(TsInformationType.Data);
                         }
@@ -152,13 +161,16 @@ public class TramoSeatsXmlProcessor {
 
     public XmlInformationSet process(XmlTramoSeatsRequests request) {
         ProcessingContext ctx = context(request.context);
-        Stream<XmlTramoSeatsAtomicRequest> stream = request.getParallelProcessing() ? 
-                request.getItems().parallelStream(): request.getItems().stream();
+        Stream<XmlTramoSeatsAtomicRequest> stream = request.getParallelProcessing()
+                ? request.getItems().parallelStream() : request.getItems().stream();
         List<CompositeResults> models = stream.map(
                 o -> {
                     try {
                         TramoSeatsSpecification spec = specification(o);
                         Ts s = XmlTs.TS_UNMARSHALLER.unmarshal(o.series);
+                        if (s == null) {
+                            return null;
+                        }
                         if (s.hasData() == TsStatus.Undefined) {
                             s.load(TsInformationType.Data);
                         }
@@ -212,7 +224,7 @@ public class TramoSeatsXmlProcessor {
     }
 
     public static ProcessingContext context(XmlProcessingContext ctx) {
-        if ( ctx == null) {
+        if (ctx == null) {
             return ProcessingContext.getActiveContext();
         } else {
             ProcessingContext c = new ProcessingContext();

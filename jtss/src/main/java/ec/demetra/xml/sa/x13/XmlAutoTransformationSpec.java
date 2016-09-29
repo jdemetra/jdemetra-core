@@ -56,7 +56,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AutoTransformationSpecType", propOrder = {
-    "fct"
+    "aicDiff"
 })
 public class XmlAutoTransformationSpec {
 
@@ -64,7 +64,7 @@ public class XmlAutoTransformationSpec {
     protected Double aicDiff;
 
     /**
-     * Gets the value of the fct property.
+     * Gets the value of the aicDiff property.
      *
      * @return possible object is {@link Double }
      *

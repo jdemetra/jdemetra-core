@@ -53,8 +53,6 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "EstimationSpec")
 @XmlType(name = "EstimationSpecType", propOrder = {
     "precision",
-    "eml",
-    "ubp"
 })
 public class XmlEstimationSpec
         extends ec.demetra.xml.modelling.XmlEstimationSpec {

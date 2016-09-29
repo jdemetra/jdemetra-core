@@ -82,7 +82,7 @@ public class XmlCalendarsTest {
         JAXBContext jaxb = JAXBContext.newInstance(xcals.getClass());
         JAXBSource source = new JAXBSource(jaxb, xcals);
         Validator validator = Schemas.Calendars.newValidator();
-        validator.setErrorHandler(new TestErrorHandler());
+        //validator.setErrorHandler(new TestErrorHandler());
         validator.validate(source);
     }
 

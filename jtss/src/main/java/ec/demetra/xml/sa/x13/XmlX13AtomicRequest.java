@@ -16,7 +16,6 @@
  */
 package ec.demetra.xml.sa.x13;
 
-import ec.demetra.xml.sa.tramoseats.*;
 import ec.demetra.xml.core.XmlTs;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,17 +25,17 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * <p>Java class for TramoSeatsAtomicRequestType complex type.
+ * <p>Java class for X13AtomicRequestType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="TramoSeatsAtomicRequestType"&gt;
+ * &lt;complexType name="X13AtomicRequestType"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
  *         &lt;element name="Series" type="{ec/eurostat/jdemetra/core}TsType"/&gt;
- *         &lt;group ref="{ec/eurostat/jdemetra/sa/tramoseats}TramoSeatsSpecificationGroup"/&gt;
+ *         &lt;group ref="{ec/eurostat/jdemetra/sa/tramoseats}X13SpecificationGroup"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -46,20 +45,20 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TramoSeatsAtomicRequestType", propOrder = {
+@XmlType(name = "X13AtomicRequestType", propOrder = {
     "series",
     "specification",
     "defaultSpecification"
 })
 @XmlSeeAlso({
-    XmlTramoSeatsRequest.class
+    XmlX13Request.class
 })
 public class XmlX13AtomicRequest {
 
     @XmlElement(name = "Series", required = true)
     protected XmlTs series;
     @XmlElement(name = "Specification")
-    protected XmlTramoSeatsSpecification specification;
+    protected XmlX13Specification specification;
     @XmlElement(name = "DefaultSpecification")
     @XmlSchemaType(name = "NMTOKEN")
     protected String defaultSpecification;
@@ -93,10 +92,10 @@ public class XmlX13AtomicRequest {
      * 
      * @return
      *     possible object is
-     *     {@link TramoSeatsSpecificationType }
+     *     {@link X13SpecificationType }
      *     
      */
-    public XmlTramoSeatsSpecification getSpecification() {
+    public XmlX13Specification getSpecification() {
         return specification;
     }
 
@@ -105,10 +104,10 @@ public class XmlX13AtomicRequest {
      * 
      * @param value
      *     allowed object is
-     *     {@link TramoSeatsSpecificationType }
+     *     {@link X13SpecificationType }
      *     
      */
-    public void setSpecification(XmlTramoSeatsSpecification value) {
+    public void setSpecification(XmlX13Specification value) {
         this.specification = value;
     }
 
@@ -117,7 +116,7 @@ public class XmlX13AtomicRequest {
      * 
      * @return
      *     possible object is
-     *     {@link TramoSeatsSpecificationEnum }
+     *     {@link X13SpecificationEnum }
      *     
      */
     public String getDefaultSpecification() {
@@ -129,7 +128,7 @@ public class XmlX13AtomicRequest {
      * 
      * @param value
      *     allowed object is
-     *     {@link TramoSeatsSpecificationEnum }
+     *     {@link X13SpecificationEnum }
      *     
      */
     public void setDefaultSpecification(String value) {

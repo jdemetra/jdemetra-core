@@ -21,17 +21,22 @@ import ec.tss.xml.IXmlMarshaller;
 import ec.tss.xml.InPlaceXmlUnmarshaller;
 import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.modelling.arima.x13.TransformSpec;
+import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * <p>Java class for TransformationSpecType complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
+ * Java class for TransformationSpecType complex type.
+ *
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ *
  * <pre>
  * &lt;complexType name="TransformationSpecType"&gt;
  *   &lt;complexContent&gt;
@@ -43,30 +48,31 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name="TransformationSpec")
+@XmlRootElement(name = "TransformationSpec")
 @XmlType(name = "TransformationSpecType", propOrder = {
     "log",
-    "auto"
+    "auto",
+    "adjust"
 })
-public class XmlTransformationSpec
-{
+public class XmlTransformationSpec {
 
     @XmlElement(name = "Log")
     protected XmlEmptyElement log;
     @XmlElement(name = "Auto")
     protected XmlAutoTransformationSpec auto;
+    @XmlElement(name = "Adjust")
+    @XmlSchemaType(name = "NMTOKEN")
+    protected LengthOfPeriodType adjust;
 
     /**
      * Gets the value of the log property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Object }
-     *     
+     *
+     * @return possible object is {@link Object }
+     *
      */
     public XmlEmptyElement getLog() {
         return log;
@@ -74,11 +80,9 @@ public class XmlTransformationSpec
 
     /**
      * Sets the value of the log property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Object }
-     *     
+     *
+     * @param value allowed object is {@link Object }
+     *
      */
     public void setLog(XmlEmptyElement value) {
         this.log = value;
@@ -86,11 +90,9 @@ public class XmlTransformationSpec
 
     /**
      * Gets the value of the auto property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link AutoTransformationSpecType }
-     *     
+     *
+     * @return possible object is {@link AutoTransformationSpecType }
+     *
      */
     public XmlAutoTransformationSpec getAuto() {
         return auto;
@@ -98,37 +100,63 @@ public class XmlTransformationSpec
 
     /**
      * Sets the value of the auto property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link AutoTransformationSpecType }
-     *     
+     *
+     * @param value allowed object is {@link AutoTransformationSpecType }
+     *
      */
     public void setAuto(XmlAutoTransformationSpec value) {
         this.auto = value;
     }
-    
-    public static final InPlaceXmlUnmarshaller<XmlTransformationSpec, TransformSpec> UNMARSHALLER=(XmlTransformationSpec xml, TransformSpec v) -> {
-        if (xml.log != null){
+
+    /**
+     * Gets the value of the adjust property.
+     *
+     * @return possible object is {@link LengthOfPeriodEnum }
+     *
+     */
+    public LengthOfPeriodType getAdjust() {
+        return adjust;
+    }
+
+    /**
+     * Sets the value of the adjust property.
+     *
+     * @param value allowed object is {@link LengthOfPeriodEnum }
+     *
+     */
+    public void setAdjust(LengthOfPeriodType value) {
+        if (value == LengthOfPeriodType.None) {
+            this.adjust = null;
+        } else {
+            this.adjust = value;
+        }
+    }
+
+    public static final InPlaceXmlUnmarshaller<XmlTransformationSpec, TransformSpec> UNMARSHALLER = (XmlTransformationSpec xml, TransformSpec v) -> {
+        if (xml.log != null) {
             v.setFunction(DefaultTransformationType.Log);
-        }else if (xml.auto != null){
+        } else if (xml.auto != null) {
             XmlAutoTransformationSpec.UNMARSHALLER.unmarshal(xml.auto, v);
-        }else{
+        } else {
             v.setFunction(DefaultTransformationType.None);
-         }
+        }
+        if (xml.adjust != null)
+            v.setAdjust(xml.adjust);
         return true;
     };
 
-    public static final IXmlMarshaller<XmlTransformationSpec, TransformSpec> MARSHALLER=(TransformSpec v) -> {
-        if (v.getFunction() ==  DefaultTransformationType.None)
+    public static final IXmlMarshaller<XmlTransformationSpec, TransformSpec> MARSHALLER = (TransformSpec v) -> {
+        if (v.getFunction() == DefaultTransformationType.None) {
             return null;
-        XmlTransformationSpec xml=new XmlTransformationSpec();
-        switch (v.getFunction()){
+        }
+        XmlTransformationSpec xml = new XmlTransformationSpec();
+        xml.setAdjust(v.getAdjust());
+        switch (v.getFunction()) {
             case Log:
                 xml.setLog(new XmlEmptyElement());
                 break;
             case Auto:
-                XmlAutoTransformationSpec xauto=new XmlAutoTransformationSpec();
+                XmlAutoTransformationSpec xauto = new XmlAutoTransformationSpec();
                 XmlAutoTransformationSpec.MARSHALLER.marshal(v, xauto);
                 xml.setAuto(xauto);
                 break;

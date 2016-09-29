@@ -14,18 +14,15 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.demetra.xml.sa.tramoseats;
+package ec.demetra.xml.sa.x13;
 
 import data.Data;
-import ec.satoolkit.tramoseats.TramoSeatsSpecification;
+import ec.satoolkit.x13.X13Specification;
 import ec.tss.TsFactory;
 import ec.tss.sa.SaItem;
 import ec.tss.sa.SaManager;
-import ec.tss.sa.processors.TramoSeatsProcessor;
-import ec.tstoolkit.algorithm.implementation.TramoProcessingFactory;
-import ec.tstoolkit.modelling.DefaultTransformationType;
-import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
-import ec.tstoolkit.modelling.arima.tramo.TransformSpec;
+import ec.tss.sa.processors.X13Processor;
+import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -50,30 +47,30 @@ import xml.TestErrorHandler;
  *
  * @author Jean Palate
  */
-public class XmlTramoSpecificationTest {
-
-    private static final String FILE = "c:\\localdata\\tramo.xml";
-    private static final String PFILE = "c:\\localdata\\ptramo.xml";
-    private static final TramoSpecification pspec;
+public class XmlRegArimaSpecificationTest {
+    
+    private static final String FILE = "c:\\localdata\\regarima.xml";
+    private static final String PFILE = "c:\\localdata\\pregarima.xml";
+    private static final RegArimaSpecification pspec;
 
     static {
-        SaManager.instance.add(new TramoSeatsProcessor());
-        SaItem item = new SaItem(TramoSeatsSpecification.RSAfull, TsFactory.instance.createTs("test", null, Data.P));
+        SaManager.instance.add(new X13Processor());
+        SaItem item = new SaItem(X13Specification.RSA5, TsFactory.instance.createTs("test", null, Data.P));
         item.process();
-        TramoSeatsSpecification tspec = (TramoSeatsSpecification) item.getPointSpecification();
-        pspec = tspec.getTramoSpecification();
+        X13Specification tspec = (X13Specification) item.getPointSpecification();
+        pspec = tspec.getRegArimaSpecification();
     }
 
-    public XmlTramoSpecificationTest() {
+    public XmlRegArimaSpecificationTest() {
     }
 
     @Test
     @Ignore
     public void testFile() throws FileNotFoundException, JAXBException, IOException {
 
-        TramoSpecification spec = TramoSpecification.TRfull;
-        XmlTramoSpecification xspec = new XmlTramoSpecification();
-        XmlTramoSpecification.MARSHALLER.marshal(spec, xspec);
+        RegArimaSpecification spec = RegArimaSpecification.RG5;
+        XmlRegArimaSpecification xspec = new XmlRegArimaSpecification();
+        XmlRegArimaSpecification.MARSHALLER.marshal(spec, xspec);
         JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
         FileOutputStream ostream = new FileOutputStream(FILE);
         try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
@@ -83,26 +80,27 @@ public class XmlTramoSpecificationTest {
             writer.flush();
         }
 
-        XmlTramoSpecification rslt = null;
+        XmlRegArimaSpecification rslt = null;
         FileInputStream istream = new FileInputStream(FILE);
         try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-            rslt = (XmlTramoSpecification) unmarshaller.unmarshal(reader);
-            TramoSpecification nspec = new TramoSpecification();
-            XmlTramoSpecification.UNMARSHALLER.unmarshal(rslt, nspec);
+            rslt = (XmlRegArimaSpecification) unmarshaller.unmarshal(reader);
+            RegArimaSpecification nspec = new RegArimaSpecification();
+            XmlRegArimaSpecification.UNMARSHALLER.unmarshal(rslt, nspec);
             assertTrue(spec.equals(nspec));
         }
     }
 
     @Test
+    //@Ignore
     public void testValidation() throws FileNotFoundException, JAXBException, IOException, SAXException {
 
-        TramoSpecification spec = TramoSpecification.TRfull;
-        XmlTramoSpecification xspec = new XmlTramoSpecification();
-        XmlTramoSpecification.MARSHALLER.marshal(spec, xspec);
+        RegArimaSpecification spec = RegArimaSpecification.RG5;
+        XmlRegArimaSpecification xspec = new XmlRegArimaSpecification();
+        XmlRegArimaSpecification.MARSHALLER.marshal(spec, xspec);
         JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
         JAXBSource source = new JAXBSource(jaxb, xspec);
-        Validator validator = Schemas.TramoSeats.newValidator();
+        Validator validator = Schemas.X13.newValidator();
         //validator.setErrorHandler(new TestErrorHandler());
         validator.validate(source);
     }
@@ -111,8 +109,8 @@ public class XmlTramoSpecificationTest {
     @Ignore
     public void testPFile() throws FileNotFoundException, JAXBException, IOException {
 
-        XmlTramoSpecification xspec = new XmlTramoSpecification();
-        XmlTramoSpecification.MARSHALLER.marshal(pspec, xspec);
+        XmlRegArimaSpecification xspec = new XmlRegArimaSpecification();
+        XmlRegArimaSpecification.MARSHALLER.marshal(pspec, xspec);
         JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
         FileOutputStream ostream = new FileOutputStream(PFILE);
         try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
@@ -122,13 +120,13 @@ public class XmlTramoSpecificationTest {
             writer.flush();
         }
 
-        XmlTramoSpecification rslt = null;
+        XmlRegArimaSpecification rslt = null;
         FileInputStream istream = new FileInputStream(PFILE);
         try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-            rslt = (XmlTramoSpecification) unmarshaller.unmarshal(reader);
-            TramoSpecification nspec = new TramoSpecification();
-            XmlTramoSpecification.UNMARSHALLER.unmarshal(rslt, nspec);
+            rslt = (XmlRegArimaSpecification) unmarshaller.unmarshal(reader);
+            RegArimaSpecification nspec = new RegArimaSpecification();
+            XmlRegArimaSpecification.UNMARSHALLER.unmarshal(rslt, nspec);
             assertTrue(pspec.equals(nspec));
         }
     }
@@ -137,32 +135,32 @@ public class XmlTramoSpecificationTest {
     //@Ignore
     public void testPValidation() throws FileNotFoundException, JAXBException, IOException, SAXException {
 
-        XmlTramoSpecification xspec = new XmlTramoSpecification();
-        XmlTramoSpecification.MARSHALLER.marshal(pspec, xspec);
+        XmlRegArimaSpecification xspec = new XmlRegArimaSpecification();
+        XmlRegArimaSpecification.MARSHALLER.marshal(pspec, xspec);
         JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
         JAXBSource source = new JAXBSource(jaxb, xspec);
-        Validator validator = Schemas.TramoSeats.newValidator();
+        Validator validator = Schemas.X13.newValidator();
         //validator.setErrorHandler(new TestErrorHandler());
         validator.validate(source);
     }
 
     @Test
+    //@Ignore
     public void testMarshalling() {
-        test(TramoSpecification.TR0);
-        test(TramoSpecification.TR1);
-        test(TramoSpecification.TR2);
-        test(TramoSpecification.TR3);
-        test(TramoSpecification.TR4);
-        test(TramoSpecification.TR5);
-        test(TramoSpecification.TRfull);
+        test(RegArimaSpecification.RG0);
+        test(RegArimaSpecification.RG1);
+        test(RegArimaSpecification.RG2);
+        test(RegArimaSpecification.RG3);
+        test(RegArimaSpecification.RG4);
+        test(RegArimaSpecification.RG5);
         test(pspec);
     }
 
-    private void test(TramoSpecification spec) {
-        XmlTramoSpecification xspec = new XmlTramoSpecification();
-        XmlTramoSpecification.MARSHALLER.marshal(spec, xspec);
-        TramoSpecification nspec = new TramoSpecification();
-        XmlTramoSpecification.UNMARSHALLER.unmarshal(xspec, nspec);
+    private void test(RegArimaSpecification spec) {
+        XmlRegArimaSpecification xspec = new XmlRegArimaSpecification();
+        XmlRegArimaSpecification.MARSHALLER.marshal(spec, xspec);
+        RegArimaSpecification nspec = new RegArimaSpecification();
+        XmlRegArimaSpecification.UNMARSHALLER.unmarshal(xspec, nspec);
         assertTrue(spec.equals(nspec));
     }
 

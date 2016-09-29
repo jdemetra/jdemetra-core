@@ -59,7 +59,9 @@ public class XmlRegressionSpec
         extends ec.demetra.xml.modelling.XmlRegressionSpec {
 
     public static final IXmlMarshaller<XmlRegressionSpec, RegressionSpec> MARSHALLER = (RegressionSpec v) -> {
-        if (!v.isUsed()) {
+        boolean used=v.getOutliersCount()>0 || v.getInterventionVariablesCount()>0 || v.getRampsCount()>0
+                || v.getUserDefinedVariablesCount()>0;
+        if (!used) {
             return null;
         }
         XmlRegressionSpec xml = new XmlRegressionSpec();

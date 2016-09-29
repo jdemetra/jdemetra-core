@@ -75,7 +75,7 @@ public class XmlEasterSpec
      *
      */
     public void setTest(RegressionTestSpec value) {
-        if (value != null && value == RegressionTestSpec.None) {
+        if (value == RegressionTestSpec.None) {
             this.test = null;
         } else {
             this.test = value;

@@ -62,11 +62,11 @@ public class XmlDefaultTradingDaysSpec
     }
 
     public void setAutoAdjust(Boolean value) {
-        if (value != null && value) {
-            autoAdjust = null;
-        } else {
+//        if (value != null && value) {
+//            autoAdjust = null;
+//        } else {
             this.autoAdjust = value;
-        }
+//        }
     }
 
     public static final InPlaceXmlMarshaller<XmlDefaultTradingDaysSpec, TradingDaysSpec> MARSHALLER = (TradingDaysSpec v, XmlDefaultTradingDaysSpec xml) -> {

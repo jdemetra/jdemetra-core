@@ -18,6 +18,7 @@ package ec.demetra.xml.sa.x13;
 
 import ec.tss.xml.IXmlMarshaller;
 import ec.tss.xml.InPlaceXmlUnmarshaller;
+import ec.tstoolkit.modelling.RegressionTestSpec;
 import ec.tstoolkit.modelling.arima.x13.MovingHolidaySpec;
 import ec.tstoolkit.modelling.arima.x13.RegressionSpec;
 import ec.tstoolkit.modelling.arima.x13.TradingDaysSpec;
@@ -131,7 +132,7 @@ public class XmlCalendarSpec
             XmlTradingDaysSpec.UNMARSHALLER.unmarshal(xml.tradingDays, v.getTradingDays());
         }
         if (xml.easter != null){
-            MovingHolidaySpec mh=new MovingHolidaySpec();
+            MovingHolidaySpec mh=MovingHolidaySpec.easterSpec(xml.easter.getTest()==RegressionTestSpec.Add);
             XmlEasterSpec.UNMARSHALLER.unmarshal(xml.easter, mh);
             v.setMovingHolidays(new MovingHolidaySpec[]{mh});
         }

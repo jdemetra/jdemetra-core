@@ -26,10 +26,13 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * <p>Java class for DefaultTradingDaysSpecType complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
+ * Java class for DefaultTradingDaysSpecType complex type.
+ *
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ *
  * <pre>
  * &lt;complexType name="DefaultTradingDaysSpecType"&gt;
  *   &lt;complexContent&gt;
@@ -43,8 +46,8 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DefaultTradingDaysSpecType", propOrder = {
@@ -52,8 +55,7 @@ import javax.xml.bind.annotation.XmlType;
     "tdOption",
     "lpOption"
 })
-@XmlSeeAlso({
-})
+@XmlSeeAlso({})
 public class XmlDefaultTradingDaysSpec {
 
     @XmlElement(name = "Calendar")
@@ -68,11 +70,9 @@ public class XmlDefaultTradingDaysSpec {
 
     /**
      * Gets the value of the calendar property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Object }
-     *     
+     *
+     * @return possible object is {@link Object }
+     *
      */
     public String getCalendar() {
         return calendar;
@@ -80,11 +80,9 @@ public class XmlDefaultTradingDaysSpec {
 
     /**
      * Sets the value of the calendar property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Object }
-     *     
+     *
+     * @param value allowed object is {@link Object }
+     *
      */
     public void setCalendar(String value) {
         this.calendar = value;
@@ -92,11 +90,9 @@ public class XmlDefaultTradingDaysSpec {
 
     /**
      * Gets the value of the tdOption property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link TradingDaysEnum }
-     *     
+     *
+     * @return possible object is {@link TradingDaysEnum }
+     *
      */
     public TradingDaysType getTdOption() {
         return tdOption;
@@ -104,11 +100,9 @@ public class XmlDefaultTradingDaysSpec {
 
     /**
      * Sets the value of the tdOption property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link TradingDaysEnum }
-     *     
+     *
+     * @param value allowed object is {@link TradingDaysEnum }
+     *
      */
     public void setTdOption(TradingDaysType value) {
         this.tdOption = value;
@@ -116,11 +110,9 @@ public class XmlDefaultTradingDaysSpec {
 
     /**
      * Gets the value of the lpOption property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link LengthOfPeriodEnum }
-     *     
+     *
+     * @return possible object is {@link LengthOfPeriodEnum }
+     *
      */
     public LengthOfPeriodType getLpOption() {
         return lpOption;
@@ -128,14 +120,16 @@ public class XmlDefaultTradingDaysSpec {
 
     /**
      * Sets the value of the lpOption property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link LengthOfPeriodEnum }
-     *     
+     *
+     * @param value allowed object is {@link LengthOfPeriodEnum }
+     *
      */
     public void setLpOption(LengthOfPeriodType value) {
-        this.lpOption = value;
+        if (value != null && value == LengthOfPeriodType.None) {
+            this.lpOption = null;
+        } else {
+            this.lpOption = value;
+        }
     }
 
 }

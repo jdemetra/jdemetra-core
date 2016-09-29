@@ -94,7 +94,7 @@ public class XmlTramoSeatsSpecificationTest {
         JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
         JAXBSource source = new JAXBSource(jaxb, xspec);
         Validator validator = Schemas.TramoSeats.newValidator();
-        validator.setErrorHandler(new TestErrorHandler());
+        //validator.setErrorHandler(new TestErrorHandler());
         validator.validate(source);
     }
 

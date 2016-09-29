@@ -20,9 +20,17 @@ import data.Data;
 import ec.demetra.xml.core.XmlInformationSet;
 import ec.demetra.xml.core.XmlTs;
 import ec.demetra.xml.core.XmlTsData;
+import ec.demetra.xml.processing.XmlProcessingContext;
+import ec.satoolkit.tramoseats.TramoSeatsSpecification;
+import ec.tstoolkit.algorithm.ProcessingContext;
 import ec.tstoolkit.information.InformationSet;
+import ec.tstoolkit.timeseries.Month;
+import ec.tstoolkit.timeseries.calendars.DayEvent;
+import ec.tstoolkit.timeseries.calendars.FixedDay;
+import ec.tstoolkit.timeseries.calendars.NationalCalendar;
+import ec.tstoolkit.timeseries.calendars.NationalCalendarProvider;
+import ec.tstoolkit.timeseries.calendars.SpecialCalendarDay;
 import ec.tstoolkit.timeseries.simplets.TsData;
-import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -85,7 +93,7 @@ public class TramoSeatsXmlProcessorTest {
     }
 
     @Test
-    public void testTramoSeatsRequest() {
+    public void testTramoSeatsRequests() {
 //        long t0 = System.currentTimeMillis();
         int N = 10;
         XmlTramoSeatsRequests requests = new XmlTramoSeatsRequests();
@@ -105,5 +113,57 @@ public class TramoSeatsXmlProcessorTest {
         for (int i = 0; i < N; ++i) {
             assertTrue(null != all.search("series" + (i + 1) + ".sa", TsData.class));
         }
+    }
+
+    @Test
+    public void testAdvancedRequest() {
+//        long t0 = System.currentTimeMillis();
+        int N = 10;
+        XmlTramoSeatsRequests requests = new XmlTramoSeatsRequests();
+        requests.setFlat(true);
+        for (int i = 0; i < N; ++i) {
+            XmlTramoSeatsAtomicRequest cur = new XmlTramoSeatsAtomicRequest();
+            cur.specification=advanced();
+            cur.series = new XmlTs();
+            XmlTsData.MARSHALLER.marshal(Data.P, cur.series);
+            requests.getItems().add(cur);
+        }
+        requests.context=context();
+        TramoSeatsXmlProcessor processor = new TramoSeatsXmlProcessor();
+        requests.setParallelProcessing(false);
+        XmlInformationSet rslt = processor.process(requests);
+//        long t1 = System.currentTimeMillis();
+//        System.out.println(t1 - t0);
+        InformationSet all = rslt.create();
+        for (int i = 0; i < N; ++i) {
+            assertTrue(null != all.search("series" + (i + 1) + ".sa", TsData.class));
+        }
+    }
+    
+    static XmlTramoSeatsSpecification advanced(){
+        TramoSeatsSpecification spec=TramoSeatsSpecification.RSAfull.clone();
+        spec.getTramoSpecification().getRegression().getCalendar().getTradingDays().setHolidays("Belgium");
+        XmlTramoSeatsSpecification xml=new XmlTramoSeatsSpecification();
+        XmlTramoSeatsSpecification.MARSHALLER.marshal(spec, xml);
+        return xml;
+    }
+    
+    static XmlProcessingContext context(){
+        ProcessingContext context=new ProcessingContext();
+        NationalCalendar calendar=new NationalCalendar();
+        calendar.add(new FixedDay(20, Month.July));
+        calendar.add(new FixedDay(10, Month.October));
+        calendar.add(new SpecialCalendarDay(DayEvent.NewYear, 0));
+        calendar.add(new SpecialCalendarDay(DayEvent.EasterMonday, 0));
+        calendar.add(new SpecialCalendarDay(DayEvent.Ascension, 0));
+        calendar.add(new SpecialCalendarDay(DayEvent.WhitMonday, 0));
+        calendar.add(new SpecialCalendarDay(DayEvent.MayDay, 0));
+        calendar.add(new SpecialCalendarDay(DayEvent.Assumption, 0));
+        calendar.add(new SpecialCalendarDay(DayEvent.AllSaintsDay, 0));
+        calendar.add(new SpecialCalendarDay(DayEvent.Christmas, 0));
+        context.getGregorianCalendars().set("Belgium", new NationalCalendarProvider(calendar));
+        XmlProcessingContext xc=new XmlProcessingContext();
+        XmlProcessingContext.MARSHALLER.marshal(context, xc);
+        return xc;
     }
 }

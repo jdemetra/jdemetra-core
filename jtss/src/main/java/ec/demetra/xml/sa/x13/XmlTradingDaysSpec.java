@@ -19,11 +19,13 @@ package ec.demetra.xml.sa.x13;
 import ec.demetra.xml.modelling.XmlUserTradingDaysSpec;
 import ec.tss.xml.InPlaceXmlMarshaller;
 import ec.tss.xml.InPlaceXmlUnmarshaller;
+import ec.tstoolkit.modelling.RegressionTestSpec;
 import ec.tstoolkit.modelling.arima.x13.TradingDaysSpec;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -54,7 +56,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "TradingDaysSpecType", propOrder = {
     "defaulttd",
     "stock",
-    "user"
+    "user",
+    "test"
 })
 public class XmlTradingDaysSpec {
 
@@ -64,6 +67,9 @@ public class XmlTradingDaysSpec {
     protected XmlStockTradingDaysSpec stock;
     @XmlElement(name = "User")
     protected XmlUserTradingDaysSpec user;
+    @XmlElement(name = "Test")
+    @XmlSchemaType(name = "NMTOKEN")
+    protected RegressionTestSpec test;
 
     /**
      * Gets the value of the default property.
@@ -125,10 +131,35 @@ public class XmlTradingDaysSpec {
         this.user = value;
     }
 
+    /**
+     * Gets the value of the test property.
+     *
+     * @return possible object is {@link RegressionTestEnum }
+     *
+     */
+    public RegressionTestSpec getTest() {
+        return test;
+    }
+
+    /**
+     * Sets the value of the test property.
+     *
+     * @param value allowed object is {@link RegressionTestEnum }
+     *
+     */
+    public void setTest(RegressionTestSpec value) {
+        if (value == RegressionTestSpec.None) {
+            this.test = null;
+        } else {
+            this.test = value;
+        }
+    }
+
     public static final InPlaceXmlMarshaller<XmlTradingDaysSpec, TradingDaysSpec> MARSHALLER = (TradingDaysSpec v, XmlTradingDaysSpec xml) -> {
         if (v.isDefault()) {
             return true;
         }
+        xml.setTest(v.getTest());
         if (v.isStockTradingDays()) {
             XmlStockTradingDaysSpec xspec = new XmlStockTradingDaysSpec();
             XmlStockTradingDaysSpec.MARSHALLER.marshal(v, xspec);
@@ -152,6 +183,9 @@ public class XmlTradingDaysSpec {
     };
 
     public static final InPlaceXmlUnmarshaller<XmlTradingDaysSpec, TradingDaysSpec> UNMARSHALLER = (XmlTradingDaysSpec xml, TradingDaysSpec v) -> {
+        if (xml.test != null) {
+            v.setTest(xml.test);
+        }
         if (xml.defaulttd != null) {
             XmlDefaultTradingDaysSpec.UNMARSHALLER.unmarshal(xml.defaulttd, v);
         } else if (xml.stock != null) {
@@ -162,6 +196,7 @@ public class XmlTradingDaysSpec {
             var = variables.toArray(var);
             v.setUserVariables(var);
         }
+
         return true;
     };
 }

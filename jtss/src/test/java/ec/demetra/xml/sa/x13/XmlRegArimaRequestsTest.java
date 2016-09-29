@@ -14,12 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.demetra.xml.sa.tramoseats;
+package ec.demetra.xml.sa.x13;
 
 import data.Data;
 import ec.demetra.xml.core.XmlTs;
 import ec.demetra.xml.core.XmlTsData;
-import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.xml.bind.JAXBContext;
@@ -30,33 +29,38 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.xml.sax.SAXException;
 import xml.Schemas;
-import xml.TestErrorHandler;
 
 /**
  *
  * @author Jean Palate
  */
-public class XmlTramoRequestTest {
+public class XmlRegArimaRequestsTest {
     
-    public XmlTramoRequestTest() {
+    public XmlRegArimaRequestsTest() {
     }
 
-    @Test
+   @Test
     public void testValidation() throws FileNotFoundException, JAXBException, IOException, SAXException {
 
-         XmlTramoRequest request=new XmlTramoRequest();
-        request.defaultSpecification="TRfull";
-        request.series=new XmlTs();
-        XmlTsData.MARSHALLER.marshal(Data.X, request.series);
-        request.getOutputFilter().add("arima.*");
-        request.getOutputFilter().add("likelihood.*");
-        request.getOutputFilter().add("residuals.*");
-        request.getOutputFilter().add("*_f");
-        JAXBContext jaxb = JAXBContext.newInstance(request.getClass());
-        JAXBSource source = new JAXBSource(jaxb, request);
-        Validator validator = Schemas.TramoSeats.newValidator();
+         int N = 5;
+        XmlRegArimaRequests requests = new XmlRegArimaRequests();
+        for (int i = 0; i < N; ++i) {
+            XmlRegArimaAtomicRequest cur = new XmlRegArimaAtomicRequest();
+            cur.defaultSpecification = "RG5c";
+            cur.series = new XmlTs();
+            XmlTsData.MARSHALLER.marshal(Data.P, cur.series);
+            requests.getItems().add(cur);
+        }
+        //requests.getOutputFilter().add("arima.*");
+        requests.getOutputFilter().add("likelihood.*");
+        requests.getOutputFilter().add("arima.*");
+        requests.getOutputFilter().add("likelihood.*");
+        requests.getOutputFilter().add("residuals.*");
+        requests.getOutputFilter().add("*_f");
+        JAXBContext jaxb = JAXBContext.newInstance(requests.getClass());
+        JAXBSource source = new JAXBSource(jaxb, requests);
+        Validator validator = Schemas.X13.newValidator();
         //validator.setErrorHandler(new TestErrorHandler());
         validator.validate(source);
     }
-    
 }
