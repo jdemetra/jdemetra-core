@@ -84,12 +84,12 @@ public final class Params {
     }
 
     @Nonnull
-    public static <S extends IConfig> IParam<S, DataFormat> onDataFormat(@Nonnull final DataFormat defaultValue, @Nonnull final String localeKey, @Nonnull final String datePatternKey, @Nonnull final String numberPatternKey) {
+    public static <S extends IConfig> IParam<S, DataFormat> onDataFormat(@Nonnull DataFormat defaultValue, @Nonnull String localeKey, @Nonnull String datePatternKey, @Nonnull String numberPatternKey) {
         return new DataFormatParam(defaultValue, localeKey, datePatternKey, numberPatternKey);
     }
 
     @Nonnull
-    public static <S extends IConfig> IParam<S, double[]> onDoubleArray(@Nonnull final String key, final double... defaultValues) {
+    public static <S extends IConfig> IParam<S, double[]> onDoubleArray(@Nonnull String key, @Nonnull double... defaultValues) {
         return new SingleParam<>(defaultValues, key, Parsers.doubleArrayParser(), Formatters.doubleArrayFormatter());
     }
 
