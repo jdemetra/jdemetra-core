@@ -555,7 +555,7 @@ and open the template in the editor.
                     <xs:annotation>
                         <xs:documentation>
                             Specifies that the standard errors used for extreme values detection are computed separately for two complementary sets of calendar months/quarters 
-                            The vector specifies the positions of the periods of one group (the other one being computed by complement)
+                            The vector specifies the group of each period (1 or 2)
                         </xs:documentation>
                     </xs:annotation>
                 </xs:element>
@@ -593,7 +593,7 @@ and open the template in the editor.
             <xs:extension base="x13:RegArimaAtomicRequestType">
                 <xs:sequence>
                     <xs:element name="Context" type="tss:ProcessingContextType"/>
-                    <xs:element name="OutputFilter" type="xs:NMTOKENS"/>
+                    <xs:element name="OutputFilter" type="tss:Tokens"/>
                 </xs:sequence>
          <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
            </xs:extension>
@@ -608,7 +608,7 @@ and open the template in the editor.
         <xs:sequence>
             <xs:element name="Item" type="x13:RegArimaAtomicRequestType" maxOccurs="unbounded"/>
             <xs:element name="Context" type="tss:ProcessingContextType"/>
-            <xs:element name="OutputFilter" type="xs:NMTOKENS"/>
+            <xs:element name="OutputFilter" type="tss:Tokens"/>
         </xs:sequence>
         <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
         <xs:attribute name="parallelProcessing" type="xs:boolean" use="optional" default="true"/>
@@ -685,7 +685,7 @@ and open the template in the editor.
             <xs:extension base="x13:X13AtomicRequestType">
                 <xs:sequence>
                     <xs:element name="Context" type="tss:ProcessingContextType"/>
-                    <xs:element name="OutputFilter" type="xs:NMTOKENS"/>
+                    <xs:element name="OutputFilter" type="tss:Tokens"/>
                 </xs:sequence>
         <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
             </xs:extension>
@@ -700,7 +700,7 @@ and open the template in the editor.
         <xs:sequence>
             <xs:element name="Item" type="x13:X13AtomicRequestType" maxOccurs="unbounded"/>
             <xs:element name="Context" type="tss:ProcessingContextType"/>
-            <xs:element name="OutputFilter" type="xs:NMTOKENS"/>
+            <xs:element name="OutputFilter" type="tss:Tokens"/>
         </xs:sequence>
         <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
         <xs:attribute name="parallelProcessing" type="xs:boolean" use="optional" default="true"/>

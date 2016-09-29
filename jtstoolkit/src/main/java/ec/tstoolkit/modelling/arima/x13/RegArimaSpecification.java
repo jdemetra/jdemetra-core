@@ -648,4 +648,22 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
         }
     }
 
+    public static RegArimaSpecification fromString(String name) {
+        switch (name) {
+            case "RG0":
+                return RG0;
+            case "RG1":
+                return RG1;
+            case "RG2":
+                return RG2;
+            case "RG3":
+                return RG3;
+            case "RG4":
+                return RG4;
+            case "RG5":
+                return RG5;
+            default:
+                return new RegArimaSpecification();
+        }
+    }
 }

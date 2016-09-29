@@ -137,7 +137,7 @@ public class XmlRegArimaSpecification extends XmlModellingSpecification {
             XmlEstimationSpec.UNMARSHALLER.unmarshal(xml.estimation, v.getEstimate());
         }
         if (xml.calendar != null) {
-            XmlCalendarSpec.UNMARSHALLER.unmarshal(xml.calendar, v.getRegression().getCalendar());
+            XmlCalendarSpec.UNMARSHALLER.unmarshal(xml.calendar, v.getRegression());
         }
         if (xml.regression != null) {
             XmlRegressionSpec.UNMARSHALLER.unmarshal(xml.regression, v.getRegression());
@@ -159,7 +159,7 @@ public class XmlRegArimaSpecification extends XmlModellingSpecification {
         xml.series = XmlSeriesSpec.MARSHALLER.marshal(v);
         xml.transformation = XmlTransformationSpec.MARSHALLER.marshal(v.getTransform());
         xml.estimation = XmlEstimationSpec.MARSHALLER.marshal(v.getEstimate());
-        xml.calendar = XmlCalendarSpec.MARSHALLER.marshal(v.getRegression().getCalendar());
+        xml.calendar = XmlCalendarSpec.MARSHALLER.marshal(v.getRegression());
         xml.regression = XmlRegressionSpec.MARSHALLER.marshal(v.getRegression());
         xml.outliers = XmlOutliersSpec.MARSHALLER.marshal(v.getOutliers());
 
