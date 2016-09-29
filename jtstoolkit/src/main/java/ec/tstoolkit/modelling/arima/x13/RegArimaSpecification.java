@@ -605,16 +605,16 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
             return "RG1";
         }
         if (this == RG2) {
-            return "RG2";
+            return "RG2c";
         }
         if (this == RG3) {
             return "RG3";
         }
         if (this == RG4) {
-            return "RG4";
+            return "RG4c";
         }
         if (this == RG5) {
-            return "RG5";
+            return "RG5c";
         }
         if (equals(RG0)) {
             return "RG0";
@@ -623,16 +623,16 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
             return "RG1";
         }
         if (equals(RG2)) {
-            return "RG2";
+            return "RG2c";
         }
         if (equals(RG3)) {
             return "RG3";
         }
         if (equals(RG4)) {
-            return "RG4";
+            return "RG4c";
         }
         if (equals(RG5)) {
-            return "RG5";
+            return "RG5c";
         }
         return SMETHOD;
     }
@@ -648,4 +648,22 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
         }
     }
 
+    public static RegArimaSpecification fromString(String name) {
+        switch (name) {
+            case "RG0":
+                return RG0;
+            case "RG1":
+                return RG1;
+            case "RG2c":
+                return RG2;
+            case "RG3":
+                return RG3;
+            case "RG4c":
+                return RG4;
+            case "RG5c":
+                return RG5;
+            default:
+                return new RegArimaSpecification();
+        }
+    }
 }

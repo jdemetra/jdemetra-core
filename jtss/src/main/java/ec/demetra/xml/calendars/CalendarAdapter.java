@@ -16,6 +16,7 @@
  */
 package ec.demetra.xml.calendars;
 
+import ec.tstoolkit.timeseries.calendars.GregorianCalendarManager;
 import ec.tstoolkit.timeseries.calendars.IGregorianCalendarProvider;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
@@ -28,4 +29,6 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 public abstract class CalendarAdapter<X extends XmlCalendar, V extends IGregorianCalendarProvider> extends XmlAdapter<X, V>{
     public abstract Class<V> getValueType();
     public abstract Class<X> getXmlType();
+    
+    public abstract V unmarshal(X x, GregorianCalendarManager mgr);
 }

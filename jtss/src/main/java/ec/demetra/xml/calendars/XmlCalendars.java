@@ -80,7 +80,7 @@ public class XmlCalendars {
      * 
      * @return 
      */
-    public List<XmlCalendar> getCalendar() {
+    public List<XmlCalendar> getCalendars() {
         if (calendar == null) {
             calendar = new ArrayList<>();
         }

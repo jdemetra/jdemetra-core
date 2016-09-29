@@ -18,6 +18,9 @@ package ec.demetra.xml.sa.tramoseats;
 
 import ec.demetra.xml.sa.XmlSaSpecification;
 import ec.demetra.xml.sa.benchmarking.XmlCholetteSpec;
+import ec.satoolkit.tramoseats.TramoSeatsSpecification;
+import ec.tss.xml.InPlaceXmlMarshaller;
+import ec.tss.xml.InPlaceXmlUnmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -134,5 +137,25 @@ public class XmlTramoSeatsSpecification
     public void setBenchmarking(XmlCholetteSpec value) {
         this.benchmarking = value;
     }
-
+    
+    public static final InPlaceXmlUnmarshaller<XmlTramoSeatsSpecification, TramoSeatsSpecification> UNMARSHALLER = (XmlTramoSeatsSpecification xml, TramoSeatsSpecification v) -> {
+        if (xml.preprocessing != null)
+            XmlTramoSpecification.UNMARSHALLER.unmarshal(xml.preprocessing, v.getTramoSpecification());
+        if (xml.decomposition != null)
+            XmlSeatsSpec.UNMARSHALLER.unmarshal(xml.decomposition, v.getSeatsSpecification());
+        if (xml.benchmarking != null)
+            XmlCholetteSpec.UNMARSHALLER.unmarshal(xml.benchmarking, v.getBenchmarkingSpecification());
+        else
+            v.getBenchmarkingSpecification().setEnabled(false);
+        return true;
+    };
+    
+    public static final InPlaceXmlMarshaller<XmlTramoSeatsSpecification, TramoSeatsSpecification> MARSHALLER = (TramoSeatsSpecification v, XmlTramoSeatsSpecification xml ) -> {
+        xml.preprocessing=new XmlTramoSpecification();
+        XmlTramoSpecification.MARSHALLER.marshal(v.getTramoSpecification(), xml.preprocessing);
+        xml.decomposition=new XmlSeatsSpec();
+        XmlSeatsSpec.MARSHALLER.marshal(v.getSeatsSpecification(), xml.decomposition);
+        xml.benchmarking=XmlCholetteSpec.MARSHALLER.marshal(v.getBenchmarkingSpecification());
+        return true;
+    };
 }

@@ -17,6 +17,7 @@
 package ec.demetra.xml.core;
 
 import ec.tss.Ts;
+import ec.tss.TsFactory;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -29,6 +30,7 @@ import ec.tss.TsStatus;
 import ec.tss.xml.IXmlUnmarshaller;
 import ec.tss.xml.InPlaceXmlMarshaller;
 import ec.tstoolkit.MetaData;
+import ec.tstoolkit.timeseries.simplets.TsData;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
@@ -144,7 +146,7 @@ public class XmlTs
 
     public static final IXmlUnmarshaller<XmlTs, TsInformation> INFO_UNMARSHALLER = (XmlTs xml) -> {
         TsMoniker moniker = TsMoniker.create(xml.source, xml.identifier);
-        TsInformation info = new TsInformation(xml.name, moniker, xml.values != null
+        TsInformation info = new TsInformation(xml.name == null ? "series" : xml.name, moniker, xml.values != null
                 ? TsInformationType.UserDefined : TsInformationType.None);
         if (xml.metaData != null) {
             info.metaData = xml.metaData;
@@ -178,6 +180,19 @@ public class XmlTs
         xml.metaData = v.getMetaData();
 
         return true;
+    };
+
+    public static final IXmlUnmarshaller<XmlTs, Ts> TS_UNMARSHALLER = (XmlTs xml) -> {
+        TsMoniker moniker = TsMoniker.create(xml.source, xml.identifier);
+        Ts ts = TsFactory.instance.getTs(moniker);
+        if (ts != null) {
+            return ts;
+        }
+        TsData data = null;
+        if (xml.values != null) {
+            data = XmlTsData.UNMARSHALLER.unmarshal(xml);
+        }
+        return TsFactory.instance.createTs(xml.name, xml.metaData, data);
     };
 
     public static class Adapter extends XmlAdapter<XmlTs, TsInformation> {

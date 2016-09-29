@@ -33,19 +33,30 @@ public class XmlAutoModellingSpecTest {
     public void testMarshaller() {
         AutoModelSpec spec=new AutoModelSpec();
         spec.setEnabled(true);
+        test(spec);
         spec.setAcceptDefault(true);
+        test(spec);
         spec.setAmiCompare(true);
+        test(spec);
         spec.setPc(.1);
+        test(spec);
         spec.setPcr(.88);
+        test(spec);
         spec.setCancel(.3);
+        test(spec);
         spec.setTsig(2);
+        test(spec);
         spec.setUb1(.9);
+        test(spec);
         spec.setUb2(.92);
+        test(spec);
+    }
+    
+    private void test(AutoModelSpec spec){
         XmlAutoModellingSpec xspec=new XmlAutoModellingSpec();
         AutoModelSpec nspec=new AutoModelSpec();
         XmlAutoModellingSpec.MARSHALLER.marshal(spec, xspec);
         XmlAutoModellingSpec.UNMARSHALLER.unmarshal(xspec, nspec);
         assertTrue(spec.equals(nspec));
     }
-    
 }

@@ -5,8 +5,11 @@
  */
 package ec.demetra.xml.regression;
 
+import ec.tss.xml.IXmlMarshaller;
+import ec.tss.xml.XmlTsData;
 import ec.tstoolkit.modelling.TsVariableDescriptor;
 import ec.tstoolkit.modelling.TsVariableDescriptor.UserComponentType;
+import ec.tstoolkit.timeseries.regression.TsVariable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -40,16 +43,33 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "UserVariableType", propOrder = {
+    "data",
     "variable"
 })
 public class XmlUserVariable
         extends XmlModifiableRegressionVariable {
 
-    @XmlElement(name = "Variable", required = true)
+    @XmlElement(name = "Data")
+    private XmlTsData data;
+    @XmlElement(name = "Variable")
     @XmlSchemaType(name = "NMTOKEN")
     protected String variable;
     @XmlAttribute(name = "effect", required = true)
     protected UserComponentType effect;
+
+    /**
+     * @return the data
+     */
+    public XmlTsData getData() {
+        return data;
+    }
+
+    /**
+     * @param data the data to set
+     */
+    public void setData(XmlTsData data) {
+        this.data = data;
+    }
 
     /**
      * Gets the value of the variable property.
@@ -97,6 +117,8 @@ public class XmlUserVariable
         @Override
         public TsVariableDescriptor unmarshal(XmlUserVariable v){
             TsVariableDescriptor desc = new TsVariableDescriptor();
+            if (v.variable == null)
+                return null;
             desc.setName(v.variable);
             if (v.effect != null) {
                 desc.setEffect(v.effect);
@@ -131,4 +153,5 @@ public class XmlUserVariable
     public static final LegacyAdapter getLegacyAdapter() {
         return DESC_ADAPTER;
     }
+    
 }

@@ -16,7 +16,6 @@
  */
 package ec.demetra.xml.sa.tramoseats;
 
-import ec.demetra.xml.regression.TsVariableAdapters;
 import ec.demetra.xml.regression.XmlInterventionVariable;
 import ec.demetra.xml.regression.XmlOutlier;
 import ec.demetra.xml.regression.XmlRamp;
@@ -28,8 +27,6 @@ import ec.tss.xml.IXmlMarshaller;
 import ec.tss.xml.InPlaceXmlUnmarshaller;
 import ec.tstoolkit.modelling.TsVariableDescriptor;
 import ec.tstoolkit.modelling.arima.tramo.RegressionSpec;
-import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
-import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.regression.InterventionVariable;
 import ec.tstoolkit.timeseries.regression.OutlierDefinition;
 import ec.tstoolkit.timeseries.regression.Ramp;
@@ -62,7 +59,9 @@ public class XmlRegressionSpec
         extends ec.demetra.xml.modelling.XmlRegressionSpec {
 
     public static final IXmlMarshaller<XmlRegressionSpec, RegressionSpec> MARSHALLER = (RegressionSpec v) -> {
-        if (!v.isUsed()) {
+        boolean used=v.getOutliersCount()>0 || v.getInterventionVariablesCount()>0 || v.getRampsCount()>0
+                || v.getUserDefinedVariablesCount()>0;
+        if (!used) {
             return null;
         }
         XmlRegressionSpec xml = new XmlRegressionSpec();

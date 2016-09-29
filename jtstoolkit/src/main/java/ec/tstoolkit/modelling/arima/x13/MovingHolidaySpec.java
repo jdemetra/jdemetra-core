@@ -58,7 +58,7 @@ public class MovingHolidaySpec implements Cloneable, InformationSetSerializable 
       MovingHolidaySpec easter = new MovingHolidaySpec();
         easter.test_ = RegressionTestSpec.Add;
         easter.type_ = julian ? Type.JulianEaster : Type.Easter;
-        easter.w_ = 8;
+        easter.w_ = DEF_EASTERDUR;
         easter.test_ = pretest ? RegressionTestSpec.Add : RegressionTestSpec.None;
         return easter;
     }

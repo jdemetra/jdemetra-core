@@ -230,6 +230,10 @@ limitations under the Licence.
         <xs:list itemType="xs:boolean"/>
     </xs:simpleType>
 
+    <xs:simpleType name="Tokens">
+        <xs:list itemType="xs:token"/>
+    </xs:simpleType>
+
     <xs:simpleType name="Probability">
         <xs:restriction base="xs:double">
             <xs:minExclusive value="0"/>
@@ -446,7 +450,7 @@ limitations under the Licence.
             <xs:documentation>
             </xs:documentation>
         </xs:annotation>
-        <xs:attribute name="name" type="xs:ID" use="required"/>
+        <xs:attribute name="name" type="xs:NMTOKEN" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="StaticTsVariableType">
@@ -476,7 +480,7 @@ limitations under the Licence.
             <xs:extension base="tss:TsVariableType">
                 <xs:sequence>
                     <xs:element name="Moniker" type="tss:TsMonikerType"/>
-                    <xs:element name="Tsdata" type="tss:TsDataType" minOccurs="0"/>
+                    <xs:element name="TsData" type="tss:TsDataType" minOccurs="0"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -490,6 +494,7 @@ limitations under the Licence.
         <xs:sequence>
             <xs:element name="Variable" type="tss:TsVariableType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
+                <xs:attribute name="name" type="xs:string" use="required" />
     </xs:complexType>
 
     <!--Utilities-->

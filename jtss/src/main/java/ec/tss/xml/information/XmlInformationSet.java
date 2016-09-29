@@ -89,6 +89,7 @@ public class XmlInformationSet implements IXmlConverter<InformationSet> {
             return;
         }
         List<Information<Object>> items = t.deepSelect(Object.class);
+        items.removeIf(item->InformationSet.class.isInstance(item.value));
         item = new XmlInformation[items.size()];
         int cur = 0;
         for (Information<Object> info : items) {

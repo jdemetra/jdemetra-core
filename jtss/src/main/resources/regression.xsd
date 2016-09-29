@@ -271,7 +271,7 @@ limitations under the Licence.
             <xs:extension base="tss:ModifiableRegressionVariableType">
                 <xs:sequence>
                     <xs:choice>
-                        <xs:element name="Variables" type="xs:IDREFS"/>
+                        <xs:element name="Variables" type="xs:NMTOKENS"/>
                         <xs:element name="Data" type="tss:TsDataListType"/>
                     </xs:choice>
                 </xs:sequence>
