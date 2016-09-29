@@ -23,6 +23,7 @@ import ec.tstoolkit.design.UtilityClass;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 
 /**
@@ -136,6 +137,7 @@ public final class Params {
 
         @Override
         public void set(IConfig.Builder<?, S> builder, P value) {
+            Objects.requireNonNull(builder);
             if (!defaultValue.equals(value) && value != null) {
                 String valueAsString = formatter.formatAsString(value);
                 if (valueAsString != null) {
@@ -178,6 +180,7 @@ public final class Params {
 
         @Override
         public void set(IConfig.Builder<?, S> builder, DataFormat value) {
+            Objects.requireNonNull(builder);
             if (!defaultValue.equals(value)) {
                 builder.put(localeKey, value.getLocaleString());
                 builder.put(datePatternKey, value.getDatePattern());
