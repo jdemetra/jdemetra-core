@@ -21,11 +21,7 @@ package ec.demetra.xml.regression;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-/**
- *
- * @author Kristof Bayens
- */
-@XmlRootElement(name = XmlRegModel.RNAME)
+//@XmlRootElement(name = XmlRegModel.RNAME)
 @XmlType(name = XmlRegModel.NAME)
 public class XmlRegModel {
     static final String RNAME = "regModel", NAME = RNAME+"Type";

@@ -60,7 +60,7 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "EstimationSpec")
+//@XmlRootElement(name = "EstimationSpec")
 @XmlType(name = "EstimationSpecType", propOrder = {
     "precision",
     "eml",

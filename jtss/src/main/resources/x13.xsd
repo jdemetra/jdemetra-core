@@ -620,9 +620,6 @@ and open the template in the editor.
         <xs:attribute name="parallelProcessing" type="xs:boolean" use="optional" default="true"/>
     </xs:complexType>
 
-    <xs:element name="RegArimaSpecification" type="x13:RegArimaSpecificationType"/>
-    <xs:element name="RegArimaRequest" type="x13:RegArimaRequestType"/>
-    <xs:element name="RegArimaRequests" type="x13:RegArimaRequestsType"/>
 
     <!-- X13 specification-->
 
@@ -712,9 +709,9 @@ and open the template in the editor.
         <xs:attribute name="parallelProcessing" type="xs:boolean" use="optional" default="true"/>
     </xs:complexType>
 
-    <xs:element name="TransformationSpec" type="x13:TransformationSpecType"/>
-    <xs:element name="EstimationSpec" type="x13:EstimationSpecType"/>
-    <xs:element name="RegressionSpec" type="x13:RegressionSpecType"/>
+    <xs:element name="RegArimaSpecification" type="x13:RegArimaSpecificationType"/>
+    <xs:element name="RegArimaRequest" type="x13:RegArimaRequestType"/>
+    <xs:element name="RegArimaRequests" type="x13:RegArimaRequestsType"/>
     <xs:element name="X13Specification" type="x13:X13SpecificationType"/>
     <xs:element name="X13Request" type="x13:X13RequestType"/>
     <xs:element name="X13Requests" type="x13:X13RequestsType"/>

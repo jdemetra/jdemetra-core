@@ -44,7 +44,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  *
  * @author Jean Palate
  */
-@XmlRootElement(name = XmlInformation.RNAME)
+//@XmlRootElement(name = XmlInformation.RNAME)
 @XmlType(name = XmlInformation.NAME)
 public class XmlInformation {
 

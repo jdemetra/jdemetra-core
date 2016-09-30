@@ -60,7 +60,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name="InterventionVariable")
+//@XmlRootElement(name="InterventionVariable")
 @XmlType(name = "InterventionVariableType", propOrder = {
     "sequence",
     "deltaFilter",

@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  * @author Jean Palate
  */
-@XmlRootElement(name = XmlAlgorithm.RNAME)
+//@XmlRootElement(name = XmlAlgorithm.RNAME)
 @XmlType(name = XmlAlgorithm.NAME)
 public class XmlAlgorithm implements IXmlConverter<AlgorithmDescriptor> {
     static final String NAME = "AlgorithmDescriptorType";

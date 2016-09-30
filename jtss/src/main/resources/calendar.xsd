@@ -229,9 +229,6 @@ limitations under the Licence.
         </xs:sequence>
     </xs:complexType>
 
-    <xs:element name="NationalCalendar" type="tss:NationalCalendarType"/>
-    <xs:element name="CompositeCalendar" type="tss:CompositeCalendarType"/>
-    <xs:element name="ChainedCalendar" type="tss:ChainedCalendarType"/>
     <xs:element name="Calendars" type="tss:CalendarsType"/>
 
 </xs:schema>

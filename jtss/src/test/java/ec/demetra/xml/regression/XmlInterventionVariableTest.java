@@ -23,10 +23,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.util.JAXBSource;
+import javax.xml.namespace.QName;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Validator;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -63,34 +67,21 @@ public class XmlInterventionVariableTest {
         try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(xvar, writer);
+//            marshaller.marshal(xvar, writer);
+            marshaller.marshal(new JAXBElement(QName.valueOf("test"), XmlInterventionVariable.class, xvar), writer);
             writer.flush();
         }
 
         XmlInterventionVariable rslt = null;
         FileInputStream istream = new FileInputStream(FILE);
         try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
+            Source source = new StreamSource(reader);
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-            rslt = (XmlInterventionVariable) unmarshaller.unmarshal(reader);
+//            rslt = (XmlInterventionVariable) unmarshaller.unmarshal(reader);
+            JAXBElement<XmlInterventionVariable> jrslt =   unmarshaller.unmarshal(source, XmlInterventionVariable.class);
+            rslt=jrslt.getValue();
             InterventionVariable nvar = XmlInterventionVariable.getAdapter().unmarshal(rslt);
         }
-    }
-
-    @Test
-    public void testValidation() throws FileNotFoundException, JAXBException, IOException, SAXException {
-
-        JAXBContext jaxb = JAXBContext.newInstance(XmlInterventionVariable.class);
-        InterventionVariable ivar = new InterventionVariable();
-        ivar.setDelta(.9);
-        Day d0 = new Day(1999, Month.April, 3);
-        Day d1 = new Day(2005, Month.June, 3);
-        ivar.add(d0, d0);
-        ivar.add(d1, d1.plus(90));
-        XmlInterventionVariable xvar = XmlInterventionVariable.getAdapter().marshal(ivar);
-        JAXBSource source = new JAXBSource(jaxb, xvar);
-        Validator validator = Schemas.Modelling.newValidator();
-        //validator.setErrorHandler(new TestErrorHandler());
-        validator.validate(source);
     }
 
 }

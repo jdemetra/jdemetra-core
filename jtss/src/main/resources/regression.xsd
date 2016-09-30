@@ -250,8 +250,6 @@ limitations under the Licence.
         </xs:complexContent>
     </xs:complexType>
 
-    <xs:element name="InterventionVariable" type="tss:InterventionVariableType"/>
- 
     <xs:complexType name="UserVariableType">
         <xs:complexContent>
             <xs:extension base="tss:ModifiableRegressionVariableType">

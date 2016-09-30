@@ -81,17 +81,4 @@ public class XmlTransformationSpecTest {
         }
     }
 
-    @Test
-    public void testValidation() throws FileNotFoundException, JAXBException, IOException, SAXException {
-
-        TramoSpecification spec = TramoSpecification.TRfull;
-        TransformSpec tspec = spec.getTransform().clone();
-        XmlTransformationSpec xspec=XmlTransformationSpec.MARSHALLER.marshal(tspec);
-        JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
-        JAXBSource source = new JAXBSource(jaxb, xspec);
-        Validator validator = Schemas.TramoSeats.newValidator();
-        //validator.setErrorHandler(new TestErrorHandler());
-        validator.validate(source);
-    }
-
 }

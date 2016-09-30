@@ -29,7 +29,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Jean Palate
  */
-@XmlRootElement(name = XmlGenericTradingDays.RNAME)
+//@XmlRootElement(name = XmlGenericTradingDays.RNAME)
 @XmlType(name = XmlGenericTradingDays.NAME)
 public class XmlGenericTradingDays extends XmlModifiableRegressionVariable {
 

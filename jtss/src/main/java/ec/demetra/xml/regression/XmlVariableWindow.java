@@ -29,7 +29,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Jean Palate
  */
-@XmlRootElement(name = XmlVariableWindow.NAME)
+//@XmlRootElement(name = XmlVariableWindow.NAME)
 @XmlType(name = XmlVariableWindow.NAME)
 public class XmlVariableWindow extends XmlRegressionVariableModifier{
     

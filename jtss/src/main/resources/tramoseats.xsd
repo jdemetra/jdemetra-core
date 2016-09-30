@@ -611,9 +611,6 @@ and open the template in the editor.
         <xs:attribute name="parallelProcessing" type="xs:boolean" use="optional" default="true"/>
     </xs:complexType>
 
-    <xs:element name="TramoSpecification" type="trs:TramoSpecificationType"/>
-    <xs:element name="TramoRequest" type="trs:TramoRequestType"/>
-    <xs:element name="TramoRequests" type="trs:TramoRequestsType"/>
 
     <!-- TramoSeats specification-->
 
@@ -704,9 +701,9 @@ and open the template in the editor.
         <xs:attribute name="parallelProcessing" type="xs:boolean" use="optional" default="true"/>
     </xs:complexType>
 
-    <xs:element name="TransformationSpec" type="trs:TransformationSpecType"/>
-    <xs:element name="EstimationSpec" type="trs:EstimationSpecType"/>
-    <xs:element name="RegressionSpec" type="trs:RegressionSpecType"/>
+    <xs:element name="TramoSpecification" type="trs:TramoSpecificationType"/>
+    <xs:element name="TramoRequest" type="trs:TramoRequestType"/>
+    <xs:element name="TramoRequests" type="trs:TramoRequestsType"/>
     <xs:element name="TramoSeatsSpecification" type="trs:TramoSeatsSpecificationType"/>
     <xs:element name="TramoSeatsRequest" type="trs:TramoSeatsRequestType"/>
     <xs:element name="TramoSeatsRequests" type="trs:TramoSeatsRequestsType"/>

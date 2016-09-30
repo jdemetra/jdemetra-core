@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.openide.util.lookup.ServiceProvider;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "NationalCalendar")
+//@XmlRootElement(name = "NationalCalendar")
 @XmlType(name = "NationalCalendarType", propOrder = {
     "specialDayEvent"
 })

@@ -510,9 +510,7 @@ limitations under the Licence.
 
     <xs:element name="Matrix" type="tss:MatrixType"/>
     <xs:element name="TsData" type="tss:TsDataType"/>
-    <xs:element name="MetaData" type="tss:MetaDataType"/>
     <xs:element name="Ts" type="tss:TsType"/>
     <xs:element name="TsCollection" type="tss:TsCollectionType"/>
-    <xs:element name="VariablesDictionary" type="tss:TsVariablesType"/>
 
 </xs:schema>

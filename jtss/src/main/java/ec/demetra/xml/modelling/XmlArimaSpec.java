@@ -57,7 +57,7 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "ArimaSpec")
+//@XmlRootElement(name = "ArimaSpec")
 @XmlType(name = "ArimaSpecType", propOrder = {
     "mean",
     "orders",

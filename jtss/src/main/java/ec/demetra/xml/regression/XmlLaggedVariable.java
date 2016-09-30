@@ -26,7 +26,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Jean Palate
  */
-@XmlRootElement(name = XmlLaggedVariable.RNAME)
+//@XmlRootElement(name = XmlLaggedVariable.RNAME)
 @XmlType(name = XmlLaggedVariable.NAME)
 public class XmlLaggedVariable extends XmlRegressionVariableModifier{
     
