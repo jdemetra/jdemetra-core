@@ -52,7 +52,7 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "TransformationSpec")
+//@XmlRootElement(name = "TransformationSpec")
 @XmlType(name = "TransformationSpecType", propOrder = {
     "log",
     "auto",

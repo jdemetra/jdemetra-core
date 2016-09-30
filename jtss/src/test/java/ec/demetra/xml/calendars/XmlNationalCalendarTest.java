@@ -32,10 +32,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.util.JAXBSource;
+import javax.xml.namespace.QName;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Validator;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -53,24 +57,6 @@ public class XmlNationalCalendarTest {
     public XmlNationalCalendarTest() {
     }
 
-    @Test
-    public void testValidation() throws JAXBException, SAXException, IOException {
-
-        XmlNationalCalendar xcal = new XmlNationalCalendar();
-        xcal.setName("calendar.test");
-        XmlFixedDay fday = new XmlFixedDay();
-        fday.setMonth(Month.March);
-        fday.setDay(21);
-        XmlSpecialDayEvent sday = new XmlSpecialDayEvent();
-        sday.setDay(fday);
-        xcal.getSpecialDayEvent().add(sday);
-        JAXBContext jaxb = JAXBContext.newInstance(xcal.getClass());
-//        JAXBElement jcal = new JAXBElement(QName.valueOf("test"), XmlNationalCalendar.class, xcal);
-        JAXBSource source = new JAXBSource(jaxb, xcal);
-        Validator validator = Schemas.Calendars.newValidator();
-//        validator.setErrorHandler(new TestErrorHandler());
-        validator.validate(source);
-    }
 
     @Test
     @Ignore
@@ -96,19 +82,19 @@ public class XmlNationalCalendarTest {
         try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(xcal, writer);
-//            marshaller.marshal(new JAXBElement(QName.valueOf("test"), XmlNationalCalendar.class, xcal), writer);
+//            marshaller.marshal(xcal, writer);
+            marshaller.marshal(new JAXBElement(QName.valueOf("test"), XmlNationalCalendar.class, xcal), writer);
             writer.flush();
         }
 
         ec.demetra.xml.calendars.XmlNationalCalendar rslt;
         FileInputStream istream = new FileInputStream(FILE);
         try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
-//            Source source = new StreamSource(reader);
+            Source source = new StreamSource(reader);
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-            rslt=(XmlNationalCalendar) unmarshaller.unmarshal(reader);
-//            JAXBElement<XmlNationalCalendar> jrslt =   unmarshaller.unmarshal(source, XmlNationalCalendar.class);
-//            rslt=jrslt.getValue();
+//            rslt=(XmlNationalCalendar) unmarshaller.unmarshal(reader);
+            JAXBElement<XmlNationalCalendar> jrslt =   unmarshaller.unmarshal(source, XmlNationalCalendar.class);
+            rslt=jrslt.getValue();
             //           assertTrue(rslt.create().equals(tspec));
         }
         NationalCalendarProvider nprovider = XmlNationalCalendar.getAdapter().unmarshal(rslt);

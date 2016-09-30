@@ -30,7 +30,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name="ChainedCalendar")
+//@XmlRootElement(name="ChainedCalendar")
 @XmlType(name = "ChainedCalendarType", propOrder = {
     "startCalendar",
     "endCalendar",
