@@ -19,8 +19,6 @@ package ec.tss.tsproviders;
 import com.google.common.base.Strings;
 import ec.tss.ITsProvider;
 import java.io.IOException;
-import java.util.List;
-import java.util.WeakHashMap;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -34,7 +32,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * @since 1.0.0
  */
 @ThreadSafe
-public interface IDataSourceProvider extends ITsProvider, HasDataHierarchy, HasDataDisplayName, HasDataMoniker {
+public interface IDataSourceProvider extends ITsProvider, HasDataSourceList, HasDataHierarchy, HasDataDisplayName, HasDataMoniker {
 
     /**
      * Gets a label for this provider.<br>Note that the result might change
@@ -46,32 +44,6 @@ public interface IDataSourceProvider extends ITsProvider, HasDataHierarchy, HasD
     default String getDisplayName() {
         return getSource();
     }
-
-    /**
-     * Gets the DataSources loaded by this provider.
-     *
-     * @return a list of DataSources; might be empty but never null.
-     */
-    @Nonnull
-    List<DataSource> getDataSources();
-
-    /**
-     * Adds a listener to the provider in order to receive change
-     * notifications.<br>Note that the specified listener might be stored in a
-     * {@link WeakHashMap} to avoid memory leak. It is up to you to keep it in a
-     * strong ref to prevent garbage collection.
-     *
-     * @param listener
-     */
-    void addDataSourceListener(@Nonnull IDataSourceListener listener);
-
-    /**
-     * Removes a listener from the provider if that listener has been added.
-     * Does nothing otherwise.
-     *
-     * @param listener
-     */
-    void removeDataSourceListener(@Nonnull IDataSourceListener listener);
 
     /**
      * Gets a label for an exception thrown by this provider.

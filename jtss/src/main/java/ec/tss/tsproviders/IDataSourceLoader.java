@@ -16,7 +16,6 @@
  */
 package ec.tss.tsproviders;
 
-import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
@@ -35,34 +34,6 @@ import javax.annotation.concurrent.ThreadSafe;
  * @since 1.0.0
  */
 @ThreadSafe
-public interface IDataSourceLoader extends IDataSourceProvider, HasDataSourceBean {
+public interface IDataSourceLoader extends IDataSourceProvider, HasDataSourceMutableList, HasDataSourceBean {
 
-    /**
-     * Adds a new DataSource to the provider.
-     *
-     * @param dataSource
-     * @return true if the DataSource has been added to the provider, false
-     * otherwise.
-     * @throws IllegalArgumentException if the DataSource doesn't belong to this
-     * provider.
-     */
-    boolean open(@Nonnull DataSource dataSource) throws IllegalArgumentException;
-
-    /**
-     * Removes a DataSource from the provider.
-     *
-     * @param dataSource
-     * @return true if the DataSource has been removed from the provider, false
-     * otherwise.
-     * @throws IllegalArgumentException if the DataSource doesn't belong to this
-     * provider.
-     */
-    boolean close(@Nonnull DataSource dataSource) throws IllegalArgumentException;
-
-    /**
-     * Removes all the DataSources from this provider.
-     */
-    default void closeAll() {
-        getDataSources().forEach(this::close);
-    }
 }
