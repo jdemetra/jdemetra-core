@@ -34,7 +34,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * @author Philippe Charles
  */
 @ThreadSafe
-public interface IDataSourceLoader extends IDataSourceProvider {
+public interface IDataSourceLoader extends IDataSourceProvider, HasDataSourceBean {
 
     /**
      * Adds a new DataSource to the provider.
@@ -64,36 +64,4 @@ public interface IDataSourceLoader extends IDataSourceProvider {
     default void closeAll() {
         getDataSources().forEach(this::close);
     }
-
-    /**
-     * Creates a provider-specific bean that can be used to configure a
-     * DataSource.
-     *
-     * @return a non-null bean.
-     */
-    @Nonnull
-    Object newBean();
-
-    /**
-     * Creates a DataSource whose configuration is determined by the specified
-     * bean.
-     *
-     * @param bean
-     * @return a non-null DataSource.
-     * @throws IllegalArgumentException if the bean doesn't belong to this
-     * provider.
-     */
-    @Nonnull
-    DataSource encodeBean(@Nonnull Object bean) throws IllegalArgumentException;
-
-    /**
-     * Creates a bean by reading the parameters of the specified DataSource.
-     *
-     * @param dataSource
-     * @return a non-null bean.
-     * @throws IllegalArgumentException if the DataSource doesn't belong to this
-     * provider.
-     */
-    @Nonnull
-    Object decodeBean(@Nonnull DataSource dataSource) throws IllegalArgumentException;
 }
