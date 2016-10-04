@@ -24,6 +24,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * Defines a specialized provider whose source is a file.
  *
  * @author Philippe Charles
+ * @since 1.0.0
  */
 @ThreadSafe
 public interface IFileLoader extends IDataSourceLoader, FileFilter, HasFilePaths {

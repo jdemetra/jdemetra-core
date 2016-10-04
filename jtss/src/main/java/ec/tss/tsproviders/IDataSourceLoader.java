@@ -32,6 +32,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * </code>
  *
  * @author Philippe Charles
+ * @since 1.0.0
  */
 @ThreadSafe
 public interface IDataSourceLoader extends IDataSourceProvider, HasDataSourceBean {

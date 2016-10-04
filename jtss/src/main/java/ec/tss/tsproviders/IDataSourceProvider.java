@@ -31,6 +31,7 @@ import javax.annotation.concurrent.ThreadSafe;
  *
  * @author Demortier Jeremy
  * @author Philippe Charles
+ * @since 1.0.0
  */
 @ThreadSafe
 public interface IDataSourceProvider extends ITsProvider, HasDataHierarchy, HasDataDisplayName, HasDataMoniker {

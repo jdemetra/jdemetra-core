@@ -52,6 +52,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * mandatory.
  *
  * @author Philippe Charles
+ * @since 1.0.0
  */
 @Immutable
 @XmlJavaTypeAdapter(DataSource.XmlAdapter.class)
