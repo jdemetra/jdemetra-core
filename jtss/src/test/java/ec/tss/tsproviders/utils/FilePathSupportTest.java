@@ -17,7 +17,6 @@
 package ec.tss.tsproviders.utils;
 
 import java.io.File;
-import java.util.function.Consumer;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
@@ -32,8 +31,7 @@ public class FilePathSupportTest {
     @SuppressWarnings("null")
     public void testFactory() {
         assertThat(FilePathSupport.of()).isNotNull();
-        assertThatThrownBy(() -> FilePathSupport.of((Runnable) null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> FilePathSupport.of((Consumer<File[]>) null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> FilePathSupport.of(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
