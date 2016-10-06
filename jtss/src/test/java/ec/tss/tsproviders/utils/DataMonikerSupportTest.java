@@ -19,6 +19,7 @@ package ec.tss.tsproviders.utils;
 import ec.tss.TsMoniker;
 import ec.tss.tsproviders.DataSet;
 import ec.tss.tsproviders.DataSource;
+import ec.tss.tsproviders.HasDataMoniker;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
@@ -48,8 +49,9 @@ public class DataMonikerSupportTest {
     }
 
     @Test
+    @SuppressWarnings("null")
     public void testToDataSource() {
-        DataMonikerSupport support = DataMonikerSupport.usingUri(providerName);
+        HasDataMoniker support = DataMonikerSupport.usingUri(providerName);
         assertThat(support.toDataSource(goodDataSourceMoniker)).isEqualTo(goodDataSource);
         assertThat(support.toDataSource(goodDataSetMoniker)).isNull();
         assertThatThrownBy(() -> support.toDataSource(null)).isInstanceOf(NullPointerException.class);
@@ -58,8 +60,9 @@ public class DataMonikerSupportTest {
     }
 
     @Test
+    @SuppressWarnings("null")
     public void testToDataSet() {
-        DataMonikerSupport support = DataMonikerSupport.usingUri(providerName);
+        HasDataMoniker support = DataMonikerSupport.usingUri(providerName);
         assertThat(support.toDataSet(goodDataSetMoniker)).isEqualTo(goodDataSet);
         assertThat(support.toDataSet(goodDataSourceMoniker)).isNull();
         assertThatThrownBy(() -> support.toDataSet(null)).isInstanceOf(NullPointerException.class);
@@ -68,16 +71,18 @@ public class DataMonikerSupportTest {
     }
 
     @Test
+    @SuppressWarnings("null")
     public void testFromDataSource() {
-        DataMonikerSupport support = DataMonikerSupport.usingUri(providerName);
+        HasDataMoniker support = DataMonikerSupport.usingUri(providerName);
         assertThat(support.toMoniker(goodDataSource)).isEqualTo(goodDataSourceMoniker);
         assertThatThrownBy(() -> support.toMoniker((DataSource) null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> support.toMoniker(badDataSource)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
+    @SuppressWarnings("null")
     public void testFromDataSet() {
-        DataMonikerSupport support = DataMonikerSupport.usingUri(providerName);
+        HasDataMoniker support = DataMonikerSupport.usingUri(providerName);
         assertThat(support.toMoniker(goodDataSet)).isEqualTo(goodDataSetMoniker);
         assertThatThrownBy(() -> support.toMoniker((DataSet) null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> support.toMoniker(badDataSet)).isInstanceOf(IllegalArgumentException.class);

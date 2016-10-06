@@ -12,8 +12,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Map.Entry;
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 
 /**
@@ -26,35 +26,42 @@ public class ParamsTest {
         assertBehavior(p, defaultValue, newValue, ImmutableMap.of(key, newValueAsString));
     }
 
+    @SuppressWarnings("null")
     private <T> void assertBehavior(IParam<DataSource, T> param, T defaultValue, T newValue, Map<String, String> keyValues) {
         DataSource.Builder builder = DataSource.builder("", "");
+
+        // NPE
+        assertThatThrownBy(() -> param.get(null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> param.set(null, defaultValue)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> param.set(null, newValue)).isInstanceOf(NullPointerException.class);
+
         // default value
-        Assert.assertEquals(defaultValue, param.defaultValue());
+        assertThat(param.defaultValue()).isEqualTo(defaultValue);
+
         // keys absent => default value
         DataSource emptyConfig = builder.clear().build();
-        Assert.assertEquals(defaultValue, param.get(emptyConfig));
+        assertThat(param.get(emptyConfig)).isEqualTo(defaultValue);
+
         // keys present => new value
         builder.clear();
-        for (Entry<String, String> o : keyValues.entrySet()) {
-            builder.put(o.getKey(), o.getValue());
-        }
+        keyValues.forEach(builder::put);
         DataSource normalConfig = builder.build();
         if (newValue instanceof double[]) {
-            Assert.assertArrayEquals((double[]) newValue, (double[]) param.get(normalConfig), 0);
+            assertThat((double[]) param.get(normalConfig)).containsExactly((double[]) newValue);
         } else {
-            Assert.assertEquals(newValue, param.get(normalConfig));
+            assertThat(param.get(normalConfig)).isEqualTo(newValue);
         }
+
         // new value => keys present
         builder.clear();
         param.set(builder, newValue);
         DataSource newConfig = builder.build();
-        for (Entry<String, String> o : keyValues.entrySet()) {
-            Assert.assertEquals(o.getValue(), newConfig.get(o.getKey()));
-        }
+        keyValues.forEach((k, v) -> assertThat(newConfig.get(k)).isEqualTo(v));
+
         // default value => keys absent
         builder.clear();
         param.set(builder, defaultValue);
-        Assert.assertTrue(builder.build().getParams().isEmpty());
+        assertThat(builder.build().getParams()).isEmpty();
     }
 
     @Test

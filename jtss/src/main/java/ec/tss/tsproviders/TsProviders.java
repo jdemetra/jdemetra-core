@@ -41,6 +41,7 @@ import javax.annotation.Nonnull;
  * Utility class that simplify the use of Ts providers.
  *
  * @author Philippe Charles
+ * @since 1.0.0
  */
 public final class TsProviders {
 

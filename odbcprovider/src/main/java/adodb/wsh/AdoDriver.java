@@ -19,10 +19,14 @@ package adodb.wsh;
 import ec.tstoolkit.design.VisibleForTesting;
 import static java.lang.String.format;
 import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.LoggerFactory;
 
 /**
  * https://msdn.microsoft.com/en-us/library/aa478977.aspx
@@ -30,9 +34,18 @@ import java.util.concurrent.ConcurrentMap;
  * @author Philippe Charles
  * @since 2.1.0
  */
+@ServiceProvider(service = Driver.class)
 public final class AdoDriver extends _Driver {
 
     public static final String PREFIX = "jdbc:adodb:";
+
+    static {
+        try {
+            DriverManager.registerDriver(new AdoDriver());
+        } catch (SQLException ex) {
+            LoggerFactory.getLogger(AdoDriver.class).error("Cannot register AdoDriver", ex);
+        }
+    }
 
     private final Wsh wsh;
     private final ConcurrentMap<String, AdoContext> pool;

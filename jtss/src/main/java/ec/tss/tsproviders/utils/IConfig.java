@@ -21,11 +21,15 @@ import java.util.Map;
 import java.util.SortedMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 
 /**
+ * Defines an immutable key-value store.
  *
  * @author Philippe Charles
+ * @since 1.0.0
  */
+@Immutable
 public interface IConfig {
 
     @Nullable

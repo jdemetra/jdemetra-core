@@ -18,6 +18,7 @@ package ec.tss.tsproviders.utils;
 
 import ec.tss.tsproviders.DataSet;
 import ec.tss.tsproviders.DataSource;
+import ec.tss.tsproviders.HasDataDisplayName;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
@@ -43,16 +44,18 @@ public class DataDisplayNameSupportTest {
     }
 
     @Test
+    @SuppressWarnings("null")
     public void testGetDisplayDataSourceName() {
-        DataDisplayNameSupport support = DataDisplayNameSupport.usingUri(providerName);
+        HasDataDisplayName support = DataDisplayNameSupport.usingUri(providerName);
         assertThat(support.getDisplayName(goodDataSource)).isNotEmpty();
         assertThatThrownBy(() -> support.getDisplayName((DataSource) null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> support.getDisplayName(badDataSource)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
+    @SuppressWarnings("null")
     public void testGetDisplayDataSetName() {
-        DataDisplayNameSupport support = DataDisplayNameSupport.usingUri(providerName);
+        HasDataDisplayName support = DataDisplayNameSupport.usingUri(providerName);
         assertThat(support.getDisplayName(goodDataSet)).isNotEmpty();
         assertThatThrownBy(() -> support.getDisplayName((DataSet) null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> support.getDisplayName(badDataSet)).isInstanceOf(IllegalArgumentException.class);
@@ -61,7 +64,7 @@ public class DataDisplayNameSupportTest {
     @Test
     @SuppressWarnings("null")
     public void testGetDisplayDataSetNodeName() {
-        DataDisplayNameSupport support = DataDisplayNameSupport.usingUri(providerName);
+        HasDataDisplayName support = DataDisplayNameSupport.usingUri(providerName);
         assertThat(support.getDisplayNodeName(goodDataSet)).isNotEmpty();
         assertThatThrownBy(() -> support.getDisplayNodeName(null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> support.getDisplayName(badDataSet)).isInstanceOf(IllegalArgumentException.class);

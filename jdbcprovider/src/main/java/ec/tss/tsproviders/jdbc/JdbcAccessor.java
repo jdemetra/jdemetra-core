@@ -20,9 +20,11 @@ import ec.tss.tsproviders.db.DbAccessor;
 import ec.tss.tsproviders.db.DbSeries;
 import ec.tss.tsproviders.db.DbSetId;
 import ec.tss.tsproviders.db.DbUtil;
+import ec.tstoolkit.utilities.GuavaCaches;
 import ec.util.jdbc.JdbcTable;
 import ec.util.jdbc.SqlIdentifierQuoter;
 import java.sql.*;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
@@ -275,7 +277,8 @@ public class JdbcAccessor<BEAN extends JdbcBean> extends DbAccessor.Commander<BE
 
     @Override
     public DbAccessor<BEAN> memoize() {
-        return DbAccessor.BulkAccessor.from(this, dbBean.getCacheDepth(), DbAccessor.BulkAccessor.newTtlCache(dbBean.getCacheTtl()));
+        Duration duration = Duration.ofMillis(dbBean.getCacheTtl());
+        return DbAccessor.BulkAccessor.from(this, dbBean.getCacheDepth(), GuavaCaches.ttlCache(duration));
     }
 
     /**

@@ -20,7 +20,6 @@ import com.google.common.base.Optional;
 import com.google.common.base.StandardSystemProperty;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;
 import ec.tss.TsCollectionInformation;
@@ -37,6 +36,7 @@ import ec.tss.tsproviders.utils.DataSourceSupport;
 import ec.tss.tsproviders.utils.Parsers;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.utilities.Files2;
+import ec.tstoolkit.utilities.GuavaCaches;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -63,7 +63,7 @@ public class UscbProvider implements IDataSourceProvider {
     private final Parsers.Parser<DataSource> legacyDataSourceParser;
 
     public UscbProvider() {
-        m_accessors = CacheBuilder.newBuilder().softValues().build();
+        m_accessors = GuavaCaches.softValuesCache();
         legacyDataSourceParser = FileDataSourceId.legacyParser(SOURCE, VERSION);
         support = DataSourceSupport.create(SOURCE, LOGGER);
         openAll();

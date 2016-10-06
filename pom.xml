@@ -48,7 +48,7 @@
         <!-- dependencies -->
         <junit.version>4.12</junit.version>
         <jsr305.version>3.0.1</jsr305.version>
-        <assertj.version>3.4.1</assertj.version>
+        <assertj.version>3.5.2</assertj.version>
         <netbeans.version>RELEASE81</netbeans.version>
     </properties>
   

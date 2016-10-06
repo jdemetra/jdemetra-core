@@ -23,6 +23,7 @@ import ec.tstoolkit.design.UtilityClass;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 
 /**
@@ -84,12 +85,12 @@ public final class Params {
     }
 
     @Nonnull
-    public static <S extends IConfig> IParam<S, DataFormat> onDataFormat(@Nonnull final DataFormat defaultValue, @Nonnull final String localeKey, @Nonnull final String datePatternKey, @Nonnull final String numberPatternKey) {
+    public static <S extends IConfig> IParam<S, DataFormat> onDataFormat(@Nonnull DataFormat defaultValue, @Nonnull String localeKey, @Nonnull String datePatternKey, @Nonnull String numberPatternKey) {
         return new DataFormatParam(defaultValue, localeKey, datePatternKey, numberPatternKey);
     }
 
     @Nonnull
-    public static <S extends IConfig> IParam<S, double[]> onDoubleArray(@Nonnull final String key, final double... defaultValues) {
+    public static <S extends IConfig> IParam<S, double[]> onDoubleArray(@Nonnull String key, @Nonnull double... defaultValues) {
         return new SingleParam<>(defaultValues, key, Parsers.doubleArrayParser(), Formatters.doubleArrayFormatter());
     }
 
@@ -136,6 +137,7 @@ public final class Params {
 
         @Override
         public void set(IConfig.Builder<?, S> builder, P value) {
+            Objects.requireNonNull(builder);
             if (!defaultValue.equals(value) && value != null) {
                 String valueAsString = formatter.formatAsString(value);
                 if (valueAsString != null) {
@@ -178,6 +180,7 @@ public final class Params {
 
         @Override
         public void set(IConfig.Builder<?, S> builder, DataFormat value) {
+            Objects.requireNonNull(builder);
             if (!defaultValue.equals(value)) {
                 builder.put(localeKey, value.getLocaleString());
                 builder.put(datePatternKey, value.getDatePattern());
