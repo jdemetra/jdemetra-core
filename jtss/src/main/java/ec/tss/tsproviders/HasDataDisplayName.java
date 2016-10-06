@@ -68,4 +68,15 @@ public interface HasDataDisplayName {
     default String getDisplayNodeName(@Nonnull DataSet dataSet) throws IllegalArgumentException {
         return getDisplayName(dataSet);
     }
+
+    /**
+     * Creates a new instance of HasDataDisplayName using uri parser/formatter.
+     *
+     * @param providerName a non-null provider name
+     * @return a non-null instance
+     */
+    @Nonnull
+    static HasDataDisplayName usingUri(@Nonnull String providerName) {
+        return new Util.DataDisplayNameSupport(providerName, DataSource.uriFormatter(), DataSet.uriFormatter());
+    }
 }
