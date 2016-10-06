@@ -58,6 +58,6 @@ public abstract class AbstractFileLoader<DATA, BEAN extends IFileBean> extends A
     }
 
     protected File getRealFile(File file) throws FileNotFoundException {
-        return support.getRealFile(paths, file);
+        return DataSourceSupport.getRealFile(paths, file);
     }
 }

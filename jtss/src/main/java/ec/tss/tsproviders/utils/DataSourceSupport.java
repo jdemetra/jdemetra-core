@@ -23,6 +23,9 @@ import ec.tss.TsInformation;
 import ec.tss.TsMoniker;
 import ec.tss.tsproviders.DataSet;
 import ec.tss.tsproviders.DataSource;
+import ec.tss.tsproviders.HasDataMoniker;
+import ec.tss.tsproviders.HasDataSourceMutableList;
+import ec.tss.tsproviders.HasFilePaths;
 import ec.tss.tsproviders.IDataSourceListener;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.utilities.Files2;
@@ -44,7 +47,7 @@ import org.slf4j.Logger;
  *
  * @author Philippe Charles
  */
-public class DataSourceSupport {
+public class DataSourceSupport implements HasDataSourceMutableList, HasDataMoniker, HasFilePaths {
 
     @Nonnull
     public static DataSourceSupport create(@Nonnull String providerName, @Nonnull Logger logger) {
@@ -56,7 +59,7 @@ public class DataSourceSupport {
     protected final List<DataSource> dataSourcesAsList;
     protected final DataSourceEventSupport eventSupport;
     protected final IConstraint<String> providerNameConstraint;
-    private File[] paths;
+    private final HasFilePaths filePathsSupport;
 
     public DataSourceSupport(@Nonnull String providerName, @Nonnull Set<DataSource> dataSources, @Nonnull DataSourceEventSupport eventSupport) {
         this.providerName = providerName;
@@ -64,7 +67,7 @@ public class DataSourceSupport {
         this.dataSourcesAsList = new ArrayList(dataSources);
         this.eventSupport = eventSupport;
         this.providerNameConstraint = onProviderName(providerName);
-        this.paths = new File[0];
+        this.filePathsSupport = FilePathSupport.of();
     }
 
     @Nonnull
@@ -166,8 +169,9 @@ public class DataSourceSupport {
     }
     //</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="Basic">
-    public boolean open(@Nonnull DataSource dataSource) {
+    //<editor-fold defaultstate="collapsed" desc="HasDataSourceMutableList">
+    @Override
+    public boolean open(DataSource dataSource) {
         check(dataSource);
         synchronized (dataSources) {
             if (dataSources.add(dataSource)) {
@@ -179,7 +183,8 @@ public class DataSourceSupport {
         return false;
     }
 
-    public boolean close(@Nonnull DataSource dataSource) {
+    @Override
+    public boolean close(DataSource dataSource) {
         check(dataSource);
         synchronized (dataSources) {
             if (dataSources.remove(dataSource)) {
@@ -191,6 +196,7 @@ public class DataSourceSupport {
         return false;
     }
 
+    @Override
     public void closeAll() {
         synchronized (dataSources) {
             dataSources.clear();
@@ -199,11 +205,74 @@ public class DataSourceSupport {
         }
     }
 
-    @Nonnull
+    @Override
     public List<DataSource> getDataSources() {
         synchronized (dataSources) {
             return Collections.unmodifiableList(dataSourcesAsList);
         }
+    }
+
+    @Override
+    public void addDataSourceListener(IDataSourceListener listener) {
+        eventSupport.add(listener);
+    }
+
+    @Override
+    public void removeDataSourceListener(IDataSourceListener listener) {
+        eventSupport.remove(listener);
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="HasDataMoniker">
+    @Override
+    public TsMoniker toMoniker(DataSet dataSet) throws IllegalArgumentException {
+        check(dataSet);
+        return new TsMoniker(providerName, DataSet.uriFormatter().tryFormatAsString(dataSet).get());
+    }
+
+    @Override
+    public TsMoniker toMoniker(DataSource dataSource) throws IllegalArgumentException {
+        check(dataSource);
+        return new TsMoniker(providerName, DataSource.uriFormatter().tryFormatAsString(dataSource).get());
+    }
+
+    @Override
+    public DataSet toDataSet(TsMoniker moniker) {
+        doCheck(providerNameConstraint, moniker.getSource());
+        String id = moniker.getId();
+        DataSet result = DataSet.uriParser().parse(id);
+        return result != null ? result : DataSet.xmlParser().parse(id);
+    }
+
+    @Override
+    public DataSource toDataSource(TsMoniker moniker) {
+        doCheck(providerNameConstraint, moniker.getSource());
+        String id = moniker.getId();
+        DataSource result = DataSource.uriParser().parse(id);
+        return result != null ? result : DataSource.xmlParser().parse(id);
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="HasFilePaths">
+    @Override
+    public File[] getPaths() {
+        return filePathsSupport.getPaths();
+    }
+
+    @Override
+    public void setPaths(File[] paths) {
+        filePathsSupport.setPaths(paths);
+    }
+
+    @Override
+    public File resolveFilePath(File file) throws FileNotFoundException {
+        return getRealFile(file);
+    }
+    //</editor-fold>
+
+    @Nonnull
+    public File getRealFile(@Nonnull File file) throws FileNotFoundException {
+        return filePathsSupport.resolveFilePath(file);
     }
 
     @Nonnull
@@ -212,73 +281,6 @@ public class DataSourceSupport {
         String message = ex.getMessage();
         return !Strings.isNullOrEmpty(message) ? message : name;
     }
-
-    public void addDataSourceListener(@Nonnull IDataSourceListener listener) {
-        eventSupport.add(listener);
-    }
-
-    public void removeDataSourceListener(@Nonnull IDataSourceListener listener) {
-        eventSupport.remove(listener);
-    }
-    //</editor-fold>
-
-    //<editor-fold defaultstate="collapsed" desc="Converters">
-    @Nonnull
-    public TsMoniker toMoniker(@Nonnull DataSet dataSet) throws IllegalArgumentException {
-        check(dataSet);
-        return new TsMoniker(providerName, DataSet.uriFormatter().tryFormatAsString(dataSet).get());
-    }
-
-    @Nonnull
-    public TsMoniker toMoniker(@Nonnull DataSource dataSource) throws IllegalArgumentException {
-        check(dataSource);
-        return new TsMoniker(providerName, DataSource.uriFormatter().tryFormatAsString(dataSource).get());
-    }
-
-    @Nullable
-    public DataSet toDataSet(@Nonnull TsMoniker moniker) {
-        doCheck(providerNameConstraint, moniker.getSource());
-        String id = moniker.getId();
-        DataSet result = DataSet.uriParser().parse(id);
-        return result != null ? result : DataSet.xmlParser().parse(id);
-    }
-
-    @Nullable
-    public DataSource toDataSource(@Nonnull TsMoniker moniker) {
-        doCheck(providerNameConstraint, moniker.getSource());
-        String id = moniker.getId();
-        DataSource result = DataSource.uriParser().parse(id);
-        return result != null ? result : DataSource.xmlParser().parse(id);
-    }
-    //</editor-fold>
-
-    //<editor-fold defaultstate="collapsed" desc="File paths">
-    @Nonnull
-    public File getRealFile(@Nonnull File[] paths, @Nonnull File file) throws FileNotFoundException {
-        File result = Files2.getAbsoluteFile(paths, file);
-        if (result == null) {
-            throw new FileNotFoundException("Relative file '" + file.getPath() + "' outside paths");
-        }
-        if (!result.exists()) {
-            throw new FileNotFoundException(result.getPath());
-        }
-        return result;
-    }
-
-    @Nonnull
-    public File[] getPaths() {
-        return paths.clone();
-    }
-
-    public void setPaths(@Nullable File[] paths) {
-        this.paths = paths != null ? paths.clone() : new File[0];
-    }
-
-    @Nonnull
-    public File getRealFile(@Nonnull File file) throws FileNotFoundException {
-        return getRealFile(paths, file);
-    }
-    //</editor-fold>
 
     @Deprecated
     @Nonnull
@@ -314,6 +316,24 @@ public class DataSourceSupport {
         return info;
     }
 
+    @Nonnull
+    public <DATA> DATA getValue(@Nonnull LoadingCache<DataSource, DATA> cache, @Nonnull DataSource key) throws IOException {
+        check(key);
+        return GuavaCaches.getOrThrowIOException(cache, key);
+    }
+
+    @Nonnull
+    public static File getRealFile(@Nonnull File[] paths, @Nonnull File file) throws FileNotFoundException {
+        File result = Files2.getAbsoluteFile(paths, file);
+        if (result == null) {
+            throw new FileNotFoundException("Relative file '" + file.getPath() + "' outside paths");
+        }
+        if (!result.exists()) {
+            throw new FileNotFoundException(result.getPath());
+        }
+        return result;
+    }
+
     private static boolean hasMissingValuesAtExtremities(@Nonnull TsData data) {
         return !data.isEmpty() && (data.isMissing(0) || data.isMissing(data.getLength() - 1));
     }
@@ -326,11 +346,5 @@ public class DataSourceSupport {
                 return providerName.equals(t) ? null : "Invalid provider name";
             }
         };
-    }
-
-    @Nonnull
-    public <DATA> DATA getValue(@Nonnull LoadingCache<DataSource, DATA> cache, @Nonnull DataSource key) throws IOException {
-        check(key);
-        return GuavaCaches.getOrThrowIOException(cache, key);
     }
 }

@@ -34,13 +34,13 @@ import javax.annotation.concurrent.ThreadSafe;
 public final class DataDisplayNameSupport implements HasDataDisplayName {
 
     /**
-     * Creates a new instance of this class using uri parser/formatter.
+     * Creates a new instance of HasDataDisplayName using uri parser/formatter.
      *
      * @param providerName a non-null provider name
      * @return a non-null instance
      */
     @Nonnull
-    public static DataDisplayNameSupport usingUri(@Nonnull String providerName) {
+    public static HasDataDisplayName usingUri(@Nonnull String providerName) {
         return new DataDisplayNameSupport(providerName, DataSource.uriFormatter(), DataSet.uriFormatter());
     }
 

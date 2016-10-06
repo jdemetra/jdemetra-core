@@ -40,7 +40,7 @@ public final class FilePathSupport implements HasFilePaths {
      * @return a non-null instance
      */
     @Nonnull
-    public static FilePathSupport of() {
+    public static HasFilePaths of() {
         return new FilePathSupport(() -> {
             // do nothing
         });
@@ -53,7 +53,7 @@ public final class FilePathSupport implements HasFilePaths {
      * @return a non-null instance
      */
     @Nonnull
-    public static FilePathSupport of(@Nonnull Runnable onPathsChange) {
+    public static HasFilePaths of(@Nonnull Runnable onPathsChange) {
         Objects.requireNonNull(onPathsChange);
         return new FilePathSupport(onPathsChange);
     }

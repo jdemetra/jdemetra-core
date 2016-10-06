@@ -36,13 +36,13 @@ import javax.annotation.concurrent.ThreadSafe;
 public final class DataMonikerSupport implements HasDataMoniker {
 
     /**
-     * Creates a new instance of this class using uri parser/formatter.
+     * Creates a new instance of HasDataMoniker using uri parser/formatter.
      *
      * @param providerName a non-null provider name
      * @return a non-null instance
      */
     @Nonnull
-    public static DataMonikerSupport usingUri(@Nonnull String providerName) {
+    public static HasDataMoniker usingUri(@Nonnull String providerName) {
         return new DataMonikerSupport(providerName, DataSource.uriFormatter(), DataSet.uriFormatter(), DataSource.uriParser(), DataSet.uriParser());
     }
 

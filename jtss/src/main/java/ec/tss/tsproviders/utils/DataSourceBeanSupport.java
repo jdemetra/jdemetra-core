@@ -33,7 +33,7 @@ import javax.annotation.concurrent.ThreadSafe;
 public final class DataSourceBeanSupport<T> implements HasDataSourceBean<T> {
 
     /**
-     * Creates a new instance of this class using a versioned param.
+     * Creates a new instance of HasDataSourceBean using a versioned param.
      *
      * @param <T> the type of the bean
      * @param providerName a non-null provider name
@@ -41,7 +41,7 @@ public final class DataSourceBeanSupport<T> implements HasDataSourceBean<T> {
      * @return a non-null instance
      */
     @Nonnull
-    public static <T> DataSourceBeanSupport<T> of(@Nonnull String providerName, @Nonnull VersionedParam<DataSource, T> param) {
+    public static <T> HasDataSourceBean<T> of(@Nonnull String providerName, @Nonnull VersionedParam<DataSource, T> param) {
         return new DataSourceBeanSupport(providerName, param);
     }
 

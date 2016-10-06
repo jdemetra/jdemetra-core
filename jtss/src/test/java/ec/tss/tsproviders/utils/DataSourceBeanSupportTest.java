@@ -17,6 +17,7 @@
 package ec.tss.tsproviders.utils;
 
 import ec.tss.tsproviders.DataSource;
+import ec.tss.tsproviders.HasDataSourceBean;
 import java.io.File;
 import java.util.Objects;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -94,7 +95,7 @@ public class DataSourceBeanSupportTest {
 
     @Test
     public void testNewBean() {
-        DataSourceBeanSupport support = DataSourceBeanSupport.of(providerName, param);
+        HasDataSourceBean support = DataSourceBeanSupport.of(providerName, param);
         assertThat(support.newBean())
                 .isNotNull()
                 .isNotSameAs(support.newBean())
@@ -104,8 +105,9 @@ public class DataSourceBeanSupportTest {
     }
 
     @Test
+    @SuppressWarnings("null")
     public void testEncodeBean() {
-        DataSourceBeanSupport support = DataSourceBeanSupport.of(providerName, param);
+        HasDataSourceBean support = DataSourceBeanSupport.of(providerName, param);
         DataSource.Builder b = DataSource.builder(providerName, version);
         assertThat(support.encodeBean(support.newBean()))
                 .isEqualTo(b.clear().build());
@@ -116,8 +118,9 @@ public class DataSourceBeanSupportTest {
     }
 
     @Test
+    @SuppressWarnings("null")
     public void testDecodeBean() {
-        DataSourceBeanSupport support = DataSourceBeanSupport.of(providerName, param);
+        HasDataSourceBean support = DataSourceBeanSupport.of(providerName, param);
         DataSource.Builder b = DataSource.builder(providerName, version);
         assertThat(support.decodeBean(b.clear().build()))
                 .isEqualTo(support.newBean());

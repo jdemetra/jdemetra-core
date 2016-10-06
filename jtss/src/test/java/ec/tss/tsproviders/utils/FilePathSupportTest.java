@@ -16,6 +16,7 @@
  */
 package ec.tss.tsproviders.utils;
 
+import ec.tss.tsproviders.HasFilePaths;
 import java.io.File;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -36,7 +37,7 @@ public class FilePathSupportTest {
 
     @Test
     public void testPaths() {
-        FilePathSupport support = FilePathSupport.of();
+        HasFilePaths support = FilePathSupport.of();
         assertThat(support.getPaths())
                 .isNotSameAs(support.getPaths())
                 .isEmpty();
