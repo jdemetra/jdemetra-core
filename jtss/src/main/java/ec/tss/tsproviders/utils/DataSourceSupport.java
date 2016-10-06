@@ -17,9 +17,7 @@
 package ec.tss.tsproviders.utils;
 
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 import com.google.common.cache.LoadingCache;
-import com.google.common.util.concurrent.UncheckedExecutionException;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
 import ec.tss.TsMoniker;
@@ -28,6 +26,7 @@ import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.IDataSourceListener;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.utilities.Files2;
+import ec.tstoolkit.utilities.GuavaCaches;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -37,7 +36,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.slf4j.Logger;
@@ -52,6 +50,7 @@ public class DataSourceSupport {
     public static DataSourceSupport create(@Nonnull String providerName, @Nonnull Logger logger) {
         return new DataSourceSupport(providerName, new LinkedHashSet<>(), DataSourceEventSupport.create(logger));
     }
+
     protected final String providerName;
     protected final Set<DataSource> dataSources;
     protected final List<DataSource> dataSourcesAsList;
@@ -330,26 +329,8 @@ public class DataSourceSupport {
     }
 
     @Nonnull
-    private static IOException unboxToIOException(@Nonnull ExecutionException ex) {
-        Throwable cause = ex.getCause();
-        if (cause instanceof IOException) {
-            return (IOException) cause;
-        }
-        if (cause != null) {
-            return new IOException(cause);
-        }
-        return new IOException(ex);
-    }
-
-    @Nonnull
     public <DATA> DATA getValue(@Nonnull LoadingCache<DataSource, DATA> cache, @Nonnull DataSource key) throws IOException {
         check(key);
-        try {
-            return cache.get(key);
-        } catch (ExecutionException ex) {
-            throw unboxToIOException(ex);
-        } catch (UncheckedExecutionException ex) {
-            throw Throwables.propagate(ex.getCause());
-        }
+        return GuavaCaches.getOrThrowIOException(cache, key);
     }
 }
