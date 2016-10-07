@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableSortedMap;
 import ec.tss.tsproviders.utils.Formatters;
 import java.io.*;
 import java.util.Map.Entry;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -117,20 +118,7 @@ public class DataSourceTest {
 
     @Test
     public void testSerializable() throws IOException, ClassNotFoundException {
-
-        DataSource dataSource = newSample();
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-            oos.writeObject(dataSource);
-        }
-        byte[] bytes = baos.toByteArray();
-
-        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
-            DataSource result = (DataSource) ois.readObject();
-            Assert.assertEquals(dataSource, result);
-            Assert.assertNotSame(dataSource, result);
-        }
+        assertThat(Util.fromToBytes(newSample())).isEqualTo(newSample());
     }
 
     @Test

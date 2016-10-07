@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
  * @author Jean Palate
  * @author Philippe Charles
  */
+@Deprecated
 public class RandomProvider extends AbstractDataSourceLoader<double[][], RandomBean> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RandomProvider.class);
