@@ -378,7 +378,7 @@ public class UnitRoots implements Cloneable {
 
     private IVector m_n, m_d;
     private int[] m_dp;
-    private final static double g_epsilon = 1e-6;
+    private final static double g_epsilon = 1e-8;
     @SuppressWarnings("unused")
     private static final UnitRootsSolver g_default = initDefault();
 

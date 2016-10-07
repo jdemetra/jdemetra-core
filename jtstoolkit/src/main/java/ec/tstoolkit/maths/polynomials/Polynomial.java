@@ -134,6 +134,16 @@ public final class Polynomial implements IReadDataBlock {
         return new ReadDataBlock(m_c, start, length);
     }
 
+    boolean isSymmetric() {
+        if (this.degree % 2 != 0)
+            return false;
+        for (int i=0; i<degree/2; ++i){
+            if (Math.abs(m_c[i]-m_c[degree-i])>EPSILON)
+                return false;
+        }
+        return true;
+    }
+
     /**
      *
      */
