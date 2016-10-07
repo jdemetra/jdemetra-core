@@ -21,7 +21,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
@@ -41,8 +40,8 @@ public final class FilePathSupport implements HasFilePaths {
      * @return a non-null instance
      */
     @Nonnull
-    public static FilePathSupport of() {
-        return new FilePathSupport(o -> {
+    public static HasFilePaths of() {
+        return new FilePathSupport(() -> {
             // do nothing
         });
     }
@@ -54,28 +53,17 @@ public final class FilePathSupport implements HasFilePaths {
      * @return a non-null instance
      */
     @Nonnull
-    public static FilePathSupport of(@Nonnull Runnable onPathsChange) {
+    public static HasFilePaths of(@Nonnull Runnable onPathsChange) {
         Objects.requireNonNull(onPathsChange);
-        return new FilePathSupport(o -> onPathsChange.run());
-    }
-
-    /**
-     * Creates a new instance of this class with a callback.
-     *
-     * @param onPathsChange a non-null callback to be notified of paths change
-     * @return a non-null instance
-     */
-    @Nonnull
-    public static FilePathSupport of(@Nonnull Consumer<File[]> onPathsChange) {
         return new FilePathSupport(onPathsChange);
     }
 
     private static final File[] EMPTY = new File[0];
 
-    private final Consumer<File[]> onPathsChange;
+    private final Runnable onPathsChange;
     private final AtomicReference<File[]> paths;
 
-    private FilePathSupport(Consumer<File[]> onPathsChange) {
+    private FilePathSupport(Runnable onPathsChange) {
         this.onPathsChange = Objects.requireNonNull(onPathsChange);
         this.paths = new AtomicReference<>(EMPTY);
     }
@@ -85,7 +73,7 @@ public final class FilePathSupport implements HasFilePaths {
     public void setPaths(@Nullable File[] paths) {
         File[] newValue = paths != null ? paths.clone() : EMPTY;
         if (!Arrays.equals(this.paths.getAndSet(newValue), newValue)) {
-            onPathsChange.accept(paths);
+            onPathsChange.run();
         }
     }
 

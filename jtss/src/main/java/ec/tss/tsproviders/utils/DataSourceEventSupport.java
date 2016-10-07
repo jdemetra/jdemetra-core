@@ -49,9 +49,11 @@ public class DataSourceEventSupport {
         Set<IDataSourceListener> weakHashSet = Collections.newSetFromMap(new WeakHashMap<IDataSourceListener, Boolean>());
         return new DataSourceEventSupport(logger, Collections.synchronizedSet(weakHashSet));
     }
+
     protected final Logger logger;
     protected final Set<IDataSourceListener> listeners;
 
+    @Deprecated
     public DataSourceEventSupport(@Nonnull Logger logger, @Nonnull Set<IDataSourceListener> listeners) {
         this.logger = logger;
         this.listeners = listeners;

@@ -20,13 +20,13 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import ec.tss.tsproviders.utils.IConstraint;
 import ec.tss.tsproviders.utils.Parsers;
 import ec.tss.tsproviders.utils.StrangeParsers;
+import ec.tstoolkit.utilities.GuavaCaches;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -251,11 +251,12 @@ public abstract class DbAccessor<BEAN extends DbBean> {
             };
         }
 
+        @Deprecated
         @Nonnull
-        public static Cache<DbSetId, List<DbSeries>> newTtlCache(long ttl) {
-            return CacheBuilder.newBuilder().expireAfterWrite(ttl, TimeUnit.MILLISECONDS).build();
+        public static Cache<DbSetId, List<DbSeries>> newTtlCache(long ttlInMillis) {
+            return GuavaCaches.ttlCache(Duration.ofMillis(ttlInMillis));
         }
-        //
+
         protected final Cache<DbSetId, List<DbSeries>> cache;
         protected final int cacheLevel;
         protected final int depth;

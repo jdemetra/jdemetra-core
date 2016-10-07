@@ -22,6 +22,7 @@ import java.io.IOException;
  *
  * @author Philippe Charles
  * @param <P>
+ * @since 1.0.0
  */
 @Deprecated
 public interface IProviderVisitor<P> {
