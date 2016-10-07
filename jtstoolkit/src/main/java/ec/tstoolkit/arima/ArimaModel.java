@@ -20,8 +20,10 @@ import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.Immutable;
 import ec.tstoolkit.maths.Complex;
 import ec.tstoolkit.maths.linearfilters.BackFilter;
-import ec.tstoolkit.maths.linearfilters.SymmetricFrequencyResponseDecomposer;
+import ec.tstoolkit.maths.linearfilters.SymmetricFrequencyResponseDecomposer3;
 import ec.tstoolkit.maths.linearfilters.SymmetricFilter;
+import ec.tstoolkit.maths.linearfilters.SymmetricFrequencyResponseDecomposer;
+import ec.tstoolkit.maths.linearfilters.SymmetricFrequencyResponseDecomposer2;
 import ec.tstoolkit.maths.polynomials.Polynomial;
 import ec.tstoolkit.maths.polynomials.UnitRootsSolver;
 
@@ -66,13 +68,13 @@ public class ArimaModel extends AbstractArimaModel implements IArimaModel {
     }
 
     /**
-     * Adds two Arima models, considering that their innovations are independent.
-     * The sum of two Arima models is computed as follows:
-     * The auto-regressive parts (stationary and non stationary of the aggregated
+     * Adds two Arima models, considering that their innovations are
+     * independent. The sum of two Arima models is computed as follows: The
+     * auto-regressive parts (stationary and non stationary of the aggregated
      * model are the smaller common multiple of the corresponding polynomials of
-     * the components. The sum of the acf of the modified moving average 
+     * the components. The sum of the acf of the modified moving average
      * polynomials is then computed and factorized, to get the moving average
-     * polynomial and innovation variance of the sum. See the class 
+     * polynomial and innovation variance of the sum. See the class
      * ec.tstoolkit.maths.linearfilters.SymmetricFrequencyResponseDecomposer for
      * the factorization of the aggregated acf.
      *
@@ -635,12 +637,21 @@ public class ArimaModel extends AbstractArimaModel implements IArimaModel {
 
     // conversion between BFilter and SymmetricFilter
     private void ma_stob2() {
+        SymmetricFrequencyResponseDecomposer3 sfr3 = new SymmetricFrequencyResponseDecomposer3();
+        //SymmetricFrequencyResponseDecomposer2 sfr2 = new SymmetricFrequencyResponseDecomposer2();
         SymmetricFrequencyResponseDecomposer sfr = new SymmetricFrequencyResponseDecomposer();
-        if (!sfr.decompose(sma_)) {
+        if (sfr3.decompose(sma_)) {
+            bma_ = sfr3.getBFilter();
+            var_ = sfr3.getFactor();
+//        } else if (sfr2.decompose(sma_)) {
+//            bma_ = sfr2.getBFilter();
+//            var_ = sfr2.getFactor();
+        } else if (sfr.decompose(sma_)) {
+            bma_ = sfr.getBFilter();
+            var_ = sfr.getFactor();
+        } else {
             throw new ArimaException(ArimaException.InvalidDecomposition);
         }
-        bma_ = sfr.getBFilter();
-        var_ = sfr.getFactor();
     }
 
     /**
@@ -660,6 +671,7 @@ public class ArimaModel extends AbstractArimaModel implements IArimaModel {
     public ArimaModel minus(final ArimaModel r, boolean simplify) {
         return pm(this, r, false, simplify);
     }
+
     /**
      *
      * @param v
@@ -688,6 +700,7 @@ public class ArimaModel extends AbstractArimaModel implements IArimaModel {
     public ArimaModel plus(final ArimaModel r, boolean simplify) {
         return pm(this, r, true, simplify);
     }
+
     /**
      *
      * @param v

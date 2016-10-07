@@ -37,7 +37,7 @@ import org.junit.BeforeClass;
  */
 public class WienerKolmogorovEstimatorTest {
 
-    private static final double EPS = 1e-7;
+    private static final double EPS = 1e-5;
 
     public WienerKolmogorovEstimatorTest() {
     }
@@ -70,11 +70,18 @@ public class WienerKolmogorovEstimatorTest {
                     TsData t2 = sa2.getSeries(ComponentType.Trend, ComponentInformation.Value);
                     double d = t1.distance(t2) / range;
 //                    System.out.println(d);
+//                    System.out.print(i);
+//                    System.out.print('\t');
+//                    System.out.print(j);
+//                    System.out.print('\t');
+//                    System.out.print(d);
                     assertTrue(d < EPS);
                     t1 = sa1.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
                     t2 = sa2.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
                     d = t1.distance(t2) / range;
                     //                   System.out.println(d);
+//                    System.out.print('\t');
+//                    System.out.print(d);
                     assertTrue(d < EPS);
                     seats.setMeanCorrection(true);
                     sa1 = wk.decompose(seats, ucm, null, null);
@@ -83,11 +90,15 @@ public class WienerKolmogorovEstimatorTest {
                     t2 = sa2.getSeries(ComponentType.Trend, ComponentInformation.Value);
                     d = t1.distance(t2) / range;
                     //                   System.out.println(d);
+//                    System.out.print('\t');
+//                    System.out.print(d);
                     assertTrue(d < EPS);
                     t1 = sa1.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
                     t2 = sa2.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
                     d = t1.distance(t2) / range;
                     //                  System.out.println(d);
+//                    System.out.print('\t');
+//                    System.out.println(d);
                     assertTrue(d < EPS);
                 }
             }
