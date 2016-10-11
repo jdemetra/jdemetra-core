@@ -19,7 +19,6 @@ package ec.tss.tsproviders;
 import ec.tss.tsproviders.utils.IConfig;
 import ec.tss.tsproviders.utils.IParam;
 import ec.tss.tsproviders.utils.Params;
-import ec.tss.tsproviders.utils.VersionedParam;
 import java.io.File;
 import java.util.Objects;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -60,7 +59,7 @@ public class HasDataSourceBeanTest {
         }
     }
 
-    private final VersionedParam<DataSource, CustomBean> param = VersionedParam.of(version, new IParam<DataSource, CustomBean>() {
+    private final IParam<DataSource, CustomBean> param = new IParam<DataSource, CustomBean>() {
 
         private final IParam<DataSource, File> fileParam = Params.onFile(new File("defaultFile"), "f");
         private final IParam<DataSource, String> detailsParam = Params.onString("defaultValue", "d");
@@ -86,18 +85,18 @@ public class HasDataSourceBeanTest {
             fileParam.set(builder, value.file);
             detailsParam.set(builder, value.details);
         }
-    });
+    };
 
     @Test
     @SuppressWarnings("null")
     public void testFactory() {
-        assertThatThrownBy(() -> HasDataSourceBean.of(null, param)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> HasDataSourceBean.of(providerName, null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> HasDataSourceBean.of(null, param, version)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> HasDataSourceBean.of(providerName, null, version)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
     public void testNewBean() {
-        HasDataSourceBean support = HasDataSourceBean.of(providerName, param);
+        HasDataSourceBean support = HasDataSourceBean.of(providerName, param, version);
         assertThat(support.newBean())
                 .isNotNull()
                 .isNotSameAs(support.newBean())
@@ -109,7 +108,7 @@ public class HasDataSourceBeanTest {
     @Test
     @SuppressWarnings("null")
     public void testEncodeBean() {
-        HasDataSourceBean support = HasDataSourceBean.of(providerName, param);
+        HasDataSourceBean support = HasDataSourceBean.of(providerName, param, version);
         DataSource.Builder b = DataSource.builder(providerName, version);
         assertThat(support.encodeBean(support.newBean()))
                 .isEqualTo(b.clear().build());
@@ -122,7 +121,7 @@ public class HasDataSourceBeanTest {
     @Test
     @SuppressWarnings("null")
     public void testDecodeBean() {
-        HasDataSourceBean support = HasDataSourceBean.of(providerName, param);
+        HasDataSourceBean support = HasDataSourceBean.of(providerName, param, version);
         DataSource.Builder b = DataSource.builder(providerName, version);
         assertThat(support.decodeBean(b.clear().build()))
                 .isEqualTo(support.newBean());

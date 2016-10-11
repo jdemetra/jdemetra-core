@@ -22,8 +22,8 @@ import ec.tss.tsproviders.utils.DataSourceEventSupport;
 import ec.tss.tsproviders.utils.DataSourcePreconditions;
 import ec.tss.tsproviders.utils.Formatters;
 import ec.tss.tsproviders.utils.IConfig;
+import ec.tss.tsproviders.utils.IParam;
 import ec.tss.tsproviders.utils.Parsers;
-import ec.tss.tsproviders.utils.VersionedParam;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -150,11 +150,13 @@ final class Util {
 
     static final class DataSourceBeanSupport<T> extends ProviderPart implements HasDataSourceBean<T> {
 
-        private final VersionedParam<DataSource, T> param;
+        private final IParam<DataSource, T> param;
+        private final String version;
 
-        DataSourceBeanSupport(String providerName, VersionedParam<DataSource, T> param) {
+        DataSourceBeanSupport(String providerName, IParam<DataSource, T> param, String version) {
             super(providerName);
             this.param = Objects.requireNonNull(param);
+            this.version = Objects.requireNonNull(version);
         }
 
         @Override
@@ -166,7 +168,7 @@ final class Util {
         public DataSource encodeBean(Object bean) throws IllegalArgumentException {
             Objects.requireNonNull(bean);
             try {
-                IConfig.Builder<?, DataSource> builder = DataSource.builder(providerName, param.getVersion());
+                IConfig.Builder<?, DataSource> builder = DataSource.builder(providerName, version);
                 param.set(builder, (T) bean);
                 return builder.build();
             } catch (ClassCastException ex) {
