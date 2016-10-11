@@ -20,6 +20,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import ec.tstoolkit.design.UtilityClass;
+import ec.tstoolkit.timeseries.TsAggregationType;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -99,6 +101,11 @@ public final class Params {
         return new SingleParam<>(ImmutableList.copyOf(defaultValue), key, Parsers.onSplitter(splitter), Formatters.onJoiner(joiner));
     }
 
+    @Nonnull
+    public static <S extends IConfig> IParam<S, ObsGathering> onObsGathering(@Nonnull ObsGathering defaultValue, @Nonnull String frequencyKey, @Nonnull String aggregationKey, @Nonnull String skipKey) {
+        return new ObsGatheringParam(defaultValue, frequencyKey, aggregationKey, skipKey);
+    }
+
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
     private static final class SingleParam<S extends IConfig, P> implements IParam<S, P> {
 
@@ -107,11 +114,15 @@ public final class Params {
         private final IParser<P> parser;
         private final IFormatter<P> formatter;
 
-        private SingleParam(@Nonnull P defaultValue, @Nonnull String key, @Nonnull IParser<P> parser, @Nonnull IFormatter<P> formatter) {
-            this.defaultValue = defaultValue;
-            this.key = key;
-            this.parser = parser;
-            this.formatter = formatter;
+        private SingleParam(
+                @Nonnull P defaultValue,
+                @Nonnull String key,
+                @Nonnull IParser<P> parser,
+                @Nonnull IFormatter<P> formatter) {
+            this.defaultValue = Objects.requireNonNull(defaultValue);
+            this.key = Objects.requireNonNull(key);
+            this.parser = Objects.requireNonNull(parser);
+            this.formatter = Objects.requireNonNull(formatter);
         }
 
         private boolean isValid(@Nonnull String tmp) {
@@ -154,11 +165,15 @@ public final class Params {
         private final String datePatternKey;
         private final String numberPatternKey;
 
-        public DataFormatParam(@Nonnull final DataFormat defaultValue, @Nonnull final String localeKey, @Nonnull final String datePatternKey, @Nonnull final String numberPatternKey) {
-            this.defaultValue = defaultValue;
-            this.localeKey = localeKey;
-            this.datePatternKey = datePatternKey;
-            this.numberPatternKey = numberPatternKey;
+        private DataFormatParam(
+                @Nonnull DataFormat defaultValue,
+                @Nonnull String localeKey,
+                @Nonnull String datePatternKey,
+                @Nonnull String numberPatternKey) {
+            this.defaultValue = Objects.requireNonNull(defaultValue);
+            this.localeKey = Objects.requireNonNull(localeKey);
+            this.datePatternKey = Objects.requireNonNull(datePatternKey);
+            this.numberPatternKey = Objects.requireNonNull(numberPatternKey);
         }
 
         private boolean isValid(String locale, String datePattern) {
@@ -186,6 +201,45 @@ public final class Params {
                 builder.put(datePatternKey, value.getDatePattern());
                 builder.put(numberPatternKey, value.getNumberPattern());
             }
+        }
+    }
+
+    private static final class ObsGatheringParam<S extends IConfig> implements IParam<S, ObsGathering> {
+
+        private final ObsGathering defaultValue;
+        private final IParam<S, TsFrequency> frequency;
+        private final IParam<S, TsAggregationType> aggregationType;
+        private final IParam<S, Boolean> skipMissingValues;
+
+        private ObsGatheringParam(
+                @Nonnull ObsGathering defaultValue,
+                @Nonnull String frequencyKey,
+                @Nonnull String aggregationKey,
+                @Nonnull String skipKey) {
+            this.defaultValue = defaultValue;
+            this.frequency = onEnum(defaultValue.getFrequency(), frequencyKey);
+            this.aggregationType = onEnum(defaultValue.getAggregationType(), aggregationKey);
+            this.skipMissingValues = onBoolean(defaultValue.isSkipMissingValues(), skipKey);
+        }
+
+        @Override
+        public ObsGathering defaultValue() {
+            return defaultValue;
+        }
+
+        @Override
+        public ObsGathering get(S config) {
+            return skipMissingValues.get(config)
+                    ? ObsGathering.excludingMissingValues(frequency.get(config), aggregationType.get(config))
+                    : ObsGathering.includingMissingValues(frequency.get(config), aggregationType.get(config));
+        }
+
+        @Override
+        public void set(IConfig.Builder<?, S> builder, ObsGathering value) {
+            Objects.requireNonNull(builder);
+            skipMissingValues.set(builder, value.isSkipMissingValues());
+            frequency.set(builder, value.getFrequency());
+            aggregationType.set(builder, value.getAggregationType());
         }
     }
     //</editor-fold>
