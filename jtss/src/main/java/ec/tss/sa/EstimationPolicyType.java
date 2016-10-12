@@ -17,7 +17,6 @@
 package ec.tss.sa;
 
 import ec.tstoolkit.design.IntValue;
-import java.util.EnumSet;
 
 /**
  *
@@ -81,11 +80,8 @@ public enum EstimationPolicyType implements IntValue{
      *            Integer representation of the frequency
      * @return Enum representation of the frequency
      */
-    public static EstimationPolicyType valueOf(final int value) {
-	for (EstimationPolicyType option : EnumSet.allOf(EstimationPolicyType.class))
-	    if (option.intValue() == value)
-		return option;
-	return null;
+    public static EstimationPolicyType valueOf(int value) {
+        return IntValue.valueOf(EstimationPolicyType.class, value).orElse(null);
     }
 
     private final int value;

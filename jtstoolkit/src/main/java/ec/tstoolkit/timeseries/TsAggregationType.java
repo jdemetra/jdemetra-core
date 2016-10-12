@@ -18,7 +18,6 @@ package ec.tstoolkit.timeseries;
 
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.IntValue;
-import java.util.EnumSet;
 
 /**
  *
@@ -60,11 +59,8 @@ public enum TsAggregationType implements IntValue {
      * @param value
      * @return
      */
-    public static TsAggregationType valueOf(final int value) {
-	for (TsAggregationType type : EnumSet.allOf(TsAggregationType.class))
-	    if (type.intValue() == value)
-		return type;
-	return null;
+    public static TsAggregationType valueOf(int value) {
+        return IntValue.valueOf(TsAggregationType.class, value).orElse(null);
     }
 
     private final int value;

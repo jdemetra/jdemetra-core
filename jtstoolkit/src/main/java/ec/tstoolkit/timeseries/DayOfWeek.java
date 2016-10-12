@@ -19,7 +19,6 @@ package ec.tstoolkit.timeseries;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.IntValue;
 import java.util.Calendar;
-import java.util.EnumSet;
 
 /**
  *
@@ -96,11 +95,8 @@ public enum DayOfWeek implements IntValue {
      * @param value
      * @return
      */
-    public static DayOfWeek valueOf(final int value) {
-	for (DayOfWeek dayofweek : EnumSet.allOf(DayOfWeek.class))
-	    if (dayofweek.intValue() == value)
-		return dayofweek;
-	return null;
+    public static DayOfWeek valueOf(int value) {
+        return IntValue.valueOf(DayOfWeek.class, value).orElse(null);
     }
 
     private final int value;

@@ -19,7 +19,6 @@ package ec.tstoolkit.timeseries.simplets;
 
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.IntValue;
-import java.util.EnumSet;
 
 /**
  *
@@ -44,11 +43,8 @@ public enum TsDataTableInfo implements IntValue {
      * @param value
      * @return
      */
-    public static TsDataTableInfo valueOf(final int value) {
-	for (TsDataTableInfo info : EnumSet.allOf(TsDataTableInfo.class))
-	    if (info.intValue() == value)
-		return info;
-	return null;
+    public static TsDataTableInfo valueOf(int value) {
+        return IntValue.valueOf(TsDataTableInfo.class, value).orElse(null);
     }
 
     private final int value;
