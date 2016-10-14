@@ -71,6 +71,11 @@ public final class Params {
     }
 
     @Nonnull
+    public static <S extends IConfig> IParam<S, Character> onCharacter(@Nonnull Character defaultValue, @Nonnull String key) {
+        return new SingleParam<>(defaultValue, key, Parsers.charParser(), Formatters.charFormatter());
+    }
+
+    @Nonnull
     public static <S extends IConfig> IParam<S, Double> onDouble(@Nonnull Double defaultValue, @Nonnull String key) {
         return new SingleParam<>(defaultValue, key, Parsers.doubleParser(), Formatters.doubleFormatter());
     }
