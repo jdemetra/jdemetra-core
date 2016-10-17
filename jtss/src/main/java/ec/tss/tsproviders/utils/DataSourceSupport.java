@@ -67,7 +67,7 @@ public class DataSourceSupport implements HasDataSourceMutableList, HasDataMonik
         this.dataSourcesAsList = new ArrayList(dataSources);
         this.eventSupport = eventSupport;
         this.providerNameConstraint = onProviderName(providerName);
-        this.filePathsSupport = FilePathSupport.of();
+        this.filePathsSupport = HasFilePaths.of();
     }
 
     @Nonnull

@@ -18,7 +18,6 @@ package ec.tstoolkit.timeseries;
 
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.IntValue;
-import java.util.EnumSet;
 
 /**
  *
@@ -51,10 +50,7 @@ public enum PeriodKind implements IntValue
      * @return
      */
     public static PeriodKind valueOf(final int value) {
-	for (PeriodKind periodKind : EnumSet.allOf(PeriodKind.class))
-	    if (periodKind.intValue() == value)
-		return periodKind;
-	return null;
+        return IntValue.valueOf(PeriodKind.class, value).orElse(null);
     }
 
     private final int value;

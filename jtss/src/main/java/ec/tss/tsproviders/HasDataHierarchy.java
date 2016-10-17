@@ -54,4 +54,9 @@ public interface HasDataHierarchy {
      */
     @Nonnull
     List<DataSet> children(@Nonnull DataSet parent) throws IllegalArgumentException, IOException;
+
+    @Nonnull
+    static HasDataHierarchy noOp(@Nonnull String providerName) {
+        return new Util.NoOpDataHierarchy(providerName);
+    }
 }

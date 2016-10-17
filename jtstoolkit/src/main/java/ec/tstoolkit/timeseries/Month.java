@@ -18,7 +18,6 @@ package ec.tstoolkit.timeseries;
 
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.IntValue;
-import java.util.EnumSet;
 
 /**
  *
@@ -92,11 +91,8 @@ public enum Month implements IntValue {
      * @param value
      * @return
      */
-    public static Month valueOf(final int value) {
-	for (Month option : EnumSet.allOf(Month.class))
-	    if (option.intValue() == value)
-		return option;
-	return null;
+    public static Month valueOf(int value) {
+        return IntValue.valueOf(Month.class, value).orElse(null);
     }
 
     private final int value;

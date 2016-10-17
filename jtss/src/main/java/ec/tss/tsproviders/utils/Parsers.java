@@ -199,6 +199,11 @@ public final class Parsers {
         return BOOL_PARSER;
     }
 
+    @Nonnull
+    public static Parser<Character> charParser() {
+        return CHAR_PARSER;
+    }
+
     /**
      * Create a {@link Parser} that delegates its parsing to
      * {@link Double#valueOf(java.lang.String)}.
@@ -335,12 +340,24 @@ public final class Parsers {
     private static final Parser<Boolean> BOOL_PARSER = new Parser<Boolean>() {
         @Override
         public Boolean parse(CharSequence input) throws NullPointerException {
-            String tmp = input.toString();
-            return tmp.equalsIgnoreCase("true")
-                    ? Boolean.TRUE
-                    : tmp.equalsIgnoreCase("false")
-                    ? Boolean.FALSE
-                    : null;
+            switch (input.toString()) {
+                case "true":
+                case "TRUE":
+                case "1":
+                    return Boolean.TRUE;
+                case "false":
+                case "FALSE":
+                case "0":
+                    return Boolean.FALSE;
+                default:
+                    return null;
+            }
+        }
+    };
+    private static final Parser<Character> CHAR_PARSER = new Parser<Character>() {
+        @Override
+        public Character parse(CharSequence input) throws NullPointerException {
+            return input.length() == 1 ? input.charAt(0) : null;
         }
     };
     private static final Parser<Charset> CHARSET_PARSER = new FailSafeParser<Charset>() {

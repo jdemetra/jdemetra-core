@@ -21,7 +21,7 @@ import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Parameters used when collecting observations in order to create time series.
@@ -29,7 +29,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * @author Philippe Charles
  * @since 2.2.0
  */
-@ThreadSafe
+@Immutable
 public final class ObsGathering {
 
     @Nonnull
@@ -41,6 +41,8 @@ public final class ObsGathering {
     public static ObsGathering excludingMissingValues(@Nonnull TsFrequency frequency, @Nonnull TsAggregationType aggregationType) {
         return new ObsGathering(frequency, aggregationType, true);
     }
+
+    public static final ObsGathering DEFAULT = excludingMissingValues(TsFrequency.Undefined, TsAggregationType.None);
 
     private final TsFrequency frequency;
     private final TsAggregationType aggregationType;

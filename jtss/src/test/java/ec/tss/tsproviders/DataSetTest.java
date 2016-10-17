@@ -19,9 +19,9 @@ package ec.tss.tsproviders;
 import com.google.common.collect.ImmutableSortedMap;
 import ec.tss.tsproviders.utils.Formatters;
 import java.io.*;
-import java.util.Map.Entry;
 import org.junit.Assert;
 import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -29,43 +29,51 @@ import org.junit.Test;
  */
 public class DataSetTest {
 
-    static final DataSource ID = DataSourceTest.newSample();
-    static final String K1 = "domain", V1 = "NB01";
+    final DataSource id = DataSourceTest.newSample();
+    final String k1 = "domain", v1 = "NB01";
+    final ImmutableSortedMap<String, String> content = ImmutableSortedMap.of(k1, v1);
+    final ImmutableSortedMap<String, String> emptyContent = ImmutableSortedMap.of();
 
-    static DataSet newSample() {
-        return new DataSet(ID, DataSet.Kind.DUMMY, ImmutableSortedMap.of(K1, V1));
+    DataSet newSample() {
+        return new DataSet(id, DataSet.Kind.DUMMY, content);
     }
 
     @Test
     public void testConstructor() {
-        DataSet dataSet = newSample();
-        Assert.assertEquals(ID, dataSet.getDataSource());
-        for (Entry<String, String> o : ImmutableSortedMap.of(K1, V1).entrySet()) {
-            Assert.assertEquals(o.getValue(), dataSet.getParams().get(o.getKey()));
-        }
+        assertThat(newSample()).satisfies(o -> {
+            assertThat(o.getDataSource()).isEqualTo(id);
+            assertThat(o.getKind()).isEqualTo(DataSet.Kind.DUMMY);
+            assertThat(o.getParams()).containsAllEntriesOf(content);
+            content.forEach((k, v) -> assertThat(o.get(k)).isEqualTo(v));
+        });
     }
 
     @Test
     public void testEquals() {
-        DataSet dataSet = newSample();
-        Assert.assertEquals(dataSet, newSample());
-        Assert.assertNotSame(dataSet, newSample());
-        Assert.assertFalse(dataSet.equals(new DataSet(ID, DataSet.Kind.DUMMY, ImmutableSortedMap.<String, String>of())));
+        assertThat(newSample())
+                .isEqualTo(newSample())
+                .isNotEqualTo(new DataSet(id, DataSet.Kind.SERIES, content))
+                .isNotEqualTo(new DataSet(id, DataSet.Kind.DUMMY, emptyContent));
     }
 
     @Test
     public void testHashCode() {
-        DataSet dataSet = newSample();
-        Assert.assertEquals(dataSet.hashCode(), newSample().hashCode());
-        Assert.assertFalse(dataSet.hashCode() == new DataSet(ID, DataSet.Kind.DUMMY, ImmutableSortedMap.<String, String>of()).hashCode());
+        assertThat(newSample().hashCode())
+                .isEqualTo(newSample().hashCode())
+                .isNotEqualTo(new DataSet(id, DataSet.Kind.DUMMY, emptyContent).hashCode());
     }
 
     @Test
     public void testGet() {
-        DataSet dataSet = newSample();
-        Assert.assertEquals(1, dataSet.getParams().size());
-        Assert.assertEquals(V1, dataSet.get(K1));
-        Assert.assertNull(dataSet.get("hello"));
+        assertThat(newSample()).satisfies(o -> {
+            assertThat(o.get(k1)).isEqualTo(v1);
+            assertThat(o.get("hello")).isNull();
+        });
+    }
+
+    @Test
+    public void testGetParams() {
+        assertThat(newSample().getParams()).containsAllEntriesOf(content);
     }
 
     @Test
@@ -75,8 +83,8 @@ public class DataSetTest {
         Assert.assertNotNull(formatter.format(dataSet));
         //System.err.println(DataSet.xmlFormatter(false).format(dataSet));
 
-        DataSet d1 = new DataSet(ID, DataSet.Kind.COLLECTION, ImmutableSortedMap.of(K1, V1));
-        DataSet d2 = new DataSet(ID, DataSet.Kind.COLLECTION, ImmutableSortedMap.of(K1, V1));
+        DataSet d1 = new DataSet(id, DataSet.Kind.COLLECTION, content);
+        DataSet d2 = new DataSet(id, DataSet.Kind.COLLECTION, content);
         Assert.assertEquals(formatter.format(d1), formatter.format(d2));
     }
 
@@ -88,20 +96,7 @@ public class DataSetTest {
 
     @Test
     public void testSerializable() throws IOException, ClassNotFoundException {
-
-        DataSet dataSet = newSample();
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-            oos.writeObject(dataSet);
-        }
-        byte[] bytes = baos.toByteArray();
-
-        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
-            DataSet result = (DataSet) ois.readObject();
-            Assert.assertEquals(dataSet, result);
-            Assert.assertNotSame(dataSet, result);
-        }
+        assertThat(Util.fromToBytes(newSample())).isEqualTo(newSample());
     }
 
     @Test
@@ -110,11 +105,11 @@ public class DataSetTest {
         Formatters.Formatter<DataSet> formatter = DataSet.uriFormatter();
         Assert.assertNotNull(formatter.format(dataSet));
 
-        DataSet d1 = new DataSet(ID, DataSet.Kind.COLLECTION, ImmutableSortedMap.of(K1, V1));
-        DataSet d2 = new DataSet(ID, DataSet.Kind.COLLECTION, ImmutableSortedMap.of(K1, V1));
+        DataSet d1 = new DataSet(id, DataSet.Kind.COLLECTION, content);
+        DataSet d2 = new DataSet(id, DataSet.Kind.COLLECTION, content);
         Assert.assertEquals(formatter.format(d1), formatter.format(d2));
 
-        DataSet empty = new DataSet(ID, DataSet.Kind.COLLECTION, ImmutableSortedMap.<String, String>of());
+        DataSet empty = new DataSet(id, DataSet.Kind.COLLECTION, emptyContent);
         Assert.assertEquals("demetra://tsprovider/SPREADSHEET/20111209/COLLECTION?datePattern=yyyy-MM-dd&file=c%3A%5Cdata.txt&locale=fr_BE#", formatter.format(empty));
     }
 
@@ -123,7 +118,7 @@ public class DataSetTest {
         DataSet dataSet = newSample();
         Assert.assertEquals(dataSet, DataSet.uriParser().parse(DataSet.uriFormatter().tryFormat(dataSet).get()));
 
-        DataSet empty = new DataSet(ID, DataSet.Kind.COLLECTION, ImmutableSortedMap.<String, String>of());
+        DataSet empty = new DataSet(id, DataSet.Kind.COLLECTION, emptyContent);
         Assert.assertEquals(empty, DataSet.uriParser().parse(DataSet.uriFormatter().tryFormat(empty).get()));
     }
 }
