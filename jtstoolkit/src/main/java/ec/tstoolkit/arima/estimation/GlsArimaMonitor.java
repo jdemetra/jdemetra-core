@@ -43,7 +43,7 @@ public class GlsArimaMonitor<S extends IArimaModel> implements
     private IArmaFilter m_filter1 = new KalmanFilter(false),
             m_filter2 = new KalmanFilter(true);// new AnsleyFilter();
     private int m_flimit = 1;
-    private boolean m_ml = true, m_llog = false;
+    private boolean m_ml = true, m_llog = false, m_mt=false;
     private IFunctionMinimizer m_min = null;// new
     // ec.tstoolkit.maths.functions.minpack.LMMinimizer();
     private IParametricMapping<S> m_mapper;
@@ -215,6 +215,14 @@ public class GlsArimaMonitor<S extends IArimaModel> implements
     public boolean isUsingMaximumLikelihood() {
         return m_ml;
     }
+    
+    public boolean isMultiThread(){
+        return m_mt;
+    }
+
+    public void setMultiThread(boolean mt){
+        m_mt=mt;
+    }
 
     @Override
     public RegArimaEstimation<S> optimize(RegArimaModel<S> regs) {
@@ -254,6 +262,7 @@ public class GlsArimaMonitor<S extends IArimaModel> implements
             }
             m_fn = new ArmaFunction<>(regs.getDModel(), regs.getArima().getNonStationaryARCount(), regs
                     .getMissings(), m_mapper);
+            m_fn.mt=m_mt;
             if (regs.getVarsCount() > m_flimit) {
                 m_fn.filter = m_filter2;
             } else {
