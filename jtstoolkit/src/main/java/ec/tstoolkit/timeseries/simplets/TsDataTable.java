@@ -177,6 +177,13 @@ public class TsDataTable {
         }
     }
 
+    public void add(TsData... ts) {
+        internalClear();
+        for (TsData s : ts) {
+            m_data.add(s);
+        }
+    }
+
     private void internalClear() {
         m_curfreq = 0;
         m_count = 0;
