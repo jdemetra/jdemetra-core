@@ -63,7 +63,6 @@ public class TsDenton2 extends AbstractTsBenchmarking {
             return null;
         }
         denton.setConversionFactor(qfreq / yfreq);
-        TsData tr;
         if (series != null) {
             // Y is limited to q !
             TsPeriodSelector qsel = new TsPeriodSelector();
