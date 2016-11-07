@@ -67,4 +67,27 @@ public interface HasFilePaths {
         }
         return result;
     }
+
+    /**
+     * Creates a new instance of HasFilePaths.
+     *
+     * @return a non-null instance
+     */
+    @Nonnull
+    static HasFilePaths of() {
+        return new Util.FilePathSupport(() -> {
+            // do nothing
+        });
+    }
+
+    /**
+     * Creates a new instance of HasFilePaths with a callback.
+     *
+     * @param onPathsChange a non-null callback to be notified of paths change
+     * @return a non-null instance
+     */
+    @Nonnull
+    static HasFilePaths of(@Nonnull Runnable onPathsChange) {
+        return new Util.FilePathSupport(onPathsChange);
+    }
 }

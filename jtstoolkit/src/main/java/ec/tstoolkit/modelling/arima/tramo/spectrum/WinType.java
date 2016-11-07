@@ -30,11 +30,8 @@ public enum WinType implements IntValue {
     Bartlett(3),
     Hamming(4),
     Parzen(5);
-   public static WinType valueOf(final int value) {
-	for (WinType option : values())
-	    if (option.intValue() == value)
-		return option;
-	return null;
+   public static WinType valueOf(int value) {
+       return IntValue.valueOf(WinType.class, value).orElse(null);
     }
 
     private final int value;

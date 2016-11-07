@@ -76,4 +76,15 @@ public interface HasDataMoniker {
      */
     @Nullable
     DataSet toDataSet(@Nonnull TsMoniker moniker) throws IllegalArgumentException;
+
+    /**
+     * Creates a new instance of HasDataMoniker using uri parser/formatter.
+     *
+     * @param providerName a non-null provider name
+     * @return a non-null instance
+     */
+    @Nonnull
+    static HasDataMoniker usingUri(@Nonnull String providerName) {
+        return new Util.DataMonikerSupport(providerName, DataSource.uriFormatter(), DataSet.uriFormatter(), DataSource.uriParser(), DataSet.uriParser());
+    }
 }

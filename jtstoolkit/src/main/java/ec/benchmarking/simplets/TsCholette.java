@@ -118,7 +118,7 @@ public class TsCholette extends AbstractTsBenchmarking {
 
         if (getAggregationType() == TsAggregationType.Average
                 || getAggregationType() == TsAggregationType.Sum) {
-            SsfCholette cholette = new SsfCholette(c, rho_, w);
+            SsfCholette cholette = new SsfCholette(c, s.getStart().getPosition()%c, rho_, w);
 //        WeightedSsfDisaggregation<SsfAr1> cholette=
 //                new WeightedSsfDisaggregation(c, w, new SsfAr1(ro_));
             DisturbanceSmoother dsmoother = new DisturbanceSmoother();
@@ -184,7 +184,7 @@ public class TsCholette extends AbstractTsBenchmarking {
 
         if (getAggregationType() == TsAggregationType.Average
                 || getAggregationType() == TsAggregationType.Sum) {
-            SsfDenton denton = new SsfDenton(c, w);
+            SsfDenton denton = new SsfDenton(c, s.getStart().getPosition()%c, w);
             DisturbanceSmoother dsmoother = new DisturbanceSmoother();
             dsmoother.setSsf(denton);
             dsmoother.process(new SsfData(y, null));

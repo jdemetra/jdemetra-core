@@ -30,6 +30,7 @@ import ec.tstoolkit.sarima.SarimaSpecification;
  * @author Jean Palate
  * @author Philippe Charles
  */
+@Deprecated
 public class RandomBean implements IDataSourceBean {
 
     static final IParam<DataSource, Integer> X_SEED = Params.onInteger(0, "seed");

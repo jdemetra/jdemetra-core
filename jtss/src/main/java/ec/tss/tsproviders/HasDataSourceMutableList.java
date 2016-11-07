@@ -16,8 +16,11 @@
  */
 package ec.tss.tsproviders;
 
+import ec.tss.tsproviders.utils.DataSourceEventSupport;
+import java.util.LinkedHashSet;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
+import org.slf4j.Logger;
 
 /**
  * Defines the ability to modify a list of data sources. Note that the
@@ -56,5 +59,10 @@ public interface HasDataSourceMutableList extends HasDataSourceList {
      */
     default void closeAll() {
         getDataSources().forEach(this::close);
+    }
+
+    @Nonnull
+    public static HasDataSourceMutableList of(@Nonnull String providerName, @Nonnull Logger logger) {
+        return new Util.DataSourceListSupport(providerName, new LinkedHashSet<>(), DataSourceEventSupport.create(logger));
     }
 }

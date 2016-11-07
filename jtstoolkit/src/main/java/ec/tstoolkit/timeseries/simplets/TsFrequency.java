@@ -21,7 +21,6 @@ package ec.tstoolkit.timeseries.simplets;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.IntValue;
 import ec.tstoolkit.timeseries.TsException;
-import java.util.EnumSet;
 
 /**
  * Frequency of an event. 
@@ -83,11 +82,8 @@ public enum TsFrequency implements IntValue{
      *            Integer representation of the frequency
      * @return Enum representation of the frequency
      */
-    public static TsFrequency valueOf(final int value) {
-	for (TsFrequency option : EnumSet.allOf(TsFrequency.class))
-	    if (option.intValue() == value)
-		return option;
-	return null;
+    public static TsFrequency valueOf(int value) {
+        return IntValue.valueOf(TsFrequency.class, value).orElse(null);
     }
 
     private final int value;

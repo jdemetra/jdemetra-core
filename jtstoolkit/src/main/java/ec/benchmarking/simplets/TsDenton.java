@@ -106,7 +106,7 @@ public class TsDenton extends AbstractTsBenchmarking {
 
         double[] y = expand(series.getDomain(), obj, getAggregationType());
 
-        SsfDenton denton = new SsfDenton(c, series.internalStorage());
+        SsfDenton denton = new SsfDenton(c, series.getStart().getPosition()%c, series.internalStorage());
 //        WeightedSsfDisaggregation<SsfRw> denton=new WeightedSsfDisaggregation<SsfRw>(c, series.getValues().internalStorage(), new SsfRw());
         DisturbanceSmoother dsmoother = new DisturbanceSmoother();
         dsmoother.setSsf(denton);

@@ -31,13 +31,8 @@ public enum WindowType implements IntValue {
     Hamming(4),
     Parzen(5);
 
-    public static WindowType valueOf(final int value) {
-        for (WindowType option : values()) {
-            if (option.intValue() == value) {
-                return option;
-            }
-        }
-        return null;
+    public static WindowType valueOf(int value) {
+        return IntValue.valueOf(WindowType.class, value).orElse(null);
     }
     private final int value;
 

@@ -19,7 +19,6 @@ package ec.tstoolkit.modelling;
 
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.IntValue;
-import java.util.EnumSet;
 
 /**
  * 
@@ -84,12 +83,9 @@ public enum ComponentType implements IntValue {
      * @param value
      * @return
      */
-    public static ComponentType valueOf(final int value)
+    public static ComponentType valueOf(int value)
     {
-	for (ComponentType type : EnumSet.allOf(ComponentType.class))
-	    if (type.intValue() == value)
-		return type;
-	return null;
+        return IntValue.valueOf(ComponentType.class, value).orElse(null);
     }
 
     private final int value;

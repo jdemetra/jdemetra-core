@@ -16,6 +16,7 @@
  */
 package ec.tss.tsproviders;
 
+import ec.tss.tsproviders.utils.IParam;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -61,4 +62,18 @@ public interface HasDataSourceBean<T> {
      */
     @Nonnull
     T decodeBean(@Nonnull DataSource dataSource) throws IllegalArgumentException;
+
+    /**
+     * Creates a new instance of HasDataSourceBean using a versioned param.
+     *
+     * @param <T> the type of the bean
+     * @param providerName a non-null provider name
+     * @param param a non-null param
+     * @param version a non-null version
+     * @return a non-null instance
+     */
+    @Nonnull
+    static <T> HasDataSourceBean<T> of(@Nonnull String providerName, @Nonnull IParam<DataSource, T> param, @Nonnull String version) {
+        return new Util.DataSourceBeanSupport(providerName, param, version);
+    }
 }
