@@ -182,6 +182,11 @@ public final class Formatters {
     }
 
     @Nonnull
+    public static Formatter<Character> charFormatter() {
+        return CHAR_FORMATTER;
+    }
+
+    @Nonnull
     public static Formatter<Charset> charsetFormatter() {
         return CHARSET_FORMATTER;
     }
@@ -333,6 +338,12 @@ public final class Formatters {
     private static final Formatter<Boolean> BOOL_FORMATTER = new Formatter<Boolean>() {
         @Override
         public CharSequence format(Boolean value) throws NullPointerException {
+            return value.toString();
+        }
+    };
+    private static final Formatter<Character> CHAR_FORMATTER = new Formatter<Character>() {
+        @Override
+        public CharSequence format(Character value) throws NullPointerException {
             return value.toString();
         }
     };

@@ -19,7 +19,6 @@ package ec.tstoolkit.algorithm;
 
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.IntValue;
-import java.util.EnumSet;
 
 /**
  * @author Jean Palate
@@ -53,13 +52,8 @@ public enum ProcQuality implements IntValue {
     /// </summary>
     Good(5);
 
-    public static ProcQuality valueOf(final int value) {
-        for (ProcQuality option : EnumSet.allOf(ProcQuality.class)) {
-            if (option.intValue() == value) {
-                return option;
-            }
-        }
-        return null;
+    public static ProcQuality valueOf(int value) {
+        return IntValue.valueOf(ProcQuality.class, value).orElse(null);
     }
 
     public boolean isAtLeast(ProcQuality quality){
