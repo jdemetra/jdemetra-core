@@ -23,7 +23,6 @@ import ec.tstoolkit.maths.linearfilters.BackFilter;
 import ec.tstoolkit.maths.linearfilters.SymmetricFrequencyResponseDecomposer3;
 import ec.tstoolkit.maths.linearfilters.SymmetricFilter;
 import ec.tstoolkit.maths.linearfilters.SymmetricFrequencyResponseDecomposer;
-import ec.tstoolkit.maths.linearfilters.SymmetricFrequencyResponseDecomposer2;
 import ec.tstoolkit.maths.polynomials.Polynomial;
 import ec.tstoolkit.maths.polynomials.UnitRootsSolver;
 
