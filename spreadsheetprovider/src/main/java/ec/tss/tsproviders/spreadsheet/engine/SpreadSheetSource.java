@@ -20,7 +20,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import ec.tss.tsproviders.spreadsheet.facade.Book;
 import ec.tss.tsproviders.utils.DataFormat;
-import ec.tss.tsproviders.utils.Parsers;
+import ec.tss.tsproviders.utils.IParser;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.IOException;
@@ -42,7 +42,7 @@ public final class SpreadSheetSource {
 
     @Deprecated
     @Nonnull
-    public static SpreadSheetSource load(@Nonnull Book book, @Nonnull Parsers.Parser<Date> dateParser, @Nonnull Parsers.Parser<Number> numberParser, @Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean clean) throws IOException {
+    public static SpreadSheetSource load(@Nonnull Book book, @Nonnull IParser<Date> dateParser, @Nonnull IParser<Number> numberParser, @Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean clean) throws IOException {
         return Engine.parseSource(book, dateParser, numberParser, freq, aggregation, clean);
     }
 

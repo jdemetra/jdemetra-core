@@ -19,7 +19,6 @@ package ec.tss.tsproviders;
 import com.google.common.collect.ImmutableSortedMap;
 import ec.tss.tsproviders.utils.Formatters;
 import java.io.*;
-import java.util.Map.Entry;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Assert;
 import org.junit.Test;
@@ -44,9 +43,7 @@ public class DataSourceTest {
         DataSource dataSource = newSample();
         Assert.assertEquals(PNAME, dataSource.getProviderName());
         Assert.assertEquals(VERSION, dataSource.getVersion());
-        for (Entry<String, String> o : ImmutableSortedMap.of(K1, V1, K2, V2, K3, V3).entrySet()) {
-            Assert.assertEquals(o.getValue(), dataSource.getParams().get(o.getKey()));
-        }
+        ImmutableSortedMap.of(K1, V1, K2, V2, K3, V3).forEach((k, v) -> Assert.assertEquals(v, dataSource.getParams().get(k)));
     }
 
     @Test
@@ -88,7 +85,7 @@ public class DataSourceTest {
     @Test
     public void testBuilder() {
         DataSource dataSource = newSample();
-        DataSource.Builder builder = DataSource.builder(dataSource);
+        DataSource.Builder builder = dataSource.toBuilder();
         DataSource tmp = builder.build();
         Assert.assertEquals(dataSource, tmp);
         Assert.assertNotSame(dataSource, tmp);
@@ -113,7 +110,7 @@ public class DataSourceTest {
     @Test
     public void testXmlParser() {
         DataSource dataSource = newSample();
-        Assert.assertEquals(dataSource, DataSource.xmlParser().parse(DataSource.xmlFormatter(false).tryFormat(dataSource).get()));
+        Assert.assertEquals(dataSource, DataSource.xmlParser().parse(DataSource.xmlFormatter(false).formatValue(dataSource).get()));
     }
 
     @Test
@@ -138,9 +135,9 @@ public class DataSourceTest {
     @Test
     public void testUriParser() {
         DataSource dataSource = newSample();
-        Assert.assertEquals(dataSource, DataSource.uriParser().parse(DataSource.uriFormatter().tryFormat(dataSource).get()));
+        Assert.assertEquals(dataSource, DataSource.uriParser().parse(DataSource.uriFormatter().formatValue(dataSource).get()));
 
         DataSource empty = new DataSource("", "", ImmutableSortedMap.<String, String>of());
-        Assert.assertEquals(empty, DataSource.uriParser().parse(DataSource.uriFormatter().tryFormat(empty).get()));
+        Assert.assertEquals(empty, DataSource.uriParser().parse(DataSource.uriFormatter().formatValue(empty).get()));
     }
 }

@@ -183,7 +183,7 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
         }
 
         DataSet[] children = new DataSet[ws.tsclist[index].tslist.length];
-        DataSet.Builder builder = DataSet.builder(parent, DataSet.Kind.SERIES);
+        DataSet.Builder builder = parent.toBuilder(DataSet.Kind.SERIES);
         for (int i = 0; i < children.length; i++) {
             Z_SERIESINDEX.set(builder, i);
             children[i] = builder.build();
@@ -234,7 +234,7 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
             return Collections.emptyList();
         }
         TsInformation[] result = new TsInformation[collection.tslist.length];
-        DataSet.Builder builder = DataSet.builder(dataSet, DataSet.Kind.SERIES);
+        DataSet.Builder builder = dataSet.toBuilder(DataSet.Kind.SERIES);
         for (int i = 0; i < result.length; ++i) {
             wsTs s = collection.tslist[i];
             Z_SERIESINDEX.set(builder, i);

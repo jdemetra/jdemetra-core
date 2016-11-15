@@ -24,7 +24,6 @@ import ec.tss.tsproviders.sdmx.model.SdmxSource;
 import ec.tss.tsproviders.utils.DataFormat;
 import ec.tss.tsproviders.utils.ObsGathering;
 import ec.tss.tsproviders.utils.OptionalTsData;
-import ec.tss.tsproviders.utils.Parsers.Parser;
 import static ec.tstoolkit.utilities.GuavaCollectors.toImmutableList;
 import java.util.Calendar;
 import java.util.Date;
@@ -39,6 +38,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import static ec.tss.tsproviders.sdmx.engine.FluentDom.asStream;
+import ec.tss.tsproviders.utils.IParser;
 
 /**
  *
@@ -127,8 +127,8 @@ public class GenericDocFactory extends AbstractDocumentFactory {
     }
 
     private static OptionalTsData getData(Node seriesNode, TimeFormat timeFormat, Calendar cal) {
-        Parser<Date> toPeriod = timeFormat.getParser();
-        Parser<Number> toValue = DEFAULT_DATA_FORMAT.numberParser();
+        IParser<Date> toPeriod = timeFormat.getParser();
+        IParser<Number> toValue = DEFAULT_DATA_FORMAT.numberParser();
         ObsGathering gathering = ObsGathering.includingMissingValues(timeFormat.getFrequency(), timeFormat.getAggregationType());
         return OptionalTsData.builderByDate(cal, gathering)
                 .addAll(lookupObservations(seriesNode), o -> toPeriod.parse(getPeriod(o)), o -> toValue.parse(getValue(o)))

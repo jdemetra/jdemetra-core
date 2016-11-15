@@ -116,7 +116,7 @@ public abstract class DbProvider<BEAN extends DbBean> extends AbstractDataSource
             return Collections.emptyList();
         }
         DataSet[] children = new DataSet[values.size()];
-        DataSet.Builder builder = DataSet.builder(parent, dims.hasGrandChildren() ? DataSet.Kind.COLLECTION : DataSet.Kind.SERIES);
+        DataSet.Builder builder = parent.toBuilder(dims.hasGrandChildren() ? DataSet.Kind.COLLECTION : DataSet.Kind.SERIES);
         String childDimColumn = dims.childDimColumn();
         for (int i = 0; i < children.length; i++) {
             builder.put(childDimColumn, values.get(i));

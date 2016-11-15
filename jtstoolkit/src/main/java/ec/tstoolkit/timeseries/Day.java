@@ -13,7 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
+ */
 package ec.tstoolkit.timeseries;
 
 import java.util.Calendar;
@@ -28,7 +28,7 @@ import java.text.SimpleDateFormat;
 
 /**
  * Representation of a day.
- * 
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
@@ -66,11 +66,11 @@ public final class Day implements IPeriod, Comparable<Day> {
     public static int getMonthDays(int month) {
         return monthDays[month];
     }
-    
+
     public static int getCumulatedMonthDays(int month) {
         return cumulatedMonthDays[month];
     }
-    
+
     private static int calc(final Date date) {
         Calendar cal = CALENDAR_THREAD_LOCAL.get();
         cal.setTime(date);
@@ -80,7 +80,7 @@ public final class Day implements IPeriod, Comparable<Day> {
 
     /**
      * Number of days from begin 1970. month and day are 0-base indexed.
-     * 
+     *
      * @param year
      * @param month
      * @param day
@@ -103,7 +103,7 @@ public final class Day implements IPeriod, Comparable<Day> {
 
     /**
      * Number of days from begin 1970. day is 0-base indexed.
-     * 
+     *
      * @param year
      * @param ndays
      * @return
@@ -116,8 +116,7 @@ public final class Day implements IPeriod, Comparable<Day> {
 
         if (year < 30) {
             year += 2000; // 29 == 2029
-        }
-        else if (year < 100) {
+        } else if (year < 100) {
             year += 1900; // 30 == 1930
         }
         boolean bLeapYear = isLeap(year);
@@ -133,14 +132,13 @@ public final class Day implements IPeriod, Comparable<Day> {
         // correction for leap year
         if (bLeapYear) {
             return rslt - 1;
-        }
-        else {
+        } else {
             return rslt;
         }
     }
 
     /**
-     * 
+     *
      * @param d0
      * @param d1
      * @return
@@ -151,7 +149,7 @@ public final class Day implements IPeriod, Comparable<Day> {
 
     /**
      * Creates a new object that represents today
-     * 
+     *
      * @return Today
      */
     public static Day toDay() {
@@ -164,8 +162,7 @@ public final class Day implements IPeriod, Comparable<Day> {
 //        }
         if (year < 30) {
             year += 2000; // 29 == 2029
-        }
-        else if (year < 100) {
+        } else if (year < 100) {
             year += 1900; // 30 == 1930
         }
         return year;
@@ -174,7 +171,7 @@ public final class Day implements IPeriod, Comparable<Day> {
     /**
      * Verifies the validity of (year, month, day, where month, day are 0-base
      * indexed).
-     * 
+     *
      * @return true if leap year, false otherwise.
      * @throws TSException
      */
@@ -196,17 +193,15 @@ public final class Day implements IPeriod, Comparable<Day> {
         return bLeapYear;
     }
 
-     // 0 = 1/1/70
+    // 0 = 1/1/70
     private final int day_;
     private static final long G_DAY0 = new GregorianCalendar(1970, Calendar.JANUARY, 1).getTimeInMillis();
 
     /**
      * Gets the number of days by month (0-base indexed).
-     * 
-     * @param year
-     *            Considered year (meaningful only for February).
-     * @param month
-     *            Considered (0-based) month.
+     *
+     * @param year Considered year (meaningful only for February).
+     * @param month Considered (0-based) month.
      * @return Number of days in the considered month
      */
     public static int getNumberOfDaysByMonth(final int year, final int month) {
@@ -218,7 +213,7 @@ public final class Day implements IPeriod, Comparable<Day> {
 
     /**
      * true if year is leap
-     * 
+     *
      * @param year
      * @return
      */
@@ -227,7 +222,7 @@ public final class Day implements IPeriod, Comparable<Day> {
     }
 
     /**
-     * 
+     *
      * @param d
      */
     public Day(final Date d) {
@@ -235,7 +230,7 @@ public final class Day implements IPeriod, Comparable<Day> {
     }
 
     /**
-     * 
+     *
      * @param day
      */
     Day(final int day) {
@@ -243,7 +238,7 @@ public final class Day implements IPeriod, Comparable<Day> {
     }
 
     /**
-     * 
+     *
      * @param year Year
      * @param month Month (integer value of month is 0-based
      * @param day 0-based day
@@ -258,7 +253,7 @@ public final class Day implements IPeriod, Comparable<Day> {
     }
 
     /**
-     * 
+     *
      * @param dt
      * @return
      */
@@ -268,7 +263,7 @@ public final class Day implements IPeriod, Comparable<Day> {
     }
 
     /**
-     * 
+     *
      * @param d1
      * @return
      */
@@ -280,7 +275,7 @@ public final class Day implements IPeriod, Comparable<Day> {
     public boolean equals(Object obj) {
         return this == obj || (obj instanceof Day && equals((Day) obj));
     }
-    
+
     private boolean equals(Day other) {
         return day_ == other.day_;
     }
@@ -293,7 +288,7 @@ public final class Day implements IPeriod, Comparable<Day> {
     }
 
     /**
-     * 
+     *
      * @return
      */
     @Override
@@ -302,7 +297,7 @@ public final class Day implements IPeriod, Comparable<Day> {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public DayOfWeek getDayOfWeek() {
@@ -315,17 +310,17 @@ public final class Day implements IPeriod, Comparable<Day> {
 
     /**
      * Gets the identifier of the day.
-     * 
+     *
      * @return The identifier of the day, which is the number of days after (or
-     *         before if id is negative) the first of January 1970 (id of
-     *         1/1/1970 equals 0).
+     * before if id is negative) the first of January 1970 (id of 1/1/1970
+     * equals 0).
      */
     public int getId() {
         return day_;
     }
 
     /**
-     * 
+     *
      * @return
      */
     public int getMonth() {
@@ -333,7 +328,7 @@ public final class Day implements IPeriod, Comparable<Day> {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public int getYear() {
@@ -342,7 +337,7 @@ public final class Day implements IPeriod, Comparable<Day> {
 
     /**
      * Is this day strictly after a given day?
-     * 
+     *
      * @param d1
      * @return this > d1
      */
@@ -352,7 +347,7 @@ public final class Day implements IPeriod, Comparable<Day> {
 
     /**
      * Is this day strictly before a given day?
-     * 
+     *
      * @param d1
      * @return this < d1
      */
@@ -362,7 +357,7 @@ public final class Day implements IPeriod, Comparable<Day> {
 
     /**
      * Is this day equal or before a given day?
-     * 
+     *
      * @param d1
      * @return this <= d1
      */
@@ -372,7 +367,7 @@ public final class Day implements IPeriod, Comparable<Day> {
 
     /**
      * Is this day equal or after a given day?
-     * 
+     *
      * @param d1
      * @return this >= d1
      */
@@ -381,7 +376,7 @@ public final class Day implements IPeriod, Comparable<Day> {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public boolean isWorkingDay() {
@@ -389,7 +384,7 @@ public final class Day implements IPeriod, Comparable<Day> {
         if (d < 0) {
             d += 7;
         }
-        return d<5;
+        return d < 5;
     }
 
     @Override
@@ -398,7 +393,7 @@ public final class Day implements IPeriod, Comparable<Day> {
     }
 
     /**
-     * 
+     *
      * @param ndays
      * @return
      */
@@ -407,7 +402,7 @@ public final class Day implements IPeriod, Comparable<Day> {
     }
 
     /**
-     * 
+     *
      * @param ndays
      * @return
      */
@@ -416,12 +411,12 @@ public final class Day implements IPeriod, Comparable<Day> {
     }
 
     /**
-     * Returns a <code>Date</code> object representing this
-     * <code>Day</code>'s time value (millisecond offset from the <a
+     * Returns a <code>Date</code> object representing this <code>Day</code>'s
+     * time value (millisecond offset from the <a
      * href="#Epoch">Epoch</a>").
      *
      * @return a <code>Date</code> representing the time value.
-    */    
+     */
     @NewObject
     public Date getTime() {
         return new Date(getTimeInMillis());
@@ -430,14 +425,14 @@ public final class Day implements IPeriod, Comparable<Day> {
     public long getTimeInMillis() {
         return toInternalCalendar().getTimeInMillis();
     }
-    
+
     /**
      * Returns a <code>GregorianCalendar</code> object set to this
      * <code>Day</code>'s time value (millisecond offset from the <a
      * href="#Epoch">Epoch</a>").
-     * 
+     *
      * @return a new <code>GregorianCalendar</code> set to the time value.
-     * @see #getTime() 
+     * @see #getTime()
      */
     @NewObject
     public GregorianCalendar toCalendar() {
@@ -454,32 +449,22 @@ public final class Day implements IPeriod, Comparable<Day> {
         cal.add(Calendar.DAY_OF_MONTH, day_);
         return cal;
     }
-    
+
     @Override
     public String toString() {
         return DATE_FORMAT_THREAD_LOCAL.get().format(toInternalCalendar().getTime());
     }
-    
-    public static Day fromString(String s) throws ParseException{
+
+    public static Day fromString(String s) throws ParseException {
         return new Day(DATE_FORMAT_THREAD_LOCAL.get().parse(s));
     }
 
-    private static final ThreadLocal<SimpleDateFormat> DATE_FORMAT_THREAD_LOCAL = new ThreadLocal<SimpleDateFormat>() {
-        @Override
-        protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat("yyyy-MM-dd");
-        }
-    };
-    /**
-     * Calendar.getInstance() creates a new instance of GregorianCalendar and its 
-     * constructor triggers a lot of internal synchronized code.
-     * => We use ThreadLocal to avoid this overhead
-     */
-    private static final ThreadLocal<GregorianCalendar> CALENDAR_THREAD_LOCAL = new ThreadLocal<GregorianCalendar>() {
-        @Override
-        protected GregorianCalendar initialValue() {
-            return new GregorianCalendar();
-        }
-    };
+    private static final ThreadLocal<SimpleDateFormat> DATE_FORMAT_THREAD_LOCAL = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd"));
 
+    /**
+     * Calendar.getInstance() creates a new instance of GregorianCalendar and
+     * its constructor triggers a lot of internal synchronized code. => We use
+     * ThreadLocal to avoid this overhead
+     */
+    private static final ThreadLocal<GregorianCalendar> CALENDAR_THREAD_LOCAL = ThreadLocal.withInitial(GregorianCalendar::new);
 }

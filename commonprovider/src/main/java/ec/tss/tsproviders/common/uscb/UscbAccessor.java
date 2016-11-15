@@ -17,6 +17,7 @@
 package ec.tss.tsproviders.common.uscb;
 
 import ec.tss.tsproviders.legacy.FileDataSourceId;
+import ec.tss.tsproviders.utils.IParser;
 import ec.tss.tsproviders.utils.Parsers;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
@@ -137,7 +138,7 @@ public class UscbAccessor {
     static class USCensusObs {
 
         static final double ND = -99999;
-        static final Parsers.Parser<Double> VALUE_PARSER = Parsers.doubleParser();
+        static final IParser<Double> VALUE_PARSER = Parsers.doubleParser();
         int year;
         int period;
         double obs;
@@ -155,7 +156,7 @@ public class UscbAccessor {
                 if (date != null && val != null) {
                     year = Integer.parseInt(date.substring(0, 4));
                     period = Integer.parseInt(date.substring(4, 6));
-                    obs = VALUE_PARSER.tryParse(val).or(ND);
+                    obs = VALUE_PARSER.parseValue(val).orElse(ND);
                     if (obs == ND) {
                         obs = Double.NaN;
                     }
@@ -177,7 +178,7 @@ public class UscbAccessor {
                     period = Integer.parseInt(tokenizer.nextToken());
                 }
                 if (tokenizer.hasNextToken()) {
-                    obs = VALUE_PARSER.tryParse(tokenizer.nextToken()).or(Double.NaN);
+                    obs = VALUE_PARSER.parseValue(tokenizer.nextToken()).orElse(Double.NaN);
                 }
                 return year > 0 && period > 0 && !tokenizer.hasNextToken();
             } catch (NumberFormatException | NullPointerException ex) {

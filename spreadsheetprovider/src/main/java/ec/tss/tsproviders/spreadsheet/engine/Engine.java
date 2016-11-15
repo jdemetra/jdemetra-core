@@ -20,9 +20,9 @@ import com.google.common.collect.ImmutableList;
 import ec.tss.tsproviders.spreadsheet.facade.Book;
 import ec.tss.tsproviders.spreadsheet.facade.Sheet;
 import ec.tss.tsproviders.utils.DataFormat;
+import ec.tss.tsproviders.utils.IParser;
 import ec.tss.tsproviders.utils.ObsGathering;
 import ec.tss.tsproviders.utils.OptionalTsData;
-import ec.tss.tsproviders.utils.Parsers;
 import ec.tstoolkit.design.VisibleForTesting;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
@@ -47,7 +47,7 @@ abstract class Engine {
     }
 
     @VisibleForTesting
-    static SpreadSheetSource parseSource(Book book, Parsers.Parser<Date> dateParser, Parsers.Parser<Number> numberParser, TsFrequency freq, TsAggregationType aggregation, boolean clean) throws IOException {
+    static SpreadSheetSource parseSource(Book book, IParser<Date> dateParser, IParser<Number> numberParser, TsFrequency freq, TsAggregationType aggregation, boolean clean) throws IOException {
         CellParser<String> toName = CellParser.onStringType();
         CellParser<Date> toDate = CellParser.onDateType().or(CellParser.fromParser(dateParser));
         CellParser<Number> toNumber = CellParser.onNumberType().or(CellParser.fromParser(numberParser));
