@@ -16,6 +16,7 @@
  */
 package ec.tss.tsproviders.common.tsw;
 
+import ec.tss.tsproviders.utils.IParser;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tss.tsproviders.utils.Parsers;
 import ec.tstoolkit.design.VisibleForTesting;
@@ -95,17 +96,17 @@ abstract class TswFactory {
     private enum TswFilters implements DirectoryStream.Filter<Path> {
 
         ANY_FILE {
-                    @Override
-                    public boolean accept(Path entry) throws IOException {
-                        return !Files.isDirectory(entry);
-                    }
-                },
+            @Override
+            public boolean accept(Path entry) throws IOException {
+                return !Files.isDirectory(entry);
+            }
+        },
         FILE_WITHOUT_EXTENSION {
-                    @Override
-                    public boolean accept(Path entry) throws IOException {
-                        return !Files.isDirectory(entry) && !entry.getFileName().toString().contains(".");
-                    }
-                }
+            @Override
+            public boolean accept(Path entry) throws IOException {
+                return !Files.isDirectory(entry) && !entry.getFileName().toString().contains(".");
+            }
+        }
     }
 
     @VisibleForTesting
@@ -171,7 +172,7 @@ abstract class TswFactory {
 
         // Read remaining lines until all values are parsed
         DoubleList values = new DoubleList();
-        Parsers.Parser<Number> valueParser = new ValueParser();
+        IParser<Number> valueParser = new ValueParser();
         while (iterator.hasNext() && values.size() < domain.getLength()) {
             Tokenizer tokenizer = new Tokenizer(iterator.next());
             while (tokenizer.hasNextToken()) {
@@ -194,7 +195,7 @@ abstract class TswFactory {
     private static final Charset TSW_CHARSET = StandardCharsets.US_ASCII;
     private static final int TSW_NAN = -99999;
 
-    private final static class NameParser extends Parsers.Parser<String> {
+    private final static class NameParser implements IParser<String> {
 
         private static final NameParser INSTANCE = new NameParser();
 
@@ -205,7 +206,7 @@ abstract class TswFactory {
         }
     }
 
-    private final static class DomainParser extends Parsers.Parser<TsDomain> {
+    private final static class DomainParser implements IParser<TsDomain> {
 
         private static final DomainParser INSTANCE = new DomainParser();
 

@@ -16,7 +16,6 @@
  */
 package ec.tss.tsproviders.common.uscb;
 
-import com.google.common.base.Optional;
 import com.google.common.base.StandardSystemProperty;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
@@ -33,7 +32,7 @@ import ec.tss.tsproviders.IDataSourceProvider;
 import ec.tss.tsproviders.legacy.FileDataSourceId;
 import ec.tss.tsproviders.legacy.InvalidMonikerException;
 import ec.tss.tsproviders.utils.DataSourceSupport;
-import ec.tss.tsproviders.utils.Parsers;
+import ec.tss.tsproviders.utils.IParser;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.utilities.Files2;
 import ec.tstoolkit.utilities.GuavaCaches;
@@ -60,7 +59,7 @@ public class UscbProvider implements IDataSourceProvider {
     private static final File DEFAULT_FOLDER = Files2.fromPath(StandardSystemProperty.USER_HOME.value(), "Data", "USCB");
     private final Cache<FileDataSourceId, UscbAccessor> m_accessors;
     private final DataSourceSupport support;
-    private final Parsers.Parser<DataSource> legacyDataSourceParser;
+    private final IParser<DataSource> legacyDataSourceParser;
 
     public UscbProvider() {
         m_accessors = GuavaCaches.softValuesCache();
@@ -74,10 +73,7 @@ public class UscbProvider implements IDataSourceProvider {
         String[] files = folder.list();
         if (files != null) {
             for (String file : files) {
-                Optional<DataSource> dataSource = legacyDataSourceParser.tryParse(file);
-                if (dataSource.isPresent()) {
-                    support.open(dataSource.get());
-                }
+                legacyDataSourceParser.parseValue(file).ifPresent(support::open);
             }
         }
     }

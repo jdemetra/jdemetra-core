@@ -77,7 +77,7 @@ final class TxtLoader {
         int nbrRows = 0;
         int nbrUselessRows = 0;
         String[] titles = new String[0];
-        Parsers.Parser<Date> dateParser = obsFormat.dateParser().or(FALLBACK_PARSER.get());
+        IParser<Date> dateParser = obsFormat.dateParser().orElse(FALLBACK_PARSER.get());
         Parsers.Parser<Number> numberParser = obsFormat.numberParser();
         GregorianCalendar cal = new GregorianCalendar();
         List<OptionalTsData.Builder2<Date>> dataCollectors = new ArrayList<>();
@@ -174,9 +174,9 @@ final class TxtLoader {
     }
 
     // needed by the use of SimpleDateFormat in the subparsers
-    private static final ThreadLocal<Parsers.Parser<Date>> FALLBACK_PARSER = new ThreadLocal<Parsers.Parser<Date>>() {
+    private static final ThreadLocal<IParser<Date>> FALLBACK_PARSER = new ThreadLocal<IParser<Date>>() {
         @Override
-        protected Parsers.Parser<Date> initialValue() {
+        protected IParser<Date> initialValue() {
             ImmutableList<IParser<Date>> list = Stream.of(FALLBACK_FORMATS)
                     .map(o -> new DataFormat(Locale.ROOT, o, null).dateParser())
                     .collect(GuavaCollectors.toImmutableList());

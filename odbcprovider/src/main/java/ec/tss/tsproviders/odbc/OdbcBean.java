@@ -50,12 +50,12 @@ public class OdbcBean extends JdbcBean implements IFileBean {
 
     @Override
     public File getFile() {
-        return FILE_PARSERS.tryParse(getDbName()).or(new File(""));
+        return FILE_PARSERS.parseValue(getDbName()).orElse(new File(""));
     }
 
     @Override
     public void setFile(File file) {
-        setDbName(FILE_FORMATTERS.tryFormatAsString(file).or(""));
+        setDbName(FILE_FORMATTERS.formatValueAsString(file).orElse(""));
     }
 
     /**

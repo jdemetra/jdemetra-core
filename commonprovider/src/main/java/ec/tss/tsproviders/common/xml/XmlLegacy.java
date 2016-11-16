@@ -21,6 +21,7 @@ import ec.tss.tsproviders.DataSet;
 import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.legacy.FileDataSourceId;
 import ec.tss.tsproviders.legacy.InvalidMonikerException;
+import ec.tss.tsproviders.utils.IParser;
 import ec.tss.tsproviders.utils.Parsers;
 
 /**
@@ -48,7 +49,7 @@ final class XmlLegacy {
     }
 
     static Parsers.Parser<DataSet> dataSetParser() {
-        final Parsers.Parser<DataSource> tmp = dataSourceParser();
+        final IParser<DataSource> tmp = dataSourceParser();
         return new Parsers.Parser<DataSet>() {
             @Override
             public DataSet parse(CharSequence input) throws NullPointerException {

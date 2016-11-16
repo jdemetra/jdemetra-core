@@ -32,85 +32,77 @@ import org.junit.Test;
 public class FormattersTest {
 
     @Test
-    @SuppressWarnings("null")
     public void testCharFormatter() {
         Formatter<Character> f = Formatters.charFormatter();
+        assertCompliance(f);
         assertThat(f.format('h')).isEqualTo("h");
         assertThat(f.format('\t')).isEqualTo("\t");
-        assertThatThrownBy(() -> f.format(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
     @SuppressWarnings("null")
     public void testBoolFormatter() {
         Formatter<Boolean> f = Formatters.boolFormatter();
+        assertCompliance(f);
         assertThat(f.format(Boolean.TRUE)).isEqualTo("true");
         assertThat(f.format(Boolean.FALSE)).isEqualTo("false");
-        assertThatThrownBy(() -> f.format(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    @SuppressWarnings("null")
     public void testCharsetFormatter() {
         Formatter<Charset> f = Formatters.charsetFormatter();
+        assertCompliance(f);
         assertThat(f.format(StandardCharsets.UTF_8)).isEqualTo("UTF-8");
-        assertThatThrownBy(() -> f.format(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    @SuppressWarnings("null")
     public void testOfInstance() {
         Formatter<String> f = Formatters.ofInstance("hello");
+        assertCompliance(f);
         assertThat(f.format("lkj")).isEqualTo("hello");
         assertThat(Formatters.ofInstance(null).format("lkj")).isNull();
-        assertThatThrownBy(() -> f.format(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    @SuppressWarnings("null")
     public void testDoubleArrayFormatter() {
         Formatter<double[]> f = Formatters.doubleArrayFormatter();
+        assertCompliance(f);
         assertThat(f.format(new double[]{0.4, -4.5})).isEqualTo("[0.4, -4.5]");
         assertThat(f.format(new double[]{})).isEqualTo("[]");
-        assertThatThrownBy(() -> f.format(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    @SuppressWarnings("null")
     public void testEnumFormatter() {
         Formatter<TsFrequency> f = Formatters.enumFormatter();
+        assertCompliance(f);
         assertThat(f.format(TsFrequency.Monthly)).isEqualTo("Monthly");
-        assertThatThrownBy(() -> f.format(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    @SuppressWarnings("null")
     public void testFileFormatter() {
         Formatter<File> f = Formatters.fileFormatter();
+        assertCompliance(f);
         assertThat(f.format(new File("test.xml"))).isEqualTo("test.xml");
-        assertThatThrownBy(() -> f.format(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    @SuppressWarnings("null")
     public void testIntFormatter() {
         Formatter<Integer> f = Formatters.intFormatter();
+        assertCompliance(f);
         assertThat(f.format(42)).isEqualTo("42");
-        assertThatThrownBy(() -> f.format(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    @SuppressWarnings("null")
     public void testStringFormatter() {
         Formatter<String> f = Formatters.stringFormatter();
+        assertCompliance(f);
         assertThat(f.format("hello")).isEqualTo("hello");
-        assertThatThrownBy(() -> f.format(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    public void testFormatterTryFormat() {
-        assertThat(Formatters.ofInstance("123").tryFormat(new Object()).get()).isEqualTo("123");
-        assertThat(Formatters.ofInstance(null).tryFormat(new Object()).isPresent()).isFalse();
+    public void testFormatterFormatValue() {
+        assertThat(Formatters.ofInstance("123").formatValue(new Object()).get()).isEqualTo("123");
+        assertThat(Formatters.ofInstance(null).formatValue(new Object()).isPresent()).isFalse();
     }
 
     @Test
@@ -120,8 +112,16 @@ public class FormattersTest {
     }
 
     @Test
-    public void testFormatterTryFormatAsString() {
-        assertThat(Formatters.ofInstance("123").tryFormatAsString(new Object()).get()).isEqualTo("123");
-        assertThat(Formatters.ofInstance(null).tryFormatAsString(new Object()).isPresent()).isFalse();
+    public void testFormatterFormatValueAsString() {
+        assertThat(Formatters.ofInstance("123").formatValueAsString(new Object()).get()).isEqualTo("123");
+        assertThat(Formatters.ofInstance(null).formatValueAsString(new Object()).isPresent()).isFalse();
+    }
+
+    @SuppressWarnings("null")
+    private static void assertCompliance(Formatter<?> f) {
+        assertThatThrownBy(() -> f.format(null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> f.formatAsString(null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> f.formatValue(null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> f.formatValueAsString(null)).isInstanceOf(NullPointerException.class);
     }
 }

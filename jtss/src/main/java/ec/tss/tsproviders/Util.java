@@ -20,10 +20,10 @@ import com.google.common.collect.ImmutableList;
 import ec.tss.TsMoniker;
 import ec.tss.tsproviders.utils.DataSourceEventSupport;
 import ec.tss.tsproviders.utils.DataSourcePreconditions;
-import ec.tss.tsproviders.utils.Formatters;
 import ec.tss.tsproviders.utils.IConfig;
+import ec.tss.tsproviders.utils.IFormatter;
 import ec.tss.tsproviders.utils.IParam;
-import ec.tss.tsproviders.utils.Parsers;
+import ec.tss.tsproviders.utils.IParser;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -68,10 +68,10 @@ final class Util {
 
     static final class DataDisplayNameSupport extends ProviderPart implements HasDataDisplayName {
 
-        private final Formatters.Formatter<DataSource> dataSourceFormatter;
-        private final Formatters.Formatter<DataSet> dataSetFormatter;
+        private final IFormatter<DataSource> dataSourceFormatter;
+        private final IFormatter<DataSet> dataSetFormatter;
 
-        DataDisplayNameSupport(String providerName, Formatters.Formatter<DataSource> dataSourceFormatter, Formatters.Formatter<DataSet> dataSetFormatter) {
+        DataDisplayNameSupport(String providerName, IFormatter<DataSource> dataSourceFormatter, IFormatter<DataSet> dataSetFormatter) {
             super(providerName);
             this.dataSourceFormatter = Objects.requireNonNull(dataSourceFormatter);
             this.dataSetFormatter = Objects.requireNonNull(dataSetFormatter);
@@ -100,12 +100,12 @@ final class Util {
 
     static final class DataMonikerSupport extends ProviderPart implements HasDataMoniker {
 
-        private final Formatters.Formatter<DataSource> dataSourceFormatter;
-        private final Formatters.Formatter<DataSet> dataSetFormatter;
-        private final Parsers.Parser<DataSource> dataSourceParser;
-        private final Parsers.Parser<DataSet> dataSetParser;
+        private final IFormatter<DataSource> dataSourceFormatter;
+        private final IFormatter<DataSet> dataSetFormatter;
+        private final IParser<DataSource> dataSourceParser;
+        private final IParser<DataSet> dataSetParser;
 
-        DataMonikerSupport(String providerName, Formatters.Formatter<DataSource> dataSourceFormatter, Formatters.Formatter<DataSet> dataSetFormatter, Parsers.Parser<DataSource> dataSourceParser, Parsers.Parser<DataSet> dataSetParser) {
+        DataMonikerSupport(String providerName, IFormatter<DataSource> dataSourceFormatter, IFormatter<DataSet> dataSetFormatter, IParser<DataSource> dataSourceParser, IParser<DataSet> dataSetParser) {
             super(providerName);
             this.dataSourceFormatter = Objects.requireNonNull(dataSourceFormatter);
             this.dataSetFormatter = Objects.requireNonNull(dataSetFormatter);

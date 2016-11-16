@@ -227,13 +227,13 @@ public class DataSourceSupport implements HasDataSourceMutableList, HasDataMonik
     @Override
     public TsMoniker toMoniker(DataSet dataSet) throws IllegalArgumentException {
         check(dataSet);
-        return new TsMoniker(providerName, DataSet.uriFormatter().tryFormatAsString(dataSet).get());
+        return new TsMoniker(providerName, DataSet.uriFormatter().formatValueAsString(dataSet).get());
     }
 
     @Override
     public TsMoniker toMoniker(DataSource dataSource) throws IllegalArgumentException {
         check(dataSource);
-        return new TsMoniker(providerName, DataSource.uriFormatter().tryFormatAsString(dataSource).get());
+        return new TsMoniker(providerName, DataSource.uriFormatter().formatValueAsString(dataSource).get());
     }
 
     @Override

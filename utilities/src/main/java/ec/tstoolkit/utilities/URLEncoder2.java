@@ -127,12 +127,7 @@ public final class URLEncoder2 {
         dontNeedEncoding.set('.');
         dontNeedEncoding.set('*');
 
-        TL = new ThreadLocal<CustomCharArrayWriter>() {
-            @Override
-            protected CustomCharArrayWriter initialValue() {
-                return new CustomCharArrayWriter();
-            }
-        };
+        TL = ThreadLocal.withInitial(CustomCharArrayWriter::new);
     }
 
     /**

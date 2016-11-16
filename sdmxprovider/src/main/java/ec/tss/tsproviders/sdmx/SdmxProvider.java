@@ -36,8 +36,8 @@ import ec.tss.tsproviders.sdmx.model.SdmxSeries;
 import ec.tss.tsproviders.sdmx.model.SdmxSource;
 import ec.tss.tsproviders.utils.AbstractFileLoader;
 import ec.tss.tsproviders.utils.IParam;
+import ec.tss.tsproviders.utils.IParser;
 import ec.tss.tsproviders.utils.Params;
-import ec.tss.tsproviders.utils.Parsers;
 import ec.tstoolkit.MetaData;
 import java.io.File;
 import java.io.IOException;
@@ -64,8 +64,8 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SdmxProvider.class);
 
     private final ISdmxSourceFactory[] factories;
-    private final Parsers.Parser<DataSource> legacyDataSourceParser;
-    private final Parsers.Parser<DataSet> legacyDataSetParser;
+    private final IParser<DataSource> legacyDataSourceParser;
+    private final IParser<DataSet> legacyDataSetParser;
     private final Splitter.MapSplitter keyValueSplitter;
     private final Joiner compactNamingJoiner;
     private boolean compactNaming;
@@ -159,7 +159,7 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
     protected void fillCollection(TsCollectionInformation info, DataSet dataSet) throws IOException {
         SdmxGroup group = getGroup(dataSet);
         info.type = TsInformationType.All;
-        DataSet.Builder builder = DataSet.builder(dataSet, DataSet.Kind.SERIES);
+        DataSet.Builder builder = dataSet.toBuilder(DataSet.Kind.SERIES);
         for (SdmxSeries series : group.series) {
             Y_GROUP_ID.set(builder, group.id);
             Z_SERIES_ID.set(builder, series.id);
@@ -217,7 +217,7 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
     public List<DataSet> children(DataSet parent) throws IllegalArgumentException, IOException {
         support.check(parent, DataSet.Kind.COLLECTION);
         ImmutableList.Builder<DataSet> result = ImmutableList.builder();
-        DataSet.Builder builder = DataSet.builder(parent, DataSet.Kind.SERIES);
+        DataSet.Builder builder = parent.toBuilder(DataSet.Kind.SERIES);
         for (SdmxSeries o : getGroup(parent).series) {
             Z_SERIES_ID.set(builder, o.id);
             result.add(builder.build());

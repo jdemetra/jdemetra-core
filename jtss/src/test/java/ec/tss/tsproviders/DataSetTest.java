@@ -91,7 +91,7 @@ public class DataSetTest {
     @Test
     public void testXmlParser() {
         DataSet dataSet = newSample();
-        Assert.assertEquals(dataSet, DataSet.xmlParser().parse(DataSet.xmlFormatter(false).tryFormat(dataSet).get()));
+        Assert.assertEquals(dataSet, DataSet.xmlParser().parse(DataSet.xmlFormatter(false).formatValue(dataSet).get()));
     }
 
     @Test
@@ -116,9 +116,9 @@ public class DataSetTest {
     @Test
     public void testUriParser() {
         DataSet dataSet = newSample();
-        Assert.assertEquals(dataSet, DataSet.uriParser().parse(DataSet.uriFormatter().tryFormat(dataSet).get()));
+        Assert.assertEquals(dataSet, DataSet.uriParser().parse(DataSet.uriFormatter().formatValue(dataSet).get()));
 
         DataSet empty = new DataSet(id, DataSet.Kind.COLLECTION, emptyContent);
-        Assert.assertEquals(empty, DataSet.uriParser().parse(DataSet.uriFormatter().tryFormat(empty).get()));
+        Assert.assertEquals(empty, DataSet.uriParser().parse(DataSet.uriFormatter().formatValue(empty).get()));
     }
 }
