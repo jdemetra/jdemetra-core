@@ -35,7 +35,7 @@ public class LogTransformation implements ITsDataTransformation
      */
     public boolean canTransform(TsData data)
     {
-	return data.check(x->x>0);
+	return data.check(x->Double.isFinite(x) ? x>0 : true);
     }
 
     /**
