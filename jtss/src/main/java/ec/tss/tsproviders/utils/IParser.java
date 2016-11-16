@@ -16,6 +16,9 @@
  */
 package ec.tss.tsproviders.utils;
 
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -28,11 +31,12 @@ import javax.annotation.Nullable;
  * create a "null value" from a parser, you should use the NullObject pattern.
  *
  * @author Philippe Charles
- * @param <Y> The type of the object to be created
+ * @param <T> The type of the object to be created
  * @see IFormatter
+ * @since 1.0.0
  */
 @FunctionalInterface
-public interface IParser<Y> {
+public interface IParser<T> {
 
     /**
      * Parse a CharSequence to create an object.
@@ -42,5 +46,47 @@ public interface IParser<Y> {
      * @throws NullPointerException if input is null
      */
     @Nullable
-    Y parse(@Nonnull CharSequence input);
+    T parse(@Nonnull CharSequence input);
+
+    /**
+     * Returns an {@link Optional} containing the object that has bean created
+     * by the parsing if this parsing was possible.<p>
+     * Use this instead of {@link #parse(java.lang.CharSequence)} to increase
+     * readability and prevent NullPointerExceptions.
+     *
+     * @param input the input used to create the object
+     * @return a never-null {@link Optional}
+     * @throws NullPointerException if input is null
+     * @since 2.2.0
+     */
+    @Nonnull
+    default Optional<T> parseValue(@Nonnull CharSequence input) {
+        return Optional.ofNullable(parse(input));
+    }
+
+    /**
+     *
+     * @param other
+     * @return
+     * @since 2.2.0
+     */
+    @Nonnull
+    @SuppressWarnings("null")
+    default IParser<T> orElse(@Nonnull IParser<T> other) {
+        Objects.requireNonNull(other);
+        return o -> {
+            T result = parse(o);
+            return result != null ? result : other.parse(o);
+        };
+    }
+
+    @Nonnull
+    @SuppressWarnings("null")
+    default <X> IParser<X> andThen(@Nonnull Function<? super T, ? extends X> after) {
+        Objects.requireNonNull(after);
+        return o -> {
+            T tmp = parse(o);
+            return tmp != null ? after.apply(tmp) : null;
+        };
+    }
 }

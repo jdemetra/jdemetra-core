@@ -660,12 +660,7 @@ public class TsPeriod implements Serializable, Cloneable, IPeriod,
             return THREAD_LOCAL.get();
         }
 
-        private static final ThreadLocal<CalendarUtil> THREAD_LOCAL = new ThreadLocal<CalendarUtil>() {
-            @Override
-            protected CalendarUtil initialValue() {
-                return new CalendarUtil();
-            }
-        };
+        private static final ThreadLocal<CalendarUtil> THREAD_LOCAL = ThreadLocal.withInitial(CalendarUtil::new);
         
         private final GregorianCalendar cal = new GregorianCalendar();
 

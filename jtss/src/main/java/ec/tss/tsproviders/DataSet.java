@@ -21,7 +21,6 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSortedMap;
 import ec.tss.tsproviders.DataSource.DataSourceBean;
 import ec.tss.tsproviders.utils.*;
-import ec.tss.tsproviders.utils.Formatters.Formatter;
 import ec.tss.tsproviders.utils.Parsers.FailSafeParser;
 import ec.tstoolkit.design.Immutable;
 import ec.tstoolkit.design.VisibleForTesting;
@@ -98,11 +97,6 @@ public final class DataSet implements IConfig, Serializable {
     }
 
     @Override
-    public String get(String key) {
-        return params.get(key);
-    }
-
-    @Override
     public SortedMap<String, String> getParams() {
         return params;
     }
@@ -130,6 +124,19 @@ public final class DataSet implements IConfig, Serializable {
         return helper.toString();
     }
 
+    /**
+     * Creates a new builder with the content of this datasource.
+     *
+     * @param kind a non-null dataset kind
+     * @return a non-null builder
+     * @since 2.2.0
+     */
+    @Nonnull
+    public Builder toBuilder(@Nonnull Kind kind) {
+        Objects.requireNonNull(kind, "kind");
+        return new Builder(dataSource, kind).putAll(params);
+    }
+
     @VisibleForTesting
     DataSetBean toBean() {
         DataSetBean bean = new DataSetBean();
@@ -154,11 +161,10 @@ public final class DataSet implements IConfig, Serializable {
         return new Builder(dataSource, kind);
     }
 
+    @Deprecated
     @Nonnull
     public static Builder builder(@Nonnull DataSet dataSet, @Nonnull Kind kind) {
-        Objects.requireNonNull(dataSet, "dataSet");
-        Objects.requireNonNull(kind, "kind");
-        return new Builder(dataSet.getDataSource(), kind).putAll(dataSet.getParams());
+        return dataSet.toBuilder(kind);
     }
 
     /**
@@ -261,12 +267,7 @@ public final class DataSet implements IConfig, Serializable {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
-    private static final ThreadLocal<Xml> XML = new ThreadLocal<Xml>() {
-        @Override
-        protected Xml initialValue() {
-            return new Xml();
-        }
-    };
+    private static final ThreadLocal<Xml> XML = ThreadLocal.withInitial(Xml::new);
 
     private static final class Xml {
 
@@ -280,9 +281,9 @@ public final class DataSet implements IConfig, Serializable {
             }
         }
 
-        final Parsers.Parser<DataSet> defaultParser = Parsers.<DataSetBean>onJAXB(BEAN_CONTEXT).compose(DataSetBean::toId);
-        final Formatters.Formatter<DataSet> defaultFormatter = Formatters.<DataSetBean>onJAXB(BEAN_CONTEXT, false).compose(DataSet::toBean);
-        final Formatters.Formatter<DataSet> formattedOutputFormatter = Formatters.<DataSetBean>onJAXB(BEAN_CONTEXT, true).compose(DataSet::toBean);
+        final Parsers.Parser<DataSet> defaultParser = Parsers.wrap(Parsers.<DataSetBean>onJAXB(BEAN_CONTEXT).andThen(DataSetBean::toId));
+        final Formatters.Formatter<DataSet> defaultFormatter = Formatters.wrap(Formatters.<DataSetBean>onJAXB(BEAN_CONTEXT, false).compose2(DataSet::toBean));
+        final Formatters.Formatter<DataSet> formattedOutputFormatter = Formatters.wrap(Formatters.<DataSetBean>onJAXB(BEAN_CONTEXT, true).compose2(DataSet::toBean));
     }
 
     private static final String SCHEME = "demetra";
@@ -307,21 +308,20 @@ public final class DataSet implements IConfig, Serializable {
             if (fragment == null) {
                 return null;
             }
-            DataSource dataSource = DataSource.builder(path[0], path[1]).putAll(query).build();
-            return DataSet.builder(dataSource, Kind.valueOf(path[2])).putAll(fragment).build();
+            DataSource dataSource = DataSource.deepCopyOf(path[0], path[1], query);
+            return DataSet.deepCopyOf(dataSource, Kind.valueOf(path[2]), fragment);
         }
     };
 
-    private static final Formatters.Formatter<DataSet> URI_FORMATTER = new Formatter<DataSet>() {
-        @Override
-        public CharSequence format(DataSet value) {
-            DataSource dataSource = value.getDataSource();
-            return new UriBuilder(SCHEME, HOST)
-                    .path(dataSource.getProviderName(), dataSource.getVersion(), value.getKind().name())
-                    .query(dataSource.getParams())
-                    .fragment(value.getParams())
-                    .build().toString();
-        }
-    };
+    private static final Formatters.Formatter<DataSet> URI_FORMATTER = Formatters.wrap(DataSet::formatAsUri);
+
+    private static CharSequence formatAsUri(DataSet value) {
+        DataSource dataSource = value.getDataSource();
+        return new UriBuilder(SCHEME, HOST)
+                .path(dataSource.getProviderName(), dataSource.getVersion(), value.getKind().name())
+                .query(dataSource.getParams())
+                .fragment(value.getParams())
+                .build().toString();
+    }
     //</editor-fold>
 }

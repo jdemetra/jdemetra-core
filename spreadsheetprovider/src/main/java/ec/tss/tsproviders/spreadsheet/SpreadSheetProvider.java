@@ -168,7 +168,7 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
         SpreadSheetSeries[] tmp = col.series.stream().sorted().toArray(SpreadSheetSeries[]::new);
 
         DataSet[] children = new DataSet[tmp.length];
-        DataSet.Builder builder = DataSet.builder(parent, DataSet.Kind.SERIES);
+        DataSet.Builder builder = parent.toBuilder(DataSet.Kind.SERIES);
         for (int i = 0; i < children.length; i++) {
             Z_SERIESNAME.set(builder, tmp[i].seriesName);
             children[i] = builder.build();
@@ -206,7 +206,7 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
             return Collections.emptyList();
         }
         TsInformation[] result = new TsInformation[collection.series.size()];
-        DataSet.Builder builder = DataSet.builder(dataSet, DataSet.Kind.SERIES);
+        DataSet.Builder builder = dataSet.toBuilder(DataSet.Kind.SERIES);
         for (int i = 0; i < result.length; i++) {
             SpreadSheetSeries o = collection.series.get(i);
             Z_SERIESNAME.set(builder, o.seriesName);
