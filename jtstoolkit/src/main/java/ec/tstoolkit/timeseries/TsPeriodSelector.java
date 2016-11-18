@@ -66,7 +66,7 @@ public class TsPeriodSelector implements Cloneable {
         return hash;
     }
     
-    public static final Day DEF_BEG=new Day(1900, Month.January, 0), DEF_END=new Day(2015, Month.December, 30);
+    public static final Day DEF_BEG=new Day(1900, Month.January, 0), DEF_END=new Day(2020, Month.December, 30);
     
     private PeriodSelectorType type_ = PeriodSelectorType.All;
     private Day d0_ = DEF_BEG, d1_ = DEF_END;
@@ -134,8 +134,8 @@ public class TsPeriodSelector implements Cloneable {
     private void doClear() {
         n0_ = 0;
         n1_ = 0;
-        d0_ = null;
-        d1_ = null;
+        d0_ = DEF_BEG;
+        d1_ = DEF_END;
         type_ = PeriodSelectorType.All;
     }
 

@@ -80,6 +80,8 @@ public class MovingHolidaySpec implements Cloneable, InformationSetSerializable 
     }
     
     public void setW(int value) {
+        if (value <= 0 || value > 25)
+            throw new IllegalArgumentException("Should be in [1,25]");
         w_ = value;
     }
     
