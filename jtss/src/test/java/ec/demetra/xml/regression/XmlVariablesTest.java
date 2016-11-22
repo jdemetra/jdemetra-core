@@ -65,8 +65,8 @@ public class XmlVariablesTest {
         xtd.contrasts = true;
         xtd.DayClustering = DayClustering.TD4.getGroupsDefinition();
         XmlVariables xvar = new XmlVariables();
-        xvar.vars.add(xout);
-        xvar.vars.add(xtd);
+        xvar.getVars().add(xout);
+        xvar.getVars().add(xtd);
         XmlVariableWindow xwnd=new XmlVariableWindow();
         xwnd.From=new TsPeriod(TsFrequency.Yearly, 2000, 0).firstday();
         xwnd.To=new TsPeriod(TsFrequency.Yearly, 2010, 0).lastday();

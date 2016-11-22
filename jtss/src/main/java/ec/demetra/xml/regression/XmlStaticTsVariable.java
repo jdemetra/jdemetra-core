@@ -16,6 +16,7 @@
  */
 package ec.demetra.xml.regression;
 
+import com.google.common.base.Strings;
 import ec.demetra.xml.core.XmlTsData;
 import ec.tstoolkit.timeseries.regression.TsVariable;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
@@ -83,27 +84,30 @@ public class XmlStaticTsVariable
         this.tsData = value;
     }
 
-    public static class Adapter extends XmlAdapter<XmlStaticTsVariable, TsVariable>{
+    public static class Adapter extends XmlAdapter<XmlStaticTsVariable, TsVariable> {
 
         @Override
         public TsVariable unmarshal(XmlStaticTsVariable v) {
-            
+
             return new TsVariable(v.tsData.getName(), XmlTsData.UNMARSHALLER.unmarshal(v.tsData));
         }
 
         @Override
         public XmlStaticTsVariable marshal(TsVariable v) {
-            XmlStaticTsVariable x=new XmlStaticTsVariable();
-            x.tsData=new XmlTsData();
+            XmlStaticTsVariable x = new XmlStaticTsVariable();
+            x.tsData = new XmlTsData();
             XmlTsData.MARSHALLER.marshal(v.getTsData(), x.tsData);
-            x.tsData.setName(v.getDescription(TsFrequency.Undefined));
+            String desc = v.getDescription(TsFrequency.Undefined);
+            if (!Strings.isNullOrEmpty(desc)) {
+                x.tsData.setName(desc);
+            }
             return x;
         }
     }
-    
-    private static final Adapter ADAPTER=new Adapter();
-    
-    public static Adapter getAdapter(){
+
+    private static final Adapter ADAPTER = new Adapter();
+
+    public static Adapter getAdapter() {
         return ADAPTER;
     }
 }

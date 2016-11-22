@@ -20,8 +20,27 @@ import data.Data;
 import ec.demetra.xml.core.XmlInformationSet;
 import ec.demetra.xml.core.XmlTs;
 import ec.demetra.xml.core.XmlTsData;
+import ec.demetra.xml.processing.XmlProcessingContext;
+import ec.demetra.xml.regression.XmlRegression;
+import ec.demetra.xml.regression.XmlRegressionItem;
+import ec.demetra.xml.regression.XmlStaticTsVariable;
+import ec.demetra.xml.regression.XmlTsVariables;
+import ec.demetra.xml.regression.XmlUserVariable;
+import ec.demetra.xml.sa.tramoseats.XmlTramoSeatsSpecification;
+import ec.satoolkit.tramoseats.TramoSeatsSpecification;
+import ec.satoolkit.x13.X13Specification;
+import ec.tstoolkit.algorithm.ProcessingContext;
 import ec.tstoolkit.information.InformationSet;
+import ec.tstoolkit.modelling.TsVariableDescriptor;
+import ec.tstoolkit.timeseries.Month;
+import ec.tstoolkit.timeseries.calendars.DayEvent;
+import ec.tstoolkit.timeseries.calendars.FixedDay;
+import ec.tstoolkit.timeseries.calendars.NationalCalendar;
+import ec.tstoolkit.timeseries.calendars.NationalCalendarProvider;
+import ec.tstoolkit.timeseries.calendars.SpecialCalendarDay;
 import ec.tstoolkit.timeseries.simplets.TsData;
+import java.util.List;
+import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -30,7 +49,7 @@ import static org.junit.Assert.*;
  * @author Jean Palate
  */
 public class X13XmlProcessorTest {
-    
+
     public X13XmlProcessorTest() {
     }
 
@@ -107,4 +126,80 @@ public class X13XmlProcessorTest {
             assertTrue(null != all.search("series" + (i + 1) + ".sa", TsData.class));
         }
     }
+
+    @Test
+    public void testX13AdvancedRequest() {
+        XmlX13Request request = new XmlX13Request();
+        request.series = new XmlTs();
+        request.context = context();
+        request.specification = advanced();
+        request.getOutputFilter().add("regression.*");
+        XmlTsData.MARSHALLER.marshal(Data.P, request.series);
+
+        X13XmlProcessor processor = new X13XmlProcessor();
+//        requests.setParallelProcessing(false);
+        XmlInformationSet rslt = processor.process(request);
+        assertTrue(null != rslt);
+
+    }
+
+    static XmlX13Specification advanced() {
+        X13Specification spec = X13Specification.RSA5.clone();
+        spec.getRegArimaSpecification().getRegression().getTradingDays().setHolidays("Belgium");
+        XmlX13Specification xml = new XmlX13Specification();
+        XmlX13Specification.MARSHALLER.marshal(spec, xml);
+        ec.demetra.xml.sa.x13.XmlRegressionSpec regression = new ec.demetra.xml.sa.x13.XmlRegressionSpec();
+        XmlRegression variables = new XmlRegression();
+        List<XmlRegressionItem> items = variables.getItems();
+        XmlRegressionItem xvar = new XmlRegressionItem();
+        XmlUserVariable xuser = new XmlUserVariable();
+        xuser.setVariable("vars.reg1");
+        xuser.setEffect(TsVariableDescriptor.UserComponentType.Irregular);
+        xvar.setVariable(xuser);
+        items.add(xvar);
+        regression.setVariables(variables);
+        XmlRegressionSpec rspec = new XmlRegressionSpec();
+        rspec.setVariables(variables);
+        xml.preprocessing.setRegression(rspec);
+        return xml;
+    }
+
+    static XmlProcessingContext context() {
+        ProcessingContext context = new ProcessingContext();
+        NationalCalendar calendar = new NationalCalendar();
+        calendar.add(new FixedDay(20, Month.July));
+        calendar.add(new FixedDay(10, Month.October));
+        calendar.add(new SpecialCalendarDay(DayEvent.NewYear, 0));
+        calendar.add(new SpecialCalendarDay(DayEvent.EasterMonday, 0));
+        calendar.add(new SpecialCalendarDay(DayEvent.Ascension, 0));
+        calendar.add(new SpecialCalendarDay(DayEvent.WhitMonday, 0));
+        calendar.add(new SpecialCalendarDay(DayEvent.MayDay, 0));
+        calendar.add(new SpecialCalendarDay(DayEvent.Assumption, 0));
+        calendar.add(new SpecialCalendarDay(DayEvent.AllSaintsDay, 0));
+        calendar.add(new SpecialCalendarDay(DayEvent.Christmas, 0));
+        context.getGregorianCalendars().set("Belgium", new NationalCalendarProvider(calendar));
+        XmlProcessingContext xc = new XmlProcessingContext();
+        XmlProcessingContext.MARSHALLER.marshal(context, xc);
+        XmlStaticTsVariable var = new XmlStaticTsVariable();
+        var.setName("reg1");
+        XmlTsData data = new XmlTsData();
+        double[] r = new double[600];
+        Random rnd = new Random();
+        for (int i = 0; i < r.length; ++i) {
+            r[i] = rnd.nextDouble();
+        }
+        data.setValues(r);
+        data.setFrequency(12);
+        data.setFirstPeriod(1);
+        data.setFirstYear(1960);
+        var.setTsData(data);
+        XmlTsVariables xvars = new XmlTsVariables();
+        xvars.setName("vars");
+        xvars.getVariables().add(var);
+        XmlProcessingContext.Variables vars = new XmlProcessingContext.Variables();
+        vars.getGroup().add(xvars);
+        xc.setVariables(vars);
+        return xc;
+    }
+
 }

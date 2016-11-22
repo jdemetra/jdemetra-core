@@ -58,11 +58,9 @@ import javax.xml.bind.annotation.XmlType;
     "modifier"
 })
 @XmlSeeAlso({
-//    DefaulTradingDaysType.class,
-//    GenericTradingDaysType.class,
-//    EasterVariableType.class,
-//    UserVariableType.class,
-//    UserVariablesType.class
+    XmlGenericTradingDays.class,
+    XmlUserVariables.class,
+    XmlUserVariable.class
 })
 public abstract class XmlModifiableRegressionVariable
     extends XmlRegressionVariable
@@ -100,7 +98,7 @@ public abstract class XmlModifiableRegressionVariable
     
     public List<XmlRegressionVariableModifier> getModifiers() {
         if (modifier == null) {
-            modifier = new ArrayList<XmlRegressionVariableModifier>();
+            modifier = new ArrayList<>();
         }
         return this.modifier;
     }

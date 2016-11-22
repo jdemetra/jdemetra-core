@@ -37,16 +37,16 @@ import xml.TestErrorHandler;
  * @author Jean Palate
  */
 public class XmlTramoRequestTest {
-    
+
     public XmlTramoRequestTest() {
     }
 
     @Test
     public void testValidation() throws FileNotFoundException, JAXBException, IOException, SAXException {
 
-         XmlTramoRequest request=new XmlTramoRequest();
-        request.defaultSpecification="TRfull";
-        request.series=new XmlTs();
+        XmlTramoRequest request = new XmlTramoRequest();
+        request.defaultSpecification = "TRfull";
+        request.series = new XmlTs();
         XmlTsData.MARSHALLER.marshal(Data.X, request.series);
         request.getOutputFilter().add("arima.*");
         request.getOutputFilter().add("likelihood.*");
@@ -58,5 +58,5 @@ public class XmlTramoRequestTest {
         //validator.setErrorHandler(new TestErrorHandler());
         validator.validate(source);
     }
-    
+
 }
