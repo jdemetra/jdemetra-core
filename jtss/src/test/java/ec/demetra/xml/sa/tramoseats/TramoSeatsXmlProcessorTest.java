@@ -21,9 +21,15 @@ import ec.demetra.xml.core.XmlInformationSet;
 import ec.demetra.xml.core.XmlTs;
 import ec.demetra.xml.core.XmlTsData;
 import ec.demetra.xml.processing.XmlProcessingContext;
+import ec.demetra.xml.regression.XmlRegression;
+import ec.demetra.xml.regression.XmlRegressionItem;
+import ec.demetra.xml.regression.XmlStaticTsVariable;
+import ec.demetra.xml.regression.XmlTsVariables;
+import ec.demetra.xml.regression.XmlUserVariable;
 import ec.satoolkit.tramoseats.TramoSeatsSpecification;
 import ec.tstoolkit.algorithm.ProcessingContext;
 import ec.tstoolkit.information.InformationSet;
+import ec.tstoolkit.modelling.TsVariableDescriptor;
 import ec.tstoolkit.timeseries.Month;
 import ec.tstoolkit.timeseries.calendars.DayEvent;
 import ec.tstoolkit.timeseries.calendars.FixedDay;
@@ -32,6 +38,7 @@ import ec.tstoolkit.timeseries.calendars.NationalCalendarProvider;
 import ec.tstoolkit.timeseries.calendars.SpecialCalendarDay;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.List;
+import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -116,7 +123,7 @@ public class TramoSeatsXmlProcessorTest {
     }
 
     @Test
-    public void testAdvancedRequest() {
+    public void testAdvancedRequests() {
 //        long t0 = System.currentTimeMillis();
         int N = 10;
         XmlTramoSeatsRequests requests = new XmlTramoSeatsRequests();
@@ -140,11 +147,36 @@ public class TramoSeatsXmlProcessorTest {
         }
     }
     
+    @Test
+    public void testAdvancedRequest() {
+        XmlTramoSeatsRequest request = new XmlTramoSeatsRequest();
+        request.specification = TramoSeatsXmlProcessorTest.advanced();
+        request.context=TramoSeatsXmlProcessorTest.context();
+        request.series = new XmlTs();
+        XmlTsData.MARSHALLER.marshal(Data.X, request.series);
+        request.getOutputFilter().add("regression.*");
+         TramoSeatsXmlProcessor processor = new TramoSeatsXmlProcessor();
+         XmlInformationSet rslt = processor.process(request);
+         assertTrue(rslt != null);
+    }
     static XmlTramoSeatsSpecification advanced(){
         TramoSeatsSpecification spec=TramoSeatsSpecification.RSAfull.clone();
         spec.getTramoSpecification().getRegression().getCalendar().getTradingDays().setHolidays("Belgium");
         XmlTramoSeatsSpecification xml=new XmlTramoSeatsSpecification();
         XmlTramoSeatsSpecification.MARSHALLER.marshal(spec, xml);
+        ec.demetra.xml.sa.x13.XmlRegressionSpec regression = new ec.demetra.xml.sa.x13.XmlRegressionSpec();
+        XmlRegression variables = new XmlRegression();
+        List<XmlRegressionItem> items = variables.getItems();
+        XmlRegressionItem xvar = new XmlRegressionItem();
+        XmlUserVariable xuser = new XmlUserVariable();
+        xuser.setVariable("vars.reg1");
+        xuser.setEffect(TsVariableDescriptor.UserComponentType.Irregular);
+        xvar.setVariable(xuser);
+        items.add(xvar);
+        regression.setVariables(variables);
+        XmlRegressionSpec rspec=new XmlRegressionSpec();
+        rspec.setVariables(variables);
+        xml.preprocessing.setRegression(rspec);
         return xml;
     }
     
@@ -164,6 +196,25 @@ public class TramoSeatsXmlProcessorTest {
         context.getGregorianCalendars().set("Belgium", new NationalCalendarProvider(calendar));
         XmlProcessingContext xc=new XmlProcessingContext();
         XmlProcessingContext.MARSHALLER.marshal(context, xc);
+        XmlStaticTsVariable var = new XmlStaticTsVariable();
+        var.setName("reg1");
+        XmlTsData data = new XmlTsData();
+        double[] r = new double[600];
+        Random rnd = new Random();
+        for (int i = 0; i < r.length; ++i) {
+            r[i] = rnd.nextDouble();
+        }
+        data.setValues(r);
+        data.setFrequency(12);
+        data.setFirstPeriod(1);
+        data.setFirstYear(1960);
+        var.setTsData(data);
+        XmlTsVariables xvars = new XmlTsVariables();
+        xvars.setName("vars");
+        xvars.getVariables().add(var);
+        XmlProcessingContext.Variables vars = new XmlProcessingContext.Variables();
+        vars.getGroup().add(xvars);
+        xc.setVariables(vars);
         return xc;
     }
 }

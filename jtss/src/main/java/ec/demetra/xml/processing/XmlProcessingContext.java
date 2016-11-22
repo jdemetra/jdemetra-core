@@ -118,7 +118,14 @@ public class XmlProcessingContext {
     public static class Variables {
 
         @XmlElement(name = "Group")
-        protected List<XmlTsVariables> group = new ArrayList<>();
+        private List<XmlTsVariables> group = new ArrayList<>();
+
+        /**
+         * @return the group
+         */
+        public List<XmlTsVariables> getGroup() {
+            return group;
+        }
 
     }
 
@@ -144,7 +151,7 @@ public class XmlProcessingContext {
                     XmlTsVariables xcur = new XmlTsVariables();
                     xcur.setName(n);
                     XmlTsVariables.MARSHALLER.marshal(cur, xcur);
-                    xml.variables.group.add(xcur);
+                    xml.variables.getGroup().add(xcur);
                 }
             }
         }
@@ -159,7 +166,7 @@ public class XmlProcessingContext {
             }
         }
         if (xml.variables != null) {
-            for (XmlTsVariables xcur : xml.variables.group) {
+            for (XmlTsVariables xcur : xml.variables.getGroup()) {
                 TsVariables vars = new TsVariables();
                 XmlTsVariables.UNMARSHALLER.unmarshal(xcur, vars);
                 v.getTsVariableManagers().set(xcur.getName(), vars);

@@ -73,7 +73,7 @@ public class XmlTramoSeatsRequestTest {
         JAXBContext jaxb = JAXBContext.newInstance(request.getClass());
         JAXBSource source = new JAXBSource(jaxb, request);
         Validator validator = Schemas.TramoSeats.newValidator();
-        //validator.setErrorHandler(new TestErrorHandler());
+        validator.setErrorHandler(new TestErrorHandler());
         validator.validate(source);
     }
 }

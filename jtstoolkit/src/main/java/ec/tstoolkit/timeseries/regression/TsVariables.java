@@ -47,7 +47,7 @@ public class TsVariables extends NameManager<ITsVariable> {
     }
 
     public boolean isEmpty() {
-        return getCount() <= 1;
+        return getCount() < 1;
     }
 
     public TsDomain common(TsFrequency freq) {

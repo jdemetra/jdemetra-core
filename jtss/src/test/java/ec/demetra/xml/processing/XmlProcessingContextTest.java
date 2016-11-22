@@ -35,6 +35,7 @@ import org.junit.Test;
 import org.junit.Ignore;
 import org.xml.sax.SAXException;
 import xml.Schemas;
+import xml.TestErrorHandler;
 
 /**
  *
