@@ -24,16 +24,20 @@ import java.io.OutputStream;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.FileSystemException;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nonnull;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.openxml4j.opc.PackageAccess;
+import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.openide.util.lookup.ServiceProvider;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
+import spreadsheet.xlsx.XlsxPackage;
+import spreadsheet.xlsx.XlsxReader;
 
 /**
  *
@@ -72,8 +76,11 @@ public class ExcelBookFactory extends Book.Factory {
     @Override
     public Book load(File file) throws IOException {
         checkFile(file);
+        if (fast.get()) {
+            return newReader().read(file.toPath());
+        }
         try {
-            return fast.get() ? FastPoiBook.create(createXMLReader(), file) : PoiBook.create(file);
+            return PoiBook.create(file);
         } catch (OpenXML4JException | InvalidOperationException ex) {
             throw new IOException(ex);
         }
@@ -81,8 +88,11 @@ public class ExcelBookFactory extends Book.Factory {
 
     @Override
     public Book load(InputStream stream) throws IOException {
+        if (fast.get()) {
+            return newReader().read(stream);
+        }
         try {
-            return fast.get() ? FastPoiBook.create(createXMLReader(), stream) : PoiBook.create(stream);
+            return PoiBook.create(stream);
         } catch (OpenXML4JException ex) {
             throw new IOException(ex);
         }
@@ -101,6 +111,7 @@ public class ExcelBookFactory extends Book.Factory {
         }
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Implementation details">
     @Nonnull
     private static File checkFile(@Nonnull File file) throws FileSystemException {
         if (!file.exists() || file.isDirectory()) {
@@ -112,12 +123,87 @@ public class ExcelBookFactory extends Book.Factory {
         return file;
     }
 
-    @Nonnull
-    private static XMLReader createXMLReader() throws IOException {
-        try {
-            return XMLReaderFactory.createXMLReader();
-        } catch (SAXException ex) {
-            throw new IOException("While creating XmlReader", ex);
+    private static XlsxReader newReader() {
+        XlsxReader result = new XlsxReader();
+        result.setPackager(CustomFactory.INSTANCE);
+        return result;
+    }
+
+    static final class CustomFactory implements XlsxPackage.Factory {
+
+        static final CustomFactory INSTANCE = new CustomFactory();
+
+        @Override
+        public XlsxPackage open(InputStream stream) throws IOException {
+            try {
+                return openOPC(OPCPackage.open(stream));
+            } catch (OpenXML4JException | InvalidOperationException ex) {
+                throw new IOException(ex);
+            }
+        }
+
+        @Override
+        public XlsxPackage open(Path file) throws IOException {
+            try {
+                return open(file.toFile());
+            } catch (UnsupportedOperationException ex) {
+                return XlsxPackage.Factory.super.open(file);
+            }
+        }
+
+        private XlsxPackage open(File file) throws IOException {
+            try {
+                return openOPC(OPCPackage.open(file.getPath(), PackageAccess.READ));
+            } catch (OpenXML4JException | InvalidOperationException ex) {
+                throw new IOException(ex);
+            }
+        }
+
+        private static XlsxPackage openOPC(OPCPackage pkg) throws IOException, OpenXML4JException {
+            XSSFReader reader = new XSSFReader(pkg);
+            return new XlsxPackage() {
+                @Override
+                public InputStream getWorkbookData() throws IOException {
+                    try {
+                        return reader.getWorkbookData();
+                    } catch (InvalidFormatException ex) {
+                        throw new IOException("While opening xml", ex);
+                    }
+                }
+
+                @Override
+                public InputStream getSharedStringsData() throws IOException {
+                    try {
+                        return reader.getSharedStringsData();
+                    } catch (InvalidFormatException ex) {
+                        throw new IOException("While opening xml", ex);
+                    }
+                }
+
+                @Override
+                public InputStream getStylesData() throws IOException {
+                    try {
+                        return reader.getStylesData();
+                    } catch (InvalidFormatException ex) {
+                        throw new IOException("While opening xml", ex);
+                    }
+                }
+
+                @Override
+                public InputStream getSheet(String relationId) throws IOException {
+                    try {
+                        return reader.getSheet(relationId);
+                    } catch (InvalidFormatException ex) {
+                        throw new IOException("While opening xml", ex);
+                    }
+                }
+
+                @Override
+                public void close() throws IOException {
+                    pkg.close();
+                }
+            };
         }
     }
+    //</editor-fold>
 }
