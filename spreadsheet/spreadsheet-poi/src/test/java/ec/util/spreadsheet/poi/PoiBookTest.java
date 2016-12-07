@@ -33,7 +33,7 @@ public class PoiBookTest {
     private static final Callable<InputStream> XLS = asByteSource("/Top5Browsers.xls");
 
     private static Callable<InputStream> asByteSource(String name) {
-        return FastPoiBookTest.class.getResource(name)::openStream;
+        return PoiBookTest.class.getResource(name)::openStream;
     }
 
     @Test

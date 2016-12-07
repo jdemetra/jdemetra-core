@@ -14,23 +14,24 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.util.spreadsheet.poi;
+package spreadsheet.xlsx.internal;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.function.IntFunction;
+import java.util.function.IntPredicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.apache.poi.ss.usermodel.DateUtil;
+import spreadsheet.xlsx.XlsxDateSystem;
 
 /**
  *
  * @author Philippe Charles
  */
-final class FastPoiValueFactory {
+final class XlsxValueFactory {
 
     // http://openxmldeveloper.org/blog/b/openxmldeveloper/archive/2012/03/08/dates-in-strict-spreadsheetml-files.aspx
     private static final String ISO_DATE_FORMAT = "yyyy-MM-dd";
@@ -43,27 +44,29 @@ final class FastPoiValueFactory {
     static final String INLINE_STRING_TYPE = "inlineStr";
     static final String DATE_TYPE = "d";
 
-    private final FastPoiContext context;
+    private final XlsxDateSystem dateSystem;
+    private final IntFunction<String> sharedStrings;
+    private final IntPredicate dateFormats;
     private final Calendar calendar;
     private final DateFormat isoDateFormat;
 
-    public FastPoiValueFactory(@Nonnull FastPoiContext context) {
-        this.context = context;
+    XlsxValueFactory(XlsxDateSystem dateSystem, IntFunction<String> sharedStrings, IntPredicate dateFormats) {
+        this.dateSystem = dateSystem;
+        this.sharedStrings = sharedStrings;
+        this.dateFormats = dateFormats;
         // using default time-zone
         this.calendar = new GregorianCalendar();
         this.isoDateFormat = new SimpleDateFormat(ISO_DATE_FORMAT);
     }
 
-    private boolean isADateFormat(@Nullable String rawStyleIndex) throws IndexOutOfBoundsException, NumberFormatException {
-        return rawStyleIndex != null ? context.isADateFormat(Integer.parseInt(rawStyleIndex)) : false;
-    }
-
     @Nullable
-    private Object getNumberOrDate(@Nonnull String rawValue, @Nullable String rawStyleIndex) {
+    private Object getNumberOrDate(@Nonnull String rawValue, @Nullable Integer rawStyleIndex) {
         try {
             double number = Double.parseDouble(rawValue);
-            if (DateUtil.isValidExcelDate(number) && isADateFormat(rawStyleIndex)) {
-                return getJavaDate(calendar, number, context.isDate1904());
+            if (rawStyleIndex != null
+                    && dateFormats.test(rawStyleIndex)
+                    && dateSystem.isValidExcelDate(number)) {
+                return dateSystem.getJavaDate(calendar, number);
             }
             return number;
         } catch (NumberFormatException | IndexOutOfBoundsException ex) {
@@ -72,7 +75,7 @@ final class FastPoiValueFactory {
     }
 
     @Nullable
-    public Object getValue(@Nonnull String rawValue, @Nullable String rawDataType, @Nullable String rawStyleIndex) {
+    public Object getValue(@Nonnull String rawValue, @Nullable String rawDataType, @Nullable Integer rawStyleIndex) {
         if (rawDataType == null) {
             return getNumberOrDate(rawValue, rawStyleIndex);
         }
@@ -81,7 +84,7 @@ final class FastPoiValueFactory {
                 return getNumberOrDate(rawValue, rawStyleIndex);
             case SHARED_STRING_TYPE:
                 try {
-                    return context.getSharedString(Integer.parseInt(rawValue));
+                    return sharedStrings.apply(Integer.parseInt(rawValue));
                 } catch (NumberFormatException | IndexOutOfBoundsException ex) {
                     return null;
                 }
@@ -100,21 +103,5 @@ final class FastPoiValueFactory {
                 // BOOLEAN or ERROR or default
                 return null;
         }
-    }
-
-    /**
-     * Same as {@link DateUtil#getJavaDate(double, boolean)} but with calendar
-     * as first parameter to reduce memory usage.
-     *
-     * @param calendar
-     * @param date
-     * @param use1904windowing
-     * @return
-     */
-    private static Date getJavaDate(Calendar calendar, double date, boolean use1904windowing) {
-        int wholeDays = (int) Math.floor(date);
-        int millisecondsInDay = (int) ((date - wholeDays) * DateUtil.DAY_MILLISECONDS + 0.5);
-        DateUtil.setCalendar(calendar, wholeDays, millisecondsInDay, use1904windowing, false);
-        return calendar.getTime();
     }
 }
