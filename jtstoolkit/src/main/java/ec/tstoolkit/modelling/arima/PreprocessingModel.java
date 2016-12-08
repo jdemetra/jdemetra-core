@@ -1,17 +1,17 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or â€“ as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or â€“ as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.tstoolkit.modelling.arima;
@@ -567,7 +567,7 @@ public class PreprocessingModel implements IProcResults {
         TsData c = regressionEffect(f.getDomain());
         TsData r = TsData.add(f, c);
 
-        if (!transformed) {
+        if (transformed) {
             backTransform(r, true, true);
         }
         return r;
@@ -577,7 +577,7 @@ public class PreprocessingModel implements IProcResults {
         TsData b = linearizedBackcast(nb);
         TsData c = regressionEffect(b.getDomain());
         TsData r = TsData.add(b, c);
-        if (!transformed) {
+        if (transformed) {
             backTransform(r, true, true);
         }
         return r;
