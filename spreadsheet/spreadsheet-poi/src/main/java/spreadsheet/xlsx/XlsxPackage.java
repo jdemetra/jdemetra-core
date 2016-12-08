@@ -39,7 +39,7 @@ public interface XlsxPackage extends Closeable {
      * @throws IOException if the stream is missing or something went wrong
      */
     @Nonnull
-    InputStream getWorkbookData() throws IOException;
+    InputStream getWorkbook() throws IOException;
 
     /**
      * Returns a stream to read the content of the shared strings table.
@@ -48,7 +48,7 @@ public interface XlsxPackage extends Closeable {
      * @throws IOException if the stream is missing or something went wrong
      */
     @Nonnull
-    InputStream getSharedStringsData() throws IOException;
+    InputStream getSharedStrings() throws IOException;
 
     /**
      * Returns a stream to read the content of the styles table.
@@ -57,7 +57,7 @@ public interface XlsxPackage extends Closeable {
      * @throws IOException if the stream is missing or something went wrong
      */
     @Nonnull
-    InputStream getStylesData() throws IOException;
+    InputStream getStyles() throws IOException;
 
     /**
      * Returns a stream to read the content of the specified Sheet.

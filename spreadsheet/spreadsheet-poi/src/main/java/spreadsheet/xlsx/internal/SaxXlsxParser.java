@@ -25,6 +25,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 import spreadsheet.xlsx.XlsxParser;
+import spreadsheet.xlsx.internal.util.SaxUtil;
 
 /**
  *
@@ -48,23 +49,39 @@ public final class SaxXlsxParser implements XlsxParser {
     }
 
     @Override
-    public void parseWorkbookData(InputStream stream, WorkbookDataVisitor visitor) throws IOException {
-        new WorkbookDataSaxEventHandler(visitor).parse(xmlReader, stream);
+    public void visitWorkbook(InputStream stream, WorkbookVisitor visitor) throws IOException {
+        try {
+            new WorkbookSaxEventHandler(visitor).runWith(xmlReader, stream);
+        } catch (SAXException ex) {
+            throw new IOException("While parsing workbook", ex);
+        }
     }
 
     @Override
-    public void parseSharedStringsData(InputStream stream, SharedStringsVisitor visitor) throws IOException {
-        new SharedStringsDataSaxEventHandler(visitor).parse(xmlReader, stream);
+    public void visitSharedStrings(InputStream stream, SharedStringsVisitor visitor) throws IOException {
+        try {
+            new SharedStringsSaxEventHandler(visitor).runWith(xmlReader, stream);
+        } catch (SAXException ex) {
+            throw new IOException("While parsing shared strings", ex);
+        }
     }
 
     @Override
-    public void parseStylesData(InputStream stream, StylesDataVisitor visitor) throws IOException {
-        new StylesDataSaxEventHandler(visitor).parse(xmlReader, stream);
+    public void visitStyles(InputStream stream, StylesVisitor visitor) throws IOException {
+        try {
+            new StylesSaxEventHandler(visitor).runWith(xmlReader, stream);
+        } catch (SAXException ex) {
+            throw new IOException("While parsing styles", ex);
+        }
     }
 
     @Override
-    public void parseSheet(InputStream stream, SheetVisitor visitor) throws IOException {
-        new SheetSaxEventHandler(visitor).parse(xmlReader, stream);
+    public void visitSheet(InputStream stream, SheetVisitor visitor) throws IOException {
+        try {
+            new SheetSaxEventHandler(visitor).runWith(xmlReader, stream);
+        } catch (SAXException ex) {
+            throw new IOException("While parsing sheet", ex);
+        }
     }
 
     @Override
@@ -74,7 +91,7 @@ public final class SaxXlsxParser implements XlsxParser {
     /**
      * FIXME: missing support of inline string <is><t>hello</t></is>
      */
-    static final class SheetSaxEventHandler extends DefaultHandler implements SaxUtil.Tmp {
+    private static final class SheetSaxEventHandler extends DefaultHandler implements SaxUtil.ContentRunner {
 
         private static final String CELL_TAG = "c";
         private static final String REFERENCE_ATTRIBUTE = "r";
@@ -144,7 +161,7 @@ public final class SaxXlsxParser implements XlsxParser {
     /**
      * http://msdn.microsoft.com/en-us/library/office/documentformat.openxml.spreadsheet.aspx
      */
-    static final class WorkbookDataSaxEventHandler extends DefaultHandler implements SaxUtil.Tmp {
+    private static final class WorkbookSaxEventHandler extends DefaultHandler implements SaxUtil.ContentRunner {
 
         private static final String SHEET_TAG = "sheet";
         private static final String WORKBOOK_PROPERTIES_TAG = "workbookPr";
@@ -152,9 +169,9 @@ public final class SaxXlsxParser implements XlsxParser {
         private static final String SHEET_TAB_ID_ATTRIBUTE = "r:id";
         private static final String SHEET_NAME_ATTRIBUTE = "name";
 
-        private final WorkbookDataVisitor visitor;
+        private final WorkbookVisitor visitor;
 
-        WorkbookDataSaxEventHandler(WorkbookDataVisitor visitor) {
+        WorkbookSaxEventHandler(WorkbookVisitor visitor) {
             this.visitor = visitor;
         }
 
@@ -174,7 +191,7 @@ public final class SaxXlsxParser implements XlsxParser {
     /**
      * http://msdn.microsoft.com/en-us/library/office/gg278314.aspx
      */
-    static final class SharedStringsDataSaxEventHandler extends DefaultHandler implements SaxUtil.Tmp {
+    private static final class SharedStringsSaxEventHandler extends DefaultHandler implements SaxUtil.ContentRunner {
 
         private static final String SHARED_STRING_ITEM_TAG = "si";
         private static final String TEXT_TAG = "t";
@@ -182,7 +199,7 @@ public final class SaxXlsxParser implements XlsxParser {
         private final SharedStringsVisitor visitor;
         private final SaxUtil.SaxStringBuilder stringBuilder;
 
-        SharedStringsDataSaxEventHandler(SharedStringsVisitor visitor) {
+        SharedStringsSaxEventHandler(SharedStringsVisitor visitor) {
             this.visitor = visitor;
             this.stringBuilder = new SaxUtil.SaxStringBuilder();
         }
@@ -217,7 +234,7 @@ public final class SaxXlsxParser implements XlsxParser {
         }
     }
 
-    static final class StylesDataSaxEventHandler extends DefaultHandler implements SaxUtil.Tmp {
+    private static final class StylesSaxEventHandler extends DefaultHandler implements SaxUtil.ContentRunner {
 
         private static final String CELL_FORMAT_TAG = "xf";
         private static final String CELL_FORMATS_TAG = "cellXfs";
@@ -225,10 +242,10 @@ public final class SaxXlsxParser implements XlsxParser {
         private static final String NUMBER_FORMAT_ID_ATTRIBUTE = "numFmtId";
         private static final String NUMBER_FORMAT_CODE_ATTRIBUTE = "formatCode";
 
-        private final StylesDataVisitor visitor;
+        private final StylesVisitor visitor;
         private boolean insideGroupTag;
 
-        StylesDataSaxEventHandler(StylesDataVisitor visitor) {
+        StylesSaxEventHandler(StylesVisitor visitor) {
             this.visitor = visitor;
             this.insideGroupTag = false;
         }
