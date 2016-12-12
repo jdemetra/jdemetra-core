@@ -36,7 +36,7 @@ public final class DefaultXlsxNumberingFormat implements XlsxNumberingFormat {
     }
 
     // https://msdn.microsoft.com/en-us/library/documentformat.openxml.spreadsheet.numberingformat.aspx
-    private boolean isBuiltInExcelDateFormat(int numFmtId) {
+    static boolean isBuiltInExcelDateFormat(int numFmtId) {
         switch (numFmtId) {
             case 14:
             case 15:
@@ -57,7 +57,7 @@ public final class DefaultXlsxNumberingFormat implements XlsxNumberingFormat {
     }
 
     // https://support.office.com/en-us/article/Create-or-delete-a-custom-number-format-78f2a361-936b-4c03-8772-09fab54be7f4#bm1
-    private boolean isCustomExcelDateFormat(@Nullable String formatCode) {
+    static boolean isCustomExcelDateFormat(@Nullable String formatCode) {
         if (formatCode != null) {
             PrimitiveIterator.OfInt iter = formatCode.chars().iterator();
             while (iter.hasNext()) {
@@ -85,7 +85,7 @@ public final class DefaultXlsxNumberingFormat implements XlsxNumberingFormat {
         return false;
     }
 
-    private void skipUntil(PrimitiveIterator.OfInt iterator, IntPredicate predicate) {
+    private static void skipUntil(PrimitiveIterator.OfInt iterator, IntPredicate predicate) {
         while (iterator.hasNext() && !predicate.test(iterator.nextInt())) {
         }
     }

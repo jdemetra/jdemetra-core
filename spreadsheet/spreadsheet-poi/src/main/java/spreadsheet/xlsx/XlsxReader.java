@@ -17,12 +17,12 @@
 package spreadsheet.xlsx;
 
 import ec.util.spreadsheet.Book;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import javax.annotation.Nonnull;
 import spreadsheet.xlsx.internal.XlsxBook;
+import spreadsheet.xlsx.internal.util.IOUtil;
 
 /**
  *
@@ -41,30 +41,19 @@ public final class XlsxReader {
 
     @Nonnull
     public Book read(@Nonnull Path file) throws IOException {
-        XlsxPackage pkg = getPackager().open(file);
-        return create(pkg);
+        return createBookOrClose(getPackager().open(file));
     }
 
     @Nonnull
     public Book read(@Nonnull InputStream stream) throws IOException {
-        XlsxPackage pkg = getPackager().open(stream);
-        return create(pkg);
+        return createBookOrClose(getPackager().open(stream));
     }
 
-    private Book create(XlsxPackage pkg) throws IOException {
+    private Book createBookOrClose(XlsxPackage pkg) throws IOException {
         try {
             return XlsxBook.create(pkg, this);
         } catch (IOException ex) {
-            ensureClosed(ex, pkg);
-            throw ex;
-        }
-    }
-
-    private static void ensureClosed(IOException exception, Closeable closeable) {
-        try {
-            closeable.close();
-        } catch (IOException suppressed) {
-            exception.addSuppressed(suppressed);
+            throw IOUtil.ensureClosed(ex, pkg);
         }
     }
 }

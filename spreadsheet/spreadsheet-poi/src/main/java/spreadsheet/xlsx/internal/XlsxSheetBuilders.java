@@ -16,14 +16,17 @@
  */
 package spreadsheet.xlsx.internal;
 
+import ec.util.spreadsheet.Sheet;
 import ec.util.spreadsheet.helpers.ArraySheet;
 import ec.util.spreadsheet.helpers.CellRefHelper;
 import java.io.IOException;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import javax.annotation.Nonnull;
@@ -47,24 +50,22 @@ public final class XlsxSheetBuilders {
             @Nonnull XlsxDateSystem dateSystem,
             @Nonnull IntFunction<String> sharedStrings,
             @Nonnull IntPredicate dateFormats) {
-        XlsxValueFactory valueFactory = new XlsxValueFactory(dateSystem, sharedStrings, dateFormats);
-        return CORES > 1
-                ? new MultiThreadedBuilder(valueFactory)
-                : new Builder(valueFactory);
+        Builder result = new Builder(new XlsxValueFactory(dateSystem, sharedStrings, dateFormats));
+        return CORES > 1 ? new MultiSheetBuilder(result) : result;
     }
 
     private static final int CORES = Runtime.getRuntime().availableProcessors();
 
-    private static class Builder implements XlsxSheetBuilder {
+    static final class Builder implements XlsxSheetBuilder {
 
         private final XlsxValueFactory valueFactory;
         private final CellRefHelper refHelper;
         private ArraySheet.Builder arraySheetBuilder;
 
-        public Builder(XlsxValueFactory valueFactory) {
+        Builder(XlsxValueFactory valueFactory) {
             this.valueFactory = valueFactory;
             this.refHelper = new CellRefHelper();
-            this.arraySheetBuilder = null;
+            this.arraySheetBuilder = ArraySheet.builder();
         }
 
         @Override
@@ -74,73 +75,76 @@ public final class XlsxSheetBuilders {
         }
 
         @Override
-        public Builder put(@Nullable String ref, @Nonnull CharSequence rawValue, @Nullable String rawDataType, @Nullable Integer rawStyleIndex) {
-            process(ref, rawValue, rawDataType, rawStyleIndex);
+        public XlsxSheetBuilder put(String ref, CharSequence value, String dataType, Integer styleIndex) {
+            Object cellValue = valueFactory.getValue(value.toString(), dataType, styleIndex);
+            if (cellValue != null && refHelper.parse(ref)) {
+                arraySheetBuilder.value(refHelper.getRowIndex(), refHelper.getColumnIndex(), cellValue);
+            }
             return this;
         }
 
-        protected void process(@Nullable String ref, @Nonnull CharSequence rawValue, @Nullable String rawDataType, @Nullable Integer rawStyleIndex) {
-            Object cellValue = valueFactory.getValue(rawValue.toString(), rawDataType, rawStyleIndex);
-            if (cellValue == null || !refHelper.parse(ref)) {
-                return;
-            }
-            arraySheetBuilder.value(refHelper.getRowIndex(), refHelper.getColumnIndex(), cellValue);
+        @Override
+        public Sheet build() {
+            return arraySheetBuilder.build();
         }
 
         @Override
-        public ArraySheet build() {
-            return arraySheetBuilder != null ? arraySheetBuilder.build() : ArraySheet.copyOf("", new Object[][]{});
-        }
-
-        @Override
-        public void close() throws IOException {
+        public void close() {
+            arraySheetBuilder.clear();
         }
     }
 
-    private static final class MultiThreadedBuilder extends Builder {
+    static final class MultiSheetBuilder implements XlsxSheetBuilder {
 
+        private static final int FIRST_BATCH_SIZE = 10;
+        private static final int NEXT_BATCH_SIZE = 1000;
+        private static final int QUEUE_MAX_SIZE = 10;
+
+        private final Builder delegate;
         private final ExecutorService executor;
-        private final Queue<QueueItem> queue;
-        private final Consumer singleConsumer;
-//        int outOfCapacity = 0;
+        private final CustomQueue queue;
+        private Batch nextBatch;
 
-        public MultiThreadedBuilder(XlsxValueFactory valueFactory) {
-            super(valueFactory);
+        MultiSheetBuilder(Builder delegate) {
+            this.delegate = delegate;
             this.executor = Executors.newSingleThreadExecutor();
-            this.queue = new P1C1QueueOriginal3<>(1000);
-            this.singleConsumer = new Consumer<QueueItem>(queue) {
-                @Override
-                protected void consume(QueueItem item) {
-                    process(item.ref, item.rawValue, item.rawDataType, item.rawStyleIndex);
-                }
-            };
-            executor.execute(singleConsumer);
+            this.queue = new CustomQueue(QUEUE_MAX_SIZE);
+            this.nextBatch = new Batch(FIRST_BATCH_SIZE);
         }
 
         @Override
-        public Builder put(@Nullable String ref, @Nonnull CharSequence rawValue, @Nullable String rawDataType, @Nullable Integer rawStyleIndex) {
-            QueueItem item = new QueueItem(ref, rawValue, rawDataType, rawStyleIndex);
-            if (!queue.offer(item)) {
-//                outOfCapacity++;
-                do {
-                    threadYield();
-                } while (!queue.offer(item));
-            }
+        public XlsxSheetBuilder reset(String sheetName, String sheetBounds) {
+            queue.waitForCompletion();
+            delegate.reset(sheetName, sheetBounds);
             return this;
         }
 
         @Override
-        public ArraySheet build() {
-//            System.out.println("outOfCapacity=" + outOfCapacity);
-            while (!queue.isEmpty()) {
-                threadYield();
+        public XlsxSheetBuilder put(String ref, CharSequence value, String dataType, Integer styleIndex) {
+            if (nextBatch.isFull()) {
+                if (queue.isFull()) {
+                    queue.waitForCompletion();
+                }
+                queue.add(executor.submit(nextBatch.asTask(delegate)));
+                nextBatch = new Batch(NEXT_BATCH_SIZE);
             }
-            return super.build();
+            nextBatch.put(ref, value, dataType, styleIndex);
+            return this;
+        }
+
+        @Override
+        public Sheet build() {
+            queue.waitForCompletion();
+            if (nextBatch.getSize() > 0) {
+                nextBatch.process(delegate);
+                nextBatch = new Batch(FIRST_BATCH_SIZE);
+            }
+            return delegate.build();
         }
 
         @Override
         public void close() throws IOException {
-            singleConsumer.interrupt();
+            delegate.close();
             executor.shutdown();
             try {
                 executor.awaitTermination(100, TimeUnit.SECONDS);
@@ -149,59 +153,71 @@ public final class XlsxSheetBuilders {
             }
         }
 
-        private static final class QueueItem {
+        static final class CustomQueue {
 
-            @Nullable
-            public final String ref;
-            @Nonnull
-            public final CharSequence rawValue;
-            @Nullable
-            public final String rawDataType;
-            @Nullable
-            public final Integer rawStyleIndex;
+            private final int maxQueueSize;
+            private final List<Future<?>> queue;
 
-            public QueueItem(@Nullable String ref, @Nonnull CharSequence rawValue, @Nullable String rawDataType, @Nullable Integer rawStyleIndex) {
-                this.ref = ref;
-                this.rawValue = rawValue;
-                this.rawDataType = rawDataType;
-                this.rawStyleIndex = rawStyleIndex;
+            CustomQueue(int maxQueueSize) {
+                this.maxQueueSize = maxQueueSize;
+                this.queue = new ArrayList<>(maxQueueSize);
+            }
+
+            boolean isFull() {
+                return queue.size() >= maxQueueSize;
+            }
+
+            void waitForCompletion() {
+                for (Future<?> o : queue) {
+                    try {
+                        o.get();
+                    } catch (InterruptedException | ExecutionException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+                queue.clear();
+            }
+
+            private void add(Future<?> submit) {
+                queue.add(submit);
             }
         }
 
-        private static abstract class Consumer<T> implements Runnable {
+        static final class Batch {
 
-            private final Queue<T> queue;
-            private final AtomicBoolean endOfData;
+            private final Object[][] values;
+            private int size;
 
-            public Consumer(Queue<T> queue) {
-                this.queue = queue;
-                this.endOfData = new AtomicBoolean(false);
+            Batch(int maxSize) {
+                this.values = new Object[maxSize][4];
+                this.size = 0;
             }
 
-            @Override
-            public void run() {
-                T result;
-                while (true) {
-                    while (null == (result = queue.poll())) {
-                        if (endOfData.get()) {
-                            return;
-                        }
-                        threadYield();
-                    }
-                    consume(result);
+            void put(@Nullable String ref, @Nonnull CharSequence value, @Nullable String dataType, @Nullable Integer styleIndex) {
+                Object[] row = values[size++];
+                row[0] = ref;
+                row[1] = value;
+                row[2] = dataType;
+                row[3] = styleIndex;
+            }
+
+            int getSize() {
+                return size;
+            }
+
+            boolean isFull() {
+                return values.length == size;
+            }
+
+            void process(Builder delegate) {
+                for (int i = 0; i < size; i++) {
+                    delegate.put((String) values[i][0], (CharSequence) values[i][1], (String) values[i][2], (Integer) values[i][3]);
                 }
             }
 
-            abstract protected void consume(T item);
-
-            public void interrupt() {
-                endOfData.set(true);
+            Runnable asTask(Builder delegate) {
+                return () -> process(delegate);
             }
-        }
-
-        @SuppressWarnings("CallToThreadYield")
-        private static void threadYield() {
-            Thread.yield();
         }
     }
 }

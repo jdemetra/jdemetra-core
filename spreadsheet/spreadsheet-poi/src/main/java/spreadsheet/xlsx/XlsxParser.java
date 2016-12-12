@@ -31,38 +31,42 @@ import spreadsheet.xlsx.internal.SaxXlsxParser;
  */
 public interface XlsxParser extends Closeable {
 
-    void parseWorkbookData(InputStream stream, WorkbookDataVisitor visitor) throws IOException;
+    void visitWorkbook(InputStream stream, WorkbookVisitor visitor) throws IOException;
 
-    void parseSharedStringsData(InputStream stream, SharedStringsVisitor visitor) throws IOException;
+    void visitSharedStrings(InputStream stream, SharedStringsVisitor visitor) throws IOException;
 
-    void parseStylesData(InputStream stream, StylesDataVisitor visitor) throws IOException;
+    void visitStyles(InputStream stream, StylesVisitor visitor) throws IOException;
 
-    void parseSheet(InputStream stream, SheetVisitor visitor) throws IOException;
+    void visitSheet(InputStream stream, SheetVisitor visitor) throws IOException;
 
-    interface WorkbookDataVisitor {
+    interface WorkbookVisitor {
 
-        void onSheet(String relationId, String name);
+        void onSheet(@Nonnull String relationId, @Nonnull String name);
 
         void onDate1904(boolean date1904);
     }
 
     interface SharedStringsVisitor {
 
-        void onSharedString(String str);
+        void onSharedString(@Nonnull String str);
     }
 
-    interface StylesDataVisitor {
+    interface StylesVisitor {
 
-        void onNumberFormat(int formatId, String formatCode);
+        void onNumberFormat(int formatId, String formatCode) throws IllegalStateException;
 
-        void onCellFormat(int formatId);
+        void onCellFormat(int formatId) throws IllegalStateException;
     }
 
     interface SheetVisitor {
 
-        void onSheetData(String sheetBounds);
+        void onSheetData(@Nullable String sheetBounds) throws IllegalStateException;
 
-        void onCell(@Nullable String ref, @Nonnull CharSequence rawValue, @Nullable String rawDataType, @Nullable Integer rawStyleIndex);
+        void onCell(
+                @Nullable String ref,
+                @Nonnull CharSequence value,
+                @Nullable String dataType,
+                @Nullable Integer styleIndex) throws IllegalStateException;
     }
 
     interface Factory {

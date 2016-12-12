@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package spreadsheet.xlsx.internal;
+package spreadsheet.xlsx.internal.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,60 +22,51 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
+import spreadsheet.xlsx.internal.util.IOUtil.ByteSource;
 
 /**
  *
  * @author Philippe Charles
  * @since 2.2.0
  */
-final class SaxUtil {
+@lombok.experimental.UtilityClass
+public class SaxUtil {
 
-    private SaxUtil() {
-        // static class
-    }
+    public interface ContentRunner extends ContentHandler {
 
-    interface ByteSource {
-
-        InputStream openStream() throws IOException;
-    }
-
-    interface Tmp extends ContentHandler {
-
-        default void parse(XMLReader reader, InputStream stream) throws IOException {
-            doParse(reader, stream, this);
+        default void runWith(XMLReader reader, InputStream stream) throws IOException, SAXException {
+            parse(reader, stream, this);
         }
 
-        default void parse(XMLReader reader, ByteSource byteSource) throws IOException {
+        default void runWith(XMLReader reader, ByteSource byteSource) throws IOException, SAXException {
             try (InputStream stream = byteSource.openStream()) {
-                if (stream != null) {
-                    doParse(reader, stream, this);
-                }
+                runWith(reader, stream);
             }
         }
     }
 
-    interface ValueHandler<T> extends ContentHandler {
+    public interface ContentSupplier<T> extends ContentHandler {
 
-        default T parse(XMLReader reader, ByteSource byteSource) throws IOException {
+        default T getWith(XMLReader reader, InputStream stream) throws IOException, SAXException {
+            parse(reader, stream, this);
+            return build();
+        }
+
+        default T getWith(XMLReader reader, ByteSource byteSource) throws IOException, SAXException {
             try (InputStream stream = byteSource.openStream()) {
-                doParse(reader, stream, this);
-                return build();
+                return getWith(reader, stream);
             }
         }
 
         T build();
     }
 
-    private static void doParse(XMLReader reader, InputStream stream, ContentHandler handler) throws IOException {
-        try {
-            reader.setContentHandler(handler);
-            reader.parse(new InputSource(stream));
-        } catch (SAXException ex) {
-            throw new IOException("While parsing xml", ex);
-        }
+    private void parse(XMLReader reader, InputStream stream, ContentHandler handler) throws IOException, SAXException {
+        reader.setContentHandler(handler);
+        reader.parse(new InputSource(stream));
     }
 
-    static final class SaxStringBuilder {
+    public static final class SaxStringBuilder {
 
         private boolean enabled = false;
         private StringBuilder content = new StringBuilder();

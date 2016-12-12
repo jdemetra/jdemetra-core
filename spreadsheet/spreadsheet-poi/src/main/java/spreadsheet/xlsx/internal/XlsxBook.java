@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.stream.Collectors;
@@ -35,6 +36,7 @@ import spreadsheet.xlsx.XlsxPackage;
 import spreadsheet.xlsx.XlsxParser;
 import spreadsheet.xlsx.XlsxReader;
 import spreadsheet.xlsx.XlsxSheetBuilder;
+import spreadsheet.xlsx.internal.util.IOUtil;
 
 /**
  *
@@ -50,10 +52,10 @@ public final class XlsxBook extends Book {
         try {
             parser = reader.getParser().create();
 
-            WorkbookData data = parseWorkbookData(pkg::getWorkbookData, parser);
+            WorkbookData data = parseWorkbook(pkg::getWorkbook, parser);
             XlsxDateSystem dateSystem = data.date1904 ? reader.getDateSystem1904() : reader.getDateSystem1900();
-            IntFunction<String> sharedStrings = parseSharedStringsData(pkg::getSharedStringsData, parser);
-            IntPredicate dateFormats = parseStylesData(pkg::getStylesData, parser, reader.getNumberingFormat());
+            IntFunction<String> sharedStrings = parseSharedStrings(pkg::getSharedStrings, parser)::get;
+            IntPredicate dateFormats = parseStyles(reader.getNumberingFormat(), pkg::getStyles, parser)::get;
 
             sheetBuilder = reader.getBuilder().create(dateSystem, sharedStrings, dateFormats);
 
@@ -89,7 +91,7 @@ public final class XlsxBook extends Book {
     @Override
     public Sheet getSheet(int index) throws IOException {
         SheetMeta meta = sheets.get(index);
-        return parseSheet(() -> pkg.getSheet(meta.relationId), parser, meta.name, sheetBuilder);
+        return parseSheet(meta.name, sheetBuilder, () -> pkg.getSheet(meta.relationId), parser);
     }
 
     static void closeAll(IOException initial, Closeable... closeables) throws IOException {
@@ -111,37 +113,31 @@ public final class XlsxBook extends Book {
         }
     }
 
-    static final class WorkbookData {
+    @lombok.Value
+    static class WorkbookData {
 
-        final List<SheetMeta> sheets;
-        final boolean date1904;
-
-        private WorkbookData(List<SheetMeta> sheets, boolean date1904) {
-            this.sheets = sheets;
-            this.date1904 = date1904;
-        }
+        List<SheetMeta> sheets;
+        boolean date1904;
     }
 
-    static final class SheetMeta {
+    @lombok.Value
+    static class SheetMeta {
 
-        final String relationId;
-        final String name;
-
-        private SheetMeta(String relationId, String name) {
-            this.relationId = relationId;
-            this.name = name;
-        }
+        @Nonnull
+        String relationId;
+        @Nonnull
+        String name;
     }
 
-    static WorkbookData parseWorkbookData(SaxUtil.ByteSource byteSource, XlsxParser parser) throws IOException {
-        WorkbookDataVisitorImpl result = new WorkbookDataVisitorImpl();
+    static WorkbookData parseWorkbook(IOUtil.ByteSource byteSource, XlsxParser parser) throws IOException {
+        WorkbookVisitorImpl result = new WorkbookVisitorImpl();
         try (InputStream stream = byteSource.openStream()) {
-            parser.parseWorkbookData(stream, result);
+            parser.visitWorkbook(stream, result);
         }
         return result.build();
     }
 
-    static final class WorkbookDataVisitorImpl implements XlsxParser.WorkbookDataVisitor {
+    private static final class WorkbookVisitorImpl implements XlsxParser.WorkbookVisitor {
 
         private final List<SheetMeta> sheets = new ArrayList<>();
         private boolean date1904 = false;
@@ -161,76 +157,91 @@ public final class XlsxBook extends Book {
         }
     }
 
-    static IntFunction<String> parseSharedStringsData(SaxUtil.ByteSource byteSource, XlsxParser parser) throws IOException {
+    static List<String> parseSharedStrings(IOUtil.ByteSource byteSource, XlsxParser parser) throws IOException {
         List<String> result = new ArrayList<>();
         try (InputStream stream = byteSource.openStream()) {
-            parser.parseSharedStringsData(stream, result::add);
+            parser.visitSharedStrings(stream, o -> result.add(Objects.requireNonNull(o)));
         }
-        return result::get;
+        return result;
     }
 
-    static IntPredicate parseStylesData(SaxUtil.ByteSource byteSource, XlsxParser parser, XlsxNumberingFormat dateFormat) throws IOException {
-        StylesDataVisitorImpl result = new StylesDataVisitorImpl(dateFormat);
+    static List<Boolean> parseStyles(XlsxNumberingFormat dateFormat, IOUtil.ByteSource byteSource, XlsxParser parser) throws IOException {
+        StylesVisitorImpl result = new StylesVisitorImpl(dateFormat);
         try (InputStream stream = byteSource.openStream()) {
-            parser.parseStylesData(stream, result);
+            parser.visitStyles(stream, result);
         }
         return result.build();
     }
 
-    static final class StylesDataVisitorImpl implements XlsxParser.StylesDataVisitor {
+    private static final class StylesVisitorImpl implements XlsxParser.StylesVisitor {
 
         private final XlsxNumberingFormat dateFormat;
         private final List<Integer> orderedListOfIds = new ArrayList<>();
         private final Map<Integer, String> numberFormats = new HashMap<>();
+        private boolean hasCellFormat;
 
-        StylesDataVisitorImpl(XlsxNumberingFormat dateFormat) {
+        StylesVisitorImpl(XlsxNumberingFormat dateFormat) {
             this.dateFormat = dateFormat;
+            this.hasCellFormat = false;
         }
 
         @Override
         public void onNumberFormat(int formatId, String formatCode) {
+            if (hasCellFormat) {
+                throw new IllegalStateException();
+            }
             numberFormats.put(formatId, formatCode);
         }
 
         @Override
         public void onCellFormat(int formatId) {
+            hasCellFormat = true;
             orderedListOfIds.add(formatId);
         }
 
-        public IntPredicate build() {
+        public List<Boolean> build() {
             // Style order matters! -> accessed by index in sheets
             return orderedListOfIds.stream()
                     .map(o -> dateFormat.isExcelDateFormat(o, numberFormats.get(o)))
-                    .collect(Collectors.toList())::get;
+                    .collect(Collectors.toList());
         }
     }
 
-    static Sheet parseSheet(SaxUtil.ByteSource byteSource, XlsxParser parser, String name, XlsxSheetBuilder sheetBuilder) throws IOException {
+    static Sheet parseSheet(String name, XlsxSheetBuilder sheetBuilder, IOUtil.ByteSource byteSource, XlsxParser parser) throws IOException {
         SheetVisitorImpl result = new SheetVisitorImpl(name, sheetBuilder);
         try (InputStream stream = byteSource.openStream()) {
-            parser.parseSheet(stream, result);
+            parser.visitSheet(stream, result);
         }
         return result.build();
     }
 
-    static final class SheetVisitorImpl implements XlsxParser.SheetVisitor {
+    private static final class SheetVisitorImpl implements XlsxParser.SheetVisitor {
 
         private final String sheetName;
         private final XlsxSheetBuilder sheetBuilder;
+        private boolean inData;
 
         SheetVisitorImpl(String sheetName, XlsxSheetBuilder sheetBuilder) {
             this.sheetName = sheetName;
-            this.sheetBuilder = sheetBuilder.reset(sheetName, null);
+            this.sheetBuilder = sheetBuilder;
+            this.inData = false;
         }
 
         @Override
         public void onSheetData(String sheetBounds) {
+            if (inData) {
+                throw new IllegalStateException();
+            }
             sheetBuilder.reset(sheetName, sheetBounds);
+            inData = true;
         }
 
         @Override
-        public void onCell(String ref, CharSequence rawValue, String rawDataType, Integer rawStyleIndex) {
-            sheetBuilder.put(ref, rawValue, rawDataType, rawStyleIndex);
+        public void onCell(String ref, CharSequence value, String dataType, Integer styleIndex) {
+            if (!inData) {
+                throw new IllegalStateException();
+            }
+            sheetBuilder.put(ref, value, dataType, styleIndex);
         }
 
         public Sheet build() {
