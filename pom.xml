@@ -27,6 +27,13 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>joinup-snapshots</id>
+            <url>https://joinup.ec.europa.eu/nexus/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
     </repositories>
     
     <distributionManagement>
@@ -71,9 +78,6 @@
         <module>spreadsheetprovider</module>
         <module>sdmxprovider</module>
         <module>commonprovider</module>
-
-        <!-- librairies -->        
-        <module>spreadsheet</module>
 
         <!-- several apps -->
         <module>jbench</module>
