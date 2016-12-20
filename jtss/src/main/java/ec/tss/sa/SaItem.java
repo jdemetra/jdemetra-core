@@ -1,7 +1,7 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
+ * Licensed under the EUPL, Version 1.1 or â€“ as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
@@ -16,6 +16,8 @@
  */
 package ec.tss.sa;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
 import ec.satoolkit.GenericSaProcessingFactory;
 import ec.satoolkit.ISaSpecification;
 import ec.tss.Ts;
@@ -46,7 +48,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SaItem {
 
     public static final String DOMAIN_SPEC = "domainspec", ESTIMATION_SPEC = "estimationspec", POINT_SPEC = "pointspec",
-            TS = "ts", QUALITY = "quality", PRIORITY = "priority", POLICY = "policy", METADATA = "metadata";
+            TS = "ts", QUALITY = "quality", PRIORITY = "priority", POLICY = "policy", METADATA = "metadata", NAME = "name";
     public static final String DIAGNOSTICS = "diagnostics";
     private static final String DIAGNOSTICS_INTERNAL = "__diagnostics";
 
@@ -80,6 +82,7 @@ public class SaItem {
     private String[] warnings_;
     private InformationSet qsummary_;
     private MetaData metaData_;
+    private String name = "";
     private boolean locked_;
 
     public SaItem makeCopy() {
@@ -99,6 +102,7 @@ public class SaItem {
             n.warnings_ = warnings_;
             n.cacheResults_ = cacheResults_;
             n.metaData_ = metaData_ == null ? null : metaData_.clone();
+            n.name = name;
             return n;
         }
     }
@@ -125,6 +129,7 @@ public class SaItem {
 
     public SaItem newSpecification(Ts s, ISaSpecification espec, EstimationPolicyType policy) {
         SaItem nitem = new SaItem();
+        nitem.name = name;
         nitem.dspec_ = dspec_;
         nitem.ts_ = s;
         if (espec != null) {
@@ -146,11 +151,9 @@ public class SaItem {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(getEstimationSpecification());
-        if (ts_ != null) {
-            String item = ts_.getName();
-            if (item != null) {
-                builder.append(" - ").append(item);
-            }
+        String item = getName();
+        if (!item.isEmpty()) {
+            builder.append(" - ").append(item);
         }
         return builder.toString();
     }
@@ -162,6 +165,24 @@ public class SaItem {
     public void setMetaData(MetaData md) {
         metaData_ = md;
         dirty_ = true;
+    }
+
+    public String getName() {
+        return !name.isEmpty()
+                ? (ts_ != null && ts_.isFrozen() ? name + " [frozen]" : name)
+                : (ts_ != null ? ts_.getName() : "");
+    }
+
+    public String getRawName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        String oldName = this.name;
+        if (!oldName.equals(name)) {
+            this.name = Strings.nullToEmpty(name);
+            this.dirty_ = true;
+        }
     }
 
     public int getPriority() {
@@ -468,10 +489,14 @@ public class SaItem {
             metaData_ = new MetaData();
             InformationSetHelper.fillMetaData(md, metaData_);
         }
+        setName(info.get(NAME, String.class));
         return true;
     }
 
     boolean write(InformationSet info, NameManager<ISaSpecification> defaults, boolean verbose) {
+        if (!name.isEmpty()) {
+            info.set(NAME, name);
+        }
         TsInformation tsinfo;
         if (ts_.getMoniker().isAnonymous()) {
             tsinfo = new TsInformation(ts_, TsInformationType.All);
