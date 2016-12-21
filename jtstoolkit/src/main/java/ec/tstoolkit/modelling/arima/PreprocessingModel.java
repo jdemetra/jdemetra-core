@@ -577,7 +577,7 @@ public class PreprocessingModel implements IProcResults {
         TsData b = linearizedBackcast(nb);
         TsData c = regressionEffect(b.getDomain());
         TsData r = TsData.add(b, c);
-        if (transformed) {
+        if (!transformed) {
             backTransform(r, true, true);
         }
         return r;
