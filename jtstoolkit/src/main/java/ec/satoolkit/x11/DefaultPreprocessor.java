@@ -65,7 +65,7 @@ public class DefaultPreprocessor extends DefaultX11Algorithm implements
         InformationSet btables = info.subSet(X11Kernel.B);
         btables.set(X11Kernel.B1, sall);
         if (fs != null) {
-            atables.set(X11Kernel.A1a, model_.forecast(fs.getLength(), true));
+            atables.set(X11Kernel.A1a, model_.forecast(fs.getLength(), false));
         }
         // complete the information sets using the pre-processing model
         TsDomain domain = model_.description.getSeriesDomain();
