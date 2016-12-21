@@ -13,6 +13,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import org.junit.Test;
 import org.junit.Assert;
+import utilities.CompareTsData;
 
 /**
  *
@@ -25,8 +26,8 @@ public class X13FcastTest {
         X13Specification x13spec = makeX13Spec(DefaultTransformationType.None);
         SequentialProcessing<TsData> processing = X13ProcessingFactory.instance.generateProcessing(x13spec);
         CompositeResults comprest = processing.process(tso);
-        Assert.assertTrue("A1a", X13UserdefinedVariablesInDTablesMainResults.compareTS(ta1aNone, comprest.getData("a-tables.a1a", TsData.class), 0.0000000001));
-        Assert.assertTrue("D16a is wrong", X13UserdefinedVariablesInDTablesMainResults.compareTS(td16aNone, comprest.getData("d-tables.d16a", TsData.class), 0.000000001));
+        Assert.assertTrue("A1a", CompareTsData.compareTS(ta1aNone, comprest.getData("a-tables.a1a", TsData.class), 0.0000000001));
+        Assert.assertTrue("D16a is wrong", CompareTsData.compareTS(td16aNone, comprest.getData("d-tables.d16a", TsData.class), 0.000000001));
     }
 
     @Test
@@ -36,10 +37,10 @@ public class X13FcastTest {
         CompositeResults comprest = processing.process(tso);
         System.out.println("Specification");
 
-        Assert.assertTrue("A1 is wrong", X13UserdefinedVariablesInDTablesMainResults.compareTS(tso, comprest.getData("a-tables.a1", TsData.class), 0.000000001));
-        Assert.assertTrue("A1a", X13UserdefinedVariablesInDTablesMainResults.compareTS(ta1aLog, comprest.getData("a-tables.a1a", TsData.class), 0.000001));
-        Assert.assertTrue("D16a is wrong", X13UserdefinedVariablesInDTablesMainResults.compareTS(td16aLog, comprest.getData("d-tables.d16a", TsData.class), 0.00001));
-        Assert.assertTrue("D16 is wrong", X13UserdefinedVariablesInDTablesMainResults.compareTS(td16Log, comprest.getData("d-tables.d16", TsData.class), 0.000000001));
+        Assert.assertTrue("A1 is wrong", CompareTsData.compareTS(tso, comprest.getData("a-tables.a1", TsData.class), 0.000000001));
+        Assert.assertTrue("A1a", CompareTsData.compareTS(ta1aLog, comprest.getData("a-tables.a1a", TsData.class), 0.000001));
+        Assert.assertTrue("D16a is wrong", CompareTsData.compareTS(td16aLog, comprest.getData("d-tables.d16a", TsData.class), 0.00001));
+        Assert.assertTrue("D16 is wrong", CompareTsData.compareTS(td16Log, comprest.getData("d-tables.d16", TsData.class), 0.000000001));
     }
 
     private X13Specification makeX13Spec(DefaultTransformationType trafoType) {

@@ -25,6 +25,7 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.utilities.NameManager;
 import org.junit.Assert;
 import org.junit.Test;
+import utilities.CompareTsData;
 
 
 /*These tests compare check the results if user-definfined variables are used*
@@ -41,8 +42,8 @@ public class X13UserdefinedVariablesInDTablesMainResults {
         X13Specification x13spec = makeX13Spec(UserComponentType.Undefined);
         SequentialProcessing<TsData> processing = X13ProcessingFactory.instance.generateProcessing(x13spec, makeContext());
         CompositeResults comprest = processing.process(tso);
-        Assert.assertTrue("Forecast is wrong", compareTS(tsForecast, comprest.getData("y_f", TsData.class), 0.000000001));
-        Assert.assertTrue("A9 is wrong", compareTS(tsReg_a, comprest.getData("a-tables.a9u", TsData.class), 0.000000001));
+        Assert.assertTrue("Forecast is wrong", CompareTsData.compareTS(tsForecast, comprest.getData("y_f", TsData.class), 0.000000001));
+        Assert.assertTrue("A9 is wrong", CompareTsData.compareTS(tsReg_a, comprest.getData("a-tables.a9u", TsData.class), 0.000000001));
         //Resultvalues are not stored
     }
 
@@ -51,23 +52,23 @@ public class X13UserdefinedVariablesInDTablesMainResults {
         X13Specification x13spec = makeX13Spec(UserComponentType.Trend);
         SequentialProcessing<TsData> processing = X13ProcessingFactory.instance.generateProcessing(x13spec, makeContext());
         CompositeResults comprest = processing.process(tso);
-        Assert.assertTrue("Forecast is wrong", compareTS(tsForecast, comprest.getData("y_f", TsData.class), 0.000000001));
-        Assert.assertTrue("A8 is wrong", compareTS(tsReg_a, comprest.getData("a-tables.a8", TsData.class), 0.000000001));
-        Assert.assertTrue("A8t is wrong", compareTS(tsReg_a, comprest.getData("a-tables.a8t", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonally adjusted is wrong", compareTS(tsseasonaladjusted.plus(tsReg), comprest.getData("sa", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonally adjusted forecast is wrong", compareTS(tsseasonaladjusted_f.plus(tsReg_f), comprest.getData("sa_f", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonal is wrong", compareTS(tsseasonal, comprest.getData("s", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonal forecast is wrong", compareTS(tsseasonal_f, comprest.getData("s_f", TsData.class), 0.000000001));
-        Assert.assertTrue("Irregular is wrong", compareTS(tsirregular, comprest.getData("i", TsData.class), 0.000000001));
-        Assert.assertTrue("Trend is wrong", compareTS(tstrend.plus(tsReg), comprest.getData("t", TsData.class), 0.000000001));
-        Assert.assertTrue("Trend forecast is wrong", compareTS(tstrend_f.plus(tsReg_f), comprest.getData("t_f", TsData.class), 0.000000001));
-        Assert.assertTrue("D10 is wrong", compareTS(tsseasonal, comprest.getData("d-tables.d10", TsData.class), 0.000000001));
-        Assert.assertTrue("D10a is wrong", compareTS(tsseasonal_f, comprest.getData("d-tables.d10a", TsData.class), 0.000000001));
-        Assert.assertTrue("D11 is wrong", compareTS(tsseasonaladjusted.plus(tsReg), comprest.getData("d-tables.d11", TsData.class), 0.000000001));
-        Assert.assertTrue("D11a is wrong", compareTS(tsseasonaladjusted_f.plus(tsReg_f), comprest.getData("d-tables.d11a", TsData.class), 0.000000001));
-        Assert.assertTrue("D12 is wrong", compareTS(tstrend.plus(tsReg), comprest.getData("d-tables.d12", TsData.class), 0.000000001));
-        Assert.assertTrue("D12a is wrong", compareTS(tstrend_f.plus(tsReg_f), comprest.getData("d-tables.d12a", TsData.class), 0.000000001));
-        Assert.assertTrue("D13 is wrong", compareTS(tsirregular, comprest.getData("d-tables.d13", TsData.class), 0.000000001));
+        Assert.assertTrue("Forecast is wrong", CompareTsData.compareTS(tsForecast, comprest.getData("y_f", TsData.class), 0.000000001));
+        Assert.assertTrue("A8 is wrong", CompareTsData.compareTS(tsReg_a, comprest.getData("a-tables.a8", TsData.class), 0.000000001));
+        Assert.assertTrue("A8t is wrong", CompareTsData.compareTS(tsReg_a, comprest.getData("a-tables.a8t", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonally adjusted is wrong", CompareTsData.compareTS(tsseasonaladjusted.plus(tsReg), comprest.getData("sa", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonally adjusted forecast is wrong", CompareTsData.compareTS(tsseasonaladjusted_f.plus(tsReg_f), comprest.getData("sa_f", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonal is wrong", CompareTsData.compareTS(tsseasonal, comprest.getData("s", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonal forecast is wrong", CompareTsData.compareTS(tsseasonal_f, comprest.getData("s_f", TsData.class), 0.000000001));
+        Assert.assertTrue("Irregular is wrong", CompareTsData.compareTS(tsirregular, comprest.getData("i", TsData.class), 0.000000001));
+        Assert.assertTrue("Trend is wrong", CompareTsData.compareTS(tstrend.plus(tsReg), comprest.getData("t", TsData.class), 0.000000001));
+        Assert.assertTrue("Trend forecast is wrong", CompareTsData.compareTS(tstrend_f.plus(tsReg_f), comprest.getData("t_f", TsData.class), 0.000000001));
+        Assert.assertTrue("D10 is wrong", CompareTsData.compareTS(tsseasonal, comprest.getData("d-tables.d10", TsData.class), 0.000000001));
+        Assert.assertTrue("D10a is wrong", CompareTsData.compareTS(tsseasonal_f, comprest.getData("d-tables.d10a", TsData.class), 0.000000001));
+        Assert.assertTrue("D11 is wrong", CompareTsData.compareTS(tsseasonaladjusted.plus(tsReg), comprest.getData("d-tables.d11", TsData.class), 0.000000001));
+        Assert.assertTrue("D11a is wrong", CompareTsData.compareTS(tsseasonaladjusted_f.plus(tsReg_f), comprest.getData("d-tables.d11a", TsData.class), 0.000000001));
+        Assert.assertTrue("D12 is wrong", CompareTsData.compareTS(tstrend.plus(tsReg), comprest.getData("d-tables.d12", TsData.class), 0.000000001));
+        Assert.assertTrue("D12a is wrong", CompareTsData.compareTS(tstrend_f.plus(tsReg_f), comprest.getData("d-tables.d12a", TsData.class), 0.000000001));
+        Assert.assertTrue("D13 is wrong", CompareTsData.compareTS(tsirregular, comprest.getData("d-tables.d13", TsData.class), 0.000000001));
 
     }
 
@@ -76,23 +77,23 @@ public class X13UserdefinedVariablesInDTablesMainResults {
         X13Specification x13spec = makeX13Spec(UserComponentType.Series);
         SequentialProcessing<TsData> processing = X13ProcessingFactory.instance.generateProcessing(x13spec, makeContext());
         CompositeResults comprest = processing.process(tso);
-        Assert.assertTrue("Forecast is wrong", compareTS(tsForecast, comprest.getData("y_f", TsData.class), 0.000000001));
-        Assert.assertTrue("A9 is wrong", compareTS(tsReg_a, comprest.getData("a-tables.a9", TsData.class), 0.000000001));
-        Assert.assertTrue("A9ser is wrong", compareTS(tsReg_a, comprest.getData("a-tables.a9ser", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonally adjusted is wrong", compareTS(tsseasonaladjusted, comprest.getData("sa", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonally adjusted forecast is wrong", compareTS(tsseasonaladjusted_f, comprest.getData("sa_f", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonal is wrong", compareTS(tsseasonal, comprest.getData("s", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonal forecast is wrong", compareTS(tsseasonal_f, comprest.getData("s_f", TsData.class), 0.000000001));
-        Assert.assertTrue("Irregular is wrong", compareTS(tsirregular, comprest.getData("i", TsData.class), 0.000000001));
-        Assert.assertTrue("Trend is wrong", compareTS(tstrend, comprest.getData("t", TsData.class), 0.000000001));
-        Assert.assertTrue("Trend forecast is wrong", compareTS(tstrend_f, comprest.getData("t_f", TsData.class), 0.000000001));
-        Assert.assertTrue("D10 is wrong", compareTS(tsseasonal, comprest.getData("d-tables.d10", TsData.class), 0.000000001));
-        Assert.assertTrue("D10a is wrong", compareTS(tsseasonal_f, comprest.getData("d-tables.d10a", TsData.class), 0.000000001));
-        Assert.assertTrue("D11 is wrong", compareTS(tsseasonaladjusted, comprest.getData("d-tables.d11", TsData.class), 0.000000001));
-        Assert.assertTrue("D11a is wrong", compareTS(tsseasonaladjusted_f, comprest.getData("d-tables.d11a", TsData.class), 0.000000001));
-        Assert.assertTrue("D12 is wrong", compareTS(tstrend, comprest.getData("d-tables.d12", TsData.class), 0.000000001));
-        Assert.assertTrue("D12a is wrong", compareTS(tstrend_f, comprest.getData("d-tables.d12a", TsData.class), 0.000000001));
-        Assert.assertTrue("D13 is wrong", compareTS(tsirregular, comprest.getData("d-tables.d13", TsData.class), 0.000000001));
+        Assert.assertTrue("Forecast is wrong", CompareTsData.compareTS(tsForecast, comprest.getData("y_f", TsData.class), 0.000000001));
+        Assert.assertTrue("A9 is wrong", CompareTsData.compareTS(tsReg_a, comprest.getData("a-tables.a9", TsData.class), 0.000000001));
+        Assert.assertTrue("A9ser is wrong", CompareTsData.compareTS(tsReg_a, comprest.getData("a-tables.a9ser", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonally adjusted is wrong", CompareTsData.compareTS(tsseasonaladjusted, comprest.getData("sa", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonally adjusted forecast is wrong", CompareTsData.compareTS(tsseasonaladjusted_f, comprest.getData("sa_f", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonal is wrong", CompareTsData.compareTS(tsseasonal, comprest.getData("s", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonal forecast is wrong", CompareTsData.compareTS(tsseasonal_f, comprest.getData("s_f", TsData.class), 0.000000001));
+        Assert.assertTrue("Irregular is wrong", CompareTsData.compareTS(tsirregular, comprest.getData("i", TsData.class), 0.000000001));
+        Assert.assertTrue("Trend is wrong", CompareTsData.compareTS(tstrend, comprest.getData("t", TsData.class), 0.000000001));
+        Assert.assertTrue("Trend forecast is wrong", CompareTsData.compareTS(tstrend_f, comprest.getData("t_f", TsData.class), 0.000000001));
+        Assert.assertTrue("D10 is wrong", CompareTsData.compareTS(tsseasonal, comprest.getData("d-tables.d10", TsData.class), 0.000000001));
+        Assert.assertTrue("D10a is wrong", CompareTsData.compareTS(tsseasonal_f, comprest.getData("d-tables.d10a", TsData.class), 0.000000001));
+        Assert.assertTrue("D11 is wrong", CompareTsData.compareTS(tsseasonaladjusted, comprest.getData("d-tables.d11", TsData.class), 0.000000001));
+        Assert.assertTrue("D11a is wrong", CompareTsData.compareTS(tsseasonaladjusted_f, comprest.getData("d-tables.d11a", TsData.class), 0.000000001));
+        Assert.assertTrue("D12 is wrong", CompareTsData.compareTS(tstrend, comprest.getData("d-tables.d12", TsData.class), 0.000000001));
+        Assert.assertTrue("D12a is wrong", CompareTsData.compareTS(tstrend_f, comprest.getData("d-tables.d12a", TsData.class), 0.000000001));
+        Assert.assertTrue("D13 is wrong", CompareTsData.compareTS(tsirregular, comprest.getData("d-tables.d13", TsData.class), 0.000000001));
 
     }
 
@@ -101,23 +102,23 @@ public class X13UserdefinedVariablesInDTablesMainResults {
         X13Specification x13spec = makeX13Spec(UserComponentType.SeasonallyAdjusted);
         SequentialProcessing<TsData> processing = X13ProcessingFactory.instance.generateProcessing(x13spec, makeContext());
         CompositeResults comprest = processing.process(tso);
-        Assert.assertTrue("Forecast is wrong", compareTS(tsForecast, comprest.getData("y_f", TsData.class), 0.000000001));
-        Assert.assertTrue("A9 is wrong", compareTS(tsReg_a, comprest.getData("a-tables.a9", TsData.class), 0.000000001));
-        Assert.assertTrue("A9sa is wrong", compareTS(tsReg_a, comprest.getData("a-tables.a9sa", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonally adjusted is wrong", compareTS(tsseasonaladjusted.plus(tsReg), comprest.getData("sa", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonally adjusted forecast is wrong", compareTS(tsseasonaladjusted_f.plus(tsReg_f), comprest.getData("sa_f", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonal is wrong", compareTS(tsseasonal, comprest.getData("s", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonal forecast is wrong", compareTS(tsseasonal_f, comprest.getData("s_f", TsData.class), 0.000000001));
-        Assert.assertTrue("Irregular is wrong", compareTS(tsirregular, comprest.getData("i", TsData.class), 0.000000001));
-        Assert.assertTrue("Trend is wrong", compareTS(tstrend, comprest.getData("t", TsData.class), 0.000000001));
-        Assert.assertTrue("Trend forecast is wrong", compareTS(tstrend_f, comprest.getData("t_f", TsData.class), 0.000000001));
-        Assert.assertTrue("D10 is wrong", compareTS(tsseasonal, comprest.getData("d-tables.d10", TsData.class), 0.000000001));
-        Assert.assertTrue("D10a is wrong", compareTS(tsseasonal_f, comprest.getData("d-tables.d10a", TsData.class), 0.000000001));
-        Assert.assertTrue("D11 is wrong", compareTS(tsseasonaladjusted.plus(tsReg), comprest.getData("d-tables.d11", TsData.class), 0.000000001));
-        Assert.assertTrue("D11a is wrong", compareTS(tsseasonaladjusted_f.plus(tsReg_f), comprest.getData("d-tables.d11a", TsData.class), 0.000000001));
-        Assert.assertTrue("D12 is wrong", compareTS(tstrend, comprest.getData("d-tables.d12", TsData.class), 0.000000001));
-        Assert.assertTrue("D12a is wrong", compareTS(tstrend_f, comprest.getData("d-tables.d12a", TsData.class), 0.000000001));
-        Assert.assertTrue("D13 is wrong", compareTS(tsirregular, comprest.getData("d-tables.d13", TsData.class), 0.000000001));
+        Assert.assertTrue("Forecast is wrong", CompareTsData.compareTS(tsForecast, comprest.getData("y_f", TsData.class), 0.000000001));
+        Assert.assertTrue("A9 is wrong", CompareTsData.compareTS(tsReg_a, comprest.getData("a-tables.a9", TsData.class), 0.000000001));
+        Assert.assertTrue("A9sa is wrong", CompareTsData.compareTS(tsReg_a, comprest.getData("a-tables.a9sa", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonally adjusted is wrong", CompareTsData.compareTS(tsseasonaladjusted.plus(tsReg), comprest.getData("sa", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonally adjusted forecast is wrong", CompareTsData.compareTS(tsseasonaladjusted_f.plus(tsReg_f), comprest.getData("sa_f", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonal is wrong", CompareTsData.compareTS(tsseasonal, comprest.getData("s", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonal forecast is wrong", CompareTsData.compareTS(tsseasonal_f, comprest.getData("s_f", TsData.class), 0.000000001));
+        Assert.assertTrue("Irregular is wrong", CompareTsData.compareTS(tsirregular, comprest.getData("i", TsData.class), 0.000000001));
+        Assert.assertTrue("Trend is wrong", CompareTsData.compareTS(tstrend, comprest.getData("t", TsData.class), 0.000000001));
+        Assert.assertTrue("Trend forecast is wrong", CompareTsData.compareTS(tstrend_f, comprest.getData("t_f", TsData.class), 0.000000001));
+        Assert.assertTrue("D10 is wrong", CompareTsData.compareTS(tsseasonal, comprest.getData("d-tables.d10", TsData.class), 0.000000001));
+        Assert.assertTrue("D10a is wrong", CompareTsData.compareTS(tsseasonal_f, comprest.getData("d-tables.d10a", TsData.class), 0.000000001));
+        Assert.assertTrue("D11 is wrong", CompareTsData.compareTS(tsseasonaladjusted.plus(tsReg), comprest.getData("d-tables.d11", TsData.class), 0.000000001));
+        Assert.assertTrue("D11a is wrong", CompareTsData.compareTS(tsseasonaladjusted_f.plus(tsReg_f), comprest.getData("d-tables.d11a", TsData.class), 0.000000001));
+        Assert.assertTrue("D12 is wrong", CompareTsData.compareTS(tstrend, comprest.getData("d-tables.d12", TsData.class), 0.000000001));
+        Assert.assertTrue("D12a is wrong", CompareTsData.compareTS(tstrend_f, comprest.getData("d-tables.d12a", TsData.class), 0.000000001));
+        Assert.assertTrue("D13 is wrong", CompareTsData.compareTS(tsirregular, comprest.getData("d-tables.d13", TsData.class), 0.000000001));
 
     }
 
@@ -126,23 +127,23 @@ public class X13UserdefinedVariablesInDTablesMainResults {
         X13Specification x13spec = makeX13Spec(UserComponentType.Seasonal);
         SequentialProcessing<TsData> processing = X13ProcessingFactory.instance.generateProcessing(x13spec, makeContext());
         CompositeResults comprest = processing.process(tso);
-        Assert.assertTrue("Forecast is wrong", compareTS(tsForecast, comprest.getData("y_f", TsData.class), 0.000000001));
-        Assert.assertTrue("A8 is wrong", compareTS(tsReg_a, comprest.getData("a-tables.a8", TsData.class), 0.000000001));
-        Assert.assertTrue("A8s is wrong", compareTS(tsReg_a, comprest.getData("a-tables.a8s", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonally adjusted is wrong", compareTS(tsseasonaladjusted, comprest.getData("sa", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonally adjusted forecast is wrong", compareTS(tsseasonaladjusted_f, comprest.getData("sa_f", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonal is wrong", compareTS(tsseasonal.plus(tsReg), comprest.getData("s", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonal forecast is wrong", compareTS(tsseasonal_f.plus(tsReg_f), comprest.getData("s_f", TsData.class), 0.000000001));
-        Assert.assertTrue("Irregular is wrong", compareTS(tsirregular, comprest.getData("i", TsData.class), 0.000000001));
-        Assert.assertTrue("Trend is wrong", compareTS(tstrend, comprest.getData("t", TsData.class), 0.000000001));
-        Assert.assertTrue("Trend forecast is wrong", compareTS(tstrend_f, comprest.getData("t_f", TsData.class), 0.000000001));
-        Assert.assertTrue("D10 is wrong", compareTS(tsseasonal.plus(tsReg), comprest.getData("d-tables.d10", TsData.class), 0.000000001));
-        Assert.assertTrue("D10a is wrong", compareTS(tsseasonal_f.plus(tsReg_f), comprest.getData("d-tables.d10a", TsData.class), 0.000000001));
-        Assert.assertTrue("D11 is wrong", compareTS(tsseasonaladjusted, comprest.getData("d-tables.d11", TsData.class), 0.000000001));
-        Assert.assertTrue("D11a is wrong", compareTS(tsseasonaladjusted_f, comprest.getData("d-tables.d11a", TsData.class), 0.000000001));
-        Assert.assertTrue("D12 is wrong", compareTS(tstrend, comprest.getData("d-tables.d12", TsData.class), 0.000000001));
-        Assert.assertTrue("D12a is wrong", compareTS(tstrend_f, comprest.getData("d-tables.d12a", TsData.class), 0.000000001));
-        Assert.assertTrue("D13 is wrong", compareTS(tsirregular, comprest.getData("d-tables.d13", TsData.class), 0.000000001));
+        Assert.assertTrue("Forecast is wrong", CompareTsData.compareTS(tsForecast, comprest.getData("y_f", TsData.class), 0.000000001));
+        Assert.assertTrue("A8 is wrong", CompareTsData.compareTS(tsReg_a, comprest.getData("a-tables.a8", TsData.class), 0.000000001));
+        Assert.assertTrue("A8s is wrong", CompareTsData.compareTS(tsReg_a, comprest.getData("a-tables.a8s", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonally adjusted is wrong", CompareTsData.compareTS(tsseasonaladjusted, comprest.getData("sa", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonally adjusted forecast is wrong", CompareTsData.compareTS(tsseasonaladjusted_f, comprest.getData("sa_f", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonal is wrong", CompareTsData.compareTS(tsseasonal.plus(tsReg), comprest.getData("s", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonal forecast is wrong", CompareTsData.compareTS(tsseasonal_f.plus(tsReg_f), comprest.getData("s_f", TsData.class), 0.000000001));
+        Assert.assertTrue("Irregular is wrong", CompareTsData.compareTS(tsirregular, comprest.getData("i", TsData.class), 0.000000001));
+        Assert.assertTrue("Trend is wrong", CompareTsData.compareTS(tstrend, comprest.getData("t", TsData.class), 0.000000001));
+        Assert.assertTrue("Trend forecast is wrong", CompareTsData.compareTS(tstrend_f, comprest.getData("t_f", TsData.class), 0.000000001));
+        Assert.assertTrue("D10 is wrong", CompareTsData.compareTS(tsseasonal.plus(tsReg), comprest.getData("d-tables.d10", TsData.class), 0.000000001));
+        Assert.assertTrue("D10a is wrong", CompareTsData.compareTS(tsseasonal_f.plus(tsReg_f), comprest.getData("d-tables.d10a", TsData.class), 0.000000001));
+        Assert.assertTrue("D11 is wrong", CompareTsData.compareTS(tsseasonaladjusted, comprest.getData("d-tables.d11", TsData.class), 0.000000001));
+        Assert.assertTrue("D11a is wrong", CompareTsData.compareTS(tsseasonaladjusted_f, comprest.getData("d-tables.d11a", TsData.class), 0.000000001));
+        Assert.assertTrue("D12 is wrong", CompareTsData.compareTS(tstrend, comprest.getData("d-tables.d12", TsData.class), 0.000000001));
+        Assert.assertTrue("D12a is wrong", CompareTsData.compareTS(tstrend_f, comprest.getData("d-tables.d12a", TsData.class), 0.000000001));
+        Assert.assertTrue("D13 is wrong", CompareTsData.compareTS(tsirregular, comprest.getData("d-tables.d13", TsData.class), 0.000000001));
     }
 
     @Test
@@ -150,44 +151,27 @@ public class X13UserdefinedVariablesInDTablesMainResults {
         X13Specification x13spec = makeX13Spec(UserComponentType.Irregular);
         SequentialProcessing<TsData> processing = X13ProcessingFactory.instance.generateProcessing(x13spec, makeContext());
         CompositeResults comprest = processing.process(tso);
-        Assert.assertTrue("Forecast is wrong", compareTS(tsForecast, comprest.getData("y_f", TsData.class), 0.000000001));
-        Assert.assertTrue("A1a is wrong", compareTS(tsForecast, comprest.getData("a-tables.a1a", TsData.class), 0.000000001));
+        Assert.assertTrue("Forecast is wrong", CompareTsData.compareTS(tsForecast, comprest.getData("y_f", TsData.class), 0.000000001));
+        Assert.assertTrue("A1a is wrong", CompareTsData.compareTS(tsForecast, comprest.getData("a-tables.a1a", TsData.class), 0.000000001));
 
-        Assert.assertTrue("A8 is wrong", compareTS(tsReg_a, comprest.getData("a-tables.a8", TsData.class), 0.000000001));
-        Assert.assertTrue("A8i is wrong", compareTS(tsReg_a, comprest.getData("a-tables.a8i", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonally adjusted is wrong", compareTS(tsseasonaladjusted.plus(tsReg), comprest.getData("sa", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonally adjusted forecast is wrong", compareTS(tsseasonaladjusted_f.plus(tsReg_f), comprest.getData("sa_f", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonal is wrong", compareTS(tsseasonal, comprest.getData("s", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonal forecast is wrong", compareTS(tsseasonal_f, comprest.getData("s_f", TsData.class), 0.000000001));
-        Assert.assertTrue("Irregular is wrong", compareTS(tsirregular.plus(tsReg), comprest.getData("i", TsData.class), 0.000000001));
-        Assert.assertTrue("Trend is wrong", compareTS(tstrend, comprest.getData("t", TsData.class), 0.000000001));
-        Assert.assertTrue("Trend forecast is wrong", compareTS(tstrend_f, comprest.getData("t_f", TsData.class), 0.000000001));
-        Assert.assertTrue("D10 is wrong", compareTS(tsseasonal, comprest.getData("d-tables.d10", TsData.class), 0.000000001));
-        Assert.assertTrue("D10a is wrong", compareTS(tsseasonal_f, comprest.getData("d-tables.d10a", TsData.class), 0.000000001));
-        Assert.assertTrue("D11 is wrong", compareTS(tsseasonaladjusted.plus(tsReg), comprest.getData("d-tables.d11", TsData.class), 0.000000001));
-        Assert.assertTrue("D11a is wrong", compareTS(tsseasonaladjusted_f.plus(tsReg_f), comprest.getData("d-tables.d11a", TsData.class), 0.000000001));
-        Assert.assertTrue("D12 is wrong", compareTS(tstrend, comprest.getData("d-tables.d12", TsData.class), 0.000000001));
-        Assert.assertTrue("D12a is wrong", compareTS(tstrend_f, comprest.getData("d-tables.d12a", TsData.class), 0.000000001));
-        Assert.assertTrue("D13 is wrong", compareTS(tsirregular.plus(tsReg), comprest.getData("d-tables.d13", TsData.class), 0.000000001));
+        Assert.assertTrue("A8 is wrong", CompareTsData.compareTS(tsReg_a, comprest.getData("a-tables.a8", TsData.class), 0.000000001));
+        Assert.assertTrue("A8i is wrong", CompareTsData.compareTS(tsReg_a, comprest.getData("a-tables.a8i", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonally adjusted is wrong", CompareTsData.compareTS(tsseasonaladjusted.plus(tsReg), comprest.getData("sa", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonally adjusted forecast is wrong", CompareTsData.compareTS(tsseasonaladjusted_f.plus(tsReg_f), comprest.getData("sa_f", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonal is wrong", CompareTsData.compareTS(tsseasonal, comprest.getData("s", TsData.class), 0.000000001));
+        Assert.assertTrue("Seasonal forecast is wrong", CompareTsData.compareTS(tsseasonal_f, comprest.getData("s_f", TsData.class), 0.000000001));
+        Assert.assertTrue("Irregular is wrong", CompareTsData.compareTS(tsirregular.plus(tsReg), comprest.getData("i", TsData.class), 0.000000001));
+        Assert.assertTrue("Trend is wrong", CompareTsData.compareTS(tstrend, comprest.getData("t", TsData.class), 0.000000001));
+        Assert.assertTrue("Trend forecast is wrong", CompareTsData.compareTS(tstrend_f, comprest.getData("t_f", TsData.class), 0.000000001));
+        Assert.assertTrue("D10 is wrong", CompareTsData.compareTS(tsseasonal, comprest.getData("d-tables.d10", TsData.class), 0.000000001));
+        Assert.assertTrue("D10a is wrong", CompareTsData.compareTS(tsseasonal_f, comprest.getData("d-tables.d10a", TsData.class), 0.000000001));
+        Assert.assertTrue("D11 is wrong", CompareTsData.compareTS(tsseasonaladjusted.plus(tsReg), comprest.getData("d-tables.d11", TsData.class), 0.000000001));
+        Assert.assertTrue("D11a is wrong", CompareTsData.compareTS(tsseasonaladjusted_f.plus(tsReg_f), comprest.getData("d-tables.d11a", TsData.class), 0.000000001));
+        Assert.assertTrue("D12 is wrong", CompareTsData.compareTS(tstrend, comprest.getData("d-tables.d12", TsData.class), 0.000000001));
+        Assert.assertTrue("D12a is wrong", CompareTsData.compareTS(tstrend_f, comprest.getData("d-tables.d12a", TsData.class), 0.000000001));
+        Assert.assertTrue("D13 is wrong", CompareTsData.compareTS(tsirregular.plus(tsReg), comprest.getData("d-tables.d13", TsData.class), 0.000000001));
     }
 
-    static boolean compareTS(TsData orignal, TsData test, double precision) {
-        if (!orignal.getStart().equals(test.getStart())) {
-            return false;
-        }
-
-        if (!(orignal.getLength() == test.getLength())) {
-            return false;
-        }
-
-        for (int i = 0; i < orignal.getLength(); i++) {
-            if (Math.abs(orignal.get(i) - test.get(i)) > precision) {
-                return false;
-            }
-        }
-
-        return true;
-    }
 
     private static ProcessingContext context;
 

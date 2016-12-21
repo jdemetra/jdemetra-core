@@ -64,7 +64,7 @@ public class X11Kernel implements ISeriesDecomposer {
             D9_RMSROUND = "rmsRounds", D9_SLEN = "slen",
             D10L = "d10_lin", D11L = "d11_lin", D12L = "d12_lin", D13L = "d13_lin",
             D10aL = "d10a_lin", D11aL = "d11a_lin", D12aL = "d12a_lin", D13aL = "d13a_lin",
-            D9_DEFAULT = "s3x5default", D9_FILTER = "d9filter", D12_FILTER = "d12filter", D12_TLEN = "tlen";
+            D9_DEFAULT = "s3x5default", D9_FILTER = "d9filter", D12_FILTER = "d12filter", D12_TLEN = "tlen", D9_FILTER_COMPOSIT = "d9filtercomposit";
     public static final String[] ALL_D = {D1, D2, D3, D4, D5, D6, D7, D8, D9,
         D10, D10a, D11, D11a, D12, D12a, D13, D14, D15, D16, D16a, D18, D19, D20};
     public static final String E1 = "e1", E2 = "e2", E3 = "e3", E11 = "e11";

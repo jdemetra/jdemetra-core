@@ -32,7 +32,7 @@ class DefaultSeasonalComputer extends DefaultX11Algorithm implements
 
     private IFiltering initialFilter, finalFilter;
     private boolean useMsr;
-
+ private DefaultSeasonalFilteringStrategy[] finalComplexSeasonalFilteringStrategy;
     /**
      *
      * @param x11
@@ -67,6 +67,9 @@ class DefaultSeasonalComputer extends DefaultX11Algorithm implements
                 info.subSet(X11Kernel.D).set(X11Kernel.D9_SLEN, c.getLength());
             }
             info.subSet(X11Kernel.D).set(X11Kernel.D9_FILTER, filtering.getDescription());
+        if ("Composite filter".endsWith(filtering.getDescription())) {
+                info.subSet(X11Kernel.D).set(X11Kernel.D9_FILTER_COMPOSIT, finalComplexSeasonalFilteringStrategy);
+            }
         }
         return filtering.process(s, s.getDomain());
     }
@@ -153,7 +156,7 @@ class DefaultSeasonalComputer extends DefaultX11Algorithm implements
     public void setFilters(SeasonalFilterOption[] options) {
         if (options == null) {
             setMsrFilters();
-        } else if (options.length == 1) {
+        } else if (options.length == 1 || allEqual(options)) {
             setFilter(options[0]);
         } else {
             useMsr = false;
@@ -168,6 +171,9 @@ class DefaultSeasonalComputer extends DefaultX11Algorithm implements
                     s0[i] = filter;
                     s1[i] = filter;
                 }
+            }
+            if (options.length != 1) {
+                finalComplexSeasonalFilteringStrategy = s1;
             }
             initialFilter = new ComplexSeasonalFilteringStrategy(s0);
             finalFilter = new ComplexSeasonalFilteringStrategy(s1);
@@ -221,5 +227,15 @@ class DefaultSeasonalComputer extends DefaultX11Algorithm implements
         MsrTable rms = calculateMsr(fseas, rdomain, s);
         InformationSet dtables = info.subSet(X11Kernel.D);
         dtables.set(X11Kernel.D9_RMS, rms);
+    }
+    
+     private boolean allEqual(SeasonalFilterOption[] options) {
+        SeasonalFilterOption option1 = options[0];
+        for (SeasonalFilterOption option : options) {
+            if (!option.equals(option1)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
