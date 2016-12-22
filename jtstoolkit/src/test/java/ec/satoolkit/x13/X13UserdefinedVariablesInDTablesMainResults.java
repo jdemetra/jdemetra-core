@@ -151,8 +151,8 @@ public class X13UserdefinedVariablesInDTablesMainResults {
         SequentialProcessing<TsData> processing = X13ProcessingFactory.instance.generateProcessing(x13spec, makeContext());
         CompositeResults comprest = processing.process(tso);
         Assert.assertTrue("Forecast is wrong", compareTS(tsForecast, comprest.getData("y_f", TsData.class), 0.000000001));
-       Assert.assertTrue("A1a is wrong", compareTS(tsForecast, comprest.getData("a-tables.a1a", TsData.class), 0.000000001));
-       
+        Assert.assertTrue("A1a is wrong", compareTS(tsForecast, comprest.getData("a-tables.a1a", TsData.class), 0.000000001));
+
         Assert.assertTrue("A8 is wrong", compareTS(tsReg_a, comprest.getData("a-tables.a8", TsData.class), 0.000000001));
         Assert.assertTrue("A8i is wrong", compareTS(tsReg_a, comprest.getData("a-tables.a8i", TsData.class), 0.000000001));
         Assert.assertTrue("Seasonally adjusted is wrong", compareTS(tsseasonaladjusted.plus(tsReg), comprest.getData("sa", TsData.class), 0.000000001));
@@ -171,7 +171,7 @@ public class X13UserdefinedVariablesInDTablesMainResults {
         Assert.assertTrue("D13 is wrong", compareTS(tsirregular.plus(tsReg), comprest.getData("d-tables.d13", TsData.class), 0.000000001));
     }
 
-    boolean compareTS(TsData orignal, TsData test, double precision) {
+    static boolean compareTS(TsData orignal, TsData test, double precision) {
         if (!orignal.getStart().equals(test.getStart())) {
             return false;
         }
@@ -197,7 +197,7 @@ public class X13UserdefinedVariablesInDTablesMainResults {
             context = ProcessingContext.getActiveContext();
             NameManager<TsVariables> activeMgr = context.getTsVariableManagers();
             TsVariables mgr = new TsVariables();
-            mgr.set("x_1", tsvUser); //ok 
+            mgr.set("x_1", tsvUser); //ok
             activeMgr.set("Vars-1", mgr);//ok
             activeMgr.resetDirty();
         }
@@ -206,7 +206,7 @@ public class X13UserdefinedVariablesInDTablesMainResults {
     }
 
     ;
-    
+
     X13Specification makeX13Spec() {
         X13Specification x13Spec = new X13Specification();
         X11Specification x11spec = new X11Specification();

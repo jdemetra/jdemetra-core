@@ -1,21 +1,23 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or â€“ as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.tss.sa;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
 import ec.satoolkit.GenericSaProcessingFactory;
 import ec.satoolkit.ISaSpecification;
 import ec.tss.Ts;
@@ -26,7 +28,10 @@ import ec.tss.TsMoniker;
 import ec.tss.TsStatus;
 import ec.tss.sa.documents.SaDocument;
 import ec.tstoolkit.MetaData;
-import ec.tstoolkit.algorithm.*;
+import ec.tstoolkit.algorithm.AlgorithmDescriptor;
+import ec.tstoolkit.algorithm.CompositeResults;
+import ec.tstoolkit.algorithm.ProcDiagnostic;
+import ec.tstoolkit.algorithm.ProcQuality;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.information.InformationSetHelper;
 import ec.tstoolkit.information.ProxyResults;
@@ -43,7 +48,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SaItem {
 
     public static final String DOMAIN_SPEC = "domainspec", ESTIMATION_SPEC = "estimationspec", POINT_SPEC = "pointspec",
-            TS = "ts", QUALITY = "quality", PRIORITY = "priority", POLICY = "policy", METADATA = "metadata";
+            TS = "ts", QUALITY = "quality", PRIORITY = "priority", POLICY = "policy", METADATA = "metadata", NAME = "name";
     public static final String DIAGNOSTICS = "diagnostics";
     private static final String DIAGNOSTICS_INTERNAL = "__diagnostics";
 
@@ -77,6 +82,7 @@ public class SaItem {
     private String[] warnings_;
     private InformationSet qsummary_;
     private MetaData metaData_;
+    private String name = "";
     private boolean locked_;
 
     public SaItem makeCopy() {
@@ -96,6 +102,7 @@ public class SaItem {
             n.warnings_ = warnings_;
             n.cacheResults_ = cacheResults_;
             n.metaData_ = metaData_ == null ? null : metaData_.clone();
+            n.name = name;
             return n;
         }
     }
@@ -122,6 +129,7 @@ public class SaItem {
 
     public SaItem newSpecification(Ts s, ISaSpecification espec, EstimationPolicyType policy) {
         SaItem nitem = new SaItem();
+        nitem.name = name;
         nitem.dspec_ = dspec_;
         nitem.ts_ = s;
         if (espec != null) {
@@ -131,32 +139,21 @@ public class SaItem {
             nitem.estimation_ = EstimationPolicyType.Complete;
         }
         nitem.priority_ = priority_;
+        nitem.metaData_ = metaData_;
         return nitem;
     }
 
     public SaItem newSpecification(ISaSpecification espec, EstimationPolicyType policy) {
-        SaItem nitem = new SaItem();
-        nitem.dspec_ = dspec_;
-        nitem.ts_ = ts_;
-        if (espec != null) {
-            nitem.espec_ = espec;
-            nitem.estimation_ = policy;
-        } else {
-            nitem.estimation_ = EstimationPolicyType.Complete;
-        }
-        nitem.priority_ = priority_;
-        return nitem;
+        return newSpecification(ts_, espec, policy);
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(getEstimationSpecification());
-        if (ts_ != null) {
-            String item = ts_.getName();
-            if (item != null) {
-                builder.append(" - ").append(item);
-            }
+        String item = getName();
+        if (!item.isEmpty()) {
+            builder.append(" - ").append(item);
         }
         return builder.toString();
     }
@@ -168,6 +165,24 @@ public class SaItem {
     public void setMetaData(MetaData md) {
         metaData_ = md;
         dirty_ = true;
+    }
+
+    public String getName() {
+        return !name.isEmpty()
+                ? (ts_ != null && ts_.isFrozen() ? name + " [frozen]" : name)
+                : (ts_ != null ? ts_.getName() : "");
+    }
+
+    public String getRawName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        String oldName = this.name;
+        if (!oldName.equals(name)) {
+            this.name = Strings.nullToEmpty(name);
+            this.dirty_ = true;
+        }
     }
 
     public int getPriority() {
@@ -252,19 +267,6 @@ public class SaItem {
         }
     }
 
-//        public void SetContext(TSContext context)
-//        {
-//            lock (m_id)
-//            {
-//
-//                if (dspec_ != null)
-//                    dspec_.Context = context;
-//                if (espec_ != null)
-//                    espec_.Context = context;
-//                if (pspec_ != null)
-//                    pspec_.Context = context;
-//            }
-//        }
     public ISaSpecification getEstimationSpecification() {
         return espec_ != null ? espec_ : dspec_;
     }
@@ -405,6 +407,8 @@ public class SaItem {
     public boolean fillDocument(SaDocument<?> doc) {
         if (!MetaData.isNullOrEmpty(metaData_)) {
             doc.getMetaData().copy(metaData_);
+        } else {
+            doc.getMetaData().clear();
         }
         return doc.unsafeFill(getTs(), getEstimationSpecification(), process());
     }
@@ -416,6 +420,8 @@ public class SaItem {
         if (doc.unsafeFill(getTs(), xspec, process())) {
             if (!MetaData.isNullOrEmpty(metaData_)) {
                 doc.getMetaData().copy(metaData_);
+            } else {
+                doc.getMetaData().clear();
             }
             return doc;
         } else {
@@ -483,10 +489,14 @@ public class SaItem {
             metaData_ = new MetaData();
             InformationSetHelper.fillMetaData(md, metaData_);
         }
+        setName(info.get(NAME, String.class));
         return true;
     }
 
     boolean write(InformationSet info, NameManager<ISaSpecification> defaults, boolean verbose) {
+        if (!name.isEmpty()) {
+            info.set(NAME, name);
+        }
         TsInformation tsinfo;
         if (ts_.getMoniker().isAnonymous()) {
             tsinfo = new TsInformation(ts_, TsInformationType.All);
