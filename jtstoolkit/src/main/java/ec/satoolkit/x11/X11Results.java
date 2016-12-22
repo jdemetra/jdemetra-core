@@ -78,6 +78,10 @@ public class X11Results implements ISaResults {
         return dtables.get(X11Kernel.D9_FILTER, String.class);
     }
 
+    public DefaultSeasonalFilteringStrategy[] getFinalSeasonalFilterComposit() {
+        InformationSet dtables = info_.getSubSet(X11Kernel.D);
+        return dtables.get(X11Kernel.D9_FILTER_COMPOSIT, DefaultSeasonalFilteringStrategy[].class);
+    }    
     public String getFinalTrendFilter() {
         InformationSet dtables = info_.getSubSet(X11Kernel.D);
         return dtables.get(X11Kernel.D12_FILTER, String.class);
