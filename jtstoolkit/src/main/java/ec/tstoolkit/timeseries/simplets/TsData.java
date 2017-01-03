@@ -1221,7 +1221,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @see #add(double,TsData)
      */
     public TsData plus(final double d) {
-        return transformFinite(x -> x - d);
+        return transformFinite(x -> x + d);
     }
 
     /**
