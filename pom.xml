@@ -63,6 +63,7 @@
         <jsr305.version>3.0.1</jsr305.version>
         <assertj.version>3.5.2</assertj.version>
         <netbeans.version>RELEASE81</netbeans.version>
+        <lombok.version>1.16.12</lombok.version>
     </properties>
   
     <modules>
@@ -105,6 +106,11 @@
                 <groupId>org.netbeans.api</groupId>
                 <artifactId>org-openide-util-lookup</artifactId>
                 <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
             </dependency>
             <!-- < dev tools -->
             
