@@ -135,4 +135,14 @@ public interface ITsVariable {
      * otherwise
      */
     boolean isSignificant(TsDomain domain);
+    
+    String getName();
+    
+    static String shortName(String s){
+        int pos=s.indexOf('#');
+        if (pos < 0)
+            return s;
+        else
+            return s.substring(0, pos);
+    }
 }

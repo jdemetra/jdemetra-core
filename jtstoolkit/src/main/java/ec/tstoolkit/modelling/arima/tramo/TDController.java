@@ -21,9 +21,11 @@ import ec.tstoolkit.modelling.arima.RegArimaEstimator;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import ec.tstoolkit.timeseries.regression.GregorianCalendarVariables;
+import ec.tstoolkit.timeseries.regression.ICalendarVariable;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -36,7 +38,7 @@ public class TDController extends AbstractModelController {
     private double ptd = 0.01;
 
     public TDController(double ptd) {
-        this.ptd=ptd;
+        this.ptd = ptd;
         td = TradingDaysType.WorkingDays;
         lp = LengthOfPeriodType.None;
     }
@@ -44,12 +46,12 @@ public class TDController extends AbstractModelController {
     public TDController(TradingDaysType td, LengthOfPeriodType lp, double ptd) {
         this.td = td;
         this.lp = lp;
-        this.ptd=ptd;
+        this.ptd = ptd;
     }
 
     @Override
     public ProcessingResult process(ModellingContext context) {
-        if (Variable.isUsed(context.description.getCalendars())) {
+        if (context.description.contains(var -> var.status.isSelected() && var.isCalendar())) {
             return ProcessingResult.Unchanged;
         }
         if (!needProcessing(context)) {
@@ -86,13 +88,13 @@ public class TDController extends AbstractModelController {
         int ntd = td.getVariablesCount();
         TsDomain edomain = context.description.getEstimationDomain();
         // drop the number of data corresponding to the number of regression variables 
-        edomain=edomain.drop(edomain.getLength()-res.length, 0);
+        edomain = edomain.drop(edomain.getLength() - res.length, 0);
         List<DataBlock> bvars = new ArrayList<DataBlock>(ntd);
         for (int i = 0; i < ntd; ++i) {
             bvars.add(new DataBlock(edomain.getLength()));
         }
         tdvars.data(edomain, bvars);
- //       BackFilter ur = context.description.getArimaComponent().getDifferencingFilter();
+        //       BackFilter ur = context.description.getArimaComponent().getDifferencingFilter();
         for (int i = 0; i < ntd; ++i) {
             DataBlock cur = bvars.get(i);
 //            if (ur.getDegree() > 0) {
@@ -100,7 +102,7 @@ public class TDController extends AbstractModelController {
 //                ur.filter(cur, dcur);
 //                reg.addX(dcur);
 //            } else {
-                reg.addX(cur);
+            reg.addX(cur);
 //            }
         }
         Ols ols = new Ols();
@@ -121,18 +123,17 @@ public class TDController extends AbstractModelController {
         ModelDescription ndesc = context.description.clone();
         GregorianCalendarVariables tdvars = tdvars(context);
         tdvars.setDayOfWeek(td);
-        ndesc.getCalendars().clear();
-        ndesc.getCalendars().add(new Variable(tdvars, ComponentType.CalendarEffect, RegStatus.Accepted));
+        ndesc.removeVariable(var -> var.isCalendar());
+        ndesc.addVariable(Variable.calendarVariable(tdvars, RegStatus.Accepted));
         return ndesc;
     }
 
     private GregorianCalendarVariables tdvars(ModellingContext context) {
-        List<Variable> calendars = context.description.getCalendars();
-        for (Variable var : calendars) {
-            if (var.isCompatible(GregorianCalendarVariables.class)) {
-                return ((GregorianCalendarVariables) var.getVariable()).clone();
-            }
+        Optional<Variable> found = context.description.variables().filter(var -> var.isCalendar()).findAny();
+        if (found.isPresent()) {
+            return ((GregorianCalendarVariables) found.get().getVariable()).clone();
+        } else {
+            return GregorianCalendarVariables.getDefault(TradingDaysType.None);
         }
-        return GregorianCalendarVariables.getDefault(TradingDaysType.None);
     }
 }

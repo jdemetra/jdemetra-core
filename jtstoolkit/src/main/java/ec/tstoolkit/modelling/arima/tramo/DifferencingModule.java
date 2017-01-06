@@ -375,7 +375,7 @@ public class DifferencingModule extends AbstractTramoModule implements IDifferen
 
         int icon = 0;
 
-        // search for regular unit roots
+        // searchVariable for regular unit roots
         if (Math.abs(ar + 1) <= din_) // ar near -1
         {
             if (-ar > 1.02) // |ar| too big (bad estimation)
@@ -461,7 +461,7 @@ public class DifferencingModule extends AbstractTramoModule implements IDifferen
                 context.description.setSpecification(cspec);
                 context.estimation = null;
             }
-            if (nmean != context.description.isMean()) {
+            if (nmean != context.description.isEstimatedMean()) {
                 changed = true;
                 context.description.setMean(nmean);
                 context.estimation = null;

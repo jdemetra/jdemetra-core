@@ -23,6 +23,7 @@ import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.*;
 import ec.tstoolkit.sarima.estimation.GlsSarimaMonitor;
+import ec.tstoolkit.timeseries.regression.ICalendarVariable;
 import ec.tstoolkit.timeseries.regression.ILengthOfPeriodVariable;
 import ec.tstoolkit.timeseries.regression.IMovingHolidayVariable;
 import ec.tstoolkit.timeseries.regression.ITradingDaysVariable;
@@ -51,9 +52,9 @@ public class RegressionVariablesTest2 extends AbstractTramoModule implements IPr
 
     private void addInfo(ModelDescription desc, InformationSet information) {
         InformationSet subset = information.subSet(PreprocessingDictionary.CALENDAR);
-        subset.set("count", Variable.usedVariablesCount(desc.getCalendars()));
+        subset.set("count", desc.countRegressors(var->var.status.isSelected() && var.isCompatible(ICalendarVariable.class)));
         InformationSet esubset = information.subSet(PreprocessingDictionary.EASTER);
-        esubset.set("easter", Variable.usedVariablesCount(desc.getMovingHolidays()));
+        esubset.set("easter", desc.countRegressors(var->var.status.isSelected() && var.isCompatible(IMovingHolidayVariable.class)));
     }
 
     @Override
@@ -74,7 +75,7 @@ public class RegressionVariablesTest2 extends AbstractTramoModule implements IPr
         TsVariableSelection.Item<ITsVariable>[] items = tdsel.elements();
         int start = context.description.getRegressionVariablesStartingPosition();
         for (int i = 0; i < items.length; ++i) {
-            Variable search = Variable.search(context.description.getCalendars(), items[i].variable);
+            Variable search = context.description.searchVariable(items[i].variable);
             if (search.status.needTesting()) {
                 IRegressionTest test = items[i].variable.getDim() == 1 ? wdTest_ : tdTest_;
                 if (test.accept(ll, nhp, start + items[i].position, items[i].variable.getDim(), tdsubset)) {
@@ -86,7 +87,7 @@ public class RegressionVariablesTest2 extends AbstractTramoModule implements IPr
         if (!usetd) {
             items = lpsel.elements();
             for (int i = 0; i < items.length; ++i) {
-                Variable search = Variable.search(context.description.getCalendars(), items[i].variable);
+                Variable search =context.description.searchVariable(items[i].variable);
                 if (search.status.needTesting()) {
                     if (lpTest_.accept(ll, nhp, start + items[i].position, items[i].variable.getDim(), tdsubset)) {
                         usetd = true;
@@ -97,7 +98,7 @@ public class RegressionVariablesTest2 extends AbstractTramoModule implements IPr
 
         items = tdsel.elements();
         for (int i = 0; i < items.length; ++i) {
-            Variable search = Variable.search(context.description.getCalendars(), items[i].variable);
+            Variable search = context.description.searchVariable(items[i].variable);
             if (search.status.needTesting()) {
                 if (usetd) {
                     search.status = RegStatus.Accepted;
@@ -109,7 +110,7 @@ public class RegressionVariablesTest2 extends AbstractTramoModule implements IPr
         }
         items = lpsel.elements();
         for (int i = 0; i < items.length; ++i) {
-            Variable search = Variable.search(context.description.getCalendars(), items[i].variable);
+            Variable search = context.description.searchVariable(items[i].variable);
             if (search.status.needTesting()) {
                 if (usetd) {
                     search.status = RegStatus.Accepted;
@@ -123,7 +124,7 @@ public class RegressionVariablesTest2 extends AbstractTramoModule implements IPr
         TsVariableSelection mhsel = x.selectCompatible(IMovingHolidayVariable.class);
         items = mhsel.elements();
         for (int i = 0; i < items.length; ++i) {
-            Variable search = Variable.search(context.description.getMovingHolidays(), items[i].variable);
+            Variable search = context.description.searchVariable(items[i].variable);
             if (search.status.needTesting()) {
                 if (mhTest_.accept(ll, nhp, start + items[i].position, items[i].variable.getDim(), esubset)) {
                     search.status = RegStatus.Accepted;
@@ -146,7 +147,7 @@ public class RegressionVariablesTest2 extends AbstractTramoModule implements IPr
             changed = true;
         }
 
-        if (context.automodelling && context.description.isMean() && !meanTest_.accept(ll, nhp, 0, 1, esubset)) {
+        if (context.automodelling && context.description.isEstimatedMean()&& !meanTest_.accept(ll, nhp, 0, 1, esubset)) {
             context.description.setMean(false);
             changed = true;
         }
@@ -158,7 +159,7 @@ public class RegressionVariablesTest2 extends AbstractTramoModule implements IPr
     }
 
     private boolean testUsers(final TsVariableList x, final List<Variable> vars, int start, ConcentratedLikelihood ll, int nhp) {
-        TsVariableSelection sel = x.select(new SelectorImpl(vars));
+        TsVariableSelection sel = x.select(var->var instanceof IUserTsVariable && Variable.search(vars, var) != null);
         if (sel.isEmpty()) {
             return true;
         }
@@ -166,7 +167,7 @@ public class RegressionVariablesTest2 extends AbstractTramoModule implements IPr
         boolean changed = false;
         for (int i = 0; i < items.length; ++i) {
             Variable search = Variable.search(vars, items[i].variable);
-            if (search.status.needTesting()) {
+            if (search != null && search.status.needTesting()) {
                 IRegressionTest test = items[i].variable.getDim() == 1 ? wdTest_ : tdTest_;
                 if (test.accept(ll, nhp, start + items[i].position, items[i].variable.getDim(), null)) {
                     search.status = RegStatus.Accepted;
@@ -179,17 +180,4 @@ public class RegressionVariablesTest2 extends AbstractTramoModule implements IPr
         return changed;
     }
 
-    private static class SelectorImpl implements TsVariableList.ISelector {
-
-        private final List<Variable> vars;
-
-        public SelectorImpl(List<Variable> vars) {
-            this.vars = vars;
-        }
-
-        @Override
-        public boolean accept(ITsVariable var) {
-            return var instanceof IUserTsVariable && Variable.search(vars, var) != null;
-        }
-    }
 }

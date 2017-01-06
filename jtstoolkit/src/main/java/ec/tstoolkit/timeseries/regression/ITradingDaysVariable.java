@@ -26,5 +26,16 @@ import ec.tstoolkit.design.Development;
  */
 @Development(status = Development.Status.Alpha)
 public interface ITradingDaysVariable extends ICalendarVariable {
+    static final String NAME="td";
+    
+
+    @Override
+    default String getName(){
+        int n=getDim();
+        if (n == 1)
+            return NAME;
+        else 
+            return NAME+'#'+n;
+    }
 
 }

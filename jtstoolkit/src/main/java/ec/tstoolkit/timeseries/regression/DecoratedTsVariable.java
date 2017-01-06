@@ -85,4 +85,9 @@ public class DecoratedTsVariable extends AbstractTsModifier {
     public boolean isSignificant(TsDomain domain) {
         return var.isSignificant(domain);
     }
+    
+    @Override
+    public String getName(){
+        return var.getName();
+    }
 }

@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.data.DataBlock;
@@ -31,10 +30,9 @@ import ec.tstoolkit.timeseries.simplets.TsPeriod;
 public class Constant extends AbstractSingleTsVariable {
 
     /**
-     * 
+     *
      */
-    public Constant()
-    {
+    public Constant() {
     }
 
     /**
@@ -44,16 +42,22 @@ public class Constant extends AbstractSingleTsVariable {
      */
     @Override
     public void data(TsPeriod start, DataBlock data) {
-	data.set(1);
+        data.set(1);
     }
 
     @Override
     public String getDescription(TsFrequency context) {
-	return "Constant";
+        return "Constant";
     }
 
     @Override
     public boolean isSignificant(TsDomain domain) {
-	return true;
+        return true;
     }
+
+    @Override
+    public String getName() {
+        return "const";
+    }
+
 }

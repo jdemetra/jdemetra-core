@@ -55,6 +55,7 @@ public class TsVariableReference implements
     /**
      *
      * @param id
+     * @param context
      */
     public TsVariableReference(String id, ProcessingContext context) {
         this.id = id;
@@ -109,6 +110,11 @@ public class TsVariableReference implements
     @Override
     public boolean isSignificant(TsDomain domain) {
         return var().isSignificant(domain);
+    }
+    
+    @Override
+    public String getName(){
+        return id;
     }
 
 }

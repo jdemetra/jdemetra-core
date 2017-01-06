@@ -114,13 +114,13 @@ public class TradingDaysSelectionModule2 extends DemetraModule implements IPrepr
         model.setOutliers(null);
 
         // remove previous calendar effects 
-        model.getCalendars().clear();
+        model.removeVariable(var->var.isCalendar());
         if (td != null) {
             GenericTradingDaysVariables vars = new GenericTradingDaysVariables(td);
-            model.getCalendars().add(new Variable(vars, ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(vars, RegStatus.Accepted));
         }
         if (lp != LengthOfPeriodType.None) {
-            model.getCalendars().add(new Variable(new LeapYearVariable(lp), ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(new LeapYearVariable(lp), RegStatus.Accepted));
         }
         ModellingContext cxt = new ModellingContext();
         cxt.description = model;
@@ -135,13 +135,13 @@ public class TradingDaysSelectionModule2 extends DemetraModule implements IPrepr
         ModelDescription model = models[0].description.clone();
 
         // remove previous calendar effects 
-        model.getCalendars().clear();
+        model.removeVariable(var->var.isCalendar());
         if (td != null) {
             GenericTradingDaysVariables vars = new GenericTradingDaysVariables(td);
-            model.getCalendars().add(new Variable(vars, ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(vars, RegStatus.Accepted));
         }
         if (lp != LengthOfPeriodType.None) {
-            model.getCalendars().add(new Variable(new LeapYearVariable(lp), ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(new LeapYearVariable(lp), RegStatus.Accepted));
         }
         ModellingContext cxt = new ModellingContext();
         cxt.description = model;
@@ -166,13 +166,13 @@ public class TradingDaysSelectionModule2 extends DemetraModule implements IPrepr
             model.setMean(true);
         }
         model.setOutliers(null);
-        model.getCalendars().clear();
+        model.removeVariable(var->var.isCalendar());
         if (td != null) {
             GenericTradingDaysVariables vars = new GenericTradingDaysVariables(td);
-            model.getCalendars().add(new Variable(vars, ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(vars, RegStatus.Accepted));
         }
         if (lp != LengthOfPeriodType.None) {
-            model.getCalendars().add(new Variable(new LeapYearVariable(lp), ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(new LeapYearVariable(lp), RegStatus.Accepted));
         }
         return model;
     }

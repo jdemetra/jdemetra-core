@@ -19,12 +19,13 @@ package ec.tstoolkit.modelling;
 
 import ec.tstoolkit.timeseries.regression.AbstractTsVariableBox;
 import ec.tstoolkit.timeseries.regression.ITsVariable;
+import ec.tstoolkit.timeseries.regression.IUserTsVariable;
 
 /**
  *
  * @author Jean Palate
  */
-public class UserVariable extends AbstractTsVariableBox implements ITsVariable{
+public class UserVariable extends AbstractTsVariableBox implements IUserTsVariable{
     
     private final ComponentType type_;
     
@@ -35,5 +36,10 @@ public class UserVariable extends AbstractTsVariableBox implements ITsVariable{
     
     public ComponentType getType(){
         return type_;
+    }
+    
+    @Override
+    public String getName(){
+        return var.getName();
     }
 }

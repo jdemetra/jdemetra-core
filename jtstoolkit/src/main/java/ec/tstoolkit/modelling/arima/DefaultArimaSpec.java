@@ -27,6 +27,7 @@ import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  *
@@ -35,12 +36,13 @@ import java.util.Map;
 @Development(status = Development.Status.Preliminary)
 public class DefaultArimaSpec implements Cloneable, InformationSetSerializable {
 
-    public static final String MEAN = "mean",
+    public static final String MEAN = "mean", MU="mu",
             THETA = "theta", D = "d", PHI = "phi",
             BTHETA = "btheta", BD = "bd", BPHI = "bphi";
 
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, MEAN), Boolean.class);
+        dic.put(InformationSet.item(prefix, MU), Parameter.class);
         dic.put(InformationSet.item(prefix, D), Integer.class);
         dic.put(InformationSet.item(prefix, BD), Integer.class);
         dic.put(InformationSet.item(prefix, THETA), Parameter[].class);
@@ -49,7 +51,7 @@ public class DefaultArimaSpec implements Cloneable, InformationSetSerializable {
         dic.put(InformationSet.item(prefix, BPHI), Parameter[].class);
     }
 
-    private boolean mean_;
+    private Parameter mu;
     private int d_, bd_;
     private Parameter[] phi_, theta_, bphi_, btheta_;
 
@@ -68,11 +70,25 @@ public class DefaultArimaSpec implements Cloneable, InformationSetSerializable {
     }
 
     public boolean isMean() {
-        return mean_;
+        return mu != null;
     }
 
     public void setMean(boolean mean) {
-        mean_ = mean;
+        mu = mean ? new Parameter() : null;
+    }
+    
+    public Parameter getMu(){
+        return mu;
+    }
+    
+    public void setMu(Parameter mu){
+        this.mu=mu;
+    }
+
+    public void fixMu() {
+        if (mu != null)
+            mu.setType(ParameterType.Fixed);
+        
     }
 
     public void setParameterType(ParameterType type) {
@@ -170,7 +186,8 @@ public class DefaultArimaSpec implements Cloneable, InformationSetSerializable {
     }
     
     public void setArimaComponent(SarimaComponent aspec) {
-        mean_ = aspec.isMean();
+        Parameter m = aspec.getMu();
+        mu =m==null ? null : m.clone();
         setP(aspec.getP());
         setD(aspec.getD());
         setQ(aspec.getQ());
@@ -205,7 +222,7 @@ public class DefaultArimaSpec implements Cloneable, InformationSetSerializable {
         setBP(0);
         bd_ = 1;
         setBQ(1);
-        mean_ = false;
+        mu = null;
     }
 
     public void airlineWithMean() {
@@ -215,7 +232,7 @@ public class DefaultArimaSpec implements Cloneable, InformationSetSerializable {
         setBP(0);
         bd_ = 1;
         setBQ(1);
-        mean_ = true;
+        mu = new Parameter();
     }
 
     public int getP() {
@@ -272,7 +289,7 @@ public class DefaultArimaSpec implements Cloneable, InformationSetSerializable {
     }
 
     public boolean isDefault() {
-        return (!mean_) && isAirline()
+        return (mu == null) && isAirline()
                 && Parameter.isDefault(phi_) && Parameter.isDefault(theta_)
                 && Parameter.isDefault(bphi_) && Parameter.isDefault(btheta_);
     }
@@ -409,7 +426,7 @@ public class DefaultArimaSpec implements Cloneable, InformationSetSerializable {
     }
     
     private boolean equals(DefaultArimaSpec other) {
-        return bd_ == other.bd_ && d_ == other.d_ && mean_ == other.mean_
+        return bd_ == other.bd_ && d_ == other.d_ && Objects.deepEquals(mu, other.mu)
                 && Arrays.deepEquals(phi_, other.phi_) && Arrays.deepEquals(theta_, other.theta_)
                 && Arrays.deepEquals(bphi_, other.bphi_) && Arrays.deepEquals(btheta_, other.btheta_);
     }
@@ -417,7 +434,7 @@ public class DefaultArimaSpec implements Cloneable, InformationSetSerializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 53 * hash + (this.mean_ ? 1 : 0);
+        hash = 53 * hash;
         hash = 53 * hash + this.d_;
         hash = 53 * hash + this.bd_;
         return hash;
@@ -426,8 +443,8 @@ public class DefaultArimaSpec implements Cloneable, InformationSetSerializable {
     @Override
     public InformationSet write(boolean verbose) {
         InformationSet info = new InformationSet();
-        if (verbose || mean_) {
-            info.add(MEAN, mean_);
+        if (mu != null) {
+            info.add(MU, mu);
         }
         if (getP() != 0) {
             info.add(PHI, phi_);
@@ -457,7 +474,11 @@ public class DefaultArimaSpec implements Cloneable, InformationSetSerializable {
             airline();
             Boolean mean = info.get(MEAN, Boolean.class);
             if (mean != null) {
-                mean_ = mean;
+                mu=new Parameter();
+            }
+            Parameter m = info.get(MU, Parameter.class);
+            if (m != null) {
+                mu=m;
             }
             Integer d = info.get(D, Integer.class);
             if (d != null) {

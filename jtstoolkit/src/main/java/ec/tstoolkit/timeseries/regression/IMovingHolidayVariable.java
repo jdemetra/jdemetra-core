@@ -27,4 +27,8 @@ import ec.tstoolkit.design.Development;
 @Development(status = Development.Status.Alpha)
 public interface IMovingHolidayVariable extends ITsVariable {
 
+    @Override
+    default String getName(){
+        return "mh";
+    }
 }

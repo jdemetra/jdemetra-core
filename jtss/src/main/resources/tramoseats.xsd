@@ -27,6 +27,9 @@ and open the template in the editor.
     <xs:simpleType name="TradingDaysTestEnum">
         <xs:annotation>
             <xs:documentation>
+                Defines the test that will be applied to test the significance of the trading days effects.
+                A joint F-test on all the coefficients or separate T-tests on each coefficients
+                can be used.  
             </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:NMTOKEN">
@@ -38,6 +41,9 @@ and open the template in the editor.
     <xs:simpleType name="EasterHolidayEnum">
         <xs:annotation>
             <xs:documentation>
+                The Easter effect is defined for a period before Easter. By default (standard)
+                the considered period doesn't include Easter. A period taking into account 
+                Easter (IncludeEaster) and Easter Monday (IncludeEasterMonday) can also be used.  
             </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:NMTOKEN">
@@ -50,7 +56,11 @@ and open the template in the editor.
     <xs:simpleType name="ApproximationModeEnum">
         <xs:annotation>
             <xs:documentation>
-                Actions in case of non-decomposable models
+                Actions in case of non-decomposable models. 
+                When the ARIMA model estimated by TRAMO does not accept an admissible decomposition, 
+                SEATS doesn't perform any decomposition (None), 
+                replaces the model with a decomposable one (Legacy),
+                or estimates a new model by adding a white noise to the non-admissible model estimated by TRAMO (Noisy).
             </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:NMTOKEN">
@@ -63,7 +73,11 @@ and open the template in the editor.
     <xs:simpleType name="SeatsEstimationMethodEnum">
         <xs:annotation>
             <xs:documentation>
-                Method used to estimate the components in SEATS
+                Method used to estimate the components in SEATS. All the methods 
+                should give the same results. However, Burman is significantly faster
+                and KalmanSmoother is more robust, especially when the ARIMA model 
+                contains (quasi-)unit roots in the mocing average polynomial.
+                Matrix is proposed for completion, but should be generally avoided. 
             </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:NMTOKEN">
@@ -100,13 +114,14 @@ and open the template in the editor.
             <xs:element name="Log">
                 <xs:annotation>
                     <xs:documentation>
-                        Corresponds to LAM=0.
+                        Log transformation. Corresponds to LAM=0.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
             <xs:element name="Auto" type ="trs:AutoTransformationSpecType">
                 <xs:annotation>
                     <xs:documentation>
+                        Automatic detection of the transformation of the series.
                         Corresponds to LAM=-1.
                     </xs:documentation>
                 </xs:annotation>
@@ -531,15 +546,56 @@ and open the template in the editor.
         <xs:complexContent>
             <xs:extension base="modelling:ModellingSpecificationType">
                 <xs:sequence>
-                    <xs:element name="Series" type="trs:SeriesSpecType" minOccurs="0"/>
-                    <xs:element name="Transformation" type="trs:TransformationSpecType" minOccurs="0"/>
-                    <xs:element name="Estimation" type="trs:EstimationSpecType" minOccurs="0"/>
-                    <xs:element name="Regression" type="trs:RegressionSpecType" minOccurs="0"/>
-                    <xs:element name="Calendar" type="trs:CalendarSpecType" minOccurs="0"/>
-                    <xs:element name="Outliers" type="trs:OutlierSpecType" minOccurs="0"/>
+                    <xs:element name="Series" type="trs:SeriesSpecType" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Describes the transformation of the series. When missing, no transformation is applied
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="Transformation" type="trs:TransformationSpecType" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="Estimation" type="trs:EstimationSpecType" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="Regression" type="trs:RegressionSpecType" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="Calendar" type="trs:CalendarSpecType" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="Outliers" type="trs:OutlierSpecType" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
                     <xs:choice minOccurs="0">
-                        <xs:element name="Arima" type="modelling:ArimaSpecType"/>
-                        <xs:element name="AutoModelling" type="trs:AutoModellingSpecType"/>
+                        <xs:element name="Arima" type="modelling:ArimaSpecType">
+                            <xs:annotation>
+                                <xs:documentation>
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="AutoModelling" type="trs:AutoModellingSpecType">
+                            <xs:annotation>
+                                <xs:documentation>
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
                     </xs:choice>
                 </xs:sequence>
             </xs:extension>
@@ -565,8 +621,18 @@ and open the template in the editor.
 
     <xs:group name="TramoSpecificationGroup">
         <xs:choice>
-            <xs:element name="Specification" type="trs:TramoSpecificationType"/>
-            <xs:element name="DefaultSpecification" type="trs:TramoSpecificationEnum"/>
+            <xs:element name="Specification" type="trs:TramoSpecificationType">
+                <xs:annotation>
+                    <xs:documentation>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="DefaultSpecification" type="trs:TramoSpecificationEnum">
+                <xs:annotation>
+                    <xs:documentation>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
         </xs:choice>
     </xs:group>
 
@@ -604,8 +670,22 @@ and open the template in the editor.
         </xs:annotation>
         <xs:sequence>
             <xs:element name="Item" type="trs:TramoAtomicRequestType" maxOccurs="unbounded"/>
-            <xs:element name="Context" type="tss:ProcessingContextType" minOccurs="0"/>
-            <xs:element name="OutputFilter" type="tss:Tokens"/>
+            <xs:element name="Context" type="tss:ProcessingContextType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        The processing context should contain the calendars and
+                        the regression variables the specifications refer to
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="OutputFilter" type="tss:Tokens">
+                <xs:annotation>
+                    <xs:documentation>
+                        The output filter contains the items that should be returned
+                        for the current requests. 
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
         </xs:sequence>
         <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
         <xs:attribute name="parallelProcessing" type="xs:boolean" use="optional" default="true"/>
@@ -679,8 +759,22 @@ and open the template in the editor.
         <xs:complexContent>
             <xs:extension base="trs:TramoSeatsAtomicRequestType">
                 <xs:sequence>
-                    <xs:element name="Context" type="tss:ProcessingContextType" minOccurs="0"/>
-                    <xs:element name="OutputFilter" type="tss:Tokens" minOccurs="0"/>
+                    <xs:element name="Context" type="tss:ProcessingContextType" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The processing context should contain the calendars and
+                                the regression variables the specifications refer to
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="OutputFilter" type="tss:Tokens" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The output filter contains the items that should be returned
+                                for the current requests. 
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
                 </xs:sequence>
                 <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
             </xs:extension>
@@ -693,12 +787,39 @@ and open the template in the editor.
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="Item" type="trs:TramoSeatsAtomicRequestType" maxOccurs="unbounded"/>
-            <xs:element name="Context" type="tss:ProcessingContextType" minOccurs="0"/>
-            <xs:element name="OutputFilter" type="tss:Tokens" minOccurs="0"/>
+            <xs:element name="Item" type="trs:TramoSeatsAtomicRequestType" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Context" type="tss:ProcessingContextType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="OutputFilter" type="tss:Tokens" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
         </xs:sequence>
-        <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
-        <xs:attribute name="parallelProcessing" type="xs:boolean" use="optional" default="true"/>
+        <xs:attribute name="flat" type="xs:boolean" use="optional" default="false">
+            <xs:annotation>
+                <xs:documentation>
+                    
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="parallelProcessing" type="xs:boolean" use="optional" default="true">
+            <xs:annotation>
+                <xs:documentation>
+                    
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:element name="TramoSpecification" type="trs:TramoSpecificationType"/>

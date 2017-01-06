@@ -35,7 +35,7 @@ and open the template in the editor.
     <xs:complexType name="TransformationSpecType" abstract="true">
         <xs:annotation>
             <xs:documentation>
-                Automatic transformation of a series
+                Transformation of the series
             </xs:documentation>
         </xs:annotation>
     </xs:complexType>
@@ -43,7 +43,7 @@ and open the template in the editor.
     <xs:complexType name="ModellingSpecType" abstract="true">
         <xs:annotation>
             <xs:documentation>
-                Automatic modelling of a series
+                Automatic modelling of the series
             </xs:documentation>
         </xs:annotation>
     </xs:complexType>

@@ -34,7 +34,7 @@ import ec.tstoolkit.timeseries.simplets.TsPeriod;
 public class TsVariable extends AbstractSingleTsVariable implements
         IUserSource {
 
-    private String desc_ = "";
+    private String name, desc_ = "";
     private TsData tsdata_;
 
     /**
@@ -147,6 +147,15 @@ public class TsVariable extends AbstractSingleTsVariable implements
 
     protected void setData(TsData s) {
         tsdata_ = s;
+    }
+
+    @Override
+    public String getName() {
+        return name == null ? "var" : name;
+    }
+    
+    public void setName(String name){
+        this.name=name;
     }
 
     private static class TsVariableConverter implements InformationConverter<TsVariable> {

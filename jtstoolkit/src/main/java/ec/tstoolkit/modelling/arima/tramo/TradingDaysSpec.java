@@ -84,6 +84,12 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
         return isAutomatic() || td_ != TradingDaysType.None || users_ != null || w_ != 0;
     }
 
+    public boolean isDefined() {
+        return users_ != null || (w_ != 0 && test_ == RegressionTestType.None) 
+                || ((lp_ || td_ != TradingDaysType.None) 
+                && (test_ ==RegressionTestType.None && auto_ == AutoMethod.Unused)) ;
+    }
+
     public boolean isAutomatic() {
         return auto_ != AutoMethod.Unused;
     }

@@ -23,79 +23,77 @@ import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import java.util.List;
 
 /**
- * Computes trigonometric variables:
- * sin(wt), cos(wt) at given frequencies
- * if w = pi, sin(wt) is omitted
- * t = 0 for 1/1/70
+ * Computes trigonometric variables: sin(wt), cos(wt) at given frequencies if w
+ * = pi, sin(wt) is omitted t = 0 for 1/1/70
+ *
  * @author Jean Palate
  */
 public class TrigonometricVariables implements ITsVariable {
-    
+
     /**
      * to be multiplied by pi
      */
     private final double[] freq;
-    
-    public static TrigonometricVariables regular(int periodicity){
-        int n=periodicity/2;
-        double[] freq=new double[n];
-        double f=2.0/periodicity;
-        for (int i=1; i<=n; ++i){
-            freq[i-1]=f*i;
+
+    public static TrigonometricVariables regular(int periodicity) {
+        int n = periodicity / 2;
+        double[] freq = new double[n];
+        double f = 2.0 / periodicity;
+        for (int i = 1; i <= n; ++i) {
+            freq[i - 1] = f * i;
         }
         return new TrigonometricVariables(freq);
     }
 
-    public static TrigonometricVariables regular(int periodicity, int[] seasfreq){
-        double[] freq=new double[seasfreq.length];
-        double f=2.0/periodicity;
-        for (int i=0; i<seasfreq.length; ++i){
-            freq[i]=f*seasfreq[i];
+    public static TrigonometricVariables regular(int periodicity, int[] seasfreq) {
+        double[] freq = new double[seasfreq.length];
+        double f = 2.0 / periodicity;
+        for (int i = 0; i < seasfreq.length; ++i) {
+            freq[i] = f * seasfreq[i];
         }
         return new TrigonometricVariables(freq);
     }
 
     /**
-     * Creates trigonometric series for "non regular" series
-     * Example:
-     * For weekly series, periodicity is 365.25/7 = 52.1786
-     * We compute the trigonometric variables for 
-     * w= (k*2*pi)/52.1786, k=1,..., nfreq
-     * 
-     * @param periodicity Annual periodicity 
+     * Creates trigonometric series for "non regular" series Example: For weekly
+     * series, periodicity is 365.25/7 = 52.1786 We compute the trigonometric
+     * variables for w= (k*2*pi)/52.1786, k=1,..., nfreq
+     *
+     * @param periodicity Annual periodicity
      * @param nfreq Number of "seasonal" frequencies of interest
-     * @return 
-     * 
+     * @return
+     *
      */
-    public static TrigonometricVariables all(double periodicity, int nfreq){
-        double[] freq=new double[nfreq];
-        double f=2.0/periodicity;
-        for (int i=1; i<=nfreq; ++i){
-            freq[i-1]=f*i;
+    public static TrigonometricVariables all(double periodicity, int nfreq) {
+        double[] freq = new double[nfreq];
+        double f = 2.0 / periodicity;
+        for (int i = 1; i <= nfreq; ++i) {
+            freq[i - 1] = f * i;
         }
         return new TrigonometricVariables(freq);
     }
 
-    public TrigonometricVariables(double[] freq){
-        this.freq=freq;
+    public TrigonometricVariables(double[] freq) {
+        this.freq = freq;
     }
 
     @Override
     public void data(TsDomain domain, List<DataBlock> data) {
         int start = domain.startId();
-        int nlast=freq.length-1;
-        if (freq[nlast] != 1)
+        int nlast = freq.length - 1;
+        if (freq[nlast] != 1) {
             ++nlast;
-        for (int i=0; i<nlast; ++i){
-            double w=freq[i]*Math.PI;
-            DataBlock c = data.get(2*i);
-            c.set(k->Math.cos(w*(k+start)));
-            DataBlock s = data.get(2*i+1);
-            s.set(k->Math.sin(w*(k+start)));
         }
-        if (nlast<freq.length){ // PI
-            DataBlock c = data.get(2*nlast);
-            c.set(k->(k+start)%2 == 0 ? 1 : -1);
+        for (int i = 0; i < nlast; ++i) {
+            double w = freq[i] * Math.PI;
+            DataBlock c = data.get(2 * i);
+            c.set(k -> Math.cos(w * (k + start)));
+            DataBlock s = data.get(2 * i + 1);
+            s.set(k -> Math.sin(w * (k + start)));
+        }
+        if (nlast < freq.length) { // PI
+            DataBlock c = data.get(2 * nlast);
+            c.set(k -> (k + start) % 2 == 0 ? 1 : -1);
         }
     }
 
@@ -116,8 +114,8 @@ public class TrigonometricVariables implements ITsVariable {
 
     @Override
     public int getDim() {
-        int n=freq.length;
-        return freq[n-1] == 1 ? 2*n-1 : 2*n;
+        int n = freq.length;
+        return freq[n - 1] == 1 ? 2 * n - 1 : 2 * n;
     }
 
     @Override
@@ -129,5 +127,10 @@ public class TrigonometricVariables implements ITsVariable {
     public boolean isSignificant(TsDomain domain) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
+    @Override
+    public String getName() {
+        return "trig#" + getDim();
+    }
+
 }

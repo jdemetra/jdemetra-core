@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class AbstractTsVariableBox {
 
-    private final ITsVariable var;
+    protected final ITsVariable var;
 
     protected AbstractTsVariableBox(ITsVariable var) {
         this.var = var;

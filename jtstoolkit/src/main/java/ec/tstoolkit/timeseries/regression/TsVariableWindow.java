@@ -125,4 +125,9 @@ public class TsVariableWindow extends AbstractTsModifier {
         TsDomain sdom = domain.select(sel);
         return ! sdom.isEmpty();
     }
+    
+    @Override 
+    public String getName(){
+        return var.getName();
+    }
 }

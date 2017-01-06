@@ -28,6 +28,7 @@ import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.modelling.arima.SeparateRegressionTest;
 import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.*;
+import ec.tstoolkit.timeseries.regression.ICalendarVariable;
 import ec.tstoolkit.timeseries.regression.ILengthOfPeriodVariable;
 import ec.tstoolkit.timeseries.regression.IMovingHolidayVariable;
 import ec.tstoolkit.timeseries.regression.ITradingDaysVariable;
@@ -86,12 +87,12 @@ public class RegressionVariablesTest implements IPreprocessingModule {
         TsVariableList x = context.description.buildRegressionVariables();
         TsVariableSelection sel = x.selectCompatible(ITradingDaysVariable.class);
         TsVariableSelection.Item<ITsVariable>[] items = sel.elements();
-        int nregs = Variable.usedVariablesCount(context.description.getCalendars());
-        int ntd = Variable.usedCount(context.description.getCalendars(), ITradingDaysVariable.class);
+        int nregs = context.description.countRegressors(var->var.status.isSelected() && var instanceof ICalendarVariable);
+        int ntd = context.description.countRegressors(var->var.status.isSelected() && var instanceof ITradingDaysVariable);
         boolean usetd = false;
         ArrayList<Variable> toreject = new ArrayList<>();
         for (int i = 0; i < items.length; ++i) {
-            Variable search = Variable.search(context.description.getCalendars(), items[i].variable);
+            Variable search = context.description.searchVariable(items[i].variable);
             if (search.status.needTesting()) {
                 if (!test_.accept(ll, -1, start + items[i].position, items[i].variable.getDim(), tdsubset)
                         && (nregs <= 1 || (derived_ != null && !derived_.accept(ll, -1, start, ntd, null)))) {
@@ -106,7 +107,7 @@ public class RegressionVariablesTest implements IPreprocessingModule {
         items = sel.elements();
         boolean uselp = false;
         for (int i = 0; i < items.length; ++i) {
-            Variable search = Variable.search(context.description.getCalendars(), items[i].variable);
+            Variable search = context.description.searchVariable(items[i].variable);
             if (search.status.needTesting()) {
                 if (!test_.accept(ll, -1, start + items[i].position, items[i].variable.getDim(), tdsubset)) {
                     toreject.add(search);
@@ -124,7 +125,7 @@ public class RegressionVariablesTest implements IPreprocessingModule {
         sel = x.selectCompatible(IMovingHolidayVariable.class);
         items = sel.elements();
         for (int i = 0; i < items.length; ++i) {
-            Variable search = Variable.search(context.description.getMovingHolidays(), items[i].variable);
+            Variable search = context.description.searchVariable(items[i].variable);
             if (search.status.needTesting()) {
                 if (!test_.accept(ll, -1, start + items[i].position, items[i].variable.getDim(), esubset)) {
                     search.status = RegStatus.Rejected;
@@ -133,7 +134,7 @@ public class RegressionVariablesTest implements IPreprocessingModule {
             }
         }
 
-        if (mu_ != null && context.description.isMean()) {
+        if (mu_ != null && context.description.isEstimatedMean()) {
             if (!mu_.accept(ll, -1, 0, 1, null)) {
                 context.description.setMean(false);
                 changed = true;

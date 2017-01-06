@@ -40,7 +40,7 @@ public class RegularUnderDifferencingTest extends AbstractModelController {
     public ProcessingResult process(ModellingContext context) {
         SarimaModel cur = context.estimation.getArima();
         SarimaSpecification spec = cur.getSpecification();
-        if (spec.getD() == DifferencingModule.MAXD || spec.getP() == 0 || !context.description.isMean()) {
+        if (spec.getD() == DifferencingModule.MAXD || spec.getP() == 0 || !context.description.isEstimatedMean()) {
             return ProcessingResult.Unchanged;
         }
         if (checkResiduals(context)) {

@@ -75,11 +75,11 @@ public class RegressionVariablesTest2 implements IPreprocessingModule {
         TsVariableSelection.Item<ITsVariable>[] tditems = tdsel.elements();
         boolean usetd = false;
         for (int i = 0; i < tditems.length; ++i) {
-            Variable search = Variable.search(context.description.getMovingHolidays(), tditems[i].variable);
+            Variable search = context.description.searchVariable(tditems[i].variable);
             if (search.status.needTesting()) {
                 if (!test_.accept(ll, -1, start + tditems[i].position, tditems[i].variable.getDim(), null)
                         && !derived_.accept(ll, -1, start + tditems[i].position, tditems[i].variable.getDim(), null)) {
-                    Variable.setStatus(context.description.getCalendars(), tditems[i].variable, RegStatus.Rejected);
+                    search.status=RegStatus.Rejected;
                     changed = true;
                 } else {
                     usetd = true;
@@ -89,10 +89,10 @@ public class RegressionVariablesTest2 implements IPreprocessingModule {
         TsVariableSelection lpsel = x.selectCompatible(ILengthOfPeriodVariable.class);
         TsVariableSelection.Item<ITsVariable>[] lpitems = lpsel.elements();
         for (int i = 0; i < lpitems.length; ++i) {
-            Variable search = Variable.search(context.description.getMovingHolidays(), lpitems[i].variable);
+            Variable search = context.description.searchVariable(lpitems[i].variable);
             if (search.status.needTesting()) {
                 if (!usetd || !test_.accept(ll, -1, start + lpitems[i].position, lpitems[i].variable.getDim(), null)) {
-                    Variable.setStatus(context.description.getCalendars(), lpitems[i].variable, RegStatus.Rejected);
+                    search.status=RegStatus.Rejected;
                     changed = true;
                 }
             }
@@ -101,16 +101,16 @@ public class RegressionVariablesTest2 implements IPreprocessingModule {
         TsVariableSelection mhsel = x.selectCompatible(IMovingHolidayVariable.class);
         TsVariableSelection.Item<ITsVariable>[] mhitems = mhsel.elements();
         for (int i = 0; i < mhitems.length; ++i) {
-            Variable search = Variable.search(context.description.getMovingHolidays(), mhitems[i].variable);
+            Variable search = context.description.searchVariable(mhitems[i].variable);
             if (search.status.needTesting()) {
                 if (!test_.accept(ll, -1, start + mhitems[i].position, mhitems[i].variable.getDim(), null)) {
-                    Variable.setStatus(context.description.getMovingHolidays(), mhitems[i].variable, RegStatus.Rejected);
+                    search.status=RegStatus.Rejected;
                     changed = true;
                 }
             }
         }
 
-        if (context.automodelling && context.description.isMean()) {
+        if (context.automodelling && context.description.isEstimatedMean()) {
             if (!mu_.accept(ll, -1, 0, 1, null)) {
                 context.description.setMean(false);
                 changed = true;

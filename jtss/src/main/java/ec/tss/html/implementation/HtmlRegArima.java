@@ -30,6 +30,7 @@ import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.regression.EasterVariable;
+import ec.tstoolkit.timeseries.regression.GregorianCalendarVariables;
 import ec.tstoolkit.timeseries.regression.IEasterVariable;
 import ec.tstoolkit.timeseries.regression.ILengthOfPeriodVariable;
 import ec.tstoolkit.timeseries.regression.IMovingHolidayVariable;
@@ -46,6 +47,7 @@ import ec.tstoolkit.timeseries.regression.TsVariableSelection;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.IOException;
+import java.util.List;
 
 /**
  *
@@ -86,7 +88,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
     }
 
     private void writeSummary(HtmlStream stream) throws IOException {
-        TsFrequency context=model_.getFrequency();
+        TsFrequency context = model_.getFrequency();
         stream.write(HtmlTag.HEADER1, h1, "Summary").newLine();
         stream.write("Estimation span: [").write(model_.description.getEstimationDomain().getStart().toString());
         stream.write(" - ").write(model_.description.getEstimationDomain().getLast().toString()).write(']').newLine();
@@ -98,17 +100,17 @@ public class HtmlRegArima extends AbstractHtmlElement {
         if (model_.description.getLengthOfPeriodType() != LengthOfPeriodType.None) {
             stream.write("Series has been corrected for leap year").newLine();
         }
-        int ntd = Variable.usedVariablesCount(model_.description.getCalendars());
+        int ntd = model_.description.countRegressors(var -> var.isCalendar() && var.status.isSelected());
         if (ntd == 0) {
             stream.write("No trading days effects").newLine();
         } else {
             stream.write("Trading days effects (").write(Integer.toString(ntd)).write(ntd > 1 ? " variables)" : " variable)").newLine();
         }
-        TsVariableSelection<IEasterVariable> easter = x_.select(IEasterVariable.class);
-        if (easter.getVariablesCount() == 0) {
+        List<Variable> ee = model_.description.selectVariables(var -> var.isMovingHoliday() && var.status.isSelected());
+        if (ee.isEmpty()) {
             stream.write("No easter effect").newLine();
         } else {
-            stream.write(easter.get(0).variable.getDescription(context) + " detected").newLine();
+            stream.write(ee.get(0).getVariable().getDescription(context) + " detected").newLine();
         }
         int no = model_.description.getOutliers().size();
         int npo = model_.description.getPrespecifiedOutliers().size();
@@ -238,7 +240,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
     public void writeRegression(HtmlStream stream, boolean outliers) throws IOException {
         RegArimaModel<SarimaModel> regarima = model_.estimation.getRegArima();
         writeMean(stream, regarima);
-        TsFrequency context=context();
+        TsFrequency context = context();
         writeRegressionItems(stream, ITradingDaysVariable.class, context);
         writeRegressionItems(stream, ILengthOfPeriodVariable.class, context);
         writeRegressionItems(stream, IMovingHolidayVariable.class, context);
@@ -337,15 +339,33 @@ public class HtmlRegArima extends AbstractHtmlElement {
             stream.write(new HtmlTableCell("T-Stat", 100, HtmlStyle.Bold));
             stream.write(new HtmlTableCell("P[|T| &gt t]", 100, HtmlStyle.Bold));
             stream.close(HtmlTag.TABLEROW);
+            int ndim = reg.variable.getDim();
             for (int j = 0; j < reg.variable.getDim(); ++j) {
                 stream.open(HtmlTag.TABLEROW);
-                if (reg.variable.getDim() > 1) {
+                if (ndim > 1) {
                     stream.write(new HtmlTableCell(reg.variable.getItemDescription(j, context), 100));
                 } else {
                     stream.write(new HtmlTableCell("", 100));
                 }
                 stream.write(new HtmlTableCell(df4.format(b[start + j + reg.position]), 100));
                 double tval = ll_.getTStat(start + j + reg.position, true, nhp_);
+                stream.write(new HtmlTableCell(formatT(tval), 100));
+                double prob = 1 - t.getProbabilityForInterval(-tval, tval);
+                stream.write(new HtmlTableCell(df4.format(prob), 100));
+                stream.close(HtmlTag.TABLEROW);
+            }
+            if (ndim > 1 && reg.variable instanceof GregorianCalendarVariables) {
+                // we compute the derived sunday variable
+                stream.open(HtmlTag.TABLEROW);
+                stream.write(new HtmlTableCell("Sunday (derived)", 100));
+                double bd = 0;
+                int k0 = start + reg.position, k1 = k0 + ndim;
+                for (int k = k0; k < k1; ++k) {
+                    bd -= b[k];
+                }
+                stream.write(new HtmlTableCell(df4.format(bd), 100));
+                double var = ll_.getBVar(true, nhp_).subMatrix(k0, k1, k0, k1).sum();
+                double tval = bd / Math.sqrt(var);
                 stream.write(new HtmlTableCell(formatT(tval), 100));
                 double prob = 1 - t.getProbabilityForInterval(-tval, tval);
                 stream.write(new HtmlTableCell(df4.format(prob), 100));

@@ -63,8 +63,7 @@ public class RegressionVariablesController2 extends AbstractTramoModule implemen
 
     @Override
     public ProcessingResult process(ModellingContext context) {
-        if ((context.description.getCalendars() == null || context.description.getCalendars().isEmpty())
-                && (context.description.getMovingHolidays() == null || context.description.getMovingHolidays().isEmpty())) {
+        if (context.description.contains(var -> var.isCalendar() || var.isMovingHoliday())) {
             return ProcessingResult.Unprocessed;
         }
 
@@ -81,7 +80,7 @@ public class RegressionVariablesController2 extends AbstractTramoModule implemen
         Double SS0 = regarima0.getLikelihood().getSsqErr();
         Double SSmc0 = regarima0.getLikelihood().getSigma();
 
-        if (context.description.getCalendars() == null || context.description.getCalendars().isEmpty()) {
+        if (context.description.contains(var -> var.isCalendar())) {
             boolean mean = Math.abs(cxt0.estimation.getLikelihood().getTStats()[0]) > tval_;
             context.description = backModel(context, TradingDaysType.None, LengthOfPeriodType.None, checkEE(cxt0), mean);
             return ProcessingResult.Changed;
@@ -167,12 +166,12 @@ public class RegressionVariablesController2 extends AbstractTramoModule implemen
         model.setOutliers(null);
         model.setPrespecifiedOutliers(null);
 // remove previous calendar effects 
-        model.getCalendars().clear();
+        model.removeVariable(var->var.isCalendar());
         if (td != TradingDaysType.None) {
-            model.getCalendars().add(new Variable(GregorianCalendarVariables.getDefault(td), ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(GregorianCalendarVariables.getDefault(td), RegStatus.Accepted));
         }
         if (lp != LengthOfPeriodType.None) {
-            model.getCalendars().add(new Variable(new LeapYearVariable(lp), ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(new LeapYearVariable(lp), RegStatus.Accepted));
         }
         return model;
     }
@@ -183,24 +182,24 @@ public class RegressionVariablesController2 extends AbstractTramoModule implemen
             model.setMean(mean);
         }
         model.setOutliers(null);
-        model.getCalendars().clear();
+        model.removeVariable(var->var.isCalendar());
         if (!Ee) {
-            model.getMovingHolidays().clear();
+            model.removeVariable(var->var.isMovingHoliday());
         } else {
             TsVariableList x = model.buildRegressionVariables();
             TsVariableSelection sel = x.selectCompatible(IMovingHolidayVariable.class);
             TsVariableSelection.Item<ITsVariable>[] items = sel.elements();
             items = sel.elements();
             for (int i = 0; i < items.length; ++i) {
-                Variable search = Variable.search(model.getMovingHolidays(), items[i].variable);
+                Variable search = model.searchVariable(items[i].variable);
                 search.status = RegStatus.Accepted;
             }
         }
         if (td != TradingDaysType.None) {
-            model.getCalendars().add(new Variable(GregorianCalendarVariables.getDefault(td), ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(GregorianCalendarVariables.getDefault(td), RegStatus.Accepted));
         }
         if (lp != LengthOfPeriodType.None) {
-            model.getCalendars().add(new Variable(new LeapYearVariable(lp), ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(new LeapYearVariable(lp), RegStatus.Accepted));
         }
         return model;
     }
@@ -221,16 +220,16 @@ public class RegressionVariablesController2 extends AbstractTramoModule implemen
 
     private boolean checkEE(ModellingContext model) {
         boolean retval = true;
-        if (model.description.getMovingHolidays() == null || model.description.getMovingHolidays().isEmpty()) {
+        if (model.description.contains(var->var.isMovingHoliday())) {
             return false;
         }
         TsVariableList x = model.description.buildRegressionVariables();
         TsVariableSelection sel = x.selectCompatible(IMovingHolidayVariable.class);
-         if (sel.isEmpty()) {
+        if (sel.isEmpty()) {
             return false;
         }
         TsVariableSelection.Item<ITsVariable>[] items = sel.elements();
-        Variable search = Variable.search(model.description.getMovingHolidays(), items[items.length - 1].variable);
+        Variable search = model.description.searchVariable(items[items.length - 1].variable);
         if (search == null) { // should never happen
             return false;
         }

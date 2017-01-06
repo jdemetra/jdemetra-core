@@ -81,10 +81,10 @@ public class DefaultPreprocessor extends DefaultX11Algorithm implements
         atables.add(X11Kernel.A7, mh);
         //d.add(X11Kernel.D18, cal);
         TsData p = model_.outliersEffect(domain);
-        TsData pt = model_.regressionEffect(domain, LevelShift.class);
-        TsData ps = model_.regressionEffect(domain, SeasonalOutlier.class);
-        TsData pa = model_.regressionEffect(domain, AdditiveOutlier.class);
-        TsData pc = model_.regressionEffect(domain, TransitoryChange.class);
+        TsData pt = model_.deterministicEffect(domain, LevelShift.class);
+        TsData ps = model_.deterministicEffect(domain, SeasonalOutlier.class);
+        TsData pa = model_.deterministicEffect(domain, AdditiveOutlier.class);
+        TsData pc = model_.deterministicEffect(domain, TransitoryChange.class);
         TsData ut = model_.userEffect(domain, ComponentType.Trend);
         TsData ua = model_.userEffect(domain, ComponentType.Irregular);
         TsData us = model_.userEffect(domain, ComponentType.Seasonal);

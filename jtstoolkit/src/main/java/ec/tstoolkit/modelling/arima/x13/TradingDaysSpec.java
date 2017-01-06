@@ -64,6 +64,10 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
         return type_ != TradingDaysType.None || users_ != null || w_ != 0;
     }
 
+    boolean isDefined() {
+        return isUsed() && test_ == RegressionTestSpec.None;
+    }
+
     public void setTradingDaysType(TradingDaysType value) {
         type_ = value;
     }
@@ -142,6 +146,7 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
             holidays_ = null;
             type_ = TradingDaysType.None;
             lp_ = LengthOfPeriodType.None;
+            autoAdjust_ = false;
         }
     }
 
@@ -300,4 +305,5 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
         dic.put(InformationSet.item(prefix, TEST), String.class);
         dic.put(InformationSet.item(prefix, CHANGEOFREGIME), String.class);
     }
+
 }

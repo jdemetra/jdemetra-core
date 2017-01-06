@@ -29,6 +29,7 @@ import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import ec.tstoolkit.timeseries.regression.*;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * * @author gianluca, jean Correction 22/7/2014. pre-specified Easter effect
@@ -75,6 +76,9 @@ public class RegressionTestTD extends AbstractTramoModule implements IPreprocess
 
     @Override
     public ProcessingResult process(ModellingContext context) {
+        if (!context.description.contains(var -> var.isCalendar() || var.isMovingHoliday())) {
+            return ProcessingResult.Unprocessed;
+        }
         // Step 1: choose between TD and WD
         td6Model = createModel(context, TradingDaysType.TradingDays, LengthOfPeriodType.None);
         if (td6Model == null) {
@@ -171,14 +175,14 @@ public class RegressionTestTD extends AbstractTramoModule implements IPreprocess
         model.setOutliers(null);
 
         // remove previous calendar effects 
-        model.getCalendars().clear();
+        model.removeVariable(var ->var.isCalendar());
         if (td != TradingDaysType.None) {
             GregorianCalendarVariables vars = tdvars(context);
             vars.setDayOfWeek(td);
-            model.getCalendars().add(new Variable(vars, ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(vars, RegStatus.Accepted));
         }
         if (lp != LengthOfPeriodType.None) {
-            model.getCalendars().add(new Variable(new LeapYearVariable(lp), ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(new LeapYearVariable(lp), RegStatus.Accepted));
         }
         ModellingContext cxt = new ModellingContext();
         cxt.description = model;
@@ -233,13 +237,13 @@ public class RegressionTestTD extends AbstractTramoModule implements IPreprocess
         ModelDescription model = td6Model.description.clone();
 
         // remove previous calendar effects 
-        model.getCalendars().clear();
+        model.removeVariable(var -> var.isCalendar());
         if (td != TradingDaysType.None) {
             tdvar.setDayOfWeek(td);
-            model.getCalendars().add(new Variable(tdvar, ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(tdvar, RegStatus.Accepted));
         }
         if (lp != LengthOfPeriodType.None) {
-            model.getCalendars().add(new Variable(new LeapYearVariable(lp), ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(new LeapYearVariable(lp), RegStatus.Accepted));
         }
         ModelEstimation estimation = new ModelEstimation(model.buildRegArima());
         int nhp = model.getArimaComponent().getFreeParametersCount();
@@ -253,15 +257,15 @@ public class RegressionTestTD extends AbstractTramoModule implements IPreprocess
             model.setMean(mean);
         }
         model.setOutliers(null);
-        model.getCalendars().clear();
+        model.removeVariable(var -> var.isCalendar());
         if (!Ee) {
-            model.getMovingHolidays().clear();
+            model.removeVariable(var-> var.isMovingHoliday());
         } else {
             TsVariableList x = model.buildRegressionVariables();
             TsVariableSelection sel = x.selectCompatible(IMovingHolidayVariable.class);
             TsVariableSelection.Item<ITsVariable>[] items = sel.elements();
             for (int i = 0; i < items.length; ++i) {
-                Variable search = Variable.search(model.getMovingHolidays(), items[i].variable);
+                Variable search = model.searchVariable(items[i].variable);
                 if (search.status.needTesting()) {
                     search.status = RegStatus.Accepted;
                 }
@@ -270,10 +274,10 @@ public class RegressionTestTD extends AbstractTramoModule implements IPreprocess
         if (td != TradingDaysType.None) {
             GregorianCalendarVariables vars = tdvars(context);
             vars.setDayOfWeek(td);
-            model.getCalendars().add(new Variable(vars, ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(vars, RegStatus.Accepted));
         }
         if (lp != LengthOfPeriodType.None) {
-            model.getCalendars().add(new Variable(new LeapYearVariable(lp), ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(new LeapYearVariable(lp), RegStatus.Accepted));
         }
         return model;
     }
@@ -302,7 +306,7 @@ public class RegressionTestTD extends AbstractTramoModule implements IPreprocess
             return false;
         }
         TsVariableSelection.Item<ITsVariable>[] items = sel.elements();
-        Variable search = Variable.search(model.description.getMovingHolidays(), items[items.length - 1].variable);
+        Variable search = model.description.searchVariable(items[items.length - 1].variable);
         if (search == null) { // should never happen
             return false;
         }
@@ -321,13 +325,15 @@ public class RegressionTestTD extends AbstractTramoModule implements IPreprocess
     }
 
     private GregorianCalendarVariables tdvars(ModellingContext context) {
-        List<Variable> calendars = context.description.getCalendars();
-        for (Variable var : calendars) {
-            if (var.isCompatible(GregorianCalendarVariables.class)) {
-                return ((GregorianCalendarVariables) var.getVariable()).clone();
-            }
+        Optional<Variable> found = context.description.variables()
+                .filter(var -> var.getVariable() instanceof GregorianCalendarVariables)
+                .findAny();
+        if (found.isPresent()) {
+            GregorianCalendarVariables gv = (GregorianCalendarVariables) found.get().getVariable();
+            return gv.clone();
+        } else {
+            return GregorianCalendarVariables.getDefault(TradingDaysType.None);
         }
-        return GregorianCalendarVariables.getDefault(TradingDaysType.None);
     }
 
     private void addLPInfo(PreprocessingModel model, double tstat) {
@@ -342,7 +348,7 @@ public class RegressionTestTD extends AbstractTramoModule implements IPreprocess
 //            builder.append("Easter not significant (T=").append(tstat).append(')');
 //            model.addProcessingInformation(ProcessingInformation.info(REGS,
 //                    RegressionTestTD.class.getName(), builder.toString(), null));
-     }
+    }
 
     private void addTDInfo(ModellingContext context, double pwd, double ptd, double pdel, int sel) {
 //        if (context.processingLog != null) {

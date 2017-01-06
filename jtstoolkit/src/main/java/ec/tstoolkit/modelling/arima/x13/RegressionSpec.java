@@ -19,15 +19,22 @@ package ec.tstoolkit.modelling.arima.x13;
 import ec.tstoolkit.information.Information;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.information.InformationSetSerializable;
+import ec.tstoolkit.modelling.RegressionTestSpec;
 import ec.tstoolkit.modelling.TsVariableDescriptor;
+import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
+import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import ec.tstoolkit.timeseries.regression.*;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.utilities.Comparator;
 import ec.tstoolkit.utilities.Jdk6;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  *
@@ -43,7 +50,8 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
             OUTLIER = "outlier", OUTLIERS = "outliers",
             RAMP = "ramp", RAMPS = "ramps",
             USER = "user", USERS = "user*",
-            INTERVENTION = "intervention", INTERVENTIONS = "intervention*";
+            INTERVENTION = "intervention", INTERVENTIONS = "intervention*",
+            COEFF = "coefficients", FCOEFF = "fixedcoefficients";
 
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, AICDIFF), Double.class);
@@ -65,6 +73,8 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     private ArrayList<TsVariableDescriptor> users_ = new ArrayList<>();
     private ArrayList<InterventionVariable> interventions_ = new ArrayList<>();
     private ArrayList<Ramp> ramps_ = new ArrayList<>();
+    private Map<String, double[]> fcoeff = new LinkedHashMap<>();
+    private Map<String, double[]> coeff = new LinkedHashMap<>();
 
     public RegressionSpec() {
     }
@@ -75,6 +85,8 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         users_.clear();
         interventions_.clear();
         ramps_.clear();
+        fcoeff.clear();
+        coeff.clear();
         aicdiff_ = DEF_AICCDIFF;
     }
 
@@ -238,6 +250,103 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         return interventions_.size();
     }
 
+    public String[] getRegressionVariableNames(TsFrequency freq) {
+        ArrayList<String> names = new ArrayList<>();
+        // calendar
+        if (td_.isDefined()) {
+
+            if (td_.isStockTradingDays()) {
+                names.add(ITradingDaysVariable.NAME);
+            }
+            String[] user = td_.getUserVariables();
+            if (user != null) {
+                names.add(ITradingDaysVariable.NAME + '#' + user.length);
+            } else {
+                if (td_.getTradingDaysType() == TradingDaysType.WorkingDays) {
+                    names.add(ITradingDaysVariable.NAME);
+                } else {
+                    names.add(ITradingDaysVariable.NAME + "#6");
+                }
+                if (td_.getLengthOfPeriod() != LengthOfPeriodType.None) {
+                    names.add(ILengthOfPeriodVariable.NAME);
+                }
+            }
+            // easter
+            MovingHolidaySpec easter = getEaster();
+            if (easter != null && easter.getTest() == RegressionTestSpec.None) {
+                names.add(IEasterVariable.NAME);
+            }
+        }
+        // outliers
+        outliers_.forEach(od -> names.add(od.toString(freq)));
+
+        // ramp
+        ramps_.forEach(rp -> names.add(rp.toString(freq)));
+
+        // intervention
+        interventions_.forEach(iv
+                -> {
+            String n = iv.getName();
+            if (names.contains(n)) {
+                n += '*';
+            }
+            names.add(n);
+        });
+
+        // user
+        users_.forEach(uv
+                -> {
+            int n = uv.getLastLag() - uv.getFirstLag() + 1;
+            if (n == 1) {
+                names.add(uv.getName());
+            } else {
+                names.add(uv.getName() + '#' + n);
+            }
+        });
+        String[] all = new String[names.size()];
+        return names.toArray(all);
+    }
+
+    public double[] getCoefficients(String name) {
+        return coeff.get(name);
+    }
+
+    public void setCoefficients(String name, double[] c) {
+        coeff.put(name, c);
+    }
+
+    public void clearAllCoefficients() {
+        coeff.clear();
+    }
+
+    public void clearCoefficients(String name) {
+        coeff.remove(name);
+    }
+
+    public double[] getFixedCoefficients(String name) {
+        return fcoeff.get(name);
+    }
+
+    public Map<String, double[]> getAllFixedCoefficients() {
+        return Collections.unmodifiableMap(fcoeff);
+    }
+
+    public Map<String, double[]> getAllCoefficients() {
+        return Collections.unmodifiableMap(coeff);
+    }
+
+    public void setFixedCoefficients(String name, double[] c) {
+        fcoeff.put(name, c);
+    }
+
+    public void clearAllFixedCoefficients() {
+        fcoeff.clear();
+    }
+
+    public void clearFixedCoefficients(String name) {
+        fcoeff.remove(name);
+    }
+
     public void clearRamps() {
         ramps_.clear();
     }
@@ -280,9 +389,11 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
             }
             spec.td_ = td_.clone();
             spec.users_ = new ArrayList<>();
-            for (TsVariableDescriptor var : users_) {
-                spec.users_.add(var.clone());
-            }
+            users_.forEach(var -> spec.users_.add(var.clone()));
+            spec.fcoeff = new LinkedHashMap<>();
+            fcoeff.forEach((name, c) -> spec.fcoeff.put(name, c));
+            spec.coeff = new LinkedHashMap<>();
+            coeff.forEach((name, c) -> spec.coeff.put(name, c));
             return spec;
         } catch (CloneNotSupportedException ex) {
             throw new AssertionError();
@@ -301,7 +412,9 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
                 && Comparator.equals(ramps_, other.ramps_)
                 && Comparator.equals(outliers_, other.outliers_)
                 && Comparator.equals(mh_, other.mh_)
-                && Comparator.equals(interventions_, other.interventions_);
+                && Comparator.equals(interventions_, other.interventions_)
+                && compare(fcoeff, other.fcoeff);
+
     }
 
     @Override
@@ -369,6 +482,14 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
                 specInfo.add(INTERVENTION + Integer.toString(idx++), cur);
             }
         }
+        if (!fcoeff.isEmpty()) {
+            InformationSet icoeff = specInfo.subSet(FCOEFF);
+            fcoeff.forEach((s, c) -> icoeff.set(s, c.length == 1 ? c[0] : c));
+        }
+        if (!coeff.isEmpty()) {
+            InformationSet icoeff = specInfo.subSet(COEFF);
+            coeff.forEach((s, c) -> icoeff.set(s, c.length == 1 ? c[0] : c));
+        }
         return specInfo;
     }
 
@@ -430,20 +551,39 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
                     interventions_.add(cur);
                 }
             }
+            InformationSet ifcoeff = info.getSubSet(FCOEFF);
+            if (ifcoeff != null) {
+                List<Information<double[]>> all = ifcoeff.select(double[].class);
+                all.stream().forEach(reg -> fcoeff.put(reg.name, reg.value));
+                List<Information<Double>> sall = ifcoeff.select(Double.class);
+                sall.stream().forEach(reg -> fcoeff.put(reg.name, new double[]{reg.value}));
+            }
+            InformationSet icoeff = info.getSubSet(COEFF);
+            if (icoeff != null) {
+                List<Information<double[]>> all = icoeff.select(double[].class);
+                all.stream().forEach(reg -> coeff.put(reg.name, reg.value));
+                List<Information<Double>> sall = icoeff.select(Double.class);
+                sall.stream().forEach(reg -> coeff.put(reg.name, new double[]{reg.value}));
+            }
             return true;
         } catch (Exception err) {
             return false;
         }
     }
 
-//    @Override
-//    public void fillDictionary(String prefix, List<String> dic) {
-//        dic.add(InformationSet.item(prefix, AICDIFF));
-//        TradingDaysSpec.dictionary(InformationSet.item(prefix, TD), dic);
-//        MovingHolidaySpec.dictionary(InformationSet.item(prefix, MHS), dic);
-//        dic.add(InformationSet.item(prefix, OUTLIERS));
-//        dic.add(InformationSet.item(prefix, RAMPS));
-//        TsVariableDescriptor.dictionary(InformationSet.item(prefix, USERS), dic);
-//        InterventionVariable.dictionary(InformationSet.item(prefix, INTERVENTIONS), dic);
-//    }
+    private boolean compare(Map<String, double[]> cl, Map<String, double[]> cr) {
+        if (cl.size() != cr.size()) {
+            return false;
+        }
+        Optional<Map.Entry<String, double[]>> any = cl.entrySet().stream().filter(entry -> {
+            if (!cr.containsKey(entry.getKey())) {
+                return true;
+            } else {
+                return !Arrays.equals(entry.getValue(), cr.get(entry.getKey()));
+            }
+        }).findAny();
+
+        return !any.isPresent();
+    }
+
 }

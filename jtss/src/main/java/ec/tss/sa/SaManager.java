@@ -87,7 +87,7 @@ public final class SaManager extends AlgorithmManager<ISaSpecification, TsData, 
 
     public <S extends ISaSpecification> SaDocument<S> refreshDocument(SaDocument<S> doc, TsDomain frozenPeriod, EstimationPolicyType policy, boolean nospan) {
         // createDiagnostics a new temporary SaItem
-        SaItem tmp = new SaItem(doc.getSpecification(), doc.getTs());
+        SaItem tmp = new SaItem(doc.getSpecification(), doc.getInput());
         tmp.unsafeFill(doc.getResults());
         if (!updatePointSpecification(tmp)) {
             return null;
@@ -98,7 +98,7 @@ public final class SaManager extends AlgorithmManager<ISaSpecification, TsData, 
         }
         SaDocument<S> ndoc = doc.clone();
         ndoc.setSpecification((S) nspec);
-        ndoc.setTs(doc.getTs());
+        ndoc.setInput(doc.getInput());
         return ndoc;
     }
 

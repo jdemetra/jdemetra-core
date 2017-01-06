@@ -52,6 +52,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  *
@@ -226,12 +227,7 @@ public class MixedFrequenciesModelEstimation implements IProcResults {
         if (coeffs == null) {
             return new TsData(domain, 0);
         } else {
-            TsVariableSelection sel = regs.select(new ISelector() {
-                @Override
-                public boolean accept(ITsVariable var) {
-                    return !(var instanceof DiffConstant); //To change body of generated methods, choose Tools | Templates.
-                }
-            });
+            TsVariableSelection sel = regs.select( var-> !(var instanceof DiffConstant)); //To change body of generated methods, choose Tools | Templates.
             DataBlock sum = sel.sum(new DataBlock(coeffs, 0, coeffs.length, 1), domain);
 
             if (sum == null) {
@@ -266,20 +262,14 @@ public class MixedFrequenciesModelEstimation implements IProcResults {
     }
 
     public TsData regressionEffect(TsDomain domain, final ComponentType type) {
-        return regressionEffect(domain, new TsVariableList.ISelector() {
-
-            @Override
-            public boolean accept(ITsVariable var) {
-                return ! (var instanceof DiffConstant) && DeterministicComponent.getType(var) == type;
-            }
-        });
+        return regressionEffect(domain, var-> ! (var instanceof DiffConstant) && DeterministicComponent.getType(var) == type);
     }
 
     private TsDomain fdomain() {
         return new TsDomain(edomain.getEnd(), edomain.getFrequency().intValue());
     }
 
-    private TsData regressionEffect(TsDomain domain, TsVariableList.ISelector selector) {
+    private TsData regressionEffect(TsDomain domain, Predicate<ITsVariable> selector) {
         if (likelihood == null) {
             return null;
         }

@@ -365,7 +365,7 @@ public class SaItem {
             return null;
         }
 
-        CompositeResults rslts = SaManager.instance.process(getEstimationSpecification(), ts_.getTsData());
+        CompositeResults rslts = SaManager.instance.process(getActiveSpecification(), ts_.getTsData());
         synchronized (id_) {
             rslts_ = rslts;
             update();

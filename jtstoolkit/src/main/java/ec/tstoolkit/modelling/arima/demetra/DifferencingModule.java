@@ -132,7 +132,7 @@ public class DifferencingModule extends DemetraModule implements IDifferencingMo
                 context.description.setSpecification(cspec);
                 context.estimation = null;
             }
-            if (isMeanCorrection() != context.description.isMean()) {
+            if (isMeanCorrection() != context.description.isEstimatedMean()) {
                 changed = true;
                 context.description.setMean(isMeanCorrection());
                 context.estimation = null;

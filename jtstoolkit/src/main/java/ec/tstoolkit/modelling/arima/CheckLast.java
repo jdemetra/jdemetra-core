@@ -165,6 +165,30 @@ public class CheckLast {
     }
 
     /**
+     * Gets the absolute errors (=observed-forecasts). 
+     * @return An array with the absolute errors. The
+     * number of data depends on the "backCount" property
+     */
+    public double[] getAbsoluteErrors() {
+        double[] e = y_.internalStorage().clone();
+        double[] f = ofcasts_.internalStorage();
+        for (int i = 0; i < e.length; ++i) {
+            e[i] -= f[i];
+        }
+        return e;
+    }
+
+    /**
+     * Gets the absolute error (observed-forecast) 
+     * @param i The considered last observation. It must belong to [0,
+     * backCount[.
+     * @return The absolute error of the considered last observation
+     */
+    public double getAbsoluteError(int i) {
+        return y_.get(i)-ofcasts_.get(i);
+     }
+
+    /**
      * Gets the untransformed (= comparable to the initial data) forecasts.
      *
      * @return An array with the forecasts at the end of the series. The number
@@ -176,7 +200,8 @@ public class CheckLast {
 
     /**
      * Gets the "scores" (ratios between the forecast errors and the standard
-     * deviation of the forecasts) of the last observations.
+     * deviation of the forecasts) of the last observations (positive values
+     * mean under-estimation).
      *
      * @return An array with the forecasts at the end of the series. The number
      * of data depends on the "backCount" property
@@ -193,8 +218,17 @@ public class CheckLast {
     }
 
     /**
+     * Alias for getScores
+     * @return 
+     */
+    public double[] getRelativeErrors() {
+        return getScores();
+    }
+
+        /**
      * Gets the score of the last observations, defined as the ratio between the
-     * forecast error and the standard error of the forecast.
+     * forecast error (= observed-predicted) and the standard error of the
+     * forecast.
      *
      * @param i The considered last observation. It must belong to [0,
      * backCount[.
@@ -205,6 +239,15 @@ public class CheckLast {
             return Double.NaN;
         }
         return (fy_.get(i) - forecasts_.forecast(i)) / forecasts_.forecastStdev(i);
+    }
+    
+    /**
+     * Alias for getScore
+     * @param i
+     * @return 
+     */
+    public double getRelativeError(int i){
+        return getScore(i);
     }
 
     /**

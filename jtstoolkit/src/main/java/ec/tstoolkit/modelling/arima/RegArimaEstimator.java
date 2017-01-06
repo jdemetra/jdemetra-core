@@ -312,6 +312,7 @@ public class RegArimaEstimator implements IRegArimaProcessor<SarimaModel> {
         try {
             GlsSarimaMonitor nmonitor = createProcessor();
             RegArimaModel<SarimaModel> nmodel = estimation.model.clone();
+            nmodel.setArima(nmodel.getArima().clone());
             mapping_.validate(parameters);
             nmodel.getArima().setParameters(parameters);
             RegArimaEstimation<SarimaModel> nrslts = nmonitor.optimize(nmodel);
@@ -373,6 +374,7 @@ public class RegArimaEstimator implements IRegArimaProcessor<SarimaModel> {
         try {
             GlsSarimaMonitor nmonitor = createProcessor();
             RegArimaModel<SarimaModel> nmodel = estimation.model.clone();
+            nmodel.setArima(nmodel.getArima().clone());
             mapping_.validate(parameters);
             nmodel.getArima().setParameters(parameters);
             RegArimaEstimation<SarimaModel> nrslts = nmonitor.optimize(nmodel);
@@ -405,29 +407,29 @@ public class RegArimaEstimator implements IRegArimaProcessor<SarimaModel> {
         }
     }
 
-    private double rmax(Polynomial p) {
-        p = p.adjustDegree();
-        if (p.getDegree() == 1) {
-            return -p.get(1);
-        }
-        Complex[] roots = p.roots();
-        double rmax = 0;
-        for (int i = 0; i < roots.length; ++i) {
-            if (roots[i].getIm() == 0) {
-                if (rmax == 0 || Math.abs(roots[i].getRe()) < Math.abs(rmax)) {
-                    rmax = roots[i].getRe();
-                }
-            }
-        }
-        if (rmax == 0) {
-            return 0;
-        }
-        rmax = 1 / rmax;
-        if (rmax < -.9) {
-            rmax = -.9;
-        } else if (rmax > .9) {
-            rmax = .9;
-        }
-        return rmax;
-    }
+//    private double rmax(Polynomial p) {
+//        p = p.adjustDegree();
+//        if (p.getDegree() == 1) {
+//            return -p.get(1);
+//        }
+//        Complex[] roots = p.roots();
+//        double rmax = 0;
+//        for (int i = 0; i < roots.length; ++i) {
+//            if (roots[i].getIm() == 0) {
+//                if (rmax == 0 || Math.abs(roots[i].getRe()) < Math.abs(rmax)) {
+//                    rmax = roots[i].getRe();
+//                }
+//            }
+//        }
+//        if (rmax == 0) {
+//            return 0;
+//        }
+//        rmax = 1 / rmax;
+//        if (rmax < -.9) {
+//            rmax = -.9;
+//        } else if (rmax > .9) {
+//            rmax = .9;
+//        }
+//        return rmax;
+//    }
 }

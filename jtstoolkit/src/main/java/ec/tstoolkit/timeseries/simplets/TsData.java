@@ -129,7 +129,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         } else if (tsl == null) {
             return tsr;
         }
-        return computeOnIntersection((a, b) -> a + b, tsl, tsr);
+        return computeOnIntersection(tsl, tsr, (a, b) -> a + b);
     }
 
     /**
@@ -173,7 +173,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         } else if (tsl == null) {
             return tsr.inv();
         }
-        return computeOnIntersection((a, b) -> a / b, tsl, tsr);
+        return computeOnIntersection(tsl, tsr, (a, b) -> a / b);
     }
 
     /**
@@ -208,7 +208,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
             return tsr;
         }
 
-        return computeOnIntersection((a, b) -> a * b, tsl, tsr);
+        return computeOnIntersection(tsl, tsr, (a, b) -> a * b);
     }
 
     /**
@@ -243,7 +243,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
             return tsr.chs();
         }
 
-        return computeOnIntersection((a, b) -> a - b, tsl, tsr);
+        return computeOnIntersection(tsl, tsr, (a, b) -> a - b);
     }
 
     private static final IRandomNumberGenerator RNG = JdkRNG.newRandom();
@@ -613,7 +613,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @return A new time series is returned. May be empty, but not null.
      */
     public TsData delta(final int lag) {
-        return autoTransform((x1, x0) -> x1 - x0, lag);
+        return autoTransform(lag, (x1, x0) -> x1 - x0);
     }
 
     /**
@@ -835,9 +835,10 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     }
 
     @Deprecated
-    public Values getValues(){
+    public Values getValues() {
         return new Values(vals, false);
     }
+
     /**
      * Gets the first period after the d1 of the series. That period doesn't
      * belong to the time domain.
@@ -987,7 +988,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
     public Stream<TsObservation> stream() {
         return StreamSupport.stream(spliterator(), false);
     }
-    
+
     /**
      * Returns this time series lagged by a given number of period.
      *
@@ -1209,7 +1210,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
      * @return A new time series is returned. May be empty, but not null.
      */
     public TsData pctVariation(final int lag) {
-        return autoTransform((x1, x0) -> (x1 / x0 - 1) * 100, lag);
+        return autoTransform(lag, (x1, x0) -> (x1 / x0 - 1) * 100);
     }
 
     /**
@@ -1443,7 +1444,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
     //<editor-fold defaultstate="collapsed" desc="functional methods">
     @Override
-    public double computeRecursively(DoubleBinaryOperator fn, final double initial) {
+    public double computeRecursively(final double initial, DoubleBinaryOperator fn) {
         double cur = initial;
         for (int i = 0; i < vals.length; i++) {
             cur = fn.applyAsDouble(cur, vals[i]);
@@ -1470,7 +1471,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         applyIf(x -> Double.isFinite(x), fn);
     }
 
-    public void applyRecursively(DoubleBinaryOperator fn, final double initial) {
+    public void applyRecursively(final double initial, DoubleBinaryOperator fn) {
         double cur = initial;
         for (int i = 0; i < vals.length; i++) {
             cur = fn.applyAsDouble(cur, vals[i]);
@@ -1540,7 +1541,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         return ns;
     }
 
-    public TsData autoTransform(DoubleBinaryOperator fn, int lag) {
+    public TsData autoTransform(int lag, DoubleBinaryOperator fn) {
         int n = vals.length - lag;
         if (n <= 0) {
             return null;
@@ -1557,9 +1558,18 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         return ns;
     }
 
-    public void apply(DoubleBinaryOperator fn, IReadDataBlock x) {
+    public void apply(IReadDataBlock x, DoubleBinaryOperator fn) {
         for (int i = 0; i < vals.length; i++) {
             vals[i] = fn.applyAsDouble(vals[i], x.get(i));
+        }
+    }
+
+    public void applyOnFinite(IReadDataBlock x, DoubleBinaryOperator fn) {
+        for (int i = 0; i < vals.length; i++) {
+            double cur = vals[i];
+            if (Double.isFinite(cur)) {
+                vals[i] = fn.applyAsDouble(cur, x.get(i));
+            }
         }
     }
 
@@ -1583,19 +1593,19 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         }
     }
 
-    public void set(DoubleUnaryOperator fn, IReadDataBlock x) {
+    public void set(IReadDataBlock x, DoubleUnaryOperator fn) {
         for (int i = 0; i < vals.length; i++) {
             vals[i] = fn.applyAsDouble(x.get(i));
         }
     }
 
-    public void set(DoubleBinaryOperator fn, IReadDataBlock x, IReadDataBlock y) {
+    public void set(IReadDataBlock x, IReadDataBlock y, DoubleBinaryOperator fn) {
         for (int i = 0; i < vals.length; i++) {
             vals[i] = fn.applyAsDouble(x.get(i), y.get(i));
         }
     }
 
-    public static TsData computeOnIntersection(final DoubleBinaryOperator fn, final TsData tsl, final TsData tsr) {
+    public static TsData computeOnIntersection(final TsData tsl, final TsData tsr, final DoubleBinaryOperator fn) {
 
         TsDomain rDomain = tsr.getDomain();
         TsDomain lDomain = tsl.getDomain();
@@ -1611,15 +1621,15 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
 
         int rbeg = rDomain.firstid(), lbeg = tsl.start.id(), ibeg = iDomain.firstid();
         int li = ibeg - lbeg, ri = ibeg - rbeg;
-        rslt.set(
+        rslt.set(tsl.rextract(li, ni), tsr.rextract(ri, ni),
                 (a, b) -> {
                     if (Double.isFinite(a) && Double.isFinite(b)) {
                         return fn.applyAsDouble(a, b);
                     } else {
                         return Double.NaN;
                     }
-                },
-                tsl.rextract(li, ni), tsr.rextract(ri, ni));
+                }
+        );
         return rslt;
     }
 

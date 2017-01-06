@@ -1982,7 +1982,7 @@ public final class DataBlock implements IDataBlock, Cloneable {
 //</editor-fold>
 //<editor-fold defaultstate="collapsed" desc="functional methods">
     @Override
-    public double computeRecursively(DoubleBinaryOperator fn, final double initial) {
+    public double computeRecursively(final double initial, DoubleBinaryOperator fn) {
         double cur = initial;
         for (int i = beg; i != end; i += inc) {
             cur = fn.applyAsDouble(cur, src[i]);
@@ -2008,7 +2008,7 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     @Override
-    public void applyRecursively(DoubleBinaryOperator fn, final double initial) {
+    public void applyRecursively(final double initial, DoubleBinaryOperator fn) {
         double cur = initial;
         for (int i = beg; i != end; i += inc) {
             cur = fn.applyAsDouble(cur, src[i]);
@@ -2064,7 +2064,7 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     @Override
-    public void apply(DoubleBinaryOperator fn, IReadDataBlock x) {
+    public void apply(IReadDataBlock x, DoubleBinaryOperator fn) {
         for (int i = beg, j = 0; i != end; i += inc, j++) {
             src[i] = fn.applyAsDouble(src[i], x.get(j));
         }
@@ -2091,7 +2091,7 @@ public final class DataBlock implements IDataBlock, Cloneable {
     }
 
     @Override
-    public void set(DoubleUnaryOperator fn, IReadDataBlock x) {
+    public void set(IReadDataBlock x, DoubleUnaryOperator fn) {
         for (int i = beg, j = 0; i != end; i += inc, j++) {
             src[i] = fn.applyAsDouble(x.get(j));
         }
@@ -2107,14 +2107,14 @@ public final class DataBlock implements IDataBlock, Cloneable {
 
     }
 
-    public void set(DoubleBinaryOperator fn, DataBlock x, DataBlock y) {
+    public void set(DataBlock x, DataBlock y, DoubleBinaryOperator fn) {
         for (int i = beg, j = x.beg, k = y.beg; i != end; i += inc, j += x.inc, k += y.inc) {
             src[i] = fn.applyAsDouble(x.src[j], y.src[k]);
         }
     }
 
     @Override
-    public void set(DoubleBinaryOperator fn, IReadDataBlock x, IReadDataBlock y) {
+    public void set(IReadDataBlock x, IReadDataBlock y, DoubleBinaryOperator fn) {
         for (int i = beg, j = 0; i != end; i += inc, j++) {
             src[i] = fn.applyAsDouble(x.get(j), y.get(j));
         }

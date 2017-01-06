@@ -5,6 +5,8 @@
  */
 package ec.tstoolkit.modelling.arima.tramo;
 
+import ec.tstoolkit.Parameter;
+import ec.tstoolkit.ParameterType;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.modelling.TsVariableDescriptor;
 import ec.tstoolkit.timeseries.Day;
@@ -45,7 +47,7 @@ public class RegressionSpecTest {
         actual.read(info);
         assertEquals(3, actual.getCalendar().getEaster().getDuration());
 
-        OutlierDefinition outDef = new OutlierDefinition(Day.BEG, OutlierType.AO);
+        OutlierDefinition outDef = new OutlierDefinition(Day.toDay(), OutlierType.AO);
         OutlierDefinition[] outliers_ = new OutlierDefinition[]{outDef};
         expected.setOutliers(outliers_);
         info = expected.write(true);
@@ -80,6 +82,11 @@ public class RegressionSpecTest {
         actual.read(info);
         assertEquals(1, actual.getRampsCount());
         assertEquals(1, actual.getRamps().length);
-
+        
+        expected.setFixedCoefficients("ftest",new double[]{10});
+        expected.setCoefficients("test",new double[]{10});
+        info = expected.write(true);
+        actual.read(info);
+        assertEquals(actual, expected);
     }
 }
