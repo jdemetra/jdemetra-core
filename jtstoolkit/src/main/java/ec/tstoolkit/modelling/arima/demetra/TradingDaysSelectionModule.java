@@ -169,13 +169,13 @@ public class TradingDaysSelectionModule extends DemetraModule implements IPrepro
         model.setOutliers(null);
 
         // remove previous calendar effects 
-        model.getCalendars().clear();
+        model.removeVariable(var->var.isCalendar());
         if (td != null) {
             GenericTradingDaysVariables vars = new GenericTradingDaysVariables(td);
-            model.getCalendars().add(new Variable(vars, ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(vars, RegStatus.Accepted));
         }
         if (lp != LengthOfPeriodType.None) {
-            model.getCalendars().add(new Variable(new LeapYearVariable(lp), ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(new LeapYearVariable(lp), RegStatus.Accepted));
         }
         ModellingContext cxt = new ModellingContext();
         cxt.description = model;
@@ -190,13 +190,13 @@ public class TradingDaysSelectionModule extends DemetraModule implements IPrepro
         ModelDescription model = tdModel.description.clone();
 
         // remove previous calendar effects 
-        model.getCalendars().clear();
+        model.removeVariable(var->var.isCalendar());
         if (td != null) {
             GenericTradingDaysVariables vars = new GenericTradingDaysVariables(td);
-            model.getCalendars().add(new Variable(vars, ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(vars, RegStatus.Accepted));
         }
         if (lp != LengthOfPeriodType.None) {
-            model.getCalendars().add(new Variable(new LeapYearVariable(lp), ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(new LeapYearVariable(lp), RegStatus.Accepted));
         }
         ModelEstimation estimation = new ModelEstimation(model.buildRegArima());
         int nhp = model.getArimaComponent().getFreeParametersCount();
@@ -210,13 +210,13 @@ public class TradingDaysSelectionModule extends DemetraModule implements IPrepro
             model.setMean(mean);
         }
         model.setOutliers(null);
-        model.getCalendars().clear();
+        model.removeVariable(var->var.isCalendar());
         if (td != null) {
             GenericTradingDaysVariables vars = new GenericTradingDaysVariables(td);
-            model.getCalendars().add(new Variable(vars, ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(vars, RegStatus.Accepted));
         }
         if (lp != LengthOfPeriodType.None) {
-            model.getCalendars().add(new Variable(new LeapYearVariable(lp), ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(new LeapYearVariable(lp), RegStatus.Accepted));
         }
         return model;
     }
@@ -237,31 +237,31 @@ public class TradingDaysSelectionModule extends DemetraModule implements IPrepro
         return retval;
     }
 
-    private boolean checkEE(PreprocessingModel model) {
-        boolean retval = true;
-        TsVariableList x = model.description.buildRegressionVariables();
-        TsVariableSelection sel = x.selectCompatible(EasterVariable.class);
-        if (sel.isEmpty()) {
-            return false;
-        }
-        TsVariableSelection.Item<ITsVariable>[] items = sel.elements();
-        Variable search = Variable.search(model.description.getMovingHolidays(), items[items.length - 1].variable);
-        if (search == null) { // should never happen
-            return false;
-        }
-        if (!search.status.needTesting()) {
-            return true;
-        }
-        ConcentratedLikelihood ll = model.estimation.getLikelihood();
-        int start = model.description.getRegressionVariablesStartingPosition();
-        double[] Tstat = ll.getTStats(true, 2);//airline
-        double t = Tstat[start + items[items.length - 1].position];
-        if (Math.abs(t) < 2.2) {
-            addEasterInfo(model, t);
-            retval = false;
-        }
-        return retval;
-    }
+//    private boolean checkEE(PreprocessingModel model) {
+//        boolean retval = true;
+//        TsVariableList x = model.description.buildRegressionVariables();
+//        TsVariableSelection sel = x.selectCompatible(EasterVariable.class);
+//        if (sel.isEmpty()) {
+//            return false;
+//        }
+//        TsVariableSelection.Item<ITsVariable>[] items = sel.elements();
+//        Variable search = Variable.search(model.description.getMovingHolidays(), items[items.length - 1].variable);
+//        if (search == null) { // should never happen
+//            return false;
+//        }
+//        if (!search.status.needTesting()) {
+//            return true;
+//        }
+//        ConcentratedLikelihood ll = model.estimation.getLikelihood();
+//        int start = model.description.getRegressionVariablesStartingPosition();
+//        double[] Tstat = ll.getTStats(true, 2);//airline
+//        double t = Tstat[start + items[items.length - 1].position];
+//        if (Math.abs(t) < 2.2) {
+//            addEasterInfo(model, t);
+//            retval = false;
+//        }
+//        return retval;
+//    }
 
     private void addLPInfo(PreprocessingModel model, double tstat) {
 //        StringBuilder builder = new StringBuilder();

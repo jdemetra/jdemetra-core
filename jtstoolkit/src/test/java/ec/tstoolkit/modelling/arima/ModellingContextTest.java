@@ -19,11 +19,13 @@ package ec.tstoolkit.modelling.arima;
 
 import data.Data;
 import ec.tstoolkit.modelling.ComponentType;
+import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import ec.tstoolkit.timeseries.regression.GregorianCalendarVariables;
+import ec.tstoolkit.timeseries.regression.ICalendarVariable;
 import ec.tstoolkit.timeseries.regression.LeapYearVariable;
 import java.util.List;
 
@@ -115,7 +117,7 @@ public class ModellingContextTest {
         System.out.println("No trading days");
         ModellingContext context=new ModellingContext();
         context.description=reference.description.clone();
-        context.description.getCalendars().clear();
+        context.description.removeVariable(var->var.isCalendar());
         computeTramo(context);
         displayStatistics(context);
         // or
@@ -128,13 +130,12 @@ public class ModellingContextTest {
         System.out.println("Trading days");
         ModellingContext context=new ModellingContext();
         context.description=reference.description.clone();
-        List<Variable> calendars = context.description.getCalendars();
+        context.description.removeVariable(var->var.isCalendar());
         // add usual trading days (without testing)
-        calendars.clear();
         GregorianCalendarVariables td=GregorianCalendarVariables.getDefault(TradingDaysType.TradingDays);
-        calendars.add(new Variable(td, ComponentType.CalendarEffect));
+        context.description.addVariable(Variable.calendarVariable(td, RegStatus.Prespecified));
         LeapYearVariable lp=new LeapYearVariable(LengthOfPeriodType.LeapYear);
-        calendars.add(new Variable(lp, ComponentType.CalendarEffect));
+        context.description.addVariable(Variable.calendarVariable(lp, RegStatus.Prespecified));
         computeTramo(context);
         displayStatistics(context);
         // or
@@ -151,9 +152,9 @@ public class ModellingContextTest {
         // add usual trading days (without testing)
         calendars.clear();
         GregorianCalendarVariables td=GregorianCalendarVariables.getDefault(TradingDaysType.WorkingDays);
-        calendars.add(new Variable(td, ComponentType.CalendarEffect));
+        calendars.add(Variable.calendarVariable(td, RegStatus.Prespecified));
         LeapYearVariable lp=new LeapYearVariable(LengthOfPeriodType.LeapYear);
-        calendars.add(new Variable(lp, ComponentType.CalendarEffect));
+        calendars.add(Variable.calendarVariable(lp, RegStatus.Prespecified));
         computeTramo(context);
         displayStatistics(context);
         // or

@@ -62,7 +62,7 @@ public class RobustCovarianceMatrixComputer {
         DataBlockIterator columns = xe.columns();
         DataBlock column = columns.getData();
         do {
-            column.apply((a, b) -> a * b, e);
+            column.apply(e, (a, b) -> a * b);
         } while (columns.next());
         return xe;
     }

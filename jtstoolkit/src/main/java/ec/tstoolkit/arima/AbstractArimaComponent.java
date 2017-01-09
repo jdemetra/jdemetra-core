@@ -13,34 +13,64 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
-
+ */
 package ec.tstoolkit.arima;
 
+import ec.tstoolkit.Parameter;
+import ec.tstoolkit.ParameterType;
 import ec.tstoolkit.design.Development;
 
 /**
  * @author Jean Palate
+ * @param <M>
  */
 @Development(status = Development.Status.Alpha)
 public abstract class AbstractArimaComponent<M extends IArimaModel> {
-   private boolean mean_;
+
+    private Parameter mean;
+
     /**
-     * @return the mean_
+     * @return the mean
      */
     public boolean isMean() {
-        return mean_;
+        return mean != null;
+    }
+
+    public boolean isEstimatedMean() {
+        return mean != null && !mean.isFixed();
+    }
+    /**
+     * @param m
+     */
+    public void setMean(boolean m) {
+        this.mean = m ? new Parameter() : null;
     }
 
     /**
-     * @param mean_ the mean_ to set
+     * @param value the mean to set
      */
-    public void setMean(boolean mean_) {
-        this.mean_ = mean_;
+    public void setMu(Parameter value) {
+        this.mean = value;
+    }
+
+    public Parameter getMu() {
+        return mean;
+    }
+
+    public double getMeanCorrection() {
+        return mean == null ? 0 : mean.getValue();
+    }
+
+    @Override
+    protected AbstractArimaComponent clone() throws CloneNotSupportedException {
+        AbstractArimaComponent cl = (AbstractArimaComponent) super.clone();
+        if (mean != null) {
+            cl.mean = mean.clone();
+        }
+        return cl;
     }
 
     public abstract M getModel();
-    
+
     public abstract void setModel(M value);
 }

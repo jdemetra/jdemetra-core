@@ -19,14 +19,12 @@ package ec.tstoolkit.modelling;
 import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.data.DataBlock;
-import ec.tstoolkit.data.IReadDataBlock;
+import ec.tstoolkit.data.ReadDataBlock;
 import ec.tstoolkit.information.InformationMapper;
 import ec.tstoolkit.modelling.arima.ModelEstimation;
-import static ec.tstoolkit.modelling.arima.PreprocessingModel.outlierTypes;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.regression.Constant;
 import ec.tstoolkit.timeseries.regression.DiffConstant;
-import ec.tstoolkit.timeseries.regression.EasterVariable;
 import ec.tstoolkit.timeseries.regression.ICalendarVariable;
 import ec.tstoolkit.timeseries.regression.IEasterVariable;
 import ec.tstoolkit.timeseries.regression.IMovingHolidayVariable;
@@ -38,7 +36,6 @@ import ec.tstoolkit.timeseries.regression.OutlierType;
 import ec.tstoolkit.timeseries.regression.Ramp;
 import ec.tstoolkit.timeseries.regression.Sequence;
 import ec.tstoolkit.timeseries.regression.TsVariableList;
-import ec.tstoolkit.timeseries.regression.TsVariableSelection;
 import ec.tstoolkit.timeseries.simplets.ConstTransformation;
 import ec.tstoolkit.timeseries.simplets.ExpTransformation;
 import ec.tstoolkit.timeseries.simplets.ITsDataTransformation;
@@ -50,6 +47,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  *
@@ -62,7 +60,7 @@ public class DeterministicComponent implements IProcResults {
     private TsData original_, y_;
     private LengthOfPeriodType lp_ = LengthOfPeriodType.None;
     private DefaultTransformationType function_ = DefaultTransformationType.None;
-    private final TsVariableList x_ = new TsVariableList();
+    private final List<PreadjustmentVariable> x_ = new ArrayList<>();
     private DataBlock b_;
     private double units_ = 1;
 
@@ -81,7 +79,9 @@ public class DeterministicComponent implements IProcResults {
     }
 
     public TsVariableList getX() {
-        return x_.clone();
+        TsVariableList x = new TsVariableList();
+        x_.stream().forEach(var -> x.add(var.getVariable()));
+        return x;
     }
 
     public void setOriginal(TsData s) {
@@ -92,39 +92,12 @@ public class DeterministicComponent implements IProcResults {
         y_ = s;
     }
 
-    public void add(IOutlierVariable o) {
-        x_.add(o);
-    }
-
-    public void add(UserVariable user) {
-        x_.add(user);
-    }
-
-    public void add(Ramp ramp) {
-        x_.add(ramp);
-    }
-
-    public void add(InterventionVariable i) {
-        x_.add(i);
-    }
-
-    public void add(ICalendarVariable td) {
-        x_.add(td);
-    }
-
-    public void add(IMovingHolidayVariable mh) {
-        x_.add(mh);
+    public void add(PreadjustmentVariable var) {
+        x_.add(var);
     }
 
     public void clearX() {
         x_.clear();
-    }
-
-    public void setCoefficients(IReadDataBlock coeff) {
-        if (coeff.getLength() != x_.getVariablesCount()) {
-            throw new IllegalArgumentException();
-        }
-        b_ = new DataBlock(coeff);
     }
 
     public static ComponentType getType(IOutlierVariable var) {
@@ -295,7 +268,7 @@ public class DeterministicComponent implements IProcResults {
         if (b_ == null) {
             return new TsData(domain, 0);
         } else {
-            DataBlock sum = x_.all().sum(b_, domain);
+            DataBlock sum = PreadjustmentVariable.regressionEffect(x_.stream(), domain);
 
             if (sum == null) {
                 sum = new DataBlock(domain.getLength());
@@ -307,12 +280,7 @@ public class DeterministicComponent implements IProcResults {
 
     // cmp is used in back transformation
     public <T extends ITsVariable> TsData regressionEffect(TsDomain domain, Class<T> tclass) {
-        TsVariableSelection sel = x_.selectCompatible(tclass);
-        if (sel.isEmpty()) {
-            return new TsData(domain, 0);
-        }
-
-        DataBlock sum = sel.sum(b_, domain);
+        DataBlock sum = PreadjustmentVariable.regressionEffect(x_.stream(), domain, tclass);
 
         if (sum == null) {
             sum = new DataBlock(domain.getLength());
@@ -321,102 +289,59 @@ public class DeterministicComponent implements IProcResults {
         return rslt;
     }
 
-    private TsData regressionEffect(TsDomain domain, TsVariableList.ISelector selector) {
-        TsVariableSelection<ITsVariable> sel = x_.select(selector);
-        if (sel.isEmpty()) {
-            return new TsData(domain, 0);
-        }
-
-        DataBlock sum = sel.sum(b_, domain);
-
-        if (sum == null) {
-            sum = new DataBlock(domain.getLength());
-        }
-        TsData rslt = new TsData(domain.getStart(), sum.getData(), false);
-        return rslt;
+    private TsData regressionEffect(TsDomain domain, Predicate<PreadjustmentVariable> selector) {
+        DataBlock sum = PreadjustmentVariable.regressionEffect(x_.stream(), domain, selector);
+        return new TsData(domain.getStart(), sum.getData(), false);
     }
 
     public TsData outliersEffect(TsDomain domain) {
-        return regressionEffect(domain, IOutlierVariable.class);
+        return regressionEffect(domain, reg->reg.isOutlier());
     }
 
     public TsData outliersEffect(TsDomain domain, final ComponentType type) {
         if (type == ComponentType.Undefined) {
-            return outliersEffect(domain);
+            return regressionEffect(domain, reg -> reg.isOutlier());
+        } else {
+            return regressionEffect(domain, reg -> reg.getType() == type && reg.isOutlier());
         }
-        OutlierType[] types = outlierTypes(type);
-        TsData rslt = null;
-        for (int i = 0; i < types.length; ++i) {
-            TsVariableSelection sel = x_.select(types[i]);
-            if (!sel.isEmpty()) {
-
-                DataBlock sum = sel.sum(b_, domain);
-
-                if (sum != null) {
-                    rslt = TsData.add(rslt, new TsData(domain.getStart(), sum.getData(), false));
-                }
-            }
-        }
-        return rslt;
-
     }
 
     public List<TsData> regressors(TsDomain domain) {
         ArrayList<TsData> regs = new ArrayList<>();
-        List<DataBlock> data = x_.all().data(domain);
-        for (DataBlock d : data) {
-            double[] cur = new double[domain.getLength()];
-            d.copyTo(cur, 0);
-            regs.add(new TsData(domain.getStart(), cur, false));
-        }
+        x_.stream().forEach(
+                var -> {
+                    DataBlock z = new DataBlock(domain.getLength());
+                    var.addEffect(z, domain);
+                    regs.add(new TsData(domain.getStart(), z.getData(), false));
+                }
+        );
         return regs;
     }
 
     public TsData deterministicEffect(TsDomain domain, final ComponentType type) {
-        TsVariableSelection<ITsVariable> sel = x_.select(
-                new TsVariableList.ISelector() {
-                    @Override
-                    public boolean accept(ITsVariable var) {
-                        return getType(var) == type;
-                    }
-                });
-
-        if (sel.isEmpty()) {
-            return new TsData(domain, 0);
-        }
-
-        DataBlock sum = sel.sum(b_, domain);
-
-        if (sum == null) {
-            sum = new DataBlock(domain.getLength());
-        }
-        TsData rslt = new TsData(domain.getStart(), sum.getData(), false);
-        return rslt;
+        return regressionEffect(domain, reg -> reg.getType() == type);
     }
 
     public TsData userEffect(TsDomain domain, final ComponentType type) {
-        TsVariableSelection<ITsVariable> sel = x_.select(
-                new TsVariableList.ISelector() {
-                    @Override
-                    public boolean accept(ITsVariable var) {
-                        if (!(var instanceof UserVariable)) {
-                            return false;
-                        }
-                        return ((UserVariable) var).getType() == type;
-                    }
-                });
-
-        if (sel.isEmpty()) {
-            return new TsData(domain, 0);
+        return regressionEffect(domain, reg -> reg.getType() == type && reg.isUser());
+    }
+    
+    public int countVariables(final Predicate<PreadjustmentVariable> pred){
+        int n=0;
+        for (PreadjustmentVariable var : x_){
+            if (pred.test(var))
+                ++n;
         }
+        return n;
+    }
 
-        DataBlock sum = sel.sum(b_, domain);
-
-        if (sum == null) {
-            sum = new DataBlock(domain.getLength());
+    public int countRegressors(final Predicate<PreadjustmentVariable> pred){
+        int n=0;
+        for (PreadjustmentVariable var : x_){
+            if (pred.test(var))
+                n+=var.getVariable().getDim();
         }
-        TsData rslt = new TsData(domain.getStart(), sum.getData(), false);
-        return rslt;
+        return n;
     }
 
     @Override
@@ -488,6 +413,19 @@ public class DeterministicComponent implements IProcResults {
     public boolean isMultiplicative() {
         return function_ == DefaultTransformationType.Log;
     }
+    
+    public boolean setCoefficients(ReadDataBlock c) {
+        if (c.getLength() != countRegressors(reg->true))
+            return false;
+        int cur=0;
+        for (PreadjustmentVariable var : x_){
+            int n=var.getCoefficients().length;
+            c.rextract(cur, n).copyTo(var.getCoefficients(), 0);
+            cur+=n;
+        }
+        return true;
+    }
+
 
     public static final String LOG = "log",
             ADJUST = "adjust",
@@ -620,13 +558,8 @@ public class DeterministicComponent implements IProcResults {
         mapper.add(ModellingDictionary.OMHE, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
             @Override
             public TsData retrieve(DeterministicComponent source) {
-                TsData cal = source.regressionEffect(source.domain(false), new TsVariableList.ISelector() {
-
-                    @Override
-                    public boolean accept(ITsVariable var) {
-                        return (var instanceof IMovingHolidayVariable) && !(var instanceof IEasterVariable);
-                    }
-                });
+                TsData cal = source.regressionEffect(source.domain(false),
+                        var -> (var instanceof IMovingHolidayVariable) && !(var instanceof IEasterVariable));
                 source.backTransform(cal, false, false);
                 return cal;
             }
@@ -634,13 +567,8 @@ public class DeterministicComponent implements IProcResults {
         mapper.add(ModellingDictionary.OMHE + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
             @Override
             public TsData retrieve(DeterministicComponent source) {
-                TsData cal = source.regressionEffect(source.domain(true), new TsVariableList.ISelector() {
-
-                    @Override
-                    public boolean accept(ITsVariable var) {
-                        return (var instanceof IMovingHolidayVariable) && !(var instanceof IEasterVariable);
-                    }
-                });
+                TsData cal = source.regressionEffect(source.domain(true),
+                        var -> (var instanceof IMovingHolidayVariable) && !(var instanceof IEasterVariable));
                 source.backTransform(cal, false, false);
                 return cal;
             }
@@ -825,16 +753,15 @@ public class DeterministicComponent implements IProcResults {
         mapper.add(NTD, new InformationMapper.Mapper<DeterministicComponent, Integer>(Integer.class) {
             @Override
             public Integer retrieve(final DeterministicComponent source) {
-                TsVariableSelection<ICalendarVariable> sel = source.x_.select(ICalendarVariable.class);
-                return sel.getVariablesCount();
+                return source.countRegressors(reg->reg.isCalendar());
             }
         });
         mapper.add(NMH, new InformationMapper.Mapper<DeterministicComponent, Integer>(Integer.class) {
             @Override
             public Integer retrieve(final DeterministicComponent source) {
-                TsVariableSelection<IMovingHolidayVariable> sel = source.x_.select(IMovingHolidayVariable.class);
-                return sel.getVariablesCount();
+                return source.countRegressors(reg->reg.isMovingHoliday());
             }
         });
     }
+
 }

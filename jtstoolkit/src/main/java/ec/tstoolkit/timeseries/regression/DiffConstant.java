@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.data.DataBlock;
@@ -96,4 +95,10 @@ public class DiffConstant extends AbstractSingleTsVariable {
     public boolean isSignificant(TsDomain domain) {
         return domain.getLength() > m_ur.getDegree();
     }
+
+    @Override
+    public String getName() {
+        return "trend";
+    }
+
 }

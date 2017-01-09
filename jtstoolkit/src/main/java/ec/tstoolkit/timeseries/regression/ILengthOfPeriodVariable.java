@@ -27,4 +27,11 @@ import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
  */
 @Development(status = Development.Status.Alpha)
 public interface ILengthOfPeriodVariable extends ICalendarVariable{
+    
+    static final String NAME="lp";
+    
+    @Override
+    default String getName(){
+        return NAME;
+    }
 }

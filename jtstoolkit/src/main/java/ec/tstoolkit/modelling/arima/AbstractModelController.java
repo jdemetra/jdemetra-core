@@ -52,7 +52,7 @@ public abstract class AbstractModelController implements IModelController {
      * @return True if the mean is significant 
      */
     protected boolean checkMean(ModellingContext context) {
-        if (!context.description.isMean()) {
+        if (!context.description.isEstimatedMean()) {
             return true;
         }
         double ser = context.estimation.getLikelihood().getBSer(0, true, context.description.getArimaComponent().getFreeParametersCount());

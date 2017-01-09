@@ -114,7 +114,7 @@ public class RegressionVariables {
                 if (c != 0) {
                     DataBlock tmp = new DataBlock(domain.getLength());
                     item.variable.data(domain, Collections.singletonList(tmp));
-                    sum.apply((x, y) -> x + c * y, tmp);
+                    sum.apply(tmp, (x, y) -> x + c * y);
                 }
             } else {
                 Matrix tmp = new Matrix(domain.getLength(), dim);
@@ -124,7 +124,7 @@ public class RegressionVariables {
                 for (DataBlock col : cols) {
                     final double c = item.coefficients[pos++].getValue();
                     if (c != 0) {
-                        sum.apply((x, y) -> x + c * y, col);
+                        sum.apply(col, (x, y) -> x + c * y);
                     }
                 }
             }

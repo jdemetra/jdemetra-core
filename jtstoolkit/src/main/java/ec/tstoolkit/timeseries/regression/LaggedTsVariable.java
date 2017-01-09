@@ -158,4 +158,15 @@ public class LaggedTsVariable extends AbstractTsModifier {
         return var.isSignificant(new TsDomain(domain.getStart().minus(
                 m_firstlag), n));
     }
+    
+    @Override
+    public String getName(){
+        int n=getDim();
+        if (n == 0)
+            return var.getName();
+        else
+            return ITsVariable.shortName(var.getName())+'#'+n;
+    }
+
+
 }

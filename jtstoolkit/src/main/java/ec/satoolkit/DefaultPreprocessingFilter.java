@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.satoolkit;
 
 import ec.tstoolkit.data.DataBlock;
@@ -83,26 +82,23 @@ public class DefaultPreprocessingFilter implements IPreprocessingFilter {
 
     @Override
     public TsData getCorrectedSeries(boolean transformed) {
-        TsData lin;
+        ;
         boolean mul = (!transformed) && model_.isMultiplicative();
-        if (model_.estimation.getRegArima().getVarsCount() == 0) {
-            lin = model_.interpolatedSeries(transformed);
-        } else {
-            lin = model_.linearizedSeries(true);
-            if (mul) {
-                lin = lin.exp();
-            }
+        TsData lin = model_.linearizedSeries(true);
+        if (mul) {
+            lin = lin.exp();
         }
         return lin;
     }
-    
-    private int forecastLength(int freq){
-        if (nf_ == 0 || freq == 0)
+
+    private int forecastLength(int freq) {
+        if (nf_ == 0 || freq == 0) {
             return 0;
-        else if (nf_<0)
-            return -freq*nf_;
-        else
+        } else if (nf_ < 0) {
+            return -freq * nf_;
+        } else {
             return nf_;
+        }
     }
 
     @Override
@@ -113,7 +109,7 @@ public class DefaultPreprocessingFilter implements IPreprocessingFilter {
         int nf = forecastLength(model_.description.getFrequency());
         TsData f = model_.linearizedForecast(nf, true);
         if ((!transformed) && model_.isMultiplicative()) {
-            f.apply(x->Math.exp(x));
+            f.apply(x -> Math.exp(x));
         }
         return f;
     }
@@ -184,7 +180,6 @@ public class DefaultPreprocessingFilter implements IPreprocessingFilter {
 //    public TsData filter(String id, TsData data) {
 //        return data;
 //    }
-
     @Override
     public boolean isInitialized() {
         return model_ != null;

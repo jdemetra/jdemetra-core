@@ -346,4 +346,8 @@ public class InterventionVariable extends AbstractSingleTsVariable implements Cl
         appendDetails(builder);
         return builder.toString();
     }
+    
+    public String getName(){
+        return toString();
+    }
 }

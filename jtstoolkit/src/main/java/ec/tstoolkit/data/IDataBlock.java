@@ -13,9 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
-
+ */
 package ec.tstoolkit.data;
 
 import ec.tstoolkit.design.Development;
@@ -62,14 +60,14 @@ public interface IDataBlock extends IReadDataBlock {
      * @param value The new value.
      */
     void set(int idx, double value);
-    
+
     default void apply(DoubleUnaryOperator fn) {
         int n = getLength();
         for (int i = 0; i < n; i++) {
             set(i, fn.applyAsDouble(get(i)));
         }
     }
-    
+
     default void applyIf(DoublePredicate pred, DoubleUnaryOperator fn) {
         int n = getLength();
         for (int i = 0; i < n; i++) {
@@ -79,8 +77,8 @@ public interface IDataBlock extends IReadDataBlock {
             }
         }
     }
-    
-    default void applyRecursively(DoubleBinaryOperator fn, final double initial) {
+
+    default void applyRecursively(final double initial, DoubleBinaryOperator fn) {
         double cur = initial;
         int n = getLength();
         for (int i = 0; i < n; i++) {
@@ -89,13 +87,13 @@ public interface IDataBlock extends IReadDataBlock {
         }
     }
 
-    default void apply(DoubleBinaryOperator fn, IReadDataBlock x) {
+    default void apply(IReadDataBlock x, DoubleBinaryOperator fn) {
         int n = getLength();
         for (int i = 0; i < n; i++) {
             set(i, fn.applyAsDouble(get(i), x.get(i)));
         }
     }
-    
+
     default void copy(IReadDataBlock x) {
         int n = getLength();
         for (int i = 0; i < n; i++) {
@@ -109,7 +107,7 @@ public interface IDataBlock extends IReadDataBlock {
             set(i, fn.getAsDouble());
         }
     }
-    
+
     default void setIf(DoublePredicate pred, DoubleSupplier fn) {
         int n = getLength();
         for (int i = 0; i < n; i++) {
@@ -118,26 +116,26 @@ public interface IDataBlock extends IReadDataBlock {
             }
         }
     }
-    
+
     default void set(IntToDoubleFunction fn) {
         int n = getLength();
         for (int i = 0; i < n; i++) {
             set(i, fn.applyAsDouble(i));
         }
     }
-    
-    default void set(DoubleUnaryOperator fn, IReadDataBlock x) {
+
+    default void set(IReadDataBlock x, DoubleUnaryOperator fn) {
         int n = getLength();
         for (int i = 0; i < n; i++) {
             set(i, fn.applyAsDouble(x.get(i)));
         }
     }
-    
-    default void set(DoubleBinaryOperator fn, IReadDataBlock x, IReadDataBlock y) {
+
+    default void set(IReadDataBlock x, IReadDataBlock y, DoubleBinaryOperator fn) {
         int n = getLength();
         for (int i = 0; i < n; i++) {
             set(i, fn.applyAsDouble(x.get(i), y.get(i)));
         }
     }
-    
+
 }

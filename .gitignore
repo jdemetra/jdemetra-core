@@ -7,4 +7,6 @@
 /sdmxprovider/target/
 /commonprovider/target/
 /jbench/target/
+/jwsacruncher/target/
+/spreadsheet/*/target/
 /demetra-tck/target/

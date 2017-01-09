@@ -143,13 +143,16 @@ public class CheckLastTest {
         System.out.println(tramoTerror.getScore(2));
         tramoTerror.check(s1);
         double[] scores = tramoTerror.getScores(), fcasts = tramoTerror.getForecastsValues(),
-                vals = tramoTerror.getValues(), actuals = tramoTerror.getActualValues();
+                vals = tramoTerror.getValues(), actuals = tramoTerror.getActualValues(),
+                aerrors=tramoTerror.getAbsoluteErrors();
         for (int i = 0; i < tramoTerror.getBackCount(); ++i) {
             System.out.print(actuals[i]);
             System.out.print('\t');
             System.out.print(fcasts[i]);
             System.out.print('\t');
             System.out.print(vals[i]);
+            System.out.print('\t');
+            System.out.print(aerrors[i]);
             System.out.print('\t');
             System.out.println(scores[i]);
         }

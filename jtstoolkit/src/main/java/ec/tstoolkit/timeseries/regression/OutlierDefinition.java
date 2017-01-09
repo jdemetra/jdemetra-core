@@ -128,9 +128,13 @@ public class OutlierDefinition implements Comparable<OutlierDefinition> {
     }
 
     public String toString(TsFrequency freq) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(code).append(InformationSet.SEP).append(StringFormatter.write(new TsPeriod(freq, position)));
-        return builder.toString();
+        if (freq == TsFrequency.Undefined) {
+            return toString();
+        } else {
+            StringBuilder builder = new StringBuilder();
+            builder.append(code).append(InformationSet.SEP).append(StringFormatter.write(new TsPeriod(freq, position)));
+            return builder.toString();
+        }
     }
 
     public static OutlierDefinition fromString(String s) {

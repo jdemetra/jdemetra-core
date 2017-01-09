@@ -26,6 +26,7 @@ import ec.tstoolkit.maths.realfunctions.IFunction;
 import ec.tstoolkit.maths.realfunctions.IFunctionInstance;
 import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.DefaultTransformationType;
+import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.estimation.GlsSarimaMonitor;
@@ -67,10 +68,10 @@ public class PreprocessingModelTest {
         // Use a (0 1 1) (without parameters)
         model.setAirline(false);
         // Add trading days (without leap year) and seasonal dummies
-        ITsVariable td = GregorianCalendarVariables.getDefault(TradingDaysType.TradingDays);
+        GregorianCalendarVariables td = GregorianCalendarVariables.getDefault(TradingDaysType.TradingDays);
         ITsVariable sd = new SeasonalDummies(Data.X.getFrequency());
-        model.getCalendars().add(new Variable(td));
-        model.getUserVariables().add(new Variable(sd, ComponentType.Seasonal));
+        model.addVariable(Variable.calendarVariable(td, RegStatus.Prespecified));
+        model.addVariable(Variable.userVariable(sd, ComponentType.Seasonal, RegStatus.Prespecified));
         // Generate the low-level regression model
         RegArimaModel<SarimaModel> regarima = model.buildRegArima();
 
@@ -97,8 +98,8 @@ public class PreprocessingModelTest {
         ModelDescription model = new ModelDescription(Data.P, null);
         model.setTransformation(DefaultTransformationType.Log, PreadjustmentType.LengthOfPeriod);
         model.setAirline(true);
-        ITsVariable td = GregorianCalendarVariables.getDefault(TradingDaysType.TradingDays);
-        model.getCalendars().add(new Variable(td));
+        GregorianCalendarVariables td = GregorianCalendarVariables.getDefault(TradingDaysType.TradingDays);
+        model.getCalendars().add(Variable.calendarVariable(td, RegStatus.Prespecified));
         RegArimaModel<SarimaModel> regarima = model.buildRegArima();
         GlsSarimaMonitor gls = new GlsSarimaMonitor();
         gls.setPrecision(1e-9);

@@ -171,11 +171,20 @@ public class Ramp extends AbstractSingleTsVariable implements Cloneable {
     }
 
     public String toString(TsFrequency freq) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(PREFIX)
-                .append(InformationSet.SEP).append(StringFormatter.write(new TsPeriod(freq, start.minus(1))))
-                .append(InformationSet.SEP).append(StringFormatter.write(new TsPeriod(freq, end.plus(1))));
-        return builder.toString();
+        if (freq == TsFrequency.Undefined) {
+            return toString();
+        } else {
+            StringBuilder builder = new StringBuilder();
+            builder.append(PREFIX)
+                    .append(InformationSet.SEP).append(StringFormatter.write(new TsPeriod(freq, start.minus(1))))
+                    .append(InformationSet.SEP).append(StringFormatter.write(new TsPeriod(freq, end.plus(1))));
+            return builder.toString();
+        }
+    }
+
+    @Override
+    public String getName() {
+        return toString();
     }
 
     public static Ramp fromString(String s) {

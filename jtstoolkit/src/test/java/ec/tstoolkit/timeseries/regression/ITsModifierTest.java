@@ -149,4 +149,8 @@ class TramoExpander extends AbstractTsModifier {
         return domain.getFrequency() == var.getDefinitionFrequency();
     }
 
+    @Override
+    public String getName(){
+        return var.getName();
+    }
 }

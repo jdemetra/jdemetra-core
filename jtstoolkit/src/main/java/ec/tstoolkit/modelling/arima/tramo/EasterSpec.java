@@ -93,6 +93,10 @@ public class EasterSpec implements Cloneable, InformationSetSerializable {
         return type_ != Type.Unused;
     }
 
+    public boolean isDefined() {
+        return type_ != Type.Unused && !test_;
+    }
+
     public void setOption(Type type) {
         type_ = type;
     }

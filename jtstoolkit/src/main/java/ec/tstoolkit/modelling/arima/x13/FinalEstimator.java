@@ -127,7 +127,7 @@ public class FinalEstimator implements IModelEstimator {
         //}
 
         // new implementation (cfr Tramo)
-        // search the smallest TVal, remove only 1 parameter
+        // searchVariable the smallest TVal, remove only 1 parameter
 
         int cpr = 0, cps = 0, cqr = 0, cqs = 0;
         double tmin = cval;

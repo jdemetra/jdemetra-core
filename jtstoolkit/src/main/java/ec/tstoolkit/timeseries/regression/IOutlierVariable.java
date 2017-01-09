@@ -60,6 +60,11 @@ public interface IOutlierVariable extends ITsVariable {
         return TsFrequency.Undefined;
     }
     
+    @Override 
+    default String getName(){
+        return getDescription(TsFrequency.Undefined);
+    }
+    
     /**
      *
      * @param start

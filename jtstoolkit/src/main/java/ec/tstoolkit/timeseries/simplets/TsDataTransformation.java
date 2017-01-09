@@ -100,16 +100,16 @@ public class TsDataTransformation implements ITsDataTransformation {
         IReadDataBlock extract = m_tsdata.rextract(jstart, common.getLength());
 	switch (op) {
 	case Diff:
-	    s.apply((x,y)->x-y, extract);
+	    s.apply(extract, (x,y)->x-y);
 	    break;
 	case Product:
-	    s.apply((x,y)->x*y, extract);
+	    s.apply(extract, (x,y)->x*y);
 	    break;
 	case Sum:
-	    s.apply((x,y)->x+y, extract);
+	    s.apply(extract, (x,y)->x+y);
 	    break;
 	case Ratio:
-	    s.apply((x,y)->x/y, extract);
+	    s.apply(extract, (x,y)->x/y);
 	    break;
 
 	default:

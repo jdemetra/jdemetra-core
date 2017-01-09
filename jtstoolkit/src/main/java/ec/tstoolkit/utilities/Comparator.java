@@ -17,7 +17,9 @@
 
 package ec.tstoolkit.utilities;
 
+import ec.tstoolkit.Parameter;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -96,4 +98,5 @@ public class Comparator {
         }
         return c%91;
     }
+
 }

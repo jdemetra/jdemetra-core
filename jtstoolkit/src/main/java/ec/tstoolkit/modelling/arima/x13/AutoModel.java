@@ -105,7 +105,7 @@ public class AutoModel implements IPreprocessingModule {
             context.description.setSpecification(nspec);
             changed = true;
         }
-        if (nmean != context.description.isMean()) {
+        if (nmean != context.description.isEstimatedMean()) {
             context.description.setMean(nmean);
             changed = true;
         }

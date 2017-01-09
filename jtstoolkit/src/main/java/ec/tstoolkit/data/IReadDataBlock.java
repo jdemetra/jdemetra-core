@@ -107,7 +107,7 @@ public interface IReadDataBlock {
         return -1;
     }
 
-    default double computeRecursively(DoubleBinaryOperator fn, final double initial) {
+    default double computeRecursively(final double initial, DoubleBinaryOperator fn) {
         double cur = initial;
         int n = getLength();
         for (int i = n - 1; i >= 0; --i) {

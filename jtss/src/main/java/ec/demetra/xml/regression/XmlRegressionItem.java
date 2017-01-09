@@ -71,7 +71,6 @@ public class XmlRegressionItem {
     @XmlElement(name = "Coefficients")
     protected XmlParameters coefficients;
     @XmlAttribute(name = "name")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlSchemaType(name = "NMTOKEN")
     protected String name;
 

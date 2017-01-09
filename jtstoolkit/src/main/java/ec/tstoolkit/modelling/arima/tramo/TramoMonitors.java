@@ -50,20 +50,20 @@ public class TramoMonitors {
         easter.setDuration(6);
         easter.includeEaster(true);
         easter.setType(EasterVariable.Correction.Simple);
-        desc.getMovingHolidays().add(new Variable(easter, ComponentType.CalendarEffect, RegStatus.ToRemove));
+        desc.getMovingHolidays().add(Variable.movingHolidayVariable(easter, RegStatus.ToRemove));
     }
 
     static void addTradingDays(ModelDescription desc, int ntd) {
         if (ntd == 1 || ntd == 2) {
             GregorianCalendarVariables td = GregorianCalendarVariables.getDefault(TradingDaysType.WorkingDays);
-            desc.getCalendars().add(new Variable(td, ComponentType.CalendarEffect, RegStatus.ToRemove));
+            desc.addVariable(Variable.calendarVariable(td, RegStatus.ToRemove));
         } else if (ntd == 6 || ntd == 7) {
             GregorianCalendarVariables td = GregorianCalendarVariables.getDefault(TradingDaysType.TradingDays);
-            desc.getCalendars().add(new Variable(td, ComponentType.CalendarEffect, RegStatus.ToRemove));
+            desc.addVariable(Variable.calendarVariable(td, RegStatus.ToRemove));
         }
         if (ntd == 2 || ntd == 7) {
             LeapYearVariable lp = new LeapYearVariable(LengthOfPeriodType.LeapYear);
-            desc.getCalendars().add(new Variable(lp, ComponentType.CalendarEffect, RegStatus.ToRemove));
+            desc.addVariable(Variable.calendarVariable(lp, RegStatus.ToRemove));
         }
     }
 

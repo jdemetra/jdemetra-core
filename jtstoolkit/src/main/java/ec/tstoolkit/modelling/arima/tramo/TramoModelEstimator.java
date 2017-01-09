@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.modelling.arima.tramo;
 
 import ec.tstoolkit.arima.ArimaException;
@@ -39,13 +38,13 @@ public class TramoModelEstimator extends RegArimaEstimator {
 
     public static final double TRAMO_EPS = 1e-4;
 
-     public TramoModelEstimator(IParametricMapping<SarimaModel> mapping) {
+    public TramoModelEstimator(IParametricMapping<SarimaModel> mapping) {
         super(mapping);
-        eps_=TRAMO_EPS;
+        eps_ = TRAMO_EPS;
         super.setStartingPoint(StartingPoint.HannanRissanen);
     }
 
-     @Override
+    @Override
     protected void computepvar(GlsSarimaMonitor monitor, RegArimaEstimation<SarimaModel> rslt) {
 
         int n = rslt.likelihood.getDegreesOfFreedom(true, mapping_.getDim());
@@ -175,7 +174,6 @@ public class TramoModelEstimator extends RegArimaEstimator {
 //                }
 //            }
 //        } 
-
 //        int icur=spec.getP()+spec.getQ()+spec.getBP();
 //        if (! fixed[icur] && spec.getP() <= 1 && spec.getQ() == 1 && Math.abs(arima.))
 //        if () {

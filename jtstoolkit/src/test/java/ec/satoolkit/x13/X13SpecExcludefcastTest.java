@@ -25,6 +25,7 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import java.util.Date;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -136,6 +137,7 @@ public class X13SpecExcludefcastTest {
 
     }
 
+    @Ignore
     @Test
     public void CalendarsigmaAllForcast18ExcludefcNo() {
         setInputData();

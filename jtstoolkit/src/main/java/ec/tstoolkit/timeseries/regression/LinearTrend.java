@@ -66,4 +66,9 @@ public class LinearTrend extends AbstractSingleTsVariable {
 	return true;
     }
 
+    @Override
+    public String getName(){
+        return "trend";
+    }
+
 }

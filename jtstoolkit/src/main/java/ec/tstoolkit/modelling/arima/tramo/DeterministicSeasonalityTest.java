@@ -20,6 +20,7 @@ package ec.tstoolkit.modelling.arima.tramo;
 import ec.tstoolkit.arima.estimation.IRegArimaProcessor;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.modelling.ComponentType;
+import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.IOutliersDetectionModule;
 import ec.tstoolkit.modelling.arima.JointRegressionTest;
@@ -67,8 +68,8 @@ public class DeterministicSeasonalityTest {
         // Add Seasonal dummy variables
 //        
         SeasonalDummies sd = new SeasonalDummies(context.description.getEstimationDomain().getFrequency());
-        Variable tvar = new Variable(sd, ComponentType.Seasonal);
-        md.getUserVariables().add(tvar);
+        Variable tvar = Variable.userVariable(sd, ComponentType.Seasonal, RegStatus.Prespecified);
+        md.addVariable(tvar);
         SarimaSpecification spec = md.getSpecification();
         spec.setBP(0);
         spec.setBD(0);

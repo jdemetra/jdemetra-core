@@ -26,11 +26,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Modifier of a regression variable.
- * That modifier generates a new variable, which is equivalent to the original up or to a given date,
- * an is set to 0 for the other periods.
- * See the ChangeOfRegimeType enumeration for further details.
- * 
+ * Modifier of a regression variable. That modifier generates a new variable,
+ * which is equivalent to the original up or to a given date, an is set to 0 for
+ * the other periods. See the ChangeOfRegimeType enumeration for further
+ * details.
+ *
  * @deprecated Since 2.2.0 Use TsVariableWindow
  * @author Jean Palate
  */
@@ -40,9 +40,10 @@ public class ChangeOfRegime extends AbstractTsModifier {
 
     private final ChangeOfRegimeType regime;
     private final Day day;
- 
+
     /**
      * Creates a new "change of regime" variable
+     *
      * @param var The modified variable
      * @param regime The type of the change of regime
      * @param day The day that defines the change of regime.
@@ -122,6 +123,7 @@ public class ChangeOfRegime extends AbstractTsModifier {
 
     /**
      * Returns the day that defines the change of regime
+     *
      * @return
      */
     public Day getDay() {
@@ -194,5 +196,29 @@ public class ChangeOfRegime extends AbstractTsModifier {
                 return var.isSignificant(domc);
             }
         }
+    }
+
+    @Override
+    public String getName() {
+        String name = var.getName();
+        int pos = name.indexOf('#');
+        String sname = name, suffix = null;
+        if (pos >= 0) {
+            sname = name.substring(0, pos);
+            suffix = name.substring(pos);
+        }
+        StringBuilder builder = new StringBuilder();
+        if (regime == ChangeOfRegimeType.ZeroEnded) {
+            builder.append(sname);
+            builder.append("//)");
+        } else {
+            builder.append("(//");
+            builder.append(sname);
+        }
+        if (suffix != null) {
+            builder.append(suffix);
+        }
+        return builder.toString();
+
     }
 }
