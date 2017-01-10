@@ -32,7 +32,6 @@ import java.util.GregorianCalendar;
 @Development(status = Development.Status.Alpha)
 public class JulianEasterVariable extends AbstractSingleTsVariable implements IEasterVariable {
 
-
     private static final int CYCLE = 532;
 
     private static final int[] C_MAR = new int[]{
@@ -48,6 +47,20 @@ public class JulianEasterVariable extends AbstractSingleTsVariable implements IE
         252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252
     };
 
+    private static final int TWOCYCLE = CYCLE * 2;
+
+    private static final int[] C_MAR2 = new int[]{
+        1, 3, 8, 22, 51, 91, 145, 226, 343, 488, 657, 858, 1099, 1379, 1692, 2036, 2414, 2828,
+        3284, 3779, 4307, 4866, 5458, 6092, 6764, 7469, 8204, 8971
+    };
+    private static final int[] C_APR2 = new int[]{
+        878, 1784, 2713, 3664, 4633, 5613, 6586, 7547, 8484, 9400, 10293, 11155, 11978, 12762, 13513, 14233,
+        14919, 15569, 16177, 16746, 17282, 17787, 18259, 18689, 19081, 19440, 19769, 20066
+    };
+    private static final int[] C_MAY2 = new int[]{
+        185,341,471,570,636,680,717,739,749,752,754,755,
+        755,755,755,755,755,755,755,755,755,755,755,755,755,755,755,755
+    };
     private int dur_ = 6;
 
     private boolean m_gc = true;
@@ -97,7 +110,7 @@ public class JulianEasterVariable extends AbstractSingleTsVariable implements IE
         if (freq < 3) {
             return;
         }
-        double q = CYCLE * dur_;
+        double q = TWOCYCLE * dur_;
         int n = data.getLength();
         int y = start.getYear();
         TsPeriod march = new TsPeriod(TsFrequency.Monthly, y, 2),
@@ -105,7 +118,7 @@ public class JulianEasterVariable extends AbstractSingleTsVariable implements IE
                 may = new TsPeriod(TsFrequency.Monthly, y, 4);
         Day beg = start.firstday(), end = start.plus(n).lastday();
         while (true) {
-            Day easter = Utilities.julianEaster(y, m_gc);
+            Day easter = Utilities.julianEaster3(y, m_gc);
             if (beg.isBefore(easter)) {
                 // computes the number of days in M, A, M
                 Day pbeg = easter.minus(dur_);
@@ -124,17 +137,17 @@ public class JulianEasterVariable extends AbstractSingleTsVariable implements IE
                 TsPeriod cur = new TsPeriod(start.getFrequency(), march);
                 int ipos = cur.minus(start);
                 if (ipos >= 0 && ipos < n) {
-                    data.add(ipos, n0 / dur - C_MAR[dur_ - 1] / q);
+                    data.add(ipos, n0 / dur - C_MAR2[dur_ - 1] / q);
                 }
                 cur = new TsPeriod(start.getFrequency(), april);
                 ipos = cur.minus(start);
                 if (ipos >= 0 && ipos < n) {
-                    data.add(ipos, n1 / dur - C_APR[dur_ - 1] / q);
+                    data.add(ipos, n1 / dur - C_APR2[dur_ - 1] / q);
                 }
                 cur = new TsPeriod(start.getFrequency(), may);
                 ipos = cur.minus(start);
                 if (ipos >= 0 && ipos < n) {
-                    data.add(ipos, n2 / dur - C_MAY[dur_ - 1] / q);
+                    data.add(ipos, n2 / dur - C_MAY2[dur_ - 1] / q);
                 }
             }
             march.move(12);
@@ -150,6 +163,6 @@ public class JulianEasterVariable extends AbstractSingleTsVariable implements IE
 
     @Override
     public boolean isSignificant(TsDomain domain) {
-        return domain.getFrequency().intValue()>2;
+        return domain.getFrequency().intValue() > 2;
     }
 }
