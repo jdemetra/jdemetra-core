@@ -176,6 +176,7 @@ public class Utilities {
      * @param gregorian Gregorian (true) or Julian (false) day
      * @return Easter day
      */
+    @Deprecated
     public static Day julianEaster(int year, boolean gregorian) {
         int a = year % 19;
         int b = year % 4;
@@ -200,6 +201,7 @@ public class Utilities {
         }
     }
 
+    @Deprecated
     public static Day julianEaster2(int year, boolean gregorian) {
         int g = year % 19;
         int i = (19 * g + 15) % 30;
@@ -212,6 +214,81 @@ public class Utilities {
             return easter.plus(13);
         } else {
             return easter;
+        }
+    }
+
+    /**
+     * Converts a Julian date into a Julian day number
+     *
+     * @param year
+     * @param month From 1 to 12
+     * @param day From 1 to 31
+     * @return The Julian day
+     */
+    public static int julianDate2JDN(int year, int month, int day) {
+        int a = (14 - month) / 12;
+        int y = year + 4800 - a;
+        int m = month + (12 * a) - 3;
+        return day + ((153 * m + 2) / 5) + 365 * y + y / 4 - 32083;
+    }
+
+    /**
+     * Converts a Gregorian date into a Julian day number
+     *
+     * @param year
+     * @param month From 1 to 12
+     * @param day From 1 to 31
+     * @return The Julian day
+     */
+    public static int gregorianDate2JDN(int year, int month, int day) {
+        int a = (14 - month) / 12;
+        int y = year + 4800 - a;
+        int m = month + (12 * a) - 3;
+        return day + ((153 * m + 2) / 5) + 365 * y + y / 4 - y / 100 + y / 400 - 32045;
+    }
+
+    /**
+     * Converts a Julian day number into a Gregorian date
+     * @param jdn The Julian date number 
+     * @return 
+     */
+    public static Day JDN2GregorianDate(int jdn) {
+        final int y=4716, v=3, j=1401, u=5, m= 2, s= 153, n=12, w=2, r=4, B=274277, p= 1461, C=-38;
+
+        int f = jdn + j +(((4 * jdn + B) / 146097) * 3) / 4 + C;
+        int e = r * f + v;
+        int g = (e% p) / r;
+        int h = u * g + w;
+        int D = (h% s) / u ;
+        int M = ((h / s + m)% n);
+        int Y = (e / p) - y + (n + m - M) / n;
+        return new Day(Y, Month.valueOf(M), D);
+    }
+
+    /**
+     * Returns the Julian Easter (Delambre's algorithm)
+     *
+     * @param year Considered year
+     * @param gregorian Gregorian (true) or Julian (false) day
+     * @return Easter day
+     */
+    public static Day julianEaster3(int year, boolean gregorian) {
+        int a = year % 19;
+        int b = year % 4;
+        int c = year % 7;
+        int d = (19 * a + 15) % 30;
+        int e = (2 * b + 4 * c - d + 34) % 7;
+        int f = d + e + 114;
+        /*
+       * month and day give the Easter date in the Julian calendar
+         */
+        int month = f / 31;
+        int day = (f % 31) + 1;
+        Day easterJ = new Day(year, Month.valueOf(month - 1), day - 1);
+        if (gregorian) {
+            return JDN2GregorianDate(julianDate2JDN(year, month, day));
+        } else {
+            return easterJ;
         }
     }
 
@@ -422,8 +499,8 @@ public class Utilities {
     /**
      *
      * @param domain
-     * @return Arrays with the number of Sundays, ..., Saturdays.
-     * td[0][k] is the number of Sundays in the period k.
+     * @return Arrays with the number of Sundays, ..., Saturdays. td[0][k] is
+     * the number of Sundays in the period k.
      */
     public static int[][] tdCount(TsDomain domain) {
         int[][] rslt = new int[7][];
@@ -532,7 +609,7 @@ public class Utilities {
      * The probability that Easter falls on April,4 + K (or March, 22 + K) is
      * defined by PROB[K]/CYCLE
      */
-    static final int CYCLE = 532;
+    static final int CYCLE = 532, TWOCYCLE=CYCLE<<1;
     static final int[] PROB = new int[]{
         4, 8, 8, 12, 16, 16, 20, 16, 16, 20, 16, 16, 20, 16, 20, 20, 16, 20, 16, 16, 20, 16, 16, 20, 16, 20, 16, 16, 20, 16, 12, 12, 8, 8, 4
     };
@@ -541,19 +618,26 @@ public class Utilities {
      * Computes the probability for a given Easter date, in the Gregorian
      * calendar.
      *
-     * @param pos Pos is the position between 4/4 and 8/5 (from 0 to 35
+     * @param pos Pos is the position between 1/4 and 13/5 (from 0 to 43
      * (excluded)
      * @return The requested probability. For instance, probJulianEaster(0)
      * gives the probability that the Julian Easter falls on April, 4
      */
     public static double probJulianEaster(int pos) {
-        if (pos < 0 || pos >= 35) {
+        if (pos < 0 || pos >= 43) {
             return 0;
         } else {
-            double denom = CYCLE;
-            return PROB[pos] / denom;
+            double denom = TWOCYCLE;
+            return JD[pos] / denom;
         }
     }
+    
+    private static final int[] JD={
+        1,1,3,9,15,11,14,27,36,28,24,32,40,39,33,31,
+        34,36,42,39,33,31,33,42,38,33,30,32,39,40,
+        33,29,26,31,33,22,7,15,12,7,1,1,1
+    };        
+
 
     /**
      * Computes the probability for a given Easter date. The current
