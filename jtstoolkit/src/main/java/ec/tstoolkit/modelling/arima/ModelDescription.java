@@ -545,6 +545,12 @@ public class ModelDescription implements Cloneable {
                 .collect(Collectors.toList());
     }
 
+    public List<PreadjustmentVariable> selectPreadjustmentVariables(Predicate<PreadjustmentVariable> pred) {
+        return preadjustment.stream()
+                .filter(pred)
+                .collect(Collectors.toList());
+    }
+
     public boolean contains(Predicate<Variable> pred) {
         return variables.stream().anyMatch(pred);
     }

@@ -26,13 +26,14 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import ec.tstoolkit.utilities.StringFormatter;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class Ramp extends AbstractSingleTsVariable implements Cloneable {
+public class Ramp extends AbstractSingleTsVariable implements IUserTsVariable, Cloneable {
 
     private Day start, end;
 
@@ -184,7 +185,7 @@ public class Ramp extends AbstractSingleTsVariable implements Cloneable {
 
     @Override
     public String getName() {
-        return toString();
+        return toString().replace('.','$');
     }
 
     public static Ramp fromString(String s) {
