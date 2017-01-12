@@ -19,6 +19,7 @@ package ec.tstoolkit.modelling;
 import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.data.DataBlock;
+import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.data.ReadDataBlock;
 import ec.tstoolkit.information.InformationMapper;
 import ec.tstoolkit.modelling.arima.ModelEstimation;
@@ -414,7 +415,7 @@ public class DeterministicComponent implements IProcResults {
         return function_ == DefaultTransformationType.Log;
     }
     
-    public boolean setCoefficients(ReadDataBlock c) {
+    public boolean setCoefficients(IReadDataBlock c) {
         if (c.getLength() != countRegressors(reg->true))
             return false;
         int cur=0;
