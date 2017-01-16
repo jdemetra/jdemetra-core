@@ -22,6 +22,7 @@ import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.dstats.T;
 import ec.tstoolkit.eco.ConcentratedLikelihood;
 import ec.tstoolkit.modelling.DefaultTransformationType;
+import ec.tstoolkit.modelling.PreadjustmentVariable;
 import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.JointRegressionTest;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
@@ -48,6 +49,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  *
@@ -238,32 +240,44 @@ public class HtmlRegArima extends AbstractHtmlElement {
     }
 
     public void writeRegression(HtmlStream stream, boolean outliers) throws IOException {
-        RegArimaModel<SarimaModel> regarima = model_.estimation.getRegArima();
-        writeMean(stream, regarima);
+        writeMean(stream);
         TsFrequency context = context();
-        writeRegressionItems(stream, ITradingDaysVariable.class, context);
-        writeRegressionItems(stream, ILengthOfPeriodVariable.class, context);
-        writeRegressionItems(stream, IMovingHolidayVariable.class, context);
+        writeRegressionItems(stream, context, true, var -> var instanceof ITradingDaysVariable);
+        writeRegressionItems(stream, context, false, var -> var instanceof ILengthOfPeriodVariable);
+        writeFixedRegressionItems(stream, "Fixed calendar effects", context, var -> var.isCalendar());
+        writeRegressionItems(stream, context, false, var->var instanceof IMovingHolidayVariable);
+        writeFixedRegressionItems(stream, "Fixed moving holidays effects", context, var -> var.isMovingHoliday());
         if (outliers) {
             writeOutliers(stream, true, context);
             writeOutliers(stream, false, context);
+            writeFixedRegressionItems(stream, "Fixed outliers", context, var->var.isOutlier());
         }
-        writeRamps(stream);
-        writeInterventionVariables(stream);
-        writeRegressionItems(stream, IUserTsVariable.class, context);
+        writeRegressionItems(stream, "Ramps", context, var->var instanceof Ramp);
+        writeRegressionItems(stream, "Intervention variables", context, var->var instanceof InterventionVariable);
+        writeRegressionItems(stream, "Ramps", context, var->var instanceof IUserTsVariable 
+                && !(var instanceof InterventionVariable) && !(var instanceof Ramp));
+        writeFixedRegressionItems(stream, "Fixed other regression effects", context, var->var.isUser());
         writeMissing(stream);
     }
 
-    private void writeMean(HtmlStream stream, RegArimaModel<SarimaModel> regarima) throws IOException {
-        if (!regarima.isMeanCorrection()) {
+    private void writeMean(HtmlStream stream) throws IOException {
+        if (!model_.description.isMean()) {
             return;
         }
+        if (model_.description.isEstimatedMean()) {
+            writeEstimatedMean(stream);
+        } else {
+            writeFixedMean(stream);
+        }
+    }
+
+    private void writeEstimatedMean(HtmlStream stream) throws IOException {
         double[] b = ll_.getB();
         stream.write(HtmlTag.HEADER3, h3, "Mean");
         stream.open(new HtmlTable(0, 400));
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableCell("", 100));
-        stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
+        stream.write(new HtmlTableCell("Coefficient", 100, HtmlStyle.Bold));
         stream.write(new HtmlTableCell("T-Stat", 100, HtmlStyle.Bold));
         stream.write(new HtmlTableCell("P[|T| &gt t]", 100, HtmlStyle.Bold));
         stream.close(HtmlTag.TABLEROW);
@@ -276,6 +290,21 @@ public class HtmlRegArima extends AbstractHtmlElement {
         stream.write(new HtmlTableCell(formatT(tval), 100));
         double prob = 1 - t.getProbabilityForInterval(-tval, tval);
         stream.write(new HtmlTableCell(df4.format(prob), 100));
+        stream.close(HtmlTag.TABLEROW);
+        stream.close(HtmlTag.TABLE);
+        stream.newLine();
+    }
+
+    private void writeFixedMean(HtmlStream stream) throws IOException {
+        stream.write(HtmlTag.HEADER3, h3, "Fixed mean");
+        stream.open(new HtmlTable(0, 200));
+        stream.open(HtmlTag.TABLEROW);
+        stream.write(new HtmlTableCell("", 100));
+        stream.write(new HtmlTableCell("Coefficient", 100, HtmlStyle.Bold));
+        stream.close(HtmlTag.TABLEROW);
+        stream.open(HtmlTag.TABLEROW);
+        stream.write(new HtmlTableCell("mu", 100));
+        stream.write(new HtmlTableCell(df4.format(model_.description.getArimaComponent().getMeanCorrection()), 100));
         stream.close(HtmlTag.TABLEROW);
         stream.close(HtmlTag.TABLE);
         stream.newLine();
@@ -321,8 +350,8 @@ public class HtmlRegArima extends AbstractHtmlElement {
         stream.newLine();
     }
 
-    private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, Class<V> tclass, TsFrequency context) throws IOException {
-        TsVariableSelection<ITsVariable> regs = x_.selectCompatible(tclass);
+    private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, TsFrequency context, boolean jointest, Predicate<ITsVariable> predicate) throws IOException {
+        TsVariableSelection<ITsVariable> regs = x_.select(predicate);
         if (regs.isEmpty()) {
             return;
         }
@@ -375,7 +404,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
             stream.newLine();
         }
         int nvars = regs.getVariablesCount();
-        if (regs.getItemsCount() == 1 && nvars > 1) {
+        if (jointest && regs.getItemsCount() == 1 && nvars > 1) {
             JointRegressionTest jtest = new JointRegressionTest(.05);
             boolean ok = jtest.accept(ll_, nhp_, start + regs.get(0).position, nvars, null);
             StringBuilder builder = new StringBuilder();
@@ -391,17 +420,15 @@ public class HtmlRegArima extends AbstractHtmlElement {
         }
     }
 
-    private <V extends ITsVariable> void writeInterventionVariables(HtmlStream stream) throws IOException {
-        TsVariableSelection<InterventionVariable> regs = x_.select(InterventionVariable.class);
+    private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, String header, TsFrequency context, Predicate<ITsVariable> predicate) throws IOException {
+        TsVariableSelection<ITsVariable> regs = x_.select(predicate);
         if (regs.isEmpty()) {
             return;
         }
+        if (header != null) {
+            stream.write(HtmlTag.HEADER3, h3, header);
+        }
         T t = new T();
-        t.setDegreesofFreedom(ll_.getDegreesOfFreedom(true, nhp_));
-        double[] b = ll_.getB();
-        int start = model_.description.getRegressionVariablesStartingPosition();
-        stream.write(HtmlTag.HEADER3, h3, "Intervention variables");
-
         stream.open(new HtmlTable(0, 400));
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableCell("", 100));
@@ -409,56 +436,223 @@ public class HtmlRegArima extends AbstractHtmlElement {
         stream.write(new HtmlTableCell("T-Stat", 100, HtmlStyle.Bold));
         stream.write(new HtmlTableCell("P[|T| &gt t]", 100, HtmlStyle.Bold));
         stream.close(HtmlTag.TABLEROW);
-
-        for (TsVariableSelection.Item<InterventionVariable> reg : regs.elements()) {
-            stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell(reg.variable.toString(TsFrequency.valueOf(model_.description.getFrequency())), 100));
-            stream.write(new HtmlTableCell(df4.format(b[start + reg.position]), 100));
-            double tval = ll_.getTStat(start + reg.position, true, nhp_);
-            stream.write(new HtmlTableCell(formatT(tval), 100));
-            double prob = 1 - t.getProbabilityForInterval(-tval, tval);
-            stream.write(new HtmlTableCell(df4.format(prob), 100));
-            stream.close(HtmlTag.TABLEROW);
-        }
-
-        stream.close(HtmlTag.TABLE);
-        stream.newLine();
-    }
-
-    private <V extends ITsVariable> void writeRamps(HtmlStream stream) throws IOException {
-        TsVariableSelection<Ramp> regs = x_.select(Ramp.class);
-        if (regs.isEmpty()) {
-            return;
-        }
-        T t = new T();
         t.setDegreesofFreedom(ll_.getDegreesOfFreedom(true, nhp_));
         double[] b = ll_.getB();
         int start = model_.description.getRegressionVariablesStartingPosition();
-        stream.write(HtmlTag.HEADER3, h3, "Ramps");
+        for (TsVariableSelection.Item<ITsVariable> reg : regs.elements()) {
+            int ndim = reg.variable.getDim();
+            for (int j = 0; j < reg.variable.getDim(); ++j) {
+                stream.open(HtmlTag.TABLEROW);
+                if (ndim > 1) {
+                    stream.write(new HtmlTableCell(reg.variable.getItemDescription(j, context), 100));
+                } else {
+                    stream.write(new HtmlTableCell("", 100));
+                }
+                stream.write(new HtmlTableCell(df4.format(b[start + j + reg.position]), 100));
+                double tval = ll_.getTStat(start + j + reg.position, true, nhp_);
+                stream.write(new HtmlTableCell(formatT(tval), 100));
+                double prob = 1 - t.getProbabilityForInterval(-tval, tval);
+                stream.write(new HtmlTableCell(df4.format(prob), 100));
+                stream.close(HtmlTag.TABLEROW);
+            }
+        }
+        stream.close(HtmlTag.TABLE);
+        stream.newLine();
+    }
 
-        stream.open(new HtmlTable(0, 400));
+    private <V extends ITsVariable> void writeFixedRegressionItems(HtmlStream stream, String header, TsFrequency context, Predicate<PreadjustmentVariable> predicate) throws IOException {
+        List<PreadjustmentVariable> regs = model_.description.selectPreadjustmentVariables(predicate);
+        if (regs.isEmpty()) {
+            return;
+        }
+        if (header != null) {
+            stream.write(HtmlTag.HEADER3, h3, header);
+        }
+        stream.open(new HtmlTable(0, 200));
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableCell("", 100));
         stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
-        stream.write(new HtmlTableCell("T-Stat", 100, HtmlStyle.Bold));
-        stream.write(new HtmlTableCell("P[|T| &gt t]", 100, HtmlStyle.Bold));
         stream.close(HtmlTag.TABLEROW);
 
-        for (TsVariableSelection.Item<Ramp> reg : regs.elements()) {
-            stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell(reg.variable.toString(TsFrequency.valueOf(model_.description.getFrequency())), 100));
-            stream.write(new HtmlTableCell(df4.format(b[start + reg.position]), 100));
-            double tval = ll_.getTStat(start + reg.position, true, nhp_);
-            stream.write(new HtmlTableCell(formatT(tval), 100));
-            double prob = 1 - t.getProbabilityForInterval(-tval, tval);
-            stream.write(new HtmlTableCell(df4.format(prob), 100));
-            stream.close(HtmlTag.TABLEROW);
+        for (PreadjustmentVariable reg : regs) {
+            ITsVariable cur = reg.getVariable();
+            double[] c = reg.getCoefficients();
+            for (int j = 0; j < cur.getDim(); ++j) {
+                stream.open(HtmlTag.TABLEROW);
+                stream.write(new HtmlTableCell(cur.getItemDescription(j, context), 100));
+                stream.write(new HtmlTableCell(df4.format(c[j]), 100));
+                stream.close(HtmlTag.TABLEROW);
+            }
         }
 
         stream.close(HtmlTag.TABLE);
         stream.newLine();
     }
 
+    private <V extends ITsVariable> void writeFixedRegressionItems(HtmlStream stream, TsFrequency context, Predicate<PreadjustmentVariable> predicate) throws IOException {
+        List<PreadjustmentVariable> regs = model_.description.selectPreadjustmentVariables(predicate);
+        if (regs.isEmpty()) {
+            return;
+        }
+        for (PreadjustmentVariable reg : regs) {
+            ITsVariable cur = reg.getVariable();
+            stream.write(HtmlTag.HEADER3, h3, cur.getDescription(context));
+            stream.open(new HtmlTable(0, 200));
+            stream.open(HtmlTag.TABLEROW);
+            stream.write(new HtmlTableCell("", 100));
+            stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
+            stream.close(HtmlTag.TABLEROW);
+
+            double[] c = reg.getCoefficients();
+            for (int j = 0; j < cur.getDim(); ++j) {
+                stream.open(HtmlTag.TABLEROW);
+                stream.write(new HtmlTableCell(cur.getItemDescription(j, context), 100));
+                stream.write(new HtmlTableCell(df4.format(c[j]), 100));
+                stream.close(HtmlTag.TABLEROW);
+            }
+            stream.close(HtmlTag.TABLE);
+            stream.newLine();
+        }
+
+    }
+
+//    private <V extends ITsVariable> void writeInterventionVariables(HtmlStream stream) throws IOException {
+//        TsVariableSelection<InterventionVariable> regs = x_.select(InterventionVariable.class);
+//        if (regs.isEmpty()) {
+//            return;
+//        }
+//        T t = new T();
+//        t.setDegreesofFreedom(ll_.getDegreesOfFreedom(true, nhp_));
+//        double[] b = ll_.getB();
+//        int start = model_.description.getRegressionVariablesStartingPosition();
+//        stream.write(HtmlTag.HEADER3, h3, "Intervention variables");
+//
+//        stream.open(new HtmlTable(0, 400));
+//        stream.open(HtmlTag.TABLEROW);
+//        stream.write(new HtmlTableCell("", 100));
+//        stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
+//        stream.write(new HtmlTableCell("T-Stat", 100, HtmlStyle.Bold));
+//        stream.write(new HtmlTableCell("P[|T| &gt t]", 100, HtmlStyle.Bold));
+//        stream.close(HtmlTag.TABLEROW);
+//
+//        for (TsVariableSelection.Item<InterventionVariable> reg : regs.elements()) {
+//            stream.open(HtmlTag.TABLEROW);
+//            stream.write(new HtmlTableCell(reg.variable.toString(TsFrequency.valueOf(model_.description.getFrequency())), 100));
+//            stream.write(new HtmlTableCell(df4.format(b[start + reg.position]), 100));
+//            double tval = ll_.getTStat(start + reg.position, true, nhp_);
+//            stream.write(new HtmlTableCell(formatT(tval), 100));
+//            double prob = 1 - t.getProbabilityForInterval(-tval, tval);
+//            stream.write(new HtmlTableCell(df4.format(prob), 100));
+//            stream.close(HtmlTag.TABLEROW);
+//        }
+//
+//        stream.close(HtmlTag.TABLE);
+//        stream.newLine();
+//    }
+//
+//    private <V extends ITsVariable> void writeOtherVariables(HtmlStream stream, TsFrequency context) throws IOException {
+//        TsVariableSelection<ITsVariable> regs = x_.select(var -> (var instanceof IUserTsVariable) && !(var instanceof Ramp) && !(var instanceof InterventionVariable));
+//        if (regs.isEmpty()) {
+//            return;
+//        }
+//        T t = new T();
+//        t.setDegreesofFreedom(ll_.getDegreesOfFreedom(true, nhp_));
+//        double[] b = ll_.getB();
+//        int start = model_.description.getRegressionVariablesStartingPosition();
+//        stream.write(HtmlTag.HEADER3, h3, "User variables");
+//
+//        stream.open(new HtmlTable(0, 400));
+//        stream.open(HtmlTag.TABLEROW);
+//        stream.write(new HtmlTableCell("", 100));
+//        stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
+//        stream.write(new HtmlTableCell("T-Stat", 100, HtmlStyle.Bold));
+//        stream.write(new HtmlTableCell("P[|T| &gt t]", 100, HtmlStyle.Bold));
+//        stream.close(HtmlTag.TABLEROW);
+//
+//        for (TsVariableSelection.Item<ITsVariable> reg : regs.elements()) {
+//            for (int j = 0; j < reg.variable.getDim(); ++j) {
+//                stream.open(HtmlTag.TABLEROW);
+//                stream.write(new HtmlTableCell(reg.variable.getItemDescription(j, context), 100));
+//                stream.write(new HtmlTableCell(df4.format(b[start + reg.position + j]), 100));
+//                double tval = ll_.getTStat(start + reg.position + j, true, nhp_);
+//                stream.write(new HtmlTableCell(formatT(tval), 100));
+//                double prob = 1 - t.getProbabilityForInterval(-tval, tval);
+//                stream.write(new HtmlTableCell(df4.format(prob), 100));
+//                stream.close(HtmlTag.TABLEROW);
+//            }
+//        }
+//
+//        stream.close(HtmlTag.TABLE);
+//        stream.newLine();
+//    }
+//
+//    private <V extends ITsVariable> void writeFixedOtherVariables(HtmlStream stream, TsFrequency context) throws IOException {
+//        List<PreadjustmentVariable> regs = model_.description.selectPreadjustmentVariables(var
+//                -> {
+//            ITsVariable tvar = var.getVariable();
+//            return (tvar instanceof IUserTsVariable) && !(tvar instanceof Ramp) && !(tvar instanceof InterventionVariable);
+//        });
+//
+//        if (regs.isEmpty()) {
+//            return;
+//        }
+//        stream.write(HtmlTag.HEADER3, h3, "Fixed user variables");
+//
+//        stream.open(new HtmlTable(0, 200));
+//        stream.open(HtmlTag.TABLEROW);
+//        stream.write(new HtmlTableCell("", 200));
+//        stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
+//        stream.close(HtmlTag.TABLEROW);
+//
+//        for (PreadjustmentVariable reg : regs) {
+//            ITsVariable cur = reg.getVariable();
+//            double[] c = reg.getCoefficients();
+//            for (int j = 0; j < cur.getDim(); ++j) {
+//                stream.open(HtmlTag.TABLEROW);
+//                stream.write(new HtmlTableCell(cur.getItemDescription(j, context), 100));
+//                stream.write(new HtmlTableCell(df4.format(c[j]), 100));
+//                stream.close(HtmlTag.TABLEROW);
+//            }
+//        }
+//
+//        stream.close(HtmlTag.TABLE);
+//        stream.newLine();
+//    }
+//
+//    private <V extends ITsVariable> void writeRamps(HtmlStream stream, TsFrequency context) throws IOException {
+//        TsVariableSelection<Ramp> regs = x_.select(Ramp.class);
+//        if (regs.isEmpty()) {
+//            return;
+//        }
+//        T t = new T();
+//        t.setDegreesofFreedom(ll_.getDegreesOfFreedom(true, nhp_));
+//        double[] b = ll_.getB();
+//        int start = model_.description.getRegressionVariablesStartingPosition();
+//        stream.write(HtmlTag.HEADER3, h3, "Ramps");
+//
+//        stream.open(new HtmlTable(0, 400));
+//        stream.open(HtmlTag.TABLEROW);
+//        stream.write(new HtmlTableCell("", 100));
+//        stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
+//        stream.write(new HtmlTableCell("T-Stat", 100, HtmlStyle.Bold));
+//        stream.write(new HtmlTableCell("P[|T| &gt t]", 100, HtmlStyle.Bold));
+//        stream.close(HtmlTag.TABLEROW);
+//
+//        for (TsVariableSelection.Item<Ramp> reg : regs.elements()) {
+//            stream.open(HtmlTag.TABLEROW);
+//            stream.write(new HtmlTableCell(reg.variable.getDescription(context), 100));
+//            stream.write(new HtmlTableCell(df4.format(b[start + reg.position]), 100));
+//            double tval = ll_.getTStat(start + reg.position, true, nhp_);
+//            stream.write(new HtmlTableCell(formatT(tval), 100));
+//            double prob = 1 - t.getProbabilityForInterval(-tval, tval);
+//            stream.write(new HtmlTableCell(df4.format(prob), 100));
+//            stream.close(HtmlTag.TABLEROW);
+//        }
+//
+//        stream.close(HtmlTag.TABLE);
+//        stream.newLine();
+//    }
+//
     private void writeMissing(HtmlStream stream) throws IOException {
         MissingValueEstimation[] missings = model_.missings(true);
         if (missings == null) {

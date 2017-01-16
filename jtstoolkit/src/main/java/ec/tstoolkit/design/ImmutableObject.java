@@ -18,30 +18,17 @@
 
 package ec.tstoolkit.design;
 
-import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The visible state of objects of this class doesn't change after their
- * creation.
- * Those objects should not be cloned or copied.
- * They are thread safe
- * 
- * General rules:
- * - the object is fully initialized in the constructor (fields should be final)
- * - the class should be final
- * 
- * Special cases: 
- * - the initialization of some fields could be delayed, for performances issues.
- * - in that case, the internal code should preserve the integrity of the object in a multi-threaded context.
+ * Identifies methods that return immutable objects. 
  * 
  * @author Jean Palate
  */
-@Target( { ElementType.TYPE })
+@Target( { ElementType.METHOD })
 @Retention(RetentionPolicy.SOURCE)
-@Documented
-public @interface Immutable {
+public @interface ImmutableObject {
 }

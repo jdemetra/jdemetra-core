@@ -25,23 +25,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The visible state of objects of this class doesn't change after their
- * creation.
- * Those objects should not be cloned or copied.
- * They are thread safe
- * 
- * General rules:
- * - the object is fully initialized in the constructor (fields should be final)
- * - the class should be final
- * 
- * Special cases: 
- * - the initialization of some fields could be delayed, for performances issues.
- * - in that case, the internal code should preserve the integrity of the object in a multi-threaded context.
+ * Identifies a class whose global (static) resources are thread-safe
+ * Different objects of this class can be safely accessed/modified from different threads.
+ *
+ * This is the default thread property of the classes of JD+
  * 
  * @author Jean Palate
  */
 @Target( { ElementType.TYPE })
 @Retention(RetentionPolicy.SOURCE)
 @Documented
-public @interface Immutable {
+public @interface NotThreadSafe {
 }
