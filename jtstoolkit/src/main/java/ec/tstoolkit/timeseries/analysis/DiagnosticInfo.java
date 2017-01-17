@@ -49,5 +49,22 @@ public enum DiagnosticInfo {
     /**
      *
      */
-    AnnualDifference
+    AnnualDifference;
+    
+    public DiagnosticTsFunction asFunction(){
+        switch (this){
+        
+            case AbsoluteDifference:
+                return (ref, s, pos)->ref.get(pos)-s.get(pos);
+            case RelativeDifference:
+                return (ref, s, pos)->{
+                    double T=ref.get(pos);
+                    return (T-s.get(pos))/T;
+                };
+            
+            default:
+                return (ref, s,pos)->Double.NaN;
+        }
+        
+    }
 }
