@@ -17,7 +17,6 @@
 package ec.tss.sa;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
 import ec.satoolkit.GenericSaProcessingFactory;
 import ec.satoolkit.ISaSpecification;
 import ec.tss.Ts;
@@ -48,7 +47,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SaItem {
 
     public static final String DOMAIN_SPEC = "domainspec", ESTIMATION_SPEC = "estimationspec", POINT_SPEC = "pointspec",
-            TS = "ts", QUALITY = "quality", PRIORITY = "priority", POLICY = "policy", METADATA = "metadata", NAME = "name";
+            TS = "ts", QUALITY = "quality", PRIORITY = "priority", POLICY = "policy", METADATA = "metadata", NAME = "name", COMMENT = "comment";
     public static final String DIAGNOSTICS = "diagnostics";
     private static final String DIAGNOSTICS_INTERNAL = "__diagnostics";
 
@@ -164,6 +163,26 @@ public class SaItem {
 
     public void setMetaData(MetaData md) {
         metaData_ = md;
+        dirty_ = true;
+    }
+
+    public String getComment() {
+        if (metaData_ != null && metaData_.containsKey(COMMENT)) {
+            return metaData_.get(COMMENT);
+        }
+        return null;
+    }
+
+    public void setComment(String comment) {
+        if (metaData_ == null) {
+            metaData_ = new MetaData();
+        }
+
+        if (Strings.isNullOrEmpty(comment)) {
+            metaData_.remove(COMMENT);
+        } else {
+            metaData_.put(COMMENT, comment);
+        }
         dirty_ = true;
     }
 
