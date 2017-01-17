@@ -19,6 +19,7 @@ package ec.tstoolkit.timeseries.analysis;
 import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.simplets.TsData;
+import ec.tstoolkit.timeseries.simplets.TsDataFunction;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import java.util.ArrayList;
@@ -281,6 +282,11 @@ public class RevisionHistory<T extends IProcResults> {
      */
     public double seriesRevision(String series, TsPeriod period,
             DiagnosticInfo mode) {
+        return seriesRevision(series, period, mode.asFunction());
+    }
+
+    public double seriesRevision(String series, TsPeriod period,
+            DiagnosticTsFunction fn) {
         TsPeriod start = m_domainT.getStart();
         TsDomain domain = new TsDomain(start, period.minus(start) + 1);
         T it = tsInfo(domain);
@@ -293,24 +299,7 @@ public class RevisionHistory<T extends IProcResults> {
             return Double.NaN;
         }
         int idx = domain.getLength() - 1;
-        double dt = tdata.get(idx), dT = Tdata.get(idx);
-        if (null != mode) {
-            switch (mode) {
-                case RelativeDifference:
-                    return (dT - dt) / dt;
-                case AbsoluteDifference:
-                    return dT - dt;
-                case PeriodToPeriodGrowthDifference: {
-                    double dt0 = tdata.get(idx - 1), dT0 = Tdata.get(idx - 1);
-                    return (dT - dT0) / dT0 - (dt - dt0) / dt0;
-                }
-                default: {
-                    double dt0 = tdata.get(idx - 1), dT0 = Tdata.get(idx - 1);
-                    return (dT - dT0) - (dt - dt0);
-                }
-            }
-        }
-        return Double.NaN;
+        return fn.apply(Tdata, tdata, idx);
     }
 
     /**
@@ -366,25 +355,23 @@ public class RevisionHistory<T extends IProcResults> {
         return rslt;
     }
  
-    
-    
-//    public TsData tsRevision(String item, TsPeriod period, TsPeriod start, DiagnosticTsFunction fn ) {
-//        TsPeriod p0 = m_domainT.getStart();
-//        int pos = period.minus(p0);
-//        TsData rslt = new TsData(start, m_domainT.getEnd().minus(start));
-//        int len = start.minus(p0) + 1;
-//        for (int i = 0; i < rslt.getLength(); ++i, ++len) {
-//            TsDomain rdom = new TsDomain(p0, len);
-//            T output = tsInfo(rdom);
-//            if (output != null) {
-//                TsData t = output.getData(item, TsData.class);
-//                if (t != null) {
-//                    rslt.set(i, fn.apply(t, pos));
-//                } else {
-//                    rslt.set(i, Double.NaN);
-//                }
-//            }
-//        }
-//        return rslt;
-//    }
+    public TsData tsRevision(String item, TsPeriod period, TsPeriod start, TsDataFunction fn ) {
+        TsPeriod p0 = m_domainT.getStart();
+        int pos = period.minus(p0);
+        TsData rslt = new TsData(start, m_domainT.getEnd().minus(start));
+        int len = start.minus(p0) + 1;
+        for (int i = 0; i < rslt.getLength(); ++i, ++len) {
+            TsDomain rdom = new TsDomain(p0, len);
+            T output = tsInfo(rdom);
+            if (output != null) {
+                TsData t = output.getData(item, TsData.class);
+                if (t != null) {
+                    rslt.set(i, fn.apply(t, pos));
+                } else {
+                    rslt.set(i, Double.NaN);
+                }
+            }
+        }
+        return rslt;
+    }
 }
