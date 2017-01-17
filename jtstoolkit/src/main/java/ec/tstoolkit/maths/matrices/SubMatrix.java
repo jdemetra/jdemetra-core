@@ -149,34 +149,39 @@ public class SubMatrix implements Cloneable {
     }
 
     /**
-     * Adds the current submatrix to the submatrix given by its top/left position (i,j) in another submatrix
+     * Adds the current submatrix to the submatrix given by its top/left
+     * position (i,j) in another submatrix
+     *
      * @param i The row index
      * @param j TheColumn index
      * @param m The target submatrix
      */
     public void addTo(SubMatrix m, int i, int j) {
-        int scur=m_start, tcur=m.m_start + i * m.m_row_inc + j * m.m_col_inc;
-        for (int c=0; c<m_ncols; ++c, scur+=m_col_inc, tcur+=m.m_col_inc){
-            for (int r=0, sidx=scur, tidx=tcur; r<m_nrows; ++r, sidx+=m_row_inc, tidx+=m.m_row_inc){
-                m.m_data[tidx]+=m_data[sidx];
+        int scur = m_start, tcur = m.m_start + i * m.m_row_inc + j * m.m_col_inc;
+        for (int c = 0; c < m_ncols; ++c, scur += m_col_inc, tcur += m.m_col_inc) {
+            for (int r = 0, sidx = scur, tidx = tcur; r < m_nrows; ++r, sidx += m_row_inc, tidx += m.m_row_inc) {
+                m.m_data[tidx] += m_data[sidx];
             }
         }
     }
 
     /**
-     * Adds the current submatrix to the submatrix given by its top/left position (i,j) in another submatrix
+     * Adds the current submatrix to the submatrix given by its top/left
+     * position (i,j) in another submatrix
+     *
      * @param i The row index
      * @param j TheColumn index
      * @param m The target submatrix
      */
     public void subTo(SubMatrix m, int i, int j) {
-        int scur=m_start, tcur=m.m_start + i * m.m_row_inc + j * m.m_col_inc;
-        for (int c=0; c<m_ncols; ++c, scur+=m_col_inc, tcur+=m.m_col_inc){
-            for (int r=0, sidx=scur, tidx=tcur; r<m_nrows; ++r, sidx+=m_row_inc, tidx+=m.m_row_inc){
-                m.m_data[tidx]-=m_data[sidx];
+        int scur = m_start, tcur = m.m_start + i * m.m_row_inc + j * m.m_col_inc;
+        for (int c = 0; c < m_ncols; ++c, scur += m_col_inc, tcur += m.m_col_inc) {
+            for (int r = 0, sidx = scur, tidx = tcur; r < m_nrows; ++r, sidx += m_row_inc, tidx += m.m_row_inc) {
+                m.m_data[tidx] -= m_data[sidx];
             }
         }
     }
+
     /**
      *
      */
@@ -204,6 +209,7 @@ public class SubMatrix implements Cloneable {
 
     /**
      * x(i,j) = fn(i,j)
+     *
      * @param fn The given function
      * @since 2.2
      */
@@ -228,9 +234,10 @@ public class SubMatrix implements Cloneable {
             }
         }
     }
-    
+
     /**
      * x(i,j) = x(i,j) + fn(i,j)
+     *
      * @param fn The given function
      * @since 2.2
      */
@@ -258,6 +265,7 @@ public class SubMatrix implements Cloneable {
 
     /**
      * x(i,j) = fn(i,j,x(i,j))
+     *
      * @param fn The given function
      * @since 2.2
      */
@@ -282,9 +290,10 @@ public class SubMatrix implements Cloneable {
             }
         }
     }
-    
+
     /**
      * x(i,j) = x(i,j) + fn(i,j,x(i,j))
+     *
      * @param fn The given function
      * @since 2.2
      */
@@ -349,10 +358,10 @@ public class SubMatrix implements Cloneable {
             return;
         }
 
-        int scur=m.m_start, tcur=m_start;
-        for (int c=0; c<m_ncols; ++c, scur+=m.m_col_inc, tcur+=m_col_inc){
-            for (int r=0, sidx=scur, tidx=tcur; r<m_nrows; ++r, sidx+=m.m_row_inc, tidx+=m_row_inc){
-                m_data[tidx]=m.m_data[sidx];
+        int scur = m.m_start, tcur = m_start;
+        for (int c = 0; c < m_ncols; ++c, scur += m.m_col_inc, tcur += m_col_inc) {
+            for (int r = 0, sidx = scur, tidx = tcur; r < m_nrows; ++r, sidx += m.m_row_inc, tidx += m_row_inc) {
+                m_data[tidx] = m.m_data[sidx];
             }
         }
     }
@@ -466,18 +475,20 @@ public class SubMatrix implements Cloneable {
 
     /**
      * Copies the current submatrix at a given position (i,j) in another matrix
+     *
      * @param i The row index
      * @param j TheColumn index
      * @param m The target submatrix
      */
     public void copyTo(SubMatrix m, int i, int j) {
-        int scur=m_start, tcur=m.m_start + i * m.m_row_inc + j * m.m_col_inc;
-        for (int c=0; c<m_ncols; ++c, scur+=m_col_inc, tcur+=m.m_col_inc){
-            for (int r=0, sidx=scur, tidx=tcur; r<m_nrows; ++r, sidx+=m_row_inc, tidx+=m.m_row_inc){
-                m.m_data[tidx]=m_data[sidx];
+        int scur = m_start, tcur = m.m_start + i * m.m_row_inc + j * m.m_col_inc;
+        for (int c = 0; c < m_ncols; ++c, scur += m_col_inc, tcur += m.m_col_inc) {
+            for (int r = 0, sidx = scur, tidx = tcur; r < m_nrows; ++r, sidx += m_row_inc, tidx += m.m_row_inc) {
+                m.m_data[tidx] = m_data[sidx];
             }
         }
     }
+
     /**
      * this = a * Y
      *
@@ -559,6 +570,7 @@ public class SubMatrix implements Cloneable {
             col.addAY(z, x);
         } while (cols.next());
     }
+
     /**
      *
      * @return
@@ -718,28 +730,40 @@ public class SubMatrix implements Cloneable {
         return p;
     }
 
+    private static final int PROD_THRESHOLD = 6;
+
     /**
      *
      * @param m
      * @param n
      */
     public void product(final SubMatrix m, final SubMatrix n) {
-        // if (m_nrows != m.m_nrows || m_ncols != n.m_ncols || m.m_ncols !=
-        // n.m_nrows)
-        // throw new MatrixException(MatrixException.IncompatibleDimensions);
-        DataBlockIterator iter, riter, citer;
-        iter = columns();
-        riter = m.rows();
-        citer = n.columns();
+        if (m.getColumnsCount() < PROD_THRESHOLD * (m.getRowsCount())) {
+            DataBlockIterator cols = columns();
+            DataBlockIterator rcols = n.columns();
+            DataBlockIterator lcols = m.columns();
 
-        DataBlock cur = iter.getData(), col = citer.getData(), row = riter.getData();
-        do {
-            int pos = 0;
-            riter.begin();
+            DataBlock col = cols.getData(), rcol = rcols.getData(), lcol = lcols.getData();
             do {
-                cur.set(pos++, row.dot(col));
-            } while (riter.next());
-        } while (iter.next() && citer.next());
+                lcols.begin();
+                int k = 0;
+                col.setAY(rcol.get(k++), lcol);
+                while (lcols.next()) {
+                    col.addAY(rcol.get(k++), lcol);
+                }
+            } while (cols.next() && rcols.next());
+        } else {
+            DataBlockIterator iter = columns(), riter = m.rows(), citer = n.columns();
+
+            DataBlock cur = iter.getData(), col = citer.getData(), row = riter.getData();
+            do {
+                int pos = 0;
+                riter.begin();
+                do {
+                    cur.set(pos++, row.dot(col));
+                } while (riter.next());
+            } while (iter.next() && citer.next());
+        }
     }
 
     /**
@@ -1054,7 +1078,7 @@ public class SubMatrix implements Cloneable {
         } while (rows.next());
         return builder.toString();
     }
-    
+
     /**
      * Computes the sum of the rows
      *
@@ -1076,8 +1100,8 @@ public class SubMatrix implements Cloneable {
     }
 
     /**
-     * Computes in place src*this*y. The result is stored in this object. src,y and
- this object must be square matrices with the same dimensions
+     * Computes in place src*this*y. The result is stored in this object. src,y
+     * and this object must be square matrices with the same dimensions
      *
      * @param x
      * @param y
@@ -1128,183 +1152,191 @@ public class SubMatrix implements Cloneable {
     }
 
 //<editor-fold defaultstate="collapsed" desc="iterator method">
-    
     /**
-     * The following methods can be used to create fast iterations.
-     * They avoid the creation of unnecessary objects
-     * 
+     * The following methods can be used to create fast iterations. They avoid
+     * the creation of unnecessary objects
+     *
      * example:
-     * 
-     * (Sub)Matrix data=...
-     * SubMatrix cur=data.topLeft();
-     * while (cur){
-     *    cur.next(r,c);
-     * }
+     *
+     * (Sub)Matrix data=... SubMatrix cur=data.topLeft(); while (cur){
+     * cur.next(r,c); }
      */
-    
-    
     /**
-     * Takes the bottom-right of the current submatrix as the new starting position
-     * and updates the number of rows/columns
+     * Takes the bottom-right of the current submatrix as the new starting
+     * position and updates the number of rows/columns
+     *
      * @param nrows The number of rows in the submatrix
      * @param ncols The number of columns in the submatrix
      */
-    public void next(int nrows, int ncols){
-        m_start+=m_nrows*m_row_inc+m_ncols*m_col_inc;
-        m_nrows=nrows;
-        m_ncols=ncols;
+    public void next(int nrows, int ncols) {
+        m_start += m_nrows * m_row_inc + m_ncols * m_col_inc;
+        m_nrows = nrows;
+        m_ncols = ncols;
     }
 
     /**
-     * Takes the bottom-right of the current submatrix as the new starting position
-      */
-    public void next(){
-        m_start+=m_nrows*m_row_inc+m_ncols*m_col_inc;
+     * Takes the bottom-right of the current submatrix as the new starting
+     * position
+     */
+    public void next() {
+        m_start += m_nrows * m_row_inc + m_ncols * m_col_inc;
     }
 
     /**
      * Takes the top-right of the current submatrix as the new starting position
      * and updates the number of columns
+     *
      * @param ncols The number of columns in the submatrix
      */
-    public void hnext(int ncols){
-        m_start+=m_ncols*m_col_inc;
-        m_ncols=ncols;
+    public void hnext(int ncols) {
+        m_start += m_ncols * m_col_inc;
+        m_ncols = ncols;
     }
 
     /**
      * Takes the top-right of the current submatrix as the new starting position
      */
-    public void hnext(){
-        m_start+=m_ncols*m_col_inc;
-    }
-    
-    /**
-     * Takes the bottom-left of the current submatrix as the new starting position
-     * and updates the number of rows
-     * @param nrows The number of rows in the submatrix
-     */
-    public void vnext(int nrows){
-        m_start+=m_nrows*m_row_inc;
-        m_nrows=nrows;
+    public void hnext() {
+        m_start += m_ncols * m_col_inc;
     }
 
     /**
-     * Takes the bottom-left of the current submatrix as the new starting position
+     * Takes the bottom-left of the current submatrix as the new starting
+     * position and updates the number of rows
+     *
+     * @param nrows The number of rows in the submatrix
      */
-    public void vnext(){
-        m_start+=m_nrows*m_row_inc;
+    public void vnext(int nrows) {
+        m_start += m_nrows * m_row_inc;
+        m_nrows = nrows;
     }
-    
+
+    /**
+     * Takes the bottom-left of the current submatrix as the new starting
+     * position
+     */
+    public void vnext() {
+        m_start += m_nrows * m_row_inc;
+    }
+
     /**
      * Takes the top-left of the current submatrix as the new ending position
      * and updates the number of rows/columns
+     *
      * @param nrows The number of rows in the submatrix
      * @param ncols The number of columns in the submatrix
      */
-    public void previous(int nrows, int ncols){
-        m_start-=nrows*m_row_inc+ncols*m_col_inc;
-        m_nrows=nrows;
-        m_ncols=ncols;
+    public void previous(int nrows, int ncols) {
+        m_start -= nrows * m_row_inc + ncols * m_col_inc;
+        m_nrows = nrows;
+        m_ncols = ncols;
     }
 
     /**
      * Takes the top-left of the current submatrix as the new ending position
      */
-    public void previous(){
-        m_start-=m_nrows*m_row_inc+m_ncols*m_col_inc;
+    public void previous() {
+        m_start -= m_nrows * m_row_inc + m_ncols * m_col_inc;
     }
 
     /**
      * Takes the bottom-left of the current submatrix as the new ending position
      * and updates the number of columns
+     *
      * @param ncols The number of columns in the submatrix
      */
-    public void hprevious(int ncols){
-        m_start-=ncols*m_col_inc;
-        m_ncols=ncols;
+    public void hprevious(int ncols) {
+        m_start -= ncols * m_col_inc;
+        m_ncols = ncols;
     }
 
     /**
      * Takes the bottom-left of the current submatrix as the new ending position
      */
-    public void hprevious(){
-        m_start-=m_ncols*m_col_inc;
+    public void hprevious() {
+        m_start -= m_ncols * m_col_inc;
     }
-    
+
     /**
      * Takes the top-right of the current submatrix as the new ending position
      * and updates the number of rows
+     *
      * @param nrows The number of rows in the submatrix
      */
-    public void vprevious(int nrows){
-        m_start-=nrows*m_row_inc;
-        m_nrows=nrows;
+    public void vprevious(int nrows) {
+        m_start -= nrows * m_row_inc;
+        m_nrows = nrows;
     }
 
     /**
      * Takes the top-right of the current submatrix as the new ending position
      */
-    public void vprevious(){
-        m_start-=m_nrows*m_row_inc;
+    public void vprevious() {
+        m_start -= m_nrows * m_row_inc;
     }
-    
+
     /**
      * Top-left empty sub-matrix. To be used with next(a,b)
+     *
      * @return An empty sub-matrix
      */
-    public SubMatrix topLeft(){
+    public SubMatrix topLeft() {
         return new SubMatrix(m_data, m_start, 0, 0, m_row_inc, m_col_inc);
     }
-    
+
     /**
      * Top-left sub-matrix
+     *
      * @param nr Number of rows. Could be 0.
-     * @param nc Number of columns. Could be 0. 
+     * @param nc Number of columns. Could be 0.
      * @return A nr src nc sub-matrix
      */
-    public SubMatrix topLeft(int nr, int nc){
+    public SubMatrix topLeft(int nr, int nc) {
         return new SubMatrix(m_data, m_start, nr, nc, m_row_inc, m_col_inc);
     }
-    
+
     /**
      * Top-left sub-matrix
+     *
      * @param nr Number of rows. Could be 0.
      * @return A nr src nc sub-matrix
      */
-    public SubMatrix top(int nr){
+    public SubMatrix top(int nr) {
         return new SubMatrix(m_data, m_start, nr, m_ncols, m_row_inc, m_col_inc);
     }
 
     /**
      * Top-left sub-matrix
+     *
      * @param nc Number of columns. Could be 0.
      * @return A nr src nc sub-matrix
      */
-    public SubMatrix left(int nc){
+    public SubMatrix left(int nc) {
         return new SubMatrix(m_data, m_start, m_nrows, nc, m_row_inc, m_col_inc);
     }
-    
+
     /**
-     * bottom-right  sub-matrix. 
+     * bottom-right sub-matrix.
+     *
      * @return An empty sub-matrix
      */
-    public SubMatrix bottomRight(){
-        int start=m_nrows*m_row_inc+m_ncols*m_col_inc;
+    public SubMatrix bottomRight() {
+        int start = m_nrows * m_row_inc + m_ncols * m_col_inc;
         return new SubMatrix(m_data, start, 0, 0, m_row_inc, m_col_inc);
     }
 
     /**
      * Bottom-right sub-matrix
+     *
      * @param nr Number of rows. Could be 0.
-     * @param nc Number of columns. Could be 0. 
+     * @param nc Number of columns. Could be 0.
      * @return A nr src nc sub-matrix
      */
-    public SubMatrix bottomRight(int nr, int nc){
-        int start=(m_nrows-nr)*m_row_inc+(m_ncols-nc)*m_col_inc;
+    public SubMatrix bottomRight(int nr, int nc) {
+        int start = (m_nrows - nr) * m_row_inc + (m_ncols - nc) * m_col_inc;
         return new SubMatrix(m_data, start, nr, nc, m_row_inc, m_col_inc);
     }
-    
+
     /**
      * Bottom sub-matrix
      *
@@ -1314,7 +1346,6 @@ public class SubMatrix implements Cloneable {
     public SubMatrix bottom(int nr) {
         return new SubMatrix(m_data, m_start + m_nrows - nr, nr, m_ncols, m_row_inc, m_col_inc);
     }
-
 
     /**
      * right sub-matrix
