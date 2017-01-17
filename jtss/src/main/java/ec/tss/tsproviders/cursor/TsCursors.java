@@ -14,8 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.tss.tsproviders.utils;
+package ec.tss.tsproviders.cursor;
 
+import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tstoolkit.MetaData;
 import java.io.IOException;
 import java.util.Iterator;
