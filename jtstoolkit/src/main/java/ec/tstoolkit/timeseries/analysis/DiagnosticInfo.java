@@ -59,16 +59,16 @@ public enum DiagnosticInfo {
             case RelativeDifference:
                 return (ref, s, pos) -> {
                     double T = ref.get(pos);
-                    return (T - s.get(pos)) / T;
+                    return 100*(T - s.get(pos)) / T; // percent
                 };
             case PeriodToPeriodGrowthDifference:
-                return (ref, s, pos) -> ref.get(pos) / ref.get(pos - 1) - s.get(pos) / s.get(pos - 1);
+                return (ref, s, pos) -> 100*(ref.get(pos) / ref.get(pos - 1) - s.get(pos) / s.get(pos - 1));
             case PeriodToPeriodDifference:
                 return (ref, s, pos) -> (ref.get(pos) - ref.get(pos - 1)) - (s.get(pos) - s.get(pos - 1));
             case AnnualGrowthDifference:
                 return (ref, s, pos) -> {
                     int lag = ref.getFrequency().intValue();
-                    return ref.get(pos) / ref.get(pos - lag) - s.get(pos) / s.get(pos - lag);
+                    return 100*(ref.get(pos) / ref.get(pos - lag) - s.get(pos) / s.get(pos - lag));
                 };
             case AnnualDifference:
                 return (ref, s, pos) -> {
@@ -88,11 +88,11 @@ public enum DiagnosticInfo {
             case RelativeDifference:
                 return (s, pos) -> s.get(pos);
             case PeriodToPeriodGrowthDifference:
-                return (s, pos) -> s.get(pos) / s.get(pos - 1) - 1;
+                return (s, pos) -> 100*(s.get(pos) / s.get(pos - 1) - 1);
             case PeriodToPeriodDifference:
                 return (s, pos) -> (s.get(pos) - s.get(pos - 1));
             case AnnualGrowthDifference:
-                return (s, pos) -> s.get(pos) / s.get(pos - s.getFrequency().intValue()) - 1;
+                return (s, pos) -> 100*(s.get(pos) / s.get(pos - s.getFrequency().intValue()) - 1);
             case AnnualDifference:
                 return (s, pos) -> s.get(pos) - s.get(pos - s.getFrequency().intValue());
             default:
@@ -114,5 +114,31 @@ public enum DiagnosticInfo {
                 return this;
         }
 
+    }
+    
+    public boolean isRelative(){
+        return this==RelativeDifference || this == PeriodToPeriodGrowthDifference || this == AnnualGrowthDifference;
+    }
+    
+    @Override
+    public String toString(){
+        switch (this) {
+
+            case AbsoluteDifference:
+                return "Absolute differences";
+            case RelativeDifference:
+                return "Relative differences (%)";
+            case PeriodToPeriodGrowthDifference:
+                return "Period to period growth differences (%)";
+            case PeriodToPeriodDifference:
+                return "Period to period differences";
+            case AnnualGrowthDifference:
+                 return "Annual growth differences (%)";
+            case AnnualDifference:
+                 return "Annual differences";
+           default:
+                return null;
+        }
+        
     }
 }

@@ -40,8 +40,8 @@ import java.text.NumberFormat;
  */
 public class HtmlRevisionsDocument extends AbstractHtmlElement implements IHtmlElement {
 
-    private TsData revisions_;
-    private DiagnosticInfo info_;
+    private final TsData revisions_;
+    private final DiagnosticInfo info_;
     private int threshold_ = 2;
 
     public HtmlRevisionsDocument(TsData revisions, DiagnosticInfo info) {

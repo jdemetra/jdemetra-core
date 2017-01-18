@@ -121,17 +121,18 @@ public class RevisionHistory<T extends IProcResults> {
                     TsData tdata = ilag[i].getData(series, TsData.class);
                     if (tdata != null) {
                         int idx = tdata.getLength() - 1;
-                        double dt = tdata.get(idx), dT = Tdata.get(idx);
-                        if (mode == DiagnosticInfo.RelativeDifference) {
-                            rslt[i] = (dT - dt) / dt;
-                        } else if (mode == DiagnosticInfo.AbsoluteDifference) {
-                            rslt[i] = dT - dt;
-                        } else // PtoP growth difference
-                        {
-                            double dt0 = tdata.get(idx - 1), dT0 = Tdata
-                                    .get(idx - 1);
-                            rslt[i] = (dT - dT0) / dT0 - (dt - dt0) / dt0;
-                        }
+                        rslt[i]=mode.asFunction().apply(Tdata, tdata, idx);
+//                        double dt = tdata.get(idx), dT = Tdata.get(idx);
+//                        if (mode == DiagnosticInfo.RelativeDifference) {
+//                            rslt[i] = (dT - dt) / dt;
+//                        } else if (mode == DiagnosticInfo.AbsoluteDifference) {
+//                            rslt[i] = dT - dt;
+//                        } else // PtoP growth difference
+//                        {
+//                            double dt0 = tdata.get(idx - 1), dT0 = Tdata
+//                                    .get(idx - 1);
+//                            rslt[i] = (dT - dT0) / dT0 - (dt - dt0) / dt0;
+//                        }
                     }
                 }
             }
@@ -147,17 +148,18 @@ public class RevisionHistory<T extends IProcResults> {
                     TsData tdata = ilag[i].getData(series, TsData.class);
                     if (tdata != null) {
                         int idx = tdata.getLength() - 1;
-                        double dt = tdata.get(idx), dc = cdata.get(idx);
-                        if (mode == DiagnosticInfo.RelativeDifference) {
-                            rslt[i] = (dt - dc) / dc;
-                        } else if (mode == DiagnosticInfo.AbsoluteDifference) {
-                            rslt[i] = dt - dc;
-                        } else // PtoP growth difference
-                        {
-                            double dt0 = tdata.get(idx - 1), dc0 = cdata
-                                    .get(idx - 1);
-                            rslt[i] = (dt - dt0) / dt0 - (dc - dc0) / dc0;
-                        }
+                        rslt[i]=mode.asFunction().apply(cdata, tdata, idx);
+//                        double dt = tdata.get(idx), dc = cdata.get(idx);
+//                        if (mode == DiagnosticInfo.RelativeDifference) {
+//                            rslt[i] = (dt - dc) / dc;
+//                        } else if (mode == DiagnosticInfo.AbsoluteDifference) {
+//                            rslt[i] = dt - dc;
+//                        } else // PtoP growth difference
+//                        {
+//                            double dt0 = tdata.get(idx - 1), dc0 = cdata
+//                                    .get(idx - 1);
+//                            rslt[i] = (dt - dt0) / dt0 - (dc - dc0) / dc0;
+//                        }
                     }
                 }
             }
