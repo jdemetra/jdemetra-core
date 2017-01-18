@@ -17,11 +17,11 @@
 package ec.tss.tsproviders.cursor;
 
 import ec.tss.tsproviders.utils.OptionalTsData;
-import ec.tstoolkit.MetaData;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.Optional;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
@@ -38,6 +38,15 @@ import javax.annotation.concurrent.NotThreadSafe;
 public interface TsCursor<ID> extends Closeable {
 
     /**
+     * Gets the current metadata of the time series collection.
+     *
+     * @return a non-null metadata
+     * @throws IOException if an internal exception prevented data retrieval.
+     */
+    @Nonnull
+    Map<String, String> getMetaData() throws IOException;
+
+    /**
      * Moves to the next series.
      *
      * @return true if there is a next series, false otherwise
@@ -52,18 +61,16 @@ public interface TsCursor<ID> extends Closeable {
      * @throws IOException if an internal exception prevented data retrieval.
      */
     @Nonnull
-    ID getId() throws IOException;
+    ID getSeriesId() throws IOException;
 
     /**
      * Gets the current time series metadata.
      *
-     * @return non-null optional metadata
+     * @return a non-null metadata
      * @throws IOException if an internal exception prevented data retrieval.
      */
     @Nonnull
-    default Optional<MetaData> getMetaData() throws IOException {
-        return Optional.empty();
-    }
+    Map<String, String> getSeriesMetaData() throws IOException;
 
     /**
      * Gets the current time series data.
@@ -72,14 +79,7 @@ public interface TsCursor<ID> extends Closeable {
      * @throws IOException if an internal exception prevented data retrieval.
      */
     @Nonnull
-    default OptionalTsData getData() throws IOException {
-        return TsCursors.NOT_REQUESTED;
-    }
-
-    @Override
-    default void close() throws IOException {
-        // do nothing by default
-    }
+    OptionalTsData getSeriesData() throws IOException;
 
     /**
      * Returns a cursor consisting of the results of applying the given function
@@ -87,7 +87,7 @@ public interface TsCursor<ID> extends Closeable {
      *
      * @param <Z> the identifier type of the new cursor
      * @param function a non-null function to apply to each identifier
-     * @return a new cursor
+     * @return a non-null cursor
      */
     @Nonnull
     default <Z> TsCursor<Z> transform(@Nonnull Function<? super ID, ? extends Z> function) {
@@ -99,7 +99,7 @@ public interface TsCursor<ID> extends Closeable {
      * given predicate.
      *
      * @param predicate a non-null predicate to apply to each identifier
-     * @return a new cursor
+     * @return a non-null cursor
      */
     @Nonnull
     default TsCursor<ID> filter(@Nonnull Predicate<? super ID> predicate) {
@@ -107,69 +107,82 @@ public interface TsCursor<ID> extends Closeable {
     }
 
     /**
+     * Returns a cursor that uses the specified collection meta data.
+     *
+     * @param meta a non-null meta data
+     * @return a non-null cursor
+     */
+    @Nonnull
+    default TsCursor<ID> withMetaData(@Nonnull Map<String, String> meta) {
+        return new TsCursors.WithMetaDataCursor<>(this, meta);
+    }
+
+    /**
+     * Returns an cursor with an additional close handler.
+     *
+     * @param closeHandler a non-null task to execute when the stream is closed
+     * @return a non-null cursor
+     */
+    @Nonnull
+    default TsCursor<ID> onClose(@Nonnull Closeable closeHandler) {
+        return new TsCursors.OnCloseCursor<>(this, closeHandler);
+    }
+
+    /**
      * Creates an empty cursor.
      *
-     * @param <T> the type of the cursor identifiers
+     * @param <ID> the type of the cursor identifiers
      * @return a new cursor
      */
     @Nonnull
-    static <T> TsCursor<T> noOp() {
-        return TsCursors.NoOpCursor.INSTANCE;
+    static <ID> TsCursor<ID> empty() {
+        return TsCursors.EmptyCursor.INSTANCE;
     }
 
     /**
      * Creates a cursor from a single item.
      *
-     * @param <T> the type of the cursor identifiers
+     * @param <ID> the type of the cursor identifiers
      * @param id the identifier
      * @param data the optional data
-     * @param metaData the optional metadata
+     * @param meta the metadata
      * @return a new cursor
      */
     @Nonnull
-    static <T> TsCursor<T> singleton(
-            @Nonnull T id,
-            @Nonnull OptionalTsData data,
-            @Nonnull Optional<MetaData> metaData) {
-        return new TsCursors.SingletonCursor<>(id, data, metaData);
+    static <ID> TsCursor<ID> singleton(@Nonnull ID id, @Nonnull OptionalTsData data, @Nonnull Map<String, String> meta) {
+        return new TsCursors.SingletonCursor<>(id, data, meta);
     }
 
     /**
      * Creates a cursor from a single item.
      *
-     * @param <T> the type of the cursor identifiers
+     * @param <ID> the type of the cursor identifiers
      * @param id the identifier
      * @param data the optional data
      * @return a new cursor
      */
     @Nonnull
-    static <T> TsCursor<T> singleton(
-            @Nonnull T id,
-            @Nonnull OptionalTsData data) {
-        return new TsCursors.SingletonCursor<>(id, data, Optional.empty());
+    static <ID> TsCursor<ID> singleton(@Nonnull ID id, @Nonnull OptionalTsData data) {
+        return new TsCursors.SingletonCursor<>(id, data, Collections.emptyMap());
     }
 
     /**
      * Creates a cursor from a single item.
      *
-     * @param <T> the type of the cursor identifiers
+     * @param <ID> the type of the cursor identifiers
      * @param id the identifier
      * @return a new cursor
      */
     @Nonnull
-    static <T> TsCursor<T> singleton(
-            @Nonnull T id) {
-        return new TsCursors.SingletonCursor<>(id, TsCursors.NOT_REQUESTED, Optional.empty());
+    static <ID> TsCursor<ID> singleton(@Nonnull ID id) {
+        return new TsCursors.SingletonCursor<>(id, TsCursors.NOT_REQUESTED, Collections.emptyMap());
     }
 
     /**
      * Creates a cursor from an iterator.
      *
-     * @param <X> the type of the iterator elements
-     * @param <Y> the type of the cursor identifiers
+     * @param <E> the type of the iterator elements
      * @param iterator the iterator
-     * @param toId a non-null function to get identifier from a element from the
-     * iterator
      * @param toData a non-null function to get optional data from a element
      * from the iterator
      * @param toMeta a non-null function to get optional metadata from a element
@@ -177,48 +190,38 @@ public interface TsCursor<ID> extends Closeable {
      * @return a new cursor
      */
     @Nonnull
-    static <X, Y> TsCursor<Y> from(
-            @Nonnull Iterator<X> iterator,
-            @Nonnull Function<? super X, ? extends Y> toId,
-            @Nonnull Function<? super X, OptionalTsData> toData,
-            @Nonnull Function<? super X, Optional<MetaData>> toMeta) {
-        return new TsCursors.IteratingCursor<>(iterator, toId, toData, toMeta);
+    static <E> TsCursor<E> from(
+            @Nonnull Iterator<E> iterator,
+            @Nonnull Function<? super E, OptionalTsData> toData,
+            @Nonnull Function<? super E, Map<String, String>> toMeta) {
+        return new TsCursors.IteratingCursor<>(iterator, Function.identity(), toData, toMeta);
     }
 
     /**
      * Creates a cursor from an iterator.
      *
-     * @param <X> the type of the iterator elements
-     * @param <Y> the type of the cursor identifiers
+     * @param <E> the type of the iterator elements
      * @param iterator the iterator
-     * @param toId a non-null function to get identifier from a element from the
-     * iterator
      * @param toData a non-null function to get optional data from a element
      * from the iterator
      * @return a new cursor
      */
     @Nonnull
-    static <X, Y> TsCursor<Y> from(
-            @Nonnull Iterator<X> iterator,
-            @Nonnull Function<? super X, ? extends Y> toId,
-            @Nonnull Function<? super X, OptionalTsData> toData) {
-        return new TsCursors.IteratingCursor<>(iterator, toId, toData, TsCursors.NO_META);
+    static <E> TsCursor<E> from(
+            @Nonnull Iterator<E> iterator,
+            @Nonnull Function<? super E, OptionalTsData> toData) {
+        return new TsCursors.IteratingCursor<>(iterator, Function.identity(), toData, TsCursors.NO_META);
     }
 
     /**
      * Creates a cursor from an iterator.
      *
-     * @param <X> the type of the iterator elements
-     * @param <Y> the type of the cursor identifiers
+     * @param <E> the type of the iterator elements
      * @param iterator the iterator
-     * @param toId a non-null function to get identifier from a element from the
-     * iterator
      * @return a new cursor
      */
     @Nonnull
-    static <X, Y> TsCursor<Y> from(
-            @Nonnull Iterator<X> iterator,
-            @Nonnull Function<? super X, ? extends Y> toId) {
-        return new TsCursors.IteratingCursor<>(iterator, toId, TsCursors.NO_DATA, TsCursors.NO_META);
+    static <E> TsCursor<E> from(@Nonnull Iterator<E> iterator) {
+        return new TsCursors.IteratingCursor<>(iterator, Function.identity(), TsCursors.NO_DATA, TsCursors.NO_META);
     }
 }

@@ -34,6 +34,7 @@ import ec.tss.tsproviders.utils.TsFiller;
 import ec.tstoolkit.MetaData;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.utilities.LinearId;
+import java.util.Collections;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -57,6 +58,16 @@ public class TsCursorAsFillerTest {
             .add(new LinearId("node", "leaf1"))
             .add(new LinearId("node", "leaf2"), Data.M1)
             .add(new LinearId("leaf3"), Data.M2, customMeta)
+            .nodeMeta(o -> {
+                switch (o.toString()) {
+                    case "":
+                        return Collections.singletonMap("type", "root");
+                    case "node":
+                        return Collections.singletonMap("type", "node");
+                    default:
+                        return Collections.emptyMap();
+                }
+            })
             .build();
 
     private final TsMoniker goodSource;
@@ -123,7 +134,7 @@ public class TsCursorAsFillerTest {
 
         assertThat(new TsCollectionInformation(goodSource, TsInformationType.MetaData)).satisfies(info -> {
             assertThat(filler.fillCollection(info)).isTrue();
-            assertThat(info).isEqualToIgnoringGivenFields(colInfo(null, goodSource, TsInformationType.MetaData, null, null), "items");
+            assertThat(info).isEqualToIgnoringGivenFields(colInfo(null, goodSource, TsInformationType.MetaData, null, metaOf("type", "root")), "items");
             assertThat(info.items)
                     .usingFieldByFieldElementComparator()
                     .containsExactly(
@@ -135,7 +146,7 @@ public class TsCursorAsFillerTest {
 
         assertThat(new TsCollectionInformation(goodSource, All)).satisfies(info -> {
             assertThat(filler.fillCollection(info)).isTrue();
-            assertThat(info).isEqualToIgnoringGivenFields(colInfo(null, goodSource, All, null, null), "items");
+            assertThat(info).isEqualToIgnoringGivenFields(colInfo(null, goodSource, All, null, metaOf("type", "root")), "items");
             assertThat(info.items)
                     .usingFieldByFieldElementComparator()
                     .containsExactly(
@@ -163,7 +174,7 @@ public class TsCursorAsFillerTest {
 
         assertThat(new TsCollectionInformation(goodCollection, TsInformationType.MetaData)).satisfies(info -> {
             assertThat(filler.fillCollection(info)).isTrue();
-            assertThat(info).isEqualToIgnoringGivenFields(colInfo(null, goodCollection, TsInformationType.MetaData, null, null), "items");
+            assertThat(info).isEqualToIgnoringGivenFields(colInfo(null, goodCollection, TsInformationType.MetaData, null, metaOf("type", "node")), "items");
             assertThat(info.items)
                     .usingFieldByFieldElementComparator()
                     .containsExactly(
@@ -174,7 +185,7 @@ public class TsCursorAsFillerTest {
 
         assertThat(new TsCollectionInformation(goodCollection, All)).satisfies(info -> {
             assertThat(filler.fillCollection(info)).isTrue();
-            assertThat(info).isEqualToIgnoringGivenFields(colInfo(null, goodCollection, All, null, null), "items");
+            assertThat(info).isEqualToIgnoringGivenFields(colInfo(null, goodCollection, All, null, metaOf("type", "node")), "items");
             assertThat(info.items)
                     .usingFieldByFieldElementComparator()
                     .containsExactly(

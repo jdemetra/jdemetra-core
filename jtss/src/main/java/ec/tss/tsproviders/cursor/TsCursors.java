@@ -16,11 +16,13 @@
  */
 package ec.tss.tsproviders.cursor;
 
+import com.google.common.collect.Iterators;
 import ec.tss.tsproviders.utils.OptionalTsData;
-import ec.tstoolkit.MetaData;
+import java.io.Closeable;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.Optional;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
@@ -39,76 +41,29 @@ final class TsCursors {
     }
 
     static final OptionalTsData NOT_REQUESTED = OptionalTsData.absent("Not requested");
-    static final Function<Object, Optional<MetaData>> NO_META = o -> Optional.empty();
+    static final Function<Object, Map<String, String>> NO_META = o -> Collections.emptyMap();
     static final Function<Object, OptionalTsData> NO_DATA = o -> NOT_REQUESTED;
 
-    static final class NoOpCursor implements TsCursor {
-
-        static final NoOpCursor INSTANCE = new NoOpCursor();
-
-        @Override
-        public boolean nextSeries() throws IOException {
-            return false;
+    private static <X, Y> Y applyNotNull(String funcName, Function<X, Y> func, X input) throws RuntimeException {
+        Y result = func.apply(input);
+        if (result != null) {
+            return result;
         }
-
-        @Override
-        public Object getId() throws IOException {
-            throw new IllegalStateException();
-        }
+        throw new RuntimeException("Invalid function '" + funcName + "': expected non-null result with parameter + '" + input + "'");
     }
 
-    static final class SingletonCursor<T> implements TsCursor<T> {
+    //<editor-fold defaultstate="collapsed" desc="Forwarding cursors">
+    private abstract static class ForwardingCursor<ID> implements TsCursor<ID> {
 
-        private final T id;
-        private final OptionalTsData data;
-        private final Optional<MetaData> metaData;
-        private boolean first;
+        protected final TsCursor<ID> delegate;
 
-        SingletonCursor(
-                @Nonnull T id,
-                @Nonnull OptionalTsData data,
-                @Nonnull Optional<MetaData> metaData) {
-            this.id = requireNonNull(id);
-            this.data = requireNonNull(data);
-            this.metaData = requireNonNull(metaData);
-            this.first = true;
-        }
-
-        @Override
-        public boolean nextSeries() throws IOException {
-            if (first) {
-                first = false;
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public T getId() throws IOException {
-            return id;
-        }
-
-        @Override
-        public Optional<MetaData> getMetaData() throws IOException {
-            return metaData;
-        }
-
-        @Override
-        public OptionalTsData getData() throws IOException {
-            return data;
-        }
-    }
-
-    static final class TransformingCursor<X, Y> implements TsCursor<Y> {
-
-        private final TsCursor<X> delegate;
-        private final Function<? super X, ? extends Y> toId;
-
-        TransformingCursor(
-                @Nonnull TsCursor<X> delegate,
-                @Nonnull Function<? super X, ? extends Y> toId) {
+        private ForwardingCursor(TsCursor<ID> delegate) {
             this.delegate = requireNonNull(delegate);
-            this.toId = requireNonNull(toId);
+        }
+
+        @Override
+        public Map<String, String> getMetaData() throws IOException {
+            return delegate.getMetaData();
         }
 
         @Override
@@ -117,18 +72,18 @@ final class TsCursors {
         }
 
         @Override
-        public Y getId() throws IOException {
-            return toId.apply(delegate.getId());
+        public ID getSeriesId() throws IOException {
+            return delegate.getSeriesId();
         }
 
         @Override
-        public Optional<MetaData> getMetaData() throws IOException {
-            return delegate.getMetaData();
+        public Map<String, String> getSeriesMetaData() throws IOException {
+            return delegate.getSeriesMetaData();
         }
 
         @Override
-        public OptionalTsData getData() throws IOException {
-            return delegate.getData();
+        public OptionalTsData getSeriesData() throws IOException {
+            return delegate.getSeriesData();
         }
 
         @Override
@@ -137,63 +92,226 @@ final class TsCursors {
         }
     }
 
-    static final class FilteringCursor<T> implements TsCursor<T> {
+    static final class TransformingCursor<ID, Z> extends ForwardingCursor<Z> {
 
-        private final TsCursor<T> delegate;
-        private final Predicate<? super T> filter;
+        private final Function<? super ID, ? extends Z> function;
+
+        TransformingCursor(
+                @Nonnull TsCursor<ID> delegate,
+                @Nonnull Function<? super ID, ? extends Z> function) {
+            super((TsCursor<Z>) delegate);
+            this.function = requireNonNull(function);
+        }
+
+        @Override
+        public Z getSeriesId() throws IOException {
+            ID id = ((TsCursor<ID>) delegate).getSeriesId();
+            return applyNotNull("id", function, id);
+        }
+    }
+
+    static final class FilteringCursor<ID> extends ForwardingCursor<ID> {
+
+        private final Predicate<? super ID> filter;
 
         FilteringCursor(
-                @Nonnull TsCursor<T> delegate,
-                @Nonnull Predicate<? super T> filter) {
-            this.delegate = requireNonNull(delegate);
+                @Nonnull TsCursor<ID> delegate,
+                @Nonnull Predicate<? super ID> filter) {
+            super(delegate);
             this.filter = requireNonNull(filter);
         }
 
         @Override
         public boolean nextSeries() throws IOException {
             while (delegate.nextSeries()) {
-                if (filter.test(delegate.getId())) {
+                if (filter.test(delegate.getSeriesId())) {
                     return true;
                 }
             }
             return false;
         }
+    }
 
-        @Override
-        public T getId() throws IOException {
-            return delegate.getId();
+    static final class WithMetaDataCursor<ID> extends ForwardingCursor<ID> {
+
+        private final Map<String, String> meta;
+
+        WithMetaDataCursor(@Nonnull TsCursor<ID> delegate, @Nonnull Map<String, String> meta) {
+            super(delegate);
+            this.meta = requireNonNull(meta);
         }
 
         @Override
-        public Optional<MetaData> getMetaData() throws IOException {
-            return delegate.getMetaData();
+        public Map<String, String> getMetaData() throws IOException {
+            return meta;
         }
+    }
 
-        @Override
-        public OptionalTsData getData() throws IOException {
-            return delegate.getData();
+    static final class OnCloseCursor<ID> extends ForwardingCursor<ID> {
+
+        private final Closeable closeHandler;
+
+        OnCloseCursor(@Nonnull TsCursor<ID> delegate, @Nonnull Closeable closeHandler) {
+            super(delegate);
+            this.closeHandler = requireNonNull(closeHandler);
         }
 
         @Override
         public void close() throws IOException {
-            delegate.close();
+            try {
+                delegate.close();
+            } catch (IOException first) {
+                try {
+                    closeHandler.close();
+                } catch (IOException second) {
+                    first.addSuppressed(second);
+                }
+                throw (first);
+            }
+            closeHandler.close();
+        }
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="In-memory cursors">
+    static abstract class InMemoryCursor<ID> implements TsCursor<ID> {
+
+        @Override
+        final public Map<String, String> getMetaData() {
+            return Collections.emptyMap();
+        }
+
+        @Override
+        abstract public boolean nextSeries();
+
+        @Override
+        abstract public ID getSeriesId();
+
+        @Override
+        abstract public Map<String, String> getSeriesMetaData();
+
+        @Override
+        abstract public OptionalTsData getSeriesData();
+
+        @Override
+        final public void close() {
+            // do nothing
+        }
+
+        @Override
+        final public TsCursor<ID> withMetaData(Map<String, String> meta) {
+            return meta.isEmpty() ? this : TsCursor.super.withMetaData(meta);
         }
     }
 
-    static final class IteratingCursor<X, Y> implements TsCursor<Y> {
+    static final class EmptyCursor extends InMemoryCursor {
 
-        private final Iterator<X> delegate;
-        private final Function<? super X, ? extends Y> toId;
-        private final Function<? super X, OptionalTsData> toData;
-        private final Function<? super X, Optional<MetaData>> toMeta;
-        private X current;
+        static final EmptyCursor INSTANCE = new EmptyCursor();
+
+        @Override
+        public boolean nextSeries() {
+            return false;
+        }
+
+        @Override
+        public Object getSeriesId() {
+            throw new IllegalStateException();
+        }
+
+        @Override
+        public Map getSeriesMetaData() {
+            throw new IllegalStateException();
+        }
+
+        @Override
+        public OptionalTsData getSeriesData() {
+            throw new IllegalStateException();
+        }
+
+        @Override
+        public EmptyCursor filter(Predicate predicate) {
+            requireNonNull(predicate);
+            return this;
+        }
+
+        @Override
+        public EmptyCursor transform(Function function) {
+            requireNonNull(function);
+            return this;
+        }
+    }
+
+    static final class SingletonCursor<ID> extends InMemoryCursor<ID> {
+
+        private ID id;
+        private final OptionalTsData data;
+        private final Map<String, String> meta;
+        private boolean first;
+
+        SingletonCursor(
+                @Nonnull ID id,
+                @Nonnull OptionalTsData data,
+                @Nonnull Map<String, String> meta) {
+            this.id = requireNonNull(id);
+            this.data = requireNonNull(data);
+            this.meta = requireNonNull(meta);
+            this.first = true;
+        }
+
+        @Override
+        public boolean nextSeries() {
+            if (first) {
+                first = false;
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public ID getSeriesId() {
+            return id;
+        }
+
+        @Override
+        public Map<String, String> getSeriesMetaData() {
+            return meta;
+        }
+
+        @Override
+        public OptionalTsData getSeriesData() {
+            return data;
+        }
+
+        @Override
+        public SingletonCursor<ID> filter(Predicate<? super ID> predicate) {
+            requireNonNull(predicate);
+            first = first && predicate.test(id);
+            return this;
+        }
+
+        @Override
+        public <Z> SingletonCursor<Z> transform(Function<? super ID, ? extends Z> function) {
+            requireNonNull(function);
+            SingletonCursor<Z> result = (SingletonCursor<Z>) this;
+            result.id = applyNotNull("id", function, id);
+            return result;
+        }
+    }
+
+    static final class IteratingCursor<E, ID> extends InMemoryCursor<ID> {
+
+        private Iterator<E> iterator;
+        private Function<? super E, ? extends ID> toId;
+        private final Function<? super E, OptionalTsData> toData;
+        private final Function<? super E, Map<String, String>> toMeta;
+        private E current;
 
         IteratingCursor(
-                @Nonnull Iterator<X> delegate,
-                @Nonnull Function<? super X, ? extends Y> toId,
-                @Nonnull Function<? super X, OptionalTsData> toData,
-                @Nonnull Function<? super X, Optional<MetaData>> toMeta) {
-            this.delegate = requireNonNull(delegate);
+                @Nonnull Iterator<E> iterator,
+                @Nonnull Function<? super E, ? extends ID> toId,
+                @Nonnull Function<? super E, OptionalTsData> toData,
+                @Nonnull Function<? super E, Map<String, String>> toMeta) {
+            this.iterator = requireNonNull(iterator);
             this.toId = requireNonNull(toId);
             this.toData = requireNonNull(toData);
             this.toMeta = requireNonNull(toMeta);
@@ -201,23 +319,41 @@ final class TsCursors {
 
         @Override
         public boolean nextSeries() {
-            current = delegate.hasNext() ? delegate.next() : null;
+            current = iterator.hasNext() ? iterator.next() : null;
             return current != null;
         }
 
         @Override
-        public Y getId() {
-            return toId.apply(current);
+        public ID getSeriesId() {
+            return applyNotNull("id", toId, current);
         }
 
         @Override
-        public Optional<MetaData> getMetaData() {
-            return toMeta.apply(current);
+        public Map<String, String> getSeriesMetaData() {
+            return applyNotNull("meta", toMeta, current);
         }
 
         @Override
-        public OptionalTsData getData() {
-            return toData.apply(current);
+        public OptionalTsData getSeriesData() {
+            return applyNotNull("data", toData, current);
+        }
+
+        @Override
+        public IteratingCursor<E, ID> filter(Predicate<? super ID> predicate) {
+            iterator = compose(iterator, toId, requireNonNull(predicate));
+            return this;
+        }
+
+        @Override
+        public <Z> IteratingCursor<E, Z> transform(Function<? super ID, ? extends Z> function) {
+            IteratingCursor<E, Z> result = (IteratingCursor<E, Z>) this;
+            result.toId = toId.andThen(requireNonNull(function));
+            return result;
         }
     }
+
+    private static <E, ID> Iterator<E> compose(Iterator<E> iterator, Function<? super E, ? extends ID> toId, Predicate<? super ID> predicate) {
+        return Iterators.filter(iterator, o -> predicate.test(applyNotNull("id", toId, o)));
+    }
+    //</editor-fold>
 }

@@ -25,6 +25,7 @@ import ec.tstoolkit.MetaData;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.utilities.Id;
+import ec.tstoolkit.utilities.LinearId;
 import ec.tstoolkit.utilities.TreeOfIds;
 import ec.tstoolkit.utilities.Trees;
 import java.io.IOException;
@@ -46,22 +47,28 @@ final class IdTsSupport implements HasTsCursor, HasDataDisplayName {
 
     private final TreeOfIds tree;
     private final Function<Id, OptionalTsData> toData;
-    private final Function<Id, Optional<MetaData>> toMeta;
+    private final Function<Id, Map<String, String>> toMeta;
+    private final Function<Id, Map<String, String>> nodeToMeta;
 
-    private IdTsSupport(TreeOfIds tree, Function<Id, OptionalTsData> toData, Function<Id, Optional<MetaData>> toMeta) {
+    private IdTsSupport(TreeOfIds tree, Function<Id, OptionalTsData> toData, Function<Id, Map<String, String>> toMeta, Function<Id, Map<String, String>> nodeToMeta) {
         this.tree = tree;
         this.toData = toData;
         this.toMeta = toMeta;
+        this.nodeToMeta = nodeToMeta;
     }
 
     @Override
     public TsCursor<DataSet> getData(DataSource dataSource, TsInformationType type) throws IllegalArgumentException, IOException {
-        return TsCursor.from(leafs(tree).iterator(), getSeriesDataSetFunc(dataSource), getDataFunc(type), getMetaFunc(type));
+        return TsCursor.from(leafs(tree).iterator(), getDataFunc(type), getMetaFunc(type))
+                .transform(getSeriesDataSetFunc(dataSource))
+                .withMetaData(getNodeMeta(""));
     }
 
     @Override
     public TsCursor<DataSet> getData(DataSet dataSet, TsInformationType type) throws IllegalArgumentException, IOException {
-        return getData(dataSet.getDataSource(), type).filter(isChildOf(dataSet));
+        return getData(dataSet.getDataSource(), type)
+                .withMetaData(getNodeMeta(dataSet))
+                .filter(isChildOf(dataSet));
     }
 
     @Override
@@ -78,13 +85,22 @@ final class IdTsSupport implements HasTsCursor, HasDataDisplayName {
         return type.encompass(TsInformationType.Data) ? toData : o -> NOT_REQUESTED_DATA;
     }
 
-    private Function<Id, Optional<MetaData>> getMetaFunc(TsInformationType type) {
+    private Function<Id, Map<String, String>> getMetaFunc(TsInformationType type) {
         return type.encompass(TsInformationType.MetaData) ? toMeta : o -> NOT_REQUESTED_META;
+    }
+
+    private Map<String, String> getNodeMeta(DataSet parent) {
+        String parentId = parent.getParam(ID_PARAM).orElseThrow(IllegalArgumentException::new);
+        return getNodeMeta(parentId);
+    }
+
+    private Map<String, String> getNodeMeta(String parentId) {
+        return Optional.ofNullable(nodeToMeta.apply(new LinearId(parentId))).orElseGet(Collections::emptyMap);
     }
 
     private static final String ID_PARAM = "id";
     private static final OptionalTsData NOT_REQUESTED_DATA = OptionalTsData.absent("Not requested");
-    private static final Optional<MetaData> NOT_REQUESTED_META = Optional.empty();
+    private static final Map<String, String> NOT_REQUESTED_META = null;
 
     private static Stream<Id> leafs(TreeOfIds tree) {
         return Stream.of(tree.roots())
@@ -116,31 +132,37 @@ final class IdTsSupport implements HasTsCursor, HasDataDisplayName {
 
     public static final class Builder {
 
+        private Function<Id, Map<String, String>> nodeToMeta = o -> Collections.emptyMap();
         private final List<Item> items = new ArrayList<>();
 
         public Builder add(Id id) {
-            items.add(new Item(id, OptionalTsData.absent("No data available"), Optional.empty()));
+            items.add(new Item(id, OptionalTsData.absent("No data available"), Collections.emptyMap()));
             return this;
         }
 
         public Builder add(Id id, TsData data) {
-            items.add(new Item(id, OptionalTsData.present(data), Optional.empty()));
+            items.add(new Item(id, OptionalTsData.present(data), Collections.emptyMap()));
             return this;
         }
 
-        public Builder add(Id id, TsData data, MetaData meta) {
-            items.add(new Item(id, OptionalTsData.present(data), Optional.of(meta)));
+        public Builder add(Id id, TsData data, Map<String, String> meta) {
+            items.add(new Item(id, OptionalTsData.present(data), meta));
             return this;
         }
 
-        public Builder add(Id id, MetaData meta) {
-            items.add(new Item(id, OptionalTsData.absent("No data available"), Optional.of(meta)));
+        public Builder add(Id id, Map<String, String> meta) {
+            items.add(new Item(id, OptionalTsData.absent("No data available"), meta));
+            return this;
+        }
+
+        public Builder nodeMeta(Function<Id, Map<String, String>> nodeToMeta) {
+            this.nodeToMeta = nodeToMeta;
             return this;
         }
 
         public IdTsSupport build() {
             Map<Id, Item> target = items.stream().collect(Collectors.toMap(o -> o.id, o -> o));
-            return new IdTsSupport(new TreeOfIds(new ArrayList(target.keySet())), o -> target.get(o).data, o -> target.get(o).meta);
+            return new IdTsSupport(new TreeOfIds(new ArrayList(target.keySet())), o -> target.get(o).data, o -> target.get(o).meta, nodeToMeta);
         }
     }
 
@@ -148,9 +170,9 @@ final class IdTsSupport implements HasTsCursor, HasDataDisplayName {
 
         final Id id;
         final OptionalTsData data;
-        final Optional<MetaData> meta;
+        final Map<String, String> meta;
 
-        private Item(Id id, OptionalTsData data, Optional<MetaData> meta) {
+        private Item(Id id, OptionalTsData data, Map<String, String> meta) {
             this.id = id;
             this.data = data;
             this.meta = meta;

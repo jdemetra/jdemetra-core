@@ -37,12 +37,12 @@ final class NoOpTsCursorSupport implements HasTsCursor {
     @Override
     public TsCursor<DataSet> getData(DataSource dataSource, TsInformationType type) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
-        return TsCursor.noOp();
+        return TsCursor.empty();
     }
 
     @Override
     public TsCursor<DataSet> getData(DataSet dataSet, TsInformationType type) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSet);
-        return TsCursor.noOp();
+        return TsCursor.empty();
     }
 }

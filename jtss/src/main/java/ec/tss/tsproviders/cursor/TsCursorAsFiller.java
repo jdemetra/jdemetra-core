@@ -25,7 +25,9 @@ import ec.tss.tsproviders.HasDataDisplayName;
 import ec.tss.tsproviders.HasDataMoniker;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tss.tsproviders.utils.TsFiller;
+import ec.tstoolkit.MetaData;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.slf4j.Logger;
@@ -68,7 +70,7 @@ public final class TsCursorAsFiller {
             if (isCollection(dataSource)) {
                 try {
                     return resource.fill(info, dataSource);
-                } catch (Exception ex) {
+                } catch (IOException ex) {
                     return resource.reportException(info, dataSource, ex);
                 }
             }
@@ -77,7 +79,7 @@ public final class TsCursorAsFiller {
             if (isCollection(dataSet)) {
                 try {
                     return resource.fill(info, dataSet);
-                } catch (Exception ex) {
+                } catch (IOException ex) {
                     return resource.reportException(info, dataSet, ex);
                 }
             }
@@ -91,7 +93,7 @@ public final class TsCursorAsFiller {
             if (isSeries(dataSet)) {
                 try {
                     return resource.fill(info, dataSet);
-                } catch (Exception ex) {
+                } catch (IOException ex) {
                     return resource.reportException(info, dataSet, ex);
                 }
             }
@@ -116,23 +118,23 @@ public final class TsCursorAsFiller {
 
         DataSource toDataSource(TsCollectionInformation info);
 
-        boolean fill(TsCollectionInformation info, DataSource dataSource) throws Exception;
+        boolean fill(TsCollectionInformation info, DataSource dataSource) throws IOException;
 
-        boolean reportException(TsCollectionInformation info, DataSource dataSource, Exception ex);
+        boolean reportException(TsCollectionInformation info, DataSource dataSource, IOException ex);
 
         DataSet toDataSet(TsCollectionInformation info);
 
-        boolean fill(TsCollectionInformation info, DataSet dataSet) throws Exception;
+        boolean fill(TsCollectionInformation info, DataSet dataSet) throws IOException;
 
-        boolean reportException(TsCollectionInformation info, DataSet dataSet, Exception ex);
+        boolean reportException(TsCollectionInformation info, DataSet dataSet, IOException ex);
 
         boolean reportInvalid(TsCollectionInformation info);
 
         DataSet toDataSet(TsInformation info);
 
-        boolean fill(TsInformation info, DataSet dataSet) throws Exception;
+        boolean fill(TsInformation info, DataSet dataSet) throws IOException;
 
-        boolean reportException(TsInformation info, DataSet dataSet, Exception ex);
+        boolean reportException(TsInformation info, DataSet dataSet, IOException ex);
 
         boolean reportInvalid(TsInformation info);
     }
@@ -167,21 +169,21 @@ public final class TsCursorAsFiller {
         }
 
         @Override
-        public boolean reportException(TsCollectionInformation info, DataSet dataSet, Exception ex) {
+        public boolean reportException(TsCollectionInformation info, DataSet dataSet, IOException ex) {
             logger.error("While getting collection '" + info.moniker + "'", ex);
             info.invalidDataCause = ex.getMessage();
             return false;
         }
 
         @Override
-        public boolean reportException(TsCollectionInformation info, DataSource dataSource, Exception ex) {
+        public boolean reportException(TsCollectionInformation info, DataSource dataSource, IOException ex) {
             logger.error("While getting collection '" + info.moniker + "'", ex);
             info.invalidDataCause = ex.getMessage();
             return false;
         }
 
         @Override
-        public boolean reportException(TsInformation info, DataSet dataSet, Exception ex) {
+        public boolean reportException(TsInformation info, DataSet dataSet, IOException ex) {
             logger.error("While getting series '" + info.moniker + "'", ex);
             info.invalidDataCause = ex.getMessage();
             return false;
@@ -221,6 +223,7 @@ public final class TsCursorAsFiller {
         public boolean fill(TsInformation info, DataSet dataSet) throws IOException {
             try (TsCursor<DataSet> cursor = htc.getData(dataSet, info.type)) {
                 if (cursor.nextSeries()) {
+                    info.name = hddn.getDisplayName(dataSet);
                     fill(info, cursor);
                     return true;
                 } else {
@@ -231,32 +234,28 @@ public final class TsCursorAsFiller {
         }
 
         private void fill(TsCollectionInformation info, TsCursor<DataSet> cursor) throws IOException {
+            if (info.type.encompass(TsInformationType.MetaData)) {
+                fillMeta(info, cursor);
+            }
             while (cursor.nextSeries()) {
-                TsInformation item = new TsInformation();
-                item.type = info.type;
+                DataSet dataSet = cursor.getSeriesId();
+                TsInformation item = new TsInformation(hddn.getDisplayName(dataSet), hdm.toMoniker(dataSet), info.type);
                 fill(item, cursor);
                 info.items.add(item);
             }
         }
 
         private void fill(TsInformation info, TsCursor<DataSet> cursor) throws IOException {
-            fillId(info, cursor);
-            if (info.type.encompass(TsInformationType.Data)) {
-                fillData(info, cursor);
-            }
             if (info.type.encompass(TsInformationType.MetaData)) {
                 fillMeta(info, cursor);
             }
-        }
-
-        private void fillId(TsInformation info, TsCursor<DataSet> cursor) throws IOException {
-            DataSet dataSet = cursor.getId();
-            info.name = hddn.getDisplayName(dataSet);
-            info.moniker = hdm.toMoniker(dataSet);
+            if (info.type.encompass(TsInformationType.Data)) {
+                fillData(info, cursor);
+            }
         }
 
         private void fillData(TsInformation info, TsCursor<DataSet> cursor) throws IOException {
-            OptionalTsData data = cursor.getData();
+            OptionalTsData data = cursor.getSeriesData();
             if (data.isPresent()) {
                 info.data = data.get();
                 info.invalidDataCause = null;
@@ -266,8 +265,14 @@ public final class TsCursorAsFiller {
             }
         }
 
+        private void fillMeta(TsCollectionInformation info, TsCursor<DataSet> cursor) throws IOException {
+            Map<String, String> meta = cursor.getMetaData();
+            info.metaData = !meta.isEmpty() ? new MetaData(meta) : null;
+        }
+
         private void fillMeta(TsInformation info, TsCursor<DataSet> cursor) throws IOException {
-            info.metaData = cursor.getMetaData().orElse(null);
+            Map<String, String> meta = cursor.getSeriesMetaData();
+            info.metaData = !meta.isEmpty() ? new MetaData(meta) : null;
         }
     }
 }
