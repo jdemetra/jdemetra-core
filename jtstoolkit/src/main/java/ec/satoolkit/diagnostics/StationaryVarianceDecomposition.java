@@ -243,7 +243,7 @@ public class StationaryVarianceDecomposition {
     public double getVarTotal() {
         return varC + varS + varI + varP + varCal;
     }
-    private static final String nl = "\r\n";
+    private static final String nl = System.lineSeparator();
 
     @Override
     public String toString() {

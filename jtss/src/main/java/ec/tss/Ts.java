@@ -109,7 +109,7 @@ public abstract class Ts implements IDocumented, ITsIdentified {
         builder.append(getName());
         TsData data = getTsData();
         if (data != null) {
-            builder.append("\r\n");
+            builder.append(System.lineSeparator());
             builder.append(data.toString());
         }
         return builder.toString();

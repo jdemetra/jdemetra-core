@@ -1418,7 +1418,7 @@ public class TsData implements Cloneable, Iterable<TsObservation>, IReadDataBloc
         StringBuilder builder = new StringBuilder();
         for (TsObservation obs : this) {
             builder.append(obs.getPeriod()).append('\t').append(obs.getValue());
-            builder.append("\r\n");
+            builder.append(System.lineSeparator());
         }
         return builder.toString();
     }

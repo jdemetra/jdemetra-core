@@ -57,7 +57,7 @@ public class InformationMapping<S> {
 
     public static int listItem(String prefix, String key) {
         if (!key.startsWith(prefix)) {
-            return -1;
+            return Integer.MIN_VALUE;
         }
         int start = prefix.length();
         if (LSTART != null) {
@@ -68,13 +68,37 @@ public class InformationMapping<S> {
             end -= LEND.length();
         }
         if (end <= start) {
-            return -1;
+            return Integer.MIN_VALUE;
         }
         String s = key.substring(start, end);
         try {
-            return Integer.parseUnsignedInt(s);
+            return Integer.parseInt(s);
         } catch (NumberFormatException ex) {
-            return -1;
+            return Integer.MIN_VALUE;
+        }
+    }
+
+    public static boolean isIParamItem(String prefix, String key) {
+        if (!key.startsWith(prefix)) {
+            return false;
+        }
+        int start = prefix.length();
+        if (LSTART != null) {
+            start += LSTART.length();
+        }
+        int end = key.length();
+        if (LEND != null) {
+            end -= LEND.length();
+        }
+        if (end <= start) {
+            return false;
+        }
+        String s = key.substring(start, end);
+        try {
+            Integer.parseInt(s);
+            return true;
+        } catch (NumberFormatException ex) {
+            return false;
         }
     }
 
@@ -183,6 +207,18 @@ public class InformationMapping<S> {
         }
     }
 
+    public <T> void setIParam(String prefix, Class<T> tclass, BiFunction<S, Integer, T> extractor) {
+        synchronized (lmap) {
+            lmap.put(prefix, new TListFunction(tclass, 0, 0, extractor));
+        }
+    }
+
+    public <T> void setIParam(String prefix, BiFunction<S, Integer, TsData> extractor) {
+        synchronized (lmap) {
+            lmap.put(prefix, new TListFunction(TsData.class, 0, 0, extractor));
+        }
+    }
+
     public void fillDictionary(String prefix, Map<String, Class> dic) {
         synchronized (map) {
             for (Entry<String, TFunction<S, ?>> entry : map.entrySet()) {
@@ -191,7 +227,11 @@ public class InformationMapping<S> {
         }
         synchronized (lmap) {
             for (Entry<String, TListFunction<S, ?>> entry : lmap.entrySet()) {
-                dic.put(InformationSet.item(prefix, entry.getKey() + "*"), entry.getValue().targetClass);
+                if (entry.getValue().start == entry.getValue().end) {
+                    dic.put(InformationSet.item(prefix, entry.getKey() + "?"), entry.getValue().targetClass);
+                } else {
+                    dic.put(InformationSet.item(prefix, entry.getKey() + "*"), entry.getValue().targetClass);
+                }
             }
         }
     }
@@ -223,8 +263,12 @@ public class InformationMapping<S> {
         }
         synchronized (lmap) {
             for (Entry<String, TListFunction<S, ?>> x : lmap.entrySet()) {
+                if (x.getValue().start == x.getValue().end) {
+                    return isIParamItem(x.getKey(), id);
+                }
+
                 int idx = listItem(x.getKey(), id);
-                if (idx >= x.getValue().start && idx <= x.getValue().end) {
+                if (idx >= x.getValue().start && idx < x.getValue().end) {
                     return true;
                 }
             }
@@ -249,7 +293,9 @@ public class InformationMapping<S> {
                 TListFunction<S, ?> value = x.getValue();
                 if (tclass.isAssignableFrom(value.targetClass)) {
                     int idx = listItem(x.getKey(), id);
-                    if (idx >= value.start && idx <= value.end) {
+                    if (value.start == value.end) {
+                        return (T) value.extractor.apply(source, idx);
+                    } else if (idx >= value.start && idx < value.end) {
                         return (T) value.extractor.apply(source, idx);
                     }
                 }

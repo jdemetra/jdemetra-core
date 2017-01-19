@@ -48,7 +48,7 @@ public class PreprocessingModelTest {
     public PreprocessingModelTest() {
     }
 
-    //@Test
+    @Test
     public void demoDictionary() {
         Map<String, Class> dic = PreprocessingModel.dictionary();
         for (Entry<String, Class> o : dic.entrySet()) {

@@ -133,11 +133,11 @@ public class ModelStatistics {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("nz=").append(nz).append(("\r\n"));
-        builder.append("effective nobs=").append(neffective).append(("\r\n"));
-        builder.append("outliers=").append(outliers).append(("\r\n"));
-        builder.append("bic=").append(bic).append(("\r\n"));
-        builder.append("se=").append(se).append(("\r\n"));
+        builder.append("nz=").append(nz).append((System.lineSeparator()));
+        builder.append("effective nobs=").append(neffective).append((System.lineSeparator()));
+        builder.append("outliers=").append(outliers).append((System.lineSeparator()));
+        builder.append("bic=").append(bic).append((System.lineSeparator()));
+        builder.append("se=").append(se).append((System.lineSeparator()));
         builder.append("Q=").append(ljungBox).append(" (pvalue=").append(ljungBoxPvalue).append((")\r\n"));
         builder.append("Qs=").append(seasLjungBox).append(" (pvalue=").append(seasLjungBoxPvalue);
 

@@ -38,7 +38,7 @@ public class InformationMappingTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void testDictionary() {
         LinkedHashMap<String, Class> dic = new LinkedHashMap();
         mapping.fillDictionary(null, dic);

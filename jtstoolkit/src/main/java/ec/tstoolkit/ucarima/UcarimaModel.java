@@ -376,11 +376,11 @@ public class UcarimaModel implements Cloneable {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Model: ").append(getModel()).append("\r\n");
+        builder.append("Model: ").append(getModel()).append(System.lineSeparator());
         for (int i = 0, j = 0; i < m_cmps.size(); ++i) {
             ArimaModel cmp = m_cmps.get(i);
             if (!cmp.isNull()) {
-                builder.append("component").append(++j).append(": ").append(cmp).append("\r\n");
+                builder.append("component").append(++j).append(": ").append(cmp).append(System.lineSeparator());
             }
         }
         return builder.toString();
