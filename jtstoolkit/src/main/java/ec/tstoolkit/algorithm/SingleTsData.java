@@ -49,7 +49,7 @@ public class SingleTsData implements IProcResults {
     }
 
     @Override
-    public Map<String, Class> getDictionary() {
+    public Map<String, Class> getDictionary(boolean compact) {
         return Collections.singletonMap(name, (Class) TsData.class);
     }
 

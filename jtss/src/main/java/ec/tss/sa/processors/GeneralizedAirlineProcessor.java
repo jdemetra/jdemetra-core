@@ -99,7 +99,7 @@ public class GeneralizedAirlineProcessor implements ISaProcessingFactory<General
     }
 
     @Override
-    public Map<String, Class> getOutputDictionary() {
-        return GeneralizedAirlineProcessingFactory.instance.getOutputDictionary();
+    public Map<String, Class> getOutputDictionary(boolean compact) {
+        return GeneralizedAirlineProcessingFactory.instance.getOutputDictionary(compact);
     }
 }

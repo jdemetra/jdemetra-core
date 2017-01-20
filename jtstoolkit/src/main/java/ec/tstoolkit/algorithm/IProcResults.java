@@ -42,9 +42,15 @@ public interface IProcResults {
     /**
      * Gets the dictionary of all the possible results
      *
+     * @param compact True if the dictionary contains wild cards, false otherwise
      * @return The Map with the output (identifier and class)
      */
-    Map<String, Class> getDictionary();
+    Map<String, Class> getDictionary(boolean compact);
+    
+    @Deprecated
+    default Map<String, Class> getDictionary(){
+        return getDictionary(false);
+    }
 
     /**
      * . The identifier and the type should come from the dictionary provided by
@@ -68,7 +74,7 @@ public interface IProcResults {
      */
     default <T> Map<String, T> searchAll(String pattern, Class<T> tclass) {
         Map<String, T> rslt = new LinkedHashMap<>();
-        Map<String, Class> dic = getDictionary();
+        Map<String, Class> dic = getDictionary(false);
         WildCards wc = new WildCards(pattern);
         for (Map.Entry<String, Class> x : dic.entrySet()) {
             if (wc.match(x.getKey())) {

@@ -70,9 +70,9 @@ public class CalendarizationProcessor implements IProcessingFactory<Calendarizat
     }
 
     @Override
-    public Map<String, Class> getOutputDictionary() {
+    public Map<String, Class> getOutputDictionary(boolean compact) {
         Map<String, Class> dic = new HashMap<>();
-        CalendarizationResults.fillDictionary(null, dic);
+        CalendarizationResults.fillDictionary(null, dic, compact);
         return dic;
     }
 

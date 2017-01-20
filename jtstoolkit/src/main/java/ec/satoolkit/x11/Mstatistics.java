@@ -26,6 +26,7 @@ import ec.tstoolkit.data.DescriptiveStatistics;
 import ec.tstoolkit.eco.Ols;
 import ec.tstoolkit.eco.RegModel;
 import ec.tstoolkit.information.InformationMapper;
+import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.stats.AutoCorrelations;
 import ec.tstoolkit.timeseries.simplets.PeriodIterator;
@@ -34,6 +35,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * This class computes the M-Statistics
@@ -521,7 +523,7 @@ public final class Mstatistics implements IProcResults {
         }
         int ifreq = O.getFrequency().intValue();
         TsData s = Snorm.delta(ifreq);
-        s.applyOnFinite(x->Math.abs(x));
+        s.applyOnFinite(x -> Math.abs(x));
         DescriptiveStatistics stats = new DescriptiveStatistics(s);
         m[7] = 10 * stats.getSum() / s.getLength();
     }
@@ -566,7 +568,7 @@ public final class Mstatistics implements IProcResults {
             Ols ols = new Ols();
             RegModel model = new RegModel();
             //
-            stC.applyOnFinite(x->Math.log(x));
+            stC.applyOnFinite(x -> Math.log(x));
             model.setY(new DataBlock(stC.internalStorage()));
             model.setMeanCorrection(true);
             model.addX(new DataBlock(line));
@@ -576,10 +578,10 @@ public final class Mstatistics implements IProcResults {
 
             double[] b = ols.getLikelihood().getB();
             TsData lt = new TsData(stC.getStart(), line, false).times(b[1]);
-            lt.applyOnFinite(x->x+b[0]);
+            lt.applyOnFinite(x -> x + b[0]);
 
             stC = stC.minus(lt);
-            stO.applyOnFinite(x->Math.log(x));
+            stO.applyOnFinite(x -> Math.log(x));
             stO = stO.minus(lt);
 
         } else {
@@ -596,7 +598,7 @@ public final class Mstatistics implements IProcResults {
 
             double[] b = ols.getLikelihood().getB();
             TsData lt = new TsData(stC.getStart(), line, false).times(b[1]);
-            lt.applyOnFinite(x->x+b[0]);
+            lt.applyOnFinite(x -> x + b[0]);
 
             stC = stC.minus(lt);
             stO = stO.minus(lt);
@@ -770,28 +772,22 @@ public final class Mstatistics implements IProcResults {
 
     @Override
     public boolean contains(String id) {
-        synchronized (mapper) {
-            return mapper.contains(id);
-        }
+        return MAPPING.contains(id);
     }
 
     @Override
-    public Map<String, Class> getDictionary() {
-        synchronized (mapper) {
-            LinkedHashMap<String, Class> dictionary = new LinkedHashMap<>();
-            mapper.fillDictionary(null, dictionary);
-            return dictionary;
-        }
+    public Map<String, Class> getDictionary(boolean compact) {
+        LinkedHashMap<String, Class> dictionary = new LinkedHashMap<>();
+        MAPPING.fillDictionary(null, dictionary, compact);
+        return dictionary;
     }
 
     @Override
     public <T> T getData(String id, Class<T> tclass) {
-        synchronized (mapper) {
-            if (mapper.contains(id)) {
-                return mapper.getData(this, id, tclass);
-            } else {
-                return null;
-            }
+        if (MAPPING.contains(id)) {
+            return MAPPING.getData(this, id, tclass);
+        } else {
+            return null;
         }
     }
 
@@ -805,134 +801,38 @@ public final class Mstatistics implements IProcResults {
     public static final String M9 = "m9", M10 = "m10", M11 = "m11";
     public static final String Q = "q", Q2 = "q-m2";
 
-    public static void fillDictionary(String prefix, Map<String, Class> map) {
-        mapper.fillDictionary(prefix, map);
+    public static void fillDictionary(String prefix, Map<String, Class> map, boolean compact) {
+        MAPPING.fillDictionary(prefix, map, compact);
     }
 
-    // MAPPERS
-    public static <T> void addMapping(String name, InformationMapper.Mapper<Mstatistics, T> mapping) {
-        synchronized (mapper) {
-            mapper.add(name, mapping);
-        }
+    // MAPPING
+    public static InformationMapping<Mstatistics> getMapping() {
+        return MAPPING;
     }
-    private static final InformationMapper<Mstatistics> mapper = new InformationMapper<>();
+
+    public static <T> void setMapping(String name, Class<T> tclass, Function<Mstatistics, T> extractor) {
+        MAPPING.set(name, tclass, extractor);
+    }
+
+    public static <T> void setTsData(String name, Function<Mstatistics, TsData> extractor) {
+        MAPPING.set(name, extractor);
+    }
+
+    private static final InformationMapping<Mstatistics> MAPPING = new InformationMapping<>(Mstatistics.class);
 
     static {
-        mapper.add(M1, new InformationMapper.Mapper<Mstatistics, Double>(Double.class
-        ) {
-            @Override
-            public Double retrieve(Mstatistics source) {
-                return source.getM(1);
-            }
-        }
-        );
-        mapper
-                .add(M2, new InformationMapper.Mapper<Mstatistics, Double>(Double.class
-                        ) {
-                            @Override
-                            public Double retrieve(Mstatistics source) {
-                                return source.getM(2);
-                            }
-                        }
-                );
-        mapper
-                .add(M3, new InformationMapper.Mapper<Mstatistics, Double>(Double.class
-                        ) {
-                            @Override
-                            public Double retrieve(Mstatistics source) {
-                                return source.getM(3);
-                            }
-                        }
-                );
-        mapper
-                .add(M4, new InformationMapper.Mapper<Mstatistics, Double>(Double.class
-                        ) {
-                            @Override
-                            public Double retrieve(Mstatistics source) {
-                                return source.getM(4);
-                            }
-                        }
-                );
-        mapper
-                .add(M5, new InformationMapper.Mapper<Mstatistics, Double>(Double.class
-                        ) {
-                            @Override
-                            public Double retrieve(Mstatistics source) {
-                                return source.getM(5);
-                            }
-                        }
-                );
-        mapper
-                .add(M6, new InformationMapper.Mapper<Mstatistics, Double>(Double.class
-                        ) {
-                            @Override
-                            public Double retrieve(Mstatistics source) {
-                                return source.getM(6);
-                            }
-                        }
-                );
-        mapper
-                .add(M7, new InformationMapper.Mapper<Mstatistics, Double>(Double.class
-                        ) {
-                            @Override
-                            public Double retrieve(Mstatistics source) {
-                                return source.getM(7);
-                            }
-                        }
-                );
-        mapper
-                .add(M8, new InformationMapper.Mapper<Mstatistics, Double>(Double.class
-                        ) {
-                            @Override
-                            public Double retrieve(Mstatistics source) {
-                                return source.getM(8);
-                            }
-                        }
-                );
-        mapper
-                .add(M9, new InformationMapper.Mapper<Mstatistics, Double>(Double.class
-                        ) {
-                            @Override
-                            public Double retrieve(Mstatistics source) {
-                                return source.getM(9);
-                            }
-                        }
-                );
-        mapper
-                .add(M10, new InformationMapper.Mapper<Mstatistics, Double>(Double.class
-                        ) {
-                            @Override
-                            public Double retrieve(Mstatistics source) {
-                                return source.getM(10);
-                            }
-                        }
-                );
-        mapper
-                .add(M11, new InformationMapper.Mapper<Mstatistics, Double>(Double.class
-                        ) {
-                            @Override
-                            public Double retrieve(Mstatistics source) {
-                                return source.getM(11);
-                            }
-                        }
-                );
-        mapper
-                .add(Q, new InformationMapper.Mapper<Mstatistics, Double>(Double.class
-                        ) {
-                            @Override
-                            public Double retrieve(Mstatistics source) {
-                                return source.getQ();
-                            }
-                        }
-                );
-        mapper
-                .add(Q2, new InformationMapper.Mapper<Mstatistics, Double>(Double.class
-                        ) {
-                            @Override
-                            public Double retrieve(Mstatistics source) {
-                                return source.getQm2();
-                            }
-                        }
-                );
+        MAPPING.set(M1, Double.class, source -> source.getM(1));
+        MAPPING.set(M2, Double.class, source -> source.getM(2));
+        MAPPING.set(M3, Double.class, source -> source.getM(3));
+        MAPPING.set(M4, Double.class, source -> source.getM(4));
+        MAPPING.set(M5, Double.class, source -> source.getM(5));
+        MAPPING.set(M6, Double.class, source -> source.getM(6));
+        MAPPING.set(M7, Double.class, source -> source.getM(7));
+        MAPPING.set(M8, Double.class, source -> source.getM(8));
+        MAPPING.set(M9, Double.class, source -> source.getM(9));
+        MAPPING.set(M10, Double.class, source -> source.getM(10));
+        MAPPING.set(M11, Double.class, source -> source.getM(11));
+        MAPPING.set(Q, Double.class, source -> source.getQ());
+        MAPPING.set(Q2, Double.class, source -> source.getQm2());
     }
 }

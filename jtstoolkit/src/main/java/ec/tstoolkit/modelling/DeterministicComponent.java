@@ -20,8 +20,7 @@ import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
-import ec.tstoolkit.data.ReadDataBlock;
-import ec.tstoolkit.information.InformationMapper;
+import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.modelling.arima.ModelEstimation;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.regression.Constant;
@@ -48,6 +47,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -296,7 +296,7 @@ public class DeterministicComponent implements IProcResults {
     }
 
     public TsData outliersEffect(TsDomain domain) {
-        return regressionEffect(domain, reg->reg.isOutlier());
+        return regressionEffect(domain, reg -> reg.isOutlier());
     }
 
     public TsData outliersEffect(TsDomain domain, final ComponentType type) {
@@ -326,34 +326,36 @@ public class DeterministicComponent implements IProcResults {
     public TsData userEffect(TsDomain domain, final ComponentType type) {
         return regressionEffect(domain, reg -> reg.getType() == type && reg.isUser());
     }
-    
-    public int countVariables(final Predicate<PreadjustmentVariable> pred){
-        int n=0;
-        for (PreadjustmentVariable var : x_){
-            if (pred.test(var))
+
+    public int countVariables(final Predicate<PreadjustmentVariable> pred) {
+        int n = 0;
+        for (PreadjustmentVariable var : x_) {
+            if (pred.test(var)) {
                 ++n;
+            }
         }
         return n;
     }
 
-    public int countRegressors(final Predicate<PreadjustmentVariable> pred){
-        int n=0;
-        for (PreadjustmentVariable var : x_){
-            if (pred.test(var))
-                n+=var.getVariable().getDim();
+    public int countRegressors(final Predicate<PreadjustmentVariable> pred) {
+        int n = 0;
+        for (PreadjustmentVariable var : x_) {
+            if (pred.test(var)) {
+                n += var.getVariable().getDim();
+            }
         }
         return n;
     }
 
     @Override
-    public Map<String, Class> getDictionary() {
-        return dictionary();
+    public Map<String, Class> getDictionary(boolean compact) {
+        return dictionary(compact);
     }
 
     @Override
     public <T> T getData(String id, Class<T> tclass) {
-        if (mapper.contains(id)) {
-            return mapper.getData(this, id, tclass);
+        if (MAPPING.contains(id)) {
+            return MAPPING.getData(this, id, tclass);
         } else {
             return null;
         }
@@ -361,8 +363,8 @@ public class DeterministicComponent implements IProcResults {
 
     @Override
     public boolean contains(String id) {
-        synchronized (mapper) {
-            return mapper.contains(id);
+        synchronized (MAPPING) {
+            return MAPPING.contains(id);
         }
     }
 
@@ -371,14 +373,14 @@ public class DeterministicComponent implements IProcResults {
         return Collections.EMPTY_LIST;
     }
 
-    public static void fillDictionary(String prefix, Map<String, Class> map) {
-        mapper.fillDictionary(prefix, map);
-        ModelEstimation.fillDictionary(prefix, map);
+    public static void fillDictionary(String prefix, Map<String, Class> map, boolean compact) {
+        MAPPING.fillDictionary(prefix, map, compact);
+        ModelEstimation.fillDictionary(prefix, map, compact);
     }
 
-    public static Map<String, Class> dictionary() {
+    public static Map<String, Class> dictionary(boolean compact) {
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
-        fillDictionary(null, map);
+        fillDictionary(null, map, compact);
         return map;
     }
 
@@ -414,19 +416,19 @@ public class DeterministicComponent implements IProcResults {
     public boolean isMultiplicative() {
         return function_ == DefaultTransformationType.Log;
     }
-    
+
     public boolean setCoefficients(IReadDataBlock c) {
-        if (c.getLength() != countRegressors(reg->true))
+        if (c.getLength() != countRegressors(reg -> true)) {
             return false;
-        int cur=0;
-        for (PreadjustmentVariable var : x_){
-            int n=var.getCoefficients().length;
+        }
+        int cur = 0;
+        for (PreadjustmentVariable var : x_) {
+            int n = var.getCoefficients().length;
             c.rextract(cur, n).copyTo(var.getCoefficients(), 0);
-            cur+=n;
+            cur += n;
         }
         return true;
     }
-
 
     public static final String LOG = "log",
             ADJUST = "adjust",
@@ -434,335 +436,203 @@ public class DeterministicComponent implements IProcResults {
             NTD = "ntd", NMH = "nmh";
     // MAPPERS
 
-    public static <T> void addMapping(String name, InformationMapper.Mapper<DeterministicComponent, T> mapping) {
-        synchronized (mapper) {
-            mapper.add(name, mapping);
-        }
+    // MAPPING
+    public static InformationMapping<DeterministicComponent> getMapping() {
+        return MAPPING;
     }
-    private static final InformationMapper<DeterministicComponent> mapper = new InformationMapper<>();
+
+    public static <T> void setMapping(String name, Class<T> tclass, Function<DeterministicComponent, T> extractor) {
+        MAPPING.set(name, tclass, extractor);
+    }
+
+    public static <T> void setTsData(String name, Function<DeterministicComponent, TsData> extractor) {
+        MAPPING.set(name, extractor);
+    }
+
+    private static final InformationMapping<DeterministicComponent> MAPPING = new InformationMapping<>(DeterministicComponent.class);
 
     static {
-        mapper.add(LOG, new InformationMapper.Mapper<DeterministicComponent, Boolean>(Boolean.class) {
-            @Override
-            public Boolean retrieve(DeterministicComponent source) {
-                return source.isMultiplicative();
-            }
+        MAPPING.set(LOG, Boolean.class, source -> source.isMultiplicative());
+        MAPPING.set(ADJUST, Boolean.class, source -> source.getLengthOfPeriodAdjustment() != LengthOfPeriodType.None);
+        MAPPING.set(ModellingDictionary.Y, source -> source.getOriginal());
+        MAPPING.set(ModellingDictionary.YC, source -> source.interpolatedSeries(false));
+        MAPPING.set(ModellingDictionary.Y_LIN, source -> source.linearizedSeries());
+        MAPPING.set(ModellingDictionary.L, source -> source.linearizedSeries());
+        MAPPING.set(ModellingDictionary.YCAL, source -> {
+            TsData td = source.regressionEffect(source.domain(true), ICalendarVariable.class);
+            TsData mh = source.regressionEffect(source.domain(true), IMovingHolidayVariable.class);
+            TsData cal = TsData.add(td, mh);
+            source.backTransform(cal, false, true);
+            return source.inv_op(source.interpolatedSeries(false), cal);
         });
-        mapper.add(ADJUST, new InformationMapper.Mapper<DeterministicComponent, Boolean>(Boolean.class) {
-            @Override
-            public Boolean retrieve(DeterministicComponent source) {
-                return source.getLengthOfPeriodAdjustment() != LengthOfPeriodType.None;
-            }
+        MAPPING.set(ModellingDictionary.DET, source -> {
+            TsData reg = source.regressionEffect(source.domain(false));
+            source.backTransform(reg, false, true);
+            return reg;
         });
-        mapper.add(ModellingDictionary.Y, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                return source.getOriginal();
-            }
+        MAPPING.set(ModellingDictionary.DET + SeriesInfo.F_SUFFIX, source -> {
+            TsData reg = source.regressionEffect(source.domain(true));
+            source.backTransform(reg, false, true);
+            return reg;
         });
-        mapper.add(ModellingDictionary.YC, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                return source.interpolatedSeries(false);
-            }
+        MAPPING.set(ModellingDictionary.CAL, source -> {
+            TsData td = source.regressionEffect(source.domain(false), ICalendarVariable.class);
+            TsData mh = source.regressionEffect(source.domain(false), IMovingHolidayVariable.class);
+            TsData cal = TsData.add(td, mh);
+            source.backTransform(cal, false, true);
+            return cal;
         });
-        mapper.add(ModellingDictionary.Y_LIN, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                return source.linearizedSeries();
-            }
+        MAPPING.set(ModellingDictionary.CAL + SeriesInfo.F_SUFFIX, source -> {
+            TsData td = source.regressionEffect(source.domain(true), ICalendarVariable.class);
+            TsData mh = source.regressionEffect(source.domain(true), IMovingHolidayVariable.class);
+            TsData cal = TsData.add(td, mh);
+            source.backTransform(cal, false, true);
+            return cal;
         });
-        mapper.add(ModellingDictionary.L, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                return source.linearizedSeries();
-            }
+        MAPPING.set(ModellingDictionary.TDE, source -> {
+            TsData cal = source.regressionEffect(source.domain(false), ICalendarVariable.class);
+            source.backTransform(cal, false, true);
+            return cal;
         });
-        mapper.add(ModellingDictionary.YCAL, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData td = source.regressionEffect(source.domain(true), ICalendarVariable.class);
-                TsData mh = source.regressionEffect(source.domain(true), IMovingHolidayVariable.class);
-                TsData cal = TsData.add(td, mh);
-                source.backTransform(cal, false, true);
-                return source.inv_op(source.interpolatedSeries(false), cal);
-            }
+        MAPPING.set(ModellingDictionary.TDE + SeriesInfo.F_SUFFIX, source -> {
+            TsData cal = source.regressionEffect(source.domain(true), ICalendarVariable.class);
+            source.backTransform(cal, false, true);
+            return cal;
         });
-        mapper.add(ModellingDictionary.DET, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData reg = source.regressionEffect(source.domain(false));
-                source.backTransform(reg, false, true);
-                return reg;
-            }
+        MAPPING.set(ModellingDictionary.EE, source -> {
+            TsData cal = source.regressionEffect(source.domain(false), IEasterVariable.class);
+            source.backTransform(cal, false, false);
+            return cal;
         });
-        mapper.add(ModellingDictionary.DET + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData reg = source.regressionEffect(source.domain(true));
-                source.backTransform(reg, false, true);
-                return reg;
-            }
+        MAPPING.set(ModellingDictionary.EE + SeriesInfo.F_SUFFIX, source -> {
+            TsData cal = source.regressionEffect(source.domain(true), IEasterVariable.class);
+            source.backTransform(cal, false, false);
+            return cal;
         });
-        mapper.add(ModellingDictionary.CAL, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData td = source.regressionEffect(source.domain(false), ICalendarVariable.class);
-                TsData mh = source.regressionEffect(source.domain(false), IMovingHolidayVariable.class);
-                TsData cal = TsData.add(td, mh);
-                source.backTransform(cal, false, true);
-                return cal;
-            }
+        MAPPING.set(ModellingDictionary.OMHE, source -> {
+            TsData cal = source.regressionEffect(source.domain(false),
+                    var -> (var instanceof IMovingHolidayVariable) && !(var instanceof IEasterVariable));
+            source.backTransform(cal, false, false);
+            return cal;
         });
-        mapper.add(ModellingDictionary.CAL + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData td = source.regressionEffect(source.domain(true), ICalendarVariable.class);
-                TsData mh = source.regressionEffect(source.domain(true), IMovingHolidayVariable.class);
-                TsData cal = TsData.add(td, mh);
-                source.backTransform(cal, false, true);
-                return cal;
-            }
+        MAPPING.set(ModellingDictionary.OMHE + SeriesInfo.F_SUFFIX, source -> {
+            TsData cal = source.regressionEffect(source.domain(true),
+                    var -> (var instanceof IMovingHolidayVariable) && !(var instanceof IEasterVariable));
+            source.backTransform(cal, false, false);
+            return cal;
         });
-        mapper.add(ModellingDictionary.TDE, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData cal = source.regressionEffect(source.domain(false), ICalendarVariable.class);
-                source.backTransform(cal, false, true);
-                return cal;
-            }
+        MAPPING.set(ModellingDictionary.MHE, source -> {
+            TsData cal = source.regressionEffect(source.domain(false), IMovingHolidayVariable.class);
+            source.backTransform(cal, false, false);
+            return cal;
         });
-        mapper.add(ModellingDictionary.TDE + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData cal = source.regressionEffect(source.domain(true), ICalendarVariable.class);
-                source.backTransform(cal, false, true);
-                return cal;
-            }
+        MAPPING.set(ModellingDictionary.MHE + SeriesInfo.F_SUFFIX, source -> {
+            TsData cal = source.regressionEffect(source.domain(true), IMovingHolidayVariable.class);
+            source.backTransform(cal, false, false);
+            return cal;
         });
-        mapper.add(ModellingDictionary.EE, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData cal = source.regressionEffect(source.domain(false), IEasterVariable.class);
-                source.backTransform(cal, false, false);
-                return cal;
-            }
+        MAPPING.set(ModellingDictionary.OUT, source -> {
+            TsData o = source.outliersEffect(source.domain(false));
+            source.backTransform(o, false, false);
+            return o;
         });
-        mapper.add(ModellingDictionary.EE + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData cal = source.regressionEffect(source.domain(true), IEasterVariable.class);
-                source.backTransform(cal, false, false);
-                return cal;
-            }
+        MAPPING.set(ModellingDictionary.OUT + SeriesInfo.F_SUFFIX, source -> {
+            TsData o = source.outliersEffect(source.domain(true));
+            source.backTransform(o, false, false);
+            return o;
         });
-        mapper.add(ModellingDictionary.OMHE, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData cal = source.regressionEffect(source.domain(false),
-                        var -> (var instanceof IMovingHolidayVariable) && !(var instanceof IEasterVariable));
-                source.backTransform(cal, false, false);
-                return cal;
-            }
+        MAPPING.set(ModellingDictionary.OUT_I, source -> {
+            TsData o = source.outliersEffect(source.domain(false), ComponentType.Irregular);
+            source.backTransform(o, false, false);
+            return o;
         });
-        mapper.add(ModellingDictionary.OMHE + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData cal = source.regressionEffect(source.domain(true),
-                        var -> (var instanceof IMovingHolidayVariable) && !(var instanceof IEasterVariable));
-                source.backTransform(cal, false, false);
-                return cal;
-            }
+        MAPPING.set(ModellingDictionary.OUT_I + SeriesInfo.F_SUFFIX, source -> {
+            TsData o = source.outliersEffect(source.domain(true), ComponentType.Irregular);
+            source.backTransform(o, false, false);
+            return o;
         });
-        mapper.add(ModellingDictionary.MHE, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData cal = source.regressionEffect(source.domain(false), IMovingHolidayVariable.class);
-                source.backTransform(cal, false, false);
-                return cal;
-            }
+        MAPPING.set(ModellingDictionary.OUT_T, source -> {
+            TsData o = source.outliersEffect(source.domain(false), ComponentType.Trend);
+            source.backTransform(o, false, false);
+            return o;
         });
-        mapper.add(ModellingDictionary.MHE + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData cal = source.regressionEffect(source.domain(true), IMovingHolidayVariable.class);
-                source.backTransform(cal, false, false);
-                return cal;
-            }
+        MAPPING.set(ModellingDictionary.OUT_T + SeriesInfo.F_SUFFIX, source -> {
+            TsData o = source.outliersEffect(source.domain(true), ComponentType.Trend);
+            source.backTransform(o, false, false);
+            return o;
         });
-        mapper.add(ModellingDictionary.OUT, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData o = source.outliersEffect(source.domain(false));
-                source.backTransform(o, false, false);
-                return o;
-            }
+        MAPPING.set(ModellingDictionary.OUT_S, source -> {
+            TsData o = source.outliersEffect(source.domain(false), ComponentType.Seasonal);
+            source.backTransform(o, false, false);
+            return o;
         });
-        mapper.add(ModellingDictionary.OUT + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData o = source.outliersEffect(source.domain(true));
-                source.backTransform(o, false, false);
-                return o;
-            }
+        MAPPING.set(ModellingDictionary.OUT_S + SeriesInfo.F_SUFFIX, source -> {
+            TsData o = source.outliersEffect(source.domain(true), ComponentType.Seasonal);
+            source.backTransform(o, false, false);
+            return o;
         });
-        mapper.add(ModellingDictionary.OUT_I, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData o = source.outliersEffect(source.domain(false), ComponentType.Irregular);
-                source.backTransform(o, false, false);
-                return o;
-            }
+        MAPPING.set(ModellingDictionary.REG, source -> {
+            TsData r = source.regressionEffect(source.domain(false), UserVariable.class);
+            source.backTransform(r, false, false);
+            return r;
         });
-        mapper.add(ModellingDictionary.OUT_I + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData o = source.outliersEffect(source.domain(true), ComponentType.Irregular);
-                source.backTransform(o, false, false);
-                return o;
-            }
+        MAPPING.set(ModellingDictionary.REG + SeriesInfo.F_SUFFIX, source -> {
+            TsData r = source.regressionEffect(source.domain(true), UserVariable.class);
+            source.backTransform(r, false, false);
+            return r;
         });
-        mapper.add(ModellingDictionary.OUT_T, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData o = source.outliersEffect(source.domain(false), ComponentType.Trend);
-                source.backTransform(o, false, false);
-                return o;
-            }
+        MAPPING.set(ModellingDictionary.REG_T, source -> {
+            TsData r = source.userEffect(source.domain(false), ComponentType.Trend);
+            source.backTransform(r, false, false);
+            return r;
         });
-        mapper.add(ModellingDictionary.OUT_T + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData o = source.outliersEffect(source.domain(true), ComponentType.Trend);
-                source.backTransform(o, false, false);
-                return o;
-            }
+        MAPPING.set(ModellingDictionary.REG_T + SeriesInfo.F_SUFFIX, source -> {
+            TsData r = source.userEffect(source.domain(true), ComponentType.Trend);
+            source.backTransform(r, false, false);
+            return r;
         });
-        mapper.add(ModellingDictionary.OUT_S, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData o = source.outliersEffect(source.domain(false), ComponentType.Seasonal);
-                source.backTransform(o, false, false);
-                return o;
-            }
+        MAPPING.set(ModellingDictionary.REG_S, source -> {
+            TsData r = source.userEffect(source.domain(false), ComponentType.Seasonal);
+            source.backTransform(r, false, false);
+            return r;
         });
-        mapper.add(ModellingDictionary.OUT_S + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData o = source.outliersEffect(source.domain(true), ComponentType.Seasonal);
-                source.backTransform(o, false, false);
-                return o;
-            }
+        MAPPING.set(ModellingDictionary.REG_S + SeriesInfo.F_SUFFIX, source -> {
+            TsData r = source.userEffect(source.domain(true), ComponentType.Seasonal);
+            source.backTransform(r, false, false);
+            return r;
         });
-        mapper.add(ModellingDictionary.REG, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData r = source.regressionEffect(source.domain(false), UserVariable.class);
-                source.backTransform(r, false, false);
-                return r;
-            }
+        MAPPING.set(ModellingDictionary.REG_I, source -> {
+            TsData r = source.userEffect(source.domain(false), ComponentType.Irregular);
+            source.backTransform(r, false, false);
+            return r;
         });
-        mapper.add(ModellingDictionary.REG + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData r = source.regressionEffect(source.domain(true), UserVariable.class);
-                source.backTransform(r, false, false);
-                return r;
-            }
+        MAPPING.set(ModellingDictionary.REG_I + SeriesInfo.F_SUFFIX, source -> {
+            TsData r = source.userEffect(source.domain(true), ComponentType.Irregular);
+            source.backTransform(r, false, false);
+            return r;
         });
-        mapper.add(ModellingDictionary.REG_T, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData r = source.userEffect(source.domain(false), ComponentType.Trend);
-                source.backTransform(r, false, false);
-                return r;
-            }
+        MAPPING.set(ModellingDictionary.REG_SA, source -> {
+            TsData r = source.userEffect(source.domain(false), ComponentType.SeasonallyAdjusted);
+            source.backTransform(r, false, false);
+            return r;
         });
-        mapper.add(ModellingDictionary.REG_T + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData r = source.userEffect(source.domain(true), ComponentType.Trend);
-                source.backTransform(r, false, false);
-                return r;
-            }
+        MAPPING.set(ModellingDictionary.REG_SA + SeriesInfo.F_SUFFIX, source -> {
+            TsData r = source.userEffect(source.domain(true), ComponentType.SeasonallyAdjusted);
+            source.backTransform(r, false, false);
+            return r;
         });
-        mapper.add(ModellingDictionary.REG_S, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData r = source.userEffect(source.domain(false), ComponentType.Seasonal);
-                source.backTransform(r, false, false);
-                return r;
-            }
+        MAPPING.set(ModellingDictionary.REG_Y, source -> {
+            TsData r = source.userEffect(source.domain(false), ComponentType.Series);
+            source.backTransform(r, false, false);
+            return r;
         });
-        mapper.add(ModellingDictionary.REG_S + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData r = source.userEffect(source.domain(true), ComponentType.Seasonal);
-                source.backTransform(r, false, false);
-                return r;
-            }
-        });
-        mapper.add(ModellingDictionary.REG_I, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData r = source.userEffect(source.domain(false), ComponentType.Irregular);
-                source.backTransform(r, false, false);
-                return r;
-            }
-        });
-        mapper.add(ModellingDictionary.REG_I + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData r = source.userEffect(source.domain(true), ComponentType.Irregular);
-                source.backTransform(r, false, false);
-                return r;
-            }
-        });
-        mapper.add(ModellingDictionary.REG_SA, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData r = source.userEffect(source.domain(false), ComponentType.SeasonallyAdjusted);
-                source.backTransform(r, false, false);
-                return r;
-            }
-        });
-        mapper.add(ModellingDictionary.REG_SA + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData r = source.userEffect(source.domain(true), ComponentType.SeasonallyAdjusted);
-                source.backTransform(r, false, false);
-                return r;
-            }
-        });
-        mapper.add(ModellingDictionary.REG_Y, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData r = source.userEffect(source.domain(false), ComponentType.Series);
-                source.backTransform(r, false, false);
-                return r;
-            }
-        });
-        mapper.add(ModellingDictionary.REG_Y + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DeterministicComponent, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DeterministicComponent source) {
-                TsData r = source.userEffect(source.domain(true), ComponentType.Series);
-                source.backTransform(r, false, false);
-                return r;
-            }
+        MAPPING.set(ModellingDictionary.REG_Y + SeriesInfo.F_SUFFIX, source -> {
+            TsData r = source.userEffect(source.domain(true), ComponentType.Series);
+            source.backTransform(r, false, false);
+            return r;
         });
 
-        mapper.add(NTD, new InformationMapper.Mapper<DeterministicComponent, Integer>(Integer.class) {
-            @Override
-            public Integer retrieve(final DeterministicComponent source) {
-                return source.countRegressors(reg->reg.isCalendar());
-            }
-        });
-        mapper.add(NMH, new InformationMapper.Mapper<DeterministicComponent, Integer>(Integer.class) {
-            @Override
-            public Integer retrieve(final DeterministicComponent source) {
-                return source.countRegressors(reg->reg.isMovingHoliday());
-            }
-        });
+        MAPPING.set(NTD, Integer.class, source -> source.countRegressors(reg -> reg.isCalendar()));
+        MAPPING.set(NMH, Integer.class, source -> source.countRegressors(reg -> reg.isMovingHoliday()));
     }
-
 }

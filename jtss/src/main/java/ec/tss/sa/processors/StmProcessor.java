@@ -102,7 +102,7 @@ public class StmProcessor implements ISaProcessingFactory<StmSpecification> {
         return StmProcessingFactory.instance.getSpecificationDictionary(specClass);
     }
     @Override
-    public Map<String, Class> getOutputDictionary() {
-        return StmProcessingFactory.instance.getOutputDictionary();
+    public Map<String, Class> getOutputDictionary(boolean compact) {
+        return StmProcessingFactory.instance.getOutputDictionary(compact);
     }
 }

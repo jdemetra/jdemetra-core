@@ -89,7 +89,7 @@ public class TramoProcessingFactory implements IProcessingFactory<TramoSpecifica
     }
     
     @Override
-    public Map<String, Class> getOutputDictionary() {
-        return PreprocessingModel.dictionary();
+    public Map<String, Class> getOutputDictionary(boolean compact) {
+        return PreprocessingModel.dictionary(compact);
     }
 }

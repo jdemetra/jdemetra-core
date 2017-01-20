@@ -371,7 +371,7 @@ public class MultiSaProcessingFactory implements IProcessingFactory<MultiSaSpeci
     }
 
     @Override
-    public Map<String, Class> getOutputDictionary() {
+    public Map<String, Class> getOutputDictionary(boolean compact) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

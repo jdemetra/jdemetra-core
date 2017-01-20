@@ -81,7 +81,7 @@ public class MixedFrequenciesArimaProcessor implements IProcessingFactory<MixedF
     }
 
     @Override
-    public Map<String, Class> getOutputDictionary() {
+    public Map<String, Class> getOutputDictionary(boolean compact) {
         Map<String, Class> dic = new HashMap<>();
         return dic;
     }

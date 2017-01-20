@@ -26,6 +26,7 @@ import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.eco.DiffuseConcentratedLikelihood;
 import ec.tstoolkit.information.InformationMapper;
+import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.maths.realfunctions.IFunction;
 import ec.tstoolkit.maths.realfunctions.IFunctionInstance;
@@ -37,6 +38,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  *
@@ -65,12 +67,12 @@ public class DisaggregationResults implements IProcResults {
         IParametricMapping<? extends ISsf> mapping = result.getMapping();
         return LikelihoodStatistics.create(ll, ll.getN(), mapping == null ? 0 : mapping.getDim(), 0);
     }
-    
-    public IFunction getEstimationFunction(){
+
+    public IFunction getEstimationFunction() {
         return result.getEstimationFunction();
     }
 
-    public IFunctionInstance getMin(){
+    public IFunctionInstance getMin() {
         return result.getMin();
     }
 
@@ -92,118 +94,88 @@ public class DisaggregationResults implements IProcResults {
 
     @Override
     public boolean contains(String id) {
-        synchronized (mapper) {
-            return mapper.contains(id);
-        }
+        return MAPPING.contains(id);
     }
 
     @Override
-    public Map<String, Class> getDictionary() {
+    public Map<String, Class> getDictionary(boolean compact) {
         // TODO
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
-        mapper.fillDictionary(null, map);
+        fillDictionary(null, map, compact);
         return map;
     }
 
     @Override
     public <T> T getData(String id, Class<T> tclass) {
-        synchronized (mapper) {
-            if (mapper.contains(id)) {
-                return mapper.getData(this, id, tclass);
-            } else {
-                return null;
-            }
+        if (MAPPING.contains(id)) {
+            return MAPPING.getData(this, id, tclass);
+        } else {
+            return null;
         }
     }
-    
+
     @Override
     public List<ProcessingInformation> getProcessingInformation() {
         return Collections.EMPTY_LIST;
     }
 
-    public static void fillDictionary(String prefix, Map<String, Class> map){
-        mapper.fillDictionary(prefix, map);
-    } 
-
-    // MAPPERS
-    public static <T> void addMapping(String name, InformationMapper.Mapper<DisaggregationResults, T> mapping) {
-        synchronized (mapper) {
-            mapper.add(name, mapping);
-        }
+    public static void fillDictionary(String prefix, Map<String, Class> map, boolean compact) {
+        MAPPING.fillDictionary(prefix, map, compact);
     }
-    private static final InformationMapper<DisaggregationResults> mapper = new InformationMapper<>();
+
+    // MAPPING
+    public static InformationMapping<DisaggregationResults> getMapping() {
+        return MAPPING;
+    }
+
+    public static <T> void setMapping(String name, Class<T> tclass, Function<DisaggregationResults, T> extractor) {
+        MAPPING.set(name, tclass, extractor);
+    }
+
+    public static <T> void setTsData(String name, Function<DisaggregationResults, TsData> extractor) {
+        MAPPING.set(name, extractor);
+    }
+
+    private static final InformationMapping<DisaggregationResults> MAPPING = new InformationMapping<>(DisaggregationResults.class);
 
     static {
-        mapper.add(DISAGGREGATION, new InformationMapper.Mapper<DisaggregationResults, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DisaggregationResults source) {
-
-                return source.result.getSmoothedSeries();
+        MAPPING.set(DISAGGREGATION, source -> source.result.getSmoothedSeries());
+        MAPPING.set(EDISAGGREGATION, source -> source.result.getSmoothedSeriesVariance().sqrt());
+        MAPPING.set(LDISAGGREGATION, source -> {
+            TsData s = source.result.getSmoothedSeries();
+            TsData e = source.result.getSmoothedSeriesVariance().sqrt();
+            e.apply(x -> -2 * x);
+            return TsData.add(s, e);
+        });
+        MAPPING.set(UDISAGGREGATION, source -> {
+            TsData s = source.result.getSmoothedSeries();
+            TsData e = source.result.getSmoothedSeriesVariance().sqrt();
+            e.apply(x -> 2 * x);
+            return TsData.add(s, e);
+        });
+        MAPPING.set(RESIDUALS, source -> source.result.getFullResiduals());
+        MAPPING.set(SMOOTHING, source -> {
+            if (source.nindicators == 0) {
+                return null;
             }
+            TsData y = source.result.getSmoothedSeries();
+            TsData regs = source.getData(REGEFFECT, TsData.class);
+            return TsData.subtract(y, regs);
         });
 
-        mapper.add(EDISAGGREGATION, new InformationMapper.Mapper<DisaggregationResults, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DisaggregationResults source) {
-                return source.result.getSmoothedSeriesVariance().sqrt();
+        MAPPING.set(REGEFFECT, source -> {
+            if (source.nindicators == 0) {
+                return null;
             }
-        });
-
-        mapper.add(LDISAGGREGATION, new InformationMapper.Mapper<DisaggregationResults, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DisaggregationResults source) {
-                TsData s = source.result.getSmoothedSeries();
-                TsData e = source.result.getSmoothedSeriesVariance().sqrt();
-                e.apply(x->-2*x);
-                return TsData.add(s, e);
+            TsDomain dom = source.result.getData().hEDom;
+            DataBlock d = new DataBlock(dom.getLength());
+            double[] b = source.getLikelihood().getB();
+            Matrix matrix = source.result.getModel().getX().all().matrix(dom);
+            for (int i = b.length - source.nindicators, j = matrix.getColumnsCount() - source.nindicators;
+                    i < b.length; ++i, ++j) {
+                d.addAY(b[i], matrix.column(j));
             }
-        });
-
-        mapper.add(UDISAGGREGATION, new InformationMapper.Mapper<DisaggregationResults, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DisaggregationResults source) {
-                TsData s = source.result.getSmoothedSeries();
-                TsData e = source.result.getSmoothedSeriesVariance().sqrt();
-                e.apply(x->2*x);
-                return TsData.add(s, e);
-            }
-        });
-
-        mapper.add(RESIDUALS, new InformationMapper.Mapper<DisaggregationResults, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DisaggregationResults source) {
-                return source.result.getFullResiduals();
-            }
-        });
-
-        mapper.add(SMOOTHING, new InformationMapper.Mapper<DisaggregationResults, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DisaggregationResults source) {
-                if (source.nindicators == 0) {
-                    return null;
-                }
-                TsData y = source.result.getSmoothedSeries();
-                TsData regs = source.getData(REGEFFECT, TsData.class);
-                return TsData.subtract(y, regs);
-            }
-        });
-
-        mapper.add(REGEFFECT, new InformationMapper.Mapper<DisaggregationResults, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(DisaggregationResults source) {
-                if (source.nindicators == 0) {
-                    return null;
-                }
-                TsDomain dom = source.result.getData().hEDom;
-                DataBlock d = new DataBlock(dom.getLength());
-                double[] b = source.getLikelihood().getB();
-                Matrix matrix = source.result.getModel().getX().all().matrix(dom);
-                for (int i = b.length - source.nindicators, j = matrix.getColumnsCount() - source.nindicators;
-                        i < b.length; ++i, ++j) {
-                    d.addAY(b[i], matrix.column(j));
-                }
-                return new TsData(dom.getStart(), d);
-            }
+            return new TsData(dom.getStart(), d);
         });
     }
 }

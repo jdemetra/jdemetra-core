@@ -99,7 +99,7 @@ public class MixedAirlineProcessor implements ISaProcessingFactory<MixedAirlineS
         return MixedAirlineProcessingFactory.instance.getSpecificationDictionary(specClass);
     }
     @Override
-    public Map<String, Class> getOutputDictionary() {
+    public Map<String, Class> getOutputDictionary(boolean compact) {
         return MixedAirlineProcessingFactory.instance.getOutputDictionary();
     }
 }

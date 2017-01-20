@@ -24,6 +24,7 @@ import ec.tstoolkit.arima.estimation.LikelihoodStatistics;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.eco.ConcentratedLikelihood;
 import ec.tstoolkit.information.InformationMapper;
+import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.modelling.ComponentType;
@@ -52,6 +53,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -209,7 +211,7 @@ public class MixedFrequenciesModelEstimation implements IProcResults {
             } else {
                 sregs = sregs.changeFrequency(l0.getFrequency(), TsAggregationType.Sum, true);
                 if (log) {
-                    sregs.apply(x->x/edomain.getFrequency().ratio(l0.getFrequency()));
+                    sregs.apply(x -> x / edomain.getFrequency().ratio(l0.getFrequency()));
                 }
             }
         }
@@ -227,7 +229,7 @@ public class MixedFrequenciesModelEstimation implements IProcResults {
         if (coeffs == null) {
             return new TsData(domain, 0);
         } else {
-            TsVariableSelection sel = regs.select( var-> !(var instanceof DiffConstant)); //To change body of generated methods, choose Tools | Templates.
+            TsVariableSelection sel = regs.select(var -> !(var instanceof DiffConstant)); //To change body of generated methods, choose Tools | Templates.
             DataBlock sum = sel.sum(new DataBlock(coeffs, 0, coeffs.length, 1), domain);
 
             if (sum == null) {
@@ -262,7 +264,7 @@ public class MixedFrequenciesModelEstimation implements IProcResults {
     }
 
     public TsData regressionEffect(TsDomain domain, final ComponentType type) {
-        return regressionEffect(domain, var-> ! (var instanceof DiffConstant) && DeterministicComponent.getType(var) == type);
+        return regressionEffect(domain, var -> !(var instanceof DiffConstant) && DeterministicComponent.getType(var) == type);
     }
 
     private TsDomain fdomain() {
@@ -338,29 +340,27 @@ public class MixedFrequenciesModelEstimation implements IProcResults {
         return vregs;
     }
 
-    public static void fillDictionary(String prefix, Map<String, Class> map) {
-        mapper.fillDictionary(prefix, map);
+    public static void fillDictionary(String prefix, Map<String, Class> map, boolean compact) {
+        MAPPING.fillDictionary(prefix, map, compact);
     }
 
     @Override
-    public Map<String, Class> getDictionary() {
+    public Map<String, Class> getDictionary(boolean compact) {
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
-        fillDictionary(null, map);
+        fillDictionary(null, map, compact);
         return map;
     }
 
     @Override
     public <T> T getData(String id, Class<T> tclass) {
-        return mapper.getData(this, id, tclass);
+        return MAPPING.getData(this, id, tclass);
     }
 
     @Override
     public boolean contains(String id) {
-        synchronized (mapper) {
-            return mapper.contains(id);
-        }
+        return MAPPING.contains(id);
     }
-    
+
     @Override
     public List<ProcessingInformation> getProcessingInformation() {
         return Collections.EMPTY_LIST;
@@ -406,480 +406,208 @@ public class MixedFrequenciesModelEstimation implements IProcResults {
             ARIMA_TH = "th", ARIMA_TH1 = "th(1)", ARIMA_TH2 = "th(2)", ARIMA_TH3 = "th(3)", ARIMA_TH4 = "th(4)",
             ARIMA_BPHI = "bphi", ARIMA_BPHI1 = "bphi(1)", ARIMA_BTH = "bth", ARIMA_BTH1 = "bth(1)",
             YC = "yc", YC_E = "yc_e", YC_L = "yc_orig", YC_L_E = "yc_orig_e";
-//    private static final String[] LIKELIHOOD_DICTIONARY = {
-//        LVAL, AIC, AICC, BIC, BICC
-//    };
-//    private static final String[] RES_TEST_DICTIONARY = {
-//        RES_MEAN,
-//        RES_SKEWNESS, RES_KURTOSIS, RES_DH,
-//        RES_LB, RES_LB2, RES_SEASLB,
-//        RES_BP, RES_BP2, RES_SEASBP
-//    };
 
-    public static <T> void addMapping(String name, InformationMapper.Mapper<MixedFrequenciesModelEstimation, T> mapping) {
-        synchronized (mapper) {
-            mapper.add(name, mapping);
-        }
+    // MAPPING
+    public static InformationMapping<MixedFrequenciesModelEstimation> getMapping() {
+        return MAPPING;
     }
 
-    private static final InformationMapper<MixedFrequenciesModelEstimation> mapper = new InformationMapper<>();
-
-    private static class ArimaMapper extends InformationMapper.Mapper<MixedFrequenciesModelEstimation, Parameter> {
-
-        private final String name_;
-        private final int lag_;
-
-        ArimaMapper(String name, int lag) {
-            super(Parameter.class);
-            name_ = name;
-            lag_ = lag;
-        }
-
-        @Override
-        public Parameter retrieve(MixedFrequenciesModelEstimation source) {
-            SarimaModel arima = source.getArima();
-            int pos = -1;
-            switch (name_) {
-                case ARIMA_PHI:
-                    pos = arima.getPhiPosition(lag_);
-                    break;
-                case ARIMA_BPHI:
-                    pos = arima.getBPhiPosition(lag_);
-                    break;
-                case ARIMA_TH:
-                    pos = arima.getThetaPosition(lag_);
-                    break;
-                case ARIMA_BTH:
-                    pos = arima.getBThetaPosition(lag_);
-                    break;
-                default:
-                    break;
-            }
-            if (pos < 0) {
-                return null;
-            }
-            double err = source.pcov == null ? 0 : Math.sqrt(source.pcov.get(pos, pos));
-            Parameter p = new Parameter(arima.getParameter(pos), err == 0 ? ParameterType.Fixed : ParameterType.Estimated);
-            p.setStde(err);
-            return p;
-        }
+    public static <T> void setMapping(String name, Class<T> tclass, Function<MixedFrequenciesModelEstimation, T> extractor) {
+        MAPPING.set(name, tclass, extractor);
     }
-    // fill the mapper
+
+    public static <T> void setTsData(String name, Function<MixedFrequenciesModelEstimation, TsData> extractor) {
+        MAPPING.set(name, extractor);
+    }
+
+    private static final InformationMapping<MixedFrequenciesModelEstimation> MAPPING = new InformationMapping<>(MixedFrequenciesModelEstimation.class);
+
+    private static Parameter param(MixedFrequenciesModelEstimation source, String name, int lag) {
+        SarimaModel arima = source.getArima();
+        int pos = -1;
+        switch (name) {
+            case ARIMA_PHI:
+                pos = arima.getPhiPosition(lag);
+                break;
+            case ARIMA_BPHI:
+                pos = arima.getBPhiPosition(lag);
+                break;
+            case ARIMA_TH:
+                pos = arima.getThetaPosition(lag);
+                break;
+            case ARIMA_BTH:
+                pos = arima.getBThetaPosition(lag);
+                break;
+            default:
+                break;
+        }
+        if (pos < 0) {
+            return null;
+        }
+        double err = source.pcov == null ? 0 : Math.sqrt(source.pcov.get(pos, pos));
+        Parameter p = new Parameter(arima.getParameter(pos), err == 0 ? ParameterType.Fixed : ParameterType.Estimated);
+        p.setStde(err);
+        return p;
+    }
 
     static {
         // Series
-        mapper.add(YC, new InformationMapper.Mapper<MixedFrequenciesModelEstimation, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelEstimation source) {
-                return source.getInterpolatedSeries(false);
+        MAPPING.set(YC, source -> source.getInterpolatedSeries(false));
+        MAPPING.set(YC_E, source -> source.getInterpolationErrors(false));
+        MAPPING.set(YC_L, source -> source.getInterpolatedSeries(true));
+        MAPPING.set(YC_L_E, source -> source.getInterpolationErrors(true));
+        MAPPING.set(ModellingDictionary.Y_LIN, source -> {
+            TsData s = source.linearizedSeries();
+            if (s == null) {
+                return null;
+            }
+            if (source.log) {
+                return s.exp();
+            } else {
+                return s;
             }
         });
-        mapper.add(YC_E, new InformationMapper.Mapper<MixedFrequenciesModelEstimation, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelEstimation source) {
-                return source.getInterpolationErrors(false);
+        MAPPING.set(ModellingDictionary.CAL, source -> {
+            TsData s = source.regressionEffect(source.edomain, ComponentType.CalendarEffect);
+            if (s == null) {
+                return null;
+            }
+            if (source.log) {
+                return s.exp();
+            } else {
+                return s;
             }
         });
-        // Series
-        mapper.add(YC_L, new InformationMapper.Mapper<MixedFrequenciesModelEstimation, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelEstimation source) {
-                return source.getInterpolatedSeries(true);
+        MAPPING.set(ModellingDictionary.DET, source -> {
+            TsData s = source.regressionEffect(source.edomain);
+            if (s == null) {
+                return null;
+            }
+            if (source.log) {
+                return s.exp();
+            } else {
+                return s;
             }
         });
-        // Series
-        mapper.add(YC_L_E, new InformationMapper.Mapper<MixedFrequenciesModelEstimation, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelEstimation source) {
-                return source.getInterpolationErrors(true);
+        MAPPING.set(ModellingDictionary.TDE, source -> {
+            TsData s = source.tradingDaysEffect(source.edomain);
+            if (s == null) {
+                return null;
+            }
+            if (source.log) {
+                return s.exp();
+            } else {
+                return s;
             }
         });
-        mapper.add(ModellingDictionary.Y_LIN, new InformationMapper.Mapper<MixedFrequenciesModelEstimation, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelEstimation source) {
-                TsData s = source.linearizedSeries();
-                if (s == null) {
-                    return null;
-                }
-                if (source.log) {
-                    return s.exp();
-                } else {
-                    return s;
-                }
+        MAPPING.set(ModellingDictionary.EE, source -> {
+            TsData s = source.movingHolidaysEffect(source.edomain);
+            if (s == null) {
+                return null;
+            }
+            if (source.log) {
+                return s.exp();
+            } else {
+                return s;
             }
         });
-        mapper.add(ModellingDictionary.CAL, new InformationMapper.Mapper<MixedFrequenciesModelEstimation, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(MixedFrequenciesModelEstimation source) {
-                TsData s = source.regressionEffect(source.edomain, ComponentType.CalendarEffect);
-                if (s == null) {
-                    return null;
-                }
-                if (source.log) {
-                    return s.exp();
-                } else {
-                    return s;
-                }
+        MAPPING.set(ModellingDictionary.CAL + SeriesInfo.F_SUFFIX, source -> {
+            TsData s = source.regressionEffect(source.fdomain(), ComponentType.CalendarEffect);
+            if (s == null) {
+                return null;
+            }
+            if (source.log) {
+                return s.exp();
+            } else {
+                return s;
             }
         });
-        mapper.add(ModellingDictionary.DET, new InformationMapper.Mapper<MixedFrequenciesModelEstimation, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(MixedFrequenciesModelEstimation source) {
-                TsData s = source.regressionEffect(source.edomain);
-                if (s == null) {
-                    return null;
-                }
-                if (source.log) {
-                    return s.exp();
-                } else {
-                    return s;
-                }
+        MAPPING.set(ModellingDictionary.DET + SeriesInfo.F_SUFFIX, source -> {
+            TsData s = source.regressionEffect(source.fdomain());
+            if (s == null) {
+                return null;
+            }
+            if (source.log) {
+                return s.exp();
+            } else {
+                return s;
             }
         });
-        mapper.add(ModellingDictionary.TDE, new InformationMapper.Mapper<MixedFrequenciesModelEstimation, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(MixedFrequenciesModelEstimation source) {
-                TsData s = source.tradingDaysEffect(source.edomain);
-                if (s == null) {
-                    return null;
-                }
-                if (source.log) {
-                    return s.exp();
-                } else {
-                    return s;
-                }
+        MAPPING.set(ModellingDictionary.TDE + SeriesInfo.F_SUFFIX, source -> {
+            TsData s = source.tradingDaysEffect(source.fdomain());
+            if (s == null) {
+                return null;
+            }
+            if (source.log) {
+                return s.exp();
+            } else {
+                return s;
             }
         });
-        mapper.add(ModellingDictionary.EE, new InformationMapper.Mapper<MixedFrequenciesModelEstimation, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(MixedFrequenciesModelEstimation source) {
-                TsData s = source.movingHolidaysEffect(source.edomain);
-                if (s == null) {
-                    return null;
-                }
-                if (source.log) {
-                    return s.exp();
-                } else {
-                    return s;
-                }
+        MAPPING.set(ModellingDictionary.EE + SeriesInfo.F_SUFFIX, source -> {
+            TsData s = source.movingHolidaysEffect(source.fdomain());
+            if (s == null) {
+                return null;
             }
-        });
-        mapper.add(ModellingDictionary.CAL + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelEstimation, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(MixedFrequenciesModelEstimation source) {
-                TsData s = source.regressionEffect(source.fdomain(), ComponentType.CalendarEffect);
-                if (s == null) {
-                    return null;
-                }
-                if (source.log) {
-                    return s.exp();
-                } else {
-                    return s;
-                }
-            }
-        });
-        mapper.add(ModellingDictionary.DET + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelEstimation, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(MixedFrequenciesModelEstimation source) {
-                TsData s = source.regressionEffect(source.fdomain());
-                if (s == null) {
-                    return null;
-                }
-                if (source.log) {
-                    return s.exp();
-                } else {
-                    return s;
-                }
-            }
-        });
-        mapper.add(ModellingDictionary.TDE + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelEstimation, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(MixedFrequenciesModelEstimation source) {
-                TsData s = source.tradingDaysEffect(source.fdomain());
-                if (s == null) {
-                    return null;
-                }
-                if (source.log) {
-                    return s.exp();
-                } else {
-                    return s;
-                }
-            }
-        });
-        mapper.add(ModellingDictionary.EE + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelEstimation, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(MixedFrequenciesModelEstimation source) {
-                TsData s = source.movingHolidaysEffect(source.fdomain());
-                if (s == null) {
-                    return null;
-                }
-                if (source.log) {
-                    return s.exp();
-                } else {
-                    return s;
-                }
+            if (source.log) {
+                return s.exp();
+            } else {
+                return s;
             }
         });
 
         // Likelihood
-        mapper.add(InformationSet.item(LIKELIHOOD, NEFFOBS), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, Integer>(Integer.class) {
-
-            @Override
-            public Integer retrieve(MixedFrequenciesModelEstimation source) {
-                return source.statistics.effectiveObservationsCount;
-            }
-        });
-        mapper.add(InformationSet.item(LIKELIHOOD, NP), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, Integer>(Integer.class) {
-
-            @Override
-            public Integer retrieve(MixedFrequenciesModelEstimation source) {
-                return source.statistics.estimatedParametersCount;
-            }
-        });
-        mapper.add(InformationSet.item(LIKELIHOOD, LVAL), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, Double>(Double.class) {
-
-            @Override
-            public Double retrieve(MixedFrequenciesModelEstimation source) {
-                return source.statistics.logLikelihood;
-            }
-        });
-        mapper.add(InformationSet.item(LIKELIHOOD, ADJLVAL), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, Double>(Double.class) {
-
-            @Override
-            public Double retrieve(MixedFrequenciesModelEstimation source) {
-                return source.statistics.adjustedLogLikelihood;
-            }
-        });
-        mapper.add(InformationSet.item(LIKELIHOOD, SSQERR), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, Double>(Double.class) {
-
-            @Override
-            public Double retrieve(MixedFrequenciesModelEstimation source) {
-                return source.statistics.SsqErr;
-            }
-        });
-        mapper.add(InformationSet.item(LIKELIHOOD, AIC), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, Double>(Double.class) {
-
-            @Override
-            public Double retrieve(MixedFrequenciesModelEstimation source) {
-                return source.statistics.AIC;
-            }
-        });
-        mapper.add(InformationSet.item(LIKELIHOOD, AICC), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, Double>(Double.class) {
-
-            @Override
-            public Double retrieve(MixedFrequenciesModelEstimation source) {
-                return source.statistics.AICC;
-            }
-        });
-        mapper.add(InformationSet.item(LIKELIHOOD, BIC), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, Double>(Double.class) {
-
-            @Override
-            public Double retrieve(MixedFrequenciesModelEstimation source) {
-                return source.statistics.BIC;
-            }
-        });
-        mapper.add(InformationSet.item(LIKELIHOOD, BICC), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, Double>(Double.class) {
-
-            @Override
-            public Double retrieve(MixedFrequenciesModelEstimation source) {
-                return source.statistics.BICC;
-            }
-        });
-
+        MAPPING.set(InformationSet.item(LIKELIHOOD, NEFFOBS), Integer.class,
+                source -> source.statistics.effectiveObservationsCount);
+        MAPPING.set(InformationSet.item(LIKELIHOOD, NP), Integer.class,
+                source -> source.statistics.estimatedParametersCount);
+        MAPPING.set(InformationSet.item(LIKELIHOOD, LVAL), Double.class,
+                source -> source.statistics.logLikelihood);
+        MAPPING.set(InformationSet.item(LIKELIHOOD, ADJLVAL), Double.class,
+                source -> source.statistics.adjustedLogLikelihood);
+        MAPPING.set(InformationSet.item(LIKELIHOOD, SSQERR), Double.class,
+                source -> source.statistics.SsqErr);
+        MAPPING.set(InformationSet.item(LIKELIHOOD, AIC), Double.class,
+                source -> source.statistics.AIC);
+        MAPPING.set(InformationSet.item(LIKELIHOOD, AICC), Double.class,
+                source -> source.statistics.AICC);
+        MAPPING.set(InformationSet.item(LIKELIHOOD, BIC), Double.class,
+                source -> source.statistics.BIC);
+        MAPPING.set(InformationSet.item(LIKELIHOOD, BICC), Double.class,
+                source -> source.statistics.BICC);
         // RESIDUALS
-        mapper.add(InformationSet.item(RESIDUALS, SER), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, Double>(Double.class) {
-
-            @Override
-            public Double retrieve(MixedFrequenciesModelEstimation source) {
-                return Math.sqrt(source.statistics.SsqErr
-                        / (source.statistics.effectiveObservationsCount - source.statistics.estimatedParametersCount + 1));
-            }
-        });
-        mapper.add(InformationSet.item(RESIDUALS, SERML), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, Double>(Double.class) {
-
-            @Override
-            public Double retrieve(MixedFrequenciesModelEstimation source) {
-                return Math.sqrt(source.statistics.SsqErr
-                        / (source.statistics.effectiveObservationsCount));
-            }
-        });
-        mapper.add(InformationSet.item(RESIDUALS, RES_DATA), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, double[]>(double[].class) {
-
-            @Override
-            public double[] retrieve(MixedFrequenciesModelEstimation source) {
-                return source.likelihood.getResiduals();
-            }
-        });
-//        mapper.add(InformationSet.item(RESIDUALS, RES_MEAN), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, StatisticalTest>(StatisticalTest.class) {
-//
-//            @Override
-//            public StatisticalTest retrieve(MixedFrequenciesModelEstimation source) {
-//                return StatisticalTest.create(source.getNiidTests().getMeanTest());
-//            }
-//        });
-//        mapper.add(InformationSet.item(RESIDUALS, RES_SKEWNESS), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, StatisticalTest>(StatisticalTest.class) {
-//
-//            @Override
-//            public StatisticalTest retrieve(MixedFrequenciesModelEstimation source) {
-//                return StatisticalTest.create(source.getNiidTests().getSkewness());
-//            }
-//        });
-//        mapper.add(InformationSet.item(RESIDUALS, RES_KURTOSIS), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, StatisticalTest>(StatisticalTest.class) {
-//
-//            @Override
-//            public StatisticalTest retrieve(MixedFrequenciesModelEstimation source) {
-//                return StatisticalTest.create(source.getNiidTests().getKurtosis());
-//            }
-//        });
-//        mapper.add(InformationSet.item(RESIDUALS, RES_DH), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, StatisticalTest>(StatisticalTest.class) {
-//
-//            @Override
-//            public StatisticalTest retrieve(MixedFrequenciesModelEstimation source) {
-//                return StatisticalTest.create(source.getNiidTests().getNormalityTest());
-//            }
-//        });
-//        mapper.add(InformationSet.item(RESIDUALS, RES_LB), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, StatisticalTest>(StatisticalTest.class) {
-//
-//            @Override
-//            public StatisticalTest retrieve(MixedFrequenciesModelEstimation source) {
-//                return StatisticalTest.create(source.getNiidTests().getLjungBox());
-//            }
-//        });
-//        mapper.add(InformationSet.item(RESIDUALS, RES_LB2), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, StatisticalTest>(StatisticalTest.class) {
-//
-//            @Override
-//            public StatisticalTest retrieve(MixedFrequenciesModelEstimation source) {
-//                return StatisticalTest.create(source.getNiidTests().getLjungBoxOnSquare());
-//            }
-//        });
-//        mapper.add(InformationSet.item(RESIDUALS, RES_SEASLB), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, StatisticalTest>(StatisticalTest.class) {
-//
-//            @Override
-//            public StatisticalTest retrieve(MixedFrequenciesModelEstimation source) {
-//                return StatisticalTest.create(source.getNiidTests().getSeasonalLjungBox());
-//            }
-//        });
-//        mapper.add(InformationSet.item(RESIDUALS, RES_BP), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, StatisticalTest>(StatisticalTest.class) {
-//
-//            @Override
-//            public StatisticalTest retrieve(MixedFrequenciesModelEstimation source) {
-//                return StatisticalTest.create(source.getNiidTests().getBoxPierce());
-//            }
-//        });
-//        mapper.add(InformationSet.item(RESIDUALS, RES_BP2), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, StatisticalTest>(StatisticalTest.class) {
-//
-//            @Override
-//            public StatisticalTest retrieve(MixedFrequenciesModelEstimation source) {
-//                return StatisticalTest.create(source.getNiidTests().getBoxPierceOnSquare());
-//            }
-//        });
-//        mapper.add(InformationSet.item(RESIDUALS, RES_SEASBP), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, StatisticalTest>(StatisticalTest.class) {
-//
-//            @Override
-//            public StatisticalTest retrieve(MixedFrequenciesModelEstimation source) {
-//                return StatisticalTest.create(source.getNiidTests().getSeasonalBoxPierce());
-//            }
-//        });
-//        mapper.add(InformationSet.item(RESIDUALS, RES_UD_NUMBER), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, StatisticalTest>(StatisticalTest.class) {
-//
-//            @Override
-//            public StatisticalTest retrieve(MixedFrequenciesModelEstimation source) {
-//                TestofUpDownRuns ud = source.getNiidTests().getUpAndDownRuns();
-//                ud.setKind(RunsTestKind.Number);
-//                return StatisticalTest.create(ud);
-//            }
-//        });
-//        mapper.add(InformationSet.item(RESIDUALS, RES_UD_LENGTH), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, StatisticalTest>(StatisticalTest.class) {
-//
-//            @Override
-//            public StatisticalTest retrieve(MixedFrequenciesModelEstimation source) {
-//                TestofUpDownRuns ud = source.getNiidTests().getUpAndDownRuns();
-//                ud.setKind(RunsTestKind.Length);
-//                return StatisticalTest.create(ud);
-//            }
-//        });
-
+        MAPPING.set(InformationSet.item(RESIDUALS, SER), Double.class,
+                source -> Math.sqrt(source.statistics.SsqErr
+                        / (source.statistics.effectiveObservationsCount - source.statistics.estimatedParametersCount + 1)));
+        MAPPING.set(InformationSet.item(RESIDUALS, SERML), Double.class,
+                source -> Math.sqrt(source.statistics.SsqErr
+                        / (source.statistics.effectiveObservationsCount)));
+        MAPPING.set(InformationSet.item(RESIDUALS, RES_DATA), double[].class,
+                source -> source.likelihood.getResiduals());
         // ARIMA
-        mapper.add(ARIMA, new InformationMapper.Mapper<MixedFrequenciesModelEstimation, SarimaModel>(SarimaModel.class) {
+        MAPPING.set(ARIMA, SarimaModel.class, source -> source.arima);
+        MAPPING.set(InformationSet.item(ARIMA, ARIMA_P), Integer.class,
+                source -> source.arima.getRegularAROrder());
+        MAPPING.set(InformationSet.item(ARIMA, ARIMA_D), Integer.class,
+                source -> source.arima.getRegularDifferenceOrder());
+        MAPPING.set(InformationSet.item(ARIMA, ARIMA_Q), Integer.class,
+                source -> source.arima.getRegularMAOrder());
+        MAPPING.set(InformationSet.item(ARIMA, ARIMA_BP), Integer.class,
+                source -> source.arima.getSeasonalAROrder());
+        MAPPING.set(InformationSet.item(ARIMA, ARIMA_BD), Integer.class,
+                source -> source.arima.getSeasonalDifferenceOrder());
+        MAPPING.set(InformationSet.item(ARIMA, ARIMA_BQ), Integer.class,
+                source -> source.arima.getSeasonalMAOrder());
 
-            @Override
-            public SarimaModel retrieve(MixedFrequenciesModelEstimation source) {
-                return source.arima;
-            }
-        });
+        MAPPING.setList(InformationSet.item(ARIMA, ARIMA_PHI), 1, 5, Parameter.class,
+                (source, i) -> param(source, ARIMA_PHI, i));
+        MAPPING.setList(InformationSet.item(ARIMA, ARIMA_BPHI), 1, 2, Parameter.class,
+                (source, i) -> param(source, ARIMA_BPHI, i));
+        MAPPING.setList(InformationSet.item(ARIMA, ARIMA_TH), 1, 5, Parameter.class,
+                (source, i) -> param(source, ARIMA_TH, i));
+        MAPPING.setList(InformationSet.item(ARIMA, ARIMA_BTH), 1, 2, Parameter.class,
+                (source, i) -> param(source, ARIMA_BTH, i));
 
-//        mapper.add(InformationSet.item(ARIMA, ARIMA_MEAN), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, Boolean>(Boolean.class) {
-//
-//            @Override
-//            public Boolean retrieve(MixedFrequenciesModelEstimation source) {
-//                return source.model_.isMeanCorrection();
-//            }
-//        });
-        mapper.add(InformationSet.item(ARIMA, ARIMA_P), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, Integer>(Integer.class) {
-
-            @Override
-            public Integer retrieve(MixedFrequenciesModelEstimation source) {
-                return source.arima.getRegularAROrder();
-            }
-        });
-        mapper.add(InformationSet.item(ARIMA, ARIMA_D), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, Integer>(Integer.class) {
-
-            @Override
-            public Integer retrieve(MixedFrequenciesModelEstimation source) {
-                return source.arima.getRegularDifferenceOrder();
-            }
-        });
-        mapper.add(InformationSet.item(ARIMA, ARIMA_Q), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, Integer>(Integer.class) {
-
-            @Override
-            public Integer retrieve(MixedFrequenciesModelEstimation source) {
-                return source.arima.getRegularMAOrder();
-            }
-        });
-        mapper.add(InformationSet.item(ARIMA, ARIMA_BP), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, Integer>(Integer.class) {
-
-            @Override
-            public Integer retrieve(MixedFrequenciesModelEstimation source) {
-                return source.arima.getSeasonalAROrder();
-            }
-        });
-        mapper.add(InformationSet.item(ARIMA, ARIMA_BD), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, Integer>(Integer.class) {
-
-            @Override
-            public Integer retrieve(MixedFrequenciesModelEstimation source) {
-                return source.arima.getSeasonalDifferenceOrder();
-            }
-        });
-        mapper.add(InformationSet.item(ARIMA, ARIMA_BQ), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, Integer>(Integer.class) {
-
-            @Override
-            public Integer retrieve(MixedFrequenciesModelEstimation source) {
-                return source.arima.getSeasonalMAOrder();
-            }
-        });
-
-        mapper.add(InformationSet.item(ARIMA, ARIMA_PHI1), new ArimaMapper(ARIMA_PHI, 1));
-        mapper.add(InformationSet.item(ARIMA, ARIMA_PHI2), new ArimaMapper(ARIMA_PHI, 2));
-        mapper.add(InformationSet.item(ARIMA, ARIMA_PHI3), new ArimaMapper(ARIMA_PHI, 3));
-        mapper.add(InformationSet.item(ARIMA, ARIMA_PHI4), new ArimaMapper(ARIMA_PHI, 4));
-        mapper.add(InformationSet.item(ARIMA, ARIMA_BPHI1), new ArimaMapper(ARIMA_BPHI, 1));
-        mapper.add(InformationSet.item(ARIMA, ARIMA_TH1), new ArimaMapper(ARIMA_TH, 1));
-        mapper.add(InformationSet.item(ARIMA, ARIMA_TH2), new ArimaMapper(ARIMA_TH, 2));
-        mapper.add(InformationSet.item(ARIMA, ARIMA_TH3), new ArimaMapper(ARIMA_TH, 3));
-        mapper.add(InformationSet.item(ARIMA, ARIMA_TH4), new ArimaMapper(ARIMA_TH, 4));
-        mapper.add(InformationSet.item(ARIMA, ARIMA_BTH1), new ArimaMapper(ARIMA_BTH, 1));
-
-        mapper.add(InformationSet.item(ARIMA, ARIMA_COVAR), new InformationMapper.Mapper<MixedFrequenciesModelEstimation, Matrix>(Matrix.class) {
-
-            @Override
-            public Matrix retrieve(MixedFrequenciesModelEstimation source) {
-                return source.pcov;
-            }
-        });
+        MAPPING.set(InformationSet.item(ARIMA, ARIMA_COVAR), Matrix.class, source -> source.pcov);
     }
 }

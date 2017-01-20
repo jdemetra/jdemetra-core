@@ -9,6 +9,7 @@ import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.eco.DiffuseConcentratedLikelihood;
 import ec.tstoolkit.information.InformationMapper;
+import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.maths.realfunctions.IFunction;
 import ec.tstoolkit.maths.realfunctions.IFunctionInstance;
 import ec.tstoolkit.structural.BasicStructuralModel;
@@ -22,6 +23,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  *
@@ -29,6 +31,8 @@ import java.util.Map;
  */
 public class StmEstimation implements IProcResults{
     
+    public static final String RESIDUALS="residuals";
+
     private final BsmMonitor monitor_;
     private final TsData y_;
     private final TsVariableList x_;
@@ -41,9 +45,7 @@ public class StmEstimation implements IProcResults{
 
     @Override
     public boolean contains(String id) {
-        synchronized (mapper) {
-            return mapper.contains(id);
-        }
+            return MAPPING.contains(id);
     }
 
     @Override
@@ -52,20 +54,17 @@ public class StmEstimation implements IProcResults{
     }
 
     @Override
-    public Map<String, Class> getDictionary() {
+    public Map<String, Class> getDictionary(boolean compact) {
         // TODO
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
-        mapper.fillDictionary(null, map);
+        MAPPING.fillDictionary(null, map, compact);
         return map;
     }
 
     @Override
     public <T> T getData(String id, Class<T> tclass) {
-        synchronized (mapper) {
-            
-                return (T) mapper.getData(this, id, tclass);
-        }
-    }
+                return (T) MAPPING.getData(this, id, tclass);
+     }
 
 
     public BasicStructuralModel getModel() {
@@ -99,24 +98,24 @@ public class StmEstimation implements IProcResults{
     }
 
 
-    // MAPPERS
-
-    public static <T> void addMapping(String name, InformationMapper.Mapper<StmEstimation, T> mapping) {
-        synchronized (mapper) {
-            mapper.add(name, mapping);
-        }
+    // MAPPING
+    public static InformationMapping<StmEstimation> getMapping() {
+        return MAPPING;
     }
 
-    private static final InformationMapper<StmEstimation> mapper = new InformationMapper<>();
+    public static <T> void setMapping(String name, Class<T> tclass, Function<StmEstimation, T> extractor) {
+        MAPPING.set(name, tclass, extractor);
+    }
+
+    public static <T> void setTsData(String name, Function<StmEstimation, TsData> extractor) {
+        MAPPING.set(name, extractor);
+    }
+
+    private static final InformationMapping<StmEstimation> MAPPING = new InformationMapping<>(StmEstimation.class);
 
     static {
-        mapper.add("residuals", new InformationMapper.Mapper<StmEstimation, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmEstimation source) {
-                return source.getResiduals();
-            }
-        });
+        MAPPING.set(RESIDUALS, source-> source.getResiduals());
     }
+    
 }
 

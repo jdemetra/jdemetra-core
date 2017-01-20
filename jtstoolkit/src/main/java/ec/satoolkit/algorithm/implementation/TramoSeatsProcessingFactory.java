@@ -96,12 +96,12 @@ public class TramoSeatsProcessingFactory extends GenericSaProcessingFactory impl
     }
 
     @Override
-    public Map<String, Class> getOutputDictionary() {
+    public Map<String, Class> getOutputDictionary(boolean compact) {
         HashMap<String, Class> dic = new HashMap<>();
-        PreprocessingModel.fillDictionary(null, dic);
-        SeatsResults.fillDictionary(DECOMPOSITION, dic);
-        DefaultSeriesDecomposition.fillDictionary(null, dic);
-        SaBenchmarkingResults.fillDictionary(BENCHMARKING, dic);
+        PreprocessingModel.fillDictionary(null, dic, compact);
+        SeatsResults.fillDictionary(DECOMPOSITION, dic, compact);
+        DefaultSeriesDecomposition.fillDictionary(null, dic, compact);
+        SaBenchmarkingResults.fillDictionary(BENCHMARKING, dic, compact);
         return dic;
     }
 }

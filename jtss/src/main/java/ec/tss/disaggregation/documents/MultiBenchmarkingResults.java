@@ -59,7 +59,7 @@ public class MultiBenchmarkingResults implements IProcResults {
     }
 
     @Override
-    public Map<String, Class> getDictionary() {
+    public Map<String, Class> getDictionary(boolean compact) {
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
         info.fillDictionary(null, map);
         return map;

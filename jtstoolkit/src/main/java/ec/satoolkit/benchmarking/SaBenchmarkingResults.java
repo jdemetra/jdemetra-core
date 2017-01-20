@@ -55,7 +55,7 @@ public class SaBenchmarkingResults implements IProcResults {
 
     public static final String ORIGINAL="original", TARGET="target", BENCHMARKED="result";
     
-    public static void fillDictionary(String prefix, Map<String, Class> map) {
+    public static void fillDictionary(String prefix, Map<String, Class> map, boolean compact) {
        map.put(InformationSet.item(prefix, ORIGINAL), TsData.class);
        map.put(InformationSet.item(prefix, TARGET), TsData.class);
        map.put(InformationSet.item(prefix, BENCHMARKED), TsData.class);
@@ -67,9 +67,9 @@ public class SaBenchmarkingResults implements IProcResults {
     }
 
     @Override
-    public Map<String, Class> getDictionary() {
+    public Map<String, Class> getDictionary(boolean compact) {
         LinkedHashMap<String, Class> dic=new LinkedHashMap<>();
-        fillDictionary(null, dic);
+        fillDictionary(null, dic, compact);
        return dic;
     }
 

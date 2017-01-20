@@ -83,8 +83,8 @@ public class RegArimaProcessingFactory implements IProcessingFactory<RegArimaSpe
     }
 
     @Override
-    public Map<String, Class> getOutputDictionary() {
-        return PreprocessingModel.dictionary();
+    public Map<String, Class> getOutputDictionary(boolean compact) {
+        return PreprocessingModel.dictionary(compact);
     }
 
     private static class RegArimaProcessing implements IProcessing<TsData, PreprocessingModel> {

@@ -35,7 +35,7 @@ public class MultiCholetteResults implements IProcResults{
     }
 
     @Override
-    public Map<String, Class> getDictionary() {
+    public Map<String, Class> getDictionary(boolean compact) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

@@ -87,6 +87,7 @@ public class CompositeResults implements IProcResults {
         }
     }
 
+    @Override
     public List<ProcessingInformation> getProcessingInformation() {
         return Collections.unmodifiableList(infos);
     }
@@ -118,11 +119,11 @@ public class CompositeResults implements IProcResults {
     }
 
     @Override
-    public Map<String, Class> getDictionary() {
+    public Map<String, Class> getDictionary(boolean compact) {
         LinkedHashMap<String, Class> dic = new LinkedHashMap<>();
         for (Node node : nodes.values()) {
             if (node.results != null) {
-                Map<String, Class> cur = node.results.getDictionary();
+                Map<String, Class> cur = node.results.getDictionary(compact);
                 ProcUtilities.fillDictionary(dic, node.prefix, cur);
             }
         }

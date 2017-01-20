@@ -68,9 +68,9 @@ public class DentonProcessor implements IProcessingFactory<DentonSpecification, 
     }
 
     @Override
-    public Map<String, Class> getOutputDictionary() {
+    public Map<String, Class> getOutputDictionary(boolean compact) {
         Map<String, Class> dic = new HashMap<>();
-        BenchmarkingResults.fillDictionary(null, dic);
+        BenchmarkingResults.fillDictionary(null, dic, compact);
         return dic;
     }
 

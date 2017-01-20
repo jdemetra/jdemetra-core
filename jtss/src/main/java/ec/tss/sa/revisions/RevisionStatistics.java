@@ -12,6 +12,7 @@ import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.data.DescriptiveStatistics;
 import ec.tstoolkit.information.Information;
 import ec.tstoolkit.information.InformationMapper;
+import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.information.ProxyResults;
 import ec.tstoolkit.timeseries.simplets.TsData;
@@ -20,6 +21,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  *
@@ -35,197 +37,57 @@ public class RevisionStatistics implements IProcResults {
 
     @Override
     public boolean contains(String id) {
-        synchronized (mapper) {
-            return mapper.contains(id);
-        }
+        return MAPPING.contains(id);
     }
 
     @Override
-    public Map<String, Class> getDictionary() {
+    public Map<String, Class> getDictionary(boolean compact) {
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
-        synchronized (mapper) {
-            mapper.fillDictionary(null, map);
-        }
+        MAPPING.fillDictionary(null, map, compact);
         return map;
     }
 
     @Override
     public <T> T getData(String id, Class<T> tclass) {
-        synchronized (mapper) {
-            return mapper.getData(this, id, tclass);
-        }
+        return MAPPING.getData(this, id, tclass);
     }
 
-    public static <T> void addMapping(String name, InformationMapper.Mapper<RevisionStatistics, T> mapping) {
-        synchronized (mapper) {
-            mapper.add(name, mapping);
-        }
+    // MAPPING
+    public static InformationMapping<RevisionStatistics> getMapping() {
+        return MAPPING;
     }
 
-    @Override
-    public List<ProcessingInformation> getProcessingInformation() {
-        return Collections.EMPTY_LIST;
+    public static <T> void setMapping(String name, Class<T> tclass, Function<RevisionStatistics, T> extractor) {
+        MAPPING.set(name, tclass, extractor);
     }
 
-    private static final InformationMapper<RevisionStatistics> mapper = new InformationMapper<>();
+    public static <T> void setTsData(String name, Function<RevisionStatistics, TsData> extractor) {
+        MAPPING.set(name, extractor);
+    }
+
+    private static final InformationMapping<RevisionStatistics> MAPPING = new InformationMapping<>(RevisionStatistics.class);
 
     static {
-        mapper.add(DSACOUNT, new InformationMapper.Mapper<RevisionStatistics, int[]>(int[].class) {
-
-            @Override
-            public int[] retrieve(RevisionStatistics source) {
-                return source.dsan_;
-            }
-        });
-
-        mapper.add(DSAMIN, new InformationMapper.Mapper<RevisionStatistics, double[]>(double[].class) {
-
-            @Override
-            public double[] retrieve(RevisionStatistics source) {
-                return source.dsamin_;
-            }
-        });
-
-        mapper.add(DSAMAX, new InformationMapper.Mapper<RevisionStatistics, double[]>(double[].class) {
-
-            @Override
-            public double[] retrieve(RevisionStatistics source) {
-                return source.dsamax_;
-            }
-        });
-
-        mapper.add(DSAAVERAGE, new InformationMapper.Mapper<RevisionStatistics, double[]>(double[].class) {
-
-            @Override
-            public double[] retrieve(RevisionStatistics source) {
-                return source.dsaavg_;
-            }
-        });
-
-        mapper.add(DSASTDEV, new InformationMapper.Mapper<RevisionStatistics, double[]>(double[].class) {
-
-            @Override
-            public double[] retrieve(RevisionStatistics source) {
-                return source.dsastdev_;
-            }
-        });
-        mapper.add(SACOUNT, new InformationMapper.Mapper<RevisionStatistics, int[]>(int[].class) {
-
-            @Override
-            public int[] retrieve(RevisionStatistics source) {
-                return source.san_;
-            }
-        });
-
-        mapper.add(SAMIN, new InformationMapper.Mapper<RevisionStatistics, double[]>(double[].class) {
-
-            @Override
-            public double[] retrieve(RevisionStatistics source) {
-                return source.samin_;
-            }
-        });
-
-        mapper.add(SAMAX, new InformationMapper.Mapper<RevisionStatistics, double[]>(double[].class) {
-
-            @Override
-            public double[] retrieve(RevisionStatistics source) {
-                return source.samax_;
-            }
-        });
-
-        mapper.add(SAAVERAGE, new InformationMapper.Mapper<RevisionStatistics, double[]>(double[].class) {
-
-            @Override
-            public double[] retrieve(RevisionStatistics source) {
-                return source.saavg_;
-            }
-        });
-
-        mapper.add(SASTDEV, new InformationMapper.Mapper<RevisionStatistics, double[]>(double[].class) {
-
-            @Override
-            public double[] retrieve(RevisionStatistics source) {
-                return source.sastdev_;
-            }
-        });
-        mapper.add(SCOUNT, new InformationMapper.Mapper<RevisionStatistics, int[]>(int[].class) {
-
-            @Override
-            public int[] retrieve(RevisionStatistics source) {
-                return source.sn_;
-            }
-        });
-
-        mapper.add(SMIN, new InformationMapper.Mapper<RevisionStatistics, double[]>(double[].class) {
-
-            @Override
-            public double[] retrieve(RevisionStatistics source) {
-                return source.smin_;
-            }
-        });
-
-        mapper.add(SMAX, new InformationMapper.Mapper<RevisionStatistics, double[]>(double[].class) {
-
-            @Override
-            public double[] retrieve(RevisionStatistics source) {
-                return source.smax_;
-            }
-        });
-
-        mapper.add(SAVERAGE, new InformationMapper.Mapper<RevisionStatistics, double[]>(double[].class) {
-
-            @Override
-            public double[] retrieve(RevisionStatistics source) {
-                return source.savg_;
-            }
-        });
-
-        mapper.add(SSTDEV, new InformationMapper.Mapper<RevisionStatistics, double[]>(double[].class) {
-
-            @Override
-            public double[] retrieve(RevisionStatistics source) {
-                return source.sstdev_;
-            }
-        });
-        mapper.add(CCOUNT, new InformationMapper.Mapper<RevisionStatistics, int[]>(int[].class) {
-
-            @Override
-            public int[] retrieve(RevisionStatistics source) {
-                return source.cn_;
-            }
-        });
-
-        mapper.add(CMIN, new InformationMapper.Mapper<RevisionStatistics, double[]>(double[].class) {
-
-            @Override
-            public double[] retrieve(RevisionStatistics source) {
-                return source.cmin_;
-            }
-        });
-
-        mapper.add(CMAX, new InformationMapper.Mapper<RevisionStatistics, double[]>(double[].class) {
-
-            @Override
-            public double[] retrieve(RevisionStatistics source) {
-                return source.cmax_;
-            }
-        });
-
-        mapper.add(CAVERAGE, new InformationMapper.Mapper<RevisionStatistics, double[]>(double[].class) {
-
-            @Override
-            public double[] retrieve(RevisionStatistics source) {
-                return source.cavg_;
-            }
-        });
-
-        mapper.add(CSTDEV, new InformationMapper.Mapper<RevisionStatistics, double[]>(double[].class) {
-
-            @Override
-            public double[] retrieve(RevisionStatistics source) {
-                return source.cstdev_;
-            }
-        });
+        MAPPING.set(DSACOUNT, int[].class, source -> source.dsan_);
+        MAPPING.set(DSAMIN, double[].class, source -> source.dsamin_);
+        MAPPING.set(DSAMAX, double[].class, source -> source.dsamax_);
+        MAPPING.set(DSAAVERAGE, double[].class, source -> source.dsaavg_);
+        MAPPING.set(DSASTDEV, double[].class, source -> source.dsastdev_);
+        MAPPING.set(SACOUNT, int[].class, source -> source.san_);
+        MAPPING.set(SAMIN, double[].class, source -> source.samin_);
+        MAPPING.set(SAMAX, double[].class, source -> source.samax_);
+        MAPPING.set(SAAVERAGE, double[].class, source -> source.saavg_);
+        MAPPING.set(SASTDEV, double[].class, source -> source.sastdev_);
+        MAPPING.set(SCOUNT, int[].class, source -> source.sn_);
+        MAPPING.set(SMIN, double[].class, source -> source.smin_);
+        MAPPING.set(SMAX, double[].class, source -> source.smax_);
+        MAPPING.set(SAVERAGE, double[].class, source -> source.savg_);
+        MAPPING.set(SSTDEV, double[].class, source -> source.sstdev_);
+        MAPPING.set(CCOUNT, int[].class, source -> source.cn_);
+        MAPPING.set(CMIN, double[].class, source -> source.cmin_);
+        MAPPING.set(CMAX, double[].class, source -> source.cmax_);
+        MAPPING.set(CAVERAGE, double[].class, source -> source.cavg_);
+        MAPPING.set(CSTDEV, double[].class, source -> source.cstdev_);
     }
 
     private int[] dsan_, san_, sn_, cn_;
@@ -512,5 +374,10 @@ public class RevisionStatistics implements IProcResults {
             cstdev_[i] = stats.getRmse();
             cn_[i] = stats.getObservationsCount();
         }
+    }
+
+    @Override
+    public List<ProcessingInformation> getProcessingInformation() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
