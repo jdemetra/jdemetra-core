@@ -25,7 +25,6 @@ import ec.tstoolkit.arima.ArimaModel;
 import ec.tstoolkit.arima.estimation.RegArimaEstimation;
 import ec.tstoolkit.arima.special.GeneralizedAirlineModel;
 import ec.tstoolkit.arima.special.GeneralizedAirlineMonitor;
-import ec.tstoolkit.information.InformationMapper;
 import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.maths.linearfilters.BackFilter;
@@ -197,9 +196,9 @@ public class GeneralizedAirlineResults implements ISaResults {
     }
 
     @Override
-    public Map<String, Class> getDictionary(boolean compact) {
+    public Map<String, Class> getDictionary() {
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
-        MAPPING.fillDictionary(null, map, compact);
+        MAPPING.fillDictionary(null, map, false);
         return map;
     }
 

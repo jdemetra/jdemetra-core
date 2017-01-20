@@ -67,9 +67,9 @@ public class SaBenchmarkingResults implements IProcResults {
     }
 
     @Override
-    public Map<String, Class> getDictionary(boolean compact) {
+    public Map<String, Class> getDictionary() {
         LinkedHashMap<String, Class> dic=new LinkedHashMap<>();
-        fillDictionary(null, dic, compact);
+        fillDictionary(null, dic, false);
        return dic;
     }
 

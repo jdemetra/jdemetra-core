@@ -225,9 +225,9 @@ public class ModelEstimation implements IProcResults {
     }
 
     @Override
-    public Map<String, Class> getDictionary(boolean compact) {
+    public Map<String, Class> getDictionary() {
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
-        fillDictionary(null, map, compact);
+        fillDictionary(null, map, false);
         return map;
     }
 

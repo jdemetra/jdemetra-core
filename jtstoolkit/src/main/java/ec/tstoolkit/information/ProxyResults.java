@@ -53,7 +53,7 @@ public class ProxyResults implements IProcResults {
     }
 
     @Override
-    public Map<String, Class> getDictionary(boolean compact) {
+    public Map<String, Class> getDictionary() {
         return Collections.unmodifiableMap(map);
     }
 

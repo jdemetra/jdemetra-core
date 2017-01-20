@@ -119,11 +119,11 @@ public class CompositeResults implements IProcResults {
     }
 
     @Override
-    public Map<String, Class> getDictionary(boolean compact) {
+    public Map<String, Class> getDictionary() {
         LinkedHashMap<String, Class> dic = new LinkedHashMap<>();
         for (Node node : nodes.values()) {
             if (node.results != null) {
-                Map<String, Class> cur = node.results.getDictionary(compact);
+                Map<String, Class> cur = node.results.getDictionary();
                 ProcUtilities.fillDictionary(dic, node.prefix, cur);
             }
         }

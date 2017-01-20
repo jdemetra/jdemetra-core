@@ -42,15 +42,12 @@ public class MultiTsDataTest {
 
     @Test
     public void testDictionary() {
-        assertTrue(data.getDictionary(true).size() == 1);
-        assertTrue(data.getDictionary(false).size() == N);
+        assertTrue(data.getDictionary().size() == N);
     }
 
     @Test
     public void testgetData() {
-        Map<String, Class> dictionary = data.getDictionary(false);
+        Map<String, Class> dictionary = data.getDictionary();
         dictionary.forEach((s, c) -> assertTrue(data.getData(s, c) != null));
-        Map<String, Class> cdictionary = data.getDictionary(true);
-        cdictionary.forEach((s, c) -> assertTrue(data.searchAll(s, c).size() == N));
     }
 }

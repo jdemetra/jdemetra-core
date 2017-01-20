@@ -24,7 +24,6 @@ import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.arima.ArimaModel;
 import ec.tstoolkit.data.DataBlock;
-import ec.tstoolkit.information.InformationMapper;
 import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.maths.Complex;
 import ec.tstoolkit.maths.linearfilters.BackFilter;
@@ -397,10 +396,10 @@ public class MixedFrequenciesModelDecomposition implements IProcResults {
     }
 
     @Override
-    public Map<String, Class> getDictionary(boolean compact) {
+    public Map<String, Class> getDictionary() {
         // TODO
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
-        MAPPING.fillDictionary(null, map, compact);
+        MAPPING.fillDictionary(null, map, false);
         return map;
     }
 

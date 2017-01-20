@@ -26,7 +26,6 @@ import ec.satoolkit.seats.SeatsToolkit;
 import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.arima.special.MixedAirlineModel;
 import ec.tstoolkit.arima.special.MixedAirlineMonitor;
-import ec.tstoolkit.information.InformationMapper;
 import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.modelling.ComponentType;
@@ -107,10 +106,10 @@ public class MixedAirlineResults implements ISaResults {
     }
 
     @Override
-    public Map<String, Class> getDictionary(boolean compact) {
+    public Map<String, Class> getDictionary() {
         // TODO
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
-        MAPPING.fillDictionary(null, map, compact);
+        MAPPING.fillDictionary(null, map, false);
         return map;
     }
 

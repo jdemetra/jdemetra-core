@@ -25,7 +25,6 @@ import ec.tstoolkit.arima.estimation.LikelihoodStatistics;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.eco.DiffuseConcentratedLikelihood;
-import ec.tstoolkit.information.InformationMapper;
 import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.maths.realfunctions.IFunction;
@@ -98,10 +97,10 @@ public class DisaggregationResults implements IProcResults {
     }
 
     @Override
-    public Map<String, Class> getDictionary(boolean compact) {
+    public Map<String, Class> getDictionary() {
         // TODO
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
-        fillDictionary(null, map, compact);
+        fillDictionary(null, map, false);
         return map;
     }
 

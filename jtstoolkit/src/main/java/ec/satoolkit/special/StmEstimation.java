@@ -8,7 +8,6 @@ package ec.satoolkit.special;
 import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.eco.DiffuseConcentratedLikelihood;
-import ec.tstoolkit.information.InformationMapper;
 import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.maths.realfunctions.IFunction;
 import ec.tstoolkit.maths.realfunctions.IFunctionInstance;
@@ -17,8 +16,6 @@ import ec.tstoolkit.structural.BsmMonitor;
 import ec.tstoolkit.timeseries.regression.TsVariableList;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
-import ec.tstoolkit.ucarima.UcarimaModel;
-import ec.tstoolkit.ucarima.WienerKolmogorovEstimators;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -54,10 +51,10 @@ public class StmEstimation implements IProcResults{
     }
 
     @Override
-    public Map<String, Class> getDictionary(boolean compact) {
+    public Map<String, Class> getDictionary() {
         // TODO
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
-        MAPPING.fillDictionary(null, map, compact);
+        MAPPING.fillDictionary(null, map, false);
         return map;
     }
 

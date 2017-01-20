@@ -51,16 +51,12 @@ public class MultiTsData implements IProcResults {
     }
 
     @Override
-    public Map<String, Class> getDictionary(boolean compact) {
-        if (compact) {
-            return Collections.singletonMap(name + '*', TsData.class);
-        } else {
-            LinkedHashMap<String, Class> dic = new LinkedHashMap<>();
-            for (int i = 0; i < ts.length; ++i) {
-                dic.put(encode(i), TsData.class);
-            }
-            return dic;
+    public Map<String, Class> getDictionary() {
+        LinkedHashMap<String, Class> dic = new LinkedHashMap<>();
+        for (int i = 0; i < ts.length; ++i) {
+            dic.put(encode(i), TsData.class);
         }
+        return dic;
     }
 
     @Override

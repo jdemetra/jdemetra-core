@@ -25,7 +25,6 @@ import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.DescriptiveStatistics;
 import ec.tstoolkit.eco.Ols;
 import ec.tstoolkit.eco.RegModel;
-import ec.tstoolkit.information.InformationMapper;
 import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.stats.AutoCorrelations;
@@ -776,9 +775,9 @@ public final class Mstatistics implements IProcResults {
     }
 
     @Override
-    public Map<String, Class> getDictionary(boolean compact) {
+    public Map<String, Class> getDictionary() {
         LinkedHashMap<String, Class> dictionary = new LinkedHashMap<>();
-        MAPPING.fillDictionary(null, dictionary, compact);
+        MAPPING.fillDictionary(null, dictionary, false);
         return dictionary;
     }
 

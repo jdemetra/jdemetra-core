@@ -23,7 +23,6 @@ import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.arima.estimation.LikelihoodStatistics;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.eco.ConcentratedLikelihood;
-import ec.tstoolkit.information.InformationMapper;
 import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.maths.matrices.Matrix;
@@ -44,7 +43,6 @@ import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.regression.ITsVariable;
 import ec.tstoolkit.timeseries.regression.OutlierType;
 import ec.tstoolkit.timeseries.regression.TsVariableList;
-import ec.tstoolkit.timeseries.regression.TsVariableList.ISelector;
 import ec.tstoolkit.timeseries.regression.TsVariableSelection;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
@@ -345,9 +343,9 @@ public class MixedFrequenciesModelEstimation implements IProcResults {
     }
 
     @Override
-    public Map<String, Class> getDictionary(boolean compact) {
+    public Map<String, Class> getDictionary() {
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
-        fillDictionary(null, map, compact);
+        fillDictionary(null, map, false);
         return map;
     }
 

@@ -348,8 +348,8 @@ public class DeterministicComponent implements IProcResults {
     }
 
     @Override
-    public Map<String, Class> getDictionary(boolean compact) {
-        return dictionary(compact);
+    public Map<String, Class> getDictionary() {
+        return dictionary(false);
     }
 
     @Override

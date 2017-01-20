@@ -11,13 +11,11 @@ import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.data.DescriptiveStatistics;
 import ec.tstoolkit.information.Information;
-import ec.tstoolkit.information.InformationMapper;
 import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.information.ProxyResults;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +39,9 @@ public class RevisionStatistics implements IProcResults {
     }
 
     @Override
-    public Map<String, Class> getDictionary(boolean compact) {
+    public Map<String, Class> getDictionary() {
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
-        MAPPING.fillDictionary(null, map, compact);
+        MAPPING.fillDictionary(null, map, false);
         return map;
     }
 

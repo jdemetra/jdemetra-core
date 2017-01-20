@@ -25,7 +25,6 @@ import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.modelling.ModellingDictionary;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.information.Information;
-import ec.tstoolkit.information.InformationMapper;
 import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.modelling.ComponentType;
@@ -103,9 +102,9 @@ public class X11Results implements ISaResults {
     }
 
     @Override
-    public Map<String, Class> getDictionary(boolean compact) {
+    public Map<String, Class> getDictionary() {
         LinkedHashMap<String, Class> dictionary = new LinkedHashMap<>();
-        MAPPING.fillDictionary(null, dictionary, compact);
+        MAPPING.fillDictionary(null, dictionary, false);
         info_.fillDictionary(null, dictionary);
         return dictionary;
     }
