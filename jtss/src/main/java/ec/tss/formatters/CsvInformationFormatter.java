@@ -44,7 +44,7 @@ public class CsvInformationFormatter {
 
     private static HashMap<Type, IStringFormatter> dictionary = new HashMap<>();
     private final char comma;
-    private static final String newLine = "\r\n";
+    private static final String newLine = System.lineSeparator();
     private boolean fullName;
 
     public void setFullName(boolean fullName) {

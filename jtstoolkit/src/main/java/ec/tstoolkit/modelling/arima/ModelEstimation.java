@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.modelling.arima;
 
 import ec.tstoolkit.Parameter;
@@ -28,7 +27,7 @@ import ec.tstoolkit.design.Development;
 import ec.tstoolkit.eco.ConcentratedLikelihood;
 import ec.tstoolkit.eco.Ols;
 import ec.tstoolkit.eco.RegModel;
-import ec.tstoolkit.information.InformationMapper;
+import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.information.StatisticalTest;
 import ec.tstoolkit.maths.matrices.Matrix;
@@ -40,6 +39,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  *
@@ -125,8 +125,8 @@ public class ModelEstimation implements IProcResults {
     }
 
     public DataBlock getFullResiduals() {
-        RegArimaEstimation<SarimaModel> tmp =
-                new RegArimaEstimation<>(model_, likelihood_);
+        RegArimaEstimation<SarimaModel> tmp
+                = new RegArimaEstimation<>(model_, likelihood_);
         return new DataBlock(tmp.fullResiduals());
     }
 
@@ -137,25 +137,23 @@ public class ModelEstimation implements IProcResults {
             statistics_ = new RegArimaEstimation<>(model_, likelihood_).statistics(nhp, logtransform_);
             tests_ = null;
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
-    
+
     public boolean compute(IRegArimaProcessor<SarimaModel> monitor, int nhp) {
         if (likelihood_ != null) {
             return true;
         }
-        RegArimaEstimation<SarimaModel> estimation = monitor.process(model_) ;
+        RegArimaEstimation<SarimaModel> estimation = monitor.process(model_);
         if (estimation != null) {
             model_ = estimation.model;
             likelihood_ = estimation.likelihood;
             statistics_ = estimation.statistics(nhp, logtransform_);
             tests_ = null;
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -164,15 +162,14 @@ public class ModelEstimation implements IProcResults {
 //        if (likelihood_ != null) {
 //            return true;
 //        }
-        RegArimaEstimation<SarimaModel> estimation = monitor.optimize(model_) ;
+        RegArimaEstimation<SarimaModel> estimation = monitor.optimize(model_);
         if (estimation != null) {
             model_ = estimation.model;
             likelihood_ = estimation.likelihood;
             statistics_ = estimation.statistics(nhp, logtransform_);
             tests_ = null;
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -223,29 +220,27 @@ public class ModelEstimation implements IProcResults {
         return pcov_;
     }
 
-    public static void fillDictionary(String prefix, Map<String, Class> map) {
-        mapper.fillDictionary(prefix, map);
+    public static void fillDictionary(String prefix, Map<String, Class> map, boolean compact) {
+        MAPPING.fillDictionary(prefix, map, compact);
     }
 
     @Override
     public Map<String, Class> getDictionary() {
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
-        fillDictionary(null, map);
+        fillDictionary(null, map, false);
         return map;
     }
 
     @Override
     public <T> T getData(String id, Class<T> tclass) {
-        return mapper.getData(this, id, tclass);
+        return MAPPING.getData(this, id, tclass);
     }
 
     @Override
     public boolean contains(String id) {
-        synchronized (mapper) {
-            return mapper.contains(id);
-        }
-    }
-    
+            return MAPPING.contains(id);
+     }
+
     @Override
     public List<ProcessingInformation> getProcessingInformation() {
         return Collections.EMPTY_LIST;
@@ -290,321 +285,115 @@ public class ModelEstimation implements IProcResults {
             ARIMA_PHI = "phi", ARIMA_PHI1 = "phi(1)", ARIMA_PHI2 = "phi(2)", ARIMA_PHI3 = "phi(3)", ARIMA_PHI4 = "phi(4)",
             ARIMA_TH = "th", ARIMA_TH1 = "th(1)", ARIMA_TH2 = "th(2)", ARIMA_TH3 = "th(3)", ARIMA_TH4 = "th(4)",
             ARIMA_BPHI = "bphi", ARIMA_BPHI1 = "bphi(1)", ARIMA_BTH = "bth", ARIMA_BTH1 = "bth(1)";
-//    private static final String[] LIKELIHOOD_DICTIONARY = {
-//        LVAL, AIC, AICC, BIC, BICC
-//    };
-//    private static final String[] RES_TEST_DICTIONARY = {
-//        RES_MEAN,
-//        RES_SKEWNESS, RES_KURTOSIS, RES_DH,
-//        RES_LB, RES_LB2, RES_SEASLB,
-//        RES_BP, RES_BP2, RES_SEASBP
-//    };
 
-    public static <T> void addMapping(String name, InformationMapper.Mapper<ModelEstimation, T> mapping) {
-        synchronized (mapper) {
-            mapper.add(name, mapping);
+    // MAPPING
+    public static InformationMapping<ModelEstimation> getMapping() {
+        return MAPPING;
+    }
+
+    public static <T> void setMapping(String name, Class<T> tclass, Function<ModelEstimation, T> extractor) {
+        synchronized (MAPPING) {
+            MAPPING.set(name, tclass, extractor);
         }
     }
-    private static final InformationMapper<ModelEstimation> mapper = new InformationMapper<>();
 
-    private static class ArimaMapper extends InformationMapper.Mapper<ModelEstimation, Parameter> {
+    private static final InformationMapping<ModelEstimation> MAPPING = new InformationMapping<>(ModelEstimation.class);
 
-        private final String name_;
-        private final int lag_;
-
-        ArimaMapper(String name, int lag) {
-            super(Parameter.class);
-            name_ = name;
-            lag_ = lag;
+    private static Parameter param(ModelEstimation source, String name, int lag) {
+        SarimaModel arima = source.getArima();
+        int pos = -1;
+        switch (name) {
+            case ARIMA_PHI:
+                pos = arima.getPhiPosition(lag);
+                break;
+            case ARIMA_BPHI:
+                pos = arima.getBPhiPosition(lag);
+                break;
+            case ARIMA_TH:
+                pos = arima.getThetaPosition(lag);
+                break;
+            case ARIMA_BTH:
+                pos = arima.getBThetaPosition(lag);
+                break;
+            default:
+                break;
         }
-
-        @Override
-        public Parameter retrieve(ModelEstimation source) {
-            SarimaModel arima = source.getArima();
-            int pos = -1;
-            switch (name_) {
-                case ARIMA_PHI:
-                    pos = arima.getPhiPosition(lag_);
-                    break;
-                case ARIMA_BPHI:
-                    pos = arima.getBPhiPosition(lag_);
-                    break;
-                case ARIMA_TH:
-                    pos = arima.getThetaPosition(lag_);
-                    break;
-                case ARIMA_BTH:
-                    pos = arima.getBThetaPosition(lag_);
-                    break;
-                default:
-                    break;
-            }
-            if (pos < 0) {
-                return null;
-            }
-            double err = source.pcov_ == null ? 0 : Math.sqrt(source.pcov_.get(pos, pos));
-            Parameter p = new Parameter(arima.getParameter(pos), err == 0 ? ParameterType.Fixed : ParameterType.Estimated);
-            p.setStde(err);
-            return p;
+        if (pos < 0) {
+            return null;
         }
+        double err = source.pcov_ == null ? 0 : Math.sqrt(source.pcov_.get(pos, pos));
+        Parameter p = new Parameter(arima.getParameter(pos), err == 0 ? ParameterType.Fixed : ParameterType.Estimated);
+        p.setStde(err);
+        return p;
     }
-    // fill the mapper
 
     static {
 
         // Likelihood
-        mapper.add(InformationSet.item(LIKELIHOOD, NEFFOBS), new InformationMapper.Mapper<ModelEstimation, Integer>(Integer.class) {
-
-            @Override
-            public Integer retrieve(ModelEstimation source) {
-                return source.statistics_.effectiveObservationsCount;
-            }
-        });
-        mapper.add(InformationSet.item(LIKELIHOOD, NP), new InformationMapper.Mapper<ModelEstimation, Integer>(Integer.class) {
-
-            @Override
-            public Integer retrieve(ModelEstimation source) {
-                return source.statistics_.estimatedParametersCount;
-            }
-        });
-        mapper.add(InformationSet.item(LIKELIHOOD, LVAL), new InformationMapper.Mapper<ModelEstimation, Double>(Double.class) {
-
-            @Override
-            public Double retrieve(ModelEstimation source) {
-                return source.statistics_.logLikelihood;
-            }
-        });
-        mapper.add(InformationSet.item(LIKELIHOOD, ADJLVAL), new InformationMapper.Mapper<ModelEstimation, Double>(Double.class) {
-
-            @Override
-            public Double retrieve(ModelEstimation source) {
-                return source.statistics_.adjustedLogLikelihood;
-            }
-        });
-        mapper.add(InformationSet.item(LIKELIHOOD, SSQERR), new InformationMapper.Mapper<ModelEstimation, Double>(Double.class) {
-
-            @Override
-            public Double retrieve(ModelEstimation source) {
-                return source.statistics_.SsqErr;
-            }
-        });
-        mapper.add(InformationSet.item(LIKELIHOOD, AIC), new InformationMapper.Mapper<ModelEstimation, Double>(Double.class) {
-
-            @Override
-            public Double retrieve(ModelEstimation source) {
-                return source.statistics_.AIC;
-            }
-        });
-        mapper.add(InformationSet.item(LIKELIHOOD, AICC), new InformationMapper.Mapper<ModelEstimation, Double>(Double.class) {
-
-            @Override
-            public Double retrieve(ModelEstimation source) {
-                return source.statistics_.AICC;
-            }
-        });
-        mapper.add(InformationSet.item(LIKELIHOOD, BIC), new InformationMapper.Mapper<ModelEstimation, Double>(Double.class) {
-
-            @Override
-            public Double retrieve(ModelEstimation source) {
-                return source.statistics_.BIC;
-            }
-        });
-        mapper.add(InformationSet.item(LIKELIHOOD, BICC), new InformationMapper.Mapper<ModelEstimation, Double>(Double.class) {
-
-            @Override
-            public Double retrieve(ModelEstimation source) {
-                return source.statistics_.BICC;
-            }
-        });
-
-        // RESIDUALS
-        mapper.add(InformationSet.item(RESIDUALS, SER), new InformationMapper.Mapper<ModelEstimation, Double>(Double.class) {
-
-            @Override
-            public Double retrieve(ModelEstimation source) {
-                return Math.sqrt(source.statistics_.SsqErr / 
-                       (source.statistics_.effectiveObservationsCount-source.statistics_.estimatedParametersCount+1));
-            }
-        });
-        mapper.add(InformationSet.item(RESIDUALS, SERML), new InformationMapper.Mapper<ModelEstimation, Double>(Double.class) {
-
-            @Override
-            public Double retrieve(ModelEstimation source) {
-                return Math.sqrt(source.statistics_.SsqErr / 
-                       (source.statistics_.effectiveObservationsCount));
-            }
-        });
-        mapper.add(InformationSet.item(RESIDUALS, RES_DATA), new InformationMapper.Mapper<ModelEstimation, double[]>(double[].class) {
-
-            @Override
-            public double[] retrieve(ModelEstimation source) {
-                return source.likelihood_.getResiduals();
-            }
-        });
-        mapper.add(InformationSet.item(RESIDUALS, RES_MEAN), new InformationMapper.Mapper<ModelEstimation, StatisticalTest>(StatisticalTest.class) {
-
-            @Override
-            public StatisticalTest retrieve(ModelEstimation source) {
-                return StatisticalTest.create(source.getNiidTests().getMeanTest());
-            }
-        });
-        mapper.add(InformationSet.item(RESIDUALS, RES_SKEWNESS), new InformationMapper.Mapper<ModelEstimation, StatisticalTest>(StatisticalTest.class) {
-
-            @Override
-            public StatisticalTest retrieve(ModelEstimation source) {
-                return StatisticalTest.create(source.getNiidTests().getSkewness());
-            }
-        });
-        mapper.add(InformationSet.item(RESIDUALS, RES_KURTOSIS), new InformationMapper.Mapper<ModelEstimation, StatisticalTest>(StatisticalTest.class) {
-
-            @Override
-            public StatisticalTest retrieve(ModelEstimation source) {
-                return StatisticalTest.create(source.getNiidTests().getKurtosis());
-            }
-        });
-        mapper.add(InformationSet.item(RESIDUALS, RES_DH), new InformationMapper.Mapper<ModelEstimation, StatisticalTest>(StatisticalTest.class) {
-
-            @Override
-            public StatisticalTest retrieve(ModelEstimation source) {
-                return StatisticalTest.create(source.getNiidTests().getNormalityTest());
-            }
-        });
-        mapper.add(InformationSet.item(RESIDUALS, RES_LB), new InformationMapper.Mapper<ModelEstimation, StatisticalTest>(StatisticalTest.class) {
-
-            @Override
-            public StatisticalTest retrieve(ModelEstimation source) {
-                return StatisticalTest.create(source.getNiidTests().getLjungBox());
-            }
-        });
-        mapper.add(InformationSet.item(RESIDUALS, RES_LB2), new InformationMapper.Mapper<ModelEstimation, StatisticalTest>(StatisticalTest.class) {
-
-            @Override
-            public StatisticalTest retrieve(ModelEstimation source) {
-                return StatisticalTest.create(source.getNiidTests().getLjungBoxOnSquare());
-            }
-        });
-        mapper.add(InformationSet.item(RESIDUALS, RES_SEASLB), new InformationMapper.Mapper<ModelEstimation, StatisticalTest>(StatisticalTest.class) {
-
-            @Override
-            public StatisticalTest retrieve(ModelEstimation source) {
-                return StatisticalTest.create(source.getNiidTests().getSeasonalLjungBox());
-            }
-        });
-        mapper.add(InformationSet.item(RESIDUALS, RES_BP), new InformationMapper.Mapper<ModelEstimation, StatisticalTest>(StatisticalTest.class) {
-
-            @Override
-            public StatisticalTest retrieve(ModelEstimation source) {
-                return StatisticalTest.create(source.getNiidTests().getBoxPierce());
-            }
-        });
-        mapper.add(InformationSet.item(RESIDUALS, RES_BP2), new InformationMapper.Mapper<ModelEstimation, StatisticalTest>(StatisticalTest.class) {
-
-            @Override
-            public StatisticalTest retrieve(ModelEstimation source) {
-                return StatisticalTest.create(source.getNiidTests().getBoxPierceOnSquare());
-            }
-        });
-        mapper.add(InformationSet.item(RESIDUALS, RES_SEASBP), new InformationMapper.Mapper<ModelEstimation, StatisticalTest>(StatisticalTest.class) {
-
-            @Override
-            public StatisticalTest retrieve(ModelEstimation source) {
-                return StatisticalTest.create(source.getNiidTests().getSeasonalBoxPierce());
-            }
-        });
-        mapper.add(InformationSet.item(RESIDUALS, RES_UD_NUMBER), new InformationMapper.Mapper<ModelEstimation, StatisticalTest>(StatisticalTest.class) {
-
-            @Override
-            public StatisticalTest retrieve(ModelEstimation source) {
-                TestofUpDownRuns ud = source.getNiidTests().getUpAndDownRuns();
-                ud.setKind(RunsTestKind.Number);
-                return StatisticalTest.create(ud);
-            }
-        });
-        mapper.add(InformationSet.item(RESIDUALS, RES_UD_LENGTH), new InformationMapper.Mapper<ModelEstimation, StatisticalTest>(StatisticalTest.class) {
-
-            @Override
-            public StatisticalTest retrieve(ModelEstimation source) {
-                TestofUpDownRuns ud = source.getNiidTests().getUpAndDownRuns();
-                ud.setKind(RunsTestKind.Length);
-                return StatisticalTest.create(ud);
-            }
-        });
+        MAPPING.set(InformationSet.item(LIKELIHOOD, NEFFOBS), Integer.class, source -> source.statistics_.effectiveObservationsCount);
+        MAPPING.set(InformationSet.item(LIKELIHOOD, NP), Integer.class, source -> source.statistics_.estimatedParametersCount);
+        MAPPING.set(InformationSet.item(LIKELIHOOD, LVAL), Double.class, source -> source.statistics_.logLikelihood);
+        MAPPING.set(InformationSet.item(LIKELIHOOD, ADJLVAL), Double.class, source -> source.statistics_.adjustedLogLikelihood);
+        MAPPING.set(InformationSet.item(LIKELIHOOD, SSQERR), Double.class, source -> source.statistics_.SsqErr);
+        MAPPING.set(InformationSet.item(LIKELIHOOD, AIC), Double.class, source -> source.statistics_.AIC);
+        MAPPING.set(InformationSet.item(LIKELIHOOD, AICC), Double.class, source -> source.statistics_.AICC);
+        MAPPING.set(InformationSet.item(LIKELIHOOD, BIC), Double.class, source -> source.statistics_.BIC);
+        MAPPING.set(InformationSet.item(LIKELIHOOD, BICC), Double.class, source -> source.statistics_.BICC);
+        MAPPING.set(InformationSet.item(RESIDUALS, SER), Double.class,
+                source -> Math.sqrt(source.statistics_.SsqErr / (source.statistics_.effectiveObservationsCount - source.statistics_.estimatedParametersCount + 1)));
+        MAPPING.set(InformationSet.item(RESIDUALS, SERML), Double.class,
+                source -> Math.sqrt(source.statistics_.SsqErr / (source.statistics_.effectiveObservationsCount)));
+        MAPPING.set(InformationSet.item(RESIDUALS, RES_DATA), double[].class, source -> source.likelihood_.getResiduals());
+        MAPPING.set(InformationSet.item(RESIDUALS, RES_MEAN), StatisticalTest.class,
+                source -> StatisticalTest.create(source.getNiidTests().getMeanTest()));
+        MAPPING.set(InformationSet.item(RESIDUALS, RES_SKEWNESS), StatisticalTest.class,
+                source -> StatisticalTest.create(source.getNiidTests().getSkewness()));
+        MAPPING.set(InformationSet.item(RESIDUALS, RES_KURTOSIS), StatisticalTest.class,
+                source -> StatisticalTest.create(source.getNiidTests().getKurtosis()));
+        MAPPING.set(InformationSet.item(RESIDUALS, RES_DH), StatisticalTest.class,
+                source -> StatisticalTest.create(source.getNiidTests().getNormalityTest()));
+        MAPPING.set(InformationSet.item(RESIDUALS, RES_LB), StatisticalTest.class,
+                source -> StatisticalTest.create(source.getNiidTests().getLjungBox()));
+        MAPPING.set(InformationSet.item(RESIDUALS, RES_LB2), StatisticalTest.class,
+                source -> StatisticalTest.create(source.getNiidTests().getLjungBoxOnSquare()));
+        MAPPING.set(InformationSet.item(RESIDUALS, RES_SEASLB), StatisticalTest.class,
+                source -> StatisticalTest.create(source.getNiidTests().getSeasonalLjungBox()));
+        MAPPING.set(InformationSet.item(RESIDUALS, RES_BP), StatisticalTest.class,
+                source -> StatisticalTest.create(source.getNiidTests().getBoxPierce()));
+        MAPPING.set(InformationSet.item(RESIDUALS, RES_BP2), StatisticalTest.class,
+                source -> StatisticalTest.create(source.getNiidTests().getBoxPierceOnSquare()));
+        MAPPING.set(InformationSet.item(RESIDUALS, RES_SEASBP), StatisticalTest.class,
+                source -> StatisticalTest.create(source.getNiidTests().getSeasonalBoxPierce()));
+        MAPPING.set(InformationSet.item(RESIDUALS, RES_UD_NUMBER), StatisticalTest.class,
+                source -> {
+                    TestofUpDownRuns ud = source.getNiidTests().getUpAndDownRuns();
+                    ud.setKind(RunsTestKind.Number);
+                    return StatisticalTest.create(ud);
+                });
+        MAPPING.set(InformationSet.item(RESIDUALS, RES_UD_LENGTH), StatisticalTest.class,
+                source -> {
+                    TestofUpDownRuns ud = source.getNiidTests().getUpAndDownRuns();
+                    ud.setKind(RunsTestKind.Length);
+                    return StatisticalTest.create(ud);
+                });
 
         // ARIMA
-        mapper.add(ARIMA, new InformationMapper.Mapper<ModelEstimation, SarimaModel>(SarimaModel.class) {
-
-            @Override
-            public SarimaModel retrieve(ModelEstimation source) {
-                return source.model_.getArima();
-            }
-        });
-
-        mapper.add(InformationSet.item(ARIMA, ARIMA_MEAN), new InformationMapper.Mapper<ModelEstimation, Boolean>(Boolean.class) {
-
-            @Override
-            public Boolean retrieve(ModelEstimation source) {
-                return source.model_.isMeanCorrection();
-            }
-        });
-        mapper.add(InformationSet.item(ARIMA, ARIMA_P), new InformationMapper.Mapper<ModelEstimation, Integer>(Integer.class) {
-
-            @Override
-            public Integer retrieve(ModelEstimation source) {
-                return source.model_.getArima().getRegularAROrder();
-            }
-        });
-        mapper.add(InformationSet.item(ARIMA, ARIMA_D), new InformationMapper.Mapper<ModelEstimation, Integer>(Integer.class) {
-
-            @Override
-            public Integer retrieve(ModelEstimation source) {
-                return source.model_.getArima().getRegularDifferenceOrder();
-            }
-        });
-        mapper.add(InformationSet.item(ARIMA, ARIMA_Q), new InformationMapper.Mapper<ModelEstimation, Integer>(Integer.class) {
-
-            @Override
-            public Integer retrieve(ModelEstimation source) {
-                return source.model_.getArima().getRegularMAOrder();
-            }
-        });
-        mapper.add(InformationSet.item(ARIMA, ARIMA_BP), new InformationMapper.Mapper<ModelEstimation, Integer>(Integer.class) {
-
-            @Override
-            public Integer retrieve(ModelEstimation source) {
-                return source.model_.getArima().getSeasonalAROrder();
-            }
-        });
-        mapper.add(InformationSet.item(ARIMA, ARIMA_BD), new InformationMapper.Mapper<ModelEstimation, Integer>(Integer.class) {
-
-            @Override
-            public Integer retrieve(ModelEstimation source) {
-                return source.model_.getArima().getSeasonalDifferenceOrder();
-            }
-        });
-        mapper.add(InformationSet.item(ARIMA, ARIMA_BQ), new InformationMapper.Mapper<ModelEstimation, Integer>(Integer.class) {
-
-            @Override
-            public Integer retrieve(ModelEstimation source) {
-                return source.model_.getArima().getSeasonalMAOrder();
-            }
-        });
-
-        mapper.add(InformationSet.item(ARIMA, ARIMA_PHI1), new ArimaMapper(ARIMA_PHI, 1));
-        mapper.add(InformationSet.item(ARIMA, ARIMA_PHI2), new ArimaMapper(ARIMA_PHI, 2));
-        mapper.add(InformationSet.item(ARIMA, ARIMA_PHI3), new ArimaMapper(ARIMA_PHI, 3));
-        mapper.add(InformationSet.item(ARIMA, ARIMA_PHI4), new ArimaMapper(ARIMA_PHI, 4));
-        mapper.add(InformationSet.item(ARIMA, ARIMA_BPHI1), new ArimaMapper(ARIMA_BPHI, 1));
-        mapper.add(InformationSet.item(ARIMA, ARIMA_TH1), new ArimaMapper(ARIMA_TH, 1));
-        mapper.add(InformationSet.item(ARIMA, ARIMA_TH2), new ArimaMapper(ARIMA_TH, 2));
-        mapper.add(InformationSet.item(ARIMA, ARIMA_TH3), new ArimaMapper(ARIMA_TH, 3));
-        mapper.add(InformationSet.item(ARIMA, ARIMA_TH4), new ArimaMapper(ARIMA_TH, 4));
-        mapper.add(InformationSet.item(ARIMA, ARIMA_BTH1), new ArimaMapper(ARIMA_BTH, 1));
-
-        mapper.add(InformationSet.item(ARIMA, ARIMA_COVAR), new InformationMapper.Mapper<ModelEstimation, Matrix>(Matrix.class) {
-
-            @Override
-            public Matrix retrieve(ModelEstimation source) {
-                return source.pcov_;
-            }
-        });
+        MAPPING.set(ARIMA, SarimaModel.class, source -> source.model_.getArima());
+        MAPPING.set(InformationSet.item(ARIMA, ARIMA_MEAN), Boolean.class, source -> source.model_.isMeanCorrection());
+        MAPPING.set(InformationSet.item(ARIMA, ARIMA_P), Integer.class, source -> source.model_.getArima().getRegularAROrder());
+        MAPPING.set(InformationSet.item(ARIMA, ARIMA_D), Integer.class, source -> source.model_.getArima().getRegularDifferenceOrder());
+        MAPPING.set(InformationSet.item(ARIMA, ARIMA_Q), Integer.class, source -> source.model_.getArima().getRegularMAOrder());
+        MAPPING.set(InformationSet.item(ARIMA, ARIMA_BP), Integer.class, source -> source.model_.getArima().getSeasonalAROrder());
+        MAPPING.set(InformationSet.item(ARIMA, ARIMA_BD), Integer.class, source -> source.model_.getArima().getSeasonalDifferenceOrder());
+        MAPPING.set(InformationSet.item(ARIMA, ARIMA_BQ), Integer.class, source -> source.model_.getArima().getSeasonalMAOrder());
+        MAPPING.setList(InformationSet.item(ARIMA, ARIMA_PHI), 1, 5, Parameter.class,
+                (source, i) -> param(source, ARIMA_PHI, i));
+        MAPPING.setList(InformationSet.item(ARIMA, ARIMA_BPHI), 1, 2, Parameter.class,
+                (source, i) -> param(source, ARIMA_BPHI, i));
+        MAPPING.setList(InformationSet.item(ARIMA, ARIMA_TH), 1, 5, Parameter.class,
+                (source, i) -> param(source, ARIMA_TH, i));
+        MAPPING.setList(InformationSet.item(ARIMA, ARIMA_BTH), 1, 2, Parameter.class,
+                (source, i) -> param(source, ARIMA_BTH, i));
+        MAPPING.set(InformationSet.item(ARIMA, ARIMA_COVAR), Matrix.class, source -> source.pcov_);
     }
 }

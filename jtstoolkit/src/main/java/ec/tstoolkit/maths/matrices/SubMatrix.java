@@ -1059,7 +1059,7 @@ public class SubMatrix implements Cloneable {
         StringBuilder builder = new StringBuilder();
         DataBlockIterator rows = this.rows();
         do {
-            builder.append(rows.getData()).append("\r\n");
+            builder.append(rows.getData()).append(System.lineSeparator());
         } while (rows.next());
         return builder.toString();
     }
@@ -1072,7 +1072,7 @@ public class SubMatrix implements Cloneable {
         DataBlockIterator rows = this.rows();
         do {
             if (rows.getPosition() > 0) {
-                builder.append("\r\n");
+                builder.append(System.lineSeparator());
             }
             builder.append(rows.getData().toString(fmt));
         } while (rows.next());

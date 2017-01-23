@@ -25,7 +25,7 @@ import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.modelling.ModellingDictionary;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.information.Information;
-import ec.tstoolkit.information.InformationMapper;
+import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.SeriesInfo;
@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  *
@@ -42,6 +43,8 @@ import java.util.Map;
  */
 @Development(status = Development.Status.Alpha)
 public class X11Results implements ISaResults {
+
+    public static final String SEASONALITY = "seasonality", TRENDFILTER = "trendfilter", SEASFILTER = "seasfilter";
 
     public X11Results(DecompositionMode mode, InformationSet info) {
         info_ = info;
@@ -53,7 +56,7 @@ public class X11Results implements ISaResults {
         decomposition.add(b1.fittoDomain(cdom), ComponentType.Series);
         TsData fb1 = b1.fittoDomain(fdom);
         // avoid missing values when b1 is "smaller" than fdom
-        fb1=fb1.cleanExtremities();
+        fb1 = fb1.cleanExtremities();
         if (!fb1.isEmpty()) {
             decomposition.add(fb1, ComponentType.Series, ComponentInformation.Forecast);
         }
@@ -81,7 +84,8 @@ public class X11Results implements ISaResults {
     public DefaultSeasonalFilteringStrategy[] getFinalSeasonalFilterComposit() {
         InformationSet dtables = info_.getSubSet(X11Kernel.D);
         return dtables.get(X11Kernel.D9_FILTER_COMPOSIT, DefaultSeasonalFilteringStrategy[].class);
-    }    
+    }
+
     public String getFinalTrendFilter() {
         InformationSet dtables = info_.getSubSet(X11Kernel.D);
         return dtables.get(X11Kernel.D12_FILTER, String.class);
@@ -100,167 +104,117 @@ public class X11Results implements ISaResults {
     @Override
     public Map<String, Class> getDictionary() {
         LinkedHashMap<String, Class> dictionary = new LinkedHashMap<>();
-        mapper.fillDictionary(null, dictionary);
+        MAPPING.fillDictionary(null, dictionary, false);
         info_.fillDictionary(null, dictionary);
         return dictionary;
     }
 
     @Override
     public boolean contains(String id) {
-        synchronized (mapper) {
-            if (mapper.contains(id)) {
-                return true;
-            }
-            if (info_ != null) {
-                if (!id.contains(InformationSet.STRSEP)) {
-                    return info_.deepSearch(id, Object.class) != null;
-                } else {
-                    return info_.search(id, Object.class) != null;
-                }
-
+        if (MAPPING.contains(id)) {
+            return true;
+        }
+        if (info_ != null) {
+            if (!id.contains(InformationSet.STRSEP)) {
+                return info_.deepSearch(id, Object.class) != null;
             } else {
-                return false;
+                return info_.search(id, Object.class) != null;
             }
+
+        } else {
+            return false;
         }
     }
 
     @Override
     public <T> T getData(String id, Class<T> tclass) {
-        synchronized (mapper) {
-            if (mapper.contains(id)) {
-                return mapper.getData(this, id, tclass);
-            }
-            if (!id.contains(InformationSet.STRSEP)) {
-                return info_.deepSearch(id, tclass);
-            } else {
-                return info_.search(id, tclass);
-            }
+        if (MAPPING.contains(id)) {
+            return MAPPING.getData(this, id, tclass);
+        }
+        if (!id.contains(InformationSet.STRSEP)) {
+            return info_.deepSearch(id, tclass);
+        } else {
+            return info_.search(id, tclass);
         }
     }
-    
-     @Override
+
+    @Override
     public <T> Map<String, T> searchAll(String wc, Class<T> tclass) {
-        Map<String, T> all = mapper.searchAll(this, wc, tclass);
+        Map<String, T> all = MAPPING.searchAll(this, wc, tclass);
         if (info_ != null) {
             List<Information<T>> sel = info_.select(wc, tclass);
-            for (Information<T> info: sel){
+            for (Information<T> info : sel) {
                 all.put(info.name, info.value);
             }
-        } 
+        }
         return all;
     }
-    
-   @Override
+
+    @Override
     public List<ProcessingInformation> getProcessingInformation() {
         return Collections.EMPTY_LIST;
     }
 
-    public static void fillDictionary(String prefix, Map<String, Class> dic){
-          mapper.fillDictionary(prefix, dic);
-          // X11 dictionary:
-          for (int i=0; i<X11Kernel.ALL_A.length; ++i){
-              String code=InformationSet.concatenate(X11Kernel.A, X11Kernel.ALL_A[i]);
-              dic.put(InformationSet.item(prefix, code), TsData.class);
-          }
-          for (int i=0; i<X11Kernel.ALL_B.length; ++i){
-              String code=InformationSet.concatenate(X11Kernel.B, X11Kernel.ALL_B[i]);
-              dic.put(InformationSet.item(prefix, code), TsData.class);
-          }
-          for (int i=0; i<X11Kernel.ALL_C.length; ++i){
-              String code=InformationSet.concatenate(X11Kernel.C, X11Kernel.ALL_C[i]);
-              dic.put(InformationSet.item(prefix, code), TsData.class);
-          }
-          for (int i=0; i<X11Kernel.ALL_D.length; ++i){
-              String code=InformationSet.concatenate(X11Kernel.D, X11Kernel.ALL_D[i]);
-              dic.put(InformationSet.item(prefix, code), TsData.class);
-          }
-         for (int i=0; i<X11Kernel.ALL_E.length; ++i){
-              String code=InformationSet.concatenate(X11Kernel.E, X11Kernel.ALL_E[i]);
-              dic.put(InformationSet.item(prefix, code), TsData.class);
-          }
-     }
-
-
-    // MAPPERS
-    public static <T> void addMapping(String name, InformationMapper.Mapper<X11Results, T> mapping) {
-        synchronized (mapper) {
-            mapper.add(name, mapping);
+    public static void fillDictionary(String prefix, Map<String, Class> dic, boolean compact) {
+        MAPPING.fillDictionary(prefix, dic, compact);
+        // X11 dictionary:
+        for (int i = 0; i < X11Kernel.ALL_A.length; ++i) {
+            String code = InformationSet.concatenate(X11Kernel.A, X11Kernel.ALL_A[i]);
+            dic.put(InformationSet.item(prefix, code), TsData.class);
+        }
+        for (int i = 0; i < X11Kernel.ALL_B.length; ++i) {
+            String code = InformationSet.concatenate(X11Kernel.B, X11Kernel.ALL_B[i]);
+            dic.put(InformationSet.item(prefix, code), TsData.class);
+        }
+        for (int i = 0; i < X11Kernel.ALL_C.length; ++i) {
+            String code = InformationSet.concatenate(X11Kernel.C, X11Kernel.ALL_C[i]);
+            dic.put(InformationSet.item(prefix, code), TsData.class);
+        }
+        for (int i = 0; i < X11Kernel.ALL_D.length; ++i) {
+            String code = InformationSet.concatenate(X11Kernel.D, X11Kernel.ALL_D[i]);
+            dic.put(InformationSet.item(prefix, code), TsData.class);
+        }
+        for (int i = 0; i < X11Kernel.ALL_E.length; ++i) {
+            String code = InformationSet.concatenate(X11Kernel.E, X11Kernel.ALL_E[i]);
+            dic.put(InformationSet.item(prefix, code), TsData.class);
         }
     }
-    private static final InformationMapper<X11Results> mapper = new InformationMapper<>();
+
+    // MAPPING
+    public static InformationMapping<X11Results> getMapping() {
+        return MAPPING;
+    }
+
+    public static <T> void setMapping(String name, Class<T> tclass, Function<X11Results, T> extractor) {
+        MAPPING.set(name, tclass, extractor);
+    }
+
+    public static <T> void setTsData(String name, Function<X11Results, TsData> extractor) {
+        MAPPING.set(name, extractor);
+    }
+
+    private static final InformationMapping<X11Results> MAPPING = new InformationMapping<>(X11Results.class);
 
     static {
-        mapper.add(ModellingDictionary.Y_CMP, new InformationMapper.Mapper<X11Results, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(X11Results source) {
-                return source.decomposition.getSeries(ComponentType.Series, ComponentInformation.Value);
-            }
-        });
-        mapper.add(ModellingDictionary.Y_CMP + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<X11Results, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(X11Results source) {
-                return source.decomposition.getSeries(ComponentType.Series, ComponentInformation.Forecast);
-            }
-        });
-        mapper.add(ModellingDictionary.T_CMP, new InformationMapper.Mapper<X11Results, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(X11Results source) {
-                return source.decomposition.getSeries(ComponentType.Trend, ComponentInformation.Value);
-            }
-        });
-        mapper.add(ModellingDictionary.T_CMP + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<X11Results, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(X11Results source) {
-                return source.decomposition.getSeries(ComponentType.Trend, ComponentInformation.Forecast);
-            }
-        });
-        mapper.add(ModellingDictionary.SA_CMP, new InformationMapper.Mapper<X11Results, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(X11Results source) {
-                return source.decomposition.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value);
-            }
-        });
-        mapper.add(ModellingDictionary.S_CMP, new InformationMapper.Mapper<X11Results, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(X11Results source) {
-                return source.decomposition.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
-            }
-        });
-        mapper.add(ModellingDictionary.S_CMP + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<X11Results, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(X11Results source) {
-                return source.decomposition.getSeries(ComponentType.Seasonal, ComponentInformation.Forecast);
-            }
-        });
-        mapper.add(ModellingDictionary.I_CMP, new InformationMapper.Mapper<X11Results, TsData>(TsData.class) {
-            @Override
-            public TsData retrieve(X11Results source) {
-                return source.decomposition.getSeries(ComponentType.Irregular, ComponentInformation.Value);
-            }
-        });
-        mapper.add(ModellingDictionary.MODE, new InformationMapper.Mapper<X11Results, DecompositionMode>(DecompositionMode.class) {
-            @Override
-            public DecompositionMode retrieve(X11Results source) {
-                return source.decomposition.getMode();
-            }
-        });
-        mapper.add("seasonality", new InformationMapper.Mapper<X11Results, Boolean>(Boolean.class) {
-            @Override
-            public Boolean retrieve(X11Results source) {
-                return !source.getFinalSeasonalFilter().equals(DummyFilter.NAME);
-            }
-        });
-        mapper.add("trendfilter", new InformationMapper.Mapper<X11Results, String>(String.class) {
-            @Override
-            public String retrieve(X11Results source) {
-                return source.getFinalTrendFilter();
-            }
-        });
-        mapper.add("seasfilter", new InformationMapper.Mapper<X11Results, String>(String.class) {
-            @Override
-            public String retrieve(X11Results source) {
-                return source.getFinalSeasonalFilter();
-            }
-        });
+        MAPPING.set(ModellingDictionary.Y_CMP,
+                source -> source.decomposition.getSeries(ComponentType.Series, ComponentInformation.Value));
+        MAPPING.set(ModellingDictionary.Y_CMP + SeriesInfo.F_SUFFIX,
+                source -> source.decomposition.getSeries(ComponentType.Series, ComponentInformation.Forecast));
+        MAPPING.set(ModellingDictionary.T_CMP,
+                source -> source.decomposition.getSeries(ComponentType.Trend, ComponentInformation.Value));
+        MAPPING.set(ModellingDictionary.T_CMP + SeriesInfo.F_SUFFIX,
+                source -> source.decomposition.getSeries(ComponentType.Trend, ComponentInformation.Forecast));
+        MAPPING.set(ModellingDictionary.SA_CMP,
+                source -> source.decomposition.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value));
+        MAPPING.set(ModellingDictionary.S_CMP,
+                source -> source.decomposition.getSeries(ComponentType.Seasonal, ComponentInformation.Value));
+        MAPPING.set(ModellingDictionary.S_CMP + SeriesInfo.F_SUFFIX,
+                source -> source.decomposition.getSeries(ComponentType.Seasonal, ComponentInformation.Forecast));
+        MAPPING.set(ModellingDictionary.I_CMP,
+                source -> source.decomposition.getSeries(ComponentType.Irregular, ComponentInformation.Value));
+        MAPPING.set(ModellingDictionary.MODE, DecompositionMode.class, source -> source.decomposition.getMode());
+        MAPPING.set(SEASONALITY, Boolean.class, source -> !source.getFinalSeasonalFilter().equals(DummyFilter.NAME));
+        MAPPING.set(TRENDFILTER, String.class, source -> source.getFinalTrendFilter());
+        MAPPING.set(SEASFILTER, String.class, source -> source.getFinalSeasonalFilter());
     }
 }

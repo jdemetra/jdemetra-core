@@ -92,7 +92,7 @@ public class TxtOutput extends BasicConfiguration implements IOutput<SaDocument<
         File file = new File(folder, Paths.changeExtension(name, "dta"));
         try (OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.ISO_8859_1)) {
             w.write(sname);
-            w.write("\r\n");
+            w.write(System.lineSeparator());
             w.write(Integer.toString(s.getLength()));
             w.write(" ");
             w.write(Integer.toString(s.getStart().getYear()));
@@ -102,7 +102,7 @@ public class TxtOutput extends BasicConfiguration implements IOutput<SaDocument<
             w.write(Integer.toString(s.getFrequency().intValue()));
 
             for (int i = 0; i < s.getLength(); ++i) {
-                w.write("\r\n");
+                w.write(System.lineSeparator());
                 double value = s.get(i);
                 w.write(Double.toString(Double.isNaN(value) ? -99999 : value));
             }

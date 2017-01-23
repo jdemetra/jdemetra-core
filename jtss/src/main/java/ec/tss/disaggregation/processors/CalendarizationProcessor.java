@@ -29,6 +29,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -70,9 +71,9 @@ public class CalendarizationProcessor implements IProcessingFactory<Calendarizat
     }
 
     @Override
-    public Map<String, Class> getOutputDictionary() {
-        Map<String, Class> dic = new HashMap<>();
-        CalendarizationResults.fillDictionary(null, dic);
+    public Map<String, Class> getOutputDictionary(boolean compact) {
+        LinkedHashMap<String, Class> dic = new LinkedHashMap<>();
+        CalendarizationResults.fillDictionary(null, dic, compact);
         return dic;
     }
 

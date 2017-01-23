@@ -42,10 +42,9 @@ public interface IProcResults {
     /**
      * Gets the dictionary of all the possible results
      *
-     * @return The Map with the output (identifier and class)
      */
     Map<String, Class> getDictionary();
-
+    
     /**
      * . The identifier and the type should come from the dictionary provided by
      * this object

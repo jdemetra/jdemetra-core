@@ -16,6 +16,7 @@
  */
 package ec.tstoolkit.information;
 
+import ec.tstoolkit.design.ThreadSafe;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -38,6 +39,7 @@ import java.util.logging.Logger;
  * @since 2.2.0
  * @author Jean Palate
  */
+@ThreadSafe
 public class InformationMapping<S> {
 
     public static final String LSTART = "(", LEND = ")";
@@ -55,9 +57,22 @@ public class InformationMapping<S> {
         return builder.toString();
     }
 
+    public static String wcKey(String prefix, char wc) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(prefix);
+        if (LSTART != null) {
+            builder.append(LSTART);
+        }
+        builder.append(wc);
+        if (LEND != null) {
+            builder.append(LEND);
+        }
+        return builder.toString();
+    }
+
     public static int listItem(String prefix, String key) {
         if (!key.startsWith(prefix)) {
-            return -1;
+            return Integer.MIN_VALUE;
         }
         int start = prefix.length();
         if (LSTART != null) {
@@ -68,13 +83,37 @@ public class InformationMapping<S> {
             end -= LEND.length();
         }
         if (end <= start) {
-            return -1;
+            return Integer.MIN_VALUE;
         }
         String s = key.substring(start, end);
         try {
-            return Integer.parseUnsignedInt(s);
+            return Integer.parseInt(s);
         } catch (NumberFormatException ex) {
-            return -1;
+            return Integer.MIN_VALUE;
+        }
+    }
+
+    public static boolean isIParamItem(String prefix, String key) {
+        if (!key.startsWith(prefix)) {
+            return false;
+        }
+        int start = prefix.length();
+        if (LSTART != null) {
+            start += LSTART.length();
+        }
+        int end = key.length();
+        if (LEND != null) {
+            end -= LEND.length();
+        }
+        if (end <= start) {
+            return false;
+        }
+        String s = key.substring(start, end);
+        try {
+            Integer.parseInt(s);
+            return true;
+        } catch (NumberFormatException ex) {
+            return false;
         }
     }
 
@@ -160,38 +199,66 @@ public class InformationMapping<S> {
     }
 
     public <T> void set(String name, Class<T> tclass, Function<S, T> extractor) {
-        synchronized (map) {
+        synchronized (this) {
             map.put(name, new TFunction(tclass, extractor));
         }
     }
 
     public <T> void set(String name, Function<S, TsData> extractor) {
-        synchronized (lmap) {
+        synchronized (this) {
             map.put(name, new TFunction(TsData.class, extractor));
         }
     }
 
     public <T> void setList(String prefix, int start, int end, Class<T> tclass, BiFunction<S, Integer, T> extractor) {
-        synchronized (lmap) {
+        synchronized (this) {
             lmap.put(prefix, new TListFunction(tclass, start, end, extractor));
         }
     }
 
     public <T> void setList(String prefix, int start, int end, BiFunction<S, Integer, TsData> extractor) {
-        synchronized (lmap) {
+        synchronized (this) {
             lmap.put(prefix, new TListFunction(TsData.class, start, end, extractor));
         }
     }
 
-    public void fillDictionary(String prefix, Map<String, Class> dic) {
-        synchronized (map) {
+    public <T> void set(String prefix, int defparam, Class<T> tclass, BiFunction<S, Integer, T> extractor) {
+        synchronized (this) {
+            lmap.put(prefix, new TListFunction(tclass, defparam, defparam, extractor));
+        }
+    }
+
+    public <T> void set(String prefix, int defparam, BiFunction<S, Integer, TsData> extractor) {
+        synchronized (this) {
+            lmap.put(prefix, new TListFunction(TsData.class, defparam, defparam, extractor));
+        }
+    }
+
+    public void fillDictionary(String prefix, Map<String, Class> dic, boolean compact) {
+        synchronized (this) {
             for (Entry<String, TFunction<S, ?>> entry : map.entrySet()) {
                 dic.put(InformationSet.item(prefix, entry.getKey()), entry.getValue().targetClass);
             }
-        }
-        synchronized (lmap) {
-            for (Entry<String, TListFunction<S, ?>> entry : lmap.entrySet()) {
-                dic.put(InformationSet.item(prefix, entry.getKey() + "*"), entry.getValue().targetClass);
+            if (compact) {
+                for (Entry<String, TListFunction<S, ?>> entry : lmap.entrySet()) {
+                    TListFunction<S, ?> fn = entry.getValue();
+                    if (fn.start == fn.end) {
+                        dic.put(InformationSet.item(prefix, wcKey(entry.getKey(), '?')), fn.targetClass);
+                    } else {
+                        dic.put(InformationSet.item(prefix, wcKey(entry.getKey(), '*')), fn.targetClass);
+                    }
+                }
+            } else {
+                for (Entry<String, TListFunction<S, ?>> entry : lmap.entrySet()) {
+                    TListFunction<S, ?> fn = entry.getValue();
+                    if (fn.start == fn.end) {
+                        dic.put(InformationSet.item(prefix, listKey(entry.getKey(), fn.start)), fn.targetClass);
+                    } else {
+                        for (int i = fn.start; i < fn.end; ++i) {
+                            dic.put(InformationSet.item(prefix, listKey(entry.getKey(), i)), fn.targetClass);
+                        }
+                    }
+                }
             }
         }
     }
@@ -202,10 +269,8 @@ public class InformationMapping<S> {
 
     public String[] keys() {
         List<String> k = new ArrayList<>();
-        synchronized (map) {
+        synchronized (this) {
             k.addAll(map.keySet());
-        }
-        synchronized (lmap) {
             for (Entry<String, TListFunction<S, ?>> entry : lmap.entrySet()) {
                 for (int j = entry.getValue().start; j <= entry.getValue().end; ++j) {
                     k.add(listKey(entry.getKey(), j));
@@ -216,15 +281,17 @@ public class InformationMapping<S> {
     }
 
     public boolean contains(String id) {
-        synchronized (map) {
+        synchronized (this) {
             if (map.containsKey(id)) {
                 return true;
             }
-        }
-        synchronized (lmap) {
             for (Entry<String, TListFunction<S, ?>> x : lmap.entrySet()) {
+                if (x.getValue().start == x.getValue().end) {
+                    return isIParamItem(x.getKey(), id);
+                }
+
                 int idx = listItem(x.getKey(), id);
-                if (idx >= x.getValue().start && idx <= x.getValue().end) {
+                if (idx >= x.getValue().start && idx < x.getValue().end) {
                     return true;
                 }
             }
@@ -233,7 +300,7 @@ public class InformationMapping<S> {
     }
 
     public <T> T getData(S source, String id, Class<T> tclass) {
-        synchronized (map) {
+        synchronized (this) {
             TFunction<S, ?> fn = map.get(id);
             if (fn != null) {
                 if (!tclass.isAssignableFrom(fn.targetClass)) {
@@ -242,14 +309,13 @@ public class InformationMapping<S> {
                     return (T) fn.extractor.apply(source);
                 }
             }
-        }
-        // search in lists
-        synchronized (lmap) {
             for (Entry<String, TListFunction<S, ?>> x : lmap.entrySet()) {
                 TListFunction<S, ?> value = x.getValue();
                 if (tclass.isAssignableFrom(value.targetClass)) {
                     int idx = listItem(x.getKey(), id);
-                    if (idx >= value.start && idx <= value.end) {
+                    if (value.start == value.end) {
+                        return (T) value.extractor.apply(source, idx);
+                    } else if (idx >= value.start && idx < value.end) {
                         return (T) value.extractor.apply(source, idx);
                     }
                 }
@@ -261,7 +327,7 @@ public class InformationMapping<S> {
     public <T> Map<String, T> searchAll(S source, String pattern, Class<T> tclass) {
         LinkedHashMap<String, T> list = new LinkedHashMap<>();
         WildCards wc = new WildCards(pattern);
-        synchronized (map) {
+        synchronized (this) {
             for (Entry<String, TFunction<S, ?>> x : map.entrySet()) {
                 if (wc.match(x.getKey())) {
                     TFunction<S, ?> fn = x.getValue();
@@ -270,9 +336,6 @@ public class InformationMapping<S> {
                     }
                 }
             }
-        }
-        // search in lists
-        synchronized (lmap) {
             for (Entry<String, TListFunction<S, ?>> x : lmap.entrySet()) {
                 TListFunction<S, ?> fn = x.getValue();
                 if (tclass.isAssignableFrom(fn.targetClass)) {

@@ -87,6 +87,7 @@ public class CompositeResults implements IProcResults {
         }
     }
 
+    @Override
     public List<ProcessingInformation> getProcessingInformation() {
         return Collections.unmodifiableList(infos);
     }

@@ -329,7 +329,7 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
     }
 
     @Override
-    public Map<String, Class> getOutputDictionary() {
-        return X13ProcessingFactory.instance.getOutputDictionary();
+    public Map<String, Class> getOutputDictionary(boolean compact) {
+        return X13ProcessingFactory.instance.getOutputDictionary(compact);
     }
 }

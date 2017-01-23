@@ -16,13 +16,20 @@
  */
 package ec.tss.sa.output;
 
+import ec.tss.sa.SaManager;
+import ec.tstoolkit.algorithm.IProcessingFactory;
+import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.utilities.Files2;
 import ec.tstoolkit.utilities.Id;
 import ec.tstoolkit.utilities.Paths;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -48,10 +55,11 @@ public class BasicConfiguration {
             } else {
                 DecimalFormat fmt = (DecimalFormat) NumberFormat.getNumberInstance();
                 char sep = fmt.getDecimalFormatSymbols().getDecimalSeparator();
-                if (sep == ',')
+                if (sep == ',') {
                     return ';';
-                else
+                } else {
                     return ',';
+                }
             }
         }
     }
@@ -60,6 +68,40 @@ public class BasicConfiguration {
         synchronized (ndec) {
             csvSeparator = c;
         }
+    }
+
+    public static final List<String> allSeries(boolean compact, List<? extends IProcessingFactory> facs) {
+        LinkedHashSet<String> dic = new LinkedHashSet<>();
+        for (IProcessingFactory fac : facs) {
+            Map<String, Class> odic = fac.getOutputDictionary(compact);
+            odic.forEach((s, c) -> {
+                if (c == TsData.class && !dic.contains(s)) {
+                    dic.add(s);
+                }
+            });
+        }
+        return dic.stream().collect(Collectors.toList());
+    }
+
+    public static final List<String> allSaSeries(boolean compact) {
+        return allSeries(compact, SaManager.instance.getProcessors());
+    }
+
+    public static final List<String> allDetails(boolean compact, List<? extends IProcessingFactory> facs) {
+        LinkedHashSet<String> dic = new LinkedHashSet<>();
+        for (IProcessingFactory fac : facs) {
+            Map<String, Class> odic = fac.getOutputDictionary(compact);
+            odic.forEach((s, c) -> {
+                if (c != TsData.class && !dic.contains(s)) {
+                    dic.add(s);
+                }
+            });
+        }
+        return dic.stream().collect(Collectors.toList());
+    }
+
+    public static final List<String> allSaDetails(boolean compact) {
+        return allDetails(compact, SaManager.instance.getProcessors());
     }
 
     public static final String DEMETRA = "Demetra+", DEF_FILE = "demetra";

@@ -291,9 +291,9 @@ public class HodrickPrescottProcessingFactory implements IProcessingFactory<Hodr
     }
 
     @Override
-    public Map<String, Class> getOutputDictionary() {
+    public Map<String, Class> getOutputDictionary(boolean compact) {
         LinkedHashMap<String, Class> dic = new LinkedHashMap<>();
-        BusinessCycleDecomposition.fillDictionary(BC, dic);
+        BusinessCycleDecomposition.fillDictionary(BC, dic, compact);
         return dic;
     }
 }

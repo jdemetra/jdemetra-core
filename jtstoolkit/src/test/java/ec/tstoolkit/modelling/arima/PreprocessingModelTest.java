@@ -37,6 +37,7 @@ import ec.tstoolkit.timeseries.regression.ITsVariable;
 import ec.tstoolkit.timeseries.regression.SeasonalDummies;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -48,9 +49,16 @@ public class PreprocessingModelTest {
     public PreprocessingModelTest() {
     }
 
-    //@Test
+    @Test
+    @Ignore
     public void demoDictionary() {
-        Map<String, Class> dic = PreprocessingModel.dictionary();
+        Map<String, Class> dic = PreprocessingModel.dictionary(false);
+        for (Entry<String, Class> o : dic.entrySet()) {
+            System.out.print(o.getKey());
+            System.out.print('\t');
+            System.out.println(o.getValue().getSimpleName());
+        }
+        dic = PreprocessingModel.dictionary(true);
         for (Entry<String, Class> o : dic.entrySet()) {
             System.out.print(o.getKey());
             System.out.print('\t');

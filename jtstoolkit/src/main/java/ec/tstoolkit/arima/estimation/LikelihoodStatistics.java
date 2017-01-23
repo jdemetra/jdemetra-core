@@ -87,31 +87,31 @@ public class LikelihoodStatistics {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Number of observations :").append(observationsCount).append("\r\n");
+        builder.append("Number of observations :").append(observationsCount).append(System.lineSeparator());
         builder.append("Effective number of observations :").append(
-                effectiveObservationsCount).append("\r\n");
+                effectiveObservationsCount).append(System.lineSeparator());
         builder.append("Number of parameters estimated :").append(
-                estimatedParametersCount).append("\r\n");
+                estimatedParametersCount).append(System.lineSeparator());
         Formatter fmt = new Formatter();
         builder.append("log likelihood :").append(
-                fmt.format("%.4f", logLikelihood)).append("\r\n");
+                fmt.format("%.4f", logLikelihood)).append(System.lineSeparator());
         if (!Double.isNaN(transformationAdjustment)) {
             fmt = new Formatter();
             builder.append("Transformation Adjustment :").append(
-                    fmt.format("%.4f", transformationAdjustment)).append("\r\n");
+                    fmt.format("%.4f", transformationAdjustment)).append(System.lineSeparator());
             fmt = new Formatter();
             builder.append("Adjusted log likelihood :").append(
-                    fmt.format("%.4f", adjustedLogLikelihood)).append("\r\n");
+                    fmt.format("%.4f", adjustedLogLikelihood)).append(System.lineSeparator());
         }
         fmt = new Formatter();
-        builder.append("AIC :").append(fmt.format("%.4f", AIC)).append("\r\n");
+        builder.append("AIC :").append(fmt.format("%.4f", AIC)).append(System.lineSeparator());
         fmt = new Formatter();
 //        builder.append("AICC (F-corrected-AIC) :").append(
-//                fmt.format("%.4f", AICC)).append("\r\n");
+//                fmt.format("%.4f", AICC)).append(System.lineSeparator());
 //        fmt = new Formatter();
-//        builder.append("Hannan Quinn :").append(fmt.format("%.4f", HannanQuinn)).append("\r\n");
+//        builder.append("Hannan Quinn :").append(fmt.format("%.4f", HannanQuinn)).append(System.lineSeparator());
 //        fmt = new Formatter();
-//        builder.append("BIC :").append(fmt.format("%.4f", BIC)).append("\r\n");
+//        builder.append("BIC :").append(fmt.format("%.4f", BIC)).append(System.lineSeparator());
 //        fmt = new Formatter();
         builder.append("BIC corrected for length :").append(fmt.format("%.4f", BICC));
         return builder.toString();

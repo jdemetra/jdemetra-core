@@ -314,7 +314,7 @@ public class TsDataTable {
         }
         // write each rows
         for (int j = 0; j < dom.getLength(); ++j) {
-            builder.append("\r\n").append(dom.get(j));
+            builder.append(System.lineSeparator()).append(dom.get(j));
             for (int i = 0; i < m_data.size(); ++i) {
                 TsDataTableInfo dataInfo = getDataInfo(j, i);
                 if (dataInfo == TsDataTableInfo.Valid) {

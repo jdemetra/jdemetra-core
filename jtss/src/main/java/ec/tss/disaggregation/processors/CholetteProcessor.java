@@ -24,10 +24,10 @@ import ec.tstoolkit.algorithm.IProcSpecification;
 import ec.tstoolkit.algorithm.IProcessing;
 import ec.tstoolkit.algorithm.IProcessingFactory;
 import ec.tstoolkit.algorithm.ProcessingContext;
-import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -75,9 +75,9 @@ public class CholetteProcessor implements IProcessingFactory<UniCholetteSpecific
     }
 
     @Override
-    public Map<String, Class> getOutputDictionary() {
-        Map<String, Class> dic = new HashMap<>();
-        BenchmarkingResults.fillDictionary(null, dic);
+    public Map<String, Class> getOutputDictionary(boolean compact) {
+        Map<String, Class> dic = new LinkedHashMap<>();
+        BenchmarkingResults.fillDictionary(null, dic, compact);
         return dic;
     }
 

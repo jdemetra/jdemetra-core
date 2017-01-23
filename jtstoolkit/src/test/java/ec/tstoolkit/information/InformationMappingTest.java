@@ -38,10 +38,10 @@ public class InformationMappingTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void testDictionary() {
         LinkedHashMap<String, Class> dic = new LinkedHashMap();
-        mapping.fillDictionary(null, dic);
+        mapping.fillDictionary(null, dic, true);
         dic.entrySet().stream().forEach(x -> {
             System.out.print(x.getKey());
             System.out.print('\t');

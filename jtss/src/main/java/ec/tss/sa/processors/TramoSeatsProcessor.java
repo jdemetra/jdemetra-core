@@ -330,7 +330,7 @@ public class TramoSeatsProcessor implements ISaProcessingFactory<TramoSeatsSpeci
     }
 
     @Override
-    public Map<String, Class> getOutputDictionary() {
-        return TramoSeatsProcessingFactory.instance.getOutputDictionary();
+    public Map<String, Class> getOutputDictionary(boolean compact) {
+        return TramoSeatsProcessingFactory.instance.getOutputDictionary(compact);
     }
 }
