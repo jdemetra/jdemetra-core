@@ -30,6 +30,7 @@ import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.modelling.arima.tramo.TransformSpec;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -97,7 +98,7 @@ public class TramoSeatsProcessingFactory extends GenericSaProcessingFactory impl
 
     @Override
     public Map<String, Class> getOutputDictionary(boolean compact) {
-        HashMap<String, Class> dic = new HashMap<>();
+        LinkedHashMap<String, Class> dic = new LinkedHashMap<>();
         PreprocessingModel.fillDictionary(null, dic, compact);
         SeatsResults.fillDictionary(DECOMPOSITION, dic, compact);
         DefaultSeriesDecomposition.fillDictionary(null, dic, compact);

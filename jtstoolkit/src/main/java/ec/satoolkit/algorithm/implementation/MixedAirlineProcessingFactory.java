@@ -31,6 +31,7 @@ import ec.tstoolkit.modelling.arima.Method;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -100,7 +101,7 @@ public class MixedAirlineProcessingFactory extends GenericSaProcessingFactory im
     
     @Override
     public Map<String, Class> getOutputDictionary(boolean compact) {
-        HashMap<String, Class> dic = new HashMap<>();
+        HashMap<String, Class> dic = new LinkedHashMap<>();
         PreprocessingModel.fillDictionary(null, dic, compact);
         DefaultSeriesDecomposition.fillDictionary(null, dic, compact);
         SaBenchmarkingResults.fillDictionary(BENCHMARKING, dic, compact);

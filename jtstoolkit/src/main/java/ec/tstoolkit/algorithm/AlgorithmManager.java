@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.algorithm;
 
 import ec.tstoolkit.design.Development;
@@ -34,24 +33,30 @@ import java.util.List;
  *
  *
  * @author Jean Palate
+ * @param <S>
+ * @param <I>
+ * @param <O>
+ * @param <D>
  */
 @Development(status = Development.Status.Alpha)
-public abstract class AlgorithmManager<S extends IProcSpecification, I, R extends IProcResults, D extends IProcDocument<? extends S, ?, ? extends R>, P extends IProcessingFactory<? extends S, I, R>, O extends IOutputFactory<? extends D>, T extends IDiagnosticsFactory<R>> 
-implements IAlgorithmManager <S, I, R, P>{
+public abstract class AlgorithmManager<S extends IProcSpecification, I, R extends IProcResults, D extends IProcDocument<? extends S, ?, ? extends R>, P extends IProcessingFactory<? extends S, I, R>, O extends IOutputFactory<? extends D>, T extends IDiagnosticsFactory<R>>
+        implements IAlgorithmManager<S, I, R, P> {
 
-    private ArrayList<P> processors_ = new ArrayList<>();
-    private ArrayList<O> output_ = new ArrayList<>();
-    private ArrayList<T> tests_ = new ArrayList<>();
+    private final ArrayList<P> processors_ = new ArrayList<>();
+    private final ArrayList<O> output_ = new ArrayList<>();
+    private final ArrayList<T> tests_ = new ArrayList<>();
 
-    public static InformationSet getActiveContext(){
+    public static InformationSet getActiveContext() {
         return null;
     }
-       
+
     public InformationSet diagnostic(R sa) {
         InformationSet summary = new InformationSet();
-        for (IDiagnosticsFactory<R> diag : tests_) {
-            if (diag.isEnabled()) {
-                summary.add(create(diag, sa));
+        synchronized (tests_) {
+            for (IDiagnosticsFactory<R> diag : tests_) {
+                if (diag.isEnabled()) {
+                    summary.add(create(diag, sa));
+                }
             }
         }
         return summary;
@@ -81,67 +86,89 @@ implements IAlgorithmManager <S, I, R, P>{
     }
 
     public void sortProcessors(Comparator<P> cmp) {
-        Collections.sort(processors_, cmp);
+        synchronized (processors_) {
+            Collections.sort(processors_, cmp);
+        }
     }
 
     public void sortOutput(Comparator<O> cmp) {
-        Collections.sort(output_, cmp);
+        synchronized (output_) {
+            Collections.sort(output_, cmp);
+        }
     }
 
     public void sortDiagnostics(Comparator<T> cmp) {
-        Collections.sort(tests_, cmp);
+        synchronized (tests_) {
+            Collections.sort(tests_, cmp);
+        }
     }
+
     public <T extends S> R process(T spec, I input) {
         return process(spec, input, null);
     }
-    
+
     public <T extends S> R process(T spec, I input, ProcessingContext context) {
-        for (IProcessingFactory processor : processors_) {
-            if (processor.canHandle(spec)) {
-                IProcessing<I, R> processing = processor.generateProcessing(spec, context);
-                return processing.process(input);
+        synchronized (processors_) {
+            for (IProcessingFactory processor : processors_) {
+                if (processor.canHandle(spec)) {
+                    IProcessing<I, R> processing = processor.generateProcessing(spec, context);
+                    return processing.process(input);
+                }
             }
         }
         return null;
     }
-    
-    public <T extends S> IProcessingFactory find(T spec){
-        for (IProcessingFactory processor : processors_) {
-            if (processor.canHandle(spec)) {
-                return processor;
+
+    public <T extends S> IProcessingFactory find(T spec) {
+        synchronized (processors_) {
+            for (IProcessingFactory processor : processors_) {
+                if (processor.canHandle(spec)) {
+                    return processor;
+                }
             }
+            return null;
         }
-        return null;
     }
 
     @Override
     public List<P> getProcessors() {
-        return Collections.unmodifiableList(processors_);
+        synchronized (processors_) {
+            return Collections.unmodifiableList(processors_);
+        }
     }
 
     public List<O> getOutput() {
-        return Collections.unmodifiableList(output_);
+        synchronized (output_) {
+            return Collections.unmodifiableList(output_);
+        }
     }
 
     public List<T> getDiagnostics() {
-        return Collections.unmodifiableList(tests_);
+        synchronized (tests_) {
+            return Collections.unmodifiableList(tests_);
+        }
     }
 
     public P getProcessor(AlgorithmDescriptor desc) {
-        if (desc == null)
+        if (desc == null) {
             return null;
-        for (P processor : processors_) {
-            if (desc.isCompatible(processor.getInformation())) {
-                return processor;
-            }
         }
-        return null;
+        synchronized (processors_) {
+            for (P processor : processors_) {
+                if (desc.isCompatible(processor.getInformation())) {
+                    return processor;
+                }
+            }
+            return null;
+        }
     }
 
     protected T addDiagnostics(String module, String impl) {
         T diag = (T) ec.tstoolkit.design.InterfaceLoader.create(module, IDiagnosticsFactory.class, impl);
         if (diag != null) {
-            tests_.add(diag);
+            synchronized (tests_) {
+                tests_.add(diag);
+            }
         }
         return diag;
     }
@@ -149,7 +176,9 @@ implements IAlgorithmManager <S, I, R, P>{
     protected O addOutput(String module, String impl) {
         O o = (O) ec.tstoolkit.design.InterfaceLoader.create(module, IOutputFactory.class, impl);
         if (o != null) {
-            output_.add(o);
+            synchronized (output_) {
+                output_.add(o);
+            }
         }
         return o;
     }
@@ -160,7 +189,9 @@ implements IAlgorithmManager <S, I, R, P>{
                 return;
             }
         }
-        tests_.add(diag);
+        synchronized (tests_) {
+            tests_.add(diag);
+        }
     }
 
     protected void addOutput(O diag) {
@@ -169,11 +200,15 @@ implements IAlgorithmManager <S, I, R, P>{
                 return;
             }
         }
-        output_.add(diag);
+        synchronized (output_) {
+            output_.add(diag);
+        }
     }
 
     protected void addProcessor(P proc) {
-        processors_.add(proc);
+        synchronized (processors_) {
+            processors_.add(proc);
+        }
     }
 
     public AlgorithmManager() {
@@ -181,14 +216,20 @@ implements IAlgorithmManager <S, I, R, P>{
 
     @Override
     public void dispose() {
-        for (O output : output_) {
-            output.dispose();
+        synchronized (output_) {
+            for (O output : output_) {
+                output.dispose();
+            }
         }
-        for (T diag : tests_) {
-            diag.dispose();
+        for (T t : tests_) {
+            for (T diag : tests_) {
+                diag.dispose();
+            }
         }
-        for (P processor : processors_) {
-            processor.dispose();
+        synchronized (processors_) {
+            for (P processor : processors_) {
+                processor.dispose();
+            }
         }
     }
 }

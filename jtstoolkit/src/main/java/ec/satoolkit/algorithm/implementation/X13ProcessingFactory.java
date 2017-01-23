@@ -32,6 +32,7 @@ import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.modelling.arima.x13.BasicSpec;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -131,7 +132,7 @@ public class X13ProcessingFactory extends GenericSaProcessingFactory implements 
 
     @Override
     public Map<String, Class> getOutputDictionary(boolean compact) {
-        HashMap<String, Class> dic = new HashMap<>();
+        HashMap<String, Class> dic = new LinkedHashMap<>();
         PreprocessingModel.fillDictionary(null, dic, compact);
         X11Results.fillDictionary(DECOMPOSITION, dic, compact);
         Mstatistics.fillDictionary(MSTATISTICS, dic, compact);

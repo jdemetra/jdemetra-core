@@ -34,6 +34,7 @@ import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.information.ProxyResults;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -174,7 +175,7 @@ public class RevisionAnalysisProcessor implements IProcessingFactory<RevisionAna
 
     @Override
     public Map<String, Class> getOutputDictionary(boolean compact) {
-        Map<String, Class> dic = new HashMap<>();
+        Map<String, Class> dic = new LinkedHashMap<>();
         return dic;
     }
 

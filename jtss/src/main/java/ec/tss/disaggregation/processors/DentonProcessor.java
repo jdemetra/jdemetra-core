@@ -28,6 +28,7 @@ import ec.tstoolkit.timeseries.TsPeriodSelector;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -69,7 +70,7 @@ public class DentonProcessor implements IProcessingFactory<DentonSpecification, 
 
     @Override
     public Map<String, Class> getOutputDictionary(boolean compact) {
-        Map<String, Class> dic = new HashMap<>();
+        Map<String, Class> dic = new LinkedHashMap<>();
         BenchmarkingResults.fillDictionary(null, dic, compact);
         return dic;
     }

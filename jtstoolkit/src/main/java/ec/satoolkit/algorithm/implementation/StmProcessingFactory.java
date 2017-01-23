@@ -45,6 +45,7 @@ import ec.tstoolkit.timeseries.regression.TsVariableSelection;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -120,7 +121,7 @@ public class StmProcessingFactory extends GenericSaProcessingFactory implements 
 
     @Override
     public Map<String, Class> getOutputDictionary(boolean compact) {
-        HashMap<String, Class> dic = new HashMap<>();
+        HashMap<String, Class> dic = new LinkedHashMap<>();
         PreprocessingModel.fillDictionary(null, dic, compact);
         DefaultSeriesDecomposition.fillDictionary(null, dic, compact);
         SaBenchmarkingResults.fillDictionary(BENCHMARKING, dic, compact);
