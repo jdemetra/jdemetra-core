@@ -69,6 +69,10 @@ public final class InformationSet implements Cloneable {
         return true;
     }
 
+    public static boolean hasWildCards(String str) {
+        return str.indexOf('*')>=0 || str.indexOf('?')>=0;
+    }
+
     public static String removePrefix(String name) {
         int pos = 0;
         int len = name.length();

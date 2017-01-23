@@ -22,6 +22,7 @@ import ec.tss.tsproviders.utils.MultiLineNameUtil;
 import ec.tstoolkit.Parameter;
 import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.ProcDiagnostic;
+import ec.tstoolkit.information.Information;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.information.RegressionItem;
 import ec.tstoolkit.information.StatisticalTest;
@@ -42,7 +43,7 @@ import java.util.List;
  */
 public class CsvInformationFormatter {
 
-    private static HashMap<Type, IStringFormatter> dictionary = new HashMap<>();
+    private static final HashMap<Type, IStringFormatter> dictionary = new HashMap<>();
     private final char comma;
     private static final String newLine = System.lineSeparator();
     private boolean fullName;
@@ -74,6 +75,48 @@ public class CsvInformationFormatter {
         dictionary.put(RegressionItem.class, new RegressionItemFormatter(true));
         dictionary.put(StatisticalTest.class, new StatisticalTestFormatter());
         dictionary.put(ProcDiagnostic.class, new DiagnosticFormatter());
+    }
+    
+    // preparing the matrix:
+    // for each record, for each name, we search for the length of an item, the actual items (in case of
+    // wildcards) and the corresponding result
+    private static class MatrixItem
+    {
+        private static final Object[] EMPTY=new Object[0], SEMPTY=new String[0];
+        
+        int length;
+        String name;
+        String[] items;
+        Object[] results=EMPTY;
+        
+        boolean isHomogeneous(){
+            if ( results.length <= 1)
+                return true;
+            Class c=results[0].getClass();
+            for (int i=1; i<results.length; ++i)
+                if (!results[i].getClass().equals(c))
+                    return false;
+            return true;
+        }
+        
+        void fill(final String id, InformationSet record, boolean shortname){
+            int l = id.indexOf(':');
+            length=1;
+            String sid=id;
+            if (l >= 0) {
+                sid = id.substring(0, l);
+                String s1 = id.substring(l + 1);
+                int w = 0;
+                try {
+                    length = Integer.parseInt(s1);
+                } catch (Exception ex) {
+                }
+            }
+            List<Information<Object>> sel = record.select(sid);
+            if (sel.isEmpty()){
+                
+            }
+        }
     }
 
     public void format(Writer writer, List<InformationSet> records, List<String> names, boolean shortname) {
@@ -174,7 +217,6 @@ public class CsvInformationFormatter {
 
             String slast = sname[sname.length - 1];
             int l = slast.indexOf(':');
-            witems[icur] = 1;
             if (l >= 0) {
 
                 String s0 = slast.substring(0, l);
@@ -186,6 +228,8 @@ public class CsvInformationFormatter {
                     witems[icur] = w;
                 } catch (Exception ex) {
                 }
+            } else {
+                witems[icur] = 1;
             }
             icur++;
         }
@@ -253,17 +297,17 @@ public class CsvInformationFormatter {
 
     private String format(Object obj, int item) {
 
-        IStringFormatter fmt;
         try {
-            fmt = dictionary.get(obj.getClass());
-            return fmt.format(obj, item);
+            IStringFormatter fmt = dictionary.get(obj.getClass());
+            if (fmt != null) {
+                return fmt.format(obj, item);
+            } else if (item == 0) {
+                return obj.toString();
+            } else {
+                return "";
+            }
         } catch (Exception ex) {
             String msg = ex.getMessage();
-        }
-
-        if (item == 0) {
-            return obj.toString();
-        } else {
             return "";
         }
     }
@@ -289,14 +333,12 @@ public class CsvInformationFormatter {
                 writer.write(txt);
                 writer.write('\"');
             }
+        } else if (txt.indexOf('\"') >= 0) {
+            writer.write("\"\"");
+            writer.write(txt);
+            writer.write("\"\"");
         } else {
-            if (txt.indexOf('\"') >= 0) {
-                writer.write("\"\"");
-                writer.write(txt);
-                writer.write("\"\"");
-            } else {
-                writer.write(txt);
-            }
+            writer.write(txt);
         }
     }
 }
