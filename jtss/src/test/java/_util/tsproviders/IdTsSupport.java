@@ -14,12 +14,14 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.tss.tsproviders.cursor;
+package _util.tsproviders;
 
 import ec.tss.TsInformationType;
 import ec.tss.tsproviders.DataSet;
 import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.HasDataDisplayName;
+import ec.tss.tsproviders.cursor.HasTsCursor;
+import ec.tss.tsproviders.cursor.TsCursor;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tstoolkit.MetaData;
 import ec.tstoolkit.timeseries.simplets.TsData;
@@ -43,14 +45,14 @@ import java.util.stream.Stream;
  *
  * @author Philippe Charles
  */
-final class IdTsSupport implements HasTsCursor, HasDataDisplayName {
+public final class IdTsSupport implements HasTsCursor, HasDataDisplayName {
 
     private final TreeOfIds tree;
     private final Function<Id, OptionalTsData> toData;
     private final Function<Id, Map<String, String>> toMeta;
     private final Function<Id, Map<String, String>> nodeToMeta;
 
-    private IdTsSupport(TreeOfIds tree, Function<Id, OptionalTsData> toData, Function<Id, Map<String, String>> toMeta, Function<Id, Map<String, String>> nodeToMeta) {
+    public IdTsSupport(TreeOfIds tree, Function<Id, OptionalTsData> toData, Function<Id, Map<String, String>> toMeta, Function<Id, Map<String, String>> nodeToMeta) {
         this.tree = tree;
         this.toData = toData;
         this.toMeta = toMeta;

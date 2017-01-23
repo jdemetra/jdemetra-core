@@ -16,6 +16,12 @@
  */
 package ec.tss.tsproviders.cursor;
 
+import _util.IOExceptionUtil.FirstIO;
+import _util.IOExceptionUtil.SecondIO;
+import static _util.IOExceptionUtil.asCloseable;
+import _util.tsproviders.ResourceWatcher;
+import static _util.tsproviders.TsCursorUtil.forEachId;
+import static _util.tsproviders.TsCursorUtil.readAllAndClose;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import static com.google.common.collect.Iterators.forArray;
 import static com.google.common.collect.Iterators.singletonIterator;
@@ -34,7 +40,6 @@ import ec.tss.tsproviders.cursor.TsCursors.WithMetaDataCursor;
 import ec.tstoolkit.MetaData;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,8 +47,6 @@ import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import static java.util.function.Function.identity;
 import java.util.function.Supplier;
@@ -196,13 +199,13 @@ public class TsCursorTest {
             assertThat(cursor.nextSeries()).isFalse();
         }
 
-        assertThatThrownBy(() -> consume(new IteratingCursor<>(singletonIterator(someKey), badIdFunc, goodDataFunc, goodMetaFunc)))
+        assertThatThrownBy(() -> readAllAndClose(new IteratingCursor<>(singletonIterator(someKey), badIdFunc, goodDataFunc, goodMetaFunc)))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("id");
-        assertThatThrownBy(() -> consume(new IteratingCursor<>(singletonIterator(someKey), goodIdFunc, badDataFunc, goodMetaFunc)))
+        assertThatThrownBy(() -> readAllAndClose(new IteratingCursor<>(singletonIterator(someKey), goodIdFunc, badDataFunc, goodMetaFunc)))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("data");
-        assertThatThrownBy(() -> consume(new IteratingCursor<>(singletonIterator(someKey), goodIdFunc, goodDataFunc, badMetaFunc)))
+        assertThatThrownBy(() -> readAllAndClose(new IteratingCursor<>(singletonIterator(someKey), goodIdFunc, goodDataFunc, badMetaFunc)))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("meta");
     }
@@ -216,11 +219,11 @@ public class TsCursorTest {
 
         try (TransformingCursor<String, String> cursor = new TransformingCursor<>(delegateFactory.get(), goodIdFunc)) {
             List<String> ids = new ArrayList<>();
-            forEach(cursor, ids::add);
+            forEachId(cursor, ids::add);
             assertThat(ids).containsExactly("HELLO", "WORLD");
         }
 
-        assertThatThrownBy(() -> consume(new TransformingCursor<>(delegateFactory.get(), badIdFunc)))
+        assertThatThrownBy(() -> readAllAndClose(new TransformingCursor<>(delegateFactory.get(), badIdFunc)))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("id");
     }
@@ -234,7 +237,7 @@ public class TsCursorTest {
 
         try (FilteringCursor<String> cursor = new FilteringCursor<>(delegateFactory.get(), o -> o.startsWith("w"))) {
             List<String> ids = new ArrayList<>();
-            forEach(cursor, ids::add);
+            forEachId(cursor, ids::add);
             assertThat(ids).containsExactly("world");
         }
     }
@@ -258,48 +261,19 @@ public class TsCursorTest {
 
         assertThatThrownBy(() -> delegateFactory.get().onClose(null)).isInstanceOf(NullPointerException.class);
 
-        AtomicBoolean closed = new AtomicBoolean(false);
-        try (OnCloseCursor<?> cursor = new OnCloseCursor<>(delegateFactory.get(), () -> closed.set(true))) {
-            assertThat(closed.get()).isFalse();
+        ResourceWatcher<?> watcher = ResourceWatcher.usingId();
+        try (OnCloseCursor<?> cursor = new OnCloseCursor<>(delegateFactory.get(), watcher.watchAsCloseable("test"))) {
+            assertThat(watcher.isLeakingResources()).isTrue();
         }
-        assertThat(closed.get()).isTrue();
+        assertThat(watcher.isLeakingResources()).isFalse();
 
-        assertThatThrownBy(() -> TsCursor.empty().onClose(closeable(FirstIO::new)).onClose(closeable(SecondIO::new)).close())
+        assertThatThrownBy(() -> TsCursor.empty().onClose(asCloseable(FirstIO::new)).onClose(asCloseable(SecondIO::new)).close())
                 .isInstanceOf(FirstIO.class)
                 .satisfies(o -> {
                     assertThat(o.getSuppressed())
                             .hasSize(1)
                             .hasAtLeastOneElementOfType(SecondIO.class);
                 });
-    }
-
-    private static final class FirstIO extends IOException {
-    }
-
-    private static final class SecondIO extends IOException {
-    }
-
-    private static Closeable closeable(Supplier<IOException> factory) {
-        return () -> {
-            IOException result = factory.get();
-            System.out.println(result);
-            throw result;
-        };
-    }
-
-    private static void consume(TsCursor<?> cursor) throws IOException {
-        cursor.getMetaData();
-        while (cursor.nextSeries()) {
-            cursor.getSeriesId();
-            cursor.getSeriesData();
-            cursor.getSeriesMetaData();
-        }
-    }
-
-    private static <ID> void forEach(TsCursor<ID> cursor, Consumer<? super ID> consumer) throws IOException {
-        while (cursor.nextSeries()) {
-            consumer.accept(cursor.getSeriesId());
-        }
     }
 
     private static <ID> void assertNextSeries(InMemoryCursor<ID> cursor, ID id, OptionalTsData data, Map<String, String> meta) {

@@ -16,6 +16,9 @@
  */
 package ec.tss.tsproviders.cursor;
 
+import _util.tsproviders.NoOpTsCursorSupport;
+import _util.tsproviders.FailingTsCursorSupport;
+import _util.tsproviders.IdTsSupport;
 import data.Data;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
@@ -29,7 +32,7 @@ import static ec.tss.tsproviders.DataSet.Kind.SERIES;
 import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.HasDataDisplayName;
 import ec.tss.tsproviders.HasDataMoniker;
-import static ec.tss.tsproviders.cursor.IdTsSupport.metaOf;
+import static _util.tsproviders.IdTsSupport.metaOf;
 import ec.tss.tsproviders.utils.TsFiller;
 import ec.tstoolkit.MetaData;
 import ec.tstoolkit.timeseries.simplets.TsData;

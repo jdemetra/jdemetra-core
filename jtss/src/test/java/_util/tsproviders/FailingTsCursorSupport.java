@@ -14,11 +14,13 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.tss.tsproviders.cursor;
+package _util.tsproviders;
 
 import ec.tss.TsInformationType;
 import ec.tss.tsproviders.DataSet;
 import ec.tss.tsproviders.DataSource;
+import ec.tss.tsproviders.cursor.HasTsCursor;
+import ec.tss.tsproviders.cursor.TsCursor;
 import ec.tss.tsproviders.utils.DataSourcePreconditions;
 import java.io.IOException;
 
@@ -26,12 +28,12 @@ import java.io.IOException;
  *
  * @author Philippe Charles
  */
-final class FailingTsCursorSupport implements HasTsCursor {
+public final class FailingTsCursorSupport implements HasTsCursor {
 
     private final String providerName;
     private final String message;
 
-    FailingTsCursorSupport(String providerName, String message) {
+    public FailingTsCursorSupport(String providerName, String message) {
         this.providerName = providerName;
         this.message = message;
     }
