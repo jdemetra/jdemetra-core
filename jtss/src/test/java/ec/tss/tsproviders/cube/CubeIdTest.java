@@ -107,10 +107,21 @@ public class CubeIdTest {
     }
 
     @Test
-    public void testParent() {
-        assertThat(EMPTY.parent()).isEmpty();
-        assertThat(SECTOR_REGION.parent()).isEmpty();
-        assertThat(INDUSTRY.parent()).contains(SECTOR_REGION);
+    public void testGetParent() {
+        assertThat(EMPTY.getParent()).isNull();
+        assertThat(SECTOR_REGION.getParent()).isNull();
+        assertThat(INDUSTRY.getParent()).isEqualTo(SECTOR_REGION);
+    }
+
+    @Test
+    public void testGetAncestor() {
+        assertThat(EMPTY.getAncestor(0)).isNull();
+        assertThat(SECTOR_REGION.getAncestor(0)).isNull();
+        assertThat(INDUSTRY.getAncestor(0)).isEqualTo(SECTOR_REGION);
+        assertThat(INDUSTRY.getAncestor(1)).isNull();
+        assertThat(INDUSTRY_BE.getAncestor(0)).isEqualTo(SECTOR_REGION);
+        assertThat(INDUSTRY_BE.getAncestor(1)).isEqualTo(INDUSTRY);
+        assertThat(INDUSTRY_BE.getAncestor(2)).isNull();
     }
 
     @Test

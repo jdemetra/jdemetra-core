@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -100,41 +99,22 @@ final class CubeAccessors {
 
         private final ConcurrentMap<CubeId, Object> cache;
         private final int cacheLevel;
-        private final int depth;
+        private final boolean cacheEnabled;
 
         BulkCubeAccessor(@Nonnull CubeAccessor delegate, @Nonnegative int depth, @Nonnull ConcurrentMap<CubeId, Object> cache) {
             super(delegate);
             this.cacheLevel = Math.max(0, delegate.getRoot().getMaxLevel() - depth);
             this.cache = cache;
-            this.depth = depth;
-        }
-
-        private boolean isCacheEnabled() {
-            return depth > 0;
-        }
-
-        @Nullable
-        private CubeId getAncestorForCache(@Nonnull CubeId ref) {
-            if (cacheLevel < ref.getLevel()) {
-                String[] tmp = new String[cacheLevel];
-                for (int i = 0; i < tmp.length; i++) {
-                    tmp[i] = ref.getDimensionValue(i);
-                }
-                return getRoot().child(tmp);
-            }
-            return null;
+            this.cacheEnabled = depth > 0;
         }
 
         @Override
         public TsCursor<CubeId> getAllSeriesWithData(CubeId ref) throws IOException {
-            if (isCacheEnabled() && !ref.isSeries()) {
+            if (cacheEnabled && !ref.isSeries()) {
                 if (ref.getLevel() == cacheLevel) {
-                    List<TsItem> value = (List<TsItem>) cache.get(ref);
-                    return value != null
-                            ? TsCursor.from(value.iterator(), TsItem::getData, TsItem::getMetadata).transform(TsItem::getId)
-                            : new CacheLoadingCursor(super.getAllSeriesWithData(ref), ref, cache);
+                    return getCursorFromCache(cache, ref, super::getAllSeriesWithData);
                 } else {
-                    CubeId ancestor = getAncestorForCache(ref);
+                    CubeId ancestor = ref.getAncestor(cacheLevel);
                     if (ancestor != null) {
                         return getAllSeriesWithData(ancestor).filter(ref::isAncestorOf);
                     }
@@ -145,8 +125,8 @@ final class CubeAccessors {
 
         @Override
         public TsCursor<CubeId> getSeriesWithData(CubeId ref) throws IOException {
-            if (isCacheEnabled() && ref.isSeries()) {
-                CubeId ancestor = getAncestorForCache(ref);
+            if (cacheEnabled && ref.isSeries()) {
+                CubeId ancestor = ref.getAncestor(cacheLevel);
                 if (ancestor != null) {
                     return getAllSeriesWithData(ancestor).filter(ref::equals);
                 }
@@ -155,20 +135,39 @@ final class CubeAccessors {
         }
 
         //<editor-fold defaultstate="collapsed" desc="Implementation details">
+        private static TsCursor<CubeId> getCursorFromCache(ConcurrentMap<CubeId, Object> cache, CubeId key, CacheLoader loader) throws IOException {
+            List<TsItem> value = (List<TsItem>) cache.get(key);
+            return value != null
+                    ? TsCursor.from(value.iterator(), TsItem::getData, TsItem::getMetadata).transform(TsItem::getId)
+                    : new CacheLoadingCursor(loader.load(key), key, cache);
+        }
+
+        private interface CacheLoader {
+
+            TsCursor<CubeId> load(CubeId key) throws IOException;
+        }
+
         private static final class CacheLoadingCursor implements TsCursor<CubeId> {
 
             private final TsCursor<CubeId> delegate;
-            private final CubeId ref;
+            private final CubeId key;
             private final ConcurrentMap<CubeId, Object> cache;
             private final List<TsItem> items;
+            private boolean closed = false;
             private TsItem currentItem;
 
-            private CacheLoadingCursor(TsCursor<CubeId> delegate, CubeId ref, ConcurrentMap<CubeId, Object> cache) {
+            private CacheLoadingCursor(TsCursor<CubeId> delegate, CubeId key, ConcurrentMap<CubeId, Object> cache) {
                 this.delegate = delegate;
-                this.ref = ref;
+                this.key = key;
                 this.cache = cache;
                 this.items = new ArrayList<>();
+                this.closed = false;
                 this.currentItem = null;
+            }
+
+            @Override
+            public boolean isClosed() throws IOException {
+                return closed;
             }
 
             @Override
@@ -204,10 +203,12 @@ final class CubeAccessors {
 
             @Override
             public void close() throws IOException {
+                closed = true;
                 while (delegate.nextSeries()) {
                     fetchCurrentSeries();
                 }
-                cache.put(ref, items);
+                cache.put(key, items);
+                delegate.close();
             }
 
             private TsItem fetchCurrentSeries() throws IOException {

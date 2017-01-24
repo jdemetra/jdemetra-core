@@ -21,8 +21,9 @@ import _util.IOExceptionUtil.SecondIO;
 import static _util.IOExceptionUtil.asCloseable;
 import _util.tsproviders.ResourceWatcher;
 import static _util.tsproviders.TsCursorUtil.forEachId;
+import static _util.tsproviders.TsCursorUtil.readAll;
 import static _util.tsproviders.TsCursorUtil.readAllAndClose;
-import static com.google.common.collect.Iterators.forArray;
+import com.google.common.collect.ImmutableMap;
 import static com.google.common.collect.Iterators.singletonIterator;
 import com.google.common.collect.Maps;
 import ec.tss.tsproviders.cursor.TsCursors.EmptyCursor;
@@ -34,7 +35,6 @@ import ec.tss.tsproviders.cursor.TsCursors.SingletonCursor;
 import ec.tss.tsproviders.cursor.TsCursors.TransformingCursor;
 import ec.tss.tsproviders.cursor.TsCursors.WithMetaDataCursor;
 import ec.tss.tsproviders.utils.OptionalTsData;
-import ec.tstoolkit.MetaData;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.IOException;
@@ -48,6 +48,7 @@ import java.util.function.Supplier;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
+import static com.google.common.collect.Iterators.forArray;
 
 /**
  *
@@ -57,7 +58,7 @@ public class TsCursorsTest {
 
     private final String someKey = "hello";
     private final OptionalTsData someData = OptionalTsData.present(TsData.random(TsFrequency.Monthly, 1));
-    private final MetaData someMeta = new MetaData();
+    private final Map<String, String> someMeta = ImmutableMap.of("key", "value");
 
     private final Function<String, String> goodIdFunc = String::toUpperCase;
     private final Function<String, OptionalTsData> goodDataFunc = o -> someData;
@@ -67,42 +68,46 @@ public class TsCursorsTest {
     private final Function<String, Map<String, String>> badMetaFunc = o -> null;
 
     @Test
-    public void testEmptyCursor() {
-        try (EmptyCursor cursor = EmptyCursor.INSTANCE) {
+    public void testEmptyCursor() throws IOException {
+        try (EmptyCursor cursor = new EmptyCursor()) {
             assertThat(cursor.getMetaData()).isEmpty();
             assertThat(cursor.nextSeries()).isFalse();
             assertThatThrownBy(() -> cursor.getSeriesId()).isInstanceOf(IllegalStateException.class);
             assertThatThrownBy(() -> cursor.getSeriesData()).isInstanceOf(IllegalStateException.class);
             assertThatThrownBy(() -> cursor.getSeriesMetaData()).isInstanceOf(IllegalStateException.class);
-            assertInputNotNull(cursor);
+            assertApi(cursor);
         }
 
-        try (EmptyCursor cursor = EmptyCursor.INSTANCE.filter(o -> false)) {
+        try (EmptyCursor cursor = new EmptyCursor().filter(o -> false)) {
             assertThat(cursor.getMetaData()).isEmpty();
             assertThat(cursor.nextSeries()).isFalse();
         }
 
-        try (EmptyCursor cursor = EmptyCursor.INSTANCE.filter(o -> true)) {
+        try (EmptyCursor cursor = new EmptyCursor().filter(o -> true)) {
             assertThat(cursor.getMetaData()).isEmpty();
             assertThat(cursor.nextSeries()).isFalse();
         }
 
-        try (EmptyCursor cursor = EmptyCursor.INSTANCE.transform(identity())) {
+        try (EmptyCursor cursor = new EmptyCursor().transform(identity())) {
             assertThat(cursor.getMetaData()).isEmpty();
             assertThat(cursor.nextSeries()).isFalse();
+        }
+
+        try (InMemoryCursor cursor = new EmptyCursor().withMetaData(someMeta)) {
+            assertThat(cursor.getMetaData()).isEqualTo(someMeta);
         }
     }
 
     @Test
     @SuppressWarnings("null")
-    public void testSingletonCursor() {
+    public void testSingletonCursor() throws IOException {
         Supplier<SingletonCursor<String>> example = () -> new SingletonCursor<>(someKey, someData, someMeta);
 
         try (SingletonCursor<String> cursor = example.get()) {
             assertThat(cursor.getMetaData()).isEmpty();
             assertNextSeries(cursor, someKey, someData, someMeta);
             assertThat(cursor.nextSeries()).isFalse();
-            assertInputNotNull(cursor);
+            assertApi(cursor);
         }
 
         try (SingletonCursor<String> cursor = example.get().filter(o -> false)) {
@@ -120,11 +125,15 @@ public class TsCursorsTest {
             assertNextSeries(cursor, "HELLO", someData, someMeta);
             assertThat(cursor.nextSeries()).isFalse();
         }
+
+        try (InMemoryCursor cursor = example.get().withMetaData(someMeta)) {
+            assertThat(cursor.getMetaData()).isEqualTo(someMeta);
+        }
     }
 
     @Test
     @SuppressWarnings("null")
-    public void testIteratingCursor() {
+    public void testIteratingCursor() throws IOException {
         Supplier<IteratingCursor<String, String>> example = () -> new IteratingCursor<>(forArray("hello", "world"), goodIdFunc, goodDataFunc, goodMetaFunc);
 
         try (IteratingCursor<String, String> cursor = example.get()) {
@@ -132,20 +141,20 @@ public class TsCursorsTest {
             assertNextSeries(cursor, "HELLO", someData, someMeta);
             assertNextSeries(cursor, "WORLD", someData, someMeta);
             assertThat(cursor.nextSeries()).isFalse();
-            assertInputNotNull(cursor);
+            assertApi(cursor);
         }
 
         try (IteratingCursor<String, String> cursor = example.get().filter(o -> false)) {
             assertThat(cursor.getMetaData()).isEmpty();
             assertThat(cursor.nextSeries()).isFalse();
-            assertInputNotNull(cursor);
+            assertApi(cursor);
         }
 
         try (IteratingCursor<String, String> cursor = example.get().filter(o -> o.startsWith("HE"))) {
             assertThat(cursor.getMetaData()).isEmpty();
             assertNextSeries(cursor, "HELLO", someData, someMeta);
             assertThat(cursor.nextSeries()).isFalse();
-            assertInputNotNull(cursor);
+            assertApi(cursor);
         }
 
         try (IteratingCursor<String, String> cursor = example.get().transform(String::toLowerCase)) {
@@ -153,7 +162,11 @@ public class TsCursorsTest {
             assertNextSeries(cursor, "hello", someData, someMeta);
             assertNextSeries(cursor, "world", someData, someMeta);
             assertThat(cursor.nextSeries()).isFalse();
-            assertInputNotNull(cursor);
+            assertApi(cursor);
+        }
+
+        try (InMemoryCursor cursor = example.get().withMetaData(someMeta)) {
+            assertThat(cursor.getMetaData()).isEqualTo(someMeta);
         }
 
         try (IteratingCursor<String, String> cursor = example.get().filter(o -> o.startsWith("HE")).transform(String::toLowerCase)) {
@@ -252,11 +265,41 @@ public class TsCursorsTest {
         assertThat(cursor.getSeriesMetaData()).isEqualTo(meta);
     }
 
+    private static void assertApi(TsCursor<?> cursor) throws IOException {
+        assertInputNotNull(cursor);
+        assertNoMoreSeriesState(cursor);
+        assertCloseState(cursor);
+    }
+
     @SuppressWarnings("null")
     private static void assertInputNotNull(TsCursor<?> cursor) {
         assertThatThrownBy(() -> cursor.filter(null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> cursor.onClose(null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> cursor.transform(null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> cursor.withMetaData(null)).isInstanceOf(NullPointerException.class);
+    }
+
+    private static void assertCloseState(TsCursor<?> cursor) throws IOException {
+        assertThat(cursor.isClosed()).isFalse();
+        cursor.close();
+        assertThat(cursor.isClosed()).isTrue();
+        assertThatThrownBy(() -> cursor.getMetaData()).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> cursor.nextSeries()).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> cursor.getSeriesId()).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> cursor.getSeriesData()).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> cursor.getSeriesMetaData()).isInstanceOf(IllegalStateException.class);
+        assertThat(cursor.filter(o -> true)).isNotNull();
+        assertThat(cursor.onClose(() -> {
+        })).isNotNull();
+        assertThat(cursor.transform(identity())).isNotNull();
+        assertThat(cursor.withMetaData(Collections.emptyMap())).isNotNull();
+    }
+
+    private static void assertNoMoreSeriesState(TsCursor<?> cursor) throws IOException {
+        assertThat(cursor.isClosed()).isFalse();
+        readAll(cursor);
+        assertThatThrownBy(() -> cursor.getSeriesId()).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> cursor.getSeriesData()).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> cursor.getSeriesMetaData()).isInstanceOf(IllegalStateException.class);
     }
 }

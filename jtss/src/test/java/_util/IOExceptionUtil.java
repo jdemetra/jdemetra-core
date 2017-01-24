@@ -28,9 +28,7 @@ public final class IOExceptionUtil {
 
     public static Closeable asCloseable(Supplier<IOException> factory) {
         return () -> {
-            IOException result = factory.get();
-            System.out.println(result);
-            throw result;
+            throw factory.get();
         };
     }
 

@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
@@ -52,6 +53,20 @@ final class TsCursors {
         throw new RuntimeException("Invalid function '" + funcName + "': expected non-null result with parameter + '" + input + "'");
     }
 
+    private static void close(Closeable delegate, Closeable closeHandler) throws IOException {
+        try {
+            delegate.close();
+        } catch (IOException first) {
+            try {
+                closeHandler.close();
+            } catch (IOException second) {
+                first.addSuppressed(second);
+            }
+            throw (first);
+        }
+        closeHandler.close();
+    }
+
     //<editor-fold defaultstate="collapsed" desc="Forwarding cursors">
     private static class ForwardingCursor<ID> implements TsCursor<ID> {
 
@@ -59,6 +74,11 @@ final class TsCursors {
 
         private ForwardingCursor(TsCursor<ID> delegate) {
             this.delegate = requireNonNull(delegate);
+        }
+
+        @Override
+        public boolean isClosed() throws IOException {
+            return delegate.isClosed();
         }
 
         @Override
@@ -158,17 +178,7 @@ final class TsCursors {
 
         @Override
         public void close() throws IOException {
-            try {
-                delegate.close();
-            } catch (IOException first) {
-                try {
-                    closeHandler.close();
-                } catch (IOException second) {
-                    first.addSuppressed(second);
-                }
-                throw (first);
-            }
-            closeHandler.close();
+            TsCursors.close(delegate, closeHandler);
         }
     }
     //</editor-fold>
@@ -176,9 +186,25 @@ final class TsCursors {
     //<editor-fold defaultstate="collapsed" desc="In-memory cursors">
     static abstract class InMemoryCursor<ID> implements TsCursor<ID> {
 
+        private boolean closed = false;
+        private Map<String, String> meta = Collections.emptyMap();
+        private Closeable closeable = null;
+
+        protected void checkClosedState() throws IllegalStateException {
+            if (closed) {
+                throw new IllegalStateException("Closed");
+            }
+        }
+
+        @Override
+        public boolean isClosed() {
+            return closed;
+        }
+
         @Override
         final public Map<String, String> getMetaData() {
-            return Collections.emptyMap();
+            checkClosedState();
+            return meta;
         }
 
         @Override
@@ -194,32 +220,48 @@ final class TsCursors {
         abstract public OptionalTsData getSeriesData();
 
         @Override
-        final public void close() {
-            // do nothing
+        final public void close() throws IOException {
+            closed = true;
+            if (closeable != null) {
+                closeable.close();
+            }
         }
 
         @Override
-        final public TsCursor<ID> withMetaData(Map<String, String> meta) {
-            return meta.isEmpty() ? this : TsCursor.super.withMetaData(meta);
+        final public InMemoryCursor<ID> withMetaData(Map<String, String> meta) {
+            Objects.requireNonNull(meta);
+            this.meta = meta;
+            return this;
+        }
+
+        @Override
+        final public InMemoryCursor<ID> onClose(Closeable closeHandler) {
+            Objects.requireNonNull(closeHandler);
+            this.closeable = this.closeable == null ? closeHandler : compose(closeHandler);
+            return this;
+        }
+
+        private Closeable compose(Closeable closeHandler) {
+            Closeable first = this.closeable;
+            return () -> TsCursors.close(first, closeHandler);
         }
     }
 
-    static final class EmptyCursor extends InMemoryCursor {
-
-        static final EmptyCursor INSTANCE = new EmptyCursor();
+    static final class EmptyCursor<ID> extends InMemoryCursor<ID> {
 
         @Override
         public boolean nextSeries() {
+            checkClosedState();
             return false;
         }
 
         @Override
-        public Object getSeriesId() {
+        public ID getSeriesId() {
             throw new IllegalStateException();
         }
 
         @Override
-        public Map getSeriesMetaData() {
+        public Map<String, String> getSeriesMetaData() {
             throw new IllegalStateException();
         }
 
@@ -229,15 +271,15 @@ final class TsCursors {
         }
 
         @Override
-        public EmptyCursor filter(Predicate predicate) {
+        public EmptyCursor<ID> filter(Predicate<? super ID> predicate) {
             requireNonNull(predicate);
             return this;
         }
 
         @Override
-        public EmptyCursor transform(Function function) {
+        public <Z> EmptyCursor<Z> transform(Function<? super ID, ? extends Z> function) {
             requireNonNull(function);
-            return this;
+            return (EmptyCursor<Z>) this;
         }
     }
 
@@ -246,7 +288,7 @@ final class TsCursors {
         private ID id;
         private final OptionalTsData data;
         private final Map<String, String> meta;
-        private boolean first;
+        private Boolean first;
 
         SingletonCursor(
                 @Nonnull ID id,
@@ -258,34 +300,50 @@ final class TsCursors {
             this.first = true;
         }
 
+        private void checkSeriesState() throws IllegalStateException {
+            if (first == null || first == true) {
+                throw new IllegalStateException("Series");
+            }
+        }
+
         @Override
         public boolean nextSeries() {
-            if (first) {
+            checkClosedState();
+            if (Boolean.TRUE.equals(first)) {
                 first = false;
                 return true;
+            } else if (Boolean.FALSE.equals(first)) {
+                first = null;
+                return false;
             }
             return false;
         }
 
         @Override
         public ID getSeriesId() {
+            checkClosedState();
+            checkSeriesState();
             return id;
         }
 
         @Override
         public Map<String, String> getSeriesMetaData() {
+            checkClosedState();
+            checkSeriesState();
             return meta;
         }
 
         @Override
         public OptionalTsData getSeriesData() {
+            checkClosedState();
+            checkSeriesState();
             return data;
         }
 
         @Override
         public SingletonCursor<ID> filter(Predicate<? super ID> predicate) {
             requireNonNull(predicate);
-            first = first && predicate.test(id);
+            first = first != null && first && predicate.test(id);
             return this;
         }
 
@@ -317,24 +375,37 @@ final class TsCursors {
             this.toMeta = requireNonNull(toMeta);
         }
 
+        private void checkSeriesState() throws IllegalStateException {
+            if (current == null) {
+                throw new IllegalStateException("Series");
+            }
+        }
+
         @Override
         public boolean nextSeries() {
+            checkClosedState();
             current = iterator.hasNext() ? iterator.next() : null;
             return current != null;
         }
 
         @Override
         public ID getSeriesId() {
+            checkClosedState();
+            checkSeriesState();
             return applyNotNull("id", toId, current);
         }
 
         @Override
         public Map<String, String> getSeriesMetaData() {
+            checkClosedState();
+            checkSeriesState();
             return applyNotNull("meta", toMeta, current);
         }
 
         @Override
         public OptionalTsData getSeriesData() {
+            checkClosedState();
+            checkSeriesState();
             return applyNotNull("data", toData, current);
         }
 

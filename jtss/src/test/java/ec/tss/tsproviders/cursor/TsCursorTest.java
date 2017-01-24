@@ -19,8 +19,10 @@ package ec.tss.tsproviders.cursor;
 import static ec.tss.tsproviders.cursor.TsCursors.NOT_REQUESTED;
 import static ec.tss.tsproviders.cursor.TsCursors.NO_DATA;
 import static ec.tss.tsproviders.cursor.TsCursors.NO_META;
+import java.io.IOException;
 import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyMap;
+import static java.util.function.Function.identity;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 
@@ -54,5 +56,16 @@ public class TsCursorTest {
         assertThatThrownBy(() -> TsCursor.from(null, NO_DATA, NO_META)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> TsCursor.from(emptyIterator(), null, NO_META)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> TsCursor.from(emptyIterator(), NO_DATA, null)).isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    @SuppressWarnings("null")
+    public void testDefaultMethods() throws IOException {
+        try (TsCursor cursor = TsCursor.empty()) {
+            assertThatThrownBy(() -> cursor.filter(null)).isInstanceOf(NullPointerException.class);
+            assertThatThrownBy(() -> cursor.transform(null)).isInstanceOf(NullPointerException.class);
+            assertThatThrownBy(() -> cursor.onClose(null)).isInstanceOf(NullPointerException.class);
+            assertThatThrownBy(() -> cursor.withMetaData(null)).isInstanceOf(NullPointerException.class);
+        }
     }
 }

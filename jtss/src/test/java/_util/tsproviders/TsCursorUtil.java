@@ -28,18 +28,22 @@ import java.util.function.Consumer;
 @MightBeMovedFromTestToMain
 public final class TsCursorUtil {
 
-    public static int readAllAndClose(TsCursor<?> cursor) throws IOException {
+    public static int readAll(TsCursor<?> cursor) throws IOException {
         int result = 0;
-        try (TsCursor<?> closeable = cursor) {
-            cursor.getMetaData();
-            while (cursor.nextSeries()) {
-                cursor.getSeriesId();
-                cursor.getSeriesData();
-                cursor.getSeriesMetaData();
-                result++;
-            }
+        cursor.getMetaData();
+        while (cursor.nextSeries()) {
+            cursor.getSeriesId();
+            cursor.getSeriesData();
+            cursor.getSeriesMetaData();
+            result++;
         }
         return result;
+    }
+
+    public static int readAllAndClose(TsCursor<?> cursor) throws IOException {
+        try (TsCursor<?> closeable = cursor) {
+            return readAll(cursor);
+        }
     }
 
     public static <ID> void forEachId(TsCursor<ID> cursor, Consumer<? super ID> consumer) throws IOException {

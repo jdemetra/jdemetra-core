@@ -83,4 +83,14 @@ public class CubeAccessorsTest {
         factory.apply(2).getAllSeriesWithData(SECTOR_REGION).close();
         assertThat(cache).isNotEmpty();
     }
+
+    @Test
+    public void testResourceLeak() throws IOException {
+        ResourceWatcher<?> watcher = ResourceWatcher.usingId();
+        ConcurrentMap<CubeId, Object> cache = new ConcurrentHashMap<>();
+        BulkCubeAccessor accessor = new BulkCubeAccessor(new XCubeAccessor(SECTOR_REGION, watcher), 1, cache);
+        accessor.getSeriesWithData(INDUSTRY_BE).close();
+        assertThat(cache).isNotEmpty();
+        assertThat(watcher.isLeakingResources()).isFalse();
+    }
 }

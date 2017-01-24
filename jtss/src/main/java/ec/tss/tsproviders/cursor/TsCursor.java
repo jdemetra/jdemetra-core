@@ -38,48 +38,65 @@ import javax.annotation.concurrent.NotThreadSafe;
 public interface TsCursor<ID> extends Closeable {
 
     /**
+     * Retrieves whether this cursor has been closed. A cursor is closed if the
+     * method close has been called on it, or if it is automatically closed.
+     *
+     * @return true if this cursor is closed; false if it is still open
+     * @throws IOException if an internal exception prevented state retrieval.
+     */
+    boolean isClosed() throws IOException;
+
+    /**
      * Gets the current metadata of the time series collection.
      *
      * @return a non-null metadata
      * @throws IOException if an internal exception prevented data retrieval.
+     * @throws IllegalStateException if this cursor is closed
      */
     @Nonnull
-    Map<String, String> getMetaData() throws IOException;
+    Map<String, String> getMetaData() throws IOException, IllegalStateException;
 
     /**
      * Moves to the next series.
      *
      * @return true if there is a next series, false otherwise
      * @throws IOException if an internal exception prevented data retrieval.
+     * @throws IllegalStateException if this cursor is closed
      */
-    boolean nextSeries() throws IOException;
+    boolean nextSeries() throws IOException, IllegalStateException;
 
     /**
      * Gets the current time series identifier.
      *
      * @return a non-null identifier
      * @throws IOException if an internal exception prevented data retrieval.
+     * @throws IllegalStateException if {@link #nextSeries()} returns false or
+     * if this cursor is closed
      */
     @Nonnull
-    ID getSeriesId() throws IOException;
+    ID getSeriesId() throws IOException, IllegalStateException;
 
     /**
      * Gets the current time series metadata.
      *
      * @return a non-null metadata
      * @throws IOException if an internal exception prevented data retrieval.
+     * @throws IllegalStateException if {@link #nextSeries()} returns false or
+     * if this cursor is closed
      */
     @Nonnull
-    Map<String, String> getSeriesMetaData() throws IOException;
+    Map<String, String> getSeriesMetaData() throws IOException, IllegalStateException;
 
     /**
      * Gets the current time series data.
      *
      * @return a non-null optional data
      * @throws IOException if an internal exception prevented data retrieval.
+     * @throws IllegalStateException if {@link #nextSeries()} returns false or
+     * if this cursor is closed
      */
     @Nonnull
-    OptionalTsData getSeriesData() throws IOException;
+    OptionalTsData getSeriesData() throws IOException, IllegalStateException;
 
     /**
      * Returns a cursor consisting of the results of applying the given function
@@ -120,7 +137,7 @@ public interface TsCursor<ID> extends Closeable {
     /**
      * Returns an cursor with an additional close handler.
      *
-     * @param closeHandler a non-null task to execute when the stream is closed
+     * @param closeHandler a non-null task to execute if the stream is closed
      * @return a non-null cursor
      */
     @Nonnull
@@ -136,7 +153,7 @@ public interface TsCursor<ID> extends Closeable {
      */
     @Nonnull
     static <ID> TsCursor<ID> empty() {
-        return TsCursors.EmptyCursor.INSTANCE;
+        return new TsCursors.EmptyCursor<>();
     }
 
     /**

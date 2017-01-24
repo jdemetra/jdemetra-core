@@ -20,7 +20,6 @@ import ec.tstoolkit.design.Immutable;
 import ec.tstoolkit.utilities.Arrays2;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -135,11 +134,6 @@ public final class CubeId {
         return new CubeId(dimensionIds, Arrays2.concat(this.dimensionsValues, dimensionValues));
     }
 
-    @Nonnull
-    public Optional<CubeId> parent() {
-        return isRoot() ? Optional.empty() : Optional.of(new CubeId(dimensionIds, Arrays.copyOf(dimensionsValues, getLevel() - 1)));
-    }
-
     public boolean isAncestorOf(@Nonnull CubeId input) {
         if (!haveSameDimensions(this, input) || getLevel() >= input.getLevel()) {
             return false;
@@ -150,6 +144,16 @@ public final class CubeId {
             }
         }
         return true;
+    }
+
+    @Nullable
+    CubeId getParent() {
+        return getAncestor(getLevel() - 1);
+    }
+
+    @Nullable
+    CubeId getAncestor(int level) {
+        return 0 <= level && level < getLevel() ? new CubeId(dimensionIds, Arrays.copyOf(dimensionsValues, level)) : null;
     }
 
     @Override

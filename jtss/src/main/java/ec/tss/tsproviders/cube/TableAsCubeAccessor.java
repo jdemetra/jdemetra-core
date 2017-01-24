@@ -67,6 +67,8 @@ public final class TableAsCubeAccessor implements CubeAccessor {
     @NotThreadSafe
     public interface TableCursor extends AutoCloseable {
 
+        boolean isClosed() throws Exception;
+
         boolean nextRow() throws Exception;
     }
 
@@ -179,7 +181,7 @@ public final class TableAsCubeAccessor implements CubeAccessor {
         return ex instanceof IOException ? (IOException) ex : new IOException(ex);
     }
 
-    private abstract static class TableAsCubeAdapter<T extends AutoCloseable> implements TsCursor<CubeId> {
+    private abstract static class TableAsCubeAdapter<T extends TableCursor> implements TsCursor<CubeId> {
 
         protected final CubeId parentId;
         protected final T cursor;
@@ -187,6 +189,15 @@ public final class TableAsCubeAccessor implements CubeAccessor {
         private TableAsCubeAdapter(CubeId parentId, T cursor) {
             this.parentId = parentId;
             this.cursor = cursor;
+        }
+
+        @Override
+        public boolean isClosed() throws IOException {
+            try {
+                return cursor.isClosed();
+            } catch (Exception ex) {
+                throw propagateIOException(ex);
+            }
         }
 
         @Override
