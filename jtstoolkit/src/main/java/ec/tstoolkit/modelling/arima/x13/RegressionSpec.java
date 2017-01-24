@@ -25,6 +25,7 @@ import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import ec.tstoolkit.timeseries.regression.*;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
+import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import ec.tstoolkit.utilities.Comparator;
 import ec.tstoolkit.utilities.Jdk6;
 import java.util.ArrayList;
@@ -277,11 +278,24 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
                 names.add(IEasterVariable.NAME);
             }
         }
+        
         // outliers
-        outliers_.forEach(od -> names.add(od.toString(freq)));
+        outliers_.stream().map((def) -> {
+            StringBuilder builder = new StringBuilder();
+            builder.append(def.getCode()).append(" (");
+            if (freq == TsFrequency.Undefined) {
+                builder.append(def.getPosition());
+            } else {
+                TsPeriod p = new TsPeriod(freq, def.getPosition());
+                builder.append(p);
+            }
+            return builder.append(')');
+        }).forEach((builder) -> {
+            names.add(builder.toString());
+        });
 
         // ramp
-        ramps_.forEach(rp -> names.add(rp.toString(freq)));
+        ramps_.forEach(rp -> names.add(rp.getName()));
 
         // intervention
         interventions_.forEach(iv
@@ -325,6 +339,11 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
 
     public double[] getFixedCoefficients(String name) {
         return fcoeff.get(name);
+    }
+
+    public void setAllFixedCoefficients(Map<String, double[]> coeffs) {
+        clearAllFixedCoefficients();
+        fcoeff.putAll(coeffs);
     }
 
     public Map<String, double[]> getAllFixedCoefficients() {

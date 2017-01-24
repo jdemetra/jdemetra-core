@@ -5,8 +5,6 @@
  */
 package ec.tstoolkit.modelling.arima.tramo;
 
-import ec.tstoolkit.Parameter;
-import ec.tstoolkit.ParameterType;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.modelling.TsVariableDescriptor;
 import ec.tstoolkit.timeseries.Day;
@@ -14,9 +12,8 @@ import ec.tstoolkit.timeseries.regression.InterventionVariable;
 import ec.tstoolkit.timeseries.regression.OutlierDefinition;
 import ec.tstoolkit.timeseries.regression.OutlierType;
 import ec.tstoolkit.timeseries.regression.Ramp;
-import java.util.ArrayList;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
