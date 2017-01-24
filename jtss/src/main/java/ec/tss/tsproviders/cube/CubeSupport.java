@@ -32,7 +32,7 @@ import ec.tss.tsproviders.utils.IConfig;
 import ec.tss.tsproviders.utils.IParam;
 import ec.tss.tsproviders.cursor.TsCursor;
 import ec.tss.tsproviders.cursor.TsCursorAsFiller;
-import ec.tss.tsproviders.utils.TsProviderSupport;
+import ec.tss.tsproviders.utils.TsFillerAsProvider;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -189,7 +189,7 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
             @Nonnull CubeSupport cubeSupport,
             @Nonnull HasDataMoniker monikerSupport,
             @Nonnull Runnable cacheCleaner) {
-        return TsProviderSupport.of(providerName, TsAsyncMode.Once, TsCursorAsFiller.of(logger, cubeSupport, monikerSupport, cubeSupport), cacheCleaner);
+        return TsFillerAsProvider.of(providerName, TsAsyncMode.Once, TsCursorAsFiller.of(logger, cubeSupport, monikerSupport, cubeSupport), cacheCleaner);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">

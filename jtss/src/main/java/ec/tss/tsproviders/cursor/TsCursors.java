@@ -53,7 +53,7 @@ final class TsCursors {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Forwarding cursors">
-    private abstract static class ForwardingCursor<ID> implements TsCursor<ID> {
+    private static class ForwardingCursor<ID> implements TsCursor<ID> {
 
         protected final TsCursor<ID> delegate;
 

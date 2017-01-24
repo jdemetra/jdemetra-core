@@ -36,7 +36,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * @since 2.2.0
  */
 @ThreadSafe
-public abstract class TsProviderSupport implements ITsProvider {
+public abstract class TsFillerAsProvider implements ITsProvider {
 
     @Nonnull
     public static ITsProvider of(@Nonnull String providerName, @Nonnull TsAsyncMode asyncMode, @Nonnull TsFiller filler) {
@@ -59,7 +59,7 @@ public abstract class TsProviderSupport implements ITsProvider {
     private final String providerName;
     private final Runnable cacheCleaner;
 
-    private TsProviderSupport(String providerName, Runnable cacheCleaner) {
+    private TsFillerAsProvider(String providerName, Runnable cacheCleaner) {
         this.providerName = Objects.requireNonNull(providerName);
         this.cacheCleaner = Objects.requireNonNull(cacheCleaner);
     }
@@ -78,7 +78,7 @@ public abstract class TsProviderSupport implements ITsProvider {
     private static final Runnable NO_CACHE = () -> {
     };
 
-    private static final class SyncImpl extends TsProviderSupport {
+    private static final class SyncImpl extends TsFillerAsProvider {
 
         private final TsFiller filler;
 
@@ -124,7 +124,7 @@ public abstract class TsProviderSupport implements ITsProvider {
         }
     }
 
-    private static final class AsyncImpl extends TsProviderSupport {
+    private static final class AsyncImpl extends TsFillerAsProvider {
 
         private final TsAsyncMode asyncMode;
         private final TsFiller filler;

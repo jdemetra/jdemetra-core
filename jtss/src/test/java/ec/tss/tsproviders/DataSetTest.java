@@ -16,6 +16,7 @@
  */
 package ec.tss.tsproviders;
 
+import static _util.SerializableUtil.fromToBytes;
 import com.google.common.collect.ImmutableSortedMap;
 import ec.tss.tsproviders.utils.Formatters;
 import java.io.*;
@@ -96,7 +97,7 @@ public class DataSetTest {
 
     @Test
     public void testSerializable() throws IOException, ClassNotFoundException {
-        assertThat(Util.fromToBytes(newSample())).isEqualTo(newSample());
+        assertThat(fromToBytes(newSample())).isEqualTo(newSample());
     }
 
     @Test
