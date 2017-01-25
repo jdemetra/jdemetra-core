@@ -17,17 +17,21 @@
 package ec.tss.tsproviders.cursor;
 
 import com.google.common.collect.Iterators;
+import ec.tss.tsproviders.utils.FunctionWithIO;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
-import static java.util.Objects.requireNonNull;
+import java.util.concurrent.ConcurrentMap;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Package-private supporting class for {@link TsCursor}.
@@ -45,6 +49,17 @@ final class TsCursors {
     static final Function<Object, Map<String, String>> NO_META = o -> Collections.emptyMap();
     static final Function<Object, OptionalTsData> NO_DATA = o -> NOT_REQUESTED;
 
+    static final String CLOSE_ISE = "This cursor is closed";
+    static final String NEXT_ISE = "This cursor has no more series or has not been started";
+
+    static final String ID_NPE = "id";
+    static final String DATA_NPE = "data";
+    static final String META_DATA_NPE = "meta data";
+    static final String DELEGATE_NPE = "delegate";
+    static final String ID_FILTER_NPE = "id filter";
+    static final String ID_TRANSFORMER_NPE = "id transformer";
+    static final String CLOSE_HANDLER_NPE = "close handler";
+
     private static <X, Y> Y applyNotNull(String funcName, Function<X, Y> func, X input) throws RuntimeException {
         Y result = func.apply(input);
         if (result != null) {
@@ -53,18 +68,86 @@ final class TsCursors {
         throw new RuntimeException("Invalid function '" + funcName + "': expected non-null result with parameter + '" + input + "'");
     }
 
-    private static void close(Closeable delegate, Closeable closeHandler) throws IOException {
+    private static void closeBoth(Closeable first, Closeable second) throws IOException {
         try {
-            delegate.close();
-        } catch (IOException first) {
+            first.close();
+        } catch (IOException ex) {
             try {
-                closeHandler.close();
-            } catch (IOException second) {
-                first.addSuppressed(second);
+                second.close();
+            } catch (IOException suppressed) {
+                ex.addSuppressed(suppressed);
             }
-            throw (first);
+            throw ex;
         }
-        closeHandler.close();
+        second.close();
+    }
+
+    @Immutable
+    static final class XCollection<ID> implements Iterable<XSeries<ID>> {
+
+        private final Map<String, String> meta;
+        private final List<XSeries<ID>> items;
+
+        private XCollection(Map<String, String> meta, List<XSeries<ID>> items) {
+            this.meta = Collections.unmodifiableMap(meta);
+            this.items = Collections.unmodifiableList(items);
+        }
+
+        public Map<String, String> getMetaData() {
+            return meta;
+        }
+
+        @Override
+        public Iterator<XSeries<ID>> iterator() {
+            return items.iterator();
+        }
+
+        public TsCursor<ID> toCursor() {
+            return new IteratingCursor<>(iterator(), XSeries<ID>::getId, XSeries::getData, XSeries::getMetadata)
+                    .withMetaData(meta);
+        }
+    }
+
+    @Immutable
+    static final class XSeries<ID> {
+
+        private final ID id;
+        private final Map<String, String> metadata;
+        private final OptionalTsData data;
+
+        private XSeries(ID id, Map<String, String> metadata, OptionalTsData data) {
+            this.id = id;
+            this.metadata = metadata;
+            this.data = data;
+        }
+
+        public ID getId() {
+            return id;
+        }
+
+        public OptionalTsData getData() {
+            return data;
+        }
+
+        public Map<String, String> getMetadata() {
+            return metadata;
+        }
+    }
+
+    @Nonnull
+    static <KEY, ID> TsCursor<ID> getOrLoad(
+            @Nonnull ConcurrentMap<KEY, Object> cache,
+            @Nonnull KEY key,
+            @Nonnull FunctionWithIO<? super KEY, ? extends TsCursor<ID>> loader) throws IOException {
+
+        requireNonNull(cache, "cache");
+        requireNonNull(key, "key");
+        requireNonNull(loader, "loader");
+
+        Object result = cache.get(key);
+        return result instanceof XCollection
+                ? ((XCollection<ID>) result).toCursor()
+                : new CachingCursor<>(loader.apply(key), key, cache);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Forwarding cursors">
@@ -73,7 +156,7 @@ final class TsCursors {
         protected final TsCursor<ID> delegate;
 
         private ForwardingCursor(TsCursor<ID> delegate) {
-            this.delegate = requireNonNull(delegate);
+            this.delegate = requireNonNull(delegate, DELEGATE_NPE);
         }
 
         @Override
@@ -120,7 +203,7 @@ final class TsCursors {
                 @Nonnull TsCursor<ID> delegate,
                 @Nonnull Function<? super ID, ? extends Z> function) {
             super((TsCursor<Z>) delegate);
-            this.function = requireNonNull(function);
+            this.function = requireNonNull(function, ID_TRANSFORMER_NPE);
         }
 
         @Override
@@ -138,7 +221,7 @@ final class TsCursors {
                 @Nonnull TsCursor<ID> delegate,
                 @Nonnull Predicate<? super ID> filter) {
             super(delegate);
-            this.filter = requireNonNull(filter);
+            this.filter = requireNonNull(filter, ID_FILTER_NPE);
         }
 
         @Override
@@ -158,7 +241,7 @@ final class TsCursors {
 
         WithMetaDataCursor(@Nonnull TsCursor<ID> delegate, @Nonnull Map<String, String> meta) {
             super(delegate);
-            this.meta = requireNonNull(meta);
+            this.meta = requireNonNull(meta, META_DATA_NPE);
         }
 
         @Override
@@ -173,12 +256,90 @@ final class TsCursors {
 
         OnCloseCursor(@Nonnull TsCursor<ID> delegate, @Nonnull Closeable closeHandler) {
             super(delegate);
-            this.closeHandler = requireNonNull(closeHandler);
+            this.closeHandler = requireNonNull(closeHandler, CLOSE_HANDLER_NPE);
         }
 
         @Override
         public void close() throws IOException {
-            TsCursors.close(delegate, closeHandler);
+            closeBoth(delegate, closeHandler);
+        }
+    }
+
+    static final class CachingCursor<KEY, ID> extends ForwardingCursor<ID> {
+
+        private final KEY key;
+        private final ConcurrentMap<KEY, Object> cache;
+        private final List<XSeries<ID>> items;
+        private XSeries<ID> currentItem;
+
+        CachingCursor(TsCursor<ID> delegate, KEY key, ConcurrentMap<KEY, Object> cache) {
+            super(delegate);
+            this.key = key;
+            this.cache = cache;
+            this.items = new ArrayList<>();
+            this.currentItem = null;
+        }
+
+        private void checkState() throws IllegalStateException, IOException {
+            if (isClosed()) {
+                throw new IllegalStateException(CLOSE_ISE);
+            }
+            if (currentItem == null) {
+                throw new IllegalStateException(NEXT_ISE);
+            }
+        }
+
+        @Override
+        public Map<String, String> getMetaData() throws IOException {
+            return delegate.getMetaData();
+        }
+
+        @Override
+        public boolean nextSeries() throws IOException {
+            if (delegate.nextSeries()) {
+                currentItem = fetchCurrentSeries();
+                return true;
+            }
+            currentItem = null;
+            return false;
+        }
+
+        @Override
+        public ID getSeriesId() throws IOException {
+            checkState();
+            return currentItem.getId();
+        }
+
+        @Override
+        public Map<String, String> getSeriesMetaData() throws IOException {
+            checkState();
+            return currentItem.getMetadata();
+        }
+
+        @Override
+        public OptionalTsData getSeriesData() throws IOException {
+            checkState();
+            return currentItem.getData();
+        }
+
+        @Override
+        public void close() throws IOException {
+            closeBoth(this::flushToCache, delegate::close);
+        }
+
+        private void flushToCache() throws IOException {
+            if (!isClosed()) {
+                while (delegate.nextSeries()) {
+                    fetchCurrentSeries();
+                }
+                cache.put(key, new XCollection<>(delegate.getMetaData(), items));
+            }
+        }
+
+        private XSeries<ID> fetchCurrentSeries() throws IOException {
+            XSeries<ID> item = new XSeries<>(delegate.getSeriesId(), delegate.getSeriesMetaData(), delegate.getSeriesData());
+            items.add(item);
+            return item;
         }
     }
     //</editor-fold>
@@ -192,7 +353,7 @@ final class TsCursors {
 
         protected void checkClosedState() throws IllegalStateException {
             if (closed) {
-                throw new IllegalStateException("Closed");
+                throw new IllegalStateException(CLOSE_ISE);
             }
         }
 
@@ -229,21 +390,21 @@ final class TsCursors {
 
         @Override
         final public InMemoryCursor<ID> withMetaData(Map<String, String> meta) {
-            Objects.requireNonNull(meta);
+            requireNonNull(meta, META_DATA_NPE);
             this.meta = meta;
             return this;
         }
 
         @Override
         final public InMemoryCursor<ID> onClose(Closeable closeHandler) {
-            Objects.requireNonNull(closeHandler);
+            requireNonNull(closeHandler, CLOSE_HANDLER_NPE);
             this.closeable = this.closeable == null ? closeHandler : compose(closeHandler);
             return this;
         }
 
         private Closeable compose(Closeable closeHandler) {
             Closeable first = this.closeable;
-            return () -> TsCursors.close(first, closeHandler);
+            return () -> closeBoth(first, closeHandler);
         }
     }
 
@@ -257,28 +418,31 @@ final class TsCursors {
 
         @Override
         public ID getSeriesId() {
-            throw new IllegalStateException();
+            checkClosedState();
+            throw new IllegalStateException(NEXT_ISE);
         }
 
         @Override
         public Map<String, String> getSeriesMetaData() {
-            throw new IllegalStateException();
+            checkClosedState();
+            throw new IllegalStateException(NEXT_ISE);
         }
 
         @Override
         public OptionalTsData getSeriesData() {
-            throw new IllegalStateException();
+            checkClosedState();
+            throw new IllegalStateException(NEXT_ISE);
         }
 
         @Override
         public EmptyCursor<ID> filter(Predicate<? super ID> predicate) {
-            requireNonNull(predicate);
+            requireNonNull(predicate, ID_FILTER_NPE);
             return this;
         }
 
         @Override
         public <Z> EmptyCursor<Z> transform(Function<? super ID, ? extends Z> function) {
-            requireNonNull(function);
+            requireNonNull(function, ID_TRANSFORMER_NPE);
             return (EmptyCursor<Z>) this;
         }
     }
@@ -294,15 +458,15 @@ final class TsCursors {
                 @Nonnull ID id,
                 @Nonnull OptionalTsData data,
                 @Nonnull Map<String, String> meta) {
-            this.id = requireNonNull(id);
-            this.data = requireNonNull(data);
-            this.meta = requireNonNull(meta);
+            this.id = requireNonNull(id, ID_NPE);
+            this.data = requireNonNull(data, DATA_NPE);
+            this.meta = requireNonNull(meta, META_DATA_NPE);
             this.first = true;
         }
 
         private void checkSeriesState() throws IllegalStateException {
             if (first == null || first == true) {
-                throw new IllegalStateException("Series");
+                throw new IllegalStateException(NEXT_ISE);
             }
         }
 
@@ -342,14 +506,14 @@ final class TsCursors {
 
         @Override
         public SingletonCursor<ID> filter(Predicate<? super ID> predicate) {
-            requireNonNull(predicate);
+            requireNonNull(predicate, ID_FILTER_NPE);
             first = first != null && first && predicate.test(id);
             return this;
         }
 
         @Override
         public <Z> SingletonCursor<Z> transform(Function<? super ID, ? extends Z> function) {
-            requireNonNull(function);
+            requireNonNull(function, ID_TRANSFORMER_NPE);
             SingletonCursor<Z> result = (SingletonCursor<Z>) this;
             result.id = applyNotNull("id", function, id);
             return result;
@@ -369,15 +533,15 @@ final class TsCursors {
                 @Nonnull Function<? super E, ? extends ID> toId,
                 @Nonnull Function<? super E, OptionalTsData> toData,
                 @Nonnull Function<? super E, Map<String, String>> toMeta) {
-            this.iterator = requireNonNull(iterator);
-            this.toId = requireNonNull(toId);
-            this.toData = requireNonNull(toData);
-            this.toMeta = requireNonNull(toMeta);
+            this.iterator = requireNonNull(iterator, "iterator");
+            this.toId = requireNonNull(toId, "id extractor");
+            this.toData = requireNonNull(toData, "data extractor");
+            this.toMeta = requireNonNull(toMeta, "meta extractor");
         }
 
         private void checkSeriesState() throws IllegalStateException {
             if (current == null) {
-                throw new IllegalStateException("Series");
+                throw new IllegalStateException(NEXT_ISE);
             }
         }
 
@@ -411,14 +575,14 @@ final class TsCursors {
 
         @Override
         public IteratingCursor<E, ID> filter(Predicate<? super ID> predicate) {
-            iterator = compose(iterator, toId, requireNonNull(predicate));
+            iterator = compose(iterator, toId, requireNonNull(predicate, ID_FILTER_NPE));
             return this;
         }
 
         @Override
         public <Z> IteratingCursor<E, Z> transform(Function<? super ID, ? extends Z> function) {
             IteratingCursor<E, Z> result = (IteratingCursor<E, Z>) this;
-            result.toId = toId.andThen(requireNonNull(function));
+            result.toId = toId.andThen(requireNonNull(function, ID_TRANSFORMER_NPE));
             return result;
         }
     }

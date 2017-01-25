@@ -16,12 +16,14 @@
  */
 package ec.tss.tsproviders.cursor;
 
+import ec.tss.tsproviders.utils.FunctionWithIO;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
@@ -240,5 +242,13 @@ public interface TsCursor<ID> extends Closeable {
     @Nonnull
     static <E> TsCursor<E> from(@Nonnull Iterator<E> iterator) {
         return new TsCursors.IteratingCursor<>(iterator, Function.identity(), TsCursors.NO_DATA, TsCursors.NO_META);
+    }
+
+    @Nonnull
+    static <KEY, ID> TsCursor<ID> withCache(
+            @Nonnull ConcurrentMap<KEY, Object> cache,
+            @Nonnull KEY key,
+            @Nonnull FunctionWithIO<? super KEY, ? extends TsCursor<ID>> loader) throws IOException {
+        return TsCursors.getOrLoad(cache, key, loader);
     }
 }

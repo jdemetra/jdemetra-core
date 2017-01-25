@@ -16,16 +16,11 @@
  */
 package ec.tss.tsproviders.cube;
 
-import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tss.tsproviders.cursor.TsCursor;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.concurrent.Immutable;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
@@ -112,7 +107,7 @@ final class CubeAccessors {
         public TsCursor<CubeId> getAllSeriesWithData(CubeId ref) throws IOException {
             if (cacheEnabled && !ref.isSeries()) {
                 if (ref.getLevel() == cacheLevel) {
-                    return getCursorFromCache(cache, ref, super::getAllSeriesWithData);
+                    return TsCursor.withCache(cache, ref, super::getAllSeriesWithData);
                 } else {
                     CubeId ancestor = ref.getAncestor(cacheLevel);
                     if (ancestor != null) {
@@ -133,116 +128,5 @@ final class CubeAccessors {
             }
             return super.getSeriesWithData(ref);
         }
-
-        //<editor-fold defaultstate="collapsed" desc="Implementation details">
-        private static TsCursor<CubeId> getCursorFromCache(ConcurrentMap<CubeId, Object> cache, CubeId key, CacheLoader loader) throws IOException {
-            List<TsItem> value = (List<TsItem>) cache.get(key);
-            return value != null
-                    ? TsCursor.from(value.iterator(), TsItem::getData, TsItem::getMetadata).transform(TsItem::getId)
-                    : new CacheLoadingCursor(loader.load(key), key, cache);
-        }
-
-        private interface CacheLoader {
-
-            TsCursor<CubeId> load(CubeId key) throws IOException;
-        }
-
-        private static final class CacheLoadingCursor implements TsCursor<CubeId> {
-
-            private final TsCursor<CubeId> delegate;
-            private final CubeId key;
-            private final ConcurrentMap<CubeId, Object> cache;
-            private final List<TsItem> items;
-            private boolean closed = false;
-            private TsItem currentItem;
-
-            private CacheLoadingCursor(TsCursor<CubeId> delegate, CubeId key, ConcurrentMap<CubeId, Object> cache) {
-                this.delegate = delegate;
-                this.key = key;
-                this.cache = cache;
-                this.items = new ArrayList<>();
-                this.closed = false;
-                this.currentItem = null;
-            }
-
-            @Override
-            public boolean isClosed() throws IOException {
-                return closed;
-            }
-
-            @Override
-            public Map<String, String> getMetaData() throws IOException {
-                // FIXME: add metadata in cache
-                return delegate.getMetaData();
-            }
-
-            @Override
-            public boolean nextSeries() throws IOException {
-                if (delegate.nextSeries()) {
-                    currentItem = fetchCurrentSeries();
-                    return true;
-                }
-                currentItem = null;
-                return false;
-            }
-
-            @Override
-            public CubeId getSeriesId() throws IOException {
-                return currentItem.getId();
-            }
-
-            @Override
-            public Map<String, String> getSeriesMetaData() throws IOException {
-                return currentItem.getMetadata();
-            }
-
-            @Override
-            public OptionalTsData getSeriesData() throws IOException {
-                return currentItem.getData();
-            }
-
-            @Override
-            public void close() throws IOException {
-                closed = true;
-                while (delegate.nextSeries()) {
-                    fetchCurrentSeries();
-                }
-                cache.put(key, items);
-                delegate.close();
-            }
-
-            private TsItem fetchCurrentSeries() throws IOException {
-                TsItem item = new TsItem(delegate.getSeriesId(), delegate.getSeriesMetaData(), delegate.getSeriesData());
-                items.add(item);
-                return item;
-            }
-        }
-
-        @Immutable
-        private static final class TsItem {
-
-            private final CubeId id;
-            private final Map<String, String> metadata;
-            private final OptionalTsData data;
-
-            public TsItem(CubeId id, Map<String, String> metadata, OptionalTsData data) {
-                this.id = id;
-                this.metadata = metadata;
-                this.data = data;
-            }
-
-            public CubeId getId() {
-                return id;
-            }
-
-            public OptionalTsData getData() {
-                return data;
-            }
-
-            public Map<String, String> getMetadata() {
-                return metadata;
-            }
-        }
-        //</editor-fold>
     }
 }

@@ -48,7 +48,17 @@ import java.util.function.Supplier;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
+import ec.tss.tsproviders.cursor.TsCursors.CachingCursor;
+import ec.tss.tsproviders.cursor.TsCursors.XCollection;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import static ec.tss.tsproviders.cursor.TsCursors.CLOSE_ISE;
+import static ec.tss.tsproviders.cursor.TsCursors.ID_FILTER_NPE;
+import static ec.tss.tsproviders.cursor.TsCursors.NEXT_ISE;
 import static com.google.common.collect.Iterators.forArray;
+import static ec.tss.tsproviders.cursor.TsCursors.CLOSE_HANDLER_NPE;
+import static ec.tss.tsproviders.cursor.TsCursors.ID_TRANSFORMER_NPE;
+import static ec.tss.tsproviders.cursor.TsCursors.META_DATA_NPE;
 
 /**
  *
@@ -72,9 +82,6 @@ public class TsCursorsTest {
         try (EmptyCursor cursor = new EmptyCursor()) {
             assertThat(cursor.getMetaData()).isEmpty();
             assertThat(cursor.nextSeries()).isFalse();
-            assertThatThrownBy(() -> cursor.getSeriesId()).isInstanceOf(IllegalStateException.class);
-            assertThatThrownBy(() -> cursor.getSeriesData()).isInstanceOf(IllegalStateException.class);
-            assertThatThrownBy(() -> cursor.getSeriesMetaData()).isInstanceOf(IllegalStateException.class);
             assertApi(cursor);
         }
 
@@ -197,7 +204,7 @@ public class TsCursorsTest {
     public void testTransformingCursor() throws IOException {
         Supplier<TsCursor<String>> delegateFactory = () -> TsCursor.from(forArray("hello", "world"));
 
-        assertThatThrownBy(() -> delegateFactory.get().transform(null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> delegateFactory.get().transform(null)).isInstanceOf(NullPointerException.class).hasMessage(ID_TRANSFORMER_NPE);
 
         try (TransformingCursor<String, String> cursor = new TransformingCursor<>(delegateFactory.get(), goodIdFunc)) {
             List<String> ids = new ArrayList<>();
@@ -215,7 +222,7 @@ public class TsCursorsTest {
     public void testFilteringCursor() throws IOException {
         Supplier<TsCursor<String>> delegateFactory = () -> TsCursor.from(forArray("hello", "world"));
 
-        assertThatThrownBy(() -> delegateFactory.get().filter(null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> delegateFactory.get().filter(null)).isInstanceOf(NullPointerException.class).hasMessage(ID_FILTER_NPE);
 
         try (FilteringCursor<String> cursor = new FilteringCursor<>(delegateFactory.get(), o -> o.startsWith("w"))) {
             List<String> ids = new ArrayList<>();
@@ -229,7 +236,7 @@ public class TsCursorsTest {
     public void testMetaDataCursor() throws IOException {
         Supplier<TsCursor<String>> delegateFactory = () -> TsCursor.from(forArray("hello", "world"));
 
-        assertThatThrownBy(() -> delegateFactory.get().withMetaData(null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> delegateFactory.get().withMetaData(null)).isInstanceOf(NullPointerException.class).hasMessage(META_DATA_NPE);
 
         try (WithMetaDataCursor<String> cursor = new WithMetaDataCursor<>(delegateFactory.get(), Collections.singletonMap("key", "value"))) {
             assertThat(cursor.getMetaData()).containsExactly(Maps.immutableEntry("key", "value"));
@@ -241,7 +248,7 @@ public class TsCursorsTest {
     public void testOnCloseCursor() throws IOException {
         Supplier<TsCursor<String>> delegateFactory = () -> TsCursor.from(forArray("hello", "world"));
 
-        assertThatThrownBy(() -> delegateFactory.get().onClose(null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> delegateFactory.get().onClose(null)).isInstanceOf(NullPointerException.class).hasMessage(CLOSE_HANDLER_NPE);
 
         ResourceWatcher<?> watcher = ResourceWatcher.usingId();
         try (OnCloseCursor<?> cursor = new OnCloseCursor<>(delegateFactory.get(), watcher.watchAsCloseable("test"))) {
@@ -256,6 +263,18 @@ public class TsCursorsTest {
                             .hasSize(1)
                             .hasAtLeastOneElementOfType(SecondIO.class);
                 });
+    }
+
+    @Test
+    public void testCachingCursor() throws IOException {
+        Supplier<TsCursor<String>> delegateFactory = () -> TsCursor.from(forArray("hello", "world"));
+
+        ConcurrentMap<String, Object> cache = new ConcurrentHashMap<>();
+        try (CachingCursor<String, ?> cursor = new CachingCursor<>(delegateFactory.get(), "key", cache)) {
+            assertApi(cursor);
+        }
+        assertThat(cache).containsOnlyKeys("key");
+        assertThat(cache.get("key")).isInstanceOf(XCollection.class);
     }
 
     private static <ID> void assertNextSeries(InMemoryCursor<ID> cursor, ID id, OptionalTsData data, Map<String, String> meta) {
@@ -273,33 +292,35 @@ public class TsCursorsTest {
 
     @SuppressWarnings("null")
     private static void assertInputNotNull(TsCursor<?> cursor) {
-        assertThatThrownBy(() -> cursor.filter(null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> cursor.onClose(null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> cursor.transform(null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> cursor.withMetaData(null)).isInstanceOf(NullPointerException.class);
-    }
-
-    private static void assertCloseState(TsCursor<?> cursor) throws IOException {
-        assertThat(cursor.isClosed()).isFalse();
-        cursor.close();
-        assertThat(cursor.isClosed()).isTrue();
-        assertThatThrownBy(() -> cursor.getMetaData()).isInstanceOf(IllegalStateException.class);
-        assertThatThrownBy(() -> cursor.nextSeries()).isInstanceOf(IllegalStateException.class);
-        assertThatThrownBy(() -> cursor.getSeriesId()).isInstanceOf(IllegalStateException.class);
-        assertThatThrownBy(() -> cursor.getSeriesData()).isInstanceOf(IllegalStateException.class);
-        assertThatThrownBy(() -> cursor.getSeriesMetaData()).isInstanceOf(IllegalStateException.class);
-        assertThat(cursor.filter(o -> true)).isNotNull();
-        assertThat(cursor.onClose(() -> {
-        })).isNotNull();
-        assertThat(cursor.transform(identity())).isNotNull();
-        assertThat(cursor.withMetaData(Collections.emptyMap())).isNotNull();
+        assertThatThrownBy(() -> cursor.filter(null)).isInstanceOf(NullPointerException.class).hasMessage(ID_FILTER_NPE);
+        assertThatThrownBy(() -> cursor.onClose(null)).isInstanceOf(NullPointerException.class).hasMessage(CLOSE_HANDLER_NPE);
+        assertThatThrownBy(() -> cursor.transform(null)).isInstanceOf(NullPointerException.class).hasMessage(ID_TRANSFORMER_NPE);
+        assertThatThrownBy(() -> cursor.withMetaData(null)).isInstanceOf(NullPointerException.class).hasMessage(META_DATA_NPE);
     }
 
     private static void assertNoMoreSeriesState(TsCursor<?> cursor) throws IOException {
         assertThat(cursor.isClosed()).isFalse();
         readAll(cursor);
-        assertThatThrownBy(() -> cursor.getSeriesId()).isInstanceOf(IllegalStateException.class);
-        assertThatThrownBy(() -> cursor.getSeriesData()).isInstanceOf(IllegalStateException.class);
-        assertThatThrownBy(() -> cursor.getSeriesMetaData()).isInstanceOf(IllegalStateException.class);
+        cursor.nextSeries(); // subsequent calls must have no effects
+        assertThatThrownBy(() -> cursor.getSeriesId()).isInstanceOf(IllegalStateException.class).hasMessage(NEXT_ISE);
+        assertThatThrownBy(() -> cursor.getSeriesData()).isInstanceOf(IllegalStateException.class).hasMessage(NEXT_ISE);
+        assertThatThrownBy(() -> cursor.getSeriesMetaData()).isInstanceOf(IllegalStateException.class).hasMessage(NEXT_ISE);
+    }
+
+    private static void assertCloseState(TsCursor<?> cursor) throws IOException {
+        assertThat(cursor.isClosed()).isFalse();
+        cursor.close();
+        cursor.close(); // subsequent calls must have no effects
+        assertThat(cursor.isClosed()).isTrue();
+        assertThatThrownBy(() -> cursor.getMetaData()).isInstanceOf(IllegalStateException.class).hasMessage(CLOSE_ISE);
+        assertThatThrownBy(() -> cursor.nextSeries()).isInstanceOf(IllegalStateException.class).hasMessage(CLOSE_ISE);
+        assertThatThrownBy(() -> cursor.getSeriesId()).isInstanceOf(IllegalStateException.class).hasMessage(CLOSE_ISE);
+        assertThatThrownBy(() -> cursor.getSeriesData()).isInstanceOf(IllegalStateException.class).hasMessage(CLOSE_ISE);
+        assertThatThrownBy(() -> cursor.getSeriesMetaData()).isInstanceOf(IllegalStateException.class).hasMessage(CLOSE_ISE);
+        assertThat(cursor.filter(o -> true)).isNotNull();
+        assertThat(cursor.onClose(() -> {
+        })).isNotNull();
+        assertThat(cursor.transform(identity())).isNotNull();
+        assertThat(cursor.withMetaData(Collections.emptyMap())).isNotNull();
     }
 }

@@ -22,7 +22,8 @@ import static ec.tss.tsproviders.cursor.TsCursors.NO_META;
 import java.io.IOException;
 import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyMap;
-import static java.util.function.Function.identity;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 
@@ -56,6 +57,15 @@ public class TsCursorTest {
         assertThatThrownBy(() -> TsCursor.from(null, NO_DATA, NO_META)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> TsCursor.from(emptyIterator(), null, NO_META)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> TsCursor.from(emptyIterator(), NO_DATA, null)).isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    @SuppressWarnings("null")
+    public void testCachingFactory() {
+        ConcurrentMap<String, Object> cache = new ConcurrentHashMap<>();
+        assertThatThrownBy(() -> TsCursor.withCache(null, "", o -> TsCursor.empty())).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> TsCursor.withCache(cache, null, o -> TsCursor.empty())).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> TsCursor.withCache(cache, "", null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
