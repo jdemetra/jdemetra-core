@@ -67,6 +67,8 @@ public final class TableAsCubeAccessor implements CubeAccessor {
     @NotThreadSafe
     public interface TableCursor extends AutoCloseable {
 
+        Map<String, String> getMetaData() throws Exception;
+
         boolean isClosed() throws Exception;
 
         boolean nextRow() throws Exception;
@@ -202,7 +204,11 @@ public final class TableAsCubeAccessor implements CubeAccessor {
 
         @Override
         public Map<String, String> getMetaData() throws IOException {
-            return Collections.emptyMap();
+            try {
+                return cursor.getMetaData();
+            } catch (Exception ex) {
+                throw propagateIOException(ex);
+            }
         }
 
         @Override
