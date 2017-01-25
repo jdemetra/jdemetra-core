@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -170,6 +171,21 @@ public class MetaData implements Map<String, String>, Cloneable, IModifiable {
     @Override
     public void resetDirty() {
         dirty_=false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj || (obj instanceof MetaData && equals((MetaData) obj));        
+    }
+    
+    private boolean equals(MetaData other) {
+        return this.dirty_ == other.dirty_ 
+                && this.props_.equals(other.props_);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(props_, dirty_);
     }
     
     public static boolean isNullOrEmpty(MetaData md){

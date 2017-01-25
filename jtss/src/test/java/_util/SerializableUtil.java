@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.tss.tsproviders;
+package _util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,13 +27,13 @@ import java.io.Serializable;
  *
  * @author Philippe Charles
  */
-final class Util {
+public final class SerializableUtil {
 
-    private Util() {
+    private SerializableUtil() {
         // static class
     }
 
-    static <T extends Serializable> byte[] toBytes(T obj) throws IOException {
+    public static <T extends Serializable> byte[] toBytes(T obj) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeObject(obj);
@@ -41,13 +41,13 @@ final class Util {
         return baos.toByteArray();
     }
 
-    static <T extends Serializable> T fromBytes(byte[] bytes) throws IOException, ClassNotFoundException {
+    public static <T extends Serializable> T fromBytes(byte[] bytes) throws IOException, ClassNotFoundException {
         try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
             return (T) ois.readObject();
         }
     }
 
-    static <T extends Serializable> T fromToBytes(T obj) throws IOException, ClassNotFoundException {
+    public static <T extends Serializable> T fromToBytes(T obj) throws IOException, ClassNotFoundException {
         return (T) fromBytes(toBytes(obj));
     }
 }
