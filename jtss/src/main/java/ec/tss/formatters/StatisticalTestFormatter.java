@@ -46,11 +46,6 @@ public class StatisticalTestFormatter implements IStringFormatter {
     }
     
     @Override
-    public int getDefaultRepresentationLength(){
-        return 2;
-    }
-    
-    @Override
     public String format(Object obj, int item) {
 
         StatisticalTest test = (StatisticalTest)obj;
