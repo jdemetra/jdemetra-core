@@ -138,7 +138,7 @@ public class BasicConfiguration {
         "det", "det_f", "cal", "cal_f", "tde", "tde_f", "mhe", "mhe_f", "ee", "ee_f",
         "omhe", "omhe_f", "out", "out_f", "out_i", "out_i_f", "out_t", "out_t_f", "out_s",
         "out_s_f", "reg", "reg_f", "reg_t", "reg_t_f", "reg_s", "reg_s_f", "reg_i", "reg_i_f",
-        "reg_sa", "reg_sa_f", "reg_y", "reg_y_f", "fullresiduals",
+        "reg_sa", "reg_sa_f", "reg_y", "reg_y_f", "fullresiduals", "*_f", "decomposition.d-tables.*",
         "decomposition.y_lin",
         "decomposition.y_lin_f",
         "decomposition.t_lin",

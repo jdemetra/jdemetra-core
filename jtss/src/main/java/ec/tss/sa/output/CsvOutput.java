@@ -58,7 +58,7 @@ public class CsvOutput implements IOutput<SaDocument<ISaSpecification>> {
 
     @Override
     public void end(Object context) throws Exception {
-        for (String item : config_.getSeries()) {
+        for (String item : summary_.getItems()) {
             String nfile = config_.getFilePrefix();
             nfile += "_" + item.replace('.', '_');
             nfile = Paths.changeExtension(nfile, "csv");

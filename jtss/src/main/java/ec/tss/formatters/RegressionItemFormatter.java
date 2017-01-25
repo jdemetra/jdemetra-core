@@ -54,6 +54,11 @@ public class RegressionItemFormatter implements IStringFormatter {
     }
 
     @Override
+    public int getDefaultRepresentationLength(){
+        return 3;
+    }
+
+    @Override
     public String format(Object obj, int item) {
 
         RegressionItem reg = (RegressionItem) obj;

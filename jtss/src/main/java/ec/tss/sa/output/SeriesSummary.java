@@ -13,15 +13,17 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.sa.output;
 
 import ec.tss.sa.documents.SaDocument;
 import ec.tstoolkit.algorithm.IProcResults;
+import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -30,7 +32,7 @@ import java.util.Map;
 public class SeriesSummary {
 
     public final String Name;
-    private final Map<String, TsData> series_ = new HashMap<>();
+    private final Map<String, TsData> series_ = new LinkedHashMap<>();
 
     public SeriesSummary(String[] items, String name, SaDocument<?> document) {
         Name = name;
@@ -41,9 +43,13 @@ public class SeriesSummary {
         for (String item : items) {
             item = item.toLowerCase();
             if (results != null) {
-                series_.put(item, results.getData(item, TsData.class));
-            }
-            else {
+                if (InformationSet.hasWildCards(item)) {
+                    Map<String, TsData> all = results.searchAll(item, TsData.class);
+                    all.keySet().forEach(s->series_.put(s, results.getData(s, TsData.class)));
+                } else {
+                    series_.put(item, results.getData(item, TsData.class));
+                }
+            } else {
                 series_.put(item, null);
             }
 
@@ -53,9 +59,12 @@ public class SeriesSummary {
     public TsData getSeries(String name) {
         if (series_.containsKey(name)) {
             return series_.get(name);
-        }
-        else {
+        } else {
             return null;
         }
+    }
+
+    void fill(Set<String> set) {
+        set.addAll(series_.keySet());
     }
 }

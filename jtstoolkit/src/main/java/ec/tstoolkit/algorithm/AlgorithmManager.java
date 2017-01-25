@@ -19,10 +19,10 @@ package ec.tstoolkit.algorithm;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.information.Information;
 import ec.tstoolkit.information.InformationSet;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The algorithm manager class offer services for generic algorithms:
@@ -33,18 +33,25 @@ import java.util.List;
  *
  *
  * @author Jean Palate
- * @param <S>
- * @param <I>
- * @param <O>
- * @param <D>
+ * 
+ * Manages Processing factories (P), which produce results R from input I and specification S
+ * Objects of this class will also contains diagnostic classes (T) that can analyse the results
+ * and output factory classes (O) that can handle document objects (D) corresponding to a processing
+ * @param <S> Specification class
+ * @param <I> Input class
+ * @param <R> Results class
+ * @param <O> Output class
+ * @param <P> Processing factory class
+ * @param <D> Document class
+ * @param <T> Diagnostics class
  */
 @Development(status = Development.Status.Alpha)
 public abstract class AlgorithmManager<S extends IProcSpecification, I, R extends IProcResults, D extends IProcDocument<? extends S, ?, ? extends R>, P extends IProcessingFactory<? extends S, I, R>, O extends IOutputFactory<? extends D>, T extends IDiagnosticsFactory<R>>
         implements IAlgorithmManager<S, I, R, P> {
 
-    private final ArrayList<P> processors_ = new ArrayList<>();
-    private final ArrayList<O> output_ = new ArrayList<>();
-    private final ArrayList<T> tests_ = new ArrayList<>();
+    private final List<P> processors_ = new CopyOnWriteArrayList<>();
+    private final List<O> output_ = new CopyOnWriteArrayList<>();
+    private final List<T> tests_ = new CopyOnWriteArrayList<>();
 
     public static InformationSet getActiveContext() {
         return null;
@@ -52,11 +59,9 @@ public abstract class AlgorithmManager<S extends IProcSpecification, I, R extend
 
     public InformationSet diagnostic(R sa) {
         InformationSet summary = new InformationSet();
-        synchronized (tests_) {
-            for (IDiagnosticsFactory<R> diag : tests_) {
-                if (diag.isEnabled()) {
-                    summary.add(create(diag, sa));
-                }
+        for (IDiagnosticsFactory<R> diag : tests_) {
+            if (diag.isEnabled()) {
+                summary.add(create(diag, sa));
             }
         }
         return summary;
@@ -86,21 +91,15 @@ public abstract class AlgorithmManager<S extends IProcSpecification, I, R extend
     }
 
     public void sortProcessors(Comparator<P> cmp) {
-        synchronized (processors_) {
-            Collections.sort(processors_, cmp);
-        }
+        Collections.sort(processors_, cmp);
     }
 
     public void sortOutput(Comparator<O> cmp) {
-        synchronized (output_) {
-            Collections.sort(output_, cmp);
-        }
+        Collections.sort(output_, cmp);
     }
 
     public void sortDiagnostics(Comparator<T> cmp) {
-        synchronized (tests_) {
-            Collections.sort(tests_, cmp);
-        }
+        Collections.sort(tests_, cmp);
     }
 
     public <T extends S> R process(T spec, I input) {
@@ -108,67 +107,53 @@ public abstract class AlgorithmManager<S extends IProcSpecification, I, R extend
     }
 
     public <T extends S> R process(T spec, I input, ProcessingContext context) {
-        synchronized (processors_) {
-            for (IProcessingFactory processor : processors_) {
-                if (processor.canHandle(spec)) {
-                    IProcessing<I, R> processing = processor.generateProcessing(spec, context);
-                    return processing.process(input);
-                }
+        for (IProcessingFactory processor : processors_) {
+            if (processor.canHandle(spec)) {
+                IProcessing<I, R> processing = processor.generateProcessing(spec, context);
+                return processing.process(input);
             }
         }
         return null;
     }
 
     public <T extends S> IProcessingFactory find(T spec) {
-        synchronized (processors_) {
-            for (IProcessingFactory processor : processors_) {
-                if (processor.canHandle(spec)) {
-                    return processor;
-                }
+        for (IProcessingFactory processor : processors_) {
+            if (processor.canHandle(spec)) {
+                return processor;
             }
-            return null;
         }
+        return null;
     }
 
     @Override
     public List<P> getProcessors() {
-        synchronized (processors_) {
-            return Collections.unmodifiableList(processors_);
-        }
+        return Collections.unmodifiableList(processors_);
     }
 
     public List<O> getOutput() {
-        synchronized (output_) {
-            return Collections.unmodifiableList(output_);
-        }
+        return Collections.unmodifiableList(output_);
     }
 
     public List<T> getDiagnostics() {
-        synchronized (tests_) {
-            return Collections.unmodifiableList(tests_);
-        }
+        return Collections.unmodifiableList(tests_);
     }
 
     public P getProcessor(AlgorithmDescriptor desc) {
         if (desc == null) {
             return null;
         }
-        synchronized (processors_) {
-            for (P processor : processors_) {
-                if (desc.isCompatible(processor.getInformation())) {
-                    return processor;
-                }
+        for (P processor : processors_) {
+            if (desc.isCompatible(processor.getInformation())) {
+                return processor;
             }
-            return null;
         }
+        return null;
     }
 
     protected T addDiagnostics(String module, String impl) {
         T diag = (T) ec.tstoolkit.design.InterfaceLoader.create(module, IDiagnosticsFactory.class, impl);
         if (diag != null) {
-            synchronized (tests_) {
-                tests_.add(diag);
-            }
+            tests_.add(diag);
         }
         return diag;
     }
@@ -176,9 +161,7 @@ public abstract class AlgorithmManager<S extends IProcSpecification, I, R extend
     protected O addOutput(String module, String impl) {
         O o = (O) ec.tstoolkit.design.InterfaceLoader.create(module, IOutputFactory.class, impl);
         if (o != null) {
-            synchronized (output_) {
-                output_.add(o);
-            }
+            output_.add(o);
         }
         return o;
     }
@@ -189,9 +172,7 @@ public abstract class AlgorithmManager<S extends IProcSpecification, I, R extend
                 return;
             }
         }
-        synchronized (tests_) {
-            tests_.add(diag);
-        }
+        tests_.add(diag);
     }
 
     protected void addOutput(O diag) {
@@ -200,15 +181,11 @@ public abstract class AlgorithmManager<S extends IProcSpecification, I, R extend
                 return;
             }
         }
-        synchronized (output_) {
-            output_.add(diag);
-        }
+        output_.add(diag);
     }
 
     protected void addProcessor(P proc) {
-        synchronized (processors_) {
-            processors_.add(proc);
-        }
+        processors_.add(proc);
     }
 
     public AlgorithmManager() {
@@ -216,20 +193,16 @@ public abstract class AlgorithmManager<S extends IProcSpecification, I, R extend
 
     @Override
     public void dispose() {
-        synchronized (output_) {
-            for (O output : output_) {
-                output.dispose();
-            }
+        for (O output : output_) {
+            output.dispose();
         }
         for (T t : tests_) {
             for (T diag : tests_) {
                 diag.dispose();
             }
         }
-        synchronized (processors_) {
-            for (P processor : processors_) {
-                processor.dispose();
-            }
+        for (P processor : processors_) {
+            processor.dispose();
         }
     }
 }
