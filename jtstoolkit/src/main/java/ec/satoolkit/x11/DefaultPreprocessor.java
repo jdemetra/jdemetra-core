@@ -60,7 +60,10 @@ public class DefaultPreprocessor extends DefaultX11Algorithm implements
     public void preprocess(InformationSet info) {
         TsData s = filter_.getCorrectedSeries(false);
         TsData fs = filter_.getCorrectedForecasts(false);
+        TsData bs = filter_.getCorrectedBackcasts(false);
         TsData sall = s.update(fs);
+        if (bs != null)
+            sall=bs.update(sall);
         InformationSet atables = info.subSet(X11Kernel.A);
         InformationSet btables = info.subSet(X11Kernel.B);
         btables.set(X11Kernel.B1, sall);
@@ -70,8 +73,8 @@ public class DefaultPreprocessor extends DefaultX11Algorithm implements
         // complete the information sets using the pre-processing model
         TsDomain domain = model_.description.getSeriesDomain();
         // extend the domain for forecasts
-        int nf = context.getForecastHorizon(), ny = context.getFrequency();
-        domain = domain.extend(0, nf == 0 ? ny : nf);
+        int nf = context.getForecastHorizon(), nb=context.getBackcastHorizon(), ny = context.getFrequency();
+        domain = domain.extend(nb, nf == 0 ? ny : nf);
 
         TsData mh = model_.movingHolidaysEffect(domain);
         TsData td = model_.tradingDaysEffect(domain);

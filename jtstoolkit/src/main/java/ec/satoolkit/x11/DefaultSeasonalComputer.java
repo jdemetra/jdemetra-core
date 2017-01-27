@@ -88,7 +88,7 @@ class DefaultSeasonalComputer extends DefaultX11Algorithm implements
 
     private IFiltering selectMsr(TsData s, InformationSet info) {
         // remove incomplete year
-        TsDomain rdomain = s.getDomain().drop(0, context.getForecastHorizon());
+        TsDomain rdomain = s.getDomain().drop(context.getBackcastHorizon(), context.getForecastHorizon());
         SymmetricFilter f7 = FilterFactory.makeSymmetricFilter(7);
         DefaultSeasonalFilteringStrategy fseas = new DefaultSeasonalFilteringStrategy(
                 f7, new FilteredMeanEndPoints(f7));
@@ -220,7 +220,7 @@ class DefaultSeasonalComputer extends DefaultX11Algorithm implements
     }
 
     private void generateMsr(TsData s, InformationSet info) {
-        TsDomain rdomain = s.getDomain().drop(0, context.getForecastHorizon());
+        TsDomain rdomain = s.getDomain().drop(context.getBackcastHorizon(), context.getForecastHorizon());
         SymmetricFilter f7 = FilterFactory.makeSymmetricFilter(7);
         DefaultSeasonalFilteringStrategy fseas = new DefaultSeasonalFilteringStrategy(
                 f7, new FilteredMeanEndPoints(f7));

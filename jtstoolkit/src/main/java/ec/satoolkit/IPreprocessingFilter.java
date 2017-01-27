@@ -78,6 +78,15 @@ public interface IPreprocessingFilter {
     TsData getCorrectedForecasts(boolean transformed);
 
     /**
+     * Gets the backcasts of the corrected series
+     *
+     * @param transformed True if the (log-...)transformed series is returned,
+     * false otherwise (series in the original scale).
+     * @return A new time series is returned.
+     */
+    @NewObject
+    TsData getCorrectedBackcasts(boolean transformed);
+    /**
      * Gets the correction that will be associated to a given component.
      *
      * @param domain The domain for which the correction will be computed.

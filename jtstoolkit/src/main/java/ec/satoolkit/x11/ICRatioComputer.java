@@ -35,7 +35,8 @@ public class ICRatioComputer {
         TsData sc = strategy.process(s, s.getDomain());
         TsData si = context.op(s, sc);
         int nf = context.getForecastHorizon();
-        TsDomain gdom = nf == 0 ? null : sc.getDomain().drop(0, nf);
+        int nb = context.getBackcastHorizon();
+        TsDomain gdom = (nf == 0 && nb == 0) ? null : sc.getDomain().drop(nb, nf);
         double gc = SeriesEvolution.calcAbsMeanVariations(sc, gdom, 1,
                 context.isMultiplicative());
         double gi = SeriesEvolution.calcAbsMeanVariations(si, gdom, 1,

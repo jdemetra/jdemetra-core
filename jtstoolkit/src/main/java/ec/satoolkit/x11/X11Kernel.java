@@ -150,7 +150,7 @@ public class X11Kernel implements ISeriesDecomposer {
         TsData b4d = toolkit.getContext().op(b3, b4anorm);
 
         ecorr = toolkit.getExtremeValuesCorrector();
-        ecorr.setForecasthorizont(toolkit.getContext().getForecastHorizon());
+//        ecorr.setForecasthorizont(toolkit.getContext().getForecastHorizon());
         if (ecorr instanceof CochranDependentExtremeValuesCorrector) {
             ((CochranDependentExtremeValuesCorrector) ecorr).testCochran(b4d);
         }
