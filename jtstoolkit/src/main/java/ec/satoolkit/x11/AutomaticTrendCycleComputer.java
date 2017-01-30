@@ -53,7 +53,8 @@ class AutomaticTrendCycleComputer extends DefaultX11Algorithm implements
         TsData sc = strategy.process(s, s.getDomain());
         TsData si = op(s, sc);
         int nf = context.getForecastHorizon();
-        TsDomain gdom = nf == 0 ? null : sc.getDomain().drop(0, nf);
+        int nb = context.getBackcastHorizon();
+        TsDomain gdom = (nf == 0 && nb == 0) ? null : sc.getDomain().drop(nb, nf);
         double gc = SeriesEvolution.calcAbsMeanVariations(sc, gdom, 1,
                 isMultiplicative());
         double gi = SeriesEvolution.calcAbsMeanVariations(si, gdom, 1,

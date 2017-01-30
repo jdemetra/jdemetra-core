@@ -54,7 +54,7 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
     protected double[] stdev;
     protected TsData scur, scorr, sweights;
     protected boolean isexcludefcast;
-    protected int forcasthorizont;
+    //protected int forcasthorizont;
 
     /**
      * Searches the extreme values in a given series
@@ -419,7 +419,7 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
     private TsData excludeforecast(TsData tsWithForcast) {
         TsData tsWithoutforCast;
         if (isexcludefcast) {
-            tsWithoutforCast = tsWithForcast.drop(0, forcasthorizont);
+            tsWithoutforCast = tsWithForcast.drop(context.getBackcastHorizon(),context.getForecastHorizon());
             return tsWithoutforCast;
         } else {
             return tsWithForcast;
@@ -436,15 +436,15 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
         return isexcludefcast;
     }
 
-    @Override
-    public void setForecasthorizont(int forcasthorizont) {
-        this.forcasthorizont = forcasthorizont;
-
-    }
-
-    @Override
-    public int getForecasthorizont() {
-        return this.forcasthorizont;
-
-    }
+//    @Override
+//    public void setForecasthorizont(int forcasthorizont) {
+//        this.forcasthorizont = forcasthorizont;
+//
+//    }
+//
+//    @Override
+//    public int getForecasthorizont() {
+//        return this.forcasthorizont;
+//
+//    }
 }

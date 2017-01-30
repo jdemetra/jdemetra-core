@@ -49,8 +49,8 @@ public class X11Toolkit extends BaseX11Algorithm implements
      * @return A default toolkit, to be used by an X11Kernel
      */
     public static X11Toolkit create(X11Specification spec) {
-        X11Context context = new X11Context(spec.getMode(), spec
-                .getForecastHorizon());
+        X11Context context = new X11Context(spec.getMode(), 
+                spec.getBackcastHorizon(), spec.getForecastHorizon());
 
         X11Toolkit toolkit = new X11Toolkit(context);
 

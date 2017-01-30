@@ -32,7 +32,7 @@ public class DefaultPreprocessingFilter implements IPreprocessingFilter {
     private PreprocessingModel model_;
     @Deprecated
     private double mean_;
-    private int nf_ = -2;
+    private int nf_ = -2, nb_=-2;
 
     public int getForecastHorizon() {
         return nf_;
@@ -40,6 +40,14 @@ public class DefaultPreprocessingFilter implements IPreprocessingFilter {
 
     public void setForecastHorizon(int nf) {
         nf_ = nf;
+    }
+
+    public int getBackcastHorizon() {
+        return nb_;
+    }
+
+    public void setBackcastHorizon(int nb) {
+        nb_ = nb;
     }
 
     @Deprecated
@@ -59,9 +67,11 @@ public class DefaultPreprocessingFilter implements IPreprocessingFilter {
         TsDomain domain = model.description.getSeriesDomain();
         int freq = domain.getFrequency().intValue();
         int nf = forecastLength(freq);
+        int nb = backcastLength(freq);
 
         int n = domain.getLength() + nf;
-        domain = new TsDomain(domain.getStart(), n);
+        
+        domain = new TsDomain(domain.getStart().minus(nb), n);
         TsData ccorr = model.deterministicEffect(domain, ComponentType.CalendarEffect);
         TsData scorr = model.deterministicEffect(domain, ComponentType.Seasonal);
         TsData corr = TsData.add(scorr, ccorr);
@@ -101,6 +111,16 @@ public class DefaultPreprocessingFilter implements IPreprocessingFilter {
         }
     }
 
+    private int backcastLength(int freq) {
+        if (nb_ == 0 || freq == 0) {
+            return 0;
+        } else if (nb_ < 0) {
+            return -freq * nb_;
+        } else {
+            return nb_;
+        }
+    }
+    
     @Override
     public TsData getCorrectedForecasts(boolean transformed) {
         if (nf_ == 0) {
@@ -112,6 +132,19 @@ public class DefaultPreprocessingFilter implements IPreprocessingFilter {
             f.apply(x -> Math.exp(x));
         }
         return f;
+    }
+
+    @Override
+    public TsData getCorrectedBackcasts(boolean transformed) {
+        if (nb_ == 0) {
+            return null;
+        }
+        int nb = backcastLength(model_.description.getFrequency());
+        TsData b = model_.linearizedBackcast(nb, true);
+        if ((!transformed) && model_.isMultiplicative()) {
+            b.apply(x -> Math.exp(x));
+        }
+        return b;
     }
 
     @Override
