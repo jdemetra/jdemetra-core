@@ -29,7 +29,7 @@ public interface IX11Algorithm {
 
     /**
      * Gives access to the current context of the X11 processing
-     * @return The current context
+     * @param context
      */
     void setContext(X11Context context);
 }

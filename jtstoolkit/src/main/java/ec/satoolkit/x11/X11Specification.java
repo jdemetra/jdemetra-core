@@ -34,7 +34,7 @@ import java.util.Objects;
 public class X11Specification implements IProcSpecification, Cloneable {
 
     public static final double DEF_LSIGMA = 1.5, DEF_USIGMA = 2.5;
-    public static final int DEF_FCASTS = -1;
+    public static final int DEF_FCASTS = -1, DEF_BCASTS = 0;
 
     public static final String MODE = "mode",
             SEASONAL = "seasonal",
@@ -42,6 +42,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
             USIGMA = "usigma",
             TRENDMA = "trendma",
             SEASONALMA = "seasonalma",
+            BCASTS = "bcasts",
             FCASTS = "fcasts",
             CALENDARSIGMA = "calendarsigma",
             SIGMAVEC="sigmavec",
@@ -55,6 +56,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
         dic.put(InformationSet.item(prefix, TRENDMA), Integer.class);
         dic.put(InformationSet.item(prefix, SEASONALMA), String[].class);
         dic.put(InformationSet.item(prefix, FCASTS), Integer.class);
+        dic.put(InformationSet.item(prefix, BCASTS), Integer.class);
         dic.put(InformationSet.item(prefix, CALENDARSIGMA), String.class);
       //  dic.put(InformationSet.item(prefix, MODE), String.class);
         dic.put(InformationSet.item(prefix, SIGMAVEC), String[].class);
@@ -66,7 +68,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
     private SeasonalFilterOption[] filters_;
     private double lsigma_ = DEF_LSIGMA, usigma_ = DEF_USIGMA;
     private int henderson_ = 0;
-    private int fcasts_ = DEF_FCASTS;
+    private int fcasts_ = DEF_FCASTS, bcasts_ = DEF_BCASTS;
     private CalendarSigma calendarsigma_ = CalendarSigma.None;
     private SigmavecOption[] sigmavec_; 
     private boolean excludefcast_= false;
@@ -74,6 +76,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
     /**
      * Number of forecasts used in X11. By default, 0. When pre-processing is
      * used, the number of forecasts corresponds usually to 1 year.
+     * Negative values correspond to full years (-3 = 3 years)
      *
      * @return the forecastsHorizon
      */
@@ -81,6 +84,15 @@ public class X11Specification implements IProcSpecification, Cloneable {
         return fcasts_;
     }
 
+    /**
+     * Number of backcasts used in X11. By default, 0.
+     * Negative values correspond to full years (-3 = 3 years)
+     *
+     * @return the backcastsHorizon
+     */
+    public int getBackcastHorizon() {
+        return bcasts_;
+    }
     /**
      * Length of the Henderson filter [trendma option in X12-Arima]. When the
      * length is 0, an automatic estimation of the length of the Henderson
@@ -207,6 +219,19 @@ public class X11Specification implements IProcSpecification, Cloneable {
     }
 
     /**
+     * Number of forecasts used in X11. By default, 0. When pre-processing is
+     * used, the number of forecasts corresponds usually to 1 year.
+     *
+     * @param backcastsHorizon The backcasts horizon to set When
+     * backcastsHorizon is negative, its absolute value corresponds to the
+     * number of years of backcasting. For example, setBackcastHorizon(-1) is
+     * equivalent to setBackcastHorizon(12) for monthly data and to
+     * setBackcastHorizon(4) for quarterly data.
+     */
+    public void setBackcastHorizon(int backcastsHorizon) {
+        this.bcasts_ = backcastsHorizon;
+    }
+    /**
      * Option of Calendarsigma[X12], specifies the calculation of the standard
      * error calculation used for outlier detection in the X11 part
      *
@@ -306,7 +331,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
     }
 
     private boolean equals(X11Specification spec) {
-        return spec.fcasts_ == fcasts_
+        return spec.fcasts_ == fcasts_ && spec.bcasts_ == bcasts_
                 && Arrays.deepEquals(spec.filters_, filters_)
                 && Arrays.deepEquals(spec.sigmavec_, sigmavec_)
                 && spec.seasonal_ == seasonal_
@@ -358,8 +383,11 @@ public class X11Specification implements IProcSpecification, Cloneable {
             }
             info.add(SEASONALMA, filters);
         }
-        if (verbose || fcasts_ != -1) {
+        if (verbose || fcasts_ != DEF_FCASTS) {
             info.add(FCASTS, fcasts_);
+        }
+        if (verbose || bcasts_ != DEF_BCASTS) {
+            info.add(BCASTS, bcasts_);
         }
 
         if (verbose || calendarsigma_ != CalendarSigma.None) {
@@ -405,6 +433,10 @@ public class X11Specification implements IProcSpecification, Cloneable {
             Integer fcasts = info.get(FCASTS, Integer.class);
             if (fcasts != null) {
                 fcasts_ = fcasts;
+            }
+            Integer bcasts = info.get(BCASTS, Integer.class);
+            if (bcasts != null) {
+                bcasts_ = bcasts;
             }
             String[] sfilters = info.get(SEASONALMA, String[].class);
             if (sfilters != null) {

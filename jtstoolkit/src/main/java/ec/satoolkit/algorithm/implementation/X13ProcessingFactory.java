@@ -61,6 +61,7 @@ public class X13ProcessingFactory extends GenericSaProcessingFactory implements 
         }
         DefaultPreprocessingFilter filter = new DefaultPreprocessingFilter();
         filter.setForecastHorizon(xspec.getX11Specification().getForecastHorizon());
+        filter.setBackcastHorizon(xspec.getX11Specification().getBackcastHorizon());
         addDecompositionStep(new X11Decomposer(xspec.getX11Specification()), filter, processing);
         addFinalStep(filter, processing);
         addDiagnosticsStep(processing);

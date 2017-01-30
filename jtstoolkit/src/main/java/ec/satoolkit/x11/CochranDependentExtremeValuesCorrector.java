@@ -27,7 +27,7 @@ public class CochranDependentExtremeValuesCorrector extends DefaultX11Algorithm
     private DecompositionMode mode_;
     private double lsig_, usig_;
     protected boolean isexcludefcast;
-    protected int forcasthorizont;
+    //protected int forcasthorizont;
 
     @Override
     /**
@@ -44,7 +44,7 @@ public class CochranDependentExtremeValuesCorrector extends DefaultX11Algorithm
         extremeValuesCorrector_.setContext(context);
         extremeValuesCorrector_.setSigma(lsig_, usig_);
         extremeValuesCorrector_.setExcludefcast(isexcludefcast);
-        extremeValuesCorrector_.setForecasthorizont(forcasthorizont);
+    //    extremeValuesCorrector_.setForecasthorizont(forcasthorizont);
         return extremeValuesCorrector_.analyse(s);
     }
 
@@ -116,13 +116,13 @@ public class CochranDependentExtremeValuesCorrector extends DefaultX11Algorithm
         return isexcludefcast;
     }
 
-    @Override
-    public void setForecasthorizont(int forcasthorizont) {
-        this.forcasthorizont = forcasthorizont;
-    }
-
-    @Override
-    public int getForecasthorizont() {
-        return forcasthorizont;
-    }
+//    @Override
+//    public void setForecasthorizont(int forcasthorizont) {
+//        this.forcasthorizont = forcasthorizont;
+//    }
+//
+//    @Override
+//    public int getForecasthorizont() {
+//        return forcasthorizont;
+//    }
 }
