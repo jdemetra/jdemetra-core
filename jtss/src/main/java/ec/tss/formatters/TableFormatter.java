@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.formatters;
 
 import ec.tss.TsMoniker;
@@ -28,6 +27,7 @@ import ec.tstoolkit.information.StatisticalTest;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -190,10 +190,17 @@ public class TableFormatter {
     }
 
     private String format(Object obj, int item) {
-
         IStringFormatter fmt;
         try {
-            fmt = dictionary.get(obj.getClass());
+            if (obj != null && obj.getClass().isArray()) {
+                Object[] array = (Object[]) obj;
+                fmt = dictionary.get(array[0].getClass());
+                Object[] rslt = Arrays.stream(array).map(i -> fmt.format(i, item)).toArray();
+                return Arrays.toString(rslt);
+            } else {
+                fmt = dictionary.get(obj.getClass());
+            }
+
             return fmt.format(obj, item);
         } catch (Exception ex) {
             String msg = ex.getMessage();

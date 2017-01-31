@@ -190,6 +190,11 @@ public final class Formatters {
     }
 
     @Nonnull
+    public static Formatter<String[]> stringArrayFormatter() {
+        return STRING_ARRAY_FORMATTER;
+    }
+
+    @Nonnull
     @SuppressWarnings("null")
     public static <X, Y> Formatter<Y> compose(@Nonnull IFormatter<X> formatter, @Nonnull Function<Y, X> before) {
         return new Wrapper<>(o -> {
@@ -346,5 +351,7 @@ public final class Formatters {
     private static final Formatter<double[]> DOUBLE_ARRAY_FORMATTER = new Wrapper<>(o -> Arrays.toString(Objects.requireNonNull(o)));
     private static final Formatter<?> OBJECT_TO_STRING_FORMATTER = new Wrapper<>(Object::toString);
     private static final Formatter<? extends Enum<?>> ENUM_NAME_FORMATTER = new Wrapper<>(Enum::name);
+    private static final Formatter<String[]> STRING_ARRAY_FORMATTER = new Wrapper<>(o -> Arrays.toString(Objects.requireNonNull(o))); 
+
     //</editor-fold>
 }
