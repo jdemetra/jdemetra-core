@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -278,7 +279,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
                 names.add(IEasterVariable.NAME);
             }
         }
-        
+
         // outliers
         outliers_.stream().map((def) -> {
             StringBuilder builder = new StringBuilder();
@@ -347,6 +348,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     }
 
     public Map<String, double[]> getAllFixedCoefficients() {
+        checkFixedCoefficients();
         return Collections.unmodifiableMap(fcoeff);
     }
 
@@ -610,7 +612,15 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     }
 
     public boolean hasFixedCoefficients(String shortname) {
-        Optional<String> any = fcoeff.keySet().stream().filter(x->shortname.equals(ITsVariable.shortName(x))).findAny();
+        Optional<String> any = fcoeff.keySet().stream().filter(x -> shortname.equals(ITsVariable.shortName(x))).findAny();
         return any.isPresent();
     }
+
+    private void checkFixedCoefficients() {
+        String[] names = getRegressionVariableNames(TsFrequency.Undefined);
+        Arrays.sort(names);
+        List<String> toremove = fcoeff.keySet().stream().filter(s -> Arrays.binarySearch(names, s) < 0).collect(Collectors.toList());
+        toremove.forEach(s -> fcoeff.remove(s));
+    }
+
 }
