@@ -85,7 +85,8 @@ public class SeasonalOutlier extends AbstractOutlierVariable {
                 xpos = pos;
             }
             if (xpos < 0) {
-                for (int j = 0; j < freq + xpos; ++j) {
+                int max=Math.min(len, freq + xpos);
+                for (int j = 0; j < max; ++j) {
                     data.set(j, z);
                 }
                 xpos += freq;
