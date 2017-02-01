@@ -164,6 +164,7 @@ public class OutliersDetector implements IOutliersDetectionModule {
             sod_.exclude(context.description.getMissingValues());
             sod_.exclude(context.description.getOutliersPosition(true));
             sod_.exclude(context.description.getOutliersPosition(false));
+            sod_.exclude(context.description.getFixedOutliersPosition());
             outliers_.addAll(context.description.getOutliers());
 
             boolean changed = execute();
@@ -464,5 +465,5 @@ public class OutliersDetector implements IOutliersDetectionModule {
         }
         return Math.max(cv, MINCV);
     }
-    
+
 }

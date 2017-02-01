@@ -605,4 +605,12 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         return !any.isPresent();
     }
 
+    public boolean hasFixedCoefficients() {
+        return !this.fcoeff.isEmpty();
+    }
+
+    public boolean hasFixedCoefficients(String shortname) {
+        Optional<String> any = fcoeff.keySet().stream().filter(x->shortname.equals(ITsVariable.shortName(x))).findAny();
+        return any.isPresent();
+    }
 }
