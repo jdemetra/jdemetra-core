@@ -241,6 +241,11 @@ public final class Parsers {
     }
 
     @Nonnull
+    public static Parser<String[]> stringArrayParser() {
+        return STRING_ARRAY_PARSER;
+    }
+
+    @Nonnull
     public static <X, Y> Parser<Y> compose(@Nonnull IParser<X> parser, @Nonnull Function<X, Y> after) {
         return new Parser<Y>() {
             @Override
@@ -392,6 +397,21 @@ public final class Parsers {
         return result;
     }
 
+    private static String[] parseStringArray(CharSequence input) {
+        String tmp = input.toString();
+        int beginIndex = tmp.indexOf('[');
+        int endIndex = tmp.lastIndexOf(']');
+        if (beginIndex == -1 || endIndex == -1) {
+            return null;
+        }
+        String[] values = tmp.substring(beginIndex + 1, endIndex).split("\\s*,\\s*");
+        String[] result = new String[values.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = values[i].trim();
+        }
+        return result;
+    }
+
     private static final Parser<File> FILE_PARSER = new Wrapper<>(o -> new File(o.toString()));
     private static final Parser<Integer> INT_PARSER = new FailSafeParser<Integer>() {
         @Override
@@ -424,6 +444,12 @@ public final class Parsers {
         @Override
         protected double[] doParse(CharSequence input) throws Exception {
             return parseDoubleArray(input);
+        }
+    };
+    private static final Parser<String[]> STRING_ARRAY_PARSER = new FailSafeParser<String[]>() {
+        @Override
+        protected String[] doParse(CharSequence input) throws Exception {
+            return parseStringArray(input);
         }
     };
     //</editor-fold>

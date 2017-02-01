@@ -102,6 +102,11 @@ public final class Params {
     }
 
     @Nonnull
+    public static <S extends IConfig> IParam<S, String[]> onStringArray(@Nonnull String key, @Nonnull String... defaultValues) {
+        return new SingleParam<>(defaultValues, key, Parsers.stringArrayParser(), Formatters.stringArrayFormatter());
+    }
+
+    @Nonnull
     public static <S extends IConfig> IParam<S, List<String>> onStringList(@Nonnull List<String> defaultValue, @Nonnull String key, @Nonnull Splitter splitter, @Nonnull Joiner joiner) {
         return new SingleParam<>(ImmutableList.copyOf(defaultValue), key, Parsers.onSplitter(splitter), Formatters.onJoiner(joiner));
     }
