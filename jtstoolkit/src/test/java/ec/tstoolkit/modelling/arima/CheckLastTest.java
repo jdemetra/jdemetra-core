@@ -35,6 +35,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Random;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -236,7 +237,7 @@ public class CheckLastTest {
         spec.getOutliers().add(OutlierType.SO);
         spec.getOutliers().setCriticalValue(3);
         CheckLast cl=new CheckLast(spec.build());
-        cl.check(Data.P);
+        assertTrue(cl.check(Data.P));
     }
 
 }
