@@ -587,8 +587,30 @@ public class ModelDescription implements Cloneable {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @return the pre-specified outliers
+     */
+    public List<IOutlierVariable> getFixedOutliers() {
+        return preadjustment.stream()
+                .filter(var -> var.isOutlier() )
+                .map(var -> (IOutlierVariable) var.getVariable())
+                .collect(Collectors.toList());
+    }
+    
     public int[] getOutliersPosition(boolean prespecified) {
         List<IOutlierVariable> vars = prespecified ? getPrespecifiedOutliers() : getOutliers();
+
+        int[] pos = new int[vars.size()];
+        TsPeriod start = estimationDomain_.getStart();
+        for (int i = 0; i < pos.length; ++i) {
+            TsPeriod ostart = new TsPeriod(estimationDomain_.getFrequency(), vars.get(i).getPosition());
+            pos[i] = ostart.minus(start);
+        }
+        return pos;
+    }
+
+    public int[] getFixedOutliersPosition() {
+        List<IOutlierVariable> vars = getFixedOutliers();
 
         int[] pos = new int[vars.size()];
         TsPeriod start = estimationDomain_.getStart();

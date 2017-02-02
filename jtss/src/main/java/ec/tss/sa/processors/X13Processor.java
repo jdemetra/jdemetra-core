@@ -87,8 +87,7 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
         X13Specification newspec = spec.clone();
 
         RegArimaSpecification ntspec = newspec.getRegArimaSpecification(),
-                dtspec = defspec.getRegArimaSpecification(),
-                tspec = spec.getRegArimaSpecification();
+                dtspec = defspec.getRegArimaSpecification();
         if (nospan) {
             ntspec.getBasic().getSpan().all();
         }

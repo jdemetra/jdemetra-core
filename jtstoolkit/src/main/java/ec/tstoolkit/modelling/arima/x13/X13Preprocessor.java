@@ -110,7 +110,7 @@ public class X13Preprocessor implements IPreprocessor {
             clear();
 
             builder.initialize(context);
-            if (context.description.isFullySpecified()) {
+            if (context.description.isFullySpecified() && outliers == null) {
                 // nothing to do
                 IParametricMapping<SarimaModel> mapping = context.description.defaultMapping();
                 ModelDescription model = context.description;
