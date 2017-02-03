@@ -118,7 +118,7 @@ public class TramoSeatsXmlProcessorTest {
 //        System.out.println(t1 - t0);
         InformationSet all = rslt.create();
         for (int i = 0; i < N; ++i) {
-            assertTrue(null != all.search("series" + (i + 1) + ".sa", TsData.class));
+            assertTrue(null != all.search("series" + (i + 1) + ".final.sa", TsData.class));
         }
     }
 
@@ -143,7 +143,7 @@ public class TramoSeatsXmlProcessorTest {
 //        System.out.println(t1 - t0);
         InformationSet all = rslt.create();
         for (int i = 0; i < N; ++i) {
-            assertTrue(null != all.search("series" + (i + 1) + ".sa", TsData.class));
+            assertTrue(null != all.search("series" + (i + 1) + ".final.sa", TsData.class));
         }
     }
     

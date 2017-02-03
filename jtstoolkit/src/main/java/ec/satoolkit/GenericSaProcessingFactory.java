@@ -159,7 +159,7 @@ public class GenericSaProcessingFactory {
     }
 
     protected static void addPreprocessingStep(IPreprocessor preprocessor, SequentialProcessing sproc) {
-        sproc.add(createPreprocessingStep(preprocessor, PREPROCESSING, null));
+        sproc.add(createPreprocessingStep(preprocessor, PREPROCESSING, PREPROCESSING));
     }
 
     protected static <R extends ISaResults> IProcessingNode<TsData> createDecompositionStep(final IDefaultSeriesDecomposer<R> decomposer, final IPreprocessingFilter filter) {
@@ -216,7 +216,7 @@ public class GenericSaProcessingFactory {
 
             @Override
             public String getPrefix() {
-                return null;
+                return FINAL;
             }
 
             @Override
