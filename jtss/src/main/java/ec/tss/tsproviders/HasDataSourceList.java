@@ -56,4 +56,9 @@ public interface HasDataSourceList {
      * @param listener
      */
     void removeDataSourceListener(@Nonnull IDataSourceListener listener);
+
+    @Nonnull
+    public static HasDataSourceList of(@Nonnull String providerName, @Nonnull Iterable<DataSource> dataSources) {
+        return new Util.DataSourceListSupport(providerName, dataSources);
+    }
 }
