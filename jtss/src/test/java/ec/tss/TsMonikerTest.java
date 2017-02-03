@@ -13,14 +13,12 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -31,19 +29,28 @@ public class TsMonikerTest {
 
     @Test
     public void testEquals() {
-        TsMoniker m1 = new TsMoniker("ABC", "123");
-        TsMoniker m2 = new TsMoniker("ABC", "123");
-
-        assertEquals(m1, m2);
-        assertNotSame(m1, m2);
-
-        assertNotEquals(m1, new TsMoniker("ABC", "xxx"));
-        assertNotEquals(m1, new TsMoniker("xxx", "123"));
+        assertThat(new TsMoniker("ABC", "123"))
+                .isEqualTo(new TsMoniker("ABC", "123"))
+                .isNotEqualTo(new TsMoniker("ABC", "xxx"))
+                .isNotEqualTo(new TsMoniker("xxx", "123"));
 
         TsMoniker m3 = new TsMoniker();
+        assertThat(m3)
+                .isEqualTo(m3)
+                .isNotEqualTo(new TsMoniker());
+    }
 
-        assertEquals(m3, m3);
-        assertNotEquals(m3, new TsMoniker());
+    @Test
+    public void testHashcode() {
+        assertThat(new TsMoniker("ABC", "123").hashCode())
+                .isEqualTo(new TsMoniker("ABC", "123").hashCode())
+                .isNotEqualTo(new TsMoniker("ABC", "xxx").hashCode())
+                .isNotEqualTo(new TsMoniker("xxx", "123").hashCode());
+
+        TsMoniker m3 = new TsMoniker();
+        assertThat(m3.hashCode())
+                .isEqualTo(m3.hashCode())
+                .isNotEqualTo(new TsMoniker());
     }
 
     @Test
@@ -64,28 +71,14 @@ public class TsMonikerTest {
         assertEquals(signum(a.compareTo(c)), signum(a_bis.compareTo(c)));
         // R4
         assertEquals(0, a.compareTo(a));
-        
+
         TsMoniker x = new TsMoniker();
         TsMoniker y = new TsMoniker();
-        assertEquals(0, x.compareTo(x));
-        assertTrue(x.compareTo(y) < 0);
-        assertTrue(y.compareTo(x) > 0);        
-    }
-    
-    @Test
-    public void someOtherTests(){
-        boolean equals = "ok".equals(null);
+        assertThat(x.compareTo(x)).isEqualTo(0);
+        assertThat(x.compareTo(y)).isEqualTo(y.compareTo(x) * -1);
     }
 
     static int signum(int value) {
         return value == 0 ? 0 : value > 0 ? 1 : -1;
-    }
-
-    static void assertNotEquals(Object l, Object r) {
-        assertFalse(l.equals(r));
-    }
-
-    static void assertNotEquals(int l, int r) {
-        assertFalse(l == r);
     }
 }

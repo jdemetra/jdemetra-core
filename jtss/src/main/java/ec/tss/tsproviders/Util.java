@@ -183,12 +183,38 @@ final class Util {
         }
     }
 
-    static final class DataSourceListSupport extends ProviderPart implements HasDataSourceMutableList {
+    static final class DataSourceListSupport extends ProviderPart implements HasDataSourceList {
+
+        private final List<DataSource> dataSources;
+
+        DataSourceListSupport(String providerName, Iterable<DataSource> dataSources) {
+            super(providerName);
+            this.dataSources = ImmutableList.copyOf(dataSources);
+            this.dataSources.forEach(this::checkProvider);
+        }
+
+        @Override
+        public List<DataSource> getDataSources() {
+            return dataSources;
+        }
+
+        @Override
+        public void addDataSourceListener(IDataSourceListener listener) {
+            Objects.requireNonNull(listener);
+        }
+
+        @Override
+        public void removeDataSourceListener(IDataSourceListener listener) {
+            Objects.requireNonNull(listener);
+        }
+    }
+
+    static final class DataSourceMutableListSupport extends ProviderPart implements HasDataSourceMutableList {
 
         private final LinkedHashSet<DataSource> dataSources;
         private final DataSourceEventSupport eventSupport;
 
-        DataSourceListSupport(String providerName, LinkedHashSet<DataSource> dataSources, DataSourceEventSupport eventSupport) {
+        DataSourceMutableListSupport(String providerName, LinkedHashSet<DataSource> dataSources, DataSourceEventSupport eventSupport) {
             super(providerName);
             this.dataSources = Objects.requireNonNull(dataSources);
             this.eventSupport = Objects.requireNonNull(eventSupport);

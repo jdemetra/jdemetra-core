@@ -753,4 +753,18 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
             return table.toString(headers);
         }
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj || (obj instanceof TsCollection && equals((TsCollection) obj));
+    }
+
+    @Override
+    public int hashCode() {
+        return getMoniker().hashCode();
+    }
+
+    private boolean equals(TsCollection other) {
+        return other == null ? false : getMoniker().equals(other.getMoniker());
+    }
 }

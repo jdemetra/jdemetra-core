@@ -136,7 +136,7 @@ public abstract class TsFillerAsProvider implements ITsProvider {
             this.asyncMode = Objects.requireNonNull(asyncMode);
             this.filler = Objects.requireNonNull(filler);
             this.asyncRequests = new AsyncRequests();
-            this.requestsHandler = new RequestsHandler2();
+            this.requestsHandler = new RequestsHandler2(asyncRequests, filler);
             requestsHandler.start();
         }
 
@@ -173,6 +173,7 @@ public abstract class TsFillerAsProvider implements ITsProvider {
             Objects.requireNonNull(moniker, "Moniker cannot be null");
             Objects.requireNonNull(type, "Type cannot be null");
             DataSourcePreconditions.checkProvider(getSource(), moniker);
+
             if (type == TsInformationType.None) {
                 asyncRequests.removeTs(moniker, TsInformationType.All);
             } else {
@@ -190,6 +191,7 @@ public abstract class TsFillerAsProvider implements ITsProvider {
             Objects.requireNonNull(moniker, "Moniker cannot be null");
             Objects.requireNonNull(type, "Type cannot be null");
             DataSourcePreconditions.checkProvider(getSource(), moniker);
+
             if (type == TsInformationType.None) {
                 asyncRequests.removeTsCollection(moniker, TsInformationType.All);
             } else {
@@ -201,57 +203,67 @@ public abstract class TsFillerAsProvider implements ITsProvider {
             }
             return true;
         }
+    }
 
-        private final class RequestsHandler2 implements Runnable {
+    private static final class RequestsHandler2 implements Runnable {
 
-            final Thread requestsThread;
-            final AtomicBoolean end = new AtomicBoolean(false);
+        private final AsyncRequests asyncRequests;
+        private final TsFiller filler;
+        private final Thread requestsThread;
+        private final AtomicBoolean end;
 
-            RequestsHandler2() {
-                requestsThread = new Thread(this);
-                requestsThread.setDaemon(true);
-            }
+        RequestsHandler2(AsyncRequests asyncRequests, TsFiller filler) {
+            this.asyncRequests = asyncRequests;
+            this.filler = filler;
+            this.requestsThread = new Thread(this);
+            this.end = new AtomicBoolean(false);
+            requestsThread.setDaemon(true);
+        }
 
-            @Override
-            public void run() {
-                while (!end.get()) {
-                    // step 1. process tsCollection
-                    TsCollectionInformation crequest = asyncRequests.nextTsCollection();
-                    if (crequest != null && TsFactory.instance.isTsCollectionAlive(crequest.moniker)) {
-                        filler.fillCollection(crequest);
-                        TsFactory.instance.update(crequest);
-                    }
-                    // step 2. process ts
-                    TsInformation srequest = asyncRequests.nextTs();
-                    if (srequest != null && TsFactory.instance.isTsAlive(srequest.moniker)) {
-                        filler.fillSeries(srequest);
-                        TsFactory.instance.update(srequest);
-                    }
-                    // step 3. sleep if queues are empty
-                    if (srequest == null && crequest == null) {
-                        LockSupport.park();
-                    }
-                }
-            }
-
-            void start() {
-                requestsThread.start();
-            }
-
-            void stop() {
+        @Override
+        public void run() {
+            while (!end.get()) {
+                processNextTsCollection();
+                processNextTs();
                 if (asyncRequests.isEmpty()) {
-                    LockSupport.unpark(requestsThread);
+                    LockSupport.park();
                 }
-                end.set(true);
             }
+        }
 
-            void unpark() {
+        private void processNextTsCollection() {
+            TsCollectionInformation crequest = asyncRequests.nextTsCollection();
+            if (crequest != null && TsFactory.instance.isTsCollectionAlive(crequest.moniker)) {
+                filler.fillCollection(crequest);
+                TsFactory.instance.update(crequest);
+            }
+        }
+
+        private void processNextTs() {
+            TsInformation srequest = asyncRequests.nextTs();
+            if (srequest != null && TsFactory.instance.isTsAlive(srequest.moniker)) {
+                filler.fillSeries(srequest);
+                TsFactory.instance.update(srequest);
+            }
+        }
+
+        void start() {
+            requestsThread.start();
+        }
+
+        void stop() {
+            if (asyncRequests.isEmpty()) {
                 LockSupport.unpark(requestsThread);
             }
+            end.set(true);
+        }
 
-            void park() {
-                LockSupport.park(requestsThread);
-            }
+        void unpark() {
+            LockSupport.unpark(requestsThread);
+        }
+
+        void park() {
+            LockSupport.park(requestsThread);
         }
     }
     //</editor-fold>

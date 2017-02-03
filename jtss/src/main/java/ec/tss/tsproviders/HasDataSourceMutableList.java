@@ -63,6 +63,6 @@ public interface HasDataSourceMutableList extends HasDataSourceList {
 
     @Nonnull
     public static HasDataSourceMutableList of(@Nonnull String providerName, @Nonnull Logger logger) {
-        return new Util.DataSourceListSupport(providerName, new LinkedHashSet<>(), DataSourceEventSupport.create(logger));
+        return new Util.DataSourceMutableListSupport(providerName, new LinkedHashSet<>(), DataSourceEventSupport.create(logger));
     }
 }
