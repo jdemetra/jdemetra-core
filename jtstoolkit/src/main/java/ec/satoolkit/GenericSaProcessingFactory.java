@@ -108,7 +108,7 @@ public class GenericSaProcessingFactory {
     }
 
     protected static IProcessingNode<TsData> createInitialStep(final TsPeriodSelector selector, boolean validate) {
-        return (!validate) ? DefaultProcessingFactory.createInitialStep(selector) : DefaultProcessingFactory.createInitialStep(selector,  new Validation() {
+        return (!validate) ? DefaultProcessingFactory.createInitialStep(selector) : DefaultProcessingFactory.createInitialStep(selector, new Validation() {
             @Override
             public boolean validate(TsData s) {
                 testSeries(s);
@@ -333,12 +333,6 @@ public class GenericSaProcessingFactory {
 
                     // forecasts...
                     if (fdomain != null) {
-                        TsData fy = op(mul, detSA, fdata);
-                        fy = op(mul, detT, fy);
-                        fy = op(mul, detS, fy);
-                         fy = op(mul, detI, fy);
-                        //fy  fy = op(mul, detS, fy);= op(mul, detY, fy);
-                        //               finals.add(fy, ComponentType.Series, ComponentInformation.Forecast);
                         TsData ftl = ldecomp.getSeries(ComponentType.Trend,
                                 ComponentInformation.Forecast);
                         TsData ft = op(mul, detT, ftl);
@@ -367,14 +361,17 @@ public class GenericSaProcessingFactory {
                             }
                             finals.add(fi, ComponentType.Irregular, ComponentInformation.Forecast);
                         }
-                        TsData fsa = inv_op(mul, fy, fs);
+                        TsData fy = pm.forecast(fdomain.getLength(), false);
+                        finals.add(fy, ComponentType.Series, ComponentInformation.Forecast);
+                        TsData fsa = op(mul, ft, fi);
+                        fsa = op(mul, fsa, detSA);
                         if (fsa != null) {
                             if (!fdomain.equals(fsa.getDomain())) {
                                 fsa = fsa.fittoDomain(fdomain);
                             }
                             finals.add(fsa, ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
                         }
-                    }
+                   }
                     results.put(FINAL, finals);
                     return Status.Valid;
                 }
