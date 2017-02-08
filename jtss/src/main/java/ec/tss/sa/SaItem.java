@@ -198,8 +198,9 @@ public class SaItem {
 
     public void setName(String name) {
         String oldName = this.name;
-        if (!oldName.equals(name)) {
-            this.name = Strings.nullToEmpty(name);
+        String newName=Strings.nullToEmpty(name);
+        if (!oldName.equals(newName)) {
+            this.name = newName;
             this.dirty_ = true;
         }
     }
