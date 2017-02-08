@@ -40,17 +40,25 @@ public final class InformationSet implements Cloneable {
     public static final String LOG = "log";
 
     public static String concatenate(String... s) {
-        if (s.length == 0) {
-            return "";
-        } else if (s.length == 1) {
-            return s[0];
-        } else {
-            StringBuilder builder = new StringBuilder();
-            builder.append(s[0]);
-            for (int i = 1; i < s.length; ++i) {
-                builder.append(SEP).append(s[i]);
-            }
-            return builder.toString();
+        switch (s.length) {
+            case 0:
+                return "";
+            case 1:
+                return s[0];
+            default:
+                boolean first = true;
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < s.length; ++i) {
+                    if (s[i] != null) {
+                        if (!first) {
+                            builder.append(SEP);
+                        } else {
+                            first = false;
+                        }
+                        builder.append(s[i]);
+                    }
+                }
+                return builder.toString();
         }
     }
 
@@ -70,7 +78,7 @@ public final class InformationSet implements Cloneable {
     }
 
     public static boolean hasWildCards(String str) {
-        return str.indexOf('*')>=0 || str.indexOf('?')>=0;
+        return str.indexOf('*') >= 0 || str.indexOf('?') >= 0;
     }
 
     public static String removePrefix(String name) {

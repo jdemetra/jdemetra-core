@@ -367,12 +367,16 @@ public class ModelEstimation implements IProcResults {
         MAPPING.set(InformationSet.item(RESIDUALS, RES_UD_NUMBER), StatisticalTest.class,
                 source -> {
                     TestofUpDownRuns ud = source.getNiidTests().getUpAndDownRuns();
+                    if (ud==null)
+                        return null;
                     ud.setKind(RunsTestKind.Number);
                     return StatisticalTest.create(ud);
                 });
         MAPPING.set(InformationSet.item(RESIDUALS, RES_UD_LENGTH), StatisticalTest.class,
                 source -> {
                     TestofUpDownRuns ud = source.getNiidTests().getUpAndDownRuns();
+                    if (ud==null)
+                        return null;
                     ud.setKind(RunsTestKind.Length);
                     return StatisticalTest.create(ud);
                 });

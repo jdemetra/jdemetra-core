@@ -220,6 +220,8 @@ public class TramoSeatsProcessor implements ISaProcessingFactory<TramoSeatsSpeci
             boolean used = false;
             if (vars.select(ILengthOfPeriodVariable.class).isEmpty()) {
                 tdspec.setLeapYear(false);
+            } else {
+                used = true;
             }
             if (vars.select(ITradingDaysVariable.class).isEmpty()) {
                 tdspec.setTradingDaysType(TradingDaysType.None);

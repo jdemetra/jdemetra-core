@@ -160,6 +160,8 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
             }
             if (vars.select(ILengthOfPeriodVariable.class).isEmpty()) {
                 tdspec.setLengthOfPeriod(LengthOfPeriodType.None);
+            }else{
+                used=true;
             }
             if (!used) {
                 rspec.getTradingDays().disable();

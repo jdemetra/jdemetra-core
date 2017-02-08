@@ -45,7 +45,7 @@ import java.util.stream.Stream;
  */
 public class TramoSeatsXmlProcessor {
 
-    private static final String[] DEF_SA = new String[]{"y", "t", "s", "i", "sa", "ycal", "y_f", "t_f", "s_f", "i_f", "sa_f"};
+    private static final String[] DEF_SA = new String[]{"final.y", "final.t", "final.s", "final.i", "final.sa", "final.ycal", "final.y_f", "final.t_f", "final.s_f", "final.i_f", "final.sa_f"};
 
     public XmlInformationSet process(XmlTramoRequest request) {
         // specification
