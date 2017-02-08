@@ -251,7 +251,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     public int getInterventionVariablesCount() {
         return interventions_.size();
     }
-    
+
     public String[] getRegressionVariableNames(TsFrequency freq) {
         return getRegressionVariableNames(freq, false);
     }
@@ -259,7 +259,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     public String[] getRegressionVariableShortNames(TsFrequency freq) {
         return getRegressionVariableNames(freq, true);
     }
-    
+
     private String[] getRegressionVariableNames(TsFrequency freq, boolean shortname) {
         ArrayList<String> names = new ArrayList<>();
         // calendar
@@ -285,11 +285,11 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
                     names.add(ILengthOfPeriodVariable.NAME);
                 }
             }
-            // easter
-            MovingHolidaySpec easter = getEaster();
-            if (easter != null && easter.getTest() == RegressionTestSpec.None) {
-                names.add(IEasterVariable.NAME);
-            }
+        }
+        // easter
+        MovingHolidaySpec easter = getEaster();
+        if (easter != null && easter.getTest() == RegressionTestSpec.None) {
+            names.add(IEasterVariable.NAME);
         }
 
         // outliers
