@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  *
@@ -74,7 +75,7 @@ public abstract class MultiTsDocument<S extends IProcSpecification, R extends IP
         if (isLocked() || Arrays.equals(getMonikers(getInput()), getMonikers(s))) {
             return;
         }
-        super.setInput(s);
+        super.setInput(Stream.of(s).map(Ts::freeze).toArray(Ts[]::new));
     }
 
     @Override
