@@ -58,12 +58,13 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         InterventionVariable.fillDictionary(InformationSet.item(prefix, INTERVENTIONS), dic);
         TsVariableDescriptor.fillDictionary(InformationSet.item(prefix, USERS), dic);
     }
-   
+
     private CalendarSpec calendar_ = new CalendarSpec();
     private ArrayList<OutlierDefinition> outliers_ = new ArrayList<>();
     private ArrayList<Ramp> ramps_ = new ArrayList<>();
     private ArrayList<InterventionVariable> interventions_ = new ArrayList<>();
     private ArrayList<TsVariableDescriptor> users_ = new ArrayList<>();
+    // the maps with the coefficients use short names...
     private Map<String, double[]> fcoeff = new LinkedHashMap<>();
     private Map<String, double[]> coeff = new LinkedHashMap<>();
 
@@ -193,6 +194,14 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     }
 
     public String[] getRegressionVariableNames(TsFrequency freq) {
+        return getRegressionVariableNames(freq, false);
+    }
+
+    public String[] getRegressionVariableShortNames(TsFrequency freq) {
+        return getRegressionVariableNames(freq, true);
+    }
+
+    private String[] getRegressionVariableNames(TsFrequency freq, boolean shortname) {
         ArrayList<String> names = new ArrayList<>();
         if (calendar_.isUsed()) {
             // calendar
@@ -203,9 +212,13 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
                 }
                 String[] user = calendar_.getTradingDays().getUserVariables();
                 if (user != null) {
-                    names.add(ITradingDaysVariable.NAME + '#' + user.length);
+                    if (shortname || user.length == 1) {
+                        names.add(ITradingDaysVariable.NAME);
+                    } else {
+                        names.add(ITradingDaysVariable.NAME + '#' + user.length);
+                    }
                 } else {
-                    if (calendar_.getTradingDays().getTradingDaysType() == TradingDaysType.WorkingDays) {
+                    if (calendar_.getTradingDays().getTradingDaysType() == TradingDaysType.WorkingDays || shortname) {
                         names.add(ITradingDaysVariable.NAME);
                     } else {
                         names.add(ITradingDaysVariable.NAME + "#6");
@@ -252,7 +265,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         users_.forEach(uv
                 -> {
             int n = uv.getLastLag() - uv.getFirstLag() + 1;
-            if (n == 1) {
+            if (n == 1 || shortname) {
                 names.add(uv.getName());
             } else {
                 names.add(uv.getName() + '#' + n);
@@ -277,23 +290,23 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     public void clearCoefficients(String name) {
         coeff.remove(name);
     }
-    
+
     public double[] getFixedCoefficients(String name) {
 //        checkFixedCoefficients();
         return fcoeff.get(name);
     }
-    
+
     public void setAllFixedCoefficients(Map<String, double[]> coeffs) {
         clearAllFixedCoefficients();
         fcoeff.putAll(coeffs);
     }
-    
-    public Map<String, double[]> getAllFixedCoefficients(){
+
+    public Map<String, double[]> getAllFixedCoefficients() {
         checkFixedCoefficients();
         return Collections.unmodifiableMap(fcoeff);
     }
 
-    public Map<String, double[]> getAllCoefficients(){
+    public Map<String, double[]> getAllCoefficients() {
         return Collections.unmodifiableMap(coeff);
     }
 
@@ -423,13 +436,13 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
                 specInfo.add(INTERVENTION + Integer.toString(idx++), cur);
             }
         }
-        if (! fcoeff.isEmpty()){
+        if (!fcoeff.isEmpty()) {
             InformationSet icoeff = specInfo.subSet(FCOEFF);
-            fcoeff.forEach((s,c)->icoeff.set(s, c.length == 1 ? c[0] : c));
+            fcoeff.forEach((s, c) -> icoeff.set(s, c.length == 1 ? c[0] : c));
         }
-        if (! coeff.isEmpty()){
+        if (!coeff.isEmpty()) {
             InformationSet icoeff = specInfo.subSet(COEFF);
-            coeff.forEach((s,c)->icoeff.set(s, c.length == 1 ? c[0] : c));
+            coeff.forEach((s, c) -> icoeff.set(s, c.length == 1 ? c[0] : c));
         }
         return specInfo;
     }
@@ -480,15 +493,15 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
                 interventions_.add(cur);
             }
         }
-        InformationSet ifcoeff=info.getSubSet(FCOEFF);
-        if (ifcoeff != null){
+        InformationSet ifcoeff = info.getSubSet(FCOEFF);
+        if (ifcoeff != null) {
             List<Information<double[]>> all = ifcoeff.select(double[].class);
             all.stream().forEach(reg -> fcoeff.put(reg.name, reg.value));
             List<Information<Double>> sall = ifcoeff.select(Double.class);
             sall.stream().forEach(reg -> fcoeff.put(reg.name, new double[]{reg.value}));
         }
-        InformationSet icoeff=info.getSubSet(COEFF);
-        if (icoeff != null){
+        InformationSet icoeff = info.getSubSet(COEFF);
+        if (icoeff != null) {
             List<Information<double[]>> all = icoeff.select(double[].class);
             all.stream().forEach(reg -> coeff.put(reg.name, reg.value));
             List<Information<Double>> sall = icoeff.select(Double.class);
@@ -508,22 +521,24 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     public static final String CALENDAR = "calendar",
             OUTLIERS = "outliers",
             USER = "user", USERS = "user*", RAMPS = "ramps",
-            INTERVENTION = "intervention", INTERVENTIONS = "intervention*", 
-            COEFF="coefficients", FCOEFF="fixedcoefficients";
+            INTERVENTION = "intervention", INTERVENTIONS = "intervention*",
+            COEFF = "coefficients", FCOEFF = "fixedcoefficients";
     private static final String[] DICTIONARY = new String[]{
         CALENDAR, OUTLIERS, USERS, RAMPS, INTERVENTIONS, COEFF, FCOEFF
     };
 
     private boolean compare(Map<String, double[]> cl, Map<String, double[]> cr) {
-        if (cl.size() != cr.size())
+        if (cl.size() != cr.size()) {
             return false;
-        Optional<Map.Entry<String, double[]>>any = cl.entrySet().stream().filter(entry-> {
-            if (!cr.containsKey(entry.getKey()))
+        }
+        Optional<Map.Entry<String, double[]>> any = cl.entrySet().stream().filter(entry -> {
+            if (!cr.containsKey(entry.getKey())) {
                 return true;
-            else 
+            } else {
                 return !Arrays.equals(entry.getValue(), cr.get(entry.getKey()));
+            }
         }).findAny();
-        
+
         return !any.isPresent();
     }
 
@@ -532,15 +547,15 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     }
 
     public boolean hasFixedCoefficients(String shortname) {
-        Optional<String> any = fcoeff.keySet().stream().filter(x->shortname.equals(ITsVariable.shortName(x))).findAny();
+        Optional<String> any = fcoeff.keySet().stream().filter(x -> shortname.equals(ITsVariable.shortName(x))).findAny();
         return any.isPresent();
     }
-    
-    private void checkFixedCoefficients(){
-        String[] names = getRegressionVariableNames(TsFrequency.Undefined);
+
+    private void checkFixedCoefficients() {
+        String[] names = getRegressionVariableShortNames(TsFrequency.Undefined);
         Arrays.sort(names);
-        List<String> toremove = fcoeff.keySet().stream().filter(s->Arrays.binarySearch(names, s)<0).collect(Collectors.toList());
-        toremove.forEach(s->fcoeff.remove(s));
+        List<String> toremove = fcoeff.keySet().stream().filter(s -> Arrays.binarySearch(names, s) < 0).collect(Collectors.toList());
+        toremove.forEach(s -> fcoeff.remove(s));
     }
 
 }

@@ -251,8 +251,16 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     public int getInterventionVariablesCount() {
         return interventions_.size();
     }
-
+    
     public String[] getRegressionVariableNames(TsFrequency freq) {
+        return getRegressionVariableNames(freq, false);
+    }
+
+    public String[] getRegressionVariableShortNames(TsFrequency freq) {
+        return getRegressionVariableNames(freq, true);
+    }
+    
+    private String[] getRegressionVariableNames(TsFrequency freq, boolean shortname) {
         ArrayList<String> names = new ArrayList<>();
         // calendar
         if (td_.isDefined()) {
@@ -262,9 +270,13 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
             }
             String[] user = td_.getUserVariables();
             if (user != null) {
-                names.add(ITradingDaysVariable.NAME + '#' + user.length);
+                if (shortname || user.length == 1) {
+                    names.add(ITradingDaysVariable.NAME);
+                } else {
+                    names.add(ITradingDaysVariable.NAME + '#' + user.length);
+                }
             } else {
-                if (td_.getTradingDaysType() == TradingDaysType.WorkingDays) {
+                if (td_.getTradingDaysType() == TradingDaysType.WorkingDays || shortname) {
                     names.add(ITradingDaysVariable.NAME);
                 } else {
                     names.add(ITradingDaysVariable.NAME + "#6");
@@ -312,7 +324,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         users_.forEach(uv
                 -> {
             int n = uv.getLastLag() - uv.getFirstLag() + 1;
-            if (n == 1) {
+            if (n == 1 || shortname) {
                 names.add(uv.getName());
             } else {
                 names.add(uv.getName() + '#' + n);
@@ -617,7 +629,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     }
 
     private void checkFixedCoefficients() {
-        String[] names = getRegressionVariableNames(TsFrequency.Undefined);
+        String[] names = getRegressionVariableShortNames(TsFrequency.Undefined);
         Arrays.sort(names);
         List<String> toremove = fcoeff.keySet().stream().filter(s -> Arrays.binarySearch(names, s) < 0).collect(Collectors.toList());
         toremove.forEach(s -> fcoeff.remove(s));
