@@ -17,6 +17,7 @@
 package ec.tss;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import ec.tss.tsproviders.utils.MultiLineNameUtil;
 import java.util.Iterator;
@@ -413,12 +414,12 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
 
     @Override
     public Iterator<Ts> iterator() {
-        return m_ts.iterator();
+        return Iterators.forArray(toArray());
     }
 
     @Nonnull
     public Stream<Ts> stream() {
-        return m_ts.stream();
+        return Stream.of(toArray());
     }
 
     /**
