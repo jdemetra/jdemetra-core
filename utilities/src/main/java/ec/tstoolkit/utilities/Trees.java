@@ -18,7 +18,7 @@ package ec.tstoolkit.utilities;
 
 import com.google.common.collect.Iterators;
 import com.google.common.collect.UnmodifiableIterator;
-import java.io.PrintStream;
+import java.io.IOException;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -91,15 +91,30 @@ public final class Trees {
             @Nonnull T root,
             @Nonnull Function<? super T, ? extends Stream<? extends T>> children,
             @Nonnegative int maxLevel,
-            @Nonnull PrintStream printStream,
-            @Nonnull Function<? super T, ? extends CharSequence> toString) {
-        printStream.println(toString.apply(root));
+            @Nonnull Function<? super T, ? extends CharSequence> toString,
+            @Nonnull Appendable appendable) throws IOException {
+        appendable.append(toString.apply(root)).append(System.lineSeparator());
         List<?> list = children.apply(root).collect(Collectors.toList());
         if (maxLevel > 0) {
             for (int i = 0; i < list.size(); i++) {
-                prettyPrint((T) list.get(i), children, maxLevel - 1, printStream, toString, "", i == list.size() - 1);
+                prettyPrint((T) list.get(i), children, maxLevel - 1, appendable, toString, "", i == list.size() - 1);
             }
         }
+    }
+
+    @Nonnull
+    public static <T> String prettyPrintToString(
+            @Nonnull T root,
+            @Nonnull Function<? super T, ? extends Stream<? extends T>> children,
+            @Nonnegative int maxLevel,
+            @Nonnull Function<? super T, ? extends CharSequence> toString) {
+        StringBuilder result = new StringBuilder();
+        try {
+            prettyPrint(root, children, maxLevel, toString, result);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        return result.toString();
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
@@ -174,23 +189,23 @@ public final class Trees {
             @Nonnull T item,
             @Nonnull Function<? super T, ? extends Stream<? extends T>> children,
             @Nonnegative int maxLevel,
-            @Nonnull PrintStream printStream,
+            @Nonnull Appendable appendable,
             @Nonnull Function<? super T, ? extends CharSequence> toString,
             @Nonnull String prefix,
-            boolean last) {
-        printStream.append(prefix);
+            boolean last) throws IOException {
+        appendable.append(prefix);
         if (last) {
-            printStream.append("`-");
+            appendable.append("`-");
             prefix += "   ";
         } else {
-            printStream.append("|-");
+            appendable.append("|-");
             prefix += "|  ";
         }
-        printStream.println(toString.apply(item));
+        appendable.append(toString.apply(item)).append(System.lineSeparator());
         if (maxLevel > 0) {
             List<?> list = children.apply(item).collect(Collectors.toList());
             for (int i = 0; i < list.size(); i++) {
-                prettyPrint((T) list.get(i), children, maxLevel - 1, printStream, toString, prefix, i == list.size() - 1);
+                prettyPrint((T) list.get(i), children, maxLevel - 1, appendable, toString, prefix, i == list.size() - 1);
             }
         }
     }

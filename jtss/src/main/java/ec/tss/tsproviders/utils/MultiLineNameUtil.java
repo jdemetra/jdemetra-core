@@ -16,6 +16,9 @@
  */
 package ec.tss.tsproviders.utils;
 
+import ec.tstoolkit.utilities.Trees;
+import java.util.function.Function;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 
 /**
@@ -33,9 +36,9 @@ public final class MultiLineNameUtil {
 
     private static final String JOIN_SEP = " " + RIGHT_POINTING_TRIANGLE + " ";
     private static final String LAST_PREFIX = HORIZONTAL_ELLIPSIS + " ";
-    
+
     public static final String SEPARATOR = "\n";
-    
+
     @Nonnull
     public static String join(@Nonnull String input) {
         return join(input, JOIN_SEP);
@@ -48,7 +51,12 @@ public final class MultiLineNameUtil {
 
     @Nonnull
     public static String toHtml(@Nonnull String input) {
-        return "<html>" + input.replace(SEPARATOR, "<br>");
+//        return "<html>" + input.replace(SEPARATOR, "<br>");
+        String[] items = input.split(SEPARATOR, -1);
+        Function<Integer, Stream<Integer>> children = o -> o < items.length - 1 ? Stream.of(o + 1) : Stream.empty();
+        Function<Integer, String> toString = o -> (o == 0 ? "" : " ") + items[o] + "<br>";
+        String result = Trees.prettyPrintToString(0, children, Integer.MAX_VALUE, toString);
+        return "<html>" + result.replace(" ", "&nbsp;");
     }
 
     @Nonnull

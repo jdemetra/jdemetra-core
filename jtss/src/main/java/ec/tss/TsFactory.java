@@ -454,15 +454,17 @@ public class TsFactory {
             TsCollection result = getTsCollection(moniker);
             if (result == null) {
                 result = new TsCollection(name, moniker);
-                TsCollectionInformation info = new TsCollectionInformation(moniker, type);
-                fill(info);
+                if (type != TsInformationType.None) {
+                    TsCollectionInformation info = new TsCollectionInformation(moniker, type);
+                    fill(info);
+                    // set data
+                    List<Ts> updated = result.update(info);
+                    for (Ts s : updated) {
+                        notify(s, type, result);
+                    }
+                }
                 // add collection
                 m_collections.put(moniker, new WeakReference<>(result));
-                // set data
-                List<Ts> updated = result.update(info);
-                for (Ts s : updated) {
-                    notify(s, type, result);
-                }
             } else {
                 result.load(type);
             }

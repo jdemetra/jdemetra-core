@@ -314,7 +314,7 @@ public final class TsProviders {
         };
 
         try {
-            Trees.prettyPrint((Object) dataSource, children, maxLevel, printStream, toString);
+            Trees.prettyPrint((Object) dataSource, children, maxLevel, toString, printStream);
         } catch (UncheckedIOException ex) {
             throw ex.getCause();
         }

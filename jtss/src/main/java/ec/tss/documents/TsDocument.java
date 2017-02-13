@@ -75,7 +75,7 @@ public class TsDocument<S extends IProcSpecification, R extends IProcResults> ex
         if (getInput() != null && getInput().getMoniker().equals(s.getMoniker())) {
             return;
         }
-        super.setInput(s);
+        super.setInput(s.freeze());
     }
 
     public boolean isTsFrozen() {

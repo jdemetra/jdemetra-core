@@ -117,20 +117,20 @@ public class SaItem {
         dspec_ = dspec;
         estimation_ = policy;
         espec_ = espec;
-        ts_ = s;
+        ts_ = s.freeze();
     }
 
     public SaItem(ISaSpecification dspec, Ts s) {
         dspec_ = dspec;
         estimation_ = EstimationPolicyType.Complete;
-        ts_ = s;
+        ts_ = s.freeze();
     }
 
     public SaItem newSpecification(Ts s, ISaSpecification espec, EstimationPolicyType policy) {
         SaItem nitem = new SaItem();
         nitem.name = name;
         nitem.dspec_ = dspec_;
-        nitem.ts_ = s;
+        nitem.ts_ = s.freeze();
         if (espec != null) {
             nitem.espec_ = espec;
             nitem.estimation_ = policy;
