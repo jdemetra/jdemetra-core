@@ -106,7 +106,7 @@ public class TsSmoothingSpecification implements IProcSpecification {
     }
 
     @Override
-    public IProcSpecification clone() {
+    public TsSmoothingSpecification clone() {
         try {
             TsSmoothingSpecification spec = (TsSmoothingSpecification) super.clone();
             if (param_ != null) {

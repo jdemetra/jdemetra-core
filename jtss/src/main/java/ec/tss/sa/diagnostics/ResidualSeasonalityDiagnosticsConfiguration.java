@@ -43,7 +43,7 @@ public class ResidualSeasonalityDiagnosticsConfiguration implements Cloneable, I
     private double sA3Severe_ = SA3SEV;
     private double sA3Bad_ = SA3BAD;
     private double sA3Uncertain_ = SA3UNC;
-    private boolean enabled_ = true;
+    private boolean enabled_ = false;
 
     public ResidualSeasonalityDiagnosticsConfiguration() {
     }

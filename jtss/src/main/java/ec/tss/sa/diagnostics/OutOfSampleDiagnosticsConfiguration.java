@@ -35,7 +35,7 @@ public class OutOfSampleDiagnosticsConfiguration implements Cloneable, IProperty
 
     private double bad_ = BAD;
     private double uncertain_ = UNC;
-    private boolean menabled_ = true, venabled_=true;
+    private boolean menabled_ = false, venabled_=false;
     private double length_= LENGTH;
 
     @Override
