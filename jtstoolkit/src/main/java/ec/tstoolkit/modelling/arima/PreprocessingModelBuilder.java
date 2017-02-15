@@ -20,8 +20,6 @@ import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.timeseries.regression.EasterVariable;
-import ec.tstoolkit.timeseries.regression.ICalendarVariable;
-import ec.tstoolkit.timeseries.regression.IMovingHolidayVariable;
 import ec.tstoolkit.timeseries.regression.JulianEasterVariable;
 import java.util.List;
 
@@ -33,7 +31,7 @@ import java.util.List;
 public class PreprocessingModelBuilder {
 
     public static boolean updateCalendar(ModelDescription model, boolean usecalendar) {
-        List<Variable> cals = model.selectVariables(var -> var.status.needTesting() && var.getVariable() instanceof ICalendarVariable);
+        List<Variable> cals = model.selectVariables(var -> var.status.needTesting() && var.isCalendar());
         if (cals.isEmpty()) {
             return false;
         }
@@ -43,7 +41,7 @@ public class PreprocessingModelBuilder {
                 if (!cal.status.isSelected()) {
                     changed = true;
                 }
-
+                cal.status = RegStatus.Accepted;
             }
         } else {
             for (Variable cal : cals) {
@@ -60,9 +58,9 @@ public class PreprocessingModelBuilder {
     }
 
     public static boolean updateEaster(ModelDescription model, int duration) {
-        List<Variable> mhs = model.selectVariables(var -> var.status.needTesting() && var.getVariable() instanceof IMovingHolidayVariable);
+        List<Variable> mhs = model.selectVariables(var -> var.status.needTesting() && var.isMovingHoliday());
         boolean changed = false;
-        for (Variable mh :mhs) {
+        for (Variable mh : mhs) {
             if (mh.getVariable() instanceof EasterVariable) {
                 if (duration == 0) {
                     if (mh.status.isSelected()) {
@@ -85,7 +83,7 @@ public class PreprocessingModelBuilder {
                         mh.status = RegStatus.Accepted;
                     }
                 }
-            } else if (mh.status.needTesting() && mh.getVariable() instanceof JulianEasterVariable) {
+            } else if (mh.getVariable() instanceof JulianEasterVariable) {
                 if (duration == 0) {
                     if (mh.status.isSelected()) {
                         changed = true;
@@ -110,21 +108,4 @@ public class PreprocessingModelBuilder {
         }
         return changed;
     }
-//    public static boolean updateTransformation(ModelDescription model, boolean log, boolean lpadjust) {
-//        model.setTransformation(log ? TransformationFunction.Log : TransformationFunction.None);
-//        if (log && lpadjust) {
-//            // remove leap year
-//            if (model.getCalendars() != null) {
-//                for (Variable var : model.getCalendars()) {
-//                    ITsVariable root = var.getRootVariable();
-//                    if (root instanceof ILengthOfPeriodVariable) {
-//                        var.status = RegStatus.Excluded;
-//                        model.setTransformation(((ILengthOfPeriodVariable) root).getType());
-//                        return true;
-//                    }
-//                }
-//            }
-//        }
-//        return false;
-//    }
 }
