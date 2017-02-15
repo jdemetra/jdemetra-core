@@ -17,7 +17,6 @@
 package ec.tss.sa.diagnostics;
 
 import ec.satoolkit.DecompositionMode;
-import ec.satoolkit.diagnostics.FTest;
 import ec.satoolkit.diagnostics.QSTest;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.IDiagnostics;
@@ -30,8 +29,6 @@ import ec.tstoolkit.modelling.DifferencingResults;
 import ec.tstoolkit.modelling.ModellingDictionary;
 import ec.tstoolkit.modelling.arima.JointRegressionTest;
 import ec.tstoolkit.stats.StatisticalTest;
-import ec.tstoolkit.timeseries.calendars.TradingDaysType;
-import ec.tstoolkit.timeseries.regression.GregorianCalendarVariables;
 import ec.tstoolkit.timeseries.regression.RegressionUtilities;
 import ec.tstoolkit.timeseries.regression.SeasonalDummies;
 import ec.tstoolkit.timeseries.simplets.TsData;
