@@ -86,7 +86,7 @@ public class X13SpecFixedUserDefinedRegressorsTest {
         Assert.assertEquals("outlier description 1 is wrong: ", "AO (1-2001)", regs.elements()[0].variable.getDescription(preprocessingModel.description.getEstimationDomain().getFrequency()));
         Assert.assertEquals("value outlier 2 is wrong: ", 0.1821, b[start + regs.elements()[1].position], 0.0001);
         Assert.assertEquals("outlier description 2 is wrong: ", "AO (3-2008)", regs.elements()[1].variable.getDescription(preprocessingModel.description.getEstimationDomain().getFrequency()));
-        Assert.assertTrue("B1 is wrong", CompareTsData.compareTS(PD2824FB1_1f_AO, comprest.getData("b-tables.b1", TsData.class), 0.0000001));
+        Assert.assertTrue("B1 is wrong", CompareTsData.compareTS(PD2824FB1_1f_AO, comprest.getData("b-tables.b1", TsData.class), 0.000000001));
     }
 
     X13Specification makeX13Spec_fixed_1_AO() {
@@ -105,17 +105,18 @@ public class X13SpecFixedUserDefinedRegressorsTest {
         regArimaSpecification.setTransform(tr);
         OutlierSpec o = new OutlierSpec();
         o.add(OutlierType.AO);
-
+o.setDefaultCriticalValue(3.75);
         regArimaSpecification.setOutliers(o);
 
 //Regression
         RegressionSpec rs = regArimaSpecification.getRegression();
+        rs.clearMovingHolidays();
         TsVariableDescriptor tsVariablesDescriptor = new TsVariableDescriptor("Vars-1.x_1");//ok
         tsVariablesDescriptor.setEffect(TsVariableDescriptor.UserComponentType.Irregular);
         rs.add(tsVariablesDescriptor);
         double[] c = new double[1];
         c[0] = 0.08;
-        rs.setFixedCoefficients("var", c);
+        rs.setFixedCoefficients("Vars-1.x_1", c);
 //Automodel        
         regArimaSpecification.setUsingAutoModel(false);
 
@@ -163,6 +164,7 @@ public class X13SpecFixedUserDefinedRegressorsTest {
 
 //Regression
         RegressionSpec rs = regArimaSpecification.getRegression();
+        rs.clearMovingHolidays();
         TsVariableDescriptor tsVariablesDescriptor = new TsVariableDescriptor("Vars-1.x_1");//ok
         tsVariablesDescriptor.setEffect(TsVariableDescriptor.UserComponentType.Irregular);
         rs.add(tsVariablesDescriptor);
@@ -215,13 +217,8 @@ public class X13SpecFixedUserDefinedRegressorsTest {
         regArimaSpecification.setOutliers(o);
 
 //Regression
-//        RegressionSpec rs = regArimaSpecification.getRegression();
-//        TsVariableDescriptor tsVariablesDescriptor = new TsVariableDescriptor("Vars-1.x_1");//ok
-//        tsVariablesDescriptor.setEffect(TsVariableDescriptor.UserComponentType.Irregular);
-//        rs.add(tsVariablesDescriptor);
-//        double[] c = new double[1];
-//        c[0] = 0.08;
-//        rs.setFixedCoefficients("var", c);
+        RegressionSpec rs = regArimaSpecification.getRegression();
+        rs.clearMovingHolidays();
 //Automodel        
         regArimaSpecification.setUsingAutoModel(false);
 
@@ -249,7 +246,7 @@ public class X13SpecFixedUserDefinedRegressorsTest {
     }
 
     @Test
-    public void UserVar_fixed_0_AO()  {
+    public void UserVar_fixed_0_AO() {
 
         context = makeContext();
         X13Specification x13spec = makeX13Spec_fixed_0_AO();
@@ -270,7 +267,6 @@ public class X13SpecFixedUserDefinedRegressorsTest {
 //            System.out.println(b[start + regs.elements()[i].position]);
 //            System.out.println(regs.elements()[i].variable.getDescription(preprocessingModel.description.getEstimationDomain().getFrequency()));
 //        }
-
         Assert.assertEquals("value outlier 1 is wrong: ", -0.26513869666377704, b[start + regs.elements()[0].position], 0.000000000001);
         Assert.assertEquals("outlier description 1 is wrong: ", "AO (5-2016)", regs.elements()[0].variable.getDescription(preprocessingModel.description.getEstimationDomain().getFrequency()));
         Assert.assertEquals("value outlier 2 is wrong: ", 0.32697791950990107, b[start + regs.elements()[1].position], 0.000000000001);
@@ -299,4 +295,3 @@ public class X13SpecFixedUserDefinedRegressorsTest {
         return context;
     }
 }
-

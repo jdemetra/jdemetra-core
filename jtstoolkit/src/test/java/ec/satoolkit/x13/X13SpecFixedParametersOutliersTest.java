@@ -69,7 +69,6 @@ public class X13SpecFixedParametersOutliersTest {
         Assert.assertEquals("outlier description 2 is wrong: ", "AO (12-2007)", regs.elements()[1].variable.getDescription(preprocessingModel.description.getEstimationDomain().getFrequency()));
         Assert.assertTrue("B1 is wrong", CompareTsData.compareTS(ABC1B1, comprest.getData("b-tables.b1", TsData.class), 0.000000001));
         Assert.assertTrue("D10 is wrong", CompareTsData.compareTS(ABC1D10, comprest.getData("d-tables.d10", TsData.class), 0.000000001));
-// System.out.println(comprest.getData("d-tables.d10", TsData.class));
     }
 
     @Test
@@ -132,10 +131,7 @@ public class X13SpecFixedParametersOutliersTest {
         Assert.assertTrue("B1 is wrong", CompareTsData.compareTS(ABC1B1_fixed_2_AO, comprest.getData("b-tables.b1", TsData.class).fittoDomain(ABC1B1_fixed_2_AO.getDomain()), 0.0001));
         Assert.assertTrue("D10 is wrong", CompareTsData.compareTS(ABC1D10_fixed_2_AO.times(.01),
                 comprest.getData("d-tables.d10", TsData.class).fittoDomain(ABC1B1_fixed_2_AO.getDomain()), 0.0001));
-
-//        System.out.println("D10");
-//        System.out.println(comprest.getData("d-tables.d10", TsData.class));
-    }
+  }
 
     X13Specification makeX13Spec() {
 
@@ -256,11 +252,11 @@ public class X13SpecFixedParametersOutliersTest {
         rs.add(outlierDefinition2);
 
         double[] c = new double[1];
-        c[0] = -5.8802; //-0.042442334225138614;
+        c[0] = -5.8802; 
         rs.setFixedCoefficients(ITsVariable.shortName("AO (2002-12-01)"), c);
 
         double[] d = new double[1];
-        d[0] = -5.0435; //-0.042442334225138614;
+        d[0] = -5.0435;
         rs.setFixedCoefficients(ITsVariable.shortName("AO (2003-12-01)"), d);
 
 //Automodel        
@@ -312,11 +308,11 @@ public class X13SpecFixedParametersOutliersTest {
         rs.add(outlierDefinition2);
 
         double[] c = new double[2];
-        c[0] = -5.8802; //-0.042442334225138614;
+        c[0] = -5.8802; 
         rs.setFixedCoefficients(ITsVariable.shortName("AO (2002-12-01)"), c);
 
         double[] d = new double[1];
-        d[0] = -5.0435; //-0.042442334225138614;
+        d[0] = -5.0435; 
         rs.setFixedCoefficients(ITsVariable.shortName("AO (2003-12-01)"), d);
 
 //Outlier

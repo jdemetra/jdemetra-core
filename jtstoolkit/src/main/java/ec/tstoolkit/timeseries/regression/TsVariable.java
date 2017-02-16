@@ -51,6 +51,7 @@ public class TsVariable extends AbstractSingleTsVariable implements
      * @param tsdata
      */
     public TsVariable(String desc, TsData tsdata) {
+       name=desc;
         desc_ = desc;
         tsdata_ = tsdata;
     }
