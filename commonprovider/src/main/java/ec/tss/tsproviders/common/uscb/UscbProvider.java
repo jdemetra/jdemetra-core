@@ -192,7 +192,7 @@ public class UscbProvider implements IDataSourceProvider {
 
     @Override
     public TsAsyncMode getAsyncMode() {
-        return TsAsyncMode.None;
+        return TsAsyncMode.Once;
     }
 
     @Override

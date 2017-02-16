@@ -66,7 +66,7 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
     protected final Parsers.Parser<DataSet> legacyDataSetParser;
 
     public XmlProvider() {
-        super(LOGGER, SOURCE, TsAsyncMode.None);
+        super(LOGGER, SOURCE, TsAsyncMode.Once);
         this.legacyDataSourceParser = XmlLegacy.dataSourceParser();
         this.legacyDataSetParser = XmlLegacy.dataSetParser();
     }

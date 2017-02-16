@@ -50,7 +50,7 @@ public class TswProvider extends AbstractFileLoader<TswSource, TswBean> {
     private static final Logger LOGGER = LoggerFactory.getLogger(TswProvider.class);
 
     public TswProvider() {
-        super(LOGGER, SOURCE, TsAsyncMode.None);
+        super(LOGGER, SOURCE, TsAsyncMode.Once);
     }
 
     @Override
