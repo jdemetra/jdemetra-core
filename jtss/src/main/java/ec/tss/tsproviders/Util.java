@@ -32,6 +32,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 /**
  * Package-private supporting class for ts providers.
@@ -44,6 +45,9 @@ final class Util {
     private Util() {
         // static class
     }
+
+    static final Consumer<Object> DO_NOTHING = o -> {
+    };
 
     private static abstract class ProviderPart {
 
@@ -186,11 +190,23 @@ final class Util {
     static final class DataSourceListSupport extends ProviderPart implements HasDataSourceList {
 
         private final List<DataSource> dataSources;
+        private final DataSourceEventSupport eventSupport;
+        private final Consumer<? super DataSource> cacheCleaner;
 
-        DataSourceListSupport(String providerName, Iterable<DataSource> dataSources) {
+        DataSourceListSupport(String providerName, Iterable<DataSource> dataSources,
+                DataSourceEventSupport eventSupport, Consumer<? super DataSource> cacheCleaner) {
             super(providerName);
             this.dataSources = ImmutableList.copyOf(dataSources);
-            this.dataSources.forEach(this::checkProvider);
+            this.eventSupport = Objects.requireNonNull(eventSupport);
+            this.cacheCleaner = Objects.requireNonNull(cacheCleaner);
+            dataSources.forEach(this::checkProvider);
+        }
+
+        @Override
+        public void reload(DataSource dataSource) {
+            checkProvider(dataSource);
+            cacheCleaner.accept(dataSource);
+            eventSupport.fireChanged(dataSource);
         }
 
         @Override
@@ -200,12 +216,12 @@ final class Util {
 
         @Override
         public void addDataSourceListener(IDataSourceListener listener) {
-            Objects.requireNonNull(listener);
+            eventSupport.add(listener);
         }
 
         @Override
         public void removeDataSourceListener(IDataSourceListener listener) {
-            Objects.requireNonNull(listener);
+            eventSupport.remove(listener);
         }
     }
 
@@ -213,11 +229,21 @@ final class Util {
 
         private final LinkedHashSet<DataSource> dataSources;
         private final DataSourceEventSupport eventSupport;
+        private final Consumer<? super DataSource> cacheCleaner;
 
-        DataSourceMutableListSupport(String providerName, LinkedHashSet<DataSource> dataSources, DataSourceEventSupport eventSupport) {
+        DataSourceMutableListSupport(String providerName, LinkedHashSet<DataSource> dataSources,
+                DataSourceEventSupport eventSupport, Consumer<? super DataSource> cacheCleaner) {
             super(providerName);
             this.dataSources = Objects.requireNonNull(dataSources);
             this.eventSupport = Objects.requireNonNull(eventSupport);
+            this.cacheCleaner = Objects.requireNonNull(cacheCleaner);
+        }
+
+        @Override
+        public void reload(DataSource dataSource) {
+            checkProvider(dataSource);
+            cacheCleaner.accept(dataSource);
+            eventSupport.fireChanged(dataSource);
         }
 
         @Override

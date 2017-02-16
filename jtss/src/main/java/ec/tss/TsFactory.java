@@ -16,6 +16,11 @@
  */
 package ec.tss;
 
+import ec.tss.tsproviders.DataSet;
+import ec.tss.tsproviders.DataSource;
+import ec.tss.tsproviders.HasDataSourceList;
+import ec.tss.tsproviders.IDataSourceListener;
+import ec.tss.tsproviders.IDataSourceProvider;
 import ec.tstoolkit.MetaData;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.InterfaceLoader;
@@ -26,7 +31,9 @@ import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.LockSupport;
+import java.util.function.Consumer;
 import java.util.stream.Collector;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -144,6 +151,7 @@ public class TsFactory {
     private boolean m_useSynchronousNotifications = true;
     NotificationsQueue notifications = new NotificationsQueue();
     TsFactoryCleaner cleaner = new TsFactoryCleaner();
+    private final ReloadListener reloadListener = new ReloadListener();
 
     private TsFactory() {
         m_threadID = Thread.currentThread().getId();
@@ -159,6 +167,9 @@ public class TsFactory {
             return false;
         }
         m_providers.put(provider.getSource(), provider);
+        if (provider instanceof HasDataSourceList) {
+            ((HasDataSourceList) provider).addDataSourceListener(reloadListener);
+        }
         return true;
     }
 
@@ -221,7 +232,7 @@ public class TsFactory {
      *
      */
     public void clear() {
-        m_providers.forEach((k, v) -> v.dispose());
+        m_providers.values().forEach(ITsProvider::dispose);
         m_providers.clear();
     }
 
@@ -500,7 +511,7 @@ public class TsFactory {
      */
     public void dispose() {
         m_close = true;
-        m_providers.forEach((k, v) -> v.dispose());
+        m_providers.values().forEach(ITsProvider::dispose);
         cleaner.interrupt();
         notifications.notificationThread.interrupt();
     }
@@ -631,7 +642,7 @@ public class TsFactory {
     }
 
     private boolean doLoad(@Nonnull Ts.Master ts, @Nonnull TsInformationType type) {
-        if (ts.getInformationType().encompass(type) || ts.getMoniker().isAnonymous()) {
+        if (ts.getMoniker().isAnonymous()) {
             return true;
         }
         TsInformation info = new TsInformation(ts.getName(), ts.getMoniker(), type);
@@ -642,16 +653,14 @@ public class TsFactory {
     }
 
     private boolean doLoad(@Nonnull TsCollection c, @Nonnull TsInformationType type) {
-        if (c.getInformationType().encompass(type)) {
+        if (c.getMoniker().isAnonymous()) {
             return true;
         }
         TsCollectionInformation info = new TsCollectionInformation(c.getMoniker(), type);
         boolean result = fill(info);
         List<Ts> updated = c.update(info);
         notify(c, info.type, this);
-        for (Ts s : updated) {
-            notify(s, info.type, c);
-        }
+        updated.forEach(s -> notify(s, info.type, c));
         return result;
     }
 
@@ -829,6 +838,9 @@ public class TsFactory {
     public void remove(String name) {
         if (m_providers.containsKey(name)) {
             ITsProvider provider = m_providers.get(name);
+            if (provider instanceof HasDataSourceList) {
+                ((HasDataSourceList) provider).removeDataSourceListener(reloadListener);
+            }
             provider.dispose();
             m_providers.remove(name);
         }
@@ -864,14 +876,10 @@ public class TsFactory {
             if (c != null) {
                 List<Ts> updated = c.update(info);
                 notify(c, info.type, null);
-                for (Ts s : updated) {
-                    notify(s, info.type, c);
-                }
+                updated.forEach(s -> notify(s, info.type, c));
             } else {
                 // the collection has been destroyed, but the series could be alive...
-                for (TsInformation sinfo : info.items) {
-                    update(sinfo);
-                }
+                info.items.forEach(sinfo -> update(sinfo));
             }
         }
     }
@@ -907,5 +915,66 @@ public class TsFactory {
             l.addAll(r);
             return l;
         }, o -> TsFactory.instance.createTsCollection(null, null, null, o));
+    }
+
+    private final class ReloadListener implements IDataSourceListener {
+
+        @Override
+        public void changed(DataSource dataSource) {
+            ITsProvider p = getProvider(dataSource.getProviderName());
+            if (p instanceof IDataSourceProvider) {
+                IDataSourceProvider o = (IDataSourceProvider) p;
+                reloadTSCollection(o, dataSource);
+                reloadTS(o, dataSource);
+            }
+        }
+
+        private void reloadTSCollection(IDataSourceProvider p, DataSource dataSource) {
+            Stream.of(lookupTsCollection(p, dataSource)).forEach(getTsCollectionReloader(p));
+        }
+
+        private void reloadTS(IDataSourceProvider p, DataSource dataSource) {
+            Stream.of(lookupTs(p, dataSource)).forEach(getTsReloader(p));
+        }
+
+        private TsCollection[] lookupTsCollection(IDataSourceProvider p, DataSource dataSource) {
+            synchronized (m_collections) {
+                return m_collections.entrySet().stream()
+                        .filter(o -> isRelatedTo(p, dataSource, o.getKey()))
+                        .map(o -> o.getValue().get())
+                        .filter(Objects::nonNull)
+                        .toArray(TsCollection[]::new);
+            }
+        }
+
+        private Ts.Master[] lookupTs(IDataSourceProvider p, DataSource dataSource) {
+            synchronized (m_collections) {
+                return m_ts.entrySet().stream()
+                        .filter(o -> isRelatedTo(p, dataSource, o.getKey()))
+                        .map(o -> o.getValue().get())
+                        .filter(Objects::nonNull)
+                        .toArray(Ts.Master[]::new);
+            }
+        }
+
+        private boolean isRelatedTo(IDataSourceProvider p, DataSource dataSource, TsMoniker moniker) {
+            if (p.getSource().equals(moniker.getSource())) {
+                DataSet dataSet = p.toDataSet(moniker);
+                return dataSet != null && dataSet.getDataSource().equals(dataSource);
+            }
+            return false;
+        }
+
+        private Consumer<TsCollection> getTsCollectionReloader(IDataSourceProvider p) {
+            return p.getAsyncMode() == TsAsyncMode.None
+                    ? o -> doLoad(o, o.getInformationType())
+                    : o -> p.queryTsCollection(o.getMoniker(), o.getInformationType());
+        }
+
+        private Consumer<Ts.Master> getTsReloader(IDataSourceProvider p) {
+            return p.getAsyncMode() == TsAsyncMode.None
+                    ? o -> doLoad(o, o.getInformationType())
+                    : o -> p.queryTs(o.getMoniker(), o.getInformationType());
+        }
     }
 }

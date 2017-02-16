@@ -68,6 +68,12 @@ public abstract class AbstractDataSourceProvider<DATA> extends AbstractTsProvide
     }
 
     @Override
+    public void reload(DataSource dataSource) throws IllegalArgumentException {
+        cache.invalidate(dataSource);
+        support.reload(dataSource);
+    }
+
+    @Override
     public List<DataSource> getDataSources() {
         return support.getDataSources();
     }

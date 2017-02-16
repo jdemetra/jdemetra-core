@@ -16,10 +16,13 @@
  */
 package ec.tss.tsproviders;
 
+import ec.tss.tsproviders.utils.DataSourceEventSupport;
 import java.util.List;
 import java.util.WeakHashMap;
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
+import org.slf4j.Logger;
 
 /**
  * Defines the ability to watch a list of data sources. Note that the
@@ -30,6 +33,8 @@ import javax.annotation.concurrent.ThreadSafe;
  */
 @ThreadSafe
 public interface HasDataSourceList {
+
+    void reload(@Nonnull DataSource dataSource) throws IllegalArgumentException;
 
     /**
      * Gets the DataSources loaded by this provider.
@@ -58,7 +63,17 @@ public interface HasDataSourceList {
     void removeDataSourceListener(@Nonnull IDataSourceListener listener);
 
     @Nonnull
-    public static HasDataSourceList of(@Nonnull String providerName, @Nonnull Iterable<DataSource> dataSources) {
-        return new Util.DataSourceListSupport(providerName, dataSources);
+    public static HasDataSourceList of(
+            @Nonnull String providerName, @Nonnull Logger logger,
+            @Nonnull Iterable<DataSource> dataSources,
+            @Nonnull Consumer<? super DataSource> cacheCleaner) {
+        return new Util.DataSourceListSupport(providerName, dataSources, DataSourceEventSupport.create(logger), cacheCleaner);
+    }
+
+    @Nonnull
+    public static HasDataSourceList of(
+            @Nonnull String providerName, @Nonnull Logger logger,
+            @Nonnull Iterable<DataSource> dataSources) {
+        return of(providerName, logger, dataSources, Util.DO_NOTHING);
     }
 }
