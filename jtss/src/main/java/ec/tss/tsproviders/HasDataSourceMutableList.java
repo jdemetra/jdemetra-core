@@ -18,6 +18,7 @@ package ec.tss.tsproviders;
 
 import ec.tss.tsproviders.utils.DataSourceEventSupport;
 import java.util.LinkedHashSet;
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 import org.slf4j.Logger;
@@ -62,7 +63,14 @@ public interface HasDataSourceMutableList extends HasDataSourceList {
     }
 
     @Nonnull
+    public static HasDataSourceMutableList of(
+            @Nonnull String providerName, @Nonnull Logger logger,
+            @Nonnull Consumer<? super DataSource> cacheCleaner) {
+        return new Util.DataSourceMutableListSupport(providerName, new LinkedHashSet<>(), DataSourceEventSupport.create(logger), cacheCleaner);
+    }
+
+    @Nonnull
     public static HasDataSourceMutableList of(@Nonnull String providerName, @Nonnull Logger logger) {
-        return new Util.DataSourceMutableListSupport(providerName, new LinkedHashSet<>(), DataSourceEventSupport.create(logger));
+        return of(providerName, logger, Util.DO_NOTHING);
     }
 }

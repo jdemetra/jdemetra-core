@@ -95,6 +95,12 @@ public class UscbProvider implements IDataSourceProvider {
     }
 
     @Override
+    public void reload(DataSource dataSource) throws IllegalArgumentException {
+        clearCache();
+        support.reload(dataSource);
+    }
+
+    @Override
     public List<DataSource> getDataSources() {
         return support.getDataSources();
     }
@@ -186,7 +192,7 @@ public class UscbProvider implements IDataSourceProvider {
 
     @Override
     public TsAsyncMode getAsyncMode() {
-        return TsAsyncMode.None;
+        return TsAsyncMode.Once;
     }
 
     @Override

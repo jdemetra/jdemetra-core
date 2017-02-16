@@ -72,7 +72,7 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
     private boolean keysInMetaData;
 
     public SdmxProvider() {
-        super(LOGGER, SOURCE, TsAsyncMode.None);
+        super(LOGGER, SOURCE, TsAsyncMode.Once);
         this.factories = new ISdmxSourceFactory[]{new CunningPlanFactory()};
         this.legacyDataSourceParser = SdmxLegacy.dataSourceParser();
         this.legacyDataSetParser = SdmxLegacy.dataSetParser();

@@ -171,6 +171,12 @@ public class DataSourceSupport implements HasDataSourceMutableList, HasDataMonik
 
     //<editor-fold defaultstate="collapsed" desc="HasDataSourceMutableList">
     @Override
+    public void reload(DataSource dataSource) throws IllegalArgumentException {
+        check(dataSource);
+        eventSupport.fireChanged(dataSource);
+    }
+
+    @Override
     public boolean open(DataSource dataSource) {
         check(dataSource);
         synchronized (dataSources) {

@@ -53,7 +53,7 @@ public class TxtProvider extends AbstractFileLoader<TxtSource, TxtBean> {
     protected final Parsers.Parser<DataSet> legacyDataSetParser;
 
     public TxtProvider() {
-        super(LOGGER, SOURCE, TsAsyncMode.None);
+        super(LOGGER, SOURCE, TsAsyncMode.Once);
         this.fileFilter = new TxtFileFilter();
         this.legacyDataSourceParser = TxtLegacy.dataSourceParser();
         this.legacyDataSetParser = TxtLegacy.dataSetParser();

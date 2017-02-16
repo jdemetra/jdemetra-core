@@ -34,6 +34,11 @@ import javax.annotation.concurrent.ThreadSafe;
 @ThreadSafe
 public interface IDataSourceProvider extends ITsProvider, HasDataSourceList, HasDataHierarchy, HasDataDisplayName, HasDataMoniker {
 
+    @Override
+    default void reload(DataSource dataSource) {
+        clearCache();
+    }
+
     /**
      * Gets a label for this provider.<br>Note that the result might change
      * according to the configuration of the provider.

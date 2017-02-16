@@ -22,6 +22,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
+import org.slf4j.helpers.NOPLogger;
 
 /**
  *
@@ -32,14 +33,14 @@ public class HasDataSourceListTest {
     @Test
     @SuppressWarnings("null")
     public void testFactory() {
-        assertThatThrownBy(() -> HasDataSourceList.of(null, Collections.emptyList())).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> HasDataSourceList.of("name", null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> HasDataSourceList.of(null, NOPLogger.NOP_LOGGER, Collections.emptyList())).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> HasDataSourceList.of("name", NOPLogger.NOP_LOGGER, null)).isInstanceOf(NullPointerException.class);
 
         DataSource.Builder b = DataSource.builder("name", "");
         List<DataSource> items = new ArrayList<>();
         items.add(b.put("key", "v1").build());
 
-        HasDataSourceList list = HasDataSourceList.of("name", items);
+        HasDataSourceList list = HasDataSourceList.of("name", NOPLogger.NOP_LOGGER, items);
         assertThatThrownBy(() -> list.addDataSourceListener(null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> list.removeDataSourceListener(null)).isInstanceOf(NullPointerException.class);
 

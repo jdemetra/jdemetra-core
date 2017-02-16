@@ -57,7 +57,7 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
     protected final Parsers.Parser<DataSet> legacyDataSetParser;
 
     public SpreadSheetProvider() {
-        super(LOGGER, SOURCE, TsAsyncMode.None);
+        super(LOGGER, SOURCE, TsAsyncMode.Once);
         this.legacyDataSourceParser = SpreadSheetLegacy.legacyDataSourceParser();
         this.legacyDataSetParser = SpreadSheetLegacy.legacyDataSetParser();
     }
