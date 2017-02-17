@@ -352,12 +352,13 @@ public class X13SpecFixedParametersOutliersTest {
     ProcessingContext makeContext() {
 
         if (context == null) {
-            context = ProcessingContext.getActiveContext();
+            context = new ProcessingContext();
             NameManager<TsVariables> activeMgr = context.getTsVariableManagers();
             TsVariables mgr = new TsVariables();
-            mgr.set("x_1", tsvUser); //ok
-            activeMgr.set("Vars-1", mgr);//ok
+            mgr.set("x_1", tsvUser); 
+            activeMgr.set("Vars-1", mgr);
             activeMgr.resetDirty();
+            ProcessingContext.setActiveContext(context);
         }
 
         return context;
