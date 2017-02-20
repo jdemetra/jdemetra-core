@@ -245,18 +245,18 @@ public class HtmlRegArima extends AbstractHtmlElement {
         writeRegressionItems(stream, context, true, var -> var instanceof ITradingDaysVariable);
         writeRegressionItems(stream, context, false, var -> var instanceof ILengthOfPeriodVariable);
         writeFixedRegressionItems(stream, "Fixed calendar effects", context, var -> var.isCalendar());
-        writeRegressionItems(stream, context, false, var->var instanceof IMovingHolidayVariable);
+        writeRegressionItems(stream, context, false, var -> var instanceof IMovingHolidayVariable);
         writeFixedRegressionItems(stream, "Fixed moving holidays effects", context, var -> var.isMovingHoliday());
         if (outliers) {
             writeOutliers(stream, true, context);
             writeOutliers(stream, false, context);
-            writeFixedRegressionItems(stream, "Fixed outliers", context, var->var.isOutlier());
+            writeFixedRegressionItems(stream, "Fixed outliers", context, var -> var.isOutlier());
         }
-        writeRegressionItems(stream, "Ramps", context, var->var instanceof Ramp);
-        writeRegressionItems(stream, "Intervention variables", context, var->var instanceof InterventionVariable);
-        writeRegressionItems(stream, "Ramps", context, var->var instanceof IUserTsVariable 
+        writeRegressionItems(stream, "Ramps", context, var -> var instanceof Ramp);
+        writeRegressionItems(stream, "Intervention variables", context, var -> var instanceof InterventionVariable);
+        writeRegressionItems(stream, "Ramps", context, var -> var instanceof IUserTsVariable
                 && !(var instanceof InterventionVariable) && !(var instanceof Ramp));
-        writeFixedRegressionItems(stream, "Fixed other regression effects", context, var->var.isUser());
+        writeFixedRegressionItems(stream, "Fixed other regression effects", context, var -> var.isUser());
         writeMissing(stream);
     }
 
@@ -405,18 +405,21 @@ public class HtmlRegArima extends AbstractHtmlElement {
         }
         int nvars = regs.getVariablesCount();
         if (jointest && regs.getItemsCount() == 1 && nvars > 1) {
-            JointRegressionTest jtest = new JointRegressionTest(.05);
-            boolean ok = jtest.accept(ll_, nhp_, start + regs.get(0).position, nvars, null);
-            StringBuilder builder = new StringBuilder();
-            builder.append("Joint F-Test = ").append(df2.format(jtest.getTest().getValue()))
-                    .append(" (").append(df4.format(jtest.getTest().getPValue())).append(')');
+            try {
+                JointRegressionTest jtest = new JointRegressionTest(.05);
+                boolean ok = jtest.accept(ll_, nhp_, start + regs.get(0).position, nvars, null);
+                StringBuilder builder = new StringBuilder();
+                builder.append("Joint F-Test = ").append(df2.format(jtest.getTest().getValue()))
+                        .append(" (").append(df4.format(jtest.getTest().getPValue())).append(')');
 
-            if (!ok) {
-                stream.write(builder.toString(), HtmlStyle.Bold, HtmlStyle.Danger);
-            } else {
-                stream.write(builder.toString(), HtmlStyle.Italic);
+                if (!ok) {
+                    stream.write(builder.toString(), HtmlStyle.Bold, HtmlStyle.Danger);
+                } else {
+                    stream.write(builder.toString(), HtmlStyle.Italic);
+                }
+                stream.newLines(2);
+            } catch (Exception ex) {
             }
-            stream.newLines(2);
         }
     }
 
