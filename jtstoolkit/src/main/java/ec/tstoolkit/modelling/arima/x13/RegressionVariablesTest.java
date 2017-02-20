@@ -87,8 +87,8 @@ public class RegressionVariablesTest implements IPreprocessingModule {
         TsVariableList x = context.description.buildRegressionVariables();
         TsVariableSelection sel = x.selectCompatible(ITradingDaysVariable.class);
         TsVariableSelection.Item<ITsVariable>[] items = sel.elements();
-        int nregs = context.description.countRegressors(var->var.status.isSelected() && var instanceof ICalendarVariable);
-        int ntd = context.description.countRegressors(var->var.status.isSelected() && var instanceof ITradingDaysVariable);
+        int nregs = context.description.countRegressors(var->var.status.isSelected() && var.getVariable() instanceof ICalendarVariable);
+        int ntd = context.description.countRegressors(var->var.status.isSelected() && var.getVariable() instanceof ITradingDaysVariable);
         boolean usetd = false;
         ArrayList<Variable> toreject = new ArrayList<>();
         for (int i = 0; i < items.length; ++i) {

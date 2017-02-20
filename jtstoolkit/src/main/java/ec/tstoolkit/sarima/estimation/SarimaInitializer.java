@@ -97,7 +97,7 @@ public class SarimaInitializer implements IarimaInitializer {
             if (regs.getDModel().getVarsCount() > 0) {
                 Ols ols = new Ols();
                 if (!ols.process(regs.getDModel())) {
-                    return null;
+                    return (SarimaModel) sarima.stationaryTransformation().stationaryModel;
                 }
                 dy_ = ols.getResiduals();
             } else {

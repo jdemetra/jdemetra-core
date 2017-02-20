@@ -159,7 +159,7 @@ public class ConcentratedLikelihoodEstimation {
             } while (xcols.next() && xlcols.next());
 
             Householder qr = new Householder(true);
-            qr.setEpsilon(1e-9);
+            qr.setEpsilon(1e-12);
             qr.decompose(xl);
             if (qr.getRank() == 0) {
                 double ssqerr = yl.ssq();

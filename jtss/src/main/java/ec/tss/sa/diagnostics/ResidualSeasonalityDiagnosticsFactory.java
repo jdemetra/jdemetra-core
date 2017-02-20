@@ -51,7 +51,7 @@ public class ResidualSeasonalityDiagnosticsFactory implements ISaDiagnosticsFact
 
     @Override
     public String getName() {
-        return "Residual seasonality";
+        return "Residual seasonality (legacy)";
     }
 
     @Override

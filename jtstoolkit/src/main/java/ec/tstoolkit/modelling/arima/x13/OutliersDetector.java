@@ -16,6 +16,7 @@
  */
 package ec.tstoolkit.modelling.arima.x13;
 
+import ec.tstoolkit.arima.estimation.AnsleyFilter;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.design.Development;
@@ -31,6 +32,7 @@ import ec.tstoolkit.modelling.IRobustStandardDeviationComputer;
 import ec.tstoolkit.modelling.arima.AbstractSingleOutlierDetector;
 import ec.tstoolkit.modelling.arima.ExactSingleOutlierDetector;
 import ec.tstoolkit.modelling.arima.IOutliersDetectionModule;
+import ec.tstoolkit.modelling.arima.IResidualsComputer;
 import ec.tstoolkit.modelling.arima.ModelDescription;
 import ec.tstoolkit.modelling.arima.ModelEstimation;
 import ec.tstoolkit.modelling.arima.ModellingContext;
@@ -118,7 +120,7 @@ public class OutliersDetector implements IOutliersDetectionModule {
     }
 
     private static final int MAX_OUTLIERS = 30, MAX_ITER = 30;
-    private static final GlsSarimaMonitor monitor;
+    private final GlsSarimaMonitor monitor;
 
     public double getEpsilon() {
         return monitor.getPrecision();
@@ -136,12 +138,6 @@ public class OutliersDetector implements IOutliersDetectionModule {
         return span_;
     }
 
-    static {
-        monitor = new GlsSarimaMonitor();
-        monitor.setMinimizer(new ProxyMinimizer(new LevenbergMarquardtMethod()));
-        monitor.useLogLikelihood(false);
-    }
-
     @Override
     public ProcessingResult process(ModellingContext context) {
         try {
@@ -153,7 +149,9 @@ public class OutliersDetector implements IOutliersDetectionModule {
             mapping_ = X13Preprocessor.createDefaultMapping(context.description);
             if (context.estimation == null) {
                 regarima_ = context.description.buildRegArima();
-                estimateModel();
+                if (!estimateModel()) {
+                    return ProcessingResult.Failed;
+                }
             } else {
                 estimation_ = context.estimation;
                 regarima_ = context.estimation.getRegArima();
@@ -198,8 +196,10 @@ public class OutliersDetector implements IOutliersDetectionModule {
      *
      */
     public OutliersDetector() {
-        sod_ = new ExactSingleOutlierDetector<>(IRobustStandardDeviationComputer.mad(false));
-        //sod_ = new TrenchSingleOutlierDetector();
+        sod_ = new ExactSingleOutlierDetector(IRobustStandardDeviationComputer.mad(false), IResidualsComputer.mlComputer(), new AnsleyFilter());
+        monitor = new GlsSarimaMonitor();
+        monitor.setMinimizer(new ProxyMinimizer(new LevenbergMarquardtMethod()));
+        monitor.useLogLikelihood(false);
     }
 
     /**
@@ -208,6 +208,9 @@ public class OutliersDetector implements IOutliersDetectionModule {
      */
     public OutliersDetector(AbstractSingleOutlierDetector<SarimaModel> sod) {
         sod_ = sod;
+        monitor = new GlsSarimaMonitor();
+        monitor.setMinimizer(new ProxyMinimizer(new LevenbergMarquardtMethod()));
+        monitor.useLogLikelihood(false);
     }
 
     private void addOutlier(IOutlierVariable o) {
@@ -251,14 +254,20 @@ public class OutliersDetector implements IOutliersDetectionModule {
         m_round = 0;
 
         do {
-            sod_.process(regarima_);
+            if (!sod_.process(regarima_)) {
+                break;
+            }
             max = sod_.getMaxTStat();
             if (Math.abs(max) > curcv_) {
                 m_round++;
                 IOutlierVariable o = sod_.getMaxOutlier();
                 addOutlier(o);
                 changed = true;
-                estimateModel();
+                if (!estimateModel()) {
+                    outliers_.remove(o);
+                    estimateModel();
+                    break;
+                }
                 /*
                  * int v = verifymodel(cv_); if (v == -1) break; else if (v ==
                  * 0) reestimatemodel();
@@ -267,10 +276,12 @@ public class OutliersDetector implements IOutliersDetectionModule {
             } else {
                 break;// no outliers to remove...
             }
-        } while (m_round < maxiter_ && outliers_.size() < MAX_OUTLIERS);
+        } while (m_round < maxiter_ && outliers_.size() <= MAX_OUTLIERS);
 
         while (verifymodel(curcv_) == 0) {
-            estimateModel();
+            if (!estimateModel()) {
+                break;
+            }
             changed = true;
         }
 
@@ -325,15 +336,14 @@ public class OutliersDetector implements IOutliersDetectionModule {
         return outliers_.size();
     }
 
-    private void estimateModel() {
-        synchronized (monitor) {
-            estimation_ = new ModelEstimation(regarima_, llcorr_);
-            monitor.setMapping(mapping_);
-            if (!estimation_.compute(monitor, mapping_.getDim())) {
-                throw new X13Exception();
-            }
-            regarima_ = estimation_.getRegArima();
+    private boolean estimateModel() {
+        estimation_ = new ModelEstimation(regarima_, llcorr_);
+        monitor.setMapping(mapping_);
+        if (!estimation_.compute(monitor, mapping_.getDim())) {
+            return false;
         }
+        regarima_ = estimation_.getRegArima();
+        return true;
     }
 
     /**

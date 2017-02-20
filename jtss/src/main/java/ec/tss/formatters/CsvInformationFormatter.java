@@ -274,7 +274,7 @@ public class CsvInformationFormatter {
             int cur = 0;
             for (MatrixItem[] item : items) {
                 if (rowheaders != null) {
-                    String rh = rowheaders.get(cur);
+                    String rh = rowheaders.get(cur++);
                     if (rh != null) {
                         writeHeader(writer, rh);
                     }

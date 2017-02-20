@@ -897,7 +897,7 @@ public class ModelDescription implements Cloneable {
 
     private void checkPreadjustment() {
         if (adjust_ == PreadjustmentType.Auto && function_ == DefaultTransformationType.Log) {
-            variables.stream().filter(var -> var.getVariable() instanceof ILengthOfPeriodVariable).forEach(var -> var.status = RegStatus.Rejected);
+            variables.stream().filter(var -> var.getVariable() instanceof ILengthOfPeriodVariable).forEach(var -> var.status = RegStatus.Excluded);
         }
     }
 

@@ -202,7 +202,7 @@ public class X13Preprocessor implements IPreprocessor {
                         // final tests
                         checkUnitRoots(context);
                         checkMA(context);
-                        if (context.automodelling && !context.description.isEstimatedMean()&& Math.abs(rtval_) > 2.5) {
+                        if (context.automodelling && !context.description.isMean() && Math.abs(rtval_) > 2.5) {
                             if (checkMu_) {
                                 context.description.setMean(true);
                             }

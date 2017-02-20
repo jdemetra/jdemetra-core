@@ -73,8 +73,6 @@ public class CalendarEffectsDetection implements IPreprocessingModule {
     /**
      * Creates a new calendar effects detection module
      *
-     * @param preadjust True if a pre-adjustment for leap year is made in
-     * log-transformed models, false otherwise.
      */
     public CalendarEffectsDetection() {
         comparer_ = new AICcComparator();

@@ -201,10 +201,10 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      * @param o
      */
     public void exclude(IOutlierVariable o) {
+            TsPeriod start = new TsPeriod(m_domain.getFrequency(), o.getPosition());
         for (int i = 0; i < m_o.size(); ++i) {
             IOutlierFactory exemplar = m_o.get(i);
-            TsPeriod start = new TsPeriod(m_domain.getFrequency(), o.getPosition());
-            if (exemplar.getOutlierType().equals(o.getOutlierType())) {
+            if (exemplar.getOutlierCode().equals(o.getCode())) {
                 int pos = start.minus(m_domain.getStart());
                 exclude(pos, i);
                 break;
@@ -220,7 +220,7 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
         for (int i = 0; i < m_o.size(); ++i) {
             IOutlierFactory exemplar = m_o.get(i);
             TsPeriod start = new TsPeriod(m_domain.getFrequency(), o.getPosition());
-            if (exemplar.getOutlierType().equals(o.getOutlierType())) {
+            if (exemplar.getOutlierCode().equals(o.getCode())) {
                 int pos = start.minus(m_domain.getStart());
                 allow(pos, i);
                 break;
