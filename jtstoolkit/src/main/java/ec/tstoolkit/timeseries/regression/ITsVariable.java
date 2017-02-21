@@ -145,4 +145,9 @@ public interface ITsVariable {
         else
             return s.substring(0, pos);
     }
+    
+    static String validName(String name){
+        return name.replace('.', '@');
+    }
+
 }

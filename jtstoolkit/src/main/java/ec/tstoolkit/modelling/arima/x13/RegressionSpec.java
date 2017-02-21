@@ -286,7 +286,8 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
                 }
             }
         }
-        // easter
+        
+         // easter
         MovingHolidaySpec easter = getEaster();
         if (easter != null && easter.getTest() == RegressionTestSpec.None) {
             names.add(IEasterVariable.NAME);
@@ -325,16 +326,20 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
                 -> {
             int n = uv.getLastLag() - uv.getFirstLag() + 1;
             if (n == 1 || shortname) {
-                names.add(uv.getName());
+                names.add(validName(uv.getName()));
             } else {
-                names.add(uv.getName() + '#' + n);
+                names.add(validName(uv.getName()) + '#' + n);
             }
         });
         String[] all = new String[names.size()];
         return names.toArray(all);
     }
 
-    public double[] getCoefficients(String name) {
+   private static String validName(String name){
+        return name.replace('.', '@');
+    }
+
+   public double[] getCoefficients(String name) {
         return coeff.get(name);
     }
 

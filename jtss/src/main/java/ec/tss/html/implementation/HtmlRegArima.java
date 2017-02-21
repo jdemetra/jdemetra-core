@@ -252,9 +252,9 @@ public class HtmlRegArima extends AbstractHtmlElement {
             writeOutliers(stream, false, context);
             writeFixedRegressionItems(stream, "Fixed outliers", context, var -> var.isOutlier());
         }
-        writeRegressionItems(stream, "Ramps", context, var -> var instanceof Ramp);
-        writeRegressionItems(stream, "Intervention variables", context, var -> var instanceof InterventionVariable);
-        writeRegressionItems(stream, "Ramps", context, var -> var instanceof IUserTsVariable
+        writeRegressionItems(stream, "Ramps", true, context, var -> var instanceof Ramp);
+        writeRegressionItems(stream, "Intervention variables", true, context, var -> var instanceof InterventionVariable);
+        writeRegressionItems(stream, "User variables", true, context, var -> var instanceof IUserTsVariable
                 && !(var instanceof InterventionVariable) && !(var instanceof Ramp));
         writeFixedRegressionItems(stream, "Fixed other regression effects", context, var -> var.isUser());
         writeMissing(stream);
@@ -311,43 +311,48 @@ public class HtmlRegArima extends AbstractHtmlElement {
     }
 
     private void writeOutliers(HtmlStream stream, boolean prespecified, TsFrequency context) throws IOException {
-        TsVariableSelection<IOutlierVariable> regs = x_.select(IOutlierVariable.class);
-        boolean found = false;
-        for (TsVariableSelection.Item<IOutlierVariable> reg : regs.elements()) {
-            if (model_.description.isPrespecified(reg.variable) == prespecified) {
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            return;
-        }
-        T t = new T();
-        t.setDegreesofFreedom(ll_.getDegreesOfFreedom(true, nhp_));
-        double[] b = ll_.getB();
-        stream.write(HtmlTag.HEADER3, h3, prespecified ? "Prespecified outliers" : "Outliers");
-        stream.open(new HtmlTable(0, 400));
-        stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("", 100));
-        stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
-        stream.write(new HtmlTableCell("T-Stat", 100, HtmlStyle.Bold));
-        stream.write(new HtmlTableCell("P[|T| &gt t]", 100, HtmlStyle.Bold));
-        stream.close(HtmlTag.TABLEROW);
-        int start = model_.description.getRegressionVariablesStartingPosition();
-        for (TsVariableSelection.Item<IOutlierVariable> reg : regs.elements()) {
-            if (model_.description.isPrespecified(reg.variable) == prespecified) {
-                stream.open(HtmlTag.TABLEROW);
-                stream.write(new HtmlTableCell(reg.variable.getDescription(context), 100));
-                stream.write(new HtmlTableCell(df4.format(b[start + reg.position]), 100));
-                double tval = ll_.getTStat(start + reg.position, true, nhp_);
-                stream.write(new HtmlTableCell(formatT(tval), 100));
-                double prob = 1 - t.getProbabilityForInterval(-tval, tval);
-                stream.write(new HtmlTableCell(df4.format(prob), 100));
-                stream.close(HtmlTag.TABLEROW);
-            }
-        }
-        stream.close(HtmlTag.TABLE);
-        stream.newLine();
+
+        String header = prespecified ? "Prespecified outliers" : "Outliers";
+        writeRegressionItems(stream, header, true, context, var -> var instanceof IOutlierVariable
+                && model_.description.isPrespecified((IOutlierVariable) var) == prespecified);
+//        
+//        TsVariableSelection<IOutlierVariable> regs = x_.select(IOutlierVariable.class);
+//        boolean found = false;
+//        for (TsVariableSelection.Item<IOutlierVariable> reg : regs.elements()) {
+//            if (model_.description.isPrespecified(reg.variable) == prespecified) {
+//                found = true;
+//                break;
+//            }
+//        }
+//        if (!found) {
+//            return;
+//        }
+//        T t = new T();
+//        t.setDegreesofFreedom(ll_.getDegreesOfFreedom(true, nhp_));
+//        double[] b = ll_.getB();
+//        stream.write(HtmlTag.HEADER3, h3, prespecified ? "Prespecified outliers" : "Outliers");
+//        stream.open(new HtmlTable(0, 400));
+//        stream.open(HtmlTag.TABLEROW);
+//        stream.write(new HtmlTableCell("", 100));
+//        stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
+//        stream.write(new HtmlTableCell("T-Stat", 100, HtmlStyle.Bold));
+//        stream.write(new HtmlTableCell("P[|T| &gt t]", 100, HtmlStyle.Bold));
+//        stream.close(HtmlTag.TABLEROW);
+//        int start = model_.description.getRegressionVariablesStartingPosition();
+//        for (TsVariableSelection.Item<IOutlierVariable> reg : regs.elements()) {
+//            if (model_.description.isPrespecified(reg.variable) == prespecified) {
+//                stream.open(HtmlTag.TABLEROW);
+//                stream.write(new HtmlTableCell(reg.variable.getDescription(context), 100));
+//                stream.write(new HtmlTableCell(df4.format(b[start + reg.position]), 100));
+//                double tval = ll_.getTStat(start + reg.position, true, nhp_);
+//                stream.write(new HtmlTableCell(formatT(tval), 100));
+//                double prob = 1 - t.getProbabilityForInterval(-tval, tval);
+//                stream.write(new HtmlTableCell(df4.format(prob), 100));
+//                stream.close(HtmlTag.TABLEROW);
+//            }
+//        }
+//        stream.close(HtmlTag.TABLE);
+//        stream.newLine();
     }
 
     private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, TsFrequency context, boolean jointest, Predicate<ITsVariable> predicate) throws IOException {
@@ -423,7 +428,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
         }
     }
 
-    private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, String header, TsFrequency context, Predicate<ITsVariable> predicate) throws IOException {
+    private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, String header, boolean desc, TsFrequency context, Predicate<ITsVariable> predicate) throws IOException {
         TsVariableSelection<ITsVariable> regs = x_.select(predicate);
         if (regs.isEmpty()) {
             return;
@@ -446,7 +451,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
             int ndim = reg.variable.getDim();
             for (int j = 0; j < reg.variable.getDim(); ++j) {
                 stream.open(HtmlTag.TABLEROW);
-                if (ndim > 1) {
+                if (ndim > 1 || desc) {
                     stream.write(new HtmlTableCell(reg.variable.getItemDescription(j, context), 100));
                 } else {
                     stream.write(new HtmlTableCell("", 100));

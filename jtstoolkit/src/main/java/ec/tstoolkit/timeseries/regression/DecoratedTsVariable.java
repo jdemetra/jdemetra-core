@@ -88,6 +88,11 @@ public class DecoratedTsVariable extends AbstractTsModifier {
     
     @Override
     public String getName(){
-        return var.getName();
+        String cname=name.replace('.', '@');
+        int n=getDim();
+        if (n == 1)
+            return cname;
+        else 
+            return cname+'#'+n;
     }
 }
