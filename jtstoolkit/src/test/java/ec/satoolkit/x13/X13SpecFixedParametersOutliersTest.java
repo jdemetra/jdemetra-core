@@ -25,7 +25,6 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.utilities.NameManager;
 import org.junit.Test;
 import ec.satoolkit.GenericSaResults;
-import ec.satoolkit.x13.X13Specification;
 import ec.tstoolkit.eco.ConcentratedLikelihood;
 import ec.tstoolkit.modelling.arima.x13.OutlierSpec;
 import ec.tstoolkit.modelling.arima.x13.RegressionSpec;
@@ -38,17 +37,15 @@ import ec.tstoolkit.timeseries.regression.TsVariableSelection;
 import ec.tstoolkit.timeseries.regression.TsVariableSelection.Item;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
-import java.io.IOException;
 import org.junit.Assert;
 import static org.junit.Assert.assertTrue;
-import org.junit.Ignore;
 import utilities.CompareTsData;
 
 /**
  *
  * @author Christiane Hofer
  */
-public class X13SpecFixedParametersOutliers {
+public class X13SpecFixedParametersOutliersTest {
 
     @Test
     public void OutlierAO_notfixed() {
@@ -72,7 +69,6 @@ public class X13SpecFixedParametersOutliers {
         Assert.assertEquals("outlier description 2 is wrong: ", "AO (12-2007)", regs.elements()[1].variable.getDescription(preprocessingModel.description.getEstimationDomain().getFrequency()));
         Assert.assertTrue("B1 is wrong", CompareTsData.compareTS(ABC1B1, comprest.getData("b-tables.b1", TsData.class), 0.000000001));
         Assert.assertTrue("D10 is wrong", CompareTsData.compareTS(ABC1D10, comprest.getData("d-tables.d10", TsData.class), 0.000000001));
-// System.out.println(comprest.getData("d-tables.d10", TsData.class));
     }
 
     @Test
@@ -135,10 +131,7 @@ public class X13SpecFixedParametersOutliers {
         Assert.assertTrue("B1 is wrong", CompareTsData.compareTS(ABC1B1_fixed_2_AO, comprest.getData("b-tables.b1", TsData.class).fittoDomain(ABC1B1_fixed_2_AO.getDomain()), 0.0001));
         Assert.assertTrue("D10 is wrong", CompareTsData.compareTS(ABC1D10_fixed_2_AO.times(.01),
                 comprest.getData("d-tables.d10", TsData.class).fittoDomain(ABC1B1_fixed_2_AO.getDomain()), 0.0001));
-
-//        System.out.println("D10");
-//        System.out.println(comprest.getData("d-tables.d10", TsData.class));
-    }
+  }
 
     X13Specification makeX13Spec() {
 
@@ -259,11 +252,11 @@ public class X13SpecFixedParametersOutliers {
         rs.add(outlierDefinition2);
 
         double[] c = new double[1];
-        c[0] = -5.8802; //-0.042442334225138614;
+        c[0] = -5.8802; 
         rs.setFixedCoefficients(ITsVariable.shortName("AO (2002-12-01)"), c);
 
         double[] d = new double[1];
-        d[0] = -5.0435; //-0.042442334225138614;
+        d[0] = -5.0435;
         rs.setFixedCoefficients(ITsVariable.shortName("AO (2003-12-01)"), d);
 
 //Automodel        
@@ -315,11 +308,11 @@ public class X13SpecFixedParametersOutliers {
         rs.add(outlierDefinition2);
 
         double[] c = new double[2];
-        c[0] = -5.8802; //-0.042442334225138614;
+        c[0] = -5.8802; 
         rs.setFixedCoefficients(ITsVariable.shortName("AO (2002-12-01)"), c);
 
         double[] d = new double[1];
-        d[0] = -5.0435; //-0.042442334225138614;
+        d[0] = -5.0435; 
         rs.setFixedCoefficients(ITsVariable.shortName("AO (2003-12-01)"), d);
 
 //Outlier
@@ -359,12 +352,13 @@ public class X13SpecFixedParametersOutliers {
     ProcessingContext makeContext() {
 
         if (context == null) {
-            context = ProcessingContext.getActiveContext();
+            context = new ProcessingContext();
             NameManager<TsVariables> activeMgr = context.getTsVariableManagers();
             TsVariables mgr = new TsVariables();
-            mgr.set("x_1", tsvUser); //ok
-            activeMgr.set("Vars-1", mgr);//ok
+            mgr.set("x_1", tsvUser); 
+            activeMgr.set("Vars-1", mgr);
             activeMgr.resetDirty();
+            ProcessingContext.setActiveContext(context);
         }
 
         return context;

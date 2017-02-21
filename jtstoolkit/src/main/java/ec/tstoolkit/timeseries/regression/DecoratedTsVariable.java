@@ -88,6 +88,6 @@ public class DecoratedTsVariable extends AbstractTsModifier {
     
     @Override
     public String getName(){
-        return var.getName();
+        return name;//var.getName();
     }
 }
