@@ -70,6 +70,8 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
 
     public void setTradingDaysType(TradingDaysType value) {
         type_ = value;
+        users_ = null;
+        w_ = 0;
     }
 
     public LengthOfPeriodType getLengthOfPeriod() {
@@ -94,6 +96,10 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
      */
     public void setStockTradingDays(int w) {
         w_ = w;
+        holidays_ = null;
+        users_ = null;
+        type_ = TradingDaysType.None;
+        lp_ = LengthOfPeriodType.None;
     }
 
     public boolean isStockTradingDays() {
@@ -130,6 +136,7 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
         }
         if (holidays_ != null) {
             users_ = null;
+            w_ = 0;
         }
     }
 
