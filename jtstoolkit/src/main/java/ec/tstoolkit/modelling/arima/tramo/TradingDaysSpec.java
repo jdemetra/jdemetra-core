@@ -19,6 +19,7 @@ package ec.tstoolkit.modelling.arima.tramo;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.information.InformationSetSerializable;
 import ec.tstoolkit.modelling.RegressionTestType;
+import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import java.util.Arrays;
 import java.util.Map;
@@ -85,9 +86,9 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
     }
 
     public boolean isDefined() {
-        return users_ != null || (w_ != 0 && test_ == RegressionTestType.None) 
-                || ((lp_ || td_ != TradingDaysType.None) 
-                && (test_ ==RegressionTestType.None && auto_ == AutoMethod.Unused)) ;
+        return users_ != null || (w_ != 0 && test_ == RegressionTestType.None)
+                || ((lp_ || td_ != TradingDaysType.None)
+                && (test_ == RegressionTestType.None && auto_ == AutoMethod.Unused));
     }
 
     public boolean isAutomatic() {
@@ -119,6 +120,8 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
 
     public void setTradingDaysType(TradingDaysType value) {
         td_ = value;
+        users_ = null;
+        w_=0;
     }
 
     public boolean isLeapYear() {
@@ -135,6 +138,12 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
      */
     public void setStockTradingDays(int w) {
         w_ = w;
+        holidays_ = null;
+        users_ = null;
+        td_ = TradingDaysType.None;
+        lp_ = false;
+        auto_ = AutoMethod.Unused;
+        pftd_ = DEF_PFTD;
     }
 
     public boolean isStockTradingDays() {
@@ -187,6 +196,8 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
             holidays_ = null;
             td_ = TradingDaysType.None;
             lp_ = false;
+            auto_ = AutoMethod.Unused;
+            pftd_ = DEF_PFTD;
         }
     }
 
@@ -248,7 +259,7 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
                 || !Objects.equals(holidays_, other.holidays_) || w_ != other.w_ || auto_ != other.auto_) {
             return false;
         }
-        
+
         if (auto_ != AutoMethod.Unused) {
             return pftd_ == other.pftd_;
         } else {
