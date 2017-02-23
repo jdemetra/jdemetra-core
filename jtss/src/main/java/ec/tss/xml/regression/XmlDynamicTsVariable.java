@@ -43,10 +43,11 @@ public class XmlDynamicTsVariable extends XmlNamedObject implements IXmlConverte
     @Override
     public DynamicTsVariable create() {
         TsMoniker m = moniker.create();
-        TsData d = tsdata != null ? tsdata.create() : null;
-        DynamicTsVariable var = new DynamicTsVariable(tsdata.name, m, d);
-        
-        return var;
+        if (tsdata != null) {
+            return new DynamicTsVariable(tsdata.name, m, tsdata.create());
+        } else {
+            return new DynamicTsVariable(null, m, null);
+        }
     }
 
     @Override
