@@ -152,7 +152,7 @@ public final class SaManager extends AlgorithmManager<ISaSpecification, TsData, 
         }
         return summary;
     }
-
+    
     @Override
     public String getFamily() {
         return GenericSaProcessingFactory.FAMILY;

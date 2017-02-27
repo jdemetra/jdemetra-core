@@ -19,8 +19,13 @@
 package ec.tss.sa.diagnostics;
 
 import ec.tss.sa.ISaDiagnosticsFactory;
+import static ec.tss.sa.diagnostics.ResidualsDiagnosticsFactory.ALL;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.IDiagnostics;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -29,6 +34,14 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ISaDiagnosticsFactory.class)
 public class SeatsDiagnosticsFactory implements ISaDiagnosticsFactory {
+
+    public static final String SEAS_VAR = "seas variance", IRR_VAR = "irregular variance";
+    public static final String SEAS_I_CORR = "seas/irr cross-correlation";
+    public static final String NOTSAME = "Non decomposable model. Changed by Seats";
+    public static final String CUTOFF = "Parameters cut off by Seats";
+    public static final String NAME = "seats";
+    
+    public static final List<String> ALL=Collections.unmodifiableList(Arrays.asList(SEAS_VAR, IRR_VAR, SEAS_I_CORR));
 
     //public static final SeatsDiagnosticsFactory Default = new SeatsDiagnosticsFactory();
     private SeatsDiagnosticsConfiguration config_;
@@ -50,17 +63,21 @@ public class SeatsDiagnosticsFactory implements ISaDiagnosticsFactory {
 
     @Override
     public void dispose() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public String getName() {
-        return "Seats";
+        return NAME;
     }
 
     @Override
     public String getDescription() {
         return "Comparison of the variance/covariance of estimators/estimates";
+    }
+
+    @Override
+    public List<String> getTestDictionary(){
+        return ALL.stream().map(s->s+":2").collect(Collectors.toList());
     }
 
     @Override

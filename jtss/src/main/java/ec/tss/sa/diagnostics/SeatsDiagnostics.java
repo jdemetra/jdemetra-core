@@ -39,11 +39,6 @@ import java.util.List;
  */
 public class SeatsDiagnostics implements IDiagnostics {
 
-    public static final String SEAS_VAR = "seas variance", IRR_VAR = "irregular variance";
-    public static final String SEAS_I_CORR = "seas/irr cross-correlation";
-    public static final String NOTSAME = "Non decomposable model. Changed by Seats";
-    public static final String CUTOFF = "Parameters cut off by Seats";
-    public static final String NAME = "seats";
 //    private UcarimaModel ucm_;
 //    private ArimaModel[] models_, stmodels_;
 //    private LinearModel[] emodels_;
@@ -122,12 +117,12 @@ public class SeatsDiagnostics implements IDiagnostics {
 
     @Override
     public String getName() {
-        return NAME;
+        return SeatsDiagnosticsFactory.NAME;
     }
 
     @Override
     public List<String> getTests() {
-        return Arrays.asList(SEAS_VAR, IRR_VAR, SEAS_I_CORR);
+        return SeatsDiagnosticsFactory.ALL;
     }
 
     @Override
@@ -153,15 +148,15 @@ public class SeatsDiagnostics implements IDiagnostics {
     public double getValue(String test) {
         double val = Double.NaN;
         int icmp = -1, jcmp = -1;
-        if (test.equals(SEAS_VAR) || test.equals(SEAS_I_CORR)) {
+        if (test.equals(SeatsDiagnosticsFactory.SEAS_VAR) || test.equals(SeatsDiagnosticsFactory.SEAS_I_CORR)) {
             icmp = S_CMP;
         }
-        if (test.equals(IRR_VAR) || test.equals(SEAS_I_CORR)) {
+        if (test.equals(SeatsDiagnosticsFactory.IRR_VAR) || test.equals(SeatsDiagnosticsFactory.SEAS_I_CORR)) {
             jcmp = I_CMP;
         }
-        if (test.equals(SEAS_VAR)) {
+        if (test.equals(SeatsDiagnosticsFactory.SEAS_VAR)) {
             val = diags_.getPValue(icmp);
-        } else if (test.equals(IRR_VAR)) {
+        } else if (test.equals(SeatsDiagnosticsFactory.IRR_VAR)) {
             val = diags_.getPValue(jcmp);
         } else if (icmp >= 0 && jcmp >= 0) {
             val = diags_.getPValue(icmp, jcmp);
@@ -172,9 +167,9 @@ public class SeatsDiagnostics implements IDiagnostics {
     @Override
     public List<String> getWarnings() {
         if (!same_) {
-            return Collections.singletonList(NOTSAME);
+            return Collections.singletonList(SeatsDiagnosticsFactory.NOTSAME);
         } else if (cutoff_){
-             return Collections.singletonList(CUTOFF);
+             return Collections.singletonList(SeatsDiagnosticsFactory.CUTOFF);
         }else{
            return null;
         }

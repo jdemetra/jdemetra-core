@@ -19,6 +19,7 @@ package ec.tstoolkit.algorithm;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.information.Information;
 import ec.tstoolkit.information.InformationSet;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -149,7 +150,7 @@ public abstract class AlgorithmManager<S extends IProcSpecification, I, R extend
         }
         return null;
     }
-
+    
     protected T addDiagnostics(String module, String impl) {
         T diag = (T) ec.tstoolkit.design.InterfaceLoader.create(module, IDiagnosticsFactory.class, impl);
         if (diag != null) {

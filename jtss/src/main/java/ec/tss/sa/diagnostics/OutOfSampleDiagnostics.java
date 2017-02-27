@@ -32,9 +32,6 @@ import java.util.List;
  */
 public class OutOfSampleDiagnostics implements IDiagnostics {
 
-    public static final String MEAN = "mean", MSE = "mse";
-    public static final String NAME = "out-of-sample";
-    public static final List<String> DEF_TESTS = Arrays.asList(MEAN, MSE);
     private double ub_ = OutOfSampleDiagnosticsConfiguration.UNC;
     private double bb_ = OutOfSampleDiagnosticsConfiguration.BAD;
     private double mpval_, vpval_;
@@ -84,12 +81,12 @@ public class OutOfSampleDiagnostics implements IDiagnostics {
 
     @Override
     public String getName() {
-        return NAME;
+        return OutOfSampleDiagnosticsFactory.NAME;
     }
 
     @Override
     public List<String> getTests() {
-        return DEF_TESTS;
+        return OutOfSampleDiagnosticsFactory.ALL;
     }
 
     @Override
@@ -109,9 +106,9 @@ public class OutOfSampleDiagnostics implements IDiagnostics {
 
     @Override
     public double getValue(String test) {
-        if (test.equals(DEF_TESTS.get(0))) {
+        if (test.equals(OutOfSampleDiagnosticsFactory.MEAN)) {
             return mpval_;
-        } else if (test.equals(DEF_TESTS.get(1))) {
+        } else if (test.equals(OutOfSampleDiagnosticsFactory.MSE)) {
             return vpval_;
         } else {
             return Double.NaN;

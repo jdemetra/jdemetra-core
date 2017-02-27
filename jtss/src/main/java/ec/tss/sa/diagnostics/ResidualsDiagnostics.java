@@ -29,7 +29,6 @@ import ec.tstoolkit.stats.LjungBoxTest;
 import ec.tstoolkit.stats.NiidTests;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -38,17 +37,11 @@ import java.util.List;
  */
 public class ResidualsDiagnostics implements IDiagnostics {
 
-    public static final String NORMALITY = "normality", INDEPENDENCE = "independence",
-        TD_PEAK = "spectral td peaks", S_PEAK = "spectral seas peaks";
-
-    public static final String NAME = "regarima residuals";
-
-    private List<String> tests_ = Arrays.asList(NORMALITY, INDEPENDENCE, TD_PEAK, S_PEAK);
 
     private double N0_ = 0.1, N1_ = .01;
     private double tdPeriodogram0_ = 0.1, tdPeriodogram1_ = 0.01, tdPeriodogram2_ = 0.001;
     private double sPeriodogram0_ = 0.1, sPeriodogram1_ = 0.01, sPeriodogram2_ = 0.001;
-    private List<String> warnings_ = new ArrayList<>();
+    private final List<String> warnings_ = new ArrayList<>();
 
     private NiidTests stats_;
     private Periodogram periodogram_;
@@ -97,122 +90,48 @@ public class ResidualsDiagnostics implements IDiagnostics {
 
     @Override
     public String getName() {
-        return NAME;
+        return ResidualsDiagnosticsFactory.NAME;
     }
 
     @Override
     public List<String> getTests() {
-        return tests_;
+        return ResidualsDiagnosticsFactory.ALL;
     }
 
     @Override
     public ProcQuality getDiagnostic(String test) {
         double pval = 0;
-        if (test.equals(tests_.get(0))) {
-            if (stats_ == null)
-                return ProcQuality.Undefined;
-            DoornikHansenTest dht = stats_.getNormalityTest();
-            if (dht == null)
-                return ProcQuality.Undefined;
-            pval = dht.getPValue();
-            if (pval > N0_)
-                return ProcQuality.Good;
-            else if (pval < N1_)
-                return ProcQuality.Bad;
-            else
-                return ProcQuality.Uncertain;
-        }
-        else if (test.equals(tests_.get(1))) {
-            if (stats_ == null)
-                return ProcQuality.Undefined;
-            LjungBoxTest lbt = stats_.getLjungBox();
-            if (lbt == null)
-                return ProcQuality.Undefined;
-            pval = lbt.getPValue();
-            if (pval > N0_)
-                return ProcQuality.Good;
-            else if (pval < N1_)
-                return ProcQuality.Bad;
-            else
-                return ProcQuality.Uncertain;
-        }
-        else if (test.equals(tests_.get(2))) {
-            if (periodogram_ == null)
-                return ProcQuality.Undefined;
-            double[] tdfreqs = Periodogram.getTradingDaysFrequencies(freq_);
-            double[] p = periodogram_.getS();
-            double xmax = 0;
-            double dstep = periodogram_.getIntervalInRadians();
-            for (int i = 0; i < tdfreqs.length; ++i) {
-                int i0 = (int)(tdfreqs[i] / dstep);
-                double xcur = p[i0];
-                if (xcur > xmax)
-                    xmax = xcur;
-                xcur = p[i0 + 1];
-                if (xcur > xmax)
-                    xmax = xcur;
-            }
-            pval = 1 - Math.pow(1 - Math.exp(-xmax * .5), tdfreqs.length);
-            if (pval < tdPeriodogram2_)
-                return ProcQuality.Severe;
-            if (pval < tdPeriodogram1_)
-                return ProcQuality.Bad;
-            else if (pval > tdPeriodogram0_)
-                return ProcQuality.Good;
-            else
-                return ProcQuality.Uncertain;
-        }
-        else if (test.equals(tests_.get(3))) {
-            if (periodogram_ == null)
-                return ProcQuality.Undefined;
-            double[] seasfreqs = new double[(freq_ - 1) / 2];
-            // seas freq in radians...
-            for (int i = 0; i < seasfreqs.length; ++i)
-                seasfreqs[i] = (i + 1) * 2 * Math.PI / freq_;
-
-            double[] p = periodogram_.getS();
-            double xmax = 0;
-            double dstep = periodogram_.getIntervalInRadians();
-            for (int i = 0; i < seasfreqs.length; ++i) {
-                int i0 = (int)(seasfreqs[i] / dstep);
-                double xcur = p[i0];
-                if (xcur > xmax)
-                    xmax = xcur;
-                xcur = p[i0 + 1];
-                if (xcur > xmax)
-                    xmax = xcur;
-            }
-            pval = 1 - Math.pow(1 - Math.exp(-xmax * .5), seasfreqs.length);
-            if (pval < sPeriodogram2_)
-                return ProcQuality.Severe;
-            if (pval < sPeriodogram1_)
-                return ProcQuality.Bad;
-            else if (pval > sPeriodogram0_)
-                return ProcQuality.Good;
-            else
-                return ProcQuality.Uncertain;
-        }
-        return ProcQuality.Undefined;
-    }
-
-    @Override
-    public double getValue(String test) {
-        try{
-        double pval = 0;
-        if (test.equals(tests_.get(0))) {
-            if (stats_ != null) {
+        switch (test) {
+            case ResidualsDiagnosticsFactory.NORMALITY:
+                if (stats_ == null)
+                    return ProcQuality.Undefined;
                 DoornikHansenTest dht = stats_.getNormalityTest();
+                if (dht == null)
+                    return ProcQuality.Undefined;
                 pval = dht.getPValue();
-            }
-        }
-        else if (test.equals(tests_.get(1))) {
-            if (stats_ != null) {
+                if (pval > N0_)
+                    return ProcQuality.Good;
+                else if (pval < N1_)
+                    return ProcQuality.Bad;
+                else
+                    return ProcQuality.Uncertain;
+            case ResidualsDiagnosticsFactory.INDEPENDENCE:
+                if (stats_ == null)
+                    return ProcQuality.Undefined;
                 LjungBoxTest lbt = stats_.getLjungBox();
+                if (lbt == null)
+                    return ProcQuality.Undefined;
                 pval = lbt.getPValue();
-            }
-        }
-        else if (test.equals(tests_.get(2))) {
-            if (periodogram_ != null) {
+                if (pval > N0_)
+                    return ProcQuality.Good;
+                else if (pval < N1_)
+                    return ProcQuality.Bad;
+                else
+                    return ProcQuality.Uncertain;
+            case ResidualsDiagnosticsFactory.TD_PEAK:
+            {
+                if (periodogram_ == null)
+                    return ProcQuality.Undefined;
                 double[] tdfreqs = Periodogram.getTradingDaysFrequencies(freq_);
                 double[] p = periodogram_.getS();
                 double xmax = 0;
@@ -227,15 +146,24 @@ public class ResidualsDiagnostics implements IDiagnostics {
                         xmax = xcur;
                 }
                 pval = 1 - Math.pow(1 - Math.exp(-xmax * .5), tdfreqs.length);
+                if (pval < tdPeriodogram2_)
+                    return ProcQuality.Severe;
+                if (pval < tdPeriodogram1_)
+                    return ProcQuality.Bad;
+                else if (pval > tdPeriodogram0_)
+                    return ProcQuality.Good;
+                else
+                    return ProcQuality.Uncertain;
             }
-        }
-        else if (test.equals(tests_.get(3))) {
-            if (periodogram_ != null) {
+            case ResidualsDiagnosticsFactory.S_PEAK:
+            {
+                if (periodogram_ == null)
+                    return ProcQuality.Undefined;
                 double[] seasfreqs = new double[(freq_ - 1) / 2];
                 // seas freq in radians...
                 for (int i = 0; i < seasfreqs.length; ++i)
                     seasfreqs[i] = (i + 1) * 2 * Math.PI / freq_;
-
+                
                 double[] p = periodogram_.getS();
                 double xmax = 0;
                 double dstep = periodogram_.getIntervalInRadians();
@@ -249,8 +177,77 @@ public class ResidualsDiagnostics implements IDiagnostics {
                         xmax = xcur;
                 }
                 pval = 1 - Math.pow(1 - Math.exp(-xmax * .5), seasfreqs.length);
+                if (pval < sPeriodogram2_)
+                    return ProcQuality.Severe;
+                if (pval < sPeriodogram1_)
+                    return ProcQuality.Bad;
+                else if (pval > sPeriodogram0_)
+                    return ProcQuality.Good;
+                else
+                    return ProcQuality.Uncertain;
             }
+            default:
+                break;
         }
+        return ProcQuality.Undefined;
+    }
+
+    @Override
+    public double getValue(String test) {
+        try{
+        double pval = 0;
+            switch (test) {
+                case ResidualsDiagnosticsFactory.NORMALITY:
+                    if (stats_ != null) {
+                        DoornikHansenTest dht = stats_.getNormalityTest();
+                        pval = dht.getPValue();
+                    }       break;
+                case ResidualsDiagnosticsFactory.INDEPENDENCE:
+                    if (stats_ != null) {
+                        LjungBoxTest lbt = stats_.getLjungBox();
+                        pval = lbt.getPValue();
+                    }       break;
+                case ResidualsDiagnosticsFactory.TD_PEAK:
+                    if (periodogram_ != null) {
+                        double[] tdfreqs = Periodogram.getTradingDaysFrequencies(freq_);
+                        double[] p = periodogram_.getS();
+                        double xmax = 0;
+                        double dstep = periodogram_.getIntervalInRadians();
+                        for (int i = 0; i < tdfreqs.length; ++i) {
+                            int i0 = (int)(tdfreqs[i] / dstep);
+                            double xcur = p[i0];
+                            if (xcur > xmax)
+                                xmax = xcur;
+                            xcur = p[i0 + 1];
+                            if (xcur > xmax)
+                                xmax = xcur;
+                        }
+                        pval = 1 - Math.pow(1 - Math.exp(-xmax * .5), tdfreqs.length);
+                    }       break;
+                case ResidualsDiagnosticsFactory.S_PEAK:
+                    if (periodogram_ != null) {
+                        double[] seasfreqs = new double[(freq_ - 1) / 2];
+                        // seas freq in radians...
+                        for (int i = 0; i < seasfreqs.length; ++i)
+                            seasfreqs[i] = (i + 1) * 2 * Math.PI / freq_;
+                        
+                        double[] p = periodogram_.getS();
+                        double xmax = 0;
+                        double dstep = periodogram_.getIntervalInRadians();
+                        for (int i = 0; i < seasfreqs.length; ++i) {
+                            int i0 = (int)(seasfreqs[i] / dstep);
+                            double xcur = p[i0];
+                            if (xcur > xmax)
+                                xmax = xcur;
+                            xcur = p[i0 + 1];
+                            if (xcur > xmax)
+                                xmax = xcur;
+                        }
+                        pval = 1 - Math.pow(1 - Math.exp(-xmax * .5), seasfreqs.length);
+                    }       break;
+                default:
+                    break;
+            }
         return pval;
         }
         catch (Exception err){
