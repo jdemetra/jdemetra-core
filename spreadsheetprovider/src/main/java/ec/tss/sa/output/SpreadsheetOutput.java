@@ -53,7 +53,7 @@ public class SpreadsheetOutput implements IOutput<SaDocument<ISaSpecification>> 
 
     @Override
     public void process(SaDocument<ISaSpecification> document) {
-        DefaultSummary summary = new DefaultSummary(document.getInput().getName(), document.getResults(), config_.getSeries());
+        DefaultSummary summary = new DefaultSummary(document.getInput().getRawName(), document.getResults(), config_.getSeries());
         if (config_.isSaveModel()) {
             summary.setModel(document.getSpecification());
         }
