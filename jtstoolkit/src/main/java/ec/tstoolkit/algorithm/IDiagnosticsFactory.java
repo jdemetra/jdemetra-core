@@ -17,6 +17,8 @@
 
 package ec.tstoolkit.algorithm;
 
+import java.util.List;
+
 /**
  *
  * @author Jean Palate
@@ -32,6 +34,13 @@ public interface IDiagnosticsFactory <R extends IProcResults>{
     boolean isEnabled();
 
     void setEnabled(boolean enabled);
+    
+    /**
+     * Get the list of the tests
+     * @return A non empty list of tests.
+     */
+    List<String> getTestDictionary();
+    
 
     /// <summary>
     ///

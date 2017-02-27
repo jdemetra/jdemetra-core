@@ -42,8 +42,6 @@ import java.util.List;
  */
 public class ResidualTradingDaysDiagnostics implements IDiagnostics {
 
-    static final String FTEST_SA = "F-Test on SA", FTEST_I = "F-Test on I";
-    static final String[] ALL = new String[]{FTEST_SA, FTEST_I};
     private StatisticalTest f_sa, f_i;
     private double sev, bad, unc;
 
@@ -130,10 +128,10 @@ public class ResidualTradingDaysDiagnostics implements IDiagnostics {
     public List<String> getTests() {
         ArrayList<String> tests = new ArrayList<>();
         if (f_sa != null) {
-            tests.add(FTEST_SA);
+            tests.add(ResidualTradingDaysDiagnosticsFactory.FTEST_SA);
         }
         if (f_i != null) {
-            tests.add(FTEST_I);
+            tests.add(ResidualTradingDaysDiagnosticsFactory.FTEST_I);
         }
         return tests;
     }
@@ -142,10 +140,10 @@ public class ResidualTradingDaysDiagnostics implements IDiagnostics {
     public ProcQuality getDiagnostic(String test
     ) {
         switch (test) {
-            case FTEST_SA:
+            case ResidualTradingDaysDiagnosticsFactory.FTEST_SA:
                 return quality(f_sa);
 
-            case FTEST_I:
+            case ResidualTradingDaysDiagnosticsFactory.FTEST_I:
                 return quality(f_i);
 
             default:
@@ -159,9 +157,9 @@ public class ResidualTradingDaysDiagnostics implements IDiagnostics {
 
         switch (test) {
 
-            case FTEST_SA:
+            case ResidualTradingDaysDiagnosticsFactory.FTEST_SA:
                 return pvalue(f_sa);
-            case FTEST_I:
+            case ResidualTradingDaysDiagnosticsFactory.FTEST_I:
                 return pvalue(f_i);
 
             default:

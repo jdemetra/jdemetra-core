@@ -37,9 +37,6 @@ import java.util.List;
  */
 public final class CoherenceDiagnostics implements IDiagnostics {
 
-    public static final String DEF = "definition", BIAS = "annual totals";
-    public static final String NAME = "basic checks";
-    public static final List<String> DEF_TESTS = Arrays.asList(DEF, BIAS);
     private double maxDA_, maxDDef_;
     private double eb_ = .5;
     private double ub_ = .01, bb_ = 0.05, sb_ = .1;
@@ -203,17 +200,17 @@ public final class CoherenceDiagnostics implements IDiagnostics {
 
     @Override
     public String getName() {
-        return NAME;
+        return CoherenceDiagnosticsFactory.NAME;
     }
 
     @Override
     public List<String> getTests() {
-        return DEF_TESTS;
+        return CoherenceDiagnosticsFactory.ALL;
     }
 
     @Override
     public ProcQuality getDiagnostic(String test) {
-        if (test.equals(DEF_TESTS.get(0))) {
+        if (test.equals(CoherenceDiagnosticsFactory.ALL.get(0))) {
             if (Double.isNaN(maxDDef_)) {
                 return ProcQuality.Error;
             }
@@ -236,7 +233,7 @@ public final class CoherenceDiagnostics implements IDiagnostics {
     @Override
     public double getValue(String test) {
         double val;
-        if (test.equals(DEF_TESTS.get(0))) {
+        if (test.equals(CoherenceDiagnosticsFactory.ALL.get(0))) {
             val = maxDDef_;
         } else {
             val = maxDA_;

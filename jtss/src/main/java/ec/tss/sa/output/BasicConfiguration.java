@@ -16,8 +16,11 @@
  */
 package ec.tss.sa.output;
 
+import ec.satoolkit.GenericSaProcessingFactory;
 import ec.tss.sa.SaManager;
+import ec.tstoolkit.algorithm.IDiagnosticsFactory;
 import ec.tstoolkit.algorithm.IProcessingFactory;
+import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.utilities.Files2;
 import ec.tstoolkit.utilities.Id;
@@ -87,7 +90,7 @@ public class BasicConfiguration {
         return allSeries(compact, SaManager.instance.getProcessors());
     }
 
-    public static final List<String> allDetails(boolean compact, List<? extends IProcessingFactory> facs) {
+    public static final List<String> allDetails(boolean compact, List<? extends IProcessingFactory> facs, List<? extends IDiagnosticsFactory> diags) {
         LinkedHashSet<String> dic = new LinkedHashSet<>();
         for (IProcessingFactory fac : facs) {
             Map<String, Class> odic = fac.getOutputDictionary(compact);
@@ -97,11 +100,17 @@ public class BasicConfiguration {
                 }
             });
         }
+        diags.stream().filter(d -> d.isEnabled()).forEach(
+                z -> {
+                    String lz = z.getName().toLowerCase();
+                    z.getTestDictionary().forEach(t -> dic.add(InformationSet.concatenate(GenericSaProcessingFactory.DIAGNOSTICS, lz, ((String) t).toLowerCase())));
+                }
+        );
         return dic.stream().collect(Collectors.toList());
     }
 
     public static final List<String> allSaDetails(boolean compact) {
-        return allDetails(compact, SaManager.instance.getProcessors());
+        return allDetails(compact, SaManager.instance.getProcessors(), SaManager.instance.getDiagnostics());
     }
 
     public static final String DEMETRA = "Demetra+", DEF_FILE = "demetra";

@@ -52,7 +52,7 @@ public class GenericSaProcessingFactory {
 
     public static final String FAMILY = "Seasonal adjustment";
     public static final String PREPROCESSING = "preprocessing",
-            DECOMPOSITION = "decomposition", FINAL = "final", BENCHMARKING = "benchmarking";
+            DECOMPOSITION = "decomposition", FINAL = "final", BENCHMARKING = "benchmarking", DIAGNOSTICS = "diagnostics";
     public final static int MAX_REPEAT_COUNT = 80, MAX_MISSING_COUNT = 33;
 
     public static void testSeries(final TsData y) {

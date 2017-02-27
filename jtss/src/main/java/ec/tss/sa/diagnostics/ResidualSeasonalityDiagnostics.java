@@ -36,9 +36,6 @@ public class ResidualSeasonalityDiagnostics implements IDiagnostics {
 
     private SeasonalityTest fsa_, fsa3_, firr_;
     
-    public static final String NAME="residual seasonality";
-
-    private static List<String> tests_ = Arrays.asList("on sa", "on sa (last 3 years)", "on irregular");
 
     private double[] sa_ = new double[] { 0.1, 0.05, 0.01 };
     private double[] sa3_ = new double[] { 0.1, 0.05, 0.01 };
@@ -126,19 +123,19 @@ public class ResidualSeasonalityDiagnostics implements IDiagnostics {
 
     @Override
     public String getName() {
-        return NAME;
+        return ResidualSeasonalityDiagnosticsFactory.NAME;
     }
 
     @Override
     public List<String> getTests() {
-        return tests_;
+        return ResidualSeasonalityDiagnosticsFactory.ALL;
     }
 
     @Override
     public ProcQuality getDiagnostic(String test) {
-        if (test.equals(tests_.get(0)))
+        if (test.equals(ResidualSeasonalityDiagnosticsFactory.SA))
             return test(fsa_, sa_);
-        else if(test.equals(tests_.get(1)))
+        else if(test.equals(ResidualSeasonalityDiagnosticsFactory.SA_LAST))
             return test(fsa3_, sa3_);
         else
             return test(firr_, irr_);
@@ -147,9 +144,9 @@ public class ResidualSeasonalityDiagnostics implements IDiagnostics {
     @Override
     public double getValue(String test) {
         double val = 0;
-        if (test.equals(tests_.get(0)) && fsa_ != null)
+        if (test.equals(ResidualSeasonalityDiagnosticsFactory.SA) && fsa_ != null)
             val = fsa_.getPValue();
-        else if(test.equals(tests_.get(1)) && fsa3_ != null)
+        else if(test.equals(ResidualSeasonalityDiagnosticsFactory.SA_LAST) && fsa3_ != null)
             val = fsa3_.getPValue();
         else if ( firr_ != null)
             val = firr_.getPValue();

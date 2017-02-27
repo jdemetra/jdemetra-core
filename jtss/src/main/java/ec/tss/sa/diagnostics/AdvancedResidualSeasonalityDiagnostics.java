@@ -43,8 +43,6 @@ import java.util.List;
  */
 public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
 
-    static final String QS_SA = "Qs test on SA", QS_I = "Qs test on I", FTEST_SA = "F-Test on SA (seasonal dummies)", FTEST_I = "F-Test on I (seasonal dummies)";
-    static final String[] ALL = new String[]{QS_SA, QS_I, FTEST_SA, FTEST_I};
     private static final double E_LIMIT = .005;
     private StatisticalTest qs_sa, qs_i, f_sa, f_i;
     private double sev, bad, unc;
@@ -164,16 +162,16 @@ public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
     public List<String> getTests() {
         ArrayList<String> tests = new ArrayList<>();
         if (qs_sa != null) {
-            tests.add(QS_SA);
+            tests.add(AdvancedResidualSeasonalityDiagnosticsFactory.QS_SA);
         }
         if (f_sa != null) {
-            tests.add(FTEST_SA);
+            tests.add(AdvancedResidualSeasonalityDiagnosticsFactory.FTEST_SA);
         }
         if (qs_i != null) {
-            tests.add(QS_I);
+            tests.add(AdvancedResidualSeasonalityDiagnosticsFactory.QS_I);
         }
         if (f_i != null) {
-            tests.add(FTEST_I);
+            tests.add(AdvancedResidualSeasonalityDiagnosticsFactory.FTEST_I);
         }
         return tests;
     }
@@ -182,15 +180,13 @@ public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
     public ProcQuality getDiagnostic(String test
     ) {
         switch (test) {
-            case QS_SA:
+            case AdvancedResidualSeasonalityDiagnosticsFactory.QS_SA:
                 return quality(qs_sa);
-
-            case FTEST_SA:
+            case AdvancedResidualSeasonalityDiagnosticsFactory.FTEST_SA:
                 return quality(f_sa);
-            case QS_I:
+            case AdvancedResidualSeasonalityDiagnosticsFactory.QS_I:
                 return quality(qs_i);
-
-            case FTEST_I:
+            case AdvancedResidualSeasonalityDiagnosticsFactory.FTEST_I:
                 return quality(f_i);
 
             default:
@@ -203,17 +199,14 @@ public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
     ) {
 
         switch (test) {
-            case QS_SA:
+            case AdvancedResidualSeasonalityDiagnosticsFactory.QS_SA:
                 return pvalue(qs_sa);
-
-            case FTEST_SA:
+            case AdvancedResidualSeasonalityDiagnosticsFactory.FTEST_SA:
                 return pvalue(f_sa);
-            case QS_I:
+            case AdvancedResidualSeasonalityDiagnosticsFactory.QS_I:
                 return pvalue(qs_i);
-
-            case FTEST_I:
+            case AdvancedResidualSeasonalityDiagnosticsFactory.FTEST_I:
                 return pvalue(f_i);
-
             default:
                 return Double.NaN;
         }

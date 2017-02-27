@@ -21,6 +21,10 @@ package ec.tss.sa.diagnostics;
 import ec.tss.sa.ISaDiagnosticsFactory;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.IDiagnostics;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -29,6 +33,14 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ISaDiagnosticsFactory.class)
 public class ResidualsDiagnosticsFactory implements ISaDiagnosticsFactory {
+
+    public static final String NORMALITY = "normality", INDEPENDENCE = "independence",
+        TD_PEAK = "spectral td peaks", S_PEAK = "spectral seas peaks";
+
+    public static final String NAME = "regarima residuals";
+
+    public static List<String> ALL = Collections.unmodifiableList(Arrays.asList(NORMALITY, INDEPENDENCE, TD_PEAK, S_PEAK));
+
     private ResidualsDiagnosticsConfiguration config_;
     //public static final ResidualsDiagnosticsFactory Default = new ResidualsDiagnosticsFactory();
 
@@ -46,17 +58,21 @@ public class ResidualsDiagnosticsFactory implements ISaDiagnosticsFactory {
 
     @Override
     public void dispose() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public String getName() {
-        return "Regarima residuals";
+        return NAME;
     }
 
     @Override
     public String getDescription() {
         return "Regarima residuals";
+    }
+
+    @Override
+    public List<String> getTestDictionary(){
+        return ALL.stream().map(s->s+":2").collect(Collectors.toList());
     }
 
     @Override

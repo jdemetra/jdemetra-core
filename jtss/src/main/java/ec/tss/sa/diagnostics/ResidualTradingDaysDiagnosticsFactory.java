@@ -19,6 +19,10 @@ package ec.tss.sa.diagnostics;
 import ec.tss.sa.ISaDiagnosticsFactory;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.IDiagnostics;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -29,6 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class ResidualTradingDaysDiagnosticsFactory implements ISaDiagnosticsFactory {
     
     static final String NAME="Residual trading days tests", DESC="Residual trading days tests";
+    static final String FTEST_SA = "F-Test on SA", FTEST_I = "F-Test on I";
+    static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(FTEST_SA, FTEST_I));
 
     private ResidualTradingDaysDiagnosticsConfiguration config_;
 
@@ -62,6 +68,11 @@ public class ResidualTradingDaysDiagnosticsFactory implements ISaDiagnosticsFact
     @Override
     public String getDescription() {
         return DESC;
+    }
+    
+    @Override
+    public List<String> getTestDictionary(){
+        return ALL.stream().map(s->s+":2").collect(Collectors.toList());
     }
 
     @Override
