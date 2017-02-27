@@ -53,7 +53,7 @@ public abstract class Ts implements IDocumented, ITsIdentified {
         m_name = Strings.nullToEmpty(name);
     }
 
-    public String getRawName() {
+    public final String getRawName() {
         return m_name;
     }
 

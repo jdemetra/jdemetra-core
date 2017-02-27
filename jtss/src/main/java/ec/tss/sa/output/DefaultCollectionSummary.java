@@ -34,7 +34,7 @@ public class DefaultCollectionSummary {
     final List<SeriesSummary> items_ = new ArrayList<>();
 
     void add(String[] series, SaDocument<?> rslts) {
-        String name = rslts.getInput().getName();
+        String name = rslts.getInput().getRawName();
         if (name == null)
             name = "series" + Integer.toString(items_.size() + 1);
         items_.add(new SeriesSummary(series, name, rslts));
