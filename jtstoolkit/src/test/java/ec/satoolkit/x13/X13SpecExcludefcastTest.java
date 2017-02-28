@@ -137,7 +137,7 @@ public class X13SpecExcludefcastTest {
 
     }
 
-    @Ignore
+
     @Test
     public void CalendarsigmaAllForcast18ExcludefcNo() {
         setInputData();
