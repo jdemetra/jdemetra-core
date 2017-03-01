@@ -13,16 +13,16 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
-
+ */
 package ec.tss.sa;
 
 import ec.satoolkit.GenericSaResults;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
+import ec.tstoolkit.modelling.arima.ModelDescription;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.modelling.arima.tramo.TramoProcessor;
+import ec.tstoolkit.sarima.SarimaComponent;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;
 import ec.tstoolkit.stats.LjungBoxTest;
@@ -38,6 +38,7 @@ import java.util.Map;
  * @author Kristof Bayens
  */
 public class RegArimaReport implements ISaReport {
+
     private final int freq_;
     private final DoubleList lb_ = new DoubleList();
     private final Map<SarimaSpecification, Integer> arima_ = new HashMap<>();
@@ -69,8 +70,7 @@ public class RegArimaReport implements ISaReport {
         int n = 0;
         try {
             n = arima_.get(spec);
-        }
-        catch(Exception ex) {
+        } catch (Exception ex) {
         }
         return n;
     }
@@ -104,80 +104,98 @@ public class RegArimaReport implements ISaReport {
 
     @Override
     public boolean add(CompositeResults rslts) {
-        if (rslts == null)
+        if (rslts == null) {
             return false;
-        PreprocessingModel mdl=GenericSaResults.getPreprocessingModel(rslts);
+        }
+        PreprocessingModel mdl = GenericSaResults.getPreprocessingModel(rslts);
         if (mdl != null) {
-             Total++;
-            try{
-            addArima(mdl.estimation.getRegArima());
-            TsVariableList vars = mdl.description.buildRegressionVariables();
-            addTransform(mdl.isMultiplicative());
-            addCalendar(vars, mdl.description.getLengthOfPeriodType());
-            addOutliers(vars);
-            addStats(mdl.description.getArimaComponent().getFreeParametersCount(), mdl.getFullResiduals());
-            return true;
-            }
-            catch (Exception err){
+            Total++;
+            try {
+                addArima(mdl.description.getArimaComponent());
+                addTransform(mdl.isMultiplicative());
+                addCalendar(mdl.description);
+                addOutliers(mdl.description);
+                addStats(mdl.description.getArimaComponent().getFreeParametersCount(), mdl.getFullResiduals());
+                return true;
+            } catch (Exception err) {
                 return false;
             }
-        }
-        else
+        } else {
             return false;
+        }
     }
 
-    private void addArima(RegArimaModel<SarimaModel> stmodel) {
-        SarimaSpecification spec = stmodel.getArima().getSpecification();
+    private void addArima(SarimaComponent arima) {
+        SarimaSpecification spec = arima.getSpecification();
         Integer count = arima_.get(spec);
-        if (count == null)
+        if (count == null) {
             arima_.put(spec, 1);
-        else
+        } else {
             arima_.put(spec, count + 1);
-        if (stmodel.isMeanCorrection())
+        }
+        if (arima.isMean()) {
             ++MeanCount;
+        }
+    }
+
+    private void addStats(int np, TsData residuals) {
+        if (residuals == null) {
+            return;
+        }
+        try {
+            LjungBoxTest lb = new LjungBoxTest();
+            lb.setHyperParametersCount(np);
+            lb.setK(TramoProcessor.calcLBLength(freq_));
+            lb.test(residuals);
+            if (lb.isValid()) {
+                this.lb_.add(lb.getValue());
+            }
+        } catch (Exception err) {
+        }
+    }
+
+    private void addCalendar(ModelDescription desc) {
+        int ntd = desc.countRegressors(var -> var.isCalendar() && var.status.isSelected());
+        int nftd = desc.countFixedRegressors(var -> var.isCalendar());
+
+        int nlp = desc.countRegressors(var -> var.getVariable() instanceof ILengthOfPeriodVariable && var.status.isSelected());
+        int nflp = desc.countFixedRegressors(var -> var.getVariable() instanceof ILengthOfPeriodVariable);
+
+        ntd -= nftd;
+        nftd -= nflp;
+
+        int nee = desc.countRegressors(var -> var.isMovingHoliday() && var.status.isSelected());
+        int nfee = desc.countFixedRegressors(var -> var.isMovingHoliday());
+        if (ntd > 0 || nftd > 0) {
+            ++TdCount;
+        }
+        if (desc.getLengthOfPeriodType() != LengthOfPeriodType.None || nlp > 0 || nflp > 0) {
+            ++LpCount;
+        }
+        if (nee > 0 || nfee > 0) {
+            ++EasterCount;
+        }
+
+    }
+
+    private void addOutliers(ModelDescription desc) {
+        AoCount += countOutlier(desc, OutlierType.AO.name());
+        LsCount += countOutlier(desc, OutlierType.LS.name());
+        TcCount += countOutlier(desc, OutlierType.TC.name());
+        SoCount += countOutlier(desc, OutlierType.SO.name());
     }
     
-        private void addStats(int np, TsData residuals)
-        {
-            if (residuals == null)
-                return;
-                try
-                {
-                    LjungBoxTest lb = new LjungBoxTest();
-                    lb.setHyperParametersCount(np);
-                    lb.setK(TramoProcessor.calcLBLength(freq_));
-                    lb.test(residuals);
-                    if (lb.isValid()){
-                            this.lb_.add(lb.getValue());
-                    }
-                }
-                catch (Exception err){ }
-            }
-        
-
-        private void addCalendar(TsVariableList vars, LengthOfPeriodType adjust)
-        {
-            if (vars.select(ICalendarVariable.class).getItemsCount()> 0)
-                ++TdCount;
-            if (adjust != LengthOfPeriodType.None || vars.select(ILengthOfPeriodVariable.class).getItemsCount()> 0)
-                    ++LpCount;
-           if (vars.select(IEasterVariable.class).getItemsCount()> 0)
-                ++EasterCount;
-            
-        }
-
-     private void addOutliers(TsVariableList vars) {
-        AoCount+=vars.select(OutlierType.AO).getItemsCount();
-        LsCount+=vars.select(OutlierType.LS).getItemsCount();
-        TcCount+=vars.select(OutlierType.TC).getItemsCount();
-        SoCount+=vars.select(OutlierType.SO).getItemsCount();
+    private int countOutlier(ModelDescription desc, String code){
+        int n=desc.countRegressors(var->var.isOutlier() && ((IOutlierVariable)var.getVariable()).getCode().equals(code));
+        int nf=desc.countFixedRegressors(var->var.isOutlier() && ((IOutlierVariable)var.getVariable()).getCode().equals(code));
+        return n+nf;
     }
 
     private void addTransform(boolean multiplicative) {
-        if (multiplicative)
-        ++LogCount;
+        if (multiplicative) {
+            ++LogCount;
+        }
 
     }
-
 
 }

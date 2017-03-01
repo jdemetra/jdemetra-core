@@ -134,13 +134,13 @@ public final class SaManager extends AlgorithmManager<ISaSpecification, TsData, 
         for (String test : diags.getTests()) {
             double val = diags.getValue(test);
             ProcDiagnostic item = new ProcDiagnostic(val, diags.getDiagnostic(test));
-            set.set(test, item);
+            set.set(test.toLowerCase(), item);
         }
         List<String> warnings = diags.getWarnings();
         if (warnings != null && !warnings.isEmpty()) {
             set.set(InformationSet.WARNINGS, Jdk6.Collections.toArray( warnings, String.class));
         }
-        return new Information<>(diags.getName(), set);
+        return new Information<>(diags.getName().toLowerCase(), set);
     }
 
     public static InformationSet createDiagnostics(CompositeResults sa) {

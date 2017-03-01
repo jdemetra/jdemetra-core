@@ -37,27 +37,34 @@ import java.util.List;
  */
 public class MatrixFormatter {
 
-    private static HashMap<Class, IStringFormatter> dictionary = new HashMap<>();
+    private static final HashMap<Class, IStringFormatter> DICTIONARY = new HashMap<>();
+    
+    static{
+        DICTIONARY.put(double.class, new DoubleFormatter());
+        DICTIONARY.put(int.class, new IntegerFormatter());
+        DICTIONARY.put(long.class, new LongFormatter());
+        DICTIONARY.put(boolean.class, new BooleanFormatter("1", "0"));
+        DICTIONARY.put(Double.class, new DoubleFormatter());
+        DICTIONARY.put(Integer.class, new IntegerFormatter());
+        DICTIONARY.put(Long.class, new LongFormatter());
+        DICTIONARY.put(Boolean.class, new BooleanFormatter("1", "0"));
+        DICTIONARY.put(String.class, new StringFormatter());
+        DICTIONARY.put(SarimaModel.class, new SarimaFormatter());
+        DICTIONARY.put(Parameter.class, new ParameterFormatter());
+        DICTIONARY.put(TsMoniker.class, new MonikerFormatter());
+        DICTIONARY.put(TsPeriod.class, new PeriodFormatter());
+        DICTIONARY.put(RegressionItem.class, new RegressionItemFormatter());
+        DICTIONARY.put(StatisticalTest.class, new StatisticalTestFormatter());
+        DICTIONARY.put(ProcDiagnostic.class, new DiagnosticFormatter());
+        DICTIONARY.put(Complex.class, new ComplexFormatter());
+    }
 
     public MatrixFormatter() {
 
-        dictionary.put(double.class, new DoubleFormatter());
-        dictionary.put(int.class, new IntegerFormatter());
-        dictionary.put(long.class, new LongFormatter());
-        dictionary.put(boolean.class, new BooleanFormatter("1", "0"));
-        dictionary.put(Double.class, new DoubleFormatter());
-        dictionary.put(Integer.class, new IntegerFormatter());
-        dictionary.put(Long.class, new LongFormatter());
-        dictionary.put(Boolean.class, new BooleanFormatter("1", "0"));
-        dictionary.put(String.class, new StringFormatter());
-        dictionary.put(SarimaModel.class, new SarimaFormatter());
-        dictionary.put(Parameter.class, new ParameterFormatter());
-        dictionary.put(TsMoniker.class, new MonikerFormatter());
-        dictionary.put(TsPeriod.class, new PeriodFormatter());
-        dictionary.put(RegressionItem.class, new RegressionItemFormatter());
-        dictionary.put(StatisticalTest.class, new StatisticalTestFormatter());
-        dictionary.put(ProcDiagnostic.class, new DiagnosticFormatter());
-        dictionary.put(Complex.class, new ComplexFormatter());
+    }
+    
+    public static boolean canProcess(Class cl){
+        return DICTIONARY.containsKey(cl);
     }
 
     public String[] formatInformation(List<InformationSet> records, List<String> names, boolean shortname) {
@@ -205,7 +212,7 @@ public class MatrixFormatter {
 
         IStringFormatter fmt;
         try {
-            fmt = dictionary.get(obj.getClass());
+            fmt = DICTIONARY.get(obj.getClass());
             return fmt.format(obj, item);
         } catch (Exception ex) {
             String msg = ex.getMessage();

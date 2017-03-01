@@ -287,12 +287,14 @@ public class InformationMapping<S> {
             }
             for (Entry<String, TListFunction<S, ?>> x : lmap.entrySet()) {
                 if (x.getValue().start == x.getValue().end) {
-                    return isIParamItem(x.getKey(), id);
-                }
-
-                int idx = listItem(x.getKey(), id);
-                if (idx >= x.getValue().start && idx < x.getValue().end) {
-                    return true;
+                    if (isIParamItem(x.getKey(), id)) {
+                        return true;
+                    }
+                } else {
+                    int idx = listItem(x.getKey(), id);
+                    if (idx >= x.getValue().start && idx < x.getValue().end) {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -313,6 +315,8 @@ public class InformationMapping<S> {
                 TListFunction<S, ?> value = x.getValue();
                 if (tclass.isAssignableFrom(value.targetClass)) {
                     int idx = listItem(x.getKey(), id);
+                    if (idx == Integer.MIN_VALUE)
+                        continue;
                     if (value.start == value.end) {
                         return (T) value.extractor.apply(source, idx);
                     } else if (idx >= value.start && idx < value.end) {

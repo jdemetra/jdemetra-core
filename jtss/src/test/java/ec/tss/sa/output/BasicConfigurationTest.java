@@ -72,7 +72,7 @@ public class BasicConfigurationTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void testAllCompactDettails() {
         for (String s : BasicConfiguration.allDetails(true, facs, diags))
             System.out.println(s);

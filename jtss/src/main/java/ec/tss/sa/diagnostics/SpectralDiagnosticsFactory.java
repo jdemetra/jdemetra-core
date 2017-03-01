@@ -32,7 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class SpectralDiagnosticsFactory implements ISaDiagnosticsFactory {
 
     public static final String SEAS = "spectral seas peaks", TD = "spectral td peaks";
-    public static final String NAME = "visual spectral analysis";
+    public static final String NAME = "Visual spectral analysis";
     public static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(SEAS, TD));
     //public static final SpectralDiagnosticsFactory Default = new SpectralDiagnosticsFactory();
     private SpectralDiagnosticsConfiguration config_;

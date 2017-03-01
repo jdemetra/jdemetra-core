@@ -33,7 +33,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class CoherenceDiagnosticsFactory implements ISaDiagnosticsFactory {
 
     public static final String DEF = "definition", BIAS = "annual totals";
-    public static final String NAME = "basic checks";
+    public static final String NAME = "Basic checks";
     public static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(DEF, BIAS));
 //    public static final CoherenceDiagnosticsFactory Default = new CoherenceDiagnosticsFactory();
     private CoherenceDiagnosticsConfiguration config_;

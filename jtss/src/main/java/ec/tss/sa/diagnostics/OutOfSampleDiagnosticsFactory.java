@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class OutOfSampleDiagnosticsFactory implements ISaDiagnosticsFactory {
 
     public static final String MEAN = "mean", MSE = "mse";
-    public static final String NAME = "out-of-sample";
+    public static final String NAME = "Out-of-sample";
     public static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(MEAN, MSE));
 
     //public static final OutOfSampleDiagnosticsFactory Default = new OutOfSampleDiagnosticsFactory();

@@ -39,7 +39,7 @@ public class SeatsDiagnosticsFactory implements ISaDiagnosticsFactory {
     public static final String SEAS_I_CORR = "seas/irr cross-correlation";
     public static final String NOTSAME = "Non decomposable model. Changed by Seats";
     public static final String CUTOFF = "Parameters cut off by Seats";
-    public static final String NAME = "seats";
+    public static final String NAME = "Seats";
     
     public static final List<String> ALL=Collections.unmodifiableList(Arrays.asList(SEAS_VAR, IRR_VAR, SEAS_I_CORR));
 

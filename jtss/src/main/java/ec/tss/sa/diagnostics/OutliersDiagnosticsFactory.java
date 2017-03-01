@@ -35,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class OutliersDiagnosticsFactory implements ISaDiagnosticsFactory {
 
     public static final String NUMBER = "number of outliers";
-    public static final String NAME = "outliers";
+    public static final String NAME = "Outliers";
     public static final List<String> ALL = Collections.singletonList(NUMBER);
     //public static final OutliersDiagnosticsFactory Default = new OutliersDiagnosticsFactory();
     private OutliersDiagnosticsConfiguration config_;
@@ -97,8 +97,6 @@ public class OutliersDiagnosticsFactory implements ISaDiagnosticsFactory {
 
     @Override
     public IDiagnostics create(CompositeResults rslts) {
-        if (! (rslts instanceof IRegArimaSaResults))
-            return null;
         return OutliersDiagnostics.create(config_, rslts);
     }
 
