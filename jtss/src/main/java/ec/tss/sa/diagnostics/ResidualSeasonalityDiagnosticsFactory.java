@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ISaDiagnosticsFactory.class)
 public class ResidualSeasonalityDiagnosticsFactory implements ISaDiagnosticsFactory {
 
-    public static final String NAME="residual seasonality", 
+    public static final String NAME="Combined residual seasonality test", 
             SA="on sa", SA_LAST="on sa (last 3 years)", IRR="on irregular";
     public static final List<String> ALL=Collections.unmodifiableList(Arrays.asList(SA, SA_LAST, IRR));
     private ResidualSeasonalityDiagnosticsConfiguration config_;
@@ -59,12 +59,12 @@ public class ResidualSeasonalityDiagnosticsFactory implements ISaDiagnosticsFact
 
     @Override
     public String getName() {
-        return "residual seasonality (legacy)";
+        return NAME;
     }
 
     @Override
     public String getDescription() {
-        return "Checks the presence of residual seasonality";
+        return "Checks the presence of residual seasonality (combined test)";
     }
 
     @Override

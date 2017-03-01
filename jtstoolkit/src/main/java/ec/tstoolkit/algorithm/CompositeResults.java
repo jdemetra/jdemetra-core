@@ -115,6 +115,22 @@ public class CompositeResults implements IProcResults {
                 }
             }
         }
+        // second strategy. See getData
+        for (Entry<String, Node> entry : nodes.entrySet()) {
+            Node node = entry.getValue();
+            if (node.results != null) {
+                String cid;
+                if (node.prefix != null && InformationSet.isPrefix(id, node.prefix)) {
+                    cid = InformationSet.removePrefix(id);
+                } else {
+                    cid = id;
+                }
+                if (cid != null){
+                    return node.results.contains(cid);
+                }
+            }
+        }
+        
         return false;
     }
 
@@ -170,7 +186,7 @@ public class CompositeResults implements IProcResults {
 
     @Override
     public <T> Map<String, T> searchAll(String id, Class<T> tclass) {
-        Map<String, T> all=new LinkedHashMap<>();
+        Map<String, T> all = new LinkedHashMap<>();
         for (Entry<String, Node> entry : nodes.entrySet()) {
             Node node = entry.getValue();
             if (node.results != null) {
@@ -178,8 +194,23 @@ public class CompositeResults implements IProcResults {
                     if (InformationSet.isPrefix(id, node.prefix)) {
                         all.putAll(node.results.searchAll(InformationSet.removePrefix(id), tclass));
                     }
-                }else{
-                     all.putAll(node.results.searchAll(id, tclass));
+                } else {
+                    all.putAll(node.results.searchAll(id, tclass));
+                }
+            }
+        }
+        // second strategy : we remove the prefixes (see also getData)
+        if (all.isEmpty()) {
+            for (Entry<String, Node> entry : nodes.entrySet()) {
+                Node node = entry.getValue();
+                if (node.results != null) {
+                    String cid;
+                    if (node.prefix != null && InformationSet.isPrefix(id, node.prefix)) {
+                        cid = InformationSet.removePrefix(id);
+                    } else {
+                        cid = id;
+                    }
+                    all.putAll(node.results.searchAll(cid, tclass));
                 }
             }
         }

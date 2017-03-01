@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ISaDiagnosticsFactory.class)
 public class MDiagnosticsFactory implements ISaDiagnosticsFactory {
 
-    public static final String NAME = "m-statistics";
+    public static final String NAME = "M-Statistics";
     public static final List<String> ALL=Collections.unmodifiableList(Arrays.asList(Mstatistics.Q, Mstatistics.Q2));
     //public static final MDiagnosticsFactory Default = new MDiagnosticsFactory();
     private MDiagnosticsConfiguration config_;

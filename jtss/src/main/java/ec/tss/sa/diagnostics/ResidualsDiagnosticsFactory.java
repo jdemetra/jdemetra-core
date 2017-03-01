@@ -37,7 +37,7 @@ public class ResidualsDiagnosticsFactory implements ISaDiagnosticsFactory {
     public static final String NORMALITY = "normality", INDEPENDENCE = "independence",
         TD_PEAK = "spectral td peaks", S_PEAK = "spectral seas peaks";
 
-    public static final String NAME = "regarima residuals";
+    public static final String NAME = "Regarima residuals";
 
     public static List<String> ALL = Collections.unmodifiableList(Arrays.asList(NORMALITY, INDEPENDENCE, TD_PEAK, S_PEAK));
 

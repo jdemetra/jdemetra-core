@@ -567,6 +567,11 @@ public class ModelDescription implements Cloneable {
                 .mapToInt(var -> var.getVariable().getDim()).sum();
     }
 
+    public int countFixedRegressors(Predicate<PreadjustmentVariable> pred) {
+        return preadjustment.stream()
+                .filter(pred)
+                .mapToInt(var -> var.getVariable().getDim()).sum();
+    }
     /**
      * @return the outliers
      */

@@ -291,6 +291,7 @@ public class SaItem {
         return espec_ != null ? espec_ : dspec_;
     }
 
+    @Deprecated
     public ISaSpecification getActiveSpecification() {
         synchronized (id_) {
             if (pspec_ == null) {

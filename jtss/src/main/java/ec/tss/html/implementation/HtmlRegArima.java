@@ -103,19 +103,32 @@ public class HtmlRegArima extends AbstractHtmlElement {
             stream.write("Series has been corrected for leap year").newLine();
         }
         int ntd = model_.description.countRegressors(var -> var.isCalendar() && var.status.isSelected());
-        if (ntd == 0) {
+        int nftd = model_.description.countFixedRegressors(var -> var.isCalendar());
+        if (ntd == 0 && nftd == 0) {
             stream.write("No trading days effects").newLine();
         } else {
-            stream.write("Trading days effects (").write(Integer.toString(ntd)).write(ntd > 1 ? " variables)" : " variable)").newLine();
+            if (ntd != 0) {
+                stream.write("Trading days effects (").write(Integer.toString(ntd)).write(ntd > 1 ? " variables)" : " variable)").newLine();
+            }
+            if (nftd != 0) {
+                stream.write("Fixed Trading days effects (").write(Integer.toString(nftd)).write(nftd > 1 ? " variables)" : " variable)").newLine();
+            }
         }
         List<Variable> ee = model_.description.selectVariables(var -> var.isMovingHoliday() && var.status.isSelected());
-        if (ee.isEmpty()) {
+        List<PreadjustmentVariable> fee = model_.description.selectPreadjustmentVariables(var -> var.isMovingHoliday());
+        if (ee.isEmpty() && fee.isEmpty()) {
             stream.write("No easter effect").newLine();
         } else {
-            stream.write(ee.get(0).getVariable().getDescription(context) + " detected").newLine();
+            if (!ee.isEmpty()) {
+                stream.write(ee.get(0).getVariable().getDescription(context) + " detected").newLine();
+            }
+            if (!fee.isEmpty()) {
+                stream.write("Fixed " + fee.get(0).getVariable().getDescription(context) + " effect").newLine();
+            }
         }
         int no = model_.description.getOutliers().size();
         int npo = model_.description.getPrespecifiedOutliers().size();
+        int nfo = model_.description.countFixedRegressors(var -> var.isOutlier());
 
         if (npo > 1) {
             stream.write(Integer.toString(npo)).write(" pre-specified outliers").newLine();
@@ -126,6 +139,11 @@ public class HtmlRegArima extends AbstractHtmlElement {
             stream.write(Integer.toString(no)).write(" detected outliers").newLine();
         } else if (no == 1) {
             stream.write(Integer.toString(no)).write(" detected outlier").newLine();
+        }
+        if (nfo > 1) {
+            stream.write(Integer.toString(nfo)).write(" fixed outliers").newLine();
+        } else if (nfo == 1) {
+            stream.write(Integer.toString(nfo)).write(" fixed outlier").newLine();
         }
         stream.write(HtmlTag.LINEBREAK);
     }

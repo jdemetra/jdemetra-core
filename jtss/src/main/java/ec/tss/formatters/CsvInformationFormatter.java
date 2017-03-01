@@ -117,7 +117,6 @@ public class CsvInformationFormatter {
             if (l >= 0) {
                 sid = id.substring(0, l);
                 String s1 = id.substring(l + 1);
-                int w = 0;
                 try {
                     length = Integer.parseInt(s1);
                 } catch (Exception ex) {
@@ -138,6 +137,9 @@ public class CsvInformationFormatter {
                     if (length == 0 && isHomogeneous()) {
                         updateLength();
                     }
+                } else {
+                    results = EMPTY;
+                    items = SEMPTY;
                 }
             } else {
                 results = new Object[]{record.search(sid, Object.class)};
@@ -181,6 +183,9 @@ public class CsvInformationFormatter {
                     if (length == 0 && isHomogeneous()) {
                         updateLength();
                     }
+                } else {
+                    results = EMPTY;
+                    items = SEMPTY;
                 }
             } else {
                 results = new Object[]{record.getData(sid, Object.class)};
@@ -255,10 +260,12 @@ public class CsvInformationFormatter {
             LinkedHashMap<String, Integer> map = new LinkedHashMap<>();
             for (MatrixItem[] mis : items) {
                 MatrixItem m = mis[cur];
-                for (int j = 0; j < m.items.length; ++j) {
-                    Integer l = map.get(m.items[j]);
-                    if (l == null || l < m.length) {
-                        map.put(m.items[j], m.length);
+                if (m.items != null) {
+                    for (int j = 0; j < m.items.length; ++j) {
+                        Integer l = map.get(m.items[j]);
+                        if (l == null || l < m.length) {
+                            map.put(m.items[j], m.length);
+                        }
                     }
                 }
             }

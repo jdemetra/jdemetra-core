@@ -177,8 +177,7 @@ public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
     }
 
     @Override
-    public ProcQuality getDiagnostic(String test
-    ) {
+    public ProcQuality getDiagnostic(String test) {
         switch (test) {
             case AdvancedResidualSeasonalityDiagnosticsFactory.QS_SA:
                 return quality(qs_sa);
@@ -195,9 +194,7 @@ public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
     }
 
     @Override
-    public double getValue(String test
-    ) {
-
+    public double getValue(String test) {
         switch (test) {
             case AdvancedResidualSeasonalityDiagnosticsFactory.QS_SA:
                 return pvalue(qs_sa);
