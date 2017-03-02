@@ -35,10 +35,6 @@ import java.util.List;
  */
 public class SpectralDiagnostics implements IDiagnostics {
 
-    public static final String SEAS = "spectral seas peaks", TD = "spectral td peaks";
-    public static final String NAME = "visual spectral analysis";
-    private static final List<String> EMPTY = new ArrayList<>();
-    private static final List<String> tests_ = Arrays.asList(SEAS, TD);
     private boolean sorig_, ssa_, sirr_;
     private boolean tdsa_, tdirr_;
     private boolean strict_;
@@ -120,19 +116,19 @@ public class SpectralDiagnostics implements IDiagnostics {
 
     @Override
     public String getName() {
-        return NAME;
+        return SpectralDiagnosticsFactory.NAME;
     }
 
     @Override
     public List<String> getTests() {
-        return tests_;
+        return SpectralDiagnosticsFactory.ALL;
     }
 
     @Override
     public ProcQuality getDiagnostic(String test) {
         if (! processed_)
             return ProcQuality.Undefined;
-        if (test.equals(tests_.get(0))) {
+        if (test.equals(SpectralDiagnosticsFactory.SEAS)) {
             if (!sirr_ && !ssa_) {
                 return ProcQuality.Good;
             } else if (sirr_ && ssa_) {
@@ -141,7 +137,7 @@ public class SpectralDiagnostics implements IDiagnostics {
                 return strict_ ? ProcQuality.Severe : ProcQuality.Bad;
             }
         }
-        if (test.equals(tests_.get(1))) {
+        if (test.equals(SpectralDiagnosticsFactory.TD)) {
             if (!tdirr_ && !tdsa_) {
                 return ProcQuality.Good;
             } else if (tdirr_ && tdsa_) {
@@ -163,7 +159,7 @@ public class SpectralDiagnostics implements IDiagnostics {
         if (!sorig_) {
             return Collections.singletonList("No seasonal peak in the original differenced series");
         } else {
-            return EMPTY;
+            return Collections.EMPTY_LIST;
         }
     }
 }

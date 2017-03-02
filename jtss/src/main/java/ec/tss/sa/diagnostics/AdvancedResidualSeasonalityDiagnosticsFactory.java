@@ -20,6 +20,10 @@ import ec.tss.sa.ISaDiagnosticsFactory;
 import ec.tss.sa.SaManager;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.IDiagnostics;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -30,6 +34,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class AdvancedResidualSeasonalityDiagnosticsFactory implements ISaDiagnosticsFactory {
     
     static final String NAME="Residual seasonality tests", DESC="Residual seasonality tests";
+    static final String QS_SA = "Qs test on SA", QS_I = "Qs test on I", FTEST_SA = "F-Test on SA (seasonal dummies)", FTEST_I = "F-Test on I (seasonal dummies)";
+    static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(QS_SA, QS_I, FTEST_SA, FTEST_I));
 
     private AdvancedResidualSeasonalityDiagnosticsConfiguration config_;
 
@@ -63,6 +69,11 @@ public class AdvancedResidualSeasonalityDiagnosticsFactory implements ISaDiagnos
     @Override
     public String getDescription() {
         return DESC;
+    }
+    
+    @Override
+    public List<String> getTestDictionary(){
+        return ALL.stream().map(s->s+":2").collect(Collectors.toList());
     }
 
     @Override

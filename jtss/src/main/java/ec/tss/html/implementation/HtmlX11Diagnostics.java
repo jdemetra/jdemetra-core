@@ -275,27 +275,47 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
 
     private void writeF2H(HtmlStream stream) throws IOException {
         stream.write(HtmlTag.HEADER2, h2, F2H_TITLE);
-        stream.write("Cochran Test Result:");
+        //  stream.write("Cochran Test Result:");
         boolean testResultCochran = stats_.getCochranResult();
-        stream.write(" The test statistic: ");
-        stream.write(Math.round(stats_.getTestValue() * 10000d) / 10000d);
-
-        if (testResultCochran) {
-            stream.write(" is equal or less than the critical value: ");
-        } else {
-            stream.write(" is greater than the critical value: ");
+        stream.open(new HtmlTable(0, 30+120  * F2H_HEADERS.length));
+        stream.open(HtmlTag.TABLEROW);
+        for (int j = 0; j < F2H_HEADERS.length; ++j) {
+            stream.write(new HtmlTableCell(F2H_HEADERS[j], 120));
         }
-        stream.write(Math.round(stats_.getCriticalValue() * 10000d) / 10000d);
-
+        stream.close(HtmlTag.TABLEROW);
+        stream.open(HtmlTag.TABLEROW);
+        stream.write(new HtmlTableCell(Double.toString(Math.round(stats_.getTestValue() * 10000d) / 10000d), 120));
+        stream.write(new HtmlTableCell(Double.toString(Math.round(stats_.getCriticalValue() * 10000d) / 10000d), 120));
+  
         if (testResultCochran) {
-            stream.write(" the null hypothesis for identical variances of each period with at least ");
-            stream.write(stats_.getminNumberOfYears());
-            stream.write(" observations, cannot be rejected at a 95% level of confidence and non period-specific variance should be used. ");
+            stream.write(new HtmlTableCell("Null hypothesis is not rejected.", 150));
         } else {
-            stream.write(" the null hypothesis for identical variances of each period with at least ");
-            stream.write(stats_.getminNumberOfYears());
-            stream.write(" observations, has to be rejected at a 95% level of confidence and periode-specific variances should be used. ");
+            stream.write(new HtmlTableCell("Null hypothesis is rejected.", 150));
         }
+
+        stream.close(HtmlTag.TABLEROW);
+
+        stream.close(HtmlTag.TABLE);
+
+//        stream.write(" The test statistic: ");
+//        stream.write(Math.round(stats_.getTestValue() * 10000d) / 10000d);
+//
+//        if (testResultCochran) {
+//            stream.write(" is equal or less than the critical value: ");
+//        } else {
+//            stream.write(" is greater than the critical value: ");
+//        }
+//        stream.write(Math.round(stats_.getCriticalValue() * 10000d) / 10000d);
+//
+//        if (testResultCochran) {
+//            stream.write(" the null hypothesis for identical variances of each period with at least ");
+//            stream.write(stats_.getminNumberOfYears());
+//            stream.write(" observations, cannot be rejected at a 95% level of confidence and non period-specific variance should be used. ");
+//        } else {
+//            stream.write(" the null hypothesis for identical variances of each period with at least ");
+//            stream.write(stats_.getminNumberOfYears());
+//            stream.write(" observations, has to be rejected at a 95% level of confidence and periode-specific variances should be used. ");
+//        }
 
         stream.newLines(2);
     }
@@ -318,7 +338,7 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
             F2E_TITLE2 = "I/C Ratio: ",
             F2F_TITLE = "Relative contribution of the components to the stationary portion of the variance in the original series",
             F2G_TITLE = "Autocorrelation of the irregular",
-            F2H_TITLE = "Heteroskedasticity";
+            F2H_TITLE = "Heteroskedasticity (Cochran test on equal variances within each period)";
 
     private static final String[] F2A_HEADERS = new String[]{
         "Span", "O", "CI", "I", "C", "S", "P", "TD&H", "Mod.O", "Mod.CI", "Mod.I"
@@ -329,4 +349,6 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
     private static final String[] F2C_HEADERS = new String[]{
         "O", "I", "C", "S", "CI"
     };
+
+    private static final String[] F2H_HEADERS = new String[]{"Test statistic", "Critical value (5% level)", "Decision"};
 }

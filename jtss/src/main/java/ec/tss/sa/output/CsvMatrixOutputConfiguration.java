@@ -16,6 +16,7 @@
  */
 package ec.tss.sa.output;
 
+import ec.tss.sa.SaManager;
 import ec.tstoolkit.utilities.Jdk6;
 import java.io.File;
 import java.util.Arrays;
@@ -35,7 +36,8 @@ public class CsvMatrixOutputConfiguration extends BasicConfiguration implements 
     private boolean fullName_;
 
     public CsvMatrixOutputConfiguration() {
-        items_ = allDetails;
+        List<String> details = allDetails(true, SaManager.instance.getProcessors(), SaManager.instance.getDiagnostics());
+        items_ = details.toArray(new String[details.size()]);
         fullName_ = true;
     }
 

@@ -102,7 +102,8 @@ public class X13UserdefinedVariablesInDTablesMainResults {
         X13Specification x13spec = makeX13Spec(UserComponentType.SeasonallyAdjusted);
         SequentialProcessing<TsData> processing = X13ProcessingFactory.instance.generateProcessing(x13spec, makeContext());
         CompositeResults comprest = processing.process(tso);
-        Assert.assertTrue("Forecast is wrong", CompareTsData.compareTS(tsForecast, comprest.getData("y_f", TsData.class), 0.000000001));
+        TsData fc=comprest.getData("y_f", TsData.class);
+        Assert.assertTrue("Forecast is wrong", CompareTsData.compareTS(tsForecast, fc, 0.000000001));
         Assert.assertTrue("A9 is wrong", CompareTsData.compareTS(tsReg_a, comprest.getData("a-tables.a9", TsData.class), 0.000000001));
         Assert.assertTrue("A9sa is wrong", CompareTsData.compareTS(tsReg_a, comprest.getData("a-tables.a9sa", TsData.class), 0.000000001));
         Assert.assertTrue("Seasonally adjusted is wrong", CompareTsData.compareTS(tsseasonaladjusted.plus(tsReg), comprest.getData("sa", TsData.class), 0.000000001));
@@ -157,7 +158,8 @@ public class X13UserdefinedVariablesInDTablesMainResults {
         Assert.assertTrue("A8 is wrong", CompareTsData.compareTS(tsReg_a, comprest.getData("a-tables.a8", TsData.class), 0.000000001));
         Assert.assertTrue("A8i is wrong", CompareTsData.compareTS(tsReg_a, comprest.getData("a-tables.a8i", TsData.class), 0.000000001));
         Assert.assertTrue("Seasonally adjusted is wrong", CompareTsData.compareTS(tsseasonaladjusted.plus(tsReg), comprest.getData("sa", TsData.class), 0.000000001));
-        Assert.assertTrue("Seasonally adjusted forecast is wrong", CompareTsData.compareTS(tsseasonaladjusted_f.plus(tsReg_f), comprest.getData("sa_f", TsData.class), 0.000000001));
+        TsData saf=comprest.getData("sa_f", TsData.class);
+        Assert.assertTrue("Seasonally adjusted forecast is wrong", CompareTsData.compareTS(tsseasonaladjusted_f.plus(tsReg_f), saf, 0.000000001));
         Assert.assertTrue("Seasonal is wrong", CompareTsData.compareTS(tsseasonal, comprest.getData("s", TsData.class), 0.000000001));
         Assert.assertTrue("Seasonal forecast is wrong", CompareTsData.compareTS(tsseasonal_f, comprest.getData("s_f", TsData.class), 0.000000001));
         Assert.assertTrue("Irregular is wrong", CompareTsData.compareTS(tsirregular.plus(tsReg), comprest.getData("i", TsData.class), 0.000000001));
@@ -206,7 +208,7 @@ public class X13UserdefinedVariablesInDTablesMainResults {
         arimaSpec.setBP(0);
         arimaSpec.setBD(1);
         arimaSpec.setBQ(1);
-        arimaSpec.setMean(true);
+        arimaSpec.setMean(false); // !!
         Parameter[] paraTheta = Parameter.create(1);
         paraTheta[0].setType(ParameterType.Undefined);
         arimaSpec.setTheta(paraTheta);

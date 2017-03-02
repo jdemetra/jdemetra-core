@@ -34,7 +34,7 @@ public class AdvancedResidualSeasonalityDiagnosticsConfiguration implements Clon
 
     private double sev_ = SEV, bad_ = BAD, unc_ = UNC;
     private boolean enabled_ = true;
-    private boolean qs = false;
+    private boolean qs = true;
     private boolean ftest = true;
     private int flast = 8;
     private int qslast = 0;

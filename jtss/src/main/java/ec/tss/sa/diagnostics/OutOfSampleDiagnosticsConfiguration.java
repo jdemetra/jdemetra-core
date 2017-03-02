@@ -101,11 +101,11 @@ public class OutOfSampleDiagnosticsConfiguration implements Cloneable, IProperty
     }
 
     public boolean isMSETestEnabled() {
-        return menabled_;
+        return venabled_;
     }
 
     public void setMSETestEnabled(boolean value) {
-        menabled_ = value;
+        venabled_ = value;
     }
 
     public double getBad() {

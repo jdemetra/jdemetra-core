@@ -16,8 +16,12 @@
  */
 package ec.tss.sa.output;
 
+import ec.satoolkit.GenericSaProcessingFactory;
+import ec.tss.formatters.MatrixFormatter;
 import ec.tss.sa.SaManager;
+import ec.tstoolkit.algorithm.IDiagnosticsFactory;
 import ec.tstoolkit.algorithm.IProcessingFactory;
+import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.utilities.Files2;
 import ec.tstoolkit.utilities.Id;
@@ -25,6 +29,7 @@ import ec.tstoolkit.utilities.Paths;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -87,25 +92,45 @@ public class BasicConfiguration {
         return allSeries(compact, SaManager.instance.getProcessors());
     }
 
-    public static final List<String> allDetails(boolean compact, List<? extends IProcessingFactory> facs) {
+    public static final List<String> allDetails(boolean compact, List<? extends IProcessingFactory> facs, List<? extends IDiagnosticsFactory> diags) {
         LinkedHashSet<String> dic = new LinkedHashSet<>();
         for (IProcessingFactory fac : facs) {
             Map<String, Class> odic = fac.getOutputDictionary(compact);
             odic.forEach((s, c) -> {
-                if (c != TsData.class && !dic.contains(s)) {
+                if (c != TsData.class && MatrixFormatter.canProcess(c) && !dic.contains(s)) {
                     dic.add(s);
                 }
             });
         }
+        diags.stream().filter(d -> d.isEnabled()).forEach(
+                z -> {
+                    String lz = z.getName().toLowerCase();
+                    z.getTestDictionary().forEach(t -> dic.add(InformationSet.concatenate(GenericSaProcessingFactory.DIAGNOSTICS, lz, ((String) t).toLowerCase())));
+                }
+        );
         return dic.stream().collect(Collectors.toList());
     }
 
     public static final List<String> allSaDetails(boolean compact) {
-        return allDetails(compact, SaManager.instance.getProcessors());
+        return allDetails(compact, SaManager.instance.getProcessors(), SaManager.instance.getDiagnostics());
     }
+
+    public static final List<String> allSingleSaDetails(boolean compact) {
+        List<String> d = allDetails(compact, SaManager.instance.getProcessors(), SaManager.instance.getDiagnostics());
+        List<String> dc=new ArrayList<>();
+        for (String cur : d){
+            int last = cur.lastIndexOf(":");
+            if (last>0)
+                dc.add(cur.substring(0, last));
+            else
+                dc.add(cur);
+        }
+        return dc;
+   }
 
     public static final String DEMETRA = "Demetra+", DEF_FILE = "demetra";
     public static final String defaultFolder = Files2.fromPath(Paths.getDefaultHome(), DEMETRA).getPath();
+    @Deprecated
     public static final String[] allDetails = {
         "span.start", "span.end", "span.n",
         "espan.start", "espan.end", "espan.n",
@@ -132,13 +157,14 @@ public class BasicConfiguration {
         "regression.nout", "regression.out(1):3", "regression.out(2):3", "regression.out(3):3", "regression.out(4):3", "regression.out(5):3", "regression.out(6):3", "regression.out(7):3", "regression.out(8):3",
         "regression.out(9):3", "regression.out(10):3", "regression.out(11):3", "regression.out(12):3", "regression.out(13):3", "regression.out(14):3", "regression.out(15):3", "regression.out(16):3",
         "decomposition.seasonality", "decomposition.trendfilter", "decomposition.seasfilter"};
+    @Deprecated
     public static final String[] allSeries = {
         "y", "y_f", "y_ef", "yc", "yc_f", "yc_ef", "y_lin", "y_lin_f", "l", "ycal", "ycal_f", "l_f", "l_b",
         "t", "t_f", "sa", "sa_f", "s", "s_f", "i", "i_f",
         "det", "det_f", "cal", "cal_f", "tde", "tde_f", "mhe", "mhe_f", "ee", "ee_f",
         "omhe", "omhe_f", "out", "out_f", "out_i", "out_i_f", "out_t", "out_t_f", "out_s",
         "out_s_f", "reg", "reg_f", "reg_t", "reg_t_f", "reg_s", "reg_s_f", "reg_i", "reg_i_f",
-        "reg_sa", "reg_sa_f", "reg_y", "reg_y_f", "fullresiduals", "*_f", "decomposition.d-tables.*",
+        "reg_sa", "reg_sa_f", "reg_y", "reg_y_f", "fullresiduals",
         "decomposition.y_lin",
         "decomposition.y_lin_f",
         "decomposition.t_lin",

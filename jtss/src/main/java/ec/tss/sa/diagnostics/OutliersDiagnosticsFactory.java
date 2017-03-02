@@ -22,6 +22,9 @@ import ec.satoolkit.IRegArimaSaResults;
 import ec.tss.sa.ISaDiagnosticsFactory;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.IDiagnostics;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -31,6 +34,9 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ISaDiagnosticsFactory.class)
 public class OutliersDiagnosticsFactory implements ISaDiagnosticsFactory {
 
+    public static final String NUMBER = "number of outliers";
+    public static final String NAME = "Outliers";
+    public static final List<String> ALL = Collections.singletonList(NUMBER);
     //public static final OutliersDiagnosticsFactory Default = new OutliersDiagnosticsFactory();
     private OutliersDiagnosticsConfiguration config_;
 
@@ -52,12 +58,17 @@ public class OutliersDiagnosticsFactory implements ISaDiagnosticsFactory {
 
     @Override
     public String getName() {
-        return "Outliers";
+        return NAME;
     }
 
     @Override
     public String getDescription() {
         return "Relative number of outliers";
+    }
+
+    @Override
+    public List<String> getTestDictionary(){
+        return ALL.stream().map(s->s+":2").collect(Collectors.toList());
     }
 
     @Override
@@ -86,8 +97,6 @@ public class OutliersDiagnosticsFactory implements ISaDiagnosticsFactory {
 
     @Override
     public IDiagnostics create(CompositeResults rslts) {
-        if (! (rslts instanceof IRegArimaSaResults))
-            return null;
         return OutliersDiagnostics.create(config_, rslts);
     }
 

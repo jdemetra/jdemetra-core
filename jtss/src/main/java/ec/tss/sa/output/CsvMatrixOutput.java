@@ -76,6 +76,6 @@ public class CsvMatrixOutput implements IOutput<SaDocument<ISaSpecification>> {
 
     @Override
     public void process(SaDocument<ISaSpecification> document) {
-        infos_.add(new NamedObject<>(document.getTs().getName(), document.getResults()));
+        infos_.add(new NamedObject<>(document.getInput().getRawName(), document.getResults()));
     }
 }

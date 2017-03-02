@@ -67,7 +67,13 @@ public enum EstimationPolicyType implements IntValue{
     /**
      * The new sa series is only based on previously computed seasonal factors (estimates+forecasts)
      */
+    @Deprecated
     UseForecasts(10),
+    /**
+     * The new sa series is only based on previously computed seasonal factors (estimates+forecasts)
+     * Nomenclature in line with the guidelines
+     */
+    Current(10),
     /**
      * 
      */
