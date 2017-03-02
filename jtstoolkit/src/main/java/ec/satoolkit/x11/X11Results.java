@@ -62,16 +62,19 @@ public class X11Results implements ISaResults {
         }
         decomposition.add(info.subSet(X11Kernel.D).get(X11Kernel.D11L, TsData.class),
                 ComponentType.SeasonallyAdjusted);
-        decomposition.add(info.subSet(X11Kernel.D).get(X11Kernel.D11aL, TsData.class),
-                ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
+        TsData sal=info.subSet(X11Kernel.D).get(X11Kernel.D11aL, TsData.class);
+        decomposition.add(sal, ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
         decomposition.add(info.subSet(X11Kernel.D).get(X11Kernel.D12L, TsData.class),
                 ComponentType.Trend);
         decomposition.add(d10, ComponentType.Seasonal);
         decomposition.add(d10a, ComponentType.Seasonal, ComponentInformation.Forecast);
-        decomposition.add(info.subSet(X11Kernel.D).get(X11Kernel.D12aL, TsData.class),
-                ComponentType.Trend, ComponentInformation.Forecast);
+        TsData tl=info.subSet(X11Kernel.D).get(X11Kernel.D12aL, TsData.class);
+        decomposition.add(tl, ComponentType.Trend, ComponentInformation.Forecast);
         decomposition.add(info.subSet(X11Kernel.D).get(X11Kernel.D13L, TsData.class),
                 ComponentType.Irregular);
+        // implicit forecast of the irregular: SA = T + I or I = SA - T
+        TsData il=decomposition.getMode().isMultiplicative() ? TsData.divide(sal, tl) : TsData.subtract(sal, tl);
+       decomposition.add(il, ComponentType.Irregular, ComponentInformation.Forecast);
     }
     private DefaultSeriesDecomposition decomposition;
     private InformationSet info_;
