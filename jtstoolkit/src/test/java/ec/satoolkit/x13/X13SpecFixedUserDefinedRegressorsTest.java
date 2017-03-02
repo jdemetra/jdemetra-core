@@ -42,7 +42,7 @@ import utilities.CompareTsData;
  *
  * @author Christiane Hofer
  */
-public class X13SpecFixedUserDefinedRegressors {
+public class X13SpecFixedUserDefinedRegressorsTest {
 
     @Test
     public void UserVar_fixed_1() throws IOException {
@@ -79,14 +79,14 @@ public class X13SpecFixedUserDefinedRegressors {
 //            System.out.println(b[start + regs.elements()[i].position]);
 //            System.out.println(regs.elements()[i].variable.getDescription(preprocessingModel.description.getEstimationDomain().getFrequency()));
 //        }
-
         //results form X13 order might be wrong
         Assert.assertEquals("Expected Number of Outliers ist wrong", 2, preprocessingModel.description.getOutliers().size());
         Assert.assertEquals("value outlier 1 is wrong: ", -0.2212, b[start + regs.elements()[0].position], 0.0001);
         Assert.assertEquals("outlier description 1 is wrong: ", "AO (1-2001)", regs.elements()[0].variable.getDescription(preprocessingModel.description.getEstimationDomain().getFrequency()));
         Assert.assertEquals("value outlier 2 is wrong: ", 0.1821, b[start + regs.elements()[1].position], 0.0001);
         Assert.assertEquals("outlier description 2 is wrong: ", "AO (3-2008)", regs.elements()[1].variable.getDescription(preprocessingModel.description.getEstimationDomain().getFrequency()));
-        Assert.assertTrue("B1 is wrong", CompareTsData.compareTS(PD2824FB1_1f_AO, comprest.getData("b-tables.b1", TsData.class), 0.0000001));
+        TsData b1 = comprest.getData("b-tables.b1", TsData.class).fittoDomain(PD2824FB1_1f_AO.getDomain());
+        Assert.assertTrue("B1 is wrong", CompareTsData.compareTS(PD2824FB1_1f_AO, b1, 0.0001));
     }
 
     X13Specification makeX13Spec_fixed_1_AO() {
@@ -115,7 +115,7 @@ public class X13SpecFixedUserDefinedRegressors {
         rs.add(tsVariablesDescriptor);
         double[] c = new double[1];
         c[0] = 0.08;
-        rs.setFixedCoefficients("var", c);
+        rs.setFixedCoefficients("Vars-1@x_1", c);
 //Automodel        
         regArimaSpecification.setUsingAutoModel(false);
 
@@ -168,7 +168,8 @@ public class X13SpecFixedUserDefinedRegressors {
         rs.add(tsVariablesDescriptor);
         double[] c = new double[1];
         c[0] = 0.08;
-        rs.setFixedCoefficients("Vars-1.x_1", c);
+        // dots can't be used in serialization. They are replace by @ in names
+        rs.setFixedCoefficients("Vars-1@x_1", c);
 //Automodel        
         regArimaSpecification.setUsingAutoModel(false);
 
@@ -249,7 +250,7 @@ public class X13SpecFixedUserDefinedRegressors {
     }
 
     @Test
-    public void UserVar_fixed_0_AO()  {
+    public void UserVar_fixed_0_AO() {
 
         context = makeContext();
         X13Specification x13spec = makeX13Spec_fixed_0_AO();
@@ -270,7 +271,6 @@ public class X13SpecFixedUserDefinedRegressors {
 //            System.out.println(b[start + regs.elements()[i].position]);
 //            System.out.println(regs.elements()[i].variable.getDescription(preprocessingModel.description.getEstimationDomain().getFrequency()));
 //        }
-
         Assert.assertEquals("value outlier 1 is wrong: ", -0.26513869666377704, b[start + regs.elements()[0].position], 0.000000000001);
         Assert.assertEquals("outlier description 1 is wrong: ", "AO (5-2016)", regs.elements()[0].variable.getDescription(preprocessingModel.description.getEstimationDomain().getFrequency()));
         Assert.assertEquals("value outlier 2 is wrong: ", 0.32697791950990107, b[start + regs.elements()[1].position], 0.000000000001);
@@ -287,15 +287,15 @@ public class X13SpecFixedUserDefinedRegressors {
     ProcessingContext makeContext() {
 
         if (context == null) {
-            context = ProcessingContext.getActiveContext();
+            context = new ProcessingContext();
             NameManager<TsVariables> activeMgr = context.getTsVariableManagers();
             TsVariables mgr = new TsVariables();
             mgr.set("x_1", tsvUY4712); //ok
             activeMgr.set("Vars-1", mgr);//ok
             activeMgr.resetDirty();
+            ProcessingContext.setActiveContext(context);
         }
 
         return context;
     }
 }
-
