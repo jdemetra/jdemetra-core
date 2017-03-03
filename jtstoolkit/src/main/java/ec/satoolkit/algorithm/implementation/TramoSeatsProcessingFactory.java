@@ -27,6 +27,7 @@ import ec.tstoolkit.algorithm.*;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.Singleton;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
+import ec.tstoolkit.modelling.arima.tramo.SeasonalityTestResults;
 import ec.tstoolkit.modelling.arima.tramo.TransformSpec;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.HashMap;
@@ -54,6 +55,9 @@ public class TramoSeatsProcessingFactory extends GenericSaProcessingFactory impl
         addDecompositionStep(new SeatsDecomposer(xspec.getSeatsSpecification()), filter, processing);
         addFinalStep(filter, processing);
         addBenchmarkingStep(xspec.getBenchmarkingSpecification(), processing);
+        //modification for seasonality tests in R
+        addSeasTestStep(context, processing);
+
         return processing;
     }
     public static final TramoSeatsProcessingFactory instance = new TramoSeatsProcessingFactory();
@@ -103,6 +107,9 @@ public class TramoSeatsProcessingFactory extends GenericSaProcessingFactory impl
         SeatsResults.fillDictionary(DECOMPOSITION, dic, compact);
         DefaultSeriesDecomposition.fillDictionary(null, dic, compact);
         SaBenchmarkingResults.fillDictionary(BENCHMARKING, dic, compact);
+         //modification for seasonality tests in R
+        SeasonalityTestResults.fillDictionary("seasonality", dic, compact);
+
         return dic;
     }
 }
