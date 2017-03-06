@@ -16,6 +16,7 @@
  */
 package ec.tss.tsproviders;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import ec.tss.TsMoniker;
 import ec.tss.tsproviders.utils.DataSourceEventSupport;
@@ -25,6 +26,7 @@ import ec.tss.tsproviders.utils.IFormatter;
 import ec.tss.tsproviders.utils.IParam;
 import ec.tss.tsproviders.utils.IParser;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,6 +50,14 @@ final class Util {
 
     static final Consumer<Object> DO_NOTHING = o -> {
     };
+
+    static String getDisplayNameFromMessageOrClassName(IOException exception) {
+        if (exception instanceof FileNotFoundException) {
+            return "File not found: " + exception.getMessage();
+        }
+        String message = exception.getMessage();
+        return !Strings.isNullOrEmpty(message) ? message : exception.getClass().getSimpleName();
+    }
 
     private static abstract class ProviderPart {
 

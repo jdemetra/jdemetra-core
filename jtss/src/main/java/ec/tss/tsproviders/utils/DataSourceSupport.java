@@ -281,11 +281,11 @@ public class DataSourceSupport implements HasDataSourceMutableList, HasDataMonik
         return filePathsSupport.resolveFilePath(file);
     }
 
+    @Deprecated
     @Nonnull
-    public String getDisplayName(@Nonnull IOException ex) throws IllegalArgumentException {
-        String name = ex.getClass().getSimpleName();
-        String message = ex.getMessage();
-        return !Strings.isNullOrEmpty(message) ? message : name;
+    public String getDisplayName(@Nonnull IOException exception) throws IllegalArgumentException {
+        String message = exception.getMessage();
+        return !Strings.isNullOrEmpty(message) ? message : exception.getClass().getSimpleName();
     }
 
     @Deprecated
@@ -307,19 +307,31 @@ public class DataSourceSupport implements HasDataSourceMutableList, HasDataMonik
         return info;
     }
 
+    @Deprecated
     @Nonnull
     public TsInformation fillSeries(@Nonnull TsInformation info, @Nonnull Exception exception) {
-        eventSupport.logger.error("While getting series", exception);
-        info.data = null;
-        info.invalidDataCause = exception.getMessage();
+        reportException(info, exception, Exception::getMessage);
         return info;
     }
 
+    public boolean reportException(@Nonnull TsInformation info, @Nonnull Exception ex, @Nonnull IFormatter<? super IOException> formatter) {
+        eventSupport.logger.info("Failed to get series", ex);
+        info.data = null;
+        info.invalidDataCause = ex instanceof IOException ? formatter.formatAsString((IOException) ex) : ex.getMessage();
+        return false;
+    }
+
+    @Deprecated
     @Nonnull
     public TsCollectionInformation fillCollection(@Nonnull TsCollectionInformation info, @Nonnull Exception exception) {
-        eventSupport.logger.error("While getting collection", exception);
-        info.invalidDataCause = exception.getMessage();
+        reportException(info, exception, Exception::getMessage);
         return info;
+    }
+
+    public boolean reportException(@Nonnull TsCollectionInformation info, @Nonnull Exception ex, @Nonnull IFormatter<? super IOException> formatter) {
+        eventSupport.logger.info("Failed to get collection", ex);
+        info.invalidDataCause = ex instanceof IOException ? formatter.formatAsString((IOException) ex) : ex.getMessage();
+        return false;
     }
 
     @Nonnull
