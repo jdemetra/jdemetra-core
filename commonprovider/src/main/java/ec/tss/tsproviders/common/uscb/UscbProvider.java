@@ -123,11 +123,6 @@ public class UscbProvider implements IDataSourceProvider {
     }
 
     @Override
-    public String getDisplayName(IOException exception) throws IllegalArgumentException {
-        return support.getDisplayName(exception);
-    }
-
-    @Override
     public void addDataSourceListener(IDataSourceListener listener) {
         support.addDataSourceListener(listener);
     }

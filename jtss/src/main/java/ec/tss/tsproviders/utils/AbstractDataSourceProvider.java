@@ -79,11 +79,6 @@ public abstract class AbstractDataSourceProvider<DATA> extends AbstractTsProvide
     }
 
     @Override
-    public String getDisplayName(IOException exception) throws IllegalArgumentException {
-        return support.getDisplayName(exception);
-    }
-
-    @Override
     public void addDataSourceListener(IDataSourceListener listener) {
         support.addDataSourceListener(listener);
     }
@@ -142,8 +137,7 @@ public abstract class AbstractDataSourceProvider<DATA> extends AbstractTsProvide
                     fillCollection(info, dataSource);
                     return true;
                 } catch (Exception ex) {
-                    support.fillCollection(info, ex);
-                    return false;
+                    return support.reportException(info, ex, this::getDisplayName);
                 }
             }
         }
@@ -155,8 +149,7 @@ public abstract class AbstractDataSourceProvider<DATA> extends AbstractTsProvide
                     fillCollection(info, dataSet);
                     return true;
                 } catch (Exception ex) {
-                    support.fillCollection(info, ex);
-                    return false;
+                    return support.reportException(info, ex, this::getDisplayName);
                 }
             }
         }
@@ -174,8 +167,7 @@ public abstract class AbstractDataSourceProvider<DATA> extends AbstractTsProvide
                     fillSeries(info, dataSet);
                     return true;
                 } catch (Exception ex) {
-                    support.fillSeries(info, ex);
-                    return false;
+                    return support.reportException(info, ex, this::getDisplayName);
                 }
             }
         }

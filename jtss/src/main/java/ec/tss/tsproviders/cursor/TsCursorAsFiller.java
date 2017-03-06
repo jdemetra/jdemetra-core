@@ -170,22 +170,22 @@ public final class TsCursorAsFiller {
 
         @Override
         public boolean reportException(TsCollectionInformation info, DataSet dataSet, IOException ex) {
-            logger.error("While getting collection '" + info.moniker + "'", ex);
-            info.invalidDataCause = ex.getMessage();
+            logger.info("Failed to get collection '" + info.moniker + "'", ex);
+            info.invalidDataCause = hddn.getDisplayName(ex);
             return false;
         }
 
         @Override
         public boolean reportException(TsCollectionInformation info, DataSource dataSource, IOException ex) {
-            logger.error("While getting collection '" + info.moniker + "'", ex);
-            info.invalidDataCause = ex.getMessage();
+            logger.info("Failed to get collection '" + info.moniker + "'", ex);
+            info.invalidDataCause = hddn.getDisplayName(ex);
             return false;
         }
 
         @Override
         public boolean reportException(TsInformation info, DataSet dataSet, IOException ex) {
-            logger.error("While getting series '" + info.moniker + "'", ex);
-            info.invalidDataCause = ex.getMessage();
+            logger.info("Failed to get series '" + info.moniker + "'", ex);
+            info.invalidDataCause = hddn.getDisplayName(ex);
             return false;
         }
 
