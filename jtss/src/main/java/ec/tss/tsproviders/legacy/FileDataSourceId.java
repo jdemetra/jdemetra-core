@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.legacy;
 
 import ec.tss.tsproviders.DataSource;
@@ -40,11 +39,17 @@ public final class FileDataSourceId implements CharSequence {
     }
 
     public static FileDataSourceId parse(String input) {
-        LinearIdBuilder id = LinearIdBuilder.parse(SH, input);
-        if (id != null && id.getCount() == 1 && Files2.isValidPath(new File(id.get(0)))) {
-            return new FileDataSourceId(id);
+        if (!isDemetraUri(input)) {
+            LinearIdBuilder id = LinearIdBuilder.parse(SH, input);
+            if (id != null && id.getCount() == 1 && Files2.isValidPath(new File(id.get(0)))) {
+                return new FileDataSourceId(id);
+            }
         }
         return null;
+    }
+
+    private static boolean isDemetraUri(String input) {
+        return input != null && input.startsWith("demetra://");
     }
 
     public static FileDataSourceId from(File file) {

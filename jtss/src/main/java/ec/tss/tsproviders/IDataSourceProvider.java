@@ -16,9 +16,7 @@
  */
 package ec.tss.tsproviders;
 
-import com.google.common.base.Strings;
 import ec.tss.ITsProvider;
-import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -48,19 +46,5 @@ public interface IDataSourceProvider extends ITsProvider, HasDataSourceList, Has
     @Nonnull
     default String getDisplayName() {
         return getSource();
-    }
-
-    /**
-     * Gets a label for an exception thrown by this provider.
-     *
-     * @param exception
-     * @return a non-empty label
-     * @throws IllegalArgumentException if the exception doesn't belong to this
-     * provider.
-     */
-    @Nonnull
-    default String getDisplayName(@Nonnull IOException exception) throws IllegalArgumentException {
-        String message = exception.getMessage();
-        return !Strings.isNullOrEmpty(message) ? message : exception.getClass().getSimpleName();
     }
 }

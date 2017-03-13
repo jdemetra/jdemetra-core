@@ -16,6 +16,7 @@
  */
 package ec.tss.tsproviders;
 
+import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -67,6 +68,19 @@ public interface HasDataDisplayName {
     @Nonnull
     default String getDisplayNodeName(@Nonnull DataSet dataSet) throws IllegalArgumentException {
         return getDisplayName(dataSet);
+    }
+
+    /**
+     * Gets a label for an exception thrown by this provider.
+     *
+     * @param exception
+     * @return a non-empty label
+     * @throws IllegalArgumentException if the exception doesn't belong to this
+     * provider.
+     */
+    @Nonnull
+    default String getDisplayName(@Nonnull IOException exception) throws IllegalArgumentException {
+        return Util.getDisplayNameFromMessageOrClassName(exception);
     }
 
     /**
