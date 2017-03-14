@@ -72,6 +72,7 @@
         <module>jtss</module>  
         <module>utilities</module>
         <module>demetra-tck</module>
+        <module>demetra-workspace</module>
 	
         <!-- I/O modules -->
         <module>odbcprovider</module>
@@ -158,6 +159,11 @@
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-common</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-workspace</artifactId>
                 <version>${project.version}</version>            
             </dependency>
             <!-- < modules -->

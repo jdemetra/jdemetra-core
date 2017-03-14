@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<calendars xmlns="ec/tss.core">
+    <nationalCalendar name="Belgium">
+        <specialDayEvent>
+            <fixedDay>
+                <month>January</month>
+                <day>1</day>
+            </fixedDay>
+        </specialDayEvent>
+    </nationalCalendar>
+</calendars>

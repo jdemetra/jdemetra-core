@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<calendarsType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="ec/tss.core">
+  <nationalCalendar name="Calendar_1">
+    <specialDayEvent>
+      <fixedDay>
+        <month>January</month>
+        <day>1</day>
+      </fixedDay>
+    </specialDayEvent>
+  </nationalCalendar>
+</calendarsType>
