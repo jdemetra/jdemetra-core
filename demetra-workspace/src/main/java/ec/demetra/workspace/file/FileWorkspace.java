@@ -52,7 +52,7 @@ public interface FileWorkspace extends Workspace {
 
     @Nonnull
     static FileWorkspace open(@Nonnull Path file) throws IOException {
-        return open(file, probeFormat(file).orElseThrow(() -> new IOException("Cannot probe workspace file format")));
+        return open(file, probeFormat(file).orElseThrow(() -> new IOException("Cannot probe workspace file format of '" + file + "'")));
     }
 
     @Nonnull
