@@ -40,6 +40,9 @@ public interface FileWorkspace extends Workspace {
     Path getFile() throws IOException;
 
     @Nonnull
+    Path getRootFolder() throws IOException;
+
+    @Nonnull
     Path getFile(@Nonnull WorkspaceItem item) throws IOException;
 
     @Nonnull

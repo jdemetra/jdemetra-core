@@ -40,6 +40,7 @@ import static internal.test.TestResources.GENERIC_MOD_DOC_REGARIMA;
 import static internal.test.TestResources.GENERIC_MOD_DOC_TRAMO;
 import static internal.test.TestResources.GENERIC_MOD_SPEC_REGARIMA;
 import static internal.test.TestResources.GENERIC_MOD_SPEC_TRAMO;
+import static internal.test.TestResources.GENERIC_ROOT;
 import static internal.test.TestResources.GENERIC_SA_DOC_TRAMOSEATS;
 import static internal.test.TestResources.GENERIC_SA_DOC_X13;
 import static internal.test.TestResources.GENERIC_SA_MULTI;
@@ -49,6 +50,7 @@ import static internal.test.TestResources.GENERIC_UTIL_CAL;
 import static internal.test.TestResources.GENERIC_UTIL_VAR;
 import static internal.test.TestResources.LEGACY_INDEX;
 import static internal.test.TestResources.LEGACY_ITEMS;
+import static internal.test.TestResources.LEGACY_ROOT;
 import static internal.test.TestResources.LEGACY_SA_DOC_TRAMOSEATS;
 import static internal.test.TestResources.LEGACY_SA_DOC_X13;
 import static internal.test.TestResources.LEGACY_SA_MULTI;
@@ -92,6 +94,7 @@ public class FileWorkspaceImplTest {
             assertThat(ws.getName()).isEqualTo("my_workspace");
             assertThat(ws.getFileFormat()).isEqualTo(FileFormat.GENERIC);
             assertThat(ws.getFile()).isEqualTo(GENERIC_INDEX);
+            assertThat(ws.getRootFolder()).isEqualTo(GENERIC_ROOT);
             assertThat(ws.getSupportedFamilies()).isNotEmpty();
 
             assertThat(ws.getItems()).containsExactlyInAnyOrder(GENERIC_ITEMS.toArray(new WorkspaceItem[0]));
@@ -121,6 +124,7 @@ public class FileWorkspaceImplTest {
         try (FileWorkspace ws = FileWorkspaceImpl.open(LEGACY_INDEX, FileFormat.LEGACY, IoUtil.supplierOfServiceLoader(FamilyHandler.class))) {
             assertThat(ws.getFileFormat()).isEqualTo(FileFormat.LEGACY);
             assertThat(ws.getFile()).isEqualTo(LEGACY_INDEX);
+            assertThat(ws.getRootFolder()).isEqualTo(LEGACY_ROOT);
             assertThat(ws.getSupportedFamilies()).isNotEmpty();
 
             assertThat(ws.getItems()).containsExactlyInAnyOrder(LEGACY_ITEMS.toArray(new WorkspaceItem[0]));
@@ -146,6 +150,7 @@ public class FileWorkspaceImplTest {
             assertThat(ws.getName()).isEqualTo("my_workspace");
             assertThat(ws.getFileFormat()).isEqualTo(FileFormat.GENERIC);
             assertThat(ws.getFile()).isEqualTo(GENERIC_INDEX);
+            assertThat(ws.getRootFolder()).isEqualTo(GENERIC_ROOT);
             assertThat(ws.getSupportedFamilies()).isEmpty();
 
             assertThat(ws.getItems()).containsExactlyInAnyOrder(GENERIC_ITEMS.toArray(new WorkspaceItem[0]));

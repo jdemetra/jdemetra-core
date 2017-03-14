@@ -37,6 +37,7 @@ import static internal.test.TestResources.GENERIC_MOD_DOC_REGARIMA;
 import static internal.test.TestResources.GENERIC_MOD_DOC_TRAMO;
 import static internal.test.TestResources.GENERIC_MOD_SPEC_REGARIMA;
 import static internal.test.TestResources.GENERIC_MOD_SPEC_TRAMO;
+import static internal.test.TestResources.GENERIC_ROOT;
 import static internal.test.TestResources.GENERIC_SA_DOC_TRAMOSEATS;
 import static internal.test.TestResources.GENERIC_SA_DOC_X13;
 import static internal.test.TestResources.GENERIC_SA_MULTI;
@@ -45,6 +46,7 @@ import static internal.test.TestResources.GENERIC_SA_SPEC_X13;
 import static internal.test.TestResources.GENERIC_UTIL_CAL;
 import static internal.test.TestResources.GENERIC_UTIL_VAR;
 import static internal.test.TestResources.LEGACY_INDEX;
+import static internal.test.TestResources.LEGACY_ROOT;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
@@ -76,10 +78,12 @@ public class FileWorkspaceTest {
         try (FileWorkspace ws = FileWorkspace.open(GENERIC_INDEX)) {
             assertThat(ws.getFileFormat()).isEqualTo(FileFormat.GENERIC);
             assertThat(ws.getFile()).isEqualTo(GENERIC_INDEX);
+            assertThat(ws.getRootFolder()).isEqualTo(GENERIC_ROOT);
         }
         try (FileWorkspace ws = FileWorkspace.open(LEGACY_INDEX)) {
             assertThat(ws.getFileFormat()).isEqualTo(FileFormat.LEGACY);
             assertThat(ws.getFile()).isEqualTo(LEGACY_INDEX);
+            assertThat(ws.getRootFolder()).isEqualTo(LEGACY_ROOT);
         }
         assertThatThrownBy(() -> FileWorkspace.open(null)).isInstanceOf(NullPointerException.class);
     }
@@ -90,10 +94,12 @@ public class FileWorkspaceTest {
         try (FileWorkspace ws = FileWorkspace.open(GENERIC_INDEX, FileFormat.GENERIC)) {
             assertThat(ws.getFileFormat()).isEqualTo(FileFormat.GENERIC);
             assertThat(ws.getFile()).isEqualTo(GENERIC_INDEX);
+            assertThat(ws.getRootFolder()).isEqualTo(GENERIC_ROOT);
         }
         try (FileWorkspace ws = FileWorkspace.open(LEGACY_INDEX, FileFormat.LEGACY)) {
             assertThat(ws.getFileFormat()).isEqualTo(FileFormat.LEGACY);
             assertThat(ws.getFile()).isEqualTo(LEGACY_INDEX);
+            assertThat(ws.getRootFolder()).isEqualTo(LEGACY_ROOT);
         }
         assertThatThrownBy(() -> FileWorkspace.open(null, FileFormat.LEGACY)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> FileWorkspace.open(GENERIC_INDEX, null)).isInstanceOf(NullPointerException.class);

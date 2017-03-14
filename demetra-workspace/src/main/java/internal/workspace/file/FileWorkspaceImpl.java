@@ -181,6 +181,11 @@ public final class FileWorkspaceImpl implements FileWorkspace {
     }
 
     @Override
+    public Path getRootFolder() throws IOException {
+        return rootFolder;
+    }
+
+    @Override
     public Path getFile(WorkspaceItem item) throws IOException {
         Index.Key key = toKey(item);
 
