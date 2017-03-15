@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.xml.regression;
 
 import ec.tss.DynamicTsVariable;
@@ -43,11 +42,11 @@ public class XmlDynamicTsVariable extends XmlNamedObject implements IXmlConverte
     @Override
     public DynamicTsVariable create() {
         TsMoniker m = moniker.create();
-        if (tsdata != null) {
-            return new DynamicTsVariable(tsdata.name, m, tsdata.create());
-        } else {
-            return new DynamicTsVariable(null, m, null);
-        }
+        DynamicTsVariable result = tsdata != null
+                ? new DynamicTsVariable(tsdata.name, m, tsdata.create())
+                : new DynamicTsVariable(name, m, null);
+        result.setName(name);
+        return result;
     }
 
     @Override
@@ -58,7 +57,7 @@ public class XmlDynamicTsVariable extends XmlNamedObject implements IXmlConverte
         if (d != null) {
             tsdata = new XmlTsData();
             tsdata.copy(d);
-            tsdata.name=t.getDescription();
+            tsdata.name = t.getDescription();
         }
     }
 }

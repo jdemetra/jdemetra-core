@@ -149,6 +149,7 @@ public class TxtProvider extends AbstractFileLoader<TxtSource, TxtBean> {
     protected void fillSeries(TsInformation info, DataSet dataSet) throws IOException {
         TxtSeries series = getSeries(dataSet);
         support.fillSeries(info, series.data, X_CLEAN_MISSING.get(dataSet.getDataSource()));
+        info.name = getDisplayName(dataSet);
         info.type = TsInformationType.All;
     }
 

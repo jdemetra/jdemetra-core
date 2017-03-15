@@ -40,6 +40,9 @@ public interface FileWorkspace extends Workspace {
     Path getFile() throws IOException;
 
     @Nonnull
+    Path getRootFolder() throws IOException;
+
+    @Nonnull
     Path getFile(@Nonnull WorkspaceItem item) throws IOException;
 
     @Nonnull
@@ -49,7 +52,7 @@ public interface FileWorkspace extends Workspace {
 
     @Nonnull
     static FileWorkspace open(@Nonnull Path file) throws IOException {
-        return open(file, probeFormat(file).orElseThrow(() -> new IOException("Cannot probe workspace file format")));
+        return open(file, probeFormat(file).orElseThrow(() -> new IOException("Cannot probe workspace file format of '" + file + "'")));
     }
 
     @Nonnull

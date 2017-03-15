@@ -161,6 +161,7 @@ public abstract class DbProvider<BEAN extends DbBean> extends AbstractDataSource
         if (info.type.intValue() >= TsInformationType.Data.intValue()) {
             DbAccessor<BEAN> acc = getAccessor(dataSet.getDataSource());
             Dims dims = DIM_MAP.get(dataSet);
+            info.name = getDisplayName(dataSet);
             info.type = TsInformationType.All;
             try {
                 support.fillSeries(info, acc.getSeriesWithData(dims.dimValues).getData(), true);

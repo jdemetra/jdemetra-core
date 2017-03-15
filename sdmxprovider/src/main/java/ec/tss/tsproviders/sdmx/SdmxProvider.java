@@ -170,6 +170,7 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
     @Override
     protected void fillSeries(TsInformation info, DataSet dataSet) throws IOException {
         SdmxSeries series = getSeries(dataSet);
+        info.name = getDisplayName(dataSet);
         info.type = TsInformationType.All;
         info.metaData = getMetaData(series);
         support.fillSeries(info, series.data, true);

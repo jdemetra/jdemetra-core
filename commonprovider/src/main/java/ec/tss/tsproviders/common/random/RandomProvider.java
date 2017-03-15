@@ -132,8 +132,8 @@ public class RandomProvider extends AbstractDataSourceLoader<double[][], RandomB
         TsFrequency freq = TsFrequency.valueOf(decodeBean(dataSet.getDataSource()).getS());
         // fill TsInformation
         int index = Z_INDEX.get(dataSet);
-        info.name = getDisplayName(dataSet);
         info.data = new TsData(freq, 2000, 0, rawData[index], false);
+        info.name = getDisplayName(dataSet);
         info.type = TsInformationType.All;
     }
 

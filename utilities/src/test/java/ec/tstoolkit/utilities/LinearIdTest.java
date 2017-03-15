@@ -14,9 +14,8 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.demetra.workspace;
+package ec.tstoolkit.utilities;
 
-import ec.tstoolkit.utilities.LinearId;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
@@ -25,25 +24,24 @@ import org.junit.Test;
  *
  * @author Philippe Charles
  */
-public class WorkspaceFamilyTest {
+public class LinearIdTest {
 
-    private final WorkspaceFamily empty = WorkspaceFamily.parse("");
-    private final WorkspaceFamily single = WorkspaceFamily.parse("single");
-    private final WorkspaceFamily dual = WorkspaceFamily.parse("hello@world");
+    private final LinearId empty = new LinearId();
+    private final LinearId single = new LinearId("single");
+    private final LinearId dual = new LinearId("hello", "world");
 
     @Test
     @SuppressWarnings("null")
     public void testOf() {
-        assertThatThrownBy(() -> WorkspaceFamily.of(null)).isInstanceOf(NullPointerException.class);
-        assertThat(WorkspaceFamily.of(empty)).isSameAs(empty);
-        assertThat(WorkspaceFamily.of(new LinearId())).isEqualTo(empty);
-        assertThat(WorkspaceFamily.of(new LinearId("hello", "world"))).isEqualTo(dual);
-        assertThat(LinearId.of(dual)).isEqualTo(new LinearId("hello", "world"));
+        assertThatThrownBy(() -> LinearId.of(null)).isInstanceOf(NullPointerException.class);
+        assertThat(LinearId.of(empty)).isSameAs(empty);
+        assertThat(LinearId.of(new LinearId())).isEqualTo(empty);
+        assertThat(LinearId.of(new LinearId("hello", "world"))).isEqualTo(dual);
     }
 
     @Test
     public void testGet() {
-        assertThatThrownBy(() -> empty.get(0)).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> empty.get(0)).isInstanceOf(NullPointerException.class);
         assertThat(single.get(0)).isEqualTo("single");
         assertThat(dual.get(0)).isEqualTo("hello");
         assertThat(dual.get(1)).isEqualTo("world");
@@ -67,21 +65,21 @@ public class WorkspaceFamilyTest {
         assertThat(dual.startsWith(empty)).isTrue();
         assertThat(dual.startsWith(single)).isFalse();
         assertThat(dual.startsWith(dual)).isTrue();
-        assertThat(dual.startsWith(WorkspaceFamily.parse("hello"))).isTrue();
+        assertThat(dual.startsWith(new LinearId("hello"))).isTrue();
     }
 
     @Test
     public void testEquals() {
         assertThat(empty)
-                .isEqualTo(WorkspaceFamily.parse(""))
+                .isEqualTo(new LinearId())
                 .isNotEqualTo(single)
                 .isNotEqualTo(dual);
         assertThat(single)
-                .isEqualTo(WorkspaceFamily.parse("single"))
+                .isEqualTo(new LinearId("single"))
                 .isNotEqualTo(empty)
                 .isNotEqualTo(dual);
         assertThat(dual)
-                .isEqualTo(WorkspaceFamily.parse("hello@world"))
+                .isEqualTo(new LinearId("hello", "world"))
                 .isNotEqualTo(empty)
                 .isNotEqualTo(single);
     }
@@ -89,15 +87,15 @@ public class WorkspaceFamilyTest {
     @Test
     public void testHashcode() {
         assertThat(empty.hashCode())
-                .isEqualTo(WorkspaceFamily.parse("").hashCode())
+                .isEqualTo(new LinearId("").hashCode())
                 .isNotEqualTo(single.hashCode())
                 .isNotEqualTo(dual.hashCode());
         assertThat(single.hashCode())
-                .isEqualTo(WorkspaceFamily.parse("single").hashCode())
+                .isEqualTo(new LinearId("single").hashCode())
                 .isNotEqualTo(empty.hashCode())
                 .isNotEqualTo(dual.hashCode());
         assertThat(dual.hashCode())
-                .isEqualTo(WorkspaceFamily.parse("hello@world").hashCode())
+                .isEqualTo(new LinearId("hello", "world").hashCode())
                 .isNotEqualTo(empty.hashCode())
                 .isNotEqualTo(single.hashCode());
     }
@@ -113,28 +111,28 @@ public class WorkspaceFamilyTest {
     public void testToString() {
         assertThat(empty.toString()).isEqualTo("");
         assertThat(single.toString()).isEqualTo("single");
-        assertThat(dual.toString()).isEqualTo("hello@world");
+        assertThat(dual.toString()).isEqualTo("hello.world");
     }
 
     @Test
     public void testExtend() {
-        assertThat(empty.extend("other")).isEqualTo(WorkspaceFamily.parse("other"));
-        assertThat(single.extend("other")).isEqualTo(WorkspaceFamily.parse("single@other"));
-        assertThat(dual.extend("other")).isEqualTo(WorkspaceFamily.parse("hello@world@other"));
+        assertThat(empty.extend("other")).isEqualTo(new LinearId("other"));
+        assertThat(single.extend("other")).isEqualTo(new LinearId("single", "other"));
+        assertThat(dual.extend("other")).isEqualTo(new LinearId("hello", "world", "other"));
     }
 
     @Test
     public void testParent() {
-        assertThat(empty.parent()).isNull();
+        assertThat(empty.parent()).isEqualTo(empty);
         assertThat(single.parent()).isEqualTo(empty);
-        assertThat(dual.parent()).isEqualTo(WorkspaceFamily.parse("hello"));
+        assertThat(dual.parent()).isEqualTo(new LinearId("hello"));
     }
 
     @Test
     public void testPath() {
         assertThat(empty.path()).isEmpty();
         assertThat(single.path()).containsExactly(single);
-        assertThat(dual.path()).containsExactly(WorkspaceFamily.parse("hello"), WorkspaceFamily.parse("hello@world"));
+        assertThat(dual.path()).containsExactly(new LinearId("hello"), new LinearId("hello", "world"));
     }
 
     @Test
@@ -142,8 +140,8 @@ public class WorkspaceFamilyTest {
         assertThat(single).isLessThan(dual);
         assertThat(dual).isGreaterThan(single);
         assertThat(dual).isEqualByComparingTo(dual);
-        assertThat(WorkspaceFamily.parse("a")).isLessThan(WorkspaceFamily.parse("b"));
-        assertThat(WorkspaceFamily.parse("b")).isGreaterThan(WorkspaceFamily.parse("a"));
+        assertThat(new LinearId("a")).isLessThan(new LinearId("b"));
+        assertThat(new LinearId("b")).isGreaterThan(new LinearId("a"));
     }
 
     @Test

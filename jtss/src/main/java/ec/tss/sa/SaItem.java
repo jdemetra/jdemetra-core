@@ -465,11 +465,7 @@ public class SaItem {
         if (tsinfo == null) {
             return false;
         }
-        if (tsinfo.data != null) {
-            ts_ = TsFactory.instance.createTs(tsinfo.name, tsinfo.moniker, tsinfo.metaData, tsinfo.data);
-        } else {
-            ts_ = TsFactory.instance.createTs(tsinfo.name, tsinfo.moniker, TsInformationType.None);
-        }
+        ts_ = TsFactory.instance.createTs(tsinfo.name, tsinfo.moniker, tsinfo.metaData, tsinfo.data);
         String dname = info.get(DOMAIN_SPEC, String.class);
         if (dname == null) {
             return false;

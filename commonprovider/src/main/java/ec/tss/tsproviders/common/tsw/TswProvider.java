@@ -118,6 +118,7 @@ public class TswProvider extends AbstractFileLoader<TswSource, TswBean> {
     protected void fillSeries(TsInformation info, DataSet dataSet) throws IOException {
         TswSeries series = getSeries(dataSet);
         support.fillSeries(info, series.data, true);
+        info.name = getDisplayName(dataSet);
         info.type = TsInformationType.All;
     }
 
