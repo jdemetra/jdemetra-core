@@ -222,6 +222,7 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
             throw new IOException("null");
         }
         support.fillSeries(info, series.data, X_CLEAN_MISSING.get(dataSet.getDataSource()));
+        info.name = getDisplayName(dataSet);
         info.type = TsInformationType.All;
     }
 

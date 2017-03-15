@@ -353,11 +353,13 @@ public class TsFactory {
         synchronized (m_ts) {
             Ts.Master result = (Ts.Master) getTs(moniker);
             if (result == null) {
-                result = new Ts.Master(name, moniker);
                 if (type != TsInformationType.None) {
                     TsInformation info = new TsInformation(name, moniker, type);
                     fill(info);
+                    result = new Ts.Master(name != null ? name : info.name, moniker);
                     result.update(info);
+                } else {
+                    result = new Ts.Master(name, moniker);
                 }
                 m_ts.put(moniker, new WeakReference<>(result));
             } else {

@@ -226,6 +226,7 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
             throw new IOException("null");
         }
         info.data = series.tsdata.create();
+        info.name = getDisplayName(dataSet);
         info.type = TsInformationType.All;
     }
 
