@@ -32,13 +32,8 @@ public class DynamicTsVariable extends TsVariable implements IDynamicObject {
 
     private final TsMoniker moniker_;
 
-    private static TsData fromMoniker(TsMoniker moniker) {
-        Ts s = TsFactory.instance.createTs(null, moniker, TsInformationType.Data);
-        if (s.hasData() == TsStatus.Undefined) {
-            s.load(TsInformationType.Data);
-        }
-        return s.getTsData();
-
+    private static Ts fromMoniker(TsMoniker moniker) {
+        return TsFactory.instance.createTs(null, moniker, TsInformationType.Data);
     }
 
     public DynamicTsVariable(String desc, TsMoniker moniker, TsData data) {
@@ -47,7 +42,7 @@ public class DynamicTsVariable extends TsVariable implements IDynamicObject {
     }
 
     public DynamicTsVariable(String desc, TsMoniker moniker) {
-        super(desc, fromMoniker(moniker));
+        super(desc, fromMoniker(moniker).getTsData());
         moniker_ = moniker;
     }
 
@@ -57,11 +52,12 @@ public class DynamicTsVariable extends TsVariable implements IDynamicObject {
 
     @Override
     public boolean refresh() {
-        TsData data = fromMoniker(moniker_);
-        if (data == null) {
+        Ts ts = fromMoniker(moniker_);
+        if (ts.getTsData() == null) {
             return false;
         }
-        setData(data);
+        setDescription(ts.getName());
+        setData(ts.getTsData());
         return true;
     }
     

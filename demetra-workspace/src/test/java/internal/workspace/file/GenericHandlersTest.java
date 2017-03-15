@@ -19,6 +19,7 @@ package internal.workspace.file;
 import ec.demetra.workspace.file.spi.FamilyHandler;
 import ec.tss.DynamicTsVariable;
 import ec.tstoolkit.timeseries.calendars.GregorianCalendarManager;
+import ec.tstoolkit.timeseries.regression.ITsVariable;
 import ec.tstoolkit.timeseries.regression.TsVariables;
 import static internal.test.TestResources.GENERIC_ROOT;
 import java.io.IOException;
@@ -45,6 +46,10 @@ public class GenericHandlersTest {
 
         TsVariables value = (TsVariables) handler.read(GENERIC_ROOT, "Vars-1");
         assertThat(value.getNames()).containsExactly("x_1", "x_2", "x_3");
-        assertThat(value.variables()).hasOnlyElementsOfType(DynamicTsVariable.class);
+        assertThat(value.variables()).satisfies(o -> {
+            assertThat(o).hasOnlyElementsOfType(DynamicTsVariable.class);
+            assertThat(o).extracting(ITsVariable::getName).containsExactlyInAnyOrder("x_1", "x_2", "x_3");
+            assertThat(o).extracting(ITsVariable::getDescription).containsExactlyInAnyOrder("S1 - 000854628", "x_2", "x_3");
+        });
     }
 }
