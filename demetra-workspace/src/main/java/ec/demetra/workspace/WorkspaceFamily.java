@@ -31,18 +31,14 @@ import javax.annotation.Nonnull;
 public final class WorkspaceFamily implements Id {
 
     @Nonnull
-    public static WorkspaceFamily of(@Nonnull Id input) {
-        if (input instanceof WorkspaceFamily) {
-            return (WorkspaceFamily) input;
+    public static WorkspaceFamily of(@Nonnull Id id) {
+        if (id instanceof WorkspaceFamily) {
+            return (WorkspaceFamily) id;
         }
-        if (input.getCount() == 0) {
+        if (id.getCount() == 0) {
             return EMPTY;
         }
-        String[] data = new String[input.getCount()];
-        for (int i = 0; i < data.length; i++) {
-            data[i] = input.get(i);
-        }
-        return new WorkspaceFamily(data);
+        return new WorkspaceFamily(id.toArray());
     }
 
     @Nonnull
@@ -83,61 +79,8 @@ public final class WorkspaceFamily implements Id {
     }
 
     @Override
-    public String tail() {
-        int n = getCount();
-        return n > 0 ? get(n - 1) : null;
-    }
-
-    @Override
-    public Id[] path() {
-        int n = getCount();
-        if (n == 0) {
-            return new Id[0];
-        }
-        Id[] path = new Id[n];
-        Id cur = this;
-        while (n > 0) {
-            path[--n] = cur;
-            cur = cur.parent();
-        }
-        return path;
-    }
-
-    @Override
     public int getCount() {
         return data.length;
-    }
-
-    @Override
-    public boolean startsWith(Id id) {
-        int sn = id.getCount();
-        if (sn > getCount()) {
-            return false;
-        }
-        for (int i = 0; i < sn; ++i) {
-            if (!get(i).equals(id.get(i))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public int compareTo(Id o) {
-        int ln = getCount(), rn = o.getCount();
-        if (ln < rn) {
-            return -1;
-        }
-        if (ln > rn) {
-            return 1;
-        }
-        for (int i = 0; i < ln; ++i) {
-            int cmp = get(i).compareTo(o.get(i));
-            if (cmp != 0) {
-                return cmp;
-            }
-        }
-        return 0;
     }
 
     @Override
@@ -157,6 +100,11 @@ public final class WorkspaceFamily implements Id {
     @Override
     public String toString() {
         return Arrays.stream(data).collect(Collectors.joining("@"));
+    }
+
+    @Override
+    public String[] toArray() {
+        return data.clone();
     }
 
     public static final WorkspaceFamily SA_MULTI = parse("Seasonal adjustment@multi-documents");
