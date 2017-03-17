@@ -19,6 +19,7 @@ package ec.tss.tsproviders.spreadsheet.engine;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Streams;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
 import ec.tss.TsInformationType;
@@ -44,7 +45,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -103,7 +103,7 @@ public abstract class SpreadSheetFactory {
                 }
 
                 if (options.isShowDates()) {
-                    builder.column(options.isShowTitle() ? 1 : 0, 0, StreamSupport.stream(table.getDomain().spliterator(), false).map(options.isBeginPeriod() ? o -> o.firstday().getTime() : o -> o.lastday().getTime()).iterator());
+                    builder.column(options.isShowTitle() ? 1 : 0, 0, Streams.stream(table.getDomain()).map(options.isBeginPeriod() ? o -> o.firstday().getTime() : o -> o.lastday().getTime()).iterator());
                 }
 
                 int firstRow = options.isShowTitle() ? 1 : 0;

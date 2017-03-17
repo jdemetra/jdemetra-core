@@ -19,6 +19,7 @@ package ec.tss;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Streams;
 import ec.tss.tsproviders.utils.MultiLineNameUtil;
 import java.util.Iterator;
 import java.util.List;
@@ -31,7 +32,6 @@ import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -271,7 +271,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
                 if (m_set == null) {
                     buildSet();
                 }
-                return StreamSupport.stream(all.spliterator(), false)
+                return Streams.stream(all)
                         .filter(o -> m_set.contains(o.getMoniker()))
                         .toArray(Ts[]::new);
             }

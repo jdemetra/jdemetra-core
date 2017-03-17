@@ -17,10 +17,8 @@
 package ec.tstoolkit.utilities;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.io.BufferedReader;
@@ -34,6 +32,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import static java.util.Objects.requireNonNull;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -146,7 +146,7 @@ public abstract class CheckedIterator<E, T extends Throwable> {
         requireNonNull(predicate);
         while (hasNext()) {
             E element = next();
-            if (!predicate.apply(element)) {
+            if (!predicate.test(element)) {
                 return false;
             }
         }
@@ -161,7 +161,7 @@ public abstract class CheckedIterator<E, T extends Throwable> {
         requireNonNull(predicate, "predicate");
         for (int i = 0; hasNext(); i++) {
             E current = next();
-            if (predicate.apply(current)) {
+            if (predicate.test(current)) {
                 return i;
             }
         }
@@ -179,7 +179,7 @@ public abstract class CheckedIterator<E, T extends Throwable> {
             }
             Object o1 = this.next();
             Object o2 = that.next();
-            if (!com.google.common.base.Objects.equal(o1, o2)) {
+            if (!Objects.equals(o1, o2)) {
                 return false;
             }
         }
@@ -211,7 +211,7 @@ public abstract class CheckedIterator<E, T extends Throwable> {
             protected E computeNext() throws T {
                 while (unfiltered.hasNext()) {
                     E element = unfiltered.next();
-                    if (predicate.apply(element)) {
+                    if (predicate.test(element)) {
                         return element;
                     }
                 }

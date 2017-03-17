@@ -38,6 +38,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * http://psy-lob-saw.blogspot.be/2013/03/single-producerconsumer-lock-free-queue.html
  * @author Nitsan Wakart
  */
+@Deprecated
 public final class P1C1QueueOriginal3<E> implements Queue<E> {
 
     private final int capacity;

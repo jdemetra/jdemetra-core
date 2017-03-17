@@ -16,7 +16,6 @@
  */
 package ec.tss;
 
-import com.google.common.primitives.Ints;
 import ec.tstoolkit.design.Immutable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -122,7 +121,7 @@ public final class TsMoniker implements Comparable<TsMoniker> {
     public int compareTo(TsMoniker o) {
         if (this.isAnonymous()) {
             if (o.isAnonymous()) {
-                return Ints.compare(this.hashCode(), o.hashCode());
+                return Integer.compare(this.hashCode(), o.hashCode());
             } else {
                 return -1;
             }

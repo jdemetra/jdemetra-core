@@ -17,6 +17,7 @@
 package ec.tstoolkit.utilities;
 
 import com.google.common.collect.Iterators;
+import com.google.common.collect.Streams;
 import com.google.common.collect.UnmodifiableIterator;
 import java.io.IOException;
 import java.util.Deque;
@@ -27,7 +28,6 @@ import java.util.Stack;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
@@ -61,7 +61,7 @@ public final class Trees {
     public static <T> Stream<T> breadthFirstStream(
             @Nonnull T root,
             @Nonnull Function<? super T, ? extends Stream<? extends T>> children) {
-        return StreamSupport.stream(breadthFirstIterable(root, children).spliterator(), false);
+        return Streams.stream(breadthFirstIterable(root, children));
     }
 
     /**
@@ -83,7 +83,7 @@ public final class Trees {
     public static <T> Stream<T> depthFirstStream(
             @Nonnull T root,
             @Nonnull Function<? super T, ? extends Stream<? extends T>> children) {
-        return StreamSupport.stream(depthFirstIterable(root, children).spliterator(), false);
+        return Streams.stream(depthFirstIterable(root, children));
     }
 
     @Nonnull

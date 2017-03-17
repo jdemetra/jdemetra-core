@@ -17,6 +17,7 @@
 package ec.tss.tsproviders.sdmx.engine;
 
 import com.google.common.collect.ImmutableList;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import ec.tss.tsproviders.sdmx.model.SdmxGroup;
 import ec.tss.tsproviders.sdmx.model.SdmxItem;
 import ec.tss.tsproviders.sdmx.model.SdmxSeries;
@@ -24,7 +25,6 @@ import ec.tss.tsproviders.sdmx.model.SdmxSource;
 import ec.tss.tsproviders.utils.DataFormat;
 import ec.tss.tsproviders.utils.ObsGathering;
 import ec.tss.tsproviders.utils.OptionalTsData;
-import static ec.tstoolkit.utilities.GuavaCollectors.toImmutableList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;

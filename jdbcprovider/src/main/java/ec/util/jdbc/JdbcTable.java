@@ -17,7 +17,6 @@
 package ec.util.jdbc;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
@@ -31,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -273,21 +273,21 @@ public final class JdbcTable implements Comparable<JdbcTable> {
     }
 
     private boolean equals(JdbcTable that) {
-        return Objects.equal(this.catalog, that.catalog)
-                && Objects.equal(this.schema, that.schema)
-                && Objects.equal(this.name, that.name)
-                && Objects.equal(this.type, that.type)
-                && Objects.equal(this.remarks, that.remarks)
-                && Objects.equal(this.typesCatalog, that.typesCatalog)
-                && Objects.equal(this.typesSchema, that.typesSchema)
-                && Objects.equal(this.typeName, that.typeName)
-                && Objects.equal(this.selfReferencingColumnName, that.selfReferencingColumnName)
-                && Objects.equal(this.refGeneration, that.refGeneration);
+        return Objects.equals(this.catalog, that.catalog)
+                && Objects.equals(this.schema, that.schema)
+                && Objects.equals(this.name, that.name)
+                && Objects.equals(this.type, that.type)
+                && Objects.equals(this.remarks, that.remarks)
+                && Objects.equals(this.typesCatalog, that.typesCatalog)
+                && Objects.equals(this.typesSchema, that.typesSchema)
+                && Objects.equals(this.typeName, that.typeName)
+                && Objects.equals(this.selfReferencingColumnName, that.selfReferencingColumnName)
+                && Objects.equals(this.refGeneration, that.refGeneration);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(catalog, schema, name, type, remarks, typesCatalog, typesSchema, typeName, selfReferencingColumnName, refGeneration);
+        return Objects.hash(catalog, schema, name, type, remarks, typesCatalog, typesSchema, typeName, selfReferencingColumnName, refGeneration);
     }
 
     @Override

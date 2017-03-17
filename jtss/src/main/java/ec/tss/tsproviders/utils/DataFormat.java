@@ -115,7 +115,7 @@ public final class DataFormat {
 
     @Override
     public int hashCode() {
-        return com.google.common.base.Objects.hashCode(locale, datePattern, numberPattern);
+        return Objects.hash(locale, datePattern, numberPattern);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Parsers/Formatters">

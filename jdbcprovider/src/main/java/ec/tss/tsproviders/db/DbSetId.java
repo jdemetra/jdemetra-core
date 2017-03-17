@@ -22,6 +22,7 @@ import ec.tss.tsproviders.utils.IConstraint;
 import ec.tstoolkit.design.Immutable;
 import ec.tstoolkit.utilities.Arrays2;
 import java.util.Arrays;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -140,7 +141,7 @@ public final class DbSetId {
             return false;
         }
         for (int i = l.length - 1; i >= 0; i--) {
-            if (!com.google.common.base.Objects.equal(l[i], r[i])) {
+            if (!Objects.equals(l[i], r[i])) {
                 return false;
             }
         }

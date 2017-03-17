@@ -16,7 +16,6 @@
  */
 package ec.tss.tsproviders.utils;
 
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
@@ -31,6 +30,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.JAXBContext;
@@ -196,7 +196,7 @@ public final class Formatters {
 
     @Nonnull
     @SuppressWarnings("null")
-    public static <X, Y> Formatter<Y> compose(@Nonnull IFormatter<X> formatter, @Nonnull Function<Y, X> before) {
+    public static <X, Y> Formatter<Y> compose(@Nonnull IFormatter<X> formatter, @Nonnull Function<? super Y, ? extends X> before) {
         return new Wrapper<>(o -> {
             X tmp = before.apply(o);
             return tmp != null ? formatter.format(tmp) : null;
@@ -260,13 +260,11 @@ public final class Formatters {
          *
          * @param <Y>
          * @param before
-         * @return a never-null formatter
-         * @deprecated use {@link #compose2(java.util.function.Function)}
-         * instead
+         * @return a never-null formatter instead
          */
-        @Deprecated
+        @Override
         @Nonnull
-        public <Y> Formatter<Y> compose(@Nonnull Function<Y, T> before) {
+        public <Y> Formatter<Y> compose(@Nonnull Function<? super Y, ? extends T> before) {
             return Formatters.<T, Y>compose(this, before);
         }
 
@@ -339,11 +337,6 @@ public final class Formatters {
         public java.util.Optional<String> formatValueAsString(T value) {
             return formatter.formatValueAsString(value);
         }
-
-        @Override
-        public <Y> IFormatter<Y> compose2(java.util.function.Function<? super Y, ? extends T> before) {
-            return formatter.compose2(before);
-        }
     }
 
     private static final Formatter<File> FILE_FORMATTER = new Wrapper<>(File::getPath);
@@ -351,7 +344,7 @@ public final class Formatters {
     private static final Formatter<double[]> DOUBLE_ARRAY_FORMATTER = new Wrapper<>(o -> Arrays.toString(Objects.requireNonNull(o)));
     private static final Formatter<?> OBJECT_TO_STRING_FORMATTER = new Wrapper<>(Object::toString);
     private static final Formatter<? extends Enum<?>> ENUM_NAME_FORMATTER = new Wrapper<>(Enum::name);
-    private static final Formatter<String[]> STRING_ARRAY_FORMATTER = new Wrapper<>(o -> Arrays.toString(Objects.requireNonNull(o))); 
+    private static final Formatter<String[]> STRING_ARRAY_FORMATTER = new Wrapper<>(o -> Arrays.toString(Objects.requireNonNull(o)));
 
     //</editor-fold>
 }
