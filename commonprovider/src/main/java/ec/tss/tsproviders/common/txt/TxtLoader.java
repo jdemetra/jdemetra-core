@@ -27,7 +27,6 @@ import ec.tss.tsproviders.utils.ObsGathering;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tss.tsproviders.utils.Parsers;
 import ec.tstoolkit.utilities.CheckedIterator;
-import ec.tstoolkit.utilities.GuavaCollectors;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -179,7 +178,7 @@ final class TxtLoader {
         protected IParser<Date> initialValue() {
             ImmutableList<IParser<Date>> list = Stream.of(FALLBACK_FORMATS)
                     .map(o -> new DataFormat(Locale.ROOT, o, null).dateParser())
-                    .collect(GuavaCollectors.toImmutableList());
+                    .collect(ImmutableList.toImmutableList());
             return Parsers.firstNotNull(list);
         }
     };

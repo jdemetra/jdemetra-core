@@ -105,7 +105,7 @@ public interface IFormatter<T> {
      */
     @Nonnull
     @SuppressWarnings("null")
-    default <Y> IFormatter<Y> compose2(@Nonnull Function<? super Y, ? extends T> before) {
+    default <Y> IFormatter<Y> compose(@Nonnull Function<? super Y, ? extends T> before) {
         return o -> {
             T tmp = before.apply(o);
             return tmp != null ? format(tmp) : null;

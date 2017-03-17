@@ -17,8 +17,6 @@
 
 package ec.tss.formatters;
 
-import com.google.common.base.Strings;
-import ec.tstoolkit.information.StatisticalTest;
 import ec.tstoolkit.maths.Complex;
 import java.text.DecimalFormat;
 

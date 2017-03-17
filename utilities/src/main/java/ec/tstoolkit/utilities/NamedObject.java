@@ -16,7 +16,8 @@
  */
 package ec.tstoolkit.utilities;
 
-import com.google.common.base.Objects;
+import java.util.Objects;
+
 
 /**
  *
@@ -41,12 +42,12 @@ public final class NamedObject<T> implements Comparable<NamedObject<T>> {
         if (object instanceof Comparable) {
             return ((Comparable) object).compareTo(o.object);
         }
-        return Objects.equal(object, o.object) ? 0 : 1;
+        return Objects.equals(object, o.object) ? 0 : 1;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(name, object);
+        return Objects.hash(name, object);
     }
 
     @Override
@@ -55,6 +56,6 @@ public final class NamedObject<T> implements Comparable<NamedObject<T>> {
     }
 
     private boolean equals(NamedObject that) {
-        return Objects.equal(this.name, that.name) && Objects.equal(this.object, that.object);
+        return Objects.equals(this.name, that.name) && Objects.equals(this.object, that.object);
     }
 }

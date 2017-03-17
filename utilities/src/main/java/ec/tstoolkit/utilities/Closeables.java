@@ -40,14 +40,11 @@ public final class Closeables {
     }
 
     public static Closeable asCloseable(final XMLStreamWriter o) {
-        return new Closeable() {
-            @Override
-            public void close() throws IOException {
-                try {
-                    o.close();
-                } catch (XMLStreamException ex) {
-                    throw new IOException("While closing XMLStreamWriter", ex);
-                }
+        return () -> {
+            try {
+                o.close();
+            } catch (XMLStreamException ex) {
+                throw new IOException("While closing XMLStreamWriter", ex);
             }
         };
     }
@@ -60,14 +57,11 @@ public final class Closeables {
 
     @Deprecated
     public static Closeable asCloseable(final ResultSet o) {
-        return new Closeable() {
-            @Override
-            public void close() throws IOException {
-                try {
-                    o.close();
-                } catch (SQLException ex) {
-                    throw new IOException("While closing ResultSet", ex);
-                }
+        return () -> {
+            try {
+                o.close();
+            } catch (SQLException ex) {
+                throw new IOException("While closing ResultSet", ex);
             }
         };
     }
@@ -80,14 +74,11 @@ public final class Closeables {
 
     @Deprecated
     public static Closeable asCloseable(final Statement o) {
-        return new Closeable() {
-            @Override
-            public void close() throws IOException {
-                try {
-                    o.close();
-                } catch (SQLException ex) {
-                    throw new IOException("While closing Statement", ex);
-                }
+        return () -> {
+            try {
+                o.close();
+            } catch (SQLException ex) {
+                throw new IOException("While closing Statement", ex);
             }
         };
     }
@@ -100,14 +91,11 @@ public final class Closeables {
 
     @Deprecated
     public static Closeable asCloseable(final Connection o) {
-        return new Closeable() {
-            @Override
-            public void close() throws IOException {
-                try {
-                    o.close();
-                } catch (SQLException ex) {
-                    throw new IOException("While closing Connection", ex);
-                }
+        return () -> {
+            try {
+                o.close();
+            } catch (SQLException ex) {
+                throw new IOException("While closing Connection", ex);
             }
         };
     }

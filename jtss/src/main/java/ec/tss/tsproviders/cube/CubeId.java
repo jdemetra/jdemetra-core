@@ -20,6 +20,7 @@ import ec.tstoolkit.design.Immutable;
 import ec.tstoolkit.utilities.Arrays2;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -185,7 +186,7 @@ public final class CubeId {
             return false;
         }
         for (int i = l.length - 1; i >= 0; i--) {
-            if (!com.google.common.base.Objects.equal(l[i], r[i])) {
+            if (!Objects.equals(l[i], r[i])) {
                 return false;
             }
         }

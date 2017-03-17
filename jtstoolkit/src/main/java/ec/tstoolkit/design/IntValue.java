@@ -18,6 +18,7 @@ package ec.tstoolkit.design;
 
 import java.util.EnumSet;
 import java.util.Optional;
+import java.util.function.IntSupplier;
 
 /**
  * Defines a class that can be represented by an int.<br>
@@ -31,7 +32,7 @@ import java.util.Optional;
  *
  * @author Philippe Charles
  */
-public interface IntValue {
+public interface IntValue extends IntSupplier {
 
     /**
      * Returns the value of this Object as an int.<br>
@@ -40,6 +41,11 @@ public interface IntValue {
      * @return
      */
     int intValue();
+
+    @Override
+    default int getAsInt() {
+        return intValue();
+    }
 
     /**
      * Returns the enum constant of the specified enum type with the specified

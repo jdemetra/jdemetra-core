@@ -16,7 +16,6 @@
  */
 package ec.tss.tsproviders.db;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import ec.tss.tsproviders.utils.ObsCharacteristics;
 import ec.tss.tsproviders.utils.ObsGathering;
@@ -27,6 +26,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -89,7 +89,7 @@ public final class DbUtil {
                     value = cursor.value;
                     t0 = cursor.next();
                     t1 = t0 && Arrays.equals(dimValues, cursor.dimValues);
-                    t2 = t1 && Objects.equal(period, cursor.period);
+                    t2 = t1 && Objects.equals(period, cursor.period);
                 }
                 data.add(period, value);
             }
@@ -119,7 +119,7 @@ public final class DbUtil {
                 while (t1) {
                     value = cursor.value;
                     t0 = cursor.next();
-                    t1 = t0 && Objects.equal(period, latestPeriod = cursor.period);
+                    t1 = t0 && Objects.equals(period, latestPeriod = cursor.period);
                 }
                 data.add(period, value);
             }

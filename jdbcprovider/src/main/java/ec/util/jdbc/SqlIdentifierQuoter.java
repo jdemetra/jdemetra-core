@@ -16,9 +16,9 @@
  */
 package ec.util.jdbc;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
+import ec.tstoolkit.design.VisibleForTesting;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.Locale;

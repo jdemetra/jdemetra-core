@@ -17,6 +17,7 @@
 package ec.tss.tsproviders.sdmx.engine;
 
 import com.google.common.collect.ImmutableList;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import com.google.common.collect.Maps;
 import ec.tss.tsproviders.sdmx.model.SdmxItem;
 import ec.tss.tsproviders.sdmx.model.SdmxSeries;
@@ -24,7 +25,6 @@ import ec.tss.tsproviders.sdmx.model.SdmxSource;
 import ec.tss.tsproviders.utils.DataFormat;
 import ec.tss.tsproviders.utils.ObsGathering;
 import ec.tss.tsproviders.utils.OptionalTsData;
-import static ec.tstoolkit.utilities.GuavaCollectors.toImmutableList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -37,6 +37,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import static ec.tss.tsproviders.sdmx.engine.FluentDom.asStream;
 import ec.tss.tsproviders.utils.IParser;
+import java.util.List;
 
 /**
  *
@@ -66,7 +67,7 @@ public class GuessingCompactFactory extends AbstractDocumentFactory {
                 .anyMatch(o -> "KeyFamilyRef".equals(o.getLocalName()));
     }
 
-    private static ImmutableList<SdmxItem> getSdmxItems(Node dataSetNode, Calendar cal) {
+    private static List<SdmxItem> getSdmxItems(Node dataSetNode, Calendar cal) {
         return asStream(dataSetNode.getChildNodes())
                 .filter(o -> "Series".equals(o.getLocalName()))
                 .map(o -> getSdmxSeries(o, cal))

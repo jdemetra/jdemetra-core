@@ -282,8 +282,8 @@ public final class DataSet implements IConfig, Serializable {
         }
 
         final Parsers.Parser<DataSet> defaultParser = Parsers.wrap(Parsers.<DataSetBean>onJAXB(BEAN_CONTEXT).andThen(DataSetBean::toId));
-        final Formatters.Formatter<DataSet> defaultFormatter = Formatters.wrap(Formatters.<DataSetBean>onJAXB(BEAN_CONTEXT, false).compose2(DataSet::toBean));
-        final Formatters.Formatter<DataSet> formattedOutputFormatter = Formatters.wrap(Formatters.<DataSetBean>onJAXB(BEAN_CONTEXT, true).compose2(DataSet::toBean));
+        final Formatters.Formatter<DataSet> defaultFormatter = Formatters.<DataSetBean>onJAXB(BEAN_CONTEXT, false).compose(DataSet::toBean);
+        final Formatters.Formatter<DataSet> formattedOutputFormatter = Formatters.<DataSetBean>onJAXB(BEAN_CONTEXT, true).compose(DataSet::toBean);
     }
 
     private static final String SCHEME = "demetra";

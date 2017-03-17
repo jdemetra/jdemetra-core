@@ -16,7 +16,6 @@
  */
 package ec.tss.tsproviders.odbc;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.base.Splitter.MapSplitter;
 import ec.tss.tsproviders.DataSource;
@@ -24,6 +23,7 @@ import ec.tss.tsproviders.IFileBean;
 import ec.tss.tsproviders.jdbc.JdbcBean;
 import ec.tss.tsproviders.utils.Formatters;
 import ec.tss.tsproviders.utils.Parsers;
+import ec.tstoolkit.design.VisibleForTesting;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Collections;

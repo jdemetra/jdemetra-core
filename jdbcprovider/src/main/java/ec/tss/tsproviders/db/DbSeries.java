@@ -16,11 +16,11 @@
  */
 package ec.tss.tsproviders.db;
 
+import com.google.common.collect.Streams;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
 
 /**
@@ -64,7 +64,7 @@ public final class DbSeries {
 
     @Nonnull
     public static DbSeries findById(@Nonnull Iterable<DbSeries> iterable, @Nonnull DbSetId id) throws NoSuchElementException {
-        return StreamSupport.stream(iterable.spliterator(), false)
+        return Streams.stream(iterable)
                 .filter(o -> (o != null) ? id.equals(o.getId()) : false)
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
@@ -72,7 +72,7 @@ public final class DbSeries {
 
     @Nonnull
     public static List<DbSeries> filterByAncestor(@Nonnull Iterable<DbSeries> iterable, @Nonnull DbSetId ancestor) {
-        return StreamSupport.stream(iterable.spliterator(), false)
+        return Streams.stream(iterable)
                 .filter(o -> (o != null) ? isDescendant(ancestor, o.getId()) : false)
                 .collect(Collectors.toList());
     }
