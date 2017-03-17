@@ -81,13 +81,13 @@ public class TsCursorAsFillerTest {
     private final TsMoniker leaf3;
 
     {
-        DataSource ds = DataSource.builder(provider, "").build();
+        DataSource ds = DataSource.of(provider, "");
         goodSource = monikers.toMoniker(ds);
-        goodCollection = monikers.toMoniker(DataSet.builder(ds, COLLECTION).put("id", "node").build());
-        goodSeries = monikers.toMoniker(DataSet.builder(ds, SERIES).put("id", "leaf3").build());
-        leaf1 = monikers.toMoniker(DataSet.builder(ds, SERIES).put("id", "node.leaf1").build());
-        leaf2 = monikers.toMoniker(DataSet.builder(ds, SERIES).put("id", "node.leaf2").build());
-        leaf3 = monikers.toMoniker(DataSet.builder(ds, SERIES).put("id", "leaf3").build());
+        goodCollection = monikers.toMoniker(DataSet.of(ds, COLLECTION, "id", "node"));
+        goodSeries = monikers.toMoniker(DataSet.of(ds, SERIES, "id", "leaf3"));
+        leaf1 = monikers.toMoniker(DataSet.of(ds, SERIES, "id", "node.leaf1"));
+        leaf2 = monikers.toMoniker(DataSet.of(ds, SERIES, "id", "node.leaf2"));
+        leaf3 = monikers.toMoniker(DataSet.of(ds, SERIES, "id", "leaf3"));
     }
 
     @Test

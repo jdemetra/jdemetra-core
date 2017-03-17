@@ -20,6 +20,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
+import com.google.common.collect.Streams;
 import ec.tstoolkit.design.IBuilder;
 import ec.tstoolkit.utilities.URLEncoder2;
 import java.io.UnsupportedEncodingException;
@@ -32,7 +33,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SortedMap;
-import java.util.function.Function;
+import java.util.function.BiConsumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -43,9 +44,6 @@ import javax.annotation.Nullable;
  * @author Philippe Charles
  */
 public final class UriBuilder implements IBuilder<URI> {
-
-    private static final Splitter PATH_SLITTER = Splitter.on('/');
-    private static final Splitter.MapSplitter KEY_VALUE_SPLITTER = Splitter.on('&').withKeyValueSeparator("=");
 
     // PROPERTIES
     private final String scheme;
@@ -151,30 +149,78 @@ public final class UriBuilder implements IBuilder<URI> {
         return sb;
     }
 
-    @Nonnull
-    private static Map<String, String> transformKeyValues(@Nonnull Map<String, String> keyValues, @Nonnull Function<String, String> func) {
-        Map<String, String> result = new HashMap<>();
-        keyValues.forEach((k, v) -> {
-            result.put(func.apply(k), func.apply(v));
-        });
-        return result;
-    }
-
     @Nullable
     public static String[] getPathArray(@Nonnull URI uri) {
         String path = uri.getRawPath();
-        return path != null && !path.isEmpty() ? PATH_SLITTER.splitToList(path.substring(1)).stream().map(UriBuilder::decodeUrlUtf8).toArray(String[]::new) : null;
+        return path != null && !path.isEmpty() ? splitToArray(path.subSequence(1, path.length())) : null;
+    }
+
+    @Nullable
+    public static String[] getPathArray(@Nonnull URI uri, int expectedSize) {
+        String path = uri.getRawPath();
+        return path != null && !path.isEmpty() ? splitToArray(path.subSequence(1, path.length()), expectedSize) : null;
     }
 
     @Nullable
     public static Map<String, String> getQueryMap(@Nonnull URI uri) {
         String query = uri.getRawQuery();
-        return query != null ? (query.isEmpty() ? Collections.emptyMap() : transformKeyValues(KEY_VALUE_SPLITTER.split(query), UriBuilder::decodeUrlUtf8)) : null;
+        return query != null ? splitMap(query) : null;
     }
 
     @Nullable
     public static Map<String, String> getFragmentMap(@Nonnull URI uri) {
         String fragment = uri.getRawFragment();
-        return fragment != null ? (fragment.isEmpty() ? Collections.emptyMap() : transformKeyValues(KEY_VALUE_SPLITTER.split(fragment), UriBuilder::decodeUrlUtf8)) : null;
+        return fragment != null ? splitMap(fragment) : null;
+    }
+
+    private static final Splitter PATH_SPLITTER = Splitter.on('/');
+    private static final Splitter ENTRY_SPLITTER = Splitter.on('&');
+    private static final Splitter KEY_VALUE_SPLITTER = Splitter.on('=');
+
+    @Nullable
+    private static String[] splitToArray(@Nonnull CharSequence input) {
+        return Streams.stream(PATH_SPLITTER.split(input)).map(UriBuilder::decodeUrlUtf8).toArray(String[]::new);
+    }
+
+    @Nullable
+    private static String[] splitToArray(@Nonnull CharSequence input, int expectedSize) {
+        Iterator<String> items = PATH_SPLITTER.split(input).iterator();
+        if (expectedSize == 0 || !items.hasNext()) {
+            return null;
+        }
+        String[] result = new String[expectedSize];
+        int index = 0;
+        do {
+            result[index++] = decodeUrlUtf8(items.next());
+        } while (index < expectedSize && items.hasNext());
+        return !items.hasNext() && index == expectedSize ? result : null;
+    }
+
+    @Nullable
+    private static Map<String, String> splitMap(@Nonnull CharSequence input) {
+        if (input.length() == 0) {
+            return Collections.emptyMap();
+        }
+        Map<String, String> result = new HashMap<>();
+        return splitMapTo(input, result::put) ? result : null;
+    }
+
+    private static boolean splitMapTo(@Nonnull CharSequence input, @Nonnull BiConsumer<String, String> consumer) {
+        for (String entry : ENTRY_SPLITTER.split(input)) {
+            Iterator<String> entryFields = KEY_VALUE_SPLITTER.split(entry).iterator();
+            if (!entryFields.hasNext()) {
+                return false;
+            }
+            String key = entryFields.next();
+            if (!entryFields.hasNext()) {
+                return false;
+            }
+            String value = entryFields.next();
+            if (entryFields.hasNext()) {
+                return false;
+            }
+            consumer.accept(decodeUrlUtf8(key), decodeUrlUtf8(value));
+        }
+        return true;
     }
 }

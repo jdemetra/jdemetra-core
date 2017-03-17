@@ -70,9 +70,7 @@ public final class JdbcLegacy {
                             builder.put(dimColumns[1], id.getSeries());
                             return builder.build();
                         }
-                        DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
-                        builder.put(dimColumns[0], id.getDomain());
-                        return builder.build();
+                        return DataSet.of(dataSource, DataSet.Kind.COLLECTION, dimColumns[0], id.getDomain());
                     }
                 }
                 return null;

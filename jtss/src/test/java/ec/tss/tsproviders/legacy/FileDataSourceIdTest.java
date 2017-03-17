@@ -48,7 +48,7 @@ public class FileDataSourceIdTest {
    
     @Test
     public void testDemetraUri() {
-        String input = DataSource.uriFormatter().formatAsString(DataSource.builder("p", "123").build());
+        String input = DataSource.uriFormatter().formatAsString(DataSource.of("p", "123"));
         assertThat(FileDataSourceId.parse(input)).isNull();
     }
     

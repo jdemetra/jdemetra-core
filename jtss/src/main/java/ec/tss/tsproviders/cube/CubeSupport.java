@@ -86,7 +86,7 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
             if (ex != null) {
                 throw ex;
             }
-            DataSet fake = DataSet.builder(dataSource, DataSet.Kind.SERIES).build();
+            DataSet fake = DataSet.of(dataSource, DataSet.Kind.SERIES);
             return Collections.singletonList(fake);
         }
 

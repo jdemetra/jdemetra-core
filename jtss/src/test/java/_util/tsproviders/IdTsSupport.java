@@ -111,8 +111,7 @@ public final class IdTsSupport implements HasTsCursor, HasDataDisplayName {
     }
 
     private static Function<Id, DataSet> getSeriesDataSetFunc(DataSource dataSource) {
-        DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
-        return o -> builder.put(ID_PARAM, o.toString()).build();
+        return o -> DataSet.of(dataSource, DataSet.Kind.SERIES, ID_PARAM, o.toString());
     }
 
     private static Predicate<DataSet> isChildOf(DataSet parent) {

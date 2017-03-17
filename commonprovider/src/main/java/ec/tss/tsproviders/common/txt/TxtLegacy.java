@@ -61,7 +61,7 @@ final class TxtLegacy {
                     return null;
                 }
                 if (!id.isSeries()) {
-                    return DataSet.builder(dataSource, DataSet.Kind.COLLECTION).build();
+                    return DataSet.of(dataSource, DataSet.Kind.COLLECTION);
                 }
                 DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
                 TxtProvider.Z_SERIESINDEX.set(builder, id.getIndexSeries());
