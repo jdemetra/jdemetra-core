@@ -141,16 +141,15 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
         for (SdmxItem o : source.items) {
             if (o instanceof SdmxGroup) {
                 SdmxGroup group = ((SdmxGroup) o);
-                Y_GROUP_ID.set(builder, group.id);
+                builder.put(Y_GROUP_ID, group.id);
                 for (SdmxSeries series : group.series) {
-                    Z_SERIES_ID.set(builder, series.id);
+                    builder.put(Z_SERIES_ID, series.id);
                     info.items.add(newTsInformation(builder.build(), series));
                 }
             } else {
                 SdmxSeries series = (SdmxSeries) o;
-                Y_GROUP_ID.set(builder, "");
-                Z_SERIES_ID.set(builder, series.id);
-                info.items.add(newTsInformation(builder.build(), series));
+                DataSet child = builder.put(Y_GROUP_ID, "").put(Z_SERIES_ID, series.id).build();
+                info.items.add(newTsInformation(child, series));
             }
         }
     }
@@ -161,9 +160,8 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
         info.type = TsInformationType.All;
         DataSet.Builder builder = dataSet.toBuilder(DataSet.Kind.SERIES);
         for (SdmxSeries series : group.series) {
-            Y_GROUP_ID.set(builder, group.id);
-            Z_SERIES_ID.set(builder, series.id);
-            info.items.add(newTsInformation(builder.build(), series));
+            DataSet child = builder.put(Y_GROUP_ID, group.id).put(Z_SERIES_ID, series.id).build();
+            info.items.add(newTsInformation(child, series));
         }
     }
 
@@ -189,12 +187,9 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
         DataSet.Builder sBuilder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
         for (SdmxItem o : getSource(dataSource).items) {
             if (o instanceof SdmxGroup) {
-                Y_GROUP_ID.set(cBuilder, o.id);
-                result.add(cBuilder.build());
+                result.add(cBuilder.put(Y_GROUP_ID, o.id).build());
             } else {
-                Y_GROUP_ID.set(sBuilder, "");
-                Z_SERIES_ID.set(sBuilder, o.id);
-                result.add(sBuilder.build());
+                result.add(sBuilder.put(Y_GROUP_ID, "").put(Z_SERIES_ID, o.id).build());
             }
         }
         return result.build();
@@ -220,8 +215,7 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
         ImmutableList.Builder<DataSet> result = ImmutableList.builder();
         DataSet.Builder builder = parent.toBuilder(DataSet.Kind.SERIES);
         for (SdmxSeries o : getGroup(parent).series) {
-            Z_SERIES_ID.set(builder, o.id);
-            result.add(builder.build());
+            result.add(builder.put(Z_SERIES_ID, o.id).build());
         }
         return result.build();
     }

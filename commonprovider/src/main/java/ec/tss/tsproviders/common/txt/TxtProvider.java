@@ -122,8 +122,7 @@ public class TxtProvider extends AbstractFileLoader<TxtSource, TxtBean> {
         DataSet[] children = new DataSet[tmp.items.size()];
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
         for (int i = 0; i < children.length; i++) {
-            Z_SERIESINDEX.set(builder, i);
-            children[i] = builder.build();
+            children[i] = builder.put(Z_SERIESINDEX, i).build();
         }
         return Arrays.asList(children);
     }
@@ -135,8 +134,8 @@ public class TxtProvider extends AbstractFileLoader<TxtSource, TxtBean> {
         info.type = TsInformationType.All;
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
         for (TxtSeries o : source.items) {
-            Z_SERIESINDEX.set(builder, o.index);
-            info.items.add(support.fillSeries(newTsInformation(builder.build(), TsInformationType.All), o.data, X_CLEAN_MISSING.get(dataSource)));
+            DataSet child = builder.put(Z_SERIESINDEX, o.index).build();
+            info.items.add(support.fillSeries(newTsInformation(child, TsInformationType.All), o.data, X_CLEAN_MISSING.get(dataSource)));
         }
     }
 

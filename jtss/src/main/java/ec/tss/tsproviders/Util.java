@@ -22,7 +22,6 @@ import com.google.common.collect.ImmutableSortedMap;
 import ec.tss.TsMoniker;
 import ec.tss.tsproviders.utils.DataSourceEventSupport;
 import ec.tss.tsproviders.utils.DataSourcePreconditions;
-import ec.tss.tsproviders.utils.IConfig;
 import ec.tss.tsproviders.utils.IFormatter;
 import ec.tss.tsproviders.utils.IParam;
 import ec.tss.tsproviders.utils.IParser;
@@ -196,9 +195,9 @@ final class Util {
         public DataSource encodeBean(Object bean) throws IllegalArgumentException {
             Objects.requireNonNull(bean);
             try {
-                IConfig.Builder<?, DataSource> builder = DataSource.builder(providerName, version);
-                param.set(builder, (T) bean);
-                return builder.build();
+                return DataSource.builder(providerName, version)
+                        .put(param, (T) bean)
+                        .build();
             } catch (ClassCastException ex) {
                 throw new IllegalArgumentException(ex);
             }

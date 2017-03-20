@@ -144,8 +144,7 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
         DataSet[] children = new DataSet[ws.tsclist.length];
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
         for (int i = 0; i < children.length; i++) {
-            Y_COLLECTIONINDEX.set(builder, i);
-            children[i] = builder.build();
+            children[i] = builder.put(Y_COLLECTIONINDEX, i).build();
         }
         return Arrays.asList(children);
     }
@@ -185,8 +184,7 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
         DataSet[] children = new DataSet[ws.tsclist[index].tslist.length];
         DataSet.Builder builder = parent.toBuilder(DataSet.Kind.SERIES);
         for (int i = 0; i < children.length; i++) {
-            Z_SERIESINDEX.set(builder, i);
-            children[i] = builder.build();
+            children[i] = builder.put(Z_SERIESINDEX, i).build();
         }
         return Arrays.asList(children);
     }
@@ -201,8 +199,8 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
         info.type = TsInformationType.All;
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
         for (int i = 0; i < source.tsclist.length; i++) {
-            Y_COLLECTIONINDEX.set(builder, i);
-            info.items.addAll(getAll(builder.build(), source.tsclist[i]));
+            DataSet child = builder.put(Y_COLLECTIONINDEX, i).build();
+            info.items.addAll(getAll(child, source.tsclist[i]));
         }
     }
 
@@ -238,9 +236,9 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
         DataSet.Builder builder = dataSet.toBuilder(DataSet.Kind.SERIES);
         for (int i = 0; i < result.length; ++i) {
             wsTs s = collection.tslist[i];
-            Z_SERIESINDEX.set(builder, i);
+            DataSet child = builder.put(Z_SERIESINDEX, i).build();
             OptionalTsData data = s.tsdata != null ? OptionalTsData.present(s.tsdata.create()) : OptionalTsData.absent("No data");
-            result[i] = support.fillSeries(newTsInformation(builder.build(), TsInformationType.All), data, true);
+            result[i] = support.fillSeries(newTsInformation(child, TsInformationType.All), data, true);
         }
         return Arrays.asList(result);
     }

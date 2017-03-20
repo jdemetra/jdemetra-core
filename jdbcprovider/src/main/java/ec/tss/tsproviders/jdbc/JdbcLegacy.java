@@ -13,7 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
+ */
 package ec.tss.tsproviders.jdbc;
 
 import ec.tss.tsproviders.DataSet;
@@ -65,10 +65,10 @@ public final class JdbcLegacy {
                     if (dataSource != null) {
                         String[] dimColumns = JdbcBean.getDimArray(dataSource);
                         if (id.getSeries() != null) {
-                            DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
-                            builder.put(dimColumns[0], id.getDomain());
-                            builder.put(dimColumns[1], id.getSeries());
-                            return builder.build();
+                            return DataSet.builder(dataSource, DataSet.Kind.SERIES)
+                                    .put(dimColumns[0], id.getDomain())
+                                    .put(dimColumns[1], id.getSeries())
+                                    .build();
                         }
                         return DataSet.of(dataSource, DataSet.Kind.COLLECTION, dimColumns[0], id.getDomain());
                     }
