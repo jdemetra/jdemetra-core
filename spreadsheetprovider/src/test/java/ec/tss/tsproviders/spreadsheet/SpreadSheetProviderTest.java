@@ -16,15 +16,22 @@
  */
 package ec.tss.tsproviders.spreadsheet;
 
+import ec.tss.TsCollectionInformation;
+import ec.tss.TsInformation;
+import ec.tss.TsInformationType;
+import ec.tss.TsMoniker;
 import ec.tss.tsproviders.DataSet;
 import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.IFileLoaderAssert;
+import ec.tss.tsproviders.utils.DataFormat;
+import ec.tstoolkit.timeseries.TsAggregationType;
+import ec.tstoolkit.timeseries.simplets.TsData;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -32,62 +39,95 @@ import org.junit.Test;
  */
 public class SpreadSheetProviderTest {
 
-    static final URL dataUrl = SpreadSheetProviderTest.class.getResource("/Top5Browsers.ods");
-
-    SpreadSheetProvider provider;
-
-    @Before
-    public void before() {
-        provider = new SpreadSheetProvider();
-    }
-
-    @After
-    public void after() {
-        provider.dispose();
-    }
-
-    @Test
-    public void testGetDataSources() {
-        DataSource dataSource = loadFile(provider);
-        List<DataSource> dataSources = provider.getDataSources();
-        Assert.assertEquals(1, dataSources.size());
-        Assert.assertEquals(dataSource, dataSources.get(0));
-    }
-
-    @Test
-    public void testGetDisplayNameDataSource() {
-        DataSource dataSource = loadFile(provider);
-        Assert.assertEquals(IFileLoaderAssert.urlAsFile(dataUrl).getPath(), provider.getDisplayName(dataSource));
-    }
-
-    @Test
-    public void testGetDisplayNameDataSet() throws Exception {
-        DataSource dataSource = loadFile(provider);
-        DataSet o = provider.children(provider.children(dataSource).get(0)).get(2);
-        Assert.assertEquals("Top 5 Browsers - Monthly\nChrome", provider.getDisplayName(o));
-    }
-
-    @Test
-    public void testGetDisplayNodeName() throws Exception {
-        DataSource dataSource = loadFile(provider);
-        DataSet o = provider.children(provider.children(dataSource).get(0)).get(2);
-        Assert.assertEquals("Chrome", provider.getDisplayNodeName(o));
-    }
-
     @Test
     public void testCompliance() {
-        IFileLoaderAssert.assertCompliance(SpreadSheetProvider::new, o -> getSampleBean(o));
+        IFileLoaderAssert.assertCompliance(SpreadSheetProvider::new, SpreadSheetProviderTest::getSampleBean);
     }
+
+    @Test
+    public void testMonikerLegacy() {
+        String legacy = "<<Insee.xlsx>><<'FRANCE Alim# et tabac$'>><<Industries alimentaires 001563038>>";
+
+        SpreadSheetBean bean = new SpreadSheetBean();
+        bean.setFile(new File("Insee.xlsx"));
+
+        DataSet expected = DataSet.builder(bean.toDataSource("XCLPRVDR", "20111201"), DataSet.Kind.SERIES)
+                .put("seriesName", "Industries alimentaires 001563038")
+                .put("sheetName", "'FRANCE Alim# et tabac$'")
+                .build();
+
+        try (SpreadSheetProvider p = new SpreadSheetProvider()) {
+            assertThat(p.toDataSet(new TsMoniker("XCLPRVDR", legacy))).isEqualTo(expected);
+        }
+    }
+
+    @Test
+    public void testMonikerUri() {
+        String uri = "demetra://tsprovider/XCLPRVDR/20111201/SERIES?aggregationType=Last&cleanMissing=false&datePattern=dd%2FMM%2Fyyyy&file=Insee.xlsx&frequency=Monthly&locale=fr&numberPattern=%23.%23#seriesName=Textiles+001563047&sheetName=FRANCE+Textile";
+
+        SpreadSheetBean bean = new SpreadSheetBean();
+        bean.setAggregationType(TsAggregationType.Last);
+        bean.setCleanMissing(false);
+        bean.setDataFormat(DataFormat.create("fr", "dd/MM/yyyy", "#.#"));
+        bean.setFile(new File("Insee.xlsx"));
+        bean.setFrequency(TsFrequency.Monthly);
+
+        DataSet expected = DataSet.builder(bean.toDataSource("XCLPRVDR", "20111201"), DataSet.Kind.SERIES)
+                .put("seriesName", "Textiles 001563047")
+                .put("sheetName", "FRANCE Textile")
+                .build();
+
+        try (SpreadSheetProvider p = new SpreadSheetProvider()) {
+            assertThat(p.toDataSet(new TsMoniker("XCLPRVDR", uri))).isEqualTo(expected);
+        }
+    }
+
+    @Test
+    public void testSample() throws IOException {
+        try (SpreadSheetProvider p = new SpreadSheetProvider()) {
+            SpreadSheetBean bean = getSampleBean(p);
+            DataSource dataSource = p.encodeBean(bean);
+            assertThat(p.getDataSources()).isEmpty();
+            assertThat(p.open(dataSource)).isTrue();
+
+            assertThat(p.getDataSources()).containsExactly(dataSource);
+            assertThat(p.getDisplayName(dataSource)).isEqualTo(bean.getFile().getPath());
+            assertThat(p.children(dataSource)).hasSize(3);
+
+            DataSet node = p.children(dataSource).get(0);
+            assertThat(p.getDisplayName(node)).isEqualTo("Top 5 Browsers - Monthly");
+            assertThat(p.getDisplayNodeName(node)).isEqualTo("Top 5 Browsers - Monthly");
+            assertThat(p.children(node)).hasSize(6);
+
+            assertThat(new TsCollectionInformation(p.toMoniker(node), TsInformationType.All))
+                    .satisfies(o -> {
+                        assertThat(p.get(o)).isTrue();
+                        assertThat(o.items).hasSize(6);
+                    });
+
+            DataSet leaf = p.children(node).get(2);
+            assertThat(p.getDisplayName(leaf)).isEqualTo("Top 5 Browsers - Monthly\nChrome");
+            assertThat(p.getDisplayNodeName(leaf)).isEqualTo("Chrome");
+
+            assertThat(new TsInformation("", p.toMoniker(leaf), TsInformationType.All))
+                    .satisfies(o -> {
+                        assertThat(p.get(o)).isTrue();
+                        assertThat(o)
+                                .extracting("moniker", "name", "metaData", "data", "type", "invalidDataCause")
+                                .containsExactly(p.toMoniker(leaf), "Top 5 Browsers - Monthly\nChrome", null, new TsData(TsFrequency.Monthly, 2008, 6, VALUES, false), TsInformationType.All, null);
+                    });
+
+            assertThat(p.close(dataSource)).isTrue();
+            assertThat(p.getDataSources()).isEmpty();
+        }
+    }
+
+    static final URL SAMPLE = SpreadSheetProviderTest.class.getResource("/Top5Browsers.ods");
+    static final double[] VALUES = {0.0, 0.0, 1.03, 1.02, 0.93, 1.21, 1.38, 1.52, 1.73, 2.07, 2.42, 2.82, 3.01, 3.38, 3.69, 4.17, 4.66, 5.45, 6.04, 6.72, 7.29, 8.06, 8.61, 9.24, 9.88, 10.76, 11.54, 12.39, 13.35, 14.85, 15.68, 16.54, 17.37, 18.29, 19.36, 20.65, 22.14, 23.16, 23.61, 25.0, 25.65};
 
     private static SpreadSheetBean getSampleBean(SpreadSheetProvider p) {
         SpreadSheetBean bean = p.newBean();
-        bean.setFile(IFileLoaderAssert.urlAsFile(dataUrl));
+        bean.setFile(IFileLoaderAssert.urlAsFile(SAMPLE));
         return bean;
-    }
-
-    private static DataSource loadFile(SpreadSheetProvider p) {
-        DataSource dataSource = p.encodeBean(getSampleBean(p));
-        Assert.assertTrue(p.open(dataSource));
-        return dataSource;
     }
 }

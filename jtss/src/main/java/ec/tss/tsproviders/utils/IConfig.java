@@ -123,5 +123,11 @@ public interface IConfig {
             map.forEach(this::put);
             return (THIS) this;
         }
+
+        @Nonnull
+        default <V> THIS put(@Nonnull IParam<T, V> param, V value) {
+            param.set(this, value);
+            return (THIS) this;
+        }
     }
 }

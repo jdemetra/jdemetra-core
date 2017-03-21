@@ -18,10 +18,10 @@ package ec.tss.tsproviders;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSortedMap;
 import ec.tss.TsMoniker;
 import ec.tss.tsproviders.utils.DataSourceEventSupport;
 import ec.tss.tsproviders.utils.DataSourcePreconditions;
-import ec.tss.tsproviders.utils.IConfig;
 import ec.tss.tsproviders.utils.IFormatter;
 import ec.tss.tsproviders.utils.IParam;
 import ec.tss.tsproviders.utils.IParser;
@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -46,6 +47,18 @@ final class Util {
 
     private Util() {
         // static class
+    }
+
+    static ImmutableSortedMap<String, String> toImmutable(Map<String, String> params) {
+        switch (params.size()) {
+            case 0:
+                return ImmutableSortedMap.of();
+            case 1:
+                Map.Entry<String, String> first = params.entrySet().iterator().next();
+                return ImmutableSortedMap.of(first.getKey(), first.getValue());
+            default:
+                return ImmutableSortedMap.copyOf(params);
+        }
     }
 
     static final Consumer<Object> DO_NOTHING = o -> {
@@ -182,9 +195,9 @@ final class Util {
         public DataSource encodeBean(Object bean) throws IllegalArgumentException {
             Objects.requireNonNull(bean);
             try {
-                IConfig.Builder<?, DataSource> builder = DataSource.builder(providerName, version);
-                param.set(builder, (T) bean);
-                return builder.build();
+                return DataSource.builder(providerName, version)
+                        .put(param, (T) bean)
+                        .build();
             } catch (ClassCastException ex) {
                 throw new IllegalArgumentException(ex);
             }

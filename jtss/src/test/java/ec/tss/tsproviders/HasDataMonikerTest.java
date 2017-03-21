@@ -28,10 +28,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class HasDataMonikerTest {
 
     private final String providerName = "myprovider";
-    private final DataSource goodDataSource = DataSource.builder("myprovider", "1234").build();
-    private final DataSource badDataSource = DataSource.builder("xxx", "1234").build();
-    private final DataSet goodDataSet = DataSet.builder(goodDataSource, DataSet.Kind.SERIES).build();
-    private final DataSet badDataSet = DataSet.builder(badDataSource, DataSet.Kind.SERIES).build();
+    private final DataSource goodDataSource = DataSource.of("myprovider", "1234");
+    private final DataSource badDataSource = DataSource.of("xxx", "1234");
+    private final DataSet goodDataSet = DataSet.of(goodDataSource, DataSet.Kind.SERIES);
+    private final DataSet badDataSet = DataSet.of(badDataSource, DataSet.Kind.SERIES);
     private final TsMoniker goodDataSourceMoniker = new TsMoniker(providerName, DataSource.uriFormatter().formatAsString(goodDataSource));
     private final TsMoniker badDataSourceMoniker = new TsMoniker("xxx", DataSource.uriFormatter().formatAsString(badDataSource));
     private final TsMoniker goodDataSetMoniker = new TsMoniker(providerName, DataSet.uriFormatter().formatAsString(goodDataSet));

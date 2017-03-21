@@ -112,8 +112,7 @@ public final class FileDataSourceId implements CharSequence {
             @Override
             public DataSource parse(CharSequence input) throws NullPointerException {
                 FileDataSourceId id = FileDataSourceId.parse(input);
-                return id != null
-                        ? DataSource.builder(providerName, version).put(X_FILE, id.getFile()).build() : null;
+                return id != null ? DataSource.of(providerName, version, X_FILE, id.getFile()) : null;
             }
         };
     }

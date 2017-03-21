@@ -102,9 +102,8 @@ public class TswProvider extends AbstractFileLoader<TswSource, TswBean> {
     protected void fillCollection(TsCollectionInformation info, DataSource dataSource) throws IOException {
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
         for (TswSeries o : getSource(dataSource).items) {
-            Z_FILENAME.set(builder, o.fileName);
-            Z_NAME.set(builder, o.name);
-            info.items.add(support.fillSeries(newTsInformation(builder.build(), TsInformationType.All), o.data, true));
+            DataSet child = builder.put(Z_FILENAME, o.fileName).put(Z_NAME, o.name).build();
+            info.items.add(support.fillSeries(newTsInformation(child, TsInformationType.All), o.data, true));
         }
         info.type = TsInformationType.All;
     }
@@ -127,11 +126,10 @@ public class TswProvider extends AbstractFileLoader<TswSource, TswBean> {
         support.check(dataSource);
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
         return getSource(dataSource).items.stream()
-                .map(o -> {
-                    Z_FILENAME.set(builder, o.fileName);
-                    Z_NAME.set(builder, o.name);
-                    return builder.build();
-                })
+                .map(o -> builder
+                        .put(Z_FILENAME, o.fileName)
+                        .put(Z_NAME, o.name)
+                        .build())
                 .collect(Collectors.toList());
     }
 

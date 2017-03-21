@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.common.xml;
 
 import ec.tss.tsproviders.DataSet;
@@ -62,14 +61,14 @@ final class XmlLegacy {
                     return null;
                 }
                 if (!id.isSeries()) {
-                    DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
-                    XmlProvider.Y_COLLECTIONINDEX.set(builder, id.getIndexCollection());
-                    return builder.build();
+                    return DataSet.builder(dataSource, DataSet.Kind.COLLECTION)
+                            .put(XmlProvider.Y_COLLECTIONINDEX, id.getIndexCollection())
+                            .build();
                 } else {
-                    DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
-                    XmlProvider.Y_COLLECTIONINDEX.set(builder, id.getIndexCollection());
-                    XmlProvider.Z_SERIESINDEX.set(builder, id.getIndexSeries());
-                    return builder.build();
+                    return DataSet.builder(dataSource, DataSet.Kind.SERIES)
+                            .put(XmlProvider.Y_COLLECTIONINDEX, id.getIndexCollection())
+                            .put(XmlProvider.Z_SERIESINDEX, id.getIndexSeries())
+                            .build();
                 }
             }
         };

@@ -20,7 +20,6 @@ import ec.tss.TsInformation;
 import ec.tss.TsInformationType;
 import ec.tss.TsMoniker;
 import java.io.IOException;
-import java.util.Collections;
 import org.assertj.core.api.SoftAssertions;
 
 /**
@@ -40,8 +39,8 @@ final class Utils {
     static final Object NULL_BEAN = null;
     static final IOException NULL_IO_EXCEPTION = null;
 
-    static final DataSource BAD_DATA_SOURCE = DataSource.deepCopyOf("BAD", "", Collections.emptyMap());
-    static final DataSet BAD_DATA_SET = DataSet.deepCopyOf(BAD_DATA_SOURCE, DataSet.Kind.SERIES, Collections.emptyMap());
+    static final DataSource BAD_DATA_SOURCE = DataSource.of("BAD", "");
+    static final DataSet BAD_DATA_SET = DataSet.of(BAD_DATA_SOURCE, DataSet.Kind.SERIES);
     static final TsMoniker BAD_MONIKER = new TsMoniker("BAD", "");
     static final Object BAD_BEAN = new Object();
 

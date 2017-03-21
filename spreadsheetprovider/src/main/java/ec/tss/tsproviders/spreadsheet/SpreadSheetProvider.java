@@ -35,6 +35,7 @@ import ec.util.spreadsheet.Book;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.openide.util.lookup.ServiceProvider;
@@ -133,15 +134,11 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
             return Collections.emptyList();
         }
 
-        SpreadSheetCollection[] tmp = ws.collections.values().stream().sorted().toArray(SpreadSheetCollection[]::new);
-
-        DataSet[] children = new DataSet[tmp.length];
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
-        for (int i = 0; i < children.length; i++) {
-            Y_SHEETNAME.set(builder, tmp[i].sheetName);
-            children[i] = builder.build();
-        }
-        return Arrays.asList(children);
+        return ws.collections.values().stream()
+                .sorted()
+                .map(o -> builder.put(Y_SHEETNAME, o.sheetName).build())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -165,15 +162,11 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
             return Collections.emptyList();
         }
 
-        SpreadSheetSeries[] tmp = col.series.stream().sorted().toArray(SpreadSheetSeries[]::new);
-
-        DataSet[] children = new DataSet[tmp.length];
         DataSet.Builder builder = parent.toBuilder(DataSet.Kind.SERIES);
-        for (int i = 0; i < children.length; i++) {
-            Z_SERIESNAME.set(builder, tmp[i].seriesName);
-            children[i] = builder.build();
-        }
-        return Arrays.asList(children);
+        return col.series.stream()
+                .sorted()
+                .map(o -> builder.put(Z_SERIESNAME, o.seriesName).build())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -185,8 +178,8 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
         source.collections.values().stream()
                 .sorted()
                 .forEach(o -> {
-                    Y_SHEETNAME.set(builder, o.sheetName);
-                    info.items.addAll(getAll(builder.build(), o));
+                    DataSet child = builder.put(Y_SHEETNAME, o.sheetName).build();
+                    info.items.addAll(getAll(child, o));
                 });
     }
 
@@ -205,14 +198,13 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
         if (collection.series.isEmpty()) {
             return Collections.emptyList();
         }
-        TsInformation[] result = new TsInformation[collection.series.size()];
         DataSet.Builder builder = dataSet.toBuilder(DataSet.Kind.SERIES);
-        for (int i = 0; i < result.length; i++) {
-            SpreadSheetSeries o = collection.series.get(i);
-            Z_SERIESNAME.set(builder, o.seriesName);
-            result[i] = support.fillSeries(newTsInformation(builder.build(), TsInformationType.All), o.data, X_CLEAN_MISSING.get(dataSet.getDataSource()));
-        }
-        return Arrays.asList(result);
+        return collection.series.stream()
+                .map(o -> {
+                    DataSet child = builder.put(Z_SERIESNAME, o.seriesName).build();
+                    return support.fillSeries(newTsInformation(child, TsInformationType.All), o.data, X_CLEAN_MISSING.get(dataSet.getDataSource()));
+                })
+                .collect(Collectors.toList());
     }
 
     @Override

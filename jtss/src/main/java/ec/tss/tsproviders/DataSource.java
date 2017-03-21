@@ -127,10 +127,23 @@ public final class DataSource implements IConfig, Serializable {
     }
 
     @Nonnull
+    public static DataSource of(@Nonnull String providerName, @Nonnull String version) {
+        Objects.requireNonNull(providerName, "providerName");
+        Objects.requireNonNull(version, "version");
+        return new DataSource(providerName, version, ImmutableSortedMap.of());
+    }
+
+    @Nonnull
+    public static DataSource of(@Nonnull String providerName, @Nonnull String version, @Nonnull String key, @Nonnull String value) {
+        Objects.requireNonNull(providerName, "providerName");
+        Objects.requireNonNull(version, "version");
+        return new DataSource(providerName, version, ImmutableSortedMap.of(key, value));
+    }
+
+    @Nonnull
     public static DataSource deepCopyOf(@Nonnull String providerName, @Nonnull String version, @Nonnull Map<String, String> params) {
         Objects.requireNonNull(providerName, "providerName");
         Objects.requireNonNull(version, "version");
-        Objects.requireNonNull(params, "params");
         return new DataSource(providerName, version, ImmutableSortedMap.copyOf(params));
     }
 
@@ -211,7 +224,7 @@ public final class DataSource implements IConfig, Serializable {
 
         @Override
         public DataSource build() {
-            return DataSource.deepCopyOf(providerName, version, params);
+            return new DataSource(providerName, version, Util.toImmutable(params));
         }
     }
 
@@ -276,15 +289,15 @@ public final class DataSource implements IConfig, Serializable {
             if (!SCHEME.equals(uri.getScheme()) || !HOST.equals(uri.getHost())) {
                 return null;
             }
-            String[] path = UriBuilder.getPathArray(uri);
-            if (path == null || path.length != 2) {
+            String[] path = UriBuilder.getPathArray(uri, 2);
+            if (path == null) {
                 return null;
             }
             Map<String, String> query = UriBuilder.getQueryMap(uri);
             if (query == null) {
                 return null;
             }
-            return DataSource.deepCopyOf(path[0], path[1], query);
+            return new DataSource(path[0], path[1], Util.toImmutable(query));
         }
     };
 

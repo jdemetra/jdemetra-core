@@ -76,8 +76,7 @@ public class RandomProvider extends AbstractDataSourceLoader<double[][], RandomB
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
         DataSet[] result = new DataSet[decodeBean(dataSource).getCount()];
         for (int i = 0; i < result.length; i++) {
-            Z_INDEX.set(builder, i);
-            result[i] = builder.build();
+            result[i] = builder.put(Z_INDEX, i).build();
         }
         return Arrays.asList(result);
     }

@@ -27,10 +27,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class HasDataDisplayNameTest {
 
     private final String providerName = "myprovider";
-    private final DataSource goodDataSource = DataSource.builder("myprovider", "1234").build();
-    private final DataSource badDataSource = DataSource.builder("xxx", "1234").build();
-    private final DataSet goodDataSet = DataSet.builder(goodDataSource, DataSet.Kind.SERIES).build();
-    private final DataSet badDataSet = DataSet.builder(badDataSource, DataSet.Kind.SERIES).build();
+    private final DataSource goodDataSource = DataSource.of("myprovider", "1234");
+    private final DataSource badDataSource = DataSource.of("xxx", "1234");
+    private final DataSet goodDataSet = DataSet.of(goodDataSource, DataSet.Kind.SERIES);
+    private final DataSet badDataSet = DataSet.of(badDataSource, DataSet.Kind.SERIES);
 
     @Test
     @SuppressWarnings("null")

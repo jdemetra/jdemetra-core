@@ -33,7 +33,7 @@ public class DataSourcePreconditionsTest {
     @Test
     @SuppressWarnings("null")
     public void testDataSource() {
-        DataSource input = DataSource.builder("myprovider", "1234").build();
+        DataSource input = DataSource.of("myprovider", "1234");
         assertThat(checkProvider("myprovider", input))
                 .isSameAs(input);
         assertThatThrownBy(() -> checkProvider("xxx", input))
@@ -47,7 +47,7 @@ public class DataSourcePreconditionsTest {
     @Test
     @SuppressWarnings("null")
     public void testDataSet() {
-        DataSet input = DataSet.builder(DataSource.builder("myprovider", "1234").build(), DataSet.Kind.SERIES).build();
+        DataSet input = DataSet.of(DataSource.of("myprovider", "1234"), DataSet.Kind.SERIES);
         assertThat(checkProvider("myprovider", input))
                 .isSameAs(input);
         assertThatThrownBy(() -> checkProvider("xxx", input))

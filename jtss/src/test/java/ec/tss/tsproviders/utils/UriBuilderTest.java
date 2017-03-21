@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.utils;
 
 import com.google.common.collect.ImmutableSortedMap;
@@ -22,6 +21,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SortedMap;
+import org.assertj.core.api.Assertions;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -90,14 +90,13 @@ public class UriBuilderTest {
 
     @Test
     public void testPath() {
-        URI uri = new UriBuilder(scheme, host).path(path).query(query).build();
-        assertEquals(rawPath, uri.getRawPath());
-        assertArrayEquals(path, UriBuilder.getPathArray(uri));
-        assertEquals("", new UriBuilder(scheme, host).build().getRawPath());
         // FIXME: what to do with empty or null ?
 //        assertEquals("", new UriBuilder(scheme, host).path("").build().getRawPath());
 //        assertEquals("", new UriBuilder(scheme, host).path((String)null).build().getRawPath());
 //        assertEquals("", new UriBuilder(scheme, host).path((String[])null).build().getRawPath());
+
+        Assertions.assertThat(new UriBuilder(scheme, host).build().getRawPath()).isEmpty();
+        Assertions.assertThat(new UriBuilder(scheme, host).path(path).build().getRawPath()).isEqualTo(rawPath);
     }
 
     @Test
@@ -111,5 +110,20 @@ public class UriBuilderTest {
             assertTrue(query.containsKey(o.getKey()));
             assertEquals(o.getValue(), query.get(o.getKey()));
         }
+    }
+
+    @Test
+    public void testGetPathArray() {
+        Assertions.assertThat(new UriBuilder(scheme, host).build()).satisfies(o -> {
+            Assertions.assertThat(UriBuilder.getPathArray(o, 0)).isNull();
+            Assertions.assertThat(UriBuilder.getPathArray(o, 1)).isNull();
+        });
+
+        Assertions.assertThat(new UriBuilder(scheme, host).path(path).build()).satisfies(o -> {
+            Assertions.assertThat(UriBuilder.getPathArray(o, 0)).isNull();
+            Assertions.assertThat(UriBuilder.getPathArray(o, 1)).isNull();
+            Assertions.assertThat(UriBuilder.getPathArray(o, 2)).containsExactly(path);
+            Assertions.assertThat(UriBuilder.getPathArray(o, 3)).isNull();
+        });
     }
 }

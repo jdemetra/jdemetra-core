@@ -80,7 +80,7 @@ public abstract class DbProvider<BEAN extends DbBean> extends AbstractDataSource
         DbAccessor<BEAN> accessor = getAccessor(dataSource);
         Dims dims = new Dims(DbBean.getDimArray(dataSource));
 
-        DataSet fake = DataSet.builder(dataSource, DataSet.Kind.SERIES).build();
+        DataSet fake = DataSet.of(dataSource, DataSet.Kind.SERIES);
         // special case: we return a fake dataset if no dimColumns
         if (dims.dimColumns.length == 0) {
             Exception ex = accessor.testDbBean();

@@ -86,7 +86,7 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
             if (ex != null) {
                 throw ex;
             }
-            DataSet fake = DataSet.builder(dataSource, DataSet.Kind.SERIES).build();
+            DataSet fake = DataSet.of(dataSource, DataSet.Kind.SERIES);
             return Collections.singletonList(fake);
         }
 
@@ -204,10 +204,7 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
     }
 
     private static Function<CubeId, DataSet> toDataSetFunc(DataSet.Builder builder, IParam<DataSet, CubeId> dimValuesParam) {
-        return (CubeId input) -> {
-            dimValuesParam.set(builder, input);
-            return builder.build();
-        };
+        return o -> builder.put(dimValuesParam, o).build();
     }
 
     private static final class ByNameParam implements IParam<DataSet, CubeId> {

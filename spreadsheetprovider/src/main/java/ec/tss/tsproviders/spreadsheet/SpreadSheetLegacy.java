@@ -62,15 +62,15 @@ final class SpreadSheetLegacy {
                     return null;
                 }
                 if (id.isCollection()) {
-                    DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
-                    SpreadSheetProvider.Y_SHEETNAME.set(builder, id.getSheetName());
-                    return builder.build();
+                    return DataSet.builder(dataSource, DataSet.Kind.COLLECTION)
+                            .put(SpreadSheetProvider.Y_SHEETNAME, id.getSheetName())
+                            .build();
                 }
                 String seriesName = searchSeriesName(dataSource, id);
-                DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
-                SpreadSheetProvider.Y_SHEETNAME.set(builder, id.getSheetName());
-                SpreadSheetProvider.Z_SERIESNAME.set(builder, seriesName);
-                return builder.build();
+                return DataSet.builder(dataSource, DataSet.Kind.SERIES)
+                        .put(SpreadSheetProvider.Y_SHEETNAME, id.getSheetName())
+                        .put(SpreadSheetProvider.Z_SERIESNAME, seriesName)
+                        .build();
             }
         };
     }
