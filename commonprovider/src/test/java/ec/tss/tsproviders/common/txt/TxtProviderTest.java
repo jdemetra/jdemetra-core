@@ -63,10 +63,10 @@ public class TxtProviderTest {
 
     @Test
     public void testMonikerUri() {
-        String uri = "demetra://tsprovider/Txt/20111201/SERIES?aggregationType=Last&charset=UTF-8&cleanMissing=true&datePattern=dd%2FMM%2Fyyyy&delimiter=SEMICOLON&file=Insee1.txt&frequency=Monthly&headers=false&locale=fr&numberPattern=%23.%23&skipLines=3&textQualifier=QUOTE#seriesIndex=1";
+        String uri = "demetra://tsprovider/Txt/20111201/SERIES?aggregationType=Last&charset=UTF-16&cleanMissing=true&datePattern=dd%2FMM%2Fyyyy&delimiter=SEMICOLON&file=Insee1.txt&frequency=Monthly&headers=false&locale=fr&numberPattern=%23.%23&skipLines=3&textQualifier=QUOTE#seriesIndex=1";
 
         TxtBean bean = new TxtBean();
-        bean.setCharset(StandardCharsets.UTF_8);
+        bean.setCharset(StandardCharsets.UTF_16);
         bean.setCleanMissing(true);
         bean.setDataFormat(DataFormat.create("fr", "dd/MM/yyyy", "#.#"));
         bean.setDelimiter(TxtBean.Delimiter.SEMICOLON);
