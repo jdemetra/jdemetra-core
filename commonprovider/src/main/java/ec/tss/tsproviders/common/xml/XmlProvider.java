@@ -61,7 +61,7 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
             throw Throwables.propagate(ex);
         }
     }
-    //
+
     protected final Parsers.Parser<DataSource> legacyDataSourceParser;
     protected final Parsers.Parser<DataSet> legacyDataSetParser;
 
@@ -151,6 +151,7 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
 
     @Override
     public String getDisplayNodeName(DataSet dataSet) {
+        support.check(dataSet);
         wsTsWorkspace ws = cache.getIfPresent(dataSet.getDataSource());
         if (ws == null) {
             switch (dataSet.getKind()) {
@@ -281,12 +282,16 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
 
     @Override
     public DataSource encodeBean(Object bean) throws IllegalArgumentException {
-        return ((XmlBean) bean).toDataSource(SOURCE, VERSION);
+        try {
+            return ((XmlBean) bean).toDataSource(SOURCE, VERSION);
+        } catch (ClassCastException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     @Override
     public XmlBean decodeBean(DataSource dataSource) {
-        return new XmlBean(dataSource);
+        return new XmlBean(support.check(dataSource));
     }
 
     @Override
