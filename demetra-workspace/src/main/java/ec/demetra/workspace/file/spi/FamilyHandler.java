@@ -24,6 +24,8 @@ import java.nio.file.Path;
 import javax.annotation.Nonnull;
 
 /**
+ * Defines an extension point for FileWorkspace that allows it to deal with new
+ * kind of data.
  *
  * @author Philippe Charles
  * @since 2.2.0

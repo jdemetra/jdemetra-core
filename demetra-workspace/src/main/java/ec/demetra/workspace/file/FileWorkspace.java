@@ -27,6 +27,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 /**
+ * Defines a kind of workspace that uses files as storage.
  *
  * @author Philippe Charles
  * @since 2.2.0
