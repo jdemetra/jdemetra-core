@@ -17,12 +17,20 @@
 package ec.demetra.workspace.file;
 
 /**
+ * Closed list of file formats used by file workspaces.
  *
  * @author Philippe Charles
  * @since 2.2.0
  */
 public enum FileFormat {
 
-    GENERIC, LEGACY;
+    /**
+     * Represents the default format of JDemetra+
+     */
+    GENERIC,
+    /**
+     * Represents the format of Demetra+
+     */
+    LEGACY;
 
 }

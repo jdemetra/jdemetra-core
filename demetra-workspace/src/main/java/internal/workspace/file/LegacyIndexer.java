@@ -16,6 +16,7 @@
  */
 package internal.workspace.file;
 
+import com.google.common.io.MoreFiles;
 import ec.demetra.workspace.WorkspaceFamily;
 import static ec.demetra.workspace.WorkspaceFamily.SA_DOC_TRAMOSEATS;
 import static ec.demetra.workspace.WorkspaceFamily.SA_DOC_X13;
@@ -72,7 +73,7 @@ final class LegacyIndexer implements Indexer {
     @Override
     public Index loadIndex() throws IOException {
         try {
-            return xmlToIndex(unmarshalIndex(file));
+            return xmlToIndex(unmarshalIndex(file), MoreFiles.getNameWithoutExtension(file));
         } catch (JAXBException ex) {
             throw new IOException(ex);
         }
@@ -92,8 +93,8 @@ final class LegacyIndexer implements Indexer {
         // do nothing
     }
 
-    private static Index xmlToIndex(XmlLegacyWorkspace xml) {
-        Index.Builder result = Index.builder().name("");
+    private static Index xmlToIndex(XmlLegacyWorkspace xml, String name) {
+        Index.Builder result = Index.builder().name(name);
 
         JaxbUtil.forSingle(xml.calendars, pusher(result, UTIL_CAL));
         JaxbUtil.forSingle(xml.variables, pusher(result, UTIL_VAR));

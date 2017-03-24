@@ -16,6 +16,7 @@
  */
 package internal.workspace.file;
 
+import com.google.common.io.MoreFiles;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import static ec.demetra.workspace.WorkspaceFamily.SA_DOC_TRAMOSEATS;
@@ -46,8 +47,9 @@ public class LegacyIndexerTest {
     @Test
     public void testLoad() throws IOException {
         Path sampleFile = newLegacySample();
+        Index expectedIndex = sampleIndex.withName(MoreFiles.getNameWithoutExtension(sampleFile));
         try (Indexer indexer = new LegacyIndexer(sampleFile)) {
-            assertThat(indexer.loadIndex()).isEqualTo(sampleIndex);
+            assertThat(indexer.loadIndex()).isEqualTo(expectedIndex);
         }
     }
 
@@ -55,13 +57,14 @@ public class LegacyIndexerTest {
     @SuppressWarnings("null")
     public void testStore() throws IOException {
         Path sampleFile = newLegacySample();
+        Index expectedIndex = sampleIndex.withName(MoreFiles.getNameWithoutExtension(sampleFile));
         try (Indexer indexer = new LegacyIndexer(sampleFile)) {
             assertThatThrownBy(() -> indexer.storeIndex(null)).isInstanceOf(NullPointerException.class);
 
-            indexer.storeIndex(sampleIndex);
-            assertThat(indexer.loadIndex()).isEqualTo(sampleIndex);
+            indexer.storeIndex(expectedIndex);
+            assertThat(indexer.loadIndex()).isEqualTo(expectedIndex);
 
-            Index newIndex = sampleIndex.withItem(new Index.Key(SA_MULTI, "hello"), new Index.Value("hello", false, null));
+            Index newIndex = expectedIndex.withItem(new Index.Key(SA_MULTI, "hello"), new Index.Value("hello", false, null));
             indexer.storeIndex(newIndex);
             assertThat(indexer.loadIndex()).isEqualTo(newIndex);
         }

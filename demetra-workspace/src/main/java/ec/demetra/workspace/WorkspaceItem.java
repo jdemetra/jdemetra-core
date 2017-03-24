@@ -17,6 +17,7 @@
 package ec.demetra.workspace;
 
 /**
+ * Defines the meta of an item in a workspace.
  *
  * @author Philippe Charles
  * @since 2.2.0
@@ -25,15 +26,27 @@ package ec.demetra.workspace;
 @lombok.Builder(builderClassName = "Builder", toBuilder = true)
 public class WorkspaceItem {
 
+    /**
+     * Defines the kind of data that this item represents.
+     */
     @lombok.NonNull
     WorkspaceFamily family;
 
+    /**
+     * A non-null identifier that is unique per family.
+     */
     @lombok.NonNull
     String id;
 
+    /**
+     * An optional label.
+     */
     String label;
 
     boolean readOnly;
 
+    /**
+     * Some optional comments.
+     */
     String comments;
 }
