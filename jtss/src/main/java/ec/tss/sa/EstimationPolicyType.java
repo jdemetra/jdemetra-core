@@ -55,6 +55,11 @@ public enum EstimationPolicyType implements IntValue{
      */
     FreeParameters(40),
     /**
+     * The auto-regressive parameters used in the definition of the filters are considered as
+     * fixed. In the case of Seats, the roots of the ARIMA model are always distributed the same way.
+     */
+    FixedAutoRegressiveParameters(35),
+    /**
      * The parameters used in the definition of the filters are considered as
      * fixed. In the case of Seats, the ARIMA model is unchanged; in the case of
      * X13, both the ARIMA model and the x11 filters are unchanged.
