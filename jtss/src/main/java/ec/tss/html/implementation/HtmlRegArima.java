@@ -18,21 +18,18 @@ package ec.tss.html.implementation;
 
 import ec.tss.html.*;
 import ec.tstoolkit.Parameter;
-import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.dstats.T;
 import ec.tstoolkit.eco.ConcentratedLikelihood;
+import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.modelling.PreadjustmentVariable;
 import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.JointRegressionTest;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.sarima.SarimaComponent;
-import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
-import ec.tstoolkit.timeseries.regression.EasterVariable;
 import ec.tstoolkit.timeseries.regression.GregorianCalendarVariables;
-import ec.tstoolkit.timeseries.regression.IEasterVariable;
 import ec.tstoolkit.timeseries.regression.ILengthOfPeriodVariable;
 import ec.tstoolkit.timeseries.regression.IMovingHolidayVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
@@ -41,7 +38,6 @@ import ec.tstoolkit.timeseries.regression.ITsVariable;
 import ec.tstoolkit.timeseries.regression.IUserTsVariable;
 import ec.tstoolkit.timeseries.regression.InterventionVariable;
 import ec.tstoolkit.timeseries.regression.MissingValueEstimation;
-import ec.tstoolkit.timeseries.regression.OutlierType;
 import ec.tstoolkit.timeseries.regression.Ramp;
 import ec.tstoolkit.timeseries.regression.TsVariableList;
 import ec.tstoolkit.timeseries.regression.TsVariableSelection;
@@ -172,6 +168,9 @@ public class HtmlRegArima extends AbstractHtmlElement {
         SarimaComponent arima = model_.description.getArimaComponent();
         SarimaSpecification sspec = arima.getSpecification();
         stream.write('[').write(sspec.toString()).write(']').newLines(2);
+        if (sspec.getParametersCount() == 0) {
+            return;
+        }
         stream.open(new HtmlTable(0, 400));
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableCell("", 100));
@@ -251,6 +250,71 @@ public class HtmlRegArima extends AbstractHtmlElement {
         }
 
         stream.close(HtmlTag.TABLE);
+
+        Matrix pcov = model_.estimation.getParametersCovariance();
+        if (pcov != null && pcov.getRowsCount() > 1) {
+            int size = pcov.getColumnsCount();
+            stream.newLines(2);
+            stream.write(HtmlTag.HEADER3, h3, "Correlation of the estimates").newLine();
+            stream.open(HtmlTag.TABLE);
+
+            stream.open(HtmlTag.TABLEROW);
+            stream.write(new HtmlTableCell("", 100));
+
+            for (int i = 0; i < P; ++i) {
+                StringBuilder header = new StringBuilder();
+                header.append("Phi(").append(i + 1).append(")");
+                stream.write(new HtmlTableCell(header.toString(), 100));
+            }
+
+            for (int i = 0; i < Q; ++i) {
+                StringBuilder header = new StringBuilder();
+                header.append("Theta(").append(i + 1).append(")");
+                stream.write(new HtmlTableCell(header.toString(), 100));
+            }
+
+            for (int i = 0; i < BP; ++i) {
+                StringBuilder header = new StringBuilder();
+                header.append("BPhi(").append(i + 1).append(")");
+                stream.write(new HtmlTableCell(header.toString(), 100));
+            }
+
+            for (int i = 0; i < BQ; ++i) {
+                StringBuilder header = new StringBuilder();
+                header.append("BTheta(").append(i + 1).append(")");
+                stream.write(new HtmlTableCell(header.toString(), 100));
+            }
+            stream.close(HtmlTag.TABLEROW);
+
+            for (int i = 0; i < size; ++i) {
+                StringBuilder header = new StringBuilder();
+                stream.open(HtmlTag.TABLEROW);
+                if (i < P) {
+                    header.append("Phi(").append(i + 1);
+                } else if (i < P + Q) {
+                    header.append("Theta(").append(i - P + 1);
+                } else if (i < P + Q + BP) {
+                    header.append("BPhi(").append(i - P - Q + 1);
+                } else {
+                    header.append("BTheta(").append(i - P - Q - BP + 1);
+                }
+                header.append(")");
+                stream.write(new HtmlTableCell(header.toString(), 100));
+                for (int j = 0; j < size; ++j) {
+                    double vi = pcov.get(i, i), vj = pcov.get(j, j);
+                    if (vi != 0 && vj != 0) {
+                        double val = pcov.get(i, j) / Math.sqrt(vi * vj);
+                        stream.write(new HtmlTableCell(df4.format(val), 100));
+                    } else {
+                        stream.write(new HtmlTableCell("-", 100));
+                    }
+                }
+                stream.close(HtmlTag.TABLEROW);
+            }
+
+            stream.close(HtmlTag.TABLE);
+            stream.newLine();
+        }
     }
 
     public void writeRegression(HtmlStream stream) throws IOException {
