@@ -115,6 +115,32 @@ public class DefaultArimaSpec implements Cloneable, InformationSetSerializable {
 
     }
 
+    public void setMAParameterType(ParameterType type) {
+        if (theta_ != null) {
+            for (int i = 0; i < theta_.length; ++i) {
+                theta_[i].setType(type);
+            }
+        }
+        if (btheta_ != null) {
+            for (int i = 0; i < btheta_.length; ++i) {
+                btheta_[i].setType(type);
+            }
+        }
+    }
+    
+    public void setARParameterType(ParameterType type) {
+        if (phi_ != null) {
+            for (int i = 0; i < phi_.length; ++i) {
+                phi_[i].setType(type);
+            }
+        }
+        if (bphi_ != null) {
+            for (int i = 0; i < bphi_.length; ++i) {
+                bphi_[i].setType(type);
+            }
+        }
+    }
+    
     public void clearParameters() {
         if (phi_ != null) {
             for (int i = 0; i < phi_.length; ++i) {

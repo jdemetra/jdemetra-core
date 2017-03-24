@@ -1059,10 +1059,10 @@ public class PreprocessingModel implements IProcResults {
         MAPPING.set(InformationSet.item(REGRESSION, COVAR), Matrix.class,
                 source -> source.estimation.getLikelihood().getBVar(true, source.description.getArimaComponent().getFreeParametersCount()));
         MAPPING.set(InformationSet.item(REGRESSION, PCOVAR), Matrix.class, source -> source.estimation.getParametersCovariance());
-        MAPPING.set(FCASTS, -1, TsData.class, (source, i) -> source.forecast(nperiods(source, i), false));
-        MAPPING.set(BCASTS, -1, TsData.class, (source, i) -> source.backcast(nperiods(source, i), false));
-        MAPPING.set(LIN_FCASTS, -1, TsData.class, (source, i) -> source.linearizedForecast(nperiods(source, i)));
-        MAPPING.set(LIN_BCASTS, -1, TsData.class, (source, i) -> source.linearizedBackcast(nperiods(source, i)));
+        MAPPING.set(FCASTS, -2, TsData.class, (source, i) -> source.forecast(nperiods(source, i), false));
+        MAPPING.set(BCASTS, -2, TsData.class, (source, i) -> source.backcast(nperiods(source, i), false));
+        MAPPING.set(LIN_FCASTS, -2, TsData.class, (source, i) -> source.linearizedForecast(nperiods(source, i)));
+        MAPPING.set(LIN_BCASTS, -2, TsData.class, (source, i) -> source.linearizedBackcast(nperiods(source, i)));
 
     }
 
