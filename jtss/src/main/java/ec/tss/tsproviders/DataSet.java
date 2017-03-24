@@ -147,10 +147,23 @@ public final class DataSet implements IConfig, Serializable {
     }
 
     @Nonnull
+    public static DataSet of(@Nonnull DataSource dataSource, @Nonnull Kind kind) {
+        Objects.requireNonNull(dataSource, "dataSource");
+        Objects.requireNonNull(kind, "kind");
+        return new DataSet(dataSource, kind, ImmutableSortedMap.of());
+    }
+
+    @Nonnull
+    public static DataSet of(@Nonnull DataSource dataSource, @Nonnull Kind kind, @Nonnull String key, @Nonnull String value) {
+        Objects.requireNonNull(dataSource, "dataSource");
+        Objects.requireNonNull(kind, "kind");
+        return new DataSet(dataSource, kind, ImmutableSortedMap.of(key, value));
+    }
+
+    @Nonnull
     public static DataSet deepCopyOf(@Nonnull DataSource dataSource, @Nonnull Kind kind, @Nonnull Map<String, String> params) {
         Objects.requireNonNull(dataSource, "dataSource");
         Objects.requireNonNull(kind, "kind");
-        Objects.requireNonNull(params, "params");
         return new DataSet(dataSource, kind, ImmutableSortedMap.copyOf(params));
     }
 
@@ -231,7 +244,7 @@ public final class DataSet implements IConfig, Serializable {
 
         @Override
         public DataSet build() {
-            return DataSet.deepCopyOf(dataSource, kind, params);
+            return new DataSet(dataSource, kind, Util.toImmutable(params));
         }
     }
 
@@ -296,8 +309,8 @@ public final class DataSet implements IConfig, Serializable {
             if (!SCHEME.equals(uri.getScheme()) || !HOST.equals(uri.getHost())) {
                 return null;
             }
-            String[] path = UriBuilder.getPathArray(uri);
-            if (path == null || path.length != 3) {
+            String[] path = UriBuilder.getPathArray(uri, 3);
+            if (path == null) {
                 return null;
             }
             Map<String, String> query = UriBuilder.getQueryMap(uri);
@@ -308,8 +321,8 @@ public final class DataSet implements IConfig, Serializable {
             if (fragment == null) {
                 return null;
             }
-            DataSource dataSource = DataSource.deepCopyOf(path[0], path[1], query);
-            return DataSet.deepCopyOf(dataSource, Kind.valueOf(path[2]), fragment);
+            DataSource dataSource = new DataSource(path[0], path[1], Util.toImmutable(query));
+            return new DataSet(dataSource, Kind.valueOf(path[2]), Util.toImmutable(fragment));
         }
     };
 

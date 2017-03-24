@@ -22,30 +22,84 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 
 /**
+ * Defines an abstract way to load/store data from/to a workspace.
  *
  * @author Philippe Charles
  * @since 2.2.0
  */
 public interface Workspace extends Closeable {
 
+    /**
+     * Gets the workspace name.
+     *
+     * @return a non-null name
+     * @throws IOException if the operation failed
+     */
     @Nonnull
     String getName() throws IOException;
 
+    /**
+     * Sets the workspace name.
+     *
+     * @param name a non-null name
+     * @throws IOException if the operation failed
+     */
     void setName(@Nonnull String name) throws IOException;
 
+    /**
+     * Lists all supported data families.
+     *
+     * @return a non-null collection
+     * @throws IOException if the operation failed
+     */
     @Nonnull
     Collection<WorkspaceFamily> getSupportedFamilies() throws IOException;
 
+    /**
+     * Lists all items of this workspace.
+     *
+     * @return a non-null collection
+     * @throws IOException if the operation failed
+     */
     @Nonnull
     Collection<WorkspaceItem> getItems() throws IOException;
 
+    /**
+     * Loads the data of a workspace item. Note that the type of the returned
+     * object is linked to the item family.
+     *
+     * @param item a non-null item
+     * @return a non-null data
+     * @throws IOException if the operation failed
+     */
     @Nonnull
     Object load(@Nonnull WorkspaceItem item) throws IOException;
 
+    /**
+     * Stores the metadata and data of a workspace item. The item is replaced if
+     * it already exist in the workspace. Note that the type of the provided
+     * object is linked to the item family.
+     *
+     * @param item a non-null item
+     * @param value a non-null data
+     * @throws IOException if the operation failed
+     */
     void store(@Nonnull WorkspaceItem item, @Nonnull Object value) throws IOException;
 
+    /**
+     * Removes a workspace item if it exists, do nothing otherwise.
+     *
+     * @param item a non-null item
+     * @throws IOException if the operation failed
+     */
     void delete(@Nonnull WorkspaceItem item) throws IOException;
 
+    /**
+     * Copies the content of this workspace to another one.
+     *
+     * @param target a non-null workspace
+     * @throws IOException if the operation failed
+     */
     default void copyTo(@Nonnull Workspace target) throws IOException {
         target.setName(getName());
         Collection<WorkspaceFamily> families = target.getSupportedFamilies();

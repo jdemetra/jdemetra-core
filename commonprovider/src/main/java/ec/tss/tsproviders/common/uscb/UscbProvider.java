@@ -119,7 +119,7 @@ public class UscbProvider implements IDataSourceProvider {
     @Override
     public List<DataSet> children(DataSource dataSource) {
         support.check(dataSource);
-        return Collections.singletonList(DataSet.builder(dataSource, DataSet.Kind.SERIES).build());
+        return Collections.singletonList(DataSet.of(dataSource, DataSet.Kind.SERIES));
     }
 
     @Override

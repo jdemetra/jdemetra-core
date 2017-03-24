@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 
 /**
+ * Defines the kind of data that a workspace might deal with.
  *
  * @author Philippe Charles
  * @since 2.2.0
@@ -30,6 +31,12 @@ import javax.annotation.Nonnull;
 @Immutable
 public final class WorkspaceFamily implements Id {
 
+    /**
+     * Creates a family from a generic id.
+     *
+     * @param id a non-null id
+     * @return a non-null family
+     */
     @Nonnull
     public static WorkspaceFamily of(@Nonnull Id id) {
         if (id instanceof WorkspaceFamily) {
@@ -41,6 +48,12 @@ public final class WorkspaceFamily implements Id {
         return new WorkspaceFamily(id.toArray());
     }
 
+    /**
+     * Parses a family from a string.
+     *
+     * @param input a non-null string
+     * @return a non-null family
+     */
     @Nonnull
     public static WorkspaceFamily parse(@Nonnull String input) {
         return !input.isEmpty() ? new WorkspaceFamily(input.split("@", -1)) : EMPTY;

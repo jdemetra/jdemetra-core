@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class CubeSupportTest {
 
-    private final DataSource dataSource = DataSource.builder("provider", "").build();
+    private final DataSource dataSource = DataSource.of("provider", "");
     private final DataSet col = DataSet.builder(dataSource, DataSet.Kind.COLLECTION).put("sector", "industry").build();
     private final DataSet series = DataSet.builder(dataSource, DataSet.Kind.SERIES).put("sector", "industry").put("region", "be").build();
     private final IParam<DataSet, CubeId> cubeIdParam = CubeSupport.idByName(SECTOR_REGION);

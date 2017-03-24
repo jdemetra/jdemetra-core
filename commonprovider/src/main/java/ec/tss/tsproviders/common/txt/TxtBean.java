@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.common.txt;
 
 import ec.tss.tsproviders.DataSource;
@@ -27,6 +26,7 @@ import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.File;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 /**
@@ -47,7 +47,7 @@ public class TxtBean implements IFileBean, IDataSourceBean {
     //
     static final IParam<DataSource, File> FILE = onFile(new File(""), "file");
     static final IParam<DataSource, DataFormat> DATAFORMAT = onDataFormat(new DataFormat(Locale.ENGLISH, "yyyy-MM-DD", null), "locale", "datePattern", "numberPattern");
-    static final IParam<DataSource, Charset> CHARSET = onCharset(Charset.defaultCharset(), "charset");
+    static final IParam<DataSource, Charset> CHARSET = onCharset(StandardCharsets.UTF_8, "charset");
     static final IParam<DataSource, Delimiter> DELIMITER = onEnum(Delimiter.TAB, "delimiter");
     static final IParam<DataSource, Boolean> HEADERS = onBoolean(true, "headers");
     static final IParam<DataSource, Integer> SKIPLINES = onInteger(0, "skipLines");

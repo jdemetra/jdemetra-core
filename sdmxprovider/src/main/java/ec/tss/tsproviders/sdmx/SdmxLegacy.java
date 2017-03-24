@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.sdmx;
 
 import ec.tss.tsproviders.DataSet;
@@ -60,7 +59,7 @@ final class SdmxLegacy {
                     return null;
                 }
                 DataSource dataSource = tmp.parse(id.getUrl());
-                return dataSource != null ? DataSet.builder(dataSource, DataSet.Kind.SERIES).build() : null;
+                return dataSource != null ? DataSet.of(dataSource, DataSet.Kind.SERIES) : null;
             }
         };
     }
