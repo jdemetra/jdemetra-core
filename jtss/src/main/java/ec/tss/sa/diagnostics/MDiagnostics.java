@@ -40,7 +40,7 @@ public class MDiagnostics implements IDiagnostics {
     public static MDiagnostics create(MDiagnosticsConfiguration config, CompositeResults rslts) {
         try {
             X11Results drslts = GenericSaResults.getDecomposition(rslts, X11Results.class);
-            if (drslts == null || !(drslts instanceof X11Results)) {
+            if (drslts == null) {
                 return null;
             }
 

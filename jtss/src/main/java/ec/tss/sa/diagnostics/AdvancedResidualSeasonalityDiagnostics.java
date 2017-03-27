@@ -17,6 +17,8 @@
 package ec.tss.sa.diagnostics;
 
 import ec.satoolkit.DecompositionMode;
+import ec.satoolkit.GenericSaResults;
+import ec.satoolkit.ISaResults;
 import ec.satoolkit.diagnostics.QSTest;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.IDiagnostics;
@@ -61,15 +63,19 @@ public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
     }
 
     private static boolean isSignificant(TsData i) {
-        if (i == null)
+        if (i == null) {
             return false;
+        }
         DescriptiveStatistics idesc = new DescriptiveStatistics(i);
         double se = idesc.getStdev();
-        return se  > E_LIMIT;
+        return se > E_LIMIT;
     }
 
     static IDiagnostics create(CompositeResults rslts, AdvancedResidualSeasonalityDiagnosticsConfiguration config) {
         try {
+            if (rslts == null || GenericSaResults.getDecomposition(rslts, ISaResults.class) == null) {
+                return null;
+            }
             AdvancedResidualSeasonalityDiagnostics test = new AdvancedResidualSeasonalityDiagnostics();
             TsData sa = rslts.getData(ModellingDictionary.SA_CMP, TsData.class);
             TsData i = rslts.getData(ModellingDictionary.I_CMP, TsData.class);
@@ -177,7 +183,8 @@ public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
     }
 
     @Override
-    public ProcQuality getDiagnostic(String test) {
+    public ProcQuality getDiagnostic(String test
+    ) {
         switch (test) {
             case AdvancedResidualSeasonalityDiagnosticsFactory.QS_SA:
                 return quality(qs_sa);
@@ -194,7 +201,8 @@ public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
     }
 
     @Override
-    public double getValue(String test) {
+    public double getValue(String test
+    ) {
         switch (test) {
             case AdvancedResidualSeasonalityDiagnosticsFactory.QS_SA:
                 return pvalue(qs_sa);
