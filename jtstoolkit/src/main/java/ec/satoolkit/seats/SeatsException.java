@@ -38,6 +38,8 @@ public class SeatsException extends SaException {
 
     final static String ERR_ESTIMATION = "Model estimation failed";
 
+    public static final String ERR_LENGTH = "Not enough observations", ERR_MISSING = "Missing values are not allowed";
+
     /**
      *
      */
