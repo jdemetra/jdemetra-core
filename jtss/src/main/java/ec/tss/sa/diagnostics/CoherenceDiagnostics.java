@@ -17,7 +17,9 @@
 package ec.tss.sa.diagnostics;
 
 import ec.satoolkit.DecompositionMode;
+import ec.satoolkit.GenericSaProcessingFactory;
 import ec.satoolkit.GenericSaResults;
+import ec.satoolkit.ISaResults;
 import ec.satoolkit.ISeriesDecomposition;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.IDiagnostics;
@@ -48,7 +50,7 @@ public final class CoherenceDiagnostics implements IDiagnostics {
 
     static CoherenceDiagnostics create(CoherenceDiagnosticsConfiguration config, CompositeResults rslts) {
         try {
-            if (rslts == null) {
+            if (rslts == null || GenericSaResults.getDecomposition(rslts, ISaResults.class) == null) {
                 return null;
             } else {
                 return new CoherenceDiagnostics(config, rslts);

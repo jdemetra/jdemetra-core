@@ -51,6 +51,7 @@ public class SeatsKernel implements ISeriesDecomposer {
             toolkit = SeatsToolkit.create(new SeatsSpecification());
         }
         SeatsContext context = toolkit.getContext();
+        context.check(s);
         SeatsModel model = toolkit.getModelBuilder().build(s, info, context);
         // step 1. Validate the current model;
         validate(model, info, context);

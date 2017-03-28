@@ -19,6 +19,7 @@ package ec.satoolkit.seats;
 import ec.satoolkit.seats.SeatsSpecification.ApproximationMode;
 import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,4 +117,21 @@ public class SeatsContext {
     public void setLogTransformed(boolean logTransformed) {
         this.logTransformed = logTransformed;
     }
+    
+        /**
+     * Controls that the given series can be processed by SEATS
+     *
+     * @param s The considered time series
+     */
+    public void check(final TsData s) {
+        int freq=s.getFrequency().intValue();
+        if (s.getLength() < 3 * freq) {
+            throw new SeatsException(SeatsException.ERR_LENGTH);
+        }
+        if (s.hasMissingValues()) {
+            throw new SeatsException(SeatsException.ERR_MISSING);
+        }
+
+    }
+
 }

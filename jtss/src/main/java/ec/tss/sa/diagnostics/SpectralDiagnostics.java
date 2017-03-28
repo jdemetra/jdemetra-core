@@ -16,6 +16,8 @@
  */
 package ec.tss.sa.diagnostics;
 
+import ec.satoolkit.GenericSaResults;
+import ec.satoolkit.ISaResults;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.modelling.ModellingDictionary;
 import ec.tstoolkit.algorithm.IDiagnostics;
@@ -59,6 +61,9 @@ public class SpectralDiagnostics implements IDiagnostics {
     private boolean test(CompositeResults rslt, double sens, int len, boolean strict) {
          strict_ = strict;
         try {
+            if (rslt == null || GenericSaResults.getDecomposition(rslt, ISaResults.class) == null) {
+                return false;
+            }
             boolean r=false;
             TsPeriodSelector sel = new TsPeriodSelector();
             SpectralDiagnostic diag = new SpectralDiagnostic();
