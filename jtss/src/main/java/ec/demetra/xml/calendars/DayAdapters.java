@@ -16,13 +16,14 @@
  */
 package ec.demetra.xml.calendars;
 
+import com.google.common.collect.Iterables;
 import ec.tstoolkit.design.GlobalServiceProvider;
 import ec.tstoolkit.timeseries.calendars.ISpecialDay;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-import org.openide.util.Lookup;
 
 /**
  *
@@ -52,8 +53,8 @@ public class DayAdapters {
     private final List<DayAdapter> adapters = new ArrayList<>();
 
     public void load() {
-        Lookup.Result<DayAdapter> all = Lookup.getDefault().lookupResult(DayAdapter.class);
-        adapters.addAll(all.allInstances());
+        Iterable<DayAdapter> all = ServiceLoader.load(DayAdapter.class);
+        Iterables.addAll(adapters, all);
     }
 
     public List<Class> getXmlClasses() {
