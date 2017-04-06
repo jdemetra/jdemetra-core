@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
@@ -255,6 +256,15 @@ public final class TableAsCubeAccessor implements CubeAccessor {
         }
 
         @Override
+        public String getSeriesLabel() throws IOException, IllegalStateException {
+            try {
+                return Stream.concat(parentId.getDimensionValueStream(), Stream.of(cursor.getDimValues())).collect(CubeAccessors.LABEL_COLLECTOR);
+            } catch (Exception ex) {
+                throw propagateIOException(ex);
+            }
+        }
+
+        @Override
         public OptionalTsData getSeriesData() throws IOException {
             throw new IOException("Not requested");
         }
@@ -311,6 +321,15 @@ public final class TableAsCubeAccessor implements CubeAccessor {
         }
 
         @Override
+        public String getSeriesLabel() throws IOException, IllegalStateException {
+            try {
+                return Stream.concat(parentId.getDimensionValueStream(), Stream.of(currentId)).collect(CubeAccessors.LABEL_COLLECTOR);
+            } catch (Exception ex) {
+                throw propagateIOException(ex);
+            }
+        }
+
+        @Override
         public OptionalTsData getSeriesData() throws IOException {
             return data.build();
         }
@@ -356,6 +375,15 @@ public final class TableAsCubeAccessor implements CubeAccessor {
         }
 
         @Override
+        public String getSeriesLabel() throws IOException, IllegalStateException {
+            try {
+                return parentId.getDimensionValueStream().collect(CubeAccessors.LABEL_COLLECTOR);
+            } catch (Exception ex) {
+                throw propagateIOException(ex);
+            }
+        }
+
+        @Override
         public OptionalTsData getSeriesData() throws IOException {
             return data.build();
         }
@@ -380,6 +408,15 @@ public final class TableAsCubeAccessor implements CubeAccessor {
         public CubeId getSeriesId() throws IOException {
             try {
                 return parentId.child(cursor.getChild());
+            } catch (Exception ex) {
+                throw propagateIOException(ex);
+            }
+        }
+
+        @Override
+        public String getSeriesLabel() throws IOException, IllegalStateException {
+            try {
+                return Stream.concat(parentId.getDimensionValueStream(), Stream.of(cursor.getChild())).collect(CubeAccessors.LABEL_COLLECTOR);
             } catch (Exception ex) {
                 throw propagateIOException(ex);
             }

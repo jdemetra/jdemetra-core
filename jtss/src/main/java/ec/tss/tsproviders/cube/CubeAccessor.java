@@ -20,7 +20,6 @@ import ec.tss.tsproviders.cursor.TsCursor;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentMap;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,7 +56,7 @@ public interface CubeAccessor {
 
     @Nonnull
     default String getDisplayName(@Nonnull CubeId id) throws IOException {
-        return id.isVoid() ? "All" : id.getDimensionValueStream().collect(Collectors.joining(", "));
+        return id.isVoid() ? "All" : id.getDimensionValueStream().collect(CubeAccessors.LABEL_COLLECTOR);
     }
 
     @Nonnull

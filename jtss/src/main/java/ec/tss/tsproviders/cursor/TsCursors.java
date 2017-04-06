@@ -55,6 +55,7 @@ final class TsCursors {
     static final String ID_NPE = "id";
     static final String DATA_NPE = "data";
     static final String META_DATA_NPE = "meta data";
+    static final String LABEL_NPE = "label";
     static final String DELEGATE_NPE = "delegate";
     static final String ID_FILTER_NPE = "id filter";
     static final String ID_TRANSFORMER_NPE = "id transformer";
@@ -103,7 +104,7 @@ final class TsCursors {
         }
 
         public TsCursor<ID> toCursor() {
-            return new IteratingCursor<>(iterator(), XSeries<ID>::getId, XSeries::getData, XSeries::getMetadata)
+            return new IteratingCursor<>(iterator(), XSeries<ID>::getId, XSeries::getData, XSeries::getMetadata, XSeries::getLabel)
                     .withMetaData(meta);
         }
     }
@@ -112,17 +113,23 @@ final class TsCursors {
     static final class XSeries<ID> {
 
         private final ID id;
+        private final String label;
         private final Map<String, String> metadata;
         private final OptionalTsData data;
 
-        private XSeries(ID id, Map<String, String> metadata, OptionalTsData data) {
+        private XSeries(ID id, String label, Map<String, String> metadata, OptionalTsData data) {
             this.id = id;
+            this.label = label;
             this.metadata = metadata;
             this.data = data;
         }
 
         public ID getId() {
             return id;
+        }
+
+        public String getLabel() {
+            return label;
         }
 
         public OptionalTsData getData() {
@@ -177,6 +184,11 @@ final class TsCursors {
         @Override
         public ID getSeriesId() throws IOException {
             return delegate.getSeriesId();
+        }
+
+        @Override
+        public String getSeriesLabel() throws IOException, IllegalStateException {
+            return delegate.getSeriesLabel();
         }
 
         @Override
@@ -311,6 +323,12 @@ final class TsCursors {
         }
 
         @Override
+        public String getSeriesLabel() throws IOException, IllegalStateException {
+            checkState();
+            return currentItem.getLabel();
+        }
+
+        @Override
         public Map<String, String> getSeriesMetaData() throws IOException {
             checkState();
             return currentItem.getMetadata();
@@ -337,7 +355,7 @@ final class TsCursors {
         }
 
         private XSeries<ID> fetchCurrentSeries() throws IOException {
-            XSeries<ID> item = new XSeries<>(delegate.getSeriesId(), delegate.getSeriesMetaData(), delegate.getSeriesData());
+            XSeries<ID> item = new XSeries<>(delegate.getSeriesId(), delegate.getSeriesLabel(), delegate.getSeriesMetaData(), delegate.getSeriesData());
             items.add(item);
             return item;
         }
@@ -373,6 +391,9 @@ final class TsCursors {
 
         @Override
         abstract public ID getSeriesId();
+
+        @Override
+        public abstract String getSeriesLabel();
 
         @Override
         abstract public Map<String, String> getSeriesMetaData();
@@ -423,6 +444,12 @@ final class TsCursors {
         }
 
         @Override
+        public String getSeriesLabel() {
+            checkClosedState();
+            throw new IllegalStateException(NEXT_ISE);
+        }
+
+        @Override
         public Map<String, String> getSeriesMetaData() {
             checkClosedState();
             throw new IllegalStateException(NEXT_ISE);
@@ -452,15 +479,18 @@ final class TsCursors {
         private ID id;
         private final OptionalTsData data;
         private final Map<String, String> meta;
+        private final String label;
         private Boolean first;
 
         SingletonCursor(
                 @Nonnull ID id,
                 @Nonnull OptionalTsData data,
-                @Nonnull Map<String, String> meta) {
+                @Nonnull Map<String, String> meta,
+                @Nonnull String label) {
             this.id = requireNonNull(id, ID_NPE);
             this.data = requireNonNull(data, DATA_NPE);
             this.meta = requireNonNull(meta, META_DATA_NPE);
+            this.label = requireNonNull(label, LABEL_NPE);
             this.first = true;
         }
 
@@ -488,6 +518,13 @@ final class TsCursors {
             checkClosedState();
             checkSeriesState();
             return id;
+        }
+
+        @Override
+        public String getSeriesLabel() {
+            checkClosedState();
+            checkSeriesState();
+            return label;
         }
 
         @Override
@@ -526,17 +563,20 @@ final class TsCursors {
         private Function<? super E, ? extends ID> toId;
         private final Function<? super E, OptionalTsData> toData;
         private final Function<? super E, Map<String, String>> toMeta;
+        private final Function<? super E, String> toLabel;
         private E current;
 
         IteratingCursor(
                 @Nonnull Iterator<E> iterator,
                 @Nonnull Function<? super E, ? extends ID> toId,
                 @Nonnull Function<? super E, OptionalTsData> toData,
-                @Nonnull Function<? super E, Map<String, String>> toMeta) {
+                @Nonnull Function<? super E, Map<String, String>> toMeta,
+                @Nonnull Function<? super E, String> toLabel) {
             this.iterator = requireNonNull(iterator, "iterator");
             this.toId = requireNonNull(toId, "id extractor");
             this.toData = requireNonNull(toData, "data extractor");
             this.toMeta = requireNonNull(toMeta, "meta extractor");
+            this.toLabel = requireNonNull(toLabel, "label extractor");
         }
 
         private void checkSeriesState() throws IllegalStateException {
@@ -557,6 +597,13 @@ final class TsCursors {
             checkClosedState();
             checkSeriesState();
             return applyNotNull("id", toId, current);
+        }
+
+        @Override
+        public String getSeriesLabel() {
+            checkClosedState();
+            checkSeriesState();
+            return applyNotNull("label", toLabel, current);
         }
 
         @Override

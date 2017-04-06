@@ -19,6 +19,8 @@ package ec.tss.tsproviders.cube;
 import ec.tss.tsproviders.cursor.TsCursor;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
@@ -34,6 +36,8 @@ final class CubeAccessors {
     private CubeAccessors() {
         // static class
     }
+
+    static final Collector<? super String, ?, String> LABEL_COLLECTOR = Collectors.joining(", ");
 
     private static class ForwardingAccessor implements CubeAccessor {
 
