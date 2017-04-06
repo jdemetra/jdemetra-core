@@ -19,6 +19,7 @@ package ec.tss.tsproviders.cursor;
 import com.google.common.collect.Iterators;
 import ec.tss.tsproviders.utils.FunctionWithIO;
 import ec.tss.tsproviders.utils.OptionalTsData;
+import ec.tstoolkit.utilities.Closeables;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -67,20 +68,6 @@ final class TsCursors {
             return result;
         }
         throw new RuntimeException("Invalid function '" + funcName + "': expected non-null result with parameter + '" + input + "'");
-    }
-
-    private static void closeBoth(Closeable first, Closeable second) throws IOException {
-        try {
-            first.close();
-        } catch (IOException ex) {
-            try {
-                second.close();
-            } catch (IOException suppressed) {
-                ex.addSuppressed(suppressed);
-            }
-            throw ex;
-        }
-        second.close();
     }
 
     @Immutable
@@ -273,7 +260,7 @@ final class TsCursors {
 
         @Override
         public void close() throws IOException {
-            closeBoth(delegate, closeHandler);
+            Closeables.closeBoth(delegate, closeHandler);
         }
     }
 
@@ -342,7 +329,7 @@ final class TsCursors {
 
         @Override
         public void close() throws IOException {
-            closeBoth(this::flushToCache, delegate::close);
+            Closeables.closeBoth(this::flushToCache, delegate::close);
         }
 
         private void flushToCache() throws IOException {
@@ -425,7 +412,7 @@ final class TsCursors {
 
         private Closeable compose(Closeable closeHandler) {
             Closeable first = this.closeable;
-            return () -> closeBoth(first, closeHandler);
+            return () -> Closeables.closeBoth(first, closeHandler);
         }
     }
 

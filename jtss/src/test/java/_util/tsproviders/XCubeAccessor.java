@@ -19,6 +19,7 @@ package _util.tsproviders;
 import ec.tss.tsproviders.cube.CubeAccessor;
 import ec.tss.tsproviders.cube.CubeId;
 import ec.tss.tsproviders.cursor.TsCursor;
+import ec.tss.tsproviders.utils.IteratorWithIO;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -65,13 +66,23 @@ public final class XCubeAccessor implements CubeAccessor {
     }
 
     @Override
-    public TsCursor<CubeId> getChildren(CubeId id) throws IOException {
+    public IteratorWithIO<CubeId> getChildren(CubeId id) throws IOException {
         Objects.requireNonNull(id);
-        return TsCursor.<CubeId>empty().onClose(resourceWatcher.watchAsCloseable("getChildren"));
+        return IteratorWithIO.<CubeId>empty().onClose(resourceWatcher.watchAsCloseable("getChildren"));
     }
 
     @Override
     public String getDisplayName() throws IOException {
         return root.toString();
+    }
+
+    @Override
+    public String getDisplayName(CubeId id) throws IOException {
+        return id.toString();
+    }
+
+    @Override
+    public String getDisplayNodeName(CubeId id) throws IOException {
+        return id.toString();
     }
 }

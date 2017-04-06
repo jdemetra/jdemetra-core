@@ -17,6 +17,7 @@
 package ec.tss.tsproviders.cube;
 
 import ec.tss.tsproviders.cursor.TsCursor;
+import ec.tss.tsproviders.utils.IteratorWithIO;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentMap;
@@ -49,20 +50,16 @@ public interface CubeAccessor {
     TsCursor<CubeId> getSeriesWithData(@Nonnull CubeId id) throws IOException;
 
     @Nonnull
-    TsCursor<CubeId> getChildren(@Nonnull CubeId id) throws IOException;
+    IteratorWithIO<CubeId> getChildren(@Nonnull CubeId id) throws IOException;
 
     @Nonnull
     String getDisplayName() throws IOException;
 
     @Nonnull
-    default String getDisplayName(@Nonnull CubeId id) throws IOException {
-        return id.isVoid() ? "All" : id.getDimensionValueStream().collect(CubeAccessors.LABEL_COLLECTOR);
-    }
+    String getDisplayName(@Nonnull CubeId id) throws IOException;
 
     @Nonnull
-    default String getDisplayNodeName(@Nonnull CubeId id) throws IOException {
-        return id.isVoid() ? "All" : id.getDimensionValue(id.getLevel() - 1);
-    }
+    String getDisplayNodeName(@Nonnull CubeId id) throws IOException;
 
     @Nonnull
     default CubeAccessor bulk(@Nonnegative int depth, @Nonnull ConcurrentMap<CubeId, Object> cache) {
