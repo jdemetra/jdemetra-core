@@ -53,15 +53,15 @@ public interface CubeAccessor {
     TsCursor<CubeId> getChildren(@Nonnull CubeId id) throws IOException;
 
     @Nonnull
-    String getDisplayName();
+    String getDisplayName() throws IOException;
 
     @Nonnull
-    default String getDisplayName(@Nonnull CubeId id) {
+    default String getDisplayName(@Nonnull CubeId id) throws IOException {
         return id.isVoid() ? "All" : id.getDimensionValueStream().collect(Collectors.joining(", "));
     }
 
     @Nonnull
-    default String getDisplayNodeName(@Nonnull CubeId id) {
+    default String getDisplayNodeName(@Nonnull CubeId id) throws IOException {
         return id.isVoid() ? "All" : id.getDimensionValue(id.getLevel() - 1);
     }
 

@@ -58,10 +58,10 @@ public final class TableAsCubeAccessor implements CubeAccessor {
         ChildrenCursor getChildrenCursor(@Nonnull CubeId id) throws Exception;
 
         @Nonnull
-        OptionalTsData.Builder2<T> newBuilder();
+        String getDisplayName() throws Exception;
 
         @Nonnull
-        String getDisplayName();
+        OptionalTsData.Builder2<T> newBuilder();
     }
 
     @NotThreadSafe
@@ -174,8 +174,12 @@ public final class TableAsCubeAccessor implements CubeAccessor {
     }
 
     @Override
-    public String getDisplayName() {
-        return resource.getDisplayName();
+    public String getDisplayName() throws IOException {
+        try {
+            return resource.getDisplayName();
+        } catch (Exception ex) {
+            throw propagateIOException(ex);
+        }
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">

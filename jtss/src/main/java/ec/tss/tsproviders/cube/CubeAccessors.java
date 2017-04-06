@@ -74,18 +74,23 @@ final class CubeAccessors {
         }
 
         @Override
-        public String getDisplayName() {
+        public String getDisplayName() throws IOException {
             return delegate.getDisplayName();
         }
 
         @Override
-        public String getDisplayName(CubeId id) {
+        public String getDisplayName(CubeId id) throws IOException {
             return delegate.getDisplayName(id);
         }
 
         @Override
-        public String getDisplayNodeName(CubeId id) {
+        public String getDisplayNodeName(CubeId id) throws IOException {
             return delegate.getDisplayNodeName(id);
+        }
+
+        @Override
+        public CubeAccessor bulk(int depth, ConcurrentMap<CubeId, Object> cache) {
+            return delegate.bulk(depth, cache);
         }
     }
 

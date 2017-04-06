@@ -71,7 +71,7 @@ public final class XCubeAccessor implements CubeAccessor {
     }
 
     @Override
-    public String getDisplayName() {
+    public String getDisplayName() throws IOException {
         return root.toString();
     }
 }

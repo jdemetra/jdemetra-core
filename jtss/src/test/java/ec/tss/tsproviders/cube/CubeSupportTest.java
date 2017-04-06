@@ -24,6 +24,8 @@ import ec.tss.TsInformationType;
 import ec.tss.tsproviders.DataSet;
 import ec.tss.tsproviders.DataSource;
 import static ec.tss.tsproviders.cube.CubeIdTest.EMPTY;
+import static ec.tss.tsproviders.cube.CubeIdTest.INDUSTRY;
+import static ec.tss.tsproviders.cube.CubeIdTest.INDUSTRY_BE;
 import static ec.tss.tsproviders.cube.CubeIdTest.SECTOR_REGION;
 import ec.tss.tsproviders.utils.IParam;
 import java.io.IOException;
@@ -63,5 +65,23 @@ public class CubeSupportTest {
         readAllAndClose(support.getData(col, TsInformationType.All));
         readAllAndClose(support.getData(series, TsInformationType.All));
         assertThat(watcher.isLeakingResources()).isFalse();
+    }
+
+    @Test
+    public void testIdByName() {
+        assertThat(CubeSupport.idByName(SECTOR_REGION)).satisfies(o -> {
+            assertThat(o.defaultValue()).isEqualTo(SECTOR_REGION);
+            assertThat(o.get(col)).isEqualTo(INDUSTRY);
+            assertThat(o.get(series)).isEqualTo(INDUSTRY_BE);
+        });
+    }
+
+    @Test
+    public void testidBySeparator() {
+        assertThat(CubeSupport.idBySeparator(SECTOR_REGION, ".", "id")).satisfies(o -> {
+            assertThat(o.defaultValue()).isEqualTo(SECTOR_REGION);
+            assertThat(o.get(DataSet.builder(dataSource, DataSet.Kind.COLLECTION).put("id", "industry").build())).isEqualTo(INDUSTRY);
+            assertThat(o.get(DataSet.builder(dataSource, DataSet.Kind.SERIES).put("id", "industry.be").build())).isEqualTo(INDUSTRY_BE);
+        });
     }
 }
