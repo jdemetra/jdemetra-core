@@ -32,6 +32,7 @@ import ec.tss.tsproviders.utils.IConfig;
 import ec.tss.tsproviders.utils.IParam;
 import ec.tss.tsproviders.cursor.TsCursor;
 import ec.tss.tsproviders.cursor.TsCursorAsFiller;
+import ec.tss.tsproviders.utils.IteratorWithIO;
 import ec.tss.tsproviders.utils.TsFillerAsProvider;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -193,11 +194,11 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
-    private static List<DataSet> children(DataSet.Builder builder, TsCursor<CubeId> values, IParam<DataSet, CubeId> idParam) throws IOException {
-        try (TsCursor<DataSet> cursor = values.transform(toDataSetFunc(builder, idParam))) {
+    private static List<DataSet> children(DataSet.Builder builder, IteratorWithIO<CubeId> values, IParam<DataSet, CubeId> idParam) throws IOException {
+        try (IteratorWithIO<DataSet> cursor = values.transform(toDataSetFunc(builder, idParam))) {
             List<DataSet> result = new ArrayList<>();
-            while (cursor.nextSeries()) {
-                result.add(cursor.getSeriesId());
+            while (cursor.hasNext()) {
+                result.add(cursor.next());
             }
             return result;
         }

@@ -223,7 +223,7 @@ public final class TsCursorAsFiller {
         public boolean fill(TsInformation info, DataSet dataSet) throws IOException {
             try (TsCursor<DataSet> cursor = htc.getData(dataSet, info.type)) {
                 if (cursor.nextSeries()) {
-                    info.name = hddn.getDisplayName(dataSet);
+                    info.name = cursor.getSeriesLabel();
                     fill(info, cursor);
                     return true;
                 } else {
@@ -239,7 +239,7 @@ public final class TsCursorAsFiller {
             }
             while (cursor.nextSeries()) {
                 DataSet dataSet = cursor.getSeriesId();
-                TsInformation item = new TsInformation(hddn.getDisplayName(dataSet), hdm.toMoniker(dataSet), info.type);
+                TsInformation item = new TsInformation(cursor.getSeriesLabel(), hdm.toMoniker(dataSet), info.type);
                 fill(item, cursor);
                 info.items.add(item);
             }
