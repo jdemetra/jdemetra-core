@@ -90,6 +90,7 @@
 
         <!-- several apps -->
         <module>jbench</module>
+        <module>demetra-datatypes</module>
     </modules>
 	
     <dependencyManagement>
