@@ -117,10 +117,10 @@ public class XmlTsVariables {
         for (int i=0; i<names.length; ++i){
             ITsVariable var=v.get(names[i]);
             XmlTsVariable xvar=null;
-            if (var instanceof TsVariable){               
-                xvar=XmlStaticTsVariable.getAdapter().marshal((TsVariable) var);
-            }else if (var instanceof DynamicTsVariable){               
+            if (var instanceof DynamicTsVariable){               
                 xvar=XmlDynamicTsVariable.getAdapter().marshal((DynamicTsVariable) var);
+            } else if (var instanceof TsVariable){               
+                xvar=XmlStaticTsVariable.getAdapter().marshal((TsVariable) var);
             }  
             if (xvar != null){
                 xvar.setName(names[i]);
