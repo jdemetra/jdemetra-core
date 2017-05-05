@@ -57,7 +57,7 @@ public interface Sequence<E> extends Iterable<E> {
      * @throws IndexOutOfBoundsException if the <tt>index</tt> argument is
      * negative or not less than <tt>length()</tt>
      */
-    E get(@Nonnegative int index) throws IndexOutOfBoundsException;
+    E elementAt(@Nonnegative int index) throws IndexOutOfBoundsException;
 
     default boolean isEmpty() {
         return length() == 0;
@@ -102,14 +102,14 @@ public interface Sequence<E> extends Iterable<E> {
          * @throws IndexOutOfBoundsException if the <tt>index</tt> argument is
          * negative or not less than <tt>length()</tt>
          */
-        double getDouble(@Nonnegative int index) throws IndexOutOfBoundsException;
+        double get(@Nonnegative int index) throws IndexOutOfBoundsException;
 
         @Override
-        default Double get(int index) throws IndexOutOfBoundsException {
+        default Double elementAt(int index) throws IndexOutOfBoundsException {
             if (Tripwire.ENABLED) {
                 Tripwire.trip(getClass(), "{0} calling Sequence.OfDouble.get()");
             }
-            return getDouble(index);
+            return get(index);
         }
 
         @Nonnull

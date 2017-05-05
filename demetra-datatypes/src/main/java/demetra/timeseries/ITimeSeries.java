@@ -53,11 +53,11 @@ public interface ITimeSeries<P extends ITimePeriod, V extends Number, O extends 
 
     @Nonnull
     default P getPeriod(@Nonnegative int index) throws IndexOutOfBoundsException {
-        return getDomain().get(index);
+        return getDomain().elementAt(index);
     }
 
     default V getValue(@Nonnegative int index) throws IndexOutOfBoundsException {
-        return getValues().get(index);
+        return getValues().elementAt(index);
     }
 
     interface OfDouble<P extends ITimePeriod, O extends TimeObservation.OfDouble<P>> extends ITimeSeries<P, Double, O> {
@@ -66,7 +66,7 @@ public interface ITimeSeries<P extends ITimePeriod, V extends Number, O extends 
         Sequence.OfDouble getValues();
 
         default double getDoubleValue(@Nonnegative int index) throws IndexOutOfBoundsException {
-            return getValues().getDouble(index);
+            return getValues().get(index);
         }
 
         @Override

@@ -41,12 +41,12 @@ public class WeeksTest {
         LocalDate start = LocalDate.of(2017, 1, 1);
         Weeks d = Weeks.of(start, 59);
         for (int i = 0; i < d.length(); ++i) {
-            assertTrue(d.search(d.get(i).firstDay()) == i);
+            assertTrue(d.search(d.elementAt(i).firstDay()) == i);
         }
         assertTrue(d.search(LocalDate.of(2016, 12, 31)) == -1);
         assertTrue(d.search(LocalDate.of(2018, 3, 1)) == -d.length());
         for (int i = 0; i < d.length(); ++i) {
-            assertTrue(d.search(d.get(i).firstDay().atStartOfDay().plusMinutes(655)) == i);
+            assertTrue(d.search(d.elementAt(i).firstDay().atStartOfDay().plusMinutes(655)) == i);
         }
         assertTrue(d.search(LocalDate.of(2016, 12, 31).atStartOfDay().plusMinutes(655)) == -1);
         assertTrue(d.search(LocalDate.of(2018, 3, 1).atStartOfDay().plusMinutes(655)) == -d.length());

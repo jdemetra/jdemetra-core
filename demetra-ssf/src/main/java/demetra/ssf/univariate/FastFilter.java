@@ -1,0 +1,126 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package demetra.ssf.univariate;
+
+import demetra.data.CellReader;
+import demetra.data.DataBlock;
+import demetra.data.DataBlockIterator;
+import demetra.maths.linearfilters.ILinearProcess;
+import demetra.maths.matrices.Matrix;
+import demetra.ssf.ISsfDynamics;
+import demetra.ssf.ResultsRange;
+import demetra.data.Doubles;
+
+/**
+ *
+ * @author Jean Palate
+ */
+public class FastFilter implements ILinearProcess {
+
+    private final IFilteringResults frslts;
+    private final ISsfMeasurement measurement;
+    private final ISsfDynamics dynamics;
+    private final int start, end;
+    private Matrix states;
+    // temporaries
+    private DataBlock tmp;
+    private DataBlockIterator scols;
+
+    public FastFilter(ISsf ssf, IFilteringResults frslts, ResultsRange range) {
+        this.frslts = frslts;
+        measurement = ssf.getMeasurement();
+        dynamics = ssf.getDynamics();
+        start = range.getStart();
+        end = range.getEnd();
+    }
+
+    public boolean filter(Matrix x) {
+        if (end - start < x.getRowsCount()) {
+            return false;
+        }
+        int dim = dynamics.getStateDim();
+        states = Matrix.make(dim, x.getColumnsCount());
+        prepareTmp();
+        DataBlockIterator rows = x.rowsIterator();
+        int pos = start;
+        while (++pos < end && rows.hasNext()) {
+            iterate(pos, rows.next());
+        }
+        return true;
+    }
+
+    private void prepareTmp() {
+        int nvars = states.getColumnsCount();
+        tmp = DataBlock.make(nvars);
+        scols = states.columnsIterator();
+    }
+
+    private void iterate(int i, DataBlock row) {
+        boolean missing = !Double.isFinite(frslts.error(i));
+        if (!missing) {
+            double f = frslts.errorVariance(i);
+            if (f > 0) {
+                measurement.ZM(i, states, tmp);
+                row.sub(tmp);
+                // update the states
+                DataBlock C = frslts.M(i);
+                // process by column
+                scols.reset();
+                CellReader r = row.reader();
+                while (scols.hasNext()) {
+                    scols.next().addAY(r.next() / f, C);
+                }
+                row.mul(1 / Math.sqrt(f));
+            } else {
+                row.set(Double.NaN);
+            }
+        }
+        dynamics.TM(i, states);
+        //  
+    }
+
+    @Override
+    public boolean transform(Doubles in, DataBlock out) {
+        if (in.length() > end - start) {
+            return false;
+        }
+        int dim = dynamics.getStateDim(), n = in.length();
+        DataBlock state = DataBlock.make(dim);
+        int pos = start, ipos = 0, opos = 0;
+        do {
+            boolean missing = !Double.isFinite(frslts.error(pos));
+            if (!missing) {
+                double f = frslts.errorVariance(pos);
+                double e = in.get(ipos) - measurement.ZX(pos, state);
+                if (f != 0) {
+                    out.set(opos++, e / Math.sqrt(f));
+                    // update the state
+                    DataBlock C = frslts.M(pos);
+                    // process by column
+                    state.addAY(e / f, C);
+                }
+            }
+            dynamics.TX(pos++, state);
+        } while (++ipos < n);
+        return true;
+    }
+
+    @Override
+    public int getOutputLength(int inputLength) {
+        int n = 0;
+        int imax = start + inputLength;
+        if (imax > end) {
+            return -1;
+        }
+        for (int i = start; i < imax; ++i) {
+            double e = frslts.error(i), v = frslts.errorVariance(i);
+            if (Double.isFinite(e) && v != 0) {
+                ++n;
+            }
+        }
+        return n;
+    }
+}

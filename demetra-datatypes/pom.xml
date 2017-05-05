@@ -10,6 +10,7 @@
 
     <artifactId>demetra-datatypes</artifactId>
     <packaging>jar</packaging>
+    <name>JD3 - DataTypes</name>
 
     <dependencies>
         <!-- compile only -->

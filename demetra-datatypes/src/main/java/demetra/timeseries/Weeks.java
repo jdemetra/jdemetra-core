@@ -65,7 +65,7 @@ public final class Weeks implements IDateDomain<DailyPeriod> {
     }
 
     @Override
-    public DailyPeriod get(int index) {
+    public DailyPeriod elementAt(int index) {
         return DailyPeriod.of(firstDay.plusDays(7 * index), 7);
     }
 

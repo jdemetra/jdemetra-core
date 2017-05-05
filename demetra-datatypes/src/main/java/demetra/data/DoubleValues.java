@@ -72,7 +72,7 @@ public final class DoubleValues implements Sequence.OfDouble {
     }
 
     @Override
-    public double getDouble(int index) {
+    public double get(int index) {
         return values[index];
     }
 

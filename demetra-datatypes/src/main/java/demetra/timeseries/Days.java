@@ -51,7 +51,7 @@ public final class Days implements IDateDomain<Day> {
     }
 
     @Override
-    public Day get(int index) {
+    public Day elementAt(int index) {
         return Day.of(start.plusDays(index));
     }
 

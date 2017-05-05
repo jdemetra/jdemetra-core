@@ -54,7 +54,7 @@ class Sequences {
         @Override
         public E next() {
             if (hasNext()) {
-                return seq.get(cur++);
+                return seq.elementAt(cur++);
             } else {
                 throw new NoSuchElementException();
             }
@@ -63,14 +63,14 @@ class Sequences {
 
     <E> void forEach(Sequence<E> seq, Consumer<? super E> action) {
         for (int i = 0; i < seq.length(); i++) {
-            action.accept(seq.get(i));
+            action.accept(seq.elementAt(i));
         }
     }
 
     <E> E[] toArray(Sequence<E> seq, IntFunction<E[]> generator) {
         E[] result = generator.apply(seq.length());
         for (int i = 0; i < result.length; i++) {
-            result[i] = seq.get(i);
+            result[i] = seq.elementAt(i);
         }
         return result;
     }
@@ -92,7 +92,7 @@ class Sequences {
         @Override
         public double nextDouble() {
             if (hasNext()) {
-                return seq.getDouble(cur++);
+                return seq.get(cur++);
             } else {
                 throw new NoSuchElementException();
             }
@@ -101,14 +101,14 @@ class Sequences {
         @Override
         public void forEachRemaining(DoubleConsumer block) {
             for (; cur < seq.length(); cur++) {
-                block.accept(seq.getDouble(cur));
+                block.accept(seq.get(cur));
             }
         }
     }
 
     void forEach(Sequence.OfDouble seq, DoubleConsumer action) {
         for (int i = 0; i < seq.length(); i++) {
-            action.accept(seq.getDouble(i));
+            action.accept(seq.get(i));
         }
     }
 
@@ -125,14 +125,14 @@ class Sequences {
     void copyTo(Sequence.OfDouble seq, double[] buffer, int offset) {
         int n = seq.length();
         for (int i = 0; i < n; ++i) {
-            buffer[offset + i] = seq.getDouble(i);
+            buffer[offset + i] = seq.get(i);
         }
     }
 
     double[] toArray(Sequence.OfDouble seq) {
         double[] result = new double[seq.length()];
         for (int i = 0; i < result.length; ++i) {
-            result[i] = seq.getDouble(i);
+            result[i] = seq.get(i);
         }
         return result;
     }
@@ -140,7 +140,7 @@ class Sequences {
     boolean allMatch(Sequence.OfDouble seq, DoublePredicate pred) {
         int n = seq.length();
         for (int i = 0; i < n; ++i) {
-            if (!pred.test(seq.getDouble(i))) {
+            if (!pred.test(seq.get(i))) {
                 return false;
             }
         }
@@ -150,7 +150,7 @@ class Sequences {
     int firstIndexOf(Sequence.OfDouble seq, DoublePredicate pred) {
         int n = seq.length();
         for (int i = 0; i < n; ++i) {
-            if (pred.test(seq.getDouble(i))) {
+            if (pred.test(seq.get(i))) {
                 return i;
             }
         }
@@ -160,7 +160,7 @@ class Sequences {
     int lastIndexOf(Sequence.OfDouble seq, DoublePredicate pred) {
         int n = seq.length();
         for (int i = n - 1; i >= 0; --i) {
-            if (pred.test(seq.getDouble(i))) {
+            if (pred.test(seq.get(i))) {
                 return i;
             }
         }
@@ -171,7 +171,7 @@ class Sequences {
         double cur = initial;
         int n = seq.length();
         for (int i = 0; i < n; ++i) {
-            cur = fn.applyAsDouble(cur, seq.getDouble(i));
+            cur = fn.applyAsDouble(cur, seq.get(i));
         }
         return cur;
     }
