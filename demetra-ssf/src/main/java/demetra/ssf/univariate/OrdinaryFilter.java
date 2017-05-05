@@ -1,0 +1,144 @@
+/*
+ * Copyright 2013-2014 National Bank copyOf Belgium
+ * 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions copyOf the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy copyOf the Licence at:
+ * 
+ * http://ec.europa.eu/idabc/eupl
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
+package demetra.ssf.univariate;
+
+import demetra.ssf.UpdateInformation;
+import demetra.data.DataBlock;
+import demetra.maths.matrices.Matrix;
+import demetra.ssf.ISsfDynamics;
+import demetra.ssf.State;
+import demetra.ssf.StateInfo;
+
+/**
+ * Ordinary Kalman filter for univariate time series
+ *
+ * @author Jean Palate
+ */
+public class OrdinaryFilter {
+
+    public static interface Initializer {
+
+        int initialize(State state, ISsf ssf, ISsfData data);
+    }
+
+    private final Initializer initializer;
+    private State state;
+    private UpdateInformation updinfo;
+    private ISsfMeasurement measurement;
+    private ISsfDynamics dynamics;
+    private boolean missing;
+
+    /**
+     *
+     * @param initializer
+     */
+    public OrdinaryFilter(Initializer initializer) {
+        this.initializer = initializer;
+    }
+
+    public OrdinaryFilter() {
+        this.initializer = null;
+    }
+
+     protected boolean error(int t, ISsfData data) {
+        missing = data.isMissing(t);
+        if (missing) {
+            // pe_ = null;
+            updinfo.setMissing();
+            return false;
+        } else {
+            // pe_ = new UpdateInformation(ssf_.getStateDim(), 1);
+            // K = PZ'/f
+            // computes (ZP)' in K'. Missing values are set to 0 
+            // Z~v x r, P~r x r, K~r x v
+            DataBlock C = updinfo.M();
+            // computes ZPZ'; results in pe_.L
+            //measurement.ZVZ(pos_, state_.P.subMatrix(), F);
+            measurement.ZM(t, state.P(), C);
+            double v = measurement.ZX(t, C);
+            if (measurement.hasErrors()) {
+                v += measurement.errorVariance(t);
+            }
+            updinfo.setVariance(v);
+            // We put in K  PZ'*(ZPZ'+H)^-1 = PZ'* F^-1 = PZ'*(LL')^-1/2 = PZ'(L')^-1
+            // K L' = PZ' or L K' = ZP
+
+            double y = data.get(t);
+            updinfo.set(y - measurement.ZX(t, state.a()));
+            return true;
+        }
+    }
+
+
+    /**
+     * Retrieves the final state (which is a(N|N-1))
+     *
+     * @return
+     */
+    public State getFinalState() {
+        return state;
+    }
+
+    private int initialize(ISsf ssf, ISsfData data) {
+        measurement = ssf.getMeasurement();
+        dynamics = ssf.getDynamics();
+        updinfo = new UpdateInformation(dynamics.getStateDim());
+        if (initializer == null) {
+            state = State.of(dynamics);
+            return state == null ? -1 : 0;
+        } else {
+            state = new State(dynamics.getStateDim());
+            return initializer.initialize(state, ssf, data);
+        }
+    }
+
+    /**
+     *
+     * @param ssf
+     * @param data
+     * @param rslts
+     * @return
+     */
+    public boolean process(final ISsf ssf, final ISsfData data, final IFilteringResults rslts) {
+        // intialize the state with a(0|-1)
+        int t = initialize(ssf, data);
+        if (t < 0) {
+            return false;
+        }
+        int end = data.length();
+        while (t < end) {
+            if (rslts != null) {
+                rslts.save(t, state, StateInfo.Forecast);
+            }
+            if (error(t, data)) {
+                if (rslts != null) {
+                    rslts.save(t, updinfo);
+                }
+                state.update(updinfo);
+            } else if (rslts != null) {
+                rslts.save(t, updinfo);
+            }
+            if (rslts != null) {
+                rslts.save(t, state, StateInfo.Concurrent);
+            }
+            state.next(t++, dynamics);
+        }
+        return true;
+    }
+
+
+}

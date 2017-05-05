@@ -85,9 +85,9 @@ public class DoubleValuesTest {
 
     @Test
     public void testDoubleAt() {
-        assertThat(PI.getDouble(0)).isEqualTo(Math.PI);
-        assertThatThrownBy(() -> EMPTY.getDouble(0)).isInstanceOf(IndexOutOfBoundsException.class);
-        assertThatThrownBy(() -> EMPTY.getDouble(-1)).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThat(PI.get(0)).isEqualTo(Math.PI);
+        assertThatThrownBy(() -> EMPTY.get(0)).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> EMPTY.get(-1)).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test

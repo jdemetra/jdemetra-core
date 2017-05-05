@@ -35,7 +35,7 @@ public class DiscreteDomainTest {
         }
         DiscreteDomain dd = DiscreteDomain.of(d);
         for (int i = 0; i < dd.length(); ++i) {
-            assertTrue(dd.search(dd.get(i).start()) == i);
+            assertTrue(dd.search(dd.elementAt(i).start()) == i);
         }
         assertTrue(dd.search(d[0].minusSeconds(1)) == -1);
         assertTrue(dd.search(d[d.length - 1].minusSeconds(1)) == -dd.length());

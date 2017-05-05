@@ -91,6 +91,13 @@
         <!-- several apps -->
         <module>jbench</module>
         <module>demetra-datatypes</module>
+        <module>demetra-core</module>
+        <module>demetra-algorithms</module>
+        <module>demetra-eco</module>
+        <module>demetra-algorithms-ex</module>
+        <module>demetra-ssf</module>
+        <module>demetra-sts</module>
+        <module>demetra-stl</module>
     </modules>
 	
     <dependencyManagement>
@@ -180,6 +187,40 @@
                 <version>${project.version}</version>            
             </dependency>
             <!-- < modules -->
+            
+            <!-- modules 3.0 > -->
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-datatypes</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-core</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-algorithms</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-algorithms-ex</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-eco</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-ssf</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            
+            <!-- < modules 3.0 -->
         </dependencies>
     </dependencyManagement>
 

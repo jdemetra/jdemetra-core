@@ -63,7 +63,7 @@ public final class TsDomain implements IDateDomain<TsPeriod> {
     }
 
     @Override
-    public TsPeriod get(int index) {
+    public TsPeriod elementAt(int index) {
         return start.plus(index);
     }
 

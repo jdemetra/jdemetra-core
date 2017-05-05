@@ -44,7 +44,7 @@ public class TsDataTypeTest {
 
         System.out.println("\n[Test for]");
         for (int i = 0; i < ts.length(); i++) {
-            System.out.println(ts.get(i));
+            System.out.println(ts.elementAt(i));
         }
 
         System.out.println("\n[Test forEach]");

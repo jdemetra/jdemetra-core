@@ -33,7 +33,7 @@ public final class IntToDoubleSequence implements Sequence.OfDouble {
     }
 
     @Override
-    public double getDouble(int idx) {
+    public double get(int idx) {
         return fn.applyAsDouble(idx);
     }
 
@@ -47,9 +47,9 @@ public final class IntToDoubleSequence implements Sequence.OfDouble {
         StringBuilder builder = new StringBuilder();
         int n = length();
         if (n > 0) {
-            builder.append(getDouble(0));
+            builder.append(get(0));
             for (int i = 1; i < n; ++i) {
-                builder.append('\t').append(getDouble(i));
+                builder.append('\t').append(get(i));
             }
         }
         return builder.toString();

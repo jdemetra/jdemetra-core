@@ -12,3 +12,12 @@
 /demetra-tck/target/
 /demetra-workspace/target/
 /demetra-datatypes/target/
+/demetra-core/target/
+/demetra-algorithms/target/
+/demetra-algorithms-ex/target/
+/demetra-eco/target/
+/demetra-ssf/target/
+/demetra-stl/target/
+/demetra-sts/target/
+/demetra-core/nbproject/
+/demetra-algorithms/nbproject/
