@@ -195,7 +195,7 @@ public class NumericalDerivatives implements IFunctionDerivatives {
     }
     
     @Override
-    public Doubles getGradient() {
+    public Doubles gradient() {
         if (grad == null) {
             calcgrad();
         }
@@ -207,7 +207,7 @@ public class NumericalDerivatives implements IFunctionDerivatives {
      * @param h
      */
     @Override
-    public void getHessian(Matrix h) {
+    public void hessian(Matrix h) {
         if (hessian == null) {
             calch();
         }

@@ -39,20 +39,20 @@ public interface IFunctionMinimizer {
      * 
      * @return
      */
-    double getConvergenceCriterion();
+    double getFunctionPrecision();
 
     /**
      * 
      * @return
      */
-    double getPrecision();
+    double getParametersPrecision();
     /**
      * 
      * @return
      */
-    Matrix getCurvature();
+    Matrix curvatureAtMinimum();
     
-    Doubles getGradient();
+    Doubles gradientAtMinimum();
 
     /**
      *
@@ -96,13 +96,13 @@ public interface IFunctionMinimizer {
      * 
      * @param value
      */
-    void setConvergenceCriterion(double value);
+    void setFunctionPrecision(double value);
 
     /**
      * 
      * @param value
      */
-    void setPrecsion(double value);
+    void setParametersPrecsion(double value);
     /**
      *
      * @param n

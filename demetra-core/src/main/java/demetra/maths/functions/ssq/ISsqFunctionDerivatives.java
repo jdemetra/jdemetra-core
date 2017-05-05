@@ -42,6 +42,6 @@ public interface ISsqFunctionDerivatives extends IFunctionDerivatives {
      * the matrix J is n x m and J(i, j) = dE(i)/dp(j)
      * @param matrix
      */
-    void getJacobian(Matrix matrix);
+    void jacobian(Matrix matrix);
     
 }

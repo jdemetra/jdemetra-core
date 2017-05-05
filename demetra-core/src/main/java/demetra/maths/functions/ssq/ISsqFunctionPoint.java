@@ -38,7 +38,7 @@ public interface ISsqFunctionPoint {
      * @return Returns the derivatives of the function. May be numerical or
      * analytical derivatives
      */
-    default ISsqFunctionDerivatives getSsqDerivatives(){
+    default ISsqFunctionDerivatives ssqDerivatives(){
         return new SsqNumericalDerivatives(this, false);
     };
     

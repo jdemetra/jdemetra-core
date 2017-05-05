@@ -70,20 +70,20 @@ public class GridSearch implements IFunctionMinimizer {
     }
 
     @Override
-    public double getConvergenceCriterion() {
+    public double getFunctionPrecision() {
         return epsilon;
     }
 
     @Override
-    public Matrix getCurvature() {
+    public Matrix curvatureAtMinimum() {
         Matrix h = Matrix.square(1);
-        new NumericalDerivatives(m_ftry, false).getHessian(h);
+        new NumericalDerivatives(m_ftry, false).hessian(h);
         return h;
     }
 
     @Override
-    public Doubles getGradient() {
-        return new NumericalDerivatives(m_ftry, false).getGradient();
+    public Doubles gradientAtMinimum() {
+        return new NumericalDerivatives(m_ftry, false).gradient();
     }
 
     /**
@@ -232,7 +232,7 @@ public class GridSearch implements IFunctionMinimizer {
     }
 
     @Override
-    public void setConvergenceCriterion(double value) {
+    public void setFunctionPrecision(double value) {
         epsilon = value;
     }
 
@@ -266,12 +266,12 @@ public class GridSearch implements IFunctionMinimizer {
     }
 
     @Override
-    public double getPrecision() {
+    public double getParametersPrecision() {
         return precision;
     }
 
     @Override
-    public void setPrecsion(double value) {
+    public void setParametersPrecsion(double value) {
         precision = value;
     }
 }
