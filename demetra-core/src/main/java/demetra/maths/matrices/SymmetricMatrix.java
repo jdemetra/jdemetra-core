@@ -155,6 +155,8 @@ public class SymmetricMatrix {
         default void lcholesky(final Matrix M) {
             lcholesky(M, 0);
         }
+        
+        Matrix inverse(final Matrix S);
     }
 
     private final static AtomicReference<Algorithms> IMPL = new AtomicReference<>(FastSymmetricMatrixAlgorithms.INSTANCE);
@@ -328,6 +330,10 @@ public class SymmetricMatrix {
     public static void lcholesky(final Matrix M) {
         IMPL.get().lcholesky(M);
     }
+    
+    public static Matrix inverse(Matrix S){
+        return IMPL.get().inverse(S);
+    }
 
     public static void reenforceSymmetry(Matrix S) {
         if (!S.isSquare()) {
@@ -387,5 +393,6 @@ public class SymmetricMatrix {
             }
         }
     }
+    
 
 }

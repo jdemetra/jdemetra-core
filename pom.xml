@@ -98,6 +98,14 @@
         <module>demetra-ssf</module>
         <module>demetra-sts</module>
         <module>demetra-stl</module>
+        <module>demetra-benchmarking</module>
+        <module>demetra-regarima</module>
+        <module>demetra-seats</module>
+        <module>demetra-arima</module>
+        <module>demetra-ucarima</module>
+        <module>demetra-tramo</module>
+        <module>demetra-sacore</module>
+        <module>demetra-benchmarking-types</module>
     </modules>
 	
     <dependencyManagement>
@@ -219,7 +227,47 @@
                 <artifactId>demetra-ssf</artifactId>
                 <version>${project.version}</version>            
             </dependency>
-            
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-arima</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-benchmarking-types</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-benchmarking</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-regarima</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-tramo</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-ucarima</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-seats</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-sacore</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+           
             <!-- < modules 3.0 -->
         </dependencies>
     </dependencyManagement>

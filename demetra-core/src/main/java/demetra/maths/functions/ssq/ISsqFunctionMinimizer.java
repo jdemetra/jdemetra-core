@@ -38,19 +38,19 @@ public interface ISsqFunctionMinimizer {
      *
      * @return
      */
-    double getConvergenceCriterion();
+    double getFunctionPrecision();
 
     /**
      *
      * @return
      */
-    double getPrecision();
+    double getParametersPrecision();
 
     /**
      *
      * @return
      */
-    Matrix getCurvature();
+    Matrix curvatureAtMinimum();
 
     /**
      *
@@ -70,7 +70,7 @@ public interface ISsqFunctionMinimizer {
      */
     ISsqFunctionPoint getResult();
 
-    Doubles getGradient();
+    Doubles gradientAtMinimum();
 
     double getObjective();
 
@@ -94,9 +94,9 @@ public interface ISsqFunctionMinimizer {
      *
      * @param value
      */
-    void setConvergenceCriterion(double value);
+    void setFunctionPrecision(double value);
 
-    void setPrecision(double value);
+    void setParametersPrecision(double value);
 
     /**
      *

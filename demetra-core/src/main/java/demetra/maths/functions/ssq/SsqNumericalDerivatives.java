@@ -239,7 +239,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
      * @return
      */
     @Override
-    public Doubles getGradient() {
+    public Doubles gradient() {
         if (m_grad == null) {
             calcgrad();
         }
@@ -252,7 +252,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
      * @return
      */
     @Override
-    public void getJacobian(Matrix m) {
+    public void jacobian(Matrix m) {
         if (m_de == null) {
             calcgrad();
         }
@@ -269,7 +269,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
      * @param h
      */
     @Override
-    public void getHessian(Matrix h) {
+    public void hessian(Matrix h) {
         if (m_h == null) {
             calch();
         }

@@ -53,8 +53,8 @@ public class TransformedFunction implements IFunction {
         }
 
         @Override
-        public IFunctionDerivatives getDerivatives() {
-            return new Derivatives(yfx.getDerivatives(), getValue());
+        public IFunctionDerivatives derivatives() {
+            return new Derivatives(yfx.derivatives(), getValue());
         }
 
     }
@@ -80,8 +80,8 @@ public class TransformedFunction implements IFunction {
          * @return
          */
         @Override
-        public Doubles getGradient() {
-            DataBlock g = DataBlock.copyOf(dfx.getGradient());
+        public Doubles gradient() {
+            DataBlock g = DataBlock.copyOf(dfx.gradient());
             double dt = t.df(fx);
             g.mul(dt);
             return g;
@@ -94,11 +94,11 @@ public class TransformedFunction implements IFunction {
          * @return
          */
         @Override
-        public void getHessian(Matrix H) {
+        public void hessian(Matrix H) {
             int n = getDomain().getDim();
             Matrix h = Matrix.square(n);
-            dfx.getHessian(h);
-            Doubles grad = dfx.getGradient();
+            dfx.hessian(h);
+            Doubles grad = dfx.gradient();
             double dt = t.df(fx), d2t = t.d2f(fx);
             h.mul(dt);
             h.addXaXt(d2t, DataBlock.copyOf(grad));

@@ -48,8 +48,8 @@ public class SsqProxyMinimizer implements ISsqFunctionMinimizer {
      * @return
      */
     @Override
-    public double getConvergenceCriterion() {
-        return minimizer.getConvergenceCriterion();
+    public double getFunctionPrecision() {
+        return minimizer.getFunctionPrecision();
     }
 
     /**
@@ -57,8 +57,8 @@ public class SsqProxyMinimizer implements ISsqFunctionMinimizer {
      * @return
      */
     @Override
-    public Matrix getCurvature() {
-        return minimizer.getCurvature();
+    public Matrix curvatureAtMinimum() {
+        return minimizer.curvatureAtMinimum();
     }
 
     /**
@@ -66,8 +66,8 @@ public class SsqProxyMinimizer implements ISsqFunctionMinimizer {
      * @return
      */
     @Override
-    public Doubles getGradient() {
-        return minimizer.getGradient();
+    public Doubles gradientAtMinimum() {
+        return minimizer.gradientAtMinimum();
     }
 
     /**
@@ -116,8 +116,8 @@ public class SsqProxyMinimizer implements ISsqFunctionMinimizer {
      * @param value
      */
     @Override
-    public void setConvergenceCriterion(double value) {
-        minimizer.setConvergenceCriterion(value);
+    public void setFunctionPrecision(double value) {
+        minimizer.setFunctionPrecision(value);
     }
 
     /**
@@ -130,12 +130,12 @@ public class SsqProxyMinimizer implements ISsqFunctionMinimizer {
     }
     
     @Override
-    public double getPrecision() {
-        return minimizer.getPrecision();
+    public double getParametersPrecision() {
+        return minimizer.getParametersPrecision();
     }
     
     @Override
-    public void setPrecision(double value) {
-        minimizer.setPrecsion(value);
+    public void setParametersPrecision(double value) {
+        minimizer.setParametersPrecsion(value);
     }
 }

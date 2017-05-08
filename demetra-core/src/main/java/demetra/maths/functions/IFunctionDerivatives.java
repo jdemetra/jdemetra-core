@@ -37,11 +37,18 @@ public interface IFunctionDerivatives {
      * 
      * @return
      */
-    Doubles getGradient();
+    Doubles gradient();
 
     /**
      * 
      * @param hessian
      */
-    void getHessian(Matrix hessian);
+    void hessian(Matrix hessian);
+    
+    default Matrix hessian(){
+        int n=getFunction().getDomain().getDim();
+        Matrix H=Matrix.square(n);
+        hessian(H);
+        return H;
+    }
 }

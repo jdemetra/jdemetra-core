@@ -117,7 +117,7 @@ public final class DataBlock implements Doubles {
      * @param data The Doubles being copied
      * @return
      */
-    public static DataBlock copyOf(Doubles data) {
+    public static DataBlock copyOf(Sequence.OfDouble data) {
         double[] x = new double[data.length()];
         data.copyTo(x, 0);
         return new DataBlock(x, 0, x.length, 1);
@@ -372,7 +372,7 @@ public final class DataBlock implements Doubles {
 
     public void brotate() {
         int imax = end - inc;
-        double s=data[beg];
+        double s = data[beg];
         if (inc == 1) {
             for (int i = beg; i < imax; ++i) {
                 double z = data[i + 1];
@@ -476,37 +476,37 @@ public final class DataBlock implements Doubles {
         data[beg] = 0;
     }
 
-    public final void set(int idx, double value) {
+    public void set(int idx, double value) {
         data[beg + idx * inc] = value;
     }
 
     @Override
-    public final double get(int idx) {
+    public double get(int idx) {
         return data[beg + idx * inc];
     }
 
     @Override
-    public final int length() {
+    public int length() {
         return (end - beg) / inc;
     }
 
-    public final double[] getStorage() {
+    public double[] getStorage() {
         return data;
     }
 
-    public final int getStartPosition() {
+    public int getStartPosition() {
         return beg;
     }
 
-    public final int getEndPosition() {
+    public int getEndPosition() {
         return end;
     }
 
-    public final int getLastPosition() {
+    public int getLastPosition() {
         return end - inc;
     }
 
-    public final int getIncrement() {
+    public int getIncrement() {
         return inc;
     }
 
@@ -610,7 +610,7 @@ public final class DataBlock implements Doubles {
         return s / (n - m);
     }
 
-    public final void copy(DataBlock x) {
+    public void copy(DataBlock x) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
         double[] xdata = x.getStorage();
         for (int i = beg, j = xbeg; i != end; i += inc, j += xinc) {
@@ -618,14 +618,14 @@ public final class DataBlock implements Doubles {
         }
     }
 
-    public final void copy(Doubles x) {
+    public void copy(Doubles x) {
         CellReader cell = x.reader();
         for (int i = beg; i != end; i += inc) {
             data[i] = cell.next();
         }
     }
 
-    public final void swap(DataBlock x) {
+    public void swap(DataBlock x) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
         double[] xdata = x.getStorage();
         for (int i = beg, j = xbeg; i != end; i += inc, j += xinc) {
@@ -705,30 +705,30 @@ public final class DataBlock implements Doubles {
         }
     }
 
-    public final void apply(int pos, DoubleUnaryOperator fn) {
+    public void apply(int pos, DoubleUnaryOperator fn) {
         int idx = beg + pos * inc;
         data[idx] = fn.applyAsDouble(data[idx]);
     }
 
-    public final void add(int pos, double d) {
+    public void add(int pos, double d) {
         data[beg + pos * inc] += d;
     }
 
-    public final void mul(int pos, double d) {
+    public void mul(int pos, double d) {
         data[beg + pos * inc] *= d;
     }
 
-    public final void sub(int pos, double d) {
+    public void sub(int pos, double d) {
         data[beg + pos * inc] -= d;
     }
 
-    public final void div(int pos, double d) {
+    public void div(int pos, double d) {
         if (d != 1) {
             data[beg + pos * inc] /= d;
         }
     }
 
-    public final void set(Iterator<DataBlock> blocks, DataBlockFunction fn) {
+    public void set(Iterator<DataBlock> blocks, DataBlockFunction fn) {
         int pos = beg;
         if (inc == 1) {
             while (blocks.hasNext()) {
@@ -742,7 +742,7 @@ public final class DataBlock implements Doubles {
         }
     }
 
-    public final void apply(Iterator<DataBlock> blocks, DataBlockFunction fn, DoubleBinaryOperator op) {
+    public void apply(Iterator<DataBlock> blocks, DataBlockFunction fn, DoubleBinaryOperator op) {
         int pos = beg;
         while (blocks.hasNext()) {
             data[pos] = op.applyAsDouble(data[pos], fn.apply(blocks.next()));
@@ -750,7 +750,7 @@ public final class DataBlock implements Doubles {
         }
     }
 
-    public final void apply(DataBlock x, DoubleBinaryOperator fn) {
+    public void apply(DataBlock x, DoubleBinaryOperator fn) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
         double[] xdata = x.getStorage();
         for (int i = beg, j = xbeg; i != end; i += inc, j += xinc) {
@@ -758,14 +758,14 @@ public final class DataBlock implements Doubles {
         }
     }
 
-    public final void apply(Doubles x, DoubleBinaryOperator fn) {
+    public void apply(Doubles x, DoubleBinaryOperator fn) {
         CellReader cell = x.reader();
         for (int i = beg; i != end; i += inc) {
             data[i] = fn.applyAsDouble(data[i], cell.next());
         }
     }
 
-    public final void apply(DoubleUnaryOperator fn) {
+    public void apply(DoubleUnaryOperator fn) {
         if (inc == 1) {
             for (int i = beg; i < end; ++i) {
                 data[i] = fn.applyAsDouble(data[i]);
@@ -777,7 +777,7 @@ public final class DataBlock implements Doubles {
         }
     }
 
-    public final void add(double d) {
+    public void add(double d) {
         if (d == 0) {
             return;
         }
@@ -792,7 +792,20 @@ public final class DataBlock implements Doubles {
         }
     }
 
-    public final void sub(double d) {
+    public void chs() {
+        if (inc == 1) {
+            for (int i = beg; i < end; ++i) {
+                data[i] = -data[i];
+            }
+        } else {
+            for (int i = beg; i != end; i += inc) {
+                data[i] = -data[i];
+            }
+        }
+
+    }
+
+    public void sub(double d) {
         if (d == 0) {
             return;
         }
@@ -807,7 +820,7 @@ public final class DataBlock implements Doubles {
         }
     }
 
-    public final void mul(double d) {
+    public void mul(double d) {
         if (d == 1) {
             return;
         }
@@ -822,7 +835,7 @@ public final class DataBlock implements Doubles {
         }
     }
 
-    public final void div(double d) {
+    public void div(double d) {
         if (d == 1) {
             return;
         }
@@ -837,7 +850,7 @@ public final class DataBlock implements Doubles {
         }
     }
 
-    public final void set(DataBlock x, DoubleUnaryOperator fn) {
+    public void set(DataBlock x, DoubleUnaryOperator fn) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
         double[] xdata = x.getStorage();
         for (int i = beg, j = xbeg; i != end; i += inc, j += xinc) {
@@ -845,7 +858,7 @@ public final class DataBlock implements Doubles {
         }
     }
 
-    public final void set(DataBlock x, DataBlock y, DoubleBinaryOperator fn) {
+    public void set(DataBlock x, DataBlock y, DoubleBinaryOperator fn) {
         int ybeg = y.getStartPosition(), yinc = y.getIncrement();
         double[] ydata = y.getStorage();
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
@@ -855,14 +868,14 @@ public final class DataBlock implements Doubles {
         }
     }
 
-    public final void set(Doubles x, DoubleUnaryOperator fn) {
+    public void set(Doubles x, DoubleUnaryOperator fn) {
         CellReader xcell = x.reader();
         for (int i = beg; i != end; i += inc) {
             data[i] = fn.applyAsDouble(xcell.next());
         }
     }
 
-    public final void set(Doubles x, Doubles y, DoubleBinaryOperator fn) {
+    public void set(Doubles x, Doubles y, DoubleBinaryOperator fn) {
         CellReader xcell = x.reader(), ycell = y.reader();
         for (int i = beg; i != end; i += inc) {
             data[i] = fn.applyAsDouble(xcell.next(), ycell.next());
@@ -870,7 +883,7 @@ public final class DataBlock implements Doubles {
     }
 
     // some default shortcuts
-    public final void setAY(final double a, DataBlock y) {
+    public void setAY(final double a, DataBlock y) {
         if (a == 0) {
             set(0);
         } else if (a == 1) {
@@ -888,7 +901,7 @@ public final class DataBlock implements Doubles {
         }
     }
 
-    public final void addAY(double a, DataBlock y) {
+    public void addAY(double a, DataBlock y) {
         if (a == 0) {
             return;
         } else if (a == 1) {
@@ -906,7 +919,7 @@ public final class DataBlock implements Doubles {
         }
     }
 
-    public final void add(DataBlock x) {
+    public void add(DataBlock x) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
         double[] xdata = x.getStorage();
         if (inc == 1 && xinc == 1) {
@@ -921,7 +934,7 @@ public final class DataBlock implements Doubles {
 
     }
 
-    public final void sub(DataBlock x) {
+    public void sub(DataBlock x) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
         double[] xdata = x.getStorage();
         for (int i = beg, j = xbeg; i != end; i += inc, j += xinc) {
@@ -929,7 +942,7 @@ public final class DataBlock implements Doubles {
         }
     }
 
-    public final void mul(DataBlock x) {
+    public void mul(DataBlock x) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
         double[] xdata = x.getStorage();
         for (int i = beg, j = xbeg; i != end; i += inc, j += xinc) {
@@ -937,7 +950,7 @@ public final class DataBlock implements Doubles {
         }
     }
 
-    public final void div(DataBlock x) {
+    public void div(DataBlock x) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
         double[] xdata = x.getStorage();
         for (int i = beg, j = xbeg; i != end; i += inc, j += xinc) {
@@ -945,13 +958,13 @@ public final class DataBlock implements Doubles {
         }
     }
 
-    public final void set(DoubleSupplier fn) {
+    public void set(DoubleSupplier fn) {
         for (int i = beg; i != end; i += inc) {
             data[i] = fn.getAsDouble();
         }
     }
 
-    public final void set(IntToDoubleFunction fn) {
+    public void set(IntToDoubleFunction fn) {
         if (inc == 1) {
             for (int i = beg, j = 0; i < end; ++i, ++j) {
                 data[i] = fn.applyAsDouble(j);
@@ -963,7 +976,7 @@ public final class DataBlock implements Doubles {
         }
     }
 
-    public final void set(double val) {
+    public void set(double val) {
         if (inc == 1) {
             for (int i = beg; i < end; ++i) {
                 data[i] = val;
@@ -982,6 +995,46 @@ public final class DataBlock implements Doubles {
             cur = fn.applyAsDouble(cur, data[i]);
         }
         return cur;
+    }
+
+    /**
+     * Computes the minimum of this src block
+     *
+     * @return Returns min{src(i)}
+     */
+    public double min() {
+        if (beg == end) {
+            return 0;
+        } else {
+            double nrm = data[beg];
+            for (int ix = beg + inc; ix != end; ix += inc) {
+                double tmp = data[ix];
+                if (tmp < nrm) {
+                    nrm = tmp;
+                }
+            }
+            return nrm;
+        }
+    }
+
+    /**
+     * Computes the maximum of this src block
+     *
+     * @return Returns max{src(i)}
+     */
+    public double max() {
+        if (beg == end) {
+            return 0;
+        } else {
+            double nrm = data[beg];
+            for (int ix = beg + inc; ix != end; ix += inc) {
+                double tmp = data[ix];
+                if (tmp > nrm) {
+                    nrm = tmp;
+                }
+            }
+            return nrm;
+        }
     }
 
     public String toString(String fmt) {

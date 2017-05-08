@@ -57,18 +57,18 @@ public class ProxyMinimizer implements IFunctionMinimizer {
      * @return
      */
     @Override
-    public double getConvergenceCriterion() {
-        return minimizer.getConvergenceCriterion();
+    public double getFunctionPrecision() {
+        return minimizer.getFunctionPrecision();
     }
     
     @Override
-    public Matrix getCurvature() {
-        return minimizer.getCurvature();
+    public Matrix curvatureAtMinimum() {
+        return minimizer.curvatureAtMinimum();
     }
     
     @Override
-    public Doubles getGradient() {
-        return minimizer.getGradient();
+    public Doubles gradientAtMinimum() {
+        return minimizer.gradientAtMinimum();
     }
     
     @Override
@@ -128,8 +128,8 @@ public class ProxyMinimizer implements IFunctionMinimizer {
      * @param value
      */
     @Override
-    public void setConvergenceCriterion(double value) {
-        minimizer.setConvergenceCriterion(value);
+    public void setFunctionPrecision(double value) {
+        minimizer.setFunctionPrecision(value);
     }
 
     /**
@@ -142,12 +142,12 @@ public class ProxyMinimizer implements IFunctionMinimizer {
     }
     
     @Override
-    public double getPrecision() {
-        return minimizer.getPrecision();
+    public double getParametersPrecision() {
+        return minimizer.getParametersPrecision();
     }
     
     @Override
-    public void setPrecsion(double value) {
-        minimizer.setPrecision(value);
+    public void setParametersPrecsion(double value) {
+        minimizer.setParametersPrecision(value);
     }
 }

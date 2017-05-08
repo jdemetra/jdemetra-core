@@ -284,30 +284,13 @@ public enum FastSymmetricMatrixAlgorithms implements SymmetricMatrix.Algorithms 
         }
     }
 
-//    @Override
-//    public void XSXt(Matrix S, Matrix X, Matrix M) {
-//        Matrix XS = X.times(S);
-//        DataBlockIterator rows = XS.rowsIterator(), cols = X.rowsIterator(), mcols=M.columnsIterator();
-//        int c = 0;
-//        while (cols.hasNext()) {
-//            int idx=c;
-//            rows.reset(c++);
-//            DataBlock mcol = mcols.next();
-//            DataBlock col = cols.next();
-//            while (rows.hasNext()) {
-//                mcol.set(idx++, rows.next().dot(col));
-//            }
-//        }
-//        SymmetricMatrix.fromLower(M);
-//    }
-
     @Override
     public void XtSX(Matrix S, Matrix X, Matrix M) {
         Matrix SX = S.times(X);
-        DataBlockIterator rows = SX.columnsIterator(), cols = X.columnsIterator(), mcols=M.columnsIterator();
+        DataBlockIterator rows = SX.columnsIterator(), cols = X.columnsIterator(), mcols = M.columnsIterator();
         int c = 0;
         while (cols.hasNext()) {
-            int idx=c;
+            int idx = c;
             rows.reset(c++);
             DataBlock mcol = mcols.next();
             DataBlock col = cols.next();
@@ -316,5 +299,21 @@ public enum FastSymmetricMatrixAlgorithms implements SymmetricMatrix.Algorithms 
             }
         }
         SymmetricMatrix.fromLower(M);
+    }
+
+    @Override
+    public Matrix inverse(Matrix S) {
+        try {
+            Matrix lower = S.deepClone();
+            lcholesky(lower);
+            lower = LowerTriangularMatrix.inverse(lower);
+            return LtL(lower);
+        } catch (MatrixException e) {
+            CroutDoolittle cr = new CroutDoolittle();
+            cr.decompose(S);
+            Matrix I = Matrix.identity(S.getRowsCount());
+            cr.solve(I);
+            return I;
+        }
     }
 }
