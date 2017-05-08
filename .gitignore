@@ -21,3 +21,6 @@
 /demetra-sts/target/
 /demetra-core/nbproject/
 /demetra-algorithms/nbproject/
+/demetra-benchmarking/target/
+/demetra-benchmarking-types/target/
+/demetra-benchmarking-types/nbproject/

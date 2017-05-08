@@ -117,7 +117,7 @@ public final class DataBlock implements Doubles {
      * @param data The Doubles being copied
      * @return
      */
-    public static DataBlock copyOf(Doubles data) {
+    public static DataBlock copyOf(Sequence.OfDouble data) {
         double[] x = new double[data.length()];
         data.copyTo(x, 0);
         return new DataBlock(x, 0, x.length, 1);
