@@ -54,7 +54,7 @@ class Sequences {
         @Override
         public E next() {
             if (hasNext()) {
-                return seq.elementAt(cur++);
+                return seq.get(cur++);
             } else {
                 throw new NoSuchElementException();
             }
@@ -63,24 +63,24 @@ class Sequences {
 
     <E> void forEach(Sequence<E> seq, Consumer<? super E> action) {
         for (int i = 0; i < seq.length(); i++) {
-            action.accept(seq.elementAt(i));
+            action.accept(seq.get(i));
         }
     }
 
     <E> E[] toArray(Sequence<E> seq, IntFunction<E[]> generator) {
         E[] result = generator.apply(seq.length());
         for (int i = 0; i < result.length; i++) {
-            result[i] = seq.elementAt(i);
+            result[i] = seq.get(i);
         }
         return result;
     }
 
     static final class DoubleIterator implements PrimitiveIterator.OfDouble {
 
-        private final Sequence.OfDouble seq;
+        private final DoubleSequence seq;
         private int cur = 0;
 
-        DoubleIterator(Sequence.OfDouble seq) {
+        DoubleIterator(DoubleSequence seq) {
             this.seq = seq;
         }
 
@@ -106,30 +106,30 @@ class Sequences {
         }
     }
 
-    void forEach(Sequence.OfDouble seq, DoubleConsumer action) {
+    void forEach(DoubleSequence seq, DoubleConsumer action) {
         for (int i = 0; i < seq.length(); i++) {
             action.accept(seq.get(i));
         }
     }
 
-    Spliterator.OfDouble spliterator(Sequence.OfDouble seq) {
+    Spliterator.OfDouble spliterator(DoubleSequence seq) {
         return Spliterators.spliterator(seq.iterator(), seq.length(), Spliterator.ORDERED);
     }
 
-    DoubleStream stream(Sequence.OfDouble seq) {
+    DoubleStream stream(DoubleSequence seq) {
         return StreamSupport.doubleStream(seq::spliterator,
                 Spliterator.SUBSIZED | Spliterator.SIZED | Spliterator.ORDERED,
                 false);
     }
 
-    void copyTo(Sequence.OfDouble seq, double[] buffer, int offset) {
+    void copyTo(DoubleSequence seq, double[] buffer, int offset) {
         int n = seq.length();
         for (int i = 0; i < n; ++i) {
             buffer[offset + i] = seq.get(i);
         }
     }
 
-    double[] toArray(Sequence.OfDouble seq) {
+    double[] toArray(DoubleSequence seq) {
         double[] result = new double[seq.length()];
         for (int i = 0; i < result.length; ++i) {
             result[i] = seq.get(i);
@@ -137,7 +137,7 @@ class Sequences {
         return result;
     }
 
-    boolean allMatch(Sequence.OfDouble seq, DoublePredicate pred) {
+    boolean allMatch(DoubleSequence seq, DoublePredicate pred) {
         int n = seq.length();
         for (int i = 0; i < n; ++i) {
             if (!pred.test(seq.get(i))) {
@@ -147,7 +147,17 @@ class Sequences {
         return true;
     }
 
-    int firstIndexOf(Sequence.OfDouble seq, DoublePredicate pred) {
+    boolean anyMatch(DoubleSequence seq, DoublePredicate pred) {
+        int n = seq.length();
+        for (int i = 0; i < n; ++i) {
+            if (pred.test(seq.get(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    int firstIndexOf(DoubleSequence seq, DoublePredicate pred) {
         int n = seq.length();
         for (int i = 0; i < n; ++i) {
             if (pred.test(seq.get(i))) {
@@ -157,7 +167,7 @@ class Sequences {
         return n;
     }
 
-    int lastIndexOf(Sequence.OfDouble seq, DoublePredicate pred) {
+    int lastIndexOf(DoubleSequence seq, DoublePredicate pred) {
         int n = seq.length();
         for (int i = n - 1; i >= 0; --i) {
             if (pred.test(seq.get(i))) {
@@ -167,7 +177,7 @@ class Sequences {
         return -1;
     }
 
-    double reduce(Sequence.OfDouble seq, double initial, DoubleBinaryOperator fn) {
+    double reduce(DoubleSequence seq, double initial, DoubleBinaryOperator fn) {
         double cur = initial;
         int n = seq.length();
         for (int i = 0; i < n; ++i) {

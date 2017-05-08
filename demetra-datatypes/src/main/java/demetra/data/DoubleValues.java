@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 @Immutable
 @lombok.EqualsAndHashCode
 @lombok.ToString
-public final class DoubleValues implements Sequence.OfDouble {
+public final class DoubleValues implements DoubleSequence {
 
     public static final DoubleValues EMPTY = new DoubleValues(new double[0]);
 
@@ -56,7 +56,7 @@ public final class DoubleValues implements Sequence.OfDouble {
     }
 
     @Nonnull
-    public static DoubleValues of(@Nonnull Sequence.OfDouble seq) {
+    public static DoubleValues of(@Nonnull DoubleSequence seq) {
         return seq instanceof DoubleValues ? (DoubleValues) seq : ofInternal(seq.toArray());
     }
 

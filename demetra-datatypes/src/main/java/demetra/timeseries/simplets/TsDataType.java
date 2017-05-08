@@ -81,8 +81,8 @@ public final class TsDataType implements ITimeSeries.OfDouble<TsPeriod, TsObserv
     }
 
     @Override
-    public TsObservation elementAt(int index) throws IndexOutOfBoundsException {
-        return new TsObservation(getPeriod(index), getDoubleValue(index));
+    public TsObservation get(int index) throws IndexOutOfBoundsException {
+        return new TsObservation(getPeriod(index), getValue(index));
     }
 
     /**
@@ -116,7 +116,7 @@ public final class TsDataType implements ITimeSeries.OfDouble<TsPeriod, TsObserv
     public String toString() {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < domain.length(); ++i) {
-            builder.append(domain.elementAt(i)).append('\t').append(values.get(i));
+            builder.append(domain.get(i)).append('\t').append(values.get(i));
             builder.append(System.lineSeparator());
         }
         return builder.toString();

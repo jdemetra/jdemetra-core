@@ -16,6 +16,7 @@
  */
 package demetra.ssf.univariate;
 
+import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.data.Sequence;
 
@@ -23,7 +24,7 @@ import demetra.data.Sequence;
  *
  * @author Jean Palate
  */
-public interface ISsfData extends Sequence.OfDouble{
+public interface ISsfData extends DoubleSequence{
 
 
      /**

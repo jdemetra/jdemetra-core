@@ -47,7 +47,7 @@ public final class DiscreteDomain implements ITimeDomain<TimePoint> {
     }
 
     @Override
-    public TimePoint elementAt(int index) {
+    public TimePoint get(int index) {
         return TimePoint.of(dates[index]);
     }
 

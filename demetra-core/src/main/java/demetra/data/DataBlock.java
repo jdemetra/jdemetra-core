@@ -22,7 +22,6 @@ import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
-import demetra.utilities.DoubleList;
 import java.util.function.Supplier;
 
 /**
@@ -117,7 +116,7 @@ public final class DataBlock implements Doubles {
      * @param data The Doubles being copied
      * @return
      */
-    public static DataBlock copyOf(Sequence.OfDouble data) {
+    public static DataBlock copyOf(DoubleSequence data) {
         double[] x = new double[data.length()];
         data.copyTo(x, 0);
         return new DataBlock(x, 0, x.length, 1);

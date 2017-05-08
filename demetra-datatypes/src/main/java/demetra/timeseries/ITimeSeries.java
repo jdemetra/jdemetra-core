@@ -16,8 +16,9 @@
  */
 package demetra.timeseries;
 
+import demetra.data.BaseSequence;
+import demetra.data.DoubleSequence;
 import demetra.data.Sequence;
-import internal.Tripwire;
 import java.util.function.ObjDoubleConsumer;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -43,7 +44,7 @@ public interface ITimeSeries<P extends ITimePeriod, V extends Number, O extends 
      *
      * @return The content of this time series.
      */
-    Sequence<V> getValues();
+    BaseSequence<V> getValues();
 
     @Nonnegative
     @Override
@@ -53,33 +54,21 @@ public interface ITimeSeries<P extends ITimePeriod, V extends Number, O extends 
 
     @Nonnull
     default P getPeriod(@Nonnegative int index) throws IndexOutOfBoundsException {
-        return getDomain().elementAt(index);
-    }
-
-    default V getValue(@Nonnegative int index) throws IndexOutOfBoundsException {
-        return getValues().elementAt(index);
+        return getDomain().get(index);
     }
 
     interface OfDouble<P extends ITimePeriod, O extends TimeObservation.OfDouble<P>> extends ITimeSeries<P, Double, O> {
 
         @Override
-        Sequence.OfDouble getValues();
+        DoubleSequence getValues();
 
-        default double getDoubleValue(@Nonnegative int index) throws IndexOutOfBoundsException {
+        default double getValue(@Nonnegative int index) throws IndexOutOfBoundsException {
             return getValues().get(index);
-        }
-
-        @Override
-        default Double getValue(int index) throws IndexOutOfBoundsException {
-            if (Tripwire.ENABLED) {
-                Tripwire.trip(getClass(), "{0} calling ITimeSeries.OfDouble.getValue()");
-            }
-            return getDoubleValue(index);
         }
 
         default void forEach(@Nonnull ObjDoubleConsumer<P> consumer) {
             for (int i = 0; i < length(); i++) {
-                consumer.accept(getPeriod(i), getDoubleValue(i));
+                consumer.accept(getPeriod(i), getValue(i));
             }
         }
     }

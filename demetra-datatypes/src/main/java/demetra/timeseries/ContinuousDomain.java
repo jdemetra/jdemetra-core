@@ -47,7 +47,7 @@ public final class ContinuousDomain implements ITimeDomain<TimePeriod> {
     }
 
     @Override
-    public TimePeriod elementAt(int index) {
+    public TimePeriod get(int index) {
         return TimePeriod.of(dates[index], dates[index + 1]);
     }
 

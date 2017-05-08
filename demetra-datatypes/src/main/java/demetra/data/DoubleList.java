@@ -13,14 +13,13 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-package demetra.utilities;
+ */
+package demetra.data;
 
 import demetra.design.PrimitiveReplacementOf;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Spliterator;
-import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleUnaryOperator;
 import java.util.stream.DoubleStream;
@@ -31,12 +30,12 @@ import java.util.stream.DoubleStream;
  * @author Philippe Charles
  */
 @PrimitiveReplacementOf(generic = List.class, primitive = double.class)
-public final class DoubleList {
+public final class DoubleList implements DoubleSequence {
 
     private static final int DEFAULT_SIZE = 128;
-    private double[] _array;
-    private int _limit;
-    private double fillval = 0;
+
+    private double[] values;
+    private int length;
 
     /**
      * create an DoubleList of default size
@@ -45,33 +44,64 @@ public final class DoubleList {
         this(DEFAULT_SIZE);
     }
 
-    public DoubleList(final int initialCapacity) {
-        this(initialCapacity, 0);
-    }
-
-    /**
-     * create a copy of an existing DoubleList
-     *
-     * @param list the existing DoubleList
-     */
-    public DoubleList(final DoubleList list) {
-        this(list._array.length);
-        System.arraycopy(list._array, 0, _array, 0, _array.length);
-        _limit = list._limit;
-    }
-
     /**
      * create an DoubleList with a predefined initial size
      *
      * @param initialCapacity the size for the internal array
      */
-    public DoubleList(final int initialCapacity, double fillvalue) {
-        _array = new double[initialCapacity];
-        if (fillval != 0) {
-            fillval = fillvalue;
-            Arrays.fill(_array, fillval);
+    public DoubleList(int initialCapacity) {
+        values = new double[initialCapacity];
+        length = 0;
+    }
+
+    /**
+     * create a copy of an existing DoubleSequence
+     *
+     * @param list the existing DoubleSequence
+     */
+    public DoubleList(DoubleSequence list) {
+        values = list.toArray();
+        length = values.length;
+    }
+
+    @Override
+    public int length() {
+        return length;
+    }
+
+    @Override
+    public double get(int index) {
+        if (index >= length) {
+            throw new IndexOutOfBoundsException();
         }
-        _limit = 0;
+        return values[index];
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return length == 0;
+    }
+
+    @Override
+    public double[] toArray() {
+        double[] result = new double[length];
+        System.arraycopy(values, 0, result, 0, length);
+        return result;
+    }
+
+    @Override
+    public void copyTo(double[] buffer, int offset) {
+        System.arraycopy(values, 0, buffer, offset, length);
+    }
+
+    @Override
+    public DoubleStream stream() {
+        return Arrays.stream(values, 0, length);
+    }
+
+    @Override
+    public Spliterator.OfDouble spliterator() {
+        return Arrays.spliterator(values, 0, length);
     }
 
     /**
@@ -83,21 +113,20 @@ public final class DoubleList {
      * @exception IndexOutOfBoundsException if the index is out of range (index
      * < 0 || index > size()).
      */
-    public void add(final int index, final double value) {
-        if (index > _limit) {
+    public void add(int index, double value) {
+        if (index > length) {
             throw new IndexOutOfBoundsException();
-        } else if (index == _limit) {
+        } else if (index == length) {
             add(value);
         } else {
 
             // index < limit -- insert into the middle
-            if (_limit == _array.length) {
-                growArray(_limit * 2);
+            if (length == values.length) {
+                growArray(length * 2);
             }
-            System.arraycopy(_array, index, _array, index + 1,
-                    _limit - index);
-            _array[ index] = value;
-            _limit++;
+            System.arraycopy(values, index, values, index + 1, length - index);
+            values[index] = value;
+            length++;
         }
     }
 
@@ -108,11 +137,11 @@ public final class DoubleList {
      *
      * @return true (as per the general contract of the Collection.add method).
      */
-    public boolean add(final double value) {
-        if (_limit == _array.length) {
-            growArray(_limit * 2);
+    public boolean add(double value) {
+        if (length == values.length) {
+            growArray(length * 2);
         }
-        _array[ _limit++] = value;
+        values[length++] = value;
         return true;
     }
 
@@ -128,13 +157,13 @@ public final class DoubleList {
      *
      * @return true if this list changed as a result of the call.
      */
-    public boolean addAll(final DoubleList c) {
-        if (c._limit != 0) {
-            if ((_limit + c._limit) > _array.length) {
-                growArray(_limit + c._limit);
+    public boolean addAll(DoubleSequence c) {
+        if (!c.isEmpty()) {
+            if ((length + c.length()) > values.length) {
+                growArray(length + c.length());
             }
-            System.arraycopy(c._array, 0, _array, _limit, c._limit);
-            _limit += c._limit;
+            c.copyTo(values, length);
+            length += c.length();
         }
         return true;
     }
@@ -158,22 +187,21 @@ public final class DoubleList {
      * @exception IndexOutOfBoundsException if the index is out of range (index
      * < 0 || index > size())
      */
-    public boolean addAll(final int index, final DoubleList c) {
-        if (index > _limit) {
+    public boolean addAll(int index, DoubleSequence c) {
+        if (index > length) {
             throw new IndexOutOfBoundsException();
         }
-        if (c._limit != 0) {
-            if ((_limit + c._limit) > _array.length) {
-                growArray(_limit + c._limit);
+        if (c.length() != 0) {
+            if ((length + c.length()) > values.length) {
+                growArray(length + c.length());
             }
 
             // make a hole
-            System.arraycopy(_array, index, _array, index + c._limit,
-                    _limit - index);
+            System.arraycopy(values, index, values, index + c.length(), length - index);
 
             // fill it in
-            System.arraycopy(c._array, 0, _array, index, c._limit);
-            _limit += c._limit;
+            c.copyTo(values, index);
+            length += c.length();
         }
         return true;
     }
@@ -183,7 +211,7 @@ public final class DoubleList {
      * this call returns (unless it throws an exception).
      */
     public void clear() {
-        _limit = 0;
+        length = 0;
     }
 
     /**
@@ -191,19 +219,12 @@ public final class DoubleList {
      * returns true if and only if this list contains at least one element e
      * such that o == e
      *
-     * @param o element whose presence in this list is to be tested.
+     * @param value element whose presence in this list is to be tested.
      *
      * @return true if this list contains the specified element.
      */
-    public boolean contains(final double o) {
-        boolean rval = false;
-
-        for (int j = 0; !rval && (j < _limit); j++) {
-            if (_array[ j] == o) {
-                rval = true;
-            }
-        }
-        return rval;
+    public boolean contains(double value) {
+        return anyMatch(o -> o == value);
     }
 
     /**
@@ -215,17 +236,8 @@ public final class DoubleList {
      * @return true if this list contains all of the elements of the specified
      * collection.
      */
-    public boolean containsAll(final DoubleList c) {
-        boolean rval = true;
-
-        if (this != c) {
-            for (int j = 0; rval && (j < c._limit); j++) {
-                if (!contains(c._array[ j])) {
-                    rval = false;
-                }
-            }
-        }
-        return rval;
+    public boolean containsAll(DoubleSequence c) {
+        return this != c ? allMatch(o -> contains(o)) : true;
     }
 
     /**
@@ -248,12 +260,12 @@ public final class DoubleList {
         if (!rval && (o != null) && (o.getClass() == this.getClass())) {
             DoubleList other = (DoubleList) o;
 
-            if (other._limit == _limit) {
+            if (other.length == length) {
 
                 // assume match
                 rval = true;
-                for (int j = 0; rval && (j < _limit); j++) {
-                    rval = _array[ j] == other._array[ j];
+                for (int j = 0; rval && (j < length); j++) {
+                    rval = values[j] == other.values[j];
                 }
             }
         }
@@ -261,28 +273,11 @@ public final class DoubleList {
     }
 
     /**
-     * Returns the element at the specified position in this list.
-     *
-     * @param index index of element to return.
-     *
-     * @return the element at the specified position in this list.
-     *
-     * @exception IndexOutOfBoundsException if the index is out of range (index
-     * < 0 || index >= size()).
-     */
-    public double get(final int index) {
-        if (index >= _limit) {
-            throw new IndexOutOfBoundsException();
-        }
-        return _array[ index];
-    }
-
-    /**
      * Returns the hash code value for this list. The hash code of a list is
      * defined to be the result of the following calculation:
      *
      * <code>
-     * 
+     *
      * hashCode = 1;
      * Iterator i = list.iterator();
      * while (i.hasNext()) {
@@ -299,7 +294,7 @@ public final class DoubleList {
      */
     @Override
     public int hashCode() {
-        return Arrays.hashCode(_array);
+        return Arrays.hashCode(values);
     }
 
     /**
@@ -308,32 +303,13 @@ public final class DoubleList {
      * returns the lowest index i such that (o == get(i)), or -1 if there is no
      * such index.
      *
-     * @param o element to search for.
+     * @param value element to search for.
      *
      * @return the index in this list of the first occurrence of the specified
      * element, or -1 if this list does not contain this element.
      */
-    public int indexOf(final double o) {
-        int rval = 0;
-
-        for (; rval < _limit; rval++) {
-            if (o == _array[ rval]) {
-                break;
-            }
-        }
-        if (rval == _limit) {
-            rval = -1;   // didn't find it
-        }
-        return rval;
-    }
-
-    /**
-     * Returns true if this list contains no elements.
-     *
-     * @return true if this list contains no elements.
-     */
-    public boolean isEmpty() {
-        return _limit == 0;
+    public int indexOf(double value) {
+        return indexOf(o -> o == value);
     }
 
     /**
@@ -342,20 +318,13 @@ public final class DoubleList {
      * returns the highest index i such that (o == get(i)), or -1 if there is no
      * such index.
      *
-     * @param o element to search for.
+     * @param value element to search for.
      *
      * @return the index in this list of the last occurrence of the specified
      * element, or -1 if this list does not contain this element.
      */
-    public int lastIndexOf(final double o) {
-        int rval = _limit - 1;
-
-        for (; rval >= 0; rval--) {
-            if (o == _array[ rval]) {
-                break;
-            }
-        }
-        return rval;
+    public int lastIndexOf(double value) {
+        return lastIndexOf(o -> o == value);
     }
 
     /**
@@ -371,13 +340,13 @@ public final class DoubleList {
      * < 0 || index >= size()).
      */
     public double remove(final int index) {
-        if (index >= _limit) {
+        if (index >= length) {
             throw new IndexOutOfBoundsException();
         }
-        double rval = _array[ index];
+        double rval = values[index];
 
-        System.arraycopy(_array, index + 1, _array, index, _limit - index);
-        _limit--;
+        System.arraycopy(values, index + 1, values, index, length - index);
+        length--;
         return rval;
     }
 
@@ -394,12 +363,12 @@ public final class DoubleList {
     public boolean removeValue(final double o) {
         boolean rval = false;
 
-        for (int j = 0; !rval && (j < _limit); j++) {
-            if (o == _array[ j]) {
-                if (j + 1 < _limit) {
-                    System.arraycopy(_array, j + 1, _array, j, _limit - j);
+        for (int j = 0; !rval && (j < length); j++) {
+            if (o == values[j]) {
+                if (j + 1 < length) {
+                    System.arraycopy(values, j + 1, values, j, length - j);
                 }
-                _limit--;
+                length--;
                 rval = true;
             }
         }
@@ -415,11 +384,11 @@ public final class DoubleList {
      *
      * @return true if this list changed as a result of the call.
      */
-    public boolean removeAll(final DoubleList c) {
+    public boolean removeAll(DoubleSequence c) {
         boolean rval = false;
 
-        for (int j = 0; j < c._limit; j++) {
-            if (removeValue(c._array[ j])) {
+        for (int j = 0; j < c.length(); j++) {
+            if (removeValue(c.get(j))) {
                 rval = true;
             }
         }
@@ -438,8 +407,8 @@ public final class DoubleList {
     public boolean retainAll(final DoubleList c) {
         boolean rval = false;
 
-        for (int j = 0; j < _limit;) {
-            if (!c.contains(_array[ j])) {
+        for (int j = 0; j < length;) {
+            if (!c.contains(values[j])) {
                 remove(j);
                 rval = true;
             } else {
@@ -461,13 +430,13 @@ public final class DoubleList {
      * @exception IndexOutOfBoundsException if the index is out of range (index
      * < 0 || index >= size()).
      */
-    public double set(final int index, final double element) {
-        if (index >= _limit) {
+    public double set(int index, double element) {
+        if (index >= length) {
             throw new IndexOutOfBoundsException();
         }
-        double rval = _array[ index];
+        double rval = values[index];
 
-        _array[ index] = element;
+        values[index] = element;
         return rval;
     }
 
@@ -478,21 +447,7 @@ public final class DoubleList {
      * @return the number of elements in this DoubleList
      */
     public int size() {
-        return _limit;
-    }
-
-    /**
-     * Returns an array containing all of the elements in this list in proper
-     * sequence. Obeys the general contract of the Collection.toArray method.
-     *
-     * @return an array containing all of the elements in this list in proper
-     * sequence.
-     */
-    public double[] toArray() {
-        double[] rval = new double[_limit];
-
-        System.arraycopy(_array, 0, rval, 0, _limit);
-        return rval;
+        return length;
     }
 
     /**
@@ -506,40 +461,13 @@ public final class DoubleList {
      *
      * @return an array containing the elements of this list.
      */
-    public double[] toArray(final double[] a) {
-        double[] rval;
-
-        if (a.length == _limit) {
-            System.arraycopy(_array, 0, a, 0, _limit);
-            rval = a;
+    public double[] toArray(double[] a) {
+        if (a.length == length) {
+            System.arraycopy(values, 0, a, 0, length);
+            return a;
         } else {
-            rval = toArray();
+            return toArray();
         }
-        return rval;
-    }
-
-    private void growArray(final int new_size) {
-        int size = (new_size == _array.length) ? new_size + 1
-                : new_size;
-        double[] new_array = new double[size];
-
-        if (fillval != 0) {
-            Arrays.fill(new_array, _array.length, new_array.length, fillval);
-        }
-
-        System.arraycopy(_array, 0, new_array, 0, _limit);
-        _array = new_array;
-    }
-    
-    /**
-     * Returns a sequential {@code Stream} with this collection as its source.
-     *
-     * @return a sequential {@code Stream} over the elements in this collection
-     * @see java.util.Collection#stream()
-     * @since 2.2.0
-     */
-    public DoubleStream stream() {
-        return Arrays.stream(_array, 0, _limit);
     }
 
     /**
@@ -554,8 +482,8 @@ public final class DoubleList {
      */
     public void replaceAll(DoubleUnaryOperator operator) {
         java.util.Objects.requireNonNull(operator);
-        for (int i = 0; i < _limit; i++) {
-            _array[i] = operator.applyAsDouble(_array[i]);
+        for (int i = 0; i < length; i++) {
+            values[i] = operator.applyAsDouble(values[i]);
         }
     }
 
@@ -566,18 +494,7 @@ public final class DoubleList {
      * @since 2.2.0
      */
     public void sort() {
-        Arrays.sort(_array, 0, _limit);
-    }
-
-    /**
-     * Creates a {@link Spliterator} over the elements in this list.
-     *
-     * @return a {@code Spliterator} over the elements in this list
-     * @see java.util.List#spliterator()
-     * @since 2.2.0
-     */
-    public Spliterator.OfDouble spliterator() {
-        return Arrays.spliterator(_array, 0, _limit);
+        Arrays.sort(values, 0, length);
     }
 
     /**
@@ -596,8 +513,8 @@ public final class DoubleList {
         java.util.Objects.requireNonNull(filter);
         boolean removed = false;
         int i = 0;
-        while (i < _limit) {
-            if (filter.test(_array[i])) {
+        while (i < length) {
+            if (filter.test(values[i])) {
                 remove(i);
                 removed = true;
             } else {
@@ -607,19 +524,10 @@ public final class DoubleList {
         return removed;
     }
 
-    /**
-     * Performs the given action for each element of the {@code List} until
-     * all elements have been processed or the action throws an exception.
-     *
-     * @param action The action to be performed for each element
-     * @throws NullPointerException if the specified action is null
-     * @see java.lang.Iterable#forEach(java.util.function.Consumer)
-     * @since 2.2.0
-     */
-    public void forEach(DoubleConsumer action) {
-        java.util.Objects.requireNonNull(action);
-        for (int i = 0; i < _limit; i++) {
-            action.accept(_array[i]);
-        }
+    private void growArray(int newSize) {
+        int size = (newSize == values.length) ? newSize + 1 : newSize;
+        double[] newArray = new double[size];
+        System.arraycopy(values, 0, newArray, 0, length);
+        values = newArray;
     }
 }

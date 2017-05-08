@@ -30,7 +30,7 @@ import java.util.function.IntToDoubleFunction;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface Doubles extends Sequence.OfDouble {
+public interface Doubles extends DoubleSequence {
 
     //<editor-fold defaultstate="collapsed" desc="Static factories">
     /**

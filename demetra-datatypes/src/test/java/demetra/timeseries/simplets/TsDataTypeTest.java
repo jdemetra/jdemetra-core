@@ -23,7 +23,6 @@ import java.time.LocalDate;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
-import internal.Tripwire;
 
 /**
  *
@@ -33,8 +32,6 @@ public class TsDataTypeTest {
 
     @Demo
     public static void main(String[] args) {
-        System.setProperty(Tripwire.TRIPWIRE_PROPERTY, Boolean.TRUE.toString());
-
         TsDataType ts = TsDataType.of(TsPeriod.year(2001), DoubleValues.ofInternal(3.14, 7));
 
         System.out.println("\n[Tests ...]");
@@ -44,7 +41,7 @@ public class TsDataTypeTest {
 
         System.out.println("\n[Test for]");
         for (int i = 0; i < ts.length(); i++) {
-            System.out.println(ts.elementAt(i));
+            System.out.println(ts.get(i));
         }
 
         System.out.println("\n[Test forEach]");
@@ -63,24 +60,16 @@ public class TsDataTypeTest {
         System.out.println("\n[Test forEach(k, v)]");
         ts.forEach((k, v) -> System.out.println(k + ":" + v + " "));
 
-        System.out.println("\n[Test getPeriod / getDoubleValue]");
+        System.out.println("\n[Test getPeriod / getValue]");
         for (int i = 0; i < ts.length(); i++) {
-            System.out.println(ts.getPeriod(i) + " -> " + ts.getDoubleValue(i));
-        }
-
-        System.out.println("\n[Test ITimeSeries]");
-        {
-            ITimeSeries<?, ?, ?> x = ts;
-            for (int i = 0; i < x.length(); i++) {
-                System.out.println(x.getPeriod(i).start() + " -> " + x.getValue(i).doubleValue());
-            }
+            System.out.println(ts.getPeriod(i) + " -> " + ts.getValue(i));
         }
 
         System.out.println("\n[Test ITimeSeries.OfDouble]");
         {
             ITimeSeries.OfDouble<?, ?> y = ts;
             for (int i = 0; i < y.length(); i++) {
-                System.out.println(y.getPeriod(i).start() + " -> " + y.getDoubleValue(i));
+                System.out.println(y.getPeriod(i).start() + " -> " + y.getValue(i));
             }
         }
     }

@@ -14,20 +14,38 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries;
+package demetra.data;
+
+import java.util.Iterator;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 
 /**
  *
  * @author Philippe Charles
- * @param <P> period type
- * @param <V> value type
+ * @param <E>
  */
-public interface TimeObservation<P extends ITimePeriod, V> {
+public interface BaseSequence<E> {
 
-    P getPeriod();
+    /**
+     * Returns the length of this sequence.
+     *
+     * @return the number of <code>values</code>s in this sequence
+     */
+    @Nonnegative
+    int length();
 
-    interface OfDouble<P extends ITimePeriod> extends TimeObservation<P, Double> {
+    default boolean isEmpty() {
+        return length() == 0;
+    }
 
-        double getValue();
+    @Nonnull
+    Iterator<E> iterator();
+
+    @Nonnull
+    default Spliterator<E> spliterator() {
+        return Spliterators.spliterator(iterator(), length(), 0);
     }
 }

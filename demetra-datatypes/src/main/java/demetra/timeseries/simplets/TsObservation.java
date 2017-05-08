@@ -28,5 +28,5 @@ import demetra.timeseries.TimeObservation;
 public final class TsObservation implements TimeObservation.OfDouble<TsPeriod> {
 
     TsPeriod period;
-    double doubleValue;
+    double value;
 }

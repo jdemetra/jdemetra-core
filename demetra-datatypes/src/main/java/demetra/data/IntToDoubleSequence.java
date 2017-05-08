@@ -22,7 +22,7 @@ import java.util.function.IntToDoubleFunction;
  *
  * @author Philippe Charles
  */
-public final class IntToDoubleSequence implements Sequence.OfDouble {
+public final class IntToDoubleSequence implements DoubleSequence {
 
     private final int length;
     private final IntToDoubleFunction fn;

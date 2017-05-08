@@ -18,7 +18,6 @@ package demetra.data;
 
 import static demetra.data.DoubleValues.EMPTY;
 import internal.Demo;
-import internal.Tripwire;
 import java.util.stream.DoubleStream;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
@@ -32,16 +31,14 @@ public class DoubleValuesTest {
 
     @Demo
     public static void main(String[] args) {
-        System.setProperty(Tripwire.TRIPWIRE_PROPERTY, Boolean.TRUE.toString());
-
         DoubleValues values = DoubleValues.ofInternal(3.14, 3, 5, 7);
-        System.out.println(DoubleValues.of(values.doubleStream().skip(1).map(o -> o * 2)));
+        System.out.println(DoubleValues.of(values.stream().skip(1).map(o -> o * 2)));
 
         double[] tmp = values.toArray();
         tmp[2] = 123;
         System.out.println(DoubleValues.ofInternal(tmp));
 
-        System.out.println(DoubleValues.of(DoubleStream.concat(DoubleStream.of(777), values.doubleStream())));
+        System.out.println(DoubleValues.of(DoubleStream.concat(DoubleStream.of(777), values.stream())));
 
         double[] buffer = new double[values.length() + 1];
         values.copyTo(buffer, 1);
