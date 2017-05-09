@@ -90,22 +90,14 @@
 
         <!-- several apps -->
         <module>jbench</module>
-        <module>demetra-datatypes</module>
-        <module>demetra-core</module>
-        <module>demetra-algorithms</module>
-        <module>demetra-eco</module>
-        <module>demetra-algorithms-ex</module>
-        <module>demetra-ssf</module>
-        <module>demetra-sts</module>
-        <module>demetra-stl</module>
-        <module>demetra-benchmarking</module>
-        <module>demetra-regarima</module>
-        <module>demetra-seats</module>
-        <module>demetra-arima</module>
-        <module>demetra-ucarima</module>
-        <module>demetra-tramo</module>
-        <module>demetra-sacore</module>
-        <module>demetra-benchmarking-types</module>
+		
+		<!-- JD3 -->
+        <module>basic-tools</module>
+        <module>core-econometrics</module>
+        <module>tramo-seats</module>
+        <module>structural-ts</module>
+        <module>sa</module>
+        <module>benchmarking</module>
     </modules>
 	
     <dependencyManagement>
