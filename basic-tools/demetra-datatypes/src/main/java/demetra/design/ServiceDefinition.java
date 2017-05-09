@@ -30,7 +30,7 @@ import java.util.ServiceLoader;
  * @author Philippe Charles
  */
 @Target({ElementType.TYPE})
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface ServiceDefinition {
 
@@ -39,6 +39,8 @@ public @interface ServiceDefinition {
      * service relative to others. Lower-numbered services are returned in the
      * lookup result first. Services with no specified position are returned
      * last.
+     *
+     * @return
      */
     boolean hasPosition() default false;
 

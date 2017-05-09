@@ -5,13 +5,11 @@
  */
 package demetra.maths.matrices.impl;
 
-import demetra.maths.matrices.impl.FastSymmetricMatrixAlgorithms;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import java.util.Random;
 import demetra.maths.matrices.MatrixComparator;
 import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.matrices.impl.FastSymmetricMatrixAlgorithms;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -21,8 +19,7 @@ import static org.junit.Assert.*;
  */
 public class FastSymmetricMatrixAlgorithmsTest {
 
-    public FastSymmetricMatrixAlgorithmsTest() {
-    }
+    FastSymmetricMatrixAlgorithms algo = new FastSymmetricMatrixAlgorithms();
 
     @Test
     public void testCholesky() {
@@ -31,13 +28,13 @@ public class FastSymmetricMatrixAlgorithmsTest {
 //        L.set((i, j) -> i >= j ? (i + 1) * (j + 1) * (j + 1) : 0);
         Random rnd = new Random(0);
         L.set((i, j) -> i >= j ? rnd.nextDouble() : 0);
-        Matrix M = FastSymmetricMatrixAlgorithms.INSTANCE.XXt(L);
+        Matrix M = algo.XXt(L);
 
         Matrix O = M.deepClone();
         ec.tstoolkit.maths.matrices.Matrix m = MatrixComparator.toLegacy(M);
         ec.tstoolkit.maths.matrices.Matrix o = m.clone();
         ec.tstoolkit.maths.matrices.SymmetricMatrix.lcholesky(m, 1e-9);
-        FastSymmetricMatrixAlgorithms.INSTANCE.lcholesky(M, 1e-9);
+        algo.lcholesky(M, 1e-9);
         assertTrue(MatrixComparator.distance(M, m) == 0);
 
 //        long t0 = System.currentTimeMillis();
@@ -51,7 +48,7 @@ public class FastSymmetricMatrixAlgorithmsTest {
 //        t0 = System.currentTimeMillis();
 //        for (int k = 0; k < K; ++k) {
 //            Matrix P = O.deepClone();
-//            FastSymmetricMatrixAlgorithms.INSTANCE.lcholesky(P, 1e-9);
+//            algo.lcholesky(P, 1e-9);
 //        }
 //        t1 = System.currentTimeMillis();
 //        System.out.println("New LCholesky");
@@ -65,13 +62,13 @@ public class FastSymmetricMatrixAlgorithmsTest {
 //        L.set((i, j) -> i >= j ? (i + 1) * (j + 1) * (j + 1) : 0);
         Random rnd = new Random(0);
         L.set((i, j) -> i >= j && (i + 1) % 5 != 0 ? rnd.nextDouble() : 0);
-        Matrix M = FastSymmetricMatrixAlgorithms.INSTANCE.XXt(L);
+        Matrix M = algo.XXt(L);
 
         Matrix O = M.deepClone();
         ec.tstoolkit.maths.matrices.Matrix m = MatrixComparator.toLegacy(M);
         ec.tstoolkit.maths.matrices.Matrix o = m.clone();
         ec.tstoolkit.maths.matrices.SymmetricMatrix.lcholesky(m, 1e-9);
-        FastSymmetricMatrixAlgorithms.INSTANCE.lcholesky(M, 1e-9);
+        algo.lcholesky(M, 1e-9);
         assertTrue(MatrixComparator.distance(M, m) == 0);
     }
 
@@ -80,7 +77,7 @@ public class FastSymmetricMatrixAlgorithmsTest {
         int N = 40, K = 100000;
         Matrix X = Matrix.square(N);
         X.set((i, j) -> (i + 1) * (j + 1) * (j + 1));
-        Matrix M = FastSymmetricMatrixAlgorithms.INSTANCE.XXt(X);
+        Matrix M = algo.XXt(X);
 
         ec.tstoolkit.maths.matrices.Matrix x = MatrixComparator.toLegacy(X);
         ec.tstoolkit.maths.matrices.Matrix m = ec.tstoolkit.maths.matrices.SymmetricMatrix.XXt(x);
@@ -95,7 +92,7 @@ public class FastSymmetricMatrixAlgorithmsTest {
 //        System.out.println(t1 - t0);
 //        t0 = System.currentTimeMillis();
 //        for (int k = 0; k < K; ++k) {
-//             FastSymmetricMatrixAlgorithms.INSTANCE.XXt(X);
+//             algo.XXt(X);
 //        }
 //        t1 = System.currentTimeMillis();
 //        System.out.println("New XXt");
@@ -107,7 +104,7 @@ public class FastSymmetricMatrixAlgorithmsTest {
         int N = 40, K = 100000;
         Matrix X = Matrix.square(N);
         X.set((i, j) -> (i + 1) * (j + 1) * (j + 1));
-        Matrix M = FastSymmetricMatrixAlgorithms.INSTANCE.XtX(X);
+        Matrix M = algo.XtX(X);
 
         ec.tstoolkit.maths.matrices.Matrix x = MatrixComparator.toLegacy(X);
         ec.tstoolkit.maths.matrices.Matrix m = ec.tstoolkit.maths.matrices.SymmetricMatrix.XtX(x);
@@ -122,7 +119,7 @@ public class FastSymmetricMatrixAlgorithmsTest {
 //        System.out.println(t1 - t0);
 //        t0 = System.currentTimeMillis();
 //        for (int k = 0; k < K; ++k) {
-//             FastSymmetricMatrixAlgorithms.INSTANCE.XtX(X);
+//             algo.XtX(X);
 //        }
 //        t1 = System.currentTimeMillis();
 //        System.out.println("New XtX");
@@ -134,7 +131,7 @@ public class FastSymmetricMatrixAlgorithmsTest {
         int N = 20, K = 1000000;
         Matrix L = Matrix.square(N);
         L.set((i, j) -> i >= j ? (i + 1) * (j + 1) * (j + 1) : 0);
-        Matrix M = FastSymmetricMatrixAlgorithms.INSTANCE.LLt(L);
+        Matrix M = algo.LLt(L);
 
         ec.tstoolkit.maths.matrices.Matrix l = MatrixComparator.toLegacy(L);
         ec.tstoolkit.maths.matrices.Matrix m = ec.tstoolkit.maths.matrices.SymmetricMatrix.LLt(l);
@@ -149,7 +146,7 @@ public class FastSymmetricMatrixAlgorithmsTest {
 //        System.out.println(t1 - t0);
 //        t0 = System.currentTimeMillis();
 //        for (int k = 0; k < K; ++k) {
-//             FastSymmetricMatrixAlgorithms.INSTANCE.LLt(L);
+//             algo.LLt(L);
 //        }
 //        t1 = System.currentTimeMillis();
 //        System.out.println("New LLt");
@@ -161,7 +158,7 @@ public class FastSymmetricMatrixAlgorithmsTest {
         int N = 20, K = 1000000;
         Matrix U = Matrix.square(N);
         U.set((i, j) -> i <= j ? (i + 1) * (j + 1) * (j + 1) : 0);
-        Matrix M = FastSymmetricMatrixAlgorithms.INSTANCE.UtU(U);
+        Matrix M = algo.UtU(U);
 
         ec.tstoolkit.maths.matrices.Matrix u = MatrixComparator.toLegacy(U);
         ec.tstoolkit.maths.matrices.Matrix m = ec.tstoolkit.maths.matrices.SymmetricMatrix.UtU(u);
@@ -175,7 +172,7 @@ public class FastSymmetricMatrixAlgorithmsTest {
 //        System.out.println(t1 - t0);
 //        t0 = System.currentTimeMillis();
 //        for (int k = 0; k < K; ++k) {
-//             FastSymmetricMatrixAlgorithms.INSTANCE.UtU(U);
+//             algo.UtU(U);
 //        }
 //        t1 = System.currentTimeMillis();
 //        System.out.println("New UtU");
@@ -187,8 +184,8 @@ public class FastSymmetricMatrixAlgorithmsTest {
         int N = 20, K = 1000000;
         Matrix U = Matrix.square(N);
         U.set((i, j) -> i <= j ? (i + 1) * (j + 1) * (j + 1) : 0);
-        Matrix M = FastSymmetricMatrixAlgorithms.INSTANCE.UUt(U);
-        Matrix X = FastSymmetricMatrixAlgorithms.INSTANCE.XXt(U);
+        Matrix M = algo.UUt(U);
+        Matrix X = algo.XXt(U);
 
         assertTrue(MatrixComparator.distance(M, X) == 0);
 //        long t0 = System.currentTimeMillis();
@@ -200,7 +197,7 @@ public class FastSymmetricMatrixAlgorithmsTest {
 //        System.out.println(t1 - t0);
 //        t0 = System.currentTimeMillis();
 //        for (int k = 0; k < K; ++k) {
-//             FastSymmetricMatrixAlgorithms.INSTANCE.UtU(U);
+//             algo.UtU(U);
 //        }
 //        t1 = System.currentTimeMillis();
 //        System.out.println("New UtU");
@@ -213,11 +210,11 @@ public class FastSymmetricMatrixAlgorithmsTest {
         Matrix L = Matrix.square(N);
         Random rnd = new Random(0);
         L.set((i, j) -> i >= j ? rnd.nextDouble() : 0);
-        Matrix M = FastSymmetricMatrixAlgorithms.INSTANCE.XXt(L);
+        Matrix M = algo.XXt(L);
 
         ec.tstoolkit.maths.matrices.Matrix m = MatrixComparator.toLegacy(M);
         ec.tstoolkit.maths.matrices.SymmetricMatrix.lcholesky(m, 1e-9);
-        FastSymmetricMatrixAlgorithms.INSTANCE.lcholesky(M.transpose(), 1e-9);
+        algo.lcholesky(M.transpose(), 1e-9);
         assertTrue(MatrixComparator.distance(M.transpose(), m) == 0);
 
     }
@@ -228,11 +225,11 @@ public class FastSymmetricMatrixAlgorithmsTest {
         Matrix L = Matrix.square(N);
         Random rnd = new Random(0);
         L.set((i, j) -> i >= j && (i + 1) % 5 != 0 ? rnd.nextDouble() : 0);
-        Matrix M = FastSymmetricMatrixAlgorithms.INSTANCE.XXt(L);
+        Matrix M = algo.XXt(L);
 
         ec.tstoolkit.maths.matrices.Matrix m = MatrixComparator.toLegacy(M);
         ec.tstoolkit.maths.matrices.SymmetricMatrix.lcholesky(m, 1e-9);
-        FastSymmetricMatrixAlgorithms.INSTANCE.lcholesky(M.transpose(), 1e-9);
+        algo.lcholesky(M.transpose(), 1e-9);
         assertTrue(MatrixComparator.distance(M.transpose(), m) == 0);
     }
 
@@ -242,8 +239,8 @@ public class FastSymmetricMatrixAlgorithmsTest {
         DataBlock x = DataBlock.make(N);
         x.set(i -> i + 1);
         Matrix X = Matrix.builder(x.getStorage()).nrows(N).ncolumns(1).build();
-        Matrix M = FastSymmetricMatrixAlgorithms.INSTANCE.XXt(X);
-        Matrix m = FastSymmetricMatrixAlgorithms.INSTANCE.xxt(x);
+        Matrix M = algo.XXt(X);
+        Matrix m = algo.xxt(x);
 
         assertTrue(MatrixComparator.distance(M, m) == 0);
         // System.out.println(m);

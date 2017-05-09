@@ -24,7 +24,6 @@ import demetra.design.IBuilder;
 import demetra.maths.matrices.ILUDecomposition;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
-import demetra.maths.matrices.impl.CroutDoolittle;
 
 /**
  *

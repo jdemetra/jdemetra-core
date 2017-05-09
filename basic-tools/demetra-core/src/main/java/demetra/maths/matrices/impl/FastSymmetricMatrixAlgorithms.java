@@ -22,15 +22,16 @@ import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.SymmetricMatrix;
+import demetra.maths.matrices.spi.SymmetricMatrixAlgorithms;
 import demetra.random.IRandomNumberGenerator;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-public enum FastSymmetricMatrixAlgorithms implements SymmetricMatrix.Algorithms {
-
-    INSTANCE;
+@ServiceProvider(service = SymmetricMatrixAlgorithms.class)
+public final class FastSymmetricMatrixAlgorithms implements SymmetricMatrixAlgorithms {
 
     @Override
     public void randomize(Matrix M, IRandomNumberGenerator rng) {

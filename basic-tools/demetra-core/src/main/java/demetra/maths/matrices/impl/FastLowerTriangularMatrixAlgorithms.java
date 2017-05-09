@@ -19,27 +19,28 @@ package demetra.maths.matrices.impl;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
-import demetra.design.Singleton;
-import demetra.maths.matrices.LowerTriangularMatrix;
+import demetra.maths.matrices.spi.LowerTriangularMatrixAlgorithms;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-@Singleton
-public enum FastLowerTriangularMatrixAlgorithms implements LowerTriangularMatrix.Algorithms {
+@ServiceProvider(service = LowerTriangularMatrixAlgorithms.class)
+public final class FastLowerTriangularMatrixAlgorithms implements LowerTriangularMatrixAlgorithms {
 
-    INSTANCE;
+    public FastLowerTriangularMatrixAlgorithms() {
+    }
 
     /**
      * Solves the set copyOf equations Lx = b where x and b are vectors with a
- Length less than or equal to the number copyOf rows copyOf the matrix. The
- solution is returned in place i.e. the solution x replaces the right hand
- side b. Column version
+     * Length less than or equal to the number copyOf rows copyOf the matrix.
+     * The solution is returned in place i.e. the solution x replaces the right
+     * hand side b. Column version
      *
      * @param L L. Lower triangular matrix
      * @param b On entry the right hand side copyOf the equation. Contains the
- solution x on returning.
+     * solution x on returning.
      * @param zero Small positive value identifying 0. Can be 0.
      * @throws MatrixException Thrown when the system cannot be solved
      */
@@ -54,13 +55,13 @@ public enum FastLowerTriangularMatrixAlgorithms implements LowerTriangularMatrix
 
     /**
      * Solves the set copyOf equations Lx = b where x and b are vectors with a
- Length less than or equal to the number copyOf rows copyOf the matrix. The
- solution is returned in place i.e. the solution x replaces the right hand
- side b. Row version
+     * Length less than or equal to the number copyOf rows copyOf the matrix.
+     * The solution is returned in place i.e. the solution x replaces the right
+     * hand side b. Row version
      *
      * @param L L. Lower triangular matrix
      * @param b On entry the right hand side copyOf the equation. Contains the
- solution x on returning.
+     * solution x on returning.
      * @param zero Small positive value identifying 0. Can be 0.
      * @throws MatrixException Thrown when the system cannot be solved
      */
@@ -168,12 +169,13 @@ public enum FastLowerTriangularMatrixAlgorithms implements LowerTriangularMatrix
     }
 
     /**
-     * Solves the set copyOf equations x*L = b Forward substitution, column version.
+     * Solves the set copyOf equations x*L = b Forward substitution, column
+     * version.
      *
      * When L contains zeroes on the diagonal, the system is either unsolvable
- or under-determined. Unsolvable systems will throw exceptions. In the
- case copyOf under-determined systems, the x corresponding to the 0 in the
- diagonal is set to 0.
+     * or under-determined. Unsolvable systems will throw exceptions. In the
+     * case copyOf under-determined systems, the x corresponding to the 0 in the
+     * diagonal is set to 0.
      *
      * @param L The lower triangular matrix
      * @param b In-Out parameter. On entry, it contains b. On exit, it contains
@@ -231,7 +233,8 @@ public enum FastLowerTriangularMatrixAlgorithms implements LowerTriangularMatrix
     }
 
     /**
-     * Solves the set copyOf equations x*L = b Forward substitution, row version.
+     * Solves the set copyOf equations x*L = b Forward substitution, row
+     * version.
      *
      * @param L The lower triangular matrix
      * @param b In-Out parameter. On entry, it contains b. On exit, it contains
@@ -253,7 +256,7 @@ public enum FastLowerTriangularMatrixAlgorithms implements LowerTriangularMatrix
             for (int i = L.getLastPosition(), xi = xend; xi > xbeg; i -= cinc + rinc) {
                 int xd = xi - 1;
                 double t = x[xd];
-                for (int xj = xi, idx=i+1; xj < xend; ++xj, ++idx) {
+                for (int xj = xi, idx = i + 1; xj < xend; ++xj, ++idx) {
                     t -= x[xj] * data[idx];
                 }
                 if (Math.abs(t) > zero) {
@@ -294,8 +297,9 @@ public enum FastLowerTriangularMatrixAlgorithms implements LowerTriangularMatrix
 
     /**
      * Computes r = L*r The method right-multiplies the matrix by a vector. The
- Length copyOf the vector must be equal or less than the number copyOf rows copyOf the
- matrix. The multiplier is modified in place. Column version
+     * Length copyOf the vector must be equal or less than the number copyOf
+     * rows copyOf the matrix. The multiplier is modified in place. Column
+     * version
      *
      * @param L The lower triangular matrix
      * @param x
@@ -319,21 +323,21 @@ public enum FastLowerTriangularMatrixAlgorithms implements LowerTriangularMatrix
         int xend = r.getEndPosition();
 
         if (xinc == 1 && rinc == 1) {
-            for (int li = L.getLastPosition(), xi = xend - 1; li >= L.getStartPosition(); li -= rinc+cinc, xi -= xinc) {
+            for (int li = L.getLastPosition(), xi = xend - 1; li >= L.getStartPosition(); li -= rinc + cinc, xi -= xinc) {
                 double z = x[xi];
                 if (z != 0) {
                     x[xi] = data[li] * z;
-                    for (int xj = xi+1, idx = li + 1; xj != xend; ++xj, ++idx) {
+                    for (int xj = xi + 1, idx = li + 1; xj != xend; ++xj, ++idx) {
                         x[xj] += data[idx] * z;
                     }
                 }
             }
         } else {
-            for (int li = L.getLastPosition(), xi = xend - xinc; li >= L.getStartPosition(); li -= rinc+cinc, xi -= xinc) {
+            for (int li = L.getLastPosition(), xi = xend - xinc; li >= L.getStartPosition(); li -= rinc + cinc, xi -= xinc) {
                 double z = x[xi];
                 if (z != 0) {
                     x[xi] = data[li] * z;
-                    for (int xj = xi + xinc, idx = li + rinc; xj != xend; xj += xinc, idx+=rinc) {
+                    for (int xj = xi + xinc, idx = li + rinc; xj != xend; xj += xinc, idx += rinc) {
                         x[xj] += data[idx] * z;
                     }
                 }
@@ -410,7 +414,7 @@ public enum FastLowerTriangularMatrixAlgorithms implements LowerTriangularMatrix
             for (int xi = xbeg, li = L.getStartPosition(); xi < xend; ++xi, li += rinc) {
                 double z = x[xi];
                 if (z != 0) {
-                    int k=li;
+                    int k = li;
                     for (int xj = xbeg; xj < xi; ++xj, ++k) {
                         x[xj] += data[k] * z;
                     }
@@ -421,7 +425,7 @@ public enum FastLowerTriangularMatrixAlgorithms implements LowerTriangularMatrix
             for (int xi = xbeg, li = L.getStartPosition(); xi != xend; xi += xinc, li += rinc) {
                 double z = x[xi];
                 if (z != 0) {
-                    int k=li;
+                    int k = li;
                     for (int xj = xbeg; xj != xi; xj += xinc, k += cinc) {
                         x[xj] += data[k] * z;
                     }
@@ -439,5 +443,4 @@ public enum FastLowerTriangularMatrixAlgorithms implements LowerTriangularMatrix
             lmul_row(L, x);
         }
     }
-
 }

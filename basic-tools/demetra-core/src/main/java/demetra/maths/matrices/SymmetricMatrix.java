@@ -5,175 +5,33 @@
  */
 package demetra.maths.matrices;
 
+import demetra.maths.matrices.spi.SymmetricMatrixAlgorithms;
 import java.util.concurrent.atomic.AtomicReference;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleAccumulator;
-import demetra.maths.matrices.impl.FastSymmetricMatrixAlgorithms;
 import demetra.random.IRandomNumberGenerator;
+import demetra.utilities.ServiceLookup;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@lombok.experimental.UtilityClass
 public class SymmetricMatrix {
 
-    public static interface Algorithms {
+    private final AtomicReference<SymmetricMatrixAlgorithms> IMPL = ServiceLookup.firstMutable(SymmetricMatrixAlgorithms.class);
 
-        void randomize(Matrix M, IRandomNumberGenerator rng);
-
-        /**
-         * Computes xx' and stores the results in m. The routines doesn't verify
-         * the conditions on the dimensions.
-         *
-         * @param x r column array
-         * @param M r x r sub-matrix.
-         */
-        void xxt(final DataBlock x, final Matrix M);
-
-        default Matrix xxt(final DataBlock x) {
-            Matrix M = Matrix.square(x.length());
-            xxt(x, M);
-            return M;
-        }
-
-        /**
-         * Computes XX' and stores the results in m. The routines doesn't verify
-         * the conditions on the dimensions copyOf the sub-matrices.
-         *
-         * @param X r x c sub-matrix
-         * @param M r x r sub-matrix.
-         */
-        void XXt(final Matrix X, final Matrix M);
-
-        default void XtX(final Matrix X, final Matrix M) {
-            XXt(X.transpose(), M);
-        }
-
-        default Matrix XXt(final Matrix X) {
-            Matrix M = Matrix.square(X.getRowsCount());
-            XXt(X, M);
-            return M;
-        }
-
-        default Matrix XtX(final Matrix X) {
-            Matrix M = Matrix.square(X.getColumnsCount());
-            XXt(X.transpose(), M);
-            return M;
-        }
-
-        /**
-         * Computes L*L'
-         *
-         * @param L The lower triangular matrix (L). The routine just use the
-         * lower part copyOf the input matrix.
-         * @param M Output. Will contain LLt after the function call
-         */
-        void LLt(final Matrix L, final Matrix M);
-
-        void UUt(final Matrix U, final Matrix M);
-
-        default void UtU(final Matrix U, final Matrix M) {
-            LLt(U.transpose(), M);
-        }
-
-        default void LtL(final Matrix L, final Matrix M) {
-            UUt(L.transpose(), M);
-        }
-
-        default Matrix LLt(final Matrix L) {
-            Matrix M = Matrix.square(L.getRowsCount());
-            LLt(L, M);
-            return M;
-        }
-
-        default Matrix UtU(final Matrix U) {
-            Matrix M = Matrix.square(U.getColumnsCount());
-            LLt(U.transpose(), M);
-            return M;
-        }
-
-        default Matrix LtL(final Matrix L) {
-            Matrix M = Matrix.square(L.getRowsCount());
-            UUt(L.transpose(), M);
-            return M;
-        }
-
-        default Matrix UUt(final Matrix U) {
-            Matrix M = Matrix.square(U.getColumnsCount());
-            UUt(U, M);
-            return M;
-        }
-
-        /**
-         * M = XSX'
-         *
-         * @param X
-         * @param S
-         * @param M
-         */
-        void XtSX(final Matrix S, final Matrix X, final Matrix M);
-
-        /**
-         * Returns XSX'
-         *
-         * @param X
-         * @param S
-         * @return
-         */
-        default Matrix XSXt(final Matrix S, final Matrix X) {
-            return XtSX(S, X.transpose());
-        }
-
-        /**
-         * M = X'SX
-         *
-         * @param X
-         * @param S
-         * @param M
-         */
-        default void XSXt(final Matrix S, final Matrix X, final Matrix M) {
-            XtSX(S, X.transpose(), M);
-        }
-
-        /**
-         * Returns X'SX
-         *
-         * @param X
-         * @param S
-         * @return
-         */
-        default Matrix XtSX(final Matrix S, final Matrix X) {
-            int n = X.getColumnsCount();
-            Matrix M = Matrix.square(n);
-            XtSX(S, X, M);
-            return M;
-        }
-
-        void lcholesky(final Matrix M, final double zero);
-
-        default void lcholesky(final Matrix M) {
-            lcholesky(M, 0);
-        }
-        
-        Matrix inverse(final Matrix S);
-    }
-
-    private final static AtomicReference<Algorithms> IMPL = new AtomicReference<>(FastSymmetricMatrixAlgorithms.INSTANCE);
-
-    public static void setImplementation(Algorithms algorithms) {
+    public void setImplementation(SymmetricMatrixAlgorithms algorithms) {
         IMPL.set(algorithms);
     }
 
-    public static Algorithms getImplementation() {
+    public SymmetricMatrixAlgorithms getImplementation() {
         return IMPL.get();
     }
 
-    private SymmetricMatrix() {
-    }
-
     // Static calls to the current implementation
-    public static void randomize(Matrix M, IRandomNumberGenerator rng) {
+    public void randomize(Matrix M, IRandomNumberGenerator rng) {
         IMPL.get().randomize(M, rng);
     }
 
@@ -184,11 +42,11 @@ public class SymmetricMatrix {
      * @param x r column array
      * @param M r x r sub-matrix.
      */
-    public static void xxt(final DataBlock x, final Matrix M) {
+    public void xxt(final DataBlock x, final Matrix M) {
         IMPL.get().xxt(x, M);
     }
 
-    public static Matrix xxt(final DataBlock x) {
+    public Matrix xxt(final DataBlock x) {
         return IMPL.get().xxt(x);
     }
 
@@ -199,23 +57,23 @@ public class SymmetricMatrix {
      * @param X r x c sub-matrix
      * @param M r x r sub-matrix.
      */
-    public static void XXt(final Matrix X, final Matrix M) {
+    public void XXt(final Matrix X, final Matrix M) {
         IMPL.get().XXt(X, M);
     }
 
-    public static void XtX(final Matrix X, final Matrix M) {
+    public void XtX(final Matrix X, final Matrix M) {
         IMPL.get().XtX(X, M);
     }
 
-    public static Matrix XXt(final Matrix X) {
+    public Matrix XXt(final Matrix X) {
         return IMPL.get().XXt(X);
     }
 
-    public static Matrix XtX(final Matrix X) {
+    public Matrix XtX(final Matrix X) {
         return IMPL.get().XtX(X);
     }
 
-    public static Matrix robustXtX(final Matrix X, DoubleAccumulator acc) {
+    public Matrix robustXtX(final Matrix X, DoubleAccumulator acc) {
         int n = X.getColumnsCount();
         Matrix z = Matrix.square(n);
         DataBlockIterator rows = X.columnsIterator(), columns = X.columnsIterator();
@@ -247,35 +105,35 @@ public class SymmetricMatrix {
      * part copyOf the input matrix.
      * @param M Output. Will contain LLt after the function call
      */
-    public static void LLt(final Matrix L, final Matrix M) {
+    public void LLt(final Matrix L, final Matrix M) {
         IMPL.get().LLt(L, M);
     }
 
-    public static void UUt(final Matrix U, final Matrix M) {
+    public void UUt(final Matrix U, final Matrix M) {
         IMPL.get().UUt(U, M);
     }
 
-    public static void UtU(final Matrix U, final Matrix M) {
+    public void UtU(final Matrix U, final Matrix M) {
         IMPL.get().UtU(U, M);
     }
 
-    public static void LtL(final Matrix L, final Matrix M) {
+    public void LtL(final Matrix L, final Matrix M) {
         IMPL.get().LtL(L, M);
     }
 
-    public static Matrix LLt(final Matrix L) {
+    public Matrix LLt(final Matrix L) {
         return IMPL.get().LLt(L);
     }
 
-    public static Matrix UtU(final Matrix U) {
+    public Matrix UtU(final Matrix U) {
         return IMPL.get().UtU(U);
     }
 
-    public static Matrix LtL(final Matrix L) {
+    public Matrix LtL(final Matrix L) {
         return IMPL.get().LtL(L);
     }
 
-    public static Matrix UUt(final Matrix U) {
+    public Matrix UUt(final Matrix U) {
         return IMPL.get().UUt(U);
     }
 
@@ -286,7 +144,7 @@ public class SymmetricMatrix {
      * @param S
      * @param M
      */
-    public static void XSXt(final Matrix S, final Matrix X, final Matrix M) {
+    public void XSXt(final Matrix S, final Matrix X, final Matrix M) {
         IMPL.get().XSXt(S, X, M);
     }
 
@@ -297,7 +155,7 @@ public class SymmetricMatrix {
      * @param S
      * @return
      */
-    public static Matrix XSXt(final Matrix S, final Matrix X) {
+    public Matrix XSXt(final Matrix S, final Matrix X) {
         return IMPL.get().XSXt(S, X);
     }
 
@@ -308,7 +166,7 @@ public class SymmetricMatrix {
      * @param S
      * @param M
      */
-    public static void XtSX(final Matrix S, final Matrix X, final Matrix M) {
+    public void XtSX(final Matrix S, final Matrix X, final Matrix M) {
         IMPL.get().XtSX(S, X, M);
     }
 
@@ -319,23 +177,23 @@ public class SymmetricMatrix {
      * @param S
      * @return
      */
-    public static Matrix XtSX(final Matrix S, final Matrix X) {
+    public Matrix XtSX(final Matrix S, final Matrix X) {
         return IMPL.get().XtSX(S, X);
     }
 
-    public static void lcholesky(final Matrix M, final double zero) {
+    public void lcholesky(final Matrix M, final double zero) {
         IMPL.get().lcholesky(M, zero);
     }
 
-    public static void lcholesky(final Matrix M) {
+    public void lcholesky(final Matrix M) {
         IMPL.get().lcholesky(M);
     }
-    
-    public static Matrix inverse(Matrix S){
+
+    public Matrix inverse(Matrix S) {
         return IMPL.get().inverse(S);
     }
 
-    public static void reenforceSymmetry(Matrix S) {
+    public void reenforceSymmetry(Matrix S) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -356,7 +214,7 @@ public class SymmetricMatrix {
         }
     }
 
-    public static void fromLower(Matrix S) {
+    public void fromLower(Matrix S) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -375,7 +233,7 @@ public class SymmetricMatrix {
         }
     }
 
-    public static void fromUpper(Matrix S) {
+    public void fromUpper(Matrix S) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -393,6 +251,4 @@ public class SymmetricMatrix {
             }
         }
     }
-    
-
 }
