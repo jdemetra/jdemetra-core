@@ -48,7 +48,7 @@ public class LikelihoodStatistics {
     /**
      *
      */
-    public int observationsCount, effectiveObservationsCount, estimatedParametersCount;
+    public int observationsCount, missingCount, effectiveObservationsCount, estimatedParametersCount;
     /**
      *
      */
@@ -88,6 +88,7 @@ public class LikelihoodStatistics {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Number of observations :").append(observationsCount).append(System.lineSeparator());
+        builder.append("Number of missing values :").append(missingCount).append(System.lineSeparator());
         builder.append("Effective number of observations :").append(
                 effectiveObservationsCount).append(System.lineSeparator());
         builder.append("Number of parameters estimated :").append(
@@ -116,5 +117,14 @@ public class LikelihoodStatistics {
         builder.append("BIC corrected for length :").append(fmt.format("%.4f", BICC));
         return builder.toString();
 
+    }
+    
+    public void adjustForMissing(int nmissing){
+        if (missingCount>0 || nmissing == 0)
+            return;
+        missingCount=nmissing;
+        this.observationsCount-=missingCount;
+        this.effectiveObservationsCount-=missingCount;
+        this.estimatedParametersCount-=missingCount;
     }
 }
