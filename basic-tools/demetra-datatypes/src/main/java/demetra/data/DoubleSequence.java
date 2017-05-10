@@ -16,8 +16,6 @@
  */
 package demetra.data;
 
-import java.util.PrimitiveIterator;
-import java.util.Spliterator;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;
@@ -44,31 +42,6 @@ public interface DoubleSequence extends BaseSequence<Double> {
      */
     double get(@Nonnegative int index) throws IndexOutOfBoundsException;
 
-    @Override
-    default PrimitiveIterator.OfDouble iterator() {
-        return new Sequences.DoubleIterator(this);
-    }
-
-    default void forEach(@Nonnull DoubleConsumer action) {
-        Sequences.forEach(this, action);
-    }
-
-    @Override
-    default Spliterator.OfDouble spliterator() {
-        return Sequences.spliterator(this);
-    }
-
-    /**
-     * Returns a stream of {@code double} zero-extending the {@code double}
-     * values from this sequence.
-     *
-     * @return an IntStream of double values from this sequence
-     */
-    @Nonnull
-    default DoubleStream stream() {
-        return Sequences.stream(this);
-    }
-
     /**
      * Copies the data into a given buffer
      *
@@ -88,6 +61,21 @@ public interface DoubleSequence extends BaseSequence<Double> {
     @Nonnull
     default double[] toArray() {
         return Sequences.toArray(this);
+    }
+
+    /**
+     * Returns a stream of {@code double} zero-extending the {@code double}
+     * values from this sequence.
+     *
+     * @return an IntStream of double values from this sequence
+     */
+    @Nonnull
+    default DoubleStream stream() {
+        return Sequences.stream(this);
+    }
+
+    default void forEach(@Nonnull DoubleConsumer action) {
+        Sequences.forEach(this, action);
     }
 
     /**

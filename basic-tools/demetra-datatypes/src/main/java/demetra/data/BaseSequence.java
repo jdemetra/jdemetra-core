@@ -16,11 +16,7 @@
  */
 package demetra.data;
 
-import java.util.Iterator;
-import java.util.Spliterator;
-import java.util.Spliterators;
 import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
 
 /**
  *
@@ -39,13 +35,5 @@ public interface BaseSequence<E> {
 
     default boolean isEmpty() {
         return length() == 0;
-    }
-
-    @Nonnull
-    Iterator<E> iterator();
-
-    @Nonnull
-    default Spliterator<E> spliterator() {
-        return Spliterators.spliterator(iterator(), length(), 0);
     }
 }

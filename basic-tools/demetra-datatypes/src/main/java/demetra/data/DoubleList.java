@@ -19,7 +19,6 @@ package demetra.data;
 import demetra.design.PrimitiveReplacementOf;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Spliterator;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleUnaryOperator;
 import java.util.stream.DoubleStream;
@@ -97,11 +96,6 @@ public final class DoubleList implements DoubleSequence {
     @Override
     public DoubleStream stream() {
         return Arrays.stream(values, 0, length);
-    }
-
-    @Override
-    public Spliterator.OfDouble spliterator() {
-        return Arrays.spliterator(values, 0, length);
     }
 
     /**

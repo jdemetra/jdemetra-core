@@ -113,13 +113,11 @@ class Sequences {
     }
 
     Spliterator.OfDouble spliterator(DoubleSequence seq) {
-        return Spliterators.spliterator(seq.iterator(), seq.length(), Spliterator.ORDERED);
+        return Spliterators.spliterator(new DoubleIterator(seq), seq.length(), Spliterator.ORDERED);
     }
 
     DoubleStream stream(DoubleSequence seq) {
-        return StreamSupport.doubleStream(seq::spliterator,
-                Spliterator.SUBSIZED | Spliterator.SIZED | Spliterator.ORDERED,
-                false);
+        return StreamSupport.doubleStream(spliterator(seq), false);
     }
 
     void copyTo(DoubleSequence seq, double[] buffer, int offset) {
