@@ -768,7 +768,7 @@ public final class Polynomial implements Doubles {
      * @return
      */
     public Complex evaluateAtFrequency(final double w) {
-        ComplexBuilder f = new ComplexBuilder(get(0));
+        ComplexBuilder f = ComplexBuilder.of(get(0));
         for (int i = 1; i <= degree; ++i) {
             f.add(Complex.polar(coeff[i], w * i));
         }
