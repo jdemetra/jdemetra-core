@@ -101,6 +101,23 @@ public final class Complex implements ComplexParts {
     }
 
     /**
+     * Returns a Complex from its norm and its argument if c = a + i*b r =
+     * sqrt(a*a + b*b) theta = atan(b/a)
+     *
+     * @param r Norm of the complex number
+     * @param theta Argument of the complex number
+     * @return
+     */
+    public static Complex polar(double r, double theta) {
+        if (r < 0.0) {
+            theta += Math.PI;
+            r = -r;
+        }
+        theta = theta % TWOPI;
+        return cart(r * Math.cos(theta), r * Math.sin(theta));
+    }
+
+    /**
      * The static method finds the roots present in lr but not in rr
      *
      * @param lr An array of complex roots
@@ -221,32 +238,6 @@ public final class Complex implements ComplexParts {
 
     }
 
-    /**
-     * Returns a Complex from its norm and its argument if c = a + i*b r =
-     * sqrt(a*a + b*b) theta = atan(b/a)
-     *
-     * @param r Norm of the complex number
-     * @param theta Argument of the complex number
-     * @return
-     */
-    public static Complex polar(double r, double theta) {
-        if (r < 0.0) {
-            theta += Math.PI;
-            r = -r;
-        }
-
-        theta = theta % TWOPI;
-
-        return cart(r * Math.cos(theta), r * Math.sin(theta));
-    }
-
-//    /**
-//     * 
-//     * @return
-//     */
-//    public static Complex random(IRandomNumberGenerator rng) {
-//	return cart(rng.nextDouble() * 2 - 1, rng.nextDouble() * 2 - 1);
-//    }
     /**
      *
      * @param c
@@ -406,7 +397,7 @@ public final class Complex implements ComplexParts {
     }
 
     public Complex sqrt() {
-        return ComplexMath.sqrt(re, im);
+        return ComplexMath.sqrt(re, im, Complex::cart);
     }
 
     /**
@@ -423,23 +414,8 @@ public final class Complex implements ComplexParts {
      * @param c
      * @return
      */
-    public Complex div(final Complex c) {
-        double dRe, dIm;
-        double scalar;
-
-        if (Math.abs(c.re) >= Math.abs(c.im)) {
-            scalar = 1.0 / (c.re + c.im * (c.im / c.re));
-
-            dRe = scalar * (re + im * (c.im / c.re));
-            dIm = scalar * (im - re * (c.im / c.re));
-
-        } else {
-            scalar = 1.0 / (c.re * (c.re / c.im) + c.im);
-
-            dRe = scalar * (re * (c.re / c.im) + im);
-            dIm = scalar * (im * (c.re / c.im) - re);
-        }// endif
-        return Complex.cart(dRe, dIm);
+    public Complex div(Complex c) {
+        return ComplexMath.div(re, im, c.re, c.im, Complex::cart);
     }
 
     /**
@@ -498,19 +474,7 @@ public final class Complex implements ComplexParts {
      * @return
      */
     public Complex inv() {
-        double scalar, zRe, zIm;
-        if (Math.abs(re) >= Math.abs(im)) {
-            scalar = 1.0 / (re + im * (im / re));
-
-            zRe = scalar;
-            zIm = scalar * (-im / re);
-        } else {
-            scalar = 1.0 / (re * (re / im) + im);
-
-            zRe = scalar * (re / im);
-            zIm = -scalar;
-        }
-        return Complex.cart(zRe, zIm);
+        return ComplexMath.inv(re, im, Complex::cart);
     }
 
     /**
@@ -569,8 +533,7 @@ public final class Complex implements ComplexParts {
      * @return
      */
     public Complex times(final Complex b) {
-        return Complex.cart((re * b.re) - (im * b.im), (re * b.im)
-                + (im * b.re));
+        return Complex.cart((re * b.re) - (im * b.im), (re * b.im) + (im * b.re));
     }
 
     /**

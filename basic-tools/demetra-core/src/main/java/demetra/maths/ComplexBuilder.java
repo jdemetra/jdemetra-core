@@ -78,6 +78,12 @@ public final class ComplexBuilder implements ComplexParts, IBuilder<Complex> {
         return im;
     }
 
+    private ComplexBuilder set(double re, double im) {
+        this.re = re;
+        this.im = im;
+        return this;
+    }
+
     /**
      * Adds a complex number to this object
      *
@@ -119,7 +125,11 @@ public final class ComplexBuilder implements ComplexParts, IBuilder<Complex> {
      * @return This object is returned
      */
     public ComplexBuilder div(ComplexParts c) {
-        return div(c.getRe(), c.getIm());
+        return ComplexMath.div(re, im, c.getRe(), c.getIm(), this::set);
+    }
+
+    public ComplexBuilder div(double x, double y) {
+        return ComplexMath.div(re, im, x, y, this::set);
     }
 
     /**
@@ -135,54 +145,12 @@ public final class ComplexBuilder implements ComplexParts, IBuilder<Complex> {
     }
 
     /**
-     * Divides this object by a complex number (= x + i*y)
-     *
-     * @param x The real part
-     * @param y The imaginary part
-     * @return This object is returned
-     */
-    protected ComplexBuilder div(final double x, final double y) {
-        double dRe, dIm;
-        double scalar;
-
-        if (Math.abs(x) >= Math.abs(y)) {
-            scalar = 1.0 / (x + y * (y / x));
-
-            dRe = scalar * (re + im * (y / x));
-            dIm = scalar * (im - re * (y / x));
-
-        } else {
-            scalar = 1.0 / (x * (x / y) + y);
-
-            dRe = scalar * (re * (x / y) + im);
-            dIm = scalar * (im * (x / y) - re);
-        }// endif
-        re = dRe;
-        im = dIm;
-        return this;
-    }
-
-    /**
      * Inverts this object
      *
      * @return This object is returned
      */
     public ComplexBuilder inv() {
-        double scalar, zRe, zIm;
-        if (Math.abs(re) >= Math.abs(im)) {
-            scalar = 1.0 / (re + im * (im / re));
-
-            zRe = scalar;
-            zIm = scalar * (-im / re);
-        } else {
-            scalar = 1.0 / (re * (re / im) + im);
-
-            zRe = scalar * (re / im);
-            zIm = -scalar;
-        }
-        re = zRe;
-        im = zIm;
-        return this;
+        return ComplexMath.inv(re, im, this::set);
     }
 
     /**
