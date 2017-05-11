@@ -45,7 +45,7 @@ public final class ComplexBuilder implements ComplexParts, IBuilder<Complex> {
      * @param re
      * @return
      */
-    public static ComplexBuilder of(double re) {
+    public static ComplexBuilder cart(double re) {
         return new ComplexBuilder(re, 0);
     }
 
@@ -56,7 +56,7 @@ public final class ComplexBuilder implements ComplexParts, IBuilder<Complex> {
      * @param im Imaginary part
      * @return
      */
-    public static ComplexBuilder of(double re, double im) {
+    public static ComplexBuilder cart(double re, double im) {
         return new ComplexBuilder(re, im);
     }
 

@@ -33,24 +33,16 @@ public final class ComplexMath {
      * @param im Imaginary part
      * @return Absolute value of re + i * im
      */
-    static double abs(final double re, final double im) {
+    static double abs(double re, double im) {
         return Utilities.hypotenuse(re, im);
-//	if (re == 0 && im == 0)
-//	    return 0;
-//	final double absX = Math.abs(re);
-//	final double absY = Math.abs(im);
-//
-//	if (absX >= absY) {
-//	    final double d = im / re;
-//	    return absX * Math.sqrt(1.0 + d * d);
-//	} else {
-//	    final double d = re / im;
-//	    return absY * Math.sqrt(1.0 + d * d);
-//	}
     }
 
-    static double absSquare(final double x, final double y) {
-        return x * x + y * y;
+    static double absSquare(double re, double im) {
+        return re * re + im * im;
+    }
+
+    static double arg(double re, double im) {
+        return Math.atan2(im, re);
     }
 
     /**
@@ -98,10 +90,7 @@ public final class ComplexMath {
      */
     public static Complex acosec(ComplexParts c) {
         // acosec(c) = asin(1/c)
-
-        ComplexBuilder tmp = ComplexBuilder.of(c);
-        tmp.inv();
-        return asin(tmp.build());
+        return asin(ComplexBuilder.of(c).inv());
     }
 
     /**
@@ -145,12 +134,11 @@ public final class ComplexMath {
     public static Complex acot(ComplexParts c) {
         // acot(c) = -i/2 * log( (ic-1)/(ic+1) )
         double cr = c.getRe(), ci = c.getIm();
-        ComplexBuilder tmp = ComplexBuilder.of(-ci - 1, cr);
+        ComplexBuilder tmp = ComplexBuilder.cart(-ci - 1, cr);
         tmp.div(1 - ci, cr);
 
-        Complex ltmp = tmp.build();
         // -i/2*log
-        double re = ltmp.getRe(), im = ltmp.getIm();
+        double re = tmp.getRe(), im = tmp.getIm();
         return Complex.cart(0.5 * arg(re, im), -0.5 * Math.log(abs(re, im)));
     }
 
@@ -163,16 +151,12 @@ public final class ComplexMath {
         // atanh(z) = 1/2 * log( (c+1)/(c-1) )
         double cr = c.getRe(), ci = c.getIm();
 
-        ComplexBuilder tmp = ComplexBuilder.of(cr + 1, ci);
+        ComplexBuilder tmp = ComplexBuilder.cart(cr + 1, ci);
         tmp.div(cr - 1, ci);
 
         double re = tmp.getRe(), im = tmp.getIm();
         return Complex.cart(0.5 * Math.log(abs(re, im)), 0.5 * arg(re, im)); // principal
         // value
-    }
-
-    static double arg(final double re, final double im) {
-        return Math.atan2(im, re);
     }
 
     /**
@@ -183,10 +167,7 @@ public final class ComplexMath {
     public static Complex asec(ComplexParts c) {
         // asec(c) = -i * log(1/c + i*sqrt(1 - 1/c*c))
         // asec(c) = acos(1/c)
-
-        ComplexBuilder tmp = ComplexBuilder.of(c);
-        tmp.inv();
-        return acos(tmp.build());
+        return acos(ComplexBuilder.of(c).inv());
     }
 
     /**
@@ -269,12 +250,11 @@ public final class ComplexMath {
     public static Complex atan(ComplexParts c) {
         // atan(c) = -i/2 * log( (i-c)/(i+c) )
         double cr = c.getRe(), ci = c.getIm();
-        ComplexBuilder tmp = ComplexBuilder.of(-cr, 1 - ci);
+        ComplexBuilder tmp = ComplexBuilder.cart(-cr, 1 - ci);
         tmp.div(cr, 1 + ci);
 
-        Complex ltmp = tmp.build();
         // -i*log
-        double re = ltmp.getRe(), im = ltmp.getIm();
+        double re = tmp.getRe(), im = tmp.getIm();
         return Complex.cart(0.5 * arg(re, im), -0.5 * Math.log(abs(re, im)));
     }
 
@@ -287,7 +267,7 @@ public final class ComplexMath {
         // atanh(z) = 1/2 * log( (1+c)/(1-c) )
         double cr = c.getRe(), ci = c.getIm();
 
-        ComplexBuilder tmp = ComplexBuilder.of(cr + 1, ci);
+        ComplexBuilder tmp = ComplexBuilder.cart(cr + 1, ci);
         tmp.div(1 - cr, -ci);
 
         double re = tmp.getRe(), im = tmp.getIm();
@@ -330,9 +310,7 @@ public final class ComplexMath {
      */
     public static Complex cosec(ComplexParts c) {
         // cosec(c) = 1 / sin(c)
-        ComplexBuilder builder = ComplexBuilder.of(sin(c));
-        builder.inv();
-        return builder.build();
+        return ComplexBuilder.of(sin(c)).inv().build();
     }
 
     /**
@@ -389,7 +367,7 @@ public final class ComplexMath {
         double im2 = scalar * (-siic);
 
         // 
-        ComplexBuilder result = ComplexBuilder.of(0.5 * (re1 + re2),
+        ComplexBuilder result = ComplexBuilder.cart(0.5 * (re1 + re2),
                 0.5 * (im1 + im2));
         result.div(0.5 * (im1 - im2), -0.5 * (re1 - re2));
         return result.build();
@@ -422,7 +400,7 @@ public final class ComplexMath {
         double re2 = scalar * cic;
         double im2 = scalar * (-sic);
 
-        ComplexBuilder result = ComplexBuilder.of(re1 + re2, im1 + im2);
+        ComplexBuilder result = ComplexBuilder.cart(re1 + re2, im1 + im2);
         result.div(re1 - re2, im1 - im2);
         return result.build();
     }
@@ -498,9 +476,7 @@ public final class ComplexMath {
      */
     public static Complex sec(ComplexParts c) {
         // sec(c) = 1 / cos(c)
-        ComplexBuilder builder = ComplexBuilder.of(cos(c));
-        builder.inv();
-        return builder.build();
+        return ComplexBuilder.of(cos(c)).inv().build();
     }
 
     /**
@@ -558,17 +534,6 @@ public final class ComplexMath {
         return Complex.cart(0.5 * (re1 - re2), 0.5 * (im1 - im2));
     }
 
-    /**
-     *
-     * @param c
-     * @return
-     * @deprecated use {@link Complex#sqrt()} instead
-     */
-    @Deprecated
-    public static Complex sqrt(ComplexParts c) {
-        return sqrt(c.getRe(), c.getIm());
-    }
-
     static Complex sqrt(final double re, final double im) {
         final double scale = abs(re, im);
 
@@ -617,7 +582,7 @@ public final class ComplexMath {
         double im2 = scalar * (-siic);
 
         // 
-        ComplexBuilder result = ComplexBuilder.of(0.5 * (im1 - im2), -0.5
+        ComplexBuilder result = ComplexBuilder.cart(0.5 * (im1 - im2), -0.5
                 * (re1 - re2));
         result.div(0.5 * (re1 + re2), 0.5 * (im1 + im2));
         return result.build();
@@ -650,7 +615,7 @@ public final class ComplexMath {
         double re2 = scalar * cic;
         double im2 = scalar * (-sic);
 
-        ComplexBuilder result = ComplexBuilder.of(re1 - re2, im1 - im2);
+        ComplexBuilder result = ComplexBuilder.cart(re1 - re2, im1 - im2);
         result.div(re1 + re2, im1 + im2);
         return result.build();
     }

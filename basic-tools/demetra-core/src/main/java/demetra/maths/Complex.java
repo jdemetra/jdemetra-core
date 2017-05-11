@@ -116,7 +116,7 @@ public final class Complex implements ComplexParts {
         int rem = 0;
         for (int i = 0; i < rrlength; i++) {
             for (int j = 0; j < lrlength; j++) {
-                if (!flags[j] && (lr[j].minus(rr[i]).abs() <= epsilon)) {
+                if (!flags[j] && lr[j].equals(rr[i], epsilon)) {
                     flags[j] = true;
                     rem++;
                 }
@@ -131,16 +131,6 @@ public final class Complex implements ComplexParts {
         }
 
         return remroots;
-    }
-
-    /**
-     *
-     * @param l
-     * @param r
-     * @return
-     */
-    public static double distance(Complex l, Complex r) {
-        return ComplexMath.abs(l.re - r.re, l.im - r.im);
     }
 
     /**
@@ -168,7 +158,7 @@ public final class Complex implements ComplexParts {
         // determine common roots
         for (int i = 0; i < lnroots; i++) {
             for (int j = 0; j < rnroots; j++) {
-                if (!rflags[j] && (lroots[i].minus(rroots[j]).abs() <= epsilon)) {
+                if (!rflags[j] && lroots[i].equals(rroots[j], epsilon)) {
                     lflags[i] = true;
                     rflags[j] = true;
                     croots++;
@@ -474,9 +464,9 @@ public final class Complex implements ComplexParts {
      */
     public boolean equals(final Complex z, final double tolerance) {
         // still true when _equal_ to tolerance? ...
-        return ComplexMath.abs(re - z.re, im - z.im) <= tolerance;
+        return distance(z) <= tolerance;
         // ...and tolerance is always non-negative
-    }// end Equals(Complex,double)
+    }
 
     @Override
     public boolean equals(Object obj) {

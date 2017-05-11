@@ -16,6 +16,8 @@
  */
 package demetra.maths;
 
+import javax.annotation.Nonnull;
+
 /**
  *
  * @author Philippe Charles
@@ -56,7 +58,7 @@ public interface ComplexParts {
      * @return
      */
     default double arg() {
-        return Math.atan2(getIm(), getRe());
+        return ComplexMath.arg(getIm(), getRe());
     }
 
     /**
@@ -77,5 +79,9 @@ public interface ComplexParts {
      */
     default boolean isNaN() {
         return Double.isNaN(getRe()) || Double.isNaN(getIm());
+    }
+
+    default double distance(@Nonnull ComplexParts c) {
+        return ComplexMath.abs(getRe() - c.getRe(), getIm() - c.getIm());
     }
 }
