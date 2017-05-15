@@ -26,6 +26,7 @@ import ec.tstoolkit.information.Information;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.information.RegressionItem;
 import ec.tstoolkit.information.StatisticalTest;
+import ec.tstoolkit.maths.Complex;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import ec.tstoolkit.utilities.NamedObject;
@@ -80,6 +81,7 @@ public class CsvInformationFormatter {
         DICTIONARY.put(RegressionItem.class, new RegressionItemFormatter(true));
         DICTIONARY.put(StatisticalTest.class, new StatisticalTestFormatter());
         DICTIONARY.put(ProcDiagnostic.class, new DiagnosticFormatter());
+        DICTIONARY.put(Complex.class, new ComplexFormatter());
     }
 
     // preparing the matrix:
