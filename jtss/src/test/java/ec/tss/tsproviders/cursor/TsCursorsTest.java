@@ -108,11 +108,11 @@ public class TsCursorsTest {
     @Test
     @SuppressWarnings("null")
     public void testSingletonCursor() throws IOException {
-        Supplier<SingletonCursor<String>> example = () -> new SingletonCursor<>(someKey, someData, someMeta);
+        Supplier<SingletonCursor<String>> example = () -> new SingletonCursor<>(someKey, someData, someMeta, "LABEL");
 
         try (SingletonCursor<String> cursor = example.get()) {
             assertThat(cursor.getMetaData()).isEmpty();
-            assertNextSeries(cursor, someKey, someData, someMeta);
+            assertNextSeries(cursor, someKey, someData, someMeta, "LABEL");
             assertThat(cursor.nextSeries()).isFalse();
             assertApi(cursor);
         }
@@ -129,7 +129,7 @@ public class TsCursorsTest {
 
         try (SingletonCursor<String> cursor = example.get().transform(String::toUpperCase)) {
             assertThat(cursor.getMetaData()).isEmpty();
-            assertNextSeries(cursor, "HELLO", someData, someMeta);
+            assertNextSeries(cursor, "HELLO", someData, someMeta, "LABEL");
             assertThat(cursor.nextSeries()).isFalse();
         }
 
@@ -141,12 +141,12 @@ public class TsCursorsTest {
     @Test
     @SuppressWarnings("null")
     public void testIteratingCursor() throws IOException {
-        Supplier<IteratingCursor<String, String>> example = () -> new IteratingCursor<>(forArray("hello", "world"), goodIdFunc, goodDataFunc, goodMetaFunc);
+        Supplier<IteratingCursor<String, String>> example = () -> new IteratingCursor<>(forArray("hello", "world"), goodIdFunc, goodDataFunc, goodMetaFunc, TsCursorsTest::quote);
 
         try (IteratingCursor<String, String> cursor = example.get()) {
             assertThat(cursor.getMetaData()).isEmpty();
-            assertNextSeries(cursor, "HELLO", someData, someMeta);
-            assertNextSeries(cursor, "WORLD", someData, someMeta);
+            assertNextSeries(cursor, "HELLO", someData, someMeta, "'hello'");
+            assertNextSeries(cursor, "WORLD", someData, someMeta, "'world'");
             assertThat(cursor.nextSeries()).isFalse();
             assertApi(cursor);
         }
@@ -159,15 +159,15 @@ public class TsCursorsTest {
 
         try (IteratingCursor<String, String> cursor = example.get().filter(o -> o.startsWith("HE"))) {
             assertThat(cursor.getMetaData()).isEmpty();
-            assertNextSeries(cursor, "HELLO", someData, someMeta);
+            assertNextSeries(cursor, "HELLO", someData, someMeta, "'hello'");
             assertThat(cursor.nextSeries()).isFalse();
             assertApi(cursor);
         }
 
         try (IteratingCursor<String, String> cursor = example.get().transform(String::toLowerCase)) {
             assertThat(cursor.getMetaData()).isEmpty();
-            assertNextSeries(cursor, "hello", someData, someMeta);
-            assertNextSeries(cursor, "world", someData, someMeta);
+            assertNextSeries(cursor, "hello", someData, someMeta, "'hello'");
+            assertNextSeries(cursor, "world", someData, someMeta, "'world'");
             assertThat(cursor.nextSeries()).isFalse();
             assertApi(cursor);
         }
@@ -178,23 +178,23 @@ public class TsCursorsTest {
 
         try (IteratingCursor<String, String> cursor = example.get().filter(o -> o.startsWith("HE")).transform(String::toLowerCase)) {
             assertThat(cursor.getMetaData()).isEmpty();
-            assertNextSeries(cursor, "hello", someData, someMeta);
+            assertNextSeries(cursor, "hello", someData, someMeta, "'hello'");
             assertThat(cursor.nextSeries()).isFalse();
         }
 
         try (IteratingCursor<String, String> cursor = example.get().transform(String::toLowerCase).filter(o -> o.startsWith("he"))) {
             assertThat(cursor.getMetaData()).isEmpty();
-            assertNextSeries(cursor, "hello", someData, someMeta);
+            assertNextSeries(cursor, "hello", someData, someMeta, "'hello'");
             assertThat(cursor.nextSeries()).isFalse();
         }
 
-        assertThatThrownBy(() -> readAllAndClose(new IteratingCursor<>(singletonIterator(someKey), badIdFunc, goodDataFunc, goodMetaFunc)))
+        assertThatThrownBy(() -> readAllAndClose(new IteratingCursor<>(singletonIterator(someKey), badIdFunc, goodDataFunc, goodMetaFunc, Object::toString)))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("id");
-        assertThatThrownBy(() -> readAllAndClose(new IteratingCursor<>(singletonIterator(someKey), goodIdFunc, badDataFunc, goodMetaFunc)))
+        assertThatThrownBy(() -> readAllAndClose(new IteratingCursor<>(singletonIterator(someKey), goodIdFunc, badDataFunc, goodMetaFunc, Object::toString)))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("data");
-        assertThatThrownBy(() -> readAllAndClose(new IteratingCursor<>(singletonIterator(someKey), goodIdFunc, goodDataFunc, badMetaFunc)))
+        assertThatThrownBy(() -> readAllAndClose(new IteratingCursor<>(singletonIterator(someKey), goodIdFunc, goodDataFunc, badMetaFunc, Object::toString)))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("meta");
     }
@@ -277,11 +277,12 @@ public class TsCursorsTest {
         assertThat(cache.get("key")).isInstanceOf(XCollection.class);
     }
 
-    private static <ID> void assertNextSeries(InMemoryCursor<ID> cursor, ID id, OptionalTsData data, Map<String, String> meta) {
+    private static <ID> void assertNextSeries(InMemoryCursor<ID> cursor, ID id, OptionalTsData data, Map<String, String> meta, String label) {
         assertThat(cursor.nextSeries()).isTrue();
         assertThat(cursor.getSeriesId()).isEqualTo(id);
         assertThat(cursor.getSeriesData()).isEqualTo(data);
         assertThat(cursor.getSeriesMetaData()).isEqualTo(meta);
+        assertThat(cursor.getSeriesLabel()).isEqualTo(label);
     }
 
     private static void assertApi(TsCursor<?> cursor) throws IOException {
@@ -305,6 +306,7 @@ public class TsCursorsTest {
         assertThatThrownBy(() -> cursor.getSeriesId()).isInstanceOf(IllegalStateException.class).hasMessage(NEXT_ISE);
         assertThatThrownBy(() -> cursor.getSeriesData()).isInstanceOf(IllegalStateException.class).hasMessage(NEXT_ISE);
         assertThatThrownBy(() -> cursor.getSeriesMetaData()).isInstanceOf(IllegalStateException.class).hasMessage(NEXT_ISE);
+        assertThatThrownBy(() -> cursor.getSeriesLabel()).isInstanceOf(IllegalStateException.class).hasMessage(NEXT_ISE);
     }
 
     private static void assertCloseState(TsCursor<?> cursor) throws IOException {
@@ -317,10 +319,15 @@ public class TsCursorsTest {
         assertThatThrownBy(() -> cursor.getSeriesId()).isInstanceOf(IllegalStateException.class).hasMessage(CLOSE_ISE);
         assertThatThrownBy(() -> cursor.getSeriesData()).isInstanceOf(IllegalStateException.class).hasMessage(CLOSE_ISE);
         assertThatThrownBy(() -> cursor.getSeriesMetaData()).isInstanceOf(IllegalStateException.class).hasMessage(CLOSE_ISE);
+        assertThatThrownBy(() -> cursor.getSeriesLabel()).isInstanceOf(IllegalStateException.class).hasMessage(CLOSE_ISE);
         assertThat(cursor.filter(o -> true)).isNotNull();
         assertThat(cursor.onClose(() -> {
         })).isNotNull();
         assertThat(cursor.transform(identity())).isNotNull();
         assertThat(cursor.withMetaData(Collections.emptyMap())).isNotNull();
+    }
+
+    private static <X> String quote(X object) {
+        return "'" + object + "'";
     }
 }

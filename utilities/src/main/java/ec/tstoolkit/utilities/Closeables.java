@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.annotation.Nonnull;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.slf4j.Logger;
@@ -39,6 +40,20 @@ public final class Closeables {
         // static class
     }
 
+    public static void closeBoth(@Nonnull Closeable first, @Nonnull Closeable second) throws IOException {
+        try {
+            first.close();
+        } catch (IOException ex) {
+            try {
+                second.close();
+            } catch (IOException suppressed) {
+                ex.addSuppressed(suppressed);
+            }
+            throw ex;
+        }
+        second.close();
+    }
+    
     public static Closeable asCloseable(final XMLStreamWriter o) {
         return () -> {
             try {

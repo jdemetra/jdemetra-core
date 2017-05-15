@@ -79,6 +79,17 @@ public interface TsCursor<ID> extends Closeable {
     ID getSeriesId() throws IOException, IllegalStateException;
 
     /**
+     * Gets the current time series label.
+     *
+     * @return a non-null label
+     * @throws IOException if an internal exception prevented data retrieval.
+     * @throws IllegalStateException if {@link #nextSeries()} returns false or
+     * if this cursor is closed
+     */
+    @Nonnull
+    String getSeriesLabel() throws IOException, IllegalStateException;
+
+    /**
      * Gets the current time series metadata.
      *
      * @return a non-null metadata
@@ -165,11 +176,26 @@ public interface TsCursor<ID> extends Closeable {
      * @param id the identifier
      * @param data the optional data
      * @param meta the metadata
+     * @param label the label
+     * @return a new cursor
+     */
+    @Nonnull
+    static <ID> TsCursor<ID> singleton(@Nonnull ID id, @Nonnull OptionalTsData data, @Nonnull Map<String, String> meta, @Nonnull String label) {
+        return new TsCursors.SingletonCursor<>(id, data, meta, label);
+    }
+
+    /**
+     * Creates a cursor from a single item.
+     *
+     * @param <ID> the type of the cursor identifiers
+     * @param id the identifier
+     * @param data the optional data
+     * @param meta the metadata
      * @return a new cursor
      */
     @Nonnull
     static <ID> TsCursor<ID> singleton(@Nonnull ID id, @Nonnull OptionalTsData data, @Nonnull Map<String, String> meta) {
-        return new TsCursors.SingletonCursor<>(id, data, meta);
+        return new TsCursors.SingletonCursor<>(id, data, meta, id.toString());
     }
 
     /**
@@ -182,7 +208,7 @@ public interface TsCursor<ID> extends Closeable {
      */
     @Nonnull
     static <ID> TsCursor<ID> singleton(@Nonnull ID id, @Nonnull OptionalTsData data) {
-        return new TsCursors.SingletonCursor<>(id, data, Collections.emptyMap());
+        return new TsCursors.SingletonCursor<>(id, data, Collections.emptyMap(), id.toString());
     }
 
     /**
@@ -194,7 +220,29 @@ public interface TsCursor<ID> extends Closeable {
      */
     @Nonnull
     static <ID> TsCursor<ID> singleton(@Nonnull ID id) {
-        return new TsCursors.SingletonCursor<>(id, TsCursors.NOT_REQUESTED, Collections.emptyMap());
+        return new TsCursors.SingletonCursor<>(id, TsCursors.NOT_REQUESTED, Collections.emptyMap(), id.toString());
+    }
+
+    /**
+     * Creates a cursor from an iterator.
+     *
+     * @param <E> the type of the iterator elements
+     * @param iterator the iterator
+     * @param toData a non-null function to get optional data from a element
+     * from the iterator
+     * @param toMeta a non-null function to get optional metadata from a element
+     * from the iterator
+     * @param toLabel a non-null function to get a label from a element from the
+     * iterator
+     * @return a new cursor
+     */
+    @Nonnull
+    static <E> TsCursor<E> from(
+            @Nonnull Iterator<E> iterator,
+            @Nonnull Function<? super E, OptionalTsData> toData,
+            @Nonnull Function<? super E, Map<String, String>> toMeta,
+            @Nonnull Function<? super E, String> toLabel) {
+        return new TsCursors.IteratingCursor<>(iterator, Function.identity(), toData, toMeta, toLabel);
     }
 
     /**
@@ -213,7 +261,7 @@ public interface TsCursor<ID> extends Closeable {
             @Nonnull Iterator<E> iterator,
             @Nonnull Function<? super E, OptionalTsData> toData,
             @Nonnull Function<? super E, Map<String, String>> toMeta) {
-        return new TsCursors.IteratingCursor<>(iterator, Function.identity(), toData, toMeta);
+        return new TsCursors.IteratingCursor<>(iterator, Function.identity(), toData, toMeta, Object::toString);
     }
 
     /**
@@ -229,7 +277,7 @@ public interface TsCursor<ID> extends Closeable {
     static <E> TsCursor<E> from(
             @Nonnull Iterator<E> iterator,
             @Nonnull Function<? super E, OptionalTsData> toData) {
-        return new TsCursors.IteratingCursor<>(iterator, Function.identity(), toData, TsCursors.NO_META);
+        return new TsCursors.IteratingCursor<>(iterator, Function.identity(), toData, TsCursors.NO_META, Object::toString);
     }
 
     /**
@@ -241,7 +289,7 @@ public interface TsCursor<ID> extends Closeable {
      */
     @Nonnull
     static <E> TsCursor<E> from(@Nonnull Iterator<E> iterator) {
-        return new TsCursors.IteratingCursor<>(iterator, Function.identity(), TsCursors.NO_DATA, TsCursors.NO_META);
+        return new TsCursors.IteratingCursor<>(iterator, Function.identity(), TsCursors.NO_DATA, TsCursors.NO_META, Object::toString);
     }
 
     @Nonnull
