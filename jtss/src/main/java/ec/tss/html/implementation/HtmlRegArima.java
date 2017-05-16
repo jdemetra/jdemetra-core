@@ -90,8 +90,14 @@ public class HtmlRegArima extends AbstractHtmlElement {
         stream.write(HtmlTag.HEADER1, h1, "Summary").newLine();
         stream.write("Estimation span: [").write(model_.description.getEstimationDomain().getStart().toString());
         stream.write(" - ").write(model_.description.getEstimationDomain().getLast().toString()).write(']').newLine();
-        stream.write(Integer.toString(model_.description.getEstimationDomain().getLength())).
-                write(" observations").newLine();
+        int nm = model_.estimation.getRegArima().getMissingsCount();
+        if (nm > 0) {
+            stream.write(Integer.toString(model_.description.getEstimationDomain().getLength())).
+                    write(" observations (including missing)").newLine();
+        } else {
+            stream.write(Integer.toString(model_.description.getEstimationDomain().getLength())).
+                    write(" observations").newLine();
+        }
         if (model_.description.getTransformation() == DefaultTransformationType.Log) {
             stream.write("Series has been log-transformed").newLine();
         }

@@ -173,6 +173,11 @@
                 <artifactId>demetra-workspace</artifactId>
                 <version>${project.version}</version>            
             </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-tck</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
             <!-- < modules -->
         </dependencies>
     </dependencyManagement>
