@@ -23,6 +23,7 @@ import ec.tstoolkit.design.Development;
 import ec.tstoolkit.information.Information;
 import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.information.InformationSet;
+import ec.tstoolkit.maths.Complex;
 import ec.tstoolkit.modelling.ComponentInformation;
 import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.ModellingDictionary;
@@ -181,13 +182,13 @@ public class SeatsResults implements ISaResults {
         Map<String, T> all = MAPPING.searchAll(this, wc, tclass);
         if (info_ != null) {
             List<Information<T>> sel = info_.select(wc, tclass);
-            for (Information<T> info: sel){
+            for (Information<T> info : sel) {
                 all.put(info.name, info.value);
             }
-        } 
+        }
         return all;
     }
-    
+
     @Override
     public List<ProcessingInformation> getProcessingInformation() {
         return log_ == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(log_);
@@ -209,8 +210,10 @@ public class SeatsResults implements ISaResults {
     public static <T> void set(String name, Function<SeatsResults, TsData> extractor) {
         MAPPING.set(name, extractor);
     }
-    
+
     private static final InformationMapping<SeatsResults> MAPPING = new InformationMapping<>(SeatsResults.class);
+
+    public static final String CUTOFF = "parameters_cutoff", CHANGED = "model_changed", SEAS = "seasonality", AR_ROOT = "ar_root";
 
     static {
         MAPPING.set(ModellingDictionary.Y_LIN, source -> source.initialComponents.getSeries(ComponentType.Series, ComponentInformation.Value));
@@ -287,6 +290,17 @@ public class SeatsResults implements ISaResults {
             }
         });
         MAPPING.set(ModellingDictionary.MODE, DecompositionMode.class, source -> source.finalComponents.getMode());
-        MAPPING.set("seasonality", Boolean.class, source -> !source.decomposition.getComponent(1).isNull());
+        MAPPING.set(SEAS, Boolean.class, source -> !source.decomposition.getComponent(1).isNull());
+        MAPPING.set(CUTOFF, Boolean.class, source -> source.model.isCutOff());
+        MAPPING.set(CHANGED, Boolean.class, source -> source.model.isChanged());
+        MAPPING.setList(AR_ROOT, 1, 3, Complex.class, (source, i) -> {
+            Complex[] ar = source.model.getAutoRegressiveRoots();
+            if (i > ar.length) {
+                return null;
+            } else {
+                return ar[i - 1].inv();
+            }
+        });
+
     }
 }
