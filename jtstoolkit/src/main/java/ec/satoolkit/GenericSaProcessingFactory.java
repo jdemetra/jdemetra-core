@@ -24,8 +24,10 @@ import ec.tstoolkit.algorithm.DefaultProcessingFactory;
 import ec.tstoolkit.algorithm.IProcDocument;
 import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.IProcSpecification;
+import ec.tstoolkit.algorithm.IProcessing;
 import ec.tstoolkit.algorithm.IProcessing.Status;
 import ec.tstoolkit.algorithm.IProcessingNode;
+import ec.tstoolkit.algorithm.ProcessingContext;
 import ec.tstoolkit.algorithm.SequentialProcessing;
 import ec.tstoolkit.algorithm.SingleTsData;
 import ec.tstoolkit.algorithm.SingleTsDataProcessing.Validation;
@@ -36,6 +38,7 @@ import ec.tstoolkit.modelling.SeriesInfo;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
 import ec.tstoolkit.modelling.arima.ModellingContext;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
+import ec.tstoolkit.modelling.arima.tramo.SeasonalityTestResults;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.TsPeriodSelector;
 import ec.tstoolkit.timeseries.simplets.TsData;
@@ -371,7 +374,7 @@ public class GenericSaProcessingFactory {
                             }
                             finals.add(fsa, ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
                         }
-                   }
+                    }
                     results.put(FINAL, finals);
                     return Status.Valid;
                 }
@@ -439,6 +442,35 @@ public class GenericSaProcessingFactory {
 
     protected static void addBenchmarkingStep(SaBenchmarkingSpec spec, SequentialProcessing sproc) {
         sproc.add(createBenchmarkingStep(spec));
+    }
+
+    //modification for seasonality tests in R
+    protected static IProcessingNode createSeasTestStep(ProcessingContext context) {
+        return new IProcessingNode<TsData>() {
+            @Override
+            public String getName() {
+                return "seasonality";
+            }
+
+            @Override
+            public String getPrefix() {
+                return "seasonality";
+            }
+
+            @Override
+            public IProcessing.Status process(TsData s, Map<String, IProcResults> results) {
+                SeasonalityTestResults test = new SeasonalityTestResults();
+
+                test.setMode(model(results).isMultiplicative());
+                test.setData(s);
+                results.put("seasonality", test);
+                return IProcessing.Status.Valid;
+            }
+        };
+    }
+
+    protected static void addSeasTestStep(ProcessingContext context, SequentialProcessing processing) {
+        processing.add(createSeasTestStep(context));
     }
 
     protected static TsData op(boolean mul, TsData l, TsData r) {
