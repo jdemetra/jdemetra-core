@@ -60,6 +60,15 @@ public class ResidualTradingDaysDiagnostics implements IDiagnostics {
         return refe == 0 || se / refe > E_LIMIT;
     }
 
+    private static boolean isSignificant(TsData i) {
+        if (i == null) {
+            return false;
+        }
+        DescriptiveStatistics idesc = new DescriptiveStatistics(i);
+        double se = idesc.getStdev();
+        return se > E_LIMIT;
+    }
+
     static IDiagnostics create(CompositeResults rslts, ResidualTradingDaysDiagnosticsConfiguration config) {
         try {
             ResidualTradingDaysDiagnostics test = new ResidualTradingDaysDiagnostics();
@@ -71,7 +80,7 @@ public class ResidualTradingDaysDiagnostics implements IDiagnostics {
             int ny = config.getSpan();
             boolean ar = config.isArModelling();
             boolean mul = isMultiplicative(rslts);
-            boolean isignif = (sa != null && i != null) ? isSignificant(i, sa) : true;
+            boolean isignif = mul ? isSignificant(i) : (sa != null && i != null) ? isSignificant(i, sa) : true;
             if (sa != null) {
                 if (mul) {
                     sa = sa.log();
@@ -201,7 +210,7 @@ public class ResidualTradingDaysDiagnostics implements IDiagnostics {
             GregorianCalendarVariables tdvars = GregorianCalendarVariables.getDefault(TradingDaysType.TradingDays);
             int ntd = tdvars.getDim();
             TsDomain edomain = s.getDomain();
-            List<DataBlock> bvars = new ArrayList<DataBlock>(ntd);
+            List<DataBlock> bvars = new ArrayList<>(ntd);
             for (int i = 0; i < ntd; ++i) {
                 bvars.add(new DataBlock(edomain.getLength()));
             }
@@ -233,7 +242,7 @@ public class ResidualTradingDaysDiagnostics implements IDiagnostics {
             GregorianCalendarVariables tdvars = GregorianCalendarVariables.getDefault(TradingDaysType.TradingDays);
             int ntd = tdvars.getDim();
             TsDomain edomain = s.getDomain().drop(1, 0);
-            List<DataBlock> bvars = new ArrayList<DataBlock>(ntd);
+            List<DataBlock> bvars = new ArrayList<>(ntd);
             for (int i = 0; i < ntd; ++i) {
                 bvars.add(new DataBlock(edomain.getLength()));
             }
@@ -245,12 +254,12 @@ public class ResidualTradingDaysDiagnostics implements IDiagnostics {
                 reg.addX(cur);
             }
             Ols ols = new Ols();
-//            reg.setMeanCorrection(true);
+            reg.setMeanCorrection(true);
             if (!ols.process(reg)) {
                 return null;
             }
             JointRegressionTest test = new JointRegressionTest(.01);
-            test.accept(ols.getLikelihood(), 0, 1, ntd, null);
+            test.accept(ols.getLikelihood(), 0, 2, ntd, null);
             return test.getTest();
         } catch (Exception err) {
             return null;
