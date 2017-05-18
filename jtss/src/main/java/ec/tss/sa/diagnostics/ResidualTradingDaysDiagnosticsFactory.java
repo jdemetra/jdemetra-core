@@ -33,7 +33,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ResidualTradingDaysDiagnosticsFactory implements ISaDiagnosticsFactory {
     
     static final String NAME="Residual trading days tests", DESC="Residual trading days tests";
-    static final String FTEST_SA = "F-Test on SA", FTEST_I = "F-Test on I";
+    static final String FTEST_SA = "F-Test on SA (td)", FTEST_I = "F-Test on I (td)";
     static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(FTEST_SA, FTEST_I));
 
     private ResidualTradingDaysDiagnosticsConfiguration config_;
