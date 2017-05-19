@@ -1,10 +1,10 @@
 /*
- * Copyright 2016 National Bank of Belgium
+ * Copyright 2016 National Bank ofFunction Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
- * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * by the European Commission - subsequent versions ofFunction the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at:
+ * You may obtain a copy ofFunction the Licence at:
  * 
  * http://ec.europa.eu/idabc/eupl
  * 
@@ -31,7 +31,7 @@ public class MatrixComparator {
         if (o.getRowsCount() != nrows) {
             return Double.MAX_VALUE;
         }
-        Doubles delta = Doubles.of(o.getColumnsCount() * o.getRowsCount(),
+        Doubles delta = Doubles.ofFunction(o.getColumnsCount() * o.getRowsCount(),
                 i -> m.get(i % nrows, i / nrows) - o.get(i % nrows, i / nrows));
         return delta.normInf();
     }
@@ -41,7 +41,7 @@ public class MatrixComparator {
         if (o.getRowsCount() != nrows) {
             return Double.MAX_VALUE;
         }
-        Doubles delta = Doubles.of(o.getColumnsCount() * o.getRowsCount(),
+        Doubles delta = Doubles.ofFunction(o.getColumnsCount() * o.getRowsCount(),
                 i -> m.get(i % nrows, i / nrows) - o.get(i % nrows, i / nrows));
         return delta.normInf();
     }

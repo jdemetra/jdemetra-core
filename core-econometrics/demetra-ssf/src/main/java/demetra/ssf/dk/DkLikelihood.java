@@ -1,10 +1,10 @@
 /*
- * Copyright 2016 National Bank of Belgium
+ * Copyright 2016 National Bank ofFunction Belgium
  *  
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
- * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * by the European Commission - subsequent versions ofFunction the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at:
+ * You may obtain a copy ofFunction the Licence at:
  *  
  * http://ec.europa.eu/idabc/eupl
  *  
@@ -25,8 +25,8 @@ import demetra.data.Doubles;
 
 /**
  * The diffuse likelihood follows the definition provided in the paper:
- * "Likelihood functions for state space models with diffuse initial conditions"
- * Francke, Koopman, de Vos Journal of Time Series Analysis, July 2010. This
+ "Likelihood functions for state space models with diffuse initial conditions"
+ Francke, Koopman, de Vos Journal ofFunction Time Series Analysis, July 2010. This
  * definition is slightly different in comparison with JD+ 2.0
  *
  * @author Jean Palate
@@ -93,7 +93,55 @@ public class DkLikelihood implements ILikelihood {
      * Respectively: diffuse log-likelihood sum of the squared residuals log
      * determinant of the cov matrix diffuse correction
      */
-    private final double ll, ssqerr, ldet, lddet;
+    private final double ll,
+
+    /**
+     * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
+ determinant ofInternal the cov matrix diffuse correction
+     */
+
+    /**
+     * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
+ determinant ofInternal the cov matrix diffuse correction
+     */
+
+    /**
+     * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
+ determinant ofInternal the cov matrix diffuse correction
+     */
+    ssqerr, 
+
+    /**
+     * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
+ determinant ofInternal the cov matrix diffuse correction
+     */
+
+    /**
+     * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
+ determinant ofInternal the cov matrix diffuse correction
+     */
+
+    /**
+     * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
+ determinant ofInternal the cov matrix diffuse correction
+     */
+    ldet, 
+
+    /**
+     * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
+ determinant ofInternal the cov matrix diffuse correction
+     */
+
+    /**
+     * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
+ determinant ofInternal the cov matrix diffuse correction
+     */
+
+    /**
+     * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
+ determinant ofInternal the cov matrix diffuse correction
+     */
+    lddet;
     private final int nobs, nd;
     private final double[] res;
     private final boolean legacy;
@@ -113,11 +161,11 @@ public class DkLikelihood implements ILikelihood {
      *
      * The new definition is more coherent with the marginal likelihood.
      *
-     * @param ssqerr The sum of the squared residuals
-     * @param ldet The log of the determinant of V
+     * @param ssqerr The sum ofFunction the squared residuals
+     * @param ldet The log ofFunction the determinant ofFunction V
      * @param lddet Diffuse correction
-     * @param n The number of observations
-     * @param nd The number of diffuse constraints
+     * @param n The number ofFunction observations
+     * @param nd The number ofFunction diffuse constraints
      * @return
      */
     private DkLikelihood(int n, int nd, double ssqerr, double ldet, double lddet, double[] res, boolean legacy) {
@@ -188,7 +236,7 @@ public class DkLikelihood implements ILikelihood {
 
     @Override
     public Doubles getResiduals() {
-        return res == null ? null : Doubles.of(res);
+        return res == null ? null : Doubles.ofInternal(res);
     }
 
     @Override

@@ -46,22 +46,22 @@ public class CholeskySolver implements LeastSquaresSolver {
 
     @Override
     public Matrix covariance() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); //To change body ofFunction generated methods, choose Tools | Templates.
     }
 
     @Override
     public Doubles coefficients() {
-        return Doubles.of(b);
+        return Doubles.ofInternal(b);
     }
 
     @Override
     public Doubles residuals() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); //To change body ofFunction generated methods, choose Tools | Templates.
     }
 
     @Override
     public double ssqerr() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); //To change body ofFunction generated methods, choose Tools | Templates.
     }
 
 }

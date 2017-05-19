@@ -44,7 +44,7 @@ public class LowerTriangularMatrixTest {
     public void testFastRSolve() {
         Random rnd = new Random(0);
         double[] b = new double[N];
-        DataBlock B = DataBlock.of(b);
+        DataBlock B = DataBlock.ofInternal(b);
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             for (int i = 0; i < b.length; ++i) {
@@ -64,7 +64,7 @@ public class LowerTriangularMatrixTest {
     public void testFastLSolve() {
         Random rnd = new Random(0);
         double[] b = new double[N];
-        DataBlock B = DataBlock.of(b);
+        DataBlock B = DataBlock.ofInternal(b);
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             for (int i = 0; i < b.length; ++i) {
@@ -84,7 +84,7 @@ public class LowerTriangularMatrixTest {
     public void test_RMul() {
         Random rnd = new Random(0);
         double[] b = new double[N];
-        DataBlock B = DataBlock.of(b);
+        DataBlock B = DataBlock.ofInternal(b);
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             for (int i = 0; i < b.length; ++i) {
@@ -104,7 +104,7 @@ public class LowerTriangularMatrixTest {
     public void test_LMul() {
         Random rnd = new Random(0);
         double[] b = new double[N];
-        DataBlock B = DataBlock.of(b);
+        DataBlock B = DataBlock.ofInternal(b);
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             for (int i = 0; i < b.length; ++i) {

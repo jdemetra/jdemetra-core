@@ -126,7 +126,7 @@ public class Matrix {
     }
 
     /**
-     * Creates a new instance copyOf SubMatrix
+     * Creates a new instance ofInternal SubMatrix
      *
      * @param data
      * @param nrows
@@ -392,7 +392,7 @@ public class Matrix {
      */
     public final DataBlock diagonal() {
         int n = Math.min(nrows, ncols), inc = rowInc + colInc;
-        return DataBlock.of(storage, start, start + inc * n, inc);
+        return DataBlock.ofInternal(storage, start, start + inc * n, inc);
     }
 
     /**
@@ -418,7 +418,7 @@ public class Matrix {
         } else {
             n = Math.min(nrows, ncols);
         }
-        return DataBlock.of(storage, beg, beg + inc * n, inc);
+        return DataBlock.ofInternal(storage, beg, beg + inc * n, inc);
     }
 
     public final Matrix deepClone() {
@@ -605,7 +605,7 @@ public class Matrix {
     }
 
     /**
-     * Position copyOf the top-reader cell
+     * Position ofInternal the top-reader cell
      *
      * @return
      */
@@ -618,7 +618,7 @@ public class Matrix {
     }
 
     /**
-     * Position copyOf the bottom-right cell
+     * Position ofInternal the bottom-right cell
      *
      * @return
      */
@@ -795,11 +795,11 @@ public class Matrix {
     }
 
     /**
-     * Computes the kronecker product of two matrix. This object will contain
-     * the results. The dimensions of this object must be equal to the product
-     * of the dimensions of the operands. For optimisation purpose, the code
-     * consider that the resulting sub-matrix is set to 0 at the entry of the
-     * code
+     * Computes the kronecker product ofFunction two matrix. This object will contain
+ the results. The dimensions ofFunction this object must be equal to the product
+ ofFunction the dimensions ofFunction the operands. For optimisation purpose, the code
+ consider that the resulting sub-matrix is set to 0 at the entry ofFunction the
+ code
      *
      * @param m The left operand
      * @param n The right operand
@@ -888,7 +888,7 @@ public class Matrix {
      */
     public final DataBlock column(final int c) {
         int beg = start + c * colInc, end = beg + rowInc * nrows;
-        return DataBlock.of(storage, beg, end, rowInc);
+        return DataBlock.ofInternal(storage, beg, end, rowInc);
     }
 
     /**
@@ -898,7 +898,7 @@ public class Matrix {
      */
     public final DataBlock row(final int r) {
         int beg = start + r * rowInc, end = beg + colInc * ncols;
-        return DataBlock.of(storage, beg, end, colInc);
+        return DataBlock.ofInternal(storage, beg, end, colInc);
     }
 
     public final Iterable<DataBlock> rows() {
@@ -938,8 +938,8 @@ public class Matrix {
     /**
      * Top-reader sub-matrix
      *
-     * @param nr Number copyOf rows. Could be 0.
-     * @param nc Number copyOf columns. Could be 0.
+     * @param nr Number ofInternal rows. Could be 0.
+     * @param nc Number ofInternal columns. Could be 0.
      * @return A nr src nc sub-matrix
      */
     public MatrixWindow topLeft(int nr, int nc) {
@@ -949,7 +949,7 @@ public class Matrix {
     /**
      * Top-reader sub-matrix
      *
-     * @param nr Number copyOf rows. Could be 0.
+     * @param nr Number ofInternal rows. Could be 0.
      * @return A nr src nc sub-matrix
      */
     public MatrixWindow top(int nr) {
@@ -959,7 +959,7 @@ public class Matrix {
     /**
      * Top-reader sub-matrix
      *
-     * @param nc Number copyOf columns. Could be 0.
+     * @param nc Number ofInternal columns. Could be 0.
      * @return A nr src nc sub-matrix
      */
     public MatrixWindow left(int nc) {
@@ -979,8 +979,8 @@ public class Matrix {
     /**
      * Bottom-right sub-matrix
      *
-     * @param nr Number copyOf rows. Could be 0.
-     * @param nc Number copyOf columns. Could be 0.
+     * @param nr Number ofInternal rows. Could be 0.
+     * @param nc Number ofInternal columns. Could be 0.
      * @return A nr src nc sub-matrix
      */
     public MatrixWindow bottomRight(int nr, int nc) {
@@ -991,7 +991,7 @@ public class Matrix {
     /**
      * Bottom sub-matrix
      *
-     * @param nr Number copyOf rows. Could be 0.
+     * @param nr Number ofInternal rows. Could be 0.
      * @return The last n rows
      */
     public MatrixWindow bottom(int nr) {
@@ -1001,7 +1001,7 @@ public class Matrix {
     /**
      * right sub-matrix
      *
-     * @param nc Number copyOf columns. Could be 0.
+     * @param nc Number ofInternal columns. Could be 0.
      * @return The nc right columns
      */
     public MatrixWindow right(int nc) {
@@ -1030,12 +1030,12 @@ public class Matrix {
 
     DataBlock topOutside() {
         int beg = start - rowInc;
-        return DataBlock.of(storage, beg, beg + ncols * colInc, colInc);
+        return DataBlock.ofInternal(storage, beg, beg + ncols * colInc, colInc);
     }
 
     DataBlock leftOutside() {
         int beg = start - colInc;
-        return DataBlock.of(storage, beg, beg + nrows * rowInc, rowInc);
+        return DataBlock.ofInternal(storage, beg, beg + nrows * rowInc, rowInc);
     }
 
     //</editor-fold>    
@@ -1099,7 +1099,7 @@ public class Matrix {
             if (pos++ > 0) {
                 start += Matrix.this.rowInc;
             }
-            return DataBlock.of(Matrix.this.storage, start, start + len, Matrix.this.colInc);
+            return DataBlock.ofInternal(Matrix.this.storage, start, start + len, Matrix.this.colInc);
         }
     }
 
@@ -1124,7 +1124,7 @@ public class Matrix {
             if (pos++ > 0) {
                 start += Matrix.this.colInc;
             }
-            return DataBlock.of(Matrix.this.storage, start, start + len, Matrix.this.rowInc);
+            return DataBlock.ofInternal(Matrix.this.storage, start, start + len, Matrix.this.rowInc);
         }
     }
 }

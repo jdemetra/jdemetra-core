@@ -9,8 +9,8 @@ import demetra.maths.matrices.Matrix;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import demetra.data.Doubles;
-import demetra.maths.matrices.impl.Householder;
-import demetra.maths.matrices.impl.RobustHouseholder;
+import demetra.maths.matrices.internal.Householder;
+import demetra.maths.matrices.internal.RobustHouseholder;
 
 /**
  *

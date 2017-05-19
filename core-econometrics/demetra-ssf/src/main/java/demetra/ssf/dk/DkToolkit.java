@@ -25,7 +25,7 @@ import demetra.maths.linearfilters.ILinearProcess;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
-import demetra.maths.matrices.impl.Householder;
+import demetra.maths.matrices.internal.Householder;
 import demetra.ssf.dk.sqrt.DiffuseSquareRootInitializer;
 import demetra.ssf.ResultsRange;
 import demetra.ssf.State;
@@ -312,7 +312,7 @@ public class DkToolkit {
                     ++j;
                 }
             }
-            return DataBlock.of(bc);
+            return DataBlock.ofInternal(bc);
         }
 
         private Matrix expand(Matrix v, int[] unused) {

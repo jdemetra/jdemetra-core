@@ -9,11 +9,11 @@ import java.util.Random;
 import demetra.data.DataBlock;
 import demetra.data.NeumaierAccumulator;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.impl.CroutDoolittle;
-import demetra.maths.matrices.impl.Gauss;
-import demetra.maths.matrices.impl.Householder;
-import demetra.maths.matrices.impl.HouseholderWithPivoting;
-import demetra.maths.matrices.impl.RobustHouseholder;
+import demetra.maths.matrices.internal.CroutDoolittle;
+import demetra.maths.matrices.internal.Gauss;
+import demetra.maths.matrices.internal.Householder;
+import demetra.maths.matrices.internal.HouseholderWithPivoting;
+import demetra.maths.matrices.internal.RobustHouseholder;
 import org.junit.Ignore;
 import org.junit.Test;
 

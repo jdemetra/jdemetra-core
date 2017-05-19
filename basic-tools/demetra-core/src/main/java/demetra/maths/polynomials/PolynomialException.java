@@ -44,7 +44,7 @@ public class PolynomialException extends RuntimeException {
     /**
          *
          */
-    public final static String PoleError = "rf_err_pole";
+    public final static String POLE = "rf_err_pole";
 
     /**
      *

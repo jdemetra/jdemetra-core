@@ -20,8 +20,8 @@ import java.util.Iterator;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.design.Development;
-import demetra.maths.matrices.impl.GivensRotation;
-import demetra.maths.matrices.impl.HouseholderReflection;
+import demetra.maths.matrices.internal.GivensRotation;
+import demetra.maths.matrices.internal.HouseholderReflection;
 
 
 /**

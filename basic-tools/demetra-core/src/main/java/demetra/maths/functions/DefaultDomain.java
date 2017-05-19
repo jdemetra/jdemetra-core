@@ -1,10 +1,10 @@
 /*
-* Copyright 2013 National Bank of Belgium
+* Copyright 2013 National Bank ofFunction Belgium
 *
 * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
+* by the European Commission - subsequent versions ofFunction the EUPL (the "Licence");
 * You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
+* You may obtain a copy ofFunction the Licence at:
 *
 * http://ec.europa.eu/idabc/eupl
 *
@@ -88,6 +88,6 @@ public class DefaultDomain implements IParametersDomain {
 
     @Override
     public Doubles getDefault() {
-        return Doubles.of(dim, i->0);
+        return Doubles.ofFunction(dim, i->0);
     }
 }

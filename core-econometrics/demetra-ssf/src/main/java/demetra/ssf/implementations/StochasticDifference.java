@@ -1,10 +1,10 @@
 /*
- * Copyright 2016 National Bank of Belgium
+ * Copyright 2016 National Bank ofInternal Belgium
  *  
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
- * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * by the European Commission - subsequent versions ofInternal the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at:
+ * You may obtain a copy ofInternal the Licence at:
  *  
  * http://ec.europa.eu/idabc/eupl
  *  
@@ -33,7 +33,7 @@ import demetra.ssf.univariate.Ssf;
 public class StochasticDifference extends Ssf {
 
     public static StochasticDifference create(ISsf stmodel, Polynomial ur) {
-        double[] coef = ur.getCoefficients();
+        double[] coef = ur.coefficients().toArray();
         int n = 0;
         for (int i = 1; i < coef.length; ++i) {
             if (coef[i] != 0) {
@@ -310,12 +310,12 @@ public class StochasticDifference extends Ssf {
 
         @Override
         public int getStateDim() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            throw new UnsupportedOperationException("Not supported yet."); //To change body ofInternal generated methods, choose Tools | Templates.
         }
 
         @Override
         public boolean isValid() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            throw new UnsupportedOperationException("Not supported yet."); //To change body ofInternal generated methods, choose Tools | Templates.
         }
     }
 

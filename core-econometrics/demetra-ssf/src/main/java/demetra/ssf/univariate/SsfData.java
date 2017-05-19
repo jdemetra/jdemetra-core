@@ -24,7 +24,7 @@ public class SsfData implements ISsfData  {
     }
 
     public SsfData(double[] x) {
-        data = Doubles.of(x.length, i->x[i]);
+        data = Doubles.ofFunction(x.length, i->x[i]);
     }
 
     @Override

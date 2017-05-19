@@ -7,7 +7,7 @@ package demetra.leastsquares;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.impl.SingularValueDecomposition;
+import demetra.maths.matrices.internal.SingularValueDecomposition;
 import demetra.data.Doubles;
 
 /**

@@ -381,7 +381,7 @@ public class Measurements {
         @Override
         public void addH(int pos, Matrix V) {
             if (var != null) {
-                V.diagonal().add(DataBlock.of(var));
+                V.diagonal().add(DataBlock.ofInternal(var));
             }
         }
 
