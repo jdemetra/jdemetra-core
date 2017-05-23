@@ -59,6 +59,10 @@ public final class TsPeriod implements IDatePeriod, Comparable<TsPeriod> {
         return new TsPeriod(frequency, calcId(ifreq, year, position));
     }
 
+    public static TsPeriod ofInternal(TsFrequency frequency, int id) {
+        return new TsPeriod(frequency, id);
+    }
+
     /**
      * *
      * Creates a period corresponding to the given year

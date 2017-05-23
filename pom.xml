@@ -68,7 +68,7 @@
         <!-- dependencies -->
         <junit.version>4.12</junit.version>
         <jsr305.version>3.0.1</jsr305.version>
-        <assertj.version>3.6.2</assertj.version>
+        <assertj.version>3.8.0</assertj.version>
         <netbeans.version>RELEASE82</netbeans.version>
         <lombok.version>1.16.12</lombok.version>
     </properties>
@@ -91,13 +91,14 @@
         <!-- several apps -->
         <module>jbench</module>
 		
-		<!-- JD3 -->
+        <!-- JD3 -->
         <module>basic-tools</module>
         <module>core-econometrics</module>
         <module>tramo-seats</module>
         <module>structural-ts</module>
         <module>sa</module>
         <module>benchmarking</module>
+        <module>demetra-tsprovider</module>
     </modules>
 	
     <dependencyManagement>
