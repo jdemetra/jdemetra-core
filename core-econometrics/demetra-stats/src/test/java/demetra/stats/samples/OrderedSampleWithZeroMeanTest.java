@@ -5,10 +5,13 @@
  */
 package demetra.stats.samples;
 
+import demetra.data.DataBlock;
 import demetra.data.Doubles;
 import java.util.Random;
+import java.util.function.IntToDoubleFunction;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -20,33 +23,48 @@ public class OrderedSampleWithZeroMeanTest {
     }
 
     @Test
-    public void stressTestCov() {
-        int K = 1000000, N = 10000;
-        double[] x = new double[N];
-        double[] y = new double[N];
+    public void testAutocovariances() {
+        double[] x = new double[100];
         Random rnd = new Random();
-        for (int i = 0; i < x.length; ++i) {
-            x[i] = rnd.nextDouble() - .5;
-            y[i] = rnd.nextDouble() - .5;
+        DataBlock X = DataBlock.ofInternal(x);
+        X.set(rnd::nextDouble);
+
+        OrderedSampleWithZeroMean sample = OrderedSampleWithZeroMean.of(X);
+
+        IntToDoubleFunction fn = sample.autoCovarianceFunction();
+        for (int i = 0; i < 20; ++i) {
+            assertEquals(fn.applyAsDouble(i), ec.tstoolkit.data.DescriptiveStatistics.cov(i, x), 1e-9);
         }
-        Doubles X = Doubles.ofInternal(x);
-        Doubles Y = Doubles.ofInternal(y);
+    }
+
+    @Test
+    //@Ignore
+    public void stressTestAutocovariances() {
+        int N=200, K=1000000;
+        double[] x = new double[N];
+        Random rnd = new Random();
+        DataBlock X = DataBlock.ofInternal(x);
+        X.set(rnd::nextDouble);
+
         long t0 = System.currentTimeMillis();
-        double z=0;
-        for (int i = 0; i < K; ++i) {
-            z+=OrderedSampleWithZeroMean.cov(x, y, i % 20);
+        for (int k = 0; k < K; ++k) {
+            OrderedSampleWithZeroMean sample = OrderedSampleWithZeroMean.of(X);
+            IntToDoubleFunction fn = sample.autoCovarianceFunction();
+            double z = 0;
+            for (int i = 0; i < 20; ++i) {
+                z += fn.applyAsDouble(i);
+            }
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
-        for (int i = 0; i < K; ++i) {
-            z+=OrderedSampleWithZeroMean.covNoMissing(X, Y, i % 20);
-        }
-        t1 = System.currentTimeMillis();
-        System.out.println(t1 - t0);
-        t0 = System.currentTimeMillis();
-        for (int i = 0; i < K; ++i) {
-            z+=OrderedSampleWithZeroMean.cov(X, Y, i % 20);
+        for (int k = 0; k < K; ++k) {
+            OrderedSampleWithZeroMean sample = OrderedSampleWithZeroMean.of(X);
+            IntToDoubleFunction fn = sample.autoCovarianceFunction();
+            double z = 0;
+            for (int i = 0; i < 20; ++i) {
+                z += ec.tstoolkit.data.DescriptiveStatistics.cov(i, x);
+            }
         }
         t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);

@@ -21,6 +21,7 @@ import demetra.data.Doubles;
 import demetra.design.Immutable;
 import demetra.maths.Constants;
 import java.util.Arrays;
+import java.util.function.DoublePredicate;
 
 /**
  *
@@ -30,176 +31,11 @@ import java.util.Arrays;
 @Immutable
 public final class DescriptiveStatistics {
 
-    /**
-     * Computes the auto-covariance
-     *
-     * @param k Lag of the auto-variance
-     * @param data Data on which the auto-covariance is computed
-     * @return
-     */
-    public static double[] ac(int k, double[] data) {
-        double[] c = new double[k];
-        double var = cov(0, data);
-        for (int i = 0; i < k; ++i) {
-            c[i] = cov(i + 1, data) / var;
-        }
-        return c;
-    }
-
-    /**
-     * Computes the covariance between two arrays of doubles, which are supposed
-     * to have zero means; the arrays might contain missing values (Double.NaN);
-     * those values are omitted in the computation the covariance (and the
-     * number of observations are adjusted).
-     *
-     * @param x The first array
-     * @param y The second array
-     * @param t The delay between the two arrays
-     * @return The covariance; cov = sum((x(i)*y(i+t)/(n-t))
-     */
-    public static double cov(double[] x, double[] y, int t) {
-        // x and y must have the same Length...
-        if (t < 0) {
-            return cov(y, x, -t);
-        }
-        double v = 0;
-        int n = x.length - t;
-        int nm = 0;
-        for (int i = 0; i < n; ++i) {
-            double xcur = x[i];
-            double ycur = y[i + t];
-            if (Double.isFinite(xcur) && Double.isFinite(ycur)) {
-                v += xcur * ycur;
-            } else {
-                ++nm;
-            }
-        }
-        int m = x.length - nm;
-        if (m == 0) {
-            return 0;
-        }
-        return v / m;
-        //return v / x.length;
-    }
-
-    // compute the covariance of (x (from sx to sx+n), y(from sy to sy+n)
-    /**
-     *
-     * @param x
-     * @param sx
-     * @param y
-     * @param sy
-     * @param n
-     * @return
-     */
-    public static double cov(double[] x, int sx, double[] y, int sy, int n) {
-        double v = 0;
-        int nm = 0;
-        for (int i = 0; i < n; ++i) {
-            double xcur = x[i + sx];
-            double ycur = y[i + sy];
-            if (Double.isFinite(xcur) && Double.isFinite(ycur)) {
-                v += xcur * ycur;
-            } else {
-                ++nm;
-            }
-        }
-        n -= nm;
-        if (n == 0) {
-            return 0;
-        }
-        return v / n;
-    }
-
-    /**
-     *
-     * @param k
-     * @param data
-     * @return
-     */
-    public static double cov(int k, double[] data) {
-        return cov(data, data, k);
-    }
-
     public static final double DELTA = 3.834e-20;
 
     public static boolean isSmall(double val) {
         Constants.getEpsilon();
         return Math.abs(val) < DELTA;
-    }
-
-    /**
-     *
-     * @param ac
-     * @return
-     */
-    public static double[] pac(double[] ac) {
-        double[] pc = new double[ac.length];
-        return pac(ac, pc);
-    }
-
-    /**
-     *
-     * @param ac
-     * @param coeff
-     * @return
-     */
-    public static double[] pac(double[] ac, double[] coeff) {
-        int kmax = ac.length;
-        double[] pac = new double[kmax];
-        double[] tmp = new double[kmax];
-
-        pac[0] = coeff[0] = ac[0]; // K = 1
-        for (int K = 2; K <= kmax; ++K) {
-            double n = 0, d = 0;
-            for (int k = 1; k <= K - 1; ++k) {
-                double x = coeff[k - 1];
-                n += ac[K - k - 1] * x;
-                d += ac[k - 1] * x;
-            }
-            pac[K - 1] = coeff[K - 1] = (ac[K - 1] - n) / (1 - d);
-
-            for (int i = 0; i < K; ++i) {
-                tmp[i] = coeff[i];
-            }
-            for (int j = 1; j <= K - 1; ++j) {
-                coeff[j - 1] = tmp[j - 1] - tmp[K - 1] * tmp[K - j - 1];
-            }
-        }
-        return pac;
-    }
-
-    /**
-     *
-     * @param k
-     * @param data
-     * @return
-     */
-    public static double[] pac(int k, double[] data) {
-        return pac(ac(k, data));
-    }
-
-    /**
-     * Computes the variance of x
-     *
-     * @param x Data for which we compute the variance
-     * @param sx Starting position in the array
-     * @param n Number of toArray.
-     * @return
-     */
-    public static double var(double[] x, int sx, int n) {
-        double v = 0;
-        int nm = 0;
-        for (int i = 0; i < n; ++i) {
-            double xcur = x[i + sx];
-            if (Double.isFinite(xcur)) {
-                v += xcur * xcur;
-            } else {
-                ++nm;
-            }
-        }
-        n -= nm;
-        return v / n;
     }
 
     private final double[] data;
@@ -335,10 +171,6 @@ public final class DescriptiveStatistics {
         }
     }
 
-    // / <Summary>
-    // / A Read Only property representing the average of the toArray in the
-    // dataset.
-    // / </Summary>
     /**
      *
      * @return
@@ -446,7 +278,7 @@ public final class DescriptiveStatistics {
      * @return
      */
     public int getObservationsCount() {
-        return data.length - getMissingValuesCount();
+        return data.length - nmissings;
     }
 
     /**
@@ -554,32 +386,12 @@ public final class DescriptiveStatistics {
      */
     public boolean hasZeroes() {
         double[] tmp = this.sortedObs;
-        if (tmp != null) {
-            if (tmp[0] > 0 || tmp[tmp.length - 1] < 0) {
-                return false;
-            }
+        if (tmp != null && tmp.length > 0 && (tmp[0] > 0 || tmp[tmp.length - 1] < 0)) {
+            return false;
         }
-        for (int i = 0; i < data.length; i++) {
-            double v = data[i];
-            if (Double.isFinite(v) && v == 0) {
-                return true;
-            }
-        }
-        return false;
+        return !allObservationsMatch(x -> x != 0);
     }
 
-    /**
-     *
-     * @return
-     */
-    public double[] internalStorage() {
-        return data;
-    }
-
-    // / <Summary>
-    // / A Read Only property to see if the toArray in the dataset have a constant
-    // value.
-    // / </Summary>
     /**
      *
      * @return
@@ -607,10 +419,6 @@ public final class DescriptiveStatistics {
         }
     }
 
-    // / <Summary>
-    // / A Read Only property that returns true if all toArray in the set are
-    // larger than some value
-    // / </Summary>
     /**
      *
      * @param val
@@ -619,22 +427,12 @@ public final class DescriptiveStatistics {
     public boolean isGreater(double val) {
         double[] tmp = this.sortedObs;
         if (tmp != null) {
-            return tmp[0] > val;
+            return tmp.length == 0 ? true : tmp[0] > val;
         } else {
-            for (int i = 0; i < data.length; i++) {
-                double v = data[i];
-                if (Double.isFinite(v) && v <= val) {
-                    return false;
-                }
-            }
-            return true;
+            return allObservationsMatch(x -> x > val);
         }
     }
 
-    // / <Summary>
-    // / A Read Only property that returns true if all toArray in the set are
-    // larger than or equal to some value
-    // / </Summary>
     /**
      *
      * @param val
@@ -643,22 +441,12 @@ public final class DescriptiveStatistics {
     public boolean isGreaterOrEqual(double val) {
         double[] tmp = this.sortedObs;
         if (tmp != null) {
-            return tmp[0] > val;
+            return tmp.length == 0 ? true : tmp[0] >= val;
         } else {
-            for (int i = 0; i < data.length; i++) {
-                double v = data[i];
-                if (Double.isFinite(v) && v < val) {
-                    return false;
-                }
-            }
-            return true;
+            return allObservationsMatch(x -> x >= val);
         }
     }
 
-    // / <Summary>
-    // / A Read Only property that returns true if all toArray in the set are
-    // strictly negative
-    // / </Summary>
     /**
      *
      * @return
@@ -667,10 +455,6 @@ public final class DescriptiveStatistics {
         return isSmaller(0.0);
     }
 
-    // / <Summary>
-    // / A Read Only property that returns true if all toArray in the set are
-    // negative or zero
-    // / </Summary>
     /**
      *
      * @return
@@ -679,10 +463,6 @@ public final class DescriptiveStatistics {
         return isSmallerOrEqual(0.0);
     }
 
-    // / <Summary>
-    // / A Read Only property that returns true if all toArray in the set are
-    // strictly positive
-    // / </Summary>
     /**
      *
      * @return
@@ -692,10 +472,6 @@ public final class DescriptiveStatistics {
         return isGreater(0.0);
     }
 
-    // / <Summary>
-    // / A Read Only property that returns true if all toArray in the set are
-    // positive or zero
-    // / </Summary>
     /**
      *
      * @return
@@ -704,10 +480,6 @@ public final class DescriptiveStatistics {
         return isGreaterOrEqual(0.0);
     }
 
-    // / <Summary>
-    // / A Read Only property that returns true if all toArray in the set are
-    // smaller than some value
-    // / </Summary>
     /**
      *
      * @param val
@@ -716,22 +488,12 @@ public final class DescriptiveStatistics {
     public boolean isSmaller(double val) {
         double[] tmp = this.sortedObs;
         if (tmp != null) {
-            return tmp[0] > val;
+            return tmp.length == 0 ? true : tmp[tmp.length - 1] < val;
         } else {
-            for (int i = 0; i < data.length; i++) {
-                double v = data[i];
-                if (Double.isFinite(v) && v >= val) {
-                    return false;
-                }
-            }
-            return true;
+            return allObservationsMatch(x -> x < val);
         }
     }
 
-    // / <Summary>
-    // / A Read Only property that returns true if all toArray in the set are
-    // smaller than or equal to some value
-    // / </Summary>
     /**
      *
      * @param val
@@ -740,22 +502,12 @@ public final class DescriptiveStatistics {
     public boolean isSmallerOrEqual(double val) {
         double[] tmp = this.sortedObs;
         if (tmp != null) {
-            return tmp[0] > val;
+            return tmp.length == 0 ? true : tmp[tmp.length - 1] <= val;
         } else {
-            for (int i = 0; i < data.length; i++) {
-                double v = data[i];
-                if (Double.isFinite(v) && v > val) {
-                    return false;
-                }
-            }
-            return true;
+            return allObservationsMatch(x -> x <= val);
         }
     }
 
-    // / <Summary>
-    // / A Read Only property that returns true if all toArray in the set are
-    // larger than some value
-    // / </Summary>
     /**
      *
      * @param eps
@@ -766,9 +518,23 @@ public final class DescriptiveStatistics {
         if (tmp != null) {
             return tmp[0] >= -eps && tmp[tmp.length - 1] <= eps;
         } else {
-            for (int i = 0; i < data.length; i++) {
-                double v = data[i];
-                if (Double.isFinite(v) && Math.abs(v) > eps) {
+            return allObservationsMatch(x -> Math.abs(x) <= eps);
+        }
+    }
+
+    public boolean allObservationsMatch(DoublePredicate condition) {
+        double[] tmp = this.obs;
+        if (tmp != null) {
+            for (int i = 0; i < tmp.length; ++i) {
+                if (!condition.test(tmp[i])) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            for (int i = 0; i < data.length; ++i) {
+                double x = data[i];
+                if (Double.isFinite(x) && !condition.test(x)) {
                     return false;
                 }
             }
@@ -831,5 +597,9 @@ public final class DescriptiveStatistics {
      */
     public Doubles observations() {
         return Doubles.ofInternal(obs());
+    }
+
+    public Doubles data() {
+        return Doubles.ofInternal(data);
     }
 }

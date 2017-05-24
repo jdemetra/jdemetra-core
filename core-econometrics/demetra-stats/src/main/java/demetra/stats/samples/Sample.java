@@ -5,14 +5,21 @@
  */
 package demetra.stats.samples;
 
+import demetra.data.DoubleSequence;
+import java.util.stream.DoubleStream;
+
 /**
- *
+ * Basic statistics on a sample. The items of the sample can be retrieved by a stream.
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public interface Sample {
+    
+    DoubleStream all();
 
     double mean();
 
     double variance();
+    
+    int size();
 
 }

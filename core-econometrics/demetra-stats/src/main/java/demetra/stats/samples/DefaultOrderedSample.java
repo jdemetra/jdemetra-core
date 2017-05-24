@@ -5,7 +5,9 @@
  */
 package demetra.stats.samples;
 
+import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
+import java.util.stream.DoubleStream;
 
 /**
  *
@@ -15,24 +17,62 @@ class DefaultOrderedSample implements OrderedSample {
 
     private final Doubles data;
     private final double mean;
+    private final boolean hasMissing;
 
     public DefaultOrderedSample(Doubles data) {
         this.data = data;
+        this.hasMissing = !data.allMatch(x -> Double.isFinite(x));
         this.mean = computeMean();
     }
 
     @Override
     public double mean() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return mean;
     }
 
     @Override
     public double autoCovariance(int lag) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // x and y must have the same Length...
+        int t = lag < 0 ? -lag : lag;
+        double v = 0;
+        int n = data.length() - t;
+        int nm = 0;
+        for (int i = 0; i < n; ++i) {
+            double xcur = data.get(i) - mean;
+            double ycur = data.get(i + t) - mean;
+            if (Double.isFinite(xcur) && Double.isFinite(ycur)) {
+                v += xcur * ycur;
+            } else {
+                ++nm;
+            }
+        }
+        int m = data.length() - nm;
+        if (m == 0) {
+            return 0;
+        }
+        return v / m;
     }
 
     private double computeMean() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (hasMissing) {
+            return data.average();
+        } else {
+            return data.averageWithMissing();
+        }
+    }
+
+    @Override
+    public DoubleSequence data() {
+        return data;
+    }
+
+    @Override
+    public int size() {
+        if (hasMissing) {
+            return data.count(x -> Double.isFinite(x));
+        } else {
+            return data.length();
+        }
     }
 
 }

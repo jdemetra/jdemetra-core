@@ -14,44 +14,27 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
 */
-package demetra.stats;
+package demetra.stats.tests;
 
 import demetra.design.Development;
 
-
 /**
- *
+ * An enumeration representing the way tests are conducted
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
-public class StatException extends RuntimeException
-{
-    private static final long serialVersionUID = 7471723272952365623L;
-
+@Development(status = Development.Status.Release)
+public enum TestType {
     /**
-     * 
+     *
      */
-    public StatException()
-    {
-    }
-
+    Undefined,
+    /** test_Lower : test that a statistic is below some value */
+    Lower,
+    /** test_Upper : test that a statistic is above some value */
+    Upper,
     /**
-     * 
-     * @param msg
+     * test_TwoSided : test that a statistic is below some value and above
+     * another value
      */
-    public StatException(final String msg)
-    {
-	super(msg);
-    }
-
-    /**
-     * 
-     * @param message
-     * @param innerException
-     */
-    public StatException(final String message, final Exception innerException)
-    {
-	super(message, innerException);
-    }
-
+    TwoSided;
 }

@@ -5,8 +5,9 @@
  */
 package demetra.stats.samples;
 
-import demetra.data.Doubles;
-import demetra.design.IBuilder;
+import demetra.data.DoubleSequence;
+import java.util.function.IntToDoubleFunction;
+import java.util.stream.DoubleStream;
 
 /**
  *
@@ -14,60 +15,27 @@ import demetra.design.IBuilder;
  */
 public interface OrderedSample extends Sample {
 
-    public static class Builder implements IBuilder<Sample> {
+    double autoCovariance(int lag);
 
-        private final Doubles data;
-        private double mean = Double.NaN;
-        private boolean checkMissing=true;
+    DoubleSequence data();
 
-        private Builder(Doubles data) {
-            this.data = data;
-        }
-
-        public Builder mean(double mean) {
-            this.mean = mean;
-            return this;
-        }
-
-       public Builder checkMissing(boolean check) {
-            this.checkMissing=check;
-            return this;
-        }
-
-       @Override
-        public Sample build() {
-            if (!Double.isFinite(mean)) {
-                return new DefaultOrderedSample(data);
-            } else if (mean == 0) {
-                return new OrderedSampleWithZeroMean(data, checkMissing);
-            } else {
-                return new OrderedSampleWithMean(data, mean);
-            }
-        }
+    default IntToDoubleFunction autoCorrelationFunction() {
+        final double v = variance();
+        return i -> autoCovariance(i) / v;
     }
 
-    default double[] autoCovariancces(int maxlag) {
-        double[] cov = new double[maxlag];
-        for (int i = 0; i < cov.length; ++i) {
-            cov[i] = autoCovariance(i + 1);
-        }
-        return cov;
+    default IntToDoubleFunction autoCovarianceFunction() {
+        return i -> autoCovariance(i);
     }
 
-    default double[] autoCorrelations(int maxlag) {
-        double v = variance();
-        double[] cov = new double[maxlag];
-        if (v != 0) {
-            for (int i = 0; i < cov.length; ++i) {
-                cov[i] = autoCovariance(i + 1) / v;
-            }
-        }
-        return cov;
-    }
-    
-    default double variance(){
+    @Override
+    default double variance() {
         return autoCovariance(0);
     }
 
-    double autoCovariance(int lag);
+    @Override
+    default DoubleStream all() {
+        return data().stream();
+    }
+
 }
