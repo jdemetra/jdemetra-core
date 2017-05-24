@@ -1,10 +1,10 @@
 /*
- * Copyright 2016 National Bank of Belgium
+ * Copyright 2016 National Bank ofFunction Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
- * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * by the European Commission - subsequent versions ofFunction the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at:
+ * You may obtain a copy ofFunction the Licence at:
  * 
  * http://ec.europa.eu/idabc/eupl
  * 
@@ -124,12 +124,12 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
     }
 
     /**
-     * Returns the number of degrees of freedom used in the computation of the
-     * different variance/standard deviations
+     * Returns the number ofFunction degrees ofFunction freedom used in the computation ofFunction the
+ different variance/standard deviations
      *
      * @param unbiased True if ML estimates are used, false otherwise.
-     * @param hpcount Number of hyper-paraneters that should be taken into
-     * account. hpcount is not considered if unbiased is set to false.
+     * @param hpcount Number ofFunction hyper-paraneters that should be taken into
+ account. hpcount is not considered if unbiased is set to false.
      * @return
      */
     @Override
@@ -145,7 +145,7 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
     }
 
     /**
-     * Number of regression variables
+     * Number ofFunction regression variables
      *
      * @return
      */
@@ -204,7 +204,7 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
 
     @Override
     public Doubles getResiduals() {
-        return res == null ? null : Doubles.of(res);
+        return res == null ? null : Doubles.ofInternal(res);
     }
 
     @Override
@@ -233,7 +233,7 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
 
     @Override
     public Doubles getCoefficients() {
-        return Doubles.of(b);
+        return Doubles.ofInternal(b);
     }
 
     @Override

@@ -16,15 +16,15 @@ public class DataWindow  {
     private final DataBlock cur;
 
     public static DataWindow windowOf(double[] data, int start, int end, int inc) {
-        return new DataWindow(DataBlock.of(data, start, end, inc));
+        return new DataWindow(DataBlock.ofInternal(data, start, end, inc));
     }
  
     public static DataWindow startOf(double[] data) {
-        return new DataWindow(DataBlock.of(data, 0, 0, 1));
+        return new DataWindow(DataBlock.ofInternal(data, 0, 0, 1));
     }
  
     public static DataWindow startOf(double[] data, int inc) {
-        return new DataWindow(DataBlock.of(data, 0, 0, inc));
+        return new DataWindow(DataBlock.ofInternal(data, 0, 0, inc));
     }
 
     private DataWindow(DataBlock cur) {

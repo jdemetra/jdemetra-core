@@ -478,7 +478,7 @@ public class SeasonalComponent {
 //            C.diagonal().add(1);
 //            Matrix D = Matrix.diagonal(var);
 //            V = SymmetricMatrix.quadraticFormT(D, C);
-            DataBlock xvar = DataBlock.of(var);
+            DataBlock xvar = DataBlock.ofInternal(var);
             V = Matrix.square(period - 1);
 //            V.diagonal().copyFrom(var, 0);
 //            V.add(xvar.sum() / (period * period));

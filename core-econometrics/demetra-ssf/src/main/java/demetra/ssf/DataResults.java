@@ -1,10 +1,10 @@
 /*
- * Copyright 2016 National Bank copyOf Belgium
+ * Copyright 2016 National Bank ofInternal Belgium
  *  
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
- * by the European Commission - subsequent versions copyOf the EUPL (the "Licence");
+ * by the European Commission - subsequent versions ofInternal the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
- * You may obtain a copy copyOf the Licence at:
+ * You may obtain a copy ofInternal the Licence at:
  *  
  * http://ec.europa.eu/idabc/eupl
  *  
@@ -53,7 +53,7 @@ public class DataResults {
     }
 
     public DataBlock all() {
-        return DataBlock.of(data, 0, nused, 1);
+        return DataBlock.ofInternal(data, 0, nused, 1);
     }
 
     /**
@@ -63,7 +63,7 @@ public class DataResults {
      * @return 
      */
     public DataBlock extract(int beg, int n) {
-        return DataBlock.of(data, beg, beg+n, 1);
+        return DataBlock.ofInternal(data, beg, beg+n, 1);
     }
     /**
      *
@@ -106,9 +106,9 @@ public class DataResults {
 
     public Doubles asDoublesReader(boolean complete) {
         if (complete) {
-            return Doubles.of(nused + start, i -> i < start ? Double.NaN : data[i - start]);
+            return Doubles.ofFunction(nused + start, i -> i < start ? Double.NaN : data[i - start]);
         } else {
-            return Doubles.of(nused, i -> data[i]);
+            return Doubles.ofFunction(nused, i -> data[i]);
         }
     }
 

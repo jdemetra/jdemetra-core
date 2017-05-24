@@ -1,7 +1,6 @@
 package demetra.maths;
 
 import demetra.design.Development;
-import demetra.utilities.functions.BiDoubleFunction;
 
 /*
 * Copyright 2013 National Bank of Belgium
@@ -18,752 +17,640 @@ import demetra.utilities.functions.BiDoubleFunction;
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
- */
+*/
+
+
+
 /**
  * Mathematical functions on complex numbers
- *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
 public final class ComplexMath {
 
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex acos(ComplexParts c) {
-        return acos(c.getRe(), c.getIm(), Complex::cart);
-    }
 
     /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex acosec(ComplexParts c) {
-        // acosec(c) = asin(1/c)
-        return asin(ComplexBuilder.of(c).inv());
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex acosh(ComplexParts c) {
-        return acosh(c.getRe(), c.getIm(), Complex::cart);
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex acot(ComplexParts c) {
-        return acot(c.getRe(), c.getIm(), Complex::cart);
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex acoth(ComplexParts c) {
-        return acoth(c.getRe(), c.getIm(), Complex::cart);
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex asec(ComplexParts c) {
-        // asec(c) = -i * log(1/c + i*sqrt(1 - 1/c*c))
-        // asec(c) = acos(1/c)
-        return acos(ComplexBuilder.of(c).inv());
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex asin(ComplexParts c) {
-        return asin(c.getRe(), c.getIm(), Complex::cart);
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex asinh(ComplexParts c) {
-        return asinh(c.getRe(), c.getIm(), Complex::cart);
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex atan(ComplexParts c) {
-        return atan(c.getRe(), c.getIm(), Complex::cart);
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex atanh(ComplexParts c) {
-        return atanh(c.getRe(), c.getIm(), Complex::cart);
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex cos(ComplexParts c) {
-        return cos(c.getRe(), c.getIm(), Complex::cart);
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex cosec(ComplexParts c) {
-        // cosec(c) = 1 / sin(c)
-        return ComplexBuilder.of(sin(c)).inv().build();
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex cosh(ComplexParts c) {
-        return cosh(c.getRe(), c.getIm(), Complex::cart);
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex cot(ComplexParts c) {
-        return cot(c.getRe(), c.getIm(), Complex::cart);
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex coth(ComplexParts c) {
-        return coth(c.getRe(), c.getIm(), Complex::cart);
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex exp(ComplexParts c) {
-        return exp(c.getRe(), c.getIm(), Complex::cart);
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex log(ComplexParts c) {
-        return log(c.getRe(), c.getIm(), Complex::cart);
-    }
-
-    /**
-     *
-     * @param c
-     * @param exponent
-     * @return
-     */
-    public static Complex pow(ComplexParts c, ComplexParts exponent) {
-        return pow(c.getRe(), c.getIm(), exponent.getRe(), exponent.getIm(), Complex::cart);
-    }
-
-    /**
-     *
-     * @param c
-     * @param exponent
-     * @return
-     */
-    public static Complex pow(ComplexParts c, double exponent) {
-        return pow(c.getRe(), c.getIm(), exponent, Complex::cart);
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex sec(ComplexParts c) {
-        // sec(c) = 1 / cos(c)
-        return ComplexBuilder.of(cos(c)).inv().build();
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex sin(ComplexParts c) {
-        return sin(c.getRe(), c.getIm(), Complex::cart);
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex sinh(ComplexParts c) {
-        return sinh(c.getRe(), c.getIm(), Complex::cart);
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex tan(ComplexParts c) {
-        return tan(c.getRe(), c.getIm(), Complex::cart);
-    }
-
-    /**
-     *
-     * @param c
-     * @return
-     */
-    public static Complex tanh(ComplexParts c) {
-        return tanh(c.getRe(), c.getIm(), Complex::cart);
-    }
-
-    /**
-     * abs(z) = sqrt(re*re + im*im)
-     *
+     * abs(z) = sqrt(re*re + im*im) 
+     * 
      * @param re Real part
      * @param im Imaginary part
      * @return Absolute value of re + i * im
      */
-    static double abs(double re, double im) {
+    static double abs(final double re, final double im) {
         return Utilities.hypotenuse(re, im);
+//	if (re == 0 && im == 0)
+//	    return 0;
+//	final double absX = Math.abs(re);
+//	final double absY = Math.abs(im);
+//
+//	if (absX >= absY) {
+//	    final double d = im / re;
+//	    return absX * Math.sqrt(1.0 + d * d);
+//	} else {
+//	    final double d = re / im;
+//	    return absY * Math.sqrt(1.0 + d * d);
+//	}
     }
 
-    static double absSquare(double re, double im) {
-        return re * re + im * im;
+    static double absSquare(final double x, final double y) {
+	return x * x + y * y;
     }
 
-    static double arg(double re, double im) {
-        return Math.atan2(im, re);
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex acos(final Complex c) {
+	// acos(c) = -i * log(c + i*sqrt(1 - c*c))
+	double cr = c.getRe(), ci = c.getIm();
+
+	// 1-c*c
+	double tmpr = 1 - (cr * cr - ci * ci);
+	double tmpi = -2 * cr * ci;
+
+	// sqrt(1-c*c)
+	final double scale = abs(tmpr, tmpi);
+
+	if (scale > 0.0)
+	    if (tmpr > 0.0) {
+		tmpr = Math.sqrt(0.5 * (scale + tmpr));
+		tmpi = .5 * tmpi / tmpr;
+	    } else {
+		double tmp = Math.sqrt(0.5 * (scale - tmpr));
+		if (tmpi < 0.0)
+		    tmp = -tmp;
+		tmpr = 0.5 * tmpi / tmp;
+		tmpi = tmp;
+	    }
+
+	// c + i*sqrt(1-c*c)
+	double re = cr - tmpi;
+	double im = ci + tmpr;
+
+	// -i*log
+	return Complex.cart(arg(re, im), -Math.log(abs(re, im)));
     }
 
-    static <R> R log(double cr, double ci, BiDoubleFunction<R> factory) {
-        return factory.apply(Math.log(abs(cr, ci)), arg(cr, ci));
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex acosec(final Complex c) {
+	// acosec(c) = asin(1/c)
+
+	ComplexBuilder tmp = new ComplexBuilder(c);
+	tmp.inv();
+	return asin(tmp.build());
     }
 
-    static <R> R div(double lRe, double lIm, double rRe, double rIm, BiDoubleFunction<R> factory) {
-        double dRe, dIm;
-        if (Math.abs(rRe) >= Math.abs(rIm)) {
-            double scalar = 1.0 / (rRe + rIm * (rIm / rRe));
-            dRe = scalar * (lRe + lIm * (rIm / rRe));
-            dIm = scalar * (lIm - lRe * (rIm / rRe));
-        } else {
-            double scalar = 1.0 / (rRe * (rRe / rIm) + rIm);
-            dRe = scalar * (lRe * (rRe / rIm) + lIm);
-            dIm = scalar * (lIm * (rRe / rIm) - lRe);
-        }
-        return factory.apply(dRe, dIm);
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex acosh(final Complex c) {
+	// acosh(c) = log(c + sqrt(c*c - 1))
+	double cr = c.getRe(), ci = c.getIm();
+	// c*c + 1
+	double tmpr = cr * cr - ci * ci - 1;
+	double tmpi = 2 * cr * ci;
+
+	final double scale = abs(tmpr, tmpi);
+
+	if (scale > 0.0)
+	    if (tmpr > 0.0) {
+		tmpr = Math.sqrt(0.5 * (scale + tmpr));
+		tmpi = .5 * tmpi / tmpr;
+	    } else {
+		double tmp = Math.sqrt(0.5 * (scale - tmpr));
+		if (tmpi < 0.0)
+		    tmp = -tmp;
+		tmpr = 0.5 * tmpi / tmp;
+		tmpi = tmp;
+	    }
+
+	tmpr += cr;
+	tmpi += ci;
+	return log(tmpr, tmpi);
     }
 
-    static <R> R inv(double re, double im, BiDoubleFunction<R> factory) {
-        double zRe, zIm;
-        if (Math.abs(re) >= Math.abs(im)) {
-            double scalar = 1.0 / (re + im * (im / re));
-            zRe = scalar;
-            zIm = scalar * (-im / re);
-        } else {
-            double scalar = 1.0 / (re * (re / im) + im);
-            zRe = scalar * (re / im);
-            zIm = -scalar;
-        }
-        return factory.apply(zRe, zIm);
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex acot(final Complex c) {
+	// acot(c) = -i/2 * log( (ic-1)/(ic+1) )
+	double cr = c.getRe(), ci = c.getIm();
+	ComplexBuilder tmp = new ComplexBuilder(-ci - 1, cr);
+	tmp.div(1 - ci, cr);
+
+	Complex ltmp = tmp.build();
+	// -i/2*log
+	double re = ltmp.getRe(), im = ltmp.getIm();
+	return Complex.cart(0.5 * arg(re, im), -0.5 * Math.log(abs(re, im)));
     }
 
-    static <R> R sqrt(double xRe, double xIm, BiDoubleFunction<R> factory) {
-        double sRe, sIm;
-        {
-            final double scale = abs(xRe, xIm);
-            if (scale > 0.0) {
-                if (xRe > 0.0) {
-                    sRe = Math.sqrt(0.5 * (scale + xRe));
-                    sIm = 0.5 * xIm / sRe;
-                } else {
-                    double tmp = Math.sqrt(0.5 * (scale - xRe));
-                    if (xIm < 0.0) {
-                        tmp = -tmp;
-                    }
-                    sRe = 0.5 * xIm / tmp;
-                    sIm = tmp;
-                }
-            } else {
-                sRe = 0;
-                sIm = 0;
-            }
-        }
-        return factory.apply(sRe, sIm);
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex acoth(final Complex c) {
+	// atanh(z) = 1/2 * log( (c+1)/(c-1) )
+	double cr = c.getRe(), ci = c.getIm();
+
+	ComplexBuilder tmp = new ComplexBuilder(cr + 1, ci);
+	tmp.div(cr - 1, ci);
+
+	double re = tmp.getRe(), im = tmp.getIm();
+	return Complex.cart(0.5 * Math.log(abs(re, im)), 0.5 * arg(re, im)); // principal
+									     // value
     }
 
-    // acos(c) = -i * log(c + i*sqrt(1 - c*c))
-    static <R> R acos(double cr, double ci, BiDoubleFunction<R> factory) {
-        // x = 1 - c*c
-        double xRe = 1 - (cr * cr - ci * ci);
-        double xIm = -2 * cr * ci;
-
-        // s = sqrt(x)
-        double sRe, sIm;
-        {
-            final double scale = abs(xRe, xIm);
-            if (scale > 0.0) {
-                if (xRe > 0.0) {
-                    sRe = Math.sqrt(0.5 * (scale + xRe));
-                    sIm = 0.5 * xIm / sRe;
-                } else {
-                    double tmp = Math.sqrt(0.5 * (scale - xRe));
-                    if (xIm < 0.0) {
-                        tmp = -tmp;
-                    }
-                    sRe = 0.5 * xIm / tmp;
-                    sIm = tmp;
-                }
-            } else {
-                sRe = 0;
-                sIm = 0;
-            }
-        }
-
-        // z = c + i * s
-        double zRe = cr - sIm;
-        double zIm = ci + sRe;
-
-        // -i * log(z)
-        return factory.apply(arg(zRe, zIm), -Math.log(abs(zRe, zIm)));
+    static double arg(final double re, final double im) {
+	return Math.atan2(im, re);
     }
 
-    // acosh(c) = log(c + sqrt(c*c - 1))
-    static <R> R acosh(double cr, double ci, BiDoubleFunction<R> factory) {
-        // x = c*c - 1
-        double xRe = cr * cr - ci * ci - 1;
-        double xIm = 2 * cr * ci;
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex asec(final Complex c)
+    {
+	// asec(c) = -i * log(1/c + i*sqrt(1 - 1/c*c))
+	// asec(c) = acos(1/c)
 
-        // s = sqrt(x)
-        double sRe, sIm;
-        {
-            final double scale = abs(xRe, xIm);
-            if (scale > 0.0) {
-                if (xRe > 0.0) {
-                    sRe = Math.sqrt(0.5 * (scale + xRe));
-                    sIm = 0.5 * xIm / sRe;
-                } else {
-                    double tmp = Math.sqrt(0.5 * (scale - xRe));
-                    if (xIm < 0.0) {
-                        tmp = -tmp;
-                    }
-                    sRe = 0.5 * xIm / tmp;
-                    sIm = tmp;
-                }
-            } else {
-                sRe = 0;
-                sIm = 0;
-            }
-        }
-
-        // log (c + s)
-        return log(cr + sRe, ci + sIm, factory);
+	ComplexBuilder tmp = new ComplexBuilder(c);
+	tmp.inv();
+	return acos(tmp.build());
     }
 
-    // acot(c) = -i/2 * log( (ic-1)/(ic+1) )
-    static <R> R acot(double cr, double ci, BiDoubleFunction<R> factory) {
-        // l = (ic-1)
-        double lRe = -ci - 1, lIm = cr;
-        // r = (ic+1)
-        double rRe = -ci + 1, rIm = cr;
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex asin(final Complex c) {
+	// asin(c) = -i * log(i*c + sqrt(1 - c*c))
 
-        // d = l / r
-        double dRe, dIm;
-        if (Math.abs(rRe) >= Math.abs(rIm)) {
-            double scalar = 1.0 / (rRe + rIm * (rIm / rRe));
-            dRe = scalar * (lRe + lIm * (rIm / rRe));
-            dIm = scalar * (lIm - lRe * (rIm / rRe));
-        } else {
-            double scalar = 1.0 / (rRe * (rRe / rIm) + rIm);
-            dRe = scalar * (lRe * (rRe / rIm) + lIm);
-            dIm = scalar * (lIm * (rRe / rIm) - lRe);
-        }
+	double cr = c.getRe(), ci = c.getIm();
 
-        // -i/2 * log(d)
-        return factory.apply(0.5 * arg(dRe, dIm), -0.5 * Math.log(abs(dRe, dIm)));
+	// 1-c*c
+	double tmpr = 1 - (cr * cr - ci * ci);
+	double tmpi = -2 * cr * ci;
+
+	// sqrt(1-c*c)
+	final double scale = abs(tmpr, tmpi);
+
+	if (scale > 0.0)
+	    if (tmpr > 0.0) {
+		tmpr = Math.sqrt(0.5 * (scale + tmpr));
+		tmpi = .5 * tmpi / tmpr;
+	    } else {
+		double tmp = Math.sqrt(0.5 * (scale - tmpr));
+		if (tmpi < 0.0)
+		    tmp = -tmp;
+		tmpr = 0.5 * tmpi / tmp;
+		tmpi = tmp;
+	    }
+
+	// i*c + sqrt(1-c*c)
+	tmpr -= ci;
+	tmpi += cr;
+
+	// -i*log
+	return Complex.cart(arg(tmpr, tmpi), -Math.log(abs(tmpr, tmpi)));
     }
 
-    // atanh(z) = 1/2 * log( (c+1)/(c-1) )
-    static <R> R acoth(double cr, double ci, BiDoubleFunction<R> factory) {
-        // l = (c+1)
-        double lRe = cr + 1, lIm = ci;
-        // r = (c-1)
-        double rRe = cr - 1, rIm = ci;
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex asinh(final Complex c) {
+	// asinh(c) = log(c + sqrt(c*c + 1))
+	double cr = c.getRe(), ci = c.getIm();
+	// c*c + 1
+	double tmpr = cr * cr - ci * ci + 1;
+	double tmpi = 2 * cr * ci;
 
-        // d = l / r
-        double dRe, dIm;
-        if (Math.abs(rRe) >= Math.abs(rIm)) {
-            double scalar = 1.0 / (rRe + rIm * (rIm / rRe));
-            dRe = scalar * (lRe + lIm * (rIm / rRe));
-            dIm = scalar * (lIm - lRe * (rIm / rRe));
-        } else {
-            double scalar = 1.0 / (rRe * (rRe / rIm) + rIm);
-            dRe = scalar * (lRe * (rRe / rIm) + lIm);
-            dIm = scalar * (lIm * (rRe / rIm) - lRe);
-        }
+	final double scale = abs(tmpr, tmpi);
 
-        // 1/2 * log(d)
-        return factory.apply(0.5 * Math.log(abs(dRe, dIm)), 0.5 * arg(dRe, dIm));
+	if (scale > 0.0)
+	    if (tmpr > 0.0) {
+		tmpr = Math.sqrt(0.5 * (scale + tmpr));
+		tmpi = .5 * tmpi / tmpr;
+	    } else {
+		double tmp = Math.sqrt(0.5 * (scale - tmpr));
+		if (tmpi < 0.0)
+		    tmp = -tmp;
+		tmpr = 0.5 * tmpi / tmp;
+		tmpi = tmp;
+	    }
+
+	tmpr += cr;
+	tmpi += ci;
+	return log(tmpr, tmpi);
     }
 
-    // asin(c) = -i * log(i*c + sqrt(1 - c*c))
-    static <R> R asin(double cr, double ci, BiDoubleFunction<R> factory) {
-        // x = 1 - c*c
-        double xRe = 1 - (cr * cr - ci * ci);
-        double xIm = -2 * cr * ci;
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex atan(final Complex c) {
+	// atan(c) = -i/2 * log( (i-c)/(i+c) )
+	double cr = c.getRe(), ci = c.getIm();
+	ComplexBuilder tmp = new ComplexBuilder(-cr, 1 - ci);
+	tmp.div(cr, 1 + ci);
 
-        // s = sqrt(x)
-        double sRe, sIm;
-        {
-            final double scale = abs(xRe, xIm);
-            if (scale > 0.0) {
-                if (xRe > 0.0) {
-                    sRe = Math.sqrt(0.5 * (scale + xRe));
-                    sIm = 0.5 * xIm / sRe;
-                } else {
-                    double tmp = Math.sqrt(0.5 * (scale - xRe));
-                    if (xIm < 0.0) {
-                        tmp = -tmp;
-                    }
-                    sRe = 0.5 * xIm / tmp;
-                    sIm = tmp;
-                }
-            } else {
-                sRe = 0;
-                sIm = 0;
-            }
-        }
-
-        // z = i*c + s
-        double zRe = sRe - ci;
-        double zIm = sIm + cr;
-
-        // -i * log(z)
-        return factory.apply(arg(zRe, zIm), -Math.log(abs(zRe, zIm)));
+	Complex ltmp = tmp.build();
+	// -i*log
+	double re = ltmp.getRe(), im = ltmp.getIm();
+	return Complex.cart(0.5 * arg(re, im), -0.5 * Math.log(abs(re, im)));
     }
 
-    // asinh(c) = log(c + sqrt(c*c + 1))
-    static <R> R asinh(double cr, double ci, BiDoubleFunction<R> factory) {
-        // x = c*c + 1
-        double xRe = cr * cr - ci * ci + 1;
-        double xIm = 2 * cr * ci;
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex atanh(final Complex c) {
+	// atanh(z) = 1/2 * log( (1+c)/(1-c) )
+	double cr = c.getRe(), ci = c.getIm();
 
-        // s = sqrt(x)
-        double sRe, sIm;
-        {
-            final double scale = abs(xRe, xIm);
-            if (scale > 0.0) {
-                if (xRe > 0.0) {
-                    sRe = Math.sqrt(0.5 * (scale + xRe));
-                    sIm = 0.5 * xIm / sRe;
-                } else {
-                    double tmp = Math.sqrt(0.5 * (scale - xRe));
-                    if (xIm < 0.0) {
-                        tmp = -tmp;
-                    }
-                    sRe = 0.5 * xIm / tmp;
-                    sIm = tmp;
-                }
-            } else {
-                sRe = 0;
-                sIm = 0;
-            }
-        }
+	ComplexBuilder tmp = new ComplexBuilder(cr + 1, ci);
+	tmp.div(1 - cr, -ci);
 
-        // log(c + s)
-        return log(cr + sRe, ci + sIm, factory);
+	double re = tmp.getRe(), im = tmp.getIm();
+	return Complex.cart(0.5 * Math.log(abs(re, im)), 0.5 * arg(re, im)); // principal
+									     // value
     }
 
-    // atan(c) = -i/2 * log( (i-c)/(i+c) )
-    static <R> R atan(double cr, double ci, BiDoubleFunction<R> factory) {
-        // l = (i-c)
-        double lRe = -cr, lIm = 1 - ci;
-        // r = (i+c)
-        double rRe = +cr, rIm = 1 + ci;
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex cos(final Complex c)
+    {
+	// cos(c) = ( e(ic)+e(-ic)) / 2
 
-        // d = l / r
-        double dRe, dIm;
-        if (Math.abs(rRe) >= Math.abs(rIm)) {
-            double scalar = 1.0 / (rRe + rIm * (rIm / rRe));
-            dRe = scalar * (lRe + lIm * (rIm / rRe));
-            dIm = scalar * (lIm - lRe * (rIm / rRe));
-        } else {
-            double scalar = 1.0 / (rRe * (rRe / rIm) + rIm);
-            dRe = scalar * (lRe * (rRe / rIm) + lIm);
-            dIm = scalar * (lIm * (rRe / rIm) - lRe);
-        }
+	double ric = -c.getIm();
+	double iic = c.getRe();
 
-        // -i/2 * log(d)
-        return factory.apply(0.5 * arg(dRe, dIm), -0.5 * Math.log(abs(dRe, dIm)));
+	// e(ic) ...
+	double scalar = Math.exp(ric);
+	double ciic = Math.cos(iic);
+	double siic = Math.sin(iic);
+
+	double re1 = scalar * ciic;
+	double im1 = scalar * siic;
+
+	// e(-ic)
+	scalar = Math.exp(-ric);
+	double re2 = scalar * ciic;
+	double im2 = scalar * (-siic);
+
+	// result:
+	return Complex.cart(0.5 * (re1 + re2), 0.5 * (im1 + im2));
     }
 
-    // atanh(z) = 1/2 * log( (1+c)/(1-c) )
-    static <R> R atanh(double cr, double ci, BiDoubleFunction<R> factory) {
-        // l = (1+c)
-        double lRe = 1 + cr, lIm = +ci;
-        // r = (1-c)
-        double rRe = 1 - cr, rIm = -ci;
-
-        // d = l / r
-        double dRe, dIm;
-        if (Math.abs(rRe) >= Math.abs(rIm)) {
-            double scalar = 1.0 / (rRe + rIm * (rIm / rRe));
-            dRe = scalar * (lRe + lIm * (rIm / rRe));
-            dIm = scalar * (lIm - lRe * (rIm / rRe));
-        } else {
-            double scalar = 1.0 / (rRe * (rRe / rIm) + rIm);
-            dRe = scalar * (lRe * (rRe / rIm) + lIm);
-            dIm = scalar * (lIm * (rRe / rIm) - lRe);
-        }
-
-        // 1/2 * log(d)
-        return factory.apply(0.5 * Math.log(abs(dRe, dIm)), 0.5 * arg(dRe, dIm));
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex cosec(final Complex c) {
+	// cosec(c) = 1 / sin(c)
+	ComplexBuilder builder = new ComplexBuilder(sin(c));
+	builder.inv();
+	return builder.build();
     }
 
-    // cos(c) = ( e(ic)+e(-ic)) / 2
-    static <R> R cos(double cr, double ci, BiDoubleFunction<R> factory) {
-        double ric = -ci;
-        double iic = cr;
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex cosh(final Complex c) {
+	// cosh(c) = ( exp(c) + exp(-c) ) / 2
 
-        // e(ic) ...
-        double scalar = Math.exp(ric);
-        double ciic = Math.cos(iic);
-        double siic = Math.sin(iic);
+	double rc = c.getRe(), ic = c.getIm();
 
-        double re1 = scalar * ciic;
-        double im1 = scalar * siic;
+	// e(c)
+	// e(c) ...
+	double scalar = Math.exp(rc);
+	double cic = Math.cos(ic);
+	double sic = Math.sin(ic);
 
-        // e(-ic)
-        scalar = Math.exp(-ric);
-        double re2 = scalar * ciic;
-        double im2 = scalar * (-siic);
+	double re1 = scalar * cic;
+	double im1 = scalar * sic;
 
-        // result:
-        return factory.apply(0.5 * (re1 + re2), 0.5 * (im1 + im2));
+	// e(-c)
+	scalar = Math.exp(-rc);
+	double re2 = scalar * cic;
+	double im2 = scalar * (-sic);
+
+	return Complex.cart(0.5 * (re1 + re2), 0.5 * (im1 + im2));
     }
 
-    // cosh(c) = ( exp(c) + exp(-c) ) / 2
-    static <R> R cosh(double cr, double ci, BiDoubleFunction<R> factory) {
-        // e(c)
-        // e(c) ...
-        double scalar = Math.exp(cr);
-        double cic = Math.cos(ci);
-        double sic = Math.sin(ci);
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex cot(final Complex c) {
+	// cot(c) = cos(c) / sin(c)
+	// cos(c) = ( e(ic)+e(-ic)) / 2
+	// sin(c) = ( e(ic)-e(-ic)) / (2*i)
 
-        double re1 = scalar * cic;
-        double im1 = scalar * sic;
+	double ric = -c.getIm();
+	double iic = c.getRe();
 
-        // e(-c)
-        scalar = Math.exp(-cr);
-        double re2 = scalar * cic;
-        double im2 = scalar * (-sic);
+	// e(ic) ...
+	double scalar = Math.exp(ric);
+	double ciic = Math.cos(iic);
+	double siic = Math.sin(iic);
 
-        return factory.apply(0.5 * (re1 + re2), 0.5 * (im1 + im2));
+	double re1 = scalar * ciic;
+	double im1 = scalar * siic;
+
+	// e(-ic)
+	scalar = Math.exp(-ric);
+	double re2 = scalar * ciic;
+	double im2 = scalar * (-siic);
+
+	// 
+	ComplexBuilder result = new ComplexBuilder(0.5 * (re1 + re2),
+		0.5 * (im1 + im2));
+	result.div(0.5 * (im1 - im2), -0.5 * (re1 - re2));
+	return result.build();
     }
 
-    static <R> R cot(double cr, double ci, BiDoubleFunction<R> factory) {
-        // cot(c) = cos(c) / sin(c)
-        // cos(c) = ( e(ic)+e(-ic)) / 2
-        // sin(c) = ( e(ic)-e(-ic)) / (2*i)
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex coth(final Complex c) {
+	// cosh(c) = ( exp(c) + exp(-c) ) / 2
+	// sinh(c) = ( exp(c) - exp(-c) ) / 2
+	// coth(c) = cosh(c) / sinh(c)
+	// coth(c) = ( exp(c) + exp(-c) ) / ( exp(c) - exp(-c) )
 
-        double ric = -ci;
-        double iic = cr;
+	double rc = c.getRe(), ic = c.getIm();
 
-        // e(ic) ...
-        double scalar = Math.exp(ric);
-        double ciic = Math.cos(iic);
-        double siic = Math.sin(iic);
+	// e(c)
+	// e(c) ...
+	double scalar = Math.exp(rc);
+	double cic = Math.cos(ic);
+	double sic = Math.sin(ic);
 
-        double re1 = scalar * ciic;
-        double im1 = scalar * siic;
+	double re1 = scalar * cic;
+	double im1 = scalar * sic;
 
-        // e(-ic)
-        scalar = Math.exp(-ric);
-        double re2 = scalar * ciic;
-        double im2 = scalar * (-siic);
+	// e(-c)
+	scalar = Math.exp(-rc);
+	double re2 = scalar * cic;
+	double im2 = scalar * (-sic);
 
-        return div(
-                0.5 * (re1 + re2), 0.5 * (im1 + im2),
-                0.5 * (im1 - im2), -0.5 * (re1 - re2),
-                factory);
+	ComplexBuilder result = new ComplexBuilder(re1 + re2, im1 + im2);
+	result.div(re1 - re2, im1 - im2);
+	return result.build();
     }
 
-    static <R> R coth(double cr, double ci, BiDoubleFunction<R> factory) {
-        // cosh(c) = ( exp(c) + exp(-c) ) / 2
-        // sinh(c) = ( exp(c) - exp(-c) ) / 2
-        // coth(c) = cosh(c) / sinh(c)
-        // coth(c) = ( exp(c) + exp(-c) ) / ( exp(c) - exp(-c) )
-
-        // e(c)
-        double scalar = Math.exp(cr);
-        double cic = Math.cos(ci);
-        double sic = Math.sin(ci);
-
-        double re1 = scalar * cic;
-        double im1 = scalar * sic;
-
-        // e(-c)
-        scalar = Math.exp(-cr);
-        double re2 = scalar * cic;
-        double im2 = scalar * (-sic);
-
-        return div(
-                re1 + re2, im1 + im2,
-                re1 - re2, im1 - im2,
-                factory);
+    // exp, log, pow, sqrt
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex exp(final Complex c) {
+	return exp(c.getRe(), c.getIm());
     }
 
-    static <R> R exp(double cr, double ci, BiDoubleFunction<R> factory) {
-        // e(a+ib)=e(a)*e(ib)
-        double scalar = Math.exp(cr);
-        // e(ib) = cos(b) + i sin(b)
-        return factory.apply(scalar * Math.cos(ci), scalar * Math.sin(ci));
+    private static Complex exp(final double a, final double b) {
+	// e(a+ib)=e(a)*e(ib)
+	double scalar = Math.exp(a);
+	// e(ib) = cos(b) + i sin(b)
+	return Complex.cart(scalar * Math.cos(b), scalar * Math.sin(b));
     }
 
-    static <R> R pow(double cr, double ci, double er, double ei, BiDoubleFunction<R> factory) {
-        double re = Math.log(abs(cr, ci));
-        double im = arg(cr, ci);
-
-        double rtmp = re * er - im * ei;
-        double itmp = re * ei + im * er;
-
-        double scalar = Math.exp(rtmp);
-
-        return factory.apply(scalar * Math.cos(itmp), scalar * Math.sin(itmp));
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex log(final Complex c)
+    {
+	return Complex.cart(Math.log(c.abs()), c.arg()); // principal value
     }
 
-    static <R> R pow(double cr, double ci, double exponent, BiDoubleFunction<R> factory) {
-        double re = exponent * Math.log(abs(cr, ci));
-        double im = exponent * arg(cr, ci);
-
-        double scalar = Math.exp(re);
-
-        return factory.apply(scalar * Math.cos(im), scalar * Math.sin(im));
+    static Complex log(final double re, final double im) {
+	return Complex.cart(Math.log(abs(re, im)), arg(re, im)); // principal
+								 // value
     }
 
-    // sin(c) = ( e(ic)-e(-ic)) / (2*i)
-    static <R> R sin(double cr, double ci, BiDoubleFunction<R> factory) {
-        double ric = -ci;
-        double iic = cr;
+    /**
+     * 
+     * @param c
+     * @param exponent
+     * @return
+     */
+    public static Complex pow(final Complex c, final Complex exponent)
+    {
+	double re = Math.log(c.abs());
+	double im = c.arg();
 
-        // e(ic) ...
-        double scalar = Math.exp(ric);
-        double ciic = Math.cos(iic);
-        double siic = Math.sin(iic);
+	double rtmp = re * exponent.getRe() - im * exponent.getIm();
+	double itmp = re * exponent.getIm() + im * exponent.getRe();
 
-        double re1 = scalar * ciic;
-        double im1 = scalar * siic;
+	double scalar = Math.exp(rtmp);
 
-        // e(-ic)
-        scalar = Math.exp(-ric);
-        double re2 = scalar * ciic;
-        double im2 = scalar * (-siic);
-
-        return factory.apply(0.5 * (im1 - im2), -0.5 * (re1 - re2));
+	return Complex.cart(scalar * Math.cos(itmp), scalar * Math.sin(itmp));
     }
 
-    // sinh(c) = ( exp(c) - exp(-c) ) / 2
-    static <R> R sinh(double cr, double ci, BiDoubleFunction<R> factory) {
-        // e(c)
-        // e(c) ...
-        double scalar = Math.exp(cr);
-        double cic = Math.cos(ci);
-        double sic = Math.sin(ci);
+    /**
+     * 
+     * @param c
+     * @param exponent
+     * @return
+     */
+    public static Complex pow(final Complex c, final double exponent) {
+	double re = exponent * Math.log(c.abs());
+	double im = exponent * c.arg();
 
-        double re1 = scalar * cic;
-        double im1 = scalar * sic;
+	double scalar = Math.exp(re);
 
-        // e(-c)
-        scalar = Math.exp(-cr);
-        double re2 = scalar * cic;
-        double im2 = scalar * (-sic);
-
-        return factory.apply(0.5 * (re1 - re2), 0.5 * (im1 - im2));
+	return Complex.cart(scalar * Math.cos(im), scalar * Math.sin(im));
     }
 
-    static <R> R tan(double cr, double ci, BiDoubleFunction<R> factory) {
-        // tan(c) = sin(c) / cos(c)
-        // cos(c) = ( e(ic)+e(-ic)) / 2
-        // sin(c) = ( e(ic)-e(-ic)) / (2*i)
-
-        double ric = -ci;
-        double iic = cr;
-
-        // e(ic) ...
-        double scalar = Math.exp(ric);
-        double ciic = Math.cos(iic);
-        double siic = Math.sin(iic);
-
-        double re1 = scalar * ciic;
-        double im1 = scalar * siic;
-
-        // e(-ic)
-        scalar = Math.exp(-ric);
-        double re2 = scalar * ciic;
-        double im2 = scalar * (-siic);
-
-        return div(
-                0.5 * (im1 - im2), -0.5 * (re1 - re2),
-                0.5 * (re1 + re2), 0.5 * (im1 + im2),
-                factory);
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex sec(final Complex c) {
+	// sec(c) = 1 / cos(c)
+	ComplexBuilder builder = new ComplexBuilder(cos(c));
+	builder.inv();
+	return builder.build();
     }
 
-    static <R> R tanh(double cr, double ci, BiDoubleFunction<R> factory) {
-        // cosh(c) = ( exp(c) + exp(-c) ) / 2
-        // sinh(c) = ( exp(c) - exp(-c) ) / 2
-        // tanh(c) = sinh(c) / cosh(c)
-        // tanh(c) = ( exp(c) - exp(-c) ) / ( exp(c) + exp(-c) )
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex sin(final Complex c)
+    {
+	// sin(c) = ( e(ic)-e(-ic)) / (2*i)
 
-        // e(c)
-        double scalar = Math.exp(cr);
-        double cic = Math.cos(ci);
-        double sic = Math.sin(ci);
+	double ric = -c.getIm();
+	double iic = c.getRe();
 
-        double re1 = scalar * cic;
-        double im1 = scalar * sic;
+	// e(ic) ...
+	double scalar = Math.exp(ric);
+	double ciic = Math.cos(iic);
+	double siic = Math.sin(iic);
 
-        // e(-c)
-        scalar = Math.exp(-cr);
-        double re2 = scalar * cic;
-        double im2 = scalar * (-sic);
+	double re1 = scalar * ciic;
+	double im1 = scalar * siic;
 
-        return div(
-                re1 - re2, im1 - im2,
-                re1 + re2, im1 + im2,
-                factory);
+	// e(-ic)
+	scalar = Math.exp(-ric);
+	double re2 = scalar * ciic;
+	double im2 = scalar * (-siic);
+
+	// result:
+	return Complex.cart(0.5 * (im1 - im2), -0.5 * (re1 - re2));
+    }
+
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex sinh(final Complex c) {
+	// sinh(c) = ( exp(c) - exp(-c) ) / 2
+
+	double rc = c.getRe(), ic = c.getIm();
+
+	// e(c)
+	// e(c) ...
+	double scalar = Math.exp(rc);
+	double cic = Math.cos(ic);
+	double sic = Math.sin(ic);
+
+	double re1 = scalar * cic;
+	double im1 = scalar * sic;
+
+	// e(-c)
+	scalar = Math.exp(-rc);
+	double re2 = scalar * cic;
+	double im2 = scalar * (-sic);
+
+	return Complex.cart(0.5 * (re1 - re2), 0.5 * (im1 - im2));
+    }
+
+    /**
+     * 
+     * @param c
+     * @return
+     * @deprecated use {@link Complex#sqrt()} instead
+     */
+    @Deprecated
+    public static Complex sqrt(final Complex c) {
+	return sqrt(c.getRe(), c.getIm());
+    }
+
+    static Complex sqrt(final double re, final double im) {
+	final double scale = abs(re, im);
+
+	if (scale > 0.0)
+	    if (re > 0.0) {
+		double tmp = Math.sqrt(0.5 * (scale + re));
+		return Complex.cart(tmp, 0.5 * im / tmp);
+	    } else {
+		double tmp = Math.sqrt(0.5 * (scale - re));
+
+		if (im < 0.0)
+		    tmp = -tmp;
+
+		return Complex.cart(0.5 * im / tmp, tmp);
+	    }
+	else
+	    return Complex.ZERO;
+    }
+
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex tan(final Complex c) {
+	// tan(c) = sin(c) / cos(c)
+	// cos(c) = ( e(ic)+e(-ic)) / 2
+	// sin(c) = ( e(ic)-e(-ic)) / (2*i)
+
+	double ric = -c.getIm();
+	double iic = c.getRe();
+
+	// e(ic) ...
+	double scalar = Math.exp(ric);
+	double ciic = Math.cos(iic);
+	double siic = Math.sin(iic);
+
+	double re1 = scalar * ciic;
+	double im1 = scalar * siic;
+
+	// e(-ic)
+	scalar = Math.exp(-ric);
+	double re2 = scalar * ciic;
+	double im2 = scalar * (-siic);
+
+	// 
+	ComplexBuilder result = new ComplexBuilder(0.5 * (im1 - im2), -0.5
+		* (re1 - re2));
+	result.div(0.5 * (re1 + re2), 0.5 * (im1 + im2));
+	return result.build();
+    }
+
+    /**
+     * 
+     * @param c
+     * @return
+     */
+    public static Complex tanh(final Complex c) {
+	// cosh(c) = ( exp(c) + exp(-c) ) / 2
+	// sinh(c) = ( exp(c) - exp(-c) ) / 2
+	// tanh(c) = sinh(c) / cosh(c)
+	// tanh(c) = ( exp(c) - exp(-c) ) / ( exp(c) + exp(-c) )
+
+	double rc = c.getRe(), ic = c.getIm();
+
+	// e(c)
+	// e(c) ...
+	double scalar = Math.exp(rc);
+	double cic = Math.cos(ic);
+	double sic = Math.sin(ic);
+
+	double re1 = scalar * cic;
+	double im1 = scalar * sic;
+
+	// e(-c)
+	scalar = Math.exp(-rc);
+	double re2 = scalar * cic;
+	double im2 = scalar * (-sic);
+
+	ComplexBuilder result = new ComplexBuilder(re1 - re2, im1 - im2);
+	result.div(re1 + re2, im1 + im2);
+	return result.build();
     }
 
     private ComplexMath() {

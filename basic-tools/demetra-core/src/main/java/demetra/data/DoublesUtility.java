@@ -18,7 +18,6 @@ package demetra.data;
 
 import demetra.utilities.IntList;
 import demetra.utilities.functions.DoubleBiPredicate;
-import java.text.DecimalFormat;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoublePredicate;
 

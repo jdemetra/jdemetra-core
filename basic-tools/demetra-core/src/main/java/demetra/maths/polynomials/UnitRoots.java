@@ -1,10 +1,10 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2013 National Bank ofInternal Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
- * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * by the European Commission - subsequent versions ofInternal the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at:
+ * You may obtain a copy ofInternal the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
@@ -176,7 +176,7 @@ public class UnitRoots implements Cloneable {
         double[] p = Polynomial.Coefficients.fromDegree(n);
         p[n] = -1;
         p[0] = 1;
-        return Polynomial.of(p);
+        return Polynomial.ofInternal(p);
     }
 
     /**
@@ -265,7 +265,7 @@ public class UnitRoots implements Cloneable {
             }
         }
 
-        return Polynomial.of(Arrays.copyOf(tmp, nc));
+        return Polynomial.ofInternal(Arrays.copyOf(tmp, nc));
     }
 
     private static int mul(final double[] c, final int nc, final int d) {
@@ -303,7 +303,7 @@ public class UnitRoots implements Cloneable {
             nc = div(tmp, nc, ur.m_d.get(i));
         }
 
-        return Polynomial.of(Arrays.copyOf(tmp, nc));
+        return Polynomial.ofInternal(Arrays.copyOf(tmp, nc));
     }
 
     /**
@@ -317,7 +317,7 @@ public class UnitRoots implements Cloneable {
     }
 
     /**
-     * find the first divisor of x after d which is prime with p...
+     * find the first divisor ofInternal x after d which is prime with p...
      *
      * @param x
      * @param d
@@ -325,7 +325,7 @@ public class UnitRoots implements Cloneable {
      * @return 0 if no divisor is find
      */
     private static int nextdiv(final int x, final int d, final int p) {
-        // should be optimized for large value of x
+        // should be optimized for large value ofInternal x
         for (int nd = d - 1; nd > 1; --nd) {
             if ((x % nd == 0) && (IntUtilities.gcd(nd, p) == 1)) {
                 return nd;
@@ -346,7 +346,7 @@ public class UnitRoots implements Cloneable {
         for (int i = 0, j = 0; i < freq; ++i, j += d) {
             p[j] = 1;
         }
-        Polynomial P = Polynomial.of(p);
+        Polynomial P = Polynomial.ofInternal(p);
         if (d == 1) {
             Complex[] roots = Complex.unitRoots(freq);
             Complex[] nroots=new Complex[roots.length-1];
@@ -394,7 +394,7 @@ public class UnitRoots implements Cloneable {
     }
 
     /**
-     * Adds a set of unit roots
+     * Adds a set ofInternal unit roots
      *
      * @param ur The ur-th roots are added (equivalent to multiply by (1 - x^ur)
      */
@@ -415,8 +415,8 @@ public class UnitRoots implements Cloneable {
     }
 
     /**
-     * Adds the x-roots of 1 that are not y-roots of 1, where y is a divisor of
-     * x. For example, if x = 6, the polynomial (1 - x^6)(1 - x)/(1 - x^2)(1 -
+     * Adds the x-roots ofInternal 1 that are not y-roots ofInternal 1, where y is a divisor ofInternal
+ x. For example, if x = 6, the polynomial (1 - x^6)(1 - x)/(1 - x^2)(1 -
      * x^3) = x^2 - x - 1 is added
      *
      * @param divs
@@ -661,7 +661,7 @@ public class UnitRoots implements Cloneable {
     }
 
     /**
-     * The Idx-th item of the denominator
+     * The Idx-th item ofInternal the denominator
      *
      * @param idx
      * @return
@@ -671,7 +671,7 @@ public class UnitRoots implements Cloneable {
     }
 
     /**
-     * Number of items on the denominator
+     * Number ofInternal items on the denominator
      *
      * @return
      */
@@ -680,7 +680,7 @@ public class UnitRoots implements Cloneable {
     }
 
     /**
-     * Degree of the denominator (= sum of the items of the denominator)
+     * Degree ofInternal the denominator (= sum ofInternal the items ofInternal the denominator)
      *
      * @return
      */
@@ -693,7 +693,7 @@ public class UnitRoots implements Cloneable {
     }
 
     /**
-     * The Idx-th item of the numerator
+     * The Idx-th item ofInternal the numerator
      *
      * @param idx
      * @return
@@ -703,7 +703,7 @@ public class UnitRoots implements Cloneable {
     }
 
     /**
-     * Number of items on the numerator
+     * Number ofInternal items on the numerator
      *
      * @return
      */
@@ -712,7 +712,7 @@ public class UnitRoots implements Cloneable {
     }
 
     /**
-     * Degree of the numerator (= sum of the items of the numerator)
+     * Degree ofInternal the numerator (= sum ofInternal the items ofInternal the numerator)
      *
      * @return
      */
@@ -725,7 +725,7 @@ public class UnitRoots implements Cloneable {
     }
 
     /**
-     * Number of roots (= degree of the polynomial = NumDegree - DenomDegree)
+     * Number ofInternal roots (= getDegree ofInternal the polynomial = NumDegree - DenomDegree)
      *
      * @return
      */
@@ -779,7 +779,7 @@ public class UnitRoots implements Cloneable {
     }
 
     /**
-     * Removes as set of unit roots
+     * Removes as set ofInternal unit roots
      *
      * @param ur The ur-th roots are removed (equivalent to divide by (1 - x^ur)
      */
@@ -800,8 +800,8 @@ public class UnitRoots implements Cloneable {
     }
 
     /**
-     * Removes the x-roots of 1 that are not y-roots of 1, where y is a divisor
-     * of x. For example, if x = 6, the polynomial (1 - x^6)(1 - x)/(1 - x^2)(1
+     * Removes the x-roots ofInternal 1 that are not y-roots ofInternal 1, where y is a divisor
+ ofInternal x. For example, if x = 6, the polynomial (1 - x^6)(1 - x)/(1 - x^2)(1
      * - x^3) = x^2 - x - 1 is removed
      *
      * @param divs
@@ -951,7 +951,7 @@ public class UnitRoots implements Cloneable {
     /**
      * this * this
      *
-     * @return The square of this object
+     * @return The square ofInternal this object
      */
     public UnitRoots squared() {
         simplify();
@@ -975,6 +975,6 @@ public class UnitRoots implements Cloneable {
      * @return
      */
     public Polynomial toPolynomial() {
-        return Polynomial.of(coefficients());
+        return Polynomial.ofInternal(coefficients());
     }
 }

@@ -34,11 +34,12 @@ public final class DataBlock implements Doubles {
     public static interface DataBlockFunction {
 
         /**
-         * Real function on an array of doubles. This interface is mainly used
-         * with the corresponding "apply" method. For example: Matrix M=...
-         * DataBlock rsum=... rsum.apply(M.columnsIterator(), col->col.sum());
+         * Real function on an array of doubles. This interface is
+         * mainly used with the corresponding "apply" method. For example:
+         * Matrix M=... DataBlock rsum=... rsum.apply(M.columnsIterator(),
+         * col->col.sum());
          *
-         * @param data The toArray
+         * @param data The data
          * @return the function result
          */
         double apply(DataBlock data);
@@ -48,7 +49,7 @@ public final class DataBlock implements Doubles {
 
     //<editor-fold defaultstate="collapsed" desc="Static factories">
     /**
-     * Creates a toArray block of a given length. The buffer is created
+     * Creates a data block of a given length. The buffer is created
      * internally
      *
      * @param n The number of elements
@@ -61,25 +62,25 @@ public final class DataBlock implements Doubles {
     /**
      * Envelope around an array of doubles.
      *
-     * @param data The array of doubles. the toArray are not copied (they might
-     * be modified externally).
+     * @param data The array of doubles. the data are not copied
+ (they might be modified externally).
      * @return
      */
-    public static DataBlock of(double[] data) {
+    public static DataBlock ofInternal(double[] data) {
         return new DataBlock(data, 0, data.length, 1);
     }
 
     /**
      * Envelope around a part of an array of doubles.
      *
-     * @param data The array of doubles. the toArray are not copied.
+     * @param data The array of doubles. the data are not copied.
      * @param start The starting position (included)
      * @param end The ending position (excluded)
      * @return
      * @throws IllegalArgumentException is thrown if the end position is not
      * after the reader position.
      */
-    public static DataBlock of(double[] data, int start, int end) {
+    public static DataBlock ofInternal(double[] data, int start, int end) {
         if (end < start) {
             throw new IllegalArgumentException("Invalid DoubleArray");
         }
@@ -89,7 +90,7 @@ public final class DataBlock implements Doubles {
     /**
      * Envelope around a part of an array of doubles.
      *
-     * @param data The array of doubles. the toArray are not copied.
+     * @param data The array of doubles. the data are not copied.
      * @param start The starting position (included)
      * @param end The ending position (excluded)
      * @param inc The differences between two successive positions. Might be
@@ -97,10 +98,10 @@ public final class DataBlock implements Doubles {
      * @return
      * @throws (end-start) must be a positive multiple of inc.
      */
-    public static DataBlock of(double[] data, int start, int end, int inc) {
-//        if (inc == 1) {
-//            return of(toArray, reader, end);
-//        }
+    public static DataBlock ofInternal(double[] data, int start, int end, int inc) {
+        if (inc == 1) {
+            return ofInternal(data, start, end);
+        }
         if ((end - start) % inc != 0) {
             throw new IllegalArgumentException("Invalid DoubleArray");
         }
@@ -125,7 +126,7 @@ public final class DataBlock implements Doubles {
     /**
      * Envelope around a copy of an array of doubles.
      *
-     * @param data The array of doubles. the toArray are copied
+     * @param data The array of doubles. the data are copied
      * @return
      */
     public static DataBlock copyOf(double[] data) {
@@ -133,10 +134,10 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * Select the toArray that match a given criterion and put them in a new
+     * Select the data that match a given criterion and put them in a new
      * DataBlock.
      *
-     * @param data The toArray
+     * @param data The data
      * @param pred The selection criterion
      * @return
      */
@@ -149,7 +150,7 @@ public final class DataBlock implements Doubles {
                 list.add(cur);
             }
         }
-        return DataBlock.of(list.toArray());
+        return DataBlock.ofInternal(list.toArray());
     }
 
     //</editor-fold>
@@ -197,8 +198,8 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * Computes the euclidian norm of the src block. Based on the "dnrm2" Lapack
-     * function.
+     * Computes the euclidian norm of the src block. Based on the
+     * "dnrm2" Lapack function.
      *
      * @return The euclidian norm (&gt=0).
      */
@@ -260,16 +261,16 @@ public final class DataBlock implements Doubles {
      * inc0*inc1.
      *
      * @param start The starting position (in the current src block).
-     * @param count The number copyOf items in the selection. If count is -1,
-     * the largest extract is returned.
-     * @param inc The increment copyOf the selection.
+     * @param count The number of items in the selection. If count is -1, the
+ largest extract is returned.
+     * @param inc The increment of the selection.
      * @return A new block is returned.
      */
     public DataBlock extract(int start, int count, int inc) {
         int i0 = beg + start * this.inc, i1, ninc;
         ninc = inc * this.inc;
         if (count == -1) {
-            // not optimized. We go from i0 to i1 by step copyOf ninc (i1 = i0 + n*ninc)
+            // not optimized. We go from i0 to i1 by step of ninc (i1 = i0 + n*ninc)
             // (i1-ninc) must be <= (end-linc) if ninc > 0 or >= end-linc if ninc <0
             // case linc > 0 : n = 1 + (end - linc - i0) / ninc
             int n = 0;
@@ -287,32 +288,39 @@ public final class DataBlock implements Doubles {
         return new DataBlock(data, i0, i1, ninc);
     }
 
-    public DataWindow window() {
-        return new DataWindow(data, beg, end, inc);
-    }
-
-    public DataWindow left() {
-        return new DataWindow(data, beg, beg, inc);
-    }
-
     public DataBlock range(int beg, int end) {
         return new DataBlock(data, this.beg + beg * inc, this.beg + end * inc, inc);
     }
 
+    @Override
     public DataBlock drop(int beg, int end) {
         return new DataBlock(data, this.beg + beg * inc, this.end - end * inc, inc);
+    }
+
+    @Override
+    public DataBlock reverse() {
+        return new DataBlock(data, end - inc, beg - inc, -inc);
     }
 
     public DataBlock extend(int beg, int end) {
         return new DataBlock(data, this.beg - beg * inc, this.end + end * inc, inc);
     }
 
+    public DataWindow window() {
+        return new DataWindow(data, beg, end, inc);
+    }
+
     public DataWindow window(int beg, int end) {
         return new DataWindow(data, this.beg + beg * inc, this.beg + end * inc, inc);
     }
 
-    public DataBlock reverse() {
-        return new DataBlock(data, end - inc, beg - inc, -inc);
+    public DataWindow left() {
+        return new DataWindow(data, beg, beg, inc);
+    }
+
+    public DataBlock deepClone() {
+        double[] copy = toArray();
+        return new DataBlock(copy, 0, copy.length, 1);
     }
 
     public void bshiftAndNegSum() {
@@ -635,13 +643,13 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * Computes the product copyOf a vector by a matrix and stores the result in
-     * this src block this = row * cols. We must have that 1. the length copyOf
-     * this src block = the number copyOf columns 2. the length copyOf the
-     * vector = the length copyOf each column. The iterator is changed !!!
+     * Computes the product of a vector by a matrix and stores the result in
+ this src block this = row * cols. We must have that 1. the length of this
+ src block = the number of columns 2. the length of the vector = the
+ length of each column. The iterator is changed !!!
      *
      * @param row The vector array
-     * @param cols The columns copyOf the matrix
+     * @param cols The columns of the matrix
      */
     public void product(DataBlock row, Iterator<DataBlock> cols) {
         int idx = beg;
@@ -680,13 +688,13 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * Adds the product copyOf a vector by a matrix to this src block this +=
-     * row * cols. We must have that 1. the length copyOf this src block = the
-     * number copyOf columns 2. the length copyOf the vector = the length copyOf
-     * each column. The iterator is changed !!!
+     * Adds the product of a vector by a matrix to this src block this += row *
+ cols. We must have that 1. the length of this src block = the number of
+ columns 2. the length of the vector = the length of each column. The
+ iterator is changed !!!
      *
      * @param row The vector array
-     * @param cols The columns copyOf the matrix
+     * @param cols The columns of the matrix
      */
     public void addProduct(DataBlock row, Iterator<DataBlock> cols) {
         int idx = beg;

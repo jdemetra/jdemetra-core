@@ -1,10 +1,10 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2013 National Bank ofInternal Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
- * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * by the European Commission - subsequent versions ofInternal the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at:
+ * You may obtain a copy ofInternal the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
@@ -205,13 +205,13 @@ public class GridSearch implements IFunctionMinimizer {
                 return false;
             }
         }
-        m_ftry = fn.evaluate(DataBlock.of(new double[]{curX}));
+        m_ftry = fn.evaluate(DataBlock.ofInternal(new double[]{curX}));
         return true;
     }
 
     private double evaluate(double x) {
         try {
-            IFunctionPoint fx = this.fn.evaluate(DataBlock.of(new double[]{x}));
+            IFunctionPoint fx = this.fn.evaluate(DataBlock.ofInternal(new double[]{x}));
             return fx.getValue();
         } catch (Exception err) {
             return Double.NaN;

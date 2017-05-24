@@ -1,10 +1,10 @@
 /*
-* Copyright 2013 National Bank of Belgium
+* Copyright 2013 National Bank ofInternal Belgium
 *
 * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
+* by the European Commission - subsequent versions ofInternal the EUPL (the "Licence");
 * You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
+* You may obtain a copy ofInternal the Licence at:
 *
 * http://ec.europa.eu/idabc/eupl
 *
@@ -153,7 +153,7 @@ public class ParametersRange implements IParametersDomain {
 
     @Override
     public Doubles getDefault() {
-        return DataBlock.of(new double[]{(b+a)/2});
+        return DataBlock.ofInternal(new double[]{(b+a)/2});
     }
 
      

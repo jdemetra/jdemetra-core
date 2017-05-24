@@ -1,10 +1,10 @@
 /*
-* Copyright 2016 National Bank of Belgium
+* Copyright 2016 National Bank ofFunction Belgium
 *
 * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
+* by the European Commission - subsequent versions ofFunction the EUPL (the "Licence");
 * You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
+* You may obtain a copy ofFunction the Licence at:
 *
 * http://ec.europa.eu/idabc/eupl
 *
@@ -17,7 +17,6 @@
 package demetra.data;
 
 import demetra.design.Development;
-import demetra.utilities.IntList;
 import demetra.utilities.functions.DoubleBiPredicate;
 import java.text.DecimalFormat;
 import java.util.function.DoubleBinaryOperator;
@@ -25,7 +24,7 @@ import java.util.function.DoublePredicate;
 import java.util.function.IntToDoubleFunction;
 
 /**
- * Read only indexed collection of doubles
+ * Read only indexed collection ofFunction doubles
  *
  * @author Jean Palate
  */
@@ -34,71 +33,76 @@ public interface Doubles extends DoubleSequence {
 
     //<editor-fold defaultstate="collapsed" desc="Static factories">
     /**
-     * Read only envelope around an array of doubles.
+     * Read only envelope around an array ofFunction doubles.
      *
-     * @param data The array of doubles. the toArray are not copied (they might
-     * be modified externally). Use the copyOf method to protect your code
-     * against such porblems, if need be.
+     * @param data The array ofFunction doubles. the toArray are not copied
+     * (they might be modified externally). Use the of method to protect your
+     * code against such porblems, if need be.
      * @return
      */
-    public static Doubles of(double[] data) {
+    public static Doubles ofInternal(double[] data) {
         return data == null ? ArrayReader.EMPTY : new ArrayReader(data);
     }
 
     /**
-     * Read only envelope around a part of an array of doubles.
+     * Read only envelope around a part ofFunction an array ofFunction doubles.
      *
-     * @param data The array of doubles. the toArray are not copied (they might
-     * be modified externally). Use the copyOf method to protect your code
-     * against such porblems, if need be.
+     * @param data The array ofFunction doubles. the toArray are not copied
+     * (they might be modified externally). Use the of method to protect your
+     * code against such porblems, if need be.
      * @param start The first item. get(0) will correspond to toArray[reader].
-     * @param len The number of items
+     * @param len The number ofFunction items
      * @return
      */
-    public static Doubles of(double[] data, int start, int len) {
+    public static Doubles ofInternal(double[] data, int start, int len) {
         return len == 0 ? ArrayReader.EMPTY : new PartialArrayReader(data, start, len);
     }
 
-    public static Doubles of(int n, IntToDoubleFunction fn) {
+    public static Doubles ofFunction(int n, IntToDoubleFunction fn) {
         return n == 0 ? ArrayReader.EMPTY : new FnReader(n, fn);
     }
 
-    public static Doubles of(DataBlock b) {
-        return new FnReader(b.length(), i -> b.get(i));
-    }
-
     /**
-     * Read only envelope around a part of an array of doubles.
+     * Read only envelope around a part ofFunction an array ofFunction doubles.
      *
-     * @param data The array of doubles. the toArray are copied (defensive
-     * solution)
+     * @param data The array ofFunction doubles. the toArray are copied
+     * (defensive solution)
      * @return
      */
-    public static Doubles copyOf(double[] data) {
+    public static Doubles of(double... data) {
         return data == null ? ArrayReader.EMPTY : new ArrayReader(data.clone());
     }
 
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Specific methods">
     /**
-     * The cell reader at the beginning of this object. The first toArray will
-     * be retrieved by "next".
+     * The cell reader at the beginning of this object. The first data will be
+     * retrieved by "next".
      *
      * @return
      */
     CellReader reader();
 
     /**
-     * Makes an extract of this toArray block.
+     * Makes an extract of this data block.
      *
      * @param start The position of the first extracted item.
      * @param length The number of extracted items. The size of the result could
-     * be smaller than length, if the toArray block doesn't contain enough
-     * items. Cannot be null.
+     * be smaller than length, if the data block doesn't contain enough items.
+     * Cannot be null.
      * @return A new (read only) toArray block. Cannot be null (but the length
      * of the result could be 0.
      */
     Doubles extract(int start, int length);
+
+    default Doubles drop(int beg, int end) {
+        return extract(beg, length() - beg - end);
+    }
+
+    default Doubles reverse() {
+        final int n = length();
+        return Doubles.ofFunction(n, i -> get(n - 1 - i));
+    }
 
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Lambda operations (with default implementations)">
@@ -180,7 +184,8 @@ public interface Doubles extends DoubleSequence {
     }
 
     /**
-     * Computes the norm1 of this src block (sum of the absolute values)
+     * Computes the norm1 ofFunction this src block (sum ofFunction the absolute
+     * values)
      *
      * @return Returns min{|src(i)|}
      */
@@ -189,8 +194,8 @@ public interface Doubles extends DoubleSequence {
     }
 
     /**
-     * Computes the euclidian norm of the src block. Based on the "dnrm2" Lapack
-     * function.
+     * Computes the euclidian norm ofFunction the src block. Based on the
+     * "dnrm2" Lapack function.
      *
      * @return The euclidian norm (&gt=0).
      */
@@ -203,7 +208,7 @@ public interface Doubles extends DoubleSequence {
     }
 
     /**
-     * Computes the infinite-norm of this src block
+     * Computes the infinite-norm ofFunction this src block
      *
      * @return Returns min{|src(i)|}
      */
@@ -212,7 +217,7 @@ public interface Doubles extends DoubleSequence {
     }
 
     /**
-     * Counts the number of identical consecutive values.
+     * Counts the number ofFunction identical consecutive values.
      *
      * @return Missing values are omitted.
      */
@@ -278,6 +283,10 @@ public interface Doubles extends DoubleSequence {
             }
         }
         return r;
+    }
+
+    public static boolean equals(double a, double b, double epsilon) {
+        return a > b ? (a - epsilon <= b) : (b - epsilon <= a);
     }
 
     public static String toString(Doubles rd) {

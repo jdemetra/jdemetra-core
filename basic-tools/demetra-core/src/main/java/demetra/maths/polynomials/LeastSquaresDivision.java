@@ -21,7 +21,7 @@ import demetra.data.DataBlockIterator;
 import demetra.maths.Constants;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
-import demetra.maths.matrices.impl.Householder;
+import demetra.maths.matrices.internal.Householder;
 
 /**
  *
@@ -54,7 +54,7 @@ public class LeastSquaresDivision {
             Householder qr = new Householder();
             qr.decompose(m);
             DataBlock E = DataBlock.make(d - 1);
-            qr.leastSquares(N, DataBlock.of(coeff), E);
+            qr.leastSquares(N, DataBlock.ofInternal(coeff), E);
             this.err = E.norm2() / d;
             return true;
         } catch (MatrixException error) {

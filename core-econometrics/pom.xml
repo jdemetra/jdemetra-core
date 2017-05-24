@@ -19,6 +19,7 @@
         <module>demetra-regarima</module>
         <module>demetra-ssf</module>
         <module>demetra-ucarima</module>
+        <module>demetra-stats</module>
     </modules>
     
     <build>

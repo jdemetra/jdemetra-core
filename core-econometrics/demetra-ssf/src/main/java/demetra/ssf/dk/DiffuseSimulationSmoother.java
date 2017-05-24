@@ -1,10 +1,10 @@
 /*
- * Copyright 2016 National Bank of Belgium
+ * Copyright 2016 National Bank ofFunction Belgium
  *  
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
- * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * by the European Commission - subsequent versions ofFunction the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at:
+ * You may obtain a copy ofFunction the Licence at:
  *  
  * http://ec.europa.eu/idabc/eupl
  *  
@@ -141,7 +141,7 @@ public class DiffuseSimulationSmoother {
         protected final void smooth() {
             R = DataBlock.make(dim);
             Ri = DataBlock.make(dim);
-            // we reproduce here the usual iterations of the smoother
+            // we reproduce here the usual iterations ofFunction the smoother
             doNormalSmoothing();
             doDiffuseSmoohing();
 //            smoothedInnovations.rescale(Math.sqrt(var));
@@ -385,7 +385,7 @@ public class DiffuseSimulationSmoother {
         }
 
         public Doubles getErrors() {
-            return Doubles.of(ferrors);
+            return Doubles.ofInternal(ferrors);
         }
 
         public DataBlockStorage getSimulatedStates() {

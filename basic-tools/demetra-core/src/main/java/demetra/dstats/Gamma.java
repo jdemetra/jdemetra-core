@@ -386,8 +386,8 @@ public class Gamma implements IContinuousDistribution {
         }
 
         x -= 2.0;
-        p = Polynomial.revaluate(P, x);
-        q = Polynomial.revaluate(Q, x);
+        p = Polynomial.reverseEvaluate(P, x);
+        q = Polynomial.reverseEvaluate(Q, x);
         return z * p / q;
     }
 
@@ -856,7 +856,7 @@ public class Gamma implements IContinuousDistribution {
                 return Math.log(z);
             }
             x -= 2.0;
-            p = x * Polynomial.revaluate(B, x) / Polynomial.revaluate(C, x);
+            p = x * Polynomial.reverseEvaluate(B, x) / Polynomial.reverseEvaluate(C, x);
             return (Math.log(z) + p);
         }
 
@@ -876,7 +876,7 @@ public class Gamma implements IContinuousDistribution {
                     - 2.7777777777777777777778e-3) * p
                     + 0.0833333333333333333333) / x;
         } else {
-            q += Polynomial.revaluate(A, p) / x;
+            q += Polynomial.reverseEvaluate(A, p) / x;
         }
         return q;
     }
@@ -938,7 +938,7 @@ public class Gamma implements IContinuousDistribution {
         double w = 1.0 / x;
         double y = Math.exp(x);
 
-        w = 1.0 + w * Polynomial.revaluate(STIR, w);
+        w = 1.0 + w * Polynomial.reverseEvaluate(STIR, w);
 
         if (x > MAXSTIR) {
             /* Avoid overflow in Math.pow() */

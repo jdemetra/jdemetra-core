@@ -24,9 +24,9 @@ import demetra.design.Development;
 import demetra.design.ServiceDefinition;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
-import demetra.maths.matrices.impl.CroutDoolittle;
-import demetra.maths.matrices.impl.Householder;
-import demetra.maths.matrices.impl.RobustHouseholder;
+import demetra.maths.matrices.internal.CroutDoolittle;
+import demetra.maths.matrices.internal.Householder;
+import demetra.maths.matrices.internal.RobustHouseholder;
 
 /**
  * Defines algorithms that solve linear system

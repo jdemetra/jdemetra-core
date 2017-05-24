@@ -12,10 +12,11 @@ import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.IQRDecomposition;
+import demetra.maths.matrices.internal.FastSymmetricMatrixAlgorithms;
+import demetra.maths.matrices.internal.FastUpperTriangularMatrixAlgorithms;
 import demetra.data.Doubles;
 import demetra.data.NeumaierAccumulator;
 import demetra.design.IBuilder;
-import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
 
 /**
@@ -95,14 +96,14 @@ public class QRSolver implements LeastSquaresSolver {
             return false;
         }
     }
-
-    private void clear() {
-        ssqerr = 0;
-        R = null;
-        c = null;
-        b = null;
-        res = null;
-        V = null;
+    
+    private void clear(){
+        ssqerr=0;
+        R=null;
+        c=null;
+        b=null;
+        res=null;
+        V=null;
     }
 
     private void computeWithScaling(Doubles y, Matrix x) {
@@ -131,7 +132,7 @@ public class QRSolver implements LeastSquaresSolver {
                 iterativeEstimation(DataBlock.copyOf(y), xc);
             }
         } else {
-            DataBlock B = DataBlock.of(b), E = DataBlock.of(res);
+            DataBlock B = DataBlock.ofInternal(b), E = DataBlock.ofInternal(res);
             qr.leastSquares(y, B, E);
             ssqerr = E.ssq();
         }
@@ -163,7 +164,7 @@ public class QRSolver implements LeastSquaresSolver {
             }
         } else {
             res = new double[n - qr.rank()];
-            DataBlock B = DataBlock.of(b), E = DataBlock.of(res);
+            DataBlock B = DataBlock.ofInternal(b), E = DataBlock.ofInternal(res);
             qr.leastSquares(y, B, E);
             ssqerr = E.ssq();
         }
@@ -175,8 +176,8 @@ public class QRSolver implements LeastSquaresSolver {
             double sig = ssqerr / (n - m);
             Matrix v = null;
             if (!R.isEmpty()) {
-                Matrix U = UpperTriangularMatrix.inverse(R);
-                v = SymmetricMatrix.UUt(U);
+                Matrix U = FastUpperTriangularMatrixAlgorithms.INSTANCE.inverse(R);
+                v = FastSymmetricMatrixAlgorithms.INSTANCE.UUt(U);
                 v.apply(x -> x * sig);
             }
             if (m == used.length) {
@@ -202,20 +203,20 @@ public class QRSolver implements LeastSquaresSolver {
     @Override
     public Doubles coefficients() {
         if (used.length == m) {
-            return Doubles.of(b);
+            return Doubles.ofInternal(b);
         } else {
             // expand the coefficients
             double[] c = new double[m];
             for (int i = 0; i < used.length; ++i) {
                 c[used[i]] = b[i];
             }
-            return Doubles.of(c);
+            return Doubles.ofInternal(c);
         }
     }
 
     @Override
     public Doubles residuals() {
-        return Doubles.of(res);
+        return Doubles.ofInternal(res);
     }
 
     @Override
@@ -235,7 +236,7 @@ public class QRSolver implements LeastSquaresSolver {
         DataBlock F = DataBlock.make(n);
         DataBlock G = DataBlock.make(m);
 
-        DataBlock B = DataBlock.of(b);
+        DataBlock B = DataBlock.ofInternal(b);
         DataBlock E = DataBlock.make(n);
         // step 1
         int iter = 0;
@@ -278,17 +279,16 @@ public class QRSolver implements LeastSquaresSolver {
 
     private void iterativeEstimation2(Doubles Y, Matrix X) {
 
-        DataBlock B = DataBlock.of(b), E = DataBlock.of(res);
+        DataBlock B = DataBlock.ofInternal(b), E = DataBlock.ofInternal(res);
         Doubles W = Y;
         for (int i = 0; i < niter; ++i) {
             DataBlock db = DataBlock.make(b.length), de = DataBlock.make(res.length);
             qr.leastSquares(W, db, de);
             B.add(db);
             E.copy(de);
-            double ssq = E.ssq();
-            if (ssqerr != 0 && ssq > ssqerr) {
+            double ssq=E.ssq();
+            if (ssqerr != 0 && ssq>ssqerr)
                 break;
-            }
             ssqerr = ssq;
 
             DataBlock Err = DataBlock.make(n);
