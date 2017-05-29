@@ -16,8 +16,10 @@
  */
 package ec.tss.tsproviders.utils;
 
+import com.google.common.base.MoreObjects;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
@@ -28,8 +30,6 @@ import javax.annotation.concurrent.Immutable;
  * @since 2.2.0
  */
 @Immutable
-@lombok.Value
-@lombok.experimental.Wither
 public final class ObsGathering {
 
     @Nonnull
@@ -44,17 +44,52 @@ public final class ObsGathering {
 
     public static final ObsGathering DEFAULT = excludingMissingValues(TsFrequency.Undefined, TsAggregationType.None);
 
-    @lombok.NonNull
-    TsFrequency frequency;
-
-    @lombok.NonNull
-    TsAggregationType aggregationType;
-
-    boolean skipMissingValues;
+    private final TsFrequency frequency;
+    private final TsAggregationType aggregationType;
+    private final boolean skipMissingValues;
 
     private ObsGathering(TsFrequency frequency, TsAggregationType aggregationType, boolean skipMissingValues) {
         this.frequency = frequency;
         this.aggregationType = aggregationType;
         this.skipMissingValues = skipMissingValues;
+    }
+
+    @Nonnull
+    public TsFrequency getFrequency() {
+        return frequency;
+    }
+
+    @Nonnull
+    public TsAggregationType getAggregationType() {
+        return aggregationType;
+    }
+
+    public boolean isSkipMissingValues() {
+        return skipMissingValues;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj || (obj instanceof ObsGathering && equals((ObsGathering) obj));
+    }
+
+    private boolean equals(ObsGathering that) {
+        return this.frequency == that.frequency
+                && this.aggregationType == that.aggregationType
+                && this.skipMissingValues == that.skipMissingValues;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(frequency, aggregationType, skipMissingValues);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(ObsGathering.class)
+                .add("frequency", frequency)
+                .add("aggregationType", aggregationType)
+                .add("skipMissingValues", skipMissingValues)
+                .toString();
     }
 }

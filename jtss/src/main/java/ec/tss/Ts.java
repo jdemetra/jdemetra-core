@@ -47,16 +47,10 @@ public abstract class Ts implements IDocumented, ITsIdentified {
         Public,
         Confidential
     }
-    private String m_name;
+    private final String m_name;
 
     protected Ts(String name) {
         m_name = Strings.nullToEmpty(name);
-    }
-
-    protected void replaceRawName(String name) {
-        if (!Strings.isNullOrEmpty(name)) {
-            this.m_name = name;
-        }
     }
 
     public final String getRawName() {
@@ -520,7 +514,6 @@ public abstract class Ts implements IDocumented, ITsIdentified {
                 }
                 m_info = m_info.union(info.type);
                 m_invalidDataMessage = info.invalidDataCause;
-                replaceRawName(info.name);
             }
         }
 
