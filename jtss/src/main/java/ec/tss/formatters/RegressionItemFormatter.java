@@ -17,6 +17,7 @@
 package ec.tss.formatters;
 
 import com.google.common.base.Strings;
+import ec.tss.sa.output.BasicConfiguration;
 import ec.tstoolkit.information.RegressionItem;
 import java.text.DecimalFormat;
 
@@ -69,7 +70,7 @@ public class RegressionItemFormatter implements IStringFormatter {
             ++item;
         }
         if (Math.abs(item) == 1) {
-            return reg.description;
+            return StringFormatter.cleanup(reg.description);
         } else if (Math.abs(item) == 2) {
             return fmt.format(reg.coefficient);
         } else if (Math.abs(item) == 3) {
@@ -98,4 +99,6 @@ public class RegressionItemFormatter implements IStringFormatter {
         return builder.toString();
 
     }
+    
+
 }
