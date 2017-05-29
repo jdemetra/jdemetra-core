@@ -5,7 +5,7 @@
     
     <groupId>eu.europa.ec.joinup.sat</groupId>
     <artifactId>demetra-parent</artifactId>
-    <version>2.2.0-RC1</version>
+    <version>3.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     
     <name>JDemetra+</name>
@@ -90,6 +90,14 @@
 
         <!-- several apps -->
         <module>jbench</module>
+		
+		<!-- JD3 -->
+        <module>basic-tools</module>
+        <module>core-econometrics</module>
+        <module>tramo-seats</module>
+        <module>structural-ts</module>
+        <module>sa</module>
+        <module>benchmarking</module>
     </modules>
 	
     <dependencyManagement>
@@ -179,6 +187,80 @@
                 <version>${project.version}</version>            
             </dependency>
             <!-- < modules -->
+            
+            <!-- modules 3.0 > -->
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-datatypes</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-core</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-algorithms</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-algorithms-ex</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-eco</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-ssf</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-arima</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-benchmarking-types</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-benchmarking</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-regarima</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-tramo</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-ucarima</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-seats</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-sacore</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+           
+            <!-- < modules 3.0 -->
         </dependencies>
     </dependencyManagement>
 
