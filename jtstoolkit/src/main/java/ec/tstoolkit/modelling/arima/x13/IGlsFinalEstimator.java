@@ -120,7 +120,7 @@ public class IGlsFinalEstimator implements IModelEstimator {
         boolean dqs = Utilities.checkRoots(pm.rextract(start, len), 1 / cmod);// SeasonalMA.Roots,
         // 1/cmod);
 
-        if (!dpr || !dps || !dqr || !dqs) {
+        if (!dpr && !dps && !dqr && !dqs) {
             return 0;
         }
         //}
@@ -134,7 +134,7 @@ public class IGlsFinalEstimator implements IModelEstimator {
 
 
         int k = -1;
-        if (spec.getP() > 0) {
+        if (dpr) {
             k += spec.getP();
             double v = Math.abs(pm.get(k));
             double s = diag.get(k);
@@ -146,7 +146,7 @@ public class IGlsFinalEstimator implements IModelEstimator {
                 }
             }
         }
-        if (spec.getBP() > 0) {
+        if (dps) {
             k += spec.getBP();
             double v = Math.abs(pm.get(k));
             double s = diag.get(k);
@@ -161,7 +161,7 @@ public class IGlsFinalEstimator implements IModelEstimator {
                 }
             }
         }
-        if (spec.getQ() > 0) {
+        if (dqs) {
             k += spec.getQ();
             double v = Math.abs(pm.get(k));
             double s = diag.get(k);
@@ -177,7 +177,7 @@ public class IGlsFinalEstimator implements IModelEstimator {
                 }
             }
         }
-        if (spec.getBQ() > 0) {
+        if (dqs) {
             k += spec.getBQ();
             double v = Math.abs(pm.get(k));
             double s = diag.get(k);

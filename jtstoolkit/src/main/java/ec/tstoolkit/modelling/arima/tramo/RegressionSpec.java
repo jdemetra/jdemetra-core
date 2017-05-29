@@ -208,23 +208,28 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
             if (calendar_.getTradingDays().isDefined()) {
 
                 if (calendar_.getTradingDays().isStockTradingDays()) {
-                    names.add(ITradingDaysVariable.NAME);
-                }
-                String[] user = calendar_.getTradingDays().getUserVariables();
-                if (user != null) {
-                    if (shortname || user.length == 1) {
-                        names.add(ITradingDaysVariable.NAME);
-                    } else {
-                        names.add(ITradingDaysVariable.NAME + '#' + user.length);
-                    }
-                } else {
-                    if (calendar_.getTradingDays().getTradingDaysType() == TradingDaysType.WorkingDays || shortname) {
+                    if (shortname) {
                         names.add(ITradingDaysVariable.NAME);
                     } else {
                         names.add(ITradingDaysVariable.NAME + "#6");
                     }
-                    if (calendar_.getTradingDays().isLeapYear()) {
-                        names.add(ILengthOfPeriodVariable.NAME);
+                } else {
+                    String[] user = calendar_.getTradingDays().getUserVariables();
+                    if (user != null) {
+                        if (shortname || user.length == 1) {
+                            names.add(ITradingDaysVariable.NAME);
+                        } else {
+                            names.add(ITradingDaysVariable.NAME + '#' + user.length);
+                        }
+                    } else {
+                        if (calendar_.getTradingDays().getTradingDaysType() == TradingDaysType.WorkingDays || shortname) {
+                            names.add(ITradingDaysVariable.NAME);
+                        } else {
+                            names.add(ITradingDaysVariable.NAME + "#6");
+                        }
+                        if (calendar_.getTradingDays().isLeapYear()) {
+                            names.add(ILengthOfPeriodVariable.NAME);
+                        }
                     }
                 }
             }
@@ -274,8 +279,8 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         String[] all = new String[names.size()];
         return names.toArray(all);
     }
-    
-    private static String validName(String name){
+
+    private static String validName(String name) {
         return name.replace('.', '@');
     }
 

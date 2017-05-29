@@ -432,6 +432,11 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
         if (m_info.encompass(type)) {
             return true;
         }
+        if (m_moniker.isAnonymous()) {
+            return m_ts.stream()
+                    .map(o -> o.load(type))
+                    .reduce(Boolean.TRUE, (l, r) -> r && l);
+        }
         return TsFactory.instance.load(this, type);
     }
 
