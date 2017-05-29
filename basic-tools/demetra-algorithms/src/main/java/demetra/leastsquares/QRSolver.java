@@ -12,11 +12,10 @@ import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.IQRDecomposition;
-import demetra.maths.matrices.internal.FastSymmetricMatrixAlgorithms;
-import demetra.maths.matrices.internal.FastUpperTriangularMatrixAlgorithms;
 import demetra.data.Doubles;
 import demetra.data.NeumaierAccumulator;
 import demetra.design.IBuilder;
+import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
 
 /**
@@ -97,13 +96,13 @@ public class QRSolver implements LeastSquaresSolver {
         }
     }
     
-    private void clear(){
-        ssqerr=0;
-        R=null;
-        c=null;
-        b=null;
-        res=null;
-        V=null;
+    private void clear() {
+        ssqerr = 0;
+        R = null;
+        c = null;
+        b = null;
+        res = null;
+        V = null;
     }
 
     private void computeWithScaling(Doubles y, Matrix x) {
@@ -176,8 +175,8 @@ public class QRSolver implements LeastSquaresSolver {
             double sig = ssqerr / (n - m);
             Matrix v = null;
             if (!R.isEmpty()) {
-                Matrix U = FastUpperTriangularMatrixAlgorithms.INSTANCE.inverse(R);
-                v = FastSymmetricMatrixAlgorithms.INSTANCE.UUt(U);
+                Matrix U = UpperTriangularMatrix.inverse(R);
+                v = SymmetricMatrix.UUt(U);
                 v.apply(x -> x * sig);
             }
             if (m == used.length) {
@@ -286,9 +285,10 @@ public class QRSolver implements LeastSquaresSolver {
             qr.leastSquares(W, db, de);
             B.add(db);
             E.copy(de);
-            double ssq=E.ssq();
-            if (ssqerr != 0 && ssq>ssqerr)
+            double ssq = E.ssq();
+            if (ssqerr != 0 && ssq > ssqerr) {
                 break;
+            }
             ssqerr = ssq;
 
             DataBlock Err = DataBlock.make(n);

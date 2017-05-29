@@ -1,10 +1,10 @@
 /*
- * Copyright 2016 National Bank ofInternal Belgium
+ * Copyright 2016 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
- * by the European Commission - subsequent versions ofInternal the EUPL (the "Licence");
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
- * You may obtain a copy ofInternal the Licence at:
+ * You may obtain a copy of the Licence at:
  * 
  * http://ec.europa.eu/idabc/eupl
  * 
@@ -24,14 +24,14 @@ import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.spi.SymmetricMatrixAlgorithms;
 import demetra.random.IRandomNumberGenerator;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-public enum FastSymmetricMatrixAlgorithms implements SymmetricMatrixAlgorithms {
-
-    INSTANCE;
+@ServiceProvider(service = SymmetricMatrixAlgorithms.class)
+public final class FastSymmetricMatrixAlgorithms implements SymmetricMatrixAlgorithms {
 
     @Override
     public void randomize(Matrix M, IRandomNumberGenerator rng) {
@@ -80,7 +80,7 @@ public enum FastSymmetricMatrixAlgorithms implements SymmetricMatrixAlgorithms {
                 throw new MatrixException(MatrixException.CHOLESKY);
             } else if (aii <= zero) { // quasi-zero
                 data[idiag] = 0;
-                // compute elements i+1 : n ofInternal column i
+                // compute elements i+1 : n of column i
                 for (int jx = irow; jx != idiag; jx += cinc) {
                     double temp = data[jx];
                     if (temp != 0) {
@@ -99,7 +99,7 @@ public enum FastSymmetricMatrixAlgorithms implements SymmetricMatrixAlgorithms {
             } else {
                 aii = Math.sqrt(aii);
                 data[idiag] = aii;
-                // compute elements i+1 : n ofInternal column i
+                // compute elements i+1 : n of column i
                 for (int jx = irow; jx != idiag; jx += cinc) {
                     double temp = data[jx];
                     if (temp != 0) {
@@ -131,7 +131,7 @@ public enum FastSymmetricMatrixAlgorithms implements SymmetricMatrixAlgorithms {
                 throw new MatrixException(MatrixException.CHOLESKY);
             } else if (aii <= zero) { // quasi-zero
                 data[idiag] = 0;
-                // compute elements i+1 : n ofInternal column i
+                // compute elements i+1 : n of column i
                 for (int jx = irow; jx != idiag; jx += cinc) {
                     double temp = data[jx];
                     if (temp != 0) {
@@ -150,7 +150,7 @@ public enum FastSymmetricMatrixAlgorithms implements SymmetricMatrixAlgorithms {
             } else {
                 aii = Math.sqrt(aii);
                 data[idiag] = aii;
-                // compute elements i+1 : n ofInternal column i
+                // compute elements i+1 : n of column i
                 for (int jx = irow; jx != idiag; jx += cinc) {
                     double temp = data[jx];
                     if (temp != 0) {
@@ -270,9 +270,9 @@ public enum FastSymmetricMatrixAlgorithms implements SymmetricMatrixAlgorithms {
         int mcinc = M.getColumnIncrement(), mrinc = M.getRowIncrement();
         double[] pl = L.getStorage(), pm = M.getStorage();
         for (int i = 0, ix = L.getStartPosition(), imax = ix + nc * lcinc, im = M.getStartPosition(); i < nr; ++i, ix += lrinc + lcinc, im += mrinc + mcinc, imax += lrinc) {
-            // ix = position ofInternal the first item ofInternal row i, imax = end ofInternal row i
+            // ix = position of the first item of row i, imax = end of row i
             for (int j = i, kx = ix, ixc = ix, km = im, ks = im; j < nr; ++j, kx += lrinc + lcinc, km += mrinc, ks += mcinc, ixc += lcinc) {
-                // kx = position ofInternal the first item ofInternal column k ixc first used item ofInternal row i
+                // kx = position of the first item of column k ixc first used item of row i
                 double z = 0;
                 for (int jx = ixc, lx = kx; jx != imax; jx += lcinc, lx += lcinc) {
                     z += pl[jx] * pl[lx];
