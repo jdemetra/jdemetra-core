@@ -20,36 +20,38 @@ import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.spi.UpperTriangularMatrixAlgorithms;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-public class FastUpperTriangularMatrixAlgorithms implements UpperTriangularMatrixAlgorithms{
+@ServiceProvider(service = UpperTriangularMatrixAlgorithms.class)
+public final class FastUpperTriangularMatrixAlgorithms implements UpperTriangularMatrixAlgorithms {
 
-    public static final FastUpperTriangularMatrixAlgorithms INSTANCE = new FastUpperTriangularMatrixAlgorithms();
+    private final FastLowerTriangularMatrixAlgorithms lower;
 
-    private FastUpperTriangularMatrixAlgorithms() {
+    public FastUpperTriangularMatrixAlgorithms() {
+        lower = new FastLowerTriangularMatrixAlgorithms();
     }
 
     @Override
     public void rsolve(Matrix M, DataBlock x, double zero) throws MatrixException {
-        FastLowerTriangularMatrixAlgorithms.INSTANCE.lsolve(M.transpose(), x, zero);
+        lower.lsolve(M.transpose(), x, zero);
     }
 
     @Override
     public void lsolve(Matrix M, DataBlock x, double zero) throws MatrixException {
-        FastLowerTriangularMatrixAlgorithms.INSTANCE.rsolve(M.transpose(), x, zero);
+        lower.rsolve(M.transpose(), x, zero);
     }
 
     @Override
     public void rmul(Matrix M, DataBlock x) {
-        FastLowerTriangularMatrixAlgorithms.INSTANCE.lmul(M.transpose(), x);
+        lower.lmul(M.transpose(), x);
     }
 
     @Override
     public void lmul(Matrix M, DataBlock x) {
-        FastLowerTriangularMatrixAlgorithms.INSTANCE.rmul(M.transpose(), x);
+        lower.rmul(M.transpose(), x);
     }
-    
 }
