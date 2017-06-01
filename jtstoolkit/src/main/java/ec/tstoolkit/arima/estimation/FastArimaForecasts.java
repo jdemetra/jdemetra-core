@@ -80,21 +80,20 @@ public class FastArimaForecasts {
         ssqErr=perr.getSsqErr();
 	// the first forecasts are produced by the state vector...
 	double[] f = new double[nf];
+	DataBlock a = filter.getState().A;
+        int dim=a.getLength();
 	if (nf >= ssf_.getStateDim()) {
-	    DataBlock a = filter.getState().A;
 	    a.copyTo(f, 0);
 	    // complete the forecasts....
-	    int last = a.getLength() - 1;
-	    for (int i = ssf_.getStateDim(); i < nf; ++i) {
+	    int last = dim - 1;
+	    for (int i = dim; i < nf; ++i) {
 		ssf_.TX(a);
 		f[i] = a.get(last);
 	    }
 	} else
 	    filter.getState().A.range(0, nf).copyTo(f, 0);
         if (bmean){
-            DataBlock s=new DataBlock(f.length-bar_.getDegree());
-            bar_.filter(new DataBlock(f), s);
-            mean=s.get(s.getLength()-1);
+            mean=a.range(dim-bar_.getLength(), dim).dotReverse(bar_.getCoefficients());
         }
 	return f;
     }
