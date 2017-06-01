@@ -410,6 +410,7 @@ public class CsvInformationFormatter {
         } else {
             txt = MultiLineNameUtil.last(txt);
         }
+        txt=StringFormatter.cleanup(txt);
 
         if (txt.indexOf(comma) >= 0) {
             if (txt.indexOf('\"') >= 0) {

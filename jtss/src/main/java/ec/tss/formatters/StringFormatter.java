@@ -21,13 +21,21 @@ package ec.tss.formatters;
  *
  * @author Jean Palate
  */
-class StringFormatter implements IStringFormatter {
+public class StringFormatter implements IStringFormatter {
 
     @Override
     public String format(Object obj, int item) {
         if (item > 0)
             return "";
         return obj.toString();
+    }
+    
+    /**
+     * Replaces line separators with white spaces
+     */
+        public static String cleanup(String txt){
+        txt=txt.replace(System.lineSeparator(), " ");
+        return txt.replace('\n', ' '); // defensive approach
     }
 }
 
