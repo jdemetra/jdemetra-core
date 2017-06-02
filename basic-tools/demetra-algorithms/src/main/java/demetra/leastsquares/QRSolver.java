@@ -13,6 +13,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.IQRDecomposition;
 import demetra.data.Doubles;
+import demetra.data.LogSign;
 import demetra.data.NeumaierAccumulator;
 import demetra.design.IBuilder;
 import demetra.maths.matrices.SymmetricMatrix;
@@ -23,6 +24,11 @@ import demetra.maths.matrices.UpperTriangularMatrix;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public class QRSolver implements LeastSquaresSolver {
+
+    @Override
+    public LogSign covarianceLogDeterminant() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
     public static class Builder implements IBuilder<QRSolver> {
 
@@ -82,7 +88,7 @@ public class QRSolver implements LeastSquaresSolver {
     }
 
     @Override
-    public boolean compute(Doubles y, Matrix x) {
+    public boolean solve(Doubles y, Matrix x) {
         try {
             clear();
             if (scaling) {
@@ -258,10 +264,10 @@ public class QRSolver implements LeastSquaresSolver {
                 cols.next().robustDot(E, acc);
                 g.setAndNext(-acc.sum());
             }
-            // compute in place QtF
+            // solve in place QtF
             qr.applyQt(F);
 
-            // compute in place R'h=g or h'R=g'
+            // solve in place R'h=g or h'R=g'
             UpperTriangularMatrix.lsolve(R, G);
 
             DataBlock F1 = F.extract(0, m);

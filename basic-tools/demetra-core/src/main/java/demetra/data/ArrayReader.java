@@ -73,7 +73,7 @@ class ArrayReader implements Doubles {
         }
 
         @Override
-        public void reset(int npos) {
+        public void setPosition(int npos) {
             pos = npos;
         }
     }
@@ -130,7 +130,7 @@ class PartialArrayReader implements Doubles {
         }
 
         @Override
-        public void reset(int npos) {
+        public void setPosition(int npos) {
             pos = npos;
         }
     }
@@ -181,7 +181,7 @@ class FnReader implements Doubles {
         }
 
         @Override
-        public void reset(int npos) {
+        public void setPosition(int npos) {
             pos = npos;
         }
     }

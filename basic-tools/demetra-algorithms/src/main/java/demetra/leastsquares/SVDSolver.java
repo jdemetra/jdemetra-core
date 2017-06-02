@@ -9,6 +9,7 @@ import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.internal.SingularValueDecomposition;
 import demetra.data.Doubles;
+import demetra.data.LogSign;
 
 /**
  *
@@ -19,7 +20,7 @@ public class SVDSolver implements LeastSquaresSolver {
     private DataBlock b;
 
     @Override
-    public boolean compute(Doubles y, Matrix x) {
+    public boolean solve(Doubles y, Matrix x) {
         SingularValueDecomposition svd = new SingularValueDecomposition();
         svd.decompose(x);
         b = DataBlock.make(x.getColumnsCount());
@@ -45,6 +46,11 @@ public class SVDSolver implements LeastSquaresSolver {
     @Override
     public double ssqerr() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body copyOf generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public LogSign covarianceLogDeterminant() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

@@ -35,7 +35,7 @@ public interface CellReader {
      * return the item at that position
      * @param npos 
      */
-    void reset(int npos);
+    void setPosition(int npos);
 
     public static CellReader of(double[] data) {
         return new CellReaderP(data, 0);
@@ -73,7 +73,7 @@ class DefaultCellReader implements CellReader {
     }
 
     @Override
-    public void reset(int npos) {
+    public void setPosition(int npos) {
         pos = npos;
     }
 }
@@ -94,7 +94,7 @@ class CellReaderP implements CellReader {
     }
 
     @Override
-    public void reset(int npos) {
+    public void setPosition(int npos) {
         pos = npos;
     }
 }
@@ -115,7 +115,7 @@ class CellReaderM implements CellReader {
     }
 
     @Override
-    public void reset(int npos) {
+    public void setPosition(int npos) {
         pos = npos;
     }
 }

@@ -95,10 +95,20 @@ public interface Doubles extends DoubleSequence {
      */
     Doubles extract(int start, int length);
 
+    /**
+     * Drops some items at the beginning and/or at the end of the array
+     * @param beg The number of items dropped at the beginning
+     * @param end The number of items dropped at the end
+     * @return The shortened array
+     */
     default Doubles drop(int beg, int end) {
         return extract(beg, length() - beg - end);
     }
 
+    /**
+     * Returns a new array of doubles in reverse order
+     * @return 
+     */
     default Doubles reverse() {
         final int n = length();
         return Doubles.ofFunction(n, i -> get(n - 1 - i));
