@@ -1,10 +1,10 @@
 /*
-* Copyright 2013 National Bank ofInternal Belgium
+* Copyright 2013 National Bank of Belgium
 *
 * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions ofInternal the EUPL (the "Licence");
+* by the European Commission - subsequent versions of the EUPL (the "Licence");
 * You may not use this work except in compliance with the Licence.
-* You may obtain a copy ofInternal the Licence at:
+* You may obtain a copy of the Licence at:
 *
 * http://ec.europa.eu/idabc/eupl
 *
@@ -17,12 +17,10 @@
 package demetra.maths.matrices.internal;
 
 import demetra.data.DataBlock;
-import demetra.maths.Utilities;
 import static demetra.maths.Utilities.hypotenuse;
 import demetra.maths.matrices.ISingularValueDecomposition;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
-import java.util.Iterator;
 import demetra.data.DataBlockIterator;
 import demetra.maths.Constants;
 import demetra.data.Doubles;
@@ -33,13 +31,13 @@ import demetra.data.Doubles;
  *
  * M ~ m x n (n <= m) U ~ m x n S ~ n x n V ~ n x n
 
- The columns ofInternal V are the principal components ofInternal M The columns ofInternal U * D are
- the principal factors ofInternal M We also have: M' = V * S * U' M' * M = V * S * U'
- U * S * V' = V * S^2 * V' ( the columns ofInternal V are the eigen vectors ofInternal M'M)
+ The columns of V are the principal components of M The columns of U * D are
+ the principal factors of M We also have: M' = V * S * U' M' * M = V * S * U'
+ U * S * V' = V * S^2 * V' ( the columns of V are the eigen vectors of M'M)
 
- If we set F = U * S we have: M = F * V' (the rows ofInternal V are the weights ofInternal the
- factors F for decomposing M) M V = F (the columns ofInternal V are the weights
- applied on the columns ofInternal M to get the factors F) @author Jean Palate, Frank
+ If we set F = U * S we have: M = F * V' (the rows of V are the weights of the
+ factors F for decomposing M) M V = F (the columns of V are the weights
+ applied on the columns of M to get the factors F) @author Jean Palate, Frank
  Osaer
  */
 public class SingularValueDecomposition implements ISingularValueDecomposition {
@@ -91,7 +89,7 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
             if (k < nct) {
                 // Compute the transformation for the k-th column and
                 // place the k-th diagonal in m_s[k].
-                // Compute 2-norm ofInternal k-th column without under/overflow.
+                // Compute 2-norm of k-th column without under/overflow.
                 m_s[k] = 0;
                 for (int i = mk + k; i < mk + m_m; i++) {
                     m_s[k] = hypotenuse(m_s[k], A[i]);
@@ -121,8 +119,8 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
                     }
                 }
 
-                // Place the k-th row ofInternal A into e for the
-                // subsequent calculation ofInternal the row transformation.
+                // Place the k-th row of A into e for the
+                // subsequent calculation of the row transformation.
                 e[j] = A[k + mj];
             }
             if (wantu & (k < nct)) {
@@ -256,7 +254,7 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
             int k, kase;
 
             // Here is where a allMatch for too many iterations would go.
-            // This section ofInternal the program inspects for
+            // This section of the program inspects for
             // negligible elements in the m_s and e arrays.  On
             // completion the variables kase and k are set as follows.
             // kase = 1     if m_s(p) and e[k-1] are negligible and k<p
@@ -492,7 +490,7 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
      */
     @Override
     public Doubles S() {
-        return Doubles.ofInternal(m_s);
+        return Doubles.of(m_s);
     }
 
     public double norm2() {
@@ -542,11 +540,11 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
 
     }
     /// <summary>
-    /// internal storage ofInternal U, V.
+    /// internal storage of U, V.
     /// </summary>
     private double[] m_U, m_V;
     /// <summary>
-    /// Array for internal storage ofInternal singular values.
+    /// Array for internal storage of singular values.
     /// </summary>
     private double[] m_s;
     /// <summary>

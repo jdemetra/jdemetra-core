@@ -9,11 +9,11 @@ import demetra.maths.matrices.Matrix;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import demetra.data.Doubles;
+import demetra.data.LogSign;
 import demetra.maths.matrices.internal.Householder;
-import demetra.maths.matrices.internal.RobustHouseholder;
 
 /**
- *
+ * 
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public interface LeastSquaresSolver {
@@ -35,12 +35,12 @@ public interface LeastSquaresSolver {
     }
 
     /**
-     *
+     * Solves the least squares problem 
      * @param y
      * @param x
      * @return
      */
-    boolean compute(Doubles y, Matrix x);
+    boolean solve(Doubles y, Matrix X);
 
     /**
      *
@@ -61,7 +61,8 @@ public interface LeastSquaresSolver {
     Doubles residuals();
 
     double ssqerr();
-
+    
+    LogSign covarianceLogDeterminant();
 }
 
 class LS_Factory {

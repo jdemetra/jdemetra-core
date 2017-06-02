@@ -70,7 +70,7 @@ class DefaultCell implements Cell {
     }
 
     @Override
-    public void reset(int npos) {
+    public void setPosition(int npos) {
         pos = npos;
     }
 
@@ -103,7 +103,7 @@ class CellP implements Cell {
     }
 
     @Override
-    public void reset(int npos) {
+    public void setPosition(int npos) {
         pos = npos;
     }
 
@@ -134,7 +134,7 @@ class CellM implements Cell {
     }
 
     @Override
-    public void reset(int npos) {
+    public void setPosition(int npos) {
         pos = npos;
     }
 
@@ -168,7 +168,7 @@ class SingleCell implements Cell {
     }
 
     @Override
-    public void reset(int npos) {
+    public void setPosition(int npos) {
     }
 
     @Override
