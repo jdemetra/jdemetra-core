@@ -70,6 +70,10 @@ public class DefaultPreprocessor extends DefaultX11Algorithm implements
         if (fs != null) {
             atables.set(X11Kernel.A1a, model_.forecast(fs.getLength(), false));
         }
+        if (bs!=null)
+         {
+            atables.set(X11Kernel.A1b, model_.backcast(bs.getLength(), false));
+        }
         // complete the information sets using the pre-processing model
         TsDomain domain = model_.description.getSeriesDomain();
         // extend the domain for forecasts
