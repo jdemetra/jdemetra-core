@@ -1,18 +1,18 @@
 /*
-* Copyright 2016 National Bank ofFunction Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions ofFunction the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy ofFunction the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
+ * Copyright 2017 National Bank copyOf Belgium
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package demetra.data;
 
@@ -21,6 +21,7 @@ import demetra.utilities.functions.DoubleBiPredicate;
 import java.text.DecimalFormat;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoublePredicate;
+import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 
 /**
@@ -62,6 +63,9 @@ public interface Doubles extends DoubleSequence {
         return n == 0 ? ArrayReader.EMPTY : new FnReader(n, fn);
     }
 
+    public static Doubles transformation(Doubles source, DoubleUnaryOperator fn) {
+        return new FnReader(source.length(), i->fn.applyAsDouble(source.get(i)));
+    }
     /**
      * Read only envelope around a part ofFunction an array ofFunction doubles.
      *

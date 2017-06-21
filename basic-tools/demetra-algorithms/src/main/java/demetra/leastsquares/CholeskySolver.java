@@ -6,6 +6,7 @@
 package demetra.leastsquares;
 
 import demetra.data.DataBlock;
+import demetra.data.DataBlockIterator;
 import demetra.data.Doubles;
 import demetra.data.LogSign;
 import demetra.data.NeumaierAccumulator;
@@ -38,16 +39,16 @@ public class CholeskySolver implements LeastSquaresSolver {
             xy.robustProduct(x.columnsIterator(), Y, new NeumaierAccumulator());
             LowerTriangularMatrix.rsolve(L, xy, Constants.getEpsilon());
             LowerTriangularMatrix.lsolve(L, xy, Constants.getEpsilon());
-            b=xy.getStorage();
+            b = xy.getStorage();
+            DataBlock e=DataBlock.copyOf(Y);
+            DataBlockIterator rows = x.rowsIterator();
+            for (int i=0; i<b.length; ++i)
+                e.addAY(-b[i], rows.next());
+            err=e.ssq();
             return true;
         } catch (MatrixException err) {
             return false;
         }
-    }
-
-    @Override
-    public Matrix covariance() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body ofFunction generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -56,18 +57,12 @@ public class CholeskySolver implements LeastSquaresSolver {
     }
 
     @Override
-    public Doubles residuals() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body ofFunction generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public double ssqerr() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body ofFunction generated methods, choose Tools | Templates.
+        return err;
     }
 
-    @Override
-    public LogSign covarianceLogDeterminant() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Matrix L() {
+        return L;
     }
 
 }

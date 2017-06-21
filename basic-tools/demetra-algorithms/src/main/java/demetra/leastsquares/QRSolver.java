@@ -13,7 +13,6 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.IQRDecomposition;
 import demetra.data.Doubles;
-import demetra.data.LogSign;
 import demetra.data.NeumaierAccumulator;
 import demetra.design.IBuilder;
 import demetra.maths.matrices.SymmetricMatrix;
@@ -25,25 +24,14 @@ import demetra.maths.matrices.UpperTriangularMatrix;
  */
 public class QRSolver implements LeastSquaresSolver {
 
-    @Override
-    public LogSign covarianceLogDeterminant() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     public static class Builder implements IBuilder<QRSolver> {
 
         private final IQRDecomposition qr;
-        private boolean normalize;
         private int niter = 1;
         private boolean simple;
 
         private Builder(IQRDecomposition qr) {
             this.qr = qr;
-        }
-
-        public Builder normalize(boolean normalize) {
-            this.normalize = normalize;
-            return this;
         }
 
         public Builder iterative(int niter) {
@@ -63,7 +51,7 @@ public class QRSolver implements LeastSquaresSolver {
 
         @Override
         public QRSolver build() {
-            return new QRSolver(qr, normalize, niter, simple);
+            return new QRSolver(qr, niter, simple);
         }
     }
 
@@ -77,12 +65,11 @@ public class QRSolver implements LeastSquaresSolver {
     private int n, m;
     private double[] c;
     private final IQRDecomposition qr;
-    private final boolean scaling, simple;
+    private final boolean simple;
     private final int niter;
 
-    private QRSolver(IQRDecomposition qr, boolean scaling, int niter, boolean simple) {
+    private QRSolver(IQRDecomposition qr, int niter, boolean simple) {
         this.qr = qr;
-        this.scaling = scaling;
         this.niter = niter;
         this.simple = simple;
     }
@@ -91,17 +78,13 @@ public class QRSolver implements LeastSquaresSolver {
     public boolean solve(Doubles y, Matrix x) {
         try {
             clear();
-            if (scaling) {
-                computeWithScaling(y, x);
-            } else {
-                computeWithoutScaling(y, x);
-            }
+            compute(y, x);
             return true;
         } catch (MatrixException err) {
             return false;
         }
     }
-    
+
     private void clear() {
         ssqerr = 0;
         R = null;
@@ -150,7 +133,7 @@ public class QRSolver implements LeastSquaresSolver {
         }
     }
 
-    private void computeWithoutScaling(Doubles y, Matrix x) {
+    private void compute(Doubles y, Matrix x) {
 
         // X'X, X'y
         n = y.length();
@@ -175,8 +158,7 @@ public class QRSolver implements LeastSquaresSolver {
         }
     }
 
-    @Override
-    public Matrix covariance() {
+    public Matrix invXtX() {
         if (V == null) {
             double sig = ssqerr / (n - m);
             Matrix v = null;
@@ -219,7 +201,6 @@ public class QRSolver implements LeastSquaresSolver {
         }
     }
 
-    @Override
     public Doubles residuals() {
         return Doubles.ofInternal(res);
     }
@@ -310,5 +291,12 @@ public class QRSolver implements LeastSquaresSolver {
             }
             W = Err;
         }
+    }
+
+    /**
+     * @return the R
+     */
+    public Matrix getR() {
+        return R;
     }
 }

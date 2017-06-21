@@ -1,12 +1,12 @@
 /*
  * Copyright 2016 National Bank of Belgium
  * 
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  * 
- * http://ec.europa.eu/idabc/eupl
+ * https://joinup.ec.europa.eu/software/page/eupl
  * 
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
@@ -36,10 +36,9 @@ public final class DataBlock implements Doubles {
     public static interface DataBlockFunction {
 
         /**
-         * Real function on an array of doubles. This interface is
-         * mainly used with the corresponding "apply" method. For example:
-         * Matrix M=... DataBlock rsum=... rsum.apply(M.columnsIterator(),
-         * col->col.sum());
+         * Real function on an array of doubles. This interface is mainly used
+         * with the corresponding "apply" method. For example: Matrix M=...
+         * DataBlock rsum=... rsum.apply(M.columnsIterator(), col->col.sum());
          *
          * @param data The data
          * @return the function result
@@ -51,8 +50,7 @@ public final class DataBlock implements Doubles {
 
     //<editor-fold defaultstate="collapsed" desc="Static factories">
     /**
-     * Creates a data block of a given length. The buffer is created
-     * internally
+     * Creates a data block of a given length. The buffer is created internally
      *
      * @param n The number of elements
      * @return
@@ -64,7 +62,8 @@ public final class DataBlock implements Doubles {
     /**
      * Envelope around an array of doubles.
      *
-     * @param data The array of doubles. the data are not copied (they might be modified externally).
+     * @param data The array of doubles. the data are not copied (they might be
+     * modified externally).
      * @return
      */
     public static DataBlock ofInternal(@Nonnull double[] data) {
@@ -155,7 +154,6 @@ public final class DataBlock implements Doubles {
     }
 
     //</editor-fold>
-    
     final double[] data;
     final int inc;
     int beg, end;
@@ -184,16 +182,17 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public Cell cells() {
         return Cell.of(data, beg, inc);
     }
 
     /**
-     * Copies the data stored in a buffer.
-     * The buffer must contain enough data for this object (buffer.length-start greater or equal than this.length())
+     * Copies the data stored in a buffer. The buffer must contain enough data
+     * for this object (buffer.length-start greater or equal than this.length())
+     *
      * @param buffer The buffer that contains the data being copied
      * @param start The position of the first data that will be copied
      */
@@ -214,8 +213,9 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * Takes and extract of this DataBlock, defined by its first position and its length
-     * in the current block
+     * Takes and extract of this DataBlock, defined by its first position and
+     * its length in the current block
+     *
      * @param start The first position of the extract in the current block
      * @param length The length of the extract
      * @return A new DataBlock is returned
@@ -226,8 +226,8 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * Computes the euclidian norm of the src block. Based on the
-     * "dnrm2" Lapack function.
+     * Computes the euclidian norm of the src block. Based on the "dnrm2" Lapack
+     * function.
      *
      * @return The euclidian norm (&gt=0).
      */
@@ -261,8 +261,8 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * Computes the euclidian norm of the src block. 
-     * This implementation is faster than norm2, but less accurate.
+     * Computes the euclidian norm of the src block. This implementation is
+     * faster than norm2, but less accurate.
      *
      * @return The euclidian norm (&gt=0).
      */
@@ -295,7 +295,8 @@ public final class DataBlock implements Doubles {
      * inc0*inc1.
      *
      * @param start The starting position (in the current src block).
-     * @param count The number of items in the selection. If count is -1, the largest extract is returned.
+     * @param count The number of items in the selection. If count is -1, the
+     * largest extract is returned.
      * @param inc The increment of the selection.
      * @return A new block is returned.
      */
@@ -342,59 +343,61 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * Extends the current DataBlock. The underlying data buffer should be long enough
+     * Extends the current DataBlock. The underlying data buffer should be long
+     * enough
+     *
      * @param beg The number of cells added at the beginning
      * @param end The number of cells added at the end
-     * @return 
+     * @return
      */
     public DataBlock extend(int beg, int end) {
         return new DataBlock(data, this.beg - beg * inc, this.end + end * inc, inc);
     }
 
     /**
-     * Transform this DataBlock in the corresponding window.
-     * Contrary to a DataBlock, the bounds of a window can be modified 
-     * @return 
+     * Transform this DataBlock in the corresponding window. Contrary to a
+     * DataBlock, the bounds of a window can be modified
+     *
+     * @return
      */
     public DataWindow window() {
         return new DataWindow(data, beg, end, inc);
     }
 
     /**
-     * 
+     *
      * @param beg Start of the window (included)
      * @param end End of the window (excluded)
-     * @return 
+     * @return
      */
     public DataWindow window(@Nonnegative int beg, @Nonnegative int end) {
         return new DataWindow(data, this.beg + beg * inc, this.beg + end * inc, inc);
     }
 
     /**
-     * Returns an empty window on the left of this array.
-     * Typically, it should be used with a call to the next(n) method 
-     * 
-     * DataWindow wnd=this.left();
-     * wnd.next(n);
-     * @return 
+     * Returns an empty window on the left of this array. Typically, it should
+     * be used with a call to the next(n) method
+     *
+     * DataWindow wnd=this.left(); wnd.next(n);
+     *
+     * @return
      */
     public DataWindow left() {
         return new DataWindow(data, beg, beg, inc);
     }
 
     /**
-     * Makes a deep clone of this object. 
-     * The new object will contain a copy of the data of this object
-     * @return 
+     * Makes a deep clone of this object. The new object will contain a copy of
+     * the data of this object
+     *
+     * @return
      */
     public DataBlock deepClone() {
         double[] copy = toArray();
         return new DataBlock(copy, 0, copy.length, 1);
     }
 
-    
-     //<editor-fold defaultstate="collapsed" desc="shift operations">
-
+    //<editor-fold defaultstate="collapsed" desc="shift operations">
     /**
      * Shift the cells to the left and put in the last item the opposite of the
      * sum of the initial data.
@@ -419,8 +422,8 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * Shift the cells to the left and put in the last item the 
-     * sum of the initial data.
+     * Shift the cells to the left and put in the last item the sum of the
+     * initial data.
      */
     public void bshiftAndSum() {
         int imax = end - inc;
@@ -481,8 +484,9 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * Shift the cells n positions to the left 
-     * @param n 
+     * Shift the cells n positions to the left
+     *
+     * @param n
      */
     public void bshift(int n) {
         if (inc == 1) {
@@ -499,8 +503,9 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * Shift the cells n positions to the right 
-     * @param n 
+     * Shift the cells n positions to the right
+     *
+     * @param n
      */
     public void fshift(int n) {
         if (inc == 1) {
@@ -517,8 +522,8 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * Shift the cells to the right and put in the first item the opposite of the
-     * sum of the initial data.
+     * Shift the cells to the right and put in the first item the opposite of
+     * the sum of the initial data.
      */
     public void fshiftAndNegSum() {
         double s = data[beg];
@@ -537,8 +542,8 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * Shift the cells to the right and put in the first item the 
-     * sum of the initial data.
+     * Shift the cells to the right and put in the first item the sum of the
+     * initial data.
      */
     public void fshiftAndSum() {
         double s = data[beg];
@@ -592,9 +597,9 @@ public final class DataBlock implements Doubles {
     }
 
     //</editor-fold>
-    
     /**
      * Sets the given value in the ith cell
+     *
      * @param idx The considered cell
      * @param value The new value
      */
@@ -619,12 +624,12 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * Gets the underlying storage
-     * The cells of this object are defined by
-     * cell 0: getStorage()[getStartPosition()]
-     * cell i: getStorage()[getStartPosition()+i*getIncrement()]
-     * last cell (included): getStorage()[getLastPosition()]
-     * @return 
+     * Gets the underlying storage The cells of this object are defined by cell
+     * 0: getStorage()[getStartPosition()] cell i:
+     * getStorage()[getStartPosition()+i*getIncrement()] last cell (included):
+     * getStorage()[getLastPosition()]
+     *
+     * @return
      */
     @Unsafe
     public double[] getStorage() {
@@ -633,7 +638,8 @@ public final class DataBlock implements Doubles {
 
     /**
      * Gets the starting position in the underlying storage
-     * @return 
+     *
+     * @return
      */
     @Unsafe
     public int getStartPosition() {
@@ -642,7 +648,8 @@ public final class DataBlock implements Doubles {
 
     /**
      * Gets the ending position (excluded) in the underlying storage
-     * @return 
+     *
+     * @return
      */
     public int getEndPosition() {
         return end;
@@ -650,27 +657,27 @@ public final class DataBlock implements Doubles {
 
     /**
      * Gets the last position (included) in the underlying storage
-     * @return 
+     *
+     * @return
      */
     public int getLastPosition() {
         return end - inc;
     }
 
     /**
-     * Gets the distance between two successive cells.
-     * Can be negative.
-     * 
-     * @return 
+     * Gets the distance between two successive cells. Can be negative.
+     *
+     * @return
      */
     public int getIncrement() {
         return inc;
     }
 
     /**
-     * Scalar product between two DataBlocks 
-     * 
+     * Scalar product between two DataBlocks
+     *
      * @param x The other DataBlock. Cannot be smaller than this object.
-     * @return 
+     * @return
      */
     public double dot(DataBlock x) {
         double s = 0;
@@ -698,9 +705,10 @@ public final class DataBlock implements Doubles {
 
     /**
      * Computes in a robust way the scalar product
+     *
      * @param x The other DataBlock. Cannot be smaller than this object.
-     * @param sum The robust accumulator. Should be correctly initialized. It will
-     * contain the result on exit     * 
+     * @param sum The robust accumulator. Should be correctly initialized. It
+     * will contain the result on exit *
      */
     public void robustDot(DataBlock x, DoubleAccumulator sum) {
         if (inc == 1) {
@@ -793,9 +801,20 @@ public final class DataBlock implements Doubles {
         }
     }
 
+    public void copy(DoubleSequence x) {
+        if (inc == 1) {
+            x.copyTo(data, beg);
+        } else {
+            for (int i = beg, j = 0; i != end; i += inc) {
+                data[i] = x.get(j);
+            }
+        }
+    }
+
     /**
      * Exchanges the data between this DataBlock and the given DataBlock
-     * @param x 
+     *
+     * @param x
      */
     public void swap(DataBlock x) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
@@ -809,9 +828,9 @@ public final class DataBlock implements Doubles {
 
     /**
      * Computes the product of a vector by a matrix and stores the result in
- this src block this = row * cols. We must have that 1. the length of this
- src block = the number of columns 2. the length of the vector = the
- length of each column. The iterator is changed !!!
+     * this src block this = row * cols. We must have that 1. the length of this
+     * src block = the number of columns 2. the length of the vector = the
+     * length of each column. The iterator is changed !!!
      *
      * @param row The vector array
      * @param cols The columns of the matrix
@@ -854,9 +873,9 @@ public final class DataBlock implements Doubles {
 
     /**
      * Adds the product of a vector by a matrix to this src block this += row *
- cols. We must have that 1. the length of this src block = the number of
- columns 2. the length of the vector = the length of each column. The
- iterator is changed !!!
+     * cols. We must have that 1. the length of this src block = the number of
+     * columns 2. the length of the vector = the length of each column. The
+     * iterator is changed !!!
      *
      * @param row The vector array
      * @param cols The columns of the matrix
@@ -878,8 +897,9 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * Applies the given operator on the data at the given position.
-     * It is equivalent to "setPosition(pos, fn.applyAsDouble(get(pos))" 
+     * Applies the given operator on the data at the given position. It is
+     * equivalent to "setPosition(pos, fn.applyAsDouble(get(pos))"
+     *
      * @param pos The position of the data being modified
      * @param fn The unary operator
      */
@@ -890,9 +910,9 @@ public final class DataBlock implements Doubles {
 
     /**
      * this(pos)=this(pos)+d
-     * 
+     *
      * @param pos The position of the data being modified
-     * @param d 
+     * @param d
      */
     public void add(final @Nonnegative int pos, final double d) {
         data[beg + pos * inc] += d;
@@ -900,8 +920,9 @@ public final class DataBlock implements Doubles {
 
     /**
      * this(pos)=this(pos)*d
+     *
      * @param pos
-     * @param d 
+     * @param d
      */
     public void mul(int pos, double d) {
         data[beg + pos * inc] *= d;
@@ -940,10 +961,10 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * this(i)=fn(this(i), x(i))
-     * Apply a given unary operator to all the data
+     * this(i)=fn(this(i), x(i)) Apply a given unary operator to all the data
+     *
      * @param x
-     * @param fn The operator 
+     * @param fn The operator
      */
     public void apply(@Nonnull DataBlock x, @Nonnull DoubleBinaryOperator fn) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
@@ -954,10 +975,10 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * this(i)=fn(this(i), x(i))
-     * Apply a given unary operator to all the data
+     * this(i)=fn(this(i), x(i)) Apply a given unary operator to all the data
+     *
      * @param x
-     * @param fn The operator 
+     * @param fn The operator
      */
     public void apply(@Nonnull Doubles x, @Nonnull DoubleBinaryOperator fn) {
         CellReader cell = x.reader();
@@ -967,9 +988,9 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * this(i)=fn(this(i))
-     * Apply a given unary operator to all the data
-     * @param fn The operator 
+     * this(i)=fn(this(i)) Apply a given unary operator to all the data
+     *
+     * @param fn The operator
      */
     public void apply(@Nonnull final DoubleUnaryOperator fn) {
         if (inc == 1) {
@@ -985,7 +1006,8 @@ public final class DataBlock implements Doubles {
 
     /**
      * Add d to all the data
-     * @param d 
+     *
+     * @param d
      */
     public void add(double d) {
         if (d == 0) {
@@ -1019,8 +1041,9 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * Subtracts d from all the data 
-     * @param d 
+     * Subtracts d from all the data
+     *
+     * @param d
      */
     public void sub(double d) {
         if (d == 0) {
@@ -1039,6 +1062,7 @@ public final class DataBlock implements Doubles {
 
     /**
      * Multiplies all the data by d
+     *
      * @param d The multiplier
      */
     public void mul(double d) {
@@ -1058,6 +1082,7 @@ public final class DataBlock implements Doubles {
 
     /**
      * divides all the data by d.
+     *
      * @param d The divisor
      */
     public void div(double d) {
@@ -1077,8 +1102,9 @@ public final class DataBlock implements Doubles {
 
     /**
      * Sets this(i)=fn(x(i))
+     *
      * @param x
-     * @param fn 
+     * @param fn
      */
     public void set(@Nonnull DataBlock x, @Nonnull DoubleUnaryOperator fn) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
@@ -1090,9 +1116,10 @@ public final class DataBlock implements Doubles {
 
     /**
      * Sets this(i)=fn(x(i), y(i))
+     *
      * @param x
      * @param y
-     * @param fn 
+     * @param fn
      */
     public void set(@Nonnull DataBlock x, @Nonnull DataBlock y, @Nonnull DoubleBinaryOperator fn) {
         int ybeg = y.getStartPosition(), yinc = y.getIncrement();
@@ -1106,8 +1133,9 @@ public final class DataBlock implements Doubles {
 
     /**
      * Sets this(i)=fn(x(i))
+     *
      * @param x
-     * @param fn 
+     * @param fn
      */
     public void set(@Nonnull Doubles x, @Nonnull DoubleUnaryOperator fn) {
         CellReader xcell = x.reader();
@@ -1118,9 +1146,10 @@ public final class DataBlock implements Doubles {
 
     /**
      * Sets this(i)=fn(x(i), y(i))
+     *
      * @param x
      * @param y
-     * @param fn 
+     * @param fn
      */
     public void set(@Nonnull Doubles x, @Nonnull Doubles y, @Nonnull DoubleBinaryOperator fn) {
         CellReader xcell = x.reader(), ycell = y.reader();
@@ -1131,8 +1160,9 @@ public final class DataBlock implements Doubles {
 
     /**
      * Sets this(i)=a*y(i)
+     *
      * @param a
-     * @param y 
+     * @param y
      */
     public void setAY(final double a, @Nonnull DataBlock y) {
         if (a == 0) {
@@ -1154,8 +1184,9 @@ public final class DataBlock implements Doubles {
 
     /**
      * Computes this(i)=this(i)+a*y(i)
+     *
      * @param a
-     * @param y 
+     * @param y
      */
     public void addAY(double a, @Nonnull DataBlock y) {
         if (a == 0) {

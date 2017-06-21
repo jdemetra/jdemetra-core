@@ -32,4 +32,6 @@ public class Ols {
     public LinearModel getModel(){
         return model;
     }
+    
+    
 }

@@ -1,19 +1,30 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2017 National Bank copyOf Belgium
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package demetra.linearmodel;
 
 import demetra.data.CellReader;
 import demetra.data.DataBlock;
-import demetra.data.DataWindow;
 import demetra.design.Immutable;
 import demetra.maths.matrices.Matrix;
 import java.util.ArrayList;
-import java.util.Iterator;
 import demetra.data.DataBlockIterator;
+import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
+import javax.annotation.Nonnull;
 
 /**
  *
@@ -24,42 +35,56 @@ public class LinearModel {
 
     public static class Builder {
 
-        private final Doubles y;
+        private final double[] y;
         private boolean mean;
-        private final ArrayList<Doubles> x = new ArrayList<>();
+        private final ArrayList<DoubleSequence> x = new ArrayList<>();
 
-        private Builder(Doubles y) {
-            this.y = y;
+        private Builder(@Nonnull DoubleSequence y) {
+            this.y = y.toArray();
         }
 
         public Builder meanCorrection(boolean mean) {
             this.mean = mean;
             return this;
         }
-        
-        public Builder addX(Doubles var){
+
+        public Builder addX(@Nonnull DoubleSequence var) {
+            if (var.length() != y.length) {
+                throw new RuntimeException("Incompatible dimensions");
+            }
             x.add(var);
             return this;
         }
 
+        public Builder addX(@Nonnull DoubleSequence... vars) {
+            for (DoubleSequence var : vars) {
+                if (var.length() != y.length) {
+                    throw new RuntimeException("Incompatible dimensions");
+                }
+                x.add(var);
+            }
+            return this;
+        }
+
         public LinearModel build() {
-            int n=y.length();
-            double[] Y = new double[n];
-            y.copyTo(Y, 0);
-            Matrix X = Matrix.make(Y.length, x.size());
+            Matrix X = Matrix.make(y.length, x.size());
             if (!X.isEmpty()) {
                 DataBlockIterator cols = X.columnsIterator();
-                for (Doubles xcur : x) {
+                for (DoubleSequence xcur : x) {
                     cols.next().copy(xcur);
                 }
             }
-            return new LinearModel(Y, mean, X);
+            return new LinearModel(y, mean, X);
         }
     }
 
     private final double[] y;
     private final boolean mean;
     private final Matrix x;
+
+    public static Builder of(DoubleSequence y) {
+        return new Builder(y);
+    }
 
     /**
      *
@@ -71,25 +96,27 @@ public class LinearModel {
     }
 
     /**
-     *
-     * @param b
+     * Computes y-Xb. 
+     * @param b The coefficients of the mean and of the regression variables
      * @return
      */
-    public DataBlock calcRes(final Doubles b) {
-        
-        DataBlock res=DataBlock.make(y.length);
+    public DataBlock calcResiduals(final Doubles b) {
+        if (getVarsCount() != b.length())
+            throw new RuntimeException("Incompatible dimensions");
+
+        DataBlock res = DataBlock.make(y.length);
         res.copyFrom(y, 0);
 
         CellReader cell = b.reader();
-        if (mean)
-            res.add(cell.next());
+        if (mean) {
+            res.add(-cell.next());
+        }
         DataBlockIterator columns = x.columnsIterator();
-        while (columns.hasNext()){
-            res.addAY(cell.next(), columns.next());
+        while (columns.hasNext()) {
+            res.addAY(-cell.next(), columns.next());
         }
         return res;
     }
-
 
     /**
      *
@@ -135,7 +162,6 @@ public class LinearModel {
         return mean;
     }
 
-
     /**
      *
      * @return
@@ -151,5 +177,15 @@ public class LinearModel {
      */
     public Doubles X(final int idx) {
         return x.column(idx);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("y~").append(mean ? '1' : '0');
+        if (!x.isEmpty()) {
+            builder.append("+x(").append(x.getColumnsCount()).append(')');
+        }
+        return builder.toString();
     }
 }

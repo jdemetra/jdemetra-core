@@ -21,7 +21,6 @@ import org.junit.Test;
 public class QRSolverTest {
 
         QRSolver solver = QRSolver.builder(new Householder())
-                .normalize(false)
                 .iterative(3)
                 .simpleIteration(true)
                 .build();

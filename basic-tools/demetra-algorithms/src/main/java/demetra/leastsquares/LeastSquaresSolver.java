@@ -35,40 +35,36 @@ public interface LeastSquaresSolver {
     }
 
     /**
-     * Solves the least squares problem 
-     * @param y
-     * @param x
+     * Solves the least squares problem: min || y - Xb ||.
+     * <br>
+     * b = (X'X)^-1 X'y
+     * <br>
+     * e = y - Xb = [I-X(X'X)^-1 X']y = My
+     * @param y 
+     * @param X 
      * @return
      */
     boolean solve(Doubles y, Matrix X);
 
     /**
-     *
-     * @return
-     */
-    Matrix covariance();
-
-    /**
-     *
-     * @return
+     * Returns b
+     * @return 
      */
     Doubles coefficients();
 
     /**
-     *
-     * @return
+     * Computes e*e'
+     * @return 
      */
-    Doubles residuals();
-
     double ssqerr();
     
-    LogSign covarianceLogDeterminant();
+   
 }
 
 class LS_Factory {
 
     static AtomicReference<Supplier<LeastSquaresSolver>> FAST_FACTORY = new AtomicReference<>(() -> 
-            QRSolver.builder(new Householder()).normalize(false).build());
+            QRSolver.builder(new Householder()).build());
     static AtomicReference<Supplier<LeastSquaresSolver>> ROBUST_FACTORY = new AtomicReference<>(() -> 
-            QRSolver.builder(new Householder()).normalize(true).iterative(3).simpleIteration(true).build());
+            QRSolver.builder(new Householder()).iterative(3).simpleIteration(true).build());
 }
