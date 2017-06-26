@@ -110,24 +110,6 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
     }
 
     /**
-     * Returns the number of degrees of freedom used in the computation of the
-     * different variance/standard deviations
-     *
-     * @param unbiased True if ML estimates are used, false otherwise.
-     * @param hpcount Number of hyper-paraneters that should be taken into
-     * account. hpcount is not considered if unbiased is set to false.
-     * @return
-     */
-    @Override
-    public int getDegreesOfFreedom(boolean unbiased, int hpcount) {
-        int n = getN();
-        if (unbiased) {
-            n -= nx + hpcount;
-        }
-        return n;
-    }
-
-    /**
      * Number of regression variables
      *
      * @return

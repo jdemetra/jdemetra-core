@@ -16,7 +16,6 @@
  */
 package demetra.likelihood;
 
-import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.IBuilder;
 import demetra.design.Immutable;

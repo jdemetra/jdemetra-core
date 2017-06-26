@@ -1,27 +1,33 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
+ * Copyright 2017 National Bank copyOf Belgium
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package demetra.likelihood;
 
+import demetra.eco.EcoException;
+
 /**
- * 
+ * Device for computing the determinantal term of likelihood functions in a safe way.
+ * See the likelihood classes for further information
  * @author Jean Palate
  */
 public class DeterminantalTerm {
-    private double m_detcar, m_detman = 1;
+    
+    private final static double LOG2= Math.log(2.0);
+    
+    private double detcar, detman = 1;
 
     /**
      *
@@ -41,8 +47,8 @@ public class DeterminantalTerm {
          *
          */
     public void clear() {
-	m_detman = 1;
-	m_detcar = 0;
+	detman = 1;
+	detcar = 0;
     }
 
     /**
@@ -51,8 +57,8 @@ public class DeterminantalTerm {
      * @return
      */
     public double factor(final int n) {
-	double det = Math.pow(m_detman, (1.0 / n));
-	det *= Math.pow(2.0, (m_detcar / n));
+	double det = Math.pow(detman, (1.0 / n));
+	det *= Math.pow(2.0, (detcar / n));
 	return det;
     }
 
@@ -61,7 +67,7 @@ public class DeterminantalTerm {
      * @return
      */
     public double getLogDeterminant() {
-	return Math.log(m_detman) + m_detcar * Math.log(2.0);
+	return Math.log(detman) + detcar * LOG2;
     }
 
     /**
@@ -73,21 +79,21 @@ public class DeterminantalTerm {
     }
 
     private void update(final double var) {
-	if (! Double.isFinite(var) || var <= 0)
-	    throw new EcoException(EcoException.LDET);
-	/*
-	 * if (var <= 0) { m_detman = 0; return; }
-	 */
-
-	m_detman *= var;
-	while (m_detman >= 1) {
-	    m_detman *= .0625;
-	    m_detcar += 4.0;
+        if (!Double.isFinite(var)) {
+            throw new EcoException(EcoException.INV_VAR);
+        }
+        if (var <= 0) {
+            throw new EcoException(EcoException.NEG_VAR);
+        }
+	detman *= var;
+	while (detman >= 1) {
+	    detman *= .0625;
+	    detcar += 4.0; // 2^4 = 16, 1/16 = 0.0625
 	}
 
-	while (m_detman != 0 && m_detman <= 0.0625) {
-	    m_detman *= 16;
-	    m_detcar -= 4.0;
+	while (detman != 0 && detman <= 0.0625) {
+	    detman *= 16;
+	    detcar -= 4.0;
 	}
     }
 

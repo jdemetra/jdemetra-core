@@ -91,9 +91,35 @@ public class Normal implements IContinuousDistribution {
 	return sb.toString();
     }
 
+    /**
+     * 
+     * @return
+     */
+    public double getStdev() {
+	return stdev;
+    }
+    
+    // Moments
+
     @Override
     public double getExpectation() {
 	return mean;
+    }
+
+    @Override
+    public double getVariance() {
+	return stdev * stdev;
+    }
+
+    public double getSkewness() {
+        return 0;
+    }
+
+    public double getKurtosis() {
+        if (stdev == 1)
+            return 3;
+        double var = stdev * stdev;
+        return 3 * var * var;
     }
 
     /**
@@ -169,19 +195,6 @@ public class Normal implements IContinuousDistribution {
 	Interval ni = new Interval(r0 * stdev + mean, r1 * stdev
 		+ mean);
 	return ni;
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public double getStdev() {
-	return stdev;
-    }
-
-    @Override
-    public double getVariance() {
-	return stdev * stdev;
     }
 
     @Override

@@ -123,26 +123,26 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
         this.bvar = bvar;
     }
 
-    /**
-     * Returns the number ofFunction degrees ofFunction freedom used in the computation ofFunction the
- different variance/standard deviations
-     *
-     * @param unbiased True if ML estimates are used, false otherwise.
-     * @param hpcount Number ofFunction hyper-paraneters that should be taken into
- account. hpcount is not considered if unbiased is set to false.
-     * @return
-     */
-    @Override
-    public int getDegreesOfFreedom(boolean unbiased, int hpcount) {
-        int n = getN();
-        if (unbiased) {
-            n -= hpcount;
-            if (b != null) {
-                n -= b.length;
-            }
-        }
-        return n;
-    }
+//    /**
+//     * Returns the number ofFunction degrees ofFunction freedom used in the computation ofFunction the
+// different variance/standard deviations
+//     *
+//     * @param unbiased True if ML estimates are used, false otherwise.
+//     * @param hpcount Number ofFunction hyper-paraneters that should be taken into
+// account. hpcount is not considered if unbiased is set to false.
+//     * @return
+//     */
+//    @Override
+//    public int getDegreesOfFreedom(boolean unbiased, int hpcount) {
+//        int n = getN();
+//        if (unbiased) {
+//            n -= hpcount;
+//            if (b != null) {
+//                n -= b.length;
+//            }
+//        }
+//        return n;
+//    }
 
     /**
      * Number ofFunction regression variables

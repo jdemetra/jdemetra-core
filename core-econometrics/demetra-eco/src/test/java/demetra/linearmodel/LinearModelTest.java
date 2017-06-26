@@ -16,6 +16,7 @@
  */
 package demetra.linearmodel;
 
+import demetra.eco.LinearModel;
 import demetra.data.DataBlock;
 import demetra.data.Doubles;
 import java.util.Random;

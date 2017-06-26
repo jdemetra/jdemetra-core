@@ -87,7 +87,7 @@ public class F implements IContinuousDistribution {
     @Override
     public double getExpectation() {
 	if (k2 <= 2)
-	    throw new DStatException("Expectation undefined for k2 <= 2", "F");
+	    throw new DStatException(DStatException.ERR_UNDEFINED, "F");
 	return (k2 / (k2 - 2.0));
     }
 
@@ -131,9 +131,10 @@ public class F implements IContinuousDistribution {
      */
     @Override
     public double getVariance() throws DStatException {
-	if (k2 <= 4)
-	    throw new DStatException("Variance undefined for k2 <= 4", "F");
-
+	if (k2 <= 2)
+	    throw new DStatException(DStatException.ERR_UNDEFINED, "F");
+        if (k2 <= 4)
+            return Double.POSITIVE_INFINITY;
 	double top = (2 * k2 * k2 * (k1 + k2 - 2));
 	double bot = (k1 * (k2 - 2) * (k2 - 2) * (k2 - 4));
 	return top / bot;
@@ -162,10 +163,10 @@ public class F implements IContinuousDistribution {
             num.set(cnum);
         }
         if (cdenom == null){
-            cdenom=new Chi2(k1);
+            cdenom=new Chi2(k2);
             denom.set(cdenom);
         }
-	return cnum.random(rng)/cdenom.random(rng);
+	return (cnum.random(rng)/k1)/(cdenom.random(rng)/k2);
     }
 
     @Override

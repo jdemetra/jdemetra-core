@@ -9,7 +9,6 @@ import demetra.maths.matrices.Matrix;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import demetra.data.Doubles;
-import demetra.data.LogSign;
 import demetra.maths.matrices.internal.Householder;
 
 /**
