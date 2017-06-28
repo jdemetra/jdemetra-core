@@ -361,7 +361,7 @@ public class X11Kernel implements ISeriesDecomposer {
         if (curMode == DecompositionMode.LogAdditive) {
             d1.applyOnFinite(x->Math.exp(x));
             // d9bis.getValues().exp(); ???
-            d1.applyOnFinite(x->Math.exp(x));
+            d10.applyOnFinite(x->Math.exp(x));
             toolkit.getContext().setMode(DecompositionMode.Multiplicative);
         }
 
