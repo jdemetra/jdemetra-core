@@ -43,7 +43,7 @@ public class StatisticalTest {
      * @param type
      * @param asymptotical
      */
-    StatisticalTest(final IDistribution dist, final double val,
+    public StatisticalTest(final IDistribution dist, final double val,
             final TestType type, final boolean asymptotical) {
         distribution = dist;
         value = val;

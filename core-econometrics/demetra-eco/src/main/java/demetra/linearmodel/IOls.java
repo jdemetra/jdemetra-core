@@ -14,13 +14,5 @@ import demetra.maths.matrices.Matrix;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public interface IOls {
-    LinearModel getModel();
-    Doubles coefficients();
-    double ser();
-    double r2();
-    double adjustedR2();
-    Matrix covariance();
-    
-    
-    ConcentratedLikelihood likelihood();
+    OlsResults compute(LinearModel model);
 }

@@ -26,7 +26,11 @@
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-algorithms</artifactId>
         </dependency>
-        <dependency>
+         <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-stats</artifactId>
+        </dependency>
+       <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <scope>provided</scope>
@@ -44,6 +48,11 @@
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-tstoolkit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-data-tests</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

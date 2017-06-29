@@ -22,8 +22,10 @@ import demetra.design.Immutable;
 import demetra.maths.matrices.Matrix;
 import java.util.ArrayList;
 import demetra.data.DataBlockIterator;
+import demetra.data.DataWindow;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
+import demetra.maths.matrices.MatrixWindow;
 import javax.annotation.Nonnull;
 
 /**
@@ -167,7 +169,17 @@ public class LinearModel {
      * @return
      */
     public Matrix variables() {
+        if (! mean)
         return x.deepClone();
+        else
+        {
+            Matrix vars=Matrix.make(x.getRowsCount(), x.getColumnsCount()+1);
+            MatrixWindow left = vars.left(1);
+            left.set(1);
+            left.hnext(x.getColumnsCount());
+            left.copy(x);
+            return vars;
+        }
     }
 
     /**

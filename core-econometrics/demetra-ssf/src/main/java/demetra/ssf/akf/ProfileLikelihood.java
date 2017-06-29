@@ -31,7 +31,19 @@ public class ProfileLikelihood implements ILikelihood {
      * Respectively: diffuse log-likelihood sum of the squared residuals log
      * determinant of the cov matrix diffuse correction
      */
-    private double ll, ssqerr, ldet;
+    private double ll,
+
+    /**
+     * Respectively: diffuse log-likelihood sum of the squared e log
+ determinant of the cov matrix diffuse correction
+     */
+    ssqerr, 
+
+    /**
+     * Respectively: diffuse log-likelihood sum of the squared e log
+ determinant of the cov matrix diffuse correction
+     */
+    ldet;
     private int n;
     private DataBlock b;
     private Matrix varB;
@@ -55,27 +67,27 @@ public class ProfileLikelihood implements ILikelihood {
     }
 
     @Override
-    public double getFactor() {
+    public double factor() {
         return Math.exp((ldet) / n);
     }
 
     @Override
-    public double getLogLikelihood() {
+    public double logLikelihood() {
         return ll;
     }
 
     @Override
-    public int getN() {
+    public int dim() {
         return n;
     }
 
     @Override
-    public Doubles getResiduals() {
+    public Doubles e() {
         return DataBlock.EMPTY;
     }
 
     @Override
-    public double getLogDeterminant() {
+    public double logDeterminant() {
         return ldet;
     }
 
@@ -83,17 +95,17 @@ public class ProfileLikelihood implements ILikelihood {
      *
      * @return
      */
-    public double getSer() {
+    public double ser() {
         return Math.sqrt(ssqerr / n);
     }
 
     @Override
-    public double getSigma() {
+    public double sigma() {
         return ssqerr / n;
     }
 
     @Override
-    public double getSsqErr() {
+    public double ssq() {
         return ssqerr;
     }
 
@@ -121,7 +133,7 @@ public class ProfileLikelihood implements ILikelihood {
      * -0.5*(n*log(2*pi)+n*log(ssqerr/n)+n+log|V|)
      *
      *
-     * @param ssqerr The sum of the squared residuals
+     * @param ssqerr The sum of the squared e
      * @param ldet The log of the determinant of V
      * @param b
      * @param varB
@@ -147,9 +159,9 @@ public class ProfileLikelihood implements ILikelihood {
     }
 
     public void add(ILikelihood ll) {
-        n += ll.getN();
-        ssqerr += ll.getSsqErr();
-        ldet += ll.getLogDeterminant();
+        n += ll.dim();
+        ssqerr += ll.ssq();
+        ldet += ll.logDeterminant();
         calcll();
     }
 
@@ -164,10 +176,10 @@ public class ProfileLikelihood implements ILikelihood {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("ll=").append(this.getLogLikelihood()).append("\r\n");
-        builder.append("n=").append(this.getN()).append("\r\n");
-        builder.append("ssq=").append(this.getSsqErr()).append("\r\n");
-        builder.append("ldet=").append(this.getLogDeterminant()).append("\r\n");
+        builder.append("ll=").append(this.logLikelihood()).append("\r\n");
+        builder.append("n=").append(this.dim()).append("\r\n");
+        builder.append("ssq=").append(this.ssq()).append("\r\n");
+        builder.append("ldet=").append(this.logDeterminant()).append("\r\n");
         return builder.toString();
     }
 

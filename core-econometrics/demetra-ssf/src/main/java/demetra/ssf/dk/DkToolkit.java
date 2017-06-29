@@ -239,18 +239,18 @@ public class DkToolkit {
             int nl = yl.length();
             Matrix xl = xl(model, lp, nl);
             if (xl == null) {
-                return DkConcentratedLikelihood.builder(ll.getN(), ll.getD())
-                        .ssqErr(ll.getSsqErr())
-                        .logDeterminant(ll.getLogDeterminant())
+                return DkConcentratedLikelihood.builder(ll.dim(), ll.getD())
+                        .ssqErr(ll.ssq())
+                        .logDeterminant(ll.logDeterminant())
                         .logDiffuseDeterminant(ll.getDiffuseCorrection())
                         .residuals(yl).build();
             } else {
                 Householder qr = new Householder();
                 qr.decompose(xl);
                 if (qr.rank() == 0) {
-                    return DkConcentratedLikelihood.builder(ll.getN(), ll.getD())
-                            .ssqErr(ll.getSsqErr())
-                            .logDeterminant(ll.getLogDeterminant())
+                    return DkConcentratedLikelihood.builder(ll.dim(), ll.getD())
+                            .ssqErr(ll.ssq())
+                            .logDeterminant(ll.logDeterminant())
                             .logDiffuseDeterminant(ll.getDiffuseCorrection())
                             .residuals(yl).build();
                 } else {
@@ -265,10 +265,10 @@ public class DkToolkit {
                     b = expand(b, unused);
                     u = expand(u, unused);
                     // initializing the results...
-                    int nobs = ll.getN();
+                    int nobs = ll.dim();
                     int d = ll.getD();
                     int[] idiffuse = model.getDiffuseElements();
-                    double ldet = ll.getLogDeterminant(), dcorr = ll.getDiffuseCorrection();
+                    double ldet = ll.logDeterminant(), dcorr = ll.getDiffuseCorrection();
                     if (idiffuse != null) {
                         Doubles rdiag = qr.rdiagonal(true);
                         double lregdet = 0;
@@ -287,13 +287,13 @@ public class DkToolkit {
                     double sig = ssqerr / (nobs - d);
                     Matrix bvar = SymmetricMatrix.UUt(u);
                     bvar.mul(sig);
-                    return DkConcentratedLikelihood.builder(ll.getN(), ll.getD())
-                            .ssqErr(ll.getSsqErr())
-                            .logDeterminant(ll.getLogDeterminant())
+                    return DkConcentratedLikelihood.builder(ll.dim(), ll.getD())
+                            .ssqErr(ll.ssq())
+                            .logDeterminant(ll.logDeterminant())
                             .logDiffuseDeterminant(ll.getDiffuseCorrection())
                             .residuals(yl)
                             .coefficients(b)
-                            .covariance(bvar)
+                            .unscaledCovariance(bvar)
                             .build();
                 }
             }

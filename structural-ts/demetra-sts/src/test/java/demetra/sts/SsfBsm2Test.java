@@ -49,8 +49,8 @@ public class SsfBsm2Test {
         DkLikelihood ll = DkToolkit.likelihoodComputer(true, true).compute(bsm, data);
         DkLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(bsm, data);
         DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer(true).compute(bsm, data);
-        assertEquals(ll.getLogLikelihood(), ll2.getLogLikelihood(), 1e-6);
-        assertEquals(ll.getLogLikelihood(), ll3.getLogLikelihood(), 1e-6);
+        assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
+        assertEquals(ll.logLikelihood(), ll3.logLikelihood(), 1e-6);
     }
 
     @Test

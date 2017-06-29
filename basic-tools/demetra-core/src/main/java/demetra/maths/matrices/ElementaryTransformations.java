@@ -176,14 +176,6 @@ public class ElementaryTransformations {
     // apply givens rotations on the first row and transform the next rows.
     public static void rowGivens(Matrix m) {
         givens(m.rowsIterator(), m.getColumnsCount());
-//        DataBlock r0=m.row(0);
-//        SubMatrix rest=m.extract(1, m.getRowsCount(), 0, m.getColumnsCount());
-//         for (int i = 1; i < m.getColumnsCount(); ++i) {
-//            if (r0.get(i) != 0) {
-//                GivensRotation rotation = new GivensRotation(r0, i);
-//                rotation.ctransform(rest);
-//            }
-//        }
     }
 
     public static void columnHouseholder(Matrix m) {
@@ -197,6 +189,9 @@ public class ElementaryTransformations {
         }
     }
 
+    public static void columnGivens(Matrix m) {
+        givens(m.columnsIterator(), m.getRowsCount());
+    }
     /**
      * Decomposes L0.V0.L0' + X.W.X' = L.V.L' L0 and L are lower triangular
      * matrices V, W are diagonal matrices that can contain infinite values See

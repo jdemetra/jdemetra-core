@@ -17,6 +17,7 @@
 package demetra.maths.matrices;
 
 import demetra.data.NeumaierAccumulator;
+import demetra.maths.Constants;
 import demetra.random.IRandomNumberGenerator;
 import demetra.random.MersenneTwister;
 import java.util.Random;
@@ -56,6 +57,74 @@ public class SymmetricMatrixTest {
     }
 
     @Test
+    public void testCholeskySingular1() {
+        Matrix A = Matrix.make(6,4);
+        A.column(0).set(1);
+        A.column(1).set(2);
+        A.column(2).set(i->i);
+        A.column(3).set(A.column(0), A.column(2), (x,y)->x+3*y);
+        Matrix X=SymmetricMatrix.XtX(A);
+        SymmetricMatrix.lcholesky(X, 1e-9);
+        Matrix I = Matrix.square(X.getRowsCount());
+        I.diagonal().set(X.diagonal(), x->x==0 ? 0 : 1);
+        LowerTriangularMatrix.rsolve(X, I, 1e-9);
+        Matrix IX1=SymmetricMatrix.LtL(I);
+
+        Matrix B = Matrix.make(6,2);
+        B.column(0).set(1);
+        B.column(1).set(i->i);
+        X=SymmetricMatrix.XtX(B);
+        SymmetricMatrix.lcholesky(X, Constants.getEpsilon());
+        I = Matrix.identity(X.getRowsCount());
+         LowerTriangularMatrix.rsolve(X, I, Constants.getEpsilon());
+        Matrix IX2=SymmetricMatrix.LtL(I);
+        assertEquals(IX1.get(0,0), IX2.get(0, 0), 1e-9);
+        assertEquals(IX1.get(2,2), IX2.get(1, 1), 1e-9);
+        assertEquals(IX1.get(0,2), IX2.get(0, 1), 1e-9);
+     }
+
+   @Test
+    public void testCholeskySingular2() {
+        Matrix A = Matrix.make(6,4);
+        A.column(0).set(1);
+        A.column(1).set(2);
+        A.column(2).set(i->i*i);
+        A.column(3).set(A.column(0), A.column(2), (x,y)->x+3*y);
+        Matrix X=SymmetricMatrix.XtX(A);
+        SymmetricMatrix.lcholesky(X, 1e-9);
+        Matrix I = Matrix.square(X.getRowsCount());
+        I.diagonal().set(X.diagonal(), x->x==0 ? 0 : 1);
+        LowerTriangularMatrix.lsolve(X, I, 1e-9);
+        Matrix IX1=SymmetricMatrix.LtL(I);
+
+        Matrix B = Matrix.make(6,2);
+        B.column(0).set(1);
+        B.column(1).set(i->i*i);
+        X=SymmetricMatrix.XtX(B);
+        SymmetricMatrix.lcholesky(X, Constants.getEpsilon());
+        I = Matrix.identity(X.getRowsCount());
+         LowerTriangularMatrix.lsolve(X, I, Constants.getEpsilon());
+        Matrix IX2=SymmetricMatrix.LtL(I);
+        assertEquals(IX1.get(0,0), IX2.get(0, 0), 1e-9);
+        assertEquals(IX1.get(2,2), IX2.get(1, 1), 1e-9);
+        assertEquals(IX1.get(0,2), IX2.get(0, 1), 1e-9);
+     }
+
+    @Test
+    public void testCholesky() {
+        Matrix A = Matrix.make(6,2);
+        A.column(0).set(1);
+        A.column(1).set(i->i);
+        Matrix X=SymmetricMatrix.XtX(A);
+        SymmetricMatrix.lcholesky(X, Constants.getEpsilon());
+        Matrix I = Matrix.square(X.getRowsCount());
+        I.diagonal().set(X.diagonal(), x->x==0 ? 0 : 1);
+        LowerTriangularMatrix.lsolve(X, I, Constants.getEpsilon());
+        Matrix IX=SymmetricMatrix.LtL(I);
+        System.out.println(IX);
+    }
+
+    @Test
     public void testReenforce() {
         Matrix Q = Matrix.square(20);
         IRandomNumberGenerator rnd = MersenneTwister.fromSystemNanoTime();
@@ -63,5 +132,4 @@ public class SymmetricMatrixTest {
         SymmetricMatrix.reenforceSymmetry(Q);
         assertTrue(Q.isSymmetric(0));
     }
-
 }

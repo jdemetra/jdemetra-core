@@ -20,6 +20,7 @@ import demetra.design.IBuilder;
 import demetra.design.Immutable;
 import demetra.maths.matrices.Matrix;
 import demetra.data.Doubles;
+import java.util.function.Supplier;
 
 /**
  * This class represents the concentrated likelihood of a linear regression
@@ -31,8 +32,8 @@ import demetra.data.Doubles;
 @Immutable
 public final class ConcentratedLikelihood implements IConcentratedLikelihood {
 
-    public static Builder concentratedLikelihood(int n, int nx) {
-        return new Builder(n, nx);
+    public static Builder likelihood(int n) {
+        return new Builder(n);
     }
 
     public static class Builder implements IBuilder<ConcentratedLikelihood> {
@@ -42,11 +43,10 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
         double[] res;
         double[] b;
         Matrix bvar;
-        final int nx;
+        Supplier<Matrix> bvarFn;
 
-        Builder(int n, int nx) {
+        Builder(int n) {
             this.n = n;
-            this.nx = nx;
         }
 
         public Builder logDeterminant(double ldet) {
@@ -78,14 +78,19 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
             return this;
         }
 
-        public Builder covariance(Matrix var) {
-            bvar=var;
+        public Builder unscaledCovariance(Matrix var) {
+            bvar = var;
+            return this;
+        }
+
+        public Builder unscaledCovarianceSupplier(Supplier<Matrix> s) {
+            bvarFn = s;
             return this;
         }
 
         @Override
         public ConcentratedLikelihood build() {
-            return new ConcentratedLikelihood(n, nx, ssqerr, ldet, b, bvar, res);
+            return new ConcentratedLikelihood(this);
         }
     }
 
@@ -93,51 +98,46 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
     private final int n;
     private final double[] res;
     private final double[] b;
-    private final Matrix bvar;
-    private final int nx;
+    private volatile Matrix bvar;
+    private final Supplier<Matrix> bvarFn;
 
-    private ConcentratedLikelihood(final int n, final int nx, final double ssqerr, final double ldet, final double[] b, final Matrix bvar, final double[] res) {
+    private ConcentratedLikelihood(final int n, final double ssqerr, final double ldet, final double[] b, final Matrix bvar, final Supplier<Matrix> s, final double[] res) {
         this.n = n;
-        this.nx = nx;
         this.ldet = ldet;
         this.ssqerr = ssqerr;
         this.b = b;
         this.bvar = bvar;
+        this.bvarFn = s;
         this.res = res;
         this.ll = -.5
                 * (n * Math.log(2 * Math.PI) + n
                 * (1 + Math.log(ssqerr / n)) + ldet);
     }
 
-    /**
-     * Number of regression variables
-     *
-     * @return
-     */
-    @Override
-    public int getNx() {
-        return nx;
+    private ConcentratedLikelihood(Builder builder) {
+        this.n = builder.n;
+        this.ldet = builder.ldet;
+        this.ssqerr = builder.ssqerr;
+        this.b = builder.b;
+        this.bvar = builder.bvar;
+        this.bvarFn = builder.bvarFn;
+        this.res = builder.res;
+        this.ll = -.5
+                * (n * Math.log(2 * Math.PI) + n
+                * (1 + Math.log(ssqerr / n)) + ldet);
     }
 
     @Override
-    public double getLogDeterminant() {
+    public double logDeterminant() {
         return ldet;
     }
 
     /**
-     * Computes the factor of the likelihood. The log-likelihood is:
-     * ll=-.5[n*log(2*pi)+n*(log(ssq/n)+1)+ldet]
-     * =-.5[n*log(2*pi)+n+n*(log(ssq/n)+ldet/n)] So, for a given n, maximizing
-     * the likelihood is equivalent to minimizing sigma*factor where:
-     * sigma=ssq/n factor=exp(ldet/n)=exp(log(det(V)^1/n)=(det(L)^1/n)^2
-     *
-     * So, the factor is the square of the geometric mean of the main diagonal
-     * of the Cholesky factor.
      *
      * @return The factor of the likelihood.
      */
     @Override
-    public double getFactor() {
+    public double factor() {
         return Math.exp(ldet / n);
     }
 
@@ -146,7 +146,7 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
      * @return
      */
     @Override
-    public double getLogLikelihood() {
+    public double logLikelihood() {
         return ll;
     }
 
@@ -155,22 +155,32 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
      * @return
      */
     @Override
-    public int getN() {
+    public int dim() {
         return n;
     }
 
     @Override
-    public Doubles getResiduals() {
+    public Doubles e() {
         return Doubles.of(res);
     }
 
     @Override
-    public Doubles getCoefficients() {
+    public Doubles coefficients() {
         return Doubles.of(b);
     }
 
     @Override
-    public Matrix getCoefficientsCovariance() {
+    public Matrix unscaledCovariance() {
+        Matrix tmp = bvar;
+        if (tmp == null && bvarFn != null) {
+            synchronized (this) {
+                tmp = bvar;
+                if (tmp == null) {
+                    tmp = bvarFn.get();
+                    bvar = tmp;
+                }
+            }
+        }
         return bvar;
     }
 
@@ -180,13 +190,13 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
      * @return A positive number.
      */
     @Override
-    public double getSsqErr() {
+    public double ssq() {
         return ssqerr;
     }
 
     /**
      * Adjust the likelihood if the toArray have been pre-multiplied by a given
- scaling factor
+     * scaling factor
      *
      * @param yfactor The scaling factor
      * @param xfactor
@@ -220,7 +230,7 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
                 bvar.apply(i, i, x -> x * ifactor * ifactor);
             }
         }
-        return new ConcentratedLikelihood(n, nx, nssqerr, ldet, nb, nbvar, nres);
+        return new ConcentratedLikelihood(n, nssqerr, ldet, nb, nbvar, null, nres);
 
     }
 }

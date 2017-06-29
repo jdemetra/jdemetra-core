@@ -1,10 +1,10 @@
 /*
- * Copyright 2016 National Bank copyOf Belgium
+ * Copyright 2016 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
- * by the European Commission - subsequent versions copyOf the EUPL (the "Licence");
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
- * You may obtain a copy copyOf the Licence at:
+ * You may obtain a copy of the Licence at:
  * 
  * http://ec.europa.eu/idabc/eupl
  * 
@@ -33,13 +33,13 @@ public final class FastLowerTriangularMatrixAlgorithms implements LowerTriangula
     }
 
     /**
-     * Solves the set copyOf equations Lx = b where x and b are vectors with a
-     * Length less than or equal to the number copyOf rows copyOf the matrix.
-     * The solution is returned in place i.e. the solution x replaces the right
-     * hand side b. Column version
+     * Solves the set of equations Lx = b where x and b are vectors with a
+     * Length less than or equal to the number of rows of the matrix. The
+     * solution is returned in place i.e. the solution x replaces the right hand
+     * side b. Column version
      *
      * @param L L. Lower triangular matrix
-     * @param b On entry the right hand side copyOf the equation. Contains the
+     * @param b On entry the right hand side of the equation. Contains the
      * solution x on returning.
      * @param zero Small positive value identifying 0. Can be 0.
      * @throws MatrixException Thrown when the system cannot be solved
@@ -54,13 +54,13 @@ public final class FastLowerTriangularMatrixAlgorithms implements LowerTriangula
     }
 
     /**
-     * Solves the set copyOf equations Lx = b where x and b are vectors with a
-     * Length less than or equal to the number copyOf rows copyOf the matrix.
-     * The solution is returned in place i.e. the solution x replaces the right
-     * hand side b. Row version
+     * Solves the set of equations Lx = b where x and b are vectors with a
+     * Length less than or equal to the number of rows of the matrix. The
+     * solution is returned in place i.e. the solution x replaces the right hand
+     * side b. Row version
      *
      * @param L L. Lower triangular matrix
-     * @param b On entry the right hand side copyOf the equation. Contains the
+     * @param b On entry the right hand side of the equation. Contains the
      * solution x on returning.
      * @param zero Small positive value identifying 0. Can be 0.
      * @throws MatrixException Thrown when the system cannot be solved
@@ -128,12 +128,18 @@ public final class FastLowerTriangularMatrixAlgorithms implements LowerTriangula
                 if (Math.abs(t) > zero) {
                     double d = data[i];
                     if (d == 0) {
-                        throw new MatrixException(MatrixException.SINGULAR);
-                    }
-                    double c = t / d;
-                    x[xi] = c;
-                    for (int xj = xi + xinc, j = i + rinc; xj < xend; ++xj, ++j) {
-                        x[xj] -= c * data[j];
+                        for (int xj = xi + xinc, j = i + rinc; xj < xend; ++xj, ++j) {
+                            if (Math.abs(data[j]) > zero) {
+                                throw new MatrixException(MatrixException.SINGULAR);
+                            }
+                        }
+                        x[xi] = 0;
+                    } else {
+                        double c = t / d;
+                        x[xi] = c;
+                        for (int xj = xi + xinc, j = i + rinc; xj < xend; ++xj, ++j) {
+                            x[xj] -= c * data[j];
+                        }
                     }
                 } else {
                     x[xi] = 0;
@@ -145,12 +151,18 @@ public final class FastLowerTriangularMatrixAlgorithms implements LowerTriangula
                 if (Math.abs(t) > zero) {
                     double d = data[i];
                     if (d == 0) {
-                        throw new MatrixException(MatrixException.SINGULAR);
-                    }
-                    double c = t / d;
-                    x[xi] = c;
-                    for (int xj = xi + xinc, j = i + rinc; xj != xend; xj += xinc, j += rinc) {
-                        x[xj] -= c * data[j];
+                        for (int xj = xi + xinc, j = i + rinc; xj != xend; xj += xinc, j += rinc) {
+                            if (Math.abs(data[j]) > zero) {
+                                throw new MatrixException(MatrixException.SINGULAR);
+                            }
+                        }
+                        x[xi] = 0;
+                    } else {
+                        double c = t / d;
+                        x[xi] = c;
+                        for (int xj = xi + xinc, j = i + rinc; xj != xend; xj += xinc, j += rinc) {
+                            x[xj] -= c * data[j];
+                        }
                     }
                 } else {
                     x[xi] = 0;
@@ -169,12 +181,11 @@ public final class FastLowerTriangularMatrixAlgorithms implements LowerTriangula
     }
 
     /**
-     * Solves the set copyOf equations x*L = b Forward substitution, column
-     * version.
+     * Solves the set of equations x*L = b Forward substitution, column version.
      *
      * When L contains zeroes on the diagonal, the system is either unsolvable
      * or under-determined. Unsolvable systems will throw exceptions. In the
-     * case copyOf under-determined systems, the x corresponding to the 0 in the
+     * case of under-determined systems, the x corresponding to the 0 in the
      * diagonal is set to 0.
      *
      * @param L The lower triangular matrix
@@ -233,8 +244,7 @@ public final class FastLowerTriangularMatrixAlgorithms implements LowerTriangula
     }
 
     /**
-     * Solves the set copyOf equations x*L = b Forward substitution, row
-     * version.
+     * Solves the set of equations x*L = b Forward substitution, row version.
      *
      * @param L The lower triangular matrix
      * @param b In-Out parameter. On entry, it contains b. On exit, it contains
@@ -297,13 +307,12 @@ public final class FastLowerTriangularMatrixAlgorithms implements LowerTriangula
 
     /**
      * Computes r = L*r The method right-multiplies the matrix by a vector. The
-     * Length copyOf the vector must be equal or less than the number copyOf
-     * rows copyOf the matrix. The multiplier is modified in place. Column
-     * version
+     * Length of the vector must be equal or less than the number of rows of the
+     * matrix. The multiplier is modified in place. Column version
      *
      * @param L The lower triangular matrix
      * @param x
-     * @param r An array copyOf double
+     * @param r An array of double
      */
     @Override
     public void rmul(Matrix L, DataBlock x) {

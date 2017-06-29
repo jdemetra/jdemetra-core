@@ -14,10 +14,10 @@
     <name>JD3 - Basic Tools (aggregator)</name>
     
     <modules>
-        <module>demetra-algorithms</module>
         <module>demetra-algorithms-ex</module>
         <module>demetra-core</module>
         <module>demetra-datatypes</module>
+        <module>DataForTests</module>
     </modules>
     
     <build>

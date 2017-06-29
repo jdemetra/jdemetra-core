@@ -16,7 +16,6 @@
  */
 package demetra.likelihood;
 
-import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.data.Doubles;
 
@@ -31,25 +30,15 @@ public interface IConcentratedLikelihood extends ILikelihood {
 
     /**
      *
-     * @param idx
      * @return
      */
-    default double getCoefficient(int idx){
-        return getCoefficients().get(idx);
-    }
+    Doubles coefficients();
 
     /**
      *
      * @return
      */
-    Doubles getCoefficients();
-
-    /**
-     *
-     * @return
-     */
-    Matrix getCoefficientsCovariance();
-
+    Matrix unscaledCovariance();
 
 //    /**
 //     *
@@ -62,8 +51,8 @@ public interface IConcentratedLikelihood extends ILikelihood {
      *
      * @return
      */
-    default int getNx(){
-        return getCoefficients().length();
+    default int nx(){
+        return coefficients().length();
     }
 
  }

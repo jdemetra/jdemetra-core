@@ -50,42 +50,65 @@ import demetra.data.Doubles;
  * <br>
  * ssq * det^1/n (= ssq*factor)
  * <br>
- * if e are the residuals and v = e*det^1/(2n), we try to minimize the sum of squares defined by vv'.
- * This last formulation will be used in optimization procedures based like Levenberg-Marquardt or similar algorithms.
+ if e are the e and v = e*det^1/(2n), we try to minimize the sum of squares defined by vv'.
+ This last formulation will be used in optimization procedures based like Levenberg-Marquardt or similar algorithms.
  */
 @Development(status = Development.Status.Release)
 public interface ILikelihood {
+
+    /**
+     * @return Log of the likelihood
+     */
+    double logLikelihood();
+
+    /**
+     * @return Square root of Sigma.
+     */
+    int dim();
 
     /**
      * Return the log-determinant
      *
      * @return
      */
-    double getLogDeterminant();
+    double logDeterminant();
 
     /**
-     * @return Log of the likelihood
+     * Gets the ML estimate of the standard error of the model. ser=sqrt(ssq/n)
+     *
+     * @return A positive number.
      */
-    double getLogLikelihood();
+    default double ser() {
+        return Math.sqrt(ssq() / dim());
+    }
 
     /**
-     * @return Square root of Sigma.
+     * Gets the ML estimate of the variance of the model. sigma=ssq/n
+     *
+     * @return A positive number.
      */
-    int getN();
+    default double sigma() {
+        return ssq() / dim();
+    }
 
     /**
-     * @return The Standardized innovations. May be null if the residuals are not stored
+     * @return Sum of the squared standardized innovations
      */
-    Doubles getResiduals();
+    double ssq();
+    
+        /**
+     * @return The Standardized innovations. May be null if the e are not stored
+     */
+    Doubles e();
 
     /**
      * @return The determinantal factor (n-th root).
      */
-    double getFactor();
+    double factor();
     
-    default Doubles getV(){
-        double f=getFactor();
-        Doubles e=getResiduals();
+    default Doubles v(){
+        double f=factor();
+        Doubles e=e();
         if (f == 1)
             return e;
         else{
@@ -94,27 +117,5 @@ public interface ILikelihood {
         }
     }
 
-    /**
-     * Gets the ML estimate of the standard error of the model. ser=sqrt(ssq/n)
-     *
-     * @return A positive number.
-     */
-    default double getSer() {
-        return Math.sqrt(getSsqErr() / getN());
-    }
-
-    /**
-     * Gets the ML estimate of the variance of the model. sigma=ssq/n
-     *
-     * @return A positive number.
-     */
-    default double getSigma() {
-        return getSsqErr() / getN();
-    }
-
-    /**
-     * @return Sum of the squared standardized innovations
-     */
-    double getSsqErr();
 
 }
