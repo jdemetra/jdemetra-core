@@ -159,7 +159,7 @@ public class SymmetricFilter extends AbstractFiniteFilter {
             return new BackFilter(tmp);
         }
 
-        Polynomial q = Q.getPolynomial();
+        Polynomial q = Q.asPolynomial();
         Polynomial c = m_p;
 
         int nq = q.getDegree();

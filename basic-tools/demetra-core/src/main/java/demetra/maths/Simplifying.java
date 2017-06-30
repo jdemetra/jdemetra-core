@@ -29,15 +29,15 @@ public abstract class Simplifying<T> {
     /**
      * Left, right and common items
      */
-    protected T m_left, m_right, m_common;
+    protected T simplifiedLeft, simplifiedRight, common;
 
     /**
      * Clear the simplifying tool
      */
     protected void clear() {
-	m_left = null;
-	m_right = null;
-	m_common = null;
+	simplifiedLeft = null;
+	simplifiedRight = null;
+	common = null;
     }
 
     /**
@@ -45,15 +45,15 @@ public abstract class Simplifying<T> {
      * @return The common factor. Should not be null. 
      */
     public T getCommon() {
-	return m_common;
+	return common;
     }
 
     /**
-     * Gets the simplified left operand
-     * @return The left operand. Could be the same as the initial operand
+     * Gets the simplified simplifiedLeft operand
+     * @return The simplifiedLeft operand. Could be the same as the initial operand
      */
     public T getLeft() {
-	return m_left;
+	return simplifiedLeft;
     }
 
     /**
@@ -61,12 +61,12 @@ public abstract class Simplifying<T> {
      * @return The right operand. Could be the same as the initial operand
      */
     public T getRight() {
-	return m_right;
+	return simplifiedRight;
     }
 
     /**
      * Simplifies two elements T
-     * @param left The left operand
+     * @param left The simplifiedLeft operand
      * @param right The right operand
      * @return True if the items have been simplified, false otherwise
      */

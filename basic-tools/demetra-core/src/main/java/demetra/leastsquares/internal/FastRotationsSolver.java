@@ -19,7 +19,6 @@ package demetra.leastsquares.internal;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.Doubles;
-import demetra.leastsquares.ILeastSquaresSolver;
 import demetra.leastsquares.IQRSolver;
 import demetra.maths.Constants;
 import demetra.maths.matrices.Matrix;

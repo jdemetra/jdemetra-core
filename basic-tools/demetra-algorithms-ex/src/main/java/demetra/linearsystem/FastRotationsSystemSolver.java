@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.linearsystem.internal;
+package demetra.linearsystem;
 
 import demetra.design.Development;
 import java.util.Arrays;
@@ -27,9 +27,7 @@ import demetra.linearsystem.ILinearSystemSolver;
 import demetra.maths.matrices.UpperTriangularMatrix;
 
 /**
- * This class is a translation ofInternal the code used in Seats (routine
- * MLTSOL)
- *
+ * Based on fast givens rotations
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)

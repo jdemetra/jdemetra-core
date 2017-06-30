@@ -43,9 +43,9 @@ public class UnitRoots implements Cloneable {
 
         @Override
         public boolean simplify(final UnitRoots left, final UnitRoots right) {
-            m_left = left;
-            m_right = right;
-            m_common = new UnitRoots();
+            simplifiedLeft = left;
+            simplifiedRight = right;
+            common = new UnitRoots();
 
             if ((left == null) || (right == null)) {
                 return false;
@@ -56,20 +56,20 @@ public class UnitRoots implements Cloneable {
             if (left.isIdentity() || right.isIdentity()) {
                 return false;
             }
-            m_left = left.clone();
-            m_right = right.clone();
+            simplifiedLeft = left.clone();
+            simplifiedRight = right.clone();
             // A || B
 
-            int ldiff = m_left.m_n.getSize() - m_left.m_d.getSize(), rdiff = m_right.m_n.getSize()
-                    - m_right.m_d.getSize();
-            m_left.calcmaps();
-            m_right.calcmaps();
+            int ldiff = simplifiedLeft.m_n.getSize() - simplifiedLeft.m_d.getSize(), rdiff = simplifiedRight.m_n.getSize()
+                    - simplifiedRight.m_d.getSize();
+            simplifiedLeft.calcmaps();
+            simplifiedRight.calcmaps();
 
             // common nums are removed, with all the corresponding denoms
             step1();
             step2(ldiff, rdiff);
             // finally, adjust for D1;
-            if (!m_common.isIdentity()) {
+            if (!common.isIdentity()) {
                 return true;
             } else {
                 return false;
@@ -82,9 +82,9 @@ public class UnitRoots implements Cloneable {
             do {
                 int kl = 0, kr = 0;
                 int pgcd = 0;
-                while (kl < m_left.m_n.getSize() && kr < m_right.m_n.getSize()) {
-                    lu = m_left.m_n.get(kl);
-                    ru = m_right.m_n.get(kr);
+                while (kl < simplifiedLeft.m_n.getSize() && kr < simplifiedRight.m_n.getSize()) {
+                    lu = simplifiedLeft.m_n.get(kl);
+                    ru = simplifiedRight.m_n.get(kr);
                     pgcd = IntUtilities.gcd(lu, ru);
                     if (pgcd > 1 || lu == 1 || ru == 1) {
                         break;
@@ -97,16 +97,16 @@ public class UnitRoots implements Cloneable {
                 if (pgcd > 1) {
                     // search possible common denominators
                     IntList d = new IntList();
-                    for (int i = 0; i < m_left.m_dp.length; ++i) {
-                        int dcur = IntUtilities.gcd(m_left.m_d.get(i), lu);
-                        if (m_left.m_dp[i] == kl && !d.contains(dcur)) {
+                    for (int i = 0; i < simplifiedLeft.m_dp.length; ++i) {
+                        int dcur = IntUtilities.gcd(simplifiedLeft.m_d.get(i), lu);
+                        if (simplifiedLeft.m_dp[i] == kl && !d.contains(dcur)) {
                             d.add(dcur);
                         }
                     }
 
-                    for (int i = 0; i < m_right.m_dp.length; ++i) {
-                        int dcur = IntUtilities.gcd(m_right.m_d.get(i), ru);
-                        if (m_right.m_dp[i] == kr && !d.contains(dcur)) {
+                    for (int i = 0; i < simplifiedRight.m_dp.length; ++i) {
+                        int dcur = IntUtilities.gcd(simplifiedRight.m_d.get(i), ru);
+                        if (simplifiedRight.m_dp[i] == kr && !d.contains(dcur)) {
                             d.add(dcur);
                         }
                     }
@@ -119,20 +119,20 @@ public class UnitRoots implements Cloneable {
                         break;
                     }
 
-                    m_common.add(pgcd);
-                    m_right.remove(pgcd);
-                    m_left.remove(pgcd);
+                    common.add(pgcd);
+                    simplifiedRight.remove(pgcd);
+                    simplifiedLeft.remove(pgcd);
                     for (int i = 0; i < d.size(); i++) {
                         int id = d.get(i);
-                        m_left.add(id);
-                        m_right.add(id);
-                        m_common.remove(id);
+                        simplifiedLeft.add(id);
+                        simplifiedRight.add(id);
+                        common.remove(id);
                     }
-                    m_left.simplify();
-                    m_left.calcmaps();
-                    m_right.simplify();
-                    m_right.calcmaps();
-                    m_common.simplify();
+                    simplifiedLeft.simplify();
+                    simplifiedLeft.calcmaps();
+                    simplifiedRight.simplify();
+                    simplifiedRight.calcmaps();
+                    common.simplify();
                 } else {
                     break;
                 }
@@ -141,18 +141,18 @@ public class UnitRoots implements Cloneable {
 
         private void step2(final int ldiff, final int rdiff) {
             int cdiff = ldiff < rdiff ? ldiff : rdiff;
-            int curdiff = m_common.m_n.getSize() - m_common.m_d.getSize();
+            int curdiff = common.m_n.getSize() - common.m_d.getSize();
             if (curdiff < cdiff) {
                 for (int i = curdiff; i < cdiff; ++i) {
-                    m_common.add(1);
-                    m_left.remove(1);
-                    m_right.remove(1);
+                    common.add(1);
+                    simplifiedLeft.remove(1);
+                    simplifiedRight.remove(1);
                 }
             } else if (curdiff > cdiff) {
                 for (int i = cdiff; i < curdiff; ++i) {
-                    m_common.remove(1);
-                    m_left.add(1);
-                    m_right.add(1);
+                    common.remove(1);
+                    simplifiedLeft.add(1);
+                    simplifiedRight.add(1);
                 }
             }
         }

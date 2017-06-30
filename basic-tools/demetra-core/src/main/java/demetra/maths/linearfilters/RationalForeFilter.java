@@ -21,6 +21,7 @@ import demetra.design.Immutable;
 import demetra.maths.Complex;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
+import java.util.function.IntToDoubleFunction;
 
 /**
  *
@@ -30,13 +31,17 @@ import demetra.maths.polynomials.RationalFunction;
 @Immutable
 public class RationalForeFilter implements IRationalFilter {
 
-    private final RationalFunction m_rfe;
+    public static final RationalForeFilter ZERO=new RationalForeFilter();
+
+    private final RationalFunction rationalFunction;
+    private final int fshift;
 
     /**
      *
      */
     public RationalForeFilter() {
-        m_rfe = RationalFunction.zero();
+        rationalFunction = RationalFunction.zero();
+        fshift=0;
     }
 
     /**
@@ -44,12 +49,14 @@ public class RationalForeFilter implements IRationalFilter {
      * @param num
      * @param denom
      */
-    public RationalForeFilter(final ForeFilter num, final ForeFilter denom) {
-        m_rfe = RationalFunction.of(num.getPolynomial(), denom.getPolynomial());
+    public RationalForeFilter(final ForeFilter num, final ForeFilter denom, final int fshift) {
+        rationalFunction = RationalFunction.of(num.getPolynomial(), denom.getPolynomial());
+        this.fshift=fshift;
     }
 
-    RationalForeFilter(final RationalFunction rfe) {
-        m_rfe = rfe;
+    RationalForeFilter(final RationalFunction rfe, final int fshift) {
+        rationalFunction = rfe;
+        this.fshift=fshift;
     }
 
     /**
@@ -60,8 +67,8 @@ public class RationalForeFilter implements IRationalFilter {
      * @return A new rational filter is returned
      */
     public RationalForeFilter drop(final int n) {
-        RationalFunction rfe = m_rfe.drop(n);
-        return new RationalForeFilter(rfe);
+        RationalFunction rfe = rationalFunction.drop(n);
+        return new RationalForeFilter(rfe, fshift+n);
     }
 
     /**
@@ -71,8 +78,9 @@ public class RationalForeFilter implements IRationalFilter {
      */
     @Override
     public Complex frequencyResponse(final double freq) {
-        Complex n = Utilities.frequencyResponse(m_rfe.getNumerator().asFunction(), 0, m_rfe.getNumerator().length(), freq);
-        Complex d = Utilities.frequencyResponse(m_rfe.getDenominator().asFunction(), 0, m_rfe.getDenominator().length(), freq);
+        IntToDoubleFunction fn = rationalFunction.getNumerator().asFunction();
+        Complex n = Utilities.frequencyResponse(i->fn.applyAsDouble(i-fshift), fshift, fshift+rationalFunction.getNumerator().getDegree(), freq);
+        Complex d = Utilities.frequencyResponse(rationalFunction.getDenominator().asFunction(), 0, rationalFunction.getDenominator().getDegree(), freq);
         return n.div(d);
     }
 
@@ -82,7 +90,7 @@ public class RationalForeFilter implements IRationalFilter {
      */
     @Override
     public ForeFilter getDenominator() {
-        Polynomial p = m_rfe.getDenominator();
+        Polynomial p = rationalFunction.getDenominator();
         return new ForeFilter(p);
     }
 
@@ -99,12 +107,12 @@ public class RationalForeFilter implements IRationalFilter {
      * @return
      */
     public RationalBackFilter getMirror() {
-        return new RationalBackFilter(m_rfe);
+        return new RationalBackFilter(rationalFunction, fshift);
     }
 
     @Override
     public ForeFilter getNumerator() {
-        Polynomial p = m_rfe.getNumerator();
+        Polynomial p = rationalFunction.getNumerator();
         return new ForeFilter(p);
     }
 
@@ -113,7 +121,7 @@ public class RationalForeFilter implements IRationalFilter {
      * @return
      */
     public RationalFunction getRationalFunction() {
-        return m_rfe;
+        return rationalFunction;
     }
 
     /**
@@ -121,8 +129,8 @@ public class RationalForeFilter implements IRationalFilter {
      * @return
      */
     public int getUBound() {
-        if (m_rfe.isFinite()) {
-            return m_rfe.getNumerator().getDegree();
+        if (rationalFunction.isFinite()) {
+            return rationalFunction.getNumerator().getDegree();
         } else {
             return Integer.MAX_VALUE;
         }
@@ -134,7 +142,7 @@ public class RationalForeFilter implements IRationalFilter {
      * @return
      */
     public double weight(int pos) {
-	return m_rfe.get(pos);
+	return rationalFunction.get(pos);
     }
     /**
      *
@@ -142,7 +150,7 @@ public class RationalForeFilter implements IRationalFilter {
      * @return
      */
     public double[] getWeights(final int n) {
-        return m_rfe.coefficients(n);
+        return rationalFunction.coefficients(n);
     }
 
     /**
@@ -160,7 +168,7 @@ public class RationalForeFilter implements IRationalFilter {
      */
     @Override
     public boolean hasUpperBound() {
-        return m_rfe.isFinite();
+        return rationalFunction.isFinite();
     }
 
     /**
@@ -168,7 +176,7 @@ public class RationalForeFilter implements IRationalFilter {
      * @param n
      */
     public void prepare(final int n) {
-        m_rfe.prepare(n);
+        rationalFunction.prepare(n);
     }
 
     /**
@@ -177,8 +185,8 @@ public class RationalForeFilter implements IRationalFilter {
      * @return
      */
     public RationalForeFilter times(final RationalForeFilter r) {
-        Polynomial ln = m_rfe.getNumerator(), rn = r.m_rfe.getNumerator();
-        Polynomial ld = m_rfe.getDenominator(), rd = r.m_rfe.getDenominator();
+        Polynomial ln = rationalFunction.getNumerator(), rn = r.rationalFunction.getNumerator();
+        Polynomial ld = rationalFunction.getDenominator(), rd = r.rationalFunction.getDenominator();
         Polynomial.SimplifyingTool psmp = new Polynomial.SimplifyingTool();
         if (psmp.simplify(ln, rd)) {
             ln = psmp.getLeft();
@@ -196,6 +204,16 @@ public class RationalForeFilter implements IRationalFilter {
             d = d.divide(d0);
         }
         RationalFunction rfe = RationalFunction.of(n, d);
-        return new RationalForeFilter(rfe);
+        return new RationalForeFilter(rfe, fshift+r.fshift);
+    }
+
+    @Override
+    public RationalBackFilter getRationalBackFilter() {
+        return RationalBackFilter.ZERO;
+    }
+
+    @Override
+    public RationalForeFilter getRationalForeFilter() {
+        return this;
     }
 }

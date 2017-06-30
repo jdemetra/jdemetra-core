@@ -20,9 +20,9 @@ import org.junit.Ignore;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public class LeastSquaresSolverTest {
+public class ILeastSquaresSolverTest {
     
-    public LeastSquaresSolverTest() {
+    public ILeastSquaresSolverTest() {
     }
 
     @Test

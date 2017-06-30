@@ -16,7 +16,6 @@
  */
 package demetra.arima;
 
-import demetra.arima.intenral.AutoCovarianceComputers;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.linearfilters.BackFilter;
@@ -25,7 +24,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
 import java.lang.reflect.Array;
-import java.util.concurrent.atomic.AtomicReference;
+
 
 /**
  * The auto-covariance function provides the auto-covariance of any stationary
@@ -41,138 +40,48 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Immutable
 @Development(status = Development.Status.Alpha)
-public class AutoCovarianceFunction {
-
-    @FunctionalInterface
-    public static interface Computer {
-
-        /**
-         * Computes the auto-covariances for the given arima model for lags [0, rank[
-         *
-         * @param ar
-         * @param ma
-         * @param rank
-         * @return
-         */
-        double[] ac(Polynomial ar, Polynomial ma, int rank);
-    }
-
-    private static final AtomicReference<Computer> DEF_COMPUTER = new AtomicReference<>(AutoCovarianceComputers.DEFAULT);
-
-    @FunctionalInterface
-    public static interface SymmetricComputer {
-
-        /**
-         * Computes the auto-covariances for the given symmetric filter for lags [0, rank[
-         *
-         * @param ar
-         * @param sma
-         * @param rank
-         * @return
-         */
-        double[] ac(Polynomial ar, SymmetricFilter sma, int rank);
-    }
-
-    private static final AtomicReference<SymmetricComputer> DEF_SYMCOMPUTER = new AtomicReference<>();
-
-    public static void setDefautComputer(Computer computer) {
-        DEF_COMPUTER.set(computer);
-    }
-
-    private static final int BLOCK = 36;
-    private final Polynomial ar, ma;
-    private final SymmetricFilter sma;
-    private volatile double[] ac;
-    private final double ivar;
-
-    public AutoCovarianceFunction(final Polynomial ma, final Polynomial ar, final double var) {
-        this.ma = ma;
-        this.ar = ar;
-        this.sma = null;
-        this.ivar = var;
-    }
-
-    public AutoCovarianceFunction(final SymmetricFilter sma, final Polynomial ar) {
-        this.sma = sma;
-        this.ar = ar;
-        this.ma = null;
-        this.ivar = 1;
-    }
-
-    /**
-     * Gets all the auto-covariances up to a given rank.
-     *
-     * @param n The number of requested auto-covariances
-     * @return An array of n values, going from the variance up to the
-     * auto-covariance of rank(n-1).
-     */
-    public double[] values(final int n) {
-        prepare(n);
-        double[] a = new double[n];
-        int nmax = Math.min(n, ac.length);
-        System.arraycopy(ac, 0, a, 0, nmax);
-        return a;
-    }
-
-    public double get(final int k) {
-        prepare(k + 1);
-        if (k >= ac.length) {
-            return 0;
-        } else {
-            return ac[k];
-        }
-    }
-
-    /**
-     * Computes the auto-covariances up to the given rank (included).
-     *
-     * @param rank The rank to be computed.
-     */
-    public void prepare(int rank) {
-        if (rank == 0) {
-            rank = BLOCK;
-        } else {
-            int r = rank % BLOCK;
-            if (r != 0) {
-                rank += BLOCK - r;
-            }
-        }
-        double[] acov = ac;
-        if (acov == null || acov.length <= rank) {
-            synchronized (this) {
-                acov = ac;
-                if (acov == null || acov.length <= rank) {
-                    ac = ac(acov, rank);
-                }
-            }
-        }
-    }
-
-    // ac is only used in the synchronized block
-    private double[] ac(double[] acov, int rank) {
-        if (acov == null) {
-            acov = DEF_COMPUTER.get().ac(ar, ma, rank);
-            if (ivar != 1) {
-                for (int i = 0; i <= acov.length; ++i) {
-                    acov[i] *= ivar;
-                }
-            }
-        }
-        if (acov.length <= rank) {
-            double[] tmp=new double[rank+1];
-            System.arraycopy(acov, 0, tmp, 0, acov.length);
-            int p=ar.length();
-            for (int r = acov.length; r <= rank; ++r) {
-                double s = 0;
-                for (int j = 1; j < p; ++j) {
-                    s += ar.get(j) * tmp[r - j];
-                }
-                tmp[r] = -s;
-            }
-            acov=tmp;
-        }
-        return acov;
-    }
+public class AutoCovarianceFunction_1 {
+    
+//    public static interface Computer{
+//        double[] ac(IArimaModel arima, int rank);        
+//    }
+//
+//    /**
+//     * Method used for estimating the auto-covariance function
+//     */
+//    public static enum Method {
+//
+//        /**
+//         * Default method. See for instance Brockwell and Davis, 3.3, method 1.
+//         * The underlying linear system is solved by means of a QR decomposition
+//         * with pivoting
+//         */
+//        Default,
+//        /**
+//         * Default method. See for instance Brockwell and Davis, 3.3, method 1.
+//         * The underlying linear system is solved by means of a LU decomposition
+//         * with pivoting
+//         */
+//        Default2,
+//        /**
+//         * Use the decomposition [Q(B)Q(F)]/[P(B)P(F)] = N(B)/D(B) + N(F)/D(F).
+//         * The underlying linear system is solved by means of a QR decomposition
+//         * with pivoting. This method is the default one.
+//         */
+//        SymmetricFilterDecomposition,
+//        /**
+//         * Use the decomposition [Q(B)Q(F)]/[P(B)P(F)] = N(B)/D(B) + N(F)/D(F).
+//         * The underlying linear system is solved by means of a LU decomposition
+//         * with pivoting
+//         */
+//        SymmetricFilterDecomposition2
+//    }
+//    private static final int BLOCK = 36;
+//    private Polynomial ar, ma;
+//    private SymmetricFilter sma_;
+//    private double[] c_;
+//    private double var_;
+//    private Method method_ = Method.Default2;
 //
 //    /**
 //     * Creates the auto-covariance function for a model identified by its moving
@@ -223,7 +132,7 @@ public class AutoCovarianceFunction {
 //            throw new ArimaException("Invalid acf method");
 //        }
 //        method_ = method;
-//        ac = null;
+//        c_ = null;
 //    }
 //
 //    /**
@@ -236,8 +145,8 @@ public class AutoCovarianceFunction {
 //    public double[] values(final int n) {
 //        prepare(n);
 //        double[] a = new double[n];
-//        int nmax = Math.min(n, ac.length);
-//        System.arraycopy(ac, 0, a, 0, nmax);
+//        int nmax = Math.min(n, c_.length);
+//        System.arraycopy(c_, 0, a, 0, nmax);
 //        return a;
 //    }
 //
@@ -249,10 +158,10 @@ public class AutoCovarianceFunction {
 //     */
 //    public double get(final int k) {
 //        prepare(k + 1);
-//        if (k >= ac.length) {
+//        if (k >= c_.length) {
 //            return 0;
 //        } else {
-//            return ac[k];
+//            return c_[k];
 //        }
 //    }
 //
@@ -291,7 +200,7 @@ public class AutoCovarianceFunction {
 //                rank += BLOCK - r;
 //            }
 //        }
-//        if (ac != null && ac.length > rank) {
+//        if (c_ != null && c_.length > rank) {
 //            return;
 //        }
 //
@@ -311,6 +220,123 @@ public class AutoCovarianceFunction {
 //        }
 //    }
 //
+//    private void computeDefault(int rank) {
+//        int p = ar.getDegree() + 1;
+//        int q = ma.getDegree() + 1;
+//        int r0 = Math.max(p, q);
+//        if (rank < r0) {
+//            rank = r0;
+//        }
+//        int k0 = r0;
+//        if (c_ == null) {
+//            // initialization process
+//            c_ = new double[rank + 1];
+//            RationalFunction rfe = RationalFunction.of(ma, ar);
+//            double[] cr = rfe.coefficients(q);
+//
+//            Matrix c = Matrix.make(r0, r0 + 1);
+//            for (int i = 0; i < q; ++i) {
+//                double s = 0;
+//                for (int j = i; j < q; ++j) {
+//                    s += ma.get(j) * cr[j - i];
+//                }
+//                c.set(i, r0, s);
+//            }
+//
+//            for (int i = 0; i < r0; ++i) {
+//                for (int j = 0; j < p; ++j) {
+//                    double w = ar.get(j);
+//                    if (w != 0) {
+//                        c.add(i, i < j ? j - i : i - j, w);
+//                    }
+//                }
+//            }
+//
+//            if (!SparseSystemSolver.solve(c)) {
+//                throw new ArimaException(ArimaException.NonStationary);
+//            }
+//
+//            for (int i = 0; i < r0; ++i) {
+//                c_[i] = c.get(i, r0) * var_;
+//            }
+//        } else {
+//            double[] tmp = new double[rank + 1];
+//            k0 = c_.length;
+//            for (int u = 0; u < k0; ++u) {
+//                tmp[u] = c_[u];
+//            }
+//            c_ = tmp;
+//        }
+//        // after the initialization process
+//        for (int r = k0; r <= rank; ++r) {
+//            double s = 0;
+//            for (int x = 1; x < p; ++x) {
+//                s += ar.get(x) * c_[r - x];
+//            }
+//            c_[r] = -s;
+//        }
+//    }
+//
+//    private void computeDefault2(int rank) {
+//        int p = ar.getDegree() + 1;
+//        int q = ma.getDegree() + 1;
+//        int r0 = Math.max(p, q);
+//        if (rank < r0) {
+//            rank = r0;
+//        }
+//        int k0 = r0;
+//        if (c_ == null) {
+//            try {
+//                // initialization process
+//                c_ = new double[rank + 1];
+//                RationalFunction rfe = RationalFunction.of(ma, ar);
+//                double[] cr = rfe.coefficients(q);
+//                double[] m = new double[r0];
+//                for (int i = 0; i < q; ++i) {
+//                    double s = 0;
+//                    for (int j = i; j < q; ++j) {
+//                        s += ma.get(j) * cr[j - i];
+//                    }
+//                    m[i] = s;//*m_var;
+//                }
+//
+//                Matrix c = Matrix.make(r0);
+//                for (int i = 0; i < r0; ++i) {
+//                    for (int j = 0; j < p; ++j) {
+//                        double w = ar.get(j);
+//                        if (w != 0) {
+//                            c.add(i, i < j ? j - i : i - j, w);
+//                        }
+//                    }
+//                }
+//
+//                Householder qr = new Householder(false);
+//                qr.decompose(c);
+//                double[] tmp = qr.solve(m);
+//
+//                for (int i = 0; i < r0; ++i) {
+//                    c_[i] = tmp[i] * var_;
+//                }
+//            } catch (MatrixException err) {
+//                throw new ArimaException(ArimaException.NonStationary);
+//            }
+//        } else {
+//            double[] tmp = new double[rank + 1];
+//            k0 = c_.length;
+//            for (int u = 0; u < k0; ++u) {
+//                tmp[u] = c_[u];
+//            }
+//            c_ = tmp;
+//        }
+//        // after the initialization process
+//        for (int r = k0; r <= rank; ++r) {
+//            double s = 0;
+//            for (int x = 1; x < p; ++x) {
+//                s += ar.get(x) * c_[r - x];
+//            }
+//            c_[r] = -s;
+//        }
+//    }
 //
 //    private void computeSymmetric(int rank, boolean dsym) {
 //        int p = ar.getDegree() + 1;
@@ -324,11 +350,11 @@ public class AutoCovarianceFunction {
 //            if (sma_ == null) {
 //                sma_ = SymmetricFilter.convolution(new BackFilter(ma));
 //            }
-//            ac = sma_.getCoefficients();
-//            new DataBlock(ac).mul(var_);
+//            c_ = sma_.getCoefficients();
+//            new DataBlock(c_).mul(var_);
 //        } else {
-//            if (ac == null) {
-//                ac = new double[rank + 1];
+//            if (c_ == null) {
+//                c_ = new double[rank + 1];
 //                if (sma_ == null) {
 //                    sma_ = SymmetricFilter.createFromFilter(new BackFilter(ma));
 //                }
@@ -336,34 +362,34 @@ public class AutoCovarianceFunction {
 //                double[] tmp = new RationalFunction(g.getPolynomial(), ar).coefficients(rank + 1);
 //
 //                if (var_ != 1) {
-//                    ac[0] = 2 * tmp[0] * var_;
+//                    c_[0] = 2 * tmp[0] * var_;
 //                    for (int i = 1; i < tmp.length; ++i) {
-//                        ac[i] = tmp[i] * var_;
+//                        c_[i] = tmp[i] * var_;
 //                    }
 //                } else {
-//                    System.arraycopy(tmp, 0, ac, 0, tmp.length);
-//                    ac[0] *= 2;
+//                    System.arraycopy(tmp, 0, c_, 0, tmp.length);
+//                    c_[0] *= 2;
 //                }
 //
 //            }
-//            if (rank < ac.length) {
+//            if (rank < c_.length) {
 //                return;
 //            }
 //
-//            int k0 = ac.length;
+//            int k0 = c_.length;
 //            double[] tmp = new double[rank];
 //            for (int u = 0; u < k0; ++u) {
-//                tmp[u] = ac[u];
+//                tmp[u] = c_[u];
 //            }
-//            ac = tmp;
+//            c_ = tmp;
 //
 //            // after the initialization process
 //            for (int r = k0; r < rank; ++r) {
 //                double s = 0;
 //                for (int x = 1; x < p; ++x) {
-//                    s += ar.get(x) * ac[r - x];
+//                    s += ar.get(x) * c_[r - x];
 //                }
-//                ac[r] = -s;
+//                c_[r] = -s;
 //            }
 //        }
 //    }

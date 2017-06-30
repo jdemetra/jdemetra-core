@@ -920,20 +920,20 @@ public final class Polynomial implements Doubles {
         public boolean simplify(final Polynomial left, final Polynomial right) {
             clear();
             //
-            m_common = Polynomial.ONE;
+            common = Polynomial.ONE;
             if (left.coeff.length >= right.coeff.length) {
                 simplify(left, right, null);
             } else {
                 simplify(right, left, null);
-                Polynomial tmp = m_left;
-                m_left = m_right;
-                m_right = tmp;
+                Polynomial tmp = simplifiedLeft;
+                simplifiedLeft = simplifiedRight;
+                simplifiedRight = tmp;
             }
 
-            return m_common.coeff.length > 1;
+            return common.coeff.length > 1;
         }
 
-        private boolean simplify(Polynomial left, final Polynomial right, Complex[] roots) // left.Degree >= right.Degree)
+        private boolean simplify(Polynomial left, final Polynomial right, Complex[] roots) // simplifiedLeft.Degree >= right.Degree)
         {
             if (right.coeff.length == 1) {
                 return false;
@@ -954,39 +954,39 @@ public final class Polynomial implements Doubles {
                     {
                         /*
                          * rtmp.pcoeff[0] = -a; Division division = new Division();
-                         * division.divide(left, rtmp); Polynomial div =
+                         * division.divide(simplifiedLeft, rtmp); Polynomial div =
                          * division.getQuotient(); rem =
                          * division.getRemainder(); rem.smooth(); if
-                         * (rem.isNull()) { left = div; m_common =
-                         * m_common.times(rtmp); }
+                         * (rem.isNull()) { simplifiedLeft = div; common =
+                         * common.times(rtmp); }
                          */
                         // if element is a root, remove it
                         rtmp[0] = -a;
                         // FIXME: find a way to avoid creating xxx
                         Polynomial xxx = Polynomial.ofInternal(rtmp);
                         left = left.divide(xxx);
-                        m_common = m_common.times(xxx);
+                        common = common.times(xxx);
                     } else if (b > 0) {
                         // (x-(a+bi))*(x-(a-bi) = x^2-2ax+a^2+b^2
                         ctmp[0] = a * a + b * b;
                         ctmp[1] = -2 * a;
                         /*
                          * Division division = new Division();
-                         * division.divide(left, ctmp); Polynomial div =
+                         * division.divide(simplifiedLeft, ctmp); Polynomial div =
                          * division.getQuotient(); rem =
                          * division.getRemainder(); rem.smooth(); if
-                         * (rem.isNull()) { left = div;
+                         * (rem.isNull()) { simplifiedLeft = div;
                          */
                         // FIXME: find a way to avoid creating xxx
                         Polynomial xxx = Polynomial.ofInternal(ctmp);
                         left = left.divide(xxx);
-                        m_common = m_common.times(xxx);
+                        common = common.times(xxx);
                     }
                 }
             }
-            if (m_common.getDegree() > 0) {
-                m_left = left;
-                m_right = right.divide(m_common);
+            if (common.getDegree() > 0) {
+                simplifiedLeft = left;
+                simplifiedRight = right.divide(common);
                 return true;
             } else {
                 return false;
@@ -1001,7 +1001,7 @@ public final class Polynomial implements Doubles {
          */
         public boolean simplify(final Polynomial left, final UnitRoots right) {
             clear();
-            m_common = Polynomial.ONE;
+            common = Polynomial.ONE;
             return simplify(left, right.toPolynomial(), right.roots());
         }
 
@@ -1010,16 +1010,16 @@ public final class Polynomial implements Doubles {
             if (!div.divide(left, right) || !div.isExact()) {
                 return false;
             }
-            m_left = div.getQuotient();
-            m_right = Polynomial.ONE;
-            m_common = right;
-//            Polynomial.Division division = Polynomial.divide(left, right);
+            simplifiedLeft = div.getQuotient();
+            simplifiedRight = Polynomial.ONE;
+            common = right;
+//            Polynomial.Division division = Polynomial.divide(simplifiedLeft, right);
 //            if (!division.isExact()) {
 //                return false;
 //            }
-//            m_left = division.getQuotient();
-//            m_right = Polynomial.ONE;
-//            m_common = right;
+//            simplifiedLeft = division.getQuotient();
+//            simplifiedRight = Polynomial.ONE;
+//            common = right;
             return true;
         }
     }

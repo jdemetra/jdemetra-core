@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.linearsystem.internal;
+package demetra.linearsystem;
 
+import demetra.linearsystem.FastRotationsSystemSolver;
 import demetra.data.DataBlock;
 import demetra.linearsystem.ILinearSystemSolver;
 import demetra.maths.matrices.Matrix;

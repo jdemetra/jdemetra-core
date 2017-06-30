@@ -28,7 +28,6 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.internal.CroutDoolittle;
 import demetra.maths.matrices.internal.Householder;
-import demetra.maths.matrices.internal.RobustHouseholder;
 
 /**
  * Defines algorithms that solve linear system
@@ -81,7 +80,7 @@ public interface ILinearSystemSolver {
 class LS_Factory{
    
     static AtomicReference<Supplier<ILinearSystemSolver>> FAST_FACTORY = new AtomicReference<>(
-            ()->LUSolver.builder(new CroutDoolittle()).normalize(true).build());
+            ()->LUSolver.builder(new CroutDoolittle()).normalize(true).improve(true).build());
     static AtomicReference<Supplier<ILinearSystemSolver>> ROBUST_FACTORY = new AtomicReference<>(
-            ()->QRLinearSystemSolver.builder(new RobustHouseholder()).normalize(true).improve(true).build());
+            ()->QRLinearSystemSolver.builder(new Householder()).normalize(true).improve(true).build());
 }

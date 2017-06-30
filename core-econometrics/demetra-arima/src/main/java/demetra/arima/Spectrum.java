@@ -30,6 +30,7 @@ import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.NumericalDerivatives;
 import demetra.maths.functions.ParametersRange;
+import java.util.function.IntToDoubleFunction;
 
 /**
  * The (pseudo-)spectrum is the Fourier transform of the auto-covariance
@@ -41,6 +42,96 @@ import demetra.maths.functions.ParametersRange;
 @Immutable
 public class Spectrum {
 
+    private final static double EPS = 1e-7;
+    private final static double EPS2 = 1e-9;
+    private final static double TWOPI = Math.PI * 2;
+    private final SymmetricFilter num, denom;
+
+    /**
+     *
+     * @param num
+     * @param denom
+     */
+    public Spectrum(final SymmetricFilter num, final SymmetricFilter denom) {
+        this.num = num;
+        this.denom = denom;
+    }
+
+    /**
+     *
+     * @param freq
+     * @return
+     */
+    public double get(final double freq) {
+        double val = value(this, freq);
+        if (val < 0) {
+            return 0;
+        }
+        if (Double.isNaN(val)) {
+            return Double.POSITIVE_INFINITY;
+        }
+        return val / TWOPI;
+    }
+
+    static double value(Spectrum s, double x) {
+        double d = s.denom.frequencyResponse(x).getRe();
+        double n = s.num.frequencyResponse(x).getRe();
+        if (Math.abs(d) > EPS2) {
+            return n / d;
+        } else if (Math.abs(n) < EPS) { // 0/0
+            for (int i = 1; i <= 10; ++i) {
+                double dd = new dfr(s.denom, i).evaluate(x);
+                double nd = new dfr(s.num, i).evaluate(x);
+                if (Math.abs(dd) > EPS2) {
+                    return nd / dd;
+                }
+                if (Math.abs(nd) > EPS) {
+                    break;
+                }
+            }
+        }
+        return Double.NaN;
+
+    }
+
+    private static class dfr {
+
+        final int d;
+        final SymmetricFilter filter;
+
+        dfr(SymmetricFilter filter, int d) {
+            this.filter = filter;
+            this.d = d;
+        }
+
+        double evaluate(double freq) {
+            IntToDoubleFunction weights = filter.weights();
+            if (d % 2 == 0) {
+                double s = 0;
+                for (int i = 1; i <= filter.getDegree(); ++i) {
+                    double c = i;
+                    for (int j = 1; j < d; ++j) {
+                        c *= i;
+                    }
+                    c *= Math.cos(freq * i)*weights.applyAsDouble(i);
+                    s += c;
+                }
+                return s;
+            } else {
+                double s = 0;
+                for (int i = 1; i <= filter.getDegree(); ++i) {
+                    double c = i;
+                    for (int j = 1; j < d; ++j) {
+                        c *= i;
+                    }
+                    c *= Math.sin(freq * i)*weights.applyAsDouble(i);
+                    s += c;
+                }
+                return s;
+            }
+        }
+    }
+    
 //    /**
 //     * The Minimizer class searches the minimum of the spectrum. Since 2.1.0,
 //     * the implementation is based on a simple grid search (instead of an
@@ -152,7 +243,7 @@ public class Spectrum {
 //            GridSearch search = new GridSearch();
 //            search.setBounds(0, Math.PI);
 //            search.setMaxIter(1000);
-//            int nd = spectrum.m_num.getDegree() + spectrum.m_denom.getDegree();
+//            int nd = spectrum.num.getDegree() + spectrum.denom.getDegree();
 //            search.setInitialGridCount(4 * nd - 1);
 //            search.setConvergenceCriterion(1e-9);
 //            search.setPrecision(1e-7);
@@ -170,21 +261,21 @@ public class Spectrum {
 //
 //
 //        private double evaluate(Polynomial num, Polynomial denom, double x) {
-//            if (Math.abs(x) < g_epsilon2) {
+//            if (Math.abs(x) < EPS2) {
 //                x = 0;
 //            }
 //            double n = num.evaluateAt(x), d = denom.evaluateAt(x);
 //            // normal case: 
-//            if (Math.abs(d) > g_epsilon) {
+//            if (Math.abs(d) > EPS) {
 //                return n / d;
-//            } else if (Math.abs(n) > g_epsilon) {
+//            } else if (Math.abs(n) > EPS) {
 //                return Double.NaN;
 //            } else if (x == 0) {
 //                int rmax = Math.min(num.getDegree(), denom.getDegree());
 //                for (int i = 1; i <= rmax; ++i) {
 //                    double cn = num.get(i), cd = denom.get(i);
-//                    boolean sn = Math.abs(cn) > g_epsilon;
-//                    boolean sd = Math.abs(cd) > g_epsilon;
+//                    boolean sn = Math.abs(cn) > EPS;
+//                    boolean sd = Math.abs(cd) > EPS;
 //                    if (sn && sd) {
 //                        return cn / cd;
 //                    } else if (sn) {
@@ -202,107 +293,14 @@ public class Spectrum {
 //            }
 //        }
 //    }
-//    private final static double g_epsilon = 1e-7;
-//    private final static double g_epsilon2 = 1e-9;
-//    private final static double TWOPI = Math.PI * 2;
-//    private SymmetricFilter m_num, m_denom;
 //
-//    /**
-//     *
-//     */
-//    public Spectrum() {
-//    }
-//
-//    /**
-//     *
-//     * @param num
-//     * @param denom
-//     */
-//    public Spectrum(final SymmetricFilter num, final SymmetricFilter denom) {
-//        m_num = num;
-//        m_denom = denom;
-//    }
-//
-//    /**
-//     *
-//     * @param freq
-//     * @return
-//     */
-//    public double get(final double freq) {
-//        double val = value(this, freq);
-//        if (val < 0) {
-//            return 0;
-//        }
-//        if (Double.isNaN(val)) {
-//            return Double.POSITIVE_INFINITY;
-//        }
-//        return val / TWOPI;
-//    }
-//
-//    static double value(Spectrum s, double x) {
-//        double d = s.m_denom.frequencyResponse(x).getRe();
-//        double n = s.m_num.frequencyResponse(x).getRe();
-//        if (Math.abs(d) > g_epsilon2) {
-//            return n / d;
-//        } else if (Math.abs(n)< g_epsilon) { // 0/0
-//            for (int i = 1; i <= 10; ++i) {
-//                double dd = new dfr(s.m_denom, i).evaluate(x);
-//                double nd = new dfr(s.m_num, i).evaluate(x);
-//                if (Math.abs(dd) > g_epsilon2) {
-//                    return nd / dd;
-//                }
-//                if (Math.abs(nd) > g_epsilon) {
-//                    break;
-//                }
-//            }
-//        }
-//        return Double.NaN;
-//
-//    }
-//
-//    private static class dfr {
-//
-//        final int d;
-//        final SymmetricFilter filter;
-//
-//        dfr(SymmetricFilter filter, int d) {
-//            this.filter = filter;
-//            this.d = d;
-//        }
-//
-//        double evaluate(double freq) {
-//            if (d % 2 == 0) {
-//                double s = 0;
-//                for (int i = 1; i <= filter.getDegree(); ++i) {
-//                    double c = i;
-//                    for (int j = 1; j < d; ++j) {
-//                        c *= i;
-//                    }
-//                    c *= Math.cos(freq * i)*filter.getWeight(i);
-//                    s += c;
-//                }
-//                return s;
-//            } else {
-//                double s = 0;
-//                for (int i = 1; i <= filter.getDegree(); ++i) {
-//                    double c = i;
-//                    for (int j = 1; j < d; ++j) {
-//                        c *= i;
-//                    }
-//                    c *= Math.sin(freq * i)*filter.getWeight(i);
-//                    s += c;
-//                }
-//                return s;
-//            }
-//        }
-//    }
 //
 //    /**
 //     *
 //     * @return
 //     */
 //    public SymmetricFilter getDenominator() {
-//        return m_denom;
+//        return denom;
 //    }
 //
 //    /**
@@ -310,7 +308,7 @@ public class Spectrum {
 //     * @return
 //     */
 //    public SymmetricFilter getNumerator() {
-//        return m_num;
+//        return num;
 //    }
 //
 }

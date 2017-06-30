@@ -36,4 +36,12 @@ public interface IRationalFilter extends IFilter {
      * @return
      */
     IFiniteFilter getNumerator();
+    
+    RationalBackFilter getRationalBackFilter();
+
+    /**
+     *
+     * @return
+     */
+    RationalForeFilter getRationalForeFilter();
 }
