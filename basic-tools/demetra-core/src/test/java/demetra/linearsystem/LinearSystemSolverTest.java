@@ -5,11 +5,13 @@
  */
 package demetra.linearsystem;
 
-import demetra.linearsystem.internal.QRSolver;
+import demetra.linearsystem.internal.SparseSystemSolver;
+import demetra.linearsystem.internal.QRLinearSystemSolver;
 import demetra.linearsystem.internal.LUSolver;
 import java.util.Random;
 import demetra.data.DataBlock;
 import demetra.data.NeumaierAccumulator;
+import demetra.linearsystem.internal.FastRotationsSystemSolver;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.internal.CroutDoolittle;
 import demetra.maths.matrices.internal.Gauss;
@@ -29,15 +31,15 @@ public class LinearSystemSolverTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void testMethods() {
-        double[] del = new double[8];
+        double[] del = new double[9];
 
-        QRSolver qr = QRSolver.builder(new Householder())
+        QRLinearSystemSolver qr = QRLinearSystemSolver.builder(new Householder())
                 .normalize(true).improve(true).build();
-        QRSolver pqr = QRSolver.builder(new HouseholderWithPivoting())
+        QRLinearSystemSolver pqr = QRLinearSystemSolver.builder(new HouseholderWithPivoting())
                 .normalize(true).improve(true).build();
-        QRSolver rqr = QRSolver.builder(new RobustHouseholder())
+        QRLinearSystemSolver rqr = QRLinearSystemSolver.builder(new RobustHouseholder())
                 .normalize(true).improve(true).build();
         LUSolver gauss = LUSolver.builder(new Gauss())
                 .normalize(true).build();
@@ -48,12 +50,13 @@ public class LinearSystemSolverTest {
         LUSolver icrout = LUSolver.builder(new CroutDoolittle())
                 .normalize(true).improve(true).build();
         SparseSystemSolver sparse = new SparseSystemSolver();
-        for (int K = 0; K < 1000; ++K) {
-            for (int N = 1; N <= 100; ++N) {
-                Matrix M = Matrix.square(N);
-                Random rnd = new Random();
+        FastRotationsSystemSolver rotations = new FastRotationsSystemSolver();
+        for (int N = 1; N <= 100; ++N) {
+            Matrix M = Matrix.square(N);
+            Random rnd = new Random();
+            DataBlock x = DataBlock.make(N);
+            for (int K = 0; K < 1000; ++K) {
                 M.set(() -> rnd.nextDouble());
-                DataBlock x = DataBlock.make(N);
                 x.set(() -> rnd.nextDouble());
                 DataBlock y = DataBlock.make(N);
                 y.robustProduct(M.rowsIterator(), x, new NeumaierAccumulator());
@@ -82,9 +85,12 @@ public class LinearSystemSolverTest {
                 tmp = DataBlock.copyOf(y);
                 sparse.solve(M, tmp);
                 del[7] += x.distance(tmp);
+                tmp = DataBlock.copyOf(y);
+                rotations.solve(M, tmp);
+                del[8] += x.distance(tmp);
             }
             DataBlock q = DataBlock.copyOf(del);
-            q.div(100 * (K + 1));
+            q.div(1000);
             System.out.println(q);
         }
     }

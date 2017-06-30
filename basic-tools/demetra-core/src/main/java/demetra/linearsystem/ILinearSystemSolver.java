@@ -17,7 +17,7 @@
 package demetra.linearsystem;
 
 
-import demetra.linearsystem.internal.QRSolver;
+import demetra.linearsystem.internal.QRLinearSystemSolver;
 import demetra.linearsystem.internal.LUSolver;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -39,21 +39,21 @@ import demetra.maths.matrices.internal.RobustHouseholder;
  */
 @Development(status = Development.Status.Alpha)
 @ServiceDefinition
-public interface LinearSystemSolver {
+public interface ILinearSystemSolver {
 
-    public static LinearSystemSolver fastSolver(){
+    public static ILinearSystemSolver fastSolver(){
         return LS_Factory.FAST_FACTORY.get().get();
     }
 
-    public static LinearSystemSolver robustSolver(){
+    public static ILinearSystemSolver robustSolver(){
         return LS_Factory.ROBUST_FACTORY.get().get();
     }
 
-    public static void setFastSolver(Supplier<LinearSystemSolver> factory){
+    public static void setFastSolver(Supplier<ILinearSystemSolver> factory){
         LS_Factory.FAST_FACTORY.set(factory);
     }
     
-    public static void setRobustSolver(Supplier<LinearSystemSolver> factory){
+    public static void setRobustSolver(Supplier<ILinearSystemSolver> factory){
         LS_Factory.ROBUST_FACTORY.set(factory);
     }
 
@@ -80,8 +80,8 @@ public interface LinearSystemSolver {
 
 class LS_Factory{
    
-    static AtomicReference<Supplier<LinearSystemSolver>> FAST_FACTORY = new AtomicReference<>(
+    static AtomicReference<Supplier<ILinearSystemSolver>> FAST_FACTORY = new AtomicReference<>(
             ()->LUSolver.builder(new CroutDoolittle()).normalize(true).build());
-    static AtomicReference<Supplier<LinearSystemSolver>> ROBUST_FACTORY = new AtomicReference<>(
-            ()->QRSolver.builder(new RobustHouseholder()).normalize(true).improve(true).build());
+    static AtomicReference<Supplier<ILinearSystemSolver>> ROBUST_FACTORY = new AtomicReference<>(
+            ()->QRLinearSystemSolver.builder(new RobustHouseholder()).normalize(true).improve(true).build());
 }

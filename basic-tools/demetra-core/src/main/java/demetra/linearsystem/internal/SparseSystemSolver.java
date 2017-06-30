@@ -15,7 +15,7 @@
 * limitations under the Licence.
 */
 
-package demetra.linearsystem;
+package demetra.linearsystem.internal;
 
 import demetra.design.Development;
 import java.util.Arrays;
@@ -23,6 +23,7 @@ import demetra.data.DataBlock;
 import demetra.maths.Constants;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
+import demetra.linearsystem.ILinearSystemSolver;
 
 /**
  * This class is a translation ofInternal the code used in Seats (routine MLTSOL)
@@ -30,7 +31,7 @@ import demetra.maths.matrices.MatrixException;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public final class SparseSystemSolver implements LinearSystemSolver {
+public final class SparseSystemSolver implements ILinearSystemSolver {
 
     
     /**

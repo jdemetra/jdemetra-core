@@ -21,18 +21,18 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.NeumaierAccumulator;
 import demetra.design.IBuilder;
-import demetra.linearsystem.LinearSystemSolver;
 import demetra.maths.matrices.IQRDecomposition;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
+import demetra.linearsystem.ILinearSystemSolver;
 
 /**
  *
  * @author Jean Palate
  */
-public class QRSolver implements LinearSystemSolver {
+public class QRLinearSystemSolver implements ILinearSystemSolver {
 
-    public static class Builder implements IBuilder<QRSolver> {
+    public static class Builder implements IBuilder<QRLinearSystemSolver> {
 
         private final IQRDecomposition qr;
         private boolean improve, normalize;
@@ -52,8 +52,8 @@ public class QRSolver implements LinearSystemSolver {
         }
 
         @Override
-        public QRSolver build() {
-            return new QRSolver(qr, normalize, improve);
+        public QRLinearSystemSolver build() {
+            return new QRLinearSystemSolver(qr, normalize, improve);
         }
     }
 
@@ -63,7 +63,7 @@ public class QRSolver implements LinearSystemSolver {
     private final IQRDecomposition qr;
     private final boolean improve, normalize;
 
-    private QRSolver(IQRDecomposition qr, boolean normalize, boolean improve) {
+    private QRLinearSystemSolver(IQRDecomposition qr, boolean normalize, boolean improve) {
         this.qr = qr;
         this.normalize = normalize;
         this.improve = improve;

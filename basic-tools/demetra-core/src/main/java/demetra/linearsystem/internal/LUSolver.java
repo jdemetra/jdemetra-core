@@ -21,17 +21,17 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.NeumaierAccumulator;
 import demetra.design.IBuilder;
-import demetra.linearsystem.LinearSystemSolver;
 import demetra.maths.matrices.ILUDecomposition;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.internal.CroutDoolittle;
+import demetra.linearsystem.ILinearSystemSolver;
 
 /**
  *
  * @author Jean Palate
  */
-public class LUSolver implements LinearSystemSolver {
+public class LUSolver implements ILinearSystemSolver {
 
     public static class Builder implements IBuilder<LUSolver> {
 
