@@ -42,6 +42,10 @@ public class ArimaException extends RuntimeException {
      *
      */
     public static final String INVALID = "invalid ARIMA";
+    /**
+     *
+     */
+    public static final String MIN_SPECTRUM = "error in minimizing the spectrum";
 
     /**
      * 

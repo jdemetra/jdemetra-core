@@ -47,7 +47,7 @@ public interface IArimaModel extends ILinearModel
      * is missing.
      * @return The degree of the AR polynomial. >= 0.
      */
-    int getARCount();
+    int getARDegree();
 
     /**
      * Gets the moving average polynomial
@@ -62,7 +62,7 @@ public interface IArimaModel extends ILinearModel
      * is missing.
      * @return The degree of the MA polynomial. >= 0.
      */
-    int getMACount();
+    int getMADegree();
 
     /**
      * Gets the non stationary (containing only unit roots) auto-regressive polynomial
@@ -78,7 +78,7 @@ public interface IArimaModel extends ILinearModel
      * 0 if there is no unit roots.
      * @return The number of unit roots. 0 if the model is stationary.
      */
-    int getNonStationaryARCount();
+    int getNonStationaryARDegree();
 
     /**
      * 
@@ -90,7 +90,7 @@ public interface IArimaModel extends ILinearModel
      * Gets the degree of the stationary (without unit roots) AR polynomial. 
      * @return The degree of the stationary AR polynomial.
      */
-    int getStationaryARCount();
+    int getStationaryARDegree();
 
     /**
      * Gets the pi-weights of the model.

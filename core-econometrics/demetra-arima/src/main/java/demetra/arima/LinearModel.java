@@ -117,7 +117,7 @@ public class LinearModel implements ILinearModel {
                 tmp=acf;
                 if (tmp == null) {
                     RationalFilter f = getFilter();
-                    Polynomial n = f.getNumerator().asPolynomial();
+                    Polynomial n = Polynomial.ofInternal(f.getNumerator().toArray());
                     Polynomial bd = f.getRationalBackFilter().getDenominator().asPolynomial();
                     Polynomial fd = f.getRationalForeFilter().getDenominator().asPolynomial();
                     tmp = new AutoCovarianceFunction(n, bd.times(fd), getInnovationVariance());

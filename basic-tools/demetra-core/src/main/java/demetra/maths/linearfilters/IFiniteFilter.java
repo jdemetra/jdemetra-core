@@ -57,7 +57,10 @@ public interface IFiniteFilter extends IFilter {
      */
     IntToDoubleFunction weights();
     
-    
+    /**
+     * Returns all the weights, from lbound to ubound
+     * @return 
+     */
     default double[] toArray(){
         double[] w=new double[length()];
         IntToDoubleFunction weights = weights();
@@ -67,10 +70,6 @@ public interface IFiniteFilter extends IFilter {
         return w;
     }
     
-    default Polynomial asPolynomial(){
-        return Polynomial.ofInternal(toArray());
-    }
-
     /**
      * If this filter is w(l)B^(-l)+...+w(u)F^u Its mirror is
      * w(-u)B^(u)+...+w(-l)F^(-l)

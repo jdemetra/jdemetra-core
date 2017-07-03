@@ -97,7 +97,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
     public static FiniteFilter multiply(final IFiniteFilter l,
 	    final IFiniteFilter r) {
 	int llb = l.getLowerBound(), rlb = r.getLowerBound();
-	Polynomial lp = l.asPolynomial(), rp = r.asPolynomial();
+	Polynomial lp = Polynomial.ofInternal(l.toArray()), rp = Polynomial.ofInternal(r.toArray());
 	Polynomial w = lp.times(rp);
 	return new FiniteFilter(w, llb + rlb);
     }

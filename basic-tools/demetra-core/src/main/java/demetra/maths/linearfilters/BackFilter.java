@@ -132,27 +132,16 @@ public class BackFilter extends AbstractFiniteFilter {
     }
 
     /**
-     * Gets the coefficients of the filter (in the order of the powers of the back shift operator):
+     * Gets the coefficients of the filter, in the form of a polynomial.
+     * The coefficients are in the order of the powers of the back shift operator:
      * <br>
      * (1 a1 a2 ...)
      * @return
      */
-    public Doubles coefficients() {
-	return polynomial.coefficients();
-    }
-
-    @Override
     public Polynomial asPolynomial() {
-        return polynomial;
+	return polynomial;
     }
-    
-    /**
-     * 
-     * @return
-     */
-    public int getDegree() {
-	return polynomial.getDegree();
-    }
+  
 
     /**
      * 
@@ -428,7 +417,7 @@ public class BackFilter extends AbstractFiniteFilter {
 		    : new UnitRootsSolver(freq);
 	    urs.factorize(f.polynomial);
 	    unitRoots = new BackFilter(urs.getUnitRoots().toPolynomial());
-	    if (unitRoots.getDegree() == 0) {
+	    if (unitRoots.length() == 1) {
 		stationaryFilter = f;
 		return false;
 	    } else {

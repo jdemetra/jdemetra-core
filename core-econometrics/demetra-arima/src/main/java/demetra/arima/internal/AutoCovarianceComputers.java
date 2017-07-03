@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.arima.intenral;
+package demetra.arima.internal;
 
 import demetra.arima.ArimaException;
 import demetra.arima.AutoCovarianceFunction;
@@ -32,11 +32,8 @@ import demetra.maths.polynomials.RationalFunction;
  */
 public class AutoCovarianceComputers {
 
-    public static final AutoCovarianceFunction.Computer DEFAULT = defaultComputer(ILinearSystemSolver.robustSolver());
-    public static final AutoCovarianceFunction.SymmetricComputer DEFAULT_SYMETRIC = defaultSymmetricComputer(ILinearSystemSolver.robustSolver());
-
     public static AutoCovarianceFunction.Computer defaultComputer(ILinearSystemSolver solver) {
-        return (Polynomial ar, Polynomial ma, int rank) -> {
+        return (Polynomial ma, Polynomial ar, int rank) -> {
              int p = ar.length();
             int q = ma.length();
             int r0 = Math.max(p, q);
@@ -67,6 +64,10 @@ public class AutoCovarianceComputers {
                 }
             }
             try {
+                if (solver == null)
+                    ILinearSystemSolver.robustSolver().solve(M, x);
+                else
+                    solver.solve(M, x);
             } catch (Exception err) {
                 throw new ArimaException(ArimaException.NONSTATIONARY);
             }
@@ -83,7 +84,7 @@ public class AutoCovarianceComputers {
     }
 
     public static AutoCovarianceFunction.SymmetricComputer defaultSymmetricComputer(ILinearSystemSolver solver) {
-        return (Polynomial ar, SymmetricFilter sma, int rank) -> {
+        return (SymmetricFilter sma, Polynomial ar, int rank) -> {
             return null;
 //        int p = ar.getDegree() + 1;
 //        int q = sma == null ? 0 : sma.getDegree() + 1 ;

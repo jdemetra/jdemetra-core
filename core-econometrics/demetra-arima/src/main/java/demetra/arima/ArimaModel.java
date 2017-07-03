@@ -19,11 +19,12 @@ package demetra.arima;
 import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.design.Immutable;
+import demetra.maths.Complex;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.UnitRootsSolver;
-
+import javax.annotation.Nonnull;
 
 /**
  * Box-Jenkins ARIMA model P(B)D(B) y(t) = Q(B) e(t). P(B) is the stationary
@@ -41,19 +42,67 @@ import demetra.maths.polynomials.UnitRootsSolver;
  *
  * @author Jean Palate
  */
-
-
 @Immutable
 @Development(status = Development.Status.Alpha)
-public class ArimaModel implements IArimaModel {
+public class ArimaModel extends AbstractArimaModel {
 
-    private static final double EPS = 1e-4;
-    private final BackFilter bar_;
-    private final BackFilter delta_; // non stationary ar
-    private volatile BackFilter bma_; // stationary part
-    private volatile double var_;
-    private volatile SymmetricFilter sar_, sma_; // stationary part
-    private volatile boolean st_, inv_, initprop_;
+    private static final double EPS = 1e-6;
+    private final BackFilter ar;// stationary part
+    private final BackFilter delta; // non stationary ar
+    private final BackFilter ma;
+    private final double var;
+    private final SymmetricFilter sma; // stationary part
+
+    // Computed elements
+    private volatile SymmetricFilter.Factorization smaFactorization;
+    private volatile SymmetricFilter sar, derivedsma; // stationary part
+
+    /**
+     * Creates a white noise, with variance 1.
+     */
+    public static ArimaModel whiteNoise() {
+        return new ArimaModel(BackFilter.ONE, BackFilter.ONE, BackFilter.ONE, 1);
+    }
+
+    /**
+     * Creates a white noise, with variance 1.
+     */
+    public static ArimaModel whiteNoise(double var) {
+        return new ArimaModel(BackFilter.ONE, BackFilter.ONE, BackFilter.ONE, var);
+    }
+
+    /**
+     * Creates a new Arima model
+     *
+     * @param ar The stationary auto-regressive polynomial
+     * @param delta The non stationary auto-regressive polynomial
+     * @param ma The moving average polynomial
+     * @param var The innovation variance
+     */
+    public ArimaModel(@Nonnull final BackFilter ar, @Nonnull final BackFilter delta, @Nonnull final BackFilter ma,
+            final double var) {
+        this.var = var;
+        this.ar = ar;
+        this.delta = delta;
+        this.ma = ma;
+        sma = null;
+    }
+
+    /**
+     * Creates a new Arima model
+     *
+     * @param ar The stationary auto-regressive polynomial P(B)
+     * @param delta The non stationary auto-regressive polynomial D(B)
+     * @param sma A symmetric filter corresponding to var*Q(B)*Q(F)
+     */
+    public ArimaModel(@Nonnull final BackFilter ar, @Nonnull final BackFilter delta,
+            @Nonnull final SymmetricFilter sma) {
+        this.ar = ar;
+        this.delta = delta;
+        this.sma = sma;
+        this.ma = null;
+        this.var = 0;
+    }
 
     /**
      * Adds an Arima model to a white noise process with variance var. The
@@ -129,13 +178,13 @@ public class ArimaModel implements IArimaModel {
         if (Math.abs(lm.getInnovationVariance() - rm.getInnovationVariance()) > eps) {
             return false;
         }
-        if (! lm.getNonStationaryAR().asPolynomial().equals(rm.getNonStationaryAR().asPolynomial(), eps)) {
+        if (!lm.getNonStationaryAR().asPolynomial().equals(rm.getNonStationaryAR().asPolynomial(), eps)) {
             return false;
         }
-        if (! lm.getStationaryAR().asPolynomial().equals(rm.getStationaryAR().asPolynomial(), eps)) {
+        if (!lm.getStationaryAR().asPolynomial().equals(rm.getStationaryAR().asPolynomial(), eps)) {
             return false;
         }
-        if (! lm.getMA().asPolynomial().equals(rm.getMA().asPolynomial(), eps)) {
+        if (!lm.getMA().asPolynomial().equals(rm.getMA().asPolynomial(), eps)) {
             return false;
         }
         return true;
@@ -148,30 +197,23 @@ public class ArimaModel implements IArimaModel {
      * @return A new arima model is returned
      */
     public ArimaModel scaleVariance(double factor) {
-        ArimaModel m = new ArimaModel();
-        double var = this.getInnovationVariance();
-        if (var == 0) {
-            return this;
-        }
 
-        m.delta_ = delta_;
-        m.bar_ = bar_;
-        m.bma_ = bma_;
-        m.var_ = var * factor;
-        m.sar_ = sar_;
-        if (this.sma_ != null) {
-            m.sma_ = sma_.times(factor);
+        ArimaModel m;
+        if (sma == null) {
+            m = new ArimaModel(ar, delta, ma, var * factor);
+        } else {
+            m = new ArimaModel(ar, delta, sma.times(factor));
+        }
+        m.sar = sar;
+        SymmetricFilter dma = derivedsma;
+        if (dma != null) {
+            m.derivedsma = derivedsma.times(factor);
+        }
+        SymmetricFilter.Factorization fac = smaFactorization;
+        if (fac != null) {
+            m.smaFactorization = new SymmetricFilter.Factorization(fac.factor, fac.scaling * factor);
         }
         return m;
-    }
-
-    @Override
-    protected AutoCovarianceFunction initAcgf() throws ArimaException {
-        if (sma_ != null) {
-            return new AutoCovarianceFunction(sma_, getAR());
-        } else {
-            return super.initAcgf();
-        }
     }
 
     /**
@@ -191,13 +233,11 @@ public class ArimaModel implements IArimaModel {
      */
     public static ArimaModel create(final IArimaModel arima) {
         try {
-            ArimaModel m = new ArimaModel();
-
-            m.delta_ = arima.getNonStationaryAR();
-            m.bar_ = arima.getStationaryAR();
-            m.bma_ = arima.getMA();
-            m.var_ = arima.getInnovationVariance();
-            return m;
+            return new ArimaModel(
+                    arima.getNonStationaryAR(),
+                    arima.getStationaryAR(),
+                    arima.getMA(),
+                    arima.getInnovationVariance());
         } catch (ArimaException ex) {
             return null;
         }
@@ -207,16 +247,16 @@ public class ArimaModel implements IArimaModel {
             final boolean plus, final boolean simplify) {
         if (r.isWhiteNoise()) {
             if (plus) {
-                return l.plus(r.var_);
+                return l.plus(r.var);
             } else {
-                return l.minus(r.var_);
+                return l.minus(r.var);
             }
         } else if (l.isWhiteNoise() && plus) {
-            return ArimaModel.add(l.var_, r);
+            return ArimaModel.add(l.var, r);
         }
 
         // compute the denominator
-        BackFilter lar = l.bar_, rar = r.bar_, ar;
+        BackFilter lar = l.ar, rar = r.ar, ar;
         // BFilter lar = l.bar(), rar = r.bar(), ar = null;
         BackFilter.SimplifyingTool smp = new BackFilter.SimplifyingTool(false);
         if (smp.simplify(lar, rar)) {
@@ -227,7 +267,7 @@ public class ArimaModel implements IArimaModel {
             ar = lar.times(rar);
         }
 
-        BackFilter lur = l.delta_, rur = r.delta_, ur;
+        BackFilter lur = l.delta, rur = r.delta, ur;
         BackFilter.SimplifyingTool smpur = new BackFilter.SimplifyingTool(true);
         if (smpur.simplify(lur, rur)) {
             ur = lur.times(smpur.getRight());
@@ -239,10 +279,10 @@ public class ArimaModel implements IArimaModel {
             rar = rar.times(rur);
         }
 
-        SymmetricFilter sl = SymmetricFilter.createFromFilter(lar), sr = SymmetricFilter.createFromFilter(rar);
+        SymmetricFilter sl = SymmetricFilter.convolution(lar), sr = SymmetricFilter.convolution(rar);
 
         // use SymmetricFilter for the numerator.
-        SymmetricFilter lma = l.sma(), rma = r.sma(); // contains the innovation
+        SymmetricFilter lma = l.symmetricMA(), rma = r.symmetricMA(); // contains the innovation
         // variances...
         SymmetricFilter snum;
         if (plus) {
@@ -254,176 +294,18 @@ public class ArimaModel implements IArimaModel {
             return new ArimaModel(null, null, null, 0);
         }
 
-        ArimaModel rslt = new ArimaModel(ar, ur, null, null, 0, snum);
+        ArimaModel rslt = new ArimaModel(ar, ur, snum);
         if (simplify) {
-            rslt.simplify();
+            return rslt.simplify();
         } else {
-            rslt.simplifyAr();
-        }
-        return rslt;
-    }
-
-    /**
-     * Creates a white noise, with variance 1.
-     */
-    public ArimaModel() {
-        bar_ = BackFilter.ONE;
-        bma_ = BackFilter.ONE;
-        delta_ = BackFilter.ONE;
-        var_ = 1;
-    }
-
-    /**
-     * Creates a white noise, with variance var.
-     *
-     * @param var The variance of the innovations
-     */
-    public ArimaModel(double var) {
-        bar_ = BackFilter.ONE;
-        bma_ = BackFilter.ONE;
-        delta_ = BackFilter.ONE;
-        var_ = var;
-    }
-
-    /**
-     * Creates a new Arima model
-     *
-     * @param ar The stationary auto-regressive polynomial
-     * @param delta The non stationary auto-regressive polynomial
-     * @param ma The moving average polynomial
-     * @param var The innovation variance
-     */
-    public ArimaModel(final BackFilter ar, final BackFilter delta, final BackFilter ma,
-            final double var) {
-        var_ = var;
-        if (ar == null) {
-            bar_ = BackFilter.ONE;
-        } else {
-            bar_ = ar;
-        }
-        if (ma == null) {
-            bma_ = BackFilter.ONE;
-        } else {
-            bma_ = ma;
-        }
-        if (delta == null) {
-            delta_ = BackFilter.ONE;
-        } else {
-            delta_ = delta;
-        }
-        check();
-    }
-
-    /**
-     * Creates a new Arima model
-     *
-     * @param ar The stationary auto-regressive polynomial P(B)
-     * @param delta The non stationary auto-regressive polynomial D(B)
-     * @param sma A symmetric filter corresponding to var*Q(B)*Q(F)
-     */
-    public ArimaModel(final BackFilter ar, final BackFilter delta,
-            final SymmetricFilter sma) {
-        if (ar == null) {
-            bar_ = BackFilter.ONE;
-        } else {
-            bar_ = ar;
-        }
-        if (sma == null) {
-            bma_ = BackFilter.ONE;
-        } else {
-            sma_ = sma;
-        }
-        if (delta == null) {
-            delta_ = BackFilter.ONE;
-        } else {
-            delta_ = delta;
-        }
-        check();
-    }
-
-    /**
-     * Creates a new Arima model, using its polynomial representation and its
-     * symmetric filter representation. Attention, the constructor will not
-     * verify the coherence of the information.
-     *
-     * @param bar Stationary auto-regressive polynomial. May be null.
-     * @param ur Non-stationary auto-regressive polynomial. May be null.
-     * @param sar Symmetric auto-regressive filter. Should be equal to
-     * bar(B)*bar(F) if bar is defined.
-     * @param bma Moving average polynomial. May be null
-     * @param var Innovation variance.
-     * @param sma Symmetric moving average filter. Should be equal to
-     * var*bma(B)*bma(F) if bma is defined.
-     */
-    public ArimaModel(final BackFilter bar, final BackFilter ur,
-            final SymmetricFilter sar, final BackFilter bma, final double var,
-            final SymmetricFilter sma) {
-        bar_ = bar;
-        delta_ = ur;
-        sar_ = sar;
-        bma_ = bma;
-        sma_ = sma;
-        var_ = var;
-        check();
-    }
-
-    /**
-     * Create a new Arima model, starting from a stationary model and from a
-     * differencing filter. if starima ~ p(B)y(t) = q(B) e(t) e~N(0, vI), the
-     * result is p(B) ur(B) y(t) = q(B) e(t) e~N(0, vI)
-     *
-     * @param starima The stationary model
-     * @param ur The differencing filter
-     */
-    public ArimaModel(final IArimaModel starima, final BackFilter ur) {
-        if (!starima.isStationary()) {
-            throw new ArimaException(ArimaException.NONSTATIONARY);
-        }
-        bar_ = starima.getAR();
-        bma_ = starima.getMA();
-        if (ur == null) {
-            delta_ = BackFilter.ONE;
-        } else {
-            delta_ = ur;
-        }
-        var_ = starima.getInnovationVariance();
-    }
-
-    private void ar_btos() {
-        sar_ = SymmetricFilter.createFromFilter(bar_.times(delta_));
-    }
-
-    private BackFilter bma() throws ArimaException {
-        if (bma_ == null) {
-            ma_stob();
-        }
-        return bma_;
-    }
-
-    private void check() {
-        if (delta_ == null) {
-            delta_ = BackFilter.ONE;
-        }
-        if (bar_ == null) {
-            bar_ = BackFilter.ONE;
-        } else {
-            BackFilter ar = check(bar_);
-            if (ar != null) {
-                bar_ = ar;
-                sar_ = null;
-            }
-        }
-        BackFilter ma = check(bma_);
-        if (ma != null) {
-            bma_ = ma;
-            sma_ = null;
+            return rslt.simplifyAr();
         }
     }
 
     @Override
     public BackFilter getAR() {
-        // get { return bar()*delta_; }
-        return bar_.times(delta_);
+        // get { return bar()*delta; }
+        return ar.times(delta);
     }
 
     /**
@@ -431,8 +313,8 @@ public class ArimaModel implements IArimaModel {
      * @return
      */
     @Override
-    public int getARCount() {
-        return getStationaryARCount() + getNonStationaryARCount();
+    public int getARDegree() {
+        return getStationaryARDegree() + getNonStationaryARDegree();
     }
 
     /**
@@ -441,7 +323,20 @@ public class ArimaModel implements IArimaModel {
      */
     @Override
     public double getInnovationVariance() throws ArimaException {
-        return var();
+        if (ma != null) {
+            return var;
+        }
+        SymmetricFilter.Factorization fac = smaFactorization;
+        if (fac == null) {
+            synchronized (this) {
+                fac = smaFactorization;
+                if (fac == null) {
+                    fac = sma.factorize();
+                    smaFactorization = fac;
+                }
+            }
+        }
+        return fac.scaling;
     }
 
     /**
@@ -450,32 +345,44 @@ public class ArimaModel implements IArimaModel {
      */
     @Override
     public BackFilter getMA() {
-        return bma();
+        if (ma != null) {
+            return ma;
+        }
+        SymmetricFilter.Factorization fac = smaFactorization;
+        if (fac == null) {
+            synchronized (this) {
+                fac = smaFactorization;
+                if (fac == null) {
+                    fac = sma.factorize();
+                    smaFactorization = fac;
+                }
+            }
+        }
+        return fac.factor;
     }
 
     @Override
-    public int getMACount() {
-        if (bma_ != null) {
-            return bma_.getDegree();
+    public int getMADegree() {
+        if (ma != null) {
+            return -ma.getLowerBound();
         } else {
-            return sma_.getDegree();
+            return sma.getUpperBound();
         }
     }
 
     @Override
     public BackFilter getNonStationaryAR() {
-        return delta_;
+        return delta;
     }
 
     @Override
-    public int getNonStationaryARCount() {
-        return delta_.getDegree();
+    public int getNonStationaryARDegree() {
+        return delta.length() - 1;
     }
 
     @Override
     public BackFilter getStationaryAR() {
-        return bar_;
-        // get { return bar(); }
+        return ar;
     }
 
     /**
@@ -483,59 +390,32 @@ public class ArimaModel implements IArimaModel {
      * @return
      */
     @Override
-    public int getStationaryARCount() {
-        return bar_.getDegree();
-    }
-
-    private void initproperties() {
-        st_ = true;
-        if (delta_.getLength() > 1) {
-            st_ = false;
-        }
-        try {
-            Complex[] rma = bma().roots();
-            inv_ = true;
-            if (rma != null) {
-                for (int i = 0; i < rma.length; ++i) {
-                    double nrm = rma[i].absSquare();
-                    if (nrm <= 1 + EPS) {
-                        inv_ = false;
-                        break;
-                    }
-                }
-            }
-        } catch (ArimaException ex) {
-            inv_ = false;
-        }
-
-        initprop_ = true;
-    }
-
-    @Override
-    protected Spectrum initSpectrum() {
-        return new Spectrum(sma(), sar());
+    public int getStationaryARDegree() {
+        return ar.length() - 1;
     }
 
     @Override
     public boolean isInvertible() {
-        if (!initprop_) {
-            initproperties();
+        try {
+            Complex[] rma = getMA().roots();
+            if (rma != null) {
+                for (int i = 0; i < rma.length; ++i) {
+                    double nrm = rma[i].absSquare();
+                    if (nrm <= 1 + EPS) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        } catch (ArimaException ex) {
+            return false;
         }
-        return inv_;
     }
 
     @Override
     public boolean isNull() {
-        return delta_.getDegree() == 0
-                && (sma_ != null ? sma_.isNull() : var_ == 0);
-    }
-
-    @Override
-    public boolean isStationary() {
-        if (!initprop_) {
-            initproperties();
-        }
-        return st_;
+        return delta.length() == 0
+                && (sma != null ? sma.isNull() : var == 0);
     }
 
     /**
@@ -543,69 +423,19 @@ public class ArimaModel implements IArimaModel {
      * @return
      */
     public boolean isWhiteNoise() {
-        if (bar_.getDegree() != 0) {
+        if (ar.length() > 1) {
             return false;
         }
-        if (delta_.getDegree() != 0) {
+        if (delta.length() > 1) {
             return false;
         }
-        if (bma_ != null && bma_.getDegree() != 0) {
+        if (ma != null && ma.length() > 1) {
             return false;
         }
-        if (sma_ != null && sma_.getDegree() != 0) {
+        if (sma != null && sma.length() > 1) {
             return false;
         }
-        // computes the variance, if necessary
-        if (bma_ == null) {
-            if (sma_ == null) {
-                var_ = 0;
-            } else {
-                var_ = sma_.getWeight(0);
-                bma_ = BackFilter.ONE;
-            }
-        }
-        return true;
-    }
-
-    private void ma_btos() {
-        sma_ = SymmetricFilter.createFromFilter(bma_);
-        sma_ = sma_.times(var_);
-    }
-
-    // conversion between BFilter and SymmetricFilter
-    private void ma_stob() {
-        if (sma_.getLength() == 1) {
-            bma_ = BackFilter.ONE;
-            var_ = sma_.getWeight(0);
-        } else {
-//             bma_ = new SymmetricFilter.Decomposer().factorize(sma_);
-//            if (bma_ == null)
-            ma_stob2();
-//            else{
-//                double v=bma_.get(0);
-//                var_=v*v;
-//                bma_=bma_.normalize();
-//            }
-        }
-    }
-
-    // conversion between BFilter and SymmetricFilter
-    private void ma_stob2() {
-        SymmetricFrequencyResponseDecomposer3 sfr3 = new SymmetricFrequencyResponseDecomposer3();
-        //SymmetricFrequencyResponseDecomposer2 sfr2 = new SymmetricFrequencyResponseDecomposer2();
-        SymmetricFrequencyResponseDecomposer sfr = new SymmetricFrequencyResponseDecomposer();
-        if (sfr3.decompose(sma_)) {
-            bma_ = sfr3.getBFilter();
-            var_ = sfr3.getFactor();
-//        } else if (sfr2.decompose(sma_)) {
-//            bma_ = sfr2.getBFilter();
-//            var_ = sfr2.getFactor();
-        } else if (sfr.decompose(sma_)) {
-            bma_ = sfr.getBFilter();
-            var_ = sfr.getFactor();
-        } else {
-            throw new ArimaException(ArimaException.InvalidDecomposition);
-        }
+        return getInnovationVariance() > 0;
     }
 
     /**
@@ -633,12 +463,13 @@ public class ArimaModel implements IArimaModel {
      */
     public ArimaModel minus(final double v) {
         if (isWhiteNoise()) {
-            return new ArimaModel(null, null, null, var_ - v);
+            return new ArimaModel(null, null, null, var - v);
         }
         // use SymmetricFilter for the numerator.
-        SymmetricFilter sma = sma(), sar = sar();
+        SymmetricFilter sma = symmetricMA(), sar = symmetricAR();
         SymmetricFilter snum = sma.minus(SymmetricFilter.multiply(v, sar));
-        ArimaModel rslt = new ArimaModel(bar_, delta_, sar_, null, 0, snum);
+        ArimaModel rslt = new ArimaModel(ar, delta, snum);
+        rslt.sar = sar;
         return rslt;
     }
 
@@ -662,12 +493,13 @@ public class ArimaModel implements IArimaModel {
      */
     public ArimaModel plus(final double v) {
         if (isWhiteNoise()) {
-            return new ArimaModel(null, null, null, v + var_);
+            return new ArimaModel(null, null, null, v + var);
         }
         // use SymmetricFilter for the numerator.
-        SymmetricFilter sma = sma(), sar = sar();
+        SymmetricFilter sma = symmetricMA(), sar = symmetricAR();
         SymmetricFilter snum = sma.plus(SymmetricFilter.multiply(v, sar));
-        ArimaModel rslt = new ArimaModel(bar_, delta_, sar_, null, 0, snum);
+        ArimaModel rslt = new ArimaModel(ar, delta, snum);
+        rslt.sar = sar;
         return rslt;
     }
 
@@ -687,26 +519,28 @@ public class ArimaModel implements IArimaModel {
         return plus(m);
     }
 
-    SymmetricFilter sar() {
-        if (sar_ == null) {
-            ar_btos();
+    @Override
+    public SymmetricFilter symmetricAR() {
+        SymmetricFilter s = sar;
+        if (s == null) {
+            synchronized (this) {
+                s = sar;
+                if (s == null) {
+                    s = SymmetricFilter.convolution(ar.times(delta));
+                    sar = s;
+                }
+            }
         }
-        return sar_;
+        return s;
     }
 
     /**
      *
      * @return
      */
-    public boolean simplify() {
-        boolean sar = simplifyAr();
-        boolean sur = simplifyUr();
-        if (sar || sur) {
-            clearCachedObjects();
-            return true;
-        } else {
-            return false;
-        }
+    public ArimaModel simplify() {
+        ArimaModel m = simplifyAr();
+        return m.simplifyUr();
     }
 
     /**
@@ -715,20 +549,18 @@ public class ArimaModel implements IArimaModel {
      *
      * @return True if the model has been simplified
      */
-    public boolean simplifyAr() {
+    public ArimaModel simplifyAr() {
         try {
             BackFilter.SimplifyingTool smp = new BackFilter.SimplifyingTool(false);
-            if (smp.simplify(bar_, bma())) {
-                bar_ = smp.getLeft();
-                bma_ = smp.getRight();
-                sar_ = null;
-                sma_ = null;
-                return true;
+            if (smp.simplify(ar, getMA())) {
+                BackFilter nar = smp.getLeft();
+                BackFilter nma = smp.getRight();
+                return new ArimaModel(nar, delta, nma, getInnovationVariance());
             } else {
-                return false;
+                return this;
             }
         } catch (ArimaException e) {
-            return false;
+            return this;
         }
     }
 
@@ -736,26 +568,25 @@ public class ArimaModel implements IArimaModel {
      * Simplifies possible common roots between the non-stationary
      * auto-regressive polynomial and the moving average polynomial.
      *
-     * @return True if the model has been simplified
+     * @return The simplified model (=this f no simplification)
      */
-    public boolean simplifyUr() {
+    public ArimaModel simplifyUr() {
         try {
             UnitRootsSolver urs = new UnitRootsSolver();
-            if (!urs.factorize(bma().asPolynomial())) {
-                return false;
+            if (!urs.factorize(getMA().asPolynomial())) {
+                return this;
             }
             Polynomial.SimplifyingTool smp = new Polynomial.SimplifyingTool();
-            if (smp.simplify(urs.getUnitRoots().toPolynomial(), delta_.asPolynomial())) {
-                delta_ = new BackFilter(smp.getRight());
-                bma_ = new BackFilter(smp.getLeft().times(urs.remainder()));
-                sma_ = null;
-                return true;
+            if (smp.simplify(urs.getUnitRoots().toPolynomial(), delta.asPolynomial())) {
+                BackFilter ndelta = new BackFilter(smp.getRight());
+                BackFilter nma = new BackFilter(smp.getLeft().times(urs.remainder()));
+                return new ArimaModel(getStationaryAR(), ndelta, nma, getInnovationVariance());
             } else {
-                return false;
+                return this;
             }
 
         } catch (ArimaException e) {
-            return false;
+            return this;
         }
     }
 
@@ -763,23 +594,35 @@ public class ArimaModel implements IArimaModel {
      *
      * @return
      */
-    public SymmetricFilter sma() {
-        if (sma_ == null) {
-            ma_btos();
+    @Override
+    public SymmetricFilter symmetricMA() {
+        if (sma != null) {
+            return sma;
         }
-        return sma_;
+        SymmetricFilter s = derivedsma;
+        if (s == null) {
+            synchronized (this) {
+                s = derivedsma;
+                if (s == null) {
+                    s = SymmetricFilter.convolution(ma, var);
+                    derivedsma = s;
+                }
+            }
+        }
+        return derivedsma;
     }
 
     @Override
     public StationaryTransformation stationaryTransformation() {
-        return new StationaryTransformation(new ArimaModel(bar_, BackFilter.ONE,
-                null, bma_, var_, sma_), delta_);
+        ArimaModel st;
+        if (sma == null) {
+            st = new ArimaModel(ar, BackFilter.ONE, ma, var);
+            st.derivedsma = derivedsma;
+        } else {
+            st = new ArimaModel(ar, BackFilter.ONE, sma);
+            st.smaFactorization = smaFactorization;
+        }
+        return new StationaryTransformation(st, delta);
     }
 
-    double var() throws ArimaException {
-        if (bma_ == null) {
-            ma_stob();
-        }
-        return var_;
-    }
 }

@@ -52,7 +52,7 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @return
      */
     public static ForeFilter add(final double d, final ForeFilter l) {
-        Polynomial p = l.m_p.plus(d);
+        Polynomial p = l.polynomial.plus(d);
         return new ForeFilter(p);
     }
 
@@ -63,11 +63,11 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @return
      */
     public static ForeFilter multiply(final double d, final ForeFilter l) {
-        Polynomial p = l.m_p.times(d);
+        Polynomial p = l.polynomial.times(d);
         return new ForeFilter(p);
     }
 
-    private final Polynomial m_p;
+    private final Polynomial polynomial;
 
     /**
      * Create a new BackFilter from the specified coefficients.<br>
@@ -92,7 +92,7 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @param p
      */
     public ForeFilter(final Polynomial p) {
-        m_p = p;
+        polynomial = p;
     }
 
     /**
@@ -101,7 +101,7 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @return
      */
     public ForeFilter divide(final ForeFilter r) {
-        Polynomial.Division div = Polynomial.divide(m_p, r.m_p);
+        Polynomial.Division div = Polynomial.divide(polynomial, r.polynomial);
         if (!div.getRemainder().isZero()) {
             throw new PolynomialException(PolynomialException.DIVISION);
         }
@@ -114,11 +114,11 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @return
      */
     public double get(final int idx) {
-        return m_p.get(idx);
+        return polynomial.get(idx);
     }
 
     public Polynomial getPolynomial() {
-        return m_p;
+        return polynomial;
     }
 
     /**
@@ -126,7 +126,7 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @return
      */
     public int getDegree() {
-        return m_p.getDegree();
+        return polynomial.getDegree();
     }
 
     /**
@@ -135,7 +135,7 @@ public class ForeFilter extends AbstractFiniteFilter {
      */
     @Override
     public int length() {
-        return m_p.getDegree() + 1;
+        return polynomial.getDegree() + 1;
     }
 
     /**
@@ -149,7 +149,7 @@ public class ForeFilter extends AbstractFiniteFilter {
 
     @Override
     public int getUpperBound() {
-        return m_p.getDegree();
+        return polynomial.getDegree();
     }
 
     /**
@@ -158,12 +158,11 @@ public class ForeFilter extends AbstractFiniteFilter {
      */
     @Override
     public IntToDoubleFunction weights() {
-        return i -> m_p.get(i);
+        return i -> polynomial.get(i);
     }
 
-    @Override
     public Polynomial asPolynomial() {
-        return m_p;
+        return polynomial;
     }
 
     /**
@@ -171,7 +170,7 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @return
      */
     public boolean isIdentity() {
-        return m_p.isIdentity();
+        return polynomial.isIdentity();
     }
 
     /**
@@ -179,7 +178,7 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @return
      */
     public boolean isNull() {
-        return m_p.isZero();
+        return polynomial.isZero();
     }
 
     /**
@@ -188,7 +187,7 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @return
      */
     public ForeFilter minus(final double d) {
-        Polynomial p = m_p.minus(d);
+        Polynomial p = polynomial.minus(d);
         return new ForeFilter(p);
     }
 
@@ -198,7 +197,7 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @return
      */
     public ForeFilter minus(final ForeFilter r) {
-        Polynomial p = m_p.minus(r.m_p);
+        Polynomial p = polynomial.minus(r.polynomial);
         return new ForeFilter(p);
     }
 
@@ -208,7 +207,7 @@ public class ForeFilter extends AbstractFiniteFilter {
      */
     @Override
     public BackFilter mirror() {
-        return new BackFilter(m_p);
+        return new BackFilter(polynomial);
     }
 
     /**
@@ -216,7 +215,7 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @return
      */
     public ForeFilter negate() {
-        Polynomial p = m_p.negate();
+        Polynomial p = polynomial.negate();
         return new ForeFilter(p);
     }
 
@@ -225,11 +224,11 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @return
      */
     public ForeFilter normalize() {
-        double r = m_p.get(0);
+        double r = polynomial.get(0);
         if (r == 0 || r == 1) {
             return this;
         } else {
-            return new ForeFilter(m_p.times(1 / r));
+            return new ForeFilter(polynomial.times(1 / r));
         }
     }
 
@@ -239,7 +238,7 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @return
      */
     public ForeFilter plus(final double d) {
-        Polynomial p = m_p.plus(d);
+        Polynomial p = polynomial.plus(d);
         return new ForeFilter(p);
     }
 
@@ -249,7 +248,7 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @return
      */
     public ForeFilter plus(final ForeFilter r) {
-        Polynomial p = m_p.plus(r.m_p);
+        Polynomial p = polynomial.plus(r.polynomial);
         return new ForeFilter(p);
     }
 
@@ -258,7 +257,7 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @return
      */
     public Complex[] roots() {
-        return m_p.roots();
+        return polynomial.roots();
     }
 
     /**
@@ -267,7 +266,7 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @return
      */
     public Complex[] roots(final IRootsSolver searcher) {
-        return m_p.roots(searcher);
+        return polynomial.roots(searcher);
     }
 
     /**
@@ -276,7 +275,7 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @return
      */
     public ForeFilter times(final double d) {
-        Polynomial p = m_p.times(d);
+        Polynomial p = polynomial.times(d);
         return new ForeFilter(p);
     }
 
@@ -286,13 +285,13 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @return
      */
     public ForeFilter times(final ForeFilter r) {
-        Polynomial p = m_p.times(r.m_p);
+        Polynomial p = polynomial.times(r.polynomial);
         return new ForeFilter(p);
     }
 
     @Override
     public String toString() {
-        return m_p.toString('F', true);
+        return polynomial.toString('F', true);
     }
 
     /**
@@ -333,7 +332,7 @@ public class ForeFilter extends AbstractFiniteFilter {
         public boolean transform(ForeFilter f) {
             UnitRootsSolver urs = freq == 0 ? new UnitRootsSolver()
                     : new UnitRootsSolver(freq);
-            urs.factorize(f.m_p);
+            urs.factorize(f.polynomial);
             unitRoots = new ForeFilter(urs.getUnitRoots().toPolynomial());
             if (unitRoots.getDegree() == 0) {
                 stationaryFilter = f;
