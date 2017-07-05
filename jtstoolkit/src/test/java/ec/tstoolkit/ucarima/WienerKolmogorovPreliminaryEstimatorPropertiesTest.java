@@ -109,6 +109,7 @@ public class WienerKolmogorovPreliminaryEstimatorPropertiesTest {
         decomposer.add(ssel);
 
         UcarimaModel ucm = decomposer.decompose(ArimaModel.create(sarima));
+        System.out.println(ucm);
         double var = ucm.setVarianceMax(-1, false);
         return ucm;
     }

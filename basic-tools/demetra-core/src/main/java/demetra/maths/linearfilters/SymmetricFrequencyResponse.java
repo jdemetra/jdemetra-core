@@ -178,7 +178,7 @@ public class SymmetricFrequencyResponse {
      * @param sf
      */
     public SymmetricFrequencyResponse(final SymmetricFilter sf) {
-        double[] n = sf.toArray();
+        double[] n = sf.coefficientsAsPolynomial().toArray();
         D2SFR(n);
         m_p = Polynomial.of(n);
     }

@@ -16,11 +16,14 @@
  */
 package demetra.data;
 
+import demetra.design.AlgorithmImplementation;
+
 
 /**
  *
  * @author Jean Palate
  */
+@AlgorithmImplementation(algorithm=IDataNormalizer.class)
 public class DecimalNormalizer implements IDataNormalizer {
 
     private static final double D_MAX = 10, D_MIN = 1e-1;

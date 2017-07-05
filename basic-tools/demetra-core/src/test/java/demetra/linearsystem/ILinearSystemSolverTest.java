@@ -30,7 +30,7 @@ public class ILinearSystemSolverTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void testMethods() {
 
         QRLinearSystemSolver qr = QRLinearSystemSolver.builder(new Householder())

@@ -129,7 +129,7 @@ public class AnsleyFilter implements IArmaFilter {
             }
         }
 
-        Polynomial sma = SymmetricFilter.fromFilter(ma).asPolynomial();
+        Polynomial sma = SymmetricFilter.fromFilter(ma).coefficientsAsPolynomial();
         if (m_var != 1) {
             sma = sma.times(m_var);
         }

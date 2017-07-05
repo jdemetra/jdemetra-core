@@ -45,6 +45,8 @@ import javax.annotation.Nonnull;
 @Development(status = Development.Status.Alpha)
 public class ArimaModel extends AbstractArimaModel {
 
+    public static final ArimaModel ONE = whiteNoise(), NULL = whiteNoise(0);
+
     private static final double EPS = 1e-6;
     private final BackFilter ar;// stationary part
     private final BackFilter delta; // non stationary ar
@@ -98,8 +100,8 @@ public class ArimaModel extends AbstractArimaModel {
             return null;
         }
     }
-    
-    public ArimaModel copyOf(IArimaModel arima){
+
+    public static ArimaModel copyOf(IArimaModel arima) {
         return new ArimaModel(arima.getStationaryAR(), arima.getNonStationaryAR(),
                 arima.getMA(), arima.getInnovationVariance());
     }
@@ -169,7 +171,7 @@ public class ArimaModel extends AbstractArimaModel {
      * step of the procedure)
      */
     public static ArimaModel add(final IArimaModel l, final ArimaModel r) {
-        ArimaModel m = ArimaModel.create(l);
+        ArimaModel m = ArimaModel.copyOf(l);
         if (m == null) {
             throw new ArimaException("+ operation failed");
         }
@@ -189,7 +191,7 @@ public class ArimaModel extends AbstractArimaModel {
      * step of the procedure)
      */
     public static ArimaModel subtract(final IArimaModel l, final ArimaModel r) {
-        ArimaModel m = ArimaModel.create(l);
+        ArimaModel m = ArimaModel.copyOf(l);
         if (m == null) {
             throw new ArimaException("+ operation failed");
         }
@@ -258,34 +260,16 @@ public class ArimaModel extends AbstractArimaModel {
         return scaleVariance(1 / getInnovationVariance());
     }
 
-    /**
-     * Creates a new Arima model from a generic arima model
-     *
-     * @param arima The generic arima model
-     * @return A new arima model is returned.
-     */
-    public static ArimaModel create(final IArimaModel arima) {
-        try {
-            return new ArimaModel(
-                    arima.getNonStationaryAR(),
-                    arima.getStationaryAR(),
-                    arima.getMA(),
-                    arima.getInnovationVariance());
-        } catch (ArimaException ex) {
-            return null;
-        }
-    }
-
     private static ArimaModel pm(final ArimaModel l, final ArimaModel r,
             final boolean plus, final boolean simplify) {
         if (r.isWhiteNoise()) {
             if (plus) {
-                return l.plus(r.var);
+                return l.plus(r.getInnovationVariance());
             } else {
-                return l.minus(r.var);
+                return l.minus(r.getInnovationVariance());
             }
         } else if (l.isWhiteNoise() && plus) {
-            return ArimaModel.add(l.var, r);
+            return ArimaModel.add(l.getInnovationVariance(), r);
         }
 
         // compute the denominator
@@ -324,7 +308,7 @@ public class ArimaModel extends AbstractArimaModel {
             snum = lma.times(sr).minus(rma.times(sl));
         }
         if (snum.isNull()) {
-            return new ArimaModel(null, null, null, 0);
+            return NULL;
         }
 
         ArimaModel rslt = new ArimaModel(ar, ur, snum);
@@ -447,8 +431,11 @@ public class ArimaModel extends AbstractArimaModel {
 
     @Override
     public boolean isNull() {
-        return delta.length() == 0
-                && (sma != null ? sma.isNull() : var == 0);
+        if (this == NULL) {
+            return true;
+        }
+        return delta.length() == 1
+                && (sma != null ? sma.isNull() : Math.abs(var)<EPS);
     }
 
     /**
@@ -496,7 +483,8 @@ public class ArimaModel extends AbstractArimaModel {
      */
     public ArimaModel minus(final double v) {
         if (isWhiteNoise()) {
-            return new ArimaModel(null, null, null, var - v);
+            if (Math.abs(var-getInnovationVariance())<EPS)
+            return NULL;
         }
         // use SymmetricFilter for the numerator.
         SymmetricFilter sma = symmetricMA(), sar = symmetricAR();
@@ -526,7 +514,7 @@ public class ArimaModel extends AbstractArimaModel {
      */
     public ArimaModel plus(final double v) {
         if (isWhiteNoise()) {
-            return new ArimaModel(null, null, null, v + var);
+            return ArimaModel.whiteNoise(v + getInnovationVariance());
         }
         // use SymmetricFilter for the numerator.
         SymmetricFilter sma = symmetricMA(), sar = symmetricAR();
@@ -545,7 +533,7 @@ public class ArimaModel extends AbstractArimaModel {
      * @throws ArimaException
      */
     public ArimaModel plus(final IArimaModel r) throws ArimaException {
-        ArimaModel m = ArimaModel.create(r);
+        ArimaModel m = ArimaModel.copyOf(r);
         if (m == null) {
             throw new ArimaException("+ operation failed");
         }

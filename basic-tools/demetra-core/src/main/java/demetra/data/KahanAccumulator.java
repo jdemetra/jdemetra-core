@@ -16,10 +16,14 @@
  */
 package demetra.data;
 
+import demetra.design.AlgorithmImplementation;
+import static demetra.design.AlgorithmImplementation.Feature.Fast;
+
 /**
  * Kahan algorithm
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@AlgorithmImplementation(algorithm=IDataNormalizer.class, feature=Fast, isDefault=true)
 public strictfp final class KahanAccumulator implements DoubleAccumulator{
     
     private double del, sum;

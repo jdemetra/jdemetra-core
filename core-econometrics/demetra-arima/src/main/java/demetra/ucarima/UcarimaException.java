@@ -14,35 +14,37 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
 */
-package demetra.maths.polynomials;
+package demetra.ucarima;
 
 import demetra.design.Development;
 
 
 /**
- * 
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface IRootSelector {
+public class UcarimaException extends RuntimeException {
+
+    public UcarimaException() {
+    }
 
     /**
      * 
-     * @return
+     * @param msg
      */
-    Polynomial getOutofSelection();
+    public UcarimaException(final String msg) {
+	// super(g_origin, g_rmgr.GetString(msg));
+	super(msg);
+    }
 
     /**
      * 
-     * @return
+     * @param message
+     * @param innerException
      */
-    Polynomial getSelection();
+    public UcarimaException(final String message, final Exception innerException) {
+	super(message, innerException);
+    }
 
-    /**
-     * 
-     * @param p
-     * @return
-     */
-    boolean select(Polynomial p);
-    boolean selectUnitRoots(Polynomial p);
 }

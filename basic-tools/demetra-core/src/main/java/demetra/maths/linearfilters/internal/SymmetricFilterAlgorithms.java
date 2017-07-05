@@ -33,7 +33,7 @@ public class SymmetricFilterAlgorithms {
     public static SymmetricFilter.Decomposer decomposer(ILinearSystemSolver solver) {
         return (SymmetricFilter filter, final BackFilter Q) -> {
             if (Q.length() == 1) {
-                double[] data = filter.asPolynomial().toArray();
+                double[] data = filter.coefficientsAsPolynomial().toArray();
                 data[0] /= 2;
                 Polynomial tmp = Polynomial.ofInternal(data);
                 double q0 = Q.get(0);
@@ -44,7 +44,7 @@ public class SymmetricFilterAlgorithms {
             }
 
             Polynomial q = Q.asPolynomial();
-            Polynomial c = filter.asPolynomial();
+            Polynomial c = filter.coefficientsAsPolynomial();
 
             int nq = q.length();
             int nc = c.length();

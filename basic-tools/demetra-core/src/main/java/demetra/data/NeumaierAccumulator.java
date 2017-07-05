@@ -16,11 +16,15 @@
  */
 package demetra.data;
 
+import demetra.design.AlgorithmImplementation;
+import static demetra.design.AlgorithmImplementation.Feature.Balanced;
+
 /**
  * Kahan and Babuska summation, Neumaier variant
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@AlgorithmImplementation(algorithm=IDataNormalizer.class, feature=Balanced)
 public strictfp final class NeumaierAccumulator implements DoubleAccumulator {
 
     private double del, sum;

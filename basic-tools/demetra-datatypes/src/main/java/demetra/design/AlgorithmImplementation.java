@@ -69,5 +69,5 @@ public @interface AlgorithmImplementation {
      */
     Feature feature() default Feature.None;
     
-
+    boolean isDefault() default false;
 }

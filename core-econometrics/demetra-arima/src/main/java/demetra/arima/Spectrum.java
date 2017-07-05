@@ -230,6 +230,12 @@ public class Spectrum {
          * @param spectrum The spectrum being minimized
          */
         public void minimize(final Spectrum spectrum) {
+            if (spectrum.num.length()==1 && spectrum.denom.length() == 1) {
+                // constant
+                m_x = 0;
+                m_min = value(spectrum, 0);
+                return;
+            }
             m_x = 0;
             m_min = Double.MAX_VALUE;
             double y = value(spectrum, 0);

@@ -16,6 +16,8 @@
  */
 package demetra.data;
 
+import demetra.design.AlgorithmImplementation;
+import static demetra.design.AlgorithmImplementation.Feature.Robust;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
@@ -23,7 +25,8 @@ import java.math.MathContext;
  *
  * @author Jean Palate
  */
-public class BigDecimalAccumulator implements DoubleAccumulator {
+@AlgorithmImplementation(algorithm=IDataNormalizer.class, feature=Robust)
+public strictfp class BigDecimalAccumulator implements DoubleAccumulator {
 
     private BigDecimal sum;
     private final MathContext context=MathContext.DECIMAL128;

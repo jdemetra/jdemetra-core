@@ -16,11 +16,14 @@
  */
 package demetra.data;
 
+import demetra.design.Algorithm;
+
 
 /**
  * 
  * @author Jean Palate
  */
+@Algorithm
 public interface IDataNormalizer {
     /**
      * 

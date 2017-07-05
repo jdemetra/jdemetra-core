@@ -16,10 +16,13 @@
  */
 package demetra.data;
 
+import demetra.design.Algorithm;
+
 /**
  *
  * @author Jean Palate
  */
+@Algorithm
 public interface DoubleAccumulator {
     void add(double term);
     

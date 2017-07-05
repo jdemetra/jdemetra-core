@@ -14,43 +14,75 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
 */
-package demetra.maths.polynomials;
+package demetra.ucarima;
 
+import demetra.arima.ArimaModel;
 import demetra.design.Development;
 
+
 /**
- * 
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class AllSelector implements IRootSelector {
-
-    private Polynomial m_p;
+public abstract class SimpleModelDecomposer
+{
+    ArimaModel model, signal, noise;
 
     /**
      *
      */
-    public AllSelector() {
+    protected SimpleModelDecomposer() {
+	model = signal = noise = null;
     }
 
-    @Override
-    public Polynomial getOutofSelection() {
-	return null;
+    /**
+         *
+         */
+    protected abstract void calc();
+
+    /**
+         *
+         */
+    protected void clear() {
+	signal = noise = null;
     }
 
-    @Override
-    public Polynomial getSelection() {
-	return m_p;
+    /**
+     * 
+     * @return
+     */
+    public ArimaModel getModel() {
+	return model;
     }
 
-    @Override
-    public boolean select(final Polynomial p) {
-	m_p = p;
-	return p.getDegree() > 0;
+    /**
+     * 
+     * @return
+     */
+    public ArimaModel getNoise() {
+	if (noise == null)
+	    calc();
+	return noise;
     }
 
-    @Override
-    public boolean selectUnitRoots(Polynomial p) {
-       return select(p);
+    /**
+     * 
+     * @return
+     */
+    public ArimaModel getSignal() {
+	if (signal == null)
+	    calc();
+	return signal;
     }
+
+    /**
+     * 
+     * @param value
+     */
+    public void setModel(final ArimaModel value) {
+	model = value;
+	clear();
+    }
+
 }

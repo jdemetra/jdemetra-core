@@ -17,6 +17,7 @@
 
 package demetra.data;
 
+import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 
 /**
@@ -25,6 +26,7 @@ import demetra.design.Development;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Beta)
+@AlgorithmImplementation(algorithm=IDataNormalizer.class)
 public class AbsMeanNormalizer implements IDataNormalizer {
 
     @Override

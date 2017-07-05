@@ -254,7 +254,7 @@ public class SymmetricFilter extends AbstractFiniteFilter {
      *
      * @return
      */
-    public Polynomial asPolynomial() {
+    public Polynomial coefficientsAsPolynomial() {
         return polynomial;
     }
 
