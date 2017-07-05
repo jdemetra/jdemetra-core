@@ -29,12 +29,12 @@ import demetra.maths.linearfilters.BackFilter;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public class StationaryTransformation<S extends ILinearModel> {
+public class StationaryTransformation {
 
     /**
      *
      */
-    private final S stationaryModel;
+    private final IArimaModel stationaryModel;
 
     /**
      *
@@ -46,7 +46,7 @@ public class StationaryTransformation<S extends ILinearModel> {
      * @param stationaryModel
      * @param unitRoots
      */
-    public StationaryTransformation(final S stationaryModel,
+    public StationaryTransformation(final IArimaModel stationaryModel,
 	    final BackFilter unitRoots) {
 	this.stationaryModel = stationaryModel;
 	this.unitRoots = unitRoots;
@@ -55,7 +55,7 @@ public class StationaryTransformation<S extends ILinearModel> {
     /**
      * @return the stationaryModel
      */
-    public S getStationaryModel() {
+    public IArimaModel getStationaryModel() {
         return stationaryModel;
     }
 

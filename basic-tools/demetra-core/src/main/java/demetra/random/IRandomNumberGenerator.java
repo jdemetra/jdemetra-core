@@ -16,11 +16,14 @@
 */
 package demetra.random;
 
+import demetra.design.Algorithm;
+
 /**
  * Random number generator (RNG).
  *
  * @author Philippe Charles
  */
+@Algorithm
 public interface IRandomNumberGenerator {
 
     /**

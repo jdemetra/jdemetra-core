@@ -14,12 +14,21 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.arima.estimation;
+package demetra.design;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- *
+ * Special case of service definition
  * @author Jean Palate
  */
-class RationalFunction {
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.SOURCE)
+@Documented
+public @interface Algorithm {
     
 }

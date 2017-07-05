@@ -16,6 +16,7 @@
 */
 package demetra.random;
 
+import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 
 
@@ -25,7 +26,8 @@ import demetra.design.Development;
  * @see http://en.wikipedia.org/wiki/Xorshift
  * @author Jean Palate, Jeremy Demortier
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
+@AlgorithmImplementation(algorithm=IRandomNumberGenerator.class)
 public class XorshiftRNG extends AbstractRNG {
 
     // STATIC FACTORY METHODS >

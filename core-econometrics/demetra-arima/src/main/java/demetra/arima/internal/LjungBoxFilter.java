@@ -15,24 +15,30 @@
 * limitations under the Licence.
 */
 
-package demetra.arima.estimation;
+package demetra.arima.internal;
 
 import demetra.arima.IArimaModel;
+import demetra.arima.estimation.IArmaFilter;
 import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
 import demetra.data.Doubles;
+import demetra.data.LogSign;
+import demetra.design.AlgorithmImplementation;
+import static demetra.design.AlgorithmImplementation.Feature.Legacy;
 import demetra.design.Development;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
+import org.openide.util.lookup.ServiceProvider;
 
 
 /**
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
+@AlgorithmImplementation(algorithm=IArmaFilter.class, feature=Legacy)
+@ServiceProvider(service=IArmaFilter.class)
 public class LjungBoxFilter implements IArmaFilter {
 
     private int m_n, m_p, m_q;
@@ -40,11 +46,6 @@ public class LjungBoxFilter implements IArmaFilter {
     private double[] m_u;
     private Matrix m_G, m_X, m_V1, m_L;
     private double m_s, m_t;
-    
-    @Override
-    public LjungBoxFilter exemplar(){
-        return new LjungBoxFilter();
-    }
     
     private void ar(double[] a) {
         // AR(w)
@@ -254,25 +255,15 @@ public class LjungBoxFilter implements IArmaFilter {
 
             // compute G
             calcg(m);
-            m_X = SymmetricMatrix.quadraticForm(m_G, m_V1);
+            m_X = SymmetricMatrix.XtSX(m_G, m_V1);
 
             // compute the inverse of the covariance matrix
 
-            SymmetricMatrix.lcholesky(m_L);
-            m_s = 2 * m_L.diagonal().sumLog().value;
-            Matrix I = Matrix.make(m_p + m_q, m_p + m_q);
-            I.diagonal().set(1);
-            DataBlockIterator cols = I.columnsIterator();
-            while  {
-                LowerTriangularMatrix.rsolve(m_L, col);
-            } while (cols.next());
-            cols.begin();
-            do {
-                LowerTriangularMatrix.lsolve(m_L, col);
-            } while (cols.next());
-            m_X.add(I);
+            Matrix IL=SymmetricMatrix.inverse(m_L);
+            m_s = 2 * LogSign.of(m_L.diagonal()).value;
+            m_X.add(IL);
             SymmetricMatrix.lcholesky(m_X);
-            m_t = 2 * m_X.diagonal().sumLog().value;
+            m_t = 2 *LogSign.of(m_X.diagonal()).value;
         }
 
         return n + m_p + m_q;

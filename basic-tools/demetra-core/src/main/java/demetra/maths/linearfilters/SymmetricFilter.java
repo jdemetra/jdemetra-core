@@ -62,8 +62,8 @@ public class SymmetricFilter extends AbstractFiniteFilter {
      * @param f The initial filter
      * @return f * f.mirror()
      */
-    public static SymmetricFilter convolution(IFiniteFilter f) {
-        return convolution(f, 1);
+    public static SymmetricFilter fromFilter(IFiniteFilter f) {
+        return fromFilter(f, 1);
     }
 
     /**
@@ -72,7 +72,7 @@ public class SymmetricFilter extends AbstractFiniteFilter {
      * @param f The initial filter
      * @return f * f.mirror()
      */
-    public static SymmetricFilter convolution(IFiniteFilter f, final double scaling) {
+    public static SymmetricFilter fromFilter(IFiniteFilter f, final double scaling) {
         double[] w = f.toArray();
         double[] c = new double[w.length];
         for (int i = 0; i < w.length; ++i) {

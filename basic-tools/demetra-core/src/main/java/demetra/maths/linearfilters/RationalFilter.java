@@ -70,13 +70,13 @@ public class RationalFilter implements IRationalFilter {
             D = new BackFilter(smp.getRight());
         }
 
-        SymmetricFilter n = SymmetricFilter.convolution(N);
+        SymmetricFilter n = SymmetricFilter.fromFilter(N);
         BackFilter g = n.decompose(D);
         RationalFilter rf = new RationalFilter();
         rf.m_rb = new RationalBackFilter(g, D, 0);
         rf.m_rf = rf.m_rb.mirror();
-        rf.m_n = SymmetricFilter.convolution(N);
-        rf.m_d = SymmetricFilter.convolution(D);
+        rf.m_n = SymmetricFilter.fromFilter(N);
+        rf.m_d = SymmetricFilter.fromFilter(D);
         return rf;
     }
 

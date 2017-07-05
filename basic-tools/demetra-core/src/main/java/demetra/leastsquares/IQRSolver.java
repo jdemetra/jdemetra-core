@@ -16,6 +16,7 @@
  */
 package demetra.leastsquares;
 
+import demetra.design.Algorithm;
 import demetra.leastsquares.internal.QRSolver;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.internal.Householder;
@@ -26,6 +27,7 @@ import java.util.function.Supplier;
  *
  * @author Jean Palate
  */
+@Algorithm
 public interface IQRSolver extends ILeastSquaresSolver {
 
       public static IQRSolver fastSolver() {

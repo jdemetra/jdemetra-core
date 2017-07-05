@@ -7,11 +7,13 @@ package demetra.leastsquares;
 
 import demetra.maths.matrices.Matrix;
 import demetra.data.Doubles;
+import demetra.design.Algorithm;
 
 /**
  * 
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@Algorithm
 public interface ILeastSquaresSolver {
 
 

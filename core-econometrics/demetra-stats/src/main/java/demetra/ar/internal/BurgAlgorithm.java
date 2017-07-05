@@ -14,46 +14,47 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.ar;
+package demetra.ar.internal;
+
+import demetra.ar.IAutoRegressiveEstimation;
+import demetra.data.Doubles;
+import demetra.design.AlgorithmImplementation;
+import static demetra.design.AlgorithmImplementation.Feature.Balanced;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-public class BurgAlgorithm {
+@ServiceProvider(service = IAutoRegressiveEstimation.class)
+@AlgorithmImplementation(algorithm =IAutoRegressiveEstimation.class, feature=Balanced)
+public class BurgAlgorithm implements IAutoRegressiveEstimation {
 
-    private double[] x;
+    private double[] y;
     private double[] a;
 
-    public boolean solve(IReadDataBlock x, int m) {
-        this.x = new double[x.getLength()];
-        x.copyTo(this.x, 0);
+    @Override
+    public boolean estimate(Doubles y, int m) {
+        this.y = new double[y.length()];
+        y.copyTo(this.y, 0);
         return calc(m);
     }
 
-    public IReadDataBlock getCoefficients() {
-        return new ReadDataBlock(a);
+    @Override
+    public Doubles coefficients() {
+        return Doubles.ofInternal(a);
     }
 
-    public double[] residuals() {
-        int n = x.length;
-        double[] res = new double[n];
-        for (int i = 0; i < n; ++i) {
-            double e = x[i];
-            int jmax = a.length > i ? i : a.length;
-            for (int j = 1; j <= jmax; ++j) {
-                e += a[j - 1] * x[i - j];
-            }
-            res[i] = e;
-        }
-        return res;
+    @Override
+    public Doubles data() {
+        return Doubles.ofInternal(y);
     }
 
     private boolean calc(int m) {
-        int n = x.length - 1;
+        int n = y.length - 1;
         double[] ak = new double[m + 1];
         ak[0] = 1.0;
-        double[] f = x.clone(), b = x.clone();
+        double[] f = y.clone(), b = y.clone();
         double dk = 0.0;
         for (int j = 0; j <= n; j++) {
             dk += 2 * f[j] * f[j];
@@ -80,7 +81,8 @@ public class BurgAlgorithm {
             dk = (1.0 - mu * mu) * dk - f[k + 1] * f[k + 1] - b[n - k - 1] * b[n - k - 1];
         }
         a = new double[m];
-        System.arraycopy(ak, 1, a, 0, m);
+        for (int i=0; i<m; ++i)
+            a[i]=-ak[i+1];
         return true;
     }
 }

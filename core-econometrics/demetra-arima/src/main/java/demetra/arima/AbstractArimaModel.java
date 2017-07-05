@@ -32,9 +32,13 @@ public abstract class AbstractArimaModel implements IArimaModel {
     private volatile Spectrum spectrum;
     private volatile AutoCovarianceFunction acf;
 
-    protected abstract SymmetricFilter symmetricMA();
+    protected SymmetricFilter symmetricMA(){
+        return SymmetricFilter.fromFilter(getMA(), getInnovationVariance());
+    }
 
-    protected abstract SymmetricFilter symmetricAR();
+    protected SymmetricFilter symmetricAR(){
+        return SymmetricFilter.fromFilter(getAR());
+    }
 
     @Override
     public Spectrum getSpectrum() {
@@ -106,7 +110,19 @@ public abstract class AbstractArimaModel implements IArimaModel {
 
     @Override
     public boolean isStationary() {
-        return getNonStationaryARDegree() > 0;
+        return getNonStationaryAROrder() > 0;
     }
 
+    @Override
+    public String toString() {
+        try {
+            StringBuilder builder = new StringBuilder();
+            builder.append("AR = ").append(getAR().toString()).append("; ");
+            builder.append("MA = ").append(getMA().toString()).append("; ");
+            builder.append("var =").append(getInnovationVariance());
+            return builder.toString();
+        } catch (ArimaException ex) {
+            return "Invalid model";
+        }
+    }
 }

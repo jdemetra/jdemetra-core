@@ -32,6 +32,7 @@ import javax.annotation.Nonnull;
  */
 public final class DataBlock implements Doubles {
 
+
     @FunctionalInterface
     public static interface DataBlockFunction {
 
@@ -794,6 +795,10 @@ public final class DataBlock implements Doubles {
         }
     }
 
+    /**
+     * Copy the given data. 
+     * @param x The data being copied. Could be larger than the current buffer
+     */
     public void copy(Doubles x) {
         CellReader cell = x.reader();
         for (int i = beg; i != end; i += inc) {
@@ -1322,6 +1327,11 @@ public final class DataBlock implements Doubles {
             return nrm;
         }
     }
+    
+    public Doubles unmodifiable() {
+        return Doubles.ofFunction(this.length(), i->get(i));
+    }
+
 
     public String toString(String fmt) {
         return Doubles.toString(this, fmt);

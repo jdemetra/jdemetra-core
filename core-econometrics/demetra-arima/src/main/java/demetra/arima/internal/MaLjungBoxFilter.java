@@ -15,24 +15,25 @@
 * limitations under the Licence.
 */
 
-package demetra.arima.estimation;
+package demetra.arima.internal;
 
-import ec.tstoolkit.arima.IArimaModel;
-import ec.tstoolkit.data.DataBlock;
-import ec.tstoolkit.data.IReadDataBlock;
-import ec.tstoolkit.design.Development;
-import ec.tstoolkit.maths.matrices.LowerTriangularMatrix;
-import ec.tstoolkit.maths.matrices.Matrix;
-import ec.tstoolkit.maths.matrices.SubMatrix;
-import ec.tstoolkit.maths.matrices.SymmetricMatrix;
-import ec.tstoolkit.maths.polynomials.Polynomial;
-import ec.tstoolkit.maths.polynomials.RationalFunction;
+import demetra.arima.IArimaModel;
+import demetra.arima.estimation.IArmaFilter;
+import demetra.data.DataBlock;
+import demetra.data.Doubles;
+import demetra.data.LogSign;
+import demetra.design.Development;
+import demetra.maths.matrices.LowerTriangularMatrix;
+import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.SymmetricMatrix;
+import demetra.maths.polynomials.Polynomial;
+import demetra.maths.polynomials.RationalFunction;
 
 /**
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class MaLjungBoxFilter implements IArmaFilter {
+public class MaLjungBoxFilter {
 
     private int m_n, m_q;
 
@@ -43,17 +44,13 @@ public class MaLjungBoxFilter implements IArmaFilter {
 
     private double m_t;
 
-    @Override
-    public MaLjungBoxFilter exemplar(){
-        return new MaLjungBoxFilter();
-    }
     // / <summary>
     // / MA(a0) = AR(w) or a0 = M w
     // / </summary>
     // / <param name="w"></param>
     // / <returns></returns>
-    private double[] calca0(IReadDataBlock w) {
-	double[] a0 = new double[w.getLength()];
+    private double[] calca0(Doubles w) {
+	double[] a0 = new double[w.length()];
 	w.copyTo(a0, 0);
 	rma(a0);
 
@@ -83,9 +80,9 @@ public class MaLjungBoxFilter implements IArmaFilter {
     // / </summary>
     // / <param name="m"></param>
     private void calcg(int m) {
-	RationalFunction rf = new RationalFunction(Polynomial.ONE, m_ma);
+	RationalFunction rf = RationalFunction.of(Polynomial.ONE, m_ma);
 	double[] pi = rf.coefficients(m_n);
-	Matrix gg = new Matrix(m, m);
+	Matrix gg = Matrix.square(m);
 
 	// compute first column
 	for (int i = 0; i < m; ++i) {
@@ -125,62 +122,59 @@ public class MaLjungBoxFilter implements IArmaFilter {
 	rma(v);
     }
 
-    @Override
-    public void filter(IReadDataBlock w, DataBlock wl) {
+    public void filter(Doubles w, DataBlock wl) {
 	// compute a0=Mw
 	double[] a0 = calca0(w);
 	double[] g = calcg(a0);
 	m_u = calch(g);
-	LowerTriangularMatrix.rsolve(m_X, m_u);
-	LowerTriangularMatrix.lsolve(m_X, m_u);
-	double[] v = new double[w.getLength()];
+        DataBlock U=DataBlock.ofInternal(m_u);
+	LowerTriangularMatrix.rsolve(m_X, U);
+	LowerTriangularMatrix.lsolve(m_X, U);
+	double[] v = new double[w.length()];
 	calcv(v);
 	wl.range(0, m_q).copyFrom(m_u, 0);
-	wl.drop(m_q, 0).difference(new DataBlock(a0), new DataBlock(v));
+	wl.drop(m_q, 0).set(i->a0[i]-v[i]);
     }
 
     /**
      * 
      * @return
      */
-    public DataBlock getInitialResiduals()
+    public Doubles getInitialResiduals()
     {
-	return new DataBlock(m_u);
+	return Doubles.ofInternal(m_u);
     }
 
     // / <summary>
     // / v = V1 * m_u
     // / </summary>
     // / <param name="v"></param>
-    @Override
     public double getLogDeterminant() {
 	return m_t;
     }
 
-    @Override
     public int initialize(IArimaModel arima, int n) {
-	m_ma = arima.getMA().getPolynomial();
+	m_ma = arima.getMA().asPolynomial();
 	m_n = n;
 	m_q = m_ma.getDegree();
 
 	// compute V1' * G * V1 = X' X and V (covar model)
 
-	m_V1 = new Matrix(m_q, m_q);
+	m_V1 = Matrix.square(m_q);
 
 	if (m_q > 0) {
-	    SubMatrix Q = m_V1.subMatrix();
-	    Q.diagonal().set(m_ma.get(m_q));
+	    m_V1.diagonal().set(m_ma.get(m_q));
 	    for (int i = 1; i < m_q; ++i)
-		Q.subDiagonal(i).set(m_ma.get(m_q - i));
+		m_V1.subDiagonal(i).set(m_ma.get(m_q - i));
 	}
 
 	// compute G
 	calcg(m_q);
-	m_X = SymmetricMatrix.quadraticForm(m_G, m_V1);
+	m_X = SymmetricMatrix.XtSX(m_G, m_V1);
 
 	m_X.diagonal().add(1);
 	SymmetricMatrix.lcholesky(m_X);
-	m_t = 2 * m_X.diagonal().sumLog().value;
+	m_t = 2 * LogSign.of(m_X.diagonal()).value;
 	return n + m_q;
     }
 

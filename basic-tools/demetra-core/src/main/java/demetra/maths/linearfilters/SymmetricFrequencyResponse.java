@@ -57,7 +57,7 @@ public class SymmetricFrequencyResponse {
      * @return
      */
     public static SymmetricFrequencyResponse createFromFilter(final IFiniteFilter f) {
-        return new SymmetricFrequencyResponse(SymmetricFilter.convolution(f));
+        return new SymmetricFrequencyResponse(SymmetricFilter.fromFilter(f));
     }
 
     /**

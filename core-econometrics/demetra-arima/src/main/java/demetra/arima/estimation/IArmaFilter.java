@@ -19,8 +19,13 @@
 package demetra.arima.estimation;
 
 import demetra.arima.IArimaModel;
+import demetra.arima.internal.AnsleyFilter;
+import demetra.arima.internal.KalmanFilter;
+import demetra.arima.internal.LjungBoxFilter;
+import demetra.arima.internal.ModifiedLjungBoxFilter;
 import demetra.data.DataBlock;
 import demetra.data.Doubles;
+import demetra.design.Algorithm;
 import demetra.design.Development;
 
 
@@ -38,6 +43,7 @@ import demetra.design.Development;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
+@Algorithm
 public interface IArmaFilter {
 
     /**
@@ -63,9 +69,17 @@ public interface IArmaFilter {
      */
     int initialize(final IArimaModel model, int length);
     
-    /**
-     * Provides an examplar of the filter (prototype design pattern)
-     * @return 
-     */
-    IArmaFilter exemplar();
+   
+    public static IArmaFilter ansley(){
+        return new AnsleyFilter();
+    }
+    public static IArmaFilter ljungBox(){
+        return new LjungBoxFilter();
+    }
+    public static IArmaFilter kalman(){
+        return new KalmanFilter();
+    }
+    public static IArmaFilter modifiedLjungBox(){
+        return new ModifiedLjungBoxFilter();
+    }
 }

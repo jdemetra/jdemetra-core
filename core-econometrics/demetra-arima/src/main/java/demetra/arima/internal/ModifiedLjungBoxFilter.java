@@ -15,22 +15,29 @@
 * limitations under the Licence.
 */
 
-package demetra.arima.estimation;
+package demetra.arima.internal;
 
-import ec.tstoolkit.arima.IArimaModel;
-import ec.tstoolkit.data.DataBlock;
-import ec.tstoolkit.data.IReadDataBlock;
-import ec.tstoolkit.design.Development;
-import ec.tstoolkit.maths.matrices.LowerTriangularMatrix;
-import ec.tstoolkit.maths.matrices.Matrix;
-import ec.tstoolkit.maths.matrices.SubMatrix;
-import ec.tstoolkit.maths.matrices.SymmetricMatrix;
-import ec.tstoolkit.maths.polynomials.Polynomial;
+import demetra.arima.IArimaModel;
+import demetra.arima.estimation.IArmaFilter;
+import demetra.data.DataBlock;
+import demetra.data.DataWindow;
+import demetra.data.Doubles;
+import demetra.data.LogSign;
+import demetra.design.AlgorithmImplementation;
+import static demetra.design.AlgorithmImplementation.Feature.Legacy;
+import demetra.design.Development;
+import demetra.maths.matrices.LowerTriangularMatrix;
+import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.SymmetricMatrix;
+import demetra.maths.polynomials.Polynomial;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
+@AlgorithmImplementation(algorithm=IArmaFilter.class, feature=Legacy)
+@ServiceProvider(service=IArmaFilter.class)
 public class ModifiedLjungBoxFilter implements IArmaFilter {
 
     private int m_n, m_p, m_q;
@@ -42,22 +49,16 @@ public class ModifiedLjungBoxFilter implements IArmaFilter {
     private Matrix m_L, m_C;
 
     @Override
-    public ModifiedLjungBoxFilter exemplar(){
-        return new ModifiedLjungBoxFilter();
-    }
-
-    @Override
-    public void filter(IReadDataBlock rw, DataBlock wl) {
-	DataBlock w = new DataBlock(rw);
+    public void filter(Doubles rw, DataBlock wl) {
+	DataBlock w = DataBlock.copyOf(rw);
 	// step 1. AR filter w, if necessary
 	DataBlock z = w;
 	if (m_p > 0) {
-	    z = new DataBlock(w.getLength() - m_p);
-	    DataBlock x = w.drop(m_p, 0);
-	    z.copy(x);
+	    z = DataBlock.make(w.length() - m_p);
+	    DataWindow x = w.drop(m_p, 0).window();
+	    z.copy(x.get());
 	    for (int i = 1; i <= m_p; ++i) {
-		x.move(-1);
-		z.addAY(m_ar.get(i), x);
+		z.addAY(m_ar.get(i), x.move(-1));
 	    }
 	}
 	// filter z (pure ma part)
@@ -87,8 +88,8 @@ public class ModifiedLjungBoxFilter implements IArmaFilter {
     @Override
     public int initialize(IArimaModel arima, int n) {
         clear();
-	m_ar = arima.getAR().getPolynomial().adjustDegree();
-	m_ma = arima.getMA().getPolynomial().adjustDegree();
+	m_ar = arima.getAR().asPolynomial();
+	m_ma = arima.getMA().asPolynomial();
 	m_n = n;
 	m_p = m_ar.getDegree();
 	m_q = m_ma.getDegree();
@@ -100,20 +101,19 @@ public class ModifiedLjungBoxFilter implements IArmaFilter {
 	// Compute the covariance matrix V
 
 	if (m_p > 0) {
-	    m_L = new Matrix(m_p, m_p);
+	    m_L = Matrix.square(m_p);
 
 	    // W = var(y)
-	    SubMatrix W = m_L.subMatrix();
 	    double[] cov = arima.getAutoCovarianceFunction().values(m_p);
-	    W.diagonal().set(cov[0]);
+	    m_L.diagonal().set(cov[0]);
 
 	    for (int i = 1; i < m_p; ++i)
-		W.subDiagonal(i).set(cov[i]);
+		m_L.subDiagonal(i).set(cov[i]);
 	    if (m_q > 0) {
 		double[] psi = arima.getPsiWeights().getRationalFunction()
 			.coefficients(m_q);
-		Matrix C = new Matrix(m_n - m_p, m_p);
-		m_C = new Matrix(m_n + m_q - m_p, m_p);
+		Matrix C = Matrix.make(m_n - m_p, m_p);
+		m_C = Matrix.make(m_n + m_q - m_p, m_p);
 		// fill in the columns of m_C and filter them
 		for (int c = 0; c < m_p; ++c) {
 		    DataBlock col = C.column(c);
@@ -140,7 +140,7 @@ public class ModifiedLjungBoxFilter implements IArmaFilter {
 	    }
 	    SymmetricMatrix.fromUpper(m_L);
 	    SymmetricMatrix.lcholesky(m_L);
-	    m_s = 2 * m_L.diagonal().sumLog().value;
+	    m_s = 2 * LogSign.of(m_L.diagonal()).value;
 	}
 	return n + m_q;
     }

@@ -136,7 +136,7 @@ public class LinearModel implements ILinearModel {
                 tmp=spectrum;
                 if (tmp == null) {
                     IRationalFilter rf = this.getFilter();
-                    tmp = new Spectrum(SymmetricFilter.convolution(rf.getNumerator()).times(getInnovationVariance()), SymmetricFilter.convolution(rf.getDenominator()));
+                    tmp = new Spectrum(SymmetricFilter.fromFilter(rf.getNumerator()).times(getInnovationVariance()), SymmetricFilter.fromFilter(rf.getDenominator()));
                     spectrum=tmp;
                 }
             }

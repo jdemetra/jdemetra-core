@@ -35,7 +35,7 @@ public class SarimaSpecification implements Cloneable {
     private static final BackFilter m10 = differencingFilter(12, 1, 0), m20 = differencingFilter(12, 2, 0), m01 = differencingFilter(12, 0, 1),
             m11 = differencingFilter(12, 1, 1), q10 = differencingFilter(4, 1, 0), q20 = differencingFilter(4, 2, 0), q01 = differencingFilter(4, 0, 1), q11 = differencingFilter(4, 1, 1);
 
-    private static BackFilter differencingFilter(int freq, int d, int bd) {
+    public static BackFilter differencingFilter(int freq, int d, int bd) {
         Polynomial X = null;
         if (d > 0) {
             X = UnitRoots.D(1, d);

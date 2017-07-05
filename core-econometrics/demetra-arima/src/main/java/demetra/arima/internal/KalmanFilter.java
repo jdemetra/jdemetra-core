@@ -15,21 +15,27 @@
 * limitations under the Licence.
 */
 
-package demetra.arima.estimation;
+package demetra.arima.internal;
 
 import demetra.arima.ArimaException;
 import demetra.arima.IArimaModel;
+import demetra.arima.estimation.IArmaFilter;
 import demetra.data.DataBlock;
 import demetra.data.Doubles;
+import demetra.design.AlgorithmImplementation;
+import static demetra.design.AlgorithmImplementation.Feature.Fast;
 import demetra.design.Development;
 import demetra.likelihood.DeterminantalTerm;
 import demetra.maths.polynomials.Polynomial;
+import org.openide.util.lookup.ServiceProvider;
 
 
 /**
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
+@AlgorithmImplementation(algorithm=IArmaFilter.class, feature=Fast)
+@ServiceProvider(service=IArmaFilter.class)
 public class KalmanFilter implements IArmaFilter {
 
     private double[] m_C;

@@ -37,8 +37,8 @@ public class MovingAverageDistance {
      * @return The distance between the models
      */
     public static double compute(IArimaModel a, IArimaModel b, int npi){
-        StationaryTransformation<IArimaModel> sta = a.stationaryTransformation();
-        StationaryTransformation<IArimaModel> stb = b.stationaryTransformation();
+        StationaryTransformation sta = a.stationaryTransformation();
+        StationaryTransformation stb = b.stationaryTransformation();
         if (! sta.getUnitRoots().asPolynomial().equals(stb.getUnitRoots().asPolynomial(), 1e-6))
             return -1;
         RationalBackFilter pia = (sta.getStationaryModel()).getPsiWeights();

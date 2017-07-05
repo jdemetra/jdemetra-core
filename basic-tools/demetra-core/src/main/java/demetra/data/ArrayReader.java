@@ -167,6 +167,11 @@ class FnReader implements Doubles {
         return new FnReader(length, i -> fn.applyAsDouble(i + start));
     }
 
+    @Override
+    public String toString() {
+        return Doubles.toString(this);
+    }
+
     class Cell implements CellReader {
 
         private int pos;

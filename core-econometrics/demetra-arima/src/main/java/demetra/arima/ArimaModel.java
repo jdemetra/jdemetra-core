@@ -16,7 +16,6 @@
  */
 package demetra.arima;
 
-import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
@@ -59,6 +58,8 @@ public class ArimaModel extends AbstractArimaModel {
 
     /**
      * Creates a white noise, with variance 1.
+     *
+     * @return
      */
     public static ArimaModel whiteNoise() {
         return new ArimaModel(BackFilter.ONE, BackFilter.ONE, BackFilter.ONE, 1);
@@ -66,9 +67,41 @@ public class ArimaModel extends AbstractArimaModel {
 
     /**
      * Creates a white noise, with variance 1.
+     *
+     * @param var
      */
     public static ArimaModel whiteNoise(double var) {
         return new ArimaModel(BackFilter.ONE, BackFilter.ONE, BackFilter.ONE, var);
+    }
+
+    public ArimaModel of(final Polynomial fullAR, final Polynomial MA,
+            final double var) {
+        try {
+            double x = fullAR.get(0), y = MA.get(0);
+
+            BackFilter ar = new BackFilter(fullAR);
+            if (x != 1) {
+                ar = ar.normalize();
+            }
+            BackFilter ur = BackFilter.ONE;
+            BackFilter.StationaryTransformation st = new BackFilter.StationaryTransformation();
+            if (st.transform(ar)) {
+                ar = st.stationaryFilter;
+                ur = st.unitRoots;
+            }
+            BackFilter ma = new BackFilter(MA);
+            if (y != 1) {
+                ma = ma.normalize();
+            }
+            return new ArimaModel(ar, ur, ma, var * y / x * y / x);
+        } catch (RuntimeException ex) {
+            return null;
+        }
+    }
+    
+    public ArimaModel copyOf(IArimaModel arima){
+        return new ArimaModel(arima.getStationaryAR(), arima.getNonStationaryAR(),
+                arima.getMA(), arima.getInnovationVariance());
     }
 
     /**
@@ -279,7 +312,7 @@ public class ArimaModel extends AbstractArimaModel {
             rar = rar.times(rur);
         }
 
-        SymmetricFilter sl = SymmetricFilter.convolution(lar), sr = SymmetricFilter.convolution(rar);
+        SymmetricFilter sl = SymmetricFilter.fromFilter(lar), sr = SymmetricFilter.fromFilter(rar);
 
         // use SymmetricFilter for the numerator.
         SymmetricFilter lma = l.symmetricMA(), rma = r.symmetricMA(); // contains the innovation
@@ -313,8 +346,8 @@ public class ArimaModel extends AbstractArimaModel {
      * @return
      */
     @Override
-    public int getARDegree() {
-        return getStationaryARDegree() + getNonStationaryARDegree();
+    public int getAROrder() {
+        return getStationaryAROrder() + getNonStationaryAROrder();
     }
 
     /**
@@ -362,7 +395,7 @@ public class ArimaModel extends AbstractArimaModel {
     }
 
     @Override
-    public int getMADegree() {
+    public int getMAOrder() {
         if (ma != null) {
             return -ma.getLowerBound();
         } else {
@@ -376,7 +409,7 @@ public class ArimaModel extends AbstractArimaModel {
     }
 
     @Override
-    public int getNonStationaryARDegree() {
+    public int getNonStationaryAROrder() {
         return delta.length() - 1;
     }
 
@@ -390,7 +423,7 @@ public class ArimaModel extends AbstractArimaModel {
      * @return
      */
     @Override
-    public int getStationaryARDegree() {
+    public int getStationaryAROrder() {
         return ar.length() - 1;
     }
 
@@ -526,7 +559,7 @@ public class ArimaModel extends AbstractArimaModel {
             synchronized (this) {
                 s = sar;
                 if (s == null) {
-                    s = SymmetricFilter.convolution(ar.times(delta));
+                    s = SymmetricFilter.fromFilter(ar.times(delta));
                     sar = s;
                 }
             }
@@ -604,7 +637,7 @@ public class ArimaModel extends AbstractArimaModel {
             synchronized (this) {
                 s = derivedsma;
                 if (s == null) {
-                    s = SymmetricFilter.convolution(ma, var);
+                    s = SymmetricFilter.fromFilter(ma, var);
                     derivedsma = s;
                 }
             }

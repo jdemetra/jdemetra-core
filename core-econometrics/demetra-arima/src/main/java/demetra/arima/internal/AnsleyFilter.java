@@ -14,13 +14,16 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.arima.estimation;
+package demetra.arima.internal;
 
 import demetra.arima.IArimaModel;
+import demetra.arima.estimation.IArmaFilter;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.Doubles;
 import demetra.data.LogSign;
+import demetra.design.AlgorithmImplementation;
+import static demetra.design.AlgorithmImplementation.Feature.Fast;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
@@ -28,12 +31,15 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
+import org.openide.util.lookup.ServiceProvider;
 
 
 /**
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
+@AlgorithmImplementation(algorithm=IArmaFilter.class, feature=Fast)
+@ServiceProvider(service=IArmaFilter.class)
 public class AnsleyFilter implements IArmaFilter {
 
     private Matrix m_bL;
@@ -41,11 +47,6 @@ public class AnsleyFilter implements IArmaFilter {
     private double m_var;
     private int m_n;
     protected boolean m_wnoptimize = true;
-
-    @Override
-    public AnsleyFilter exemplar() {
-        return new AnsleyFilter();
-    }
 
     /**
      *
@@ -128,7 +129,7 @@ public class AnsleyFilter implements IArmaFilter {
             }
         }
 
-        Polynomial sma = SymmetricFilter.convolution(ma).asPolynomial();
+        Polynomial sma = SymmetricFilter.fromFilter(ma).asPolynomial();
         if (m_var != 1) {
             sma = sma.times(m_var);
         }
