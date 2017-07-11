@@ -70,6 +70,10 @@ public class DefaultPreprocessor extends DefaultX11Algorithm implements
         if (fs != null) {
             atables.set(X11Kernel.A1a, model_.forecast(fs.getLength(), false));
         }
+        if (bs!=null)
+         {
+            atables.set(X11Kernel.A1b, model_.backcast(bs.getLength(), false));
+        }
         // complete the information sets using the pre-processing model
         TsDomain domain = model_.description.getSeriesDomain();
         // extend the domain for forecasts
@@ -98,20 +102,26 @@ public class DefaultPreprocessor extends DefaultX11Algorithm implements
         pt = TsData.add(pt, ut);
         ps = TsData.add(ps, us);
         pa = TsData.add(pa, ua);
+        TsData pi=TsData.add(pa, pc);
+        TsData pall=TsData.add(pt, TsData.add(ps, pi));
+        TsData u=TsData.add(usa, user);
         model_.backTransform(p, false, false);
         model_.backTransform(pt, false, false);
         model_.backTransform(ps, false, false);
         model_.backTransform(pa, false, false);
         model_.backTransform(pc, false, false);
+        model_.backTransform(pi, false, false);
+        model_.backTransform(pall, false, false);
         model_.backTransform(usa, false, false);
         model_.backTransform(uu, false, false);
         model_.backTransform(user, false, false);
+        model_.backTransform(u, false, false);
 
         atables.add(X11Kernel.A8t, pt);
         atables.add(X11Kernel.A8s, ps);
-        atables.add(X11Kernel.A8i, invOp(pa, pc));
-        atables.add(X11Kernel.A8, invOp(invOp(pt, invOp(pa, pc)),ps));
-        atables.add(X11Kernel.A9, invOp(usa, user));
+        atables.add(X11Kernel.A8i, pi);
+        atables.add(X11Kernel.A8, pall);
+        atables.add(X11Kernel.A9, u);
         atables.add(X11Kernel.A9sa, usa);
         atables.add(X11Kernel.A9u, uu);
         atables.add(X11Kernel.A9ser, user);

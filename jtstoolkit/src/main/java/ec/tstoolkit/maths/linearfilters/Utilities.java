@@ -61,32 +61,33 @@ public final class Utilities
      * Checks that the norm of the roots of a given polynomial are higher than rmin
      * @param c The coefficients of the polynomial. The polynomial is 1+c(0)x+...
      * @param rmin The limit of the roots
-     * @return
+     * @return False if the polynomial contains quasi-unit roots or if the polynomial is a constant, true otherwise
      */
     public static boolean checkRoots(final IReadDataBlock c, final double rmin) {
 	int nc = c.getLength();
-	if (nc == 0)
-	    return true;
-	if (nc == 1) {
-	    double cabs = Math.abs(c.get(0));
-	    return (1 / cabs) > rmin;
-	} else if (nc == 2) { // 1+ax+bx2.
-	    double a = c.get(0), b = c.get(1);
-	    double ro = a * a - 4 * b;
-	    if (ro > 0) { // Roots are (-a+-sqrt(ro))/(2b) 
-		double sro = Math.sqrt(ro);
-		double x0 = (-a + sro) / (2*b), x1 = (-a - sro) / (2*b);
-		return Math.abs(x0) > rmin && Math.abs(x1) > rmin;
-	    } 
-            else // Roots are (-a+-isqrt(-ro))/(2b). Abs(roots) = (1/2b)*sqrt((a*a - a*a+4*b))=1/sqr(b)
-                // b is necessary positive
-		return (1/Math.sqrt(b))>rmin;
-	}else{
-	double[] ctmp = new double[nc + 1];
-	ctmp[0] = 1;
-        c.copyTo(ctmp, 1);
-	Polynomial p = Polynomial.of(ctmp);
-	return checkRoots(p.roots(), rmin);
+        switch (nc) {
+            case 0:
+                return false;
+            case 1:
+                double cabs = Math.abs(c.get(0));
+                return (1 / cabs) > rmin;
+            case 2:
+                double a = c.get(0), b = c.get(1);
+                double ro = a * a - 4 * b;
+                if (ro > 0) { // Roots are (-a+-sqrt(ro))/(2b)
+                    double sro = Math.sqrt(ro);
+                    double x0 = (-a + sro) / (2*b), x1 = (-a - sro) / (2*b);
+                    return Math.abs(x0) > rmin && Math.abs(x1) > rmin;
+                }
+                else // Roots are (-a+-isqrt(-ro))/(2b). Abs(roots) = (1/2b)*sqrt((a*a - a*a+4*b))=1/sqr(b)
+                    // b is necessary positive
+                    return (1/Math.sqrt(b))>rmin;
+            default:
+                double[] ctmp = new double[nc + 1];
+                ctmp[0] = 1;
+                c.copyTo(ctmp, 1);
+                Polynomial p = Polynomial.of(ctmp);
+                return checkRoots(p.roots(), rmin);
         }
     }
 

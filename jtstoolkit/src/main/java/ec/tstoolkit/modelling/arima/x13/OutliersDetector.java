@@ -276,7 +276,7 @@ public class OutliersDetector implements IOutliersDetectionModule {
             } else {
                 break;// no outliers to remove...
             }
-        } while (m_round < maxiter_ && outliers_.size() <= MAX_OUTLIERS);
+        } while (m_round < maxiter_ && outliers_.size() < MAX_OUTLIERS);
 
         while (verifymodel(curcv_) == 0) {
             if (!estimateModel()) {

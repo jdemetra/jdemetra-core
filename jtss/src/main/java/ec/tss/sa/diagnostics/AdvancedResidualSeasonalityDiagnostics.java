@@ -45,7 +45,7 @@ import java.util.List;
  */
 public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
 
-    private static final double E_LIMIT = .005;
+    private static final double E_LIMIT1 = .01, E_LIMIT2=0.005;
     private StatisticalTest qs_sa, qs_i, f_sa, f_i;
     private double sev, bad, unc;
 
@@ -54,12 +54,12 @@ public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
         return mul != null && mul.isMultiplicative();
     }
 
-    private static boolean isSignificant(TsData s, TsData ref) {
+    private static boolean isSignificant(TsData s, TsData ref, double limit) {
         DescriptiveStatistics sdesc = new DescriptiveStatistics(s);
         DescriptiveStatistics refdesc = new DescriptiveStatistics(ref);
         double se = sdesc.getStdev();
         double refe = refdesc.getRmse();
-        return refe == 0 || se / refe > E_LIMIT;
+        return refe == 0 || se / refe > limit;
     }
 
     private static boolean isSignificant(TsData i) {
@@ -68,7 +68,7 @@ public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
         }
         DescriptiveStatistics idesc = new DescriptiveStatistics(i);
         double se = idesc.getStdev();
-        return se > E_LIMIT;
+        return se > E_LIMIT1;
     }
 
     static IDiagnostics create(CompositeResults rslts, AdvancedResidualSeasonalityDiagnosticsConfiguration config) {
@@ -83,7 +83,7 @@ public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
                 return null;
             }
             boolean mul = isMultiplicative(rslts);
-            boolean isignif = mul ? isSignificant(i) : (sa != null && i != null) ? isSignificant(i, sa) : true;
+            boolean isignif = mul ? isSignificant(i) : (sa != null && i != null) ? isSignificant(i, sa, E_LIMIT1) : true;
             if (config.isQsTest()) {
                 int ny = config.getQsTestLastYears();
                 if (sa != null) {
@@ -97,7 +97,7 @@ public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
                         salast = sac.drop(Math.max(0, sac.getLength() - ifreq * ny - 1), 0);
                     }
                     DifferencingResults dsa = DifferencingResults.create(salast, -1, true);
-                    if (isSignificant(dsa.getDifferenced(), salast)) {
+                    if (isSignificant(dsa.getDifferenced(), salast, E_LIMIT2)) {
                         test.qs_sa = QSTest.compute(dsa.getDifferenced().internalStorage(), ifreq, 2);
                     }
                 }

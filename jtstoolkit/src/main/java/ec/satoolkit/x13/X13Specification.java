@@ -25,6 +25,7 @@ import ec.satoolkit.benchmarking.SaBenchmarkingSpec;
 import ec.satoolkit.x11.X11Specification;
 import ec.tstoolkit.algorithm.ProcessingContext;
 import ec.tstoolkit.information.InformationSet;
+import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
 import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
 import ec.tstoolkit.modelling.arima.x13.TradingDaysSpec;
@@ -375,4 +376,22 @@ public class X13Specification extends AbstractSaSpecification implements ISaSpec
         return true;
     }
 
+    public void checkMode() {
+        if (!regSpec_.getBasic().isPreprocessing()) {
+            return;
+        }
+        DefaultTransformationType fn = regSpec_.getTransform().getFunction();
+        switch (fn) {
+            case Log:
+                if (!x11Spec_.getMode().isMultiplicative()) {
+                    x11Spec_.setMode(DecompositionMode.Multiplicative);
+                }
+                return;
+            case None:
+                x11Spec_.setMode(DecompositionMode.Additive);
+                return;
+            default:
+                x11Spec_.setMode(DecompositionMode.Undefined);
+        }
+    }
 }

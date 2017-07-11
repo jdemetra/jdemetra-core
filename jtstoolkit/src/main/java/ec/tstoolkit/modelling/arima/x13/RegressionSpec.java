@@ -266,28 +266,33 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         if (td_.isDefined()) {
 
             if (td_.isStockTradingDays()) {
-                names.add(ITradingDaysVariable.NAME);
-            }
-            String[] user = td_.getUserVariables();
-            if (user != null) {
-                if (shortname || user.length == 1) {
-                    names.add(ITradingDaysVariable.NAME);
-                } else {
-                    names.add(ITradingDaysVariable.NAME + '#' + user.length);
-                }
-            } else {
-                if (td_.getTradingDaysType() == TradingDaysType.WorkingDays || shortname) {
+                if (shortname) {
                     names.add(ITradingDaysVariable.NAME);
                 } else {
                     names.add(ITradingDaysVariable.NAME + "#6");
                 }
-                if (td_.getLengthOfPeriod() != LengthOfPeriodType.None) {
-                    names.add(ILengthOfPeriodVariable.NAME);
+            } else {
+                String[] user = td_.getUserVariables();
+                if (user != null) {
+                    if (shortname || user.length == 1) {
+                        names.add(ITradingDaysVariable.NAME);
+                    } else {
+                        names.add(ITradingDaysVariable.NAME + '#' + user.length);
+                    }
+                } else {
+                    if (td_.getTradingDaysType() == TradingDaysType.WorkingDays || shortname) {
+                        names.add(ITradingDaysVariable.NAME);
+                    } else {
+                        names.add(ITradingDaysVariable.NAME + "#6");
+                    }
+                    if (td_.getLengthOfPeriod() != LengthOfPeriodType.None) {
+                        names.add(ILengthOfPeriodVariable.NAME);
+                    }
                 }
             }
         }
-        
-         // easter
+
+        // easter
         MovingHolidaySpec easter = getEaster();
         if (easter != null && easter.getTest() == RegressionTestSpec.None) {
             names.add(IEasterVariable.NAME);
@@ -335,11 +340,11 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         return names.toArray(all);
     }
 
-   private static String validName(String name){
+    private static String validName(String name) {
         return name.replace('.', '@');
     }
 
-   public double[] getCoefficients(String name) {
+    public double[] getCoefficients(String name) {
         return coeff.get(name);
     }
 
