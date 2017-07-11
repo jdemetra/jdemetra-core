@@ -17,9 +17,9 @@
 
 package ec.tstoolkit.timeseries.simplets;
 
-import ec.tstoolkit.OperationType;
-import ec.tstoolkit.data.Values;
+import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.OperationType;
 
 /**
  *
@@ -125,7 +125,7 @@ public final class ConstTransformation implements ITsDataTransformation {
      */
     public boolean transform(TsData data, LogJacobian ljacobian)
     {
-	Values val = data.getValues();
+	DataBlock val = new DataBlock(data.internalStorage());
 	switch (op) {
 	case Diff:
 	    val.sub(value);

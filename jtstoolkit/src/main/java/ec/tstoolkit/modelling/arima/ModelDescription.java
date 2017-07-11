@@ -16,8 +16,10 @@
  */
 package ec.tstoolkit.modelling.arima;
 
+import ec.tstoolkit.OperationType;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.data.DataBlock;
+import ec.tstoolkit.data.LogSign;
 import ec.tstoolkit.data.ReadDataBlock;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.eco.Ols;
@@ -26,6 +28,7 @@ import ec.tstoolkit.maths.realfunctions.IParametricMapping;
 import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.modelling.DeterministicComponent;
+import ec.tstoolkit.modelling.PreadjustmentVariable;
 import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.sarima.SarimaComponent;
@@ -43,6 +46,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -56,11 +63,8 @@ public class ModelDescription implements Cloneable {
     private double[] y0_, y_;
     private int[] missings_;
     private SarimaComponent arima_ = new SarimaComponent();
-    private List<Variable> users_ = new ArrayList<>();
-    private List<Variable> calendars_ = new ArrayList<>();
-    private List<Variable> holidays_ = new ArrayList<>();
-    private List<IOutlierVariable> outliers_ = new ArrayList<>();
-    private List<IOutlierVariable> poutliers_ = new ArrayList<>();
+    private List<PreadjustmentVariable> preadjustment = new ArrayList<>();
+    private List<Variable> variables = new ArrayList<>();
     private double units_ = 1;
     private PreadjustmentType adjust_ = PreadjustmentType.None;
     private volatile LengthOfPeriodType lp_ = LengthOfPeriodType.None;
@@ -78,27 +82,21 @@ public class ModelDescription implements Cloneable {
         } else {
             estimationDomain_ = original_.getDomain().intersection(eDomain);
         }
-        y0_ = original_.fittoDomain(estimationDomain_).getValues().internalStorage();
+        y0_ = original_.fittoDomain(estimationDomain_).internalStorage();
     }
 
     @Override
     public ModelDescription clone() {
         try {
             ModelDescription model = (ModelDescription) super.clone();
-            model.users_ = new ArrayList<>();
-            for (Variable var : users_) {
-                model.users_.add(var.clone());
+            model.preadjustment = new ArrayList<>();
+            for (PreadjustmentVariable var : preadjustment) {
+                model.preadjustment.add(var);
             }
-            model.calendars_ = new ArrayList<>();
-            for (Variable var : calendars_) {
-                model.calendars_.add(var.clone());
+            model.variables = new ArrayList<>();
+            for (Variable var : variables) {
+                model.variables.add(var.clone());
             }
-            model.holidays_ = new ArrayList<>();
-            for (Variable var : holidays_) {
-                model.holidays_.add(var.clone());
-            }
-            model.poutliers_ = new ArrayList<>(poutliers_);
-            model.outliers_ = new ArrayList<>(outliers_);
             model.arima_ = arima_.clone();
             return model;
         } catch (CloneNotSupportedException err) {
@@ -123,65 +121,50 @@ public class ModelDescription implements Cloneable {
         checkVariables();
         ArrayList<DataBlock> xdata = new ArrayList<>();
         // users...
-        if (users_ != null) {
-            for (Variable var : users_) {
-                if (var.status.isSelected()) {
-                    DataBlock[] cur = getX(var.getVariable());
-                    Collections.addAll(xdata, cur);
-                }
-            }
-        }
-        // calendars...
-        if (calendars_ != null) {
-            for (Variable var : calendars_) {
-                if (var.status.isSelected()) {
-                    DataBlock[] cur = getX(var.getVariable());
-                    Collections.addAll(xdata, cur);
-                }
-            }
-        }
-        // moving holidays...
-        if (holidays_ != null) {
-            for (Variable var : holidays_) {
-                if (var.status.isSelected()) {
-                    DataBlock[] cur = getX(var.getVariable());
-                    Collections.addAll(xdata, cur);
-                }
-            }
-        }
-
-        if (poutliers_ != null) {
-            for (IOutlierVariable var : poutliers_) {
-                if (var.isSignificant(estimationDomain_)) {
-                    DataBlock[] cur = getX(var);
-                    Collections.addAll(xdata, cur);
-                }
-            }
-        }
-
-        if (outliers_ != null) {
-            for (IOutlierVariable var : outliers_) {
-                if (var.isSignificant(estimationDomain_)) {
-                    DataBlock[] cur = getX(var);
-                    Collections.addAll(xdata, cur);
-                }
-            }
-        }
+        variables.stream().filter(var
+                -> var.isUser() && var.status.isSelected())
+                .forEach(
+                        var -> {
+                            DataBlock[] cur = getX(var.getVariable());
+                            Collections.addAll(xdata, cur);
+                        });
+        // calendars
+        variables.stream().filter(var
+                -> var.isCalendar() && var.status.isSelected())
+                .forEach(
+                        var -> {
+                            DataBlock[] cur = getX(var.getVariable());
+                            Collections.addAll(xdata, cur);
+                        });
+        // moving holidays
+        variables.stream().filter(var
+                -> var.isMovingHoliday() && var.status.isSelected())
+                .forEach(
+                        var -> {
+                            DataBlock[] cur = getX(var.getVariable());
+                            Collections.addAll(xdata, cur);
+                        });
+        // prespecified outliers
+        variables.stream().filter(var
+                -> var.isOutlier() && var.status == RegStatus.Prespecified)
+                .forEach(
+                        var -> {
+                            DataBlock[] cur = getX(var.getVariable());
+                            Collections.addAll(xdata, cur);
+                        });
+        // other outliers
+        variables.stream().filter(var
+                -> var.isOutlier() && var.status != RegStatus.Prespecified)
+                .forEach(
+                        var -> {
+                            DataBlock[] cur = getX(var.getVariable());
+                            Collections.addAll(xdata, cur);
+                        });
         return xdata;
     }
 
     public void checkVariables() {
-        for (Variable var : users_) {
-            if (var.status.isSelected() && !var.getVariable().isSignificant(estimationDomain_)) {
-                var.status = RegStatus.Excluded;
-            }
-        }
-        for (Variable var : calendars_) {
-            if (var.status.isSelected() && !var.getVariable().isSignificant(estimationDomain_)) {
-                var.status = RegStatus.Excluded;
-            }
-        }
-        for (Variable var : holidays_) {
+        for (Variable var : variables) {
             if (var.status.isSelected() && !var.getVariable().isSignificant(estimationDomain_)) {
                 var.status = RegStatus.Excluded;
             }
@@ -196,74 +179,120 @@ public class ModelDescription implements Cloneable {
         }
     }
 
+    public List<Variable> getOrderedVariables() {
+        checkVariables();
+        List<Variable> x = new ArrayList<>();
+        // users
+        variables.stream().filter(var
+                -> var.isUser() && var.status.isSelected())
+                .forEach(var -> x.add(var));
+        // calendars
+        variables.stream().filter(var
+                -> var.isCalendar() && var.status.isSelected())
+                .forEach(var -> x.add(var));
+        // moving holidays
+        variables.stream().filter(var
+                -> var.isMovingHoliday() && var.status.isSelected())
+                .forEach(var -> x.add(var));
+        // prespecified outliers
+        variables.stream().filter(var
+                -> var.isOutlier() && var.status == RegStatus.Prespecified)
+                .forEach(var -> x.add(var));
+        // other outliers
+        variables.stream().filter(var
+                -> var.isOutlier() && var.status != RegStatus.Prespecified)
+                .forEach(var -> x.add(var));
+        return x;
+    }
+
     /**
-     * Build the regression variables list. The regression variables are organized as follows:
-     * 1 users-defined variables (user variables - intervention variables - ramps)
-     * 2 calendars
-     * 3 moving holidays
-     * 4 pre-specified outliers
-     * 5 detected outliers
+     * Build the regression variables list. The regression variables should be
+     * organized as follows: 1 users-defined variables (user variables -
+     * intervention variables - ramps), 2 calendars, 3 moving holidays, 4
+     * pre-specified outliers, 5 detected outliers
+     *
      * @return The variables list. May be empty
      */
     public TsVariableList buildRegressionVariables() {
-        checkVariables();
         TsVariableList x = new TsVariableList();
-        // users...
-        for (Variable var : users_) {
-            if (var.status.isSelected() && var.getVariable().isSignificant(estimationDomain_)) {
-                x.add(var.getVariable());
-            }
+        List<Variable> vars = getOrderedVariables();
+        for (Variable var : vars) {
+            x.add(var.getVariable());
         }
-        // calendars...
-        for (Variable var : calendars_) {
-            if (var.status.isSelected()) {
-                x.add(var.getVariable());
-            }
-        }
-        // moving holidays...
-        for (Variable var : holidays_) {
-            if (var.status.isSelected()) {
-                x.add(var.getVariable());
-            }
-        }
+        return x;
+    }
 
-        for (IOutlierVariable var : poutliers_) {
-            if (var.isSignificant(estimationDomain_)) {
-                x.add(var);
-
+    public TsVariableSelection buildRegressionVariables(Predicate<Variable> pred) {
+        checkVariables();
+        TsVariableSelection x = new TsVariableSelection();
+        int cur = 0;
+        // users
+        for (Variable var : variables) {
+            if (var.isUser() && var.status.isSelected()) {
+                if (pred.test(var)) {
+                    x.add(var.getVariable(), cur);
+                }
+                cur += var.getVariable().getDim();
             }
         }
-        for (IOutlierVariable var : outliers_) {
-            if (var.isSignificant(estimationDomain_)) {
-                x.add(var);
-
+        // calendars
+        for (Variable var : variables) {
+            if (var.isCalendar() && var.status.isSelected()) {
+                if (pred.test(var)) {
+                    x.add(var.getVariable(), cur);
+                }
+                cur += var.getVariable().getDim();
+            }
+        }
+        // moving holidays
+        for (Variable var : variables) {
+            if (var.isMovingHoliday() && var.status.isSelected()) {
+                if (pred.test(var)) {
+                    x.add(var.getVariable(), cur);
+                }
+                cur += var.getVariable().getDim();
+            }
+        }
+        // prespecified outliers
+        for (Variable var : variables) {
+            if (var.isOutlier() && var.status == RegStatus.Prespecified && var.status.isSelected()) {
+                if (pred.test(var)) {
+                    x.add(var.getVariable(), cur);
+                }
+                cur += var.getVariable().getDim();
+            }
+        }
+        // other outliers
+        for (Variable var : variables) {
+            if (var.isOutlier() && var.status != RegStatus.Prespecified && var.status.isSelected()) {
+                if (pred.test(var)) {
+                    x.add(var.getVariable(), cur);
+                }
+                cur += var.getVariable().getDim();
             }
         }
         return x;
     }
 
-    public ComponentType getType(IOutlierVariable var) {
-        return DeterministicComponent.getType(var);
+    public boolean isPrespecified(final IOutlierVariable ovar) {
+        Variable var = searchVariable(ovar);
+        return var == null ? false : var.status == RegStatus.Prespecified;
     }
 
-    public ComponentType getType(ITsVariable var) {
+    public ComponentType getType(ITsVariable tsvar) {
         // outliers
-        if (var instanceof IOutlierVariable) {
-            return getType((IOutlierVariable) var);
-        }
-        if (Variable.search(calendars_, var) != null) {
-            return ComponentType.CalendarEffect;
-        }
-        if (Variable.search(holidays_, var) != null) {
-            return ComponentType.CalendarEffect;
-        }
-        Variable user = Variable.search(users_, var);
-        if (user != null) {
-            return user.type;
-        }
+        Variable var = searchVariable(tsvar);
+        return var == null ? ComponentType.Undefined : var.type;
+    }
 
-        return ComponentType.Undefined;
+    public Variable searchVariable(ITsVariable tsvar) {
+        Optional<Variable> found = variables.stream().filter(var -> var.getVariable() == tsvar).findAny();
+        return found.isPresent() ? found.get() : null;
+    }
 
+    public PreadjustmentVariable searchPreadjustmentVariable(ITsVariable tsvar) {
+        Optional<PreadjustmentVariable> found = preadjustment.stream().filter(var -> var.getVariable() == tsvar).findAny();
+        return found.isPresent() ? found.get() : null;
     }
 
     private DataBlock[] getX(ITsVariable variable) {
@@ -286,7 +315,7 @@ public class ModelDescription implements Cloneable {
 
     public int getRegressionVariablesStartingPosition() {
         int start = 0;
-        if (arima_.isMean()) {
+        if (arima_.isEstimatedMean()) {
             ++start;
         }
         if (missings_ != null) {
@@ -300,8 +329,8 @@ public class ModelDescription implements Cloneable {
         IntList x = new IntList();
         // users...
         int curpos = 0;
-        for (Variable var : users_) {
-            if (var.status.isSelected() && var.getVariable().isSignificant(estimationDomain_)) {
+        for (Variable var : variables) {
+            if (var.status.isSelected()) {
                 int n = var.getVariable().getDim();
                 if (var.type == type) {
                     for (int i = 0; i < n; ++i) {
@@ -312,50 +341,44 @@ public class ModelDescription implements Cloneable {
                 }
             }
         }
-        // calendars...
-        for (Variable var : calendars_) {
-            if (var.status.isSelected()) {
-                int n = var.getVariable().getDim();
-                if (type == ComponentType.CalendarEffect) {
-                    for (int i = 0; i < n; ++i) {
-                        x.add(curpos++);
-                    }
-                } else {
-                    curpos += n;
-                }
-            }
-        }
-        // moving holidays...
-        for (Variable var : holidays_) {
-            if (var.status.isSelected()) {
-                int n = var.getVariable().getDim();
-                if (type == ComponentType.CalendarEffect) {
-                    for (int i = 0; i < n; ++i) {
-                        x.add(curpos++);
-                    }
-                } else {
-                    curpos += n;
-                }
-            }
-        }
+        return x.toArray();
+    }
 
-        for (IOutlierVariable var : poutliers_) {
-            if (var.isSignificant(estimationDomain_)) {
-                if (getType(var) == type) {
-                    x.add(curpos);
+    public <S extends ITsVariable> int[] getRegressionVariablePositions(List<S> slist) {
+        checkVariables();
+        IntList x = new IntList();
+        // users...
+        for (S var : slist) {
+            int pos = getRegressionVariablePosition(var);
+            int n = var.getDim();
+            if (pos >= 0) {
+                for (int i = 0; i < n; ++i) {
+                    x.add(pos++);
                 }
-                ++curpos;
-            }
-        }
-        for (IOutlierVariable var : outliers_) {
-            if (var.isSignificant(estimationDomain_)) {
-                if (getType(var) == type) {
-                    x.add(curpos);
+            } else {
+                for (int i = 0; i < n; ++i) {
+                    x.add(-1);
                 }
-                ++curpos;
             }
         }
         return x.toArray();
+    }
+
+    public <S extends ITsVariable> int getRegressionVariablePosition(S s) {
+        checkVariables();
+        // users...
+        int curpos = 0;
+        for (Variable var : variables) {
+            if (var.status.isSelected()) {
+                if (s == var.getVariable()) {
+                    return curpos;
+                } else {
+                    int n = var.getVariable().getDim();
+                    curpos += n;
+                }
+            }
+        }
+        return -1;
     }
 
     public RegArimaModel<SarimaModel> buildRegArima() {
@@ -363,7 +386,11 @@ public class ModelDescription implements Cloneable {
         DataBlock ydata = new DataBlock(y);
 
         RegArimaModel<SarimaModel> regarima = new RegArimaModel<>(arima_.getModel(), ydata);
-        regarima.setMeanCorrection(arima_.isMean());
+        if (arima_.isEstimatedMean()) {
+            regarima.setMeanCorrection(true);
+        } else if (arima_.isMean()) {
+            regarima.setMeanCorrection(arima_.getMu().getValue());
+        }
         regarima.setMissings(missings_);
         List<DataBlock> xdata = createX();
         for (DataBlock var : xdata) {
@@ -408,9 +435,12 @@ public class ModelDescription implements Cloneable {
     }
 
     /**
-     * Gets the transformed original series. The original may be transformed for leap year 
-     * correction and for log-transformation. It contains missing values
-     * @return 
+     * Gets the transformed original series. The original may be transformed for
+     * leap year correction or log-transformation and for fixed effects. The fixed
+     * effects are always applied additively after the log-transformation. The
+     * transformed original may contain missing values
+     *
+     * @return
      */
     public TsData transformedOriginal() {
         TsData tmp = original_.clone();
@@ -420,6 +450,7 @@ public class ModelDescription implements Cloneable {
         if (function_ == DefaultTransformationType.Log) {
             new LogTransformation().transform(tmp, null);
         }
+        tmp.applyOnFinite(PreadjustmentVariable.regressionEffect(preadjustment.stream(), tmp.getDomain()), (x, y) -> x - y);
         return tmp;
     }
 
@@ -449,51 +480,154 @@ public class ModelDescription implements Cloneable {
     }
 
     /**
-     * @return the users_
+     * @return the mean_
+     */
+    public boolean isEstimatedMean() {
+        return arima_.isEstimatedMean();
+    }
+
+    /**
+     * @return the variables
+     */
+    public Stream<PreadjustmentVariable> preadjustmentVariables() {
+        return preadjustment.stream();
+    }
+
+    public boolean hasFixedEffects() {
+        return !preadjustment.isEmpty();
+    }
+
+    public Stream<Variable> variables() {
+        return variables.stream();
+    }
+
+    /**
+     * @return the variables
      */
     public List<Variable> getUserVariables() {
-        return users_;
+        return variables.stream()
+                .filter(var -> var.getVariable() instanceof IUserTsVariable)
+                .collect(Collectors.toList());
     }
 
     /**
      * @return the calendars_
      */
     public List<Variable> getCalendars() {
-        return calendars_;
+        return selectVariables(var -> var instanceof ICalendarVariable);
     }
 
     /**
-     * @return the holidays
+     * all the variables
+     *
+     * @return
      */
-    public List<Variable> getMovingHolidays() {
-        return holidays_;
+    protected List<Variable> getVariables() {
+        return variables;
     }
 
+    /**
+     * all the pre-adjustment variables
+     *
+     * @return
+     */
+    protected List<PreadjustmentVariable> getPreadjustmentVariables() {
+        return preadjustment;
+    }
+
+    public List<Variable> getMovingHolidays() {
+        return selectVariables(var -> var instanceof IMovingHolidayVariable);
+    }
+
+    public List<Variable> selectVariables(Predicate<Variable> pred) {
+        return variables.stream()
+                .filter(pred)
+                .collect(Collectors.toList());
+    }
+
+    public List<PreadjustmentVariable> selectPreadjustmentVariables(Predicate<PreadjustmentVariable> pred) {
+        return preadjustment.stream()
+                .filter(pred)
+                .collect(Collectors.toList());
+    }
+
+    public boolean contains(Predicate<Variable> pred) {
+        return variables.stream().anyMatch(pred);
+    }
+
+    public int countVariables(Predicate<Variable> pred) {
+        return (int) variables.stream()
+                .filter(pred)
+                .count();
+    }
+
+    public int countRegressors(Predicate<Variable> pred) {
+        return variables.stream()
+                .filter(pred)
+                .mapToInt(var -> var.getVariable().getDim()).sum();
+    }
+
+    public int countFixedRegressors(Predicate<PreadjustmentVariable> pred) {
+        return preadjustment.stream()
+                .filter(pred)
+                .mapToInt(var -> var.getVariable().getDim()).sum();
+    }
     /**
      * @return the outliers
      */
     public List<IOutlierVariable> getOutliers() {
-        return outliers_;
+        return variables.stream()
+                .filter(var -> var.getVariable() instanceof IOutlierVariable && var.status != RegStatus.Prespecified)
+                .map(var -> (IOutlierVariable) var.getVariable())
+                .collect(Collectors.toList());
     }
 
     /**
      * @return the pre-specified outliers
      */
     public List<IOutlierVariable> getPrespecifiedOutliers() {
-        return poutliers_;
+        return variables.stream()
+                .filter(var -> var.getVariable() instanceof IOutlierVariable && var.status == RegStatus.Prespecified)
+                .map(var -> (IOutlierVariable) var.getVariable())
+                .collect(Collectors.toList());
     }
 
+    /**
+     * @return the pre-specified outliers
+     */
+    public List<IOutlierVariable> getFixedOutliers() {
+        return preadjustment.stream()
+                .filter(var -> var.isOutlier() )
+                .map(var -> (IOutlierVariable) var.getVariable())
+                .collect(Collectors.toList());
+    }
+    
     public int[] getOutliersPosition(boolean prespecified) {
-        List<IOutlierVariable> vars = prespecified ? poutliers_ : outliers_;
-        if (vars.isEmpty()) {
-            return null;
-        }
+        List<IOutlierVariable> vars = prespecified ? getPrespecifiedOutliers() : getOutliers();
+
         int[] pos = new int[vars.size()];
         TsPeriod start = estimationDomain_.getStart();
         for (int i = 0; i < pos.length; ++i) {
-            pos[i] = vars.get(i).getPosition().minus(start);
+            TsPeriod ostart = new TsPeriod(estimationDomain_.getFrequency(), vars.get(i).getPosition());
+            pos[i] = ostart.minus(start);
         }
         return pos;
+    }
+
+    public int[] getFixedOutliersPosition() {
+        List<IOutlierVariable> vars = getFixedOutliers();
+
+        int[] pos = new int[vars.size()];
+        TsPeriod start = estimationDomain_.getStart();
+        for (int i = 0; i < pos.length; ++i) {
+            TsPeriod ostart = new TsPeriod(estimationDomain_.getFrequency(), vars.get(i).getPosition());
+            pos[i] = ostart.minus(start);
+        }
+        return pos;
+    }
+
+    public <T extends ITsVariable> boolean isUsed(Class<T> tclass) {
+        return variables.stream().anyMatch(var -> tclass.isInstance(var.getVariable()) && var.status.isSelected());
     }
 
     /**
@@ -511,7 +645,7 @@ public class ModelDescription implements Cloneable {
     }
 
     public LengthOfPeriodType getLengthOfPeriodType() {
-        return adjust_.convert(Variable.isUsed(calendars_), function_ == DefaultTransformationType.Log);
+        return adjust_.convert(isUsed(ICalendarVariable.class), function_ == DefaultTransformationType.Log);
     }
 
     /**
@@ -526,23 +660,27 @@ public class ModelDescription implements Cloneable {
         int len = y0_.length;
         diff_ = arima_.getDifferencingOrder();
         LogJacobian lj = new LogJacobian(diff_, len);
-        lp_ = adjust_.convert(Variable.isUsed(calendars_), function_ == DefaultTransformationType.Log);
+        lp_ = adjust_.convert(isUsed(ICalendarVariable.class), function_ == DefaultTransformationType.Log);
         if (lp_ != LengthOfPeriodType.None) {
             new LengthOfPeriodTransformation(lp_).transform(tmp, lj);
         }
         if (function_ == DefaultTransformationType.Log) {
-            TsDataBlock lts = TsDataBlock.all(tmp);
             LogTransformation tlog = new LogTransformation();
             if (tlog.canTransform(tmp)) {
                 tlog.transform(tmp, lj);
             } else {
                 throw new TsException("Series contains values lower or equal to zero. Logs not allowed");
             }
-
+        }
+        if (!preadjustment.isEmpty()) {
+            DataBlock all = PreadjustmentVariable.regressionEffect(preadjustment.stream(), estimationDomain_);
+            tmp.apply(all, (x, y) -> x - y);
+            // we don't need to modify the adjustment factor, which is computed on the initial figures
+            // TODO: check for missing values
         }
 
         logtransform_ = lj.value + logtransform0_;
-        y_ = tmp.getValues().internalStorage();
+        y_ = tmp.internalStorage();
     }
 
     public void setUnit(double unit) {
@@ -553,7 +691,7 @@ public class ModelDescription implements Cloneable {
             LogJacobian lj = new LogJacobian(diff, len);
             ConstTransformation.unit(units_).transform(tmp, lj);
             logtransform0_ = lj.value;
-            y0_ = tmp.getValues().internalStorage();
+            y0_ = tmp.internalStorage();
             invalidateData();
         }
     }
@@ -580,6 +718,7 @@ public class ModelDescription implements Cloneable {
         return true;
     }
 
+    @Deprecated
     public void setInterpolatedSeries(double[] y, int[] missing) {
         y0_ = y;
         missings_ = missing;
@@ -609,6 +748,18 @@ public class ModelDescription implements Cloneable {
         }
     }
 
+    public void setPreadjustments(List<PreadjustmentVariable> var) {
+        preadjustment.clear();
+        preadjustment.addAll(var);
+        invalidateData();
+    }
+
+    public void setVariables(List<Variable> var) {
+        variables.clear();
+        variables.addAll(var);
+        invalidateData();
+    }
+
     public void setArimaComponent(SarimaComponent arima) {
         arima_ = arima;
 
@@ -628,57 +779,61 @@ public class ModelDescription implements Cloneable {
         arima_.setSpecification(spec);
     }
 
-    public boolean replace(ITsVariable oldVar, ITsVariable newVar) {
-        if (Variable.replace(calendars_, oldVar, newVar)) {
-            return true;
-        } else if (Variable.replace(holidays_, oldVar, newVar)) {
-            return true;
-        }
-        if (Variable.replace(users_, oldVar, newVar)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
+//    public boolean replace(ITsVariable oldVar, ITsVariable newVar) {
+//        return Variable.replace(variables, oldVar, newVar);
+//    }
     public void setOutliers(List<IOutlierVariable> outliers) {
-        outliers_.clear();
+        variables.removeIf(var -> var.isOutlier() && var.status != RegStatus.Prespecified);
         if (outliers != null) {
-            for (IOutlierVariable xvar : outliers) {
-                xvar.setPrespecified(false);
+            for (IOutlierVariable o : outliers) {
+                variables.add(Variable.outlier(o));
             }
-            outliers_.addAll(outliers);
         }
     }
 
     public void addOutliers(List<IOutlierVariable> outliers) {
-        if (outliers == null || outliers.isEmpty()) {
-            return;
+        if (outliers != null) {
+            for (IOutlierVariable o : outliers) {
+                variables.add(Variable.outlier(o));
+            }
         }
-        for (IOutlierVariable xvar : outliers) {
-            xvar.setPrespecified(false);
-        }
-        outliers_.addAll(outliers);
     }
 
     public void setPrespecifiedOutliers(List<IOutlierVariable> outliers) {
-        poutliers_.clear();
+        variables.removeIf(var -> var.isOutlier() && var.status == RegStatus.Prespecified);
         if (outliers != null) {
-            for (IOutlierVariable xvar : outliers) {
-                xvar.setPrespecified(true);
+            for (IOutlierVariable o : outliers) {
+                variables.add(Variable.prespecifiedOutlier(o));
             }
-            poutliers_.addAll(outliers);
         }
     }
 
     public void addPrespecifiedOutliers(List<IOutlierVariable> outliers) {
-        if (outliers == null || outliers.isEmpty()) {
-            return;
+        if (outliers != null) {
+            for (IOutlierVariable o : outliers) {
+                variables.add(Variable.prespecifiedOutlier(o));
+            }
         }
-        for (IOutlierVariable xvar : outliers) {
-            xvar.setPrespecified(true);
+    }
+
+    public void addVariable(Variable... var) {
+        for (Variable v : var) {
+            variables.add(v);
         }
-        poutliers_.addAll(outliers);
+    }
+
+    public void addPreadjustment(PreadjustmentVariable... var) {
+        for (PreadjustmentVariable v : var) {
+            preadjustment.add(v);
+        }
+    }
+
+    public void removeVariable(Predicate<Variable> pred) {
+        variables.removeIf(pred);
+    }
+
+    public void removePreadjustment(Predicate<PreadjustmentVariable> pred) {
+        preadjustment.removeIf(pred);
     }
 
     public DataBlock getOlsResiduals() {
@@ -747,7 +902,7 @@ public class ModelDescription implements Cloneable {
 
     private void checkPreadjustment() {
         if (adjust_ == PreadjustmentType.Auto && function_ == DefaultTransformationType.Log) {
-            Variable.setStatus(calendars_, ILengthOfPeriodVariable.class, RegStatus.Excluded);
+            variables.stream().filter(var -> var.getVariable() instanceof ILengthOfPeriodVariable).forEach(var -> var.status = RegStatus.Excluded);
         }
     }
 
@@ -784,17 +939,13 @@ public class ModelDescription implements Cloneable {
         if (this.function_ == DefaultTransformationType.Auto) {
             return false;
         }
-        return !Variable.needTesting(calendars_)
-                && !Variable.needTesting(users_)
-                && !Variable.needTesting(holidays_);
+        return !Variable.needTesting(variables);
     }
 
     public boolean isRegressionDefined() {
         if (this.function_ == DefaultTransformationType.Auto) {
             return false;
         }
-        return Variable.isUsageDefined(calendars_)
-                && Variable.isUsageDefined(users_)
-                && Variable.isUsageDefined(holidays_);
+        return Variable.isUsageDefined(variables);
     }
 }

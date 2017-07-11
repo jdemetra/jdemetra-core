@@ -16,7 +16,9 @@
 */
 package ec.tstoolkit.maths.polynomials;
 
+import ec.tstoolkit.design.AlgorithmDefinition;
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.design.PrototypePattern;
 import ec.tstoolkit.maths.Complex;
 
 /**
@@ -24,26 +26,29 @@ import ec.tstoolkit.maths.Complex;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
+@AlgorithmDefinition
+@PrototypePattern
 public interface IRootsSolver {
-
+    
     /**
      * Clear the previous results
      */
     void clear();
 
     /**
-     * The method try to factorizes the polynomial passed as a parameter.
+     * The method tries to factorize the polynomial passed as a parameter.
+     * It should be noted that the factorization can be partial
      * 
      * @param p
-     * @return True if it succeeded
+     * @return True if it succeeded, even partly
      */
     boolean factorize(Polynomial p);
 
     /**
-     * The ratio
+     * The ratio between the original polynomial and the identified roots
      * 
      * @return Equals to the initial polynomial if the factorization didn't
-     *         success
+     *         succeed
      */
     Polynomial remainder();
 
@@ -54,4 +59,5 @@ public interface IRootsSolver {
      */
     Complex[] roots();
 
+    IRootsSolver exemplar();
 }

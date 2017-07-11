@@ -87,7 +87,7 @@ public final class SaManager extends AlgorithmManager<ISaSpecification, TsData, 
 
     public <S extends ISaSpecification> SaDocument<S> refreshDocument(SaDocument<S> doc, TsDomain frozenPeriod, EstimationPolicyType policy, boolean nospan) {
         // createDiagnostics a new temporary SaItem
-        SaItem tmp = new SaItem(doc.getSpecification(), doc.getTs());
+        SaItem tmp = new SaItem(doc.getSpecification(), doc.getInput());
         tmp.unsafeFill(doc.getResults());
         if (!updatePointSpecification(tmp)) {
             return null;
@@ -98,7 +98,7 @@ public final class SaManager extends AlgorithmManager<ISaSpecification, TsData, 
         }
         SaDocument<S> ndoc = doc.clone();
         ndoc.setSpecification((S) nspec);
-        ndoc.setTs(doc.getTs());
+        ndoc.setInput(doc.getInput());
         return ndoc;
     }
 
@@ -134,13 +134,13 @@ public final class SaManager extends AlgorithmManager<ISaSpecification, TsData, 
         for (String test : diags.getTests()) {
             double val = diags.getValue(test);
             ProcDiagnostic item = new ProcDiagnostic(val, diags.getDiagnostic(test));
-            set.set(test, item);
+            set.set(test.toLowerCase(), item);
         }
         List<String> warnings = diags.getWarnings();
         if (warnings != null && !warnings.isEmpty()) {
             set.set(InformationSet.WARNINGS, Jdk6.Collections.toArray( warnings, String.class));
         }
-        return new Information<>(diags.getName(), set);
+        return new Information<>(diags.getName().toLowerCase(), set);
     }
 
     public static InformationSet createDiagnostics(CompositeResults sa) {
@@ -152,7 +152,7 @@ public final class SaManager extends AlgorithmManager<ISaSpecification, TsData, 
         }
         return summary;
     }
-
+    
     @Override
     public String getFamily() {
         return GenericSaProcessingFactory.FAMILY;

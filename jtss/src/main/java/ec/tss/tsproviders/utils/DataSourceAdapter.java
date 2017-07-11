@@ -13,32 +13,16 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.utils;
 
-import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.IDataSourceListener;
 
 /**
  *
  * @author Philippe Charles
  */
+@Deprecated
 public class DataSourceAdapter implements IDataSourceListener {
 
-    @Override
-    public void opened(DataSource dataSource) {
-    }
-
-    @Override
-    public void closed(DataSource dataSource) {
-    }
-
-    @Override
-    public void changed(DataSource dataSource) {
-    }
-
-    @Override
-    public void allClosed(String providerName) {
-    }
 }

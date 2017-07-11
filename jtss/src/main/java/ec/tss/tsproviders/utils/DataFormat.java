@@ -115,7 +115,7 @@ public final class DataFormat {
 
     @Override
     public int hashCode() {
-        return com.google.common.base.Objects.hashCode(locale, datePattern, numberPattern);
+        return Objects.hash(locale, datePattern, numberPattern);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Parsers/Formatters">
@@ -198,14 +198,12 @@ public final class DataFormat {
                 result = new SimpleDateFormat(datePattern);
                 result.setLenient(false);
             }
+        } else if (locale != null) {
+            result = DateFormat.getDateInstance(DateFormat.DEFAULT, locale);
+            result.setLenient(false);
         } else {
-            if (locale != null) {
-                result = DateFormat.getDateInstance(DateFormat.DEFAULT, locale);
-                result.setLenient(false);
-            } else {
-                result = SimpleDateFormat.getDateInstance();
-                result.setLenient(true);
-            }
+            result = SimpleDateFormat.getDateInstance();
+            result.setLenient(true);
         }
         return result;
     }
@@ -227,12 +225,10 @@ public final class DataFormat {
             } else {
                 return new DecimalFormat(numberPattern);
             }
+        } else if (locale != null) {
+            return NumberFormat.getInstance(locale);
         } else {
-            if (locale != null) {
-                return NumberFormat.getInstance(locale);
-            } else {
-                return NumberFormat.getInstance();
-            }
+            return NumberFormat.getInstance();
         }
     }
     //</editor-fold>
@@ -264,7 +260,7 @@ public final class DataFormat {
      */
     @Nonnull
     public static DataFormat create(@Nullable String locale, @Nullable String datePattern, @Nullable String numberPattern) {
-        return new DataFormat(locale != null ? LOCALE_PARSER.tryParse(locale).orNull() : null, datePattern, numberPattern);
+        return new DataFormat(locale != null ? LOCALE_PARSER.parseValue(locale).orElse(null) : null, datePattern, numberPattern);
     }
 
     @Nonnull
@@ -273,9 +269,11 @@ public final class DataFormat {
     }
 
     /**
-     * <p>Converts a String to a Locale.</p>
+     * <p>
+     * Converts a String to a Locale.</p>
      *
-     * <p>This method takes the string format of a locale and creates the locale
+     * <p>
+     * This method takes the string format of a locale and creates the locale
      * object from it.</p>
      *
      * <pre>
@@ -284,12 +282,14 @@ public final class DataFormat {
      *   LocaleUtils.toLocale("en_GB_xxx")  = new Locale("en", "GB", "xxx")   (#)
      * </pre>
      *
-     * <p>(#) The behaviour of the JDK variant constructor changed between
-     * JDK1.3 and JDK1.4. In JDK1.3, the constructor upper cases the variant, in
+     * <p>
+     * (#) The behaviour of the JDK variant constructor changed between JDK1.3
+     * and JDK1.4. In JDK1.3, the constructor upper cases the variant, in
      * JDK1.4, it doesn't. Thus, the result from getVariant() may vary depending
      * on your JDK.</p>
      *
-     * <p>This method validates the input strictly. The language code must be
+     * <p>
+     * This method validates the input strictly. The language code must be
      * lowercase. The country code must be uppercase. The separator must be an
      * underscore. The length must be correct. </p>
      *

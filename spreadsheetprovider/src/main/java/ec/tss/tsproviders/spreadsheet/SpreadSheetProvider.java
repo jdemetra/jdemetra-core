@@ -16,7 +16,7 @@
  */
 package ec.tss.tsproviders.spreadsheet;
 
-import com.google.common.collect.Ordering;
+import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
@@ -35,8 +35,10 @@ import ec.util.spreadsheet.Book;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +46,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Demortier Jeremy
  */
+@ServiceProvider(service = ITsProvider.class)
 public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, SpreadSheetBean> {
 
     public static final String SOURCE = "XCLPRVDR";
@@ -55,7 +58,7 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
     protected final Parsers.Parser<DataSet> legacyDataSetParser;
 
     public SpreadSheetProvider() {
-        super(LOGGER, SOURCE, TsAsyncMode.None);
+        super(LOGGER, SOURCE, TsAsyncMode.Once);
         this.legacyDataSourceParser = SpreadSheetLegacy.legacyDataSourceParser();
         this.legacyDataSetParser = SpreadSheetLegacy.legacyDataSetParser();
     }
@@ -88,7 +91,10 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
         Book.Factory factory = getFactoryByFile(file);
         if (factory != null) {
             try (Book book = factory.load(file)) {
-                TsImportOptions options = TsImportOptions.create(bean.getDataFormat(), bean.getFrequency(), bean.getAggregationType(), bean.isCleanMissing());
+                ObsGathering gathering = bean.isCleanMissing()
+                        ? ObsGathering.excludingMissingValues(bean.getFrequency(), bean.getAggregationType())
+                        : ObsGathering.includingMissingValues(bean.getFrequency(), bean.getAggregationType());
+                TsImportOptions options = TsImportOptions.create(bean.getDataFormat(), gathering);
                 return SpreadSheetFactory.getDefault().toSource(book, options);
             }
         }
@@ -128,15 +134,11 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
             return Collections.emptyList();
         }
 
-        List<SpreadSheetCollection> tmp = Ordering.natural().sortedCopy(ws.collections.values());
-
-        DataSet[] children = new DataSet[tmp.size()];
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
-        for (int i = 0; i < children.length; i++) {
-            Y_SHEETNAME.set(builder, tmp.get(i).sheetName);
-            children[i] = builder.build();
-        }
-        return Arrays.asList(children);
+        return ws.collections.values().stream()
+                .sorted()
+                .map(o -> builder.put(Y_SHEETNAME, o.sheetName).build())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -160,15 +162,11 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
             return Collections.emptyList();
         }
 
-        List<SpreadSheetSeries> tmp = Ordering.natural().sortedCopy(col.series);
-
-        DataSet[] children = new DataSet[tmp.size()];
-        DataSet.Builder builder = DataSet.builder(parent, DataSet.Kind.SERIES);
-        for (int i = 0; i < children.length; i++) {
-            Z_SERIESNAME.set(builder, tmp.get(i).seriesName);
-            children[i] = builder.build();
-        }
-        return Arrays.asList(children);
+        DataSet.Builder builder = parent.toBuilder(DataSet.Kind.SERIES);
+        return col.series.stream()
+                .sorted()
+                .map(o -> builder.put(Z_SERIESNAME, o.seriesName).build())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -177,10 +175,12 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
         //info.moniker.setName();
         info.type = TsInformationType.All;
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
-        for (SpreadSheetCollection o : Ordering.natural().sortedCopy(source.collections.values())) {
-            Y_SHEETNAME.set(builder, o.sheetName);
-            info.items.addAll(getAll(builder.build(), o));
-        }
+        source.collections.values().stream()
+                .sorted()
+                .forEach(o -> {
+                    DataSet child = builder.put(Y_SHEETNAME, o.sheetName).build();
+                    info.items.addAll(getAll(child, o));
+                });
     }
 
     @Override
@@ -198,14 +198,13 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
         if (collection.series.isEmpty()) {
             return Collections.emptyList();
         }
-        TsInformation[] result = new TsInformation[collection.series.size()];
-        DataSet.Builder builder = DataSet.builder(dataSet, DataSet.Kind.SERIES);
-        for (int i = 0; i < result.length; i++) {
-            SpreadSheetSeries o = collection.series.get(i);
-            Z_SERIESNAME.set(builder, o.seriesName);
-            result[i] = support.fillSeries(newTsInformation(builder.build(), TsInformationType.All), o.data, X_CLEAN_MISSING.get(dataSet.getDataSource()));
-        }
-        return Arrays.asList(result);
+        DataSet.Builder builder = dataSet.toBuilder(DataSet.Kind.SERIES);
+        return collection.series.stream()
+                .map(o -> {
+                    DataSet child = builder.put(Z_SERIESNAME, o.seriesName).build();
+                    return support.fillSeries(newTsInformation(child, TsInformationType.All), o.data, X_CLEAN_MISSING.get(dataSet.getDataSource()));
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -215,6 +214,7 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
             throw new IOException("null");
         }
         support.fillSeries(info, series.data, X_CLEAN_MISSING.get(dataSet.getDataSource()));
+        info.name = getDisplayName(dataSet);
         info.type = TsInformationType.All;
     }
 
@@ -276,12 +276,16 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
 
     @Override
     public DataSource encodeBean(Object bean) throws IllegalArgumentException {
-        return ((SpreadSheetBean) bean).toDataSource(SOURCE, VERSION);
+        try {
+            return ((SpreadSheetBean) bean).toDataSource(SOURCE, VERSION);
+        } catch (ClassCastException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     @Override
     public SpreadSheetBean decodeBean(DataSource dataSource) {
-        return new SpreadSheetBean(dataSource);
+        return new SpreadSheetBean(support.check(dataSource));
     }
 
     @Override

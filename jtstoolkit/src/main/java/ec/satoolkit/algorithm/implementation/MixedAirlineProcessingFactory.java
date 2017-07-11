@@ -31,13 +31,14 @@ import ec.tstoolkit.modelling.arima.Method;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Deprecated
 public class MixedAirlineProcessingFactory extends GenericSaProcessingFactory implements IProcessingFactory<MixedAirlineSpecification, TsData, CompositeResults> {
     
     public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, "Mixed airline model", null);
@@ -99,11 +100,11 @@ public class MixedAirlineProcessingFactory extends GenericSaProcessingFactory im
     }
     
     @Override
-    public Map<String, Class> getOutputDictionary() {
-        HashMap<String, Class> dic = new HashMap<>();
-        PreprocessingModel.fillDictionary(null, dic);
-        DefaultSeriesDecomposition.fillDictionary(null, dic);
-        SaBenchmarkingResults.fillDictionary(BENCHMARKING, dic);
+    public Map<String, Class> getOutputDictionary(boolean compact) {
+        HashMap<String, Class> dic = new LinkedHashMap<>();
+        PreprocessingModel.fillDictionary(null, dic, compact);
+        DefaultSeriesDecomposition.fillDictionary(null, dic, compact);
+        SaBenchmarkingResults.fillDictionary(BENCHMARKING, dic, compact);
         return dic;
     }
 }

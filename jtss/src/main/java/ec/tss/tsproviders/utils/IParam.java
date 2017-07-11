@@ -13,17 +13,24 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.utils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.ThreadSafe;
 
 /**
+ * Tool that loads/stores values from/to a key-value structure. It provides a
+ * best-effort retrieval behavior where a failure returns a default value
+ * instead of an error. All implementations must be thread-safe.
  *
  * @author Philippe Charles
+ * @since 1.0.0
+ * @param <S>
+ * @param <P>
  */
+@ThreadSafe
 public interface IParam<S extends IConfig, P> {
 
     @Nonnull

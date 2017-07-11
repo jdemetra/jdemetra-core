@@ -26,6 +26,7 @@ import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -43,6 +44,22 @@ public class TsDentonTest {
         for (int i = 0; i < y.getLength(); ++i) {
             y.set(i, y.get(i) * (1 + 0.01 * i));
         }
+    }
+    
+    @Test
+    public void testMul(){
+        TsDenton denton = new TsDenton();
+        denton.setMultiplicative(true);
+        TsData mc = denton.benchmark(m, y);
+        assertTrue(mc.changeFrequency(TsFrequency.Yearly, TsAggregationType.Sum, true).distance(y)<1e-9);
+    }
+
+    @Test
+    public void testAdd(){
+        TsDenton denton = new TsDenton();
+        denton.setMultiplicative(true);
+        TsData mc = denton.benchmark(m, y);
+        assertTrue(mc.changeFrequency(TsFrequency.Yearly, TsAggregationType.Sum, true).distance(y)<1e-9);
     }
 
 //    @Test

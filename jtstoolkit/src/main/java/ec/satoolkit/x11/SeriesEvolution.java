@@ -35,7 +35,7 @@ public class SeriesEvolution {
         int freq = s.getFrequency().intValue();
         double[] mean = new double[freq];
 
-        double[] x = s.getValues().internalStorage();
+        double[] x = s.internalStorage();
         int istart, iend;
         if (domain != null) {
             istart = s.getDomain().search(domain.getStart());
@@ -62,7 +62,7 @@ public class SeriesEvolution {
 
     public static double calcAbsMeanVariations(TsData s, TsDomain domain,
             int lag, boolean mul) {
-        double[] x = s.getValues().internalStorage();
+        double[] x = s.internalStorage();
         int istart, iend;
         if (domain != null) {
             istart = s.getDomain().search(domain.getStart());
@@ -115,7 +115,7 @@ public class SeriesEvolution {
         int freq = s.getFrequency().intValue();
         double[] mean = new double[freq];
 
-        double[] x = s.getValues().internalStorage();
+        double[] x = s.internalStorage();
         int istart, iend;
         if (domain != null) {
             istart = s.getDomain().search(domain.getStart());
@@ -146,7 +146,7 @@ public class SeriesEvolution {
         double[] mean = new double[freq];
         double[] std = new double[freq];
 
-        double[] x = s.getValues().internalStorage();
+        double[] x = s.internalStorage();
         int istart, iend;
         if (domain != null) {
             istart = s.getDomain().search(domain.getStart());
@@ -180,7 +180,7 @@ public class SeriesEvolution {
         }
         TsData del = mul ? ts.pctVariation(1) : ts.delta(1);
         int n = del.getLength();
-        double[] x = del.getValues().internalStorage();
+        double[] x = del.internalStorage();
         int c = 0;
         int s = 0;
         for (int i = 0; i < n; ++i) {

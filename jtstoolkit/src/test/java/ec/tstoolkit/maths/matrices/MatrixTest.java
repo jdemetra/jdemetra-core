@@ -122,4 +122,19 @@ public class MatrixTest {
         assertTrue(!D.isDiagonal(.000999));
     }
 
+    @Test
+    public void testSwaps() {
+        Matrix D = new Matrix(20, 10);
+        D.randomize();
+        Matrix Ref = D.clone();
+        D.permuteRows(0, 19);
+        D.permuteColumns(0, 9);
+        D.permuteRows(13, 15);
+        D.permuteColumns(2, 9);
+        D.permuteRows(13, 15);
+        D.permuteColumns(2, 9);
+        D.permuteRows(0, 19);
+        D.permuteColumns(0, 9);
+        assertTrue(D.distance(Ref)==0);
+    }
 }

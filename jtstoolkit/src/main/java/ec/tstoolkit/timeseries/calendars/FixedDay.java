@@ -222,11 +222,6 @@ public class FixedDay implements ISpecialDay {
                     ++m_cur;
                     return m_info;
                 }
-                
-                @Override
-                public void remove() {
-                    throw new UnsupportedOperationException("Not supported yet.");
-                }
             };
         }
     }

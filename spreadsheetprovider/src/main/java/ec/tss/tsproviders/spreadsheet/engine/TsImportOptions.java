@@ -16,7 +16,9 @@
  */
 package ec.tss.tsproviders.spreadsheet.engine;
 
+import com.google.common.base.MoreObjects;
 import ec.tss.tsproviders.utils.DataFormat;
+import ec.tss.tsproviders.utils.ObsGathering;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.Objects;
@@ -25,80 +27,99 @@ import javax.annotation.Nonnull;
 /**
  *
  * @author Philippe Charles
+ * @since 2.1.0
  */
 public final class TsImportOptions {
 
+    @Deprecated
     @Nonnull
     public static TsImportOptions create(DataFormat dataFormat, TsFrequency frequency, TsAggregationType aggregationType, boolean cleanMissing) {
-        return new TsImportOptions(dataFormat, frequency, aggregationType, cleanMissing);
+        ObsGathering gathering = cleanMissing
+                ? ObsGathering.excludingMissingValues(frequency, aggregationType)
+                : ObsGathering.includingMissingValues(frequency, aggregationType);
+        return new TsImportOptions(dataFormat, gathering);
+    }
+
+    /**
+     *
+     * @param dataFormat
+     * @param gathering
+     * @return a non-null object
+     * @since 2.2.0
+     */
+    @Nonnull
+    public static TsImportOptions create(DataFormat dataFormat, ObsGathering gathering) {
+        return new TsImportOptions(dataFormat, gathering);
     }
 
     @Nonnull
     public static TsImportOptions getDefault() {
-        return new TsImportOptions(DataFormat.DEFAULT, TsFrequency.Undefined, TsAggregationType.None, true);
+        return DEFAULT;
     }
+
+    private static final TsImportOptions DEFAULT = create(DataFormat.DEFAULT, ObsGathering.excludingMissingValues(TsFrequency.Undefined, TsAggregationType.None));
 
     private final DataFormat dataFormat;
-    private final TsFrequency frequency;
-    private final TsAggregationType aggregationType;
-    private final boolean cleanMissing;
+    private final ObsGathering gathering;
 
-    //<editor-fold defaultstate="collapsed" desc="Generated code">
-    private TsImportOptions(DataFormat dataFormat, TsFrequency frequency, TsAggregationType aggregationType, boolean cleanMissing) {
+    private TsImportOptions(DataFormat dataFormat, ObsGathering gathering) {
         this.dataFormat = dataFormat;
-        this.frequency = frequency;
-        this.aggregationType = aggregationType;
-        this.cleanMissing = cleanMissing;
+        this.gathering = gathering;
     }
 
+    @Nonnull
     public DataFormat getDataFormat() {
         return dataFormat;
     }
 
+    /**
+     * Gets the observation collection parameters
+     *
+     * @return a non-null object
+     * @since 2.2.0
+     */
+    @Nonnull
+    public ObsGathering getObsGathering() {
+        return gathering;
+    }
+
+    @Deprecated
+    @Nonnull
     public TsFrequency getFrequency() {
-        return frequency;
+        return gathering.getFrequency();
     }
 
+    @Deprecated
+    @Nonnull
     public TsAggregationType getAggregationType() {
-        return aggregationType;
+        return gathering.getAggregationType();
     }
 
+    @Deprecated
     public boolean isCleanMissing() {
-        return cleanMissing;
+        return gathering.isSkipMissingValues();
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 29 * hash + Objects.hashCode(this.dataFormat);
-        hash = 29 * hash + Objects.hashCode(this.frequency);
-        hash = 29 * hash + Objects.hashCode(this.aggregationType);
-        hash = 29 * hash + (this.cleanMissing ? 1 : 0);
-        return hash;
+        return Objects.hash(dataFormat, gathering);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final TsImportOptions other = (TsImportOptions) obj;
-        if (!Objects.equals(this.dataFormat, other.dataFormat)) {
-            return false;
-        }
-        if (this.frequency != other.frequency) {
-            return false;
-        }
-        if (this.aggregationType != other.aggregationType) {
-            return false;
-        }
-        if (this.cleanMissing != other.cleanMissing) {
-            return false;
-        }
-        return true;
+        return this == obj || (obj instanceof TsImportOptions && equals((TsImportOptions) obj));
     }
-    //</editor-fold>
+
+    private boolean equals(TsImportOptions that) {
+        return Objects.equals(this.dataFormat, that.dataFormat)
+                && Objects.equals(this.gathering, that.gathering);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(TsImportOptions.class)
+                .add("dataFormat", dataFormat)
+                .add("collectionParams", gathering)
+                .toString();
+    }
 }

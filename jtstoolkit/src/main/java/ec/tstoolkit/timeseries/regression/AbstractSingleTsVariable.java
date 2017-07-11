@@ -31,12 +31,7 @@ import java.util.List;
 @Development(status = Development.Status.Release)
 public abstract class AbstractSingleTsVariable implements ITsVariable {
 
-    @Override
-    @Deprecated
-    public void data(TsDomain domain, List<DataBlock> data, int start) {
-        data(domain.getStart(), data.get(start));
-    }
-
+ 
     @Override
     public void data(TsDomain domain, List<DataBlock> data) {
         data(domain.getStart(), data.get(0));
@@ -64,13 +59,8 @@ public abstract class AbstractSingleTsVariable implements ITsVariable {
     }
 
     @Override
-    public String getItemDescription(int item) {
-        return getDescription();
-    }
-
-    @Override
-    public String toString() {
-        return getDescription();
+    public String getItemDescription(int item, TsFrequency context) {
+        return getDescription(context);
     }
 
 }

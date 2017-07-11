@@ -13,9 +13,10 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
+ */
 package ec.tss.tsproviders.common.txt;
 
+import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
@@ -34,21 +35,26 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
+import java.util.Objects;
+import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@ServiceProvider(service = ITsProvider.class)
 public class TxtProvider extends AbstractFileLoader<TxtSource, TxtBean> {
 
     public static final String SOURCE = "Txt";
     public static final String VERSION = "20111201";
     static final IParam<DataSet, Integer> Z_SERIESINDEX = Params.onInteger(-1, "seriesIndex");
     private static final Logger LOGGER = LoggerFactory.getLogger(TxtProvider.class);
+
+    private final TxtFileFilter fileFilter;
     protected final Parsers.Parser<DataSource> legacyDataSourceParser;
     protected final Parsers.Parser<DataSet> legacyDataSetParser;
 
     public TxtProvider() {
-        super(LOGGER, SOURCE, TsAsyncMode.None);
+        super(LOGGER, SOURCE, TsAsyncMode.Once);
+        this.fileFilter = new TxtFileFilter();
         this.legacyDataSourceParser = TxtLegacy.dataSourceParser();
         this.legacyDataSetParser = TxtLegacy.dataSetParser();
     }
@@ -116,8 +122,7 @@ public class TxtProvider extends AbstractFileLoader<TxtSource, TxtBean> {
         DataSet[] children = new DataSet[tmp.items.size()];
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
         for (int i = 0; i < children.length; i++) {
-            Z_SERIESINDEX.set(builder, i);
-            children[i] = builder.build();
+            children[i] = builder.put(Z_SERIESINDEX, i).build();
         }
         return Arrays.asList(children);
     }
@@ -129,8 +134,8 @@ public class TxtProvider extends AbstractFileLoader<TxtSource, TxtBean> {
         info.type = TsInformationType.All;
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
         for (TxtSeries o : source.items) {
-            Z_SERIESINDEX.set(builder, o.index);
-            info.items.add(support.fillSeries(newTsInformation(builder.build(), TsInformationType.All), o.data, X_CLEAN_MISSING.get(dataSource)));
+            DataSet child = builder.put(Z_SERIESINDEX, o.index).build();
+            info.items.add(support.fillSeries(newTsInformation(child, TsInformationType.All), o.data, X_CLEAN_MISSING.get(dataSource)));
         }
     }
 
@@ -143,6 +148,7 @@ public class TxtProvider extends AbstractFileLoader<TxtSource, TxtBean> {
     protected void fillSeries(TsInformation info, DataSet dataSet) throws IOException {
         TxtSeries series = getSeries(dataSet);
         support.fillSeries(info, series.data, X_CLEAN_MISSING.get(dataSet.getDataSource()));
+        info.name = getDisplayName(dataSet);
         info.type = TsInformationType.All;
     }
 
@@ -161,28 +167,32 @@ public class TxtProvider extends AbstractFileLoader<TxtSource, TxtBean> {
 
     @Override
     public DataSource encodeBean(Object bean) throws IllegalArgumentException {
-        return ((TxtBean) bean).toDataSource(SOURCE, VERSION);
+        try {
+            return ((TxtBean) bean).toDataSource(SOURCE, VERSION);
+        } catch (ClassCastException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     @Override
     public TxtBean decodeBean(DataSource dataSource) {
-        return new TxtBean(dataSource);
+        return new TxtBean(support.check(dataSource));
     }
 
     @Override
     public boolean accept(File pathname) {
-        String tmp = pathname.getPath().toLowerCase(Locale.ENGLISH);
-        return tmp.endsWith(".txt") || tmp.endsWith(".csv") || tmp.endsWith(".tsv");
+        return fileFilter.accept(pathname);
     }
 
     @Override
     public String getFileDescription() {
-        return "Text file";
+        return fileFilter.getDescription();
     }
 
     @Override
     public List<DataSet> children(DataSet parent) throws IllegalArgumentException, IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Objects.requireNonNull(parent);
+        throw new IllegalArgumentException("Not supported yet.");
     }
 
     @Override

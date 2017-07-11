@@ -136,7 +136,7 @@ public class OverSeasTest {
         double retVal = 0.0;
         if (targetS.getFrequency().intValue() == 1)
             return retVal;
-        DescriptiveStatistics bs = new DescriptiveStatistics(targetS.getValues());
+        DescriptiveStatistics bs = new DescriptiveStatistics(targetS);
         double c0 = bs.getSumSquare();
         c0 = c0 / targetS.getLength();
         int Mq = targetS.getFrequency().intValue();
@@ -167,12 +167,12 @@ public class OverSeasTest {
     private int ComputeOverSeasTest() {
         int retVal = 0;
         TsData diffS = serie.delta(1);
-        DescriptiveStatistics bs = new DescriptiveStatistics(diffS.getValues());
+        DescriptiveStatistics bs = new DescriptiveStatistics(diffS);
         TsData targetS = diffS.minus(bs.getAverage());
         double SNPVal = Kendalls(targetS);
         if (diff) {
             diffS = serie.delta(1);
-            bs = new DescriptiveStatistics(diffS.getValues());
+            bs = new DescriptiveStatistics(diffS);
             targetS = diffS.minus(bs.getAverage());
         } else {
             targetS = serie.clone();

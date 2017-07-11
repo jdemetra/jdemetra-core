@@ -65,7 +65,7 @@ public class HtmlArima extends AbstractHtmlElement implements IHtmlElement {
         }
         double var = m_model.getInnovationVariance();
         if (Math.abs(var - 1) > EPS) {
-            String val = new Formatter().format("%.5f", Double.valueOf(var)).toString();
+            String val = new Formatter().format("%.5f", var).toString();
             stream.write(VAR).write(val, HtmlStyle.Bold).newLine();
         }
     }
@@ -73,7 +73,7 @@ public class HtmlArima extends AbstractHtmlElement implements IHtmlElement {
     public void writeShortModel(HtmlStream stream) throws IOException {
         double var = m_model.getInnovationVariance();
         if (Math.abs(var - 1) > EPS) {
-            String val = new Formatter().format("%.5f", Double.valueOf(var)).toString();
+            String val = new Formatter().format("%.5f", var).toString();
             stream.write(". " + VAR).write(val);
         }
     }

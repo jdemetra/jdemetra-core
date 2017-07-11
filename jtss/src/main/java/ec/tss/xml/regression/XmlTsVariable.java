@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.xml.regression;
 
 import ec.tss.xml.IXmlConverter;
@@ -22,14 +21,13 @@ import ec.tss.xml.XmlNamedObject;
 import ec.tss.xml.XmlTsData;
 import ec.tstoolkit.timeseries.regression.TsVariable;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 
 /**
  *
  * @author Kristof Bayens
  */
-@XmlType(name = XmlTsVariable.NAME)
 public class XmlTsVariable extends XmlNamedObject implements IXmlConverter<TsVariable> {
+
     static final String NAME = "TsVariableType";
     @XmlElement
     public XmlTsData tsdata;
@@ -42,8 +40,9 @@ public class XmlTsVariable extends XmlNamedObject implements IXmlConverter<TsVar
         if (tsdata == null) {
             return null;
         }
-        TsVariable var = new TsVariable(tsdata.name, tsdata.create());
-        return var;
+        TsVariable result = new TsVariable(tsdata.name, tsdata.create());
+        result.setName(name);
+        return result;
     }
 
     @Override

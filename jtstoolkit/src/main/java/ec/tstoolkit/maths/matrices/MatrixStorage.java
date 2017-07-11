@@ -140,4 +140,16 @@ public class MatrixStorage {
         }
     }
 
+    /**
+     * Multiplies the current data blocks by a given factor
+     * @param factor 
+     */
+    public void rescale(double factor) {
+        if (factor == 1)
+            return;
+        int n=m_size*m_nused;
+        for (int i=0; i<n; ++i){
+            m_data[i]*=factor;
+        }
+    }
 }

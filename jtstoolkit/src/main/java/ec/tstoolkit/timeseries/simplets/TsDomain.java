@@ -21,6 +21,8 @@ import ec.tstoolkit.design.Immutable;
 import ec.tstoolkit.timeseries.*;
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Represents a regular time domain. Such a domain is defined as a continuous
@@ -50,11 +52,6 @@ public final class TsDomain implements IDomain, Serializable, Iterable<TsPeriod>
         @Override
         public TsPeriod next() {
             return m_dom.get(m_cur++);
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
         }
     }
     private static final long serialVersionUID = 3500593038737276467L;
@@ -224,6 +221,14 @@ public final class TsDomain implements IDomain, Serializable, Iterable<TsPeriod>
     public TsPeriod getStart() {
         return new TsPeriod(m_freq, m_beg);
     }
+    
+    /**
+     * Id of the starting period
+     * @return 
+     */
+    public int startId(){
+        return m_beg;
+    }
 
     @Override
     public int hashCode() {
@@ -292,6 +297,10 @@ public final class TsDomain implements IDomain, Serializable, Iterable<TsPeriod>
     @Override
     public Iterator<TsPeriod> iterator() {
         return new TSPeriodIterator(this);
+    }
+
+    public Stream<TsPeriod> stream() {
+        return StreamSupport.stream(spliterator(), false);
     }
 
     /**

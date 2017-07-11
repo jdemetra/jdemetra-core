@@ -18,6 +18,7 @@ package ec.tstoolkit.utilities;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -37,6 +38,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * http://psy-lob-saw.blogspot.be/2013/03/single-producerconsumer-lock-free-queue.html
  * @author Nitsan Wakart
  */
+@Deprecated
 public final class P1C1QueueOriginal3<E> implements Queue<E> {
 
     private final int capacity;
@@ -74,9 +76,7 @@ public final class P1C1QueueOriginal3<E> implements Queue<E> {
 
     @Override
     public boolean offer(final E e) {
-        if (null == e) {
-            throw new NullPointerException("Null is not a valid element");
-        }
+        Objects.requireNonNull(e, "Null is not a valid element");
 
         final long currentTail = tail.get();
         final long wrapPoint = currentTail - capacity;

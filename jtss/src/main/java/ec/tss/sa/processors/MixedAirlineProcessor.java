@@ -41,6 +41,7 @@ import java.util.Map;
  *
  * @author Jean Palate
  */
+@Deprecated
 public class MixedAirlineProcessor implements ISaProcessingFactory<MixedAirlineSpecification> {
 
     public static final AlgorithmDescriptor DESCRIPTOR=MixedAirlineProcessingFactory.DESCRIPTOR;
@@ -98,7 +99,7 @@ public class MixedAirlineProcessor implements ISaProcessingFactory<MixedAirlineS
         return MixedAirlineProcessingFactory.instance.getSpecificationDictionary(specClass);
     }
     @Override
-    public Map<String, Class> getOutputDictionary() {
+    public Map<String, Class> getOutputDictionary(boolean compact) {
         return MixedAirlineProcessingFactory.instance.getOutputDictionary();
     }
 }

@@ -40,17 +40,25 @@ public final class InformationSet implements Cloneable {
     public static final String LOG = "log";
 
     public static String concatenate(String... s) {
-        if (s.length == 0) {
-            return "";
-        } else if (s.length == 1) {
-            return s[0];
-        } else {
-            StringBuilder builder = new StringBuilder();
-            builder.append(s[0]);
-            for (int i = 1; i < s.length; ++i) {
-                builder.append(SEP).append(s[i]);
-            }
-            return builder.toString();
+        switch (s.length) {
+            case 0:
+                return "";
+            case 1:
+                return s[0];
+            default:
+                boolean first = true;
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < s.length; ++i) {
+                    if (s[i] != null) {
+                        if (!first) {
+                            builder.append(SEP);
+                        } else {
+                            first = false;
+                        }
+                        builder.append(s[i]);
+                    }
+                }
+                return builder.toString();
         }
     }
 
@@ -67,6 +75,10 @@ public final class InformationSet implements Cloneable {
             }
         }
         return true;
+    }
+
+    public static boolean hasWildCards(String str) {
+        return str.indexOf('*') >= 0 || str.indexOf('?') >= 0;
     }
 
     public static String removePrefix(String name) {
@@ -784,14 +796,7 @@ public final class InformationSet implements Cloneable {
         }
     }
 
-    /**
-     *
-     * @param <S>
-     * @param names
-     * @param sclass
-     * @return
-     */
-    public <S> S search(final String[] names, final Class<S> sclass) {
+    private InformationSet root(final String[] names) {
         InformationSet cur = this;
         if (names.length > 1) {
             for (int i = 0; i < names.length - 1; ++i) {
@@ -802,7 +807,23 @@ public final class InformationSet implements Cloneable {
                 }
             }
         }
-        return cur.get(names[names.length - 1], sclass);
+        return cur;
+    }
+
+    /**
+     *
+     * @param <S>
+     * @param names
+     * @param sclass
+     * @return
+     */
+    public <S> S search(final String[] names, final Class<S> sclass) {
+        InformationSet cur = root(names);
+        if (cur == null) {
+            return null;
+        } else {
+            return cur.get(names[names.length - 1], sclass);
+        }
     }
 
     /**
@@ -841,9 +862,14 @@ public final class InformationSet implements Cloneable {
      */
     @NewObject
     public List<Information<Object>> select(final String wc) {
-        ArrayList<Information<Object>> list = new ArrayList<>();
-        WildCards w = new WildCards(wc);
-        for (Entry<String, IndexedObject<?>> kv : information_.entrySet()) {
+        String[] split = split(wc);
+        InformationSet cur = root(split);
+        if (cur == null) {
+            return Collections.EMPTY_LIST;
+        }
+        WildCards w = new WildCards(split[split.length - 1]);
+        List<Information<Object>> list = new ArrayList<>();
+        for (Entry<String, IndexedObject<?>> kv : cur.information_.entrySet()) {
             if (w.match(kv.getKey())) {
                 list.add(new Information<>(kv.getKey(),
                         kv.getValue().obj, kv.getValue().index));
@@ -868,9 +894,14 @@ public final class InformationSet implements Cloneable {
     @NewObject
     public <S> List<Information<S>> select(final String wc,
             final Class<S> sclass) {
+        String[] split = split(wc);
+        InformationSet cur = root(split);
+        if (cur == null) {
+            return Collections.EMPTY_LIST;
+        }
+        WildCards w = new WildCards(split[split.length - 1]);
         ArrayList<Information<S>> list = new ArrayList<>();
-        WildCards w = new WildCards(wc);
-        for (Entry<String, IndexedObject<?>> kv : information_.entrySet()) {
+        for (Entry<String, IndexedObject<?>> kv : cur.information_.entrySet()) {
             if (w.match(kv.getKey())) {
                 S s = convert(kv.getValue().obj, sclass);
                 if (s != null) {
@@ -1005,24 +1036,25 @@ public final class InformationSet implements Cloneable {
         for (Entry<String, IndexedObject<?>> kv : info.information_.entrySet()) {
             if (!information_.containsKey(kv.getKey())) {
                 information_.put(kv.getKey(), new IndexedObject(kv.getValue().obj));
-            } else {
-                // merge subset
-                if (InformationSet.class.isInstance(kv.getValue().obj)) {
-                    InformationSet subset = getSubSet(kv.getKey());
-                    if (subset == null) {
-                        return false;
-                    } else {
-                        subset.merge((InformationSet) kv.getValue().obj);
-                    }
+            } else // merge subset
+            if (InformationSet.class.isInstance(kv.getValue().obj)) {
+                InformationSet subset = getSubSet(kv.getKey());
+                if (subset == null) {
+                    return false;
                 } else {
-                    // merge warnings and errors
-                    if (kv.getKey().equals(WARNINGS)) {
+                    subset.merge((InformationSet) kv.getValue().obj);
+                }
+            } else {
+                // merge warnings and errors
+                switch (kv.getKey()) {
+                    case WARNINGS:
                         this.addMessages(WARNINGS, (String[]) kv.getValue().obj);
-                    } else if (kv.getKey().equals(ERRORS)) {
+                        break;
+                    case ERRORS:
                         this.addMessages(ERRORS, (String[]) kv.getValue().obj);
-                    } else {
+                        break;
+                    default:
                         return false;
-                    }
                 }
             }
         }
@@ -1032,7 +1064,7 @@ public final class InformationSet implements Cloneable {
     public boolean update(InformationSet info) {
         for (Entry<String, IndexedObject<?>> kv : info.information_.entrySet()) {
             if (kv.getValue().obj instanceof InformationSet) {
-                InformationSet subset = getSubSet(kv.getKey());
+                InformationSet subset = subSet(kv.getKey());
                 if (subset == null) {
                     return false;
                 } else {

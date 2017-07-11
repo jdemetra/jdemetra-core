@@ -18,6 +18,7 @@ package ec.tss.tsproviders.common.xml;
 
 import com.google.common.base.Throwables;
 import com.google.common.io.Files;
+import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
@@ -39,9 +40,11 @@ import java.util.Locale;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@ServiceProvider(service = ITsProvider.class)
 public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
 
     public static final String SOURCE = "Xml";
@@ -58,12 +61,12 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
             throw Throwables.propagate(ex);
         }
     }
-    //
+
     protected final Parsers.Parser<DataSource> legacyDataSourceParser;
     protected final Parsers.Parser<DataSet> legacyDataSetParser;
 
     public XmlProvider() {
-        super(LOGGER, SOURCE, TsAsyncMode.None);
+        super(LOGGER, SOURCE, TsAsyncMode.Once);
         this.legacyDataSourceParser = XmlLegacy.dataSourceParser();
         this.legacyDataSetParser = XmlLegacy.dataSetParser();
     }
@@ -141,14 +144,14 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
         DataSet[] children = new DataSet[ws.tsclist.length];
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
         for (int i = 0; i < children.length; i++) {
-            Y_COLLECTIONINDEX.set(builder, i);
-            children[i] = builder.build();
+            children[i] = builder.put(Y_COLLECTIONINDEX, i).build();
         }
         return Arrays.asList(children);
     }
 
     @Override
     public String getDisplayNodeName(DataSet dataSet) {
+        support.check(dataSet);
         wsTsWorkspace ws = cache.getIfPresent(dataSet.getDataSource());
         if (ws == null) {
             switch (dataSet.getKind()) {
@@ -180,10 +183,9 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
         }
 
         DataSet[] children = new DataSet[ws.tsclist[index].tslist.length];
-        DataSet.Builder builder = DataSet.builder(parent, DataSet.Kind.SERIES);
+        DataSet.Builder builder = parent.toBuilder(DataSet.Kind.SERIES);
         for (int i = 0; i < children.length; i++) {
-            Z_SERIESINDEX.set(builder, i);
-            children[i] = builder.build();
+            children[i] = builder.put(Z_SERIESINDEX, i).build();
         }
         return Arrays.asList(children);
     }
@@ -198,8 +200,8 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
         info.type = TsInformationType.All;
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
         for (int i = 0; i < source.tsclist.length; i++) {
-            Y_COLLECTIONINDEX.set(builder, i);
-            info.items.addAll(getAll(builder.build(), source.tsclist[i]));
+            DataSet child = builder.put(Y_COLLECTIONINDEX, i).build();
+            info.items.addAll(getAll(child, source.tsclist[i]));
         }
     }
 
@@ -223,6 +225,7 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
             throw new IOException("null");
         }
         info.data = series.tsdata.create();
+        info.name = getDisplayName(dataSet);
         info.type = TsInformationType.All;
     }
 
@@ -231,12 +234,12 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
             return Collections.emptyList();
         }
         TsInformation[] result = new TsInformation[collection.tslist.length];
-        DataSet.Builder builder = DataSet.builder(dataSet, DataSet.Kind.SERIES);
+        DataSet.Builder builder = dataSet.toBuilder(DataSet.Kind.SERIES);
         for (int i = 0; i < result.length; ++i) {
             wsTs s = collection.tslist[i];
-            Z_SERIESINDEX.set(builder, i);
-            OptionalTsData data = s.tsdata != null ? OptionalTsData.present(0, 0, s.tsdata.create()) : OptionalTsData.absent(0, 0, "No data");
-            result[i] = support.fillSeries(newTsInformation(builder.build(), TsInformationType.All), data, true);
+            DataSet child = builder.put(Z_SERIESINDEX, i).build();
+            OptionalTsData data = s.tsdata != null ? OptionalTsData.present(s.tsdata.create()) : OptionalTsData.absent("No data");
+            result[i] = support.fillSeries(newTsInformation(child, TsInformationType.All), data, true);
         }
         return Arrays.asList(result);
     }
@@ -279,12 +282,16 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
 
     @Override
     public DataSource encodeBean(Object bean) throws IllegalArgumentException {
-        return ((XmlBean) bean).toDataSource(SOURCE, VERSION);
+        try {
+            return ((XmlBean) bean).toDataSource(SOURCE, VERSION);
+        } catch (ClassCastException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     @Override
     public XmlBean decodeBean(DataSource dataSource) {
-        return new XmlBean(dataSource);
+        return new XmlBean(support.check(dataSource));
     }
 
     @Override

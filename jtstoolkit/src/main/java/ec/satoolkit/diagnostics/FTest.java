@@ -20,6 +20,7 @@ import ec.tstoolkit.arima.estimation.RegArimaEstimation;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.modelling.ComponentType;
+import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.JointRegressionTest;
 import ec.tstoolkit.modelling.arima.ModelDescription;
@@ -106,7 +107,7 @@ public class FTest {
         rspec.airline(false);
         SarimaModel arima = new SarimaModel(rspec);
         regmodel_ = new RegArimaModel<>(arima);
-        regmodel_.setY(new DataBlock(input.getValues().internalStorage()));
+        regmodel_.setY(new DataBlock(input.internalStorage()));
         regmodel_.setMeanCorrection(true);
     }
 
@@ -167,7 +168,7 @@ public class FTest {
         context.hasseas = false;
         SeasonalDummies dummies = new SeasonalDummies(s.getFrequency());
         nseas_ = dummies.getDim();
-        context.description.getUserVariables().add(new Variable(dummies, ComponentType.Seasonal));
+        context.description.addVariable(Variable.userVariable(dummies, ComponentType.Seasonal, RegStatus.Prespecified));
         if (!estimateContext(context)) {
             return false;
         }

@@ -35,6 +35,7 @@ import ec.tstoolkit.timeseries.regression.LeapYearVariable;
 import ec.tstoolkit.timeseries.regression.TsVariableList;
 import ec.tstoolkit.timeseries.regression.TsVariableSelection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -65,8 +66,7 @@ public class RegressionTestTD2 extends AbstractTramoModule implements IPreproces
 
     @Override
     public ProcessingResult process(ModellingContext context) {
-        if ((context.description.getCalendars() == null || context.description.getCalendars().isEmpty())
-                && (context.description.getMovingHolidays() == null || context.description.getMovingHolidays().isEmpty())) {
+        if (!context.description.contains(var -> var.isCalendar() || var.isMovingHoliday())) {
             return ProcessingResult.Unprocessed;
         }
 
@@ -83,7 +83,7 @@ public class RegressionTestTD2 extends AbstractTramoModule implements IPreproces
         Double SS0 = regarima0.getLikelihood().getSsqErr();
         Double SSmc0 = regarima0.getLikelihood().getSigma();
 
-        if (context.description.getCalendars() == null || context.description.getCalendars().isEmpty()) {
+        if (!context.description.contains(var -> var.isCalendar())) {
             boolean mean = Math.abs(cxt0.estimation.getLikelihood().getTStats()[0]) > tval_;
             context.description = backModel(context, TradingDaysType.None, LengthOfPeriodType.None, checkEE(cxt0), mean);
             transferLogs(cxt0, context);
@@ -178,12 +178,12 @@ public class RegressionTestTD2 extends AbstractTramoModule implements IPreproces
         model.setOutliers(null);
 //        model.setPrespecifiedOutliers(null);
 // remove previous calendar effects 
-        model.getCalendars().clear();
+        model.removeVariable(var -> var.isCalendar());
         if (td != TradingDaysType.None) {
-            model.getCalendars().add(new Variable(GregorianCalendarVariables.getDefault(td), ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(GregorianCalendarVariables.getDefault(td), RegStatus.Accepted));
         }
         if (lp != LengthOfPeriodType.None) {
-            model.getCalendars().add(new Variable(new LeapYearVariable(lp), ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(new LeapYearVariable(lp), RegStatus.Accepted));
         }
         return model;
     }
@@ -194,15 +194,15 @@ public class RegressionTestTD2 extends AbstractTramoModule implements IPreproces
             model.setMean(mean);
         }
         model.setOutliers(null);
-        model.getCalendars().clear();
+        model.removeVariable(var -> var.isCalendar());
         if (!Ee) {
-            model.getMovingHolidays().clear();
+            model.removeVariable(var->var.isMovingHoliday());
         } else {
             TsVariableList x = model.buildRegressionVariables();
             TsVariableSelection sel = x.selectCompatible(IMovingHolidayVariable.class);
             TsVariableSelection.Item<ITsVariable>[] items = sel.elements();
             for (int i = 0; i < items.length; ++i) {
-                Variable search = Variable.search(model.getMovingHolidays(), items[i].variable);
+                Variable search = model.searchVariable(items[i].variable);
                 if (search.status.needTesting()) {
                     search.status = RegStatus.Accepted;
                 }
@@ -211,22 +211,23 @@ public class RegressionTestTD2 extends AbstractTramoModule implements IPreproces
         if (td != TradingDaysType.None) {
             GregorianCalendarVariables vars = tdvars(context);
             vars.setDayOfWeek(td);
-            model.getCalendars().add(new Variable(vars, ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(vars, RegStatus.Accepted));
         }
         if (lp != LengthOfPeriodType.None) {
-            model.getCalendars().add(new Variable(new LeapYearVariable(lp), ComponentType.CalendarEffect, RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(new LeapYearVariable(lp), RegStatus.Accepted));
         }
         return model;
     }
 
     private GregorianCalendarVariables tdvars(ModellingContext context) {
-        List<Variable> calendars = context.description.getCalendars();
-        for (Variable var : calendars) {
-            if (var.isCompatible(GregorianCalendarVariables.class)) {
-                return ((GregorianCalendarVariables) var.getVariable()).clone();
-            }
+        Optional<Variable> found = context.description.variables()
+                .filter(var -> var.isCompatible(GregorianCalendarVariables.class))
+                .findFirst();
+        if (found.isPresent()) {
+            return ((GregorianCalendarVariables) found.get().getVariable()).clone();
+        } else {
+            return GregorianCalendarVariables.getDefault(TradingDaysType.None);
         }
-        return GregorianCalendarVariables.getDefault(TradingDaysType.None);
     }
 
     private boolean checkLY(ModellingContext model) {
@@ -247,7 +248,7 @@ public class RegressionTestTD2 extends AbstractTramoModule implements IPreproces
 
     private boolean checkEE(ModellingContext model) {
         boolean retval = true;
-        if (model.description.getMovingHolidays() == null || model.description.getMovingHolidays().isEmpty()) {
+        if (!model.description.contains(var->var.isMovingHoliday())) {
             return false;
         }
         TsVariableList x = model.description.buildRegressionVariables();
@@ -256,7 +257,7 @@ public class RegressionTestTD2 extends AbstractTramoModule implements IPreproces
             return false;
         }
         TsVariableSelection.Item<ITsVariable>[] items = sel.elements();
-        Variable search = Variable.search(model.description.getMovingHolidays(), items[items.length - 1].variable);
+        Variable search = model.description.searchVariable(items[items.length - 1].variable);
         if (search == null) { // should never happen
             return false;
         }
@@ -320,6 +321,5 @@ public class RegressionTestTD2 extends AbstractTramoModule implements IPreproces
     }
 
     private static final String TD = "TD F-Test", REGS = "Regression variables";
-
 
 }

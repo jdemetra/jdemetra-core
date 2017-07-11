@@ -28,6 +28,7 @@ import ec.tstoolkit.utilities.Arrays2;
 import java.util.Arrays;
 import java.util.Formatter;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.IntToDoubleFunction;
 
 /**
  *
@@ -131,6 +132,16 @@ public final class Polynomial implements IReadDataBlock {
     @Override
     public IReadDataBlock rextract(int start, int length) {
         return new ReadDataBlock(m_c, start, length);
+    }
+
+    boolean isSymmetric() {
+        if (this.degree % 2 != 0)
+            return false;
+        for (int i=0; i<degree/2; ++i){
+            if (Math.abs(m_c[i]-m_c[degree-i])>EPSILON)
+                return false;
+        }
+        return true;
     }
 
     /**
@@ -552,15 +563,14 @@ public final class Polynomial implements IReadDataBlock {
      * interface.
      *
      */
-    //private static IRootsSolver g_defRootsSolver = new GrantHitchinsSolver();
-    private static IRootsSolver g_defRootsSolver = new MullerNewtonSolver();
+    private static final AtomicReference<IRootsSolver> defSolver= new AtomicReference<>(new MullerNewtonSolver());
 
     /**
      *
      * @return
      */
     public static IRootsSolver getDefRootsSearcher() {
-        return Polynomial.g_defRootsSolver;
+        return defSolver.get().exemplar();
     }
 
     /**
@@ -568,7 +578,7 @@ public final class Polynomial implements IReadDataBlock {
      * @param value
      */
     public static void setDefRootsSearcher(final IRootsSolver value) {
-        Polynomial.g_defRootsSolver = value;
+        defSolver.set(value);
     }
 
     /**
@@ -708,6 +718,57 @@ public final class Polynomial implements IReadDataBlock {
             f = m_c[i] + (f * x);
         }
         return f;
+    }
+    
+    /**
+     * Evaluates a polynomial defined by given coefficients at a given point.
+     * The coefficients are stored in reverse order (the first coefficient corresponds
+     * to the highest power and the last one to the constant)
+     * @param c The coefficients. Should contain at least one element (not checked)
+     * @param x The evaluation point;
+     * @return the value of p(x)
+     */
+    public static double revaluate(final double[] c, final double x){
+        int d = c.length;
+        int p = 0;
+        double y = c[p++];
+        for (; p < d; ++p) {
+            y = c[p] + y * x;
+        }
+        return y;
+    }
+
+    /**
+     * Evaluates a polynomial defined by given coefficients at a given point.
+     * The coefficients are stored in normal order (the first coefficient corresponds
+     * to the constant and the last one to the highest power)
+     * @param c The coefficients. Should contain at least one element (not checked)
+     * @param x The evaluation point;
+     * @return the value of p(x)
+     */
+    public static double evaluate(final double[] c, final double x){
+        int p = c.length-1;
+        double y = c[p--];
+        for (; p >= 0; --p) {
+            y = c[p] + (y * x);
+        }
+        return y;
+    }
+
+    /**
+     * Evaluates a polynomial with coefficients defined by a give function at a given point.
+     * @param degree The degree of the polynomial
+     * @param fn The function defining the coefficients. fn(i) is the coefficient corresponding to the power i
+     * @param x The evaluation point;
+     * @return the value of p(x)
+     */
+    public static double evaluate(final int degree, IntToDoubleFunction fn, final double x){
+        int p = degree;
+        double y = fn.applyAsDouble(p--);
+        for (; p >= 0; --p) {
+            y = fn.applyAsDouble(p) + (y * x);
+        }
+        return y;
     }
 
     /**
@@ -889,7 +950,7 @@ public final class Polynomial implements IReadDataBlock {
     public Complex[] roots() {
         Complex[] result = defRoots.get();
         if (result == null) {
-            result = roots(g_defRootsSolver);
+            result = roots(getDefRootsSearcher());
             defRoots.set(result);
         }
         return result;
@@ -914,21 +975,19 @@ public final class Polynomial implements IReadDataBlock {
         if (getDegree() == 0) {
             return new Complex[0];
         }
-        if (searcher == null) {
-            searcher = g_defRootsSolver;
+        final Polynomial tmp = this.adjustDegree();
+        if (tmp.getDegree() == 0) {
+            return new Complex[0];
         }
-        synchronized (searcher) {
-            final Polynomial tmp = this.adjustDegree();
-            if (tmp.getDegree() == 0) {
-                return new Complex[0];
-            }
-            if (searcher.factorize(tmp)) {
-                Complex[] roots = searcher.roots();
-                searcher.clear();
-                return roots;
-            } else {
-                return null;
-            }
+        if (searcher == null) {
+            searcher = getDefRootsSearcher();
+        }
+        if (searcher.factorize(tmp)) {
+            Complex[] roots = searcher.roots();
+            searcher.clear();
+            return roots;
+        } else {
+            return null;
         }
     }
 

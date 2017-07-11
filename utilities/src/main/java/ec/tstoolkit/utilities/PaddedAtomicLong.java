@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @see P1C1QueueOriginal3
  * @author Nitsan Wakart
  */
+@Deprecated
 final class PaddedAtomicLong extends AtomicLong {
 
     public PaddedAtomicLong() {

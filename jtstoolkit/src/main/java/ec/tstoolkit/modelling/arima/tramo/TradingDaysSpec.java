@@ -19,6 +19,7 @@ package ec.tstoolkit.modelling.arima.tramo;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.information.InformationSetSerializable;
 import ec.tstoolkit.modelling.RegressionTestType;
+import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import java.util.Arrays;
 import java.util.Map;
@@ -50,8 +51,8 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
         dic.put(InformationSet.item(prefix, W), Integer.class);
         dic.put(InformationSet.item(prefix, TESTTYPE), String.class);
     }
-    
-    public static final double DEF_PFTD=.01;
+
+    public static final double DEF_PFTD = .01;
 
     private String holidays_;
     private String[] users_;
@@ -59,7 +60,7 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
     private boolean lp_;
     private RegressionTestType test_ = RegressionTestType.None;
     private int w_ = 0;
-    private AutoMethod auto_=AutoMethod.Unused;
+    private AutoMethod auto_ = AutoMethod.Unused;
     private double pftd_ = DEF_PFTD;
 
     public TradingDaysSpec() {
@@ -73,7 +74,7 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
         test_ = RegressionTestType.None;
         w_ = 0;
         auto_ = AutoMethod.Unused;
-        pftd_=DEF_PFTD;
+        pftd_ = DEF_PFTD;
     }
 
     public TradingDaysType getTradingDaysType() {
@@ -84,6 +85,12 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
         return isAutomatic() || td_ != TradingDaysType.None || users_ != null || w_ != 0;
     }
 
+    public boolean isDefined() {
+        return users_ != null || (w_ != 0 && test_ == RegressionTestType.None)
+                || ((lp_ || td_ != TradingDaysType.None)
+                && (test_ == RegressionTestType.None && auto_ == AutoMethod.Unused));
+    }
+
     public boolean isAutomatic() {
         return auto_ != AutoMethod.Unused;
     }
@@ -91,27 +98,30 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
     public void setAutomatic(boolean value) {
         auto_ = value ? AutoMethod.FTest : AutoMethod.Unused;
     }
-    
-    public AutoMethod getAutomaticMethod(){
+
+    public AutoMethod getAutomaticMethod() {
         return auto_;
     }
-    
-    public void setAutomaticMethod(AutoMethod m){
-       auto_=m;
+
+    public void setAutomaticMethod(AutoMethod m) {
+        auto_ = m;
     }
-            
-    public double getProbabibilityForFTest(){
+
+    public double getProbabibilityForFTest() {
         return pftd_;
     }
 
-    public void setProbabibilityForFTest(double f){
-        if (f <=0 || f>.1)
+    public void setProbabibilityForFTest(double f) {
+        if (f <= 0 || f > .1) {
             throw new IllegalArgumentException();
-        pftd_=f;
+        }
+        pftd_ = f;
     }
-    
+
     public void setTradingDaysType(TradingDaysType value) {
         td_ = value;
+        users_ = null;
+        w_=0;
     }
 
     public boolean isLeapYear() {
@@ -128,6 +138,12 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
      */
     public void setStockTradingDays(int w) {
         w_ = w;
+        holidays_ = null;
+        users_ = null;
+        td_ = TradingDaysType.None;
+        lp_ = false;
+        auto_ = AutoMethod.Unused;
+        pftd_ = DEF_PFTD;
     }
 
     public boolean isStockTradingDays() {
@@ -180,6 +196,8 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
             holidays_ = null;
             td_ = TradingDaysType.None;
             lp_ = false;
+            auto_ = AutoMethod.Unused;
+            pftd_ = DEF_PFTD;
         }
     }
 
@@ -236,10 +254,17 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
     }
 
     private boolean equals(TradingDaysSpec other) {
-        return Arrays.deepEquals(users_, other.users_)
-                && Objects.equals(holidays_, other.holidays_) && w_ == other.w_
-                && td_ == other.td_ && lp_ == other.lp_ && test_ == other.test_ 
-                && auto_ == other.auto_ && pftd_ == other.pftd_;
+        // type
+        if (!Arrays.deepEquals(users_, other.users_)
+                || !Objects.equals(holidays_, other.holidays_) || w_ != other.w_ || auto_ != other.auto_) {
+            return false;
+        }
+
+        if (auto_ != AutoMethod.Unused) {
+            return pftd_ == other.pftd_;
+        } else {
+            return td_ == other.td_ && lp_ == other.lp_ && test_ == other.test_;
+        }
     }
 
     @Override
@@ -307,7 +332,7 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
             }
             Double pftd = info.get(PFTD, Double.class);
             if (pftd != null) {
-                pftd_ =pftd;
+                pftd_ = pftd;
             }
             String td = info.get(TDOPTION, String.class);
             if (td != null) {

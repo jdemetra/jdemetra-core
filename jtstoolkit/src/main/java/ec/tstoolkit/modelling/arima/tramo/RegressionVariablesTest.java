@@ -23,6 +23,7 @@ import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.*;
 import ec.tstoolkit.sarima.estimation.GlsSarimaMonitor;
+import ec.tstoolkit.timeseries.regression.ICalendarVariable;
 import ec.tstoolkit.timeseries.regression.ILengthOfPeriodVariable;
 import ec.tstoolkit.timeseries.regression.IMovingHolidayVariable;
 import ec.tstoolkit.timeseries.regression.ITradingDaysVariable;
@@ -64,10 +65,10 @@ public class RegressionVariablesTest extends AbstractTramoModule implements IPre
         model.setAirline(context.hasseas);
         model.setMean(true);
 
-        boolean hastd = model.getCalendars() != null && !model.getCalendars().isEmpty();
+        boolean hastd = model.variables().filter(var->var.isCalendar()).findAny().isPresent();
         //RegStatus.ToRemove);
-        boolean hasmh = model.getMovingHolidays() != null && !model.getMovingHolidays().isEmpty();
-        boolean hasuser = model.getUserVariables() != null && !model.getUserVariables().isEmpty();
+        boolean hasmh = model.variables().filter(var->var.isMovingHoliday()).findAny().isPresent();
+        boolean hasuser = model.variables().filter(var->var.isUser()).findAny().isPresent();
 //        model.setPrespecifiedOutliers(null);
         if (hastd || hasmh || hasuser || context.automodelling) {
             return model;
@@ -100,7 +101,7 @@ public class RegressionVariablesTest extends AbstractTramoModule implements IPre
         boolean usetd = false;
         int start = tmpModel.getRegressionVariablesStartingPosition();
         for (int i = 0; i < items.length; ++i) {
-            Variable search = Variable.search(context.description.getCalendars(), items[i].variable);
+            Variable search = context.description.searchVariable(items[i].variable);
             if (search.status.needTesting()) {
                 IRegressionTest test = items[i].variable.getDim() == 1 ? wdTest_ : tdTest_;
                 if (test.accept(ll, nhp, start + items[i].position, items[i].variable.getDim(), tdsubset)) {
@@ -116,7 +117,7 @@ public class RegressionVariablesTest extends AbstractTramoModule implements IPre
         sel = x.selectCompatible(ILengthOfPeriodVariable.class);
         items = sel.elements();
         for (int i = 0; i < items.length; ++i) {
-            Variable search = Variable.search(context.description.getCalendars(), items[i].variable);
+            Variable search = context.description.searchVariable(items[i].variable);
             if (search.status.needTesting()) {
                 if (usetd && lpTest_.accept(ll, nhp, start + items[i].position, items[i].variable.getDim(), tdsubset)) {
                     search.status = RegStatus.Accepted;
@@ -130,7 +131,7 @@ public class RegressionVariablesTest extends AbstractTramoModule implements IPre
         sel = x.selectCompatible(IMovingHolidayVariable.class);
         items = sel.elements();
         for (int i = 0; i < items.length; ++i) {
-            Variable search = Variable.search(context.description.getMovingHolidays(), items[i].variable);
+            Variable search = context.description.searchVariable(items[i].variable);
             if (search.status.needTesting()) {
                 if (mhTest_.accept(ll, nhp, start + items[i].position, items[i].variable.getDim(), esubset)) {
                     search.status = RegStatus.Accepted;
@@ -150,7 +151,7 @@ public class RegressionVariablesTest extends AbstractTramoModule implements IPre
         if (! testUsers(x, context.description.getUserVariables(), start, ll, nhp))
             changed=true;
 
-        if (context.automodelling && tmpModel.isMean()&& ! meanTest_.accept(ll, nhp, 0, 1, esubset)) {
+        if (context.automodelling && tmpModel.isEstimatedMean()&& ! meanTest_.accept(ll, nhp, 0, 1, esubset)) {
             context.description.setMean(false);
             changed=true;
         }
@@ -160,7 +161,7 @@ public class RegressionVariablesTest extends AbstractTramoModule implements IPre
     }
 
     private boolean testUsers(final TsVariableList x, final List<Variable> vars, int start, ConcentratedLikelihood ll, int nhp) {
-        TsVariableSelection sel = x.select(new SelectorImpl(vars));
+        TsVariableSelection sel = x.select(var->var instanceof IUserTsVariable && Variable.search(vars, var) != null);
         if (sel.isEmpty()) {
             return true;
         }
@@ -181,17 +182,4 @@ public class RegressionVariablesTest extends AbstractTramoModule implements IPre
         return changed ;
     }
 
-    private static class SelectorImpl implements TsVariableList.ISelector {
-
-        private final List<Variable> vars;
-
-        public SelectorImpl(List<Variable> vars) {
-            this.vars = vars;
-        }
-
-        @Override
-        public boolean accept(ITsVariable var) {
-            return var instanceof IUserTsVariable && Variable.search(vars, var) != null;
-        }
-    }
 }

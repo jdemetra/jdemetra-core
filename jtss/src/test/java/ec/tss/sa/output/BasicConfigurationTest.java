@@ -17,8 +17,18 @@
 
 package ec.tss.sa.output;
 
+import ec.tss.sa.ISaDiagnosticsFactory;
+import ec.tss.sa.ISaProcessingFactory;
+import ec.tss.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsFactory;
+import ec.tss.sa.diagnostics.ResidualSeasonalityDiagnosticsFactory;
+import ec.tss.sa.diagnostics.SpectralDiagnosticsFactory;
+import ec.tss.sa.processors.TramoSeatsProcessor;
+import ec.tss.sa.processors.X13Processor;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -26,6 +36,22 @@ import org.junit.Test;
  * @author Jean Palate
  */
 public class BasicConfigurationTest {
+    
+    private static final List<ISaProcessingFactory> facs;
+    private static final List<ISaDiagnosticsFactory> diags;
+   
+    static {
+        facs=new ArrayList<>();
+        facs.add(new TramoSeatsProcessor());
+        facs.add(new X13Processor());
+        diags=new ArrayList<>();
+        diags.add(new AdvancedResidualSeasonalityDiagnosticsFactory());
+        diags.add(new ResidualSeasonalityDiagnosticsFactory());
+        diags.add(new SpectralDiagnosticsFactory());
+        diags.forEach(d->d.setEnabled(true));
+        
+        facs.add(new X13Processor());
+    }
     
     public BasicConfigurationTest() {
     }
@@ -38,14 +64,25 @@ public class BasicConfigurationTest {
     public static void tearDownClass() throws Exception {
     }
 
-//    @Test
-    public void demoAllSeries() {
-        for (String s : BasicConfiguration.allSeries)
+    @Test
+    @Ignore
+    public void testAllSeries() {
+        for (String s : BasicConfiguration.allSeries(true, facs))
             System.out.println(s);
     }
-//    @Test
-    public void demoAllOutput() {
-        for (String s : BasicConfiguration.allDetails)
+
+    @Test
+    @Ignore
+    public void testAllCompactDettails() {
+        for (String s : BasicConfiguration.allDetails(true, facs, diags))
             System.out.println(s);
     }
+    
+    @Test
+    @Ignore
+    public void testAllDettails() {
+        for (String s : BasicConfiguration.allDetails(false, facs, diags))
+            System.out.println(s);
+    }
+    
 }

@@ -18,8 +18,11 @@
 package ec.tstoolkit.timeseries.simplets;
 
 import ec.tstoolkit.OperationType;
-import ec.tstoolkit.data.Values;
+import ec.tstoolkit.data.DataBlock;
+import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.timeseries.simplets.TsData;
+import ec.tstoolkit.timeseries.simplets.TsDomain;
 
 /**
  *
@@ -87,35 +90,32 @@ public class TsDataTransformation implements ITsDataTransformation {
      */
     public boolean transform(TsData data, LogJacobian ljacobian)
     {
-	Values val = data.getValues();
 	TsDomain domain = m_tsdata.getDomain();
 	TsDomain common = data.getDomain().intersection(domain);
 	int istart = common.getStart().minus(data.getStart());
 	int jstart = common.getStart().minus(domain.getStart());
 	int iend = istart + common.getLength();
 	int jend = jstart + common.getLength();
-	double[] s = m_tsdata.getValues().internalStorage();
+	DataBlock s = new DataBlock(m_tsdata.internalStorage(), istart, iend, 1);
+        IReadDataBlock extract = m_tsdata.rextract(jstart, common.getLength());
 	switch (op) {
 	case Diff:
-	    for (int i = istart, j = jstart; i < iend; ++i, ++j)
-		val.add(i, -s[j]);
+	    s.apply(extract, (x,y)->x-y);
 	    break;
 	case Product:
-	    for (int i = istart, j = jstart; i < iend; ++i, ++j)
-		val.mul(i, s[j]);
+	    s.apply(extract, (x,y)->x*y);
 	    break;
 	case Sum:
-	    for (int i = istart, j = jstart; i < iend; ++i, ++j)
-		val.add(i, s[j]);
+	    s.apply(extract, (x,y)->x+y);
 	    break;
 	case Ratio:
-	    for (int i = istart, j = jstart; i < iend; ++i, ++j)
-		val.mul(i, 1 / s[j]);
+	    s.apply(extract, (x,y)->x/y);
 	    break;
 
 	default:
 	    return false;
 	}
+        // TODO Should be verified !!!
 	if (ljacobian != null
 		&& (op == OperationType.Product || op == OperationType.Ratio)) {
 	    if (ljacobian.start > istart) {
@@ -126,7 +126,7 @@ public class TsDataTransformation implements ITsDataTransformation {
 		jend -= iend - ljacobian.end;
 	    double l = 0;
 	    for (int j = jstart; j < jend; ++j)
-		l += Math.log(s[j]);
+		l += Math.log(s.get(j));
 	    if (op == OperationType.Product)
 		ljacobian.value += l;
 	    else

@@ -22,8 +22,11 @@ import com.google.common.collect.ImmutableList;
 import ec.tss.tsproviders.common.txt.TxtBean.Delimiter;
 import ec.tss.tsproviders.common.txt.TxtBean.TextQualifier;
 import ec.tss.tsproviders.utils.DataFormat;
+import ec.tss.tsproviders.utils.IParser;
+import ec.tss.tsproviders.utils.ObsGathering;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tss.tsproviders.utils.Parsers;
+import ec.tstoolkit.utilities.CheckedIterator;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +34,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  *
@@ -54,29 +59,40 @@ final class TxtLoader {
         }
     }
 
-    static TxtSource load(Reader reader, TxtBean bean) throws IOException {
+    private static TxtSource load(Reader reader, TxtBean bean) throws IOException {
         try (CSVReader csvReader = new CSVReader(reader, toChar(bean.delimiter), toChar(bean.textQualifier), bean.skipLines)) {
-            return load(csvReader, bean);
+            ObsGathering gathering = bean.cleanMissing
+                    ? ObsGathering.excludingMissingValues(bean.frequency, bean.aggregationType)
+                    : ObsGathering.includingMissingValues(bean.frequency, bean.aggregationType);
+            return load(csvReader, bean.getDataFormat(), gathering, bean.isHeaders());
         }
     }
 
-    static TxtSource load(CSVReader reader, TxtBean bean) throws IOException {
+    static TxtSource load(CSVReader reader, DataFormat obsFormat, ObsGathering obsGathering, boolean header) throws IOException {
+        return load(asCheckedIterator(reader), obsFormat, obsGathering, header);
+    }
+
+    private static TxtSource load(CheckedIterator<String[], IOException> iterator, DataFormat obsFormat, ObsGathering obsGathering, boolean header) throws IOException {
         int nbrRows = 0;
         int nbrUselessRows = 0;
         String[] titles = new String[0];
-        Parsers.Parser<Date> dateParser = bean.dataFormat.dateParser().or(FALLBACK_PARSER.get());
-        Parsers.Parser<Number> numberParser = bean.dataFormat.numberParser();
-        List<OptionalTsData.Builder> dataCollectors = new ArrayList<>();
+        IParser<Date> dateParser = obsFormat.dateParser().orElse(FALLBACK_PARSER.get());
+        Parsers.Parser<Number> numberParser = obsFormat.numberParser();
+        GregorianCalendar cal = new GregorianCalendar();
+        List<OptionalTsData.Builder2<Date>> dataCollectors = new ArrayList<>();
 
-        String[] line;
-        while ((line = reader.readNext()) != null) {
+        while (iterator.hasNext()) {
+            String[] line = iterator.next();
+            if (line == null) {
+                throw new RuntimeException("Not possible");
+            }
             if (nbrRows == 0) {
-                titles = bean.headers ? line : generateHeaders(line.length);
+                titles = header ? line : generateTitles(line.length);
                 for (int i = 1; i < titles.length; i++) {
-                    dataCollectors.add(new OptionalTsData.Builder(bean.frequency, bean.aggregationType));
+                    dataCollectors.add(OptionalTsData.builderByDate(cal, obsGathering));
                 }
             }
-            if (!(nbrRows == 0 && bean.headers)) {
+            if (!(nbrRows == 0 && header)) {
                 Date period = line.length > 0 ? dateParser.parse(line[0]) : null;
                 if (period != null) {
                     int max = Math.min(titles.length, line.length);
@@ -97,12 +113,10 @@ final class TxtLoader {
         return new TxtSource(nbrRows, nbrUselessRows, Arrays.asList(data));
     }
 
-    static String[] generateHeaders(int size) {
-        String[] result = new String[size];
-        for (int i = 0; i < size; i++) {
-            result[i] = "Column " + i;
-        }
-        return result;
+    static String[] generateTitles(int size) {
+        return IntStream.range(0, size)
+                .mapToObj(i -> "Column " + i)
+                .toArray(String[]::new);
     }
 
     static char toChar(Delimiter delimiter) {
@@ -130,17 +144,45 @@ final class TxtLoader {
         }
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    // needed by the use of SimpleDateFormat in the subparsers
-    private static final ThreadLocal<Parsers.Parser<Date>> FALLBACK_PARSER = new ThreadLocal<Parsers.Parser<Date>>() {
-        @Override
-        protected Parsers.Parser<Date> initialValue() {
-            ImmutableList.Builder<Parsers.Parser<Date>> list = ImmutableList.builder();
-            for (String o : FALLBACK_FORMATS) {
-                list.add(new DataFormat(Locale.ROOT, o, null).dateParser());
+
+    private static CheckedIterator<String[], IOException> asCheckedIterator(CSVReader reader) {
+        return new CheckedIterator<String[], IOException>() {
+            private String[] nextItem = null;
+
+            @Override
+            public boolean hasNext() throws IOException {
+                if (nextItem != null) {
+                    return true;
+                } else {
+                    nextItem = reader.readNext();
+                    return (nextItem != null);
+                }
             }
-            return Parsers.firstNotNull(list.build());
+
+            @Override
+            public String[] next() throws IOException, NoSuchElementException {
+                if (nextItem != null || hasNext()) {
+                    String[] item = nextItem;
+                    nextItem = null;
+                    return item;
+                } else {
+                    throw new NoSuchElementException();
+                }
+            }
+        };
+    }
+
+    // needed by the use of SimpleDateFormat in the subparsers
+    private static final ThreadLocal<IParser<Date>> FALLBACK_PARSER = new ThreadLocal<IParser<Date>>() {
+        @Override
+        protected IParser<Date> initialValue() {
+            ImmutableList<IParser<Date>> list = Stream.of(FALLBACK_FORMATS)
+                    .map(o -> new DataFormat(Locale.ROOT, o, null).dateParser())
+                    .collect(ImmutableList.toImmutableList());
+            return Parsers.firstNotNull(list);
         }
     };
+
     // fallback formats; order matters!
     private static final String[] FALLBACK_FORMATS = {
         "yyyy-MM-dd",

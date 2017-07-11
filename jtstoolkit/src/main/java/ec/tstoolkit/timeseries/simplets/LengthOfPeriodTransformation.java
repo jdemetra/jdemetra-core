@@ -16,6 +16,7 @@
 */
 
 package ec.tstoolkit.timeseries.simplets;
+import ec.tstoolkit.timeseries.simplets.ITsDataTransformation;
 
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
@@ -45,6 +46,7 @@ public class LengthOfPeriodTransformation implements ITsDataTransformation {
      * 
      * @return
      */
+    @Override
     public ITsDataTransformation converse()
     {
 	LengthOfPeriodTransformation transform = new LengthOfPeriodTransformation(
@@ -59,6 +61,7 @@ public class LengthOfPeriodTransformation implements ITsDataTransformation {
      * @param ljacobian
      * @return
      */
+    @Override
     public boolean transform(TsData data, LogJacobian ljacobian)
     {
 	ec.tstoolkit.timeseries.calendars.Utilities.transform(type, data,

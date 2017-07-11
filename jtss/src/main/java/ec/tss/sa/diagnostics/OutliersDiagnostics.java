@@ -33,12 +33,6 @@ import java.util.List;
  */
 public final class OutliersDiagnostics implements IDiagnostics {
 
-    public static final String NUMBER = "number of outliers";
-
-    public static final String NAME = "outliers";
-
-    public static final List<String> DEF_TESTS = Collections.singletonList(NUMBER);
-
     private double ub_ = OutliersDiagnosticsConfiguration.UNC;
     private double bb_ = OutliersDiagnosticsConfiguration.BAD;
     private double sb_ = OutliersDiagnosticsConfiguration.SEV;
@@ -74,19 +68,19 @@ public final class OutliersDiagnostics implements IDiagnostics {
         TsData y = rslts.description.getOriginal();
         if (y == null)
             return;
-        n_ = y.getValues().getObsCount();
+        n_ = y.getObsCount();
         p_ = rslts.description.getPrespecifiedOutliers().size();
         o_ = rslts.description.getOutliers().size();
     }
 
     @Override
     public String getName() {
-        return NAME;
+        return OutliersDiagnosticsFactory.NAME;
     }
 
     @Override
     public List<String> getTests() {
-        return DEF_TESTS;
+        return OutliersDiagnosticsFactory.ALL;
     }
 
     @Override
@@ -107,7 +101,7 @@ public final class OutliersDiagnostics implements IDiagnostics {
     @Override
     public double getValue(String test) {
         double val = Double.NaN;
-        if (!test.equals(DEF_TESTS.get(0)))
+        if (!test.equals(OutliersDiagnosticsFactory.NUMBER))
             return val;
         if (Double.isNaN(n_))
             return val;

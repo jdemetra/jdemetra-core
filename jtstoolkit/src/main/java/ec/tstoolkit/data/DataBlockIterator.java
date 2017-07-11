@@ -42,11 +42,11 @@ import ec.tstoolkit.design.NewObject;
 public final class DataBlockIterator implements Cloneable{
 
     // positions of the first column; 
-    private final int bstart_, estart_, del_;
+    private final int bstart, estart, del;
 
-    private double[] data_;
+    private final double[] data;
 
-    private DataBlock cur_;
+    private DataBlock cur;
 
     /**
      * Creates a new iterator. The parameters correspond to a rows iterator
@@ -62,18 +62,18 @@ public final class DataBlockIterator implements Cloneable{
      */
     public DataBlockIterator(double[] data, int start, int nr, int nc,
 	    int rinc, int cinc) {
-	data_ = data;
-	bstart_ = start;
-	estart_ = start + (nr-1) * rinc;
-	del_ = rinc;
-	cur_ = new DataBlock(data, start, start + nc * cinc, cinc);
+	this.data = data;
+	bstart = start;
+	estart = start + (nr-1) * rinc;
+	del = rinc;
+	cur = new DataBlock(data, start, start + nc * cinc, cinc);
     }
     
     @Override
     public DataBlockIterator clone(){
         try {
             DataBlockIterator iter= (DataBlockIterator) super.clone();
-            iter.cur_=cur_.clone();
+            iter.cur=cur.clone();
             return iter;
         } catch (CloneNotSupportedException ex) {
            throw new AssertionError();
@@ -84,18 +84,18 @@ public final class DataBlockIterator implements Cloneable{
      * Sets the iterator to the first element. 
      */
     public void begin() {
-	int del = cur_.getStartPosition() - bstart_;
-	if (del > 0)
-	    cur_.slide(-del);
+	int cdel = cur.getStartPosition() - bstart;
+	if (cdel > 0)
+	    cur.slide(-cdel);
     }
 
     /**
      * Sets the iterator to the last block. The current block is a valid block
      */
     public void end() {
-	int del = estart_ - cur_.beg_;
-	if (del != 0)
-	    cur_.slide(del);
+	int cdel = estart - cur.beg;
+	if (cdel != 0)
+	    cur.slide(cdel);
     }
 
     /**
@@ -103,7 +103,7 @@ public final class DataBlockIterator implements Cloneable{
      * @return A strictly positive number
      */
     public int getCount() {
-	return 1+ (del_ == 1 ? estart_ - bstart_ : (estart_ - bstart_) / del_);
+	return 1+ (del == 1 ? estart - bstart : (estart - bstart) / del);
     }
 
     /**
@@ -113,7 +113,7 @@ public final class DataBlockIterator implements Cloneable{
      * Successive calls to getData() always return the same object
      */
     public DataBlock getData() {
-	return cur_;
+	return cur;
     }
 
     /**
@@ -121,7 +121,7 @@ public final class DataBlockIterator implements Cloneable{
      * @return The position of the iterator. Belongs to [0, getCount()[.
      */
     public int getPosition() {
-	return (cur_.beg_ - bstart_) / del_;
+	return (cur.beg - bstart) / del;
     }
 
     /**
@@ -130,10 +130,10 @@ public final class DataBlockIterator implements Cloneable{
      * was already at the end).
      */
     public boolean next() {
-        if (cur_.beg_ == estart_)
+        if (cur.beg == estart)
             return false;
         else{
-            cur_.slide(del_);
+            cur.slide(del);
 	    return true;
         }
     }
@@ -144,8 +144,8 @@ public final class DataBlockIterator implements Cloneable{
      * was already at the beginning).
      */
     public boolean previous() {
-	if (cur_.getStartPosition() != bstart_) {
-	    cur_.slide(-del_);
+	if (cur.getStartPosition() != bstart) {
+	    cur.slide(-del);
 	    return true;
 	} else
 	    return false;
@@ -157,9 +157,9 @@ public final class DataBlockIterator implements Cloneable{
      * Using a value outside that range will lead to unpredictable behavior.
      */
     public void setPosition(int value) {
-	int del = (bstart_ + value * del_) - cur_.getStartPosition();
-	if (del != 0)
-	    cur_.slide(del);
+	int cdel = (bstart + value * this.del) - cur.getStartPosition();
+	if (cdel != 0)
+	    cur.slide(cdel);
     }
 
     /**
@@ -170,10 +170,10 @@ public final class DataBlockIterator implements Cloneable{
     public DataBlock[] toArray()
     {
 	DataBlock[] rc = new DataBlock[getCount()];
-	int l = cur_.getEndPosition() - cur_.getStartPosition();
-	int inc = cur_.getIncrement();
-	for (int i = 0, b = bstart_; i < rc.length; ++i, b += del_)
-	    rc[i] = new DataBlock(data_, b, b + l, inc);
+	int l = cur.getEndPosition() - cur.getStartPosition();
+	int inc = cur.getIncrement();
+	for (int i = 0, b = bstart; i < rc.length; ++i, b += del)
+	    rc[i] = new DataBlock(data, b, b + l, inc);
 	return rc;
     }
     
@@ -185,7 +185,7 @@ public final class DataBlockIterator implements Cloneable{
     @NewObject
     public DataBlock sum(){
         DataBlockIterator tmp=this.clone();
-        if (tmp.cur_.beg_ == tmp.estart_)
+        if (tmp.cur.beg == tmp.estart)
             return null;
         DataBlock sum=tmp.getData().deepClone();
         while (tmp.next()){

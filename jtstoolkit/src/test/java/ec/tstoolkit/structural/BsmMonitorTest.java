@@ -24,6 +24,7 @@ import ec.tstoolkit.ssf.SsfData;
 import ec.tstoolkit.ssf.arima.SsfArima;
 import ec.tstoolkit.ucarima.UcarimaModel;
 import static org.junit.Assert.assertTrue;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -43,7 +44,7 @@ public class BsmMonitorTest {
         mspec.sUse = ComponentUse.Free;
         SeasonalModel[] models = new SeasonalModel[]{SeasonalModel.Crude, SeasonalModel.Dummy,
             SeasonalModel.HarrisonStevens, SeasonalModel.Trigonometric};
-        double[] y = data.Data.P.getValues().internalStorage();
+        double[] y = data.Data.P.internalStorage();
         for (int i = 0; i < models.length; ++i) {
             mspec.seasModel = models[i];
             monitor.setSpecification(mspec);
@@ -72,7 +73,7 @@ public class BsmMonitorTest {
         mspec.sUse = ComponentUse.Free;
         SeasonalModel[] models = new SeasonalModel[]{SeasonalModel.Crude, SeasonalModel.Dummy,
             SeasonalModel.HarrisonStevens, SeasonalModel.Trigonometric};
-        double[] y = data.Data.P.getValues().internalStorage();
+        double[] y = data.Data.P.internalStorage();
         for (int i = 0; i < models.length; ++i) {
             mspec.seasModel = models[i];
             monitor.setSpecification(mspec);
@@ -90,5 +91,22 @@ public class BsmMonitorTest {
             double ll2 = ll.getUncorrectedLogLikelihood();
             assertTrue(Math.abs(ll2 - ll1) < 1e-3);
         }
+    }
+
+    @Test
+    @Ignore
+    public void testNile() {
+        ModelSpecification mspec = new ModelSpecification();
+        mspec.seasModel = SeasonalModel.Unused;
+        double[] y = data.Data.Nile.internalStorage();
+        long t0 = System.currentTimeMillis();
+        for (int i = 0; i < 1000; ++i) {
+            BsmMonitor monitor = new BsmMonitor();
+            monitor.setPrecision(1e-6);
+            monitor.setSpecification(mspec);
+            boolean ok = monitor.process(y, 1);
+        }
+        long t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
     }
 }

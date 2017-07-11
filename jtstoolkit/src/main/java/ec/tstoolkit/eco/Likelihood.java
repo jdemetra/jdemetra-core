@@ -208,10 +208,10 @@ public class Likelihood implements ILikelihood {
     @Override
     public String toString(){
         StringBuilder builder=new StringBuilder();
-        builder.append("ll=").append(this.getLogLikelihood()).append("\r\n");
-        builder.append("n=").append(this.getN()).append("\r\n");
-        builder.append("ssq=").append(this.getSsqErr()).append("\r\n");
-        builder.append("ldet=").append(this.getLogDeterminant()).append("\r\n");
+        builder.append("ll=").append(this.getLogLikelihood()).append(System.lineSeparator());
+        builder.append("n=").append(this.getN()).append(System.lineSeparator());
+        builder.append("ssq=").append(this.getSsqErr()).append(System.lineSeparator());
+        builder.append("ldet=").append(this.getLogDeterminant()).append(System.lineSeparator());
         return builder.toString();
     }
 

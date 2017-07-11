@@ -55,13 +55,13 @@ public class GenericDocFactoryTest {
         assertEquals(TimeFormat.P1M, series.timeFormat);
         assertEquals("FREQ=M", series.id);
         assertEquals(new TsDomain(TsFrequency.Monthly, 2000, 0, 12), series.data.get().getDomain());
-        assertArrayEquals(new double[]{3.14, 3.14, 4.29, 6.04, 5.18, 5.07, 3.13, 1.17, 1.14, 3.04, 1.14, 3.24}, series.data.get().getValues().internalStorage(), 0);
+        assertArrayEquals(new double[]{3.14, 3.14, 4.29, 6.04, 5.18, 5.07, 3.13, 1.17, 1.14, 3.04, 1.14, 3.24}, series.data.get().internalStorage(), 0);
 
         series = group.series.get(1);
         assertEquals(TimeFormat.P1Y, series.timeFormat);
         assertEquals("FREQ=A", series.id);
         assertEquals(new TsDomain(TsFrequency.Yearly, 2000, 0, 1), series.data.get().getDomain());
-        assertArrayEquals(new double[]{3.14}, series.data.get().getValues().internalStorage(), 0);
+        assertArrayEquals(new double[]{3.14}, series.data.get().internalStorage(), 0);
     }
 
     @Test
@@ -77,14 +77,14 @@ public class GenericDocFactoryTest {
         assertEquals("NADET2008_INDICATOR=B1G, NADET2008_BRANCH=A38_AA, NADET2008_SECTOR=S1, NADET2008_PRICE=L, FREQUENCY=A", series.id);
         data = series.data.get();
         assertEquals(new TsDomain(TsFrequency.Yearly, 2009, 0, 5), data.getDomain());
-        assertArrayEquals(new double[]{2722.8, 2911.5, 2836.2, 2708.5, 2797.7}, data.getValues().internalStorage(), 0);
+        assertArrayEquals(new double[]{2722.8, 2911.5, 2836.2, 2708.5, 2797.7}, data.internalStorage(), 0);
 
         series = (SdmxSeries) source.items.get(2);
         assertEquals(TimeFormat.P1Y, series.timeFormat);
         assertEquals("NADET2008_INDICATOR=B1G, NADET2008_BRANCH=A38_AA, NADET2008_SECTOR=S11, NADET2008_PRICE=V, FREQUENCY=A", series.id);
         data = series.data.get();
         assertEquals(new TsDomain(TsFrequency.Yearly, 2009, 0, 5), data.getDomain());
-        assertArrayEquals(new double[]{705.6, 815.8, 882.2, 960, 1199.4}, data.getValues().internalStorage(), 0);
+        assertArrayEquals(new double[]{705.6, 815.8, 882.2, 960, 1199.4}, data.internalStorage(), 0);
     }
 
     @Test

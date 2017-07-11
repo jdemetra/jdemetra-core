@@ -17,13 +17,11 @@
 
 package ec.tstoolkit.maths.matrices.lapack;
 
-import ec.tstoolkit.design.Development;
-
 /**
  * 
  * @author Jean Palate
  */
-@Development(status = Development.Status.Exploratory)
+@Deprecated
 public class Dgeqr2 {
 
     private final static double ONE = 1.0;

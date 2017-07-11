@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.common.random;
 
 import ec.tss.*;
@@ -31,6 +30,7 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
  * @author Jean Palate
  * @author Philippe Charles
  */
+@Deprecated
 public class RandomProvider extends AbstractDataSourceLoader<double[][], RandomBean> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RandomProvider.class);
@@ -75,14 +76,14 @@ public class RandomProvider extends AbstractDataSourceLoader<double[][], RandomB
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
         DataSet[] result = new DataSet[decodeBean(dataSource).getCount()];
         for (int i = 0; i < result.length; i++) {
-            Z_INDEX.set(builder, i);
-            result[i] = builder.build();
+            result[i] = builder.put(Z_INDEX, i).build();
         }
         return Arrays.asList(result);
     }
 
     @Override
     public List<DataSet> children(DataSet parent) throws IllegalArgumentException {
+        Objects.requireNonNull(parent);
         throw new IllegalArgumentException("No hierarchy");
     }
 
@@ -130,8 +131,8 @@ public class RandomProvider extends AbstractDataSourceLoader<double[][], RandomB
         TsFrequency freq = TsFrequency.valueOf(decodeBean(dataSet.getDataSource()).getS());
         // fill TsInformation
         int index = Z_INDEX.get(dataSet);
-        info.name = getDisplayName(dataSet);
         info.data = new TsData(freq, 2000, 0, rawData[index], false);
+        info.name = getDisplayName(dataSet);
         info.type = TsInformationType.All;
     }
 
@@ -142,11 +143,15 @@ public class RandomProvider extends AbstractDataSourceLoader<double[][], RandomB
 
     @Override
     public DataSource encodeBean(Object bean) throws IllegalArgumentException {
-        return ((RandomBean) bean).toDataSource(SOURCE, VERSION);
+        try {
+            return ((RandomBean) bean).toDataSource(SOURCE, VERSION);
+        } catch (ClassCastException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     @Override
     public RandomBean decodeBean(DataSource dataSource) throws IllegalArgumentException {
-        return new RandomBean(dataSource);
+        return new RandomBean(support.check(dataSource));
     }
 }

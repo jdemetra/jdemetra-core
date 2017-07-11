@@ -13,13 +13,13 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.utils;
 
 import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.IDataSourceListener;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 import javax.annotation.Nonnull;
@@ -49,9 +49,11 @@ public class DataSourceEventSupport {
         Set<IDataSourceListener> weakHashSet = Collections.newSetFromMap(new WeakHashMap<IDataSourceListener, Boolean>());
         return new DataSourceEventSupport(logger, Collections.synchronizedSet(weakHashSet));
     }
+
     protected final Logger logger;
     protected final Set<IDataSourceListener> listeners;
 
+    @Deprecated
     public DataSourceEventSupport(@Nonnull Logger logger, @Nonnull Set<IDataSourceListener> listeners) {
         this.logger = logger;
         this.listeners = listeners;
@@ -63,50 +65,50 @@ public class DataSourceEventSupport {
     }
 
     public void add(@Nonnull IDataSourceListener listener) {
-        listeners.add(listener);
+        listeners.add(Objects.requireNonNull(listener));
     }
 
     public void remove(@Nonnull IDataSourceListener listener) {
-        listeners.remove(listener);
+        listeners.remove(Objects.requireNonNull(listener));
     }
 
     public void fireOpened(@Nonnull DataSource dataSource) {
-        for (IDataSourceListener o : listeners) {
+        listeners.forEach((o) -> {
             try {
                 o.opened(dataSource);
             } catch (Exception ex) {
                 logger.warn("While sending open event", ex);
             }
-        }
+        });
     }
 
     public void fireClosed(@Nonnull DataSource dataSource) {
-        for (IDataSourceListener o : listeners) {
+        listeners.forEach((o) -> {
             try {
                 o.closed(dataSource);
             } catch (Exception ex) {
                 logger.warn("While sending close event", ex);
             }
-        }
+        });
     }
 
     public void fireAllClosed(@Nonnull String providerName) {
-        for (IDataSourceListener o : listeners) {
+        listeners.forEach((o) -> {
             try {
                 o.allClosed(providerName);
             } catch (Exception ex) {
                 logger.warn("While sending closeall event", ex);
             }
-        }
+        });
     }
 
     public void fireChanged(@Nonnull DataSource dataSource) {
-        for (IDataSourceListener o : listeners) {
+        listeners.forEach((o) -> {
             try {
                 o.changed(dataSource);
             } catch (Exception ex) {
                 logger.warn("While sending change event", ex);
             }
-        }
+        });
     }
 }

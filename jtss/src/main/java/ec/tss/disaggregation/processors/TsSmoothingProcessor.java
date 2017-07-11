@@ -93,7 +93,7 @@ public class TsSmoothingProcessor implements ITemporalDisaggregationProcessingFa
     }
     
     @Override
-    public Map<String, Class> getOutputDictionary() {
+    public Map<String, Class> getOutputDictionary(boolean compact) {
         return Collections.singletonMap(INTERPOLATION, (Class) TsData.class);
     }
     

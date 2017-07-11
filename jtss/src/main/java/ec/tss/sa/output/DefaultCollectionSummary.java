@@ -22,7 +22,9 @@ import ec.tss.sa.documents.SaDocument;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -32,7 +34,7 @@ public class DefaultCollectionSummary {
     final List<SeriesSummary> items_ = new ArrayList<>();
 
     void add(String[] series, SaDocument<?> rslts) {
-        String name = rslts.getTs().getName();
+        String name = rslts.getInput().getRawName();
         if (name == null)
             name = "series" + Integer.toString(items_.size() + 1);
         items_.add(new SeriesSummary(series, name, rslts));
@@ -43,6 +45,14 @@ public class DefaultCollectionSummary {
         for (int i = 0; i < names.length; ++i)
             names[i] = items_.get(i).Name;
         return Arrays.asList(names);
+    }
+    
+    List<String> getItems(){
+        LinkedHashSet<String> set=new LinkedHashSet<>();
+        items_.stream().forEach((summary) -> {
+            summary.fill(set);
+        });
+        return set.stream().collect(Collectors.toList());
     }
 
     List<TsData> getSeries(String item) {

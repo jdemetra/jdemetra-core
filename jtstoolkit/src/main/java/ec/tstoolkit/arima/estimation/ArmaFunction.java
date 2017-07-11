@@ -44,6 +44,7 @@ public class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunct
     public final int d;
     public IArmaFilter filter;
     public boolean ml = true, llog=false;
+    public boolean mt=false;
 
     public ArmaFunction(RegModel dmodel, int d, int[] missings, IParametricMapping<S> mapper) {
 	this.d=d;
@@ -65,12 +66,12 @@ public class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunct
 
     @Override
     public IFunctionDerivatives getDerivatives(IFunctionInstance point) {
-	return new NumericalDerivatives(this, point, false);
+	return new NumericalDerivatives(this, point, false, mt);
     }
 
     @Override
     public ISsqFunctionDerivatives getDerivatives(ISsqFunctionInstance point) {
-	return new SsqNumericalDerivatives(this, point, false);
+	return new SsqNumericalDerivatives(this, point, false, mt);
     }
 
     @Override

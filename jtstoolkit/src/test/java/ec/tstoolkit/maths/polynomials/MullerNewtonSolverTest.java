@@ -33,7 +33,7 @@ import org.junit.Test;
  */
 public class MullerNewtonSolverTest {
 
-//    @Test
+    //@Test
     public void demoSolver() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 3; ++i) {
@@ -41,12 +41,14 @@ public class MullerNewtonSolverTest {
             q.randomize();
             Polynomial p = Polynomial.fromData(q);
             MullerNewtonSolver s = new MullerNewtonSolver();
-            //s.setLeastSquaresDivision(true);
+            s.setLeastSquaresDivision(true);
             s.factorize(p);
             Complex[] roots = s.roots();
             Complex.lejaOrder(roots);
             Polynomial x = Polynomial.fromComplexRoots(roots, p.get(p.getDegree()));
             System.out.println(x.minus(p));
+            System.out.println(p);
+            System.out.println(x);
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);

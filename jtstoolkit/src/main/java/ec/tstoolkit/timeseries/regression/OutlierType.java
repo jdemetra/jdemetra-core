@@ -20,7 +20,6 @@ package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.IntValue;
-import java.util.EnumSet;
 
 /**
  *
@@ -98,11 +97,8 @@ public enum OutlierType implements IntValue {
      * @param value
      * @return
      */
-    public static OutlierType valueOf(final int value) {
-	for (OutlierType periodKind : EnumSet.allOf(OutlierType.class))
-	    if (periodKind.intValue() == value)
-		return periodKind;
-	return null;
+    public static OutlierType valueOf(int value) {
+        return IntValue.valueOf(OutlierType.class, value).orElse(null);
     }
 
     private final int value;

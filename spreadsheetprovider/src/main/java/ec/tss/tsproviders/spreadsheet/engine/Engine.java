@@ -20,8 +20,9 @@ import com.google.common.collect.ImmutableList;
 import ec.tss.tsproviders.spreadsheet.facade.Book;
 import ec.tss.tsproviders.spreadsheet.facade.Sheet;
 import ec.tss.tsproviders.utils.DataFormat;
+import ec.tss.tsproviders.utils.IParser;
+import ec.tss.tsproviders.utils.ObsGathering;
 import ec.tss.tsproviders.utils.OptionalTsData;
-import ec.tss.tsproviders.utils.Parsers;
 import ec.tstoolkit.design.VisibleForTesting;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -45,7 +47,7 @@ abstract class Engine {
     }
 
     @VisibleForTesting
-    static SpreadSheetSource parseSource(Book book, Parsers.Parser<Date> dateParser, Parsers.Parser<Number> numberParser, TsFrequency freq, TsAggregationType aggregation, boolean clean) throws IOException {
+    static SpreadSheetSource parseSource(Book book, IParser<Date> dateParser, IParser<Number> numberParser, TsFrequency freq, TsAggregationType aggregation, boolean clean) throws IOException {
         CellParser<String> toName = CellParser.onStringType();
         CellParser<Date> toDate = CellParser.onDateType().or(CellParser.fromParser(dateParser));
         CellParser<Number> toNumber = CellParser.onNumberType().or(CellParser.fromParser(numberParser));
@@ -128,7 +130,10 @@ abstract class Engine {
 
         ImmutableList.Builder<SpreadSheetSeries> list = ImmutableList.builder();
 
-        OptionalTsData.Builder data = new OptionalTsData.Builder(frequency, aggregationType, clean);
+        ObsGathering gathering = clean
+                ? ObsGathering.excludingMissingValues(frequency, aggregationType)
+                : ObsGathering.includingMissingValues(frequency, aggregationType);
+        OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(new GregorianCalendar(), gathering);
         for (int columnIdx = 0; columnIdx < names.size(); columnIdx++) {
             for (int rowIdx = 0; rowIdx < dates.size(); rowIdx++) {
                 Number value = toNumber.parse(sheet, rowIdx + FIRST_DATA_ROW_IDX, columnIdx + FIRST_DATA_COL_IDX);

@@ -23,6 +23,7 @@ import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.maths.matrices.SymmetricMatrix;
 import ec.tstoolkit.maths.realfunctions.IParametricMapping;
 import ec.tstoolkit.modelling.ComponentType;
+import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.IPreprocessingModule;
 import ec.tstoolkit.modelling.arima.ModelDescription;
@@ -112,8 +113,8 @@ public class ModelController2 implements IPreprocessingModule {
         // Add Seasonal dummy variables
 //        
         SeasonalDummies sd = new SeasonalDummies(context.description.getEstimationDomain().getFrequency());
-        Variable tvar = new Variable(sd, ComponentType.SeasonallyAdjusted);
-        md.getUserVariables().add(tvar);
+        Variable tvar = Variable.userVariable(sd, ComponentType.SeasonallyAdjusted, RegStatus.Prespecified);
+        md.addVariable(tvar);
         SarimaSpecification spec = md.getSpecification();
         spec.setBP(0);
         spec.setBD(0);
@@ -280,7 +281,7 @@ public class ModelController2 implements IPreprocessingModule {
         try {
             ModelDescription md = context.description;
             TsData lin = new TsData(context.description.getEstimationDomain());
-            context.estimation.getRegArima().getY().copyTo(lin.getValues().internalStorage(), 0);
+            context.estimation.getRegArima().getY().copyTo(lin.internalStorage(), 0);
             TsData dlin = lin.delta(1);
             PeaksEnum[] peaks = Spect.SpectrumComputation(dlin);
             int d = md.getSpecification().getD();

@@ -29,7 +29,7 @@ import java.util.List;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class LaggedTsVariable implements ITsModifier {
+public class LaggedTsVariable extends AbstractTsModifier {
     // / <summary>
     // / firstlag less then lastlag !!!
     // / positive lags mean past, negative lags mean future !!!
@@ -39,8 +39,7 @@ public class LaggedTsVariable implements ITsModifier {
     // / <param name="lastlag">Last lag</param>
 
     private final int m_firstlag, m_lastlag;
-    private ITsVariable var;
-
+ 
     /**
      * 
      * @param var
@@ -48,10 +47,10 @@ public class LaggedTsVariable implements ITsModifier {
      * @param lastlag
      */
     public LaggedTsVariable(ITsVariable var, int firstlag, int lastlag) {
+        super(var);
         if (lastlag < firstlag) {
             throw new TsException("Invalid lags");
         }
-        this.var = var;
         m_firstlag = firstlag;
         m_lastlag = lastlag;
     }
@@ -60,15 +59,6 @@ public class LaggedTsVariable implements ITsModifier {
     public void data(TsDomain domain, List<DataBlock> data) {
         int nvar = var.getDim();
         for (int i = m_firstlag, k = 0; i <= m_lastlag; ++i, k+=nvar) {
-            var.data(domain.move(-i), data.subList(k, k+nvar));
-        }
-    }
-
-    @Override
-    @Deprecated
-    public void data(TsDomain domain, List<DataBlock> data, int start) {
-        int nvar = var.getDim();
-        for (int i = m_firstlag, k = start; i <= m_lastlag; ++i, k+=nvar) {
             var.data(domain.move(-i), data.subList(k, k+nvar));
         }
     }
@@ -89,9 +79,9 @@ public class LaggedTsVariable implements ITsModifier {
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         StringBuilder builder = new StringBuilder();
-        builder.append(var.getDescription());
+        builder.append(var.getDescription(context));
         if (m_firstlag > 0) {
             builder.append("[-").append(m_firstlag).append(" : ");
         }
@@ -121,13 +111,13 @@ public class LaggedTsVariable implements ITsModifier {
     }
 
     @Override
-    public String getItemDescription(int idx) {
+    public String getItemDescription(int idx, TsFrequency context) {
         int nvar = var.getDim();
 
         int lag = m_firstlag + idx / nvar;
 
         StringBuilder builder = new StringBuilder();
-        builder.append(var.getItemDescription(idx % nvar));
+        builder.append(var.getItemDescription(idx % nvar, context));
         if (lag > 0) {
             builder.append(" [-").append(lag).append(']');
         }
@@ -168,4 +158,15 @@ public class LaggedTsVariable implements ITsModifier {
         return var.isSignificant(new TsDomain(domain.getStart().minus(
                 m_firstlag), n));
     }
+    
+    @Override
+    public String getName(){
+        int n=getDim();
+        if (n == 0)
+            return var.getName();
+        else
+            return ITsVariable.shortName(var.getName())+'#'+n;
+    }
+
+
 }

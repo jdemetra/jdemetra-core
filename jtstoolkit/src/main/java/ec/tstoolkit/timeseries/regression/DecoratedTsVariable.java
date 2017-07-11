@@ -26,64 +26,73 @@ import java.util.List;
  *
  * @author Jean Palate
  */
-public class DecoratedTsVariable implements ITsModifier {
+public class DecoratedTsVariable extends AbstractTsModifier {
     
-    private final String name_;
-    private final ITsVariable var_;
+    private final String name;
 
     public DecoratedTsVariable(final ITsVariable var, final String name) {
-        var_ = var;
-        name_ = name;
+        super(var);
+        this.name = name;
     }
     
     @Override
     public ITsVariable getVariable() {
-        return var_;
+        return var;
     }
     
     @Override
     @Deprecated
     public void data(TsDomain domain, List<DataBlock> data, int start) {
-        var_.data(domain, data, start);
+        var.data(domain, data, start);
     }
     
     @Override
     public void data(TsDomain domain, List<DataBlock> data) {
-        var_.data(domain, data);
+        var.data(domain, data);
     }
 
     @Override
     public TsDomain getDefinitionDomain() {
-        return var_.getDefinitionDomain();
+        return var.getDefinitionDomain();
     }
     
     @Override
     public TsFrequency getDefinitionFrequency() {
-        return var_.getDefinitionFrequency();
+        return var.getDefinitionFrequency();
     }
     
     @Override
-    public String getDescription() {
-        return name_;
+    public String getDescription(TsFrequency context) {
+        return name;
     }
     
     @Override
     public int getDim() {
-        return var_.getDim();
+        return var.getDim();
     }
     
     @Override
-    public String getItemDescription(int idx) {
-        if (var_.getDim() == 1) {
-            return name_;
+    public String getItemDescription(int idx, TsFrequency context) {
+        if (var.getDim() == 1) {
+            return name;
         }
         StringBuilder builder = new StringBuilder();
-        builder.append(name_).append('[').append(idx + 1).append(']');
+        builder.append(name).append('[').append(idx + 1).append(']');
         return builder.toString();
     }
     
     @Override
     public boolean isSignificant(TsDomain domain) {
-        return var_.isSignificant(domain);
+        return var.isSignificant(domain);
+    }
+    
+    @Override
+    public String getName(){
+        String cname=name.replace('.', '@');
+        int n=getDim();
+        if (n == 1)
+            return cname;
+        else 
+            return cname+'#'+n;
     }
 }

@@ -17,26 +17,28 @@
 package ec.tss.tsproviders.utils;
 
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.UncheckedExecutionException;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
 import ec.tss.TsMoniker;
 import ec.tss.tsproviders.DataSet;
 import ec.tss.tsproviders.DataSource;
+import ec.tss.tsproviders.HasDataMoniker;
+import ec.tss.tsproviders.HasDataSourceMutableList;
+import ec.tss.tsproviders.HasFilePaths;
 import ec.tss.tsproviders.IDataSourceListener;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.utilities.Files2;
+import ec.tstoolkit.utilities.GuavaCaches;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.slf4j.Logger;
@@ -45,26 +47,27 @@ import org.slf4j.Logger;
  *
  * @author Philippe Charles
  */
-public class DataSourceSupport {
+public class DataSourceSupport implements HasDataSourceMutableList, HasDataMoniker, HasFilePaths {
 
     @Nonnull
     public static DataSourceSupport create(@Nonnull String providerName, @Nonnull Logger logger) {
-        return new DataSourceSupport(providerName, new LinkedHashSet<DataSource>(), DataSourceEventSupport.create(logger));
+        return new DataSourceSupport(providerName, new LinkedHashSet<>(), DataSourceEventSupport.create(logger));
     }
+
     protected final String providerName;
     protected final Set<DataSource> dataSources;
     protected final List<DataSource> dataSourcesAsList;
     protected final DataSourceEventSupport eventSupport;
     protected final IConstraint<String> providerNameConstraint;
-    private File[] paths;
+    private final HasFilePaths filePathsSupport;
 
     public DataSourceSupport(@Nonnull String providerName, @Nonnull Set<DataSource> dataSources, @Nonnull DataSourceEventSupport eventSupport) {
         this.providerName = providerName;
         this.dataSources = dataSources;
-        this.dataSourcesAsList = Lists.newArrayList(dataSources);
+        this.dataSourcesAsList = new ArrayList(dataSources);
         this.eventSupport = eventSupport;
         this.providerNameConstraint = onProviderName(providerName);
-        this.paths = new File[0];
+        this.filePathsSupport = HasFilePaths.of();
     }
 
     @Nonnull
@@ -138,6 +141,7 @@ public class DataSourceSupport {
 
     @Nonnull
     public <T> T checkBean(@Nonnull Object bean, final Class<T> clazz) {
+        Objects.requireNonNull(bean);
         doCheck(new IConstraint<Object>() {
             @Override
             public String check(Object t) {
@@ -165,8 +169,15 @@ public class DataSourceSupport {
     }
     //</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="Basic">
-    public boolean open(@Nonnull DataSource dataSource) {
+    //<editor-fold defaultstate="collapsed" desc="HasDataSourceMutableList">
+    @Override
+    public void reload(DataSource dataSource) throws IllegalArgumentException {
+        check(dataSource);
+        eventSupport.fireChanged(dataSource);
+    }
+
+    @Override
+    public boolean open(DataSource dataSource) {
         check(dataSource);
         synchronized (dataSources) {
             if (dataSources.add(dataSource)) {
@@ -178,7 +189,8 @@ public class DataSourceSupport {
         return false;
     }
 
-    public boolean close(@Nonnull DataSource dataSource) {
+    @Override
+    public boolean close(DataSource dataSource) {
         check(dataSource);
         synchronized (dataSources) {
             if (dataSources.remove(dataSource)) {
@@ -190,6 +202,7 @@ public class DataSourceSupport {
         return false;
     }
 
+    @Override
     public void closeAll() {
         synchronized (dataSources) {
             dataSources.clear();
@@ -198,52 +211,47 @@ public class DataSourceSupport {
         }
     }
 
-    @Nonnull
+    @Override
     public List<DataSource> getDataSources() {
         synchronized (dataSources) {
             return Collections.unmodifiableList(dataSourcesAsList);
         }
     }
 
-    @Nonnull
-    public String getDisplayName(@Nonnull IOException ex) throws IllegalArgumentException {
-        String name = ex.getClass().getSimpleName();
-        String message = ex.getMessage();
-        return !Strings.isNullOrEmpty(message) ? message : name;
-    }
-
-    public void addDataSourceListener(@Nonnull IDataSourceListener listener) {
+    @Override
+    public void addDataSourceListener(IDataSourceListener listener) {
         eventSupport.add(listener);
     }
 
-    public void removeDataSourceListener(@Nonnull IDataSourceListener listener) {
+    @Override
+    public void removeDataSourceListener(IDataSourceListener listener) {
         eventSupport.remove(listener);
     }
     //</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="Converters">
-    @Nonnull
-    public TsMoniker toMoniker(@Nonnull DataSet dataSet) throws IllegalArgumentException {
+    //<editor-fold defaultstate="collapsed" desc="HasDataMoniker">
+    @Override
+    public TsMoniker toMoniker(DataSet dataSet) throws IllegalArgumentException {
         check(dataSet);
-        return new TsMoniker(providerName, DataSet.uriFormatter().tryFormatAsString(dataSet).get());
+        return new TsMoniker(providerName, DataSet.uriFormatter().formatValueAsString(dataSet).get());
     }
 
-    @Nonnull
-    public TsMoniker toMoniker(@Nonnull DataSource dataSource) throws IllegalArgumentException {
+    @Override
+    public TsMoniker toMoniker(DataSource dataSource) throws IllegalArgumentException {
         check(dataSource);
-        return new TsMoniker(providerName, DataSource.uriFormatter().tryFormatAsString(dataSource).get());
+        return new TsMoniker(providerName, DataSource.uriFormatter().formatValueAsString(dataSource).get());
     }
 
-    @Nullable
-    public DataSet toDataSet(@Nonnull TsMoniker moniker) {
+    @Override
+    public DataSet toDataSet(TsMoniker moniker) {
         doCheck(providerNameConstraint, moniker.getSource());
         String id = moniker.getId();
         DataSet result = DataSet.uriParser().parse(id);
         return result != null ? result : DataSet.xmlParser().parse(id);
     }
 
-    @Nullable
-    public DataSource toDataSource(@Nonnull TsMoniker moniker) {
+    @Override
+    public DataSource toDataSource(TsMoniker moniker) {
         doCheck(providerNameConstraint, moniker.getSource());
         String id = moniker.getId();
         DataSource result = DataSource.uriParser().parse(id);
@@ -251,33 +259,34 @@ public class DataSourceSupport {
     }
     //</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="File paths">
-    @Nonnull
-    public File getRealFile(@Nonnull File[] paths, @Nonnull File file) throws FileNotFoundException {
-        File result = Files2.getAbsoluteFile(paths, file);
-        if (result == null) {
-            throw new FileNotFoundException("Relative file '" + file.getPath() + "' outside paths");
-        }
-        if (!result.exists()) {
-            throw new FileNotFoundException(result.getPath());
-        }
-        return result;
-    }
-
-    @Nonnull
+    //<editor-fold defaultstate="collapsed" desc="HasFilePaths">
+    @Override
     public File[] getPaths() {
-        return paths.clone();
+        return filePathsSupport.getPaths();
     }
 
-    public void setPaths(@Nullable File[] paths) {
-        this.paths = paths != null ? paths.clone() : new File[0];
+    @Override
+    public void setPaths(File[] paths) {
+        filePathsSupport.setPaths(paths);
     }
+
+    @Override
+    public File resolveFilePath(File file) throws FileNotFoundException {
+        return getRealFile(file);
+    }
+    //</editor-fold>
 
     @Nonnull
     public File getRealFile(@Nonnull File file) throws FileNotFoundException {
-        return getRealFile(paths, file);
+        return filePathsSupport.resolveFilePath(file);
     }
-    //</editor-fold>
+
+    @Deprecated
+    @Nonnull
+    public String getDisplayName(@Nonnull IOException exception) throws IllegalArgumentException {
+        String message = exception.getMessage();
+        return !Strings.isNullOrEmpty(message) ? message : exception.getClass().getSimpleName();
+    }
 
     @Deprecated
     @Nonnull
@@ -298,19 +307,49 @@ public class DataSourceSupport {
         return info;
     }
 
+    @Deprecated
     @Nonnull
     public TsInformation fillSeries(@Nonnull TsInformation info, @Nonnull Exception exception) {
-        eventSupport.logger.error("While getting series", exception);
-        info.data = null;
-        info.invalidDataCause = exception.getMessage();
+        reportException(info, exception, Exception::getMessage);
         return info;
     }
 
+    public boolean reportException(@Nonnull TsInformation info, @Nonnull Exception ex, @Nonnull IFormatter<? super IOException> formatter) {
+        eventSupport.logger.info("Failed to get series", ex);
+        info.data = null;
+        info.invalidDataCause = ex instanceof IOException ? formatter.formatAsString((IOException) ex) : ex.getMessage();
+        return false;
+    }
+
+    @Deprecated
     @Nonnull
     public TsCollectionInformation fillCollection(@Nonnull TsCollectionInformation info, @Nonnull Exception exception) {
-        eventSupport.logger.error("While getting collection", exception);
-        info.invalidDataCause = exception.getMessage();
+        reportException(info, exception, Exception::getMessage);
         return info;
+    }
+
+    public boolean reportException(@Nonnull TsCollectionInformation info, @Nonnull Exception ex, @Nonnull IFormatter<? super IOException> formatter) {
+        eventSupport.logger.info("Failed to get collection", ex);
+        info.invalidDataCause = ex instanceof IOException ? formatter.formatAsString((IOException) ex) : ex.getMessage();
+        return false;
+    }
+
+    @Nonnull
+    public <DATA> DATA getValue(@Nonnull LoadingCache<DataSource, DATA> cache, @Nonnull DataSource key) throws IOException {
+        check(key);
+        return GuavaCaches.getOrThrowIOException(cache, key);
+    }
+
+    @Nonnull
+    public static File getRealFile(@Nonnull File[] paths, @Nonnull File file) throws FileNotFoundException {
+        File result = Files2.getAbsoluteFile(paths, file);
+        if (result == null) {
+            throw new FileNotFoundException("Relative file '" + file.getPath() + "' outside paths");
+        }
+        if (!result.exists()) {
+            throw new FileNotFoundException(result.getPath());
+        }
+        return result;
     }
 
     private static boolean hasMissingValuesAtExtremities(@Nonnull TsData data) {
@@ -325,29 +364,5 @@ public class DataSourceSupport {
                 return providerName.equals(t) ? null : "Invalid provider name";
             }
         };
-    }
-
-    @Nonnull
-    private static IOException unboxToIOException(@Nonnull ExecutionException ex) {
-        Throwable cause = ex.getCause();
-        if (cause instanceof IOException) {
-            return (IOException) cause;
-        }
-        if (cause != null) {
-            return new IOException(cause);
-        }
-        return new IOException(ex);
-    }
-
-    @Nonnull
-    public <DATA> DATA getValue(@Nonnull LoadingCache<DataSource, DATA> cache, @Nonnull DataSource key) throws IOException {
-        check(key);
-        try {
-            return cache.get(key);
-        } catch (ExecutionException ex) {
-            throw unboxToIOException(ex);
-        } catch (UncheckedExecutionException ex) {
-            throw Throwables.propagate(ex.getCause());
-        }
     }
 }

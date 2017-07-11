@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders;
 
 import java.io.IOException;
@@ -22,18 +21,39 @@ import java.io.IOException;
 /**
  *
  * @author Philippe Charles
+ * @param <P>
+ * @since 1.0.0
  */
+@Deprecated
 public interface IProviderVisitor<P> {
 
-    boolean preVisitSource(P provider, DataSource dataSource) throws IOException;
+    default boolean preVisitSource(P provider, DataSource dataSource) throws IOException {
+        return true;
+    }
 
-    boolean postVisitSource(P provider, DataSource dataSource, IOException ex) throws IOException;
+    default boolean postVisitSource(P provider, DataSource dataSource, IOException ex) throws IOException {
+        if (ex != null) {
+            throw ex;
+        }
+        return true;
+    }
 
-    boolean preVisitCollection(P provider, DataSet dataSet, int level) throws IOException;
+    default boolean preVisitCollection(P provider, DataSet dataSet, int level) throws IOException {
+        return true;
+    }
 
-    boolean postVisitCollection(P provider, DataSet dataSet, int level, IOException ex) throws IOException;
+    default boolean postVisitCollection(P provider, DataSet dataSet, int level, IOException ex) throws IOException {
+        if (ex != null) {
+            throw ex;
+        }
+        return true;
+    }
 
-    boolean visitDummy(P provider, DataSet dataSet, int level) throws IOException;
+    default boolean visitDummy(P provider, DataSet dataSet, int level) throws IOException {
+        return true;
+    }
 
-    boolean visitSeries(P provider, DataSet dataSet, int level) throws IOException;
+    default boolean visitSeries(P provider, DataSet dataSet, int level) throws IOException {
+        return true;
+    }
 }

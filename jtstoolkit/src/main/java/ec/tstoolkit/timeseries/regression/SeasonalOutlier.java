@@ -22,6 +22,7 @@ import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.linearfilters.BackFilter;
 import ec.tstoolkit.maths.linearfilters.RationalBackFilter;
 import ec.tstoolkit.maths.polynomials.UnitRoots;
+import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
@@ -33,21 +34,24 @@ import ec.tstoolkit.timeseries.simplets.TsPeriod;
 @Development(status = Development.Status.Alpha)
 public class SeasonalOutlier extends AbstractOutlierVariable {
 
+    public static final String CODE="SO";
+
     boolean zeroEnded;
 
     /**
      * 
      * @param pos
      */
-    public SeasonalOutlier(TsPeriod pos) {
+    public SeasonalOutlier(Day pos) {
         super(pos);
     }
 
     @Override
     public void data(TsPeriod start, DataBlock data) {
-        int pos = position.minus(start);
+        TsPeriod pstart=new TsPeriod(start.getFrequency(), position);
+        int pos = pstart.minus(start);
         data.set(0);
-        int freq = position.getFrequency().intValue();
+        int freq = start.getFrequency().intValue();
 
         double z = -1.0 / (freq - 1);
         int xpos;
@@ -81,7 +85,8 @@ public class SeasonalOutlier extends AbstractOutlierVariable {
                 xpos = pos;
             }
             if (xpos < 0) {
-                for (int j = 0; j < freq + xpos; ++j) {
+                int max=Math.min(len, freq + xpos);
+                for (int j = 0; j < max; ++j) {
                     data.set(j, z);
                 }
                 xpos += freq;
@@ -98,20 +103,18 @@ public class SeasonalOutlier extends AbstractOutlierVariable {
     }
 
     @Override
-    public TsFrequency getDefinitionFrequency() {
-        return position.getFrequency();
-    }
-
-    @Override
     public OutlierType getOutlierType() {
         return OutlierType.SO;
     }
-
+    
+    public String getCode(){
+        return CODE;
+    }
+    
     @Override
     public boolean isSignificant(TsDomain domain) {
-        if (domain.getFrequency() != position.getFrequency()) {
+        if (domain.getFrequency() == TsFrequency.Yearly)
             return false;
-        }
         return domain.search(position) >= 0;
     }
 

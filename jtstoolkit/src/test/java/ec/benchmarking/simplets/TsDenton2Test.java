@@ -28,7 +28,7 @@ import static org.junit.Assert.*;
  */
 public class TsDenton2Test {
 
-    public final TsData y, m, ym;
+    public final TsData y, m, mp, ym;
 
     public TsDenton2Test() {
         m = data.Data.X;
@@ -37,6 +37,7 @@ public class TsDenton2Test {
         for (int i = 0; i < y.getLength(); ++i) {
             y.set(i, y.get(i) * (1 + 0.01 * i));
         }
+        mp = data.Data.X.drop(5, 7);
     }
 
     @Test
@@ -45,13 +46,13 @@ public class TsDenton2Test {
         denton.setMultiplicative(true);
         for (int i = 1; i < 3; ++i) {
             denton.setDifferencingOrder(i);
-            TsData mc = denton.benchmark(m, y);
+            TsData mc = denton.process(m, y);
             assertTrue(mc.changeFrequency(TsFrequency.Yearly, TsAggregationType.Sum, true).distance(y) < 1e-9);
         }
         denton.setModified(false);
         for (int i = 1; i < 3; ++i) {
             denton.setDifferencingOrder(i);
-            TsData mc = denton.benchmark(m, y);
+            TsData mc = denton.process(m, y);
             assertTrue(mc.changeFrequency(TsFrequency.Yearly, TsAggregationType.Sum, true).distance(y) < 1e-9);
         }
     }
@@ -62,7 +63,41 @@ public class TsDenton2Test {
         denton.setMultiplicative(false);
         for (int i = 1; i < 3; ++i) {
             denton.setDifferencingOrder(i);
-            TsData mc = denton.benchmark(m, y);
+            TsData mc = denton.process(m, y);
+            assertTrue(mc.changeFrequency(TsFrequency.Yearly, TsAggregationType.Sum, true).distance(y) < 1e-9);
+        }
+        denton.setModified(false);
+        for (int i = 1; i < 3; ++i) {
+            denton.setDifferencingOrder(i);
+            TsData mc = denton.process(m, y);
+            assertTrue(mc.changeFrequency(TsFrequency.Yearly, TsAggregationType.Sum, true).distance(y) < 1e-9);
+        }
+    }
+    
+    @Test
+    public void testPartialAdd() {
+        TsDenton2 denton = new TsDenton2();
+        denton.setMultiplicative(false);
+        for (int i = 1; i < 3; ++i) {
+            denton.setDifferencingOrder(i);
+            TsData mc = denton.benchmark(mp, y);
+            assertTrue(mc.changeFrequency(TsFrequency.Yearly, TsAggregationType.Sum, true).distance(y) < 1e-9);
+        }
+        denton.setModified(false);
+        for (int i = 1; i < 3; ++i) {
+            denton.setDifferencingOrder(i);
+            TsData mc = denton.benchmark(mp, y);
+            assertTrue(mc.changeFrequency(TsFrequency.Yearly, TsAggregationType.Sum, true).distance(y) < 1e-9);
+        }
+    }
+    
+    @Test
+    public void testPartialMul() {
+        TsDenton2 denton = new TsDenton2();
+        denton.setMultiplicative(true);
+        for (int i = 1; i < 3; ++i) {
+            denton.setDifferencingOrder(i);
+            TsData mc = denton.benchmark(mp, y);
             assertTrue(mc.changeFrequency(TsFrequency.Yearly, TsAggregationType.Sum, true).distance(y) < 1e-9);
         }
         denton.setModified(false);
@@ -72,4 +107,5 @@ public class TsDenton2Test {
             assertTrue(mc.changeFrequency(TsFrequency.Yearly, TsAggregationType.Sum, true).distance(y) < 1e-9);
         }
     }
+
 }

@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class AbstractTsVariableBox {
 
-    private final ITsVariable var;
+    protected final ITsVariable var;
 
     protected AbstractTsVariableBox(ITsVariable var) {
         this.var = var;
@@ -50,16 +50,16 @@ public class AbstractTsVariableBox {
         return var.getDefinitionFrequency();
     }
 
-    public String getDescription() {
-        return var.getDescription();
+    public String getDescription(TsFrequency context) {
+        return var.getDescription(context);
     }
 
     public int getDim() {
         return var.getDim();
     }
 
-    public String getItemDescription(int idx) {
-        return var.getItemDescription(idx);
+    public String getItemDescription(int idx, TsFrequency context) {
+        return var.getItemDescription(idx, context);
     }
 
     public boolean isSignificant(TsDomain domain) {

@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.data.DataBlock;
@@ -23,25 +22,20 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.List;
 
 /**
- * The seasonal dummies are in fact seasonal contrasts. The contrasting
- * period is by design the last period of the year.
- * The regression variables generated that way are linearly independent.
+ * The seasonal dummies are in fact seasonal contrasts. The contrasting period
+ * is by design the last period of the year. The regression variables generated
+ * that way are linearly independent.
+ *
  * @author Gianluca Caporello
  */
 public class SeasonalDummies implements ITsVariable {
 
-     TsFrequency freq_;
+    TsFrequency freq_;
 
     public SeasonalDummies(TsFrequency freq) {
         freq_ = freq;
     }
 
-    @Override
-    @Deprecated
-    public void data(TsDomain domain, List<DataBlock> data, int start) {
-        data(domain, data.subList(start, start+freq_.intValue() - 1));
-    }
-    
     @Override
     public void data(TsDomain domain, List<DataBlock> data) {
         int pstart = domain.getStart().getPosition();
@@ -83,7 +77,7 @@ public class SeasonalDummies implements ITsVariable {
      * @return
      */
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         StringBuilder builder = new StringBuilder();
         builder.append("Seasonal dummies");
         return builder.toString();
@@ -104,7 +98,7 @@ public class SeasonalDummies implements ITsVariable {
      * @return
      */
     @Override
-    public String getItemDescription(int idx) {
+    public String getItemDescription(int idx, TsFrequency context) {
         StringBuilder builder = new StringBuilder();
         builder.append("Seasonal dummy [").append(idx + 1).append(']');
         return builder.toString();
@@ -119,4 +113,10 @@ public class SeasonalDummies implements ITsVariable {
     public boolean isSignificant(TsDomain domain) {
         return domain.getFrequency() != TsFrequency.Yearly;
     }
+
+    @Override
+    public String getName() {
+        return "seas#" + getDim();
+    }
+
 }

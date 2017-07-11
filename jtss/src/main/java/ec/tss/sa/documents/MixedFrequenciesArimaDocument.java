@@ -33,6 +33,7 @@ import ec.tstoolkit.arima.special.mixedfrequencies.MixedFrequenciesSpecification
  *
  * @author Jean Palate
  */
+@Deprecated
 public class MixedFrequenciesArimaDocument  extends MultiTsDocument<MixedFrequenciesSpecification, CompositeResults> {
 
     public MixedFrequenciesArimaDocument() {

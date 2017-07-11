@@ -39,6 +39,13 @@ public final class Files2 {
         return new File(parent, Joiner.on(File.separatorChar).join(path));
     }
 
+    /**
+     *
+     * @param file
+     * @return
+     * @deprecated may return false positives!
+     */
+    @Deprecated
     public static boolean isValidPath(File file) {
         try {
             file.getCanonicalPath();

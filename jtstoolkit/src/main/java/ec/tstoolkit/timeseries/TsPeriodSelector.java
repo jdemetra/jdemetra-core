@@ -1,29 +1,29 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
+ */
 package ec.tstoolkit.timeseries;
 
 import ec.tstoolkit.design.Development;
 import java.util.Objects;
 
 /**
- *
+ * Defines selection in a time domain
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 public class TsPeriodSelector implements Cloneable {
 
     public boolean equals(TsPeriodSelector ps) {
@@ -33,9 +33,10 @@ public class TsPeriodSelector implements Cloneable {
         if (ps == null && type_ == PeriodSelectorType.All) {
             return true;
         }
-        if (type_ != ps.type_)
+        if (type_ != ps.type_) {
             return false;
-        switch (type_){
+        }
+        switch (type_) {
             case Excluding:
                 return n0_ == ps.n0_ && n1_ == ps.n1_;
             case Last:
@@ -44,7 +45,7 @@ public class TsPeriodSelector implements Cloneable {
                 return n0_ == ps.n0_;
             case Between:
                 return d0_.equals(ps.d0_) && d1_.equals(ps.d1_);
-            case From:   
+            case From:
                 return d0_.equals(ps.d0_);
             case To:
                 return d1_.equals(ps.d1_);
@@ -66,14 +67,14 @@ public class TsPeriodSelector implements Cloneable {
         return hash;
     }
     
-    public static final Day DEF_BEG=new Day(1900, Month.January, 0), DEF_END=new Day(2015, Month.December, 30);
+    public static final Day DEF_BEG=new Day(1900, Month.January, 0), DEF_END=new Day(2020, Month.December, 30);
     
     private PeriodSelectorType type_ = PeriodSelectorType.All;
     private Day d0_ = DEF_BEG, d1_ = DEF_END;
     private int n0_, n1_;
 
     /**
-     *
+     * Default period selector. By default, it selects all the periods of a domain
      */
     public TsPeriodSelector() {
     }
@@ -82,37 +83,27 @@ public class TsPeriodSelector implements Cloneable {
      *
      * @param p
      */
+    @Deprecated
     public TsPeriodSelector(final TsPeriodSelector p) {
         type_ = p.type_;
         n0_ = p.n0_;
         n1_ = p.n1_;
-        d0_ = p.d0_;
-        d1_ = p.d1_;
+        d0_ = p.d0_ != null ? p.d0_ : DEF_BEG;
+        d1_ = p.d1_ != null ? p.d1_ : DEF_END;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#all()
-     */
     /**
-     *
+     * Select all the periods
      */
     public void all() {
         doClear();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * be.nbb.timeseries.simplets.IPeriodSelector#between(be.nbb.timeseries.Day,
-     * be.nbb.timeseries.Day)
-     */
     /**
-     *
-     * @param d0
-     * @param d1
+     * Select all the periods between two days. The way incomplete periods are considered
+     * is left to the classes that use the selector.
+     * @param d0 The starting day
+     * @param d1 The ending day
      */
     public void between(final Day d0, final Day d1) {
         doClear();
@@ -144,21 +135,16 @@ public class TsPeriodSelector implements Cloneable {
     private void doClear() {
         n0_ = 0;
         n1_ = 0;
-        d0_ = null;
-        d1_ = null;
+        d0_ = DEF_BEG;
+        d1_ = DEF_END;
         type_ = PeriodSelectorType.All;
     }
 
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#last(int)
-     */
     /**
-     *
-     * @param n0
-     * @param n1
+     * Excludes some periods at the beginning and/or at the end of a time domain
+     * @param n0 Number of periods excluded at the beginning of the time domain. Greater or equal to 0.
+     * @param n1 Number of periods excluded at the end of the time domain. Greater or equal to 0.
      */
     public void excluding(final int n0, final int n1) {
         doClear();
@@ -167,20 +153,9 @@ public class TsPeriodSelector implements Cloneable {
         n1_ = n1;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#none()
-     */
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#first(int)
-     */
     /**
-     *
-     * @param n
+     * Select a given number of periods at the beginning of a time domain
+     * @param n The number of selected periods
      */
     public void first(final int n) {
         doClear();
@@ -188,15 +163,10 @@ public class TsPeriodSelector implements Cloneable {
         n0_ = n;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * be.nbb.timeseries.simplets.IPeriodSelector#from(be.nbb.timeseries.Day)
-     */
     /**
-     *
-     * @param d0
+     * Select the periods after a given date. The way incomplete periods are considered
+     * is left to the classes that use the selector.
+     * @param d0 The date for the selection
      */
     public void from(final Day d0) {
         doClear();
@@ -205,99 +175,73 @@ public class TsPeriodSelector implements Cloneable {
     }
 
     /**
-     *
+     * The starting day of the selector. Its interpretation depends on on the type of the selector
      * @return
      */
     public Day getD0() {
         return d0_;
     }
 
+    @Deprecated
     public void setD0(Day d) {
         d0_ = d;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#getD1()
-     */
     /**
-     *
+     * The ending day of the selector. Its interpretation depends on on the type of the selector. May be unused
      * @return
      */
     public Day getD1() {
         return d1_;
     }
 
+    @Deprecated
     public void setD1(Day d) {
         d1_ = d;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#getN()
-     */
     /**
-     *
+     * The number of starting periods defined by the selector. Its interpretation depends on on the type of the selector. May be unused
      * @return
      */
     public int getN0() {
         return n0_;
     }
 
+    @Deprecated
     public void setN0(int i) {
         n0_ = i;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#getN()
-     */
     /**
-     *
+     * The number of ending periods defined by the selector. Its interpretation depends on on the type of the selector. May be unused
      * @return
      */
     public int getN1() {
         return n1_;
     }
 
+    @Deprecated
     public void setN1(int i) {
         n1_ = i;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#getD0()
-     */
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#getKind()
-     */
     /**
-     *
+     * The type of the selector
      * @return
      */
     public PeriodSelectorType getType() {
         return type_;
     }
 
+    @Deprecated
     public void setType(PeriodSelectorType type) {
         type_ = type;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#last(int)
-     */
     /**
-     *
-     * @param n
+     * Select a given number of periods at the end of a time domain
+     * @param n The number of selected periods
      */
     public void last(final int n) {
         doClear();
@@ -306,21 +250,17 @@ public class TsPeriodSelector implements Cloneable {
     }
 
     /**
-     *
+     * Select nothing
      */
     public void none() {
         doClear();
         type_ = PeriodSelectorType.None;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see be.nbb.timeseries.simplets.IPeriodSelector#to(be.nbb.timeseries.Day)
-     */
     /**
-     *
-     * @param d1
+     * Select the periods up to a given date. The way incomplete periods are considered
+     * is left to the classes that use the selector.
+     * @param d1 The date for the selection
      */
     public void to(final Day d1) {
         doClear();
@@ -358,11 +298,11 @@ public class TsPeriodSelector implements Cloneable {
                     builder.append("last ");
                     if (n1_ > 1) {
                         builder.append(n1_).append(" periods");
-                    } else if (n1_ > 0){
+                    } else if (n1_ > 0) {
                         builder.append("period");
-                    } else if (n1_ <-1) {
+                    } else if (n1_ < -1) {
                         builder.append(-n1_).append(" years");
-                    } else if (n1_ < 0){
+                    } else if (n1_ < 0) {
                         builder.append("year");
                     }
                 }
@@ -406,5 +346,13 @@ public class TsPeriodSelector implements Cloneable {
             default:
                 return "";
         }
+    }
+    
+    public boolean isAll(){
+        return type_ == PeriodSelectorType.All;
+    }
+    
+    public boolean isNone(){
+         return type_ == PeriodSelectorType.None;
     }
 }

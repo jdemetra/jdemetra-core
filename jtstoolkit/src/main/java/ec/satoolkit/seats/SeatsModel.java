@@ -24,6 +24,7 @@ import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.eco.ConcentratedLikelihood;
+import ec.tstoolkit.maths.Complex;
 import ec.tstoolkit.modelling.arima.tramo.SeasonalityDetector;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;
@@ -42,6 +43,7 @@ public class SeatsModel {
     private IArimaModel noisyModel;
     private final boolean hasSeas;
     private boolean cutoff, changed;
+    private Complex[] arRoots;
 
     /**
      *
@@ -67,6 +69,17 @@ public class SeatsModel {
     public SarimaModel getSarima() {
         return model;
     }
+    
+    public Complex[] getAutoRegressiveRoots(){
+        if (arRoots == null){
+            if (model == null)
+                arRoots=new Complex[0];
+            else{
+                arRoots=model.getRegularAR().roots();
+            }
+        }
+        return arRoots;
+    }
 
     /**
      * @return the model
@@ -87,7 +100,7 @@ public class SeatsModel {
      */
     public RegArimaModel<SarimaModel> getRegarima() {
         RegArimaModel<SarimaModel> regarima = new RegArimaModel<>(
-                model, new DataBlock(series.getValues().internalStorage()));
+                model, new DataBlock(series.internalStorage()));
         regarima.setMeanCorrection(meanCorrection);
         return regarima;
     }
@@ -177,7 +190,7 @@ public class SeatsModel {
         }
         else {
             RegArimaModel<IArimaModel> regarima = new RegArimaModel<>(
-                    noisyModel, new DataBlock(series.getValues().internalStorage()));
+                    noisyModel, new DataBlock(series.internalStorage()));
             regarima.setMeanCorrection(meanCorrection);
             ConcentratedLikelihood ll = regarima.computeLikelihood();
             RegArimaEstimation<IArimaModel> est = new RegArimaEstimation<>(regarima, ll);

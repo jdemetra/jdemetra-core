@@ -16,7 +16,7 @@
  */
 package ec.tss.tsproviders.common.tsw;
 
-import com.google.common.collect.ImmutableList;
+import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
@@ -30,6 +30,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +40,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Kristof Bayens
  */
+@ServiceProvider(service = ITsProvider.class)
 public class TswProvider extends AbstractFileLoader<TswSource, TswBean> {
 
     public static final String SOURCE = "TSW";
@@ -46,7 +50,7 @@ public class TswProvider extends AbstractFileLoader<TswSource, TswBean> {
     private static final Logger LOGGER = LoggerFactory.getLogger(TswProvider.class);
 
     public TswProvider() {
-        super(LOGGER, SOURCE, TsAsyncMode.None);
+        super(LOGGER, SOURCE, TsAsyncMode.Once);
     }
 
     @Override
@@ -61,12 +65,16 @@ public class TswProvider extends AbstractFileLoader<TswSource, TswBean> {
 
     @Override
     public DataSource encodeBean(Object bean) throws IllegalArgumentException {
-        return ((TswBean) bean).toDataSource(SOURCE, VERSION);
+        try {
+            return ((TswBean) bean).toDataSource(SOURCE, VERSION);
+        } catch (ClassCastException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     @Override
     public TswBean decodeBean(DataSource dataSource) {
-        return new TswBean(dataSource);
+        return new TswBean(support.check(dataSource));
     }
 
     @Override
@@ -81,7 +89,8 @@ public class TswProvider extends AbstractFileLoader<TswSource, TswBean> {
 
     @Override
     public List<DataSet> children(DataSet parent) throws IllegalArgumentException, IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Objects.requireNonNull(parent);
+        throw new IllegalArgumentException("Not supported yet.");
     }
 
     @Override
@@ -93,9 +102,8 @@ public class TswProvider extends AbstractFileLoader<TswSource, TswBean> {
     protected void fillCollection(TsCollectionInformation info, DataSource dataSource) throws IOException {
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
         for (TswSeries o : getSource(dataSource).items) {
-            Z_FILENAME.set(builder, o.fileName);
-            Z_NAME.set(builder, o.name);
-            info.items.add(support.fillSeries(newTsInformation(builder.build(), TsInformationType.All), o.data, true));
+            DataSet child = builder.put(Z_FILENAME, o.fileName).put(Z_NAME, o.name).build();
+            info.items.add(support.fillSeries(newTsInformation(child, TsInformationType.All), o.data, true));
         }
         info.type = TsInformationType.All;
     }
@@ -109,6 +117,7 @@ public class TswProvider extends AbstractFileLoader<TswSource, TswBean> {
     protected void fillSeries(TsInformation info, DataSet dataSet) throws IOException {
         TswSeries series = getSeries(dataSet);
         support.fillSeries(info, series.data, true);
+        info.name = getDisplayName(dataSet);
         info.type = TsInformationType.All;
     }
 
@@ -116,13 +125,12 @@ public class TswProvider extends AbstractFileLoader<TswSource, TswBean> {
     public List<DataSet> children(DataSource dataSource) throws IllegalArgumentException, IOException {
         support.check(dataSource);
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
-        ImmutableList.Builder<DataSet> result = ImmutableList.builder();
-        for (TswSeries series : getSource(dataSource).items) {
-            Z_FILENAME.set(builder, series.fileName);
-            Z_NAME.set(builder, series.name);
-            result.add(builder.build());
-        }
-        return result.build();
+        return getSource(dataSource).items.stream()
+                .map(o -> builder
+                        .put(Z_FILENAME, o.fileName)
+                        .put(Z_NAME, o.name)
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -17,8 +17,10 @@
 
 package ec.tss.tsproviders.legacy;
 
+import ec.tss.tsproviders.DataSource;
 import java.io.File;
 import java.io.IOException;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -42,6 +44,12 @@ public class FileDataSourceIdTest {
     public static void afterClass() {
         FILE.delete();
         OTHER.delete();
+    }
+   
+    @Test
+    public void testDemetraUri() {
+        String input = DataSource.uriFormatter().formatAsString(DataSource.of("p", "123"));
+        assertThat(FileDataSourceId.parse(input)).isNull();
     }
     
     @Test

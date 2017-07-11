@@ -22,7 +22,7 @@ import ec.satoolkit.ISaResults;
 import ec.satoolkit.ISeriesDecomposition;
 import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.eco.DiffuseConcentratedLikelihood;
-import ec.tstoolkit.information.InformationMapper;
+import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.maths.realfunctions.IFunction;
 import ec.tstoolkit.maths.realfunctions.IFunctionInstance;
@@ -45,6 +45,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  *
@@ -53,7 +54,7 @@ import java.util.Map;
 public class StmResults implements ISaResults {
 
     public static final String MODEL = "model";
-    public static final String SERIES = "series", LEVEL = "level", CYCLE = "cycle", SLOPE = "slope", NOISE = "noise", SEASONAL = "seasonal";
+    public static final String SERIES = "series", LEVEL = "level", CYCLE = "cycle", SLOPE = "slope", NOISE = "noise", SEASONAL = "seasonal", RESIDUALS="residuals";
     private final BsmMonitor monitor_;
     private final SmoothingResults srslts_;
     private final InformationSet info_ = new InformationSet();
@@ -72,7 +73,7 @@ public class StmResults implements ISaResults {
         BasicStructuralModel model = monitor.getResult();
         Smoother smoother = new Smoother();
         smoother.setSsf(model);
-        ExtendedSsfData data = new ExtendedSsfData(new SsfData(y.getValues().internalStorage(), null));
+        ExtendedSsfData data = new ExtendedSsfData(new SsfData(y.internalStorage(), null));
         data.setForecastsCount(y.getFrequency().intValue());
         srslts_ = new SmoothingResults();
         smoother.process(data, srslts_);
@@ -135,20 +136,18 @@ public class StmResults implements ISaResults {
 
     @Override
     public boolean contains(String id) {
-        synchronized (mapper) {
-            if (mapper.contains(id)) {
-                return true;
-            }
-            if (info_ != null) {
-                if (!id.contains(InformationSet.STRSEP)) {
-                    return info_.deepSearch(id, Object.class) != null;
-                } else {
-                    return info_.search(id, Object.class) != null;
-                }
-
+        if (MAPPING.contains(id)) {
+            return true;
+        }
+        if (info_ != null) {
+            if (!id.contains(InformationSet.STRSEP)) {
+                return info_.deepSearch(id, Object.class) != null;
             } else {
-                return false;
+                return info_.search(id, Object.class) != null;
             }
+
+        } else {
+            return false;
         }
     }
 
@@ -199,21 +198,19 @@ public class StmResults implements ISaResults {
     public Map<String, Class> getDictionary() {
         // TODO
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
-        mapper.fillDictionary(null, map);
+        MAPPING.fillDictionary(null, map, false);
         return map;
     }
 
     @Override
     public <T> T getData(String id, Class<T> tclass) {
-        synchronized (mapper) {
-            if (mapper.contains(id)) {
-                return mapper.getData(this, id, tclass);
-            }
-            if (!id.contains(InformationSet.STRSEP)) {
-                return info_.deepSearch(id, tclass);
-            } else {
-                return info_.search(id, tclass);
-            }
+        if (MAPPING.contains(id)) {
+            return MAPPING.getData(this, id, tclass);
+        }
+        if (!id.contains(InformationSet.STRSEP)) {
+            return info_.deepSearch(id, tclass);
+        } else {
+            return info_.search(id, tclass);
         }
     }
 
@@ -269,187 +266,74 @@ public class StmResults implements ISaResults {
         return info_;
     }
 
-    // MAPPERS
-
-    public static <T> void addMapping(String name, InformationMapper.Mapper<StmResults, T> mapping) {
-        synchronized (mapper) {
-            mapper.add(name, mapping);
-        }
+    // MAPPING
+    public static InformationMapping<StmResults> getMapping() {
+        return MAPPING;
     }
 
-    private static final InformationMapper<StmResults> mapper = new InformationMapper<>();
+    public static <T> void setMapping(String name, Class<T> tclass, Function<StmResults, T> extractor) {
+        MAPPING.set(name, tclass, extractor);
+    }
+
+    public static <T> void setTsData(String name, Function<StmResults, TsData> extractor) {
+        MAPPING.set(name, extractor);
+    }
+
+    private static final InformationMapping<StmResults> MAPPING = new InformationMapping<>(StmResults.class);
 
     static {
-        mapper.add(ModellingDictionary.Y_CMP, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                return source.mul_ ? source.y_.exp() : source.y_;
-            }
+        MAPPING.set(ModellingDictionary.Y_CMP, source -> source.mul_ ? source.y_.exp() : source.y_);
+        MAPPING.set(ModellingDictionary.Y_CMP + SeriesInfo.F_SUFFIX, source -> source.mul_ ? source.yf_.exp() : source.yf_);
+        MAPPING.set(ModellingDictionary.T_CMP, source -> {
+            TsData x = source.t_.fittoDomain(source.y_.getDomain());
+            return source.mul_ ? x.exp() : x;
         });
-        mapper.add(ModellingDictionary.Y_CMP + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                return source.mul_ ? source.yf_.exp() : source.yf_;
-            }
+        MAPPING.set(ModellingDictionary.T_CMP + SeriesInfo.F_SUFFIX, source -> {
+            TsData x = source.t_.fittoDomain(source.yf_.getDomain());
+            return source.mul_ ? x.exp() : x;
         });
-        mapper.add(ModellingDictionary.T_CMP, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                TsData x = source.t_.fittoDomain(source.y_.getDomain());
-                return source.mul_ ? x.exp() : x;
-            }
+        MAPPING.set(ModellingDictionary.T_CMP + SeriesInfo.F_SUFFIX, source -> {
+            TsData x = source.t_.fittoDomain(source.yf_.getDomain());
+            return source.mul_ ? x.exp() : x;
         });
-        mapper.add(ModellingDictionary.T_CMP + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                TsData x = source.t_.fittoDomain(source.yf_.getDomain());
-                return source.mul_ ? x.exp() : x;
-            }
+        MAPPING.set(ModellingDictionary.SA_CMP, source -> {
+            TsData x = source.sa_.fittoDomain(source.y_.getDomain());
+            return source.mul_ ? x.exp() : x;
         });
-        mapper.add(ModellingDictionary.T_CMP + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                TsData x = source.t_.fittoDomain(source.yf_.getDomain());
-                return source.mul_ ? x.exp() : x;
-            }
+        MAPPING.set(ModellingDictionary.SA_CMP + SeriesInfo.F_SUFFIX, source -> {
+            TsData x = source.sa_.fittoDomain(source.yf_.getDomain());
+            return source.mul_ ? x.exp() : x;
         });
-        mapper.add(ModellingDictionary.SA_CMP, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                TsData x = source.sa_.fittoDomain(source.y_.getDomain());
-                return source.mul_ ? x.exp() : x;
-            }
+        MAPPING.set(ModellingDictionary.S_CMP, source -> {
+            TsData x = source.s_.fittoDomain(source.y_.getDomain());
+            return source.mul_ ? x.exp() : x;
         });
-        mapper.add(ModellingDictionary.SA_CMP + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                TsData x = source.sa_.fittoDomain(source.yf_.getDomain());
-                return source.mul_ ? x.exp() : x;
-            }
+        MAPPING.set(ModellingDictionary.S_CMP + SeriesInfo.F_SUFFIX, source -> {
+            TsData x = source.s_.fittoDomain(source.yf_.getDomain());
+            return source.mul_ ? x.exp() : x;
         });
-        mapper.add(ModellingDictionary.S_CMP, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                TsData x = source.s_.fittoDomain(source.y_.getDomain());
-                return source.mul_ ? x.exp() : x;
-            }
+        MAPPING.set(ModellingDictionary.I_CMP, source -> {
+            TsData x = source.i_.fittoDomain(source.y_.getDomain());
+            return source.mul_ ? x.exp() : x;
         });
-        mapper.add(ModellingDictionary.S_CMP + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                TsData x = source.s_.fittoDomain(source.yf_.getDomain());
-                return source.mul_ ? x.exp() : x;
-            }
+        MAPPING.set(ModellingDictionary.I_CMP + SeriesInfo.F_SUFFIX, source -> {
+            TsData x = source.i_.fittoDomain(source.yf_.getDomain());
+            return source.mul_ ? x.exp() : x;
         });
-        mapper.add(ModellingDictionary.I_CMP, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                TsData x = source.i_.fittoDomain(source.y_.getDomain());
-                return source.mul_ ? x.exp() : x;
-            }
+        MAPPING.set(ModellingDictionary.SI_CMP, source -> {
+            TsData si = TsData.add(source.s_, source.i_);
+            return source.mul_ ? si.exp() : si;
         });
-        mapper.add(ModellingDictionary.I_CMP + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                TsData x = source.i_.fittoDomain(source.yf_.getDomain());
-                return source.mul_ ? x.exp() : x;
-            }
-        });
-        mapper.add(ModellingDictionary.SI_CMP, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                TsData si = TsData.add(source.s_, source.i_);
-                return source.mul_ ? si.exp() : si;
-            }
-        });
-        mapper.add(ModellingDictionary.Y_LIN, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                return source.y_;
-            }
-        });
-        mapper.add(ModellingDictionary.Y_LIN + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                return source.yf_;
-            }
-        });
-        mapper.add(ModellingDictionary.T_LIN, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                return source.t_.fittoDomain(source.y_.getDomain());
-            }
-        });
-        mapper.add(ModellingDictionary.T_LIN + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                return source.t_.fittoDomain(source.yf_.getDomain());
-            }
-        });
-        mapper.add(ModellingDictionary.SA_LIN, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                return source.sa_.fittoDomain(source.y_.getDomain());
-            }
-        });
-        mapper.add(ModellingDictionary.SA_LIN + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                return source.sa_.fittoDomain(source.yf_.getDomain());
-            }
-        });
-        mapper.add(ModellingDictionary.S_LIN, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                return source.s_.fittoDomain(source.y_.getDomain());
-            }
-        });
-        mapper.add(ModellingDictionary.S_LIN + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                return source.s_.fittoDomain(source.yf_.getDomain());
-            }
-        });
-        mapper.add(ModellingDictionary.I_LIN, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                return source.i_.fittoDomain(source.y_.getDomain());
-            }
-        });
-        mapper.add(ModellingDictionary.I_LIN + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                return source.i_.fittoDomain(source.yf_.getDomain());
-            }
-        });
-        mapper.add("residuals", new InformationMapper.Mapper<StmResults, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(StmResults source) {
-                return source.getResiduals();
-            }
-        });
+        MAPPING.set(ModellingDictionary.Y_LIN, source -> source.y_);
+        MAPPING.set(ModellingDictionary.Y_LIN + SeriesInfo.F_SUFFIX, source -> source.yf_);
+        MAPPING.set(ModellingDictionary.T_LIN, source -> source.t_.fittoDomain(source.y_.getDomain()));
+        MAPPING.set(ModellingDictionary.T_LIN + SeriesInfo.F_SUFFIX, source -> source.t_.fittoDomain(source.yf_.getDomain()));
+        MAPPING.set(ModellingDictionary.SA_LIN, source -> source.sa_.fittoDomain(source.y_.getDomain()));
+        MAPPING.set(ModellingDictionary.SA_LIN + SeriesInfo.F_SUFFIX, source -> source.sa_.fittoDomain(source.yf_.getDomain()));
+        MAPPING.set(ModellingDictionary.S_LIN, source -> source.s_.fittoDomain(source.y_.getDomain()));
+        MAPPING.set(ModellingDictionary.S_LIN + SeriesInfo.F_SUFFIX, source -> source.s_.fittoDomain(source.yf_.getDomain()));
+        MAPPING.set(ModellingDictionary.I_LIN, source -> source.i_.fittoDomain(source.y_.getDomain()));
+        MAPPING.set(ModellingDictionary.I_LIN + SeriesInfo.F_SUFFIX, source -> source.i_.fittoDomain(source.yf_.getDomain()));
+        MAPPING.set(RESIDUALS, source -> source.getResiduals());
     }
 }

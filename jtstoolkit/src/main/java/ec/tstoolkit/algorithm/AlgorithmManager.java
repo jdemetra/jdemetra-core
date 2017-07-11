@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.algorithm;
 
 import ec.tstoolkit.design.Development;
@@ -24,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The algorithm manager class offer services for generic algorithms:
@@ -34,19 +34,30 @@ import java.util.List;
  *
  *
  * @author Jean Palate
+ * 
+ * Manages Processing factories (P), which produce results R from input I and specification S
+ * Objects of this class will also contains diagnostic classes (T) that can analyse the results
+ * and output factory classes (O) that can handle document objects (D) corresponding to a processing
+ * @param <S> Specification class
+ * @param <I> Input class
+ * @param <R> Results class
+ * @param <O> Output class
+ * @param <P> Processing factory class
+ * @param <D> Document class
+ * @param <T> Diagnostics class
  */
 @Development(status = Development.Status.Alpha)
-public abstract class AlgorithmManager<S extends IProcSpecification, I, R extends IProcResults, D extends IProcDocument<? extends S, ?, ? extends R>, P extends IProcessingFactory<? extends S, I, R>, O extends IOutputFactory<? extends D>, T extends IDiagnosticsFactory<R>> 
-implements IAlgorithmManager <S, I, R, P>{
+public abstract class AlgorithmManager<S extends IProcSpecification, I, R extends IProcResults, D extends IProcDocument<? extends S, ?, ? extends R>, P extends IProcessingFactory<? extends S, I, R>, O extends IOutputFactory<? extends D>, T extends IDiagnosticsFactory<R>>
+        implements IAlgorithmManager<S, I, R, P> {
 
-    private ArrayList<P> processors_ = new ArrayList<>();
-    private ArrayList<O> output_ = new ArrayList<>();
-    private ArrayList<T> tests_ = new ArrayList<>();
+    private final List<P> processors_ = new CopyOnWriteArrayList<>();
+    private final List<O> output_ = new CopyOnWriteArrayList<>();
+    private final List<T> tests_ = new CopyOnWriteArrayList<>();
 
-    public static InformationSet getActiveContext(){
+    public static InformationSet getActiveContext() {
         return null;
     }
-       
+
     public InformationSet diagnostic(R sa) {
         InformationSet summary = new InformationSet();
         for (IDiagnosticsFactory<R> diag : tests_) {
@@ -91,10 +102,11 @@ implements IAlgorithmManager <S, I, R, P>{
     public void sortDiagnostics(Comparator<T> cmp) {
         Collections.sort(tests_, cmp);
     }
+
     public <T extends S> R process(T spec, I input) {
         return process(spec, input, null);
     }
-    
+
     public <T extends S> R process(T spec, I input, ProcessingContext context) {
         for (IProcessingFactory processor : processors_) {
             if (processor.canHandle(spec)) {
@@ -104,8 +116,8 @@ implements IAlgorithmManager <S, I, R, P>{
         }
         return null;
     }
-    
-    public <T extends S> IProcessingFactory find(T spec){
+
+    public <T extends S> IProcessingFactory find(T spec) {
         for (IProcessingFactory processor : processors_) {
             if (processor.canHandle(spec)) {
                 return processor;
@@ -128,8 +140,9 @@ implements IAlgorithmManager <S, I, R, P>{
     }
 
     public P getProcessor(AlgorithmDescriptor desc) {
-        if (desc == null)
+        if (desc == null) {
             return null;
+        }
         for (P processor : processors_) {
             if (desc.isCompatible(processor.getInformation())) {
                 return processor;
@@ -137,7 +150,7 @@ implements IAlgorithmManager <S, I, R, P>{
         }
         return null;
     }
-
+    
     protected T addDiagnostics(String module, String impl) {
         T diag = (T) ec.tstoolkit.design.InterfaceLoader.create(module, IDiagnosticsFactory.class, impl);
         if (diag != null) {
@@ -184,8 +197,10 @@ implements IAlgorithmManager <S, I, R, P>{
         for (O output : output_) {
             output.dispose();
         }
-        for (T diag : tests_) {
-            diag.dispose();
+        for (T t : tests_) {
+            for (T diag : tests_) {
+                diag.dispose();
+            }
         }
         for (P processor : processors_) {
             processor.dispose();

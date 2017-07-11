@@ -1,17 +1,17 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.tstoolkit.timeseries.regression;
@@ -32,9 +32,9 @@ import ec.tstoolkit.timeseries.simplets.TsPeriod;
  */
 @Development(status = Development.Status.Alpha)
 public class TsVariable extends AbstractSingleTsVariable implements
-        IUserTsVariable {
+        IUserSource {
 
-    private String desc_ = "";
+    private String name, desc_ = "";
     private TsData tsdata_;
 
     /**
@@ -47,6 +47,7 @@ public class TsVariable extends AbstractSingleTsVariable implements
 
     /**
      *
+     * @param desc
      * @param tsdata
      */
     public TsVariable(String desc, TsData tsdata) {
@@ -61,6 +62,10 @@ public class TsVariable extends AbstractSingleTsVariable implements
      */
     @Override
     public void data(TsPeriod start, DataBlock data) {
+        if (tsdata_ == null) {
+            // should data be cleared?
+            return;
+        }
         TsDomain domain = tsdata_.getDomain();
         // position of the first data (in m_ts)
         int istart = start.minus(domain.getStart());
@@ -84,17 +89,17 @@ public class TsVariable extends AbstractSingleTsVariable implements
         }
 
         data.range(jstart, jend).copy(
-                new DataBlock(tsdata_.getValues().internalStorage(), istart,
-                iend, 1));
+                new DataBlock(tsdata_.internalStorage(), istart,
+                        iend, 1));
     }
 
     @Override
     public TsFrequency getDefinitionFrequency() {
-        return tsdata_.getFrequency();
+        return tsdata_ != null ? tsdata_.getFrequency() : null;
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         return desc_;
     }
 
@@ -104,7 +109,7 @@ public class TsVariable extends AbstractSingleTsVariable implements
      */
     @Override
     public TsDomain getDefinitionDomain() {
-        return tsdata_.getDomain();
+        return tsdata_ != null ? tsdata_.getDomain() : null;
     }
 
     /**
@@ -117,6 +122,9 @@ public class TsVariable extends AbstractSingleTsVariable implements
 
     @Override
     public boolean isSignificant(TsDomain domain) {
+        if (tsdata_ == null) {
+            return false;
+        }
         if (domain.getFrequency() != tsdata_.getFrequency()) {
             return false;
         }
@@ -125,7 +133,7 @@ public class TsVariable extends AbstractSingleTsVariable implements
             return false;
         }
         int start = idom.getStart().minus(tsdata_.getStart());
-        return !new DataBlock(tsdata_.getValues().internalStorage(), start,
+        return !new DataBlock(tsdata_.internalStorage(), start,
                 start + idom.getLength(), 1).isZero();
     }
 
@@ -139,6 +147,15 @@ public class TsVariable extends AbstractSingleTsVariable implements
 
     protected void setData(TsData s) {
         tsdata_ = s;
+    }
+
+    @Override
+    public String getName() {
+        return name == null ? "var" : name;
+    }
+    
+    public void setName(String name){
+        this.name=name;
     }
 
     private static class TsVariableConverter implements InformationConverter<TsVariable> {
@@ -169,7 +186,7 @@ public class TsVariable extends AbstractSingleTsVariable implements
         }
         static final String TYPE = "static time series", DATA = "data", DESC = "description";
     };
-    
+
     private static final InformationConverter<TsVariable> tsvar = new TsVariableConverter();
 
     public static void register() {

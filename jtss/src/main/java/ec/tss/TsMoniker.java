@@ -16,9 +16,7 @@
  */
 package ec.tss;
 
-import com.google.common.primitives.Ints;
 import ec.tstoolkit.design.Immutable;
-import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -29,10 +27,8 @@ import javax.annotation.Nullable;
 @Immutable
 public final class TsMoniker implements Comparable<TsMoniker> {
 
-    private static final AtomicInteger g_id = new AtomicInteger(0);
     private final String m_source;
     private final String m_id;
-    private final int hash;
 
     @Nonnull
     public static TsMoniker create(@Nullable String source, @Nullable String id) throws IllegalArgumentException {
@@ -51,7 +47,6 @@ public final class TsMoniker implements Comparable<TsMoniker> {
     public TsMoniker() {
         m_source = null;
         m_id = null;
-        hash = g_id.getAndIncrement();
     }
 
     public static TsMoniker createDynamicMoniker() {
@@ -61,7 +56,6 @@ public final class TsMoniker implements Comparable<TsMoniker> {
     private TsMoniker(String source) {
         m_source = source;
         m_id = null;
-        hash = g_id.getAndIncrement();
     }
 
     /**
@@ -76,7 +70,6 @@ public final class TsMoniker implements Comparable<TsMoniker> {
         }
         m_source = source;
         m_id = id;
-        hash = 0 ^ m_source.hashCode() ^ m_id.hashCode();
     }
 
     public boolean isAnonymous() {
@@ -89,7 +82,7 @@ public final class TsMoniker implements Comparable<TsMoniker> {
     }
 
     private boolean equals(TsMoniker other) {
-        return !isAnonymous() ? (m_source.equals(other.m_source) && m_id.equals(other.m_id)) : (hash == other.hash);
+        return !isAnonymous() && (m_source.equals(other.m_source) && m_id.equals(other.m_id));
     }
 
     /**
@@ -112,29 +105,31 @@ public final class TsMoniker implements Comparable<TsMoniker> {
 
     @Override
     public int hashCode() {
-        return hash;
+        return !isAnonymous()
+                ? (0 ^ m_source.hashCode() ^ m_id.hashCode())
+                : super.hashCode();
     }
 
     @Override
     public String toString() {
-        return !isAnonymous() ? (m_source + "<@>" + m_id) : String.valueOf(hash);
+        return !isAnonymous()
+                ? (m_source + "<@>" + m_id)
+                : super.toString();
     }
 
     @Override
     public int compareTo(TsMoniker o) {
         if (this.isAnonymous()) {
             if (o.isAnonymous()) {
-                return Ints.compare(this.hash, o.hash);
+                return Integer.compare(this.hashCode(), o.hashCode());
             } else {
                 return -1;
             }
+        } else if (o.isAnonymous()) {
+            return 1;
         } else {
-            if (o.isAnonymous()) {
-                return 1;
-            } else {
-                int r0 = this.m_source.compareTo(o.m_source);
-                return r0 != 0 ? r0 : this.m_id.compareTo(o.m_id);
-            }
+            int r0 = this.m_source.compareTo(o.m_source);
+            return r0 != 0 ? r0 : this.m_id.compareTo(o.m_id);
         }
     }
 }

@@ -68,17 +68,17 @@ public class SlidingSpans<I extends IProcResults> {
     
     private Node<I>[] m_estimation;
 
-    private ITsProcessing<I> m_processing;
+    private final ITsProcessing<I> m_processing;
 
-    private TsDomain m_domainT;
+    private final TsDomain m_domainT;
 
-    private I m_reference;
+    private final I m_reference;
 
     private int m_spanLength = 8;
 
     private int m_spanCount = 4;
 
-    private int m_spanDistance = 1;
+    private final int m_spanDistance = 1;
 
     private int m_spanMin = 2;
 
@@ -97,7 +97,7 @@ public class SlidingSpans<I extends IProcResults> {
     private void addDel(int p,
 	    HashMap<TsPeriod, SlidingSpans<I>.MaxMin> buffer, TsData data) {
 	TsPeriod start = data.getStart();
-	double[] obs = data.getValues().internalStorage();
+	double[] obs = data.internalStorage();
 	for (int i = p; i < obs.length; ++i) {
 	    TsPeriod cur = start.plus(i);
 	    MaxMin Mm = buffer.get(cur);
@@ -112,7 +112,7 @@ public class SlidingSpans<I extends IProcResults> {
     private void addPct(int p,
 	    HashMap<TsPeriod, SlidingSpans<I>.MaxMin> buffer, TsData data) {
 	TsPeriod start = data.getStart();
-	double[] obs = data.getValues().internalStorage();
+	double[] obs = data.internalStorage();
 	for (int i = p; i < obs.length; ++i) {
 	    TsPeriod cur = start.plus(i);
 	    MaxMin Mm = buffer.get(cur);
@@ -127,7 +127,7 @@ public class SlidingSpans<I extends IProcResults> {
     private void addValue(HashMap<TsPeriod, SlidingSpans<I>.MaxMin> buffer,
 	    TsData data) {
 	TsPeriod start = data.getStart();
-	double[] obs = data.getValues().internalStorage();
+	double[] obs = data.internalStorage();
 	for (int i = 0; i < obs.length; ++i) {
 	    TsPeriod cur = start.plus(i);
 	    MaxMin Mm = buffer.get(cur);

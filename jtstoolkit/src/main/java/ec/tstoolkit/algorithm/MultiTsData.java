@@ -19,6 +19,7 @@ package ec.tstoolkit.algorithm;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +52,7 @@ public class MultiTsData implements IProcResults {
 
     @Override
     public Map<String, Class> getDictionary() {
-        HashMap<String, Class> dic = new HashMap<>();
+        LinkedHashMap<String, Class> dic = new LinkedHashMap<>();
         for (int i = 0; i < ts.length; ++i) {
             dic.put(encode(i), TsData.class);
         }
@@ -95,5 +96,5 @@ public class MultiTsData implements IProcResults {
     public List<ProcessingInformation> getProcessingInformation() {
         return Collections.EMPTY_LIST;
     }
-    
+
 }

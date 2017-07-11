@@ -13,16 +13,15 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.utils;
 
-import com.google.common.collect.Lists;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
 import ec.tss.TsInformationType;
 import ec.tss.TsMoniker;
 import java.util.Deque;
+import java.util.LinkedList;
 
 /**
  *
@@ -30,8 +29,8 @@ import java.util.Deque;
  */
 public class AsyncRequests {
 
-    private final Deque<TsInformation> m_srequests = Lists.newLinkedList();
-    private final Deque<TsCollectionInformation> m_crequests = Lists.newLinkedList();
+    private final Deque<TsInformation> m_srequests = new LinkedList<>();
+    private final Deque<TsCollectionInformation> m_crequests = new LinkedList<>();
 
     public void clear() {
         synchronized (m_crequests) {
@@ -41,9 +40,19 @@ public class AsyncRequests {
             m_srequests.clear();
         }
     }
-    
-    public boolean isEmpty(){
-        return m_crequests.isEmpty() && m_srequests.isEmpty();
+
+    public boolean isEmpty() {
+        synchronized (m_crequests) {
+            if (!m_crequests.isEmpty()) {
+                return false;
+            }
+        }
+        synchronized (m_srequests) {
+            if (!m_srequests.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void addTsCollection(TsMoniker moniker, TsInformationType type) {
@@ -90,7 +99,7 @@ public class AsyncRequests {
     /**
      * Requests whose information is encompassed by the given type are removed.
      *
-     * @param id
+     * @param moniker
      * @param type
      * @return
      */

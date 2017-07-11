@@ -60,18 +60,25 @@ public class DefaultPreprocessor extends DefaultX11Algorithm implements
     public void preprocess(InformationSet info) {
         TsData s = filter_.getCorrectedSeries(false);
         TsData fs = filter_.getCorrectedForecasts(false);
+        TsData bs = filter_.getCorrectedBackcasts(false);
         TsData sall = s.update(fs);
+        if (bs != null)
+            sall=bs.update(sall);
         InformationSet atables = info.subSet(X11Kernel.A);
         InformationSet btables = info.subSet(X11Kernel.B);
         btables.set(X11Kernel.B1, sall);
         if (fs != null) {
-            atables.set(X11Kernel.A1a, model_.forecast(fs.getLength(), true));
+            atables.set(X11Kernel.A1a, model_.forecast(fs.getLength(), false));
+        }
+        if (bs!=null)
+         {
+            atables.set(X11Kernel.A1b, model_.backcast(bs.getLength(), false));
         }
         // complete the information sets using the pre-processing model
         TsDomain domain = model_.description.getSeriesDomain();
         // extend the domain for forecasts
-        int nf = context.getForecastHorizon(), ny = context.getFrequency();
-        domain = domain.extend(0, nf == 0 ? ny : nf);
+        int nf = context.getForecastHorizon(), nb=context.getBackcastHorizon(), ny = context.getFrequency();
+        domain = domain.extend(nb, nf == 0 ? ny : nf);
 
         TsData mh = model_.movingHolidaysEffect(domain);
         TsData td = model_.tradingDaysEffect(domain);
@@ -81,10 +88,10 @@ public class DefaultPreprocessor extends DefaultX11Algorithm implements
         atables.add(X11Kernel.A7, mh);
         //d.add(X11Kernel.D18, cal);
         TsData p = model_.outliersEffect(domain);
-        TsData pt = model_.regressionEffect(domain, LevelShift.class);
-        TsData ps = model_.regressionEffect(domain, SeasonalOutlier.class);
-        TsData pa = model_.regressionEffect(domain, AdditiveOutlier.class);
-        TsData pc = model_.regressionEffect(domain, TransitoryChange.class);
+        TsData pt = model_.deterministicEffect(domain, LevelShift.class);
+        TsData ps = model_.deterministicEffect(domain, SeasonalOutlier.class);
+        TsData pa = model_.deterministicEffect(domain, AdditiveOutlier.class);
+        TsData pc = model_.deterministicEffect(domain, TransitoryChange.class);
         TsData ut = model_.userEffect(domain, ComponentType.Trend);
         TsData ua = model_.userEffect(domain, ComponentType.Irregular);
         TsData us = model_.userEffect(domain, ComponentType.Seasonal);
@@ -95,20 +102,26 @@ public class DefaultPreprocessor extends DefaultX11Algorithm implements
         pt = TsData.add(pt, ut);
         ps = TsData.add(ps, us);
         pa = TsData.add(pa, ua);
+        TsData pi=TsData.add(pa, pc);
+        TsData pall=TsData.add(pt, TsData.add(ps, pi));
+        TsData u=TsData.add(usa, user);
         model_.backTransform(p, false, false);
         model_.backTransform(pt, false, false);
         model_.backTransform(ps, false, false);
         model_.backTransform(pa, false, false);
         model_.backTransform(pc, false, false);
+        model_.backTransform(pi, false, false);
+        model_.backTransform(pall, false, false);
         model_.backTransform(usa, false, false);
         model_.backTransform(uu, false, false);
         model_.backTransform(user, false, false);
+        model_.backTransform(u, false, false);
 
         atables.add(X11Kernel.A8t, pt);
         atables.add(X11Kernel.A8s, ps);
-        atables.add(X11Kernel.A8i, invOp(pa, pc));
-        atables.add(X11Kernel.A8, invOp(invOp(pt, invOp(pa, pc)),ps));
-        atables.add(X11Kernel.A9, invOp(usa, user));
+        atables.add(X11Kernel.A8i, pi);
+        atables.add(X11Kernel.A8, pall);
+        atables.add(X11Kernel.A9, u);
         atables.add(X11Kernel.A9sa, usa);
         atables.add(X11Kernel.A9u, uu);
         atables.add(X11Kernel.A9ser, user);

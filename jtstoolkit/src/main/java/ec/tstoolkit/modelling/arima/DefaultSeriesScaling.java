@@ -66,7 +66,7 @@ public class DefaultSeriesScaling implements ISeriesScaling {
         int n = 0;
         for (int i = 0; i < data.length; ++i) {
             double d = data[i];
-            if (DescriptiveStatistics.isFinite(d)) {
+            if (Double.isFinite(d)) {
                 s += Math.abs(d);
                 ++n;
             }
@@ -84,7 +84,7 @@ public class DefaultSeriesScaling implements ISeriesScaling {
         double n = 0;
         for (int i = 0; i < data.length; ++i) {
             double d = data[i];
-            if (DescriptiveStatistics.isFinite(d)) {
+            if (Double.isFinite(d)) {
                 s = RootMeanSquareNormalizer.hypot(s, d);
                 n += 1;
             }
@@ -103,7 +103,7 @@ public class DefaultSeriesScaling implements ISeriesScaling {
         double max = 0;
         for (int i = 0; i < data.length; ++i) {
             double d = data[i];
-            if (DescriptiveStatistics.isFinite(d)) {
+            if (Double.isFinite(d)) {
                 d = Math.abs(d);
                 if (d > max) {
                     max = d;

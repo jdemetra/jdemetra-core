@@ -60,10 +60,10 @@ public class RegressionVariablesController extends AbstractTramoModule implement
 
     @Override
     public ProcessingResult process(ModellingContext context) {
-        boolean hasmean = context.description.isMean();
+        boolean hasmean = context.description.isEstimatedMean();
         ModelEstimation oldestimation = context.estimation;
         int nhp = context.description.getArimaComponent().getFreeParametersCount();
-        if (!context.description.isMean()) {
+        if (!context.description.isEstimatedMean()) {
             context.description.setMean(true);
             ModelEstimation estimation = new ModelEstimation(context.description.buildRegArima());
             estimation.compute(getMonitor(), nhp);
@@ -81,7 +81,7 @@ public class RegressionVariablesController extends AbstractTramoModule implement
         TsVariableSelection.Item<ITsVariable>[] items = sel.elements();
         boolean usetd = false;
         for (int i = 0; i < items.length; ++i) {
-            Variable search = Variable.search(context.description.getCalendars(), items[i].variable);
+            Variable search = context.description.searchVariable(items[i].variable);
             if (search.status.needTesting()) {
                 if (!tdTest_.accept(ll, nhp, start + items[i].position, items[i].variable.getDim(), tdsubset)) {
                     search.status = RegStatus.Rejected;
@@ -95,7 +95,7 @@ public class RegressionVariablesController extends AbstractTramoModule implement
         sel = x.selectCompatible(ILengthOfPeriodVariable.class);
         items = sel.elements();
         for (int i = 0; i < items.length; ++i) {
-            Variable search = Variable.search(context.description.getCalendars(), items[i].variable);
+            Variable search = context.description.searchVariable(items[i].variable);
             if (search.status.needTesting()) {
                 if (!usetd || !lpTest_.accept(ll, nhp, start + items[i].position, items[i].variable.getDim(), tdsubset)) {
                     search.status = RegStatus.Rejected;
@@ -106,7 +106,7 @@ public class RegressionVariablesController extends AbstractTramoModule implement
         sel = x.selectCompatible(IMovingHolidayVariable.class);
         items = sel.elements();
         for (int i = 0; i < items.length; ++i) {
-            Variable search = Variable.search(context.description.getMovingHolidays(), items[i].variable);
+            Variable search = context.description.searchVariable(items[i].variable);
             if (search.status.needTesting()) {
                 if (!mhTest_.accept(ll, nhp, start + items[i].position, items[i].variable.getDim(), esubset)) {
                     search.status = RegStatus.Rejected;

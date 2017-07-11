@@ -115,7 +115,7 @@ public class SymmetricFrequencyResponse {
             return dtransform(rank);
         }
     }
-
+    
     static Matrix dtransform(final int rank) {
         // use the usual recurrence : cos (k+1)w + cos (k-1)w= 2*cos kw *cos w
         // cos kw = -cos (k-2)w + 2* cos (k-1)w * cos w

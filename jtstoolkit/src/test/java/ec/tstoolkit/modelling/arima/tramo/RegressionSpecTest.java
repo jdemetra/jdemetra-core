@@ -12,9 +12,8 @@ import ec.tstoolkit.timeseries.regression.InterventionVariable;
 import ec.tstoolkit.timeseries.regression.OutlierDefinition;
 import ec.tstoolkit.timeseries.regression.OutlierType;
 import ec.tstoolkit.timeseries.regression.Ramp;
-import java.util.ArrayList;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -45,13 +44,13 @@ public class RegressionSpecTest {
         actual.read(info);
         assertEquals(3, actual.getCalendar().getEaster().getDuration());
 
-        OutlierDefinition outDef = new OutlierDefinition(Day.BEG, OutlierType.AO, true);
+        OutlierDefinition outDef = new OutlierDefinition(Day.toDay(), OutlierType.AO);
         OutlierDefinition[] outliers_ = new OutlierDefinition[]{outDef};
         expected.setOutliers(outliers_);
         info = expected.write(true);
         actual.read(info);
         assertEquals(1, actual.getOutliers().length);
-        assertEquals(OutlierType.AO, actual.getOutlier(0).type);
+        assertEquals(OutlierType.AO, actual.getOutlier(0).getType());
 
         TsVariableDescriptor vardesc = new TsVariableDescriptor("test");
         vardesc.setEffect(TsVariableDescriptor.UserComponentType.Seasonal);
@@ -80,6 +79,11 @@ public class RegressionSpecTest {
         actual.read(info);
         assertEquals(1, actual.getRampsCount());
         assertEquals(1, actual.getRamps().length);
-
+        
+        expected.setFixedCoefficients("ftest",new double[]{10});
+        expected.setCoefficients("test",new double[]{10});
+        info = expected.write(true);
+        actual.read(info);
+        assertEquals(actual, expected);
     }
 }

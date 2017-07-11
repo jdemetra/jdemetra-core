@@ -80,7 +80,7 @@ public abstract class DbProvider<BEAN extends DbBean> extends AbstractDataSource
         DbAccessor<BEAN> accessor = getAccessor(dataSource);
         Dims dims = new Dims(DbBean.getDimArray(dataSource));
 
-        DataSet fake = DataSet.builder(dataSource, DataSet.Kind.SERIES).build();
+        DataSet fake = DataSet.of(dataSource, DataSet.Kind.SERIES);
         // special case: we return a fake dataset if no dimColumns
         if (dims.dimColumns.length == 0) {
             Exception ex = accessor.testDbBean();
@@ -116,7 +116,7 @@ public abstract class DbProvider<BEAN extends DbBean> extends AbstractDataSource
             return Collections.emptyList();
         }
         DataSet[] children = new DataSet[values.size()];
-        DataSet.Builder builder = DataSet.builder(parent, dims.hasGrandChildren() ? DataSet.Kind.COLLECTION : DataSet.Kind.SERIES);
+        DataSet.Builder builder = parent.toBuilder(dims.hasGrandChildren() ? DataSet.Kind.COLLECTION : DataSet.Kind.SERIES);
         String childDimColumn = dims.childDimColumn();
         for (int i = 0; i < children.length; i++) {
             builder.put(childDimColumn, values.get(i));
@@ -161,6 +161,7 @@ public abstract class DbProvider<BEAN extends DbBean> extends AbstractDataSource
         if (info.type.intValue() >= TsInformationType.Data.intValue()) {
             DbAccessor<BEAN> acc = getAccessor(dataSet.getDataSource());
             Dims dims = DIM_MAP.get(dataSet);
+            info.name = getDisplayName(dataSet);
             info.type = TsInformationType.All;
             try {
                 support.fillSeries(info, acc.getSeriesWithData(dims.dimValues).getData(), true);

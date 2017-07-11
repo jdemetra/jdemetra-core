@@ -42,13 +42,6 @@ public class EstimateSpecTest {
         assertNotEquals(expected, actual);
         actual.setUbp(1.0);
         assertEquals(expected, actual);
-
-        TsPeriodSelector p = new TsPeriodSelector();
-        p.setType(PeriodSelectorType.Between);
-        expected.setSpan(p);
-        assertNotEquals(expected, actual);
-        actual.setSpan(p);
-        assertEquals(expected, actual);
     }
 
     @Test
@@ -70,7 +63,6 @@ public class EstimateSpecTest {
         
         // Test Model span
         TsPeriodSelector perSel = new TsPeriodSelector();
-        perSel.setType(PeriodSelectorType.From);
         perSel.from(Day.toDay());
         spec.setSpan(perSel);
         info = spec.write(true);
@@ -78,15 +70,13 @@ public class EstimateSpecTest {
         assertEquals(PeriodSelectorType.From, nspec.getSpan().getType());
         assertEquals(Day.toDay(), nspec.getSpan().getD0());
 
-        perSel.setType(PeriodSelectorType.To);
-        perSel.to(Day.toDay());
+         perSel.to(Day.toDay());
         spec.setSpan(perSel);
         info = spec.write(true);
         nspec.read(info);
         assertEquals(PeriodSelectorType.To, nspec.getSpan().getType());
         assertEquals(Day.toDay(), nspec.getSpan().getD1());
         
-        perSel.setType(PeriodSelectorType.Between);
         perSel.between(Day.toDay(), Day.toDay().plus(1));
         spec.setSpan(perSel);
         info = spec.write(true);
@@ -95,7 +85,6 @@ public class EstimateSpecTest {
         assertEquals(Day.toDay(), nspec.getSpan().getD0());
         assertEquals(Day.toDay().plus(1), nspec.getSpan().getD1());
         
-        perSel.setType(PeriodSelectorType.First);
         perSel.first(1);
         spec.setSpan(perSel);
         info = spec.write(true);
@@ -103,7 +92,6 @@ public class EstimateSpecTest {
         assertEquals(PeriodSelectorType.First, nspec.getSpan().getType());
         assertEquals(1, nspec.getSpan().getN0());
         
-        perSel.setType(PeriodSelectorType.Last);
         perSel.last(1);
         spec.setSpan(perSel);
         info = spec.write(true);
@@ -111,7 +99,6 @@ public class EstimateSpecTest {
         assertEquals(PeriodSelectorType.Last, nspec.getSpan().getType());
         assertEquals(1, nspec.getSpan().getN1());
         
-        perSel.setType(PeriodSelectorType.Excluding);
         perSel.excluding(1, 2);
         spec.setSpan(perSel);
         info = spec.write(true);

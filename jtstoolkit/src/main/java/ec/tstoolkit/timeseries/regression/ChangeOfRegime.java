@@ -26,33 +26,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Modifier of a regression variable. That modifier generates a new variable,
+ * which is equivalent to the original up or to a given date, an is set to 0 for
+ * the other periods. See the ChangeOfRegimeType enumeration for further
+ * details.
  *
+ * @deprecated Since 2.2.0 Use TsVariableWindow
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
-public class ChangeOfRegime implements ITsModifier {
+@Development(status = Development.Status.Release)
+@Deprecated
+public class ChangeOfRegime extends AbstractTsModifier {
 
     private final ChangeOfRegimeType regime;
     private final Day day;
-    private ITsVariable var;
 
     /**
+     * Creates a new "change of regime" variable
      *
-     * @param var
-     * @param regime
-     * @param day
+     * @param var The modified variable
+     * @param regime The type of the change of regime
+     * @param day The day that defines the change of regime.
      */
     public ChangeOfRegime(final ITsVariable var,
             final ChangeOfRegimeType regime, final Day day) {
-        this.var = var;
+        super(var);
         this.regime = regime;
         this.day = day;
-    }
-
-    @Override
-    @Deprecated
-    public void data(TsDomain domain, List<DataBlock> data, int start) {
-        data(domain, data.subList(start, start+getDim()));
     }
 
     @Override
@@ -96,18 +96,33 @@ public class ChangeOfRegime implements ITsModifier {
         }
     }
 
-    private String description(String desc) {
+    private String description(String desc, TsFrequency freq) {
         StringBuilder builder = new StringBuilder();
         builder.append(desc);
         if (regime == ChangeOfRegimeType.ZeroEnded) {
-            builder.append("(/").append(day.toString()).append("//)");
+            builder.append("(/");
+            if (freq == TsFrequency.Undefined) {
+                builder.append(day);
+            } else {
+                TsPeriod p = new TsPeriod(freq, day);
+                builder.append(p);
+            }
+            builder.append("//)");
         } else {
-            builder.append("(//").append(day.toString()).append("/)");
+            builder.append("(//");
+            if (freq == TsFrequency.Undefined) {
+                builder.append(day);
+            } else {
+                TsPeriod p = new TsPeriod(freq, day);
+                builder.append(p);
+            }
+            builder.append("/)");
         }
         return builder.toString();
     }
 
     /**
+     * Returns the day that defines the change of regime
      *
      * @return
      */
@@ -126,8 +141,8 @@ public class ChangeOfRegime implements ITsModifier {
     }
 
     @Override
-    public String getDescription() {
-        return description(var.getDescription());
+    public String getDescription(TsFrequency context) {
+        return description(var.getDescription(context), context);
     }
 
     @Override
@@ -136,8 +151,8 @@ public class ChangeOfRegime implements ITsModifier {
     }
 
     @Override
-    public String getItemDescription(int idx) {
-        return description(var.getItemDescription(idx));
+    public String getItemDescription(int idx, TsFrequency context) {
+        return description(var.getItemDescription(idx, context), context);
     }
 
     /**
@@ -181,5 +196,29 @@ public class ChangeOfRegime implements ITsModifier {
                 return var.isSignificant(domc);
             }
         }
+    }
+
+    @Override
+    public String getName() {
+        String name = var.getName();
+        int pos = name.indexOf('#');
+        String sname = name, suffix = null;
+        if (pos >= 0) {
+            sname = name.substring(0, pos);
+            suffix = name.substring(pos);
+        }
+        StringBuilder builder = new StringBuilder();
+        if (regime == ChangeOfRegimeType.ZeroEnded) {
+            builder.append(sname);
+            builder.append("//)");
+        } else {
+            builder.append("(//");
+            builder.append(sname);
+        }
+        if (suffix != null) {
+            builder.append(suffix);
+        }
+        return builder.toString();
+
     }
 }

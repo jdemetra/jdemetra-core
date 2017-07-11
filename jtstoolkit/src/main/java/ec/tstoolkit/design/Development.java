@@ -58,8 +58,7 @@ public @interface Development {
         /**
          *
          */
-        Release(
-		5);
+        Release(5);
 	private final int value;
 
 	Status(final int value) {

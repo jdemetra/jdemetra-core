@@ -13,7 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
+ */
 package ec.tstoolkit.dstats;
 
 import ec.tstoolkit.design.Development;
@@ -21,14 +21,16 @@ import ec.tstoolkit.design.Development;
 /**
  * Represents a continuous statistical distribution (Normal, LogNormal, X2, ...)
  * The domain is a continuum
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
 public interface IContinuousDistribution extends IDistribution {
+
     /**
      * Returns the value of x for the density function describing the
      * distribution
-     * 
+     *
      * @param x The value at which density is to be computed
      * @return density(x).
      * @throws DStatException
@@ -37,21 +39,38 @@ public interface IContinuousDistribution extends IDistribution {
 
     /**
      * Returns the left bound.
+     *
      * @return The left bound. Can be Double.NEGATIVE INFINITY
      */
     double getLeftBound();
 
     /**
      * Returns the probability that the variable belongs to the interval [x,y]
+     *
      * @param x Lower bound of the interval
      * @param y Upper bound of the interval
      * @return P(X in [x,y]). Belongs to [0, 1].
      * @throws DStatException
      */
-    double getProbabilityForInterval(double x, double y) throws DStatException;
+    default double getProbabilityForInterval(double x, double y) throws DStatException {
+        double l, u;
+        if (Double.isFinite(x) && Double.isFinite(y) && x > y){
+            l=y;
+            u=x;
+        }else{
+            l=x;
+            u=y;
+        }
+             
+        double pu = Double.isFinite(u) ? getProbability(u, ProbabilityType.Lower) : 1;
+        double pl = Double.isFinite(l) ? getProbability(l, ProbabilityType.Lower) : 0;
+
+        return pu > pl ? pu - pl : 0;
+    }
 
     /**
-     * Returns the right bound. 
+     * Returns the right bound.
+     *
      * @return The right bound. Can be Double.POSITIVEINFINITY.
      */
     double getRightBound();

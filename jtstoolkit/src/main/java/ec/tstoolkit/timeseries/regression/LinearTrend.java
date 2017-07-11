@@ -21,6 +21,7 @@ import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 
 /**
@@ -56,13 +57,18 @@ public class LinearTrend extends AbstractSingleTsVariable {
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
 	return "Trend";
     }
 
     @Override
     public boolean isSignificant(TsDomain domain) {
 	return true;
+    }
+
+    @Override
+    public String getName(){
+        return "trend";
     }
 
 }

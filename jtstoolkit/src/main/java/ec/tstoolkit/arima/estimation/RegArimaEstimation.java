@@ -70,6 +70,7 @@ public class RegArimaEstimation<M extends IArimaModel> {
 	stats.adjustedLogLikelihood = adj == 0 ? stats.logLikelihood
 		: stats.logLikelihood + stats.transformationAdjustment;
 	stats.SsqErr = likelihood.getSsqErr();
+        stats.adjustForMissing(model.getMissingsCount());
 	stats.calc();
 	return stats;
     }

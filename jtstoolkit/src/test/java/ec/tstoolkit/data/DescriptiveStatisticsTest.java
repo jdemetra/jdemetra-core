@@ -28,11 +28,11 @@ public class DescriptiveStatisticsTest {
     
     @Test
     public void testIsFinite() {
-        Assert.assertTrue(DescriptiveStatistics.isFinite(0d));
-        Assert.assertTrue(DescriptiveStatistics.isFinite(123.123));
-        Assert.assertTrue(DescriptiveStatistics.isFinite(-123.123));
-        Assert.assertFalse(DescriptiveStatistics.isFinite(Double.NEGATIVE_INFINITY));
-        Assert.assertFalse(DescriptiveStatistics.isFinite(Double.POSITIVE_INFINITY));
-        Assert.assertFalse(DescriptiveStatistics.isFinite(Double.NaN));
+        Assert.assertTrue(Double.isFinite(0d));
+        Assert.assertTrue(Double.isFinite(123.123));
+        Assert.assertTrue(Double.isFinite(-123.123));
+        Assert.assertFalse(Double.isFinite(Double.NEGATIVE_INFINITY));
+        Assert.assertFalse(Double.isFinite(Double.POSITIVE_INFINITY));
+        Assert.assertFalse(Double.isFinite(Double.NaN));
     }
 }

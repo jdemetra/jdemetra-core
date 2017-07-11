@@ -16,12 +16,10 @@
  */
 package ec.tstoolkit.timeseries.simplets;
 
-import ec.tstoolkit.data.DescriptiveStatistics;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.TsException;
 import ec.tstoolkit.timeseries.TsPeriodSelector;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -121,7 +119,7 @@ public class TsDataTable {
             return TsDataTableInfo.Empty;
         }
         double data = m_data.get(seriesId).get(id - m_ids[seriesId]);
-        if (!DescriptiveStatistics.isFinite(data)) {
+        if (!Double.isFinite(data)) {
             return TsDataTableInfo.Missing;
         } else {
             return TsDataTableInfo.Valid;
@@ -142,7 +140,7 @@ public class TsDataTable {
      * @return
      */
     public TsPeriodSelector getSelector() {
-        return new TsPeriodSelector(m_periodselector);
+        return m_periodselector.clone();
     }
 
     /**
@@ -173,6 +171,13 @@ public class TsDataTable {
     }
 
     public void add(final Iterable<TsData> ts) {
+        internalClear();
+        for (TsData s : ts) {
+            m_data.add(s);
+        }
+    }
+
+    public void add(TsData... ts) {
         internalClear();
         for (TsData s : ts) {
             m_data.add(s);
@@ -280,7 +285,7 @@ public class TsDataTable {
      * @param periodSelector
      */
     public void setSelector(final TsPeriodSelector periodSelector) {
-        m_periodselector = new TsPeriodSelector(periodSelector);
+        m_periodselector = periodSelector.clone();
         internalClear();
     }
 
@@ -309,7 +314,7 @@ public class TsDataTable {
         }
         // write each rows
         for (int j = 0; j < dom.getLength(); ++j) {
-            builder.append("\r\n").append(dom.get(j));
+            builder.append(System.lineSeparator()).append(dom.get(j));
             for (int i = 0; i < m_data.size(); ++i) {
                 TsDataTableInfo dataInfo = getDataInfo(j, i);
                 if (dataInfo == TsDataTableInfo.Valid) {

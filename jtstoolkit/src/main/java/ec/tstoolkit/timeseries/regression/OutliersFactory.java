@@ -70,12 +70,11 @@ public final class OutliersFactory {
      * @param def
      * @return
      */
-    public IOutlierVariable make(OutlierDefinition def, TsFrequency freq)
+    public IOutlierVariable make(OutlierDefinition def)
     {
 	for (IOutlierFactory fac : factories)
-	    if (fac.getOutlierType() == def.type){
-		IOutlierVariable o=fac.create(new TsPeriod(freq, def.position));
-                o.setPrespecified(def.prespecified);
+	    if (fac.getOutlierType() == def.getType()){
+		IOutlierVariable o=fac.create(def.getPosition());
                 return o;
             }
 	return null;

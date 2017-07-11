@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<demetraWorkspace xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" defaultMethod="Undefined" xmlns="ec/tss.demetra">
+  <tramoseatsSpecs>
+    <tramoseatsSpec readOnly="false">
+      <name>TramoSeatsSpec-1</name>
+    </tramoseatsSpec>
+  </tramoseatsSpecs>
+  <x12Specs>
+    <x12Spec readOnly="false">
+      <name>X12Spec-1</name>
+    </x12Spec>
+  </x12Specs>
+  <tramoseatsDocs>
+    <tramoseatsDoc readOnly="false">
+      <name>TramoSeats [1]</name>
+    </tramoseatsDoc>
+  </tramoseatsDocs>
+  <x12Docs>
+    <x12Doc readOnly="false">
+      <name>X12 [1]</name>
+    </x12Doc>
+  </x12Docs>
+  <saProcessing>
+    <processing readOnly="false">
+      <name>SAProcessing-1</name>
+    </processing>
+  </saProcessing>
+  <calendars readOnly="false">
+    <name>Calendars</name>
+  </calendars>
+  <variables readOnly="false">
+    <name>Variables</name>
+  </variables>
+</demetraWorkspace>

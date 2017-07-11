@@ -16,7 +16,11 @@
  */
 package ec.tss;
 
-import com.google.common.collect.Iterables;
+import ec.tss.tsproviders.DataSet;
+import ec.tss.tsproviders.DataSource;
+import ec.tss.tsproviders.HasDataSourceList;
+import ec.tss.tsproviders.IDataSourceListener;
+import ec.tss.tsproviders.IDataSourceProvider;
 import ec.tstoolkit.MetaData;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.InterfaceLoader;
@@ -27,6 +31,9 @@ import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.LockSupport;
+import java.util.function.Consumer;
+import java.util.stream.Collector;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -144,6 +151,7 @@ public class TsFactory {
     private boolean m_useSynchronousNotifications = true;
     NotificationsQueue notifications = new NotificationsQueue();
     TsFactoryCleaner cleaner = new TsFactoryCleaner();
+    private final ReloadListener reloadListener = new ReloadListener();
 
     private TsFactory() {
         m_threadID = Thread.currentThread().getId();
@@ -159,6 +167,9 @@ public class TsFactory {
             return false;
         }
         m_providers.put(provider.getSource(), provider);
+        if (provider instanceof HasDataSourceList) {
+            ((HasDataSourceList) provider).addDataSourceListener(reloadListener);
+        }
         return true;
     }
 
@@ -207,11 +218,11 @@ public class TsFactory {
     private void cleanTSCollection() {
         synchronized (m_collections) {
             HashMap<TsMoniker, WeakReference<TsCollection>> tmp = new HashMap<>();
-            for (Entry<TsMoniker, WeakReference<TsCollection>> r : m_collections.entrySet()) {
-                if (r.getValue().get() != null) {
-                    tmp.put(r.getKey(), r.getValue());
+            m_collections.forEach((k, v) -> {
+                if (v.get() != null) {
+                    tmp.put(k, v);
                 }
-            }
+            });
             m_collections.clear();
             m_collections.putAll(tmp);
         }
@@ -221,10 +232,7 @@ public class TsFactory {
      *
      */
     public void clear() {
-        for (ITsProvider provider : m_providers.values()) {
-            provider.dispose();
-        }
-
+        m_providers.values().forEach(ITsProvider::dispose);
         m_providers.clear();
     }
 
@@ -232,9 +240,7 @@ public class TsFactory {
      *
      */
     public void clearCache() {
-        for (ITsProvider provider : m_providers.values()) {
-            provider.clearCache();
-        }
+        m_providers.forEach((k, v) -> v.clearCache());
         cleanTSCollection();
         cleanTS();
     }
@@ -347,11 +353,13 @@ public class TsFactory {
         synchronized (m_ts) {
             Ts.Master result = (Ts.Master) getTs(moniker);
             if (result == null) {
-                result = new Ts.Master(name, moniker);
                 if (type != TsInformationType.None) {
                     TsInformation info = new TsInformation(name, moniker, type);
                     fill(info);
+                    result = new Ts.Master(name != null ? name : info.name, moniker);
                     result.update(info);
+                } else {
+                    result = new Ts.Master(name, moniker);
                 }
                 m_ts.put(moniker, new WeakReference<>(result));
             } else {
@@ -418,22 +426,26 @@ public class TsFactory {
     public TsCollection createTsCollection(@Nullable String name, @Nullable TsMoniker moniker, @Nullable MetaData md,
             @Nullable Iterable<Ts> ts) {
         synchronized (m_collections) {
-            WeakReference<TsCollection> wref = m_collections.get(moniker);
-            if (wref != null) {
-                TsCollection c = wref.get();
-                if (c != null) {
-                    return c;
+            if (moniker == null) {
+                TsCollection c = new TsCollection(name, new TsMoniker(), md, ts);
+                m_collections.put(c.getMoniker(), new WeakReference<>(c));
+                return c;
+            } else {
+                WeakReference<TsCollection> wref = m_collections.get(moniker);
+                if (wref != null) {
+                    TsCollection c = wref.get();
+                    if (c != null) {
+                        return c;
+                    } else {
+                        c = new TsCollection(name, moniker, md, ts);
+                        m_collections.put(c.getMoniker(), new WeakReference<>(c));
+                        return c;
+                    }
                 } else {
-                    c = new TsCollection(name, moniker, md, ts);
-                    m_collections.put(moniker, new WeakReference<>(
-                            c));
+                    TsCollection c = new TsCollection(name, moniker, md, ts);
+                    m_collections.put(c.getMoniker(), new WeakReference<>(c));
                     return c;
                 }
-            } else {
-                TsCollection c = new TsCollection(name, moniker, md, ts);
-                m_collections.put(c.getMoniker(),
-                        new WeakReference<>(c));
-                return c;
             }
         }
     }
@@ -455,15 +467,17 @@ public class TsFactory {
             TsCollection result = getTsCollection(moniker);
             if (result == null) {
                 result = new TsCollection(name, moniker);
-                TsCollectionInformation info = new TsCollectionInformation(moniker, type);
-                fill(info);
+                if (type != TsInformationType.None) {
+                    TsCollectionInformation info = new TsCollectionInformation(moniker, type);
+                    fill(info);
+                    // set data
+                    List<Ts> updated = result.update(info);
+                    for (Ts s : updated) {
+                        notify(s, type, result);
+                    }
+                }
                 // add collection
                 m_collections.put(moniker, new WeakReference<>(result));
-                // set data
-                List<Ts> updated = result.update(info);
-                for (Ts s : updated) {
-                    notify(s, type, result);
-                }
             } else {
                 result.load(type);
             }
@@ -499,9 +513,7 @@ public class TsFactory {
      */
     public void dispose() {
         m_close = true;
-        for (ITsProvider provider : m_providers.values()) {
-            provider.dispose();
-        }
+        m_providers.values().forEach(ITsProvider::dispose);
         cleaner.interrupt();
         notifications.notificationThread.interrupt();
     }
@@ -527,7 +539,7 @@ public class TsFactory {
      */
     @Nonnull
     public String[] getProviders() {
-        return Iterables.toArray(m_providers.keySet(), String.class);
+        return m_providers.keySet().stream().toArray(String[]::new);
     }
 
     /**
@@ -632,7 +644,7 @@ public class TsFactory {
     }
 
     private boolean doLoad(@Nonnull Ts.Master ts, @Nonnull TsInformationType type) {
-        if (ts.getInformationType().encompass(type) || ts.getMoniker().isAnonymous()) {
+        if (ts.getMoniker().isAnonymous()) {
             return true;
         }
         TsInformation info = new TsInformation(ts.getName(), ts.getMoniker(), type);
@@ -643,16 +655,14 @@ public class TsFactory {
     }
 
     private boolean doLoad(@Nonnull TsCollection c, @Nonnull TsInformationType type) {
-        if (c.getInformationType().encompass(type)) {
+        if (c.getMoniker().isAnonymous()) {
             return true;
         }
         TsCollectionInformation info = new TsCollectionInformation(c.getMoniker(), type);
         boolean result = fill(info);
         List<Ts> updated = c.update(info);
         notify(c, info.type, this);
-        for (Ts s : updated) {
-            notify(s, info.type, c);
-        }
+        updated.forEach(s -> notify(s, info.type, c));
         return result;
     }
 
@@ -830,6 +840,9 @@ public class TsFactory {
     public void remove(String name) {
         if (m_providers.containsKey(name)) {
             ITsProvider provider = m_providers.get(name);
+            if (provider instanceof HasDataSourceList) {
+                ((HasDataSourceList) provider).removeDataSourceListener(reloadListener);
+            }
             provider.dispose();
             m_providers.remove(name);
         }
@@ -865,14 +878,10 @@ public class TsFactory {
             if (c != null) {
                 List<Ts> updated = c.update(info);
                 notify(c, info.type, null);
-                for (Ts s : updated) {
-                    notify(s, info.type, c);
-                }
+                updated.forEach(s -> notify(s, info.type, c));
             } else {
                 // the collection has been destroyed, but the series could be alive...
-                for (TsInformation sinfo : info.items) {
-                    update(sinfo);
-                }
+                info.items.forEach(sinfo -> update(sinfo));
             }
         }
     }
@@ -900,5 +909,74 @@ public class TsFactory {
      */
     public void useSynchronousNotifications(boolean value) {
         m_useSynchronousNotifications = value;
+    }
+
+    @Nonnull
+    public static Collector<Ts, ?, TsCollection> toTsCollection() {
+        return Collector.<Ts, List<Ts>, TsCollection>of(ArrayList::new, List::add, (l, r) -> {
+            l.addAll(r);
+            return l;
+        }, o -> TsFactory.instance.createTsCollection(null, null, null, o));
+    }
+
+    private final class ReloadListener implements IDataSourceListener {
+
+        @Override
+        public void changed(DataSource dataSource) {
+            ITsProvider p = getProvider(dataSource.getProviderName());
+            if (p instanceof IDataSourceProvider) {
+                IDataSourceProvider o = (IDataSourceProvider) p;
+                reloadTSCollection(o, dataSource);
+                reloadTS(o, dataSource);
+            }
+        }
+
+        private void reloadTSCollection(IDataSourceProvider p, DataSource dataSource) {
+            Stream.of(lookupTsCollection(p, dataSource)).forEach(getTsCollectionReloader(p));
+        }
+
+        private void reloadTS(IDataSourceProvider p, DataSource dataSource) {
+            Stream.of(lookupTs(p, dataSource)).forEach(getTsReloader(p));
+        }
+
+        private TsCollection[] lookupTsCollection(IDataSourceProvider p, DataSource dataSource) {
+            synchronized (m_collections) {
+                return m_collections.entrySet().stream()
+                        .filter(o -> isRelatedTo(p, dataSource, o.getKey()))
+                        .map(o -> o.getValue().get())
+                        .filter(Objects::nonNull)
+                        .toArray(TsCollection[]::new);
+            }
+        }
+
+        private Ts.Master[] lookupTs(IDataSourceProvider p, DataSource dataSource) {
+            synchronized (m_collections) {
+                return m_ts.entrySet().stream()
+                        .filter(o -> isRelatedTo(p, dataSource, o.getKey()))
+                        .map(o -> o.getValue().get())
+                        .filter(Objects::nonNull)
+                        .toArray(Ts.Master[]::new);
+            }
+        }
+
+        private boolean isRelatedTo(IDataSourceProvider p, DataSource dataSource, TsMoniker moniker) {
+            if (p.getSource().equals(moniker.getSource())) {
+                DataSet dataSet = p.toDataSet(moniker);
+                return dataSet != null && dataSet.getDataSource().equals(dataSource);
+            }
+            return false;
+        }
+
+        private Consumer<TsCollection> getTsCollectionReloader(IDataSourceProvider p) {
+            return p.getAsyncMode() == TsAsyncMode.None
+                    ? o -> doLoad(o, o.getInformationType())
+                    : o -> p.queryTsCollection(o.getMoniker(), o.getInformationType());
+        }
+
+        private Consumer<Ts.Master> getTsReloader(IDataSourceProvider p) {
+            return p.getAsyncMode() == TsAsyncMode.None
+                    ? o -> doLoad(o, o.getInformationType())
+                    : o -> p.queryTs(o.getMoniker(), o.getInformationType());
+        }
     }
 }

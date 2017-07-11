@@ -23,6 +23,7 @@ import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.calendars.Utilities;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 
 /**
@@ -59,7 +60,7 @@ public class LeapYearVariable extends AbstractSingleTsVariable implements ILengt
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         switch (ltype_) {
             case LeapYear:
                 return "Leap year";

@@ -45,13 +45,14 @@ import ec.tstoolkit.timeseries.regression.TsVariableSelection;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Deprecated
 public class StmProcessingFactory extends GenericSaProcessingFactory implements IProcessingFactory<StmSpecification, TsData, CompositeResults> {
 
     public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, "Structural model", null);
@@ -119,11 +120,11 @@ public class StmProcessingFactory extends GenericSaProcessingFactory implements 
     }
 
     @Override
-    public Map<String, Class> getOutputDictionary() {
-        HashMap<String, Class> dic = new HashMap<>();
-        PreprocessingModel.fillDictionary(null, dic);
-        DefaultSeriesDecomposition.fillDictionary(null, dic);
-        SaBenchmarkingResults.fillDictionary(BENCHMARKING, dic);
+    public Map<String, Class> getOutputDictionary(boolean compact) {
+        HashMap<String, Class> dic = new LinkedHashMap<>();
+        PreprocessingModel.fillDictionary(null, dic, compact);
+        DefaultSeriesDecomposition.fillDictionary(null, dic, compact);
+        SaBenchmarkingResults.fillDictionary(BENCHMARKING, dic, compact);
         return dic;
     }
 
@@ -151,19 +152,19 @@ public class StmProcessingFactory extends GenericSaProcessingFactory implements 
                 BsmMonitor monitor = new BsmMonitor();
                 monitor.setSpecification(decompositionSpec);
                 if (model == null) {
-                    if (monitor.process(input.getValues().internalStorage(), input.getFrequency().intValue())) {
+                    if (monitor.process(input.internalStorage(), input.getFrequency().intValue())) {
                         estimation = new StmEstimation(input, new TsVariableList(), monitor);
                     }
                 } else {
                     TsData y = model.description.transformedOriginal();
                     TsVariableList x = model.description.buildRegressionVariables();
                     if (x.isEmpty()) {
-                        if (monitor.process(y.getValues().internalStorage(), input.getFrequency().intValue())) {
+                        if (monitor.process(y.internalStorage(), input.getFrequency().intValue())) {
                             estimation = new StmEstimation(y, x, monitor);
                         }
                     } else {
                         Matrix mx = x.all().matrix(y.getDomain());
-                        if (monitor.process(y.getValues().internalStorage(), mx.subMatrix(), y.getFrequency().intValue())) {
+                        if (monitor.process(y.internalStorage(), mx.subMatrix(), y.getFrequency().intValue())) {
                             estimation = new StmEstimation(y, x, monitor);
                         }
                     }

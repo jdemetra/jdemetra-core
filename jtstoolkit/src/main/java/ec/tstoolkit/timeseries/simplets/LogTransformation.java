@@ -18,7 +18,6 @@
 package ec.tstoolkit.timeseries.simplets;
 
 import ec.tstoolkit.data.DataBlock;
-import ec.tstoolkit.data.DescriptiveStatistics;
 import ec.tstoolkit.design.Development;
 
 /**
@@ -36,9 +35,7 @@ public class LogTransformation implements ITsDataTransformation
      */
     public boolean canTransform(TsData data)
     {
-	DescriptiveStatistics stats = new DescriptiveStatistics(data
-		.getValues());
-	return stats.isPositive();
+	return data.check(x->Double.isFinite(x) ? x>0 : true);
     }
 
     /**
@@ -62,9 +59,9 @@ public class LogTransformation implements ITsDataTransformation
     {
 	if (!canTransform(data))
 	    return false;
-	data.getValues().log();
+	data.apply(x->Math.log(x));
 	if (ljacobian != null) {
-	    DataBlock rc = new DataBlock(data.getValues().internalStorage())
+	    DataBlock rc = new DataBlock(data.internalStorage())
 		    .range(ljacobian.start, ljacobian.end);
 	    ljacobian.value -= rc.sum();
 	}

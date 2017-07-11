@@ -17,8 +17,6 @@
 package ec.tstoolkit.utilities;
 
 import com.google.common.base.Enums;
-import com.google.common.base.Functions;
-import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Range;
@@ -139,7 +137,7 @@ public class CheckedIteratorTest {
         CheckedIterator<String, RuntimeException> iterator;
 
         iterator = create("one", "two");
-        assertEquals(ImmutableMap.of("one", "hello", "two", "hello"), iterator.toMap(Functions.constant("hello")));
+        assertEquals(ImmutableMap.of("one", "hello", "two", "hello"), iterator.toMap(o -> "hello"));
     }
 
     @Test
@@ -147,7 +145,7 @@ public class CheckedIteratorTest {
         CheckedIterator<String, RuntimeException> iterator;
 
         iterator = create("READ", "WRITE");
-        assertEquals(ImmutableMap.of(AccessMode.READ, "hello", AccessMode.WRITE, "hello"), iterator.toMap(Enums.stringConverter(AccessMode.class), Functions.constant("hello")));
+        assertEquals(ImmutableMap.of(AccessMode.READ, "hello", AccessMode.WRITE, "hello"), iterator.toMap(Enums.stringConverter(AccessMode.class), o -> "hello"));
     }
 
     @Test
@@ -250,21 +248,21 @@ public class CheckedIteratorTest {
 
     @Test
     public void testAll() {
-        assertTrue(create("one", "two").all(Predicates.notNull()));
-        assertFalse(create("one", "two").all(Predicates.equalTo("one")));
+        assertTrue(create("one", "two").all(o -> o != null));
+        assertFalse(create("one", "two").all(o -> "one".equals(o)));
     }
 
     @Test
     public void testAny() {
-        assertFalse(create("one", "two").any(Predicates.equalTo("hello")));
-        assertTrue(create("one", "two").any(Predicates.equalTo("one")));
+        assertFalse(create("one", "two").any(o -> "hello".equals(o)));
+        assertTrue(create("one", "two").any(o -> "one".equals(o)));
     }
 
     @Test
     public void testIndexOf() {
-        assertEquals(-1, create("one", "two").indexOf(Predicates.equalTo("hello")));
-        assertEquals(0, create("one", "two").indexOf(Predicates.equalTo("one")));
-        assertEquals(1, create("one", "two").indexOf(Predicates.equalTo("two")));
+        assertEquals(-1, create("one", "two").indexOf(o -> "hello".equals(o)));
+        assertEquals(0, create("one", "two").indexOf(o -> "one".equals(o)));
+        assertEquals(1, create("one", "two").indexOf(o -> "two".equals(o)));
     }
 
     @Test
@@ -306,21 +304,21 @@ public class CheckedIteratorTest {
         CheckedIterator<String, RuntimeException> iterator;
 
         iterator = create("one", "two");
-        assertEquals("one", iterator.find(Predicates.notNull()));
+        assertEquals("one", iterator.find(o -> o != null));
 
         iterator = create("one", "two");
         iterator.next();
-        assertEquals("two", iterator.find(Predicates.notNull()));
+        assertEquals("two", iterator.find(o -> o != null));
     }
 
     @Test(expected = NoSuchElementException.class)
     public void testFindNoSuchElementException() {
-        create("one", "two").find(Predicates.equalTo("three"));
+        create("one", "two").find(o -> "three".equals(o));
     }
 
     @Test
     public void testFindWithDefault() {
-        assertEquals("hello", create("one", "two").find(Predicates.equalTo("three"), "hello"));
+        assertEquals("hello", create("one", "two").find(o -> "three".equals(o), "hello"));
     }
 
     @Test
@@ -341,10 +339,10 @@ public class CheckedIteratorTest {
     public void testFilter() {
         CheckedIterator<String, RuntimeException> iterator;
 
-        iterator = create("one", "two", "one").filter(Predicates.equalTo("one"));
+        iterator = create("one", "two", "one").filter(o -> "one".equals(o));
         assertArrayEquals(new String[]{"one", "one"}, iterator.toList().toArray());
 
-        iterator = create("one", "two", "one").filter(Predicates.alwaysFalse());
+        iterator = create("one", "two", "one").filter(o -> false);
         assertArrayEquals(new String[]{}, iterator.toList().toArray());
     }
 
@@ -387,7 +385,7 @@ public class CheckedIteratorTest {
     public void testTransform() {
         CheckedIterator<String, RuntimeException> iterator;
 
-        iterator = create("one", "two", "three").transform(Functions.constant("hello"));
+        iterator = create("one", "two", "three").transform(o -> "hello");
         assertArrayEquals(new String[]{"hello", "hello", "hello"}, iterator.toList().toArray());
     }
 

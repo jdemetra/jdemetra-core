@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders;
 
 import javax.annotation.Nonnull;
@@ -22,14 +21,19 @@ import javax.annotation.Nonnull;
 /**
  *
  * @author Philippe Charles
+ * @since 1.0.0
  */
 public interface IDataSourceListener {
 
-    void opened(@Nonnull DataSource dataSource);
+    default void opened(@Nonnull DataSource dataSource) {
+    }
 
-    void closed(@Nonnull DataSource dataSource);
+    default void closed(@Nonnull DataSource dataSource) {
+    }
 
-    void changed(@Nonnull DataSource dataSource);
+    default void changed(@Nonnull DataSource dataSource) {
+    }
 
-    void allClosed(@Nonnull String providerName);
+    default void allClosed(@Nonnull String providerName) {
+    }
 }

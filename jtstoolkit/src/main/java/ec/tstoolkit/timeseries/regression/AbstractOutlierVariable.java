@@ -19,6 +19,9 @@ package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.timeseries.Day;
+import ec.tstoolkit.timeseries.simplets.TsDomain;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import java.util.Arrays;
 
@@ -38,9 +41,21 @@ public abstract class AbstractOutlierVariable extends AbstractSingleTsVariable
      * @param medcorrection
      * @return
      */
+    @Deprecated
+    public static double mad(double[] data, boolean medcorrection) {
+        double[] e = data.clone();
+        return calcmad(e, medcorrection);
+    }
+    
+    @Deprecated
     public static double mad(IReadDataBlock data, boolean medcorrection) {
         double[] e = new double[data.getLength()];
         data.copyTo(e, 0);
+        return calcmad(e, medcorrection);
+    }
+    
+    @Deprecated
+    private static double calcmad(double[] e, boolean medcorrection) {
         Arrays.sort(e);
         int n = e.length;
         double median = 0;
@@ -70,43 +85,35 @@ public abstract class AbstractOutlierVariable extends AbstractSingleTsVariable
         }
         return 1.483 * median;
     }
-    TsPeriod position;
-    boolean prespecified;
+    
+    protected final Day position;
 
     /**
      *
-     * @param p
+     * @param pos
      */
-    protected AbstractOutlierVariable(TsPeriod p) {
-        position = p.clone();
+    protected AbstractOutlierVariable(Day pos) {
+        position = pos;
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         StringBuilder builder = new StringBuilder();
-        builder.append(getOutlierType()).append(" (").append(position).append(
-                ')');
+        builder.append(getCode()).append(" (");
+        if (context == TsFrequency.Undefined)
+            builder.append(position);
+        else{
+            TsPeriod p=new TsPeriod(context, position);
+            builder.append(p);
+        }
+        builder.append(')');
         return builder.toString();
     }
 
     // / <summary>Position of the outlier</summary>
     @Override
-    public TsPeriod getPosition() {
+    public Day getPosition() {
         return position;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public boolean isPrespecified() {
-        return prespecified;
-    }
-
-    @Override
-    public void setPrespecified(boolean value) {
-        prespecified = value;
     }
 
 }

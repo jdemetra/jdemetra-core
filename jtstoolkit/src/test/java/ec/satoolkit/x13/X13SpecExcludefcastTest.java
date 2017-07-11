@@ -5,14 +5,10 @@
  */
 package ec.satoolkit.x13;
 
-import data.DataCalendarSigmaX11;
-import ec.satoolkit.DecompositionMode;
 import ec.satoolkit.algorithm.implementation.X13ProcessingFactory;
 import ec.satoolkit.x11.CalendarSigma;
-import ec.satoolkit.x11.SeasonalFilterOption;
+
 import ec.satoolkit.x11.SigmavecOption;
-import ec.satoolkit.x11.X11Kernel;
-import ec.satoolkit.x11.X11Results;
 import ec.satoolkit.x11.X11Specification;
 import ec.tstoolkit.Parameter;
 import ec.tstoolkit.ParameterType;
@@ -21,15 +17,15 @@ import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.modelling.arima.x13.AutoModelSpec;
 import ec.tstoolkit.modelling.arima.x13.OutlierSpec;
 import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
-import ec.tstoolkit.modelling.arima.x13.SingleOutlierSpec;
 import ec.tstoolkit.modelling.arima.x13.TransformSpec;
+import ec.tstoolkit.timeseries.regression.OutlierDefinition;
 import ec.tstoolkit.timeseries.regression.OutlierType;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
+import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -45,7 +41,6 @@ public class X13SpecExcludefcastTest {
     }
 
     private static TsData tsInput;
-
     private X11Specification x11spec;
     private X13Specification x13spec;
     private CompositeResults comprest;
@@ -53,8 +48,18 @@ public class X13SpecExcludefcastTest {
     @Test
     public void CalendarSigmaSelect4Test() {
         setInputData4();
-
         setSpec();
+        x13spec.getRegArimaSpecification().setUsingAutoModel(false);
+
+        x13spec.getRegArimaSpecification().getArima().setQ(1);
+        Parameter[] theta = {new Parameter(0.51783, ParameterType.Fixed)};
+        x13spec.getRegArimaSpecification().getArima().setTheta(theta);
+        x13spec.getRegArimaSpecification().getArima().setBQ(1);
+        Parameter[] btheta = {new Parameter(-0.99798, ParameterType.Fixed)};
+        x13spec.getRegArimaSpecification().getArima().setBTheta(btheta);
+        x13spec.getRegArimaSpecification().getArima().setD(1);
+        x13spec.getRegArimaSpecification().getArima().setBD(1);
+
         x13spec.getX11Specification().setCalendarSigma(CalendarSigma.Select);
         SigmavecOption[] sigmavecOption = new SigmavecOption[4];
         sigmavecOption[0] = SigmavecOption.Group1;
@@ -62,11 +67,22 @@ public class X13SpecExcludefcastTest {
         sigmavecOption[2] = SigmavecOption.Group2;
         sigmavecOption[3] = SigmavecOption.Group2;
         x13spec.getX11Specification().setSigmavec(sigmavecOption);
+
+        OutlierDefinition[] out = new OutlierDefinition[6];
+        out[0] = new OutlierDefinition(new TsPeriod(TsFrequency.Quarterly, 2008, 1), OutlierType.LS);
+        out[1] = new OutlierDefinition(new TsPeriod(TsFrequency.Quarterly, 2011, 1), OutlierType.AO);
+        out[2] = new OutlierDefinition(new TsPeriod(TsFrequency.Quarterly, 2014, 1), OutlierType.AO);
+        out[3] = new OutlierDefinition(new TsPeriod(TsFrequency.Quarterly, 2017, 1), OutlierType.AO);
+        out[4] = new OutlierDefinition(new TsPeriod(TsFrequency.Quarterly, 2020, 1), OutlierType.LS);
+        out[5] = new OutlierDefinition(new TsPeriod(TsFrequency.Quarterly, 2023, 1), OutlierType.AO);
+        x13spec.getRegArimaSpecification().getRegression().setOutliers(out);
+
         comprest = X13ProcessingFactory.process(tsInput, x13spec);
 
         double[] d9s4
                 = {101.24854, Double.NaN, 99.56373, Double.NaN, 100.67665, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 100.75421, 99.98503, 99.01279, Double.NaN, 101.28807, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 99.73893, Double.NaN, Double.NaN, 99.943, 99.18735, 99.16893, Double.NaN, 100.71319, 99.79349, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 100.4726, 99.75503, Double.NaN, 99.63666, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 100.24218, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 100.25458, Double.NaN, Double.NaN, 99.45497, 99.57245, Double.NaN, 100.0898, 100.00716, 99.63573, 100.35026, Double.NaN, Double.NaN, Double.NaN, 100.39815, 98.96781, Double.NaN, 100.81696, 100.94803, Double.NaN, Double.NaN, 100.07831, Double.NaN, Double.NaN, Double.NaN, 100.70552, 100.86139, Double.NaN, 99.35791, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 100.30196, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN};
         TsData tsd9s4 = new TsData(TsFrequency.Quarterly, 2002, 1, d9s4, false);
+
         for (int i = 0; i < 92; i++) {
             Assert.assertEquals("For Calendarsigma None quarterly time series in Table D9 the  " + i + ". value ", tsd9s4.get(i) / 100, comprest.getData("d-tables.d9", TsData.class).get(i), 0.00001);
         }
@@ -80,9 +96,9 @@ public class X13SpecExcludefcastTest {
         x13spec.getX11Specification().setCalendarSigma(CalendarSigma.None);
         x13spec.getX11Specification().setForecastHorizon(18);
         comprest = X13ProcessingFactory.process(tsInput, x13spec);
-        double[] d9 = {Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,100.50122,Double.NaN,Double.NaN,Double.NaN,Double.NaN,99.39306,Double.NaN,Double.NaN,Double.NaN,95.71319,Double.NaN,102.48386,Double.NaN,98.79776,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,95.56255,96.47674,Double.NaN,103.42272,101.96267,Double.NaN,105.4637,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,98.511,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,97.89241,Double.NaN,Double.NaN,103.42196,101.23931,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,98.7917,96.70064,Double.NaN,Double.NaN,108.65172,103.24147,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,105.56223,100.74004,Double.NaN,100.2846,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN};
-            
-            TsData tsd9 = new TsData(TsFrequency.Monthly, 2002, 1, d9, false);
+        double[] d9 = {Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 100.50122, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 99.39306, Double.NaN, Double.NaN, Double.NaN, 95.71319, Double.NaN, 102.48386, Double.NaN, 98.79776, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 95.56255, 96.47674, Double.NaN, 103.42272, 101.96267, Double.NaN, 105.4637, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 98.511, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 97.89241, Double.NaN, Double.NaN, 103.42196, 101.23931, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 98.7917, 96.70064, Double.NaN, Double.NaN, 108.65172, 103.24147, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 105.56223, 100.74004, Double.NaN, 100.2846, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN};
+
+        TsData tsd9 = new TsData(TsFrequency.Monthly, 2002, 1, d9, false);
         for (int i = 0; i < 92; i++) {
             Assert.assertEquals("Monthly time series in Table D9 the  " + i + ". value ", tsd9.get(i) / 100, comprest.getData("d-tables.d9", TsData.class).get(i), 0.00001);
         }
@@ -96,7 +112,7 @@ public class X13SpecExcludefcastTest {
         x13spec.getX11Specification().setCalendarSigma(CalendarSigma.None);
         x13spec.getX11Specification().setForecastHorizon(48);
         comprest = X13ProcessingFactory.process(tsInput, x13spec);
-        double[] d9 = {Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,100.5012,Double.NaN,Double.NaN,Double.NaN,Double.NaN,99.39304,Double.NaN,Double.NaN,Double.NaN,95.71305,Double.NaN,102.48395,Double.NaN,98.79772,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,95.56241,96.4761,Double.NaN,103.42306,101.96289,Double.NaN,105.4637,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,98.51075,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,97.89271,Double.NaN,Double.NaN,103.42383,101.24031,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,98.78939,96.70114,Double.NaN,Double.NaN,108.66088,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,105.60628,100.77026,Double.NaN,100.25917,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN};
+        double[] d9 = {Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 100.5012, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 99.39304, Double.NaN, Double.NaN, Double.NaN, 95.71305, Double.NaN, 102.48395, Double.NaN, 98.79772, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 95.56241, 96.4761, Double.NaN, 103.42306, 101.96289, Double.NaN, 105.4637, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 98.51075, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 97.89271, Double.NaN, Double.NaN, 103.42383, 101.24031, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 98.78939, 96.70114, Double.NaN, Double.NaN, 108.66088, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, 105.60628, 100.77026, Double.NaN, 100.25917, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN};
         TsData tsd9 = new TsData(TsFrequency.Monthly, 2002, 1, d9, false);
         for (int i = 0; i < 92; i++) {
             Assert.assertEquals("Monthly time series in Table D9 the  " + i + ". value ", tsd9.get(i) / 100, comprest.getData("d-tables.d9", TsData.class).get(i), 0.00001);
@@ -120,6 +136,7 @@ public class X13SpecExcludefcastTest {
         }
 
     }
+
 
     @Test
     public void CalendarsigmaAllForcast18ExcludefcNo() {

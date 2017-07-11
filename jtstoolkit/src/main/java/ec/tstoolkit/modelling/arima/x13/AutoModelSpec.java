@@ -71,7 +71,7 @@ public class AutoModelSpec implements Cloneable, InformationSetSerializable {
             tsig_ = DEF_TSIG, ub1_ = DEF_UB1, ub2_ = DEF_UB2, ubfinal_ = DEF_UBFINAL;
     public static final double DEF_LJUNGBOX = .95, DEF_TSIG = 1, DEF_PREDCV = .14286, DEF_UBFINAL = 1.05, DEF_UB1 = 1 / .96, DEF_UB2 = .88,
             DEF_CANCEL = 0.1, DEF_FCT = 1 / .9875;
-    private static final boolean DEF_ACCEPTDEF = false, DEF_CHECKMU = true, DEF_MIXED = true,
+    public static final boolean DEF_ACCEPTDEF = false, DEF_CHECKMU = true, DEF_MIXED = true,
             DEF_BALANCED = false, DEF_HR = false;
 
     public AutoModelSpec() {

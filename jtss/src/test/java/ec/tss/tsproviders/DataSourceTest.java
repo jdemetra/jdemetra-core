@@ -16,12 +16,14 @@
  */
 package ec.tss.tsproviders;
 
+import static _util.SerializableUtil.fromToBytes;
 import com.google.common.collect.ImmutableSortedMap;
-import ec.tss.tsproviders.utils.Formatters;
+import ec.tss.tsproviders.utils.IFormatter;
+import ec.tss.tsproviders.utils.IParser;
 import java.io.*;
-import java.util.Map.Entry;
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -34,125 +36,147 @@ public class DataSourceTest {
             K2 = "locale", V2 = "fr_BE",
             K3 = "datePattern", V3 = "yyyy-MM-dd";
 
+    static final ImmutableSortedMap<String, String> P0 = ImmutableSortedMap.of();
+    static final ImmutableSortedMap<String, String> P1 = ImmutableSortedMap.of(K1, V1);
+    static final ImmutableSortedMap<String, String> P3 = ImmutableSortedMap.of(K1, V1, K2, V2, K3, V3);
+
+    static final DataSource ZERO = new DataSource(PNAME, VERSION, P0);
+    static final DataSource ONE = new DataSource(PNAME, VERSION, P1);
+
     static DataSource newSample() {
-        return new DataSource(PNAME, VERSION, ImmutableSortedMap.of(K1, V1, K2, V2, K3, V3));
+        return new DataSource(PNAME, VERSION, P3);
     }
 
     @Test
     public void testConstructor() {
-        DataSource dataSource = newSample();
-        Assert.assertEquals(PNAME, dataSource.getProviderName());
-        Assert.assertEquals(VERSION, dataSource.getVersion());
-        for (Entry<String, String> o : ImmutableSortedMap.of(K1, V1, K2, V2, K3, V3).entrySet()) {
-            Assert.assertEquals(o.getValue(), dataSource.getParams().get(o.getKey()));
-        }
+        assertThat(newSample()).satisfies(o -> {
+            assertThat(o.getProviderName()).isEqualTo(PNAME);
+            assertThat(o.getVersion()).isEqualTo(VERSION);
+            assertThat(o.getParams()).containsAllEntriesOf(P3).hasSize(3);
+        });
+    }
+
+    @Test
+    @SuppressWarnings("null")
+    public void testDeepCopyOf() {
+        assertThatThrownBy(() -> DataSource.deepCopyOf(null, VERSION, P0)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> DataSource.deepCopyOf(PNAME, null, P0)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> DataSource.deepCopyOf(PNAME, VERSION, null)).isInstanceOf(NullPointerException.class);
+        assertThat(DataSource.deepCopyOf(PNAME, VERSION, P3)).isEqualTo(newSample());
+    }
+
+    @Test
+    @SuppressWarnings("null")
+    public void testOf() {
+        assertThatThrownBy(() -> DataSource.of(null, VERSION)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> DataSource.of(PNAME, null)).isInstanceOf(NullPointerException.class);
+        assertThat(DataSource.of(PNAME, VERSION)).isEqualTo(ZERO);
+    }
+
+    @Test
+    @SuppressWarnings("null")
+    public void testOfKeyValue() {
+        assertThatThrownBy(() -> DataSource.of(null, VERSION, K1, V1)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> DataSource.of(PNAME, null, K1, V1)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> DataSource.of(PNAME, VERSION, null, V1)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> DataSource.of(PNAME, VERSION, K1, null)).isInstanceOf(NullPointerException.class);
+        assertThat(DataSource.of(PNAME, VERSION, K1, V1)).isEqualTo(ONE);
     }
 
     @Test
     public void testEquals() {
-        DataSource dataSource = newSample();
-        Assert.assertEquals(dataSource, newSample());
-        Assert.assertNotSame(dataSource, newSample());
-        Assert.assertFalse(dataSource.equals(new DataSource(PNAME, VERSION, ImmutableSortedMap.<String, String>of())));
-
-        DataSource d1 = new DataSource("", "", ImmutableSortedMap.of(K1, V1, K2, V2, K3, V3));
-        DataSource d2 = new DataSource("", "", ImmutableSortedMap.of(K3, V3, K2, V2, K1, V1));
-        Assert.assertEquals(d1, d2);
+        assertThat(newSample())
+                .isEqualTo(newSample())
+                .isNotSameAs(newSample())
+                .isNotEqualTo(ZERO)
+                .isEqualTo(new DataSource(PNAME, VERSION, ImmutableSortedMap.of(K3, V3, K2, V2, K1, V1)));
     }
 
     @Test
     public void testToString() {
-        DataSource d1 = new DataSource("", "", ImmutableSortedMap.of(K1, V1, K2, V2, K3, V3));
-        DataSource d2 = new DataSource("", "", ImmutableSortedMap.of(K3, V3, K2, V2, K1, V1));
-        Assert.assertEquals(d1.toString(), d2.toString());
+        assertThat(newSample().toString())
+                .isEqualTo(newSample().toString())
+                .isEqualTo(new DataSource(PNAME, VERSION, ImmutableSortedMap.of(K3, V3, K2, V2, K1, V1)).toString())
+                .isNotEqualTo(ZERO.toString());
     }
 
     @Test
     public void testHashCode() {
-        DataSource dataSource = newSample();
-        Assert.assertEquals(dataSource.hashCode(), newSample().hashCode());
-        Assert.assertFalse(dataSource.hashCode() == new DataSource(PNAME, VERSION, ImmutableSortedMap.<String, String>of()).hashCode());
+        assertThat(newSample().hashCode())
+                .isEqualTo(newSample().hashCode())
+                .isEqualTo(new DataSource(PNAME, VERSION, ImmutableSortedMap.of(K3, V3, K2, V2, K1, V1)).hashCode())
+                .isNotEqualTo(ZERO.hashCode());
     }
 
     @Test
     public void testGet() {
-        DataSource dataSource = newSample();
-        Assert.assertEquals(3, dataSource.getParams().size());
-        Assert.assertEquals(V1, dataSource.get(K1));
-        Assert.assertEquals(V2, dataSource.get(K2));
-        Assert.assertEquals(V3, dataSource.get(K3));
-        Assert.assertNull(dataSource.get("hello"));
+        assertThat(newSample()).satisfies(o -> {
+            assertThat(o.getParams()).hasSize(3);
+            assertThat(o.get(K1)).isEqualTo(V1);
+            assertThat(o.get(K2)).isEqualTo(V2);
+            assertThat(o.get(K3)).isEqualTo(V3);
+            assertThat(o.get("hello")).isNull();
+        });
     }
 
     @Test
     public void testBuilder() {
-        DataSource dataSource = newSample();
-        DataSource.Builder builder = DataSource.builder(dataSource);
-        DataSource tmp = builder.build();
-        Assert.assertEquals(dataSource, tmp);
-        Assert.assertNotSame(dataSource, tmp);
-        Assert.assertEquals(tmp, builder.build());
-        Assert.assertNotSame(dataSource, builder.build());
-        builder.put(K1, "hello");
-        Assert.assertEquals("hello", builder.build().get(K1));
+        assertThat(ZERO.toBuilder().build()).isEqualTo(ZERO);
+        assertThat(ONE.toBuilder().build()).isEqualTo(ONE);
+
+        DataSource.Builder builder = newSample().toBuilder();
+        assertThat(builder.build())
+                .isEqualTo(newSample())
+                .isNotSameAs(newSample())
+                .isEqualTo(builder.build())
+                .isNotSameAs(builder.build());
+        assertThat(builder.put(K1, "hello").build().get(K1)).isEqualTo("hello");
+        assertThat(builder.put(K1, true).build().get(K1)).isEqualTo("true");
+        assertThat(builder.put(K1, 123).build().get(K1)).isEqualTo("123");
+        assertThat(builder.clear().build().getParams()).isEmpty();
     }
 
     @Test
     public void testXmlFormatter() {
-        DataSource dataSource = newSample();
-        Formatters.Formatter<DataSource> formatter = DataSource.xmlFormatter(false);
-        Assert.assertNotNull(formatter.format(dataSource));
-        //System.out.println(formatter.format(dataSource));
+        IFormatter<DataSource> formatter = DataSource.xmlFormatter(false);
 
-        DataSource d1 = new DataSource("", "", ImmutableSortedMap.of(K1, V1, K2, V2, K3, V3));
-        DataSource d2 = new DataSource("", "", ImmutableSortedMap.of(K3, V3, K2, V2, K1, V1));
-        Assert.assertEquals(formatter.format(d1), formatter.format(d2));
+        assertThat(formatter.format(newSample()))
+                .isNotEmpty()
+                .isEqualTo(formatter.format(newSample()))
+                .isEqualTo(formatter.format(new DataSource(PNAME, VERSION, ImmutableSortedMap.of(K3, V3, K2, V2, K1, V1))))
+                .isNotEqualTo(formatter.format(ZERO));
     }
 
     @Test
     public void testXmlParser() {
-        DataSource dataSource = newSample();
-        Assert.assertEquals(dataSource, DataSource.xmlParser().parse(DataSource.xmlFormatter(false).tryFormat(dataSource).get()));
+        IFormatter<DataSource> formatter = DataSource.xmlFormatter(false);
+        IParser<DataSource> parser = DataSource.xmlParser();
+
+        assertThat(parser.parse(formatter.formatValue(newSample()).get())).isEqualTo(newSample());
     }
 
     @Test
     public void testSerializable() throws IOException, ClassNotFoundException {
-
-        DataSource dataSource = newSample();
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-            oos.writeObject(dataSource);
-        }
-        byte[] bytes = baos.toByteArray();
-
-        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
-            DataSource result = (DataSource) ois.readObject();
-            Assert.assertEquals(dataSource, result);
-            Assert.assertNotSame(dataSource, result);
-        }
+        assertThat(fromToBytes(newSample())).isEqualTo(newSample());
     }
 
     @Test
     public void testUriFormatter() {
-        DataSource dataSource = newSample();
-        Formatters.Formatter<DataSource> formatter = DataSource.uriFormatter();
-        Assert.assertNotNull(formatter.format(dataSource));
+        IFormatter<DataSource> formatter = DataSource.uriFormatter();
 
-        DataSource d1 = new DataSource("", "", ImmutableSortedMap.of(K1, V1, K2, V2, K3, V3));
-        DataSource d2 = new DataSource("", "", ImmutableSortedMap.of(K3, V3, K2, V2, K1, V1));
-        Assert.assertEquals(formatter.format(d1), formatter.format(d2));
-
-        DataSource empty = new DataSource("", "", ImmutableSortedMap.<String, String>of());
-        Assert.assertEquals("demetra://tsprovider//?", formatter.format(empty));
+        assertThat(formatter.format(newSample()))
+                .isNotEmpty()
+                .isEqualTo(formatter.format(newSample()))
+                .isEqualTo(formatter.format(new DataSource(PNAME, VERSION, ImmutableSortedMap.of(K3, V3, K2, V2, K1, V1))))
+                .isNotEqualTo(formatter.format(ZERO))
+                .startsWith("demetra://tsprovider/");
     }
 
     @Test
     public void testUriParser() {
-        DataSource dataSource = newSample();
-        Assert.assertEquals(dataSource, DataSource.uriParser().parse(DataSource.uriFormatter().tryFormat(dataSource).get()));
+        IFormatter<DataSource> formatter = DataSource.uriFormatter();
+        IParser<DataSource> parser = DataSource.uriParser();
 
-        DataSource empty = new DataSource("", "", ImmutableSortedMap.<String, String>of());
-        Assert.assertEquals(empty, DataSource.uriParser().parse(DataSource.uriFormatter().tryFormat(empty).get()));
+        assertThat(parser.parse(formatter.formatValue(newSample()).get())).isEqualTo(newSample());
     }
 }

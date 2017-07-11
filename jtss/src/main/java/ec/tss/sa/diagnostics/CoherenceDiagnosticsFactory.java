@@ -13,21 +13,28 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
-
+ */
 package ec.tss.sa.diagnostics;
 
 import ec.tss.sa.ISaDiagnosticsFactory;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.IDiagnostics;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
+@ServiceProvider(service = ISaDiagnosticsFactory.class)
 public class CoherenceDiagnosticsFactory implements ISaDiagnosticsFactory {
 
+    public static final String DEF = "definition", BIAS = "annual totals";
+    public static final String NAME = "Basic checks";
+    public static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(DEF, BIAS));
 //    public static final CoherenceDiagnosticsFactory Default = new CoherenceDiagnosticsFactory();
     private CoherenceDiagnosticsConfiguration config_;
 
@@ -50,12 +57,17 @@ public class CoherenceDiagnosticsFactory implements ISaDiagnosticsFactory {
 
     @Override
     public String getName() {
-        return "Basic checks";
+        return NAME;
     }
 
     @Override
     public String getDescription() {
         return "Basic checks";
+    }
+
+    @Override
+    public List<String> getTestDictionary() {
+        return ALL.stream().map(s -> s + ":2").collect(Collectors.toList());
     }
 
     @Override

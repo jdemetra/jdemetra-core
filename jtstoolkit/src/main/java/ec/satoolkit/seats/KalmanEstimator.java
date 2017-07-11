@@ -77,14 +77,14 @@ public class KalmanEstimator implements IComponentsEstimator {
             //IArimaModel sum=ucm.getModel();
         } else {
             ucm = ucm.clone();
-            if (hastr) {
-                ucm.compact(2, 2);
-            }
+        }
+        if (hastr) {
+            ucm.compact(2, 2);
         }
         ucm.simplify();
 
         // add forecasts
-        ec.tstoolkit.ssf.SsfData sdata = new ec.tstoolkit.ssf.SsfData(s.getValues().internalStorage(), null);
+        ec.tstoolkit.ssf.SsfData sdata = new ec.tstoolkit.ssf.SsfData(s.internalStorage(), null);
         ec.tstoolkit.ssf.ExtendedSsfData xsdata = new ec.tstoolkit.ssf.ExtendedSsfData(sdata);
         xsdata.setForecastsCount(nf);
 
@@ -126,10 +126,12 @@ public class KalmanEstimator implements IComponentsEstimator {
             ecmps[i] = ecur.fittoDomain(sdomain);
             efcmps[i] = ecur.fittoDomain(fdomain);
         }
+        DataBlock zsa = new DataBlock(ssf.getStateDim());
 
         int cur = 0;
         decomposition.add(s, ComponentType.Series);
         if (hast) {
+            zsa.set(ssf.cmpPos(cur), 1);
             decomposition.add(cmps[cur], ComponentType.Trend);
             decomposition.add(fcmps[cur], ComponentType.Trend, ComponentInformation.Forecast);
             decomposition.add(ecmps[cur], ComponentType.Trend, ComponentInformation.Stdev);
@@ -141,30 +143,52 @@ public class KalmanEstimator implements IComponentsEstimator {
             decomposition.add(fcmps[cur], ComponentType.Seasonal, ComponentInformation.Forecast);
             decomposition.add(ecmps[cur], ComponentType.Seasonal, ComponentInformation.Stdev);
             decomposition.add(efcmps[cur], ComponentType.Seasonal, ComponentInformation.StdevForecast);
-            decomposition.add(TsData.subtract(s, cmps[cur]),
-                    ComponentType.SeasonallyAdjusted);
             ++cur;
-        } else {
-            decomposition.add(s, ComponentType.SeasonallyAdjusted);
         }
         if (hasirr) {
+            zsa.set(ssf.cmpPos(cur), 1);
             decomposition.add(cmps[cur], ComponentType.Irregular);
             decomposition.add(fcmps[cur], ComponentType.Irregular, ComponentInformation.Forecast);
             decomposition.add(ecmps[cur], ComponentType.Irregular, ComponentInformation.Stdev);
             decomposition.add(efcmps[cur], ComponentType.Irregular, ComponentInformation.StdevForecast);
         }
         // computes the forecasts of the series
-        DataBlock z = new DataBlock(ssf.getStateDim());
-        ssf.Z(0, z);
+        DataBlock z;
+        if (hass) {
+            z = new DataBlock(ssf.getStateDim());
+            ssf.Z(0, z);
+        } else {
+            z = zsa;
+        }
+
         double[] f = srslts.zcomponent(z);
-        double[] ef = srslts.zcomponent(z);
+        double[] ef = srslts.zvariance(z);
         TsData sf = new TsData(fdomain), sef = new TsData(fdomain);
         for (int i = 0; i < fdomain.getLength(); ++i) {
             sf.set(i, f[n + i]);
-            sef.set(i, ef[n + i]);
+            sef.set(i, ef[n + i] <= 0 ? 0 : Math.sqrt(ef[n + i]));
         }
         decomposition.add(sf, ComponentType.Series, ComponentInformation.Forecast);
         decomposition.add(sef, ComponentType.Series, ComponentInformation.StdevForecast);
+        if (hass) {
+            int is = hast ? 1 : 0;
+            decomposition.add(TsData.subtract(s, cmps[is]), ComponentType.SeasonallyAdjusted);
+            decomposition.add(ecmps[is], ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
+            double[] fsa = srslts.zcomponent(zsa);
+            double[] efsa = srslts.zvariance(zsa);
+            TsData sfsa = new TsData(fdomain), sefsa = new TsData(fdomain);
+            for (int i = 0; i < fdomain.getLength(); ++i) {
+                sfsa.set(i, fsa[n + i]);
+                sefsa.set(i, efsa[n + i] <= 0 ? 0 : Math.sqrt(efsa[n + i]));
+            }
+            decomposition.add(sfsa, ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
+            decomposition.add(sefsa, ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
+
+        } else {
+            decomposition.add(s, ComponentType.SeasonallyAdjusted);
+            decomposition.add(sf, ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
+            decomposition.add(sef, ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
+        }
         return decomposition;
     }
 }

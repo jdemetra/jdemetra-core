@@ -20,6 +20,7 @@ import ec.tstoolkit.design.NewObject;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.Deflater;
@@ -58,9 +59,10 @@ public abstract class ByteArrayConverter {
      *
      * @param s a non-null converter
      * @see #getInstance()
+     * @throws IllegalArgumentException
      */
-    public static final void setInstance(@Nonnull ByteArrayConverter s) {
-        INSTANCE.set(Objects.requireNonNull(s));
+    public static final void setInstance(@Nonnull ByteArrayConverter s) throws IllegalArgumentException {
+        INSTANCE.set(check(Objects.requireNonNull(s)));
     }
 
     @Nonnull
@@ -125,6 +127,20 @@ public abstract class ByteArrayConverter {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
+    private static ByteArrayConverter check(ByteArrayConverter converter) throws IllegalArgumentException {
+        try {
+            double[] v1 = {};
+            double[] v2 = {3.14, Double.NaN, Double.MIN_VALUE, Double.MAX_VALUE};
+            if (Arrays.equals(v1, converter.toDoubleArray(converter.fromDoubleArray(v1)))
+                    && Arrays.equals(v2, converter.toDoubleArray(converter.fromDoubleArray(v2)))) {
+                return converter;
+            }
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("Invalid byte array converter", ex);
+        }
+        throw new IllegalArgumentException("Invalid byte array converter");
+    }
+
     private static final AtomicReference<ByteArrayConverter> INSTANCE = new AtomicReference<>(getDefault());
 
     private static final class DefaultConverter extends ByteArrayConverter {

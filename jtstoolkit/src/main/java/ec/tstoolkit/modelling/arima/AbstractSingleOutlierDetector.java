@@ -1,36 +1,33 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package ec.tstoolkit.modelling.arima;
 
 import ec.tstoolkit.arima.IArimaModel;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
-import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.data.TableOfBoolean;
 import ec.tstoolkit.design.Development;
-import ec.tstoolkit.dstats.Normal;
-import ec.tstoolkit.dstats.ProbabilityType;
-import ec.tstoolkit.maths.matrices.Householder;
 import ec.tstoolkit.maths.matrices.Matrix;
+import ec.tstoolkit.modelling.IRobustStandardDeviationComputer;
 import ec.tstoolkit.timeseries.regression.IOutlierFactory;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
+import ec.tstoolkit.utilities.DoubleList;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -41,90 +38,24 @@ import java.util.Iterator;
 @Development(status = Development.Status.Beta)
 public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
 
-    /**
-     *
-     * @param nval
-     * @return
-     */
-    public static double calcVA(int nval) {
-        return calcVA(nval, 0.05);
-    }
-
-    /**
-     *
-     * @param nvals
-     * @param alpha
-     * @return
-     */
-    public static double calcVA(int nvals, double alpha) {
-        Normal normal = new Normal();
-        if (nvals == 1) {
-            return normal.getProbabilityInverse(alpha / 2,
-                    ProbabilityType.Upper);
-        }
-        double n = nvals;
-        double[] y = new double[3];
-        int[] x = new int[]{2, 100, 200};
-        Matrix X = new Matrix(3, 3);
-
-        for (int i = 0; i < 3; ++i) {
-            X.set(i, 0, 1);
-            X.set(i, 2, Math.sqrt(2 * Math.log(x[i])));
-            X.set(i, 1, (Math.log(Math.log(x[i])) + Math.log(4 * Math.PI))
-                    / (2 * X.get(i, 2)));
-        }
-
-        y[0] = normal.getProbabilityInverse((1 + Math.sqrt(1 - alpha)) / 2,
-                ProbabilityType.Lower);
-        for (int i = 1; i < 3; ++i) {
-            y[i] = calcVAL(x[i], alpha);
-        }
-        // solve X b = y
-        Householder qr = new Householder(false);
-        qr.decompose(X);
-        double[] b = qr.solve(y);
-
-        double acv = Math.sqrt(2 * Math.log(n));
-        double bcv = (Math.log(Math.log(n)) + Math.log(4 * Math.PI))
-                / (2 * acv);
-        return b[0] + b[1] * bcv + b[2] * acv;
-    }
-
-    private static double calcVAL(int nvals, double alpha) {
-        if (nvals == 1) {
-            return 1.96; // normal distribution
-        }
-        double n = nvals;
-        double pmod = 2 - Math.sqrt(1 + alpha);
-        double acv = Math.sqrt(2 * Math.log(n));
-        double bcv = acv - (Math.log(Math.log(n)) + Math.log(4 * Math.PI))
-                / (2 * acv);
-        double xcv = -Math.log(-.5 * Math.log(pmod));
-        return xcv / acv + bcv;
-    }
-
-    private ArrayList<IOutlierFactory> m_o = new ArrayList<>();
-
+    protected final IRobustStandardDeviationComputer sdevComputer;
+    private final ArrayList<IOutlierFactory> m_o = new ArrayList<>();
+    private final DoubleList m_ow = new DoubleList();
     private RegArimaModel<T> m_model;
-
     private TsDomain m_domain;
-
-    private double m_mad;
-
     private int m_lbound, m_ubound;
-
-    private Matrix m_T;
+    private Matrix m_T, m_c;
 
     private TableOfBoolean m_bT;
 
     private int m_posmax = -1, m_omax = -1;
 
-    private int m_centile = 50;
-
     /**
      *
+     * @param sdevComputer
      */
-    public AbstractSingleOutlierDetector() {
+    public AbstractSingleOutlierDetector(IRobustStandardDeviationComputer sdevComputer) {
+        this.sdevComputer = sdevComputer;
     }
 
     /**
@@ -133,7 +64,26 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      */
     public void addOutlierFactory(IOutlierFactory o) {
         m_o.add(o);
-        clear();
+        m_ow.add(1);
+        clear(true);
+    }
+
+    /**
+     *
+     * @param o
+     * @param weight
+     */
+    public void addOutlierFactory(IOutlierFactory o, double weight) {
+        m_o.add(o);
+        m_ow.add(weight);
+        clear(true);
+    }
+
+    /**
+     * @return the sdevComputer
+     */
+    public IRobustStandardDeviationComputer getStandardDeviationComputer() {
+        return sdevComputer;
     }
 
     /**
@@ -144,40 +94,20 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
 
     /**
      *
-     * @param e
+     * @param all
      */
-    protected void calcMAD(IReadDataBlock e) {
-        int n = e.getLength();
-        double[] a = new double[n];
-        e.copyTo(a, 0);
-        for (int i = 0; i < n; ++i) {
-            a[i] = Math.abs(a[i]);
-        }
-        Arrays.sort(a);
-        double m = 0;
-        int nm = n * m_centile / 100;
-        if (n % 2 == 0) // n even
-        {
-            m = (a[nm - 1] + a[nm]) / 2;
-        } else {
-            m = a[nm];
-        }
-        Normal normal = new Normal();
-        double l = normal.getProbabilityInverse(0.5 + .005 * m_centile,
-                ProbabilityType.Lower);
-        m_mad = m / l;
-    }
-
-    /**
-     *
-     */
-    protected void clear() {
+    protected void clear(boolean all) {
+        sdevComputer.reset();
         m_model = null;
-        m_mad = 0;
         m_omax = -1;
         m_posmax = -1;
-        if (m_T != null) {
+        if (all) {
+            m_T = null;
+            m_c = null;
+            m_bT = null;
+        } else if (m_T != null) {
             m_T.clear();
+            m_c.clear();
         }
     }
 
@@ -186,7 +116,8 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      */
     public void clearOutlierFactories() {
         m_o.clear();
-        clear();
+        m_ow.clear();
+        clear(true);
     }
 
     /**
@@ -196,7 +127,7 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      * @return
      */
     public double coeff(int pos, int outlier) {
-        return m_T.get(pos, outlier) * m_mad;
+        return m_c.get(pos, outlier);
     }
 
     /**
@@ -208,6 +139,19 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
         // avoid outliers outside the current range
         if (pos >= 0 && pos < m_bT.getRowsCount()) {
             m_bT.set(pos, ioutlier, false);
+            m_T.set(pos, ioutlier, 0);
+        }
+    }
+
+    /**
+     *
+     * @param pos
+     * @param ioutlier
+     */
+    public void allow(int pos, int ioutlier) {
+        // avoid outliers outside the current range
+        if (pos >= 0 && pos < m_bT.getRowsCount()) {
+            m_bT.set(pos, ioutlier, true);
             m_T.set(pos, ioutlier, 0);
         }
     }
@@ -229,14 +173,56 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
 
     /**
      *
+     * @param pos
+     */
+    public void allow(int[] pos) {
+        if (pos == null) {
+            return;
+        }
+        for (int i = 0; i < pos.length; ++i) {
+            for (int j = 0; j < m_o.size(); ++j) {
+                allow(pos[i], j);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param pos
+     */
+    public void exclude(int pos) {
+        for (int j = 0; j < m_o.size(); ++j) {
+            exclude(pos, j);
+        }
+    }
+
+    /**
+     *
      * @param o
      */
     public void exclude(IOutlierVariable o) {
+            TsPeriod start = new TsPeriod(m_domain.getFrequency(), o.getPosition());
         for (int i = 0; i < m_o.size(); ++i) {
             IOutlierFactory exemplar = m_o.get(i);
-            if (exemplar.getOutlierType().equals(o.getOutlierType())) {
-                int pos = o.getPosition().minus(m_domain.getStart());
+            if (exemplar.getOutlierCode().equals(o.getCode())) {
+                int pos = start.minus(m_domain.getStart());
                 exclude(pos, i);
+                break;
+            }
+        }
+    }
+
+    /**
+     *
+     * @param o
+     */
+    public void allow(IOutlierVariable o) {
+        for (int i = 0; i < m_o.size(); ++i) {
+            IOutlierFactory exemplar = m_o.get(i);
+            TsPeriod start = new TsPeriod(m_domain.getFrequency(), o.getPosition());
+            if (exemplar.getOutlierCode().equals(o.getCode())) {
+                int pos = start.minus(m_domain.getStart());
+                allow(pos, i);
                 break;
             }
         }
@@ -295,7 +281,7 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      * @return
      */
     public double getMAD() {
-        return m_mad;
+        return sdevComputer.get();
     }
 
     /**
@@ -414,6 +400,7 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      */
     protected void prepareT(int n) {
         m_T = new Matrix(n, m_o.size());
+        m_c = new Matrix(n, m_o.size());
         m_bT = new TableOfBoolean(n, m_o.size());
         for (int i = 0; i < m_o.size(); ++i) {
             IOutlierFactory fac = getOutlierFactory(i);
@@ -421,7 +408,7 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
             int jstart = Math.max(m_lbound, dom.getStart().minus(m_domain.getStart()));
             int jend = Math.min(m_ubound, dom.getEnd().minus(m_domain.getStart()));
             for (int j = jstart; j < jend; ++j) {
-                m_bT.set(j, i, Boolean.TRUE);
+                m_bT.set(j, i, true);
             }
         }
     }
@@ -432,7 +419,7 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      * @return
      */
     public boolean process(RegArimaModel<T> model) {
-        clear();
+        clear(false);
         m_model = model.clone();
         return calc();
     }
@@ -444,26 +431,22 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
         double max = 0;
         int imax = -1;
         double[] T = m_T.internalStorage();
-        for (int i = 0; i < T.length; ++i) {
-            double cur = Math.abs(T[i]);
-            if (cur > max) {
-                imax = i;
-                max = cur;
+        for (int i = 0, c = 0; c < m_T.getColumnsCount(); ++c) {
+            double w = m_ow.get(c);
+
+            for (int r = 0; r < m_T.getRowsCount(); ++r, ++i) {
+                double cur = Math.abs(T[i]) * w;
+                if (cur > max) {
+                    imax = i;
+                    max = cur;
+                }
             }
-        }
-        if (imax == -1) {
-            return;
+            if (imax == -1) {
+                return;
+            }
         }
         m_posmax = imax % m_T.getRowsCount();
         m_omax = imax / m_T.getRowsCount();
-    }
-
-    /**
-     *
-     * @param value
-     */
-    public void setMAD(double value) {
-        m_mad = value;
     }
 
     /**
@@ -474,6 +457,16 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      */
     protected void setT(int pos, int outlier, double val) {
         m_T.set(pos, outlier, val);
+    }
+
+    /**
+     *
+     * @param pos
+     * @param outlier
+     * @param val
+     */
+    protected void setCoefficient(int pos, int outlier, double val) {
+        m_c.set(pos, outlier, val);
     }
 
     /**

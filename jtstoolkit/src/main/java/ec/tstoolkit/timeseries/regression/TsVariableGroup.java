@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.data.DataBlock;
@@ -29,51 +28,44 @@ import java.util.List;
  * @author Jean Palate
  */
 public class TsVariableGroup implements IUserTsVariable {
-    
+
     private final ITsVariable[] vars_;
     private final String desc_;
-    
-    public TsVariableGroup(String desc, ITsVariable[] vars ){
-        desc_=desc;
-        vars_=vars;
+    private String name;
+
+    public TsVariableGroup(String desc, ITsVariable[] vars) {
+        desc_ = desc;
+        vars_ = vars;
     }
-    
-    public TsVariableGroup(String desc, TsData[] vars ){
-        desc_=desc;
-        vars_=new ITsVariable[vars.length];
-        for (int i=0; i<vars.length; ++i){
-            vars_[i]=new TsVariable(vars[i]);
+
+    public TsVariableGroup(String desc, TsData[] vars) {
+        desc_ = desc;
+        vars_ = new ITsVariable[vars.length];
+        for (int i = 0; i < vars.length; ++i) {
+            vars_[i] = new TsVariable(vars[i]);
         }
     }
- 
+
     @Override
     public void data(TsDomain domain, List<DataBlock> data) {
-        for (int i=0, n0=0; i<vars_.length; ++i){
-            int n1=n0+vars_[i].getDim();
+        for (int i = 0, n0 = 0; i < vars_.length; ++i) {
+            int n1 = n0 + vars_[i].getDim();
             vars_[i].data(domain, data.subList(n0, n1));
-            n0=n1;
-        }
-    }
-    
-    @Override
-    public void data(TsDomain domain, List<DataBlock> data, int start) {
-        for (int i=0, n0=start; i<vars_.length; ++i){
-            int n1=n0+vars_[i].getDim();
-            vars_[i].data(domain, data.subList(n0, n1));
-            n0=n1;
+            n0 = n1;
         }
     }
 
     @Override
     public TsDomain getDefinitionDomain() {
-        TsDomain domain=null;
-        for (int i=0; i<vars_.length; ++i){
-            TsDomain d=vars_[i].getDefinitionDomain();
-            if (d != null){
-                if (domain == null)
-                    domain=d;
-                else
-                    domain=d.intersection(domain);
+        TsDomain domain = null;
+        for (int i = 0; i < vars_.length; ++i) {
+            TsDomain d = vars_[i].getDefinitionDomain();
+            if (d != null) {
+                if (domain == null) {
+                    domain = d;
+                } else {
+                    domain = d.intersection(domain);
+                }
             }
         }
         return domain;
@@ -81,51 +73,69 @@ public class TsVariableGroup implements IUserTsVariable {
 
     @Override
     public TsFrequency getDefinitionFrequency() {
-        TsFrequency freq=TsFrequency.Undefined;
-        for (int i=0; i<vars_.length; ++i){
-            TsFrequency f=vars_[i].getDefinitionFrequency();
-            if (f != TsFrequency.Undefined){
-                if (freq == TsFrequency.Undefined)
-                    freq=f;
-                else if (freq != f)
+        TsFrequency freq = TsFrequency.Undefined;
+        for (int i = 0; i < vars_.length; ++i) {
+            TsFrequency f = vars_[i].getDefinitionFrequency();
+            if (f != TsFrequency.Undefined) {
+                if (freq == TsFrequency.Undefined) {
+                    freq = f;
+                } else if (freq != f) {
                     throw new TsException(TsException.INCOMPATIBLE_FREQ);
+                }
             }
         }
         return freq;
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         return desc_ == null ? "" : desc_; //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public int getDim() {
-        int n=0;
-        for (int i=0; i<vars_.length; ++i){
-            n+=vars_[i].getDim();
+        int n = 0;
+        for (int i = 0; i < vars_.length; ++i) {
+            n += vars_[i].getDim();
         }
         return n;
     }
 
     @Override
-    public String getItemDescription(int idx) {
-        int cur=idx;
-        for (int i=0; i<vars_.length; ++i){
-            int dim=vars_[i].getDim();
-            if (cur < dim)
-                return vars_[i].getItemDescription(cur);
-            cur-=dim;
+    public String getItemDescription(int idx, TsFrequency context) {
+        int cur = idx;
+        for (int i = 0; i < vars_.length; ++i) {
+            int dim = vars_[i].getDim();
+            if (cur < dim) {
+                return vars_[i].getItemDescription(cur, context);
+            }
+            cur -= dim;
         }
         return "";
     }
 
     @Override
     public boolean isSignificant(TsDomain domain) {
-        for (int i=0; i<vars_.length; ++i){
-            if (! vars_[i].isSignificant(domain))
+        for (int i = 0; i < vars_.length; ++i) {
+            if (!vars_[i].isSignificant(domain)) {
                 return false;
-        } 
+            }
+        }
         return true;
     }
+
+    @Override
+    public String getName() {
+        int n = getDim();
+        if (n == 1) {
+            return desc_ == null ? "vars" : name;
+        } else {
+            return (desc_ == null ? "vars#" : name+'#') + n;
+        }
+    }
+    
+    public void setName(String name){
+        this.name=name;
+    }
+
 }

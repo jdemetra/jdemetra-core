@@ -208,7 +208,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public void Pf0(SubMatrix pf0) {
-        pf0.set(0, 0, 1);
+        //pf0.set(0, 0, 1);
     }
 
     /**
@@ -335,7 +335,7 @@ public class SsfRw implements ISsf {
      */
     @Override
     public void ZM(int pos, SubMatrix m, DataBlock x) {
-        x.set(0, m.get(0, 0));
+        x.copy(m.row(0));
     }
 
     /**

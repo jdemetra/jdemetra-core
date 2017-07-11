@@ -63,8 +63,8 @@ public class RegressionSpecTest {
 
         expected = new RegressionSpec();
         actual = new RegressionSpec();
-        OutlierDefinition oDef1 = new OutlierDefinition(new Day(2015, Month.March, 15), OutlierType.AO, true);
-        OutlierDefinition oDef2 = new OutlierDefinition(new Day(2013, Month.April, 27), OutlierType.SLS, false);
+        OutlierDefinition oDef1 = new OutlierDefinition(new Day(2015, Month.March, 15), OutlierType.AO);
+        OutlierDefinition oDef2 = new OutlierDefinition(new Day(2013, Month.April, 27), OutlierType.SLS);
         OutlierDefinition[] oDef = new OutlierDefinition[]{oDef1, oDef2};
         assertEquals(expected, actual);
         expected.setOutliers(oDef);

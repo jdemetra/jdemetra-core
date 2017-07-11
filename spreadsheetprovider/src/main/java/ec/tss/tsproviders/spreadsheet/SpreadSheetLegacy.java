@@ -23,6 +23,7 @@ import ec.tss.tsproviders.legacy.FileDataSourceId;
 import ec.tss.tsproviders.legacy.InvalidMonikerException;
 import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection;
 import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetSource;
+import ec.tss.tsproviders.utils.IParser;
 import ec.tss.tsproviders.utils.Parsers;
 import ec.tss.tsproviders.utils.Parsers.FailSafeParser;
 import ec.tss.tsproviders.utils.Parsers.Parser;
@@ -51,7 +52,7 @@ final class SpreadSheetLegacy {
 
     @Nonnull
     static Parsers.Parser<DataSet> legacyDataSetParser() {
-        final Parsers.Parser<DataSource> tmp = legacyDataSourceParser();
+        final IParser<DataSource> tmp = legacyDataSourceParser();
         return new FailSafeParser<DataSet>() {
             @Override
             protected DataSet doParse(CharSequence input) throws Exception {
@@ -61,15 +62,15 @@ final class SpreadSheetLegacy {
                     return null;
                 }
                 if (id.isCollection()) {
-                    DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
-                    SpreadSheetProvider.Y_SHEETNAME.set(builder, id.getSheetName());
-                    return builder.build();
+                    return DataSet.builder(dataSource, DataSet.Kind.COLLECTION)
+                            .put(SpreadSheetProvider.Y_SHEETNAME, id.getSheetName())
+                            .build();
                 }
                 String seriesName = searchSeriesName(dataSource, id);
-                DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
-                SpreadSheetProvider.Y_SHEETNAME.set(builder, id.getSheetName());
-                SpreadSheetProvider.Z_SERIESNAME.set(builder, seriesName);
-                return builder.build();
+                return DataSet.builder(dataSource, DataSet.Kind.SERIES)
+                        .put(SpreadSheetProvider.Y_SHEETNAME, id.getSheetName())
+                        .put(SpreadSheetProvider.Z_SERIESNAME, seriesName)
+                        .build();
             }
         };
     }

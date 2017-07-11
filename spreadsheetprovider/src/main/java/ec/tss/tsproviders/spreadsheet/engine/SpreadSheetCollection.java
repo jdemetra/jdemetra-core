@@ -16,15 +16,14 @@
  */
 package ec.tss.tsproviders.spreadsheet.engine;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
-import com.google.common.primitives.Ints;
 import ec.tss.tsproviders.spreadsheet.facade.Sheet;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 
 /**
@@ -51,7 +50,7 @@ public final class SpreadSheetCollection implements Comparable<SpreadSheetCollec
     private final Map<String, Integer> map;
 
     public SpreadSheetCollection(@Nonnull String sheetName, int ordering, @Nonnull AlignType alignType, @Nonnull ImmutableList<SpreadSheetSeries> series) {
-        this(sheetName, ordering, alignType, series, new HashMap<String, Integer>());
+        this(sheetName, ordering, alignType, series, new HashMap<>());
     }
 
     private SpreadSheetCollection(String sheetName, int ordering, AlignType alignType, ImmutableList<SpreadSheetSeries> series, Map<String, Integer> map) {
@@ -64,7 +63,7 @@ public final class SpreadSheetCollection implements Comparable<SpreadSheetCollec
 
     @Override
     public int compareTo(SpreadSheetCollection o) {
-        int result = Ints.compare(ordering, o.ordering);
+        int result = Integer.compare(ordering, o.ordering);
         if (result != 0) {
             return result;
         }
@@ -73,7 +72,7 @@ public final class SpreadSheetCollection implements Comparable<SpreadSheetCollec
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(ordering, sheetName);
+        return Objects.hash(ordering, sheetName);
     }
 
     @Override

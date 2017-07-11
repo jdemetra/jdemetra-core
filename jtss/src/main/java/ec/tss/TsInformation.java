@@ -13,16 +13,16 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss;
 
 import ec.tstoolkit.MetaData;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.simplets.TsData;
+import javax.annotation.Nonnull;
 
 /**
- * 
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
@@ -32,7 +32,7 @@ public final class TsInformation {
      * IN
      */
     public TsMoniker moniker;
-    
+
     /**
      * OUT
      */
@@ -62,53 +62,71 @@ public final class TsInformation {
      *
      */
     public TsInformation() {
-	this.moniker = new TsMoniker();
-	type = TsInformationType.UserDefined;
+        this.moniker = new TsMoniker();
+        type = TsInformationType.UserDefined;
     }
 
     /**
-     * 
+     *
      * @param ts
      * @param type
      */
     public TsInformation(Ts ts, TsInformationType type) {
-        this.name=ts.getRawName();
-	this.moniker = ts.getMoniker();
-	this.type = type;
-	ts.load(type);
-	if (hasData())
-	    data = ts.getTsData();
-	if (hasMetaData())
-	    metaData = ts.getMetaData();
+        this.name = ts.getRawName();
+        this.moniker = ts.getMoniker();
+        this.type = type;
+        ts.load(type);
+        if (hasData()) {
+            data = ts.getTsData();
+        }
+        if (hasMetaData()) {
+            metaData = ts.getMetaData();
+        }
+        this.invalidDataCause = ts.getInvalidDataCause();
     }
 
     /**
-     * 
+     *
+     * @param name
      * @param moniker
      * @param type
      */
     public TsInformation(String name, TsMoniker moniker, TsInformationType type) {
-	this.name=name;
+        this.name = name;
         this.moniker = moniker;
-	this.type = type;
+        this.type = type;
     }
 
     /**
-     * 
+     *
      * @return
      */
     public boolean hasData() {
-	return type == TsInformationType.All || type == TsInformationType.Data
-		|| (type == TsInformationType.UserDefined && data != null);
+        return type == TsInformationType.All || type == TsInformationType.Data
+                || (type == TsInformationType.UserDefined && data != null);
     }
 
     /**
-     * 
+     *
      * @return
      */
     public boolean hasMetaData() {
-	return type == TsInformationType.All
-		|| type == TsInformationType.MetaData
-		|| (type == TsInformationType.UserDefined && metaData != null);
+        return type == TsInformationType.All
+                || type == TsInformationType.MetaData
+                || (type == TsInformationType.UserDefined && metaData != null);
+    }
+
+    /**
+     * Converts this ts information to a Ts.
+     *
+     * @return a non null Ts
+     */
+    @Nonnull
+    public Ts toTs() {
+        Ts result = TsFactory.instance.createTs(name, moniker, metaData, data);
+        if (data == null) {
+            result.setInvalidDataCause(invalidDataCause);
+        }
+        return result;
     }
 }

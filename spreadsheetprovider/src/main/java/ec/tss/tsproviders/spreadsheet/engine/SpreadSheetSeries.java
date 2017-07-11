@@ -16,10 +16,9 @@
  */
 package ec.tss.tsproviders.spreadsheet.engine;
 
-import com.google.common.base.Objects;
-import com.google.common.primitives.Ints;
 import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType;
 import ec.tss.tsproviders.utils.OptionalTsData;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 
 /**
@@ -42,7 +41,7 @@ public final class SpreadSheetSeries implements Comparable<SpreadSheetSeries> {
 
     @Override
     public int compareTo(SpreadSheetSeries o) {
-        int result = Ints.compare(ordering, o.ordering);
+        int result = Integer.compare(ordering, o.ordering);
         if (result != 0) {
             return result;
         }
@@ -51,7 +50,7 @@ public final class SpreadSheetSeries implements Comparable<SpreadSheetSeries> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(ordering, seriesName);
+        return Objects.hash(ordering, seriesName);
     }
 
     @Override

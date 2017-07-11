@@ -21,6 +21,8 @@ import ec.tstoolkit.information.Information;
 import ec.tstoolkit.information.InformationSet;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -44,12 +46,15 @@ public class XmlInformationSet implements IXmlConverter<InformationSet> {
         InformationSet info = new InformationSet();
         if (item != null) {
             for (int i = 0; i < item.length; ++i) {
-                Information<Object> si = item[i].toInformation();
-                if (si.name.indexOf(InformationSet.SEP) >= 0) {
-                    String[] split = InformationSet.split(si.name);
-                    info.add(split, si.value);
-                } else {
-                    info.add(si);
+                try {
+                    Information<Object> si = item[i].toInformation();
+                    if (si.name.indexOf(InformationSet.SEP) >= 0) {
+                        String[] split = InformationSet.split(si.name);
+                        info.add(split, si.value);
+                    } else {
+                        info.add(si);
+                    }
+                } catch (Exception ex) {
                 }
             }
         }
@@ -65,9 +70,12 @@ public class XmlInformationSet implements IXmlConverter<InformationSet> {
         item = new XmlInformation[items.size()];
         int cur = 0;
         for (Information<Object> info : items) {
-            XmlInformation tmp = XmlInformation.create(info);
-            if (tmp != null) {
-                item[cur++] = tmp;
+            try {
+                XmlInformation tmp = XmlInformation.create(info);
+                if (tmp != null) {
+                    item[cur++] = tmp;
+                }
+            } catch (Exception ex) {
             }
         }
 
@@ -81,12 +89,16 @@ public class XmlInformationSet implements IXmlConverter<InformationSet> {
             return;
         }
         List<Information<Object>> items = t.deepSelect(Object.class);
+        items.removeIf(item->InformationSet.class.isInstance(item.value));
         item = new XmlInformation[items.size()];
         int cur = 0;
         for (Information<Object> info : items) {
-            XmlInformation tmp = XmlInformation.create(info);
-            if (tmp != null) {
-                item[cur++] = tmp;
+            try {
+                XmlInformation tmp = XmlInformation.create(info);
+                if (tmp != null) {
+                    item[cur++] = tmp;
+                }
+            } catch (Exception ex) {
             }
         }
 

@@ -25,6 +25,7 @@ import ec.tstoolkit.timeseries.TsPeriodSelector;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.text.ParseException;
 import java.util.Date;
+import javax.annotation.Nonnull;
 
 /**
  *
@@ -46,13 +47,19 @@ public abstract class Ts implements IDocumented, ITsIdentified {
         Public,
         Confidential
     }
-    private final String m_name;
+    private String m_name;
 
     protected Ts(String name) {
         m_name = Strings.nullToEmpty(name);
     }
 
-    public String getRawName() {
+    protected void replaceRawName(String name) {
+        if (!Strings.isNullOrEmpty(name)) {
+            this.m_name = name;
+        }
+    }
+
+    public final String getRawName() {
         return m_name;
     }
 
@@ -92,14 +99,23 @@ public abstract class Ts implements IDocumented, ITsIdentified {
     public abstract String getInvalidDataCause();
 
     public abstract void setInvalidDataCause(String message);
-    
+
+    /**
+     * Converts this time series to a TsInformation.
+     *
+     * @param type
+     * @return a non-null TsInformation
+     */
+    @Nonnull
+    public abstract TsInformation toInfo(@Nonnull TsInformationType type);
+
     @Override
-    public String toString(){
-        StringBuilder builder=new StringBuilder();
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
         builder.append(getName());
-        TsData data=getTsData();
-        if (data != null){
-            builder.append("\r\n");
+        TsData data = getTsData();
+        if (data != null) {
+            builder.append(System.lineSeparator());
             builder.append(data.toString());
         }
         return builder.toString();
@@ -219,7 +235,7 @@ public abstract class Ts implements IDocumented, ITsIdentified {
         Master(String name, TsMoniker moniker) {
             super(name);
             m_moniker = moniker;
-            if (moniker.getId()== null) {
+            if (moniker.getId() == null) {
                 m_info = TsInformationType.UserDefined;
             }
         }
@@ -504,6 +520,7 @@ public abstract class Ts implements IDocumented, ITsIdentified {
                 }
                 m_info = m_info.union(info.type);
                 m_invalidDataMessage = info.invalidDataCause;
+                replaceRawName(info.name);
             }
         }
 
@@ -521,6 +538,13 @@ public abstract class Ts implements IDocumented, ITsIdentified {
         public String getInvalidDataCause() {
             return m_invalidDataMessage;
         }
+
+        @Override
+        public TsInformation toInfo(TsInformationType type) {
+            synchronized (m_moniker) {
+                return new TsInformation(this, type);
+            }
+        }
     }
 
     static class Proxy extends Ts {
@@ -534,9 +558,10 @@ public abstract class Ts implements IDocumented, ITsIdentified {
 
         @Override
         public Ts freeze() {
-            if (master.isFrozen())
+            if (master.isFrozen()) {
                 return this;
-            Ts tmp=master.freeze();
+            }
+            Ts tmp = master.freeze();
             return new Proxy(getName() + " [frozen]", tmp.getMaster());
         }
 
@@ -623,6 +648,13 @@ public abstract class Ts implements IDocumented, ITsIdentified {
         @Override
         public void setInvalidDataCause(String message) {
             master.setInvalidDataCause(message);
+        }
+
+        @Override
+        public TsInformation toInfo(TsInformationType type) {
+            TsInformation result = master.toInfo(type);
+            result.name = getName();
+            return result;
         }
     }
 }

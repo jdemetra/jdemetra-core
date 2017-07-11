@@ -16,23 +16,28 @@
  */
 package ec.tss.tsproviders.sdmx.engine;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
-import static ec.tss.tsproviders.sdmx.engine.FluentDom.*;
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import com.google.common.collect.Maps;
 import ec.tss.tsproviders.sdmx.model.SdmxItem;
 import ec.tss.tsproviders.sdmx.model.SdmxSeries;
 import ec.tss.tsproviders.sdmx.model.SdmxSource;
 import ec.tss.tsproviders.utils.DataFormat;
+import ec.tss.tsproviders.utils.ObsGathering;
 import ec.tss.tsproviders.utils.OptionalTsData;
-import ec.tss.tsproviders.utils.Parsers;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import static ec.tss.tsproviders.sdmx.engine.FluentDom.asStream;
+import ec.tss.tsproviders.utils.IParser;
+import java.util.List;
 
 /**
  *
@@ -54,55 +59,52 @@ public class GuessingCompactFactory extends AbstractDocumentFactory {
     @Override
     public SdmxSource create(Document doc) {
         Optional<Node> dataSetNode = lookupDataSetNode(doc);
-        return new SdmxSource(SdmxSource.Type.COMPACT, getSdmxItems(dataSetNode.get()));
+        return new SdmxSource(SdmxSource.Type.COMPACT, getSdmxItems(dataSetNode.get(), new GregorianCalendar()));
     }
 
     private static boolean hasKeyFamilyRef(Node dataSetNode) {
-        return childNodes(dataSetNode).anyMatch(IS_KEY_FAMILY_REF);
+        return asStream(dataSetNode.getChildNodes())
+                .anyMatch(o -> "KeyFamilyRef".equals(o.getLocalName()));
     }
 
-    private static ImmutableList<SdmxItem> getSdmxItems(Node dataSetNode) {
-        ImmutableList.Builder<SdmxItem> result = ImmutableList.builder();
-        for (Node seriesNode : lookupSeriesNodes(dataSetNode)) {
-            result.add(getSdmxSeries(seriesNode));
-        }
-        return result.build();
+    private static List<SdmxItem> getSdmxItems(Node dataSetNode, Calendar cal) {
+        return asStream(dataSetNode.getChildNodes())
+                .filter(o -> "Series".equals(o.getLocalName()))
+                .map(o -> getSdmxSeries(o, cal))
+                .collect(toImmutableList());
     }
 
-    private static SdmxSeries getSdmxSeries(Node seriesNode) {
+    private static SdmxSeries getSdmxSeries(Node seriesNode, Calendar cal) {
         ImmutableList<Map.Entry<String, String>> key = getKey(seriesNode);
         TimeFormat timeFormat = getTimeFormat(seriesNode);
-        OptionalTsData data = getData(seriesNode, timeFormat);
-        return new SdmxSeries(key, NO_ATTRIBUTES, timeFormat, data);
+        OptionalTsData data = getData(seriesNode, timeFormat, cal);
+        return new SdmxSeries(key, ImmutableList.of(), timeFormat, data);
     }
 
-    private static OptionalTsData getData(Node seriesNode, TimeFormat timeFormat) {
-        Parsers.Parser<Date> toPeriod = timeFormat.getParser();
-        Parsers.Parser<Number> toValue = DEFAULT_DATA_FORMAT.numberParser();
-        OptionalTsData.Builder result = new OptionalTsData.Builder(timeFormat.getFrequency(), timeFormat.getAggregationType());
-        for (NamedNodeMap obs : lookupObservations(seriesNode)) {
-            Date period = getPeriod(obs, toPeriod);
-            Number value = period != null ? getValue(obs, toValue) : null;
-            result.add(period, value);
-        }
-        return result.build();
+    private static OptionalTsData getData(Node seriesNode, TimeFormat timeFormat, Calendar cal) {
+        IParser<Date> toPeriod = timeFormat.getParser();
+        IParser<Number> toValue = DEFAULT_DATA_FORMAT.numberParser();
+        ObsGathering gathering = ObsGathering.includingMissingValues(timeFormat.getFrequency(), timeFormat.getAggregationType());
+        return OptionalTsData.builderByDate(cal, gathering)
+                .addAll(lookupObservations(seriesNode), o -> getPeriod(o, toPeriod), o -> getValue(o, toValue))
+                .build();
     }
 
-    private static Date getPeriod(NamedNodeMap obs, Parsers.Parser<Date> toPeriod) {
+    private static Date getPeriod(NamedNodeMap obs, IParser<Date> toPeriod) {
         Node tmp = obs.getNamedItem(TIME_PERIOD_ATTRIBUTE);
         return tmp != null ? toPeriod.parse(tmp.getNodeValue()) : null;
     }
 
-    private static Number getValue(NamedNodeMap obs, Parsers.Parser<Number> toValue) {
+    private static Number getValue(NamedNodeMap obs, IParser<Number> toValue) {
         Node tmp = obs.getNamedItem(OBS_VALUE_ATTRIBUTE);
         return tmp != null ? toValue.parse(tmp.getNodeValue()) : null;
     }
 
     private static ImmutableList<Map.Entry<String, String>> getKey(Node seriesNode) {
-        return attributes(seriesNode)
-                .filter(Predicates.not(IS_TIME_FORMAT))
-                .transform(toMapEntry())
-                .toList();
+        return asStream(seriesNode.getAttributes())
+                .filter(o -> !TIME_FORMAT_ATTRIBUTE.equals(o.getNodeName()))
+                .map(o -> Maps.immutableEntry(o.getNodeName(), o.getNodeValue()))
+                .collect(toImmutableList());
     }
 
     private static TimeFormat getTimeFormat(Node seriesNode) {
@@ -123,15 +125,15 @@ public class GuessingCompactFactory extends AbstractDocumentFactory {
     }
 
     private static Optional<Node> lookupDataSetNode(Document doc) {
-        return childNodes(doc.getDocumentElement()).firstMatch(IS_DATA_SET);
+        return asStream(doc.getDocumentElement().getChildNodes())
+                .filter(o -> "DataSet".equals(o.getLocalName()))
+                .findFirst();
     }
 
-    private static Iterable<Node> lookupSeriesNodes(Node dataSetNode) {
-        return childNodes(dataSetNode).filter(IS_SERIES);
-    }
-
-    private static Iterable<NamedNodeMap> lookupObservations(Node seriesNode) {
-        return childNodes(seriesNode).filter(IS_OBS).transform(toAttributes());
+    private static Stream<NamedNodeMap> lookupObservations(Node seriesNode) {
+        return asStream(seriesNode.getChildNodes())
+                .filter(o -> "Obs".equals(o.getLocalName()))
+                .map(Node::getAttributes);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Resources">    
@@ -140,14 +142,6 @@ public class GuessingCompactFactory extends AbstractDocumentFactory {
     private static final String TIME_PERIOD_ATTRIBUTE = "TIME_PERIOD";
     private static final String OBS_VALUE_ATTRIBUTE = "OBS_VALUE";
 
-    private static final Predicate<Node> IS_DATA_SET = localNameEqualTo("DataSet");
-    private static final Predicate<Node> IS_KEY_FAMILY_REF = localNameEqualTo("KeyFamilyRef");
-    private static final Predicate<Node> IS_SERIES = localNameEqualTo("Series");
-    private static final Predicate<Node> IS_OBS = localNameEqualTo("Obs");
-    private static final Predicate<Node> IS_TIME_FORMAT = nodeNameEqualTo(TIME_FORMAT_ATTRIBUTE);
-
     private static final DataFormat DEFAULT_DATA_FORMAT = new DataFormat(Locale.ROOT, null, null);
-
-    private static final ImmutableList<Map.Entry<String, String>> NO_ATTRIBUTES = ImmutableList.of();
     //</editor-fold>
 }

@@ -13,14 +13,14 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.common.txt;
 
 import ec.tss.tsproviders.DataSet;
 import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.legacy.FileDataSourceId;
 import ec.tss.tsproviders.legacy.InvalidMonikerException;
+import ec.tss.tsproviders.utils.IParser;
 import ec.tss.tsproviders.utils.Parsers;
 
 /**
@@ -48,7 +48,7 @@ final class TxtLegacy {
     }
 
     static Parsers.Parser<DataSet> dataSetParser() {
-        final Parsers.Parser<DataSource> tmp = dataSourceParser();
+        final IParser<DataSource> tmp = dataSourceParser();
         return new Parsers.Parser<DataSet>() {
             @Override
             public DataSet parse(CharSequence input) throws NullPointerException {
@@ -61,11 +61,11 @@ final class TxtLegacy {
                     return null;
                 }
                 if (!id.isSeries()) {
-                    return DataSet.builder(dataSource, DataSet.Kind.COLLECTION).build();
+                    return DataSet.of(dataSource, DataSet.Kind.COLLECTION);
                 }
-                DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
-                TxtProvider.Z_SERIESINDEX.set(builder, id.getIndexSeries());
-                return builder.build();
+                return DataSet.builder(dataSource, DataSet.Kind.SERIES)
+                        .put(TxtProvider.Z_SERIESINDEX, id.getIndexSeries())
+                        .build();
             }
         };
     }

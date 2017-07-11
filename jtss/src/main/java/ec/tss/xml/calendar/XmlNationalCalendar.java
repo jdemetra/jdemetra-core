@@ -51,7 +51,7 @@ public class XmlNationalCalendar extends AbstractXmlCalendar {
     }
 
     private boolean isMean() {
-        return meancorrection == null ? true : meancorrection.booleanValue();
+        return meancorrection == null ? true : meancorrection;
     }
 
     private void setJulian(boolean julian) {
@@ -63,7 +63,7 @@ public class XmlNationalCalendar extends AbstractXmlCalendar {
     }
     
     private boolean isJulian() {
-        return julianCal == null ? false : julianCal.booleanValue();
+        return julianCal == null ? false : julianCal;
     }
     
     public XmlNationalCalendar() {

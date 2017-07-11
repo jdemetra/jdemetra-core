@@ -35,7 +35,7 @@ public class SpectralDiagnosticsConfiguration implements Cloneable, IPropertyDes
     public static final double SENSITIVITY = 6.0 / 52;
     public static final int LENGTH = 8;
 
-    private boolean enabled_ = true;
+    private boolean enabled_ = false;
     private double sens_ = SENSITIVITY;
     private int length_ = LENGTH;
     private boolean strict_ = false;

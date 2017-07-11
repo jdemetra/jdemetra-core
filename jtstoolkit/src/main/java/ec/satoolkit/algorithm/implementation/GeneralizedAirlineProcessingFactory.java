@@ -37,7 +37,7 @@ import java.util.Map;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Deprecated
 public class GeneralizedAirlineProcessingFactory extends GenericSaProcessingFactory implements IProcessingFactory<GeneralizedAirlineSpecification, TsData, CompositeResults> {
 
     public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, "Generalized airline model", null);
@@ -96,11 +96,11 @@ public class GeneralizedAirlineProcessingFactory extends GenericSaProcessingFact
     }
 
     @Override
-    public Map<String, Class> getOutputDictionary() {
+    public Map<String, Class> getOutputDictionary(boolean compact) {
         HashMap<String, Class> dic = new HashMap<>();
-        PreprocessingModel.fillDictionary(null, dic);
-        DefaultSeriesDecomposition.fillDictionary(null, dic);
-        SaBenchmarkingResults.fillDictionary(BENCHMARKING, dic);
+        PreprocessingModel.fillDictionary(null, dic, compact);
+        DefaultSeriesDecomposition.fillDictionary(null, dic, compact);
+        SaBenchmarkingResults.fillDictionary(BENCHMARKING, dic, compact);
         return dic;
     }
 }

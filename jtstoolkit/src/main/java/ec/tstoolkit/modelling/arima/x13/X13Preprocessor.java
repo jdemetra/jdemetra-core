@@ -13,10 +13,11 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.modelling.arima.x13;
 
+import ec.tstoolkit.arima.estimation.RegArimaEstimation;
+import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.Complex;
 import ec.tstoolkit.maths.realfunctions.IParametricMapping;
@@ -27,9 +28,11 @@ import ec.tstoolkit.modelling.arima.IPreprocessingModule;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
 import ec.tstoolkit.modelling.arima.ISeriesScaling;
 import ec.tstoolkit.modelling.arima.ModelDescription;
+import ec.tstoolkit.modelling.arima.ModelEstimation;
 import ec.tstoolkit.modelling.arima.ModellingContext;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.modelling.arima.ProcessingResult;
+import ec.tstoolkit.modelling.arima.RegArimaEstimator;
 import ec.tstoolkit.sarima.SarimaComponent;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;
@@ -93,16 +96,13 @@ public class X13Preprocessor implements IPreprocessor {
         // Creates a "default model", which is an airline model (0 1 1)(0 1 1) with mean,
         // except when no seasonal component is needed; the model is then
         // (0 1 1)(0 0 0) with mean
-
         // Step 3.
         // Computes the default model with data in levels/logs
         // The default model, without regression variables is always used.
-
         // Step 4.
         // Check for the presence of trading days/Easter/[others] and mean correction.
         // The default model, without regression variables other than the tested ones
         // is always used.
-
         // Step 5.
         // Complete the model with all the pre-specified regression variables
         // and with any pre-specified arima model (or orders).
@@ -110,6 +110,19 @@ public class X13Preprocessor implements IPreprocessor {
             clear();
 
             builder.initialize(context);
+            if (context.description.isFullySpecified() && outliers == null) {
+                // nothing to do
+                IParametricMapping<SarimaModel> mapping = context.description.defaultMapping();
+                ModelDescription model = context.description;
+                RegArimaModel<SarimaModel> regarima = model.buildRegArima();
+                RegArimaEstimator monitor = new RegArimaEstimator(mapping);
+                monitor.getMinimizer().setMaxIter(1);
+                monitor.optimize(regarima);
+                ModelEstimation estimation = new ModelEstimation(regarima, model.getLikelihoodCorrection());
+                estimation.computeLikelihood(mapping.getDim());
+                estimation.updateParametersCovariance(monitor.getParametersCovariance());
+                return new PreprocessingModel(model, estimation);
+            }
 
             // step 1. Transformation
             runTransformations(context);
@@ -213,8 +226,7 @@ public class X13Preprocessor implements IPreprocessor {
 
         } catch (Exception err) {
             return null;
-        }
-        finally{
+        } finally {
             clear();
         }
     }
@@ -229,21 +241,21 @@ public class X13Preprocessor implements IPreprocessor {
             regressionTest0 = new RegressionVariablesTest(false, RegressionVariablesTest.CVAL, check);
         }
     }
-    
-    public boolean isMixed(){
+
+    public boolean isMixed() {
         return this.mixedModel_;
     }
-    
-    public void setMixed(boolean mixed){
-        mixedModel_=mixed;
+
+    public void setMixed(boolean mixed) {
+        mixedModel_ = mixed;
     }
-    
-    public double getLjungBoxLimit(){
+
+    public double getLjungBoxLimit() {
         return this.pcr_;
     }
-    
-    public void setLjungBoxLimit(double val){
-        this.pcr_=val;
+
+    public void setLjungBoxLimit(double val) {
+        this.pcr_ = val;
     }
 
     protected boolean runTransformations(ModellingContext context) {
@@ -311,8 +323,8 @@ public class X13Preprocessor implements IPreprocessor {
         SarimaSpecification spec0 = reference_.description.getSpecification(),
                 spec = context.description.getSpecification();
         SarimaModel arima = context.estimation.getArima();
-        boolean mu0 = reference_.description.isMean(),
-                mu = context.description.isMean();
+        boolean mu0 = reference_.description.isEstimatedMean(),
+                mu = context.description.isEstimatedMean();
         ModelController controller = new ModelController();
         controller.accept(context);
         double rvr = controller.getRvr();
@@ -459,7 +471,7 @@ public class X13Preprocessor implements IPreprocessor {
     private void redoEstimation(ModellingContext context) {
         estimator.estimate(context);
         // check mean
-        if (context.description.isMean()) {
+        if (context.description.isEstimatedMean()) {
             checkMu(context, false);
         }
         if (!context.description.getOutliers().isEmpty()) {

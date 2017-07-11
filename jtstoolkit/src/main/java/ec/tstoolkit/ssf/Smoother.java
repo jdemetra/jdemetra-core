@@ -190,7 +190,6 @@ public class Smoother extends BaseDiffuseSmoother {
             double ser = ll.getSer();
             m_srslts.setStandardError(ser);
         }
-
         return true;
     }
 

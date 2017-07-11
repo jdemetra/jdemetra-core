@@ -38,12 +38,14 @@ import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  *
  * @author Jean Palate
  */
+@Deprecated
 public class MixedFrequenciesArimaProcessor implements IProcessingFactory<MixedFrequenciesSpecification, TsData[], CompositeResults> {
 
     public static final String FAMILY = GenericSaProcessingFactory.FAMILY;
@@ -80,8 +82,8 @@ public class MixedFrequenciesArimaProcessor implements IProcessingFactory<MixedF
     }
 
     @Override
-    public Map<String, Class> getOutputDictionary() {
-        Map<String, Class> dic = new HashMap<>();
+    public Map<String, Class> getOutputDictionary(boolean compact) {
+        Map<String, Class> dic = new LinkedHashMap<>();
         return dic;
     }
 

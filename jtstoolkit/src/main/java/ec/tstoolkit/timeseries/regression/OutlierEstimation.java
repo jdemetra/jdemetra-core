@@ -18,6 +18,7 @@
 package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.eco.CoefficientEstimation;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 
 /**
@@ -26,30 +27,30 @@ import ec.tstoolkit.timeseries.simplets.TsPeriod;
  */
 public class OutlierEstimation extends CoefficientEstimation {
 
-    public OutlierEstimation(CoefficientEstimation e, IOutlierVariable outlier) {
+    public OutlierEstimation(CoefficientEstimation e, IOutlierVariable outlier, TsFrequency freq) {
         super(e.getValue(), e.getStdev());
-        position_ = outlier.getPosition();
-        code_ = outlier.getOutlierType();
+        position = new TsPeriod(freq, outlier.getPosition());
+        code = outlier.getCode();
     }
 
     //    public OutlierDefinition getOutlierDefinition() {
     //        return new OutlierDefinition(position_, code_);
     //    }
     public TsPeriod getPosition() {
-        return position_;
+        return position;
     }
 
-    public OutlierType getCode() {
-        return code_;
+    public String getCode() {
+        return code;
     }
     
-    private TsPeriod position_;
-    private OutlierType code_;
+    private final TsPeriod position;
+    private final String code;
     
     @Override
     public String toString(){
         StringBuilder builder=new StringBuilder();
-        builder.append(position_).append(": ").append(code_).append("=").append(super.toString());
+        builder.append(position).append(": ").append(code).append("=").append(super.toString());
         return builder.toString();
     }
 }

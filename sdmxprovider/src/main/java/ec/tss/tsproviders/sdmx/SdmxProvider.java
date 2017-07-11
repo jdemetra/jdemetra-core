@@ -20,6 +20,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
@@ -35,14 +36,15 @@ import ec.tss.tsproviders.sdmx.model.SdmxSeries;
 import ec.tss.tsproviders.sdmx.model.SdmxSource;
 import ec.tss.tsproviders.utils.AbstractFileLoader;
 import ec.tss.tsproviders.utils.IParam;
+import ec.tss.tsproviders.utils.IParser;
 import ec.tss.tsproviders.utils.Params;
-import ec.tss.tsproviders.utils.Parsers;
 import ec.tstoolkit.MetaData;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
+import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +52,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Kristof Bayens
  */
+@ServiceProvider(service = ITsProvider.class)
 public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
 
     public static final String SOURCE = "TSProviders.Sdmx.SdmxProvider";
@@ -61,15 +64,15 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SdmxProvider.class);
 
     private final ISdmxSourceFactory[] factories;
-    private final Parsers.Parser<DataSource> legacyDataSourceParser;
-    private final Parsers.Parser<DataSet> legacyDataSetParser;
+    private final IParser<DataSource> legacyDataSourceParser;
+    private final IParser<DataSet> legacyDataSetParser;
     private final Splitter.MapSplitter keyValueSplitter;
     private final Joiner compactNamingJoiner;
     private boolean compactNaming;
     private boolean keysInMetaData;
 
     public SdmxProvider() {
-        super(LOGGER, SOURCE, TsAsyncMode.None);
+        super(LOGGER, SOURCE, TsAsyncMode.Once);
         this.factories = new ISdmxSourceFactory[]{new CunningPlanFactory()};
         this.legacyDataSourceParser = SdmxLegacy.dataSourceParser();
         this.legacyDataSetParser = SdmxLegacy.dataSetParser();
@@ -138,16 +141,15 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
         for (SdmxItem o : source.items) {
             if (o instanceof SdmxGroup) {
                 SdmxGroup group = ((SdmxGroup) o);
-                Y_GROUP_ID.set(builder, group.id);
+                builder.put(Y_GROUP_ID, group.id);
                 for (SdmxSeries series : group.series) {
-                    Z_SERIES_ID.set(builder, series.id);
+                    builder.put(Z_SERIES_ID, series.id);
                     info.items.add(newTsInformation(builder.build(), series));
                 }
             } else {
                 SdmxSeries series = (SdmxSeries) o;
-                Y_GROUP_ID.set(builder, "");
-                Z_SERIES_ID.set(builder, series.id);
-                info.items.add(newTsInformation(builder.build(), series));
+                DataSet child = builder.put(Y_GROUP_ID, "").put(Z_SERIES_ID, series.id).build();
+                info.items.add(newTsInformation(child, series));
             }
         }
     }
@@ -156,17 +158,17 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
     protected void fillCollection(TsCollectionInformation info, DataSet dataSet) throws IOException {
         SdmxGroup group = getGroup(dataSet);
         info.type = TsInformationType.All;
-        DataSet.Builder builder = DataSet.builder(dataSet, DataSet.Kind.SERIES);
+        DataSet.Builder builder = dataSet.toBuilder(DataSet.Kind.SERIES);
         for (SdmxSeries series : group.series) {
-            Y_GROUP_ID.set(builder, group.id);
-            Z_SERIES_ID.set(builder, series.id);
-            info.items.add(newTsInformation(builder.build(), series));
+            DataSet child = builder.put(Y_GROUP_ID, group.id).put(Z_SERIES_ID, series.id).build();
+            info.items.add(newTsInformation(child, series));
         }
     }
 
     @Override
     protected void fillSeries(TsInformation info, DataSet dataSet) throws IOException {
         SdmxSeries series = getSeries(dataSet);
+        info.name = getDisplayName(dataSet);
         info.type = TsInformationType.All;
         info.metaData = getMetaData(series);
         support.fillSeries(info, series.data, true);
@@ -185,12 +187,9 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
         DataSet.Builder sBuilder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
         for (SdmxItem o : getSource(dataSource).items) {
             if (o instanceof SdmxGroup) {
-                Y_GROUP_ID.set(cBuilder, o.id);
-                result.add(cBuilder.build());
+                result.add(cBuilder.put(Y_GROUP_ID, o.id).build());
             } else {
-                Y_GROUP_ID.set(sBuilder, "");
-                Z_SERIES_ID.set(sBuilder, o.id);
-                result.add(sBuilder.build());
+                result.add(sBuilder.put(Y_GROUP_ID, "").put(Z_SERIES_ID, o.id).build());
             }
         }
         return result.build();
@@ -214,10 +213,9 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
     public List<DataSet> children(DataSet parent) throws IllegalArgumentException, IOException {
         support.check(parent, DataSet.Kind.COLLECTION);
         ImmutableList.Builder<DataSet> result = ImmutableList.builder();
-        DataSet.Builder builder = DataSet.builder(parent, DataSet.Kind.SERIES);
+        DataSet.Builder builder = parent.toBuilder(DataSet.Kind.SERIES);
         for (SdmxSeries o : getGroup(parent).series) {
-            Z_SERIES_ID.set(builder, o.id);
-            result.add(builder.build());
+            result.add(builder.put(Z_SERIES_ID, o.id).build());
         }
         return result.build();
     }
@@ -241,12 +239,16 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
 
     @Override
     public DataSource encodeBean(Object bean) throws IllegalArgumentException {
-        return ((SdmxBean) bean).toDataSource(SOURCE, VERSION);
+        try {
+            return ((SdmxBean) bean).toDataSource(SOURCE, VERSION);
+        } catch (ClassCastException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     @Override
     public SdmxBean decodeBean(DataSource dataSource) {
-        return new SdmxBean(dataSource);
+        return new SdmxBean(support.check(dataSource));
     }
 
     @Override

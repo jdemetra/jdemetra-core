@@ -1,20 +1,19 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
-
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
 package ec.tstoolkit.arima.estimation;
 
 import data.Data;
@@ -40,6 +39,8 @@ import ec.tstoolkit.ssf.ucarima.SsfUcarima;
 import ec.tstoolkit.ucarima.UcarimaModel;
 import ec.tstoolkit.ucarima.estimation.BurmanEstimatesC;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.BeforeClass;
 
@@ -153,7 +154,7 @@ public class AnsleyFilterTest {
             for (int i = 0; i < n; ++i) {
                 N.filter(DN.column(i), Q.row(n - i - 1).drop(n - ds.getDegree(), 0));
             }
-            double[] y = Data.X.getValues().internalStorage();
+            double[] y = Data.X.internalStorage();
             DataBlock yd = new DataBlock(y.length - dn.getDegree());
             noise.getNonStationaryAR().filter(new DataBlock(y), yd);
             DataBlock yl = new DataBlock(yd.getLength());
@@ -215,7 +216,7 @@ public class AnsleyFilterTest {
         long t0 = System.currentTimeMillis();
         for (int a = 0; a < 1000; ++a) {
             // add forecasts
-            ec.tstoolkit.ssf.SsfData sdata = new ec.tstoolkit.ssf.SsfData(Data.X.getValues().internalStorage(), null);
+            ec.tstoolkit.ssf.SsfData sdata = new ec.tstoolkit.ssf.SsfData(Data.X.internalStorage(), null);
 
             SsfUcarima ssf = new SsfUcarima(ucm);
             // compute KS
@@ -226,7 +227,7 @@ public class AnsleyFilterTest {
             DiffuseFilteringResults frslts = new DiffuseFilteringResults(true);
             filter.process(sdata, frslts);
 
-            smoother.process(new ec.tstoolkit.ssf.SsfData(Data.X.getValues().internalStorage(), null), frslts);
+            smoother.process(new ec.tstoolkit.ssf.SsfData(Data.X.internalStorage(), null), frslts);
             ec.tstoolkit.ssf.SmoothingResults srslts = smoother.calcSmoothedStates();
             double[] z = srslts.component(0);
             if (a == 0) {
@@ -238,5 +239,25 @@ public class AnsleyFilterTest {
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
+    }
+
+    @Test
+    public void testWN() {
+        ArimaModel wn = new ArimaModel(.5);
+        AnsleyFilter filter = new AnsleyFilter();
+        filter.initialize(wn, 10);
+        DataBlock in = new DataBlock(10);
+        in.set(i -> i + 1);
+        DataBlock out = new DataBlock(10);
+        filter.filter(in, out);
+        AnsleyFilter filter2 = new AnsleyFilter();
+        DataBlock out2 = new DataBlock(10);
+        filter2.setOptimizedForWhiteNoise(false);
+        filter2.initialize(wn, 10);
+        filter2.filter(in, out2);
+        assertTrue(filter.getCholeskyFactor().distance(filter2.getCholeskyFactor())<1.e-9);
+        assertTrue(out.distance(out2)<1e-9);
+        assertEquals(filter.getLogDeterminant(), filter2.getLogDeterminant(), 1e-9);
+        
     }
 }

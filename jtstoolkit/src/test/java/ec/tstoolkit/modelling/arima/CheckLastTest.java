@@ -20,10 +20,13 @@ import data.Data;
 import ec.tstoolkit.data.DescriptiveStatistics;
 import ec.tstoolkit.dstats.ProbabilityType;
 import ec.tstoolkit.dstats.T;
+import ec.tstoolkit.modelling.arima.tramo.ArimaSpec;
 import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
 import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.TsAggregationType;
+import ec.tstoolkit.timeseries.regression.OutlierType;
+import static ec.tstoolkit.timeseries.regression.RegressionUtilities.data;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDataCollector;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
@@ -32,7 +35,9 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Random;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -40,26 +45,26 @@ import org.junit.Test;
  * @author Jean Palate
  */
 public class CheckLastTest {
-
+    
     public CheckLastTest() {
     }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
     }
-
+    
     @AfterClass
     public static void tearDownClass() throws Exception {
     }
 
     //@Test
     public void demo() {
-
+        
         CheckLast tramoTerror = new CheckLast(TramoSpecification.TR5.build());
         tramoTerror.check(Data.X);
         System.out.println("Tramo-Terror");
         System.out.println(tramoTerror.getScore(0));
-
+        
         CheckLast xTerror = new CheckLast(RegArimaSpecification.RG5.build());
         xTerror.check(Data.X);
         System.out.println("X13-Terror");
@@ -71,7 +76,7 @@ public class CheckLastTest {
         int n = 1000;
         List<TsData> rndAirlines = Data.rndAirlines(n, 240, -.6, -.8);
         CheckLast terror = new CheckLast(TramoSpecification.TR0.build());
-
+        
         double[] scores = new double[n];
         int i = 0;
         for (TsData s : rndAirlines) {
@@ -80,7 +85,7 @@ public class CheckLastTest {
             }
         }
         DescriptiveStatistics stats = new DescriptiveStatistics(scores);
-
+        
         T t = new T();
         t.setDegreesofFreedom(238);
         double[] quantiles = stats.quantiles(20);
@@ -117,7 +122,7 @@ public class CheckLastTest {
         val = 100;
         double[] values = new double[n];
         for (int i = 0; i < n; ++i) {
-            val += (.1*i)*rnd.nextDouble();
+            val += (.1 * i) * rnd.nextDouble();
             values[i] = val;
         }
         // Missing values are identified by Double.NaN
@@ -143,7 +148,8 @@ public class CheckLastTest {
         System.out.println(tramoTerror.getScore(2));
         tramoTerror.check(s1);
         double[] scores = tramoTerror.getScores(), fcasts = tramoTerror.getForecastsValues(),
-                vals = tramoTerror.getValues(), actuals = tramoTerror.getActualValues();
+                vals = tramoTerror.getValues(), actuals = tramoTerror.getActualValues(),
+                aerrors = tramoTerror.getAbsoluteErrors();
         for (int i = 0; i < tramoTerror.getBackCount(); ++i) {
             System.out.print(actuals[i]);
             System.out.print('\t');
@@ -151,17 +157,87 @@ public class CheckLastTest {
             System.out.print('\t');
             System.out.print(vals[i]);
             System.out.print('\t');
+            System.out.print(aerrors[i]);
+            System.out.print('\t');
             System.out.println(scores[i]);
         }
-
+        
         System.out.println(tramoTerror.getScore(0));
-
+        
         System.out.println("X13-Terror");
         CheckLast xTerror = new CheckLast(RegArimaSpecification.RG4.build());
         xTerror.check(s0);
         System.out.println(xTerror.getScore(0));
         xTerror.check(s1);
         System.out.println(xTerror.getScore(0));
+    }
+    
+    @Test
+    @Ignore
+    public void testRandom() {
+        Random rnd = new Random();
+        for (int i = 0; i < 1000; ++i) {
+            TsData s = new TsData(TsFrequency.Monthly, 2000, 0, 60);
+            s.set(j -> rnd.nextDouble());
+            CheckLast cl = new CheckLast(TramoSpecification.TRfull.build());
+            if (cl.check(s)) {
+                System.out.println(cl.getScore(0));
+            } else {
+                System.out.println("failed");
+            }
+        }
+    }
+    
+    @Test
+    @Ignore
+    public void testFailed() {
+        Random rnd = new Random();
+        TsData s = new TsData(TsFrequency.Monthly, 2000, 0, 50);
+        s.set(j -> rnd.nextDouble());
+        TramoSpecification spec=TramoSpecification.TR0.clone();
+        ArimaSpec aspec=new ArimaSpec();
+        aspec.setQ(0);
+        aspec.setD(0);
+        aspec.setBQ(0);
+        aspec.setBD(0);
+        aspec.setMean(true);
+        spec.setArima(aspec);
+        CheckLast cl = new CheckLast(spec.build());
+        if (cl.check(s)) {
+            System.out.println("checklast");
+            System.out.println("value = " + cl.getValues()[0]);
+            // forecast:
+            System.out.println("forecast = " + cl.getForecastsValues()[0]);
+            // absolute error:
+            System.out.println("absolute error = " + cl.getAbsoluteError(0));
+            // score:
+            System.out.println("score = " + cl.getScore(0));
+        }
+        
+        System.out.println("");
+        System.out.println("simple detection");
+        // We compute similar statistics
+        DescriptiveStatistics dstats = new DescriptiveStatistics(s.drop(0, 1));
+        // value: 
+        double obs = s.get(s.getLength() - 1);
+        System.out.println("value = " + obs);
+        // forecast:
+        System.out.println("forecast = " + dstats.getAverage());
+        // absolute error:
+        double aerror = obs - dstats.getAverage();
+        System.out.println("absolute error = " + aerror);
+        // score:
+        System.out.println("score = " + aerror / dstats.getStdevDF(1));
+    }
+    
+    
+    @Test
+    public void testSO() {
+        TramoSpecification spec = TramoSpecification.TRfull.clone();
+        spec.getOutliers().add(OutlierType.SO);
+        spec.getOutliers().setCriticalValue(3);
+        CheckLast cl=new CheckLast(spec.build());
+        assertTrue(cl.check(Data.P));
     }
 
 }

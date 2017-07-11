@@ -17,10 +17,10 @@
 package ec.tss;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Streams;
 import ec.tss.tsproviders.utils.MultiLineNameUtil;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,49 +30,54 @@ import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public final class TsCollection implements ITsIdentified, IDocumented,
-        Iterable<Ts> {
+public final class TsCollection implements ITsIdentified, IDocumented, Iterable<Ts> {
 
     private final TsMoniker m_moniker;
     private final String m_name;
     private MetaData m_metadata;
-    private final List<Ts> m_ts = new ArrayList<>();
+    private final List<Ts> m_ts;
     private volatile TsInformationType m_info;
     private volatile Set<TsMoniker> m_set;
     private String m_invalidDataCause;
 
-    TsCollection(String name) {
+    TsCollection(@Nullable String name) {
         m_name = Strings.nullToEmpty(name);
         m_moniker = new TsMoniker();
+        m_metadata = null;
+        m_ts = new ArrayList<>();
         m_info = TsInformationType.UserDefined;
+        m_set = null;
+        m_invalidDataCause = null;
     }
 
-    TsCollection(String name, TsMoniker moniker) {
-        m_name = name;
+    TsCollection(@Nullable String name, @Nonnull TsMoniker moniker) {
+        m_name = Strings.nullToEmpty(name);
         m_moniker = moniker;
-        if (m_moniker.getSource() == null) {
-            m_info = TsInformationType.UserDefined;
-        } else {
-            m_info = TsInformationType.None;
-        }
+        m_metadata = null;
+        m_ts = new ArrayList<>();
+        m_info = m_moniker.getSource() == null ? TsInformationType.UserDefined : TsInformationType.None;
+        m_set = null;
+        m_invalidDataCause = null;
     }
 
-    TsCollection(String name, TsMoniker moniker, MetaData md, Iterable<Ts> ts) {
-        m_name = name;
+    TsCollection(@Nullable String name, @Nonnull TsMoniker moniker, @Nullable MetaData md, @Nullable Iterable<Ts> ts) {
+        m_name = Strings.nullToEmpty(name);
         m_moniker = moniker;
         m_metadata = md;
-        if (ts != null) {
-            for (Ts s : ts) {
-                m_ts.add(s);
-            }
-        }
+        m_ts = ts != null ? Lists.newArrayList(ts) : new ArrayList<>();
         m_info = TsInformationType.UserDefined;
+        m_set = null;
+        m_invalidDataCause = null;
     }
 
     @Override
@@ -164,10 +169,9 @@ public final class TsCollection implements ITsIdentified, IDocumented,
     }
 
     private void buildSet() {
-        m_set = new HashSet<>(m_ts.size());
-        for (Ts s : m_ts) {
-            m_set.add(s.getMoniker());
-        }
+        m_set = m_ts.stream()
+                .map(Ts::getMoniker)
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -177,7 +181,7 @@ public final class TsCollection implements ITsIdentified, IDocumented,
      */
     public TsCollection clean(boolean empty) {
         synchronized (m_moniker) {
-            List<Ts> list = Lists.newArrayListWithCapacity(m_ts.size());
+            List<Ts> list = new ArrayList(m_ts.size());
             for (Ts s : m_ts) {
                 if (s.hasData() == TsStatus.Valid) {
                     list.add(s);
@@ -204,7 +208,7 @@ public final class TsCollection implements ITsIdentified, IDocumented,
      */
     public TsCollection clean(double cntVal, boolean empty) {
         synchronized (m_moniker) {
-            List<Ts> list = Lists.newArrayListWithCapacity(m_ts.size());
+            List<Ts> list = new ArrayList(m_ts.size());
             for (Ts s : m_ts) {
                 if (s.hasData() == TsStatus.Undefined) {
                     s.load(TsInformationType.Data);
@@ -267,13 +271,9 @@ public final class TsCollection implements ITsIdentified, IDocumented,
                 if (m_set == null) {
                     buildSet();
                 }
-                List<Ts> tmp = Lists.newArrayList();
-                for (Ts s : all) {
-                    if (m_set.contains(s.getMoniker())) {
-                        tmp.add(s);
-                    }
-                }
-                return Iterables.toArray(tmp, Ts.class);
+                return Streams.stream(all)
+                        .filter(o -> m_set.contains(o.getMoniker()))
+                        .toArray(Ts[]::new);
             }
         }
     }
@@ -284,7 +284,7 @@ public final class TsCollection implements ITsIdentified, IDocumented,
      */
     public Ts[] toArray() {
         synchronized (m_moniker) {
-            return Iterables.toArray(m_ts, Ts.class);
+            return m_ts.toArray(new Ts[m_ts.size()]);
         }
     }
 
@@ -414,7 +414,12 @@ public final class TsCollection implements ITsIdentified, IDocumented,
 
     @Override
     public Iterator<Ts> iterator() {
-        return m_ts.iterator();
+        return Iterators.forArray(toArray());
+    }
+
+    @Nonnull
+    public Stream<Ts> stream() {
+        return Stream.of(toArray());
     }
 
     /**
@@ -426,6 +431,11 @@ public final class TsCollection implements ITsIdentified, IDocumented,
         // check if the information is available...
         if (m_info.encompass(type)) {
             return true;
+        }
+        if (m_moniker.isAnonymous()) {
+            return m_ts.stream()
+                    .map(o -> o.load(type))
+                    .reduce(Boolean.TRUE, (l, r) -> r && l);
         }
         return TsFactory.instance.load(this, type);
     }
@@ -483,9 +493,7 @@ public final class TsCollection implements ITsIdentified, IDocumented,
                 }
             }
             if (!tmp.isEmpty()) {
-                for (Ts s : tmp) {
-                    m_ts.remove(s);
-                }
+                m_ts.removeAll(tmp);
                 m_set = null;
                 rslt = tmp.size();
             }
@@ -647,6 +655,7 @@ public final class TsCollection implements ITsIdentified, IDocumented,
 
     /**
      * Search a series by its name
+     *
      * @param name The name of the series
      * @return The first series with the given name is returned
      */
@@ -714,14 +723,12 @@ public final class TsCollection implements ITsIdentified, IDocumented,
                 // load the series...
                 m_ts.clear();
                 if (!info.items.isEmpty()) {
-                    updated = Lists.newArrayListWithCapacity(info.items.size());
+                    updated = new ArrayList(info.items.size());
                     for (TsInformation sinfo : info.items) {
                         Ts s = TsFactory.instance.getTs(sinfo.moniker);
                         if (s != null) {
                             s.getMaster().update(sinfo);
-                            if (updated != null) {
-                                updated.add(s);
-                            }
+                            updated.add(s);
                         } else {
                             s = TsFactory.instance.createTs(sinfo);
                         }
@@ -744,12 +751,26 @@ public final class TsCollection implements ITsIdentified, IDocumented,
         synchronized (m_moniker) {
             String[] headers = new String[m_ts.size()];
             List<TsData> all = getAllData();
-            for (int i=0; i<headers.length; ++i){
-                headers[i]=MultiLineNameUtil.last(m_ts.get(i).getName());
+            for (int i = 0; i < headers.length; ++i) {
+                headers[i] = MultiLineNameUtil.last(m_ts.get(i).getName());
             }
-            TsDataTable table=new TsDataTable();
+            TsDataTable table = new TsDataTable();
             table.add(all);
             return table.toString(headers);
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj || (obj instanceof TsCollection && equals((TsCollection) obj));
+    }
+
+    @Override
+    public int hashCode() {
+        return getMoniker().hashCode();
+    }
+
+    private boolean equals(TsCollection other) {
+        return other == null ? false : getMoniker().equals(other.getMoniker());
     }
 }

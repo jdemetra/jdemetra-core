@@ -18,7 +18,6 @@
 package ec.tstoolkit.modelling.arima.tramo.seriestest;
 
 import ec.tstoolkit.design.IntValue;
-import java.util.EnumSet;
 
 /**
  *
@@ -27,11 +26,8 @@ import java.util.EnumSet;
 public enum SerType implements IntValue {
     Residuals(0),
     Xlin(1);
-   public static SerType valueOf(final int value) {
-	for (SerType option : EnumSet.allOf(SerType.class))
-	    if (option.intValue() == value)
-		return option;
-	return null;
+   public static SerType valueOf(int value) {
+        return IntValue.valueOf(SerType.class, value).orElse(null);
     }
 
     private final int value;

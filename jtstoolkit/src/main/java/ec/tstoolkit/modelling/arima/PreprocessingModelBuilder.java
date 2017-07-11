@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.modelling.arima;
 
 import ec.tstoolkit.modelling.Variable;
@@ -22,6 +21,7 @@ import ec.tstoolkit.design.Development;
 import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.timeseries.regression.EasterVariable;
 import ec.tstoolkit.timeseries.regression.JulianEasterVariable;
+import java.util.List;
 
 /**
  *
@@ -31,27 +31,24 @@ import ec.tstoolkit.timeseries.regression.JulianEasterVariable;
 public class PreprocessingModelBuilder {
 
     public static boolean updateCalendar(ModelDescription model, boolean usecalendar) {
-        if (model.getCalendars().isEmpty()) {
+        List<Variable> cals = model.selectVariables(var -> var.status.needTesting() && var.isCalendar());
+        if (cals.isEmpty()) {
             return false;
         }
         boolean changed = false;
         if (usecalendar) {
-            for (Variable cal : model.getCalendars()) {
-                if (cal.status.needTesting()) {
-                    if (!cal.status.isSelected()) {
-                        changed = true;
-                    }
-                    cal.status = RegStatus.Accepted;
+            for (Variable cal : cals) {
+                if (!cal.status.isSelected()) {
+                    changed = true;
                 }
+                cal.status = RegStatus.Accepted;
             }
         } else {
-            for (Variable cal : model.getCalendars()) {
-                if (cal.status.needTesting()) {
-                    if (cal.status.isSelected()) {
-                        changed = true;
-                    }
-                    cal.status = RegStatus.Rejected;
+            for (Variable cal : cals) {
+                if (cal.status.isSelected()) {
+                    changed = true;
                 }
+                cal.status = RegStatus.Rejected;
             }
         }
         if (changed && model.getPreadjustmentType() == PreadjustmentType.Auto) {
@@ -61,9 +58,10 @@ public class PreprocessingModelBuilder {
     }
 
     public static boolean updateEaster(ModelDescription model, int duration) {
+        List<Variable> mhs = model.selectVariables(var -> var.status.needTesting() && var.isMovingHoliday());
         boolean changed = false;
-        for (Variable mh : model.getMovingHolidays()) {
-            if (mh.status.needTesting() && mh.getVariable() instanceof EasterVariable) {
+        for (Variable mh : mhs) {
+            if (mh.getVariable() instanceof EasterVariable) {
                 if (duration == 0) {
                     if (mh.status.isSelected()) {
                         changed = true;
@@ -85,8 +83,7 @@ public class PreprocessingModelBuilder {
                         mh.status = RegStatus.Accepted;
                     }
                 }
-            }
-            else if (mh.status.needTesting() && mh.getVariable() instanceof JulianEasterVariable) {
+            } else if (mh.getVariable() instanceof JulianEasterVariable) {
                 if (duration == 0) {
                     if (mh.status.isSelected()) {
                         changed = true;
@@ -111,21 +108,4 @@ public class PreprocessingModelBuilder {
         }
         return changed;
     }
-//    public static boolean updateTransformation(ModelDescription model, boolean log, boolean lpadjust) {
-//        model.setTransformation(log ? TransformationFunction.Log : TransformationFunction.None);
-//        if (log && lpadjust) {
-//            // remove leap year
-//            if (model.getCalendars() != null) {
-//                for (Variable var : model.getCalendars()) {
-//                    ITsVariable root = var.getRootVariable();
-//                    if (root instanceof ILengthOfPeriodVariable) {
-//                        var.status = RegStatus.Excluded;
-//                        model.setTransformation(((ILengthOfPeriodVariable) root).getType());
-//                        return true;
-//                    }
-//                }
-//            }
-//        }
-//        return false;
-//    }
 }

@@ -23,6 +23,8 @@ import ec.tstoolkit.timeseries.simplets.TsDomain;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.utilities.Jdk6;
 import java.util.ArrayList;
+import java.util.function.Predicate;
+
 
 /**
  *
@@ -285,41 +287,39 @@ public class TsVariableList implements Cloneable {
         return sel;
     }
 
-    public TsVariableSelection<IOutlierVariable> select(OutlierType type, boolean prespecified) {
-        int cur = 0;
-        TsVariableSelection<IOutlierVariable> sel = new TsVariableSelection<>();
-        for (ITsVariable group : vars_) {
-            if (group instanceof IOutlierVariable) {
-                IOutlierVariable o = (IOutlierVariable) group;
-                if ((type == OutlierType.Undefined || o.getOutlierType() == type)
-                        && prespecified == o.isPrespecified()) {
-                    sel.add(o, cur);
-                }
-            }
-            cur += group.getDim();
-        }
-
-        return sel;
-    }
-
     public void clear() {
         vars_.clear();
     }
 
+    @Deprecated
     public interface ISelector {
 
         boolean accept(ITsVariable var);
     }
 
-    public TsVariableSelection<ITsVariable> select(ISelector selector) {
+//    @Deprecated
+//    public TsVariableSelection<ITsVariable> select(ISelector selector) {
+//        int cur = 0;
+//        TsVariableSelection<ITsVariable> sel = new TsVariableSelection<>();
+//        for (ITsVariable group : vars_) {
+//            if (selector.accept(group)) {
+//                sel.add(group, cur);
+//            }
+//            cur += group.getDim();
+//        }
+//        return sel;
+//    }
+    
+    public TsVariableSelection<ITsVariable> select(Predicate<ITsVariable> selector) {
         int cur = 0;
         TsVariableSelection<ITsVariable> sel = new TsVariableSelection<>();
         for (ITsVariable group : vars_) {
-            if (selector.accept(group)) {
+            if (selector.test(group)) {
                 sel.add(group, cur);
             }
             cur += group.getDim();
         }
         return sel;
     }
+
 }

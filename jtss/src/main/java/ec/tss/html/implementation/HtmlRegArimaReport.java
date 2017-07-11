@@ -13,9 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
-
+ */
 package ec.tss.html.implementation;
 
 import ec.tss.html.AbstractHtmlElement;
@@ -31,6 +29,7 @@ import java.io.IOException;
  * @author Kristof Bayens
  */
 public class HtmlRegArimaReport extends AbstractHtmlElement implements IHtmlElement {
+
     private RegArimaReport report_;
     private String title_;
 
@@ -41,8 +40,9 @@ public class HtmlRegArimaReport extends AbstractHtmlElement implements IHtmlElem
 
     @Override
     public void write(HtmlStream stream) throws IOException {
-        if (title_ != null)
+        if (title_ != null) {
             writeSummary(stream);
+        }
 
         writeTransform(stream);
         writeArima(stream);
@@ -86,16 +86,21 @@ public class HtmlRegArimaReport extends AbstractHtmlElement implements IHtmlElem
 
         double tot = report_.Total;
         int n = report_.AoCount + report_.LsCount + report_.TcCount + report_.SoCount;
+        stream.write("All outliers: ").write(n).write(" [ average: ").write(df2.format(n / tot)).write(" ]").newLines(2);
         if (n > 0) {
-            stream.write("All outliers: ").write(n).write(" [ average: ").write(df2.format(n / tot)).write(" ]").newLines(2);
-            if (report_.AoCount > 0)
+            if (report_.AoCount > 0) {
                 stream.write("Additive outliers: ").write(report_.AoCount).write(" [ average: ").write(df2.format(report_.AoCount / tot)).write(" ]").newLine();
-            if (report_.LsCount > 0)
+            }
+            if (report_.LsCount > 0) {
                 stream.write("Level shifts: ").write(report_.LsCount).write(" [ average: ").write(df2.format(report_.LsCount / tot)).write(" ]").newLine();
-            if (report_.TcCount > 0)
+            }
+            if (report_.TcCount > 0) {
                 stream.write("Transitory changes: ").write(report_.TcCount).write(" [ average: ").write(df2.format(report_.TcCount / tot)).write(" ]").newLine();
-            if (report_.SoCount > 0)
+            }
+            if (report_.SoCount > 0) {
                 stream.write("Seasonal outliers: ").write(report_.SoCount).write(" [ average: ").write(df2.format(report_.SoCount / tot)).write(" ]").newLine();
+            }
+            stream.newLine();
         }
     }
 

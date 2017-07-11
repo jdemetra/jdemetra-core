@@ -42,7 +42,11 @@ import java.util.Objects;
 public class TramoSpecification implements Cloneable, IRegArimaSpecification {
 
     private static final double CVAL = 1.96;
-    final static OutliersFactory fac = new OutliersFactory(true);
+    private final static OutliersFactory fac = new OutliersFactory(true);
+
+    public static final OutliersFactory getOutliersFactory() {
+        return fac;
+    }
     //public static TramoSpecification Default;
     public static final TramoSpecification TR0, TR1, TR2, TR3, TR4, TR5, TRfull;
     private static final String SMETHOD = "TR";
@@ -729,5 +733,27 @@ public class TramoSpecification implements Cloneable, IRegArimaSpecification {
             return builder.toString();
         }
     }
+
+    public static TramoSpecification fromString(String name) {
+        switch (name) {
+            case "TR0":
+                return TR0;
+            case "TR1":
+                return TR1;
+            case "TR2":
+                return TR2;
+            case "TR3":
+                return TR3;
+            case "TR4":
+                return TR4;
+            case "TR5":
+                return TR5;
+            case "TRfull":
+                return TRfull;
+            default:
+                return new TramoSpecification();
+        }
+    }
+
     ///////////////////////////////////////////////////////////////////////////
 }

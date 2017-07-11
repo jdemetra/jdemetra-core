@@ -68,7 +68,7 @@ public class StockTradingDaysVariables implements ITradingDaysVariable, Cloneabl
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         StringBuilder builder=new StringBuilder();
         builder.append("TD Stock [").append(w_).append(']');
         return builder.toString();
@@ -80,7 +80,7 @@ public class StockTradingDaysVariables implements ITradingDaysVariable, Cloneabl
     }
 
     @Override
-    public String getItemDescription(int idx) {
+    public String getItemDescription(int idx, TsFrequency context) {
         return DayOfWeek.valueOf(idx+1).toString();
     }
 
@@ -89,12 +89,6 @@ public class StockTradingDaysVariables implements ITradingDaysVariable, Cloneabl
         return domain.getFrequency()==TsFrequency.Monthly;
     }
 
-    @Override
-    @Deprecated
-    public void data(TsDomain domain, List<DataBlock> data, int start) {
-        data(domain, data.subList(start, start+getDim()));
-    }
-    
     @Override
     public void data(TsDomain domain, List<DataBlock> data) {
         int n = domain.getLength();

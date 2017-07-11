@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.data.DataBlock;
@@ -24,6 +23,7 @@ import ec.tstoolkit.maths.polynomials.Polynomial;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.TsException;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 
 /**
@@ -84,7 +84,7 @@ public class DiffConstant extends AbstractSingleTsVariable {
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         StringBuilder builder = new StringBuilder();
         builder.append("Polynomial trend (").append(m_ur.getDegree()).append(
                 ')');
@@ -95,4 +95,10 @@ public class DiffConstant extends AbstractSingleTsVariable {
     public boolean isSignificant(TsDomain domain) {
         return domain.getLength() > m_ur.getDegree();
     }
+
+    @Override
+    public String getName() {
+        return "trend";
+    }
+
 }

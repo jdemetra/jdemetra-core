@@ -112,6 +112,21 @@ public class TramoProcessor extends AbstractTramoModule implements IPreprocessor
             } else {
                 defaultBuilder.initialize(context);
             }
+            if (context.description.isFullySpecified() && outliers == null) {
+                // nothing to do
+                IParametricMapping<SarimaModel> mapping = context.description.defaultMapping();
+                ModelDescription model = context.description;
+                RegArimaModel<SarimaModel> regarima = model.buildRegArima();
+                TramoModelEstimator monitor = new TramoModelEstimator(mapping);
+                monitor.getMinimizer().setMaxIter(1);
+                monitor.optimize(regarima);
+                ModelEstimation estimation = new ModelEstimation(regarima, model.getLikelihoodCorrection());
+                estimation.computeLikelihood(mapping.getDim());
+                estimation.updateParametersCovariance(monitor.getParametersCovariance());
+                context.estimation=estimation;
+                return context.current(true);
+            }
+
             if (!initContext(context)) {
                 return null;
             }
@@ -187,7 +202,7 @@ public class TramoProcessor extends AbstractTramoModule implements IPreprocessor
             if (needAutoModelling(context)) {
                 execAutoModelling(context);
                 changed = (!context.description.getSpecification().equals(curspec))
-                        || context.description.isMean() != curmu;
+                        || context.description.isEstimatedMean()!= curmu;
 //                if (outliers == null && round_ == 1) {
 //                    if (testAutoModel(context)) {
 //                        if (regressionTest2.process(context) != ProcessingResult.Unchanged) {
@@ -262,13 +277,11 @@ public class TramoProcessor extends AbstractTramoModule implements IPreprocessor
             }
             control(context, estimator);
             return true;
+        } else if (finalizer.estimate(context)) {
+            return true;
         } else {
-            if (finalizer.estimate(context)) {
-                return true;
-            } else {
-                context.information.addError("Tramo final estimation failed");
-                throw new TramoException("Unable to estimate the model");
-            }
+            context.information.addError("Tramo final estimation failed");
+            throw new TramoException("Unable to estimate the model");
         }
     }
 
@@ -647,35 +660,34 @@ public class TramoProcessor extends AbstractTramoModule implements IPreprocessor
 
     }
 
-    private boolean finalMeanTest(ModellingContext context) {
-
-        if (context.description.isMean() || mu_) {
-            return true;
-        }
-        double[] res = context.estimation.getLikelihood().getResiduals();
-        double s = 0, s2 = 0;
-        int n = res.length;
-        for (int i = 0; i < n; ++i) {
-            s += res[i];
-            s2 += res[i] * res[i];
-        }
-        double rtval = Math.abs(s / Math.sqrt((s2 * n - s * s) / n));
-
-        if (rtval <= 2.5) {
-            return true;
-        }
-        mu_ = true;
-        context.description.setMean(true);
-        RegArimaModel<SarimaModel> nregarima = context.description.buildRegArima();
-        nregarima.setArima(context.estimation.getArima());
-        context.estimation = new ModelEstimation(nregarima, context.description.getLikelihoodCorrection());
-        int nhp = context.description.getArimaComponent().getFreeParametersCount();
-        context.estimation.computeLikelihood(nhp);
-        pass_ = 3;
-//        addMeanHistory(context);
-        return false;
-    }
-
+//    private boolean finalMeanTest(ModellingContext context) {
+//
+//        if (context.description.isMean() || mu_) {
+//            return true;
+//        }
+//        double[] res = context.estimation.getLikelihood().getResiduals();
+//        double s = 0, s2 = 0;
+//        int n = res.length;
+//        for (int i = 0; i < n; ++i) {
+//            s += res[i];
+//            s2 += res[i] * res[i];
+//        }
+//        double rtval = Math.abs(s / Math.sqrt((s2 * n - s * s) / n));
+//
+//        if (rtval <= 2.5) {
+//            return true;
+//        }
+//        mu_ = true;
+//        context.description.setMean(true);
+//        RegArimaModel<SarimaModel> nregarima = context.description.buildRegArima();
+//        nregarima.setArima(context.estimation.getArima());
+//        context.estimation = new ModelEstimation(nregarima, context.description.getLikelihoodCorrection());
+//        int nhp = context.description.getArimaComponent().getFreeParametersCount();
+//        context.estimation.computeLikelihood(nhp);
+//        pass_ = 3;
+////        addMeanHistory(context);
+//        return false;
+//    }
 //    static void addArmaHistory(ModellingContext context) {
 //        context.information.subSet("history").add("arma", context.description.getSpecification().doStationary().toString());
 //    }
@@ -793,167 +805,161 @@ public class TramoProcessor extends AbstractTramoModule implements IPreprocessor
      * @return True if the model finally chosen is not an airline model, false
      * otherwise
      */
-    private boolean testAutoModel(ModellingContext context) {
-        // the reference model is an airline model...
-        SarimaSpecification spec = context.description.getSpecification();
-        if (spec.isAirline(context.hasseas)) {
-            return false;
-        }
-
-        // compute airline model. It was done in a previous step, but it is difficult
-        // to integrate that step in the logic of the processing. So we do it again
-        // model with mean only
-        ModelDescription desc = context.description.clone();
-        desc.getCalendars().clear();
-        desc.getMovingHolidays().clear();
-        desc.getUserVariables().clear();
-        desc.getPrespecifiedOutliers().clear();
-        desc.setMean(true);
-        desc.setAirline(context.hasseas);
-        TramoModelEstimator estimator = new TramoModelEstimator(desc.defaultMapping());
-        ModelEstimation air = new ModelEstimation(desc.buildRegArima());
-        air.compute(estimator, desc.getArimaComponent().getFreeParametersCount());
-
-        PreprocessingModel airline = new PreprocessingModel(desc, air);
-        airline.updateModel();
-        ModelStatistics sairline = new ModelStatistics(airline);
-
-        // the airline model is not accepted
-        Parameter q = airline.description.getArimaComponent().getTheta()[0];
-        if (q.getStde() != 0 && Math.abs(q.getValue() / q.getStde()) < 1.96) {
-            return true;
-        }
-        if (context.hasseas) {
-            Parameter bq = airline.description.getArimaComponent().getBTheta()[0];
-            if (bq.getStde() == 0 && Math.abs(bq.getValue() / bq.getStde()) < 1.96) {
-                return true;
-            }
-        }
-
-        // makes and estimates a model with mean only
-        desc.setSpecification(spec);
-        ModelEstimation estimation = null;
-        boolean accept = true;
-
-        int round = 0;
-        do {
-            accept = true;
-            spec = desc.getSpecification();
-            estimator = new TramoModelEstimator(desc.defaultMapping());
-            estimation = new ModelEstimation(desc.buildRegArima());
-            if (!estimation.compute(estimator, desc.getArimaComponent().getFreeParametersCount())) {
-                return false;
-            }
-            if (round++ != 1 && spec.getParametersCount() > 1 && !Variable.isUsed(context.description.getCalendars())
-                    && !Variable.isUsed(context.description.getMovingHolidays())) {
-                // check the model
-                SarimaSpecification nspec = checkModel(estimation.getArima(), estimator.getParametersCovariance().diagonal());
-                if (nspec != null && !nspec.equals(spec)) {
-                    desc.setSpecification(nspec);
-                    accept = false;
-                }
-            }
-
-        } while (!accept);
-
-        PreprocessingModel tmp = new PreprocessingModel(desc, estimation);
-        ModelStatistics cur = new ModelStatistics(tmp);
-
-        double fct2 = 1, fct0 = 1.025;
-        double pdfm = 1 - sairline.ljungBoxPvalue, pami = 1 - cur.ljungBoxPvalue;
-        double rsddfm = sairline.se, rsdami = cur.se;
-        SarimaModel arima = estimation.getArima();
-        if ((pami < .95 && pdfm < .75 && rsddfm < rsdami)
-                || (pami < .95 && pdfm < .75 && pdfm < pami && rsddfm < fct0 * rsdami)
-                || (pami >= .95 && pdfm < .95 && rsddfm < fct2 * rsdami)
-                || (spec.getD() == 0 && spec.getBD() == 1
-                && spec.getP() == 1 && arima.phi(1) <= -.82
-                && spec.getQ() <= 1 && spec.getBP() == 0 && spec.getBQ() == 1)
-                || (spec.getD() == 1 && spec.getBD() == 0 && spec.getP() == 0
-                && spec.getQ() == 1 && spec.getBP() == 1 && arima.bphi(1) <= -.65
-                && spec.getBQ() <= 1)) {
-            // we reuse airline
-            restore(context);
-            return false;
-        } else {
-            RegArimaModel<SarimaModel> regarima = context.description.buildRegArima();
-            regarima.setArima(tmp.estimation.getArima());
-            context.estimation = new ModelEstimation(regarima);
-            context.estimation.computeLikelihood(desc.getArimaComponent().getFreeParametersCount());
-            return true;
-        }
-    }
-
-    private SarimaSpecification checkModel(SarimaModel model, IReadDataBlock var) {
-        SarimaSpecification spec = model.getSpecification();
-        IReadDataBlock p = model.getParameters();
-        int beg = 0, len = 0;
-        int cpr = 0, cps = 0, cqr = 0, cqs = 0;
-        if (spec.getP() > 0) {
-            len = spec.getP();
-            cpr = checkParameters(p.rextract(beg, len), var.rextract(beg, len));
-            beg += len;
-        }
-        if (spec.getBP() > 0) {
-            len = spec.getBP();
-            cps = checkParameters(p.rextract(beg, len), var.rextract(beg, len));
-            beg += len;
-        }
-        if (spec.getQ() > 0) {
-            len = spec.getQ();
-            cqr = checkParameters(p.rextract(beg, len), var.rextract(beg, len));
-            beg += len;
-        }
-        if (spec.getBQ() > 0) {
-            len = spec.getBQ();
-            cqs = checkParameters(p.rextract(beg, len), var.rextract(beg, len));
-            beg += len;
-        }
-        int cont = cpr + cps + cqr + cqs;
-        if (cont > 1) {
-            return null;
-        } else {
-            SarimaSpecification nspec = spec.clone();
-            if (cpr == 1) {
-                nspec.setP(spec.getP() - 1);
-            } else if (cps == 1) {
-                nspec.setBP(spec.getBP() - 1);
-            } else if (cqr == 1) {
-                nspec.setQ(spec.getQ() - 1);
-            } else if (cqs == 1) {
-                nspec.setBQ(spec.getBQ() - 1);
-            }
-            return nspec;
-        }
-    }
-
-    /**
-     *
-     * @param p
-     * @param var
-     * @return The number of non significant final parameters
-     */
-    private int checkParameters(IReadDataBlock p, IReadDataBlock var) {
-        final double cval = 1.8;
-        int n = p.getLength() - 1;
-        int i = 0;
-        while (i <= n) {
-            double e = var.get(n - i);
-            if (e > 0) {
-                e = Math.sqrt(e);
-                double t = p.get(n - i) / e;
-                if (t < cval) {
-                    ++i;
-                } else {
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
-        return i;
-    }
-
+//    private boolean testAutoModel(ModellingContext context) {
+//        // the reference model is an airline model...
+//        SarimaSpecification spec = context.description.getSpecification();
+//        if (spec.isAirline(context.hasseas)) {
+//            return false;
+//        }
+//
+//        // compute airline model. It was done in a previous step, but it is difficult
+//        // to integrate that step in the logic of the processing. So we do it again
+//        // model with mean only
+//        ModelDescription desc = context.description.clone();
+//        desc.removeVariable(var->true);
+//        desc.setMean(true);
+//        desc.setAirline(context.hasseas);
+//        TramoModelEstimator estimator = new TramoModelEstimator(desc.defaultMapping());
+//        ModelEstimation air = new ModelEstimation(desc.buildRegArima());
+//        air.compute(estimator, desc.getArimaComponent().getFreeParametersCount());
+//
+//        PreprocessingModel airline = new PreprocessingModel(desc, air);
+//        airline.updateModel();
+//        ModelStatistics sairline = new ModelStatistics(airline);
+//
+//        // the airline model is not accepted
+//        Parameter q = airline.description.getArimaComponent().getTheta()[0];
+//        if (q.getStde() != 0 && Math.abs(q.getValue() / q.getStde()) < 1.96) {
+//            return true;
+//        }
+//        if (context.hasseas) {
+//            Parameter bq = airline.description.getArimaComponent().getBTheta()[0];
+//            if (bq.getStde() == 0 && Math.abs(bq.getValue() / bq.getStde()) < 1.96) {
+//                return true;
+//            }
+//        }
+//
+//        // makes and estimates a model with mean only
+//        desc.setSpecification(spec);
+//        ModelEstimation estimation = null;
+//        boolean accept = true;
+//
+//        int round = 0;
+//        do {
+//            accept = true;
+//            spec = desc.getSpecification();
+//            estimator = new TramoModelEstimator(desc.defaultMapping());
+//            estimation = new ModelEstimation(desc.buildRegArima());
+//            if (!estimation.compute(estimator, desc.getArimaComponent().getFreeParametersCount())) {
+//                return false;
+//            }
+//            if (round++ != 1 && spec.getParametersCount() > 1 && !Variable.isUsed(context.description.getCalendars())
+//                    && !Variable.isUsed(context.description.getMovingHolidays())) {
+//                // check the model
+//                SarimaSpecification nspec = checkModel(estimation.getArima(), estimator.getParametersCovariance().diagonal());
+//                if (nspec != null && !nspec.equals(spec)) {
+//                    desc.setSpecification(nspec);
+//                    accept = false;
+//                }
+//            }
+//
+//        } while (!accept);
+//
+//        PreprocessingModel tmp = new PreprocessingModel(desc, estimation);
+//        ModelStatistics cur = new ModelStatistics(tmp);
+//
+//        double fct2 = 1, fct0 = 1.025;
+//        double pdfm = 1 - sairline.ljungBoxPvalue, pami = 1 - cur.ljungBoxPvalue;
+//        double rsddfm = sairline.se, rsdami = cur.se;
+//        SarimaModel arima = estimation.getArima();
+//        if ((pami < .95 && pdfm < .75 && rsddfm < rsdami)
+//                || (pami < .95 && pdfm < .75 && pdfm < pami && rsddfm < fct0 * rsdami)
+//                || (pami >= .95 && pdfm < .95 && rsddfm < fct2 * rsdami)
+//                || (spec.getD() == 0 && spec.getBD() == 1
+//                && spec.getP() == 1 && arima.phi(1) <= -.82
+//                && spec.getQ() <= 1 && spec.getBP() == 0 && spec.getBQ() == 1)
+//                || (spec.getD() == 1 && spec.getBD() == 0 && spec.getP() == 0
+//                && spec.getQ() == 1 && spec.getBP() == 1 && arima.bphi(1) <= -.65
+//                && spec.getBQ() <= 1)) {
+//            // we reuse airline
+//            restore(context);
+//            return false;
+//        } else {
+//            RegArimaModel<SarimaModel> regarima = context.description.buildRegArima();
+//            regarima.setArima(tmp.estimation.getArima());
+//            context.estimation = new ModelEstimation(regarima);
+//            context.estimation.computeLikelihood(desc.getArimaComponent().getFreeParametersCount());
+//            return true;
+//        }
+//    }
+//    private SarimaSpecification checkModel(SarimaModel model, IReadDataBlock var) {
+//        SarimaSpecification spec = model.getSpecification();
+//        IReadDataBlock p = model.getParameters();
+//        int beg = 0, len = 0;
+//        int cpr = 0, cps = 0, cqr = 0, cqs = 0;
+//        if (spec.getP() > 0) {
+//            len = spec.getP();
+//            cpr = checkParameters(p.rextract(beg, len), var.rextract(beg, len));
+//            beg += len;
+//        }
+//        if (spec.getBP() > 0) {
+//            len = spec.getBP();
+//            cps = checkParameters(p.rextract(beg, len), var.rextract(beg, len));
+//            beg += len;
+//        }
+//        if (spec.getQ() > 0) {
+//            len = spec.getQ();
+//            cqr = checkParameters(p.rextract(beg, len), var.rextract(beg, len));
+//            beg += len;
+//        }
+//        if (spec.getBQ() > 0) {
+//            len = spec.getBQ();
+//            cqs = checkParameters(p.rextract(beg, len), var.rextract(beg, len));
+//            beg += len;
+//        }
+//        int cont = cpr + cps + cqr + cqs;
+//        if (cont > 1) {
+//            return null;
+//        } else {
+//            SarimaSpecification nspec = spec.clone();
+//            if (cpr == 1) {
+//                nspec.setP(spec.getP() - 1);
+//            } else if (cps == 1) {
+//                nspec.setBP(spec.getBP() - 1);
+//            } else if (cqr == 1) {
+//                nspec.setQ(spec.getQ() - 1);
+//            } else if (cqs == 1) {
+//                nspec.setBQ(spec.getBQ() - 1);
+//            }
+//            return nspec;
+//        }
+//    }
+//    /**
+//     *
+//     * @param p
+//     * @param var
+//     * @return The number of non significant final parameters
+//     */
+//    private int checkParameters(IReadDataBlock p, IReadDataBlock var) {
+//        final double cval = 1.8;
+//        int n = p.getLength() - 1;
+//        int i = 0;
+//        while (i <= n) {
+//            double e = var.get(n - i);
+//            if (e > 0) {
+//                e = Math.sqrt(e);
+//                double t = p.get(n - i) / e;
+//                if (t < cval) {
+//                    ++i;
+//                } else {
+//                    break;
+//                }
+//            } else {
+//                break;
+//            }
+//        }
+//        return i;
+//    }
     /**
      * @return the dfm_
      */
@@ -1015,7 +1021,7 @@ public class TramoProcessor extends AbstractTramoModule implements IPreprocessor
         LjungBoxTest lb = new LjungBoxTest();
         lb.setLag(ifreq);
         lb.setK(k);
-        lb.test(delta.getValues());
+        lb.test(delta);
         lb.setSignificanceThreshold(.1);
         return !lb.isValid() || lb.isSignificant();
     }

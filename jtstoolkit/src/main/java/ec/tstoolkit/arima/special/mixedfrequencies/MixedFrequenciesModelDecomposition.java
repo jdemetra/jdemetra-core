@@ -24,7 +24,7 @@ import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.arima.ArimaModel;
 import ec.tstoolkit.data.DataBlock;
-import ec.tstoolkit.information.InformationMapper;
+import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.maths.Complex;
 import ec.tstoolkit.maths.linearfilters.BackFilter;
 import ec.tstoolkit.maths.polynomials.Polynomial;
@@ -57,12 +57,15 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  *
  * @author Jean Palate
  */
 public class MixedFrequenciesModelDecomposition implements IProcResults {
+
+    public static final String SEASONALITY = "seasonality";
 
     private UcarimaModel ucm_;
     private DefaultSeriesDecomposition decomposition_;
@@ -84,7 +87,7 @@ public class MixedFrequenciesModelDecomposition implements IProcResults {
     public boolean decompose(TsData hdata, TsData ldata, SarimaModel arima, boolean mean, DataType type, boolean mul) {
         clear();
         this.mul = mul;
-        this.mean=mean;
+        this.mean = mean;
         if (!calcDomain(hdata, ldata)) {
             return false;
         }
@@ -163,7 +166,7 @@ public class MixedFrequenciesModelDecomposition implements IProcResults {
         decomposer.add(new SeasonalSelector(arima.getFrequency()));
         UcarimaModel ucm = decomposer.decompose(arima);
         ucm.setVarianceMax(-1);
-         if (mean) {
+        if (mean) {
             UcarimaModel tmp = new UcarimaModel();
             ArimaModel tm = ucm.getComponent(0);
             BackFilter urb = BackFilter.D1;
@@ -179,8 +182,8 @@ public class MixedFrequenciesModelDecomposition implements IProcResults {
             }
             ucm = tmp;
             //IArimaModel sum=ucm.getModel();
-        } 
-         if (ucm.isValid()) {
+        }
+        if (ucm.isValid()) {
             ucm.compact(2, 2);
             return ucm;
         } else {
@@ -396,22 +399,18 @@ public class MixedFrequenciesModelDecomposition implements IProcResults {
     public Map<String, Class> getDictionary() {
         // TODO
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
-        mapper.fillDictionary(null, map);
+        MAPPING.fillDictionary(null, map, false);
         return map;
     }
 
     @Override
     public boolean contains(String id) {
-        synchronized (mapper) {
-            return mapper.contains(id);
-        }
+        return MAPPING.contains(id);
     }
 
     @Override
     public <T> T getData(String id, Class<T> tclass) {
-        synchronized (mapper) {
-            return mapper.getData(this, id, tclass);
-        }
+        return MAPPING.getData(this, id, tclass);
     }
 
     @Override
@@ -419,267 +418,117 @@ public class MixedFrequenciesModelDecomposition implements IProcResults {
         return Collections.EMPTY_LIST;
     }
 
-    public static void fillDictionary(String prefix, Map<String, Class> map) {
-        mapper.fillDictionary(prefix, map);
+    public static void fillDictionary(String prefix, Map<String, Class> map, boolean compact) {
+        MAPPING.fillDictionary(prefix, map, compact);
     }
 
-    // MAPPERS
-    public static <T> void addMapping(String name, InformationMapper.Mapper<MixedFrequenciesModelDecomposition, T> mapping) {
-        synchronized (mapper) {
-            mapper.add(name, mapping);
-        }
+    // MAPPING
+    public static InformationMapping<MixedFrequenciesModelDecomposition> getMapping() {
+        return MAPPING;
     }
-    private static final InformationMapper<MixedFrequenciesModelDecomposition> mapper = new InformationMapper<>();
+
+    public static <T> void setMapping(String name, Class<T> tclass, Function<MixedFrequenciesModelDecomposition, T> extractor) {
+        MAPPING.set(name, tclass, extractor);
+    }
+
+    public static <T> void setTsData(String name, Function<MixedFrequenciesModelDecomposition, TsData> extractor) {
+        MAPPING.set(name, extractor);
+    }
+
+    private static final InformationMapping<MixedFrequenciesModelDecomposition> MAPPING = new InformationMapping<>(MixedFrequenciesModelDecomposition.class);
 
     static {
-        mapper.add(ModellingDictionary.Y_CMP, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                TsData s = source.decomposition_.getSeries(ComponentType.Series, ComponentInformation.Value);
-                return (s != null && source.mul) ? s.exp() : s;
+        MAPPING.set(ModellingDictionary.Y_CMP, source -> {
+            TsData s = source.decomposition_.getSeries(ComponentType.Series, ComponentInformation.Value);
+            return (s != null && source.mul) ? s.exp() : s;
+        });
+        MAPPING.set(ModellingDictionary.T_CMP, source -> {
+            TsData s = source.decomposition_.getSeries(ComponentType.Trend, ComponentInformation.Value);
+            return (s != null && source.mul) ? s.exp() : s;
+        });
+        MAPPING.set(ModellingDictionary.SA_CMP, source -> {
+            TsData s = source.decomposition_.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value);
+            return (s != null && source.mul) ? s.exp() : s;
+        });
+        MAPPING.set(ModellingDictionary.S_CMP, source -> {
+            TsData s = source.decomposition_.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
+            return (s != null && source.mul) ? s.exp() : s;
+        });
+        MAPPING.set(ModellingDictionary.I_CMP, source -> {
+            TsData s = source.decomposition_.getSeries(ComponentType.Irregular, ComponentInformation.Value);
+            return (s != null && source.mul) ? s.exp() : s;
+        });
+        MAPPING.set(ModellingDictionary.Y_CMP + SeriesInfo.F_SUFFIX, source -> {
+            TsData s = source.decomposition_.getSeries(ComponentType.Series, ComponentInformation.Forecast);
+            return (s != null && source.mul) ? s.exp() : s;
+        });
+        MAPPING.set(ModellingDictionary.T_CMP + SeriesInfo.F_SUFFIX, source -> {
+            TsData s = source.decomposition_.getSeries(ComponentType.Trend, ComponentInformation.Forecast);
+            return (s != null && source.mul) ? s.exp() : s;
+        });
+        MAPPING.set(ModellingDictionary.SA_CMP + SeriesInfo.F_SUFFIX, source -> {
+            TsData s = source.decomposition_.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
+            return (s != null && source.mul) ? s.exp() : s;
+        });
+        MAPPING.set(ModellingDictionary.S_CMP + SeriesInfo.F_SUFFIX, source -> {
+            TsData s = source.decomposition_.getSeries(ComponentType.Seasonal, ComponentInformation.Forecast);
+            return (s != null && source.mul) ? s.exp() : s;
+        });
+        MAPPING.set(ModellingDictionary.I_CMP + SeriesInfo.F_SUFFIX, source -> {
+            TsData s = source.decomposition_.getSeries(ComponentType.Irregular, ComponentInformation.Forecast);
+            return (s != null && source.mul) ? s.exp() : s;
+        });
+        MAPPING.set(ModellingDictionary.Y_LIN,
+                source -> source.decomposition_.getSeries(ComponentType.Series, ComponentInformation.Value));
+        MAPPING.set(ModellingDictionary.Y_LIN + SeriesInfo.E_SUFFIX,
+                source -> source.decomposition_.getSeries(ComponentType.Series, ComponentInformation.Stdev));
+        MAPPING.set(ModellingDictionary.T_LIN,
+                source -> source.decomposition_.getSeries(ComponentType.Trend, ComponentInformation.Value));
+        MAPPING.set(ModellingDictionary.T_LIN + SeriesInfo.E_SUFFIX,
+                source -> source.decomposition_.getSeries(ComponentType.Trend, ComponentInformation.Stdev));
+        MAPPING.set(ModellingDictionary.SA_LIN,
+                source -> source.decomposition_.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value));
+        MAPPING.set(ModellingDictionary.SA_LIN + SeriesInfo.E_SUFFIX,
+                source -> source.decomposition_.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev));
+        MAPPING.set(ModellingDictionary.S_LIN,
+                source -> source.decomposition_.getSeries(ComponentType.Seasonal, ComponentInformation.Value));
+        MAPPING.set(ModellingDictionary.S_LIN + SeriesInfo.E_SUFFIX,
+                source -> source.decomposition_.getSeries(ComponentType.Seasonal, ComponentInformation.Stdev));
+        MAPPING.set(ModellingDictionary.I_LIN,
+                source -> source.decomposition_.getSeries(ComponentType.Irregular, ComponentInformation.Value));
+        MAPPING.set(ModellingDictionary.I_LIN + SeriesInfo.E_SUFFIX,
+                source -> source.decomposition_.getSeries(ComponentType.Irregular, ComponentInformation.Stdev));
+        MAPPING.set(ModellingDictionary.Y_LIN + SeriesInfo.F_SUFFIX,
+                source -> source.decomposition_.getSeries(ComponentType.Series, ComponentInformation.Forecast));
+        MAPPING.set(ModellingDictionary.Y_LIN + SeriesInfo.EF_SUFFIX,
+                source -> source.decomposition_.getSeries(ComponentType.Series, ComponentInformation.StdevForecast));
+        MAPPING.set(ModellingDictionary.T_LIN + SeriesInfo.F_SUFFIX,
+                source -> source.decomposition_.getSeries(ComponentType.Trend, ComponentInformation.Forecast));
+        MAPPING.set(ModellingDictionary.T_LIN + SeriesInfo.EF_SUFFIX,
+                source -> source.decomposition_.getSeries(ComponentType.Trend, ComponentInformation.StdevForecast));
+        MAPPING.set(ModellingDictionary.SA_LIN + SeriesInfo.F_SUFFIX,
+                source -> source.decomposition_.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast));
+        MAPPING.set(ModellingDictionary.SA_LIN + SeriesInfo.EF_SUFFIX,
+                source -> source.decomposition_.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast));
+        MAPPING.set(ModellingDictionary.S_LIN + SeriesInfo.F_SUFFIX,
+                source -> source.decomposition_.getSeries(ComponentType.Seasonal, ComponentInformation.Forecast));
+        MAPPING.set(ModellingDictionary.S_LIN + SeriesInfo.EF_SUFFIX,
+                source -> source.decomposition_.getSeries(ComponentType.Seasonal, ComponentInformation.StdevForecast));
+        MAPPING.set(ModellingDictionary.I_LIN + SeriesInfo.F_SUFFIX,
+                source -> source.decomposition_.getSeries(ComponentType.Irregular, ComponentInformation.Forecast));
+        MAPPING.set(ModellingDictionary.I_LIN + SeriesInfo.EF_SUFFIX,
+                source -> source.decomposition_.getSeries(ComponentType.Irregular, ComponentInformation.StdevForecast));
+        MAPPING.set(ModellingDictionary.SI_LIN, source -> {
+            TsData i = source.decomposition_.getSeries(ComponentType.Irregular, ComponentInformation.Value);
+            TsData s = source.decomposition_.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
+            TsData si = TsData.add(s, i);
+            if (source.mul) {
+                return si.exp();
+            } else {
+                return si;
             }
         });
-        mapper.add(ModellingDictionary.T_CMP, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                TsData s = source.decomposition_.getSeries(ComponentType.Trend, ComponentInformation.Value);
-                return (s != null && source.mul) ? s.exp() : s;
-            }
-        });
-        mapper.add(ModellingDictionary.SA_CMP, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                TsData s = source.decomposition_.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value);
-                return (s != null && source.mul) ? s.exp() : s;
-            }
-        });
-        mapper.add(ModellingDictionary.S_CMP, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                TsData s = source.decomposition_.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
-                return (s != null && source.mul) ? s.exp() : s;
-            }
-        });
-        mapper.add(ModellingDictionary.I_CMP, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                TsData s = source.decomposition_.getSeries(ComponentType.Irregular, ComponentInformation.Value);
-                return (s != null && source.mul) ? s.exp() : s;
-            }
-        });
-        mapper.add(ModellingDictionary.Y_CMP+ SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                TsData s = source.decomposition_.getSeries(ComponentType.Series, ComponentInformation.Forecast);
-                return (s != null && source.mul) ? s.exp() : s;
-            }
-        });
-        mapper.add(ModellingDictionary.T_CMP+ SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                TsData s = source.decomposition_.getSeries(ComponentType.Trend, ComponentInformation.Forecast);
-                return (s != null && source.mul) ? s.exp() : s;
-            }
-        });
-        mapper.add(ModellingDictionary.SA_CMP+ SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                TsData s = source.decomposition_.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
-                return (s != null && source.mul) ? s.exp() : s;
-            }
-        });
-        mapper.add(ModellingDictionary.S_CMP+ SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                TsData s = source.decomposition_.getSeries(ComponentType.Seasonal, ComponentInformation.Forecast);
-                return (s != null && source.mul) ? s.exp() : s;
-            }
-        });
-        mapper.add(ModellingDictionary.I_CMP+ SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                TsData s = source.decomposition_.getSeries(ComponentType.Irregular, ComponentInformation.Forecast);
-                return (s != null && source.mul) ? s.exp() : s;
-            }
-        });
-        mapper.add(ModellingDictionary.Y_LIN, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.Series, ComponentInformation.Value);
-            }
-        });
-        mapper.add(ModellingDictionary.Y_LIN + SeriesInfo.E_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.Series, ComponentInformation.Stdev);
-            }
-        });
-        mapper.add(ModellingDictionary.T_LIN, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.Trend, ComponentInformation.Value);
-            }
-        });
-        mapper.add(ModellingDictionary.T_LIN + SeriesInfo.E_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.Trend, ComponentInformation.Stdev);
-            }
-        });
-        mapper.add(ModellingDictionary.SA_LIN, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value);
-            }
-        });
-        mapper.add(ModellingDictionary.SA_LIN + SeriesInfo.E_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
-            }
-        });
-        mapper.add(ModellingDictionary.S_LIN, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
-            }
-        });
-        mapper.add(ModellingDictionary.S_LIN + SeriesInfo.E_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.Seasonal, ComponentInformation.Stdev);
-            }
-        });
-        mapper.add(ModellingDictionary.I_LIN, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.Irregular, ComponentInformation.Value);
-            }
-        });
-        mapper.add(ModellingDictionary.I_LIN + SeriesInfo.E_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.Irregular, ComponentInformation.Stdev);
-            }
-        });
-        mapper.add(ModellingDictionary.Y_LIN + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.Series, ComponentInformation.Forecast);
-            }
-        });
-        mapper.add(ModellingDictionary.Y_LIN + SeriesInfo.EF_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.Series, ComponentInformation.StdevForecast);
-            }
-        });
-        mapper.add(ModellingDictionary.T_LIN + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.Trend, ComponentInformation.Forecast);
-            }
-        });
-        mapper.add(ModellingDictionary.T_LIN + SeriesInfo.EF_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.Trend, ComponentInformation.StdevForecast);
-            }
-        });
-        mapper.add(ModellingDictionary.SA_LIN + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
-            }
-        });
-        mapper.add(ModellingDictionary.SA_LIN + SeriesInfo.EF_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
-            }
-        });
-        mapper.add(ModellingDictionary.S_LIN + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.Seasonal, ComponentInformation.Forecast);
-            }
-        });
-        mapper.add(ModellingDictionary.S_LIN + SeriesInfo.EF_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.Seasonal, ComponentInformation.StdevForecast);
-            }
-        });
-        mapper.add(ModellingDictionary.I_LIN + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.Irregular, ComponentInformation.Forecast);
-            }
-        });
-        mapper.add(ModellingDictionary.I_LIN + SeriesInfo.EF_SUFFIX, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.decomposition_.getSeries(ComponentType.Irregular, ComponentInformation.StdevForecast);
-            }
-        });
-        mapper.add(ModellingDictionary.SI_LIN, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(MixedFrequenciesModelDecomposition source) {
-                TsData i = source.decomposition_.getSeries(ComponentType.Irregular, ComponentInformation.Value);
-                TsData s = source.decomposition_.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
-                TsData si = TsData.add(s, i);
-                if (source.mul) {
-                    return si.exp();
-                } else {
-                    return si;
-                }
-            }
-        });
-        mapper.add(ModellingDictionary.MODE, new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, DecompositionMode>(DecompositionMode.class) {
-
-            @Override
-            public DecompositionMode retrieve(MixedFrequenciesModelDecomposition source) {
-                return source.mul ? DecompositionMode.Multiplicative : DecompositionMode.Additive;
-            }
-        });
-        mapper.add("seasonality", new InformationMapper.Mapper<MixedFrequenciesModelDecomposition, Boolean>(Boolean.class) {
-
-            @Override
-            public Boolean retrieve(MixedFrequenciesModelDecomposition source) {
-                return !source.ucm_.getComponent(1).isNull();
-            }
-        });
+        MAPPING.set(ModellingDictionary.MODE, DecompositionMode.class, source -> source.mul ? DecompositionMode.Multiplicative : DecompositionMode.Additive);
+        MAPPING.set(SEASONALITY, Boolean.class, source -> !source.ucm_.getComponent(1).isNull());
     }
-
 }

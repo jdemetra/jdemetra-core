@@ -13,18 +13,20 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.db;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import ec.tss.tsproviders.utils.ObsCharacteristics;
+import ec.tss.tsproviders.utils.ObsGathering;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -73,7 +75,8 @@ public final class DbUtil {
     @Nonnull
     public static <T extends Exception> List<DbSeries> getAllSeriesWithData(@Nonnull AllSeriesWithDataCursor<T> cursor, @Nonnull DbSetId ref, @Nonnull TsFrequency frequency, @Nonnull TsAggregationType aggregationType) throws T {
         ImmutableList.Builder<DbSeries> result = ImmutableList.builder();
-        OptionalTsData.Builder data = new OptionalTsData.Builder(frequency, aggregationType);
+        ObsGathering gathering = ObsGathering.includingMissingValues(frequency, aggregationType);
+        OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(new GregorianCalendar(), gathering, ObsCharacteristics.ORDERED);
         boolean t0 = cursor.next();
         while (t0) {
             String[] dimValues = cursor.dimValues;
@@ -86,7 +89,7 @@ public final class DbUtil {
                     value = cursor.value;
                     t0 = cursor.next();
                     t1 = t0 && Arrays.equals(dimValues, cursor.dimValues);
-                    t2 = t1 && Objects.equal(period, cursor.period);
+                    t2 = t1 && Objects.equals(period, cursor.period);
                 }
                 data.add(period, value);
             }
@@ -104,7 +107,8 @@ public final class DbUtil {
 
     @Nonnull
     public static <T extends Exception> DbSeries getSeriesWithData(@Nonnull SeriesWithDataCursor<T> cursor, @Nonnull DbSetId ref, @Nonnull TsFrequency frequency, @Nonnull TsAggregationType aggregationType) throws T {
-        OptionalTsData.Builder data = new OptionalTsData.Builder(frequency, aggregationType);
+        ObsGathering gathering = ObsGathering.includingMissingValues(frequency, aggregationType);
+        OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(new GregorianCalendar(), gathering, ObsCharacteristics.ORDERED);
         boolean t0 = cursor.next();
         if (t0) {
             Date latestPeriod = cursor.period;
@@ -115,7 +119,7 @@ public final class DbUtil {
                 while (t1) {
                     value = cursor.value;
                     t0 = cursor.next();
-                    t1 = t0 && Objects.equal(period, latestPeriod = cursor.period);
+                    t1 = t0 && Objects.equals(period, latestPeriod = cursor.period);
                 }
                 data.add(period, value);
             }

@@ -102,12 +102,12 @@ public class FinalEstimator implements IModelEstimator {
 
         SarimaModel m = context.estimation.getRegArima().getArima();
         SarimaSpecification spec = m.getSpecification();
-        if (spec.getParametersCount() == 1) {
-            return 0;
-        }
-
+//        if (spec.getParametersCount() == 1) {
+//            return 0;
+//        }
+//
         IReadDataBlock pm = m.getParameters();
-        //if (context.automodelling) {
+//        //if (context.automodelling) {
         int start = 0, len = spec.getP();
         boolean dpr = Utilities.checkRoots(pm.rextract(start, len), 1 / cmod);// (m.RegularAR.Roots,
         start += len;
@@ -119,15 +119,15 @@ public class FinalEstimator implements IModelEstimator {
         start += len;
         len = spec.getBQ();
         boolean dqs = Utilities.checkRoots(pm.rextract(start, len), 1 / cmod);// SeasonalMA.Roots,
-        // 1/cmod);
-
-        if (!dpr || !dps || !dqr || !dqs) {
-            return 0;
+//        // 1/cmod);
+//
+        if (!dpr && !dps && !dqr && !dqs) {
+            return 0; // nothing to do
         }
         //}
 
         // new implementation (cfr Tramo)
-        // search the smallest TVal, remove only 1 parameter
+        // searchVariable the smallest TVal, remove only 1 parameter
 
         int cpr = 0, cps = 0, cqr = 0, cqs = 0;
         double tmin = cval;
@@ -135,7 +135,7 @@ public class FinalEstimator implements IModelEstimator {
 
 
         int k = -1;
-        if (spec.getP() > 0) {
+        if (dpr) {
             k += spec.getP();
             double v = Math.abs(pm.get(k));
             double s = diag.get(k);
@@ -147,7 +147,7 @@ public class FinalEstimator implements IModelEstimator {
                 }
             }
         }
-        if (spec.getBP() > 0) {
+        if (dps) {
             k += spec.getBP();
             double v = Math.abs(pm.get(k));
             double s = diag.get(k);
@@ -162,7 +162,7 @@ public class FinalEstimator implements IModelEstimator {
                 }
             }
         }
-        if (spec.getQ() > 0) {
+        if (dqr) {
             k += spec.getQ();
             double v = Math.abs(pm.get(k));
             double s = diag.get(k);
@@ -178,7 +178,7 @@ public class FinalEstimator implements IModelEstimator {
                 }
             }
         }
-        if (spec.getBQ() > 0) {
+        if (dqs) {
             k += spec.getBQ();
             double v = Math.abs(pm.get(k));
             double s = diag.get(k);

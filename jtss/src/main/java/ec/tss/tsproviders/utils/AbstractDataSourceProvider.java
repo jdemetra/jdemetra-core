@@ -29,6 +29,7 @@ import ec.tstoolkit.MetaData;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.slf4j.Logger;
@@ -67,13 +68,14 @@ public abstract class AbstractDataSourceProvider<DATA> extends AbstractTsProvide
     }
 
     @Override
-    public List<DataSource> getDataSources() {
-        return support.getDataSources();
+    public void reload(DataSource dataSource) throws IllegalArgumentException {
+        cache.invalidate(dataSource);
+        support.reload(dataSource);
     }
 
     @Override
-    public String getDisplayName(IOException exception) throws IllegalArgumentException {
-        return support.getDisplayName(exception);
+    public List<DataSource> getDataSources() {
+        return support.getDataSources();
     }
 
     @Override
@@ -113,11 +115,15 @@ public abstract class AbstractDataSourceProvider<DATA> extends AbstractTsProvide
 
     @Override
     public boolean queryTsCollection(TsMoniker moniker, TsInformationType type) {
+        Objects.requireNonNull(moniker, "Moniker cannot be null");
+        Objects.requireNonNull(type, "Type cannot be null");
         return support.checkQuietly(moniker) && super.queryTsCollection(moniker, type);
     }
 
     @Override
     public boolean queryTs(TsMoniker moniker, TsInformationType type) {
+        Objects.requireNonNull(moniker, "Moniker cannot be null");
+        Objects.requireNonNull(type, "Type cannot be null");
         return support.checkQuietly(moniker) && super.queryTs(moniker, type);
     }
 
@@ -131,8 +137,7 @@ public abstract class AbstractDataSourceProvider<DATA> extends AbstractTsProvide
                     fillCollection(info, dataSource);
                     return true;
                 } catch (Exception ex) {
-                    support.fillCollection(info, ex);
-                    return false;
+                    return support.reportException(info, ex, this::getDisplayName);
                 }
             }
         }
@@ -144,8 +149,7 @@ public abstract class AbstractDataSourceProvider<DATA> extends AbstractTsProvide
                     fillCollection(info, dataSet);
                     return true;
                 } catch (Exception ex) {
-                    support.fillCollection(info, ex);
-                    return false;
+                    return support.reportException(info, ex, this::getDisplayName);
                 }
             }
         }
@@ -163,8 +167,7 @@ public abstract class AbstractDataSourceProvider<DATA> extends AbstractTsProvide
                     fillSeries(info, dataSet);
                     return true;
                 } catch (Exception ex) {
-                    support.fillSeries(info, ex);
-                    return false;
+                    return support.reportException(info, ex, this::getDisplayName);
                 }
             }
         }

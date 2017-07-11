@@ -68,7 +68,7 @@ public class LinearizedLogSmoother<S extends ISsf>
         cumul.transform(tmp);
         m_yc = m_y.clone();
         for (int i = 0; i < tmp.length; ++i) {
-            if (DescriptiveStatistics.isFinite(m_yc[i])) {
+            if (Double.isFinite(m_yc[i])) {
                 m_yc[i] += tmp[i];
             }
         }
@@ -93,7 +93,7 @@ public class LinearizedLogSmoother<S extends ISsf>
         cumul.transform(tmp);
         m_yc = m_y.clone();
         for (int i = 0; i < tmp.length; ++i) {
-            if (DescriptiveStatistics.isFinite(m_yc[i])) {
+            if (Double.isFinite(m_yc[i])) {
                 m_yc[i] += tmp[i];
             }
         }

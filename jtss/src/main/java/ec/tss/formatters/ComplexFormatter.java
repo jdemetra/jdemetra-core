@@ -13,12 +13,9 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.formatters;
 
-import com.google.common.base.Strings;
-import ec.tstoolkit.information.StatisticalTest;
 import ec.tstoolkit.maths.Complex;
 import java.text.DecimalFormat;
 
@@ -29,31 +26,49 @@ import java.text.DecimalFormat;
 public class ComplexFormatter implements IStringFormatter {
 
     private static final DecimalFormat df4 = new DecimalFormat();
-     static {
+
+    static {
         df4.setMaximumFractionDigits(4);
         df4.setGroupingUsed(false);
     }
-   private final DecimalFormat fmt;
+    private final DecimalFormat fmt;
 
-    public ComplexFormatter(){
-        fmt=df4;
+    public ComplexFormatter() {
+        fmt = df4;
     }
-    
-    public ComplexFormatter(DecimalFormat fmt){
-        this.fmt=fmt;
+
+    public ComplexFormatter(DecimalFormat fmt) {
+        this.fmt = fmt;
     }
-    
+
+    @Override
+    public int getDefaultRepresentationLength() {
+        return 2;
+    }
+
     @Override
     public String format(Object obj, int item) {
 
-        Complex c=(Complex)obj;
-        if (item == 0)
+        Complex c = (Complex) obj;
+        if (item == 0) {
             return c.toString();
-        if (Math.abs(item)== 1)
+        }
+        if (Math.abs(item) == 1) {
             return fmt.format(c.abs());
-        else if (Math.abs(item)== 2)
-            return fmt.format(c.arg());
-        else
+        } else if (Math.abs(item) == 2) {
+            double arg = c.arg();
+            if (arg == 0) {
+                return "";
+            } else {
+                double period = (2 * Math.PI) / arg;
+                if (period < -2 + 1e-6 && period > -2 - 1e-6) {
+                    return "2";
+                } else {
+                    return fmt.format(period);
+                }
+            }
+        } else {
             return "";
+        }
     }
 }

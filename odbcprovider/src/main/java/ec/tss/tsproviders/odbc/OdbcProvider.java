@@ -18,6 +18,7 @@ package ec.tss.tsproviders.odbc;
 
 import adodb.wsh.AdoDriver;
 import com.google.common.base.StandardSystemProperty;
+import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;
 import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.IFileLoader;
@@ -27,12 +28,13 @@ import ec.tss.tsproviders.jdbc.JdbcAccessor;
 import ec.tss.tsproviders.jdbc.JdbcBean;
 import ec.tss.tsproviders.jdbc.JdbcProvider;
 import ec.tss.tsproviders.utils.OptionalTsData;
+import ec.tstoolkit.design.VisibleForTesting;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.File;
-import java.io.FileFilter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
+import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +42,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Demortier Jeremy
  */
+@ServiceProvider(service = ITsProvider.class)
 public class OdbcProvider extends JdbcProvider<OdbcBean> implements IFileLoader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OdbcProvider.class);
@@ -49,8 +52,13 @@ public class OdbcProvider extends JdbcProvider<OdbcBean> implements IFileLoader 
     protected final DriverBasedSupplier connectionSupplier;
 
     public OdbcProvider() {
+        this(new OdbcSupplier());
+    }
+
+    @VisibleForTesting
+    OdbcProvider(DriverBasedSupplier connectionSupplier) {
         super(SOURCE, VERSION, LOGGER, TsAsyncMode.Once);
-        connectionSupplier = new OdbcSupplier();
+        this.connectionSupplier = connectionSupplier;
     }
 
     @Override
@@ -93,12 +101,7 @@ public class OdbcProvider extends JdbcProvider<OdbcBean> implements IFileLoader 
 
     @Override
     public boolean accept(File pathname) {
-        for (FileFilter o : OdbcBean.FILE_FILTERS) {
-            if (o.accept(pathname)) {
-                return true;
-            }
-        }
-        return false;
+        return OdbcBean.FILE_FILTERS.stream().anyMatch(o -> (o.accept(pathname)));
     }
 
     @Override

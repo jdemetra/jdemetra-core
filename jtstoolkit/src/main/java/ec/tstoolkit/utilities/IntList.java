@@ -20,6 +20,11 @@ package ec.tstoolkit.utilities;
 import ec.tstoolkit.design.PrimitiveReplacementOf;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Spliterator;
+import java.util.function.IntConsumer;
+import java.util.function.IntPredicate;
+import java.util.function.IntUnaryOperator;
+import java.util.stream.IntStream;
 
 /**
  * A List of int's; as full an implementation of the java.util.List interface as
@@ -70,6 +75,7 @@ public final class IntList {
      * create an IntList with a predefined initial size
      *
      * @param initialCapacity the size for the internal array
+     * @param fillvalue
      */
     public IntList(final int initialCapacity, int fillvalue) {
         _array = new int[initialCapacity];
@@ -538,6 +544,98 @@ public final class IntList {
 
         System.arraycopy(_array, 0, new_array, 0, _limit);
         _array = new_array;
+    }
+    
+    /**
+     * Returns a sequential {@code Stream} with this collection as its source.
+     *
+     * @return a sequential {@code Stream} over the elements in this collection
+     * @see java.util.Collection#stream()
+     * @since 2.2.0
+     */
+    public IntStream stream() {
+        return Arrays.stream(_array, 0, _limit);
+    }
+
+    /**
+     * Replaces each element of this list with the result of applying the
+     * operator to that element. Errors or runtime exceptions thrown by the
+     * operator are relayed to the caller.
+     *
+     * @param operator the operator to apply to each element
+     * @throws NullPointerException if the specified operator is null
+     * @see java.util.List#replaceAll(java.util.function.UnaryOperator)
+     * @since 2.2.0
+     */
+    public void replaceAll(IntUnaryOperator operator) {
+        java.util.Objects.requireNonNull(operator);
+        for (int i = 0; i < _limit; i++) {
+            _array[i] = operator.applyAsInt(_array[i]);
+        }
+    }
+
+    /**
+     * Sorts this list.
+     *
+     * @see java.util.List#sort(java.util.Comparator)
+     * @since 2.2.0
+     */
+    public void sort() {
+        Arrays.sort(_array, 0, _limit);
+    }
+
+    /**
+     * Creates a {@link Spliterator} over the elements in this list.
+     *
+     * @return a {@code Spliterator} over the elements in this list
+     * @see java.util.List#spliterator()
+     * @since 2.2.0
+     */
+    public Spliterator.OfInt spliterator() {
+        return Arrays.spliterator(_array, 0, _limit);
+    }
+
+    /**
+     * Removes all of the elements of this collection that satisfy the given
+     * predicate. Errors or runtime exceptions thrown during iteration or by the
+     * predicate are relayed to the caller.
+     *
+     * @param filter a predicate which returns {@code true} for elements to be
+     * removed
+     * @return {@code true} if any elements were removed
+     * @throws NullPointerException if the specified filter is null
+     * @see java.util.Collection#removeIf(java.util.function.Predicate)
+     * @since 2.2.0
+     */
+    public boolean removeIf(IntPredicate filter) {
+        java.util.Objects.requireNonNull(filter);
+        boolean removed = false;
+        int i = 0;
+        while (i < _limit) {
+            if (filter.test(_array[i])) {
+                remove(i);
+                removed = true;
+            } else {
+                i++;
+            }
+        }
+        return removed;
+    }
+
+    /**
+     * Performs the given action for each element of the {@code List} until
+     * all elements have been processed or the action throws an exception.
+     *
+     * @param action The action to be performed for each element
+     * @throws NullPointerException if the specified action is null
+     * @see java.lang.Iterable#forEach(java.util.function.Consumer)
+     * @since 2.2.0
+     */
+    public void forEach(IntConsumer action) {
+        java.util.Objects.requireNonNull(action);
+        for (int i = 0; i < _limit; i++) {
+            action.accept(_array[i]);
+        }
     }
 }   // end public class IntList
 

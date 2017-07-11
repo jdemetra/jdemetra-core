@@ -51,7 +51,7 @@ public class PeriodSpecificExtremeValuesCorrector extends DefaultExtremeValuesCo
             sweights = new TsData(scur.getDomain());
             PeriodIterator iteri = new PeriodIterator(scur);
             PeriodIterator itero = new PeriodIterator(sweights);
-            sweights.getValues().set(1);
+            sweights.set(()->1);
 
             double xbar = getMean();
             int y = 0;

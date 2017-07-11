@@ -22,5 +22,8 @@ package ec.tss.formatters;
  * @author Jean Palate
  */
 interface IStringFormatter {
-    public String format(Object obj, int item);
+    String format(Object obj, int item);
+    default int getDefaultRepresentationLength(){
+        return 1;
+    }
 }

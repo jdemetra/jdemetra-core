@@ -18,8 +18,9 @@
 
 package ec.tstoolkit.timeseries.simplets;
 
-import ec.tstoolkit.data.DescriptiveStatistics;
+import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.utilities.IntList;
 
 /**
@@ -60,7 +61,8 @@ public class AverageInterpolator implements ITsDataInterpolator
 	// starting at the end of the series
 	int ny = y.length, i0 = -1, i1 = -1;
 	for (int i = ny - 1; i >= 0; --i) {
-	    if (!DescriptiveStatistics.isFinite(y[i])) {
+            double cur=y[i];
+	    if (!Double.isFinite(cur)) {
 		if (i1 == -1)
 		    i1 = i + 1;
 		i0 = i - 1;
@@ -87,7 +89,7 @@ public class AverageInterpolator implements ITsDataInterpolator
     @Override
     public boolean interpolate(TsData data, IntList missingpos)
     {
-	return cleanMissings(data.getValues().internalStorage(), missingpos);
+	return cleanMissings(data.internalStorage(), missingpos);
     }
 
 }

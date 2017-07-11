@@ -16,37 +16,57 @@
  */
 package adodb.wsh;
 
+import ec.tstoolkit.design.VisibleForTesting;
+import static java.lang.String.format;
 import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.LoggerFactory;
 
 /**
  * https://msdn.microsoft.com/en-us/library/aa478977.aspx
  *
  * @author Philippe Charles
+ * @since 2.1.0
  */
+@ServiceProvider(service = Driver.class)
 public final class AdoDriver extends _Driver {
 
     public static final String PREFIX = "jdbc:adodb:";
 
+    static {
+        try {
+            DriverManager.registerDriver(new AdoDriver());
+        } catch (SQLException ex) {
+            LoggerFactory.getLogger(AdoDriver.class).error("Cannot register AdoDriver", ex);
+        }
+    }
+
     private final Wsh wsh;
-    private final Map<String, AdoConnection> connectionPool;
+    private final ConcurrentMap<String, AdoContext> pool;
 
     public AdoDriver() {
-        this.wsh = Wsh.getDefault();
-        this.connectionPool = new ConcurrentHashMap<>();
+        this(Wsh.getDefault(), new ConcurrentHashMap<>());
+    }
+
+    @VisibleForTesting
+    AdoDriver(Wsh wsh, ConcurrentMap<String, AdoContext> pool) {
+        this.wsh = wsh;
+        this.pool = pool;
     }
 
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
         if (!acceptsURL(url)) {
-            throw new SQLException("Invalid database address: " + url);
+            throw new SQLException(format("Invalid database url: '%s'", url));
         }
         String connectionString = url.trim().substring(PREFIX.length());
-        Connection result = connectionPool.remove(connectionString);
-        return result != null ? result : new AdoConnection(wsh, connectionString, connectionPool);
+        return AdoConnection.of(getOrCreate(connectionString), this::recycle);
     }
 
     @Override
@@ -58,4 +78,15 @@ public final class AdoDriver extends _Driver {
     public boolean jdbcCompliant() {
         return false;
     }
+
+    //<editor-fold defaultstate="collapsed" desc="Internal implementation">
+    private AdoContext getOrCreate(String connectionString) {
+        AdoContext result = pool.remove(connectionString);
+        return result != null ? result : AdoContext.of(wsh, connectionString);
+    }
+
+    private void recycle(AdoContext o) {
+        pool.put(o.getConnectionString(), o);
+    }
+    //</editor-fold>
 }

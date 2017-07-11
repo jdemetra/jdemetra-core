@@ -27,6 +27,7 @@ import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import ec.tstoolkit.timeseries.regression.GregorianCalendarVariables;
+import ec.tstoolkit.timeseries.regression.ICalendarVariable;
 import ec.tstoolkit.timeseries.regression.LeapYearVariable;
 import org.junit.Test;
 
@@ -117,15 +118,15 @@ public class AbstractModelControllerTest {
             model.setPrespecifiedOutliers(null);
 
             // remove previous calendar effects 
-            model.getCalendars().clear();
+            model.removeVariable(var->var.isCalendar());
             if (td != TradingDaysType.None) // we create a variable, using the usual calendar, with the "Accepted" status (so that it could be removed later).
             // use the prespecified status if you don't want to test it later.
             {
-                model.getCalendars().add(new Variable(GregorianCalendarVariables.getDefault(td), ComponentType.CalendarEffect, RegStatus.Accepted));
+                model.addVariable(Variable.calendarVariable(GregorianCalendarVariables.getDefault(td), RegStatus.Accepted));
             }
             if (lp != LengthOfPeriodType.None) // same as td
             {
-                model.getCalendars().add(new Variable(new LeapYearVariable(lp), ComponentType.CalendarEffect, RegStatus.Accepted));
+                model.addVariable(Variable.calendarVariable(new LeapYearVariable(lp), RegStatus.Accepted));
             }
             return model;
         }

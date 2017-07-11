@@ -63,9 +63,8 @@ public class ITsModifierTest {
     }
 }
 
-class TramoExpander implements ITsModifier {
+class TramoExpander extends AbstractTsModifier {
 
-    private final ITsVariable var;
     private final PreprocessingModel model;
 
     static TsData of(ITsVariable v) {
@@ -82,6 +81,7 @@ class TramoExpander implements ITsModifier {
     }
 
     TramoExpander(ITsVariable var, TramoSpecification spec) {
+        super(var);
         TsData s = of(var);
         if (s == null) {
             throw new IllegalArgumentException();
@@ -91,22 +91,12 @@ class TramoExpander implements ITsModifier {
     }
 
     TramoExpander(TsData s, TramoSpecification spec) {
-        var = new TsVariable(s);
+        super(new TsVariable(s));
         model = spec.build().process(s, new ModellingContext());
     }
 
     @Override
-    public ITsVariable getVariable() {
-        return var;
-    }
-
-    @Override
     public void data(TsDomain domain, List<DataBlock> data) {
-        data(domain, data,0);
-    }
-    
-    @Override
-    public void data(TsDomain domain, List<DataBlock> data, int start) {
         TsData s = of(var);
         TsDomain vdom = s.getDomain();
         int nb = vdom.getStart().minus(domain.getStart());
@@ -126,7 +116,7 @@ class TramoExpander implements ITsModifier {
         if (f != null) {
             s = s.update(f);
         }
-        data.get(start).copy(s);
+        data.get(0).copy(s);
     }
 
     @Override
@@ -140,8 +130,8 @@ class TramoExpander implements ITsModifier {
     }
 
     @Override
-    public String getDescription() {
-        return var.getDescription();
+    public String getDescription(TsFrequency context) {
+        return var.getDescription(context);
     }
 
     @Override
@@ -150,8 +140,8 @@ class TramoExpander implements ITsModifier {
     }
 
     @Override
-    public String getItemDescription(int idx) {
-        return var.getItemDescription(idx);
+    public String getItemDescription(int idx, TsFrequency context) {
+        return var.getItemDescription(idx, context);
     }
 
     @Override
@@ -159,4 +149,8 @@ class TramoExpander implements ITsModifier {
         return domain.getFrequency() == var.getDefinitionFrequency();
     }
 
+    @Override
+    public String getName(){
+        return var.getName();
+    }
 }

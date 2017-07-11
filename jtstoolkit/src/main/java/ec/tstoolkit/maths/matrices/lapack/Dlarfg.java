@@ -23,6 +23,7 @@ import ec.tstoolkit.maths.Constants;
  * 
  * @author Jean Palate
  */
+@Deprecated
 public class Dlarfg {
     private final static double ZERO = 0.0, ONE = 1.0;
     private double m_beta, m_tau, m_alpha;

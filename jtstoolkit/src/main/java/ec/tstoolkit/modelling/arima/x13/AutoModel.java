@@ -76,9 +76,9 @@ public class AutoModel implements IPreprocessingModule {
         try {
             // get residuals
             DataBlock res = context.estimation.getLinearizedData();
-            iddiff.process(freq, res, 0, 0);
+            iddiff.process(res, freq, 0, 0);
             int nd = iddiff.getD(), nbd = iddiff.getBD();
-            nmean = iddiff.isMean();
+            nmean = iddiff.isMeanCorrection();
 
             DataBlock dres;
             if (nd != 0 || nbd != 0) {
@@ -105,7 +105,7 @@ public class AutoModel implements IPreprocessingModule {
             context.description.setSpecification(nspec);
             changed = true;
         }
-        if (nmean != context.description.isMean()) {
+        if (nmean != context.description.isEstimatedMean()) {
             context.description.setMean(nmean);
             changed = true;
         }

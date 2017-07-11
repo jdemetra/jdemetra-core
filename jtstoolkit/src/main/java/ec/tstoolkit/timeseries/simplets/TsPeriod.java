@@ -22,10 +22,10 @@ import java.util.Date;
 
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.Day;
-import ec.tstoolkit.timeseries.IPeriod;
 import ec.tstoolkit.timeseries.Month;
 import ec.tstoolkit.timeseries.TsException;
 import java.util.GregorianCalendar;
+import ec.tstoolkit.timeseries.IPeriod;
 
 /**
  * Represents a regular period (corresponding to a TsFrequency) of the year. A
@@ -358,7 +358,11 @@ public class TsPeriod implements Serializable, Cloneable, IPeriod,
         return m_id;
     }
 
-    int id() {
+    /**
+     * Number of periods since 1/1/70 (reference period)
+     * @return 
+     */
+    public int id() {
         return m_id;
     }
     
@@ -656,12 +660,7 @@ public class TsPeriod implements Serializable, Cloneable, IPeriod,
             return THREAD_LOCAL.get();
         }
 
-        private static final ThreadLocal<CalendarUtil> THREAD_LOCAL = new ThreadLocal<CalendarUtil>() {
-            @Override
-            protected CalendarUtil initialValue() {
-                return new CalendarUtil();
-            }
-        };
+        private static final ThreadLocal<CalendarUtil> THREAD_LOCAL = ThreadLocal.withInitial(CalendarUtil::new);
         
         private final GregorianCalendar cal = new GregorianCalendar();
 

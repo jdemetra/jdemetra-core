@@ -28,6 +28,7 @@ import ec.tstoolkit.ssf.DiffuseVarianceFilter;
 import ec.tstoolkit.ssf.Filter;
 import ec.tstoolkit.ssf.FilteredData;
 import ec.tstoolkit.ssf.FilteringResults;
+import ec.tstoolkit.ssf.ISsf;
 import ec.tstoolkit.ssf.SsfData;
 import ec.tstoolkit.ssf.VarianceFilter;
 import ec.tstoolkit.ssf.arima.SsfArima;
@@ -85,6 +86,12 @@ public class Forecasts {
             final List<DataBlock> x, final int fHorizon, final int nhp) {
         DataBlock y = gls.model.getY();
         IArimaModel arima = gls.model.getArima();
+        int nd=arima.getNonStationaryARCount();
+        int[] missings = gls.model.getMissings();
+        if (!checkMissings(missings, nd)){
+            calcForecast2(gls,x,fHorizon,nhp);
+            return;
+        }
         int nx = x == null ? 0 : x.size();
         if (gls.model.isMeanCorrection()) {
             ++nx;
@@ -116,7 +123,6 @@ public class Forecasts {
             yc[i] = Double.NaN;
         }
         // reset missing values, if any
-        int[] missings = gls.model.getMissings();
         if (missings != null) {
             for (int i = 0; i < gls.model.getMissingsCount(); ++i) {
                 yc[missings[i]] = Double.NaN;
@@ -218,13 +224,13 @@ public class Forecasts {
 
         int n = gls.model.getObsCount();
         SsfArima ssf = new SsfArima(arima);
-        Filter<SsfArima> filter = new Filter<>();
+        Filter<ISsf> filter = new Filter<>();
         filter.setSsf(ssf);
-        ec.tstoolkit.ssf.arima.SsfArima.Initializer initializer=
-                new ec.tstoolkit.ssf.arima.SsfArima.Initializer();
+        ec.tstoolkit.ssf.DiffuseSquareRootInitializer initializer=
+                new ec.tstoolkit.ssf.DiffuseSquareRootInitializer();
         filter.setInitializer(initializer);
 
-        FilteringResults frslts = new FilteringResults(true);
+        DiffuseFilteringResults frslts = new DiffuseFilteringResults(true);
         frslts.getFilteredData().setSavingA(true);
         // filter y, extended with nf missing values
         double[] yc = new double[n + nf_];
@@ -243,7 +249,7 @@ public class Forecasts {
         SsfData ssfy = new SsfData(yc, null);
         filter.process(ssfy, frslts);
 
-        VarianceFilter vfilter = frslts.getVarianceFilter();
+        DiffuseVarianceFilter vfilter = frslts.getVarianceFilter();
         FilteredData fdata = frslts.getFilteredData();
 
         double mvar = gls.likelihood.getSsqErr()
@@ -293,9 +299,7 @@ public class Forecasts {
                     xcur = yc;
                 }
 
-                SsfData ssfx = new SsfData(xcur, null);
-                initializer.calcInitialState(ssf, new DataBlock(a0), ssfx);
-                vfilter.process(fdata, pos, xcur, a0);
+                vfilter.process(fdata, 0, xcur, a0);
                 for (int j = 0; j < nf_; ++j) {
                     xe.set(j, i, fdata.E(n + j));
                 }
@@ -314,5 +318,14 @@ public class Forecasts {
         for (int i = 0; i < ef_.length; ++i) {
             ef_[i] = Math.sqrt(ef_[i]);
         }
+    }
+
+    private boolean checkMissings(int[] missings, int nd) {
+        if (missings == null)
+            return true;
+        for (int i=0;i<missings.length; ++i)
+            if (missings[i]<nd)
+                return false;
+        return true;
     }
 }

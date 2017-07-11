@@ -27,9 +27,11 @@ import ec.tstoolkit.timeseries.regression.TsVariable;
 import ec.tstoolkit.timeseries.regression.TsVariables;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
+import java.util.Map;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -82,4 +84,22 @@ public class TramoSeatsProcessorTest {
 //        System.out.println(mts.getTsData());
 //        System.out.println(fts.getTsData());
    }
+    
+    @Test
+    @Ignore
+    public void testOutputDictionary(){
+        Map<String, Class> dic = new TramoSeatsProcessor().getOutputDictionary(true);
+        dic.forEach((s,c)->{
+            System.out.print(s);
+            System.out.print('\t');
+            System.out.println(c.getCanonicalName());
+        });
+        System.out.println("");
+        dic = new TramoSeatsProcessor().getOutputDictionary(false);
+        dic.forEach((s,c)->{
+            System.out.print(s);
+            System.out.print('\t');
+            System.out.println(c.getCanonicalName());
+        });
+    }
 }

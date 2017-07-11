@@ -48,7 +48,7 @@ public class GuessingCompactFactoryTest {
         assertEquals(TsFrequency.Monthly, s0.data.get().getFrequency());
         assertEquals(new TsPeriod(TsFrequency.Monthly, 2000, 0), s0.data.get().getStart());
         assertEquals(new TsPeriod(TsFrequency.Monthly, 2000, 11), s0.data.get().getLastPeriod());
-        assertArrayEquals(new double[]{3.14, 2.29, 3.14, 5.24, 3.14, 3.78, 3.65, 2.37, 3.14, 3.17, 3.34, 1.21}, s0.data.get().getValues().internalStorage(), 0);
+        assertArrayEquals(new double[]{3.14, 2.29, 3.14, 5.24, 3.14, 3.78, 3.65, 2.37, 3.14, 3.17, 3.34, 1.21}, s0.data.get().internalStorage(), 0);
 
         SdmxSeries s1 = (SdmxSeries) source.items.get(1);
         assertEquals("COLLECTION=B, FREQ=A, JD_CATEGORY=A, JD_TYPE=P, VIS_CTY=MX", s1.id);
@@ -56,6 +56,6 @@ public class GuessingCompactFactoryTest {
         assertEquals(TsFrequency.Yearly, s1.data.get().getFrequency());
         assertEquals(new TsPeriod(TsFrequency.Yearly, 2000, 0), s1.data.get().getStart());
         assertEquals(s1.data.get().getStart(), s1.data.get().getLastPeriod());
-        assertArrayEquals(new double[]{3.14}, s1.data.get().getValues().internalStorage(), 0);
+        assertArrayEquals(new double[]{3.14}, s1.data.get().internalStorage(), 0);
     }
 }

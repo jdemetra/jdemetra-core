@@ -25,11 +25,11 @@ public class JulianEasterVariableTest {
         
         JulianEasterVariable var=new JulianEasterVariable();
         var.setDuration(28);
-        TsPeriod start=new TsPeriod(TsFrequency.Monthly, 1995,0);
-        DataBlock m=new DataBlock(532*12);
+        TsPeriod start=new TsPeriod(TsFrequency.Monthly, 1583,0);
+        DataBlock m=new DataBlock(2*532*12);
         var.data(start, m);
         for (int i=0; i<12; ++i){
-            assertTrue(m.extract(i, -1, 12).sum()/532<1e-6);
+            assertTrue(m.extract(i, -1, 12).sum()/(2*532)<1e-6);
         }
     }
     

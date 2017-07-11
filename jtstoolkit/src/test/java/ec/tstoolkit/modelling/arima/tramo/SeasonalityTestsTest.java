@@ -57,7 +57,7 @@ public class SeasonalityTestsTest {
     @Test
     public void demo() {
         TsData s=Data.X.log().delta(1);
-        SeasonalityTests rtest = SeasonalityTests.residualSeasonalityTest(s.getValues().internalStorage(), TsFrequency.Monthly);
+        SeasonalityTests rtest = SeasonalityTests.residualSeasonalityTest(s.internalStorage(), TsFrequency.Monthly);
         int score=rtest.getScore();
         assertTrue(score > 2);
     }

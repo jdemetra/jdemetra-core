@@ -47,7 +47,7 @@ public class MemBook extends Book {
 
     @Override
     public Sheet getSheet(int index) {
-        return BookFactoryAdapter.toSheet(sheets.get(index));
+        return new BookFactoryAdapter.ToSheetAdapter(sheets.get(index));
     }
 
     @Override

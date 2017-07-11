@@ -56,6 +56,7 @@ import java.util.List;
  */
 @Development(status = Development.Status.Preliminary)
 public class OutliersDetector implements IOutliersDetectionModule {
+    
 
     private static final double EPS = 1e-5;
     private static final int MAXROUND = 50, MAXOUTLIERS = 24;
@@ -99,6 +100,8 @@ public class OutliersDetector implements IOutliersDetectionModule {
         sod_.exclude(context.description.getMissingValues());
         sod_.exclude(context.description.getOutliersPosition(true));
         sod_.exclude(context.description.getOutliersPosition(false));
+        sod_.exclude(context.description.getFixedOutliersPosition());
+        
         outliers_.addAll(context.description.getOutliers());
 
         regarima_ = context.description.buildRegArima();
@@ -473,7 +476,7 @@ public class OutliersDetector implements IOutliersDetectionModule {
         int nparm = Math.max(spec.getD() + spec.getP() + spec.getFrequency()
                 * (spec.getBD() + spec.getBP()), spec.getQ()
                 + spec.getFrequency() * spec.getBQ())
-                + (desc.isMean() ? 1 : 0)
+                + (desc.isEstimatedMean()? 1 : 0)
                 + (15 * n) / 100 + spec.getFrequency();
         if (n - nparm <= 0) {
             return -1;
@@ -528,6 +531,7 @@ public class OutliersDetector implements IOutliersDetectionModule {
      * @param n
      * @return
      */
+    @Deprecated
     public static double calcDefaultCriticalValue(int n) {
         double cv = 0;
 //        if (n < 50) {
@@ -550,7 +554,8 @@ public class OutliersDetector implements IOutliersDetectionModule {
     private double calcCv(ModellingContext context) {
         double cv = cv_;
         if (cv == 0) {
-            cv = calcDefaultCriticalValue(context.description.getY().length);
+            cv = ICriticalValueComputer.defaultComputer().compute(context.description.getY().length);
+            //cv=calcDefaultCriticalValue(context.description.getY().length);
         }
         for (int i = 0; i < -selectivity_; ++i) {
             cv *= (1 - pc_);

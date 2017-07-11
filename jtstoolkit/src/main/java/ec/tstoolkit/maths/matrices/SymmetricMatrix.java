@@ -476,7 +476,7 @@ public final class SymmetricMatrix {
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         int nc = x.getColumnsCount();
         Matrix SX = new Matrix(n, nc);
-        SX.subMatrix().product(s, x);
+        SX.all().product(s, x);
         DataBlockIterator rows = x.columns(), cols = SX.columns();
         Matrix o = new Matrix(nc, nc);
 
@@ -505,7 +505,7 @@ public final class SymmetricMatrix {
         int n = s.getRowsCount();
         int nc = x.getColumnsCount();
         Matrix SX = new Matrix(n, nc);
-        SX.subMatrix().product(s, x);
+        SX.all().product(s, x);
         DataBlockIterator rows = x.columns(), cols = SX.columns(), xcols = xtsx
                 .columns();
         DataBlock col = cols.getData(), xcol = xcols.getData(), cur = rows
@@ -569,7 +569,7 @@ public final class SymmetricMatrix {
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         int nr = x.getRowsCount();
         Matrix XS = new Matrix(nr, n);
-        XS.subMatrix().product(x, s);
+        XS.all().product(x, s);
         DataBlockIterator rows = XS.rows(), cols = x.rows();
         Matrix o = new Matrix(nr, nr);
 
@@ -599,7 +599,7 @@ public final class SymmetricMatrix {
         int n = s.getRowsCount();
         int nr = x.getRowsCount();
         Matrix XS = new Matrix(nr, n);
-        XS.subMatrix().product(x, s);
+        XS.all().product(x, s);
         DataBlockIterator rows = XS.rows(), cols = x.rows(), xcols = xsxt
                 .columns();
         DataBlock col = cols.getData(), xcol = xcols.getData(), cur = rows
@@ -857,7 +857,7 @@ public final class SymmetricMatrix {
      */
     public static Matrix XpXt(final Matrix x) {
         Matrix o = x.clone();
-        o.subMatrix().add(x.subMatrix().transpose());
+        o.all().add(x.all().transpose());
         return o;
     }
 

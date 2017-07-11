@@ -17,7 +17,6 @@
 package ec.tss.sa;
 
 import ec.tstoolkit.design.IntValue;
-import java.util.EnumSet;
 
 /**
  *
@@ -56,6 +55,11 @@ public enum EstimationPolicyType implements IntValue{
      */
     FreeParameters(40),
     /**
+     * The auto-regressive parameters used in the definition of the filters are considered as
+     * fixed. In the case of Seats, the roots of the ARIMA model are always distributed the same way.
+     */
+    FixedAutoRegressiveParameters(35),
+    /**
      * The parameters used in the definition of the filters are considered as
      * fixed. In the case of Seats, the ARIMA model is unchanged; in the case of
      * X13, both the ARIMA model and the x11 filters are unchanged.
@@ -68,7 +72,13 @@ public enum EstimationPolicyType implements IntValue{
     /**
      * The new sa series is only based on previously computed seasonal factors (estimates+forecasts)
      */
+    @Deprecated
     UseForecasts(10),
+    /**
+     * The new sa series is only based on previously computed seasonal factors (estimates+forecasts)
+     * Nomenclature in line with the guidelines
+     */
+    Current(10),
     /**
      * 
      */
@@ -81,11 +91,8 @@ public enum EstimationPolicyType implements IntValue{
      *            Integer representation of the frequency
      * @return Enum representation of the frequency
      */
-    public static EstimationPolicyType valueOf(final int value) {
-	for (EstimationPolicyType option : EnumSet.allOf(EstimationPolicyType.class))
-	    if (option.intValue() == value)
-		return option;
-	return null;
+    public static EstimationPolicyType valueOf(int value) {
+        return IntValue.valueOf(EstimationPolicyType.class, value).orElse(null);
     }
 
     private final int value;

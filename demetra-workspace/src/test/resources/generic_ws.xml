@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:demetraGenericWorkspace name="my_workspace" xmlns="ec/tss.core" xmlns:ns2="ec/tss.demetra">
+    <ns2:items>
+        <ns2:item readOnly="false">
+            <ns2:family>Seasonal adjustment@multi-documents</ns2:family>
+            <ns2:name>SAProcessing-1</ns2:name>
+            <ns2:file>SAProcessing-1</ns2:file>
+            <ns2:comments>hello world</ns2:comments>
+        </ns2:item>
+        <ns2:item readOnly="false">
+            <ns2:family>Modelling@documents@tramo</ns2:family>
+            <ns2:name>TramoDoc-1</ns2:name>
+            <ns2:file>TramoDoc-1</ns2:file>
+        </ns2:item>
+        <ns2:item readOnly="false">
+            <ns2:family>Seasonal adjustment@documents@x13</ns2:family>
+            <ns2:name>X13Doc-1</ns2:name>
+            <ns2:file>X13Doc-1</ns2:file>
+        </ns2:item>
+        <ns2:item readOnly="false">
+            <ns2:family>Utilities@Variables</ns2:family>
+            <ns2:name>Vars-1</ns2:name>
+            <ns2:file>Vars-1</ns2:file>
+        </ns2:item>
+        <ns2:item readOnly="false">
+            <ns2:family>Seasonal adjustment@specifications@tramoseats</ns2:family>
+            <ns2:name>TramoSeatsSpec-1</ns2:name>
+            <ns2:file>TramoSeatsSpec-1</ns2:file>
+        </ns2:item>
+        <ns2:item readOnly="false">
+            <ns2:family>Seasonal adjustment@specifications@x13</ns2:family>
+            <ns2:name>X13Spec-1</ns2:name>
+            <ns2:file>X13Spec-1</ns2:file>
+        </ns2:item>
+        <ns2:item readOnly="false">
+            <ns2:family>Modelling@specifications@regarima</ns2:family>
+            <ns2:name>RegArimaSpec-1</ns2:name>
+            <ns2:file>RegArimaSpec-1</ns2:file>
+        </ns2:item>
+        <ns2:item readOnly="false">
+            <ns2:family>Modelling@specifications@tramo</ns2:family>
+            <ns2:name>TramoSpec-1</ns2:name>
+            <ns2:file>TramoSpec-1</ns2:file>
+        </ns2:item>
+        <ns2:item readOnly="false">
+            <ns2:family>Seasonal adjustment@documents@tramoseats</ns2:family>
+            <ns2:name>TramoSeatsDoc-1</ns2:name>
+            <ns2:file>TramoSeatsDoc-1</ns2:file>
+        </ns2:item>
+        <ns2:item readOnly="false">
+            <ns2:family>Modelling@documents@regarima</ns2:family>
+            <ns2:name>RegArimaDoc-1</ns2:name>
+            <ns2:file>RegArimaDoc-1</ns2:file>
+        </ns2:item>
+    </ns2:items>
+</ns2:demetraGenericWorkspace>

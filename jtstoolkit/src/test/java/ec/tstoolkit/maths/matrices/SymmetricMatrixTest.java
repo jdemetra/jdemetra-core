@@ -112,4 +112,21 @@ public class SymmetricMatrixTest {
             System.out.println(T);
         }
     }
+    
+    @Test
+    public void testLCholeskySD(){
+        Matrix M=new Matrix(50,5);
+        M.randomize(0);
+        Matrix N=new Matrix(50, 50);
+        for (int i=0; i<50; ++i){
+            N.column(i).copy(M.subMatrix().columnSum());
+        }
+        for (int i=1; i<5; ++i){
+            N.column(26+i).copy(M.column(i));
+        }
+        Matrix Q=SymmetricMatrix.XXt(N);
+        Matrix R=Q.clone();
+        SymmetricMatrix.lcholesky(Q, 1e-9);
+        assertTrue(SymmetricMatrix.LLt(Q).distance(R)<1e-9);
+    }
 }

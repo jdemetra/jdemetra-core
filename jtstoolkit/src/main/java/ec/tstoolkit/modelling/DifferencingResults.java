@@ -55,7 +55,7 @@ public class DifferencingResults{
         boolean bmean;
         int ifreq = input.getFrequency().intValue();
         if (delta < 0) {
-            del = searchOrder(input.getValues().internalStorage(), ifreq);
+            del = searchOrder(input.internalStorage(), ifreq);
             bmean = del != 2;
         }
         else {
@@ -65,8 +65,8 @@ public class DifferencingResults{
 
         diff = input.delta(1, del);
         if (bmean) {
-            DescriptiveStatistics stats = new DescriptiveStatistics(diff.getValues());
-            diff.getValues().sub(stats.getAverage());
+            DescriptiveStatistics stats = new DescriptiveStatistics(diff);
+            diff.apply(x->x-stats.getAverage());
         }
         return new DifferencingResults(input, diff, bmean);
     }

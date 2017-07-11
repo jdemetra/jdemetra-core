@@ -17,12 +17,8 @@
 package ec.tstoolkit.utilities;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Function;
-import com.google.common.base.Functions;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.io.BufferedReader;
@@ -36,6 +32,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import static java.util.Objects.requireNonNull;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -92,7 +90,7 @@ public abstract class CheckedIterator<E, T extends Throwable> {
 
     @Nonnull
     public <V> Map<E, V> toMap(@Nonnull Function<? super E, V> valueFunc) throws T {
-        return toMap(Functions.<E>identity(), valueFunc);
+        return toMap(o -> o, valueFunc);
     }
 
     @Nonnull
@@ -148,7 +146,7 @@ public abstract class CheckedIterator<E, T extends Throwable> {
         requireNonNull(predicate);
         while (hasNext()) {
             E element = next();
-            if (!predicate.apply(element)) {
+            if (!predicate.test(element)) {
                 return false;
             }
         }
@@ -163,7 +161,7 @@ public abstract class CheckedIterator<E, T extends Throwable> {
         requireNonNull(predicate, "predicate");
         for (int i = 0; hasNext(); i++) {
             E current = next();
-            if (predicate.apply(current)) {
+            if (predicate.test(current)) {
                 return i;
             }
         }
@@ -171,7 +169,7 @@ public abstract class CheckedIterator<E, T extends Throwable> {
     }
 
     public boolean contains(@Nullable E element) throws T {
-        return any(Predicates.equalTo(element));
+        return any(element != null ? o -> element.equals(o) : o -> o == null);
     }
 
     public boolean elementsEqual(@Nonnull CheckedIterator<E, T> that) throws T {
@@ -181,7 +179,7 @@ public abstract class CheckedIterator<E, T extends Throwable> {
             }
             Object o1 = this.next();
             Object o2 = that.next();
-            if (!com.google.common.base.Objects.equal(o1, o2)) {
+            if (!Objects.equals(o1, o2)) {
                 return false;
             }
         }
@@ -199,7 +197,7 @@ public abstract class CheckedIterator<E, T extends Throwable> {
     }
 
     public int frequency(@Nullable E element) throws T {
-        return filter(Predicates.equalTo(element)).count();
+        return filter(element != null ? o -> element.equals(o) : o -> o == null).count();
     }
     //</editor-fold>
 
@@ -213,7 +211,7 @@ public abstract class CheckedIterator<E, T extends Throwable> {
             protected E computeNext() throws T {
                 while (unfiltered.hasNext()) {
                     E element = unfiltered.next();
-                    if (predicate.apply(element)) {
+                    if (predicate.test(element)) {
                         return element;
                     }
                 }
@@ -224,7 +222,7 @@ public abstract class CheckedIterator<E, T extends Throwable> {
 
     @Nonnull
     public CheckedIterator<E, T> filter(@Nonnull Class<? extends E> type) {
-        return filter(Predicates.instanceOf(type));
+        return filter(type::isInstance);
     }
 
     @Nonnull

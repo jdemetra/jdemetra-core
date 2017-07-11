@@ -33,7 +33,6 @@ import java.util.Comparator;
  * @author Jean Palate
  */
 @Deprecated
-@Development(status = Development.Status.Preliminary)
 public class ModelBenchmarking2  {
 
     private IOutliersDetectionModule outliers_;

@@ -24,6 +24,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import utilities.CompareTsData;
 
 /**
  *
@@ -72,6 +73,36 @@ public class X11KernelTest {
         assertTrue(null != rslt.getData("d-tables.d10a", TsData.class));
     }
 
+     @Test
+    public void compositeFilterMsr() {
+        X11Specification x11Specification = new X11Specification();
+        SeasonalFilterOption[] filterOption = new SeasonalFilterOption[12];
+        for (int i = 0; i < 12; i++) {
+            filterOption[i] = SeasonalFilterOption.Msr;
+        }
+        x11Specification.setSeasonalFilters(filterOption);
+        x11Specification.setSigma(5.0, 5.5);
+        X11Toolkit toolkit = X11Toolkit.create(x11Specification);
+
+        X11Kernel kernel = new X11Kernel();
+        kernel.setToolkit(toolkit);
+        X11Results rslt = kernel.process(Data.UNEMPLOY);
+        assertTrue(CompareTsData.compareTS(rslt.getData("d-tables.d10", TsData.class), Datax11.UEMPLOMENSEASONAL, 0.000000001));
+    }
+
+    @Test
+    public void Msr() {
+        X11Specification x11Specification = new X11Specification();
+        SeasonalFilterOption[] filterOption = new SeasonalFilterOption[1];
+        filterOption[0] = SeasonalFilterOption.Msr;
+        x11Specification.setSeasonalFilters(filterOption);
+        x11Specification.setSigma(5.0, 5.5);        X11Toolkit toolkit = X11Toolkit.create(x11Specification);
+
+        X11Kernel kernel = new X11Kernel();
+        kernel.setToolkit(toolkit);
+        X11Results rslt = kernel.process(Data.UNEMPLOY);
+        assertTrue(CompareTsData.compareTS(rslt.getData("d-tables.d10", TsData.class), Datax11.UEMPLOMENSEASONAL, 0.000000001));
+    }
     @Test
     public void mixedFiltersWithStableTest1() {
 

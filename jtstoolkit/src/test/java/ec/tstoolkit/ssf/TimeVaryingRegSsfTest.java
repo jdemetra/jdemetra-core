@@ -8,10 +8,7 @@ package ec.tstoolkit.ssf;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.IDataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
-import ec.tstoolkit.eco.DefaultLikelihoodEvaluation;
 import ec.tstoolkit.eco.DiffuseConcentratedLikelihood;
-import ec.tstoolkit.eco.DiffuseLikelihood;
-import ec.tstoolkit.maths.matrices.HouseholderC;
 import ec.tstoolkit.maths.matrices.LowerTriangularMatrix;
 import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.maths.matrices.SubMatrix;
@@ -28,7 +25,6 @@ import ec.tstoolkit.timeseries.regression.GregorianCalendarVariables;
 import ec.tstoolkit.timeseries.regression.RegressionUtilities;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
-import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -125,7 +121,7 @@ public class TimeVaryingRegSsfTest {
         DataBlock p = new DataBlock(new double[]{-.2, -.2, 1});
         TDvarMapping mapping = new TDvarMapping(s.getDomain());
         TimeVaryingRegSsf ssf = mapping.map(p);
-        SsfModel<TimeVaryingRegSsf> model = new SsfModel(ssf, new SsfData(s.getValues().internalStorage(), null), null, null);
+        SsfModel<TimeVaryingRegSsf> model = new SsfModel(ssf, new SsfData(s.internalStorage(), null), null, null);
         SsfFunction<TimeVaryingRegSsf> fn = new SsfFunction<>(
                 model,
                 mapping,
@@ -160,7 +156,7 @@ public class TimeVaryingRegSsfTest {
         DataBlock p = new DataBlock(new double[]{-.2, -.2, 1});
         TDvarMapping mapping = new TDvarMapping(s.getDomain(), 0);
         TimeVaryingRegSsf ssf = mapping.map(p);
-        SsfModel<TimeVaryingRegSsf> model = new SsfModel(ssf, new SsfData(s.getValues().internalStorage(), null), null, null);
+        SsfModel<TimeVaryingRegSsf> model = new SsfModel(ssf, new SsfData(s.internalStorage(), null), null, null);
         SsfFunction<TimeVaryingRegSsf> fn = new SsfFunction<>(
                 model,
                 mapping,
@@ -195,7 +191,7 @@ public class TimeVaryingRegSsfTest {
         DataBlock p = new DataBlock(new double[]{-.2, -.2, 1, 1, 1, 1, 1, 1});
         TDvar2Mapping mapping = new TDvar2Mapping(s.getDomain());
         TimeVaryingRegSsf ssf = mapping.map(p);
-        SsfModel<TimeVaryingRegSsf> model = new SsfModel(ssf, new SsfData(s.getValues().internalStorage(), null), null, null);
+        SsfModel<TimeVaryingRegSsf> model = new SsfModel(ssf, new SsfData(s.internalStorage(), null), null, null);
         SsfFunction<TimeVaryingRegSsf> fn = new SsfFunction<>(
                 model,
                 mapping,
@@ -242,7 +238,7 @@ public class TimeVaryingRegSsfTest {
         DataBlock p = new DataBlock(new double[]{-.2, -.2, 1, 1, 1, 1, 1, 1});
         TDvar3Mapping mapping = new TDvar3Mapping(s.getDomain());
         TimeVaryingRegSsf ssf = mapping.map(p);
-        SsfModel<TimeVaryingRegSsf> model = new SsfModel(ssf, new SsfData(s.getValues().internalStorage(), null), null, null);
+        SsfModel<TimeVaryingRegSsf> model = new SsfModel(ssf, new SsfData(s.internalStorage(), null), null, null);
         SsfFunction<TimeVaryingRegSsf> fn = new SsfFunction<>(
                 model,
                 mapping,
@@ -278,7 +274,7 @@ public class TimeVaryingRegSsfTest {
         DataBlock p = new DataBlock(new double[]{-.2, -.2, 1});
         TDfixedMapping mapping = new TDfixedMapping(s.getDomain());
         RegSsf ssf = mapping.map(p);
-        SsfModel<RegSsf> model = new SsfModel(ssf, new SsfData(s.getValues().internalStorage(), null), null, null);
+        SsfModel<RegSsf> model = new SsfModel(ssf, new SsfData(s.internalStorage(), null), null, null);
         SsfFunction<RegSsf> fn = new SsfFunction<>(
                 model,
                 mapping,

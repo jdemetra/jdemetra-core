@@ -113,7 +113,7 @@ public class TswFactoryTest {
             factory.loadFile(file);
         }
     }
-    
+
     @Test
     public void testEmptyLines() throws URISyntaxException, IOException {
         Path file = getResource("EmptyLines");

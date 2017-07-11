@@ -58,7 +58,7 @@ public class MovingHolidaySpec implements Cloneable, InformationSetSerializable 
       MovingHolidaySpec easter = new MovingHolidaySpec();
         easter.test_ = RegressionTestSpec.Add;
         easter.type_ = julian ? Type.JulianEaster : Type.Easter;
-        easter.w_ = 8;
+        easter.w_ = DEF_EASTERDUR;
         easter.test_ = pretest ? RegressionTestSpec.Add : RegressionTestSpec.None;
         return easter;
     }
@@ -80,6 +80,8 @@ public class MovingHolidaySpec implements Cloneable, InformationSetSerializable 
     }
     
     public void setW(int value) {
+        if (value <= 0 || value > 25)
+            throw new IllegalArgumentException("Should be in [1,25]");
         w_ = value;
     }
     

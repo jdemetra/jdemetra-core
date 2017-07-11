@@ -16,8 +16,8 @@
  */
 package ec.tss.tsproviders.utils;
 
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Splitter;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import ec.tstoolkit.design.UtilityClass;
@@ -28,8 +28,10 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.JAXBContext;
@@ -49,7 +51,7 @@ public final class Parsers {
     }
 
     @Nullable
-    public static <T> T parseFirstNotNull(@Nonnull CharSequence input, @Nonnull Iterable<? extends IParser<T>> parsers) throws NullPointerException {
+    public static <T> T parseFirstNotNull(@Nonnull CharSequence input, @Nonnull Iterable<? extends IParser<T>> parsers) {
         Objects.requireNonNull(input); // if parsers is empty
         for (IParser<T> o : parsers) {
             T result = o.parse(input);
@@ -74,7 +76,7 @@ public final class Parsers {
     }
 
     @Nonnull
-    public static <T> Parser<T> firstNotNull(@Nonnull final ImmutableList<? extends IParser<T>> parsers) {
+    public static <T> Parser<T> firstNotNull(@Nonnull ImmutableList<? extends IParser<T>> parsers) {
         return new Parser<T>() {
             @Override
             public T parse(CharSequence input) throws NullPointerException {
@@ -117,7 +119,7 @@ public final class Parsers {
     }
 
     @Nonnull
-    public static <T> Parser<T> onJAXB(@Nonnull final Unmarshaller unmarshaller) {
+    public static <T> Parser<T> onJAXB(@Nonnull Unmarshaller unmarshaller) {
         return new FailSafeParser<T>() {
             @Override
             protected T doParse(CharSequence input) throws Exception {
@@ -141,7 +143,7 @@ public final class Parsers {
     }
 
     @Nonnull
-    public static Parser<Date> onDateFormat(@Nonnull final DateFormat dateFormat) {
+    public static Parser<Date> onDateFormat(@Nonnull DateFormat dateFormat) {
         return new FailSafeParser<Date>() {
             @Override
             protected Date doParse(CharSequence input) throws Exception {
@@ -151,7 +153,7 @@ public final class Parsers {
     }
 
     @Nonnull
-    public static Parser<Number> onNumberFormat(@Nonnull final NumberFormat numberFormat) {
+    public static Parser<Number> onNumberFormat(@Nonnull NumberFormat numberFormat) {
         return new FailSafeParser<Number>() {
             @Override
             protected Number doParse(CharSequence input) throws Exception {
@@ -161,7 +163,7 @@ public final class Parsers {
     }
 
     @Nonnull
-    public static <T> Parser<T> ofInstance(@Nullable final T instance) {
+    public static <T> Parser<T> ofInstance(@Nullable T instance) {
         return new Parser<T>() {
             @Override
             public T parse(CharSequence input) throws NullPointerException {
@@ -197,6 +199,11 @@ public final class Parsers {
         return BOOL_PARSER;
     }
 
+    @Nonnull
+    public static Parser<Character> charParser() {
+        return CHAR_PARSER;
+    }
+
     /**
      * Create a {@link Parser} that delegates its parsing to
      * {@link Double#valueOf(java.lang.String)}.
@@ -214,7 +221,7 @@ public final class Parsers {
     }
 
     @Nonnull
-    public static <T extends Enum<T>> Parser<T> enumParser(@Nonnull final Class<T> enumClass) {
+    public static <T extends Enum<T>> Parser<T> enumParser(@Nonnull Class<T> enumClass) {
         return new FailSafeParser<T>() {
             @Override
             protected T doParse(CharSequence input) throws Exception {
@@ -234,14 +241,41 @@ public final class Parsers {
     }
 
     @Nonnull
-    public static <X, Y> Parser<Y> compose(@Nonnull final IParser<X> parser, @Nonnull final Function<X, Y> func) {
+    public static Parser<String[]> stringArrayParser() {
+        return STRING_ARRAY_PARSER;
+    }
+
+    @Nonnull
+    public static <X, Y> Parser<Y> compose(@Nonnull IParser<X> parser, @Nonnull Function<X, Y> after) {
         return new Parser<Y>() {
             @Override
             public Y parse(CharSequence input) throws NullPointerException {
                 X tmp = parser.parse(input);
-                return tmp != null ? func.apply(tmp) : null;
+                return tmp != null ? after.apply(tmp) : null;
             }
         };
+    }
+
+    @Nonnull
+    public static Parser<List<String>> onSplitter(@Nonnull Splitter splitter) {
+        return new FailSafeParser<List<String>>() {
+            @Override
+            protected List<String> doParse(CharSequence input) throws Exception {
+                return splitter.splitToList(input);
+            }
+        };
+    }
+
+    /**
+     *
+     * @param <T>
+     * @param parser
+     * @return
+     * @since 2.2.0
+     */
+    @Nonnull
+    public static <T> Parser<T> wrap(@Nonnull IParser<T> parser) {
+        return parser instanceof Parser ? (Parser<T>) parser : new Wrapper<>(parser);
     }
 
     public static abstract class Parser<T> implements IParser<T> {
@@ -255,17 +289,21 @@ public final class Parsers {
          * @param input the input used to create the object
          * @return a never-null {@link Optional}
          * @throws NullPointerException if input is null
+         * @deprecated use {@link #parseValue(java.lang.CharSequence)} instead
          */
+        @Deprecated
         @Nonnull
-        public Optional<T> tryParse(@Nonnull CharSequence input) throws NullPointerException {
+        public Optional<T> tryParse(@Nonnull CharSequence input) {
             return Optional.fromNullable(parse(input));
         }
 
+        @Deprecated
         @Nonnull
-        public <X> Parser<X> compose(@Nonnull Function<T, X> func) {
-            return Parsers.<T, X>compose(this, func);
+        public <X> Parser<X> compose(@Nonnull Function<T, X> after) {
+            return Parsers.<T, X>compose(this, after);
         }
 
+        @Deprecated
         @Nonnull
         public Parser<T> or(IParser<T>... parsers) {
             switch (parsers.length) {
@@ -296,12 +334,85 @@ public final class Parsers {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
-    private static final Parser<File> FILE_PARSER = new Parser<File>() {
-        @Override
-        public File parse(CharSequence input) throws NullPointerException {
-            return new File(input.toString());
+    private static final class Wrapper<T> extends Parser<T> {
+
+        private final IParser<T> parser;
+
+        private Wrapper(IParser<T> parser) {
+            this.parser = parser;
         }
-    };
+
+        @Override
+        public T parse(CharSequence input) {
+            return parser.parse(input);
+        }
+
+        @Override
+        public java.util.Optional<T> parseValue(CharSequence input) {
+            return parser.parseValue(input);
+        }
+
+        @Override
+        public IParser<T> orElse(IParser<T> other) {
+            return parser.orElse(other);
+        }
+
+        @Override
+        public <X> IParser<X> andThen(java.util.function.Function<? super T, ? extends X> after) {
+            return parser.andThen(after);
+        }
+    }
+
+    private static Boolean parseBoolean(CharSequence input) {
+        switch (input.toString()) {
+            case "true":
+            case "TRUE":
+            case "1":
+                return Boolean.TRUE;
+            case "false":
+            case "FALSE":
+            case "0":
+                return Boolean.FALSE;
+            default:
+                return null;
+        }
+    }
+
+    private static Character parseCharacter(CharSequence input) {
+        return input.length() == 1 ? input.charAt(0) : null;
+    }
+
+    private static double[] parseDoubleArray(CharSequence input) {
+        String tmp = input.toString();
+        int beginIndex = tmp.indexOf('[');
+        int endIndex = tmp.lastIndexOf(']');
+        if (beginIndex == -1 || endIndex == -1) {
+            return null;
+        }
+        String[] values = tmp.substring(beginIndex + 1, endIndex).split("\\s*,\\s*");
+        double[] result = new double[values.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = Double.parseDouble(values[i].trim());
+        }
+        return result;
+    }
+
+    private static String[] parseStringArray(CharSequence input) {
+        String tmp = input.toString();
+        int beginIndex = tmp.indexOf('[');
+        int endIndex = tmp.lastIndexOf(']');
+        if (beginIndex == -1 || endIndex == -1) {
+            return null;
+        }
+        String[] values = tmp.substring(beginIndex + 1, endIndex).split("\\s*,\\s*");
+        String[] result = new String[values.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = values[i].trim();
+        }
+        return result;
+    }
+
+    private static final Parser<File> FILE_PARSER = new Wrapper<>(o -> new File(o.toString()));
     private static final Parser<Integer> INT_PARSER = new FailSafeParser<Integer>() {
         @Override
         protected Integer doParse(CharSequence input) throws Exception {
@@ -320,44 +431,25 @@ public final class Parsers {
             return Double.valueOf(input.toString());
         }
     };
-    private static final Parser<Boolean> BOOL_PARSER = new Parser<Boolean>() {
-        @Override
-        public Boolean parse(CharSequence input) throws NullPointerException {
-            String tmp = input.toString();
-            return tmp.equalsIgnoreCase("true")
-                    ? Boolean.TRUE
-                    : tmp.equalsIgnoreCase("false")
-                            ? Boolean.FALSE
-                            : null;
-        }
-    };
+    private static final Parser<Boolean> BOOL_PARSER = new Wrapper<>(Parsers::parseBoolean);
+    private static final Parser<Character> CHAR_PARSER = new Wrapper<>(Parsers::parseCharacter);
     private static final Parser<Charset> CHARSET_PARSER = new FailSafeParser<Charset>() {
         @Override
         protected Charset doParse(CharSequence input) throws Exception {
             return Charset.forName(input.toString());
         }
     };
-    private static final Parser<String> STRING_PARSER = new Parser<String>() {
-        @Override
-        public String parse(CharSequence input) throws NullPointerException {
-            return input.toString();
-        }
-    };
+    private static final Parser<String> STRING_PARSER = new Wrapper<>(Object::toString);
     private static final Parser<double[]> DOUBLE_ARRAY_PARSER = new FailSafeParser<double[]>() {
         @Override
         protected double[] doParse(CharSequence input) throws Exception {
-            String tmp = input.toString();
-            int beginIndex = tmp.indexOf('[');
-            int endIndex = tmp.lastIndexOf(']');
-            if (beginIndex == -1 || endIndex == -1) {
-                return null;
-            }
-            String[] values = tmp.substring(beginIndex + 1, endIndex).split("\\s*,\\s*");
-            double[] result = new double[values.length];
-            for (int i = 0; i < result.length; i++) {
-                result[i] = Double.parseDouble(values[i].trim());
-            }
-            return result;
+            return parseDoubleArray(input);
+        }
+    };
+    private static final Parser<String[]> STRING_ARRAY_PARSER = new FailSafeParser<String[]>() {
+        @Override
+        protected String[] doParse(CharSequence input) throws Exception {
+            return parseStringArray(input);
         }
     };
     //</editor-fold>

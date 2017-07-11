@@ -69,7 +69,7 @@ public class EasterRelatedDayTest {
     @Test
     public void testprobJulianEaster() {
         double p = 0;
-        for (int i = 0; i < 35; ++i) {
+        for (int i = 0; i < 43; ++i) {
             double q = Utilities.probJulianEaster(i);
             p += q;
         }

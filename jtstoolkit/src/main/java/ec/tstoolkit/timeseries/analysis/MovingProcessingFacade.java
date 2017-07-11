@@ -94,12 +94,11 @@ public class MovingProcessingFacade<T extends IProcResults> {
         if (info == null) {
             return null;
         }
-        Class c = info.getDictionary().get(key);
         Object o = info.getData(key, Object.class);
         if (o == null) {
             return null;
         } else {
-            return dictionary.get(c).getDoubleValue(o);
+            return dictionary.get(o.getClass()).getDoubleValue(o);
         }
         
     }

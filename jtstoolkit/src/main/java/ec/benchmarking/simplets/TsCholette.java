@@ -13,23 +13,26 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.benchmarking.simplets;
 
 import ec.benchmarking.ssf.SsfCholette;
 import ec.benchmarking.ssf.SsfDenton;
+import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.ssf.DisturbanceSmoother;
 import ec.tstoolkit.ssf.SmoothingResults;
 import ec.tstoolkit.ssf.SsfData;
+import ec.tstoolkit.ssf.WeightedSsf;
+import ec.tstoolkit.ssf.arima.SsfAr1;
+import ec.tstoolkit.ssf.arima.SsfRw;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDataBlock;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 
 /**
- * 
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
@@ -43,26 +46,30 @@ public class TsCholette extends AbstractTsBenchmarking {
     private double rho_ = .9, lambda_;
 
     private TsData correctBias(TsData s, TsData target) {
-        if (bias_ == BiasCorrection.None) {
+        // No bias correction when we use pure interpolation
+        TsAggregationType agg=getAggregationType();
+        if (bias_ == BiasCorrection.None || 
+                (agg != TsAggregationType.Average && agg != TsAggregationType.Sum)) {
             return s;
         }
-        TsData sy = s.changeFrequency(TsFrequency.Yearly, TsAggregationType.Sum, true);
+        TsData sy = s.changeFrequency(target.getFrequency(), getAggregationType(), true);
         sy = sy.fittoDomain(target.getDomain());
+        // TsDataBlock.all(target).data.sum() is the sum of the aggregation constraints
+        //  TsDataBlock.all(sy).data.sum() is the sum of the averages or sums of the original series 
         if (bias_ == BiasCorrection.Multiplicative) {
             return s.times(TsDataBlock.all(target).data.sum() / TsDataBlock.all(sy).data.sum());
         } else {
-            double b = TsDataBlock.all(target).data.sum() - TsDataBlock.all(sy).data.sum();
-            if (getAggregationType() != TsAggregationType.Sum) {
-                return s.times(b * target.getLength());
+            double b = (TsDataBlock.all(target).data.sum() - TsDataBlock.all(sy).data.sum())/target.getLength();
+            if (agg == TsAggregationType.Average){
+                int hfreq=s.getFrequency().intValue(), lfreq=target.getFrequency().intValue();
+                b*=hfreq/lfreq;
             }
-
-            int hfreq = s.getFrequency().intValue(), lfreq = target.getFrequency().intValue();
-            return s.times(b * target.getLength() * hfreq / lfreq);
+            return s.plus(b);
         }
     }
 
     /**
-     * 
+     *
      * @return
      */
     public double getRho() {
@@ -70,7 +77,7 @@ public class TsCholette extends AbstractTsBenchmarking {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public BiasCorrection getBiasCorrection() {
@@ -82,7 +89,7 @@ public class TsCholette extends AbstractTsBenchmarking {
     }
 
     /**
-     * 
+     *
      * @param s
      * @param constraints
      * @return
@@ -96,11 +103,11 @@ public class TsCholette extends AbstractTsBenchmarking {
             obj = obj.times(c);
         }
 
-        double[] y = expand(s.getDomain(), obj);
+        double[] y = expand(s.getDomain(), obj, getAggregationType());
 
         double[] w = null;
         if (lambda_ == 1) {
-            w = s.getValues().internalStorage();
+            w = s.internalStorage();
         } else {
             w = new double[s.getLength()];
             TsDataBlock.all(s).data.copyTo(w, 0);
@@ -109,29 +116,46 @@ public class TsCholette extends AbstractTsBenchmarking {
             }
         }
 
-        SsfCholette cholette = new SsfCholette(c, rho_, w);
+        if (getAggregationType() == TsAggregationType.Average
+                || getAggregationType() == TsAggregationType.Sum) {
+            SsfCholette cholette = new SsfCholette(c, s.getStart().getPosition()%c, rho_, w);
 //        WeightedSsfDisaggregation<SsfAr1> cholette=
 //                new WeightedSsfDisaggregation(c, w, new SsfAr1(ro_));
-        DisturbanceSmoother dsmoother = new DisturbanceSmoother();
-        dsmoother.setSsf(cholette);
-        dsmoother.process(new SsfData(y, null));
-        SmoothingResults drslts = dsmoother.calcSmoothedStates();
+            DisturbanceSmoother dsmoother = new DisturbanceSmoother();
+            dsmoother.setSsf(cholette);
+            dsmoother.process(new SsfData(y, null));
+            SmoothingResults drslts = dsmoother.calcSmoothedStates();
 
-        double[] b;
-        if (w != null) {
-            b = new double[s.getLength()];
-            for (int i = 0; i < b.length; ++i) {
-                b[i] = w[i] * (drslts.A(i).get(1));
+            double[] b;
+            if (w != null) {
+                b = new double[s.getLength()];
+                for (int i = 0; i < b.length; ++i) {
+                    b[i] = w[i] * (drslts.A(i).get(1));
+                }
+            } else {
+                b = drslts.component(1);
             }
-        } else {
-            b = drslts.component(1);
-        }
 
-        return s.minus(new TsData(s.getStart(), b, false));
+            return s.minus(new TsData(s.getStart(), b, false));
+        } else {
+            WeightedSsf<SsfAr1> ssf = new WeightedSsf<>(w, new SsfAr1());
+            DisturbanceSmoother dsmoother = new DisturbanceSmoother();
+            dsmoother.setSsf(ssf);
+            dsmoother.process(new SsfData(y, null));
+            SmoothingResults drslts = dsmoother.calcSmoothedStates();
+
+            double[] b = new double[s.getLength()];
+            for (int i = 0; i < b.length; ++i) {
+                b[i] = ssf.ZX(i, drslts.A(i));
+            }
+
+            return s.minus(new TsData(s.getStart(), b, false));
+
+        }
     }
 
     /**
-     * 
+     *
      * @param s
      * @param constraints
      * @return
@@ -145,11 +169,11 @@ public class TsCholette extends AbstractTsBenchmarking {
             obj = obj.times(c);
         }
 
-        double[] y = expand(s.getDomain(), obj);
+        double[] y = expand(s.getDomain(), obj, getAggregationType());
 
         double[] w = null;
         if (lambda_ == 1) {
-            w = s.getValues().internalStorage();
+            w = s.internalStorage();
         } else {
             w = new double[s.getLength()];
             TsDataBlock.all(s).data.copyTo(w, 0);
@@ -158,27 +182,43 @@ public class TsCholette extends AbstractTsBenchmarking {
             }
         }
 
-        SsfDenton denton = new SsfDenton(c, w);
-        DisturbanceSmoother dsmoother = new DisturbanceSmoother();
-        dsmoother.setSsf(denton);
-        dsmoother.process(new SsfData(y, null));
-        SmoothingResults drslts = dsmoother.calcSmoothedStates();
+        if (getAggregationType() == TsAggregationType.Average
+                || getAggregationType() == TsAggregationType.Sum) {
+            SsfDenton denton = new SsfDenton(c, s.getStart().getPosition()%c, w);
+            DisturbanceSmoother dsmoother = new DisturbanceSmoother();
+            dsmoother.setSsf(denton);
+            dsmoother.process(new SsfData(y, null));
+            SmoothingResults drslts = dsmoother.calcSmoothedStates();
 
-        double[] b;
-        if (w != null) {
-            b = new double[s.getLength()];
-            for (int i = 0; i < b.length; ++i) {
-                b[i] = w[i] * (drslts.A(i).get(1));
+            double[] b;
+            if (w != null) {
+                b = new double[s.getLength()];
+                for (int i = 0; i < b.length; ++i) {
+                    b[i] = w[i] * (drslts.A(i).get(1));
+                }
+            } else {
+                b = drslts.component(1);
             }
+            return s.minus(new TsData(s.getStart(), b, false));
         } else {
-            b = drslts.component(1);
-        }
+            WeightedSsf<SsfRw> denton = new WeightedSsf<>(w, new SsfRw());
+            DisturbanceSmoother dsmoother = new DisturbanceSmoother();
+            dsmoother.setSsf(denton);
+            dsmoother.process(new SsfData(y, null));
+            SmoothingResults drslts = dsmoother.calcSmoothedStates();
 
-        return s.minus(new TsData(s.getStart(), b, false));
+            double[] b = new double[s.getLength()];
+            for (int i = 0; i < b.length; ++i) {
+                b[i] = denton.ZX(i, drslts.A(i));
+            }
+
+            return s.minus(new TsData(s.getStart(), b, false));
+
+        }
     }
 
     /**
-     * 
+     *
      * @param value
      */
     public void setRho(double value) {

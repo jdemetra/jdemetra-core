@@ -247,6 +247,13 @@ public class MullerNewtonSolver implements IRootsSolver {
         m_roots = null;
         m_remainder = null;
     }
+    
+    @Override
+    public MullerNewtonSolver exemplar(){
+        MullerNewtonSolver solver = new MullerNewtonSolver();
+        solver.setLeastSquaresDivision(lqdiv);
+        return solver;
+    }
 
     /**
      * *** compute P(x2) and make some checks ****
@@ -896,7 +903,7 @@ public class MullerNewtonSolver implements IRootsSolver {
     }
 
     private void update(final Complex r0) {
-        // double a, b coefficients of the quadratic polynomial x^2+ax+b
+        // double a, b coefficients of the quadratic polynomial x^2-ax-b
         double a = 2 * r0.getRe(), b = -r0.absSquare();
         m_roots[m_idx++] = r0;
         m_roots[m_idx++] = r0.conj();

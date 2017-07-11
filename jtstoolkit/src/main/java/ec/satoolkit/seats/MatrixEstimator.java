@@ -100,8 +100,8 @@ public class MatrixEstimator implements IComponentsEstimator {
                 fcmps[i] = new TsData(f0, ftmp, false);
                 double[] eftmp = mc.stdevForecasts(i);
                 efcmps[i] = new TsData(f0, eftmp, false);
-                ecmps[i].getValues().mul(ser);
-                efcmps[i].getValues().mul(ser);
+                ecmps[i].applyOnFinite(x->x*ser);
+                efcmps[i].applyOnFinite(x->x*ser);
             }
         }
         
@@ -133,7 +133,7 @@ public class MatrixEstimator implements IComponentsEstimator {
         
         TsData fs = new TsData(f0, mc.getForecasts(), false),
                 efs = new TsData(f0, mc.stdevForecasts(), false);
-        efs.getValues().mul(ser);
+        efs.applyOnFinite(x->x*ser);
         decomposition.add(fs, ComponentType.Series, ComponentInformation.Forecast);
         decomposition.add(efs, ComponentType.Series, ComponentInformation.StdevForecast);
         

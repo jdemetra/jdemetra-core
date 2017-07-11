@@ -13,9 +13,11 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.utilities;
+
+import java.util.Arrays;
+import javax.annotation.Nonnull;
 
 /**
  *
@@ -24,38 +26,45 @@ package ec.tstoolkit.utilities;
 //@Immutable
 public class LinearId implements Id {
 
-    private static final IdAggregator defAggregator_ = new DefaultIdAggregator();
+    @Nonnull
+    public static LinearId of(@Nonnull Id id) {
+        if (id instanceof LinearId) {
+            return (LinearId) id;
+        }
+        if (id.getCount() == 0) {
+            return new LinearId(null, DEFAULT_AGGREGATOR, null);
+        }
+        return new LinearId(id.toArray(), DEFAULT_AGGREGATOR, null);
+    }
+
+    private static final IdAggregator DEFAULT_AGGREGATOR = new DefaultIdAggregator();
+
     private final String[] data_;
     private final IdAggregator aggregator_;
 
     public LinearId() {
-        data_ = null;
-        aggregator_ = defAggregator_;
+        this(null, DEFAULT_AGGREGATOR, null);
     }
 
     public LinearId(String id) {
-        data_ = new String[]{id};
-        aggregator_ = defAggregator_;
+        this(new String[]{id}, DEFAULT_AGGREGATOR, null);
     }
 
     public LinearId(String parent, String tail) {
-        data_ = new String[]{parent, tail};
-        aggregator_ = defAggregator_;
+        this(new String[]{parent, tail}, DEFAULT_AGGREGATOR, null);
     }
 
     public LinearId(String... id) {
-        data_ = id.clone();
-        aggregator_ = defAggregator_;
+        this(id.clone(), DEFAULT_AGGREGATOR, null);
     }
 
     public LinearId(String[] ids, IdAggregator aggregator) {
-        if (ids != null) {
-            data_ = ids.clone();
-        }
-        else {
-            data_ = null;
-        }
-        aggregator_ = aggregator;
+        this(ids != null ? ids.clone() : null, aggregator, null);
+    }
+
+    private LinearId(String[] ids, IdAggregator aggregator, Void private_constructor) {
+        this.data_ = ids;
+        this.aggregator_ = aggregator;
     }
 
     @Override
@@ -66,68 +75,27 @@ public class LinearId implements Id {
     @Override
     public LinearId extend(String tail) {
         int n = getCount();
-        String[] ids = new String[n + 1];
-        for (int i = 0; i < n; ++i) {
-            ids[i] = data_[i];
+        if (n <= 0) {
+            return new LinearId(new String[]{tail}, aggregator_, null);
         }
+        String[] ids = Arrays.copyOf(data_, n + 1);
         ids[n] = tail;
-        return new LinearId(ids, aggregator_);
+        return new LinearId(ids, aggregator_, null);
     }
 
     @Override
     public LinearId parent() {
         int n = getCount();
         if (n <= 1) {
-            return new LinearId(null, aggregator_);
+            return new LinearId(null, aggregator_, null);
         }
-        String[] ids = new String[n - 1];
-        for (int i = 0; i < n - 1; ++i) {
-            ids[i] = data_[i];
-        }
-        return new LinearId(ids, aggregator_);
-    }
-
-    @Override
-    public String tail() {
-        return (data_ == null || data_.length == 0) ? null : data_[data_.length - 1];
-    }
-
-    @Override
-    public Id[] path() {
-        int n = getCount();
-        if (n == 0) {
-            return new Id[0];
-        }
-        Id[] path = new Id[n];
-        Id cur = this;
-        while (n > 0) {
-            path[--n] = cur;
-            cur = cur.parent();
-        }
-        return path;
+        String[] ids = Arrays.copyOf(data_, n - 1);
+        return new LinearId(ids, aggregator_, null);
     }
 
     @Override
     public int getCount() {
         return data_ == null ? 0 : data_.length;
-    }
-
-    @Override
-    public int compareTo(Id o) {
-        int ln = getCount(), rn = o.getCount();
-        if (ln < rn) {
-            return -1;
-        }
-        if (ln > rn) {
-            return 1;
-        }
-        for (int i = 0; i < ln; ++i) {
-            int cmp = data_[i].compareTo(o.get(i));
-            if (cmp != 0) {
-                return cmp;
-            }
-        }
-        return 0;
     }
 
     @Override
@@ -153,16 +121,7 @@ public class LinearId implements Id {
     }
 
     @Override
-    public boolean startsWith(Id id) {
-        int n = getCount(), sn = id.getCount();
-        if (sn > n) {
-            return false;
-        }
-        for (int i = 0; i < sn; ++i) {
-            if (!data_[i].equals(id.get(i))) {
-                return false;
-            }
-        }
-        return true;
+    public String[] toArray() {
+        return data_ != null ? data_.clone() : new String[0];
     }
 }

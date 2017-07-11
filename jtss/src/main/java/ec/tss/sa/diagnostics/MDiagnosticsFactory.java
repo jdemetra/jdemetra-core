@@ -17,16 +17,25 @@
 
 package ec.tss.sa.diagnostics;
 
+import ec.satoolkit.x11.Mstatistics;
 import ec.tss.sa.ISaDiagnosticsFactory;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.IDiagnostics;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Kristof Bayens
  */
+@ServiceProvider(service = ISaDiagnosticsFactory.class)
 public class MDiagnosticsFactory implements ISaDiagnosticsFactory {
 
+    public static final String NAME = "M-Statistics";
+    public static final List<String> ALL=Collections.unmodifiableList(Arrays.asList(Mstatistics.Q, Mstatistics.Q2));
     //public static final MDiagnosticsFactory Default = new MDiagnosticsFactory();
     private MDiagnosticsConfiguration config_;
 
@@ -48,7 +57,7 @@ public class MDiagnosticsFactory implements ISaDiagnosticsFactory {
 
     @Override
     public String getName() {
-        return "M-Statistics";
+        return NAME;
     }
 
     @Override
@@ -56,6 +65,11 @@ public class MDiagnosticsFactory implements ISaDiagnosticsFactory {
         return "US-Census Bureau M-Statistics";
     }
 
+    @Override
+    public List<String> getTestDictionary() {
+         return ALL.stream().map(s->s+":2").collect(Collectors.toList());
+   }
+    
     @Override
     public boolean isEnabled() {
         return config_.isEnabled();

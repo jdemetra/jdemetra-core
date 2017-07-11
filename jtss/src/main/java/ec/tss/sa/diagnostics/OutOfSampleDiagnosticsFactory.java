@@ -20,12 +20,22 @@ package ec.tss.sa.diagnostics;
 import ec.tss.sa.ISaDiagnosticsFactory;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.IDiagnostics;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
+@ServiceProvider(service = ISaDiagnosticsFactory.class)
 public class OutOfSampleDiagnosticsFactory implements ISaDiagnosticsFactory {
+
+    public static final String MEAN = "mean", MSE = "mse";
+    public static final String NAME = "Out-of-sample";
+    public static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(MEAN, MSE));
 
     //public static final OutOfSampleDiagnosticsFactory Default = new OutOfSampleDiagnosticsFactory();
     private OutOfSampleDiagnosticsConfiguration config_;
@@ -48,12 +58,17 @@ public class OutOfSampleDiagnosticsFactory implements ISaDiagnosticsFactory {
 
     @Override
     public String getName() {
-        return "Out of Sample"; 
+        return NAME; 
     }
-
+    
     @Override
     public String getDescription() {
         return "Out of Sample analysis";
+    }
+    
+    @Override
+    public List<String> getTestDictionary(){
+        return ALL.stream().map(s->s+":2").collect(Collectors.toList());
     }
 
     @Override

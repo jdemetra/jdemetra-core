@@ -19,6 +19,8 @@ package ec.tstoolkit.data;
 
 /// <summary></summary>
 
+import ec.tstoolkit.data.IDataBlock;
+import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.design.Development;
 
 /// <remarks>
@@ -31,7 +33,7 @@ import ec.tstoolkit.design.Development;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Beta)
-public class AbsMeanNormalizer implements IDataNormalizer {
+public class AbsMeanNormalizer implements IDataNormalizer, InPlaceNormalizer {
 
     private double m_c;
 
@@ -52,7 +54,7 @@ public class AbsMeanNormalizer implements IDataNormalizer {
 	int n = 0;
 	for (int i = 0; i < m_data.length; ++i) {
 	    double d = m_data[i];
-	    if (DescriptiveStatistics.isFinite(d)) {
+	    if (Double.isFinite(d)) {
 		s += Math.abs(d);
 		++n;
 	    }
@@ -62,7 +64,7 @@ public class AbsMeanNormalizer implements IDataNormalizer {
 	m_c = n / s;
 
 	for (int i = 0; i < m_data.length; ++i)
-	    if (DescriptiveStatistics.isFinite(m_data[i]))
+	    if (Double.isFinite(m_data[i]))
 		m_data[i] *= m_c;
 	return true;
 
@@ -74,5 +76,27 @@ public class AbsMeanNormalizer implements IDataNormalizer {
 	m_data = new double[data.getLength()];
 	data.copyTo(m_data, 0);
 	return process();
+    }
+
+    @Override
+    public double normalize(IDataBlock data) {
+
+        double s = 0;
+	final int n = data.getLength();
+        int m=0;
+        
+        
+	for (int i = 0; i < n; ++i) {
+	    double d = data.get(i);
+	    if (Double.isFinite(d)) {
+		s += Math.abs(d);
+		++m;
+	    }
+	}
+	if (s == 0)
+	    return 1;
+	double c = m / s;
+        data.apply((x)->x*c);
+        return c;
     }
 }

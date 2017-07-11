@@ -21,10 +21,6 @@ import ec.satoolkit.DefaultSeriesDecomposition;
 import ec.satoolkit.GenericSaProcessingFactory;
 import static ec.satoolkit.GenericSaProcessingFactory.BENCHMARKING;
 import static ec.satoolkit.GenericSaProcessingFactory.DECOMPOSITION;
-import static ec.satoolkit.GenericSaProcessingFactory.PREPROCESSING;
-import ec.satoolkit.GenericSaResults;
-import ec.satoolkit.ISaResults;
-import ec.satoolkit.ISeriesDecomposition;
 import ec.satoolkit.benchmarking.SaBenchmarkingResults;
 import ec.satoolkit.x11.Mstatistics;
 import ec.satoolkit.x11.X11Results;
@@ -32,11 +28,11 @@ import ec.satoolkit.x13.X11Decomposer;
 import ec.satoolkit.x13.X13Specification;
 import ec.tstoolkit.algorithm.*;
 import ec.tstoolkit.design.Development;
-import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.modelling.arima.x13.BasicSpec;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -65,6 +61,7 @@ public class X13ProcessingFactory extends GenericSaProcessingFactory implements 
         }
         DefaultPreprocessingFilter filter = new DefaultPreprocessingFilter();
         filter.setForecastHorizon(xspec.getX11Specification().getForecastHorizon());
+        filter.setBackcastHorizon(xspec.getX11Specification().getBackcastHorizon());
         addDecompositionStep(new X11Decomposer(xspec.getX11Specification()), filter, processing);
         addFinalStep(filter, processing);
         addDiagnosticsStep(processing);
@@ -135,13 +132,13 @@ public class X13ProcessingFactory extends GenericSaProcessingFactory implements 
     }
 
     @Override
-    public Map<String, Class> getOutputDictionary() {
-        HashMap<String, Class> dic = new HashMap<>();
-        PreprocessingModel.fillDictionary(null, dic);
-        X11Results.fillDictionary(DECOMPOSITION, dic);
-        Mstatistics.fillDictionary(MSTATISTICS, dic);
-        DefaultSeriesDecomposition.fillDictionary(null, dic);
-        SaBenchmarkingResults.fillDictionary(BENCHMARKING, dic);
+    public Map<String, Class> getOutputDictionary(boolean compact) {
+        HashMap<String, Class> dic = new LinkedHashMap<>();
+        PreprocessingModel.fillDictionary(null, dic, compact);
+        X11Results.fillDictionary(DECOMPOSITION, dic, compact);
+        Mstatistics.fillDictionary(MSTATISTICS, dic, compact);
+        DefaultSeriesDecomposition.fillDictionary(null, dic, compact);
+        SaBenchmarkingResults.fillDictionary(BENCHMARKING, dic, compact);
         return dic;
     }
 }

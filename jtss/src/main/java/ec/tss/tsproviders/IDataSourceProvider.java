@@ -17,12 +17,8 @@
 package ec.tss.tsproviders;
 
 import ec.tss.ITsProvider;
-import ec.tss.TsMoniker;
-import java.io.IOException;
-import java.util.List;
-import java.util.WeakHashMap;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * Defines a provider that is used to discover and browse DataSources and
@@ -31,144 +27,24 @@ import javax.annotation.Nullable;
  *
  * @author Demortier Jeremy
  * @author Philippe Charles
+ * @since 1.0.0
  */
-public interface IDataSourceProvider extends ITsProvider {
+@ThreadSafe
+public interface IDataSourceProvider extends ITsProvider, HasDataSourceList, HasDataHierarchy, HasDataDisplayName, HasDataMoniker {
+
+    @Override
+    default void reload(DataSource dataSource) {
+        clearCache();
+    }
 
     /**
      * Gets a label for this provider.<br>Note that the result might change
      * according to the configuration of the provider.
      *
-     * @return a non-null label.
+     * @return a non-empty label.
      */
     @Nonnull
-    String getDisplayName();
-
-    /**
-     * Gets the DataSources loaded by this provider.
-     *
-     * @return a list of DataSources; might be empty but never null.
-     */
-    @Nonnull
-    List<DataSource> getDataSources();
-
-    /**
-     * Gets the children of the specified DataSource.
-     *
-     * @param dataSource
-     * @return a list a DataSet; might be empty but never null.
-     * @throws IllegalArgumentException if the DataSource doesn't belong to this
-     * provider.
-     * @throws IOException if an internal exception prevented data retrieval.
-     */
-    @Nonnull
-    List<DataSet> children(@Nonnull DataSource dataSource) throws IllegalArgumentException, IOException;
-
-    /**
-     * Gets the children of the specified DataSet.
-     *
-     * @param parent
-     * @return a list of DataSet; might be empty but never null.
-     * @throws IllegalArgumentException if the DataSet doesn't belong to this
-     * provider.
-     * @throws IOException if an internal exception prevented data retrieval.
-     */
-    @Nonnull
-    List<DataSet> children(@Nonnull DataSet parent) throws IllegalArgumentException, IOException;
-
-    /**
-     * Gets a label for the specified DataSource.<br>Note that the result might
-     * change according to the configuration of the provider.
-     *
-     * @param dataSource
-     * @return a non-null label.
-     * @throws IllegalArgumentException if the DataSource doesn't belong to this
-     * provider.
-     */
-    @Nonnull
-    String getDisplayName(@Nonnull DataSource dataSource) throws IllegalArgumentException;
-
-    /**
-     * Gets a full label of the specified DataSet. Use this method in a
-     * list.<br>Note that the result might change according to the configuration
-     * of the provider.
-     *
-     * @param dataSet
-     * @return a non-null label.
-     * @throws IllegalArgumentException if the DataSet doesn't belong to this
-     * provider.
-     */
-    @Nonnull
-    String getDisplayName(@Nonnull DataSet dataSet) throws IllegalArgumentException;
-
-    /**
-     * Gets a short label of the specified DataSet. Use this method in a
-     * tree.<br>Note that the result might change according to the configuration
-     * of the provider.
-     *
-     * @param dataSet
-     * @return a non-null label.
-     * @throws IllegalArgumentException if the DataSet doesn't belong to this
-     * provider.
-     */
-    @Nonnull
-    String getDisplayNodeName(@Nonnull DataSet dataSet) throws IllegalArgumentException;
-
-    /**
-     * Gets a label for an exception thrown by this provider.
-     *
-     * @param exception
-     * @return a non-null label
-     * @throws IllegalArgumentException if the exception doesn't belong to this
-     * provider.
-     */
-    @Nonnull
-    String getDisplayName(@Nonnull IOException exception) throws IllegalArgumentException;
-
-    /**
-     * Adds a listener to the provider in order to receive change
-     * notifications.<br>Note that the specified listener might be stored in a
-     * {@link WeakHashMap} to avoid memory leak. It is up to you to keep it in a
-     * strong ref to prevent garbage collection.
-     *
-     * @param listener
-     */
-    void addDataSourceListener(@Nonnull IDataSourceListener listener);
-
-    /**
-     * Removes a listener from the provider if that listener has been added.
-     * Does nothing otherwise.
-     *
-     * @param listener
-     */
-    void removeDataSourceListener(@Nonnull IDataSourceListener listener);
-
-    /**
-     * Creates a moniker from a DataSource. The resulting moniker can be used to
-     * retrieve data.
-     *
-     * @param dataSource
-     * @return a non-null moniker.
-     * @throws IllegalArgumentException if the DataSource doesn't belong to this
-     * provider.
-     */
-    @Nonnull
-    TsMoniker toMoniker(@Nonnull DataSource dataSource) throws IllegalArgumentException;
-
-    /**
-     * Creates a moniker from a DataSet. The resulting moniker can be used to
-     * retrieve data.
-     *
-     * @param dataSet
-     * @return a non-null moniker.
-     * @throws IllegalArgumentException if the DataSet doesn't belong to this
-     * provider.
-     */
-    @Nonnull
-    TsMoniker toMoniker(@Nonnull DataSet dataSet) throws IllegalArgumentException;
-
-    @Nullable
-    DataSet toDataSet(@Nonnull TsMoniker moniker) throws IllegalArgumentException;
-
-    @Nullable
-    DataSource toDataSource(@Nonnull TsMoniker moniker) throws IllegalArgumentException;
+    default String getDisplayName() {
+        return getSource();
+    }
 }

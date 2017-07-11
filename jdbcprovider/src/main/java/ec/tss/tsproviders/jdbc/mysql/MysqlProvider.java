@@ -16,6 +16,7 @@
 */
 package ec.tss.tsproviders.jdbc.mysql;
 
+import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;
 import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.db.DbAccessor;
@@ -28,6 +29,7 @@ import ec.tss.tsproviders.jdbc.dsm.datasource.DataSourceType;
 import ec.tss.tsproviders.jdbc.dsm.datasource.interfaces.IManagedDataSource;
 import ec.tss.tsproviders.jdbc.dsm.identification.Account;
 import ec.tss.tsproviders.jdbc.dsm.identification.AccountManager;
+import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Jeremy Demortier
  */
 @Deprecated
+@ServiceProvider(service = ITsProvider.class)
 public class MysqlProvider extends JdbcProvider<JdbcBean> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MysqlProvider.class);

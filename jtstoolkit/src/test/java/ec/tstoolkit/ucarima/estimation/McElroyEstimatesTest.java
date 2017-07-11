@@ -77,7 +77,7 @@ public class McElroyEstimatesTest {
             }
             double d = new DataBlock(cmps1[i]).distance(new DataBlock(cmps2[i]));
             d /= new DataBlock(cmps1[i]).nrm2();
-            assertTrue(d / lin.getLength() < 1e-9);
+            assertTrue(d / lin.getLength() < 1e-7);
         }
     }
 
@@ -156,7 +156,7 @@ public class McElroyEstimatesTest {
         //        }
 
         // add forecasts
-        ec.tstoolkit.ssf.SsfData sdata = new ec.tstoolkit.ssf.SsfData(lin.getValues().internalStorage(), null);
+        ec.tstoolkit.ssf.SsfData sdata = new ec.tstoolkit.ssf.SsfData(lin.internalStorage(), null);
         ec.tstoolkit.ssf.ExtendedSsfData xsdata = new ec.tstoolkit.ssf.ExtendedSsfData(sdata);
         xsdata.setForecastsCount(nf);
 

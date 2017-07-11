@@ -17,6 +17,7 @@
 package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.design.Immutable;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
@@ -30,95 +31,75 @@ import java.util.Objects;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
-public class OutlierDefinition implements Comparable<OutlierDefinition>, Cloneable {
+@Development(status = Development.Status.Release)
+@Immutable
+public class OutlierDefinition implements Comparable<OutlierDefinition> {
 
-    public Day position;
-    public OutlierType type;
-    public boolean prespecified;
+    private final Day position;
+    private final String code;
 
     /**
      *
      * @param period
      * @param type
-     * @param prespecified
      */
-    public OutlierDefinition(TsPeriod period, OutlierType type, boolean prespecified) {
+    public OutlierDefinition(TsPeriod period, OutlierType type) {
         position = period.firstday();
-        this.type = type;
-        this.prespecified = prespecified;
+        this.code = type.name();
     }
 
     /**
      *
      * @param pos
      * @param type
-     * @param prespecified
      */
-    public OutlierDefinition(Day pos, OutlierType type, boolean prespecified) {
+    public OutlierDefinition(Day pos, OutlierType type) {
         position = pos;
-        this.type = type;
-        this.prespecified = prespecified;
+        this.code = type.name();
     }
-    
-    public OutlierDefinition clone(){
-        try {
-            return (OutlierDefinition) super.clone();
-        } catch (CloneNotSupportedException ex) {
-            throw new AssertionError();
-        }
+
+    /**
+     *
+     * @param period
+     * @param type
+     */
+    public OutlierDefinition(TsPeriod period, String code) {
+        position = period.firstday();
+        this.code = code;
+    }
+
+    /**
+     *
+     * @param pos
+     * @param type
+     */
+    public OutlierDefinition(Day pos, String code) {
+        position = pos;
+        this.code = code;
     }
 
     public Day getPosition() {
         return position;
     }
 
-    public void setPosition(Day position) {
-        this.position = position;
-    }
-
     public OutlierType getType() {
-        return type;
-    }
-
-    public void setType(OutlierType type) {
-        this.type = type;
-    }
-
-    public boolean isPrespecified() {
-        return prespecified;
-    }
-
-    public void setPrespecified(boolean prespecified) {
-        this.prespecified = prespecified;
-    }
-
-    public OutlierDefinition prespecify(boolean val) {
-        if (val == prespecified) {
-            return this;
-        } else {
-            return new OutlierDefinition(position, type, val);
+        try {
+            return OutlierType.valueOf(code);
+        } catch (IllegalArgumentException ex) {
+            return OutlierType.Undefined;
         }
     }
 
-    public static OutlierDefinition[] prespecify(OutlierDefinition[] o, boolean val) {
-        if (o == null || o.length == 0) {
-            return o;
-        }
-        OutlierDefinition[] no = new OutlierDefinition[o.length];
-
-        for (int i = 0; i < no.length; ++i) {
-            no[i] = o[i].prespecify(val);
-        }
-        return no;
+    public String getCode() {
+        return code;
     }
 
     @Override
     public int compareTo(OutlierDefinition o) {
-        if (type == o.type) {
+        if (code.equals(o.code)) {
             return position.compareTo(o.position);
         } else {
-            return type.compareTo(o.type);
+            return code.compareTo(o.code);
         }
     }
 
@@ -128,34 +109,32 @@ public class OutlierDefinition implements Comparable<OutlierDefinition>, Cloneab
     }
 
     private boolean equals(OutlierDefinition other) {
-        return other.position.equals(position) && other.type.equals(type);
+        return other.position.equals(position) && other.code.equals(code);
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
         hash = 19 * hash + Objects.hashCode(this.position);
-        hash = 19 * hash + Objects.hashCode(this.type);
+        hash = 19 * hash + Objects.hashCode(this.code);
         return hash;
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(type).append(InformationSet.SEP).append(StringFormatter.convert(position));
-        if (this.prespecified) {
-            builder.append(InformationSet.SEP).append('f');
-        }
+        builder.append(code).append(InformationSet.SEP).append(StringFormatter.convert(position));
         return builder.toString();
     }
 
     public String toString(TsFrequency freq) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(type).append(InformationSet.SEP).append(StringFormatter.write(new TsPeriod(freq, position)));
-        if (this.prespecified) {
-            builder.append(InformationSet.SEP).append('f');
+        if (freq == TsFrequency.Undefined) {
+            return toString();
+        } else {
+            StringBuilder builder = new StringBuilder();
+            builder.append(code).append(InformationSet.SEP).append(StringFormatter.write(new TsPeriod(freq, position)));
+            return builder.toString();
         }
-        return builder.toString();
     }
 
     public static OutlierDefinition fromString(String s) {
@@ -177,11 +156,11 @@ public class OutlierDefinition implements Comparable<OutlierDefinition>, Cloneab
         }
         Day day = StringFormatter.convertDay(ss[1]);
         if (day != null) {
-            return new OutlierDefinition(day, type, p);
+            return new OutlierDefinition(day, type);
         }
         TsPeriod period = StringFormatter.readPeriod(ss[1]);
         if (period != null) {
-            return new OutlierDefinition(period, type, p);
+            return new OutlierDefinition(period, type);
         } else {
             return null;
         }
@@ -190,7 +169,7 @@ public class OutlierDefinition implements Comparable<OutlierDefinition>, Cloneab
     public static List<OutlierDefinition> of(List<IOutlierVariable> vars) {
         List<OutlierDefinition> defs = new ArrayList<>();
         for (IOutlierVariable var : vars) {
-            defs.add(new OutlierDefinition(var.getPosition(), var.getOutlierType(), var.isPrespecified()));
+            defs.add(new OutlierDefinition(var.getPosition(), var.getOutlierType()));
         }
         return defs;
     }

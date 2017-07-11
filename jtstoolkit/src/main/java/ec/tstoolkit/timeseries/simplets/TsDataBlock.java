@@ -116,7 +116,7 @@ public final class TsDataBlock {
      * @return The new time data block
      */
     public static TsDataBlock all(TsData series) {
-        return new TsDataBlock(series.getStart(), new DataBlock(series.getValues().internalStorage()));
+        return new TsDataBlock(series.getStart(), new DataBlock(series.internalStorage()));
     }
     /**
      * Data of this object
@@ -162,7 +162,7 @@ public final class TsDataBlock {
      *            The increment between to consecutive data in the data block
      */
     TsDataBlock(TsData series, int start, int end, int inc) {
-        data = new DataBlock(series.getValues().internalStorage(), start, end,
+        data = new DataBlock(series.internalStorage(), start, end,
                 inc);
         this.start = series.getStart().plus(start);
     }

@@ -20,6 +20,7 @@ import ec.tstoolkit.algorithm.ProcessingContext;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.DefaultTransformationType;
+import ec.tstoolkit.modelling.PreadjustmentVariable;
 import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.modelling.RegressionTestSpec;
 import ec.tstoolkit.modelling.TsVariableDescriptor;
@@ -47,6 +48,7 @@ import ec.tstoolkit.timeseries.regression.Ramp;
 import ec.tstoolkit.timeseries.regression.StockTradingDaysVariables;
 import ec.tstoolkit.timeseries.regression.TsVariableGroup;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  *
@@ -75,7 +77,7 @@ public class X13ModelBuilder implements IModelBuilder {
     private void initializeArima(ModelDescription model) {
         if (spec_.isUsingAutoModel()) {
             model.setAirline(true);
-            //model.setMean(true); // to be checked. 28/1/2013
+            //model.setMu(true); // to be checked. 28/1/2013
         } else if (spec_.getArima() == null) {
             model.setAirline(true);
         } else {
@@ -83,7 +85,7 @@ public class X13ModelBuilder implements IModelBuilder {
             ArimaSpec arima = spec_.getArima();
             SarimaComponent cmp = new SarimaComponent();
             cmp.setFrequency(model.getFrequency());
-            cmp.setMean(arima.isMean());
+            cmp.setMu(arima.getMu());
             cmp.setPhi(arima.getPhi());
             cmp.setTheta(arima.getTheta());
             cmp.setD(arima.getD());
@@ -99,23 +101,24 @@ public class X13ModelBuilder implements IModelBuilder {
         if (regSpec == null) {
             return;
         }
+        Map<String, double[]> preadjustment = regSpec.getAllFixedCoefficients();
         if (regSpec.getTradingDays().isUsed()) {
-            initializeTradingDays(model, regSpec.getTradingDays());
+            initializeTradingDays(model, regSpec.getTradingDays(), preadjustment);
         }
         if (regSpec.getMovingHolidays() != null) {
-            initializeMovingHolidays(model, regSpec.getMovingHolidays());
+            initializeMovingHolidays(model, regSpec.getMovingHolidays(), preadjustment);
         }
         if (regSpec.getOutliersCount() > 0) {
-            initializeOutliers(model, regSpec.getOutliers());
+            initializeOutliers(model, regSpec.getOutliers(), preadjustment);
         }
         if (regSpec.getUserDefinedVariablesCount() > 0) {
-            initializeUsers(model, regSpec.getUserDefinedVariables());
+            initializeUsers(model, regSpec.getUserDefinedVariables(), preadjustment);
         }
         if (regSpec.getInterventionVariablesCount() > 0) {
-            initializeInterventions(model, regSpec.getInterventionVariables());
+            initializeInterventions(model, regSpec.getInterventionVariables(), preadjustment);
         }
         if (regSpec.getRampsCount() > 0) {
-            initializeRamps(model, regSpec.getRamps());
+            initializeRamps(model, regSpec.getRamps(), preadjustment);
         }
     }
 
@@ -144,86 +147,141 @@ public class X13ModelBuilder implements IModelBuilder {
         model.setTransformation(fnSpec.getFunction(), type);
     }
 
-//    private void initializeCalendar(ModelDescription model, CalendarSpec calendar) {
-//        if (calendar == null) {
-//            return;
-//        }
-//        initializeTradingDays(model, calendar.getTradingDays());
-//        initializeEaster(model, calendar.getEaster());
-//    }
-//    private void initializeTradingDays(ModelDescription model, TradingDaysSpec td) {
-//        if (td == null) {
-//            return;
-//        }
-//        if (td.getHolidays() != null) {
-//            initializeHolidays(model, td);
-//        } else if (td.getUserVariables() != null) {
-//            initializeUserHolidays(model, td);
-//        } else if (td.getTradingDaysType() != TradingDaysType.None) {
-//            initializeDefaultTradingDays(model, td);
-//        }
-//    }
-//    private void initializeEaster(ModelDescription model, EasterSpec easter) {
-//        if (easter == null) {
-//            return;
-//        }
-//        EasterVariable var = new EasterVariable();
-//        var.setDuration(easter.getDuration());
-//        var.setType(EasterVariable.Type.Tramo);
-//        var.includeEaster(easter.isEasterIncluded());
-//        var.includeEasterMonday(easter.isEasterMondayIncluded());
-//        Variable evar = new Variable(var, ComponentType.CalendarEffect);
-//        evar.status = easter.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified;
-//        model.getMovingHolidays().add(evar);
-//
-//    }
-    private void initializeOutliers(ModelDescription model, OutlierDefinition[] outliers) {
-        ArrayList<IOutlierVariable> var = new ArrayList<>();
-        ArrayList<IOutlierVariable> pvar = new ArrayList<>();
-        for (int i = 0; i < outliers.length; ++i) {
-            IOutlierVariable v = RegArimaSpecification.fac.make(outliers[i], model.getEstimationDomain().getFrequency());
-            if (outliers[i].prespecified) {
-                pvar.add(v);
-            } else {
-                var.add(v);
-            }
+    private void initializeTradingDays(ModelDescription model, TradingDaysSpec tradingDays, Map<String, double[]> preadjustment) {
+        if (tradingDays.isStockTradingDays()) {
+            initializeStockTradingDays(model, tradingDays, preadjustment);
         }
-        model.addOutliers(var);
-        model.addPrespecifiedOutliers(pvar);
-
+        if (tradingDays.getHolidays() != null) {
+            initializeHolidays(model, tradingDays, preadjustment);
+        } else if (tradingDays.getUserVariables() != null) {
+            initializeUserHolidays(model, tradingDays, preadjustment);
+        } else {
+            initializeDefaultTradingDays(model, tradingDays, preadjustment);
+        }
     }
 
-    private void initializeUsers(ModelDescription model, TsVariableDescriptor[] uvars) {
+    private void initializeMovingHolidays(ModelDescription model, MovingHolidaySpec[] mh, Map<String, double[]> preadjustment) {
+        for (int i = 0; i < mh.length; ++i) {
+            if (mh[i].getType() == MovingHolidaySpec.Type.Easter) {
+                EasterVariable var = new EasterVariable();
+                var.setType(EasterVariable.Correction.PreComputed);
+                var.setDuration(mh[i].getW());
+                String sname = ITsVariable.shortName(var.getName());
+                if (preadjustment.containsKey(sname)) {
+                    PreadjustmentVariable pvar = PreadjustmentVariable.movingHolidayVariable(var, preadjustment.get(sname));
+                    model.addPreadjustment(pvar);
+                } else {
+                    Variable tvar = Variable.movingHolidayVariable(var, RegStatus.Undefined);
+                    if (null != mh[i].getTest()) {
+                        switch (mh[i].getTest()) {
+                            case Add:
+                                tvar.status = RegStatus.ToAdd;
+                                break;
+                            case Remove:
+                                tvar.status = RegStatus.ToRemove;
+                                break;
+                            default:
+                                tvar.status = RegStatus.Prespecified;
+                                break;
+                        }
+                    }
+                    model.addVariable(tvar);
+                }
+            } else if (mh[i].getType() == MovingHolidaySpec.Type.JulianEaster) {
+                JulianEasterVariable var = new JulianEasterVariable();
+                var.setDuration(mh[i].getW());
+                String sname = ITsVariable.shortName(var.getName());
+                if (preadjustment.containsKey(sname)) {
+                    PreadjustmentVariable pvar = PreadjustmentVariable.movingHolidayVariable(var, preadjustment.get(sname));
+                    model.addPreadjustment(pvar);
+                } else {
+                    Variable tvar = Variable.movingHolidayVariable(var, RegStatus.Undefined);
+                    if (null != mh[i].getTest()) {
+                        switch (mh[i].getTest()) {
+                            case Add:
+                                tvar.status = RegStatus.ToAdd;
+                                break;
+                            case Remove:
+                                tvar.status = RegStatus.ToRemove;
+                                break;
+                            default:
+                                tvar.status = RegStatus.Prespecified;
+                                break;
+                        }
+                    }
+                    model.addVariable(tvar);
+                }
+            }
+        }
+    }
+
+    private void initializeOutliers(ModelDescription model, OutlierDefinition[] outliers, Map<String, double[]> preadjustment) {
+        ArrayList<IOutlierVariable> pvar = new ArrayList<>();
+        for (int i = 0; i < outliers.length; ++i) {
+            IOutlierVariable v = RegArimaSpecification.fac.make(outliers[i]);
+            String sname = ITsVariable.shortName(v.getName());
+            if (preadjustment.containsKey(sname)) {
+                PreadjustmentVariable pv = PreadjustmentVariable.outlier(v, preadjustment.get(sname));
+                model.addPreadjustment(pv);
+            } else {
+                pvar.add(v);
+            }
+        }
+        model.addPrespecifiedOutliers(pvar);
+    }
+
+    private void initializeUsers(ModelDescription model, TsVariableDescriptor[] uvars, Map<String, double[]> preadjustment) {
         if (uvars == null) {
             return;
         }
         for (int i = 0; i < uvars.length; ++i) {
             ITsVariable var = uvars[i].toTsVariable(context_);
-            model.getUserVariables().add(new Variable(var, uvars[i].getEffect().type(), RegStatus.Prespecified));
+            String sname = ITsVariable.shortName(var.getName());
+            if (preadjustment.containsKey(sname)) {
+                PreadjustmentVariable pv = PreadjustmentVariable.userVariable(var, uvars[i].getEffect().type(), preadjustment.get(sname));
+                model.addPreadjustment(pv);
+            } else {
+                Variable uvar = Variable.userVariable(var, uvars[i].getEffect().type(), RegStatus.Prespecified);
+                model.addVariable(uvar);
+            }
         }
     }
 
-    private void initializeInterventions(ModelDescription model, InterventionVariable[] interventionVariables) {
+    private void initializeInterventions(ModelDescription model, InterventionVariable[] interventionVariables, Map<String, double[]> preadjustment) {
         if (interventionVariables == null) {
             return;
         }
         for (int i = 0; i < interventionVariables.length; ++i) {
-            Variable var = new Variable(interventionVariables[i], Variable.searchType(interventionVariables[i]), RegStatus.Prespecified);
-            model.getUserVariables().add(var);
+            InterventionVariable var = interventionVariables[i];
+            String sname = ITsVariable.shortName(var.getName());
+            if (preadjustment.containsKey(sname)) {
+                PreadjustmentVariable pv = PreadjustmentVariable.userVariable(var, Variable.searchType(var), preadjustment.get(sname));
+                model.addPreadjustment(pv);
+            } else {
+                Variable uvar = Variable.userVariable(var, Variable.searchType(var), RegStatus.Prespecified);
+                model.addVariable(uvar);
+            }
         }
     }
 
-    private void initializeRamps(ModelDescription model, Ramp[] ramps) {
+    private void initializeRamps(ModelDescription model, Ramp[] ramps, Map<String, double[]> preadjustment) {
         if (ramps == null) {
             return;
         }
         for (int i = 0; i < ramps.length; ++i) {
-            Variable var = new Variable(ramps[i], ComponentType.Trend, RegStatus.Prespecified);
-            model.getUserVariables().add(var);
+            Ramp var = ramps[i];
+            String sname = ITsVariable.shortName(var.getName());
+            if (preadjustment.containsKey(sname)) {
+                PreadjustmentVariable pv = PreadjustmentVariable.userVariable(var, ComponentType.Trend, preadjustment.get(sname));
+                model.addPreadjustment(pv);
+            } else {
+                Variable uvar = Variable.userVariable(var, ComponentType.Trend, RegStatus.Prespecified);
+                model.addVariable(uvar);
+            }
         }
     }
 
-    private void initializeHolidays(ModelDescription model, TradingDaysSpec td) {
+    private void initializeHolidays(ModelDescription model, TradingDaysSpec td, Map<String, double[]> preadjustment) {
         IGregorianCalendarProvider cal = context_.getGregorianCalendars().get(td.getHolidays());
         if (cal == null) {
             return;
@@ -234,28 +292,52 @@ public class X13ModelBuilder implements IModelBuilder {
         boolean auto = td.isAutoAdjust();
 
         if (ttd != TradingDaysType.None) {
-            ITsVariable var = new GregorianCalendarVariables(cal, ttd);
-            Variable tvar = new Variable(var, ComponentType.CalendarEffect);
-            if (td.getTest() == RegressionTestSpec.Add) {
-                tvar.status = RegStatus.ToAdd;
-            } else if (td.getTest() == RegressionTestSpec.Remove) {
-                tvar.status = RegStatus.ToRemove;
+            GregorianCalendarVariables var = new GregorianCalendarVariables(cal, ttd);
+            String sname = ITsVariable.shortName(var.getName());
+            if (preadjustment.containsKey(sname)) {
+                PreadjustmentVariable pvar = PreadjustmentVariable.calendarVariable(var, preadjustment.get(sname));
+                model.addPreadjustment(pvar);
             } else {
-                tvar.status = RegStatus.Prespecified;
+                Variable tvar = Variable.calendarVariable(var, RegStatus.Undefined);
+                if (null != td.getTest()) {
+                    switch (td.getTest()) {
+                        case Add:
+                            tvar.status = RegStatus.ToAdd;
+                            break;
+                        case Remove:
+                            tvar.status = RegStatus.ToRemove;
+                            break;
+                        default:
+                            tvar.status = RegStatus.Prespecified;
+                            break;
+                    }
+                }
+                model.addVariable(tvar);
             }
-            model.getCalendars().add(tvar);
         }
         if (tlp != LengthOfPeriodType.None) {
             LeapYearVariable var = new LeapYearVariable(tlp);
-            Variable tvar = new Variable(var, ComponentType.CalendarEffect);
-            if (td.getTest() == RegressionTestSpec.Add) {
-                tvar.status = RegStatus.ToAdd;
-            } else if (td.getTest() == RegressionTestSpec.Remove) {
-                tvar.status = RegStatus.ToRemove;
+            String sname = ITsVariable.shortName(var.getName());
+            if (preadjustment.containsKey(sname)) {
+                PreadjustmentVariable pvar = PreadjustmentVariable.calendarVariable(var, preadjustment.get(sname));
+                model.addPreadjustment(pvar);
             } else {
-                tvar.status = RegStatus.Prespecified;
+                Variable tvar = Variable.calendarVariable(var, RegStatus.Undefined);
+                if (null != td.getTest()) {
+                    switch (td.getTest()) {
+                        case Add:
+                            tvar.status = RegStatus.ToAdd;
+                            break;
+                        case Remove:
+                            tvar.status = RegStatus.ToRemove;
+                            break;
+                        default:
+                            tvar.status = RegStatus.Prespecified;
+                            break;
+                    }
+                }
+                model.addVariable(tvar);
             }
-            model.getCalendars().add(tvar);
         }
 
         if (auto) {
@@ -263,7 +345,7 @@ public class X13ModelBuilder implements IModelBuilder {
         }
     }
 
-    private void initializeUserHolidays(ModelDescription model, TradingDaysSpec td) {
+    private void initializeUserHolidays(ModelDescription model, TradingDaysSpec td, Map<String, double[]> preadjustment) {
         String[] userVariables = td.getUserVariables();
         if (userVariables == null || userVariables.length == 0) {
             return;
@@ -278,92 +360,82 @@ public class X13ModelBuilder implements IModelBuilder {
         }
 
         TsVariableGroup var = new TsVariableGroup("User-defined calendar variables", vars);
-        ITradingDaysVariable tradingDays = AbstractTsVariableBox.tradingDays(var);
-        Variable tvar = new Variable(tradingDays, ComponentType.CalendarEffect);
-        if (td.getTest() == RegressionTestSpec.Add) {
-            tvar.status = RegStatus.ToAdd;
-        } else if (td.getTest() == RegressionTestSpec.Remove) {
-            tvar.status = RegStatus.ToRemove;
+        var.setName("usertd");
+        ITradingDaysVariable tdvar = AbstractTsVariableBox.tradingDays(var);
+        String sname = ITsVariable.shortName(tdvar.getName());
+        if (preadjustment.containsKey(sname)) {
+            PreadjustmentVariable pvar = PreadjustmentVariable.tdVariable(tdvar, preadjustment.get(sname));
+            model.addPreadjustment(pvar);
         } else {
-            tvar.status = RegStatus.Prespecified;
-        }
-        model.getCalendars().add(tvar);
-    }
-
-    private void initializeTradingDays(ModelDescription model, TradingDaysSpec tradingDays) {
-        if (tradingDays.isStockTradingDays()) {
-            initializeStockTradingDays(model, tradingDays);
-        }
-        if (tradingDays.getHolidays() != null) {
-            initializeHolidays(model, tradingDays);
-        } else if (tradingDays.getUserVariables() != null) {
-            initializeUserHolidays(model, tradingDays);
-        } else {
-            initializeDefaultTradingDays(model, tradingDays);
-        }
-    }
-
-    private void initializeMovingHolidays(ModelDescription model, MovingHolidaySpec[] mh) {
-        for (int i = 0; i < mh.length; ++i) {
-            if (mh[i].getType() == MovingHolidaySpec.Type.Easter) {
-                EasterVariable var = new EasterVariable();
-                var.setType(EasterVariable.Type.Uscb);
-                Variable tvar = new Variable(var, ComponentType.CalendarEffect);
-                var.setDuration(mh[i].getW());
-                if (mh[i].getTest() == RegressionTestSpec.Add) {
+            Variable tvar = Variable.tdVariable(var, RegStatus.Undefined);
+            switch (td.getTest()) {
+                case Add:
                     tvar.status = RegStatus.ToAdd;
-                } else if (mh[i].getTest() == RegressionTestSpec.Remove) {
+                    break;
+                case Remove:
                     tvar.status = RegStatus.ToRemove;
-                } else {
+                    break;
+                default:
                     tvar.status = RegStatus.Prespecified;
-                }
-                model.getMovingHolidays().add(tvar);
+                    break;
             }
-            else if (mh[i].getType() == MovingHolidaySpec.Type.JulianEaster) {
-                JulianEasterVariable var = new JulianEasterVariable();
-                Variable tvar = new Variable(var, ComponentType.CalendarEffect);
-                var.setDuration(mh[i].getW());
-                if (mh[i].getTest() == RegressionTestSpec.Add) {
-                    tvar.status = RegStatus.ToAdd;
-                } else if (mh[i].getTest() == RegressionTestSpec.Remove) {
-                    tvar.status = RegStatus.ToRemove;
-                } else {
-                    tvar.status = RegStatus.Prespecified;
-                }
-                model.getMovingHolidays().add(tvar);
-            }
-       }
+            model.addVariable(tvar);
+        }
     }
 
-    private void initializeDefaultTradingDays(ModelDescription model, TradingDaysSpec td) {
+    private void initializeDefaultTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, double[]> preadjustment) {
         TradingDaysType ttd = td.getTradingDaysType();
         LengthOfPeriodType tlp = td.getLengthOfPeriod();
 
         boolean auto = td.isAutoAdjust();
 
         if (ttd != TradingDaysType.None) {
-            ITsVariable var = GregorianCalendarVariables.getDefault(ttd);
-            Variable tvar = new Variable(var, ComponentType.CalendarEffect);
-            if (td.getTest() == RegressionTestSpec.Add) {
-                tvar.status = RegStatus.ToAdd;
-            } else if (td.getTest() == RegressionTestSpec.Remove) {
-                tvar.status = RegStatus.ToRemove;
+            GregorianCalendarVariables var = GregorianCalendarVariables.getDefault(ttd);
+            String sname = ITsVariable.shortName(var.getName());
+            if (preadjustment.containsKey(sname)) {
+                PreadjustmentVariable pvar = PreadjustmentVariable.calendarVariable(var, preadjustment.get(sname));
+                model.addPreadjustment(pvar);
             } else {
-                tvar.status = RegStatus.Prespecified;
+                Variable tvar = Variable.calendarVariable(var, RegStatus.Undefined);
+                if (null != td.getTest()) {
+                    switch (td.getTest()) {
+                        case Add:
+                            tvar.status = RegStatus.ToAdd;
+                            break;
+                        case Remove:
+                            tvar.status = RegStatus.ToRemove;
+                            break;
+                        default:
+                            tvar.status = RegStatus.Prespecified;
+                            break;
+                    }
+                }
+                model.addVariable(tvar);
             }
-            model.getCalendars().add(tvar);
         }
         if (tlp != LengthOfPeriodType.None) {
             LeapYearVariable var = new LeapYearVariable(tlp);
-            Variable tvar = new Variable(var, ComponentType.CalendarEffect);
-            if (td.getTest() == RegressionTestSpec.Add) {
-                tvar.status = RegStatus.ToAdd;
-            } else if (td.getTest() == RegressionTestSpec.Remove) {
-                tvar.status = RegStatus.ToRemove;
+            String sname = ITsVariable.shortName(var.getName());
+            if (preadjustment.containsKey(sname)) {
+                PreadjustmentVariable pvar = PreadjustmentVariable.calendarVariable(var, preadjustment.get(sname));
+                model.addPreadjustment(pvar);
             } else {
-                tvar.status = RegStatus.Prespecified;
+                Variable tvar = Variable.calendarVariable(var, RegStatus.Undefined);
+                if (null != td.getTest()) {
+                    switch (td.getTest()) {
+                        case Add:
+                            tvar.status = RegStatus.ToAdd;
+                            break;
+                        case Remove:
+                            tvar.status = RegStatus.ToRemove;
+                            break;
+                        default:
+                            tvar.status = RegStatus.Prespecified;
+                            break;
+                    }
+                }
+                model.addVariable(tvar);
             }
-            model.getCalendars().add(tvar);
         }
 
         if (auto) {
@@ -371,32 +443,27 @@ public class X13ModelBuilder implements IModelBuilder {
         }
     }
 
-    private void initializeStockTradingDays(ModelDescription model, TradingDaysSpec td) {
-        ITsVariable var = new StockTradingDaysVariables(td.getStockTradingDays());
-        Variable tvar = new Variable(var, ComponentType.CalendarEffect);
-        if (td.getTest() == RegressionTestSpec.Add) {
-            tvar.status = RegStatus.ToAdd;
-        } else if (td.getTest() == RegressionTestSpec.Remove) {
-            tvar.status = RegStatus.ToRemove;
+    private void initializeStockTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, double[]> preadjustment) {
+        StockTradingDaysVariables var = new StockTradingDaysVariables(td.getStockTradingDays());
+        String sname = ITsVariable.shortName(var.getName());
+        if (preadjustment.containsKey(sname)) {
+            PreadjustmentVariable pvar = PreadjustmentVariable.calendarVariable(var, preadjustment.get(sname));
+            model.addPreadjustment(pvar);
         } else {
-            tvar.status = RegStatus.Prespecified;
+            Variable tvar = Variable.calendarVariable(var, RegStatus.Undefined);
+            switch (td.getTest()) {
+                case Add:
+                    tvar.status = RegStatus.ToAdd;
+                    break;
+                case Remove:
+                    tvar.status = RegStatus.ToRemove;
+                    break;
+                default:
+                    tvar.status = RegStatus.Prespecified;
+                    break;
+            }
+            model.addVariable(tvar);
         }
-        model.getCalendars().add(tvar);
     }
 
-//    private void initializeDefaultTradingDays(ModelDescription model, TradingDaysSpec td) {
-//        TradingDaysType tdType = td.getTradingDaysType();
-//        ITsVariable var = GregorianCalendarVariables.getDefault(tdType);
-//        Variable tvar = new Variable(var, ComponentType.CalendarEffect);
-//        tvar.status = td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified;
-//
-//        model.getCalendars().add(tvar);
-//
-//        if (td.isLeapYear()) {
-//            LeapYearVariable lp = new LeapYearVariable(LengthOfPeriodType.LeapYear);
-//            Variable lvar = new Variable(lp, ComponentType.CalendarEffect);
-//            lvar.status = td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified;
-//            model.getCalendars().add(lvar);
-//        }
-//    }
 }

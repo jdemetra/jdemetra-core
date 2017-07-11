@@ -13,24 +13,25 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.utils;
 
-import com.google.common.base.Preconditions;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  *
  * @author Philippe Charles
+ * @param <THIS>
+ * @param <T>
  */
 public abstract class AbstractConfigBuilder<THIS extends AbstractConfigBuilder, T extends IConfig> implements IConfig.Builder<THIS, T> {
 
     protected final Map<String, String> params;
 
     protected AbstractConfigBuilder() {
-        this(new HashMap<String, String>());
+        this(new HashMap<>());
     }
 
     protected AbstractConfigBuilder(Map<String, String> params) {
@@ -39,28 +40,9 @@ public abstract class AbstractConfigBuilder<THIS extends AbstractConfigBuilder, 
 
     @Override
     public THIS put(String key, String value) {
-        Preconditions.checkNotNull(key, "key");
-        Preconditions.checkNotNull(value, "value");
+        Objects.requireNonNull(key, "key");
+        Objects.requireNonNull(value, "value");
         params.put(key, value);
-        return (THIS) this;
-    }
-
-    public THIS put(String key, int value) {
-        return put(key, String.valueOf(value));
-    }
-
-    public THIS put(String key, boolean value) {
-        return put(key, String.valueOf(value));
-    }
-
-    public THIS put(Map.Entry<String, String> entry) {
-        return put(entry.getKey(), entry.getValue());
-    }
-
-    public THIS putAll(Map<String, String> map) {
-        for (Map.Entry<String, String> o : map.entrySet()) {
-            put(o);
-        }
         return (THIS) this;
     }
 

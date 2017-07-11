@@ -17,6 +17,8 @@
 package ec.tstoolkit.maths.matrices;
 
 import ec.tstoolkit.data.DataBlock;
+import ec.tstoolkit.data.IDataBlock;
+import ec.tstoolkit.data.IReadDataBlock;
 
 /**
  * Householder transformation with partial pivoting. R-like
@@ -118,7 +120,7 @@ public class HouseholderR extends AbstractLinearSystemSolver implements
             while (l < rank_ && qraux_[l] < tmp2[l] * eps) {
                 int z = p_ - 1;
                 // move all the columns after l to the left. 
-                System.arraycopy(x, (l+1)*n_, x, l*n_, (z-l)*n_);
+                System.arraycopy(x, (l + 1) * n_, x, l * n_, (z - l) * n_);
                 // pivot the auxiliaries
                 int ip = pivot_[l];
                 double aux = qraux_[l], t1 = tmp1[l], t2 = tmp2[l];
@@ -181,22 +183,22 @@ public class HouseholderR extends AbstractLinearSystemSolver implements
         rank_ = Math.min(rank_, n_);
     }
 
-    private void pivot(double[] external, double[] internal){
-        for (int i=0; i<external.length; ++i){
-            internal[i]=external[pivot_[i]];
+    private void pivot(double[] external, double[] internal) {
+        for (int i = 0; i < external.length; ++i) {
+            internal[i] = external[pivot_[i]];
         }
     }
-    
-    private void restore(double[] external, double[] internal){
-        for (int i=0; i<external.length; ++i){
-            external[pivot_[i]]=internal[i];
+
+    private void restore(double[] external, double[] internal) {
+        for (int i = 0; i < external.length; ++i) {
+            external[pivot_[i]] = internal[i];
         }
     }
-    
-   public void applyQt(double[] b) {
+
+    public void applyQt(double[] b) {
         applyQt(b, rank_);
     }
- 
+
     public void applyQt(double[] b, int k) {
         double[] x = m_.data_;
 
@@ -222,7 +224,7 @@ public class HouseholderR extends AbstractLinearSystemSolver implements
     }
 
     public void applyQ(double[] xb, int k) {
-        double[] b=xb.clone();
+        double[] b = xb.clone();
         pivot(xb, b);
         double[] x = m_.data_;
 
@@ -300,7 +302,7 @@ public class HouseholderR extends AbstractLinearSystemSolver implements
     }
 
     @Override
-    public void leastSquares(DataBlock x, DataBlock b, DataBlock res) throws MatrixException {
+    public void leastSquares(IReadDataBlock x, IDataBlock b, IDataBlock res) {
         double[] x_ = m_.data_;
         double[] y = new double[x.getLength()];
         x.copyTo(y, 0);
@@ -308,11 +310,21 @@ public class HouseholderR extends AbstractLinearSystemSolver implements
         if (res != null) {
             res.copyFrom(y, rank_);
         }
+        double eps=getEpsilon()*1000;
         // Solve R*X = Y;
         for (int k = rank_ - 1, kk = k * (n_ + 1); k >= 0; --k, kk -= n_ + 1) {
-            y[k] /= x_[kk];
-            for (int i = 0; i < k; ++i) {
-                y[i] -= y[k] * x_[i + k * n_];
+            double xkk = x_[kk];
+            if (Math.abs(xkk) > eps) {
+                y[k] /= xkk;
+                for (int i = 0; i < k; ++i) {
+                    y[i] -= y[k] * x_[i + k * n_];
+                }
+            }else{
+                for (int i = 0; i < k; ++i) {
+                    double xcur=x_[i + k * n_];
+                    if (Math.abs(xcur)>eps)
+                        throw new MatrixException(MatrixException.RankError);
+                }
             }
         }
         b.copyFrom(y, 0);

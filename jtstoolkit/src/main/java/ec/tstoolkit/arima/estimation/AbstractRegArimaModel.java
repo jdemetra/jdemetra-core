@@ -13,9 +13,8 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
+ */
 package ec.tstoolkit.arima.estimation;
-
 
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
@@ -41,6 +40,7 @@ public abstract class AbstractRegArimaModel {
     protected RegModel m_dregs;
     private DataBlock m_y;
     private boolean m_bmean;
+    private double meancorrection;
     private final java.util.List<DataBlock> m_x;
     private int[] m_missings;
 
@@ -52,7 +52,7 @@ public abstract class AbstractRegArimaModel {
     }
 
     /**
-     * 
+     *
      * @param m
      * @param ur
      */
@@ -60,6 +60,7 @@ public abstract class AbstractRegArimaModel {
             final boolean ur) {
         m_y = m.m_y;
         m_bmean = m.m_bmean;
+        meancorrection = m.meancorrection;
         m_missings = m.m_missings;
         m_x = Jdk6.newArrayList(m.m_x);
         if (ur) {
@@ -69,7 +70,7 @@ public abstract class AbstractRegArimaModel {
     }
 
     /**
-     * 
+     *
      * @param y
      */
     protected AbstractRegArimaModel(final DataBlock y) {
@@ -78,7 +79,7 @@ public abstract class AbstractRegArimaModel {
     }
 
     /**
-     * 
+     *
      * @param x
      */
     public void addX(final DataBlock x) {
@@ -104,7 +105,13 @@ public abstract class AbstractRegArimaModel {
             calstationarymodel();
         }
         if (m_ur.getLength() == 1) {
-            m_dregs.setY(m_y);
+            if (meancorrection == 0) {
+                m_dregs.setY(m_y);
+            } else {
+                DataBlock y = m_y.deepClone();
+                y.sub(meancorrection);
+                m_dregs.setY(y);
+            }
 
             if (m_missings != null) {
                 for (int i = 0; i < m_missings.length; ++i) {
@@ -121,6 +128,7 @@ public abstract class AbstractRegArimaModel {
             int nur = m_ur.getDegree();
             DataBlock dy = new DataBlock(m_y.getLength() - nur);
             m_ur.filter(m_y, dy);
+            dy.sub(meancorrection);
             m_dregs.setY(dy);
 
             if (m_missings != null) // could be substantially improved... make a window around the
@@ -144,7 +152,7 @@ public abstract class AbstractRegArimaModel {
     }
 
     /**
-     * 
+     *
      * @param n
      * @return
      */
@@ -165,7 +173,7 @@ public abstract class AbstractRegArimaModel {
     }
 
     /**
-     * 
+     *
      * @param b
      * @return
      */
@@ -175,6 +183,7 @@ public abstract class AbstractRegArimaModel {
         }
 
         DataBlock res = m_y.deepClone();
+        res.addAY(-meancorrection, new DataBlock(calcMeanReg(m_y.getLength())));
         int idx = 0;
         if (m_bmean) {
             double m = -b.get(idx++);
@@ -186,6 +195,14 @@ public abstract class AbstractRegArimaModel {
             res.addAY(c, m_x.get(i));
         }
         return res;
+    }
+
+    public double getMeanCorrection() {
+        return meancorrection;
+    }
+
+    public void setMeanCorrection(double meancorrection) {
+        this.meancorrection = meancorrection;
     }
 
     /**
@@ -215,7 +232,7 @@ public abstract class AbstractRegArimaModel {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public BackFilter getDifferencingFilter() {
@@ -226,7 +243,7 @@ public abstract class AbstractRegArimaModel {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public RegModel getDModel() {
@@ -237,7 +254,7 @@ public abstract class AbstractRegArimaModel {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public int[] getMissings() {
@@ -245,7 +262,7 @@ public abstract class AbstractRegArimaModel {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public int getMissingsCount() {
@@ -253,7 +270,7 @@ public abstract class AbstractRegArimaModel {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public int getObsCount() {
@@ -261,7 +278,7 @@ public abstract class AbstractRegArimaModel {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public int getVarsCount() {
@@ -276,7 +293,7 @@ public abstract class AbstractRegArimaModel {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public int getXCount() {
@@ -284,15 +301,19 @@ public abstract class AbstractRegArimaModel {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public DataBlock getY() {
         return m_y;
     }
 
+    public void insertX(final int pos, final IReadDataBlock x) {
+        insertX(pos, new DataBlock(x));
+    }
+
     /**
-     * 
+     *
      * @param pos
      * @param x
      */
@@ -313,7 +334,7 @@ public abstract class AbstractRegArimaModel {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public boolean isMeanCorrection() {
@@ -321,7 +342,7 @@ public abstract class AbstractRegArimaModel {
     }
 
     /**
-     * 
+     *
      * @param idx
      */
     public void removeX(final int idx) {
@@ -333,7 +354,7 @@ public abstract class AbstractRegArimaModel {
     }
 
     /**
-     * 
+     *
      * @param i0
      * @param n
      */
@@ -348,7 +369,7 @@ public abstract class AbstractRegArimaModel {
     }
 
     /**
-     * 
+     *
      * @param value
      */
     public void setMeanCorrection(final boolean value) {
@@ -359,7 +380,7 @@ public abstract class AbstractRegArimaModel {
     }
 
     /**
-     * 
+     *
      * @param value
      */
     public void setMissings(final int[] value) {
@@ -367,8 +388,12 @@ public abstract class AbstractRegArimaModel {
         m_dregs = null;
     }
 
+    public void setY(final IReadDataBlock value) {
+        setY(new DataBlock(value));
+    }
+
     /**
-     * 
+     *
      * @param value
      */
     public void setY(final DataBlock value) {
@@ -390,7 +415,7 @@ public abstract class AbstractRegArimaModel {
     }
 
     /**
-     * 
+     *
      * @param idx
      * @return
      */

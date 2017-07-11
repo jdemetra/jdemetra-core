@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.annotation.Nonnull;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.slf4j.Logger;
@@ -39,15 +40,26 @@ public final class Closeables {
         // static class
     }
 
+    public static void closeBoth(@Nonnull Closeable first, @Nonnull Closeable second) throws IOException {
+        try {
+            first.close();
+        } catch (IOException ex) {
+            try {
+                second.close();
+            } catch (IOException suppressed) {
+                ex.addSuppressed(suppressed);
+            }
+            throw ex;
+        }
+        second.close();
+    }
+    
     public static Closeable asCloseable(final XMLStreamWriter o) {
-        return new Closeable() {
-            @Override
-            public void close() throws IOException {
-                try {
-                    o.close();
-                } catch (XMLStreamException ex) {
-                    throw new IOException("While closing XMLStreamWriter", ex);
-                }
+        return () -> {
+            try {
+                o.close();
+            } catch (XMLStreamException ex) {
+                throw new IOException("While closing XMLStreamWriter", ex);
             }
         };
     }
@@ -60,14 +72,11 @@ public final class Closeables {
 
     @Deprecated
     public static Closeable asCloseable(final ResultSet o) {
-        return new Closeable() {
-            @Override
-            public void close() throws IOException {
-                try {
-                    o.close();
-                } catch (SQLException ex) {
-                    throw new IOException("While closing ResultSet", ex);
-                }
+        return () -> {
+            try {
+                o.close();
+            } catch (SQLException ex) {
+                throw new IOException("While closing ResultSet", ex);
             }
         };
     }
@@ -80,14 +89,11 @@ public final class Closeables {
 
     @Deprecated
     public static Closeable asCloseable(final Statement o) {
-        return new Closeable() {
-            @Override
-            public void close() throws IOException {
-                try {
-                    o.close();
-                } catch (SQLException ex) {
-                    throw new IOException("While closing Statement", ex);
-                }
+        return () -> {
+            try {
+                o.close();
+            } catch (SQLException ex) {
+                throw new IOException("While closing Statement", ex);
             }
         };
     }
@@ -100,14 +106,11 @@ public final class Closeables {
 
     @Deprecated
     public static Closeable asCloseable(final Connection o) {
-        return new Closeable() {
-            @Override
-            public void close() throws IOException {
-                try {
-                    o.close();
-                } catch (SQLException ex) {
-                    throw new IOException("While closing Connection", ex);
-                }
+        return () -> {
+            try {
+                o.close();
+            } catch (SQLException ex) {
+                throw new IOException("While closing Connection", ex);
             }
         };
     }

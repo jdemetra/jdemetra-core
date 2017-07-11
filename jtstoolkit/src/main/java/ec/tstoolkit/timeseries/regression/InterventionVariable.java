@@ -39,7 +39,7 @@ import java.util.Map;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class InterventionVariable extends AbstractSingleTsVariable implements Cloneable, InformationSetSerializable {
+public class InterventionVariable extends AbstractSingleTsVariable implements IUserTsVariable, Cloneable, InformationSetSerializable {
 
     public static final String NAME = "name",
             DELTA = "delta",
@@ -153,7 +153,7 @@ public class InterventionVariable extends AbstractSingleTsVariable implements Cl
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TsFrequency context) {
         return desc_ == null ? toString() : desc_;
     }
 
@@ -345,5 +345,10 @@ public class InterventionVariable extends AbstractSingleTsVariable implements Cl
         builder.append('}');
         appendDetails(builder);
         return builder.toString();
+    }
+    
+    @Override
+    public String getName(){
+        return toString().replace('.','$');
     }
 }

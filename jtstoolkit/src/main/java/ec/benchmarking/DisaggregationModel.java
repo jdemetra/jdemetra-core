@@ -211,7 +211,7 @@ public class DisaggregationModel implements Cloneable {
     }
 
     private void prepareY(DisaggregationData data, TsDomain yDom) {
-        double[] s = y_.getValues().internalStorage();
+        double[] s = y_.internalStorage();
         if (dType_ != DisaggregationType.Level) {
             for (int i = 0; i < s.length; ++i) {
                 s[i] = Math.log(s[i]);

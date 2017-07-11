@@ -27,8 +27,14 @@ import ec.tstoolkit.design.Development;
 @Development(status = Development.Status.Alpha)
 public interface IEasterVariable extends IMovingHolidayVariable {
     
+    static final String NAME="easter";
+    
     int getDuration();
     
     void setDuration(int dur);
 
+    @Override
+    default String getName(){
+        return NAME;
+    }
 }

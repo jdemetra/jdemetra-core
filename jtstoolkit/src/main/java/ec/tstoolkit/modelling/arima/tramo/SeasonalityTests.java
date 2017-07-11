@@ -186,7 +186,7 @@ public class SeasonalityTests {
         if (btSpectrum == null) {
             btSpectrum = new BlackmanTukeySpectrum();
             btSpectrum.setWindowType(WindowType.Tukey);
-            btSpectrum.setData(delta.getDifferenced().getValues().internalStorage());
+            btSpectrum.setData(delta.getDifferenced().internalStorage());
             int ifreq = delta.getDifferenced().getFrequency().intValue();
             int n = delta.getDifferenced().getLength();
             int wlen = 3 * n / 4 / ifreq;
@@ -241,14 +241,14 @@ public class SeasonalityTests {
 
     public StatisticalTest getQs() {
         if (qs == null) {
-            qs = QSTest.compute(delta.getDifferenced().getValues().internalStorage(), delta.getDifferenced().getFrequency().intValue(), nqs_);
+            qs = QSTest.compute(delta.getDifferenced().internalStorage(), delta.getDifferenced().getFrequency().intValue(), nqs_);
         }
         return qs;
     }
 
     public StatisticalTest getPeriodogramTest() {
         if (periodogram == null) {
-            periodogram = PeriodogramTest.computeSum2(delta.getDifferenced().getValues(), delta.getDifferenced().getFrequency().intValue());
+            periodogram = PeriodogramTest.computeSum2(delta.getDifferenced(), delta.getDifferenced().getFrequency().intValue());
         }
         return periodogram;
     }

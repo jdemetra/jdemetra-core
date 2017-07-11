@@ -18,6 +18,7 @@
 package ec.tstoolkit.data;
 
 /// <summary>Normalization based on the root mean square of the data.</summary>
+import ec.tstoolkit.data.IReadDataBlock;
 
 import ec.tstoolkit.design.Development;
 
@@ -55,6 +56,7 @@ public class RootMeanSquareNormalizer implements IDataNormalizer {
      * 
      * @return
      */
+    @Override
     public double getFactor()
     {
 	return m_c;
@@ -64,6 +66,7 @@ public class RootMeanSquareNormalizer implements IDataNormalizer {
      * 
      * @return
      */
+    @Override
     public double[] getNormalizedData()
     {
 	return m_data;
@@ -74,7 +77,7 @@ public class RootMeanSquareNormalizer implements IDataNormalizer {
 	double n = 0;
 	for (int i = 0; i < m_data.length; ++i) {
 	    double d = m_data[i];
-	    if (DescriptiveStatistics.isFinite(d)) {
+	    if (Double.isFinite(d)) {
 		s = hypot(s, d);
 		n += 1;
 	    }
@@ -84,7 +87,7 @@ public class RootMeanSquareNormalizer implements IDataNormalizer {
 	m_c = Math.sqrt(n) / s;
 
 	for (int i = 0; i < m_data.length; ++i)
-	    if (DescriptiveStatistics.isFinite(m_data[i]))
+	    if (Double.isFinite(m_data[i]))
 		m_data[i] *= m_c;
 	return true;
 
@@ -107,6 +110,7 @@ public class RootMeanSquareNormalizer implements IDataNormalizer {
      * @param data
      * @return
      */
+    @Override
     public boolean process(IReadDataBlock data)
     {
 	// if (data == null)

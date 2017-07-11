@@ -85,7 +85,7 @@ class DefaultSeasonalNormalizer extends DefaultX11Algorithm implements
             TsData xsnorm = snorm.fittoDomain(xdom);
             int nf = s.getStart().minus(xsnorm.getStart());
             new CopyYearEndPoints(nf, freq).process(null, new DataBlock(xsnorm
-                    .getValues().internalStorage()));
+                    .internalStorage()));
             return xsnorm;
         }
     }

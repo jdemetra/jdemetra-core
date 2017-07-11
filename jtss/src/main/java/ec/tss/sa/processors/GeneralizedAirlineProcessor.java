@@ -40,6 +40,7 @@ import java.util.Map;
  *
  * @author Jean Palate
  */
+@Deprecated
 public class GeneralizedAirlineProcessor implements ISaProcessingFactory<GeneralizedAirlineSpecification> {
 
     public static final AlgorithmDescriptor DESCRIPTOR=GeneralizedAirlineProcessingFactory.DESCRIPTOR;
@@ -98,7 +99,7 @@ public class GeneralizedAirlineProcessor implements ISaProcessingFactory<General
     }
 
     @Override
-    public Map<String, Class> getOutputDictionary() {
-        return GeneralizedAirlineProcessingFactory.instance.getOutputDictionary();
+    public Map<String, Class> getOutputDictionary(boolean compact) {
+        return GeneralizedAirlineProcessingFactory.instance.getOutputDictionary(compact);
     }
 }

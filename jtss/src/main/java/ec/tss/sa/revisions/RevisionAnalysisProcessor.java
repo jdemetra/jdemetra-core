@@ -20,7 +20,6 @@ import ec.satoolkit.DecompositionMode;
 import ec.satoolkit.GenericSaProcessingFactory;
 import ec.tss.Ts;
 import ec.tss.TsCollection;
-import ec.tss.disaggregation.documents.CalendarizationResults;
 import ec.tstoolkit.algorithm.AlgorithmDescriptor;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.IProcResults;
@@ -35,6 +34,7 @@ import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.information.ProxyResults;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -174,8 +174,8 @@ public class RevisionAnalysisProcessor implements IProcessingFactory<RevisionAna
     }
 
     @Override
-    public Map<String, Class> getOutputDictionary() {
-        Map<String, Class> dic = new HashMap<>();
+    public Map<String, Class> getOutputDictionary(boolean compact) {
+        Map<String, Class> dic = new LinkedHashMap<>();
         return dic;
     }
 

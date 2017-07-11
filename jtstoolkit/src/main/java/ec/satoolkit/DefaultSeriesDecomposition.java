@@ -19,7 +19,7 @@ package ec.satoolkit;
 import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.design.Development;
-import ec.tstoolkit.information.InformationMapper;
+import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.modelling.ComponentInformation;
 import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.ModellingDictionary;
@@ -31,6 +31,7 @@ import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  *
@@ -122,28 +123,22 @@ public class DefaultSeriesDecomposition implements ISeriesDecomposition, IProcRe
 
     @Override
     public boolean contains(String id) {
-        synchronized (mapper) {
-            return mapper.contains(id);
-        }
+        return MAPPING.contains(id);
     }
 
     @Override
     public Map<String, Class> getDictionary() {
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
-        synchronized (mapper) {
-            mapper.fillDictionary(null, map);
-        }
+        MAPPING.fillDictionary(null, map, false);
         return map;
     }
 
     @Override
     public <T> T getData(String id, Class<T> tclass) {
-        synchronized (mapper) {
-            return mapper.getData(this, id, tclass);
-        }
+        return MAPPING.getData(this, id, tclass);
     }
-    
-     @Override
+
+    @Override
     public List<ProcessingInformation> getProcessingInformation() {
         return Collections.EMPTY_LIST;
     }
@@ -151,118 +146,36 @@ public class DefaultSeriesDecomposition implements ISeriesDecomposition, IProcRe
     public static final String SPAN = "span", START = "start", END = "end", N = "n";
     // MAPPERS
 
-    public static void fillDictionary(String prefix, Map<String, Class> map) {
-        synchronized (mapper) {
-            mapper.fillDictionary(prefix, map);
-        }
+    public static void fillDictionary(String prefix, Map<String, Class> map, boolean compact) {
+        MAPPING.fillDictionary(prefix, map, compact);
     }
 
-    public static <T> void addMapping(String name, InformationMapper.Mapper<DefaultSeriesDecomposition, T> mapping) {
-        synchronized (mapper) {
-            mapper.add(name, mapping);
-        }
+    // MAPPING
+    public static InformationMapping<DefaultSeriesDecomposition> getMapping() {
+        return MAPPING;
     }
 
-    private static final InformationMapper<DefaultSeriesDecomposition> mapper = new InformationMapper<>();
+    public static <T> void setMapping(String name, Class<T> tclass, Function<DefaultSeriesDecomposition, T> extractor) {
+        MAPPING.set(name, tclass, extractor);
+    }
+
+    public static <T> void setTsData(String name, Function<DefaultSeriesDecomposition, TsData> extractor) {
+        MAPPING.set(name, extractor);
+    }
+
+    private static final InformationMapping<DefaultSeriesDecomposition> MAPPING = new InformationMapping<>(DefaultSeriesDecomposition.class);
 
     static {
-//        mapper.add(InformationSet.item(SPAN, START), new InformationMapper.Mapper<DefaultSeriesDecomposition, TsPeriod>(TsPeriod.class) {
-//
-//            @Override
-//            public TsPeriod retrieve(DefaultSeriesDecomposition source) {
-//                return source.model_.description.getOriginal().getStart();
-//            }
-//        });
-//        mapper.add(InformationSet.item(SPAN, END), new InformationMapper.Mapper<DefaultSeriesDecomposition, TsPeriod>(TsPeriod.class) {
-//
-//            @Override
-//            public TsPeriod retrieve(DefaultSeriesDecomposition source) {
-//                return source.model_.description.getOriginal().getLastPeriod();
-//            }
-//        });
-//        mapper.add(InformationSet.item(SPAN, N), new InformationMapper.Mapper<DefaultSeriesDecomposition, Integer>(Integer.class) {
-//
-//            @Override
-//            public Integer retrieve(DefaultSeriesDecomposition source) {
-//                return source.model_.description.getOriginal().getLength();
-//            }
-//        });
-        mapper.add(ModellingDictionary.Y, new InformationMapper.Mapper<DefaultSeriesDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(DefaultSeriesDecomposition source) {
-                return source.getSeries(ComponentType.Series, ComponentInformation.Value);
-            }
-        });
-        mapper.add(ModellingDictionary.Y + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DefaultSeriesDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(DefaultSeriesDecomposition source) {
-                return source.getSeries(ComponentType.Series, ComponentInformation.Forecast);
-            }
-        });
-        mapper.add(ModellingDictionary.T, new InformationMapper.Mapper<DefaultSeriesDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(DefaultSeriesDecomposition source) {
-                return source.getSeries(ComponentType.Trend, ComponentInformation.Value);
-            }
-        });
-        mapper.add(ModellingDictionary.T + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DefaultSeriesDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(DefaultSeriesDecomposition source) {
-                return source.getSeries(ComponentType.Trend, ComponentInformation.Forecast);
-            }
-        });
-        mapper.add(ModellingDictionary.SA, new InformationMapper.Mapper<DefaultSeriesDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(DefaultSeriesDecomposition source) {
-                return source.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value);
-            }
-        });
-        mapper.add(ModellingDictionary.SA + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DefaultSeriesDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(DefaultSeriesDecomposition source) {
-                return source.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
-            }
-        });
-        mapper.add(ModellingDictionary.S, new InformationMapper.Mapper<DefaultSeriesDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(DefaultSeriesDecomposition source) {
-                return source.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
-            }
-        });
-        mapper.add(ModellingDictionary.S + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DefaultSeriesDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(DefaultSeriesDecomposition source) {
-                return source.getSeries(ComponentType.Seasonal, ComponentInformation.Forecast);
-            }
-        });
-        mapper.add(ModellingDictionary.I, new InformationMapper.Mapper<DefaultSeriesDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(DefaultSeriesDecomposition source) {
-                return source.getSeries(ComponentType.Irregular, ComponentInformation.Value);
-            }
-        });
-        mapper.add(ModellingDictionary.I + SeriesInfo.F_SUFFIX, new InformationMapper.Mapper<DefaultSeriesDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(DefaultSeriesDecomposition source) {
-                return source.getSeries(ComponentType.Irregular, ComponentInformation.Forecast);
-            }
-        });
-        mapper.add(ModellingDictionary.MODE, new InformationMapper.Mapper<DefaultSeriesDecomposition, DecompositionMode>(DecompositionMode.class) {
-
-            @Override
-            public DecompositionMode retrieve(DefaultSeriesDecomposition source) {
-                return source.getMode();
-            }
-        });
+        MAPPING.set(ModellingDictionary.Y, source -> source.getSeries(ComponentType.Series, ComponentInformation.Value));
+        MAPPING.set(ModellingDictionary.Y + SeriesInfo.F_SUFFIX, source -> source.getSeries(ComponentType.Series, ComponentInformation.Forecast));
+        MAPPING.set(ModellingDictionary.T, source -> source.getSeries(ComponentType.Trend, ComponentInformation.Value));
+        MAPPING.set(ModellingDictionary.T + SeriesInfo.F_SUFFIX, source -> source.getSeries(ComponentType.Trend, ComponentInformation.Forecast));
+        MAPPING.set(ModellingDictionary.SA, source -> source.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value));
+        MAPPING.set(ModellingDictionary.SA + SeriesInfo.F_SUFFIX, source -> source.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast));
+        MAPPING.set(ModellingDictionary.S, source -> source.getSeries(ComponentType.Seasonal, ComponentInformation.Value));
+        MAPPING.set(ModellingDictionary.S + SeriesInfo.F_SUFFIX, source -> source.getSeries(ComponentType.Seasonal, ComponentInformation.Forecast));
+        MAPPING.set(ModellingDictionary.I, source -> source.getSeries(ComponentType.Irregular, ComponentInformation.Value));
+        MAPPING.set(ModellingDictionary.I + SeriesInfo.F_SUFFIX, source -> source.getSeries(ComponentType.Irregular, ComponentInformation.Forecast));
+        MAPPING.set(ModellingDictionary.MODE, DecompositionMode.class, source -> source.getMode());
     }
 }

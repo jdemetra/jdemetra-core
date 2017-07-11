@@ -35,6 +35,7 @@ public class SsfDenton extends BaseDisaggregation implements ISsf {
      *
      */
     public final double[] weights;
+    public final int start;
 
     /**
      * 
@@ -44,8 +45,20 @@ public class SsfDenton extends BaseDisaggregation implements ISsf {
     public SsfDenton(int conv, double[] w) {
         super(conv);
         weights = w;
+        start=0;
     }
 
+    /**
+     * 
+     * @param conv
+     * @param start
+     * @param w
+     */
+    public SsfDenton(final int conv, final int start, double[] w) {
+        super(conv);
+        weights = w;
+        this.start=start;
+    }
     /**
      * 
     
@@ -196,14 +209,15 @@ public class SsfDenton extends BaseDisaggregation implements ISsf {
     public void L(int pos, DataBlock k, SubMatrix lm) {
         double k0=k.get(0), k1=k.get(1);
         double w=weight(pos);
-        if ((pos+1)% conversion  == 0){
+        int rpos=pos+start;
+        if ((rpos+1)% conversion  == 0){
         //case I:
             lm.set(0,0, -k0);
             lm.set(0,1, -w*k0);
             lm.set(1,0, -k1);
             lm.set(1,1, 1-w*k1);
         }
-        else if (pos% conversion  == 0){
+        else if (rpos% conversion  == 0){
         //case II:
             lm.set(0,0, 0);
             lm.set(0,1, w-w*k0);
@@ -296,9 +310,10 @@ public class SsfDenton extends BaseDisaggregation implements ISsf {
     @Override
     public void T(int pos, SubMatrix tr) {
         tr.set(1, 1, 1);
-        if ((pos + 1) % conversion != 0) {
+        int rpos=pos+start;
+        if ((rpos + 1) % conversion != 0) {
             tr.set(0, 1, weight(pos));
-            if (pos % conversion != 0) {
+            if (rpos % conversion != 0) {
                 tr.set(0, 0, 1);
             }
         }
@@ -311,11 +326,12 @@ public class SsfDenton extends BaseDisaggregation implements ISsf {
      */
     @Override
     public void TVT(int pos, SubMatrix vm) {
-        if ((pos + 1) % conversion == 0) {
+        int rpos=pos+start;
+        if ((rpos + 1) % conversion == 0) {
             vm.set(0, 0, 0);
             vm.set(1, 0, 0);
             vm.set(0, 1, 0);
-        } else if (pos % conversion == 0) {
+        } else if (rpos % conversion == 0) {
             double w = weight(pos);
             double v = w * vm.get(1, 1);
             vm.set(0, 0, w * v);
@@ -338,10 +354,11 @@ public class SsfDenton extends BaseDisaggregation implements ISsf {
      */
     @Override
     public void TX(int pos, DataBlock x) {
+        int rpos=pos+start;
         // case I
-        if ((pos + 1) % conversion == 0) {
+        if ((rpos + 1) % conversion == 0) {
             x.set(0, 0);
-        }else if ( pos % conversion == 0){
+        }else if ( rpos % conversion == 0){
             // case II.
             double s = x.get(1);
             x.set(0, mweight(pos, s));
@@ -360,9 +377,9 @@ public class SsfDenton extends BaseDisaggregation implements ISsf {
      */
     @Override
     public void VpZdZ(int pos, SubMatrix vm, double d) {
-
+        int rpos=pos+start;
         vm.add(1, 1, mweight2(pos, d));
-        if (pos % conversion != 0) {
+        if (rpos % conversion != 0) {
             double w = mweight(pos, d);
             vm.add(0, 0, d);
             vm.add(0, 1, w);
@@ -391,8 +408,9 @@ public class SsfDenton extends BaseDisaggregation implements ISsf {
      */
     @Override
     public void XpZd(int pos, DataBlock x, double d) {
+        int rpos=pos+start;
         x.add(1, mweight(pos, d));
-        if (pos % conversion != 0) {
+        if (rpos % conversion != 0) {
             x.add(0, d);
         }
     }
@@ -404,11 +422,12 @@ public class SsfDenton extends BaseDisaggregation implements ISsf {
      */
     @Override
     public void XT(int pos, DataBlock x) {
+        int rpos=pos+start;
         // case I: 0, x1
-        if ((pos + 1) % conversion == 0) {
+        if ((rpos + 1) % conversion == 0) {
             x.set(0, 0);
         } // case II: 0, w x0 + x1
-        else if (pos % conversion == 0) {
+        else if (rpos % conversion == 0) {
             x.add(1, mweight(pos, x.get(0)));
             x.set(0, 0);
         } // case III: x0, w x0 + x1
@@ -426,7 +445,8 @@ public class SsfDenton extends BaseDisaggregation implements ISsf {
      */
     @Override
     public void Z(int pos, DataBlock z) {
-        if (pos % conversion == 0) {
+        int rpos=pos+start;
+        if (rpos % conversion == 0) {
             z.set(0, 0);
         } else {
             z.set(0, 1);
@@ -442,8 +462,9 @@ public class SsfDenton extends BaseDisaggregation implements ISsf {
      */
     @Override
     public void ZM(int pos, SubMatrix m, DataBlock x) {
+        int rpos=pos+start;
         x.product(m.row(1), weight(pos));
-        if (pos % conversion != 0) {
+        if (rpos % conversion != 0) {
             x.add(m.row(0));
         }
     }
@@ -456,7 +477,8 @@ public class SsfDenton extends BaseDisaggregation implements ISsf {
      */
     @Override
     public double ZVZ(int pos, SubMatrix vm) {
-        if (pos % conversion == 0) {
+        int rpos=pos+start;
+        if (rpos % conversion == 0) {
             return mweight2(pos, vm.get(1, 1));
         } else {
             double r = vm.get(0, 0);
@@ -474,7 +496,8 @@ public class SsfDenton extends BaseDisaggregation implements ISsf {
      */
     @Override
     public double ZX(int pos, DataBlock x) {
-        double r = (pos % conversion == 0) ? 0 : x.get(0);
+        int rpos=pos+start;
+        double r = (rpos % conversion == 0) ? 0 : x.get(0);
         return r + mweight(pos, x.get(1));
     }
 }

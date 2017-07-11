@@ -30,6 +30,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
+@Deprecated
 public class TsDenton extends AbstractTsBenchmarking {
 
     private boolean mul_ = true;
@@ -48,10 +49,10 @@ public class TsDenton extends AbstractTsBenchmarking {
                 aggregationConstraints.getFrequency(), getAggregationType(),
                 true));
         if (getAggregationType() == TsAggregationType.Average) {
-            del.getValues().mul(c);
+            del.apply(x->x*c);
         }
 
-        double[] y = expand(series.getDomain(), del);
+        double[] y = expand(series.getDomain(), del, getAggregationType());
 
         SsfDenton denton = new SsfDenton(c, null);
 //        WeightedSsfDisaggregation<SsfRw> denton=new WeightedSsfDisaggregation<SsfRw>(c, null, new SsfRw());
@@ -103,9 +104,9 @@ public class TsDenton extends AbstractTsBenchmarking {
             obj = obj.times(c);
         }
 
-        double[] y = expand(series.getDomain(), obj);
+        double[] y = expand(series.getDomain(), obj, getAggregationType());
 
-        SsfDenton denton = new SsfDenton(c, series.getValues().internalStorage());
+        SsfDenton denton = new SsfDenton(c, series.getStart().getPosition()%c, series.internalStorage());
 //        WeightedSsfDisaggregation<SsfRw> denton=new WeightedSsfDisaggregation<SsfRw>(c, series.getValues().internalStorage(), new SsfRw());
         DisturbanceSmoother dsmoother = new DisturbanceSmoother();
         dsmoother.setSsf(denton);

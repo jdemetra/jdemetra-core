@@ -165,7 +165,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     }
 
     public void add(IOutlierVariable outlier) {
-        outliers_.add(new OutlierDefinition(outlier.getPosition(), outlier.getOutlierType(), outlier.isPrespecified()));
+        outliers_.add(new OutlierDefinition(outlier.getPosition(), outlier.getCode()));
     }
 
     public void add(InterventionVariable ivar) {
@@ -417,7 +417,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         }
         EasterVariable var = new EasterVariable();
         var.setDuration(easter_.getDuration());
-        var.setType(EasterVariable.Type.Tramo);
+        var.setType(EasterVariable.Correction.Simple);
         var.includeEaster(easter_.getOption().containsEaster());
         var.includeEasterMonday(easter_.getOption().containsEasterMonday());
         regs.add(var);
@@ -427,7 +427,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         ArrayList<IOutlierVariable> var = new ArrayList<>();
         ArrayList<IOutlierVariable> pvar = new ArrayList<>();
         for (OutlierDefinition outlier : outliers_) {
-            IOutlierVariable v = fac.make(outlier, freq);
+            IOutlierVariable v = fac.make(outlier);
             regs.add(v);
         }
     }

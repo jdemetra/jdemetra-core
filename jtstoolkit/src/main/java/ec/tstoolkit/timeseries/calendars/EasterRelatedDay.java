@@ -32,6 +32,7 @@ import java.util.Map;
  */
 @Development(status = Development.Status.Beta)
 public class EasterRelatedDay implements ISpecialDay {
+
     /*
      * Raw estimation of the probability to get Easter at a specific date is defined below:
      * 22/3 (1/7)*1/LUNARY
@@ -92,21 +93,21 @@ public class EasterRelatedDay implements ISpecialDay {
     public EasterRelatedDay plus(int ndays) {
         return new EasterRelatedDay(offset + ndays, weight, julian);
     }
-    
-    public boolean isJulian(){
+
+    public boolean isJulian() {
         return julian;
     }
-    
+
     @Override
     public double getWeight() {
         return weight;
     }
-    
+
     @Override
-    public boolean match(Context context){
+    public boolean match(Context context) {
         return context.isJulianEaster() == julian;
     }
-    
+
     public static final EasterRelatedDay ShroveMonday = new EasterRelatedDay(-48),
             ShroveTuesday = new EasterRelatedDay(-47),
             AshWednesday = new EasterRelatedDay(-46),
@@ -147,7 +148,7 @@ public class EasterRelatedDay implements ISpecialDay {
             synchronized (jdic) {
                 Day e = jdic.get(year);
                 if (e == null) {
-                    e = Utilities.julianEaster(year, true);
+                    e = Utilities.julianEaster3(year, true);
                     jdic.put(year, e);
                 }
                 return e;
@@ -174,7 +175,8 @@ public class EasterRelatedDay implements ISpecialDay {
         return new EasterDayList(freq, offset, start, end, julian);
     }
 
-    private static int START = 80, JSTART = 93, DEL = 35;
+    private static int START = 80, JSTART = 90, DEL = 35, JDEL = 43;
+    // 31+28+21=80, 31+28+31=90
 
     @Override
     public double[][] getLongTermMeanEffect(int freq) {
@@ -194,8 +196,15 @@ public class EasterRelatedDay implements ISpecialDay {
         // We don't take into account leap year. So, the solution is slightly wrong for offset
         // <= -50.
         // The considered day falls between ...
-        // 31+28+21=80
-        int d0 = (julian ? JSTART : START) + offset, d1 = d0 + DEL; // d1 excluded
+        int d0, d1;
+        if (julian) {
+            d0 = JSTART + offset;
+            d1 = d0 + JDEL;
+        } else {
+            d0 = START + offset;
+            d1 = d0 + DEL;
+        }
+        // d1 excluded
 
         int ifreq = (int) freq;
         int c = 12 / ifreq;
@@ -292,7 +301,7 @@ public class EasterRelatedDay implements ISpecialDay {
         public EasterDayList(TsFrequency freq, int offset, Day fstart, Day fend, boolean julian) {
             m_freq = freq;
             m_offset = offset;
-            this.julian=julian;
+            this.julian = julian;
             int ystart = fstart.getYear(), yend = fend.getYear();
             Day xday = easter(ystart, julian).plus(offset);
             Day yday = easter(yend, julian).plus(offset);

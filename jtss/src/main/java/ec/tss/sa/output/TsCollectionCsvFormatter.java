@@ -36,7 +36,7 @@ public class TsCollectionCsvFormatter {
 
     private CsvLayout layout_ = CsvLayout.VTable;
     private final char comma;
-    private static final String newLine = "\r\n";
+    private static final String newLine = System.lineSeparator();
     private final DecimalFormat fmt;
     private final NumberFormat ifmt;
     private boolean fullName;

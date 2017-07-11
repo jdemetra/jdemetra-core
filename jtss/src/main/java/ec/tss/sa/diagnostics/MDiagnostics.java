@@ -33,7 +33,6 @@ import java.util.List;
  */
 public class MDiagnostics implements IDiagnostics {
 
-    public static final String NAME = "m-statistics";
     public double[] stats_;
     private double bad_ = MDiagnosticsConfiguration.BAD, severe_ = MDiagnosticsConfiguration.SEVERE;
     private boolean all_ = true;
@@ -41,7 +40,7 @@ public class MDiagnostics implements IDiagnostics {
     public static MDiagnostics create(MDiagnosticsConfiguration config, CompositeResults rslts) {
         try {
             X11Results drslts = GenericSaResults.getDecomposition(rslts, X11Results.class);
-            if (drslts == null || !(drslts instanceof X11Results)) {
+            if (drslts == null) {
                 return null;
             }
 
@@ -71,12 +70,12 @@ public class MDiagnostics implements IDiagnostics {
 
     @Override
     public String getName() {
-        return NAME;
+        return MDiagnosticsFactory.NAME;
     }
 
     @Override
     public List<String> getTests() {
-        return Arrays.asList(Mstatistics.Q, Mstatistics.Q2);
+        return MDiagnosticsFactory.ALL;
     }
 
     @Override

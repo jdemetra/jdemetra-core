@@ -89,13 +89,13 @@ public class CochranTest {
             s_[iPeriode] = 0;//  s_[i] = 0;
             blngoto = true;
             do {
-                if (!Double.isNaN(ts_.getValues().get(j))) {
+                if (!Double.isNaN(ts_.get(j))) {
                     // s_[i] = s_[i] + ((ts_.getValues().get(j) - st)*(ts_.getValues().get(j) - st));//
-                    s_[iPeriode] = s_[iPeriode] + ((ts_.getValues().get(j) - st) * (ts_.getValues().get(j) - st));//    
+                    s_[iPeriode] = s_[iPeriode] + ((ts_.get(j) - st) * (ts_.get(j) - st));//    
                     n1 = n1 + 1;//count values 
                 }
                 j = j + Ny; // for each year
-                if (j > ts_.getValues().getLength() - 1) {
+                if (j > ts_.getLength() - 1) {
                     if (nmin > n1 - 3) {
                         nmin = n1 - 3;//      
                     }

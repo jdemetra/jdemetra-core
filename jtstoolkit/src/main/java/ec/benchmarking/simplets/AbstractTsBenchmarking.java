@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.benchmarking.simplets;
 
 import ec.tstoolkit.data.AbsMeanNormalizer;
@@ -27,7 +26,7 @@ import ec.tstoolkit.timeseries.simplets.TsDomain;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 
 /**
- * 
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
@@ -45,7 +44,7 @@ public abstract class AbstractTsBenchmarking {
     protected abstract TsData benchmark(TsData s, TsData constraints);
 
     /**
-     * 
+     *
      * @param s
      * @param constraints
      * @return
@@ -53,7 +52,7 @@ public abstract class AbstractTsBenchmarking {
     protected boolean checkConstraints(TsData s, TsData constraints) {
         TsData del = constraints.minus(s.changeFrequency(constraints.getFrequency(), type_, true));
 
-        DescriptiveStatistics stats = new DescriptiveStatistics(del.getValues());
+        DescriptiveStatistics stats = new DescriptiveStatistics(del);
         if (stats.isZero(eps_ * stats.getStdev())) {
             return true;
         }
@@ -62,7 +61,7 @@ public abstract class AbstractTsBenchmarking {
     }
 
     /**
-     * 
+     *
      * @param s
      * @param constraints
      * @return
@@ -80,12 +79,12 @@ public abstract class AbstractTsBenchmarking {
     }
 
     /**
-     * 
+     *
      * @param d
      * @param agg
      * @return
      */
-    public static double[] expand(TsDomain d, TsData agg) {
+    public static double[] expand(TsDomain d, TsData agg, TsAggregationType type) {
         int hfreq = d.getFrequency().intValue(), lfreq = agg.getFrequency().intValue();
         int c = hfreq / lfreq;
         // expand the data;
@@ -95,8 +94,9 @@ public abstract class AbstractTsBenchmarking {
         }
         // search the first non missing value
         TsPeriod aggstart = agg.getStart();
-        TsPeriod first = new TsPeriod(d.getFrequency(), aggstart.getYear(),
-                aggstart.getPosition() * c + c - 1);
+        int fpos = type == TsAggregationType.First ? aggstart.getPosition()
+                : aggstart.getPosition() * c + c - 1;
+        TsPeriod first = new TsPeriod(d.getFrequency(), aggstart.getYear(), fpos);
         int pos = d.search(first);
         if (pos < 0) {
             return null;
@@ -110,7 +110,7 @@ public abstract class AbstractTsBenchmarking {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public TsAggregationType getAggregationType() {
@@ -118,7 +118,7 @@ public abstract class AbstractTsBenchmarking {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public double getEpsilon() {
@@ -126,7 +126,7 @@ public abstract class AbstractTsBenchmarking {
     }
 
     /**
-     * 
+     *
      * @param s
      * @param constraints
      * @return
@@ -141,11 +141,11 @@ public abstract class AbstractTsBenchmarking {
         }
         // normalize the data
         AbsMeanNormalizer normalizer = new AbsMeanNormalizer();
-        if (normalizer.process(s.getValues())) {
+        if (normalizer.process(s)) {
             TsData tmp = new TsData(s.getStart(), normalizer.getNormalizedData(), false);
             TsData btmp = benchmark(tmp, constraints.times(normalizer.getFactor()));
             if (btmp != null) {
-                btmp.getValues().div(normalizer.getFactor());
+                btmp.apply((x)->x/normalizer.getFactor());
             }
             return btmp;
         } else {
@@ -154,19 +154,19 @@ public abstract class AbstractTsBenchmarking {
     }
 
     /**
-     * 
+     *
      * @param value
      */
     public void setAggregationType(TsAggregationType value) {
-        if (value != TsAggregationType.Sum
-                && value != TsAggregationType.Average) {
-            throw new TsException("Unsupported benchmarking");
-        }
+//        if (value != TsAggregationType.Sum
+//                && value != TsAggregationType.Average) {
+//            throw new TsException("Unsupported benchmarking");
+//        }
         type_ = value;
     }
 
     /**
-     * 
+     *
      * @param value
      */
     public void setEpsilon(double value) {

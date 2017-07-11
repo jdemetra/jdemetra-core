@@ -16,16 +16,23 @@
  */
 package ec.tstoolkit.modelling.arima.x13;
 
+import ec.tstoolkit.arima.estimation.AnsleyFilter;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.dstats.Normal;
+import ec.tstoolkit.dstats.ProbabilityType;
 import ec.tstoolkit.information.InformationSet;
+import ec.tstoolkit.maths.matrices.Householder;
+import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.maths.realfunctions.IParametricMapping;
 import ec.tstoolkit.maths.realfunctions.ProxyMinimizer;
 import ec.tstoolkit.maths.realfunctions.levmar.LevenbergMarquardtMethod;
+import ec.tstoolkit.modelling.IRobustStandardDeviationComputer;
 import ec.tstoolkit.modelling.arima.AbstractSingleOutlierDetector;
 import ec.tstoolkit.modelling.arima.ExactSingleOutlierDetector;
 import ec.tstoolkit.modelling.arima.IOutliersDetectionModule;
+import ec.tstoolkit.modelling.arima.IResidualsComputer;
 import ec.tstoolkit.modelling.arima.ModelDescription;
 import ec.tstoolkit.modelling.arima.ModelEstimation;
 import ec.tstoolkit.modelling.arima.ModellingContext;
@@ -50,8 +57,70 @@ import java.util.ArrayList;
 @Development(status = Development.Status.Preliminary)
 public class OutliersDetector implements IOutliersDetectionModule {
 
+    public static class CriticalValueComputer implements ICriticalValueComputer {
+
+        private final double eps;
+
+        public CriticalValueComputer() {
+            eps = 0.05;
+        }
+
+        public CriticalValueComputer(final double eps) {
+            this.eps = eps;
+        }
+
+        private double calcVAL(int nvals) {
+            if (nvals == 1) {
+                return 1.96; // normal distribution
+            }
+            double n = nvals;
+            double pmod = 2 - Math.sqrt(1 + eps);
+            double acv = Math.sqrt(2 * Math.log(n));
+            double bcv = acv - (Math.log(Math.log(n)) + Math.log(4 * Math.PI))
+                    / (2 * acv);
+            double xcv = -Math.log(-.5 * Math.log(pmod));
+            return xcv / acv + bcv;
+        }
+
+        @Override
+        public double compute(int nvals) {
+            Normal normal = new Normal();
+            if (nvals == 1) {
+                return normal.getProbabilityInverse(eps / 2,
+                        ProbabilityType.Upper);
+            }
+            double n = nvals;
+            double[] y = new double[3];
+            int[] x = new int[]{2, 100, 200};
+            Matrix X = new Matrix(3, 3);
+
+            for (int i = 0; i < 3; ++i) {
+                X.set(i, 0, 1);
+                X.set(i, 2, Math.sqrt(2 * Math.log(x[i])));
+                X.set(i, 1, (Math.log(Math.log(x[i])) + Math.log(4 * Math.PI))
+                        / (2 * X.get(i, 2)));
+            }
+
+            y[0] = normal.getProbabilityInverse((1 + Math.sqrt(1 - eps)) / 2,
+                    ProbabilityType.Lower);
+            for (int i = 1; i < 3; ++i) {
+                y[i] = calcVAL(x[i]);
+            }
+            // solve X b = y
+            Householder qr = new Householder(false);
+            qr.decompose(X);
+            double[] b = qr.solve(y);
+
+            double acv = Math.sqrt(2 * Math.log(n));
+            double bcv = (Math.log(Math.log(n)) + Math.log(4 * Math.PI))
+                    / (2 * acv);
+            return b[0] + b[1] * bcv + b[2] * acv;
+
+        }
+    }
+
     private static final int MAX_OUTLIERS = 30, MAX_ITER = 30;
-    private static final GlsSarimaMonitor monitor;
+    private final GlsSarimaMonitor monitor;
 
     public double getEpsilon() {
         return monitor.getPrecision();
@@ -69,12 +138,6 @@ public class OutliersDetector implements IOutliersDetectionModule {
         return span_;
     }
 
-    static {
-        monitor = new GlsSarimaMonitor();
-        monitor.setMinimizer(new ProxyMinimizer(new LevenbergMarquardtMethod()));
-        monitor.useLogLikelihood(false);
-    }
-
     @Override
     public ProcessingResult process(ModellingContext context) {
         try {
@@ -86,7 +149,9 @@ public class OutliersDetector implements IOutliersDetectionModule {
             mapping_ = X13Preprocessor.createDefaultMapping(context.description);
             if (context.estimation == null) {
                 regarima_ = context.description.buildRegArima();
-                estimateModel();
+                if (!estimateModel()) {
+                    return ProcessingResult.Failed;
+                }
             } else {
                 estimation_ = context.estimation;
                 regarima_ = context.estimation.getRegArima();
@@ -97,6 +162,7 @@ public class OutliersDetector implements IOutliersDetectionModule {
             sod_.exclude(context.description.getMissingValues());
             sod_.exclude(context.description.getOutliersPosition(true));
             sod_.exclude(context.description.getOutliersPosition(false));
+            sod_.exclude(context.description.getFixedOutliersPosition());
             outliers_.addAll(context.description.getOutliers());
 
             boolean changed = execute();
@@ -130,8 +196,10 @@ public class OutliersDetector implements IOutliersDetectionModule {
      *
      */
     public OutliersDetector() {
-        sod_ = new ExactSingleOutlierDetector<>(null);
-        //sod_ = new TrenchSingleOutlierDetector();
+        sod_ = new ExactSingleOutlierDetector(IRobustStandardDeviationComputer.mad(false), IResidualsComputer.mlComputer(), new AnsleyFilter());
+        monitor = new GlsSarimaMonitor();
+        monitor.setMinimizer(new ProxyMinimizer(new LevenbergMarquardtMethod()));
+        monitor.useLogLikelihood(false);
     }
 
     /**
@@ -140,6 +208,9 @@ public class OutliersDetector implements IOutliersDetectionModule {
      */
     public OutliersDetector(AbstractSingleOutlierDetector<SarimaModel> sod) {
         sod_ = sod;
+        monitor = new GlsSarimaMonitor();
+        monitor.setMinimizer(new ProxyMinimizer(new LevenbergMarquardtMethod()));
+        monitor.useLogLikelihood(false);
     }
 
     private void addOutlier(IOutlierVariable o) {
@@ -183,14 +254,20 @@ public class OutliersDetector implements IOutliersDetectionModule {
         m_round = 0;
 
         do {
-            sod_.process(regarima_);
+            if (!sod_.process(regarima_)) {
+                break;
+            }
             max = sod_.getMaxTStat();
             if (Math.abs(max) > curcv_) {
                 m_round++;
                 IOutlierVariable o = sod_.getMaxOutlier();
                 addOutlier(o);
                 changed = true;
-                estimateModel();
+                if (!estimateModel()) {
+                    outliers_.remove(o);
+                    estimateModel();
+                    break;
+                }
                 /*
                  * int v = verifymodel(cv_); if (v == -1) break; else if (v ==
                  * 0) reestimatemodel();
@@ -202,7 +279,9 @@ public class OutliersDetector implements IOutliersDetectionModule {
         } while (m_round < maxiter_ && outliers_.size() < MAX_OUTLIERS);
 
         while (verifymodel(curcv_) == 0) {
-            estimateModel();
+            if (!estimateModel()) {
+                break;
+            }
             changed = true;
         }
 
@@ -257,15 +336,14 @@ public class OutliersDetector implements IOutliersDetectionModule {
         return outliers_.size();
     }
 
-    private void estimateModel() {
-        synchronized (monitor) {
-            estimation_ = new ModelEstimation(regarima_, llcorr_);
-            monitor.setMapping(mapping_);
-            if (!estimation_.compute(monitor, mapping_.getDim())) {
-                throw new X13Exception();
-            }
-            regarima_ = estimation_.getRegArima();
+    private boolean estimateModel() {
+        estimation_ = new ModelEstimation(regarima_, llcorr_);
+        monitor.setMapping(mapping_);
+        if (!estimation_.compute(monitor, mapping_.getDim())) {
+            return false;
         }
+        regarima_ = estimation_.getRegArima();
+        return true;
     }
 
     /**
@@ -390,11 +468,12 @@ public class OutliersDetector implements IOutliersDetectionModule {
     private double calcCv(ModellingContext context) {
         double cv = cv_;
         if (cv == 0) {
-            cv = AbstractSingleOutlierDetector.calcVA(context.description.getEstimationDomain().getLength());
+            cv = new CriticalValueComputer().compute(context.description.getEstimationDomain().getLength());
         }
         for (int i = 0; i < -selectivity_; ++i) {
             cv *= (1 - pc_);
         }
         return Math.max(cv, MINCV);
     }
+
 }

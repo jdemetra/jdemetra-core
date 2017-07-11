@@ -13,21 +13,27 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
-
+ */
 package ec.tss.sa.diagnostics;
 
 import ec.tss.sa.ISaDiagnosticsFactory;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.IDiagnostics;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Kristof Bayens
  */
+@ServiceProvider(service = ISaDiagnosticsFactory.class)
 public class SpectralDiagnosticsFactory implements ISaDiagnosticsFactory {
 
+    public static final String SEAS = "spectral seas peaks", TD = "spectral td peaks";
+    public static final String NAME = "Visual spectral analysis";
+    public static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(SEAS, TD));
     //public static final SpectralDiagnosticsFactory Default = new SpectralDiagnosticsFactory();
     private SpectralDiagnosticsConfiguration config_;
 
@@ -45,16 +51,21 @@ public class SpectralDiagnosticsFactory implements ISaDiagnosticsFactory {
 
     @Override
     public void dispose() {
-     }
+    }
 
     @Override
     public String getName() {
-        return "Visual spectral analysis";
+        return NAME;
     }
 
     @Override
     public String getDescription() {
         return "Visual spectral analysis";
+    }
+
+    @Override
+    public List<String> getTestDictionary() {
+        return ALL;
     }
 
     @Override

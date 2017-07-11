@@ -31,20 +31,36 @@ public final class X11Context {
 
     private DecompositionMode mode;
     private TsDomain edomain;
-    private int nfcasts;
+    private final int nfcasts, nbcasts;
 
     /**
      * Creates a new context
      *
      * @param mode    The decomposition mode used in the processing
      * @param nfcasts The number of forecasts that will be used during the
-     *                processing. Must be greater or equal to 0.
+     *                processing. 
      */
+    @Deprecated
     public X11Context(final DecompositionMode mode, final int nfcasts) {
         this.mode = mode;
         this.nfcasts = nfcasts;
+        this.nbcasts = 0;
     }
 
+    /**
+     * Creates a new context
+     *
+     * @param mode    The decomposition mode used in the processing
+     * @param nbcasts The number of backcasts that will be used during the
+     *                processing. 
+     * @param nfcasts The number of forecasts that will be used during the
+     *                processing. 
+     */
+    public X11Context(final DecompositionMode mode, final int nbcasts, final int nfcasts) {
+        this.mode = mode;
+        this.nfcasts = nfcasts;
+        this.nbcasts = nbcasts;
+    }
     /**
      *
      * @return
@@ -66,6 +82,18 @@ public final class X11Context {
         }
     }
 
+    /**
+     *
+     * @return
+     */
+    public int getBackcastHorizon() {
+        if (nbcasts >= 0) {
+            return nbcasts;
+        } else {
+            int freq = edomain.getFrequency().intValue();
+            return -nbcasts * freq;
+        }
+    }
     /**
      * Gets the current annual frequency, as an integer
      *
@@ -153,12 +181,12 @@ public final class X11Context {
         if (s.getLength() < 3 * freq) {
             throw new X11Exception(X11Exception.ERR_LENGTH);
         }
-        if (s.getValues().hasMissingValues()) {
+        if (s.hasMissingValues()) {
             throw new X11Exception(X11Exception.ERR_MISSING);
         }
 
         if (mode != DecompositionMode.Additive) {
-            double[] vals = s.getValues().internalStorage();
+            double[] vals = s.internalStorage();
             for (int i = 0; i < vals.length; ++i) {
                 if (vals[i] <= 0) {
                     throw new X11Exception(X11Exception.ERR_NEG);

@@ -16,11 +16,10 @@
  */
 package ec.tss.tsproviders.spreadsheet.engine;
 
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Streams;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
 import ec.tss.TsInformationType;
@@ -29,22 +28,22 @@ import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignT
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.VERTICAL;
 import ec.tss.tsproviders.utils.IParser;
 import ec.tss.tsproviders.utils.MultiLineNameUtil;
+import ec.tss.tsproviders.utils.ObsGathering;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tstoolkit.data.Table;
 import ec.tstoolkit.design.VisibleForTesting;
 import ec.tstoolkit.maths.matrices.Matrix;
-import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import ec.tstoolkit.timeseries.simplets.TsDataTableInfo;
-import ec.tstoolkit.timeseries.simplets.TsFrequency;
-import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import ec.util.spreadsheet.Book;
 import ec.util.spreadsheet.Cell;
 import ec.util.spreadsheet.Sheet;
 import ec.util.spreadsheet.helpers.ArraySheet;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -100,11 +99,11 @@ public abstract class SpreadSheetFactory {
                 ArraySheet.Builder builder = ArraySheet.builder().name("dnd");
 
                 if (options.isShowTitle()) {
-                    builder.row(0, options.isShowDates() ? 1 : 0, Iterables.transform(col.items, TO_NAME));
+                    builder.row(0, options.isShowDates() ? 1 : 0, col.items.stream().map(o -> o.name).iterator());
                 }
 
                 if (options.isShowDates()) {
-                    builder.column(options.isShowTitle() ? 1 : 0, 0, Iterables.transform(table.getDomain(), options.isBeginPeriod() ? TO_FIRST_DAY : TO_LAST_DAY));
+                    builder.column(options.isShowTitle() ? 1 : 0, 0, Streams.stream(table.getDomain()).map(options.isBeginPeriod() ? o -> o.firstday().getTime() : o -> o.lastday().getTime()).iterator());
                 }
 
                 int firstRow = options.isShowTitle() ? 1 : 0;
@@ -160,20 +159,7 @@ public abstract class SpreadSheetFactory {
         @Override
         public Table<?> toTable(Sheet sheet) {
             Table<Object> result = new Table<>(sheet.getRowCount(), sheet.getColumnCount());
-            for (int i = 0; i < sheet.getRowCount(); i++) {
-                for (int j = 0; j < sheet.getColumnCount(); j++) {
-                    Cell cell = sheet.getCell(i, j);
-                    if (cell != null) {
-                        if (cell.isDate()) {
-                            result.set(i, j, cell.getDate());
-                        } else if (cell.isNumber()) {
-                            result.set(i, j, cell.getNumber());
-                        } else if (cell.isString()) {
-                            result.set(i, j, cell.getString());
-                        }
-                    }
-                }
-            }
+            sheet.forEachValue(result::set);
             return result;
         }
 
@@ -186,9 +172,7 @@ public abstract class SpreadSheetFactory {
         static SpreadSheetSource parseSource(Book book, Context context) throws IOException {
             int sheetCount = book.getSheetCount();
             List<SpreadSheetCollection> result = new ArrayList<>(sheetCount);
-            for (int i = 0; i < sheetCount; i++) {
-                result.add(parseCollection(book.getSheet(i), i, context));
-            }
+            book.forEach((sheet, i) -> result.add(parseCollection(sheet, i, context)));
             return new SpreadSheetSource(result, "?");
         }
 
@@ -272,7 +256,7 @@ public abstract class SpreadSheetFactory {
 
             ImmutableList.Builder<SpreadSheetSeries> list = ImmutableList.builder();
 
-            OptionalTsData.Builder data = new OptionalTsData.Builder(context.frequency, context.aggregationType, context.clean);
+            OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(context.cal, context.gathering);
             for (int columnIdx = 0; columnIdx < names.size(); columnIdx++) {
                 for (int rowIdx = dates.getMinIndex(); rowIdx <= dates.getMaxIndex(); rowIdx++) {
                     Number value = context.toNumber.parse(sheet, rowIdx, columnIdx + FIRST_DATA_COL_IDX);
@@ -292,17 +276,15 @@ public abstract class SpreadSheetFactory {
         public final CellParser<String> toName;
         public final CellParser<Date> toDate;
         public final CellParser<Number> toNumber;
-        public final TsFrequency frequency;
-        public final TsAggregationType aggregationType;
-        public final boolean clean;
+        public final ObsGathering gathering;
+        public final Calendar cal;
 
-        public Context(CellParser<String> toName, CellParser<Date> toDate, CellParser<Number> toNumber, TsFrequency frequency, TsAggregationType aggregationType, boolean clean) {
+        public Context(CellParser<String> toName, CellParser<Date> toDate, CellParser<Number> toNumber, ObsGathering gathering) {
             this.toName = toName;
             this.toDate = toDate;
             this.toNumber = toNumber;
-            this.frequency = frequency;
-            this.aggregationType = aggregationType;
-            this.clean = clean;
+            this.gathering = gathering;
+            this.cal = new GregorianCalendar();
         }
 
         private static Context create(TsImportOptions options) {
@@ -310,7 +292,7 @@ public abstract class SpreadSheetFactory {
                     CellParser.onStringType(),
                     CellParser.onDateType().or(CellParser.fromParser(options.getDataFormat().dateParser())),
                     CellParser.onNumberType().or(CellParser.fromParser(options.getDataFormat().numberParser())),
-                    options.getFrequency(), options.getAggregationType(), options.isCleanMissing());
+                    options.getObsGathering());
         }
     }
 
@@ -474,27 +456,6 @@ public abstract class SpreadSheetFactory {
             return count > 0 && count > (other.maxIndex - other.minIndex + 1);
         }
     }
-
-    private static final Function<TsInformation, String> TO_NAME = new Function<TsInformation, String>() {
-        @Override
-        public String apply(TsInformation input) {
-            return input.name;
-        }
-    };
-
-    private static final Function<TsPeriod, Date> TO_FIRST_DAY = new Function<TsPeriod, Date>() {
-        @Override
-        public Date apply(TsPeriod input) {
-            return input.firstday().getTime();
-        }
-    };
-
-    private static final Function<TsPeriod, Date> TO_LAST_DAY = new Function<TsPeriod, Date>() {
-        @Override
-        public Date apply(TsPeriod input) {
-            return input.lastday().getTime();
-        }
-    };
 
     private static ArraySheet newArraySheet(String name, Matrix matrix) {
         ArraySheet.Builder result = ArraySheet.builder(matrix.getRowsCount(), matrix.getColumnsCount()).name(name);

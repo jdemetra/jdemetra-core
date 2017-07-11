@@ -18,6 +18,8 @@
 package ec.tstoolkit.maths.matrices;
 
 import ec.tstoolkit.data.DataBlock;
+import ec.tstoolkit.data.IDataBlock;
+import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.design.Development;
 
 /**
@@ -124,7 +126,7 @@ public class HouseholderC extends AbstractLinearSystemSolver implements
     }
 
     @Override
-    public void leastSquares(DataBlock x, DataBlock b, DataBlock res)
+    public void leastSquares(IReadDataBlock x, IDataBlock b, IDataBlock res)
 	    throws MatrixException {
 	double[] y = new double[x.getLength()];
 	x.copyTo(y, 0);

@@ -44,13 +44,16 @@ import ec.tstoolkit.timeseries.regression.*;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
+@ServiceProvider(service = ISaProcessingFactory.class)
 public class X13Processor implements ISaProcessingFactory<X13Specification> {
 
     public static final AlgorithmDescriptor DESCRIPTOR = X13ProcessingFactory.DESCRIPTOR;
@@ -84,59 +87,27 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
         X13Specification newspec = spec.clone();
 
         RegArimaSpecification ntspec = newspec.getRegArimaSpecification(),
-                dtspec = defspec.getRegArimaSpecification(),
-                tspec = spec.getRegArimaSpecification();
+                dtspec = defspec.getRegArimaSpecification();
         if (nospan) {
             ntspec.getBasic().getSpan().all();
         }
         // automodel
-        if (policy == EstimationPolicyType.Outliers_StochasticComponent) {
-            if (dtspec.isUsingAutoModel()) {
-                ntspec.setAutoModel(dtspec.getAutoModel().clone());
-            } else {
-                ntspec.setArima(dtspec.getArima().clone());
-            }
-        }
-        // outliers
-        RegressionSpec nrspec = ntspec.getRegression(), drspec = dtspec.getRegression();
-        if (policy == EstimationPolicyType.Outliers_StochasticComponent || policy == EstimationPolicyType.Outliers) {
-            ntspec.setOutliers(dtspec.getOutliers().clone());
-            // reset the default outliers detection an the default pre-specified outliers, if any
-            nrspec.setOutliers(OutlierDefinition.prespecify(drspec.getOutliers(), true));
-        }
+        // automodel/arima
+        refreshArimaSpec(ntspec, dtspec, policy);
+        refreshOutliersSpec(ntspec, dtspec, frozen, policy);
 
-        // frozen outliers
-        if (policy == EstimationPolicyType.LastOutliers) {
-            OutlierDefinition[] o = nrspec.getOutliers();
-            // reset the default outliers detection an the default pre-specified outliers, if any
-            nrspec.setOutliers(OutlierDefinition.prespecify(drspec.getOutliers(), true));
-            if (frozen != null && o != null) {
-                for (int j = 0; j < o.length; ++j) {
-                    OutlierDefinition cur = o[j];
-                    if (frozen.search(cur.position) >= 0 && !drspec.contains(cur)) {
-                        nrspec.add(cur.prespecify(true));
-                    }
-                }
-            }
-            // reset the default outliers detection, if any
-            ntspec.setOutliers(dtspec.getOutliers().clone());
-            if (frozen != null) {
-                ntspec.getOutliers().getSpan().from(frozen.getEnd().firstday());
-            }
+        RegressionSpec nrspec = ntspec.getRegression();
+        if (policy == EstimationPolicyType.Fixed) {
+            // fix all the coefficients of the regression variables
+            Map<String, double[]> all = nrspec.getAllCoefficients();
+            all.forEach((n, c) -> nrspec.setFixedCoefficients(n, c));
+        } else {
+            // copy back the initial fixed coefficients
+            nrspec.clearAllFixedCoefficients();
+            Map<String, double[]> all = dtspec.getRegression().getAllFixedCoefficients();
+            all.forEach((n, c) -> nrspec.setFixedCoefficients(n, c));
         }
-        if (policy == EstimationPolicyType.FixedParameters || policy == EstimationPolicyType.FreeParameters) {
-            // pre-specify all outliers
-            nrspec.setOutliers(OutlierDefinition.prespecify(nrspec.getOutliers(), true));
-        }
-
-        // parameters of the regarima model
-        if (policy == EstimationPolicyType.Outliers || policy == EstimationPolicyType.LastOutliers || policy == EstimationPolicyType.FreeParameters) {
-            ntspec.getArima().clearParameters();
-        }
-
-        if (policy == EstimationPolicyType.FixedParameters) {
-            ntspec.getArima().setParameterType(ParameterType.Fixed);
-        }
+        nrspec.clearAllCoefficients();
 
         // we should consider the X11 options chosen by the software ...
         return newspec;
@@ -189,6 +160,8 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
             }
             if (vars.select(ILengthOfPeriodVariable.class).isEmpty()) {
                 tdspec.setLengthOfPeriod(LengthOfPeriodType.None);
+            }else{
+                used=true;
             }
             if (!used) {
                 rspec.getTradingDays().disable();
@@ -213,13 +186,16 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
                 }
             }
         }
+        tdspec.setAutoAdjust(false);
         // outliers (if any)
         OutlierSpec ospec = tspec.getOutliers();
         if (ospec.isUsed()) {
-            TsVariableSelection<IOutlierVariable> sel = vars.select(OutlierType.Undefined, false);
+            TsVariableSelection<IOutlierVariable> sel = vars.select(OutlierType.Undefined);
             if (!sel.isEmpty()) {
                 for (TsVariableSelection.Item<IOutlierVariable> o : sel.elements()) {
-                    rspec.add(o.variable);
+                    if (!regarima.description.isPrespecified(o.variable)) {
+                        rspec.add(o.variable);
+                    }
                 }
             }
             ospec.clearTypes();
@@ -227,8 +203,88 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
         // stochastic arima model (including mean)
         tspec.getArima().setArimaComponent(regarima.description.getArimaComponent());
         tspec.setUsingAutoModel(false);
+        // update the coefficients of the regarima model
+        rspec.clearAllCoefficients();
+        double[] b = regarima.estimation.getLikelihood().getB();
+        if (b != null) {
+            int pos = regarima.description.getRegressionVariablesStartingPosition();
+            for (ITsVariable var : vars.items()) {
+                int npos = pos + var.getDim();
+                rspec.setCoefficients(ITsVariable.shortName(var.getName()), Arrays.copyOfRange(b, pos, npos));
+                pos = npos;
+            }
+        }
         item.setPointSpecification(spec);
         return true;
+    }
+
+    private void refreshArimaSpec(RegArimaSpecification spec, RegArimaSpecification defspec, EstimationPolicyType policy) {
+        ArimaSpec arima = spec.getArima(), defarima = defspec.isUsingAutoModel() ? null : defspec.getArima();
+        switch (policy) {
+            case Fixed:
+                if (arima.isMean()) {
+                    arima.fixMu();
+                }
+            case FixedParameters:
+                arima.setParameterType(ParameterType.Fixed);
+                break;
+            case FreeParameters:
+            case LastOutliers:
+            case Outliers:
+                // clear only free parameters !
+                if (defarima != null) {
+                    spec.setArima(defarima.clone());
+                } else {
+                    arima.clearParameters();
+                }
+                break;
+            case Outliers_StochasticComponent:
+                if (defarima != null) {
+                    spec.setArima(defarima.clone());
+                } else {
+                    spec.setAutoModel(defspec.getAutoModel());
+                }
+                break;
+
+        }
+    }
+
+    private void refreshOutliersSpec(RegArimaSpecification spec, RegArimaSpecification defspec, TsDomain frozen, EstimationPolicyType policy) {
+        RegressionSpec rspec = spec.getRegression(), defrspec = defspec.getRegression();
+        OutlierSpec defospec = defspec.getOutliers();
+        switch (policy) {
+            case Fixed:
+            case FixedParameters:
+            case FreeParameters:
+                // nothing to do
+                break;
+
+            case LastOutliers:
+                OutlierDefinition[] o = rspec.getOutliers();
+                // reset the default outliers detection an the default pre-specified outliers, if any
+                rspec.setOutliers(defrspec.getOutliers());
+                if (frozen != null && o != null) {
+                    for (int j = 0; j < o.length; ++j) {
+                        OutlierDefinition cur = o[j];
+                        if (frozen.search(cur.getPosition()) >= 0 && !defrspec.contains(cur)) {
+                            rspec.add(cur);
+                        }
+                    }
+                }
+                // reset the default outliers detection, if any
+                OutlierSpec no = defospec.clone();
+                if (frozen != null) {
+                    no.getSpan().from(frozen.getEnd().firstday());
+                }
+                spec.setOutliers(no);
+                break;
+            case Outliers:
+            case Outliers_StochasticComponent:
+                // reset the default outliers detection and the default pre-specified outliers, if any
+                spec.setOutliers(defospec.clone());
+                rspec.setOutliers(defrspec.getOutliers());
+                break;
+        }
     }
 
     @Override
@@ -274,7 +330,7 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
     }
 
     @Override
-    public Map<String, Class> getOutputDictionary() {
-        return X13ProcessingFactory.instance.getOutputDictionary();
+    public Map<String, Class> getOutputDictionary(boolean compact) {
+        return X13ProcessingFactory.instance.getOutputDictionary(compact);
     }
 }

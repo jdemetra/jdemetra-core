@@ -23,7 +23,6 @@ import ec.tstoolkit.modelling.RegressionTestSpec;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -33,177 +32,6 @@ import java.util.Objects;
  */
 public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
 
-//    private String holidays_;
-//    private String[] users_;
-//    private TradingDaysType type_ = TradingDaysType.TradingDays;
-//    private LengthOfPeriodType lp_ = LengthOfPeriodType.LeapYear;
-//    private RegressionTestSpec test_ = RegressionTestSpec.None;
-//    private boolean autoAdjust_ = true;
-//
-//    public TradingDaysSpec() {
-//    }
-//
-//    public TradingDaysType getTradingDaysType() {
-//        return type_;
-//    }
-//
-//    public void setTradingDaysType(TradingDaysType value) {
-//        type_ = value;
-//    }
-//
-//    public LengthOfPeriodType getLengthOfPeriod() {
-//        return lp_;
-//    }
-//
-//    public void setLengthOfPeriod(LengthOfPeriodType value) {
-//        lp_ = value;
-//    }
-//    
-//    public boolean isAutoAdjust(){
-//        return autoAdjust_;
-//    }
-//    
-//    public void setAutoAdjust(boolean value){
-//        autoAdjust_=value;
-//    }
-//
-//    public boolean isValid() {
-//        if (test_ != RegressionTestSpec.None) {
-//            return type_ != TradingDaysType.None && lp_ != LengthOfPeriodType.None;
-//        }
-//        if (type_ == TradingDaysType.None) {
-//            return lp_ != LengthOfPeriodType.None;
-//        }
-//        return true;
-//    }
-//
-//    public String getHolidays() {
-//        return holidays_;
-//    }
-//
-//    public void setHolidays(String value) {
-//        holidays_ = value;
-////                if (holidays_ == CalendarManager.DEF)
-////                    holidays_ = null;
-//        if (holidays_ != null && holidays_.length() == 0) {
-//            holidays_ = null;
-//        }
-//        if (holidays_ != null) {
-//            users_ = null;
-//        }
-//    }
-//
-//    public String[] getUserVariables() {
-//        return users_;
-//    }
-//
-//    public void setUserVariables(String[] value) {
-//        users_ = value;
-//        if (users_ != null && users_.length == 0) {
-//            users_ = null;
-//        }
-//        if (users_ != null) {
-//            holidays_ = null;
-//            type_ = TradingDaysType.None;
-//            lp_ = LengthOfPeriodType.None;
-//        }
-//    }
-//
-//    public RegressionTestSpec getTest() {
-//        return test_;
-//    }
-//
-//    public void setTest(RegressionTestSpec value) {
-//        test_ = value;
-//    }
-//
-//    public boolean isDefault() {
-//        return type_ == TradingDaysType.None && lp_ == LengthOfPeriodType.None
-//                && holidays_ == null && users_ == null;
-//    }
-//
-////        public ICalendarProvider Provider(TSContext context)
-////        {
-////            ICalendarProvider provider = null;
-////            if (context != null && holidays_ != null)
-////                provider = context.Calendars[holidays_];
-////            if (provider == null)
-////                provider = new DefaultCalendarProvider();
-////            return provider;
-////        }
-//    @Override
-//    public TradingDaysSpec clone() {
-//        try {
-//            TradingDaysSpec spec = (TradingDaysSpec) super.clone();
-//            if (users_ != null) {
-//                spec.users_ = users_.clone();
-//            }
-//            return spec;
-//        }
-//        catch (CloneNotSupportedException ex) {
-//            return null;
-//        }
-//    }
-//
-//    public boolean equals(TradingDaysSpec other) {
-//        if (other == null) {
-//            return false;
-//        }
-//        return Comparator.equals(users_, other.users_)
-//                && Comparator.equals(holidays_, other.holidays_)
-//                && type_ == other.type_ && lp_ == other.lp_ && test_ == other.test_;
-//    }
-//
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (obj instanceof TradingDaysSpec) {
-//            return equals((TradingDaysSpec) obj);
-//        }
-//        else {
-//            return super.equals(obj);
-//        }
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        int hash = 7;
-//        hash = 37 * hash + (this.holidays_ != null ? this.holidays_.hashCode() : 0);
-//        hash = 37 * hash + Arrays.deepHashCode(this.users_);
-//        hash = 37 * hash + (this.type_ != null ? this.type_.hashCode() : 0);
-//        hash = 37 * hash + (this.lp_ != null ? this.lp_.hashCode() : 0);
-//        hash = 37 * hash + (this.test_ != null ? this.test_.hashCode() : 0);
-//        hash = 37 * hash + (this.autoAdjust_ ? 1 : 0);
-//        return hash;
-//    }
-//
-//    public void disable() {
-//        holidays_ = null;
-//        users_ = null;
-//        type_ = TradingDaysType.None;
-//        lp_ = LengthOfPeriodType.None;
-//        test_ = RegressionTestSpec.None;
-//        autoAdjust_ = true;
-//    }
-//
-//    @Override
-//    public InformationSet write(boolean verbose) {
-//        throw new UnsupportedOperationException("Not supported yet.");
-//    }
-//
-//    @Override
-//    public boolean read(InformationSet info) {
-//        throw new UnsupportedOperationException("Not supported yet.");
-//    }
-//
-//    @Override
-//    public void fillDictionary(String prefix, List<String> dic) {
-//        dictionary(prefix, dic);
-//    }
-//    
-//    public static void dictionary(String prefix, List<String> dic) {
-//        throw new UnsupportedOperationException("Not supported yet.");
-//    }
-//}
     private String holidays_;
     private String[] users_;
     private TradingDaysType type_ = TradingDaysType.None;
@@ -236,8 +64,14 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
         return type_ != TradingDaysType.None || users_ != null || w_ != 0;
     }
 
+    boolean isDefined() {
+        return isUsed() && test_ == RegressionTestSpec.None;
+    }
+
     public void setTradingDaysType(TradingDaysType value) {
         type_ = value;
+        users_ = null;
+        w_ = 0;
     }
 
     public LengthOfPeriodType getLengthOfPeriod() {
@@ -262,6 +96,10 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
      */
     public void setStockTradingDays(int w) {
         w_ = w;
+        holidays_ = null;
+        users_ = null;
+        type_ = TradingDaysType.None;
+        lp_ = LengthOfPeriodType.None;
     }
 
     public boolean isStockTradingDays() {
@@ -298,6 +136,7 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
         }
         if (holidays_ != null) {
             users_ = null;
+            w_ = 0;
         }
     }
 
@@ -314,6 +153,7 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
             holidays_ = null;
             type_ = TradingDaysType.None;
             lp_ = LengthOfPeriodType.None;
+            autoAdjust_ = false;
         }
     }
 
@@ -472,4 +312,5 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
         dic.put(InformationSet.item(prefix, TEST), String.class);
         dic.put(InformationSet.item(prefix, CHANGEOFREGIME), String.class);
     }
+
 }

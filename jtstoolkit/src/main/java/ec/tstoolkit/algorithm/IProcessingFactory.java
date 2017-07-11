@@ -26,6 +26,9 @@ import java.util.Map;
  * processing for a given specification S. 
  * The processing itself will accept input of type I for generating output of type R
  * @author Jean Palate
+ * @param <S> Specification class
+ * @param <I> Input class
+ * @param <R> Results (output) class
  */
 @Development(status = Development.Status.Alpha)
 public interface IProcessingFactory<S extends IProcSpecification, I, R extends IProcResults>  {
@@ -46,11 +49,31 @@ public interface IProcessingFactory<S extends IProcSpecification, I, R extends I
     /**
      * Generates the processing related to given specifications
      * @param specification The specifications (=input) of the processing 
+     * @param context The context used in the creation of the processing
      * @return The results (=output) of the processing. May be null.
      */
     IProcessing<I,R> generateProcessing(S specification, ProcessingContext context);
     
+    /**
+     * Returns the specification dictionary for the given class
+     * @param specClass The class of the specification
+     * @return 
+     */
     Map<String, Class> getSpecificationDictionary(Class<S> specClass);
-    Map<String, Class> getOutputDictionary();
     
- }
+    /**
+     * Returns the output dictionary.
+     * @param compact True if the dictionary contains wild cards, false otherwise
+     * @return The output dictionary. It might contain id with wildcards ('*' or '?')
+     * when compact is set to true.
+     * In such case, the user should use the "searchAll" method of the IProcResults
+     * for retrieving the right information. Otherwise, the "getData" method should be
+     * preferred.
+     */
+    Map<String, Class> getOutputDictionary(boolean compact);
+    
+    @Deprecated
+    default Map<String, Class> getOutputDictionary(){
+        return getOutputDictionary(false);
+    }
+}

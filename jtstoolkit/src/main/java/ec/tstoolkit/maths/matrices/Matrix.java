@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.function.IntToDoubleFunction;
 
 /**
  * Represents matrices of doubles. Data are arranged by columns, following the
@@ -39,10 +40,42 @@ import java.util.Random;
 public class Matrix implements Cloneable {
 
     /**
+     * @since 2.2
+     */
+    @FunctionalInterface
+    public static interface MatrixFunction {
+
+        /**
+         * Applies this function to the given arguments.
+         *
+         * @param row
+         * @param column
+         * @return the function result
+         */
+        double apply(int row, int column);
+    }
+
+    /**
+     * @since 2.2
+     */
+    @FunctionalInterface
+    public static interface MatrixRelativeFunction {
+
+        /**
+         * Applies this function to the given arguments.
+         *
+         * @param row The row position
+         * @param column The column position
+         * @param cur The current value
+         * @return the function result
+         */
+        double apply(int row, int column, double cur);
+    }
+    /**
      * Creates a diagonal matrix
      *
      * @param d The diagonal items (length = n)
-     * @return The n x n diagonal matrix
+     * @return The n src n diagonal matrix
      */
     public static Matrix diagonal(final double[] d) {
         Matrix M = new Matrix(d.length, d.length);
@@ -79,10 +112,10 @@ public class Matrix implements Cloneable {
     }
 
     /**
-     * Creates the n x n identity matrix
+     * Creates the n src n identity matrix
      *
      * @param n The size of the matrix
-     * @return The identity matrix (n x n)
+     * @return The identity matrix (n src n)
      */
     public static Matrix identity(final int n) {
         Matrix M = new Matrix(n, n);
@@ -223,11 +256,11 @@ public class Matrix implements Cloneable {
     private static final IRandomNumberGenerator RNG = JdkRNG.newRandom(0);
 
     /**
-     * Creates a matrix from a given array of data. The new object is a wrapper
-     * around the data. The parameters must be coherent: data.length = nrows x
+     * Creates a matrix from a given array of src. The new object is a wrapper
+     * around the src. The parameters must be coherent: src.length = nrows src
      * ncols(not checked)
      *
-     * @param data The data
+     * @param data The src
      * @param nrows The number of rows
      * @param ncols The number of columns
      */
@@ -250,7 +283,7 @@ public class Matrix implements Cloneable {
     }
 
     /**
-     * Creates a new matrix from a given sub-matrix. The data are independent of
+     * Creates a new matrix from a given sub-matrix. The src are independent of
      * the given sub-matrix
      *
      * @param sm The sub-matrix
@@ -359,8 +392,8 @@ public class Matrix implements Cloneable {
      * Gets a given column of the matrix
      *
      * @param col The index of the column (in [0, columnsCount[)
-     * @return The data blocks representing the column. Refers to the actual
-     * data (changing the data block modifies the underlying matrix).
+     * @return The src blocks representing the column. Refers to the actual src
+     * (changing the src block modifies the underlying matrix).
      */
     public DataBlock column(final int col) {
         int beg = col * nrows_, end = beg + nrows_;
@@ -368,7 +401,7 @@ public class Matrix implements Cloneable {
     }
 
     /**
-     * Gets the columns of the matrix as a list of data block
+     * Gets the columns of the matrix as a list of src block
      *
      * @return The list of all the columns.
      */
@@ -390,7 +423,7 @@ public class Matrix implements Cloneable {
     }
 
     /**
-     * Copies the data of the matrix in a buffer. The data are copied column by
+     * Copies the src of the matrix in a buffer. The src are copied column by
      * column.
      *
      * @param buffer The buffer
@@ -403,8 +436,8 @@ public class Matrix implements Cloneable {
     /**
      * Gets the diagonal of the matrix
      *
-     * @return The data blocks representing the diagonal. Refers to the actual
-     * data (changing the data block modifies the underlying matrix).
+     * @return The src blocks representing the diagonal. Refers to the actual
+     * src (changing the src block modifies the underlying matrix).
      */
     public DataBlock diagonal() {
         int n = Math.min(nrows_, ncols_), inc = nrows_ + 1;
@@ -417,8 +450,8 @@ public class Matrix implements Cloneable {
      * @param pos The index of the sub-diagonal (in [-rowsCount, columnsCount[).
      * Positive values indicate diagonals above the main diagonal; negative
      * values indicate diagonals under the main diagonal.
-     * @return The data blocks representing the sub-diagonal. Refers to the
-     * actual data (changing the data block modifies the underlying matrix).
+     * @return The src blocks representing the sub-diagonal. Refers to the
+     * actual src (changing the src block modifies the underlying matrix).
      */
     public DataBlock subDiagonal(int pos) {
         if (pos >= ncols_) {
@@ -447,8 +480,8 @@ public class Matrix implements Cloneable {
      *
      * @param pos The index of the skew-diagonal (in [0, max(rowsCount,
      * columnsCount)[).
-     * @return The data blocks representing the skew-diagonal. Refers to the
-     * actual data (changing the data block modifies the underlying matrix).
+     * @return The src blocks representing the skew-diagonal. Refers to the
+     * actual src (changing the src block modifies the underlying matrix).
      */
     public DataBlock skewDiagonal(int pos) {
         if (pos < 0) {
@@ -505,9 +538,9 @@ public class Matrix implements Cloneable {
     /**
      * Gets the underlying memory block
      *
-     * @return The memory block that contains the data of the matrix (arranged
-     * by columns). The direct use of the memory block should be reserved to
-     * critical algorithms. Accessing the data using the different accessors
+     * @return The memory block that contains the src of the matrix (arranged by
+     * columns). The direct use of the memory block should be reserved to
+     * critical algorithms. Accessing the src using the different accessors
      * provided by the Matrix class is usually sufficient and much safer.
      */
     public double[] internalStorage() {
@@ -660,7 +693,7 @@ public class Matrix implements Cloneable {
     /**
      * The euclidian (frobenius) norm of the matrix
      *
-     * @return sqrt(sum(x(i,j)*x(i,j))) is returned
+     * @return sqrt(sum(src(i,j)*src(i,j))) is returned
      */
     public double nrm2() {
         return new DataBlock(data_).nrm2();
@@ -727,17 +760,17 @@ public class Matrix implements Cloneable {
     }
 
     /**
-     * Returns a given row (as a data block)
+     * Returns a given row (as a src block)
      *
      * @param row The 0-based index of the row.
-     * @return A data block giving access to the actual data of the matrix.
+     * @return A src block giving access to the actual src of the matrix.
      */
     public DataBlock row(final int row) {
         return new DataBlock(data_, row, row + data_.length, nrows_);
     }
 
     /**
-     * Returns all the rows of the matrix in a list of data blocks.
+     * Returns all the rows of the matrix in a list of src blocks.
      *
      * @return The list containing all the rows.
      */
@@ -773,7 +806,7 @@ public class Matrix implements Cloneable {
     /**
      * Sets a specific cell of the matrix to a given values. Using intensively
      * that method can be expensive. User should prefer modifying the matrix
-     * through data blocks. X(row, col) = value
+     * through src blocks. X(row, col) = value
      *
      * @param row The 0-based row index of the modified cell
      * @param col The 0-based column index of the modified cell
@@ -784,10 +817,63 @@ public class Matrix implements Cloneable {
     }
 
     /**
+     * x(i,j) = fn(i,j)
+     * @param fn The given function
+     * @since 2.2
+     */
+    public void set(MatrixFunction fn) {
+        for (int c = 0, i = 0; c < ncols_; ++c) {
+            for (int r = 0; r < nrows_; ++r, ++i) {
+                data_[i] = fn.apply(r, c);
+            }
+        }
+    }
+
+    /**
+     * x(i,j) = fn(i,j,x(i,j))
+     * @param fn The given function
+     * @since 2.2
+     */
+    public void set(MatrixRelativeFunction fn) {
+        for (int c = 0, i = 0; c < ncols_; ++c) {
+            for (int r = 0; r < nrows_; ++r, ++i) {
+                data_[i] = fn.apply(r, c, data_[i]);
+            }
+        }
+    }
+    
+    /**
+     * x(i,j) = x(i,j) + fn(i,j)
+     * @param fn The given function
+     * @since 2.2
+     */
+    public void add(MatrixFunction fn) {
+        for (int c = 0, i = 0; c < ncols_; ++c) {
+            for (int r = 0; r < nrows_; ++r, ++i) {
+                data_[i] += fn.apply(r, c);
+            }
+        }
+    }
+
+    /**
+     * x(i,j) = x(i,j) + fn(i,j,x(i,j))
+     * @param fn The given function
+     * @since 2.2
+     */
+    public void add(MatrixRelativeFunction fn) {
+        for (int c = 0, i = 0; c < ncols_; ++c) {
+            for (int r = 0; r < nrows_; ++r, ++i) {
+                data_[i] += fn.apply(r, c, data_[i]);
+            }
+        }
+    }
+
+    /**
      * Computes the sum of all the squared cells
      *
      * @return sum( X(i,j)*X(i,j) )
      */
+
     public double ssq() {
         double s = 0;
         for (int i = 0; i < data_.length; ++i) {
@@ -833,6 +919,11 @@ public class Matrix implements Cloneable {
      *
      * @return A sub-matrix containing all the cell is returned.
      */
+    public SubMatrix all() {
+        return new SubMatrix(data_, 0, nrows_, ncols_, 1, nrows_);
+    }
+
+    @Deprecated
     public SubMatrix subMatrix() {
         return new SubMatrix(data_, 0, nrows_, ncols_, 1, nrows_);
     }
@@ -1087,12 +1178,14 @@ public class Matrix implements Cloneable {
         if (isEmpty()) {
             return "";
         }
-        StringBuilder builder = new StringBuilder();
-        DataBlockIterator rows = this.rows();
-        do {
-            builder.append(rows.getData()).append("\r\n");
-        } while (rows.next());
-        return builder.toString();
+        return all().toString();
+    }
+
+    public String toString(String fmt) {
+        if (isEmpty()) {
+            return "";
+        }
+        return all().toString(fmt);
     }
 
     @Override
@@ -1131,7 +1224,7 @@ public class Matrix implements Cloneable {
         if (this.nrows_ >= this.ncols_) {
             hous.decompose(this);
         } else {
-            hous.decompose(this.subMatrix().transpose());
+            hous.decompose(this.all().transpose());
         }
         return hous.getRank();
     }
@@ -1160,7 +1253,7 @@ public class Matrix implements Cloneable {
 
     /**
      * Copies a given matrix. In most cases, the two matrices should have the
-     * same dimensions. However, the function only copies the data (and doesn't
+     * same dimensions. However, the function only copies the src (and doesn't
      * modify the current dimensions). The copied matrix could be larger than
      * the current matrix. In such a case, only the first cells will be copied.
      *
@@ -1181,18 +1274,18 @@ public class Matrix implements Cloneable {
     }
 
     public void smooth(double eps) {
-        double scale=1;
-        double q=Math.sqrt(eps);
-        
-        while (q<1){
-            scale*=10;
-            q*=10;
+        double scale = 1;
+        double q = Math.sqrt(eps);
+
+        while (q < 1) {
+            scale *= 10;
+            q *= 10;
         }
-            
+
         for (int i = 0; i < data_.length; ++i) {
-            double c=data_[i];
-            double d=Math.round(c*scale)/scale;
-            if (Math.abs(d-c) < eps) {
+            double c = data_[i];
+            double d = Math.round(c * scale) / scale;
+            if (Math.abs(d - c) < eps) {
                 data_[i] = d;
             }
         }
@@ -1200,38 +1293,42 @@ public class Matrix implements Cloneable {
 
     /**
      * Top-left empty sub-matrix. To be used with next(a,b)
+     *
      * @return An empty sub-matrix
      */
-    public SubMatrix topLeft(){
+    public SubMatrix topLeft() {
         return new SubMatrix(data_, 0, 0, 0, 1, nrows_);
     }
-    
+
     /**
      * Top-left sub-matrix
+     *
      * @param nr Number of rows. Could be 0.
-     * @param nc Number of columns. Could be 0. 
-     * @return A nr x nc sub-matrix
+     * @param nc Number of columns. Could be 0.
+     * @return A nr src nc sub-matrix
      */
-    public SubMatrix topLeft(int nr, int nc){
+    public SubMatrix topLeft(int nr, int nc) {
         return new SubMatrix(data_, 0, nr, nc, 1, nrows_);
     }
-    
+
     /**
-     * bottom-right sub-matrix (outside). 
+     * bottom-right sub-matrix (outside).
+     *
      * @return An empty sub-matrix
      */
-    public SubMatrix bottomRight(){
+    public SubMatrix bottomRight() {
         return new SubMatrix(data_, data_.length, 0, 0, 1, nrows_);
     }
 
     /**
-     * Bottom-right sub-matrix 
+     * Bottom-right sub-matrix
+     *
      * @param nr Number of rows. Could be 0.
-     * @param nc Number of columns. Could be 0. 
-     * @return A nr x nc sub-matrix
+     * @param nc Number of columns. Could be 0.
+     * @return A nr src nc sub-matrix
      */
-    public SubMatrix bottomRight(int nr, int nc){
-        int start=data_.length-nr-nc*nrows_;
+    public SubMatrix bottomRight(int nr, int nc) {
+        int start = data_.length - nr - nc * nrows_;
         return new SubMatrix(data_, start, nr, nc, 1, nrows_);
     }
 }

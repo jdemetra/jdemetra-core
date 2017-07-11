@@ -40,8 +40,8 @@ import java.text.NumberFormat;
  */
 public class HtmlRevisionsDocument extends AbstractHtmlElement implements IHtmlElement {
 
-    private TsData revisions_;
-    private DiagnosticInfo info_;
+    private final TsData revisions_;
+    private final DiagnosticInfo info_;
     private int threshold_ = 2;
 
     public HtmlRevisionsDocument(TsData revisions, DiagnosticInfo info) {
@@ -62,7 +62,7 @@ public class HtmlRevisionsDocument extends AbstractHtmlElement implements IHtmlE
         int y0 = revisions_.getDomain().getStart().getYear();
         int y1 = revisions_.getDomain().getLast().getYear();
 
-        DescriptiveStatistics stats = new DescriptiveStatistics(revisions_.getValues());
+        DescriptiveStatistics stats = new DescriptiveStatistics(revisions_);
 
         double mean = stats.getAverage();
         double rmse = stats.getRmse();

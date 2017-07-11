@@ -59,7 +59,7 @@ public class ConstInterpolator implements ITsDataInterpolator {
     @Override
     public boolean interpolate(TsData data, IntList missingpos)
     {
-        if (! data.getValues().hasMissingValues())
+        if (! data.hasMissingValues())
             return true;
         double nval=value;
         if (Double.isNaN(nval)){
@@ -67,9 +67,9 @@ public class ConstInterpolator implements ITsDataInterpolator {
             DescriptiveStatistics stats=new DescriptiveStatistics(data);
             nval=stats.getAverage();
         }
-	double[] val = data.getValues().internalStorage();
+	double[] val = data.internalStorage();
 	for (int i = 0; i < val.length; ++i)
-	    if (!DescriptiveStatistics.isFinite(val[i])) {
+	    if (!Double.isFinite(val[i])) {
 		missingpos.add(i);
 		val[i] = nval;
 	    }

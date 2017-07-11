@@ -22,24 +22,21 @@ import ec.tstoolkit.design.Development;
 /**
  *
  * @author Jean Palate
+ * @deprecated Since 2.2.0 Use TsVariableWindow
  */
-@Development(status = Development.Status.Alpha)
+@Deprecated
+@Development(status = Development.Status.Release)
 public enum ChangeOfRegimeType {
-    None,
-    // / <summary>
-    // / The values of the series are replaced by 0 up to a specified date
-    // (excluded)
-    // / </summary>
     /**
-     *
+     * The values of the series are replaced by 0 up to a specified date. 
+     * For a specified TsFrequency, the period that contains the given date is taken
+     * into account. The place of the date in the period has no impact. That period is not set to 0.
      */
     ZeroStarted,
-    // / <summary>
-    // / The values of the series are replaced by 0 after a specified date
-    // (included)
-    // / </summary>
     /**
-     *
+     * The values of the series are replaced by 0 after a specified date.
+     * For a specified TsFrequency, the period that contains the given date is taken
+     * into account. The place of the date in the period has no impact. That period is set to 0.
      */
     ZeroEnded
 }

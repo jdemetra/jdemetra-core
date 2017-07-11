@@ -17,7 +17,6 @@
 
 package ec.tstoolkit.timeseries.simplets;
 
-import ec.tstoolkit.data.DescriptiveStatistics;
 import ec.tstoolkit.design.Development;
 
 /**
@@ -53,7 +52,7 @@ public class TsDataIterator implements java.util.Enumeration<TsObservation> {
     public boolean hasMoreElements() {
 	if (m_skip) {
 	    for (; m_cur < m_block.data.getLength(); ++m_cur)
-		if (DescriptiveStatistics.isFinite(m_block.data.get(m_cur)))
+		if (Double.isFinite(m_block.data.get(m_cur)))
 		    return true;
 	    return false;
 	} else

@@ -16,14 +16,12 @@
  */
 package ec.tss.tsproviders;
 
-import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSortedMap;
 import ec.tss.tsproviders.utils.AbstractConfigBuilder;
 import ec.tss.tsproviders.utils.Formatters;
-import ec.tss.tsproviders.utils.Formatters.Formatter;
 import ec.tss.tsproviders.utils.IConfig;
 import ec.tss.tsproviders.utils.ParamBean;
 import ec.tss.tsproviders.utils.Parsers;
@@ -34,7 +32,6 @@ import ec.tstoolkit.design.VisibleForTesting;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.SortedMap;
 import javax.annotation.Nonnull;
@@ -54,6 +51,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * mandatory.
  *
  * @author Philippe Charles
+ * @since 1.0.0
  */
 @Immutable
 @XmlJavaTypeAdapter(DataSource.XmlAdapter.class)
@@ -81,11 +79,6 @@ public final class DataSource implements IConfig, Serializable {
     }
 
     @Override
-    public String get(String key) {
-        return params.get(key);
-    }
-
-    @Override
     public SortedMap<String, String> getParams() {
         return params;
     }
@@ -109,10 +102,19 @@ public final class DataSource implements IConfig, Serializable {
     @Override
     public String toString() {
         MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper(providerName + "(" + version + ")");
-        for (Entry<String, String> o : params.entrySet()) {
-            helper.add(o.getKey(), o.getValue());
-        }
+        params.forEach(helper::add);
         return helper.toString();
+    }
+
+    /**
+     * Creates a new builder with the content of this datasource.
+     *
+     * @return a non-null builder
+     * @since 2.2.0
+     */
+    @Nonnull
+    public Builder toBuilder() {
+        return new Builder(providerName, version).putAll(params);
     }
 
     @VisibleForTesting
@@ -125,10 +127,23 @@ public final class DataSource implements IConfig, Serializable {
     }
 
     @Nonnull
+    public static DataSource of(@Nonnull String providerName, @Nonnull String version) {
+        Objects.requireNonNull(providerName, "providerName");
+        Objects.requireNonNull(version, "version");
+        return new DataSource(providerName, version, ImmutableSortedMap.of());
+    }
+
+    @Nonnull
+    public static DataSource of(@Nonnull String providerName, @Nonnull String version, @Nonnull String key, @Nonnull String value) {
+        Objects.requireNonNull(providerName, "providerName");
+        Objects.requireNonNull(version, "version");
+        return new DataSource(providerName, version, ImmutableSortedMap.of(key, value));
+    }
+
+    @Nonnull
     public static DataSource deepCopyOf(@Nonnull String providerName, @Nonnull String version, @Nonnull Map<String, String> params) {
         Objects.requireNonNull(providerName, "providerName");
         Objects.requireNonNull(version, "version");
-        Objects.requireNonNull(params, "params");
         return new DataSource(providerName, version, ImmutableSortedMap.copyOf(params));
     }
 
@@ -139,10 +154,10 @@ public final class DataSource implements IConfig, Serializable {
         return new Builder(providerName, version);
     }
 
+    @Deprecated
     @Nonnull
     public static Builder builder(@Nonnull DataSource dataSource) {
-        Objects.requireNonNull(dataSource, "dataSource");
-        return new Builder(dataSource.getProviderName(), dataSource.getVersion()).putAll(dataSource.getParams());
+        return dataSource.toBuilder();
     }
 
     /**
@@ -209,7 +224,7 @@ public final class DataSource implements IConfig, Serializable {
 
         @Override
         public DataSource build() {
-            return DataSource.deepCopyOf(providerName, version, params);
+            return new DataSource(providerName, version, Util.toImmutable(params));
         }
     }
 
@@ -245,12 +260,7 @@ public final class DataSource implements IConfig, Serializable {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
-    private static final ThreadLocal<Xml> XML = new ThreadLocal<Xml>() {
-        @Override
-        protected Xml initialValue() {
-            return new Xml();
-        }
-    };
+    private static final ThreadLocal<Xml> XML = ThreadLocal.withInitial(Xml::new);
 
     private static final class Xml {
 
@@ -263,22 +273,10 @@ public final class DataSource implements IConfig, Serializable {
                 throw Throwables.propagate(ex);
             }
         }
-        final static Function<DataSourceBean, DataSource> FROM_BEAN = new Function<DataSourceBean, DataSource>() {
-            @Override
-            public DataSource apply(DataSourceBean input) {
-                return input.toId();
-            }
-        };
-        final static Function<DataSource, DataSourceBean> TO_BEAN = new Function<DataSource, DataSourceBean>() {
-            @Override
-            public DataSourceBean apply(DataSource input) {
-                return input.toBean();
-            }
-        };
 
-        final Parsers.Parser<DataSource> defaultParser = Parsers.<DataSourceBean>onJAXB(BEAN_CONTEXT).compose(FROM_BEAN);
-        final Formatters.Formatter<DataSource> defaultFormatter = Formatters.<DataSourceBean>onJAXB(BEAN_CONTEXT, false).compose(TO_BEAN);
-        final Formatters.Formatter<DataSource> formattedOutputFormatter = Formatters.<DataSourceBean>onJAXB(BEAN_CONTEXT, true).compose(TO_BEAN);
+        final Parsers.Parser<DataSource> defaultParser = Parsers.wrap(Parsers.<DataSourceBean>onJAXB(BEAN_CONTEXT).andThen(DataSourceBean::toId));
+        final Formatters.Formatter<DataSource> defaultFormatter = Formatters.<DataSourceBean>onJAXB(BEAN_CONTEXT, false).compose(DataSource::toBean);
+        final Formatters.Formatter<DataSource> formattedOutputFormatter = Formatters.<DataSourceBean>onJAXB(BEAN_CONTEXT, true).compose(DataSource::toBean);
     }
 
     private static final String SCHEME = "demetra";
@@ -291,26 +289,25 @@ public final class DataSource implements IConfig, Serializable {
             if (!SCHEME.equals(uri.getScheme()) || !HOST.equals(uri.getHost())) {
                 return null;
             }
-            String[] path = UriBuilder.getPathArray(uri);
-            if (path == null || path.length != 2) {
+            String[] path = UriBuilder.getPathArray(uri, 2);
+            if (path == null) {
                 return null;
             }
             Map<String, String> query = UriBuilder.getQueryMap(uri);
             if (query == null) {
                 return null;
             }
-            return DataSource.builder(path[0], path[1]).putAll(query).build();
+            return new DataSource(path[0], path[1], Util.toImmutable(query));
         }
     };
 
-    private static final Formatters.Formatter<DataSource> URI_FORMATTER = new Formatter<DataSource>() {
-        @Override
-        public CharSequence format(DataSource value) {
-            return new UriBuilder(SCHEME, HOST)
-                    .path(value.getProviderName(), value.getVersion())
-                    .query(value.getParams())
-                    .buildString();
-        }
-    };
+    private static final Formatters.Formatter<DataSource> URI_FORMATTER = Formatters.wrap(DataSource::formatAsUri);
+
+    private static CharSequence formatAsUri(DataSource value) {
+        return new UriBuilder(SCHEME, HOST)
+                .path(value.getProviderName(), value.getVersion())
+                .query(value.getParams())
+                .buildString();
+    }
     //</editor-fold>
 }

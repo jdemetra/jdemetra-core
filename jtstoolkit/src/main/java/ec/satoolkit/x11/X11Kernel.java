@@ -34,11 +34,11 @@ public class X11Kernel implements ISeriesDecomposer {
 
     public static final String A = "a-tables", B = "b-tables", C = "c-tables",
             D = "d-tables", E = "e-tables", F = "f-tables";
-    public static final String A1 = "a1", A1a = "a1a",
+    public static final String A1 = "a1", A1a = "a1a", A1b = "a1b",
             A6 = "a6", A7 = "a7",
             A8 = "a8", A8t = "a8t",
             A8s = "a8s", A8i = "a8i", A9 = "a9", A9u = "a9u", A9sa = "a9sa", A9ser = "a9ser";
-    public static final String[] ALL_A = {A1, A1a, A6, A7, A8, A8t, A8s, A8i, A9, A9sa, A9u, A9ser};
+    public static final String[] ALL_A = {A1, A1a, A1b, A6, A7, A8, A8t, A8s, A8i, A9, A9sa, A9u, A9ser};
     public static final String B1 = "b1", B2 = "b2", B3 = "b3",
             B3TEST = "b3-seasonalityTest", B4 = "b4", B5 = "b5", B6 = "b6",
             B7 = "b7", B7_IC = "b7-IC ratio", B8 = "b8", B9 = "b9",
@@ -58,15 +58,15 @@ public class X11Kernel implements ISeriesDecomposer {
     public static final String D1 = "d1", D2 = "d2", D3 = "d3",
             D3TEST = "d3-seasonalityTest", D4 = "d4", D5 = "d5", D6 = "d6",
             D7 = "d7", D7_IC = "d7-IC ratio", D8 = "d8", D9 = "d9",
-            D10 = "d10", D10a = "d10a", D11 = "d11", D11a = "d11a", D12 = "d12", D12a = "d12a", D12_IC = "d12-IC ratio",
-            D13 = "d13", D14 = "d14", D15 = "d15", D16 = "d16", D16a = "d16a", D17 = "d17",
+            D10 = "d10", D10a = "d10a",D10b = "d10b", D11 = "d11", D11a = "d11a",  D12 = "d12", D12a = "d12a", D12_IC = "d12-IC ratio",
+            D13 = "d13", D14 = "d14", D15 = "d15", D16 = "d16", D16a = "d16a", D16b = "d16b",D17 = "d17",
             D18 = "d18", D19 = "d19", D20 = "d20", D9_RMS = "finalRMS",
             D9_RMSROUND = "rmsRounds", D9_SLEN = "slen",
             D10L = "d10_lin", D11L = "d11_lin", D12L = "d12_lin", D13L = "d13_lin",
-            D10aL = "d10a_lin", D11aL = "d11a_lin", D12aL = "d12a_lin", D13aL = "d13a_lin",
-            D9_DEFAULT = "s3x5default", D9_FILTER = "d9filter", D12_FILTER = "d12filter", D12_TLEN = "tlen";
+            D10aL = "d10a_lin", D11aL = "d11a_lin",D12aL = "d12a_lin", D13aL = "d13a_lin",
+            D9_DEFAULT = "s3x5default", D9_FILTER = "d9filter", D12_FILTER = "d12filter", D12_TLEN = "tlen", D9_FILTER_COMPOSIT = "d9filtercomposit";
     public static final String[] ALL_D = {D1, D2, D3, D4, D5, D6, D7, D8, D9,
-        D10, D10a, D11, D11a, D12, D12a, D13, D14, D15, D16, D16a, D18, D19, D20};
+        D10, D10a,D10b, D11, D11a, D12, D12a, D13, D14, D15, D16, D16a,D16b, D18, D19, D20};
     public static final String E1 = "e1", E2 = "e2", E3 = "e3", E11 = "e11";
     public static final String[] ALL_E = {E1, E2, E3, E11};
     private IX11Toolkit toolkit;
@@ -150,7 +150,7 @@ public class X11Kernel implements ISeriesDecomposer {
         TsData b4d = toolkit.getContext().op(b3, b4anorm);
 
         ecorr = toolkit.getExtremeValuesCorrector();
-        ecorr.setForecasthorizont(toolkit.getContext().getForecastHorizon());
+//        ecorr.setForecasthorizont(toolkit.getContext().getForecastHorizon());
         if (ecorr instanceof CochranDependentExtremeValuesCorrector) {
             ((CochranDependentExtremeValuesCorrector) ecorr).testCochran(b4d);
         }
@@ -359,9 +359,9 @@ public class X11Kernel implements ISeriesDecomposer {
 
         DecompositionMode curMode = toolkit.getContext().getMode();
         if (curMode == DecompositionMode.LogAdditive) {
-            d1.getValues().exp();
+            d1.applyOnFinite(x->Math.exp(x));
             // d9bis.getValues().exp(); ???
-            d10.getValues().exp();
+            d10.applyOnFinite(x->Math.exp(x));
             toolkit.getContext().setMode(DecompositionMode.Multiplicative);
         }
 
@@ -380,7 +380,7 @@ public class X11Kernel implements ISeriesDecomposer {
         // m_params.getData());
         if (toolkit.getContext().getMode() == DecompositionMode.LogAdditive) {
             TsData b1 = info.subSet(B).get(B1, TsData.class); // (m_params.isTradingDayRegression()
-            d12.getValues().exp();
+            d12.applyOnFinite(x->Math.exp(x));
             toolkit.getContext().setMode(DecompositionMode.Multiplicative);
             if (uscbLike) {
                 TsData c13 = info.subSet(C).get(C13, TsData.class);
@@ -447,7 +447,7 @@ public class X11Kernel implements ISeriesDecomposer {
             TsData a1a = atables.get(A1a, TsData.class);
             TsData d16a = toolkit.getContext().op(a1a, d11c);
             TsDomain fdomain = new TsDomain(sdomain.getEnd(), nf);
-            dtables.set(D10a, d10c.fittoDomain(fdomain)); 
+            dtables.set(D10a, d10c.fittoDomain(fdomain));
             dtables.set(D10aL, d10.fittoDomain(fdomain));
             dtables.set(D11a, d11c.fittoDomain(fdomain));
             dtables.set(D11aL, d11.fittoDomain(fdomain));
@@ -472,6 +472,15 @@ public class X11Kernel implements ISeriesDecomposer {
             dtables.set(D16a, d16a);
         }
 
+        int nb = toolkit.getContext().getBackcastHorizon();
+        //backcast is only calculated if there is a backcast horizont
+        if (nb > 0) {
+            TsDomain bdomain = new TsDomain(sdomain.getStart().minus(nb), nb);    
+            TsData a1b = atables.get(A1b, TsData.class);
+             TsData d16b = toolkit.getContext().op(a1b, d11c);
+                 dtables.set(D16b, d16b);
+            dtables.set(D10b, d10c.fittoDomain(bdomain));
+           }
     }
 
     void stepE(InformationSet info) {

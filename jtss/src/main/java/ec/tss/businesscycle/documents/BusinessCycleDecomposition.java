@@ -13,18 +13,18 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.businesscycle.documents;
 
 import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.ProcessingInformation;
-import ec.tstoolkit.information.InformationMapper;
+import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  *
@@ -34,85 +34,57 @@ public class BusinessCycleDecomposition implements IProcResults {
 
     private final TsData target, trend, cycle;
     private final boolean mul;
-    public static final String TARGET="target", TREND = "trend", CYCLE = "cycle", MODE = "mode";
+    public static final String TARGET = "target", TREND = "trend", CYCLE = "cycle", MODE = "mode";
 
     public BusinessCycleDecomposition(boolean mul, TsData target, TsData trend, TsData cycle) {
         this.mul = mul;
-        this.target=target;
+        this.target = target;
         this.trend = trend;
         this.cycle = cycle;
     }
-    
-    public static void fillDictionary(String prefix, Map<String, Class> dic){
-        synchronized (mapper) {
-            mapper.fillDictionary(prefix, dic);
-        }
+
+    public static void fillDictionary(String prefix, Map<String, Class> dic, boolean compact) {
+        MAPPING.fillDictionary(prefix, dic, compact);
     }
 
     @Override
     public boolean contains(String id) {
-        synchronized (mapper) {
-            return mapper.contains(id);
-        }
+        return MAPPING.contains(id);
     }
 
     @Override
     public Map<String, Class> getDictionary() {
         LinkedHashMap<String, Class> map = new LinkedHashMap<>();
-        fillDictionary(null, map);
+        fillDictionary(null, map, false);
         return map;
     }
 
     @Override
     public <T> T getData(String id, Class<T> tclass) {
-        synchronized (mapper) {
-            return mapper.getData(this, id, tclass);
-        }
+        return MAPPING.getData(this, id, tclass);
     }
 
-    // MAPPERS
-    public static <T> void addMapping(String name, InformationMapper.Mapper<BusinessCycleDecomposition, T> mapping) {
-        synchronized (mapper) {
-            mapper.add(name, mapping);
-        }
+    // MAPPING
+    public static InformationMapping<BusinessCycleDecomposition> getMapping() {
+        return MAPPING;
     }
-    
+
+    public static <T> void setMapping(String name, Class<T> tclass, Function<BusinessCycleDecomposition, T> extractor) {
+        MAPPING.set(name, tclass, extractor);
+    }
+
+    private static final InformationMapping<BusinessCycleDecomposition> MAPPING = new InformationMapping<>(BusinessCycleDecomposition.class);
+
     @Override
     public List<ProcessingInformation> getProcessingInformation() {
         return Collections.EMPTY_LIST;
     }
 
-    private static final InformationMapper<BusinessCycleDecomposition> mapper = new InformationMapper<>();
-
     static {
-       mapper.add(TARGET, new InformationMapper.Mapper<BusinessCycleDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(BusinessCycleDecomposition source) {
-                return source.target;
-            }
-        });
-        mapper.add(TREND, new InformationMapper.Mapper<BusinessCycleDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(BusinessCycleDecomposition source) {
-                return source.trend;
-            }
-        });
-        mapper.add(CYCLE, new InformationMapper.Mapper<BusinessCycleDecomposition, TsData>(TsData.class) {
-
-            @Override
-            public TsData retrieve(BusinessCycleDecomposition source) {
-                return source.cycle;
-            }
-        });
-        mapper.add(MODE, new InformationMapper.Mapper<BusinessCycleDecomposition, Boolean>(Boolean.class) {
-
-            @Override
-            public Boolean retrieve(BusinessCycleDecomposition source) {
-                return source.mul;
-            }
-        });
+        MAPPING.set(TARGET, source -> source.target);
+        MAPPING.set(TREND, source -> source.trend);
+        MAPPING.set(CYCLE, source -> source.cycle);
+        MAPPING.set(MODE, Boolean.class, source -> source.mul);
     }
 
     /**
@@ -135,6 +107,7 @@ public class BusinessCycleDecomposition implements IProcResults {
     public TsData getTarget() {
         return target;
     }
+
     /**
      * @return the mul
      */

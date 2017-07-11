@@ -13,11 +13,11 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
-
+ */
 package ec.tss.sa.diagnostics;
 
+import ec.satoolkit.GenericSaResults;
+import ec.satoolkit.ISaResults;
 import ec.tstoolkit.modelling.ModellingDictionary;
 import ec.satoolkit.diagnostics.SeasonalityTest;
 import ec.tstoolkit.algorithm.CompositeResults;
@@ -35,37 +35,36 @@ import java.util.List;
 public class ResidualSeasonalityDiagnostics implements IDiagnostics {
 
     private SeasonalityTest fsa_, fsa3_, firr_;
-    
-    public static final String NAME="residual seasonality";
 
-    private static List<String> tests_ = Arrays.asList("on sa", "on sa (last 3 years)", "on irregular");
-
-    private double[] sa_ = new double[] { 0.1, 0.05, 0.01 };
-    private double[] sa3_ = new double[] { 0.1, 0.05, 0.01 };
-    private double[] irr_ = new double[] { 0.1, 0.05, 0.01 };
+    private double[] sa_ = new double[]{0.1, 0.05, 0.01};
+    private double[] sa3_ = new double[]{0.1, 0.05, 0.01};
+    private double[] irr_ = new double[]{0.1, 0.05, 0.01};
 
     protected static ResidualSeasonalityDiagnostics create(ResidualSeasonalityDiagnosticsConfiguration config, CompositeResults rslts) {
         try {
             ResidualSeasonalityDiagnostics diag = new ResidualSeasonalityDiagnostics(config);
-            if (! diag.test(rslts))
+            if (!diag.test(rslts)) {
                 return null;
-            else
+            } else {
                 return diag;
-        }
-        catch(Exception ex) {
+            }
+        } catch (Exception ex) {
             return null;
         }
     }
 
     public ResidualSeasonalityDiagnostics(ResidualSeasonalityDiagnosticsConfiguration config) {
-           setSABounds(config.getSASevere(), config.getSABad(), config.getSAUncertain());
-           setIrrBounds(config.getIrrSevere(), config.getIrrBad(), config.getIrrUncertain());
-           setSA3Bounds(config.getSA3Severe(), config.getSA3Bad(), config.getSA3Uncertain());
+        setSABounds(config.getSASevere(), config.getSABad(), config.getSAUncertain());
+        setIrrBounds(config.getIrrSevere(), config.getIrrBad(), config.getIrrUncertain());
+        setSA3Bounds(config.getSA3Severe(), config.getSA3Bad(), config.getSA3Uncertain());
     }
 
     public boolean test(CompositeResults rslts) {
+        if (rslts == null || GenericSaResults.getDecomposition(rslts, ISaResults.class) == null) {
+            return false;
+        }
         // computes the differences
-        TsData s =rslts.getData(ModellingDictionary.SA, TsData.class);
+        TsData s = rslts.getData(ModellingDictionary.SA, TsData.class);
         if (s != null) {
             int freq = s.getFrequency().intValue();
             s = s.delta(Math.max(1, freq / 4));
@@ -77,8 +76,9 @@ public class ResidualSeasonalityDiagnostics implements IDiagnostics {
             fsa3_ = SeasonalityTest.stableSeasonality(s.select(sel));
         }
         s = rslts.getData(ModellingDictionary.I, TsData.class);
-        if (s != null)
+        if (s != null) {
             firr_ = SeasonalityTest.stableSeasonality(s);
+        }
 
         return true;
     }
@@ -114,59 +114,63 @@ public class ResidualSeasonalityDiagnostics implements IDiagnostics {
     }
 
     private double bound(double[] lb, ProcQuality quality) {
-        if (quality == ProcQuality.Severe)
+        if (quality == ProcQuality.Severe) {
             return lb[2];
-        else if (quality == ProcQuality.Bad)
+        } else if (quality == ProcQuality.Bad) {
             return lb[1];
-        else if (quality == ProcQuality.Uncertain)
+        } else if (quality == ProcQuality.Uncertain) {
             return lb[0];
-        else
+        } else {
             return Double.NaN;
+        }
     }
 
     @Override
     public String getName() {
-        return NAME;
+        return ResidualSeasonalityDiagnosticsFactory.NAME;
     }
 
     @Override
     public List<String> getTests() {
-        return tests_;
+        return ResidualSeasonalityDiagnosticsFactory.ALL;
     }
 
     @Override
     public ProcQuality getDiagnostic(String test) {
-        if (test.equals(tests_.get(0)))
+        if (test.equals(ResidualSeasonalityDiagnosticsFactory.SA)) {
             return test(fsa_, sa_);
-        else if(test.equals(tests_.get(1)))
+        } else if (test.equals(ResidualSeasonalityDiagnosticsFactory.SA_LAST)) {
             return test(fsa3_, sa3_);
-        else
+        } else {
             return test(firr_, irr_);
+        }
     }
 
     @Override
     public double getValue(String test) {
         double val = 0;
-        if (test.equals(tests_.get(0)) && fsa_ != null)
+        if (test.equals(ResidualSeasonalityDiagnosticsFactory.SA) && fsa_ != null) {
             val = fsa_.getPValue();
-        else if(test.equals(tests_.get(1)) && fsa3_ != null)
+        } else if (test.equals(ResidualSeasonalityDiagnosticsFactory.SA_LAST) && fsa3_ != null) {
             val = fsa3_.getPValue();
-        else if ( firr_ != null)
+        } else if (firr_ != null) {
             val = firr_.getPValue();
+        }
         return val;
     }
 
     private static ProcQuality test(SeasonalityTest test, double[] b) {
-        if (test == null)
+        if (test == null) {
             return ProcQuality.Undefined;
-        else if (test.getPValue() > b[0])
+        } else if (test.getPValue() > b[0]) {
             return ProcQuality.Good;
-        else if (test.getPValue() > b[1])
+        } else if (test.getPValue() > b[1]) {
             return ProcQuality.Uncertain;
-        else if (test.getPValue() > b[2])
+        } else if (test.getPValue() > b[2]) {
             return ProcQuality.Bad;
-        else
+        } else {
             return ProcQuality.Severe;
+        }
     }
 
     @Override

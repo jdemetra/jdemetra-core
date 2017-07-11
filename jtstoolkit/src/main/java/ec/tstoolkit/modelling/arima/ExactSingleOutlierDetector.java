@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.modelling.arima;
 
 import ec.tstoolkit.arima.IArimaModel;
@@ -28,6 +27,7 @@ import ec.tstoolkit.eco.RegModel;
 import ec.tstoolkit.maths.matrices.Householder;
 import ec.tstoolkit.maths.matrices.LowerTriangularMatrix;
 import ec.tstoolkit.maths.matrices.Matrix;
+import ec.tstoolkit.modelling.IRobustStandardDeviationComputer;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 
@@ -39,21 +39,42 @@ import ec.tstoolkit.timeseries.simplets.TsPeriod;
 public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractSingleOutlierDetector<T> {
 
     private IArmaFilter m_filter;
+    private final IResidualsComputer resComputer;
     private Matrix m_L, m_X;
     private double[] m_yl, m_b, m_w;
     private int m_n;
 
-    // EChol^-1 * dy
+    public ExactSingleOutlierDetector() {
+        this(IRobustStandardDeviationComputer.mad());
+    }
+
+    public ExactSingleOutlierDetector(IRobustStandardDeviationComputer computer) {
+        this(computer, null);
+    }
+
     /**
-     * 
+     *
+     * @param computer
      * @param filter
      */
-    public ExactSingleOutlierDetector(IArmaFilter filter) {
+    public ExactSingleOutlierDetector(IRobustStandardDeviationComputer computer, IArmaFilter filter) {
+        super(computer);
         if (filter == null) {
             m_filter = new AnsleyFilter();
         } else {
             m_filter = filter;
         }
+        resComputer = IResidualsComputer.defaultComputer(m_filter.exemplar());
+    }
+
+    public ExactSingleOutlierDetector(IRobustStandardDeviationComputer computer, IResidualsComputer resComputer, IArmaFilter filter) {
+        super(computer);
+        if (filter == null) {
+            m_filter = new AnsleyFilter();
+        } else {
+            m_filter = filter;
+        }
+        this.resComputer = resComputer;
     }
 
     /**
@@ -62,19 +83,23 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
      */
     @Override
     protected boolean calc() {
-        RegModel dmodel = getModel().getDModel();
-        m_n = m_filter.initialize(getModel().getArma(), dmodel.getObsCount());
-        if (!initialize(dmodel)) {
+        try {
+            RegModel dmodel = getModel().getDModel();
+            m_n = m_filter.initialize(getModel().getArma(), dmodel.getObsCount());
+            if (!initialize(dmodel)) {
+                return false;
+            }
+            for (int i = 0; i < getOutlierFactoriesCount(); ++i) {
+                processOutlier(i);
+            }
+            return true;
+        } catch (Exception err) {
             return false;
         }
-        for (int i = 0; i < getOutlierFactoriesCount(); ++i) {
-            processOutlier(i);
-        }
-        return true;
     }
 
     /**
-     * 
+     *
      * @param model
      * @return
      */
@@ -86,8 +111,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
 
             Matrix regs = model.variables();
             if (regs == null) {
-//		calcMAD(YL);
-                calcMAD(filter(model.getY()));
+                getStandardDeviationComputer().compute(filter(model.getY()));
                 return true;
             }
 
@@ -106,7 +130,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
             m_L = qr.getR().transpose();
 
             DataBlock e = model.calcRes(new DataBlock(m_b));
-            calcMAD(filter(e));
+            getStandardDeviationComputer().compute((filter(e)));
 //	    DataBlock E = YL.deepClone();
             drcols.begin();
             do {
@@ -122,7 +146,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
     }
 
     /**
-     * 
+     *
      * @param idx
      */
     protected void processOutlier(int idx) {
@@ -131,7 +155,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
         double[] o = new double[2 * n];
         DataBlock O = new DataBlock(o);
         TsPeriod start = getDomain().getStart();
-        IOutlierVariable outlier = getOutlierFactory(idx).create(start);
+        IOutlierVariable outlier = getOutlierFactory(idx).create(start.firstday());
         outlier.data(start.minus(n), O);
         double[] od = new double[o.length - d];
         DataBlock OD = new DataBlock(od);
@@ -186,17 +210,12 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
     }
 
     protected DataBlock filter(DataBlock res) {
-        ModifiedLjungBoxFilter f = new ModifiedLjungBoxFilter();
-        IArimaModel arma = getModel().getArma();
-        int nf = f.initialize(arma, res.getLength());
-        DataBlock fres = new DataBlock(nf);
-        f.filter(res, fres);
-        return fres.drop(nf - getModel().getDModel().getObsCount(), 0);
+        return resComputer.residuals(getModel().getArma(), res);
     }
 
     @Override
-    protected void clear() {
-        super.clear();
+    protected void clear(boolean all) {
+        super.clear(all);
         m_L = null;
         m_X = null;
         m_b = null;

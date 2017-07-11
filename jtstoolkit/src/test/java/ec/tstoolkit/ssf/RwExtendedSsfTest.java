@@ -329,7 +329,7 @@ class TestFunctionInstance implements ISsqFunctionInstance {
         S = new Matrix(n, freq - 1);
         SeasonalDummies s = new SeasonalDummies(data.getFrequency());
         s.data(data.getDomain(), S.columnList());
-        ssfdata = new SsfData(data.getValues().internalStorage(), null);
+        ssfdata = new SsfData(data.internalStorage(), null);
         SsfRwAr1 rwar1 = new SsfRwAr1();
         rwar1.setRho(params[0]);
         ssf = new RwExtendedSsf(rwar1, S.subMatrix(), params[1] * params[1]);

@@ -192,4 +192,17 @@ public class DataBlockStorage {
         return new SubMatrix(m_data, 0, m_dim, m_nused, 1,
                 m_dim);
     }
+
+    /**
+     * Multiplies the current data blocks by a given factor
+     * @param factor 
+     */
+    public void rescale(double factor) {
+        if (factor == 1)
+            return;
+        int n=m_dim*m_nused;
+        for (int i=0; i<n; ++i){
+            m_data[i]*=factor;
+        }
+    }
 }

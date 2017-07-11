@@ -16,11 +16,9 @@
  */
 package ec.tss.tsproviders.common.uscb;
 
-import com.google.common.base.Optional;
 import com.google.common.base.StandardSystemProperty;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;
 import ec.tss.TsCollectionInformation;
@@ -34,13 +32,16 @@ import ec.tss.tsproviders.IDataSourceProvider;
 import ec.tss.tsproviders.legacy.FileDataSourceId;
 import ec.tss.tsproviders.legacy.InvalidMonikerException;
 import ec.tss.tsproviders.utils.DataSourceSupport;
-import ec.tss.tsproviders.utils.Parsers;
+import ec.tss.tsproviders.utils.IParser;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.utilities.Files2;
+import ec.tstoolkit.utilities.GuavaCaches;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +49,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author Kristof Bayens
  */
-public class UscbProvider implements ITsProvider, IDataSourceProvider {
+@ServiceProvider(service = ITsProvider.class)
+public class UscbProvider implements IDataSourceProvider {
 
     public static final String SOURCE = "USCB";
     public static final String VERSION = "20111201";
@@ -57,10 +59,10 @@ public class UscbProvider implements ITsProvider, IDataSourceProvider {
     private static final File DEFAULT_FOLDER = Files2.fromPath(StandardSystemProperty.USER_HOME.value(), "Data", "USCB");
     private final Cache<FileDataSourceId, UscbAccessor> m_accessors;
     private final DataSourceSupport support;
-    private final Parsers.Parser<DataSource> legacyDataSourceParser;
+    private final IParser<DataSource> legacyDataSourceParser;
 
     public UscbProvider() {
-        m_accessors = CacheBuilder.newBuilder().softValues().build();
+        m_accessors = GuavaCaches.softValuesCache();
         legacyDataSourceParser = FileDataSourceId.legacyParser(SOURCE, VERSION);
         support = DataSourceSupport.create(SOURCE, LOGGER);
         openAll();
@@ -71,10 +73,7 @@ public class UscbProvider implements ITsProvider, IDataSourceProvider {
         String[] files = folder.list();
         if (files != null) {
             for (String file : files) {
-                Optional<DataSource> dataSource = legacyDataSourceParser.tryParse(file);
-                if (dataSource.isPresent()) {
-                    support.open(dataSource.get());
-                }
+                legacyDataSourceParser.parseValue(file).ifPresent(support::open);
             }
         }
     }
@@ -96,6 +95,12 @@ public class UscbProvider implements ITsProvider, IDataSourceProvider {
     }
 
     @Override
+    public void reload(DataSource dataSource) throws IllegalArgumentException {
+        clearCache();
+        support.reload(dataSource);
+    }
+
+    @Override
     public List<DataSource> getDataSources() {
         return support.getDataSources();
     }
@@ -114,12 +119,7 @@ public class UscbProvider implements ITsProvider, IDataSourceProvider {
     @Override
     public List<DataSet> children(DataSource dataSource) {
         support.check(dataSource);
-        return Collections.singletonList(DataSet.builder(dataSource, DataSet.Kind.SERIES).build());
-    }
-
-    @Override
-    public String getDisplayName(IOException exception) throws IllegalArgumentException {
-        return support.getDisplayName(exception);
+        return Collections.singletonList(DataSet.of(dataSource, DataSet.Kind.SERIES));
     }
 
     @Override
@@ -144,7 +144,8 @@ public class UscbProvider implements ITsProvider, IDataSourceProvider {
 
     @Override
     public DataSet toDataSet(TsMoniker moniker) {
-        return null;
+        Objects.requireNonNull(moniker);
+        throw new IllegalArgumentException("Not supported");
     }
 
     @Override
@@ -186,11 +187,13 @@ public class UscbProvider implements ITsProvider, IDataSourceProvider {
 
     @Override
     public TsAsyncMode getAsyncMode() {
-        return TsAsyncMode.None;
+        return TsAsyncMode.Once;
     }
 
     @Override
-    public boolean queryTsCollection(TsMoniker tsm, TsInformationType tsit) {
+    public boolean queryTsCollection(TsMoniker moniker, TsInformationType type) {
+        Objects.requireNonNull(moniker, "Moniker cannot be null");
+        Objects.requireNonNull(type, "Type cannot be null");
         return false;
     }
 
@@ -226,7 +229,9 @@ public class UscbProvider implements ITsProvider, IDataSourceProvider {
     }
 
     @Override
-    public boolean queryTs(TsMoniker tsm, TsInformationType tsit) {
+    public boolean queryTs(TsMoniker moniker, TsInformationType type) {
+        Objects.requireNonNull(moniker, "Moniker cannot be null");
+        Objects.requireNonNull(type, "Type cannot be null");
         return false;
     }
 
@@ -255,7 +260,8 @@ public class UscbProvider implements ITsProvider, IDataSourceProvider {
 
     @Override
     public List<DataSet> children(DataSet parent) throws IllegalArgumentException, IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Objects.requireNonNull(parent);
+        throw new IllegalArgumentException("Not supported yet.");
     }
 
     @Override
