@@ -37,7 +37,7 @@ public class LowerTriangularMatrix {
     }
 
     public void rsolve(Matrix M, DataBlock x) throws MatrixException {
-        IMPL.get().rsolve(M, x, 0);
+        IMPL.get().rsolve(M, x);
     }
 
     public void lsolve(Matrix M, DataBlock x, double zero) throws MatrixException {

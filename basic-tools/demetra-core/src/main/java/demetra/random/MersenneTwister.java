@@ -16,6 +16,7 @@
 */
 package demetra.random;
 
+import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 import java.util.Date;
 
@@ -25,7 +26,8 @@ import java.util.Date;
  * @see http://en.wikipedia.org/wiki/Mersenne_twister
  * @author Jean Palate, Jeremy Demortier
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
+@AlgorithmImplementation(algorithm=IRandomNumberGenerator.class)
 public class MersenneTwister extends AbstractRNG {
 
     // STATIC FACTORY METHODS >

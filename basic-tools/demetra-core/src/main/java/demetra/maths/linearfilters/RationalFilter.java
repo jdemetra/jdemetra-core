@@ -1,10 +1,10 @@
 /*
- * Copyright 2013 National Bank ofInternal Belgium
+ * Copyright 2013 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
- * by the European Commission - subsequent versions ofInternal the EUPL (the "Licence");
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
- * You may obtain a copy ofInternal the Licence at:
+ * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
@@ -19,6 +19,7 @@ package demetra.maths.linearfilters;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.Immutable;
+import demetra.linearsystem.ILinearSystemSolver;
 import demetra.utilities.Arrays2;
 import demetra.maths.Complex;
 import demetra.maths.matrices.Matrix;
@@ -28,18 +29,18 @@ import demetra.maths.polynomials.Polynomial;
 import java.util.function.IntToDoubleFunction;
 
 /**
- * Rational filters are the ratio ofInternal two filters. They are defined in
- * different ways: 1. as the ratio ofInternal two generic filters: R(F,B) =
+ * Rational filters are the ratio of two filters. They are defined in
+ * different ways: 1. as the ratio of two generic filters: R(F,B) =
  * [V(B,F)]/[W(B, F)] (roots larger than 1 are associated to the backward
  * operator, roots smaller than 1 are associated to the forward operator and
  * roots equal to 1 are split in backward and forward operator, the last ones,
- * if any, must be double roots) 2. as the sum ofInternal a rational filter in
- * the backward operator and ofInternal a rational filter in the forward
- * operator: R(F,B) = V(B)/W(B) + X(F)/Y(F) 3. as the ratio ofInternal the
- * products ofInternal backward/forward filters: R(F,B) = [V(B) * W(F)]/[X(B) *
- * Y(F)] 4. as the ratio ofInternal a generic filter and the product ofInternal
- * a backward and ofInternal a forward filter: R(F,B) = [V(B,F)]/[X(B) * Y(F)]
- * Objects ofInternal this class store the representation 1 and 2 together
+ * if any, must be double roots) 2. as the sum of a rational filter in
+ * the backward operator and of a rational filter in the forward
+ * operator: R(F,B) = V(B)/W(B) + X(F)/Y(F) 3. as the ratio of the
+ * products of backward/forward filters: R(F,B) = [V(B) * W(F)]/[X(B) *
+ * Y(F)] 4. as the ratio of a generic filter and the product of
+ * a backward and of a forward filter: R(F,B) = [V(B,F)]/[X(B) * Y(F)]
+ * Objects of this class store the representation 1 and 2 together
  *
  * @author Jean Palate
  */
@@ -64,28 +65,28 @@ public class RationalFilter implements IRationalFilter {
     public static RationalFilter RationalSymmetricFilter(BackFilter N, BackFilter D) {
 
         Polynomial.SimplifyingTool smp = new Polynomial.SimplifyingTool();
-        if (smp.simplify(N.getPolynomial(), D.getPolynomial())) {
+        if (smp.simplify(N.asPolynomial(), D.asPolynomial())) {
             N = new BackFilter(smp.getLeft());
             D = new BackFilter(smp.getRight());
         }
 
-        SymmetricFilter n = SymmetricFilter.convolution(N);
+        SymmetricFilter n = SymmetricFilter.fromFilter(N);
         BackFilter g = n.decompose(D);
         RationalFilter rf = new RationalFilter();
-        rf.m_rb = new RationalBackFilter(g, D);
+        rf.m_rb = new RationalBackFilter(g, D, 0);
         rf.m_rf = rf.m_rb.mirror();
-        rf.m_n = SymmetricFilter.convolution(N);
-        rf.m_d = SymmetricFilter.convolution(D);
+        rf.m_n = SymmetricFilter.fromFilter(N);
+        rf.m_d = SymmetricFilter.fromFilter(D);
         return rf;
     }
 
     /**
      * Creates the rational filter N1(B)N2(F)/(D1(B)D2(F))
      *
-     * @param bnum Backward factor ofInternal the numerator
-     * @param bdenom Backward factor ofInternal the denominator
-     * @param fnum Forward factor ofInternal the numerator
-     * @param fdenom Forward factor ofInternal the denominator
+     * @param bnum Backward factor of the numerator
+     * @param bdenom Backward factor of the denominator
+     * @param fnum Forward factor of the numerator
+     * @param fdenom Forward factor of the denominator
      */
     public RationalFilter(final BackFilter bnum, final BackFilter bdenom,
             final ForeFilter fnum, final ForeFilter fdenom) {
@@ -98,8 +99,8 @@ public class RationalFilter implements IRationalFilter {
      * Computes N / DB*DF
      *
      * @param N The numerator
-     * @param DB The back filter ofInternal the denominator
-     * @param DF The forward filter ofInternal the denominator
+     * @param DB The back filter of the denominator
+     * @param DF The forward filter of the denominator
      */
     public RationalFilter(final IFiniteFilter N, final BackFilter DB,
             final ForeFilter DF) {
@@ -120,7 +121,7 @@ public class RationalFilter implements IRationalFilter {
 
     /**
      * Creates a rational filter that contains all information; we should have
-     * that rbf+rff = num/denom; the coherence ofInternal the different inputs
+     * that rbf+rff = num/denom; the coherence of the different inputs
      * is not checked
      *
      * @param rbf
@@ -139,8 +140,8 @@ public class RationalFilter implements IRationalFilter {
     /**
      * We decompose the filter N(B,F)/(Db(B)Df(F) in Nb(B)/Db(B) + Nf(F)/Df(F)
      *
-     * See Maravall, "Use and Misuses ofInternal Unobserved Components...", EUI
-     * 1993 or Bell, Martin, "Computation ofInternal Asymmetric Signal
+     * See Maravall, "Use and Misuses of Unobserved Components...", EUI
+     * 1993 or Bell, Martin, "Computation of Asymmetric Signal
      * Extraction Filters and Mean Squared Error for ARIMA Component Models",
      * Howard University, Research Report Series 2002.
      *
@@ -153,7 +154,7 @@ public class RationalFilter implements IRationalFilter {
 
         int nnb0 = -num.getLowerBound();
         int nnf0 = num.getUpperBound();
-        double[] nc = num.toArray();
+        double[] nc = num.weightsToArray();
         int nnb = nnb0;
         if (nnb < 0) {
             nnb = 0;
@@ -183,10 +184,10 @@ public class RationalFilter implements IRationalFilter {
         double[] cnf = new double[h + 1];
         cnf[0] = 0; // we suppress 1 unknown
 
-        double[] db = bd.toArray(), df = fd.toArray();
+        double[] db = bd.weightsToArray(), df = fd.weightsToArray();
 
         Matrix m = Matrix.square(ne);
-        // initialisation ofInternal the matrix
+        // initialisation of the matrix
         // left/up block [k+1]
         for (int i = 0; i <= ndf; ++i) {
             for (int j = 0; j <= k; ++j) {
@@ -200,11 +201,9 @@ public class RationalFilter implements IRationalFilter {
                 m.set(i + j, j + k + 1, db[ii]);
             }
         }
-
-        CroutDoolittle qr = new CroutDoolittle();
-        qr.decompose(m);
+        
         try {
-            qr.solve(DataBlock.ofInternal(nc));
+            ILinearSystemSolver.robustSolver().solve(m, DataBlock.ofInternal(nc));
         } catch (MatrixException e) {
             throw new LinearFilterException(
                     "Invalid decomposition of rational filter");
@@ -219,12 +218,15 @@ public class RationalFilter implements IRationalFilter {
 
         Arrays2.reverse(cnb);
 
-        m_rb = new RationalBackFilter(BackFilter.ofInternal(cnb), bd);
-        m_rf = new RationalForeFilter(ForeFilter.ofInternal(cnf), fd);
+        // TODO: compute the correct shifts
+        // nnb0 = bshift + k
+        // nnf0 = fshift + h
+        m_rb = new RationalBackFilter(BackFilter.ofInternal(cnb), bd, nnb0-k);
+        m_rf = new RationalForeFilter(ForeFilter.ofInternal(cnf), fd, nnf0+h);
     }
 
     /**
-     * Computes the frequency response ofInternal the filter at a given
+     * Computes the frequency response of the filter at a given
      * frequency
      *
      * @param freq The frequency (in radians)
@@ -238,7 +240,7 @@ public class RationalFilter implements IRationalFilter {
     }
 
     /**
-     * Gets the denominator ofInternal the filter (see representation 1)
+     * Gets the denominator of the filter (see representation 1)
      *
      * @return The denominator.
      */
@@ -285,6 +287,7 @@ public class RationalFilter implements IRationalFilter {
      *
      * @return
      */
+    @Override
     public RationalBackFilter getRationalBackFilter() {
         return m_rb;
     }
@@ -293,6 +296,7 @@ public class RationalFilter implements IRationalFilter {
      *
      * @return
      */
+    @Override
     public RationalForeFilter getRationalForeFilter() {
         return m_rf;
     }
@@ -321,7 +325,7 @@ public class RationalFilter implements IRationalFilter {
     }
 
     public IntToDoubleFunction weights() {
-        return pos->weight(pos);
+        return pos -> weight(pos);
     }
 
     @Override

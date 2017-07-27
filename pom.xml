@@ -222,6 +222,11 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-stats</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-arima</artifactId>
                 <version>${project.version}</version>            
             </dependency>
@@ -258,6 +263,11 @@
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-sacore</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-data-tests</artifactId>
                 <version>${project.version}</version>            
             </dependency>
            

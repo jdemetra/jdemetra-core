@@ -30,14 +30,16 @@ public class Chi2 implements IContinuousDistribution {
 
     public static final String NAME = "Chi2";
 
-    private final double df_;
+    private final double df;
 
 
     /**
-     * @param df
+     * @param df Degrees of freedom
      */
     public Chi2(final double df) {
-        df_ = df;
+        if (df <= 0)
+            throw new IllegalArgumentException("The degrees of freedom should be strictly positive");
+        this.df = df;
         fillHelpers();
     }
 
@@ -47,7 +49,7 @@ public class Chi2 implements IContinuousDistribution {
      * @return A strictly positive number
      */
     public double getDegreesofFreedom() {
-        return df_;
+        return df;
     }
 
     @Override
@@ -56,33 +58,44 @@ public class Chi2 implements IContinuousDistribution {
             return 0;
         }
 
-        return SpecialFunctions.chiSquareDensity(x, df_);
+        return SpecialFunctions.chiSquareDensity(x, df);
     }
 
     @Override
     public String getDescription() {
         StringBuilder sb = new StringBuilder();
         sb.append("Chi2 with ");
-        sb.append(df_);
+        sb.append(df);
         sb.append(" degrees of freedom ");
         return sb.toString();
     }
 
     /**
-     * Gets the expectation of the Chi2 distribution; it is defined as degrees
-     * of freedom if df &gt 2, otherwise an exception is thrown
+     * Gets the expectation of the Chi2 distribution.
      *
      * @return
-     * @throws DStatException An exception is thrown if the expectation doesn't
-     * exist (df &lt= 2)
      */
     @Override
     public double getExpectation() {
-        if (df_ <= 2) {
-            throw new DStatException("Expectation not defined for df <= 2",
-                    NAME);
-        }
-        return df_;
+        return df;
+    }
+
+    /**
+     * Gets the variance of the Beta distribution.
+     *
+     * @return
+     */
+    @Override
+    public double getVariance() {
+        return df * 2.0;
+    }
+    
+    public double getSkewness() {
+        return 2 * Math.sqrt(2 / df);
+    }
+
+    public double getKurtosis() {
+        return 3 + 12 / df;
     }
 
     @Override
@@ -97,7 +110,7 @@ public class Chi2 implements IContinuousDistribution {
         }
 
         double res;
-        res = SpecialFunctions.chiSquare(x, df_);
+        res = SpecialFunctions.chiSquare(x, df);
         if (pt == ProbabilityType.Upper) {
             res = 1 - res;
         }
@@ -112,7 +125,7 @@ public class Chi2 implements IContinuousDistribution {
         if (p < EPS_P || 1 - p < EPS_P) {
             throw new DStatException(DStatException.ERR_INV_SMALL, NAME);
         }
-        double start = df_;
+        double start = df;
         return ProbInvFinder.find(p, start, EPS_P, EPS_X, this);
     }
 
@@ -121,25 +134,9 @@ public class Chi2 implements IContinuousDistribution {
         return Double.POSITIVE_INFINITY;
     }
 
-    /**
-     * Gets the variance of the Beta distribution; it is defined as degrees of
-     * freedom *2 if df &gt 2, otherwise an exception is thrown
-     *
-     * @return
-     * @throws DStatException An exception is thrown if the variance doesn't
-     * exist
-     */
-    @Override
-    public double getVariance() {
-        if (df_ <= 2) {
-            throw new DStatException("Variance not defined for df <= 2", NAME);
-        }
-        return df_ * 2.0;
-    }
-
     @Override
     public BoundaryType hasLeftBound() {
-        return df_ <= 2 ? BoundaryType.Asymptotical : BoundaryType.Finite;
+        return df <= 2 ? BoundaryType.Asymptotical : BoundaryType.Finite;
     }
 
     @Override
@@ -163,7 +160,7 @@ public class Chi2 implements IContinuousDistribution {
      */
     public double random(IRandomNumberGenerator rng) {
 
-        if (df_ == 1) {
+        if (df == 1) {
             while (true) {
                 double u = rng.nextDouble();
                 double v = rng.nextDouble() * 0.857763884960707;
@@ -213,7 +210,7 @@ public class Chi2 implements IContinuousDistribution {
     }
 
      private void fillHelpers() {
-        b = Math.sqrt(df_ - 1.0);
+        b = Math.sqrt(df - 1.0);
         vm = -0.6065306597 * (1.0 - 0.25 / (b * b + 1.0));
         vm = (-b > vm) ? -b : vm;
         vp = 0.6065306597 * (0.7071067812 + b) / (0.5 + b);
@@ -224,7 +221,7 @@ public class Chi2 implements IContinuousDistribution {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(NAME).append('(');
-        sb.append(df_);
+        sb.append(df);
         sb.append(')');
         return sb.toString();
     }

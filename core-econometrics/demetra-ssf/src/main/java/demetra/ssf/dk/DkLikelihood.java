@@ -109,6 +109,11 @@ public class DkLikelihood implements ILikelihood {
      * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
  determinant ofInternal the cov matrix diffuse correction
      */
+
+    /**
+     * Respectively: diffuse log-likelihood sum of the squared e log
+ determinant of the cov matrix diffuse correction
+     */
     ssqerr, 
 
     /**
@@ -125,6 +130,11 @@ public class DkLikelihood implements ILikelihood {
      * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
  determinant ofInternal the cov matrix diffuse correction
      */
+
+    /**
+     * Respectively: diffuse log-likelihood sum of the squared e log
+ determinant of the cov matrix diffuse correction
+     */
     ldet, 
 
     /**
@@ -140,6 +150,11 @@ public class DkLikelihood implements ILikelihood {
     /**
      * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
  determinant ofInternal the cov matrix diffuse correction
+     */
+
+    /**
+     * Respectively: diffuse log-likelihood sum of the squared e log
+ determinant of the cov matrix diffuse correction
      */
     lddet;
     private final int nobs, nd;
@@ -161,7 +176,7 @@ public class DkLikelihood implements ILikelihood {
      *
      * The new definition is more coherent with the marginal likelihood.
      *
-     * @param ssqerr The sum ofFunction the squared residuals
+     * @param ssqerr The sum ofFunction the squared e
      * @param ldet The log ofFunction the determinant ofFunction V
      * @param lddet Diffuse correction
      * @param n The number ofFunction observations
@@ -220,27 +235,27 @@ public class DkLikelihood implements ILikelihood {
     }
 
     @Override
-    public double getFactor() {
+    public double factor() {
         return Math.exp((ldet + lddet) / (m()));
     }
 
     @Override
-    public double getLogLikelihood() {
+    public double logLikelihood() {
         return ll;
     }
 
     @Override
-    public int getN() {
+    public int dim() {
         return nobs;
     }
 
     @Override
-    public Doubles getResiduals() {
+    public Doubles e() {
         return res == null ? null : Doubles.ofInternal(res);
     }
 
     @Override
-    public double getLogDeterminant() {
+    public double logDeterminant() {
         return ldet;
     }
 
@@ -249,17 +264,17 @@ public class DkLikelihood implements ILikelihood {
      * @return
      */
     @Override
-    public double getSer() {
+    public double ser() {
         return Math.sqrt(ssqerr / (m()));
     }
 
     @Override
-    public double getSigma() {
+    public double sigma() {
         return ssqerr / (m());
     }
 
     @Override
-    public double getSsqErr() {
+    public double ssq() {
         return ssqerr;
     }
 
@@ -292,10 +307,10 @@ public class DkLikelihood implements ILikelihood {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("ll=").append(this.getLogLikelihood()).append(System.lineSeparator());
-        builder.append("n=").append(this.getN()).append(System.lineSeparator());
-        builder.append("ssq=").append(this.getSsqErr()).append(System.lineSeparator());
-        builder.append("ldet=").append(this.getLogDeterminant()).append(System.lineSeparator());
+        builder.append("ll=").append(this.logLikelihood()).append(System.lineSeparator());
+        builder.append("n=").append(this.dim()).append(System.lineSeparator());
+        builder.append("ssq=").append(this.ssq()).append(System.lineSeparator());
+        builder.append("ldet=").append(this.logDeterminant()).append(System.lineSeparator());
         builder.append("dcorr=").append(this.getDiffuseCorrection()).append(System.lineSeparator());
         return builder.toString();
     }

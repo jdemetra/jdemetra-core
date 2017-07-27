@@ -57,7 +57,7 @@ public class SymmetricFrequencyResponse {
      * @return
      */
     public static SymmetricFrequencyResponse createFromFilter(final IFiniteFilter f) {
-        return new SymmetricFrequencyResponse(SymmetricFilter.convolution(f));
+        return new SymmetricFrequencyResponse(SymmetricFilter.fromFilter(f));
     }
 
     /**
@@ -178,7 +178,7 @@ public class SymmetricFrequencyResponse {
      * @param sf
      */
     public SymmetricFrequencyResponse(final SymmetricFilter sf) {
-        double[] n = sf.toArray();
+        double[] n = sf.coefficientsAsPolynomial().toArray();
         D2SFR(n);
         m_p = Polynomial.of(n);
     }
@@ -400,13 +400,13 @@ public class SymmetricFrequencyResponse {
             if (Q == null) {
                 return false;
             } else {
-                m_left = new SymmetricFrequencyResponse(P);
+                simplifiedLeft = new SymmetricFrequencyResponse(P);
                 if (R == null) {
-                    m_right = new SymmetricFrequencyResponse(Polynomial.ONE);
+                    simplifiedRight = new SymmetricFrequencyResponse(Polynomial.ONE);
                 } else {
-                    m_right = new SymmetricFrequencyResponse(R);
+                    simplifiedRight = new SymmetricFrequencyResponse(R);
                 }
-                m_common = new SymmetricFrequencyResponse(Q);
+                common = new SymmetricFrequencyResponse(Q);
                 return true;
             }
         }
@@ -424,9 +424,9 @@ public class SymmetricFrequencyResponse {
                 rp = psimp.getRight();
                 p = psimp.getCommon();
 
-                m_common = new SymmetricFrequencyResponse(p);
-                m_left = new SymmetricFrequencyResponse(lp);
-                m_right = new SymmetricFrequencyResponse(rp);
+                common = new SymmetricFrequencyResponse(p);
+                simplifiedLeft = new SymmetricFrequencyResponse(lp);
+                simplifiedRight = new SymmetricFrequencyResponse(rp);
                 return true;
             } else {
                 return false;

@@ -27,24 +27,24 @@ import java.util.concurrent.atomic.AtomicReference;
 @Development(status = Development.Status.Release)
 public class T implements IContinuousDistribution {
     
-    private static final Normal nl = new Normal();
-    static final double[][] coeff = new double[][]{
+    private static final Normal N = new Normal();
+    static final double[][] COEFF = new double[][]{
         new double[]{1.0, 1.0, 0.0, 0.0, 0.0},
         new double[]{3.0, 16.0, 5.0, 0.0, 0.0},
         new double[]{-15.0, 17.0, 19.0, 3.0, 0.0},
         new double[]{-945.0, -1920.0, 1482.0, 776.0, 79.0}};
-    static final double[] denom = {4.0, 96.0, 384.0, 92160.0};
-    static final int[] ideg = {2, 3, 4, 5};
+    static final double[] DENOM = {4.0, 96.0, 384.0, 92160.0};
+    static final int[] DEG = {2, 3, 4, 5};
     
     static double calcInitT(final double p, final double df) {
-        double x = nl.getProbabilityInverse(p, ProbabilityType.Lower);
+        double x = N.getProbabilityInverse(p, ProbabilityType.Lower);
         double xx = x * x;
         double sum = x;
         double denpow = 1.0;
         for (int i = 0; i < 4; i++) {
-            double term = Utility.calcPoly(coeff[i], ideg[i], xx) * x;
+            double term = Utility.calcPoly(COEFF[i], DEG[i], xx) * x;
             denpow *= df;
-            sum += term / (denpow * denom[i]);
+            sum += term / (denpow * DENOM[i]);
         }
         
         return sum;
@@ -55,8 +55,11 @@ public class T implements IContinuousDistribution {
 
     /**
      * Default constructor; sets the degrees of freedom to 2
+     * @param df
      */
     public T(final double df) {
+        if (df < 0)
+            throw new IllegalArgumentException("The degrees of freedom should be strictly positive");
         this.df = df;
         chi2 = new AtomicReference<>();
     }
@@ -89,9 +92,22 @@ public class T implements IContinuousDistribution {
     
     @Override
     public double getExpectation() {
+        if (df <= 1)
+            throw new DStatException(DStatException.ERR_UNDEFINED, "T");
         return 0.0;
     }
     
+    @Override
+    public double getVariance() {
+        if (df <= 1) {
+            throw new DStatException(DStatException.ERR_UNDEFINED, "T");
+        } else if (df <= 2) {
+            return Double.POSITIVE_INFINITY;
+        } else {
+            return (df) / (df - 2.0);
+        }
+    }
+
     @Override
     public double getLeftBound() {
         return Double.NEGATIVE_INFINITY;
@@ -134,15 +150,6 @@ public class T implements IContinuousDistribution {
         return Double.POSITIVE_INFINITY;
     }
     
-    @Override
-    //FIXME: If df = 2 then division by zero >>> infinity?
-    public double getVariance() {
-        if (df < 2) {
-            throw new DStatException("No valid variance defined for df < 2",
-                    "T");
-        }
-        return (df) / (df - 2.0);
-    }
     
     @Override
     public BoundaryType hasLeftBound() {
@@ -166,7 +173,7 @@ public class T implements IContinuousDistribution {
             cdenom = new Chi2(df);
             chi2.set(cdenom);
         }
-        return nl.random(rng) / Math.sqrt(cdenom.random(rng) / df);
+        return N.random(rng) / Math.sqrt(cdenom.random(rng) / df);
     }
     
     @Override

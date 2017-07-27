@@ -78,13 +78,13 @@ public class SsfFunctionInstance<S, F extends ISsf> implements
     @Override
     public Doubles getE() {
         if (E == null) {
-            Doubles res = ll.getResiduals();
+            Doubles res = ll.e();
             if (res == null) {
                 return null;
             } else {
                 E = DataBlock.select(res, x->Double.isFinite(x));
                 if (fn.isMaximumLikelihood()) {
-                    double factor = Math.sqrt(ll.getFactor());
+                    double factor = Math.sqrt(ll.factor());
                     E.mul(factor);
                 }
             }
@@ -110,7 +110,7 @@ public class SsfFunctionInstance<S, F extends ISsf> implements
         if (ll == null) {
             return Double.NaN;
         }
-        return fn.isMaximumLikelihood() ? ll.getSsqErr() * ll.getFactor() : ll.getSsqErr();
+        return fn.isMaximumLikelihood() ? ll.ssq() * ll.factor() : ll.ssq();
     }
 
     @Override
@@ -119,10 +119,10 @@ public class SsfFunctionInstance<S, F extends ISsf> implements
             return Double.NaN;
         }
         if (fn.isLog()) {
-            return fn.isMaximumLikelihood() ? -ll.getLogLikelihood() : Math.log(ll.getSsqErr());
+            return fn.isMaximumLikelihood() ? -ll.logLikelihood() : Math.log(ll.ssq());
         } else {
-            return fn.isMaximumLikelihood() ? ll.getSsqErr() * ll.getFactor() : ll
-                    .getSsqErr();
+            return fn.isMaximumLikelihood() ? ll.ssq() * ll.factor() : ll
+                    .ssq();
         }
     }
 

@@ -82,7 +82,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
      */
     public static FiniteFilter multiply(final IFiniteFilter l, final double d) {
 	int lb = l.getLowerBound();
-	double[] p = l.toArray();
+	double[] p = l.weightsToArray();
 	for (int i = 0; i < p.length; ++i)
 	    p[i] *= d;
 	return FiniteFilter.promote(p, lb);
@@ -97,7 +97,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
     public static FiniteFilter multiply(final IFiniteFilter l,
 	    final IFiniteFilter r) {
 	int llb = l.getLowerBound(), rlb = r.getLowerBound();
-	Polynomial lp = l.asPolynomial(), rp = r.asPolynomial();
+	Polynomial lp = Polynomial.ofInternal(l.weightsToArray()), rp = Polynomial.ofInternal(r.weightsToArray());
 	Polynomial w = lp.times(rp);
 	return new FiniteFilter(w, llb + rlb);
     }
@@ -109,7 +109,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
      */
     public static FiniteFilter negate(final IFiniteFilter l) {
 	int lb = l.getLowerBound();
-	double[] p = l.toArray();
+	double[] p = l.weightsToArray();
 	for (int i = 0; i < p.length; ++i)
 	    p[i] = -p[i];
 	return FiniteFilter.promote(p, lb);
@@ -193,7 +193,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
      * @param f
      */
     public FiniteFilter(final IFiniteFilter f) {
-	double[] w = f.toArray();
+	double[] w = f.weightsToArray();
 	m_w = Polynomial.ofInternal(w);
 	m_lb = f.getLowerBound();
     }

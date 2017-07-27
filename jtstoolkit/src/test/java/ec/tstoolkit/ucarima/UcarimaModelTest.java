@@ -32,11 +32,13 @@ import ec.tstoolkit.ssf.SsfData;
 import ec.tstoolkit.ssf.ucarima.SsfUcarima;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDataTable;
+import static ec.tstoolkit.ucarima.WienerKolmogorovPreliminaryEstimatorPropertiesTest.ucmAirline;
 import ec.tstoolkit.ucarima.estimation.BurmanEstimatesC;
 import ec.tstoolkit.ucarima.estimation.McElroyEstimates;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
@@ -53,6 +55,11 @@ public class UcarimaModelTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+    }
+    
+    @Test
+    public void testAirline(){
+        System.out.println(ucmAirline(-.6, -.8));
     }
 
     //@Test

@@ -30,7 +30,7 @@ import demetra.maths.Constants;
 @Development(status = Development.Status.Alpha)
 public class RationalFunction {
     
-    private static final RationalFunction ZERO=new RationalFunction();
+    private static final RationalFunction ZERO=new RationalFunction(), ONE=RationalFunction.of(Polynomial.ONE, Polynomial.ONE);
 
     private double[] coeff;
     private final Polynomial num;
@@ -45,7 +45,11 @@ public class RationalFunction {
         return ZERO;
     }
 
-    private RationalFunction(){
+   public static RationalFunction one() {
+        return ONE;
+    }
+
+   private RationalFunction(){
         num=Polynomial.ZERO;
         denom=Polynomial.ONE;
     }

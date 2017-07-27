@@ -13,7 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
+ */
 package demetra.maths.linearfilters;
 
 import demetra.data.Doubles;
@@ -24,17 +24,18 @@ import demetra.maths.Simplifying;
 import demetra.maths.polynomials.IRootsSolver;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.PolynomialException;
+import demetra.maths.polynomials.UnitRootsSolver;
 import java.util.function.IntToDoubleFunction;
 
 /**
- * 
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
 public class ForeFilter extends AbstractFiniteFilter {
 
-     /**
+    /**
      *
      */
     public static final ForeFilter ZERO = new ForeFilter(Polynomial.ZERO);
@@ -45,248 +46,302 @@ public class ForeFilter extends AbstractFiniteFilter {
     public static final ForeFilter ONE = new ForeFilter(Polynomial.ONE);
 
     /**
-     * 
+     *
      * @param d
      * @param l
      * @return
      */
     public static ForeFilter add(final double d, final ForeFilter l) {
-	Polynomial p = l.m_p.plus(d);
-	return new ForeFilter(p);
+        Polynomial p = l.polynomial.plus(d);
+        return new ForeFilter(p);
     }
 
     /**
-     * 
+     *
      * @param d
      * @param l
      * @return
      */
     public static ForeFilter multiply(final double d, final ForeFilter l) {
-	Polynomial p = l.m_p.times(d);
-	return new ForeFilter(p);
+        Polynomial p = l.polynomial.times(d);
+        return new ForeFilter(p);
     }
 
-    private final Polynomial m_p;
+    private final Polynomial polynomial;
 
-     /**
+    /**
      * Create a new BackFilter from the specified coefficients.<br>
      * Note that a cached one can be returned if available (ONE, ZERO, ...)
+     *
      * @param coefficients
-     * @return 
+     * @return
      */
     public static ForeFilter ofInternal(double[] coefficients) {
         if (coefficients.length == 1) {
-            if (coefficients[0] == 1.0)
+            if (coefficients[0] == 1.0) {
                 return ForeFilter.ONE;
-            else if (coefficients[0] == 0.0)
+            } else if (coefficients[0] == 0.0) {
                 return ForeFilter.ZERO;
+            }
         }
         return new ForeFilter(Polynomial.ofInternal(coefficients));
     }
-   /**
-     * 
+
+    /**
+     *
      * @param p
      */
     public ForeFilter(final Polynomial p) {
-	m_p = p;
+        polynomial = p;
     }
 
     /**
-     * 
+     *
      * @param r
      * @return
      */
     public ForeFilter divide(final ForeFilter r) {
-	Polynomial.Division div = Polynomial.divide(m_p, r.m_p);
-	if (!div.getRemainder().isZero())
-	    throw new PolynomialException(PolynomialException.DIVISION);
-	return new ForeFilter(div.getQuotient());
+        Polynomial.Division div = Polynomial.divide(polynomial, r.polynomial);
+        if (!div.getRemainder().isZero()) {
+            throw new PolynomialException(PolynomialException.DIVISION);
+        }
+        return new ForeFilter(div.getQuotient());
     }
 
     /**
-     * 
+     *
      * @param idx
      * @return
      */
     public double get(final int idx) {
-	return m_p.get(idx);
+        return polynomial.get(idx);
     }
 
     public Polynomial getPolynomial() {
-         return m_p;
+        return polynomial;
     }
 
     /**
-     * 
+     *
      * @return
      */
     public int getDegree() {
-	return m_p.getDegree();
+        return polynomial.getDegree();
     }
 
     /**
-     * 
+     *
      * @return
      */
     @Override
     public int length() {
-	return m_p.getDegree() + 1;
+        return polynomial.getDegree() + 1;
     }
 
     /**
-     * 
+     *
      * @return
      */
     @Override
     public int getLowerBound() {
-	return 0;
+        return 0;
     }
 
     @Override
     public int getUpperBound() {
-	return m_p.getDegree();
+        return polynomial.getDegree();
     }
 
     /**
-     * 
+     *
      * @return
      */
     @Override
     public IntToDoubleFunction weights() {
-	return i->m_p.get(i);
+        return i -> polynomial.get(i);
     }
-    
-    @Override
-    public Polynomial asPolynomial(){
-        return m_p;
+
+    public Polynomial asPolynomial() {
+        return polynomial;
     }
 
     /**
-     * 
+     *
      * @return
      */
     public boolean isIdentity() {
-	return m_p.isIdentity(); 
+        return polynomial.isIdentity();
     }
 
     /**
-     * 
+     *
      * @return
      */
     public boolean isNull() {
-	return m_p.isZero();
+        return polynomial.isZero();
     }
 
     /**
-     * 
+     *
      * @param d
      * @return
      */
     public ForeFilter minus(final double d) {
-	Polynomial p = m_p.minus(d);
-	return new ForeFilter(p);
+        Polynomial p = polynomial.minus(d);
+        return new ForeFilter(p);
     }
 
     /**
-     * 
+     *
      * @param r
      * @return
      */
     public ForeFilter minus(final ForeFilter r) {
-	Polynomial p = m_p.minus(r.m_p);
-	return new ForeFilter(p);
+        Polynomial p = polynomial.minus(r.polynomial);
+        return new ForeFilter(p);
     }
 
     /**
-     * 
+     *
      * @return
      */
     @Override
     public BackFilter mirror() {
-	return new BackFilter(m_p);
+        return new BackFilter(polynomial);
     }
 
     /**
-     * 
+     *
      * @return
      */
     public ForeFilter negate() {
-	Polynomial p = m_p.negate();
-	return new ForeFilter(p);
+        Polynomial p = polynomial.negate();
+        return new ForeFilter(p);
     }
 
     /**
-     * 
+     *
      * @return
      */
     public ForeFilter normalize() {
-	double r = m_p.get(0);
-	if (r == 0 || r == 1)
+        double r = polynomial.get(0);
+        if (r == 0 || r == 1) {
             return this;
-	else 
-	    return new ForeFilter(m_p.times(1 / r));
+        } else {
+            return new ForeFilter(polynomial.times(1 / r));
+        }
     }
 
     /**
-     * 
+     *
      * @param d
      * @return
      */
     public ForeFilter plus(final double d) {
-	Polynomial p = m_p.plus(d);
-	return new ForeFilter(p);
+        Polynomial p = polynomial.plus(d);
+        return new ForeFilter(p);
     }
 
     /**
-     * 
+     *
      * @param r
      * @return
      */
     public ForeFilter plus(final ForeFilter r) {
-	Polynomial p = m_p.plus(r.m_p);
-	return new ForeFilter(p);
+        Polynomial p = polynomial.plus(r.polynomial);
+        return new ForeFilter(p);
     }
 
     /**
-     * 
+     *
      * @return
      */
     public Complex[] roots() {
-	return m_p.roots();
+        return polynomial.roots();
     }
 
     /**
-     * 
+     *
      * @param searcher
      * @return
      */
-    public Complex[] roots(final IRootsSolver searcher)
-    {
-	return m_p.roots(searcher);
+    public Complex[] roots(final IRootsSolver searcher) {
+        return polynomial.roots(searcher);
     }
 
     /**
-     * 
+     *
      * @param d
      * @return
      */
     public ForeFilter times(final double d) {
-	Polynomial p = m_p.times(d);
-	return new ForeFilter(p);
+        Polynomial p = polynomial.times(d);
+        return new ForeFilter(p);
     }
 
     /**
-     * 
+     *
      * @param r
      * @return
      */
     public ForeFilter times(final ForeFilter r) {
-	Polynomial p = m_p.times(r.m_p);
-	return new ForeFilter(p);
+        Polynomial p = polynomial.times(r.polynomial);
+        return new ForeFilter(p);
     }
 
     @Override
     public String toString() {
-	return m_p.toString('B', true);
+        return polynomial.toString('F', true);
     }
+
+    /**
+     *
+     */
+    public static class StationaryTransformation {
+
+        /**
+         *
+         */
+        /**
+         *
+         */
+        public ForeFilter unitRoots, stationaryFilter;
+
+        private int freq;
+
+        /**
+         *
+         */
+        public StationaryTransformation() {
+            this.freq = 0;
+        }
+
+        /**
+         *
+         * @param freq
+         */
+        public StationaryTransformation(int freq) {
+            this.freq = freq;
+        }
+
+        /**
+         *
+         * @param f
+         * @return
+         */
+        public boolean transform(ForeFilter f) {
+            UnitRootsSolver urs = freq == 0 ? new UnitRootsSolver()
+                    : new UnitRootsSolver(freq);
+            urs.factorize(f.polynomial);
+            unitRoots = new ForeFilter(urs.getUnitRoots().toPolynomial());
+            if (unitRoots.getDegree() == 0) {
+                stationaryFilter = f;
+                return false;
+            } else {
+                stationaryFilter = new ForeFilter(urs.remainder());
+                return true;
+            }
+        }
+    }
+
 }

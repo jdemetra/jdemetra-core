@@ -8,11 +8,17 @@ package demetra.maths.linearfilters;
 import demetra.data.DataBlock;
 
 /**
- *
+ * 
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public interface IFilterOutput {
 
+    /**
+     * Creates a filter output
+     * @param buffer The buffer that will contain the results. 
+     * @param startPos The start position of the output. More exactly, buffer[0] will contain F(y)(t)
+     * @return 
+     */
     public static IFilterOutput of(final DataBlock buffer, final int startPos) {
         return new IFilterOutput() {
             @Override

@@ -16,13 +16,11 @@
  */
 package demetra.maths.matrices;
 
-import demetra.maths.matrices.Matrix;
-import demetra.data.DataWindow;
 import java.util.Random;
-import demetra.maths.matrices.Matrix;
-import static org.junit.Assert.assertTrue;
 import org.junit.Ignore;
 import org.junit.Test;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -36,12 +34,42 @@ public class MatrixTest {
     @Test
     public void testBuilder() {
         double[] z = new double[200];
-        Matrix M = Matrix.builder(z)
+        Matrix A = Matrix.builder(z)
                 .nrows(10)
                 .ncolumns(15)
                 .build();
-        M.set((i, j) -> i + 10 * j);
-//        System.out.println(M);
+        A.set((i, j) -> i + 10 * j);
+//        System.out.println(A);
+    }
+
+    @Test
+    public void testulshift() {
+        int m=10, n=15;
+        double[] z = new double[m*n];
+        Matrix A = Matrix.builder(z)
+                .nrows(m)
+                .ncolumns(n)
+                .build();
+        A.set((i, j) -> i + 10 * j);
+        Matrix B=A.deepClone();
+        int del=3;
+        A.upLeftShift(del);
+        assertTrue(A.extract(0, m-del, 0, n-del).minus(B.extract(del, m, del, n)).isZero(1e15));
+    }
+
+    @Test
+    public void testdrshift() {
+        int m=8, n=6;
+        double[] z = new double[m*n];
+        Matrix A = Matrix.builder(z)
+                .nrows(m)
+                .ncolumns(n)
+                .build();
+        A.set((i, j) -> i + 10 * j);
+        Matrix B=A.deepClone();
+        int del=2;
+        A.downRightShift(del);
+        assertTrue(A.extract(del, m, del, n).minus(B.extract(0, m-del, 0, n-del)).isZero(1e15));
     }
 
     int N = 20, M = 50;
@@ -129,12 +157,12 @@ public class MatrixTest {
 
     //@Test
     public void testRC() {
-        Matrix M = Matrix.make(10, 10);
-        M.rows().forEach(row -> row.set(i -> row.getStartPosition() + i));
-        System.out.println(M);
-        M = Matrix.make(10, 10);
-        M.columns().forEach(col -> col.set(i -> col.getStartPosition() - i));
-        System.out.println(M);
+        Matrix A = Matrix.make(10, 10);
+        A.rows().forEach(row -> row.set(i -> row.getStartPosition() + i));
+        System.out.println(A);
+        A = Matrix.make(10, 10);
+        A.columns().forEach(col -> col.set(i -> col.getStartPosition() - i));
+        System.out.println(A);
     }
 
     @Test

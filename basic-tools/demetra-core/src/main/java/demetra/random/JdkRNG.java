@@ -17,8 +17,11 @@
 
 package demetra.random;
 
+import demetra.design.AlgorithmImplementation;
+import static demetra.design.AlgorithmImplementation.Feature.Balanced;
 import java.security.SecureRandom;
 import java.util.Random;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * A random number generator (RNG) that uses JDK's {@link Random} class.<br>
@@ -32,6 +35,7 @@ import java.util.Random;
  *
  * @author Philippe Charles
  */
+@AlgorithmImplementation(algorithm=IRandomNumberGenerator.class)
 public class JdkRNG implements IRandomNumberGenerator {
 
     // STATIC FACTORY METHODS >

@@ -1,12 +1,12 @@
 /*
  * Copyright 2016 National Bank of Belgium
  * 
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  * 
- * http://ec.europa.eu/idabc/eupl
+ * https://joinup.ec.europa.eu/software/page/eupl
  * 
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
@@ -32,6 +32,7 @@ import javax.annotation.Nonnull;
  * @author Jean Palate
  */
 public final class DataBlock implements Doubles {
+
 
     @FunctionalInterface
     public static interface DataBlockFunction {
@@ -188,6 +189,9 @@ public final class DataBlock implements Doubles {
         return CellReader.of(data, beg, inc);
     }
 
+    public CellReader reverseReader() {
+        return CellReader.of(data, end-inc, -inc);
+    }
     /**
      *
      * @return
@@ -617,6 +621,7 @@ public final class DataBlock implements Doubles {
     /**
      * Sets the given value in the ith position
      *
+     *
      * @param idx The considered cell
      * @param value The new value
      */
@@ -811,10 +816,24 @@ public final class DataBlock implements Doubles {
         }
     }
 
+    /**
+     * Copy the given data. 
+     * @param x The data being copied. Could be larger than the current buffer
+     */
     public void copy(Doubles x) {
         CellReader cell = x.reader();
         for (int i = beg; i != end; i += inc) {
             data[i] = cell.next();
+        }
+    }
+
+    public void copy(DoubleSequence x) {
+        if (inc == 1) {
+            x.copyTo(data, beg);
+        } else {
+            for (int i = beg, j = 0; i != end; i += inc) {
+                data[i] = x.get(j);
+            }
         }
     }
 
@@ -1347,6 +1366,11 @@ public final class DataBlock implements Doubles {
             return nrm;
         }
     }
+    
+    public Doubles unmodifiable() {
+        return Doubles.ofFunction(this.length(), i->get(i));
+    }
+
 
     public String toString(String fmt) {
         return Doubles.toString(this, fmt);

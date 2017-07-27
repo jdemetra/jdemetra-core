@@ -17,7 +17,6 @@
 package demetra.stats.samples;
 
 import demetra.data.CellReader;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 
 /**

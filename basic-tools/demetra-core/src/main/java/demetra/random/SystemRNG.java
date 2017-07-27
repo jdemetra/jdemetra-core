@@ -16,12 +16,14 @@
  */
 package demetra.random;
 
+import demetra.design.AlgorithmImplementation;
 import java.util.Random;
 
 /**
  *
  * @author Jean Palate
  */
+@AlgorithmImplementation(algorithm=IRandomNumberGenerator.class)
 public class SystemRNG extends AbstractRNG{
     
     private final Random rnd;

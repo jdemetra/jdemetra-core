@@ -25,18 +25,16 @@ import demetra.design.Development;
 @Development(status = Development.Status.Alpha)
 public class DStatException extends RuntimeException {
 
-    /**
-	 * 
-	 */
-    private static final long serialVersionUID = 1194137043460644262L;
-    
     private final String origin;
 
     /**
          *
          */
-    public static final String ERR_INV_SMALL = "Can't compute probability inverse (value is too near 0 or 1)",
-	    ERR_ITER = "Too many iterations in search procedure", ERR_PARAM = "Invalid definition";
+    public static final String 
+            ERR_INV_SMALL = "Can't compute probability inverse (value is too near 0 or 1)",
+	    ERR_ITER = "Too many iterations in search procedure", 
+            ERR_PARAM = "Invalid definition",
+            ERR_UNDEFINED = "Undefined";
 
     /**
      *

@@ -22,7 +22,6 @@ import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.Immutable;
 import ec.tstoolkit.maths.linearfilters.SymmetricFrequencyResponse;
 import ec.tstoolkit.maths.linearfilters.SymmetricFilter;
-import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.maths.polynomials.Polynomial;
 import ec.tstoolkit.maths.realfunctions.GridSearch;
 import ec.tstoolkit.maths.realfunctions.IFunction;

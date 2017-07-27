@@ -16,7 +16,6 @@
  */
 package demetra.likelihood;
 
-import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.IBuilder;
 import demetra.design.Immutable;
@@ -102,7 +101,7 @@ public final class Likelihood implements ILikelihood {
     }
 
     @Override
-    public double getLogDeterminant() {
+    public double logDeterminant() {
         return ldet;
     }
 
@@ -119,7 +118,7 @@ public final class Likelihood implements ILikelihood {
      * @return The factor of the likelihood.
      */
     @Override
-    public double getFactor() {
+    public double factor() {
         return Math.exp(ldet / n);
     }
 
@@ -128,7 +127,7 @@ public final class Likelihood implements ILikelihood {
      * @return
      */
     @Override
-    public double getLogLikelihood() {
+    public double logLikelihood() {
         return ll;
     }
 
@@ -137,12 +136,12 @@ public final class Likelihood implements ILikelihood {
      * @return
      */
     @Override
-    public int getN() {
+    public int dim() {
         return n;
     }
 
     @Override
-    public Doubles getResiduals() {
+    public Doubles e() {
         return Doubles.of(res);
     }
 
@@ -153,7 +152,7 @@ public final class Likelihood implements ILikelihood {
      * @return A positive number.
      */
     @Override
-    public double getSsqErr() {
+    public double ssq() {
         return ssqerr;
     }
 
@@ -182,10 +181,10 @@ public final class Likelihood implements ILikelihood {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("ll=").append(this.getLogLikelihood()).append("\r\n");
-        builder.append("n=").append(this.getN()).append("\r\n");
-        builder.append("ssq=").append(this.getSsqErr()).append("\r\n");
-        builder.append("ldet=").append(this.getLogDeterminant()).append("\r\n");
+        builder.append("ll=").append(this.logLikelihood()).append("\r\n");
+        builder.append("n=").append(this.dim()).append("\r\n");
+        builder.append("ssq=").append(this.ssq()).append("\r\n");
+        builder.append("ldet=").append(this.logDeterminant()).append("\r\n");
         return builder.toString();
     }
 

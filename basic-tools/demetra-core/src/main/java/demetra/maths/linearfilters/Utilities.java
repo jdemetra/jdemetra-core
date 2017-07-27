@@ -189,10 +189,10 @@ public final class Utilities {
     }
 
     /**
-     *
+     * Computes the frequency response
      * @param c
-     * @param lb
-     * @param w
+     * @param lb Lower bound (included)
+     * @param w Upper bound (included)
      * @return
      */
     public static Complex frequencyResponse(final IntToDoubleFunction c, final int lb, final int ub,

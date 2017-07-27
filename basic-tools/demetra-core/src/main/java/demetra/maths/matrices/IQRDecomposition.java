@@ -16,14 +16,10 @@
  */
 package demetra.maths.matrices;
 
-import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
 import demetra.data.Doubles;
 
 

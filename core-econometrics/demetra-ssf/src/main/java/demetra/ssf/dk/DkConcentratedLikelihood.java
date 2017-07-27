@@ -20,6 +20,7 @@ import demetra.design.IBuilder;
 import demetra.likelihood.IConcentratedLikelihood;
 import demetra.maths.matrices.Matrix;
 import demetra.data.Doubles;
+import java.util.function.Supplier;
 
 /**
  *
@@ -39,6 +40,7 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
         boolean legacy;
         double[] b;
         Matrix bvar;
+        Supplier<Matrix> bvarFn;
 
         Builder(int n, int nd) {
             this.n = n;
@@ -84,14 +86,19 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
             return this;
         }
 
-        public Builder covariance(Matrix var) {
+        public Builder unscaledCovariance(Matrix var) {
             bvar = var;
+            return this;
+        }
+
+        public Builder unscaledCovarianceSupplier(Supplier<Matrix> s) {
+            bvarFn = s;
             return this;
         }
 
         @Override
         public DkConcentratedLikelihood build() {
-            return new DkConcentratedLikelihood(n, nd, ssqerr, ldet, lddet, b, bvar, res, legacy);
+            return new DkConcentratedLikelihood(this);
         }
     }
 
@@ -99,11 +106,12 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
     private final int nobs, nd;
     private final double[] res;
     private final double[] b;
-    private final Matrix bvar;
+    private volatile Matrix bvar;
+    private final Supplier<Matrix> bvarFn;
     private boolean legacy;
 
     private DkConcentratedLikelihood(final int n, final int nd, final double ssqerr, final double ldet, final double lddet,
-            final double[] b, final Matrix bvar, final double[] res, boolean legacy) {
+            final double[] b, final Matrix bvar, final Supplier<Matrix> s, final double[] res, boolean legacy) {
         this.nobs = n;
         this.nd = nd;
         this.ssqerr = ssqerr;
@@ -121,27 +129,28 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
         }
         this.b = b;
         this.bvar = bvar;
+        this.bvarFn = s;
     }
 
-    /**
-     * Returns the number ofFunction degrees ofFunction freedom used in the computation ofFunction the
- different variance/standard deviations
-     *
-     * @param unbiased True if ML estimates are used, false otherwise.
-     * @param hpcount Number ofFunction hyper-paraneters that should be taken into
- account. hpcount is not considered if unbiased is set to false.
-     * @return
-     */
-    @Override
-    public int getDegreesOfFreedom(boolean unbiased, int hpcount) {
-        int n = getN();
-        if (unbiased) {
-            n -= hpcount;
-            if (b != null) {
-                n -= b.length;
-            }
+    private DkConcentratedLikelihood(final Builder builder) {
+        this.nobs = builder.n;
+        this.nd = builder.nd;
+        this.ssqerr = builder.ssqerr;
+        this.ldet = builder.ldet;
+        this.lddet = builder.lddet;
+        this.res = builder.res;
+        this.legacy = builder.legacy;
+        int m = legacy ? nobs : nobs - nd;
+        if (m > 0) {
+            ll = -.5
+                    * (m * Math.log(2 * Math.PI) + m
+                    * (1 + Math.log(ssqerr / m)) + ldet + lddet);
+        } else {
+            ll = Double.NaN;
         }
-        return n;
+        this.b = builder.b;
+        this.bvar = builder.bvar;
+        this.bvarFn=builder.bvarFn;
     }
 
     /**
@@ -150,7 +159,7 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
      * @return
      */
     @Override
-    public int getNx() {
+    public int nx() {
         return b == null ? 0 : b.length;
     }
 
@@ -175,7 +184,7 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
         if (this.legacy == legacy) {
             return this;
         } else {
-            return new DkConcentratedLikelihood(nobs, nd, ssqerr, ldet, lddet, b, bvar, res, legacy);
+            return new DkConcentratedLikelihood(nobs, nd, ssqerr, ldet, lddet, b, bvar, bvarFn, res, legacy);
         }
     }
 
@@ -188,27 +197,27 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
     }
 
     @Override
-    public double getFactor() {
+    public double factor() {
         return Math.exp((ldet + lddet) / (m()));
     }
 
     @Override
-    public double getLogLikelihood() {
+    public double logLikelihood() {
         return ll;
     }
 
     @Override
-    public int getN() {
+    public int dim() {
         return nobs;
     }
 
     @Override
-    public Doubles getResiduals() {
+    public Doubles e() {
         return res == null ? null : Doubles.ofInternal(res);
     }
 
     @Override
-    public double getLogDeterminant() {
+    public double logDeterminant() {
         return ldet;
     }
 
@@ -217,32 +226,43 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
      * @return
      */
     @Override
-    public double getSer() {
+    public double ser() {
         return Math.sqrt(ssqerr / (m()));
     }
 
     @Override
-    public double getSigma() {
+    public double sigma() {
         return ssqerr / (m());
     }
 
     @Override
-    public double getSsqErr() {
+    public double ssq() {
         return ssqerr;
     }
 
     @Override
-    public Doubles getCoefficients() {
+    public Doubles coefficients() {
         return Doubles.ofInternal(b);
     }
 
     @Override
-    public Matrix getCoefficientsCovariance() {
+    public Matrix unscaledCovariance() {
+        Matrix tmp = bvar;
+        if (tmp == null && bvarFn != null) {
+            synchronized (this) {
+                tmp = bvar;
+                if (tmp == null) {
+                    tmp = bvarFn.get();
+                    bvar = tmp;
+                }
+            }
+        }
         return bvar;
     }
+
     /**
      * Adjust the likelihood if the toArray have been pre-multiplied by a given
- scaling factor
+     * scaling factor
      *
      * @param yfactor
      * @param xfactor
@@ -274,7 +294,7 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
                 bvar.apply(i, i, x -> x * ifactor * ifactor);
             }
         }
-        return new DkConcentratedLikelihood(nobs, nd, ssqerr / yfactor * yfactor, ldet, lddet, nb, nbvar, nres, legacy);
+        return new DkConcentratedLikelihood(nobs, nd, ssqerr / yfactor * yfactor, ldet, lddet, nb, nbvar, null, nres, legacy);
     }
 
     public double getDiffuseCorrection() {
@@ -284,10 +304,10 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("ll=").append(this.getLogLikelihood()).append(System.lineSeparator());
-        builder.append("n=").append(this.getN()).append(System.lineSeparator());
-        builder.append("ssq=").append(this.getSsqErr()).append(System.lineSeparator());
-        builder.append("ldet=").append(this.getLogDeterminant()).append(System.lineSeparator());
+        builder.append("ll=").append(this.logLikelihood()).append(System.lineSeparator());
+        builder.append("n=").append(this.dim()).append(System.lineSeparator());
+        builder.append("ssq=").append(this.ssq()).append(System.lineSeparator());
+        builder.append("ldet=").append(this.logDeterminant()).append(System.lineSeparator());
         builder.append("dcorr=").append(this.getDiffuseCorrection()).append(System.lineSeparator());
         return builder.toString();
     }
