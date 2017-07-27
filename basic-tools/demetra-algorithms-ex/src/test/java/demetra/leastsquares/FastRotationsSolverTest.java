@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.leastsquares.internal;
+package demetra.leastsquares;
 
-import demetra.leastsquares.internal.FastRotationsSolver;
 import demetra.data.DataBlock;
 import demetra.data.Doubles;
 import demetra.data.DataSets;

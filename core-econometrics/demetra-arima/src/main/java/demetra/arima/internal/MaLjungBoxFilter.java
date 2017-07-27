@@ -18,7 +18,6 @@
 package demetra.arima.internal;
 
 import demetra.arima.IArimaModel;
-import demetra.arima.estimation.IArmaFilter;
 import demetra.data.DataBlock;
 import demetra.data.Doubles;
 import demetra.data.LogSign;
@@ -153,7 +152,7 @@ public class MaLjungBoxFilter {
 	return m_t;
     }
 
-    public int initialize(IArimaModel arima, int n) {
+    public int prepare(IArimaModel arima, int n) {
 	m_ma = arima.getMA().asPolynomial();
 	m_n = n;
 	m_q = m_ma.getDegree();

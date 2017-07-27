@@ -37,11 +37,10 @@ public class ArimaModelTest {
 
         ArimaModel wn = ArimaModel.whiteNoise();
         ArimaModel sum = ArimaModel.add(sarima, wn);
-        System.out.println(sum);
+//        System.out.println(sum);
         ArimaModel m = ArimaModel.subtract(sum, ArimaModel.copyOf(sarima));
         m=m.simplifyUr();
-        System.out.println();
+//        System.out.println();
         assertTrue(m.isWhiteNoise());
-
     }
 }

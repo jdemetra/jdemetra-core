@@ -182,6 +182,9 @@ public final class DataBlock implements Doubles {
         return CellReader.of(data, beg, inc);
     }
 
+    public CellReader reverseReader() {
+        return CellReader.of(data, end-inc, -inc);
+    }
     /**
      *
      * @return

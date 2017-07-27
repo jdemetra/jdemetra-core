@@ -61,7 +61,7 @@ public interface IFiniteFilter extends IFilter {
      * Returns all the weights, from lbound to ubound
      * @return 
      */
-    default double[] toArray(){
+    default double[] weightsToArray(){
         double[] w=new double[length()];
         IntToDoubleFunction weights = weights();
         for (int i=0, j=getLowerBound(); i<w.length; ++i, ++j){
@@ -80,9 +80,12 @@ public interface IFiniteFilter extends IFilter {
 
     /**
      * Apply the filter on the input and store the results in the output
+     * The range of the input is implicitly defined by the filter and by the output.
+     * If the filter is defined by w{lb)...w(ub) and the filter output is defined for [start, end[,
+     * the input should be defined for [start-lb, end+ub[
      *
-     * @param input
-     * @param rslt
+     * @param input The input
+     * @param rslt The filter output, defined for the range [getStart(), getEnd()[
      */
     void apply(IntToDoubleFunction input, IFilterOutput rslt);
     

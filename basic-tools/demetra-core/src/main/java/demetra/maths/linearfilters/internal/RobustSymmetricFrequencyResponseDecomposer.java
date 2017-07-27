@@ -67,7 +67,7 @@ public class RobustSymmetricFrequencyResponseDecomposer  {
         SymmetricFilter cur=sf;
         m_bf = null;
         // first, we try to remove unit roots from SymmetricFilter
-        double[] weights = cur.toArray();
+        double[] weights = cur.weightsToArray();
         for (int i=0; i<weights.length; ++i){
             weights[i]/=var;
         }

@@ -72,7 +72,7 @@ class SymmetricFrequencyResponseDecomposer  {
         }
 
         // first, we try to remove unit roots from SymmetricFilter
-        Polynomial p = Polynomial.ofInternal(sf.toArray());
+        Polynomial p = Polynomial.ofInternal(sf.weightsToArray());
         UnitRootsSolver urs = new UnitRootsSolver(m_freq);
         if (urs.factorize(p)) {
             UnitRoots ur = urs.getUnitRoots();

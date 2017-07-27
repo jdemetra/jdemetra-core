@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.ls;
+package demetra.leastsquares;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
@@ -72,6 +72,11 @@ public class GRSolver implements IQRSolver {
     @Override
     public Matrix R() {
         return R;
+    }
+
+    @Override
+    public Doubles residuals() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

@@ -31,7 +31,7 @@ public class FiniteFilterTest {
         filter.apply(in, out);
 
         DataBlock out2 = DataBlock.make(in.length() - filter.length() + 1);
-        filter.apply(i -> in.get(i + 9), IFilterOutput.of(out2, 0));
+        filter.apply(i -> in.get(i+3), IFilterOutput.of(out2, 6));
 
         assertTrue(out.distance(out2) < 1e-9);
     }

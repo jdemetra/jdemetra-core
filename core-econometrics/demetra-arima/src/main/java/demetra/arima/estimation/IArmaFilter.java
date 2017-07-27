@@ -52,7 +52,7 @@ public interface IArmaFilter {
      * @param inrc y (len=n)
      * @param outrc z (len=m)
      */
-    void filter(Doubles inrc, DataBlock outrc);
+    void apply(Doubles inrc, DataBlock outrc);
 
     /**
      * Computes the log of the determinant of the covariance matrix
@@ -67,7 +67,7 @@ public interface IArmaFilter {
      * @return The length of the filtered series (=m, number of rows of the transformation matrix A).
      * To be noted that the returned value is greater or (usually) equal to "length".
      */
-    int initialize(final IArimaModel model, int length);
+    int prepare(final IArimaModel model, int length);
     
    
     public static IArmaFilter ansley(){

@@ -21,6 +21,7 @@ import demetra.data.DataWindow;
 import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.maths.Complex;
+import java.util.Formatter;
 import java.util.function.IntToDoubleFunction;
 
 /**
@@ -187,7 +188,7 @@ public abstract class AbstractFiniteFilter implements IFiniteFilter {
     public void solve(final double[] in, final double[] out) {
         int n = in.length;
 
-        double[] w = toArray();
+        double[] w = weightsToArray();
         int u = w.length - 1;
 
         // initial iterations
@@ -213,7 +214,7 @@ public abstract class AbstractFiniteFilter implements IFiniteFilter {
     public void solve(final DataBlock in, final DataBlock out) {
         int n = in.length();
 
-        double[] w = toArray();
+        double[] w = weightsToArray();
         int u = w.length - 1;
 
         // initial iterations
@@ -233,6 +234,37 @@ public abstract class AbstractFiniteFilter implements IFiniteFilter {
             }
             out.set(i, z / a);
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        String fmt = "%6g";
+        boolean sign = false;
+        IntToDoubleFunction weights = this.weights();
+        for (int i = getLowerBound(); i <= getUpperBound(); ++i) {
+            double v = weights.applyAsDouble(i);
+            double av = Math.abs(v);
+            if (av >= 1e-6) {
+                if (av > v) {
+                    sb.append(" - ");
+                } else if (sign) {
+                    sb.append(" + ");
+                }
+                if ((av != 1) || (i == 0)) {
+                    sb.append(new Formatter().format(fmt, av).toString());
+                }
+                sign = true;
+                if (i < 0) {
+                    sb.append("(t-").append(-i).append(')');
+                } else if (i > 0) {
+                    sb.append("(t+").append(i).append(')');
+                } else {
+                    sb.append("(t)");
+                }
+            }
+        }
+        return sb.toString();
 
     }
 }

@@ -73,7 +73,7 @@ public class SymmetricFilter extends AbstractFiniteFilter {
      * @return f * f.mirror()
      */
     public static SymmetricFilter fromFilter(IFiniteFilter f, final double scaling) {
-        double[] w = f.toArray();
+        double[] w = f.weightsToArray();
         double[] c = new double[w.length];
         for (int i = 0; i < w.length; ++i) {
             for (int j = i; j < w.length; ++j) {

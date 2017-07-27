@@ -20,9 +20,11 @@ import demetra.arima.ArimaException;
 import demetra.arima.AutoCovarianceFunction;
 import demetra.data.DataBlock;
 import demetra.linearsystem.ILinearSystemSolver;
+import demetra.linearsystem.internal.QRLinearSystemSolver;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.internal.Householder;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
 
@@ -34,13 +36,12 @@ public class AutoCovarianceComputers {
 
     public static AutoCovarianceFunction.Computer defaultComputer(ILinearSystemSolver solver) {
         return (Polynomial ma, Polynomial ar, int rank) -> {
-             int p = ar.length();
+            int p = ar.length();
             int q = ma.length();
             int r0 = Math.max(p, q);
             if (rank < r0) {
                 rank = r0;
             }
-            int k0 = r0;
             double[] c = new double[rank + 1];
             RationalFunction rfe = RationalFunction.of(ma, ar);
             double[] cr = rfe.coefficients(q);
@@ -64,10 +65,11 @@ public class AutoCovarianceComputers {
                 }
             }
             try {
-                if (solver == null)
-                    ILinearSystemSolver.robustSolver().solve(M, x);
-                else
+                if (solver == null) {
+                    QRLinearSystemSolver.builder(new Householder()).build().solve(M, x);
+                } else {
                     solver.solve(M, x);
+                }
             } catch (Exception err) {
                 throw new ArimaException(ArimaException.NONSTATIONARY);
             }
@@ -85,55 +87,43 @@ public class AutoCovarianceComputers {
 
     public static AutoCovarianceFunction.SymmetricComputer defaultSymmetricComputer(ILinearSystemSolver solver) {
         return (SymmetricFilter sma, Polynomial ar, int rank) -> {
-            return null;
-//        int p = ar.getDegree() + 1;
-//        int q = sma == null ? 0 : sma.getDegree() + 1 ;
-//        int r0 = Math.max(p, q);
-//        if (rank < r0) {
-//            rank = r0;
-//        }
-//        double[] c;
-//        if (p == 1) {
-//            // pure moving average...
-//            c = sma.asPolynomial().toArray();
-//        } else {
-//                c = new double[rank + 1];
-//                BackFilter g = dsym ? sma_.decompose(new BackFilter(ar)) : sma_.decompose2(new BackFilter(ar));
-//                double[] tmp = new RationalFunction(g.getPolynomial(), ar).coefficients(rank + 1);
-//
-//                if (var_ != 1) {
-//                    ac[0] = 2 * tmp[0] * var_;
-//                    for (int i = 1; i < tmp.length; ++i) {
-//                        ac[i] = tmp[i] * var_;
-//                    }
-//                } else {
-//                    System.arraycopy(tmp, 0, ac, 0, tmp.length);
-//                    ac[0] *= 2;
-//                }
-//
-//            }
-//            if (rank < ac.length) {
-//                return;
-//            }
-//
-//            int k0 = ac.length;
-//            double[] tmp = new double[rank];
-//            for (int u = 0; u < k0; ++u) {
-//                tmp[u] = ac[u];
-//            }
-//            ac = tmp;
-//
-//            // after the initialization process
-//            for (int r = k0; r < rank; ++r) {
-//                double s = 0;
-//                for (int x = 1; x < p; ++x) {
-//                    s += ar.get(x) * ac[r - x];
-//                }
-//                ac[r] = -s;
-//            }
-//        }
+            int p = ar.getDegree() + 1;
+            int q = sma.getUpperBound() + 1;
+            int r0 = Math.max(p, q);
+            if (rank < r0) {
+                rank = r0;
+            }
+            double[] c;
+            if (p == 1) {
+                // pure moving average...
+                c = sma.coefficientsAsPolynomial().toArray();
+            } else {
+                c = new double[rank + 1];
+                BackFilter g = sma.decompose(new BackFilter(ar));
+                double[] tmp = RationalFunction.of(g.asPolynomial(), ar).coefficients(rank + 1);
+
+                System.arraycopy(tmp, 0, c, 0, tmp.length);
+                c[0] *= 2;
+            }
+
+            if (rank < c.length) {
+                return c;
+            }
+
+            int k0 = c.length;
+            double[] tmp = new double[rank];
+            System.arraycopy(c, 0, tmp, 0, k0);
+            c = tmp;
+            if (p > 1) {
+                for (int r = k0; r < rank; ++r) {
+                    double s = 0;
+                    for (int x = 1; x < p; ++x) {
+                        s += ar.get(x) * c[r - x];
+                    }
+                    c[r] = -s;
+                }
+            }
+            return c;
         };
     }
-
 }
-

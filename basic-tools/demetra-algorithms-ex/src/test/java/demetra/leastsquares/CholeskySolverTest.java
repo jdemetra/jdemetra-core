@@ -8,7 +8,6 @@ package demetra.leastsquares;
 import demetra.data.DataBlock;
 import demetra.data.DataSets;
 import demetra.data.Doubles;
-import demetra.ls.CholeskySolver;
 import static demetra.data.DataSets.lre;
 import demetra.maths.matrices.Matrix;
 import org.junit.Test;

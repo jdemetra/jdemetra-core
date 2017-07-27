@@ -64,10 +64,9 @@ public class QRSolver implements IQRSolver {
     }
     private double ssqerr;
     private double[] b, res;
-    private Matrix R, V;
+    private Matrix R;
     private int[] used;
     private int n, m;
-    private double[] c;
     private final IQRDecomposition qr;
     private final boolean simple;
     private final int niter;
@@ -96,10 +95,8 @@ public class QRSolver implements IQRSolver {
     private void clear() {
         ssqerr = 0;
         R = null;
-        c = null;
         b = null;
         res = null;
-        V = null;
     }
 
     private void compute(Doubles y, Matrix x) {

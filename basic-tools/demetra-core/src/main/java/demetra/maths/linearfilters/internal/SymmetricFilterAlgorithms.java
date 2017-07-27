@@ -97,7 +97,7 @@ public class SymmetricFilterAlgorithms {
         };
     }
     
-    private static final int ROBUST_LIMIT=61;
+    private static final int ROBUST_LIMIT=5;
 
     public static SymmetricFilter.Factorizer factorizer() {
         return (SymmetricFilter filter) -> filter.length() > ROBUST_LIMIT ? robustFactorizer().factorize(filter)

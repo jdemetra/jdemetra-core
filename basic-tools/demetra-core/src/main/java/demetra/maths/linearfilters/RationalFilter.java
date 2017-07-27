@@ -154,7 +154,7 @@ public class RationalFilter implements IRationalFilter {
 
         int nnb0 = -num.getLowerBound();
         int nnf0 = num.getUpperBound();
-        double[] nc = num.toArray();
+        double[] nc = num.weightsToArray();
         int nnb = nnb0;
         if (nnb < 0) {
             nnb = 0;
@@ -184,7 +184,7 @@ public class RationalFilter implements IRationalFilter {
         double[] cnf = new double[h + 1];
         cnf[0] = 0; // we suppress 1 unknown
 
-        double[] db = bd.toArray(), df = fd.toArray();
+        double[] db = bd.weightsToArray(), df = fd.weightsToArray();
 
         Matrix m = Matrix.square(ne);
         // initialisation of the matrix

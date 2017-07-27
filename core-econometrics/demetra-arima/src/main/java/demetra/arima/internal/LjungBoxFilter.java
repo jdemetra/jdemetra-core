@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package demetra.arima.internal;
 
 import demetra.arima.IArimaModel;
@@ -32,13 +31,12 @@ import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
 import org.openide.util.lookup.ServiceProvider;
 
-
 /**
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@AlgorithmImplementation(algorithm=IArmaFilter.class, feature=Legacy)
-@ServiceProvider(service=IArmaFilter.class)
+@AlgorithmImplementation(algorithm = IArmaFilter.class, feature = Legacy)
+@ServiceProvider(service = IArmaFilter.class)
 public class LjungBoxFilter implements IArmaFilter {
 
     private int m_n, m_p, m_q;
@@ -46,7 +44,7 @@ public class LjungBoxFilter implements IArmaFilter {
     private double[] m_u;
     private Matrix m_G, m_X, m_V1, m_L;
     private double m_s, m_t;
-    
+
     private void ar(double[] a) {
         // AR(w)
         if (m_p > 0) {
@@ -171,7 +169,7 @@ public class LjungBoxFilter implements IArmaFilter {
     }
 
     @Override
-    public void filter(Doubles w, DataBlock wl) {
+    public void apply(Doubles w, DataBlock wl) {
         if (m_G == null) {
             int n = wl.length();
             for (int i = 0; i < n; ++i) {
@@ -182,7 +180,7 @@ public class LjungBoxFilter implements IArmaFilter {
             double[] a0 = calca0(w);
             double[] g = calcg(a0);
             m_u = calch(g);
-            DataBlock U=DataBlock.ofInternal(m_u);
+            DataBlock U = DataBlock.ofInternal(m_u);
             LowerTriangularMatrix.rsolve(m_X, U);
             LowerTriangularMatrix.lsolve(m_X, U);
             double[] v = new double[w.length()];
@@ -203,7 +201,7 @@ public class LjungBoxFilter implements IArmaFilter {
     }
 
     @Override
-    public int initialize(IArimaModel arima, int n) {
+    public int prepare(IArimaModel arima, int n) {
         clear();
         m_ar = arima.getAR().asPolynomial();
         m_ma = arima.getMA().asPolynomial();
@@ -215,7 +213,7 @@ public class LjungBoxFilter implements IArmaFilter {
         if (m > 0) {
             // compute V1' * G * V1 = X' X and V (covar model)
 
-            m_L = Matrix.make(m_p + m_q, m_p + m_q);
+            m_L = Matrix.square(m_p + m_q);
             m_L.diagonal().set(1);
             m_V1 = Matrix.make(m, m_p + m_q);
             if (m_p > 0) {
@@ -258,12 +256,14 @@ public class LjungBoxFilter implements IArmaFilter {
             m_X = SymmetricMatrix.XtSX(m_G, m_V1);
 
             // compute the inverse of the covariance matrix
-
-            Matrix IL=SymmetricMatrix.inverse(m_L);
+            SymmetricMatrix.lcholesky(m_L);
             m_s = 2 * LogSign.of(m_L.diagonal()).value;
-            m_X.add(IL);
+            Matrix I = Matrix.identity(m_p + m_q);
+            LowerTriangularMatrix.rsolve(m_L, I);
+            LowerTriangularMatrix.lsolve(m_L, I.transpose());
+            m_X.add(I);
             SymmetricMatrix.lcholesky(m_X);
-            m_t = 2 *LogSign.of(m_X.diagonal()).value;
+            m_t = 2 * LogSign.of(m_X.diagonal()).value;
         }
 
         return n + m_p + m_q;
@@ -296,7 +296,7 @@ public class LjungBoxFilter implements IArmaFilter {
         m_X = null;
         m_V1 = null;
         m_L = null;
-        m_s=0;
-        m_t=0;
+        m_s = 0;
+        m_t = 0;
     }
 }

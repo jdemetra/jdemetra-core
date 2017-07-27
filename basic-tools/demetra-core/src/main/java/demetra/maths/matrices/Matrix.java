@@ -19,6 +19,7 @@ import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
 import demetra.data.Doubles;
+import javax.annotation.Nonnegative;
 
 /**
  *
@@ -47,12 +48,12 @@ public class Matrix {
         i.diagonal().copy(d);
         return i;
     }
-    
-    public static Matrix rowOf(DataBlock x){
+
+    public static Matrix rowOf(DataBlock x) {
         return new Matrix(x.getStorage(), x.getStartPosition(), 1, x.length(), 1, x.getIncrement());
     }
 
-    public static Matrix columnOf(DataBlock x){
+    public static Matrix columnOf(DataBlock x) {
         return new Matrix(x.getStorage(), x.getStartPosition(), x.length(), 1, x.getIncrement(), 1);
     }
 
@@ -126,7 +127,7 @@ public class Matrix {
     }
 
     /**
-     * Creates a new instance ofInternal SubMatrix
+     * Creates a new instance of SubMatrix
      *
      * @param data
      * @param nrows
@@ -605,7 +606,7 @@ public class Matrix {
     }
 
     /**
-     * Position ofInternal the top-reader cell
+     * Position of the top-reader cell
      *
      * @return
      */
@@ -618,7 +619,7 @@ public class Matrix {
     }
 
     /**
-     * Position ofInternal the bottom-right cell
+     * Position of the bottom-right cell
      *
      * @return
      */
@@ -753,16 +754,16 @@ public class Matrix {
     }
 
     public final void robustProduct(final Matrix lm, final Matrix rm, DoubleAccumulator acc) {
-            DataBlockIterator iter = columnsIterator(), riter = lm.rowsIterator(), citer = rm.columnsIterator();
-            while (iter.hasNext()) {
-                riter.reset();
-                DataBlock cur = iter.next(), col = citer.next();
-                cur.set(riter, row -> {
-                 acc.reset();
-                   col.robustDot(row, acc);
-                   return acc.sum();
-                        });
-            }
+        DataBlockIterator iter = columnsIterator(), riter = lm.rowsIterator(), citer = rm.columnsIterator();
+        while (iter.hasNext()) {
+            riter.reset();
+            DataBlock cur = iter.next(), col = citer.next();
+            cur.set(riter, row -> {
+                acc.reset();
+                col.robustDot(row, acc);
+                return acc.sum();
+            });
+        }
     }
 
     public void addXaXt(final double a, final DataBlock x) {
@@ -796,10 +797,10 @@ public class Matrix {
 
     /**
      * Computes the kronecker product ofFunction two matrix. This object will contain
- the results. The dimensions ofFunction this object must be equal to the product
- ofFunction the dimensions ofFunction the operands. For optimisation purpose, the code
- consider that the resulting sub-matrix is set to 0 at the entry ofFunction the
- code
+     * the results. The dimensions ofFunction this object must be equal to the product
+     * ofFunction the dimensions ofFunction the operands. For optimisation purpose, the code
+     * consider that the resulting sub-matrix is set to 0 at the entry ofFunction the
+     * code
      *
      * @param m The left operand
      * @param n The right operand
@@ -918,11 +919,52 @@ public class Matrix {
     }
 
     public final DataBlockIterator rowsIterator() {
-        return new RowsWindow(this);
+        return new RCIterator(topOutside(), nrows, rowInc);
+    }
+
+    public final DataBlockIterator reverseRowsIterator() {
+        return new RCIterator(bottomOutside(), nrows, -rowInc);
     }
 
     public final DataBlockIterator columnsIterator() {
-        return new ColumnsWindow(this);
+        return new RCIterator(leftOutside(), ncols, colInc);
+    }
+
+    public final DataBlockIterator reverseColumnsIterator() {
+        return new RCIterator(rightOutside(), ncols, -colInc);
+    }
+
+    /**
+     * Shifts the matrix to the top-left corner.
+     * a(i,j) = a(i+n, j+n) for i in [0, nrows-n[ and j in [0, ncols-n[
+     * The cells that are not moved are not modified
+     *
+     * @param n The displacement (n cells left and n cells up)
+     */
+    public void upLeftShift(@Nonnegative final int n) {
+        int del = (rowInc + colInc) * n;
+        for (int c = 0, i = start; c < ncols - n; ++c, i += colInc) {
+            for (int r = 0, j = i; r < nrows - n; ++r, j += rowInc) {
+                storage[j] = storage[j + del];
+            }
+        }
+    }
+
+    /**
+     * Shifts the matrix to the bottom-right corner
+     * a(i,j) = a(i-n, j-n) for i in [n, nrows[ and j in [n, ncols[
+     * The cells that are not moved are not modified.
+     *
+     * @param n The displacement (n cells right and n cells down)
+     */
+    public void downRightShift(@Nonnegative final int n) {
+        int del = (rowInc + colInc) * n;
+        for (int c = n, i = start + (nrows - 1) * rowInc
+                + (ncols - 1) * colInc; c < ncols; ++c, i -= colInc) {
+            for (int r = n, j = i; r < nrows; ++r, j -= rowInc) {
+                storage[j] = storage[j - del];
+            }
+        }
     }
 
     //<editor-fold defaultstate="collapsed" desc="matrix windows">
@@ -938,8 +980,8 @@ public class Matrix {
     /**
      * Top-reader sub-matrix
      *
-     * @param nr Number ofInternal rows. Could be 0.
-     * @param nc Number ofInternal columns. Could be 0.
+     * @param nr Number of rows. Could be 0.
+     * @param nc Number of columns. Could be 0.
      * @return A nr src nc sub-matrix
      */
     public MatrixWindow topLeft(int nr, int nc) {
@@ -949,7 +991,7 @@ public class Matrix {
     /**
      * Top-reader sub-matrix
      *
-     * @param nr Number ofInternal rows. Could be 0.
+     * @param nr Number of rows. Could be 0.
      * @return A nr src nc sub-matrix
      */
     public MatrixWindow top(int nr) {
@@ -959,7 +1001,7 @@ public class Matrix {
     /**
      * Top-reader sub-matrix
      *
-     * @param nc Number ofInternal columns. Could be 0.
+     * @param nc Number of columns. Could be 0.
      * @return A nr src nc sub-matrix
      */
     public MatrixWindow left(int nc) {
@@ -979,8 +1021,8 @@ public class Matrix {
     /**
      * Bottom-right sub-matrix
      *
-     * @param nr Number ofInternal rows. Could be 0.
-     * @param nc Number ofInternal columns. Could be 0.
+     * @param nr Number of rows. Could be 0.
+     * @param nc Number of columns. Could be 0.
      * @return A nr src nc sub-matrix
      */
     public MatrixWindow bottomRight(int nr, int nc) {
@@ -991,7 +1033,7 @@ public class Matrix {
     /**
      * Bottom sub-matrix
      *
-     * @param nr Number ofInternal rows. Could be 0.
+     * @param nr Number of rows. Could be 0.
      * @return The last n rows
      */
     public MatrixWindow bottom(int nr) {
@@ -1001,7 +1043,7 @@ public class Matrix {
     /**
      * right sub-matrix
      *
-     * @param nc Number ofInternal columns. Could be 0.
+     * @param nc Number of columns. Could be 0.
      * @return The nc right columns
      */
     public MatrixWindow right(int nc) {
@@ -1038,6 +1080,16 @@ public class Matrix {
         return DataBlock.ofInternal(storage, beg, beg + nrows * rowInc, rowInc);
     }
 
+    DataBlock bottomOutside() {
+        int beg = start + rowInc * nrows;
+        return DataBlock.ofInternal(storage, beg, beg + ncols * colInc, colInc);
+    }
+
+    DataBlock rightOutside() {
+        int beg = start + colInc * ncols;
+        return DataBlock.ofInternal(storage, beg, beg + nrows * rowInc, rowInc);
+    }
+
     //</editor-fold>    
     @Override
     public String toString() {
@@ -1065,16 +1117,11 @@ public class Matrix {
         }
         return builder.toString();
     }
-    
-    private static class RowsWindow extends DataBlockIterator{
-        private RowsWindow(Matrix M){
-            super( M.topOutside(), M.nrows, M.rowInc);
-        }
-    }
 
-    private static class ColumnsWindow extends DataBlockIterator{
-        private ColumnsWindow(Matrix M){
-            super( M.leftOutside(), M.ncols, M.colInc);
+    private static class RCIterator extends DataBlockIterator {
+
+        private RCIterator(final DataBlock start, int niter, int inc) {
+            super(start, niter, inc);
         }
     }
 

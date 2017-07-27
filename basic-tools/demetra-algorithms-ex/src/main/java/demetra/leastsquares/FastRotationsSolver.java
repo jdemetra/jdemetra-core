@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.leastsquares.internal;
+package demetra.leastsquares;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
@@ -37,7 +37,6 @@ public class FastRotationsSolver implements IQRSolver {
 
     private Matrix R;
     private double[] c, d2;
-    private double err;
     private double eps = Constants.getEpsilon();
     private int n, m;
     private double[] A;
@@ -119,11 +118,6 @@ public class FastRotationsSolver implements IQRSolver {
     @Override
     public Doubles coefficients() {
         return Doubles.ofInternal(c);
-    }
-
-    @Override
-    public double ssqerr() {
-        return err;
     }
 
     @Override
@@ -221,4 +215,13 @@ public class FastRotationsSolver implements IQRSolver {
         A[q + p * n] = 0;
     }
 
+    @Override
+    public Doubles residuals() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double ssqerr() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

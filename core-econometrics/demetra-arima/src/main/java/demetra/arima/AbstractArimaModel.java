@@ -110,7 +110,7 @@ public abstract class AbstractArimaModel implements IArimaModel {
 
     @Override
     public boolean isStationary() {
-        return getNonStationaryAROrder() > 0;
+        return getNonStationaryAROrder() == 0;
     }
 
     @Override

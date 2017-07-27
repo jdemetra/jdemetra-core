@@ -88,7 +88,11 @@ public class AutoCovarianceFunction {
     public AutoCovarianceFunction(final Polynomial ma, final Polynomial ar, final double var) {
         this.ma = ma;
         this.ar = ar;
-        this.sma = null;
+        if (ar.getDegree() == 0) {
+            this.sma = SymmetricFilter.fromFilter(new BackFilter(ma), var);
+        } else {
+            this.sma = null;
+        }
         this.ivar = var;
     }
 

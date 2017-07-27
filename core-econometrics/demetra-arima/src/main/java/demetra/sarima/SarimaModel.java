@@ -281,13 +281,16 @@ public class SarimaModel extends AbstractArimaModel {
      * @param lag
      * @return
      */
+    public double theta(final int lag) {
+        return th[lag - 1];
+    }
     /**
      *
      * @param lag
      * @return
      */
-    public double theta(final int lag) {
-        return th[lag - 1];
+    public double btheta(final int lag) {
+        return bth[lag - 1];
     }
 
     @Override

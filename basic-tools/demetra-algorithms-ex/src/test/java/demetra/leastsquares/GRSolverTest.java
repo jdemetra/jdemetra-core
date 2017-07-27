@@ -5,11 +5,9 @@
  */
 package demetra.leastsquares;
 
-import demetra.ls.GRSolver;
 import demetra.data.DataBlock;
 import demetra.data.Doubles;
 import demetra.data.DataSets;
-import demetra.ls.GRSolver;
 import static demetra.data.DataSets.lre;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.internal.Householder;

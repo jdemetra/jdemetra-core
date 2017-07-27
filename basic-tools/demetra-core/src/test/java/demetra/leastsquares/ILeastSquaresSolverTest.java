@@ -6,7 +6,6 @@
 package demetra.leastsquares;
 
 import demetra.leastsquares.internal.QRSolver;
-import demetra.leastsquares.internal.FastRotationsSolver;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.internal.Householder;
@@ -52,13 +51,6 @@ public class ILeastSquaresSolverTest {
         for (int i=0; i<K; ++i){
             QRSolver qr= QRSolver.builder(new HouseholderWithPivoting()).build();
             qr.solve(y, A);
-        }
-        t1=System.currentTimeMillis();
-        System.out.println(t1-t0);
-        t0=System.currentTimeMillis();
-        for (int i=0; i<K; ++i){
-            FastRotationsSolver gr= new FastRotationsSolver();
-            gr.solve(y, A);
         }
         t1=System.currentTimeMillis();
         System.out.println(t1-t0);

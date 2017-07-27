@@ -36,6 +36,12 @@ public interface ILeastSquaresSolver {
     Doubles coefficients();
 
     /**
+     * Returns b
+     * @return 
+     */
+    Doubles residuals();
+
+    /**
      * Computes e*e'
      * @return 
      */

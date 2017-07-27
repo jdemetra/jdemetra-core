@@ -1,7 +1,7 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or â€“ as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
@@ -43,7 +43,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class AnsleyFilter implements IArmaFilter {
 
     private Matrix m_bL;
-    private Polynomial m_ar, m_ma;
+    private double[] m_ar, m_ma;
     private double m_var;
     private int m_n;
     protected boolean m_wnoptimize = true;
@@ -56,8 +56,8 @@ public class AnsleyFilter implements IArmaFilter {
     public double[] filter(Doubles y) {
         double[] e = new double[y.length()];
         y.copyTo(e, 0);
-        int p = m_ar.getDegree();
-        int q = m_ma.getDegree();
+        int p = m_ar.length-1;
+        int q = m_ma.length-1;
         if (m_wnoptimize && p == 0 && q == 0) {
             if (m_var != 1) {
                 double std = Math.sqrt(m_var);
@@ -71,7 +71,7 @@ public class AnsleyFilter implements IArmaFilter {
             for (int i = e.length - 1; i >= p; --i) {
                 double s = 0;
                 for (int j = 1; j <= p; ++j) {
-                    s += m_ar.get(j) * e[i - j];
+                    s += m_ar[j] * e[i - j];
                 }
                 e[i] += s;
             }
@@ -87,7 +87,7 @@ public class AnsleyFilter implements IArmaFilter {
      * @param yf
      */
     @Override
-    public void filter(Doubles y, DataBlock yf) {
+    public void apply(Doubles y, DataBlock yf) {
         double[] e = filter(y);
         yf.copyFrom(e, 0);
     }
@@ -103,14 +103,14 @@ public class AnsleyFilter implements IArmaFilter {
     }
 
     @Override
-    public int initialize(final IArimaModel arima, int n) {
+    public int prepare(final IArimaModel arima, int n) {
         m_n = n;
         m_bL = null;
-        m_ar = arima.getAR().asPolynomial();
+        m_ar = arima.getAR().asPolynomial().toArray();
         BackFilter ma = arima.getMA();
         m_var = arima.getInnovationVariance();
-        m_ma = ma.asPolynomial();
-        int p = m_ar.getDegree(), q = m_ma.getDegree();
+        m_ma = ma.asPolynomial().toArray();
+        int p = m_ar.length-1, q = m_ma.length-1;
         if (m_wnoptimize && p == 0 && q == 0) {
             return n;
         }
@@ -118,21 +118,18 @@ public class AnsleyFilter implements IArmaFilter {
         double[] cov = null, dcov = null;
         if (p > 0) {
             cov = arima.getAutoCovarianceFunction().values(r);
-            double[] psi = RationalFunction.of(m_ma, m_ar).coefficients(q);
+            double[] psi = arima.getPsiWeights().getWeights(q);
             dcov = new double[r];
             for (int i = 1; i <= q; ++i) {
-                double v = m_ma.get(i);
+                double v = m_ma[i];
                 for (int j = i + 1; j <= q; ++j) {
-                    v += m_ma.get(j) * psi[j - i];
+                    v += m_ma[j] * psi[j - i];
                 }
                 dcov[i] = v * m_var;
             }
         }
 
-        Polynomial sma = SymmetricFilter.fromFilter(ma).coefficientsAsPolynomial();
-        if (m_var != 1) {
-            sma = sma.times(m_var);
-        }
+        Polynomial sma = SymmetricFilter.fromFilter(ma, m_var).coefficientsAsPolynomial();
 
         m_bL = Matrix.make(r, n);
         // complete the matrix
@@ -156,8 +153,9 @@ public class AnsleyFilter implements IArmaFilter {
         int pos=0;
         while (rows.hasNext()) {
             double s=sma.get(pos++);
+            DataBlock row = rows.next();
             if ( s!= 0) {
-                rows.next().set(s);
+                row.set(s);
             }
         } 
 

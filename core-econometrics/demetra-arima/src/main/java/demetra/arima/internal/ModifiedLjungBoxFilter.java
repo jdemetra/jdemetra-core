@@ -49,7 +49,7 @@ public class ModifiedLjungBoxFilter implements IArmaFilter {
     private Matrix m_L, m_C;
 
     @Override
-    public void filter(Doubles rw, DataBlock wl) {
+    public void apply(Doubles rw, DataBlock wl) {
 	DataBlock w = DataBlock.copyOf(rw);
 	// step 1. AR filter w, if necessary
 	DataBlock z = w;
@@ -86,7 +86,7 @@ public class ModifiedLjungBoxFilter implements IArmaFilter {
     }
 
     @Override
-    public int initialize(IArimaModel arima, int n) {
+    public int prepare(IArimaModel arima, int n) {
         clear();
 	m_ar = arima.getAR().asPolynomial();
 	m_ma = arima.getMA().asPolynomial();
@@ -96,7 +96,7 @@ public class ModifiedLjungBoxFilter implements IArmaFilter {
 
 	if (m_q > 0) {
 	    m_malb = new MaLjungBoxFilter();
-	    m_malb.initialize(arima, n - m_p);
+	    m_malb.prepare(arima, n - m_p);
 	}
 	// Compute the covariance matrix V
 

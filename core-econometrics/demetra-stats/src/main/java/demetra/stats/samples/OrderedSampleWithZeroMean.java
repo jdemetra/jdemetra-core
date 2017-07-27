@@ -5,6 +5,7 @@
  */
 package demetra.stats.samples;
 
+import demetra.data.CellReader;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import java.util.stream.DoubleStream;
@@ -17,14 +18,14 @@ public class OrderedSampleWithZeroMean implements OrderedSample {
 
     private final Doubles data;
     private final boolean hasMissing;
-    
-    public static OrderedSampleWithZeroMean of(Doubles data){
-        return new OrderedSampleWithZeroMean(data, ! data.allMatch(x->Double.isFinite(x)));
+
+    public static OrderedSampleWithZeroMean of(Doubles data) {
+        return new OrderedSampleWithZeroMean(data, !data.allMatch(x -> Double.isFinite(x)));
     }
 
     public OrderedSampleWithZeroMean(Doubles data, boolean hasMissing) {
         this.data = data;
-        this.hasMissing=hasMissing;
+        this.hasMissing = hasMissing;
     }
 
     @Override
@@ -60,9 +61,11 @@ public class OrderedSampleWithZeroMean implements OrderedSample {
         double v = 0;
         int n = x.length() - t;
         int nm = 0;
+        CellReader xr = x.reader(), yr = y.reader();
+        yr.setPosition(t);
         for (int i = 0; i < n; ++i) {
-            double xcur = x.get(i);
-            double ycur = y.get(i + t);
+            double xcur = xr.next();
+            double ycur = yr.next();
             if (Double.isFinite(xcur) && Double.isFinite(ycur)) {
                 v += xcur * ycur;
             } else {
@@ -76,6 +79,14 @@ public class OrderedSampleWithZeroMean implements OrderedSample {
         return v / m;
     }
 
+    public static double covariance(Doubles x, Doubles y) {
+        return covariance(x, y, 0);
+    }
+
+    public static double covarianceNoMissing(Doubles x, Doubles y) {
+        return covarianceNoMissing(x, y, 0);
+    }
+
     public static double covarianceNoMissing(Doubles x, Doubles y, int t) {
         // x and y must have the same Length...
         if (t < 0) {
@@ -83,10 +94,20 @@ public class OrderedSampleWithZeroMean implements OrderedSample {
         }
         double v = 0;
         int n = x.length() - t;
+        CellReader xr = x.reader(), yr = y.reader();
+        yr.setPosition(t);
         for (int i = 0; i < n; ++i) {
-            v += x.get(i) * y.get(i + t);
+            v += xr.next() * yr.next();
         }
         return v / x.length();
+    }
+
+    public static double varianceNoMissing(Doubles x) {
+        return x.ssq() / x.length();
+    }
+
+    public static double variance(Doubles x) {
+        return x.ssqWithMissing() / x.count(y -> Double.isFinite(y));
     }
 
     @Override

@@ -46,7 +46,7 @@ public class KalmanFilter implements IArmaFilter {
 
     private double m_var;
 
-    private Polynomial m_phi;
+    private double[] m_phi;
 
     private int m_dim;
 
@@ -194,7 +194,7 @@ public class KalmanFilter implements IArmaFilter {
      * @param outrc
      */
     @Override
-    public void filter(Doubles y, DataBlock outrc) {
+    public void apply(Doubles y, DataBlock outrc) {
 	if (m_multiuse) {
 	    mfilter(y, outrc);
 	} else {
@@ -211,11 +211,11 @@ public class KalmanFilter implements IArmaFilter {
     }
 
     @Override
-    public int initialize(final IArimaModel model, int length) {
+    public int prepare(final IArimaModel model, int length) {
 	m_var = model.getInnovationVariance();
 	m_ldet = Double.NaN;
-	m_phi = model.getAR().asPolynomial();
-	m_dim = Math.max(m_phi.getDegree(), model.getMA().length());
+	m_phi = model.getAR().asPolynomial().toArray();
+	m_dim = Math.max(model.getAROrder(), model.getMAOrder()+1);
 	m_C0 = model.getAutoCovarianceFunction().values(m_dim);
 	m_h0 = m_C0[0];
 	m_n = length;
@@ -315,16 +315,16 @@ public class KalmanFilter implements IArmaFilter {
 
     private double tlast(final double[] x) {
 	double last = 0;
-	for (int i = 1; i <= m_phi.getDegree(); ++i) {
-	    last -= m_phi.get(i) * x[m_dim - i];
+	for (int i = 1; i < m_phi.length; ++i) {
+	    last -= m_phi[i] * x[m_dim - i];
 	}
 	return last;
     }
 
     private void tx(final double[] x) {
 	double last = 0;
-	for (int i = 1; i <= m_phi.getDegree(); ++i) {
-	    last -= m_phi.get(i) * x[m_dim - i];
+	for (int i = 1; i < m_phi.length; ++i) {
+	    last -= m_phi[i] * x[m_dim - i];
 	}
 	for (int i = 1; i < m_dim; ++i) {
 	    x[i - 1] = x[i];
