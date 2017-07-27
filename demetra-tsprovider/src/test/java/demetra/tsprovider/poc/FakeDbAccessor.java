@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider.poc;
 
-import demetra.timeseries.simplets.TsDataType;
+import demetra.timeseries.simplets.TsData;
 import static demetra.timeseries.simplets.TsFrequency.Monthly;
 import demetra.tsprovider.cube.CubeAccessor;
 import demetra.tsprovider.cube.CubeId;
@@ -43,9 +43,9 @@ final class FakeDbAccessor implements CubeAccessor {
     public FakeDbAccessor() {
         this.root = CubeId.root("REGION", "SECTOR");
         this.data = new HashMap<>();
-        data.put(root.child("BE", "INDUSTRY"), present(TsDataType.random(Monthly, 1)));
-        data.put(root.child("FR", "INDUSTRY"), present(TsDataType.random(Monthly, 2)));
-        data.put(root.child("BE", "STUFF"), present(TsDataType.random(Monthly, 3)));
+        data.put(root.child("BE", "INDUSTRY"), present(TsData.random(Monthly, 1)));
+        data.put(root.child("FR", "INDUSTRY"), present(TsData.random(Monthly, 2)));
+        data.put(root.child("BE", "STUFF"), present(TsData.random(Monthly, 3)));
         data.put(root.child("FR", "STUFF"), absent("Not enough data"));
     }
 

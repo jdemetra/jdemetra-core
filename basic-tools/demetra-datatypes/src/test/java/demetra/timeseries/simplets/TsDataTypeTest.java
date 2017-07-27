@@ -32,12 +32,12 @@ public class TsDataTypeTest {
 
     @Demo
     public static void main(String[] args) {
-        TsDataType ts = TsDataType.of(TsPeriod.year(2001), DoubleValues.ofInternal(3.14, 7));
+        TsData ts = TsData.of(TsPeriod.year(2001), DoubleValues.ofInternal(3.14, 7));
 
         System.out.println("\n[Tests ...]");
         System.out.println(ts.toString());
-        System.out.println(ts.getDomain());
-        System.out.println(ts.getValues());
+        System.out.println(ts.domain());
+        System.out.println(ts.values());
 
         System.out.println("\n[Test for]");
         for (int i = 0; i < ts.length(); i++) {
@@ -76,15 +76,15 @@ public class TsDataTypeTest {
 
     @Test
     public void testEquals() {
-        assertThat(TsDataType.of(TsPeriod.year(2001), DoubleValues.ofInternal(1, 2, 3)))
-                .isEqualTo(TsDataType.of(TsPeriod.year(2001), DoubleValues.ofInternal(1, 2, 3)));
+        assertThat(TsData.of(TsPeriod.year(2001), DoubleValues.ofInternal(1, 2, 3)))
+                .isEqualTo(TsData.of(TsPeriod.year(2001), DoubleValues.ofInternal(1, 2, 3)));
     }
 
     @Test
     public void testRandom() {
-        TsDataType random = TsDataType.random(TsFrequency.Monthly, 0);
-        assertTrue(random.getDomain().length() == random.getValues().length());
-        assertTrue(random.getValues().allMatch(x -> x >= 100));
+        TsData random = TsData.random(TsFrequency.Monthly, 0);
+        assertTrue(random.domain().length() == random.values().length());
+        assertTrue(random.values().allMatch(x -> x >= 100));
     }
 
 }

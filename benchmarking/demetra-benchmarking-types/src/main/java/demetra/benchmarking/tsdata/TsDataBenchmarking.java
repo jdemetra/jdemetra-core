@@ -16,7 +16,7 @@
  */
 package demetra.benchmarking.tsdata;
 
-import demetra.timeseries.simplets.TsDataType;
+import demetra.timeseries.simplets.TsData;
 
 /**
  *
@@ -24,5 +24,5 @@ import demetra.timeseries.simplets.TsDataType;
  */
 public interface TsDataBenchmarking {
     
-    TsDataType benchmark(TsDataType source, TsDataType target);
+    TsData benchmark(TsData source, TsData target);
 }

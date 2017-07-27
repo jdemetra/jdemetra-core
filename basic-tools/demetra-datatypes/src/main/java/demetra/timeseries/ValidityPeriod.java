@@ -14,40 +14,39 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.processing;
+package demetra.timeseries;
 
-import demetra.timeseries.simplets.TsData;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import demetra.design.Development;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  *
  * @author Jean Palate
  */
-@lombok.Value
-public class SingleTsData implements IProcResults {
+@Development(status = Development.Status.Preliminary)
+public class ValidityPeriod {
 
-    String name;
-    TsData ts;
+    private final LocalDateTime beg, end;
 
-    @Override
-    public boolean contains(String id) {
-        return id.equals(name);
+    public ValidityPeriod(LocalDateTime beg, LocalDateTime end) {
+        this.beg=beg;
+        this.end=end;        
     }
 
-    @Override
-    public Map<String, Class> getDictionary() {
-        return Collections.singletonMap(name, (Class) TsData.class);
+    public LocalDateTime getStart() {
+        return beg;
     }
 
-    @Override
-    public <T> T getData(String id, Class<T> tclass) {
-        if (id.equals(name) && tclass.equals(TsData.class)) {
-            return (T) ts;
-        } else {
-            return null;
-        }
+    public LocalDateTime getEnd() {
+        return end;
     }
 
+    public boolean isStartSpecified() {
+        return beg != null;
+    }
+
+    public boolean isEndSpecified() {
+        return end != null;
+    }
 }

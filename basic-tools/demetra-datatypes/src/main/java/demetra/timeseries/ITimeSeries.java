@@ -37,33 +37,33 @@ public interface ITimeSeries<P extends ITimePeriod, V extends Number, O extends 
      *
      * @return
      */
-    ITimeDomain<P> getDomain();
+    ITimeDomain<P> domain();
 
     /**
      * Retrieves the content of this time series
      *
      * @return The content of this time series.
      */
-    BaseSequence<V> getValues();
+    BaseSequence<V> values();
 
     @Nonnegative
     @Override
     default int length() {
-        return getValues().length();
+        return values().length();
     }
 
     @Nonnull
     default P getPeriod(@Nonnegative int index) throws IndexOutOfBoundsException {
-        return getDomain().get(index);
+        return domain().get(index);
     }
 
     interface OfDouble<P extends ITimePeriod, O extends TimeObservation.OfDouble<P>> extends ITimeSeries<P, Double, O> {
 
         @Override
-        DoubleSequence getValues();
+        DoubleSequence values();
 
         default double getValue(@Nonnegative int index) throws IndexOutOfBoundsException {
-            return getValues().get(index);
+            return values().get(index);
         }
 
         default void forEach(@Nonnull ObjDoubleConsumer<P> consumer) {

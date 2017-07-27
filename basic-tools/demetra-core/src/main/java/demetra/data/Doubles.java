@@ -76,6 +76,10 @@ public interface Doubles extends DoubleSequence {
     public static Doubles of(double... data) {
         return data == null ? ArrayReader.EMPTY : new ArrayReader(data.clone());
     }
+    
+    public static Doubles of (final DoubleSequence seq){
+        return (seq instanceof Doubles) ? (Doubles) seq : new FnReader(seq.length(), i->seq.get(i));
+    }
 
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Specific methods">

@@ -37,7 +37,6 @@ import demetra.linearsystem.ILinearSystemSolver;
 @Development(status = Development.Status.Alpha)
 public class Denton {
 
-
     private final boolean multiplicative, modified;
     private final int differencing, conversion, offset;
     private final AggregationType type;

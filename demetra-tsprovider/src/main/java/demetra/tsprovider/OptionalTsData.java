@@ -18,7 +18,7 @@ package demetra.tsprovider;
 
 import demetra.design.Immutable;
 import demetra.design.NewObject;
-import demetra.timeseries.simplets.TsDataType;
+import demetra.timeseries.simplets.TsData;
 import java.util.Objects;
 import java.util.Optional;
 import javax.annotation.Nonnull;
@@ -37,7 +37,7 @@ import javax.annotation.Nullable;
  *
  * <p>
  * Note that, since {@link TsData} is mutable, this class create a new TsData at
- * every call of {@link  #get} in order to guarantee its immutability.
+ every call of {@link  #get} in order to guarantee its immutability.
  *
  * @author Philippe Charles
  * @see Optional
@@ -53,7 +53,7 @@ public abstract class OptionalTsData {
      * @since 2.2.0
      */
     @Nonnull
-    public static OptionalTsData present(@Nonnull TsDataType data) {
+    public static OptionalTsData present(@Nonnull TsData data) {
         return new Present(Objects.requireNonNull(data));
     }
 
@@ -86,7 +86,7 @@ public abstract class OptionalTsData {
      */
     @Nonnull
     @NewObject
-    abstract public TsDataType get() throws IllegalStateException;
+    abstract public TsData get() throws IllegalStateException;
 
     /**
      * Returns the time series data if it is present; {@code defaultValue}
@@ -98,7 +98,7 @@ public abstract class OptionalTsData {
      * @return a non-null TsData
      */
     @Nonnull
-    public TsDataType or(@Nonnull TsDataType defaultValue) {
+    public TsData or(@Nonnull TsData defaultValue) {
         Objects.requireNonNull(defaultValue, "use orNull() instead of or(null)");
         return isPresent() ? get() : defaultValue;
     }
@@ -110,7 +110,7 @@ public abstract class OptionalTsData {
      * @return a TsData if present, null otherwise
      */
     @Nullable
-    abstract public TsDataType orNull();
+    abstract public TsData orNull();
 
     /**
      * Returns a message explaining why the time series data is "absent".
@@ -124,9 +124,9 @@ public abstract class OptionalTsData {
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
     private static final class Present extends OptionalTsData {
 
-        private final TsDataType data;
+        private final TsData data;
 
-        private Present(TsDataType data) {
+        private Present(TsData data) {
             this.data = data;
         }
 
@@ -136,12 +136,12 @@ public abstract class OptionalTsData {
         }
 
         @Override
-        public TsDataType get() {
+        public TsData get() {
             return data;
         }
 
         @Override
-        public TsDataType orNull() {
+        public TsData orNull() {
             return get();
         }
 
@@ -184,12 +184,12 @@ public abstract class OptionalTsData {
         }
 
         @Override
-        public TsDataType get() throws IllegalStateException {
+        public TsData get() throws IllegalStateException {
             throw new IllegalStateException(cause);
         }
 
         @Override
-        public TsDataType orNull() {
+        public TsData orNull() {
             return null;
         }
 

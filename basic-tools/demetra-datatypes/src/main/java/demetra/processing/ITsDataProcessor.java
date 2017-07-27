@@ -18,13 +18,13 @@
 
 package demetra.processing;
 
-import demetra.timeseries.simplets.TsDataType;
+import demetra.timeseries.simplets.TsData;
 
 /**
  *
  * @author Jean Palate
   * @param <R>
  */
-public interface ITsDataProcessor <R extends IProcResults> extends IProcessor<TsDataType, R>{
+public interface ITsDataProcessor <R extends IProcResults> extends IProcessor<TsData, R>{
 
 }

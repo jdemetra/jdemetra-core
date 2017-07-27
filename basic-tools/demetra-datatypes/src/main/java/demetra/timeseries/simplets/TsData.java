@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.simplets;
 
+import demetra.data.DoubleSequence;
 import demetra.data.DoubleValues;
 import demetra.design.Development;
 import demetra.design.Immutable;
@@ -23,18 +24,18 @@ import demetra.timeseries.ITimeSeries;
 import java.util.Random;
 
 /**
- * A TsDataType is a raw time series, containing only the actual data.
- * TsDataType can only handle regular time series, with observations
- * corresponding to the usual time decomposition of an year (frequency lower or
- * equal to the monthly frequency). Observations are represented by double
- * values. Missing values are allowed; they are represented by Double.NaN.
+ * A TsData is a raw time series, containing only the actual data.
+ * TsData can only handle regular time series, with observations
+ corresponding to the usual time decomposition of an year (frequency lower or
+ equal to the monthly frequency). Observations are represented by double
+ values. Missing values are allowed; they are represented by Double.NaN.
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
 @lombok.EqualsAndHashCode
-public final class TsDataType implements ITimeSeries.OfDouble<TsPeriod, TsObservation> {
+public final class TsData implements ITimeSeries.OfDouble<TsPeriod, TsObservation> {
 
     /**
      * Creates a random time series
@@ -45,7 +46,7 @@ public final class TsDataType implements ITimeSeries.OfDouble<TsPeriod, TsObserv
      * starting period (between 1970 and 1990) and random observations is
      * generated
      */
-    public static TsDataType random(TsFrequency freq, int seed) {
+    public static TsData random(TsFrequency freq, int seed) {
         Random rnd = new Random(seed);
         int beg = rnd.nextInt(240);
         int count = rnd.nextInt(600);
@@ -55,28 +56,32 @@ public final class TsDataType implements ITimeSeries.OfDouble<TsPeriod, TsObserv
             cur = cur + rnd.nextDouble() - .5;
             data[i] = cur;
         }
-        return new TsDataType(TsDomain.of(new TsPeriod(freq, beg), data.length), DoubleValues.ofInternal(data));
+        return new TsData(TsDomain.of(new TsPeriod(freq, beg), data.length), DoubleValues.ofInternal(data));
     }
 
-    public static TsDataType of(TsPeriod start, DoubleValues values) {
-        return new TsDataType(TsDomain.of(start, values.length()), values);
+    public static TsData of(TsPeriod start, DoubleSequence values) {
+        return new TsData(TsDomain.of(start, values.length()), DoubleValues.of(values));
+    }
+
+    public static TsData ofInternal(TsPeriod start, DoubleSequence values) {
+        return new TsData(TsDomain.of(start, values.length()), values);
     }
 
     private final TsDomain domain;
-    private final DoubleValues values;
+    private final DoubleSequence values;
 
-    private TsDataType(TsDomain domain, DoubleValues values) {
+    private TsData(TsDomain domain, DoubleSequence values) {
         this.domain = domain;
         this.values = values;
     }
 
     @Override
-    public TsDomain getDomain() {
+    public TsDomain domain() {
         return domain;
     }
 
     @Override
-    public DoubleValues getValues() {
+    public DoubleSequence values() {
         return values;
     }
 
@@ -132,7 +137,7 @@ public final class TsDataType implements ITimeSeries.OfDouble<TsPeriod, TsObserv
      * series is set to Missing if some data in the original series are Missing.
      * @return A new time series is returned.
      */
-    public TsDataType changeFrequency(final TsFrequency newfreq,
+    public TsData changeFrequency(final TsFrequency newfreq,
             final TsAggregationType conversion, final boolean complete) {
         int freq = domain.getFrequency().getAsInt(), nfreq = newfreq.getAsInt();
         if (freq % nfreq != 0) {
@@ -235,6 +240,6 @@ public final class TsDataType implements ITimeSeries.OfDouble<TsPeriod, TsObserv
                 }
             }
         }
-        return TsDataType.of(TsPeriod.ofInternal(newfreq, nbeg), DoubleValues.ofInternal(result));
+        return TsData.of(TsPeriod.ofInternal(newfreq, nbeg), DoubleValues.ofInternal(result));
     }
 }

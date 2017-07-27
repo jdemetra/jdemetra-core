@@ -25,7 +25,7 @@ import static demetra.timeseries.simplets.TsAggregationType.Max;
 import static demetra.timeseries.simplets.TsAggregationType.Min;
 import static demetra.timeseries.simplets.TsAggregationType.None;
 import static demetra.timeseries.simplets.TsAggregationType.Sum;
-import demetra.timeseries.simplets.TsDataType;
+import demetra.timeseries.simplets.TsData;
 import demetra.timeseries.simplets.TsFrequency;
 import static demetra.timeseries.simplets.TsFrequency.Monthly;
 import static demetra.timeseries.simplets.TsFrequency.Quarterly;
@@ -54,6 +54,9 @@ import java.util.function.BiFunction;
 import static java.util.EnumSet.allOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static java.util.EnumSet.of;
+import static java.util.EnumSet.of;
+import static java.util.EnumSet.of;
+import static java.util.EnumSet.of;
 
 /**
  *
@@ -64,7 +67,7 @@ public class OptionalTsDataTest {
     @Test
     @SuppressWarnings("null")
     public void testFactoryPresent() {
-        TsDataType example = TsDataType.of(TsPeriod.of(Monthly, 2010, 0), DoubleValues.ofInternal(10));
+        TsData example = TsData.of(TsPeriod.of(Monthly, 2010, 0), DoubleValues.ofInternal(10));
 
         assertThat(present(example))
                 .isEqualTo(data(Monthly, 2010, 0, 10))
@@ -135,7 +138,7 @@ public class OptionalTsDataTest {
     }
 
     private static OptionalTsData data(TsFrequency freq, int firstyear, int firstperiod, double... values) {
-        return present(TsDataType.of(TsPeriod.of(freq, firstyear, firstperiod), DoubleValues.ofInternal(values)));
+        return present(TsData.of(TsPeriod.of(freq, firstyear, firstperiod), DoubleValues.ofInternal(values)));
     }
 
     private static <T> void testBuilderAdd(CustomFactory<T> cf) {

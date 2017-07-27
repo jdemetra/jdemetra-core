@@ -18,6 +18,7 @@
         <module>demetra-core</module>
         <module>demetra-datatypes</module>
         <module>DataForTests</module>
+        <module>demetra-ts</module>
     </modules>
     
     <build>
