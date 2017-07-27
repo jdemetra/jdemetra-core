@@ -162,10 +162,10 @@ public class F implements IContinuousDistribution {
             num.set(cnum);
         }
         if (cdenom == null){
-            cdenom=new Chi2(k1);
+            cdenom=new Chi2(k2);
             denom.set(cdenom);
         }
-	return cnum.random(rng)/cdenom.random(rng);
+	return (cnum.random(rng)/k1)/(cdenom.random(rng)/k2);
     }
 
     @Override

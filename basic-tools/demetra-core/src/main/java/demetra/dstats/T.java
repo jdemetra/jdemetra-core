@@ -135,6 +135,7 @@ public class T implements IContinuousDistribution {
     }
     
     @Override
+    //FIXME: If df = 2 then division by zero >>> infinity?
     public double getVariance() {
         if (df < 2) {
             throw new DStatException("No valid variance defined for df < 2",

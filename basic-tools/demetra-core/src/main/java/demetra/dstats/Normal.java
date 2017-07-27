@@ -122,6 +122,7 @@ public class Normal implements IContinuousDistribution {
     }
 
     @Override
+    //FIXME : Works with Normal(0,1) only >>> other gave "Too many iterations" error
     public double getProbabilityInverse(double p, final ProbabilityType pt) {
 	if (pt == ProbabilityType.Point)
 	    return Double.NaN;
