@@ -18,6 +18,7 @@ package demetra.data;
 
 import demetra.design.Unsafe;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
@@ -80,6 +81,8 @@ public final class DataBlock implements Doubles {
      * @return
      * @throws IllegalArgumentException is thrown if the end position is not
      * after the reader position.
+     *
+     * FIXME: check bounds? FIXME: What if start = end?
      */
     public static DataBlock ofInternal(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int end) {
         if (end < start) {
@@ -98,11 +101,15 @@ public final class DataBlock implements Doubles {
      * negative.
      * @return
      * @throws (end-start) must be a positive multiple of inc.
+     *
+     * FIXME: check bounds? FIXME: What if start = end? FIXME: Why is end
+     * @Nonnegative?
      */
     public static DataBlock ofInternal(@Nonnull double[] data, @Nonnegative int start, int end, int inc) {
         if (inc == 1) {
             return ofInternal(data, start, end);
         }
+        Objects.requireNonNull(data);
         if ((end - start) % inc != 0) {
             throw new IllegalArgumentException("Invalid DoubleArray");
         }
@@ -199,6 +206,7 @@ public final class DataBlock implements Doubles {
      *
      * @param buffer The buffer that contains the data being copied
      * @param start The position of the first data that will be copied
+     *
      */
     public void copyFrom(@Nonnull double[] buffer, @Nonnegative int start) {
         for (int i = beg, j = start; i != end; i += inc, ++j) {
@@ -208,6 +216,7 @@ public final class DataBlock implements Doubles {
 
     /**
      * {@inheritDoc}
+     *
      */
     @Override
     public void copyTo(@Nonnull double[] buffer, @Nonnegative int start) {
@@ -223,6 +232,10 @@ public final class DataBlock implements Doubles {
      * @param start The first position of the extract in the current block
      * @param length The length of the extract
      * @return A new DataBlock is returned
+     *
+     * FIXME: giving negative start or negative length don't raise exception
+     * FIXME: zero length don't raise exception? FIXME: What if the returned
+     * datablock has end > data.size or end < 0 ?
      */
     @Override
     public DataBlock extract(@Nonnegative int start, @Nonnegative int length) {
@@ -303,6 +316,11 @@ public final class DataBlock implements Doubles {
      * largest extract is returned.
      * @param inc The increment of the selection.
      * @return A new block is returned.
+     *
+     * FIXME: giving negative start don't raise exception. FIXME: giving
+     * negative count should not be permitted due to @Nonnegative but -1 is
+     * accepted? FIXME: What if count > DataBlock.data.size? FIXME: reverse
+     * order, what if count will give negative end? >> Out of bound exception?
      */
     public DataBlock extract(@Nonnegative int start, @Nonnegative int count, int inc) {
         int i0 = beg + start * this.inc, i1, ninc;
@@ -490,9 +508,9 @@ public final class DataBlock implements Doubles {
     /**
      * Shift the cells n positions to the left
      *
-     * @param n
+     * @param n can't be negative or greater than DataBlock.length
      */
-    public void bshift(int n) {
+    public void bshift(@Nonnegative int n) {
         if (inc == 1) {
             int i0 = beg, i1 = end - n;
             for (int i = i0; i < i1; ++i) {
@@ -509,9 +527,9 @@ public final class DataBlock implements Doubles {
     /**
      * Shift the cells n positions to the right
      *
-     * @param n
+     * @param n can't be negative or greater than DataBlock.length
      */
-    public void fshift(int n) {
+    public void fshift(@Nonnegative int n) {
         if (inc == 1) {
             int i0 = end - inc, i1 = beg + n;
             for (int i = i0; i >= i1; --i) {
@@ -534,7 +552,7 @@ public final class DataBlock implements Doubles {
         if (inc == 1) {
             for (int i = end - 1; i > beg; --i) {
                 s += data[i];
-                data[i] = data[i - i];
+                data[i] = data[i - 1];
             }
         } else {
             for (int i = end - inc; i != beg; i -= inc) {
@@ -554,7 +572,7 @@ public final class DataBlock implements Doubles {
         if (inc == 1) {
             for (int i = end - 1; i > beg; --i) {
                 s += data[i];
-                data[i] = data[i - i];
+                data[i] = data[i - 1];
             }
         } else {
             for (int i = end - inc; i != beg; i -= inc) {
@@ -573,11 +591,10 @@ public final class DataBlock implements Doubles {
         double s = data[last];
         if (inc == 1) {
             for (int i = last; i > beg; --i) {
-                data[i] = data[i - i];
+                data[i] = data[i - 1];
             }
         } else {
             for (int i = last; i != beg; i -= inc) {
-                s += data[i];
                 data[i] = data[i - inc];
             }
         }
@@ -590,7 +607,7 @@ public final class DataBlock implements Doubles {
     public void fshiftAndZero() {
         if (inc == 1) {
             for (int i = end - inc; i > beg; --i) {
-                data[i] = data[i - i];
+                data[i] = data[i - 1];
             }
         } else {
             for (int i = end - inc; i != beg; i -= inc) {
@@ -602,7 +619,8 @@ public final class DataBlock implements Doubles {
 
     //</editor-fold>
     /**
-     * Sets the given value in the ith cell
+     * Sets the given value in the ith position
+     *
      *
      * @param idx The considered cell
      * @param value The new value
@@ -615,7 +633,7 @@ public final class DataBlock implements Doubles {
      * {@inheritDoc}
      */
     @Override
-    public double get(int idx) {
+    public double get(@Nonnegative int idx) {
         return data[beg + idx * inc];
     }
 
@@ -932,15 +950,15 @@ public final class DataBlock implements Doubles {
      * @param pos
      * @param d
      */
-    public void mul(int pos, double d) {
+    public void mul(@Nonnegative int pos, double d) {
         data[beg + pos * inc] *= d;
     }
 
-    public void sub(int pos, double d) {
+    public void sub(@Nonnegative int pos, double d) {
         data[beg + pos * inc] -= d;
     }
 
-    public void div(int pos, double d) {
+    public void div(@Nonnegative int pos, double d) {
         if (d != 1) {
             data[beg + pos * inc] /= d;
         }
@@ -1231,24 +1249,42 @@ public final class DataBlock implements Doubles {
     public void sub(@Nonnull DataBlock x) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
         double[] xdata = x.getStorage();
-        for (int i = beg, j = xbeg; i != end; i += inc, j += xinc) {
-            data[i] -= xdata[j];
+        if (inc == 1 && xinc == 1) {
+            for (int i = beg, j = xbeg; i < end; ++i, ++j) {
+                data[i] -= xdata[j];
+            }
+        } else {
+            for (int i = beg, j = xbeg; i != end; i += inc, j += xinc) {
+                data[i] -= xdata[j];
+            }
         }
     }
 
     public void mul(@Nonnull DataBlock x) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
         double[] xdata = x.getStorage();
-        for (int i = beg, j = xbeg; i != end; i += inc, j += xinc) {
-            data[i] *= xdata[j];
+        if (inc == 1 && xinc == 1) {
+            for (int i = beg, j = xbeg; i < end; ++i, ++j) {
+                data[i] *= xdata[j];
+            }
+        } else {
+            for (int i = beg, j = xbeg; i != end; i += inc, j += xinc) {
+                data[i] *= xdata[j];
+            }
         }
     }
 
     public void div(@Nonnull DataBlock x) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
         double[] xdata = x.getStorage();
-        for (int i = beg, j = xbeg; i != end; i += inc, j += xinc) {
-            data[i] /= xdata[j];
+        if (inc == 1 && xinc == 1) {
+            for (int i = beg, j = xbeg; i < end; ++i, ++j) {
+                data[i] /= xdata[j];
+            }
+        } else {
+            for (int i = beg, j = xbeg; i != end; i += inc, j += xinc) {
+                data[i] /= xdata[j];
+            }
         }
     }
 
