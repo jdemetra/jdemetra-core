@@ -17,12 +17,12 @@
 package demetra.data;
 
 /**
- * Fast iterator to access cells of an array of doubles.
+ * Fast iterator to access cells of a sequence of doubles.
  * This "simplified" iterator doesn't control the end of the iterations 
  * (done externally). 
  * @author Jean Palate
  */
-public interface CellReader {
+public interface DoubleReader {
 
     /**
      * Returns the current element and advances the iterator 
@@ -37,29 +37,33 @@ public interface CellReader {
      */
     void setPosition(int npos);
 
-    public static CellReader of(double[] data) {
+    public static DoubleReader of(double[] data) {
         return new CellReaderP(data, 0);
     }
 
-    public static CellReader of(double[] data, int pos, int inc) {
+    public static DoubleReader of(double[] data, int pos, int inc) {
         switch (inc) {
             case 1:
                 return new CellReaderP(data, pos);
             case -1:
                 return new CellReaderM(data, pos);
             default:
-                return new DefaultCellReader(data, pos, inc);
+                return new DefaultArrayReader(data, pos, inc);
         }
+    }
+    
+    public static DoubleReader defaultReaderOf(DoubleSequence seq){
+        return new DefaultReader(seq);
     }
 }
 
-class DefaultCellReader implements CellReader {
+class DefaultArrayReader implements DoubleReader {
 
     final double[] data;
     final int inc;
     int pos;
 
-    DefaultCellReader(double[] data, int leftPos, int inc) {
+    DefaultArrayReader(double[] data, int leftPos, int inc) {
         this.data = data;
         this.pos = leftPos;
         this.inc = inc;
@@ -78,7 +82,28 @@ class DefaultCellReader implements CellReader {
     }
 }
 
-class CellReaderP implements CellReader {
+class DefaultReader implements DoubleReader {
+
+    final DoubleSequence data;
+    int pos;
+
+    DefaultReader(DoubleSequence data) {
+        this.data = data;
+        this.pos = 0;
+    }
+
+    @Override
+    public double next() {
+        return data.get(pos++);
+    }
+
+    @Override
+    public void setPosition(int npos) {
+        pos = npos;
+    }
+}
+
+class CellReaderP implements DoubleReader {
 
     final double[] data;
     int pos;
@@ -99,7 +124,7 @@ class CellReaderP implements CellReader {
     }
 }
 
-class CellReaderM implements CellReader {
+class CellReaderM implements DoubleReader {
 
     final double[] data;
     int pos;

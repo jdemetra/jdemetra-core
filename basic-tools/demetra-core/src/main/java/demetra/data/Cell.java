@@ -22,7 +22,7 @@ import java.util.function.DoubleUnaryOperator;
  *
  * @author Jean Palate
  */
-public interface Cell extends CellReader {
+public interface Cell extends DoubleReader {
 
     public static Cell of(double[] data, int pos, int inc) {
         switch (inc) {

@@ -17,6 +17,7 @@
 package demetra.data;
 
 import demetra.design.Unsafe;
+import demetra.utilities.functions.DoubleBiPredicate;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.DoubleBinaryOperator;
@@ -31,8 +32,7 @@ import javax.annotation.Nonnull;
  *
  * @author Jean Palate
  */
-public final class DataBlock implements Doubles {
-
+public final class DataBlock implements DoubleSequence {
 
     @FunctionalInterface
     public static interface DataBlockFunction {
@@ -120,9 +120,9 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * Envelope around a copy of read-only Doubles.
+     * Envelope around a copy of read-only DoubleSequence.
      *
-     * @param data The Doubles being copied
+     * @param data The DoubleSequence being copied
      * @return
      */
     public static DataBlock copyOf(@Nonnull DoubleSequence data) {
@@ -149,7 +149,7 @@ public final class DataBlock implements Doubles {
      * @param pred The selection criterion
      * @return
      */
-    public static DataBlock select(@Nonnull Doubles data, @Nonnull DoublePredicate pred) {
+    public static DataBlock select(@Nonnull DoubleSequence data, @Nonnull DoublePredicate pred) {
         DoubleList list = new DoubleList();
         int n = data.length();
         for (int i = 0; i < n; ++i) {
@@ -178,20 +178,21 @@ public final class DataBlock implements Doubles {
      */
     @Override
     public String toString() {
-        return Doubles.toString(this);
+        return DoubleSequence.toString(this);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public CellReader reader() {
-        return CellReader.of(data, beg, inc);
+    public DoubleReader reader() {
+        return DoubleReader.of(data, beg, inc);
     }
 
-    public CellReader reverseReader() {
-        return CellReader.of(data, end-inc, -inc);
+    public DoubleReader reverseReader() {
+        return DoubleReader.of(data, end - inc, -inc);
     }
+
     /**
      *
      * @return
@@ -248,14 +249,13 @@ public final class DataBlock implements Doubles {
      *
      * @return The euclidian norm (&gt=0).
      */
-    @Override
     public double norm2() {
         int n = length();
         switch (n) {
             case 0:
                 return 0;
             case 1:
-                return Math.abs(get(0));
+                return Math.abs(data[beg]);
             default:
                 double scale = 0;
                 double ssq = 1;
@@ -277,20 +277,54 @@ public final class DataBlock implements Doubles {
         }
     }
 
+    public double norm1() {
+        int n = length();
+        switch (n) {
+            case 0:
+                return 0;
+            case 1:
+                return Math.abs(data[beg]);
+            default:
+                double nrm = 0;
+                for (int i = beg; i != end; i += inc) {
+                    nrm += Math.abs(data[i]);
+                }
+                return nrm;
+        }
+    }
+
+    public double normInf() {
+        int n = length();
+        switch (n) {
+            case 0:
+                return 0;
+            case 1:
+                return Math.abs(data[beg]);
+            default:
+                double nrm = Math.abs(data[beg]);
+                for (int i = beg + inc; i != end; i += inc) {
+                    double tmp = Math.abs(data[i]);
+                    if (tmp > nrm) {
+                        nrm = tmp;
+                    }
+                }
+                return nrm;
+        }
+    }
+
     /**
      * Computes the euclidian norm of the src block. This implementation is
      * faster than norm2, but less accurate.
      *
      * @return The euclidian norm (&gt=0).
      */
-    @Override
     public double fastNorm2() {
         int n = length();
         switch (n) {
             case 0:
                 return 0;
             case 1:
-                return Math.abs(get(0));
+                return Math.abs(data[beg]);
             default:
                 double ssq = 0;
                 for (int i = beg; i != end; i += inc) {
@@ -362,6 +396,10 @@ public final class DataBlock implements Doubles {
     @Override
     public DataBlock reverse() {
         return new DataBlock(data, end - inc, beg - inc, -inc);
+    }
+
+    public double distance(DoubleSequence seq) {
+        return Doubles.distance(this, seq);
     }
 
     /**
@@ -725,6 +763,48 @@ public final class DataBlock implements Doubles {
         return s;
     }
 
+    public double jdot(DataBlock x, int l) {
+        double s = 0;
+        int i = beg, j = x.beg;
+        if (inc == 1) {
+            int il = beg + l;
+            if (x.inc == 1) {
+                for (; i < il; ++i, ++j) {
+                    s += data[i] * x.data[j];
+                }
+                for (; i < end; ++i, ++j) {
+                    s -= data[i] * x.data[j];
+                }
+
+            } else {
+                for (; i < il; ++i, j += x.inc) {
+                    s += data[i] * x.data[j];
+                }
+                for (; i < end; ++i, j += x.inc) {
+                    s -= data[i] * x.data[j];
+                }
+            }
+        } else {
+            int il = beg + l * inc;
+            if (x.inc == 1) {
+                for (; i != il; i += inc, ++j) {
+                    s += data[i] * x.data[j];
+                }
+                for (; i != end; i += inc, ++j) {
+                    s -= data[i] * x.data[j];
+                }
+            } else {
+                for (; i != il; i += inc, j += x.inc) {
+                    s += data[i] * x.data[j];
+                }
+                for (; i != end; i += inc, j += x.inc) {
+                    s -= data[i] * x.data[j];
+                }
+            }
+        }
+        return s;
+    }
+
     /**
      * Computes in a robust way the scalar product
      *
@@ -754,7 +834,6 @@ public final class DataBlock implements Doubles {
         }
     }
 
-    @Override
     public double sum() {
         double s = 0;
         for (int i = beg; i != end; i += inc) {
@@ -766,7 +845,6 @@ public final class DataBlock implements Doubles {
         return s;
     }
 
-    @Override
     public double ssq() {
         int n = length();
         double s = 0;
@@ -779,7 +857,6 @@ public final class DataBlock implements Doubles {
         return s;
     }
 
-    @Override
     public double ssqc(double mean) {
         int n = length();
         double s = 0;
@@ -792,7 +869,6 @@ public final class DataBlock implements Doubles {
         return s;
     }
 
-    @Override
     public double average() {
         int n = length();
         int m = 0;
@@ -817,23 +893,14 @@ public final class DataBlock implements Doubles {
     }
 
     /**
-     * Copy the given data. 
+     * Copy the given data.
+     *
      * @param x The data being copied. Could be larger than the current buffer
      */
-    public void copy(Doubles x) {
-        CellReader cell = x.reader();
+    public void copy(DoubleSequence x) {
+        DoubleReader cell = x.reader();
         for (int i = beg; i != end; i += inc) {
             data[i] = cell.next();
-        }
-    }
-
-    public void copy(DoubleSequence x) {
-        if (inc == 1) {
-            x.copyTo(data, beg);
-        } else {
-            for (int i = beg, j = 0; i != end; i += inc) {
-                data[i] = x.get(j);
-            }
         }
     }
 
@@ -923,6 +990,21 @@ public final class DataBlock implements Doubles {
     }
 
     /**
+     * Checks that all the src in the block are (nearly) 0.
+     *
+     * @param zero A given zero
+     * @return false if some src in the block are &gt zero in absolute value,
+     * true otherwise.
+     */
+    public boolean isZero(double zero) {
+        return allMatch(x -> !Double.isFinite(x) || Math.abs(x) <= zero);
+    }
+
+    public boolean isConstant(double cnt) {
+        return allMatch(x -> x == cnt);
+    }
+
+    /**
      * Applies the given operator on the data at the given position. It is
      * equivalent to "setPosition(pos, fn.applyAsDouble(get(pos))"
      *
@@ -1006,8 +1088,8 @@ public final class DataBlock implements Doubles {
      * @param x
      * @param fn The operator
      */
-    public void apply(@Nonnull Doubles x, @Nonnull DoubleBinaryOperator fn) {
-        CellReader cell = x.reader();
+    public void apply(@Nonnull DoubleSequence x, @Nonnull DoubleBinaryOperator fn) {
+        DoubleReader cell = x.reader();
         for (int i = beg; i != end; i += inc) {
             data[i] = fn.applyAsDouble(data[i], cell.next());
         }
@@ -1163,8 +1245,8 @@ public final class DataBlock implements Doubles {
      * @param x
      * @param fn
      */
-    public void set(@Nonnull Doubles x, @Nonnull DoubleUnaryOperator fn) {
-        CellReader xcell = x.reader();
+    public void set(@Nonnull DoubleSequence x, @Nonnull DoubleUnaryOperator fn) {
+        DoubleReader xcell = x.reader();
         for (int i = beg; i != end; i += inc) {
             data[i] = fn.applyAsDouble(xcell.next());
         }
@@ -1177,8 +1259,8 @@ public final class DataBlock implements Doubles {
      * @param y
      * @param fn
      */
-    public void set(@Nonnull Doubles x, @Nonnull Doubles y, @Nonnull DoubleBinaryOperator fn) {
-        CellReader xcell = x.reader(), ycell = y.reader();
+    public void set(@Nonnull DoubleSequence x, @Nonnull DoubleSequence y, @Nonnull DoubleBinaryOperator fn) {
+        DoubleReader xcell = x.reader(), ycell = y.reader();
         for (int i = beg; i != end; i += inc) {
             data[i] = fn.applyAsDouble(xcell.next(), ycell.next());
         }
@@ -1319,12 +1401,41 @@ public final class DataBlock implements Doubles {
     }
 
     @Override
-    public double computeIteratively(final double initial, @Nonnull DoubleBinaryOperator fn) {
+    public double reduce(final double initial, @Nonnull DoubleBinaryOperator fn) {
         double cur = initial;
         for (int i = beg; i != end; i += inc) {
             cur = fn.applyAsDouble(cur, data[i]);
         }
         return cur;
+    }
+
+    public boolean allMatch(DataBlock d, @Nonnull DoubleBiPredicate p) {
+        for (int i = beg, j = d.beg; i != end; i += inc, j += d.inc) {
+            if (!p.test(data[i], d.data[j])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean allMatch(@Nonnull DoublePredicate p) {
+        for (int i = beg; i != end; i += inc) {
+            if (!p.test(data[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean anyMatch(@Nonnull DoublePredicate p) {
+        for (int i = beg; i != end; i += inc) {
+            if (p.test(data[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -1366,14 +1477,13 @@ public final class DataBlock implements Doubles {
             return nrm;
         }
     }
-    
-    public Doubles unmodifiable() {
-        return Doubles.ofFunction(this.length(), i->get(i));
+
+    public DoubleSequence unmodifiable() {
+        return DoubleSequence.of(this.length(), i -> get(i));
     }
 
-
     public String toString(String fmt) {
-        return Doubles.toString(this, fmt);
+        return DoubleSequence.toString(this, fmt);
     }
 
     void slide(int del) {

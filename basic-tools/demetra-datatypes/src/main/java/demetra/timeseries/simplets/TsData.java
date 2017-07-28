@@ -16,8 +16,8 @@
  */
 package demetra.timeseries.simplets;
 
+import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
-import demetra.data.DoubleValues;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.timeseries.ITimeSeries;
@@ -56,28 +56,38 @@ public final class TsData implements ITimeSeries.OfDouble<TsPeriod, TsObservatio
             cur = cur + rnd.nextDouble() - .5;
             data[i] = cur;
         }
-        return new TsData(TsDomain.of(new TsPeriod(freq, beg), data.length), DoubleValues.ofInternal(data));
+        return new TsData(new TsPeriod(freq, beg), DoubleSequence.ofInternal(data));
     }
 
+    /**
+     * Creates a new time series from a copy of this sequence of doubles
+     * @param start
+     * @param values
+     * @return 
+     */
     public static TsData of(TsPeriod start, DoubleSequence values) {
-        return new TsData(TsDomain.of(start, values.length()), DoubleValues.of(values));
+        return new TsData(start, DoubleSequence.ofInternal(values.toArray()));
     }
 
     public static TsData ofInternal(TsPeriod start, DoubleSequence values) {
-        return new TsData(TsDomain.of(start, values.length()), values);
+        return new TsData(start, values);
     }
 
-    private final TsDomain domain;
+    public static TsData ofInternal(TsPeriod start, double[] values) {
+        return new TsData(start, DoubleSequence.ofInternal(values));
+    }
+
+    private final TsPeriod start;
     private final DoubleSequence values;
 
-    private TsData(TsDomain domain, DoubleSequence values) {
-        this.domain = domain;
+    private TsData(TsPeriod start, DoubleSequence values) {
+        this.start = start;
         this.values = values;
     }
 
     @Override
     public TsDomain domain() {
-        return domain;
+        return TsDomain.of(start, values.length());
     }
 
     @Override
@@ -96,11 +106,11 @@ public final class TsData implements ITimeSeries.OfDouble<TsPeriod, TsObservatio
      * @return The frequency.
      */
     public TsFrequency getFrequency() {
-        return domain.getFrequency();
+        return start.getFrequency();
     }
 
     public TsPeriod getStart() {
-        return domain.getStart();
+        return start;
     }
 
     /**
@@ -113,15 +123,17 @@ public final class TsData implements ITimeSeries.OfDouble<TsPeriod, TsObservatio
      * this time series
      */
     public double getDoubleValue(TsPeriod period) {
-        int pos = domain.search(period);
+        int pos = period.minus(start);
         return (pos < 0 || pos >= values.length()) ? Double.NaN : values.get(pos);
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < domain.length(); ++i) {
-            builder.append(domain.get(i)).append('\t').append(values.get(i));
+        int n=values.length();
+        DoubleReader reader = values.reader();
+        for (int i = 0; i < values.length(); ++i) {
+            builder.append(start.plus(i)).append('\t').append(reader.next());
             builder.append(System.lineSeparator());
         }
         return builder.toString();
@@ -139,7 +151,7 @@ public final class TsData implements ITimeSeries.OfDouble<TsPeriod, TsObservatio
      */
     public TsData changeFrequency(final TsFrequency newfreq,
             final TsAggregationType conversion, final boolean complete) {
-        int freq = domain.getFrequency().getAsInt(), nfreq = newfreq.getAsInt();
+        int freq = start.getFrequency().getAsInt(), nfreq = newfreq.getAsInt();
         if (freq % nfreq != 0) {
             return null;
         }
@@ -149,7 +161,7 @@ public final class TsData implements ITimeSeries.OfDouble<TsPeriod, TsObservatio
         int nconv = freq / nfreq;
         int c = length();
         int z0 = 0;
-        int beg = domain.getStart().id();
+        int beg = start.id();
 
         // d0 and d1
         int nbeg = beg / nconv;
@@ -240,6 +252,7 @@ public final class TsData implements ITimeSeries.OfDouble<TsPeriod, TsObservatio
                 }
             }
         }
-        return TsData.of(TsPeriod.ofInternal(newfreq, nbeg), DoubleValues.ofInternal(result));
+        
+        return TsData.of(TsPeriod.ofInternal(newfreq, nbeg), DoubleSequence.ofInternal(result));
     }
 }

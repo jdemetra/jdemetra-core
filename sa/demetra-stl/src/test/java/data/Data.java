@@ -16,7 +16,7 @@
  */
 package data;
 
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -58,6 +58,6 @@ public class Data {
         126.8, 117.7, 126.6, 123, 118.1, 123.7, 93.5, 105.4, 125, 131.9, 119.9, 110.3, 126.2, 121.6, 130.9, 123.6, 116.1, 126.9, 95, 107.6, 128.4, 127.1, 116.3, 109.5,
         113.4, 114, 128.5, 118.3, 108.6, 124.2, 86.7, 104.2, 124.1, 121.2, 112.6, 114.1, 120.3, 117.6, 133.6, 117.7, 113.8, 126.6, 81.6, 108.7, 125.9, 123, 120.7, 109.7};
 
-    public static final Doubles X = Doubles.of(g_exports);
-    public static final Doubles P = Doubles.of(g_prod);
+    public static final DoubleSequence X = DoubleSequence.of(g_exports);
+    public static final DoubleSequence P = DoubleSequence.of(g_prod);
 }

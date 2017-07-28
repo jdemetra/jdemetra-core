@@ -16,13 +16,15 @@
  */
 package demetra.timeseries.simplets;
 
-import demetra.data.Doubles;
+import demetra.data.DataBlock;
+import demetra.data.DoubleReader;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriodSelector;
 import java.time.LocalDateTime;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 import javax.annotation.Nonnegative;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -36,11 +38,11 @@ public class TsDataToolkit {
         for (int i = 0; i < data.length; ++i) {
             data[i] = fn.applyAsDouble(data[i]);
         }
-        return TsData.ofInternal(s.getStart(), Doubles.of(data));
+        return TsData.ofInternal(s.getStart(), data);
     }
 
     public TsData fastFn(TsData s, DoubleUnaryOperator fn) {
-        return TsData.ofInternal(s.getStart(), Doubles.ofFunction(s.length(), i -> fn.applyAsDouble(s.getValue(i))));
+        return TsData.ofInternal(s.getStart(), DoubleSequence.of(s.length(), i -> fn.applyAsDouble(s.getValue(i))));
     }
 
     public TsData commit(TsData s) {
@@ -56,7 +58,7 @@ public class TsDataToolkit {
         }
         TsPeriod istart = iDomain.getStart();
         int li = lDomain.search(istart), ri = rDomain.search(istart);
-        return TsData.ofInternal(istart, Doubles.ofFunction(iDomain.length(),
+        return TsData.ofInternal(istart, DoubleSequence.of(iDomain.length(),
                 i -> fn.applyAsDouble(left.getValue(li + i), right.getValue(ri + i))));
     }
 
@@ -71,10 +73,13 @@ public class TsDataToolkit {
         TsPeriod istart = iDomain.getStart();
         int li = lDomain.search(istart), ri = rDomain.search(istart);
         double[] data = new double[iDomain.length()];
+        DoubleReader lreader = left.values().reader(), rreader=right.values().reader();
+        lreader.setPosition(li);
+        rreader.setPosition(ri);
         for (int i = 0; i < data.length; ++i) {
-            data[i] = fn.applyAsDouble(left.getValue(li + i), right.getValue(ri + i));
+            data[i] = fn.applyAsDouble(lreader.next(), rreader.next());
         }
-        return TsData.ofInternal(istart, Doubles.ofInternal(data));
+        return TsData.ofInternal(istart, data);
     }
 
     public TsData fn(TsData s, int lag, DoubleBinaryOperator fn) {
@@ -91,18 +96,18 @@ public class TsDataToolkit {
                 prev = next;
             }
         }
-        return TsData.ofInternal(s.getStart().plus(lag), Doubles.ofInternal(nvalues));
+        return TsData.ofInternal(s.getStart().plus(lag), DoubleSequence.ofInternal(nvalues));
     }
 
     public TsData drop(TsData s, int nbeg, int nend) {
-        TsDomain ndomain = drop(s.domain(), nbeg, nend);
-        return TsData.ofInternal(ndomain.getStart(), Doubles.ofFunction(ndomain.length(), i -> s.getValue(i + nbeg)));
+         TsDomain ndomain = TsDataToolkit.drop(s.domain(), nbeg, nend);
+        return TsData.of(ndomain.getStart(), s.values().extract(nbeg, ndomain.length()));
     }
 
     public TsData select(TsData s, TsPeriodSelector selector) {
         TsDomain ndomain = select(s.domain(), selector);
         final int beg = ndomain.getStart().minus(s.getStart());
-        return TsData.ofInternal(ndomain.getStart(), Doubles.ofFunction(ndomain.length(), i -> s.getValue(i + beg)));
+        return TsData.of(ndomain.getStart(), s.values().extract(beg, ndomain.length()));
     }
 
     public TsDomain drop(final TsDomain domain, @Nonnegative int nbeg, @Nonnegative int nend) {
@@ -270,7 +275,7 @@ public class TsDataToolkit {
         } else if (r == null) {
             return l;
         } else {
-            return fastFn(l, r, (a, b) -> a + b);
+            return fn(l, r, (a, b) -> a + b);
         }
     }
 
@@ -360,14 +365,14 @@ public class TsDataToolkit {
 
     public TsData normalize(TsData s) {
         double[] data = s.values().toArray();
-        Doubles values=Doubles.ofInternal(data);
+        DataBlock values=DataBlock.ofInternal(data);
         final double mean = values.average();
         double ssqc = values.ssqc(mean);
         final double std = Math.sqrt(ssqc / values.length());
         for (int i=0; i<data.length; ++i){
             data[i]=(data[i]-mean)/std;
         }
-        return TsData.ofInternal(s.getStart(), values);
+        return TsData.ofInternal(s.getStart(), data);
     }
 
 }

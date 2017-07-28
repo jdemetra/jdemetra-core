@@ -17,7 +17,7 @@
 package demetra.likelihood;
 
 import demetra.design.Development;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  * The ILikelihood interface formalizes the likelihood of a usual
@@ -99,21 +99,21 @@ public interface ILikelihood {
         /**
      * @return The Standardized innovations. May be null if the e are not stored
      */
-    Doubles e();
+    DoubleSequence e();
 
     /**
      * @return The determinantal factor (n-th root).
      */
     double factor();
     
-    default Doubles v(){
+    default DoubleSequence v(){
         double f=factor();
-        Doubles e=e();
+        DoubleSequence e=e();
         if (f == 1)
             return e;
         else{
             final double sf=Math.sqrt(f);
-            return Doubles.transformation(e, x->x*sf);
+            return DoubleSequence.transformation(e, x->x*sf);
         }
     }
 

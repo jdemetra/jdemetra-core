@@ -7,7 +7,7 @@ package demetra.ssf.multivariate;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 
 /**
@@ -62,7 +62,7 @@ public class SsfMatrix implements IMultivariateSsfData {
     }
 
     @Override
-    public Doubles get(int pos) {
+    public DoubleSequence get(int pos) {
         return pos < x_.getRowsCount() ? x_.row(pos) : DataBlock.EMPTY;
     }
 }

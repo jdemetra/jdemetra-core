@@ -21,7 +21,7 @@ package demetra.ssf.univariate;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.IStateResults;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -35,9 +35,9 @@ public interface ISmoothingResults extends IStateResults {
 
     void rescaleVariances(double factor);
 
-    Doubles getComponent(int pos);
+    DoubleSequence getComponent(int pos);
 
-    Doubles getComponentVariance(int pos);
+    DoubleSequence getComponentVariance(int pos);
     
     boolean hasVariances();
 

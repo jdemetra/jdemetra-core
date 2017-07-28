@@ -18,7 +18,7 @@ package demetra.stl;
 
 import demetra.utilities.functions.RealFunction;
 import java.util.Arrays;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  * Java implementation of the original FORTRAN routine
@@ -84,7 +84,7 @@ public class StlPlus {
         sfilter = new SeasonalFilter[]{new SeasonalFilter(sspec, LoessSpecification.of(period + 1), period)};
     }
     
-    public boolean process(Doubles data) {
+    public boolean process(DoubleSequence data) {
         
         if (!initializeProcessing(data)) {
             return false;
@@ -124,7 +124,7 @@ public class StlPlus {
         return true;
     }
     
-    private boolean initializeProcessing(Doubles data) {
+    private boolean initializeProcessing(DoubleSequence data) {
         int n = data.length();
         y = new double[n];
         data.copyTo(y, 0);

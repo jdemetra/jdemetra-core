@@ -19,7 +19,7 @@ package demetra.stl;
 import demetra.utilities.functions.RealFunction;
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  * Java implementation of the original FORTRAN routine
@@ -56,7 +56,7 @@ public class Stl {
         this.spec = spec;
     }
 
-    public boolean process(Doubles data) {
+    public boolean process(DoubleSequence data) {
 
         if (!initializeProcessing(data)) {
             return false;
@@ -99,7 +99,7 @@ public class Stl {
         return true;
     }
 
-    private boolean initializeProcessing(Doubles data) {
+    private boolean initializeProcessing(DoubleSequence data) {
         int n = data.length();
         y = new double[n];
         data.copyTo(y, 0);

@@ -17,19 +17,20 @@
 package demetra.timeseries.simplets;
 
 import demetra.data.Data;
-import demetra.data.Doubles;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static demetra.timeseries.simplets.TsDataToolkit.log;
 import static demetra.timeseries.simplets.TsDataToolkit.commit;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.delta;
+import static demetra.timeseries.simplets.TsDataToolkit.normalize;
+import static demetra.timeseries.simplets.TsDataToolkit.pctVariation;
+import demetra.data.DoubleSequence;
+import demetra.data.Doubles;
+import static demetra.data.Doubles.average;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.drop;
 import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
 import static demetra.timeseries.simplets.TsDataToolkit.fn;
-import static demetra.timeseries.simplets.TsDataToolkit.normalize;
-import static demetra.timeseries.simplets.TsDataToolkit.pctVariation;
-import org.junit.Ignore;
 
 /**
  *
@@ -39,7 +40,7 @@ public class TsDataToolkitTest {
 
     TsData series = Data.TS_PROD;
     ec.tstoolkit.timeseries.simplets.TsData oldSeries = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, Data.PROD, false);
-
+    
     public TsDataToolkitTest() {
     }
 
@@ -47,7 +48,7 @@ public class TsDataToolkitTest {
     public void testUnaryOperator() {
         TsData t1 = fn(series, x -> Math.log(x));
         TsData t2 = fastFn(series, x -> Math.log(x));
-        assertTrue(0 == (Doubles.of(t1.values()).distance(Doubles.of(t2.values()))));
+        assertTrue(Doubles.distance(t1.values(), t2.values()) == 0);
     }
 
     @Test
@@ -61,7 +62,7 @@ public class TsDataToolkitTest {
     @Test
     //@Ignore
     public void stressTest() {
-        int K = 1000000;
+        int K = 2000000;
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             ec.tstoolkit.timeseries.simplets.TsData c = 
@@ -78,8 +79,8 @@ public class TsDataToolkitTest {
         t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             TsData s = delta(normalize(log(add(series, drop(series, 20, 50)))), 12);
-            Doubles values = Doubles.of(s.values());
-            double v = values.average();
+            DoubleSequence values = DoubleSequence.of(s.values());
+            double v = average(values);
             if (k == 0) {
                 System.out.println(v);
             }
@@ -120,7 +121,7 @@ public class TsDataToolkitTest {
     }
 
     private double distance(TsData s1, ec.tstoolkit.timeseries.simplets.TsData s2) {
-        return Doubles.of(s1.values()).distance(Doubles.ofInternal(s2.internalStorage()));
+        return Doubles.distance(s1.values(),DoubleSequence.ofInternal(s2.internalStorage()));
     }
 
 }

@@ -5,9 +5,9 @@
  */
 package demetra.linearmodel;
 
-import demetra.data.Doubles;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.maths.matrices.Matrix;
+import demetra.data.DoubleSequence;
 
 /**
  *

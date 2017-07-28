@@ -21,13 +21,13 @@ import demetra.arima.ArimaException;
 import demetra.arima.IArimaModel;
 import demetra.arima.estimation.IArmaFilter;
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Fast;
 import demetra.design.Development;
 import demetra.likelihood.DeterminantalTerm;
 import demetra.maths.polynomials.Polynomial;
 import org.openide.util.lookup.ServiceProvider;
+import demetra.data.DoubleSequence;
 
 
 /**
@@ -194,7 +194,7 @@ public class KalmanFilter implements IArmaFilter {
      * @param outrc
      */
     @Override
-    public void apply(Doubles y, DataBlock outrc) {
+    public void apply(DoubleSequence y, DataBlock outrc) {
 	if (m_multiuse) {
 	    mfilter(y, outrc);
 	} else {
@@ -227,7 +227,7 @@ public class KalmanFilter implements IArmaFilter {
 	return length;
     }
 
-    private void mfilter(Doubles y, DataBlock yf) {
+    private void mfilter(DoubleSequence y, DataBlock yf) {
 
 	double[] a = new double[m_dim];
 	// iteration
@@ -251,7 +251,7 @@ public class KalmanFilter implements IArmaFilter {
 	}
     }
 
-    private void sfilter(Doubles y, DataBlock outrc) {
+    private void sfilter(DoubleSequence y, DataBlock outrc) {
 	DeterminantalTerm det = new DeterminantalTerm();
 	double[] C = m_C0.clone();
 	double[] L = C.clone();

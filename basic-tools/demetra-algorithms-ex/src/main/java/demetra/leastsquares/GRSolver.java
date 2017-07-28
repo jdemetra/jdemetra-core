@@ -7,7 +7,8 @@ package demetra.leastsquares;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
+import demetra.data.DoubleSequence;
 import demetra.leastsquares.IQRSolver;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
@@ -27,7 +28,7 @@ public class GRSolver implements IQRSolver {
     private double err;
 
     @Override
-    public boolean solve(Doubles y, Matrix x) {
+    public boolean solve(DoubleSequence y, Matrix x) {
         try {
             Matrix X = x.deepClone();
             int m = x.getColumnsCount(), n = x.getRowsCount();
@@ -60,8 +61,8 @@ public class GRSolver implements IQRSolver {
     }
 
     @Override
-    public Doubles coefficients() {
-        return Doubles.ofInternal(b);
+    public DoubleSequence coefficients() {
+        return DoubleSequence.ofInternal(b);
     }
 
     @Override
@@ -75,8 +76,9 @@ public class GRSolver implements IQRSolver {
     }
 
     @Override
-    public Doubles residuals() {
+    public DoubleSequence residuals() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
 
 }

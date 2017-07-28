@@ -5,7 +5,6 @@
  */
 package demetra.linearmodel;
 
-import demetra.data.Doubles;
 import demetra.eco.EcoException;
 import lombok.NonNull;
 import demetra.leastsquares.IQRSolver;
@@ -17,6 +16,7 @@ import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -43,7 +43,7 @@ public class Ols implements IOls {
 
     @Override
     public OlsResults compute(LinearModel model) {
-        Doubles y = model.getY();
+        DoubleSequence y = model.getY();
         Matrix x = model.variables();
         if (!solver.solve(y, x)) {
             throw new EcoException(EcoException.OLS_FAILED);

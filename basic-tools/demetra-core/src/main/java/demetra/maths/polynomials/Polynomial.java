@@ -16,12 +16,10 @@
  */
 package demetra.maths.polynomials;
 
-import demetra.data.Doubles;
 import java.util.Arrays;
 import java.util.Formatter;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntToDoubleFunction;
-import demetra.data.CellReader;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
@@ -30,6 +28,8 @@ import demetra.maths.ComplexMath;
 import demetra.maths.Simplifying;
 import demetra.utilities.Arrays2;
 import lombok.NonNull;
+import demetra.data.DoubleReader;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -37,7 +37,7 @@ import lombok.NonNull;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public final class Polynomial implements Doubles {
+public final class Polynomial implements DoubleSequence {
 
     public static final Polynomial ZERO = new Polynomial(Polynomial.Coefficients.zero());
     public static final Polynomial ONE = new Polynomial(Polynomial.Coefficients.one());
@@ -46,7 +46,7 @@ public final class Polynomial implements Doubles {
     private final AtomicReference<Complex[]> defRoots = new AtomicReference<>(); // caching the roots
     private static final double EPSILON = 1e-9;
 
-    //<editor-fold defaultstate="collapsed" desc="Doubles interface">
+    //<editor-fold defaultstate="collapsed" desc="DoubleSequence interface">
     @Override
     public void copyTo(double[] buffer, int start) {
         System.arraycopy(coeff, 0, buffer, start, coeff.length);
@@ -58,16 +58,13 @@ public final class Polynomial implements Doubles {
     }
 
     @Override
-    public Doubles extract(int start, int length) {
-        return Doubles.ofFunction(length, i -> {
-            int j = i + start;
-            return j < coeff.length ? coeff[j] : 0;
-        });
+    public DoubleSequence extract(int start, int length) {
+        return DoubleSequence.ofInternal(coeff, start, length);
     }
 
     @Override
-    public CellReader reader() {
-        return CellReader.of(coeff);
+    public DoubleReader reader() {
+        return DoubleReader.of(coeff);
     }
 
     //</editor-fold>
@@ -332,7 +329,7 @@ public final class Polynomial implements Doubles {
             return false;
         }
         for (int i = 0; i <= coeff.length; ++i) {
-            if (!Doubles.equals(get(i), other.get(i), epsilon)) {
+            if (!DoubleSequence.equals(get(i), other.get(i), epsilon)) {
                 return false;
             }
         }
@@ -462,8 +459,8 @@ public final class Polynomial implements Doubles {
      *
      * @return
      */
-    public Doubles coefficients() {
-        return Doubles.ofInternal(coeff);
+    public DoubleSequence coefficients() {
+        return DoubleSequence.ofInternal(coeff);
     }
 
     @Override
@@ -648,7 +645,7 @@ public final class Polynomial implements Doubles {
         double[] result = coefficients().toArray();
         for (int i = 0; i < result.length; ++i) {
             double c = Math.round(result[i]);
-            if (Doubles.equals(c, result[i], EPSILON)) {
+            if (DoubleSequence.equals(c, result[i], EPSILON)) {
                 result[i] = c;
             }
         }

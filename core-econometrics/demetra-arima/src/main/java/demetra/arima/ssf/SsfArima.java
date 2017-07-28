@@ -18,7 +18,6 @@ package demetra.arima.ssf;
 
 import demetra.arima.AutoCovarianceFunction;
 import demetra.arima.IArimaModel;
-import demetra.data.CellReader;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;
@@ -41,6 +40,7 @@ import demetra.ssf.univariate.OrdinaryFilter;
 import demetra.ssf.univariate.Ssf;
 import demetra.ssf.implementations.Measurement;
 import demetra.ssf.UpdateInformation;
+import demetra.data.DoubleReader;
 
 /**
  *
@@ -261,7 +261,7 @@ public class SsfArima extends Ssf {
         public void TX(final int pos, final DataBlock x) {
             double z = 0;
             if (phi.length > 1) {
-                CellReader reader = x.reverseReader();
+                DoubleReader reader = x.reverseReader();
                 for (int i = 1; i < phi.length; ++i) {
                     z -= phi[i] * reader.next();
                 }
@@ -556,7 +556,7 @@ public class SsfArima extends Ssf {
         public void TX(final int pos, final DataBlock x) {
             double z = 0;
             if (phi.length > 1) {
-                CellReader reader = x.reverseReader();
+                DoubleReader reader = x.reverseReader();
                 for (int i = 1; i < phi.length; ++i) {
                     z -= phi[i] * reader.next();
                 }

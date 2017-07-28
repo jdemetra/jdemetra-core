@@ -16,7 +16,7 @@
  */
 package demetra.timeseries.simplets;
 
-import demetra.data.DoubleValues;
+import demetra.data.DoubleSequence;
 import internal.Demo;
 import demetra.timeseries.ITimeSeries;
 import java.time.LocalDate;
@@ -32,7 +32,7 @@ public class TsDataTypeTest {
 
     @Demo
     public static void main(String[] args) {
-        TsData ts = TsData.of(TsPeriod.year(2001), DoubleValues.ofInternal(3.14, 7));
+        TsData ts = TsData.of(TsPeriod.year(2001), DoubleSequence.ofInternal(3.14, 7));
 
         System.out.println("\n[Tests ...]");
         System.out.println(ts.toString());
@@ -76,8 +76,8 @@ public class TsDataTypeTest {
 
     @Test
     public void testEquals() {
-        assertThat(TsData.of(TsPeriod.year(2001), DoubleValues.ofInternal(1, 2, 3)))
-                .isEqualTo(TsData.of(TsPeriod.year(2001), DoubleValues.ofInternal(1, 2, 3)));
+        assertThat(TsData.of(TsPeriod.year(2001), DoubleSequence.ofInternal(1, 2, 3)))
+                .isEqualTo(TsData.of(TsPeriod.year(2001), DoubleSequence.ofInternal(1, 2, 3)));
     }
 
     @Test

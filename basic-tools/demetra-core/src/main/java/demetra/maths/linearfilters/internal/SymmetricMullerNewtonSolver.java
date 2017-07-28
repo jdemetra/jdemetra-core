@@ -16,7 +16,6 @@
  */
 package demetra.maths.linearfilters.internal;
 
-import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.design.VisibleForTesting;
 import demetra.maths.Complex;
@@ -34,6 +33,7 @@ import demetra.utilities.Ref;
 import demetra.utilities.Ref.BooleanRef;
 import demetra.utilities.Ref.DoubleRef;
 import demetra.utilities.Ref.IntRef;
+import demetra.data.DoubleSequence;
 
 /**
  * Mueller-Newton solver for symmetric polynomial. A symmetric polynomial is
@@ -1149,7 +1149,7 @@ class Function implements IFunction {
     int start;
 
     @Override
-    public IFunctionPoint evaluate(Doubles parameters) {
+    public IFunctionPoint evaluate(DoubleSequence parameters) {
         return new FunctionInstance(parameters.get(0));
     }
 
@@ -1171,8 +1171,8 @@ class Function implements IFunction {
         LeastSquaresDivision lq;
 
         @Override
-        public Doubles getParameters() {
-            return Doubles.of(x);
+        public DoubleSequence getParameters() {
+            return DoubleSequence.of(x);
         }
 
         public double getX() {

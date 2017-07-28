@@ -20,7 +20,7 @@ package demetra.maths.functions.ssq;
 import demetra.maths.functions.IFunction;
 import demetra.maths.functions.IParametersDomain;
 import demetra.design.Development;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  * f(p) = sum(e(t,p)^2)
@@ -40,7 +40,7 @@ public interface ISsqFunction {
      * @param parameters
      * @return
      */
-    ISsqFunctionPoint ssqEvaluate(Doubles parameters);
+    ISsqFunctionPoint ssqEvaluate(DoubleSequence parameters);
     
     default IFunction asFunction(){
         return new SsqProxyFunction(this);

@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider;
 
-import demetra.data.DoubleValues;
+import demetra.data.DoubleSequence;
 import demetra.timeseries.simplets.TsAggregationType;
 import static demetra.timeseries.simplets.TsAggregationType.Average;
 import static demetra.timeseries.simplets.TsAggregationType.First;
@@ -57,6 +57,10 @@ import static java.util.EnumSet.of;
 import static java.util.EnumSet.of;
 import static java.util.EnumSet.of;
 import static java.util.EnumSet.of;
+import static java.util.EnumSet.of;
+import static java.util.EnumSet.of;
+import static java.util.EnumSet.of;
+import static java.util.EnumSet.of;
 
 /**
  *
@@ -67,7 +71,7 @@ public class OptionalTsDataTest {
     @Test
     @SuppressWarnings("null")
     public void testFactoryPresent() {
-        TsData example = TsData.of(TsPeriod.of(Monthly, 2010, 0), DoubleValues.ofInternal(10));
+        TsData example = TsData.of(TsPeriod.of(Monthly, 2010, 0), DoubleSequence.ofInternal(10));
 
         assertThat(present(example))
                 .isEqualTo(data(Monthly, 2010, 0, 10))
@@ -138,7 +142,7 @@ public class OptionalTsDataTest {
     }
 
     private static OptionalTsData data(TsFrequency freq, int firstyear, int firstperiod, double... values) {
-        return present(TsData.of(TsPeriod.of(freq, firstyear, firstperiod), DoubleValues.ofInternal(values)));
+        return present(TsData.of(TsPeriod.of(freq, firstyear, firstperiod), DoubleSequence.ofInternal(values)));
     }
 
     private static <T> void testBuilderAdd(CustomFactory<T> cf) {

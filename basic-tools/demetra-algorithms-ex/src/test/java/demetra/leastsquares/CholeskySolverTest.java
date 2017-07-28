@@ -7,7 +7,7 @@ package demetra.leastsquares;
 
 import demetra.data.DataBlock;
 import demetra.data.DataSets;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 import static demetra.data.DataSets.lre;
 import demetra.maths.matrices.Matrix;
 import org.junit.Test;
@@ -31,7 +31,7 @@ public class CholeskySolverTest {
 
         CholeskySolver solver = new CholeskySolver();
         solver.solve(DataBlock.ofInternal(y), M);
-        Doubles beta = solver.coefficients();
+        DoubleSequence beta = solver.coefficients();
         System.out.println("Norris");
         System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
@@ -52,7 +52,7 @@ public class CholeskySolverTest {
 
         CholeskySolver solver = new CholeskySolver();
         solver.solve(DataBlock.ofInternal(y), M);
-        Doubles beta = solver.coefficients();
+        DoubleSequence beta = solver.coefficients();
         System.out.println("Pontius");
         System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
@@ -70,7 +70,7 @@ public class CholeskySolverTest {
 
         CholeskySolver solver = new CholeskySolver();
         solver.solve(DataBlock.ofInternal(y), M);
-        Doubles beta = solver.coefficients();
+        DoubleSequence beta = solver.coefficients();
         System.out.println("NoInt1");
         System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
@@ -89,7 +89,7 @@ public class CholeskySolverTest {
 
         CholeskySolver solver = new CholeskySolver();
         solver.solve(DataBlock.ofInternal(y), M);
-        Doubles beta = solver.coefficients();
+        DoubleSequence beta = solver.coefficients();
         System.out.println("NoInt2");
         System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
@@ -118,7 +118,7 @@ public class CholeskySolverTest {
 
         CholeskySolver solver = new CholeskySolver();
         solver.solve(DataBlock.ofInternal(y), M);
-        Doubles beta = solver.coefficients();
+        DoubleSequence beta = solver.coefficients();
         System.out.println("Filip");
         System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
@@ -142,7 +142,7 @@ public class CholeskySolverTest {
 
         CholeskySolver solver = new CholeskySolver();
         solver.solve(DataBlock.ofInternal(y), M);
-        Doubles beta = solver.coefficients();
+        DoubleSequence beta = solver.coefficients();
         System.out.println("Longley");
         System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
@@ -166,7 +166,7 @@ public class CholeskySolverTest {
 
         CholeskySolver solver = new CholeskySolver();
         solver.solve(DataBlock.ofInternal(y), M);
-        Doubles beta = solver.coefficients();
+        DoubleSequence beta = solver.coefficients();
         System.out.println("Wampler1");
         System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
@@ -190,7 +190,7 @@ public class CholeskySolverTest {
 
         CholeskySolver solver = new CholeskySolver();
         solver.solve(DataBlock.ofInternal(y), M);
-        Doubles beta = solver.coefficients();
+        DoubleSequence beta = solver.coefficients();
 
         System.out.println("Wampler2");
         System.out.println(beta);
@@ -215,7 +215,7 @@ public class CholeskySolverTest {
 
         CholeskySolver solver = new CholeskySolver();
         solver.solve(DataBlock.ofInternal(y), M);
-        Doubles beta = solver.coefficients();
+        DoubleSequence beta = solver.coefficients();
         System.out.println("Wampler3");
         System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
@@ -239,7 +239,7 @@ public class CholeskySolverTest {
 
         CholeskySolver solver = new CholeskySolver();
         solver.solve(DataBlock.ofInternal(y), M);
-        Doubles beta = solver.coefficients();
+        DoubleSequence beta = solver.coefficients();
         System.out.println("Wampler4");
         System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
@@ -263,7 +263,7 @@ public class CholeskySolverTest {
 
         CholeskySolver solver = new CholeskySolver();
         solver.solve(DataBlock.ofInternal(y), M);
-        Doubles beta = solver.coefficients();
+        DoubleSequence beta = solver.coefficients();
 
         System.out.println("Wampler5");
         System.out.println(beta);

@@ -16,7 +16,7 @@
  */
 package data;
 
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -97,6 +97,6 @@ public class WeeklyData {
         264816,305424,262628,384491,313276,319641,346542,405368,502904,378747,295936,311940,290796,258380,248870,265802,247628,236888,230882,235716,245035,270419,242400,245040,243379,261899,244869,240798,247067,232932,266920,248564,263424
     };
     
-    public static Doubles US_CLAIMS=Doubles.of(us_claims);
-    public static Doubles US_PETROLEUM=Doubles.of(us_petroleum);
+    public static DoubleSequence US_CLAIMS=DoubleSequence.of(us_claims);
+    public static DoubleSequence US_PETROLEUM=DoubleSequence.of(us_petroleum);
 }

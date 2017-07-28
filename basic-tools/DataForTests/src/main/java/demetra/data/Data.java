@@ -169,6 +169,6 @@ public class Data {
     public static final TsData TS_PROD;
 
     static {
-        TS_PROD = TsData.of(TsPeriod.of(TsFrequency.Monthly, 1967, 0), DoubleValues.ofInternal(PROD));
+        TS_PROD = TsData.of(TsPeriod.of(TsFrequency.Monthly, 1967, 0), DoubleSequence.ofInternal(PROD));
     }
 }

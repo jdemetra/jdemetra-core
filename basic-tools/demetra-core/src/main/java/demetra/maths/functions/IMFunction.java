@@ -19,7 +19,7 @@ package demetra.maths.functions;
 
 import demetra.design.Development;
 import java.util.function.Function;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  * Generic interface for real functions
@@ -35,7 +35,7 @@ public interface IMFunction {
      * @param parameters The parameters (read only)
      * @return The evaluation of the function (may be null)
      */
-    IMFunctionPoint evaluate(Doubles parameters);
+    IMFunctionPoint evaluate(DoubleSequence parameters);
 
     /**
      * Gets the domain of the function
@@ -43,7 +43,7 @@ public interface IMFunction {
      */
     IParametersDomain getDomain();
     
-    default Function<Doubles, Doubles> asFunction(){
+    default Function<DoubleSequence, DoubleSequence> asFunction(){
         return (p->this.evaluate(p).getValues());
     }
 }

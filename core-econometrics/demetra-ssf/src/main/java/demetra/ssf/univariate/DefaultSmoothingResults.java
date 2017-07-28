@@ -19,7 +19,7 @@ package demetra.ssf.univariate;
 import demetra.ssf.DataResults;
 import demetra.ssf.StateInfo;
 import demetra.ssf.StateStorage;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -56,11 +56,11 @@ public class DefaultSmoothingResults extends StateStorage implements ISmoothingR
         f.save(t, v);
     }
 
-    public Doubles errors() {
+    public DoubleSequence errors() {
         return e == null ? null : e.asDoublesReader(true);
     }
 
-    public Doubles errorVariances() {
+    public DoubleSequence errorVariances() {
         return f == null ? null : f.asDoublesReader(true);
     }
 

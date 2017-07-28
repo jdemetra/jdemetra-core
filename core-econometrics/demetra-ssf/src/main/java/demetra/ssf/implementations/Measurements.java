@@ -16,7 +16,6 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.CellReader;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.univariate.ISsfMeasurement;
@@ -24,6 +23,7 @@ import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.univariate.ISsf;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.SymmetricMatrix;
+import demetra.data.DoubleReader;
 
 /**
  *
@@ -532,7 +532,7 @@ public class Measurements {
                 tmp.set(0);
                 Z(pos, jvar, tmp);
                 DataBlockIterator columns = V.columnsIterator();
-                CellReader cell = tmp.reader();
+                DoubleReader cell = tmp.reader();
                 while (columns.hasNext()) {
                     ms[ivar].XpZd(pos, columns.next(), cell.next() * d);
                 }

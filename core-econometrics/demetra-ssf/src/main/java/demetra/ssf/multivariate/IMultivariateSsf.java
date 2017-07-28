@@ -18,7 +18,7 @@ package demetra.ssf.multivariate;
 
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -35,7 +35,7 @@ public interface IMultivariateSsf extends IMultivariateSsfFiltering {
     boolean isTimeInvariant();
 
     @Override
-    default MultivariateUpdateInformation next(int t, State state, Doubles x) {
+    default MultivariateUpdateInformation next(int t, State state, DoubleSequence x) {
         return MultivariateSsfHelper.next(this, t, state, x);
     }
 

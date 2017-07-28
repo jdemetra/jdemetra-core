@@ -16,50 +16,51 @@
  */
 package demetra.data;
 
-import static demetra.data.DoubleValues.EMPTY;
+import static demetra.data.DoubleArray.EMPTY;
 import internal.Demo;
 import java.util.stream.DoubleStream;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
  * @author Philippe Charles
  */
-public class DoubleValuesTest {
+public class DoubleSequenceTest {
 
     @Demo
     public static void main(String[] args) {
-        DoubleValues values = DoubleValues.ofInternal(3.14, 3, 5, 7);
-        System.out.println(DoubleValues.of(values.stream().skip(1).map(o -> o * 2)));
+        DoubleSequence values = DoubleSequence.ofInternal(3.14, 3, 5, 7);
+        System.out.println(DoubleSequence.of(values.stream().skip(1).map(o -> o * 2)));
 
         double[] tmp = values.toArray();
         tmp[2] = 123;
-        System.out.println(DoubleValues.ofInternal(tmp));
+        System.out.println(DoubleSequence.ofInternal(tmp));
 
-        System.out.println(DoubleValues.of(DoubleStream.concat(DoubleStream.of(777), values.stream())));
+        System.out.println(DoubleSequence.of(DoubleStream.concat(DoubleStream.of(777), values.stream())));
 
         double[] buffer = new double[values.length() + 1];
         values.copyTo(buffer, 1);
         buffer[0] = 777;
-        System.out.println(DoubleValues.ofInternal(buffer));
+        System.out.println(DoubleSequence.ofInternal(buffer));
     }
 
     @Test
     @SuppressWarnings("null")
     public void testFactories() {
-        assertThat(DoubleValues.ofInternal().length()).isEqualTo(0);
-        assertThat(DoubleValues.ofInternal(3.14).length()).isEqualTo(1);
-        assertThatThrownBy(() -> DoubleValues.ofInternal(null)).isInstanceOf(NullPointerException.class);
+        assertThat(DoubleSequence.ofInternal().length()).isEqualTo(0);
+        assertThat(DoubleSequence.ofInternal(3.14).length()).isEqualTo(1);
+        assertThatThrownBy(() -> DoubleSequence.ofInternal(null)).isInstanceOf(NullPointerException.class);
 
-        assertThat(DoubleValues.of().length()).isEqualTo(0);
-        assertThat(DoubleValues.of(3.14).length()).isEqualTo(1);
-        assertThatThrownBy(() -> DoubleValues.of((double[]) null)).isInstanceOf(NullPointerException.class);
+        assertThat(DoubleSequence.of().length()).isEqualTo(0);
+        assertThat(DoubleSequence.of(3.14).length()).isEqualTo(1);
+        assertThatThrownBy(() -> DoubleSequence.of((double[]) null)).isInstanceOf(NullPointerException.class);
 
-        assertThat(DoubleValues.of(DoubleStream.of()).length()).isEqualTo(0);
-        assertThat(DoubleValues.of(DoubleStream.of(3.14)).length()).isEqualTo(1);
-        assertThatThrownBy(() -> DoubleValues.of((DoubleStream) null)).isInstanceOf(NullPointerException.class);
+        assertThat(DoubleSequence.of(DoubleStream.of()).length()).isEqualTo(0);
+        assertThat(DoubleSequence.of(DoubleStream.of(3.14)).length()).isEqualTo(1);
+        assertThatThrownBy(() -> DoubleSequence.of((DoubleStream) null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
@@ -101,9 +102,9 @@ public class DoubleValuesTest {
         assertThat(copy(PI, new double[]{666, 777}, 1)).containsExactly(666, Math.PI);
     }
 
-    private static final DoubleValues PI = DoubleValues.ofInternal(Math.PI);
+    private static final DoubleSequence PI = DoubleSequence.ofInternal(Math.PI);
 
-    private static double[] copy(DoubleValues o, double[] buffer, int offset) {
+    private static double[] copy(DoubleSequence o, double[] buffer, int offset) {
         o.copyTo(buffer, offset);
         return buffer;
     }

@@ -19,7 +19,7 @@ package demetra.maths.functions;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 
 /**
@@ -67,7 +67,7 @@ public class ParametersRange implements IParametersDomain {
     }
 
     @Override
-    public boolean checkBoundaries(Doubles inparams) {
+    public boolean checkBoundaries(DoubleSequence inparams) {
 	for (int i = 0; i < m_np; ++i) {
 	    double v = inparams.get(i);
 	    if (m_excluded) {
@@ -80,7 +80,7 @@ public class ParametersRange implements IParametersDomain {
     }
 
     @Override
-    public double epsilon(Doubles inparams, int idx) {
+    public double epsilon(DoubleSequence inparams, int idx) {
 	double eps = (b - a) * m_eps;
 	if (inparams.get(idx) + eps >= b)
 	    eps = -eps;
@@ -152,7 +152,7 @@ public class ParametersRange implements IParametersDomain {
     }
 
     @Override
-    public Doubles getDefault() {
+    public DoubleSequence getDefault() {
         return DataBlock.ofInternal(new double[]{(b+a)/2});
     }
 

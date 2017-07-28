@@ -6,10 +6,12 @@
 package demetra.dstats;
 
 import demetra.random.IRandomNumberGenerator;
+import demetra.random.SystemRNG;
 import java.util.Random;
 import org.assertj.core.api.Assertions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -227,7 +229,7 @@ public class TTest {
     @Test
     public void testRandomExpectationT_2() {
         T t = new T(2);
-        int iterations = 10000;
+        int iterations = 20000;
         double sum = 0;
         double avg;
         IRandomNumberGenerator rng = getRandomNumberGenerator();
@@ -300,6 +302,7 @@ public class TTest {
     }
 
     @Test
+    @Ignore
     public void testRandomVarianceT_2() {
         int iterations = 10000;
         T t = new T(2);
@@ -323,9 +326,9 @@ public class TTest {
     }
 
     @Test
-    public void testRandomVarianceT_3() {
+    public void testRandomVarianceT_5() {
         int iterations = 10000;
-        T t = new T(3);
+        T t = new T(5);
         IRandomNumberGenerator rng = getRandomNumberGenerator();
         double[] values = new double[iterations];
         double sum = 0, avg;
@@ -411,42 +414,43 @@ public class TTest {
     }
 
     private IRandomNumberGenerator getRandomNumberGenerator() {
-        return new IRandomNumberGenerator() {
-            @Override
-            public double nextDouble() {
-                return new Random().nextDouble();
-            }
-
-            @Override
-            public int nextInt() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public long nextLong() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public boolean nextBoolean() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public float nextFloat() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public int nextInt(int n) throws IllegalArgumentException {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public IRandomNumberGenerator synchronize() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
+        return new SystemRNG(0);
+//        return new IRandomNumberGenerator() {
+//            @Override
+//            public double nextDouble() {
+//                return new Random().nextDouble();
+//            }
+//
+//            @Override
+//            public int nextInt() {
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//            }
+//
+//            @Override
+//            public long nextLong() {
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//            }
+//
+//            @Override
+//            public boolean nextBoolean() {
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//            }
+//
+//            @Override
+//            public float nextFloat() {
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//            }
+//
+//            @Override
+//            public int nextInt(int n) throws IllegalArgumentException {
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//            }
+//
+//            @Override
+//            public IRandomNumberGenerator synchronize() {
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//            }
+//        };
     }
 
 }

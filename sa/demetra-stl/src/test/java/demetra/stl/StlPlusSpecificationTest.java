@@ -24,7 +24,7 @@ import data.WeeklyData;
 import demetra.maths.matrices.Matrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -37,7 +37,7 @@ public class StlPlusSpecificationTest {
 
     @Test
     public void testDefault() {
-        Doubles data=WeeklyData.US_CLAIMS;
+        DoubleSequence data=WeeklyData.US_CLAIMS;
         // Creates a default stl specification
         StlPlusSpecification spec = StlPlusSpecification.createDefault(52, true);
         StlPlus stl = spec.build();
@@ -52,7 +52,7 @@ public class StlPlusSpecificationTest {
     
     @Test
     public void testDefaultMul() {
-        Doubles data=WeeklyData.US_CLAIMS;
+        DoubleSequence data=WeeklyData.US_CLAIMS;
         // Creates a default stl specification
         StlPlusSpecification spec = StlPlusSpecification.createDefault(52, true);
         spec.setMultiplicative(true);
@@ -69,7 +69,7 @@ public class StlPlusSpecificationTest {
     
     @Test
     public void testCustom() {
-        Doubles data=WeeklyData.US_CLAIMS;
+        DoubleSequence data=WeeklyData.US_CLAIMS;
         // Creates an empty robust stl specification (robust means 15 outer loops, 1 inner loop).
         StlPlusSpecification spec = new StlPlusSpecification(true);
         // We put the seasonal specification

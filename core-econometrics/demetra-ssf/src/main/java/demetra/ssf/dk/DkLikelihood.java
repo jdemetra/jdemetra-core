@@ -21,6 +21,7 @@ import demetra.design.IBuilder;
 import demetra.likelihood.ILikelihood;
 import demetra.design.Immutable;
 import demetra.likelihood.Likelihood;
+import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 
 /**
@@ -70,12 +71,12 @@ public class DkLikelihood implements ILikelihood {
             return this;
         }
 
-        public Builder residuals(Doubles residuals) {
+        public Builder residuals(DoubleSequence residuals) {
             if (residuals == null) {
                 return this;
             }
             if (ssqerr == 0) {
-                this.ssqerr = residuals.ssq();
+                this.ssqerr = Doubles.ssq(residuals);
             }
             this.res = residuals.toArray();
             return this;
@@ -250,8 +251,8 @@ public class DkLikelihood implements ILikelihood {
     }
 
     @Override
-    public Doubles e() {
-        return res == null ? null : Doubles.ofInternal(res);
+    public DoubleSequence e() {
+        return res == null ? null : DoubleSequence.ofInternal(res);
     }
 
     @Override

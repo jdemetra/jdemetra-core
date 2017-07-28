@@ -17,9 +17,6 @@
 package demetra.data;
 
 import demetra.design.Immutable;
-import demetra.design.Internal;
-import java.util.stream.DoubleStream;
-import javax.annotation.Nonnull;
 
 /**
  *
@@ -27,42 +24,13 @@ import javax.annotation.Nonnull;
  */
 @Immutable
 @lombok.EqualsAndHashCode
-@lombok.ToString
-public final class DoubleValues implements DoubleSequence {
+final class DoubleArray implements DoubleSequence {
 
-    public static final DoubleValues EMPTY = new DoubleValues(new double[0]);
-
-    /**
-     * Creates a new value using an array of doubles. Internal use only since it
-     * can break immutability.
-     *
-     * @param data
-     * @return
-     */
-    @Internal
-    @Nonnull
-    public static DoubleValues ofInternal(@Nonnull double... data) {
-        return data.length > 0 ? new DoubleValues(data) : EMPTY;
-    }
-
-    @Nonnull
-    public static DoubleValues of(@Nonnull double... data) {
-        return ofInternal(data.clone());
-    }
-
-    @Nonnull
-    public static DoubleValues of(@Nonnull DoubleStream stream) {
-        return ofInternal(stream.toArray());
-    }
-
-    @Nonnull
-    public static DoubleValues of(@Nonnull DoubleSequence seq) {
-        return seq instanceof DoubleValues ? (DoubleValues) seq : ofInternal(seq.toArray());
-    }
+    public static final DoubleArray EMPTY = new DoubleArray(new double[0]);
 
     private final double[] values;
 
-    private DoubleValues(double[] values) {
+    DoubleArray(double[] values) {
         this.values = values;
     }
 
@@ -84,5 +52,39 @@ public final class DoubleValues implements DoubleSequence {
     @Override
     public void copyTo(double[] buffer, int offset) {
         System.arraycopy(values, 0, buffer, offset, values.length);
+    }
+
+    @Override
+    public DoubleReader reader() {
+        return new Cell();
+    }
+
+    @Override
+    public DoubleSequence extract(int start, int length) {
+        return new PartialDoubleArray(values, start, length);
+    }
+
+    @Override
+    public String toString() {
+        return DoubleSequence.toString(this);
+    }
+
+    class Cell implements DoubleReader {
+
+        private int pos;
+
+        Cell() {
+            pos = 0;
+        }
+
+        @Override
+        public double next() {
+            return values[pos++];
+        }
+
+        @Override
+        public void setPosition(int npos) {
+            pos = npos;
+        }
     }
 }

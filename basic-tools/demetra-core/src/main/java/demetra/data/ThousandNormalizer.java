@@ -64,7 +64,7 @@ public class ThousandNormalizer implements IDataNormalizer {
     @Override
     public double normalize(DataBlock data) {
         int n = data.length();
-        int i = data.first((x) -> Double.isFinite(x));
+        int i = data.indexOf((x) -> Double.isFinite(x));
         if (i == n) {
             return 1;
         }

@@ -23,6 +23,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
+import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 
 /**
@@ -31,7 +32,7 @@ import demetra.data.Doubles;
  */
 public class MultivariateSsfHelper {
 
-    public static MultivariateUpdateInformation next(IMultivariateSsf ssf, int t, State state, Doubles x) {
+    public static MultivariateUpdateInformation next(IMultivariateSsf ssf, int t, State state, DoubleSequence x) {
         // use ordinary filter
         ISsfDynamics dynamics = ssf.getDynamics();
         ISsfMeasurements measurements = ssf.getMeasurements();
@@ -40,7 +41,7 @@ public class MultivariateSsfHelper {
             return null;
         }
         int dim = ssf.getStateDim();
-        int[] obs = x.search(y -> Double.isFinite(y));
+        int[] obs = Doubles.search(x, y -> Double.isFinite(y));
         int nobs = obs.length;
         MultivariateUpdateInformation updinfo;
         if (nobs == 0) {

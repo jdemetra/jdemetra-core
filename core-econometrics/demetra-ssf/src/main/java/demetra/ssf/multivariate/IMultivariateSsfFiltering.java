@@ -17,7 +17,7 @@
 package demetra.ssf.multivariate;
 
 import demetra.ssf.State;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -32,5 +32,5 @@ public interface IMultivariateSsfFiltering {
      * @param x Observations in t
      * @return Update information corresponding to the new observations
      */
-    MultivariateUpdateInformation next(int t, State state, Doubles x);
+    MultivariateUpdateInformation next(int t, State state, DoubleSequence x);
 }

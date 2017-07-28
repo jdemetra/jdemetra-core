@@ -16,7 +16,6 @@
  */
 package demetra.linearmodel;
 
-import demetra.data.Doubles;
 import demetra.design.Immutable;
 import demetra.dstats.F;
 import demetra.dstats.T;
@@ -24,6 +23,8 @@ import demetra.likelihood.ConcentratedLikelihood;
 import demetra.maths.matrices.Matrix;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
+import demetra.data.DoubleSequence;
+import demetra.data.Doubles;
 
 /**
  *
@@ -32,7 +33,7 @@ import demetra.stats.tests.TestType;
 @Immutable
 public class OlsResults {
 
-    public OlsResults(Doubles Y, Matrix X, boolean mean, Doubles coefficients, Matrix unscaledCov, double ssq) {
+    public OlsResults(DoubleSequence Y, Matrix X, boolean mean, DoubleSequence coefficients, Matrix unscaledCov, double ssq) {
         this.y = Y;
         this.X = X;
         this.mean = mean;
@@ -42,16 +43,16 @@ public class OlsResults {
         this.ucov = unscaledCov;
         this.nx = ucov.diagonal().count(x -> x != 0);
         // compute auxiliaries
-        y2 = y.ssq();
-        ym = y.average();
+        y2 = Doubles.ssq(y);
+        ym = Doubles.average(y);
         bxy = y2 - ssq;
     }
 
-    private final Doubles y;
+    private final DoubleSequence y;
     private final Matrix X;
     private final boolean mean;
     private final int n, nx;
-    private final Doubles coefficients;
+    private final DoubleSequence coefficients;
     private final double ssq;
     private final Matrix ucov;
     // auxiliary results
@@ -60,7 +61,7 @@ public class OlsResults {
     /**
      * @return the coefficients
      */
-    public Doubles getCoefficients() {
+    public DoubleSequence getCoefficients() {
         return coefficients;
     }
 

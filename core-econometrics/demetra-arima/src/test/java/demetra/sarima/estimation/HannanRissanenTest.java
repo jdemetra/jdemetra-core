@@ -17,12 +17,12 @@
 package demetra.sarima.estimation;
 
 import demetra.arima.ArimaSeriesGenerator;
-import demetra.data.Doubles;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarmaSpecification;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -30,7 +30,7 @@ import org.junit.Ignore;
  */
 public class HannanRissanenTest {
 
-    static final Doubles airlineData, data;
+    static final DoubleSequence airlineData, data;
 
     static {
         SarmaSpecification spec = new SarmaSpecification(12);
@@ -41,14 +41,14 @@ public class HannanRissanenTest {
                 .btheta(1, -.8)
                 .build();
         ArimaSeriesGenerator generator = new ArimaSeriesGenerator();
-        airlineData = Doubles.ofInternal(generator.generate(arima, 120));
+        airlineData = DoubleSequence.ofInternal(generator.generate(arima, 120));
         spec.setP(3);
         arima = SarimaModel.builder(spec)
                 .theta(1, -.6)
                 .btheta(1, -.8)
                 .phi(-.2, -.3, .4)
                 .build();
-        data = Doubles.ofInternal(generator.generate(arima, 120));
+        data = DoubleSequence.ofInternal(generator.generate(arima, 120));
     }
 
     public HannanRissanenTest() {

@@ -16,13 +16,13 @@
 */
 package demetra.maths.linearfilters;
 
-import demetra.data.Doubles;
 import demetra.design.Development;
 import java.text.NumberFormat;
 
 import demetra.maths.polynomials.Polynomial;
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
+import demetra.data.DoubleSequence;
 
 /**
  * 

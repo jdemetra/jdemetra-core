@@ -17,12 +17,12 @@
 package demetra.maths.functions.minpack;
 
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.maths.functions.FunctionException;
 import demetra.maths.functions.ssq.ISsqFunction;
 import demetra.maths.functions.ssq.ISsqFunctionDerivatives;
 import demetra.maths.functions.ssq.ISsqFunctionPoint;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -239,7 +239,7 @@ public class SsqEstimationProblem implements IEstimationProblem {
         }
     }
 
-    public Doubles gradient() {
+    public DoubleSequence gradient() {
         if (this.ftry == null) {
             calc();
         }

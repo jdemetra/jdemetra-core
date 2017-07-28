@@ -1,12 +1,12 @@
 /*
  * Copyright 2017 National Bank of Belgium
  * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  * 
- * http://ec.europa.eu/idabc/eupl
+ * https://joinup.ec.europa.eu/software/page/eupl
  * 
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
@@ -16,42 +16,51 @@
  */
 package demetra.data;
 
-import java.util.function.IntToDoubleFunction;
+import demetra.design.Immutable;
 
 /**
  *
- * @author Philippe Charles
+ * @author Jean Palate
  */
-final class IntToDoubleSequence implements DoubleSequence {
+@Immutable
+final class PartialDoubleArray implements DoubleSequence {
 
-    private final int length;
-    private final IntToDoubleFunction fn;
+    private final double[] data;
+    private final int beg, len;
 
-    IntToDoubleSequence(int length, IntToDoubleFunction fn) {
-        this.length = length;
-        this.fn = fn;
-    }
-
-    @Override
-    public double get(int idx) {
-        return fn.applyAsDouble(idx);
-    }
-
-    @Override
-    public int length() {
-        return length;
-    }
-
-    @Override
-    public DoubleSequence extract(final int start, final int length) {
-        return new IntToDoubleSequence(length, i -> fn.applyAsDouble(i + start));
+    PartialDoubleArray(final double[] data, int start, int len) {
+        this.data = data;
+        this.beg = start;
+        this.len = len;
     }
 
     @Override
     public DoubleReader reader() {
         return new Cell();
     }
+
+    @Override
+    public double get(int idx) {
+        return data[beg + idx];
+    }
+
+    @Override
+    public int length() {
+        return len;
+    }
     
+    @Override
+    public double[] toArray(){
+        double[] ndata=new double[len];
+        System.arraycopy(data, beg, ndata, 0, len);
+        return ndata;
+    }
+
+    @Override
+    public DoubleSequence extract(int start, int length) {
+        return new PartialDoubleArray(data, this.beg + start, length);
+    }
+
     @Override
     public String toString() {
         return DoubleSequence.toString(this);
@@ -62,17 +71,17 @@ final class IntToDoubleSequence implements DoubleSequence {
         private int pos;
 
         Cell() {
-            pos = 0;
+            pos = beg;
         }
 
         @Override
         public double next() {
-            return fn.applyAsDouble(pos++);
+            return data[pos++];
         }
 
         @Override
         public void setPosition(int npos) {
-            pos = npos;
+            pos = beg+npos;
         }
     }
 }

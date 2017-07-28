@@ -21,7 +21,7 @@ import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -29,7 +29,7 @@ import demetra.data.Doubles;
  */
 public class TimeVaryingDynamics {
 
-    public static ISsfDynamics create(Doubles dvar) {
+    public static ISsfDynamics create(DoubleSequence dvar) {
         return new TimeVaryingDiag(dvar);
     }
 
@@ -47,7 +47,7 @@ public class TimeVaryingDynamics {
             std.apply(x->Math.sqrt(x));
         }
 
-        TimeVaryingDiag(final Doubles var) {
+        TimeVaryingDiag(final DoubleSequence var) {
            this.var = DataBlock.copyOf(var);
             this.std = DataBlock.copyOf(var);
             std.apply(x->Math.sqrt(x));

@@ -31,10 +31,10 @@ public class LogSign {
     public final double value;
     public final boolean pos;
     
-    public static LogSign of(Doubles reader){
+    public static LogSign of(DoubleSequence reader){
         double value = 0;
         boolean pos = true;
-        CellReader cell = reader.reader();
+        DoubleReader cell = reader.reader();
         int n=reader.length();
         for (int i = 0; i <n; ++i) {
             double x = cell.next();
@@ -48,10 +48,10 @@ public class LogSign {
        
     }
     
-    public static LogSign of(Doubles reader, boolean chs){
+    public static LogSign of(DoubleSequence reader, boolean chs){
         double value = 0;
         boolean pos = true;
-        CellReader cell = reader.reader();
+        DoubleReader cell = reader.reader();
         int n=reader.length();
         for (int i = 0; i <n; ++i) {
             double x = cell.next();

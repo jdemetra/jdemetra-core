@@ -17,7 +17,6 @@
 package demetra.ssf.dk;
 
 import demetra.data.Cell;
-import demetra.data.CellReader;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.Matrix;
@@ -28,6 +27,7 @@ import demetra.ssf.univariate.IDisturbanceSmoothingResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.data.DoubleReader;
 
 /**
  *
@@ -257,7 +257,7 @@ public class DiffuseDisturbanceSmoother {
     }
 
     private void subZ(DataBlockIterator rows, DataBlock b) {
-        CellReader cell = b.reader();
+        DoubleReader cell = b.reader();
         while (rows.hasNext()) {
             measurement.XpZd(pos, rows.next(), -cell.next());
         }

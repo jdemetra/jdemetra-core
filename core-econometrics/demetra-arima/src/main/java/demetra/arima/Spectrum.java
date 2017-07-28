@@ -16,7 +16,6 @@
  */
 package demetra.arima;
 
-import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.linearfilters.SymmetricFrequencyResponse;
@@ -31,6 +30,7 @@ import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.NumericalDerivatives;
 import demetra.maths.functions.ParametersRange;
 import java.util.function.IntToDoubleFunction;
+import demetra.data.DoubleSequence;
 
 /**
  * The (pseudo-)spectrum is the Fourier transform of the auto-covariance
@@ -180,8 +180,8 @@ public class Spectrum {
             }
 
             @Override
-            public Doubles getParameters() {
-                return Doubles.of(pt);
+            public DoubleSequence getParameters() {
+                return DoubleSequence.of(pt);
             }
 
             @Override
@@ -213,7 +213,7 @@ public class Spectrum {
             }
 
             @Override
-            public IFunctionPoint evaluate(Doubles parameters) {
+            public IFunctionPoint evaluate(DoubleSequence parameters) {
                 return new SpectrumFunctionInstance(spec, parameters.get(0));
             }
 

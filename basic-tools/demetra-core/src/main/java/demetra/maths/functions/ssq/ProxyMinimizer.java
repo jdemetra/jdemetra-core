@@ -24,7 +24,7 @@ import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionPoint;
 import demetra.maths.functions.ssq.ISsqFunction;
 import demetra.maths.matrices.Matrix;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -67,7 +67,7 @@ public class ProxyMinimizer implements IFunctionMinimizer {
     }
     
     @Override
-    public Doubles gradientAtMinimum() {
+    public DoubleSequence gradientAtMinimum() {
         return minimizer.gradientAtMinimum();
     }
     

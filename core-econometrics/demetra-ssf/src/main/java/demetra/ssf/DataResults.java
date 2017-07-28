@@ -18,7 +18,7 @@ package demetra.ssf;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockStorage;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -104,11 +104,11 @@ public class DataResults {
         data = null;
     }
 
-    public Doubles asDoublesReader(boolean complete) {
+    public DoubleSequence asDoublesReader(boolean complete) {
         if (complete) {
-            return Doubles.ofFunction(nused + start, i -> i < start ? Double.NaN : data[i - start]);
+            return DoubleSequence.of(nused + start, i -> i < start ? Double.NaN : data[i - start]);
         } else {
-            return Doubles.ofFunction(nused, i -> data[i]);
+            return DoubleSequence.of(nused, i -> data[i]);
         }
     }
 

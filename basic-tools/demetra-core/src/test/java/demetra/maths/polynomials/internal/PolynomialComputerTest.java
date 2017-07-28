@@ -16,11 +16,11 @@
  */
 package demetra.maths.polynomials.internal;
 
-import demetra.data.Doubles;
 import demetra.maths.Complex;
 import demetra.maths.polynomials.Polynomial;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -33,7 +33,7 @@ public class PolynomialComputerTest {
 
     @Test
     public void testDefault() {
-        Polynomial P = Polynomial.ofInternal(Doubles.ofFunction(20, i -> 1.0 / (i + 1)).toArray());
+        Polynomial P = Polynomial.ofInternal(DoubleSequence.of(20, i -> 1.0 / (i + 1)).toArray());
         double[] p = P.toArray();
         PolynomialComputer computer = new PolynomialComputer(p, 0);
         Complex c = Complex.cart(.2, -.5);

@@ -23,7 +23,7 @@ import demetra.stl.IDataGetter;
 import data.Data;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -36,7 +36,7 @@ public class SeasonalFilterTest {
 
     @Test
     public void testSomeMethod() {
-        Doubles s=Data.X;
+        DoubleSequence s=Data.X;
         double[] d = s.toArray();
         LoessSpecification spec = LoessSpecification.of(7, 0);
         LoessSpecification lspec = LoessSpecification.of(13, 1);

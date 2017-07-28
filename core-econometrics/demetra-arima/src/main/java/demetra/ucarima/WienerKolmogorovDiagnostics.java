@@ -21,11 +21,11 @@ import demetra.arima.BartlettApproximation;
 import demetra.arima.LinearModel;
 import demetra.arima.StationaryTransformation;
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.dstats.Normal;
 import demetra.maths.matrices.Matrix;
 import demetra.stats.samples.OrderedSampleWithZeroMean;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -122,7 +122,7 @@ public final class WienerKolmogorovDiagnostics {
 //                AutoCorrelations ac = new AutoCorrelations(stats);
 //                ac.setCorrectedForMean(true);
 //                double evar = stats.getVar() / (err * err);
-                    double evar = OrderedSampleWithZeroMean.of(Doubles.ofInternal(itmp)).variance() / (err * err);
+                    double evar = OrderedSampleWithZeroMean.of(DoubleSequence.ofInternal(itmp)).variance() / (err * err);
                     double var = stmodels[i].getAutoCovarianceFunction().get(0);
                     m_tac.set(i, i, var);
                     m_eac.set(i, i, evar);
@@ -144,7 +144,8 @@ public final class WienerKolmogorovDiagnostics {
                             BartlettApproximation.CrossCorrelation cbartlett = new BartlettApproximation.CrossCorrelation(stmodels[i], stmodels[j]);
                             double cov = cbartlett.get(0);
                             double sdcov = cbartlett.standardDeviation(0, nc);
-                            Doubles di = Doubles.ofInternal(itmp, si, nc), dj = Doubles.ofInternal(jtmp, sj, nc);
+                            DoubleSequence di = DoubleSequence.ofInternal(itmp, si, nc);
+                            DoubleSequence dj = DoubleSequence.ofInternal(jtmp, sj, nc);
                             double vi = OrderedSampleWithZeroMean.varianceNoMissing(di);
                             double vj = OrderedSampleWithZeroMean.varianceNoMissing(dj);
                             double cvij = OrderedSampleWithZeroMean.covarianceNoMissing(di, dj);
@@ -234,7 +235,7 @@ public final class WienerKolmogorovDiagnostics {
         return m_stest[i];
     }
 
-    public Doubles getStationaryEstimate(int i) {
-        return Doubles.ofInternal(m_stdata[i]);
+    public DoubleSequence getStationaryEstimate(int i) {
+        return DoubleSequence.ofInternal(m_stdata[i]);
     }
 }

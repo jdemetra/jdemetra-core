@@ -6,8 +6,9 @@
 package demetra.stats.samples;
 
 import demetra.data.DoubleSequence;
-import demetra.data.Doubles;
 import java.util.stream.DoubleStream;
+import demetra.data.DoubleSequence;
+import demetra.data.Doubles;
 
 /**
  *
@@ -15,11 +16,11 @@ import java.util.stream.DoubleStream;
  */
 class DefaultOrderedSample implements OrderedSample {
 
-    private final Doubles data;
+    private final DoubleSequence data;
     private final double mean;
     private final boolean hasMissing;
 
-    public DefaultOrderedSample(Doubles data) {
+    public DefaultOrderedSample(DoubleSequence data) {
         this.data = data;
         this.hasMissing = !data.allMatch(x -> Double.isFinite(x));
         this.mean = computeMean();
@@ -55,9 +56,9 @@ class DefaultOrderedSample implements OrderedSample {
 
     private double computeMean() {
         if (hasMissing) {
-            return data.average();
+            return Doubles.average(data);
         } else {
-            return data.averageWithMissing();
+            return Doubles.averageWithMissing(data);
         }
     }
 

@@ -6,7 +6,7 @@
 package demetra.leastsquares;
 
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 import demetra.data.NeumaierAccumulator;
 import demetra.leastsquares.ILeastSquaresSolver;
 import demetra.maths.Constants;
@@ -28,7 +28,7 @@ public class CholeskySolver implements ILeastSquaresSolver {
     private double err;
 
     @Override
-    public boolean solve(Doubles y, Matrix x) {
+    public boolean solve(DoubleSequence y, Matrix x) {
         try {
             L = SymmetricMatrix.robustXtX(x, new NeumaierAccumulator());
             SymmetricMatrix.lcholesky(L, Constants.getEpsilon());
@@ -53,8 +53,8 @@ public class CholeskySolver implements ILeastSquaresSolver {
     }
 
     @Override
-    public Doubles coefficients() {
-        return Doubles.ofInternal(b);
+    public DoubleSequence coefficients() {
+        return DoubleSequence.ofInternal(b);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class CholeskySolver implements ILeastSquaresSolver {
     }
 
     @Override
-    public Doubles residuals() {
+    public DoubleSequence residuals() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

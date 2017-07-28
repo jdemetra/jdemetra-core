@@ -24,7 +24,7 @@ import demetra.stl.IDataGetter;
 import data.Data;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -37,7 +37,7 @@ public class LowPassLoessFilterTest {
 
     @Test
     public void testSomeMethod() {
-        Doubles s = Data.X;
+        DoubleSequence s = Data.X;
         double[] d = s.toArray();
         LoessSpecification spec = LoessSpecification.of(7, 0);
         SeasonalLoessFilter filter = new SeasonalLoessFilter(spec, 12);

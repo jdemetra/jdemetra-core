@@ -17,12 +17,12 @@
 package demetra.maths.linearfilters.internal;
 
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
 import demetra.linearsystem.ILinearSystemSolver;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.polynomials.Polynomial;
+import demetra.data.DoubleSequence;
 
 /**
  *

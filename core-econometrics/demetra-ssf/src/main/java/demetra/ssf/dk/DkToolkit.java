@@ -43,7 +43,7 @@ import demetra.ssf.univariate.ISsfBuilder;
 import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.OrdinaryFilter;
 import demetra.ssf.univariate.SsfRegressionModel;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -235,7 +235,7 @@ public class DkToolkit {
             pe.prepare(model.getSsf(), n);
             ILinearProcess lp = filteringResults(model.getSsf(), y, pe);
             DkLikelihood ll = pe.likelihood();
-            Doubles yl = pe.errors(true, true);
+            DoubleSequence yl = pe.errors(true, true);
             int nl = yl.length();
             Matrix xl = xl(model, lp, nl);
             if (xl == null) {
@@ -270,7 +270,7 @@ public class DkToolkit {
                     int[] idiffuse = model.getDiffuseElements();
                     double ldet = ll.logDeterminant(), dcorr = ll.getDiffuseCorrection();
                     if (idiffuse != null) {
-                        Doubles rdiag = qr.rdiagonal(true);
+                        DoubleSequence rdiag = qr.rdiagonal(true);
                         double lregdet = 0;
                         int ndc = 0;
                         for (int i = 0; i < idiffuse.length; ++i) {

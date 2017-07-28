@@ -21,9 +21,9 @@ import demetra.maths.matrices.Matrix;
 import demetra.ssf.State;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.multivariate.ISsfMeasurements;
-import demetra.data.CellReader;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.SymmetricMatrix;
+import demetra.data.DoubleReader;
 
 /**
  *
@@ -158,7 +158,7 @@ public class TimeInvariantMeasurements implements ISsfMeasurements {
     public void VpZdZ(int pos, int ivar, int jvar, Matrix V, double d) {
         DataBlockIterator cols = V.columnsIterator();
         DataBlock zi = Z.row(ivar), zj = Z.row(jvar);
-        CellReader zcell=zj.reader();
+        DoubleReader zcell=zj.reader();
         while (cols.hasNext()) {
             cols.next().addAY(d * zcell.next(), zi);
         }

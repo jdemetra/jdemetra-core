@@ -16,7 +16,6 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.CellReader;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;
@@ -24,6 +23,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixWindow;
 import demetra.maths.matrices.QuadraticForm;
 import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.data.DoubleReader;
 
 /**
  *
@@ -106,7 +106,7 @@ public class ExternalEffects implements ISsfMeasurement {
         v.vnext(nx);
         DataBlockIterator rows=v.rowsIterator();
         DataBlock xrow=data.row(pos);
-        CellReader cell = xrow.reader();
+        DoubleReader cell = xrow.reader();
         while (rows.hasNext()){
             m.XpZd(pos, rows.next(), d*cell.next());
         }

@@ -18,7 +18,7 @@ package demetra.ssf.akf;
 
 import demetra.data.DataBlock;
 import demetra.likelihood.ILikelihood;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  * The diffuse likelihood follows the definition provided in the paper:
@@ -114,7 +114,7 @@ public class DiffuseLikelihood implements ILikelihood {
     }
 
     @Override
-    public Doubles e() {
+    public DoubleSequence e() {
         return DataBlock.EMPTY;
     }
 

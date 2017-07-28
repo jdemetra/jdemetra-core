@@ -21,7 +21,7 @@ import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.IStateResults;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -56,7 +56,7 @@ public interface IFilteringResults extends IStateResults {
      * @param clean
      * @return
      */
-    default Doubles errors(boolean normalized, boolean clean) {
+    default DoubleSequence errors(boolean normalized, boolean clean) {
         return null;
     }
 

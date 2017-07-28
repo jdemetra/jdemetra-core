@@ -16,7 +16,6 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.CellReader;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;
@@ -24,6 +23,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixWindow;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.data.DoubleReader;
 
 /**
  *
@@ -173,7 +173,7 @@ public class WeightedCompositeMeasurement implements ISsfMeasurement {
     public void VpZdZ(int pos, Matrix V, double d) {
         tmp.set(0);
         Z(pos, tmp);
-        CellReader cell = tmp.reader();
+        DoubleReader cell = tmp.reader();
         DataBlockIterator cols = V.columnsIterator();
         while (cols.hasNext()) {
             cols.next().addAY(d * cell.next(), tmp);

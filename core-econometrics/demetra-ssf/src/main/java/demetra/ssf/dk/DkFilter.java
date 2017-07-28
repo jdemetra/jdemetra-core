@@ -24,7 +24,7 @@ import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -68,7 +68,7 @@ public class DkFilter implements ILinearProcess {
     }
 
     @Override
-    public boolean transform(Doubles in, DataBlock out) {
+    public boolean transform(DoubleSequence in, DataBlock out) {
         return new FastDiffuseFilter1().transform(in, out);
     }
 
@@ -235,7 +235,7 @@ public class DkFilter implements ILinearProcess {
             return e;
         }
 
-        boolean transform(Doubles in, DataBlock out) {
+        boolean transform(DoubleSequence in, DataBlock out) {
             if (in.length() > end - start) {
                 return false;
             }

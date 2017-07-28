@@ -18,7 +18,8 @@ package demetra.leastsquares;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
+import demetra.data.DoubleSequence;
 import demetra.leastsquares.IQRSolver;
 import demetra.maths.Constants;
 import demetra.maths.matrices.Matrix;
@@ -42,7 +43,7 @@ public class FastRotationsSolver implements IQRSolver {
     private double[] A;
 
     @Override
-    public boolean solve(Doubles y, Matrix x) {
+    public boolean solve(DoubleSequence y, Matrix x) {
         try {
             m = x.getColumnsCount();
             n = x.getRowsCount();
@@ -116,8 +117,8 @@ public class FastRotationsSolver implements IQRSolver {
     }
 
     @Override
-    public Doubles coefficients() {
-        return Doubles.ofInternal(c);
+    public DoubleSequence coefficients() {
+        return DoubleSequence.ofInternal(c);
     }
 
     @Override
@@ -216,7 +217,7 @@ public class FastRotationsSolver implements IQRSolver {
     }
 
     @Override
-    public Doubles residuals() {
+    public DoubleSequence residuals() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -224,4 +225,5 @@ public class FastRotationsSolver implements IQRSolver {
     public double ssqerr() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-}
+
+ }

@@ -18,11 +18,11 @@ package demetra.ar.internal;
 
 import demetra.ar.IAutoRegressiveEstimation;
 import demetra.data.DataBlockIterator;
-import demetra.data.Doubles;
 import demetra.design.AlgorithmImplementation;
 import demetra.leastsquares.IQRSolver;
 import demetra.maths.matrices.Matrix;
 import org.openide.util.lookup.ServiceProvider;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -35,7 +35,7 @@ public class OlsAlgorithm implements IAutoRegressiveEstimation {
     private double[] y, a;
 
     @Override
-    public boolean estimate(Doubles Y, int nar) {
+    public boolean estimate(DoubleSequence Y, int nar) {
         y=Y.toArray();
         int n = y.length;
         
@@ -45,22 +45,22 @@ public class OlsAlgorithm implements IAutoRegressiveEstimation {
             cols.next().copy(Y.drop(nar-i-1, n));
         }
         IQRSolver solver = IQRSolver.fastSolver();
-        Doubles yc = Y.drop(nar, 0);
+        DoubleSequence yc = Y.drop(nar, 0);
         if (!solver.solve(yc, M)) {
             return false;
         }
-        Doubles c = solver.coefficients();
+        DoubleSequence c = solver.coefficients();
         a=c.toArray();
         return true;
     }
 
     @Override
-    public Doubles coefficients() {
-        return Doubles.ofInternal(a);
+    public DoubleSequence coefficients() {
+        return DoubleSequence.ofInternal(a);
     }
 
     @Override
-    public Doubles data() {
-        return Doubles.ofInternal(y);
+    public DoubleSequence data() {
+        return DoubleSequence.ofInternal(y);
     }
 }

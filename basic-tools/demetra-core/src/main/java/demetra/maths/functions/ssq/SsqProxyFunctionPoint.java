@@ -21,7 +21,7 @@ package demetra.maths.functions.ssq;
 import demetra.design.Development;
 import demetra.maths.functions.IFunction;
 import demetra.maths.functions.IFunctionPoint;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  * 
@@ -44,7 +44,7 @@ public class SsqProxyFunctionPoint implements IFunctionPoint {
      * @return
      */
     @Override
-    public Doubles getParameters() {
+    public DoubleSequence getParameters() {
 	return fx.getParameters();
     }
 

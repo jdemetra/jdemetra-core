@@ -24,9 +24,9 @@ import demetra.arima.internal.KalmanFilter;
 import demetra.arima.internal.LjungBoxFilter;
 import demetra.arima.internal.ModifiedLjungBoxFilter;
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
 import demetra.design.Algorithm;
 import demetra.design.Development;
+import demetra.data.DoubleSequence;
 
 
 /**
@@ -52,7 +52,7 @@ public interface IArmaFilter {
      * @param inrc y (len=n)
      * @param outrc z (len=m)
      */
-    void apply(Doubles inrc, DataBlock outrc);
+    void apply(DoubleSequence inrc, DataBlock outrc);
 
     /**
      * Computes the log of the determinant of the covariance matrix

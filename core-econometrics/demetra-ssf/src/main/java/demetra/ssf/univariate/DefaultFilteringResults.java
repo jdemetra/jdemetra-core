@@ -28,7 +28,7 @@ import demetra.ssf.MatrixResults;
 import demetra.ssf.ResultsRange;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  * Will contain the following items at position t: a(t|t-1)
@@ -110,7 +110,7 @@ public class DefaultFilteringResults implements IFilteringResults, IStateResults
     }
 
     @Override
-    public Doubles errors(boolean normalized, boolean clean) {
+    public DoubleSequence errors(boolean normalized, boolean clean) {
         DataBlock r = e.all();
         if (normalized) {
             r = DataBlock.copyOf(r);
@@ -131,11 +131,11 @@ public class DefaultFilteringResults implements IFilteringResults, IStateResults
         return P.item(pos, pos);
     }
 
-    public Doubles errors() {
+    public DoubleSequence errors() {
         return e.asDoublesReader(true);
     }
 
-    public Doubles errorVariances() {
+    public DoubleSequence errorVariances() {
         return f.asDoublesReader(true);
     }
 
