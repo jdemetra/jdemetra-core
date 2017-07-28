@@ -25,6 +25,7 @@ import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 import javax.annotation.Nonnegative;
 import demetra.data.DoubleSequence;
+import demetra.maths.linearfilters.IFiniteFilter;
 
 /**
  *
@@ -73,7 +74,7 @@ public class TsDataToolkit {
         TsPeriod istart = iDomain.getStart();
         int li = lDomain.search(istart), ri = rDomain.search(istart);
         double[] data = new double[iDomain.length()];
-        DoubleReader lreader = left.values().reader(), rreader=right.values().reader();
+        DoubleReader lreader = left.values().reader(), rreader = right.values().reader();
         lreader.setPosition(li);
         rreader.setPosition(ri);
         for (int i = 0; i < data.length; ++i) {
@@ -100,7 +101,7 @@ public class TsDataToolkit {
     }
 
     public TsData drop(TsData s, int nbeg, int nend) {
-         TsDomain ndomain = TsDataToolkit.drop(s.domain(), nbeg, nend);
+        TsDomain ndomain = TsDataToolkit.drop(s.domain(), nbeg, nend);
         return TsData.of(ndomain.getStart(), s.values().extract(nbeg, ndomain.length()));
     }
 
@@ -365,14 +366,28 @@ public class TsDataToolkit {
 
     public TsData normalize(TsData s) {
         double[] data = s.values().toArray();
-        DataBlock values=DataBlock.ofInternal(data);
+        DataBlock values = DataBlock.ofInternal(data);
         final double mean = values.average();
         double ssqc = values.ssqc(mean);
         final double std = Math.sqrt(ssqc / values.length());
-        for (int i=0; i<data.length; ++i){
-            data[i]=(data[i]-mean)/std;
+        for (int i = 0; i < data.length; ++i) {
+            data[i] = (data[i] - mean) / std;
         }
         return TsData.ofInternal(s.getStart(), data);
     }
 
+    public TsData lead(TsData s, @Nonnegative int lead) {
+        return lead == 0 ? s : TsData.ofInternal(s.getStart().minus(lead), s.values());
+    }
+
+    public TsData lag(TsData s, @Nonnegative int lag) {
+        return lag == 0 ? s : TsData.ofInternal(s.getStart().plus(lag), s.values());
+    }
+
+    public TsData apply(IFiniteFilter filter, TsData s){
+        double[] data = s.values().toArray();
+        double[] result=new double[data.length-filter.length()+1];
+        filter.apply(DataBlock.ofInternal(data), DataBlock.ofInternal(result));
+        return TsData.ofInternal(s.getStart().minus(filter.getLowerBound()), result);
+    }
 }

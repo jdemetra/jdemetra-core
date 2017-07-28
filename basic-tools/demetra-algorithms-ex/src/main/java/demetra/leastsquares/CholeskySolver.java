@@ -7,7 +7,7 @@ package demetra.leastsquares;
 
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
-import demetra.data.NeumaierAccumulator;
+import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.leastsquares.ILeastSquaresSolver;
 import demetra.maths.Constants;
 import demetra.maths.matrices.LowerTriangularMatrix;

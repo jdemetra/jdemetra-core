@@ -11,7 +11,7 @@ import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.IQRDecomposition;
-import demetra.data.NeumaierAccumulator;
+import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.design.IBuilder;
 import demetra.leastsquares.IQRSolver;
 import demetra.maths.matrices.SymmetricMatrix;

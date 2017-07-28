@@ -25,23 +25,79 @@ import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
+import demetra.design.IBuilder;
+import javax.annotation.Nonnull;
 
 /**
  *
  * @author Jean Palate
  */
 @Immutable
-public class OlsResults {
+public class LeastSquaresResults {
 
-    public OlsResults(DoubleSequence Y, Matrix X, boolean mean, DoubleSequence coefficients, Matrix unscaledCov, double ssq) {
+    public static class Builder implements IBuilder<LeastSquaresResults> {
+
+        private Builder(DoubleSequence y, final Matrix X) {
+            this.y = y;
+            this.X = X;
+        }
+
+        public Builder mean(boolean mu) {
+            this.mean = mu;
+            return this;
+        }
+
+        public Builder estimation(DoubleSequence coefficients, Matrix ucov) {
+            this.coefficients = coefficients;
+            this.ucov = ucov;
+            return this;
+        }
+
+        public Builder ssq(double ssq) {
+            this.ssq = ssq;
+            return this;
+        }
+
+        public Builder residuals(DoubleSequence res) {
+            this.res = res;
+            if (ssq == 0) {
+                ssq = Doubles.ssq(res);
+            }
+            return this;
+        }
+
+        public Builder logDeterminant(double ldet) {
+            this.ldet = ldet;
+            return this;
+        }
+
+        private final DoubleSequence y;
+        private final Matrix X;
+        private boolean mean;
+        private DoubleSequence coefficients, res;
+        private double ssq, ldet;
+        private Matrix ucov;
+
+        @Override
+        public LeastSquaresResults build() {
+            return new LeastSquaresResults(y, X, mean, coefficients, ucov, ssq, ldet);
+        }
+    }
+    
+    public static Builder builder(@Nonnull DoubleSequence Y, Matrix X){
+        return new Builder(Y, X);
+    }
+
+    private LeastSquaresResults(DoubleSequence Y, Matrix X, boolean mean, DoubleSequence coefficients, Matrix unscaledCov, double ssq, double ldet) {
         this.y = Y;
         this.X = X;
         this.mean = mean;
         this.coefficients = coefficients;
         this.ssq = ssq;
+        this.ldet = ldet;
         this.n = y.length();
         this.ucov = unscaledCov;
-        this.nx = ucov.diagonal().count(x -> x != 0);
+        this.nx = ucov == null ? 0 : ucov.diagonal().count(x -> x != 0);
         // compute auxiliaries
         y2 = Doubles.ssq(y);
         ym = Doubles.average(y);
@@ -53,7 +109,7 @@ public class OlsResults {
     private final boolean mean;
     private final int n, nx;
     private final DoubleSequence coefficients;
-    private final double ssq;
+    private final double ssq, ldet;
     private final Matrix ucov;
     // auxiliary results
     private final double y2, ym, bxy;
@@ -177,6 +233,7 @@ public class OlsResults {
                 .coefficients(coefficients)
                 .unscaledCovariance(ucov)
                 .ssqErr(ssq)
+                .logDeterminant(ldet)
                 .build();
     }
 

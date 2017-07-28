@@ -5,6 +5,7 @@
  */
 package demetra.data;
 
+import demetra.data.accumulator.KahanAccumulator;
 import static demetra.data.DataBlock.ofInternal;
 import demetra.maths.matrices.Matrix;
 import java.util.function.DoubleBinaryOperator;

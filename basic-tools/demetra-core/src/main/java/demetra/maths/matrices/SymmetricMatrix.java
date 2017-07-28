@@ -9,7 +9,7 @@ import demetra.maths.matrices.spi.SymmetricMatrixAlgorithms;
 import java.util.concurrent.atomic.AtomicReference;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleAccumulator;
+import demetra.data.accumulator.DoubleAccumulator;
 import demetra.random.IRandomNumberGenerator;
 import demetra.utilities.ServiceLookup;
 

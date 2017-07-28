@@ -5,24 +5,25 @@
  */
 package demetra.linearmodel;
 
+import demetra.data.DataBlock;
 import demetra.eco.EcoException;
 import lombok.NonNull;
 import demetra.leastsquares.IQRSolver;
 import demetra.leastsquares.internal.QRSolver;
-import demetra.likelihood.ConcentratedLikelihood;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import demetra.data.DoubleSequence;
+import demetra.data.LogSign;
+import demetra.maths.matrices.LowerTriangularMatrix;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public class Ols implements IOls {
+public class Gls implements IGls {
 
     private static AtomicReference<Supplier<IQRSolver>> QR_FACTORY = new AtomicReference<>(()
             -> QRSolver.builder(new Householder()).build());
@@ -33,29 +34,42 @@ public class Ols implements IOls {
 
     private final IQRSolver solver;
 
-    public Ols() {
+    public Gls() {
         solver = QR_FACTORY.get().get();
     }
 
-    public Ols(@NonNull final IQRSolver solver) {
+    public Gls(@NonNull final IQRSolver solver) {
         this.solver = solver;
     }
 
     @Override
-    public LeastSquaresResults compute(LinearModel model) {
-        DoubleSequence y = model.getY();
-        Matrix x = model.variables();
-        if (!solver.solve(y, x)) {
-            throw new EcoException(EcoException.OLS_FAILED);
+    public LeastSquaresResults compute(LinearModel model, Matrix cov) {
+
+        Matrix L = cov.deepClone();
+        try {
+            SymmetricMatrix.lcholesky(L);
+        } catch (Exception err) {
+            throw new EcoException(EcoException.GLS_FAILED);
+        }
+        // yl = L^-1*y <-> L*yl = y
+        DataBlock yl = DataBlock.copyOf(model.getY());
+        LowerTriangularMatrix.rsolve(L, yl);
+
+        Matrix xl = model.variables();
+        LowerTriangularMatrix.rsolve(L, xl);
+
+        if (!solver.solve(yl, xl)) {
+            throw new EcoException(EcoException.GLS_FAILED);
         }
         Matrix R = solver.R();
         Matrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
                 .inverse(R));
-        return LeastSquaresResults.builder(y, x)
+        return LeastSquaresResults.builder(yl, xl)
                 .mean(model.isMeanCorrection())
                 .estimation(solver.coefficients(), bvar)
                 .ssq(solver.ssqerr())
                 .residuals(solver.residuals())
+                .logDeterminant(2 * LogSign.of(L.diagonal()).value)
                 .build();
     }
 

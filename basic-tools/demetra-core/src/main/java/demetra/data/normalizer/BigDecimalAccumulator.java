@@ -14,8 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.data;
+package demetra.data.normalizer;
 
+import demetra.data.accumulator.DoubleAccumulator;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Robust;
 import java.math.BigDecimal;

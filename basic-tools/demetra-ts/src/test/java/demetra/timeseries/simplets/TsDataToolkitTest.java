@@ -27,10 +27,14 @@ import static demetra.timeseries.simplets.TsDataToolkit.pctVariation;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import static demetra.data.Doubles.average;
+import demetra.maths.linearfilters.HendersonFilters;
+import demetra.maths.linearfilters.SymmetricFilter;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.drop;
 import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
 import static demetra.timeseries.simplets.TsDataToolkit.fn;
+import internal.Demo;
+import org.junit.Ignore;
 
 /**
  *
@@ -38,9 +42,9 @@ import static demetra.timeseries.simplets.TsDataToolkit.fn;
  */
 public class TsDataToolkitTest {
 
-    TsData series = Data.TS_PROD;
-    ec.tstoolkit.timeseries.simplets.TsData oldSeries = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, Data.PROD, false);
-    
+    static TsData series = Data.TS_PROD;
+    static ec.tstoolkit.timeseries.simplets.TsData oldSeries = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, Data.PROD, false);
+
     public TsDataToolkitTest() {
     }
 
@@ -60,13 +64,13 @@ public class TsDataToolkitTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void stressTest() {
         int K = 2000000;
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
-            ec.tstoolkit.timeseries.simplets.TsData c = 
-                    ec.tstoolkit.timeseries.simplets.TsData.add(oldSeries, oldSeries.drop(20, 50)).log();
+            ec.tstoolkit.timeseries.simplets.TsData c
+                    = ec.tstoolkit.timeseries.simplets.TsData.add(oldSeries, oldSeries.drop(20, 50)).log();
             c.normalize();
             c = c.delta(12);
             double v = c.average();
@@ -120,8 +124,19 @@ public class TsDataToolkitTest {
         assertTrue(distance(s, c) < 1e-9);
     }
 
+    @Demo
+    public static void main(String[] args) {
+        SymmetricFilter h13 = HendersonFilters.instance.create(13);
+        SymmetricFilter h25 = HendersonFilters.instance.create(25);
+        System.out.println("h13");
+        System.out.println(TsDataToolkit.apply(h13, series));
+        System.out.println("h25");
+        System.out.println(TsDataToolkit.apply(h25, series));
+
+    }
+
     private double distance(TsData s1, ec.tstoolkit.timeseries.simplets.TsData s2) {
-        return Doubles.distance(s1.values(),DoubleSequence.ofInternal(s2.internalStorage()));
+        return Doubles.distance(s1.values(), DoubleSequence.ofInternal(s2.internalStorage()));
     }
 
 }

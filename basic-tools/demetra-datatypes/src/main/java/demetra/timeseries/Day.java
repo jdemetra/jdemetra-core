@@ -19,6 +19,7 @@ package demetra.timeseries;
 import demetra.design.Immutable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Immutable
 @lombok.EqualsAndHashCode
@@ -57,5 +58,13 @@ public final class Day implements IDatePeriod {
     @Override
     public String toString() {
         return day.toString();
+    }
+    
+    public LocalDate toLocalDate(){
+        return day;
+    }
+    
+    public long difference(Day d){
+        return d.day.until(day, ChronoUnit.DAYS);
     }
 }

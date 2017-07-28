@@ -14,8 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.data;
+package demetra.data.accumulator;
 
+import demetra.data.normalizer.IDataNormalizer;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Fast;
 

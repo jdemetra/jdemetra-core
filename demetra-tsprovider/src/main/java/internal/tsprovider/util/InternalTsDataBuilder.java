@@ -19,6 +19,7 @@ package internal.tsprovider.util;
 import demetra.design.VisibleForTesting;
 import demetra.timeseries.simplets.TsAggregationType;
 import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.simplets.TsDataConverter;
 import demetra.timeseries.simplets.TsFrequency;
 import demetra.tsprovider.util.ObsCharacteristics;
 import demetra.tsprovider.util.ObsGathering;
@@ -173,7 +174,7 @@ public class InternalTsDataBuilder {
                 TsData result = TsDataCollector.makeFromUnknownFrequency(obs);
                 if (result != null && (result.getFrequency().getAsInt() % freq.getAsInt() == 0)) {
                     // should succeed
-                    result = result.changeFrequency(freq, convMode, true);
+                    result = TsDataConverter.changeFrequency(result, freq, convMode, true);
                 } else {
                     result = TsDataCollector.makeWithAggregation(obs, freq, convMode);
                 }

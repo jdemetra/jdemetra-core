@@ -17,7 +17,7 @@
 package demetra.sarima.estimation;
 
 import demetra.ar.IAutoRegressiveEstimation;
-import demetra.data.AbsMeanNormalizer;
+import demetra.data.normalizer.AbsMeanNormalizer;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.IBuilder;

@@ -16,6 +16,7 @@
  */
 package demetra.data;
 
+import demetra.data.accumulator.DoubleAccumulator;
 import demetra.design.Unsafe;
 import demetra.utilities.functions.DoubleBiPredicate;
 import java.util.Iterator;

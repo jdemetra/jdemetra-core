@@ -16,7 +16,7 @@
  */
 package demetra.maths.matrices;
 
-import demetra.data.NeumaierAccumulator;
+import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.maths.Constants;
 import demetra.random.IRandomNumberGenerator;
 import demetra.random.MersenneTwister;

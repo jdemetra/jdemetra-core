@@ -45,7 +45,7 @@ public class OlsTest {
                 .build();
 
         Ols ols = new Ols();
-        OlsResults rslts = ols.compute(model);
+        LeastSquaresResults rslts = ols.compute(model);
         System.out.println("Longley");
         System.out.println(rslts);
     }
@@ -69,7 +69,7 @@ public class OlsTest {
                 .build();
 
         Ols ols = new Ols();
-        OlsResults rslts = ols.compute(model);
+        LeastSquaresResults rslts = ols.compute(model);
         System.out.println("Filip");
         System.out.println(rslts);
     }

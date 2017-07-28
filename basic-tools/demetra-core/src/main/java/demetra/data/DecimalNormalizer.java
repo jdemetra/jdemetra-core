@@ -16,6 +16,7 @@
  */
 package demetra.data;
 
+import demetra.data.normalizer.IDataNormalizer;
 import demetra.design.AlgorithmImplementation;
 
 

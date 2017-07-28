@@ -5,10 +5,12 @@
  */
 package demetra.linearmodel;
 
+import demetra.maths.matrices.Matrix;
+
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public interface IOls {
-    LeastSquaresResults compute(LinearModel model);
+public interface IGls {
+    LeastSquaresResults compute(LinearModel model, Matrix cov);
 }

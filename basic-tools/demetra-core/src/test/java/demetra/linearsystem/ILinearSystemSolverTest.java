@@ -10,7 +10,7 @@ import demetra.linearsystem.internal.QRLinearSystemSolver;
 import demetra.linearsystem.internal.LUSolver;
 import java.util.Random;
 import demetra.data.DataBlock;
-import demetra.data.NeumaierAccumulator;
+import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.internal.CroutDoolittle;
 import demetra.maths.matrices.internal.Gauss;
