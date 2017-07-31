@@ -75,7 +75,7 @@ public final class TsDomain implements IDateDomain<TsPeriod> {
     }
 
     @Override
-    public Period toPeriod() {
+    public Period getPeriod() {
         return getFrequency().toPeriod();
     }
 

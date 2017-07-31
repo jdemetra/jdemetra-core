@@ -57,7 +57,7 @@ public final class DiscreteDomain implements ITimeDomain<TimePoint> {
     }
 
     @Override
-    public Period toPeriod() {
+    public Period getPeriod() {
         return null;
     }
 

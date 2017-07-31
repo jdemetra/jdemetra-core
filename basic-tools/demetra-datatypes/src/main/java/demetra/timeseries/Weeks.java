@@ -87,7 +87,7 @@ public final class Weeks implements IDateDomain<DailyPeriod> {
     }
 
     @Override
-    public Period toPeriod() {
+    public Period getPeriod() {
         return PERIOD;
     }
 }
