@@ -163,8 +163,9 @@ public abstract class BaseDiffuseSmoother {
         DoubleReader cell = b.reader();
         while (rows.hasNext()) {
             double cur = cell.next();
+            DataBlock row = rows.next();
             if (cur != 0) {
-                measurement.XpZd(pos, rows.next(), -cur);
+                measurement.XpZd(pos, row, -cur);
             }
         } 
     }

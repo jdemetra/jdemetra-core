@@ -46,12 +46,12 @@ public class SymmetricFilterAlgorithms {
             Polynomial q = Q.asPolynomial();
             Polynomial c = filter.coefficientsAsPolynomial();
 
-            int nq = q.length();
-            int nc = c.length();
+            int nq = q.length() - 1;
+            int nc = c.length() - 1;
             int r = nq > nc ? nq : nc;
 
-            Matrix a = Matrix.square(r);
-            double[] mc = new double[r];
+            Matrix a = Matrix.square(r + 1);
+            double[] mc = new double[r + 1];
             for (int i = 0; i <= r; ++i) {
                 mc[r - i] = i <= nc ? c.get(i) : 0;
                 for (int j = 0; j <= i; ++j) {
@@ -96,8 +96,8 @@ public class SymmetricFilterAlgorithms {
             }
         };
     }
-    
-    private static final int ROBUST_LIMIT=5;
+
+    private static final int ROBUST_LIMIT = 5;
 
     public static SymmetricFilter.Factorizer factorizer() {
         return (SymmetricFilter filter) -> filter.length() > ROBUST_LIMIT ? robustFactorizer().factorize(filter)

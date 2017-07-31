@@ -14,14 +14,12 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.arima.ssf;
+package demetra.ucarima.estimation;
 
 import demetra.data.Data;
-import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
-import demetra.ssf.dk.DkLikelihood;
-import demetra.ssf.dk.DkToolkit;
-import demetra.ssf.univariate.SsfData;
+import demetra.data.DataBlock;
+import demetra.ucarima.UcarimaModel;
+import static demetra.ucarima.UcarimaModelTest.ucmAirline;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -29,20 +27,24 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate
  */
-public class SsfArimaTest {
-
-    public SsfArimaTest() {
+public class BurmanEstimatesCTest {
+    
+    public BurmanEstimatesCTest() {
     }
 
     @Test
-    public void testArima() {
-        SarimaSpecification spec = new SarimaSpecification(12);
-        spec.airline();
-        SarimaModel arima = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.8).build();
-        SsfArima ssf = SsfArima.of(arima);
-        SsfData data=new SsfData(Data.PROD);
-        DkLikelihood dkl = DkToolkit.likelihoodComputer().compute(ssf, data);
-        System.out.println(dkl);
+    public void testAirline() {
+        UcarimaModel ucm = ucmAirline(-.6, -.8);
+        ucm = ucm.simplify();
+        BurmanEstimatesC burman=new BurmanEstimatesC();
+        burman.setData(Data.TS_PROD.values());
+        burman.setUcarimaModel(ucm);
+        double[] estimates = burman.estimates(0, true);
+        System.out.println(DataBlock.ofInternal(estimates));
+        estimates = burman.estimates(1, true);
+        System.out.println(DataBlock.ofInternal(estimates));
+        estimates = burman.estimates(2, true);
+        System.out.println(DataBlock.ofInternal(estimates));
     }
-
+    
 }

@@ -14,14 +14,15 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.arima.ssf;
+package demetra.ucarima.ssf;
 
 import demetra.data.Data;
-import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
-import demetra.ssf.dk.DkLikelihood;
+import demetra.data.DataBlockStorage;
 import demetra.ssf.dk.DkToolkit;
+import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.SsfData;
+import demetra.ucarima.UcarimaModel;
+import static demetra.ucarima.UcarimaModelTest.ucmAirline;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -29,20 +30,23 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate
  */
-public class SsfArimaTest {
+public class SsfUcarimaTest {
 
-    public SsfArimaTest() {
+    public SsfUcarimaTest() {
     }
 
     @Test
-    public void testArima() {
-        SarimaSpecification spec = new SarimaSpecification(12);
-        spec.airline();
-        SarimaModel arima = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.8).build();
-        SsfArima ssf = SsfArima.of(arima);
-        SsfData data=new SsfData(Data.PROD);
-        DkLikelihood dkl = DkToolkit.likelihoodComputer().compute(ssf, data);
-        System.out.println(dkl);
+    public void testDkSmoother() {
+        UcarimaModel ucm = ucmAirline(-.6, -.8);
+        ucm = ucm.simplify();
+        SsfUcarima ssf = SsfUcarima.of(ucm);
+        SsfData data = new SsfData(Data.PROD);
+        DefaultSmoothingResults sd = DkToolkit.smooth(ssf, data, true);
+        DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
+        for (int i = 0; i < 3; ++i) {
+            System.out.println(sd.getComponent(ssf.getComponentPosition(i)));
+            assertTrue(ds.item(ssf.getComponentPosition(i)).distance(sd.getComponent(ssf.getComponentPosition(i))) < 1e-9);
+        }
     }
 
 }

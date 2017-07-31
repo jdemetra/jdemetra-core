@@ -172,6 +172,7 @@ public class BurmanEstimatesC {
             x1[i] = s;
         }
 
+        ww = new double[pstar + qstar];
         for (int i = 0; i < pstar; ++i) {
             ww[i] = w2[pstar - i - 1];
         }
