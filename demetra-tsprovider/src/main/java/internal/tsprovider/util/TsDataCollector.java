@@ -16,12 +16,12 @@
  */
 package internal.tsprovider.util;
 
-import demetra.data.DoubleValues;
+import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.design.Internal;
 import demetra.design.NewObject;
 import demetra.timeseries.TsException;
-import demetra.timeseries.simplets.TsDataType;
+import demetra.timeseries.simplets.TsData;
 import demetra.timeseries.simplets.TsFrequency;
 import demetra.timeseries.simplets.TsPeriod;
 import demetra.timeseries.simplets.TsAggregationType;
@@ -148,7 +148,7 @@ public class TsDataCollector {
      * example if there are several observation for a given month and if the
      * aggregation mode is none), a null is returned (no exception).
      */
-    public TsDataType make(TsFrequency frequency, TsAggregationType convMode) {
+    public TsData make(TsFrequency frequency, TsAggregationType convMode) {
         if (frequency == TsFrequency.Undefined) {
             if (convMode != TsAggregationType.None) {
                 throw new TsException(TsException.INVALID_AGGREGATIONMODE);
@@ -171,7 +171,7 @@ public class TsDataCollector {
      * @since 2.2.0
      */
     @Internal
-    public static TsDataType makeWithAggregation(ObsList obs, TsFrequency freq, TsAggregationType convMode) {
+    public static TsData makeWithAggregation(ObsList obs, TsFrequency freq, TsAggregationType convMode) {
         int n = obs.size();
         if (n == 0) {
             return null; // NO_DATA
@@ -282,9 +282,9 @@ public class TsDataCollector {
         // check if the series is continuous and complete.
         int l = lastId - firstId + 1;
         if (l == ncur + 1) {
-            return TsDataType.of(start, DoubleValues.ofInternal(ncur + 1 == n ? vals : Arrays.copyOf(vals, ncur + 1)));
+            return TsData.of(start, DoubleSequence.ofInternal(ncur + 1 == n ? vals : Arrays.copyOf(vals, ncur + 1)));
         } else {
-            return TsDataType.of(start, expand(ncur + 1, l, ids, o -> vals[o]));
+            return TsData.of(start, expand(ncur + 1, l, ids, o -> vals[o]));
         }
     }
 
@@ -300,7 +300,7 @@ public class TsDataCollector {
      * @since 2.2.0
      */
     @Internal
-    public static TsDataType makeFromUnknownFrequency(ObsList obs) {
+    public static TsData makeFromUnknownFrequency(ObsList obs) {
         int n = obs.size();
         if (n < 2) {
             return null; // NO_DATA or GUESS_SINGLE
@@ -327,9 +327,9 @@ public class TsDataCollector {
         // check if the series is continuous and complete.
         int l = lastId - firstId + 1;
         if (l == n) {
-            return TsDataType.of(start, obs.getValues());
+            return TsData.of(start, obs.getValues());
         } else {
-            return TsDataType.of(start, expand(n, l, ids, obs::getValue));
+            return TsData.of(start, expand(n, l, ids, obs::getValue));
         }
     }
 
@@ -353,7 +353,7 @@ public class TsDataCollector {
      * @since 2.2.0
      */
     @Internal
-    public static TsDataType makeWithoutAggregation(ObsList obs, TsFrequency freq) {
+    public static TsData makeWithoutAggregation(ObsList obs, TsFrequency freq) {
         int n = obs.size();
         if (n == 0) {
             return null; // NO_DATA
@@ -378,19 +378,19 @@ public class TsDataCollector {
         // check if the series is continuous and complete.
         int l = lastId - firstId + 1;
         if (l == n) {
-            return TsDataType.of(start, obs.getValues());
+            return TsData.of(start, obs.getValues());
         } else {
-            return TsDataType.of(start, expand(n, l, ids, obs::getValue));
+            return TsData.of(start, expand(n, l, ids, obs::getValue));
         }
     }
 
-    private static DoubleValues expand(int currentSize, int expectedSize, int[] ids, IntToDoubleFunction valueFunc) {
+    private static DoubleSequence expand(int currentSize, int expectedSize, int[] ids, IntToDoubleFunction valueFunc) {
         double[] result = new double[expectedSize];
         Arrays.fill(result, Double.NaN);
         result[0] = valueFunc.applyAsDouble(0);
         for (int j = 1; j < currentSize; ++j) {
             result[ids[j] - ids[0]] = valueFunc.applyAsDouble(j);
         }
-        return DoubleValues.ofInternal(result);
+        return DoubleSequence.ofInternal(result);
     }
 }

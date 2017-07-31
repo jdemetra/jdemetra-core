@@ -5,14 +5,14 @@
  */
 package demetra.ssf.univariate;
 
-import demetra.data.CellReader;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.maths.linearfilters.ILinearProcess;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
-import demetra.data.Doubles;
+import demetra.data.DoubleReader;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -69,7 +69,7 @@ public class FastFilter implements ILinearProcess {
                 DataBlock C = frslts.M(i);
                 // process by column
                 scols.reset();
-                CellReader r = row.reader();
+                DoubleReader r = row.reader();
                 while (scols.hasNext()) {
                     scols.next().addAY(r.next() / f, C);
                 }
@@ -83,7 +83,7 @@ public class FastFilter implements ILinearProcess {
     }
 
     @Override
-    public boolean transform(Doubles in, DataBlock out) {
+    public boolean transform(DoubleSequence in, DataBlock out) {
         if (in.length() > end - start) {
             return false;
         }

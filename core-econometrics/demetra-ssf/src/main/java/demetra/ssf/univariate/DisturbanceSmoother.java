@@ -5,13 +5,13 @@
  */
 package demetra.ssf.univariate;
 
-import demetra.data.CellReader;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.SymmetricMatrix;
+import demetra.data.DoubleReader;
 
 /**
  *
@@ -242,7 +242,7 @@ public class DisturbanceSmoother {
     }
 
     private void subZ(DataBlockIterator rows, DataBlock b) {
-        CellReader x = b.reader();
+        DoubleReader x = b.reader();
         while (rows.hasNext()) {
             double cur = x.next();
             if (cur != 0) {

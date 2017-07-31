@@ -25,7 +25,7 @@ import demetra.maths.functions.ssq.ISsqFunctionPoint;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.IConcentratedLikelihoodComputer;
 import demetra.ssf.univariate.SsfRegressionModel;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -54,7 +54,7 @@ public class SsfFunctionInstance<S, F extends ISsf> implements
      * @param fn
      * @param p
      */
-    public SsfFunctionInstance(SsfFunction<S, F> fn, Doubles p) {
+    public SsfFunctionInstance(SsfFunction<S, F> fn, DoubleSequence p) {
         this.fn = fn;
         this.p = DataBlock.copyOf(p);
         current=fn.getMapping().map(p);
@@ -76,9 +76,9 @@ public class SsfFunctionInstance<S, F extends ISsf> implements
     }
 
     @Override
-    public Doubles getE() {
+    public DoubleSequence getE() {
         if (E == null) {
-            Doubles res = ll.e();
+            DoubleSequence res = ll.e();
             if (res == null) {
                 return null;
             } else {
@@ -101,7 +101,7 @@ public class SsfFunctionInstance<S, F extends ISsf> implements
     }
 
     @Override
-    public Doubles getParameters() {
+    public DoubleSequence getParameters() {
         return p;
     }
 

@@ -16,6 +16,7 @@
  */
 package demetra.data;
 
+import demetra.utilities.functions.DoubleBiPredicate;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
@@ -122,23 +123,38 @@ class Sequences {
 
     void copyTo(DoubleSequence seq, double[] buffer, int offset) {
         int n = seq.length();
+        DoubleReader reader = seq.reader();
         for (int i = 0; i < n; ++i) {
-            buffer[offset + i] = seq.get(i);
+            buffer[offset + i] = reader.next();
         }
     }
 
     double[] toArray(DoubleSequence seq) {
         double[] result = new double[seq.length()];
+        DoubleReader reader = seq.reader();
         for (int i = 0; i < result.length; ++i) {
-            result[i] = seq.get(i);
+            result[i] = reader.next();
         }
         return result;
     }
 
     boolean allMatch(DoubleSequence seq, DoublePredicate pred) {
         int n = seq.length();
+        DoubleReader reader = seq.reader();
         for (int i = 0; i < n; ++i) {
-            if (!pred.test(seq.get(i))) {
+            if (!pred.test(reader.next())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    boolean allMatch(DoubleSequence seq1, DoubleSequence seq2, DoubleBiPredicate pred) {
+        int n = seq1.length();
+        DoubleReader reader1 = seq1.reader();
+        DoubleReader reader2 = seq2.reader();
+        for (int i = 0; i < n; ++i) {
+            if (!pred.test(reader1.next(), reader2.next())) {
                 return false;
             }
         }
@@ -147,8 +163,9 @@ class Sequences {
 
     boolean anyMatch(DoubleSequence seq, DoublePredicate pred) {
         int n = seq.length();
+        DoubleReader reader = seq.reader();
         for (int i = 0; i < n; ++i) {
-            if (pred.test(seq.get(i))) {
+            if (pred.test(reader.next())) {
                 return true;
             }
         }
@@ -157,8 +174,9 @@ class Sequences {
 
     int firstIndexOf(DoubleSequence seq, DoublePredicate pred) {
         int n = seq.length();
+        DoubleReader reader = seq.reader();
         for (int i = 0; i < n; ++i) {
-            if (pred.test(seq.get(i))) {
+            if (pred.test(reader.next())) {
                 return i;
             }
         }
@@ -178,9 +196,23 @@ class Sequences {
     double reduce(DoubleSequence seq, double initial, DoubleBinaryOperator fn) {
         double cur = initial;
         int n = seq.length();
+        DoubleReader reader = seq.reader();
         for (int i = 0; i < n; ++i) {
-            cur = fn.applyAsDouble(cur, seq.get(i));
+            cur = fn.applyAsDouble(cur, reader.next());
         }
         return cur;
     }
+
+    int count(DoubleSequence seq, DoublePredicate pred) {
+        int n = seq.length();
+        int c = 0;
+        DoubleReader reader = seq.reader();
+        for (int i = n - 1; i >= 0; --i) {
+            if (pred.test(reader.next()))  {
+                ++c;
+            }
+        }
+        return c;
+    }
+
 }

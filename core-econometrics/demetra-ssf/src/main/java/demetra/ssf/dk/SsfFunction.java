@@ -26,7 +26,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfBuilder;
 import demetra.ssf.univariate.ISsfData;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -95,7 +95,7 @@ public class SsfFunction<S, F extends ISsf> implements IFunction, ISsqFunction {
     }
 
     @Override
-    public IFunctionPoint evaluate(Doubles parameters) {
+    public IFunctionPoint evaluate(DoubleSequence parameters) {
         return new SsfFunctionInstance<>(this, parameters);
     }
 
@@ -109,7 +109,7 @@ public class SsfFunction<S, F extends ISsf> implements IFunction, ISsqFunction {
     }
 
     @Override
-    public ISsqFunctionPoint ssqEvaluate(Doubles parameters) {
+    public ISsqFunctionPoint ssqEvaluate(DoubleSequence parameters) {
         return new SsfFunctionInstance<>(this, parameters);
     }
 

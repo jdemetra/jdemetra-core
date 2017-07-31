@@ -16,11 +16,11 @@
 */
 package demetra.stats.tests;
 
-import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.design.IBuilder;
 import demetra.dstats.Normal;
 import demetra.stats.DescriptiveStatistics;
+import demetra.data.DoubleSequence;
 
 
 /**
@@ -32,7 +32,7 @@ public class SkewnessTest implements IBuilder<StatisticalTest>
 {
     private final DescriptiveStatistics stats;
     
-    public SkewnessTest(Doubles data)
+    public SkewnessTest(DoubleSequence data)
     {
         this.stats=DescriptiveStatistics.of(data);
     }

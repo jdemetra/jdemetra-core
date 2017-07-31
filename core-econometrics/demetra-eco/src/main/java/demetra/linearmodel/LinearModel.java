@@ -16,7 +16,6 @@
  */
 package demetra.linearmodel;
 
-import demetra.data.CellReader;
 import demetra.data.DataBlock;
 import demetra.design.Immutable;
 import demetra.maths.matrices.Matrix;
@@ -24,9 +23,10 @@ import java.util.ArrayList;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;
 import demetra.data.DoubleSequence;
-import demetra.data.Doubles;
 import demetra.maths.matrices.MatrixWindow;
 import javax.annotation.Nonnull;
+import demetra.data.DoubleReader;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -102,14 +102,14 @@ public class LinearModel {
      * @param b The coefficients of the mean and of the regression variables
      * @return
      */
-    public DataBlock calcResiduals(final Doubles b) {
+    public DataBlock calcResiduals(final DoubleSequence b) {
         if (getVarsCount() != b.length())
             throw new RuntimeException("Incompatible dimensions");
 
         DataBlock res = DataBlock.make(y.length);
         res.copyFrom(y, 0);
 
-        CellReader cell = b.reader();
+        DoubleReader cell = b.reader();
         if (mean) {
             res.add(-cell.next());
         }
@@ -152,8 +152,8 @@ public class LinearModel {
      *
      * @return
      */
-    public Doubles getY() {
-        return Doubles.of(y);
+    public DoubleSequence getY() {
+        return DoubleSequence.of(y);
     }
 
     /**
@@ -187,7 +187,7 @@ public class LinearModel {
      * @param idx
      * @return
      */
-    public Doubles X(final int idx) {
+    public DoubleSequence X(final int idx) {
         return x.column(idx);
     }
 

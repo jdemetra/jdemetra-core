@@ -16,7 +16,6 @@
  */
 package demetra.ssf.dk;
 
-import demetra.data.CellReader;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.Matrix;
@@ -24,6 +23,7 @@ import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.ISmoothingResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.data.DoubleReader;
 
 /**
  *
@@ -160,7 +160,7 @@ public abstract class BaseDiffuseSmoother {
     }
 
     private void subZ(int pos, DataBlockIterator rows, DataBlock b) {
-        CellReader cell = b.reader();
+        DoubleReader cell = b.reader();
         while (rows.hasNext()) {
             double cur = cell.next();
             if (cur != 0) {

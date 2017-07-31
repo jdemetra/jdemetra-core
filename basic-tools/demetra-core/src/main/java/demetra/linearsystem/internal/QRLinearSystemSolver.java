@@ -19,7 +19,7 @@ package demetra.linearsystem.internal;
 import demetra.data.Cell;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.NeumaierAccumulator;
+import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.design.IBuilder;
 import demetra.maths.matrices.IQRDecomposition;
 import demetra.maths.matrices.Matrix;

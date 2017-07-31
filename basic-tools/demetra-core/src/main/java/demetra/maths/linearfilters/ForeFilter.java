@@ -16,7 +16,6 @@
  */
 package demetra.maths.linearfilters;
 
-import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
@@ -26,6 +25,7 @@ import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.PolynomialException;
 import demetra.maths.polynomials.UnitRootsSolver;
 import java.util.function.IntToDoubleFunction;
+import demetra.data.DoubleSequence;
 
 /**
  *

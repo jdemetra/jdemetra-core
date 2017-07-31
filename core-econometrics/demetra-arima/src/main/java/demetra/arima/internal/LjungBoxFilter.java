@@ -19,7 +19,6 @@ package demetra.arima.internal;
 import demetra.arima.IArimaModel;
 import demetra.arima.estimation.IArmaFilter;
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
 import demetra.data.LogSign;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Legacy;
@@ -30,6 +29,7 @@ import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
 import org.openide.util.lookup.ServiceProvider;
+import demetra.data.DoubleSequence;
 
 /**
  * @author Jean Palate
@@ -73,7 +73,7 @@ public class LjungBoxFilter implements IArmaFilter {
     // / </summary>
     // / <param name="w"></param>
     // / <returns></returns>
-    private double[] calca0(Doubles w) {
+    private double[] calca0(DoubleSequence w) {
         double[] a0 = new double[w.length()];
         w.copyTo(a0, 0);
         ar(a0);
@@ -169,7 +169,7 @@ public class LjungBoxFilter implements IArmaFilter {
     }
 
     @Override
-    public void apply(Doubles w, DataBlock wl) {
+    public void apply(DoubleSequence w, DataBlock wl) {
         if (m_G == null) {
             int n = wl.length();
             for (int i = 0; i < n; ++i) {

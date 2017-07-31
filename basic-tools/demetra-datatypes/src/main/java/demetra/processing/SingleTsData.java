@@ -16,7 +16,7 @@
  */
 package demetra.processing;
 
-import demetra.timeseries.simplets.TsDataType;
+import demetra.timeseries.simplets.TsData;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +29,7 @@ import java.util.Map;
 public class SingleTsData implements IProcResults {
 
     String name;
-    TsDataType ts;
+    TsData ts;
 
     @Override
     public boolean contains(String id) {
@@ -38,12 +38,12 @@ public class SingleTsData implements IProcResults {
 
     @Override
     public Map<String, Class> getDictionary() {
-        return Collections.singletonMap(name, (Class) TsDataType.class);
+        return Collections.singletonMap(name, (Class) TsData.class);
     }
 
     @Override
     public <T> T getData(String id, Class<T> tclass) {
-        if (id.equals(name) && tclass.equals(TsDataType.class)) {
+        if (id.equals(name) && tclass.equals(TsData.class)) {
             return (T) ts;
         } else {
             return null;

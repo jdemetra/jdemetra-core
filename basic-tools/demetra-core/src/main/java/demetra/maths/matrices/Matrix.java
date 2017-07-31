@@ -5,11 +5,10 @@
  */
 package demetra.maths.matrices;
 
-import demetra.data.CellReader;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;
-import demetra.data.DoubleAccumulator;
+import demetra.data.accumulator.DoubleAccumulator;
 import demetra.design.IBuilder;
 import java.util.Iterator;
 import java.util.function.BiConsumer;
@@ -18,8 +17,9 @@ import demetra.design.Unsafe;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
-import demetra.data.Doubles;
 import javax.annotation.Nonnegative;
+import demetra.data.DoubleReader;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -43,7 +43,7 @@ public class Matrix {
         return i;
     }
 
-    public static Matrix diagonal(Doubles d) {
+    public static Matrix diagonal(DoubleSequence d) {
         Matrix i = square(d.length());
         i.diagonal().copy(d);
         return i;
@@ -292,7 +292,7 @@ public class Matrix {
         if (colInc == 1) {
             DataBlockIterator rows = rowsIterator();
             while (rows.hasNext()) {
-                CellReader cell = rows.next().reader();
+                DoubleReader cell = rows.next().reader();
                 for (int i = 0; i < ncols; ++i) {
                     double cur = cell.next();
                     if (cur != 0) {
@@ -311,7 +311,7 @@ public class Matrix {
         } else {
             DataBlockIterator columns = columnsIterator();
             while (columns.hasNext()) {
-                CellReader cell = columns.next().reader();
+                DoubleReader cell = columns.next().reader();
                 for (int i = 0; i < nrows; ++i) {
                     double cur = cell.next();
                     if (cur != 0) {

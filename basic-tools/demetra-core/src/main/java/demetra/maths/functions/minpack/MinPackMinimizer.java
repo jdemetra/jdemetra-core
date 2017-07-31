@@ -17,12 +17,12 @@
 
 package demetra.maths.functions.minpack;
 
-import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.maths.functions.ssq.ISsqFunction;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionPoint;
 import demetra.maths.matrices.Matrix;
+import demetra.data.DoubleSequence;
 
 
 /**
@@ -65,7 +65,7 @@ public class MinPackMinimizer implements ISsqFunctionMinimizer {
     }
     
     @Override
-    public Doubles gradientAtMinimum(){
+    public DoubleSequence gradientAtMinimum(){
         return this. m_problem.gradient();
     }
             

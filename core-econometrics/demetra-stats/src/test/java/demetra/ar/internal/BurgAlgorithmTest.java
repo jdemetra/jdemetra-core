@@ -17,10 +17,10 @@
 package demetra.ar.internal;
 
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -28,7 +28,7 @@ import static org.junit.Assert.*;
  */
 public class BurgAlgorithmTest {
 
-    public static final Doubles X;
+    public static final DoubleSequence X;
 
     static {
         double[] x = new double[120];
@@ -38,7 +38,7 @@ public class BurgAlgorithmTest {
         for (int i = 2; i < 120; ++i) {
             x[i] = x[i - 1] * .8 - x[i-2] * .4 + rnd.nextGaussian();
         }
-        X = Doubles.ofInternal(x);
+        X = DoubleSequence.ofInternal(x);
     }
 
     public BurgAlgorithmTest() {

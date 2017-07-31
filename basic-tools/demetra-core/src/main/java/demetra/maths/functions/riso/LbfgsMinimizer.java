@@ -19,12 +19,12 @@
 package demetra.maths.functions.riso;
 
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
 import demetra.maths.functions.IFunction;
 import demetra.maths.functions.IFunctionDerivatives;
 import demetra.maths.functions.IFunctionMinimizer;
 import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.matrices.Matrix;
+import demetra.data.DoubleSequence;
 
 
 /**
@@ -70,7 +70,7 @@ public class LbfgsMinimizer implements IFunctionMinimizer {
     }
 
     @Override
-    public Doubles gradientAtMinimum() {
+    public DoubleSequence gradientAtMinimum() {
         return fpt.derivatives().gradient();
     }
     // / <param name="eps">Determines the accuracy with which the solution
@@ -147,7 +147,7 @@ public class LbfgsMinimizer implements IFunctionMinimizer {
         fpt = start;
         converged = false;
 
-        Doubles px = fpt.getParameters();
+        DoubleSequence px = fpt.getParameters();
         int n = px.length();
         if (n == 0) {
             return true;

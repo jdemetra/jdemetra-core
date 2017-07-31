@@ -16,7 +16,8 @@
  */
 package demetra.stats.samples;
 
-import demetra.data.CellReader;
+import demetra.data.DoubleReader;
+import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 
 /**
@@ -36,11 +37,12 @@ public class SamplesUtility {
      * @param n
      * @return
      */
-    public double cov(Doubles x, Doubles y) {
+    public double cov(DoubleSequence x, DoubleSequence y) {
         double v = 0;
         int nm = 0;
-        int n=x.length();
-        CellReader xcur = x.reader(), ycur=y.reader();
+        int n = x.length();
+        DoubleReader xcur = x.reader();
+        DoubleReader ycur = y.reader();
         for (int i = 0; i < n; ++i) {
             double xval = xcur.next();
             double yval = ycur.next();
@@ -61,14 +63,11 @@ public class SamplesUtility {
      * compute the covariance of (x (from sx to sx+n), y(from sy to sy+n)
      *
      * @param x
-     * @param sx
      * @param y
-     * @param sy
-     * @param n
      * @return
      */
-    public double covNoMissing(Doubles x, Doubles y) {
-        return x.dot(y);
+    public double covNoMissing(DoubleSequence x, DoubleSequence y) {
+        return Doubles.dot(x, y);
     }
 
 }

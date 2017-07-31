@@ -16,7 +16,7 @@
  */
 package demetra.ssf.multivariate;
 
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 
 /**
@@ -31,7 +31,7 @@ public interface IMultivariateSsfData {
      * @param v
      * @return
      */
-    Doubles get(int pos);
+    DoubleSequence get(int pos);
     /**
      *
      * @param pos

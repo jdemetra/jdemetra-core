@@ -30,7 +30,7 @@ import demetra.ssf.univariate.FastFilter;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.OrdinaryFilter;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  * QR variant copyOf the augmented Kalman filter. See for instance
@@ -69,7 +69,7 @@ public class QRFilter {
             return false;
         }
         DeterminantalTerm det = new DeterminantalTerm();
-        Doubles vars = fr.errorVariances();
+        DoubleSequence vars = fr.errorVariances();
         for (int i = 0; i < vars.length(); ++i) {
             double v = vars.get(i);
             if (v != 0) {

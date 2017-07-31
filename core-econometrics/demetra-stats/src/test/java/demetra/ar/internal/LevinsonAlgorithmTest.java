@@ -17,11 +17,10 @@
 package demetra.ar.internal;
 
 import demetra.ar.IAutoRegressiveEstimation;
-import demetra.data.DataBlock;
-import demetra.data.Doubles;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -29,7 +28,7 @@ import static org.junit.Assert.*;
  */
 public class LevinsonAlgorithmTest {
 
-    public static final Doubles X;
+    public static final DoubleSequence X;
 
     static {
         double[] x = new double[120];
@@ -39,7 +38,7 @@ public class LevinsonAlgorithmTest {
         for (int i = 2; i < 120; ++i) {
             x[i] = x[i - 1] * .8 - x[i-2] * .4 + rnd.nextGaussian();
         }
-        X = Doubles.ofInternal(x);
+        X = DoubleSequence.ofInternal(x);
     }
 
     public LevinsonAlgorithmTest() {
@@ -64,8 +63,8 @@ public class LevinsonAlgorithmTest {
                 a[i] -= coeff[j - 1] * x[i - j];
             }
         }
-        assertTrue(ar.coefficients().allMatch(Doubles.ofInternal(coeff), (y,z)->Math.abs(y-z)<1e-9));
-        assertTrue(ar.residuals().allMatch(Doubles.ofInternal(a), (y,z)->Math.abs(y-z)<1e-9));
+        assertTrue(ar.coefficients().allMatch(DoubleSequence.ofInternal(coeff), (y,z)->Math.abs(y-z)<1e-9));
+        assertTrue(ar.residuals().allMatch(DoubleSequence.ofInternal(a), (y,z)->Math.abs(y-z)<1e-9));
    }
 
 }

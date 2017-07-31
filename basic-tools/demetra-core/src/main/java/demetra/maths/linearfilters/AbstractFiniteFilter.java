@@ -18,11 +18,11 @@ package demetra.maths.linearfilters;
 
 import demetra.data.DataBlock;
 import demetra.data.DataWindow;
-import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import java.util.Formatter;
 import java.util.function.IntToDoubleFunction;
+import demetra.data.DoubleSequence;
 
 /**
  *

@@ -8,12 +8,12 @@ package demetra.arima.estimation;
 import demetra.arima.IArimaModel;
 import demetra.data.Data;
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -22,7 +22,7 @@ import org.junit.Ignore;
 public class IArmaFilterTest {
 
     private static final SarimaModel airline, arima;
-    private static final Doubles data;
+    private static final DoubleSequence data;
 
     static {
         SarimaSpecification spec = new SarimaSpecification(12);

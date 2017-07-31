@@ -20,7 +20,6 @@ import demetra.arima.ArimaException;
 import demetra.arima.IArimaModel;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.leastsquares.IQRSolver;
 import demetra.likelihood.ConcentratedLikelihood;
@@ -30,6 +29,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.utilities.SubArrayOfInt;
+import demetra.data.DoubleSequence;
 
 
 /**
@@ -72,7 +72,7 @@ public class FastKalmanFilter {
      * @param y
      * @return
      */
-    public DataBlock fastFilter(final Doubles y) {
+    public DataBlock fastFilter(final DoubleSequence y) {
         double[] C = c0.clone();
         double h = h0;
 
@@ -159,7 +159,7 @@ public class FastKalmanFilter {
      * @param nparams
      * @return BIC statistics
      */
-    public double fastProcessing(final Doubles y, int nparams) {
+    public double fastProcessing(final DoubleSequence y, int nparams) {
         DataBlock yl = fastFilter(y);
         int n = yl.length();
         double ssqerr = yl.ssq();
@@ -190,7 +190,7 @@ public class FastKalmanFilter {
      * @param stde
      * @return
      */
-    public boolean process(final Doubles y, final DataBlock res,
+    public boolean process(final DoubleSequence y, final DataBlock res,
             final DataBlock stde) {
         fast_ = false;
         DeterminantalTerm det = new DeterminantalTerm();
@@ -263,7 +263,7 @@ public class FastKalmanFilter {
      * on entry. The likelihood is completed if the processing is successful.
      * @return True if the processing is successful, false otherwise.
      */
-    public Likelihood process(final Doubles y) {
+    public Likelihood process(final DoubleSequence y) {
         fast_ = false;
         DeterminantalTerm det = new DeterminantalTerm();
         double[] C = c0.clone();
@@ -324,7 +324,7 @@ public class FastKalmanFilter {
         } while (++pos < n);
 
         return Likelihood.builder(n)
-                .residuals(Doubles.of(yl))
+                .residuals(DoubleSequence.of(yl))
                 .logDeterminant(det.getLogDeterminant())
                 .build();
     }
@@ -338,7 +338,7 @@ public class FastKalmanFilter {
      * @param ll
      * @return
      */
-    public ConcentratedLikelihood process(final Doubles y, final SubArrayOfInt ao,
+    public ConcentratedLikelihood process(final DoubleSequence y, final SubArrayOfInt ao,
             final Matrix x) {
         fast_ = false;
         DeterminantalTerm det = new DeterminantalTerm();

@@ -52,8 +52,8 @@ public class DoublesUtilityTest {
         }
         for (int k = 0; k < K; ++k) {
             double s = 0;
-            CellReader cur = a.reader();
-            CellReader xcur = b.reader();
+            DoubleReader cur = a.reader();
+            DoubleReader xcur = b.reader();
             for (int i = 0; i < N; i++) {
                 s += cur.next() * xcur.next();
             }
@@ -63,8 +63,8 @@ public class DoublesUtilityTest {
         long t0=System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             double s = 0;
-            CellReader cur = a.reader();
-            CellReader xcur = b.reader();
+            DoubleReader cur = a.reader();
+            DoubleReader xcur = b.reader();
             for (int i = 0; i < N; i++) {
                 s += cur.next() * xcur.next();
             }

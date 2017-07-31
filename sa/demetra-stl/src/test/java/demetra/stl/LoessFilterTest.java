@@ -25,7 +25,7 @@ import demetra.data.DataBlock;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -39,7 +39,7 @@ public class LoessFilterTest {
     @Test
     @Ignore
     public void testNormal() {
-        Doubles s=Data.X;
+        DoubleSequence s=Data.X;
         double[] d = s.toArray();
         LoessSpecification spec = LoessSpecification.of(25, 0,1, null);
         LoessFilter filter=new LoessFilter(spec);
@@ -51,7 +51,7 @@ public class LoessFilterTest {
     
     @Test
     public void testBF() {
-        Doubles s=Data.X;
+        DoubleSequence s=Data.X;
         double[] d = s.toArray();
         LoessSpecification spec = LoessSpecification.of(25, 1, 5, null);
         LoessFilter filter=new LoessFilter(spec);

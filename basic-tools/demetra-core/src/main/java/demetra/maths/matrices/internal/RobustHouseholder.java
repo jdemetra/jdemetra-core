@@ -18,14 +18,14 @@ package demetra.maths.matrices.internal;
 
 import demetra.maths.Constants;
 import demetra.data.DataBlock;
-import demetra.data.DoubleAccumulator;
+import demetra.data.accumulator.DoubleAccumulator;
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.IQRDecomposition;
-import demetra.data.Doubles;
-import demetra.data.NeumaierAccumulator;
+import demetra.data.accumulator.NeumaierAccumulator;
 import java.util.function.Supplier;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -82,7 +82,7 @@ public class RobustHouseholder implements IQRDecomposition {
     }
 
     @Override
-    public Doubles rdiagonal(boolean compact) {
+    public DoubleSequence rdiagonal(boolean compact) {
         return DataBlock.ofInternal(rdiag);
     }
 
@@ -221,7 +221,7 @@ public class RobustHouseholder implements IQRDecomposition {
     // / <returns>The solution b as an array copyOf double</returns>
     // /
     @Override
-    public void leastSquares(Doubles x, DataBlock b, DataBlock res) {
+    public void leastSquares(DoubleSequence x, DataBlock b, DataBlock res) {
         // if (x.Length != m)
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         // if (!IsFullRank)

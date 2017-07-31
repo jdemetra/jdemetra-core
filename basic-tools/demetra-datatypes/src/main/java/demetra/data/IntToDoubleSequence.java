@@ -22,12 +22,12 @@ import java.util.function.IntToDoubleFunction;
  *
  * @author Philippe Charles
  */
-public final class IntToDoubleSequence implements DoubleSequence {
+final class IntToDoubleSequence implements DoubleSequence {
 
     private final int length;
     private final IntToDoubleFunction fn;
 
-    public IntToDoubleSequence(int length, IntToDoubleFunction fn) {
+    IntToDoubleSequence(int length, IntToDoubleFunction fn) {
         this.length = length;
         this.fn = fn;
     }
@@ -43,15 +43,36 @@ public final class IntToDoubleSequence implements DoubleSequence {
     }
 
     @Override
+    public DoubleSequence extract(final int start, final int length) {
+        return new IntToDoubleSequence(length, i -> fn.applyAsDouble(i + start));
+    }
+
+    @Override
+    public DoubleReader reader() {
+        return new Cell();
+    }
+    
+    @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        int n = length();
-        if (n > 0) {
-            builder.append(get(0));
-            for (int i = 1; i < n; ++i) {
-                builder.append('\t').append(get(i));
-            }
+        return DoubleSequence.toString(this);
+    }
+
+    class Cell implements DoubleReader {
+
+        private int pos;
+
+        Cell() {
+            pos = 0;
         }
-        return builder.toString();
+
+        @Override
+        public double next() {
+            return fn.applyAsDouble(pos++);
+        }
+
+        @Override
+        public void setPosition(int npos) {
+            pos = npos;
+        }
     }
 }

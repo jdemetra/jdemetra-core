@@ -18,13 +18,13 @@
 package demetra.maths.matrices.internal;
 
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
 import demetra.data.LogSign;
 import demetra.design.Development;
 import demetra.maths.Constants;
 import demetra.maths.matrices.ILUDecomposition;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
+import demetra.data.DoubleSequence;
 
 
 /**
@@ -142,7 +142,7 @@ public abstract class LuDecomposition implements ILUDecomposition {
     /// <returns>A double value representing the determinant</returns>
     @Override
     public LogSign determinant() {
-        return LogSign.of(Doubles.ofFunction(n, i->get(i,i)), pivSign<0);
+        return LogSign.of(DoubleSequence.of(n, i->get(i,i)), pivSign<0);
     }
 
     /// <summary>

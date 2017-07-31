@@ -212,7 +212,7 @@ public final class TsPeriod implements IDatePeriod, Comparable<TsPeriod> {
      * @return
      */
     @Internal
-    public int id() {
+    int id() {
         return id;
     }
 

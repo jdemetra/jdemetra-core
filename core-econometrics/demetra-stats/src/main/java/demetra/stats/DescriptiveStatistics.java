@@ -17,11 +17,11 @@
 package demetra.stats;
 
 import demetra.design.Development;
-import demetra.data.Doubles;
 import demetra.design.Immutable;
 import demetra.maths.Constants;
 import java.util.Arrays;
 import java.util.function.DoublePredicate;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -44,7 +44,7 @@ public final class DescriptiveStatistics {
     private double skewness, kurtosis;
     private volatile double[] obs, sortedObs;
 
-    public static DescriptiveStatistics of(Doubles data) {
+    public static DescriptiveStatistics of(DoubleSequence data) {
         return new DescriptiveStatistics(data.toArray());
     }
 
@@ -587,19 +587,19 @@ public final class DescriptiveStatistics {
      *
      * @return
      */
-    public Doubles sortedObservations() {
-        return Doubles.ofInternal(sortObs());
+    public DoubleSequence sortedObservations() {
+        return DoubleSequence.ofInternal(sortObs());
     }
 
     /**
      *
      * @return
      */
-    public Doubles observations() {
-        return Doubles.ofInternal(obs());
+    public DoubleSequence observations() {
+        return DoubleSequence.ofInternal(obs());
     }
 
-    public Doubles data() {
-        return Doubles.ofInternal(data);
+    public DoubleSequence data() {
+        return DoubleSequence.ofInternal(data);
     }
 }

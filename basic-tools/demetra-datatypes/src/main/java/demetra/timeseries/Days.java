@@ -71,7 +71,7 @@ public final class Days implements IDateDomain<Day> {
     }
 
     @Override
-    public Period toPeriod() {
+    public Period getPeriod() {
         return Period.ofDays(1);
     }
 

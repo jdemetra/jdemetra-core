@@ -9,7 +9,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  * A = U*S*V'
@@ -20,7 +20,7 @@ public interface ISingularValueDecomposition {
     
     Matrix U();
     
-    Doubles S();
+    DoubleSequence S();
     
     Matrix V();
 }

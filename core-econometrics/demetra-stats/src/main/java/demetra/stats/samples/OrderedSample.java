@@ -6,9 +6,9 @@
 package demetra.stats.samples;
 
 import demetra.data.DoubleSequence;
-import demetra.data.Doubles;
 import java.util.function.IntToDoubleFunction;
 import java.util.stream.DoubleStream;
+import demetra.data.DoubleSequence;
 
 /**
  *

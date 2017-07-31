@@ -16,7 +16,7 @@
  */
 package demetra.processing;
 
-import demetra.timeseries.simplets.TsDataType;
+import demetra.timeseries.simplets.TsData;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -41,14 +41,14 @@ public class ArrayResult<T> implements IProcResults {
     public Map<String, Class> getDictionary() {
         LinkedHashMap<String, Class> dic = new LinkedHashMap<>();
         for (int i = 0; i < ts.length; ++i) {
-            dic.put(encode(i), TsDataType.class);
+            dic.put(encode(i), TsData.class);
         }
         return dic;
     }
 
     @Override
     public <T> T getData(String id, Class<T> tclass) {
-        if (!tclass.equals(TsDataType.class)) {
+        if (!tclass.equals(TsData.class)) {
             return null;
         }
         int i = decode(id);

@@ -19,6 +19,7 @@ package demetra.likelihood;
 import demetra.design.Development;
 import demetra.design.IBuilder;
 import demetra.design.Immutable;
+import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 
 /**
@@ -65,8 +66,8 @@ public final class Likelihood implements ILikelihood {
             return this;
         }
 
-        public Builder residuals(Doubles residuals){
-            this.ssqerr=residuals.ssq();
+        public Builder residuals(DoubleSequence residuals){
+            this.ssqerr=Doubles.ssq(residuals);
             this.res=residuals.toArray();
             return this;
         }
@@ -141,8 +142,8 @@ public final class Likelihood implements ILikelihood {
     }
 
     @Override
-    public Doubles e() {
-        return Doubles.of(res);
+    public DoubleSequence e() {
+        return DoubleSequence.of(res);
     }
 
  

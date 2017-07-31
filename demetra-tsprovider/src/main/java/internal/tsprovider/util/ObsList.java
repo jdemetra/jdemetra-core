@@ -16,7 +16,7 @@
  */
 package internal.tsprovider.util;
 
-import demetra.data.DoubleValues;
+import demetra.data.DoubleSequence;
 import demetra.design.Internal;
 import demetra.design.NewObject;
 import demetra.timeseries.simplets.TsFrequency;
@@ -40,12 +40,12 @@ public interface ObsList {
     double getValue(int index) throws IndexOutOfBoundsException;
 
     @NewObject
-    default DoubleValues getValues() {
+    default DoubleSequence getValues() {
         double[] result = new double[size()];
         for (int i = 0; i < result.length; i++) {
             result[i] = getValue(i);
         }
-        return DoubleValues.ofInternal(result);
+        return DoubleSequence.ofInternal(result);
     }
 
     @Internal

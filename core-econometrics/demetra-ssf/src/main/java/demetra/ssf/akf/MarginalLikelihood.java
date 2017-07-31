@@ -18,7 +18,7 @@ package demetra.ssf.akf;
 
 import demetra.data.DataBlock;
 import demetra.likelihood.ILikelihood;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -105,7 +105,7 @@ public class MarginalLikelihood implements ILikelihood {
     }
 
     @Override
-    public Doubles e() {
+    public DoubleSequence e() {
         return DataBlock.EMPTY;
     }
 

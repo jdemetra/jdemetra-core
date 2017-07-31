@@ -19,7 +19,7 @@ package demetra.maths.functions;
 
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 
 /**
@@ -52,7 +52,7 @@ public interface IFunctionMinimizer {
      */
     Matrix curvatureAtMinimum();
     
-    Doubles gradientAtMinimum();
+    DoubleSequence gradientAtMinimum();
 
     /**
      *
@@ -88,7 +88,7 @@ public interface IFunctionMinimizer {
      * @return
      */
     default boolean minimize(IFunction function){
-        Doubles start = function.getDomain().getDefault();
+        DoubleSequence start = function.getDomain().getDefault();
         return minimize(function.evaluate(start));
     }
     

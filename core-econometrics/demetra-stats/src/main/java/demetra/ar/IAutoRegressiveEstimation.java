@@ -19,8 +19,8 @@ package demetra.ar;
 import demetra.ar.internal.BurgAlgorithm;
 import demetra.ar.internal.LevinsonAlgorithm;
 import demetra.ar.internal.OlsAlgorithm;
-import demetra.data.Doubles;
 import demetra.design.Algorithm;
+import demetra.data.DoubleSequence;
 
 /**
  * Approximate a given series by an auto-regressive model
@@ -35,26 +35,26 @@ public interface IAutoRegressiveEstimation {
      * @param n The number of lags
      * @return True if the computation was successful
      */
-    boolean estimate(Doubles y, int n);
+    boolean estimate(DoubleSequence y, int n);
     
     /**
      * The original data
      * @return 
      */
-    Doubles data();
+    DoubleSequence data();
     
     /**
      * The coefficients of the models
      * @return The coefficients correspond to the ai of the equation
      */
-    Doubles coefficients();
+    DoubleSequence coefficients();
     
     /**
      * The residuals are given by y(t) - a1 * y(t-1) - ... - an * y(t-n)
      * <br> Missing initial figures are replaced b zeroes.
      * @return 
      */
-    default Doubles residuals(){
+    default DoubleSequence residuals(){
         double[] e=data().toArray();
         double[] a=coefficients().toArray();
         for (int i = e.length-1; i>=0; --i) {
@@ -63,7 +63,7 @@ public interface IAutoRegressiveEstimation {
                 e[i] -= a[j - 1] * e[i - j];
             }
         }
-        return Doubles.ofInternal(e);
+        return DoubleSequence.ofInternal(e);
     }
     
     public static IAutoRegressiveEstimation levinson(){

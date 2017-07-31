@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 
 /**
@@ -36,14 +37,14 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
     
     private static final int NTHREADS = Runtime.getRuntime().availableProcessors();
     
-    private Doubles[] m_ep, m_em, m_de;
+    private DoubleSequence[] m_ep, m_em, m_de;
     private double[] m_epsp;
     private double[] m_epsm;
     private double[] m_grad;
     private Matrix m_h;
     private final ISsqFunction fn;
-    private Doubles m_pt;
-    private Doubles m_ecur;
+    private DoubleSequence m_pt;
+    private DoubleSequence m_ecur;
     private final boolean m_sym, m_mt;
     private static int g_nsteps = 2;
 
@@ -77,12 +78,12 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
         int n = m_pt.length();
         m_grad = new double[n];
         m_epsp = new double[n];
-        m_ep = new Doubles[n];
+        m_ep = new DoubleSequence[n];
         if (m_sym) {
             m_epsm = new double[n];
-            m_em = new Doubles[n];
+            m_em = new DoubleSequence[n];
         }
-        m_de = new Doubles[n];
+        m_de = new DoubleSequence[n];
         if (!m_mt || n < 2) {
             for (int i = 0; i < n; ++i) {
                 m_epsp[i] = fn.getDomain().epsilon(m_pt, i);
@@ -114,8 +115,8 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
         }
         int ne = m_ecur.length();
         for (int i = 0; i < n; ++i) {
-            Doubles ep = m_ep[i];
-            Doubles em = m_ep[i];
+            DoubleSequence ep = m_ep[i];
+            DoubleSequence em = m_ep[i];
             DataBlock de = DataBlock.make(ne);
             if (m_sym) {
                 final double eps = m_epsp[i] - m_epsm[i];
@@ -124,7 +125,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
                 final double eps = m_epsp[i];
                 de.set(ep, m_ecur, (x, y) -> (x - y) / eps);
             }
-            m_grad[i] = 2 * m_ecur.dot(de);
+            m_grad[i] = 2 * Doubles.dot(m_ecur, de);
             m_de[i] = de;
         }
     }
@@ -137,15 +138,15 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
         m_h = Matrix.square(n);
         // compute first the diagonal
         for (int i = 0; i < n; ++i) {
-            Doubles de = m_de[i];
-            m_h.set(i, i, 2 * de.ssq());
+            DoubleSequence de = m_de[i];
+            m_h.set(i, i, 2 * Doubles.ssq(de));
         }
         // other elements
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < i; ++j) {
-                Doubles dei = m_de[i];
-                Doubles dej = m_de[j];
-                double z=2 * dei.dot(dej);
+                DoubleSequence dei = m_de[i];
+                DoubleSequence dej = m_de[j];
+                double z=2 * Doubles.dot(dei, dej);
                 m_h.set(i, j, z);
                 m_h.set(j, i, z);
             }
@@ -212,14 +213,14 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
      * @return
      */
     @Override
-    public Doubles dEdX(int idx) {
+    public DoubleSequence dEdX(int idx) {
         if (m_de == null) {
             calcgrad();
         }
         return m_de[idx];
     }
     
-    private Doubles err(int i, double dx) {
+    private DoubleSequence err(int i, double dx) {
         try {
             if (dx == 0) {
                 return m_ecur;
@@ -239,7 +240,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
      * @return
      */
     @Override
-    public Doubles gradient() {
+    public DoubleSequence gradient() {
         if (m_grad == null) {
             calcgrad();
         }
@@ -291,11 +292,11 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
     
     private class Err implements Callable<Void> {
         
-        Doubles[] rslt;
+        DoubleSequence[] rslt;
         int pos;
         double eps;
         
-        private Err(Doubles[] rslt, int pos, double eps) {
+        private Err(DoubleSequence[] rslt, int pos, double eps) {
             this.rslt = rslt;
             this.pos = pos;
             this.eps = eps;

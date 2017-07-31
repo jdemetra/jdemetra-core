@@ -17,8 +17,8 @@
 package demetra.ssf.univariate;
 
 import demetra.data.DoubleSequence;
-import demetra.data.Doubles;
 import demetra.data.Sequence;
+import demetra.data.DoubleSequence;
 
 /**
  *

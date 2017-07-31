@@ -5,14 +5,10 @@
  */
 package demetra.linearmodel;
 
-import demetra.data.Doubles;
-import demetra.likelihood.ConcentratedLikelihood;
-import demetra.maths.matrices.Matrix;
-
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public interface IOls {
-    OlsResults compute(LinearModel model);
+    LeastSquaresResults compute(LinearModel model);
 }

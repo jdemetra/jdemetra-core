@@ -18,7 +18,7 @@ package demetra.maths.functions.ssq;
 
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 
 /**
@@ -70,7 +70,7 @@ public interface ISsqFunctionMinimizer {
      */
     ISsqFunctionPoint getResult();
 
-    Doubles gradientAtMinimum();
+    DoubleSequence gradientAtMinimum();
 
     double getObjective();
 
@@ -87,7 +87,7 @@ public interface ISsqFunctionMinimizer {
      * @return
      */
     default boolean minimize(ISsqFunction function){
-        Doubles aDefault = function.getDomain().getDefault();
+        DoubleSequence aDefault = function.getDomain().getDefault();
         return minimize(function.ssqEvaluate(aDefault));
     }
     /**

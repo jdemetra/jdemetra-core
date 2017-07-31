@@ -20,9 +20,9 @@ import demetra.arima.IArimaModel;
 import demetra.arima.internal.MaLjungBoxFilter;
 import demetra.data.DataBlock;
 import demetra.data.DataWindow;
-import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.maths.polynomials.Polynomial;
+import demetra.data.DoubleSequence;
 
 /**
  * Computes the forecasts of an Arima model using the approach followed in X12/X13.
@@ -76,7 +76,7 @@ public class FastArimaForecasts implements IArimaForecasts {
      * @return
      */
     @Override
-    public Doubles forecasts(Doubles data, int nf) {
+    public DoubleSequence forecasts(DoubleSequence data, int nf) {
         try {
             DataBlock res = residuals(data);
             // residuals i correspond to t=i+p-q
@@ -112,14 +112,14 @@ public class FastArimaForecasts implements IArimaForecasts {
                 }
                 fcasts[i] = s;
             }
-            return Doubles.ofInternal(fcasts);
+            return DoubleSequence.ofInternal(fcasts);
         } catch (Exception err) {
             return null;
         }
     }
 
     // computes the residuals;
-    private DataBlock residuals(Doubles data) {
+    private DataBlock residuals(DoubleSequence data) {
         DataBlock w = DataBlock.copyOf(data);
         try {
             // step 1. AR filter w, if necessary

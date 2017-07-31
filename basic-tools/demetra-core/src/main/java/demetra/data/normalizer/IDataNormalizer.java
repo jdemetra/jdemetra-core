@@ -14,8 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.data;
+package demetra.data.normalizer;
 
+import demetra.data.DataBlock;
 import demetra.design.Algorithm;
 
 

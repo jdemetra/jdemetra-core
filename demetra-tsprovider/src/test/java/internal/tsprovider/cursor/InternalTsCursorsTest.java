@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import demetra.timeseries.simplets.TsDataType;
+import demetra.timeseries.simplets.TsData;
 import demetra.timeseries.simplets.TsFrequency;
 import demetra.tsprovider.OptionalTsData;
 import static internal.tsprovider.cursor.InternalTsCursor.CLOSE_HANDLER_NPE;
@@ -68,7 +68,7 @@ import static com.google.common.collect.Iterators.forArray;
 public class InternalTsCursorsTest {
 
     private final String someKey = "hello";
-    private final OptionalTsData someData = OptionalTsData.present(TsDataType.random(TsFrequency.Monthly, 1));
+    private final OptionalTsData someData = OptionalTsData.present(TsData.random(TsFrequency.Monthly, 1));
     private final Map<String, String> someMeta = ImmutableMap.of("key", "value");
 
     private final FunctionWithIO<String, String> goodIdFunc = String::toUpperCase;

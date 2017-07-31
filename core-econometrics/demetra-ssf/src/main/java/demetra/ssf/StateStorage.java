@@ -19,7 +19,7 @@ package demetra.ssf;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.univariate.ISsf;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -72,11 +72,11 @@ public class StateStorage implements IStateResults {
         }
     }
 
-    public Doubles getComponent(int pos) {
+    public DoubleSequence getComponent(int pos) {
         return A.item(pos);
     }
 
-    public Doubles getComponentVariance(int pos) {
+    public DoubleSequence getComponentVariance(int pos) {
         return P.item(pos, pos);
     }
 

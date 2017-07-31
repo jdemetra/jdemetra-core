@@ -18,9 +18,7 @@ package demetra.sarima;
 
 import demetra.arima.AbstractArimaModel;
 import demetra.arima.StationaryTransformation;
-import demetra.data.CellReader;
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.design.IBuilder;
 import demetra.design.Immutable;
@@ -28,6 +26,8 @@ import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.Utilities;
 import demetra.maths.polynomials.Polynomial;
 import javax.annotation.Nonnull;
+import demetra.data.DoubleReader;
+import demetra.data.DoubleSequence;
 
 /**
  * Box-Jenkins seasonal arima model AR(B)* SAR(B)*D(B)*SD(B) y(t) =
@@ -105,8 +105,8 @@ public class SarimaModel extends AbstractArimaModel {
             return this;
         }
         
-        public Builder parameters(Doubles p){
-            CellReader reader = p.reader();
+        public Builder parameters(DoubleSequence p){
+            DoubleReader reader = p.reader();
             for (int i=0; i<phi.length; ++i)
                 phi[i]=reader.next();
             for (int i=0; i<bphi.length; ++i)

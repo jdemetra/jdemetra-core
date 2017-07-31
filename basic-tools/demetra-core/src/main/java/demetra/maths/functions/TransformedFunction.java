@@ -19,7 +19,7 @@ package demetra.maths.functions;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 
 /**
@@ -38,7 +38,7 @@ public class TransformedFunction implements IFunction {
         }
 
         @Override
-        public Doubles getParameters() {
+        public DoubleSequence getParameters() {
             return yfx.getParameters();
         }
 
@@ -80,7 +80,7 @@ public class TransformedFunction implements IFunction {
          * @return
          */
         @Override
-        public Doubles gradient() {
+        public DoubleSequence gradient() {
             DataBlock g = DataBlock.copyOf(dfx.gradient());
             double dt = t.df(fx);
             g.mul(dt);
@@ -98,7 +98,7 @@ public class TransformedFunction implements IFunction {
             int n = getDomain().getDim();
             Matrix h = Matrix.square(n);
             dfx.hessian(h);
-            Doubles grad = dfx.gradient();
+            DoubleSequence grad = dfx.gradient();
             double dt = t.df(fx), d2t = t.d2f(fx);
             h.mul(dt);
             h.addXaXt(d2t, DataBlock.copyOf(grad));
@@ -151,7 +151,7 @@ public class TransformedFunction implements IFunction {
     }
 
     @Override
-    public IFunctionPoint evaluate(Doubles parameters) {
+    public IFunctionPoint evaluate(DoubleSequence parameters) {
         return new Point(fn.evaluate(parameters));
     }
 

@@ -18,7 +18,7 @@
 package demetra.maths.functions.ssq;
 
 import demetra.design.Development;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 
 /**
@@ -38,7 +38,7 @@ public interface ISsqRealInstance {
      * 
      * @return
      */
-    Doubles getParameters();
+    DoubleSequence getParameters();
 
     /**
      * 

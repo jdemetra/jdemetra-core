@@ -29,7 +29,7 @@ import demetra.ssf.ResultsRange;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.ISsfMeasurement;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -384,8 +384,8 @@ public class DiffuseSimulationSmoother {
             return ferrors[pos];
         }
 
-        public Doubles getErrors() {
-            return Doubles.ofInternal(ferrors);
+        public DoubleSequence getErrors() {
+            return DoubleSequence.ofInternal(ferrors);
         }
 
         public DataBlockStorage getSimulatedStates() {

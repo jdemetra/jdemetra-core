@@ -98,6 +98,21 @@ public final class DoubleList implements DoubleSequence {
         return Arrays.stream(values, 0, length);
     }
 
+    @Override
+    public DoubleReader reader() {
+        return new Cell();
+    }
+
+    @Override
+    public DoubleSequence extract(int start, int elength) {
+        return new PartialDoubleArray(values, start, elength);
+    }
+
+    @Override
+    public String toString() {
+        return DoubleSequence.toString(this);
+    }
+
     /**
      * add the specified value at the specified index
      *
@@ -524,4 +539,24 @@ public final class DoubleList implements DoubleSequence {
         System.arraycopy(values, 0, newArray, 0, length);
         values = newArray;
     }
+
+    class Cell implements DoubleReader {
+
+        private int pos;
+
+        Cell() {
+            pos = 0;
+        }
+
+        @Override
+        public double next() {
+            return values[pos++];
+        }
+
+        @Override
+        public void setPosition(int npos) {
+            pos = npos;
+        }
+    }
+
 }

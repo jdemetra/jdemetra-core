@@ -17,9 +17,9 @@
 package demetra.linearmodel;
 
 import demetra.data.DataSets;
-import demetra.data.Doubles;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -34,18 +34,18 @@ public class OlsTest {
     public void testLongley() {
         double[] y = DataSets.Longley.y;
 
-        LinearModel model = LinearModel.of(Doubles.ofInternal(y))
+        LinearModel model = LinearModel.of(DoubleSequence.ofInternal(y))
                 .meanCorrection(true)
-                .addX(Doubles.ofInternal(DataSets.Longley.x1))
-                .addX(Doubles.ofInternal(DataSets.Longley.x2))
-                .addX(Doubles.ofInternal(DataSets.Longley.x3))
-                .addX(Doubles.ofInternal(DataSets.Longley.x4))
-                .addX(Doubles.ofInternal(DataSets.Longley.x5))
-                .addX(Doubles.ofInternal(DataSets.Longley.x6))
+                .addX(DoubleSequence.ofInternal(DataSets.Longley.x1))
+                .addX(DoubleSequence.ofInternal(DataSets.Longley.x2))
+                .addX(DoubleSequence.ofInternal(DataSets.Longley.x3))
+                .addX(DoubleSequence.ofInternal(DataSets.Longley.x4))
+                .addX(DoubleSequence.ofInternal(DataSets.Longley.x5))
+                .addX(DoubleSequence.ofInternal(DataSets.Longley.x6))
                 .build();
 
         Ols ols = new Ols();
-        OlsResults rslts = ols.compute(model);
+        LeastSquaresResults rslts = ols.compute(model);
         System.out.println("Longley");
         System.out.println(rslts);
     }
@@ -53,23 +53,23 @@ public class OlsTest {
     @Test
     public void testFilip() {
         double[] y = DataSets.Filip.y;
-        Doubles x=Doubles.ofInternal(DataSets.Filip.x);
-        LinearModel model = LinearModel.of(Doubles.ofInternal(y))
+        DoubleSequence x=DoubleSequence.ofInternal(DataSets.Filip.x);
+        LinearModel model = LinearModel.of(DoubleSequence.ofInternal(y))
                 .meanCorrection(true)
                 .addX(x)
-                .addX(Doubles.transformation(x, a -> a * a))
-                .addX(Doubles.transformation(x, a -> a * a * a))
-                .addX(Doubles.transformation(x, a -> a * a * a * a))
-                .addX(Doubles.transformation(x, a -> a * a * a * a * a))
-                .addX(Doubles.transformation(x, a -> a * a * a * a * a * a))
-                .addX(Doubles.transformation(x, a -> a * a * a * a * a * a * a))
-                .addX(Doubles.transformation(x, a -> a * a * a * a * a * a * a * a))
-                .addX(Doubles.transformation(x, a -> a * a * a * a * a * a * a * a * a))
-                .addX(Doubles.transformation(x, a -> a * a * a * a * a * a * a * a * a * a))
+                .addX(DoubleSequence.transformation(x, a -> a * a))
+                .addX(DoubleSequence.transformation(x, a -> a * a * a))
+                .addX(DoubleSequence.transformation(x, a -> a * a * a * a))
+                .addX(DoubleSequence.transformation(x, a -> a * a * a * a * a))
+                .addX(DoubleSequence.transformation(x, a -> a * a * a * a * a * a))
+                .addX(DoubleSequence.transformation(x, a -> a * a * a * a * a * a * a))
+                .addX(DoubleSequence.transformation(x, a -> a * a * a * a * a * a * a * a))
+                .addX(DoubleSequence.transformation(x, a -> a * a * a * a * a * a * a * a * a))
+                .addX(DoubleSequence.transformation(x, a -> a * a * a * a * a * a * a * a * a * a))
                 .build();
 
         Ols ols = new Ols();
-        OlsResults rslts = ols.compute(model);
+        LeastSquaresResults rslts = ols.compute(model);
         System.out.println("Filip");
         System.out.println(rslts);
     }

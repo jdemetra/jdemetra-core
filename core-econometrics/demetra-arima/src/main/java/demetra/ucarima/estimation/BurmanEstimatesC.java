@@ -21,7 +21,6 @@ import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
 import demetra.arima.estimation.ExactArimaForecasts;
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
@@ -34,6 +33,7 @@ import demetra.maths.polynomials.UnitRoots;
 import demetra.ucarima.UcarimaModel;
 import demetra.ucarima.WienerKolmogorovEstimators;
 import java.util.Arrays;
+import demetra.data.DoubleSequence;
 
 /**
  * Estimation of the components of an UCARIMA model using a variant of the
@@ -58,7 +58,7 @@ public class BurmanEstimatesC {
     private int m_nparams;
     // private int m_p, m_q;, m_r;
     private double[][] m_e, m_f;
-    private Doubles m_xb, m_xf;
+    private DoubleSequence m_xb, m_xf;
     private boolean m_bmean;
     private ILUDecomposition solver;
 
@@ -430,7 +430,7 @@ public class BurmanEstimatesC {
      *
      * @return
      */
-    public Doubles getSeriesBackcasts() {
+    public DoubleSequence getSeriesBackcasts() {
         extendSeries();
         return m_xb;
     }
@@ -439,7 +439,7 @@ public class BurmanEstimatesC {
      *
      * @return
      */
-    public Doubles getSeriesForecasts() {
+    public DoubleSequence getSeriesForecasts() {
         extendSeries();
         return m_xf;
     }
@@ -563,7 +563,7 @@ public class BurmanEstimatesC {
      *
      * @param data
      */
-    public void setData(final Doubles data) {
+    public void setData(final DoubleSequence data) {
         m_data = data.toArray();
         clearResults();
         clearForecasts();

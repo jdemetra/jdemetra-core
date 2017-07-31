@@ -25,7 +25,7 @@ import demetra.ssf.IPredictionErrorDecomposition;
 import demetra.likelihood.ResidualsCumulator;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -56,7 +56,7 @@ public class PredictionErrorDecomposition implements
     }
 
     @Override
-    public Doubles errors(boolean normalized, boolean clean) {
+    public DoubleSequence errors(boolean normalized, boolean clean) {
         if (!bres || !normalized) {
             return null;
         }

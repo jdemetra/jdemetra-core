@@ -17,9 +17,8 @@
 package demetra.sarima.estimation;
 
 import demetra.ar.IAutoRegressiveEstimation;
-import demetra.data.AbsMeanNormalizer;
+import demetra.data.normalizer.AbsMeanNormalizer;
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.design.IBuilder;
 import demetra.leastsquares.IQRSolver;
@@ -28,6 +27,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarmaSpecification;
 import demetra.stats.samples.OrderedSampleWithZeroMean;
+import demetra.data.DoubleSequence;
 
 /**
  * The Hannan-Rissanen procedure is performed as in TRAMO. See
@@ -112,7 +112,7 @@ public class HannanRissanen {
     private final Initialization initialization;
 
     private double[] m_data, m_a, m_pi;
-    private Doubles m_odata;
+    private DoubleSequence m_odata;
     private double bic;
 
     private static final int MAXNPI = 50;
@@ -134,7 +134,7 @@ public class HannanRissanen {
     private double[] ls(Matrix mat, double[] y, boolean bbic) {
         IQRSolver solver = IQRSolver.fastSolver();
         solver.solve(DataBlock.ofInternal(y), mat);
-        Doubles pi = solver.coefficients();
+        DoubleSequence pi = solver.coefficients();
         int n = y.length, m = pi.count(x -> x != 0);
         if (bbic) {
             bic = Math.log(solver.ssqerr() / n) + Math.log(n) * m / n;
@@ -228,7 +228,7 @@ public class HannanRissanen {
         int p = m_spec.getP() + m_spec.getFrequency() * m_spec.getBP();
         int q = m_spec.getQ() + m_spec.getFrequency() * m_spec.getBQ();
         if (p == 0 && q == 0) {
-            bic = Math.log(Doubles.of(m_data).ssq() / m_data.length);
+            bic = Math.log(DataBlock.ofInternal(m_data).ssq() / m_data.length);
             return true;
         }
 
@@ -276,7 +276,7 @@ public class HannanRissanen {
      *
      * @return
      */
-    public Doubles getData() {
+    public DoubleSequence getData() {
         return m_odata;
     }
 
@@ -314,7 +314,7 @@ public class HannanRissanen {
 
     // step 0 of the process...
     private double[] initac() {
-        OrderedSampleWithZeroMean sample=new OrderedSampleWithZeroMean(Doubles.ofInternal(m_data), false);
+        OrderedSampleWithZeroMean sample=new OrderedSampleWithZeroMean(DoubleSequence.ofInternal(m_data), false);
         return sample.autoCorrelations(npi());
     }
 
@@ -331,7 +331,7 @@ public class HannanRissanen {
                 ar=IAutoRegressiveEstimation.levinson();
                 break;
         }
-        ar.estimate(Doubles.of(m_data), npi());
+        ar.estimate(DoubleSequence.of(m_data), npi());
         m_a=ar.residuals().toArray();
     }
 
@@ -386,7 +386,7 @@ public class HannanRissanen {
      * @param spec
      * @return
      */
-    public boolean process(final Doubles value, SarmaSpecification spec) {
+    public boolean process(final DoubleSequence value, SarmaSpecification spec) {
         clear();
         m_spec = spec.clone();
         m_odata = value;

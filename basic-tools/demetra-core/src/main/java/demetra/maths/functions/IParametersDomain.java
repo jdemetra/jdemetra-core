@@ -20,7 +20,7 @@ package demetra.maths.functions;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 
 /**
@@ -36,7 +36,7 @@ public interface IParametersDomain {
      * @param inparams
      * @return
      */
-    boolean checkBoundaries(Doubles inparams);
+    boolean checkBoundaries(DoubleSequence inparams);
 
     /**
      * 
@@ -44,7 +44,7 @@ public interface IParametersDomain {
      * @param idx
      * @return
      */
-    double epsilon(Doubles inparams, int idx);
+    double epsilon(DoubleSequence inparams, int idx);
 
     /**
      * 
@@ -73,7 +73,7 @@ public interface IParametersDomain {
      */
     ParamValidation validate(DataBlock ioparams);
     
-    Doubles getDefault();
+    DoubleSequence getDefault();
     
     default String getDescription(int idx){
         return "parameter-"+(idx+1);

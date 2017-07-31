@@ -16,11 +16,12 @@
  */
 package demetra.maths.matrices;
 
-import demetra.data.CellReader;
 import demetra.data.DataBlock;
 import demetra.design.Unsafe;
 import java.util.Iterator;
 import demetra.data.DataBlockIterator;
+import demetra.data.DoubleReader;
+import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 
 /**
@@ -48,12 +49,13 @@ public class QuadraticForm {
         return new QuadraticForm(s);
     }
 
-    public double apply(Doubles x) {
+    public double apply(DoubleSequence x) {
         DataBlockIterator columns = S.columnsIterator();
-        CellReader cell=x.reader();
-        double s=0;
-        while (columns.hasNext())
-            s+=cell.next()*columns.next().dot(x);
+        DoubleReader cell = x.reader();
+        double s = 0;
+        while (columns.hasNext()) {
+            s += cell.next() * Doubles.dot(columns.next(), x);
+        }
         return s;
     }
 

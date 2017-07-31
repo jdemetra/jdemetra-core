@@ -17,10 +17,10 @@
 package demetra.ar.internal;
 
 import demetra.ar.IAutoRegressiveEstimation;
-import demetra.data.Doubles;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Balanced;
 import org.openide.util.lookup.ServiceProvider;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -34,20 +34,20 @@ public class BurgAlgorithm implements IAutoRegressiveEstimation {
     private double[] a;
 
     @Override
-    public boolean estimate(Doubles y, int m) {
+    public boolean estimate(DoubleSequence y, int m) {
         this.y = new double[y.length()];
         y.copyTo(this.y, 0);
         return calc(m);
     }
 
     @Override
-    public Doubles coefficients() {
-        return Doubles.ofInternal(a);
+    public DoubleSequence coefficients() {
+        return DoubleSequence.ofInternal(a);
     }
 
     @Override
-    public Doubles data() {
-        return Doubles.ofInternal(y);
+    public DoubleSequence data() {
+        return DoubleSequence.ofInternal(y);
     }
 
     private boolean calc(int m) {

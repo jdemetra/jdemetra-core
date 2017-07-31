@@ -18,7 +18,8 @@ package internal.tsprovider.util;
 
 import demetra.design.VisibleForTesting;
 import demetra.timeseries.simplets.TsAggregationType;
-import demetra.timeseries.simplets.TsDataType;
+import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.simplets.TsDataConverter;
 import demetra.timeseries.simplets.TsFrequency;
 import demetra.tsprovider.util.ObsCharacteristics;
 import demetra.tsprovider.util.ObsGathering;
@@ -150,7 +151,7 @@ public class InternalTsDataBuilder {
             case 1:
                 return GUESS_SINGLE;
             default:
-                TsDataType result = TsDataCollector.makeFromUnknownFrequency(obs);
+                TsData result = TsDataCollector.makeFromUnknownFrequency(obs);
                 return result != null ? present(result) : GUESS_DUPLICATION;
         }
     }
@@ -160,7 +161,7 @@ public class InternalTsDataBuilder {
             case 0:
                 return NO_DATA;
             default:
-                TsDataType result = TsDataCollector.makeWithoutAggregation(obs, freq);
+                TsData result = TsDataCollector.makeWithoutAggregation(obs, freq);
                 return result != null ? present(result) : DUPLICATION_WITHOUT_AGGREGATION;
         }
     }
@@ -170,10 +171,10 @@ public class InternalTsDataBuilder {
             case 0:
                 return NO_DATA;
             default:
-                TsDataType result = TsDataCollector.makeFromUnknownFrequency(obs);
+                TsData result = TsDataCollector.makeFromUnknownFrequency(obs);
                 if (result != null && (result.getFrequency().getAsInt() % freq.getAsInt() == 0)) {
                     // should succeed
-                    result = result.changeFrequency(freq, convMode, true);
+                    result = TsDataConverter.changeFrequency(result, freq, convMode, true);
                 } else {
                     result = TsDataCollector.makeWithAggregation(obs, freq, convMode);
                 }

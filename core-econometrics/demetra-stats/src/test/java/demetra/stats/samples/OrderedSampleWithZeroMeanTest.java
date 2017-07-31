@@ -6,12 +6,12 @@
 package demetra.stats.samples;
 
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
 import java.util.Random;
 import java.util.function.IntToDoubleFunction;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
+import demetra.data.DoubleSequence;
 
 /**
  *

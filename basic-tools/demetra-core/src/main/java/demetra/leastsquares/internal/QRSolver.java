@@ -6,20 +6,20 @@
 package demetra.leastsquares.internal;
 
 import demetra.data.Cell;
-import demetra.data.CellReader;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.IQRDecomposition;
-import demetra.data.Doubles;
-import demetra.data.NeumaierAccumulator;
+import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.design.IBuilder;
 import demetra.leastsquares.IQRSolver;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
 import org.openide.util.lookup.ServiceProvider;
+import demetra.data.DoubleReader;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -82,7 +82,7 @@ public class QRSolver implements IQRSolver {
     }
 
     @Override
-    public boolean solve(Doubles y, Matrix x) {
+    public boolean solve(DoubleSequence y, Matrix x) {
         try {
             clear();
             compute(y, x);
@@ -99,7 +99,7 @@ public class QRSolver implements IQRSolver {
         res = null;
     }
 
-    private void compute(Doubles y, Matrix x) {
+    private void compute(DoubleSequence y, Matrix x) {
 
         // X'X, X'y
         n = y.length();
@@ -125,21 +125,21 @@ public class QRSolver implements IQRSolver {
     }
 
     @Override
-    public Doubles coefficients() {
+    public DoubleSequence coefficients() {
         if (used.length == m) {
-            return Doubles.ofInternal(b);
+            return DoubleSequence.ofInternal(b);
         } else {
             // expand the coefficients
             double[] c = new double[m];
             for (int i = 0; i < used.length; ++i) {
                 c[used[i]] = b[i];
             }
-            return Doubles.ofInternal(c);
+            return DoubleSequence.ofInternal(c);
         }
     }
 
-    public Doubles residuals() {
-        return Doubles.ofInternal(res);
+    public DoubleSequence residuals() {
+        return DoubleSequence.ofInternal(res);
     }
 
     @Override
@@ -155,7 +155,7 @@ public class QRSolver implements IQRSolver {
      * @param X
      * @param B
      */
-    private void iterativeEstimation(Doubles Y, Matrix X) {
+    private void iterativeEstimation(DoubleSequence Y, Matrix X) {
         DataBlock F = DataBlock.make(n);
         DataBlock G = DataBlock.make(m);
 
@@ -165,7 +165,7 @@ public class QRSolver implements IQRSolver {
         int iter = 0;
         do {
             Cell f = F.cells(), g = G.cells(), e = E.cells();
-            CellReader y = Y.reader();
+            DoubleReader y = Y.reader();
             NeumaierAccumulator acc = new NeumaierAccumulator();
             DataBlockIterator rows = X.rowsIterator();
             // f = y - r - X*b
@@ -200,10 +200,10 @@ public class QRSolver implements IQRSolver {
         } while (++iter < niter);
     }
 
-    private void iterativeEstimation2(Doubles Y, Matrix X) {
+    private void iterativeEstimation2(DoubleSequence Y, Matrix X) {
 
         DataBlock B = DataBlock.ofInternal(b), E = DataBlock.ofInternal(res);
-        Doubles W = Y;
+        DoubleSequence W = Y;
         for (int i = 0; i < niter; ++i) {
             DataBlock db = DataBlock.make(b.length), de = DataBlock.make(res.length);
             qr.leastSquares(W, db, de);
@@ -217,7 +217,7 @@ public class QRSolver implements IQRSolver {
 
             DataBlock Err = DataBlock.make(n);
             Cell err = Err.cells();
-            CellReader y = Y.reader();
+            DoubleReader y = Y.reader();
             NeumaierAccumulator acc = new NeumaierAccumulator();
             DataBlockIterator rows = X.rowsIterator();
             // f = y - r - X*b

@@ -16,7 +16,7 @@ package demetra.tsprovider.poc;
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-import demetra.timeseries.simplets.TsDataType;
+import demetra.timeseries.simplets.TsData;
 import demetra.timeseries.simplets.TsDomain;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
@@ -106,9 +106,9 @@ class DemoUtil {
         System.out.printf("%9s %s\n", "Data:", value);
     }
 
-    String toString(TsDataType data) {
-        TsDomain d = data.getDomain();
-        return String.format("%s, from %s to %s, %d/%d obs", d.getFrequency(), d.getStart(), d.getLast(), (int) data.getValues().reduce(0, (c, o) -> !Double.isNaN(o) ? c + 1 : c), d.length());
+    String toString(TsData data) {
+        TsDomain d = data.domain();
+        return String.format("%s, from %s to %s, %d/%d obs", d.getFrequency(), d.getStart(), d.getLast(), (int) data.values().reduce(0, (c, o) -> !Double.isNaN(o) ? c + 1 : c), d.length());
     }
 
     void printDuration(Duration duration) {

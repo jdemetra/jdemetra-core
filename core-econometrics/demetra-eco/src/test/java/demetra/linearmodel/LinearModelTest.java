@@ -18,10 +18,10 @@ package demetra.linearmodel;
 
 import demetra.linearmodel.LinearModel;
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -42,7 +42,7 @@ public class LinearModelTest {
                 .meanCorrection(true)
                 .build();
         assertTrue(lm != null);
-        assertTrue(lm.calcResiduals(Doubles.of(.5)) != null);
+        assertTrue(lm.calcResiduals(DoubleSequence.of(.5)) != null);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class LinearModelTest {
                 .addX(x1, x2)
                 .build();
         assertTrue(lm != null);
-        assertTrue(lm.calcResiduals(Doubles.of(.5, -.2, .3)) != null);
+        assertTrue(lm.calcResiduals(DoubleSequence.of(.5, -.2, .3)) != null);
     }
 
     @Test
@@ -73,11 +73,11 @@ public class LinearModelTest {
         x1.set(rnd::nextDouble);
         DataBlock x2 = DataBlock.make(10);
         x2.set(rnd::nextDouble);
-        LinearModel lm = LinearModel.of(Doubles.transformation(y, z->Math.log(z)))
+        LinearModel lm = LinearModel.of(DoubleSequence.transformation(y, z->Math.log(z)))
                 .addX(x1, x2)
                 .build();
         assertTrue(lm != null);
-        assertTrue(lm.calcResiduals(Doubles.of(-.002, .003)) != null);
+        assertTrue(lm.calcResiduals(DoubleSequence.of(-.002, .003)) != null);
     }
 
 }

@@ -16,9 +16,10 @@
  */
 package demetra.maths.matrices;
 
+import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.Matrix;
+import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -31,9 +32,9 @@ public class MatrixComparator {
         if (o.getRowsCount() != nrows) {
             return Double.MAX_VALUE;
         }
-        Doubles delta = Doubles.ofFunction(o.getColumnsCount() * o.getRowsCount(),
+        DoubleSequence delta = DoubleSequence.of(o.getColumnsCount() * o.getRowsCount(),
                 i -> m.get(i % nrows, i / nrows) - o.get(i % nrows, i / nrows));
-        return delta.normInf();
+        return Doubles.normInf(delta);
     }
 
     public static double distance(final Matrix m, final Matrix o) {
@@ -41,9 +42,9 @@ public class MatrixComparator {
         if (o.getRowsCount() != nrows) {
             return Double.MAX_VALUE;
         }
-        Doubles delta = Doubles.ofFunction(o.getColumnsCount() * o.getRowsCount(),
+        DoubleSequence delta = DoubleSequence.of(o.getColumnsCount() * o.getRowsCount(),
                 i -> m.get(i % nrows, i / nrows) - o.get(i % nrows, i / nrows));
-        return delta.normInf();
+        return Doubles.normInf(delta);
     }
 
     public static ec.tstoolkit.maths.matrices.Matrix toLegacy(Matrix M) {

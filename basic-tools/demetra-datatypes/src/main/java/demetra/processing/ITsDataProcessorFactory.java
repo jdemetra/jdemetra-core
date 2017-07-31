@@ -20,7 +20,7 @@ package demetra.processing;
 
 import demetra.algorithms.AlgorithmDescriptor;
 import demetra.design.Development;
-import demetra.timeseries.simplets.TsDataType;
+import demetra.timeseries.simplets.TsData;
 import java.util.Map;
 
 /**
@@ -33,7 +33,7 @@ import java.util.Map;
  */
 @Development(status = Development.Status.Alpha)
 public interface ITsDataProcessorFactory<S extends IProcSpecification, R extends IProcResults>  extends
-       IProcessorFactory<S, TsDataType, R>  {
+       IProcessorFactory<S, TsData, R>  {
 
     /**
      * Generates the processing related to given specifications

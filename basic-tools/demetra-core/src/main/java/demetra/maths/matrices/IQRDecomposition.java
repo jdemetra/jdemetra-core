@@ -20,7 +20,7 @@ import demetra.data.DataBlock;
 import demetra.design.Development;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 
 /**
@@ -53,7 +53,7 @@ public interface IQRDecomposition  {
      * false otherwise. Redundant variables are given by unused
      * @return 
      */
-    Doubles rdiagonal(boolean compact);
+    DoubleSequence rdiagonal(boolean compact);
     
     int rank();
     
@@ -75,7 +75,7 @@ public interface IQRDecomposition  {
      * @param res
      * @throws MatrixException
      */
-    void leastSquares(Doubles x, DataBlock b, DataBlock res)
+    void leastSquares(DoubleSequence x, DataBlock b, DataBlock res)
             throws MatrixException;
     
     /**

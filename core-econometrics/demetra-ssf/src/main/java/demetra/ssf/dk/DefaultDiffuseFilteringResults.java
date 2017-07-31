@@ -25,7 +25,7 @@ import demetra.ssf.DataResults;
 import demetra.ssf.MatrixResults;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -88,12 +88,12 @@ public class DefaultDiffuseFilteringResults extends DefaultFilteringResults impl
     }
 
     @Override
-    public Doubles errors(boolean normalized, boolean clean) {
+    public DoubleSequence errors(boolean normalized, boolean clean) {
         DataBlock r = DataBlock.copyOf(errors());
         // set diffuse elements to Double.NaN
         r.range(0, enddiffuse).apply(fi.extract(0, enddiffuse), (x,y)->y!=0 ? Double.NaN : x);
         if (normalized) {
-            Doubles allf = errorVariances();
+            DoubleSequence allf = errorVariances();
             r.apply(allf, (x, y) -> Double.isFinite(x) && Double.isFinite(y) ? x / Math.sqrt(y) : Double.NaN);
         }
         if (clean){

@@ -22,7 +22,6 @@ import demetra.arima.StationaryTransformation;
 import demetra.arima.estimation.IArmaFilter;
 import demetra.arima.internal.AnsleyFilter;
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.maths.matrices.ElementaryTransformations;
 import demetra.maths.matrices.LowerTriangularMatrix;
@@ -31,6 +30,7 @@ import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
 import demetra.ucarima.UcarimaModel;
+import demetra.data.DoubleSequence;
 
 
 /**
@@ -77,7 +77,7 @@ public class McElroyEstimates {
         clear();
     }
 
-    public void setData(Doubles data) {
+    public void setData(DoubleSequence data) {
         data_=data.toArray();
         clear();
     }

@@ -21,12 +21,12 @@ import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
 import demetra.arima.ssf.SsfArima;
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.ssf.ckms.CkmsFilter;
 import demetra.ssf.univariate.PredictionErrorDecomposition;
 import demetra.ssf.univariate.SsfData;
+import demetra.data.DoubleSequence;
 
 /**
  * @author Jean Palate
@@ -101,10 +101,10 @@ public class ExactArimaForecasts implements IArimaForecasts{
      * @return
      */
     @Override
-    public Doubles forecasts(Doubles data, int nf)
+    public DoubleSequence forecasts(DoubleSequence data, int nf)
     {
 	SsfData sd = new SsfData(data);
-	return Doubles.ofInternal(fcasts(sd, nf));
+	return DoubleSequence.ofInternal(fcasts(sd, nf));
     }
 
     @Override

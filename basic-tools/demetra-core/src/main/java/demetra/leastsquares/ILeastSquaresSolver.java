@@ -6,8 +6,8 @@
 package demetra.leastsquares;
 
 import demetra.maths.matrices.Matrix;
-import demetra.data.Doubles;
 import demetra.design.Algorithm;
+import demetra.data.DoubleSequence;
 
 /**
  * 
@@ -27,19 +27,19 @@ public interface ILeastSquaresSolver {
      * @param X 
      * @return
      */
-    boolean solve(Doubles y, Matrix X);
+    boolean solve(DoubleSequence y, Matrix X);
 
     /**
      * Returns b
      * @return 
      */
-    Doubles coefficients();
+    DoubleSequence coefficients();
 
     /**
      * Returns b
      * @return 
      */
-    Doubles residuals();
+    DoubleSequence residuals();
 
     /**
      * Computes e*e'

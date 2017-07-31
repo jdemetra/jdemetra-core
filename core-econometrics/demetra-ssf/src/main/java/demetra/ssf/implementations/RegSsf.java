@@ -16,7 +16,6 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.CellReader;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;
@@ -27,6 +26,7 @@ import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Ssf;
+import demetra.data.DoubleReader;
 
 /**
  *
@@ -249,7 +249,7 @@ public class RegSsf extends Ssf {
             v.vnext(nx);
             DataBlockIterator rows = v.rowsIterator();
             DataBlock xrow = data.row(pos);
-            CellReader x=xrow.reader();
+            DoubleReader x=xrow.reader();
             while (rows.hasNext()){
                 m.XpZd(pos, rows.next(), d * x.next());
             }

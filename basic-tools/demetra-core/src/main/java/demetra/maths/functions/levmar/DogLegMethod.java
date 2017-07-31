@@ -17,7 +17,6 @@
 package demetra.maths.functions.levmar;
 
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
 import demetra.maths.functions.ssq.ISsqFunction;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionPoint;
@@ -25,6 +24,7 @@ import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.SymmetricMatrix;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -80,7 +80,7 @@ public class DogLegMethod implements ISsqFunctionMinimizer {
     }
 
     @Override
-    public Doubles gradientAtMinimum() {
+    public DoubleSequence gradientAtMinimum() {
         return fcur_.ssqDerivatives().gradient();
     }
 

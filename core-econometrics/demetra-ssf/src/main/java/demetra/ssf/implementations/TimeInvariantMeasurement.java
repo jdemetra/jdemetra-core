@@ -19,9 +19,9 @@ package demetra.ssf.implementations;
 import demetra.data.DataBlock;
 import demetra.ssf.univariate.ISsfMeasurement;
 import java.text.DecimalFormat;
-import demetra.data.CellReader;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.Matrix;
+import demetra.data.DoubleReader;
 
 /**
  *
@@ -92,7 +92,7 @@ public class TimeInvariantMeasurement implements ISsfMeasurement {
     public void VpZdZ(int pos, Matrix V, double d) {
 
         DataBlockIterator cols = V.columnsIterator();
-        CellReader z=Z.reader();
+        DoubleReader z=Z.reader();
         int i = 0;
         while (cols.hasNext()) {
             cols.next().addAY(d * z.next(), Z);

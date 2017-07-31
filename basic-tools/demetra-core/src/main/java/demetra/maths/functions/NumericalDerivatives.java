@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -39,7 +39,7 @@ public class NumericalDerivatives implements IFunctionDerivatives {
     private Matrix hessian;
     
     private final IFunction fn;
-    private final Doubles x;
+    private final DoubleSequence x;
 
     private double fx;
 
@@ -195,11 +195,11 @@ public class NumericalDerivatives implements IFunctionDerivatives {
     }
     
     @Override
-    public Doubles gradient() {
+    public DoubleSequence gradient() {
         if (grad == null) {
             calcgrad();
         }
-        return Doubles.ofInternal(grad);
+        return DoubleSequence.ofInternal(grad);
     }
 
     /**

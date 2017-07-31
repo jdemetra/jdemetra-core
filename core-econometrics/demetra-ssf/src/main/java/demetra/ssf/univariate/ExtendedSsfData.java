@@ -17,7 +17,7 @@
 package demetra.ssf.univariate;
 
 import demetra.design.Development;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 
 /**
@@ -56,7 +56,7 @@ public class ExtendedSsfData implements ISsfData {
      * 
      * @param data
      */
-    public ExtendedSsfData(final Doubles data, int fcasts)
+    public ExtendedSsfData(final DoubleSequence data, int fcasts)
     {
 	m_data = new SsfData(data);
         m_nfcasts=fcasts;

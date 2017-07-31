@@ -20,7 +20,6 @@ import demetra.arima.IArimaModel;
 import demetra.arima.estimation.IArmaFilter;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.Doubles;
 import demetra.data.LogSign;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Fast;
@@ -32,6 +31,7 @@ import demetra.maths.matrices.MatrixException;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
 import org.openide.util.lookup.ServiceProvider;
+import demetra.data.DoubleSequence;
 
 
 /**
@@ -53,7 +53,7 @@ public class AnsleyFilter implements IArmaFilter {
      * @param y
      * @return
      */
-    public double[] filter(Doubles y) {
+    public double[] filter(DoubleSequence y) {
         double[] e = new double[y.length()];
         y.copyTo(e, 0);
         int p = m_ar.length-1;
@@ -87,7 +87,7 @@ public class AnsleyFilter implements IArmaFilter {
      * @param yf
      */
     @Override
-    public void apply(Doubles y, DataBlock yf) {
+    public void apply(DoubleSequence y, DataBlock yf) {
         double[] e = filter(y);
         yf.copyFrom(e, 0);
     }

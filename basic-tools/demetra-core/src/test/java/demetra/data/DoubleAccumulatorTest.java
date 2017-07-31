@@ -5,6 +5,9 @@
  */
 package demetra.data;
 
+import demetra.data.accumulator.KahanAccumulator;
+import demetra.data.accumulator.DoubleAccumulator;
+import demetra.data.accumulator.NeumaierAccumulator;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;

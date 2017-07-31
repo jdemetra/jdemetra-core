@@ -6,7 +6,7 @@
 package demetra.arima.estimation;
 
 import demetra.arima.IArimaModel;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -34,9 +34,9 @@ public interface IArimaForecasts {
      * @param nforecasts The number of forecasts
      * @return The forecasts
      */
-    Doubles forecasts(Doubles data, final int nforecasts);
+    DoubleSequence forecasts(DoubleSequence data, final int nforecasts);
     
-    default Doubles backcasts(Doubles data, final int nbackcasts){
+    default DoubleSequence backcasts(DoubleSequence data, final int nbackcasts){
         return forecasts(data.reverse(), nbackcasts).reverse();
     }
 }

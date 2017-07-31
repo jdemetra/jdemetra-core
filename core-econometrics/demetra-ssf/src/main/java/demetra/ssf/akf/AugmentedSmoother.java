@@ -16,7 +16,6 @@
  */
 package demetra.ssf.akf;
 
-import demetra.data.CellReader;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.LowerTriangularMatrix;
@@ -29,6 +28,7 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.OrdinarySmoother;
+import demetra.data.DoubleReader;
 
 /**
  *
@@ -247,7 +247,7 @@ public class AugmentedSmoother {
             measurement.XpZd(pos, R, c);
             // apply the same to the colums copyOf Rd
             DataBlockIterator rcols = Rd.columnsIterator();
-            CellReader cell=E.reader();
+            DoubleReader cell=E.reader();
             while (rcols.hasNext()){
                 DataBlock rcol = rcols.next();
                 c = (cell.next() - rcol.dot(C)) / f;

@@ -21,7 +21,6 @@ import demetra.arima.IArimaModel;
 import demetra.arima.estimation.IArmaFilter;
 import demetra.data.DataBlock;
 import demetra.data.DataWindow;
-import demetra.data.Doubles;
 import demetra.data.LogSign;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Legacy;
@@ -31,6 +30,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import org.openide.util.lookup.ServiceProvider;
+import demetra.data.DoubleSequence;
 
 /**
  * @author Jean Palate
@@ -49,7 +49,7 @@ public class ModifiedLjungBoxFilter implements IArmaFilter {
     private Matrix m_L, m_C;
 
     @Override
-    public void apply(Doubles rw, DataBlock wl) {
+    public void apply(DoubleSequence rw, DataBlock wl) {
 	DataBlock w = DataBlock.copyOf(rw);
 	// step 1. AR filter w, if necessary
 	DataBlock z = w;

@@ -18,6 +18,7 @@ package demetra.timeseries.simplets;
 
 import demetra.design.Development;
 import demetra.design.Immutable;
+import demetra.design.Internal;
 import demetra.timeseries.IDateDomain;
 import java.time.LocalDate;
 import java.time.Period;
@@ -45,7 +46,7 @@ public final class TsDomain implements IDateDomain<TsPeriod> {
         return new TsDomain(TsPeriod.of(freq, firstyear, firstperiod), count);
     }
 
-    static TsDomain of(TsPeriod start, int length) {
+    public static TsDomain of(TsPeriod start, int length) {
         return new TsDomain(start, length);
     }
 
@@ -74,7 +75,7 @@ public final class TsDomain implements IDateDomain<TsPeriod> {
     }
 
     @Override
-    public Period toPeriod() {
+    public Period getPeriod() {
         return getFrequency().toPeriod();
     }
 
@@ -140,6 +141,16 @@ public final class TsDomain implements IDateDomain<TsPeriod> {
         }
     }
 
+    /**
+     * Number of periods since 1/1/70 (reference period) of the first period
+     *
+     * @return
+     */
+    @Internal
+    int id() {
+        return start.id();
+    }
+    
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

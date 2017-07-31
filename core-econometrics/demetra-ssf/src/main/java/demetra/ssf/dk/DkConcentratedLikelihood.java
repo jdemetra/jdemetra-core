@@ -19,8 +19,9 @@ package demetra.ssf.dk;
 import demetra.design.IBuilder;
 import demetra.likelihood.IConcentratedLikelihood;
 import demetra.maths.matrices.Matrix;
-import demetra.data.Doubles;
 import java.util.function.Supplier;
+import demetra.data.DoubleSequence;
+import demetra.data.Doubles;
 
 /**
  *
@@ -67,18 +68,18 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
             return this;
         }
 
-        public Builder residuals(Doubles residuals) {
+        public Builder residuals(DoubleSequence residuals) {
             if (residuals == null) {
                 return this;
             }
             if (ssqerr == 0) {
-                this.ssqerr = residuals.ssq();
+                this.ssqerr = Doubles.ssq(residuals);
             }
             this.res = residuals.toArray();
             return this;
         }
 
-        public Builder coefficients(Doubles coeff) {
+        public Builder coefficients(DoubleSequence coeff) {
             if (coeff != null) {
                 b = new double[coeff.length()];
                 coeff.copyTo(res, n);
@@ -212,8 +213,8 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
     }
 
     @Override
-    public Doubles e() {
-        return res == null ? null : Doubles.ofInternal(res);
+    public DoubleSequence e() {
+        return res == null ? null : DoubleSequence.ofInternal(res);
     }
 
     @Override
@@ -241,8 +242,8 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
     }
 
     @Override
-    public Doubles coefficients() {
-        return Doubles.ofInternal(b);
+    public DoubleSequence coefficients() {
+        return DoubleSequence.ofInternal(b);
     }
 
     @Override

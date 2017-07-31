@@ -72,7 +72,7 @@ public final class ContinuousDomain implements ITimeDomain<TimePeriod> {
     }
 
     @Override
-    public Period toPeriod() {
+    public Period getPeriod() {
         return null;
     }
 

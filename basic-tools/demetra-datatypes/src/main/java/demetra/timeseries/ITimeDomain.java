@@ -44,7 +44,7 @@ public interface ITimeDomain<E extends ITimePeriod> extends Sequence<E> {
      *
      * @return null when the domain has irregular periods
      */
-    Period toPeriod();
+    Period getPeriod();
 
     /**
      * Checks that the domain is continuous

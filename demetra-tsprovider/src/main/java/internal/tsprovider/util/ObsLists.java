@@ -16,7 +16,7 @@
  */
 package internal.tsprovider.util;
 
-import demetra.data.DoubleValues;
+import demetra.data.DoubleSequence;
 import demetra.design.Internal;
 import demetra.design.VisibleForTesting;
 import demetra.timeseries.simplets.TsFrequency;
@@ -160,8 +160,8 @@ class ObsLists {
         }
 
         @Override
-        public DoubleValues getValues() {
-            return DoubleValues.ofInternal(Arrays.copyOf(values, size));
+        public DoubleSequence getValues() {
+            return DoubleSequence.ofInternal(Arrays.copyOf(values, size));
         }
     }
 }

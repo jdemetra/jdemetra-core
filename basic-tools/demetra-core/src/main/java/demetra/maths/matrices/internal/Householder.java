@@ -22,7 +22,7 @@ import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.IQRDecomposition;
-import demetra.data.Doubles;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -78,7 +78,7 @@ public class Householder implements IQRDecomposition {
     }
 
     @Override
-    public Doubles rdiagonal(boolean compact) {
+    public DoubleSequence rdiagonal(boolean compact) {
         return DataBlock.ofInternal(rdiag);
     }
 
@@ -193,7 +193,7 @@ public class Householder implements IQRDecomposition {
     // / <returns>The solution b as an array copyOf double</returns>
     // /
     @Override
-    public void leastSquares(Doubles x, DataBlock b, DataBlock res) {
+    public void leastSquares(DoubleSequence x, DataBlock b, DataBlock res) {
         // if (x.Length != m)
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         // if (!IsFullRank)

@@ -16,12 +16,12 @@
  */
 package demetra.maths.linearfilters;
 
-import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.polynomials.Polynomial;
 import demetra.utilities.Ref;
 import java.util.function.IntToDoubleFunction;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -67,7 +67,7 @@ public final class Utilities {
      * @param rmin The limit ofFunction the roots
      * @return
      */
-    public static boolean checkRoots(final Doubles c, final double rmin) {
+    public static boolean checkRoots(final DoubleSequence c, final double rmin) {
         int nc = c.length();
         switch (nc) {
             case 0:
@@ -102,7 +102,7 @@ public final class Utilities {
      * @param c
      * @return
      */
-    public static boolean checkStability(final Doubles c) {
+    public static boolean checkStability(final DoubleSequence c) {
         int nc = c.length();
         if (nc == 0) {
             return true;
@@ -135,7 +135,7 @@ public final class Utilities {
         return true;
     }
 
-    public static boolean checkQuasiStability(final Doubles c, double rtol) {
+    public static boolean checkQuasiStability(final DoubleSequence c, double rtol) {
         int nc = c.length();
         if (nc == 0) {
             return true;
