@@ -28,8 +28,10 @@ import java.util.Objects;
 @Immutable
 @lombok.EqualsAndHashCode
 public final class DailyPeriod implements IDatePeriod {
-
+    
     public static DailyPeriod of(LocalDate first, LocalDate last) {
+        if (last.isBefore(last))
+            return new DailyPeriod(first, 0);
         int del = 1 + (int) first.until(last, ChronoUnit.DAYS);
         return new DailyPeriod(first, del);
     }
@@ -44,6 +46,10 @@ public final class DailyPeriod implements IDatePeriod {
     private DailyPeriod(LocalDate first, int n) {
         this.first = first;
         this.n = n;
+    }
+    
+    public boolean isEmpty(){
+        return n == 0;
     }
 
     @Override

@@ -53,7 +53,7 @@ public interface IDatePeriod extends ITimePeriod {
     LocalDate firstDay();
 
     /**
-     * Gets the last day of the period
+     * Gets the last day of the period (included)
      *
      * @return The last day of the period
      */
