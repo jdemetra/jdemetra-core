@@ -19,7 +19,7 @@ package demetra.ucarima.estimation;
 import demetra.arima.ArimaException;
 import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
-import demetra.arima.estimation.ExactArimaForecasts;
+import demetra.arima.internal.ExactArimaForecasts;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;

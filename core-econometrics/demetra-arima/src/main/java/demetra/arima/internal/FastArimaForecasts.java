@@ -14,9 +14,10 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.arima.estimation;
+package demetra.arima.internal;
 
 import demetra.arima.IArimaModel;
+import demetra.arima.estimation.IArimaForecasts;
 import demetra.arima.internal.MaLjungBoxFilter;
 import demetra.data.DataBlock;
 import demetra.data.DataWindow;

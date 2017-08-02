@@ -16,14 +16,8 @@
  */
 package demetra.stl;
 
-import demetra.stl.IDataSelector;
-import demetra.stl.LoessFilter;
-import demetra.stl.LoessSpecification;
-import demetra.stl.IDataGetter;
-import data.Data;
-import demetra.data.DataBlock;
+import demetra.data.Data;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Ignore;
 import demetra.data.DoubleSequence;
 
@@ -39,7 +33,7 @@ public class LoessFilterTest {
     @Test
     @Ignore
     public void testNormal() {
-        DoubleSequence s=Data.X;
+        DoubleSequence s = DoubleSequence.of(Data.EXPORTS);
         double[] d = s.toArray();
         LoessSpecification spec = LoessSpecification.of(25, 0,1, null);
         LoessFilter filter=new LoessFilter(spec);
@@ -51,7 +45,7 @@ public class LoessFilterTest {
     
     @Test
     public void testBF() {
-        DoubleSequence s=Data.X;
+        DoubleSequence s = DoubleSequence.of(Data.EXPORTS);
         double[] d = s.toArray();
         LoessSpecification spec = LoessSpecification.of(25, 1, 5, null);
         LoessFilter filter=new LoessFilter(spec);

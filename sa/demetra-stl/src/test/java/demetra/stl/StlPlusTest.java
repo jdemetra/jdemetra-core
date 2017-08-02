@@ -18,8 +18,9 @@ package demetra.stl;
 
 import demetra.stl.StlPlusSpecification;
 import demetra.stl.StlPlus;
-import data.Data;
+import demetra.data.Data;
 import demetra.data.DataBlock;
+import demetra.data.DoubleSequence;
 import java.util.Random;
 import org.junit.Test;
 import org.junit.Ignore;
@@ -38,7 +39,7 @@ public class StlPlusTest {
     public void testDefault() {
 
         StlPlus stl = new StlPlus(12, 7);
-        stl.process(Data.X);
+        stl.process(DoubleSequence.of(Data.EXPORTS));
 //        System.out.println(new DataBlock(stl.trend));
 //        System.out.println(new DataBlock(stl.season[0]));
 //        System.out.println(new DataBlock(stl.irr));
@@ -49,7 +50,7 @@ public class StlPlusTest {
     public void testLargeFilter() {
 
         StlPlus stl = new StlPlus(12, 21);
-        stl.process(Data.X);
+        stl.process(DoubleSequence.of(Data.EXPORTS));
 //        System.out.println(new DataBlock(stl.trend));
 //        System.out.println(new DataBlock(stl.season[0]));
 //        System.out.println(new DataBlock(stl.irr));
@@ -61,7 +62,7 @@ public class StlPlusTest {
 
         StlPlusSpecification spec = StlPlusSpecification.createDefault(12, false);
         StlPlus stl = spec.build();
-        stl.process(Data.X);
+        stl.process(DoubleSequence.of(Data.EXPORTS));
 //        System.out.println(DataBlock.of(stl.trend));
 //        System.out.println(DataBlock.of(stl.season[0]));
 //        System.out.println(DataBlock.of(stl.irr));
@@ -75,7 +76,7 @@ public class StlPlusTest {
         spec.setMultiplicative(true);
         spec.setNumberOfOuterIterations(5);
         StlPlus stl = spec.build();
-        stl.process(Data.X);
+        stl.process(DoubleSequence.of(Data.EXPORTS));
 //        System.out.println(DataBlock.of(stl.trend));
 //        System.out.println(DataBlock.of(stl.season[0]));
 //        System.out.println(DataBlock.of(stl.irr));
@@ -89,7 +90,7 @@ public class StlPlusTest {
         spec.setMultiplicative(true);
         spec.setNumberOfOuterIterations(5);
         StlPlus stl = spec.build();
-        DataBlock s = DataBlock.copyOf(Data.X);
+        DataBlock s = DataBlock.copyOf(Data.EXPORTS);
         Random rnd = new Random();
         for (int i = 0; i < 30; ++i) {
             s.set(rnd.nextInt(s.length()), Double.NaN);
@@ -109,7 +110,7 @@ public class StlPlusTest {
             StlPlusSpecification spec = StlPlusSpecification.createDefault(12, 7, false);
             spec.setNumberOfOuterIterations(5);
             StlPlus stl = spec.build();
-            stl.process(Data.X);
+            stl.process(DoubleSequence.of(Data.EXPORTS));
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);

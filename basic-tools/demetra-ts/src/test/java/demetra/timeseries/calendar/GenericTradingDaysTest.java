@@ -23,6 +23,7 @@ import demetra.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.calendars.DefaultGregorianCalendarProvider;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import org.junit.Test;
+import org.junit.Ignore;
 import static org.junit.Assert.*;
 
 /**
@@ -47,6 +48,29 @@ public class GenericTradingDaysTest {
         for (int i = 0; i < 6; ++i) {
             assertTrue(distance(M1.column(i), oM1.column(i)) < 1e-9);
         }
+    }
+
+    @Test
+    @Ignore
+    public void stressTestTD() {
+        long t0 = System.currentTimeMillis();
+        for (int i = 0; i < 1000000; ++i) {
+            TsDomain md = TsDomain.of(TsFrequency.Monthly, 1980, 0, 360);
+            Matrix M1 = Matrix.make(md.length(), 6);
+            GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD7);
+            gtd.data(md, M1.columnList());
+        }
+        long t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
+        t0 = System.currentTimeMillis();
+        for (int i = 0; i < 1000000; ++i) {
+            ec.tstoolkit.timeseries.simplets.TsDomain omd = new ec.tstoolkit.timeseries.simplets.TsDomain(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1980, 0, 360);
+            ec.tstoolkit.maths.matrices.Matrix oM1 = new ec.tstoolkit.maths.matrices.Matrix(omd.getLength(), 6);
+            DefaultGregorianCalendarProvider.instance.calendarData(TradingDaysType.TradingDays, omd, oM1.columnList());
+        }
+        t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
+
     }
 
     private double distance(DataBlock column, ec.tstoolkit.data.DataBlock column0) {

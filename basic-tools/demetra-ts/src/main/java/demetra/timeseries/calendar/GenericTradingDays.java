@@ -16,10 +16,9 @@
  */
 package demetra.timeseries.calendar;
 
+import demetra.data.Cell;
 import demetra.data.DataBlock;
 import demetra.timeseries.simplets.TsDomain;
-import demetra.timeseries.simplets.TsFrequency;
-import demetra.timeseries.simplets.TsPeriod;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -29,21 +28,20 @@ import java.util.List;
  * @author Jean Palate
  */
 public class GenericTradingDays {
-    
- 
+
     private final DayClustering clustering;
     private final int contrastGroup;
     private final boolean normalized;
-    
-    public static GenericTradingDays contrasts(DayClustering clustering){
+
+    public static GenericTradingDays contrasts(DayClustering clustering) {
         return new GenericTradingDays(clustering, 0);
     }
 
-    public static GenericTradingDays of(DayClustering clustering){
+    public static GenericTradingDays of(DayClustering clustering) {
         return new GenericTradingDays(clustering, false);
     }
 
-    public static GenericTradingDays normalized(DayClustering clustering){
+    public static GenericTradingDays normalized(DayClustering clustering) {
         return new GenericTradingDays(clustering, true);
     }
 
@@ -53,7 +51,7 @@ public class GenericTradingDays {
         normalized = true;
     }
 
-    private GenericTradingDays(DayClustering clustering, boolean normalized ) {
+    private GenericTradingDays(DayClustering clustering, boolean normalized) {
         this.clustering = clustering;
         this.contrastGroup = -1;
         this.normalized = normalized;
@@ -77,6 +75,10 @@ public class GenericTradingDays {
 
         int[][] groups = clustering.allPositions();
         int ng = groups.length;
+        Cell[] cells = new Cell[ng];
+        for (int i = 0; i < cells.length; ++i) {
+            cells[i] = buffer.get(i).cells();
+        }
         for (int i = 0; i < n; ++i) {
             for (int ig = 0; ig < ng; ++ig) {
                 int[] group = groups[ig];
@@ -89,7 +91,7 @@ public class GenericTradingDays {
                 if (normalized) {
                     dsum /= np;
                 }
-                buffer.get(ig).set(i, dsum);
+                cells[ig].setAndNext(dsum);
             }
         }
     }
@@ -102,6 +104,10 @@ public class GenericTradingDays {
         rotate(groups);
         int ng = groups.length - 1;
         int[] cgroup = groups[ng];
+        Cell[] cells = new Cell[ng];
+        for (int i = 0; i < cells.length; ++i) {
+            cells[i] = buffer.get(i).cells();
+        }
         for (int i = 0; i < n; ++i) {
             int csum = days[cgroup[0]][i];
             int cnp = cgroup.length;
@@ -118,17 +124,14 @@ public class GenericTradingDays {
                     sum += days[group[ip]][i];
                 }
                 double dsum = sum;
-                buffer.get(ig).set(i, dsum - np*dcsum);
+                cells[ig].setAndNext(dsum - np * dcsum);
             }
         }
-//        int[] ndays = Utilities.daysCount(domain);
-//        DataBlock nb = buffer.get(ng);
-//        nb.set(i -> ndays[i]);
     }
 
     public int getCount() {
-        int n=clustering.getGroupsCount();
-        return contrastGroup>= 0 ? n-1 : n;
+        int n = clustering.getGroupsCount();
+        return contrastGroup >= 0 ? n - 1 : n;
     }
 
     public String getDescription(int idx) {
@@ -159,17 +162,16 @@ public class GenericTradingDays {
             groups[groups.length - 1] = cgroup;
         }
     }
-    
+
     /*
     *
      * @param domain
      * @return Arrays with the number of Sundays, ..., Saturdays. td[0][k] is
      * the number of Sundays in the period k.
      */
-    
-    private static final LocalDate EPOCH=LocalDate.ofEpochDay(0);
-    private static final int DAY_OF_WEEK_OF_EPOCH=EPOCH.getDayOfWeek().getValue()-1;
-    
+    private static final LocalDate EPOCH = LocalDate.ofEpochDay(0);
+    private static final int DAY_OF_WEEK_OF_EPOCH = EPOCH.getDayOfWeek().getValue() - 1;
+
     public static int[][] tdCount(TsDomain domain) {
         int[][] rslt = new int[7][];
 
@@ -177,9 +179,17 @@ public class GenericTradingDays {
         int[] start = new int[n + 1]; // id of the first day for each period
         LocalDate cur = domain.getStart().firstDay();
         int conv = 12 / domain.getFrequency().getAsInt();
+        int year = cur.getYear(), month = cur.getMonthValue();
         for (int i = 0; i < start.length; ++i) {
-            start[i] = (int) EPOCH.until(cur, ChronoUnit.DAYS);
-            cur=cur.plusMonths(conv);
+            start[i] = Utility.calc(year, month, 1);
+            month += conv;
+            if (month > 12) {
+                year++;
+                month -= 12;
+            }
+//            start[i] = (int) EPOCH.until(cur, ChronoUnit.DAYS);
+//            start[i] = Utility.calc(cur.getYear(), cur.getMonthValue(), cur.getDayOfMonth());
+//            cur=cur.plusMonths(conv);
         }
 
         for (int j = 0; j < 7; ++j) {
@@ -202,7 +212,5 @@ public class GenericTradingDays {
         }
         return rslt;
     }
-
-
 
 }

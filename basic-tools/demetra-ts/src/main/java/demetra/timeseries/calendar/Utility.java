@@ -14,9 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.calendars;
+package demetra.timeseries.calendar;
 
 import demetra.design.Development;
+import demetra.timeseries.Day;
+import demetra.timeseries.TsException;
 import demetra.timeseries.simplets.TsDomain;
 import demetra.timeseries.simplets.TsFrequency;
 import demetra.timeseries.simplets.TsPeriod;
@@ -31,14 +33,14 @@ import java.time.temporal.ChronoUnit;
  */
 @Development(status = Development.Status.Alpha)
 @lombok.experimental.UtilityClass
-public class Utility {
+class Utility {
 
     /**
      *
      * @param domain
      * @return
      */
-    public int[] daysCount(TsDomain domain) {
+    int[] daysCount(TsDomain domain) {
         // if (domain == null)
         // throw new ArgumentNullException("domain");
         int n = domain.length();
@@ -104,7 +106,7 @@ public class Utility {
      * @param month
      * @return
      */
-    public LocalDate firstWeekDay(DayOfWeek day, int year, int month) {
+    LocalDate firstWeekDay(DayOfWeek day, int year, int month) {
         TsPeriod m =  TsPeriod.of(TsFrequency.Monthly, year, month-1);
         LocalDate start = m.firstDay();
         int iday = day.getValue();
@@ -147,4 +149,63 @@ public class Utility {
 //        return rslt;
 //    }
 //
+    int calc(int year, final int month, final int day) {
+        
+        boolean bLeapYear = isLeap(year);
+
+        // make Jan 1, 1AD be 0
+        int nDate = year * 365 + year / 4 - year / 100 + year / 400
+                + Day.getCumulatedMonthDays(month-1) + day;
+
+        // If leap year and it's before March, subtract 1:
+        if ((month < 3) && bLeapYear) {
+            --nDate;
+        }
+        return nDate - 719528; // number of days since 0
+    }
+    /**
+     * Number of days from begin 1970. 
+     *
+     * @param year
+     * @param ndays
+     * @return
+     */
+    int calcDays(int year, final int ndays) {
+        if ((year < 0) || (year > 3000)) {
+            throw new TsException(TsException.INVALID_YEAR);
+        }
+
+        if (year < 30) {
+            year += 2000; // 29 == 2029
+        } else if (year < 100) {
+            year += 1900; // 30 == 1930
+        }
+        boolean bLeapYear = isLeap(year);
+        int np = bLeapYear ? 366 : 365;
+
+        if ((ndays < 0) || (ndays >= np)) {
+            throw new TsException(TsException.INVALID_DAY);
+        }
+
+        // make Jan 1, 1AD be 0
+        int rslt = year * 365 + year / 4 - year / 100 + year / 400 + ndays
+                - 719527;
+        // correction for leap year
+        if (bLeapYear) {
+            return rslt - 1;
+        } else {
+            return rslt;
+        }
+    }
+    
+    /**
+     * true if year is leap
+     *
+     * @param year
+     * @return
+     */
+    boolean isLeap(final int year) {
+        return (year % 4 == 0) && (((year % 100) != 0) || ((year % 400) == 0));
+    }
+
 }

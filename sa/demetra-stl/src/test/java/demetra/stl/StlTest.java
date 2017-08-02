@@ -16,10 +16,9 @@
  */
 package demetra.stl;
 
-import demetra.stl.Stl;
-import demetra.stl.StlSpecification;
-import data.Data;
+import demetra.data.Data;
 import demetra.data.DataBlock;
+import demetra.data.DoubleSequence;
 import java.util.Random;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -39,7 +38,7 @@ public class StlTest {
         Stl stl = new Stl(spec);
         spec.setNo(5);
         spec.setMultiplicative(true);
-        stl.process(Data.X);
+        stl.process(DoubleSequence.of(Data.EXPORTS));
 //        System.out.println(new DataBlock(stl.trend));
 //        System.out.println(new DataBlock(stl.season));
 //        System.out.println(new DataBlock(stl.irr));
@@ -51,9 +50,9 @@ public class StlTest {
         Stl stl = new Stl(spec);
         spec.setNo(5);
         spec.setMultiplicative(true);
-        DataBlock s = DataBlock.copyOf(Data.X);
-        Random rnd=new Random();
-        for (int i=0; i<10; ++i){
+        DataBlock s = DataBlock.copyOf(Data.EXPORTS);
+        Random rnd = new Random();
+        for (int i = 0; i < 10; ++i) {
             s.set(rnd.nextInt(s.length()), Double.NaN);
         }
         stl.process(s);
@@ -68,7 +67,7 @@ public class StlTest {
 
         StlSpecification spec = StlSpecification.defaultSpec(12, 21, false);
         Stl stl = new Stl(spec);
-        stl.process(Data.X);
+        stl.process(DoubleSequence.of(Data.EXPORTS));
 //        System.out.println(new DataBlock(stl.trend));
 //        System.out.println(new DataBlock(stl.season));
 //        System.out.println(new DataBlock(stl.irr));
@@ -80,7 +79,7 @@ public class StlTest {
         spec.setMultiplicative(true);
         Stl stl = new Stl(spec);
         spec.setNo(5);
-        stl.process(Data.X);
+        stl.process(DoubleSequence.of(Data.EXPORTS));
 //        System.out.println(new DataBlock(stl.trend));
 //        System.out.println(new DataBlock(stl.season));
 //        System.out.println(new DataBlock(stl.irr));
@@ -94,7 +93,7 @@ public class StlTest {
             StlSpecification spec = StlSpecification.defaultSpec(12, 7, false);
             spec.setNo(5);
             Stl stl = new Stl(spec);
-            stl.process(Data.X);
+            stl.process(DoubleSequence.of(Data.EXPORTS));
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
@@ -105,7 +104,7 @@ public class StlTest {
     public void testInner() {
         StlSpecification spec = StlSpecification.defaultSpec(12, 9, true);
         Stl stl = new Stl(spec);
-        stl.process(Data.X);
+        stl.process(DoubleSequence.of(Data.EXPORTS));
 //        System.out.println(new DataBlock(stl.trend));
 //        System.out.println(new DataBlock(stl.season));
 //        System.out.println(new DataBlock(stl.irr));

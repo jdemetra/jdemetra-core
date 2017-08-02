@@ -16,11 +16,7 @@
  */
 package demetra.stl;
 
-import demetra.stl.IDataSelector;
-import demetra.stl.SeasonalFilter;
-import demetra.stl.LoessSpecification;
-import demetra.stl.IDataGetter;
-import data.Data;
+import demetra.data.Data;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSequence;
@@ -36,7 +32,7 @@ public class SeasonalFilterTest {
 
     @Test
     public void testSomeMethod() {
-        DoubleSequence s=Data.X;
+        DoubleSequence s = DoubleSequence.of(Data.EXPORTS);
         double[] d = s.toArray();
         LoessSpecification spec = LoessSpecification.of(7, 0);
         LoessSpecification lspec = LoessSpecification.of(13, 1);
