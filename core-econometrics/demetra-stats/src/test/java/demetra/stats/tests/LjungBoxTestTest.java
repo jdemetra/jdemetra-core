@@ -34,20 +34,22 @@ public class LjungBoxTestTest {
     @Test
     public void testSomeMethod() {
         int N=100;
-        double[] data=new double[N];
-        DataBlock X=DataBlock.ofInternal(data);
+        DataBlock X=DataBlock.make(N);
         Random rnd=new Random();
         X.set(rnd::nextDouble);
         
         OrderedSampleWithZeroMean sample=OrderedSampleWithZeroMean.of(X);
         LjungBoxTest lb=new LjungBoxTest(sample);
         
-        StatisticalTest test = lb.lag(3).autoCorrelationsCount(10).build();
+        StatisticalTest test = lb
+                .lag(3)
+                .autoCorrelationsCount(10)
+                .build();
         
         ec.tstoolkit.stats.LjungBoxTest lb2=new ec.tstoolkit.stats.LjungBoxTest();
         lb2.setK(10);
         lb2.setLag(3);
-        lb2.test(new ec.tstoolkit.data.ReadDataBlock(data));
+        lb2.test(new ec.tstoolkit.data.ReadDataBlock(X.getStorage()));
         
         assertEquals(test.getPValue(), lb2.getPValue(), 1e-9);
     }

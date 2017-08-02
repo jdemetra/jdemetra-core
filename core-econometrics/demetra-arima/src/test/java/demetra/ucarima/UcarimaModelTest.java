@@ -26,7 +26,7 @@ public class UcarimaModelTest {
     }
     
 
-   static UcarimaModel ucmAirline(double th, double bth) {
+   public static UcarimaModel ucmAirline(double th, double bth) {
        SarimaSpecification spec=new SarimaSpecification(12);
        spec.airline();
        SarimaModel sarima =SarimaModel.builder(spec)

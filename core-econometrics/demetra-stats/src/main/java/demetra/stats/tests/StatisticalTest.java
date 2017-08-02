@@ -118,5 +118,16 @@ public class StatisticalTest {
     public boolean isSignificant(double threshold) {
         return getPValue() < threshold;
     }
-    
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        if (distribution != null) {
+            builder.append("Distribution=").append(distribution).append(System.lineSeparator());
+        }
+        builder.append("Value=").append(value).append(System.lineSeparator());
+        builder.append("PValue=").append(getPValue());
+        return builder.toString();
+    }
+
 }

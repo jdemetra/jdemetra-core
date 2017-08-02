@@ -15,10 +15,11 @@
 * limitations under the Licence.
 */
 
-package demetra.arima.estimation;
+package demetra.arima.internal;
 
 import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
+import demetra.arima.estimation.IArimaForecasts;
 import demetra.arima.ssf.SsfArima;
 import demetra.data.DataBlock;
 import demetra.design.Development;

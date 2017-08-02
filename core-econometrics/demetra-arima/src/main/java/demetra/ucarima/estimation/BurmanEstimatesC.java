@@ -19,7 +19,7 @@ package demetra.ucarima.estimation;
 import demetra.arima.ArimaException;
 import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
-import demetra.arima.estimation.ExactArimaForecasts;
+import demetra.arima.internal.ExactArimaForecasts;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
@@ -172,6 +172,7 @@ public class BurmanEstimatesC {
             x1[i] = s;
         }
 
+        ww = new double[pstar + qstar];
         for (int i = 0; i < pstar; ++i) {
             ww[i] = w2[pstar - i - 1];
         }

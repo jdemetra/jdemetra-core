@@ -16,8 +16,12 @@
  */
 package demetra.arima.ssf;
 
+import demetra.data.Data;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
+import demetra.ssf.dk.DkLikelihood;
+import demetra.ssf.dk.DkToolkit;
+import demetra.ssf.univariate.SsfData;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -31,12 +35,14 @@ public class SsfArimaTest {
     }
 
     @Test
-    public void testArma() {
+    public void testArima() {
         SarimaSpecification spec = new SarimaSpecification(12);
-        spec.setQ(1);
-        spec.setBQ(1);
-        SarimaModel arima = SarimaModel.builder(spec).theta(1, -.9).btheta(1, -.6).build();
+        spec.airline();
+        SarimaModel arima = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.8).build();
         SsfArima ssf = SsfArima.of(arima);
+        SsfData data=new SsfData(Data.PROD);
+        DkLikelihood dkl = DkToolkit.likelihoodComputer().compute(ssf, data);
+        System.out.println(dkl);
     }
 
 }

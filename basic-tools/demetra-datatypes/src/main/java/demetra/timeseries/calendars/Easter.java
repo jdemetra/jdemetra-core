@@ -34,7 +34,7 @@ public class Easter {
      * @param y Year
      * @return The Easter day for the given year
      */
-    public Day easter(int y) {
+    public LocalDate easter(int y) {
         int a = y % 19;
         int b = y / 100;
         int c = y % 100;
@@ -49,8 +49,7 @@ public class Easter {
         int m = (a + 11 * h + 22 * l) / 451;
         int month = (h + l - 7 * m + 114) / 31;
         int day = (h + l - 7 * m + 114) % 31 + 1;
-        LocalDate date = LocalDate.of(y, month, day);
-        return Day.of(date);
+        return LocalDate.of(y, month, day);
     }
 
     /**
@@ -60,7 +59,7 @@ public class Easter {
      * @param y Year
      * @return The Easter day for the given year
      */
-    public Day easter2(int y) {
+    public LocalDate easter2(int y) {
         int firstdig = y / 100;
         int remain19 = y % 19;
         // calculate PFM date (Paschal Full Moon)
@@ -95,15 +94,12 @@ public class Easter {
         int te = ((20 - tb - tc - td) % 7) + 1;
         int d = ta + te;
         // return the date
-        LocalDate date;
         if (d > 31) {
-            date = LocalDate.of(y, 4, d - 31);
+            return LocalDate.of(y, 4, d - 31);
         } else {
-            date = LocalDate.of(y, 3, d);
+            return LocalDate.of(y, 3, d);
         }
-        return Day.of(date);
     }
-
 
     /**
      * Converts a Julian date into a Julian day number
@@ -113,7 +109,7 @@ public class Easter {
      * @param day From 1 to 31
      * @return The Julian day
      */
-    public static int julianDate2JDN(int year, int month, int day) {
+    public int julianDate2JDN(int year, int month, int day) {
         int a = (14 - month) / 12;
         int y = year + 4800 - a;
         int m = month + (12 * a) - 3;
@@ -128,7 +124,7 @@ public class Easter {
      * @param day From 1 to 31
      * @return The Julian day
      */
-    public static int gregorianDate2JDN(int year, int month, int day) {
+    public int gregorianDate2JDN(int year, int month, int day) {
         int a = (14 - month) / 12;
         int y = year + 4800 - a;
         int m = month + (12 * a) - 3;
@@ -141,7 +137,7 @@ public class Easter {
      * @param jdn The Julian date number
      * @return
      */
-    public static Day JDN2GregorianDate(int jdn) {
+    public LocalDate JDN2GregorianDate(int jdn) {
         final int y = 4716, v = 3, j = 1401, u = 5, m = 2, s = 153, n = 12, w = 2, r = 4, B = 274277, p = 1461, C = -38;
 
         int f = jdn + j + (((4 * jdn + B) / 146097) * 3) / 4 + C;
@@ -151,8 +147,7 @@ public class Easter {
         int D = (h % s) / u;
         int M = ((h / s + m) % n);
         int Y = (e / p) - y + (n + m - M) / n;
-        LocalDate date=LocalDate.of(Y, M+1, D+1);
-        return Day.of(date);
+        return LocalDate.of(Y, M + 1, D + 1);
     }
 
     /**
@@ -162,7 +157,7 @@ public class Easter {
      * @param gregorian Gregorian (true) or Julian (false) day
      * @return Easter day
      */
-    public static Day julianEaster(int year, boolean gregorian) {
+    public LocalDate julianEaster(int year, boolean gregorian) {
         int a = year % 19;
         int b = year % 4;
         int c = year % 7;
@@ -177,19 +172,18 @@ public class Easter {
         if (gregorian) {
             return JDN2GregorianDate(julianDate2JDN(year, month, day));
         } else {
-        LocalDate easterJ = LocalDate.of(year, month, day);
-            return Day.of(easterJ);
+            return LocalDate.of(year, month, day);
         }
     }
 
     //<editor-fold defaultstate="collapsed" desc="Easter-related methods">
-    public static final double LUNARY = 29.53059, DEC_LUNARY = .53059;
+    public final double LUNARY = 29.53059, DEC_LUNARY = .53059;
     /**
      * The probability that Easter falls on April,4 + K (or March, 22 + K) is
      * defined by PROB[K]/CYCLE
      */
-    static final int CYCLE = 532, TWOCYCLE = CYCLE << 1;
-    static final int[] PROB = new int[]{
+    static int CYCLE = 532, TWOCYCLE = CYCLE << 1;
+    static int[] PROB = new int[]{
         4, 8, 8, 12, 16, 16, 20, 16, 16, 20, 16, 16, 20, 16, 20, 20, 16, 20, 16, 16, 20, 16, 16, 20, 16, 20, 16, 16, 20, 16, 12, 12, 8, 8, 4
     };
 
@@ -202,7 +196,7 @@ public class Easter {
      * @return The requested probability. For instance, probJulianEaster(0)
      * gives the probability that the Julian Easter falls on April, 4
      */
-    public static double probJulianEaster(int pos) {
+    public double probJulianEaster(int pos) {
         if (pos < 0 || pos >= 43) {
             return 0;
         } else {
@@ -228,7 +222,7 @@ public class Easter {
      * (excluded)
      * @return
      */
-    public static double probEaster(int pos) {
+    public double probEaster(int pos) {
         if (pos < 0 || pos >= 35) {
             return 0;
         }

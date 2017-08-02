@@ -17,16 +17,24 @@
 package demetra.timeseries;
 
 import demetra.design.Immutable;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.temporal.ChronoUnit;
 
 @Immutable
 @lombok.EqualsAndHashCode
 public final class Day implements IDatePeriod {
 
+    public static final Day BEG = Day.of(LocalDate.MIN), END = Day.of(LocalDate.MAX);
+
     public static Day of(LocalDate day) {
         return new Day(day);
+    }
+
+    public static Day of(int year, int month, int day) {
+        return new Day(LocalDate.of(year, month, day));
     }
 
     private final LocalDate day;
@@ -59,12 +67,42 @@ public final class Day implements IDatePeriod {
     public String toString() {
         return day.toString();
     }
-    
-    public LocalDate toLocalDate(){
+
+    public LocalDate toLocalDate() {
         return day;
     }
-    
-    public long difference(Day d){
+
+    public long difference(Day d) {
         return d.day.until(day, ChronoUnit.DAYS);
     }
+    
+    public Day plus(long ndays){
+        return new Day(day.plus(ndays, ChronoUnit.DAYS));
+    }
+    
+    public Day minus(long ndays){
+        return new Day(day.minus(ndays, ChronoUnit.DAYS));
+    }
+    
+    public DayOfWeek getDayOfWeek(){
+        return day.getDayOfWeek();
+    }
+
+    /**
+     * Returns the number of days for the month before or equal to the given month.
+     * We consider that there are 28 days in February
+     * @param month 1-based index of the month
+     * @return 
+     */
+    public static int getCumulatedMonthDays(int month) {
+        return CUMULATEDMONTHDAYS[month];
+    }
+
+    /**
+     * Cumulative number of days (if no leap year). CumulatedMonthDays[2] =
+     * number of days from 1/1 to 28/2.
+     */
+    private static final int[] CUMULATEDMONTHDAYS = {0, 31, 59, 90, 120, 151,
+        181, 212, 243, 273, 304, 334, 365};
+
 }

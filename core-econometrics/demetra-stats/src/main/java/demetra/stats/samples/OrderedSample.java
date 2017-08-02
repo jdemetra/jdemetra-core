@@ -16,6 +16,13 @@ import demetra.data.DoubleSequence;
  */
 public interface OrderedSample extends Sample {
 
+    public static OrderedSample of(DoubleSequence data){
+        return new DefaultOrderedSample(data);
+    }
+
+    public static OrderedSample ofZeroMean(DoubleSequence data){
+        return OrderedSampleWithZeroMean.of(data);
+    }
     /**
      * Gets the data
      * @return 

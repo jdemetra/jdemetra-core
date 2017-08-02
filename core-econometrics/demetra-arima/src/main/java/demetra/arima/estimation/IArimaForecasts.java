@@ -6,6 +6,8 @@
 package demetra.arima.estimation;
 
 import demetra.arima.IArimaModel;
+import demetra.arima.internal.ExactArimaForecasts;
+import demetra.arima.internal.FastArimaForecasts;
 import demetra.data.DoubleSequence;
 
 /**
@@ -13,11 +15,19 @@ import demetra.data.DoubleSequence;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public interface IArimaForecasts {
+    
+    public static IArimaForecasts exact(){
+        return new ExactArimaForecasts();
+    }
+
+    public static IArimaForecasts fast(){
+        return new FastArimaForecasts();
+    }
     /**
-     * Initiliazes the forecasts routine
-     * @param model The Arima model used for forecazsting
+     * Initialises the forecasts routine
+     * @param model The ARIMA model used for forecasting
      * @param mean Mean correction. The correction must be computed
-     * @return True if the initialization was succesful, false otherwise
+     * @return True if the initialisation was successful, false otherwise
      */
     boolean prepare(final IArimaModel model, final boolean mean);
     

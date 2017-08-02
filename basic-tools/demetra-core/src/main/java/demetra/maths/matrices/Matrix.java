@@ -20,6 +20,8 @@ import java.util.function.DoubleUnaryOperator;
 import javax.annotation.Nonnegative;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -934,6 +936,27 @@ public class Matrix {
         return new RCIterator(rightOutside(), ncols, -colInc);
     }
 
+    /**
+     * Gets the columns of the matrix as a list of src block
+     *
+     * @return The list of all the columns.
+     */
+    public List<DataBlock> columnList() {
+        ArrayList<DataBlock> rc = new ArrayList<>();
+        columns().forEach(col->rc.add(col));
+        return rc;
+    }
+    
+    /**
+     * Gets the columns of the matrix as a list of src block
+     *
+     * @return The list of all the columns.
+     */
+    public List<DataBlock> rowList() {
+        ArrayList<DataBlock> rc = new ArrayList<>();
+        rows().forEach(row->rc.add(row));
+        return rc;
+    }
     /**
      * Shifts the matrix to the top-left corner.
      * a(i,j) = a(i+n, j+n) for i in [0, nrows-n[ and j in [0, ncols-n[

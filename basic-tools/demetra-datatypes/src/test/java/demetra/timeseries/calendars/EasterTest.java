@@ -20,6 +20,7 @@ import demetra.timeseries.Day;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.temporal.ChronoUnit;
 import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -37,24 +38,24 @@ public class EasterTest {
     @Test
     public void testEaster() {
         for (int i = 1900; i < 4100; ++i) {
-            Day easter = Easter.easter(i);
-            Day easter2 = Easter.easter2(i);
+            LocalDate easter = Easter.easter(i);
+            LocalDate easter2 = Easter.easter2(i);
             Assert.assertEquals(easter, easter2);
         }
     }
 
     @Test
     public void testJulianEaster() {
-        Assert.assertEquals(Easter.julianEaster(2008, true), Day.of(LocalDate.of(2008, 4, 27)));
-        Assert.assertEquals(Easter.julianEaster(2009, true), Day.of(LocalDate.of(2009, 4, 19)));
-        Assert.assertEquals(Easter.julianEaster(2010, true), Day.of(LocalDate.of(2010, 4, 4)));
-        Assert.assertEquals(Easter.julianEaster(2011, true), Day.of(LocalDate.of(2011, 4, 24)));
+        Assert.assertEquals(Easter.julianEaster(2008, true), LocalDate.of(2008, 4, 27));
+        Assert.assertEquals(Easter.julianEaster(2009, true), LocalDate.of(2009, 4, 19));
+        Assert.assertEquals(Easter.julianEaster(2010, true), LocalDate.of(2010, 4, 4));
+        Assert.assertEquals(Easter.julianEaster(2011, true), LocalDate.of(2011, 4, 24));
     }
 
     @Test
     public void testJulianEaster2() {
         for (int i = 2000; i < 2100; ++i) {
-            assertTrue(Easter.julianEaster(i, true).toLocalDate().getDayOfWeek() == DayOfWeek.SUNDAY);
+            assertTrue(Easter.julianEaster(i, true).getDayOfWeek() == DayOfWeek.SUNDAY);
         }
     }
 
@@ -64,9 +65,9 @@ public class EasterTest {
         System.out.println("");
         int[] prob = new int[50];
         for (int i = 0; i < 2 * Easter.CYCLE; ++i) {
-            Day julianEaster = Easter.julianEaster(1583 + i, true);
-            Day first = Day.of(LocalDate.of(1583 + i, 4, 1));
-            long del=julianEaster.difference(first);
+            LocalDate julianEaster = Easter.julianEaster(1583 + i, true);
+            LocalDate first = LocalDate.of(1583 + i, 4, 1);
+            long del=first.until(julianEaster, ChronoUnit.DAYS);
             prob[(int)del]++;
         }
         for (int i = 0; i < 50; ++i) {
@@ -84,9 +85,10 @@ public class EasterTest {
         // of course, that choice is arbitrary...
         int[] prob = new int[50];
         for (int i = 0; i < 2 * Easter.CYCLE; ++i) {
-            Day julianEaster = Easter.julianEaster(1583 + i, true);
-            Day first = Day.of(LocalDate.of(1583 + i, 4, 1));
-            prob[(int)julianEaster.difference(first)]++;
+            LocalDate julianEaster = Easter.julianEaster(1583 + i, true);
+            LocalDate first = LocalDate.of(1583 + i, 4, 1);
+            int del=(int)first.until(julianEaster, ChronoUnit.DAYS);
+            prob[del]++;
         }
         // now, we compute the average length of Easter effect in the different months
 

@@ -34,7 +34,7 @@ import demetra.ucarima.UcarimaModel;
  */
 public class SsfUcarima extends Ssf {
 
-    public static SsfUcarima create(final UcarimaModel ucm) {
+    public static SsfUcarima of(final UcarimaModel ucm) {
         ucm.simplify();
         ISsfDynamics[] dyn = new ISsfDynamics[ucm.getComponentsCount()];
         int[] pos = new int[dyn.length];

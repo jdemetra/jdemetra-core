@@ -281,7 +281,7 @@ public class SsfArima extends Ssf {
             x.fshift(1);
             x.set(0, 0);
             if (last != 0) {
-                for (int i = 0, j = dim - phi.length; i < phi.length; ++i, ++j) {
+                for (int i = 1, j = dim - 1; i < phi.length; ++i, --j) {
                     if (phi[i] != 0) {
                         x.add(j, last * phi[i]);
                     }
@@ -576,7 +576,7 @@ public class SsfArima extends Ssf {
             x.fshift(1);
             x.set(0, 0);
             if (last != 0) {
-                for (int i = 0, j = dim - phi.length; i < phi.length; ++i, ++j) {
+                for (int i = 1, j = dim - 1; i < phi.length; ++i, --j) {
                     if (phi[i] != 0) {
                         x.add(j, last * phi[i]);
                     }
