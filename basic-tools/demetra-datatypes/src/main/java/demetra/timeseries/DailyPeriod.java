@@ -19,7 +19,6 @@ package demetra.timeseries;
 import demetra.design.Immutable;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Objects;
 
 /**
  *
@@ -30,7 +29,7 @@ import java.util.Objects;
 public final class DailyPeriod implements IDatePeriod {
     
     public static DailyPeriod of(LocalDate first, LocalDate last) {
-        if (last.isBefore(last))
+        if (last.isBefore(first))
             return new DailyPeriod(first, 0);
         int del = 1 + (int) first.until(last, ChronoUnit.DAYS);
         return new DailyPeriod(first, del);
@@ -71,6 +70,16 @@ public final class DailyPeriod implements IDatePeriod {
     public int lengthInDays() {
         return n;
     }
+
+    @Override
+    public IDatePeriod plus(long nperiods) {
+        return DailyPeriod.of(first.plusWeeks(nperiods), n);
+    }   
+    
+    @Override
+    public IDatePeriod minus(long nperiods) {
+        return DailyPeriod.of(first.minusWeeks(nperiods), n);
+    } 
 
     @Override
     public String toString() {

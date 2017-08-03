@@ -77,4 +77,22 @@ public interface IDatePeriod extends ITimePeriod {
     default Period length() {
         return firstDay().until(lastDay());
     }
+
+    /**
+     * Adds a number of periods to the current one. A new object is created. The
+     * current object is not modified.
+     *
+     * @param nperiods Number of periods to add
+     * @return Current period + nperiods.
+     */
+    IDatePeriod plus(long nperiods);
+
+    /**
+     * Subtracts a number of periods to the current one. A new object is
+     * created. The current object is not modified.
+     *
+     * @param nperiods The number of periods
+     * @return Returns this - nperiods.
+     */
+    IDatePeriod minus(long nperiods);
 }

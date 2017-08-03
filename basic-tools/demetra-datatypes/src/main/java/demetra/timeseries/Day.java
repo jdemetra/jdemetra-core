@@ -20,7 +20,6 @@ import demetra.design.Immutable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.temporal.ChronoUnit;
 
 @Immutable
@@ -76,10 +75,12 @@ public final class Day implements IDatePeriod {
         return d.day.until(day, ChronoUnit.DAYS);
     }
     
+    @Override
     public Day plus(long ndays){
         return new Day(day.plus(ndays, ChronoUnit.DAYS));
     }
     
+    @Override
     public Day minus(long ndays){
         return new Day(day.minus(ndays, ChronoUnit.DAYS));
     }

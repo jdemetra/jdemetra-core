@@ -19,7 +19,7 @@ public class CalendarTsData implements ITimeSeries.OfDouble<IDatePeriod, DateObs
     /**
      * Creates a random time series
      *
-     * @param freq The frequency of the series.
+     * @param freq The frequency create the series.
      * @param seed
      * @return A time series with a random length (<600 observations), a random
      * starting period (between 1970 and 1990) and random observations is
@@ -39,10 +39,11 @@ public class CalendarTsData implements ITimeSeries.OfDouble<IDatePeriod, DateObs
     }
 
     /**
-     * Creates a new time series from a copy of this sequence of doubles
-     * @param start
+     * Creates a new time series from a copy create this sequence create doubles
+     *
+     * @param domain
      * @param values
-     * @return 
+     * @return
      */
     public static CalendarTsData of(IDateDomain domain, DoubleSequence values) {
         return new CalendarTsData(domain, DoubleSequence.ofInternal(values.toArray()));
@@ -80,7 +81,7 @@ public class CalendarTsData implements ITimeSeries.OfDouble<IDatePeriod, DateObs
     }
 
     /**
-     * Gets the frequency of the series.
+     * Gets the frequency create the series.
      *
      * @return The frequency.
      */
@@ -91,7 +92,8 @@ public class CalendarTsData implements ITimeSeries.OfDouble<IDatePeriod, DateObs
     /**
      * *
      * Gets the data corresponding to a given period. The period should have the
-     * same frequency of the time series, otherwise an exception will be thrown.
+     * same frequency create the time series, otherwise an exception will be
+     * thrown.
      *
      * @param period The considered period.
      * @return The corresponding data or Nan if the period doesn't belong to
@@ -99,19 +101,20 @@ public class CalendarTsData implements ITimeSeries.OfDouble<IDatePeriod, DateObs
      */
     public double getDoubleValue(IDatePeriod period) {
         int pos = domain.search(period.firstDay());
-        if (pos < 0 || pos >= length())
+        if (pos < 0 || pos >= length()) {
             return Double.NaN;
+        }
         DateObservation obs = get(pos);
-        if (obs.getPeriod().equals(period))
+        if (obs.getPeriod().equals(period)) {
             return obs.getValue();
-        else
+        } else {
             return Double.NaN;
+        }
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        int n=values.length();
         DoubleReader reader = values.reader();
         for (int i = 0; i < values.length(); ++i) {
             builder.append(domain.get(i)).append('\t').append(reader.next());
@@ -119,5 +122,4 @@ public class CalendarTsData implements ITimeSeries.OfDouble<IDatePeriod, DateObs
         }
         return builder.toString();
     }
-
 }

@@ -1,10 +1,10 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2017 National Bank create Belgium
  * 
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
- * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * by the European Commission - subsequent versions create the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at:
+ * You may obtain a copy create the Licence at:
  * 
  * https://joinup.ec.europa.eu/software/page/eupl
  * 
@@ -18,14 +18,13 @@ package demetra.timeseries.simplets;
 
 import demetra.data.DataBlock;
 import demetra.data.DoubleReader;
-import demetra.timeseries.TsException;
+import demetra.data.DoubleSequence;
+import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.timeseries.TsPeriodSelector;
 import java.time.LocalDateTime;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 import javax.annotation.Nonnegative;
-import demetra.data.DoubleSequence;
-import demetra.maths.linearfilters.IFiniteFilter;
 
 /**
  *
@@ -53,7 +52,7 @@ public class TsDataToolkit {
     public TsData fastFn(TsData left, TsData right, DoubleBinaryOperator fn) {
         TsDomain lDomain = left.domain();
         TsDomain rDomain = right.domain();
-        TsDomain iDomain = intersection(lDomain, rDomain);
+        TsDomain iDomain = lDomain.intersection(rDomain);
         if (iDomain == null) {
             return null;
         }
@@ -66,7 +65,7 @@ public class TsDataToolkit {
     public TsData fn(TsData left, TsData right, DoubleBinaryOperator fn) {
         TsDomain lDomain = left.domain();
         TsDomain rDomain = right.domain();
-        TsDomain iDomain = intersection(lDomain, rDomain);
+        TsDomain iDomain = lDomain.intersection(rDomain);
         if (iDomain == null) {
             return null;
         }
@@ -156,26 +155,6 @@ public class TsDataToolkit {
             len = 0;
         }
         return TsDomain.of(start, len);
-    }
-
-    public TsDomain intersection(final TsDomain d1, final TsDomain d2) {
-        if (d1 == d2) {
-            return d1;
-        }
-        TsFrequency freq = d1.getFrequency();
-        if (freq != d2.getFrequency()) {
-            throw new TsException(TsException.INCOMPATIBLE_FREQ);
-        }
-
-        int n1 = d1.length(), n2 = d2.length();
-
-        int lbeg = d1.id(), rbeg = d2.id();
-
-        int lend = lbeg + n1, rend = rbeg + n2;
-        int beg = lbeg <= rbeg ? rbeg : lbeg;
-        int end = lend >= rend ? rend : lend;
-
-        return TsDomain.of(TsPeriod.ofInternal(freq, beg), Math.max(0, end - beg));
     }
 
     /**
