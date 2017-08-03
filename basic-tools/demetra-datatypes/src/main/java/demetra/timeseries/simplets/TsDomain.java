@@ -21,7 +21,9 @@ import demetra.design.Immutable;
 import demetra.design.Internal;
 import demetra.timeseries.IDateDomain;
 import demetra.timeseries.TsException;
+import demetra.timeseries.TsPeriodSelector;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import javax.annotation.Nonnegative;
 
@@ -202,5 +204,80 @@ public final class TsDomain implements IDateDomain<TsPeriod> {
     @Override
     public TsDomain lag(int nperiods) {
         return TsDomain.of(start.plus(nperiods), length);
+    }
+
+    @Override
+    public TsDomain select(TsPeriodSelector ps) {
+        if (isEmpty()) {
+            return this;
+        }
+
+        int len = length(), freq = getFrequency().getAsInt();
+        int nf = 0, nl = 0;
+        TsPeriodSelector.SelectionType type = ps.getType();
+        if (null != type) {
+            switch (type) {
+                case None:
+                    nf = len;
+                    break;
+                case First: {
+                    int nobs = ps.getN0();
+                    nl = len - nobs;
+                    break;
+                }
+                case Last: {
+                    int nobs = ps.getN1();
+                    nf = len - nobs;
+                    break;
+                }
+                case Excluding:
+                    nf = ps.getN0();
+                    nl = ps.getN1();
+                    if (nf < 0) {
+                        nf = -nf * freq;
+                    }
+                    if (nl < 0) {
+                        nl = -nl * freq;
+                    }
+                    break;
+                default:
+                    if ((type == TsPeriodSelector.SelectionType.From)
+                            || (type == TsPeriodSelector.SelectionType.Between)) {
+                        LocalDateTime d = ps.getD0();
+                        int pos = search(d);
+                        if (pos < -1) {
+                            nf = len;
+                        } else if (pos >= 0) {
+                            if (get(pos).start().isBefore(d)) {
+                                nf = pos + 1;
+                            } else {
+                                nf = pos;
+                            }
+                        }
+                    }
+                    if ((type == TsPeriodSelector.SelectionType.To)
+                            || (type == TsPeriodSelector.SelectionType.Between)) {
+                        LocalDateTime d = ps.getD1();
+                        int pos = search(d);
+                        if (pos == -1) {
+                            nl = len; // on ne garde rien
+                        } else if (pos >= 0) {
+                            if (get(pos + 1).start().isBefore(d)) {
+                                nl = len - pos;
+                            } else {
+                                nl = len - pos - 1;
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+        if (nf < 0) {
+            nf = 0;
+        }
+        if (nl < 0) {
+            nl = 0;
+        }
+        return TsDomain.of(TsPeriod.ofInternal(getFrequency(), id() + nf), len - nf - nl);
     }
 }

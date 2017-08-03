@@ -153,6 +153,7 @@ public final class Days implements IDateDomain<Day> {
         return Days.of(LocalDate.ofEpochDay(beg), end - beg);
     }
 
+    @Override
     public Days select(final TsPeriodSelector ps) {
         if (isEmpty()) {
             return this;

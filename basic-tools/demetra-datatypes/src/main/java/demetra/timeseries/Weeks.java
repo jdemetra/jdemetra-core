@@ -140,6 +140,11 @@ public final class Weeks implements IDateDomain<DailyPeriod> {
     }
 
     @Override
+    public Weeks select(TsPeriodSelector selector) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public Weeks lag(int nperiods) {
         return Weeks.of(firstDay.plusWeeks(nperiods), nweeks);
     }

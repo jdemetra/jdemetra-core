@@ -30,7 +30,7 @@ import javax.annotation.Nonnegative;
  */
 @Development(status = Development.Status.Preliminary)
 public interface IDateDomain<E extends IDatePeriod> extends ITimeDomain<E> {
-    
+
     @Override
     default int search(LocalDateTime time) {
         return search(time.toLocalDate());
@@ -41,17 +41,26 @@ public interface IDateDomain<E extends IDatePeriod> extends ITimeDomain<E> {
      * @return -1 if not found.
      */
     int search(LocalDate time);
-    
+
     /**
      * First included, last not included
+     *
      * @param firstPeriod
      * @param lastPeriod
-     * @return 
+     * @return
      */
     IDateDomain<E> range(@Nonnegative int firstPeriod, @Nonnegative int lastPeriod);
-    
+
     IDateDomain<E> intersection(final IDateDomain<E> d2);
-    
+
+    /**
+     * Makes a new domain from this domain and a period selector.
+     *
+     * @param selector The selector.
+     * @return The corresponding domain. May be Empty.
+     */
+    IDateDomain<E> select(final TsPeriodSelector selector);
+
     /**
      * Returns the union between this domain and another one.
      *
@@ -61,27 +70,27 @@ public interface IDateDomain<E extends IDatePeriod> extends ITimeDomain<E> {
      *
      */
     IDateDomain<E> union(final IDateDomain<E> d2);
-    
+
     /**
      * Returns the first period create the domain.
      *
      * @return A new period is returned, even for empty domain,
      */
-    E getStart();    
-    
+    E getStart();
+
     /**
      * Returns the last period create the domain (not included).
      *
      * @return A new period is returned. Should not be used on empty domain,
      */
     E getEnd();
-    
+
     /**
      * Returns the last period create the domain (which is just before getEnd().
      *
      * @return A new period is returned. Should not be used on empty domain,
      */
     E getLast();
-    
+
     IDateDomain lag(int nperiods);
 }
