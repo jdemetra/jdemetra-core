@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.timeseries.simplets;
+package demetra.data;
 
 import java.util.EnumSet;
 import java.util.function.IntSupplier;
@@ -23,7 +23,7 @@ import java.util.function.IntSupplier;
  *
  * @author Jean Palate
  */
-public enum TsAggregationType implements IntSupplier {
+public enum AggregationType implements IntSupplier {
     /**
      *
      */
@@ -59,8 +59,8 @@ public enum TsAggregationType implements IntSupplier {
      * @param value Integer representation of the TsAggregationType
      * @return Enum representation of the TsAggregationType
      */
-    public static TsAggregationType valueOf(int value) {
-        for (TsAggregationType option : EnumSet.allOf(TsAggregationType.class)) {
+    public static AggregationType valueOf(int value) {
+        for (AggregationType option : EnumSet.allOf(AggregationType.class)) {
             if (option.getAsInt() == value) {
                 return option;
             }
@@ -70,7 +70,7 @@ public enum TsAggregationType implements IntSupplier {
 
     private final int value;
 
-    TsAggregationType(final int value) {
+    AggregationType(final int value) {
         this.value = value;
     }
 

@@ -111,6 +111,44 @@ public class TsDataToolkit {
         return TsData.of(ndomain.getStart(), s.values().extract(beg, ndomain.length()));
     }
 
+    /**
+     * Extends the series to the specified domain. Missing values are added (or
+     * some values are removed if necessary).
+     *
+     * @param s
+     * @param domain The domain of the new series. Must have the same frequency
+     * than the original series.
+     * @return A new (possibly empty) series is returned (or null if the domain
+     * hasn't the right frequency.
+     */
+    public TsData fitToDomain(TsData s, TsDomain domain) {
+        if (s.getFrequency() != domain.getFrequency()) {
+            throw new TsException(TsException.INCOMPATIBLE_FREQ);
+        }
+        TsDomain sdomain = s.domain();
+        int nbeg = domain.id() - sdomain.id();
+        TsDomain idomain = intersection(domain, sdomain);
+        double[] data = new double[domain.length()];
+        int cur = 0;
+        if (nbeg < 0) { // before s
+            int cmax = Math.min(-nbeg, data.length);
+            for (; cur < cmax; ++cur) {
+                data[cur] = Double.NaN;
+            }
+        }
+        int ncommon=idomain.length();
+        // common data
+        if (ncommon>0) {
+            s.values().extract(idomain.id()-sdomain.id(), ncommon).copyTo(data, cur);
+            cur += ncommon;
+        }
+        // after s
+        for (; cur < data.length; ++cur) {
+            data[cur] = Double.NaN;
+        }
+        return TsData.ofInternal(domain.getStart(), data);
+    }
+
     public TsDomain drop(final TsDomain domain, @Nonnegative int nbeg, @Nonnegative int nend) {
         TsPeriod start = domain.get(nbeg);
         int len = domain.length() - nbeg - nend;
@@ -384,9 +422,9 @@ public class TsDataToolkit {
         return lag == 0 ? s : TsData.ofInternal(s.getStart().plus(lag), s.values());
     }
 
-    public TsData apply(IFiniteFilter filter, TsData s){
+    public TsData apply(IFiniteFilter filter, TsData s) {
         double[] data = s.values().toArray();
-        double[] result=new double[data.length-filter.length()+1];
+        double[] result = new double[data.length - filter.length() + 1];
         filter.apply(DataBlock.ofInternal(data), DataBlock.ofInternal(result));
         return TsData.ofInternal(s.getStart().minus(filter.getLowerBound()), result);
     }

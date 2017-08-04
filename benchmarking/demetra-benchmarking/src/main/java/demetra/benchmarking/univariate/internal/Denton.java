@@ -14,13 +14,13 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.benchmarking.univariate;
+package demetra.benchmarking.univariate.internal;
 
-import demetra.benchmarking.AggregationType;
+import demetra.benchmarking.univariate.DentonSpecification;
+import demetra.data.AggregationType;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.design.Immutable;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;

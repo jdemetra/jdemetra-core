@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider.util;
 
-import demetra.timeseries.simplets.TsAggregationType;
+import demetra.data.AggregationType;
 import demetra.timeseries.simplets.TsFrequency;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
@@ -33,26 +33,26 @@ import javax.annotation.concurrent.Immutable;
 public final class ObsGathering {
 
     @Nonnull
-    public static ObsGathering includingMissingValues(@Nonnull TsFrequency frequency, @Nonnull TsAggregationType aggregationType) {
+    public static ObsGathering includingMissingValues(@Nonnull TsFrequency frequency, @Nonnull AggregationType aggregationType) {
         return new ObsGathering(frequency, aggregationType, false);
     }
 
     @Nonnull
-    public static ObsGathering excludingMissingValues(@Nonnull TsFrequency frequency, @Nonnull TsAggregationType aggregationType) {
+    public static ObsGathering excludingMissingValues(@Nonnull TsFrequency frequency, @Nonnull AggregationType aggregationType) {
         return new ObsGathering(frequency, aggregationType, true);
     }
 
-    public static final ObsGathering DEFAULT = excludingMissingValues(TsFrequency.Undefined, TsAggregationType.None);
+    public static final ObsGathering DEFAULT = excludingMissingValues(TsFrequency.Undefined, AggregationType.None);
 
     @lombok.NonNull
     TsFrequency frequency;
 
     @lombok.NonNull
-    TsAggregationType aggregationType;
+    AggregationType aggregationType;
 
     boolean skipMissingValues;
 
-    private ObsGathering(TsFrequency frequency, TsAggregationType aggregationType, boolean skipMissingValues) {
+    private ObsGathering(TsFrequency frequency, AggregationType aggregationType, boolean skipMissingValues) {
         this.frequency = frequency;
         this.aggregationType = aggregationType;
         this.skipMissingValues = skipMissingValues;

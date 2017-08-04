@@ -20,6 +20,7 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.design.Internal;
 import demetra.timeseries.IDateDomain;
+import demetra.timeseries.TsException;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -130,12 +131,14 @@ public final class TsDomain implements IDateDomain<TsPeriod> {
      */
     public int search(final TsPeriod p) {
         if (p.getFrequency() != start.getFrequency()) {
-            return -1;
+            throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
         int id = p.id();
         id -= start.id();
-        if ((id < 0) || (id >= length)) {
+        if ((id < 0)) {
             return -1;
+        }else if (id >= length){
+            return -length;
         } else {
             return id;
         }

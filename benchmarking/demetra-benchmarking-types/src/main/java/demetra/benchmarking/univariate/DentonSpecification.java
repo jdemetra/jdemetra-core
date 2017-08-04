@@ -17,7 +17,7 @@
 package demetra.benchmarking.univariate;
 
 import demetra.algorithms.AlgorithmDescriptor;
-import demetra.benchmarking.AggregationType;
+import demetra.data.AggregationType;
 import demetra.processing.IProcSpecification;
 
 /**

@@ -32,6 +32,7 @@ import demetra.maths.linearfilters.SymmetricFilter;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.drop;
 import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
+import static demetra.timeseries.simplets.TsDataToolkit.fitToDomain;
 import static demetra.timeseries.simplets.TsDataToolkit.fn;
 import internal.Demo;
 import org.junit.Ignore;
@@ -132,11 +133,20 @@ public class TsDataToolkitTest {
         System.out.println(TsDataToolkit.apply(h13, series));
         System.out.println("h25");
         System.out.println(TsDataToolkit.apply(h25, series));
-
+    }
+    
+    public void testFit(){
+        TsData P = Data.TS_PROD;
+        TsDomain d1=TsDomain.of(P.getStart().minus(10), 5);
+        assertTrue(fitToDomain(P, d1).values().allMatch(x->Double.isNaN(x)));
+        TsDomain d2=TsDomain.of(P.domain().getEnd().plus(10), 5);
+        assertTrue(fitToDomain(P, d1).values().allMatch(x->Double.isNaN(x)));
     }
 
     private double distance(TsData s1, ec.tstoolkit.timeseries.simplets.TsData s2) {
         return Doubles.distance(s1.values(), DoubleSequence.ofInternal(s2.internalStorage()));
     }
+    
+    
 
 }

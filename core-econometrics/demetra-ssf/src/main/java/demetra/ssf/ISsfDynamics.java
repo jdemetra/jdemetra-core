@@ -36,8 +36,7 @@ public interface ISsfDynamics extends ISsfBasic {
     int getInnovationsDim(); // E
 
     /**
-     * Variance matrix of the innovations in the transition equation. V is also
-     * modelled as
+     * Variance matrix of the innovations in the transition equation.
      *
      * Another (non unique) modelling is
      *

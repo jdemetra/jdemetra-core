@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.benchmarking.univariate;
+package demetra.benchmarking.univariate.internal;
 
+import demetra.benchmarking.univariate.DentonSpecification;
+import demetra.benchmarking.univariate.internal.Denton;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import org.junit.Test;
