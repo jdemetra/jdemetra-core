@@ -36,8 +36,8 @@ public class LeastSquaresDivision {
     public boolean divide(Polynomial num, Polynomial denom) {
         try {
             err = 0;
-            DataBlock N = DataBlock.copyOf(num);
-            DataBlock D = DataBlock.copyOf(denom);
+            DataBlock N = DataBlock.of(num);
+            DataBlock D = DataBlock.of(denom);
             int n = N.length(), d = D.length();
             if (d > n) {
                 return false;

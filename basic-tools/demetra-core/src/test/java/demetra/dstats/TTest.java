@@ -415,42 +415,6 @@ public class TTest {
 
     private IRandomNumberGenerator getRandomNumberGenerator() {
         return new SystemRNG(0);
-//        return new IRandomNumberGenerator() {
-//            @Override
-//            public double nextDouble() {
-//                return new Random().nextDouble();
-//            }
-//
-//            @Override
-//            public int nextInt() {
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//            }
-//
-//            @Override
-//            public long nextLong() {
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//            }
-//
-//            @Override
-//            public boolean nextBoolean() {
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//            }
-//
-//            @Override
-//            public float nextFloat() {
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//            }
-//
-//            @Override
-//            public int nextInt(int n) throws IllegalArgumentException {
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//            }
-//
-//            @Override
-//            public IRandomNumberGenerator synchronize() {
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//            }
-//        };
     }
 
 }

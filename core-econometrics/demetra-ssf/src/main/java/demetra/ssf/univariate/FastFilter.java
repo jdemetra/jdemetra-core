@@ -21,6 +21,7 @@ import demetra.data.DoubleSequence;
 public class FastFilter implements ILinearProcess {
 
     private final IFilteringResults frslts;
+    private final ISsf ssf;
     private final ISsfMeasurement measurement;
     private final ISsfDynamics dynamics;
     private final int start, end;
@@ -30,6 +31,7 @@ public class FastFilter implements ILinearProcess {
     private DataBlockIterator scols;
 
     public FastFilter(ISsf ssf, IFilteringResults frslts, ResultsRange range) {
+        this.ssf=ssf;
         this.frslts = frslts;
         measurement = ssf.getMeasurement();
         dynamics = ssf.getDynamics();
@@ -41,7 +43,7 @@ public class FastFilter implements ILinearProcess {
         if (end - start < x.getRowsCount()) {
             return false;
         }
-        int dim = dynamics.getStateDim();
+        int dim = ssf.getStateDim();
         states = Matrix.make(dim, x.getColumnsCount());
         prepareTmp();
         DataBlockIterator rows = x.rowsIterator();
@@ -87,7 +89,7 @@ public class FastFilter implements ILinearProcess {
         if (in.length() > end - start) {
             return false;
         }
-        int dim = dynamics.getStateDim(), n = in.length();
+        int dim = ssf.getStateDim(), n = in.length();
         DataBlock state = DataBlock.make(dim);
         int pos = start, ipos = 0, opos = 0;
         do {

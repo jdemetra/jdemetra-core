@@ -18,23 +18,24 @@ package demetra.ssf.univariate;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.DataWindow;
 import demetra.ssf.ISsfDynamics;
 import demetra.maths.matrices.Matrix;
+import demetra.ssf.ISsfBase;
+import demetra.ssf.ISsfInitialization;
 
 /**
  *
  * @author Jean Palate
  */
-public interface ISsf {
+public interface ISsf extends ISsfBase {
 
     ISsfMeasurement getMeasurement();
 
-    ISsfDynamics getDynamics();
+    @Override
+    default boolean isTimeInvariant() {
+        return getDynamics().isTimeInvariant() && getMeasurement().isTimeInvariant();
+    }
 
-    int getStateDim();
-
-    boolean isTimeInvariant();
 
 //<editor-fold defaultstate="collapsed" desc="auxiliary operations">
     /**
@@ -93,14 +94,15 @@ public interface ISsf {
     default boolean diffuseEffects(Matrix effects) {
         ISsfDynamics dynamics = getDynamics();
         ISsfMeasurement measurement = getMeasurement();
-        int n = dynamics.getStateDim();
-        int d = dynamics.getNonStationaryDim();
+        ISsfInitialization initializer = getInitialization();
+        int n = initializer.getStateDim();
+        int d = initializer.getDiffuseDim();
         if (d == 0 || d != effects.getColumnsCount()) {
             return false;
         }
         Matrix matrix = Matrix.make(n, d);
         // initialization
-        dynamics.diffuseConstraints(matrix);
+        initializer.diffuseConstraints(matrix);
         DataBlockIterator rows = effects.rowsIterator();
         int pos = 0;
         measurement.ZM(pos, matrix, rows.next());

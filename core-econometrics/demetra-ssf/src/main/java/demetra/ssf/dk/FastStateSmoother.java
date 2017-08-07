@@ -37,13 +37,14 @@ public class FastStateSmoother {
         void adjust(int pos, DataBlock a, double error);
     }
     
+    private ISsf ssf;
     private ISsfDynamics dynamics;
     private ISsfMeasurement measurement;
     protected Corrector corrector;
     
     public DataBlockStorage process(ISsf ssf, ISsfData data) {
         initSsf(ssf);
-        int dim = dynamics.getStateDim();
+        int dim = ssf.getStateDim();
         int n = data.length();
         DataBlockStorage storage = new DataBlockStorage(dim, n);
         DefaultDisturbanceSmoothingResults srslts = DefaultDisturbanceSmoothingResults.light(measurement.hasErrors());
@@ -74,13 +75,13 @@ public class FastStateSmoother {
     }
     
     private void initSsf(ISsf ssf) {
+        this.ssf=ssf;
         dynamics = ssf.getDynamics();
         measurement = ssf.getMeasurement();
-        int dim = dynamics.getStateDim(), resdim = dynamics.getInnovationsDim();
     }
     
     private DataBlock initialState(ISsf ssf, ISsfData data, IDisturbanceSmoothingResults srslts) {
-        if (dynamics.isDiffuse()) {
+        if (ssf.getInitialization().isDiffuse()) {
             DiffuseDisturbanceSmoother sm = new DiffuseDisturbanceSmoother();
             sm.setCalcVariances(false);
             sm.process(ssf, data, srslts);

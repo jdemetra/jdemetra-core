@@ -104,7 +104,7 @@ public class HouseholderReflection implements IVectorTransformation {
             x.set(0, Math.abs(x.get(0)));
             return;
         }
-        vector = DataBlock.copyOf(x);
+        vector = DataBlock.of(x);
         inPlaceHouseholder();
         x.set(()->0.0);
         x.set(0, mu);

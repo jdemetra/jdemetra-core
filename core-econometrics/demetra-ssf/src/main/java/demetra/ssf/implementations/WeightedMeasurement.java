@@ -100,18 +100,8 @@ public class WeightedMeasurement implements ISsfMeasurement {
     }
 
     @Override
-    public int getStateDim() {
-        return measurement.getStateDim();
-    }
-
-    @Override
     public boolean isTimeInvariant() {
         return false;
-    }
-
-    @Override
-    public boolean isValid() {
-        return measurement.isValid();
     }
 
 }

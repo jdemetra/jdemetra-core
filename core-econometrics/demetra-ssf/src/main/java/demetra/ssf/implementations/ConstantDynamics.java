@@ -26,24 +26,12 @@ import demetra.ssf.ISsfDynamics;
  */
 public class ConstantDynamics implements ISsfDynamics {
 
-    private final int dim;
-
-    public ConstantDynamics(final int dim) {
-        this.dim = dim;
+    public ConstantDynamics() {
     }
 
-    @Override
-    public int getStateDim() {
-        return dim;
-    }
 
     @Override
     public boolean isTimeInvariant() {
-        return true;
-    }
-
-    @Override
-    public boolean isValid() {
         return true;
     }
 
@@ -73,36 +61,6 @@ public class ConstantDynamics implements ISsfDynamics {
     @Override
     public void T(int pos, Matrix tr) {
         tr.diagonal().set(1);
-    }
-
-    @Override
-    public boolean isDiffuse() {
-        return true;
-    }
-
-    @Override
-    public int getNonStationaryDim() {
-        return dim;
-    }
-
-    @Override
-    public void diffuseConstraints(Matrix b) {
-        b.diagonal().set(1);
-    }
-
-    @Override
-    public boolean a0(DataBlock a0) {
-        return true;
-    }
-
-    @Override
-    public boolean Pf0(Matrix pf0) {
-        return true;
-    }
-
-    @Override
-    public void Pi0(Matrix p) {
-        p.diagonal().set(1);
     }
 
     @Override

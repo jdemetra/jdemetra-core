@@ -148,36 +148,36 @@ public class DataBlockTest {
     @Test
     public void testCopyOfDoubleSequence() {
         assertThat(ofInternal(getSample(10), 0, 10, 1)).satisfies(o -> {
-            assertThat(DataBlock.copyOf(o).toArray()).containsExactly(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-            assertThat(DataBlock.copyOf(o).getStorage()).containsExactly(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+            assertThat(DataBlock.of(o).toArray()).containsExactly(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+            assertThat(DataBlock.of(o).getStorage()).containsExactly(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         });
         assertThat(ofInternal(getSample(10), 2, 10, 1)).satisfies(o -> {
-            assertThat(DataBlock.copyOf(o).toArray()).containsExactly(3, 4, 5, 6, 7, 8, 9, 10);
-            assertThat(DataBlock.copyOf(o).getStorage()).containsExactly(3, 4, 5, 6, 7, 8, 9, 10);
+            assertThat(DataBlock.of(o).toArray()).containsExactly(3, 4, 5, 6, 7, 8, 9, 10);
+            assertThat(DataBlock.of(o).getStorage()).containsExactly(3, 4, 5, 6, 7, 8, 9, 10);
         });
         assertThat(ofInternal(getSample(10), 0, 10, 2)).satisfies(o -> {
-            assertThat(DataBlock.copyOf(o).toArray()).containsExactly(1, 3, 5, 7, 9);
-            assertThat(DataBlock.copyOf(o).getStorage()).containsExactly(1, 3, 5, 7, 9);
+            assertThat(DataBlock.of(o).toArray()).containsExactly(1, 3, 5, 7, 9);
+            assertThat(DataBlock.of(o).getStorage()).containsExactly(1, 3, 5, 7, 9);
         });
         assertThat(ofInternal(getSample(10), 2, 10, 2)).satisfies(o -> {
-            assertThat(DataBlock.copyOf(o).toArray()).containsExactly(3, 5, 7, 9);
-            assertThat(DataBlock.copyOf(o).getStorage()).containsExactly(3, 5, 7, 9);
+            assertThat(DataBlock.of(o).toArray()).containsExactly(3, 5, 7, 9);
+            assertThat(DataBlock.of(o).getStorage()).containsExactly(3, 5, 7, 9);
         });
         assertThat(ofInternal(getSample(10), 9, -1, -1)).satisfies(o -> {
-            assertThat(DataBlock.copyOf(o).toArray()).containsExactly(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
-            assertThat(DataBlock.copyOf(o).getStorage()).containsExactly(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
+            assertThat(DataBlock.of(o).toArray()).containsExactly(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
+            assertThat(DataBlock.of(o).getStorage()).containsExactly(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
         });
         assertThat(ofInternal(getSample(10), 9, 1, -1)).satisfies(o -> {
-            assertThat(DataBlock.copyOf(o).toArray()).containsExactly(10, 9, 8, 7, 6, 5, 4, 3);
-            assertThat(DataBlock.copyOf(o).getStorage()).containsExactly(10, 9, 8, 7, 6, 5, 4, 3);
+            assertThat(DataBlock.of(o).toArray()).containsExactly(10, 9, 8, 7, 6, 5, 4, 3);
+            assertThat(DataBlock.of(o).getStorage()).containsExactly(10, 9, 8, 7, 6, 5, 4, 3);
         });
         assertThat(ofInternal(getSample(10), 9, -1, -2)).satisfies(o -> {
-            assertThat(DataBlock.copyOf(o).toArray()).containsExactly(10, 8, 6, 4, 2);
-            assertThat(DataBlock.copyOf(o).getStorage()).containsExactly(10, 8, 6, 4, 2);
+            assertThat(DataBlock.of(o).toArray()).containsExactly(10, 8, 6, 4, 2);
+            assertThat(DataBlock.of(o).getStorage()).containsExactly(10, 8, 6, 4, 2);
         });
         assertThat(ofInternal(getSample(10), 9, 1, -2)).satisfies(o -> {
-            assertThat(DataBlock.copyOf(o).toArray()).containsExactly(10, 8, 6, 4);
-            assertThat(DataBlock.copyOf(o).getStorage()).containsExactly(10, 8, 6, 4);
+            assertThat(DataBlock.of(o).toArray()).containsExactly(10, 8, 6, 4);
+            assertThat(DataBlock.of(o).getStorage()).containsExactly(10, 8, 6, 4);
         });
     }
 

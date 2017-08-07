@@ -53,6 +53,7 @@ public class SsfException extends RuntimeException  {
     public static final String TYPE = "Invalid type";
     public static final String INCONSISTENT = "Inconsistent constraints in the model";
     public static final String STATUS = "Invalid status for the state vector";
+    public static final String INITIALIZATION = "Invalid initialization";
 
     /**
      *

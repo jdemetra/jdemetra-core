@@ -28,6 +28,7 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.data.DoubleReader;
+import demetra.ssf.ISsfInitialization;
 
 /**
  *
@@ -35,6 +36,7 @@ import demetra.data.DoubleReader;
  */
 public class DiffuseDisturbanceSmoother {
 
+    private ISsf ssf;
     private ISsfDynamics dynamics;
     private ISsfMeasurement measurement;
     private IDisturbanceSmoothingResults srslts;
@@ -232,6 +234,7 @@ public class DiffuseDisturbanceSmoother {
     }
 
     private void initFilter(ISsf ssf) {
+        this.ssf=ssf;
         dynamics = ssf.getDynamics();
         measurement = ssf.getMeasurement();
         res = measurement.hasErrors();
@@ -292,18 +295,19 @@ public class DiffuseDisturbanceSmoother {
 
     public DataBlock firstSmoothedState() {
 
-        int n = dynamics.getStateDim();
+        ISsfInitialization initialization = ssf.getInitialization();
+        int n = initialization.getStateDim();
         // initial state
         DataBlock a = DataBlock.make(n);
         Matrix Pf0 = Matrix.square(n);
-        dynamics.a0(a);
-        dynamics.Pf0(Pf0);
+        initialization.a0(a);
+        initialization.Pf0(Pf0);
         // stationary initialization
         a.addProduct(R, Pf0.columnsIterator());
 
         // non stationary initialisation
         Matrix Pi0 = Matrix.square(n);
-        dynamics.Pi0(Pi0);
+        initialization.Pi0(Pi0);
         a.addProduct(Ri, Pi0.columnsIterator());
         return a;
     }

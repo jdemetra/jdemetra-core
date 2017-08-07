@@ -98,7 +98,7 @@ public class LUSolver implements ILinearSystemSolver {
         lu.decompose(An);
         DataBlock b0 = null;
         if (improve) {
-            b0 = DataBlock.copyOf(b);
+            b0 = DataBlock.of(b);
         }
         lu.solve(b);
         // improve the result

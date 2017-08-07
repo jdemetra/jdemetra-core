@@ -52,7 +52,7 @@ public class Gls implements IGls {
             throw new EcoException(EcoException.GLS_FAILED);
         }
         // yl = L^-1*y <-> L*yl = y
-        DataBlock yl = DataBlock.copyOf(model.getY());
+        DataBlock yl = DataBlock.of(model.getY());
         LowerTriangularMatrix.rsolve(L, yl);
 
         Matrix xl = model.variables();

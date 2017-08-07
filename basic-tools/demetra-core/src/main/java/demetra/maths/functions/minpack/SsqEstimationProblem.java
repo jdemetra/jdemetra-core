@@ -44,7 +44,7 @@ public class SsqEstimationProblem implements IEstimationProblem {
     public SsqEstimationProblem(ISsqFunctionPoint start) {
         ftry = start;
         fn = ftry.getSsqFunction();
-        parameters = DataBlock.copyOf(start.getParameters());
+        parameters = DataBlock.of(start.getParameters());
     }
 
     @Override

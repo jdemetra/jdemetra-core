@@ -42,7 +42,7 @@ public class MultivariateNormal {
     private volatile Matrix lchol;
 
     public MultivariateNormal(DoubleSequence mean, Matrix cov) {
-        this.mean = DataBlock.copyOf(mean);
+        this.mean = DataBlock.of(mean);
         this.cov = cov.deepClone();
     }
 

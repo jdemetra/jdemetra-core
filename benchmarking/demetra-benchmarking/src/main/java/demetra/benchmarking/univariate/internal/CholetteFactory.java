@@ -34,40 +34,40 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = CholetteAlgorithm.class)
-public class CholetteFactory implements CholetteAlgorithm {
-
-    @Override
-    public TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, CholetteSpecification spec) {
-        TsData s = correctBias(s, aggregationConstraint);
-        if (spec.getRho() == 1) {
-            return rwcholette(s, aggregationConstraint);
-        } else {
-            return archolette(s, aggregationConstraint);
-        }
-    }
-
-    private TsData correctBias(TsData s, TsData target, CholetteSpecification spec) {
-        // No bias correction when we use pure interpolation
-        AggregationType agg=spec.getAggregationType();
-        if (spec.getBias()== BiasCorrection.None || 
-                (agg != AggregationType.Average && agg != AggregationType.Sum)) {
-            return s;
-        }
-        TsData sy = TsDataConverter.changeFrequency(s, target.getFrequency(), agg, true);
-        sy = TsDataToolkit.fitToDomain(sy, target.domain());
-        // TsDataBlock.all(target).data.sum() is the sum of the aggregation constraints
-        //  TsDataBlock.all(sy).data.sum() is the sum of the averages or sums of the original series 
-        if (bias_ == BiasCorrection.Multiplicative) {
-            return s.times(TsDataBlock.all(target).data.sum() / TsDataBlock.all(sy).data.sum());
-        } else {
-            double b = (TsDataBlock.all(target).data.sum() - TsDataBlock.all(sy).data.sum())/target.getLength();
-            if (agg == TsAggregationType.Average){
-                int hfreq=s.getFrequency().intValue(), lfreq=target.getFrequency().intValue();
-                b*=hfreq/lfreq;
-            }
-            return s.plus(b);
-        }
-    }
-
-}
+//@ServiceProvider(service = CholetteAlgorithm.class)
+//public class CholetteFactory implements CholetteAlgorithm {
+//
+//    @Override
+//    public TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, CholetteSpecification spec) {
+//        TsData s = correctBias(s, aggregationConstraint);
+//        if (spec.getRho() == 1) {
+//            return rwcholette(s, aggregationConstraint);
+//        } else {
+//            return archolette(s, aggregationConstraint);
+//        }
+//    }
+//
+//    private TsData correctBias(TsData s, TsData target, CholetteSpecification spec) {
+//        // No bias correction when we use pure interpolation
+//        AggregationType agg=spec.getAggregationType();
+//        if (spec.getBias()== BiasCorrection.None || 
+//                (agg != AggregationType.Average && agg != AggregationType.Sum)) {
+//            return s;
+//        }
+//        TsData sy = TsDataConverter.changeFrequency(s, target.getFrequency(), agg, true);
+//        sy = TsDataToolkit.fitToDomain(sy, target.domain());
+//        // TsDataBlock.all(target).data.sum() is the sum of the aggregation constraints
+//        //  TsDataBlock.all(sy).data.sum() is the sum of the averages or sums of the original series 
+//        if (bias_ == BiasCorrection.Multiplicative) {
+//            return s.times(TsDataBlock.all(target).data.sum() / TsDataBlock.all(sy).data.sum());
+//        } else {
+//            double b = (TsDataBlock.all(target).data.sum() - TsDataBlock.all(sy).data.sum())/target.getLength();
+//            if (agg == TsAggregationType.Average){
+//                int hfreq=s.getFrequency().intValue(), lfreq=target.getFrequency().intValue();
+//                b*=hfreq/lfreq;
+//            }
+//            return s.plus(b);
+//        }
+//    }
+//
+//}

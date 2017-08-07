@@ -75,12 +75,10 @@ public final class Day implements IDatePeriod {
         return d.day.until(day, ChronoUnit.DAYS);
     }
     
-    @Override
     public Day plus(long ndays){
         return new Day(day.plus(ndays, ChronoUnit.DAYS));
     }
     
-    @Override
     public Day minus(long ndays){
         return new Day(day.minus(ndays, ChronoUnit.DAYS));
     }

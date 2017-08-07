@@ -19,13 +19,13 @@ package demetra.ssf.univariate;
 import demetra.data.DataBlock;
 import demetra.data.DataWindow;
 import demetra.maths.matrices.Matrix;
-import demetra.ssf.ISsfBasic;
+import demetra.ssf.ISsfRoot;
 
 /**
  *
  * @author Jean Palate
  */
-public interface ISsfMeasurement extends ISsfBasic {
+public interface ISsfMeasurement extends ISsfRoot {
 
 //<editor-fold defaultstate="collapsed" desc="description">
     /**

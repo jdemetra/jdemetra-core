@@ -57,9 +57,9 @@ public class WeeksTest {
     public void testPlus() {
         LocalDate start = LocalDate.of(2017, 1, 1);
         Weeks d = Weeks.of(start, 1);
-        d = d.lag(1);
+        d = d.move(1);
         assertThat(d.getStart().firstDay()).isEqualTo(LocalDate.of(2017, 1, 8));
-        d = d.lag(-2);
+        d = d.move(-2);
         assertThat(d.getStart().firstDay()).isEqualTo(LocalDate.of(2016, 12, 25));
     }
     

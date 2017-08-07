@@ -24,6 +24,7 @@ import demetra.ssf.implementations.Measurement;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
 import demetra.linearsystem.ILinearSystemSolver;
+import demetra.ssf.ISsfInitialization;
 
 /**
  *
@@ -245,25 +246,30 @@ public class SeasonalComponent {
     private static Matrix LVTS2, LVTS3, LVTS4, LVTS6, LVTS12, LHS2, LHS3, LHS4, LHS6, LHS12;
 
     public static ISsf create(final SeasonalModel model, final double seasVar, final int period) {
-        return new Ssf(new Dynamics(model, seasVar, period), Measurement.create(period - 1, 1));
+        Data data = new Data(model, seasVar, period);
+        return new Ssf(new Initialization(data), new Dynamics(data), Measurement.create(period - 1, 1));
     }
 
     public static ISsf harrisonStevens(final int period, final double v) {
-        return new Ssf(new HarrisonStevensDynamics(period, v), Measurement.circular(period));
+        HarrisonStevensData data=new HarrisonStevensData(period, v);
+        return new Ssf(new HarrisonStevensInitialization(data),
+                new HarrisonStevensDynamics(data), Measurement.circular(period));
     }
 
     public static ISsf harrisonStevens(final double[] var) {
-        return new Ssf(new HarrisonStevensDynamics(var), Measurement.circular(var.length));
+        HarrisonStevensData data=new HarrisonStevensData(var);
+        return new Ssf(new HarrisonStevensInitialization(data),
+                new HarrisonStevensDynamics(data), Measurement.circular(var.length));
     }
 
-    public static class Dynamics implements ISsfDynamics {
+    static class Data {
 
         private final SeasonalModel seasModel;
         private final double seasVar;
         private final int freq;
         private final Matrix tsvar, lvar;
 
-        public Dynamics(final SeasonalModel model, final double seasVar, final int freq) {
+        Data(final SeasonalModel model, final double seasVar, final int freq) {
             this.seasVar = seasVar;
             this.seasModel = model;
             this.freq = freq;
@@ -282,22 +288,21 @@ public class SeasonalComponent {
             }
         }
 
-        private double std() {
+        final double std() {
             if (seasVar == 0 || seasVar == 1) {
                 return seasVar;
             } else {
                 return Math.sqrt(seasVar);
             }
         }
+    }
 
-        @Override
-        public int getStateDim() {
-            return freq - 1;
-        }
+    static class Initialization implements ISsfInitialization {
 
-        @Override
-        public boolean isTimeInvariant() {
-            return true;
+        private final Data data;
+
+        public Initialization(final Data data) {
+            this.data = data;
         }
 
         @Override
@@ -306,100 +311,18 @@ public class SeasonalComponent {
         }
 
         @Override
-        public int getInnovationsDim() {
-            if (seasVar > 0) {
-                if (seasModel == SeasonalModel.Dummy || seasModel == SeasonalModel.Crude) {
-                    return 1;
-                } else {
-                    return freq - 1;
-                }
-            } else {
-                return 0;
-            }
-        }
-
-        @Override
-        public void V(int pos, Matrix v) {
-            if (seasVar > 0) {
-                if (seasModel == SeasonalModel.Dummy) {
-                    v.set(0, 0, seasVar);
-                } else {
-                    v.copy(tsvar);
-                }
-            }
-        }
-
-        @Override
-        public boolean hasInnovations(int pos) {
-            return seasModel != SeasonalModel.Fixed;
-        }
-
-        @Override
-        public void S(int pos, Matrix s) {
-            if (null != seasModel) switch (seasModel) {
-                case Crude:
-                    s.set(std());
-                    break;
-                case Dummy:
-                    s.set(freq - 1, 0, std());
-                    break;
-                default:
-                    s.copy(lvar);
-                    break;
-            }
-        }
-
-        @Override
-        public void addSU(int pos, DataBlock x, DataBlock u) {
-            if (null != seasModel) switch (seasModel) {
-                case Crude:
-                    x.add(std() * u.get(0));
-                    break;
-                case Dummy:
-                    x.add(freq - 1, std() * u.get(0));
-                    break;
-                default:
-                    x.addProduct(lvar.rowsIterator(), u);
-                    break;
-            }
-        }
-
-        @Override
-        public void XS(int pos, DataBlock x, DataBlock xs) {
-            if (null != seasModel) switch (seasModel) {
-                case Crude:
-                    xs.set(0, std() * x.sum());
-                    break;
-                case Dummy:
-                    xs.set(0, std() * x.get(freq - 1));
-                    break;
-                default:
-                    xs.product(x, lvar.columnsIterator());
-                    break;
-            }
-        }
-
-//        @Override
-//        public void addSX(int pos, DataBlock x, DataBlock y) {
-//            y.add(x);
-//        }
-//
-        @Override
-        public void T(int pos, Matrix tr) {
-            if (seasVar >= 0) {
-                tr.row(freq - 2).set(-1);
-                tr.subDiagonal(1).set(1);
-            }
+        public int getStateDim() {
+            return data.freq - 1;
         }
 
         @Override
         public boolean isDiffuse() {
-            return seasVar >= 0;
+            return data.seasVar >= 0;
         }
 
         @Override
-        public int getNonStationaryDim() {
-            return freq - 1;
+        public int getDiffuseDim() {
+            return data.freq - 1;
         }
 
         @Override
@@ -419,8 +342,118 @@ public class SeasonalComponent {
 
         @Override
         public boolean Pf0(Matrix p) {
-            V(0, p);
+            if (data.seasVar > 0) {
+                if (data.seasModel == SeasonalModel.Dummy) {
+                    p.set(0, 0, data.seasVar);
+                } else {
+                    p.copy(data.tsvar);
+                }
+            }
             return true;
+        }
+
+    }
+
+    static class Dynamics implements ISsfDynamics {
+
+        private final Data data;
+
+        public Dynamics(final Data data) {
+            this.data = data;
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return true;
+        }
+
+        @Override
+        public int getInnovationsDim() {
+            if (data.seasVar > 0) {
+                if (data.seasModel == SeasonalModel.Dummy
+                        || data.seasModel == SeasonalModel.Crude) {
+                    return 1;
+                } else {
+                    return data.freq - 1;
+                }
+            } else {
+                return 0;
+            }
+        }
+
+        @Override
+        public void V(int pos, Matrix v) {
+            if (data.seasVar > 0) {
+                if (data.seasModel == SeasonalModel.Dummy) {
+                    v.set(0, 0, data.seasVar);
+                } else {
+                    v.copy(data.tsvar);
+                }
+            }
+        }
+
+        @Override
+        public boolean hasInnovations(int pos) {
+            return data.seasModel != SeasonalModel.Fixed;
+        }
+
+        @Override
+        public void S(int pos, Matrix s) {
+            if (null != data.seasModel) {
+                switch (data.seasModel) {
+                    case Crude:
+                        s.set(data.std());
+                        break;
+                    case Dummy:
+                        s.set(data.freq - 1, 0, data.std());
+                        break;
+                    default:
+                        s.copy(data.lvar);
+                        break;
+                }
+            }
+        }
+
+        @Override
+        public void addSU(int pos, DataBlock x, DataBlock u) {
+            if (null != data.seasModel) {
+                switch (data.seasModel) {
+                    case Crude:
+                        x.add(data.std() * u.get(0));
+                        break;
+                    case Dummy:
+                        x.add(data.freq - 1, data.std() * u.get(0));
+                        break;
+                    default:
+                        x.addProduct(data.lvar.rowsIterator(), u);
+                        break;
+                }
+            }
+        }
+
+        @Override
+        public void XS(int pos, DataBlock x, DataBlock xs) {
+            if (null != data.seasModel) {
+                switch (data.seasModel) {
+                    case Crude:
+                        xs.set(0, data.std() * x.sum());
+                        break;
+                    case Dummy:
+                        xs.set(0, data.std() * x.get(data.freq - 1));
+                        break;
+                    default:
+                        xs.product(x, data.lvar.columnsIterator());
+                        break;
+                }
+            }
+        }
+
+        @Override
+        public void T(int pos, Matrix tr) {
+            if (data.seasVar >= 0) {
+                tr.row(data.freq - 2).set(-1);
+                tr.subDiagonal(1).set(1);
+            }
         }
 
         @Override
@@ -430,7 +463,7 @@ public class SeasonalComponent {
 
         @Override
         public void XT(int pos, DataBlock x) {
-            int imax = freq - 2;
+            int imax = data.freq - 2;
             double xs = x.get(imax);
             for (int i = imax; i > 0; --i) {
                 x.set(i, x.get(i - 1) - xs);
@@ -441,27 +474,26 @@ public class SeasonalComponent {
 
         @Override
         public void addV(int pos, Matrix p) {
-            switch (seasModel) {
+            switch (data.seasModel) {
                 case Fixed:
                     return;
                 case Dummy:
-                    p.add(0, 0, seasVar);
+                    p.add(0, 0, data.seasVar);
                     break;
                 default:
-                    p.add(tsvar);
+                    p.add(data.tsvar);
                     break;
             }
         }
-
     }
 
-    public static class HarrisonStevensDynamics implements ISsfDynamics {
+    static class HarrisonStevensData {
 
         private final int period;
         private final double[] var;
         private final Matrix V;
 
-        public HarrisonStevensDynamics(final int period, final double v) {
+        public HarrisonStevensData(final int period, final double v) {
             this.period = period;
             var = null;
             V = Matrix.square(period - 1);
@@ -470,23 +502,11 @@ public class SeasonalComponent {
             V.mul(v);
         }
 
-        public HarrisonStevensDynamics(final double[] var) {
+        public HarrisonStevensData(final double[] var) {
             period = var.length;
             this.var = var.clone();
-//            Matrix C = new Matrix(period - 1, period);
-//            C.set(-1.0 / period);
-//            C.diagonal().add(1);
-//            Matrix D = Matrix.diagonal(var);
-//            V = SymmetricMatrix.quadraticFormT(D, C);
             DataBlock xvar = DataBlock.ofInternal(var);
             V = Matrix.square(period - 1);
-//            V.diagonal().copyFrom(var, 0);
-//            V.add(xvar.sum() / (period * period));
-//            for (int i = 0; i < period - 1; ++i) {
-//                for (int j = 0; j < period - 1; ++j) {
-//                    V.add(i, j, -(var[i] + var[j]) / period);
-//                }
-//            }
             double mvar = xvar.sum() / (period * period);
             double dp = 2.0 / period;
             for (int i = 0; i < period - 1; ++i) {
@@ -501,76 +521,24 @@ public class SeasonalComponent {
         public double[] getVariances() {
             return var;
         }
+    }
 
-        @Override
-        public int getStateDim() {
-            return period - 1;
-        }
+    static class HarrisonStevensInitialization implements ISsfInitialization {
 
-        @Override
-        public boolean isTimeInvariant() {
-            return true;
+        private final HarrisonStevensData data;
+
+        public HarrisonStevensInitialization(final HarrisonStevensData data) {
+            this.data = data;
         }
 
         @Override
         public boolean isValid() {
-            return period > 1;
+            return data.period > 1;
         }
 
         @Override
-        public int getInnovationsDim() {
-            return period - 1;
-        }
-
-        @Override
-        public void V(int pos, Matrix qm) {
-            if (V != null) {
-                qm.copy(V);
-            }
-        }
-
-//        @Override
-//        public boolean hasS() {
-//            return false;
-//        }
-//
-        @Override
-        public boolean hasInnovations(int pos) {
-            return V != null;
-        }
-
-//        @Override
-//        public void Q(int pos, Matrix qm) {
-//            qm.copy(V.subMatrix());
-//        }
-//
-//        @Override
-//        public void S(int pos, Matrix sm) {
-//        }
-//
-        @Override
-        public void S(int pos, Matrix s) {
-            //TODO
-        }
-
-        @Override
-        public void addSU(int pos, DataBlock x, DataBlock u) {
-            //TODO
-        }
-
-        @Override
-        public void XS(int pos, DataBlock x, DataBlock xs) {
-            //TODO
-        }
-//        @Override
-//        public void addSX(int pos, DataBlock x, DataBlock y) {
-//            y.add(x);
-//        }
-//
-
-        @Override
-        public void T(int pos, Matrix tr) {
-            tr.diagonal().set(1);
+        public int getStateDim() {
+            return data.period - 1;
         }
 
         @Override
@@ -579,8 +547,8 @@ public class SeasonalComponent {
         }
 
         @Override
-        public int getNonStationaryDim() {
-            return period - 1;
+        public int getDiffuseDim() {
+            return data.period - 1;
         }
 
         @Override
@@ -599,9 +567,63 @@ public class SeasonalComponent {
         }
 
         @Override
-        public boolean Pf0(Matrix pf0) {
-            V(0, pf0);
+        public boolean Pf0(Matrix p) {
+            if (data.V != null) {
+                p.copy(data.V);
+            }
             return true;
+        }
+
+    }
+
+    public static class HarrisonStevensDynamics implements ISsfDynamics {
+
+        private final HarrisonStevensData data;
+
+        public HarrisonStevensDynamics(final HarrisonStevensData data) {
+            this.data = data;
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return true;
+        }
+
+        @Override
+        public int getInnovationsDim() {
+            return data.period - 1;
+        }
+
+        @Override
+        public void V(int pos, Matrix qm) {
+            if (data.V != null) {
+                qm.copy(data.V);
+            }
+        }
+
+        @Override
+        public boolean hasInnovations(int pos) {
+            return data.V != null;
+        }
+
+        @Override
+        public void S(int pos, Matrix s) {
+            //TODO
+        }
+
+        @Override
+        public void addSU(int pos, DataBlock x, DataBlock u) {
+            //TODO
+        }
+
+        @Override
+        public void XS(int pos, DataBlock x, DataBlock xs) {
+            //TODO
+        }
+
+        @Override
+        public void T(int pos, Matrix tr) {
+            tr.diagonal().set(1);
         }
 
         @Override
@@ -614,7 +636,7 @@ public class SeasonalComponent {
 
         @Override
         public void addV(int pos, Matrix p) {
-            p.add(V);
+            p.add(data.V);
         }
 
     }

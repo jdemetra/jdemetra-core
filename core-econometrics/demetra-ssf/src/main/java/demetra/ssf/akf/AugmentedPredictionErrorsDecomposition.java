@@ -80,7 +80,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
         int d = B.getColumnsCount();
         Matrix S = a().deepClone();
         LowerTriangularMatrix.rsolve(S, B.transpose());
-        DataBlock D = DataBlock.copyOf(b());
+        DataBlock D = DataBlock.of(b());
         LowerTriangularMatrix.lsolve(S, D);
         for (int i = 0; i < d; ++i) {
             DataBlock col = B.column(i);
@@ -154,7 +154,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
 
     @Override
     public void open(IMultivariateSsf ssf, IMultivariateSsfData data) {
-        prepare(ssf.getDynamics().getNonStationaryDim(), ssf.getMeasurements().getMaxCount());
+        prepare(ssf.getDiffuseDim(), ssf.getMeasurements().getMaxCount());
     }
 
     @Override

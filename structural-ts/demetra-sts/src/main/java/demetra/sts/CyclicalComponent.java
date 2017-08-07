@@ -19,55 +19,36 @@ package demetra.sts;
 import demetra.ssf.ISsfDynamics;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
+import demetra.ssf.ISsfInitialization;
 
 /**
  *
  * @author Jean Palate
  */
 public class CyclicalComponent {
-
-    public static class Dynamics implements ISsfDynamics {
-
-        private final double var, e;
-        private final double ccos, csin;
+    
+    static class Data{
+        private final double var;
         private final double cdump, cperiod;
-
-        public Dynamics(double cyclicaldumpingfactor, double cyclicalperiod, double var) {
+        
+        public Data(double cyclicaldumpingfactor, double cyclicalperiod, double var) {
             this.var = var;
-            e = Math.sqrt(var);
             cperiod = cyclicalperiod;
             cdump = cyclicaldumpingfactor;
-            double q = Math.PI * 2 / cyclicalperiod;
-            ccos = cyclicaldumpingfactor * Math.cos(q);
-            csin = cyclicaldumpingfactor * Math.sin(q);
+       }
+    }
+
+    static class Initialization implements ISsfInitialization {
+
+        final Data data;        
+
+        Initialization(Data data){
+            this.data=data;
         }
 
         @Override
-        public int getInnovationsDim() {
-            return var == 0 ? 0 : 2;
-        }
-
-        @Override
-        public void V(int pos, Matrix v) {
-            v.diagonal().set(var);
-        }
-
-        @Override
-        public void S(int pos, Matrix s) {
-            s.diagonal().set(e);
-        }
-
-        @Override
-        public boolean hasInnovations(int pos) {
-            return var != 0;
-        }
-
-        @Override
-        public void T(int pos, Matrix tr) {
-            tr.set(0, 0, ccos);
-            tr.set(1, 1, ccos);
-            tr.set(0, 1, csin);
-            tr.set(1, 0, -csin);
+        public boolean isValid() {
+            return data.cdump < 1 && data.cdump > -1;
         }
 
         @Override
@@ -76,8 +57,13 @@ public class CyclicalComponent {
         }
 
         @Override
-        public int getNonStationaryDim() {
+        public int getDiffuseDim() {
             return 0;
+        }
+
+        @Override
+        public int getStateDim() {
+            return 2;
         }
 
         @Override
@@ -91,9 +77,52 @@ public class CyclicalComponent {
 
         @Override
         public boolean Pf0(Matrix p) {
-            double q = var / (1 - cdump * cdump);
+            double q = data.var / (1 - data.cdump * data.cdump);
             p.diagonal().set(q);
             return true;
+        }
+
+    }
+
+    static class Dynamics implements ISsfDynamics {
+
+        final Data data;        
+        private final double ccos, csin, e;
+
+        Dynamics(Data data){
+            this.data=data;
+            e = Math.sqrt(data.var);
+            double q = Math.PI * 2 / data.cperiod;
+            ccos = data.cdump * Math.cos(q);
+            csin = data.cdump * Math.sin(q);
+         }
+
+        @Override
+        public int getInnovationsDim() {
+            return data.var == 0 ? 0 : 2;
+        }
+
+        @Override
+        public void V(int pos, Matrix v) {
+            v.diagonal().set(data.var);
+        }
+
+        @Override
+        public void S(int pos, Matrix s) {
+            s.diagonal().set(e);
+        }
+
+        @Override
+        public boolean hasInnovations(int pos) {
+            return data.var != 0;
+        }
+
+        @Override
+        public void T(int pos, Matrix tr) {
+            tr.set(0, 0, ccos);
+            tr.set(1, 1, ccos);
+            tr.set(0, 1, csin);
+            tr.set(1, 0, -csin);
         }
 
         @Override
@@ -110,7 +139,7 @@ public class CyclicalComponent {
 
         @Override
         public void addV(int pos, Matrix p) {
-            p.diagonal().add(var);
+            p.diagonal().add(data.var);
         }
 
         @Override
@@ -126,18 +155,8 @@ public class CyclicalComponent {
         }
 
         @Override
-        public int getStateDim() {
-            return 2;
-        }
-
-        @Override
         public boolean isTimeInvariant() {
             return true;
-        }
-
-        @Override
-        public boolean isValid() {
-            return cdump < 1 && cdump > -1;
         }
 
     }

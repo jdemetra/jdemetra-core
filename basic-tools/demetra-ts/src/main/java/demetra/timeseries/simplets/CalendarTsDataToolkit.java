@@ -1,10 +1,10 @@
 /*
- * Copyright 2017 National Bank create Belgium
+ * Copyright 2017 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
- * by the European Commission - subsequent versions create the EUPL (the "Licence");
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
- * You may obtain a copy create the Licence at:
+ * You may obtain a copy of the Licence at:
  * 
  * http://ec.europa.eu/idabc/eupl
  * 
@@ -92,8 +92,7 @@ public class CalendarTsDataToolkit {
                     prev = next;
                 }
             }
-
-            return CalendarTsData.ofInternal(s.domain().lag(lag), nvalues);
+            return CalendarTsData.ofInternal(s.domain().drop(lag, 0), nvalues);
         } else {
             throw new UnsupportedOperationException("fn() for non continuous domains");
         }

@@ -22,6 +22,7 @@ import demetra.design.Development;
 import demetra.design.IBuilder;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
+import demetra.ssf.ISsfInitialization;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Ssf;
@@ -47,7 +48,7 @@ public class SsfCholette {
         @Override
         public ISsf build() {
             CholetteDefinition def = new CholetteDefinition(conversion, start, rho, weights);
-            return new Ssf(new Dynamics(def), new Measurement(def));
+            return new Ssf(new Initialization(def), new Dynamics(def), new Measurement(def));
         }
 
         public Builder rho(double rho) {
@@ -104,7 +105,6 @@ public class SsfCholette {
         double mweight2(int pos, double m) {
             return weights == null ? m : weights[pos] * weights[pos] * m;
         }
-
     }
 
     static class Measurement implements ISsfMeasurement {
@@ -183,17 +183,51 @@ public class SsfCholette {
         }
 
         @Override
+        public boolean isTimeInvariant() {
+            return false;
+        }
+    }
+
+    static class Initialization implements ISsfInitialization {
+
+        private final CholetteDefinition def;
+
+        Initialization(CholetteDefinition def) {
+            this.def = def;
+        }
+
+        @Override
         public int getStateDim() {
             return 2;
         }
 
         @Override
-        public boolean isTimeInvariant() {
+        public boolean isValid() {
+            return true;
+        }
+
+        @Override
+        public boolean isDiffuse() {
             return false;
         }
 
         @Override
-        public boolean isValid() {
+        public int getDiffuseDim() {
+            return 0;
+        }
+
+        @Override
+        public void diffuseConstraints(Matrix b) {
+        }
+
+        @Override
+        public boolean a0(DataBlock a0) {
+            return true;
+        }
+
+        @Override
+        public boolean Pf0(Matrix pf0) {
+            pf0.set(1, 1, 1 / (1 - def.rho * def.rho));
             return true;
         }
 
@@ -228,15 +262,8 @@ public class SsfCholette {
         }
 
         /**
-         * case I: pos+1 % c = 0
-         * T=| 0 0 |
-         * | 0 1 |
-         * case II: pos % c = 0
-         * T=| 0 w |
-         * | 0 1 |
-         * case III: others
-         * T=| 1 w |
-         * | 0 1 |
+         * case I: pos+1 % c = 0 T=| 0 0 | | 0 1 | case II: pos % c = 0 T=| 0 w
+         * | | 0 1 | case III: others T=| 1 w | | 0 1 |
          *
          * @param pos
          * @param tr
@@ -251,31 +278,6 @@ public class SsfCholette {
                     tr.set(0, 0, 1);
                 }
             }
-        }
-
-        @Override
-        public boolean isDiffuse() {
-            return false;
-        }
-
-        @Override
-        public int getNonStationaryDim() {
-            return 0;
-        }
-
-        @Override
-        public void diffuseConstraints(Matrix b) {
-        }
-
-        @Override
-        public boolean a0(DataBlock a0) {
-            return true;
-        }
-
-        @Override
-        public boolean Pf0(Matrix pf0) {
-            pf0.set(1, 1, 1 / (1 - def.rho * def.rho));
-            return true;
         }
 
         @Override
@@ -356,18 +358,8 @@ public class SsfCholette {
         }
 
         @Override
-        public int getStateDim() {
-            return 2;
-        }
-
-        @Override
         public boolean isTimeInvariant() {
             return false;
-        }
-
-        @Override
-        public boolean isValid() {
-            return true;
         }
 
     }

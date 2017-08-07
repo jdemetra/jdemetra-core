@@ -112,9 +112,9 @@ public class QRSolver implements IQRSolver {
         used = qr.used();
         if (niter > 1) {
             if (simple) {
-                iterativeEstimation2(DataBlock.copyOf(y), x);
+                iterativeEstimation2(DataBlock.of(y), x);
             } else {
-                iterativeEstimation(DataBlock.copyOf(y), x);
+                iterativeEstimation(DataBlock.of(y), x);
             }
         } else {
             res = new double[n - qr.rank()];

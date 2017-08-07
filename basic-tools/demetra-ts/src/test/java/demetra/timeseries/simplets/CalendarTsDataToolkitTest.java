@@ -37,6 +37,12 @@ import org.junit.Test;
 import static demetra.timeseries.simplets.CalendarTsDataToolkit.add;
 import static demetra.timeseries.simplets.CalendarTsDataToolkit.drop;
 import static demetra.timeseries.simplets.CalendarTsDataToolkit.fn;
+import static demetra.timeseries.simplets.CalendarTsDataToolkit.add;
+import static demetra.timeseries.simplets.CalendarTsDataToolkit.drop;
+import static demetra.timeseries.simplets.CalendarTsDataToolkit.fn;
+import static demetra.timeseries.simplets.CalendarTsDataToolkit.add;
+import static demetra.timeseries.simplets.CalendarTsDataToolkit.drop;
+import static demetra.timeseries.simplets.CalendarTsDataToolkit.fn;
 
 /**
  *
@@ -63,10 +69,8 @@ public class CalendarTsDataToolkitTest {
         dom = drop(continuous.domain(), 5, 0);
         assertThat(dom.length()).isEqualTo(continuous.domain().length() - 5);
         assertThat(dom.getEnd()).isEqualTo(continuous.domain().getEnd());
-        assertThat(dom.getStart()).isEqualTo(continuous.domain().getStart().plus(5));
 
         dom = drop(continuous.domain(), 0, 3);
-        assertThat(dom.getEnd()).isEqualTo(continuous.domain().getEnd().plus(-3));
         assertThat(dom.getStart()).isEqualTo(continuous.domain().getStart());
         assertThat(dom.length()).isEqualTo(continuous.domain().length() - 3);
 

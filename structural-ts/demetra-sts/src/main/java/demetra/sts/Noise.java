@@ -19,6 +19,7 @@ package demetra.sts;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
+import demetra.ssf.ISsfInitialization;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Ssf;
 
@@ -30,10 +31,55 @@ import demetra.ssf.univariate.Ssf;
 public class Noise extends Ssf {
 
     public Noise(final double var) {
-        super(new Dynamics(var), new Measurement());
+        super(new Initialization(var), new Dynamics(var), new Measurement());
     }
 
-    private static class Dynamics implements ISsfDynamics {
+    static class Initialization implements ISsfInitialization {
+
+        private final double var;
+
+        Initialization(final double var) {
+            this.var = var;
+        }
+        
+        @Override
+        public boolean isValid() {
+            return var > 0;
+        }
+
+        @Override
+        public int getStateDim() {
+            return 1;
+        }
+
+        @Override
+        public boolean isDiffuse() {
+            return false;
+        }
+
+        @Override
+        public int getDiffuseDim() {
+            return 0;
+        }
+
+        @Override
+        public void diffuseConstraints(Matrix b) {
+        }
+
+        @Override
+        public boolean a0(DataBlock a0) {
+            return true;
+        }
+
+        @Override
+        public boolean Pf0(Matrix pf0) {
+            pf0.set(0, 0, var);
+            return true;
+        }
+
+    }
+
+    static class Dynamics implements ISsfDynamics {
 
         private final double var, e;
 
@@ -67,31 +113,6 @@ public class Noise extends Ssf {
         }
 
         @Override
-        public boolean isDiffuse() {
-            return false;
-        }
-
-        @Override
-        public int getNonStationaryDim() {
-            return 0;
-        }
-
-        @Override
-        public void diffuseConstraints(Matrix b) {
-        }
-
-        @Override
-        public boolean a0(DataBlock a0) {
-            return true;
-        }
-
-        @Override
-        public boolean Pf0(Matrix pf0) {
-            pf0.set(0, 0, var);
-            return true;
-        }
-
-        @Override
         public void TX(int pos, DataBlock x) {
             x.set(0);
         }
@@ -117,19 +138,10 @@ public class Noise extends Ssf {
         }
 
         @Override
-        public int getStateDim() {
-            return 1;
-        }
-
-        @Override
         public boolean isTimeInvariant() {
             return true;
         }
 
-        @Override
-        public boolean isValid() {
-            return var > 0;
-        }
     }
 
     private static class Measurement implements ISsfMeasurement {
@@ -175,19 +187,10 @@ public class Noise extends Ssf {
         }
 
         @Override
-        public int getStateDim() {
-            return 1;
-        }
-
-        @Override
         public boolean isTimeInvariant() {
             return true;
         }
 
-        @Override
-        public boolean isValid() {
-            return true;
-        }
 
     }
 }

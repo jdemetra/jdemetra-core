@@ -38,6 +38,7 @@ public class MultivariateArrayFilter {
 
     private LState state;
     private MultivariateUpdateInformation perrors;
+    private IMultivariateSsf ssf;
     private ISsfMeasurements measurements;
     private ISsfDynamics dynamics;
     private IMultivariateSsfData data;
@@ -53,8 +54,8 @@ public class MultivariateArrayFilter {
     /**
      */
     protected void error() {
-        DataBlock U=perrors.getTransformedPredictionErrors();
-        Matrix L=perrors.getCholeskyFactor();
+        DataBlock U = perrors.getTransformedPredictionErrors();
+        Matrix L = perrors.getCholeskyFactor();
         U.set(0);
         for (int i = 0; i < nm; ++i) {
             double y = data.get(pos, i);
@@ -68,7 +69,7 @@ public class MultivariateArrayFilter {
         end = data.getCount();
         nm = measurements.getMaxCount();
         nres = dynamics.getInnovationsDim();
-        dim = dynamics.getStateDim();
+        dim = ssf.getStateDim();
         A = Matrix.make(dim + nm, dim + nm + nres);
         return true;
     }
@@ -76,11 +77,12 @@ public class MultivariateArrayFilter {
     private int initState() {
         state = new LState(L());
         perrors = new MultivariateUpdateInformation(dim, nm);
-        if (!dynamics.a0(state.a)) {
+        
+        if (!ssf.getInitialization().a0(state.a)) {
             return -1;
         }
         Matrix P0 = Matrix.make(dim, dim);
-        if (!dynamics.Pf0(P0)) {
+        if (!ssf.getInitialization().Pf0(P0)) {
             return -1;
         }
         SymmetricMatrix.lcholesky(P0, State.ZERO);
@@ -97,6 +99,7 @@ public class MultivariateArrayFilter {
      * @return
      */
     public boolean process(final IMultivariateSsf ssf, final IMultivariateSsfData data, final IMultivariateFilteringResults rslts) {
+        this.ssf=ssf;
         measurements = ssf.getMeasurements();
         if (!measurements.isHomogeneous()) {
             return false;

@@ -27,6 +27,7 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Ssf;
 import demetra.data.DoubleReader;
+import demetra.ssf.ISsfInitialization;
 
 /**
  *
@@ -35,13 +36,15 @@ import demetra.data.DoubleReader;
 public class RegSsf extends Ssf {
 
     public static RegSsf create(ISsf model, Matrix X) {
-        Xdynamics xdyn=new Xdynamics(model.getDynamics(), X.getColumnsCount());
-        Xmeasurement xm=new Xmeasurement(model.getMeasurement(), X);
-        return new RegSsf(xdyn, xm);
+        int mdim = model.getStateDim();
+        Xinitializer xinit = new Xinitializer(mdim, model.getInitialization(), X.getColumnsCount());
+        Xdynamics xdyn = new Xdynamics(mdim, model.getDynamics(), X.getColumnsCount());
+        Xmeasurement xm = new Xmeasurement(mdim, model.getMeasurement(), X);
+        return new RegSsf(xinit, xdyn, xm);
     }
 
-    private RegSsf(ISsfDynamics dyn, ISsfMeasurement m) {
-        super(dyn, m);
+    private RegSsf(ISsfInitialization initializer, ISsfDynamics dyn, ISsfMeasurement m) {
+        super(initializer, dyn, m);
     }
 
     static class Xdynamics implements ISsfDynamics {
@@ -49,9 +52,9 @@ public class RegSsf extends Ssf {
         private final int n, nx;
         private final ISsfDynamics dyn;
 
-        Xdynamics(ISsfDynamics dyn, int nx) {
+        Xdynamics(int n, ISsfDynamics dyn, int nx) {
             this.dyn = dyn;
-            n = dyn.getStateDim();
+            this.n = n;
             this.nx = nx;
         }
 
@@ -79,45 +82,6 @@ public class RegSsf extends Ssf {
         public void T(int pos, Matrix tr) {
             dyn.T(pos, tr.topLeft(n, n));
             tr.diagonal().drop(n, 0).set(1);
-        }
-
-        @Override
-        public boolean isDiffuse() {
-            return true;
-        }
-
-        @Override
-        public int getNonStationaryDim() {
-            return nx + dyn.getNonStationaryDim();
-        }
-
-        @Override
-        public void diffuseConstraints(Matrix b) {
-            int nd = dyn.getNonStationaryDim();
-            MatrixWindow tmp = b.topLeft(n, nd);
-            if (nd > 0) {
-                dyn.diffuseConstraints(tmp);
-            }
-            tmp.next(nx, nx);
-            tmp.diagonal().set(1);
-        }
-
-        @Override
-        public boolean a0(DataBlock a0) {
-            return dyn.a0(a0.range(0, n));
-        }
-
-        @Override
-        public boolean Pf0(Matrix pf0) {
-            return dyn.Pf0(pf0.topLeft(n, n));
-        }
-
-        @Override
-        public void Pi0(Matrix pi0) {
-            MatrixWindow tmp=pi0.topLeft(n, n);
-            dyn.Pi0(tmp);
-            tmp.next(nx, nx);
-            tmp.diagonal().set(1);
         }
 
         @Override
@@ -162,13 +126,21 @@ public class RegSsf extends Ssf {
         }
 
         @Override
-        public int getStateDim() {
-            return nx + n;
-        }
-
-        @Override
         public boolean isTimeInvariant() {
             return dyn.isTimeInvariant();
+        }
+
+    }
+
+    static class Xinitializer implements ISsfInitialization {
+
+        private final int n, nx;
+        private final ISsfInitialization dyn;
+
+        Xinitializer(int n, ISsfInitialization init, int nx) {
+            this.dyn = init;
+            this.n = n;
+            this.nx = nx;
         }
 
         @Override
@@ -176,6 +148,49 @@ public class RegSsf extends Ssf {
             return nx > 0;
         }
 
+        @Override
+        public int getStateDim() {
+            return n+ nx;
+        }
+
+        @Override
+        public boolean isDiffuse() {
+            return true;
+        }
+
+        @Override
+        public int getDiffuseDim() {
+            return nx + dyn.getDiffuseDim();
+        }
+
+        @Override
+        public void diffuseConstraints(Matrix b) {
+            int nd = dyn.getDiffuseDim();
+            MatrixWindow tmp = b.topLeft(n, nd);
+            if (nd > 0) {
+                dyn.diffuseConstraints(tmp);
+            }
+            tmp.next(nx, nx);
+            tmp.diagonal().set(1);
+        }
+
+        @Override
+        public boolean a0(DataBlock a0) {
+            return dyn.a0(a0.range(0, n));
+        }
+
+        @Override
+        public boolean Pf0(Matrix pf0) {
+            return dyn.Pf0(pf0.topLeft(n, n));
+        }
+
+        @Override
+        public void Pi0(Matrix pi0) {
+            MatrixWindow tmp = pi0.topLeft(n, n);
+            dyn.Pi0(tmp);
+            tmp.next(nx, nx);
+            tmp.diagonal().set(1);
+        }
     }
 
     static class Xmeasurement implements ISsfMeasurement {
@@ -185,10 +200,10 @@ public class RegSsf extends Ssf {
         private final int n, nx;
         private final DataBlock tmp;
 
-        private Xmeasurement(final ISsfMeasurement m, final Matrix data) {
+        private Xmeasurement(final int n, final ISsfMeasurement m, final Matrix data) {
             this.data = data;
             this.m = m;
-            n = m.getStateDim();
+            this.n = n;
             nx = data.getColumnsCount();
             tmp = DataBlock.make(nx);
         }
@@ -249,8 +264,8 @@ public class RegSsf extends Ssf {
             v.vnext(nx);
             DataBlockIterator rows = v.rowsIterator();
             DataBlock xrow = data.row(pos);
-            DoubleReader x=xrow.reader();
-            while (rows.hasNext()){
+            DoubleReader x = xrow.reader();
+            while (rows.hasNext()) {
                 m.XpZd(pos, rows.next(), d * x.next());
             }
             vtmp.copy(v.transpose());
@@ -263,16 +278,6 @@ public class RegSsf extends Ssf {
             DataWindow range = x.window(0, n);
             m.XpZd(pos, range.get(), d);
             range.next(nx).addAY(d, data.row(pos));
-        }
-
-        @Override
-        public int getStateDim() {
-            return nx + n;
-        }
-
-        @Override
-        public boolean isValid() {
-            return nx > 0;
         }
 
     }

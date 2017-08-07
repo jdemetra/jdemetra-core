@@ -36,7 +36,7 @@ public class CholeskySolver implements ILeastSquaresSolver {
             // X'y
             int n = x.getColumnsCount();
             DataBlock xy = DataBlock.make(n);
-            DataBlock Y = DataBlock.copyOf(y);
+            DataBlock Y = DataBlock.of(y);
             xy.robustProduct(x.columnsIterator(), Y, new NeumaierAccumulator());
             LowerTriangularMatrix.rsolve(L, xy, Constants.getEpsilon());
             LowerTriangularMatrix.lsolve(L, xy, Constants.getEpsilon());

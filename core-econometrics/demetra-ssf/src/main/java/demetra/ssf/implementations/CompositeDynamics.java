@@ -21,6 +21,7 @@ import demetra.data.DataWindow;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixWindow;
 import demetra.ssf.ISsfDynamics;
+import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.univariate.ISsf;
 import java.util.List;
 
@@ -34,45 +35,26 @@ public class CompositeDynamics implements ISsfDynamics {
 
     private final ISsfDynamics[] dyn;
     private final int[] dim;
-    private final int fdim;
 
     public static CompositeDynamics of(ISsf... ssfs) {
         ISsfDynamics[] dyn = new ISsfDynamics[ssfs.length];
         for (int i = 0; i < dyn.length; ++i) {
             dyn[i] = ssfs[i].getDynamics();
         }
-        return new CompositeDynamics(dyn);
+        return new CompositeDynamics(CompositeSsf.dimensions(ssfs), dyn);
     }
 
-    public static CompositeDynamics ofSsf(List<ISsf> ssfs) {
-        ISsfDynamics[] dyn = new ISsfDynamics[ssfs.size()];
-        int cur = 0;
-        for (ISsf ssf : ssfs) {
-            dyn[cur++] = ssf.getDynamics();
+    public static CompositeDynamics of(IMultivariateSsf... ssfs) {
+        ISsfDynamics[] dyn = new ISsfDynamics[ssfs.length];
+        for (int i = 0; i < dyn.length; ++i) {
+            dyn[i] = ssfs[i].getDynamics();
         }
-        return new CompositeDynamics(dyn);
+        return new CompositeDynamics(CompositeSsf.dimensions(ssfs), dyn);
     }
 
-    public CompositeDynamics(ISsfDynamics... ssfs) {
-        dyn = ssfs;
-        int n = ssfs.length;
-        dim = new int[n];
-        int tdim = ssfs[0].getStateDim();
-        dim[0] = tdim;
-        for (int i = 1; i < n; ++i) {
-            dim[i] = ssfs[i].getStateDim();
-            tdim += dim[i];
-        }
-        fdim = tdim;
-    }
-
-    public CompositeDynamics(List<ISsfDynamics> ssfs) {
-        this(ssfs.toArray(new ISsfDynamics[ssfs.size()]));
-    }
-
-    @Override
-    public int getStateDim() {
-        return fdim;
+    CompositeDynamics(int[] dim, ISsfDynamics... dyn) {
+        this.dim=dim;
+        this.dyn = dyn;
     }
 
     public int getComponentsCount() {
@@ -87,16 +69,6 @@ public class CompositeDynamics implements ISsfDynamics {
     public boolean isTimeInvariant() {
         for (int i = 0; i < dyn.length; ++i) {
             if (!dyn[i].isTimeInvariant()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public boolean isValid() {
-        for (int i = 0; i < dyn.length; ++i) {
-            if (!dyn[i].isValid()) {
                 return false;
             }
         }
@@ -177,74 +149,6 @@ public class CompositeDynamics implements ISsfDynamics {
         for (int i = 0, j = 0; i < dyn.length; ++i) {
             cur.next(dim[i], dim[i]);
             dyn[i].T(pos, cur);
-        }
-    }
-
-    @Override
-    public boolean isDiffuse() {
-        for (int i = 0; i < dyn.length; ++i) {
-            if (dyn[i].isDiffuse()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public int getNonStationaryDim() {
-        int nd = 0;
-        for (int i = 0; i < dyn.length; ++i) {
-            nd += dyn[i].getNonStationaryDim();
-        }
-        return nd;
-    }
-
-    @Override
-    public void diffuseConstraints(Matrix b) {
-        // statedim * diffusedim
-        MatrixWindow cur = b.topLeft();
-        for (int i = 0, j = 0; i < dyn.length; ++i) {
-            int nst = dyn[i].getNonStationaryDim();
-            if (nst != 0) {
-                cur.next(dim[i], nst);
-                dyn[i].diffuseConstraints(cur);
-                j += nst;
-            } else {
-                cur.vnext(dim[i]);
-            }
-        }
-    }
-
-    @Override
-    public boolean a0(DataBlock a0) {
-        DataWindow cur = a0.left();
-        for (int i = 0; i < dyn.length; ++i) {
-            if (!dyn[i].a0(cur.next(dim[i]))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public boolean Pf0(Matrix p) {
-        MatrixWindow cur = p.topLeft();
-        for (int i = 0; i < dyn.length; ++i) {
-            cur.next(dim[i], dim[i]);
-            if (!dyn[i].Pf0(cur)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public void Pi0(Matrix p
-    ) {
-        MatrixWindow cur = p.topLeft();
-        for (int i = 0; i < dyn.length; ++i) {
-            cur.next(dim[i], dim[i]);
-            dyn[i].Pi0(cur);
         }
     }
 

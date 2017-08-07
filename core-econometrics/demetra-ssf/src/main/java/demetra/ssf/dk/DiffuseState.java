@@ -18,8 +18,10 @@ package demetra.ssf.dk;
 
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
+import demetra.ssf.ISsfBase;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
+import demetra.ssf.ISsfInitialization;
 
 /**
  * Represents x* = x + d, where x is a usual state vector and d models the
@@ -31,16 +33,17 @@ import demetra.ssf.State;
 @Development(status = Development.Status.Alpha)
 public class DiffuseState extends State {
 
-    public static DiffuseState of(ISsfDynamics dyn) {
-        DiffuseState state = new DiffuseState(dyn.getStateDim());
-        if (!dyn.a0(state.a())) {
+    public static DiffuseState of(ISsfBase ssf) {
+        ISsfInitialization initialization = ssf.getInitialization();
+        DiffuseState state = new DiffuseState(initialization.getStateDim());
+        if (!initialization.a0(state.a())) {
             return null;
         }
-        if (!dyn.Pf0(state.P())) {
+        if (!initialization.Pf0(state.P())) {
             return null;
         }
-        if (dyn.isDiffuse()) {
-            dyn.Pi0(state.Pi);
+        if (initialization.isDiffuse()) {
+            initialization.Pi0(state.Pi);
         }
         return state;
     }

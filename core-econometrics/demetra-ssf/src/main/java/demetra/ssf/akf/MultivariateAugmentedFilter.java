@@ -27,6 +27,7 @@ import demetra.ssf.StateInfo;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.IMultivariateSsfData;
 import demetra.ssf.multivariate.ISsfMeasurements;
+import demetra.ssf.ISsfInitialization;
 
 /**
  *
@@ -36,6 +37,7 @@ public class MultivariateAugmentedFilter {
 
     private AugmentedState state;
     private AugmentedPredictionErrors perrors;
+    private IMultivariateSsf ssf;
     private ISsfMeasurements measurements;
     private ISsfDynamics dynamics;
     private IMultivariateSsfData data;
@@ -129,7 +131,8 @@ public class MultivariateAugmentedFilter {
             perrors = null;
             return false;
         } else {
-            perrors = new AugmentedPredictionErrors(dynamics.getStateDim(), nobs, dynamics.getNonStationaryDim());
+        ISsfInitialization initialization = ssf.getInitialization();
+            perrors = new AugmentedPredictionErrors(initialization.getStateDim(), nobs, initialization.getDiffuseDim());
             Matrix L = perrors.getCholeskyFactor();
             // K = PZ'(ZPZ'+H)^-1/2
             // computes (ZP)' in K'. 
@@ -218,7 +221,7 @@ public class MultivariateAugmentedFilter {
     }
 
     private boolean initState() {
-        state = AugmentedState.of(dynamics);
+        state = AugmentedState.of(ssf);
         return (state != null);
     }
 

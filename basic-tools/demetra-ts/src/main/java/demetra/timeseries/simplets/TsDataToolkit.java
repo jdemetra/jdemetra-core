@@ -20,7 +20,9 @@ import demetra.data.DataBlock;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.IFiniteFilter;
+import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriodSelector;
+import java.time.LocalDateTime;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 import javax.annotation.Nonnegative;
@@ -99,12 +101,12 @@ public class TsDataToolkit {
     }
 
     public TsData drop(TsData s, int nbeg, int nend) {
-        TsDomain ndomain = TsDataToolkit.drop(s.domain(), nbeg, nend);
+        TsDomain ndomain = (TsDomain) s.domain().drop(nbeg, nend);
         return TsData.of(ndomain.getStart(), s.values().extract(nbeg, ndomain.length()));
     }
 
     public TsData select(TsData s, TsPeriodSelector selector) {
-        TsDomain ndomain = select(s.domain(), selector);
+        TsDomain ndomain = s.domain().select(selector);
         final int beg = ndomain.getStart().minus(s.getStart());
         return TsData.of(ndomain.getStart(), s.values().extract(beg, ndomain.length()));
     }
@@ -125,7 +127,7 @@ public class TsDataToolkit {
         }
         TsDomain sdomain = s.domain();
         int nbeg = domain.id() - sdomain.id();
-        TsDomain idomain = intersection(domain, sdomain);
+        TsDomain idomain = domain.intersection(sdomain);
         double[] data = new double[domain.length()];
         int cur = 0;
         if (nbeg < 0) { // before s
@@ -145,53 +147,6 @@ public class TsDataToolkit {
             data[cur] = Double.NaN;
         }
         return TsData.ofInternal(domain.getStart(), data);
-    }
-
-    public TsDomain drop(final TsDomain domain, @Nonnegative int nbeg, @Nonnegative int nend) {
-        TsPeriod start = domain.get(nbeg);
-        int len = domain.length() - nbeg - nend;
-        if (len < 0) {
-            len = 0;
-        }
-        return TsDomain.of(start, len);
-    }
-
-    /**
-     * Returns the union between this domain and another one.
-     *
-     * @param d1
-     * @param d2 Another domain. Should have the same frequency.
-     * @return <I>null</I> if the frequencies are not the same. If the actual
-     * union contains a hole, it is removed in the returned domain.
-     *
-     */
-    public TsDomain union(final TsDomain d1, final TsDomain d2) {
-        if (d2 == d1) {
-            return d1;
-        }
-        TsFrequency freq = d1.getFrequency();
-        if (freq != d2.getFrequency()) {
-            return null;
-        }
-
-        int ln = d1.length(), rn = d2.length();
-        int lbeg = d1.id(), rbeg = d2.id();
-        int lend = lbeg + ln, rend = rbeg + rn;
-        int beg = lbeg <= rbeg ? lbeg : rbeg;
-        int end = lend >= rend ? lend : rend;
-
-        return TsDomain.of(TsPeriod.ofInternal(freq, beg), end - beg);
-    }
-
-    /**
-     * Makes a new domain from this domain and a period selector.
-     *
-     * @param domain
-     * @param ps The selector.
-     * @return The corresponding domain. May be Empty.
-     */
-    public TsDomain select(final TsDomain domain, final TsPeriodSelector ps) {
-        return domain.select(ps);
     }
 
     // some useful shortcuts

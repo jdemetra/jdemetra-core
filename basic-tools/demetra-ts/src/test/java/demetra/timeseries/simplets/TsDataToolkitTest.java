@@ -29,13 +29,13 @@ import demetra.data.Doubles;
 import static demetra.data.Doubles.average;
 import demetra.maths.linearfilters.HendersonFilters;
 import demetra.maths.linearfilters.SymmetricFilter;
+import static demetra.timeseries.simplets.TsDataToolkit.fitToDomain;
+import internal.Demo;
+import org.junit.Ignore;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.drop;
 import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
-import static demetra.timeseries.simplets.TsDataToolkit.fitToDomain;
 import static demetra.timeseries.simplets.TsDataToolkit.fn;
-import internal.Demo;
-import org.junit.Ignore;
 
 /**
  *

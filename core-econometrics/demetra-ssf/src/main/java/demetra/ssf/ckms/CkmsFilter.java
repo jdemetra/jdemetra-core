@@ -34,16 +34,16 @@ import demetra.ssf.UpdateInformation;
 @Development(status = Development.Status.Alpha)
 public class CkmsFilter<F extends ISsf> {
 
-    public static interface IFastInitializer<F> {
+    public static interface IFastFilterInitializer<F> {
 
-        int initialize(CkmsState state, UpdateInformation upd, F ssf, ISsfData data);
+        int initializeFilter(CkmsState state, UpdateInformation upd, F ssf, ISsfData data);
     }
 
     private double eps = 0;
     private double neps;
 
 
-    private final IFastInitializer<F> initializer;
+    private final IFastFilterInitializer<F> initializer;
     private ISsfMeasurement measurement;
     private ISsfDynamics dynamics;
 
@@ -61,7 +61,7 @@ public class CkmsFilter<F extends ISsf> {
         initializer = new CkmsInitializer();
     }
 
-    public CkmsFilter(IFastInitializer<F> initializer) {
+    public CkmsFilter(IFastFilterInitializer<F> initializer) {
         this.initializer = initializer;
     }
 
@@ -90,10 +90,11 @@ public class CkmsFilter<F extends ISsf> {
         steadypos = -1;
         dynamics = ssf.getDynamics();
         measurement = ssf.getMeasurement();
-        state = new CkmsState(dynamics.getStateDim());
-        pe = new UpdateInformation(dynamics.getStateDim());
+        int dim=ssf.getStateDim();
+        state = new CkmsState(dim);
+        pe = new UpdateInformation(dim);
 
-        int t = initializer.initialize(state, pe, ssf, data);
+        int t = initializer.initializeFilter(state, pe, ssf, data);
         if (t < 0) {
             return -1;
         }

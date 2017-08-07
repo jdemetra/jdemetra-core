@@ -123,7 +123,7 @@ public final class Weeks implements IDateDomain<DailyPeriod> {
         }
 
         if (!getPeriod().equals(d2.getPeriod())) {
-            throw new CalendarTsException(CalendarTsException.INCOMPATIBLE_FREQ);
+            throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
 
         LocalDate start1 = getStart().firstDay(), start2 = d2.getStart().firstDay();
@@ -139,13 +139,7 @@ public final class Weeks implements IDateDomain<DailyPeriod> {
         throw new UnsupportedOperationException("union()");
     }
 
-    @Override
-    public Weeks select(TsPeriodSelector selector) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Weeks lag(int nperiods) {
+    public Weeks move(int nperiods) {
         return Weeks.of(firstDay.plusWeeks(nperiods), nweeks);
     }
 

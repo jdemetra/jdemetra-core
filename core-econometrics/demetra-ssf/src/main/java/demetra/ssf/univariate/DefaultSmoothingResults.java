@@ -65,9 +65,9 @@ public class DefaultSmoothingResults extends StateStorage implements ISmoothingR
     }
 
     @Override
-    public void prepare(ISsf ssf, int start, int end) {
-        super.prepare(ssf, start, end);
-        if (e != null && ssf.getMeasurement().hasErrors()) {
+    public void prepare(int dim, int start, int end) {
+        super.prepare(dim, start, end);
+        if (e != null) {
             e.prepare(start, end);
             f.prepare(start, end);
         } 

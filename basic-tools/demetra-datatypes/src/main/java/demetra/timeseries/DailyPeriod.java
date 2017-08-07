@@ -72,16 +72,6 @@ public final class DailyPeriod implements IDatePeriod {
     }
 
     @Override
-    public IDatePeriod plus(long nperiods) {
-        return DailyPeriod.of(first.plusWeeks(nperiods), n);
-    }   
-    
-    @Override
-    public IDatePeriod minus(long nperiods) {
-        return DailyPeriod.of(first.minusWeeks(nperiods), n);
-    } 
-
-    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(first.toString()).append(('.')).append(lastDay().toString());

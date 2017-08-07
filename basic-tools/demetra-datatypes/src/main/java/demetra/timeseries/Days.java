@@ -1,10 +1,10 @@
 /*
- * Copyright 2017 National Bank create Belgium
+ * Copyright 2017 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
- * by the European Commission - subsequent versions create the EUPL (the "Licence");
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
- * You may obtain a copy create the Licence at:
+ * You may obtain a copy of the Licence at:
  * 
  * http://ec.europa.eu/idabc/eupl
  * 
@@ -112,7 +112,7 @@ public final class Days implements IDateDomain<Day> {
         }
 
         if (!getPeriod().equals(d2.getPeriod())) {
-            throw new CalendarTsException(CalendarTsException.INCOMPATIBLE_FREQ);
+            throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
 
         int n1 = length(), n2 = d2.length();
@@ -153,60 +153,7 @@ public final class Days implements IDateDomain<Day> {
         return Days.of(LocalDate.ofEpochDay(beg), end - beg);
     }
 
-    @Override
-    public Days select(final TsPeriodSelector ps) {
-        if (isEmpty()) {
-            return this;
-        }
-
-        TsPeriodSelector.SelectionType type = ps.getType();
-        switch (type) {
-            case None:
-                return range(0, 0);
-            case All:
-                return this;
-            case First:
-                return range(0, ps.getN0());
-            case Last:
-                return range(length - ps.getN1(), length);
-            case Excluding:
-                return range(ps.getN0(), length - ps.getN1());
-            default:
-                int first = 0,
-                 last = length;
-                if ((type == TsPeriodSelector.SelectionType.From)
-                        || (type == TsPeriodSelector.SelectionType.Between)) {
-                    LocalDate from = ps.getD0().toLocalDate();
-                    int pos = search(from);
-                    if (pos < -1) {
-                        first = length;
-                    } else if (pos >= 0) {
-                        first = pos;
-                    }
-                }
-
-                if ((type == TsPeriodSelector.SelectionType.To)
-                        || (type == TsPeriodSelector.SelectionType.Between)) {
-                    LocalDate to = ps.getD1().toLocalDate();
-                    int pos = search(to);
-                    if (pos == -1) {
-                        last = 0; // Nothing's kept
-                    } else if (pos >= 0) {
-                        last = pos;
-                    }
-                }
-                if (first < 0) {
-                    first = 0;
-                }
-                if (last < 0) {
-                    last = 0;
-                }
-                return range(first, last);
-        }
-    }
-
-    @Override
-    public Days lag(int nperiods) {
+    public Days move(int nperiods) {
         return Days.of(start.plusDays(nperiods), length);
     }
 

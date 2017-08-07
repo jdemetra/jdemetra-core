@@ -27,6 +27,7 @@ import demetra.ssf.DataResults;
 import demetra.ssf.StateInfo;
 import demetra.ssf.akf.AugmentedState;
 import demetra.data.DoubleSequence;
+import demetra.ssf.ISsfInitialization;
 
 /**
  *
@@ -57,7 +58,8 @@ public class DefaultDiffuseSquareRootFilteringResults extends DefaultFilteringRe
     @Override
     public void prepare(ISsf ssf, final int start, final int end) {
         super.prepare(ssf, start, end);
-        int dim = ssf.getStateDim(), n = ssf.getDynamics().getNonStationaryDim();
+        ISsfInitialization initialization = ssf.getInitialization();
+        int dim = initialization.getStateDim(), n = initialization.getDiffuseDim();
         fi.prepare(start, n);
         Ci.prepare(dim, start, n);
         if (B != null) {
@@ -117,7 +119,7 @@ public class DefaultDiffuseSquareRootFilteringResults extends DefaultFilteringRe
 
     @Override
     public DoubleSequence errors(boolean normalized, boolean clean) {
-        DataBlock r = DataBlock.copyOf(errors());
+        DataBlock r = DataBlock.of(errors());
         // set diffuse elements to Double.NaN
         r.range(0, enddiffuse).apply(fi.extract(0, enddiffuse), (x, y) -> y != 0 ? Double.NaN : x);
         if (normalized) {

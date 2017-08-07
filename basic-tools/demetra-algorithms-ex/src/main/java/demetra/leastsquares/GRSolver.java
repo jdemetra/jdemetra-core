@@ -32,7 +32,7 @@ public class GRSolver implements IQRSolver {
         try {
             Matrix X = x.deepClone();
             int m = x.getColumnsCount(), n = x.getRowsCount();
-            DataBlock Y = DataBlock.copyOf(y);
+            DataBlock Y = DataBlock.of(y);
             for (int c = 0; c < m; ++c) {
                 Matrix xcur = X.extract(c, n, c, m);
                 DataBlock ycur=Y.range(c, n);

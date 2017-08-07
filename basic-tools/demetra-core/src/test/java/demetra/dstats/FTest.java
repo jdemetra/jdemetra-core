@@ -6,6 +6,7 @@
 package demetra.dstats;
 
 import demetra.random.IRandomNumberGenerator;
+import demetra.random.SystemRNG;
 import java.util.Random;
 import org.assertj.core.api.Assertions;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -207,7 +208,7 @@ public class FTest {
     @Test
     public void testRandomVarianceF_4_10() {
         F f = new F(4, 10);
-        int iterations = 10000;
+        int iterations = 20000;
         double sum = 0;
         double avg;
         double[] values = new double[iterations];
@@ -425,42 +426,7 @@ public class FTest {
     }
 
     private IRandomNumberGenerator getRandomNumberGenerator() {
-        return new IRandomNumberGenerator() {
-            @Override
-            public double nextDouble() {
-                return new Random().nextDouble();
-            }
-
-            @Override
-            public int nextInt() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public long nextLong() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public boolean nextBoolean() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public float nextFloat() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public int nextInt(int n) throws IllegalArgumentException {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public IRandomNumberGenerator synchronize() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
+        return new SystemRNG(0);
     }
 
 }

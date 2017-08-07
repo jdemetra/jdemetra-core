@@ -201,8 +201,7 @@ public final class TsDomain implements IDateDomain<TsPeriod> {
         return TsDomain.of(TsPeriod.ofInternal(getFrequency(), beg), end - beg);
     }
 
-    @Override
-    public TsDomain lag(int nperiods) {
+    public TsDomain move(int nperiods) {
         return TsDomain.of(start.plus(nperiods), length);
     }
 

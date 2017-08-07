@@ -31,21 +31,16 @@ import demetra.data.DoubleReader;
  */
 public class ExternalEffects implements ISsfMeasurement {
 
-    public static ISsfMeasurement extend(ISsfMeasurement m, final Matrix data) {
-        if (data.getColumnsCount() == 0)
-            return m;
-        return new ExternalEffects(m, data);
-    }
 
     private final ISsfMeasurement m;
     private final Matrix data;
     private final int nm, nx;
     private final DataBlock tmp;
 
-    private ExternalEffects(final ISsfMeasurement m, final Matrix data) {
+    ExternalEffects(final int dim, final ISsfMeasurement m, final Matrix data) {
         this.data = data;
         this.m = m;
-        nm = m.getStateDim();
+        nm = dim;
         nx = data.getColumnsCount();
         tmp = DataBlock.make(nx);
     }
@@ -120,16 +115,6 @@ public class ExternalEffects implements ISsfMeasurement {
         DataWindow range = x.window(0, nm);
         m.XpZd(pos, range.get(), d);
         range.next(nx).addAY(d, data.row(pos));
-    }
-
-    @Override
-    public int getStateDim() {
-        return nx + nm;
-    }
-
-    @Override
-    public boolean isValid() {
-        return nx > 0;
     }
 
 }

@@ -20,13 +20,7 @@ package demetra.ssf;
  *
  * @author Jean Palate
  */
-public interface ISsfBasic {
-    /**
-     * Dimension of the state vector
-     *
-     * @return
-     */
-    int getStateDim();
+public interface ISsfRoot {
 
     /**
      * Is this object time invariant
@@ -35,11 +29,6 @@ public interface ISsfBasic {
      */
     boolean isTimeInvariant();
 
-    /**
-     *
-     * @return
-     */
-    boolean isValid();
 
     
 }

@@ -21,6 +21,7 @@ import demetra.design.Development;
 import demetra.maths.matrices.ElementaryTransformations;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
+import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfException;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
@@ -39,7 +40,7 @@ import demetra.ssf.univariate.OrdinaryFilter;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer {
+public class DiffuseSquareRootInitializer implements OrdinaryFilter.FilterInitializer {
 
     public interface Transformation{
         void transform(DataBlock row, Matrix A); 
@@ -49,6 +50,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
     private final IDiffuseSquareRootFilteringResults results;
     private AugmentedState astate;
     private DiffuseUpdateInformation pe;
+    private ISsf ssf;
     private ISsfMeasurement measurement;
     private ISsfDynamics dynamics;
     private ISsfData data;
@@ -89,7 +91,8 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
      * @return
      */
     @Override
-    public int initialize(final State state, final ISsf ssf, final ISsfData data) {
+    public int initializeFilter(final State state, final ISsf ssf, final ISsfData data) {
+        this.ssf=ssf;
         measurement = ssf.getMeasurement();
         dynamics = ssf.getDynamics();
         this.data = data;
@@ -138,14 +141,15 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
     }
 
     private boolean initState() {
-        int r = dynamics.getStateDim();
-        astate = AugmentedState.of(dynamics);
+        ISsfInitialization initialization = ssf.getInitialization();
+        int r = initialization.getStateDim();
+        astate = AugmentedState.of(ssf);
         if (astate == null) {
             return false;
         }
         pe = new DiffuseUpdateInformation(r);
         Z = DataBlock.make(astate.getDiffuseDim());
-        dynamics.diffuseConstraints(constraints());
+        initialization.diffuseConstraints(constraints());
         return true;
     }
 
@@ -181,7 +185,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
         // P = T P T' - 1/f*(TMf)(TMf)'+RQR'+f*(TMf/f-TMi/fi)(TMf/f-TMi/fi)'
         astate.P().addXaXt(-1 / f, C);
 
-        DataBlock tmp = DataBlock.copyOf(C);
+        DataBlock tmp = DataBlock.of(C);
         tmp.addAY(-f / fi, Ci);
         astate.P().addXaXt(1 / f, tmp);
 

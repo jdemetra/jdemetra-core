@@ -44,17 +44,6 @@ public class CompositeMeasurements implements ISsfMeasurements {
         return new CompositeMeasurements(l, cdim, null, null);
     }
 
-    public static ISsfMeasurements of(ISsfMeasurement... m) {
-        int[] cdim = new int[m.length + 1];
-        for (int i = 0; i < m.length; ++i) {
-            if (m[i].hasErrors()) {
-                return null;
-            }
-            cdim[i + 1] = cdim[i] + m[i].getStateDim();
-        }
-        return new CompositeMeasurements(m, cdim, null, null);
-    }
-
     public static ISsfMeasurements of(Matrix corr, ISsf... ssf) {
         if (!corr.isSquare()) {
             return null;
@@ -297,13 +286,4 @@ public class CompositeMeasurements implements ISsfMeasurements {
         measurements[var].XpZd(pos, cur, d);
     }
 
-    @Override
-    public int getStateDim() {
-        return cdim[cdim.length - 1];
-    }
-
-    @Override
-    public boolean isValid() {
-        return true;
-    }
 }

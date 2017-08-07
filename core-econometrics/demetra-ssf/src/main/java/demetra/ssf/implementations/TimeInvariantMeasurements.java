@@ -169,14 +169,4 @@ public class TimeInvariantMeasurements implements ISsfMeasurements {
         x.addAY(d, Z.row(var));
     }
 
-    @Override
-    public int getStateDim() {
-        return Z.getColumnsCount();
-    }
-
-    @Override
-    public boolean isValid() {
-        return Z != null;
-    }
-
 }

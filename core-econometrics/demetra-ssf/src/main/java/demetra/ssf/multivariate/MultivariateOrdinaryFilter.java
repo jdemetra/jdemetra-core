@@ -39,6 +39,7 @@ public class MultivariateOrdinaryFilter {
     private final Initializer initializer;
     private State state;
     private MultivariateUpdateInformation updinfo;
+    private IMultivariateSsf ssf;
     private ISsfMeasurements measurements;
     private ISsfDynamics dynamics;
     private IMultivariateSsfData data;
@@ -130,7 +131,7 @@ public class MultivariateOrdinaryFilter {
         if (nobs == 0) {
             updinfo = null;
         } else {
-            updinfo = new MultivariateUpdateInformation(dynamics.getStateDim(), nobs);
+            updinfo = new MultivariateUpdateInformation(ssf.getStateDim(), nobs);
             Matrix L = updinfo.getCholeskyFactor();
             // K = PZ'(ZPZ'+H)^-1/2
             // computes (ZP)' in K'. Missing values are set to 0 
@@ -195,13 +196,14 @@ public class MultivariateOrdinaryFilter {
 
     private int initialize(IMultivariateSsf ssf, IMultivariateSsfData data) {
         this.data = data;
+        this.ssf=ssf;
         measurements = ssf.getMeasurements();
         dynamics = ssf.getDynamics();
         if (initializer == null) {
-            state = State.of(dynamics);
+            state = State.of(ssf);
             return state == null ? -1 : 0;
         } else {
-            state = new State(dynamics.getStateDim());
+            state = new State(ssf.getStateDim());
             return initializer.initialize(state, ssf, data);
         }
     }

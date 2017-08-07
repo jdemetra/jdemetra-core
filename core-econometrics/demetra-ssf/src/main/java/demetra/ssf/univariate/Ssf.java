@@ -18,6 +18,7 @@ package demetra.ssf.univariate;
 
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.implementations.TimeInvariantSsf;
+import demetra.ssf.ISsfInitialization;
 
 /**
  *
@@ -25,26 +26,25 @@ import demetra.ssf.implementations.TimeInvariantSsf;
  */
 public class Ssf implements ISsf {
 
+    protected final ISsfInitialization initializer;
     protected final ISsfMeasurement measurement;
     protected final ISsfDynamics dynamics;
 
     /**
      *
+     * @param initializer
      * @param dynamics
      * @param measurement
      */
-    public Ssf(final ISsfDynamics dynamics, ISsfMeasurement measurement) {
+    public Ssf(final ISsfInitialization initializer, final ISsfDynamics dynamics, ISsfMeasurement measurement) {
+        this.initializer=initializer;
         this.dynamics = dynamics;
         this.measurement = measurement;
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
-    public int getStateDim() {
-        return dynamics.getStateDim();
+    public ISsfInitialization getInitialization(){
+        return initializer;
     }
 
     @Override

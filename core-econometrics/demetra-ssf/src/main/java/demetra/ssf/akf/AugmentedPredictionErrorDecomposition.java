@@ -38,7 +38,7 @@ public class AugmentedPredictionErrorDecomposition extends PredictionErrorDecomp
     @Override
     public void prepare(final ISsf ssf, final int n) {
         super.prepare(ssf, n);
-        nd = ssf.getDynamics().getNonStationaryDim();
+        nd = ssf.getDiffuseDim();
         Q.prepare(nd, 1);
     }
 

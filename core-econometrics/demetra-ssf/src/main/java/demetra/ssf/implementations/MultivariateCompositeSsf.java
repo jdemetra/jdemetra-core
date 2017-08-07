@@ -18,6 +18,7 @@ package demetra.ssf.implementations;
 
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
+import demetra.ssf.ISsfInitialization;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.multivariate.MultivariateSsf;
 import demetra.ssf.univariate.ISsf;
@@ -29,13 +30,14 @@ import demetra.ssf.univariate.ISsf;
 public class MultivariateCompositeSsf extends MultivariateSsf {
     
     public static MultivariateCompositeSsf create(Matrix ecorr, ISsf... ssfs){
+        CompositeInitialization init=CompositeInitialization.of(ssfs);
         CompositeDynamics dyn=CompositeDynamics.of(ssfs);
         ISsfMeasurements m=CompositeMeasurements.of(ecorr, ssfs);
-        return new MultivariateCompositeSsf(dyn, m);
+        return new MultivariateCompositeSsf(init, dyn, m);
     }
 
-    private MultivariateCompositeSsf(ISsfDynamics dyn, ISsfMeasurements m) {
-        super(dyn, m);
+    private MultivariateCompositeSsf(ISsfInitialization init, ISsfDynamics dyn, ISsfMeasurements m) {
+        super(init, dyn, m);
     }
 
 }

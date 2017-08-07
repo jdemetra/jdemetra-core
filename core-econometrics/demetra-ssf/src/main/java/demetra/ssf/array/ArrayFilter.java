@@ -27,6 +27,7 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.UpdateInformation;
+import demetra.ssf.ISsfInitialization;
 
 /**
  * Array form copyOf the Kalman filter
@@ -37,8 +38,9 @@ public class ArrayFilter {
 
     private LState state_;
     private UpdateInformation pe_;
-    private ISsfMeasurement m_;
-    private ISsfDynamics dyn_;
+    private ISsf ssf;
+    private ISsfMeasurement measurement;
+    private ISsfDynamics dynamics;
     private ISsfData data_;
     private int pos_, end_, dim_, nres_;
     private Matrix A;
@@ -54,14 +56,14 @@ public class ArrayFilter {
     protected void error() {
 
         double y = data_.get(pos_);
-        pe_.set(y - m_.ZX(pos_, state_.a));
+        pe_.set(y - measurement.ZX(pos_, state_.a));
     }
 
     private boolean initFilter() {
         pos_ = 0;
         end_ = data_.length();
-        nres_ = dyn_.getInnovationsDim();
-        dim_ = dyn_.getStateDim();
+        nres_ = dynamics.getInnovationsDim();
+        dim_ = ssf.getStateDim();
         A = Matrix.make(dim_ + 1, dim_ + 1 + nres_);
         return true;
     }
@@ -69,10 +71,11 @@ public class ArrayFilter {
     private int initState() {
         state_ = new LState(L());
         pe_ = new UpdateInformation(dim_);
-        if (!dyn_.a0(state_.a))
+        ISsfInitialization initialization = ssf.getInitialization();
+        if (!initialization.a0(state_.a))
             return -1;
         Matrix P0 = Matrix.make(dim_, dim_);
-        if (! dyn_.Pf0(P0))
+        if (! initialization.Pf0(P0))
             return -1;
         SymmetricMatrix.lcholesky(P0, State.ZERO);
         state_.L.copy(P0);
@@ -88,8 +91,9 @@ public class ArrayFilter {
      * @return
      */
     public boolean process(final ISsf ssf, final ISsfData data, final IFilteringResults rslts) {
-        m_ = ssf.getMeasurement();
-        dyn_ = ssf.getDynamics();
+        this.ssf=ssf;
+        measurement = ssf.getMeasurement();
+        dynamics = ssf.getDynamics();
         data_ = data;
         if (!initFilter()) {
             return false;
@@ -110,13 +114,13 @@ public class ArrayFilter {
     }
 
     private void preArray() {
-        m_.ZM(pos_, L(), ZL());
-        dyn_.TM(pos_, L());
+        measurement.ZM(pos_, L(), ZL());
+        dynamics.TM(pos_, L());
         U().set(0);
-        dyn_.S(pos_, U());
+        dynamics.S(pos_, U());
         K().set(0);
-        if (m_.hasError(pos_))
-            A.set(0,0, Math.sqrt(m_.errorVariance(pos_)));
+        if (measurement.hasError(pos_))
+            A.set(0,0, Math.sqrt(measurement.errorVariance(pos_)));
         else
             A.set(0,0,0);
     }
@@ -129,7 +133,7 @@ public class ArrayFilter {
     }
 
     private void nextState() {
-        dyn_.TX(pos_, state_.a);
+        dynamics.TX(pos_, state_.a);
         state_.a.addAY(pe_.get() / pe_.getVariance(), pe_.M());
      }
 

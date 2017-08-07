@@ -19,7 +19,7 @@ public class CalendarTsData implements ITimeSeries.OfDouble<IDatePeriod, DateObs
     /**
      * Creates a random time series
      *
-     * @param freq The frequency create the series.
+     * @param freq The frequency of the series.
      * @param seed
      * @return A time series with a random length (<600 observations), a random
      * starting period (between 1970 and 1990) and random observations is
@@ -39,7 +39,7 @@ public class CalendarTsData implements ITimeSeries.OfDouble<IDatePeriod, DateObs
     }
 
     /**
-     * Creates a new time series from a copy create this sequence create doubles
+     * Creates a new time series from a copy of this sequence of doubles
      *
      * @param domain
      * @param values
@@ -81,7 +81,7 @@ public class CalendarTsData implements ITimeSeries.OfDouble<IDatePeriod, DateObs
     }
 
     /**
-     * Gets the frequency create the series.
+     * Gets the frequency of the series.
      *
      * @return The frequency.
      */
@@ -92,7 +92,7 @@ public class CalendarTsData implements ITimeSeries.OfDouble<IDatePeriod, DateObs
     /**
      * *
      * Gets the data corresponding to a given period. The period should have the
-     * same frequency create the time series, otherwise an exception will be
+     * same frequency of the time series, otherwise an exception will be
      * thrown.
      *
      * @param period The considered period.

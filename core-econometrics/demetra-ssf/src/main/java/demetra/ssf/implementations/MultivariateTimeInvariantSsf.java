@@ -19,6 +19,7 @@ package demetra.ssf.implementations;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.ISsfDynamics;
+import demetra.ssf.ISsfInitialization;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.multivariate.MultivariateSsf;
 
@@ -28,22 +29,23 @@ import demetra.ssf.multivariate.MultivariateSsf;
  */
 public class MultivariateTimeInvariantSsf extends MultivariateSsf{
     public static IMultivariateSsf of(IMultivariateSsf ssf){
-        TimeInvariantDynamics td=TimeInvariantDynamics.of(ssf.getDynamics());
+        TimeInvariantDynamics td=TimeInvariantDynamics.of(ssf.getStateDim(), ssf.getDynamics());
         if (td == null)
             return null;
         TimeInvariantMeasurements tm=TimeInvariantMeasurements.of(ssf.getStateDim(), ssf.getMeasurements());
-        return new MultivariateTimeInvariantSsf(td, tm);
+        return new MultivariateTimeInvariantSsf(ssf.getInitialization(), td, tm);
     }
     
     public static IMultivariateSsf of(ISsf ssf){
-        TimeInvariantDynamics td=TimeInvariantDynamics.of(ssf.getDynamics());
+        TimeInvariantDynamics td=TimeInvariantDynamics.of(ssf.getStateDim(), ssf.getDynamics());
         if (td == null)
             return null;
-        TimeInvariantMeasurements tm=TimeInvariantMeasurements.of(ssf.getStateDim(), ssf.getMeasurement());
-        return new MultivariateTimeInvariantSsf(td, tm);
+        TimeInvariantMeasurements tm=TimeInvariantMeasurements.of(
+                ssf.getStateDim(), ssf.getMeasurement());
+        return new MultivariateTimeInvariantSsf(ssf.getInitialization(), td, tm);
     }
 
-    private MultivariateTimeInvariantSsf(final ISsfDynamics dynamics, ISsfMeasurements measurement) {
-        super(dynamics, measurement);
+    private MultivariateTimeInvariantSsf(final ISsfInitialization init, final ISsfDynamics dynamics, ISsfMeasurements measurement) {
+        super(init, dynamics, measurement);
     }
 }

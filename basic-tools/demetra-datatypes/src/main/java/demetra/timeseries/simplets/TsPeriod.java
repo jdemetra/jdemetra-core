@@ -335,7 +335,6 @@ public final class TsPeriod implements IDatePeriod, Comparable<TsPeriod> {
         return Period.between(firstDay(), lastDay().plus(1, ChronoUnit.DAYS));
     }
 
-    @Override
     public TsPeriod minus(long nperiods) {
         return new TsPeriod(freq, (int) (id - nperiods));
     }
@@ -355,7 +354,6 @@ public final class TsPeriod implements IDatePeriod, Comparable<TsPeriod> {
         return id - p.id;
     }
 
-    @Override
     public TsPeriod plus(long nperiods) {
         return new TsPeriod(freq, (int) (id + nperiods));
     }

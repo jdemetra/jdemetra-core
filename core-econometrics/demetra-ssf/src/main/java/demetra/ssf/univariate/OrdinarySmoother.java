@@ -45,7 +45,7 @@ public class OrdinarySmoother {
     private int stop;
 
     public boolean process(ISsf ssf, ISsfData data) {
-        if (ssf.getDynamics().isDiffuse()) {
+        if (ssf.getInitialization().isDiffuse()) {
             return false;
         }
         OrdinaryFilter filter = new OrdinaryFilter();
@@ -57,7 +57,7 @@ public class OrdinarySmoother {
     }
 
     public boolean process(ISsf ssf, DefaultFilteringResults results) {
-        if (ssf.getDynamics().isDiffuse()) {
+        if (ssf.getInitialization().isDiffuse()) {
             return false;
         }
         ResultsRange range = results.getRange();

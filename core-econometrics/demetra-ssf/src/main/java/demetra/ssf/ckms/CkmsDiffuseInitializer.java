@@ -28,6 +28,7 @@ import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.OrdinaryFilter;
 import demetra.ssf.UpdateInformation;
+import demetra.ssf.ISsfInitialization;
 
 /**
  * Automatic initialization of diffuse time invariant models. The algorithm
@@ -39,9 +40,9 @@ import demetra.ssf.UpdateInformation;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @Development(status = Development.Status.Alpha)
-public class CkmsDiffuseInitializer<S extends ISsf> implements CkmsFilter.IFastInitializer<S> {
+public class CkmsDiffuseInitializer<S extends ISsf> implements CkmsFilter.IFastFilterInitializer<S> {
 
-    private final OrdinaryFilter.Initializer initializer;
+    private final OrdinaryFilter.FilterInitializer initializer;
 
     public CkmsDiffuseInitializer() {
         initializer = null;
@@ -51,26 +52,27 @@ public class CkmsDiffuseInitializer<S extends ISsf> implements CkmsFilter.IFastI
      *
      * @param initializer
      */
-    public CkmsDiffuseInitializer(OrdinaryFilter.Initializer initializer) {
+    public CkmsDiffuseInitializer(OrdinaryFilter.FilterInitializer initializer) {
         this.initializer = initializer;
     }
 
     @Override
-    public int initialize(CkmsState fstate, final UpdateInformation upd, S ssf, ISsfData data) {
-        State state = new State(ssf.getStateDim());
+    public int initializeFilter(CkmsState fstate, final UpdateInformation upd, S ssf, ISsfData data) {
+        ISsfInitialization initialization = ssf.getInitialization();
+        int dim = initialization.getStateDim();
+        State state = new State(dim);
         int t = 0;
         if (initializer != null) {
-            t = initializer.initialize(state, ssf, data);
+            t = initializer.initializeFilter(state, ssf, data);
             if (t < 0) {
                 return -1;
             }
         } else {
-            t = new DiffuseSquareRootInitializer().initialize(state, ssf, data);
+            t = new DiffuseSquareRootInitializer().initializeFilter(state, ssf, data);
             if (t < 0) {
                 return -1;
             }
         }
-        int dim = ssf.getStateDim();
 
         fstate.a().copy(state.a());
         ISsfDynamics dynamics = ssf.getDynamics();

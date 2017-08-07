@@ -30,6 +30,7 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.data.DoubleSequence;
+import demetra.ssf.ISsfInitialization;
 
 /**
  *
@@ -91,9 +92,9 @@ public class DiffuseSimulationSmoother {
     }
 
     private void initSsf() {
-        int dim = dynamics.getStateDim();
+        int dim = ssf.getStateDim();
         LA = Matrix.square(dim);
-        dynamics.Pf0(LA);
+        ssf.getInitialization().Pf0(LA);
         SymmetricMatrix.lcholesky(LA, EPS);
 
     }
@@ -126,7 +127,7 @@ public class DiffuseSimulationSmoother {
 
         protected BaseSimulation(IBaseDiffuseFilteringResults frslts) {
             this.frslts = frslts;
-            dim = dynamics.getStateDim();
+            dim = ssf.getStateDim();
             resdim = dynamics.getInnovationsDim();
             n = data.length();
             nd = frslts.getEndDiffusePosition();
@@ -236,15 +237,16 @@ public class DiffuseSimulationSmoother {
             // initial state
             a0 = DataBlock.make(dim);
             Matrix Pf0 = Matrix.square(dim);
-            dynamics.a0(a0);
-            dynamics.Pf0(Pf0);
+            ISsfInitialization initializer = ssf.getInitialization();
+            initializer.a0(a0);
+            initializer.Pf0(Pf0);
             // stationary initialization
             a0.addProduct(R, Pf0.columnsIterator());
 
             // non stationary initialisation
-            if (dynamics.isDiffuse()) {
+            if (initializer.isDiffuse()) {
                 Matrix Pi0 = Matrix.square(dim);
-                dynamics.Pi0(Pi0);
+                initializer.Pi0(Pi0);
                 a0.addProduct(Ri, Pi0.columnsIterator());
             }
         }
@@ -275,7 +277,7 @@ public class DiffuseSimulationSmoother {
             smoothedStates = new DataBlockStorage(dim, n);
             smoothedStates.save(0, a0);
             int cur = 1;
-            DataBlock a = DataBlock.copyOf(a0);
+            DataBlock a = DataBlock.of(a0);
             
             while (cur<n) {
                 // next: a(t+1) = T(t) a(t) + S*r(t)
@@ -335,7 +337,7 @@ public class DiffuseSimulationSmoother {
             generateInitialState(a0f);
             a0f.mul(std);
             DataBlock a = DataBlock.make(dim);
-            dynamics.a0(a);
+            ssf.getInitialization().a0(a);
             a.add(a0f);
             states.save(0, a);
             simulatedData[0] = measurement.ZX(0, a);

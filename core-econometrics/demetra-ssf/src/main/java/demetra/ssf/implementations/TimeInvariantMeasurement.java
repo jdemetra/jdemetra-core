@@ -104,17 +104,7 @@ public class TimeInvariantMeasurement implements ISsfMeasurement {
         x.addAY(d, Z);
     }
 
-    @Override
-    public int getStateDim() {
-        return Z.length();
-    }
-
-    @Override
-    public boolean isValid() {
-        return Z != null;
-    }
-    
-    @Override
+     @Override
     public String toString(){
         StringBuilder builder=new StringBuilder();
         builder.append("Z:\r\n").append(Z.toString(FMT)).append("\r\n");

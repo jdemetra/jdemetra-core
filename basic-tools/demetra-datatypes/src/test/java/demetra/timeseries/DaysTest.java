@@ -110,10 +110,10 @@ public class DaysTest {
     @Test
     public void testLag() {
         Days d = Days.of(LocalDate.of(2017, 1, 1), 5);
-        d = d.lag(1);
+        d = d.move(1);
         assertThat(d.getStart().firstDay()).isEqualTo(LocalDate.of(2017, 1, 2));
         assertThat(d.getEnd().firstDay()).isEqualTo(LocalDate.of(2017, 1, 7));
-        d = d.lag(-2);
+        d = d.move(-2);
         assertThat(d.getStart().firstDay()).isEqualTo(LocalDate.of(2016, 12, 31));
         assertThat(d.getLast().firstDay()).isEqualTo(LocalDate.of(2017, 1, 4));
         assertThat(d.getEnd().firstDay()).isEqualTo(LocalDate.of(2017, 1, 5));

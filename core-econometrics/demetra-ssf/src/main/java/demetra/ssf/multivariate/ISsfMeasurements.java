@@ -18,15 +18,15 @@ package demetra.ssf.multivariate;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
-import demetra.ssf.ISsfBasic;
 import java.util.Iterator;
 import demetra.data.DataBlockIterator;
+import demetra.ssf.ISsfRoot;
 
 /**
  *
  * @author Jean Palate
  */
-public interface ISsfMeasurements extends ISsfBasic {
+public interface ISsfMeasurements extends ISsfRoot {
 
 //<editor-fold defaultstate="collapsed" desc="description">
     /**

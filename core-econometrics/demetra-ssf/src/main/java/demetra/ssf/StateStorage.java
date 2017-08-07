@@ -92,15 +92,6 @@ public class StateStorage implements IStateResults {
         return A.getStartSaving();
     }
 
-    public void prepare(ISsf ssf, int start, int end) {
-        int dim = ssf.getStateDim();
-        A.prepare(dim, start, end);
-
-        if (P != null) {
-            P.prepare(dim, start, end);
-        }
-    }
-
     public void prepare(int dim, int start, int end) {
         A.prepare(dim, start, end);
 
