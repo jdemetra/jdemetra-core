@@ -29,40 +29,40 @@ import demetra.data.DataBlockIterator;
  */
 public class Measurement {
 
-    public static ISsfMeasurement create(final int dim, final int mpos, final double var) {
-        return new Measurement1(dim, mpos, var);
+    public static ISsfMeasurement create(final int mpos, final double var) {
+        return new Measurement1(mpos, var);
     }
 
-    public static ISsfMeasurement create(final int dim, final int mpos) {
-        return new Measurement1(dim, mpos, 0);
+    public static ISsfMeasurement create(final int mpos) {
+        return new Measurement1(mpos, 0);
     }
 
-    public static ISsfMeasurement createSum(final int n, final double var) {
-        return new SumMeasurement(n, var);
+    public static ISsfMeasurement createSum(final double var) {
+        return new SumMeasurement(var);
     }
 
-    public static ISsfMeasurement createSum(final int n) {
-        return new SumMeasurement(n, 0);
+    public static ISsfMeasurement createSum() {
+        return new SumMeasurement(0);
     }
 
-    public static ISsfMeasurement createPartialSum(final int n, final int dim, final double var) {
-        return new PartialSumMeasurement(n, dim, var);
+    public static ISsfMeasurement createPartialSum(final int n, final double var) {
+        return new PartialSumMeasurement(n, var);
     }
 
-    public static ISsfMeasurement createPartialSum(final int n, final int dim) {
-        return new PartialSumMeasurement(n, dim, 0);
+    public static ISsfMeasurement createPartialSum(final int n) {
+        return new PartialSumMeasurement(n, 0);
     }
 
-    public static ISsfMeasurement createExtractor(final int i0, final int n, final int inc, final int dim) {
-        return new ExtractorMeasurement(n, inc, n, dim);
+    public static ISsfMeasurement createExtractor(final int i0, final int n, final int inc) {
+        return new ExtractorMeasurement(n, inc, n);
     }
 
-    public static ISsfMeasurement create(final int dim, final int[] mpos) {
-        return new Measurement2(dim, mpos, 0);
+    public static ISsfMeasurement create(final int[] mpos) {
+        return new Measurement2(mpos, 0);
     }
 
-    public static ISsfMeasurement create(final int dim, final int[] mpos, final double var) {
-        return new Measurement2(dim, mpos, var);
+    public static ISsfMeasurement create(final int[] mpos, final double var) {
+        return new Measurement2(mpos, var);
     }
 
     public static ISsfMeasurement proxy(ISsfMeasurements m) {
@@ -81,12 +81,13 @@ public class Measurement {
     }
 
     public static ISsfMeasurement cyclical(final int period, final int dim) {
-        return new CyclicalMeasurement(period, 0, dim);
+        return new CyclicalMeasurement(period, 0);
     }
 
     public static ISsfMeasurement cyclical(final int period, final int pstart, final int dim) {
-        return new CyclicalMeasurement(period, pstart, dim);
+        return new CyclicalMeasurement(period, pstart);
     }
+
     private static class Proxy implements ISsfMeasurement {
 
         private final ISsfMeasurements measurements;
@@ -150,27 +151,13 @@ public class Measurement {
             measurements.XpZd(pos, 0, x, d);
         }
 
-        @Override
-        public int getStateDim() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body copyOf generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public boolean isValid() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body copyOf generated methods, choose Tools | Templates.
-        }
     }
 
     private static class SumMeasurement implements ISsfMeasurement {
 
-        private final int sdim;
         private final double var;
 
-        SumMeasurement(int n, double var) {
-            if (n < 2) {
-                throw new java.lang.IllegalArgumentException("Sum measurement");
-            }
-            this.sdim = n;
+        SumMeasurement(double var) {
             this.var = var;
         }
 
@@ -196,7 +183,7 @@ public class Measurement {
 
         @Override
         public void ZM(int pos, Matrix m, DataBlock zm) {
-            zm.set(m.row(0), m.row(1), (x,y)->x+y);
+            zm.set(m.row(0), m.row(1), (x, y) -> x + y);
             for (int r = 2; r < m.getRowsCount(); ++r) {
                 zm.add(m.row(r));
             }
@@ -227,29 +214,15 @@ public class Measurement {
             z.set(1);
         }
 
-        @Override
-        public int getStateDim() {
-            return sdim;
-        }
-
-        @Override
-        public boolean isValid() {
-            return sdim > 0;
-        }
-
     }
 
     private static class PartialSumMeasurement implements ISsfMeasurement {
 
-        private final int sdim, cdim;
+        private final int cdim;
         private final double var;
 
-        PartialSumMeasurement(int n, int dim, double var) {
-            if (n < 2) {
-                throw new java.lang.IllegalArgumentException("Sum measurement");
-            }
+        PartialSumMeasurement(int n, double var) {
             this.cdim = n;
-            this.sdim=dim;
             this.var = var;
         }
 
@@ -275,7 +248,7 @@ public class Measurement {
 
         @Override
         public void ZM(int pos, Matrix m, DataBlock zm) {
-            zm.set(m.row(0), m.row(1), (x,y)->x+y);
+            zm.set(m.row(0), m.row(1), (x, y) -> x + y);
             for (int r = 2; r < cdim; ++r) {
                 zm.add(m.row(r));
             }
@@ -305,54 +278,46 @@ public class Measurement {
         public void Z(int pos, DataBlock z) {
             z.extract(0, cdim).set(1);
         }
-
-        @Override
-        public int getStateDim() {
-            return sdim;
-        }
-
-        @Override
-        public boolean isValid() {
-            return sdim > 0;
-        }
+        
     }
 
     private static class ExtractorMeasurement implements ISsfMeasurement {
 
-        private final int i0, n, inc, dim;
+        private final int i0, n, inc;
         private final double var;
 
-        ExtractorMeasurement(int i0, int n, int inc, int dim) {
-            this(i0, n, inc, dim, 0);
+        ExtractorMeasurement(int i0, int n, int inc) {
+            this(i0, n, inc, 0);
         }
 
-        ExtractorMeasurement(int i0, int n, int inc, int dim, double var) {
-            this.i0=i0;
+        ExtractorMeasurement(int i0, int n, int inc, double var) {
+            this.i0 = i0;
             this.n = n;
             this.inc = inc;
-            this.dim=dim;
-            this.var = var;
+             this.var = var;
         }
-        
+
         /**
          * Selects specific columns
+         *
          * @param m
-         * @return 
+         * @return
          */
-        private Matrix columnExtract(Matrix m){
+        private Matrix columnExtract(Matrix m) {
             return m.extract(0, i0, m.getRowsCount(), n, 1, inc);
         }
 
         /**
          * Selects specific rows
+         *
          * @param m
-         * @return 
+         * @return
          */
-        private Matrix rowExtract(Matrix m){
+        private Matrix rowExtract(Matrix m) {
             return m.extract(i0, 0, n, m.getColumnsCount(), inc, 1);
         }
-        
-        private Matrix extract(Matrix v){
+
+        private Matrix extract(Matrix v) {
             return v.extract(i0, i0, n, n, inc, inc);
         }
 
@@ -380,7 +345,7 @@ public class Measurement {
         public void ZM(int pos, Matrix m, DataBlock zm) {
             DataBlockIterator rows = rowExtract(m).rowsIterator();
             zm.copy(rows.next());
-            while (rows.hasNext()){
+            while (rows.hasNext()) {
                 zm.add(rows.next());
             }
         }
@@ -410,25 +375,15 @@ public class Measurement {
             z.extract(i0, n, inc).set(1);
         }
 
-        @Override
-        public int getStateDim() {
-            return dim;
-        }
-
-        @Override
-        public boolean isValid() {
-            return n > 0;
-        }
     }
 
     private static class Measurement1 implements ISsfMeasurement {
 
-        private final int n, mpos;
+        private final int mpos;
         private final double var;
 
-        Measurement1(int n, int mpos, double var) {
-            this.n = n;
-            this.mpos = mpos;
+        Measurement1(int mpos, double var) {
+             this.mpos = mpos;
             this.var = var;
         }
 
@@ -482,26 +437,15 @@ public class Measurement {
             z.set(mpos, 1);
         }
 
-        @Override
-        public int getStateDim() {
-            return n;
-        }
-
-        @Override
-        public boolean isValid() {
-            return mpos < n;
-        }
 
     }
 
     private static class Measurement2 implements ISsfMeasurement {
 
-        private final int sdim;
-        private final int[] mpos;
+         private final int[] mpos;
         private final double var;
 
-        Measurement2(int n, int[] mpos, double var) {
-            this.sdim = n;
+        Measurement2(int[] mpos, double var) {
             this.mpos = mpos;
             this.var = var;
         }
@@ -587,22 +531,6 @@ public class Measurement {
             for (int i = 0; i < n; ++i) {
                 z.set(mpos[i], 1);
             }
-        }
-
-        @Override
-        public int getStateDim() {
-            return sdim;
-        }
-
-        @Override
-        public boolean isValid() {
-            int n = mpos.length;
-            for (int i = 0; i < n; ++i) {
-                if (mpos[i] >= sdim) {
-                    return false;
-                }
-            }
-            return true;
         }
 
     }
@@ -703,27 +631,15 @@ public class Measurement {
                 x.add(spos, d);
             }
         }
-
-        @Override
-        public int getStateDim() {
-            return period-1;
-        }
-
-        @Override
-        public boolean isValid() {
-            return true;
-        }
-
     }
 
     static class CyclicalMeasurement implements ISsfMeasurement {
 
-        private final int period, start, dim;
+        private final int period, start;
 
-        public CyclicalMeasurement(int period, int start, int dim) {
+        public CyclicalMeasurement(int period, int start) {
             this.period = period;
             this.start = start;
-            this.dim=dim;
         }
 
         @Override
@@ -734,8 +650,8 @@ public class Measurement {
         @Override
         public void Z(int pos, DataBlock z) {
             int spos = (start + pos) % period;
-                z.set(spos, 1);
-         }
+            z.set(spos, 1);
+        }
 
         @Override
         public boolean hasErrors() {
@@ -755,19 +671,19 @@ public class Measurement {
         @Override
         public double ZX(int pos, DataBlock x) {
             int spos = (start + pos) % period;
-                return x.get(spos);
+            return x.get(spos);
         }
 
         @Override
         public void ZM(int pos, Matrix m, DataBlock x) {
             int spos = (start + pos) % period;
-                 x.copy(m.row(spos));
+            x.copy(m.row(spos));
         }
 
         @Override
         public double ZVZ(int pos, Matrix vm) {
             int spos = (start + pos) % period;
-                 return vm.get(spos, spos);
+            return vm.get(spos, spos);
         }
 
         @Override
@@ -776,7 +692,7 @@ public class Measurement {
                 return;
             }
             int spos = (start + pos) % period;
-                 vm.add(spos, spos, d);
+            vm.add(spos, spos, d);
         }
 
         @Override
@@ -785,17 +701,7 @@ public class Measurement {
                 return;
             }
             int spos = (start + pos) % period;
-                  x.add(spos, d);
-        }
-
-        @Override
-        public int getStateDim() {
-            return dim;
-        }
-
-        @Override
-        public boolean isValid() {
-            return true;
+            x.add(spos, d);
         }
 
     }

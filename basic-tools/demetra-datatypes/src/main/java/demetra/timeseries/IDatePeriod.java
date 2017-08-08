@@ -77,4 +77,5 @@ public interface IDatePeriod extends ITimePeriod {
     default Period length() {
         return firstDay().until(lastDay());
     }
+
 }

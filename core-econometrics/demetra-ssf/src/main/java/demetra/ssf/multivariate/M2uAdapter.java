@@ -53,7 +53,7 @@ public class M2uAdapter {
             ISsfDynamics mdynamics = mssf.getDynamics();
             HomogeneousDynamics ndyn = new HomogeneousDynamics(mdynamics, measurements.getMaxCount());
             HomogeneousMeasurement nm = new HomogeneousMeasurement(measurements);
-            return new Ssf(ndyn, nm);
+            return new Ssf(mssf.getInitialization(), ndyn, nm);
         }
     }
 
@@ -168,15 +168,6 @@ public class M2uAdapter {
             measurements.XpZd(pos / nvars, i, x, d);
         }
 
-        @Override
-        public int getStateDim() {
-            return measurements.getStateDim();
-        }
-
-        @Override
-        public boolean isValid() {
-            return measurements.isValid();
-        }
     }
 
     static class HomogeneousDynamics implements ISsfDynamics {
@@ -190,18 +181,8 @@ public class M2uAdapter {
         }
 
         @Override
-        public int getStateDim() {
-            return mdynamics.getStateDim();
-        }
-
-        @Override
         public boolean isTimeInvariant() {
             return false;
-        }
-
-        @Override
-        public boolean isValid() {
-            return mdynamics.isValid();
         }
 
         @Override
@@ -254,31 +235,6 @@ public class M2uAdapter {
             } else {
                 tr.diagonal().set(1);
             }
-        }
-
-        @Override
-        public boolean isDiffuse() {
-            return mdynamics.isDiffuse();
-        }
-
-        @Override
-        public int getNonStationaryDim() {
-            return mdynamics.getNonStationaryDim();
-        }
-
-        @Override
-        public void diffuseConstraints(Matrix b) {
-            mdynamics.diffuseConstraints(b);
-        }
-
-        @Override
-        public boolean a0(DataBlock a0) {
-            return mdynamics.a0(a0);
-        }
-
-        @Override
-        public boolean Pf0(Matrix pf0) {
-            return mdynamics.Pf0(pf0);
         }
 
         @Override

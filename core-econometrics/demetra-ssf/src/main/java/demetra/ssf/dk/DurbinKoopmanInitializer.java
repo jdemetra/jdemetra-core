@@ -33,11 +33,12 @@ import demetra.ssf.univariate.OrdinaryFilter;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class DurbinKoopmanInitializer implements OrdinaryFilter.Initializer {
+public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitializer {
 
     private final IDiffuseFilteringResults results;
     private DiffuseState state;
     private DiffuseUpdateInformation pe;
+    private ISsf ssf;
     private ISsfMeasurement measurement;
     private ISsfDynamics dynamics;
     private ISsfData data;
@@ -106,7 +107,8 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.Initializer {
      * @return
      */
     @Override
-    public int initialize(final State fstate, final ISsf ssf, final ISsfData data) {
+    public int initializeFilter(final State fstate, final ISsf ssf, final ISsfData data) {
+        this.ssf=ssf;
         measurement = ssf.getMeasurement();
         dynamics = ssf.getDynamics();
         this.data = data;
@@ -143,12 +145,12 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.Initializer {
     }
 
     private boolean initState() {
-        state = DiffuseState.of(dynamics);
+        state = DiffuseState.of(ssf);
         if (state == null) {
             return false;
         }
         norm = state.Pi().frobeniusNorm();
-        pe = new DiffuseUpdateInformation(dynamics.getStateDim());
+        pe = new DiffuseUpdateInformation(ssf.getStateDim());
         return true;
     }
 
@@ -197,7 +199,7 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.Initializer {
         // = P - 1/f (Cf)(Cf') + f/(fi*fi)(Ci)(Ci)'- 1/fi(Ci*Cf' + Cf*Ci')+ 1/f (Cf)(Cf')
         // = P  - 1/f (Cf)(Cf') + (1/f)(Cf - (f/fi)Ci)(Cf - (f/fi)Ci)'
         state.P().addXaXt(-1 / f, C);
-        DataBlock tmp = DataBlock.copyOf(C);
+        DataBlock tmp = DataBlock.of(C);
         tmp.addAY(-f / fi, Ci);
         state.P().addXaXt(1 / f, tmp);
 

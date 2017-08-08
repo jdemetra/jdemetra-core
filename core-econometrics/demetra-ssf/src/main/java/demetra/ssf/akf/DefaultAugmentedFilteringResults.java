@@ -23,6 +23,7 @@ import demetra.ssf.univariate.DefaultFilteringResults;
 import demetra.ssf.DataBlockResults;
 import demetra.ssf.MatrixResults;
 import demetra.ssf.StateInfo;
+import demetra.ssf.ISsfInitialization;
 
 /**
  *
@@ -52,7 +53,8 @@ public class DefaultAugmentedFilteringResults extends DefaultFilteringResults im
     @Override
     public void prepare(ISsf ssf, final int start, final int end) {
         super.prepare(ssf, start, end);
-        int dim = ssf.getStateDim(), n = ssf.getDynamics().getNonStationaryDim();
+        ISsfInitialization initialization = ssf.getInitialization();
+        int dim = initialization.getStateDim(), n = initialization.getDiffuseDim();
         B.prepare(dim, n, 0, n);
         E.prepare(n, 0, n);
         Q.prepare(n, 1);

@@ -17,6 +17,7 @@
 package demetra.ssf.multivariate;
 
 import demetra.ssf.ISsfDynamics;
+import demetra.ssf.ISsfInitialization;
 import demetra.ssf.implementations.Measurement;
 import demetra.ssf.implementations.Measurements;
 import demetra.ssf.univariate.ISsf;
@@ -28,43 +29,41 @@ import demetra.ssf.univariate.ISsf;
 public class MultivariateSsf implements IMultivariateSsf {
     
     public static MultivariateSsf proxy(ISsf ssf){
-        return new MultivariateSsf(ssf.getDynamics(), Measurements.proxy(ssf.getMeasurement()));
+        return new MultivariateSsf(ssf.getInitialization(), ssf.getDynamics(), Measurements.proxy(ssf.getMeasurement()));
     }
 
-    protected final ISsfMeasurements measurements_;
-    protected final ISsfDynamics dynamics_;
+    protected final ISsfInitialization initialization;
+    protected final ISsfDynamics dynamics;
+    protected final ISsfMeasurements measurements;
 
     /**
      *
      * @param dynamics
      * @param measurement
      */
-    protected MultivariateSsf(final ISsfDynamics dynamics, ISsfMeasurements measurement) {
-        dynamics_=dynamics;
-        measurements_=measurement;
+    protected MultivariateSsf(final ISsfInitialization initialization, final ISsfDynamics dynamics, ISsfMeasurements measurements) {
+        this.initialization=initialization;
+        this.dynamics=dynamics;
+        this.measurements=measurements;
     }
 
-    /**
-     *
-     * @return
-     */
-    @Override
-    public int getStateDim() {
-        return dynamics_.getStateDim();
+     @Override
+    public ISsfInitialization getInitialization() {
+        return initialization;
     }
 
-    @Override
+   @Override
     public ISsfMeasurements getMeasurements() {
-        return measurements_;
+        return measurements;
     }
 
     @Override
     public ISsfDynamics getDynamics() {
-        return dynamics_;
+        return dynamics;
     }
 
     @Override
     public boolean isTimeInvariant() {
-        return dynamics_.isTimeInvariant() && measurements_.isTimeInvariant();
+        return dynamics.isTimeInvariant() && measurements.isTimeInvariant();
     }
 }

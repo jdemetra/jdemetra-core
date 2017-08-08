@@ -19,6 +19,7 @@ package demetra.ssf.dk.sqrt;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
+import demetra.ssf.ISsfInitialization;
 import demetra.ssf.StateInfo;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.dk.BaseDiffuseSmoother;
@@ -59,8 +60,9 @@ public class DiffuseSquareRootSmoother extends BaseDiffuseSmoother{
     }
 
     private void initSmoother(ISsf ssf, int end) {
-        int dim = ssf.getStateDim();
-        state = new AugmentedState(dim, ssf.getDynamics().getNonStationaryDim());
+        ISsfInitialization initialization = ssf.getInitialization();
+        int dim = initialization.getStateDim();
+        state = new AugmentedState(dim, initialization.getDiffuseDim());
 
         Rf = DataBlock.make(dim);
         C = DataBlock.make(dim);

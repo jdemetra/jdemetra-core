@@ -97,7 +97,7 @@ public class QRLinearSystemSolver implements ILinearSystemSolver {
 //            throw new MatrixException(MatrixException.SINGULAR);
 //        }
 
-        DataBlock b0 = improve ? DataBlock.copyOf(b) : null;
+        DataBlock b0 = improve ? DataBlock.of(b) : null;
         qr.leastSquares(b, b, null);
         if (!improve) {
             return;

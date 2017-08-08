@@ -120,7 +120,7 @@ public class MultivariateSsfHelper {
     }
 
     public static void addH(int t, ISsfMeasurements measurements, int[] idx, Matrix P) {
-        Matrix H = Matrix.square(measurements.getStateDim());
+        Matrix H = Matrix.square(P.getColumnsCount());
         measurements.H(t, H);
         for (int i = 0; i < idx.length; ++i) {
             for (int j = 0; j < i; ++j) {

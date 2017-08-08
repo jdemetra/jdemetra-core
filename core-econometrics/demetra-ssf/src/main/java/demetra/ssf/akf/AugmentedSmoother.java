@@ -29,6 +29,7 @@ import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.OrdinarySmoother;
 import demetra.data.DoubleReader;
+import demetra.ssf.ISsfInitialization;
 
 /**
  *
@@ -77,8 +78,9 @@ public class AugmentedSmoother {
     }
 
     private void initSmoother(ISsf ssf, int end) {
-        int dim = ssf.getStateDim();
-        int nd = ssf.getDynamics().getNonStationaryDim();
+        ISsfInitialization initialization = ssf.getInitialization();
+        int dim = initialization.getStateDim();
+        int nd = initialization.getDiffuseDim();
         state = new AugmentedState(dim, nd);
 
         R = DataBlock.make(dim);

@@ -17,14 +17,14 @@
 package demetra.tsprovider;
 
 import demetra.data.DoubleSequence;
-import demetra.timeseries.simplets.TsAggregationType;
-import static demetra.timeseries.simplets.TsAggregationType.Average;
-import static demetra.timeseries.simplets.TsAggregationType.First;
-import static demetra.timeseries.simplets.TsAggregationType.Last;
-import static demetra.timeseries.simplets.TsAggregationType.Max;
-import static demetra.timeseries.simplets.TsAggregationType.Min;
-import static demetra.timeseries.simplets.TsAggregationType.None;
-import static demetra.timeseries.simplets.TsAggregationType.Sum;
+import demetra.data.AggregationType;
+import static demetra.data.AggregationType.Average;
+import static demetra.data.AggregationType.First;
+import static demetra.data.AggregationType.Last;
+import static demetra.data.AggregationType.Max;
+import static demetra.data.AggregationType.Min;
+import static demetra.data.AggregationType.None;
+import static demetra.data.AggregationType.Sum;
 import demetra.timeseries.simplets.TsData;
 import demetra.timeseries.simplets.TsFrequency;
 import static demetra.timeseries.simplets.TsFrequency.Monthly;
@@ -53,6 +53,14 @@ import static java.util.EnumSet.complementOf;
 import java.util.function.BiFunction;
 import static java.util.EnumSet.allOf;
 import static org.assertj.core.api.Assertions.assertThat;
+import static java.util.EnumSet.of;
+import static java.util.EnumSet.of;
+import static java.util.EnumSet.of;
+import static java.util.EnumSet.of;
+import static java.util.EnumSet.of;
+import static java.util.EnumSet.of;
+import static java.util.EnumSet.of;
+import static java.util.EnumSet.of;
 import static java.util.EnumSet.of;
 import static java.util.EnumSet.of;
 import static java.util.EnumSet.of;
@@ -221,7 +229,7 @@ public class OptionalTsDataTest {
                 .isEqualTo(b.build());
 
         // defined with aggregation
-        BiFunction<TsFrequency, TsAggregationType, OptionalTsData> b6 = (f, a) -> {
+        BiFunction<TsFrequency, AggregationType, OptionalTsData> b6 = (f, a) -> {
             return cf.builderOf(f, a, false)
                     .add(jan2010, 12)
                     .add(jan2010, 13)
@@ -239,7 +247,7 @@ public class OptionalTsDataTest {
         });
 
         // unordered daily to monthly
-        Function<TsAggregationType, OptionalTsData> b7 = a -> {
+        Function<AggregationType, OptionalTsData> b7 = a -> {
             return cf.builderOf(Monthly, a, false)
                     .add(cf.dateOf(2010, 2, 1), 20)
                     .add(cf.dateOf(2010, 1, 3), 10)
@@ -301,7 +309,7 @@ public class OptionalTsDataTest {
 
         TsDataBuilder<T> builderOf(ObsGathering gathering);
 
-        default TsDataBuilder<T> builderOf(TsFrequency freq, TsAggregationType aggregation, boolean skipMissingValues) {
+        default TsDataBuilder<T> builderOf(TsFrequency freq, AggregationType aggregation, boolean skipMissingValues) {
             ObsGathering gathering = skipMissingValues
                     ? ObsGathering.excludingMissingValues(freq, aggregation)
                     : ObsGathering.includingMissingValues(freq, aggregation);

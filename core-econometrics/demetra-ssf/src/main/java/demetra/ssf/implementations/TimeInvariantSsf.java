@@ -21,6 +21,7 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Ssf;
+import demetra.ssf.ISsfInitialization;
 
 /**
  *
@@ -28,23 +29,25 @@ import demetra.ssf.univariate.Ssf;
  */
 public class TimeInvariantSsf extends Ssf{
     public static ISsf of(ISsf ssf){
-        TimeInvariantDynamics td=TimeInvariantDynamics.of(ssf.getDynamics());
+        TimeInvariantDynamics td=TimeInvariantDynamics.of(ssf.getStateDim(), ssf.getDynamics());
         if (td == null)
             return null;
         TimeInvariantMeasurement tm=TimeInvariantMeasurement.of(ssf.getStateDim(), ssf.getMeasurement());
-        return new TimeInvariantSsf(td, tm);
+        return new TimeInvariantSsf(ssf.getInitialization(), td, tm);
     }
     
-    private TimeInvariantSsf(final ISsfDynamics dynamics, ISsfMeasurement measurement) {
-        super(dynamics, measurement);
+    private TimeInvariantSsf(final ISsfInitialization initializer, final ISsfDynamics dynamics, ISsfMeasurement measurement) {
+        super(initializer, dynamics, measurement);
     }
     
     @Override
     public String toString(){
         StringBuilder builder=new StringBuilder();
-        builder.append("Measurement\r\n");
+        builder.append("Initialization").append(System.lineSeparator());
+        builder.append(getInitialization());
+        builder.append("Measurement").append(System.lineSeparator());
         builder.append(getMeasurement());
-        builder.append("\r\nDynamics\r\n");
+        builder.append("Dynamics").append(System.lineSeparator());
         builder.append(getDynamics());
         return builder.toString();
     }

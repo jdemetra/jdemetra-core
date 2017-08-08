@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.simplets;
 
+import demetra.data.AggregationType;
 import demetra.data.DoubleSequence;
 
 /**
@@ -36,7 +37,7 @@ public class TsDataConverter {
      * @return A new time series is returned.
      */
     public TsData changeFrequency(final TsData s, final TsFrequency newfreq,
-            final TsAggregationType conversion, final boolean complete) {
+            final AggregationType conversion, final boolean complete) {
         TsPeriod start=s.getStart();
         DoubleSequence values=s.values();
         int freq = start.getFrequency().getAsInt(), nfreq = newfreq.getAsInt();
@@ -133,7 +134,7 @@ public class TsDataConverter {
                     }
                 }
                 if ((ncur == nconv) || (!complete && (ncur != 0))) {
-                    if (conversion == TsAggregationType.Average) {
+                    if (conversion == AggregationType.Average) {
                         d /= ncur;
                     }
                     result[i] = d;

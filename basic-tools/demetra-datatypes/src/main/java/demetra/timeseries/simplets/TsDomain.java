@@ -20,8 +20,12 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.design.Internal;
 import demetra.timeseries.IDateDomain;
+import demetra.timeseries.TsException;
+import demetra.timeseries.TsPeriodSelector;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
+import javax.annotation.Nonnegative;
 
 /**
  *
@@ -94,29 +98,17 @@ public final class TsDomain implements IDateDomain<TsPeriod> {
         return start.getFrequency();
     }
 
-    /**
-     * Returns the first period of the domain.
-     *
-     * @return A new period is returned, even for empty domain,
-     */
+    @Override
     public TsPeriod getStart() {
         return start;
     }
 
-    /**
-     * Returns the last period of the domain (which is just before getEnd().
-     *
-     * @return A new period is returned. Should not be used on empty domain,
-     */
+    @Override
     public TsPeriod getLast() {
         return start.plus(length - 1);
     }
 
-    /**
-     * Returns the last period of the domain (which is just before getEnd().
-     *
-     * @return A new period is returned. Should not be used on empty domain,
-     */
+    @Override
     public TsPeriod getEnd() {
         return start.plus(length);
     }
@@ -130,12 +122,14 @@ public final class TsDomain implements IDateDomain<TsPeriod> {
      */
     public int search(final TsPeriod p) {
         if (p.getFrequency() != start.getFrequency()) {
-            return -1;
+            throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
         int id = p.id();
         id -= start.id();
-        if ((id < 0) || (id >= length)) {
+        if ((id < 0)) {
             return -1;
+        }else if (id >= length){
+            return -length;
         } else {
             return id;
         }
@@ -150,11 +144,139 @@ public final class TsDomain implements IDateDomain<TsPeriod> {
     int id() {
         return start.id();
     }
-    
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(getStart()).append((" - ")).append(getLast());
         return builder.toString();
+    }
+
+    @Override
+    public TsDomain range(@Nonnegative int firstPeriod, @Nonnegative int lastPeriod) {
+        int len = lastPeriod - firstPeriod;
+        if (len < 0) {
+            len = 0;
+        }
+        return TsDomain.of(get(firstPeriod), len);
+    }
+
+    @Override
+    public TsDomain intersection(IDateDomain<TsPeriod> d2) {
+       if (this == d2) {
+            return this;
+        }
+        TsFrequency freq = getFrequency();
+        if (freq != ((TsDomain)d2).getFrequency()) {
+            throw new TsException(TsException.INCOMPATIBLE_FREQ);
+        }
+
+        int n1 = length(), n2 = d2.length();
+
+        int lbeg = id(), rbeg = ((TsDomain)d2).id();
+
+        int lend = lbeg + n1, rend = rbeg + n2;
+        int beg = lbeg <= rbeg ? rbeg : lbeg;
+        int end = lend >= rend ? rend : lend;
+
+        return TsDomain.of(TsPeriod.ofInternal(freq, beg), Math.max(0, end - beg));
+    }
+
+    @Override
+    public TsDomain union(IDateDomain<TsPeriod> d2) {
+        if (d2 == this) {
+            return this;
+        }
+        Period period = getPeriod();
+        if (!period.equals(d2.getPeriod())) {
+            return null;
+        }
+
+        int ln = length(), rn = d2.length();
+        int lbeg = id(), rbeg = ((TsDomain)d2).id();    // FIXME : Solution for that casting
+        int lend = lbeg + ln, rend = rbeg + rn;
+        int beg = lbeg <= rbeg ? lbeg : rbeg;
+        int end = lend >= rend ? lend : rend;
+
+        return TsDomain.of(TsPeriod.ofInternal(getFrequency(), beg), end - beg);
+    }
+
+    public TsDomain move(int nperiods) {
+        return TsDomain.of(start.plus(nperiods), length);
+    }
+
+    @Override
+    public TsDomain select(TsPeriodSelector ps) {
+        if (isEmpty()) {
+            return this;
+        }
+
+        int len = length(), freq = getFrequency().getAsInt();
+        int nf = 0, nl = 0;
+        TsPeriodSelector.SelectionType type = ps.getType();
+        if (null != type) {
+            switch (type) {
+                case None:
+                    nf = len;
+                    break;
+                case First: {
+                    int nobs = ps.getN0();
+                    nl = len - nobs;
+                    break;
+                }
+                case Last: {
+                    int nobs = ps.getN1();
+                    nf = len - nobs;
+                    break;
+                }
+                case Excluding:
+                    nf = ps.getN0();
+                    nl = ps.getN1();
+                    if (nf < 0) {
+                        nf = -nf * freq;
+                    }
+                    if (nl < 0) {
+                        nl = -nl * freq;
+                    }
+                    break;
+                default:
+                    if ((type == TsPeriodSelector.SelectionType.From)
+                            || (type == TsPeriodSelector.SelectionType.Between)) {
+                        LocalDateTime d = ps.getD0();
+                        int pos = search(d);
+                        if (pos < -1) {
+                            nf = len;
+                        } else if (pos >= 0) {
+                            if (get(pos).start().isBefore(d)) {
+                                nf = pos + 1;
+                            } else {
+                                nf = pos;
+                            }
+                        }
+                    }
+                    if ((type == TsPeriodSelector.SelectionType.To)
+                            || (type == TsPeriodSelector.SelectionType.Between)) {
+                        LocalDateTime d = ps.getD1();
+                        int pos = search(d);
+                        if (pos == -1) {
+                            nl = len; // on ne garde rien
+                        } else if (pos >= 0) {
+                            if (get(pos + 1).start().isBefore(d)) {
+                                nl = len - pos;
+                            } else {
+                                nl = len - pos - 1;
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+        if (nf < 0) {
+            nf = 0;
+        }
+        if (nl < 0) {
+            nl = 0;
+        }
+        return TsDomain.of(TsPeriod.ofInternal(getFrequency(), id() + nf), len - nf - nl);
     }
 }

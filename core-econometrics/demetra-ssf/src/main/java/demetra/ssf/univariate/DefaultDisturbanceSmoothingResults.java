@@ -119,7 +119,7 @@ public class DefaultDisturbanceSmoothingResults implements IDisturbanceSmoothing
 
     public void prepare(ISsf ssf, int start, int end) {
         ISsfDynamics dynamics = ssf.getDynamics();
-        int dim = dynamics.getStateDim(), edim = dynamics.getInnovationsDim();
+        int edim = dynamics.getInnovationsDim();
         if (e != null) {
             e.prepare(start, end);
             if (evar != null) {

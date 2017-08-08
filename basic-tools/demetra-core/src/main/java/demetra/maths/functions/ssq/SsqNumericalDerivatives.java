@@ -158,7 +158,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
         if (eps == 0) {
             return;
         }
-        DataBlock pcur = DataBlock.copyOf(m_pt);
+        DataBlock pcur = DataBlock.of(m_pt);
         double pi = pcur.get(i);
         pcur.add(i, eps);
         if (fn.getDomain().checkBoundaries(pcur)) {
@@ -193,7 +193,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
     
     private void checkmepsilon(int i) {
         double eps = -m_epsp[i];
-        DataBlock pcur = DataBlock.copyOf(m_pt);
+        DataBlock pcur = DataBlock.of(m_pt);
         double pi = pcur.get(i);
         pcur.set(i, pi + eps);
         if (fn.getDomain().checkBoundaries(pcur)) {
@@ -225,7 +225,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
             if (dx == 0) {
                 return m_ecur;
             }
-            DataBlock pcur = DataBlock.copyOf(m_pt);
+            DataBlock pcur = DataBlock.of(m_pt);
             pcur.add(i, dx);
             ISsqFunctionPoint fn = this.fn.ssqEvaluate(pcur);
             return fn.getE();
@@ -306,7 +306,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
         @Override
         public Void call() throws Exception {
             try {
-                DataBlock cur = DataBlock.copyOf(m_pt);
+                DataBlock cur = DataBlock.of(m_pt);
                 cur.add(pos, eps);
                 ISsqFunctionPoint fn = SsqNumericalDerivatives.this.fn.ssqEvaluate(cur);
                 rslt[pos] = fn.getE();

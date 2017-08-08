@@ -81,7 +81,7 @@ public class TransformedFunction implements IFunction {
          */
         @Override
         public DoubleSequence gradient() {
-            DataBlock g = DataBlock.copyOf(dfx.gradient());
+            DataBlock g = DataBlock.of(dfx.gradient());
             double dt = t.df(fx);
             g.mul(dt);
             return g;
@@ -101,7 +101,7 @@ public class TransformedFunction implements IFunction {
             DoubleSequence grad = dfx.gradient();
             double dt = t.df(fx), d2t = t.d2f(fx);
             h.mul(dt);
-            h.addXaXt(d2t, DataBlock.copyOf(grad));
+            h.addXaXt(d2t, DataBlock.of(grad));
             H.copy(h);
         }
     }

@@ -27,6 +27,7 @@ import demetra.ssf.univariate.ISsfMeasurement;
 import java.util.Iterator;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleReader;
+import demetra.ssf.ISsfInitialization;
 
 /**
  *
@@ -36,6 +37,7 @@ public class AugmentedFilter {
 
     private AugmentedState state;
     private AugmentedUpdateInformation pe;
+    private ISsf ssf;
     private ISsfMeasurement measurement;
     private ISsfDynamics dynamics;
     private ISsfData data;
@@ -116,11 +118,12 @@ public class AugmentedFilter {
     }
 
     private boolean initState() {
-        state = AugmentedState.of(dynamics);
+        state = AugmentedState.of(ssf);
         if (state == null) {
             return false;
         }
-        pe = new AugmentedUpdateInformation(dynamics.getStateDim(), dynamics.getNonStationaryDim());
+        ISsfInitialization initialization = ssf.getInitialization();
+        pe = new AugmentedUpdateInformation(initialization.getStateDim(), initialization.getDiffuseDim());
         return true;
     }
 
@@ -132,6 +135,7 @@ public class AugmentedFilter {
      * @return
      */
     public boolean process(final ISsf ssf, final ISsfData data, final IAugmentedFilteringResults rslts) {
+        this.ssf=ssf;
         measurement = ssf.getMeasurement();
         dynamics = ssf.getDynamics();
         this.data = data;

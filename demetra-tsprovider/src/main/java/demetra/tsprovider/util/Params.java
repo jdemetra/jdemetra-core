@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider.util;
 
-import demetra.timeseries.simplets.TsAggregationType;
+import demetra.data.AggregationType;
 import demetra.timeseries.simplets.TsFrequency;
 import java.io.File;
 import java.nio.charset.Charset;
@@ -211,7 +211,7 @@ public class Params {
 
         private final ObsGathering defaultValue;
         private final IParam<S, TsFrequency> frequency;
-        private final IParam<S, TsAggregationType> aggregationType;
+        private final IParam<S, AggregationType> aggregationType;
         private final IParam<S, Boolean> skipMissingValues;
 
         private ObsGatheringParam(

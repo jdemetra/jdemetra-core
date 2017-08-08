@@ -19,6 +19,7 @@ package demetra.ssf.models;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
+import demetra.ssf.ISsfInitialization;
 import demetra.ssf.implementations.Measurement;
 import demetra.ssf.univariate.Ssf;
 
@@ -30,42 +31,52 @@ import demetra.ssf.univariate.Ssf;
  */
 public class LocalLinearTrend extends Ssf {
 
-    private final double lv, sv, nv;
+    public static LocalLinearTrend of(double lvar, double svar, double nvar) {
+        Data data = new Data(lvar, svar, nvar);
+        return new LocalLinearTrend(data);
+    }
 
-    public LocalLinearTrend(double lvar, double svar, double nvar) {
-        super(new Dynamics(lvar, svar), Measurement.create(2, 0, nvar));
-        lv = lvar;
-        sv = svar;
-        nv = nvar;
+    private LocalLinearTrend(Data data) {
+        super(new Initialization(data), new Dynamics(data), Measurement.create(0, data.nv));
+        this.data = data;
+    }
+
+    private final Data data;
+
+    static class Data {
+
+        final double lv, sv, nv;
+
+        Data(final double lv, final double sv, final double nv) {
+            this.lv = lv;
+            this.sv = sv;
+            this.nv = nv;
+        }
     }
 
     public double getVariance() {
-        return lv;
+        return data.lv;
     }
 
     public double getSlopeVariance() {
-        return sv;
+        return data.sv;
     }
 
     public double getNoiseVariance() {
-        return nv;
+        return data.nv;
     }
 
-    public static class Dynamics implements ISsfDynamics {
+    public static class Initialization implements ISsfInitialization {
 
-        private final double lvar, svar;
+        private final Data data;
 
-        public Dynamics(double var, double svar) {
-            lvar = var;
-            this.svar = svar;
+        Initialization(Data data) {
+            this.data = data;
         }
 
-        public double getVariance() {
-            return lvar;
-        }
-
-        public double getSlopeVariance() {
-            return svar;
+        @Override
+        public boolean isValid() {
+            return data.lv >= 0 && data.sv >= 0;
         }
 
         @Override
@@ -74,122 +85,12 @@ public class LocalLinearTrend extends Ssf {
         }
 
         @Override
-        public boolean isTimeInvariant() {
-            return true;
-        }
-
-        @Override
-        public boolean isValid() {
-            return lvar >= 0 && svar >= 0;
-        }
-
-        @Override
-        public int getInnovationsDim() {
-            int n = 0;
-            if (lvar > 0) {
-                ++n;
-            }
-            if (svar > 0) {
-                ++n;
-            }
-            return n;
-        }
-
-        @Override
-        public void V(int pos, Matrix qm) {
-            if (lvar > 0) {
-                qm.set(0, 0, lvar);
-            }
-            if (svar > 0) {
-                qm.set(1, 1, svar);
-            }
-        }
-
-        @Override
-        public boolean hasInnovations(int pos) {
-            return lvar != 0 || svar != 0;
-        }
-
-//        @Override
-//        public void Q(int pos, Matrix qm) {
-//            int i = 0;
-//            if (lvar > 0) {
-//                qm.set(0, 0, lvar);
-//                i = 1;
-//            }
-//            if (svar > 0) {
-//                qm.set(i, i, svar);
-//            }
-//        }
-//
-//        @Override
-//        public void S(int pos, Matrix sm) {
-//            if (svar == 0 && lvar != 0) {
-//                sm.set(1, 0, 1);
-//            } else if (svar != 0 && lvar == 0) {
-//                sm.set(0, 0, 1);
-//            }
-//        }
-        @Override
-        public void S(int pos, Matrix s) {
-            if (svar != 0 && lvar != 0) {
-                s.set(0, 0, Math.sqrt(lvar));
-                s.set(1, 1, Math.sqrt(svar));
-            } else if (lvar != 0) {
-                s.set(1, 0, Math.sqrt(lvar));
-            } else if (svar != 0) {
-                s.set(0, 1, Math.sqrt(svar));
-            }
-        }
-
-        @Override
-        public void addSU(int pos, DataBlock x, DataBlock u) {
-            if (svar != 0 && lvar != 0) {
-                x.add(0, Math.sqrt(lvar) * u.get(0));
-                x.add(1, Math.sqrt(svar) * u.get(1));
-            } else if (lvar != 0) {
-                x.add(0, Math.sqrt(lvar) * u.get(0));
-            } else if (svar != 0) {
-                x.add(1, Math.sqrt(svar) * u.get(0));
-            }
-        }
-
-        @Override
-        public void XS(int pos, DataBlock x, DataBlock xs) {
-            if (svar != 0 && lvar != 0) {
-                xs.set(0, Math.sqrt(lvar) * x.get(0));
-                xs.set(1, Math.sqrt(svar) * x.get(1));
-            } else if (lvar != 0) {
-                xs.set(0, Math.sqrt(lvar) * x.get(0));
-            } else if (svar != 0) {
-                xs.set(0, Math.sqrt(svar) * x.get(1));
-            }
-        }
-//        @Override
-//        public void addSX(int pos, DataBlock x, DataBlock y) {
-//            if (svar == 0 && lvar != 0) {
-//                y.add(1, x.get(0));
-//            } else if (svar != 0 && lvar == 0) {
-//                y.add(0, x.get(0));
-//            } else
-//            y.add(x);
-//        }
-//
-
-        @Override
-        public void T(int pos, Matrix tr) {
-            tr.set(0, 0, 1);
-            tr.set(0, 1, 1);
-            tr.set(1, 1, 1);
-        }
-
-        @Override
         public boolean isDiffuse() {
             return true;
         }
 
         @Override
-        public int getNonStationaryDim() {
+        public int getDiffuseDim() {
             return 2;
         }
 
@@ -205,13 +106,103 @@ public class LocalLinearTrend extends Ssf {
 
         @Override
         public boolean Pf0(Matrix pf0) {
-            V(0,pf0);
+            if (data.lv > 0) {
+                pf0.set(0, 0, data.lv);
+            }
+            if (data.sv > 0) {
+                pf0.set(1, 1, data.sv);
+            }
             return true;
         }
 
         @Override
         public void Pi0(Matrix pi0) {
             pi0.diagonal().set(1);
+        }
+
+    }
+
+    public static class Dynamics implements ISsfDynamics {
+
+        private final Data data;
+
+        Dynamics(Data data) {
+            this.data = data;
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return true;
+        }
+
+        @Override
+        public int getInnovationsDim() {
+            int n = 0;
+            if (data.lv > 0) {
+                ++n;
+            }
+            if (data.sv > 0) {
+                ++n;
+            }
+            return n;
+        }
+
+        @Override
+        public void V(int pos, Matrix qm) {
+            if (data.lv > 0) {
+                qm.set(0, 0, data.lv);
+            }
+            if (data.sv > 0) {
+                qm.set(1, 1, data.sv);
+            }
+        }
+
+        @Override
+        public boolean hasInnovations(int pos) {
+            return data.lv != 0 || data.sv != 0;
+        }
+
+        @Override
+        public void S(int pos, Matrix s) {
+            if (data.lv != 0 && data.sv != 0) {
+                s.set(0, 0, Math.sqrt(data.lv));
+                s.set(1, 1, Math.sqrt(data.sv));
+            } else if (data.lv != 0) {
+                s.set(1, 0, Math.sqrt(data.lv));
+            } else if (data.sv != 0) {
+                s.set(0, 1, Math.sqrt(data.sv));
+            }
+        }
+
+        @Override
+        public void addSU(int pos, DataBlock x, DataBlock u) {
+            if (data.lv != 0 && data.sv != 0) {
+                x.add(0, Math.sqrt(data.lv) * u.get(0));
+                x.add(1, Math.sqrt(data.sv) * u.get(1));
+            } else if (data.lv != 0) {
+                x.add(0, Math.sqrt(data.lv) * u.get(0));
+            } else if (data.sv != 0) {
+                x.add(1, Math.sqrt(data.sv) * u.get(0));
+            }
+        }
+
+        @Override
+        public void XS(int pos, DataBlock x, DataBlock xs) {
+            if (data.sv != 0 && data.lv != 0) {
+                xs.set(0, Math.sqrt(data.lv) * x.get(0));
+                xs.set(1, Math.sqrt(data.sv) * x.get(1));
+            } else if (data.lv != 0) {
+                xs.set(0, Math.sqrt(data.lv) * x.get(0));
+            } else if (data.sv != 0) {
+                xs.set(0, Math.sqrt(data.sv) * x.get(1));
+            }
+        }
+
+        @Override
+        public void T(int pos, Matrix tr) {
+            tr.set(0, 0, 1);
+            tr.set(0, 1, 1);
+            tr.set(1, 1, 1);
         }
 
         @Override
@@ -234,11 +225,11 @@ public class LocalLinearTrend extends Ssf {
 
         @Override
         public void addV(int pos, Matrix p) {
-            if (lvar > 0) {
-                p.add(0, 0, lvar);
+            if (data.lv > 0) {
+                p.add(0, 0, data.lv);
             }
-            if (svar > 0) {
-                p.add(1, 1, svar);
+            if (data.sv > 0) {
+                p.add(1, 1, data.sv);
             }
         }
 

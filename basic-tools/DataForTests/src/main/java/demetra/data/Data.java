@@ -5,9 +5,12 @@
  */
 package demetra.data;
 
+import demetra.timeseries.CalendarTsData;
+import demetra.timeseries.Days;
 import demetra.timeseries.simplets.TsData;
 import demetra.timeseries.simplets.TsFrequency;
 import demetra.timeseries.simplets.TsPeriod;
+import java.time.LocalDate;
 
 /**
  *
@@ -167,8 +170,10 @@ public class Data {
     };
 
     public static final TsData TS_PROD;
+    public static final CalendarTsData DAILY_CONTINUOUS;
 
     static {
         TS_PROD = TsData.of(TsPeriod.of(TsFrequency.Monthly, 1967, 0), DoubleSequence.ofInternal(PROD));
+        DAILY_CONTINUOUS = CalendarTsData.of(Days.of(LocalDate.of(2004, 1, 1), US_UNEMPL.length), DoubleSequence.ofInternal(US_UNEMPL));
     }
 }

@@ -156,7 +156,7 @@ public class NumericalDerivatives implements IFunctionDerivatives {
         if (eps == 0) {
             return;
         }
-        DataBlock pcur=DataBlock.copyOf(x);
+        DataBlock pcur=DataBlock.of(x);
         double pi = pcur.get(i);
         pcur.add(i, eps);
         if (fn.getDomain().checkBoundaries(pcur)) {
@@ -216,7 +216,7 @@ public class NumericalDerivatives implements IFunctionDerivatives {
 
     private double newval(int i, double dx) {
         try {
-            DataBlock cur = DataBlock.copyOf(x);
+            DataBlock cur = DataBlock.of(x);
             cur.add(i, dx);
             IFunctionPoint fn = this.fn.evaluate(cur);
             return fn.getValue();
@@ -227,7 +227,7 @@ public class NumericalDerivatives implements IFunctionDerivatives {
 
     private double newval(int i, int j, double dxi, double dxj) {
         try {
-            DataBlock cur = DataBlock.copyOf(x);
+            DataBlock cur = DataBlock.of(x);
             cur.add(i, dxi);
             cur.add(j, dxj);
             IFunctionPoint fn = this.fn.evaluate(cur);
@@ -266,7 +266,7 @@ public class NumericalDerivatives implements IFunctionDerivatives {
         @Override
         public Void call() throws Exception {
             try {
-                DataBlock cur = DataBlock.copyOf(x);
+                DataBlock cur = DataBlock.of(x);
                 cur.add(pos, eps);
                 IFunctionPoint fn = NumericalDerivatives.this.fn.evaluate(cur);
                 rslt[pos] = fn.getValue();

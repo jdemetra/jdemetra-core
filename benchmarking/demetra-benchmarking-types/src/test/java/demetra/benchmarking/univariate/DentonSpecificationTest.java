@@ -16,7 +16,7 @@
  */
 package demetra.benchmarking.univariate;
 
-import demetra.benchmarking.AggregationType;
+import demetra.data.AggregationType;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

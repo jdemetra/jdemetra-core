@@ -150,7 +150,7 @@ public class DogLegMethod implements ISsqFunctionMinimizer {
         double ng = Math.sqrt(ng2);
 
         DataBlock hgn = null, hdl;
-        DataBlock hsd = DataBlock.copyOf(g_);
+        DataBlock hsd = DataBlock.of(g_);
         hsd.chs();
         double dL;
 
@@ -158,7 +158,7 @@ public class DogLegMethod implements ISsqFunctionMinimizer {
         DataBlock Jg = DataBlock.make(J.getRowsCount());
         Jg.product(J.rowsIterator(), g_);
         double alpha = ng2 / Jg.ssq();
-        DataBlock a = DataBlock.copyOf(hsd);
+        DataBlock a = DataBlock.of(hsd);
         a.mul(alpha);
         double na = a.norm2();
 
@@ -173,7 +173,7 @@ public class DogLegMethod implements ISsqFunctionMinimizer {
             }
             try {
                 SymmetricMatrix.lcholesky(A);
-                hgn = DataBlock.copyOf(g_);
+                hgn = DataBlock.of(g_);
                 LowerTriangularMatrix.rsolve(A, hgn);
                 LowerTriangularMatrix.lsolve(A, hgn);
                 hgn.chs();
@@ -192,11 +192,11 @@ public class DogLegMethod implements ISsqFunctionMinimizer {
                 hdl = hgn;
                 dL = -g_.dot(hdl);
             } else if (na >= ltrusted_) {
-                hdl = DataBlock.copyOf(hsd);
+                hdl = DataBlock.of(hsd);
                 hdl.mul(ltrusted_ / ng);
                 dL = ltrusted_ * (2 * Math.abs(alpha) * ng - ltrusted_) / alpha;
             } else {
-                DataBlock bma = DataBlock.copyOf(hgn);
+                DataBlock bma = DataBlock.of(hgn);
                 bma.sub(a);
                 double c = a.dot(bma);
                 double nbma = bma.ssq();
@@ -210,7 +210,7 @@ public class DogLegMethod implements ISsqFunctionMinimizer {
                     beta = z0 / (c + z1);
                 }
                 dL = alpha * (1 - beta) * (1 - beta) * ng + beta * (2 - beta) * Fcur_;
-                hdl = DataBlock.copyOf(a);
+                hdl = DataBlock.of(a);
                 hdl.addAY(beta, bma);
             }
 
@@ -218,7 +218,7 @@ public class DogLegMethod implements ISsqFunctionMinimizer {
                 stop = 7;
                 return false;
             }
-            DataBlock np = DataBlock.copyOf(fcur_.getParameters());
+            DataBlock np = DataBlock.of(fcur_.getParameters());
             if (hdl.ssq() <= eps2 * (np.ssq() + eps2)) {
                 /*
                  * relative change in p is small, stop
@@ -252,7 +252,7 @@ public class DogLegMethod implements ISsqFunctionMinimizer {
 //                    }
                     fcur_ = ftry_;
                     Fcur_ = Ftry_;
-                    ecur_ = DataBlock.copyOf(fcur_.getE());
+                    ecur_ = DataBlock.of(fcur_.getE());
 //                    if (end) {
 //                        return false;
 //                    }
@@ -278,7 +278,7 @@ public class DogLegMethod implements ISsqFunctionMinimizer {
 
     private boolean calc() {
         iter = 0;
-        ecur_ = DataBlock.copyOf(fcur_.getE());
+        ecur_ = DataBlock.of(fcur_.getE());
         Fcur_ = fcur_.getSsqE();
         scale2_ = Fcur_;
         scale_ = Math.sqrt(Fcur_);

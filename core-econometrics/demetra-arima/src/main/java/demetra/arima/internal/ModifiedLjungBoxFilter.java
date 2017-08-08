@@ -50,7 +50,7 @@ public class ModifiedLjungBoxFilter implements IArmaFilter {
 
     @Override
     public void apply(DoubleSequence rw, DataBlock wl) {
-	DataBlock w = DataBlock.copyOf(rw);
+	DataBlock w = DataBlock.of(rw);
 	// step 1. AR filter w, if necessary
 	DataBlock z = w;
 	if (m_p > 0) {

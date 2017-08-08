@@ -21,8 +21,11 @@ package demetra.ucarima.ssf;
 import demetra.arima.ArimaModel;
 import demetra.arima.ssf.SsfArima;
 import demetra.ssf.ISsfDynamics;
+import demetra.ssf.ISsfInitialization;
 import demetra.ssf.implementations.CompositeDynamics;
+import demetra.ssf.implementations.CompositeInitialization;
 import demetra.ssf.implementations.Measurement;
+import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Ssf;
 import demetra.ucarima.UcarimaModel;
@@ -35,26 +38,22 @@ import demetra.ucarima.UcarimaModel;
 public class SsfUcarima extends Ssf {
 
     public static SsfUcarima of(final UcarimaModel ucm) {
-        ucm.simplify();
-        ISsfDynamics[] dyn = new ISsfDynamics[ucm.getComponentsCount()];
-        int[] pos = new int[dyn.length];
-        pos[0] = 0;
-        int dim = 0;
-        for (int i = 0; i < dyn.length; ++i) {
-            ArimaModel cmp = ucm.getComponent(i);
-            dyn[i] = cmp.isStationary() ? new SsfArima.StDynamics(cmp)
-                    : new SsfArima.SsfArimaDynamics(cmp);
-            pos[i] = dim;
-            dim += dyn[i].getStateDim();
+        UcarimaModel ucmc=ucm.simplify();
+        ISsf[] ssf = new ISsf[ucmc.getComponentsCount()];
+        int[] pos=new int[ssf.length];
+             ssf[0]=SsfArima.of(ucmc.getComponent(0));
+       for (int i=1; i<ssf.length; ++i){
+            ssf[i]=SsfArima.of(ucmc.getComponent(i));
+             pos[i]=pos[i-1]+ssf[i-1].getStateDim();
         }
-        return new SsfUcarima(ucm, new CompositeDynamics(dyn), Measurement.create(dim, pos), pos);
+        return new SsfUcarima(ucm, CompositeInitialization.of(ssf), CompositeDynamics.of(ssf), Measurement.create(pos), pos);
     }
 
     private final UcarimaModel ucm;
     private final int[] cmpPos;
 
-    private SsfUcarima(final UcarimaModel ucm, ISsfDynamics dyn, ISsfMeasurement m, int[] cmpPos) {
-        super(dyn, m);
+    private SsfUcarima(final UcarimaModel ucm, ISsfInitialization init, ISsfDynamics dyn, ISsfMeasurement m, int[] cmpPos) {
+        super(init, dyn, m);
         this.ucm = ucm;
         this.cmpPos=cmpPos;
     }

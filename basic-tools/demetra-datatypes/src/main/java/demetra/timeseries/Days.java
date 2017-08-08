@@ -20,6 +20,7 @@ import demetra.design.Immutable;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
+import javax.annotation.Nonnegative;
 
 /**
  *
@@ -78,5 +79,92 @@ public final class Days implements IDateDomain<Day> {
     @Override
     public boolean isContinuous() {
         return true;
+    }
+
+    @Override
+    public Days range(@Nonnegative int firstPeriod, @Nonnegative int lastPeriod) {
+        int l = lastPeriod - firstPeriod;
+        if (l < 0) {
+            l = 0;
+        }
+        return Days.of(get(firstPeriod).firstDay(), l);
+    }
+
+    @Override
+    public Day getStart() {
+        return Day.of(start);
+    }
+
+    @Override
+    public Day getEnd() {
+        return Day.of(start.plus(length, ChronoUnit.DAYS));
+    }
+
+    @Override
+    public Day getLast() {
+        return Day.of(start.plus(length - 1, ChronoUnit.DAYS));
+    }
+
+    @Override
+    public Days intersection(IDateDomain<Day> d2) {
+        if (this == d2) {
+            return this;
+        }
+
+        if (!getPeriod().equals(d2.getPeriod())) {
+            throw new TsException(TsException.INCOMPATIBLE_FREQ);
+        }
+
+        int n1 = length(), n2 = d2.length();
+
+        Long lbeg = getStart().firstDay().toEpochDay(), rbeg = d2.getStart().firstDay().toEpochDay();
+
+        Long lend = lbeg + n1, rend = rbeg + n2;
+        int beg = lbeg <= rbeg ? rbeg.intValue() : lbeg.intValue();
+        int end = lend >= rend ? rend.intValue() : lend.intValue();
+
+        return Days.of(LocalDate.ofEpochDay(beg), Math.max(0, end - beg));
+    }
+
+    @Override
+    public IDateDomain<Day> union(final IDateDomain<Day> d2) {
+        if (this == d2) {
+            return this;
+        }
+
+        if (!getPeriod().equals(d2.getPeriod())) {
+            return null;
+        }
+
+        int ln = length(), rn = d2.length();
+
+        if (ln == 0) {
+            return d2;
+        }
+        if (rn == 0) {
+            return this;
+        }
+
+        Long lbeg = getStart().firstDay().toEpochDay(), rbeg = d2.getStart().firstDay().toEpochDay();
+        Long lend = lbeg + ln, rend = rbeg + rn;
+        int beg = lbeg <= rbeg ? lbeg.intValue() : rbeg.intValue();
+        int end = lend >= rend ? lend.intValue() : rend.intValue();
+
+        return Days.of(LocalDate.ofEpochDay(beg), end - beg);
+    }
+
+    public Days move(int nperiods) {
+        return Days.of(start.plusDays(nperiods), length);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append('[')
+                .append(getStart().toString())
+                .append((", "))
+                .append(getEnd().toString())
+                .append('[');
+        return builder.toString();
     }
 }

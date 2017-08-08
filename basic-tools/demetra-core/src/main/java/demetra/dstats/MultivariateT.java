@@ -53,7 +53,7 @@ public class MultivariateT {
      * @param df degrees of freedom of the Chi2
      */
     public MultivariateT(DoubleSequence location, Matrix scale, double df){
-        this.location=DataBlock.copyOf(location);
+        this.location=DataBlock.of(location);
         this.scale=scale.deepClone();
         this.chi2=new Chi2(df);
     }

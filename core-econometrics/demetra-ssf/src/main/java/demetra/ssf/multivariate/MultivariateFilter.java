@@ -72,7 +72,7 @@ public class MultivariateFilter {
         this.data = data;
         this.ssf=ssf;
         if (initializer == null) {
-            state = State.of(ssf.getDynamics());
+            state = State.of(ssf);
             return state == null ? -1 : 0;
         } else {
             state = new State(ssf.getStateDim());

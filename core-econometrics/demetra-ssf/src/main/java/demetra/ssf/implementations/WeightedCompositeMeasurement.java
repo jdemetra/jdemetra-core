@@ -38,52 +38,43 @@ public class WeightedCompositeMeasurement implements ISsfMeasurement {
         boolean isTimeInvariant();
     };
 
-    public static ISsfMeasurement of(IWeights weights, ISsfMeasurement... m) {
-        return WeightedCompositeMeasurement.of(weights, 0, m);
-    }
-
     public static ISsfMeasurement of(IWeights weights, ISsf... ssf) {
         ISsfMeasurement[] m = new ISsfMeasurement[ssf.length];
-        for (int i = 0; i < m.length; ++i) {
-            m[i] = ssf[i].getMeasurement();
-        }
-        return WeightedCompositeMeasurement.of(weights, 0, m);
+         return of(weights, 0, ssf);
     }
 
-    public static ISsfMeasurement of(IWeights weights, double var, ISsfMeasurement... m) {
-        if (weights == null) {
-            return CompositeMeasurement.of(var, m);
+    public static ISsfMeasurement of(IWeights weights, double var, ISsf... ssf) {
+         if (weights == null) {
+            return CompositeMeasurement.of(var, ssf);
         }
-        int i = 0;
-        for (ISsfMeasurement s : m) {
-            if (s.hasErrors()) {
+        ISsfMeasurement[] m=new ISsfMeasurement[ssf.length]; 
+        for (int i=0; i< ssf.length; ++i) {
+            ISsfMeasurement cur=ssf[i].getMeasurement();
+            if (var != 0 && cur.hasErrors()) {
                 return null;
             }
-            ++i;
+            m[i]=cur;
         }
-        return new WeightedCompositeMeasurement(m, weights, var);
+        return new WeightedCompositeMeasurement(CompositeSsf.dimensions(ssf), m, weights, var);
     }
 
     private final ISsfMeasurement[] measurements;
     private final IWeights weights;
     private final int[] dim;
-    private final int fdim;
     private final double var;
     private final DataBlock tmp;
 
-    WeightedCompositeMeasurement(final ISsfMeasurement[] ms, final IWeights weights, double var) {
+    WeightedCompositeMeasurement(final int[] dim, final ISsfMeasurement[] ms, final IWeights weights, double var) {
         this.measurements = ms;
+        this.dim=dim;
         this.weights = weights;
         int n = ms.length;
-        dim = new int[n];
         int tdim = 0;
         for (int i = 0; i < n; ++i) {
-            dim[i] = ms[i].getStateDim();
             tdim += dim[i];
         }
-        fdim = tdim;
         this.var = var;
-        tmp = DataBlock.make(fdim);
+        tmp = DataBlock.make(tdim);
     }
 
     @Override
@@ -192,18 +183,4 @@ public class WeightedCompositeMeasurement implements ISsfMeasurement {
         }
     }
 
-    @Override
-    public int getStateDim() {
-        return fdim;
-    }
-
-    @Override
-    public boolean isValid() {
-        for (int i = 0; i < measurements.length; ++i) {
-            if (!measurements[i].isValid()) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

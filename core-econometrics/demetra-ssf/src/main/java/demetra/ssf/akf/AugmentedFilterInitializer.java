@@ -25,7 +25,7 @@ import demetra.ssf.univariate.OrdinaryFilter;
  *
  * @author Jean Palate
  */
-public class AugmentedFilterInitializer implements OrdinaryFilter.Initializer{
+public class AugmentedFilterInitializer implements OrdinaryFilter.FilterInitializer{
     
     private final IAugmentedFilteringResults results;
     
@@ -34,7 +34,7 @@ public class AugmentedFilterInitializer implements OrdinaryFilter.Initializer{
     }
 
     @Override
-    public int initialize(State state, ISsf ssf, ISsfData data) {
+    public int initializeFilter(State state, ISsf ssf, ISsfData data) {
         AugmentedFilter akf=new AugmentedFilter(true);
         boolean ok = akf.process(ssf, data, results);
         if (! ok)

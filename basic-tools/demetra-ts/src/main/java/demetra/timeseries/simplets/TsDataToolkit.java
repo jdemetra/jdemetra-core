@@ -1,10 +1,10 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2017 National Bank create Belgium
  * 
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
- * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * by the European Commission - subsequent versions create the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at:
+ * You may obtain a copy create the Licence at:
  * 
  * https://joinup.ec.europa.eu/software/page/eupl
  * 
@@ -18,14 +18,14 @@ package demetra.timeseries.simplets;
 
 import demetra.data.DataBlock;
 import demetra.data.DoubleReader;
+import demetra.data.DoubleSequence;
+import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriodSelector;
 import java.time.LocalDateTime;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 import javax.annotation.Nonnegative;
-import demetra.data.DoubleSequence;
-import demetra.maths.linearfilters.IFiniteFilter;
 
 /**
  *
@@ -53,7 +53,7 @@ public class TsDataToolkit {
     public TsData fastFn(TsData left, TsData right, DoubleBinaryOperator fn) {
         TsDomain lDomain = left.domain();
         TsDomain rDomain = right.domain();
-        TsDomain iDomain = intersection(lDomain, rDomain);
+        TsDomain iDomain = lDomain.intersection(rDomain);
         if (iDomain == null) {
             return null;
         }
@@ -66,7 +66,7 @@ public class TsDataToolkit {
     public TsData fn(TsData left, TsData right, DoubleBinaryOperator fn) {
         TsDomain lDomain = left.domain();
         TsDomain rDomain = right.domain();
-        TsDomain iDomain = intersection(lDomain, rDomain);
+        TsDomain iDomain = lDomain.intersection(rDomain);
         if (iDomain == null) {
             return null;
         }
@@ -101,152 +101,52 @@ public class TsDataToolkit {
     }
 
     public TsData drop(TsData s, int nbeg, int nend) {
-        TsDomain ndomain = TsDataToolkit.drop(s.domain(), nbeg, nend);
+        TsDomain ndomain = (TsDomain) s.domain().drop(nbeg, nend);
         return TsData.of(ndomain.getStart(), s.values().extract(nbeg, ndomain.length()));
     }
 
     public TsData select(TsData s, TsPeriodSelector selector) {
-        TsDomain ndomain = select(s.domain(), selector);
+        TsDomain ndomain = s.domain().select(selector);
         final int beg = ndomain.getStart().minus(s.getStart());
         return TsData.of(ndomain.getStart(), s.values().extract(beg, ndomain.length()));
     }
 
-    public TsDomain drop(final TsDomain domain, @Nonnegative int nbeg, @Nonnegative int nend) {
-        TsPeriod start = domain.get(nbeg);
-        int len = domain.length() - nbeg - nend;
-        if (len < 0) {
-            len = 0;
-        }
-        return TsDomain.of(start, len);
-    }
-
-    public TsDomain intersection(final TsDomain d1, final TsDomain d2) {
-        if (d1 == d2) {
-            return d1;
-        }
-        TsFrequency freq = d1.getFrequency();
-        if (freq != d2.getFrequency()) {
+    /**
+     * Extends the series to the specified domain. Missing values are added (or
+     * some values are removed if necessary).
+     *
+     * @param s
+     * @param domain The domain of the new series. Must have the same frequency
+     * than the original series.
+     * @return A new (possibly empty) series is returned (or null if the domain
+     * hasn't the right frequency.
+     */
+    public TsData fitToDomain(TsData s, TsDomain domain) {
+        if (s.getFrequency() != domain.getFrequency()) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
-
-        int n1 = d1.length(), n2 = d2.length();
-
-        int lbeg = d1.id(), rbeg = d2.id();
-
-        int lend = lbeg + n1, rend = rbeg + n2;
-        int beg = lbeg <= rbeg ? rbeg : lbeg;
-        int end = lend >= rend ? rend : lend;
-
-        return TsDomain.of(TsPeriod.ofInternal(freq, beg), Math.max(0, end - beg));
-    }
-
-    /**
-     * Returns the union between this domain and another one.
-     *
-     * @param d1
-     * @param d2 Another domain. Should have the same frequency.
-     * @return <I>null</I> if the frequencies are not the same. If the actual
-     * union contains a hole, it is removed in the returned domain.
-     *
-     */
-    public TsDomain union(final TsDomain d1, final TsDomain d2) {
-        if (d2 == d1) {
-            return d1;
-        }
-        TsFrequency freq = d1.getFrequency();
-        if (freq != d2.getFrequency()) {
-            return null;
-        }
-
-        int ln = d1.length(), rn = d2.length();
-        int lbeg = d1.id(), rbeg = d2.id();
-        int lend = lbeg + ln, rend = rbeg + rn;
-        int beg = lbeg <= rbeg ? lbeg : rbeg;
-        int end = lend >= rend ? lend : rend;
-
-        return TsDomain.of(TsPeriod.ofInternal(freq, beg), end - beg);
-    }
-
-    /**
-     * Makes a new domain from this domain and a period selector.
-     *
-     * @param domain
-     * @param ps The selector.
-     * @return The corresponding domain. May be Empty.
-     */
-    public TsDomain select(final TsDomain domain, final TsPeriodSelector ps) {
-        if (domain.isEmpty()) {
-            return domain;
-        }
-        // throw new ArgumentNullException("ps");
-
-        int len = domain.length(), freq = domain.getFrequency().getAsInt();
-        int nf = 0, nl = 0;
-        TsPeriodSelector.SelectionType type = ps.getType();
-        if (null != type) {
-            switch (type) {
-                case None:
-                    nf = len;
-                    break;
-                case First: {
-                    int nobs = ps.getN0();
-                    nl = len - nobs;
-                    break;
-                }
-                case Last: {
-                    int nobs = ps.getN1();
-                    nf = len - nobs;
-                    break;
-                }
-                case Excluding:
-                    nf = ps.getN0();
-                    nl = ps.getN1();
-                    if (nf < 0) {
-                        nf = -nf * freq;
-                    }
-                    if (nl < 0) {
-                        nl = -nl * freq;
-                    }
-                    break;
-                default:
-                    if ((type == TsPeriodSelector.SelectionType.From)
-                            || (type == TsPeriodSelector.SelectionType.Between)) {
-                        LocalDateTime d = ps.getD0();
-                        int pos = domain.search(d);
-                        if (pos < -1) {
-                            nf = len;
-                        } else if (pos >= 0) {
-                            if (domain.get(pos).start().isBefore(d)) {
-                                nf = pos + 1;
-                            } else {
-                                nf = pos;
-                            }
-                        }
-                    }
-                    if ((type == TsPeriodSelector.SelectionType.To)
-                            || (type == TsPeriodSelector.SelectionType.Between)) {
-                        LocalDateTime d = ps.getD1();
-                        int pos = domain.search(d);
-                        if (pos == -1) {
-                            nl = len; // on ne garde rien
-                        } else if (pos >= 0) {
-                            if (domain.get(pos + 1).start().isBefore(d)) {
-                                nl = len - pos;
-                            } else {
-                                nl = len - pos - 1;
-                            }
-                        }
-                    }
-                    break;
+        TsDomain sdomain = s.domain();
+        int nbeg = domain.id() - sdomain.id();
+        TsDomain idomain = domain.intersection(sdomain);
+        double[] data = new double[domain.length()];
+        int cur = 0;
+        if (nbeg < 0) { // before s
+            int cmax = Math.min(-nbeg, data.length);
+            for (; cur < cmax; ++cur) {
+                data[cur] = Double.NaN;
             }
         }
-        if (nf < 0) {
-            nf = 0;
+        int ncommon=idomain.length();
+        // common data
+        if (ncommon>0) {
+            s.values().extract(idomain.id()-sdomain.id(), ncommon).copyTo(data, cur);
+            cur += ncommon;
         }
-        if (nl < 0) {
-            nl = 0;
+        // after s
+        for (; cur < data.length; ++cur) {
+            data[cur] = Double.NaN;
         }
-        return TsDomain.of(TsPeriod.ofInternal(domain.getFrequency(), domain.id() + nf), len - nf - nl);
+        return TsData.ofInternal(domain.getStart(), data);
     }
 
     // some useful shortcuts
@@ -384,9 +284,9 @@ public class TsDataToolkit {
         return lag == 0 ? s : TsData.ofInternal(s.getStart().plus(lag), s.values());
     }
 
-    public TsData apply(IFiniteFilter filter, TsData s){
+    public TsData apply(IFiniteFilter filter, TsData s) {
         double[] data = s.values().toArray();
-        double[] result=new double[data.length-filter.length()+1];
+        double[] result = new double[data.length - filter.length() + 1];
         filter.apply(DataBlock.ofInternal(data), DataBlock.ofInternal(result));
         return TsData.ofInternal(s.getStart().minus(filter.getLowerBound()), result);
     }

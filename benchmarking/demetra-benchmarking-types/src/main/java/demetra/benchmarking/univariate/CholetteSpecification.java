@@ -17,6 +17,7 @@
 package demetra.benchmarking.univariate;
 
 import demetra.algorithms.AlgorithmDescriptor;
+import demetra.data.AggregationType;
 import demetra.processing.IProcSpecification;
 
 /**
@@ -25,12 +26,21 @@ import demetra.processing.IProcSpecification;
  */
 @lombok.Data
 public class CholetteSpecification implements IProcSpecification {
+
     public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "denton", null);
 
+    public static enum BiasCorrection {
+
+        None, Additive, Multiplicative
+    };
+
+    public static BiasCorrection DEF_BIAS = BiasCorrection.None;
     public static double DEF_LAMBDA = 1, DEF_RHO = 1;
     private double rho = DEF_RHO;
     private double lambda = DEF_LAMBDA;
-    
+    private BiasCorrection bias = DEF_BIAS;
+    @lombok.NonNull
+    private AggregationType aggregationType = AggregationType.Sum;
 
     @Override
     public AlgorithmDescriptor getAlgorithmDescriptor() {
@@ -39,10 +49,21 @@ public class CholetteSpecification implements IProcSpecification {
 
     @Override
     public CholetteSpecification makeCopy() {
-        CholetteSpecification spec=new CholetteSpecification();
-        spec.rho=rho;
-        spec.lambda=lambda;
+        CholetteSpecification spec = new CholetteSpecification();
+        spec.rho = rho;
+        spec.lambda = lambda;
+        spec.bias=bias;
+        spec.aggregationType=aggregationType;
         return spec;
     }
-    
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Cholette ");
+        builder.append(" (lambda=").append(lambda)
+                .append(", rho=").append(rho)
+                .append(", bias=").append(bias).append(')');
+        return builder.toString();
+    }
 }

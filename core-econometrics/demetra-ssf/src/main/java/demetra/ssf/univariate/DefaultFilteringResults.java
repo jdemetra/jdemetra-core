@@ -113,7 +113,7 @@ public class DefaultFilteringResults implements IFilteringResults, IStateResults
     public DoubleSequence errors(boolean normalized, boolean clean) {
         DataBlock r = e.all();
         if (normalized) {
-            r = DataBlock.copyOf(r);
+            r = DataBlock.of(r);
             DataBlock allf = f.all();
             r.apply(allf, (x, y) -> Double.isFinite(x) && Double.isFinite(y) ? x / Math.sqrt(y) : Double.NaN);
         }

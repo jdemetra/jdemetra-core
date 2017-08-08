@@ -17,7 +17,7 @@
 package internal.tsprovider.util;
 
 import demetra.design.VisibleForTesting;
-import demetra.timeseries.simplets.TsAggregationType;
+import demetra.data.AggregationType;
 import demetra.timeseries.simplets.TsData;
 import demetra.timeseries.simplets.TsDataConverter;
 import demetra.timeseries.simplets.TsFrequency;
@@ -121,7 +121,7 @@ public class InternalTsDataBuilder {
             ToLongFunction<T> periodFunc, ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc) {
         boolean ordered = characteristics.contains(ObsCharacteristics.ORDERED);
         if (gathering.getFrequency() == TsFrequency.Undefined) {
-            if (gathering.getAggregationType() != TsAggregationType.None) {
+            if (gathering.getAggregationType() != AggregationType.None) {
                 return new UndefinedWithAggregation<>();
             }
             return new BuilderSupport<>(
@@ -130,7 +130,7 @@ public class InternalTsDataBuilder {
                     gathering.isSkipMissingValues(),
                     o -> makeFromUnknownFrequency(o));
         }
-        if (gathering.getAggregationType() != TsAggregationType.None) {
+        if (gathering.getAggregationType() != AggregationType.None) {
             return new BuilderSupport<>(
                     ObsList.newLongObsList(ordered, tsPeriodIdFunc),
                     periodFunc,
@@ -166,7 +166,7 @@ public class InternalTsDataBuilder {
         }
     }
 
-    private static OptionalTsData makeWithAggregation(ObsList obs, TsFrequency freq, TsAggregationType convMode) {
+    private static OptionalTsData makeWithAggregation(ObsList obs, TsFrequency freq, AggregationType convMode) {
         switch (obs.size()) {
             case 0:
                 return NO_DATA;

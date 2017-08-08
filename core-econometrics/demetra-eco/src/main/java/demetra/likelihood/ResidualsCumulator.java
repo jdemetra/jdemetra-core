@@ -48,7 +48,7 @@ public class ResidualsCumulator {
         } else {
             Matrix l = var.deepClone();
             SymmetricMatrix.lcholesky(l, 1e-9);
-            DataBlock el = DataBlock.copyOf(e);
+            DataBlock el = DataBlock.of(e);
             // L^-1*e=el <-> e=L*el
             LowerTriangularMatrix.rsolve(l, el, 1e-9);
             DataBlock diag = l.diagonal();

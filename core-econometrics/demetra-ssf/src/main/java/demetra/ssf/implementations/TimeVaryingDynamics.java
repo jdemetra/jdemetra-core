@@ -14,7 +14,6 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-
 package demetra.ssf.implementations;
 
 import demetra.data.DataBlock;
@@ -44,27 +43,17 @@ public class TimeVaryingDynamics {
         TimeVaryingDiag(final double[] var) {
             this.var = DataBlock.copyOf(var);
             this.std = DataBlock.copyOf(var);
-            std.apply(x->Math.sqrt(x));
+            std.apply(x -> Math.sqrt(x));
         }
 
         TimeVaryingDiag(final DoubleSequence var) {
-           this.var = DataBlock.copyOf(var);
-            this.std = DataBlock.copyOf(var);
-            std.apply(x->Math.sqrt(x));
-        }
-
-        @Override
-        public int getStateDim() {
-            return var.length();
+            this.var = DataBlock.of(var);
+            this.std = DataBlock.of(var);
+            std.apply(x -> Math.sqrt(x));
         }
 
         @Override
         public boolean isTimeInvariant() {
-            return true;
-        }
-
-        @Override
-        public boolean isValid() {
             return true;
         }
 
@@ -90,53 +79,24 @@ public class TimeVaryingDynamics {
 
         @Override
         public void addSU(int pos, DataBlock x, DataBlock u) {
-            int n=x.length();
-            for (int i=0; i<n; ++i){
-                x.add(i, u.get(i)*std.get(i));
+            int n = x.length();
+            for (int i = 0; i < n; ++i) {
+                x.add(i, u.get(i) * std.get(i));
             }
         }
 
         @Override
 
         public void XS(int pos, DataBlock x, DataBlock xs) {
-            int n=x.length();
-            for (int i=0; i<n; ++i){
-                xs.set(i, x.get(i)*std.get(i));
+            int n = x.length();
+            for (int i = 0; i < n; ++i) {
+                xs.set(i, x.get(i) * std.get(i));
             }
         }
+
         @Override
         public void T(int pos, Matrix tr) {
             tr.diagonal().set(1);
-        }
-
-        @Override
-        public boolean isDiffuse() {
-            return true;
-        }
-
-        @Override
-        public int getNonStationaryDim() {
-            return var.length();
-        }
-
-        @Override
-        public void diffuseConstraints(Matrix b) {
-            b.diagonal().set(1);
-        }
-
-        @Override
-        public boolean a0(DataBlock a0) {
-            return true;
-        }
-
-        @Override
-        public boolean Pf0(Matrix pf0) {
-            return true;
-        }
-
-        @Override
-        public void Pi0(Matrix p) {
-            p.diagonal().set(1);
         }
 
         @Override
@@ -163,27 +123,17 @@ public class TimeVaryingDynamics {
 
         TimeVaryingFull(final Matrix var) {
             this.var = var;
-            s=var.deepClone();
+            s = var.deepClone();
             SymmetricMatrix.lcholesky(s, 1e-9);
         }
 
         TimeVaryingFull(final Matrix var, final Matrix s) {
             this.var = var;
-            this.s=s;
-        }
-
-        @Override
-        public int getStateDim() {
-            return var.getColumnsCount();
+            this.s = s;
         }
 
         @Override
         public boolean isTimeInvariant() {
-            return true;
-        }
-
-        @Override
-        public boolean isValid() {
             return true;
         }
 
@@ -220,36 +170,6 @@ public class TimeVaryingDynamics {
         @Override
         public void T(int pos, Matrix tr) {
             tr.diagonal().set(1);
-        }
-
-        @Override
-        public boolean isDiffuse() {
-            return true;
-        }
-
-        @Override
-        public int getNonStationaryDim() {
-            return var.getColumnsCount();
-        }
-
-        @Override
-        public void diffuseConstraints(Matrix b) {
-            b.diagonal().set(1);
-        }
-
-        @Override
-        public boolean a0(DataBlock a0) {
-            return true;
-        }
-
-        @Override
-        public boolean Pf0(Matrix pf0) {
-            return true;
-        }
-
-        @Override
-        public void Pi0(Matrix p) {
-            p.diagonal().set(1);
         }
 
         @Override

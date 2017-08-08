@@ -14,13 +14,13 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.benchmarking.univariate;
+package demetra.benchmarking.univariate.internal;
 
-import demetra.benchmarking.AggregationType;
+import demetra.benchmarking.univariate.DentonSpecification;
+import demetra.data.AggregationType;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.design.Immutable;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
@@ -75,7 +75,7 @@ public class Denton {
         int d = pd.getDegree();
         int n = x.length();
         if (multiplicative) {
-            x = DataBlock.copyOf(x);
+            x = DataBlock.of(x);
             x.apply(z -> 1 / z);
         }
 
@@ -105,7 +105,7 @@ public class Denton {
 
     public double[] process(DoubleSequence highSeries, DoubleSequence lowSeries) {
 
-        DataBlock x = DataBlock.copyOf(highSeries), y = DataBlock.copyOf(lowSeries);
+        DataBlock x = DataBlock.of(highSeries), y = DataBlock.of(lowSeries);
         if (type == AggregationType.Average) {
             y.mul(conversion);
         }
@@ -145,7 +145,7 @@ public class Denton {
         int ny = lowSeries.length();
         int n = ny * conversion;
 
-        DataBlock x = DataBlock.make(n), y = DataBlock.copyOf(lowSeries);
+        DataBlock x = DataBlock.make(n), y = DataBlock.of(lowSeries);
         if (type == AggregationType.Average) {
             y.mul(conversion);
         }

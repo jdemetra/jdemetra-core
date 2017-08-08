@@ -121,7 +121,7 @@ public class FastArimaForecasts implements IArimaForecasts {
 
     // computes the residuals;
     private DataBlock residuals(DoubleSequence data) {
-        DataBlock w = DataBlock.copyOf(data);
+        DataBlock w = DataBlock.of(data);
         try {
             // step 1. AR filter w, if necessary
             DataBlock z = w;

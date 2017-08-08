@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-/*
+ /*
  */
 package demetra.ssf.models;
 
@@ -23,7 +23,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.implementations.Measurement;
 import demetra.ssf.univariate.Ssf;
-
+import demetra.ssf.ISsfInitialization;
 
 /**
  *
@@ -31,56 +31,63 @@ import demetra.ssf.univariate.Ssf;
  */
 public class AR1 extends Ssf {
 
-    public AR1(final double rho, final double var, final boolean zeroinit) {
-        super(new Dynamics(rho, var, zeroinit), Measurement.create(1, 0));
+    public static AR1 of(final double rho) {
+        Data data = new Data(rho, 1, false);
+        return new AR1(data);
     }
 
-    public AR1(final double rho) {
-        super(new Dynamics(rho, 1, false), Measurement.create(1, 0));
+    public static AR1 of(final double rho, final double var, final boolean zeroinit) {
+        Data data = new Data(rho, var, zeroinit);
+        return new AR1(data);
     }
 
-    private Dynamics dynamics() {
-        return (Dynamics) this.dynamics;
+    private AR1(Data data) {
+        super(new Initialization(data), new Dynamics(data), Measurement.create(0));
+        this.data = data;
     }
+
+    private final Data data;
 
     public double getRho() {
-        return dynamics().rho;
+        return data.rho;
     }
 
     public double getInnovationVariance() {
-        return dynamics().var;
+        return data.var;
     }
 
     public boolean isZeroInitialization() {
-        return dynamics().zeroinit;
+        return data.zeroinit;
     }
 
-    public static class Dynamics implements ISsfDynamics {
+    static class Data {
 
-        private final boolean zeroinit;
-        private final double rho;
-        private final double var;
+        final boolean zeroinit;
+        final double rho;
+        final double var;
 
-        public Dynamics(double rho, double var, boolean zeroinit) {
+        Data(double rho, double var, boolean zeroinit) {
             this.rho = rho;
             this.var = var;
             this.zeroinit = zeroinit;
         }
 
-        private double std() {
+        double std() {
             return var == 1 ? 1 : Math.sqrt(var);
         }
+    }
 
-        public boolean isZeroInit() {
-            return zeroinit;
+    static class Initialization implements ISsfInitialization {
+
+        private final Data data;
+
+        Initialization(Data data) {
+            this.data = data;
         }
 
-        public double getRho() {
-            return rho;
-        }
-
-        public double getVar() {
-            return var;
+        @Override
+        public boolean isValid() {
+            return data.var > 0;
         }
 
         @Override
@@ -89,57 +96,12 @@ public class AR1 extends Ssf {
         }
 
         @Override
-        public boolean isTimeInvariant() {
-            return true;
-        }
-
-        @Override
-        public boolean isValid() {
-            return var > 0;
-        }
-
-        @Override
-        public int getInnovationsDim() {
-            return 1;
-        }
-
-        @Override
-        public void V(int pos, Matrix qm) {
-            qm.set(0, 0, var);
-        }
-
-        @Override
-        public boolean hasInnovations(int pos) {
-            return true;
-        }
-
-        @Override
-        public void S(int pos, Matrix sm) {
-            sm.set(0, 0, std());
-        }
-
-        @Override
-        public void addSU(int pos, DataBlock x, DataBlock u) {
-            x.add(0, std() * u.get(0));
-        }
-
-        @Override
-        public void XS(int pos, DataBlock x, DataBlock xs) {
-            xs.set(0, std() * x.get(0));
-        }
-
-        @Override
-        public void T(int pos, Matrix tr) {
-            tr.set(0, 0, rho);
-        }
-
-        @Override
         public boolean isDiffuse() {
             return false;
         }
 
         @Override
-        public int getNonStationaryDim() {
+        public int getDiffuseDim() {
             return 0;
         }
 
@@ -154,32 +116,82 @@ public class AR1 extends Ssf {
 
         @Override
         public boolean Pf0(Matrix pf0) {
-            if (zeroinit) {
-                pf0.set(0, 0, var);
+            if (data.zeroinit) {
+                pf0.set(0, 0, data.var);
             } else {
-                pf0.set(0, 0, var / (1 - rho * rho));
+                pf0.set(0, 0, data.var / (1 - data.rho * data.rho));
             }
             return true;
         }
 
+    }
+
+    static class Dynamics implements ISsfDynamics {
+
+        private final Data data;
+
+        public Dynamics(Data data) {
+            this.data = data;
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return true;
+        }
+
+        @Override
+        public int getInnovationsDim() {
+            return 1;
+        }
+
+        @Override
+        public void V(int pos, Matrix qm) {
+            qm.set(0, 0, data.var);
+        }
+
+        @Override
+        public boolean hasInnovations(int pos) {
+            return true;
+        }
+
+        @Override
+        public void S(int pos, Matrix sm) {
+            sm.set(0, 0, data.std());
+        }
+
+        @Override
+        public void addSU(int pos, DataBlock x, DataBlock u) {
+            x.add(0, data.std() * u.get(0));
+        }
+
+        @Override
+        public void XS(int pos, DataBlock x, DataBlock xs) {
+            xs.set(0, data.std() * x.get(0));
+        }
+
+        @Override
+        public void T(int pos, Matrix tr) {
+            tr.set(0, 0, data.rho);
+        }
+
         @Override
         public void TX(int pos, DataBlock x) {
-            x.mul(0, rho);
+            x.mul(0, data.rho);
         }
 
         @Override
         public void TVT(int pos, Matrix v) {
-            v.mul(0, 0, rho * rho);
+            v.mul(0, 0, data.rho * data.rho);
         }
 
         @Override
         public void XT(int pos, DataBlock x) {
-            x.mul(0, rho);
+            x.mul(0, data.rho);
         }
 
         @Override
         public void addV(int pos, Matrix p) {
-            p.add(0, 0, var);
+            p.add(0, 0, data.var);
         }
     }
 }

@@ -25,7 +25,7 @@ import demetra.maths.matrices.SymmetricMatrix;
  *
  * @author Jean Palate
  */
-public interface ISsfDynamics extends ISsfBasic {
+public interface ISsfDynamics extends ISsfRoot {
 
     //<editor-fold defaultstate="collapsed" desc="description">
     /**
@@ -36,8 +36,7 @@ public interface ISsfDynamics extends ISsfBasic {
     int getInnovationsDim(); // E
 
     /**
-     * Variance matrix of the innovations in the transition equation. V is also
-     * modelled as
+     * Variance matrix of the innovations in the transition equation.
      *
      * Another (non unique) modelling is
      *
@@ -76,61 +75,6 @@ public interface ISsfDynamics extends ISsfBasic {
     void T(int pos, Matrix tr);
 
     //</editor-fold>
-    //<editor-fold defaultstate="collapsed" desc="initialisation">
-    /**
-     *
-     * @return
-     */
-    boolean isDiffuse();
-
-    /**
-     * Dimension of the non stationary part of the state vector
-     *
-     * @return
-     */
-    int getNonStationaryDim();
-
-    /**
-     * B = d x nd, where d = getStateDim(), nd = getNonStationaryDim() P(-1,
-     * inf) = B * B'
-     *
-     * @param b
-     */
-    void diffuseConstraints(Matrix b);
-
-    /**
-     * Initial state
-     *
-     * @param a0 Buffer that will contain the initial state = a(0|-1)
-     * @return
-     */
-    boolean a0(DataBlock a0);
-
-    /**
-     * Modelling of the stationary variance of the initial state P(0|-1)
-     *
-     * @param pf0
-     * @return
-     */
-    boolean Pf0(Matrix pf0);
-
-    /**
-     * Modelling of the non stationary part of the initial state P(-1, inf)
-     *
-     * @param pi0
-     */
-    default void Pi0(Matrix pi0) {
-        int nd = this.getNonStationaryDim();
-        if (nd == 0) {
-            return;
-        }
-        int n = this.getStateDim();
-        Matrix B = Matrix.make(n, nd);
-        this.diffuseConstraints(B);
-        SymmetricMatrix.XXt(B, pi0);
-    }
-
-    //</editor-fold> 
     //<editor-fold defaultstate="collapsed" desc="forward operations">
     /**
      * Computes T(pos) * x

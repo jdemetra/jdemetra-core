@@ -6,6 +6,7 @@
 package demetra.dstats;
 
 import demetra.random.IRandomNumberGenerator;
+import demetra.random.SystemRNG;
 import java.util.Random;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -243,41 +244,6 @@ public class Chi2Test {
     }
 
     private IRandomNumberGenerator getRandomNumberGenerator() {
-        return new IRandomNumberGenerator() {
-            @Override
-            public double nextDouble() {
-                return new Random().nextDouble();
-            }
-
-            @Override
-            public int nextInt() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public long nextLong() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public boolean nextBoolean() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public float nextFloat() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public int nextInt(int n) throws IllegalArgumentException {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public IRandomNumberGenerator synchronize() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
+        return new SystemRNG(0);
     }
 }

@@ -38,7 +38,7 @@ import demetra.data.DoubleSequence;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@AlgorithmImplementation(algorithm=IArmaFilter.class, feature=Fast)
+@AlgorithmImplementation(algorithm=IArmaFilter.class)
 @ServiceProvider(service=IArmaFilter.class)
 public class AnsleyFilter implements IArmaFilter {
 

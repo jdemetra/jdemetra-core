@@ -32,11 +32,11 @@ import demetra.data.DoubleReader;
 public class Measurements {
 
     public static ISsfMeasurements create(final int dim, final int[] mpos, final double[] var) {
-        return new Measurements1(dim, mpos, var);
+        return new Measurements1(mpos, var);
     }
 
     public static ISsfMeasurements create(final int dim, final int[] mpos) {
-        return new Measurements1(dim, mpos, null);
+        return new Measurements1(mpos, null);
     }
 
     public static ISsfMeasurements proxy(ISsfMeasurement m) {
@@ -60,7 +60,7 @@ public class Measurements {
         if (measurements.getMaxCount() != var.length() || !measurements.isHomogeneous()) {
             return null;
         }
-        return new Extension(measurements, DataBlock.copyOf(var));
+        return new Extension(measurements, DataBlock.of(var));
     }
 
     public static ISsfMeasurements create(ISsfMeasurement[] m, int dim) {
@@ -159,15 +159,6 @@ public class Measurements {
             m_.XpZd(pos, x, d);
         }
 
-        @Override
-        public int getStateDim() {
-            return m_.getStateDim();
-        }
-
-        @Override
-        public boolean isValid() {
-            return m_.isValid();
-        }
     }
 
     static class Extension implements ISsfMeasurements {
@@ -181,7 +172,7 @@ public class Measurements {
             E = null;
             R = null;
             this.var = var;
-            se = DataBlock.copyOf(var);
+            se = DataBlock.of(var);
             se.apply(x -> Math.sqrt(x));
         }
 
@@ -288,26 +279,14 @@ public class Measurements {
         public void XpZd(int pos, int ivar, DataBlock x, double d) {
             details.XpZd(pos, ivar, x, d);
         }
-
-        @Override
-        public int getStateDim() {
-            return details.getStateDim();
-        }
-
-        @Override
-        public boolean isValid() {
-            return details.isValid();
-        }
     }
 
     static class Measurements1 implements ISsfMeasurements {
 
-        private final int sdim;
         private final int[] mpos_;
         private final double[] var;
 
-        Measurements1(final int sdim, int[] mpos, double[] var) {
-            this.sdim = sdim;
+        Measurements1(int[] mpos, double[] var) {
             mpos_ = mpos;
             this.var = var;
         }
@@ -394,33 +373,16 @@ public class Measurements {
         public void XpZd(int pos, int ivar, DataBlock x, double d) {
             x.add(mpos_[ivar], d);
         }
-
-        @Override
-        public int getStateDim() {
-            return sdim;
-        }
-
-        @Override
-        public boolean isValid() {
-            for (int i = 0; i < mpos_.length; ++i) {
-                if (mpos_[i] >= sdim) {
-                    return false;
-                }
-            }
-            return true;
-        }
     }
 
     static class MeasurementsVector implements ISsfMeasurements {
 
-        private final int sdim;
         private final ISsfMeasurement[] ms;
         private final DataBlock tmp;
 
         MeasurementsVector(ISsfMeasurement[] ms, int dim) {
             this.ms = ms;
             tmp = DataBlock.make(dim);
-            sdim = dim;
         }
 
         @Override
@@ -542,16 +504,6 @@ public class Measurements {
         @Override
         public void XpZd(int pos, int ivar, DataBlock x, double d) {
             ms[ivar].XpZd(pos, x, d);
-        }
-
-        @Override
-        public int getStateDim() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body copyOf generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public boolean isValid() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body copyOf generated methods, choose Tools | Templates.
         }
     }
 }

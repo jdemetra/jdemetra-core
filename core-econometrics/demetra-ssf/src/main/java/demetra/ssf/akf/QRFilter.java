@@ -80,9 +80,9 @@ public class QRFilter {
 
         // apply the filter on the diffuse effects
         ISsfDynamics dynamics = ssf.getDynamics();
-        X = Matrix.make(data.length(), dynamics.getNonStationaryDim());
+        X = Matrix.make(data.length(), ssf.getDiffuseDim());
         ssf.diffuseEffects(X);
-        yl = DataBlock.copyOf(fr.errors(true, true));
+        yl = DataBlock.of(fr.errors(true, true));
         FastFilter ffilter = new FastFilter(ssf, fr, new ResultsRange(0, data.length()));
         int n = ffilter.getOutputLength(X.getRowsCount());
         Xl = Matrix.make(n, X.getColumnsCount());

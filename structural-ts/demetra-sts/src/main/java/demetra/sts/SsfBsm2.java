@@ -21,6 +21,7 @@ package demetra.sts;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
+import demetra.ssf.ISsfInitialization;
 import demetra.ssf.implementations.Measurement;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Ssf;
@@ -31,8 +32,8 @@ import demetra.ssf.univariate.Ssf;
  */
 public class SsfBsm2 extends Ssf {
 
-    private SsfBsm2(Bsm2Dynamics dynamics, ISsfMeasurement measurement) {
-        super(dynamics, measurement);
+    private SsfBsm2(Bsm2Initialization initialization,Bsm2Dynamics dynamics, ISsfMeasurement measurement) {
+        super(initialization, dynamics, measurement);
     }
 
     /**
@@ -69,284 +70,67 @@ public class SsfBsm2 extends Ssf {
 
     public static SsfBsm2 of(BasicStructuralModel model) {
         int[] idx = calcCmpsIndexes(model);
-        Bsm2Dynamics dynamics = new Bsm2Dynamics(model);
-        ISsfMeasurement measurement = Measurement.create(dynamics.getStateDim(), idx, model.nVar < 0 ? 0 : model.nVar);
-        if (dynamics.isValid()) {
-            return new SsfBsm2(dynamics, measurement);
+        SsfBsm.BsmData data=new SsfBsm.BsmData(model);
+        Bsm2Initialization initialization = new Bsm2Initialization(data);
+        Bsm2Dynamics dynamics = new Bsm2Dynamics(data);
+        ISsfMeasurement measurement = Measurement.create(idx);
+        if (initialization.isValid()) {
+            return new SsfBsm2(initialization, dynamics, measurement);
         } else {
             return null;
         }
     }
 
-    public static class Bsm2Dynamics implements ISsfDynamics {
+    public static class Bsm2Initialization implements ISsfInitialization {
 
-        private final Matrix tsvar, ltsvar;
-        private final double lVar, sVar, seasVar, cVar, cDump;
-        private final double ccos, csin;
-        private final int freq;
-        private final SeasonalModel seasModel;
+        private final SsfBsm.BsmData data;
 
-        public Bsm2Dynamics(BasicStructuralModel model) {
-            lVar = model.lVar;
-            sVar = model.sVar;
-            seasVar = model.seasVar;
-            cVar = model.cVar;
-            cDump = model.cDump;
-            ccos = model.ccos;
-            csin = model.csin;
-            seasModel = model.seasModel;
-            freq = model.freq;
-            if (seasVar > 0) {
-                tsvar = SeasonalComponent.tsVar(seasModel, freq);
-                tsvar.mul(seasVar);
-                if (model.seasModel != SeasonalModel.Crude && model.seasModel != SeasonalModel.Dummy) {
-                    ltsvar = SeasonalComponent.tslVar(seasModel, freq);
-                    ltsvar.mul(Math.sqrt(seasVar));
-                } else {
-                    ltsvar = null;
-                }
-            } else {
-                tsvar = null;
-                ltsvar = null;
+                public Bsm2Initialization(SsfBsm.BsmData data) {
+            this.data=data;
+        }
+
+        @Override
+        public boolean isValid() {
+            if (data.freq == 1 && data.seasVar >= 0) {
+                return false;
             }
+            return data.lVar >= 0 || data.sVar >= 0 || data.cVar >= 0;
         }
 
         @Override
         public int getStateDim() {
             int r = 0;
-            if (cVar >= 0) {
+            if (data.cVar >= 0) {
                 r += 2;
             }
-            if (lVar >= 0) {
+            if (data.lVar >= 0) {
                 ++r;
             }
-            if (sVar >= 0) {
+            if (data.sVar >= 0) {
                 ++r;
             }
-            if (seasVar >= 0) {
-                r += freq - 1;
+            if (data.seasVar >= 0) {
+                r += data.freq - 1;
             }
             return r;
         }
 
-        @Override
-        public boolean isTimeInvariant() {
-            return true;
-        }
-
-        @Override
-        public boolean isValid() {
-            if (freq == 1 && seasVar >= 0) {
-                return false;
-            }
-            return lVar >= 0 || sVar >= 0 || cVar >= 0;
-        }
-
-        @Override
-        public int getInnovationsDim() {
-            int nr = 0;
-            if (seasVar > 0) {
-                if (seasModel == SeasonalModel.Dummy || seasModel == SeasonalModel.Crude) {
-                    ++nr;
-                } else {
-                    nr += freq - 1;
-                }
-            }
-            if (cVar > 0) {
-                nr += 2;
-            }
-            if (lVar > 0) {
-                ++nr;
-            }
-            if (sVar > 0) {
-                ++nr;
-            }
-            return nr;
-        }
-
-        @Override
-        public void V(int pos, Matrix v) {
-            int i = 0;
-            if (cVar >= 0) {
-                v.set(i, i, cVar);
-                ++i;
-                v.set(i, i, cVar);
-                ++i;
-            }
-            if (lVar >= 0) {
-                if (lVar != 0) {
-                    v.set(i, i, lVar);
-                }
-                ++i;
-            }
-            if (sVar >= 0) {
-                if (sVar != 0) {
-                    v.set(i, i, sVar);
-                }
-                ++i;
-            }
-            if (seasVar > 0) {
-                if (seasModel == SeasonalModel.Dummy) {
-                    v.set(i, i, seasVar);
-                } else {
-                    int j = i + tsvar.getRowsCount();
-                    v.extract(i, j, i, j).copy(tsvar);
-                }
-            }
-        }
-
-        @Override
-        public boolean hasInnovations(int pos) {
-            return true;
-        }
-
-        @Override
-        public void S(int pos, Matrix s) {
-            int i = 0, j = 0;
-            if (cVar > 0) {
-                double ce = Math.sqrt(cVar);
-                s.set(i++, j++, ce);
-                s.set(i++, j++, ce);
-            } else if (cVar == 0) {
-                i += 2;
-            }
-            if (lVar > 0) {
-                s.set(i++, j++, Math.sqrt(lVar));
-            } else if (lVar == 0) {
-                ++i;
-            }
-            if (sVar > 0) {
-                s.set(i++, j++, Math.sqrt(sVar));
-            } else if (sVar == 0) {
-                ++i;
-            }
-            if (seasVar > 0) {
-                switch (seasModel) {
-                    case Dummy:
-                        s.set(i, j, Math.sqrt(seasVar));
-                        break;
-                    case Crude:
-                        s.extract(i, i + freq - 1, j, j + 1).set(Math.sqrt(seasVar));
-                        break;
-                    default:
-                        s.extract(i, i + freq - 1, j, j + freq - 1).copy(ltsvar);
-                        break;
-                }
-            }
-        }
-
-        @Override
-        public void addSU(int pos, DataBlock x, DataBlock u) {
-            int i = 0, j = 0;
-            if (cVar > 0) {
-                double ce = Math.sqrt(cVar);
-                x.add(i++, u.get(j++) * ce);
-                x.add(i++, u.get(j++) * ce);
-            } else if (cVar == 0) {
-                i += 2;
-            }
-            if (lVar > 0) {
-                x.add(i++, u.get(j++) * Math.sqrt(lVar));
-            } else if (lVar == 0) {
-                ++i;
-            }
-            if (sVar > 0) {
-                x.add(i++, u.get(j++) * Math.sqrt(sVar));
-            } else if (sVar == 0) {
-                ++i;
-            }
-            if (seasVar > 0) {
-                switch (seasModel) {
-                    case Dummy:
-                        x.add(i, u.get(j) * Math.sqrt(seasVar));
-                        break;
-                    case Crude:
-                        x.range(i, i + freq - 1).add(Math.sqrt(seasVar) * u.get(j));
-                        break;
-                    default:
-                        x.range(i, i + freq - 1).addProduct(ltsvar.rowsIterator(), u.range(j, j + freq - 1));
-                        break;
-                }
-            }
-        }
-
-        @Override
-        public void XS(int pos, DataBlock x, DataBlock xs) {
-            int i = 0, j = 0;
-            if (cVar > 0) {
-                double ce = Math.sqrt(cVar);
-                xs.set(j++, x.get(i++) * ce);
-                xs.set(j++, x.get(i++) * ce);
-            } else if (cVar == 0) {
-                i += 2;
-            }
-            if (lVar > 0) {
-                xs.set(j++, x.get(i++) * Math.sqrt(lVar));
-            } else if (lVar == 0) {
-                ++i;
-            }
-            if (sVar > 0) {
-                xs.set(j++, x.get(i++) * Math.sqrt(lVar));
-            } else if (sVar == 0) {
-                ++i;
-            }
-            if (seasVar > 0) {
-                switch (seasModel) {
-                    case Dummy:
-                        xs.set(j, x.get(i) * Math.sqrt(seasVar));
-                        break;
-                    case Crude:
-                        xs.set(j, x.range(i, i + freq - 1).sum() * Math.sqrt(seasVar));
-                        break;
-                    default:
-                        xs.range(j, j + freq - 1).product(x.range(i, i + freq - 1), ltsvar.columnsIterator());
-                        break;
-                }
-            }
-        }
-
-        @Override
-        public void T(int pos, Matrix tr) {
-            int i = 0;
-            if (cVar >= 0) {
-                tr.set(i, i, ccos);
-                tr.set(i + 1, i + 1, ccos);
-                tr.set(i, i + 1, csin);
-                tr.set(i + 1, i, -csin);
-                i += 2;
-            }
-            if (lVar >= 0) {
-                tr.set(i, i, 1);
-                if (sVar >= 0) {
-                    tr.set(i, i + 1, 1);
-                    ++i;
-                    tr.set(i, i, 1);
-                }
-                ++i;
-            }
-            if (seasVar >= 0) {
-                Matrix seas = tr.extract(i, i + freq - 1, i, i + freq - 1);
-                seas.row(freq - 2).set(-1);
-                seas.subDiagonal(1).set(1);
-            }
-        }
-
-        @Override
+         @Override
         public boolean isDiffuse() {
-            return lVar >= 0 || seasVar >= 0;
+            return data.lVar >= 0 || data.seasVar >= 0;
         }
 
         @Override
-        public int getNonStationaryDim() {
+        public int getDiffuseDim() {
             int r = 0;
-            if (lVar >= 0) {
+            if (data.lVar >= 0) {
                 ++r;
             }
-            if (sVar >= 0) {
+            if (data.sVar >= 0) {
                 ++r;
             }
-            if (seasVar >= 0) {
-                r += freq - 1;
+            if (data.seasVar >= 0) {
+                r += data.freq - 1;
             }
             return r;
         }
@@ -355,7 +139,7 @@ public class SsfBsm2 extends Ssf {
         public void diffuseConstraints(Matrix b) {
             int sdim = getStateDim();
             int istart = 0;
-            if (cVar >= 0) {
+            if (data.cVar >= 0) {
                 istart += 2;
             }
             int iend = sdim;
@@ -368,7 +152,7 @@ public class SsfBsm2 extends Ssf {
         public void Pi0(Matrix p) {
             int sdim = getStateDim();
             int istart = 0;
-            if (cVar >= 0) {
+            if (data.cVar >= 0) {
                 istart += 2;
             }
             int iend = sdim;
@@ -385,55 +169,259 @@ public class SsfBsm2 extends Ssf {
         @Override
         public boolean Pf0(Matrix p) {
             int i = 0;
-            if (cVar > 0) {
-                double q = cVar / (1 - cDump * cDump);
+            if (data.cVar > 0) {
+                double q = data.cVar / (1 - data.cDump * data.cDump);
                 p.set(i, i, q);
                 ++i;
                 p.set(i, i, q);
                 ++i;
             }
-            if (lVar >= 0) {
-                if (lVar != 0) {
-                    p.set(i, i, lVar);
+            if (data.lVar >= 0) {
+                if (data.lVar != 0) {
+                    p.set(i, i, data.lVar);
                 }
                 ++i;
             }
-            if (sVar >= 0) {
-                if (sVar != 0) {
-                    p.set(i, i, sVar);
+            if (data.sVar >= 0) {
+                if (data.sVar != 0) {
+                    p.set(i, i, data.sVar);
                 }
                 ++i;
             }
-            if (seasVar > 0) {
-                if (seasModel == SeasonalModel.Dummy) {
-                    p.set(i, i, seasVar);
+            if (data.seasVar > 0) {
+                if (data.seasModel == SeasonalModel.Dummy) {
+                    p.set(i, i, data.seasVar);
                 } else {
-                    int j = i + tsvar.getRowsCount();
-                    p.extract(i, j, i, j).copy(tsvar);
+                    int j = i + data.tsvar.getRowsCount();
+                    p.extract(i, j, i, j).copy(data.tsvar);
                 }
             }
             return true;
         }
 
+   }
+    
+    public static class Bsm2Dynamics implements ISsfDynamics {
+
+        private final SsfBsm.BsmData data;
+
+                public Bsm2Dynamics(SsfBsm.BsmData data) {
+            this.data=data;
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return true;
+        }
+
+        @Override
+        public int getInnovationsDim() {
+            int nr = 0;
+            if (data.seasVar > 0) {
+                if (data.seasModel == SeasonalModel.Dummy || data.seasModel == SeasonalModel.Crude) {
+                    ++nr;
+                } else {
+                    nr += data.freq - 1;
+                }
+            }
+            if (data.cVar > 0) {
+                nr += 2;
+            }
+            if (data.lVar > 0) {
+                ++nr;
+            }
+            if (data.sVar > 0) {
+                ++nr;
+            }
+            return nr;
+        }
+
+        @Override
+        public void V(int pos, Matrix v) {
+            int i = 0;
+            if (data.cVar >= 0) {
+                v.set(i, i, data.cVar);
+                ++i;
+                v.set(i, i, data.cVar);
+                ++i;
+            }
+            if (data.lVar >= 0) {
+                if (data.lVar != 0) {
+                    v.set(i, i, data.lVar);
+                }
+                ++i;
+            }
+            if (data.sVar >= 0) {
+                if (data.sVar != 0) {
+                    v.set(i, i, data.sVar);
+                }
+                ++i;
+            }
+            if (data.seasVar > 0) {
+                if (data.seasModel == SeasonalModel.Dummy) {
+                    v.set(i, i, data.seasVar);
+                } else {
+                    int j = i + data.tsvar.getRowsCount();
+                    v.extract(i, j, i, j).copy(data.tsvar);
+                }
+            }
+        }
+
+        @Override
+        public boolean hasInnovations(int pos) {
+            return true;
+        }
+
+        @Override
+        public void S(int pos, Matrix s) {
+            int i = 0, j = 0;
+            if (data.cVar > 0) {
+                double ce = Math.sqrt(data.cVar);
+                s.set(i++, j++, ce);
+                s.set(i++, j++, ce);
+            } else if (data.cVar == 0) {
+                i += 2;
+            }
+            if (data.lVar > 0) {
+                s.set(i++, j++, Math.sqrt(data.lVar));
+            } else if (data.lVar == 0) {
+                ++i;
+            }
+            if (data.sVar > 0) {
+                s.set(i++, j++, Math.sqrt(data.sVar));
+            } else if (data.sVar == 0) {
+                ++i;
+            }
+            if (data.seasVar > 0) {
+                switch (data.seasModel) {
+                    case Dummy:
+                        s.set(i, j, Math.sqrt(data.seasVar));
+                        break;
+                    case Crude:
+                        s.extract(i, i + data.freq - 1, j, j + 1).set(Math.sqrt(data.seasVar));
+                        break;
+                    default:
+                        s.extract(i, i + data.freq - 1, j, j + data.freq - 1).copy(data.ltsvar);
+                        break;
+                }
+            }
+        }
+
+        @Override
+        public void addSU(int pos, DataBlock x, DataBlock u) {
+            int i = 0, j = 0;
+            if (data.cVar > 0) {
+                double ce = Math.sqrt(data.cVar);
+                x.add(i++, u.get(j++) * ce);
+                x.add(i++, u.get(j++) * ce);
+            } else if (data.cVar == 0) {
+                i += 2;
+            }
+            if (data.lVar > 0) {
+                x.add(i++, u.get(j++) * Math.sqrt(data.lVar));
+            } else if (data.lVar == 0) {
+                ++i;
+            }
+            if (data.sVar > 0) {
+                x.add(i++, u.get(j++) * Math.sqrt(data.sVar));
+            } else if (data.sVar == 0) {
+                ++i;
+            }
+            if (data.seasVar > 0) {
+                switch (data.seasModel) {
+                    case Dummy:
+                        x.add(i, u.get(j) * Math.sqrt(data.seasVar));
+                        break;
+                    case Crude:
+                        x.range(i, i + data.freq - 1).add(Math.sqrt(data.seasVar) * u.get(j));
+                        break;
+                    default:
+                        x.range(i, i + data.freq - 1).addProduct(data.ltsvar.rowsIterator(), u.range(j, j + data.freq - 1));
+                        break;
+                }
+            }
+        }
+
+        @Override
+        public void XS(int pos, DataBlock x, DataBlock xs) {
+            int i = 0, j = 0;
+            if (data.cVar > 0) {
+                double ce = Math.sqrt(data.cVar);
+                xs.set(j++, x.get(i++) * ce);
+                xs.set(j++, x.get(i++) * ce);
+            } else if (data.cVar == 0) {
+                i += 2;
+            }
+            if (data.lVar > 0) {
+                xs.set(j++, x.get(i++) * Math.sqrt(data.lVar));
+            } else if (data.lVar == 0) {
+                ++i;
+            }
+            if (data.sVar > 0) {
+                xs.set(j++, x.get(i++) * Math.sqrt(data.lVar));
+            } else if (data.sVar == 0) {
+                ++i;
+            }
+            if (data.seasVar > 0) {
+                switch (data.seasModel) {
+                    case Dummy:
+                        xs.set(j, x.get(i) * Math.sqrt(data.seasVar));
+                        break;
+                    case Crude:
+                        xs.set(j, x.range(i, i + data.freq - 1).sum() * Math.sqrt(data.seasVar));
+                        break;
+                    default:
+                        xs.range(j, j + data.freq - 1).product(x.range(i, i + data.freq - 1), data.ltsvar.columnsIterator());
+                        break;
+                }
+            }
+        }
+
+        @Override
+        public void T(int pos, Matrix tr) {
+            int i = 0;
+            if (data.cVar >= 0) {
+                tr.set(i, i, data.ccos);
+                tr.set(i + 1, i + 1, data.ccos);
+                tr.set(i, i + 1, data.csin);
+                tr.set(i + 1, i, -data.csin);
+                i += 2;
+            }
+            if (data.lVar >= 0) {
+                tr.set(i, i, 1);
+                if (data.sVar >= 0) {
+                    tr.set(i, i + 1, 1);
+                    ++i;
+                    tr.set(i, i, 1);
+                }
+                ++i;
+            }
+            if (data.seasVar >= 0) {
+                Matrix seas = tr.extract(i, i + data.freq - 1, i, i + data.freq - 1);
+                seas.row(data.freq - 2).set(-1);
+                seas.subDiagonal(1).set(1);
+            }
+        }
+
         @Override
         public void TX(int pos, DataBlock x) {
             int i0 = 0;
-            if (cVar >= 0) {
+            if (data.cVar >= 0) {
                 double a = x.get(i0), b = x.get(i0 + 1);
-                x.set(i0, a * ccos + b * csin);
-                x.set(i0 + 1, -a * csin + b * ccos);
+                x.set(i0, a * data.ccos + b * data.csin);
+                x.set(i0 + 1, -a * data.csin + b * data.ccos);
                 i0 += 2;
             }
-            if (lVar >= 0) {
-                if (sVar >= 0) {
+            if (data.lVar >= 0) {
+                if (data.sVar >= 0) {
                     x.add(i0, x.get(i0 + 1));
                     i0 += 2;
                 } else {
                     ++i0;
                 }
             }
-            if (seasVar >= 0) {
-                DataBlock ex = x.extract(i0, freq - 1, 1);
+            if (data.seasVar >= 0) {
+                DataBlock ex = x.extract(i0, data.freq - 1, 1);
                 ex.bshiftAndNegSum();
             }
         }
@@ -441,23 +429,23 @@ public class SsfBsm2 extends Ssf {
         @Override
         public void XT(int pos, DataBlock x) {
             int i0 = 0;
-            if (cVar >= 0) {
+            if (data.cVar >= 0) {
                 double a = x.get(i0), b = x.get(i0 + 1);
-                x.set(i0, a * ccos - b * csin);
-                x.set(i0 + 1, a * csin + b * ccos);
+                x.set(i0, a * data.ccos - b * data.csin);
+                x.set(i0 + 1, a * data.csin + b * data.ccos);
                 i0 += 2;
 
             }
-            if (lVar >= 0) {
-                if (sVar >= 0) {
+            if (data.lVar >= 0) {
+                if (data.sVar >= 0) {
                     x.add(i0 + 1, x.get(i0));
                     i0 += 2;
                 } else {
                     ++i0;
                 }
             }
-            if (seasVar >= 0) {
-                int imax = i0 + freq - 2;
+            if (data.seasVar >= 0) {
+                int imax = i0 + data.freq - 2;
                 double xs = x.get(imax);
                 for (int i = imax; i > i0; --i) {
                     x.set(i, x.get(i - 1) - xs);
@@ -469,30 +457,30 @@ public class SsfBsm2 extends Ssf {
         @Override
         public void addV(int pos, Matrix p) {
             int i = 0;
-            if (cVar >= 0) {
-                p.add(i, i, cVar);
+            if (data.cVar >= 0) {
+                p.add(i, i, data.cVar);
                 ++i;
-                p.add(i, i, cVar);
+                p.add(i, i, data.cVar);
                 ++i;
             }
-            if (lVar >= 0) {
-                if (lVar != 0) {
-                    p.add(i, i, lVar);
+            if (data.lVar >= 0) {
+                if (data.lVar != 0) {
+                    p.add(i, i, data.lVar);
                 }
                 ++i;
             }
-            if (sVar >= 0) {
-                if (sVar != 0) {
-                    p.add(i, i, sVar);
+            if (data.sVar >= 0) {
+                if (data.sVar != 0) {
+                    p.add(i, i, data.sVar);
                 }
                 ++i;
             }
-            if (seasVar > 0) {
-                if (seasModel == SeasonalModel.Dummy) {
-                    p.add(i, i, seasVar);
+            if (data.seasVar > 0) {
+                if (data.seasModel == SeasonalModel.Dummy) {
+                    p.add(i, i, data.seasVar);
                 } else {
-                    int j = i + tsvar.getRowsCount();
-                    p.extract(i, j, i, j).add(tsvar);
+                    int j = i + data.tsvar.getRowsCount();
+                    p.extract(i, j, i, j).add(data.tsvar);
                 }
             }
 

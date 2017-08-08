@@ -27,6 +27,7 @@ import demetra.ssf.State;
 import demetra.ssf.StateInfo;
 import demetra.ssf.StateStorage;
 import demetra.ssf.dk.sqrt.DiffuseSquareRootInitializer;
+import demetra.ssf.implementations.DummyInitialization;
 
 /**
  * /**
@@ -107,14 +108,14 @@ public class FixedPointSmoother {
         OrdinaryFilter filter = new OrdinaryFilter(new Initializer(ssf, fixpos, M));
         SsfDataWindow xdata = new SsfDataWindow(data, fixpos, data.length());
         int mdim = M == null ? ssf.getStateDim() : M.getRowsCount();
-        Ssf xssf = new Ssf(new Dynamics(ssf.getDynamics(), mdim), new Measurement(ssf.getMeasurement(), mdim));
+        Ssf xssf = new Ssf(new DummyInitialization(mdim+ssf.getStateDim()), new Dynamics(ssf, mdim), new Measurement(ssf, mdim));
         states = StateStorage.full(StateInfo.Concurrent);
         states.prepare(mdim, fixpos, data.length());
         Results frslts = new Results(states, ssf.getStateDim(), mdim);
         return filter.process(xssf, xdata, frslts);
     }
 
-    static class Initializer implements OrdinaryFilter.Initializer {
+    static class Initializer implements OrdinaryFilter.FilterInitializer {
 
         private final int fixpos;
         private final Matrix M;
@@ -127,7 +128,7 @@ public class FixedPointSmoother {
         }
 
         @Override
-        public int initialize(State state, ISsf ssf, ISsfData data) {
+        public int initializeFilter(State state, ISsf ssf, ISsfData data) {
             DiffuseSquareRootInitializer init = new DiffuseSquareRootInitializer(null);
             OrdinaryFilter filter = new OrdinaryFilter(init);
             SsfDataWindow data0 = new SsfDataWindow(data, 0, fixpos);
@@ -168,10 +169,10 @@ public class FixedPointSmoother {
         private final ISsfMeasurement core;
         private final int cdim, mdim;
 
-        Measurement(ISsfMeasurement core, int mdim) {
-            this.core = core;
+        Measurement(ISsf ssf, int mdim) {
+            this.core = ssf.getMeasurement();
             this.mdim = mdim;
-            this.cdim = core.getStateDim();
+            this.cdim = ssf.getStateDim();
         }
 
         @Override
@@ -205,18 +206,8 @@ public class FixedPointSmoother {
         }
 
         @Override
-        public int getStateDim() {
-            return cdim + mdim;
-        }
-
-        @Override
         public boolean isTimeInvariant() {
             return core.isTimeInvariant();
-        }
-
-        @Override
-        public boolean isValid() {
-            return core.isValid();
         }
 
         @Override
@@ -235,10 +226,10 @@ public class FixedPointSmoother {
         private final ISsfDynamics core;
         private final int cdim, mdim;
 
-        Dynamics(ISsfDynamics core, int mdim) {
-            this.core = core;
+        Dynamics(ISsf ssf, int mdim) {
+            this.core = ssf.getDynamics();
             this.mdim = mdim;
-            this.cdim = core.getStateDim();
+            this.cdim = ssf.getStateDim();
         }
 
         @Override
@@ -268,30 +259,6 @@ public class FixedPointSmoother {
         }
 
         @Override
-        public boolean isDiffuse() {
-            return false;
-        }
-
-        @Override
-        public int getNonStationaryDim() {
-            return 0;
-        }
-
-        @Override
-        public void diffuseConstraints(Matrix b) {
-        }
-
-        @Override
-        public boolean a0(DataBlock a0) {
-            return false;
-        }
-
-        @Override
-        public boolean Pf0(Matrix pf0) {
-            return false;
-        }
-
-        @Override
         public void TX(int pos, DataBlock x) {
             core.TX(pos, x.range(0, cdim));
         }
@@ -316,20 +283,12 @@ public class FixedPointSmoother {
             throw new UnsupportedOperationException("Not supported yet."); //To change body copyOf generated methods, choose Tools | Templates.
         }
 
-        @Override
-        public int getStateDim() {
-            return cdim + mdim;
-        }
 
         @Override
         public boolean isTimeInvariant() {
             return core.isTimeInvariant();
         }
 
-        @Override
-        public boolean isValid() {
-            return core.isValid();
-        }
     }
 
     static class Results implements IFilteringResults {

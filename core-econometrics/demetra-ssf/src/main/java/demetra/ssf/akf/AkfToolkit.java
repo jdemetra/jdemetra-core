@@ -63,7 +63,7 @@ public class AkfToolkit {
         smoother.setCalcVariances(all);
         DefaultSmoothingResults sresults = all ? DefaultSmoothingResults.full()
                 : DefaultSmoothingResults.light();
-        sresults.prepare(ssf, 0, data.length());
+        sresults.prepare(ssf.getStateDim(), 0, data.length());
         if (smoother.process(ssf, data, sresults)) {
             if (all) {
                 sresults.rescaleVariances(var(data.length(), smoother.getFilteringResults()));

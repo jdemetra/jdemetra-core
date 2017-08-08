@@ -37,7 +37,9 @@ public class TsException extends RuntimeException {
             INVALID_MONTH = "Invalid month", INVALID_DAY = "Invalid day",
             INVALID_FREQ = "Invalid frequnecy",
             INCOMPATIBLE_FREQ = "Incompatible frequencies",
+            INCOMPATIBLE_DOMAIN = "Incompatible domains",
             INVALID_PERIOD = "Invalid period",
+            INVALID_OPERATION ="Invalid operation",
             INVALID_AGGREGATIONMODE = "Invalid aggregation mode",
             TS_EMPTY = "Empty series";
 

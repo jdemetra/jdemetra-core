@@ -55,22 +55,22 @@ public class ILinearSystemSolverTest {
                 DataBlock y = DataBlock.make(N);
                 y.robustProduct(M.rowsIterator(), x, new NeumaierAccumulator());
 
-                DataBlock tmp = DataBlock.copyOf(y);
+                DataBlock tmp = DataBlock.of(y);
                 qr.solve(M, tmp);
                 del[0] += x.distance(tmp);
-                tmp = DataBlock.copyOf(y);
+                tmp = DataBlock.of(y);
                 pqr.solve(M, tmp);
                 del[1] += x.distance(tmp);
-                tmp = DataBlock.copyOf(y);
+                tmp = DataBlock.of(y);
                 rqr.solve(M, tmp);
                 del[2] += x.distance(tmp);
-                tmp = DataBlock.copyOf(y);
+                tmp = DataBlock.of(y);
                 igauss.solve(M, tmp);
                 del[3] += x.distance(tmp);
-                tmp = DataBlock.copyOf(y);
+                tmp = DataBlock.of(y);
                 icrout.solve(M, tmp);
                 del[4] += x.distance(tmp);
-                tmp = DataBlock.copyOf(y);
+                tmp = DataBlock.of(y);
                 sparse.solve(M, tmp);
                 del[5] += x.distance(tmp);
             }

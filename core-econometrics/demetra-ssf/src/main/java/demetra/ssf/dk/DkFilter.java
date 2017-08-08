@@ -33,6 +33,7 @@ import demetra.data.DoubleSequence;
 public class DkFilter implements ILinearProcess {
 
     private final IBaseDiffuseFilteringResults frslts;
+    private final ISsf ssf;
     private final ISsfMeasurement measurement;
     private final ISsfDynamics dynamics;
     private final int start, end, enddiffuse;
@@ -60,6 +61,7 @@ public class DkFilter implements ILinearProcess {
 
     public DkFilter(ISsf ssf, IBaseDiffuseFilteringResults frslts, ResultsRange range) {
         this.frslts = frslts;
+        this.ssf=ssf;
         measurement = ssf.getMeasurement();
         dynamics = ssf.getDynamics();
         start = range.getStart();
@@ -105,7 +107,7 @@ public class DkFilter implements ILinearProcess {
             if (x.getRowsCount() > end - start) {
                 return false;
             }
-            int dim = dynamics.getStateDim();
+            int dim = ssf.getStateDim();
             states = Matrix.make(dim, x.getColumnsCount());
             prepareTmp();
             DataBlockIterator rows = x.rowsIterator();
@@ -183,7 +185,7 @@ public class DkFilter implements ILinearProcess {
             if (x.length() > end - start) {
                 return false;
             }
-            int dim = dynamics.getStateDim(), n = x.length();
+            int dim = ssf.getStateDim(), n = x.length();
             state = DataBlock.make(dim);
             int pos = start, xpos = 0;
             do {
@@ -239,7 +241,7 @@ public class DkFilter implements ILinearProcess {
             if (in.length() > end - start) {
                 return false;
             }
-            int dim = dynamics.getStateDim(), n = in.length();
+            int dim = ssf.getStateDim(), n = in.length();
             state = DataBlock.make(dim);
             int pos = start, ipos = 0, opos = 0;
             do {

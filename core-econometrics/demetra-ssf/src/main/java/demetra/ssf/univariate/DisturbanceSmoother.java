@@ -19,6 +19,7 @@ import demetra.data.DoubleReader;
  */
 public class DisturbanceSmoother {
 
+    private ISsf ssf;
     private ISsfDynamics dynamics;
     private ISsfMeasurement measurement;
     private IDisturbanceSmoothingResults srslts;
@@ -34,7 +35,8 @@ public class DisturbanceSmoother {
     private double c, v;
 
     public boolean process(ISsf ssf, ISsfData data) {
-        if (ssf.getDynamics().isDiffuse()) {
+        this.ssf=ssf;
+        if (ssf.getInitialization().isDiffuse()) {
             return false;
         }
         OrdinaryFilter filter = new OrdinaryFilter();
@@ -46,7 +48,8 @@ public class DisturbanceSmoother {
     }
 
     public boolean process(ISsf ssf, DefaultFilteringResults results) {
-        if (ssf.getDynamics().isDiffuse()) {
+        this.ssf=ssf;
+        if (ssf.getInitialization().isDiffuse()) {
             return false;
         }
         ResultsRange range = results.getRange();
@@ -54,6 +57,7 @@ public class DisturbanceSmoother {
     }
 
     public boolean process(ISsf ssf, int start, int end, IFilteringResults results) {
+        this.ssf=ssf;
         IDisturbanceSmoothingResults sresults;
         boolean hasErrors = ssf.getMeasurement().hasErrors();
         if (calcvar) {
@@ -66,6 +70,7 @@ public class DisturbanceSmoother {
     }
 
     public boolean process(ISsf ssf, ISsfData data, IDisturbanceSmoothingResults sresults, final int stop) {
+        this.ssf=ssf;
         OrdinaryFilter filter = new OrdinaryFilter();
         DefaultFilteringResults fresults = DefaultFilteringResults.light();
         if (!filter.process(ssf, data, fresults)) {
@@ -75,6 +80,7 @@ public class DisturbanceSmoother {
     }
 
     public boolean process(ISsf ssf, final int start, final int end, IFilteringResults results, IDisturbanceSmoothingResults sresults) {
+        this.ssf=ssf;
         frslts = results;
         srslts = sresults;
         stop = start;
@@ -252,12 +258,12 @@ public class DisturbanceSmoother {
     }
 
     public DataBlock firstSmoothedState() {
-        int n = dynamics.getStateDim();
+        int n = ssf.getStateDim();
         // initial state
         DataBlock a = DataBlock.make(n);
         Matrix Pf0 = Matrix.square(n);
-        dynamics.a0(a);
-        dynamics.Pf0(Pf0);
+        ssf.getInitialization().a0(a);
+        ssf.getInitialization().Pf0(Pf0);
         // stationary initialization
         a.addProduct(R, Pf0.columnsIterator());
         return a;

@@ -335,15 +335,8 @@ public final class TsPeriod implements IDatePeriod, Comparable<TsPeriod> {
         return Period.between(firstDay(), lastDay().plus(1, ChronoUnit.DAYS));
     }
 
-    /**
-     * Subtracts a number of periods to the current one. A new object is
-     * created. The current object is not modified.
-     *
-     * @param nperiods The number of periods
-     * @return Returns this - nperiods.
-     */
-    public TsPeriod minus(int nperiods) {
-        return new TsPeriod(freq, id - nperiods);
+    public TsPeriod minus(long nperiods) {
+        return new TsPeriod(freq, (int) (id - nperiods));
     }
 
     /**
@@ -361,15 +354,8 @@ public final class TsPeriod implements IDatePeriod, Comparable<TsPeriod> {
         return id - p.id;
     }
 
-    /**
-     * Adds a number of periods to the current one. A new object is created. The
-     * current object is not modified.
-     *
-     * @param nperiods
-     * @return Returns this + nperiods.
-     */
-    public TsPeriod plus(int nperiods) {
-        return new TsPeriod(freq, id + nperiods);
+    public TsPeriod plus(long nperiods) {
+        return new TsPeriod(freq, (int) (id + nperiods));
     }
 
     @Override

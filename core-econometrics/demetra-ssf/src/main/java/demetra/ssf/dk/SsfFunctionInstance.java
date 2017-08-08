@@ -56,7 +56,7 @@ public class SsfFunctionInstance<S, F extends ISsf> implements
      */
     public SsfFunctionInstance(SsfFunction<S, F> fn, DoubleSequence p) {
         this.fn = fn;
-        this.p = DataBlock.copyOf(p);
+        this.p = DataBlock.of(p);
         current=fn.getMapping().map(p);
         currentSsf = fn.getBuilder().buildSsf(current);
         boolean fastcomputer=fn.isFast() && !fn.isMissing() && currentSsf.isTimeInvariant();

@@ -27,9 +27,9 @@ import demetra.ssf.univariate.Ssf;
  */
 public class LocalLevel extends Ssf{
     private final double lv,nv;
-
+    
     public LocalLevel(double lvar, double nvar) {
-        super(new RandomWalk.Dynamics(lvar, false), Measurement.create(1, 0, nvar));
+        super(new RandomWalk.Initialization(lvar), new RandomWalk.Dynamics(lvar), Measurement.create(0, nvar));
         lv=lvar;
         nv=nvar;        
     }

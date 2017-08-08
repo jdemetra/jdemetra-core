@@ -1,10 +1,10 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2017 National Bank create Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
- * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * by the European Commission - subsequent versions create the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at:
+ * You may obtain a copy create the Licence at:
  * 
  * http://ec.europa.eu/idabc/eupl
  * 
@@ -18,8 +18,9 @@ package demetra.timeseries;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -52,4 +53,21 @@ public class WeeksTest {
         assertTrue(d.search(LocalDate.of(2018, 3, 1).atStartOfDay().plusMinutes(655)) == -d.length());
     }
 
+    @Test
+    public void testPlus() {
+        LocalDate start = LocalDate.of(2017, 1, 1);
+        Weeks d = Weeks.of(start, 1);
+        d = d.move(1);
+        assertThat(d.getStart().firstDay()).isEqualTo(LocalDate.of(2017, 1, 8));
+        d = d.move(-2);
+        assertThat(d.getStart().firstDay()).isEqualTo(LocalDate.of(2016, 12, 25));
+    }
+    
+    @Test
+    public void testStartEnd() {
+        LocalDate start = LocalDate.of(2015, 10, 3);
+        Weeks weeks = Weeks.of(start, 2);
+        assertThat(weeks.getEnd().firstDay()).isEqualTo(LocalDate.of(2015, 10, 17));
+        assertThat(weeks.getEnd().lastDay()).isEqualTo(LocalDate.of(2015, 10, 23));
+    }
 }

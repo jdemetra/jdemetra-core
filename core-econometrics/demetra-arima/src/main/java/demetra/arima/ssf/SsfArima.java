@@ -18,6 +18,7 @@ package demetra.arima.ssf;
 
 import demetra.arima.AutoCovarianceFunction;
 import demetra.arima.IArimaModel;
+import demetra.arima.StationaryTransformation;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;
@@ -41,6 +42,7 @@ import demetra.ssf.univariate.Ssf;
 import demetra.ssf.implementations.Measurement;
 import demetra.ssf.UpdateInformation;
 import demetra.data.DoubleReader;
+import demetra.ssf.ISsfInitialization;
 
 /**
  *
@@ -52,7 +54,7 @@ public class SsfArima extends Ssf {
 //    public static IParametricMapping<SsfArima> mapping(final SarimaSpecification spec) {
 //        return new Mapping(spec);
 //    }
-    public static CkmsFilter.IFastInitializer<SsfArima> fastInitializer() {
+    public static CkmsFilter.IFastFilterInitializer<SsfArima> fastInitializer() {
         return (CkmsState state, UpdateInformation upd, SsfArima ssf, ISsfData data) -> {
             if (ssf.model.isStationary()) {
                 return stInitialize(state, upd, ssf, data);
@@ -71,19 +73,18 @@ public class SsfArima extends Ssf {
         ssf1.dynamics.TX(0, L);
         upd.setVariance(values[0]);
         return 0;
-
     }
-
+    
     private static int dInitialize(CkmsState state, UpdateInformation upd, SsfArima ssf1, ISsfData data) {
-        return new CkmsDiffuseInitializer<SsfArima>(diffuseInitializer()).initialize(state, upd, ssf1, data);
+        return new CkmsDiffuseInitializer<SsfArima>(diffuseInitializer()).initializeFilter(state, upd, ssf1, data);
     }
 
-    public static OrdinaryFilter.Initializer diffuseInitializer() {
+    static OrdinaryFilter.FilterInitializer diffuseInitializer() {
         return (State state, ISsf ssf, ISsfData data) -> {
             SsfArima ssfArima = (SsfArima) ssf;
-            SsfArimaDynamics dyn = (SsfArimaDynamics) ssfArima.getDynamics();
+            ArimaInitialization initialization = (ArimaInitialization) ssfArima.getInitialization();
             ISsfMeasurement m = ssf.getMeasurement();
-            int nr = ssf.getStateDim(), nd = dyn.getNonStationaryDim();
+            int nr = ssf.getStateDim(), nd = initialization.getDiffuseDim();
             Matrix A = Matrix.make(nr + nd, nd);
             double[] dif = ssfArima.model.getNonStationaryAR().asPolynomial().toArray();
             for (int j = 0; j < nd; ++j) {
@@ -105,9 +106,9 @@ public class SsfArima extends Ssf {
                 state.a().set(i, c);
             }
             Matrix stV = Matrix.square(nr);
-            SsfArimaDynamics.stVar(stV, dyn.stpsi, dyn.stacgf, dyn.var);
+            ArimaInitialization.stVar(stV, initialization.stpsi, initialization.stacgf, initialization.data.var);
             Matrix K = Matrix.square(nr);
-            SsfArimaDynamics.Ksi(K, dyn.dif);
+            ArimaInitialization.Ksi(K, initialization.dif);
             SymmetricMatrix.XSXt(stV, K, state.P());
             return nd;
         };
@@ -119,8 +120,8 @@ public class SsfArima extends Ssf {
      *
      * @param arima
      */
-    private SsfArima(final IArimaModel arima, final ISsfDynamics dynamics, ISsfMeasurement measurement) {
-        super(dynamics, measurement);
+    private SsfArima(final IArimaModel arima, final ISsfInitialization initialization, final ISsfDynamics dynamics, ISsfMeasurement measurement) {
+        super(initialization, dynamics, measurement);
         model = arima;
     }
 
@@ -145,9 +146,10 @@ public class SsfArima extends Ssf {
         if (var == 0) {
             throw new SsfException(SsfException.STOCH);
         }
-        ISsfDynamics dynamics = new StDynamics(arima);
-        ISsfMeasurement measurement = Measurement.create(dynamics.getStateDim(), 0);
-        return new SsfArima(arima, dynamics, measurement);
+        ArmaInitialization initialization=new ArmaInitialization(arima);
+        ISsfDynamics dynamics = new ArimaDynamics(initialization.data);
+        ISsfMeasurement measurement = Measurement.create(0);
+        return new SsfArima(arima, initialization, dynamics, measurement);
     }
 
     private static SsfArima ofNonStationary(IArimaModel arima) {
@@ -155,37 +157,26 @@ public class SsfArima extends Ssf {
         if (var == 0) {
             throw new SsfException(SsfException.STOCH);
         }
-        ISsfDynamics dynamics = new SsfArimaDynamics(arima);
-        ISsfMeasurement measurement = Measurement.create(dynamics.getStateDim(), 0);
-        return new SsfArima(arima, dynamics, measurement);
+        ArimaInitialization initialization=new ArimaInitialization(arima);
+        ISsfDynamics dynamics = new ArimaDynamics(initialization.data);
+        ISsfMeasurement measurement = Measurement.create(0);
+        return new SsfArima(arima, initialization, dynamics, measurement);
     }
-    
-    public static class StDynamics implements ISsfDynamics {
 
-        private final int dim;
-        private final double var;
-        private final double[] phi;
-        private final DataBlock psi, z, acgf;
-        private Matrix V;
-        private Matrix P0;
+    static class ArmaInitialization implements ISsfInitialization {
 
-        public StDynamics(IArimaModel arima) {
-            var = arima.getInnovationVariance();
-            Polynomial ar = arima.getAR().asPolynomial();
-            Polynomial ma = arima.getMA().asPolynomial();
-            phi = ar.toArray();
-            dim = Math.max(ar.getDegree(), ma.getDegree() + 1);
-            psi = DataBlock.ofInternal(RationalFunction.of(ma, ar).coefficients(dim));
-            acgf = DataBlock.ofInternal(arima.getAutoCovarianceFunction().values(dim));
-            z = DataBlock.make(dim);
+        final ArimaData data;
+        private final DataBlock acgf;
+        private final Matrix P0, V;
+
+        ArmaInitialization(IArimaModel arima) {
+            data = new ArimaData(arima);
+            acgf = DataBlock.ofInternal(arima.getAutoCovarianceFunction().values(data.dim));
+            P0 = p0(data.var, acgf, data.psi);
+            V = v(data.var, data.psi);
         }
 
-        private void init() {
-            P0 = p0(var, acgf, psi);
-            V = v(var, psi);
-        }
-
-        private static Matrix v(double var, DataBlock psi) {
+        static Matrix v(double var, DataBlock psi) {
             Matrix v = SymmetricMatrix.xxt(psi);
             v.mul(var);
             return v;
@@ -206,89 +197,6 @@ public class SsfArima extends Ssf {
             return P;
         }
 
-        /**
-         *
-         * @param pos
-         * @param tr
-         */
-        @Override
-        public void T(final int pos, final Matrix tr) {
-            T(tr);
-        }
-
-        /**
-         *
-         * @param tr
-         */
-        public void T(final Matrix tr) {
-            tr.subDiagonal(1).set(1);
-            for (int i = 1; i < phi.length; ++i) {
-                tr.set(dim - 1, dim - i, -phi[i]);
-            }
-        }
-
-        /**
-         *
-         * @param pos
-         * @param vm
-         */
-        @Override
-        public void TVT(final int pos, final Matrix vm) {
-            if (phi.length == 1) {
-                vm.upLeftShift(1);
-                vm.column(dim - 1).set(0);
-                vm.row(dim - 1).set(0);
-            } else {
-                z.set(0);
-                DataBlockIterator cols = vm.reverseColumnsIterator();
-                for (int i = 1; i < phi.length; ++i) {
-                    z.addAY(-phi[i], cols.next());
-                }
-                TX(pos, z);
-                vm.upLeftShift(1);
-                vm.column(dim - 1).copy(z);
-                vm.row(dim - 1).copy(z);
-            }
-
-        }
-
-        /**
-         *
-         * @param pos
-         * @param x
-         */
-        @Override
-        public void TX(final int pos, final DataBlock x) {
-            double z = 0;
-            if (phi.length > 1) {
-                DoubleReader reader = x.reverseReader();
-                for (int i = 1; i < phi.length; ++i) {
-                    z -= phi[i] * reader.next();
-                }
-            }
-            x.bshift(1);
-            x.set(dim - 1, z);
-        }
-
-        /**
-         *
-         * @param pos
-         * @param x
-         */
-        @Override
-        public void XT(final int pos, final DataBlock x) {
-            double last = -x.get(dim - 1);
-            x.fshift(1);
-            x.set(0, 0);
-            if (last != 0) {
-                for (int i = 1, j = dim - 1; i < phi.length; ++i, --j) {
-                    if (phi[i] != 0) {
-                        x.add(j, last * phi[i]);
-                    }
-                }
-            }
-        }
-
         @Override
         public boolean isValid() {
             return true;
@@ -300,7 +208,7 @@ public class SsfArima extends Ssf {
         }
 
         @Override
-        public int getNonStationaryDim() {
+        public int getDiffuseDim() {
             return 0;
         }
 
@@ -315,9 +223,6 @@ public class SsfArima extends Ssf {
 
         @Override
         public boolean Pf0(Matrix pf0) {
-            if (P0 == null) {
-                init();
-            }
             pf0.copy(P0);
             return true;
         }
@@ -328,85 +233,31 @@ public class SsfArima extends Ssf {
 
         @Override
         public int getStateDim() {
-            return dim;
-        }
-
-        @Override
-        public boolean isTimeInvariant() {
-            return true;
-        }
-
-        @Override
-        public int getInnovationsDim() {
-            return 1;
-        }
-
-        @Override
-        public void V(int pos, Matrix qm) {
-            if (V == null) {
-                init();
-            }
-            qm.copy(V);
-        }
-
-        @Override
-        public boolean hasInnovations(int pos) {
-            return true;
-        }
-
-        @Override
-        public void S(int pos, Matrix sm) {
-            if (psi == null) {
-                init();
-            }
-            sm.column(0).copy(psi);
-            if (var != 1) {
-                sm.mul(Math.sqrt(var));
-            }
-        }
-
-        @Override
-        public void XS(int pos, DataBlock x, DataBlock xs) {
-            if (psi == null) {
-                init();
-            }
-            double a = x.dot(psi);
-            if (var != 1) {
-                a *= Math.sqrt(var);
-            }
-            xs.set(0, a);
-        }
-
-        @Override
-        public void addSU(int pos, DataBlock x, DataBlock u) {
-            if (psi == null) {
-                init();
-            }
-            double a = u.get(0);
-            if (var != 1) {
-                a *= Math.sqrt(var);
-            }
-            x.addAY(a, psi);
-        }
-
-        @Override
-        public void addV(int pos, Matrix p) {
-            if (V == null) {
-                init();
-            }
-            p.add(V);
+            return data.dim;
         }
     }
 
-    public static class SsfArimaDynamics implements ISsfDynamics {
+    static class ArimaInitialization implements ISsfInitialization {
 
-        private final int dim;
-        private final double var, se;
-        private final double[] phi;
-        private final DataBlock z, psi, stpsi, stacgf;
-        private final Matrix V;
+        final ArimaData data;
+        final double[] dif;
+        private final DataBlock stpsi, stacgf;
         private final Matrix P0;
-        private final double[] dif;
+
+        ArimaInitialization(IArimaModel arima) {
+            data = new ArimaData(arima);
+            //
+            StationaryTransformation<IArimaModel> starima = arima.stationaryTransformation();
+            dif = starima.getUnitRoots().asPolynomial().toArray();
+            stacgf = DataBlock.ofInternal(starima.getStationaryModel().getAutoCovarianceFunction().values(data.dim));
+            RationalFunction rf = starima.getStationaryModel().getPsiWeights().getRationalFunction();
+            stpsi = DataBlock.ofInternal(rf.coefficients(data.dim));
+            Matrix stvar = ArmaInitialization.p0(data.var, stacgf, stpsi);
+            Matrix K = Matrix.square(data.dim);
+            Ksi(K, dif);
+            P0 = SymmetricMatrix.XSXt(stvar, K);
+
+        }
 
         /**
          * Computes B =
@@ -476,114 +327,6 @@ public class SsfArima extends Ssf {
             SymmetricMatrix.fromLower(stV);
         }
 
-        public SsfArimaDynamics(IArimaModel arima) {
-            var = arima.getInnovationVariance();
-            Polynomial ar = arima.getAR().asPolynomial();
-            Polynomial ma = arima.getMA().asPolynomial();
-            phi = ar.toArray();
-            BackFilter ur = arima.getNonStationaryAR();
-            dif = ur.asPolynomial().toArray();
-            dim = Math.max(ar.getDegree(), ma.getDegree() + 1);
-            psi = DataBlock.ofInternal(RationalFunction.of(ma, ar).coefficients(dim));
-
-            Polynomial stphi = arima.getStationaryAR().asPolynomial();
-            stacgf = DataBlock.ofInternal(new AutoCovarianceFunction(ma, stphi, var).values(dim));
-            stpsi = DataBlock.ofInternal(RationalFunction.of(ma, stphi).coefficients(dim));
-            z = DataBlock.make(dim);
-            Matrix stvar = StDynamics.p0(var, stacgf, stpsi);
-            Matrix K = Matrix.square(dim);
-            Ksi(K, dif);
-            P0 = SymmetricMatrix.XSXt(stvar, K);
-            V = StDynamics.v(var, psi);
-            se = Math.sqrt(var);
-        }
-
-        /**
-         *
-         * @param pos
-         * @param tr
-         */
-        @Override
-        public void T(final int pos, final Matrix tr) {
-            T(tr);
-        }
-
-        /**
-         *
-         * @param tr
-         */
-        public void T(final Matrix tr) {
-            tr.set(0);
-            for (int i = 1; i < dim; ++i) {
-                tr.set(i - 1, i, 1);
-            }
-            for (int i = 1; i < phi.length; ++i) {
-                tr.set(dim - 1, dim - i, -phi[i]);
-            }
-        }
-
-        /**
-         *
-         * @param pos
-         * @param vm
-         */
-        @Override
-        public void TVT(final int pos, final Matrix vm) {
-            if (phi.length == 1) {
-                vm.upLeftShift(1);
-                vm.column(dim - 1).set(0);
-                vm.row(dim - 1).set(0);
-            } else {
-                z.set(0);
-                DataBlockIterator cols = vm.reverseColumnsIterator();
-                for (int i = 1; i < phi.length; ++i) {
-                    z.addAY(-phi[i], cols.next());
-                }
-                TX(pos, z);
-                vm.upLeftShift(1);
-                vm.column(dim - 1).copy(z);
-                vm.row(dim - 1).copy(z);
-            }
-
-        }
-
-        /**
-         *
-         * @param pos
-         * @param x
-         */
-        @Override
-        public void TX(final int pos, final DataBlock x) {
-            double z = 0;
-            if (phi.length > 1) {
-                DoubleReader reader = x.reverseReader();
-                for (int i = 1; i < phi.length; ++i) {
-                    z -= phi[i] * reader.next();
-                }
-            }
-            x.bshift(1);
-            x.set(dim - 1, z);
-        }
-
-        /**
-         *
-         * @param pos
-         * @param x
-         */
-        @Override
-        public void XT(final int pos, final DataBlock x) {
-            double last = -x.get(dim - 1);
-            x.fshift(1);
-            x.set(0, 0);
-            if (last != 0) {
-                for (int i = 1, j = dim - 1; i < phi.length; ++i, --j) {
-                    if (phi[i] != 0) {
-                        x.add(j, last * phi[i]);
-                    }
-                }
-            }
-        }
-
         @Override
         public boolean isValid() {
             return true;
@@ -595,7 +338,7 @@ public class SsfArima extends Ssf {
         }
 
         @Override
-        public int getNonStationaryDim() {
+        public int getDiffuseDim() {
             return dif.length - 1;
         }
 
@@ -621,14 +364,132 @@ public class SsfArima extends Ssf {
 
         @Override
         public void Pi0(Matrix pi0) {
-            Matrix B = Matrix.make(dim, dif.length - 1);
+            Matrix B = Matrix.make(data.dim, dif.length - 1);
             B0(B, dif);
             SymmetricMatrix.XXt(B, pi0);
         }
 
         @Override
         public int getStateDim() {
-            return dim;
+            return data.dim;
+        }
+    }
+
+    static class ArimaData {
+
+        final int dim;
+        final double var, se;
+        final double[] phi;
+        final DataBlock psi;
+
+        ArimaData(IArimaModel arima) {
+            var = arima.getInnovationVariance();
+            Polynomial ar = arima.getAR().asPolynomial();
+            Polynomial ma = arima.getMA().asPolynomial();
+            phi = ar.toArray();
+            dim = Math.max(ar.getDegree(), ma.getDegree() + 1);
+            psi = DataBlock.ofInternal(RationalFunction.of(ma, ar).coefficients(dim));
+            se = Math.sqrt(var);
+        }
+
+    }
+
+    static class ArimaDynamics implements ISsfDynamics {
+
+        private final ArimaData data;
+        private final DataBlock z;
+        private final Matrix V;
+
+        public ArimaDynamics(ArimaData data) {
+            this.data = data;
+            z = DataBlock.make(data.dim);
+            V = ArmaInitialization.v(data.var, data.psi);
+        }
+
+        /**
+         *
+         * @param pos
+         * @param tr
+         */
+        @Override
+        public void T(final int pos, final Matrix tr) {
+            T(tr);
+        }
+
+        /**
+         *
+         * @param tr
+         */
+        public void T(final Matrix tr) {
+            tr.set(0);
+            for (int i = 1; i < data.dim; ++i) {
+                tr.set(i - 1, i, 1);
+            }
+            for (int i = 1; i < data.phi.length; ++i) {
+                tr.set(data.dim - 1, data.dim - i, -data.phi[i]);
+            }
+        }
+
+        /**
+         *
+         * @param pos
+         * @param vm
+         */
+        @Override
+        public void TVT(final int pos, final Matrix vm) {
+            if (data.phi.length == 1) {
+                vm.upLeftShift(1);
+                vm.column(data.dim - 1).set(0);
+                vm.row(data.dim - 1).set(0);
+            } else {
+                z.set(0);
+                DataBlockIterator cols = vm.reverseColumnsIterator();
+                for (int i = 1; i < data.phi.length; ++i) {
+                    z.addAY(-data.phi[i], cols.next());
+                }
+                TX(pos, z);
+                vm.upLeftShift(1);
+                vm.column(data.dim - 1).copy(z);
+                vm.row(data.dim - 1).copy(z);
+            }
+
+        }
+
+        /**
+         *
+         * @param pos
+         * @param x
+         */
+        @Override
+        public void TX(final int pos, final DataBlock x) {
+            double z = 0;
+            if (data.phi.length > 1) {
+                DoubleReader reader = x.reverseReader();
+                for (int i = 1; i < data.phi.length; ++i) {
+                    z -= data.phi[i] * reader.next();
+                }
+            }
+            x.bshift(1);
+            x.set(data.dim - 1, z);
+        }
+
+        /**
+         *
+         * @param pos
+         * @param x
+         */
+        @Override
+        public void XT(final int pos, final DataBlock x) {
+            double last = -x.get(data.dim - 1);
+            x.fshift(1);
+            x.set(0, 0);
+            if (last != 0) {
+                for (int i = 1, j = data.dim - 1; i < data.phi.length; ++i, --j) {
+                    if (data.phi[i] != 0) {
+                        x.add(j, last * data.phi[i]);
+                    }
+                }
+            }
         }
 
         @Override
@@ -648,9 +509,9 @@ public class SsfArima extends Ssf {
 
         @Override
         public void S(int pos, Matrix sm) {
-            sm.column(0).copy(psi);
-            if (se != 1) {
-                sm.mul(se);
+            sm.column(0).copy(data.psi);
+            if (data.se != 1) {
+                sm.mul(data.se);
             }
         }
 
@@ -666,14 +527,14 @@ public class SsfArima extends Ssf {
 
         @Override
         public void XS(int pos, DataBlock x, DataBlock sx) {
-            double a = x.dot(psi) * se;
+            double a = x.dot(data.psi) * data.se;
             sx.set(0, a);
         }
 
         @Override
         public void addSU(int pos, DataBlock x, DataBlock u) {
-            double a = u.get(0) * se;
-            x.addAY(a, psi);
+            double a = u.get(0) * data.se;
+            x.addAY(a, data.psi);
         }
 
     }

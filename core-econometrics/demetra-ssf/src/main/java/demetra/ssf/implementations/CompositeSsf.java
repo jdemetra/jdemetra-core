@@ -17,9 +17,11 @@
 package demetra.ssf.implementations;
 
 import demetra.ssf.ISsfDynamics;
+import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Ssf;
+import demetra.ssf.ISsfInitialization;
 
 /**
  *
@@ -27,27 +29,58 @@ import demetra.ssf.univariate.Ssf;
  */
 public class CompositeSsf extends Ssf{
     
-    private CompositeSsf(ISsfDynamics dyn, ISsfMeasurement m){
-        super(dyn, m);
+    public static int[] dimensions(ISsf... ssf){
+        int[] dim=new int[ssf.length];
+        for (int i=0; i<dim.length; ++i){
+            dim[i]=ssf[i].getStateDim();
+        }
+        return dim;
+    }
+    
+    public static int[] dimensions(IMultivariateSsf... ssf){
+        int[] dim=new int[ssf.length];
+        for (int i=0; i<dim.length; ++i){
+            dim[i]=ssf[i].getStateDim();
+        }
+        return dim;
+    }
+
+     CompositeSsf(ISsfInitialization initializer, ISsfDynamics dyn, ISsfMeasurement m){
+        super(initializer, dyn, m);
     }
     
     public static CompositeSsf of(double var, ISsf... ssf ){
-        ISsfMeasurement m=CompositeMeasurement.of(var, ssf);
-        if (m == null)
-            return null;
-        ISsfDynamics dyn=CompositeDynamics.of(ssf);
-        if (dyn == null)
-            return null;
-        return new CompositeSsf(dyn, m);
+        int[] dim=dimensions(ssf);
+        int n=0;
+        ISsfInitialization[] initializer =new ISsfInitialization[ssf.length];
+        ISsfMeasurement[] measurement =new ISsfMeasurement[ssf.length];
+        ISsfDynamics[] dynamics =new ISsfDynamics[ssf.length];
+        for (int i=0; i<ssf.length; ++i){
+            ISsf cur=ssf[i];
+            n+=cur.getStateDim();
+            initializer[i]=cur.getInitialization();
+            measurement[i]=cur.getMeasurement();
+            dynamics[i]=cur.getDynamics();
+        }
+        return new CompositeSsf(new CompositeInitialization(dim, initializer), 
+                new CompositeDynamics(dim, dynamics), new CompositeMeasurement(dim, measurement, var));
     }
     
     public static CompositeSsf of(WeightedCompositeMeasurement.IWeights weights, ISsf... ssf ){
         ISsfMeasurement m=WeightedCompositeMeasurement.of(weights, ssf);
         if (m == null)
             return null;
-        ISsfDynamics dyn=CompositeDynamics.of(ssf);
-        if (dyn == null)
-            return null;
-        return new CompositeSsf(dyn, m);
+        int[] dim=dimensions(ssf);
+        int n=0;
+        ISsfInitialization[] initializer =new ISsfInitialization[ssf.length];
+        ISsfDynamics[] dynamics =new ISsfDynamics[ssf.length];
+        for (int i=0; i<ssf.length; ++i){
+            ISsf cur=ssf[i];
+            n+=cur.getStateDim();
+            initializer[i]=cur.getInitialization();
+            dynamics[i]=cur.getDynamics();
+        }
+        return new CompositeSsf(new CompositeInitialization(dim, initializer), 
+                new CompositeDynamics(dim, dynamics), m);
     }
 }

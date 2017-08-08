@@ -126,12 +126,18 @@ public final class DataBlock implements DoubleSequence {
      * @param data The DoubleSequence being copied
      * @return
      */
-    public static DataBlock copyOf(@Nonnull DoubleSequence data) {
+    public static DataBlock of(@Nonnull DoubleSequence data) {
         double[] x = new double[data.length()];
         data.copyTo(x, 0);
         return new DataBlock(x, 0, x.length, 1);
     }
 
+    public static DataBlock of(int n, @Nonnull IntToDoubleFunction fn) {
+        double[] x = new double[n];
+        for (int i=0; i<n; ++i)
+            x[i]=fn.applyAsDouble(i);
+        return new DataBlock(x, 0, x.length, 1);
+    }
     /**
      * Envelope around a copy of an array of doubles.
      *

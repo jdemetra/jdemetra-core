@@ -19,6 +19,7 @@ package demetra.ssf;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
+import demetra.ssf.univariate.ISsf;
 
 /**
  * Represents a gaussian vector, with its mean and covariance matrix. The way
@@ -33,12 +34,12 @@ public class State {
 
     public static final double ZERO = 1e-9;
 
-    public static State of(ISsfDynamics dyn) {
-        State state = new State(dyn.getStateDim());
-        if (!dyn.a0(state.a)) {
+    public static State of(ISsfBase ssf) {
+        State state = new State(ssf.getStateDim());
+        if (!ssf.getInitialization().a0(state.a)) {
             return null;
         }
-        if (!dyn.Pf0(state.P)) {
+        if (!ssf.getInitialization().Pf0(state.P)) {
             return null;
         }
         return state;

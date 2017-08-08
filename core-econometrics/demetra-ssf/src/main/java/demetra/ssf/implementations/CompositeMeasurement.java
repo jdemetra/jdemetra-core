@@ -47,57 +47,24 @@ public class CompositeMeasurement implements ISsfMeasurement {
                 return null;
             }
         }
-        return new CompositeMeasurement(l, var);
-    }
-
-    public static ISsfMeasurement of(ISsfMeasurement... m) {
-        return of(0, m);
-    }
-
-    public static ISsfMeasurement of(double var, ISsfMeasurement... m) {
-        for (int i = 0; i < m.length; ++i) {
-            if (m[i].hasErrors()) {
-                return null;
-            }
-        }
-        return new CompositeMeasurement(m, var);
-    }
-
-    public static ISsfMeasurement of(Collection<ISsf> ssf) {
-        return CompositeMeasurement.of(0, ssf);
-    }
-
-    public static ISsfMeasurement of(double var, Collection<ISsf> ssf) {
-        ISsfMeasurement[] l = new ISsfMeasurement[ssf.size()];
-        int i = 0;
-        for (ISsf s : ssf) {
-            l[i] = s.getMeasurement();
-            if (l[i].hasErrors()) {
-                return null;
-            }
-            ++i;
-        }
-        return new CompositeMeasurement(l, var);
+        return new CompositeMeasurement(CompositeSsf.dimensions(ssf), l, var);
     }
 
     private final ISsfMeasurement[] measurements;
     private final int[] dim;
-    private final int fdim;
     private final double var;
     private final DataBlock tmp;
 
-    public CompositeMeasurement(final ISsfMeasurement[] ms, double var) {
+    CompositeMeasurement(final int[] dim, final ISsfMeasurement[] ms, double var) {
         this.measurements = ms;
+        this.dim = dim;
         int n = ms.length;
-        dim = new int[n];
         int tdim = 0;
         for (int i = 0; i < n; ++i) {
-            dim[i] = ms[i].getStateDim();
             tdim += dim[i];
         }
-        fdim = tdim;
         this.var = var;
-        tmp = DataBlock.make(fdim);
+        tmp = DataBlock.make(tdim);
     }
 
     public List<ISsfMeasurement> getMeasurements() {
@@ -199,18 +166,4 @@ public class CompositeMeasurement implements ISsfMeasurement {
         }
     }
 
-    @Override
-    public int getStateDim() {
-        return fdim;
-    }
-
-    @Override
-    public boolean isValid() {
-        for (int i = 0; i < measurements.length; ++i) {
-            if (!measurements[i].isValid()) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

@@ -174,7 +174,7 @@ public class LevenbergMarquardtMethod implements ISsqFunctionMinimizer {
             boolean solved = false;
             try {
                 SymmetricMatrix.lcholesky(K);
-                dp = DataBlock.copyOf(Jte);
+                dp = DataBlock.of(Jte);
                 dp.chs();
                 LowerTriangularMatrix.rsolve(K, dp);
                 LowerTriangularMatrix.lsolve(K, dp);
@@ -195,7 +195,7 @@ public class LevenbergMarquardtMethod implements ISsqFunctionMinimizer {
                     stop = 7;
                     return false;
                 }
-                DataBlock np = DataBlock.copyOf(fcur_.getParameters());
+                DataBlock np = DataBlock.of(fcur_.getParameters());
                 double dpl2 = dp.ssq(), pl2 = np.ssq();
                 if (dpl2 <= eps2 * (pl2 + eps2)) {
                     /*
@@ -227,12 +227,12 @@ public class LevenbergMarquardtMethod implements ISsqFunctionMinimizer {
                                 // restart the processing. 
                                 fcur_ = ftry_;
                                 Fcur_ = Ftry_;
-                                ecur = DataBlock.copyOf(fcur_.getE());
+                                ecur = DataBlock.of(fcur_.getE());
 //                        mu = 0;
 //                        nu = 4;
                                 return true;
                             }
-                            DataBlock dl = DataBlock.copyOf(Jte);
+                            DataBlock dl = DataBlock.of(Jte);
                             dl.addAY(-mu, dp);
                             double dL = -dl.dot(dp);
                             double ratio = dF / dL;
@@ -251,7 +251,7 @@ public class LevenbergMarquardtMethod implements ISsqFunctionMinimizer {
                                 boolean end = dF <= eps3 * scale2_;
                                 fcur_ = ftry_;
                                 Fcur_ = Ftry_;
-                                ecur = DataBlock.copyOf(fcur_.getE());
+                                ecur = DataBlock.of(fcur_.getE());
                                 if (end) {
                                     // clear the variance
                                     V = null;
@@ -296,7 +296,7 @@ public class LevenbergMarquardtMethod implements ISsqFunctionMinimizer {
         iter = 0;
         nu = 4;
         mu = 0;
-        ecur = DataBlock.copyOf(fcur_.getE());
+        ecur = DataBlock.of(fcur_.getE());
         Fcur_ = fcur_.getSsqE();
         scale2_ = Fcur_;
         scale_ = Math.sqrt(Fcur_);

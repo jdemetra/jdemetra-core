@@ -30,12 +30,12 @@ import demetra.ssf.StateInfo;
  */
 public class OrdinaryFilter {
 
-    public static interface Initializer {
+    public static interface FilterInitializer {
 
-        int initialize(State state, ISsf ssf, ISsfData data);
+        int initializeFilter(State state, ISsf ssf, ISsfData data);
     }
 
-    private final Initializer initializer;
+    private final FilterInitializer initializer;
     private State state;
     private UpdateInformation updinfo;
     private ISsfMeasurement measurement;
@@ -46,7 +46,7 @@ public class OrdinaryFilter {
      *
      * @param initializer
      */
-    public OrdinaryFilter(Initializer initializer) {
+    public OrdinaryFilter(FilterInitializer initializer) {
         this.initializer = initializer;
     }
 
@@ -96,13 +96,13 @@ public class OrdinaryFilter {
     private int initialize(ISsf ssf, ISsfData data) {
         measurement = ssf.getMeasurement();
         dynamics = ssf.getDynamics();
-        updinfo = new UpdateInformation(dynamics.getStateDim());
+        updinfo = new UpdateInformation(ssf.getStateDim());
         if (initializer == null) {
-            state = State.of(dynamics);
+            state = State.of(ssf);
             return state == null ? -1 : 0;
         } else {
-            state = new State(dynamics.getStateDim());
-            return initializer.initialize(state, ssf, data);
+            state = new State(ssf.getStateDim());
+            return initializer.initializeFilter(state, ssf, data);
         }
     }
 

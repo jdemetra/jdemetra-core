@@ -24,7 +24,7 @@ import demetra.timeseries.TsException;
 import demetra.timeseries.simplets.TsData;
 import demetra.timeseries.simplets.TsFrequency;
 import demetra.timeseries.simplets.TsPeriod;
-import demetra.timeseries.simplets.TsAggregationType;
+import demetra.data.AggregationType;
 import internal.tsprovider.util.ObsList.LongObsList;
 import java.util.Date;
 import java.util.Arrays;
@@ -148,14 +148,14 @@ public class TsDataCollector {
      * example if there are several observation for a given month and if the
      * aggregation mode is none), a null is returned (no exception).
      */
-    public TsData make(TsFrequency frequency, TsAggregationType convMode) {
+    public TsData make(TsFrequency frequency, AggregationType convMode) {
         if (frequency == TsFrequency.Undefined) {
-            if (convMode != TsAggregationType.None) {
+            if (convMode != AggregationType.None) {
                 throw new TsException(TsException.INVALID_AGGREGATIONMODE);
             }
             return makeFromUnknownFrequency(m_obs);
         }
-        if (convMode != TsAggregationType.None) {
+        if (convMode != AggregationType.None) {
             return makeWithAggregation(m_obs, frequency, convMode);
         }
         return makeWithoutAggregation(m_obs, frequency);
@@ -171,7 +171,7 @@ public class TsDataCollector {
      * @since 2.2.0
      */
     @Internal
-    public static TsData makeWithAggregation(ObsList obs, TsFrequency freq, TsAggregationType convMode) {
+    public static TsData makeWithAggregation(ObsList obs, TsFrequency freq, AggregationType convMode) {
         int n = obs.size();
         if (n == 0) {
             return null; // NO_DATA
@@ -270,7 +270,7 @@ public class TsDataCollector {
         }
 
         // correction pour le dernier cas
-        if (convMode == TsAggregationType.Average && ncur >= 0) {
+        if (convMode == AggregationType.Average && ncur >= 0) {
             vals[ncur] /= avn;
         }
 

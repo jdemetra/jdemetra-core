@@ -26,6 +26,7 @@ import demetra.random.JdkRNG;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.ssf.ISsfInitialization;
 
 /**
  *
@@ -72,9 +73,9 @@ public class RandomGenerator {
     }
 
     private void initSsf() {
-        int dim = dynamics.getStateDim();
+        int dim = ssf.getStateDim();
         LA = Matrix.square(dim);
-        dynamics.Pf0(LA);
+        ssf.getInitialization().Pf0(LA);
         SymmetricMatrix.lcholesky(LA, EPS);
 
     }
@@ -94,13 +95,14 @@ public class RandomGenerator {
         // generate diffuse elements
         double std = Math.sqrt(svar);
         a.mul(std);
-        if (dynamics.isDiffuse()) {
-            DataBlock b = DataBlock.make(dynamics.getNonStationaryDim());
+        ISsfInitialization initialization = ssf.getInitialization();
+        if (initialization.isDiffuse()) {
+            DataBlock b = DataBlock.make(initialization.getDiffuseDim());
             fillRandoms(b);
             double dstd = Math.sqrt(dvar);
             b.mul(dstd);
             Matrix B= Matrix.make(a.length(), b.length());
-            dynamics.diffuseConstraints(B);
+            initialization.diffuseConstraints(B);
             a.addProduct(B.rowsIterator(), b);
         }
     }
@@ -111,7 +113,7 @@ public class RandomGenerator {
 
         public RandomData(int n) {
             this.n = n;
-            dim = dynamics.getStateDim();
+            dim = ssf.getInitialization().getStateDim();
             resdim = dynamics.getInnovationsDim();
             if (measurement.hasErrors()) {
                 measurementErrors = new double[n];
