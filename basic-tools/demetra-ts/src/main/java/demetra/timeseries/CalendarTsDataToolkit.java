@@ -14,14 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.simplets;
+package demetra.timeseries;
 
 import demetra.data.DataBlock;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
-import demetra.timeseries.CalendarTsData;
-import demetra.timeseries.IDateDomain;
-import demetra.timeseries.IDatePeriod;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 import javax.annotation.Nonnegative;

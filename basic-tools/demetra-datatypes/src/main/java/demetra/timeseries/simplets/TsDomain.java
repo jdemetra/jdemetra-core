@@ -20,6 +20,7 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.design.Internal;
 import demetra.timeseries.IDateDomain;
+import demetra.timeseries.IRegularDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriodSelector;
 import java.time.LocalDate;
@@ -34,7 +35,7 @@ import javax.annotation.Nonnegative;
 @Development(status = Development.Status.Alpha)
 @Immutable
 @lombok.EqualsAndHashCode
-public final class TsDomain implements IDateDomain<TsPeriod> {
+public final class TsDomain implements IDateDomain<TsPeriod>, IRegularDomain<TsPeriod> {
 
     /**
      * Creates a new time domain, identified by its frequency, the year and the
@@ -201,7 +202,8 @@ public final class TsDomain implements IDateDomain<TsPeriod> {
         return TsDomain.of(TsPeriod.ofInternal(getFrequency(), beg), end - beg);
     }
 
-    public TsDomain move(int nperiods) {
+    @Override
+    public TsDomain move(long nperiods) {
         return TsDomain.of(start.plus(nperiods), length);
     }
 

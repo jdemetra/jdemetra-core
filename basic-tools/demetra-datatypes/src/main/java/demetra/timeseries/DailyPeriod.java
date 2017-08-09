@@ -18,6 +18,7 @@ package demetra.timeseries;
 
 import demetra.design.Immutable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 /**
@@ -26,7 +27,7 @@ import java.time.temporal.ChronoUnit;
  */
 @Immutable
 @lombok.EqualsAndHashCode
-public final class DailyPeriod implements IDatePeriod {
+public final class DailyPeriod implements IDatePeriod, IRegularPeriod {
     
     public static DailyPeriod of(LocalDate first, LocalDate last) {
         if (last.isBefore(first))
@@ -74,7 +75,33 @@ public final class DailyPeriod implements IDatePeriod {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(first.toString()).append(('.')).append(lastDay().toString());
+        builder.append(first.toString()).append((" : ")).append(lastDay().toString());
         return builder.toString();
+    }
+
+    @Override
+    public long until(IRegularPeriod period) {
+        if (period instanceof DailyPeriod){
+            DailyPeriod dp = (DailyPeriod) period;
+            if (dp.n == n){
+                long nd = first.until(dp.first, ChronoUnit.DAYS);
+                if (nd%n == 0)
+                    return nd/n;
+            }
+        }
+        throw new TsException(TsException.INVALID_OPERATION);
+    }
+
+    @Override
+    public DailyPeriod plus(long nperiods) {
+        if (nperiods == 0)
+            return this;
+        return of(first.plus(nperiods*n, ChronoUnit.DAYS), n);
+    }
+
+    @Override
+    public DailyPeriod moveTo(LocalDateTime dt) {
+        long del=first.until(dt.toLocalDate(), ChronoUnit.DAYS);
+        return plus(del/n);
     }
 }

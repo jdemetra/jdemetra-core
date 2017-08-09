@@ -19,7 +19,7 @@ public class CalendarTsData implements ITimeSeries.OfDouble<IDatePeriod, DateObs
     /**
      * Creates a random time series
      *
-     * @param freq The frequency of the series.
+     * @param domain
      * @param seed
      * @return A time series with a random length (<600 observations), a random
      * starting period (between 1970 and 1990) and random observations is

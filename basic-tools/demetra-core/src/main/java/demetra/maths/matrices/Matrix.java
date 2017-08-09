@@ -776,21 +776,25 @@ public class Matrix {
         double[] px = x.getStorage();
         if (xinc == 1) {
             for (int i = 0, ix = x.getStartPosition(), im = start; i < nr; ++i, ++ix, im += rowInc + colInc) {
-                for (int j = i, kx = ix, km = im, ks = im; j < nr; ++j, ++kx, km += rowInc, ks += colInc) {
-                    double z = a * px[ix] * px[kx];
-                    storage[km] += z;
-                    if (ks != km) {
-                        storage[ks] += z;
+                if (px[ix] != 0) {
+                    for (int j = i, kx = ix, km = im, ks = im; j < nr; ++j, ++kx, km += rowInc, ks += colInc) {
+                        double z = a * px[ix] * px[kx];
+                        storage[km] += z;
+                        if (ks != km) {
+                            storage[ks] += z;
+                        }
                     }
                 }
             }
         } else {
             for (int i = 0, ix = x.getStartPosition(), im = start; i < nr; ++i, ix += xinc, im += rowInc + colInc) {
-                for (int j = i, kx = ix, km = im, ks = im; j < nr; ++j, kx += xinc, km += rowInc, ks += colInc) {
-                    double z = a * px[ix] * px[kx];
-                    storage[km] += z;
-                    if (ks != km) {
-                        storage[ks] += z;
+                if (px[ix] != 0) {
+                    for (int j = i, kx = ix, km = im, ks = im; j < nr; ++j, kx += xinc, km += rowInc, ks += colInc) {
+                        double z = a * px[ix] * px[kx];
+                        storage[km] += z;
+                        if (ks != km) {
+                            storage[ks] += z;
+                        }
                     }
                 }
             }
@@ -943,10 +947,10 @@ public class Matrix {
      */
     public List<DataBlock> columnList() {
         ArrayList<DataBlock> rc = new ArrayList<>();
-        columns().forEach(col->rc.add(col));
+        columns().forEach(col -> rc.add(col));
         return rc;
     }
-    
+
     /**
      * Gets the columns of the matrix as a list of src block
      *
@@ -954,9 +958,10 @@ public class Matrix {
      */
     public List<DataBlock> rowList() {
         ArrayList<DataBlock> rc = new ArrayList<>();
-        rows().forEach(row->rc.add(row));
+        rows().forEach(row -> rc.add(row));
         return rc;
     }
+
     /**
      * Shifts the matrix to the top-left corner.
      * a(i,j) = a(i+n, j+n) for i in [0, nrows-n[ and j in [0, ncols-n[

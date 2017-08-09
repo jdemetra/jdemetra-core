@@ -14,35 +14,25 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.simplets;
+package demetra.timeseries;
 
 import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import static demetra.data.Doubles.average;
-import demetra.timeseries.CalendarTsData;
-import demetra.timeseries.IDateDomain;
-import static demetra.timeseries.simplets.CalendarTsDataToolkit.add;
-import static demetra.timeseries.simplets.CalendarTsDataToolkit.delta;
-import static demetra.timeseries.simplets.CalendarTsDataToolkit.drop;
-import static demetra.timeseries.simplets.CalendarTsDataToolkit.fastFn;
-import static demetra.timeseries.simplets.CalendarTsDataToolkit.fn;
-import static demetra.timeseries.simplets.CalendarTsDataToolkit.log;
-import static demetra.timeseries.simplets.CalendarTsDataToolkit.normalize;
+import static demetra.timeseries.CalendarTsDataToolkit.add;
+import static demetra.timeseries.CalendarTsDataToolkit.delta;
+import static demetra.timeseries.CalendarTsDataToolkit.drop;
+import static demetra.timeseries.CalendarTsDataToolkit.fastFn;
+import static demetra.timeseries.CalendarTsDataToolkit.fn;
+import static demetra.timeseries.CalendarTsDataToolkit.log;
+import static demetra.timeseries.CalendarTsDataToolkit.normalize;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 import org.junit.Test;
-import static demetra.timeseries.simplets.CalendarTsDataToolkit.add;
-import static demetra.timeseries.simplets.CalendarTsDataToolkit.drop;
-import static demetra.timeseries.simplets.CalendarTsDataToolkit.fn;
-import static demetra.timeseries.simplets.CalendarTsDataToolkit.add;
-import static demetra.timeseries.simplets.CalendarTsDataToolkit.drop;
-import static demetra.timeseries.simplets.CalendarTsDataToolkit.fn;
-import static demetra.timeseries.simplets.CalendarTsDataToolkit.add;
-import static demetra.timeseries.simplets.CalendarTsDataToolkit.drop;
-import static demetra.timeseries.simplets.CalendarTsDataToolkit.fn;
 
 /**
  *
@@ -87,6 +77,7 @@ public class CalendarTsDataToolkitTest {
     }
 
     @Test
+    @Ignore
     public void stressTest() {
         int K = 2000000;
         long t0 = System.currentTimeMillis();

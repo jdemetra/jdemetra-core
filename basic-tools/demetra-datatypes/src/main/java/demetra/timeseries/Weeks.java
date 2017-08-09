@@ -19,8 +19,10 @@ package demetra.timeseries;
 import demetra.design.Immutable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
+import java.util.Iterator;
 import javax.annotation.Nonnegative;
 
 /**
@@ -29,7 +31,7 @@ import javax.annotation.Nonnegative;
  */
 @Immutable
 @lombok.EqualsAndHashCode
-public final class Weeks implements IDateDomain<DailyPeriod> {
+public final class Weeks implements IDateDomain<DailyPeriod>, IRegularDomain<DailyPeriod>{
 
     public static Weeks of(LocalDate start, int nweeks) {
         return new Weeks(start, nweeks);
@@ -139,7 +141,8 @@ public final class Weeks implements IDateDomain<DailyPeriod> {
         throw new UnsupportedOperationException("union()");
     }
 
-    public Weeks move(int nperiods) {
+    @Override
+    public Weeks move(long nperiods) {
         return Weeks.of(firstDay.plusWeeks(nperiods), nweeks);
     }
 
@@ -153,4 +156,6 @@ public final class Weeks implements IDateDomain<DailyPeriod> {
                 .append('[');
         return builder.toString();
     }
+
+
 }

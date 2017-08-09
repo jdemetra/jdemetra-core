@@ -80,4 +80,13 @@ public final class ContinuousDomain implements ITimeDomain<TimePeriod> {
     public boolean isContinuous() {
         return true;
     }
+
+    @Override
+    public ContinuousDomain range(int first, int last) {
+        if (first >= dates.length - 1 || last <= first) {
+            return new ContinuousDomain(new LocalDateTime[]{dates[0], dates[0]});
+        }
+        return new ContinuousDomain(Arrays.copyOfRange(dates, first, last - first + 1));
+    }
+
 }

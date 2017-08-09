@@ -20,6 +20,7 @@ import demetra.data.Sequence;
 import demetra.design.Development;
 import java.time.LocalDateTime;
 import java.time.Period;
+import javax.annotation.Nonnegative;
 
 /**
  * Represents a time domain, which is an indexed collection of periods.
@@ -52,4 +53,14 @@ public interface ITimeDomain<E extends ITimePeriod> extends Sequence<E> {
      * @return True if end(t)=start(t+1), false otherwise
      */
     boolean isContinuous();
+    
+    /**
+     * First included, end excluded
+     *
+     * @param firstPeriod
+     * @param endPeriod
+     * @return
+     */
+    ITimeDomain<E> range(@Nonnegative int firstPeriod, @Nonnegative int endPeriod);
+
 }
