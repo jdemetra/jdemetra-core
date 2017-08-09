@@ -145,6 +145,15 @@ public final class TsDomain implements IDateDomain<TsPeriod>, IRegularDomain<TsP
     int id() {
         return start.id();
     }
+    
+    public boolean contains(TsDomain domain){
+                if (getFrequency() != domain.getFrequency()) {
+            throw new TsException(TsException.INCOMPATIBLE_FREQ);
+        }
+        return start.id() <= domain.start.id()
+                && start.id() + length >= domain.start.id() + domain.length;
+
+    }
 
     @Override
     public String toString() {
