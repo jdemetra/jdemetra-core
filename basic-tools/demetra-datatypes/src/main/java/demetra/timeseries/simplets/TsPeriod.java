@@ -20,8 +20,10 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.design.Internal;
 import demetra.timeseries.IDatePeriod;
+import demetra.timeseries.IRegularPeriod;
 import demetra.timeseries.TsException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Period;
 import java.time.Year;
@@ -30,7 +32,7 @@ import java.time.temporal.ChronoUnit;
 @Development(status = Development.Status.Beta)
 @Immutable
 @lombok.EqualsAndHashCode
-public final class TsPeriod implements IDatePeriod, Comparable<TsPeriod> {
+public final class TsPeriod implements IDatePeriod, IRegularPeriod, Comparable<TsPeriod> {
 
     /**
      * Creates a new TsPeriod, having a given freq and containing a given date.
@@ -353,9 +355,23 @@ public final class TsPeriod implements IDatePeriod, Comparable<TsPeriod> {
         }
         return id - p.id;
     }
+    
+    @Override
+    public long until(final IRegularPeriod p){
+        if (p instanceof TsPeriod){
+            return ((TsPeriod)p).minus(this);
+        }else
+            throw new TsException(TsException.INVALID_OPERATION);
+    }
 
+    @Override
     public TsPeriod plus(long nperiods) {
         return new TsPeriod(freq, (int) (id + nperiods));
+    }
+
+   @Override
+    public TsPeriod moveTo(LocalDateTime dt) {
+        return of(freq, dt.toLocalDate());
     }
 
     @Override

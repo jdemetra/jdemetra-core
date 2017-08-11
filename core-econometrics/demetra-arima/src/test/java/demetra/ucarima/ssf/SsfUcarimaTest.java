@@ -44,7 +44,7 @@ public class SsfUcarimaTest {
         DefaultSmoothingResults sd = DkToolkit.smooth(ssf, data, true);
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
         for (int i = 0; i < 3; ++i) {
-            System.out.println(sd.getComponent(ssf.getComponentPosition(i)));
+//            System.out.println(sd.getComponent(ssf.getComponentPosition(i)));
             assertTrue(ds.item(ssf.getComponentPosition(i)).distance(sd.getComponent(ssf.getComponentPosition(i))) < 1e-9);
         }
     }

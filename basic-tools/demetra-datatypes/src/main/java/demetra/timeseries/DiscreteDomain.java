@@ -20,6 +20,7 @@ import demetra.design.Immutable;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  *
@@ -28,6 +29,8 @@ import java.util.Arrays;
 @Immutable
 @lombok.EqualsAndHashCode
 public final class DiscreteDomain implements ITimeDomain<TimePoint> {
+
+    public static final DiscreteDomain EMPTY = new DiscreteDomain(new LocalDateTime[0]);
 
     private final LocalDateTime[] dates;
 
@@ -64,5 +67,12 @@ public final class DiscreteDomain implements ITimeDomain<TimePoint> {
     @Override
     public boolean isContinuous() {
         return false;
+    }
+    
+    @Override
+    public DiscreteDomain range( int first, int last){
+        if (first >= dates.length || last<= first)
+            return EMPTY;
+        return new DiscreteDomain(Arrays.copyOfRange(dates, first, last-first));
     }
 }

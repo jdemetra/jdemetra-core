@@ -19,7 +19,6 @@ package demetra.timeseries;
 import demetra.design.Development;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import javax.annotation.Nonnegative;
 
 /**
@@ -50,6 +49,7 @@ public interface IDateDomain<E extends IDatePeriod> extends ITimeDomain<E> {
      * @param endPeriod
      * @return
      */
+    @Override
     IDateDomain<E> range(@Nonnegative int firstPeriod, @Nonnegative int endPeriod);
     
     default IDateDomain<E> drop(@Nonnegative int nbeg, @Nonnegative int nend){

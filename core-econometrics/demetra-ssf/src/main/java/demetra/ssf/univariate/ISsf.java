@@ -39,28 +39,31 @@ public interface ISsf extends ISsfBase {
 
 //<editor-fold defaultstate="collapsed" desc="auxiliary operations">
     /**
-     * Computes X*L, where L = T(I - m/f * z)
+     * Computes X*L, where L = T - Tm/f * z
      *
      * @param pos
      * @param x The row array being modified
      * @param m A Colunm array (usually P*Z')
-     * @param f The divisor copyOf m (usually ZPZ'+ H)
+     * @param f The divisor of m (usually ZPZ'+ H)
      */
-    default void XL(int pos, DataBlock x, DataBlock m, double f) {
+    default void xL(int pos, DataBlock x, DataBlock m, double f) {
         // XT - [(XT)*m]/f * z 
         getDynamics().XT(pos, x);
         getMeasurement().XpZd(pos, x, -x.dot(m) / f);
     }
 
-    default void ML(int pos, Matrix M, DataBlock m, double f) {
+    default void XL(int pos, Matrix M, DataBlock m, double f) {
         // MT - [(MT)*m]/f * z
         ISsfDynamics dynamics = getDynamics();
         ISsfMeasurement measurement = getMeasurement();
         // Apply XL on each row copyOf M
-        M.rows().forEach(row -> {
+        DataBlockIterator rows = M.rowsIterator();
+        while (rows.hasNext()){
+            DataBlock row=rows.next();
             dynamics.XT(pos, row);
             measurement.XpZd(pos, row, -row.dot(m) / f);
-        });
+        }
+       
     }
 
     /**

@@ -108,7 +108,7 @@ public class SsfArima extends Ssf {
             Matrix stV = Matrix.square(nr);
             ArimaInitialization.stVar(stV, initialization.stpsi, initialization.stacgf, initialization.data.var);
             Matrix K = Matrix.square(nr);
-            ArimaInitialization.Ksi(K, initialization.dif);
+            ArimaInitialization.sigma(K, initialization.dif);
             SymmetricMatrix.XSXt(stV, K, state.P());
             return nd;
         };
@@ -253,9 +253,9 @@ public class SsfArima extends Ssf {
             RationalFunction rf = starima.getStationaryModel().getPsiWeights().getRationalFunction();
             stpsi = DataBlock.ofInternal(rf.coefficients(data.dim));
             Matrix stvar = ArmaInitialization.p0(data.var, stacgf, stpsi);
-            Matrix K = Matrix.square(data.dim);
-            Ksi(K, dif);
-            P0 = SymmetricMatrix.XSXt(stvar, K);
+            Matrix L = Matrix.square(data.dim);
+            sigma(L, dif);
+            P0 = SymmetricMatrix.XSXt(stvar, L);
 
         }
 
@@ -292,13 +292,13 @@ public class SsfArima extends Ssf {
          * @param X
          * @param dif
          */
-        static void Ksi(final Matrix X, final double[] dif) {
+        static void sigma(final Matrix X, final double[] dif) {
             int n = X.getRowsCount();
-            double[] ksi = RationalFunction.of(Polynomial.ONE, Polynomial.of(dif)).coefficients(n);
+            double[] lambda = RationalFunction.of(Polynomial.ONE, Polynomial.of(dif)).coefficients(n);
 
             for (int j = 0; j < n; ++j) {
                 for (int k = 0; k <= j; ++k) {
-                    X.set(j, k, ksi[j - k]);
+                    X.set(j, k, lambda[j - k]);
                 }
             }
         }

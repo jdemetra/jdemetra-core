@@ -24,7 +24,7 @@ import java.time.temporal.ChronoUnit;
 
 @Immutable
 @lombok.EqualsAndHashCode
-public final class Day implements IDatePeriod {
+public final class Day implements IDatePeriod, IRegularPeriod {
 
     public static final Day BEG = Day.of(LocalDate.MIN), END = Day.of(LocalDate.MAX);
 
@@ -71,18 +71,6 @@ public final class Day implements IDatePeriod {
         return day;
     }
 
-    public long difference(Day d) {
-        return d.day.until(day, ChronoUnit.DAYS);
-    }
-    
-    public Day plus(long ndays){
-        return new Day(day.plus(ndays, ChronoUnit.DAYS));
-    }
-    
-    public Day minus(long ndays){
-        return new Day(day.minus(ndays, ChronoUnit.DAYS));
-    }
-    
     public DayOfWeek getDayOfWeek(){
         return day.getDayOfWeek();
     }
@@ -103,5 +91,25 @@ public final class Day implements IDatePeriod {
      */
     private static final int[] CUMULATEDMONTHDAYS = {0, 31, 59, 90, 120, 151,
         181, 212, 243, 273, 304, 334, 365};
+
+    @Override
+    public long until(IRegularPeriod period) {
+        if (period instanceof Day){
+            return day.until(((Day)period).day, ChronoUnit.DAYS);
+        }else
+            throw new TsException(TsException.INVALID_OPERATION);
+    }
+
+    @Override
+    public Day plus(long ndays){
+        if (ndays == 0)
+            return this;
+        return new Day(day.plus(ndays, ChronoUnit.DAYS));
+    }
+    
+    @Override
+    public Day moveTo(LocalDateTime dt) {
+        return plus(day.until(dt.toLocalDate(), ChronoUnit.DAYS));
+    }
 
 }

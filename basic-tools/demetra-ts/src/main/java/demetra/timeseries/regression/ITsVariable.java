@@ -46,7 +46,7 @@ public interface ITsVariable<E extends ITimePeriod> {
 
     /**
      * Returns the supported time span. When it is defined, the definition
-     * domain should have the definition Period.
+     * domain should have the definition period.
      *
      * @return The supported time span is returned or null if the variable is
      * able to support any time span.
@@ -54,10 +54,10 @@ public interface ITsVariable<E extends ITimePeriod> {
     ITimeDomain<E> getDefinitionDomain();
 
     /**
-     * Returns the supported frequency.
+     * Returns the supported period.
      *
-     * @return The supported frequency is returned or TsFrequency.Undefined if
-     * the variable is able to support any frequency
+     * @return The supported period is returned or null if
+     * the variable is able to support any period
      */
     Period getDefinitionPeriod();
 
@@ -67,7 +67,8 @@ public interface ITsVariable<E extends ITimePeriod> {
      * @param context Domain of definition of the variable. Could be null
      * @return Short description of this variable. Should never be null.
      */
-    String getDescription(Period context);
+    String getDescription(ITimeDomain<E> context);
+    
     /**
      * Dimension (number of actual regression variables) of this variable
      * (group).
@@ -86,7 +87,7 @@ public interface ITsVariable<E extends ITimePeriod> {
      * getDim() = 1, getDescription and getItemDescription(0) will often return
      * the same description.
      */
-    String getItemDescription(int idx, Period context);
+    String getItemDescription(int idx, ITimeDomain<E> context);
 
     /**
      * Checks that this regression variable may be used for a given domain. The

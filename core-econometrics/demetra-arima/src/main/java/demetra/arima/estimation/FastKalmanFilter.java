@@ -444,7 +444,7 @@ public class FastKalmanFilter {
                 .coefficients(solver.coefficients())
                 .ssqErr(ssqerr)
                 .residuals(solver.residuals())
-                .unscaledCovarianceSupplier(()->SymmetricMatrix.UUt(UpperTriangularMatrix.inverse(R)))
+                .rfactor(R)
                 .build();
     }
     
