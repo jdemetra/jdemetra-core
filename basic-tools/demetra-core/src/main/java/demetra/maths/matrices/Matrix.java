@@ -21,6 +21,7 @@ import javax.annotation.Nonnegative;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -28,6 +29,8 @@ import java.util.List;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public class Matrix {
+    
+    public static final Matrix EMPTY=new Matrix(new double[0], 0, 0);
 
     public static Matrix square(int n) {
         double[] data = new double[n * n];
@@ -573,6 +576,86 @@ public class Matrix {
             final int ncols, final int rowinc, final int colinc) {
         return new Matrix(storage, start + r0 * rowInc + c0 * colInc,
                 nrows, ncols, rowInc * rowinc, colInc * colinc);
+    }
+
+    public final Matrix select(final int[] selectedRows, final int[] selectedColumns) {
+        // TODO optimization
+        Matrix m = Matrix.make(selectedRows.length, selectedColumns.length);
+        for (int c = 0; c < selectedRows.length; ++c) {
+            for (int r = 0; r < selectedRows.length; ++r) {
+                m.set(r, c, get(selectedRows[r], selectedColumns[c]));
+            }
+        }
+        return m;
+    }
+
+    /**
+     * Creates a new matrix which doesn't contain given rows/columns
+     *
+     * @param excludedRows
+     * @param excludedColumns
+     * @return A new matrix, based on another storage, is returned.
+     */
+    public final Matrix exclude(final int[] excludedRows, final int[] excludedColumns) {
+        int[] srx = excludedRows.clone();
+        Arrays.sort(srx);
+        int[] scx = excludedColumns.clone();
+        Arrays.sort(scx);
+        boolean[] rx = new boolean[nrows], cx = new boolean[ncols];
+        int nrx = 0, ncx = 0;
+        for (int i = 0; i < srx.length; ++i) {
+            int cur = srx[i];
+            if (!rx[cur]) {
+                rx[cur] = true;
+                nrx++;
+            }
+        }
+        for (int i = 0; i < scx.length; ++i) {
+            int cur = scx[i];
+            if (!cx[cur]) {
+                cx[cur] = true;
+                ncx++;
+            }
+        }
+        if (nrx == 0 && ncx == 0) {
+            return deepClone();
+        }
+
+        Matrix m = Matrix.make(nrows - nrx, ncols - ncx);
+        for (int c = 0, nc = 0; c < ncols; ++c) {
+            if (cx[c]) {
+                for (int r = 0, nr = 0; r < nrows; ++r) {
+                    if (rx[r]) {
+                        m.set(nr, nc, get(r, c));
+                        ++nr;
+                    }
+                }
+                ++nc;
+            }
+        }
+        return m;
+    }
+
+    /**
+     * Creates a new matrix which contains the current matrix at given row/col position
+     *
+     * @param nr
+     * @param rowPos
+     * @param nc
+     * @param colPos
+     * @return A new matrix, based on another storage, is returned.
+     */
+    public final Matrix expand(final int nr, final int[] rowPos, final int nc, final int[] colPos) {
+        if (rowPos.length != nr || colPos.length != nc) {
+            throw new MatrixException(MatrixException.DIM);
+        }
+        Matrix m = Matrix.make(nr, nc);
+        for (int c = 0; c < ncols; ++c) {
+            for (int r = 0; r < nrows; ++r) {
+                m.set(rowPos[r], colPos[c], get(r, c));
+            }
+        }
+        return m;
     }
 
     /**

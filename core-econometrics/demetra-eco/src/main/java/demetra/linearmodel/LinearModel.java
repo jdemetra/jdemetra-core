@@ -27,6 +27,7 @@ import demetra.maths.matrices.MatrixWindow;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
+import demetra.design.Internal;
 
 /**
  *
@@ -69,9 +70,16 @@ public class LinearModel {
         }
 
         public LinearModel build() {
-            Matrix X = Matrix.make(y.length, x.size());
+            int nx = x.size();
+            if (mean) {
+                ++nx;
+            }
+            Matrix X = Matrix.make(y.length, nx);
             if (!X.isEmpty()) {
                 DataBlockIterator cols = X.columnsIterator();
+                if (mean) {
+                    cols.next().set(1);
+                }
                 for (DoubleSequence xcur : x) {
                     cols.next().copy(xcur);
                 }
@@ -90,30 +98,37 @@ public class LinearModel {
 
     /**
      *
+     * @param y
+     * @param mean
+     * @param x X already contains the mean !!
      */
-    private LinearModel(double[] y, final boolean mean, final Matrix x) {
+    @Internal
+    public LinearModel(double[] y, final boolean mean, final Matrix x) {
         this.y = y;
         this.mean = mean;
         this.x = x;
     }
 
     /**
-     * Computes y-Xb. 
+     * Computes y-Xb.
+     *
      * @param b The coefficients of the mean and of the regression variables
      * @return
      */
     public DataBlock calcResiduals(final DoubleSequence b) {
-        if (getVarsCount() != b.length())
+        if (getVariablesCount() != b.length()) {
             throw new RuntimeException("Incompatible dimensions");
+        }
 
         DataBlock res = DataBlock.make(y.length);
         res.copyFrom(y, 0);
 
         DoubleReader cell = b.reader();
-        if (mean) {
-            res.add(-cell.next());
-        }
         DataBlockIterator columns = x.columnsIterator();
+        if (mean){
+            columns.next();
+            res.sub(cell.next());
+        }
         while (columns.hasNext()) {
             res.addAY(-cell.next(), columns.next());
         }
@@ -124,7 +139,7 @@ public class LinearModel {
      *
      * @return
      */
-    public int getObsCount() {
+    public int getObservationsCount() {
         return y.length;
     }
 
@@ -132,19 +147,7 @@ public class LinearModel {
      *
      * @return
      */
-    public int getVarsCount() {
-        int n = x.getColumnsCount();
-        if (mean) {
-            ++n;
-        }
-        return n;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public int getXCount() {
+    public int getVariablesCount() {
         return x.getColumnsCount();
     }
 
@@ -169,17 +172,7 @@ public class LinearModel {
      * @return
      */
     public Matrix variables() {
-        if (! mean)
         return x.deepClone();
-        else
-        {
-            Matrix vars=Matrix.make(x.getRowsCount(), x.getColumnsCount()+1);
-            MatrixWindow left = vars.left(1);
-            left.set(1);
-            left.hnext(x.getColumnsCount());
-            left.copy(x);
-            return vars;
-        }
     }
 
     /**
@@ -195,8 +188,11 @@ public class LinearModel {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("y~").append(mean ? '1' : '0');
-        if (!x.isEmpty()) {
-            builder.append("+x(").append(x.getColumnsCount()).append(')');
+        int nx = x.getColumnsCount();
+        if (mean)
+            --nx;
+        if (nx>0) {
+            builder.append("+x(").append(nx).append(')');
         }
         return builder.toString();
     }

@@ -33,6 +33,7 @@ import demetra.ssf.StateInfo;
 public class OrdinarySmoother {
 
     private State state;
+    private ISsf ssf;
     private ISsfDynamics dynamics;
     private ISsfMeasurement measurement;
     private ISmoothingResults srslts;
@@ -148,25 +149,6 @@ public class OrdinarySmoother {
     }
     // 
 
-    private void xL(int pos, DataBlock x) {
-        // xL = x(T-KZ) = x(T-Tc/f*Z) = xT - ((xT)*c)/f * Z
-        // compute xT
-        dynamics.XT(pos, x);
-        // compute q=xT*c
-        double q = x.dot(M);
-        // remove q/f*Z
-        measurement.XpZd(pos, x, -q / errVariance);
-    }
-
-    /**
-     * Computes X*L(pos)
-     * @param pos
-     * @param X 
-     */
-    private void XL(int pos, Matrix X) {
-        X.rows().forEach(row->xL(pos, row));
-    }
-
     /**
      *
      */
@@ -176,8 +158,8 @@ public class OrdinarySmoother {
             // L = T-KZ
             // N(t-1) = Z'(t)*Z(t)/f(t) + (T'(t)-Z'K')*N(t)*(T(t)-KZ)
             // Z'(t)*Z(t)(1/f(t)+K'N(t)K) + T'NT - Z'K'N(t) - NK'Z'
-            XL(pos, N);
-            XL(pos, N.transpose());
+            ssf.XL(pos, N, M, errVariance);
+            ssf.XL(pos, N.transpose(), M, errVariance);
 
 //            // Compute V = C'U
 //            DataBlock v = new DataBlock(M.length());
@@ -222,6 +204,7 @@ public class OrdinarySmoother {
     }
 
     private void initFilter(ISsf ssf) {
+        this.ssf=ssf;
         dynamics = ssf.getDynamics();
         measurement = ssf.getMeasurement();
     }

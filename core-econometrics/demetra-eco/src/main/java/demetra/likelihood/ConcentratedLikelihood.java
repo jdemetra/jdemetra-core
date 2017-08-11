@@ -22,6 +22,10 @@ import demetra.maths.matrices.Matrix;
 import java.util.function.Supplier;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
+import demetra.data.LogSign;
+import demetra.eco.EcoException;
+import demetra.maths.matrices.SymmetricMatrix;
+import demetra.maths.matrices.UpperTriangularMatrix;
 
 /**
  * This class represents the concentrated likelihood of a linear regression
@@ -43,8 +47,7 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
         double ssqerr, ldet;
         double[] res;
         double[] b;
-        Matrix bvar;
-        Supplier<Matrix> bvarFn;
+        Matrix bvar, r;
 
         Builder(int n) {
             this.n = n;
@@ -73,8 +76,7 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
 
         public Builder coefficients(DoubleSequence coeff) {
             if (coeff != null) {
-                b = new double[coeff.length()];
-                coeff.copyTo(res, n);
+                b = coeff.toArray();
             }
             return this;
         }
@@ -84,8 +86,14 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
             return this;
         }
 
-        public Builder unscaledCovarianceSupplier(Supplier<Matrix> s) {
-            bvarFn = s;
+        /**
+         * R factor of a QR decomposition of the regression matrix (X = Q R)
+         *
+         * @param r An upper triangular matrix
+         * @return
+         */
+        public Builder rfactor(Matrix r) {
+            this.r = r;
             return this;
         }
 
@@ -100,15 +108,15 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
     private final double[] res;
     private final double[] b;
     private volatile Matrix bvar;
-    private final Supplier<Matrix> bvarFn;
+    private final Matrix r;
 
-    private ConcentratedLikelihood(final int n, final double ssqerr, final double ldet, final double[] b, final Matrix bvar, final Supplier<Matrix> s, final double[] res) {
+    private ConcentratedLikelihood(final int n, final double ssqerr, final double ldet, final double[] b, final Matrix bvar, final Matrix r, final double[] res) {
         this.n = n;
         this.ldet = ldet;
         this.ssqerr = ssqerr;
         this.b = b;
         this.bvar = bvar;
-        this.bvarFn = s;
+        this.r = r;
         this.res = res;
         this.ll = -.5
                 * (n * Math.log(2 * Math.PI) + n
@@ -121,7 +129,7 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
         this.ssqerr = builder.ssqerr;
         this.b = builder.b;
         this.bvar = builder.bvar;
-        this.bvarFn = builder.bvarFn;
+        this.r = builder.r;
         this.res = builder.res;
         this.ll = -.5
                 * (n * Math.log(2 * Math.PI) + n
@@ -173,11 +181,12 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
     @Override
     public Matrix unscaledCovariance() {
         Matrix tmp = bvar;
-        if (tmp == null && bvarFn != null) {
+        if (tmp == null && r != null) {
             synchronized (this) {
                 tmp = bvar;
                 if (tmp == null) {
-                    tmp = bvarFn.get();
+                    Matrix u = UpperTriangularMatrix.inverse(r);
+                    tmp = SymmetricMatrix.UUt(u);
                     bvar = tmp;
                 }
             }
@@ -207,7 +216,7 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
         if (yfactor == 1) {
             return this;
         }
-        double nssqerr = ssqerr / yfactor * yfactor;
+        double nssqerr = ssqerr / (yfactor * yfactor);
         double[] nres = null;
         if (res != null) {
             nres = new double[res.length];
@@ -216,22 +225,52 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
             }
         }
         double[] nb = null;
-        Matrix nbvar = null;
-        if (b != null && xfactor != null) {
+        Matrix nbvar = null, nr=null;
+        if (b != null && nbvar != null && xfactor != null) {
             nb = new double[b.length];
             nbvar = bvar.deepClone();
             for (int i = 0; i < b.length; ++i) {
-                double ifactor = xfactor[i] / yfactor;
+                double ifactor = xfactor[i];
                 nb[i] = b[i] * ifactor;
                 for (int j = 0; j < i; ++j) {
-                    double ijfactor = ifactor * xfactor[j] / yfactor;
-                    bvar.apply(i, j, x -> x * ijfactor);
-                    bvar.apply(j, i, x -> x * ijfactor);
+                    double ijfactor = ifactor * xfactor[j];
+                    nbvar.apply(i, j, x -> x * ijfactor);
+                    nbvar.apply(j, i, x -> x * ijfactor);
                 }
-                bvar.apply(i, i, x -> x * ifactor * ifactor);
+                nbvar.apply(i, i, x -> x * ifactor * ifactor);
             }
         }
-        return new ConcentratedLikelihood(n, nssqerr, ldet, nb, nbvar, null, nres);
+        if (b != null && r != null && xfactor != null) {
+            nb = new double[b.length];
+            nr = r.deepClone();
+            for (int i = 0; i < b.length; ++i) {
+                double ifactor = xfactor[i];
+                nb[i] = b[i] * ifactor;
+                nr.column(i).div(ifactor);
+            }
+        }
+        
+        return new ConcentratedLikelihood(n, nssqerr, ldet, nb, nbvar, nr, nres);
 
+    }
+
+    public ConcentratedLikelihood correctForMissing(int nm) {
+        if (r == null) {
+            throw new EcoException(EcoException.UNEXPECTEDOPERATION);
+        }
+        double corr = LogSign.of(r.diagonal().extract(0, nm)).value;
+        double nldet = ldet + 2 * corr;
+        int nb = b.length - nm;
+        if (nb == 0) {
+            return new ConcentratedLikelihood(n - nm, ssqerr, nldet, new double[0], Matrix.EMPTY, Matrix.EMPTY, res);
+        } else {
+            return new ConcentratedLikelihood(n - nm, ssqerr, nldet, exclude(b, nm), bvar.extract(nm, b.length, nm, b.length), r.extract(nm, b.length, nm, b.length), res);
+        }
+    }
+
+    private double[] exclude(double[] x, int nm) {
+        double[] nx = new double[x.length - nm];
+        System.arraycopy(x, nm, nx, 0, nx.length);
+        return nx;
     }
 }

@@ -26,6 +26,7 @@ public class EcoException extends RuntimeException {
     public static final String NEG_VAR = "Negative variance";
     public static final String OLS_FAILED = "Ols failed";
     public static final String GLS_FAILED = "Gls failed";
+    public static final String UNEXPECTEDOPERATION="Unexpected operation";
 
     public EcoException() {
     }
