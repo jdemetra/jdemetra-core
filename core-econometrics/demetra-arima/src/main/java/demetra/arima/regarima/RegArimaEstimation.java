@@ -16,15 +16,11 @@
  */
 package demetra.arima.regarima;
 
+import demetra.arima.regarima.internals.RegArmaModel;
 import demetra.arima.IArimaModel;
-import demetra.arima.estimation.FastKalmanFilter;
-import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihood;
-import demetra.likelihood.Likelihood;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.linearmodel.LinearModel;
 
 /**
  *
@@ -36,13 +32,16 @@ import demetra.linearmodel.LinearModel;
 public class RegArimaEstimation<M extends IArimaModel> {
 
     public static <M extends IArimaModel> RegArimaEstimation<M> compute(RegArimaModel<M> model) {
-        ConcentratedLikelihoodEstimation estimation=new ConcentratedLikelihoodEstimation(null, null);
-        if (estimation.estimate(model)){
-            return new RegArimaEstimation<>(model, estimation.getLikelihood());
-        }else
-            return null;
+        
+        ConcentratedLikelihoodComputer computer = new ConcentratedLikelihoodComputer(null, null, true);
+        return new RegArimaEstimation<>(model, computer.compute(model));
     }
 
+    public static <M extends IArimaModel> RegArimaEstimation<M> compute(RegArmaModel<M> model) {
+        
+        ConcentratedLikelihoodComputer computer = new ConcentratedLikelihoodComputer(null, null, true);
+        return new RegArimaEstimation<>(null, computer.compute(model));
+    }
     /**
      *
      */
@@ -50,7 +49,7 @@ public class RegArimaEstimation<M extends IArimaModel> {
     /**
      *
      */
-    ConcentratedLikelihood likelihood;
+    ConcentratedLikelihoodEstimation<M> estimation;
 
     /**
      *
@@ -59,24 +58,13 @@ public class RegArimaEstimation<M extends IArimaModel> {
      * @return
      */
     public LikelihoodStatistics statistics(int nparams, double adj) {
-        return LikelihoodStatistics.statistics(likelihood.logLikelihood(), model.getObservationsCount()-model.getMissingValuesCount())
+        ConcentratedLikelihood ll = estimation.getLikelihood();
+        return LikelihoodStatistics.statistics(ll.logLikelihood(), model.getObservationsCount() - model.getMissingValuesCount())
                 .llAdjustment(adj)
-                .differencingOrder(model.getDifferencingOrder())
-                .parametersCount(nparams+model.getVariablesCount()+1)
-                .ssq(likelihood.ssq())
+                .differencingOrder(model.arima().getNonStationaryAROrder())
+                .parametersCount(nparams + model.getVariablesCount() + 1)
+                .ssq(ll.ssq())
                 .build();
 
-    }
-
-    public DoubleSequence fullResiduals() {
-        // compute the residuals...
-        if (model.getVariablesCount() == 0) {
-            return likelihood.e();
-        }
-        LinearModel lm = model.differencedModel().getLinearModel();
-        DataBlock e = lm.calcResiduals(likelihood.coefficients());
-        FastKalmanFilter kf = new FastKalmanFilter(model.arma());
-        Likelihood ll = kf.process(e);
-        return ll.e();
     }
 }

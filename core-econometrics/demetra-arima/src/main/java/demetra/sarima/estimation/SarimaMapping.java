@@ -1,0 +1,407 @@
+/*
+ * Copyright 2017 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
+ */
+package demetra.sarima.estimation;
+
+import demetra.data.DataBlock;
+import demetra.data.DoubleSequence;
+import demetra.design.Development;
+import demetra.maths.Complex;
+import demetra.maths.functions.FunctionException;
+import demetra.maths.functions.IParametricMapping;
+import demetra.maths.functions.ParamValidation;
+import demetra.maths.polynomials.Polynomial;
+import demetra.sarima.SarimaModel;
+import demetra.sarima.SarimaSpecification;
+
+/**
+ *
+ * @author Jean Palate
+ */
+@Development(status = Development.Status.Alpha)
+public class SarimaMapping implements IParametricMapping<SarimaModel> {
+
+     static final double MAX = 0.99999;
+    public static final double STEP = Math.sqrt(2.220446e-16);
+
+    /**
+     *
+     */
+    public final SarimaSpecification spec;
+    private final double eps;
+    private final boolean all;
+
+    private static boolean checkStability(double d) {
+        return Math.abs(d) < 1;
+    }
+
+    private static boolean checkStability(double a, double b) {
+        double ro = b * b - 4 * a;
+        if (ro < 0) {
+            return Math.abs(a) < 1;
+        } else {
+            double sro = Math.sqrt(ro);
+            double r = (-b + sro) / (2 * a);
+            if (Math.abs(1 / r) >= 1) {
+                return false;
+            }
+            r = (-b - sro) / (2 * a);
+            return Math.abs(1 / r) < 1;
+        }
+    }
+
+    static boolean checkStability(DoubleSequence c) {
+        int nc = c.length();
+        while (nc > 0 && c.get(nc - 1) == 0) {
+            --nc;
+        }
+        if (nc == 0) {
+            return true;
+        }
+        if (nc == 1) {
+            return checkStability(c.get(0));
+        }
+        if (nc == 2) {
+            return checkStability(c.get(1), c.get(0));
+        }
+
+        return demetra.maths.linearfilters.Utilities.checkStability(c.extract(0, nc));
+    }
+
+    private static boolean stabilize(boolean all, SarimaSpecification spec, DataBlock p) {
+        boolean rslt = false;
+        int start = 0;
+        if (spec.getP() > 0 && stabilize(p.extract(0, spec.getP()))) {
+            start += spec.getP();
+            rslt = true;
+        }
+        if (spec.getBP() > 0 && stabilize(p.extract(start, spec.getBP()))) {
+            start += spec.getBP();
+            rslt = true;
+        }
+        if (all && spec.getQ() > 0
+                && stabilize(p.extract(start, spec.getQ()))) {
+            start += spec.getQ();
+            rslt = true;
+        }
+        if (all && spec.getBQ() > 0 && stabilize(p.extract(start, spec.getBQ()))) {
+            rslt = true;
+        }
+        return rslt;
+    }
+
+    private static boolean stabilize(DataBlock c) {
+        int nc = c.length();
+        if (nc == 0) {
+            return false;
+        }
+        if (checkStability(c)) {
+            return false;
+        }
+        if (nc == 1) {
+            double c0 = c.get(0);
+            double cabs = Math.abs(c0);
+
+            if (cabs > 1) {
+                c.set(0, 1 / c0);
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        double[] ctmp = new double[nc + 1];
+        ctmp[0] = 1;
+        for (int i = 0; i < nc; ++i) {
+            ctmp[1 + i] = c.get(i);
+        }
+        Polynomial p = Polynomial.of(ctmp);
+        Polynomial sp = stabilize(p);
+        if (p != sp) {
+            for (int i = 0; i < nc; ++i) {
+                c.set(i, sp.get(1 + i));
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private static Polynomial stabilize(Polynomial p) {
+        if (p == null) {
+            return null;
+        }
+
+        Complex[] roots = p.roots();
+        boolean changed = false;
+        for (int i = 0; i < roots.length; ++i) {
+            Complex root = roots[i];
+            double n = 1 / roots[i].abs();
+            if (n > 1) {
+                roots[i] = root.inv();
+                changed = true;
+            }
+        }
+        if (!changed) {
+            return p;
+        }
+        Polynomial ptmp = Polynomial.fromComplexRoots(roots);
+        ptmp = ptmp.divide(ptmp.get(0));
+        return ptmp;
+    }
+
+    /**
+     *
+     * @param m
+     * @return
+     */
+    public static SarimaModel stabilize(SarimaModel m) {
+        DataBlock np = DataBlock.of(m.parameters());
+        SarimaSpecification mspec = m.specification();
+        if (stabilize(true, mspec, np)) {
+            return SarimaModel.builder(mspec).parameters(np).build();
+        } else {
+            return m;
+        }
+    }
+
+    public SarimaMapping(SarimaSpecification spec, double eps, boolean all) {
+        this.spec = spec;
+        this.all = all;
+        this.eps = eps;
+    }
+
+    /**
+     *
+     * @param p
+     * @return
+     */
+    @Override
+    public boolean checkBoundaries(DoubleSequence p) {
+        int start = 0;
+        if (spec.getP() > 0) {
+            if (!checkStability(p.extract(0, spec.getP()))) {
+                return false;
+            }
+            start += spec.getP();
+        }
+        if (spec.getBP() > 0) {
+            if (!checkStability(p.extract(start, spec.getBP()))) {
+                return false;
+            }
+            start += spec.getBP();
+        }
+        if (all) {
+            if (spec.getQ() > 0) {
+                if (!checkStability(p.extract(start, spec.getQ()))) {
+                    return false;
+                }
+                start += spec.getQ();
+            }
+            if (spec.getBQ() > 0 && !checkStability(p.extract(start, spec.getBQ()))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public double epsilon(DoubleSequence inparams, int idx) {
+        double p = inparams.get(idx);
+        if (p < 0) {
+            return eps * Math.max(1, -p);
+        } else {
+            return -eps * Math.max(1, p);
+        }
+    }
+
+    @Override
+    public int getDim() {
+        return spec.getParametersCount();
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isCheckingAll() {
+        return all;
+    }
+
+    /**
+     *
+     * @param idx
+     * @return
+     */
+    @Override
+    public double lbound(int idx) {
+        if (spec.getP() > 0) {
+            if (idx < spec.getP()) {
+                if (spec.getP() == 1) {
+                    return -MAX;
+                } else {
+                    return Double.NEGATIVE_INFINITY;
+                }
+            }
+            idx -= spec.getP();
+        }
+        if (spec.getBP() > 0) {
+            if (idx < spec.getBP()) {
+                if (spec.getBP() == 1) {
+                    return -MAX;
+                } else {
+                    return Double.NEGATIVE_INFINITY;
+                }
+            }
+            idx -= spec.getBP();
+        }
+        if (spec.getQ() > 0) {
+            if (idx < spec.getQ()) {
+                if (spec.getQ() == 1) {
+                    return -MAX;
+                } else {
+                    return Double.NEGATIVE_INFINITY;
+                }
+            }
+            idx -= spec.getQ();
+        }
+        if (spec.getBQ() == 1) {
+            return -MAX;
+        } else {
+            return Double.NEGATIVE_INFINITY;
+        }
+    }
+
+    @Override
+    public SarimaModel map(DoubleSequence p) {
+        if (p.length() != spec.getParametersCount()) {
+            throw new FunctionException(FunctionException.DIM_ERR);
+        }
+        return SarimaModel.builder(spec).parameters(p).build();
+    }
+
+    @Override
+    public double ubound(int idx) {
+        if (spec.getP() > 0) {
+            if (idx < spec.getP()) {
+                if (spec.getP() == 1) {
+                    return MAX;
+                } else {
+                    return Double.POSITIVE_INFINITY;
+                }
+            }
+            idx -= spec.getP();
+        }
+        if (spec.getBP() > 0) {
+            if (idx < spec.getBP()) {
+                if (spec.getBP() == 1) {
+                    return MAX;
+                } else {
+                    return Double.POSITIVE_INFINITY;
+                }
+            }
+            idx -= spec.getBP();
+        }
+        if (spec.getQ() > 0) {
+            if (idx < spec.getQ()) {
+                if (spec.getQ() == 1) {
+                    return MAX;
+                } else {
+                    return Double.POSITIVE_INFINITY;
+                }
+            }
+            idx -= spec.getQ();
+        }
+        if (spec.getBQ() == 1) {
+            return MAX;
+        } else {
+            return Double.POSITIVE_INFINITY;
+        }
+    }
+
+    /**
+     *
+     * @param value
+     * @return
+     */
+    @Override
+    public ParamValidation validate(DataBlock value) {
+        if (value.length() != spec.getParametersCount()) {
+            return ParamValidation.Invalid;
+        }
+        if (stabilize(true, spec, value)) {
+//        if (stabilize(m_all, false, spec, value, rmax_)) {
+//           needUrCancelling(value);
+            return ParamValidation.Changed;
+        } else {
+//            if (needUrCancelling(value)) {
+//                return ParamValidation.Changed;
+//            } else {
+            return ParamValidation.Valid;
+//            }
+        }
+    }
+
+    @Override
+    public DoubleSequence getDefault() {
+        double[] p=new double[spec.getParametersCount()];
+        int nar=spec.getP()+spec.getBP();
+        for (int i=0; i<nar; ++i){
+            p[i]=-.1;
+        }
+        for (int i=nar; i<p.length; ++i){
+            p[i]=-.2;
+        }
+        return DoubleSequence.ofInternal(p);
+    }
+
+    @Override
+    public String getDescription(final int idx) {
+        return getDescription(spec, idx);
+    }
+
+    static String getDescription(final SarimaSpecification xspec, final int idx) {
+        int i = idx;
+        if (i < xspec.getP()) {
+            return desc(PHI, i);
+        } else {
+            i -= xspec.getP();
+        }
+        if (i < xspec.getBP()) {
+            return desc(BPHI, i);
+        } else {
+            i -= xspec.getBP();
+        }
+        if (i < xspec.getQ()) {
+            return desc(TH, i);
+        } else {
+            i -= xspec.getQ();
+        }
+        if (i < xspec.getBQ()) {
+            return desc(BTH, i);
+        } else {
+            return EMPTY;
+        }
+    }
+
+    static String desc(String prefix, int idx) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(prefix).append('(').append(idx + 1).append(')');
+        return builder.toString();
+    }
+
+    public static final String PHI = "phi", BPHI = "bphi", TH = "th", BTH = "bth";
+
+}

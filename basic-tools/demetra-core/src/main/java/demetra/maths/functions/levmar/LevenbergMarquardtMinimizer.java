@@ -31,7 +31,7 @@ import demetra.data.DoubleSequence;
  *
  * @author Jean Palate
  */
-public class LevenbergMarquardtMethod implements ISsqFunctionMinimizer {
+public class LevenbergMarquardtMinimizer implements ISsqFunctionMinimizer {
 
     static final int DEF_MAX_ITER = 200;
     static final double EPSILON = 1e-17;
@@ -65,7 +65,7 @@ public class LevenbergMarquardtMethod implements ISsqFunctionMinimizer {
 
     @Override
     public ISsqFunctionMinimizer exemplar() {
-        LevenbergMarquardtMethod ex = new LevenbergMarquardtMethod();
+        LevenbergMarquardtMinimizer ex = new LevenbergMarquardtMinimizer();
         ex.eps1 = eps1;
         ex.eps2 = eps2;
         ex.eps3 = eps3;

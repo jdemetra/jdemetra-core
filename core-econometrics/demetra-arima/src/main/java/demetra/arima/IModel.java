@@ -29,7 +29,7 @@ import demetra.maths.linearfilters.IRationalFilter;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface ILinearModel {
+public interface IModel {
     /**
      * Return the auto-covariance function of the model, provided that the model is stationary
      * @return The auto-covariance function of the model.

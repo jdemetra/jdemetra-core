@@ -16,53 +16,31 @@
 */
 
 
-package demetra.arima;
+package demetra.sarima.estimation;
 
+import demetra.arima.regarima.internals.RegArmaModel;
 import demetra.design.Development;
-import demetra.design.Immutable;
-import demetra.maths.linearfilters.BackFilter;
-
+import demetra.sarima.SarimaModel;
 
 /**
+ *
  * @author Jean Palate
- * @param <S>
  */
 @Development(status = Development.Status.Alpha)
-@Immutable
-public class StationaryTransformation<S extends IModel> {
-
+@FunctionalInterface
+public interface IarmaInitializer {
     /**
-     *
+     * 
+     * @param regarma
+     * @return
      */
-    private final S stationaryModel;
+    SarimaModel initialize(RegArmaModel<SarimaModel> regarma);
 
-    /**
-     *
-     */
-    private final BackFilter unitRoots;
-
-    /**
-     *
-     * @param stationaryModel
-     * @param unitRoots
-     */
-    public StationaryTransformation(final S stationaryModel,
-	    final BackFilter unitRoots) {
-	this.stationaryModel = stationaryModel;
-	this.unitRoots = unitRoots;
+    public static IarmaInitializer defaultInitializer(){
+        return regarma->SarimaModel.builder(regarma.getArma().specification()).setDefault(-.1, -.2).build();
     }
-
-    /**
-     * @return the stationaryModel
-     */
-    public S getStationaryModel() {
-        return stationaryModel;
-    }
-
-    /**
-     * @return the unitRoots
-     */
-    public BackFilter getUnitRoots() {
-        return unitRoots;
+    
+    public static IarmaInitializer defaultInitializer(final double ar, final double ma){
+        return regarma->SarimaModel.builder(regarma.getArma().specification()).setDefault(ar, ma).build();
     }
 }

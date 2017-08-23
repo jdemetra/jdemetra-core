@@ -31,7 +31,7 @@ import demetra.maths.linearfilters.RationalBackFilter;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface IArimaModel extends ILinearModel
+public interface IArimaModel extends IModel
 {
 
     /**

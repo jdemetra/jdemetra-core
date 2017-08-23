@@ -17,18 +17,13 @@
 package demetra.arima.regarima;
 
 import demetra.arima.IArimaModel;
-import demetra.arima.StationaryTransformation;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.design.IBuilder;
 import demetra.design.Immutable;
-import demetra.linearmodel.LinearModel;
-import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.matrices.Matrix;
 import java.util.ArrayList;
-import java.util.function.IntToDoubleFunction;
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nonnull;
 
 /**
@@ -42,14 +37,14 @@ public class RegArimaModel<M extends IArimaModel> {
 
     public static class Builder<M extends IArimaModel> implements IBuilder<RegArimaModel<M>> {
 
-        private final double[] y;
+        private final DoubleSequence y;
         private final M arima;
         private boolean mean;
         private final ArrayList<DoubleSequence> x = new ArrayList<>();
         private int[] missing;
 
         private Builder(@Nonnull DoubleSequence y, @Nonnull M arima) {
-            this.y = y.toArray();
+            this.y = y;
             this.arima = arima;
         }
 
@@ -59,7 +54,7 @@ public class RegArimaModel<M extends IArimaModel> {
         }
 
         public Builder addX(@Nonnull DoubleSequence var) {
-            if (var.length() != y.length) {
+            if (var.length() != y.length()) {
                 throw new RuntimeException("Incompatible dimensions");
             }
             x.add(var);
@@ -68,7 +63,7 @@ public class RegArimaModel<M extends IArimaModel> {
 
         public Builder addX(@Nonnull DoubleSequence... vars) {
             for (DoubleSequence var : vars) {
-                if (var.length() != y.length) {
+                if (var.length() != y.length()) {
                     throw new RuntimeException("Incompatible dimensions");
                 }
                 x.add(var);
@@ -83,155 +78,80 @@ public class RegArimaModel<M extends IArimaModel> {
 
         @Override
         public RegArimaModel<M> build() {
-            Matrix X = Matrix.make(y.length, x.size());
-            if (!X.isEmpty()) {
-                DataBlockIterator cols = X.columnsIterator();
-                for (DoubleSequence xcur : x) {
-                    cols.next().copy(xcur);
-                }
-            }
-            return new RegArimaModel<>(y, arima, mean, X, missing);
+            return new RegArimaModel<>(y, arima, mean, Collections.unmodifiableList(x), missing == null ? NOMISSING : missing);
         }
     }
 
-    private final double[] y;
+    private final DoubleSequence y;
     private final M arima;
     private final boolean mean;
-    private final Matrix x;
-    private int[] missing;
-
-    private final LinearModel dmodel;
-    private final M arma;
-    private final BackFilter ur;
+    private final List<DoubleSequence> x;
+    private final int[] missing;
 
     public static <M extends IArimaModel> Builder<M> builder(DoubleSequence y, M arima) {
         return new Builder<>(y, arima);
+    }
+    
+    public static <M extends IArimaModel> RegArimaModel of(RegArimaModel<M> oldModel, M newArima){
+        return new RegArimaModel<>(oldModel.y, newArima, oldModel.mean, oldModel.x, oldModel.missing);
     }
 
     /**
      *
      */
-    private RegArimaModel(double[] y, final M arima, final boolean mean, final Matrix x, final int[] missing) {
+    private RegArimaModel(DoubleSequence y, final M arima, final boolean mean, final List<DoubleSequence> x, final int[] missing) {
         this.y = y;
         this.arima = arima;
         this.mean = mean;
         this.x = x;
         this.missing = missing;
-        StationaryTransformation<M> st = (StationaryTransformation<M>) arima.stationaryTransformation();
-        arma = st.getStationaryModel();
-        ur = st.getUnitRoots();
-        int d = ur.length() - 1;
-        int ndy = y.length - d;
-        if (ndy <= 0) {
-            dmodel = null;
-            return;
-        }
-        int nx = x == null ? 0 : x.getColumnsCount();
-        int nv = nx;
-        if (missing != null) {
-            nv += missing.length;
-        }
-        if (mean) {
-            ++nv;
-        }
-        if (d == 0 && nv == nx) { // nothing to do
-            dmodel = new LinearModel(y, false, x);
-            return;
-        }
-        double[] dy;
-        if (d > 0) {
-            dy = new double[y.length - d];
-            ur.apply(DataBlock.ofInternal(y), DataBlock.ofInternal(dy));
-        } else {
-            dy = y;
-        }
-        if (nv > 0) {
-            Matrix dx = Matrix.make(dy.length, nv);
-            DataBlockIterator cols = dx.columnsIterator();
-            if (d > 0) {
-                if (missing != null) {
-                    DoubleSequence coeff = ur.asPolynomial().coefficients().reverse();
-                    for (int i = 0; i < missing.length; ++i) {
-                        DataBlock col = cols.next();
-                        if (missing[i] >= dy.length) {
-                            col.range(missing[i] - d, dy.length).copy(coeff.drop(0, y.length - missing[i]));
-                        } else if (missing[i] >= d) {
-                            col.range(missing[i] - d, missing[i] + 1).copy(coeff);
-                        } else {
-                            col.range(0, missing[i] + 1).copy(coeff.drop(d - missing[i], 0));
-                        }
-                    }
-                }
-                if (mean) {
-                    cols.next().set(1);
-                }
-                if (x != null) {
-                    DataBlockIterator xcols = x.columnsIterator();
-                    while (xcols.hasNext()) {
-                        ur.apply(xcols.next(), cols.next());
-                    }
-                }
-            } else {
-                if (missing != null) {
-                    for (int i = 0; i < missing.length; ++i) {
-                        cols.next().set(missing[i], 1);
-                    }
-                }
-                if (mean) {
-                    cols.next().set(1);
-                }
-                if (x != null) {
-                    DataBlockIterator xcols = x.columnsIterator();
-                    while (xcols.hasNext()) {
-                        cols.next().copy(xcols.next());
-                    }
-                }
-            }
-            dmodel = new LinearModel(dy, mean, dx);
-        } else {
-            dmodel = new LinearModel(dy, mean, null);
-        }
-    }
-
-    public int getDifferencingOrder() {
-        return ur.length() - 1;
     }
 
     public int getMissingValuesCount() {
-        return missing == null ? 0 : missing.length;
+        return missing.length;
     }
 
     public int getObservationsCount() {
-        return y.length;
+        return y.length();
     }
 
     public int getVariablesCount() {
-        int nv = mean ? 1 : 0;
-        if (x != null) {
-            nv += x.getColumnsCount();
+        int nv = x.size();
+        if (mean) {
+            ++nv;
         }
         return nv;
     }
 
-    public RegArmaModel differencedModel() {
-        return new RegArmaModel(dmodel, arma, missing == null ? 0 : missing.length);
+    /**
+     * @return the y
+     */
+    @Nonnull
+    public DoubleSequence getY() {
+        return y;
     }
 
+    /**
+     * @return the x
+     */
+    @Nonnull
+    public List<DoubleSequence> getX() {
+        return x;
+    }
+
+    @Nonnull
     public M arima() {
         return arima;
-    }
-
-    public M arma() {
-        return arma;
     }
 
     public boolean isMean() {
         return mean;
     }
 
+    @Nonnull
     public int[] missing() {
-        return missing == null ? NOMISSING  : missing.clone();
+        return missing.length == 0 ? NOMISSING : missing.clone();
     }
-    
-    private static final  int[] NOMISSING=new int[0];
+
+    private static final int[] NOMISSING = new int[0];
 }

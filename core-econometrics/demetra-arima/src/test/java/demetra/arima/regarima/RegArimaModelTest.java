@@ -40,9 +40,9 @@ public class RegArimaModelTest {
                 .meanCorrection(true)
                 .missing(missingPos)
                 .build();
-        Matrix variables = model.differencedModel().getLinearModel().variables();
-        assertTrue(variables.getColumnsCount() == 1 + missingPos.length
-                && variables.getRowsCount() == y.length() - spec.getDifferenceOrder());
+//        Matrix variables = model.differencedModel().getLinearModel().variables();
+//        assertTrue(variables.getColumnsCount() == 1 + missingPos.length
+//                && variables.getRowsCount() == y.length() - spec.getDifferenceOrder());
     }
 
     @Test
@@ -53,22 +53,22 @@ public class RegArimaModelTest {
         DoubleSequence y = DataBlock.ofInternal(Data.PROD);
         int[] missingPos = new int[15];
         for (int i = 0; i < missingPos.length; ++i) {
-            missingPos[i] = 20+2 * i;
+            missingPos[i] = 2 * i;
         }
         long t0 = System.currentTimeMillis();
-//        for (int i = 0; i < 50000; ++i) {
+        for (int i = 0; i < 100000; ++i) {
             SarimaModel arima = SarimaModel.builder(spec).setDefault().build();
             RegArimaModel<SarimaModel> model = RegArimaModel.builder(y, arima)
-//                    .meanCorrection(true)
+                    .meanCorrection(true)
                     .missing(missingPos)
                     .build();
             RegArimaEstimation<SarimaModel> estimation = RegArimaEstimation.compute(model);
             estimation.statistics(2, 0);
-//        }
+        }
         long t1 = System.currentTimeMillis();
         System.out.println("New estimation");
         System.out.println(t1 - t0);
-        System.out.println(estimation.statistics(2, 0));
+//        System.out.println(estimation.statistics(2, 0));
     }
 
     @Test
@@ -78,24 +78,24 @@ public class RegArimaModelTest {
         ec.tstoolkit.data.DataBlock y = new ec.tstoolkit.data.DataBlock(Data.PROD);
         int[] missingPos = new int[15];
         for (int i = 0; i < missingPos.length; ++i) {
-            missingPos[i] = 20+2 * i;
+            missingPos[i] = 2 * i;
         }
-        long t0 = System.currentTimeMillis();
-//        for (int i = 0; i < 50000; ++i) {
-            ec.tstoolkit.sarima.SarimaModel arima = new ec.tstoolkit.sarima.SarimaModel(spec);
+           ec.tstoolkit.sarima.SarimaModel arima = new ec.tstoolkit.sarima.SarimaModel(spec);
             arima.setDefault();
             ec.tstoolkit.arima.estimation.RegArimaModel<ec.tstoolkit.sarima.SarimaModel> model = new ec.tstoolkit.arima.estimation.RegArimaModel(arima, y);
- //           model.setMeanCorrection(true);
+            model.setMeanCorrection(true);
             model.setMissings(missingPos);
-            ec.tstoolkit.arima.estimation.ConcentratedLikelihoodEstimation est = new ec.tstoolkit.arima.estimation.ConcentratedLikelihoodEstimation();
+        long t0 = System.currentTimeMillis();
+        for (int i = 0; i < 100000; ++i) {
+             ec.tstoolkit.arima.estimation.ConcentratedLikelihoodEstimation est = new ec.tstoolkit.arima.estimation.ConcentratedLikelihoodEstimation();
             est.estimate(model);
             ec.tstoolkit.arima.estimation.RegArimaEstimation<ec.tstoolkit.sarima.SarimaModel> estimation
                     = new ec.tstoolkit.arima.estimation.RegArimaEstimation(model, est.getLikelihood());
             estimation.statistics(2, 0);
-//        }
+        }
         long t1 = System.currentTimeMillis();
         System.out.println("Old estimation");
         System.out.println(t1 - t0);
-        System.out.println(estimation.statistics(2, 0));
+//        System.out.println(estimation.statistics(2, 0));
     }
 }

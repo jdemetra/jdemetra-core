@@ -48,6 +48,9 @@ public class FiniteFilterTest {
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
 
+        t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
+
         t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             DataBlock out = DataBlock.make(in.length() - filter.length() + 1);

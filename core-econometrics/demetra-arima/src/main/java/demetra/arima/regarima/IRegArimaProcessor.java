@@ -15,54 +15,44 @@
 * limitations under the Licence.
 */
 
+package demetra.arima.regarima;
 
-package demetra.arima;
-
+import demetra.arima.IArimaModel;
 import demetra.design.Development;
-import demetra.design.Immutable;
-import demetra.maths.linearfilters.BackFilter;
 
 
 /**
- * @author Jean Palate
+ * 
  * @param <S>
+ * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@Immutable
-public class StationaryTransformation<S extends IModel> {
+public interface IRegArimaProcessor<S extends IArimaModel> {
+
+    /**
+     * 
+     * @return
+     */
+    public double getPrecision();
+
+    /**
+     * 
+     * @param regs
+     * @return
+     */
+    public RegArimaEstimation<S> optimize(final RegArimaModel<S> regs);
 
     /**
      *
+     * @param regs
+     * @return
      */
-    private final S stationaryModel;
+    public RegArimaEstimation<S> process(final RegArimaModel<S> regs);
 
     /**
-     *
+     * 
+     * @param value
      */
-    private final BackFilter unitRoots;
+    public void setPrecision(double value);
 
-    /**
-     *
-     * @param stationaryModel
-     * @param unitRoots
-     */
-    public StationaryTransformation(final S stationaryModel,
-	    final BackFilter unitRoots) {
-	this.stationaryModel = stationaryModel;
-	this.unitRoots = unitRoots;
-    }
-
-    /**
-     * @return the stationaryModel
-     */
-    public S getStationaryModel() {
-        return stationaryModel;
-    }
-
-    /**
-     * @return the unitRoots
-     */
-    public BackFilter getUnitRoots() {
-        return unitRoots;
-    }
 }

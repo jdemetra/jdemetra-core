@@ -30,7 +30,7 @@ import demetra.data.DoubleSequence;
  *
  * @author Jean Palate
  */
-public class DogLegMethod implements ISsqFunctionMinimizer {
+public class DogLegMinimizer implements ISsqFunctionMinimizer {
 
     static final int DEF_MAX_ITER = 20;
     static final double EPSILON = 1e-17;
@@ -56,7 +56,7 @@ public class DogLegMethod implements ISsqFunctionMinimizer {
 
     @Override
     public ISsqFunctionMinimizer exemplar() {
-        DogLegMethod ex = new DogLegMethod();
+        DogLegMinimizer ex = new DogLegMinimizer();
         ex.eps = eps;
         ex.eps1 = eps1;
         ex.eps2 = eps2;

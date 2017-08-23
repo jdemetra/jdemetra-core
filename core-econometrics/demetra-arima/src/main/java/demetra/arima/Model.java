@@ -32,7 +32,7 @@ import demetra.maths.polynomials.Polynomial;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public class LinearModel implements ILinearModel {
+public class Model implements IModel {
 
     private final RationalFilter rf;
     private final double var;
@@ -44,7 +44,7 @@ public class LinearModel implements ILinearModel {
      * @param rf
      * @param var
      */
-    public LinearModel(final RationalFilter rf, final double var) {
+    public Model(final RationalFilter rf, final double var) {
         this.rf = rf;
         this.var = var;
     }
@@ -53,7 +53,7 @@ public class LinearModel implements ILinearModel {
      *
      * @return
      */
-    public LinearModel doStationary() {
+    public Model doStationary() {
         RationalBackFilter rb = rf.getRationalBackFilter();
         BackFilter bdenom = rb.getDenominator();
         BackFilter.StationaryTransformation bst = new BackFilter.StationaryTransformation();
@@ -69,7 +69,7 @@ public class LinearModel implements ILinearModel {
         }
 
         RationalFilter stfilter = new RationalFilter(this.rf.getNumerator(), bdenom, fdenom);
-        return new LinearModel(stfilter, var);
+        return new Model(stfilter, var);
     }
 
     /**

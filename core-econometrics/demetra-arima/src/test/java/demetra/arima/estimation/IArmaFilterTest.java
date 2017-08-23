@@ -259,7 +259,7 @@ public class IArmaFilterTest {
             lspec.setBD(spec.getBD());
             lspec.setBQ(spec.getBQ());
             ec.tstoolkit.sarima.SarimaModel lmodel = new ec.tstoolkit.sarima.SarimaModel(lspec);
-            lmodel.setParameters(new ec.tstoolkit.data.ReadDataBlock(sarima.parameters()));
+            lmodel.setParameters(new ec.tstoolkit.data.ReadDataBlock(sarima.parameters().toArray()));
             return lmodel;
         } else {
             return null;
