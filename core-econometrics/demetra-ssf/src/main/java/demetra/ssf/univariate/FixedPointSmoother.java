@@ -314,7 +314,7 @@ public class FixedPointSmoother {
         @Override
         public void save(int pos, State state, StateInfo info) {
             if (info == StateInfo.Forecast) {
-                states.save(pos, state.a().extract(start, n), state.P().extract(start, start + n, start, start + n));
+                states.save(pos, state.a().extract(start, n), state.P().extract(start, n, start, n));
             }
         }
 

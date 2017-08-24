@@ -16,7 +16,7 @@
  */
 package demetra.sarima.estimation;
 
-import demetra.arima.regarima.internals.RegArmaModel;
+import demetra.arima.regarima.internal.RegArmaModel;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
@@ -76,11 +76,11 @@ public class HannanRissanenInitializer implements IarmaInitializer {
             dy_ = null;
             LinearModel lm = regs.asLineaModel();
             HannanRissanen hr = new HannanRissanen();
-            if (lm.getVariablesCount()>0){
+            if (lm.getVariablesCount() > 0) {
                 Ols ols = new Ols();
                 LeastSquaresResults lsr = ols.compute(lm);
-                lm.calcResiduals(lsr.getCoefficients());
-            }else {
+                dy_ = lm.calcResiduals(lsr.getCoefficients());
+            } else {
                 dy_ = lm.getY();
             }
             if (Math.sqrt(Doubles.ssq(dy_) / dy_.length()) < EPS) {

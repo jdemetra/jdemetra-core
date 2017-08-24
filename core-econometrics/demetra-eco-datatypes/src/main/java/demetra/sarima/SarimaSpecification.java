@@ -18,9 +18,6 @@ package demetra.sarima;
 
 import demetra.arima.ArimaException;
 import demetra.design.Development;
-import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.UnitRoots;
 
 /**
  * Definition of the orders of the polynomials of Box-Jenkins models.
@@ -31,29 +28,6 @@ import demetra.maths.polynomials.UnitRoots;
 @Development(status = Development.Status.Alpha)
 public class SarimaSpecification implements Cloneable {
 
-    // Optimization. Default differencing filters
-    private static final BackFilter m10 = differencingFilter(12, 1, 0), m20 = differencingFilter(12, 2, 0), m01 = differencingFilter(12, 0, 1),
-            m11 = differencingFilter(12, 1, 1), q10 = differencingFilter(4, 1, 0), q20 = differencingFilter(4, 2, 0), q01 = differencingFilter(4, 0, 1), q11 = differencingFilter(4, 1, 1);
-
-    public static BackFilter differencingFilter(int freq, int d, int bd) {
-        Polynomial X = null;
-        if (d > 0) {
-            X = UnitRoots.D(1, d);
-        }
-        if (bd > 0) {
-            Polynomial XD = UnitRoots.D(freq, bd);
-            if (X == null) {
-                X = XD;
-            } else {
-                X = X.times(XD);
-            }
-        }
-        if (X == null) {
-            X = Polynomial.ONE;
-        }
-        return new BackFilter(X);
-
-    }
 
     /**
      * Frequency
@@ -240,46 +214,6 @@ public class SarimaSpecification implements Cloneable {
         return d;
     }
 
-    /**
-     *
-     * @return
-     */
-    public BackFilter getDifferencingFilter() {
-        // search in the pre-specified filters
-        if (D == 0 && BD == 0) {
-            return BackFilter.ONE;
-        }
-        if (frequency == 12) {
-            if (BD == 0) {
-                if (D == 1) {
-                    return m10;
-                } else if (D == 2) {
-                    return m20;
-                }
-            } else if (BD == 1) {
-                if (D == 0) {
-                    return m01;
-                } else if (D == 1) {
-                    return m11;
-                }
-            } else if (frequency == 4) {
-                if (BD == 0) {
-                    if (D == 1) {
-                        return q10;
-                    } else if (D == 2) {
-                        return q20;
-                    }
-                } else if (BD == 1) {
-                    if (D == 0) {
-                        return q01;
-                    } else if (D == 1) {
-                        return q11;
-                    }
-                }
-            }
-        }
-        return differencingFilter(frequency, D, BD);
-    }
 
     /**
      *
@@ -319,22 +253,6 @@ public class SarimaSpecification implements Cloneable {
         return Q;
     }
 
-    /**
-     *
-     * @return
-     */
-    public UnitRoots getUnitRoots() {
-        UnitRoots ur = new UnitRoots();
-        if (frequency > 1) {
-            for (int i = 0; i < getBD(); ++i) {
-                ur.add(frequency);
-            }
-        }
-        for (int i = 0; i < getD(); ++i) {
-            ur.add(1);
-        }
-        return ur;
-    }
 
     @Override
     public int hashCode() {

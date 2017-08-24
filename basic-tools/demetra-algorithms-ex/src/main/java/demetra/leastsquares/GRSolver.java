@@ -34,7 +34,7 @@ public class GRSolver implements IQRSolver {
             int m = x.getColumnsCount(), n = x.getRowsCount();
             DataBlock Y = DataBlock.of(y);
             for (int c = 0; c < m; ++c) {
-                Matrix xcur = X.extract(c, n, c, m);
+                Matrix xcur = X.extract(c, n-c, c, m-c);
                 DataBlock ycur=Y.range(c, n);
                 DataBlockIterator cols = xcur.columnsIterator();
                 for (int r = 1; r < xcur.getRowsCount(); ++r) {

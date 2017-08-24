@@ -147,7 +147,7 @@ public class AnsleyFilter implements IArmaFilter {
             }
         }
 
-        Matrix M = m_bL.extract(0, q + 1, p, n);
+        Matrix M = m_bL.extract(0, q + 1, p, n-p);
         DataBlockIterator rows = M.rowsIterator();
 
         int pos=0;

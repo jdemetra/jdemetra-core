@@ -5,12 +5,20 @@
  */
 package demetra.linearmodel;
 
+import demetra.design.Algorithm;
+import demetra.design.Development;
+import demetra.design.ServiceDefinition;
 import demetra.maths.matrices.Matrix;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@Algorithm
+@ServiceDefinition()
+@Development(status=Development.Status.Alpha)
 public interface IGls {
     LeastSquaresResults compute(LinearModel model, Matrix cov);
+    
+    
 }

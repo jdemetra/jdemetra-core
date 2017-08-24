@@ -295,7 +295,7 @@ public class SarimaModel extends AbstractArimaModel {
 
     @Override
     public BackFilter getAR() {
-        BackFilter df = SarimaSpecification.differencingFilter(s, d, bd);
+        BackFilter df = SarimaUtility.differencingFilter(s, d, bd);
         BackFilter st = getStationaryAR();
         return df.times(st);
     }
@@ -368,7 +368,7 @@ public class SarimaModel extends AbstractArimaModel {
      */
     @Override
     public BackFilter getNonStationaryAR() {
-        return SarimaSpecification.differencingFilter(s, d, bd);
+        return SarimaUtility.differencingFilter(s, d, bd);
     }
 
     /**

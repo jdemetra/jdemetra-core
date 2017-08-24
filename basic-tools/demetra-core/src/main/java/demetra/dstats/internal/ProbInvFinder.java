@@ -14,16 +14,23 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
 */
-package demetra.dstats;
+package demetra.dstats.internal;
 
 import demetra.design.Development;
+import demetra.design.Internal;
+import demetra.dstats.BoundaryType;
+import demetra.dstats.DStatException;
+import demetra.dstats.IContinuousDistribution;
+import demetra.dstats.ProbabilityType;
 
 /*
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-final class ProbInvFinder {
-    private final static int maxiter = 100;
+@Internal
+@lombok.experimental.UtilityClass
+public final class ProbInvFinder {
+    private final int MAXITER = 100;
 
     /**
      * Given a continuous distribution cdist and a probability p, the method
@@ -46,7 +53,7 @@ final class ProbInvFinder {
      * @throws SpecFuncException
      *             Thrown when fa and fb do not have opposite signs
      */
-    static double find(final double p, final double a, final double ptol,
+    public double find(final double p, final double a, final double ptol,
 	    final double xtol, final IContinuousDistribution cdist) {
 	double x = a;
 	double fx = cdist.getProbability(x, ProbabilityType.Lower) - p;
@@ -55,7 +62,7 @@ final class ProbInvFinder {
 
 	double xprev = x;
 	int niter = 0;
-	while (++niter < maxiter
+	while (++niter < MAXITER
 		&& (Math.abs(fx) > ptol || Math.abs(xprev - x) > xtol)) {
 	    xprev = x;
 	    // Newton - raphson
@@ -104,7 +111,7 @@ final class ProbInvFinder {
         return finish(p, x, xtol, cdist);
     }
 
-    private static double finish(final double p, final double x,
+    private double finish(final double p, final double x,
             final double xtol, final IContinuousDistribution cdist) {
         // search limits
         double step = xtol;
@@ -153,7 +160,7 @@ final class ProbInvFinder {
         return m;
     }
 
-    private static double remove(final double x, final double d, final double xtol, final IContinuousDistribution cdist) {
+    private double remove(final double x, final double d, final double xtol, final IContinuousDistribution cdist) {
         double nx = x - d;
         BoundaryType lb = cdist.hasLeftBound();
         if (lb == BoundaryType.None) {
@@ -169,7 +176,7 @@ final class ProbInvFinder {
         }
     }
 
-    private static double add(final double x, final double d, final double xtol, final IContinuousDistribution cdist) {
+    private double add(final double x, final double d, final double xtol, final IContinuousDistribution cdist) {
         double nx = x + d;
         BoundaryType rb = cdist.hasRightBound();
         if (rb == BoundaryType.None) {
@@ -185,7 +192,4 @@ final class ProbInvFinder {
         }
     }
     
-    private ProbInvFinder() {
-    }
-
 }

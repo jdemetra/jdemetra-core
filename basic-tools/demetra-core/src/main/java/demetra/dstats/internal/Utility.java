@@ -14,16 +14,19 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
 */
-package demetra.dstats;
+package demetra.dstats.internal;
 
 import demetra.design.Development;
+import demetra.dstats.DStatException;
+import demetra.dstats.ProbabilityType;
 
 /**
  * 
  * @author Frank Osaer, Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public final class Utility {
+@lombok.experimental.UtilityClass
+public class Utility {
 
     /**
      *
@@ -70,7 +73,7 @@ public final class Utility {
         0.588581570495, 0.531103462366, 0.103537752850, 0.38560700634e-2};
     private final static int m_maxit = 200;
 
-    static double calcPoly(final double[] coeff, final double val) {
+    public double calcPoly(final double[] coeff, final double val) {
         double term = coeff[coeff.length - 1];
         for (int i = coeff.length - 2; i >= 0; i--) {
             term = coeff[i] + term * val;
@@ -79,7 +82,7 @@ public final class Utility {
         return term;
     }
 
-    static double calcPoly(final double[] coeff, final int leng,
+    public double calcPoly(final double[] coeff, final int leng,
             final double val) {
         double term = coeff[leng - 1];
         for (int i = leng - 2; i >= 0; i--) {
@@ -89,7 +92,7 @@ public final class Utility {
         return term;
     }
 
-    static double intProbability(final double x, final ProbabilityType pt) {
+    public double intProbability(final double x, final ProbabilityType pt) {
         double res = 0.0;
         double y = Math.abs(x);
         if (y <= NumConstants.THRSH) {
@@ -149,7 +152,7 @@ public final class Utility {
         return res;
     }
 
-    static double intProbabilityInverse(final double p,
+    public double intProbabilityInverse(final double p,
             final calcProbDelegate cb) {
         double eps = 1.0e-13;
         double pp = 1.0 - p;
@@ -180,7 +183,7 @@ public final class Utility {
         throw new DStatException(DStatException.ERR_ITER);
     }
 
-    static double stnVal(final double p) {
+    double stnVal(final double p) {
         double sign = 1.0;
         double z = 1.0 - p;
         if (p <= 0.5) {
@@ -192,6 +195,4 @@ public final class Utility {
         return (y + (calcPoly(s_xnum, y) / calcPoly(s_xden, y))) * sign;
     }
 
-    private Utility() {
-    }
 }

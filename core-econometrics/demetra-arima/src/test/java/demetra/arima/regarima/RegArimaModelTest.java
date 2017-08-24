@@ -13,6 +13,7 @@ import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -55,6 +56,51 @@ public class RegArimaModelTest {
         for (int i = 0; i < missingPos.length; ++i) {
             missingPos[i] = 2 * i;
         }
+        SarimaModel arima = SarimaModel.builder(spec).setDefault().build();
+        RegArimaModel<SarimaModel> model = RegArimaModel.builder(y, arima)
+                .meanCorrection(true)
+                .missing(missingPos)
+                .build();
+        RegArimaEstimation<SarimaModel> estimation = RegArimaEstimation.compute(model);
+        estimation.statistics(2, 0);
+//        System.out.println("New estimation");
+//        System.out.println(estimation.statistics(2, 0));
+    }
+
+    @Test
+    public void testOldEstimation() {
+        ec.tstoolkit.sarima.SarimaSpecification spec = new ec.tstoolkit.sarima.SarimaSpecification(12);
+        spec.airline();
+        ec.tstoolkit.data.DataBlock y = new ec.tstoolkit.data.DataBlock(Data.PROD);
+        int[] missingPos = new int[15];
+        for (int i = 0; i < missingPos.length; ++i) {
+            missingPos[i] = 2 * i;
+        }
+        ec.tstoolkit.sarima.SarimaModel arima = new ec.tstoolkit.sarima.SarimaModel(spec);
+        arima.setDefault();
+        ec.tstoolkit.arima.estimation.RegArimaModel<ec.tstoolkit.sarima.SarimaModel> model = new ec.tstoolkit.arima.estimation.RegArimaModel(arima, y);
+        model.setMeanCorrection(true);
+        model.setMissings(missingPos);
+        ec.tstoolkit.arima.estimation.ConcentratedLikelihoodEstimation est = new ec.tstoolkit.arima.estimation.ConcentratedLikelihoodEstimation();
+        est.estimate(model);
+        ec.tstoolkit.arima.estimation.RegArimaEstimation<ec.tstoolkit.sarima.SarimaModel> estimation
+                = new ec.tstoolkit.arima.estimation.RegArimaEstimation(model, est.getLikelihood());
+        estimation.statistics(2, 0);
+//        System.out.println("Old estimation");
+//        System.out.println(estimation.statistics(2, 0));
+    }
+
+    @Test
+    @Ignore
+    public void stressTestEstimation() {
+
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.airline();
+        DoubleSequence y = DataBlock.ofInternal(Data.PROD);
+        int[] missingPos = new int[15];
+        for (int i = 0; i < missingPos.length; ++i) {
+            missingPos[i] = 2 * i;
+        }
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 100000; ++i) {
             SarimaModel arima = SarimaModel.builder(spec).setDefault().build();
@@ -72,7 +118,8 @@ public class RegArimaModelTest {
     }
 
     @Test
-    public void testOldEstimation() {
+    @Ignore
+    public void stressTestOldEstimation() {
         ec.tstoolkit.sarima.SarimaSpecification spec = new ec.tstoolkit.sarima.SarimaSpecification(12);
         spec.airline();
         ec.tstoolkit.data.DataBlock y = new ec.tstoolkit.data.DataBlock(Data.PROD);
@@ -80,14 +127,14 @@ public class RegArimaModelTest {
         for (int i = 0; i < missingPos.length; ++i) {
             missingPos[i] = 2 * i;
         }
-           ec.tstoolkit.sarima.SarimaModel arima = new ec.tstoolkit.sarima.SarimaModel(spec);
-            arima.setDefault();
-            ec.tstoolkit.arima.estimation.RegArimaModel<ec.tstoolkit.sarima.SarimaModel> model = new ec.tstoolkit.arima.estimation.RegArimaModel(arima, y);
-            model.setMeanCorrection(true);
-            model.setMissings(missingPos);
+        ec.tstoolkit.sarima.SarimaModel arima = new ec.tstoolkit.sarima.SarimaModel(spec);
+        arima.setDefault();
+        ec.tstoolkit.arima.estimation.RegArimaModel<ec.tstoolkit.sarima.SarimaModel> model = new ec.tstoolkit.arima.estimation.RegArimaModel(arima, y);
+        model.setMeanCorrection(true);
+        model.setMissings(missingPos);
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 100000; ++i) {
-             ec.tstoolkit.arima.estimation.ConcentratedLikelihoodEstimation est = new ec.tstoolkit.arima.estimation.ConcentratedLikelihoodEstimation();
+            ec.tstoolkit.arima.estimation.ConcentratedLikelihoodEstimation est = new ec.tstoolkit.arima.estimation.ConcentratedLikelihoodEstimation();
             est.estimate(model);
             ec.tstoolkit.arima.estimation.RegArimaEstimation<ec.tstoolkit.sarima.SarimaModel> estimation
                     = new ec.tstoolkit.arima.estimation.RegArimaEstimation(model, est.getLikelihood());
@@ -98,4 +145,5 @@ public class RegArimaModelTest {
         System.out.println(t1 - t0);
 //        System.out.println(estimation.statistics(2, 0));
     }
+
 }

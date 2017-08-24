@@ -14,9 +14,10 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
 */
-package demetra.dstats;
+package demetra.dstats.internal;
 
 import demetra.design.Development;
+import demetra.dstats.DStatException;
 
 /**
  * Defines several special Statistical and Mathematical functions

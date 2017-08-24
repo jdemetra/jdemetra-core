@@ -5,10 +5,21 @@
  */
 package demetra.linearmodel;
 
+import demetra.design.Algorithm;
+import demetra.design.Development;
+import demetra.design.ServiceDefinition;
+import demetra.maths.matrices.spi.UpperTriangularMatrixAlgorithms;
+import demetra.utilities.ServiceLookup;
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@Algorithm
+@ServiceDefinition()
+@Development(status=Development.Status.Alpha)
 public interface IOls {
     LeastSquaresResults compute(LinearModel model);
 }
+

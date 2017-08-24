@@ -14,15 +14,12 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.arima.regarima.internals;
+package demetra.arima.regarima.internal;
 
 import demetra.arima.IArimaModel;
-import demetra.arima.regarima.ConcentratedLikelihoodEstimation;
 import demetra.data.DoubleSequence;
-import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihood;
-import demetra.likelihood.ILikelihood;
 import demetra.maths.functions.IFunction;
 import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.functions.ssq.ISsqFunction;
@@ -33,7 +30,7 @@ import demetra.maths.functions.ssq.ISsqFunctionPoint;
  * @param <S> Specific arima model type
  */
 @Development(status = Development.Status.Alpha)
-public class ArmaEvaluation<S extends IArimaModel> implements ISsqFunctionPoint,
+class ArmaEvaluation<S extends IArimaModel> implements ISsqFunctionPoint,
         IFunctionPoint {
 
     final ArmaFunction<S> fn;

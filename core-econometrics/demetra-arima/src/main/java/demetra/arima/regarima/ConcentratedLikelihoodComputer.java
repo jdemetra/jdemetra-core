@@ -16,12 +16,13 @@
  */
 package demetra.arima.regarima;
 
-import demetra.arima.regarima.internals.RegArmaModel;
+import demetra.arima.regarima.internal.RegArmaModel;
 import demetra.arima.IArimaModel;
 import demetra.arima.estimation.IArmaFilter;
 import demetra.arima.internal.KalmanFilter;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
+import demetra.data.DoubleMatrix;
 import demetra.data.DoubleSequence;
 import demetra.design.Immutable;
 import demetra.eco.EcoException;
@@ -70,12 +71,11 @@ public class ConcentratedLikelihoodComputer {
 
     }
 
-    private <M extends IArimaModel> ConcentratedLikelihoodEstimation<M> process(DoubleSequence dy, Matrix x, int nl, int nm) {
+    private <M extends IArimaModel> ConcentratedLikelihoodEstimation<M> process(DoubleSequence dy, DoubleMatrix x, int nl, int nm) {
 
         ConcentratedLikelihoodEstimation.Builder<M> builder = ConcentratedLikelihoodEstimation.builder();
         DataBlock y = DataBlock.of(dy);
         int n = y.length();
-        double[] factors = null;
         double yfactor = 1;
         if (scaling) {
             double yn = y.norm2();
@@ -89,25 +89,9 @@ public class ConcentratedLikelihoodComputer {
         int nx = x.getColumnsCount();
         Matrix xl;
         if (nx > 0) {
-            if (scaling) {
-                factors = new double[nx];
-                for (int i = 0; i < nx; ++i) {
-                    DataBlock cur = x.column(i);
-                    double xn = cur.norm2();
-                    if (xn != 0) {
-                        double w = n / xn;
-                        factors[i] = w;
-                        cur.mul(w);
-                    } else {
-                        factors[i] = 1;
-                    }
-                }
-            }
-            xl = Matrix.make(nl, x.getColumnsCount());
-            DataBlockIterator xcols = x.columnsIterator();
-            DataBlockIterator xlcols = xl.columnsIterator();
-            while (xcols.hasNext()) {
-                filter.apply(xcols.next(), xlcols.next());
+            xl = Matrix.make(nl, nx);
+            for (int i=0; i<nx; ++i){
+                filter.apply(x.column(i), xl.column(i));
             }
 
             qr.decompose(xl);
@@ -146,7 +130,7 @@ public class ConcentratedLikelihoodComputer {
                     rel.addAY(-b.get(i), xl.column(i));
                 }
                 if (scaling) {
-                    cll = cll.rescale(yfactor, factors);
+                    cll = cll.rescale(yfactor, null);
                     rel.div(yfactor);
                 }
                 if (nm > 0) {

@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.arima.regarima.internals;
+package demetra.arima.regarima.internal;
 
 import demetra.arima.IArimaModel;
 import demetra.data.DoubleSequence;
@@ -36,7 +36,7 @@ public class RegArmaProcessor {
         this.mt = mt;
     }
 
-    public <S extends IArimaModel> RegArmaEstimation<S> compute(RegArmaModel<S> model, IParametricMapping<S> mapping, ISsqFunctionMinimizer minimizer, int ndf) {
+    public <S extends IArimaModel> RegArmaEstimation<S> compute(RegArmaModel<S> model, DoubleSequence start, IParametricMapping<S> mapping, ISsqFunctionMinimizer minimizer, int ndf) {
         // step 1. Build the function
         RegArmaSsqFunction fn = RegArmaSsqFunction.builder(model.getY())
                 .variables(model.getX())
@@ -46,7 +46,7 @@ public class RegArmaProcessor {
                 .parallelProcessing(mt)
                 .build();
 
-        boolean ok = minimizer.minimize(fn);
+        boolean ok =start == null ? minimizer.minimize(fn) : minimizer.minimize(fn.ssqEvaluate(start));
         RegArmaSsqFunction.Evaluation<S> rslt = (RegArmaSsqFunction.Evaluation<S>) minimizer.getResult();
         ISsqFunctionDerivatives derivatives = rslt.ssqDerivatives();
         double objective = rslt.getSsqE();
@@ -56,7 +56,7 @@ public class RegArmaProcessor {
         for (int i = 0; i < score.length; ++i) {
             score[i] *= (-.5 * ndf) / objective;
         }
-        RegArmaModel<S> nmodel = new RegArmaModel<>(model.getY(), rslt.arma, model.getX(), model.getMissingCount());
+        RegArmaModel<S> nmodel = model.newArma(rslt.arma);
         return new RegArmaEstimation<>(nmodel, objective, ok, score, hessian, ndf);
     }
 }

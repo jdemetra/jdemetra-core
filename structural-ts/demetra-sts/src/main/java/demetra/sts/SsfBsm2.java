@@ -192,7 +192,7 @@ public class SsfBsm2 extends Ssf {
                 if (data.seasModel == SeasonalModel.Dummy) {
                     p.set(i, i, data.seasVar);
                 } else {
-                    int j = i + data.tsvar.getRowsCount();
+                    int j = data.tsvar.getRowsCount();
                     p.extract(i, j, i, j).copy(data.tsvar);
                 }
             }
@@ -261,7 +261,7 @@ public class SsfBsm2 extends Ssf {
                 if (data.seasModel == SeasonalModel.Dummy) {
                     v.set(i, i, data.seasVar);
                 } else {
-                    int j = i + data.tsvar.getRowsCount();
+                    int j = data.tsvar.getRowsCount();
                     v.extract(i, j, i, j).copy(data.tsvar);
                 }
             }
@@ -298,10 +298,10 @@ public class SsfBsm2 extends Ssf {
                         s.set(i, j, Math.sqrt(data.seasVar));
                         break;
                     case Crude:
-                        s.extract(i, i + data.freq - 1, j, j + 1).set(Math.sqrt(data.seasVar));
+                        s.extract(i, data.freq - 1, j,  1).set(Math.sqrt(data.seasVar));
                         break;
                     default:
-                        s.extract(i, i + data.freq - 1, j, j + data.freq - 1).copy(data.ltsvar);
+                        s.extract(i, data.freq - 1, j, data.freq - 1).copy(data.ltsvar);
                         break;
                 }
             }
@@ -397,7 +397,7 @@ public class SsfBsm2 extends Ssf {
                 ++i;
             }
             if (data.seasVar >= 0) {
-                Matrix seas = tr.extract(i, i + data.freq - 1, i, i + data.freq - 1);
+                Matrix seas = tr.extract(i, data.freq - 1, i, data.freq - 1);
                 seas.row(data.freq - 2).set(-1);
                 seas.subDiagonal(1).set(1);
             }
@@ -479,7 +479,7 @@ public class SsfBsm2 extends Ssf {
                 if (data.seasModel == SeasonalModel.Dummy) {
                     p.add(i, i, data.seasVar);
                 } else {
-                    int j = i + data.tsvar.getRowsCount();
+                    int j = data.tsvar.getRowsCount();
                     p.extract(i, j, i, j).add(data.tsvar);
                 }
             }

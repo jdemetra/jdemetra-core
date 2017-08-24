@@ -14,20 +14,38 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
 */
-package demetra.dstats;
+package demetra.dstats.internal;
 
 import demetra.design.Development;
 
 /**
- * An enumeration of the types of probability.
+ * 
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-public enum ProbabilityType {
-    /** prob_Point : the probability of x = value */
-    Point,
-    /** prob_Lower : the probability of x .LE. value */
-    Lower,
-    /** prob_Upper : the probability of x .GE. value */
-    Upper;
+final class NumConstants {
+    /**
+         *
+         */
+    public static final double SQRPI = 1.0 / Math.sqrt(Math.PI * 2);
+
+    /**
+         *
+         */
+    public static final double ROOT32 = Math.sqrt(32.0);
+    /**
+         *
+         */
+    public static final double THRSH = 0.66291;
+    /**
+         *
+         */
+    public static final double EPS = Double.MIN_VALUE * 0.5;
+    /**
+         *
+         */
+    public static final double MIN = Double.NEGATIVE_INFINITY;
+
+    private NumConstants() {
+    }
 }

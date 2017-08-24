@@ -24,6 +24,7 @@ import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -44,17 +45,18 @@ public class GlsSarimaMonitorTest {
                 .build();
         RegArimaModel<SarimaModel> regs = RegArimaModel.builder(DoubleSequence.of(Data.PROD), arima)
                 .meanCorrection(true)
+                .missing(new int[]{3, 23, 34, 65, 123, 168})
                 .build();
         RegArimaEstimation<SarimaModel> rslt = monitor.compute(regs);
-        System.out.println("New");
-        System.out.println(rslt.statistics(2, 0));
-        System.out.println(rslt.getModel().arima());
+//        System.out.println("New");
+//        System.out.println(rslt.statistics(2, 0));
+//        System.out.println(rslt.getModel().arima());
     }
 
     @Test
     public void testLegacy() {
         ec.tstoolkit.sarima.estimation.GlsSarimaMonitor monitor = new ec.tstoolkit.sarima.estimation.GlsSarimaMonitor();
-            monitor.setPrecision(1e-11);
+        monitor.setPrecision(1e-11);
         ec.tstoolkit.sarima.SarimaSpecification spec = new ec.tstoolkit.sarima.SarimaSpecification(12);
         spec.airline();
         ec.tstoolkit.sarima.SarimaModel arima = new ec.tstoolkit.sarima.SarimaModel(spec);
@@ -62,17 +64,19 @@ public class GlsSarimaMonitorTest {
                 = new ec.tstoolkit.arima.estimation.RegArimaModel<>(arima);
         regs.setY(new ec.tstoolkit.data.DataBlock(Data.PROD));
         regs.setMeanCorrection(true);
+        regs.setMissings(new int[]{3, 23, 34, 65, 123, 168});
         ec.tstoolkit.arima.estimation.RegArimaEstimation<ec.tstoolkit.sarima.SarimaModel> rslt
                 = monitor.process(regs);
-        System.out.println("Legacy");
-        System.out.println(rslt.statistics(2, 0));
-        System.out.println(rslt.model.getArima());
+//        System.out.println("Legacy");
+//        System.out.println(rslt.statistics(2, 0));
+//        System.out.println(rslt.model.getArima());
     }
 
     @Test
+    @Ignore
     public void stressTestNew() {
         long t0 = System.currentTimeMillis();
-        for (int i = 0; i < 10000; ++i) {
+        for (int i = 0; i < 5000; ++i) {
             GlsSarimaMonitor monitor = new GlsSarimaMonitor(new HannanRissanenInitializer(true, true, false));
             SarimaSpecification spec = new SarimaSpecification(12);
             spec.airline();
@@ -81,6 +85,7 @@ public class GlsSarimaMonitorTest {
                     .build();
             RegArimaModel<SarimaModel> regs = RegArimaModel.builder(DoubleSequence.of(Data.PROD), arima)
                     .meanCorrection(true)
+                    .missing(new int[]{3, 23, 34, 65, 123, 168})
                     .build();
             RegArimaEstimation<SarimaModel> rslt = monitor.compute(regs);
         }
@@ -90,11 +95,12 @@ public class GlsSarimaMonitorTest {
     }
 
     @Test
+    @Ignore
     public void stressTestLegacy() {
         long t0 = System.currentTimeMillis();
-        for (int i = 0; i < 10000; ++i) {
+        for (int i = 0; i < 5000; ++i) {
             ec.tstoolkit.sarima.estimation.GlsSarimaMonitor monitor = new ec.tstoolkit.sarima.estimation.GlsSarimaMonitor();
-            monitor.setPrecision(1e-9);
+            monitor.setPrecision(1e-11);
             ec.tstoolkit.sarima.SarimaSpecification spec = new ec.tstoolkit.sarima.SarimaSpecification(12);
             spec.airline();
             ec.tstoolkit.sarima.SarimaModel arima = new ec.tstoolkit.sarima.SarimaModel(spec);
@@ -102,6 +108,7 @@ public class GlsSarimaMonitorTest {
                     = new ec.tstoolkit.arima.estimation.RegArimaModel<>(arima);
             regs.setY(new ec.tstoolkit.data.DataBlock(Data.PROD));
             regs.setMeanCorrection(true);
+            regs.setMissings(new int[]{3, 23, 34, 65, 123, 168});
             ec.tstoolkit.arima.estimation.RegArimaEstimation<ec.tstoolkit.sarima.SarimaModel> rslt
                     = monitor.process(regs);
         }

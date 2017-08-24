@@ -16,6 +16,7 @@
  */
 package demetra.likelihood;
 
+import demetra.data.DoubleMatrix;
 import demetra.maths.matrices.Matrix;
 import demetra.data.DoubleSequence;
 
@@ -38,7 +39,7 @@ public interface IConcentratedLikelihood extends ILikelihood {
      *
      * @return
      */
-    Matrix unscaledCovariance();
+    DoubleMatrix unscaledCovariance();
 
 //    /**
 //     *

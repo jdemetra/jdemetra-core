@@ -39,7 +39,7 @@ public class ElementaryTransformationsTest {
         Matrix cur=M;
         for (int i=0; i<M.getColumnsCount()-1; ++i){
             ElementaryTransformations.columnGivens(cur);
-            cur=cur.extract(1, cur.getRowsCount(), 1, cur.getColumnsCount());
+            cur=cur.extract(1, cur.getRowsCount()-1, 1, cur.getColumnsCount()-1);
         }
         DataBlock b=M.column(4).range(0, 4);
         UpperTriangularMatrix.rsolve(M.extract(0, 4, 0, 4), b, 1e-9);

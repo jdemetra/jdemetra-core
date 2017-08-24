@@ -14,9 +14,8 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.arima.regarima.internals;
+package demetra.arima.regarima.internal;
 
-import demetra.arima.regarima.internals.ArmaEvaluation;
 import demetra.arima.IArimaModel;
 import demetra.arima.regarima.ConcentratedLikelihoodComputer;
 import demetra.data.DoubleSequence;
@@ -37,7 +36,7 @@ import java.util.function.ToDoubleFunction;
  * @param <S>
  */
 @Development(status = Development.Status.Alpha)
-public class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
+class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
 
     public static class Builder<S extends IArimaModel> implements IBuilder<ArmaFunction<S>> {
 

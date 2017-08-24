@@ -68,7 +68,7 @@ public class AugmentedState extends State {
     }
 
     public final Matrix B() {
-        return B.extract(0, B.getRowsCount(), ndropped, B.getColumnsCount());
+        return B.extract(0, B.getRowsCount(), ndropped, B.getColumnsCount()-ndropped);
     }
 
     public void restoreB(Matrix b) {

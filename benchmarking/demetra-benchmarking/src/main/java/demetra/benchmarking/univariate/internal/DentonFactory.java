@@ -24,7 +24,6 @@ import demetra.timeseries.simplets.TsData;
 import demetra.timeseries.simplets.TsDataToolkit;
 import demetra.timeseries.simplets.TsFrequency;
 import demetra.timeseries.simplets.TsPeriod;
-import java.time.LocalDate;
 import org.openide.util.lookup.ServiceProvider;
 
 /**

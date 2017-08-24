@@ -154,18 +154,18 @@ public class MultivariateArrayFilter {
     }
 
     private Matrix K() {
-        return A.extract(nm, nm + dim, 0, nm);
+        return A.extract(nm, dim, 0, nm);
     }
 
     private Matrix ZL() {
-        return A.extract(0, nm, nm, nm + dim);
+        return A.extract(0, nm, nm, dim);
     }
 
     private Matrix L() {
-        return A.extract(nm, nm + dim, nm, nm + dim);
+        return A.extract(nm, dim, nm, dim);
     }
 
     private Matrix U() {
-        return A.extract(nm, nm + dim, nm + dim, -1);
+        return A.extract(nm, dim, nm + dim, A.getColumnsCount()-nm-dim);
     }
 }

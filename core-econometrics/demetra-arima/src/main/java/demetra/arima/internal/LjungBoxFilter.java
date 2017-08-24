@@ -232,7 +232,7 @@ public class LjungBoxFilter implements IArmaFilter {
             }
 
             if (m_q > 0) {
-                Matrix Q = m_V1.extract(0, m_q, m_p, m_p + m_q);
+                Matrix Q = m_V1.extract(0, m_q, m_p, m_q);
                 Q.diagonal().set(m_ma.get(m_q));
 
                 for (int i = 1; i < m_q; ++i) {
@@ -242,7 +242,7 @@ public class LjungBoxFilter implements IArmaFilter {
 
             if (m_q > 0 && m_p > 0) {
                 double[] psi = RationalFunction.of(m_ma, m_ar).coefficients(m_q);
-                Matrix W = m_L.extract(0, m_p, m_p, m_p + m_q);
+                Matrix W = m_L.extract(0, m_p, m_p, m_q);
                 int imin = m_q - m_p;
                 for (int i = 0; i < m_q; ++i) {
                     W.subDiagonal(imin - i).set(psi[i]);

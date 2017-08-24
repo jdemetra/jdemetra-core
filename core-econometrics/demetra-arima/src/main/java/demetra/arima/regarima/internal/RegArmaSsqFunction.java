@@ -14,20 +14,22 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.arima.regarima.internals;
+package demetra.arima.regarima.internal;
 
 import demetra.arima.IArimaModel;
 import demetra.arima.regarima.ConcentratedLikelihoodComputer;
+import demetra.data.DoubleMatrix;
 import demetra.data.DoubleSequence;
+import demetra.design.Development;
 import demetra.design.IBuilder;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.DefaultLikelihoodEvaluation;
 import demetra.likelihood.ILikelihood;
-import demetra.maths.functions.IFunction;
-import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.IParametricMapping;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.functions.ssq.ISsqFunction;
+import demetra.maths.functions.ssq.ISsqFunctionPoint;
+import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 
 /**
@@ -35,9 +37,10 @@ import java.util.function.ToDoubleFunction;
  * @author Jean Palate
  * @param <S>
  */
-public class RegArmaFunction<S extends IArimaModel> implements IFunction {
+@Development(status=Development.Status.Alpha)
+class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
 
-    public static class Builder<S extends IArimaModel> implements IBuilder<RegArmaFunction<S>> {
+    static class SsqBuilder<S extends IArimaModel> implements IBuilder<RegArmaSsqFunction<S>> {
 
         // algorithms
         private boolean ml = true;
@@ -45,71 +48,84 @@ public class RegArmaFunction<S extends IArimaModel> implements IFunction {
         private boolean mt = false;
         // model
         private final DoubleSequence dy;
-        private Matrix x;
+        private DoubleMatrix x;
         private int nmissing;
         // mapping
         private IParametricMapping<S> mapping;
 
-        private Builder(final DoubleSequence dy) {
+        private SsqBuilder(final DoubleSequence dy) {
             this.dy = dy;
         }
 
-        public Builder variables(Matrix x) {
+        SsqBuilder variables(DoubleMatrix x) {
             this.x = x;
             return this;
         }
 
-        public Builder nmissing(int nm) {
+        SsqBuilder missingCount(int nm) {
             this.nmissing = nm;
             return this;
         }
 
-        public Builder parallelProcessing(boolean parallel) {
+        SsqBuilder mapping(IParametricMapping<S> mapping) {
+            this.mapping=mapping;
+            return this;
+        }
+
+        SsqBuilder parallelProcessing(boolean parallel) {
             this.mt = parallel;
             return this;
         }
 
-        public Builder maximumLikelihood(boolean ml) {
+        SsqBuilder maximumLikelihood(boolean ml) {
             this.ml = ml;
             return this;
         }
 
-        public Builder likelihoodComputer(ConcentratedLikelihoodComputer computer) {
+        SsqBuilder likelihoodComputer(ConcentratedLikelihoodComputer computer) {
             this.cll = computer;
             return this;
         }
 
         @Override
-        public RegArmaFunction<S> build() {
-            return new RegArmaFunction<>(dy, x, nmissing, mapping, cll,
-                    ml ? DefaultLikelihoodEvaluation.logSsq() : DefaultLikelihoodEvaluation.ml(), mt);
+        public RegArmaSsqFunction<S> build() {
+            return new RegArmaSsqFunction<>(dy, x, nmissing, mapping, cll,
+                    ml ? DefaultLikelihoodEvaluation.v() : DefaultLikelihoodEvaluation.errors(),
+                    ml ? DefaultLikelihoodEvaluation.deviance() : DefaultLikelihoodEvaluation.ssq(), mt);
         }
     }
 
+    public static <S extends IArimaModel> SsqBuilder<S> builder(DoubleSequence y){
+        return new SsqBuilder<>(y);
+    }
+    
     // model
     final DoubleSequence dy;
-    final Matrix x;
+    final DoubleMatrix x;
     final int nmissing;
     // mapping
     final IParametricMapping<S> mapping;
     // algorithms
     final ConcentratedLikelihoodComputer cll;
-    final ToDoubleFunction<ILikelihood> ll;
+    final ToDoubleFunction<ILikelihood> ssqll;
+    final Function<ILikelihood, DoubleSequence> errors;
     final boolean mt;
 
-    private RegArmaFunction(final DoubleSequence dy,
-            final Matrix x,
+    private RegArmaSsqFunction(final DoubleSequence dy,
+            final DoubleMatrix x,
             final int nm,
             final IParametricMapping<S> mapping,
             final ConcentratedLikelihoodComputer cll,
-            final ToDoubleFunction<ILikelihood> ll,
+            final Function<ILikelihood, DoubleSequence> errors,
+            final ToDoubleFunction<ILikelihood> ssqll,
             final boolean mt) {
         this.dy = dy;
         this.x = x;
         this.nmissing = nm;
         this.mapping = mapping;
         this.cll = cll;
-        this.ll = ll;
+        this.ssqll = ssqll;
+        this.errors = errors;
         this.mt = mt;
     }
 
@@ -119,23 +135,28 @@ public class RegArmaFunction<S extends IArimaModel> implements IFunction {
     }
 
     @Override
-    public IFunctionPoint evaluate(DoubleSequence parameters) {
-        return new Evaluation(this, parameters);
+    public Evaluation<S> ssqEvaluate(DoubleSequence parameters) {
+        return new Evaluation<>(this, parameters);
     }
 
-    public static class Evaluation<S extends IArimaModel> implements IFunctionPoint {
+    static class Evaluation<S extends IArimaModel> implements ISsqFunctionPoint {
 
-        final RegArmaFunction<S> fn;
+        final RegArmaSsqFunction<S> fn;
         final DoubleSequence p;
         final S arma;
         final ConcentratedLikelihood ll;
 
-        public Evaluation(RegArmaFunction<S> fn, DoubleSequence p) {
+        public Evaluation(RegArmaSsqFunction<S> fn, DoubleSequence p) {
             this.fn = fn;
             this.p = p;
             this.arma = fn.mapping.map(p);
             RegArmaModel<S> regarma = new RegArmaModel<>(fn.dy, arma, fn.x, fn.nmissing);
             ll = fn.cll.compute(regarma).getLikelihood();
+        }
+
+        @Override
+        public DoubleSequence getE() {
+            return fn.errors.apply(ll);
         }
 
         public ConcentratedLikelihood getLikelihood() {
@@ -148,12 +169,12 @@ public class RegArmaFunction<S extends IArimaModel> implements IFunction {
         }
 
         @Override
-        public double getValue() {
-            return fn.ll.applyAsDouble(ll);
+        public double getSsqE() {
+            return fn.ssqll.applyAsDouble(ll);
         }
 
         @Override
-        public IFunction getFunction() {
+        public ISsqFunction getSsqFunction() {
             return fn;
         }
 

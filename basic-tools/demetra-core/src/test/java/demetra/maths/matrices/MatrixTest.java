@@ -69,7 +69,7 @@ public class MatrixTest {
         Matrix B=A.deepClone();
         int del=2;
         A.downRightShift(del);
-        assertTrue(A.extract(del, m, del, n).minus(B.extract(0, m-del, 0, n-del)).isZero(1e15));
+        assertTrue(A.extract(del, m-del, del, n-del).minus(B.extract(0, m-del, 0, n-del)).isZero(1e15));
     }
 
     int N = 20, M = 50;

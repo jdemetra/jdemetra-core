@@ -16,7 +16,7 @@
  */
 package demetra.arima.regarima;
 
-import demetra.arima.regarima.internals.RegArmaModel;
+import demetra.arima.regarima.internal.RegArmaModel;
 import demetra.arima.IArimaModel;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihood;

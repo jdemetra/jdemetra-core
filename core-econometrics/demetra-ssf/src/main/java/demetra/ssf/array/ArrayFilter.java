@@ -146,10 +146,10 @@ public class ArrayFilter {
     }
 
     private Matrix L() {
-        return A.extract(1, 1 + dim_, 1, 1 + dim_);
+        return A.extract(1, dim_, 1, dim_);
     }
 
     private Matrix U() {
-        return A.extract(1, 1 + dim_, 1 + dim_, -1);
+        return A.extract(1, dim_, 1 + dim_, A.getColumnsCount()-dim_-1);
     }
 }

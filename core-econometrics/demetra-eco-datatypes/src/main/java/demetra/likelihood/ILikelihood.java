@@ -22,7 +22,7 @@ import demetra.data.DoubleSequence;
 /**
  * The ILikelihood interface formalizes the likelihood of a usual
  * gaussian model. We suppose that the scaling factor is part of the parameters
- * and that it is concentrated out of the likelihood  
+ * and that it is concentrated out of the likelihood
  * <br>
  * For a N(0, sig2*V) distribution (dim = n), the log-likelihood is given by
  * <br>
@@ -41,17 +41,17 @@ import demetra.data.DoubleSequence;
  * ll=-.5[n*log(2*pi)+n*(log(ssq/n)+1)+ldet]
  * <br>
  * So, the likelihood is defined by means of:
- * <br> - n = dim() 
- * <br> - ldet = logDeterminant() 
- * <br> - ssq = ssq() 
+ * <br> - n = dim()
+ * <br> - ldet = logDeterminant()
+ * <br> - ssq = ssq()
  * <br> -sig2 =ssq/n is given by sigma()
  * <br>
  * Maximizing the concentrated likelihood is equivalent to minimizing the function:
  * <br>
  * ssq * det^1/n (= ssq*factor)
  * <br>
- if e are the e and v = e*det^1/(2n), we try to minimize the sum of squares defined by vv'.
- This last formulation will be used in optimization procedures based like Levenberg-Marquardt or similar algorithms.
+ * if e are the e and v = e*det^1/(2n), we try to minimize the sum of squares defined by vv'.
+ * This last formulation will be used in optimization procedures based like Levenberg-Marquardt or similar algorithms.
  */
 @Development(status = Development.Status.Release)
 public interface ILikelihood {
@@ -95,8 +95,8 @@ public interface ILikelihood {
      * @return Sum of the squared standardized innovations
      */
     double ssq();
-    
-        /**
+
+    /**
      * @return The Standardized innovations. May be null if the e are not stored
      */
     DoubleSequence e();
@@ -105,17 +105,16 @@ public interface ILikelihood {
      * @return The determinantal factor (n-th root).
      */
     double factor();
-    
-    default DoubleSequence v(){
-        double f=factor();
-        DoubleSequence e=e();
-        if (f == 1)
+
+    default DoubleSequence v() {
+        double f = factor();
+        DoubleSequence e = e();
+        if (f == 1) {
             return e;
-        else{
-            final double sf=Math.sqrt(f);
-            return DoubleSequence.transformation(e, x->x*sf);
+        } else {
+            final double sf = Math.sqrt(f);
+            return DoubleSequence.transformation(e, x -> x * sf);
         }
     }
-
 
 }

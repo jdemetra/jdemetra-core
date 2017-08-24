@@ -9,7 +9,6 @@ import demetra.eco.EcoException;
 import lombok.NonNull;
 import demetra.leastsquares.IQRSolver;
 import demetra.leastsquares.internal.QRSolver;
-import demetra.likelihood.ConcentratedLikelihood;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
@@ -17,11 +16,13 @@ import demetra.maths.matrices.internal.Householder;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import demetra.data.DoubleSequence;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@ServiceProvider(service = IOls.class)
 public class Ols implements IOls {
 
     private static AtomicReference<Supplier<IQRSolver>> QR_FACTORY = new AtomicReference<>(()

@@ -16,6 +16,8 @@
  */
 package demetra.dstats;
 
+import demetra.dstats.internal.SpecialFunctions;
+import demetra.dstats.internal.ProbInvFinder;
 import demetra.design.Development;
 import demetra.random.IRandomNumberGenerator;
 

@@ -19,9 +19,9 @@ package demetra.sarima.estimation;
 import demetra.arima.ArimaException;
 import demetra.arima.regarima.RegArimaEstimation;
 import demetra.arima.regarima.RegArimaModel;
-import demetra.arima.regarima.internals.RegArmaEstimation;
-import demetra.arima.regarima.internals.RegArmaModel;
-import demetra.arima.regarima.internals.RegArmaProcessor;
+import demetra.arima.regarima.internal.RegArmaEstimation;
+import demetra.arima.regarima.internal.RegArmaModel;
+import demetra.arima.regarima.internal.RegArmaProcessor;
 import demetra.design.Development;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.sarima.SarimaModel;
@@ -59,12 +59,12 @@ public class GlsSarimaMonitor {
         RegArmaModel<SarimaModel> dmodel=RegArmaModel.of(regs);
         SarimaModel start = initializer.initialize(dmodel);
         // not used for the time being
-        RegArmaProcessor processor=new RegArmaProcessor(true, true);
+        RegArmaProcessor processor=new RegArmaProcessor(true, false);
         SarimaMapping mapping=new SarimaMapping(dmodel.getArma().specification(), SarimaMapping.STEP, true);
         int ndf=dmodel.getY().length()-dmodel.getX().getColumnsCount()-mapping.getDim();
         LevenbergMarquardtMinimizer min=new LevenbergMarquardtMinimizer();
         min.setFunctionPrecision(1e-11);
-        RegArmaEstimation<SarimaModel> rslt = processor.compute(dmodel, mapping, min, ndf);
+        RegArmaEstimation<SarimaModel> rslt = processor.compute(dmodel, start.parameters(), mapping, min, ndf);
         
         SarimaModel arima=SarimaModel.builder(regs.arima().specification())
                 .parameters(rslt.getModel().getArma().parameters())

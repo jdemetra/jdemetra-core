@@ -3,13 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.arima.regarima.internals;
+package demetra.arima.regarima.internal;
 
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
 import demetra.arima.regarima.RegArimaModel;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
+import demetra.data.DoubleMatrix;
 import demetra.data.DoubleSequence;
 import demetra.design.Immutable;
 import demetra.eco.EcoException;
@@ -110,14 +111,18 @@ public class RegArmaModel<M extends IArimaModel> {
      * the constant
      * the other regression variables
      */
-    Matrix x;
+    DoubleMatrix x;
     /**
      * Number of missing observations (additive outliers at the beginning of x)
      */
     int missingCount;
     
     public LinearModel asLineaModel(){
-        return new LinearModel(y.toArray(), false, x);
+        return new LinearModel(y.toArray(), false, Matrix.of(x));
+    }
+    
+    public RegArmaModel newArma(M m){
+        return new RegArmaModel(y, m, x, missingCount);
     }
 
 }
