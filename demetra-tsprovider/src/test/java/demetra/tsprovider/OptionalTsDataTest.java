@@ -25,12 +25,13 @@ import static demetra.data.AggregationType.Max;
 import static demetra.data.AggregationType.Min;
 import static demetra.data.AggregationType.None;
 import static demetra.data.AggregationType.Sum;
+import demetra.timeseries.Fixme;
+import static demetra.timeseries.Fixme.Undefined;
+import demetra.timeseries.TsFrequency;
+import static demetra.timeseries.TsFrequency.MONTHLY;
+import static demetra.timeseries.TsFrequency.QUARTERLY;
+import demetra.timeseries.TsPeriod;
 import demetra.timeseries.simplets.TsData;
-import demetra.timeseries.simplets.TsFrequency;
-import static demetra.timeseries.simplets.TsFrequency.Monthly;
-import static demetra.timeseries.simplets.TsFrequency.Quarterly;
-import static demetra.timeseries.simplets.TsFrequency.Undefined;
-import demetra.timeseries.simplets.TsPeriod;
 import demetra.tsprovider.util.ObsGathering;
 import demetra.tsprovider.util.TsDataBuilder;
 import static demetra.tsprovider.OptionalTsData.absent;
@@ -41,7 +42,6 @@ import static internal.tsprovider.util.InternalTsDataBuilder.GUESS_SINGLE;
 import static internal.tsprovider.util.InternalTsDataBuilder.INVALID_AGGREGATION;
 import static internal.tsprovider.util.InternalTsDataBuilder.NO_DATA;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.GregorianCalendar;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -51,24 +51,9 @@ import static java.lang.Double.NaN;
 import java.time.LocalDate;
 import static java.util.EnumSet.complementOf;
 import java.util.function.BiFunction;
-import static java.util.EnumSet.allOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static java.util.EnumSet.of;
-import static java.util.EnumSet.of;
-import static java.util.EnumSet.of;
-import static java.util.EnumSet.of;
-import static java.util.EnumSet.of;
-import static java.util.EnumSet.of;
-import static java.util.EnumSet.of;
-import static java.util.EnumSet.of;
-import static java.util.EnumSet.of;
-import static java.util.EnumSet.of;
-import static java.util.EnumSet.of;
-import static java.util.EnumSet.of;
-import static java.util.EnumSet.of;
-import static java.util.EnumSet.of;
-import static java.util.EnumSet.of;
-import static java.util.EnumSet.of;
+import java.util.List;
 
 /**
  *
@@ -79,12 +64,12 @@ public class OptionalTsDataTest {
     @Test
     @SuppressWarnings("null")
     public void testFactoryPresent() {
-        TsData example = TsData.of(TsPeriod.of(Monthly, 2010, 0), DoubleSequence.ofInternal(10));
+        TsData example = TsData.of(TsPeriod.monthly(2010, 1), DoubleSequence.ofInternal(10));
 
         assertThat(present(example))
-                .isEqualTo(data(Monthly, 2010, 0, 10))
-                .isNotEqualTo(data(Monthly, 2010, 0, 10, 20))
-                .isNotEqualTo(data(Quarterly, 2010, 0, 10, 10))
+                .isEqualTo(data(MONTHLY, 2010, 0, 10))
+                .isNotEqualTo(data(MONTHLY, 2010, 0, 10, 20))
+                .isNotEqualTo(data(MONTHLY, 2010, 0, 10, 10))
                 .extracting(OptionalTsData::isPresent, OptionalTsData::get)
                 .containsExactly(true, example);
 
@@ -150,7 +135,7 @@ public class OptionalTsDataTest {
     }
 
     private static OptionalTsData data(TsFrequency freq, int firstyear, int firstperiod, double... values) {
-        return present(TsData.of(TsPeriod.of(freq, firstyear, firstperiod), DoubleSequence.ofInternal(values)));
+        return present(TsData.of(Fixme.asPeriod(freq, firstyear, firstperiod), DoubleSequence.ofInternal(values)));
     }
 
     private static <T> void testBuilderAdd(CustomFactory<T> cf) {
@@ -158,25 +143,25 @@ public class OptionalTsDataTest {
         Function<Object[], T> dateFunc = o -> (T) o[0];
         Function<Object[], Number> valueFunc = o -> (Number) o[1];
 
-        TsDataBuilder<T> b = cf.builderOf(Monthly, None, false);
+        TsDataBuilder<T> b = cf.builderOf(MONTHLY, None, false);
 
         assertThat(b.clear().add(null, null).build()).isEqualTo(NO_DATA);
         assertThat(b.clear().add(null, 10).build()).isEqualTo(NO_DATA);
-        assertThat(b.clear().add((T) example[0][0], null).build()).isEqualTo(data(Monthly, 2010, 0, NaN));
-        assertThat(b.clear().add((T) example[0][0], 10).build()).isEqualTo(data(Monthly, 2010, 0, 10));
+        assertThat(b.clear().add((T) example[0][0], null).build()).isEqualTo(data(MONTHLY, 2010, 0, NaN));
+        assertThat(b.clear().add((T) example[0][0], 10).build()).isEqualTo(data(MONTHLY, 2010, 0, 10));
 
         assertThat(b.clear().add(example[0], o -> null, o -> null).build()).isEqualTo(NO_DATA);
         assertThat(b.clear().add(example[0], o -> null, valueFunc).build()).isEqualTo(NO_DATA);
-        assertThat(b.clear().add(example[0], dateFunc, o -> null).build()).isEqualTo(data(Monthly, 2010, 0, NaN));
-        assertThat(b.clear().add(example[0], dateFunc, valueFunc).build()).isEqualTo(data(Monthly, 2010, 0, 10));
+        assertThat(b.clear().add(example[0], dateFunc, o -> null).build()).isEqualTo(data(MONTHLY, 2010, 0, NaN));
+        assertThat(b.clear().add(example[0], dateFunc, valueFunc).build()).isEqualTo(data(MONTHLY, 2010, 0, 10));
         assertThatThrownBy(() -> b.add(null, dateFunc, valueFunc)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> b.add(example[0], null, valueFunc)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> b.add(example[0], dateFunc, null)).isInstanceOf(NullPointerException.class);
 
         assertThat(b.clear().addAll(Stream.of(example), o -> null, o -> null).build()).isEqualTo(NO_DATA);
         assertThat(b.clear().addAll(Stream.of(example), o -> null, valueFunc).build()).isEqualTo(NO_DATA);
-        assertThat(b.clear().addAll(Stream.of(example), dateFunc, o -> null).build()).isEqualTo(data(Monthly, 2010, 0, NaN, NaN));
-        assertThat(b.clear().addAll(Stream.of(example), dateFunc, valueFunc).build()).isEqualTo(data(Monthly, 2010, 0, 10, 20));
+        assertThat(b.clear().addAll(Stream.of(example), dateFunc, o -> null).build()).isEqualTo(data(MONTHLY, 2010, 0, NaN, NaN));
+        assertThat(b.clear().addAll(Stream.of(example), dateFunc, valueFunc).build()).isEqualTo(data(MONTHLY, 2010, 0, 10, 20));
         assertThatThrownBy(() -> b.addAll(null, dateFunc, valueFunc)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> b.addAll(Stream.of(example), null, valueFunc)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> b.addAll(Stream.of(example), dateFunc, null)).isInstanceOf(NullPointerException.class);
@@ -184,7 +169,7 @@ public class OptionalTsDataTest {
 
     private static <T> void testBuilderPresent(CustomFactory<T> cf) {
         TsDataBuilder<T> b;
-        EnumSet<TsFrequency> defined = complementOf(of(Undefined));
+        List<TsFrequency> defined = Fixme.complementOfUndefined();
         T jan2010 = cf.dateOf(2010, 1, 1);
         T feb2010 = cf.dateOf(2010, 2, 1);
         T apr2010 = cf.dateOf(2010, 4, 1);
@@ -199,33 +184,33 @@ public class OptionalTsDataTest {
         });
 
         // monthly with missing values
-        b = cf.builderOf(Monthly, None, false).add(jan2010, 10).add(apr2010, 40);
+        b = cf.builderOf(MONTHLY, None, false).add(jan2010, 10).add(apr2010, 40);
         assertThat(b.build())
-                .isEqualTo(data(Monthly, 2010, 0, 10, Double.NaN, Double.NaN, 40))
+                .isEqualTo(data(MONTHLY, 2010, 0, 10, Double.NaN, Double.NaN, 40))
                 .isEqualTo(b.build());
 
         // quarterly
-        b = cf.builderOf(Quarterly, None, false).add(jan2010, 10).add(apr2010, 40);
+        b = cf.builderOf(QUARTERLY, None, false).add(jan2010, 10).add(apr2010, 40);
         assertThat(b.build())
-                .isEqualTo(data(Quarterly, 2010, 0, 10, 40))
+                .isEqualTo(data(QUARTERLY, 2010, 0, 10, 40))
                 .isEqualTo(b.build());
 
         // undefined to monthly
         b = cf.builderOf(Undefined, None, false).add(jan2010, 10).add(feb2010, 20);
         assertThat(b.build())
-                .isEqualTo(data(Monthly, 2010, 0, 10, 20))
+                .isEqualTo(data(MONTHLY, 2010, 0, 10, 20))
                 .isEqualTo(b.build());
 
         // undefined to monthly with missing values
         b = cf.builderOf(Undefined, None, false).add(jan2010, 10).add(feb2010, 20).add(may2010, 50);
         assertThat(b.build())
-                .isEqualTo(data(Monthly, 2010, 0, 10, 20, Double.NaN, Double.NaN, 50))
+                .isEqualTo(data(MONTHLY, 2010, 0, 10, 20, Double.NaN, Double.NaN, 50))
                 .isEqualTo(b.build());
 
         // undefined to quarterly
         b = cf.builderOf(Undefined, None, false).add(jan2010, 10).add(apr2010, 40);
         assertThat(b.build())
-                .isEqualTo(data(Quarterly, 2010, 0, 10, 40))
+                .isEqualTo(data(QUARTERLY, 2010, 0, 10, 40))
                 .isEqualTo(b.build());
 
         // defined with aggregation
@@ -248,7 +233,7 @@ public class OptionalTsDataTest {
 
         // unordered daily to monthly
         Function<AggregationType, OptionalTsData> b7 = a -> {
-            return cf.builderOf(Monthly, a, false)
+            return cf.builderOf(MONTHLY, a, false)
                     .add(cf.dateOf(2010, 2, 1), 20)
                     .add(cf.dateOf(2010, 1, 3), 10)
                     .add(cf.dateOf(2010, 1, 4), 11)
@@ -256,12 +241,12 @@ public class OptionalTsDataTest {
                     .add(cf.dateOf(2010, 1, 2), 13)
                     .build();
         };
-        assertThat(b7.apply(First)).isEqualTo(data(Monthly, 2010, 0, 12, 20));
-        assertThat(b7.apply(Last)).isEqualTo(data(Monthly, 2010, 0, 11, 20));
-        assertThat(b7.apply(Min)).isEqualTo(data(Monthly, 2010, 0, 10, 20));
-        assertThat(b7.apply(Max)).isEqualTo(data(Monthly, 2010, 0, 13, 20));
-        assertThat(b7.apply(Average)).isEqualTo(data(Monthly, 2010, 0, 46d / 4, 20));
-        assertThat(b7.apply(Sum)).isEqualTo(data(Monthly, 2010, 0, 46, 20));
+        assertThat(b7.apply(First)).isEqualTo(data(MONTHLY, 2010, 0, 12, 20));
+        assertThat(b7.apply(Last)).isEqualTo(data(MONTHLY, 2010, 0, 11, 20));
+        assertThat(b7.apply(Min)).isEqualTo(data(MONTHLY, 2010, 0, 10, 20));
+        assertThat(b7.apply(Max)).isEqualTo(data(MONTHLY, 2010, 0, 13, 20));
+        assertThat(b7.apply(Average)).isEqualTo(data(MONTHLY, 2010, 0, 46d / 4, 20));
+        assertThat(b7.apply(Sum)).isEqualTo(data(MONTHLY, 2010, 0, 46, 20));
     }
 
     private static <T> void testBuilderAbsent(CustomFactory<T> cf) {
@@ -269,7 +254,7 @@ public class OptionalTsDataTest {
         T jan2010 = cf.dateOf(2010, 1, 1);
 
         // no data
-        allOf(TsFrequency.class).forEach(o -> {
+        Fixme.allOf().forEach(o -> {
             TsDataBuilder<T> b2 = cf.builderOf(o, None, false);
             assertThat(b2.build())
                     .isEqualTo(NO_DATA)
@@ -297,7 +282,7 @@ public class OptionalTsDataTest {
                 .isEqualTo(b.build());
 
         // duplication without aggregation
-        complementOf(of(Undefined)).forEach(o -> {
+        Fixme.complementOfUndefined().forEach(o -> {
             TsDataBuilder<T> b2 = cf.builderOf(o, None, false).add(jan2010, 10).add(jan2010, 20);
             assertThat(b2.build())
                     .isEqualTo(DUPLICATION_WITHOUT_AGGREGATION)

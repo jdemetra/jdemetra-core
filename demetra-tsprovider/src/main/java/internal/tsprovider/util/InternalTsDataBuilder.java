@@ -18,9 +18,10 @@ package internal.tsprovider.util;
 
 import demetra.design.VisibleForTesting;
 import demetra.data.AggregationType;
+import demetra.timeseries.Fixme;
+import demetra.timeseries.TsFrequency;
 import demetra.timeseries.simplets.TsData;
 import demetra.timeseries.simplets.TsDataConverter;
-import demetra.timeseries.simplets.TsFrequency;
 import demetra.tsprovider.util.ObsCharacteristics;
 import demetra.tsprovider.util.ObsGathering;
 import demetra.tsprovider.OptionalTsData;
@@ -120,7 +121,7 @@ public class InternalTsDataBuilder {
             ObsGathering gathering, @Nonnull Set<ObsCharacteristics> characteristics,
             ToLongFunction<T> periodFunc, ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc) {
         boolean ordered = characteristics.contains(ObsCharacteristics.ORDERED);
-        if (gathering.getFrequency() == TsFrequency.Undefined) {
+        if (gathering.getFrequency().equals(Fixme.Undefined)) {
             if (gathering.getAggregationType() != AggregationType.None) {
                 return new UndefinedWithAggregation<>();
             }
@@ -172,7 +173,7 @@ public class InternalTsDataBuilder {
                 return NO_DATA;
             default:
                 TsData result = TsDataCollector.makeFromUnknownFrequency(obs);
-                if (result != null && (result.getFrequency().getAsInt() % freq.getAsInt() == 0)) {
+                if (result != null && (Fixme.getAsInt(result.getFrequency()) % Fixme.getAsInt(freq) == 0)) {
                     // should succeed
                     result = TsDataConverter.changeFrequency(result, freq, convMode, true);
                 } else {
@@ -184,7 +185,7 @@ public class InternalTsDataBuilder {
 
     public static int getIdFromTimeInMillis(Calendar cal, TsFrequency freq, long period) {
         cal.setTimeInMillis(period);
-        return calcTsPeriodId(freq.getAsInt(), cal.get(Calendar.YEAR), cal.get(Calendar.MONTH));
+        return calcTsPeriodId(Fixme.getAsInt(freq), cal.get(Calendar.YEAR), cal.get(Calendar.MONTH));
     }
 
     public static long getYearMonthDay(LocalDate date) {
@@ -193,7 +194,7 @@ public class InternalTsDataBuilder {
 
     public static int getIdFromYearMonthDay(TsFrequency freq, long period) {
         period = period / 100;
-        return calcTsPeriodId(freq.getAsInt(), (int) (period / 100), (int) (period % 100 - 1));
+        return calcTsPeriodId(Fixme.getAsInt(freq), (int) (period / 100), (int) (period % 100 - 1));
     }
 
     private static int calcTsPeriodId(int freq, int year, int month) {

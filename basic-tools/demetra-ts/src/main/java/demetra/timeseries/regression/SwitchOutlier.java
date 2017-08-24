@@ -19,17 +19,14 @@ package demetra.timeseries.regression;
 import demetra.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
-import demetra.timeseries.IRegularPeriod;
-import demetra.timeseries.ITimeDomain;
+import demetra.timeseries.RegularDomain;
 import java.time.LocalDateTime;
-import java.time.Period;
-import java.util.List;
 
 /**
  *
  * @author Jean Palate
  */
-public class SwitchOutlier<E extends IRegularPeriod> extends AbstractOutlier<E> {
+public class SwitchOutlier extends AbstractOutlier {
 
     public static final String WO = "WO";
 
@@ -66,14 +63,14 @@ public class SwitchOutlier<E extends IRegularPeriod> extends AbstractOutlier<E> 
 
 
     @Override
-    public boolean isSignificant(ITimeDomain<E> domain) {
-        int p = domain.search(position);
+    public boolean isSignificant(RegularDomain domain) {
+        int p = domain.indexOf(position);
         return p >= 0 && p < domain.length() - 1;
     }
 
     @Override
-    public SwitchOutlier<E> rename(String name) {
-        return new SwitchOutlier<>(position, name);
+    public SwitchOutlier rename(String name) {
+        return new SwitchOutlier(position, name);
     }
 
 }

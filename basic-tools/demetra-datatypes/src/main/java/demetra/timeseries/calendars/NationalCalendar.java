@@ -14,11 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries;
+package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.timeseries.calendars.ISpecialDay;
-import demetra.timeseries.calendars.SpecialDayEvent;
 import demetra.utilities.Comparator;
 import java.util.ArrayList;
 import java.util.Collection;

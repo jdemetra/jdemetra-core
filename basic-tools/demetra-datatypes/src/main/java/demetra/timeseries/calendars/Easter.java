@@ -16,9 +16,7 @@
  */
 package demetra.timeseries.calendars;
 
-import demetra.timeseries.Day;
 import java.time.LocalDate;
-import java.time.Month;
 
 /**
  *

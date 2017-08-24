@@ -18,10 +18,8 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.timeseries.DailyPeriod;
-import demetra.timeseries.IDatePeriod;
-import demetra.timeseries.simplets.TsDomain;
-import demetra.timeseries.simplets.TsFrequency;
+import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsFrequency;
 import java.time.LocalDate;
 
 
@@ -74,7 +72,7 @@ public interface ISpecialDay {
      * @param domain
      * @return The returned domain is included in the given domain. Could be an empty period
      */
-    IDatePeriod getSignificantDomain(IDatePeriod domain);
+    RegularDomain getSignificantDomain(RegularDomain domain);
     
     double getWeight();
     

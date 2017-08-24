@@ -17,12 +17,12 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.timeseries.DailyPeriod;
-import demetra.timeseries.IDatePeriod;
-import demetra.timeseries.simplets.TsFrequency;
-import demetra.timeseries.simplets.TsPeriod;
+import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsPeriod;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.AbstractList;
 import java.util.HashMap;
 import java.util.Map;
@@ -254,8 +254,11 @@ public class EasterRelatedDay implements ISpecialDay {
     }
 
     @Override
-    public IDatePeriod getSignificantDomain(IDatePeriod domain) {
-        LocalDate first=domain.firstDay(), last=domain.lastDay();
+    public RegularDomain getSignificantDomain(RegularDomain domain) {
+        if (!domain.getStartPeriod().getFreq().getUnit().equals(ChronoUnit.DAYS)) {
+            throw new IllegalArgumentException();
+        }
+        LocalDate first = domain.start().toLocalDate(), last = domain.end().toLocalDate().minusDays(1);
         LocalDate efirst = easter(first.getYear()).plusDays(offset);
         LocalDate elast = easter(last.getYear()).plusDays(offset);
         if (efirst.isBefore(first)) {
@@ -265,9 +268,9 @@ public class EasterRelatedDay implements ISpecialDay {
             elast = easter(last.getYear() - 1).plusDays(offset);
         }
         if (efirst.isAfter(elast)) {
-            return DailyPeriod.of(efirst, 0);
+            return RegularDomain.of(domain.getStartPeriod().withDate(efirst), 0);
         } else {
-            return DailyPeriod.of(efirst, elast);
+            return RegularDomain.of(domain.getStartPeriod().withDate(efirst), (int) ChronoUnit.DAYS.between(efirst, elast));
         }
     }
 

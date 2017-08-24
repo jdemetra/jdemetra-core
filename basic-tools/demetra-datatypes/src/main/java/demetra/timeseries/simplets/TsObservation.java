@@ -18,6 +18,7 @@ package demetra.timeseries.simplets;
 
 import demetra.design.Immutable;
 import demetra.timeseries.TimeObservation;
+import demetra.timeseries.TsPeriod;
 
 /**
  *

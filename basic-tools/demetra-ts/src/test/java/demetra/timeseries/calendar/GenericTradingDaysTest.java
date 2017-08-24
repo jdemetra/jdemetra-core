@@ -18,8 +18,8 @@ package demetra.timeseries.calendar;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
-import demetra.timeseries.simplets.TsDomain;
-import demetra.timeseries.simplets.TsFrequency;
+import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsPeriod;
 import ec.tstoolkit.timeseries.calendars.DefaultGregorianCalendarProvider;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class GenericTradingDaysTest {
 
     @Test
     public void testTD() {
-        TsDomain md = TsDomain.of(TsFrequency.Monthly, 1980, 0, 360);
+        RegularDomain md = RegularDomain.of(TsPeriod.monthly(1980, 1), 360);
         Matrix M1 = Matrix.make(md.length(), 6);
         GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD7);
         gtd.data(md, M1.columnList());
@@ -55,7 +55,7 @@ public class GenericTradingDaysTest {
     public void stressTestTD() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 1000000; ++i) {
-            TsDomain md = TsDomain.of(TsFrequency.Monthly, 1980, 0, 360);
+            RegularDomain md = RegularDomain.of(TsPeriod.monthly(1980, 1), 360);
             Matrix M1 = Matrix.make(md.length(), 6);
             GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD7);
             gtd.data(md, M1.columnList());

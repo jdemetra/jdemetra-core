@@ -17,7 +17,6 @@
 package demetra.timeseries;
 
 import demetra.design.Development;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**

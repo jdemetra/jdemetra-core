@@ -29,6 +29,7 @@ import demetra.data.Doubles;
 import static demetra.data.Doubles.average;
 import demetra.maths.linearfilters.HendersonFilters;
 import demetra.maths.linearfilters.SymmetricFilter;
+import demetra.timeseries.RegularDomain;
 import static demetra.timeseries.simplets.TsDataToolkit.fitToDomain;
 import internal.Demo;
 import org.junit.Ignore;
@@ -134,19 +135,17 @@ public class TsDataToolkitTest {
         System.out.println("h25");
         System.out.println(TsDataToolkit.apply(h25, series));
     }
-    
-    public void testFit(){
+
+    public void testFit() {
         TsData P = Data.TS_PROD;
-        TsDomain d1=TsDomain.of(P.getStart().minus(10), 5);
-        assertTrue(fitToDomain(P, d1).values().allMatch(x->Double.isNaN(x)));
-        TsDomain d2=TsDomain.of(P.domain().getEnd().plus(10), 5);
-        assertTrue(fitToDomain(P, d1).values().allMatch(x->Double.isNaN(x)));
+        RegularDomain d1 = RegularDomain.of(P.getStart().plus(-10), 5);
+        assertTrue(fitToDomain(P, d1).values().allMatch(x -> Double.isNaN(x)));
+        RegularDomain d2 = RegularDomain.of(P.domain().getEndPeriod().plus(10), 5);
+        assertTrue(fitToDomain(P, d1).values().allMatch(x -> Double.isNaN(x)));
     }
 
     private double distance(TsData s1, ec.tstoolkit.timeseries.simplets.TsData s2) {
         return Doubles.distance(s1.values(), DoubleSequence.ofInternal(s2.internalStorage()));
     }
-    
-    
 
 }

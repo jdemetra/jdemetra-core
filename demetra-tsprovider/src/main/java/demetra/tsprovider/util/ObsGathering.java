@@ -17,7 +17,8 @@
 package demetra.tsprovider.util;
 
 import demetra.data.AggregationType;
-import demetra.timeseries.simplets.TsFrequency;
+import demetra.timeseries.Fixme;
+import demetra.timeseries.TsFrequency;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
@@ -42,7 +43,7 @@ public final class ObsGathering {
         return new ObsGathering(frequency, aggregationType, true);
     }
 
-    public static final ObsGathering DEFAULT = excludingMissingValues(TsFrequency.Undefined, AggregationType.None);
+    public static final ObsGathering DEFAULT = excludingMissingValues(Fixme.Undefined, AggregationType.None);
 
     @lombok.NonNull
     TsFrequency frequency;

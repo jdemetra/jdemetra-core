@@ -19,7 +19,7 @@ package internal.tsprovider.util;
 import demetra.data.DoubleSequence;
 import demetra.design.Internal;
 import demetra.design.NewObject;
-import demetra.timeseries.simplets.TsFrequency;
+import demetra.timeseries.TsFrequency;
 import demetra.utilities.functions.ObjLongToIntFunction;
 
 /**

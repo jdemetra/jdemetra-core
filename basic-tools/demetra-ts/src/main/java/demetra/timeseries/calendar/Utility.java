@@ -17,11 +17,11 @@
 package demetra.timeseries.calendar;
 
 import demetra.design.Development;
-import demetra.timeseries.Day;
+import demetra.timeseries.Fixme;
+import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsException;
-import demetra.timeseries.simplets.TsDomain;
-import demetra.timeseries.simplets.TsFrequency;
-import demetra.timeseries.simplets.TsPeriod;
+import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsPeriod;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -40,17 +40,17 @@ class Utility {
      * @param domain
      * @return
      */
-    int[] daysCount(TsDomain domain) {
+    int[] daysCount(RegularDomain domain) {
         // if (domain == null)
         // throw new ArgumentNullException("domain");
         int n = domain.length();
         int[] rslt = new int[n];
         LocalDate[] start = new LocalDate[n + 1]; // id of the first day for each period
-        TsPeriod d0 = domain.getStart();
-        int conv = 12 / d0.getFrequency().getAsInt();
-        TsPeriod month = TsPeriod.of(TsFrequency.Monthly, d0.getYear(), d0.getPosition() * conv);
+        TsPeriod d0 = domain.getStartPeriod();
+        int conv = 12 / Fixme.getAsInt(d0.getFreq());
+        TsPeriod month = d0.withFreq(TsFrequency.MONTHLY);
         for (int i = 0; i < start.length; ++i) {
-            start[i] = month.firstDay();
+            start[i] = month.start().toLocalDate();
             month=month.plus(conv);
         }
         for (int i = 0; i < n; ++i) {
@@ -107,8 +107,8 @@ class Utility {
      * @return
      */
     LocalDate firstWeekDay(DayOfWeek day, int year, int month) {
-        TsPeriod m =  TsPeriod.of(TsFrequency.Monthly, year, month-1);
-        LocalDate start = m.firstDay();
+        TsPeriod m =  TsPeriod.monthly(year, month-1);
+        LocalDate start = m.start().toLocalDate();
         int iday = day.getValue();
         int istart = start.getDayOfWeek().getValue();
         int n = iday - istart;
@@ -155,7 +155,7 @@ class Utility {
 
         // make Jan 1, 1AD be 0
         int nDate = year * 365 + year / 4 - year / 100 + year / 400
-                + Day.getCumulatedMonthDays(month-1) + day;
+                + Fixme.getCumulatedMonthDays(month-1) + day;
 
         // If leap year and it's before March, subtract 1:
         if ((month < 3) && bLeapYear) {

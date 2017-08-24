@@ -19,19 +19,17 @@ package demetra.timeseries.regression;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.RationalBackFilter;
-import demetra.timeseries.IRegularPeriod;
-import demetra.timeseries.ITimeDomain;
-import demetra.timeseries.ITimePeriod;
+import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
 import java.util.List;
 
 /**
  *
  * @author Jean Palate
- * @param <E>
  */
 @Development(status = Development.Status.Alpha)
-public interface IOutlierVariable<E extends IRegularPeriod> extends ITsVariable<E> {
+public interface IOutlierVariable extends ITsVariable<RegularDomain> {
 
     public static class FilterRepresentation {
 
@@ -45,18 +43,17 @@ public interface IOutlierVariable<E extends IRegularPeriod> extends ITsVariable<
     }
 
     @Override
-    default void data(ITimeDomain<E> domain, List<DataBlock> buffer) {
-        E start=domain.get(0);
+    default void data(RegularDomain domain, List<DataBlock> buffer) {
+        TsPeriod start = domain.get(0);
         data(start, buffer.get(0));
     }
-    
+
     /**
      *
      * @param start
      * @param buffer
      */
-    void data(E start, DataBlock buffer);
-    
+    void data(TsPeriod start, DataBlock buffer);
 
     /**
      *
@@ -71,9 +68,9 @@ public interface IOutlierVariable<E extends IRegularPeriod> extends ITsVariable<
     LocalDateTime getPosition();
 
     /**
-     * 
+     *
      * @param freq
-     * @return 
+     * @return
      */
     FilterRepresentation getFilterRepresentation();
 

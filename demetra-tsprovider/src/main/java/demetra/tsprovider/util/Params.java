@@ -17,7 +17,8 @@
 package demetra.tsprovider.util;
 
 import demetra.data.AggregationType;
-import demetra.timeseries.simplets.TsFrequency;
+import demetra.timeseries.Fixme;
+import demetra.timeseries.TsFrequency;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -26,6 +27,7 @@ import javax.annotation.Nonnull;
 import demetra.util.Parser;
 import demetra.util.Formatter;
 import internal.util.Lists;
+import java.time.format.DateTimeParseException;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -210,7 +212,7 @@ public class Params {
     private static final class ObsGatheringParam<S extends IConfig> implements IParam<S, ObsGathering> {
 
         private final ObsGathering defaultValue;
-        private final IParam<S, TsFrequency> frequency;
+        private final IParam<S, String> frequency;
         private final IParam<S, AggregationType> aggregationType;
         private final IParam<S, Boolean> skipMissingValues;
 
@@ -220,7 +222,7 @@ public class Params {
                 @Nonnull String aggregationKey,
                 @Nonnull String skipKey) {
             this.defaultValue = defaultValue;
-            this.frequency = onEnum(defaultValue.getFrequency(), frequencyKey);
+            this.frequency = onString(defaultValue.getFrequency().toIsoString(), frequencyKey);
             this.aggregationType = onEnum(defaultValue.getAggregationType(), aggregationKey);
             this.skipMissingValues = onBoolean(defaultValue.isSkipMissingValues(), skipKey);
         }
@@ -233,16 +235,37 @@ public class Params {
         @Override
         public ObsGathering get(S config) {
             return skipMissingValues.get(config)
-                    ? ObsGathering.excludingMissingValues(frequency.get(config), aggregationType.get(config))
-                    : ObsGathering.includingMissingValues(frequency.get(config), aggregationType.get(config));
+                    ? ObsGathering.excludingMissingValues(getFreq(config), aggregationType.get(config))
+                    : ObsGathering.includingMissingValues(getFreq(config), aggregationType.get(config));
         }
 
         @Override
         public void set(IConfig.Builder<?, S> builder, ObsGathering value) {
             Objects.requireNonNull(builder);
             skipMissingValues.set(builder, value.isSkipMissingValues());
-            frequency.set(builder, value.getFrequency());
+            setFreq(builder, value.getFrequency());
             aggregationType.set(builder, value.getAggregationType());
+        }
+
+        private TsFrequency getFreq(S config) {
+            String tmp = frequency.get(config);
+            try {
+                return TsFrequency.parse(tmp);
+            } catch (DateTimeParseException ex) {
+                try {
+                    return Fixme.OldFreq.valueOf(tmp).convert();
+                } catch (IllegalArgumentException xxx) {
+                    return TsFrequency.parse(frequency.defaultValue());
+                }
+            }
+        }
+
+        private void setFreq(IConfig.Builder<?, S> builder, TsFrequency freq) {
+            try {
+                frequency.set(builder, Fixme.OldFreq.of(freq).name());
+            } catch (UnsupportedOperationException ex) {
+                frequency.set(builder, freq.toIsoString());
+            }
         }
     }
     //</editor-fold>

@@ -18,9 +18,9 @@ package demetra.timeseries.calendar;
 
 import demetra.data.Cell;
 import demetra.data.DataBlock;
-import demetra.timeseries.simplets.TsDomain;
+import demetra.timeseries.Fixme;
+import demetra.timeseries.RegularDomain;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 /**
@@ -61,7 +61,7 @@ public class GenericTradingDays {
         return clustering;
     }
 
-    public void data(TsDomain domain, List<DataBlock> buffer) {
+    public void data(RegularDomain domain, List<DataBlock> buffer) {
         if (contrastGroup >= 0) {
             dataContrasts(domain, buffer);
         } else {
@@ -69,7 +69,7 @@ public class GenericTradingDays {
         }
     }
 
-    private void dataNoContrast(TsDomain domain, List<DataBlock> buffer) {
+    private void dataNoContrast(RegularDomain domain, List<DataBlock> buffer) {
         int n = domain.length();
         int[][] days = tdCount(domain);
 
@@ -96,7 +96,7 @@ public class GenericTradingDays {
         }
     }
 
-    private void dataContrasts(TsDomain domain, List<DataBlock> buffer) {
+    private void dataContrasts(RegularDomain domain, List<DataBlock> buffer) {
         int n = domain.length();
         int[][] days = tdCount(domain);
 
@@ -172,13 +172,13 @@ public class GenericTradingDays {
     private static final LocalDate EPOCH = LocalDate.ofEpochDay(0);
     private static final int DAY_OF_WEEK_OF_EPOCH = EPOCH.getDayOfWeek().getValue() - 1;
 
-    public static int[][] tdCount(TsDomain domain) {
+    public static int[][] tdCount(RegularDomain domain) {
         int[][] rslt = new int[7][];
 
         int n = domain.length();
         int[] start = new int[n + 1]; // id of the first day for each period
-        LocalDate cur = domain.getStart().firstDay();
-        int conv = 12 / domain.getFrequency().getAsInt();
+        LocalDate cur = domain.start().toLocalDate();
+        int conv = 12 / Fixme.getAsInt(domain.getStartPeriod().getFreq());
         int year = cur.getYear(), month = cur.getMonthValue();
         for (int i = 0; i < start.length; ++i) {
             start[i] = Utility.calc(year, month, 1);

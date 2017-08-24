@@ -18,8 +18,7 @@ package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.timeseries.ITimeDomain;
-import demetra.timeseries.ITimePeriod;
+import demetra.timeseries.TsDomain;
 import java.time.Period;
 import java.util.List;
 
@@ -29,10 +28,10 @@ import java.util.List;
  * together.
  *
  * @author Jean Palate
- * @param <E>
+ * @param <D>
  */
 @Development(status = Development.Status.Release)
-public interface ITsVariable<E extends ITimePeriod> {
+public interface ITsVariable<D extends TsDomain> {
 
 
     /**
@@ -42,7 +41,7 @@ public interface ITsVariable<E extends ITimePeriod> {
      * @param data The buffers that will contain the data.
      * @since 1.5.2
      */
-    void data(ITimeDomain<E> domain, List<DataBlock> data);
+    void data(D domain, List<DataBlock> data);
 
     /**
      * Returns the supported time span. When it is defined, the definition
@@ -51,7 +50,7 @@ public interface ITsVariable<E extends ITimePeriod> {
      * @return The supported time span is returned or null if the variable is
      * able to support any time span.
      */
-    ITimeDomain<E> getDefinitionDomain();
+    D getDefinitionDomain();
 
     /**
      * Returns the supported period.
@@ -67,7 +66,7 @@ public interface ITsVariable<E extends ITimePeriod> {
      * @param context Domain of definition of the variable. Could be null
      * @return Short description of this variable. Should never be null.
      */
-    String getDescription(ITimeDomain<E> context);
+    String getDescription(D context);
     
     /**
      * Dimension (number of actual regression variables) of this variable
@@ -87,7 +86,7 @@ public interface ITsVariable<E extends ITimePeriod> {
      * getDim() = 1, getDescription and getItemDescription(0) will often return
      * the same description.
      */
-    String getItemDescription(int idx, ITimeDomain<E> context);
+    String getItemDescription(int idx, D context);
 
     /**
      * Checks that this regression variable may be used for a given domain. The
@@ -100,10 +99,10 @@ public interface ITsVariable<E extends ITimePeriod> {
      * @return True if the variable is significant on the given domain, false
      * otherwise
      */
-    boolean isSignificant(ITimeDomain<E> domain);
+    boolean isSignificant(D domain);
     
     String getName();
     
-    ITsVariable<E> rename(String name);
+    ITsVariable<D> rename(String name);
 
 }

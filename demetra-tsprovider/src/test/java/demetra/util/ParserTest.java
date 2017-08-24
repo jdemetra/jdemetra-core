@@ -16,7 +16,7 @@
  */
 package demetra.util;
 
-import demetra.timeseries.simplets.TsFrequency;
+import demetra.data.AggregationType;
 import internal.util.InternalParser;
 import java.io.File;
 import java.nio.charset.Charset;
@@ -85,9 +85,9 @@ public class ParserTest {
 
     @Test
     public void testOnEnum() {
-        Parser<TsFrequency> p = Parser.onEnum(TsFrequency.class);
-        assertCompliance(p, "Monthly");
-        assertThat(p.parse("Monthly")).isEqualTo(TsFrequency.Monthly);
+        Parser<AggregationType> p = Parser.onEnum(AggregationType.class);
+        assertCompliance(p, "Average");
+        assertThat(p.parse("Average")).isEqualTo(AggregationType.Average);
         assertThat(p.parse("hello")).isNull();
     }
 

@@ -6,7 +6,7 @@ package demetra.tsprovider.util;
 
 import com.google.common.collect.ImmutableMap;
 import demetra.data.AggregationType;
-import demetra.timeseries.simplets.TsFrequency;
+import demetra.timeseries.TsFrequency;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import java.io.File;
@@ -132,7 +132,7 @@ public class ParamsTest {
     @SuppressWarnings("null")
     public void testOnObsGathering() {
         ObsGathering defaultValue = ObsGathering.DEFAULT;
-        ObsGathering newValue = ObsGathering.includingMissingValues(TsFrequency.Yearly, AggregationType.Average);
+        ObsGathering newValue = ObsGathering.includingMissingValues(TsFrequency.YEARLY, AggregationType.Average);
         assertBehavior(Params.onObsGathering(defaultValue, "f", "a", "s"), defaultValue, newValue, ImmutableMap.of("f", "Yearly", "a", "Average", "s", "false"));
         assertThatThrownBy(() -> Params.onObsGathering(null, "f", "a", "s")).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> Params.onObsGathering(defaultValue, null, "a", "s")).isInstanceOf(NullPointerException.class);

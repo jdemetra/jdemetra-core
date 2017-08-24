@@ -17,8 +17,9 @@
 package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
-import demetra.timeseries.Day;
-import demetra.timeseries.Days;
+import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -39,10 +40,10 @@ public class TransitoryChangeTest {
     @Test
     public void testData() {
         DataBlock buffer = DataBlock.make(20);
-        Days days = Days.of(LocalDate.now(), buffer.length());
-        for (int i = -10; i < buffer.length()+10; ++i) {
-            TransitoryChange<Day> tc = new TransitoryChange<>(days.get(0).plus(i).start(), .7);
-            tc.data(days.getStart(), buffer);
+        RegularDomain days = RegularDomain.of(TsPeriod.of(TsFrequency.DAILY, LocalDate.now()), buffer.length());
+        for (int i = -10; i < buffer.length() + 10; ++i) {
+            TransitoryChange tc = new TransitoryChange(days.get(0).plus(i).start(), .7);
+            tc.data(days.getStartPeriod(), buffer);
             assertTrue(buffer.sum() <= 1 / (1 - tc.getCoefficient()) + 1e-9);
         }
     }

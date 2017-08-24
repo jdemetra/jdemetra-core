@@ -20,18 +20,15 @@ import demetra.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.maths.polynomials.UnitRoots;
-import demetra.timeseries.IRegularPeriod;
-import demetra.timeseries.ITimeDomain;
+import demetra.timeseries.RegularDomain;
 import java.time.LocalDateTime;
-import java.time.Period;
-import java.util.List;
 
 /**
  *
  * @author Jean Palate
  * @param <E>
  */
-public class PeriodicOutlier<E extends IRegularPeriod> extends AbstractOutlier<E> {
+public class PeriodicOutlier extends AbstractOutlier {
 
     public static final String SO = "SO";
     public static final String PO = "PO";
@@ -115,13 +112,13 @@ public class PeriodicOutlier<E extends IRegularPeriod> extends AbstractOutlier<E
     }
 
     @Override
-    public boolean isSignificant(ITimeDomain<E> domain) {
-        return domain.search(position) >= 0;
+    public boolean isSignificant(RegularDomain domain) {
+        return domain.indexOf(position) >= 0;
     }
 
     @Override
-    public PeriodicOutlier<E> rename(String name) {
-        return new PeriodicOutlier<>(position, period, zeroEnded, name);
+    public PeriodicOutlier rename(String name) {
+        return new PeriodicOutlier(position, period, zeroEnded, name);
     }
 
     public int getPeriod() {

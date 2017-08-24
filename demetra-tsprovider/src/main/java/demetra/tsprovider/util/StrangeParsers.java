@@ -16,9 +16,9 @@
  */
 package demetra.tsprovider.util;
 
+import demetra.timeseries.Fixme;
 import demetra.timeseries.TsException;
-import demetra.timeseries.simplets.TsFrequency;
-import demetra.timeseries.simplets.TsPeriod;
+import demetra.timeseries.TsFrequency;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -60,22 +60,22 @@ public class StrangeParsers {
     private static TsFrequency toFreq(String input) {
         switch (input) {
             case "Q":
-                return TsFrequency.Quarterly;
+                return TsFrequency.QUARTERLY;
             case "M":
-                return TsFrequency.Monthly;
+                return TsFrequency.MONTHLY;
             case "Y":
-                return TsFrequency.Yearly;
+                return TsFrequency.YEARLY;
             case "S":
-                return TsFrequency.HalfYearly;
+                return TsFrequency.HALF_YEARLY;
             case "T":
-                return TsFrequency.QuadriMonthly;
+                return TsFrequency.QUADRI_MONTHLY;
             default:
-                return TsFrequency.Undefined;
+                return Fixme.Undefined;
         }
     }
 
     private static Date toDate(int year, TsFrequency freq, int pos) throws TsException {
-        return Date.from(TsPeriod.of(freq, year, pos - 1).firstDay().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return Date.from(Fixme.asPeriod(freq, year, pos - 1).start().atZone(ZoneId.systemDefault()).toInstant());
     }
     //</editor-fold>
 }

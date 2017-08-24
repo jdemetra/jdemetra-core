@@ -17,8 +17,9 @@
 package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
-import demetra.timeseries.Day;
-import demetra.timeseries.Days;
+import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -35,10 +36,10 @@ public class PeriodicOutlierTest {
     @Test
     public void testData() {
         DataBlock buffer = DataBlock.make(20);
-        Days days = Days.of(LocalDate.now(), buffer.length());
+        RegularDomain days = RegularDomain.of(TsPeriod.of(TsFrequency.DAILY, LocalDate.now()), buffer.length());
         for (int i = -10; i < buffer.length()+10; ++i) {
-            PeriodicOutlier<Day> po = new PeriodicOutlier<>(days.get(0).plus(i).start(), 5, true);
-            po.data(days.getStart(), buffer);
+            PeriodicOutlier po = new PeriodicOutlier(days.get(0).plus(i).start(), 5, true);
+            po.data(days.getStartPeriod(), buffer);
             assertTrue(buffer.sum() <  1.0001);
         }
     }
@@ -46,10 +47,10 @@ public class PeriodicOutlierTest {
     @Test
     public void testData2() {
         DataBlock buffer = DataBlock.make(20);
-        Days days = Days.of(LocalDate.now(), buffer.length());
+        RegularDomain days = RegularDomain.of(TsPeriod.of(TsFrequency.DAILY, LocalDate.now()), buffer.length());
         for (int i = -10; i < buffer.length()+10; ++i) {
-            PeriodicOutlier<Day> po = new PeriodicOutlier<>(days.get(0).plus(i).start(), 5, false);
-            po.data(days.getStart(), buffer);
+            PeriodicOutlier po = new PeriodicOutlier(days.get(0).plus(i).start(), 5, false);
+            po.data(days.getStartPeriod(), buffer);
             assertTrue(buffer.sum() <  1.0001);
         }
     }

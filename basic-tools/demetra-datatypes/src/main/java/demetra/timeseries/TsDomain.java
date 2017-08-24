@@ -14,21 +14,22 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.simplets;
+package demetra.timeseries;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Test;
+import demetra.data.Range;
+import demetra.data.Sequence;
+import java.time.LocalDateTime;
 
 /**
  *
  * @author Philippe Charles
+ * @param <P>
  */
-public class TsDomainTest {
+public interface TsDomain<P> extends Range<LocalDateTime>, Sequence<P> {
 
-    @Test
-    public void testEquals() {
-        assertThat(TsDomain.of(TsFrequency.Monthly, 2010, 1, 10))
-                .isEqualTo(TsDomain.of(TsFrequency.Monthly, 2010, 1, 10))
-                .isNotEqualTo(TsDomain.of(TsFrequency.Monthly, 2010, 1, 11));
-    }
+    boolean contains(P period);
+
+    int indexOf(LocalDateTime date);
+
+    int indexOf(P period);
 }

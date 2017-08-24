@@ -13,15 +13,13 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.timeseries.simplets.TsPeriod;
+import demetra.timeseries.TsPeriod;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-
 
 /**
  *
@@ -34,7 +32,7 @@ public interface IDayInfo {
 
     TsPeriod getPeriod();
 
-    default DayOfWeek getDayOfWeek(){
+    default DayOfWeek getDayOfWeek() {
         return getDay().getDayOfWeek();
     }
 }

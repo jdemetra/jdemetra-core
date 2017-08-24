@@ -17,9 +17,8 @@
 package demetra.benchmarking.univariate;
 
 import demetra.benchmarking.spi.DentonAlgorithm;
-import demetra.design.Algorithm;
+import demetra.timeseries.TsFrequency;
 import demetra.timeseries.simplets.TsData;
-import demetra.timeseries.simplets.TsFrequency;
 import demetra.utilities.ServiceLookup;
 import java.util.concurrent.atomic.AtomicReference;
 
