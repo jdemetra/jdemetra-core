@@ -124,6 +124,11 @@ public class SsfDenton {
         }
 
         @Override
+        public boolean areErrorsTimeInvariant() {
+            return true;
+        }
+
+        @Override
         public boolean hasError(int pos) {
             return false;
         }
@@ -214,14 +219,12 @@ public class SsfDenton {
         }
 
         @Override
-        public boolean a0(DataBlock a0) {
-            return true;
+        public void a0(DataBlock a0) {
         }
 
         @Override
-        public boolean Pf0(Matrix pf0) {
+        public void Pf0(Matrix pf0) {
             pf0.set(1, 1, 1);
-            return true;
         }
 
         @Override
@@ -356,5 +359,9 @@ public class SsfDenton {
             return false;
         }
 
+        @Override
+        public boolean areInnovationsTimeInvariant() {
+            return true;
+        }
     }
 }

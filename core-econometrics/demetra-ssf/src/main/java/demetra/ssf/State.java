@@ -36,12 +36,8 @@ public class State {
 
     public static State of(ISsfBase ssf) {
         State state = new State(ssf.getStateDim());
-        if (!ssf.getInitialization().a0(state.a)) {
-            return null;
-        }
-        if (!ssf.getInitialization().Pf0(state.P)) {
-            return null;
-        }
+        ssf.getInitialization().a0(state.a);
+        ssf.getInitialization().Pf0(state.P);
         return state;
     }
 

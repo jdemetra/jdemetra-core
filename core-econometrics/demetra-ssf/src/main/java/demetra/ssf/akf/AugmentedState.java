@@ -37,12 +37,8 @@ public class AugmentedState extends State {
     public static AugmentedState of(ISsfBase ssf) {
         ISsfInitialization initialization = ssf.getInitialization();
         AugmentedState state = new AugmentedState(initialization.getStateDim(), initialization.getDiffuseDim());
-        if (!initialization.a0(state.a())) {
-            return null;
-        }
-        if (!initialization.Pf0(state.P())) {
-            return null;
-        }
+        initialization.a0(state.a());
+        initialization.Pf0(state.P());
         if (initialization.isDiffuse()) {
             initialization.diffuseConstraints(state.B);
         }

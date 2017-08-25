@@ -30,6 +30,8 @@ public class NoisyMeasurement implements ISsfMeasurement {
     public static interface INoise {
 
         double get(int pos);
+        
+        boolean isTimeInvariant();
     }
 
     public static ISsfMeasurement of(ISsfMeasurement m, INoise noise) {
@@ -43,12 +45,12 @@ public class NoisyMeasurement implements ISsfMeasurement {
         this.measurement = m;
         this.noise = n;
     }
-    
-    public ISsfMeasurement getMeasurement(){
+
+    public ISsfMeasurement getMeasurement() {
         return measurement;
     }
 
-    public INoise getNoise(){
+    public INoise getNoise() {
         return noise;
     }
 
@@ -63,13 +65,18 @@ public class NoisyMeasurement implements ISsfMeasurement {
     }
 
     @Override
+    public boolean areErrorsTimeInvariant() {
+        return noise.isTimeInvariant();
+    }
+
+    @Override
     public boolean hasError(int pos) {
         return measurement.hasError(pos) || noise.get(pos) > 0;
     }
 
     @Override
     public double errorVariance(int pos) {
-        return noise.get(pos)+measurement.errorVariance(pos);
+        return noise.get(pos) + measurement.errorVariance(pos);
     }
 
     @Override

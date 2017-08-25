@@ -60,6 +60,8 @@ public interface ISsfMeasurement extends ISsfRoot {
  be 0
      */
     double errorVariance(int pos);
+    
+    boolean areErrorsTimeInvariant();
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="forward operations">

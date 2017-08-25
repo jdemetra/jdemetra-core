@@ -162,12 +162,11 @@ public class SsfBsm2 extends Ssf {
         }
 
         @Override
-        public boolean a0(DataBlock a0) {
-            return true;
+        public void a0(DataBlock a0) {
         }
 
         @Override
-        public boolean Pf0(Matrix p) {
+        public void Pf0(Matrix p) {
             int i = 0;
             if (data.cVar > 0) {
                 double q = data.cVar / (1 - data.cDump * data.cDump);
@@ -196,7 +195,6 @@ public class SsfBsm2 extends Ssf {
                     p.extract(i, j, i, j).copy(data.tsvar);
                 }
             }
-            return true;
         }
 
    }
@@ -211,6 +209,11 @@ public class SsfBsm2 extends Ssf {
 
         @Override
         public boolean isTimeInvariant() {
+            return true;
+        }
+
+        @Override
+        public boolean areInnovationsTimeInvariant() {
             return true;
         }
 

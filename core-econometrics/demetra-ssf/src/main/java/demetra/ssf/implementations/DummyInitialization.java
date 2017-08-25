@@ -57,13 +57,11 @@ public class DummyInitialization implements ISsfInitialization {
     }
 
     @Override
-    public boolean a0(DataBlock a0) {
-        return true;
+    public void a0(DataBlock a0) {
     }
 
     @Override
-    public boolean Pf0(Matrix pf0) {
-        return true;
+    public void Pf0(Matrix pf0) {
     }
 
 }

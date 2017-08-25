@@ -111,26 +111,20 @@ public class CompositeInitialization implements ISsfInitialization {
     }
 
     @Override
-    public boolean a0(DataBlock a0) {
+    public void a0(DataBlock a0) {
         DataWindow cur = a0.left();
         for (int i = 0; i < initializers.length; ++i) {
-            if (!initializers[i].a0(cur.next(dim[i]))) {
-                return false;
-            }
+            initializers[i].a0(cur.next(dim[i]));
         }
-        return true;
     }
 
     @Override
-    public boolean Pf0(Matrix p) {
+    public void Pf0(Matrix p) {
         MatrixWindow cur = p.topLeft();
         for (int i = 0; i < initializers.length; ++i) {
             cur.next(dim[i], dim[i]);
-            if (!initializers[i].Pf0(cur)) {
-                return false;
-            }
+            initializers[i].Pf0(cur);
         }
-        return true;
     }
 
     @Override

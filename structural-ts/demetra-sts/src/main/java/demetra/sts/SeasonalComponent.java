@@ -336,12 +336,11 @@ public class SeasonalComponent {
         }
 
         @Override
-        public boolean a0(DataBlock a0) {
-            return true;
+        public void a0(DataBlock a0) {
         }
 
         @Override
-        public boolean Pf0(Matrix p) {
+        public void Pf0(Matrix p) {
             if (data.seasVar > 0) {
                 if (data.seasModel == SeasonalModel.Dummy) {
                     p.set(0, 0, data.seasVar);
@@ -349,7 +348,6 @@ public class SeasonalComponent {
                     p.copy(data.tsvar);
                 }
             }
-            return true;
         }
 
     }
@@ -364,6 +362,11 @@ public class SeasonalComponent {
 
         @Override
         public boolean isTimeInvariant() {
+            return true;
+        }
+
+        @Override
+        public boolean areInnovationsTimeInvariant() {
             return true;
         }
 
@@ -562,16 +565,14 @@ public class SeasonalComponent {
         }
 
         @Override
-        public boolean a0(DataBlock a0) {
-            return true;
+        public void a0(DataBlock a0) {
         }
 
         @Override
-        public boolean Pf0(Matrix p) {
+        public void Pf0(Matrix p) {
             if (data.V != null) {
                 p.copy(data.V);
             }
-            return true;
         }
 
     }
@@ -586,6 +587,11 @@ public class SeasonalComponent {
 
         @Override
         public boolean isTimeInvariant() {
+            return true;
+        }
+
+        @Override
+        public boolean areInnovationsTimeInvariant() {
             return true;
         }
 

@@ -36,6 +36,11 @@ public class ConstantDynamics implements ISsfDynamics {
     }
 
     @Override
+    public boolean areInnovationsTimeInvariant() {
+        return true;
+    }
+
+    @Override
     public int getInnovationsDim() {
         return 0;
     }

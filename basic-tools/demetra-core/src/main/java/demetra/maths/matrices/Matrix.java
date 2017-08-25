@@ -578,7 +578,18 @@ public class Matrix implements DoubleMatrix {
         return new Matrix(storage, start + r0 * rowInc + c0 * colInc,
                 nr, nc, rowInc, colInc);
     }
+    
+    public Matrix dropTopLeft(int nr, int nc){
+        return new Matrix(storage, start + nr * rowInc + nc * colInc,
+                nrows-nr, ncols-nc, rowInc, colInc);
+        
+    }
 
+    public Matrix dropBottomRight(int nr, int nc){
+        return new Matrix(storage, start,
+                nrows-nr, ncols-nc, rowInc, colInc);
+        
+    }
     /**
      *
      * @param r0

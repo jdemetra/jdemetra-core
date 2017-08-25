@@ -132,6 +132,11 @@ public class SsfCholette {
         }
 
         @Override
+        public boolean areErrorsTimeInvariant() {
+            return true;
+        }
+
+        @Override
         public boolean hasError(int pos) {
             return false;
         }
@@ -221,14 +226,12 @@ public class SsfCholette {
         }
 
         @Override
-        public boolean a0(DataBlock a0) {
-            return true;
+        public void a0(DataBlock a0) {
         }
 
         @Override
-        public boolean Pf0(Matrix pf0) {
+        public void Pf0(Matrix pf0) {
             pf0.set(1, 1, 1 / (1 - def.rho * def.rho));
-            return true;
         }
 
     }
@@ -261,6 +264,10 @@ public class SsfCholette {
             return true;
         }
 
+        @Override
+        public boolean areInnovationsTimeInvariant() {
+            return true;
+        }
         /**
          * case I: pos+1 % c = 0 T=| 0 0 | | 0 1 | case II: pos % c = 0 T=| 0 w
          * | | 0 1 | case III: others T=| 1 w | | 0 1 |

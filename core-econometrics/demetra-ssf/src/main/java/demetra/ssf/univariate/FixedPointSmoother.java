@@ -186,6 +186,11 @@ public class FixedPointSmoother {
         }
 
         @Override
+        public boolean areErrorsTimeInvariant() {
+            return core.areErrorsTimeInvariant();
+        }
+
+        @Override
         public boolean hasError(int pos) {
             return core.hasError(pos);
         }
@@ -250,6 +255,11 @@ public class FixedPointSmoother {
         @Override
         public boolean hasInnovations(int pos) {
             return core.hasInnovations(pos);
+        }
+
+        @Override
+        public boolean areInnovationsTimeInvariant() {
+            return core.areInnovationsTimeInvariant();
         }
 
         @Override

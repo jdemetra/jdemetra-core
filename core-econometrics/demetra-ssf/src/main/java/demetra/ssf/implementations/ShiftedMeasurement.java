@@ -21,7 +21,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
- * Shifted measurement
+ * Shifted measurement: Zshift(t) = Z(pos + shift) 
  *
  * @author Jean Palate
  */
@@ -38,6 +38,11 @@ public class ShiftedMeasurement implements ISsfMeasurement {
     @Override
     public boolean isTimeInvariant() {
         return m.isTimeInvariant();
+    }
+    
+    @Override
+    public boolean areErrorsTimeInvariant() {
+        return m.areErrorsTimeInvariant();
     }
     
     @Override

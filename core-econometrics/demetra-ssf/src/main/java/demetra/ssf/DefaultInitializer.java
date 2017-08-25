@@ -89,19 +89,17 @@ public class DefaultInitializer implements ISsfInitialization {
     }
     
     @Override
-    public boolean a0(DataBlock a) {
+    public void a0(DataBlock a) {
         if (a0 != null) {
             a0.accept(a);
         }
-        return true;
     }
     
     @Override
-    public boolean Pf0(Matrix pf) {
+    public void Pf0(Matrix pf) {
         if (Pf != null) {
             Pf.accept(pf);
         }
-        return true;
     }
     
     @Override

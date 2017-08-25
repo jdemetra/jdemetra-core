@@ -68,19 +68,15 @@ public class ArrayFilter {
         return true;
     }
 
-    private int initState() {
+    private void initState() {
         state_ = new LState(L());
         pe_ = new UpdateInformation(dim_);
         ISsfInitialization initialization = ssf.getInitialization();
-        if (!initialization.a0(state_.a))
-            return -1;
+        initialization.a0(state_.a);
         Matrix P0 = Matrix.make(dim_, dim_);
-        if (! initialization.Pf0(P0))
-            return -1;
+        initialization.Pf0(P0);
         SymmetricMatrix.lcholesky(P0, State.ZERO);
         state_.L.copy(P0);
-
-        return 0;
     }
 
     /**
@@ -98,10 +94,8 @@ public class ArrayFilter {
         if (!initFilter()) {
             return false;
         }
-        pos_ = initState();
-        if (pos_ < 0) {
-            return false;
-        }
+        initState();
+        pos_ = 0;
         do {
             preArray();
             ElementaryTransformations.fastGivensTriangularize(A);

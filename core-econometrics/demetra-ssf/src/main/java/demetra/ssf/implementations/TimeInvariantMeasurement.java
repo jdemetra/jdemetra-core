@@ -57,6 +57,11 @@ public class TimeInvariantMeasurement implements ISsfMeasurement {
     }
 
     @Override
+    public boolean areErrorsTimeInvariant() {
+        return true;
+    }
+
+    @Override
     public void Z(int pos, DataBlock z) {
         z.copy(Z);
     }

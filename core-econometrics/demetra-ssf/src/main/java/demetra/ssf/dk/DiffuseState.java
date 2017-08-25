@@ -36,12 +36,8 @@ public class DiffuseState extends State {
     public static DiffuseState of(ISsfBase ssf) {
         ISsfInitialization initialization = ssf.getInitialization();
         DiffuseState state = new DiffuseState(initialization.getStateDim());
-        if (!initialization.a0(state.a())) {
-            return null;
-        }
-        if (!initialization.Pf0(state.P())) {
-            return null;
-        }
+        initialization.a0(state.a());
+        initialization.Pf0(state.P());
         if (initialization.isDiffuse()) {
             initialization.Pi0(state.Pi);
         }
