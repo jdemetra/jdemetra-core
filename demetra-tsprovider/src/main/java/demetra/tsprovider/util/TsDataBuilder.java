@@ -18,7 +18,7 @@ package demetra.tsprovider.util;
 
 import demetra.tsprovider.OptionalTsData;
 import demetra.design.IBuilder;
-import internal.tsprovider.util.InternalTsDataBuilder;
+import internal.tsprovider.util.ByLongDataBuilder;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
@@ -113,8 +113,8 @@ public interface TsDataBuilder<T> extends IBuilder<OptionalTsData> {
      * @since 2.2.0
      */
     @Nonnull
-    static TsDataBuilder<Date> byDate(@Nonnull Calendar resource, @Nonnull ObsGathering gathering, @Nonnull ObsCharacteristics... characteristics) {
-        return InternalTsDataBuilder.builder(gathering, InternalTsDataBuilder.toEnumSet(characteristics), Date::getTime, (f, p) -> InternalTsDataBuilder.getIdFromTimeInMillis(resource, f, p));
+    static TsDataBuilder<Date> byCalendar(@Nonnull Calendar resource, @Nonnull ObsGathering gathering, @Nonnull ObsCharacteristics... characteristics) {
+        return ByLongDataBuilder.fromCalendar(resource, gathering, characteristics);
     }
 
     /**
@@ -126,7 +126,7 @@ public interface TsDataBuilder<T> extends IBuilder<OptionalTsData> {
      * @since 2.2.0
      */
     @Nonnull
-    static TsDataBuilder<LocalDate> byLocalDate(@Nonnull ObsGathering gathering, @Nonnull ObsCharacteristics... characteristics) {
-        return InternalTsDataBuilder.builder(gathering, InternalTsDataBuilder.toEnumSet(characteristics), InternalTsDataBuilder::getYearMonthDay, InternalTsDataBuilder::getIdFromYearMonthDay);
+    static TsDataBuilder<LocalDate> byDate(@Nonnull ObsGathering gathering, @Nonnull ObsCharacteristics... characteristics) {
+        return ByLongDataBuilder.fromDate(gathering, characteristics);
     }
 }

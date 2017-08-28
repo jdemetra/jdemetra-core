@@ -29,6 +29,10 @@ import demetra.timeseries.TsPeriod;
 @lombok.experimental.UtilityClass
 public class TsDataConverter {
 
+    public boolean canChangeFrequency(TsData data, TsFrequency newFreq) {
+        return Fixme.getAsInt(data.getFrequency()) % Fixme.getAsInt(newFreq) == 0;
+    }
+
     /**
      * Makes a frequency change of this series.
      *

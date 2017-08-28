@@ -36,11 +36,11 @@ import demetra.tsprovider.util.ObsGathering;
 import demetra.tsprovider.util.TsDataBuilder;
 import static demetra.tsprovider.OptionalTsData.absent;
 import static demetra.tsprovider.OptionalTsData.present;
-import static internal.tsprovider.util.InternalTsDataBuilder.DUPLICATION_WITHOUT_AGGREGATION;
-import static internal.tsprovider.util.InternalTsDataBuilder.GUESS_DUPLICATION;
-import static internal.tsprovider.util.InternalTsDataBuilder.GUESS_SINGLE;
-import static internal.tsprovider.util.InternalTsDataBuilder.INVALID_AGGREGATION;
-import static internal.tsprovider.util.InternalTsDataBuilder.NO_DATA;
+import static internal.tsprovider.util.TsDataBuilderUtil.DUPLICATION_WITHOUT_AGGREGATION;
+import static internal.tsprovider.util.TsDataBuilderUtil.GUESS_DUPLICATION;
+import static internal.tsprovider.util.TsDataBuilderUtil.GUESS_SINGLE;
+import static internal.tsprovider.util.TsDataBuilderUtil.INVALID_AGGREGATION;
+import static internal.tsprovider.util.TsDataBuilderUtil.NO_DATA;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.function.Function;
@@ -51,9 +51,9 @@ import static java.lang.Double.NaN;
 import java.time.LocalDate;
 import static java.util.EnumSet.complementOf;
 import java.util.function.BiFunction;
+import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static java.util.EnumSet.of;
-import java.util.List;
 
 /**
  *
@@ -99,11 +99,11 @@ public class OptionalTsDataTest {
     }
 
     @Test
-    public void testBuilderByDate() {
+    public void testBuilderByCalendar() {
         CustomFactory<Date> factory = new CustomFactory<Date>() {
             @Override
             public TsDataBuilder<Date> builderOf(ObsGathering gathering) {
-                return TsDataBuilder.byDate(new GregorianCalendar(), gathering);
+                return TsDataBuilder.byCalendar(new GregorianCalendar(), gathering);
             }
 
             @Override
@@ -117,11 +117,11 @@ public class OptionalTsDataTest {
     }
 
     @Test
-    public void testBuilderByLocalDate() {
+    public void testBuilderByDate() {
         CustomFactory<LocalDate> factory = new CustomFactory<LocalDate>() {
             @Override
             public TsDataBuilder<LocalDate> builderOf(ObsGathering gathering) {
-                return TsDataBuilder.byLocalDate(gathering);
+                return TsDataBuilder.byDate(gathering);
             }
 
             @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 National Bank of Belgium
+ * Copyright 2017 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -16,27 +16,30 @@
  */
 package internal.tsprovider.util;
 
-import demetra.data.DoubleSequence;
-import demetra.timeseries.TsFrequency;
+import demetra.tsprovider.OptionalTsData;
+import demetra.tsprovider.util.TsDataBuilder;
 
 /**
+ *
  * @author Philippe Charles
  */
-interface ObsList {
+@lombok.AllArgsConstructor
+final class NoOpDataBuilder<T> implements TsDataBuilder<T> {
 
-    int size();
+    private final OptionalTsData data;
 
-    void sortByPeriod();
+    @Override
+    public TsDataBuilder<T> clear() {
+        return this;
+    }
 
-    int getPeriodId(TsFrequency frequency, int index) throws IndexOutOfBoundsException;
+    @Override
+    public TsDataBuilder<T> add(T date, Number value) {
+        return this;
+    }
 
-    double getValue(int index) throws IndexOutOfBoundsException;
-
-    default DoubleSequence getValues() {
-        double[] result = new double[size()];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = getValue(i);
-        }
-        return DoubleSequence.ofInternal(result);
+    @Override
+    public OptionalTsData build() {
+        return data;
     }
 }
