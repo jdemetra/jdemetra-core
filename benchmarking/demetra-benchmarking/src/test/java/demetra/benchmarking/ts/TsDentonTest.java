@@ -19,9 +19,9 @@ package demetra.benchmarking.ts;
 import demetra.benchmarking.univariate.DentonSpecification;
 import demetra.benchmarking.univariate.TsDenton;
 import demetra.data.DataBlock;
+import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsPeriod;
 import demetra.timeseries.simplets.TsData;
-import demetra.timeseries.simplets.TsFrequency;
-import demetra.timeseries.simplets.TsPeriod;
 import org.junit.Test;
 
 /**
@@ -43,8 +43,8 @@ public class TsDentonTest {
         DentonSpecification spec=new DentonSpecification();
         spec.setModified(true);
         spec.setMultiplicative(false);
-        TsPeriod q=TsPeriod.of(TsFrequency.Quarterly, 1978, 3);
-        TsPeriod a=TsPeriod.of(TsFrequency.Yearly, 1980, 0);
+        TsPeriod q=TsPeriod.quarterly(1978, 4);
+        TsPeriod a=TsPeriod.yearly(1980);
         TsData t=TsData.of(a, y);
         TsData s=TsData.of(q, x);
         TsData b = TsDenton.benchmark(s, t, spec);
@@ -59,9 +59,9 @@ public class TsDentonTest {
         DentonSpecification spec=new DentonSpecification();
         spec.setModified(true);
         spec.setDifferencing(3);
-        TsPeriod a=TsPeriod.of(TsFrequency.Yearly, 1980, 0);
+        TsPeriod a=TsPeriod.yearly(1980);
         TsData t=TsData.of(a, y);
-        TsData b = TsDenton.benchmark(TsFrequency.QuadriMonthly, t, spec);
+        TsData b = TsDenton.benchmark(TsFrequency.QUADRI_MONTHLY, t, spec);
         System.out.println(b);
     }
 }

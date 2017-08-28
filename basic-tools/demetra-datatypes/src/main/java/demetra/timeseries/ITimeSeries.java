@@ -30,14 +30,14 @@ import javax.annotation.Nonnull;
  * @param <V> value type
  * @param <O> observation type
  */
-public interface ITimeSeries<P extends ITimePeriod, V extends Number, O extends TimeObservation<P, V>> extends Sequence<O> {
+public interface ITimeSeries<P, V extends Number, O extends TimeObservation<P, V>> extends Sequence<O> {
 
     /**
      * Retrieves the time domain of this time series
      *
      * @return
      */
-    ITimeDomain<P> domain();
+    TsDomain<P> domain();
 
     /**
      * Retrieves the content of this time series
@@ -57,7 +57,7 @@ public interface ITimeSeries<P extends ITimePeriod, V extends Number, O extends 
         return domain().get(index);
     }
 
-    interface OfDouble<P extends ITimePeriod, O extends TimeObservation.OfDouble<P>> extends ITimeSeries<P, Double, O> {
+    interface OfDouble<P, O extends TimeObservation.OfDouble<P>> extends ITimeSeries<P, Double, O> {
 
         @Override
         DoubleSequence values();

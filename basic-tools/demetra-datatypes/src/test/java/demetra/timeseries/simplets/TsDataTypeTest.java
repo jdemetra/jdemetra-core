@@ -19,6 +19,8 @@ package demetra.timeseries.simplets;
 import demetra.data.DoubleSequence;
 import internal.Demo;
 import demetra.timeseries.ITimeSeries;
+import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,7 +34,7 @@ public class TsDataTypeTest {
 
     @Demo
     public static void main(String[] args) {
-        TsData ts = TsData.of(TsPeriod.year(2001), DoubleSequence.ofInternal(3.14, 7));
+        TsData ts = TsData.of(TsPeriod.yearly(2001), DoubleSequence.ofInternal(3.14, 7));
 
         System.out.println("\n[Tests ...]");
         System.out.println(ts.toString());
@@ -54,7 +56,7 @@ public class TsDataTypeTest {
 
         System.out.println("\n[Test stream]");
         ts.stream()
-                .filter(o -> o.getPeriod().isAfter(LocalDate.of(2001, 1, 1)))
+                .filter(o -> o.getPeriod().start().isAfter(LocalDate.of(2001, 1, 1).atStartOfDay()))
                 .forEach(System.out::println);
 
         System.out.println("\n[Test forEach(k, v)]");
@@ -69,20 +71,20 @@ public class TsDataTypeTest {
         {
             ITimeSeries.OfDouble<?, ?> y = ts;
             for (int i = 0; i < y.length(); i++) {
-                System.out.println(y.getPeriod(i).start() + " -> " + y.getValue(i));
+                System.out.println(y.getPeriod(i) + " -> " + y.getValue(i));
             }
         }
     }
 
     @Test
     public void testEquals() {
-        assertThat(TsData.of(TsPeriod.year(2001), DoubleSequence.ofInternal(1, 2, 3)))
-                .isEqualTo(TsData.of(TsPeriod.year(2001), DoubleSequence.ofInternal(1, 2, 3)));
+        assertThat(TsData.of(TsPeriod.yearly(2001), DoubleSequence.ofInternal(1, 2, 3)))
+                .isEqualTo(TsData.of(TsPeriod.yearly(2001), DoubleSequence.ofInternal(1, 2, 3)));
     }
 
     @Test
     public void testRandom() {
-        TsData random = TsData.random(TsFrequency.Monthly, 0);
+        TsData random = TsData.random(TsFrequency.MONTHLY, 0);
         assertTrue(random.domain().length() == random.values().length());
         assertTrue(random.values().allMatch(x -> x >= 100));
     }

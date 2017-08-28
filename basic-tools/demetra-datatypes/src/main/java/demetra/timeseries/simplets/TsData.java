@@ -21,14 +21,17 @@ import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.timeseries.ITimeSeries;
+import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsPeriod;
 import java.util.Random;
 
 /**
- * A TsData is a raw time series, containing only the actual data.
- * TsData can only handle regular time series, with observations
- corresponding to the usual time decomposition of an year (frequency lower or
- equal to the monthly frequency). Observations are represented by double
- values. Missing values are allowed; they are represented by Double.NaN.
+ * A TsData is a raw time series, containing only the actual data. TsData can
+ * only handle regular time series, with observations corresponding to the usual
+ * time decomposition of an year (frequency lower or equal to the monthly
+ * frequency). Observations are represented by double values. Missing values are
+ * allowed; they are represented by Double.NaN.
  *
  * @author Jean Palate
  */
@@ -56,38 +59,43 @@ public final class TsData implements ITimeSeries.OfDouble<TsPeriod, TsObservatio
             cur = cur + rnd.nextDouble() - .5;
             data[i] = cur;
         }
-        return new TsData(new TsPeriod(freq, beg), DoubleSequence.ofInternal(data));
+        return make(TsPeriod.of(freq, beg), DoubleSequence.ofInternal(data));
     }
 
     /**
      * Creates a new time series from a copy of this sequence of doubles
+     *
      * @param start
      * @param values
-     * @return 
+     * @return
      */
     public static TsData of(TsPeriod start, DoubleSequence values) {
-        return new TsData(start, DoubleSequence.ofInternal(values.toArray()));
+        return make(start, DoubleSequence.ofInternal(values.toArray()));
     }
 
     public static TsData ofInternal(TsPeriod start, DoubleSequence values) {
-        return new TsData(start, values);
+        return make(start, values);
     }
 
     public static TsData ofInternal(TsPeriod start, double[] values) {
-        return new TsData(start, DoubleSequence.ofInternal(values));
+        return make(start, DoubleSequence.ofInternal(values));
     }
 
-    private final TsPeriod start;
+    private static TsData make(TsPeriod start, DoubleSequence values) {
+        return new TsData(RegularDomain.of(start, values.length()), values);
+    }
+
+    private final RegularDomain domain;
     private final DoubleSequence values;
 
-    private TsData(TsPeriod start, DoubleSequence values) {
-        this.start = start;
+    private TsData(RegularDomain domain, DoubleSequence values) {
+        this.domain = domain;
         this.values = values;
     }
 
     @Override
-    public TsDomain domain() {
-        return TsDomain.of(start, values.length());
+    public RegularDomain domain() {
+        return domain;
     }
 
     @Override
@@ -106,11 +114,11 @@ public final class TsData implements ITimeSeries.OfDouble<TsPeriod, TsObservatio
      * @return The frequency.
      */
     public TsFrequency getFrequency() {
-        return start.getFrequency();
+        return domain.getStartPeriod().getFreq();
     }
 
     public TsPeriod getStart() {
-        return start;
+        return domain.getStartPeriod();
     }
 
     /**
@@ -123,17 +131,16 @@ public final class TsData implements ITimeSeries.OfDouble<TsPeriod, TsObservatio
      * this time series
      */
     public double getDoubleValue(TsPeriod period) {
-        int pos = period.minus(start);
+        int pos = domain.indexOf(period);
         return (pos < 0 || pos >= values.length()) ? Double.NaN : values.get(pos);
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        int n=values.length();
         DoubleReader reader = values.reader();
         for (int i = 0; i < values.length(); ++i) {
-            builder.append(start.plus(i)).append('\t').append(reader.next());
+            builder.append(domain.get(i)).append('\t').append(reader.next());
             builder.append(System.lineSeparator());
         }
         return builder.toString();

@@ -19,18 +19,14 @@ package demetra.timeseries.regression;
 import demetra.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
-import demetra.timeseries.IRegularPeriod;
-import demetra.timeseries.ITimeDomain;
+import demetra.timeseries.RegularDomain;
 import java.time.LocalDateTime;
-import java.time.Period;
-import java.util.List;
 
 /**
  *
  * @author Jean Palate
- * @param <E>
  */
-public class TransitoryChange<E extends IRegularPeriod> extends AbstractOutlier<E> {
+public class TransitoryChange extends AbstractOutlier {
 
     static double ZERO = 1e-15;
     public static final String TC = "TC";
@@ -88,14 +84,14 @@ public class TransitoryChange<E extends IRegularPeriod> extends AbstractOutlier<
     }
 
     @Override
-    public boolean isSignificant(ITimeDomain<E> domain) {
-        int n = domain.search(position);
+    public boolean isSignificant(RegularDomain domain) {
+        int n = domain.indexOf(position);
         return (n >= 0 && n < domain.length() - 1);
     }
 
     @Override
-    public TransitoryChange<E> rename(String name) {
-        return new TransitoryChange<>(position, coefficient, name);
+    public TransitoryChange rename(String name) {
+        return new TransitoryChange(position, coefficient, name);
     }
 
 }

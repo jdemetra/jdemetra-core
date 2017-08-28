@@ -16,10 +16,8 @@
  */
 package demetra.timeseries.calendars;
 
-import demetra.timeseries.Day;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import org.junit.Assert;
 import org.junit.Test;

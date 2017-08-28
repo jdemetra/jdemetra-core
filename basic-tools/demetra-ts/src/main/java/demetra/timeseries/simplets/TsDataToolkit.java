@@ -20,9 +20,11 @@ import demetra.data.DataBlock;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.IFiniteFilter;
+import demetra.timeseries.Fixme;
+import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsException;
+import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsPeriodSelector;
-import java.time.LocalDateTime;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 import javax.annotation.Nonnegative;
@@ -51,28 +53,28 @@ public class TsDataToolkit {
     }
 
     public TsData fastFn(TsData left, TsData right, DoubleBinaryOperator fn) {
-        TsDomain lDomain = left.domain();
-        TsDomain rDomain = right.domain();
-        TsDomain iDomain = lDomain.intersection(rDomain);
+        RegularDomain lDomain = left.domain();
+        RegularDomain rDomain = right.domain();
+        RegularDomain iDomain = lDomain.intersection(rDomain);
         if (iDomain == null) {
             return null;
         }
-        TsPeriod istart = iDomain.getStart();
-        int li = lDomain.search(istart), ri = rDomain.search(istart);
+        TsPeriod istart = iDomain.getStartPeriod();
+        int li = lDomain.indexOf(istart), ri = rDomain.indexOf(istart);
         return TsData.ofInternal(istart, DoubleSequence.of(iDomain.length(),
                 i -> fn.applyAsDouble(left.getValue(li + i), right.getValue(ri + i))));
     }
 
     public TsData fn(TsData left, TsData right, DoubleBinaryOperator fn) {
-        TsDomain lDomain = left.domain();
-        TsDomain rDomain = right.domain();
-        TsDomain iDomain = lDomain.intersection(rDomain);
+        RegularDomain lDomain = left.domain();
+        RegularDomain rDomain = right.domain();
+        RegularDomain iDomain = lDomain.intersection(rDomain);
         if (iDomain == null) {
             return null;
         }
 
-        TsPeriod istart = iDomain.getStart();
-        int li = lDomain.search(istart), ri = rDomain.search(istart);
+        TsPeriod istart = iDomain.getStartPeriod();
+        int li = lDomain.indexOf(istart), ri = rDomain.indexOf(istart);
         double[] data = new double[iDomain.length()];
         DoubleReader lreader = left.values().reader(), rreader = right.values().reader();
         lreader.setPosition(li);
@@ -101,14 +103,14 @@ public class TsDataToolkit {
     }
 
     public TsData drop(TsData s, int nbeg, int nend) {
-        TsDomain ndomain = (TsDomain) s.domain().drop(nbeg, nend);
-        return TsData.of(ndomain.getStart(), s.values().extract(nbeg, ndomain.length()));
+        RegularDomain ndomain = s.domain().select(TsPeriodSelector.excluding(nbeg, nend));
+        return TsData.of(ndomain.getStartPeriod(), s.values().extract(nbeg, ndomain.length()));
     }
 
     public TsData select(TsData s, TsPeriodSelector selector) {
-        TsDomain ndomain = s.domain().select(selector);
-        final int beg = ndomain.getStart().minus(s.getStart());
-        return TsData.of(ndomain.getStart(), s.values().extract(beg, ndomain.length()));
+        RegularDomain ndomain = s.domain().select(selector);
+        final int beg = ndomain.getStartPeriod().until(s.getStart());
+        return TsData.of(ndomain.getStartPeriod(), s.values().extract(beg, ndomain.length()));
     }
 
     /**
@@ -121,13 +123,13 @@ public class TsDataToolkit {
      * @return A new (possibly empty) series is returned (or null if the domain
      * hasn't the right frequency.
      */
-    public TsData fitToDomain(TsData s, TsDomain domain) {
-        if (s.getFrequency() != domain.getFrequency()) {
+    public TsData fitToDomain(TsData s, RegularDomain domain) {
+        if (s.getFrequency() != domain.getStartPeriod().getFreq()) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
-        TsDomain sdomain = s.domain();
-        int nbeg = domain.id() - sdomain.id();
-        TsDomain idomain = domain.intersection(sdomain);
+        RegularDomain sdomain = s.domain();
+        int nbeg = Fixme.getId(domain) - Fixme.getId(sdomain);
+        RegularDomain idomain = domain.intersection(sdomain);
         double[] data = new double[domain.length()];
         int cur = 0;
         if (nbeg < 0) { // before s
@@ -136,17 +138,17 @@ public class TsDataToolkit {
                 data[cur] = Double.NaN;
             }
         }
-        int ncommon=idomain.length();
+        int ncommon = idomain.length();
         // common data
-        if (ncommon>0) {
-            s.values().extract(idomain.id()-sdomain.id(), ncommon).copyTo(data, cur);
+        if (ncommon > 0) {
+            s.values().extract(Fixme.getId(idomain) - Fixme.getId(sdomain), ncommon).copyTo(data, cur);
             cur += ncommon;
         }
         // after s
         for (; cur < data.length; ++cur) {
             data[cur] = Double.NaN;
         }
-        return TsData.ofInternal(domain.getStart(), data);
+        return TsData.ofInternal(domain.getStartPeriod(), data);
     }
 
     // some useful shortcuts
@@ -277,7 +279,7 @@ public class TsDataToolkit {
     }
 
     public TsData lead(TsData s, @Nonnegative int lead) {
-        return lead == 0 ? s : TsData.ofInternal(s.getStart().minus(lead), s.values());
+        return lead == 0 ? s : TsData.ofInternal(s.getStart().plus(-lead), s.values());
     }
 
     public TsData lag(TsData s, @Nonnegative int lag) {
@@ -288,6 +290,6 @@ public class TsDataToolkit {
         double[] data = s.values().toArray();
         double[] result = new double[data.length - filter.length() + 1];
         filter.apply(DataBlock.ofInternal(data), DataBlock.ofInternal(result));
-        return TsData.ofInternal(s.getStart().minus(filter.getLowerBound()), result);
+        return TsData.ofInternal(s.getStart().plus(-filter.getLowerBound()), result);
     }
 }

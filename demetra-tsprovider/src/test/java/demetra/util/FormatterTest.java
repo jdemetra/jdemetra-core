@@ -16,7 +16,7 @@
  */
 package demetra.util;
 
-import demetra.timeseries.simplets.TsFrequency;
+import demetra.data.AggregationType;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -72,9 +72,9 @@ public class FormatterTest {
 
     @Test
     public void testEnumFormatter() {
-        Formatter<TsFrequency> f = Formatter.onEnum();
+        Formatter<AggregationType> f = Formatter.onEnum();
         assertCompliance(f);
-        assertThat(f.format(TsFrequency.Monthly)).isEqualTo("Monthly");
+        assertThat(f.format(AggregationType.Average)).isEqualTo("Average");
     }
 
     @Test

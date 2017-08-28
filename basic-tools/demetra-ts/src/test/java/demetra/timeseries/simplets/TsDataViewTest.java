@@ -17,7 +17,8 @@
 package demetra.timeseries.simplets;
 
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
+import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -33,16 +34,16 @@ public class TsDataViewTest {
 
     @Test
     public void testFullYears() {
-        TsPeriod p = TsPeriod.of(TsFrequency.Monthly, LocalDate.now());
+        TsPeriod p = TsPeriod.of(TsFrequency.MONTHLY, LocalDate.now());
         for (int i = 0; i < 12; ++i) {
             for (int j = 0; j < 12; ++j) {
                 DataBlock d = DataBlock.make(i + j + 36);
-                final int beg=7-i;
-                d.set(k -> beg+k);
-                TsData s = TsData.of(p.minus(i), d);
+                final int beg = 7 - i;
+                d.set(k -> beg + k);
+                TsData s = TsData.of(p.plus(-i), d);
                 TsDataView fy = TsDataView.fullYears(s);
-                assertTrue(fy.getData().length()%12 == 0);
-                assertTrue(((int)fy.getData().get(0))%12 == 0);
+                assertTrue(fy.getData().length() % 12 == 0);
+                assertTrue(((int) fy.getData().get(0)) % 12 == 0);
             }
         }
 

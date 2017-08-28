@@ -16,7 +16,8 @@
  */
 package internal.tsprovider.util;
 
-import demetra.timeseries.simplets.TsFrequency;
+import demetra.timeseries.Fixme;
+import demetra.timeseries.TsFrequency;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -51,7 +52,7 @@ final class CalendarUtil {
     }
 
     public int calcTsPeriodId(TsFrequency freq, long timeInMillis) {
-        int ifreq = freq.getAsInt();
+        int ifreq = Fixme.getAsInt(freq);
         cal.setTimeInMillis(timeInMillis);
         return calcId(ifreq, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) / (12 / ifreq));
     }

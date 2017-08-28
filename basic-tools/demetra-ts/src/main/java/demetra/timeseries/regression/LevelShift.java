@@ -19,18 +19,15 @@ package demetra.timeseries.regression;
 import demetra.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
-import demetra.timeseries.IRegularPeriod;
-import demetra.timeseries.ITimeDomain;
+import demetra.timeseries.RegularDomain;
 import java.time.LocalDateTime;
-import java.time.Period;
-import java.util.List;
 
 /**
  *
  * @author Jean Palate
  * @param <E>
  */
-public class LevelShift<E extends IRegularPeriod> extends AbstractOutlier<E> {
+public class LevelShift extends AbstractOutlier {
 
     public static final String LS = "LS";
     
@@ -73,13 +70,13 @@ public class LevelShift<E extends IRegularPeriod> extends AbstractOutlier<E> {
 
 
     @Override
-    public boolean isSignificant(ITimeDomain<E> domain) {
-        return domain.search(position) >= 0;
+    public boolean isSignificant(RegularDomain domain) {
+        return domain.indexOf(position) >= 0;
     }
 
     @Override
-    public LevelShift<E> rename(String name) {
-        return new LevelShift<>(position, zeroEnded, name);
+    public LevelShift rename(String name) {
+        return new LevelShift(position, zeroEnded, name);
     }
 
 }

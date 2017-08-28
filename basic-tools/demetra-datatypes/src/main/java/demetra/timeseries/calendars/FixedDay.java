@@ -17,13 +17,12 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.timeseries.DailyPeriod;
-import demetra.timeseries.Day;
-import demetra.timeseries.IDatePeriod;
-import demetra.timeseries.simplets.TsDomain;
-import demetra.timeseries.simplets.TsFrequency;
-import demetra.timeseries.simplets.TsPeriod;
+import demetra.timeseries.Fixme;
+import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -65,9 +64,6 @@ public class FixedDay implements ISpecialDay {
         return true;
     }
 
-    public Day calcDay(int year) {
-        return Day.of(LocalDate.of(year, month, day));
-    }
     public static final FixedDay CHRISTMAS = new FixedDay(12, 25), NEWYEAR = new FixedDay(1, 1),
             ASSUMPTION = new FixedDay(8, 15), MAYDAY = new FixedDay(5, 1),
             ALLSAINTSDAY = new FixedDay(11, 1), HALLOWEEN = new FixedDay(10, 31);
@@ -96,16 +92,16 @@ public class FixedDay implements ISpecialDay {
         if (offset == 0) {
             return this;
         }
-        int pos = Day.getCumulatedMonthDays(month) + day;
+        int pos = Fixme.getCumulatedMonthDays(month) + day;
         pos += offset;
         if (pos < 0 || pos >= 365) {
             return null;
         }
         int nmonth = 0;
-        while (pos >= Day.getCumulatedMonthDays(nmonth + 1)) {
+        while (pos >= Fixme.getCumulatedMonthDays(nmonth + 1)) {
             ++nmonth;
         }
-        int nday = pos - Day.getCumulatedMonthDays(nmonth);
+        int nday = pos - Fixme.getCumulatedMonthDays(nmonth);
         // avoid leap year
         if (month <= 1 && nmonth >= 2) {
             return null;
@@ -131,8 +127,11 @@ public class FixedDay implements ISpecialDay {
     }
 
     @Override
-    public IDatePeriod getSignificantDomain(IDatePeriod domain) {
-        LocalDate first = domain.firstDay(), last = domain.lastDay();
+    public RegularDomain getSignificantDomain(RegularDomain domain) {
+        if (!domain.getStartPeriod().getFreq().getUnit().equals(ChronoUnit.DAYS)) {
+            throw new IllegalArgumentException();
+        }
+        LocalDate first = domain.start().toLocalDate(), last = domain.end().toLocalDate().minusDays(1);
         LocalDate efirst = LocalDate.of(first.getYear(), month, day);
         LocalDate elast = LocalDate.of(last.getYear(), month, day);
         if (efirst.isBefore(first)) {
@@ -142,9 +141,9 @@ public class FixedDay implements ISpecialDay {
             elast = LocalDate.of(last.getYear() - 1, month, day);
         }
         if (efirst.isAfter(elast)) {
-            return DailyPeriod.of(efirst, 0);
+            return RegularDomain.of(domain.getStartPeriod().withDate(efirst), 0);
         } else {
-            return DailyPeriod.of(efirst, elast);
+            return RegularDomain.of(domain.getStartPeriod().withDate(efirst), (int) ChronoUnit.DAYS.between(efirst, elast));
         }
     }
 
@@ -157,7 +156,7 @@ public class FixedDay implements ISpecialDay {
 
         @Override
         public LocalDate getDay() {
-            return LocalDate.of(m_period.getYear(), m_fday.month, m_fday.day);
+            return LocalDate.of(m_period.start().getYear(), m_fday.month, m_fday.day);
         }
 
         @Override
@@ -182,7 +181,7 @@ public class FixedDay implements ISpecialDay {
 
             // pstart is the first valid period
             if (xday.isBefore(fstart)) {
-                start = start.plus(freq.getAsInt());
+                start = start.plus(Fixme.getAsInt(freq));
                 --nyears;
             }
 
@@ -214,7 +213,7 @@ public class FixedDay implements ISpecialDay {
                         ++cur;
                         return new FixedDayInfo(pstart, fday);
                     } else {
-                        return new FixedDayInfo(pstart.plus(pstart.getFrequency().getAsInt() * (cur++)), fday);
+                        return new FixedDayInfo(pstart.plus(Fixme.getAsInt(pstart.getFreq()) * (cur++)), fday);
                     }
                 }
             };

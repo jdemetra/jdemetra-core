@@ -18,6 +18,9 @@ package demetra.timeseries.simplets;
 
 import demetra.data.AggregationType;
 import demetra.data.DoubleSequence;
+import demetra.timeseries.Fixme;
+import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsPeriod;
 
 /**
  *
@@ -25,7 +28,8 @@ import demetra.data.DoubleSequence;
  */
 @lombok.experimental.UtilityClass
 public class TsDataConverter {
-     /**
+
+    /**
      * Makes a frequency change of this series.
      *
      * @param s
@@ -38,9 +42,9 @@ public class TsDataConverter {
      */
     public TsData changeFrequency(final TsData s, final TsFrequency newfreq,
             final AggregationType conversion, final boolean complete) {
-        TsPeriod start=s.getStart();
-        DoubleSequence values=s.values();
-        int freq = start.getFrequency().getAsInt(), nfreq = newfreq.getAsInt();
+        TsPeriod start = s.getStart();
+        DoubleSequence values = s.values();
+        int freq = Fixme.getAsInt(start.getFreq()), nfreq = Fixme.getAsInt(newfreq);
         if (freq % nfreq != 0) {
             return null;
         }
@@ -50,7 +54,7 @@ public class TsDataConverter {
         int nconv = freq / nfreq;
         int c = values.length();
         int z0 = 0;
-        int beg = start.id();
+        int beg = Fixme.getId(start);
 
         // d0 and d1
         int nbeg = beg / nconv;
@@ -141,8 +145,7 @@ public class TsDataConverter {
                 }
             }
         }
-        
-        return TsData.of(TsPeriod.ofInternal(newfreq, nbeg), DoubleSequence.ofInternal(result));
+
+        return TsData.of(TsPeriod.of(newfreq, nbeg), DoubleSequence.ofInternal(result));
     }
-   
 }

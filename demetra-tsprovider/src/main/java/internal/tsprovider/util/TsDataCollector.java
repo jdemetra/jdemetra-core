@@ -22,9 +22,10 @@ import demetra.design.Internal;
 import demetra.design.NewObject;
 import demetra.timeseries.TsException;
 import demetra.timeseries.simplets.TsData;
-import demetra.timeseries.simplets.TsFrequency;
-import demetra.timeseries.simplets.TsPeriod;
 import demetra.data.AggregationType;
+import demetra.timeseries.Fixme;
+import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsPeriod;
 import internal.tsprovider.util.ObsList.LongObsList;
 import java.util.Date;
 import java.util.Arrays;
@@ -149,7 +150,7 @@ public class TsDataCollector {
      * aggregation mode is none), a null is returned (no exception).
      */
     public TsData make(TsFrequency frequency, AggregationType convMode) {
-        if (frequency == TsFrequency.Undefined) {
+        if (frequency.equals(Fixme.Undefined)) {
             if (convMode != AggregationType.None) {
                 throw new TsException(TsException.INVALID_AGGREGATIONMODE);
             }
@@ -277,7 +278,7 @@ public class TsDataCollector {
         int firstId = ids[0];
         int lastId = ids[ncur];
 
-        TsPeriod start = TsPeriod.ofInternal(freq, firstId);
+        TsPeriod start = TsPeriod.of(freq, firstId);
 
         // check if the series is continuous and complete.
         int l = lastId - firstId + 1;
@@ -310,7 +311,7 @@ public class TsDataCollector {
         int s = 0;
 
         int[] ids = new int[n];
-        TsFrequency[] freqs = TsFrequency.getAllFreqs().toArray(new TsFrequency[0]);
+        TsFrequency[] freqs = Fixme.complementOfUndefined().toArray(new TsFrequency[0]);
         for (; s < freqs.length; ++s) {
             if (makeIdsFromFrequency(obs, freqs[s], ids)) {
                 break;
@@ -322,7 +323,7 @@ public class TsDataCollector {
         int firstId = ids[0];
         int lastId = ids[n - 1];
 
-        TsPeriod start = TsPeriod.ofInternal(freqs[s], firstId);
+        TsPeriod start = TsPeriod.of(freqs[s], firstId);
 
         // check if the series is continuous and complete.
         int l = lastId - firstId + 1;
@@ -373,7 +374,7 @@ public class TsDataCollector {
         int firstId = ids[0];
         int lastId = ids[n - 1];
 
-        TsPeriod start = TsPeriod.ofInternal(freq, firstId);
+        TsPeriod start = TsPeriod.of(freq, firstId);
 
         // check if the series is continuous and complete.
         int l = lastId - firstId + 1;

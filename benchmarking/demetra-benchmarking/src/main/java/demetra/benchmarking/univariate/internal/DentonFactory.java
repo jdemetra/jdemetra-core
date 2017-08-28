@@ -18,13 +18,13 @@ package demetra.benchmarking.univariate.internal;
 
 import demetra.benchmarking.spi.DentonAlgorithm;
 import demetra.benchmarking.univariate.DentonSpecification;
+import demetra.timeseries.Fixme;
 import demetra.timeseries.TsException;
+import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsPeriodSelector;
 import demetra.timeseries.simplets.TsData;
 import demetra.timeseries.simplets.TsDataToolkit;
-import demetra.timeseries.simplets.TsFrequency;
-import demetra.timeseries.simplets.TsPeriod;
-import java.time.LocalDate;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -36,15 +36,15 @@ public class DentonFactory implements DentonAlgorithm {
 
     @Override
     public TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, DentonSpecification spec) {
-        int hfreq = highFreqSeries.getFrequency().getAsInt(), lfreq = aggregationConstraint.getFrequency().getAsInt();
+        int hfreq = Fixme.getAsInt(highFreqSeries.getFrequency()), lfreq = Fixme.getAsInt(aggregationConstraint.getFrequency());
         if (hfreq % lfreq != 0) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
         // Y is limited to q !
         TsPeriodSelector qsel = TsPeriodSelector.between(highFreqSeries.getStart().start(), highFreqSeries.getPeriod(highFreqSeries.length()).start());
         TsData naggregationConstraint = TsDataToolkit.select(aggregationConstraint, qsel);
-        TsPeriod sh = highFreqSeries.getStart(), sl = TsPeriod.of(sh.getFrequency(), naggregationConstraint.getStart().firstDay());
-        int offset = sl.minus(sh);
+        TsPeriod sh = highFreqSeries.getStart(), sl = TsPeriod.of(sh.getFreq(), naggregationConstraint.getStart().start());
+        int offset = sl.until(sh);
         Denton denton = new Denton(spec, hfreq / lfreq, offset);
         double[] r = denton.process(highFreqSeries.values(), naggregationConstraint.values());
         return TsData.ofInternal(highFreqSeries.getStart(), r);
@@ -52,12 +52,12 @@ public class DentonFactory implements DentonAlgorithm {
 
     @Override
     public TsData benchmark(TsFrequency highFreq, TsData aggregationConstraint, DentonSpecification spec) {
-       int hfreq = highFreq.getAsInt(), lfreq = aggregationConstraint.getFrequency().getAsInt();
+       int hfreq = Fixme.getAsInt(highFreq), lfreq = Fixme.getAsInt(aggregationConstraint.getFrequency());
         if (hfreq % lfreq != 0) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
         // Y is limited to q !
-        TsPeriod sh = TsPeriod.of(highFreq, aggregationConstraint.getStart().firstDay());
+        TsPeriod sh = TsPeriod.of(highFreq, aggregationConstraint.getStart().start());
         Denton denton = new Denton(spec, hfreq / lfreq, 0);
         double[] r = denton.process(aggregationConstraint.values());
         return TsData.ofInternal(sh, r);

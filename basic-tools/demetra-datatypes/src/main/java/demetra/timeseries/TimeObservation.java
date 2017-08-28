@@ -22,11 +22,11 @@ package demetra.timeseries;
  * @param <P> period type
  * @param <V> value type
  */
-public interface TimeObservation<P extends ITimePeriod, V> {
+public interface TimeObservation<P, V> {
 
     P getPeriod();
 
-    interface OfDouble<P extends ITimePeriod> extends TimeObservation<P, Double> {
+    interface OfDouble<P> extends TimeObservation<P, Double> {
 
         double getValue();
     }

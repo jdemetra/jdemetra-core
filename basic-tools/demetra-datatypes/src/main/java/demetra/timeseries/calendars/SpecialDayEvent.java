@@ -13,13 +13,14 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.timeseries.Day;
+import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsPeriod;
 import demetra.timeseries.ValidityPeriod;
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -43,28 +44,28 @@ public class SpecialDayEvent {
     public void setValidityPeriod(ValidityPeriod value) {
         validity = value;
     }
-    
-    public boolean isStartSpecified(){
-        return validity!=null && validity.isStartSpecified();
+
+    public boolean isStartSpecified() {
+        return validity != null && validity.isStartSpecified();
     }
 
-    public boolean isEndSpecified(){
-        return validity!=null && validity.isEndSpecified();
+    public boolean isEndSpecified() {
+        return validity != null && validity.isEndSpecified();
     }
 
-    public Day getStart() {
-        return validity == null ? Day.BEG : Day.of(validity.getStart().toLocalDate());
+    public TsPeriod getStart() {
+        return TsPeriod.of(TsFrequency.DAILY, validity == null ? LocalDate.MIN : validity.getStart().toLocalDate());
     }
 
-    public Day getEnd() {
-        return validity == null ? Day.END : Day.of(validity.getEnd().toLocalDate());
+    public TsPeriod getEnd() {
+        return TsPeriod.of(TsFrequency.DAILY, validity == null ? LocalDate.MAX : validity.getEnd().toLocalDate());
     }
 
     @Override
     public boolean equals(Object obj) {
         return this == obj || (obj instanceof SpecialDayEvent && equals((SpecialDayEvent) obj));
     }
-    
+
     private boolean equals(SpecialDayEvent other) {
         return day.equals(other.day) && Objects.equals(validity, other.validity);
     }

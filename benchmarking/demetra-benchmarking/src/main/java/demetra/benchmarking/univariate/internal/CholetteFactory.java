@@ -16,20 +16,6 @@
  */
 package demetra.benchmarking.univariate.internal;
 
-import demetra.benchmarking.spi.CholetteAlgorithm;
-import demetra.benchmarking.univariate.CholetteSpecification;
-import demetra.benchmarking.univariate.CholetteSpecification.BiasCorrection;
-import demetra.data.AggregationType;
-import demetra.timeseries.TsException;
-import demetra.timeseries.TsPeriodSelector;
-import demetra.timeseries.simplets.TsData;
-import demetra.timeseries.simplets.TsDataConverter;
-import demetra.timeseries.simplets.TsDataToolkit;
-import demetra.timeseries.simplets.TsFrequency;
-import demetra.timeseries.simplets.TsPeriod;
-import java.time.LocalDate;
-import org.openide.util.lookup.ServiceProvider;
-
 /**
  *
  * @author Jean Palate

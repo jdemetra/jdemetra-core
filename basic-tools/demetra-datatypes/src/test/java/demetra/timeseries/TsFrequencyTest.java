@@ -16,17 +16,22 @@
  */
 package demetra.timeseries;
 
-import demetra.design.Immutable;
-import demetra.timeseries.TimeObservation;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
+import static org.assertj.core.api.Assertions.*;
+import org.junit.Test;
 
 /**
  *
  * @author Philippe Charles
  */
-@Immutable
-@lombok.Value
-public final class DateObservation implements TimeObservation.OfDouble<IDatePeriod> {
+public class TsFrequencyTest {
 
-    IDatePeriod period;
-    double value;
+    @Test
+    public void testParse() {
+        assertThatThrownBy(() -> TsFrequency.parse("hello")).isInstanceOf(DateTimeParseException.class);
+        assertThat(TsFrequency.parse("P2Y")).isEqualTo(TsFrequency.of(2, ChronoUnit.YEARS));
+        assertThat(TsFrequency.parse("P3M")).isEqualTo(TsFrequency.of(3, ChronoUnit.MONTHS));
+        assertThat(TsFrequency.parse("PT4H")).isEqualTo(TsFrequency.of(4, ChronoUnit.HOURS));
+    }
 }

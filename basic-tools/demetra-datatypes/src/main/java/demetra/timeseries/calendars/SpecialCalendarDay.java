@@ -17,8 +17,8 @@
 
 package demetra.timeseries.calendars;
 
-import demetra.timeseries.IDatePeriod;
-import demetra.timeseries.simplets.TsFrequency;
+import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsFrequency;
 import java.time.LocalDate;
 
 
@@ -135,7 +135,7 @@ public class SpecialCalendarDay implements ISpecialDay {
     }
 
     @Override
-    public IDatePeriod getSignificantDomain(IDatePeriod domain) {
+    public RegularDomain getSignificantDomain(RegularDomain domain) {
         ISpecialDay sd = toSpecialDay();
         if (sd == null) {
             return null;

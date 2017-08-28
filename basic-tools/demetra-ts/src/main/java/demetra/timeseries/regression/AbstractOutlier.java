@@ -17,31 +17,27 @@
 package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
-import demetra.timeseries.IRegularPeriod;
-import demetra.timeseries.ITimeDomain;
+import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.util.Arrays;
 
 /**
  *
  * @author Jean Palate
- * @param <E>
  */
 @Development(status = Development.Status.Alpha)
-public abstract class AbstractOutlier<E extends IRegularPeriod>
-        implements IOutlierVariable<E> {
+public abstract class AbstractOutlier implements IOutlierVariable {
 
-    public static <E extends IRegularPeriod> String defaultName(String code, LocalDateTime pos, ITimeDomain<E> context) {
+    public static String defaultName(String code, LocalDateTime pos, RegularDomain context) {
         StringBuilder builder = new StringBuilder();
         builder.append(code).append(" (");
         if (context == null) {
             builder.append(pos);
         } else {
-            E p = context.get(0);
-            p.moveTo(pos);
+            TsPeriod p = context.get(0);
+            p.withDate(pos);
             builder.append(p);
         }
         builder.append(')');
@@ -55,30 +51,29 @@ public abstract class AbstractOutlier<E extends IRegularPeriod>
         position = pos;
         this.name = name;
     }
-    
+
     @Override
-    public void data(E start, DataBlock buffer){
-        IRegularPeriod p=start.moveTo(getPosition());
-        long outlierPos=start.until(p);
-        data((int)outlierPos, buffer);
+    public void data(TsPeriod start, DataBlock buffer) {
+        long outlierPos = start.offsetAt(getPosition()) - start.getOffset();
+        data((int) outlierPos, buffer);
     }
-    
-    protected abstract void data(int pos,DataBlock buffer);
-     
+
+    protected abstract void data(int pos, DataBlock buffer);
+
     @Override
     public String getName() {
         return name;
     }
 
     @Override
-    public String getDescription(ITimeDomain<E> context) {
+    public String getDescription(RegularDomain context) {
         StringBuilder builder = new StringBuilder();
         builder.append(getCode()).append(" (");
         if (context == null) {
             builder.append(position);
         } else {
-            E p = context.get(0);
-            p.moveTo(position);
+            TsPeriod p = context.get(0);
+            p.withDate(position);
             builder.append(p);
         }
         builder.append(')');
@@ -97,7 +92,7 @@ public abstract class AbstractOutlier<E extends IRegularPeriod>
     }
 
     @Override
-    public ITimeDomain<E> getDefinitionDomain() {
+    public RegularDomain getDefinitionDomain() {
         return null;
     }
 
@@ -107,7 +102,7 @@ public abstract class AbstractOutlier<E extends IRegularPeriod>
     }
 
     @Override
-    public String getItemDescription(int idx, ITimeDomain context) {
+    public String getItemDescription(int idx, RegularDomain context) {
         return getDescription(context);
     }
 

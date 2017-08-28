@@ -17,7 +17,6 @@ package demetra.tsprovider.poc;
  * limitations under the Licence.
  */
 import demetra.timeseries.simplets.TsData;
-import demetra.timeseries.simplets.TsDomain;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.DataSourceProvider;
@@ -28,6 +27,7 @@ import demetra.tsprovider.TsProviders;
 import demetra.tsprovider.util.MultiLineNameUtil;
 import demetra.tsprovider.OptionalTsData;
 import demetra.io.FunctionWithIO;
+import demetra.timeseries.RegularDomain;
 import demetra.utilities.Trees;
 import java.io.IOException;
 import java.time.Clock;
@@ -107,8 +107,8 @@ class DemoUtil {
     }
 
     String toString(TsData data) {
-        TsDomain d = data.domain();
-        return String.format("%s, from %s to %s, %d/%d obs", d.getFrequency(), d.getStart(), d.getLast(), (int) data.values().reduce(0, (c, o) -> !Double.isNaN(o) ? c + 1 : c), d.length());
+        RegularDomain d = data.domain();
+        return String.format("%s, from %s to %s, %d/%d obs", d.getStartPeriod().getFreq(), d.getStartPeriod(), d.getLastPeriod(), (int) data.values().reduce(0, (c, o) -> !Double.isNaN(o) ? c + 1 : c), d.length());
     }
 
     void printDuration(Duration duration) {
