@@ -234,9 +234,11 @@ public class Params {
 
         @Override
         public ObsGathering get(S config) {
-            return skipMissingValues.get(config)
-                    ? ObsGathering.excludingMissingValues(getFreq(config), aggregationType.get(config))
-                    : ObsGathering.includingMissingValues(getFreq(config), aggregationType.get(config));
+            return ObsGathering.builder()
+                    .frequency(getFreq(config))
+                    .aggregationType(aggregationType.get(config))
+                    .skipMissingValues(skipMissingValues.get(config))
+                    .build();
         }
 
         @Override

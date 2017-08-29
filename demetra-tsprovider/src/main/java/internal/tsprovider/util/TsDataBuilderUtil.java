@@ -49,7 +49,7 @@ public class TsDataBuilderUtil {
             return o -> makeFromUnknownFrequency(o);
         }
         if (gathering.getAggregationType() != AggregationType.None) {
-            return o -> makeWithAggregation(o, gathering.getFrequency(), gathering.getAggregationType());
+            return o -> makeWithAggregation(o, gathering.getFrequency(), gathering.getAggregationType(), gathering.isComplete());
         }
         return o -> makeWithoutAggregation(o, gathering.getFrequency());
     }
@@ -76,7 +76,7 @@ public class TsDataBuilderUtil {
         }
     }
 
-    private OptionalTsData makeWithAggregation(ObsList obs, TsFrequency freq, AggregationType convMode) {
+    private OptionalTsData makeWithAggregation(ObsList obs, TsFrequency freq, AggregationType convMode, boolean complete) {
         switch (obs.size()) {
             case 0:
                 return NO_DATA;
@@ -84,7 +84,7 @@ public class TsDataBuilderUtil {
                 TsData result = TsDataCollector.makeFromUnknownFrequency(obs);
                 if (result != null && TsDataConverter.canChangeFrequency(result, freq)) {
                     // should succeed
-                    result = TsDataConverter.changeFrequency(result, freq, convMode, true);
+                    result = TsDataConverter.changeFrequency(result, freq, convMode, complete);
                 } else {
                     result = TsDataCollector.makeWithAggregation(obs, freq, convMode);
                 }

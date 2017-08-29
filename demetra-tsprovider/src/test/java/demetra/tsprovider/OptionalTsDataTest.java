@@ -295,9 +295,7 @@ public class OptionalTsDataTest {
         TsDataBuilder<T> builderOf(ObsGathering gathering);
 
         default TsDataBuilder<T> builderOf(TsFrequency freq, AggregationType aggregation, boolean skipMissingValues) {
-            ObsGathering gathering = skipMissingValues
-                    ? ObsGathering.excludingMissingValues(freq, aggregation)
-                    : ObsGathering.includingMissingValues(freq, aggregation);
+            ObsGathering gathering = ObsGathering.builder().frequency(freq).aggregationType(aggregation).skipMissingValues(skipMissingValues).build();
             return builderOf(gathering);
         }
 
