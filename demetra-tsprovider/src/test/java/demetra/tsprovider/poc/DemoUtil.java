@@ -108,7 +108,7 @@ class DemoUtil {
 
     String toString(TsData data) {
         RegularDomain d = data.domain();
-        return String.format("%s, from %s to %s, %d/%d obs", d.getStartPeriod().getFreq(), d.getStartPeriod(), d.getLastPeriod(), (int) data.values().reduce(0, (c, o) -> !Double.isNaN(o) ? c + 1 : c), d.length());
+        return String.format("%s, from %s to %s, %d/%d obs", d.getStartPeriod().getUnit(), d.getStartPeriod(), d.getLastPeriod(), (int) data.values().reduce(0, (c, o) -> !Double.isNaN(o) ? c + 1 : c), d.length());
     }
 
     void printDuration(Duration duration) {

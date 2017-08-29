@@ -19,7 +19,7 @@ package demetra.timeseries.calendars;
 import demetra.design.Development;
 import demetra.timeseries.Fixme;
 import demetra.timeseries.RegularDomain;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -69,7 +69,7 @@ public class FixedDay implements ISpecialDay {
             ALLSAINTSDAY = new FixedDay(11, 1), HALLOWEEN = new FixedDay(10, 31);
 
     @Override
-    public Iterable<IDayInfo> getIterable(TsFrequency freq, LocalDate start, LocalDate end) {
+    public Iterable<IDayInfo> getIterable(TsUnit freq, LocalDate start, LocalDate end) {
         return new FixedDayIterable(freq, this, start, end);
     }
 
@@ -128,7 +128,7 @@ public class FixedDay implements ISpecialDay {
 
     @Override
     public RegularDomain getSignificantDomain(RegularDomain domain) {
-        if (!domain.getStartPeriod().getFreq().getUnit().equals(ChronoUnit.DAYS)) {
+        if (!domain.getStartPeriod().getUnit().getChronoUnit().equals(ChronoUnit.DAYS)) {
             throw new IllegalArgumentException();
         }
         LocalDate first = domain.start().toLocalDate(), last = domain.end().toLocalDate().minusDays(1);
@@ -170,7 +170,7 @@ public class FixedDay implements ISpecialDay {
 
     static class FixedDayIterable implements Iterable<IDayInfo> {
 
-        FixedDayIterable(TsFrequency freq, FixedDay fday, LocalDate fstart, LocalDate fend) {
+        FixedDayIterable(TsUnit freq, FixedDay fday, LocalDate fstart, LocalDate fend) {
             this.fday = fday;
             int ystart = fstart.getYear(), yend = fend.getYear();
             LocalDate xday = LocalDate.of(ystart, fday.month, fday.day);
@@ -213,7 +213,7 @@ public class FixedDay implements ISpecialDay {
                         ++cur;
                         return new FixedDayInfo(pstart, fday);
                     } else {
-                        return new FixedDayInfo(pstart.plus(Fixme.getAsInt(pstart.getFreq()) * (cur++)), fday);
+                        return new FixedDayInfo(pstart.plus(Fixme.getAsInt(pstart.getUnit()) * (cur++)), fday);
                     }
                 }
             };

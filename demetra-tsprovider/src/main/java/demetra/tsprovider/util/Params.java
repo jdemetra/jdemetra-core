@@ -17,8 +17,7 @@
 package demetra.tsprovider.util;
 
 import demetra.data.AggregationType;
-import demetra.timeseries.Fixme;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -212,7 +211,7 @@ public class Params {
     private static final class ObsGatheringParam<S extends IConfig> implements IParam<S, ObsGathering> {
 
         private final ObsGathering defaultValue;
-        private final IParam<S, String> frequency;
+        private final IParam<S, String> unit;
         private final IParam<S, AggregationType> aggregationType;
         private final IParam<S, Boolean> skipMissingValues;
 
@@ -222,7 +221,7 @@ public class Params {
                 @Nonnull String aggregationKey,
                 @Nonnull String skipKey) {
             this.defaultValue = defaultValue;
-            this.frequency = onString(defaultValue.getFrequency().toIsoString(), frequencyKey);
+            this.unit = onString(defaultValue.getUnit().toIsoString(), frequencyKey);
             this.aggregationType = onEnum(defaultValue.getAggregationType(), aggregationKey);
             this.skipMissingValues = onBoolean(defaultValue.isSkipMissingValues(), skipKey);
         }
@@ -235,7 +234,7 @@ public class Params {
         @Override
         public ObsGathering get(S config) {
             return ObsGathering.builder()
-                    .frequency(getFreq(config))
+                    .unit(getUnit(config))
                     .aggregationType(aggregationType.get(config))
                     .skipMissingValues(skipMissingValues.get(config))
                     .build();
@@ -245,30 +244,73 @@ public class Params {
         public void set(IConfig.Builder<?, S> builder, ObsGathering value) {
             Objects.requireNonNull(builder);
             skipMissingValues.set(builder, value.isSkipMissingValues());
-            setFreq(builder, value.getFrequency());
+            setFreq(builder, value.getUnit());
             aggregationType.set(builder, value.getAggregationType());
         }
 
-        private TsFrequency getFreq(S config) {
-            String tmp = frequency.get(config);
+        private TsUnit getUnit(S config) {
+            String text = unit.get(config);
+            TsUnit value = freqToUnit(text);
+            if (value != null) {
+                return value;
+            }
             try {
-                return TsFrequency.parse(tmp);
+                return TsUnit.parse(text);
             } catch (DateTimeParseException ex) {
-                try {
-                    return Fixme.OldFreq.valueOf(tmp).convert();
-                } catch (IllegalArgumentException xxx) {
-                    return TsFrequency.parse(frequency.defaultValue());
-                }
+                return TsUnit.parse(unit.defaultValue());
             }
         }
 
-        private void setFreq(IConfig.Builder<?, S> builder, TsFrequency freq) {
-            try {
-                frequency.set(builder, Fixme.OldFreq.of(freq).name());
-            } catch (UnsupportedOperationException ex) {
-                frequency.set(builder, freq.toIsoString());
-            }
+        private void setFreq(IConfig.Builder<?, S> builder, TsUnit value) {
+            String freq = unitToFreq(value);
+            unit.set(builder, freq != null ? freq : value.toIsoString());
         }
+    }
+
+    private TsUnit freqToUnit(String freq) {
+        switch (freq) {
+            case "Yearly":
+                return TsUnit.YEARLY;
+            case "HalfYearly":
+                return TsUnit.HALF_YEARLY;
+            case "QuadriMonthly":
+                return TsUnit.QUADRI_MONTHLY;
+            case "Quarterly":
+                return TsUnit.QUARTERLY;
+            case "BiMonthly":
+                return TsUnit.BI_MONTHLY;
+            case "Monthly":
+                return TsUnit.MONTHLY;
+        }
+        return null;
+    }
+
+    private String unitToFreq(TsUnit unit) {
+        switch (unit.getChronoUnit()) {
+            case YEARS:
+                if (unit.getAmount() == 1) {
+                    return "Yearly";
+                }
+                break;
+            case MONTHS:
+                if (unit.getAmount() == 6) {
+                    return "HalfYearly";
+                }
+                if (unit.getAmount() == 4) {
+                    return "QuadriMonthly";
+                }
+                if (unit.getAmount() == 3) {
+                    return "Quarterly";
+                }
+                if (unit.getAmount() == 2) {
+                    return "BiMonthly";
+                }
+                if (unit.getAmount() == 1) {
+                    return "Monthly";
+                }
+                break;
+        }
+        return null;
     }
     //</editor-fold>
 }

@@ -18,7 +18,7 @@ package internal.tsprovider.util;
 
 import demetra.data.DoubleSequence;
 import demetra.design.VisibleForTesting;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import demetra.utilities.functions.ObjLongToIntFunction;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +34,7 @@ interface ByLongObsList extends ObsList {
 
     void add(long period, double value);
 
-    static ByLongObsList of(boolean preSorted, ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc) {
+    static ByLongObsList of(boolean preSorted, ObjLongToIntFunction<TsUnit> tsPeriodIdFunc) {
         return preSorted
                 ? new PreSortedLongObsList(tsPeriodIdFunc, 32)
                 : new SortableLongObsList(tsPeriodIdFunc);
@@ -42,12 +42,12 @@ interface ByLongObsList extends ObsList {
 
     static final class SortableLongObsList implements ByLongObsList {
 
-        private final ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc;
+        private final ObjLongToIntFunction<TsUnit> tsPeriodIdFunc;
         private final List<LongObs> list = new ArrayList<>();
         private boolean sorted = true;
         private long latestPeriod = Long.MIN_VALUE;
 
-        private SortableLongObsList(ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc) {
+        private SortableLongObsList(ObjLongToIntFunction<TsUnit> tsPeriodIdFunc) {
             this.tsPeriodIdFunc = tsPeriodIdFunc;
         }
 
@@ -81,7 +81,7 @@ interface ByLongObsList extends ObsList {
         }
 
         @Override
-        public int getPeriodId(TsFrequency frequency, int index) {
+        public int getPeriodId(TsUnit frequency, int index) {
             return tsPeriodIdFunc.applyAsInt(frequency, list.get(index).period);
         }
 
@@ -104,12 +104,12 @@ interface ByLongObsList extends ObsList {
 
     static final class PreSortedLongObsList implements ByLongObsList {
 
-        private final ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc;
+        private final ObjLongToIntFunction<TsUnit> tsPeriodIdFunc;
         private long[] periods;
         private double[] values;
         private int size;
 
-        private PreSortedLongObsList(ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc, int initialCapacity) {
+        private PreSortedLongObsList(ObjLongToIntFunction<TsUnit> tsPeriodIdFunc, int initialCapacity) {
             this.tsPeriodIdFunc = tsPeriodIdFunc;
             this.periods = new long[initialCapacity];
             this.values = new double[initialCapacity];
@@ -149,7 +149,7 @@ interface ByLongObsList extends ObsList {
         }
 
         @Override
-        public int getPeriodId(TsFrequency frequency, int index) {
+        public int getPeriodId(TsUnit frequency, int index) {
             return tsPeriodIdFunc.applyAsInt(frequency, periods[index]);
         }
 

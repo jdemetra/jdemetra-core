@@ -20,8 +20,7 @@ import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.timeseries.simplets.TsData;
 import demetra.data.AggregationType;
-import demetra.timeseries.Fixme;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
@@ -38,7 +37,7 @@ import java.util.function.IntToDoubleFunction;
 @lombok.experimental.UtilityClass
 class TsDataCollector {
 
-    public TsData makeWithAggregation(ObsList obs, TsFrequency freq, AggregationType convMode) {
+    public TsData makeWithAggregation(ObsList obs, TsUnit freq, AggregationType convMode) {
         int n = obs.size();
         if (n == 0) {
             return null; // NO_DATA
@@ -169,7 +168,7 @@ class TsDataCollector {
         int s = 0;
 
         int[] ids = new int[n];
-        TsFrequency[] freqs = Fixme.complementOfUndefined().toArray(new TsFrequency[0]);
+        TsUnit[] freqs = TsDataBuilderUtil.GUESSING_UNITS;
         for (; s < freqs.length; ++s) {
             if (makeIdsFromFrequency(obs, freqs[s], ids)) {
                 break;
@@ -192,7 +191,7 @@ class TsDataCollector {
         }
     }
 
-    private boolean makeIdsFromFrequency(ObsList obs, TsFrequency frequency, int[] ids) {
+    private boolean makeIdsFromFrequency(ObsList obs, TsUnit frequency, int[] ids) {
         ids[0] = obs.getPeriodId(frequency, 0);
         for (int i = 1; i < ids.length; ++i) {
             ids[i] = obs.getPeriodId(frequency, i);
@@ -203,7 +202,7 @@ class TsDataCollector {
         return true;
     }
 
-    public TsData makeWithoutAggregation(ObsList obs, TsFrequency freq) {
+    public TsData makeWithoutAggregation(ObsList obs, TsUnit freq) {
         int n = obs.size();
         if (n == 0) {
             return null; // NO_DATA

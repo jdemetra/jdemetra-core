@@ -18,7 +18,7 @@ package demetra.timeseries.calendars;
 
 import demetra.design.Development;
 import demetra.timeseries.RegularDomain;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -171,7 +171,7 @@ public class EasterRelatedDay implements ISpecialDay {
     }
 
     @Override
-    public Iterable<IDayInfo> getIterable(TsFrequency freq, LocalDate start, LocalDate end) {
+    public Iterable<IDayInfo> getIterable(TsUnit freq, LocalDate start, LocalDate end) {
         return new EasterDayList(freq, offset, start, end, julian);
     }
 
@@ -255,7 +255,7 @@ public class EasterRelatedDay implements ISpecialDay {
 
     @Override
     public RegularDomain getSignificantDomain(RegularDomain domain) {
-        if (!domain.getStartPeriod().getFreq().getUnit().equals(ChronoUnit.DAYS)) {
+        if (!domain.getStartPeriod().getUnit().getChronoUnit().equals(ChronoUnit.DAYS)) {
             throw new IllegalArgumentException();
         }
         LocalDate first = domain.start().toLocalDate(), last = domain.end().toLocalDate().minusDays(1);
@@ -276,7 +276,7 @@ public class EasterRelatedDay implements ISpecialDay {
 
     static class EasterDayInfo implements IDayInfo {
 
-        public EasterDayInfo(TsFrequency freq, int year, int offset, boolean julian) {
+        public EasterDayInfo(TsUnit freq, int year, int offset, boolean julian) {
             LocalDate easter = easter(year, julian);
             day = easter.plusDays(offset);
             this.freq = freq;
@@ -297,12 +297,12 @@ public class EasterRelatedDay implements ISpecialDay {
             return day.getDayOfWeek();
         }
         final LocalDate day;
-        final TsFrequency freq;
+        final TsUnit freq;
     }
 
     static class EasterDayList extends AbstractList<IDayInfo> {
 
-        public EasterDayList(TsFrequency freq, int offset, LocalDate fstart, LocalDate fend, boolean julian) {
+        public EasterDayList(TsUnit freq, int offset, LocalDate fstart, LocalDate fend, boolean julian) {
             this.freq = freq;
             m_offset = offset;
             this.julian = julian;
@@ -323,7 +323,7 @@ public class EasterRelatedDay implements ISpecialDay {
             startyear = ystart;
         }
         private final int startyear, n, m_offset;
-        private final TsFrequency freq;
+        private final TsUnit freq;
         private final boolean julian;
 
         @Override

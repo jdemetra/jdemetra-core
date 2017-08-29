@@ -17,8 +17,7 @@
 package demetra.tsprovider.util;
 
 import demetra.data.AggregationType;
-import demetra.timeseries.Fixme;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -33,10 +32,10 @@ import javax.annotation.concurrent.Immutable;
 @lombok.Builder(builderClassName = "Builder")
 public final class ObsGathering {
 
-    public static final ObsGathering DEFAULT = new ObsGathering(Fixme.Undefined, AggregationType.None, true, true);
+    public static final ObsGathering DEFAULT = new ObsGathering(TsUnit.UNDEFINED, AggregationType.None, true, true);
 
     @lombok.NonNull
-    TsFrequency frequency;
+    TsUnit unit;
 
     @lombok.NonNull
     AggregationType aggregationType;
@@ -48,7 +47,7 @@ public final class ObsGathering {
 
     public static final class Builder {
 
-        TsFrequency frequency = Fixme.Undefined;
+        TsUnit unit = TsUnit.UNDEFINED;
         AggregationType aggregationType = AggregationType.None;
         boolean complete = true;
         boolean skipMissingValues = true;

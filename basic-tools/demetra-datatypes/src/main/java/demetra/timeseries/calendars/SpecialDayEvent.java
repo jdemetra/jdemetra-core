@@ -17,7 +17,7 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.ValidityPeriod;
 import java.time.LocalDate;
@@ -54,11 +54,11 @@ public class SpecialDayEvent {
     }
 
     public TsPeriod getStart() {
-        return TsPeriod.of(TsFrequency.DAILY, validity == null ? LocalDate.MIN : validity.getStart().toLocalDate());
+        return TsPeriod.of(TsUnit.DAILY, validity == null ? LocalDate.MIN : validity.getStart().toLocalDate());
     }
 
     public TsPeriod getEnd() {
-        return TsPeriod.of(TsFrequency.DAILY, validity == null ? LocalDate.MAX : validity.getEnd().toLocalDate());
+        return TsPeriod.of(TsUnit.DAILY, validity == null ? LocalDate.MAX : validity.getEnd().toLocalDate());
     }
 
     @Override

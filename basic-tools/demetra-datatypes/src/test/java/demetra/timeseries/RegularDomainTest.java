@@ -17,8 +17,7 @@
 package demetra.timeseries;
 
 import static demetra.timeseries.RegularDomain.of;
-import static demetra.timeseries.TsFrequency.HOURLY;
-import java.time.LocalDate;
+import static demetra.timeseries.TsUnit.HOURLY;
 import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
@@ -102,11 +101,11 @@ public class RegularDomainTest {
         assertThat(of(feb2010, 1).contains(x.plus(-1))).isFalse();
         assertThat(of(feb2010, 2).contains(x.plus(1))).isTrue();
 
-        assertThatThrownBy(() -> of(feb2010, 1).contains(x.withFreq(HOURLY)))
+        assertThatThrownBy(() -> of(feb2010, 1).contains(x.withUnit(HOURLY)))
                 .isInstanceOf(TsException.class)
                 .hasMessage(TsException.INCOMPATIBLE_FREQ);
 
-        assertThat(of(feb2010, 1).contains(x.withOrigin(LocalDate.now()))).isTrue();
+        assertThat(of(feb2010, 1).contains(x.withOffset(1))).isTrue();
     }
 
     @Test
@@ -131,11 +130,11 @@ public class RegularDomainTest {
         assertThat(of(feb2010, 1).indexOf(x.plus(-1))).isEqualTo(-1);
         assertThat(of(feb2010, 2).indexOf(x.plus(1))).isEqualTo(1);
 
-        assertThatThrownBy(() -> of(feb2010, 1).indexOf(x.withFreq(HOURLY)))
+        assertThatThrownBy(() -> of(feb2010, 1).indexOf(x.withUnit(HOURLY)))
                 .isInstanceOf(TsException.class)
                 .hasMessage(TsException.INCOMPATIBLE_FREQ);
 
-        assertThat(of(feb2010, 1).indexOf(x.withOrigin(LocalDate.now()))).isEqualTo(0);
+        assertThat(of(feb2010, 1).indexOf(x.withOffset(1))).isEqualTo(0);
     }
 
     @Test
@@ -169,11 +168,11 @@ public class RegularDomainTest {
         assertThat(of(feb2010, 2).intersection(x.move(-1))).isEqualTo(of(feb2010, 1));
         assertThat(of(feb2010, 2).intersection(x.move(-2))).isEqualTo(of(feb2010, 0));
 
-        assertThatThrownBy(() -> of(feb2010, 2).intersection(of(feb2010.withFreq(HOURLY), 2)))
+        assertThatThrownBy(() -> of(feb2010, 2).intersection(of(feb2010.withUnit(HOURLY), 2)))
                 .isInstanceOf(TsException.class)
                 .hasMessage(TsException.INCOMPATIBLE_FREQ);
 
-        assertThat(of(feb2010, 2).intersection(of(feb2010.withOrigin(LocalDate.now()), 2))).isEqualTo(x);
+        assertThat(of(feb2010, 2).intersection(of(feb2010.withOffset(1), 2))).isEqualTo(x);
     }
 
     @Test
@@ -186,11 +185,11 @@ public class RegularDomainTest {
         assertThat(of(feb2010, 2).union(x.move(-1))).isEqualTo(of(feb2010.plus(-1), 3));
         assertThat(of(feb2010, 2).union(x.move(-2))).isEqualTo(of(feb2010.plus(-2), 4));
 
-        assertThatThrownBy(() -> of(feb2010, 2).union(of(feb2010.withFreq(HOURLY), 2)))
+        assertThatThrownBy(() -> of(feb2010, 2).union(of(feb2010.withUnit(HOURLY), 2)))
                 .isInstanceOf(TsException.class)
                 .hasMessage(TsException.INCOMPATIBLE_FREQ);
 
-        assertThat(of(feb2010, 2).union(of(feb2010.withOrigin(LocalDate.now()), 2))).isEqualTo(x);
+        assertThat(of(feb2010, 2).union(of(feb2010.withOffset(1), 2))).isEqualTo(x);
     }
 
     @Test

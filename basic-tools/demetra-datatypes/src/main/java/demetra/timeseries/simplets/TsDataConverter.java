@@ -19,7 +19,7 @@ package demetra.timeseries.simplets;
 import demetra.data.AggregationType;
 import demetra.data.DoubleSequence;
 import demetra.timeseries.Fixme;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 
 /**
@@ -28,10 +28,6 @@ import demetra.timeseries.TsPeriod;
  */
 @lombok.experimental.UtilityClass
 public class TsDataConverter {
-
-    public boolean canChangeFrequency(TsData data, TsFrequency newFreq) {
-        return Fixme.getAsInt(data.getFrequency()) % Fixme.getAsInt(newFreq) == 0;
-    }
 
     /**
      * Makes a frequency change of this series.
@@ -44,50 +40,66 @@ public class TsDataConverter {
      * series is set to Missing if some data in the original series are Missing.
      * @return A new time series is returned.
      */
-    public TsData changeFrequency(final TsData s, final TsFrequency newfreq,
-            final AggregationType conversion, final boolean complete) {
+    public TsData changeFrequency(TsData s, TsUnit newfreq, AggregationType conversion, boolean complete) {
+        int ratio = s.getUnit().ratio(newfreq);
+        switch (ratio) {
+            case TsUnit.NO_STRICT_RATIO:
+            case TsUnit.NO_RATIO:
+                return null;
+            case 1:
+                return TsData.of(s.getStart().withUnit(newfreq), s.values());
+        }
+        if (s.isEmpty()) {
+            return TsData.of(s.getStart().withUnit(newfreq), s.values());
+        }
+        return complete
+                ? changeComplete(s, newfreq, conversion, ratio)
+                : changeIncomplete(s, newfreq, conversion, ratio);
+    }
+
+    private TsData changeComplete(TsData s, TsUnit newfreq, AggregationType conversion, int ratio) {
+        return changeUsingRatio(s, newfreq, conversion, true, ratio);
+    }
+
+    private TsData changeIncomplete(TsData s, TsUnit newfreq, AggregationType conversion, int ratio) {
+        return changeUsingRatio(s, newfreq, conversion, false, ratio);
+    }
+
+    private TsData changeUsingRatio(TsData s, TsUnit newfreq, AggregationType conversion, boolean complete, int ratio) {
         TsPeriod start = s.getStart();
         DoubleSequence values = s.values();
-        int freq = Fixme.getAsInt(start.getFreq()), nfreq = Fixme.getAsInt(newfreq);
-        if (freq % nfreq != 0) {
-            return null;
-        }
-        if (freq == nfreq) {
-            return s;
-        }
-        int nconv = freq / nfreq;
         int c = values.length();
         int z0 = 0;
         int beg = Fixme.getId(start);
 
         // d0 and d1
-        int nbeg = beg / nconv;
+        int nbeg = beg / ratio;
         // nbeg is the first period in the new frequency
         // z0 is the number of periods in the old frequency being dropped
-        int n0 = nconv, n1 = nconv;
-        if (beg % nconv != 0) {
+        int n0 = ratio, n1 = ratio;
+        if (beg % ratio != 0) {
             if (complete) {
                 // Attention! Different treatment if beg is negative 
                 // We always have that x = x/q + x%q
                 // but the integer division is rounded towards 0
                 if (beg > 0) {
                     ++nbeg;
-                    z0 = nconv - beg % nconv;
+                    z0 = ratio - beg % ratio;
                 } else {
-                    z0 = -beg % nconv;
+                    z0 = -beg % ratio;
                 }
             } else {
                 if (beg < 0) {
                     --nbeg;
                 }
-                n0 = (nbeg + 1) * nconv - beg;
+                n0 = (nbeg + 1) * ratio - beg;
             }
         }
 
         int end = beg + c; // excluded
-        int nend = end / nconv;
+        int nend = end / ratio;
 
-        if (end % nconv != 0) {
+        if (end % ratio != 0) {
             if (complete) {
                 if (end < 0) {
                     --nend;
@@ -96,14 +108,14 @@ public class TsDataConverter {
                 if (end > 0) {
                     ++nend;
                 }
-                n1 = end - (nend - 1) * nconv;
+                n1 = end - (nend - 1) * ratio;
             }
         }
         int n = nend - nbeg;
         double[] result = new double[n];
         if (n > 0) {
             for (int i = 0, j = z0; i < n; ++i) {
-                int nmax = nconv;
+                int nmax = ratio;
                 if (i == 0) {
                     nmax = n0;
                 } else if (i == n - 1) {
@@ -141,7 +153,7 @@ public class TsDataConverter {
                         ++ncur;
                     }
                 }
-                if ((ncur == nconv) || (!complete && (ncur != 0))) {
+                if ((ncur == ratio) || (!complete && (ncur != 0))) {
                     if (conversion == AggregationType.Average) {
                         d /= ncur;
                     }

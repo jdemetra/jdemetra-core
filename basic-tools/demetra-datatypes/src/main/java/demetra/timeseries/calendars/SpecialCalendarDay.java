@@ -18,7 +18,7 @@
 package demetra.timeseries.calendars;
 
 import demetra.timeseries.RegularDomain;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
 
 
@@ -115,7 +115,7 @@ public class SpecialCalendarDay implements ISpecialDay {
     }
     
     @Override
-    public Iterable<IDayInfo> getIterable(TsFrequency freq, LocalDate start, LocalDate end) {
+    public Iterable<IDayInfo> getIterable(TsUnit freq, LocalDate start, LocalDate end) {
         ISpecialDay sd = toSpecialDay();
         if (sd == null) {
             return null;

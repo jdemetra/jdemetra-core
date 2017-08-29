@@ -19,7 +19,7 @@ package demetra.benchmarking.ts;
 import demetra.benchmarking.univariate.DentonSpecification;
 import demetra.benchmarking.univariate.TsDenton;
 import demetra.data.DataBlock;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.simplets.TsData;
 import org.junit.Test;
@@ -61,7 +61,7 @@ public class TsDentonTest {
         spec.setDifferencing(3);
         TsPeriod a=TsPeriod.yearly(1980);
         TsData t=TsData.of(a, y);
-        TsData b = TsDenton.benchmark(TsFrequency.QUADRI_MONTHLY, t, spec);
+        TsData b = TsDenton.benchmark(TsUnit.QUADRI_MONTHLY, t, spec);
         System.out.println(b);
     }
 }

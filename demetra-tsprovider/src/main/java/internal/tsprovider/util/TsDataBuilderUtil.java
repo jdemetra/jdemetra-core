@@ -17,8 +17,7 @@
 package internal.tsprovider.util;
 
 import demetra.data.AggregationType;
-import demetra.timeseries.Fixme;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.simplets.TsData;
 import demetra.timeseries.simplets.TsDataConverter;
 import demetra.tsprovider.OptionalTsData;
@@ -40,18 +39,20 @@ public class TsDataBuilderUtil {
     public final OptionalTsData DUPLICATION_WITHOUT_AGGREGATION = OptionalTsData.absent("Duplicated observations without aggregation");
     public final OptionalTsData UNKNOWN = OptionalTsData.absent("Unexpected error");
 
+    public final TsUnit[] GUESSING_UNITS = {TsUnit.YEARLY, TsUnit.QUARTERLY, TsUnit.MONTHLY, TsUnit.HALF_YEARLY, TsUnit.QUADRI_MONTHLY, TsUnit.BI_MONTHLY};
+
     boolean isValid(ObsGathering gathering) {
-        return !(gathering.getFrequency().equals(Fixme.Undefined) && gathering.getAggregationType() != AggregationType.None);
+        return !(gathering.getUnit().equals(TsUnit.UNDEFINED) && gathering.getAggregationType() != AggregationType.None);
     }
 
     Function<ObsList, OptionalTsData> getMaker(ObsGathering gathering) {
-        if (gathering.getFrequency().equals(Fixme.Undefined)) {
+        if (gathering.getUnit().equals(TsUnit.UNDEFINED)) {
             return o -> makeFromUnknownFrequency(o);
         }
         if (gathering.getAggregationType() != AggregationType.None) {
-            return o -> makeWithAggregation(o, gathering.getFrequency(), gathering.getAggregationType(), gathering.isComplete());
+            return o -> makeWithAggregation(o, gathering.getUnit(), gathering.getAggregationType(), gathering.isComplete());
         }
-        return o -> makeWithoutAggregation(o, gathering.getFrequency());
+        return o -> makeWithoutAggregation(o, gathering.getUnit());
     }
 
     private OptionalTsData makeFromUnknownFrequency(ObsList obs) {
@@ -66,7 +67,7 @@ public class TsDataBuilderUtil {
         }
     }
 
-    private OptionalTsData makeWithoutAggregation(ObsList obs, TsFrequency freq) {
+    private OptionalTsData makeWithoutAggregation(ObsList obs, TsUnit freq) {
         switch (obs.size()) {
             case 0:
                 return NO_DATA;
@@ -76,13 +77,13 @@ public class TsDataBuilderUtil {
         }
     }
 
-    private OptionalTsData makeWithAggregation(ObsList obs, TsFrequency freq, AggregationType convMode, boolean complete) {
+    private OptionalTsData makeWithAggregation(ObsList obs, TsUnit freq, AggregationType convMode, boolean complete) {
         switch (obs.size()) {
             case 0:
                 return NO_DATA;
             default:
                 TsData result = TsDataCollector.makeFromUnknownFrequency(obs);
-                if (result != null && TsDataConverter.canChangeFrequency(result, freq)) {
+                if (result != null && result.getUnit().contains(freq)) {
                     // should succeed
                     result = TsDataConverter.changeFrequency(result, freq, convMode, complete);
                 } else {

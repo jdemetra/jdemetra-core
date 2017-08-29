@@ -109,7 +109,7 @@ public class TsDataToolkit {
 
     public TsData select(TsData s, TsPeriodSelector selector) {
         RegularDomain ndomain = s.domain().select(selector);
-        final int beg = ndomain.getStartPeriod().until(s.getStart());
+        final int beg = s.getStart().until(ndomain.getStartPeriod());
         return TsData.of(ndomain.getStartPeriod(), s.values().extract(beg, ndomain.length()));
     }
 
@@ -124,7 +124,7 @@ public class TsDataToolkit {
      * hasn't the right frequency.
      */
     public TsData fitToDomain(TsData s, RegularDomain domain) {
-        if (s.getFrequency() != domain.getStartPeriod().getFreq()) {
+        if (!s.getUnit().equals(domain.getStartPeriod().getUnit())) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
         RegularDomain sdomain = s.domain();

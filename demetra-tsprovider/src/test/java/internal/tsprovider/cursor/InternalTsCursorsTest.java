@@ -59,7 +59,7 @@ import demetra.tsprovider.cursor.TsCursor;
 import internal.tsprovider.cursor.InternalTsCursor.SingletonCursor;
 import static org.assertj.core.api.Assertions.assertThat;
 import static com.google.common.collect.Iterators.forArray;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 
 /**
  *
@@ -68,7 +68,7 @@ import demetra.timeseries.TsFrequency;
 public class InternalTsCursorsTest {
 
     private final String someKey = "hello";
-    private final OptionalTsData someData = OptionalTsData.present(TsData.random(TsFrequency.MONTHLY, 1));
+    private final OptionalTsData someData = OptionalTsData.present(TsData.random(TsUnit.MONTHLY, 1));
     private final Map<String, String> someMeta = ImmutableMap.of("key", "value");
 
     private final FunctionWithIO<String, String> goodIdFunc = String::toUpperCase;

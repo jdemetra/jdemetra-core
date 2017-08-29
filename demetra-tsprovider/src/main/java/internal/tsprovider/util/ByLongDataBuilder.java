@@ -16,14 +16,16 @@
  */
 package internal.tsprovider.util;
 
-import demetra.timeseries.Fixme;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsPeriod;
+import demetra.timeseries.TsUnit;
 import demetra.tsprovider.OptionalTsData;
 import demetra.tsprovider.util.ObsCharacteristics;
 import demetra.tsprovider.util.ObsGathering;
 import demetra.tsprovider.util.TsDataBuilder;
-import demetra.utilities.functions.ObjLongToIntFunction;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -39,24 +41,24 @@ public final class ByLongDataBuilder<T> implements TsDataBuilder<T> {
 
     public static TsDataBuilder<Date> fromCalendar(Calendar resource, ObsGathering gathering, ObsCharacteristics[] characteristics) {
         return TsDataBuilderUtil.isValid(gathering)
-                ? of(gathering, characteristics, Date::getTime, (f, p) -> getIdFromTimeInMillis(resource, f, p))
+                ? of(gathering, characteristics, new CalendarConverter(resource.getTimeZone().toZoneId()))
                 : new NoOpDataBuilder<>(TsDataBuilderUtil.INVALID_AGGREGATION);
     }
 
     public static TsDataBuilder<LocalDate> fromDate(ObsGathering gathering, ObsCharacteristics[] characteristics) {
         return TsDataBuilderUtil.isValid(gathering)
-                ? of(gathering, characteristics, ByLongDataBuilder::getYearMonthDay, ByLongDataBuilder::getIdFromYearMonthDay)
+                ? of(gathering, characteristics, DateConverter.INSTANCE)
                 : new NoOpDataBuilder<>(TsDataBuilderUtil.INVALID_AGGREGATION);
     }
 
     private final ByLongObsList obs;
-    private final ToLongFunction<T> periodFunc;
+    private final ToLongFunction<T> toLong;
     private final boolean skipMissingValues;
     private final Function<ObsList, OptionalTsData> maker;
 
-    private ByLongDataBuilder(ByLongObsList obs, ToLongFunction<T> periodFunc, boolean skipMissingValues, Function<ObsList, OptionalTsData> maker) {
+    private ByLongDataBuilder(ByLongObsList obs, ToLongFunction<T> toLong, boolean skipMissingValues, Function<ObsList, OptionalTsData> maker) {
         this.obs = obs;
-        this.periodFunc = periodFunc;
+        this.toLong = toLong;
         this.skipMissingValues = skipMissingValues;
         this.maker = maker;
     }
@@ -71,9 +73,9 @@ public final class ByLongDataBuilder<T> implements TsDataBuilder<T> {
     public TsDataBuilder<T> add(T date, Number value) {
         if (date != null) {
             if (value != null) {
-                obs.add(periodFunc.applyAsLong(date), value.doubleValue());
+                obs.add(toLong.applyAsLong(date), value.doubleValue());
             } else if (!skipMissingValues) {
-                obs.add(periodFunc.applyAsLong(date), Double.NaN);
+                obs.add(toLong.applyAsLong(date), Double.NaN);
             }
         }
         return this;
@@ -86,11 +88,11 @@ public final class ByLongDataBuilder<T> implements TsDataBuilder<T> {
 
     private static <T> ByLongDataBuilder<T> of(
             ObsGathering gathering, ObsCharacteristics[] characteristics,
-            ToLongFunction<T> periodFunc, ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc) {
+            Converter<T> converter) {
 
         return new ByLongDataBuilder<>(
-                ByLongObsList.of(isOrdered(characteristics), tsPeriodIdFunc),
-                periodFunc,
+                ByLongObsList.of(isOrdered(characteristics), converter::longToPeriodId),
+                converter::valueToLong,
                 gathering.isSkipMissingValues(),
                 TsDataBuilderUtil.getMaker(gathering));
     }
@@ -99,21 +101,52 @@ public final class ByLongDataBuilder<T> implements TsDataBuilder<T> {
         return Arrays.binarySearch(characteristics, ObsCharacteristics.ORDERED) != -1;
     }
 
-    private static int getIdFromTimeInMillis(Calendar cal, TsFrequency freq, long period) {
-        cal.setTimeInMillis(period);
-        return calcTsPeriodId(Fixme.getAsInt(freq), cal.get(Calendar.YEAR), cal.get(Calendar.MONTH));
+    private interface Converter<T> {
+
+        long valueToLong(T value);
+
+        int longToPeriodId(TsUnit unit, long l);
     }
 
-    private static long getYearMonthDay(LocalDate date) {
-        return (long) (date.getYear() * 100 + date.getMonthValue()) * 100 + date.getDayOfMonth();
+    @lombok.AllArgsConstructor
+    private static final class CalendarConverter implements Converter<Date> {
+
+        private final ZoneId zoneId;
+
+        @Override
+        public long valueToLong(Date value) {
+            return value.getTime();
+        }
+
+        @Override
+        public int longToPeriodId(TsUnit unit, long l) {
+            return (int) TsPeriod.idAt(0, unit, toLocalDateTime(l));
+        }
+
+        private LocalDateTime toLocalDateTime(long l) {
+            return LocalDateTime.ofInstant(Instant.ofEpochMilli(l), zoneId);
+        }
     }
 
-    private static int getIdFromYearMonthDay(TsFrequency freq, long period) {
-        period = period / 100;
-        return calcTsPeriodId(Fixme.getAsInt(freq), (int) (period / 100), (int) (period % 100 - 1));
-    }
+    private enum DateConverter implements Converter<LocalDate> {
+        INSTANCE;
 
-    private static int calcTsPeriodId(int freq, int year, int month) {
-        return (year - 1970) * freq + month / (12 / freq);
+        @Override
+        public long valueToLong(LocalDate date) {
+            return (long) (date.getYear() * 100 + date.getMonthValue()) * 100 + date.getDayOfMonth();
+        }
+
+        @Override
+        public int longToPeriodId(TsUnit unit, long l) {
+            return (int) TsPeriod.idAt(0, unit, toLocalDateTime(l));
+        }
+
+        private static LocalDateTime toLocalDateTime(long value) {
+            int dayOfMonth = (int) value % 100;
+            value /= 100;
+            int month = (int) value % 100;
+            value /= 100;
+            return LocalDateTime.of((int) value, month, dayOfMonth, 0, 0);
+        }
     }
 }
