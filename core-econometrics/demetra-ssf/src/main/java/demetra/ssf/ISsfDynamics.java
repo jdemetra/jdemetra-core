@@ -63,6 +63,7 @@ public interface ISsfDynamics extends ISsfRoot {
      */
     boolean hasInnovations(int pos);
 
+    boolean areInnovationsTimeInvariant();
     /**
      * Gets the transition matrix.
      *

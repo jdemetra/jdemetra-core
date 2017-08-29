@@ -14,6 +14,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
 import demetra.data.DoubleSequence;
+import demetra.sarima.SarimaUtility;
 
 /**
  *
@@ -32,7 +33,7 @@ public class IArmaFilterTest {
         arima = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.8).phi(-.2, -.5, -.2).build();
         DataBlock s = DataBlock.copyOf(Data.PROD);
         DataBlock ds = DataBlock.make(s.length() - spec.getDifferenceOrder());
-        spec.getDifferencingFilter().apply(s, ds);
+        SarimaUtility.getDifferencingFilter(spec).apply(s, ds);
         data = ds;
     }
 
@@ -259,7 +260,7 @@ public class IArmaFilterTest {
             lspec.setBD(spec.getBD());
             lspec.setBQ(spec.getBQ());
             ec.tstoolkit.sarima.SarimaModel lmodel = new ec.tstoolkit.sarima.SarimaModel(lspec);
-            lmodel.setParameters(new ec.tstoolkit.data.ReadDataBlock(sarima.parameters()));
+            lmodel.setParameters(new ec.tstoolkit.data.ReadDataBlock(sarima.parameters().toArray()));
             return lmodel;
         } else {
             return null;

@@ -62,6 +62,11 @@ public class WeightedMeasurement implements ISsfMeasurement {
     }
 
     @Override
+    public boolean areErrorsTimeInvariant(){
+        return ! measurement.hasErrors();
+    }
+
+    @Override
     public boolean hasError(int pos) {
         return measurement.hasError(pos);
     }

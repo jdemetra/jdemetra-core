@@ -63,6 +63,11 @@ public class ExternalEffects implements ISsfMeasurement {
     }
 
     @Override
+    public boolean areErrorsTimeInvariant() {
+        return m.areErrorsTimeInvariant();
+    }
+
+    @Override
     public boolean hasError(int pos) {
         return m.hasError(pos);
     }

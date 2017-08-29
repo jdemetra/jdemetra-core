@@ -118,6 +118,11 @@ public class Measurement {
         }
 
         @Override
+        public boolean areErrorsTimeInvariant() {
+            return true;
+        }
+        
+        @Override
         public boolean hasError(int pos) {
             return measurements.hasError(pos);
         }
@@ -171,6 +176,11 @@ public class Measurement {
             return var != 0;
         }
 
+        @Override
+        public boolean areErrorsTimeInvariant() {
+            return true;
+        }
+        
         @Override
         public boolean hasError(int pos) {
             return var != 0;
@@ -236,6 +246,11 @@ public class Measurement {
             return var != 0;
         }
 
+        @Override
+        public boolean areErrorsTimeInvariant() {
+            return true;
+        }
+        
         @Override
         public boolean hasError(int pos) {
             return var != 0;
@@ -332,6 +347,11 @@ public class Measurement {
         }
 
         @Override
+        public boolean areErrorsTimeInvariant() {
+            return true;
+        }
+        
+        @Override
         public boolean hasError(int pos) {
             return var != 0;
         }
@@ -398,6 +418,11 @@ public class Measurement {
         }
 
         @Override
+        public boolean areErrorsTimeInvariant() {
+            return true;
+        }
+        
+        @Override
         public boolean hasError(int pos) {
             return var != 0;
         }
@@ -460,6 +485,11 @@ public class Measurement {
             return var != 0;
         }
 
+        @Override
+        public boolean areErrorsTimeInvariant() {
+            return true;
+        }
+        
         @Override
         public boolean hasError(int pos) {
             return var != 0;
@@ -570,6 +600,11 @@ public class Measurement {
         }
 
         @Override
+        public boolean areErrorsTimeInvariant() {
+            return true;
+        }
+        
+        @Override
         public double errorVariance(int pos) {
             return 0;
         }
@@ -658,6 +693,11 @@ public class Measurement {
             return false;
         }
 
+        @Override
+        public boolean areErrorsTimeInvariant() {
+            return true;
+        }
+        
         @Override
         public boolean hasError(int pos) {
             return false;

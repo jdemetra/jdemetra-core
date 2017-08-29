@@ -1,7 +1,7 @@
 /*
- * Copyright 2016 National Bank of Belgium
+ * Copyright 2017 National Bank of Belgium
  *  
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
@@ -76,6 +76,11 @@ public class RegSsf extends Ssf {
         @Override
         public boolean hasInnovations(int pos) {
             return dyn.hasInnovations(pos);
+        }
+
+        @Override
+        public boolean areInnovationsTimeInvariant() {
+            return dyn.areInnovationsTimeInvariant();
         }
 
         @Override
@@ -175,13 +180,13 @@ public class RegSsf extends Ssf {
         }
 
         @Override
-        public boolean a0(DataBlock a0) {
-            return dyn.a0(a0.range(0, n));
+        public void a0(DataBlock a0) {
+            dyn.a0(a0.range(0, n));
         }
 
         @Override
-        public boolean Pf0(Matrix pf0) {
-            return dyn.Pf0(pf0.topLeft(n, n));
+        public void Pf0(Matrix pf0) {
+            dyn.Pf0(pf0.topLeft(n, n));
         }
 
         @Override
@@ -223,6 +228,11 @@ public class RegSsf extends Ssf {
         @Override
         public boolean hasErrors() {
             return m.hasErrors();
+        }
+        
+       @Override
+        public boolean areErrorsTimeInvariant() {
+            return m.areErrorsTimeInvariant();
         }
 
         @Override

@@ -16,10 +16,10 @@
  */
 package demetra.likelihood;
 
+import demetra.data.DoubleMatrix;
 import demetra.design.IBuilder;
 import demetra.design.Immutable;
 import demetra.maths.matrices.Matrix;
-import java.util.function.Supplier;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.data.LogSign;
@@ -179,7 +179,7 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
     }
 
     @Override
-    public Matrix unscaledCovariance() {
+    public DoubleMatrix unscaledCovariance() {
         Matrix tmp = bvar;
         if (tmp == null && r != null) {
             synchronized (this) {
@@ -191,7 +191,7 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
                 }
             }
         }
-        return bvar;
+        return bvar.unmodifiable();
     }
 
     /**
@@ -213,9 +213,6 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
      * @return
      */
     public ConcentratedLikelihood rescale(final double yfactor, double[] xfactor) {
-        if (yfactor == 1) {
-            return this;
-        }
         double nssqerr = ssqerr / (yfactor * yfactor);
         double[] nres = null;
         if (res != null) {
@@ -225,33 +222,37 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
             }
         }
         double[] nb = null;
-        Matrix nbvar = null, nr=null;
-        if (b != null && nbvar != null && xfactor != null) {
-            nb = new double[b.length];
-            nbvar = bvar.deepClone();
-            for (int i = 0; i < b.length; ++i) {
-                double ifactor = xfactor[i];
-                nb[i] = b[i] * ifactor;
-                for (int j = 0; j < i; ++j) {
-                    double ijfactor = ifactor * xfactor[j];
-                    nbvar.apply(i, j, x -> x * ijfactor);
-                    nbvar.apply(j, i, x -> x * ijfactor);
-                }
-                nbvar.apply(i, i, x -> x * ifactor * ifactor);
-            }
-        }
-        if (b != null && r != null && xfactor != null) {
+        Matrix nbvar = null, nr = null;
+        if (b != null && xfactor != null) {
             nb = new double[b.length];
             nr = r.deepClone();
             for (int i = 0; i < b.length; ++i) {
-                double ifactor = xfactor[i];
-                nb[i] = b[i] * ifactor;
-                nr.column(i).div(ifactor);
+                nb[i] = b[i] * xfactor[i];
             }
+            if (nbvar != null) {
+                nbvar = bvar.deepClone();
+                for (int i = 0; i < b.length; ++i) {
+                    double ifactor = xfactor[i];
+                    for (int j = 0; j < i; ++j) {
+                        double ijfactor = ifactor * xfactor[j];
+                        nbvar.apply(i, j, x -> x * ijfactor);
+                        nbvar.apply(j, i, x -> x * ijfactor);
+                    }
+                    nbvar.apply(i, i, x -> x * ifactor * ifactor);
+                }
+            }
+            if (r != null) {
+                nr = r.deepClone();
+                for (int i = 0; i < b.length; ++i) {
+                    nr.column(i).div(xfactor[i]);
+                }
+            }
+        } else {
+            nb = b;
+            nbvar = bvar;
+            nr = r;
         }
-        
         return new ConcentratedLikelihood(n, nssqerr, ldet, nb, nbvar, nr, nres);
-
     }
 
     public ConcentratedLikelihood correctForMissing(int nm) {
@@ -264,7 +265,7 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
         if (nb == 0) {
             return new ConcentratedLikelihood(n - nm, ssqerr, nldet, new double[0], Matrix.EMPTY, Matrix.EMPTY, res);
         } else {
-            return new ConcentratedLikelihood(n - nm, ssqerr, nldet, exclude(b, nm), bvar.extract(nm, b.length, nm, b.length), r.extract(nm, b.length, nm, b.length), res);
+            return new ConcentratedLikelihood(n - nm, ssqerr, nldet, exclude(b, nm), bvar.extract(nm, nb, nm, nb), r.extract(nm, nb, nm, nb), res);
         }
     }
 

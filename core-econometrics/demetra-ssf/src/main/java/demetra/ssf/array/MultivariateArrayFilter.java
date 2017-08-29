@@ -74,21 +74,15 @@ public class MultivariateArrayFilter {
         return true;
     }
 
-    private int initState() {
+    private void initState() {
         state = new LState(L());
         perrors = new MultivariateUpdateInformation(dim, nm);
         
-        if (!ssf.getInitialization().a0(state.a)) {
-            return -1;
-        }
+        ssf.getInitialization().a0(state.a);
         Matrix P0 = Matrix.make(dim, dim);
-        if (!ssf.getInitialization().Pf0(P0)) {
-            return -1;
-        }
+        ssf.getInitialization().Pf0(P0);
         SymmetricMatrix.lcholesky(P0, State.ZERO);
         state.L.copy(P0);
-
-        return 0;
     }
 
     /**
@@ -109,10 +103,8 @@ public class MultivariateArrayFilter {
         if (!initFilter()) {
             return false;
         }
-        pos = initState();
-        if (pos < 0) {
-            return false;
-        }
+        initState();
+        pos=0;
         rslts.open(ssf, this.data);
         do {
             preArray();
@@ -154,18 +146,18 @@ public class MultivariateArrayFilter {
     }
 
     private Matrix K() {
-        return A.extract(nm, nm + dim, 0, nm);
+        return A.extract(nm, dim, 0, nm);
     }
 
     private Matrix ZL() {
-        return A.extract(0, nm, nm, nm + dim);
+        return A.extract(0, nm, nm, dim);
     }
 
     private Matrix L() {
-        return A.extract(nm, nm + dim, nm, nm + dim);
+        return A.extract(nm, dim, nm, dim);
     }
 
     private Matrix U() {
-        return A.extract(nm, nm + dim, nm + dim, -1);
+        return A.extract(nm, dim, nm + dim, A.getColumnsCount()-nm-dim);
     }
 }

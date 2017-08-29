@@ -48,9 +48,7 @@ public class ElementaryTransformations {
             do {
                 //ElementaryTransformations.rowHouseholder(L);
                 rowGivens(L);
-                L = L.extract(1, r, 1, c);
-                --r;
-                --c;
+                L = L.extract(1, --r, 1, --c);
             } while (!L.isEmpty());
             return true;
         } catch (MatrixException err) {
@@ -163,9 +161,7 @@ public class ElementaryTransformations {
             Matrix L = X;
             do {
                 rowHouseholder(L);
-                L = L.extract(1, r, 1, c);
-                --r;
-                --c;
+                L = L.extract(1, --r, 1, --c);
             } while (!L.isEmpty());
             return true;
         } catch (MatrixException err) {

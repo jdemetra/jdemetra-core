@@ -16,7 +16,7 @@ public interface IFilterOutput {
     /**
      * Creates a filter output
      * @param buffer The buffer that will contain the results. 
-     * @param startPos The start position of the output. More exactly, buffer[0] will contain F(y)(t)
+     * @param startPos The start position of the output. More exactly, buffer[0] will contain F(y)(startpos)
      * @return 
      */
     public static IFilterOutput of(final DataBlock buffer, final int startPos) {

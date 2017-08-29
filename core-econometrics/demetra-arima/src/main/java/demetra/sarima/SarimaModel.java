@@ -237,7 +237,7 @@ public class SarimaModel extends AbstractArimaModel {
         this.bth = builder.bth;
     }
 
-    public double[] parameters() {
+    public DoubleSequence parameters() {
         double[] p = new double[phi.length + bphi.length + th.length + bth.length];
         int pos = 0;
         if (phi.length > 0) {
@@ -255,7 +255,7 @@ public class SarimaModel extends AbstractArimaModel {
         if (bth.length > 0) {
             System.arraycopy(bth, 0, p, pos, bth.length);
         }
-        return p;
+        return DoubleSequence.ofInternal(p);
     }
 
     /**
@@ -295,7 +295,7 @@ public class SarimaModel extends AbstractArimaModel {
 
     @Override
     public BackFilter getAR() {
-        BackFilter df = SarimaSpecification.differencingFilter(s, d, bd);
+        BackFilter df = SarimaUtility.differencingFilter(s, d, bd);
         BackFilter st = getStationaryAR();
         return df.times(st);
     }
@@ -368,7 +368,7 @@ public class SarimaModel extends AbstractArimaModel {
      */
     @Override
     public BackFilter getNonStationaryAR() {
-        return SarimaSpecification.differencingFilter(s, d, bd);
+        return SarimaUtility.differencingFilter(s, d, bd);
     }
 
     /**

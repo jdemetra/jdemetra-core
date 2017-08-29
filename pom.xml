@@ -139,11 +139,6 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-tstoolkit2</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-tss</artifactId>
                 <version>${project.version}</version>            
             </dependency>
@@ -208,6 +203,11 @@
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-algorithms-ex</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-eco-datatypes</artifactId>
                 <version>${project.version}</version>            
             </dependency>
             <dependency>

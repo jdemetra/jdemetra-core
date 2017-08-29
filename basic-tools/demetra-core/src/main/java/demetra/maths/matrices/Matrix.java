@@ -8,6 +8,7 @@ package demetra.maths.matrices;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;
+import demetra.data.DoubleMatrix;
 import demetra.data.accumulator.DoubleAccumulator;
 import demetra.design.IBuilder;
 import java.util.Iterator;
@@ -28,9 +29,9 @@ import java.util.List;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public class Matrix {
-    
-    public static final Matrix EMPTY=new Matrix(new double[0], 0, 0);
+public class Matrix implements DoubleMatrix {
+
+    public static final Matrix EMPTY = new Matrix(new double[0], 0, 0);
 
     public static Matrix square(int n) {
         double[] data = new double[n * n];
@@ -40,6 +41,10 @@ public class Matrix {
     public static Matrix make(int nrows, int ncols) {
         double[] data = new double[nrows * ncols];
         return new Matrix(data, nrows, ncols);
+    }
+
+    public static Matrix of(DoubleMatrix matrix) {
+        return new Matrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
     }
 
     public static Matrix identity(int n) {
@@ -396,6 +401,7 @@ public class Matrix {
      *
      * @return
      */
+    @Override
     public final DataBlock diagonal() {
         int n = Math.min(nrows, ncols), inc = rowInc + colInc;
         return DataBlock.ofInternal(storage, start, start + inc * n, inc);
@@ -406,6 +412,7 @@ public class Matrix {
      * @param pos
      * @return
      */
+    @Override
     public final DataBlock subDiagonal(int pos) {
         if (pos >= ncols) {
             return DataBlock.EMPTY;
@@ -441,6 +448,7 @@ public class Matrix {
         }
     }
 
+    @Override
     public final void copyTo(double[] data, final int start) {
         int pos = start;
         DataBlockIterator cols = columnsIterator();
@@ -474,6 +482,7 @@ public class Matrix {
         return new Matrix(storage, start, ncols, nrows, colInc, rowInc);
     }
 
+    @Override
     public final boolean isEmpty() {
         return nrows <= 0 || ncols <= 0;
     }
@@ -548,20 +557,39 @@ public class Matrix {
         return isSymmetric(0);
     }
 
+    public DoubleMatrix unmodifiable() {
+        if (isFull()) {
+            return DoubleMatrix.ofInternal(storage, nrows, ncols);
+        } else {
+            return DoubleMatrix.super.extract(0, nrows, 0, ncols);
+        }
+    }
+
     /**
      *
      * @param r0
-     * @param r1
+     * @param nr
      * @param c0
-     * @param c1
+     * @param nc
      * @return
      */
-    public Matrix extract(final int r0, final int r1, final int c0,
-            final int c1) {
+    @Override
+    public Matrix extract(final int r0, final int nr, final int c0, final int nc) {
         return new Matrix(storage, start + r0 * rowInc + c0 * colInc,
-                r1 - r0, c1 - c0, rowInc, colInc);
+                nr, nc, rowInc, colInc);
+    }
+    
+    public Matrix dropTopLeft(int nr, int nc){
+        return new Matrix(storage, start + nr * rowInc + nc * colInc,
+                nrows-nr, ncols-nc, rowInc, colInc);
+        
     }
 
+    public Matrix dropBottomRight(int nr, int nc){
+        return new Matrix(storage, start,
+                nrows-nr, ncols-nc, rowInc, colInc);
+        
+    }
     /**
      *
      * @param r0
@@ -664,6 +692,7 @@ public class Matrix {
      * @param col
      * @return
      */
+    @Override
     public final double get(final int row, final int col) {
         return storage[start + row * rowInc + col * colInc];
     }
@@ -672,6 +701,7 @@ public class Matrix {
      *
      * @return
      */
+    @Override
     public final int getColumnsCount() {
         return ncols;
     }
@@ -680,6 +710,7 @@ public class Matrix {
      *
      * @return
      */
+    @Override
     public final int getRowsCount() {
 
         return nrows;
@@ -899,7 +930,7 @@ public class Matrix {
         int rn = n.getRowsCount(), cn = n.getColumnsCount();
         for (int r = 0, i = 0; r < rm; ++r, i += rn) {
             for (int c = 0, j = 0; c < cm; ++c, j += cn) {
-                Matrix cur = extract(i, i + rn, j, j + cn);
+                Matrix cur = extract(i, rn, j, cn);
                 double e = m.get(r, c);
                 if (e != 0) {
                     cur.setAY(e, n);
@@ -976,6 +1007,7 @@ public class Matrix {
      * @param c
      * @return
      */
+    @Override
     public final DataBlock column(final int c) {
         int beg = start + c * colInc, end = beg + rowInc * nrows;
         return DataBlock.ofInternal(storage, beg, end, rowInc);
@@ -986,6 +1018,7 @@ public class Matrix {
      * @param r
      * @return
      */
+    @Override
     public final DataBlock row(final int r) {
         int beg = start + r * rowInc, end = beg + colInc * ncols;
         return DataBlock.ofInternal(storage, beg, end, colInc);

@@ -20,8 +20,7 @@ package demetra.ucarima;
 import demetra.arima.AutoCovarianceFunction;
 import demetra.arima.CrossCovarianceFunction;
 import demetra.arima.IArimaModel;
-import demetra.arima.ILinearModel;
-import demetra.arima.LinearModel;
+import demetra.arima.Model;
 import demetra.arima.StationaryTransformation;
 import demetra.design.Development;
 import demetra.maths.Complex;
@@ -29,6 +28,7 @@ import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.FiniteFilter;
 import demetra.maths.linearfilters.RationalFilter;
 import demetra.maths.linearfilters.RationalForeFilter;
+import demetra.arima.IModel;
 
 
 /**
@@ -53,7 +53,7 @@ public class WienerKolmogorovPreliminaryEstimatorProperties {
      * the revisions
      */
     private RationalFilter m_wcmp, m_wrev;
-    private LinearModel m_stcmp, m_strev;
+    private Model m_stcmp, m_strev;
     private AutoCovarianceFunction m_acgfcmp, m_acgfrev;
     private CrossCovarianceFunction m_ccgf;
     private BackFilter m_ur;
@@ -213,20 +213,20 @@ public class WienerKolmogorovPreliminaryEstimatorProperties {
             if (m_wcmp == null) {
                 m_wcmp = fest.getFilter();
                 // ACGF = ACGF (e sta) - ACGF (st rev model) +/- 2 * Filter(e sta) * Filter(st rev model)* F ^ lag+1
-                StationaryTransformation<ILinearModel> st = m_wk.finalStationaryEstimator(m_cmp, m_signal);
-                m_stcmp = (LinearModel) st.getStationaryModel();
+                StationaryTransformation<IModel> st = m_wk.finalStationaryEstimator(m_cmp, m_signal);
+                m_stcmp = (Model) st.getStationaryModel();
                 m_ur = st.getUnitRoots();
                 m_acgfcmp = m_stcmp.getAutoCovarianceFunction();
             }
             if (m_wrev == null) {
-                LinearModel errmodel = m_wk.revisionModel(m_cmp, m_lag);
+                Model errmodel = m_wk.revisionModel(m_cmp, m_lag);
                 RationalForeFilter rferr = ((RationalFilter) errmodel.getFilter()).getRationalForeFilter();
                 m_wrev = new RationalFilter(FiniteFilter.multiply(rferr.getNumerator(), model.getAR())/**Math.Sqrt(errmodel.InnovationVariance)*/
                         , model.getMA(), rferr.getDenominator());
                 // compute ErrModel*UR
                 RationalFilter ferr = new RationalFilter(FiniteFilter.multiply(m_ur, rferr.getNumerator()), BackFilter.ONE, rferr.getDenominator());
 
-                m_strev = new LinearModel(ferr, errmodel.getInnovationVariance());
+                m_strev = new Model(ferr, errmodel.getInnovationVariance());
                 m_acgfrev = m_strev.getAutoCovarianceFunction();
                 // CCGF(A,B)[i]=CCGF(B,A)[-i]
                 m_ccgf = new CrossCovarianceFunction(m_strev, m_stcmp);

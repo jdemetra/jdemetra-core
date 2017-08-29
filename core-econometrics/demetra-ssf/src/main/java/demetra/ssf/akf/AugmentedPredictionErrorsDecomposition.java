@@ -132,8 +132,8 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
         n+=nvars;
         LogSign sld = LogSign.of(D);
         det+=sld.value;
-        Q.extract(0, nd, nd+1, nd+1+nvars).copy(E);
-        Q.row(nd).range(nd+1, nd+1+nvars).copy(U);
+        Q.extract(0, nd, nd+1, nvars).copy(E);
+        Q.row(nd).extract(nd+1, nvars).copy(U);
         ElementaryTransformations.fastGivensTriangularize(Q);
     }
 

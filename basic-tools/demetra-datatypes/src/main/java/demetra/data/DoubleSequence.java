@@ -35,6 +35,7 @@ import javax.annotation.Nonnull;
  */
 public interface DoubleSequence extends BaseSequence<Double> {
 
+    public static final DoubleSequence EMPTY = new DoubleArray(new double[0]);
     /**
      * Creates a new value using an array of doubles. Internal use only since it
      * can break immutability.

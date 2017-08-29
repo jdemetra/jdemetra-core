@@ -56,7 +56,7 @@ public final class FastRotationsSystemSolver implements ILinearSystemSolver {
         }
         Matrix Q = Matrix.builder(data).nrows(n).ncolumns(m).build();
         Matrix R = Q.extract(0, n, 0, n);
-        Matrix B = Q.extract(0, n, n, m);
+        Matrix B = Q.extract(0, n, n, m-n);
         UpperTriangularMatrix.rsolve(R, B, eps);
 
         return true;

@@ -44,7 +44,8 @@ public class FunctionException extends RuntimeException {
     public static final String D_ERR = "Error in computing derivatives",
 	    STEP_ERR = "Error in computing optimization step",
 	    BOUND_ERR = "Boundaries error",
-	    MAXITER_ERR = "Maximal number of evaluations exceeded";
+	    MAXITER_ERR = "Maximal number of evaluations exceeded", 
+            DIM_ERR = "Incompatible dimensions in the paramerers";
 
     /**
      *

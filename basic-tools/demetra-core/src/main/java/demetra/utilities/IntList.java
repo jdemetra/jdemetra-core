@@ -44,8 +44,8 @@ import java.util.stream.IntStream;
 public final class IntList {
 
     private static final int DEFAULT_SIZE = 128;
-    private int[] _array;
-    private int _limit;
+    private int[] array;
+    private int limit;
     private int fillval = 0;
 
     /**
@@ -65,9 +65,9 @@ public final class IntList {
      * @param list the existing IntList
      */
     public IntList(final IntList list) {
-        this(list._array.length);
-        System.arraycopy(list._array, 0, _array, 0, _array.length);
-        _limit = list._limit;
+        this(list.array.length);
+        System.arraycopy(list.array, 0, array, 0, array.length);
+        limit = list.limit;
     }
 
     /**
@@ -77,12 +77,12 @@ public final class IntList {
      * @param fillvalue
      */
     public IntList(final int initialCapacity, int fillvalue) {
-        _array = new int[initialCapacity];
+        array = new int[initialCapacity];
         if (fillval != 0) {
             fillval = fillvalue;
-            Arrays.fill(_array, fillval);
+            Arrays.fill(array, fillval);
         }
-        _limit = 0;
+        limit = 0;
     }
 
     /**
@@ -95,20 +95,20 @@ public final class IntList {
      * < 0 || index > size()).
      */
     public void add(final int index, final int value) {
-        if (index > _limit) {
+        if (index > limit) {
             throw new IndexOutOfBoundsException();
-        } else if (index == _limit) {
+        } else if (index == limit) {
             add(value);
         } else {
 
             // index < limit -- insert into the middle
-            if (_limit == _array.length) {
-                growArray(_limit * 2);
+            if (limit == array.length) {
+                growArray(limit * 2);
             }
-            System.arraycopy(_array, index, _array, index + 1,
-                    _limit - index);
-            _array[ index] = value;
-            _limit++;
+            System.arraycopy(array, index, array, index + 1,
+                    limit - index);
+            array[ index] = value;
+            limit++;
         }
     }
 
@@ -120,10 +120,10 @@ public final class IntList {
      * @return true (as per the general contract of the Collection.add method).
      */
     public boolean add(final int value) {
-        if (_limit == _array.length) {
-            growArray(_limit * 2);
+        if (limit == array.length) {
+            growArray(limit * 2);
         }
-        _array[ _limit++] = value;
+        array[ limit++] = value;
         return true;
     }
 
@@ -140,12 +140,12 @@ public final class IntList {
      * @return true if this list changed as a result of the call.
      */
     public boolean addAll(final IntList c) {
-        if (c._limit != 0) {
-            if ((_limit + c._limit) > _array.length) {
-                growArray(_limit + c._limit);
+        if (c.limit != 0) {
+            if ((limit + c.limit) > array.length) {
+                growArray(limit + c.limit);
             }
-            System.arraycopy(c._array, 0, _array, _limit, c._limit);
-            _limit += c._limit;
+            System.arraycopy(c.array, 0, array, limit, c.limit);
+            limit += c.limit;
         }
         return true;
     }
@@ -170,21 +170,21 @@ public final class IntList {
      * < 0 || index > size())
      */
     public boolean addAll(final int index, final IntList c) {
-        if (index > _limit) {
+        if (index > limit) {
             throw new IndexOutOfBoundsException();
         }
-        if (c._limit != 0) {
-            if ((_limit + c._limit) > _array.length) {
-                growArray(_limit + c._limit);
+        if (c.limit != 0) {
+            if ((limit + c.limit) > array.length) {
+                growArray(limit + c.limit);
             }
 
             // make a hole
-            System.arraycopy(_array, index, _array, index + c._limit,
-                    _limit - index);
+            System.arraycopy(array, index, array, index + c.limit,
+                    limit - index);
 
             // fill it in
-            System.arraycopy(c._array, 0, _array, index, c._limit);
-            _limit += c._limit;
+            System.arraycopy(c.array, 0, array, index, c.limit);
+            limit += c.limit;
         }
         return true;
     }
@@ -194,7 +194,7 @@ public final class IntList {
      * this call returns (unless it throws an exception).
      */
     public void clear() {
-        _limit = 0;
+        limit = 0;
     }
 
     /**
@@ -209,8 +209,8 @@ public final class IntList {
     public boolean contains(final int o) {
         boolean rval = false;
 
-        for (int j = 0; !rval && (j < _limit); j++) {
-            if (_array[ j] == o) {
+        for (int j = 0; !rval && (j < limit); j++) {
+            if (array[ j] == o) {
                 rval = true;
             }
         }
@@ -230,8 +230,8 @@ public final class IntList {
         boolean rval = true;
 
         if (this != c) {
-            for (int j = 0; rval && (j < c._limit); j++) {
-                if (!contains(c._array[ j])) {
+            for (int j = 0; rval && (j < c.limit); j++) {
+                if (!contains(c.array[ j])) {
                     rval = false;
                 }
             }
@@ -259,12 +259,12 @@ public final class IntList {
         if (!rval && (o != null) && (o.getClass() == this.getClass())) {
             IntList other = (IntList) o;
 
-            if (other._limit == _limit) {
+            if (other.limit == limit) {
 
                 // assume match
                 rval = true;
-                for (int j = 0; rval && (j < _limit); j++) {
-                    rval = _array[ j] == other._array[ j];
+                for (int j = 0; rval && (j < limit); j++) {
+                    rval = array[ j] == other.array[ j];
                 }
             }
         }
@@ -282,10 +282,10 @@ public final class IntList {
      * < 0 || index >= size()).
      */
     public int get(final int index) {
-        if (index >= _limit) {
+        if (index >= limit) {
             throw new IndexOutOfBoundsException();
         }
-        return _array[ index];
+        return array[ index];
     }
 
     /**
@@ -311,8 +311,8 @@ public final class IntList {
     public int hashCode() {
         int hash = 0;
 
-        for (int j = 0; j < _limit; j++) {
-            hash = (31 * hash) + _array[ j];
+        for (int j = 0; j < limit; j++) {
+            hash = (31 * hash) + array[ j];
         }
         return hash;
     }
@@ -331,12 +331,12 @@ public final class IntList {
     public int indexOf(final int o) {
         int rval = 0;
 
-        for (; rval < _limit; rval++) {
-            if (o == _array[ rval]) {
+        for (; rval < limit; rval++) {
+            if (o == array[ rval]) {
                 break;
             }
         }
-        if (rval == _limit) {
+        if (rval == limit) {
             rval = -1;   // didn't find it
         }
         return rval;
@@ -348,7 +348,7 @@ public final class IntList {
      * @return true if this list contains no elements.
      */
     public boolean isEmpty() {
-        return _limit == 0;
+        return limit == 0;
     }
 
     /**
@@ -363,10 +363,10 @@ public final class IntList {
      * element, or -1 if this list does not contain this element.
      */
     public int lastIndexOf(final int o) {
-        int rval = _limit - 1;
+        int rval = limit - 1;
 
         for (; rval >= 0; rval--) {
-            if (o == _array[ rval]) {
+            if (o == array[ rval]) {
                 break;
             }
         }
@@ -386,13 +386,13 @@ public final class IntList {
      * < 0 || index >= size()).
      */
     public int remove(final int index) {
-        if (index >= _limit) {
+        if (index >= limit) {
             throw new IndexOutOfBoundsException();
         }
-        int rval = _array[ index];
+        int rval = array[ index];
 
-        System.arraycopy(_array, index + 1, _array, index, _limit - index);
-        _limit--;
+        System.arraycopy(array, index + 1, array, index, limit - index);
+        limit--;
         return rval;
     }
 
@@ -407,13 +407,13 @@ public final class IntList {
      * @return true if this list contained the specified element.
      */
     public boolean removeValue(final int value) {
-        for (int j = 0; j < _limit; j++) {
-            if (value == _array[j]) {
+        for (int j = 0; j < limit; j++) {
+            if (value == array[j]) {
                 int nextIndex = j + 1;
-                if (nextIndex < _limit) {
-                    System.arraycopy(_array, nextIndex, _array, j, _limit - nextIndex);
+                if (nextIndex < limit) {
+                    System.arraycopy(array, nextIndex, array, j, limit - nextIndex);
                 }
-                _limit--;
+                limit--;
                 return true;
             }
         }
@@ -432,8 +432,8 @@ public final class IntList {
     public boolean removeAll(final IntList c) {
         boolean rval = false;
 
-        for (int j = 0; j < c._limit; j++) {
-            if (removeValue(c._array[ j])) {
+        for (int j = 0; j < c.limit; j++) {
+            if (removeValue(c.array[ j])) {
                 rval = true;
             }
         }
@@ -452,8 +452,8 @@ public final class IntList {
     public boolean retainAll(final IntList c) {
         boolean rval = false;
 
-        for (int j = 0; j < _limit;) {
-            if (!c.contains(_array[ j])) {
+        for (int j = 0; j < limit;) {
+            if (!c.contains(array[ j])) {
                 remove(j);
                 rval = true;
             } else {
@@ -476,12 +476,12 @@ public final class IntList {
      * < 0 || index >= size()).
      */
     public int set(final int index, final int element) {
-        if (index >= _limit) {
+        if (index >= limit) {
             throw new IndexOutOfBoundsException();
         }
-        int rval = _array[ index];
+        int rval = array[ index];
 
-        _array[ index] = element;
+        array[ index] = element;
         return rval;
     }
 
@@ -492,7 +492,7 @@ public final class IntList {
      * @return the number of elements in this IntList
      */
     public int size() {
-        return _limit;
+        return limit;
     }
 
     /**
@@ -503,9 +503,9 @@ public final class IntList {
      * sequence.
      */
     public int[] toArray() {
-        int[] rval = new int[_limit];
+        int[] rval = new int[limit];
 
-        System.arraycopy(_array, 0, rval, 0, _limit);
+        System.arraycopy(array, 0, rval, 0, limit);
         return rval;
     }
 
@@ -523,8 +523,8 @@ public final class IntList {
     public int[] toArray(final int[] a) {
         int[] rval;
 
-        if (a.length == _limit) {
-            System.arraycopy(_array, 0, a, 0, _limit);
+        if (a.length == limit) {
+            System.arraycopy(array, 0, a, 0, limit);
             rval = a;
         } else {
             rval = toArray();
@@ -533,16 +533,16 @@ public final class IntList {
     }
 
     private void growArray(final int new_size) {
-        int size = (new_size == _array.length) ? new_size + 1
+        int size = (new_size == array.length) ? new_size + 1
                 : new_size;
         int[] new_array = new int[size];
 
         if (fillval != 0) {
-            Arrays.fill(new_array, _array.length, new_array.length, fillval);
+            Arrays.fill(new_array, array.length, new_array.length, fillval);
         }
 
-        System.arraycopy(_array, 0, new_array, 0, _limit);
-        _array = new_array;
+        System.arraycopy(array, 0, new_array, 0, limit);
+        array = new_array;
     }
     
     /**
@@ -553,7 +553,7 @@ public final class IntList {
      * @since 2.2.0
      */
     public IntStream stream() {
-        return Arrays.stream(_array, 0, _limit);
+        return Arrays.stream(array, 0, limit);
     }
 
     /**
@@ -568,8 +568,8 @@ public final class IntList {
      */
     public void replaceAll(IntUnaryOperator operator) {
         java.util.Objects.requireNonNull(operator);
-        for (int i = 0; i < _limit; i++) {
-            _array[i] = operator.applyAsInt(_array[i]);
+        for (int i = 0; i < limit; i++) {
+            array[i] = operator.applyAsInt(array[i]);
         }
     }
 
@@ -580,7 +580,7 @@ public final class IntList {
      * @since 2.2.0
      */
     public void sort() {
-        Arrays.sort(_array, 0, _limit);
+        Arrays.sort(array, 0, limit);
     }
 
     /**
@@ -591,7 +591,7 @@ public final class IntList {
      * @since 2.2.0
      */
     public Spliterator.OfInt spliterator() {
-        return Arrays.spliterator(_array, 0, _limit);
+        return Arrays.spliterator(array, 0, limit);
     }
 
     /**
@@ -610,8 +610,8 @@ public final class IntList {
         java.util.Objects.requireNonNull(filter);
         boolean removed = false;
         int i = 0;
-        while (i < _limit) {
-            if (filter.test(_array[i])) {
+        while (i < limit) {
+            if (filter.test(array[i])) {
                 remove(i);
                 removed = true;
             } else {
@@ -632,8 +632,8 @@ public final class IntList {
      */
     public void forEach(IntConsumer action) {
         java.util.Objects.requireNonNull(action);
-        for (int i = 0; i < _limit; i++) {
-            action.accept(_array[i]);
+        for (int i = 0; i < limit; i++) {
+            action.accept(array[i]);
         }
     }
 }   // end public class IntList

@@ -20,6 +20,7 @@
         <module>demetra-ssf</module>
         <module>demetra-ucarima</module>
         <module>demetra-stats</module>
+        <module>demetra-eco-datatypes</module>
     </modules>
     
     <build>

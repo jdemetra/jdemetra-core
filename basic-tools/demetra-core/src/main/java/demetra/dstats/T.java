@@ -16,6 +16,9 @@
  */
 package demetra.dstats;
 
+import demetra.dstats.internal.SpecialFunctions;
+import demetra.dstats.internal.ProbInvFinder;
+import demetra.dstats.internal.Utility;
 import demetra.design.Development;
 import demetra.random.IRandomNumberGenerator;
 import java.util.concurrent.atomic.AtomicReference;

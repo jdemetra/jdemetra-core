@@ -23,7 +23,7 @@ import demetra.ssf.ISsfDynamics;
 import demetra.data.DoubleSequence;
 
 /**
- *
+ * Dynamics for time varying coefficients
  * @author Jean Palate
  */
 public class TimeVaryingDynamics {
@@ -54,6 +54,11 @@ public class TimeVaryingDynamics {
 
         @Override
         public boolean isTimeInvariant() {
+            return true;
+        }
+
+        @Override
+        public boolean areInnovationsTimeInvariant() {
             return true;
         }
 
@@ -137,6 +142,10 @@ public class TimeVaryingDynamics {
             return true;
         }
 
+        @Override
+        public boolean areInnovationsTimeInvariant() {
+            return true;
+        }
         @Override
         public int getInnovationsDim() {
             return var.getColumnsCount();

@@ -18,7 +18,7 @@ package demetra.ucarima;
 
 import demetra.arima.ArimaModel;
 import demetra.arima.BartlettApproximation;
-import demetra.arima.LinearModel;
+import demetra.arima.Model;
 import demetra.arima.StationaryTransformation;
 import demetra.data.DataBlock;
 import demetra.design.Development;
@@ -36,7 +36,7 @@ public final class WienerKolmogorovDiagnostics {
 
     private Matrix m_tac, m_eac, m_sdvar;
     private ArimaModel[] m_stcmp;
-    private LinearModel[] m_stest;
+    private Model[] m_stest;
     private double[][] m_stdata;
 
     /**
@@ -60,7 +60,7 @@ public final class WienerKolmogorovDiagnostics {
         // creates stationary models
         double[][] stdata = new double[n][];
         ArimaModel[] stmodels = new ArimaModel[n];
-        LinearModel[] emodels = new LinearModel[n];
+        Model[] emodels = new Model[n];
         int ndata = data[0].length;
         for (int i = 0; i < n; ++i) {
             if (data[i] != null) {
@@ -78,7 +78,7 @@ public final class WienerKolmogorovDiagnostics {
                     stmodel.getUnitRoots().apply(DataBlock.ofInternal(data[i]), out);
                     out.sub(out.sum() / out.length());
                     stdata[i] = curst;
-                    emodels[i] = (LinearModel) wk.finalStationaryEstimator(icmp, signal).getStationaryModel();
+                    emodels[i] = (Model) wk.finalStationaryEstimator(icmp, signal).getStationaryModel();
                     stmodels[i] = (ArimaModel) stmodel.getStationaryModel();
                 }
             }
@@ -103,7 +103,7 @@ public final class WienerKolmogorovDiagnostics {
      * @param stdata Stationary data, corrected for the mean
      * @return
      */
-    private boolean test(LinearModel[] stmodels, double err, double[][] stdata) {
+    private boolean test(Model[] stmodels, double err, double[][] stdata) {
         try {
             int n = stmodels.length;
             if (n != stdata.length) {
@@ -231,7 +231,7 @@ public final class WienerKolmogorovDiagnostics {
         return m_stcmp[i];
     }
 
-    public LinearModel getStationaryEstimatorModel(int i) {
+    public Model getStationaryEstimatorModel(int i) {
         return m_stest[i];
     }
 

@@ -16,10 +16,12 @@
 */
 package demetra.dstats;
 
+import demetra.dstats.internal.SpecialFunctions;
+import demetra.dstats.internal.Utility;
 import demetra.data.Interval;
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.dstats.Utility.calcProbDelegate;
+import demetra.dstats.internal.Utility.calcProbDelegate;
 import demetra.random.IRandomNumberGenerator;
 import java.util.Formatter;
 import lombok.NonNull;

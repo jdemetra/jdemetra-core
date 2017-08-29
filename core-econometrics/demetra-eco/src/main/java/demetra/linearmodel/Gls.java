@@ -18,11 +18,13 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import demetra.data.LogSign;
 import demetra.maths.matrices.LowerTriangularMatrix;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@ServiceProvider(service = IGls.class)
 public class Gls implements IGls {
 
     private static AtomicReference<Supplier<IQRSolver>> QR_FACTORY = new AtomicReference<>(()
