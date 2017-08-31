@@ -93,6 +93,16 @@ public class CompositeMeasurement implements ISsfMeasurement {
     }
 
     @Override
+    public boolean areErrorsTimeInvariant() {
+        for (int i = 0; i < measurements.length; ++i) {
+            if (!measurements[i].areErrorsTimeInvariant()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
     public void Z(int pos, DataBlock z) {
         DataWindow cur = z.left();
         for (int i = 0; i < measurements.length; ++i) {

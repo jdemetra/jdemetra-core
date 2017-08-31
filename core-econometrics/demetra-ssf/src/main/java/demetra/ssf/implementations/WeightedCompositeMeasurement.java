@@ -112,6 +112,11 @@ public class WeightedCompositeMeasurement implements ISsfMeasurement {
     public boolean hasError(int pos) {
         return var != 0;
     }
+    
+    @Override
+    public boolean areErrorsTimeInvariant(){
+        return true;
+    }
 
     @Override
     public double errorVariance(int pos) {

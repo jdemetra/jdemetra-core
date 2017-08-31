@@ -20,8 +20,7 @@ import demetra.arima.ArimaException;
 import demetra.arima.ArimaModel;
 import demetra.arima.AutoCovarianceFunction;
 import demetra.arima.IArimaModel;
-import demetra.arima.ILinearModel;
-import demetra.arima.LinearModel;
+import demetra.arima.Model;
 import demetra.arima.StationaryTransformation;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
@@ -32,6 +31,7 @@ import demetra.maths.linearfilters.RationalForeFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.matrices.MatrixException;
 import java.util.function.IntToDoubleFunction;
+import demetra.arima.IModel;
 
 /**
  *
@@ -136,7 +136,7 @@ public class WienerKolmogorovEstimators {
 
         RationalFilter f = new RationalFilter(rb, rb.mirror(), c, SymmetricFilter.fromFilter(denom));
         RationalFilter mf = new RationalFilter(s.getMA().times(svar / mvar), s.getAR(), num.mirror(), denom.mirror());
-        LinearModel m = new LinearModel(mf, mvar);
+        Model m = new Model(mf, mvar);
 
         m_final[cmp][k] = new WienerKolmogorovEstimator(f, m);
     }
@@ -196,7 +196,7 @@ public class WienerKolmogorovEstimators {
      * @return
      * @throws ArimaException
      */
-    public StationaryTransformation<ILinearModel> finalStationaryEstimator(final int cmp,
+    public StationaryTransformation<IModel> finalStationaryEstimator(final int cmp,
             final boolean signal) throws ArimaException {
         BackFilter ur;
         if (m_ucm == null) {
@@ -227,7 +227,7 @@ public class WienerKolmogorovEstimators {
         ur = a.getNonStationaryAR();
         RationalFilter mf = new RationalFilter(a.getMA().times(avar / mvar), star, num.mirror(), denom.mirror());
 
-        return new StationaryTransformation<>(new LinearModel(mf, mvar), ur);
+        return new StationaryTransformation<>(new Model(mf, mvar), ur);
     }
 
     /**
@@ -254,23 +254,23 @@ public class WienerKolmogorovEstimators {
      * @throws ArimaException
      * @throws MatrixException
      */
-    public LinearModel revisionModel(final int cmp, final int n)
+    public Model revisionModel(final int cmp, final int n)
             throws ArimaException, MatrixException// , ref double
     // scale)
     {
         if (n < 0) {
             return null;
         }
-        LinearModel ln = finalEstimator(cmp, true).getModel();
+        Model ln = finalEstimator(cmp, true).getModel();
         RationalFilter rf = ln.getFilter();
         RationalForeFilter rff = rf.getRationalForeFilter().drop(n + 1);
         ForeFilter num = rff.getNumerator(), denom = rff.getDenominator();
         RationalFilter crf = new RationalFilter(RationalBackFilter.ZERO, new RationalForeFilter(num, denom, 0)); // 0 should be modified
-        return new LinearModel(crf, ln.getInnovationVariance());
+        return new Model(crf, ln.getInnovationVariance());
     }
 
     public AutoCovarianceFunction totalErrorAcf(final int cmp, final int n) {
-        LinearModel rev = revisionModel(cmp, n);
+        Model rev = revisionModel(cmp, n);
         ArimaModel fm = finalErrorModel(cmp);
         RationalForeFilter rf = rev.getFilter().getRationalForeFilter();
         BackFilter rnum = rf.getNumerator().mirror();
@@ -281,7 +281,7 @@ public class WienerKolmogorovEstimators {
     }
 
     public AutoCovarianceFunction revisionAcf(final int cmp, final int n) {
-        LinearModel rev = revisionModel(cmp, n);
+        Model rev = revisionModel(cmp, n);
         return rev.getAutoCovarianceFunction();
     }
 
@@ -309,7 +309,7 @@ public class WienerKolmogorovEstimators {
         // double scale=0;
         double var0 = revisionModel(cmp, 0).getAutoCovarianceFunction().get(0);// , ref
         // scale).ACGF[0];
-        LinearModel lm = finalEstimator(cmp, signal).getModel();
+        Model lm = finalEstimator(cmp, signal).getModel();
         RationalFilter rf = lm.getFilter();
         double mvar = lm.getInnovationVariance();
 
@@ -373,7 +373,7 @@ public class WienerKolmogorovEstimators {
         // variance of concurrent estimator...
         // double scale=0;
         // scale).ACGF[0];
-        LinearModel lm = finalEstimator(cmp, signal).getModel();
+        Model lm = finalEstimator(cmp, signal).getModel();
         RationalFilter rf = lm.getFilter();
         double mvar = lm.getInnovationVariance();
         IntToDoubleFunction weights = rf.weights();
@@ -427,7 +427,7 @@ public class WienerKolmogorovEstimators {
         if (m_ucm.getComponent(cmp).isNull()) {
             return Double.NaN;
         }
-        LinearModel me = finalEstimator(cmp, true).getModel();
+        Model me = finalEstimator(cmp, true).getModel();
         RationalFilter fe = me.getFilter();
         IntToDoubleFunction weights = fe.weights();
         double mv = me.getInnovationVariance();
@@ -466,7 +466,7 @@ public class WienerKolmogorovEstimators {
         if (m_ucm.getComponent(cmp).isNull()) {
             return Double.NaN;
         }
-        LinearModel me = finalEstimator(cmp, true).getModel();
+        Model me = finalEstimator(cmp, true).getModel();
         RationalFilter fe = me.getFilter();
         IntToDoubleFunction weights = fe.weights();
         double mv = me.getInnovationVariance();

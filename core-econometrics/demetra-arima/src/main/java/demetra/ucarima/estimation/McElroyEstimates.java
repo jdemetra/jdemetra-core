@@ -245,7 +245,7 @@ public class McElroyEstimates {
         for (int i = 0; i < n; ++i) {
             N.apply(DN.column(i), Q.row(n - i - 1).drop(n - ds.getDegree(), 0));
         }
-        K_[cmp] = Q.extract(0, n, n - ds.getDegree(), Q.getColumnsCount()).deepClone();
+        K_[cmp] = Q.extract(0, n, n - ds.getDegree(), Q.getColumnsCount()-n + ds.getDegree()).deepClone();
         DataBlock yd = DataBlock.make(n - dn.getDegree());
         noise.getNonStationaryAR().apply(DataBlock.ofInternal(data_), yd);
         DataBlock yl = DataBlock.make(yd.length());
@@ -343,7 +343,7 @@ public class McElroyEstimates {
                 S.subDiagonal(-i).drop(ds.getDegree() - i, 0).set(ds.get(i));
             }
             LowerTriangularMatrix.rsolve(S, D);
-            D = D.extract(ds.getDegree(), D.getRowsCount(), 0, n).deepClone();
+            D = D.extract(ds.getDegree(), D.getRowsCount()-ds.getDegree(), 0, n).deepClone();
         } else {
             D = W;
         }

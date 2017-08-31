@@ -76,6 +76,15 @@ public class CompositeDynamics implements ISsfDynamics {
     }
 
     @Override
+    public boolean areInnovationsTimeInvariant() {
+        for (int i = 0; i < dyn.length; ++i) {
+            if (!dyn[i].areInnovationsTimeInvariant()) {
+                return false;
+            }
+        }
+        return true;
+    }
+    @Override
     public int getInnovationsDim() {
         int ni = 0;
         for (int i = 0; i < dyn.length; ++i) {

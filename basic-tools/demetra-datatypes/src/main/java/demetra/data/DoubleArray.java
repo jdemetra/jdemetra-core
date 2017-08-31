@@ -26,7 +26,6 @@ import demetra.design.Immutable;
 @lombok.EqualsAndHashCode
 final class DoubleArray implements DoubleSequence {
 
-    public static final DoubleArray EMPTY = new DoubleArray(new double[0]);
 
     private final double[] values;
 

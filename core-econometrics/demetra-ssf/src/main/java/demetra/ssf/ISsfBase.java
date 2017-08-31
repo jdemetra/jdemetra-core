@@ -34,10 +34,6 @@ public interface ISsfBase extends ISsfRoot {
         return getInitialization().getDiffuseDim();
     }
 
-    default boolean isValid() {
-        return getInitialization().isValid();
-    }
-
     static final String FMT = "0.#####";
 
 }

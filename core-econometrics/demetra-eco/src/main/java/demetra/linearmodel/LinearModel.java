@@ -21,8 +21,6 @@ import demetra.design.Immutable;
 import demetra.maths.matrices.Matrix;
 import java.util.ArrayList;
 import demetra.data.DataBlockIterator;
-import demetra.data.DataWindow;
-import demetra.data.DoubleSequence;
 import demetra.maths.matrices.MatrixWindow;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleReader;
@@ -70,16 +68,9 @@ public class LinearModel {
         }
 
         public LinearModel build() {
-            int nx = x.size();
-            if (mean) {
-                ++nx;
-            }
-            Matrix X = Matrix.make(y.length, nx);
+            Matrix X = Matrix.make(y.length, x.size());
             if (!X.isEmpty()) {
                 DataBlockIterator cols = X.columnsIterator();
-                if (mean) {
-                    cols.next().set(1);
-                }
                 for (DoubleSequence xcur : x) {
                     cols.next().copy(xcur);
                 }
@@ -100,7 +91,7 @@ public class LinearModel {
      *
      * @param y
      * @param mean
-     * @param x X already contains the mean !!
+     * @param x X doesn't contain the mean !!
      */
     @Internal
     public LinearModel(double[] y, final boolean mean, final Matrix x) {
@@ -124,11 +115,10 @@ public class LinearModel {
         res.copyFrom(y, 0);
 
         DoubleReader cell = b.reader();
-        DataBlockIterator columns = x.columnsIterator();
-        if (mean){
-            columns.next();
-            res.sub(cell.next());
+        if (mean) {
+            res.add(-cell.next());
         }
+        DataBlockIterator columns = x.columnsIterator();
         while (columns.hasNext()) {
             res.addAY(-cell.next(), columns.next());
         }
@@ -148,6 +138,18 @@ public class LinearModel {
      * @return
      */
     public int getVariablesCount() {
+        int n = x.getColumnsCount();
+        if (mean) {
+            ++n;
+        }
+        return n;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getXCount() {
         return x.getColumnsCount();
     }
 
@@ -172,7 +174,16 @@ public class LinearModel {
      * @return
      */
     public Matrix variables() {
-        return x.deepClone();
+        if (!mean) {
+            return x.deepClone();
+        } else {
+            Matrix vars = Matrix.make(x.getRowsCount(), x.getColumnsCount() + 1);
+            MatrixWindow left = vars.left(1);
+            left.set(1);
+            left.hnext(x.getColumnsCount());
+            left.copy(x);
+            return vars;
+        }
     }
 
     /**
@@ -188,11 +199,8 @@ public class LinearModel {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("y~").append(mean ? '1' : '0');
-        int nx = x.getColumnsCount();
-        if (mean)
-            --nx;
-        if (nx>0) {
-            builder.append("+x(").append(nx).append(')');
+        if (!x.isEmpty()) {
+            builder.append("+x(").append(x.getColumnsCount()).append(')');
         }
         return builder.toString();
     }

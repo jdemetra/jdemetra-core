@@ -114,6 +114,11 @@ public class M2uAdapter {
         }
 
         @Override
+        public boolean areErrorsTimeInvariant() {
+            return ! hasErrors();
+        }
+
+        @Override
         public void Z(int pos, DataBlock z) {
             measurements.Z(pos / nvars, pos % nvars, z);
         }
@@ -204,6 +209,11 @@ public class M2uAdapter {
             } else {
                 return false;
             }
+        }
+
+        @Override
+        public boolean areInnovationsTimeInvariant() {
+            return false;
         }
 
         @Override

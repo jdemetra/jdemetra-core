@@ -120,16 +120,16 @@ public class Denton {
         Matrix A = Matrix.square(n + ny);
 
         SymmetricMatrix.XtX(D, A.extract(0, n, 0, n));
-        J(A.extract(n, n + ny, 0, n));
+        J(A.extract(n, ny, 0, n));
         Matrix B = A.deepClone();
-        J(A.extract(0, n, n, n + ny).transpose());
+        J(A.extract(0, n, n, ny).transpose());
         B.diagonal().drop(n, 0).set(1);
 
         DataBlock q = DataBlock.make(n + ny);
         DataBlock q0 = q.range(0, n);
         q0.copy(x);
         DataBlock q1 = q.range(n, n + ny);
-        q1.product(A.extract(n, n + ny, 0, n).rowsIterator(), q0);
+        q1.product(A.extract(n, ny, 0, n).rowsIterator(), q0);
         q1.chs();
         q1.addAY(1.0 / xm, y);
 
@@ -156,9 +156,9 @@ public class Denton {
         Matrix A = Matrix.square(n + ny);
 
         SymmetricMatrix.XtX(D, A.extract(0, n, 0, n));
-        J(A.extract(n, n + ny, 0, n));
+        J(A.extract(n, ny, 0, n));
         Matrix B = A.deepClone();
-        J(A.extract(0, n, n, n + ny).transpose());
+        J(A.extract(0, n, n, ny).transpose());
         B.diagonal().drop(n, 0).set(1);
 
         DataBlock q = DataBlock.make(n + ny);

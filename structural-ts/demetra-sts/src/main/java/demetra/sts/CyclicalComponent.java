@@ -47,11 +47,6 @@ public class CyclicalComponent {
         }
 
         @Override
-        public boolean isValid() {
-            return data.cdump < 1 && data.cdump > -1;
-        }
-
-        @Override
         public boolean isDiffuse() {
             return false;
         }
@@ -71,15 +66,13 @@ public class CyclicalComponent {
         }
 
         @Override
-        public boolean a0(DataBlock a0) {
-            return true;
+        public void a0(DataBlock a0) {
         }
 
         @Override
-        public boolean Pf0(Matrix p) {
+        public void Pf0(Matrix p) {
             double q = data.var / (1 - data.cdump * data.cdump);
             p.diagonal().set(q);
-            return true;
         }
 
     }
@@ -115,6 +108,11 @@ public class CyclicalComponent {
         @Override
         public boolean hasInnovations(int pos) {
             return data.var != 0;
+        }
+
+        @Override
+        public boolean areInnovationsTimeInvariant() {
+            return true;
         }
 
         @Override

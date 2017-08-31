@@ -43,7 +43,7 @@ public class SsfBsmTest {
         bsm = SsfBsm.of(model);
     }
 
-    //@Test
+    @Test
     public void testLikelihood() {
         SsfData data = new SsfData(Data.X);
         DkLikelihood ll = DkToolkit.likelihoodComputer(true, true).compute(bsm, data);

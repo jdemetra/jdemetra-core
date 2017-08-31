@@ -41,6 +41,10 @@ public class RegularDomain implements TsDomain<TsPeriod> {
     public TsPeriod get(int index) throws IndexOutOfBoundsException {
         return startPeriod.plus(index);
     }
+    
+    public TsUnit getUnit(){
+        return startPeriod.getUnit();
+    }
 
     public TsPeriod getEndPeriod() {
         checkNonEmpty();

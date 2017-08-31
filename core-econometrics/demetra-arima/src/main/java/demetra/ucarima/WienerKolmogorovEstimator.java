@@ -16,7 +16,7 @@
 */
 package demetra.ucarima;
 
-import demetra.arima.LinearModel;
+import demetra.arima.Model;
 import demetra.design.Development;
 import demetra.maths.linearfilters.RationalFilter;
 
@@ -30,7 +30,7 @@ import demetra.maths.linearfilters.RationalFilter;
 @Development(status = Development.Status.Alpha)
 public class WienerKolmogorovEstimator {
 
-    private final LinearModel m_model;
+    private final Model m_model;
 
     private final RationalFilter m_filter;
 
@@ -38,7 +38,7 @@ public class WienerKolmogorovEstimator {
      * @param filter Wiener-Kolmogorov filter
      * @param model Model of the estimator
      */
-    public WienerKolmogorovEstimator(final RationalFilter filter, final LinearModel model) {
+    public WienerKolmogorovEstimator(final RationalFilter filter, final Model model) {
 	m_filter = filter;
 	m_model = model;
     }
@@ -55,7 +55,7 @@ public class WienerKolmogorovEstimator {
      * The model of the final estimator of the component
      * @return
      */
-    public LinearModel getModel() {
+    public Model getModel() {
 	return m_model;
     }
 

@@ -26,7 +26,7 @@ import demetra.timeseries.simplets.TsData;
  * @author Jean Palate
  */
 @Algorithm
-@ServiceDefinition()
+@ServiceDefinition(isSingleton=true)
 public interface CholetteAlgorithm {
     TsData benchmark(TsData source, TsData target, CholetteSpecification spec);
 }

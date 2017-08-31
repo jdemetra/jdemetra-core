@@ -57,7 +57,11 @@ public class SsfCholette {
         }
 
         public Builder weights(DoubleSequence weights) {
-            this.weights = weights.toArray();
+            if (weights != null) {
+                this.weights = weights.toArray();
+            } else {
+                weights = null;
+            }
             return this;
         }
 
@@ -132,6 +136,11 @@ public class SsfCholette {
         }
 
         @Override
+        public boolean areErrorsTimeInvariant() {
+            return true;
+        }
+
+        @Override
         public boolean hasError(int pos) {
             return false;
         }
@@ -202,11 +211,6 @@ public class SsfCholette {
         }
 
         @Override
-        public boolean isValid() {
-            return true;
-        }
-
-        @Override
         public boolean isDiffuse() {
             return false;
         }
@@ -221,14 +225,12 @@ public class SsfCholette {
         }
 
         @Override
-        public boolean a0(DataBlock a0) {
-            return true;
+        public void a0(DataBlock a0) {
         }
 
         @Override
-        public boolean Pf0(Matrix pf0) {
+        public void Pf0(Matrix pf0) {
             pf0.set(1, 1, 1 / (1 - def.rho * def.rho));
-            return true;
         }
 
     }
@@ -253,11 +255,16 @@ public class SsfCholette {
 
         @Override
         public void S(int pos, Matrix cm) {
-            cm.set(1, 1, 1);
+            cm.set(1, 0, 1);
         }
 
         @Override
         public boolean hasInnovations(int pos) {
+            return true;
+        }
+
+        @Override
+        public boolean areInnovationsTimeInvariant() {
             return true;
         }
 

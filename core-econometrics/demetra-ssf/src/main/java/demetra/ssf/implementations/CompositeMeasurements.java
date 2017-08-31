@@ -251,7 +251,7 @@ public class CompositeMeasurements implements ISsfMeasurements {
 
     @Override
     public double ZVZ(int pos, int v, int w, Matrix V) {
-        Matrix Vvw = V.extract(cdim[v], cdim[v + 1], cdim[w], cdim[w + 1]);
+        Matrix Vvw = V.extract(cdim[v], cdim[v + 1]-cdim[v], cdim[w], cdim[w + 1]-cdim[w]);
         if (v == w) {
             return measurements[v].ZVZ(pos, Vvw);
         } else {
@@ -264,7 +264,7 @@ public class CompositeMeasurements implements ISsfMeasurements {
 
     @Override
     public void VpZdZ(int pos, int v, int w, Matrix V, double d) {
-        Matrix Vvw = V.extract(cdim[v], cdim[v + 1], cdim[w], cdim[w + 1]);
+        Matrix Vvw = V.extract(cdim[v], cdim[v + 1]-cdim[v], cdim[w], cdim[w + 1]-cdim[w]);
         if (v == w) {
             measurements[v].VpZdZ(pos, Vvw, d);
         } else {

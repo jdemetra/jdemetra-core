@@ -54,17 +54,15 @@ public interface ISsfInitialization {
      * Initial state
      *
      * @param a0 Buffer that will contain the initial state = a(0|-1)
-     * @return
      */
-    boolean a0(DataBlock a0);
+    void a0(DataBlock a0);
 
     /**
      * Modelling of the stationary variance of the initial state P(0|-1)
      *
      * @param pf0
-     * @return
      */
-    boolean Pf0(Matrix pf0);
+    void Pf0(Matrix pf0);
 
     /**
      * Modelling of the non stationary part of the initial state P(-1, inf)
@@ -84,9 +82,4 @@ public interface ISsfInitialization {
 
     //</editor-fold> 
     
-    /**
-     *
-     * @return
-     */
-    boolean isValid();
 }

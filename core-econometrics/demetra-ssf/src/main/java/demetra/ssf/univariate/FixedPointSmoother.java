@@ -186,6 +186,11 @@ public class FixedPointSmoother {
         }
 
         @Override
+        public boolean areErrorsTimeInvariant() {
+            return core.areErrorsTimeInvariant();
+        }
+
+        @Override
         public boolean hasError(int pos) {
             return core.hasError(pos);
         }
@@ -253,6 +258,11 @@ public class FixedPointSmoother {
         }
 
         @Override
+        public boolean areInnovationsTimeInvariant() {
+            return core.areInnovationsTimeInvariant();
+        }
+
+        @Override
         public void T(int pos, Matrix tr) {
             core.T(pos, tr.topLeft(cdim, cdim));
             tr.bottomRight(mdim, mdim).diagonal().set(1);
@@ -314,7 +324,7 @@ public class FixedPointSmoother {
         @Override
         public void save(int pos, State state, StateInfo info) {
             if (info == StateInfo.Forecast) {
-                states.save(pos, state.a().extract(start, n), state.P().extract(start, start + n, start, start + n));
+                states.save(pos, state.a().extract(start, n), state.P().extract(start, n, start, n));
             }
         }
 

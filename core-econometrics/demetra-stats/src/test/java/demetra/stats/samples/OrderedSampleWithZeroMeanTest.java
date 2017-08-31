@@ -38,7 +38,7 @@ public class OrderedSampleWithZeroMeanTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void stressTestAutocovariances() {
         int N=200, K=1000000;
         double[] x = new double[N];

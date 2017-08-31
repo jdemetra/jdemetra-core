@@ -204,9 +204,9 @@ public class ArimaSeriesGenerator {
                 pm.subDiagonal(-i).set(acf.get(i));
             }
             if (q > 0) {
-                Matrix qm = ac.extract(p, p + q, p, p + q);
+                Matrix qm = ac.extract(p, q, p, q);
                 qm.diagonal().set(starima.getInnovationVariance());
-                Matrix qp = ac.extract(p, p + q, 0, p);
+                Matrix qp = ac.extract(p, q, 0, p);
                 RationalBackFilter psi = starima.getPsiWeights();
                 int nw = Math.min(q, p);
                 psi.prepare(q);

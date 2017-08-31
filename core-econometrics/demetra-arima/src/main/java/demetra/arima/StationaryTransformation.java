@@ -29,7 +29,7 @@ import demetra.maths.linearfilters.BackFilter;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public class StationaryTransformation<S extends ILinearModel> {
+public class StationaryTransformation<S extends IModel> {
 
     /**
      *

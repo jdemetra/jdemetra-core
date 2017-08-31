@@ -43,11 +43,6 @@ public class Noise extends Ssf {
         }
         
         @Override
-        public boolean isValid() {
-            return var > 0;
-        }
-
-        @Override
         public int getStateDim() {
             return 1;
         }
@@ -67,14 +62,12 @@ public class Noise extends Ssf {
         }
 
         @Override
-        public boolean a0(DataBlock a0) {
-            return true;
+        public void a0(DataBlock a0) {
         }
 
         @Override
-        public boolean Pf0(Matrix pf0) {
+        public void Pf0(Matrix pf0) {
             pf0.set(0, 0, var);
-            return true;
         }
 
     }
@@ -105,6 +98,11 @@ public class Noise extends Ssf {
 
         @Override
         public boolean hasInnovations(int pos) {
+            return true;
+        }
+
+        @Override
+        public boolean areInnovationsTimeInvariant() {
             return true;
         }
 
@@ -154,6 +152,11 @@ public class Noise extends Ssf {
         @Override
         public boolean hasErrors() {
             return false;
+        }
+
+        @Override
+        public boolean areErrorsTimeInvariant() {
+            return true;
         }
 
         @Override

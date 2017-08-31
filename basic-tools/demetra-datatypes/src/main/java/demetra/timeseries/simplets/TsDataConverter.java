@@ -40,7 +40,7 @@ public class TsDataConverter {
      * series is set to Missing if some data in the original series are Missing.
      * @return A new time series is returned.
      */
-    public TsData changeFrequency(TsData s, TsUnit newfreq, AggregationType conversion, boolean complete) {
+    public TsData changeTsUnit(TsData s, TsUnit newfreq, AggregationType conversion, boolean complete) {
         int ratio = s.getUnit().ratio(newfreq);
         switch (ratio) {
             case TsUnit.NO_STRICT_RATIO:

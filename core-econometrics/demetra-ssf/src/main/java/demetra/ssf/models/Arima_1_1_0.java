@@ -70,8 +70,6 @@ public class Arima_1_1_0 extends Ssf {
     public boolean isZeroInitialization() {
         return data.zeroinit;
     }
-    
-    
 
     private Dynamics dynamics() {
         return (Dynamics) this.dynamics;
@@ -86,12 +84,7 @@ public class Arima_1_1_0 extends Ssf {
         private final Data data;
 
         Initialization(Data data) {
-            this.data=data;
-        }
-
-        @Override
-        public boolean isValid() {
-            return data.var > 0;
+            this.data = data;
         }
 
         @Override
@@ -117,18 +110,16 @@ public class Arima_1_1_0 extends Ssf {
         }
 
         @Override
-        public boolean a0(DataBlock a0) {
-            return true;
+        public void a0(DataBlock a0) {
         }
 
         @Override
-        public boolean Pf0(Matrix pf0) {
+        public void Pf0(Matrix pf0) {
             if (data.zeroinit) {
                 pf0.set(0, 0, data.var);
             } else {
                 pf0.set(0, 0, data.var / (1 - data.rho * data.rho));
             }
-            return true;
         }
 
         @Override
@@ -144,11 +135,16 @@ public class Arima_1_1_0 extends Ssf {
         private final Data data;
 
         Dynamics(Data data) {
-            this.data=data;
+            this.data = data;
         }
 
-         @Override
+        @Override
         public boolean isTimeInvariant() {
+            return true;
+        }
+
+        @Override
+        public boolean areInnovationsTimeInvariant() {
             return true;
         }
 

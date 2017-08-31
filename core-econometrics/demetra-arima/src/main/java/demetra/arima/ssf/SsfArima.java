@@ -198,11 +198,6 @@ public class SsfArima extends Ssf {
         }
 
         @Override
-        public boolean isValid() {
-            return true;
-        }
-
-        @Override
         public boolean isDiffuse() {
             return false;
         }
@@ -217,14 +212,12 @@ public class SsfArima extends Ssf {
         }
 
         @Override
-        public boolean a0(DataBlock a0) {
-            return true;
+        public void a0(DataBlock a0) {
         }
 
         @Override
-        public boolean Pf0(Matrix pf0) {
+        public void Pf0(Matrix pf0) {
             pf0.copy(P0);
-            return true;
         }
 
         @Override
@@ -328,11 +321,6 @@ public class SsfArima extends Ssf {
         }
 
         @Override
-        public boolean isValid() {
-            return true;
-        }
-
-        @Override
         public boolean isDiffuse() {
             return dif.length > 1;
         }
@@ -352,14 +340,12 @@ public class SsfArima extends Ssf {
         }
 
         @Override
-        public boolean a0(DataBlock a0) {
-            return true;
+        public void a0(DataBlock a0) {
         }
 
         @Override
-        public boolean Pf0(Matrix pf0) {
+        public void Pf0(Matrix pf0) {
             pf0.copy(P0);
-            return true;
         }
 
         @Override
@@ -497,6 +483,11 @@ public class SsfArima extends Ssf {
             return true;
         }
 
+        @Override
+        public boolean areInnovationsTimeInvariant() {
+            return true;
+        }
+        
         @Override
         public int getInnovationsDim() {
             return 1;
