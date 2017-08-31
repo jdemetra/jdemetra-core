@@ -85,7 +85,7 @@ public class TsDataBuilderUtil {
                 TsData result = TsDataCollector.makeFromUnknownFrequency(obs);
                 if (result != null && result.getUnit().contains(freq)) {
                     // should succeed
-                    result = TsDataConverter.changeFrequency(result, freq, convMode, complete);
+                    result = TsDataConverter.changeTsUnit(result, freq, convMode, complete);
                 } else {
                     result = TsDataCollector.makeWithAggregation(obs, freq, convMode);
                 }

@@ -18,8 +18,8 @@ package demetra.benchmarking.univariate;
 
 import demetra.data.AggregationType;
 import demetra.data.DataBlock;
-import demetra.timeseries.TsFrequency;
 import demetra.timeseries.TsPeriod;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.simplets.TsData;
 import demetra.timeseries.simplets.TsDataConverter;
 import demetra.timeseries.simplets.TsDataToolkit;
@@ -48,7 +48,7 @@ public class TsCholetteTest {
         TsData t = TsData.of(a, y);
         TsData s = TsData.of(q, x);
         TsData b = TsCholette.benchmark(s, t, spec);
-        TsData bc = TsDataConverter.changeFrequency(b, TsFrequency.YEARLY, AggregationType.Sum, true);
+        TsData bc = TsDataConverter.changeTsUnit(b, TsUnit.YEARLY, AggregationType.Sum, true);
 //        System.out.println(b);
         assertTrue(TsDataToolkit.subtract(t, bc).values().allMatch(w -> Math.abs(w) < 1e-9));
     }
@@ -68,7 +68,7 @@ public class TsCholetteTest {
         TsData t = TsData.of(a, y);
         TsData s = TsData.of(q, x);
         TsData b = TsCholette.benchmark(s, t, spec);
-        TsData bc = TsDataConverter.changeFrequency(b, TsFrequency.YEARLY, AggregationType.Sum, true);
+        TsData bc = TsDataConverter.changeTsUnit(b, TsUnit.YEARLY, AggregationType.Sum, true);
 //        System.out.println(b);
         assertTrue(TsDataToolkit.subtract(t, bc).values().allMatch(w -> Math.abs(w) < 1e-9));
     }
@@ -88,7 +88,7 @@ public class TsCholetteTest {
         TsData t = TsData.of(a, y);
         TsData s = TsData.of(q, x);
         TsData b = TsCholette.benchmark(s, t, spec);
-        TsData bc = TsDataConverter.changeFrequency(b, TsFrequency.YEARLY, AggregationType.Sum, true);
+        TsData bc = TsDataConverter.changeTsUnit(b, TsUnit.YEARLY, AggregationType.Sum, true);
 //        System.out.println(b);
         assertTrue(TsDataToolkit.subtract(t, bc).values().allMatch(w -> Math.abs(w) < 1e-9));
     }
@@ -108,7 +108,7 @@ public class TsCholetteTest {
         TsData t = TsData.of(a, y);
         TsData s = TsData.of(q, x);
         TsData b = TsCholette.benchmark(s, t, spec);
-        TsData bc = TsDataConverter.changeFrequency(b, TsFrequency.YEARLY, AggregationType.Sum, true);
+        TsData bc = TsDataConverter.changeTsUnit(b, TsUnit.YEARLY, AggregationType.Sum, true);
 //        System.out.println(b);
         assertTrue(TsDataToolkit.subtract(t, bc).values().allMatch(w -> Math.abs(w) < 1e-9));
     }
@@ -128,7 +128,7 @@ public class TsCholetteTest {
         TsData t = TsData.of(a, y);
         TsData s = TsData.of(q, x);
         TsData b = TsCholette.benchmark(s, t, spec);
-        TsData bc = TsDataConverter.changeFrequency(b, TsFrequency.YEARLY, AggregationType.Sum, true);
+        TsData bc = TsDataConverter.changeTsUnit(b, TsUnit.YEARLY, AggregationType.Sum, true);
 //        System.out.println(b);
         assertTrue(TsDataToolkit.subtract(t, bc).values().allMatch(w -> Math.abs(w) < 1e-9));
     }
@@ -164,8 +164,8 @@ public class TsCholetteTest {
         spec.setDifferencing(3);
         TsPeriod a = TsPeriod.yearly(1980);
         TsData t = TsData.of(a, y);
-        TsData b = TsDenton.benchmark(TsFrequency.QUADRI_MONTHLY, t, spec);
-        TsData bc = TsDataConverter.changeFrequency(b, TsFrequency.YEARLY, AggregationType.Sum, true);
+        TsData b = TsDenton.benchmark(TsUnit.QUADRI_MONTHLY, t, spec);
+        TsData bc = TsDataConverter.changeTsUnit(b, TsUnit.YEARLY, AggregationType.Sum, true);
         assertTrue(TsDataToolkit.subtract(t, bc).values().allMatch(x -> Math.abs(x) < 1e-9));
     }
 }

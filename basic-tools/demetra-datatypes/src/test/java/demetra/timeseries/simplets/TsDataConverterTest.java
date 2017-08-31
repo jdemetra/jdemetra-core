@@ -21,10 +21,10 @@ import demetra.data.DoubleSequence;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import static demetra.timeseries.TsUnit.*;
-import static demetra.timeseries.simplets.TsDataConverter.changeFrequency;
 import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
+import static demetra.timeseries.simplets.TsDataConverter.changeTsUnit;
 
 /**
  *
@@ -35,69 +35,69 @@ public class TsDataConverterTest {
     @Test
     public void testNoRatio() {
         TsData ts = monthlyTs(LocalDate.of(2010, 1, 1), 24);
-        assertThat(changeFrequency(ts, DAILY, First, true)).isNull();
+        assertThat(changeTsUnit(ts, DAILY, First, true)).isNull();
     }
 
     @Test
     public void testNoChange() {
         TsData ts = monthlyTs(LocalDate.of(2010, 1, 1), 24);
-        assertThat(changeFrequency(ts, MONTHLY, First, true)).isEqualTo(ts);
+        assertThat(changeTsUnit(ts, MONTHLY, First, true)).isEqualTo(ts);
     }
 
     @Test
     public void testCompleteAfterEpoch() {
         TsData ts = monthlyTs(LocalDate.of(2010, 1, 1), 24);
 
-        assertThat(changeFrequency(ts, YEARLY, First, false)).containsExactly(y(2010, 1), y(2011, 13));
-        assertThat(changeFrequency(ts, YEARLY, First, true)).containsExactly(y(2010, 1), y(2011, 13));
+        assertThat(changeTsUnit(ts, YEARLY, First, false)).containsExactly(y(2010, 1), y(2011, 13));
+        assertThat(changeTsUnit(ts, YEARLY, First, true)).containsExactly(y(2010, 1), y(2011, 13));
 
-        assertThat(changeFrequency(ts, YEARLY, Last, false)).containsExactly(y(2010, 12), y(2011, 24));
-        assertThat(changeFrequency(ts, YEARLY, Last, true)).containsExactly(y(2010, 12), y(2011, 24));
+        assertThat(changeTsUnit(ts, YEARLY, Last, false)).containsExactly(y(2010, 12), y(2011, 24));
+        assertThat(changeTsUnit(ts, YEARLY, Last, true)).containsExactly(y(2010, 12), y(2011, 24));
 
-        assertThat(changeFrequency(ts, QUARTERLY, First, false)).startsWith(q(2010, 1, 1), q(2010, 2, 4)).hasSize(8);
-        assertThat(changeFrequency(ts, QUARTERLY, First, true)).startsWith(q(2010, 1, 1), q(2010, 2, 4)).hasSize(8);
+        assertThat(changeTsUnit(ts, QUARTERLY, First, false)).startsWith(q(2010, 1, 1), q(2010, 2, 4)).hasSize(8);
+        assertThat(changeTsUnit(ts, QUARTERLY, First, true)).startsWith(q(2010, 1, 1), q(2010, 2, 4)).hasSize(8);
     }
 
     @Test
     public void testIncompleteAfterEpoch() {
         TsData ts = monthlyTs(LocalDate.of(2010, 2, 1), 24);
 
-        assertThat(changeFrequency(ts, YEARLY, First, false)).containsExactly(y(2010, 2), y(2011, 13), y(2012, 25));
-        assertThat(changeFrequency(ts, YEARLY, First, true)).containsExactly(y(2011, 13));
+        assertThat(changeTsUnit(ts, YEARLY, First, false)).containsExactly(y(2010, 2), y(2011, 13), y(2012, 25));
+        assertThat(changeTsUnit(ts, YEARLY, First, true)).containsExactly(y(2011, 13));
 
-        assertThat(changeFrequency(ts, YEARLY, Last, false)).containsExactly(y(2010, 12), y(2011, 24), y(2012, 25));
-        assertThat(changeFrequency(ts, YEARLY, Last, true)).containsExactly(y(2011, 24));
+        assertThat(changeTsUnit(ts, YEARLY, Last, false)).containsExactly(y(2010, 12), y(2011, 24), y(2012, 25));
+        assertThat(changeTsUnit(ts, YEARLY, Last, true)).containsExactly(y(2011, 24));
 
-        assertThat(changeFrequency(ts, QUARTERLY, First, false)).startsWith(q(2010, 1, 2), q(2010, 2, 4)).hasSize(9);
-        assertThat(changeFrequency(ts, QUARTERLY, First, true)).startsWith(q(2010, 2, 4), q(2010, 3, 7)).hasSize(7);
+        assertThat(changeTsUnit(ts, QUARTERLY, First, false)).startsWith(q(2010, 1, 2), q(2010, 2, 4)).hasSize(9);
+        assertThat(changeTsUnit(ts, QUARTERLY, First, true)).startsWith(q(2010, 2, 4), q(2010, 3, 7)).hasSize(7);
     }
 
     @Test
     public void testCompleteBeforeEpoch() {
         TsData ts = monthlyTs(TsPeriod.EPOCH.toLocalDate().minusYears(1), 24);
 
-        assertThat(changeFrequency(ts, YEARLY, First, false)).containsExactly(y(1969, 1), y(1970, 13));
-        assertThat(changeFrequency(ts, YEARLY, First, true)).containsExactly(y(1969, 1), y(1970, 13));
+        assertThat(changeTsUnit(ts, YEARLY, First, false)).containsExactly(y(1969, 1), y(1970, 13));
+        assertThat(changeTsUnit(ts, YEARLY, First, true)).containsExactly(y(1969, 1), y(1970, 13));
 
-        assertThat(changeFrequency(ts, YEARLY, Last, false)).containsExactly(y(1969, 12), y(1970, 24));
-        assertThat(changeFrequency(ts, YEARLY, Last, true)).containsExactly(y(1969, 12), y(1970, 24));
+        assertThat(changeTsUnit(ts, YEARLY, Last, false)).containsExactly(y(1969, 12), y(1970, 24));
+        assertThat(changeTsUnit(ts, YEARLY, Last, true)).containsExactly(y(1969, 12), y(1970, 24));
 
-        assertThat(changeFrequency(ts, QUARTERLY, First, false)).startsWith(q(1969, 1, 1), q(1969, 2, 4)).hasSize(8);
-        assertThat(changeFrequency(ts, QUARTERLY, First, true)).startsWith(q(1969, 1, 1), q(1969, 2, 4)).hasSize(8);
+        assertThat(changeTsUnit(ts, QUARTERLY, First, false)).startsWith(q(1969, 1, 1), q(1969, 2, 4)).hasSize(8);
+        assertThat(changeTsUnit(ts, QUARTERLY, First, true)).startsWith(q(1969, 1, 1), q(1969, 2, 4)).hasSize(8);
     }
 
     @Test
     public void testIncompleteBeforeEpoch() {
         TsData ts = monthlyTs(TsPeriod.EPOCH.toLocalDate().minusYears(1).plusMonths(1), 24);
 
-        assertThat(changeFrequency(ts, YEARLY, First, false)).containsExactly(y(1969, 2), y(1970, 13), y(1971, 25));
-        assertThat(changeFrequency(ts, YEARLY, First, true)).containsExactly(y(1970, 13));
+        assertThat(changeTsUnit(ts, YEARLY, First, false)).containsExactly(y(1969, 2), y(1970, 13), y(1971, 25));
+        assertThat(changeTsUnit(ts, YEARLY, First, true)).containsExactly(y(1970, 13));
 
-        assertThat(changeFrequency(ts, YEARLY, Last, false)).containsExactly(y(1969, 12), y(1970, 24), y(1971, 25));
-        assertThat(changeFrequency(ts, YEARLY, Last, true)).containsExactly(y(1970, 24));
+        assertThat(changeTsUnit(ts, YEARLY, Last, false)).containsExactly(y(1969, 12), y(1970, 24), y(1971, 25));
+        assertThat(changeTsUnit(ts, YEARLY, Last, true)).containsExactly(y(1970, 24));
 
-        assertThat(changeFrequency(ts, QUARTERLY, First, false)).startsWith(q(1969, 1, 2), q(1969, 2, 4)).hasSize(9);
-        assertThat(changeFrequency(ts, QUARTERLY, First, true)).startsWith(q(1969, 2, 4), q(1969, 3, 7)).hasSize(7);
+        assertThat(changeTsUnit(ts, QUARTERLY, First, false)).startsWith(q(1969, 1, 2), q(1969, 2, 4)).hasSize(9);
+        assertThat(changeTsUnit(ts, QUARTERLY, First, true)).startsWith(q(1969, 2, 4), q(1969, 3, 7)).hasSize(7);
     }
 
     private static TsData monthlyTs(LocalDate start, int count) {

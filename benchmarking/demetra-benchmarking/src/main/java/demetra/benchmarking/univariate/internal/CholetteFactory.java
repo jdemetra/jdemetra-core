@@ -28,11 +28,19 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.SsfData;
 import demetra.timeseries.Fixme;
 import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsException;
 import demetra.timeseries.simplets.TsData;
 import demetra.timeseries.simplets.TsDataConverter;
 import demetra.timeseries.simplets.TsDataToolkit;
 import demetra.timeseries.TsPeriod;
+import demetra.timeseries.TsUnit;
 import org.openide.util.lookup.ServiceProvider;
+import static demetra.timeseries.simplets.TsDataToolkit.multiply;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.multiply;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.multiply;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import static demetra.timeseries.simplets.TsDataToolkit.multiply;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 
@@ -60,7 +68,7 @@ public class CholetteFactory implements CholetteAlgorithm {
                 || (agg != AggregationType.Average && agg != AggregationType.Sum)) {
             return s;
         }
-        TsData sy = TsDataConverter.changeFrequency(s, target.getFrequency(), agg, true);
+        TsData sy = TsDataConverter.changeTsUnit(s, target.getUnit(), agg, true);
         sy = TsDataToolkit.fitToDomain(sy, target.domain());
         // TsDataBlock.all(target).data.sum() is the sum of the aggregation constraints
         //  TsDataBlock.all(sy).data.sum() is the sum of the averages or sums of the original series
@@ -70,7 +78,7 @@ public class CholetteFactory implements CholetteAlgorithm {
         } else {
             double b = (Doubles.sum(target.values()) - Doubles.sum(sy.values())) / target.length();
             if (agg == AggregationType.Average) {
-                int hfreq = Fixme.getAsInt(s.getFrequency()), lfreq = Fixme.getAsInt(target.getFrequency());
+                int hfreq = Fixme.getAsInt(s.getUnit()), lfreq = Fixme.getAsInt(target.getUnit());
                 b *= hfreq / lfreq;
             }
             return TsDataToolkit.add(s, b);
@@ -84,8 +92,10 @@ public class CholetteFactory implements CholetteAlgorithm {
      * @return
      */
     public static double[] expand(RegularDomain d, TsData agg, AggregationType type) {
-        int hfreq = Fixme.getAsInt(d.getStartPeriod().getFreq()), lfreq = Fixme.getAsInt(agg.getFrequency());
-        int c = hfreq / lfreq;
+        int ratio = d.getUnit().ratio(agg.getUnit());
+        if (ratio == TsUnit.NO_RATIO || ratio == TsUnit.NO_STRICT_RATIO) {
+            throw new TsException(TsException.INCOMPATIBLE_FREQ);
+        }
         // expand the data;
         double[] y = new double[d.getLength()];
         for (int i = 0; i < y.length; ++i) {
@@ -93,9 +103,9 @@ public class CholetteFactory implements CholetteAlgorithm {
         }
         // search the first non missing value
         TsPeriod aggstart = agg.getStart();
-        TsPeriod first = aggstart.withFreq(d.getStartPeriod().getFreq());
+        TsPeriod first = aggstart.withUnit(d.getUnit());
         if (type != AggregationType.First) {
-            first = first.plus(c - 1);
+            first = first.plus(ratio - 1);
         }
         int pos = d.indexOf(first);
         if (pos < 0) {
@@ -104,7 +114,7 @@ public class CholetteFactory implements CholetteAlgorithm {
         int p = 0;
         while (p < agg.length()) {
             y[pos] = agg.getValue(p++);
-            pos += c;
+            pos += ratio;
         }
         return y;
     }
@@ -116,12 +126,14 @@ public class CholetteFactory implements CholetteAlgorithm {
      * @return
      */
     private TsData archolette(TsData s, TsData target, CholetteSpecification spec) {
-        int lfreq = Fixme.getAsInt(target.getFrequency()), hfreq = Fixme.getAsInt(s.getFrequency());
-        int c = hfreq / lfreq;
+        int ratio = s.getUnit().ratio(target.getUnit());
+        if (ratio == TsUnit.NO_RATIO || ratio == TsUnit.NO_STRICT_RATIO) {
+            throw new TsException(TsException.INCOMPATIBLE_FREQ);
+        }
 
-        TsData obj = subtract(TsDataConverter.changeFrequency(s, target.getFrequency(), spec.getAggregationType(), true), target);
+        TsData obj = subtract(TsDataConverter.changeTsUnit(s, target.getUnit(), spec.getAggregationType(), true), target);
         if (spec.getAggregationType() == AggregationType.Average) {
-            obj = multiply(obj, c);
+            obj = multiply(obj, ratio);
         }
 
         double[] y = expand(s.domain(), obj, spec.getAggregationType());
@@ -138,8 +150,8 @@ public class CholetteFactory implements CholetteAlgorithm {
 
         if (spec.getAggregationType() == AggregationType.Average
                 || spec.getAggregationType() == AggregationType.Sum) {
-            ISsf ssf = SsfCholette.builder(c)
-                    .start(Fixme.getPosition(s.getStart()) % c)
+            ISsf ssf = SsfCholette.builder(ratio)
+                    .start(Fixme.getPosition(s.getStart()) % ratio)
                     .rho(spec.getRho())
                     .weights(w == null ? null : DoubleSequence.ofInternal(w))
                     .build();
@@ -155,8 +167,8 @@ public class CholetteFactory implements CholetteAlgorithm {
             }
             return subtract(s, TsData.ofInternal(s.getStart(), b));
         } else {
-            ISsf ssf = SsfCholette.builder(c)
-                    .start(Fixme.getPosition(s.getStart()) % c)
+            ISsf ssf = SsfCholette.builder(ratio)
+                    .start(Fixme.getPosition(s.getStart()) % ratio)
                     .rho(spec.getRho())
                     .weights(w == null ? null : DoubleSequence.ofInternal(w))
                     .build();
@@ -176,12 +188,14 @@ public class CholetteFactory implements CholetteAlgorithm {
      * @return
      */
     private TsData rwcholette(TsData s, TsData target, CholetteSpecification spec) {
-        int lfreq = Fixme.getAsInt(target.getFrequency()), hfreq = Fixme.getAsInt(s.getFrequency());
-        int c = hfreq / lfreq;
+        int ratio = s.getUnit().ratio(target.getUnit());
+        if (ratio == TsUnit.NO_RATIO || ratio == TsUnit.NO_STRICT_RATIO) {
+            throw new TsException(TsException.INCOMPATIBLE_FREQ);
+        }
 
-        TsData obj = subtract(TsDataConverter.changeFrequency(s, target.getFrequency(), spec.getAggregationType(), true), target);
+        TsData obj = subtract(TsDataConverter.changeTsUnit(s, target.getUnit(), spec.getAggregationType(), true), target);
         if (spec.getAggregationType() == AggregationType.Average) {
-            obj = multiply(obj, c);
+            obj = multiply(obj, ratio);
         }
 
         double[] y = expand(s.domain(), obj, spec.getAggregationType());
@@ -198,8 +212,8 @@ public class CholetteFactory implements CholetteAlgorithm {
 
         if (spec.getAggregationType() == AggregationType.Average
                 || spec.getAggregationType() == AggregationType.Sum) {
-            ISsf ssf = SsfDenton.builder(c)
-                    .start(Fixme.getPosition(s.getStart()) % c)
+            ISsf ssf = SsfDenton.builder(ratio)
+                    .start(Fixme.getPosition(s.getStart()) % ratio)
                     .weights(w == null ? null : DoubleSequence.ofInternal(w))
                     .build();
             DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(y), false);
@@ -214,8 +228,8 @@ public class CholetteFactory implements CholetteAlgorithm {
             }
             return subtract(s, TsData.ofInternal(s.getStart(), b));
         } else {
-            ISsf ssf = SsfDenton.builder(c)
-                    .start(Fixme.getPosition(s.getStart()) % c)
+            ISsf ssf = SsfDenton.builder(ratio)
+                    .start(Fixme.getPosition(s.getStart()) % ratio)
                     .weights(w == null ? null : DoubleSequence.ofInternal(w))
                     .build();
             DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(y), false);

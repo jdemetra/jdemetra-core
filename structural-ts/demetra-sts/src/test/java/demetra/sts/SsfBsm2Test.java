@@ -54,7 +54,7 @@ public class SsfBsm2Test {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void stressTestBsm() {
         SsfData data = new SsfData(Data.X);
         testLikelihood();
