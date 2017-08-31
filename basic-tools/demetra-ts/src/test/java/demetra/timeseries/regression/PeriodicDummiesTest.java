@@ -14,48 +14,32 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
+package demetra.timeseries.regression;
 
-package demetra.benchmarking;
-
-import demetra.design.Development;
-
+import demetra.maths.matrices.Matrix;
+import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsPeriod;
+import java.time.LocalDate;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
- * 
+ *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
-public class BenchmarkingException extends RuntimeException {
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = -5210663435900119926L;
-
-    /**
-     *
-     */
-    public BenchmarkingException() {
-        super();
+public class PeriodicDummiesTest {
+    
+    public PeriodicDummiesTest() {
     }
 
-    /**
-     * 
-     * @param msg
-     */
-    public BenchmarkingException(final String msg) {
-        // super(g_origin, g_rmgr.GetString(msg));
-        super(msg);
+    @Test
+    public void testMonthly() {
+        PeriodicDummies vars = new PeriodicDummies(12);
+        RegularDomain domain = RegularDomain.of(TsPeriod.monthly(2017, 8), 180);
+        Matrix M=Matrix.make(domain.getLength(), vars.getDim());
+        vars.data(domain, M.columnList());
+        //System.out.println(M);
+        assertTrue(M.columnList().stream().allMatch(col->col.sum()==15));
     }
-
-    /**
-     *
-     * @param message
-     * @param innerException
-     */
-    public BenchmarkingException(final String message,
-            final Exception innerException) {
-        super(message, innerException);
-    }
-
- }
+    
+}

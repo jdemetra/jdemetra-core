@@ -14,45 +14,31 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
+package demetra.timeseries.regression;
 
-package demetra.benchmarking;
-
-import demetra.data.DataBlock;
-import demetra.design.Development;
+import demetra.maths.matrices.Matrix;
+import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsPeriod;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
- * Cumulator of data d.
- * data[i] = d[i] +data[i-1] except when i%period == 0.
- * In that case data[i] = d[i]
+ *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
-public class Cumulator {
-
-    private final int period;
-
-    /**
-     * 
-     * @param n
-     */
-    public Cumulator(int n) {
-        this.period = n;
+public class TrigonometricVariablesTest {
+    
+    public TrigonometricVariablesTest() {
     }
 
-    /**
-     * 
-     * @param data
-     */
-    public void transform(DataBlock data) {
-        int pos = 0;
-        for (int i = pos, j = 0; i < data.length(); ++i) {
-            if (j++ > 0) {
-                data.add(i, data.get(i - 1));
-                if (j == period) {
-                    j = 0;
-                }
-            }
-        }
+    @Test
+    public void testMonthly() {
+        TrigonometricVariables vars = TrigonometricVariables.all(12, 12);
+        RegularDomain domain = RegularDomain.of(TsPeriod.monthly(2017, 8), 180);
+        Matrix M=Matrix.make(domain.getLength(), vars.getDim());
+        vars.data(domain, M.columnList());
+        System.out.println(M);
+        assertTrue(M.columnList().stream().allMatch(col->Math.abs(col.sum())<1e-6));
     }
-
+    
 }
