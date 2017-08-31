@@ -26,16 +26,12 @@ import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.SsfData;
-import demetra.timeseries.TsException;
-import demetra.timeseries.TsPeriodSelector;
+import demetra.timeseries.Fixme;
+import demetra.timeseries.RegularDomain;
 import demetra.timeseries.simplets.TsData;
 import demetra.timeseries.simplets.TsDataConverter;
 import demetra.timeseries.simplets.TsDataToolkit;
-import static demetra.timeseries.simplets.TsDataToolkit.multiply;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import demetra.timeseries.simplets.TsFrequency;
-import demetra.timeseries.simplets.TsPeriod;
-import java.time.LocalDate;
+import demetra.timeseries.TsPeriod;
 import org.openide.util.lookup.ServiceProvider;
 import static demetra.timeseries.simplets.TsDataToolkit.multiply;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
@@ -74,11 +70,43 @@ public class CholetteFactory implements CholetteAlgorithm {
         } else {
             double b = (Doubles.sum(target.values()) - Doubles.sum(sy.values())) / target.length();
             if (agg == AggregationType.Average) {
-                int hfreq = s.getFrequency().getAsInt(), lfreq = target.getFrequency().getAsInt();
+                int hfreq = Fixme.getAsInt(s.getFrequency()), lfreq = Fixme.getAsInt(target.getFrequency());
                 b *= hfreq / lfreq;
             }
             return TsDataToolkit.add(s, b);
         }
+    }
+
+    /**
+     *
+     * @param d
+     * @param agg
+     * @return
+     */
+    public static double[] expand(RegularDomain d, TsData agg, AggregationType type) {
+        int hfreq = Fixme.getAsInt(d.getStartPeriod().getFreq()), lfreq = Fixme.getAsInt(agg.getFrequency());
+        int c = hfreq / lfreq;
+        // expand the data;
+        double[] y = new double[d.getLength()];
+        for (int i = 0; i < y.length; ++i) {
+            y[i] = Double.NaN;
+        }
+        // search the first non missing value
+        TsPeriod aggstart = agg.getStart();
+        TsPeriod first = aggstart.withFreq(d.getStartPeriod().getFreq());
+        if (type != AggregationType.First) {
+            first = first.plus(c - 1);
+        }
+        int pos = d.indexOf(first);
+        if (pos < 0) {
+            return null;
+        }
+        int p = 0;
+        while (p < agg.length()) {
+            y[pos] = agg.getValue(p++);
+            pos += c;
+        }
+        return y;
     }
 
     /**
@@ -88,33 +116,32 @@ public class CholetteFactory implements CholetteAlgorithm {
      * @return
      */
     private TsData archolette(TsData s, TsData target, CholetteSpecification spec) {
-        int lfreq = target.getFrequency().intValue(), hfreq = s.getFrequency().intValue();
+        int lfreq = Fixme.getAsInt(target.getFrequency()), hfreq = Fixme.getAsInt(s.getFrequency());
         int c = hfreq / lfreq;
 
-        TsData obj = s.changeFrequency(target.getFrequency(), getAggregationType(), true).minus(target);
-        if (getAggregationType() == TsAggregationType.Average) {
-            obj = obj.times(c);
+        TsData obj = subtract(TsDataConverter.changeFrequency(s, target.getFrequency(), spec.getAggregationType(), true), target);
+        if (spec.getAggregationType() == AggregationType.Average) {
+            obj = multiply(obj, c);
         }
 
-        double[] y = expand(s.getDomain(), obj, getAggregationType());
+        double[] y = expand(s.domain(), obj, spec.getAggregationType());
 
         double[] w = null;
-        if (lambda_ == 1) {
-            w = s.internalStorage();
-        } else {
-            w = new double[s.getLength()];
-            TsDataBlock.all(s).data.copyTo(w, 0);
-            for (int i = 0; i < w.length; ++i) {
-                w[i] = Math.pow(Math.abs(w[i]), lambda_);
+        if (spec.getLambda() != 0) {
+            w = s.values().toArray();
+            if (spec.getLambda() != 1) {
+                for (int i = 0; i < w.length; ++i) {
+                    w[i] = Math.pow(Math.abs(w[i]), spec.getLambda());
+                }
             }
         }
 
         if (spec.getAggregationType() == AggregationType.Average
                 || spec.getAggregationType() == AggregationType.Sum) {
             ISsf ssf = SsfCholette.builder(c)
-                    .start(s.getStart().getPosition() % c)
+                    .start(Fixme.getPosition(s.getStart()) % c)
                     .rho(spec.getRho())
-                    .weights(DoubleSequence.ofInternal(w))
+                    .weights(w == null ? null : DoubleSequence.ofInternal(w))
                     .build();
             DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(y), false);
 
@@ -129,16 +156,15 @@ public class CholetteFactory implements CholetteAlgorithm {
             return subtract(s, TsData.ofInternal(s.getStart(), b));
         } else {
             ISsf ssf = SsfCholette.builder(c)
-                    .start(s.getStart().getPosition() % c)
+                    .start(Fixme.getPosition(s.getStart()) % c)
                     .rho(spec.getRho())
-                    .weights(DoubleSequence.ofInternal(w))
+                    .weights(w == null ? null : DoubleSequence.ofInternal(w))
                     .build();
             DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(y), false);
             double[] b = new double[s.length()];
             for (int i = 0; i < b.length; ++i) {
                 b[i] = ssf.getMeasurement().ZX(i, rslts.a(i));
             }
-
             return subtract(s, TsData.ofInternal(s.getStart(), b));
         }
     }
@@ -150,7 +176,7 @@ public class CholetteFactory implements CholetteAlgorithm {
      * @return
      */
     private TsData rwcholette(TsData s, TsData target, CholetteSpecification spec) {
-        int lfreq = target.getFrequency().getAsInt(), hfreq = s.getFrequency().getAsInt();
+        int lfreq = Fixme.getAsInt(target.getFrequency()), hfreq = Fixme.getAsInt(s.getFrequency());
         int c = hfreq / lfreq;
 
         TsData obj = subtract(TsDataConverter.changeFrequency(s, target.getFrequency(), spec.getAggregationType(), true), target);
@@ -161,48 +187,43 @@ public class CholetteFactory implements CholetteAlgorithm {
         double[] y = expand(s.domain(), obj, spec.getAggregationType());
 
         double[] w = null;
-        if (spec.getLambda() == 1) {
-            w = s.internalStorage();
-        } else {
-            w = new double[s.getLength()];
-            TsDataBlock.all(s).data.copyTo(w, 0);
-            for (int i = 0; i < w.length; ++i) {
-                w[i] = Math.pow(Math.abs(w[i]), lambda_);
+        if (spec.getLambda() != 0) {
+            w = s.values().toArray();
+            if (spec.getLambda() != 1) {
+                for (int i = 0; i < w.length; ++i) {
+                    w[i] = Math.pow(Math.abs(w[i]), spec.getLambda());
+                }
             }
         }
 
         if (spec.getAggregationType() == AggregationType.Average
                 || spec.getAggregationType() == AggregationType.Sum) {
-            SsfDenton denton = new SsfDenton(c, s.getStart().getPosition() % c, w);
-            DisturbanceSmoother dsmoother = new DisturbanceSmoother();
-            dsmoother.setSsf(denton);
-            dsmoother.process(new SsfData(y, null));
-            SmoothingResults drslts = dsmoother.calcSmoothedStates();
+            ISsf ssf = SsfDenton.builder(c)
+                    .start(Fixme.getPosition(s.getStart()) % c)
+                    .weights(w == null ? null : DoubleSequence.ofInternal(w))
+                    .build();
+            DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(y), false);
 
-            double[] b;
+            double[] b = new double[s.length()];
             if (w != null) {
-                b = new double[s.getLength()];
                 for (int i = 0; i < b.length; ++i) {
-                    b[i] = w[i] * (drslts.A(i).get(1));
+                    b[i] = w[i] * (rslts.a(i).get(1));
                 }
             } else {
-                b = drslts.component(1);
+                rslts.getComponent(1).copyTo(b, 0);
             }
-            return s.minus(new TsData(s.getStart(), b, false));
+            return subtract(s, TsData.ofInternal(s.getStart(), b));
         } else {
-            WeightedSsf<SsfRw> denton = new WeightedSsf<>(w, new SsfRw());
-            DisturbanceSmoother dsmoother = new DisturbanceSmoother();
-            dsmoother.setSsf(denton);
-            dsmoother.process(new SsfData(y, null));
-            SmoothingResults drslts = dsmoother.calcSmoothedStates();
-
-            double[] b = new double[s.getLength()];
+            ISsf ssf = SsfDenton.builder(c)
+                    .start(Fixme.getPosition(s.getStart()) % c)
+                    .weights(w == null ? null : DoubleSequence.ofInternal(w))
+                    .build();
+            DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(y), false);
+            double[] b = new double[s.length()];
             for (int i = 0; i < b.length; ++i) {
-                b[i] = denton.ZX(i, drslts.A(i));
+                b[i] = ssf.getMeasurement().ZX(i, rslts.a(i));
             }
-
-            return s.minus(new TsData(s.getStart(), b, false));
-
+            return subtract(s, TsData.ofInternal(s.getStart(), b));
         }
     }
 

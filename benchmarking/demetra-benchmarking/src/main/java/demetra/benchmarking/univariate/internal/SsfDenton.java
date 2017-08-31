@@ -51,7 +51,11 @@ public class SsfDenton {
         }
 
         public Builder weights(DoubleSequence weights) {
-            this.weights = weights.toArray();
+            if (weights != null) {
+                this.weights = weights.toArray();
+            } else {
+                weights = null;
+            }
             return this;
         }
 
@@ -199,11 +203,6 @@ public class SsfDenton {
         }
 
         @Override
-        public boolean isValid() {
-            return true;
-        }
-
-        @Override
         public boolean isDiffuse() {
             return true;
         }
@@ -308,8 +307,8 @@ public class SsfDenton {
                 double w = def.weight(pos);
                 double v = w * vm.get(1, 1);
                 vm.set(0, 0, w * v);
-                vm.set(1, 0, v );
-                vm.set(0, 1, v );
+                vm.set(1, 0, v);
+                vm.set(0, 1, v);
             } else {
                 double w = def.weight(pos);
                 double v11 = vm.get(1, 1);

@@ -14,57 +14,54 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.ssf.implementations;
+package demetra.ssf;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
-import demetra.ssf.ISsfInitialization;
+import java.util.function.Consumer;
 
 /**
  *
  * @author Jean Palate
  */
-public class ConstantInitialization implements ISsfInitialization{
+public class DiffuseInitialization implements ISsfInitialization {
     
-    private final int dim, ndiffuse;
+    private final int dim;
     
-    public ConstantInitialization(int dim, int ndiffuse){
-        this.dim=dim;
-        this.ndiffuse=ndiffuse;
+    public DiffuseInitialization(int dim) {
+        this.dim = dim;
     }
     
     @Override
     public int getStateDim() {
         return dim;
     }
-
+    
     @Override
     public boolean isDiffuse() {
         return true;
     }
-
+    
     @Override
     public int getDiffuseDim() {
-        return ndiffuse;
+        return dim;
     }
-
+    
     @Override
     public void diffuseConstraints(Matrix b) {
         b.diagonal().set(1);
     }
-
+    
     @Override
-    public void a0(DataBlock a0) {
+    public void a0(DataBlock a) {
     }
-
+    
     @Override
-    public void Pf0(Matrix pf0) {
+    public void Pf0(Matrix pf) {
     }
-
+    
     @Override
-    public void Pi0(Matrix p) {
-        p.diagonal().set(1);
+    public void Pi0(Matrix pi) {
+        pi.diagonal().set(1);
     }
-
-
 }

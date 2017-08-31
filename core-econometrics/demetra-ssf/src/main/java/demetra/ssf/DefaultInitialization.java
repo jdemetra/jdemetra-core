@@ -24,28 +24,28 @@ import java.util.function.Consumer;
  *
  * @author Jean Palate
  */
-public class DefaultInitializer implements ISsfInitialization {
+public class DefaultInitialization implements ISsfInitialization {
     
     private final int dim, ndiffuse;
     private Consumer<DataBlock> a0;
     private Consumer<Matrix> Pf, Pi, B;
     
-    public DefaultInitializer(int dim, int ndiffuse) {
+    public DefaultInitialization(int dim, int ndiffuse) {
         this.dim = dim;
         this.ndiffuse = ndiffuse;
     }
     
-    public DefaultInitializer a0(Consumer<DataBlock> a0) {
+    public DefaultInitialization a0(Consumer<DataBlock> a0) {
         this.a0 = a0;
         return this;
     }
     
-    public DefaultInitializer Pf(Consumer<Matrix> Pf) {
+    public DefaultInitialization Pf(Consumer<Matrix> Pf) {
         this.Pf = Pf;
         return this;
     }
     
-    public DefaultInitializer Pi(Consumer<Matrix> Pi) {
+    public DefaultInitialization Pi(Consumer<Matrix> Pi) {
         if (ndiffuse == 0) {
             throw new SsfException(SsfException.INITIALIZATION);
         }
@@ -53,17 +53,12 @@ public class DefaultInitializer implements ISsfInitialization {
         return this;
     }
     
-    public DefaultInitializer B(Consumer<Matrix> B) {
+    public DefaultInitialization B(Consumer<Matrix> B) {
         if (ndiffuse == 0) {
             throw new SsfException(SsfException.INITIALIZATION);
         }
         this.B = B;
         return this;
-    }
-    
-    @Override
-    public boolean isValid(){
-        return true;
     }
     
     @Override

@@ -106,7 +106,7 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
 
     @Override
     public String toString() {
-        return toString(origin, freq, offset);
+        return start().toLocalDate().toString();
     }
 
     public String toShortString() {
@@ -302,7 +302,7 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
 
         @Override
         public String toString() {
-            return TsPeriod.toString(origin, freq, offset);
+            return start().toLocalDate().toString();
         }
 
         public String toShortString() {

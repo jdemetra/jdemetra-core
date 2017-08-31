@@ -61,16 +61,6 @@ public class CompositeInitialization implements ISsfInitialization {
     }
 
     @Override
-    public boolean isValid() {
-        for (int i = 0; i < initializers.length; ++i) {
-            if (!initializers[i].isValid()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
     public int getStateDim() {
         return sdim;
     }

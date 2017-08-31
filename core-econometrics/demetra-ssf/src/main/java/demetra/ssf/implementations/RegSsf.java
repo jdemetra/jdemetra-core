@@ -36,6 +36,9 @@ import demetra.ssf.ISsfInitialization;
 public class RegSsf extends Ssf {
 
     public static RegSsf create(ISsf model, Matrix X) {
+        if (X.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
         int mdim = model.getStateDim();
         Xinitializer xinit = new Xinitializer(mdim, model.getInitialization(), X.getColumnsCount());
         Xdynamics xdyn = new Xdynamics(mdim, model.getDynamics(), X.getColumnsCount());
@@ -149,13 +152,8 @@ public class RegSsf extends Ssf {
         }
 
         @Override
-        public boolean isValid() {
-            return nx > 0;
-        }
-
-        @Override
         public int getStateDim() {
-            return n+ nx;
+            return n + nx;
         }
 
         @Override
@@ -229,8 +227,8 @@ public class RegSsf extends Ssf {
         public boolean hasErrors() {
             return m.hasErrors();
         }
-        
-       @Override
+
+        @Override
         public boolean areErrorsTimeInvariant() {
             return m.areErrorsTimeInvariant();
         }

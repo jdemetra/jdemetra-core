@@ -32,7 +32,7 @@ import demetra.ssf.univariate.Ssf;
  */
 public class SsfBsm2 extends Ssf {
 
-    private SsfBsm2(Bsm2Initialization initialization,Bsm2Dynamics dynamics, ISsfMeasurement measurement) {
+    private SsfBsm2(Bsm2Initialization initialization, Bsm2Dynamics dynamics, ISsfMeasurement measurement) {
         super(initialization, dynamics, measurement);
     }
 
@@ -70,31 +70,19 @@ public class SsfBsm2 extends Ssf {
 
     public static SsfBsm2 of(BasicStructuralModel model) {
         int[] idx = calcCmpsIndexes(model);
-        SsfBsm.BsmData data=new SsfBsm.BsmData(model);
+        SsfBsm.BsmData data = new SsfBsm.BsmData(model);
         Bsm2Initialization initialization = new Bsm2Initialization(data);
         Bsm2Dynamics dynamics = new Bsm2Dynamics(data);
         ISsfMeasurement measurement = Measurement.create(idx);
-        if (initialization.isValid()) {
-            return new SsfBsm2(initialization, dynamics, measurement);
-        } else {
-            return null;
-        }
+        return new SsfBsm2(initialization, dynamics, measurement);
     }
 
     public static class Bsm2Initialization implements ISsfInitialization {
 
         private final SsfBsm.BsmData data;
 
-                public Bsm2Initialization(SsfBsm.BsmData data) {
-            this.data=data;
-        }
-
-        @Override
-        public boolean isValid() {
-            if (data.freq == 1 && data.seasVar >= 0) {
-                return false;
-            }
-            return data.lVar >= 0 || data.sVar >= 0 || data.cVar >= 0;
+        public Bsm2Initialization(SsfBsm.BsmData data) {
+            this.data = data;
         }
 
         @Override
@@ -115,7 +103,7 @@ public class SsfBsm2 extends Ssf {
             return r;
         }
 
-         @Override
+        @Override
         public boolean isDiffuse() {
             return data.lVar >= 0 || data.seasVar >= 0;
         }
@@ -197,14 +185,14 @@ public class SsfBsm2 extends Ssf {
             }
         }
 
-   }
-    
+    }
+
     public static class Bsm2Dynamics implements ISsfDynamics {
 
         private final SsfBsm.BsmData data;
 
-                public Bsm2Dynamics(SsfBsm.BsmData data) {
-            this.data=data;
+        public Bsm2Dynamics(SsfBsm.BsmData data) {
+            this.data = data;
         }
 
         @Override
@@ -301,7 +289,7 @@ public class SsfBsm2 extends Ssf {
                         s.set(i, j, Math.sqrt(data.seasVar));
                         break;
                     case Crude:
-                        s.extract(i, data.freq - 1, j,  1).set(Math.sqrt(data.seasVar));
+                        s.extract(i, data.freq - 1, j, 1).set(Math.sqrt(data.seasVar));
                         break;
                     default:
                         s.extract(i, data.freq - 1, j, data.freq - 1).copy(data.ltsvar);

@@ -84,11 +84,6 @@ public class RandomWalk extends Ssf {
         }
 
         @Override
-        public boolean isValid() {
-            return data.var > 0;
-        }
-
-        @Override
         public int getStateDim() {
             return 1;
         }

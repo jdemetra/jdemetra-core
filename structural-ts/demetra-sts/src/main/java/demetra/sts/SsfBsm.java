@@ -133,12 +133,8 @@ public class SsfBsm extends Ssf {
         BsmInitialization initialization = new BsmInitialization(data);
         BsmDynamics dynamics = new BsmDynamics(data);
         ISsfMeasurement measurement = Measurement.create(idx);
-        if (initialization.isValid()) {
             return new SsfBsm(initialization, dynamics, measurement);
-        } else {
-            return null;
-        }
-    }
+      }
 
     static class BsmData {
 
@@ -181,14 +177,6 @@ public class SsfBsm extends Ssf {
 
         BsmInitialization(BsmData data) {
             this.data = data;
-        }
-
-        @Override
-        public boolean isValid() {
-            if (data.freq == 1 && data.seasVar >= 0) {
-                return false;
-            }
-            return data.lVar >= 0 || data.sVar >= 0 || data.cVar >= 0 || data.nVar >= 0;
         }
 
         @Override

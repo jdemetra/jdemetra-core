@@ -27,9 +27,26 @@ import java.time.LocalDateTime;
  */
 public interface TsDomain<P> extends Range<LocalDateTime>, Sequence<P> {
 
+    /**
+     * 
+     * @param period
+     * @return 
+     */
     boolean contains(P period);
 
+    /**
+     * 
+     * @param date
+     * @return Position of the period that contains the date. 
+     * -1 if this date is before the domain, -length() if it is after the domain.
+     */
     int indexOf(LocalDateTime date);
 
+    /**
+     * 
+     * @param period
+     * @return Position of the period. 
+     * -1 if this period is before the domain, -length() if it is after the domain.
+     */
     int indexOf(P period);
 }

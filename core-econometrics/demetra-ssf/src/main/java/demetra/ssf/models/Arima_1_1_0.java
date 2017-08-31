@@ -88,11 +88,6 @@ public class Arima_1_1_0 extends Ssf {
         }
 
         @Override
-        public boolean isValid() {
-            return data.var > 0;
-        }
-
-        @Override
         public int getStateDim() {
             return 21;
         }

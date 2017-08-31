@@ -75,11 +75,6 @@ public class LocalLinearTrend extends Ssf {
         }
 
         @Override
-        public boolean isValid() {
-            return data.lv >= 0 && data.sv >= 0;
-        }
-
-        @Override
         public int getStateDim() {
             return 2;
         }

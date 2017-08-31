@@ -82,9 +82,4 @@ public interface ISsfInitialization {
 
     //</editor-fold> 
     
-    /**
-     *
-     * @return
-     */
-    boolean isValid();
 }

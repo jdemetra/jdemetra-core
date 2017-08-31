@@ -33,11 +33,6 @@ public class DummyInitialization implements ISsfInitialization {
     }
 
     @Override
-    public boolean isValid() {
-        return dim>0;
-    }
-
-    @Override
     public int getStateDim() {
         return dim;
     }

@@ -1,517 +1,436 @@
 /*
- * Copyright 2013 National Bank of Belgium
- *
- * Licensed under the EUPL, Version 1.1 or – as soon they
- will be approved by the European Commission - subsequent
- versions of the EUPL (the "Licence");
- * You may not use this work except in compliance with the
- Licence.
+ * Copyright 2017 National Bank of Belgium
+ * 
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- *
- * http://ec.europa.eu/idabc/eupl
- *
- * Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- * See the Licence for the specific language governing
- permissions and limitations under the Licence.
+ * 
+ * https://joinup.ec.europa.eu/software/page/eupl
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package demetra.benchmarking.ssf;
 
-import ec.tstoolkit.data.DataBlock;
-import ec.tstoolkit.data.DataBlockIterator;
-import ec.tstoolkit.data.SubArrayOfInt;
-import ec.tstoolkit.design.Development;
-import ec.tstoolkit.maths.matrices.SubMatrix;
-import ec.tstoolkit.ssf.ISsf;
+import demetra.data.DataBlock;
+import demetra.design.Development;
+import demetra.maths.matrices.Matrix;
+import demetra.ssf.ISsfDynamics;
+import demetra.ssf.ISsfInitialization;
+import demetra.ssf.univariate.ISsf;
+import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.ssf.univariate.Ssf;
 import java.util.HashSet;
+import javax.annotation.Nonnull;
 
 /**
- * State space form for calendarization. State vector:
- * 0: Cumulative sum (from the start of a "cumulation period" to the previous
- * position)
- * 1: (Unweighted) component
+ * State space form for calendarization. State vector: 0: Cumulative (weighted) sum (from
+ * the start of a "cumulation period" to the previous position) 1: (Unweighted)
+ * component
  *
- * The matrices/vectors of the state space form can take three different forms, 
+ * The matrices/vectors of the state space form can take three different forms,
  * following its position (identified by (FIRST, LAST, DEF)
- * 
- * The transition matrix and the measurement vector will be:
- * case FIRST: 
- * T= | 0 w |, Z= | 0 w | 
- *    | 0 1 |
- * 
- * case LAST:
- * T= | 0 0 |, Z= | 1 w |
- *    | 0 1 |
- * 
+ *
+ * The transition matrix and the measurement vector will be: case FIRST: T= | 0
+ * w |, Z= | 0 w | | 0 1 |
+ *
+ * case LAST: T= | 0 0 |, Z= | 1 w | | 0 1 |
+ *
  * case DEF:
- * 
- * T= | 1 w |, Z= | 1 w |
- *    | 0 1 |
- * 
+ *
+ * T= | 1 w |, Z= | 1 w | | 0 1 |
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class SsfCalendarization implements ISsf {
-
-    private final double[] weights;
-    private final HashSet<Integer> starts = new HashSet<>();
-    private final HashSet<Integer> ends = new HashSet<>();
-    private int curpos = -1, curtype = -1;
-    public static final int LAST = 1, FIRST = 2, DEF = 0;
-
+@lombok.experimental.UtilityClass
+public class SsfCalendarization {
+    
     /**
-     * Gets the type of the model (its vectors/matrices) at a given position. 
-     * @param pos
-     * @return FIRST if pos corresponds to the beginning of a "cumulation period",
-     * LAST if pos corresponds to the end of a "cumulation period", DEF otherwise.
+     * Creates a state space model for calendarization
+     * @param starts The starting positions of the aggregation periods
+     * @param weights The weights of each observation
+     * @return 
      */
-    public int posType(int pos) {
-        if (curpos == pos) {
-            return curtype;
-        }
-        curpos = pos;
-        if (starts.contains(pos)) {
-            curtype = FIRST;
-        } else if (ends.contains(pos)) {
-            curtype = LAST;
-        } else {
-            curtype = DEF;
-        }
-        return curtype;
+    public ISsf of(@Nonnull final int[] starts, final double[] weights){
+        Data data=new Data(starts, weights);
+        return new Ssf(new Initialization(), new Dynamics(data), new Measurement(data));
     }
 
-    /**
-     *
-     * @param conv
-     * @param w
-     */
-    
-    public SsfCalendarization(int[] starts, double[] w) {
-        weights = w;
-        //this.starts = starts;
-        for (int i = 0; i < starts.length; ++i) {
-            int cur = starts[i];
-            this.starts.add(cur);
-            if (cur > 0) {
-                this.ends.add(cur - 1);
+    static class Data {
+
+        Data(final int[] starts, final double[] weights) {
+            this.weights = weights;
+            for (int i = 0; i < starts.length; ++i) {
+                int cur = starts[i];
+                this.starts.add(cur);
+                if (cur > 0) {
+                    this.ends.add(cur - 1);
+                }
             }
         }
+
+        private final double[] weights;
+        private final HashSet<Integer> starts = new HashSet<>();
+        private final HashSet<Integer> ends = new HashSet<>();
+        private int curpos = -1, curtype = -1;
+
+        /**
+         * Gets the type of the model (its vectors/matrices) at a given
+         * position.
+         *
+         * @param pos
+         * @return FIRST if pos corresponds to the beginning of a "cumulation
+         * period", LAST if pos corresponds to the end of a "cumulation period",
+         * DEF otherwise.
+         */
+        int posType(int pos) {
+            if (curpos == pos) {
+                return curtype;
+            }
+            curpos = pos;
+            if (starts.contains(pos)) {
+                curtype = FIRST;
+            } else if (ends.contains(pos)) {
+                curtype = LAST;
+            } else {
+                curtype = DEF;
+            }
+            return curtype;
+        }
+
+        private double weight(int pos) {
+            return weights == null ? 1 : weights[pos];
+        }
+
+        private double mweight(int pos, double m) {
+            return weights == null ? m : weights[pos] * m;
+        }
+
+        private double mweight2(int pos, double m) {
+            return weights == null ? m : weights[pos] * weights[pos] * m;
+        }
+
     }
 
-    /**
-     *
-     *
-     * /**
-     *
-     * @param b
-     */
-    @Override
-    public void diffuseConstraints(SubMatrix b) {
-        b.set(1, 0, 1);
-    }
+    final int LAST = 1, FIRST = 2, DEF = 0;
 
-    /**
-     *
-     * @param pos
-     * @param qm
-     */
-    @Override
-    public void fullQ(int pos, SubMatrix qm) {
-        qm.set(1, 1, 1);
-    }
+    static class Initialization implements ISsfInitialization {
 
-    /**
-     *
-     * @return
-     */
-    @Override
-    public int getNonStationaryDim() {
-        return 1;
-    }
+        Initialization() {
+        }
 
-    /**
-     *
-     * @return
-     */
-    @Override
-    public int getStateDim() {
-        return 2;
-    }
+        @Override
+        public void diffuseConstraints(Matrix b) {
+            b.set(1, 0, 1);
+        }
 
-    /**
-     *
-     * @return
-     */
-    @Override
-    public int getTransitionResCount() {
-        return 1;
-    }
+        /**
+         *
+         * @return
+         */
+        @Override
+        public int getDiffuseDim() {
+            return 1;
+        }
 
-    /**
-     *
-     * @return
-     */
-    @Override
-    public int getTransitionResDim() {
-        return 1;
-    }
+        /**
+         *
+         * @return
+         */
+        @Override
+        public int getStateDim() {
+            return 2;
+        }
 
-    /**
-     *
-     * @return
-     */
-    @Override
-    public boolean hasR() {
-        return true;
-    }
+        /**
+         *
+         * @return
+         */
+        @Override
+        public boolean isDiffuse() {
+            return true;
+        }
 
-    /**
-     *
-     * @param pos
-     * @return
-     */
-    @Override
-    public boolean hasTransitionRes(int pos) {
-        return true;
-    }
+        /**
+         *
+         * @param pf0
+         */
+        @Override
+        public void Pf0(Matrix pf0) {
+            // pf0.set(1, 1, 1);
+        }
 
-    /**
-     *
-     * @return
-     */
-    @Override
-    public boolean hasW() {
-        return false;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public boolean isDiffuse() {
-        return true;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public boolean isMeasurementEquationTimeInvariant() {
-        return false;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public boolean isTimeInvariant() {
-        return false;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public boolean isTransitionEquationTimeInvariant() {
-        return false;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public boolean isTransitionResidualTimeInvariant() {
-        return true;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public boolean isValid() {
-        return true;
-    }
-
-    /**
-     * L = T - k*Z
-     *
-     * @param pos
-     * @param k
-     * @param lm
-     */
-    @Override
-    public void L(int pos, DataBlock k, SubMatrix lm) {
-        double k0 = k.get(0), k1 = k.get(1);
-        double w = weight(pos);
-        int postype = posType(pos);
-        if (postype == LAST) {
-            //case I:
-            lm.set(0, 0, -k0);
-            lm.set(0, 1, -w * k0);
-            lm.set(1, 0, -k1);
-            lm.set(1, 1, 1 - w * k1);
-        } else if (postype == FIRST) {
-            //case II:
-            lm.set(0, 0, 0);
-            lm.set(0, 1, w - w * k0);
-            lm.set(1, 0, 0);
-            lm.set(1, 1, 1 - w * k1);
-        } else {
-            //case III:
-            lm.set(0, 0, 1 - k0);
-            lm.set(0, 1, w - w * k0);
-            lm.set(1, 0, -k1);
-            lm.set(1, 1, 1 - w * k1);
+        @Override
+        public void a0(DataBlock a0) {
 
         }
+
+        /**
+         *
+         * @param pi0
+         */
+        @Override
+        public void Pi0(Matrix pi0) {
+            pi0.set(1, 1, 1);
+        }
+
     }
 
-    private double mweight(int pos, double m) {
-        return weights == null ? m : weights[pos] * m;
-    }
+    static class Dynamics implements ISsfDynamics {
 
-    private double mweight2(int pos, double m) {
-        return weights == null ? m : weights[pos] * weights[pos] * m;
-    }
+        private final Data info;
 
-    /**
-     *
-     * @param pf0
-     */
-    @Override
-    public void Pf0(SubMatrix pf0) {
-        pf0.set(1, 1, 1);
-    }
+        Dynamics(Data info) {
+            this.info = info;
+        }
 
-    /**
-     *
-     * @param pi0
-     */
-    @Override
-    public void Pi0(SubMatrix pi0) {
-        pi0.set(1, 1, 1);
-    }
+        /**
+         *
+         * @param pos
+         * @param qm
+         */
+        @Override
+        public void V(int pos, Matrix qm) {
+            qm.set(1, 1, 1);
+        }
 
-    /**
-     *
-     * @param pos
-     * @param qm
-     */
-    @Override
-    public void Q(int pos, SubMatrix qm) {
-        qm.set(0, 0, 1);
-    }
+        @Override
+        public int getInnovationsDim() {
+            return 1;
+        }
 
-    /**
-     *
-     * @param pos
-     * @param rv
-     */
-    @Override
-    public void R(int pos, SubArrayOfInt rv) {
-        rv.set(0, 1);
-    }
+        @Override
+        public void S(int pos, Matrix cm) {
+            cm.set(1, 0, 1);
+        }
 
-    @Override
-    public void T(int pos, SubMatrix tr) {
-        tr.set(1, 1, 1);
-        int postype = posType(pos);
-        if (postype != LAST) {
-            tr.set(0, 1, weight(pos));
+        @Override
+        public boolean hasInnovations(int pos) {
+            return true;
+        }
+
+        @Override
+        public boolean areInnovationsTimeInvariant() {
+            return true;
+        }
+
+        @Override
+        public void T(int pos, Matrix tr) {
+            tr.set(1, 1, 1);
+            int postype = info.posType(pos);
+            if (postype != info.weight(pos));
             if (postype != FIRST) {
                 tr.set(0, 0, 1);
             }
         }
+
+        @Override
+        public void TX(int pos, DataBlock x) {
+            int postype = info.posType(pos);
+            double s = info.mweight(pos, x.get(1));
+            switch (postype) {
+                case LAST:
+                    x.set(0, 0);
+                    break;
+                case FIRST:
+                    // case II.
+                    x.set(0, s);
+                    break;
+                default:
+                    // case III
+                    x.add(0, s);
+                    break;
+            }
+        }
+
+        @Override
+        public void TVT(int pos, Matrix vm) {
+            int postype = info.posType(pos);
+            switch (postype) {
+                case LAST:
+                    vm.set(0, 0, 0);
+                    vm.set(1, 0, 0);
+                    vm.set(0, 1, 0);
+                    break;
+                case FIRST: {
+                    double w = info.weight(pos);
+                    double v = w * vm.get(1, 1);
+                    vm.set(0, 0, w * v);
+                    vm.set(1, 0, v);
+                    vm.set(0, 1, v);
+                    break;
+                }
+                default: {
+                    double w = info.weight(pos);
+                    double wV = w * vm.get(1, 1);
+                    double wv = w * vm.get(0, 1);
+                    vm.add(0, 1, wV);
+                    vm.add(1, 0, wV);
+                    vm.add(0, 0, 2 * wv + w * wV);
+                    break;
+                }
+            }
+        }
+
+        @Override
+        public void addSU(int pos, DataBlock x, DataBlock u) {
+            x.add(1, u.get(0));
+        }
+
+        @Override
+        public void addV(int pos, Matrix p) {
+            p.add(1, 1, 1);
+        }
+
+        @Override
+        public void XT(int pos, DataBlock x) {
+            // case I: 0, x1
+            int postype = info.posType(pos);
+            switch (postype) {
+                // case II: 0, w x0 + x1
+                case LAST:
+                    x.set(0, 0);
+                    break;
+                // case III: x0, w x0 + x1
+                case FIRST:
+                    x.add(1, info.mweight(pos, x.get(0)));
+                    x.set(0, 0);
+                    break;
+                default:
+                    x.add(1, info.mweight(pos, x.get(0)));
+                    break;
+            }
+        }
+
+        @Override
+        public void XS(int pos, DataBlock x, DataBlock xs) {
+            xs.set(0, x.get(1));
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return false;
+        }
+
     }
 
-    /**
-     *
-     * @param pos
-     * @param vm
-     */
-    @Override
-    public void TVT(int pos, SubMatrix vm) {
-        int postype = posType(pos);
-        if (postype == LAST) {
-            vm.set(0, 0, 0);
-            vm.set(1, 0, 0);
-            vm.set(0, 1, 0);
-        } else if (postype == FIRST) {
-            double w = weight(pos);
-            double v = w * vm.get(1, 1);
-            vm.set(0, 0, w * v);
-            vm.set(1, 0, v);
-            vm.set(0, 1, v);
-        } else {
-            double w = weight(pos);
-            double wV = w * vm.get(1, 1);
-            double wv = w * vm.get(0, 1);
-            vm.add(0, 1, wV);
-            vm.add(1, 0, wV);
-            vm.add(0, 0, 2 * wv + w * wV);
+    static class Measurement implements ISsfMeasurement {
+
+        private final Data info;
+
+        Measurement(Data info) {
+            this.info = info;
+        }
+
+        @Override
+        public void VpZdZ(int pos, Matrix vm, double d) {
+
+            vm.add(1, 1, info.mweight2(pos, d));
+            int postype = info.posType(pos);
+            if (postype != FIRST) {
+                double w = info.mweight(pos, d);
+                vm.add(0, 0, d);
+                vm.add(0, 1, w);
+                vm.add(1, 0, w);
+            }
+        }
+
+        @Override
+        public void XpZd(int pos, DataBlock x, double d) {
+            x.add(1, info.mweight(pos, d));
+            int postype = info.posType(pos);
+            if (postype != FIRST) {
+                x.add(0, d);
+            }
+        }
+
+        /**
+         * Z(t) = [ 0, w(t)] for t%c == 0. [ 1, w(t)] for t%c != 0.
+         *
+         * @param pos
+         * @param z
+         */
+        @Override
+        public void Z(int pos, DataBlock z) {
+            int postype = info.posType(pos);
+            if (postype == FIRST) {
+                z.set(0, 0);
+            } else {
+                z.set(0, 1);
+            }
+            z.set(1, info.weight(pos));
+        }
+
+        @Override
+        public void ZM(int pos, Matrix m, DataBlock x) {
+            x.setAY(info.weight(pos), m.row(1));
+            int postype = info.posType(pos);
+            if (postype != FIRST) {
+                x.add(m.row(0));
+            }
+        }
+
+        /**
+         *
+         * @param pos
+         * @param vm
+         * @return
+         */
+        @Override
+        public double ZVZ(int pos, Matrix vm) {
+            int postype = info.posType(pos);
+            if (postype == FIRST) {
+                return info.mweight2(pos, vm.get(1, 1));
+            } else {
+                double r = vm.get(0, 0);
+                r += info.mweight(pos, 2 * vm.get(1, 0));
+                r += info.mweight2(pos, vm.get(1, 1));
+                return r;
+            }
+        }
+
+        /**
+         *
+         * @param pos
+         * @param x
+         * @return
+         */
+        @Override
+        public double ZX(int pos, DataBlock x) {
+            int postype = info.posType(pos);
+            double r = (postype == FIRST) ? 0 : x.get(0);
+            return r + info.mweight(pos, x.get(1));
+        }
+
+        @Override
+        public boolean hasErrors() {
+            return false;
+        }
+
+        @Override
+        public boolean hasError(int pos) {
+            return false;
+        }
+
+        @Override
+        public double errorVariance(int pos) {
+            return 0;
+        }
+
+        @Override
+        public boolean areErrorsTimeInvariant() {
+            return true;
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return false;
         }
     }
 
-    /**
-     *
-     * @param pos
-     * @param x
-     */
-    @Override
-    public void TX(int pos, DataBlock x) {
-        // case I
-        int postype = posType(pos);
-        double s = mweight(pos, x.get(1));
-        if (postype == LAST) {
-            x.set(0, 0);
-        } else if (postype == FIRST) {
-            // case II.
-            x.set(0, s);
-        } else {
-            // case III
-            x.add(0, s);
-        }
-    }
-
-    /**
-     *
-     * @param pos
-     * @param vm
-     * @param d
-     */
-    @Override
-    public void VpZdZ(int pos, SubMatrix vm, double d) {
-
-        vm.add(1, 1, mweight2(pos, d));
-        int postype = posType(pos);
-        if (postype != FIRST) {
-            double w = mweight(pos, d);
-            vm.add(0, 0, d);
-            vm.add(0, 1, w);
-            vm.add(1, 0, w);
-        }
-    }
-
-    /**
-     *
-     * @param pos
-     * @param wv
-     */
-    @Override
-    public void W(int pos, SubMatrix wv) {
-    }
-
-    private double weight(int pos) {
-        return weights == null ? 1 : weights[pos];
-    }
-
-    /**
-     *
-     * @param pos
-     * @param x
-     * @param d
-     */
-    @Override
-    public void XpZd(int pos, DataBlock x, double d) {
-        x.add(1, mweight(pos, d));
-        int postype = posType(pos);
-        if (postype != FIRST) {
-            x.add(0, d);
-        }
-    }
-
-    /**
-     * |a0 0 a1| |0 b0 b1| |0 0 1|
-     *
-     * @param pos
-     * @param x
-     */
-    @Override
-    public void XT(int pos, DataBlock x) {
-        // case I: 0, x1
-        int postype = posType(pos);
-        if (postype == LAST) {
-            x.set(0, 0);
-        } // case II: 0, w x0 + x1
-        else if (postype == FIRST) {
-            x.add(1, mweight(pos, x.get(0)));
-            x.set(0, 0);
-        } // case III: x0, w x0 + x1
-        else {
-            x.add(1, mweight(pos, x.get(0)));
-        }
-    }
-
-    /**
-     * Z(t) = [ 0, w(t)] for t%c == 0. [ 1, w(t)] for t%c != 0.
-     *
-     * @param pos
-     * @param z
-     */
-    @Override
-    public void Z(int pos, DataBlock z) {
-        int postype = posType(pos);
-        if (postype == FIRST) {
-            z.set(0, 0);
-        } else {
-            z.set(0, 1);
-        }
-        z.set(1, weight(pos));
-    }
-
-    /**
-     *
-     * @param pos
-     * @param m
-     * @param x
-     */
-    @Override
-    public void ZM(int pos, SubMatrix m, DataBlock x) {
-        x.product(m.row(1), weight(pos));
-        int postype = posType(pos);
-        if (postype != FIRST) {
-            x.add(m.row(0));
-        }
-    }
-
-    /**
-     *
-     * @param pos
-     * @param vm
-     * @return
-     */
-    @Override
-    public double ZVZ(int pos, SubMatrix vm) {
-        int postype = posType(pos);
-        if (postype == FIRST) {
-            return mweight2(pos, vm.get(1, 1));
-        } else {
-            double r = vm.get(0, 0);
-            r += mweight(pos, 2 * vm.get(1, 0));
-            r += mweight2(pos, vm.get(1, 1));
-            return r;
-        }
-    }
-
-    /**
-     *
-     * @param pos
-     * @param x
-     * @return
-     */
-    @Override
-    public double ZX(int pos, DataBlock x) {
-        int postype = posType(pos);
-        double r = (postype == FIRST) ? 0 : x.get(0);
-        return r + mweight(pos, x.get(1));
-    }
 }

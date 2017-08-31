@@ -80,10 +80,6 @@ public class CompactSsf {
             initialization.Pi0(pi0.dropTopLeft(1, 1));
         }
 
-        @Override
-        public boolean isValid() {
-            return initialization.isValid();
-        }
     }
 
     static class Dynamics implements ISsfDynamics {

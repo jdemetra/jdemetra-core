@@ -88,7 +88,7 @@ public class RegularDomain implements TsDomain<TsPeriod> {
     public boolean contains(RegularDomain other) {
         startPeriod.checkCompatibility(other.startPeriod);
         int index = indexOf(startPeriod.getRebasedOffset(other.startPeriod));
-        return index != -1 && index + other.length <= length;
+        return index >= 0 && index + other.length <= length;
     }
 
     public RegularDomain move(int count) {
@@ -196,7 +196,9 @@ public class RegularDomain implements TsDomain<TsPeriod> {
 
     private int indexOf(long offset) {
         int index = distance(offset);
-        return index >= 0 && index < length ? index : -1;
+        if (index < 0)
+            return -1;
+        return index < length ? index : -length;
     }
 
     private void checkNonEmpty() throws IllegalStateException {

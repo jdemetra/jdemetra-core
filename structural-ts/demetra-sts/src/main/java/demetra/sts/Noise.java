@@ -43,11 +43,6 @@ public class Noise extends Ssf {
         }
         
         @Override
-        public boolean isValid() {
-            return var > 0;
-        }
-
-        @Override
         public int getStateDim() {
             return 1;
         }

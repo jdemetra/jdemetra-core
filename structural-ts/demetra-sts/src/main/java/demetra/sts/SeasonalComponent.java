@@ -306,11 +306,6 @@ public class SeasonalComponent {
         }
 
         @Override
-        public boolean isValid() {
-            return true;
-        }
-
-        @Override
         public int getStateDim() {
             return data.freq - 1;
         }
@@ -532,11 +527,6 @@ public class SeasonalComponent {
 
         public HarrisonStevensInitialization(final HarrisonStevensData data) {
             this.data = data;
-        }
-
-        @Override
-        public boolean isValid() {
-            return data.period > 1;
         }
 
         @Override

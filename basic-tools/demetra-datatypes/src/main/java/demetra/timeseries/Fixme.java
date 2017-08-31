@@ -47,7 +47,7 @@ public class Fixme {
             throw new UnsupportedOperationException("Unsupported origin");
         }
         OldFreq freq = OldFreq.of(p.getFreq());
-        return p.start().getMonthValue() - 1 % freq.getAsInt();
+        return (p.start().getMonthValue() - 1) / (12/freq.getAsInt());
     }
 
     public final TsFrequency Undefined = TsFrequency.of(666, ChronoUnit.MONTHS);

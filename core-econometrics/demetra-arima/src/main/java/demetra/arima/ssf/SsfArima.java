@@ -198,11 +198,6 @@ public class SsfArima extends Ssf {
         }
 
         @Override
-        public boolean isValid() {
-            return true;
-        }
-
-        @Override
         public boolean isDiffuse() {
             return false;
         }
@@ -323,11 +318,6 @@ public class SsfArima extends Ssf {
             }
 
             SymmetricMatrix.fromLower(stV);
-        }
-
-        @Override
-        public boolean isValid() {
-            return true;
         }
 
         @Override

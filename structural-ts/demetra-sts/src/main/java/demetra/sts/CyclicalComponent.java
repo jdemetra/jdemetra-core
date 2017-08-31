@@ -47,11 +47,6 @@ public class CyclicalComponent {
         }
 
         @Override
-        public boolean isValid() {
-            return data.cdump < 1 && data.cdump > -1;
-        }
-
-        @Override
         public boolean isDiffuse() {
             return false;
         }
