@@ -17,11 +17,13 @@
 package demetra.timeseries.simplets;
 
 import demetra.data.DataBlock;
-import demetra.timeseries.TsFrequency;
+import demetra.data.DoubleSequence;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Assert;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -34,7 +36,7 @@ public class TsDataViewTest {
 
     @Test
     public void testFullYears() {
-        TsPeriod p = TsPeriod.of(TsFrequency.MONTHLY, LocalDate.now());
+        TsPeriod p = TsPeriod.of(TsUnit.MONTHLY, LocalDate.now());
         for (int i = 0; i < 12; ++i) {
             for (int j = 0; j < 12; ++j) {
                 DataBlock d = DataBlock.make(i + j + 36);
@@ -42,11 +44,19 @@ public class TsDataViewTest {
                 d.set(k -> beg + k);
                 TsData s = TsData.of(p.plus(-i), d);
                 TsDataView fy = TsDataView.fullYears(s);
-                assertTrue(fy.getData().length() % 12 == 0);
-                assertTrue(((int) fy.getData().get(0)) % 12 == 0);
+                Assert.assertTrue(fy.getData().length() % 12 == 0);
+                Assert.assertTrue(((int) fy.getData().get(0)) % 12 == 0);
             }
         }
 
-    }
+        TsData d1 = TsData.of(TsPeriod.monthly(2010, 1), DoubleSequence.of(2 * 12, i -> 1 + i));
+        assertThat(TsDataView.fullYears(d1))
+                .extracting(o -> o.getStart(), o -> o.getData().toArray())
+                .containsExactly(d1.getStart(), d1.values().toArray());
 
+        TsData d2 = TsData.of(TsPeriod.monthly(2010, 2), DoubleSequence.of(2 * 12, i -> 1 + i));
+        assertThat(TsDataView.fullYears(d2))
+                .extracting(o -> o.getStart(), o -> o.getData().toArray())
+                .containsExactly(d2.getStart().plus(11), d2.values().drop(11, 1).toArray());
+    }
 }

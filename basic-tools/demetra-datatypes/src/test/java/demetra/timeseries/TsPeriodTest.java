@@ -16,7 +16,7 @@
  */
 package demetra.timeseries;
 
-import static demetra.timeseries.TsFrequency.*;
+import static demetra.timeseries.TsUnit.*;
 import static demetra.timeseries.TsPeriod.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,37 +40,37 @@ public class TsPeriodTest {
         assertThatThrownBy(() -> of(null, 0)).isInstanceOf(NullPointerException.class);
 
         assertThat(monthly(2011, 2))
-                .extracting("origin", "freq", "offset")
-                .containsExactly(DEFAULT_ORIGIN, MONTHLY, 493L);
+                .extracting("offset", "unit", "id")
+                .containsExactly(DEFAULT_OFFSET, MONTHLY, 493L);
 
         assertThat(quarterly(2011, 2))
-                .extracting("origin", "freq", "offset")
-                .containsExactly(DEFAULT_ORIGIN, QUARTERLY, 165L);
+                .extracting("offset", "unit", "id")
+                .containsExactly(DEFAULT_OFFSET, QUARTERLY, 165L);
     }
 
     @Test
     public void testBuilder() {
         assertThat(builder().build()).isNotNull();
 
-        assertThat(builder().freq(MONTHLY).build())
-                .isEqualTo(new TsPeriod(DEFAULT_ORIGIN, MONTHLY, 0))
-                .extracting("origin", "freq", "offset")
-                .containsExactly(DEFAULT_ORIGIN, MONTHLY, 0L);
+        assertThat(builder().unit(MONTHLY).build())
+                .isEqualTo(new TsPeriod(DEFAULT_OFFSET, MONTHLY, 0))
+                .extracting("offset", "unit", "id")
+                .containsExactly(DEFAULT_OFFSET, MONTHLY, 0L);
 
-        assertThat(builder().freq(MONTHLY).origin(d2011_02_01).build())
-                .isEqualTo(new TsPeriod(d2011_02_01_0000, MONTHLY, -493L))
-                .extracting("origin", "freq", "offset")
-                .containsExactly(d2011_02_01_0000, MONTHLY, -493L);
+        assertThat(builder().unit(MONTHLY).offset(someOffset).build())
+                .isEqualTo(new TsPeriod(someOffset, MONTHLY, -10L))
+                .extracting("offset", "unit", "id")
+                .containsExactly(someOffset, MONTHLY, -10L);
 
-        assertThat(builder().freq(MONTHLY).origin(d2011_02_01_1337).build())
-                .isEqualTo(new TsPeriod(d2011_02_01_1337, MONTHLY, -493L))
-                .extracting("origin", "freq", "offset")
-                .containsExactly(d2011_02_01_1337, MONTHLY, -493L);
+        assertThat(builder().unit(MONTHLY).offset(someOffset).build())
+                .isEqualTo(new TsPeriod(someOffset, MONTHLY, -10L))
+                .extracting("offset", "unit", "id")
+                .containsExactly(someOffset, MONTHLY, -10L);
 
-        assertThat(builder().origin(d2011_02_01).freq(of(2, ChronoUnit.DECADES)).plus(2).build())
-                .isEqualTo(new TsPeriod(d2011_02_01_0000, of(2, ChronoUnit.DECADES), 0))
-                .extracting("origin", "freq", "offset")
-                .containsExactly(d2011_02_01_0000, of(2, ChronoUnit.DECADES), 0L);
+        assertThat(builder().offset(someOffset).unit(of(2, ChronoUnit.DECADES)).plus(2).build())
+                .isEqualTo(new TsPeriod(someOffset, of(2, ChronoUnit.DECADES), -8))
+                .extracting("offset", "unit", "id")
+                .containsExactly(someOffset, of(2, ChronoUnit.DECADES), -8L);
 
         assertThat(builder()).satisfies(o -> {
             assertThat(o.toShortString()).isEqualTo("P1M#0");
@@ -78,9 +78,9 @@ public class TsPeriodTest {
             assertThat(o.plus(-2).toShortString()).isEqualTo("P1M#-1");
         });
 
-        assertThat(TsPeriod.builder().freq(DAILY).origin(d2011_02_01).offset(2).build())
-                .isEqualTo(TsPeriod.monthly(1970, 1).withFreq(DAILY).withOrigin(d2011_02_01).withOffset(2))
-                .isNotEqualTo(TsPeriod.builder().freq(DAILY).offset(2).origin(d2011_02_01).build());
+        assertThat(TsPeriod.builder().unit(DAILY).offset(someOffset).id(2).build())
+                .isEqualTo(TsPeriod.monthly(1970, 1).withUnit(DAILY).withOffset(someOffset).withId(2))
+                .isNotEqualTo(TsPeriod.builder().unit(DAILY).id(2).offset(someOffset).build());
     }
 
     @Test
@@ -88,8 +88,8 @@ public class TsPeriodTest {
         assertThat(of(YEARLY, d2011_02_01))
                 .isEqualTo(of(YEARLY, d2011_02_01))
                 .isNotEqualTo(of(YEARLY, d2011_02_01).next())
-                .isNotEqualTo(of(YEARLY, d2011_02_01).withOrigin(d2011_02_01))
-                .isNotEqualTo(of(YEARLY, d2011_02_01).withFreq(HOURLY))
+                .isNotEqualTo(of(YEARLY, d2011_02_01).withOffset(someOffset))
+                .isNotEqualTo(of(YEARLY, d2011_02_01).withUnit(HOURLY))
                 .isNotEqualTo(of(YEARLY, d2011_02_01).withDate(d2011_02_01.plusYears(1)))
                 .isEqualTo(of(YEARLY, d2011_02_01).withDate(d2011_02_01_1337));
     }
@@ -120,7 +120,7 @@ public class TsPeriodTest {
                 .isLessThan(monthly(2011, 3))
                 .isGreaterThan(monthly(2011, 1));
 
-        assertThat(monthly(2011, 2).withOrigin(d2011_02_01))
+        assertThat(monthly(2011, 2).withOffset(someOffset))
                 .isEqualByComparingTo(monthly(2011, 2))
                 .isLessThan(monthly(2011, 3))
                 .isGreaterThan(monthly(2011, 1));
@@ -136,9 +136,9 @@ public class TsPeriodTest {
         assertThat(monthly(2011, 2).isAfter(monthly(2011, 2))).isFalse();
         assertThat(monthly(2011, 2).isAfter(monthly(2011, 1))).isTrue();
 
-        assertThat(monthly(2011, 2).withOrigin(d2011_02_01).isAfter(monthly(2011, 3))).isFalse();
-        assertThat(monthly(2011, 2).withOrigin(d2011_02_01).isAfter(monthly(2011, 2))).isFalse();
-        assertThat(monthly(2011, 2).withOrigin(d2011_02_01).isAfter(monthly(2011, 1))).isTrue();
+        assertThat(monthly(2011, 2).withOffset(someOffset).isAfter(monthly(2011, 3))).isFalse();
+        assertThat(monthly(2011, 2).withOffset(someOffset).isAfter(monthly(2011, 2))).isFalse();
+        assertThat(monthly(2011, 2).withOffset(someOffset).isAfter(monthly(2011, 1))).isTrue();
 
         assertThatThrownBy(() -> monthly(2011, 2).isAfter(yearly(2011)))
                 .isInstanceOf(TsException.class)
@@ -151,9 +151,9 @@ public class TsPeriodTest {
         assertThat(monthly(2011, 2).isBefore(monthly(2011, 2))).isFalse();
         assertThat(monthly(2011, 2).isBefore(monthly(2011, 1))).isFalse();
 
-        assertThat(monthly(2011, 2).withOrigin(d2011_02_01).isBefore(monthly(2011, 3))).isTrue();
-        assertThat(monthly(2011, 2).withOrigin(d2011_02_01).isBefore(monthly(2011, 2))).isFalse();
-        assertThat(monthly(2011, 2).withOrigin(d2011_02_01).isBefore(monthly(2011, 1))).isFalse();
+        assertThat(monthly(2011, 2).withOffset(someOffset).isBefore(monthly(2011, 3))).isTrue();
+        assertThat(monthly(2011, 2).withOffset(someOffset).isBefore(monthly(2011, 2))).isFalse();
+        assertThat(monthly(2011, 2).withOffset(someOffset).isBefore(monthly(2011, 1))).isFalse();
 
         assertThatThrownBy(() -> monthly(2011, 2).isBefore(yearly(2011)))
                 .isInstanceOf(TsException.class)
@@ -175,17 +175,15 @@ public class TsPeriodTest {
 
     @Test
     public void testWithFreq() {
-        assertThatThrownBy(() -> of(YEARLY, d2011_02_01).withFreq(null)).isInstanceOf(NullPointerException.class);
-        assertThat(of(YEARLY, d2011_02_01).withFreq(MONTHLY)).isEqualTo(of(MONTHLY, LocalDate.of(2011, 1, 1)));
-        assertThat(of(MONTHLY, d2011_02_01).withFreq(YEARLY)).isEqualTo(of(YEARLY, d2011_02_01));
+        assertThatThrownBy(() -> of(YEARLY, d2011_02_01).withUnit(null)).isInstanceOf(NullPointerException.class);
+        assertThat(of(YEARLY, d2011_02_01).withUnit(MONTHLY)).isEqualTo(of(MONTHLY, LocalDate.of(2011, 1, 1)));
+        assertThat(of(MONTHLY, d2011_02_01).withUnit(YEARLY)).isEqualTo(of(YEARLY, d2011_02_01));
     }
 
     @Test
-    public void testWithOrigin() {
-        assertThatThrownBy(() -> of(YEARLY, d2011_02_01).withOrigin((LocalDate) null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> of(YEARLY, d2011_02_01).withOrigin((LocalDateTime) null)).isInstanceOf(NullPointerException.class);
-        assertThat(of(DAILY, d2011_02_01).withOrigin(d2011_02_01)).isEqualTo(new TsPeriod(d2011_02_01_0000, DAILY, 0));
-        assertThat(of(DAILY, d2011_02_01.plusDays(1)).withOrigin(d2011_02_01)).isEqualTo(new TsPeriod(d2011_02_01_0000, DAILY, 1));
+    public void testWithOffset() {
+        assertThat(of(DAILY, d2011_02_01).withOffset(someOffset)).isEqualTo(new TsPeriod(someOffset, DAILY, 14996));
+        assertThat(of(DAILY, d2011_02_01.plusDays(1)).withOffset(someOffset)).isEqualTo(new TsPeriod(someOffset, DAILY, 14997));
     }
 
     @Test
@@ -198,7 +196,7 @@ public class TsPeriodTest {
     @Test
     public void testToShortString() {
         assertThat(of(YEARLY, d2011_02_01).toShortString()).isEqualTo("P1Y#41");
-        assertThat(of(YEARLY, d2011_02_01).withOrigin(d2011_02_01).next().toShortString()).isEqualTo("P1Y#1@2011-02-01T00:00");
+        assertThat(of(YEARLY, d2011_02_01).withOffset(someOffset).next().toShortString()).isEqualTo("P1Y#32@10");
         assertThat(of(DAILY, d2011_02_01).toShortString()).isEqualTo("P1D#15006");
     }
 
@@ -210,12 +208,24 @@ public class TsPeriodTest {
     @Test
     public void testParse() {
         assertThatThrownBy(() -> TsPeriod.parse("hello")).isInstanceOf(DateTimeParseException.class);
-        assertThat(TsPeriod.parse("P1M#2")).isEqualTo(TsPeriod.builder().freq(MONTHLY).offset(2).build());
-        assertThat(TsPeriod.parse("P1M#-1")).isEqualTo(TsPeriod.builder().freq(MONTHLY).offset(-1).build());
-        assertThat(TsPeriod.parse("P1M#2@2011-02-01T00:00")).isEqualTo(TsPeriod.builder().freq(MONTHLY).origin(d2011_02_01).offset(2).build());
+        assertThat(TsPeriod.parse("P1M#2")).isEqualTo(TsPeriod.builder().unit(MONTHLY).id(2).build());
+        assertThat(TsPeriod.parse("P1M#-1")).isEqualTo(TsPeriod.builder().unit(MONTHLY).id(-1).build());
+        assertThat(TsPeriod.parse("P1M#2@10")).isEqualTo(TsPeriod.builder().unit(MONTHLY).offset(someOffset).id(2).build());
+    }
+
+    @Test
+    public void testUntil() {
+        assertThat(yearly(2010).until(yearly(2012))).isEqualTo(2);
+        assertThat(yearly(2010).until(yearly(2010))).isEqualTo(0);
+        assertThat(yearly(2010).until(yearly(2009))).isEqualTo(-1);
+
+        assertThatThrownBy(() -> monthly(2011, 2).until(yearly(2011)))
+                .isInstanceOf(TsException.class)
+                .hasMessage(TsException.INCOMPATIBLE_FREQ);
     }
 
     private final LocalDate d2011_02_01 = LocalDate.of(2011, 2, 1);
+    private final int someOffset = 10;
     private final LocalDateTime d2011_02_01_0000 = d2011_02_01.atStartOfDay();
     private final LocalDateTime d2011_02_01_1337 = d2011_02_01.atTime(13, 37);
 }

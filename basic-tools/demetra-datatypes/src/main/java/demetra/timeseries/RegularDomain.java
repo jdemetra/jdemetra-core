@@ -60,35 +60,35 @@ public class RegularDomain implements TsDomain<TsPeriod> {
     @Override
     public LocalDateTime end() {
         checkNonEmpty();
-        return startPeriod.dateAt(startPeriod.getOffset() + length);
+        return startPeriod.dateAt(startPeriod.getId() + length);
     }
 
     @Override
     public boolean contains(LocalDateTime date) {
-        return contains(startPeriod.offsetAt(date));
+        return contains(startPeriod.idAt(date));
     }
 
     @Override
     public boolean contains(TsPeriod period) {
         startPeriod.checkCompatibility(period);
-        return contains(startPeriod.getRebasedOffset(period));
+        return contains(startPeriod.getRebasedId(period));
     }
 
     @Override
     public int indexOf(LocalDateTime date) {
-        return indexOf(startPeriod.offsetAt(date));
+        return indexOf(startPeriod.idAt(date));
     }
 
     @Override
     public int indexOf(TsPeriod period) {
         startPeriod.checkCompatibility(period);
-        return indexOf(startPeriod.getRebasedOffset(period));
+        return indexOf(startPeriod.getRebasedId(period));
     }
 
     public boolean contains(RegularDomain other) {
         startPeriod.checkCompatibility(other.startPeriod);
-        int index = indexOf(startPeriod.getRebasedOffset(other.startPeriod));
-        return index >= 0 && index + other.length <= length;
+        int index = indexOf(startPeriod.getRebasedId(other.startPeriod));
+        return index != -1 && index + other.length <= length;
     }
 
     public RegularDomain move(int count) {
@@ -119,14 +119,14 @@ public class RegularDomain implements TsDomain<TsPeriod> {
 
         int n1 = length(), n2 = other.length();
 
-        long lbeg = startPeriod.getOffset();
-        long rbeg = startPeriod.getRebasedOffset(other.startPeriod);
+        long lbeg = startPeriod.getId();
+        long rbeg = startPeriod.getRebasedId(other.startPeriod);
 
         long lend = lbeg + n1, rend = rbeg + n2;
         long beg = lbeg <= rbeg ? rbeg : lbeg;
         long end = lend >= rend ? rend : lend;
 
-        return new RegularDomain(startPeriod.withOffset(beg), Math.max(0, distance(beg, end)));
+        return new RegularDomain(startPeriod.withId(beg), Math.max(0, distance(beg, end)));
     }
 
     public RegularDomain union(RegularDomain other) {
@@ -144,14 +144,14 @@ public class RegularDomain implements TsDomain<TsPeriod> {
 
         int ln = length(), rn = other.length();
 
-        long lbeg = startPeriod.getOffset();
-        long rbeg = startPeriod.getRebasedOffset(other.startPeriod);
+        long lbeg = startPeriod.getId();
+        long rbeg = startPeriod.getRebasedId(other.startPeriod);
 
         long lend = lbeg + ln, rend = rbeg + rn;
         long beg = lbeg <= rbeg ? lbeg : rbeg;
         long end = lend >= rend ? lend : rend;
 
-        return new RegularDomain(startPeriod.withOffset(beg), distance(beg, end));
+        return new RegularDomain(startPeriod.withId(beg), distance(beg, end));
     }
 
     public RegularDomain select(TsPeriodSelector ps) {
@@ -173,32 +173,30 @@ public class RegularDomain implements TsDomain<TsPeriod> {
                         ? range(ps.getN0(), length - ps.getN1())
                         : range(0, 0);
             case From: {
-                long fromOffset = startPeriod.offsetAt(ps.getD0());
-                return range(Math.max(0, distance(fromOffset)), Integer.MAX_VALUE);
+                long fromId = startPeriod.idAt(ps.getD0());
+                return range(Math.max(0, distance(fromId)), Integer.MAX_VALUE);
             }
             case To: {
-                long toOffset = startPeriod.offsetAt(ps.getD1());
-                return range(0, Math.max(0, distance(toOffset)));
+                long toId = startPeriod.idAt(ps.getD1());
+                return range(0, Math.max(0, distance(toId)));
             }
             case Between: {
-                long fromOffset = startPeriod.offsetAt(ps.getD0());
-                long toOffset = startPeriod.offsetAt(ps.getD1());
-                return range(Math.max(0, distance(fromOffset)), Math.max(0, distance(toOffset)));
+                long fromId = startPeriod.idAt(ps.getD0());
+                long toId = startPeriod.idAt(ps.getD1());
+                return range(Math.max(0, distance(fromId)), Math.max(0, distance(toId)));
             }
             default:
                 throw new RuntimeException();
         }
     }
 
-    private boolean contains(long offset) {
-        return startPeriod.getOffset() <= offset && offset < startPeriod.getOffset() + length;
+    private boolean contains(long id) {
+        return startPeriod.getId() <= id && id < startPeriod.getId() + length;
     }
 
-    private int indexOf(long offset) {
-        int index = distance(offset);
-        if (index < 0)
-            return -1;
-        return index < length ? index : -length;
+    private int indexOf(long id) {
+        int index = distance(id);
+        return index >= 0 && index < length ? index : -1;
     }
 
     private void checkNonEmpty() throws IllegalStateException {
@@ -207,11 +205,11 @@ public class RegularDomain implements TsDomain<TsPeriod> {
         }
     }
 
-    private int distance(long endOffset) {
-        return distance(startPeriod.getOffset(), endOffset);
+    private int distance(long endId) {
+        return distance(startPeriod.getId(), endId);
     }
 
-    private static int distance(long startOffset, long endOffset) {
-        return (int) (endOffset - startOffset);
+    private static int distance(long startId, long endId) {
+        return (int) (endId - startId);
     }
 }

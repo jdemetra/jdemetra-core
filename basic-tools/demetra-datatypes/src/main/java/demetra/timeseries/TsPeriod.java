@@ -29,43 +29,42 @@ import java.time.format.DateTimeParseException;
 @lombok.Builder(builderClassName = "Builder", toBuilder = true)
 public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
 
-    @lombok.NonNull
-    LocalDateTime origin;
+    int offset;
 
     @lombok.NonNull
-    TsFrequency freq;
+    TsUnit unit;
 
-    long offset;
+    long id;
 
     @Override
     public LocalDateTime start() {
-        return dateAt(origin, freq, offset);
+        return dateAt(offset, unit, id);
     }
 
     @Override
     public LocalDateTime end() {
-        return dateAt(origin, freq, offset + 1);
+        return dateAt(offset, unit, id + 1);
     }
 
     @Override
     public boolean contains(LocalDateTime date) {
-        return offsetAt(origin, freq, date) == offset;
+        return idAt(offset, unit, date) == id;
     }
 
     @Override
     public int compareTo(TsPeriod period) {
         checkCompatibility(period);
-        return Long.compare(offset, getRebasedOffset(period));
+        return Long.compare(id, getRebasedId(period));
     }
 
     public boolean isAfter(TsPeriod period) {
         checkCompatibility(period);
-        return offset > getRebasedOffset(period);
+        return id > getRebasedId(period);
     }
 
     public boolean isBefore(TsPeriod period) {
         checkCompatibility(period);
-        return offset < getRebasedOffset(period);
+        return id < getRebasedId(period);
     }
 
     public TsPeriod next() {
@@ -73,19 +72,15 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
     }
 
     public TsPeriod plus(long count) {
-        return new TsPeriod(origin, freq, offset + count);
+        return new TsPeriod(offset, unit, id + count);
     }
 
-    public TsPeriod withOrigin(LocalDate newOrigin) {
-        return withOrigin(newOrigin.atStartOfDay());
+    public TsPeriod withOffset(int newOffset) {
+        return make(newOffset, unit, start());
     }
 
-    public TsPeriod withOrigin(LocalDateTime newOrigin) {
-        return make(newOrigin, freq, start());
-    }
-
-    public TsPeriod withFreq(TsFrequency newFreq) {
-        return make(origin, newFreq, start());
+    public TsPeriod withUnit(TsUnit newUnit) {
+        return make(offset, newUnit, start());
     }
 
     public TsPeriod withDate(LocalDate date) {
@@ -93,181 +88,179 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
     }
 
     public TsPeriod withDate(LocalDateTime date) {
-        return make(origin, freq, date);
+        return make(offset, unit, date);
     }
 
-    public TsPeriod withOffset(long offset) {
-        return new TsPeriod(origin, freq, offset);
+    public TsPeriod withId(long id) {
+        return new TsPeriod(offset, unit, id);
     }
 
     public int until(TsPeriod endExclusive) {
-        return (int) (offset - getRebasedOffset(endExclusive));
+        checkCompatibility(endExclusive);
+        return (int) (getRebasedId(endExclusive) - id);
     }
 
     @Override
     public String toString() {
-        return start().toLocalDate().toString();
+        return toString(offset, unit, id);
     }
 
     public String toShortString() {
-        return toShortString(origin, freq, offset);
+        return toShortString(offset, unit, id);
     }
 
-    public long offsetAt(LocalDate date) {
-        return offsetAt(date.atStartOfDay());
+    public long idAt(LocalDate date) {
+        return idAt(date.atStartOfDay());
     }
 
-    public long offsetAt(LocalDateTime date) {
-        return offsetAt(origin, freq, date);
+    public long idAt(LocalDateTime date) {
+        return idAt(offset, unit, date);
     }
 
-    public LocalDateTime dateAt(long offset) {
-        return dateAt(origin, freq, offset);
+    public LocalDateTime dateAt(long id) {
+        return dateAt(offset, unit, id);
     }
 
-    private boolean hasSameOrigin(TsPeriod period) {
-        return getOrigin().equals(period.getOrigin());
+    private boolean hasSameOffset(TsPeriod period) {
+        return offset == period.offset;
     }
 
-    long getRebasedOffset(TsPeriod period) {
-        return hasSameOrigin(period)
-                ? period.getOffset()
-                : offsetAt(period.start());
+    long getRebasedId(TsPeriod period) {
+        return hasSameOffset(period)
+                ? period.id
+                : idAt(period.start());
     }
 
     void checkCompatibility(TsPeriod period) throws IllegalArgumentException {
-        if (!getFreq().equals(period.getFreq())) {
+        if (!unit.equals(period.unit)) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
     }
 
-    public static final LocalDateTime DEFAULT_ORIGIN = LocalDate.of(1970, 1, 1).atStartOfDay();
+    public static final int DEFAULT_OFFSET = 0;
+    public static final LocalDateTime EPOCH = LocalDate.of(1970, 1, 1).atStartOfDay();
 
-    public static TsPeriod of(TsFrequency freq, LocalDateTime date) {
-        return make(DEFAULT_ORIGIN, freq, date);
+    public static TsPeriod of(TsUnit unit, LocalDateTime date) {
+        return make(DEFAULT_OFFSET, unit, date);
     }
 
-    public static TsPeriod of(TsFrequency freq, LocalDate date) {
-        return make(DEFAULT_ORIGIN, freq, date);
+    public static TsPeriod of(TsUnit unit, LocalDate date) {
+        return make(DEFAULT_OFFSET, unit, date);
     }
 
-    public static TsPeriod of(TsFrequency freq, long offset) {
-        return make(DEFAULT_ORIGIN, freq, offset);
+    public static TsPeriod of(TsUnit unit, long id) {
+        return make(DEFAULT_OFFSET, unit, id);
     }
 
     public static TsPeriod yearly(int year) {
-        return make(DEFAULT_ORIGIN, TsFrequency.YEARLY, LocalDate.of(year, 1, 1));
+        return make(DEFAULT_OFFSET, TsUnit.YEARLY, LocalDate.of(year, 1, 1));
     }
 
     public static TsPeriod quarterly(int year, int quarter) {
-        return make(DEFAULT_ORIGIN, TsFrequency.QUARTERLY, LocalDate.of(year, ((quarter - 1) * 3) + 1, 1));
+        return make(DEFAULT_OFFSET, TsUnit.QUARTERLY, LocalDate.of(year, ((quarter - 1) * 3) + 1, 1));
     }
 
     public static TsPeriod monthly(int year, int month) {
-        return make(DEFAULT_ORIGIN, TsFrequency.MONTHLY, LocalDate.of(year, month, 1));
+        return make(DEFAULT_OFFSET, TsUnit.MONTHLY, LocalDate.of(year, month, 1));
     }
 
     public static TsPeriod daily(int year, int month, int dayOfMonth) {
-        return make(DEFAULT_ORIGIN, TsFrequency.DAILY, LocalDate.of(year, month, dayOfMonth));
+        return make(DEFAULT_OFFSET, TsUnit.DAILY, LocalDate.of(year, month, dayOfMonth));
     }
 
     public static TsPeriod hourly(int year, int month, int dayOfMonth, int hour) {
-        return make(DEFAULT_ORIGIN, TsFrequency.HOURLY, LocalDateTime.of(year, month, dayOfMonth, hour, 0));
+        return make(DEFAULT_OFFSET, TsUnit.HOURLY, LocalDateTime.of(year, month, dayOfMonth, hour, 0));
     }
 
     public static TsPeriod minutely(int year, int month, int dayOfMonth, int hour, int minute) {
-        return make(DEFAULT_ORIGIN, TsFrequency.MINUTELY, LocalDateTime.of(year, month, dayOfMonth, hour, minute));
+        return make(DEFAULT_OFFSET, TsUnit.MINUTELY, LocalDateTime.of(year, month, dayOfMonth, hour, minute));
     }
 
     public static TsPeriod parse(CharSequence text) throws DateTimeParseException {
         String value = text.toString();
 
-        int offsetIdx = value.indexOf('#');
-        if (offsetIdx == -1) {
+        int idIdx = value.indexOf('#');
+        if (idIdx == -1) {
             throw new DateTimeParseException("Text cannot be parsed to a period", text, 0);
         }
 
-        TsFrequency freq = TsFrequency.parse(value.substring(0, offsetIdx));
+        TsUnit unit = TsUnit.parse(value.substring(0, idIdx));
 
-        int originIdx = value.indexOf('@', offsetIdx);
-        if (originIdx == -1) {
-            long offset = parseOffset(value.substring(offsetIdx + 1));
-            return new TsPeriod(DEFAULT_ORIGIN, freq, offset);
+        int offsetIdx = value.indexOf('@', idIdx);
+        if (offsetIdx == -1) {
+            long id = parseId(value.substring(idIdx + 1));
+            return new TsPeriod(DEFAULT_OFFSET, unit, id);
         }
 
-        long offset = parseOffset(value.substring(offsetIdx + 1, originIdx));
-        LocalDateTime origin = LocalDateTime.parse(value.substring(originIdx + 1));
-        return new TsPeriod(origin, freq, offset);
+        long id = parseId(value.substring(idIdx + 1, offsetIdx));
+        int offset = parseOffset(value.substring(offsetIdx + 1));
+        return new TsPeriod(offset, unit, id);
     }
 
-    private static long parseOffset(String o) {
+    private static long parseId(String o) {
         try {
             return Long.parseLong(o);
+        } catch (NumberFormatException ex) {
+            throw new DateTimeParseException("Text cannot be parsed to an id", o, 0, ex);
+        }
+    }
+
+    private static int parseOffset(String o) {
+        try {
+            return Integer.parseInt(o);
         } catch (NumberFormatException ex) {
             throw new DateTimeParseException("Text cannot be parsed to an offset", o, 0, ex);
         }
     }
 
-    private static TsPeriod make(LocalDateTime origin, TsFrequency freq, LocalDate date) {
-        return new TsPeriod(origin, freq, offsetAt(origin, freq, date.atStartOfDay()));
+    private static TsPeriod make(int offset, TsUnit unit, LocalDate date) {
+        return new TsPeriod(offset, unit, idAt(offset, unit, date.atStartOfDay()));
     }
 
-    private static TsPeriod make(LocalDateTime origin, TsFrequency freq, LocalDateTime date) {
-        return new TsPeriod(origin, freq, offsetAt(origin, freq, date));
+    private static TsPeriod make(int offset, TsUnit unit, LocalDateTime date) {
+        return new TsPeriod(offset, unit, idAt(offset, unit, date));
     }
 
-    private static TsPeriod make(LocalDateTime origin, TsFrequency freq, long offset) {
-        return new TsPeriod(origin, freq, offset);
+    private static TsPeriod make(int offset, TsUnit unit, long id) {
+        return new TsPeriod(offset, unit, id);
     }
 
-    private static long offsetAt(LocalDateTime origin, TsFrequency freq, LocalDateTime date) {
-        return freq.getUnit().between(origin, date) / freq.getAmount();
+    public static long idAt(int offset, TsUnit unit, LocalDateTime date) {
+        return unit.getChronoUnit().between(EPOCH, date) / unit.getAmount() - offset;
     }
 
-    private static LocalDateTime dateAt(LocalDateTime origin, TsFrequency freq, long offset) {
-        return origin.plus(freq.getAmount() * offset, freq.getUnit());
+    public static LocalDateTime dateAt(int offset, TsUnit unit, long id) {
+        return EPOCH.plus(unit.getAmount() * (id + offset), unit.getChronoUnit());
     }
 
-    private static String toShortDateString(LocalDateTime date) {
-        return date.toString();
-        // FIXME: this is a problem when parsing later on -> need to investigate
-//        return LocalTime.MIDNIGHT.equals(date.toLocalTime())
-//                ? date.toLocalDate().toString()
-//                : date.toString();
+    private static String toString(int offset, TsUnit unit, long id) {
+        return DEFAULT_OFFSET == offset
+                ? String.format("TsPeriod(unit=%s, start=%s)", unit, dateAt(offset, unit, id))
+                : String.format("TsPeriod(offset=%s, unit=%s, start=%s)", offset, unit, dateAt(offset, unit, id));
     }
 
-    private static String toString(LocalDateTime origin, TsFrequency freq, long offset) {
-        return DEFAULT_ORIGIN.equals(origin)
-                ? String.format("TsPeriod(freq=%s, offset=%s)", freq, offset)
-                : String.format("TsPeriod(origin=%s, freq=%s, offset=%s)", toShortDateString(origin), freq, offset);
-    }
-
-    private static String toShortString(LocalDateTime origin, TsFrequency freq, long offset) {
-        return DEFAULT_ORIGIN.equals(origin)
-                ? String.format("%s#%s", freq, offset)
-                : String.format("%s#%s@%s", freq, offset, toShortDateString(origin));
+    private static String toShortString(int offset, TsUnit unit, long id) {
+        return DEFAULT_OFFSET == offset
+                ? String.format("%s#%s", unit, id)
+                : String.format("%s#%s@%s", unit, id, offset);
     }
 
     public static final class Builder implements Range<LocalDateTime> {
 
-        private LocalDateTime origin = DEFAULT_ORIGIN;
-        private TsFrequency freq = TsFrequency.MONTHLY;
+        private int offset = DEFAULT_OFFSET;
+        private TsUnit unit = TsUnit.MONTHLY;
 
-        private void refreshOffset(LocalDateTime oldOrigin, TsFrequency oldFreq, LocalDateTime newOrigin, TsFrequency newFreq) {
-            offset = offsetAt(newOrigin, newFreq, dateAt(oldOrigin, oldFreq, offset));
+        private void refreshId(int oldoffset, TsUnit oldUnit, int newoffset, TsUnit newUnit) {
+            this.id = idAt(newoffset, newUnit, dateAt(oldoffset, oldUnit, id));
         }
 
-        public Builder origin(LocalDate origin) {
-            return origin(origin.atStartOfDay());
-        }
-
-        public Builder origin(LocalDateTime origin) {
-            refreshOffset(this.origin, this.freq, this.origin = origin, this.freq);
+        public Builder offset(int offset) {
+            refreshId(this.offset, this.unit, this.offset = offset, this.unit);
             return this;
         }
 
-        public Builder freq(TsFrequency freq) {
-            refreshOffset(this.origin, this.freq, this.origin, this.freq = freq);
+        public Builder unit(TsUnit unit) {
+            refreshId(this.offset, this.unit, this.offset, this.unit = unit);
             return this;
         }
 
@@ -276,37 +269,37 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
         }
 
         public Builder date(LocalDateTime date) {
-            this.offset = offsetAt(origin, freq, date);
+            this.id = idAt(offset, unit, date);
             return this;
         }
 
         public Builder plus(int count) {
-            this.offset += count;
+            this.id += count;
             return this;
         }
 
         @Override
         public LocalDateTime start() {
-            return dateAt(origin, freq, offset);
+            return dateAt(offset, unit, id);
         }
 
         @Override
         public LocalDateTime end() {
-            return dateAt(origin, freq, offset + 1);
+            return dateAt(offset, unit, id + 1);
         }
 
         @Override
         public boolean contains(LocalDateTime date) {
-            return offsetAt(origin, freq, date) == offset;
+            return idAt(offset, unit, date) == id;
         }
 
         @Override
         public String toString() {
-            return start().toLocalDate().toString();
+            return TsPeriod.toString(offset, unit, id);
         }
 
         public String toShortString() {
-            return TsPeriod.toShortString(origin, freq, offset);
+            return TsPeriod.toShortString(offset, unit, id);
         }
     }
 }

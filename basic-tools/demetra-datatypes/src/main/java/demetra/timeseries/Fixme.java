@@ -16,10 +16,6 @@
  */
 package demetra.timeseries;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.IntSupplier;
 
 /**
@@ -30,12 +26,12 @@ import java.util.function.IntSupplier;
 @Deprecated
 public class Fixme {
 
-    public int getAsInt(TsFrequency freq) {
+    public int getAsInt(TsUnit freq) {
         return OldFreq.of(freq).getAsInt();
     }
 
     public int getId(TsPeriod p) {
-        return (int) p.getOffset();
+        return (int) p.getId();
     }
 
     public int getId(RegularDomain p) {
@@ -43,41 +39,26 @@ public class Fixme {
     }
 
     public int getPosition(TsPeriod p) {
-        if (!p.getOrigin().equals(TsPeriod.DEFAULT_ORIGIN)) {
+        if (p.getOffset() != TsPeriod.DEFAULT_OFFSET) {
             throw new UnsupportedOperationException("Unsupported origin");
         }
-        OldFreq freq = OldFreq.of(p.getFreq());
-        return (p.start().getMonthValue() - 1) / (12/freq.getAsInt());
+        OldFreq freq = OldFreq.of(p.getUnit());
+        return (p.start().getMonthValue() - 1) * freq.getAsInt() / 12;
     }
 
-    public final TsFrequency Undefined = TsFrequency.of(666, ChronoUnit.MONTHS);
-
-    public List<TsFrequency> complementOfUndefined() {
-        return Arrays.asList(TsFrequency.YEARLY, TsFrequency.QUARTERLY, TsFrequency.MONTHLY, TsFrequency.HALF_YEARLY, TsFrequency.QUADRI_MONTHLY, TsFrequency.BI_MONTHLY);
-    }
-
-    public List<TsFrequency> allOf() {
-        return Arrays.asList(Undefined, TsFrequency.YEARLY, TsFrequency.QUARTERLY, TsFrequency.MONTHLY, TsFrequency.HALF_YEARLY, TsFrequency.QUADRI_MONTHLY, TsFrequency.BI_MONTHLY);
-    }
-
-    public TsPeriod asPeriod(TsFrequency freq, int year, int pos) {
-        LocalDate date = LocalDate.of(year, (12 / OldFreq.of(freq).getAsInt()) * pos + 1, 1);
-        return TsPeriod.of(freq, date);
-    }
-
-    public enum OldFreq implements IntSupplier {
-        Undefined(0, Fixme.Undefined),
-        Yearly(1, TsFrequency.YEARLY),
-        HalfYearly(2, TsFrequency.HALF_YEARLY),
-        QuadriMonthly(3, TsFrequency.QUADRI_MONTHLY),
-        Quarterly(4, TsFrequency.QUARTERLY),
-        BiMonthly(6, TsFrequency.BI_MONTHLY),
-        Monthly(12, TsFrequency.MONTHLY);
+    private enum OldFreq implements IntSupplier {
+        Undefined(0, TsUnit.UNDEFINED),
+        Yearly(1, TsUnit.YEARLY),
+        HalfYearly(2, TsUnit.HALF_YEARLY),
+        QuadriMonthly(3, TsUnit.QUADRI_MONTHLY),
+        Quarterly(4, TsUnit.QUARTERLY),
+        BiMonthly(6, TsUnit.BI_MONTHLY),
+        Monthly(12, TsUnit.MONTHLY);
 
         final int val;
-        final TsFrequency freq;
+        final TsUnit freq;
 
-        private OldFreq(int val, TsFrequency freq) {
+        private OldFreq(int val, TsUnit freq) {
             this.val = val;
             this.freq = freq;
         }
@@ -87,12 +68,8 @@ public class Fixme {
             return val;
         }
 
-        public TsFrequency convert() {
-            return freq;
-        }
-
-        public static OldFreq of(TsFrequency freq) {
-            switch (freq.getUnit()) {
+        public static OldFreq of(TsUnit freq) {
+            switch (freq.getChronoUnit()) {
                 case YEARS:
                     if (freq.getAmount() == 1) {
                         return Yearly;

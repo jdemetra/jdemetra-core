@@ -54,7 +54,7 @@ public abstract class AbstractOutlier implements IOutlierVariable {
 
     @Override
     public void data(TsPeriod start, DataBlock buffer) {
-        long outlierPos = start.offsetAt(getPosition()) - start.getOffset();
+        long outlierPos = start.idAt(getPosition()) - start.getId();
         data((int) outlierPos, buffer);
     }
 

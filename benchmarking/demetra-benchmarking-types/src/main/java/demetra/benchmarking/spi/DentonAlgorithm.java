@@ -19,7 +19,7 @@ package demetra.benchmarking.spi;
 import demetra.benchmarking.univariate.DentonSpecification;
 import demetra.design.Algorithm;
 import demetra.design.ServiceDefinition;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.simplets.TsData;
 
 /**
@@ -30,5 +30,5 @@ import demetra.timeseries.simplets.TsData;
 @ServiceDefinition(isSingleton=true)
 public interface DentonAlgorithm {
     TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, DentonSpecification spec);
-    TsData benchmark(TsFrequency highFreq, TsData aggregationConstraint, DentonSpecification spec);
+    TsData benchmark(TsUnit highFreq, TsData aggregationConstraint, DentonSpecification spec);
 }
