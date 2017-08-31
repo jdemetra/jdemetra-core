@@ -16,7 +16,7 @@
  */
 package _util.tsproviders;
 
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.simplets.TsData;
 import demetra.tsprovider.OptionalTsData;
 import java.util.Collections;
@@ -37,7 +37,7 @@ public final class FakeTs {
     @lombok.NonNull
     Map<String, String> meta = Collections.emptyMap();
 
-    public static final FakeTs S1 = FakeTs.builder().label("Series 1").data(OptionalTsData.present(TsData.random(TsFrequency.MONTHLY, 1))).build();
-    public static final FakeTs S2 = FakeTs.builder().label("Series 2").data(OptionalTsData.present(TsData.random(TsFrequency.MONTHLY, 2))).build();
+    public static final FakeTs S1 = FakeTs.builder().label("Series 1").data(OptionalTsData.present(TsData.random(TsUnit.MONTHLY, 1))).build();
+    public static final FakeTs S2 = FakeTs.builder().label("Series 2").data(OptionalTsData.present(TsData.random(TsUnit.MONTHLY, 2))).build();
     public static final FakeTs S3 = FakeTs.builder().label("Series 3").data(OptionalTsData.absent("Missing")).build();
 }

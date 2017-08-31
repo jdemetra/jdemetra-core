@@ -17,7 +17,7 @@
 package demetra.tsprovider.util;
 
 import demetra.util.Parser;
-import java.util.Date;
+import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
@@ -29,7 +29,7 @@ public class StrangeParsersTest {
 
     @Test
     public void testYearFreqPosParser() {
-        Parser<Date> parser = StrangeParsers.yearFreqPosParser();
+        Parser<LocalDate> parser = StrangeParsers.yearFreqPosParser();
         assertThat(parser.parse("2010M1")).isEqualTo("2010-01-01");
         assertThat(parser.parse("2010-M1")).isEqualTo("2010-01-01");
         assertThat(parser.parse("2010M2")).isEqualTo("2010-02-01");

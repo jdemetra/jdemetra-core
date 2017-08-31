@@ -37,13 +37,28 @@ import lombok.AccessLevel;
  */
 @lombok.Value
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class TsFrequency implements TemporalAmount {
+public class TsUnit implements TemporalAmount {
 
     @Nonnegative
     long amount;
 
     @lombok.NonNull
-    ChronoUnit unit;
+    ChronoUnit chronoUnit;
+
+    public boolean contains(TsUnit other) {
+        return ratio(other) > 0;
+    }
+
+    public int ratio(TsUnit other) {
+        double x = 1D * other.chronoUnit.getDuration().getSeconds() / chronoUnit.getDuration().getSeconds() * other.amount / amount;
+        if (x < 1) {
+            return NO_RATIO;
+        }
+        if (((int) x) != x) {
+            return NO_STRICT_RATIO;
+        }
+        return (int) x;
+    }
 
     @Override
     public String toString() {
@@ -51,7 +66,7 @@ public class TsFrequency implements TemporalAmount {
     }
 
     public String toIsoString() {
-        switch (unit) {
+        switch (chronoUnit) {
             case HALF_DAYS:
             case MILLIS:
             case MINUTES:
@@ -59,14 +74,16 @@ public class TsFrequency implements TemporalAmount {
             case MICROS:
             case SECONDS:
             case NANOS:
-                return Duration.of(amount, unit).toString();
+                return Duration.of(amount, chronoUnit).toString();
+            case FOREVER:
+                return "";
         }
         return Period.from(this).toString();
     }
 
     @Override
     public long get(TemporalUnit unit) {
-        if (!this.unit.equals(unit)) {
+        if (!this.chronoUnit.equals(unit)) {
             throw new UnsupportedTemporalTypeException(unit.toString());
         }
         return amount;
@@ -74,33 +91,37 @@ public class TsFrequency implements TemporalAmount {
 
     @Override
     public List<TemporalUnit> getUnits() {
-        return Collections.singletonList(unit);
+        return Collections.singletonList(chronoUnit);
     }
 
     @Override
     public Temporal addTo(Temporal temporal) {
-        return temporal.plus(amount, unit);
+        return temporal.plus(amount, chronoUnit);
     }
 
     @Override
     public Temporal subtractFrom(Temporal temporal) {
-        return temporal.minus(amount, unit);
+        return temporal.minus(amount, chronoUnit);
     }
 
-    public static final TsFrequency YEARLY = new TsFrequency(1, ChronoUnit.YEARS);
-    public static final TsFrequency HALF_YEARLY = new TsFrequency(6, ChronoUnit.MONTHS);
-    public static final TsFrequency QUADRI_MONTHLY = new TsFrequency(4, ChronoUnit.MONTHS);
-    public static final TsFrequency QUARTERLY = new TsFrequency(3, ChronoUnit.MONTHS);
-    public static final TsFrequency BI_MONTHLY = new TsFrequency(2, ChronoUnit.MONTHS);
-    public static final TsFrequency MONTHLY = new TsFrequency(1, ChronoUnit.MONTHS);
-    public static final TsFrequency DAILY = new TsFrequency(1, ChronoUnit.DAYS);
-    public static final TsFrequency HOURLY = new TsFrequency(1, ChronoUnit.HOURS);
-    public static final TsFrequency MINUTELY = new TsFrequency(1, ChronoUnit.MINUTES);
+    public static final int NO_RATIO = -1;
+    public static final int NO_STRICT_RATIO = 0;
 
-    public static TsFrequency of(long amount, ChronoUnit unit) {
+    public static final TsUnit UNDEFINED = new TsUnit(1, ChronoUnit.FOREVER);
+    public static final TsUnit YEARLY = new TsUnit(1, ChronoUnit.YEARS);
+    public static final TsUnit HALF_YEARLY = new TsUnit(6, ChronoUnit.MONTHS);
+    public static final TsUnit QUADRI_MONTHLY = new TsUnit(4, ChronoUnit.MONTHS);
+    public static final TsUnit QUARTERLY = new TsUnit(3, ChronoUnit.MONTHS);
+    public static final TsUnit BI_MONTHLY = new TsUnit(2, ChronoUnit.MONTHS);
+    public static final TsUnit MONTHLY = new TsUnit(1, ChronoUnit.MONTHS);
+    public static final TsUnit DAILY = new TsUnit(1, ChronoUnit.DAYS);
+    public static final TsUnit HOURLY = new TsUnit(1, ChronoUnit.HOURS);
+    public static final TsUnit MINUTELY = new TsUnit(1, ChronoUnit.MINUTES);
+
+    public static TsUnit of(long amount, ChronoUnit unit) {
         switch (unit) {
             case YEARS:
-                return amount == 1 ? YEARLY : new TsFrequency(amount, unit);
+                return amount == 1 ? YEARLY : new TsUnit(amount, unit);
             case MONTHS:
                 if (amount == 1) {
                     return MONTHLY;
@@ -117,31 +138,36 @@ public class TsFrequency implements TemporalAmount {
                 if (amount == 6) {
                     return HALF_YEARLY;
                 }
-                return new TsFrequency(amount, unit);
+                return new TsUnit(amount, unit);
             case DAYS:
-                return amount == 1 ? DAILY : new TsFrequency(amount, unit);
+                return amount == 1 ? DAILY : new TsUnit(amount, unit);
             case HOURS:
-                return amount == 1 ? HOURLY : new TsFrequency(amount, unit);
+                return amount == 1 ? HOURLY : new TsUnit(amount, unit);
             case MINUTES:
-                return amount == 1 ? MINUTELY : new TsFrequency(amount, unit);
+                return amount == 1 ? MINUTELY : new TsUnit(amount, unit);
             case CENTURIES:
-                return new TsFrequency(100 * amount, ChronoUnit.YEARS);
-            case HALF_DAYS:
+                return new TsUnit(100 * amount, ChronoUnit.YEARS);
             case DECADES:
-                return new TsFrequency(10 * amount, ChronoUnit.YEARS);
+                return new TsUnit(10 * amount, ChronoUnit.YEARS);
+            case FOREVER:
+                return UNDEFINED;
+            case HALF_DAYS:
             case MICROS:
             case MILLIS:
             case SECONDS:
             case NANOS:
-                return new TsFrequency(amount, unit);
+                return new TsUnit(amount, unit);
             case WEEKS:
             default:
                 throw new UnsupportedTemporalTypeException(unit.toString());
         }
     }
 
-    public static TsFrequency parse(CharSequence text) throws DateTimeParseException {
-        if (text.length() <= 1) {
+    public static TsUnit parse(CharSequence text) throws DateTimeParseException {
+        if (text.length() == 0) {
+            return UNDEFINED;
+        }
+        if (text.length() == 1) {
             throw new DateTimeParseException("Text cannot be parsed to a freq", text, 0);
         }
         if (text.charAt(0) != 'P') {
@@ -150,36 +176,36 @@ public class TsFrequency implements TemporalAmount {
         return text.charAt(1) == 'T' ? parseTimePattern(text) : parseDatePattern(text);
     }
 
-    private static TsFrequency parseDatePattern(CharSequence text) {
+    private static TsUnit parseDatePattern(CharSequence text) {
         Matcher m = DATE_PATTERN.matcher(text);
         if (m.matches()) {
             int amount = Integer.parseInt(m.group(1));
             switch (m.group(2).charAt(0)) {
                 case 'Y':
-                    return TsFrequency.of(amount, ChronoUnit.YEARS);
+                    return TsUnit.of(amount, ChronoUnit.YEARS);
                 case 'M':
-                    return TsFrequency.of(amount, ChronoUnit.MONTHS);
+                    return TsUnit.of(amount, ChronoUnit.MONTHS);
                 case 'W':
-                    return TsFrequency.of(amount, ChronoUnit.WEEKS);
+                    return TsUnit.of(amount, ChronoUnit.WEEKS);
                 case 'D':
-                    return TsFrequency.of(amount, ChronoUnit.DAYS);
+                    return TsUnit.of(amount, ChronoUnit.DAYS);
             }
         }
         throw new DateTimeParseException("Text cannot be parsed to a freq", text, 0);
     }
 
-    private static TsFrequency parseTimePattern(CharSequence text) {
+    private static TsUnit parseTimePattern(CharSequence text) {
         Matcher m = TIME_PATTERN.matcher(text);
         if (m.matches()) {
             double amount = Double.parseDouble(m.group(1));
             switch (m.group(2).charAt(0)) {
                 case 'H':
-                    return TsFrequency.of((long) amount, ChronoUnit.HOURS);
+                    return TsUnit.of((long) amount, ChronoUnit.HOURS);
                 case 'M':
-                    return TsFrequency.of((long) amount, ChronoUnit.MINUTES);
+                    return TsUnit.of((long) amount, ChronoUnit.MINUTES);
                 case 'S':
                     // FIXME: milli, micro, nano
-                    return TsFrequency.of((long) amount, ChronoUnit.SECONDS);
+                    return TsUnit.of((long) amount, ChronoUnit.SECONDS);
             }
         }
         throw new DateTimeParseException("Text cannot be parsed to a freq", text, 0);

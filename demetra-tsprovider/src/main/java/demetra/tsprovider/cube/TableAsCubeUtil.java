@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider.cube;
 
-import demetra.timeseries.Fixme;
+import demetra.timeseries.TsUnit;
 import demetra.tsprovider.util.ObsGathering;
 import java.util.stream.Collector;
 import javax.annotation.Nonnull;
@@ -45,6 +45,6 @@ public class TableAsCubeUtil {
     }
 
     private String toString(ObsGathering gathering) {
-        return Fixme.Undefined.equals(gathering.getFrequency()) ? "" : ("(" + gathering.getFrequency() + "/" + gathering.getAggregationType() + ")");
+        return TsUnit.UNDEFINED.equals(gathering.getUnit()) ? "" : ("(" + gathering.getUnit() + "/" + gathering.getAggregationType() + ")");
     }
 }

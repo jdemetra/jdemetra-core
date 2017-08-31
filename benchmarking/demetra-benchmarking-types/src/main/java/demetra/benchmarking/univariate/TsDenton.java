@@ -17,7 +17,7 @@
 package demetra.benchmarking.univariate;
 
 import demetra.benchmarking.spi.DentonAlgorithm;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.simplets.TsData;
 import demetra.utilities.ServiceLookup;
 import java.util.concurrent.atomic.AtomicReference;
@@ -43,7 +43,7 @@ public class TsDenton {
         return IMPL.get().benchmark(highFreqSeries, aggregationConstraint, spec);
     }
 
-    public TsData benchmark(TsFrequency highFreq, TsData aggregationConstraint, DentonSpecification spec){
+    public TsData benchmark(TsUnit highFreq, TsData aggregationConstraint, DentonSpecification spec){
         return IMPL.get().benchmark(highFreq, aggregationConstraint, spec);
     }
 }

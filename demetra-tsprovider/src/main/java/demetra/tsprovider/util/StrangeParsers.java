@@ -16,15 +16,12 @@
  */
 package demetra.tsprovider.util;
 
-import demetra.timeseries.Fixme;
 import demetra.timeseries.TsException;
-import demetra.timeseries.TsFrequency;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import demetra.util.Parser;
-import java.time.ZoneId;
+import java.time.LocalDate;
 
 @lombok.experimental.UtilityClass
 public class StrangeParsers {
@@ -37,16 +34,16 @@ public class StrangeParsers {
      * @return a new parser
      */
     @Nonnull
-    public Parser<Date> yearFreqPosParser() {
+    public Parser<LocalDate> yearFreqPosParser() {
         return StrangeParsers::parseYearFreqPos;
     }
 
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
-    private Date parseYearFreqPos(CharSequence input) {
+    private LocalDate parseYearFreqPos(CharSequence input) {
         Matcher m = REGEX.matcher(input);
         if (m.matches()) {
             try {
-                return toDate(Integer.parseInt(m.group(YEAR)), toFreq(m.group(FREQ)), Integer.parseInt(m.group(POS)));
+                return toDate(Integer.parseInt(m.group(YEAR)), m.group(FREQ).charAt(0), Integer.parseInt(m.group(POS)));
             } catch (TsException | NumberFormatException ex) {
                 return null;
             }
@@ -57,25 +54,21 @@ public class StrangeParsers {
     private static final Pattern REGEX = Pattern.compile("(\\d+)-?([QMYST])(\\d+)");
     private static final int YEAR = 1, FREQ = 2, POS = 3;
 
-    private static TsFrequency toFreq(String input) {
-        switch (input) {
-            case "Q":
-                return TsFrequency.QUARTERLY;
-            case "M":
-                return TsFrequency.MONTHLY;
-            case "Y":
-                return TsFrequency.YEARLY;
-            case "S":
-                return TsFrequency.HALF_YEARLY;
-            case "T":
-                return TsFrequency.QUADRI_MONTHLY;
+    private static LocalDate toDate(int year, char freq, int pos) {
+        switch (freq) {
+            case 'Q':
+                return LocalDate.of(year, ((pos - 1) * 3) + 1, 1);
+            case 'M':
+                return LocalDate.of(year, pos, 1);
+            case 'Y':
+                return LocalDate.of(year, 1, 1);
+            case 'S':
+                return LocalDate.of(year, ((pos - 1) * 6) + 1, 1);
+            case 'T':
+                return LocalDate.of(year, ((pos - 1) * 4) + 1, 1);
             default:
-                return Fixme.Undefined;
+                throw new RuntimeException();
         }
-    }
-
-    private static Date toDate(int year, TsFrequency freq, int pos) throws TsException {
-        return Date.from(Fixme.asPeriod(freq, year, pos - 1).start().atZone(ZoneId.systemDefault()).toInstant());
     }
     //</editor-fold>
 }

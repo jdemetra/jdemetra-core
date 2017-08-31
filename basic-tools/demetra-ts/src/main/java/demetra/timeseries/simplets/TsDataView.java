@@ -23,6 +23,7 @@ import demetra.timeseries.Fixme;
 import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsPeriodSelector;
+import java.time.temporal.TemporalAdjusters;
 
 /**
  * A TsDataView is a view on equally spaced observations in a time series. Users
@@ -47,7 +48,7 @@ public final class TsDataView {
     public static TsDataView fullYears(TsData series) {
         RegularDomain domain = series.domain();
         TsPeriod start = domain.getStartPeriod(), end = domain.getEndPeriod();
-        int freq = Fixme.getAsInt(domain.getStartPeriod().getFreq());
+        int freq = Fixme.getAsInt(domain.getStartPeriod().getUnit());
         int nbeg = Fixme.getPosition(start);
         if (nbeg != 0) {
             nbeg = freq - nbeg;
@@ -72,7 +73,7 @@ public final class TsDataView {
             return null;
         }
         TsPeriod start = series.getStart(), dstart = domain.getStartPeriod();
-        int del = dstart.until(start);
+        int del = start.until(dstart);
         return new TsDataView(dstart, DoubleSequence.of(domain.length(), i -> series.getValue(del + i)), 1);
     }
 
@@ -90,7 +91,7 @@ public final class TsDataView {
             return null;
         }
         TsPeriod start = series.getStart(), dstart = domain.getStartPeriod();
-        int del = dstart.until(start);
+        int del = start.until(dstart);
         return new TsDataView(dstart, DoubleSequence.of(domain.length(), i -> series.getValue(del + i)), 1);
     }
 

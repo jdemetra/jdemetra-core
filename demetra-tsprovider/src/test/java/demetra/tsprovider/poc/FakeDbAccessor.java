@@ -24,7 +24,7 @@ import demetra.tsprovider.OptionalTsData;
 import static demetra.tsprovider.OptionalTsData.absent;
 import static demetra.tsprovider.OptionalTsData.present;
 import demetra.io.IteratorWithIO;
-import static demetra.timeseries.TsFrequency.MONTHLY;
+import static demetra.timeseries.TsUnit.MONTHLY;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;

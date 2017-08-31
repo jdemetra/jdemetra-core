@@ -14,24 +14,32 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries;
+package internal.tsprovider.util;
 
-import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
-import static org.assertj.core.api.Assertions.*;
-import org.junit.Test;
+import demetra.tsprovider.OptionalTsData;
+import demetra.tsprovider.util.TsDataBuilder;
 
 /**
  *
  * @author Philippe Charles
  */
-public class TsFrequencyTest {
+@lombok.AllArgsConstructor
+final class NoOpDataBuilder<T> implements TsDataBuilder<T> {
 
-    @Test
-    public void testParse() {
-        assertThatThrownBy(() -> TsFrequency.parse("hello")).isInstanceOf(DateTimeParseException.class);
-        assertThat(TsFrequency.parse("P2Y")).isEqualTo(TsFrequency.of(2, ChronoUnit.YEARS));
-        assertThat(TsFrequency.parse("P3M")).isEqualTo(TsFrequency.of(3, ChronoUnit.MONTHS));
-        assertThat(TsFrequency.parse("PT4H")).isEqualTo(TsFrequency.of(4, ChronoUnit.HOURS));
+    private final OptionalTsData data;
+
+    @Override
+    public TsDataBuilder<T> clear() {
+        return this;
+    }
+
+    @Override
+    public TsDataBuilder<T> add(T date, Number value) {
+        return this;
+    }
+
+    @Override
+    public OptionalTsData build() {
+        return data;
     }
 }

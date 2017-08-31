@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 National Bank of Belgium
+ * Copyright 2017 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -17,33 +17,37 @@
 package internal.tsprovider.util;
 
 import demetra.data.DoubleSequence;
-import demetra.design.Internal;
 import demetra.design.VisibleForTesting;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import demetra.utilities.functions.ObjLongToIntFunction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Package private supporting class for {@link ObsList}.
  *
  * @author Philippe Charles
- * @since 2.2.0
  */
-@Internal
-@lombok.experimental.UtilityClass
-class ObsLists {
+interface ByLongObsList extends ObsList {
 
-    static final class SortableLongObsList implements ObsList.LongObsList {
+    void clear();
 
-        private final ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc;
+    void add(long period, double value);
+
+    static ByLongObsList of(boolean preSorted, ObjLongToIntFunction<TsUnit> tsPeriodIdFunc) {
+        return preSorted
+                ? new PreSortedLongObsList(tsPeriodIdFunc, 32)
+                : new SortableLongObsList(tsPeriodIdFunc);
+    }
+
+    static final class SortableLongObsList implements ByLongObsList {
+
+        private final ObjLongToIntFunction<TsUnit> tsPeriodIdFunc;
         private final List<LongObs> list = new ArrayList<>();
         private boolean sorted = true;
         private long latestPeriod = Long.MIN_VALUE;
 
-        @VisibleForTesting
-        SortableLongObsList(ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc) {
+        private SortableLongObsList(ObjLongToIntFunction<TsUnit> tsPeriodIdFunc) {
             this.tsPeriodIdFunc = tsPeriodIdFunc;
         }
 
@@ -77,7 +81,7 @@ class ObsLists {
         }
 
         @Override
-        public int getPeriodId(TsFrequency frequency, int index) {
+        public int getPeriodId(TsUnit frequency, int index) {
             return tsPeriodIdFunc.applyAsInt(frequency, list.get(index).period);
         }
 
@@ -90,27 +94,22 @@ class ObsLists {
             }
         }
 
+        @lombok.AllArgsConstructor
         private static final class LongObs {
 
             final long period;
             final double value;
-
-            private LongObs(long period, double value) {
-                this.period = period;
-                this.value = value;
-            }
         }
     }
 
-    static final class PreSortedLongObsList implements ObsList.LongObsList {
+    static final class PreSortedLongObsList implements ByLongObsList {
 
-        private final ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc;
+        private final ObjLongToIntFunction<TsUnit> tsPeriodIdFunc;
         private long[] periods;
         private double[] values;
         private int size;
 
-        @VisibleForTesting
-        PreSortedLongObsList(ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc, int initialCapacity) {
+        private PreSortedLongObsList(ObjLongToIntFunction<TsUnit> tsPeriodIdFunc, int initialCapacity) {
             this.tsPeriodIdFunc = tsPeriodIdFunc;
             this.periods = new long[initialCapacity];
             this.values = new double[initialCapacity];
@@ -150,7 +149,7 @@ class ObsLists {
         }
 
         @Override
-        public int getPeriodId(TsFrequency frequency, int index) {
+        public int getPeriodId(TsUnit frequency, int index) {
             return tsPeriodIdFunc.applyAsInt(frequency, periods[index]);
         }
 

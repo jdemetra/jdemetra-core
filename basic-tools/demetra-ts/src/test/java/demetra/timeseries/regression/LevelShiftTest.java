@@ -18,7 +18,7 @@ package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
 import demetra.timeseries.RegularDomain;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class LevelShiftTest {
     public void testInside() {
         final int pos = 25;
         DataBlock buffer = DataBlock.make(100);
-        RegularDomain days = RegularDomain.of(TsPeriod.of(TsFrequency.DAILY, LocalDate.now()), buffer.length());
+        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAILY, LocalDate.now()), buffer.length());
         LevelShift ls = new LevelShift(days.get(pos).start(), true);
         ls.data(days.getStartPeriod(), buffer);
         assertEquals(-pos, buffer.sum(), 1e-9);
@@ -47,7 +47,7 @@ public class LevelShiftTest {
     public void testInside99() {
         final int pos = 99;
         DataBlock buffer = DataBlock.make(100);
-        RegularDomain days = RegularDomain.of(TsPeriod.of(TsFrequency.DAILY, LocalDate.now()), buffer.length());
+        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAILY, LocalDate.now()), buffer.length());
         LevelShift ls = new LevelShift(days.get(pos).start(), true);
         ls.data(days.getStartPeriod(), buffer);
         assertEquals(-pos, buffer.sum(), 1e-9);
@@ -57,7 +57,7 @@ public class LevelShiftTest {
     public void testInside0() {
         final int pos = 0;
         DataBlock buffer = DataBlock.make(100);
-        RegularDomain days = RegularDomain.of(TsPeriod.of(TsFrequency.DAILY, LocalDate.now()), buffer.length());
+        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAILY, LocalDate.now()), buffer.length());
         LevelShift ls = new LevelShift(days.get(pos).start(), true);
         ls.data(days.getStartPeriod(), buffer);
         assertEquals(-pos, buffer.sum(), 1e-9);
@@ -66,7 +66,7 @@ public class LevelShiftTest {
     @Test
     public void testBefore() {
         DataBlock buffer = DataBlock.make(100);
-        RegularDomain days = RegularDomain.of(TsPeriod.of(TsFrequency.DAILY, LocalDate.now()), buffer.length());
+        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAILY, LocalDate.now()), buffer.length());
         for (int i = 1; i < 3; ++i) {
             LevelShift ls = new LevelShift(days.get(0).plus(-i).start(), true);
             ls.data(days.getStartPeriod(), buffer);
@@ -78,7 +78,7 @@ public class LevelShiftTest {
     @Test
     public void testAfter() {
         DataBlock buffer = DataBlock.make(100);
-        RegularDomain days = RegularDomain.of(TsPeriod.of(TsFrequency.DAILY, LocalDate.now()), buffer.length());
+        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAILY, LocalDate.now()), buffer.length());
         for (int i = 1; i < 3; ++i) {
             LevelShift ls = new LevelShift(days.get(99).plus(i).start(), true);
             ls.data(days.getStartPeriod(), buffer);
@@ -91,7 +91,7 @@ public class LevelShiftTest {
     public void testInside2() {
         final int pos = 25;
         DataBlock buffer = DataBlock.make(100);
-        RegularDomain days = RegularDomain.of(TsPeriod.of(TsFrequency.DAILY, LocalDate.now()), buffer.length());
+        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAILY, LocalDate.now()), buffer.length());
         LevelShift ls = new LevelShift(days.get(pos).start(), false);
         ls.data(days.getStartPeriod(), buffer);
         assertEquals(buffer.length() - pos, buffer.sum(), 1e-9);
@@ -101,7 +101,7 @@ public class LevelShiftTest {
     public void testInside299() {
         final int pos = 99;
         DataBlock buffer = DataBlock.make(100);
-        RegularDomain days = RegularDomain.of(TsPeriod.of(TsFrequency.DAILY, LocalDate.now()), buffer.length());
+        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAILY, LocalDate.now()), buffer.length());
         LevelShift ls = new LevelShift(days.get(pos).start(), false);
         ls.data(days.getStartPeriod(), buffer);
         assertEquals(buffer.length() - pos, buffer.sum(), 1e-9);
@@ -111,7 +111,7 @@ public class LevelShiftTest {
     public void testInside20() {
         final int pos = 0;
         DataBlock buffer = DataBlock.make(100);
-        RegularDomain days = RegularDomain.of(TsPeriod.of(TsFrequency.DAILY, LocalDate.now()), buffer.length());
+        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAILY, LocalDate.now()), buffer.length());
         LevelShift ls = new LevelShift(days.get(pos).start(), false);
         ls.data(days.getStartPeriod(), buffer);
         assertEquals(buffer.length() - pos, buffer.sum(), 1e-9);
@@ -120,7 +120,7 @@ public class LevelShiftTest {
     @Test
     public void testBefore2() {
         DataBlock buffer = DataBlock.make(100);
-        RegularDomain days = RegularDomain.of(TsPeriod.of(TsFrequency.DAILY, LocalDate.now()), buffer.length());
+        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAILY, LocalDate.now()), buffer.length());
         for (int i = 1; i < 3; ++i) {
             LevelShift ls = new LevelShift(days.get(0).plus(-i).start(), false);
             ls.data(days.getStartPeriod(), buffer);
@@ -132,7 +132,7 @@ public class LevelShiftTest {
     @Test
     public void testAfter2() {
         DataBlock buffer = DataBlock.make(100);
-        RegularDomain days = RegularDomain.of(TsPeriod.of(TsFrequency.DAILY, LocalDate.now()), buffer.length());
+        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAILY, LocalDate.now()), buffer.length());
         for (int i = 1; i < 3; ++i) {
             LevelShift ls = new LevelShift(days.get(99).plus(i).start(), false);
             ls.data(days.getStartPeriod(), buffer);

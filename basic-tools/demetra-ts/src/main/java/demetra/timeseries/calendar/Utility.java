@@ -20,7 +20,7 @@ import demetra.design.Development;
 import demetra.timeseries.Fixme;
 import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsException;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -47,8 +47,8 @@ class Utility {
         int[] rslt = new int[n];
         LocalDate[] start = new LocalDate[n + 1]; // id of the first day for each period
         TsPeriod d0 = domain.getStartPeriod();
-        int conv = 12 / Fixme.getAsInt(d0.getFreq());
-        TsPeriod month = d0.withFreq(TsFrequency.MONTHLY);
+        int conv = TsUnit.MONTHLY.ratio(d0.getUnit());
+        TsPeriod month = d0.withUnit(TsUnit.MONTHLY);
         for (int i = 0; i < start.length; ++i) {
             start[i] = month.start().toLocalDate();
             month=month.plus(conv);

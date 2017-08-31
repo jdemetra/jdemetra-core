@@ -17,49 +17,26 @@
 package internal.tsprovider.util;
 
 import demetra.data.DoubleSequence;
-import demetra.design.Internal;
-import demetra.design.NewObject;
-import demetra.timeseries.TsFrequency;
-import demetra.utilities.functions.ObjLongToIntFunction;
+import demetra.timeseries.TsUnit;
 
 /**
- * INTERNAL USE ONLY
- *
  * @author Philippe Charles
- * @since 2.2.0
  */
-@Internal
-public interface ObsList {
+interface ObsList {
 
     int size();
 
     void sortByPeriod();
 
-    int getPeriodId(TsFrequency frequency, int index) throws IndexOutOfBoundsException;
+    int getPeriodId(TsUnit frequency, int index) throws IndexOutOfBoundsException;
 
     double getValue(int index) throws IndexOutOfBoundsException;
 
-    @NewObject
     default DoubleSequence getValues() {
         double[] result = new double[size()];
         for (int i = 0; i < result.length; i++) {
             result[i] = getValue(i);
         }
         return DoubleSequence.ofInternal(result);
-    }
-
-    @Internal
-    public interface LongObsList extends ObsList {
-
-        void clear();
-
-        void add(long period, double value);
-    }
-
-    @NewObject
-    static LongObsList newLongObsList(boolean preSorted, ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc) {
-        return preSorted
-                ? new ObsLists.PreSortedLongObsList(tsPeriodIdFunc, 32)
-                : new ObsLists.SortableLongObsList(tsPeriodIdFunc);
     }
 }

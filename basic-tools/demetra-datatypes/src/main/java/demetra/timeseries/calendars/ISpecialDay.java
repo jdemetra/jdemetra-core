@@ -19,7 +19,7 @@ package demetra.timeseries.calendars;
 
 import demetra.design.Development;
 import demetra.timeseries.RegularDomain;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
 
 
@@ -55,7 +55,7 @@ public interface ISpecialDay {
      * @param end
      * @return
      */
-    Iterable<IDayInfo> getIterable(TsFrequency freq, LocalDate start, LocalDate end);
+    Iterable<IDayInfo> getIterable(TsUnit freq, LocalDate start, LocalDate end);
 
     /**
      * Gives the long term mean effect on each day of week for each period of a

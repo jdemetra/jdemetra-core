@@ -22,7 +22,7 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.timeseries.ITimeSeries;
 import demetra.timeseries.RegularDomain;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import java.util.Random;
 
@@ -49,7 +49,7 @@ public final class TsData implements ITimeSeries.OfDouble<TsPeriod, TsObservatio
      * starting period (between 1970 and 1990) and random observations is
      * generated
      */
-    public static TsData random(TsFrequency freq, int seed) {
+    public static TsData random(TsUnit freq, int seed) {
         Random rnd = new Random(seed);
         int beg = rnd.nextInt(240);
         int count = rnd.nextInt(600);
@@ -113,8 +113,8 @@ public final class TsData implements ITimeSeries.OfDouble<TsPeriod, TsObservatio
      *
      * @return The frequency.
      */
-    public TsFrequency getFrequency() {
-        return domain.getStartPeriod().getFreq();
+    public TsUnit getUnit() {
+        return domain.getStartPeriod().getUnit();
     }
 
     public TsPeriod getStart() {

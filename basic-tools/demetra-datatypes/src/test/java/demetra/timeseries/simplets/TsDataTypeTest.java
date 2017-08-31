@@ -19,7 +19,7 @@ package demetra.timeseries.simplets;
 import demetra.data.DoubleSequence;
 import internal.Demo;
 import demetra.timeseries.ITimeSeries;
-import demetra.timeseries.TsFrequency;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
 import org.junit.Test;
@@ -84,7 +84,7 @@ public class TsDataTypeTest {
 
     @Test
     public void testRandom() {
-        TsData random = TsData.random(TsFrequency.MONTHLY, 0);
+        TsData random = TsData.random(TsUnit.MONTHLY, 0);
         assertTrue(random.domain().length() == random.values().length());
         assertTrue(random.values().allMatch(x -> x >= 100));
     }
