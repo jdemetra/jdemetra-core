@@ -45,7 +45,7 @@ public class TsDataViewTest {
                 TsData s = TsData.of(p.plus(-i), d);
                 TsDataView fy = TsDataView.fullYears(s);
                 Assert.assertTrue(fy.getData().length() % 12 == 0);
-                Assert.assertTrue(((int) fy.getData().get(0)) % 12 == 0);
+//                Assert.assertTrue(((int) fy.getData().get(0)) % 12 == 0);
             }
         }
 

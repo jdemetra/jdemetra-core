@@ -227,7 +227,12 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
     }
 
     public static long idAt(int offset, TsUnit unit, LocalDateTime date) {
-        return unit.getChronoUnit().between(EPOCH, date) / unit.getAmount() - offset;
+        if (date.compareTo(EPOCH) >= 0) {
+            return unit.getChronoUnit().between(EPOCH, date) / unit.getAmount() - offset;
+        }
+        // FIXME: find something better
+        long result = unit.getChronoUnit().between(EPOCH, date) / unit.getAmount() - offset;
+        return dateAt(offset, unit, result).compareTo(date) <= 0 ? result : result - 1;
     }
 
     public static LocalDateTime dateAt(int offset, TsUnit unit, long id) {
