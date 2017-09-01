@@ -15,7 +15,7 @@
  * limitations under the Licence.
  */
 
-package demetra.benchmarking.univariate.internal;
+package demetra.benchmarking.ssf;
 
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
@@ -33,12 +33,11 @@ import demetra.ssf.univariate.Ssf;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class SsfCholette {
+public class SsfDenton {
 
     public static class Builder implements IBuilder<ISsf> {
 
         private double[] weights = null;
-        private double rho = .9;
         private int start = 0;
         private final int conversion;
 
@@ -48,13 +47,8 @@ public class SsfCholette {
 
         @Override
         public ISsf build() {
-            CholetteDefinition def = new CholetteDefinition(conversion, start, rho, weights);
+            DentonDefinition def = new DentonDefinition(conversion, start, weights);
             return new Ssf(new Initialization(def), new Dynamics(def), new Measurement(def));
-        }
-
-        public Builder rho(double rho) {
-            this.rho = rho;
-            return this;
         }
 
         public Builder weights(DoubleSequence weights) {
@@ -77,13 +71,12 @@ public class SsfCholette {
         return new Builder(conversion);
     }
 
-    static class CholetteDefinition {
+    static class DentonDefinition {
 
         /**
          *
          */
         final double[] weights;
-        final double rho;
         final int start, conversion;
 
         /**
@@ -92,10 +85,9 @@ public class SsfCholette {
          * @param rho
          * @param w
          */
-        CholetteDefinition(int conv, int start, double rho, double[] w) {
+        DentonDefinition(int conv, int start, double[] w) {
             this.conversion = conv;
             this.weights = w;
-            this.rho = rho;
             this.start = start;
         }
 
@@ -114,9 +106,9 @@ public class SsfCholette {
 
     static class Measurement implements ISsfMeasurement {
 
-        private final CholetteDefinition def;
+        private final DentonDefinition def;
 
-        Measurement(CholetteDefinition def) {
+        Measurement(DentonDefinition def) {
             this.def = def;
         }
 
@@ -200,9 +192,9 @@ public class SsfCholette {
 
     static class Initialization implements ISsfInitialization {
 
-        private final CholetteDefinition def;
+        private final DentonDefinition def;
 
-        Initialization(CholetteDefinition def) {
+        Initialization(DentonDefinition def) {
             this.def = def;
         }
 
@@ -213,16 +205,17 @@ public class SsfCholette {
 
         @Override
         public boolean isDiffuse() {
-            return false;
+            return true;
         }
 
         @Override
         public int getDiffuseDim() {
-            return 0;
+            return 1;
         }
 
         @Override
         public void diffuseConstraints(Matrix b) {
+            b.set(1, 0, 1);
         }
 
         @Override
@@ -231,16 +224,20 @@ public class SsfCholette {
 
         @Override
         public void Pf0(Matrix pf0) {
-            pf0.set(1, 1, 1 / (1 - def.rho * def.rho));
+            pf0.set(1, 1, 1);
         }
 
+        @Override
+        public void Pi0(Matrix pi0) {
+            pi0.set(1, 1, 1);
+        }
     }
 
     static class Dynamics implements ISsfDynamics {
 
-        private final CholetteDefinition def;
+        private final DentonDefinition def;
 
-        Dynamics(CholetteDefinition def) {
+        Dynamics(DentonDefinition def) {
             this.def = def;
         }
 
@@ -256,16 +253,11 @@ public class SsfCholette {
 
         @Override
         public void S(int pos, Matrix cm) {
-            cm.set(1, 0, 1);
+            cm.set(1, 1, 1);
         }
 
         @Override
         public boolean hasInnovations(int pos) {
-            return true;
-        }
-
-        @Override
-        public boolean areInnovationsTimeInvariant() {
             return true;
         }
 
@@ -278,7 +270,7 @@ public class SsfCholette {
          */
         @Override
         public void T(int pos, Matrix tr) {
-            tr.set(1, 1, def.rho);
+            tr.set(1, 1, 1);
             int rpos = pos + def.start;
             if ((rpos + 1) % def.conversion != 0) {
                 tr.set(0, 1, def.weight(pos));
@@ -303,7 +295,6 @@ public class SsfCholette {
                 double s = x.get(1);
                 x.add(0, def.mweight(pos, s));
             }
-            x.mul(1, def.rho);
         }
 
         @Override
@@ -317,18 +308,17 @@ public class SsfCholette {
                 double w = def.weight(pos);
                 double v = w * vm.get(1, 1);
                 vm.set(0, 0, w * v);
-                vm.set(1, 0, v * def.rho);
-                vm.set(0, 1, v * def.rho);
+                vm.set(1, 0, v);
+                vm.set(0, 1, v);
             } else {
                 double w = def.weight(pos);
                 double v11 = vm.get(1, 1);
                 double v01 = vm.get(0, 1);
-                double z = (v01 + w * v11) * def.rho;
+                double z = (v01 + w * v11);
                 vm.set(0, 1, z);
                 vm.set(1, 0, z);
                 vm.add(0, 0, w * (2 * v01 + w * v11));
             }
-            vm.mul(1, 1, def.rho * def.rho);
         }
 
         @Override
@@ -347,16 +337,15 @@ public class SsfCholette {
             // case I: 0, x1
             if ((rpos + 1) % def.conversion == 0) {
                 x.set(0, 0);
-                x.mul(1, def.rho);
             } // case II: 0, w x0 + x1
             else if (rpos % def.conversion == 0) {
                 double x0 = x.get(0), x1 = x.get(1);
-                x.set(1, def.rho * x1 + def.mweight(pos, x0));
+                x.set(1, x1 + def.mweight(pos, x0));
                 x.set(0, 0);
             } // case III: x0, w x0 + x1
             else {
                 double x0 = x.get(0), x1 = x.get(1);
-                x.set(1, def.rho * x1 + def.mweight(pos, x0));
+                x.set(1, x1 + def.mweight(pos, x0));
             }
         }
 
@@ -370,5 +359,9 @@ public class SsfCholette {
             return false;
         }
 
+        @Override
+        public boolean areInnovationsTimeInvariant() {
+            return true;
+        }
     }
 }

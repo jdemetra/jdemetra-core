@@ -26,7 +26,7 @@ import demetra.timeseries.TsDomain;
  * @param <D>
  */
 @Development(status = Development.Status.Alpha)
-public interface ITsModifier<D extends TsDomain> extends ITsVariable<D> {
+public interface ITsModifier<D extends TsDomain<?>> extends ITsVariable<D> {
 
     /**
      * Gets the internal variable

@@ -16,17 +16,20 @@
  */
 package demetra.timeseries;
 
+import demetra.data.Range;
+import java.time.LocalDateTime;
+
 /**
  *
  * @author Philippe Charles
  * @param <P> period type
  * @param <V> value type
  */
-public interface TimeObservation<P, V> {
+public interface TimeObservation<P extends Range<LocalDateTime>, V> {
 
     P getPeriod();
 
-    interface OfDouble<P> extends TimeObservation<P, Double> {
+    interface OfDouble<P extends Range<LocalDateTime>> extends TimeObservation<P, Double> {
 
         double getValue();
     }

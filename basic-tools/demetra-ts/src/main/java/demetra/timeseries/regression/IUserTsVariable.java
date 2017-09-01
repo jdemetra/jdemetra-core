@@ -25,6 +25,6 @@ import demetra.timeseries.TsDomain;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface IUserTsVariable<D extends TsDomain> extends ITsVariable<D> {
+public interface IUserTsVariable<D extends TsDomain<?>> extends ITsVariable<D> {
 
 }

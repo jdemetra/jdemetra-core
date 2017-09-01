@@ -113,11 +113,6 @@ public class PeriodicOutlier extends AbstractOutlier {
     }
 
     @Override
-    public boolean isSignificant(RegularDomain domain) {
-        return domain.indexOf(position) >= 0;
-    }
-
-    @Override
     public PeriodicOutlier rename(String name) {
         return new PeriodicOutlier(position, period, zeroEnded, name);
     }

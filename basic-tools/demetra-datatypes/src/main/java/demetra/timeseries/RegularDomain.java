@@ -200,7 +200,7 @@ public class RegularDomain implements TsDomain<TsPeriod> {
 
     private int indexOf(long id) {
         int index = distance(id);
-        return index >= 0 && index < length ? index : -1;
+        return (length == 0 || index < 0) ? -1 : index < length ? index : -length;
     }
 
     private void checkNonEmpty() throws IllegalStateException {

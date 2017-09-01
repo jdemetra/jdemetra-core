@@ -44,7 +44,6 @@ public class GenericTradingDaysTest {
         ec.tstoolkit.timeseries.simplets.TsDomain omd = new ec.tstoolkit.timeseries.simplets.TsDomain(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1980, 0, 360);
         ec.tstoolkit.maths.matrices.Matrix oM1 = new ec.tstoolkit.maths.matrices.Matrix(omd.getLength(), 6);
         DefaultGregorianCalendarProvider.instance.calendarData(TradingDaysType.TradingDays, omd, oM1.columnList());
-
         for (int i = 0; i < 6; ++i) {
             assertTrue(distance(M1.column(i), oM1.column(i)) < 1e-9);
         }

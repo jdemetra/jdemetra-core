@@ -110,16 +110,6 @@ public class TrigonometricVariables implements ITsVariable<RegularDomain> {
     }
 
     @Override
-    public RegularDomain getDefinitionDomain() {
-        return null;
-    }
-
-    @Override
-    public Period getDefinitionPeriod() {
-        return null;
-    }
-
-    @Override
     public String getDescription(RegularDomain context) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -132,11 +122,6 @@ public class TrigonometricVariables implements ITsVariable<RegularDomain> {
 
     @Override
     public String getItemDescription(int idx, RegularDomain context) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean isSignificant(RegularDomain domain) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

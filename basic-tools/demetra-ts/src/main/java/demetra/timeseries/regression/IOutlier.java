@@ -17,21 +17,49 @@
 
 package demetra.timeseries.regression;
 
+import demetra.data.DataBlock;
 import demetra.design.Development;
+import demetra.maths.linearfilters.RationalBackFilter;
+import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface ITradingDaysVariable extends ICalendarVariable {
-    static final String NAME="td";
+public interface IOutlier<D extends TsDomain<?> > extends ITsVariable<D> {
 
-    static String name(int dim){
-       if (dim == 1)
-            return NAME;
-        else 
-            return NAME+'#'+dim;
+    public static class FilterRepresentation {
+
+        public final RationalBackFilter filter;
+        public final double correction;
+
+        public FilterRepresentation(RationalBackFilter filter, double correction) {
+            this.filter = filter;
+            this.correction = correction;
+        }
     }
+
+    /**
+     *
+     * @return
+     */
+    String getCode();
+
+    /**
+     *
+     * @return
+     */
+    LocalDateTime getPosition();
+
+    /**
+     *
+     * @return
+     */
+    FilterRepresentation getFilterRepresentation();
 
 }

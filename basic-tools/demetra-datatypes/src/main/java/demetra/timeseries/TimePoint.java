@@ -14,31 +14,36 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.regression;
+package demetra.timeseries;
 
-import demetra.maths.matrices.Matrix;
-import demetra.timeseries.RegularDomain;
-import demetra.timeseries.TsPeriod;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import demetra.data.Range;
+import java.time.LocalDateTime;
 
 /**
  *
  * @author Jean Palate
  */
-public class TrigonometricVariablesTest {
-    
-    public TrigonometricVariablesTest() {
+public class TimePoint implements Range<LocalDateTime> {
+
+    private final LocalDateTime point;
+
+    public TimePoint(LocalDateTime point) {
+        this.point = point;
     }
 
-    @Test
-    public void testMonthly() {
-        TrigonometricVariables vars = TrigonometricVariables.regular(12);
-        RegularDomain domain = RegularDomain.of(TsPeriod.monthly(2017, 8), 180);
-        Matrix M=Matrix.make(domain.getLength(), vars.getDim());
-        vars.data(domain, M.columnList());
-        //System.out.println(M);
-        assertTrue(M.columnList().stream().allMatch(col->Math.abs(col.sum())<1e-6));
+    @Override
+    public LocalDateTime start() {
+        return point;
     }
-    
+
+    @Override
+    public LocalDateTime end() {
+        return point;
+    }
+
+    @Override
+    public boolean contains(LocalDateTime element) {
+        return point.equals(element);
+    }
+
 }

@@ -84,12 +84,6 @@ public class TransitoryChange extends AbstractOutlier {
     }
 
     @Override
-    public boolean isSignificant(RegularDomain domain) {
-        int n = domain.indexOf(position);
-        return (n >= 0 && n < domain.length() - 1);
-    }
-
-    @Override
     public TransitoryChange rename(String name) {
         return new TransitoryChange(position, coefficient, name);
     }

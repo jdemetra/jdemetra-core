@@ -19,6 +19,9 @@ package demetra.timeseries.regression;
 import demetra.maths.matrices.Matrix;
 import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsPeriod;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -26,19 +29,10 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate
  */
-public class TrigonometricVariablesTest {
+public class GenericLevelShiftTest {
     
-    public TrigonometricVariablesTest() {
+    public GenericLevelShiftTest() {
     }
 
-    @Test
-    public void testMonthly() {
-        TrigonometricVariables vars = TrigonometricVariables.regular(12);
-        RegularDomain domain = RegularDomain.of(TsPeriod.monthly(2017, 8), 180);
-        Matrix M=Matrix.make(domain.getLength(), vars.getDim());
-        vars.data(domain, M.columnList());
-        //System.out.println(M);
-        assertTrue(M.columnList().stream().allMatch(col->Math.abs(col.sum())<1e-6));
-    }
     
 }

@@ -22,6 +22,7 @@ import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -40,7 +41,7 @@ public class AdditiveOutlierTest {
         DataBlock buffer = DataBlock.make(100);
         RegularDomain domain = RegularDomain.of(TsPeriod.monthly(2000, 1), 100);
         AdditiveOutlier ao = new AdditiveOutlier(domain.get(pos).start());
-        ao.data(domain.getStartPeriod(), buffer);
+        ao.data(domain, Collections.singletonList(buffer));
         assertTrue(buffer.indexOf(x -> x != 0) == pos);
         assertTrue(buffer.lastIndexOf(x -> x == 1) == pos);
 //        System.out.println(ao.getDescription(domain));
@@ -52,7 +53,7 @@ public class AdditiveOutlierTest {
         DataBlock buffer = DataBlock.make(100);
         RegularDomain weeks = RegularDomain.of(TsPeriod.of(TsUnit.of(7, ChronoUnit.DAYS), LocalDate.now()), buffer.length());
         AdditiveOutlier ao = new AdditiveOutlier(weeks.get(pos).start());
-        ao.data(weeks.getStartPeriod(), buffer);
+        ao.data(weeks, Collections.singletonList(buffer));
         assertTrue(buffer.indexOf(x -> x != 0) == pos);
         assertTrue(buffer.lastIndexOf(x -> x == 1) == pos);
 //        System.out.println(ao.getDescription(weeks));
@@ -64,7 +65,7 @@ public class AdditiveOutlierTest {
         DataBlock buffer = DataBlock.make(100);
         RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAILY, LocalDate.now()), buffer.length());
         AdditiveOutlier ao = new AdditiveOutlier(days.get(pos).start());
-        ao.data(days.getStartPeriod(), buffer);
+        ao.data(days, Collections.singletonList(buffer));
         assertTrue(buffer.indexOf(x -> x != 0) == pos);
         assertTrue(buffer.lastIndexOf(x -> x == 1) == pos);
 //        System.out.println(ao.getDescription(days));
@@ -76,7 +77,7 @@ public class AdditiveOutlierTest {
         DataBlock buffer = DataBlock.make(100);
         RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAILY, LocalDate.now()), buffer.length());
         AdditiveOutlier ao = new AdditiveOutlier(days.get(pos).start());
-        ao.data(days.getStartPeriod(), buffer);
+        ao.data(days, Collections.singletonList(buffer));
         assertEquals(1, buffer.sum(), 1e-9);
     }
 
@@ -86,7 +87,7 @@ public class AdditiveOutlierTest {
         RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAILY, LocalDate.now()), buffer.length());
         for (int i = 1; i < 3; ++i) {
             AdditiveOutlier ao = new AdditiveOutlier(days.get(0).plus(-i).start());
-            ao.data(days.getStartPeriod(), buffer);
+            ao.data(days, Collections.singletonList(buffer));
             assertEquals(0, buffer.sum(), 1e-9);
             buffer.set(0);
         }
@@ -98,7 +99,7 @@ public class AdditiveOutlierTest {
         RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAILY, LocalDate.now()), buffer.length());
         for (int i = 1; i < 3; ++i) {
             AdditiveOutlier ao = new AdditiveOutlier(days.get(99).plus(i).start());
-            ao.data(days.getStartPeriod(), buffer);
+            ao.data(days, Collections.singletonList(buffer));
             assertEquals(0, buffer.sum(), 1e-9);
             buffer.set(0);
         }

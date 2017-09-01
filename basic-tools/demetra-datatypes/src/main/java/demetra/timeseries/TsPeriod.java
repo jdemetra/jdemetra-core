@@ -20,6 +20,7 @@ import demetra.data.Range;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 
 /**
  *
@@ -245,6 +246,14 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
                 : String.format("%s#%s@%s", unit, id, offset);
     }
 
+    public String display() {
+        if (unit.getChronoUnit().getDuration().compareTo(ChronoUnit.DAYS.getDuration())>=0) {
+            return start().toLocalDate().toString();
+        } else {
+            return start().toString();
+        }
+    }
+
     public static final class Builder implements Range<LocalDateTime> {
 
         private int offset = DEFAULT_OFFSET;
@@ -301,5 +310,6 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
         public String toShortString() {
             return TsPeriod.toShortString(offset, unit, id);
         }
+
     }
 }

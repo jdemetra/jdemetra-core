@@ -14,7 +14,6 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-
 package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
@@ -34,9 +33,9 @@ import java.util.List;
  * @param <D>
  */
 @Development(status = Development.Status.Release)
-public interface ITsVariable<D extends TsDomain> {
+public interface ITsVariable<D extends TsDomain<?>> {
 
-    static final LocalDateTime EPOCH=LocalDate.ofEpochDay(0).atStartOfDay();
+    static final LocalDateTime EPOCH = LocalDate.ofEpochDay(0).atStartOfDay();
 
     /**
      * Returns in a buffer the data corresponding to a given domain
@@ -48,30 +47,13 @@ public interface ITsVariable<D extends TsDomain> {
     void data(D domain, List<DataBlock> data);
 
     /**
-     * Returns the supported time span. When it is defined, the definition
-     * domain should have the definition period.
-     *
-     * @return The supported time span is returned or null if the variable is
-     * able to support any time span.
-     */
-    D getDefinitionDomain();
-
-    /**
-     * Returns the supported period.
-     *
-     * @return The supported period is returned or null if
-     * the variable is able to support any period
-     */
-    Period getDefinitionPeriod();
-
-    /**
      * Description of this variable
      *
      * @param context Domain of definition of the variable. Could be null
      * @return Short description of this variable. Should never be null.
      */
     String getDescription(D context);
-    
+
     /**
      * Dimension (number of actual regression variables) of this variable
      * (group).
@@ -79,7 +61,9 @@ public interface ITsVariable<D extends TsDomain> {
      * @return The number of variables provided by this (group of)regression
      * variable(s). 1 in most cases.
      */
-    int getDim();
+    default int getDim() {
+        return 1;
+    }
 
     /**
      * Description of a variable of this variable group.
@@ -90,23 +74,16 @@ public interface ITsVariable<D extends TsDomain> {
      * getDim() = 1, getDescription and getItemDescription(0) will often return
      * the same description.
      */
-    String getItemDescription(int idx, D context);
+    default String getItemDescription(int idx, D context) {
+        if (getDim() == 1) {
+            return getDescription(context);
+        } else {
+            return getDescription(context) + "-" + (idx + 1);
+        }
+    }
 
-    /**
-     * Checks that this regression variable may be used for a given domain. The
-     * exact meaning of this condition is left to the implementor. Usually, a
-     * variable is not significant if it is 0 (or a constant) on the whole
-     * domain.
-     *
-     * @param domain The considered domain. It must be in the definition domain
-     * or compatible with the definition frequency when they are defined.
-     * @return True if the variable is significant on the given domain, false
-     * otherwise
-     */
-    boolean isSignificant(D domain);
-    
     String getName();
-    
+
     ITsVariable<D> rename(String name);
 
 }

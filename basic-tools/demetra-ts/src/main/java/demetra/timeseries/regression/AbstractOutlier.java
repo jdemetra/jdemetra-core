@@ -29,28 +29,11 @@ import java.time.Period;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public abstract class AbstractOutlier implements IOutlierVariable {
+public abstract class AbstractOutlier extends BaseOutlier implements IRegularOutlier {
 
-    public static String defaultName(String code, LocalDateTime pos, RegularDomain context) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(code).append(" (");
-        if (context == null) {
-            builder.append(pos);
-        } else {
-            TsPeriod p = context.get(0);
-            p.withDate(pos);
-            builder.append(p);
-        }
-        builder.append(')');
-        return builder.toString();
-    }
-
-    protected final LocalDateTime position;
-    protected final String name;
 
     protected AbstractOutlier(LocalDateTime pos, String name) {
-        position = pos;
-        this.name = name;
+        super(pos, name);
     }
 
     @Override
@@ -68,43 +51,13 @@ public abstract class AbstractOutlier implements IOutlierVariable {
 
     @Override
     public String getDescription(RegularDomain context) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(getCode()).append(" (");
-        if (context == null) {
-            builder.append(position);
-        } else {
-            TsPeriod p = context.get(0);
-            p.withDate(position);
-            builder.append(p);
-        }
-        builder.append(')');
-        return builder.toString();
+        return defaultName(getCode(), position, context);
     }
 
     // / <summary>Position of the outlier</summary>
     @Override
     public LocalDateTime getPosition() {
         return position;
-    }
-
-    @Override
-    public int getDim() {
-        return 1;
-    }
-
-    @Override
-    public RegularDomain getDefinitionDomain() {
-        return null;
-    }
-
-    @Override
-    public Period getDefinitionPeriod() {
-        return null;
-    }
-
-    @Override
-    public String getItemDescription(int idx, RegularDomain context) {
-        return getDescription(context);
     }
 
 }

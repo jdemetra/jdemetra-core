@@ -18,7 +18,9 @@ package demetra.timeseries;
 
 import demetra.data.BaseSequence;
 import demetra.data.DoubleSequence;
+import demetra.data.Range;
 import demetra.data.Sequence;
+import java.time.LocalDateTime;
 import java.util.function.ObjDoubleConsumer;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -30,7 +32,7 @@ import javax.annotation.Nonnull;
  * @param <V> value type
  * @param <O> observation type
  */
-public interface ITimeSeries<P, V extends Number, O extends TimeObservation<P, V>> extends Sequence<O> {
+public interface ITimeSeries<P extends Range<LocalDateTime>, V extends Number, O extends TimeObservation<P, V>> extends Sequence<O> {
 
     /**
      * Retrieves the time domain of this time series
@@ -57,7 +59,7 @@ public interface ITimeSeries<P, V extends Number, O extends TimeObservation<P, V
         return domain().get(index);
     }
 
-    interface OfDouble<P, O extends TimeObservation.OfDouble<P>> extends ITimeSeries<P, Double, O> {
+    interface OfDouble<P extends Range<LocalDateTime>, O extends TimeObservation.OfDouble<P>> extends ITimeSeries<P, Double, O> {
 
         @Override
         DoubleSequence values();

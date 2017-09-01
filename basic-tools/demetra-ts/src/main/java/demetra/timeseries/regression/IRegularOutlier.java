@@ -30,18 +30,7 @@ import java.util.List;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface IOutlierVariable extends ITsVariable<RegularDomain> {
-
-    public static class FilterRepresentation {
-
-        public final RationalBackFilter filter;
-        public final double correction;
-
-        public FilterRepresentation(RationalBackFilter filter, double correction) {
-            this.filter = filter;
-            this.correction = correction;
-        }
-    }
+public interface IRegularOutlier extends IOutlier<RegularDomain> {
 
     @Override
     default void data(RegularDomain domain, List<DataBlock> buffer) {
@@ -55,24 +44,5 @@ public interface IOutlierVariable extends ITsVariable<RegularDomain> {
      * @param buffer
      */
     void data(TsPeriod start, DataBlock buffer);
-
-    /**
-     *
-     * @return
-     */
-    String getCode();
-
-    /**
-     *
-     * @return
-     */
-    LocalDateTime getPosition();
-
-    /**
-     *
-     * @param freq
-     * @return
-     */
-    FilterRepresentation getFilterRepresentation();
 
 }

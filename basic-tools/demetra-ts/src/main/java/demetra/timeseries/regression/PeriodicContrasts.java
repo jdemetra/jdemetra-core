@@ -79,21 +79,6 @@ public class PeriodicContrasts implements ITsVariable<RegularDomain> {
         }
     }
 
-    @Override
-    public RegularDomain getDefinitionDomain() {
-        return null;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public Period getDefinitionPeriod() {
-        return null;
-
-    }
-
     /**
      *
      * @return
@@ -124,16 +109,6 @@ public class PeriodicContrasts implements ITsVariable<RegularDomain> {
         StringBuilder builder = new StringBuilder();
         builder.append("Period contrast [").append(idx + 1).append(']');
         return builder.toString();
-    }
-
-    /**
-     *
-     * @param domain
-     * @return
-     */
-    @Override
-    public boolean isSignificant(RegularDomain domain) {
-        return true;
     }
 
     @Override

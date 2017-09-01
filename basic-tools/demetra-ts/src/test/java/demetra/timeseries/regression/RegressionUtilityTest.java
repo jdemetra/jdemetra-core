@@ -19,6 +19,9 @@ package demetra.timeseries.regression;
 import demetra.maths.matrices.Matrix;
 import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsPeriod;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -26,19 +29,21 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate
  */
-public class TrigonometricVariablesTest {
+public class RegressionUtilityTest {
     
-    public TrigonometricVariablesTest() {
+    public RegressionUtilityTest() {
     }
 
     @Test
-    public void testMonthly() {
-        TrigonometricVariables vars = TrigonometricVariables.regular(12);
-        RegularDomain domain = RegularDomain.of(TsPeriod.monthly(2017, 8), 180);
-        Matrix M=Matrix.make(domain.getLength(), vars.getDim());
-        vars.data(domain, M.columnList());
+    public void testVarious() {
+        List<ITsVariable<RegularDomain>> vars=new ArrayList<>();
+        vars.add(new LevelShift(LocalDateTime.now(), true));
+        vars.add(new LevelShift(LocalDateTime.now(), false));
+        vars.add(new Constant());
+        vars.add(new PeriodicContrasts(7));
+        
+        RegularDomain domain=RegularDomain.of(TsPeriod.daily(2017, 7, 1), 90);
+        Matrix M=RegressionUtility.data(vars, domain);
         //System.out.println(M);
-        assertTrue(M.columnList().stream().allMatch(col->Math.abs(col.sum())<1e-6));
     }
-    
 }
