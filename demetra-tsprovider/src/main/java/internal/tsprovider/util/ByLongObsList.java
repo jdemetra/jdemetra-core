@@ -23,6 +23,7 @@ import demetra.utilities.functions.ObjLongToIntFunction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.IntUnaryOperator;
 
 /**
  *
@@ -81,8 +82,8 @@ interface ByLongObsList extends ObsList {
         }
 
         @Override
-        public int getPeriodId(TsUnit frequency, int index) {
-            return tsPeriodIdFunc.applyAsInt(frequency, list.get(index).period);
+        public IntUnaryOperator getPeriodIdFunc(TsUnit unit) {
+            return o -> tsPeriodIdFunc.applyAsInt(unit, list.get(o).period);
         }
 
         @Override
@@ -149,8 +150,8 @@ interface ByLongObsList extends ObsList {
         }
 
         @Override
-        public int getPeriodId(TsUnit frequency, int index) {
-            return tsPeriodIdFunc.applyAsInt(frequency, periods[index]);
+        public IntUnaryOperator getPeriodIdFunc(TsUnit unit) {
+            return o-> tsPeriodIdFunc.applyAsInt(unit, periods[o]);
         }
 
         @Override

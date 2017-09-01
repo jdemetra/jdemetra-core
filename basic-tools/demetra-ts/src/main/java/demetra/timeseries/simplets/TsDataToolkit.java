@@ -20,7 +20,6 @@ import demetra.data.DataBlock;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.IFiniteFilter;
-import demetra.timeseries.Fixme;
 import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
@@ -128,7 +127,7 @@ public class TsDataToolkit {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
         RegularDomain sdomain = s.domain();
-        int nbeg = Fixme.getId(domain) - Fixme.getId(sdomain);
+        int nbeg = sdomain.getStartPeriod().until(domain.getLastPeriod());
         RegularDomain idomain = domain.intersection(sdomain);
         double[] data = new double[domain.length()];
         int cur = 0;
@@ -141,7 +140,7 @@ public class TsDataToolkit {
         int ncommon = idomain.length();
         // common data
         if (ncommon > 0) {
-            s.values().extract(Fixme.getId(idomain) - Fixme.getId(sdomain), ncommon).copyTo(data, cur);
+            s.values().extract(sdomain.getStartPeriod().until(idomain.getLastPeriod()), ncommon).copyTo(data, cur);
             cur += ncommon;
         }
         // after s

@@ -62,7 +62,7 @@ public class TsDataBuilderUtil {
             case 1:
                 return GUESS_SINGLE;
             default:
-                TsData result = TsDataCollector.makeFromUnknownFrequency(obs);
+                TsData result = TsDataCollector.makeFromUnknownUnit(obs);
                 return result != null ? present(result) : GUESS_DUPLICATION;
         }
     }
@@ -82,7 +82,7 @@ public class TsDataBuilderUtil {
             case 0:
                 return NO_DATA;
             default:
-                TsData result = TsDataCollector.makeFromUnknownFrequency(obs);
+                TsData result = TsDataCollector.makeFromUnknownUnit(obs);
                 if (result != null && result.getUnit().contains(freq)) {
                     // should succeed
                     result = TsDataConverter.changeTsUnit(result, freq, convMode, complete);

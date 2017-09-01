@@ -34,10 +34,6 @@ public class Fixme {
         return (int) p.getId();
     }
 
-    public int getId(RegularDomain p) {
-        return getId(p.getStartPeriod());
-    }
-
     public int getPosition(TsPeriod p) {
         if (p.getOffset() != TsPeriod.DEFAULT_OFFSET) {
             throw new UnsupportedOperationException("Unsupported origin");
