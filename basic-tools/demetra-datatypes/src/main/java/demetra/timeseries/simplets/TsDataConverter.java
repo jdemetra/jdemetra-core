@@ -18,7 +18,7 @@ package demetra.timeseries.simplets;
 
 import demetra.data.AggregationType;
 import demetra.data.DoubleSequence;
-import demetra.timeseries.Fixme;
+import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 
@@ -33,135 +33,173 @@ public class TsDataConverter {
      * Makes a frequency change of this series.
      *
      * @param s
-     * @param newfreq The new frequency. Must be la divisor of the present
+     * @param newUnit The new frequency. Must be la divisor of the present
      * frequency.
      * @param conversion Aggregation mode.
      * @param complete If true, the observation for a given period in the new
      * series is set to Missing if some data in the original series are Missing.
      * @return A new time series is returned.
      */
-    public TsData changeTsUnit(TsData s, TsUnit newfreq, AggregationType conversion, boolean complete) {
-        int ratio = s.getUnit().ratio(newfreq);
+    public TsData changeTsUnit(TsData s, TsUnit newUnit, AggregationType conversion, boolean complete) {
+        int ratio = s.getUnit().ratio(newUnit);
         switch (ratio) {
             case TsUnit.NO_STRICT_RATIO:
             case TsUnit.NO_RATIO:
                 return null;
             case 1:
-                return TsData.of(s.getStart().withUnit(newfreq), s.values());
+                return TsData.of(s.getStart().withUnit(newUnit), s.values());
         }
         if (s.isEmpty()) {
-            return TsData.of(s.getStart().withUnit(newfreq), s.values());
+            return TsData.of(s.getStart().withUnit(newUnit), s.values());
         }
-        return complete
-                ? changeComplete(s, newfreq, conversion, ratio)
-                : changeIncomplete(s, newfreq, conversion, ratio);
+        return changeUsingRatio(s, newUnit, Aggregator.of(conversion), ratio, complete);
     }
 
-    private TsData changeComplete(TsData s, TsUnit newfreq, AggregationType conversion, int ratio) {
-        return changeUsingRatio(s, newfreq, conversion, true, ratio);
+    private TsData changeUsingRatio(TsData s, TsUnit newUnit, Aggregator aggregator, int ratio, boolean complete) {
+        int oldLength = s.length();
+
+        int tail = tail(s.domain(), newUnit);
+        int head = (oldLength - tail) % ratio;
+        int body = oldLength - head - tail;
+
+        TsPeriod newStart = s.getStart().withUnit(newUnit).plus(complete && head > 0 ? 1 : 0);
+        DoubleSequence newValues = aggregate(s.values(), aggregator, complete, ratio, head, body, tail);
+        return TsData.of(newStart, newValues);
     }
 
-    private TsData changeIncomplete(TsData s, TsUnit newfreq, AggregationType conversion, int ratio) {
-        return changeUsingRatio(s, newfreq, conversion, false, ratio);
+    private int tail(RegularDomain s, TsUnit newUnit) {
+        TsPeriod end = s.getStartPeriod().toBuilder()
+                .plus(s.getLength())
+                .unit(newUnit)
+                .unit(s.getUnit())
+                .build();
+        return end.until(s.getEndPeriod());
     }
 
-    private TsData changeUsingRatio(TsData s, TsUnit newfreq, AggregationType conversion, boolean complete, int ratio) {
-        TsPeriod start = s.getStart();
-        DoubleSequence values = s.values();
-        int c = values.length();
-        int z0 = 0;
-        int beg = Fixme.getId(start);
+    private DoubleSequence aggregate(DoubleSequence values, Aggregator aggregator, boolean complete, int ratio, int head, int body, int tail) {
+        boolean appendHead = !complete && head > 0;
+        boolean appendTail = !complete && tail > 0;
 
-        // d0 and d1
-        int nbeg = beg / ratio;
-        // nbeg is the first period in the new frequency
-        // z0 is the number of periods in the old frequency being dropped
-        int n0 = ratio, n1 = ratio;
-        if (beg % ratio != 0) {
-            if (complete) {
-                // Attention! Different treatment if beg is negative 
-                // We always have that x = x/q + x%q
-                // but the integer division is rounded towards 0
-                if (beg > 0) {
-                    ++nbeg;
-                    z0 = ratio - beg % ratio;
-                } else {
-                    z0 = -beg % ratio;
-                }
-            } else {
-                if (beg < 0) {
-                    --nbeg;
-                }
-                n0 = (nbeg + 1) * ratio - beg;
+        int length = body / ratio + (appendHead ? 1 : 0) + (appendTail ? 1 : 0);
+
+        double[] result = new double[length];
+        int i = 0;
+
+        // head
+        if (appendHead) {
+            result[i++] = aggregator.aggregate(values, 0, head);
+        }
+        // body
+        int tailIndex = body + head;
+        for (int j = head; j < tailIndex; j += ratio) {
+            result[i++] = aggregator.aggregate(values, j, j + ratio);
+        }
+        // tail
+        if (appendTail) {
+            result[i++] = aggregator.aggregate(values, tailIndex, tailIndex + tail);
+        }
+
+        return DoubleSequence.ofInternal(result);
+    }
+
+    private interface Aggregator {
+
+        double aggregate(DoubleSequence values, int start, int end);
+
+        static Aggregator of(AggregationType type) {
+            switch (type) {
+                case Average:
+                    return Aggregator::average;
+                case First:
+                    return Aggregator::first;
+                case Last:
+                    return Aggregator::last;
+                case Max:
+                    return Aggregator::max;
+                case Min:
+                    return Aggregator::min;
+                case None:
+                    return Aggregator::none;
+                case Sum:
+                    return Aggregator::sum;
+                default:
+                    throw new RuntimeException();
             }
         }
 
-        int end = beg + c; // excluded
-        int nend = end / ratio;
-
-        if (end % ratio != 0) {
-            if (complete) {
-                if (end < 0) {
-                    --nend;
-                }
-            } else {
-                if (end > 0) {
-                    ++nend;
-                }
-                n1 = end - (nend - 1) * ratio;
-            }
+        static double none(DoubleSequence values, int start, int end) {
+            return Double.NaN;
         }
-        int n = nend - nbeg;
-        double[] result = new double[n];
-        if (n > 0) {
-            for (int i = 0, j = z0; i < n; ++i) {
-                int nmax = ratio;
-                if (i == 0) {
-                    nmax = n0;
-                } else if (i == n - 1) {
-                    nmax = n1;
-                }
-                double d = 0;
-                int ncur = 0;
 
-                for (int k = 0; k < nmax; ++k, ++j) {
-                    double dcur = values.get(j);
-                    if (Double.isFinite(dcur)) {
-                        switch (conversion) {
-                            case Last:
-                                d = dcur;
-                                break;
-                            case First:
-                                if (ncur == 0) {
-                                    d = dcur;
-                                }
-                                break;
-                            case Min:
-                                if ((ncur == 0) || (dcur < d)) {
-                                    d = dcur;
-                                }
-                                break;
-                            case Max:
-                                if ((ncur == 0) || (dcur > d)) {
-                                    d = dcur;
-                                }
-                                break;
-                            default:
-                                d += dcur;
-                                break;
-                        }
-                        ++ncur;
+        static double sum(DoubleSequence values, int start, int end) {
+            double sum = 0;
+            for (int i = start; i < end; i++) {
+                double val = values.get(i);
+                if (Double.isFinite(val)) {
+                    sum += val;
+                }
+            }
+            return sum;
+        }
+
+        static double average(DoubleSequence values, int start, int end) {
+            double sum = 0;
+            double count = 0;
+            for (int i = start; i < end; i++) {
+                double val = values.get(i);
+                if (Double.isFinite(val)) {
+                    sum += val;
+                    count++;
+                }
+            }
+            return count != 0 ? sum / count : Double.NaN;
+        }
+
+        static double first(DoubleSequence values, int start, int end) {
+            for (int i = start; i < end; i++) {
+                double val = values.get(i);
+                if (Double.isFinite(val)) {
+                    return val;
+                }
+            }
+            return Double.NaN;
+        }
+
+        static double last(DoubleSequence values, int start, int end) {
+            double last = Double.NaN;
+            for (int i = start; i < end; i++) {
+                double val = values.get(i);
+                if (Double.isFinite(val)) {
+                    last = val;
+                }
+            }
+            return last;
+        }
+
+        static double min(DoubleSequence values, int start, int end) {
+            double min = Double.MAX_VALUE;
+            for (int i = start; i < end; i++) {
+                double val = values.get(i);
+                if (Double.isFinite(val)) {
+                    if (val < min) {
+                        min = val;
                     }
                 }
-                if ((ncur == ratio) || (!complete && (ncur != 0))) {
-                    if (conversion == AggregationType.Average) {
-                        d /= ncur;
-                    }
-                    result[i] = d;
-                }
             }
+            return min != Double.MAX_VALUE ? min : Double.NaN;
         }
 
-        return TsData.of(TsPeriod.of(newfreq, nbeg), DoubleSequence.ofInternal(result));
+        static double max(DoubleSequence values, int start, int end) {
+            double max = Double.MIN_VALUE;
+            for (int i = start; i < end; i++) {
+                double val = values.get(i);
+                if (Double.isFinite(val)) {
+                    if (val > max) {
+                        max = val;
+                    }
+                }
+            }
+            return max != Double.MIN_VALUE ? max : Double.NaN;
+        }
     }
 }
