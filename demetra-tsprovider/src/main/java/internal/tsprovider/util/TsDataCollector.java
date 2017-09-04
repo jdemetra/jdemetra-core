@@ -24,6 +24,7 @@ import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
+import java.util.function.IntUnaryOperator;
 
 /**
  * A TSDataCollecor collects time observations (identified by pairs of
@@ -37,12 +38,14 @@ import java.util.function.IntToDoubleFunction;
 @lombok.experimental.UtilityClass
 class TsDataCollector {
 
-    public TsData makeWithAggregation(ObsList obs, TsUnit freq, AggregationType convMode) {
+    public TsData makeWithAggregation(ObsList obs, TsUnit unit, AggregationType convMode) {
         int n = obs.size();
         if (n == 0) {
             return null; // NO_DATA
         }
         obs.sortByPeriod();
+
+        IntUnaryOperator toPeriodId = obs.getPeriodIdFunc(unit);
 
         double[] vals = new double[n];
         int[] ids = new int[n];
@@ -50,7 +53,7 @@ class TsDataCollector {
 
         int avn = 0;
         for (int i = 0; i < n; ++i) {
-            int curid = obs.getPeriodId(freq, i);
+            int curid = toPeriodId.applyAsInt(i);
             double value = obs.getValue(i);
             switch (convMode) {
                 case Average: {
@@ -143,7 +146,7 @@ class TsDataCollector {
         int firstId = ids[0];
         int lastId = ids[ncur];
 
-        TsPeriod start = TsPeriod.of(freq, firstId);
+        TsPeriod start = TsPeriod.of(unit, firstId);
 
         // check if the series is continuous and complete.
         int l = lastId - firstId + 1;
@@ -158,7 +161,7 @@ class TsDataCollector {
         return ncur < 0 || curid != ids[ncur];
     }
 
-    public TsData makeFromUnknownFrequency(ObsList obs) {
+    public TsData makeFromUnknownUnit(ObsList obs) {
         int n = obs.size();
         if (n < 2) {
             return null; // NO_DATA or GUESS_SINGLE
@@ -168,19 +171,19 @@ class TsDataCollector {
         int s = 0;
 
         int[] ids = new int[n];
-        TsUnit[] freqs = TsDataBuilderUtil.GUESSING_UNITS;
-        for (; s < freqs.length; ++s) {
-            if (makeIdsFromFrequency(obs, freqs[s], ids)) {
+        TsUnit[] units = TsDataBuilderUtil.GUESSING_UNITS;
+        for (; s < units.length; ++s) {
+            if (makeIdsFromUnit(obs, units[s], ids)) {
                 break;
             }
         }
-        if (s == freqs.length) {
+        if (s == units.length) {
             return null; // GUESS_DUPLICATION
         }
         int firstId = ids[0];
         int lastId = ids[n - 1];
 
-        TsPeriod start = TsPeriod.of(freqs[s], firstId);
+        TsPeriod start = TsPeriod.of(units[s], firstId);
 
         // check if the series is continuous and complete.
         int l = lastId - firstId + 1;
@@ -191,10 +194,11 @@ class TsDataCollector {
         }
     }
 
-    private boolean makeIdsFromFrequency(ObsList obs, TsUnit frequency, int[] ids) {
-        ids[0] = obs.getPeriodId(frequency, 0);
+    private boolean makeIdsFromUnit(ObsList obs, TsUnit unit, int[] ids) {
+        IntUnaryOperator toPeriodId = obs.getPeriodIdFunc(unit);
+        ids[0] = toPeriodId.applyAsInt(0);
         for (int i = 1; i < ids.length; ++i) {
-            ids[i] = obs.getPeriodId(frequency, i);
+            ids[i] = toPeriodId.applyAsInt(i);
             if (ids[i] == ids[i - 1]) {
                 return false;
             }
@@ -202,7 +206,7 @@ class TsDataCollector {
         return true;
     }
 
-    public TsData makeWithoutAggregation(ObsList obs, TsUnit freq) {
+    public TsData makeWithoutAggregation(ObsList obs, TsUnit unit) {
         int n = obs.size();
         if (n == 0) {
             return null; // NO_DATA
@@ -210,10 +214,12 @@ class TsDataCollector {
 
         obs.sortByPeriod();
 
+        IntUnaryOperator toPeriodId = obs.getPeriodIdFunc(unit);
+
         int[] ids = new int[n];
-        ids[0] = obs.getPeriodId(freq, 0);
+        ids[0] = toPeriodId.applyAsInt(0);
         for (int i = 1; i < n; i++) {
-            ids[i] = obs.getPeriodId(freq, i);
+            ids[i] = toPeriodId.applyAsInt(i);
             if (ids[i] == ids[i - 1]) {
                 return null; // DUPLICATION_WITHOUT_AGGREGATION
             }
@@ -222,7 +228,7 @@ class TsDataCollector {
         int firstId = ids[0];
         int lastId = ids[n - 1];
 
-        TsPeriod start = TsPeriod.of(freq, firstId);
+        TsPeriod start = TsPeriod.of(unit, firstId);
 
         // check if the series is continuous and complete.
         int l = lastId - firstId + 1;

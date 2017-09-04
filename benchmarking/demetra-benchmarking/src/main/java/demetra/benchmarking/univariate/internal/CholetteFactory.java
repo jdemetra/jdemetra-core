@@ -39,12 +39,6 @@ import demetra.timeseries.TsUnit;
 import org.openide.util.lookup.ServiceProvider;
 import static demetra.timeseries.simplets.TsDataToolkit.multiply;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.multiply;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.multiply;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.multiply;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 
 /**
  *
@@ -80,8 +74,7 @@ public class CholetteFactory implements CholetteAlgorithm {
         } else {
             double b = (Doubles.sum(target.values()) - Doubles.sum(sy.values())) / target.length();
             if (agg == AggregationType.Average) {
-                int hfreq = Fixme.getAsInt(s.getUnit()), lfreq = Fixme.getAsInt(target.getUnit());
-                b *= hfreq / lfreq;
+                b *= s.getUnit().ratio(target.getUnit());
             }
             return TsDataToolkit.add(s, b);
         }

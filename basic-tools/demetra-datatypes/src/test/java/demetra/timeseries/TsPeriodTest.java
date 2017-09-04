@@ -224,6 +224,32 @@ public class TsPeriodTest {
                 .hasMessage(TsException.INCOMPATIBLE_FREQ);
     }
 
+    @Test
+    public void testIdAt() {
+        assertThat(idAt(DEFAULT_OFFSET, MONTHLY, EPOCH)).isEqualTo(0);
+        assertThat(idAt(DEFAULT_OFFSET, MONTHLY, EPOCH.plusNanos(1))).isEqualTo(0);
+        assertThat(idAt(DEFAULT_OFFSET, MONTHLY, EPOCH.plusMonths(1))).isEqualTo(1);
+        assertThat(idAt(DEFAULT_OFFSET, MONTHLY, EPOCH.minusNanos(1))).isEqualTo(-1);
+        assertThat(idAt(DEFAULT_OFFSET, MONTHLY, EPOCH.minusMonths(1))).isEqualTo(-1);
+
+        assertThat(idAt(DEFAULT_OFFSET, YEARLY, EPOCH)).isEqualTo(0);
+        assertThat(idAt(DEFAULT_OFFSET, YEARLY, EPOCH.plusNanos(1))).isEqualTo(0);
+        assertThat(idAt(DEFAULT_OFFSET, YEARLY, EPOCH.plusYears(1))).isEqualTo(1);
+        assertThat(idAt(DEFAULT_OFFSET, YEARLY, EPOCH.minusNanos(1))).isEqualTo(-1);
+        assertThat(idAt(DEFAULT_OFFSET, YEARLY, EPOCH.minusYears(1))).isEqualTo(-1);
+    }
+
+    @Test
+    public void testDateAt() {
+        assertThat(dateAt(DEFAULT_OFFSET, MONTHLY, 0)).isEqualTo(EPOCH);
+        assertThat(dateAt(DEFAULT_OFFSET, MONTHLY, 1)).isEqualTo(EPOCH.plusMonths(1));
+        assertThat(dateAt(DEFAULT_OFFSET, MONTHLY, -1)).isEqualTo(EPOCH.minusMonths(1));
+
+        assertThat(dateAt(DEFAULT_OFFSET, YEARLY, 0)).isEqualTo(EPOCH);
+        assertThat(dateAt(DEFAULT_OFFSET, YEARLY, 1)).isEqualTo(EPOCH.plusYears(1));
+        assertThat(dateAt(DEFAULT_OFFSET, YEARLY, -1)).isEqualTo(EPOCH.minusYears(1));
+    }
+
     private final LocalDate d2011_02_01 = LocalDate.of(2011, 2, 1);
     private final int someOffset = 10;
     private final LocalDateTime d2011_02_01_0000 = d2011_02_01.atStartOfDay();
