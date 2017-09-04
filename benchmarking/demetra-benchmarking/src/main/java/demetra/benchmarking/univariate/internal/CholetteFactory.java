@@ -36,6 +36,7 @@ import demetra.timeseries.simplets.TsDataConverter;
 import demetra.timeseries.simplets.TsDataToolkit;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
 import org.openide.util.lookup.ServiceProvider;
 import static demetra.timeseries.simplets.TsDataToolkit.multiply;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
@@ -126,7 +127,7 @@ public class CholetteFactory implements CholetteAlgorithm {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
 
-        TsData obj = subtract(TsDataConverter.changeTsUnit(s, target.getUnit(), spec.getAggregationType(), true), target);
+        TsData obj = subtract(target, TsDataConverter.changeTsUnit(s, target.getUnit(), spec.getAggregationType(), true));
         if (spec.getAggregationType() == AggregationType.Average) {
             obj = multiply(obj, ratio);
         }
@@ -160,7 +161,7 @@ public class CholetteFactory implements CholetteAlgorithm {
             } else {
                 rslts.getComponent(1).copyTo(b, 0);
             }
-            return subtract(s, TsData.ofInternal(s.getStart(), b));
+            return add(s, TsData.ofInternal(s.getStart(), b));
         } else {
             ISsf ssf = SsfCholette.builder(ratio)
                     .start(Fixme.getPosition(s.getStart()) % ratio)
@@ -172,7 +173,7 @@ public class CholetteFactory implements CholetteAlgorithm {
             for (int i = 0; i < b.length; ++i) {
                 b[i] = ssf.getMeasurement().ZX(i, rslts.a(i));
             }
-            return subtract(s, TsData.ofInternal(s.getStart(), b));
+            return add(s, TsData.ofInternal(s.getStart(), b));
         }
     }
 
@@ -188,7 +189,7 @@ public class CholetteFactory implements CholetteAlgorithm {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
 
-        TsData obj = subtract(TsDataConverter.changeTsUnit(s, target.getUnit(), spec.getAggregationType(), true), target);
+        TsData obj = subtract(target, TsDataConverter.changeTsUnit(s, target.getUnit(), spec.getAggregationType(), true));
         if (spec.getAggregationType() == AggregationType.Average) {
             obj = multiply(obj, ratio);
         }
@@ -221,7 +222,7 @@ public class CholetteFactory implements CholetteAlgorithm {
             } else {
                 rslts.getComponent(1).copyTo(b, 0);
             }
-            return subtract(s, TsData.ofInternal(s.getStart(), b));
+            return add(s, TsData.ofInternal(s.getStart(), b));
         } else {
             ISsf ssf = SsfDenton.builder(ratio)
                     .start(Fixme.getPosition(s.getStart()) % ratio)
@@ -232,7 +233,7 @@ public class CholetteFactory implements CholetteAlgorithm {
             for (int i = 0; i < b.length; ++i) {
                 b[i] = ssf.getMeasurement().ZX(i, rslts.a(i));
             }
-            return subtract(s, TsData.ofInternal(s.getStart(), b));
+            return add(s, TsData.ofInternal(s.getStart(), b));
         }
     }
 
