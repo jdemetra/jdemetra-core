@@ -14,6 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
+
 package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
@@ -109,11 +110,6 @@ public class PeriodicOutlier extends AbstractOutlier {
     public FilterRepresentation getFilterRepresentation() {
         return new FilterRepresentation(new RationalBackFilter(
                 BackFilter.ONE, new BackFilter(UnitRoots.D(period)), 0), 0);
-    }
-
-    @Override
-    public boolean isSignificant(RegularDomain domain) {
-        return domain.indexOf(position) >= 0;
     }
 
     @Override

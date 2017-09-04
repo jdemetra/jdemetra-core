@@ -140,7 +140,7 @@ public final class TsData implements ITimeSeries.OfDouble<TsPeriod, TsObservatio
         StringBuilder builder = new StringBuilder();
         DoubleReader reader = values.reader();
         for (int i = 0; i < values.length(); ++i) {
-            builder.append(domain.get(i)).append('\t').append(reader.next());
+            builder.append(domain.get(i).display()).append('\t').append(reader.next());
             builder.append(System.lineSeparator());
         }
         return builder.toString();

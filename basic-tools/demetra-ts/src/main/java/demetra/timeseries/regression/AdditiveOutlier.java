@@ -19,36 +19,34 @@ package demetra.timeseries.regression;
 import demetra.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  *
  * @author Jean Palate
+ * @param <D>
  */
-public class AdditiveOutlier extends AbstractOutlier {
+public class AdditiveOutlier <D extends TsDomain<?>> extends BaseOutlier implements IOutlier<D>{
 
-    public static final String AO = "AO";
+    public static final String CODE = "AO";
 
     public AdditiveOutlier(LocalDateTime pos) {
-        super(pos, defaultName(AO, pos, null));
+        super(pos, defaultName(CODE, pos, null));
     }
-
     public AdditiveOutlier(LocalDateTime pos, String name) {
         super(pos, name);
     }
 
     @Override
-    protected void data(int outlierPos, DataBlock buffer) {
-        buffer.set(0);
-        if (outlierPos >= 0 && outlierPos < buffer.length()) {
-            buffer.set(outlierPos, 1);
-        }
+    public String getCode() {
+        return CODE;
     }
 
     @Override
-    public String getCode() {
-        return AO;
+    public LocalDateTime getPosition() {
+        return position;
     }
 
     @Override
@@ -58,13 +56,26 @@ public class AdditiveOutlier extends AbstractOutlier {
     }
 
     @Override
-    public boolean isSignificant(RegularDomain domain) {
-        return domain.indexOf(position) >= 0;
+    public void data(D domain, List<DataBlock> data) {
+        long pos=domain.indexOf(position);
+        if (pos >= 0){
+            data.get(0).set((int)pos, 1);
+        }
     }
 
     @Override
-    public AdditiveOutlier rename(String name) {
-        return new AdditiveOutlier(position, name);
+    public String getDescription(D context) {
+        return defaultName(CODE, position, context);
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public ITsVariable<D> rename(String nname) {
+        return new AdditiveOutlier(position, nname);
+    }
+    
 }

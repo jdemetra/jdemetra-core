@@ -14,45 +14,36 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
+package demetra.timeseries;
 
-package demetra.benchmarking;
-
-import demetra.data.DataBlock;
-import demetra.design.Development;
+import demetra.data.Range;
+import java.time.LocalDateTime;
 
 /**
- * Cumulator of data d.
- * data[i] = d[i] +data[i-1] except when i%period == 0.
- * In that case data[i] = d[i]
+ *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
-public class Cumulator {
+public class TimePoint implements Range<LocalDateTime> {
 
-    private final int period;
+    private final LocalDateTime point;
 
-    /**
-     * 
-     * @param n
-     */
-    public Cumulator(int n) {
-        this.period = n;
+    public TimePoint(LocalDateTime point) {
+        this.point = point;
     }
 
-    /**
-     * 
-     * @param data
-     */
-    public void transform(DataBlock data) {
-        int pos = 0;
-        for (int i = pos, j = 0; i < data.length(); ++i) {
-            if (j++ > 0) {
-                data.add(i, data.get(i - 1));
-                if (j == period) {
-                    j = 0;
-                }
-            }
-        }
+    @Override
+    public LocalDateTime start() {
+        return point;
+    }
+
+    @Override
+    public LocalDateTime end() {
+        return point;
+    }
+
+    @Override
+    public boolean contains(LocalDateTime element) {
+        return point.equals(element);
     }
 
 }

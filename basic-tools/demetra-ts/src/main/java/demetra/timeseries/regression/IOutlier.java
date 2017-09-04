@@ -19,45 +19,47 @@ package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
+import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
-import java.time.Period;
+import java.util.List;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public abstract class AbstractOutlier extends BaseOutlier implements IRegularOutlier {
+public interface IOutlier<D extends TsDomain<?> > extends ITsVariable<D> {
 
+    public static class FilterRepresentation {
 
-    protected AbstractOutlier(LocalDateTime pos, String name) {
-        super(pos, name);
+        public final RationalBackFilter filter;
+        public final double correction;
+
+        public FilterRepresentation(RationalBackFilter filter, double correction) {
+            this.filter = filter;
+            this.correction = correction;
+        }
     }
 
-    @Override
-    public void data(TsPeriod start, DataBlock buffer) {
-        long outlierPos = start.idAt(getPosition()) - start.getId();
-        data((int) outlierPos, buffer);
-    }
+    /**
+     *
+     * @return
+     */
+    String getCode();
 
-    protected abstract void data(int pos, DataBlock buffer);
+    /**
+     *
+     * @return
+     */
+    LocalDateTime getPosition();
 
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String getDescription(RegularDomain context) {
-        return defaultName(getCode(), position, context);
-    }
-
-    // / <summary>Position of the outlier</summary>
-    @Override
-    public LocalDateTime getPosition() {
-        return position;
-    }
+    /**
+     *
+     * @return
+     */
+    FilterRepresentation getFilterRepresentation();
 
 }

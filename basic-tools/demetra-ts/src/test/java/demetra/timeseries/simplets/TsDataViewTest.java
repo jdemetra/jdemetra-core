@@ -40,7 +40,7 @@ public class TsDataViewTest {
         for (int i = 0; i < 12; ++i) {
             for (int j = 0; j < 12; ++j) {
                 DataBlock d = DataBlock.make(i + j + 36);
-                final int beg = 7 - i;
+                final int beg = p.start().getMonthValue() - 1 - i;
                 d.set(k -> beg + k);
                 TsData s = TsData.of(p.plus(-i), d);
                 TsDataView fy = TsDataView.fullYears(s);

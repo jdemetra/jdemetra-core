@@ -17,47 +17,18 @@
 
 package demetra.timeseries.regression;
 
-import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.timeseries.RegularDomain;
-import demetra.timeseries.TsPeriod;
-import java.time.LocalDateTime;
-import java.time.Period;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public abstract class AbstractOutlier extends BaseOutlier implements IRegularOutlier {
-
-
-    protected AbstractOutlier(LocalDateTime pos, String name) {
-        super(pos, name);
-    }
+public interface IMovingHolidayVariable extends ITsVariable<RegularDomain> {
 
     @Override
-    public void data(TsPeriod start, DataBlock buffer) {
-        long outlierPos = start.idAt(getPosition()) - start.getId();
-        data((int) outlierPos, buffer);
+    default String getName(){
+        return "mh";
     }
-
-    protected abstract void data(int pos, DataBlock buffer);
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String getDescription(RegularDomain context) {
-        return defaultName(getCode(), position, context);
-    }
-
-    // / <summary>Position of the outlier</summary>
-    @Override
-    public LocalDateTime getPosition() {
-        return position;
-    }
-
 }

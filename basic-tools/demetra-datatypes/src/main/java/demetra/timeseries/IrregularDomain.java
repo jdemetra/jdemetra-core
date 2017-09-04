@@ -18,6 +18,7 @@ package demetra.timeseries;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -25,42 +26,57 @@ import java.util.List;
  * @author Philippe Charles
  */
 @lombok.Value(staticConstructor = "of")
-public class IrregularDomain implements TsDomain<LocalDateTime> {
+public class IrregularDomain implements TsDomain<TimePoint> {
 
     @lombok.NonNull
-    List<LocalDateTime> timestamps;
+    LocalDateTime[] timestamps;
 
     @Override
     public int length() {
-        return timestamps.size();
+        return timestamps.length;
     }
 
     @Override
-    public LocalDateTime get(int index) throws IndexOutOfBoundsException {
-        return timestamps.get(index);
+    public TimePoint get(int index) throws IndexOutOfBoundsException {
+        return new TimePoint(timestamps[index]);
     }
 
     @Override
     public LocalDateTime start() {
-        return timestamps.get(0);
+        return timestamps[0];
     }
 
     @Override
     public LocalDateTime end() {
-        return timestamps.get(timestamps.size() - 1).plusNanos(1);
+        return timestamps[timestamps.length-1].plusNanos(1);
     }
 
     @Override
     public boolean contains(LocalDateTime date) {
-        return timestamps.contains(date);
+        return Arrays.binarySearch(timestamps, date)>=0;
     }
 
     @Override
     public int indexOf(LocalDateTime date) {
-        return timestamps.indexOf(date);
+        return Arrays.binarySearch(timestamps, date);
     }
 
-    public static IrregularDomain of(LocalDateTime... values) {
-        return of(Arrays.asList(values));
+    public static IrregularDomain of(List<LocalDateTime> values) {
+        return of(values.toArray(new LocalDateTime[values.size()]));
+    }
+
+    @Override
+    public int indexOf(TimePoint point) {
+        return Arrays.binarySearch(timestamps, point.start());
+    }
+
+    @Override
+    public boolean contains(TimePoint period) {
+        return Arrays.binarySearch(timestamps, period.start())>=0;
+    }
+
+    @Override
+    public Iterator<TimePoint> iterator() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

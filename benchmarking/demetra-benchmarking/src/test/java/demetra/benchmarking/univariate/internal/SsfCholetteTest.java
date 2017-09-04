@@ -16,6 +16,7 @@
  */
 package demetra.benchmarking.univariate.internal;
 
+import demetra.benchmarking.ssf.SsfCholette;
 import demetra.data.DoubleSequence;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.DefaultSmoothingResults;

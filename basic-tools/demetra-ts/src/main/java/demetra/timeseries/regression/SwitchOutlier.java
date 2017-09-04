@@ -14,6 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
+
 package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
@@ -59,13 +60,6 @@ public class SwitchOutlier extends AbstractOutlier {
     public FilterRepresentation getFilterRepresentation() {
         return new FilterRepresentation(new RationalBackFilter(
                 BackFilter.D1, BackFilter.ONE, 0), 0);
-    }
-
-
-    @Override
-    public boolean isSignificant(RegularDomain domain) {
-        int p = domain.indexOf(position);
-        return p >= 0 && p < domain.length() - 1;
     }
 
     @Override

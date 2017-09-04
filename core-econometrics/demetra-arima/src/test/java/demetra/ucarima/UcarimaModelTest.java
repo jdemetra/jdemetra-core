@@ -22,7 +22,7 @@ public class UcarimaModelTest {
 
     @Test
     public void testAirline() {
-        System.out.println(ucmAirline(-.6, -.8));
+//        System.out.println(ucmAirline(-.6, -.8));
     }
     
 

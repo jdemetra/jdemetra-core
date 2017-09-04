@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
  * @author Philippe Charles
  * @param <P>
  */
-public interface TsDomain<P> extends Range<LocalDateTime>, Sequence<P> {
+public interface TsDomain<P extends Range<LocalDateTime>> extends Range<LocalDateTime>, Sequence<P> {
 
     /**
      * 
