@@ -14,8 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-
-package demetra.benchmarking.ssf;
+package demetra.benchmarking.univariate.internal;
 
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
@@ -49,7 +48,8 @@ public class SsfCholette {
         @Override
         public ISsf build() {
             CholetteDefinition def = new CholetteDefinition(conversion, start, rho, weights);
-            return new Ssf(new Initialization(def), new Dynamics(def), new Measurement(def));
+            return new Ssf(rho == 1 ? new DiffuseInitialization() : new StationaryInitialization(rho)
+                    , new Dynamics(def), new Measurement(def));
         }
 
         public Builder rho(double rho) {
@@ -198,12 +198,12 @@ public class SsfCholette {
         }
     }
 
-    static class Initialization implements ISsfInitialization {
+    static class StationaryInitialization implements ISsfInitialization {
 
-        private final CholetteDefinition def;
+        private final double rho;
 
-        Initialization(CholetteDefinition def) {
-            this.def = def;
+        StationaryInitialization(double rho) {
+            this.rho = rho;
         }
 
         @Override
@@ -231,9 +231,52 @@ public class SsfCholette {
 
         @Override
         public void Pf0(Matrix pf0) {
-            pf0.set(1, 1, 1 / (1 - def.rho * def.rho));
+            pf0.set(1, 1, 1 / (1 - rho * rho));
         }
 
+        @Override
+        public void Pi0(Matrix pi0) {
+            pi0.set(1, 1, 1);
+        }
+    }
+
+    static class DiffuseInitialization implements ISsfInitialization {
+
+        DiffuseInitialization() {
+        }
+
+        @Override
+        public int getStateDim() {
+            return 2;
+        }
+
+        @Override
+        public boolean isDiffuse() {
+            return true;
+        }
+
+        @Override
+        public int getDiffuseDim() {
+            return 1;
+        }
+
+        @Override
+        public void diffuseConstraints(Matrix b) {
+            b.set(1, 0, 1);
+        }
+
+        @Override
+        public void a0(DataBlock a0) {
+        }
+
+        @Override
+        public void Pf0(Matrix pf0) {
+        }
+
+        @Override
+        public void Pi0(Matrix pi0) {
+            pi0.set(1, 1, 1);
+        }
     }
 
     static class Dynamics implements ISsfDynamics {

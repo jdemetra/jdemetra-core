@@ -18,6 +18,7 @@ package demetra.benchmarking.univariate.internal;
 
 import demetra.benchmarking.spi.DentonAlgorithm;
 import demetra.benchmarking.univariate.DentonSpecification;
+import demetra.benchmarking.univariate.DentonSpecification;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;

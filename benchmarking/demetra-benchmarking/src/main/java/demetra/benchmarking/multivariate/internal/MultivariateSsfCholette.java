@@ -14,14 +14,17 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.benchmarking.ssf.multivariate;
+package demetra.benchmarking.multivariate.internal;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
+import demetra.design.IBuilder;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.ISsfMeasurements;
+import demetra.ssf.multivariate.MultivariateSsf;
 import java.util.Collection;
 
 /**
@@ -32,6 +35,52 @@ import java.util.Collection;
 @lombok.experimental.UtilityClass
 public class MultivariateSsfCholette {
 
+    public Builder builder(int nvars) {
+        return new Builder(nvars);
+    }
+
+    static class Builder implements IBuilder<IMultivariateSsf> {
+
+        private final int nvars;
+        private int conversion=4;
+        double rho=1;
+        double[][] w=null;
+        Constraint[] constraints=null;
+
+        private Builder(int nvars) {
+            this.nvars = nvars;
+        }
+        
+        public Builder conversion(int c){
+            this.conversion=c;
+            return this;
+        }
+
+        public Builder rho(double rho){
+            this.rho=rho;
+            return this;
+        }
+
+        public Builder weights(double[][] weights){
+            if (weights.length != nvars)
+                throw new IllegalArgumentException();
+            this.w=weights;
+            return this;
+        }
+
+        public Builder constraints(Constraint[] constraints){
+            this.constraints=constraints;
+            return this;
+        }
+
+        @Override
+        public IMultivariateSsf build() {
+            Data data=new Data(nvars, conversion, rho, w, constraints);
+            return new MultivariateSsf(new Initialization(data), new Dynamics(data), new Measurements(data));
+        }
+
+    }
+
     static class Data {
 
         final int c;
@@ -40,11 +89,11 @@ public class MultivariateSsfCholette {
         final double[][] w;
         final Constraint[] constraints;
 
-        Data(int c, double rho, double[][] weights, Constraint[] constraints) {
+        Data(int nvars, int c, double rho, double[][] weights, Constraint[] constraints) {
+            this.nvars = nvars;
             this.c = c;
             this.rho = rho;
             this.w = weights;
-            this.nvars = weights.length;
             this.constraints = constraints;
         }
 
@@ -129,7 +178,9 @@ public class MultivariateSsfCholette {
 
         @Override
         public void S(int pos, Matrix cm) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            for (int i=0; i<info.nvars; ++i){
+                cm.set(2*i+1, i, 1);
+            }
         }
 
         @Override
@@ -178,7 +229,7 @@ public class MultivariateSsfCholette {
 
         @Override
         public void addSU(int pos, DataBlock x, DataBlock u) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            x.extract(1, -1, 2).add(u);
         }
 
         @Override
@@ -209,7 +260,7 @@ public class MultivariateSsfCholette {
 
         @Override
         public void XS(int pos, DataBlock x, DataBlock xs) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            xs.copy(x.extract(1, -1, 2));
         }
 
         @Override
@@ -228,12 +279,20 @@ public class MultivariateSsfCholette {
 
         @Override
         public int getCount(int pos) {
-            return info.constraints.length + info.nvars;
+            if (info.constraints == null) {
+                return info.nvars;
+            } else {
+                return info.constraints.length + info.nvars;
+            }
         }
 
         @Override
         public int getMaxCount() {
-            return info.constraints.length + info.nvars;
+            if (info.constraints == null) {
+                return info.nvars;
+            } else {
+                return info.constraints.length + info.nvars;
+            }
         }
 
         @Override

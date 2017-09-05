@@ -18,6 +18,7 @@
 package demetra.benchmarking.univariate.internal;
 
 import demetra.benchmarking.univariate.DentonSpecification;
+import demetra.benchmarking.univariate.DentonSpecification;
 import demetra.data.AggregationType;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;

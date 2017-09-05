@@ -127,7 +127,7 @@ public class TsDataToolkit {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
         RegularDomain sdomain = s.domain();
-        int nbeg = sdomain.getStartPeriod().until(domain.getLastPeriod());
+        int nbeg = sdomain.getStartPeriod().until(domain.getStartPeriod());
         RegularDomain idomain = domain.intersection(sdomain);
         double[] data = new double[domain.length()];
         int cur = 0;
@@ -140,7 +140,7 @@ public class TsDataToolkit {
         int ncommon = idomain.length();
         // common data
         if (ncommon > 0) {
-            s.values().extract(sdomain.getStartPeriod().until(idomain.getLastPeriod()), ncommon).copyTo(data, cur);
+            s.values().extract(sdomain.getStartPeriod().until(idomain.getStartPeriod()), ncommon).copyTo(data, cur);
             cur += ncommon;
         }
         // after s
