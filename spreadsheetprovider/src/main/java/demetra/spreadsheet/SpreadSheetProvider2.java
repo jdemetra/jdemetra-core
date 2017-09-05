@@ -29,9 +29,9 @@ import ec.tss.tsproviders.HasFilePaths;
 import ec.tss.tsproviders.IFileLoader;
 import ec.tss.tsproviders.cursor.HasTsCursor;
 import ec.tss.tsproviders.cursor.TsCursorAsFiller;
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory;
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetSource;
-import ec.tss.tsproviders.spreadsheet.engine.TsImportOptions;
+import internal.spreadsheet.SpreadSheetFactory;
+import internal.spreadsheet.SpreadSheetSource;
+import internal.spreadsheet.TsImportOptions;
 import ec.tss.tsproviders.utils.DataSourcePreconditions;
 import ec.tss.tsproviders.utils.IParam;
 import ec.tss.tsproviders.utils.TsFillerAsProvider;
@@ -144,7 +144,7 @@ public final class SpreadSheetProvider2 implements IFileLoader {
             Book.Factory factory = getFactoryByFile(file);
             if (factory != null) {
                 try (Book book = factory.load(file)) {
-                    TsImportOptions options = TsImportOptions.create(bean.getObsFormat(), bean.getObsGathering());
+                    TsImportOptions options = TsImportOptions.of(bean.getObsFormat(), bean.getObsGathering());
                     return SpreadSheetFactory.getDefault().toSource(book, options);
                 }
             }

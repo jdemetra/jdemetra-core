@@ -14,21 +14,21 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.tss.tsproviders.spreadsheet.engine;
+package internal.spreadsheet;
 
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.HORIZONTAL;
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.VERTICAL;
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory.CellParser.onDateType;
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory.CellParser.onNumberType;
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory.CellParser.onStringType;
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory.Context;
-import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.date;
-import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.sheet;
-import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.top5Excel;
-import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.top5ExcelClassic;
-import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.top5OpenDocument;
-import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.top5Xmlss;
-import static ec.tss.tsproviders.spreadsheet.engine.Top5BrowsersHelper.testContent;
+import static internal.spreadsheet.AlignType.HORIZONTAL;
+import static internal.spreadsheet.AlignType.VERTICAL;
+import static internal.spreadsheet.CellParser.onDateType;
+import static internal.spreadsheet.CellParser.onNumberType;
+import static internal.spreadsheet.CellParser.onStringType;
+import internal.spreadsheet.SpreadSheetFactory.Context;
+import static internal.spreadsheet.TestUtils.date;
+import static internal.spreadsheet.TestUtils.sheet;
+import static internal.spreadsheet.TestUtils.top5Excel;
+import static internal.spreadsheet.TestUtils.top5ExcelClassic;
+import static internal.spreadsheet.TestUtils.top5OpenDocument;
+import static internal.spreadsheet.TestUtils.top5Xmlss;
+import static internal.spreadsheet.Top5BrowsersHelper.testContent;
 import ec.util.spreadsheet.Book;
 import ec.util.spreadsheet.od.OpenDocumentBookFactory;
 import ec.util.spreadsheet.poi.ExcelBookFactory;
@@ -37,9 +37,9 @@ import ec.util.spreadsheet.xmlss.XmlssBookFactory;
 import java.io.IOException;
 import java.net.URL;
 import org.junit.Test;
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollectionAssert.assertThat;
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory.DefaultImpl.parseCollection;
-import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.data;
+import static internal.spreadsheet.SpreadSheetCollectionAssert.assertThat;
+import static internal.spreadsheet.SpreadSheetFactory.DefaultImpl.parseCollection;
+import static internal.spreadsheet.TestUtils.data;
 import ec.tss.tsproviders.utils.ObsGathering;
 import static ec.tstoolkit.timeseries.TsAggregationType.None;
 import static ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly;
@@ -165,7 +165,7 @@ public class SpreadSheetFactoryTest {
 
     private static void testFactory(Book.Factory bookFactory, URL url) throws IOException {
         try (Book book = bookFactory.load(url)) {
-            testContent(SpreadSheetFactory.getDefault().toSource(book, TsImportOptions.getDefault()));
+            testContent(SpreadSheetFactory.getDefault().toSource(book, TsImportOptions.DEFAULT));
         }
     }
 

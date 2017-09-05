@@ -14,17 +14,17 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.tss.tsproviders.spreadsheet.engine;
+package internal.spreadsheet;
 
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.HORIZONTAL;
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.VERTICAL;
+import static internal.spreadsheet.AlignType.HORIZONTAL;
+import static internal.spreadsheet.AlignType.VERTICAL;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import static ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly;
 import static ec.tstoolkit.timeseries.simplets.TsFrequency.Quarterly;
 import static java.lang.Double.NaN;
 import static org.assertj.core.api.Assertions.assertThat;
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollectionAssert.assertThat;
-import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.data;
+import static internal.spreadsheet.SpreadSheetCollectionAssert.assertThat;
+import static internal.spreadsheet.TestUtils.data;
 
 /**
  *
@@ -38,21 +38,21 @@ final class Top5BrowsersHelper {
 
     public static void testContent(SpreadSheetSource top5Browsers) {
         assertThat(top5Browsers).isNotNull();
-        assertThat(top5Browsers.collections).hasSize(3);
+        assertThat(top5Browsers.getCollections()).hasSize(3);
 
-        assertThat(top5Browsers.collections.get("Top 5 Browsers - Monthly"))
+        assertThat(top5Browsers.getCollections().get("Top 5 Browsers - Monthly"))
                 .hasSheetName("Top 5 Browsers - Monthly")
                 .hasOrdering(0)
                 .hasAlignType(VERTICAL)
                 .containsExactly(M_DATA);
 
-        assertThat(top5Browsers.collections.get("Top 5 Browsers - Quarterly"))
+        assertThat(top5Browsers.getCollections().get("Top 5 Browsers - Quarterly"))
                 .hasSheetName("Top 5 Browsers - Quarterly")
                 .hasOrdering(1)
                 .hasAlignType(HORIZONTAL)
                 .containsExactly(Q_DATA);
 
-        assertThat(top5Browsers.collections.get("DataTest"))
+        assertThat(top5Browsers.getCollections().get("DataTest"))
                 .hasSheetName("DataTest")
                 .hasOrdering(2)
                 .hasAlignType(VERTICAL)

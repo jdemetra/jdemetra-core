@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.tss.tsproviders.spreadsheet.engine;
+package internal.spreadsheet;
 
 import ec.tstoolkit.timeseries.simplets.TsData;
 import org.assertj.core.api.AbstractAssert;
@@ -37,37 +37,37 @@ final class SpreadSheetCollectionAssert extends AbstractAssert<SpreadSheetCollec
 
     public SpreadSheetCollectionAssert hasSheetName(String name) {
         isNotNull();
-        if (!actual.sheetName.equals(name)) {
-            failWithMessage("Expected sheet's name to be <%s> but was <%s>", name, actual.sheetName);
+        if (!actual.getSheetName().equals(name)) {
+            failWithMessage("Expected sheet's name to be <%s> but was <%s>", name, actual.getSheetName());
         }
         return this;
     }
 
     public SpreadSheetCollectionAssert hasOrdering(int ordering) {
         isNotNull();
-        if (actual.ordering != ordering) {
-            failWithMessage("Expected ordering to be <%s> but was <%s>", ordering, actual.ordering);
+        if (actual.getOrdering() != ordering) {
+            failWithMessage("Expected ordering to be <%s> but was <%s>", ordering, actual.getOrdering());
         }
         return this;
     }
 
-    public SpreadSheetCollectionAssert hasAlignType(SpreadSheetCollection.AlignType alignType) {
+    public SpreadSheetCollectionAssert hasAlignType(AlignType alignType) {
         isNotNull();
-        if (!actual.alignType.equals(alignType)) {
-            failWithMessage("Expected alignType to be <%s> but was <%s>", alignType, actual.alignType);
+        if (!actual.getAlignType().equals(alignType)) {
+            failWithMessage("Expected alignType to be <%s> but was <%s>", alignType, actual.getAlignType());
         }
         return this;
     }
 
     public SpreadSheetCollectionAssert containsExactly(TsData... data) {
-        Assertions.assertThat(actual.series)
+        Assertions.assertThat(actual.getSeries())
                 .extracting(ToData.INSTANCE)
                 .containsExactly(data);
         return this;
     }
 
     public SpreadSheetCollectionAssert containsExactly(String... names) {
-        Assertions.assertThat(actual.series)
+        Assertions.assertThat(actual.getSeries())
                 .extracting(ToName.INSTANCE)
                 .containsExactly(names);
         return this;
@@ -79,7 +79,7 @@ final class SpreadSheetCollectionAssert extends AbstractAssert<SpreadSheetCollec
 
         @Override
         public TsData extract(SpreadSheetSeries input) {
-            return input.data.get();
+            return input.getData().get();
         }
     }
 
@@ -89,7 +89,7 @@ final class SpreadSheetCollectionAssert extends AbstractAssert<SpreadSheetCollec
 
         @Override
         public String extract(SpreadSheetSeries input) {
-            return input.seriesName;
+            return input.getSeriesName();
         }
     }
 }

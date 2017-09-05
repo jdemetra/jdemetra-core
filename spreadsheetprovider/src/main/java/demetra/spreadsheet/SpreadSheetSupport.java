@@ -20,9 +20,9 @@ import ec.tss.TsInformationType;
 import ec.tss.tsproviders.DataSet;
 import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.HasDataHierarchy;
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection;
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetSeries;
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetSource;
+import internal.spreadsheet.SpreadSheetCollection;
+import internal.spreadsheet.SpreadSheetSeries;
+import internal.spreadsheet.SpreadSheetSource;
 import ec.tss.tsproviders.utils.DataSourcePreconditions;
 import ec.tss.tsproviders.cursor.HasTsCursor;
 import ec.tss.tsproviders.utils.IParam;
@@ -77,7 +77,7 @@ final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
     @Override
     public List<DataSet> children(DataSource dataSource) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
-        Collection<SpreadSheetCollection> data = getSource(dataSource).collections.values();
+        Collection<SpreadSheetCollection> data = getSource(dataSource).getCollections().values();
         return data.stream()
                 .sorted()
                 .map(childrenMapper(dataSource))
@@ -87,7 +87,7 @@ final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
     @Override
     public List<DataSet> children(DataSet parent) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, parent);
-        Collection<SpreadSheetSeries> data = getCollection(parent).orElseThrow(() -> dataNotFound(parent)).series;
+        Collection<SpreadSheetSeries> data = getCollection(parent).orElseThrow(() -> dataNotFound(parent)).getSeries();
         return data.stream()
                 .sorted()
                 .map(childrenMapper(parent))
@@ -119,7 +119,7 @@ final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
         IParam<DataSet, String> sheetParam = resource.getSheetParam(dataSource);
         return o -> {
-            sheetParam.set(builder, o.sheetName);
+            sheetParam.set(builder, o.getSheetName());
             return builder.build();
         };
     }
@@ -128,7 +128,7 @@ final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
         DataSet.Builder builder = parent.toBuilder(DataSet.Kind.SERIES);
         IParam<DataSet, String> seriesParam = resource.getSeriesParam(parent.getDataSource());
         return o -> {
-            seriesParam.set(builder, o.seriesName);
+            seriesParam.set(builder, o.getSeriesName());
             return builder.build();
         };
     }
@@ -138,22 +138,22 @@ final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
         IParam<DataSet, String> sheetParam = resource.getSheetParam(dataSource);
         IParam<DataSet, String> seriesParam = resource.getSeriesParam(dataSource);
         return o -> {
-            sheetParam.set(builder, o.col.sheetName);
-            seriesParam.set(builder, o.series.seriesName);
+            sheetParam.set(builder, o.col.getSheetName());
+            seriesParam.set(builder, o.series.getSeriesName());
             return builder.build();
         };
     }
 
     private Stream<Tuple> getDataStream(DataSource dataSource) throws IOException {
-        Collection<SpreadSheetCollection> data = getSource(dataSource).collections.values();
-        return data.stream().flatMap(col -> col.series.stream().map(series -> new Tuple(col, series)));
+        Collection<SpreadSheetCollection> data = getSource(dataSource).getCollections().values();
+        return data.stream().flatMap(col -> col.getSeries().stream().map(series -> new Tuple(col, series)));
     }
 
     private Stream<Tuple> getDataStream(DataSet dataSet) throws IOException {
         switch (dataSet.getKind()) {
             case COLLECTION: {
                 SpreadSheetCollection data = getCollection(dataSet).orElseThrow(() -> dataNotFound(dataSet));
-                return Stream.of(data).flatMap(col -> col.series.stream().map(series -> new Tuple(col, series)));
+                return Stream.of(data).flatMap(col -> col.getSeries().stream().map(series -> new Tuple(col, series)));
             }
             case SERIES: {
                 SpreadSheetCollection data = getCollection(dataSet).orElseThrow(() -> dataNotFound(dataSet));
@@ -179,20 +179,20 @@ final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
         }
 
         OptionalTsData getData() {
-            return series.data;
+            return series.getData();
         }
 
         MetaData getMeta() {
             MetaData result = new MetaData();
-            result.put("sheet.name", col.sheetName);
-            result.put("series.name", series.seriesName);
-            result.put("series.alignType", series.alignType.name());
-            result.put("series.ordering", Integer.toString(series.ordering));
+            result.put("sheet.name", col.getSheetName());
+            result.put("series.name", series.getSeriesName());
+            result.put("series.alignType", series.getAlignType().name());
+            result.put("series.ordering", Integer.toString(series.getOrdering()));
             return result;
         }
 
         String getLabel() {
-            return col.sheetName + MultiLineNameUtil.SEPARATOR + series.seriesName;
+            return col.getSheetName() + MultiLineNameUtil.SEPARATOR + series.getSeriesName();
         }
     }
 
@@ -215,18 +215,18 @@ final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
     }
 
     private static Optional<SpreadSheetCollection> getCollectionByName(SpreadSheetSource ws, String name) {
-        return Optional.ofNullable(ws.collections.get(clean(name)));
+        return Optional.ofNullable(ws.getCollections().get(clean(name)));
     }
 
     private static SpreadSheetSeries getSeriesByName(SpreadSheetCollection col, String name) {
-        for (SpreadSheetSeries o : col.series) {
-            if (o.seriesName.equals(name)) {
+        for (SpreadSheetSeries o : col.getSeries()) {
+            if (o.getSeriesName().equals(name)) {
                 return o;
             }
         }
         String s = clean(name);
-        for (SpreadSheetSeries o : col.series) {
-            if (o.seriesName.equals(s)) {
+        for (SpreadSheetSeries o : col.getSeries()) {
+            if (o.getSeriesName().equals(s)) {
                 return o;
             }
         }

@@ -14,23 +14,28 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.tss.tsproviders.spreadsheet.engine;
+package internal.spreadsheet;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import java.util.List;
+import ec.tss.tsproviders.utils.OptionalTsData;
 
 /**
  *
  * @author Philippe Charles
  */
-public final class SpreadSheetSource {
+@lombok.Value
+public class SpreadSheetSeries implements Comparable<SpreadSheetSeries> {
 
-    public final ImmutableMap<String, SpreadSheetCollection> collections;
-    public final String factoryName;
+    String seriesName;
+    int ordering;
+    AlignType alignType;
+    OptionalTsData data;
 
-    public SpreadSheetSource(List<SpreadSheetCollection> list, String factoryName) {
-        this.collections = Maps.uniqueIndex(list, o -> o != null ? o.sheetName : null);
-        this.factoryName = factoryName;
+    @Override
+    public int compareTo(SpreadSheetSeries o) {
+        int result = Integer.compare(ordering, o.ordering);
+        if (result != 0) {
+            return result;
+        }
+        return seriesName.compareTo(o.seriesName);
     }
 }

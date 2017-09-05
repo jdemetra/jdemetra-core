@@ -16,6 +16,7 @@
  */
 package ec.tss.tsproviders.spreadsheet;
 
+import internal.spreadsheet.SpreadSheetLegacy;
 import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;
 import ec.tss.TsCollectionInformation;
@@ -24,11 +25,11 @@ import ec.tss.TsInformationType;
 import ec.tss.TsMoniker;
 import ec.tss.tsproviders.*;
 import static ec.tss.tsproviders.spreadsheet.SpreadSheetBean.X_CLEAN_MISSING;
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory;
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection;
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetSeries;
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetSource;
-import ec.tss.tsproviders.spreadsheet.engine.TsImportOptions;
+import internal.spreadsheet.SpreadSheetFactory;
+import internal.spreadsheet.SpreadSheetCollection;
+import internal.spreadsheet.SpreadSheetSeries;
+import internal.spreadsheet.SpreadSheetSource;
+import internal.spreadsheet.TsImportOptions;
 import ec.tss.tsproviders.utils.*;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.util.spreadsheet.Book;
@@ -47,20 +48,20 @@ import org.slf4j.LoggerFactory;
  * @author Demortier Jeremy
  */
 @ServiceProvider(service = ITsProvider.class)
-public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, SpreadSheetBean> {
+public final class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, SpreadSheetBean> {
 
-    public static final String SOURCE = "XCLPRVDR";
-    public static final String VERSION = "20111201";
-    public static final IParam<DataSet, String> Y_SHEETNAME = Params.onString("", "sheetName");
-    public static final IParam<DataSet, String> Z_SERIESNAME = Params.onString("", "seriesName");
+    private static final String SOURCE = "XCLPRVDR";
+    private static final String VERSION = "20111201";
+    private static final IParam<DataSet, String> Y_SHEETNAME = Params.onString("", "sheetName");
+    private static final IParam<DataSet, String> Z_SERIESNAME = Params.onString("", "seriesName");
     private static final Logger LOGGER = LoggerFactory.getLogger(SpreadSheetProvider.class);
-    protected final Parsers.Parser<DataSource> legacyDataSourceParser;
-    protected final Parsers.Parser<DataSet> legacyDataSetParser;
+    private final IParser<DataSource> legacyDataSourceParser;
+    private final IParser<DataSet> legacyDataSetParser;
 
     public SpreadSheetProvider() {
         super(LOGGER, SOURCE, TsAsyncMode.Once);
-        this.legacyDataSourceParser = SpreadSheetLegacy.legacyDataSourceParser();
-        this.legacyDataSetParser = SpreadSheetLegacy.legacyDataSetParser();
+        this.legacyDataSourceParser = o -> SpreadSheetLegacy.parseLegacyDataSource(o, LegacyConverterImpl.INSTANCE);
+        this.legacyDataSetParser = o -> SpreadSheetLegacy.parseLegacyDataSet(o, LegacyConverterImpl.INSTANCE);
     }
 
     @Override
@@ -94,7 +95,7 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
                 ObsGathering gathering = bean.isCleanMissing()
                         ? ObsGathering.excludingMissingValues(bean.getFrequency(), bean.getAggregationType())
                         : ObsGathering.includingMissingValues(bean.getFrequency(), bean.getAggregationType());
-                TsImportOptions options = TsImportOptions.create(bean.getDataFormat(), gathering);
+                TsImportOptions options = TsImportOptions.of(bean.getDataFormat(), gathering);
                 return SpreadSheetFactory.getDefault().toSource(book, options);
             }
         }
@@ -130,14 +131,14 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
     public List<DataSet> children(DataSource dataSource) throws IOException {
         support.check(dataSource);
         SpreadSheetSource ws = getSource(dataSource);
-        if (ws.collections.isEmpty()) {
+        if (ws.getCollections().isEmpty()) {
             return Collections.emptyList();
         }
 
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
-        return ws.collections.values().stream()
+        return ws.getCollections().values().stream()
                 .sorted()
-                .map(o -> builder.put(Y_SHEETNAME, o.sheetName).build())
+                .map(o -> builder.put(Y_SHEETNAME, o.getSheetName()).build())
                 .collect(Collectors.toList());
     }
 
@@ -158,14 +159,14 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
         support.check(parent, DataSet.Kind.COLLECTION);
 
         SpreadSheetCollection col = getCollection(parent);
-        if (col == null || col.series.isEmpty()) {
+        if (col == null || col.getSeries().isEmpty()) {
             return Collections.emptyList();
         }
 
         DataSet.Builder builder = parent.toBuilder(DataSet.Kind.SERIES);
-        return col.series.stream()
+        return col.getSeries().stream()
                 .sorted()
-                .map(o -> builder.put(Z_SERIESNAME, o.seriesName).build())
+                .map(o -> builder.put(Z_SERIESNAME, o.getSeriesName()).build())
                 .collect(Collectors.toList());
     }
 
@@ -175,10 +176,10 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
         //info.moniker.setName();
         info.type = TsInformationType.All;
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
-        source.collections.values().stream()
+        source.getCollections().values().stream()
                 .sorted()
                 .forEach(o -> {
-                    DataSet child = builder.put(Y_SHEETNAME, o.sheetName).build();
+                    DataSet child = builder.put(Y_SHEETNAME, o.getSheetName()).build();
                     info.items.addAll(getAll(child, o));
                 });
     }
@@ -189,20 +190,20 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
         if (collection == null) {
             throw new IOException("null");
         }
-        info.name = collection.sheetName;
+        info.name = collection.getSheetName();
         info.type = TsInformationType.All;
         info.items.addAll(getAll(dataSet, collection));
     }
 
     List<TsInformation> getAll(DataSet dataSet, SpreadSheetCollection collection) {
-        if (collection.series.isEmpty()) {
+        if (collection.getSeries().isEmpty()) {
             return Collections.emptyList();
         }
         DataSet.Builder builder = dataSet.toBuilder(DataSet.Kind.SERIES);
-        return collection.series.stream()
+        return collection.getSeries().stream()
                 .map(o -> {
-                    DataSet child = builder.put(Z_SERIESNAME, o.seriesName).build();
-                    return support.fillSeries(newTsInformation(child, TsInformationType.All), o.data, X_CLEAN_MISSING.get(dataSet.getDataSource()));
+                    DataSet child = builder.put(Z_SERIESNAME, o.getSeriesName()).build();
+                    return support.fillSeries(newTsInformation(child, TsInformationType.All), o.getData(), X_CLEAN_MISSING.get(dataSet.getDataSource()));
                 })
                 .collect(Collectors.toList());
     }
@@ -213,47 +214,46 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
         if (series == null) {
             throw new IOException("null");
         }
-        support.fillSeries(info, series.data, X_CLEAN_MISSING.get(dataSet.getDataSource()));
+        support.fillSeries(info, series.getData(), X_CLEAN_MISSING.get(dataSet.getDataSource()));
         info.name = getDisplayName(dataSet);
         info.type = TsInformationType.All;
     }
 
-    @Nonnull
-    public SpreadSheetSource getSource(DataSource dataSource) throws IOException {
+    private SpreadSheetSource getSource(DataSource dataSource) throws IOException {
         return support.getValue(cache, dataSource);
     }
 
-    public SpreadSheetCollection getCollection(DataSet dataSet) throws IOException {
+    private SpreadSheetCollection getCollection(DataSet dataSet) throws IOException {
         SpreadSheetSource ws = getSource(dataSet.getDataSource());
         return search(ws, Y_SHEETNAME.get(dataSet));
     }
 
-    public SpreadSheetSeries getSeries(DataSet dataSet) throws IOException {
+    private SpreadSheetSeries getSeries(DataSet dataSet) throws IOException {
         SpreadSheetCollection worksheet = getCollection(dataSet);
         if (worksheet == null) {
             return null;
         }
         String s = Z_SERIESNAME.get(dataSet);
         //       String s = clean(Z_SERIESNAME.get(dataSet));
-        for (SpreadSheetSeries o : worksheet.series) {
-            if (o.seriesName.equals(s)) {
+        for (SpreadSheetSeries o : worksheet.getSeries()) {
+            if (o.getSeriesName().equals(s)) {
                 return o;
             }
         }
         s = clean(s);
-        for (SpreadSheetSeries o : worksheet.series) {
-            if (o.seriesName.equals(s)) {
+        for (SpreadSheetSeries o : worksheet.getSeries()) {
+            if (o.getSeriesName().equals(s)) {
                 return o;
             }
         }
         return null;
     }
 
-    static SpreadSheetCollection search(SpreadSheetSource ws, String cname) {
+    private static SpreadSheetCollection search(SpreadSheetSource ws, String cname) {
         if (ws == null) {
             return null;
         }
-        return ws.collections.get(clean(cname));
+        return ws.getCollections().get(clean(cname));
     }
 
     private static String clean(String s) {
@@ -306,5 +306,49 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
             }
         }
         return null;
+    }
+
+    private enum LegacyConverterImpl implements SpreadSheetLegacy.Converter {
+
+        INSTANCE;
+
+        @Override
+        public DataSource toSource(File file) {
+            SpreadSheetBean bean = new SpreadSheetBean();
+            bean.setFile(file);
+            return bean.toDataSource(SpreadSheetProvider.SOURCE, SpreadSheetProvider.VERSION);
+        }
+
+        @Override
+        public DataSet toCollection(DataSource dataSource, String sheetName) {
+            return DataSet.builder(dataSource, DataSet.Kind.COLLECTION)
+                    .put(SpreadSheetProvider.Y_SHEETNAME, sheetName)
+                    .build();
+        }
+
+        @Override
+        public DataSet toSeries(DataSource dataSource, String sheetName, String seriesName) {
+            return DataSet.builder(dataSource, DataSet.Kind.SERIES)
+                    .put(SpreadSheetProvider.Y_SHEETNAME, sheetName)
+                    .put(SpreadSheetProvider.Z_SERIESNAME, seriesName)
+                    .build();
+        }
+
+        @Override
+        public DataSet toSeries(DataSource dataSource, String sheetName, int seriesIndex) {
+            SpreadSheetProvider tmp = TsProviders.lookup(SpreadSheetProvider.class, dataSource).get();
+            SpreadSheetSource col;
+            try {
+                col = tmp.getSource(dataSource);
+            } catch (Exception ex) {
+                return null;
+            }
+            SpreadSheetCollection cur = SpreadSheetProvider.search(col, sheetName);
+            if (cur == null) {
+                return null;
+            }
+            String seriesName = seriesIndex < cur.getSeries().size() ? cur.getSeries().get(seriesIndex).getSeriesName() : null;
+            return toSeries(dataSource, sheetName, seriesName);
+        }
     }
 }

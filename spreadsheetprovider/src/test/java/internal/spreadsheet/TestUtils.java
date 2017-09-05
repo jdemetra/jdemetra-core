@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.tss.tsproviders.spreadsheet.engine;
+package internal.spreadsheet;
 
 import com.google.common.io.Resources;
 import ec.tstoolkit.timeseries.simplets.TsData;

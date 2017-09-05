@@ -14,37 +14,32 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.tss.tsproviders.spreadsheet.engine;
+package internal.spreadsheet;
 
-import com.google.common.collect.ImmutableList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import javax.annotation.Nonnull;
 
 /**
  *
  * @author Jean Palate
  */
-public final class SpreadSheetCollection implements Comparable<SpreadSheetCollection> {
+@lombok.Value
+public class SpreadSheetCollection implements Comparable<SpreadSheetCollection> {
 
-    public enum AlignType {
+    String sheetName; // unique id; don't use ordering
+    int ordering; // this may change !
+    AlignType alignType;
+    List<SpreadSheetSeries> series;
 
-        VERTICAL, HORIZONTAL, UNKNOWN
-    }
+    Map<String, Integer> map;
 
-    public final String sheetName; // unique id; don't use ordering
-    public final int ordering; // this may change !
-    public final AlignType alignType;
-    public final ImmutableList<SpreadSheetSeries> series;
-
-    private final Map<String, Integer> map;
-
-    public SpreadSheetCollection(@Nonnull String sheetName, int ordering, @Nonnull AlignType alignType, @Nonnull ImmutableList<SpreadSheetSeries> series) {
+    public SpreadSheetCollection(@Nonnull String sheetName, int ordering, @Nonnull AlignType alignType, @Nonnull List<SpreadSheetSeries> series) {
         this(sheetName, ordering, alignType, series, new HashMap<>());
     }
 
-    private SpreadSheetCollection(String sheetName, int ordering, AlignType alignType, ImmutableList<SpreadSheetSeries> series, Map<String, Integer> map) {
+    private SpreadSheetCollection(String sheetName, int ordering, AlignType alignType, List<SpreadSheetSeries> series, Map<String, Integer> map) {
         this.sheetName = sheetName;
         this.ordering = ordering;
         this.alignType = alignType;
@@ -59,19 +54,5 @@ public final class SpreadSheetCollection implements Comparable<SpreadSheetCollec
             return result;
         }
         return sheetName.compareTo(o.sheetName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(ordering, sheetName);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof SpreadSheetCollection && equals((SpreadSheetCollection) obj));
-    }
-
-    private boolean equals(SpreadSheetCollection that) {
-        return this.ordering == that.ordering && this.sheetName.equals(that.sheetName);
     }
 }

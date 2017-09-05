@@ -14,19 +14,17 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.tss.tsproviders.spreadsheet.engine;
+package internal.spreadsheet;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Streams;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
 import ec.tss.TsInformationType;
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.HORIZONTAL;
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.UNKNOWN;
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.VERTICAL;
-import ec.tss.tsproviders.utils.IParser;
+import static internal.spreadsheet.AlignType.HORIZONTAL;
+import static internal.spreadsheet.AlignType.UNKNOWN;
+import static internal.spreadsheet.AlignType.VERTICAL;
 import ec.tss.tsproviders.utils.MultiLineNameUtil;
 import ec.tss.tsproviders.utils.ObsGathering;
 import ec.tss.tsproviders.utils.OptionalTsData;
@@ -36,7 +34,6 @@ import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import ec.tstoolkit.timeseries.simplets.TsDataTableInfo;
 import ec.util.spreadsheet.Book;
-import ec.util.spreadsheet.Cell;
 import ec.util.spreadsheet.Sheet;
 import ec.util.spreadsheet.helpers.ArraySheet;
 import java.io.IOException;
@@ -46,40 +43,39 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  *
  * @author Philippe Charles
  */
-public abstract class SpreadSheetFactory {
+public interface SpreadSheetFactory {
 
     @Nonnull
-    abstract public SpreadSheetSource toSource(@Nonnull Book book, @Nonnull TsImportOptions options) throws IOException;
+    SpreadSheetSource toSource(@Nonnull Book book, @Nonnull TsImportOptions options) throws IOException;
 
     @Nonnull
-    abstract public TsCollectionInformation toTsCollectionInfo(@Nonnull Sheet sheet, @Nonnull TsImportOptions options);
+    TsCollectionInformation toTsCollectionInfo(@Nonnull Sheet sheet, @Nonnull TsImportOptions options);
 
     @Nonnull
-    abstract public Table<?> toTable(@Nonnull Sheet sheet);
+    Table<?> toTable(@Nonnull Sheet sheet);
 
     @Nonnull
-    abstract public ArraySheet fromTsCollectionInfo(@Nonnull TsCollectionInformation col, @Nonnull TsExportOptions options);
+    ArraySheet fromTsCollectionInfo(@Nonnull TsCollectionInformation col, @Nonnull TsExportOptions options);
 
     @Nonnull
-    abstract public ArraySheet fromMatrix(@Nonnull Matrix matrix);
+    ArraySheet fromMatrix(@Nonnull Matrix matrix);
 
     @Nonnull
-    abstract public ArraySheet fromTable(@Nonnull Table<?> table);
+    ArraySheet fromTable(@Nonnull Table<?> table);
 
     @Nonnull
-    public static SpreadSheetFactory getDefault() {
+    static SpreadSheetFactory getDefault() {
         return DefaultImpl.INSTANCE;
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
     @VisibleForTesting
-    static final class DefaultImpl extends SpreadSheetFactory {
+    static final class DefaultImpl implements SpreadSheetFactory {
 
         private static final DefaultImpl INSTANCE = new DefaultImpl();
 
@@ -135,16 +131,16 @@ public abstract class SpreadSheetFactory {
             TsCollectionInformation result = new TsCollectionInformation();
             result.name = sheet.getName();
             result.type = TsInformationType.All;
-            for (SpreadSheetSeries s : parseCollection(sheet, 0, Context.create(options)).series) {
+            for (SpreadSheetSeries s : parseCollection(sheet, 0, Context.create(options)).getSeries()) {
                 TsInformation tsInfo = new TsInformation();
-                tsInfo.name = s.seriesName;
+                tsInfo.name = s.getSeriesName();
                 tsInfo.type = TsInformationType.All;
-                if (s.data.isPresent()) {
-                    tsInfo.data = s.data.get();
+                if (s.getData().isPresent()) {
+                    tsInfo.data = s.getData().get();
                     tsInfo.invalidDataCause = null;
                 } else {
                     tsInfo.data = null;
-                    tsInfo.invalidDataCause = s.data.getCause();
+                    tsInfo.invalidDataCause = s.getData().getCause();
                 }
                 result.items.add(tsInfo);
             }
@@ -173,7 +169,7 @@ public abstract class SpreadSheetFactory {
             int sheetCount = book.getSheetCount();
             List<SpreadSheetCollection> result = new ArrayList<>(sheetCount);
             book.forEach((sheet, i) -> result.add(parseCollection(sheet, i, context)));
-            return new SpreadSheetSource(result, "?");
+            return SpreadSheetSource.of(result, "?");
         }
 
         @VisibleForTesting
@@ -251,7 +247,7 @@ public abstract class SpreadSheetFactory {
             return result;
         }
 
-        private static SpreadSheetCollection loadVertically(SpreadSheetCollection.AlignType alignType, int ordering, Sheet sheet, Context context, DateHeader dates) {
+        private static SpreadSheetCollection loadVertically(AlignType alignType, int ordering, Sheet sheet, Context context, DateHeader dates) {
             List<String> names = getHorizontalNames(sheet, context, dates.minIndex);
 
             ImmutableList.Builder<SpreadSheetSeries> list = ImmutableList.builder();
@@ -290,132 +286,13 @@ public abstract class SpreadSheetFactory {
         private static Context create(TsImportOptions options) {
             return new Context(
                     CellParser.onStringType(),
-                    CellParser.onDateType().or(CellParser.fromParser(options.getDataFormat().dateParser())),
-                    CellParser.onNumberType().or(CellParser.fromParser(options.getDataFormat().numberParser())),
+                    CellParser.onDateType().or(CellParser.fromParser(options.getObsFormat().dateParser())),
+                    CellParser.onNumberType().or(CellParser.fromParser(options.getObsFormat().numberParser())),
                     options.getObsGathering());
         }
     }
 
-    @VisibleForTesting
-    static abstract class CellParser<T> {
-
-        @Nullable
-        abstract public T parse(@Nonnull Sheet sheet, int rowIndex, int columnIndex);
-
-        @Nonnull
-        public Optional<T> tryParse(@Nonnull Sheet sheet, int rowIndex, int columnIndex) {
-            return Optional.fromNullable(parse(sheet, rowIndex, columnIndex));
-        }
-
-        @Nonnull
-        public CellParser<T> or(@Nonnull CellParser<T>... cellParser) {
-            switch (cellParser.length) {
-                case 0:
-                    return this;
-                case 1:
-                    return firstNotNull(ImmutableList.of(this, cellParser[0]));
-                default:
-                    return firstNotNull(ImmutableList.<CellParser<T>>builder().add(this).add(cellParser).build());
-            }
-        }
-
-        @Nonnull
-        public static <X> CellParser<X> firstNotNull(@Nonnull ImmutableList<? extends CellParser<X>> list) {
-            return new FirstNotNull(list);
-        }
-
-        @Nonnull
-        public static <X> CellParser<X> fromParser(@Nonnull IParser<X> parser) {
-            return new Adapter(parser);
-        }
-
-        @Nonnull
-        public static CellParser<Date> onDateType() {
-            return DateCellFunc.INSTANCE;
-        }
-
-        @Nonnull
-        public static CellParser<Number> onNumberType() {
-            return NumberCellFunc.INSTANCE;
-        }
-
-        @Nonnull
-        public static CellParser<String> onStringType() {
-            return StringCellFunc.INSTANCE;
-        }
-
-        //<editor-fold defaultstate="collapsed" desc="Internal implementation">
-        private static final class FirstNotNull<X> extends CellParser<X> {
-
-            private final ImmutableList<? extends CellParser<X>> list;
-
-            FirstNotNull(ImmutableList<? extends CellParser<X>> list) {
-                this.list = list;
-            }
-
-            @Override
-            public X parse(Sheet sheet, int rowIndex, int columnIndex) {
-                for (CellParser<X> o : list) {
-                    X result = o.parse(sheet, rowIndex, columnIndex);
-                    if (result != null) {
-                        return result;
-                    }
-                }
-                return null;
-            }
-        }
-
-        private static final class Adapter<X> extends CellParser<X> {
-
-            private final IParser<X> adaptee;
-
-            Adapter(IParser<X> parser) {
-                this.adaptee = parser;
-            }
-
-            @Override
-            public X parse(Sheet sheet, int rowIndex, int columnIndex) {
-                String input = StringCellFunc.INSTANCE.parse(sheet, rowIndex, columnIndex);
-                return input != null ? adaptee.parse(input) : null;
-            }
-        }
-
-        private static final class DateCellFunc extends CellParser<Date> {
-
-            static final DateCellFunc INSTANCE = new DateCellFunc();
-
-            @Override
-            public Date parse(Sheet sheet, int rowIndex, int columnIndex) {
-                Cell cell = sheet.getCell(rowIndex, columnIndex);
-                return cell != null && cell.isDate() ? cell.getDate() : null;
-            }
-        }
-
-        private static final class NumberCellFunc extends CellParser<Number> {
-
-            static final NumberCellFunc INSTANCE = new NumberCellFunc();
-
-            @Override
-            public Number parse(Sheet sheet, int rowIndex, int columnIndex) {
-                Cell cell = sheet.getCell(rowIndex, columnIndex);
-                return cell != null && cell.isNumber() ? cell.getNumber() : null;
-            }
-        }
-
-        private static final class StringCellFunc extends CellParser<String> {
-
-            static final StringCellFunc INSTANCE = new StringCellFunc();
-
-            @Override
-            public String parse(Sheet sheet, int rowIndex, int columnIndex) {
-                Cell cell = sheet.getCell(rowIndex, columnIndex);
-                return cell != null && cell.isString() ? cell.getString() : null;
-            }
-        }
-        //</editor-fold>
-    }
-
-    private static final class DateHeader {
+    static final class DateHeader {
 
         private final Date[] dates;
         private int minIndex;
@@ -457,7 +334,7 @@ public abstract class SpreadSheetFactory {
         }
     }
 
-    private static ArraySheet newArraySheet(String name, Matrix matrix) {
+    static ArraySheet newArraySheet(String name, Matrix matrix) {
         ArraySheet.Builder result = ArraySheet.builder(matrix.getRowsCount(), matrix.getColumnsCount()).name(name);
         for (int i = 0; i < matrix.getRowsCount(); i++) {
             for (int j = 0; j < matrix.getColumnsCount(); j++) {
@@ -467,7 +344,7 @@ public abstract class SpreadSheetFactory {
         return result.build();
     }
 
-    private static ArraySheet newArraySheet(String name, Table<?> table) {
+    static ArraySheet newArraySheet(String name, Table<?> table) {
         ArraySheet.Builder result = ArraySheet.builder(table.getRowsCount(), table.getColumnsCount()).name(name);
         for (int i = 0; i < table.getRowsCount(); i++) {
             for (int j = 0; j < table.getColumnsCount(); j++) {

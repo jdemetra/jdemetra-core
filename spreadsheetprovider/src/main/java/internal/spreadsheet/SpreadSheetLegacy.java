@@ -14,97 +14,52 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.tss.tsproviders.spreadsheet;
+package internal.spreadsheet;
 
 import ec.tss.tsproviders.DataSet;
 import ec.tss.tsproviders.DataSource;
-import ec.tss.tsproviders.TsProviders;
 import ec.tss.tsproviders.legacy.FileDataSourceId;
 import ec.tss.tsproviders.legacy.InvalidMonikerException;
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection;
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetSource;
-import ec.tss.tsproviders.utils.IParser;
-import ec.tss.tsproviders.utils.Parsers;
-import ec.tss.tsproviders.utils.Parsers.FailSafeParser;
-import ec.tss.tsproviders.utils.Parsers.Parser;
-import javax.annotation.Nonnull;
+import java.io.File;
 
 /**
  *
  * @author Philippe Charles
  */
-final class SpreadSheetLegacy {
+@lombok.experimental.UtilityClass
+public class SpreadSheetLegacy {
 
-    private SpreadSheetLegacy() {
-        // static class
+    public interface Converter {
+
+        DataSource toSource(File file);
+
+        DataSet toCollection(DataSource dataSource, String sheetName);
+
+        DataSet toSeries(DataSource dataSource, String sheetName, String seriesName);
+
+        DataSet toSeries(DataSource dataSource, String sheetName, int seriesIndex);
     }
 
-    @Nonnull
-    static Parsers.Parser<DataSource> legacyDataSourceParser() {
-        return new Parser<DataSource>() {
-            @Override
-            public DataSource parse(CharSequence input) throws NullPointerException {
-                FileDataSourceId id = FileDataSourceId.parse(input);
-                return id != null ? newDataSource(id) : null;
-            }
-        };
+    public DataSource parseLegacyDataSource(CharSequence input, Converter converter) {
+        FileDataSourceId id = FileDataSourceId.parse(input);
+        return id != null ? converter.toSource(new File(id.getFile())) : null;
     }
 
-    @Nonnull
-    static Parsers.Parser<DataSet> legacyDataSetParser() {
-        final IParser<DataSource> tmp = legacyDataSourceParser();
-        return new FailSafeParser<DataSet>() {
-            @Override
-            protected DataSet doParse(CharSequence input) throws Exception {
-                SpreadSheetId id = SpreadSheetId.parse(input.toString());
-                DataSource dataSource = tmp.parse(id.getFileName());
-                if (dataSource == null) {
-                    return null;
-                }
-                if (id.isCollection()) {
-                    return DataSet.builder(dataSource, DataSet.Kind.COLLECTION)
-                            .put(SpreadSheetProvider.Y_SHEETNAME, id.getSheetName())
-                            .build();
-                }
-                String seriesName = searchSeriesName(dataSource, id);
-                return DataSet.builder(dataSource, DataSet.Kind.SERIES)
-                        .put(SpreadSheetProvider.Y_SHEETNAME, id.getSheetName())
-                        .put(SpreadSheetProvider.Z_SERIESNAME, seriesName)
-                        .build();
-            }
-        };
-    }
-
-    //<editor-fold defaultstate="collapsed" desc="Internal implementation">
-    private static DataSource newDataSource(FileDataSourceId id) {
-        return id.fill(new SpreadSheetBean()).toDataSource(SpreadSheetProvider.SOURCE, SpreadSheetProvider.VERSION);
-    }
-
-    private static String searchSeriesName(DataSource dataSource, SpreadSheetId id) {
-        int sid = id.getIndexSeries();
-        if (sid >= 0) {
-            return SeriesNameResolver.INSTANCE.resolveName(dataSource, id.getSheetName(), id.getIndexSeries());
-        }
-        return id.getSeriesName();
-    }
-
-    private enum SeriesNameResolver {
-
-        INSTANCE;
-
-        public String resolveName(DataSource dataSource, String sheetName, int index) {
-            SpreadSheetProvider tmp = TsProviders.lookup(SpreadSheetProvider.class, dataSource).get();
-            SpreadSheetSource col;
-            try {
-                col = tmp.getSource(dataSource);
-            } catch (Exception ex) {
+    public DataSet parseLegacyDataSet(CharSequence input, Converter converter) {
+        try {
+            SpreadSheetId id = SpreadSheetId.parse(input.toString());
+            DataSource dataSource = parseLegacyDataSource(id.getFileName(), converter);
+            if (dataSource == null) {
                 return null;
             }
-            SpreadSheetCollection cur = SpreadSheetProvider.search(col, sheetName);
-            if (cur == null) {
-                return null;
+            if (id.isCollection()) {
+                return converter.toCollection(dataSource, id.getSheetName());
             }
-            return index < cur.series.size() ? cur.series.get(index).seriesName : null;
+            return id.getIndexSeries() >= 0
+                    ? converter.toSeries(dataSource, id.getSheetName(), id.getIndexSeries())
+                    : converter.toSeries(dataSource, id.getSheetName(), id.getSeriesName());
+        } catch (Exception ex) {
+            return null;
         }
     }
 
@@ -224,5 +179,4 @@ final class SpreadSheetLegacy {
             return indexSeries_ >= 0 || seriesName_ != null;
         }
     }
-    //</editor-fold>
 }
