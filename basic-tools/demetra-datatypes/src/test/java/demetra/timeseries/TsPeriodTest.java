@@ -250,6 +250,28 @@ public class TsPeriodTest {
         assertThat(dateAt(DEFAULT_OFFSET, YEARLY, -1)).isEqualTo(EPOCH.minusYears(1));
     }
 
+    @Test
+    public void testGetPosition() {
+        assertThat(monthly(2010, 1).getPosition(YEARLY)).isEqualTo(0);
+        assertThat(monthly(2010, 2).getPosition(YEARLY)).isEqualTo(1);
+        assertThat(monthly(2010, 12).getPosition(YEARLY)).isEqualTo(11);
+
+        assertThat(monthly(2010, 1).getPosition(QUARTERLY)).isEqualTo(0);
+        assertThat(monthly(2010, 2).getPosition(QUARTERLY)).isEqualTo(1);
+        assertThat(monthly(2010, 3).getPosition(QUARTERLY)).isEqualTo(2);
+        assertThat(monthly(2010, 4).getPosition(QUARTERLY)).isEqualTo(0);
+
+        assertThat(monthly(2010, 1).getPosition(MONTHLY)).isEqualTo(0);
+        assertThat(monthly(2010, 2).getPosition(MONTHLY)).isEqualTo(0);
+
+        assertThat(quarterly(2010, 1).getPosition(YEARLY)).isEqualTo(0);
+        assertThat(quarterly(2010, 2).getPosition(YEARLY)).isEqualTo(1);
+        assertThat(quarterly(2010, 4).getPosition(YEARLY)).isEqualTo(3);
+
+        assertThat(monthly(2010, 1).getPosition(HOURLY)).isEqualTo(0);
+        assertThat(monthly(2010, 2).getPosition(HOURLY)).isEqualTo(0);
+    }
+
     private final LocalDate d2011_02_01 = LocalDate.of(2011, 2, 1);
     private final int someOffset = 10;
     private final LocalDateTime d2011_02_01_0000 = d2011_02_01.atStartOfDay();

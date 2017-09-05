@@ -101,6 +101,11 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
         return (int) (getRebasedId(endExclusive) - id);
     }
 
+    // FIXME: find a better name
+    public int getPosition(TsUnit unit) {
+        return getPosition(offset, this.unit, id, unit);
+    }
+
     @Override
     public String toString() {
         return toString(offset, unit, id);
@@ -239,6 +244,14 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
         return EPOCH.plus(unit.getAmount() * (id + offset), unit.getChronoUnit());
     }
 
+    private static int getPosition(int offset, TsUnit unit, long id, TsUnit target) {
+//        return withUnit(unit).withUnit(this.unit).until(this);
+        long id0 = id;
+        long id1 = idAt(offset, target, dateAt(offset, unit, id0));
+        long id2 = idAt(offset, unit, dateAt(offset, target, id1));
+        return (int) (id0 - id2);
+    }
+
     private static String toString(int offset, TsUnit unit, long id) {
         return DEFAULT_OFFSET == offset
                 ? String.format("TsPeriod(unit=%s, start=%s)", unit, dateAt(offset, unit, id))
@@ -252,7 +265,7 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
     }
 
     public String display() {
-        if (unit.getChronoUnit().getDuration().compareTo(ChronoUnit.DAYS.getDuration())>=0) {
+        if (unit.getChronoUnit().getDuration().compareTo(ChronoUnit.DAYS.getDuration()) >= 0) {
             return start().toLocalDate().toString();
         } else {
             return start().toString();
@@ -265,7 +278,7 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
         private TsUnit unit = TsUnit.MONTHLY;
 
         private void refreshId(int oldoffset, TsUnit oldUnit, int newoffset, TsUnit newUnit) {
-            this.id = idAt(newoffset, newUnit, dateAt(oldoffset, oldUnit, id));
+            this.id = TsPeriod.idAt(newoffset, newUnit, dateAt(oldoffset, oldUnit, id));
         }
 
         public Builder offset(int offset) {
@@ -283,7 +296,7 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
         }
 
         public Builder date(LocalDateTime date) {
-            this.id = idAt(offset, unit, date);
+            this.id = TsPeriod.idAt(offset, unit, date);
             return this;
         }
 
@@ -292,19 +305,23 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
             return this;
         }
 
+        public int getPosition(TsUnit unit) {
+            return TsPeriod.getPosition(offset, this.unit, id, unit);
+        }
+
         @Override
         public LocalDateTime start() {
-            return dateAt(offset, unit, id);
+            return TsPeriod.dateAt(offset, unit, id);
         }
 
         @Override
         public LocalDateTime end() {
-            return dateAt(offset, unit, id + 1);
+            return TsPeriod.dateAt(offset, unit, id + 1);
         }
 
         @Override
         public boolean contains(LocalDateTime date) {
-            return idAt(offset, unit, date) == id;
+            return TsPeriod.idAt(offset, unit, date) == id;
         }
 
         @Override
@@ -315,6 +332,5 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
         public String toShortString() {
             return TsPeriod.toShortString(offset, unit, id);
         }
-
     }
 }
