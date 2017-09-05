@@ -99,6 +99,7 @@
         <module>sa</module>
         <module>benchmarking</module>
         <module>demetra-tsprovider</module>
+        <module>demetra-bridge</module>
     </modules>
 	
     <dependencyManagement>
