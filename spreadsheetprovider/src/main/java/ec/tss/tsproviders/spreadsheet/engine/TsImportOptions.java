@@ -31,15 +31,6 @@ import javax.annotation.Nonnull;
  */
 public final class TsImportOptions {
 
-    @Deprecated
-    @Nonnull
-    public static TsImportOptions create(DataFormat dataFormat, TsFrequency frequency, TsAggregationType aggregationType, boolean cleanMissing) {
-        ObsGathering gathering = cleanMissing
-                ? ObsGathering.excludingMissingValues(frequency, aggregationType)
-                : ObsGathering.includingMissingValues(frequency, aggregationType);
-        return new TsImportOptions(dataFormat, gathering);
-    }
-
     /**
      *
      * @param dataFormat
@@ -81,23 +72,6 @@ public final class TsImportOptions {
     @Nonnull
     public ObsGathering getObsGathering() {
         return gathering;
-    }
-
-    @Deprecated
-    @Nonnull
-    public TsFrequency getFrequency() {
-        return gathering.getFrequency();
-    }
-
-    @Deprecated
-    @Nonnull
-    public TsAggregationType getAggregationType() {
-        return gathering.getAggregationType();
-    }
-
-    @Deprecated
-    public boolean isCleanMissing() {
-        return gathering.isSkipMissingValues();
     }
 
     @Override

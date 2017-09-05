@@ -14,7 +14,7 @@
     <description>A TS Provider that handles Excel and OpenDocument spreadsheets.</description>
 
     <properties>
-        <spreadsheet4j.version>2.2.0-RC1</spreadsheet4j.version>
+        <spreadsheet4j.version>2.2.0</spreadsheet4j.version>
     </properties>
 
     <dependencyManagement>
@@ -48,22 +48,6 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>spreadsheet-html</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>spreadsheet-od</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>spreadsheet-poi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>spreadsheet-xmlss</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-tss</artifactId>
         </dependency>
         <dependency>
@@ -84,6 +68,21 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>spreadsheet-od</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>spreadsheet-poi</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>spreadsheet-xmlss</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>  

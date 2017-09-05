@@ -17,10 +17,6 @@
 package ec.tss.tsproviders.spreadsheet.engine;
 
 import com.google.common.collect.ImmutableList;
-import ec.tss.tsproviders.spreadsheet.facade.Sheet;
-import ec.tstoolkit.timeseries.TsAggregationType;
-import ec.tstoolkit.timeseries.simplets.TsFrequency;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -31,11 +27,6 @@ import javax.annotation.Nonnull;
  * @author Jean Palate
  */
 public final class SpreadSheetCollection implements Comparable<SpreadSheetCollection> {
-
-    @Deprecated
-    public static SpreadSheetCollection load(Sheet sheet, int ordering, CellParser<String> toName, CellParser<Date> toDate, CellParser<Number> toNumber, TsFrequency frequency, TsAggregationType aggregationType, boolean clean) {
-        return Engine.parseCollection(sheet, ordering, toName, toDate, toNumber, frequency, aggregationType, clean);
-    }
 
     public enum AlignType {
 
@@ -82,37 +73,5 @@ public final class SpreadSheetCollection implements Comparable<SpreadSheetCollec
 
     private boolean equals(SpreadSheetCollection that) {
         return this.ordering == that.ordering && this.sheetName.equals(that.sheetName);
-    }
-
-    // build old names map...
-    @Deprecated
-    public SpreadSheetSeries searchOldName(String name) {
-        int pos = 0;
-        for (SpreadSheetSeries item : series) {
-            String iname = item.seriesName;
-            iname = iname.replace('.', '#');
-            if (iname.length() > 64) {
-                iname = iname.substring(0, 64);
-            }
-            int c = 1;
-            while (map.containsKey(iname)) {
-                String nid = Integer.toString(c++);
-                iname = iname.substring(0, iname.length() - nid.length());
-                iname += nid;
-            }
-            map.put(iname, pos++);
-        }
-
-        Integer ipos = map.get(name);
-        if (ipos == null) {
-            return null;
-        } else {
-            return series.get(ipos);
-        }
-    }
-
-    @Deprecated
-    public static AlignType getAlignType(Sheet sheet, CellParser<String> toName, CellParser<Date> toDate) {
-        return Engine.parseAlignType(sheet, toName, toDate);
     }
 }

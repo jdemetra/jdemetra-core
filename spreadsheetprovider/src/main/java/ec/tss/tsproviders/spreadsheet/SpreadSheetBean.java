@@ -114,14 +114,4 @@ public class SpreadSheetBean implements IFileBean, IDataSourceBean {
         X_CLEAN_MISSING.set(builder, cleanMissing);
         return builder.build();
     }
-
-    @Deprecated
-    public DataSource toDataSource() {
-        return toDataSource(SpreadSheetProvider.SOURCE, SpreadSheetProvider.VERSION);
-    }
-
-    @Deprecated
-    public static SpreadSheetBean from(DataSource dataSource) {
-        return new SpreadSheetBean(dataSource);
-    }
 }

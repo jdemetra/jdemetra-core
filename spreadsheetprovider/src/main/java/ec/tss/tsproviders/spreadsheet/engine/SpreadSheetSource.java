@@ -18,15 +18,7 @@ package ec.tss.tsproviders.spreadsheet.engine;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import ec.tss.tsproviders.spreadsheet.facade.Book;
-import ec.tss.tsproviders.utils.DataFormat;
-import ec.tss.tsproviders.utils.IParser;
-import ec.tstoolkit.timeseries.TsAggregationType;
-import ec.tstoolkit.timeseries.simplets.TsFrequency;
-import java.io.IOException;
-import java.util.Date;
 import java.util.List;
-import javax.annotation.Nonnull;
 
 /**
  *
@@ -34,27 +26,9 @@ import javax.annotation.Nonnull;
  */
 public final class SpreadSheetSource {
 
-    @Deprecated
-    @Nonnull
-    public static SpreadSheetSource load(@Nonnull Book book, @Nonnull DataFormat df, @Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean clean) throws IOException {
-        return Engine.parseSource(book, df, freq, aggregation, clean);
-    }
-
-    @Deprecated
-    @Nonnull
-    public static SpreadSheetSource load(@Nonnull Book book, @Nonnull IParser<Date> dateParser, @Nonnull IParser<Number> numberParser, @Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean clean) throws IOException {
-        return Engine.parseSource(book, dateParser, numberParser, freq, aggregation, clean);
-    }
-
-    @Deprecated
-    public static SpreadSheetSource load(Book book, CellParser<String> toName, CellParser<Date> toDate, CellParser<Number> toNumber, TsFrequency freq, TsAggregationType aggregation, boolean clean) throws IOException {
-        return Engine.parseSource(book, toName, toDate, toNumber, freq, aggregation, clean);
-    }
-
     public final ImmutableMap<String, SpreadSheetCollection> collections;
     public final String factoryName;
 
-    @Deprecated
     public SpreadSheetSource(List<SpreadSheetCollection> list, String factoryName) {
         this.collections = Maps.uniqueIndex(list, o -> o != null ? o.sheetName : null);
         this.factoryName = factoryName;
