@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 National Bank of Belgium
+ * Copyright 2017 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,34 +14,33 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.spreadsheet;
+package internal.spreadsheet;
 
-import ec.tss.tsproviders.DataSet;
-import ec.tss.tsproviders.DataSource;
-import ec.tss.tsproviders.HasDataDisplayName;
-import ec.tss.tsproviders.utils.DataSourcePreconditions;
-import ec.tss.tsproviders.utils.MultiLineNameUtil;
-import ec.tss.tsproviders.utils.ObsGathering;
-import ec.tstoolkit.timeseries.simplets.TsFrequency;
+import demetra.spreadsheet.SpreadSheetBean;
+import demetra.timeseries.TsUnit;
+import demetra.tsprovider.DataSet;
+import static demetra.tsprovider.DataSet.Kind.COLLECTION;
+import static demetra.tsprovider.DataSet.Kind.SERIES;
+import demetra.tsprovider.DataSource;
+import demetra.tsprovider.HasDataDisplayName;
+import demetra.tsprovider.util.DataSourcePreconditions;
+import demetra.tsprovider.util.MultiLineNameUtil;
+import demetra.tsprovider.util.ObsGathering;
 
 /**
  *
  * @author Philippe Charles
  */
-final class SpreadSheetDataDisplayName implements HasDataDisplayName {
+@lombok.AllArgsConstructor(staticName = "of")
+public final class SpreadSheetDataDisplayName implements HasDataDisplayName {
 
     private final String providerName;
     private final SpreadSheetParam resource;
 
-    SpreadSheetDataDisplayName(String providerName, SpreadSheetParam resource) {
-        this.providerName = providerName;
-        this.resource = resource;
-    }
-
     @Override
     public String getDisplayName(DataSource dataSource) throws IllegalArgumentException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
-        SpreadSheetBean2 bean = resource.get(dataSource);
+        SpreadSheetBean bean = resource.get(dataSource);
         return bean.getFile().getPath() + toString(bean.getObsGathering());
     }
 
@@ -78,6 +77,6 @@ final class SpreadSheetDataDisplayName implements HasDataDisplayName {
     }
 
     private static String toString(ObsGathering gathering) {
-        return TsFrequency.Undefined == gathering.getFrequency() ? "" : (" (" + gathering.getFrequency() + "/" + gathering.getAggregationType() + ")");
+        return TsUnit.UNDEFINED.equals(gathering.getUnit()) ? "" : String.format("(%s/%s)", gathering.getUnit(), gathering.getAggregationType());
     }
 }

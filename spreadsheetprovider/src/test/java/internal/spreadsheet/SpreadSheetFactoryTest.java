@@ -16,19 +16,24 @@
  */
 package internal.spreadsheet;
 
-import static internal.spreadsheet.AlignType.HORIZONTAL;
-import static internal.spreadsheet.AlignType.VERTICAL;
+import internal.spreadsheet.grid.GridImport;
+import demetra.data.AggregationType;
+import demetra.timeseries.TsUnit;
+import static demetra.timeseries.TsUnit.MONTHLY;
+import demetra.tsprovider.util.ObsGathering;
+import static internal.spreadsheet.grid.GridType.HORIZONTAL;
+import static internal.spreadsheet.grid.GridType.VERTICAL;
 import static internal.spreadsheet.CellParser.onDateType;
 import static internal.spreadsheet.CellParser.onNumberType;
 import static internal.spreadsheet.CellParser.onStringType;
 import internal.spreadsheet.SpreadSheetFactory.Context;
-import static internal.spreadsheet.TestUtils.date;
-import static internal.spreadsheet.TestUtils.sheet;
-import static internal.spreadsheet.TestUtils.top5Excel;
-import static internal.spreadsheet.TestUtils.top5ExcelClassic;
-import static internal.spreadsheet.TestUtils.top5OpenDocument;
-import static internal.spreadsheet.TestUtils.top5Xmlss;
-import static internal.spreadsheet.Top5BrowsersHelper.testContent;
+import static internal.spreadsheet.Top5Browsers.date;
+import static internal.spreadsheet.Top5Browsers.sheet;
+import static internal.spreadsheet.Top5Browsers.top5Excel;
+import static internal.spreadsheet.Top5Browsers.top5ExcelClassic;
+import static internal.spreadsheet.Top5Browsers.top5OpenDocument;
+import static internal.spreadsheet.Top5Browsers.top5Xmlss;
+import static internal.spreadsheet.Top5Browsers.testContent;
 import ec.util.spreadsheet.Book;
 import ec.util.spreadsheet.od.OpenDocumentBookFactory;
 import ec.util.spreadsheet.poi.ExcelBookFactory;
@@ -39,11 +44,7 @@ import java.net.URL;
 import org.junit.Test;
 import static internal.spreadsheet.SpreadSheetCollectionAssert.assertThat;
 import static internal.spreadsheet.SpreadSheetFactory.DefaultImpl.parseCollection;
-import static internal.spreadsheet.TestUtils.data;
-import ec.tss.tsproviders.utils.ObsGathering;
-import static ec.tstoolkit.timeseries.TsAggregationType.None;
-import static ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly;
-import static ec.tstoolkit.timeseries.simplets.TsFrequency.Undefined;
+import static internal.spreadsheet.Top5Browsers.data;
 import java.util.Date;
 
 /**
@@ -55,10 +56,11 @@ public class SpreadSheetFactoryTest {
     private final Date jan2010 = date(2010, 0, 1);
     private final Date feb2010 = date(2010, 1, 1);
     private final Date mar2010 = date(2010, 2, 1);
+    private final ObsGathering gathering = ObsGathering.builder().unit(TsUnit.UNDEFINED).aggregationType(AggregationType.None).skipMissingValues(true).build();
 
     @Test
     public void testParseCollectionHorizontal() {
-        Context context = new Context(onStringType(), onDateType(), onNumberType(), ObsGathering.excludingMissingValues(Undefined, None));
+        Context context = new Context(onStringType(), onDateType(), onNumberType(), gathering);
 
         Object[][] basic = {
             {null, jan2010, feb2010, mar2010},
@@ -66,9 +68,9 @@ public class SpreadSheetFactoryTest {
         };
 
         assertThat(parseCollection(sheet(basic), 0, context))
-                .hasAlignType(HORIZONTAL)
+                .hasGridType(HORIZONTAL)
                 .containsExactly("S1")
-                .containsExactly(data(Monthly, 2010, 0, 3.14, 4.56, 7.89));
+                .containsExactly(data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89));
 
         Object[][] withDateHeader = {
             {"Date", jan2010, feb2010, mar2010},
@@ -76,9 +78,9 @@ public class SpreadSheetFactoryTest {
         };
 
         assertThat(parseCollection(sheet(withDateHeader), 0, context))
-                .hasAlignType(HORIZONTAL)
+                .hasGridType(HORIZONTAL)
                 .containsExactly("S1")
-                .containsExactly(data(Monthly, 2010, 0, 3.14, 4.56, 7.89));
+                .containsExactly(data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89));
 
         Object[][] withoutHeader = {
             {jan2010, feb2010, mar2010},
@@ -86,9 +88,9 @@ public class SpreadSheetFactoryTest {
         };
 
         assertThat(parseCollection(sheet(withoutHeader), 0, context))
-                .hasAlignType(HORIZONTAL)
+                .hasGridType(HORIZONTAL)
                 .containsExactly("S1")
-                .containsExactly(data(Monthly, 2010, 0, 3.14, 4.56, 7.89));
+                .containsExactly(data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89));
 
         Object[][] withMultipleHeaders = {
             {null, null, jan2010, feb2010, mar2010},
@@ -99,18 +101,18 @@ public class SpreadSheetFactoryTest {
         };
 
         assertThat(parseCollection(sheet(withMultipleHeaders), 0, context))
-                .hasAlignType(HORIZONTAL)
+                .hasGridType(HORIZONTAL)
                 .containsExactly("G1\nS1", "G1\nS2", "G2\nS1", "S1")
                 .containsExactly(
-                        data(Monthly, 2010, 0, 3.14, 4.56, 7.89),
-                        data(Monthly, 2010, 0, 3, 4, 5),
-                        data(Monthly, 2010, 0, 7, 8, 9),
-                        data(Monthly, 2010, 0, 0, 1, 2));
+                        data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89),
+                        data(MONTHLY, 2010, 0, 3, 4, 5),
+                        data(MONTHLY, 2010, 0, 7, 8, 9),
+                        data(MONTHLY, 2010, 0, 0, 1, 2));
     }
 
     @Test
     public void testParseCollectionVertical() {
-        Context context = new Context(onStringType(), onDateType(), onNumberType(), ObsGathering.excludingMissingValues(Undefined, None));
+        Context context = new Context(onStringType(), onDateType(), onNumberType(), gathering);
 
         Object[][] basic = {
             {null, "S1"},
@@ -120,8 +122,8 @@ public class SpreadSheetFactoryTest {
         };
 
         assertThat(parseCollection(sheet(basic), 0, context))
-                .hasAlignType(VERTICAL)
-                .containsExactly(data(Monthly, 2010, 0, 3.14, 4.56, 7.89));
+                .hasGridType(VERTICAL)
+                .containsExactly(data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89));
 
         Object[][] withDateHeader = {
             {"Date", "S1"},
@@ -131,8 +133,8 @@ public class SpreadSheetFactoryTest {
         };
 
         assertThat(parseCollection(sheet(withDateHeader), 0, context))
-                .hasAlignType(VERTICAL)
-                .containsExactly(data(Monthly, 2010, 0, 3.14, 4.56, 7.89));
+                .hasGridType(VERTICAL)
+                .containsExactly(data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89));
 
         Object[][] withoutHeader = {
             {jan2010, 3.14},
@@ -141,9 +143,9 @@ public class SpreadSheetFactoryTest {
         };
 
         assertThat(parseCollection(sheet(withoutHeader), 0, context))
-                .hasAlignType(VERTICAL)
+                .hasGridType(VERTICAL)
                 .containsExactly("S1")
-                .containsExactly(data(Monthly, 2010, 0, 3.14, 4.56, 7.89));
+                .containsExactly(data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89));
 
         Object[][] withMultipleHeaders = {
             {null, "G1", null, "G2", "S1"},
@@ -154,18 +156,18 @@ public class SpreadSheetFactoryTest {
         };
 
         assertThat(parseCollection(sheet(withMultipleHeaders), 0, context))
-                .hasAlignType(VERTICAL)
+                .hasGridType(VERTICAL)
                 .containsExactly("G1\nS1", "G1\nS2", "G2\nS1", "S1")
                 .containsExactly(
-                        data(Monthly, 2010, 0, 3.14, 4.56, 7.89),
-                        data(Monthly, 2010, 0, 3, 4, 5),
-                        data(Monthly, 2010, 0, 7, 8, 9),
-                        data(Monthly, 2010, 0, 0, 1, 2));
+                        data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89),
+                        data(MONTHLY, 2010, 0, 3, 4, 5),
+                        data(MONTHLY, 2010, 0, 7, 8, 9),
+                        data(MONTHLY, 2010, 0, 0, 1, 2));
     }
 
     private static void testFactory(Book.Factory bookFactory, URL url) throws IOException {
         try (Book book = bookFactory.load(url)) {
-            testContent(SpreadSheetFactory.getDefault().toSource(book, TsImportOptions.DEFAULT));
+            testContent(SpreadSheetFactory.getDefault().toSource(book, GridImport.DEFAULT));
         }
     }
 

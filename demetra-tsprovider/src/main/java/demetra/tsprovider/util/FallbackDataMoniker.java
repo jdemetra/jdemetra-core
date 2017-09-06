@@ -14,21 +14,24 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.spreadsheet;
+package demetra.tsprovider.util;
 
-import ec.tss.TsMoniker;
-import ec.tss.tsproviders.DataSet;
-import ec.tss.tsproviders.DataSource;
-import ec.tss.tsproviders.HasDataMoniker;
+import demetra.tsprovider.DataSet;
+import demetra.tsprovider.DataSource;
+import demetra.tsprovider.HasDataMoniker;
+import demetra.tsprovider.TsMoniker;
 
 /**
  *
  * @author Philippe Charles
  */
-@lombok.AllArgsConstructor
+@lombok.AllArgsConstructor(staticName = "of")
 public final class FallbackDataMoniker implements HasDataMoniker {
 
+    @lombok.NonNull
     private final HasDataMoniker first;
+
+    @lombok.NonNull
     private final HasDataMoniker second;
 
     @Override

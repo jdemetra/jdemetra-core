@@ -14,13 +14,13 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.spreadsheet;
+package internal.spreadsheet.grid;
 
 /**
  *
  * @author Philippe Charles
  */
-public enum AlignType {
+public enum GridType {
 
     VERTICAL, HORIZONTAL, UNKNOWN
 }

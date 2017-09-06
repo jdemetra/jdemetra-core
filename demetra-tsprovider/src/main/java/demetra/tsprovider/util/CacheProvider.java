@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 National Bank of Belgium
+ * Copyright 2017 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,23 +14,28 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.spreadsheet;
+package demetra.tsprovider.util;
 
-import ec.tss.tsproviders.utils.DataFormat;
-import ec.tss.tsproviders.utils.ObsGathering;
-import ec.tstoolkit.timeseries.TsAggregationType;
-import ec.tstoolkit.timeseries.simplets.TsFrequency;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import javax.annotation.Nonnull;
 
 /**
  *
  * @author Philippe Charles
- * @since 2.1.0
  */
-@lombok.Value(staticConstructor = "of")
-public class TsImportOptions {
+public interface CacheProvider {
 
-    public static final TsImportOptions DEFAULT = new TsImportOptions(DataFormat.DEFAULT, ObsGathering.excludingMissingValues(TsFrequency.Undefined, TsAggregationType.None));
+    @Nonnull
+    <K, V> ConcurrentMap<K, V> softValuesCacheAsMap();
 
-    DataFormat obsFormat;
-    ObsGathering obsGathering;
+    static CacheProvider getDefault() {
+        // FIXME: create real cache and improved API (JCache?)
+        return new CacheProvider() {
+            @Override
+            public <K, V> ConcurrentMap<K, V> softValuesCacheAsMap() {
+                return new ConcurrentHashMap<>();
+            }
+        };
+    }
 }

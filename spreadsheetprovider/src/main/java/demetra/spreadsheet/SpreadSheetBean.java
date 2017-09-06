@@ -14,19 +14,21 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.bridge;
+package demetra.spreadsheet;
+
+import demetra.tsprovider.FileBean;
+import demetra.tsprovider.util.ObsFormat;
+import demetra.tsprovider.util.ObsGathering;
+import java.io.File;
 
 /**
  *
  * @author Philippe Charles
  */
-public final class ConverterException extends RuntimeException {
+@lombok.Data
+public final class SpreadSheetBean implements FileBean {
 
-    public static <FROM, TO> ConverterException of(Class<FROM> from, Class<TO> to, FROM value) {
-        return new ConverterException(String.format("Cannot convert from %s to %s with value '%s'", from, to, value));
-    }
-
-    public ConverterException(String message) {
-        super(message);
-    }
+    private File file;
+    private ObsFormat obsFormat;
+    private ObsGathering obsGathering;
 }

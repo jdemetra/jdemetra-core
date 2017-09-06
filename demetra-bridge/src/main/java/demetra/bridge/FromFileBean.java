@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 National Bank of Belgium
+ * Copyright 2017 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,32 +14,32 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.spreadsheet;
+package demetra.bridge;
+
+import demetra.tsprovider.FileBean;
+import ec.tss.tsproviders.IFileBean;
+import java.io.File;
 
 /**
  *
  * @author Philippe Charles
  */
-@lombok.Value(staticConstructor = "of")
-public class TsExportOptions {
+@lombok.AllArgsConstructor
+public class FromFileBean implements IFileBean {
 
-    public static final TsExportOptions DEFAULT = new TsExportOptions(true, true, true, true);
+    private final FileBean delegate;
 
-    /**
-     * true : one series per column, false : one series per line
-     */
-    boolean vertical;
-    /**
-     * show or not the dates
-     */
-    boolean showDates;
-    /**
-     * show or not the titles of the series
-     */
-    boolean showTitle;
-    /**
-     * true to set the dates at the beginning of the period, false for the end
-     * of the period
-     */
-    boolean beginPeriod;
+    public FileBean getDelegate() {
+        return delegate;
+    }
+
+    @Override
+    public File getFile() {
+        return delegate.getFile();
+    }
+
+    @Override
+    public void setFile(File file) {
+        delegate.setFile(file);
+    }
 }

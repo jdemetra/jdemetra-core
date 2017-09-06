@@ -16,32 +16,42 @@
  */
 package internal.spreadsheet;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Streams;
-import ec.tss.TsCollectionInformation;
-import ec.tss.TsInformation;
-import ec.tss.TsInformationType;
-import static internal.spreadsheet.AlignType.HORIZONTAL;
-import static internal.spreadsheet.AlignType.UNKNOWN;
-import static internal.spreadsheet.AlignType.VERTICAL;
-import ec.tss.tsproviders.utils.MultiLineNameUtil;
-import ec.tss.tsproviders.utils.ObsGathering;
-import ec.tss.tsproviders.utils.OptionalTsData;
-import ec.tstoolkit.data.Table;
-import ec.tstoolkit.design.VisibleForTesting;
-import ec.tstoolkit.maths.matrices.Matrix;
-import ec.tstoolkit.timeseries.simplets.TsDataTable;
-import ec.tstoolkit.timeseries.simplets.TsDataTableInfo;
+import internal.spreadsheet.grid.GridExport;
+import internal.spreadsheet.grid.GridImport;
+import internal.spreadsheet.grid.GridSheet;
+import internal.spreadsheet.grid.GridSeries;
+import internal.spreadsheet.grid.GridType;
+import internal.spreadsheet.grid.GridBook;
+import demetra.design.VisibleForTesting;
+import demetra.tsprovider.Ts;
+import demetra.tsprovider.TsCollection;
+import demetra.tsprovider.TsInformationType;
+import demetra.tsprovider.util.MultiLineNameUtil;
+import demetra.tsprovider.util.ObsGathering;
+import demetra.tsprovider.util.TsDataBuilder;
+import static internal.spreadsheet.grid.GridType.HORIZONTAL;
+import static internal.spreadsheet.grid.GridType.UNKNOWN;
+import static internal.spreadsheet.grid.GridType.VERTICAL;
 import ec.util.spreadsheet.Book;
 import ec.util.spreadsheet.Sheet;
 import ec.util.spreadsheet.helpers.ArraySheet;
+import internal.spreadsheet.Fixme.Matrix;
+import internal.spreadsheet.Fixme.Table;
+import internal.spreadsheet.Fixme.TsDataTable;
+import internal.spreadsheet.Fixme.TsDataTableInfo;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 
 /**
@@ -51,16 +61,16 @@ import javax.annotation.Nonnull;
 public interface SpreadSheetFactory {
 
     @Nonnull
-    SpreadSheetSource toSource(@Nonnull Book book, @Nonnull TsImportOptions options) throws IOException;
+    GridBook toSource(@Nonnull Book book, @Nonnull GridImport options) throws IOException;
 
     @Nonnull
-    TsCollectionInformation toTsCollectionInfo(@Nonnull Sheet sheet, @Nonnull TsImportOptions options);
+    TsCollection toTsCollectionInfo(@Nonnull Sheet sheet, @Nonnull GridImport options);
 
     @Nonnull
     Table<?> toTable(@Nonnull Sheet sheet);
 
     @Nonnull
-    ArraySheet fromTsCollectionInfo(@Nonnull TsCollectionInformation col, @Nonnull TsExportOptions options);
+    ArraySheet fromTsCollectionInfo(@Nonnull TsCollection col, @Nonnull GridExport options);
 
     @Nonnull
     ArraySheet fromMatrix(@Nonnull Matrix matrix);
@@ -80,32 +90,32 @@ public interface SpreadSheetFactory {
         private static final DefaultImpl INSTANCE = new DefaultImpl();
 
         @Override
-        public SpreadSheetSource toSource(Book book, TsImportOptions options) throws IOException {
+        public GridBook toSource(Book book, GridImport options) throws IOException {
             return parseSource(book, Context.create(options));
         }
 
         @Override
-        public ArraySheet fromTsCollectionInfo(TsCollectionInformation col, TsExportOptions options) {
+        public ArraySheet fromTsCollectionInfo(TsCollection col, GridExport options) {
             TsDataTable table = new TsDataTable();
-            for (TsInformation o : col.items) {
-                table.insert(-1, o.data);
+            for (Ts o : col.getItems()) {
+                table.insert(-1, o.getData().get());
             }
 
             if (table.getDomain() != null) {
                 ArraySheet.Builder builder = ArraySheet.builder().name("dnd");
 
                 if (options.isShowTitle()) {
-                    builder.row(0, options.isShowDates() ? 1 : 0, col.items.stream().map(o -> o.name).iterator());
+                    builder.row(0, options.isShowDates() ? 1 : 0, col.getItems().stream().map(o -> o.getName()).iterator());
                 }
 
                 if (options.isShowDates()) {
-                    builder.column(options.isShowTitle() ? 1 : 0, 0, Streams.stream(table.getDomain()).map(options.isBeginPeriod() ? o -> o.firstday().getTime() : o -> o.lastday().getTime()).iterator());
+                    builder.column(options.isShowTitle() ? 1 : 0, 0, table.getDomain().stream().map(options.isBeginPeriod() ? o -> o.start() : o -> o.end()).iterator());
                 }
 
                 int firstRow = options.isShowTitle() ? 1 : 0;
                 int firstColumn = options.isShowDates() ? 1 : 0;
                 int rowCount = table.getDomain().getLength();
-                int columnCount = col.items.size();
+                int columnCount = col.getItems().size();
                 for (int i = 0; i < rowCount; ++i) {
                     for (int j = 0; j < columnCount; ++j) {
                         if (table.getDataInfo(i, j) == TsDataTableInfo.Valid) {
@@ -116,7 +126,7 @@ public interface SpreadSheetFactory {
 
                 ArraySheet sheet = builder.build();
 
-                if (!options.isVertical()) {
+                if (!options.getGridType().equals(VERTICAL)) {
                     sheet = sheet.inv();
                 }
 
@@ -127,24 +137,18 @@ public interface SpreadSheetFactory {
         }
 
         @Override
-        public TsCollectionInformation toTsCollectionInfo(Sheet sheet, TsImportOptions options) {
-            TsCollectionInformation result = new TsCollectionInformation();
-            result.name = sheet.getName();
-            result.type = TsInformationType.All;
-            for (SpreadSheetSeries s : parseCollection(sheet, 0, Context.create(options)).getSeries()) {
-                TsInformation tsInfo = new TsInformation();
-                tsInfo.name = s.getSeriesName();
-                tsInfo.type = TsInformationType.All;
-                if (s.getData().isPresent()) {
-                    tsInfo.data = s.getData().get();
-                    tsInfo.invalidDataCause = null;
-                } else {
-                    tsInfo.data = null;
-                    tsInfo.invalidDataCause = s.getData().getCause();
-                }
-                result.items.add(tsInfo);
+        public TsCollection toTsCollectionInfo(Sheet sheet, GridImport options) {
+            TsCollection.Builder result = TsCollection.builder();
+            result.name(sheet.getName());
+            result.type(TsInformationType.All);
+            for (GridSeries s : parseCollection(sheet, 0, Context.create(options)).getRanges()) {
+                Ts.Builder tsInfo = Ts.builder();
+                tsInfo.name(s.getSeriesName());
+                tsInfo.type(TsInformationType.All);
+                tsInfo.data(s.getData());
+                result.item(tsInfo.build());
             }
-            return result;
+            return result.build();
         }
 
         @Override
@@ -154,7 +158,7 @@ public interface SpreadSheetFactory {
 
         @Override
         public Table<?> toTable(Sheet sheet) {
-            Table<Object> result = new Table<>(sheet.getRowCount(), sheet.getColumnCount());
+            Table<Object> result = Table.of(sheet.getRowCount(), sheet.getColumnCount());
             sheet.forEachValue(result::set);
             return result;
         }
@@ -165,15 +169,18 @@ public interface SpreadSheetFactory {
         }
 
         @VisibleForTesting
-        static SpreadSheetSource parseSource(Book book, Context context) throws IOException {
+        static GridBook parseSource(Book book, Context context) throws IOException {
             int sheetCount = book.getSheetCount();
-            List<SpreadSheetCollection> result = new ArrayList<>(sheetCount);
-            book.forEach((sheet, i) -> result.add(parseCollection(sheet, i, context)));
-            return SpreadSheetSource.of(result, "?");
+            Map<String, GridSheet> result = new HashMap<>(sheetCount);
+            book.forEach((sheet, i) -> {
+                GridSheet data = parseCollection(sheet, i, context);
+                result.put(data.getSheetName(), data);
+            });
+            return GridBook.of(result);
         }
 
         @VisibleForTesting
-        static SpreadSheetCollection parseCollection(Sheet sheet, int ordering, Context context) {
+        static GridSheet parseCollection(Sheet sheet, int ordering, Context context) {
             DateHeader rowDates = new DateHeader(sheet.getRowCount());
             for (int i = 0; i < sheet.getRowCount(); i++) {
                 rowDates.set(i, context.toDate.parse(sheet, i, 0));
@@ -192,11 +199,15 @@ public interface SpreadSheetFactory {
                 return loadVertically(HORIZONTAL, ordering, sheet.inv(), context, colDates);
             }
 
-            return new SpreadSheetCollection(sheet.getName(), ordering, UNKNOWN, ImmutableList.<SpreadSheetSeries>of());
+            return GridSheet.of(sheet.getName(), ordering, UNKNOWN, Collections.emptyList());
         }
 
         private static final int FIRST_DATA_COL_IDX = 1;
-        private static final Joiner NAME_JOINER = Joiner.on(MultiLineNameUtil.SEPARATOR).skipNulls();
+        private static final Collector<CharSequence, ?, String> NAME_JOINER = Collectors.joining(MultiLineNameUtil.SEPARATOR);
+
+        private static String joinSkippingNulls(String[] items) {
+            return Stream.of(items).filter(Objects::nonNull).collect(NAME_JOINER);
+        }
 
         private static List<String> getHorizontalNames(Sheet sheet, Context context, int level) {
             List<String> result = new ArrayList<>();
@@ -239,7 +250,7 @@ public interface SpreadSheetFactory {
                         if (!hasHeader) {
                             break;
                         }
-                        result.add(NAME_JOINER.join(path));
+                        result.add(joinSkippingNulls(path));
                     }
                     break;
                 }
@@ -247,22 +258,22 @@ public interface SpreadSheetFactory {
             return result;
         }
 
-        private static SpreadSheetCollection loadVertically(AlignType alignType, int ordering, Sheet sheet, Context context, DateHeader dates) {
+        private static GridSheet loadVertically(GridType gridType, int ordering, Sheet sheet, Context context, DateHeader dates) {
             List<String> names = getHorizontalNames(sheet, context, dates.minIndex);
 
-            ImmutableList.Builder<SpreadSheetSeries> list = ImmutableList.builder();
+            List<GridSeries> list = new ArrayList<>();
 
-            OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(context.cal, context.gathering);
+            TsDataBuilder<Date> data = TsDataBuilder.byCalendar(context.cal, context.gathering);
             for (int columnIdx = 0; columnIdx < names.size(); columnIdx++) {
                 for (int rowIdx = dates.getMinIndex(); rowIdx <= dates.getMaxIndex(); rowIdx++) {
                     Number value = context.toNumber.parse(sheet, rowIdx, columnIdx + FIRST_DATA_COL_IDX);
                     data.add(dates.get(rowIdx), value);
                 }
-                list.add(new SpreadSheetSeries(names.get(columnIdx), columnIdx, alignType, data.build()));
+                list.add(GridSeries.of(names.get(columnIdx), columnIdx, gridType, data.build()));
                 data.clear();
             }
 
-            return new SpreadSheetCollection(sheet.getName(), ordering, alignType, list.build());
+            return GridSheet.of(sheet.getName(), ordering, gridType, list);
         }
     }
 
@@ -283,7 +294,7 @@ public interface SpreadSheetFactory {
             this.cal = new GregorianCalendar();
         }
 
-        private static Context create(TsImportOptions options) {
+        private static Context create(GridImport options) {
             return new Context(
                     CellParser.onStringType(),
                     CellParser.onDateType().or(CellParser.fromParser(options.getObsFormat().dateParser())),

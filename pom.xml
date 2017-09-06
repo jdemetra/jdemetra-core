@@ -188,6 +188,11 @@
                 <artifactId>demetra-tsprovider</artifactId>
                 <version>${project.version}</version>            
             </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-bridge</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
             <!-- < modules -->
             
             <!-- modules 3.0 > -->

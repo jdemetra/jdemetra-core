@@ -14,21 +14,32 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.spreadsheet;
-
-import ec.tss.tsproviders.IFileBean;
-import ec.tss.tsproviders.utils.DataFormat;
-import ec.tss.tsproviders.utils.ObsGathering;
-import java.io.File;
+package internal.spreadsheet.grid;
 
 /**
  *
  * @author Philippe Charles
  */
-@lombok.Data
-public final class SpreadSheetBean2 implements IFileBean {
+@lombok.Value(staticConstructor = "of")
+public class GridExport {
 
-    private File file;
-    private DataFormat obsFormat;
-    private ObsGathering obsGathering;
+    public static final GridExport DEFAULT = new GridExport(GridType.VERTICAL, true, true, true);
+
+    /**
+     * true : one series per column, false : one series per line
+     */
+    private GridType gridType;
+    /**
+     * show or not the dates
+     */
+    private boolean showDates;
+    /**
+     * show or not the titles of the series
+     */
+    private boolean showTitle;
+    /**
+     * true to set the dates at the beginning of the period, false for the end
+     * of the period
+     */
+    private boolean beginPeriod;
 }

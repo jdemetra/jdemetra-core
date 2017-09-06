@@ -20,8 +20,20 @@ import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.simplets.TsData;
+import demetra.tsprovider.DataSet;
+import demetra.tsprovider.DataSource;
+import demetra.tsprovider.OptionalTsData;
+import demetra.tsprovider.Ts;
+import demetra.tsprovider.TsCollection;
+import demetra.tsprovider.TsInformationType;
+import demetra.tsprovider.TsMoniker;
+import ec.tss.TsCollectionInformation;
+import ec.tss.TsInformation;
+import ec.tstoolkit.MetaData;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -106,5 +118,136 @@ public class Converter {
 
     public ec.tstoolkit.timeseries.simplets.TsData fromTsData(TsData o) {
         return new ec.tstoolkit.timeseries.simplets.TsData(fromTsPeriod(o.getStart()), o.values().toArray(), false);
+    }
+
+    public DataSource toDataSource(ec.tss.tsproviders.DataSource o) {
+        return DataSource.builder(o.getProviderName(), o.getVersion()).putAll(o.getParams()).build();
+    }
+
+    public ec.tss.tsproviders.DataSource fromDataSource(DataSource o) {
+        return ec.tss.tsproviders.DataSource.builder(o.getProviderName(), o.getVersion()).putAll(o.getParams()).build();
+    }
+
+    public DataSet toDataSet(ec.tss.tsproviders.DataSet o) {
+        return DataSet.builder(toDataSource(o.getDataSource()), toKind(o.getKind())).putAll(o.getParams()).build();
+    }
+
+    public ec.tss.tsproviders.DataSet fromDataSet(DataSet o) {
+        return ec.tss.tsproviders.DataSet.builder(fromDataSource(o.getDataSource()), fromKind(o.getKind())).putAll(o.getParams()).build();
+    }
+
+    public DataSet.Kind toKind(ec.tss.tsproviders.DataSet.Kind o) {
+        switch (o) {
+            case COLLECTION:
+                return DataSet.Kind.COLLECTION;
+            case DUMMY:
+                return DataSet.Kind.DUMMY;
+            case SERIES:
+                return DataSet.Kind.SERIES;
+            default:
+                throw ConverterException.of(ec.tss.tsproviders.DataSet.Kind.class, DataSet.Kind.class, o);
+        }
+    }
+
+    public ec.tss.tsproviders.DataSet.Kind fromKind(DataSet.Kind o) {
+        switch (o) {
+            case COLLECTION:
+                return ec.tss.tsproviders.DataSet.Kind.COLLECTION;
+            case DUMMY:
+                return ec.tss.tsproviders.DataSet.Kind.DUMMY;
+            case SERIES:
+                return ec.tss.tsproviders.DataSet.Kind.SERIES;
+            default:
+                throw ConverterException.of(DataSet.Kind.class, ec.tss.tsproviders.DataSet.Kind.class, o);
+        }
+    }
+
+    public TsMoniker toMoniker(ec.tss.TsMoniker o) {
+        return new TsMoniker(o.getSource(), o.getId());
+    }
+
+    public ec.tss.TsMoniker fromMoniker(TsMoniker o) {
+        return new ec.tss.TsMoniker(o.getSource(), o.getId());
+    }
+
+    public TsInformationType toType(ec.tss.TsInformationType o) {
+        switch (o) {
+            case All:
+                return TsInformationType.All;
+            case BaseInformation:
+                return TsInformationType.BaseInformation;
+            case Data:
+                return TsInformationType.Data;
+            case Definition:
+                return TsInformationType.Definition;
+            case MetaData:
+                return TsInformationType.MetaData;
+            case None:
+                return TsInformationType.None;
+            case UserDefined:
+                return TsInformationType.UserDefined;
+            default:
+                throw ConverterException.of(ec.tss.TsInformationType.class, TsInformationType.class, o);
+        }
+    }
+
+    public ec.tss.TsInformationType fromType(TsInformationType o) {
+        switch (o) {
+            case All:
+                return ec.tss.TsInformationType.All;
+            case BaseInformation:
+                return ec.tss.TsInformationType.BaseInformation;
+            case Data:
+                return ec.tss.TsInformationType.Data;
+            case Definition:
+                return ec.tss.TsInformationType.Definition;
+            case MetaData:
+                return ec.tss.TsInformationType.MetaData;
+            case None:
+                return ec.tss.TsInformationType.None;
+            case UserDefined:
+                return ec.tss.TsInformationType.UserDefined;
+            default:
+                throw ConverterException.of(TsInformationType.class, ec.tss.TsInformationType.class, o);
+        }
+    }
+
+    public Map<String, String> toMeta(MetaData o) {
+        return o;
+    }
+
+    public MetaData fromMeta(Map<String, String> o) {
+        return new MetaData(o);
+    }
+
+    public Ts toTs(TsInformation o) {
+        return Ts.builder()
+                .name(o.name)
+                .moniker(toMoniker(o.moniker))
+                .type(toType(o.type))
+                .metaData(toMeta(o.metaData))
+                .data(o.invalidDataCause != null ? OptionalTsData.absent(o.invalidDataCause) : OptionalTsData.present(Converter.toTsData(o.data)))
+                .build();
+    }
+
+    public TsInformation fromTs(Ts o) {
+        TsInformation result = new TsInformation();
+        result.name = o.getName();
+        result.moniker = fromMoniker(o.getMoniker());
+        result.type = fromType(o.getType());
+        result.metaData = fromMeta(o.getMetaData());
+        result.data = o.getData().isPresent() ? fromTsData(o.getData().get()) : null;
+        result.invalidDataCause = !o.getData().isPresent() ? o.getData().getCause() : null;
+        return result;
+    }
+
+    public TsCollection toTsCollection(TsCollectionInformation o) {
+        return TsCollection.builder()
+                .name(o.name)
+                .moniker(toMoniker(o.moniker))
+                .type(toType(o.type))
+                .metaData(toMeta(o.metaData))
+                .items(o.items.stream().map(item -> toTs(item)).collect(Collectors.toList()))
+                .build();
     }
 }

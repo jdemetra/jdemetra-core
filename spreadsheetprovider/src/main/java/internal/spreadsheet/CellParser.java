@@ -16,7 +16,7 @@
  */
 package internal.spreadsheet;
 
-import ec.tss.tsproviders.utils.IParser;
+import demetra.util.Parser;
 import ec.util.spreadsheet.Cell;
 import ec.util.spreadsheet.Sheet;
 import java.util.Date;
@@ -39,7 +39,7 @@ public interface CellParser<T> {
     }
 
     @Nonnull
-    static <X> CellParser<X> fromParser(@Nonnull IParser<X> parser) {
+    static <X> CellParser<X> fromParser(@Nonnull Parser<X> parser) {
         return (s, r, c) -> Util.fromParser(parser, s, r, c);
     }
 
@@ -65,7 +65,7 @@ public interface CellParser<T> {
             return result != null ? result : second.parse(sheet, rowIndex, columnIndex);
         }
 
-        static <T> T fromParser(IParser<T> adaptee, Sheet sheet, int rowIndex, int columnIndex) {
+        static <T> T fromParser(Parser<T> adaptee, Sheet sheet, int rowIndex, int columnIndex) {
             String input = Util.parseString(sheet, rowIndex, columnIndex);
             return input != null ? adaptee.parse(input) : null;
         }

@@ -14,23 +14,26 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.spreadsheet;
+package internal.spreadsheet.grid;
 
-import com.google.common.collect.Maps;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  *
  * @author Philippe Charles
  */
-@lombok.Value
-public class SpreadSheetSource {
+@lombok.Value(staticConstructor = "of")
+public class GridBook {
 
-    Map<String, SpreadSheetCollection> collections;
-    String factoryName;
+    @lombok.NonNull
+    private Map<String, GridSheet> sheets;
 
-    public static SpreadSheetSource of(List<SpreadSheetCollection> list, String factoryName) {
-        return new SpreadSheetSource(Maps.uniqueIndex(list, o -> o != null ? o.getSheetName() : null), factoryName);
+    @Nullable
+    public GridSheet getSheetByName(@Nonnull String name) {
+        Objects.requireNonNull(name);
+        return sheets.get(name);
     }
 }

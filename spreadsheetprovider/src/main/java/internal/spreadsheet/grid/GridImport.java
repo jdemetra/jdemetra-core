@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2015 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,19 +14,21 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.bridge;
+package internal.spreadsheet.grid;
+
+import demetra.tsprovider.util.ObsFormat;
+import demetra.tsprovider.util.ObsGathering;
 
 /**
  *
  * @author Philippe Charles
+ * @since 2.1.0
  */
-public final class ConverterException extends RuntimeException {
+@lombok.Value(staticConstructor = "of")
+public class GridImport {
 
-    public static <FROM, TO> ConverterException of(Class<FROM> from, Class<TO> to, FROM value) {
-        return new ConverterException(String.format("Cannot convert from %s to %s with value '%s'", from, to, value));
-    }
+    public static final GridImport DEFAULT = new GridImport(ObsFormat.DEFAULT, ObsGathering.DEFAULT);
 
-    public ConverterException(String message) {
-        super(message);
-    }
+    private ObsFormat obsFormat;
+    private ObsGathering obsGathering;
 }

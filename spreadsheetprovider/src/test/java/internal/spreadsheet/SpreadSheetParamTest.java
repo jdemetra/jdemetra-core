@@ -14,16 +14,13 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.spreadsheet;
+package internal.spreadsheet;
 
-import ec.tss.tsproviders.DataSource;
-import ec.tss.tsproviders.HasDataSourceBean;
-import ec.tss.tsproviders.spreadsheet.SpreadSheetBean;
-import ec.tss.tsproviders.spreadsheet.SpreadSheetProvider;
-import ec.tss.tsproviders.utils.DataFormat;
-import ec.tss.tsproviders.utils.ObsGathering;
-import ec.tstoolkit.timeseries.TsAggregationType;
-import ec.tstoolkit.timeseries.simplets.TsFrequency;
+import demetra.data.AggregationType;
+import demetra.spreadsheet.SpreadSheetBean;
+import demetra.timeseries.TsUnit;
+import demetra.tsprovider.HasDataSourceBean;
+import demetra.tsprovider.util.ObsFormat;
 import java.io.File;
 import java.util.function.Supplier;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,11 +34,11 @@ public class SpreadSheetParamTest {
 
     @Test
     public void testV1() {
-        HasDataSourceBean<SpreadSheetBean2> v1 = beanSupportOf(new SpreadSheetParam.V1());
+        HasDataSourceBean<SpreadSheetBean> v1 = beanSupportOf(new SpreadSheetParam.V1());
 
-        assertCompliance(v1, SpreadSheetParamTest::getBean2Sample);
+        assertCompliance(v1, SpreadSheetParamTest::getBeanSample);
 
-        assertThat(v1.encodeBean(getBean2Sample()))
+        assertThat(v1.encodeBean(getBeanSample()))
                 .satisfies(o -> {
                     assertThat(o.getParams().keySet())
                             .containsExactly("aggregationType", "cleanMissing", "datePattern", "file", "frequency", "locale", "numberPattern");
@@ -49,40 +46,17 @@ public class SpreadSheetParamTest {
                             .containsExactly("Average", "false", "yyyy", "1234", "Yearly", "fr_BE", "#");
                 });
 
-        assertSameAsLegacy(v1);
     }
 
-    static void assertSameAsLegacy(HasDataSourceBean<SpreadSheetBean2> v1) {
-        HasDataSourceBean legacy = new SpreadSheetProvider();
-        DataSource empty = legacy.encodeBean(legacy.newBean());
-        DataSource full = legacy.encodeBean(getOldSample());
-
-        assertThat(v1.encodeBean(v1.newBean())).isEqualTo(empty);
-        assertThat(v1.encodeBean(getBean2Sample())).isEqualTo(full);
-
-        assertThat(v1.decodeBean(empty)).isEqualToComparingFieldByField(v1.newBean());
-        assertThat(v1.decodeBean(full)).isEqualToComparingFieldByField(getBean2Sample());
-    }
-
-    static HasDataSourceBean<SpreadSheetBean2> beanSupportOf(SpreadSheetParam param) {
+    static HasDataSourceBean<SpreadSheetBean> beanSupportOf(SpreadSheetParam param) {
         return HasDataSourceBean.of("XCLPRVDR", param, param.getVersion());
     }
 
-    static SpreadSheetBean getOldSample() {
+    static SpreadSheetBean getBeanSample() {
         SpreadSheetBean result = new SpreadSheetBean();
         result.setFile(new File("1234"));
-        result.setDataFormat(DataFormat.create("fr_BE", "yyyy", "#"));
-        result.setFrequency(TsFrequency.Yearly);
-        result.setAggregationType(TsAggregationType.Average);
-        result.setCleanMissing(false);
-        return result;
-    }
-
-    static SpreadSheetBean2 getBean2Sample() {
-        SpreadSheetBean2 result = new SpreadSheetBean2();
-        result.setFile(new File("1234"));
-        result.setObsFormat(DataFormat.create("fr_BE", "yyyy", "#"));
-        result.setObsGathering(ObsGathering.includingMissingValues(TsFrequency.Yearly, TsAggregationType.Average));
+        result.setObsFormat(ObsFormat.create("fr_BE", "yyyy", "#"));
+        result.setObsGathering(demetra.tsprovider.util.ObsGathering.builder().unit(TsUnit.YEARLY).aggregationType(AggregationType.Average).skipMissingValues(false).build());
         return result;
     }
 

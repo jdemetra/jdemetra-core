@@ -14,28 +14,37 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.spreadsheet;
+package internal.spreadsheet.grid;
 
-import ec.tss.tsproviders.utils.OptionalTsData;
+import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  *
- * @author Philippe Charles
+ * @author Jean Palate
  */
-@lombok.Value
-public class SpreadSheetSeries implements Comparable<SpreadSheetSeries> {
+@lombok.Value(staticConstructor = "of")
+public class GridSheet {
 
-    String seriesName;
-    int ordering;
-    AlignType alignType;
-    OptionalTsData data;
+    @lombok.NonNull
+    private String sheetName; // unique id; don't use ordering
 
-    @Override
-    public int compareTo(SpreadSheetSeries o) {
-        int result = Integer.compare(ordering, o.ordering);
-        if (result != 0) {
-            return result;
+    private int ordering; // this may change !
+
+    @lombok.NonNull
+    private GridType gridType;
+
+    @lombok.NonNull
+    private List<GridSeries> ranges;
+
+    @Nullable
+    public GridSeries getSeriesByName(@Nonnull String name) {
+        for (GridSeries o : ranges) {
+            if (o.getSeriesName().equals(name)) {
+                return o;
+            }
         }
-        return seriesName.compareTo(o.seriesName);
+        return null;
     }
 }

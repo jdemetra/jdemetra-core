@@ -16,22 +16,23 @@
  */
 package internal.spreadsheet;
 
-import ec.tstoolkit.timeseries.simplets.TsData;
+import internal.spreadsheet.grid.GridType;
+import internal.spreadsheet.grid.GridSheet;
+import demetra.timeseries.simplets.TsData;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
-import org.assertj.core.api.iterable.Extractor;
 
 /**
  *
  * @author Philippe Charles
  */
-final class SpreadSheetCollectionAssert extends AbstractAssert<SpreadSheetCollectionAssert, SpreadSheetCollection> {
+final class SpreadSheetCollectionAssert extends AbstractAssert<SpreadSheetCollectionAssert, GridSheet> {
 
-    public static SpreadSheetCollectionAssert assertThat(SpreadSheetCollection actual) {
+    public static SpreadSheetCollectionAssert assertThat(GridSheet actual) {
         return new SpreadSheetCollectionAssert(actual);
     }
 
-    public SpreadSheetCollectionAssert(SpreadSheetCollection actual) {
+    public SpreadSheetCollectionAssert(GridSheet actual) {
         super(actual, SpreadSheetCollectionAssert.class);
     }
 
@@ -51,45 +52,25 @@ final class SpreadSheetCollectionAssert extends AbstractAssert<SpreadSheetCollec
         return this;
     }
 
-    public SpreadSheetCollectionAssert hasAlignType(AlignType alignType) {
+    public SpreadSheetCollectionAssert hasGridType(GridType gridType) {
         isNotNull();
-        if (!actual.getAlignType().equals(alignType)) {
-            failWithMessage("Expected alignType to be <%s> but was <%s>", alignType, actual.getAlignType());
+        if (!actual.getGridType().equals(gridType)) {
+            failWithMessage("Expected alignType to be <%s> but was <%s>", gridType, actual.getGridType());
         }
         return this;
     }
 
     public SpreadSheetCollectionAssert containsExactly(TsData... data) {
-        Assertions.assertThat(actual.getSeries())
-                .extracting(ToData.INSTANCE)
+        Assertions.assertThat(actual.getRanges())
+                .extracting(o -> o.getData().get())
                 .containsExactly(data);
         return this;
     }
 
     public SpreadSheetCollectionAssert containsExactly(String... names) {
-        Assertions.assertThat(actual.getSeries())
-                .extracting(ToName.INSTANCE)
+        Assertions.assertThat(actual.getRanges())
+                .extracting(o -> o.getSeriesName())
                 .containsExactly(names);
         return this;
-    }
-
-    private enum ToData implements Extractor<SpreadSheetSeries, TsData> {
-
-        INSTANCE;
-
-        @Override
-        public TsData extract(SpreadSheetSeries input) {
-            return input.getData().get();
-        }
-    }
-
-    private enum ToName implements Extractor<SpreadSheetSeries, String> {
-
-        INSTANCE;
-
-        @Override
-        public String extract(SpreadSheetSeries input) {
-            return input.getSeriesName();
-        }
     }
 }

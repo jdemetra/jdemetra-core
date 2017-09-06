@@ -14,18 +14,19 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.spreadsheet;
+package internal.spreadsheet;
 
-import ec.tss.tsproviders.DataSet;
-import ec.tss.tsproviders.DataSource;
-import ec.tss.tsproviders.utils.DataFormat;
-import ec.tss.tsproviders.utils.IConfig;
-import ec.tss.tsproviders.utils.IParam;
-import ec.tss.tsproviders.utils.ObsGathering;
-import static ec.tss.tsproviders.utils.Params.onDataFormat;
-import static ec.tss.tsproviders.utils.Params.onFile;
-import static ec.tss.tsproviders.utils.Params.onObsGathering;
-import static ec.tss.tsproviders.utils.Params.onString;
+import demetra.spreadsheet.SpreadSheetBean;
+import demetra.tsprovider.DataSet;
+import demetra.tsprovider.DataSource;
+import demetra.tsprovider.util.IConfig;
+import demetra.tsprovider.util.IParam;
+import demetra.tsprovider.util.ObsFormat;
+import demetra.tsprovider.util.ObsGathering;
+import static demetra.tsprovider.util.Params.onFile;
+import static demetra.tsprovider.util.Params.onObsFormat;
+import static demetra.tsprovider.util.Params.onObsGathering;
+import static demetra.tsprovider.util.Params.onString;
 import java.io.File;
 import javax.annotation.Nonnull;
 
@@ -33,7 +34,7 @@ import javax.annotation.Nonnull;
  *
  * @author Philippe Charles
  */
-interface SpreadSheetParam extends IParam<DataSource, SpreadSheetBean2> {
+public interface SpreadSheetParam extends IParam<DataSource, SpreadSheetBean> {
 
     @Nonnull
     String getVersion();
@@ -44,21 +45,13 @@ interface SpreadSheetParam extends IParam<DataSource, SpreadSheetBean2> {
     @Nonnull
     IParam<DataSet, String> getSeriesParam(DataSource dataSource);
 
-    static final class V1 implements SpreadSheetParam {
+    public static final class V1 implements SpreadSheetParam {
 
-        private final IParam<DataSource, File> file;
-        private final IParam<DataSource, DataFormat> obsFormat;
-        private final IParam<DataSource, ObsGathering> obsGathering;
-        private final IParam<DataSet, String> sheet;
-        private final IParam<DataSet, String> series;
-
-        V1() {
-            this.file = onFile(new File(""), "file");
-            this.obsFormat = onDataFormat(DataFormat.DEFAULT, "locale", "datePattern", "numberPattern");
-            this.obsGathering = onObsGathering(ObsGathering.DEFAULT, "frequency", "aggregationType", "cleanMissing");
-            this.sheet = onString("", "sheetName");
-            this.series = onString("", "seriesName");
-        }
+        private final IParam<DataSource, File> file = onFile(new File(""), "file");
+        private final IParam<DataSource, ObsFormat> obsFormat = onObsFormat(ObsFormat.DEFAULT, "locale", "datePattern", "numberPattern");
+        private final IParam<DataSource, ObsGathering> obsGathering = onObsGathering(ObsGathering.DEFAULT, "frequency", "aggregationType", "cleanMissing");
+        private final IParam<DataSet, String> sheet = onString("", "sheetName");
+        private final IParam<DataSet, String> series = onString("", "seriesName");
 
         @Override
         public String getVersion() {
@@ -66,8 +59,8 @@ interface SpreadSheetParam extends IParam<DataSource, SpreadSheetBean2> {
         }
 
         @Override
-        public SpreadSheetBean2 defaultValue() {
-            SpreadSheetBean2 result = new SpreadSheetBean2();
+        public SpreadSheetBean defaultValue() {
+            SpreadSheetBean result = new SpreadSheetBean();
             result.setFile(file.defaultValue());
             result.setObsFormat(obsFormat.defaultValue());
             result.setObsGathering(obsGathering.defaultValue());
@@ -75,8 +68,8 @@ interface SpreadSheetParam extends IParam<DataSource, SpreadSheetBean2> {
         }
 
         @Override
-        public SpreadSheetBean2 get(DataSource dataSource) {
-            SpreadSheetBean2 result = new SpreadSheetBean2();
+        public SpreadSheetBean get(DataSource dataSource) {
+            SpreadSheetBean result = new SpreadSheetBean();
             result.setFile(file.get(dataSource));
             result.setObsFormat(obsFormat.get(dataSource));
             result.setObsGathering(obsGathering.get(dataSource));
@@ -84,7 +77,7 @@ interface SpreadSheetParam extends IParam<DataSource, SpreadSheetBean2> {
         }
 
         @Override
-        public void set(IConfig.Builder<?, DataSource> builder, SpreadSheetBean2 value) {
+        public void set(IConfig.Builder<?, DataSource> builder, SpreadSheetBean value) {
             file.set(builder, value.getFile());
             // FIXME: NPE bug in jtss
             if (value.getObsFormat() != null) {
