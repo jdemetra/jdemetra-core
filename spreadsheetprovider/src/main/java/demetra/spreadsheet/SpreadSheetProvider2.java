@@ -19,6 +19,7 @@ package demetra.spreadsheet;
 import com.google.common.cache.Cache;
 import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;
+import ec.tss.TsMoniker;
 import ec.tss.tsproviders.DataSet;
 import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.HasDataDisplayName;
@@ -37,6 +38,8 @@ import ec.tss.tsproviders.utils.IParam;
 import ec.tss.tsproviders.utils.TsFillerAsProvider;
 import ec.tstoolkit.utilities.GuavaCaches;
 import ec.util.spreadsheet.Book;
+import internal.spreadsheet.FallbackDataMoniker;
+import internal.spreadsheet.SpreadSheetLegacy;
 import java.io.File;
 import java.io.IOException;
 import java.util.ServiceLoader;
@@ -82,7 +85,7 @@ public final class SpreadSheetProvider2 implements IFileLoader {
         SpreadSheetParam beanParam = new SpreadSheetParam.V1();
 
         this.mutableListSupport = HasDataSourceMutableList.of(NAME, logger, cache::invalidate);
-        this.monikerSupport = HasDataMoniker.usingUri(NAME);
+        this.monikerSupport = new FallbackDataMoniker(HasDataMoniker.usingUri(NAME), new LegacyDataMoniker(beanParam));
         this.beanSupport = HasDataSourceBean.of(NAME, beanParam, beanParam.getVersion());
         this.filePathSupport = HasFilePaths.of(cache::invalidateAll);
         this.displayNameSupport = new SpreadSheetDataDisplayName(NAME, beanParam);
@@ -149,6 +152,75 @@ public final class SpreadSheetProvider2 implements IFileLoader {
                 }
             }
             throw new RuntimeException("File type not supported");
+        }
+    }
+
+    @lombok.AllArgsConstructor
+    private static final class LegacyDataMoniker implements HasDataMoniker, SpreadSheetLegacy.Converter {
+
+        private final SpreadSheetParam param;
+
+        @Override
+        public TsMoniker toMoniker(DataSource dataSource) throws IllegalArgumentException {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public TsMoniker toMoniker(DataSet dataSet) throws IllegalArgumentException {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public DataSource toDataSource(TsMoniker moniker) throws IllegalArgumentException {
+            return SpreadSheetLegacy.parseLegacyDataSource(moniker.getId(), this);
+        }
+
+        @Override
+        public DataSet toDataSet(TsMoniker moniker) throws IllegalArgumentException {
+            return SpreadSheetLegacy.parseLegacyDataSet(moniker.getId(), this);
+        }
+
+        @Override
+        public DataSource toSource(File file) {
+            SpreadSheetBean2 bean = new SpreadSheetBean2();
+            bean.setFile(file);
+            return DataSource.builder(NAME, param.getVersion())
+                    .put(param, bean)
+                    .build();
+        }
+
+        @Override
+        public DataSet toCollection(DataSource dataSource, String sheetName) {
+            return DataSet.builder(dataSource, DataSet.Kind.COLLECTION)
+                    .put(param.getSheetParam(dataSource), cleanSheetName(sheetName))
+                    .build();
+        }
+
+        @Override
+        public DataSet toSeries(DataSource dataSource, String sheetName, String seriesName) {
+            return DataSet.builder(dataSource, DataSet.Kind.SERIES)
+                    .put(param.getSheetParam(dataSource), cleanSheetName(sheetName))
+                    .put(param.getSeriesParam(dataSource), seriesName)
+                    .build();
+        }
+
+        @Override
+        public DataSet toSeries(DataSource dataSource, String sheetName, int seriesIndex) {
+            // not supported
+            return null;
+        }
+
+        private static String cleanSheetName(String name) {
+            // probably we should change the CharSet, but it is not very clear how and which one
+            int l = name.lastIndexOf('$');
+            if (l < 0) {
+                return name;
+            }
+            name = name.substring(0, l);
+            if (name.charAt(0) == '\'') {
+                name = name.substring(1);
+            }
+            return name.replace('#', '.');
         }
     }
 }
