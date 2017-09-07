@@ -145,7 +145,7 @@ public class CholetteFactory implements CholetteAlgorithm {
         if (spec.getAggregationType() == AggregationType.Average
                 || spec.getAggregationType() == AggregationType.Sum) {
             ISsf ssf = SsfCholette.builder(ratio)
-                    .start(Fixme.getPosition(s.getStart()) % ratio)
+                    .start(s.getStart().getPosition(target.getUnit()) % ratio)
                     .rho(spec.getRho())
                     .weights(w == null ? null : DoubleSequence.ofInternal(w))
                     .build();
@@ -162,7 +162,7 @@ public class CholetteFactory implements CholetteAlgorithm {
             return add(s, TsData.ofInternal(s.getStart(), b));
         } else {
             ISsf ssf = SsfCholette.builder(ratio)
-                    .start(Fixme.getPosition(s.getStart()) % ratio)
+                    .start(s.getStart().getPosition(target.getUnit()) % ratio)
                     .rho(spec.getRho())
                     .weights(w == null ? null : DoubleSequence.ofInternal(w))
                     .build();

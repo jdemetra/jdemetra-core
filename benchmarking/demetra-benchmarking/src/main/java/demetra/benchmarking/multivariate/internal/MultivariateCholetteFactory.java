@@ -54,6 +54,54 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
 
     static class Impl {
 
+        /**
+         * Inputs
+         */
+        private final LinkedHashMap<String, TsData> inputs = new LinkedHashMap<>();
+        /**
+         * List of the contemporaneous constraints
+         */
+        private final List<ContemporaneousConstraintDescriptor> contemporaneousConstraints
+                = new ArrayList<>();
+        /**
+         * Map of the temporal constraints The map constains pairs of (detail,
+         * aggregated series)
+         */
+        private final Map<String, String> temporalConstraints
+                = new HashMap<>();
+        /**
+         * List of exogeneous series (not benchmarked) used in the
+         * contemporaneous constraints, which appear in the left-side of
+         * contemporaneous definitions
+         */
+        private final ArrayList<String> lcnt = new ArrayList<>();
+        /**
+         * List of endogeneous series (benchmarked) used in the contemporaneous
+         * constraints, which appear in the right-side of contemporaneous
+         * definitions.
+         *
+         */
+        private final ArrayList<String> rcnt = new ArrayList<>();
+        /**
+         * Data of the series in the lcnt list. The length of each array is
+         * equal to the length of idomain
+         */
+        private double[][] lcntData;
+        /**
+         * Data of the series in the rcnt list The length of each array is equal
+         * to the length of idomain
+         */
+        private double[][] rcntData;
+        /**
+         *
+         */
+        private double[][] weights;
+        private final HashMap<String, TsData> tcntData = new HashMap<>();
+        private Constraint[] cs;
+        private double rho, lambda;
+        private RegularDomain idomain;
+        private TsUnit aggUnit;
+
         Map<String, TsData> benchmark(Map<String, TsData> inputs, MultivariateCholetteSpecification spec) {
             loadInfo(inputs, spec);
 
@@ -78,20 +126,6 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
 
             return rslts;
         }
-
-        private final LinkedHashMap<String, TsData> inputs = new LinkedHashMap<>();
-        private final List<ContemporaneousConstraintDescriptor> contemporaneousConstraints
-                = new ArrayList<>();
-        private final Map<String, String> temporalConstraints
-                = new HashMap<>();
-        private final ArrayList<String> lcnt = new ArrayList<>();
-        private final ArrayList<String> rcnt = new ArrayList<>();
-        private double[][] lcntData, rcntData, weights;
-        private final HashMap<String, TsData> tcntData = new HashMap<>();
-        private Constraint[] cs;
-        private double rho, lambda;
-        private RegularDomain idomain;
-        private TsUnit aggUnit;
 
         private void loadInfo(Map<String, TsData> data, MultivariateCholetteSpecification spec) {
             // inputs
@@ -156,8 +190,6 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
         private void computeContemporaneous(Map<String, TsData> rslts) {
 
             // compute weights, adjust constraints...
-            buildWeights();
-            buildContemporaneousConstraints();
             int nvars = rcnt.size(), ncnts = cs.length;;
             IMultivariateSsf ssf = ContemporaneousSsfCholette.builder(nvars)
                     .rho(rho)
@@ -178,10 +210,11 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
             int neq = cs.length;
             for (int i = 0; i < nvars; ++i) {
                 TsData s = inputs.get(rcnt.get(i));
-                double[] y = new double[idomain.length()];
+                TsData sc=TsDataToolkit.fitToDomain(s, idomain);
+                double[] y = sc.values().toArray();
                 DataBlock t = states.item(i);
                 for (int j = 0; j < y.length; ++j) {
-                    y[j] = t.get(j * neq) * weights[i][j];
+                    y[j] += t.get(j * neq) * weights[i][j];
                 }
                 rslts.put(rcnt.get(i), TsData.ofInternal(idomain.getStartPeriod(), y));
             }
@@ -193,6 +226,7 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
                 if (rcnt.contains(desc.constraint)) {
                     throw new IllegalArgumentException("Binding constraint cannot be used in definitions: " + desc.constraint);
                 }
+                // TODO Deal with such cases. Use "extended names" and modify the current constraint
                 if (!lcnt.contains(desc.constraint)) {
                     lcnt.add(desc.constraint);
                 }
@@ -219,7 +253,7 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
             lcntData = new double[contemporaneousConstraints.size()][];
             for (int i = 0; i < contemporaneousConstraints.size(); ++i) {
                 ContemporaneousConstraintDescriptor desc = contemporaneousConstraints.get(i);
-                if (desc.constraint == null) {
+                if (desc.constraint != null) {
                     TsData s = inputs.get(desc.constraint);
                     lcntData[i] = s.values().toArray();
                 } else {
@@ -330,6 +364,7 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
             int len = idomain.getLength();
 
             IMultivariateSsf ssf = MultivariateSsfCholette.builder(nvars)
+                    .conversion(c)
                     .rho(rho)
                     .constraints(cs)
                     .weights(weights)
@@ -350,17 +385,16 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
                 DataBlock row = M.column(i + nvars);
                 row.copyFrom(lcntData[i], 0);
             }
-
             ISsf adapter = M2uAdapter.of(ssf);
             ISsfData data = M2uAdapter.of(new SsfMatrix(M));
-            DefaultSmoothingResults states = DkToolkit.smooth(adapter, data, false);
+            DataBlockStorage states = DkToolkit.fastSmooth(adapter, data);
 
             int neq = nvars + ncnts;
             for (int i = 0; i < rcnt.size(); ++i) {
                 TsData s = inputs.get(rcnt.get(i));
                 TsDataView sc = TsDataView.select(s, idomain);
                 double[] y = sc.getData().toArray();
-                DoubleSequence t = states.getComponent(2 * i + 1);
+                DoubleSequence t = states.item(2 * i + 1);
                 for (int j = 0; j < y.length; ++j) {
                     y[j] += t.get(j * neq) * weights[i][j];
                 }

@@ -43,11 +43,12 @@ public class DentonFactory implements DentonAlgorithm {
         // Y is limited to q !
         TsPeriodSelector qsel = TsPeriodSelector.between(highFreqSeries.getStart().start(), highFreqSeries.getPeriod(highFreqSeries.length()).start());
         TsData naggregationConstraint = TsDataToolkit.select(aggregationConstraint, qsel);
-        TsPeriod sh = highFreqSeries.getStart(), sl = TsPeriod.of(sh.getUnit(), naggregationConstraint.getStart().start());
+        TsPeriod sh = highFreqSeries.getStart();
+        TsPeriod sl = TsPeriod.of(sh.getUnit(), naggregationConstraint.getStart().start());
         int offset = sh.until(sl);
         Denton denton = new Denton(spec, ratio, offset);
         double[] r = denton.process(highFreqSeries.values(), naggregationConstraint.values());
-        return TsData.ofInternal(highFreqSeries.getStart(), r);
+        return TsData.ofInternal(sh, r);
     }
 
     @Override

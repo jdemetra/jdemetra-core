@@ -29,6 +29,7 @@ import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.data.DoubleReader;
 import demetra.ssf.ISsfInitialization;
+import javax.annotation.Nonnull;
 
 /**
  *
@@ -51,13 +52,31 @@ public class DiffuseDisturbanceSmoother {
     private DataBlock tmp;
     private double c, v;
 
-    public boolean process(final ISsf ssf, final ISsfData data, IDisturbanceSmoothingResults sresults) {
+    /**
+     *
+     * @param ssf
+     * @param data
+     * @param sresults Smoothing results. The caller is responsible of preparing
+     * them!
+     * @return
+     */
+    public boolean process(final ISsf ssf, final ISsfData data, @Nonnull IDisturbanceSmoothingResults sresults) {
         IBaseDiffuseFilteringResults fresults = DkToolkit.sqrtFilter(ssf, data, false);
         // rescale the variances
         return process(ssf, data.length(), fresults, sresults);
     }
 
-    public boolean process(ISsf ssf, final int endpos, IBaseDiffuseFilteringResults results, IDisturbanceSmoothingResults sresults) {
+    /**
+     *
+     * @param ssf
+     * @param endpos
+     * @param results The filtering results should contain the necessary
+     * information for the smoothing
+     * @param sresults Smoothing results. The caller is responsible of preparing
+     * them!
+     * @return
+     */
+    public boolean process(ISsf ssf, final int endpos, IBaseDiffuseFilteringResults results, @Nonnull IDisturbanceSmoothingResults sresults) {
         frslts = results;
         srslts = sresults;
         initFilter(ssf);
@@ -114,12 +133,14 @@ public class DiffuseDisturbanceSmoother {
             Ci.set(0);
         }
         missing = !Double.isFinite(e);
-        if (!dynamics.isTimeInvariant()) {
-            S.set(0);
-            dynamics.S(pos, S);
-        }
-        if (!measurement.isTimeInvariant()) {
-            h = measurement.errorVariance(pos);
+        if (pos > 0) {
+            if (!dynamics.isTimeInvariant() && S != null) {
+                S.set(0);
+                dynamics.S(pos - 1, S);
+            }
+            if (!measurement.isTimeInvariant()) {
+                h = measurement.errorVariance(pos - 1);
+            }
         }
     }
 
@@ -129,27 +150,28 @@ public class DiffuseDisturbanceSmoother {
             iterateN();
         }
         // updates the smoothed disturbances
-        if (res) {
-            if (!missing) {
+        if (pos > 0) {
+            // updates the smoothed disturbances
+            if (res && measurement.hasError(pos - 1)) {
                 esm = c * h;
-            } else {
-                esm = Double.NaN;
             }
-        }
-        dynamics.XS(pos, R, U);
-        if (calcvar) {
-            if (res) {
-                if (!missing) {
-                    esmVariance = h - h * h * v;
-                } else {
-                    esmVariance = Double.NaN;
+            if (dynamics.hasInnovations(pos - 1)) {
+                dynamics.XS(pos - 1, R, U);
+                if (calcvar) {
+                    if (res) {
+                        esmVariance = h - h * h * v;
+                    }
+                    // v(U) = I-S'NS
+                    SymmetricMatrix.XtSX(N, S, UVar);
+                    UVar.chs();
+                    UVar.diagonal().add(1);
+                }
+            } else {
+                U.set(0);
+                if (calcvar) {
+                    UVar.set(0);
                 }
             }
-            // v(U) = I-S'NS
-            UVar.set(0);
-            SymmetricMatrix.XtSX(N, S, UVar);
-            UVar.chs();
-            UVar.diagonal().add(1);
         }
         return true;
     }
@@ -220,7 +242,7 @@ public class DiffuseDisturbanceSmoother {
     private void iterateDiffuseR() {
         dynamics.XT(pos, R);
         dynamics.XT(pos, Ri);
-        if (!missing && f != 0) {
+        if (!missing && fi != 0) {
             c = -Ri.dot(Ci);
             // Ri(t-1)=c*Z(t) +Ri(t)*T(t)
             // c = e/fi-(Ri(t)*T(t)*Ci(t))/fi-(Rf(t)*T(t)*Cf(t))/f
@@ -234,7 +256,7 @@ public class DiffuseDisturbanceSmoother {
     }
 
     private void initFilter(ISsf ssf) {
-        this.ssf=ssf;
+        this.ssf = ssf;
         dynamics = ssf.getDynamics();
         measurement = ssf.getMeasurement();
         res = measurement.hasErrors();

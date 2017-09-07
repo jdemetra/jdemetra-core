@@ -19,6 +19,7 @@ package demetra.timeseries.simplets;
 import demetra.data.DataBlock;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
+import demetra.data.Doubles;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsException;
@@ -197,6 +198,14 @@ public class TsDataToolkit {
         }
     }
 
+    public double distance(TsData l, TsData r) {
+        DoubleSequence diff = subtract(l, r).values();
+        int n=diff.count(x->Double.isFinite(x));
+        if (n == 0)
+            return Double.NaN;
+        return Math.sqrt(Doubles.ssqWithMissing(diff)/n);
+    }
+     
     public TsData subtract(double d, TsData l) {
         if (d == 0) {
             return chs(l);
