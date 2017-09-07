@@ -15,7 +15,7 @@
 * limitations under the Licence.
 */
 
-package demetra.benchmarking.ssf.multivariate;
+package demetra.benchmarking.multivariate.internal;
 
 import java.util.HashMap;
 

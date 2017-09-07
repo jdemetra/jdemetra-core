@@ -197,7 +197,7 @@ public class DataBlockStorage {
     }
 
     /**
-     * Gets a matrix representation copyOf the saved data blocks, from the position reader (included)
+     * Gets a matrix representation of the saved data blocks, from the position reader (included)
  to the position end (excluded). 
      * The successive data blocks are stored in the columns copyOf the sub-matrix
      * @param start First position (included)
@@ -205,7 +205,7 @@ public class DataBlockStorage {
      * @return
      */
     public Matrix matrix(final int start, final int end) {
-        return Matrix.builder(storage).nrows(dim * start).ncolumns(dim).start(end - start).columnIncrement(dim).build();
+        return Matrix.builder(storage).nrows(dim).ncolumns(end-start).start(dim*start).columnIncrement(dim).build();
     }
     
     /**

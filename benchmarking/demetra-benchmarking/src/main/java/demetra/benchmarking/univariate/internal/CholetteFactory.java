@@ -16,9 +16,8 @@
  */
 package demetra.benchmarking.univariate.internal;
 
-import demetra.benchmarking.ssf.SsfDenton;
-import demetra.benchmarking.ssf.SsfCholette;
 import demetra.benchmarking.spi.CholetteAlgorithm;
+import demetra.benchmarking.univariate.CholetteSpecification;
 import demetra.benchmarking.univariate.CholetteSpecification;
 import demetra.benchmarking.univariate.CholetteSpecification.BiasCorrection;
 import demetra.data.AggregationType;
@@ -36,7 +35,11 @@ import demetra.timeseries.simplets.TsDataConverter;
 import demetra.timeseries.simplets.TsDataToolkit;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
 import org.openide.util.lookup.ServiceProvider;
+import static demetra.timeseries.simplets.TsDataToolkit.multiply;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.multiply;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 
@@ -50,11 +53,7 @@ public class CholetteFactory implements CholetteAlgorithm {
     @Override
     public TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, CholetteSpecification spec) {
         TsData s = correctBias(highFreqSeries, aggregationConstraint, spec);
-        if (spec.getRho() == 1) {
-            return rwcholette(s, aggregationConstraint, spec);
-        } else {
-            return archolette(s, aggregationConstraint, spec);
-        }
+        return cholette(s, aggregationConstraint, spec);
     }
 
     private TsData correctBias(TsData s, TsData target, CholetteSpecification spec) {
@@ -120,13 +119,13 @@ public class CholetteFactory implements CholetteAlgorithm {
      * @param constraints
      * @return
      */
-    private TsData archolette(TsData s, TsData target, CholetteSpecification spec) {
+    private TsData cholette(TsData s, TsData target, CholetteSpecification spec) {
         int ratio = s.getUnit().ratio(target.getUnit());
         if (ratio == TsUnit.NO_RATIO || ratio == TsUnit.NO_STRICT_RATIO) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
 
-        TsData obj = subtract(TsDataConverter.changeTsUnit(s, target.getUnit(), spec.getAggregationType(), true), target);
+        TsData obj = subtract(target, TsDataConverter.changeTsUnit(s, target.getUnit(), spec.getAggregationType(), true));
         if (spec.getAggregationType() == AggregationType.Average) {
             obj = multiply(obj, ratio);
         }
@@ -146,7 +145,7 @@ public class CholetteFactory implements CholetteAlgorithm {
         if (spec.getAggregationType() == AggregationType.Average
                 || spec.getAggregationType() == AggregationType.Sum) {
             ISsf ssf = SsfCholette.builder(ratio)
-                    .start(Fixme.getPosition(s.getStart()) % ratio)
+                    .start(s.getStart().getPosition(target.getUnit()) % ratio)
                     .rho(spec.getRho())
                     .weights(w == null ? null : DoubleSequence.ofInternal(w))
                     .build();
@@ -160,10 +159,10 @@ public class CholetteFactory implements CholetteAlgorithm {
             } else {
                 rslts.getComponent(1).copyTo(b, 0);
             }
-            return subtract(s, TsData.ofInternal(s.getStart(), b));
+            return add(s, TsData.ofInternal(s.getStart(), b));
         } else {
             ISsf ssf = SsfCholette.builder(ratio)
-                    .start(Fixme.getPosition(s.getStart()) % ratio)
+                    .start(s.getStart().getPosition(target.getUnit()) % ratio)
                     .rho(spec.getRho())
                     .weights(w == null ? null : DoubleSequence.ofInternal(w))
                     .build();
@@ -172,67 +171,7 @@ public class CholetteFactory implements CholetteAlgorithm {
             for (int i = 0; i < b.length; ++i) {
                 b[i] = ssf.getMeasurement().ZX(i, rslts.a(i));
             }
-            return subtract(s, TsData.ofInternal(s.getStart(), b));
-        }
-    }
-
-    /**
-     *
-     * @param s
-     * @param constraints
-     * @return
-     */
-    private TsData rwcholette(TsData s, TsData target, CholetteSpecification spec) {
-        int ratio = s.getUnit().ratio(target.getUnit());
-        if (ratio == TsUnit.NO_RATIO || ratio == TsUnit.NO_STRICT_RATIO) {
-            throw new TsException(TsException.INCOMPATIBLE_FREQ);
-        }
-
-        TsData obj = subtract(TsDataConverter.changeTsUnit(s, target.getUnit(), spec.getAggregationType(), true), target);
-        if (spec.getAggregationType() == AggregationType.Average) {
-            obj = multiply(obj, ratio);
-        }
-
-        double[] y = expand(s.domain(), obj, spec.getAggregationType());
-
-        double[] w = null;
-        if (spec.getLambda() != 0) {
-            w = s.values().toArray();
-            if (spec.getLambda() != 1) {
-                for (int i = 0; i < w.length; ++i) {
-                    w[i] = Math.pow(Math.abs(w[i]), spec.getLambda());
-                }
-            }
-        }
-
-        if (spec.getAggregationType() == AggregationType.Average
-                || spec.getAggregationType() == AggregationType.Sum) {
-            ISsf ssf = SsfDenton.builder(ratio)
-                    .start(Fixme.getPosition(s.getStart()) % ratio)
-                    .weights(w == null ? null : DoubleSequence.ofInternal(w))
-                    .build();
-            DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(y), false);
-
-            double[] b = new double[s.length()];
-            if (w != null) {
-                for (int i = 0; i < b.length; ++i) {
-                    b[i] = w[i] * (rslts.a(i).get(1));
-                }
-            } else {
-                rslts.getComponent(1).copyTo(b, 0);
-            }
-            return subtract(s, TsData.ofInternal(s.getStart(), b));
-        } else {
-            ISsf ssf = SsfDenton.builder(ratio)
-                    .start(Fixme.getPosition(s.getStart()) % ratio)
-                    .weights(w == null ? null : DoubleSequence.ofInternal(w))
-                    .build();
-            DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(y), false);
-            double[] b = new double[s.length()];
-            for (int i = 0; i < b.length; ++i) {
-                b[i] = ssf.getMeasurement().ZX(i, rslts.a(i));
-            }
-            return subtract(s, TsData.ofInternal(s.getStart(), b));
+            return add(s, TsData.ofInternal(s.getStart(), b));
         }
     }
 

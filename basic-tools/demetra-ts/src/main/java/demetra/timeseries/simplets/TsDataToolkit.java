@@ -19,6 +19,7 @@ package demetra.timeseries.simplets;
 import demetra.data.DataBlock;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
+import demetra.data.Doubles;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsException;
@@ -127,7 +128,7 @@ public class TsDataToolkit {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
         RegularDomain sdomain = s.domain();
-        int nbeg = sdomain.getStartPeriod().until(domain.getLastPeriod());
+        int nbeg = sdomain.getStartPeriod().until(domain.getStartPeriod());
         RegularDomain idomain = domain.intersection(sdomain);
         double[] data = new double[domain.length()];
         int cur = 0;
@@ -140,7 +141,7 @@ public class TsDataToolkit {
         int ncommon = idomain.length();
         // common data
         if (ncommon > 0) {
-            s.values().extract(sdomain.getStartPeriod().until(idomain.getLastPeriod()), ncommon).copyTo(data, cur);
+            s.values().extract(sdomain.getStartPeriod().until(idomain.getStartPeriod()), ncommon).copyTo(data, cur);
             cur += ncommon;
         }
         // after s
@@ -197,6 +198,14 @@ public class TsDataToolkit {
         }
     }
 
+    public double distance(TsData l, TsData r) {
+        DoubleSequence diff = subtract(l, r).values();
+        int n=diff.count(x->Double.isFinite(x));
+        if (n == 0)
+            return Double.NaN;
+        return Math.sqrt(Doubles.ssqWithMissing(diff)/n);
+    }
+     
     public TsData subtract(double d, TsData l) {
         if (d == 0) {
             return chs(l);

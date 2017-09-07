@@ -38,10 +38,11 @@ public class MultivariateSsf implements IMultivariateSsf {
 
     /**
      *
+     * @param initialization
      * @param dynamics
-     * @param measurement
+     * @param measurements
      */
-    protected MultivariateSsf(final ISsfInitialization initialization, final ISsfDynamics dynamics, ISsfMeasurements measurements) {
+    public MultivariateSsf(final ISsfInitialization initialization, final ISsfDynamics dynamics, ISsfMeasurements measurements) {
         this.initialization=initialization;
         this.dynamics=dynamics;
         this.measurements=measurements;

@@ -27,7 +27,7 @@ import demetra.processing.IProcSpecification;
 @lombok.Data
 public class CholetteSpecification implements IProcSpecification {
 
-    public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "denton", null);
+    public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "cholette", null);
 
     public static enum BiasCorrection {
 
