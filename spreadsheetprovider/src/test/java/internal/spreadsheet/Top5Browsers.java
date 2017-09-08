@@ -16,19 +16,19 @@
  */
 package internal.spreadsheet;
 
-import internal.spreadsheet.grid.GridBook;
 import com.google.common.io.Resources;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import static demetra.timeseries.TsUnit.MONTHLY;
 import static demetra.timeseries.TsUnit.QUARTERLY;
 import demetra.timeseries.simplets.TsData;
+import static demetra.tsprovider.grid.GridLayout.HORIZONTAL;
+import static demetra.tsprovider.grid.GridLayout.VERTICAL;
 import ec.util.spreadsheet.Sheet;
 import ec.util.spreadsheet.helpers.ArraySheet;
-import static internal.spreadsheet.grid.GridType.HORIZONTAL;
-import static internal.spreadsheet.grid.GridType.VERTICAL;
-import static java.lang.Double.NaN;
 import static internal.spreadsheet.SpreadSheetCollectionAssert.assertThat;
+import internal.spreadsheet.grid.BookData;
+import static java.lang.Double.NaN;
 import java.net.URL;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -41,26 +41,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 @lombok.experimental.UtilityClass
 class Top5Browsers {
 
-    public static void testContent(GridBook top5Browsers) {
+    public static void testContent(BookData top5Browsers) {
         assertThat(top5Browsers).isNotNull();
         assertThat(top5Browsers.getSheets()).hasSize(3);
 
         assertThat(top5Browsers.getSheets().get("Top 5 Browsers - Monthly"))
                 .hasSheetName("Top 5 Browsers - Monthly")
                 .hasOrdering(0)
-                .hasGridType(VERTICAL)
+                .hasLayout(VERTICAL)
                 .containsExactly(M_DATA);
 
         assertThat(top5Browsers.getSheets().get("Top 5 Browsers - Quarterly"))
                 .hasSheetName("Top 5 Browsers - Quarterly")
                 .hasOrdering(1)
-                .hasGridType(HORIZONTAL)
+                .hasLayout(HORIZONTAL)
                 .containsExactly(Q_DATA);
 
         assertThat(top5Browsers.getSheets().get("DataTest"))
                 .hasSheetName("DataTest")
                 .hasOrdering(2)
-                .hasGridType(VERTICAL)
+                .hasLayout(VERTICAL)
                 .containsExactly(DT_DATA);
     }
 

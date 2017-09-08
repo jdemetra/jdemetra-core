@@ -16,35 +16,38 @@
  */
 package internal.spreadsheet.grid;
 
-import java.util.List;
+import ec.util.spreadsheet.Book;
+import demetra.tsprovider.grid.GridReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
  *
- * @author Jean Palate
+ * @author Philippe Charles
  */
 @lombok.Value(staticConstructor = "of")
-public class GridSheet {
+public class BookData {
 
     @lombok.NonNull
-    private String sheetName; // unique id; don't use ordering
-
-    private int ordering; // this may change !
-
-    @lombok.NonNull
-    private GridType gridType;
-
-    @lombok.NonNull
-    private List<GridSeries> ranges;
+    private Map<String, SheetData> sheets;
 
     @Nullable
-    public GridSeries getSeriesByName(@Nonnull String name) {
-        for (GridSeries o : ranges) {
-            if (o.getSeriesName().equals(name)) {
-                return o;
-            }
-        }
-        return null;
+    public SheetData getSheetByName(@Nonnull String name) {
+        Objects.requireNonNull(name);
+        return sheets.get(name);
+    }
+
+    public static BookData of(Book book, GridReader reader) throws IOException {
+        int sheetCount = book.getSheetCount();
+        Map<String, SheetData> result = new HashMap<>(sheetCount);
+        book.forEach((sheet, i) -> {
+            SheetData data = SheetData.of(sheet, i, reader);
+            result.put(data.getSheetName(), data);
+        });
+        return BookData.of(result);
     }
 }

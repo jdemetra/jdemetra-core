@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2017 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,26 +14,37 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.spreadsheet.grid;
+package demetra.tsprovider.grid;
 
-import java.util.Map;
-import java.util.Objects;
+import demetra.tsprovider.OptionalTsData;
+import demetra.tsprovider.Ts;
+import demetra.tsprovider.TsInformationType;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  *
  * @author Philippe Charles
  */
 @lombok.Value(staticConstructor = "of")
-public class GridBook {
+public class TsGrid {
 
     @lombok.NonNull
-    private Map<String, GridSheet> sheets;
+    private String name;
 
-    @Nullable
-    public GridSheet getSheetByName(@Nonnull String name) {
-        Objects.requireNonNull(name);
-        return sheets.get(name);
+    @lombok.NonNull
+    private OptionalTsData data;
+
+    @Nonnull
+    public static TsGrid fromTs(@Nonnull Ts o) {
+        return TsGrid.of(o.getName(), o.getData());
+    }
+
+    @Nonnull
+    public static Ts toTs(@Nonnull TsGrid o) {
+        Ts.Builder tsInfo = Ts.builder();
+        tsInfo.name(o.getName());
+        tsInfo.type(TsInformationType.All);
+        tsInfo.data(o.getData());
+        return tsInfo.build();
     }
 }

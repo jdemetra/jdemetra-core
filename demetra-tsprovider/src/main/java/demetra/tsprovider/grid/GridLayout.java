@@ -14,13 +14,13 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.spreadsheet.grid;
+package demetra.tsprovider.grid;
 
 /**
  *
  * @author Philippe Charles
  */
-public enum GridType {
+public enum GridLayout {
 
     VERTICAL, HORIZONTAL, UNKNOWN
 }

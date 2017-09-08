@@ -27,6 +27,9 @@ import demetra.tsprovider.HasFilePaths;
 import demetra.tsprovider.TsProvider;
 import demetra.tsprovider.cursor.HasTsCursor;
 import demetra.tsprovider.cursor.TsCursorAsProvider;
+import demetra.tsprovider.grid.GridFactory;
+import demetra.tsprovider.grid.GridImport;
+import demetra.tsprovider.grid.GridReader;
 import demetra.tsprovider.util.CacheProvider;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import demetra.tsprovider.util.FallbackDataMoniker;
@@ -34,11 +37,9 @@ import demetra.tsprovider.util.IParam;
 import ec.util.spreadsheet.Book;
 import internal.spreadsheet.BookSupplier;
 import internal.spreadsheet.SpreadSheetDataDisplayName;
-import internal.spreadsheet.SpreadSheetFactory;
 import internal.spreadsheet.SpreadSheetParam;
 import internal.spreadsheet.SpreadSheetSupport;
-import internal.spreadsheet.grid.GridBook;
-import internal.spreadsheet.grid.GridImport;
+import internal.spreadsheet.grid.BookData;
 import internal.spreadsheet.legacy.LegacySpreadSheetMoniker;
 import java.io.File;
 import java.io.IOException;
@@ -80,15 +81,16 @@ public final class SpreadSheetProvider implements FileLoader {
     public SpreadSheetProvider() {
         this.bookSupplier = BookSupplier.usingServiceLoader();
 
-        ConcurrentMap<DataSource, GridBook> cache = CacheProvider.getDefault().softValuesCacheAsMap();
+        ConcurrentMap<DataSource, BookData> cache = CacheProvider.getDefault().softValuesCacheAsMap();
         SpreadSheetParam param = new SpreadSheetParam.V1();
+        GridFactory gridFactory = GridFactory.getDefault();
 
         this.mutableListSupport = HasDataSourceMutableList.of(NAME, cache::remove);
         this.monikerSupport = FallbackDataMoniker.of(HasDataMoniker.usingUri(NAME), LegacySpreadSheetMoniker.of(NAME, param));
         this.beanSupport = HasDataSourceBean.of(NAME, param, param.getVersion());
         this.filePathSupport = HasFilePaths.of(cache::clear);
         this.displayNameSupport = SpreadSheetDataDisplayName.of(NAME, param);
-        this.spreadSheetSupport = SpreadSheetSupport.of(NAME, new SpreadSheetResource(cache, filePathSupport, param, bookSupplier));
+        this.spreadSheetSupport = SpreadSheetSupport.of(NAME, new SpreadSheetResource(cache, filePathSupport, param, bookSupplier, gridFactory));
         this.tsSupport = TsCursorAsProvider.of(NAME, spreadSheetSupport, monikerSupport, cache::clear);
     }
 
@@ -110,15 +112,16 @@ public final class SpreadSheetProvider implements FileLoader {
     @lombok.AllArgsConstructor
     private static final class SpreadSheetResource implements SpreadSheetSupport.Resource {
 
-        private final ConcurrentMap<DataSource, GridBook> cache;
+        private final ConcurrentMap<DataSource, BookData> cache;
         private final HasFilePaths filePathSupport;
         private final SpreadSheetParam param;
         private final BookSupplier bookSupplier;
+        private final GridFactory gridFactory;
 
         @Override
-        public GridBook getAccessor(DataSource dataSource) throws IOException {
+        public BookData getAccessor(DataSource dataSource) throws IOException {
             DataSourcePreconditions.checkProvider(NAME, dataSource);
-            GridBook result = cache.get(dataSource);
+            BookData result = cache.get(dataSource);
             if (result == null) {
                 result = loadAccessor(dataSource);
                 cache.put(dataSource, result);
@@ -136,12 +139,14 @@ public final class SpreadSheetProvider implements FileLoader {
             return param.getSeriesParam(dataSource);
         }
 
-        private GridBook loadAccessor(DataSource key) throws IOException {
+        private BookData loadAccessor(DataSource key) throws IOException {
             SpreadSheetBean bean = param.get(key);
             File file = filePathSupport.resolveFilePath(bean.getFile());
             try (Book book = bookSupplier.open(file)) {
                 GridImport options = GridImport.of(bean.getObsFormat(), bean.getObsGathering());
-                return SpreadSheetFactory.getDefault().toSource(book, options);
+                try (GridReader reader = gridFactory.getReader(options)) {
+                    return BookData.of(book, reader);
+                }
             }
         }
     }

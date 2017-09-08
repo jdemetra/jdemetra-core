@@ -14,36 +14,37 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.spreadsheet;
+package internal.spreadsheet.grid;
+
+import ec.util.spreadsheet.Sheet;
+import demetra.tsprovider.grid.GridInput;
 
 /**
  *
  * @author Philippe Charles
  */
-@lombok.experimental.UtilityClass
-public class Fixme {
+@lombok.AllArgsConstructor(staticName = "of")
+public final class SheetGridInput implements GridInput {
 
-    public interface Matrix {
+    private final Sheet sheet;
 
-        int getRowsCount();
-
-        int getColumnsCount();
-
-        double get(int i, int j);
+    @Override
+    public String getName() {
+        return sheet.getName();
     }
 
-    public interface Table<T> {
+    @Override
+    public int getRowCount() {
+        return sheet.getRowCount();
+    }
 
-        static <T> Table<T> of(int rowCount, int columnsCount) {
-            return null;
-        }
+    @Override
+    public int getColumnCount() {
+        return sheet.getColumnCount();
+    }
 
-        int getRowsCount();
-
-        int getColumnsCount();
-
-        T get(int i, int j);
-
-        void set(int i, int j, T value);
+    @Override
+    public Object getValue(int i, int j) {
+        return sheet.getCellValue(i, j);
     }
 }

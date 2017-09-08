@@ -16,36 +16,23 @@
  */
 package internal.spreadsheet;
 
-import internal.spreadsheet.grid.GridImport;
-import demetra.data.AggregationType;
-import demetra.timeseries.TsUnit;
-import static demetra.timeseries.TsUnit.MONTHLY;
-import demetra.tsprovider.util.ObsGathering;
-import static internal.spreadsheet.grid.GridType.HORIZONTAL;
-import static internal.spreadsheet.grid.GridType.VERTICAL;
-import static internal.spreadsheet.CellParser.onDateType;
-import static internal.spreadsheet.CellParser.onNumberType;
-import static internal.spreadsheet.CellParser.onStringType;
-import internal.spreadsheet.SpreadSheetFactory.Context;
-import static internal.spreadsheet.Top5Browsers.date;
-import static internal.spreadsheet.Top5Browsers.sheet;
-import static internal.spreadsheet.Top5Browsers.top5Excel;
-import static internal.spreadsheet.Top5Browsers.top5ExcelClassic;
-import static internal.spreadsheet.Top5Browsers.top5OpenDocument;
-import static internal.spreadsheet.Top5Browsers.top5Xmlss;
-import static internal.spreadsheet.Top5Browsers.testContent;
+import demetra.tsprovider.grid.GridFactory;
+import demetra.tsprovider.grid.GridImport;
+import demetra.tsprovider.grid.GridReader;
 import ec.util.spreadsheet.Book;
 import ec.util.spreadsheet.od.OpenDocumentBookFactory;
 import ec.util.spreadsheet.poi.ExcelBookFactory;
 import ec.util.spreadsheet.poi.ExcelClassicBookFactory;
 import ec.util.spreadsheet.xmlss.XmlssBookFactory;
+import static internal.spreadsheet.Top5Browsers.testContent;
+import static internal.spreadsheet.Top5Browsers.top5Excel;
+import static internal.spreadsheet.Top5Browsers.top5ExcelClassic;
+import static internal.spreadsheet.Top5Browsers.top5OpenDocument;
+import static internal.spreadsheet.Top5Browsers.top5Xmlss;
+import internal.spreadsheet.grid.BookData;
 import java.io.IOException;
 import java.net.URL;
 import org.junit.Test;
-import static internal.spreadsheet.SpreadSheetCollectionAssert.assertThat;
-import static internal.spreadsheet.SpreadSheetFactory.DefaultImpl.parseCollection;
-import static internal.spreadsheet.Top5Browsers.data;
-import java.util.Date;
 
 /**
  *
@@ -53,121 +40,11 @@ import java.util.Date;
  */
 public class SpreadSheetFactoryTest {
 
-    private final Date jan2010 = date(2010, 0, 1);
-    private final Date feb2010 = date(2010, 1, 1);
-    private final Date mar2010 = date(2010, 2, 1);
-    private final ObsGathering gathering = ObsGathering.builder().unit(TsUnit.UNDEFINED).aggregationType(AggregationType.None).skipMissingValues(true).build();
-
-    @Test
-    public void testParseCollectionHorizontal() {
-        Context context = new Context(onStringType(), onDateType(), onNumberType(), gathering);
-
-        Object[][] basic = {
-            {null, jan2010, feb2010, mar2010},
-            {"S1", 3.14, 4.56, 7.89}
-        };
-
-        assertThat(parseCollection(sheet(basic), 0, context))
-                .hasGridType(HORIZONTAL)
-                .containsExactly("S1")
-                .containsExactly(data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89));
-
-        Object[][] withDateHeader = {
-            {"Date", jan2010, feb2010, mar2010},
-            {"S1", 3.14, 4.56, 7.89}
-        };
-
-        assertThat(parseCollection(sheet(withDateHeader), 0, context))
-                .hasGridType(HORIZONTAL)
-                .containsExactly("S1")
-                .containsExactly(data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89));
-
-        Object[][] withoutHeader = {
-            {jan2010, feb2010, mar2010},
-            {3.14, 4.56, 7.89}
-        };
-
-        assertThat(parseCollection(sheet(withoutHeader), 0, context))
-                .hasGridType(HORIZONTAL)
-                .containsExactly("S1")
-                .containsExactly(data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89));
-
-        Object[][] withMultipleHeaders = {
-            {null, null, jan2010, feb2010, mar2010},
-            {"G1", "S1", 3.14, 4.56, 7.89},
-            {null, "S2", 3, 4, 5},
-            {"G2", "S1", 7, 8, 9},
-            {"S1", null, 0, 1, 2}
-        };
-
-        assertThat(parseCollection(sheet(withMultipleHeaders), 0, context))
-                .hasGridType(HORIZONTAL)
-                .containsExactly("G1\nS1", "G1\nS2", "G2\nS1", "S1")
-                .containsExactly(
-                        data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89),
-                        data(MONTHLY, 2010, 0, 3, 4, 5),
-                        data(MONTHLY, 2010, 0, 7, 8, 9),
-                        data(MONTHLY, 2010, 0, 0, 1, 2));
-    }
-
-    @Test
-    public void testParseCollectionVertical() {
-        Context context = new Context(onStringType(), onDateType(), onNumberType(), gathering);
-
-        Object[][] basic = {
-            {null, "S1"},
-            {jan2010, 3.14},
-            {feb2010, 4.56},
-            {mar2010, 7.89}
-        };
-
-        assertThat(parseCollection(sheet(basic), 0, context))
-                .hasGridType(VERTICAL)
-                .containsExactly(data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89));
-
-        Object[][] withDateHeader = {
-            {"Date", "S1"},
-            {jan2010, 3.14},
-            {feb2010, 4.56},
-            {mar2010, 7.89}
-        };
-
-        assertThat(parseCollection(sheet(withDateHeader), 0, context))
-                .hasGridType(VERTICAL)
-                .containsExactly(data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89));
-
-        Object[][] withoutHeader = {
-            {jan2010, 3.14},
-            {feb2010, 4.56},
-            {mar2010, 7.89}
-        };
-
-        assertThat(parseCollection(sheet(withoutHeader), 0, context))
-                .hasGridType(VERTICAL)
-                .containsExactly("S1")
-                .containsExactly(data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89));
-
-        Object[][] withMultipleHeaders = {
-            {null, "G1", null, "G2", "S1"},
-            {null, "S1", "S2", "S1", null},
-            {jan2010, 3.14, 3, 7, 0},
-            {feb2010, 4.56, 4, 8, 1},
-            {mar2010, 7.89, 5, 9, 2}
-        };
-
-        assertThat(parseCollection(sheet(withMultipleHeaders), 0, context))
-                .hasGridType(VERTICAL)
-                .containsExactly("G1\nS1", "G1\nS2", "G2\nS1", "S1")
-                .containsExactly(
-                        data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89),
-                        data(MONTHLY, 2010, 0, 3, 4, 5),
-                        data(MONTHLY, 2010, 0, 7, 8, 9),
-                        data(MONTHLY, 2010, 0, 0, 1, 2));
-    }
-
     private static void testFactory(Book.Factory bookFactory, URL url) throws IOException {
         try (Book book = bookFactory.load(url)) {
-            testContent(SpreadSheetFactory.getDefault().toSource(book, GridImport.DEFAULT));
+            try (GridReader reader = GridFactory.getDefault().getReader(GridImport.DEFAULT)) {
+                testContent(BookData.of(book, reader));
+            }
         }
     }
 

@@ -14,36 +14,18 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.spreadsheet;
+package demetra.tsprovider.grid;
+
+import javax.annotation.Nonnull;
 
 /**
  *
  * @author Philippe Charles
  */
-@lombok.experimental.UtilityClass
-public class Fixme {
+public interface GridWriter extends AutoCloseable {
 
-    public interface Matrix {
+    void write(@Nonnull TsCollectionGrid value, @Nonnull GridOutput output);
 
-        int getRowsCount();
-
-        int getColumnsCount();
-
-        double get(int i, int j);
-    }
-
-    public interface Table<T> {
-
-        static <T> Table<T> of(int rowCount, int columnsCount) {
-            return null;
-        }
-
-        int getRowsCount();
-
-        int getColumnsCount();
-
-        T get(int i, int j);
-
-        void set(int i, int j, T value);
-    }
+    @Override
+    void close();
 }

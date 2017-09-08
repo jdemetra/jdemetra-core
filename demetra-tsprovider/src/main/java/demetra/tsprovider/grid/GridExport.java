@@ -14,36 +14,32 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.spreadsheet;
+package demetra.tsprovider.grid;
 
 /**
  *
  * @author Philippe Charles
  */
-@lombok.experimental.UtilityClass
-public class Fixme {
+@lombok.Value(staticConstructor = "of")
+public class GridExport {
 
-    public interface Matrix {
+    public static final GridExport DEFAULT = new GridExport(GridLayout.VERTICAL, true, true, true);
 
-        int getRowsCount();
-
-        int getColumnsCount();
-
-        double get(int i, int j);
-    }
-
-    public interface Table<T> {
-
-        static <T> Table<T> of(int rowCount, int columnsCount) {
-            return null;
-        }
-
-        int getRowsCount();
-
-        int getColumnsCount();
-
-        T get(int i, int j);
-
-        void set(int i, int j, T value);
-    }
+    /**
+     * true : one series per column, false : one series per line
+     */
+    private GridLayout layout;
+    /**
+     * show or not the dates
+     */
+    private boolean showDates;
+    /**
+     * show or not the titles of the series
+     */
+    private boolean showTitle;
+    /**
+     * true to set the dates at the beginning of the period, false for the end
+     * of the period
+     */
+    private boolean beginPeriod;
 }

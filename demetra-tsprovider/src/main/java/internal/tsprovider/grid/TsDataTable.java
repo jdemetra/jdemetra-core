@@ -14,36 +14,34 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.spreadsheet;
+package internal.tsprovider.grid;
+
+import demetra.timeseries.RegularDomain;
+import demetra.timeseries.simplets.TsData;
 
 /**
  *
  * @author Philippe Charles
  */
-@lombok.experimental.UtilityClass
-public class Fixme {
+public class TsDataTable {
 
-    public interface Matrix {
-
-        int getRowsCount();
-
-        int getColumnsCount();
-
-        double get(int i, int j);
+    public enum TsDataTableInfo {
+        Valid;
     }
 
-    public interface Table<T> {
+    public RegularDomain getDomain() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-        static <T> Table<T> of(int rowCount, int columnsCount) {
-            return null;
-        }
+    public TsDataTableInfo getDataInfo(int i, int j) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-        int getRowsCount();
+    public double getData(int i, int j) {
+        return Double.NaN;
+    }
 
-        int getColumnsCount();
-
-        T get(int i, int j);
-
-        void set(int i, int j, T value);
+    public void insert(int i, TsData get) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

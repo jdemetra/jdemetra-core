@@ -16,8 +16,8 @@
  */
 package internal.spreadsheet;
 
-import internal.spreadsheet.grid.GridType;
-import internal.spreadsheet.grid.GridSheet;
+import demetra.tsprovider.grid.GridLayout;
+import internal.spreadsheet.grid.SheetData;
 import demetra.timeseries.simplets.TsData;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
@@ -26,13 +26,13 @@ import org.assertj.core.api.Assertions;
  *
  * @author Philippe Charles
  */
-final class SpreadSheetCollectionAssert extends AbstractAssert<SpreadSheetCollectionAssert, GridSheet> {
+final class SpreadSheetCollectionAssert extends AbstractAssert<SpreadSheetCollectionAssert, SheetData> {
 
-    public static SpreadSheetCollectionAssert assertThat(GridSheet actual) {
+    public static SpreadSheetCollectionAssert assertThat(SheetData actual) {
         return new SpreadSheetCollectionAssert(actual);
     }
 
-    public SpreadSheetCollectionAssert(GridSheet actual) {
+    public SpreadSheetCollectionAssert(SheetData actual) {
         super(actual, SpreadSheetCollectionAssert.class);
     }
 
@@ -52,24 +52,24 @@ final class SpreadSheetCollectionAssert extends AbstractAssert<SpreadSheetCollec
         return this;
     }
 
-    public SpreadSheetCollectionAssert hasGridType(GridType gridType) {
+    public SpreadSheetCollectionAssert hasLayout(GridLayout layout) {
         isNotNull();
-        if (!actual.getGridType().equals(gridType)) {
-            failWithMessage("Expected alignType to be <%s> but was <%s>", gridType, actual.getGridType());
+        if (!actual.getData().getLayout().equals(layout)) {
+            failWithMessage("Expected alignType to be <%s> but was <%s>", layout, actual.getData().getItems());
         }
         return this;
     }
 
     public SpreadSheetCollectionAssert containsExactly(TsData... data) {
-        Assertions.assertThat(actual.getRanges())
+        Assertions.assertThat(actual.getData().getItems())
                 .extracting(o -> o.getData().get())
                 .containsExactly(data);
         return this;
     }
 
     public SpreadSheetCollectionAssert containsExactly(String... names) {
-        Assertions.assertThat(actual.getRanges())
-                .extracting(o -> o.getSeriesName())
+        Assertions.assertThat(actual.getData().getItems())
+                .extracting(o -> o.getName())
                 .containsExactly(names);
         return this;
     }

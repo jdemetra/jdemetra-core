@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 National Bank of Belgium
+ * Copyright 2017 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,21 +14,23 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.spreadsheet.grid;
+package demetra.tsprovider.grid;
 
-import demetra.tsprovider.util.ObsFormat;
-import demetra.tsprovider.util.ObsGathering;
+import java.util.Iterator;
 
 /**
  *
  * @author Philippe Charles
- * @since 2.1.0
  */
-@lombok.Value(staticConstructor = "of")
-public class GridImport {
+public interface GridOutput {
 
-    public static final GridImport DEFAULT = new GridImport(ObsFormat.DEFAULT, ObsGathering.DEFAULT);
+    void name(String name);
+    
+    void inv();
 
-    private ObsFormat obsFormat;
-    private ObsGathering obsGathering;
+    void row(int row, int column, Iterator<?> values);
+
+    void column(int row, int column, Iterator<?> values);
+
+    void value(int row, int column, double value);
 }

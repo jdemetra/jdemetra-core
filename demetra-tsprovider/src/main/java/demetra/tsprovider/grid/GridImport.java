@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 National Bank of Belgium
+ * Copyright 2017 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,32 +14,21 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.spreadsheet.grid;
+package demetra.tsprovider.grid;
+
+import demetra.tsprovider.util.ObsFormat;
+import demetra.tsprovider.util.ObsGathering;
 
 /**
  *
  * @author Philippe Charles
+ * @since 2.1.0
  */
 @lombok.Value(staticConstructor = "of")
-public class GridExport {
+public class GridImport {
 
-    public static final GridExport DEFAULT = new GridExport(GridType.VERTICAL, true, true, true);
+    public static final GridImport DEFAULT = new GridImport(ObsFormat.DEFAULT, ObsGathering.DEFAULT);
 
-    /**
-     * true : one series per column, false : one series per line
-     */
-    private GridType gridType;
-    /**
-     * show or not the dates
-     */
-    private boolean showDates;
-    /**
-     * show or not the titles of the series
-     */
-    private boolean showTitle;
-    /**
-     * true to set the dates at the beginning of the period, false for the end
-     * of the period
-     */
-    private boolean beginPeriod;
+    private ObsFormat obsFormat;
+    private ObsGathering obsGathering;
 }
