@@ -35,21 +35,18 @@ interface ByLongObsList extends ObsList {
 
     void add(long period, double value);
 
-    static ByLongObsList of(boolean preSorted, ObjLongToIntFunction<TsUnit> tsPeriodIdFunc) {
-        return preSorted
-                ? new PreSortedLongObsList(tsPeriodIdFunc, 32)
-                : new SortableLongObsList(tsPeriodIdFunc);
-    }
-
-    static final class SortableLongObsList implements ByLongObsList {
+    static final class Sortable implements ByLongObsList {
 
         private final ObjLongToIntFunction<TsUnit> tsPeriodIdFunc;
-        private final List<LongObs> list = new ArrayList<>();
-        private boolean sorted = true;
-        private long latestPeriod = Long.MIN_VALUE;
+        private final List<LongObs> list;
+        private boolean sorted;
+        private long latestPeriod;
 
-        private SortableLongObsList(ObjLongToIntFunction<TsUnit> tsPeriodIdFunc) {
+        Sortable(ObjLongToIntFunction<TsUnit> tsPeriodIdFunc) {
             this.tsPeriodIdFunc = tsPeriodIdFunc;
+            this.list = new ArrayList<>();
+            this.sorted = true;
+            this.latestPeriod = Long.MIN_VALUE;
         }
 
         @VisibleForTesting
@@ -103,14 +100,14 @@ interface ByLongObsList extends ObsList {
         }
     }
 
-    static final class PreSortedLongObsList implements ByLongObsList {
+    static final class PreSorted implements ByLongObsList {
 
         private final ObjLongToIntFunction<TsUnit> tsPeriodIdFunc;
         private long[] periods;
         private double[] values;
         private int size;
 
-        private PreSortedLongObsList(ObjLongToIntFunction<TsUnit> tsPeriodIdFunc, int initialCapacity) {
+        PreSorted(ObjLongToIntFunction<TsUnit> tsPeriodIdFunc, int initialCapacity) {
             this.tsPeriodIdFunc = tsPeriodIdFunc;
             this.periods = new long[initialCapacity];
             this.values = new double[initialCapacity];
@@ -151,7 +148,7 @@ interface ByLongObsList extends ObsList {
 
         @Override
         public IntUnaryOperator getPeriodIdFunc(TsUnit unit) {
-            return o-> tsPeriodIdFunc.applyAsInt(unit, periods[o]);
+            return o -> tsPeriodIdFunc.applyAsInt(unit, periods[o]);
         }
 
         @Override

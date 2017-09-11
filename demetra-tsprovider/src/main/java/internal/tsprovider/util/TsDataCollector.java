@@ -22,6 +22,7 @@ import demetra.timeseries.simplets.TsData;
 import demetra.data.AggregationType;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
+import static demetra.timeseries.TsUnit.*;
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.IntUnaryOperator;
@@ -162,36 +163,44 @@ class TsDataCollector {
     }
 
     public TsData makeFromUnknownUnit(ObsList obs) {
-        int n = obs.size();
-        if (n < 2) {
+        int size = obs.size();
+        if (size < 2) {
             return null; // NO_DATA or GUESS_SINGLE
         }
         obs.sortByPeriod();
 
-        int s = 0;
+        int[] ids = new int[size];
 
-        int[] ids = new int[n];
-        TsUnit[] units = TsDataBuilderUtil.GUESSING_UNITS;
-        for (; s < units.length; ++s) {
-            if (makeIdsFromUnit(obs, units[s], ids)) {
+        TsUnit unit = makeIds(obs, ids);
+        if (unit == null) {
+            return null; // GUESS_DUPLICATION
+        }
+
+        int firstId = ids[0];
+        int lastId = ids[size - 1];
+
+        TsPeriod start = TsPeriod.of(unit, firstId);
+
+        // check if the series is continuous and complete.
+        int expectedSize = lastId - firstId + 1;
+        if (expectedSize == size) {
+            return TsData.of(start, obs.getValues());
+        } else {
+            return TsData.of(start, expand(size, expectedSize, ids, obs::getValue));
+        }
+    }
+
+    private TsUnit makeIds(ObsList obs, int[] ids) {
+        int i = 0;
+        for (; i < GUESSING_UNITS.length; ++i) {
+            if (makeIdsFromUnit(obs, GUESSING_UNITS[i], ids)) {
                 break;
             }
         }
-        if (s == units.length) {
-            return null; // GUESS_DUPLICATION
+        if (i == GUESSING_UNITS.length) {
+            return null;
         }
-        int firstId = ids[0];
-        int lastId = ids[n - 1];
-
-        TsPeriod start = TsPeriod.of(units[s], firstId);
-
-        // check if the series is continuous and complete.
-        int l = lastId - firstId + 1;
-        if (l == n) {
-            return TsData.of(start, obs.getValues());
-        } else {
-            return TsData.of(start, expand(n, l, ids, obs::getValue));
-        }
+        return GUESSING_UNITS[i];
     }
 
     private boolean makeIdsFromUnit(ObsList obs, TsUnit unit, int[] ids) {
@@ -206,9 +215,11 @@ class TsDataCollector {
         return true;
     }
 
+    final TsUnit[] GUESSING_UNITS = {YEARLY, QUARTERLY, MONTHLY, DAILY, HOURLY, MINUTELY};
+
     public TsData makeWithoutAggregation(ObsList obs, TsUnit unit) {
-        int n = obs.size();
-        if (n == 0) {
+        int size = obs.size();
+        if (size == 0) {
             return null; // NO_DATA
         }
 
@@ -216,9 +227,9 @@ class TsDataCollector {
 
         IntUnaryOperator toPeriodId = obs.getPeriodIdFunc(unit);
 
-        int[] ids = new int[n];
+        int[] ids = new int[size];
         ids[0] = toPeriodId.applyAsInt(0);
-        for (int i = 1; i < n; i++) {
+        for (int i = 1; i < size; i++) {
             ids[i] = toPeriodId.applyAsInt(i);
             if (ids[i] == ids[i - 1]) {
                 return null; // DUPLICATION_WITHOUT_AGGREGATION
@@ -226,16 +237,16 @@ class TsDataCollector {
         }
 
         int firstId = ids[0];
-        int lastId = ids[n - 1];
+        int lastId = ids[size - 1];
 
         TsPeriod start = TsPeriod.of(unit, firstId);
 
         // check if the series is continuous and complete.
-        int l = lastId - firstId + 1;
-        if (l == n) {
+        int expectedSize = lastId - firstId + 1;
+        if (expectedSize == size) {
             return TsData.of(start, obs.getValues());
         } else {
-            return TsData.of(start, expand(n, l, ids, obs::getValue));
+            return TsData.of(start, expand(size, expectedSize, ids, obs::getValue));
         }
     }
 

@@ -18,12 +18,18 @@ package internal.tsprovider.util;
 
 import demetra.data.AggregationType;
 import demetra.timeseries.TsUnit;
+import static demetra.timeseries.TsUnit.*;
 import demetra.timeseries.simplets.TsData;
 import demetra.timeseries.simplets.TsDataConverter;
 import demetra.tsprovider.OptionalTsData;
 import static demetra.tsprovider.OptionalTsData.present;
+import demetra.tsprovider.util.ObsCharacteristics;
 import demetra.tsprovider.util.ObsGathering;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -39,7 +45,13 @@ public class TsDataBuilderUtil {
     public final OptionalTsData DUPLICATION_WITHOUT_AGGREGATION = OptionalTsData.absent("Duplicated observations without aggregation");
     public final OptionalTsData UNKNOWN = OptionalTsData.absent("Unexpected error");
 
-    public final TsUnit[] GUESSING_UNITS = {TsUnit.YEARLY, TsUnit.QUARTERLY, TsUnit.MONTHLY, TsUnit.HALF_YEARLY, TsUnit.QUADRI_MONTHLY, TsUnit.BI_MONTHLY};
+    public final List<TsUnit> GUESSING_UNITS = Arrays.asList(TsDataCollector.GUESSING_UNITS);
+    public final List<TsUnit> DEFINED_UNITS = Arrays.asList(YEARLY, HALF_YEARLY, QUADRI_MONTHLY, QUARTERLY, BI_MONTHLY, MONTHLY, DAILY, HOURLY, MINUTELY);
+    public final List<TsUnit> ALL_UNITS = Stream.concat(Stream.of(UNDEFINED), GUESSING_UNITS.stream()).collect(Collectors.toList());
+
+    boolean isOrdered(ObsCharacteristics[] characteristics) {
+        return Arrays.binarySearch(characteristics, ObsCharacteristics.ORDERED) != -1;
+    }
 
     boolean isValid(ObsGathering gathering) {
         return !(gathering.getUnit().equals(TsUnit.UNDEFINED) && gathering.getAggregationType() != AggregationType.None);
@@ -67,27 +79,27 @@ public class TsDataBuilderUtil {
         }
     }
 
-    private OptionalTsData makeWithoutAggregation(ObsList obs, TsUnit freq) {
+    private OptionalTsData makeWithoutAggregation(ObsList obs, TsUnit unit) {
         switch (obs.size()) {
             case 0:
                 return NO_DATA;
             default:
-                TsData result = TsDataCollector.makeWithoutAggregation(obs, freq);
+                TsData result = TsDataCollector.makeWithoutAggregation(obs, unit);
                 return result != null ? present(result) : DUPLICATION_WITHOUT_AGGREGATION;
         }
     }
 
-    private OptionalTsData makeWithAggregation(ObsList obs, TsUnit freq, AggregationType convMode, boolean complete) {
+    private OptionalTsData makeWithAggregation(ObsList obs, TsUnit unit, AggregationType convMode, boolean complete) {
         switch (obs.size()) {
             case 0:
                 return NO_DATA;
             default:
                 TsData result = TsDataCollector.makeFromUnknownUnit(obs);
-                if (result != null && result.getUnit().contains(freq)) {
+                if (result != null && result.getUnit().contains(unit)) {
                     // should succeed
-                    result = TsDataConverter.changeTsUnit(result, freq, convMode, complete);
+                    result = TsDataConverter.changeTsUnit(result, unit, convMode, complete);
                 } else {
-                    result = TsDataCollector.makeWithAggregation(obs, freq, convMode);
+                    result = TsDataCollector.makeWithAggregation(obs, unit, convMode);
                 }
                 return result != null ? present(result) : UNKNOWN;
         }

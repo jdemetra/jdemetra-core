@@ -19,9 +19,12 @@ package demetra.tsprovider.util;
 import demetra.tsprovider.OptionalTsData;
 import demetra.design.IBuilder;
 import internal.tsprovider.util.ByLongDataBuilder;
+import internal.tsprovider.util.ByObjDataBuilder;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
@@ -71,7 +74,10 @@ public interface TsDataBuilder<T> extends IBuilder<OptionalTsData> {
      * @return this builder
      */
     @Nonnull
-    default <X> TsDataBuilder<T> add(X obs, Function<? super X, ? extends T> dateFunc, Function<? super X, ? extends Number> valueFunc) {
+    default <X> TsDataBuilder<T> add(
+            @Nullable X obs,
+            @Nonnull Function<? super X, ? extends T> dateFunc,
+            @Nonnull Function<? super X, ? extends Number> valueFunc) {
         T date = dateFunc.apply(obs);
         return TsDataBuilder.this.add(date, date != null ? valueFunc.apply(obs) : null);
     }
@@ -88,7 +94,10 @@ public interface TsDataBuilder<T> extends IBuilder<OptionalTsData> {
      * @return this builder
      */
     @Nonnull
-    default <X> TsDataBuilder<T> addAll(Stream<X> stream, Function<? super X, ? extends T> dateFunc, Function<? super X, ? extends Number> valueFunc) {
+    default <X> TsDataBuilder<T> addAll(
+            @Nonnull Stream<X> stream,
+            @Nonnull Function<? super X, ? extends T> dateFunc,
+            @Nonnull Function<? super X, ? extends Number> valueFunc) {
         stream.forEach((o) -> add(o, dateFunc, valueFunc));
         return this;
     }
@@ -110,7 +119,6 @@ public interface TsDataBuilder<T> extends IBuilder<OptionalTsData> {
      * @param gathering non-null observation collection parameters
      * @param characteristics non-null observations characteristics
      * @return non-null builder
-     * @since 2.2.0
      */
     @Nonnull
     static TsDataBuilder<Date> byCalendar(@Nonnull Calendar resource, @Nonnull ObsGathering gathering, @Nonnull ObsCharacteristics... characteristics) {
@@ -123,10 +131,22 @@ public interface TsDataBuilder<T> extends IBuilder<OptionalTsData> {
      * @param gathering non-null observation collection parameters
      * @param characteristics non-null observations characteristics
      * @return non-null builder
-     * @since 2.2.0
      */
     @Nonnull
     static TsDataBuilder<LocalDate> byDate(@Nonnull ObsGathering gathering, @Nonnull ObsCharacteristics... characteristics) {
         return ByLongDataBuilder.fromDate(gathering, characteristics);
+    }
+
+    /**
+     * Creates an OptionalTsData builder that collects {@link LocalDateTime}
+     * values.
+     *
+     * @param gathering non-null observation collection parameters
+     * @param characteristics non-null observations characteristics
+     * @return non-null builder
+     */
+    @Nonnull
+    static TsDataBuilder<LocalDateTime> byDateTime(@Nonnull ObsGathering gathering, @Nonnull ObsCharacteristics... characteristics) {
+        return ByObjDataBuilder.fromDateTime(gathering, characteristics);
     }
 }
