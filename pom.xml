@@ -99,6 +99,7 @@
         <module>sa</module>
         <module>benchmarking</module>
         <module>demetra-tsprovider</module>
+        <module>demetra-bridge</module>
     </modules>
 	
     <dependencyManagement>
@@ -180,6 +181,16 @@
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-tck</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-tsprovider</artifactId>
+                <version>${project.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-bridge</artifactId>
                 <version>${project.version}</version>            
             </dependency>
             <!-- < modules -->
