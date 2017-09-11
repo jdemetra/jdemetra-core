@@ -102,8 +102,8 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
     }
 
     // FIXME: find a better name
-    public int getPosition(TsUnit unit) {
-        return getPosition(offset, this.unit, id, unit);
+    public int getPosition(TsUnit low) {
+        return getPosition(offset, this.unit, id, low);
     }
 
     @Override
@@ -244,11 +244,11 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
         return EPOCH.plus(unit.getAmount() * (id + offset), unit.getChronoUnit());
     }
 
-    private static int getPosition(int offset, TsUnit unit, long id, TsUnit target) {
+    private static int getPosition(int offset, TsUnit high, long id, TsUnit low) {
 //        return withUnit(unit).withUnit(this.unit).until(this);
         long id0 = id;
-        long id1 = idAt(offset, target, dateAt(offset, unit, id0));
-        long id2 = idAt(offset, unit, dateAt(offset, target, id1));
+        long id1 = idAt(offset, low, dateAt(offset, high, id0));
+        long id2 = idAt(offset, high, dateAt(offset, low, id1));
         return (int) (id0 - id2);
     }
 
@@ -305,8 +305,8 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
             return this;
         }
 
-        public int getPosition(TsUnit unit) {
-            return TsPeriod.getPosition(offset, this.unit, id, unit);
+        public int getPosition(TsUnit low) {
+            return TsPeriod.getPosition(offset, this.unit, id, low);
         }
 
         @Override

@@ -22,21 +22,23 @@ import demetra.tsprovider.OptionalTsData;
 import demetra.tsprovider.util.ObsCharacteristics;
 import demetra.tsprovider.util.ObsGathering;
 import demetra.tsprovider.util.TsDataBuilder;
+import demetra.utilities.functions.ObjLongToIntFunction;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.function.Function;
 import java.util.function.ToLongFunction;
+import lombok.AccessLevel;
 
 /**
  *
  * @author Philippe Charles
  * @param <T>
  */
+@lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ByLongDataBuilder<T> implements TsDataBuilder<T> {
 
     public static TsDataBuilder<Date> fromCalendar(Calendar resource, ObsGathering gathering, ObsCharacteristics[] characteristics) {
@@ -51,21 +53,14 @@ public final class ByLongDataBuilder<T> implements TsDataBuilder<T> {
                 : new NoOpDataBuilder<>(TsDataBuilderUtil.INVALID_AGGREGATION);
     }
 
-    private final ByLongObsList obs;
+    private final ByLongObsList obsList;
     private final ToLongFunction<T> toLong;
     private final boolean skipMissingValues;
     private final Function<ObsList, OptionalTsData> maker;
 
-    private ByLongDataBuilder(ByLongObsList obs, ToLongFunction<T> toLong, boolean skipMissingValues, Function<ObsList, OptionalTsData> maker) {
-        this.obs = obs;
-        this.toLong = toLong;
-        this.skipMissingValues = skipMissingValues;
-        this.maker = maker;
-    }
-
     @Override
     public TsDataBuilder<T> clear() {
-        obs.clear();
+        obsList.clear();
         return this;
     }
 
@@ -73,9 +68,9 @@ public final class ByLongDataBuilder<T> implements TsDataBuilder<T> {
     public TsDataBuilder<T> add(T date, Number value) {
         if (date != null) {
             if (value != null) {
-                obs.add(toLong.applyAsLong(date), value.doubleValue());
+                obsList.add(toLong.applyAsLong(date), value.doubleValue());
             } else if (!skipMissingValues) {
-                obs.add(toLong.applyAsLong(date), Double.NaN);
+                obsList.add(toLong.applyAsLong(date), Double.NaN);
             }
         }
         return this;
@@ -83,7 +78,7 @@ public final class ByLongDataBuilder<T> implements TsDataBuilder<T> {
 
     @Override
     public OptionalTsData build() {
-        return maker.apply(obs);
+        return maker.apply(obsList);
     }
 
     private static <T> ByLongDataBuilder<T> of(
@@ -91,14 +86,16 @@ public final class ByLongDataBuilder<T> implements TsDataBuilder<T> {
             Converter<T> converter) {
 
         return new ByLongDataBuilder<>(
-                ByLongObsList.of(isOrdered(characteristics), converter::longToPeriodId),
+                getLongObsList(TsDataBuilderUtil.isOrdered(characteristics), converter::longToPeriodId),
                 converter::valueToLong,
                 gathering.isSkipMissingValues(),
                 TsDataBuilderUtil.getMaker(gathering));
     }
 
-    private static boolean isOrdered(ObsCharacteristics[] characteristics) {
-        return Arrays.binarySearch(characteristics, ObsCharacteristics.ORDERED) != -1;
+    private static ByLongObsList getLongObsList(boolean preSorted, ObjLongToIntFunction<TsUnit> tsPeriodIdFunc) {
+        return preSorted
+                ? new ByLongObsList.PreSorted(tsPeriodIdFunc, 32)
+                : new ByLongObsList.Sortable(tsPeriodIdFunc);
     }
 
     private interface Converter<T> {
