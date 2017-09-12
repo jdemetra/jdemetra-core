@@ -25,7 +25,6 @@ import demetra.ssf.ISsfInitialization;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.multivariate.MultivariateSsf;
-import java.util.List;
 
 /**
  *
@@ -39,7 +38,7 @@ public class ContemporaneousSsfCholette {
         return new Builder(nvars);
     }
 
-    static class Builder implements IBuilder<IMultivariateSsf> {
+    public static class Builder implements IBuilder<IMultivariateSsf> {
 
         private final int nvars;
         double rho = 1;

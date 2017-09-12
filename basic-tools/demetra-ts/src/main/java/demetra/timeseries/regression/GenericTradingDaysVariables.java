@@ -19,7 +19,6 @@ package demetra.timeseries.regression;
 import demetra.data.DataBlock;
 import demetra.timeseries.RegularDomain;
 import demetra.timeseries.calendar.GenericTradingDays;
-import java.time.Period;
 import java.util.List;
 
 /**

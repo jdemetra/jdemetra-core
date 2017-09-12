@@ -18,7 +18,6 @@ package demetra.benchmarking.univariate.internal;
 
 import demetra.benchmarking.spi.CholetteAlgorithm;
 import demetra.benchmarking.univariate.CholetteSpecification;
-import demetra.benchmarking.univariate.CholetteSpecification;
 import demetra.benchmarking.univariate.CholetteSpecification.BiasCorrection;
 import demetra.data.AggregationType;
 import demetra.data.DoubleSequence;
@@ -27,7 +26,6 @@ import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.SsfData;
-import demetra.timeseries.Fixme;
 import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.simplets.TsData;
@@ -35,10 +33,7 @@ import demetra.timeseries.simplets.TsDataConverter;
 import demetra.timeseries.simplets.TsDataToolkit;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
 import org.openide.util.lookup.ServiceProvider;
-import static demetra.timeseries.simplets.TsDataToolkit.multiply;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.multiply;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
@@ -83,6 +78,7 @@ public class CholetteFactory implements CholetteAlgorithm {
      *
      * @param d
      * @param agg
+     * @param type
      * @return
      */
     public static double[] expand(RegularDomain d, TsData agg, AggregationType type) {
