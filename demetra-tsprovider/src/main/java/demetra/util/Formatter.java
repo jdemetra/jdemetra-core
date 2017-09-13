@@ -21,8 +21,11 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -155,13 +158,20 @@ public interface Formatter<T> {
     }
 
     @Nonnull
+    static <T extends TemporalAccessor> Formatter<T> onDateTimeFormatter(@Nonnull DateTimeFormatter formatter) {
+        Objects.requireNonNull(formatter);
+        return o -> InternalFormatter.formatTemporalAccessor(formatter, o);
+    }
+
+    @Nonnull
     static Formatter<Date> onDateFormat(@Nonnull DateFormat dateFormat) {
         return dateFormat::format;
     }
 
     @Nonnull
     static Formatter<Number> onNumberFormat(@Nonnull NumberFormat numberFormat) {
-        return numberFormat::format;
+        Objects.requireNonNull(numberFormat);
+        return o -> InternalFormatter.formatNumber(numberFormat, o);
     }
 
     @Nonnull

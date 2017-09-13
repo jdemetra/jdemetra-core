@@ -30,8 +30,6 @@ import static internal.spreadsheet.SpreadSheetCollectionAssert.assertThat;
 import internal.spreadsheet.grid.BookData;
 import static java.lang.Double.NaN;
 import java.net.URL;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -67,10 +65,6 @@ class Top5Browsers {
     static TsData data(TsUnit freq, int year, int position, double... values) {
         TsPeriod p = TsPeriod.yearly(year).withUnit(freq).plus(position);
         return TsData.ofInternal(p, values);
-    }
-
-    static Date date(int year, int month, int day) {
-        return new GregorianCalendar(year, month, day).getTime();
     }
 
     static Sheet sheet(Object[][] table) {

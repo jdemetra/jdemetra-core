@@ -17,6 +17,7 @@
 package demetra.tsprovider.util;
 
 import demetra.design.Immutable;
+import demetra.design.VisibleForTesting;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -24,12 +25,18 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import demetra.util.Parser;
 import demetra.util.Formatter;
 import internal.util.Strings;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.FormatStyle;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalQuery;
+import lombok.AccessLevel;
 
 /**
  * A special object that contains all information needed to format and parse
@@ -38,14 +45,12 @@ import internal.util.Strings;
  * @author Philippe Charles
  */
 @Immutable
+@lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
+@lombok.EqualsAndHashCode
+@lombok.Getter
 public final class ObsFormat {
 
-    public static final ObsFormat DEFAULT = new ObsFormat(null, null, null);
-    public static final String SEP = " ~ ";
-    // PROPERTIES
-    private final Locale locale;
-    private final String datePattern;
-    private final String numberPattern;
+    public static final ObsFormat DEFAULT = new ObsFormat(null, "", "");
 
     /**
      * Creates a DataFormat from an optional locale, an optional date pattern
@@ -54,30 +59,23 @@ public final class ObsFormat {
      * @param locale an optional locale
      * @param datePattern an optional date pattern
      * @param numberPattern an optional number pattern
+     * @return
      * @see Locale
      * @see SimpleDateFormat
      * @see DecimalFormat
      */
-    public ObsFormat(@Nullable Locale locale, @Nullable String datePattern, @Nullable String numberPattern) {
-        this.locale = locale;
-        this.datePattern = Strings.nullToEmpty(datePattern);
-        this.numberPattern = Strings.nullToEmpty(numberPattern);
-    }
-
     @Nonnull
-    public String getNumberPattern() {
-        return numberPattern;
+    public static ObsFormat of(@Nullable Locale locale, @Nullable String datePattern, @Nullable String numberPattern) {
+        return new ObsFormat(locale, Strings.nullToEmpty(datePattern), Strings.nullToEmpty(numberPattern));
     }
 
-    @Nonnull
-    public String getDatePattern() {
-        return datePattern;
-    }
+    private final Locale locale;
 
-    @Nullable
-    public Locale getLocale() {
-        return locale;
-    }
+    @lombok.NonNull
+    private final String datePattern;
+
+    @lombok.NonNull
+    private final String numberPattern;
 
     @Nonnull
     public String getLocaleString() {
@@ -86,26 +84,27 @@ public final class ObsFormat {
 
     @Override
     public String toString() {
-        return getLocaleString() + SEP + datePattern + SEP + numberPattern;
+        return getLocaleString() + " ~ " + datePattern + " ~ " + numberPattern;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof ObsFormat && equals((ObsFormat) obj));
+    @Nonnull
+    public <T extends TemporalAccessor> Formatter<T> dateTimeFormatter() {
+        try {
+            return Formatter.onDateTimeFormatter(newDateTimeFormatter());
+        } catch (IllegalArgumentException ex) {
+            return Formatter.onNull();
+        }
     }
 
-    private boolean equals(ObsFormat that) {
-        return Objects.equals(this.locale, that.locale)
-                && this.datePattern.equals(that.datePattern)
-                && this.numberPattern.equals(that.numberPattern);
+    @Nonnull
+    public <T> Parser<T> dateTimeParser(@Nonnull TemporalQuery<T> query) {
+        try {
+            return Parser.onDateTimeFormatter(newDateTimeFormatter(), query);
+        } catch (IllegalArgumentException ex) {
+            return Parser.onNull();
+        }
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(locale, datePattern, numberPattern);
-    }
-
-    //<editor-fold defaultstate="collapsed" desc="Parsers/Formatters">
     /**
      * Returns a date formatter from the current locale and date pattern. Note
      * that an invalid pattern returns a do-nothing formatter.
@@ -113,7 +112,7 @@ public final class ObsFormat {
      * @return a non-null formatter
      */
     @Nonnull
-    public Formatter<Date> dateFormatter() {
+    public Formatter<Date> calendarFormatter() {
         try {
             return Formatter.onDateFormat(newDateFormat());
         } catch (IllegalArgumentException ex) {
@@ -128,7 +127,7 @@ public final class ObsFormat {
      * @return a non-null parser
      */
     @Nonnull
-    public Parser<Date> dateParser() {
+    public Parser<Date> calendarParser() {
         try {
             return Parser.onDateFormat(newDateFormat());
         } catch (IllegalArgumentException ex) {
@@ -166,16 +165,29 @@ public final class ObsFormat {
         }
     }
 
-    /**
-     * Creates a new {@link DateFormat} based on the current locale and date
-     * pattern.
-     *
-     * @return a non-null {@link DateFormat}
-     * @throws IllegalArgumentException if the date pattern is invalid
-     * @see SimpleDateFormat
-     */
-    @Nonnull
-    public DateFormat newDateFormat() throws IllegalArgumentException {
+    //<editor-fold defaultstate="collapsed" desc="Internal implementation">
+    @VisibleForTesting
+    DateTimeFormatter newDateTimeFormatter() throws IllegalArgumentException {
+        DateTimeFormatterBuilder result = new DateTimeFormatterBuilder()
+                .parseDefaulting(ChronoField.MONTH_OF_YEAR, 1)
+                .parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
+                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+                .parseDefaulting(ChronoField.MINUTE_OF_DAY, 0)
+                .parseDefaulting(ChronoField.SECOND_OF_DAY, 0);
+
+        if (!datePattern.isEmpty()) {
+            result.appendPattern(datePattern);
+        } else {
+            result.append(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM));
+        }
+
+        return locale != null
+                ? result.toFormatter(locale)
+                : result.toFormatter();
+    }
+
+    @VisibleForTesting
+    DateFormat newDateFormat() throws IllegalArgumentException {
         DateFormat result;
         if (!datePattern.isEmpty()) {
             if (locale != null) {
@@ -195,17 +207,8 @@ public final class ObsFormat {
         return result;
     }
 
-    /**
-     * Creates a new {@link NumberFormat} based on the current locale and number
-     * pattern.
-     *
-     * @return a non-null {@link NumberFormat}
-     * @throws IllegalArgumentException if the number pattern is invalid
-     * @see DecimalFormat
-     * @see DecimalFormatSymbols
-     */
-    @Nonnull
-    public NumberFormat newNumberFormat() throws IllegalArgumentException {
+    @VisibleForTesting
+    NumberFormat newNumberFormat() throws IllegalArgumentException {
         if (!numberPattern.isEmpty()) {
             if (locale != null) {
                 return new DecimalFormat(numberPattern, new DecimalFormatSymbols(locale));
@@ -219,18 +222,4 @@ public final class ObsFormat {
         }
     }
     //</editor-fold>
-
-    /**
-     * Creates a new DataFormat from a locale name, a date pattern and a number
-     * pattern.
-     *
-     * @param locale an optional locale name
-     * @param datePattern an optional date pattern
-     * @param numberPattern an optional number pattern
-     * @return a non-null DataFormat
-     */
-    @Nonnull
-    public static ObsFormat create(@Nullable String locale, @Nullable String datePattern, @Nullable String numberPattern) {
-        return new ObsFormat(locale != null ? Parser.onLocale().parse(locale) : null, datePattern, numberPattern);
-    }
 }

@@ -17,6 +17,10 @@
 package internal.util;
 
 import java.io.StringWriter;
+import java.text.NumberFormat;
+import java.time.DateTimeException;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -32,6 +36,18 @@ import javax.xml.bind.Marshaller;
  */
 @lombok.experimental.UtilityClass
 public class InternalFormatter {
+
+    public CharSequence formatTemporalAccessor(DateTimeFormatter formatter, TemporalAccessor value) {
+        try {
+            return formatter.format(value);
+        } catch (DateTimeException ex) {
+            return null;
+        }
+    }
+
+    public CharSequence formatNumber(NumberFormat format, Number value) {
+        return format.format(Objects.requireNonNull(value));
+    }
 
     public CharSequence formatDoubleArray(double[] value) {
         return Arrays.toString(Objects.requireNonNull(value));

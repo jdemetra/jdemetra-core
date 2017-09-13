@@ -21,6 +21,7 @@ import demetra.spreadsheet.SpreadSheetBean;
 import demetra.timeseries.TsUnit;
 import demetra.tsprovider.HasDataSourceBean;
 import demetra.tsprovider.util.ObsFormat;
+import demetra.util.Parser;
 import java.io.File;
 import java.util.function.Supplier;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,7 +56,7 @@ public class SpreadSheetParamTest {
     static SpreadSheetBean getBeanSample() {
         SpreadSheetBean result = new SpreadSheetBean();
         result.setFile(new File("1234"));
-        result.setObsFormat(ObsFormat.create("fr_BE", "yyyy", "#"));
+        result.setObsFormat(ObsFormat.of(Parser.onLocale().parse("fr_BE"), "yyyy", "#"));
         result.setObsGathering(demetra.tsprovider.util.ObsGathering.builder().unit(TsUnit.YEARLY).aggregationType(AggregationType.Average).skipMissingValues(false).build());
         return result;
     }
