@@ -25,6 +25,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import demetra.util.Parser;
 import demetra.util.Formatter;
+import internal.util.InternalParser;
 import internal.util.Lists;
 import java.time.format.DateTimeParseException;
 import java.util.function.Function;
@@ -194,7 +195,9 @@ public class Params {
             String locale = config.get(localeKey);
             String datePattern = config.get(datePatternKey);
             String numberPattern = config.get(numberPatternKey);
-            return isValid(locale, datePattern) ? ObsFormat.create(locale, datePattern, numberPattern) : defaultValue;
+            return isValid(locale, datePattern)
+                    ? ObsFormat.of(InternalParser.parseLocale(locale), datePattern, numberPattern)
+                    : defaultValue;
         }
 
         @Override

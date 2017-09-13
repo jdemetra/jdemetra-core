@@ -17,17 +17,20 @@
 package demetra.util;
 
 import demetra.data.AggregationType;
+import static demetra.util.Parser.*;
 import internal.util.InternalParser;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Locale;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.*;
+import org.assertj.core.util.DateUtil;
 
 /**
  *
@@ -36,8 +39,35 @@ import static org.junit.Assert.assertEquals;
 public class ParserTest {
 
     @Test
+    @SuppressWarnings("null")
+    public void testOnDateTimeFormatter() {
+        assertThatThrownBy(() -> onDateTimeFormatter(null, LocalDate::from)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> onDateTimeFormatter(DateTimeFormatter.ISO_DATE, null)).isInstanceOf(NullPointerException.class);
+        assertCompliance(onDateTimeFormatter(DateTimeFormatter.ISO_DATE, LocalDate::from), "2003-04-26");
+
+        LocalDate date = LocalDate.of(2003, 4, 26);
+        LocalTime time = LocalTime.of(3, 1, 2);
+        LocalDateTime dateTime = date.atTime(time);
+
+        Parser<LocalDate> p1 = onDateTimeFormatter(DateTimeFormatter.ISO_DATE, LocalDate::from);
+        assertThat(p1.parse("2003-04-26")).isEqualTo(date);
+        assertThat(p1.parse("2003-04-26T03:01:02")).isNull();
+        assertThat(p1.parse("03:01:02")).isNull();
+
+        Parser<LocalDateTime> p2 = onDateTimeFormatter(DateTimeFormatter.ISO_DATE_TIME, LocalDateTime::from);
+        assertThat(p2.parse("2003-04-26")).isNull();
+        assertThat(p2.parse("2003-04-26T03:01:02")).isEqualTo(dateTime);
+        assertThat(p2.parse("03:01:02")).isNull();
+
+        Parser<LocalTime> p3 = onDateTimeFormatter(DateTimeFormatter.ISO_TIME, LocalTime::from);
+        assertThat(p3.parse("2003-04-26")).isNull();
+        assertThat(p1.parse("2003-04-26T03:01:02")).isNull();
+        assertThat(p3.parse("03:01:02")).isEqualTo(time);
+    }
+
+    @Test
     public void testOnCharacter() {
-        Parser<Character> p = Parser.onCharacter();
+        Parser<Character> p = onCharacter();
         assertCompliance(p, "x");
         assertThat(p.parse("hello")).isNull();
         assertThat(p.parse("h")).isEqualTo('h');
@@ -46,7 +76,7 @@ public class ParserTest {
 
     @Test
     public void testOnBoolean() {
-        Parser<Boolean> p = Parser.onBoolean();
+        Parser<Boolean> p = onBoolean();
         assertCompliance(p, "true");
         assertThat(p.parse("true")).isEqualTo(true);
         assertThat(p.parse("false")).isEqualTo(false);
@@ -59,7 +89,7 @@ public class ParserTest {
 
     @Test
     public void testOnCharset() {
-        Parser<Charset> p = Parser.onCharset();
+        Parser<Charset> p = onCharset();
         assertCompliance(p, "UTF-8");
         assertThat(p.parse("UTF-8")).isEqualTo(StandardCharsets.UTF_8);
         assertThat(p.parse("hello")).isNull();
@@ -67,7 +97,7 @@ public class ParserTest {
 
     @Test
     public void testOnDoubleArray() {
-        Parser<double[]> p = Parser.onDoubleArray();
+        Parser<double[]> p = onDoubleArray();
         assertCompliance(p, "[3.5,6.1]");
         assertThat(p.parse("[3.5,6.1]")).containsExactly(3.5, 6.1);
         assertThat(p.parse("[ 3.5  ,     6.1 ]")).containsExactly(3.5, 6.1);
@@ -78,14 +108,14 @@ public class ParserTest {
 
     @Test
     public void testOnFile() {
-        Parser<File> p = Parser.onFile();
+        Parser<File> p = onFile();
         assertCompliance(p, "test.xml");
         assertThat(p.parse("test.xml")).isEqualTo(new File("test.xml"));
     }
 
     @Test
     public void testOnEnum() {
-        Parser<AggregationType> p = Parser.onEnum(AggregationType.class);
+        Parser<AggregationType> p = onEnum(AggregationType.class);
         assertCompliance(p, "Average");
         assertThat(p.parse("Average")).isEqualTo(AggregationType.Average);
         assertThat(p.parse("hello")).isNull();
@@ -93,7 +123,7 @@ public class ParserTest {
 
     @Test
     public void testOnInteger() {
-        Parser<Integer> p = Parser.onInteger();
+        Parser<Integer> p = onInteger();
         assertCompliance(p, "123");
         assertThat(p.parse("123")).isEqualTo(123);
         assertThat(p.parse("123.3")).isNull();
@@ -105,16 +135,16 @@ public class ParserTest {
 
     @Test
     public void testOnString() {
-        Parser<String> p = Parser.onString();
+        Parser<String> p = onString();
         assertCompliance(p, "hello");
         assertThat(p.parse("hello")).isEqualTo("hello");
     }
 
     @Test
     public void testOnStrictDatePattern() {
-        Parser<Date> p = Parser.onStrictDatePattern("yyyy-MM", Locale.ROOT);
+        Parser<Date> p = onStrictDatePattern("yyyy-MM", Locale.ROOT);
         assertCompliance(p, "2010-01");
-        Date jan2010 = new GregorianCalendar(2010, 0, 1).getTime();
+        Date jan2010 = DateUtil.parse("2010-01-01");
         assertThat(p.parse("2010-01")).isEqualTo(jan2010);
         assertThat(p.parse("2010-02")).isNotEqualTo(jan2010);
         assertThat(p.parse("2010-01-01")).isNull();
@@ -124,13 +154,13 @@ public class ParserTest {
     public void testToLocale() {
         Locale locale;
         locale = InternalParser.parseLocale("fr");
-        assertEquals("fr", locale.getLanguage());
+        assertThat(locale.getLanguage()).isEqualTo("fr");
         locale = InternalParser.parseLocale("fr_BE");
-        assertEquals("fr", locale.getLanguage());
+        assertThat(locale.getLanguage()).isEqualTo("fr");
         locale = InternalParser.parseLocale("fr_BE_WIN");
-        assertEquals("fr", locale.getLanguage());
-        assertEquals("BE", locale.getCountry());
-        assertEquals("WIN", locale.getVariant());
+        assertThat(locale.getLanguage()).isEqualTo("fr");
+        assertThat(locale.getCountry()).isEqualTo("BE");
+        assertThat(locale.getVariant()).isEqualTo("WIN");
         assertThat(InternalParser.parseLocale("helloworld")).isNull();
         assertThat(InternalParser.parseLocale("fr_")).isNull();
         assertThat(InternalParser.parseLocale("fr_BE_")).isNull();

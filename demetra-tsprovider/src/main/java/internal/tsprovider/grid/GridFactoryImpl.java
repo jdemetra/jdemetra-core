@@ -34,10 +34,8 @@ import demetra.tsprovider.util.ObsGathering;
 import demetra.tsprovider.util.TsDataBuilder;
 import demetra.util.Parser;
 import internal.tsprovider.grid.TsDataTable.TsDataTableInfo;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collector;
@@ -66,17 +64,15 @@ public enum GridFactoryImpl implements GridFactory {
     private static final class ReaderImpl implements GridReader {
 
         private final ValueParser<String> toName;
-        private final ValueParser<Date> toDate;
+        private final ValueParser<LocalDateTime> toDate;
         private final ValueParser<Number> toNumber;
         private final ObsGathering gathering;
-        private final Calendar cal;
 
         private ReaderImpl(GridImport options) {
             this.toName = ValueParser.onString();
-            this.toDate = ValueParser.onCalendar().or(ValueParser.onStringParser(options.getObsFormat().dateParser()));
+            this.toDate = ValueParser.onDateTime().or(ValueParser.onStringParser(options.getObsFormat().dateTimeParser(LocalDateTime::from)));
             this.toNumber = ValueParser.onNumber().or(ValueParser.onStringParser(options.getObsFormat().numberParser()));
             this.gathering = options.getObsGathering();
-            this.cal = new GregorianCalendar();
         }
 
         @Override
@@ -96,7 +92,7 @@ public enum GridFactoryImpl implements GridFactory {
             }
 
             if (colDates.isBetter(rowDates)) {
-                return loadVertically(input.getName(), HORIZONTAL, input.inv(), colDates);
+                return loadVertically(input.getName(), HORIZONTAL, new InvGridInput(input), colDates);
             }
 
             return TsCollectionGrid.builder().name(input.getName()).layout(UNKNOWN).build();
@@ -167,7 +163,7 @@ public enum GridFactoryImpl implements GridFactory {
 
             List<TsGrid> list = new ArrayList<>();
 
-            TsDataBuilder<Date> data = TsDataBuilder.byCalendar(cal, gathering);
+            TsDataBuilder<LocalDateTime> data = TsDataBuilder.byDateTime(gathering);
             for (int columnIdx = 0; columnIdx < names.size(); columnIdx++) {
                 for (int rowIdx = dates.getMinIndex(); rowIdx <= dates.getMaxIndex(); rowIdx++) {
                     Number value = toNumber.parse(grid, rowIdx, columnIdx + FIRST_DATA_COL_IDX);
@@ -182,17 +178,17 @@ public enum GridFactoryImpl implements GridFactory {
 
         private static final class DateHeader {
 
-            private final Date[] dates;
+            private final LocalDateTime[] dates;
             private int minIndex;
             private int maxIndex;
 
             private DateHeader(int maxSize) {
-                dates = new Date[maxSize];
+                dates = new LocalDateTime[maxSize];
                 minIndex = maxSize - 1;
                 maxIndex = 0;
             }
 
-            public void set(int i, Date value) {
+            public void set(int i, LocalDateTime value) {
                 dates[i] = value;
                 if (value != null) {
                     if (i < minIndex) {
@@ -204,7 +200,7 @@ public enum GridFactoryImpl implements GridFactory {
                 }
             }
 
-            public Date get(int i) {
+            public LocalDateTime get(int i) {
                 return dates[i];
             }
 
@@ -220,6 +216,32 @@ public enum GridFactoryImpl implements GridFactory {
                 int count = maxIndex - minIndex + 1;
                 return count > 0 && count > (other.maxIndex - other.minIndex + 1);
             }
+        }
+    }
+
+    @lombok.AllArgsConstructor
+    private static final class InvGridInput implements GridInput {
+
+        private final GridInput delegate;
+
+        @Override
+        public String getName() {
+            return delegate.getName();
+        }
+
+        @Override
+        public int getRowCount() {
+            return delegate.getColumnCount();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return delegate.getRowCount();
+        }
+
+        @Override
+        public Object getValue(int i, int j) {
+            return delegate.getValue(j, i);
         }
     }
 
@@ -239,8 +261,8 @@ public enum GridFactoryImpl implements GridFactory {
         }
 
         @Nonnull
-        static ValueParser<Date> onCalendar() {
-            return Util::parseCalendar;
+        static ValueParser<LocalDateTime> onDateTime() {
+            return Util::parseDateTime;
         }
 
         @Nonnull
@@ -265,9 +287,9 @@ public enum GridFactoryImpl implements GridFactory {
                 return input != null ? adaptee.parse(input) : null;
             }
 
-            static Date parseCalendar(GridInput grid, int rowIndex, int columnIndex) {
+            static LocalDateTime parseDateTime(GridInput grid, int rowIndex, int columnIndex) {
                 Object value = grid.getValue(rowIndex, columnIndex);
-                return value instanceof Date ? (Date) value : null;
+                return value instanceof LocalDateTime ? (LocalDateTime) value : null;
             }
 
             static Number parseNumber(GridInput grid, int rowIndex, int columnIndex) {
