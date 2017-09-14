@@ -71,7 +71,7 @@ public class RegArimaModel<M extends IArimaModel> {
             return this;
         }
 
-        public Builder missing(int[] missingPos) {
+        public Builder missing(int... missingPos) {
             this.missing = missingPos;
             return this;
         }
