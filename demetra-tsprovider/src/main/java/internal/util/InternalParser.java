@@ -25,6 +25,9 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.TemporalQuery;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -42,6 +45,14 @@ import javax.xml.bind.Unmarshaller;
  */
 @lombok.experimental.UtilityClass
 public class InternalParser {
+
+    public <T> T parseTemporalAccessor(DateTimeFormatter formatter, TemporalQuery<T> query, CharSequence input) {
+        try {
+            return formatter.parse(input, query);
+        } catch (DateTimeParseException ex) {
+            return null;
+        }
+    }
 
     public Boolean parseBoolean(CharSequence input) {
         switch (input.toString()) {

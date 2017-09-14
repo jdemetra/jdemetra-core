@@ -113,11 +113,11 @@ public class ParamsTest {
 
     @Test
     public void testOnDataFormat() {
-        ObsFormat d = ObsFormat.create(null, "yyyy-MM", null);
-        ObsFormat n1 = ObsFormat.create(null, "dd-MM-yyyy", null);
+        ObsFormat d = ObsFormat.of(null, "yyyy-MM", null);
+        ObsFormat n1 = ObsFormat.of(null, "dd-MM-yyyy", null);
         assertBehavior(Params.onObsFormat(d, "k1", "k2", "k3"), d, n1, ImmutableMap.of("k1", "", "k2", "dd-MM-yyyy"));
         assertBehavior(Params.onObsFormat(d, "k1", "k2", "k3"), d, n1, ImmutableMap.of("k1", "", "k2", "dd-MM-yyyy", "k3", ""));
-        ObsFormat n2 = ObsFormat.create(null, "dd-MM-yyyy", "#");
+        ObsFormat n2 = ObsFormat.of(null, "dd-MM-yyyy", "#");
         assertBehavior(Params.onObsFormat(d, "k1", "k2", "k3"), d, n2, ImmutableMap.of("k1", "", "k2", "dd-MM-yyyy", "k3", "#"));
     }
 

@@ -26,6 +26,8 @@ import javax.annotation.Nullable;
  */
 public interface GridInput {
 
+    // FIXME: fix ambiguity in returned types of #getValue
+    // FIXME: allow read byRow/byColumn
     @Nonnull
     String getName();
 
@@ -37,30 +39,4 @@ public interface GridInput {
 
     @Nullable
     Object getValue(int i, int j);
-
-    @Nonnull
-    default GridInput inv() {
-        GridInput original = this;
-        return new GridInput() {
-            @Override
-            public String getName() {
-                return original.getName();
-            }
-
-            @Override
-            public int getRowCount() {
-                return original.getColumnCount();
-            }
-
-            @Override
-            public int getColumnCount() {
-                return original.getRowCount();
-            }
-
-            @Override
-            public Object getValue(int i, int j) {
-                return original.getValue(j, i);
-            }
-        };
-    }
 }

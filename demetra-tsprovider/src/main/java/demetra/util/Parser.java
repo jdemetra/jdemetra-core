@@ -21,6 +21,8 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalQuery;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -31,6 +33,7 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 /**
@@ -129,6 +132,13 @@ public interface Parser<T> {
     @Nonnull
     static <T> Parser<T> onJAXB(@Nonnull Unmarshaller unmarshaller) {
         return o -> InternalParser.unmarshal(unmarshaller, o);
+    }
+
+    @Nonnull
+    static <T> Parser<T> onDateTimeFormatter(@Nonnull DateTimeFormatter formatter, TemporalQuery<T> query) {
+        Objects.requireNonNull(formatter);
+        Objects.requireNonNull(query);
+        return o -> InternalParser.parseTemporalAccessor(formatter, query, o);
     }
 
     @Nonnull

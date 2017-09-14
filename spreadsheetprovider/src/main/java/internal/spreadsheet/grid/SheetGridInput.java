@@ -18,6 +18,9 @@ package internal.spreadsheet.grid;
 
 import ec.util.spreadsheet.Sheet;
 import demetra.tsprovider.grid.GridInput;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 /**
  *
@@ -27,6 +30,7 @@ import demetra.tsprovider.grid.GridInput;
 public final class SheetGridInput implements GridInput {
 
     private final Sheet sheet;
+    private final ZoneId zoneId = ZoneId.systemDefault();
 
     @Override
     public String getName() {
@@ -45,6 +49,11 @@ public final class SheetGridInput implements GridInput {
 
     @Override
     public Object getValue(int i, int j) {
-        return sheet.getCellValue(i, j);
+        Object result = sheet.getCellValue(i, j);
+        return result instanceof Date ? toDateTime((Date) result) : result;
+    }
+
+    private LocalDateTime toDateTime(Date o) {
+        return LocalDateTime.ofInstant(o.toInstant(), zoneId);
     }
 }
