@@ -46,13 +46,13 @@ public class OrderedSampleWithZeroMean implements OrderedSample {
     /**
      * Computes the covariance between two arrays of doubles, which are supposed
      * to have zero means; the arrays might contain missing values (Double.NaN);
-     * those values are omitted in the computation the covariance (and the
+     * those values are omitted in the computation of the covariance (and the
      * number of observations are adjusted).
      *
      * @param x The first array
      * @param y The second array
      * @param t The delay between the two arrays
-     * @return The covariance; covariance = sum((x(i)*y(i+t)/(n-t))
+     * @return The covariance; covariance = sum((x(i)*y(i+t)/n)
      */
     public static double covariance(DoubleSequence x, DoubleSequence y, int t) {
         // x and y must have the same Length...
