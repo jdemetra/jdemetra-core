@@ -180,7 +180,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.FilterInitia
     }
 
     private void update1() {
-        double fi = pe.getDiffuseNorm2(), f = pe.getVariance(), e = pe.get();
+        double fi = pe.getDiffuseVariance(), f = pe.getVariance(), e = pe.get();
         DataBlock C = pe.M(), Ci = pe.Mi();
         // P = T P T' - 1/f*(TMf)(TMf)'+RQR'+f*(TMf/f-TMi/fi)(TMf/f-TMi/fi)'
         astate.P().addXaXt(-1 / f, C);
@@ -212,7 +212,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.FilterInitia
         if (fi < State.ZERO) {
             fi = 0;
         }
-        pe.setDiffuseNorm2(fi);
+        pe.setDiffuseVariance(fi);
 
         double f = measurement.ZVZ(t, astate.P());
         if (measurement.hasErrors()) {

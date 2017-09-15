@@ -24,7 +24,7 @@ import java.util.HashMap;
  * @author Jean Palate
  */
 @lombok.Data
-class Constraint {
+public class Constraint {
 
     /**
      *

@@ -17,7 +17,6 @@
 package demetra.sa.tests;
 
 import demetra.data.Data;
-import demetra.stats.samples.OrderedSample;
 import demetra.timeseries.simplets.TsData;
 import demetra.timeseries.simplets.TsDataToolkit;
 import org.junit.Test;
@@ -36,7 +35,7 @@ public class QsTestTest {
     public void testP1() {
         TsData s=Data.TS_PROD;
         s=TsDataToolkit.delta(s, 1);
-        QsTest test=new QsTest(OrderedSample.of(s.values()),12);
+        QsTest test=new QsTest(s.values(),12);
         System.out.println(test.build());
     }
     
@@ -44,7 +43,7 @@ public class QsTestTest {
     public void testP12() {
         TsData s=Data.TS_PROD;
         s=TsDataToolkit.delta(s, 12);
-        QsTest test=new QsTest(OrderedSample.of(s.values()),12);
+        QsTest test=new QsTest(s.values(),12);
         System.out.println(test.build());
         System.out.println(test.useNegativeAutocorrelations().build());
     }

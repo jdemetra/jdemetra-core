@@ -52,21 +52,21 @@ public class SsfCholette {
                     , new Dynamics(def), new Measurement(def));
         }
 
-        public Builder rho(double rho) {
+        public Builder rho(final double rho) {
             this.rho = rho;
             return this;
         }
 
-        public Builder weights(DoubleSequence weights) {
+        public Builder weights(final DoubleSequence weights) {
             if (weights != null) {
                 this.weights = weights.toArray();
             } else {
-                weights = null;
+                this.weights = null;
             }
             return this;
         }
 
-        public Builder start(int start) {
+        public Builder start(final int start) {
             this.start = start;
             return this;
         }

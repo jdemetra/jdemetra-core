@@ -15,7 +15,7 @@
  * limitations under the Licence.
  */
 
-package demetra.benchmarking.ssf;
+package demetra.benchmarking.univariate.internal;
 
 import demetra.data.Cell;
 import demetra.data.DataBlock;

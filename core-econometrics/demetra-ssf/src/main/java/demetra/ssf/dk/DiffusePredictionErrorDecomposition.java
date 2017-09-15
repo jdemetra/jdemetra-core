@@ -64,7 +64,7 @@ public class DiffusePredictionErrorDecomposition extends PredictionErrorDecompos
         if (pe == null || pe.isMissing()) {
             return;
         }
-        double d = pe.getDiffuseNorm2();
+        double d = pe.getDiffuseVariance();
         if (d != 0) {
             ++nd;
             ddet.add(d);

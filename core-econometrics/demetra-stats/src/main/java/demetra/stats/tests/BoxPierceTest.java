@@ -28,7 +28,7 @@ import java.util.function.IntToDoubleFunction;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class LjungBoxTest implements IBuilder<StatisticalTest> {
+public class BoxPierceTest implements IBuilder<StatisticalTest> {
 
     private int lag = 1;
     private int k = 12;
@@ -38,7 +38,7 @@ public class LjungBoxTest implements IBuilder<StatisticalTest> {
     private final IntToDoubleFunction autoCorrelations;
     private final int n;
 
-    public LjungBoxTest(DoubleSequence sample) {
+    public BoxPierceTest(DoubleSequence sample) {
         this.autoCorrelations = AutoCovariances.autoCorrelationFunction(sample, 0);
         this.n = sample.length();
     }
@@ -48,7 +48,7 @@ public class LjungBoxTest implements IBuilder<StatisticalTest> {
      * @param nhp
      * @return
      */
-    public LjungBoxTest hyperParametersCount(int nhp) {
+    public BoxPierceTest hyperParametersCount(int nhp) {
         this.nhp = nhp;
         return this;
     }
@@ -58,7 +58,7 @@ public class LjungBoxTest implements IBuilder<StatisticalTest> {
      * @param lag
      * @return
      */
-    public LjungBoxTest lag(int lag) {
+    public BoxPierceTest lag(int lag) {
         this.lag = lag;
         return this;
     }
@@ -68,22 +68,22 @@ public class LjungBoxTest implements IBuilder<StatisticalTest> {
      * @param k
      * @return
      */
-    public LjungBoxTest autoCorrelationsCount(int k) {
+    public BoxPierceTest autoCorrelationsCount(int k) {
         this.k = k;
         return this;
     }
 
-    public LjungBoxTest usePositiveAutoCorrelations() {
+    public BoxPierceTest usePositiveAutoCorrelations() {
         this.sign = 1;
         return this;
     }
 
-    public LjungBoxTest useNegativeAutoCorrelations() {
+    public BoxPierceTest useNegativeAutoCorrelations() {
         this.sign = -1;
         return this;
     }
 
-    public LjungBoxTest useAllAutoCorrelations() {
+    public BoxPierceTest useAllAutoCorrelations() {
         this.sign = 0;
         return this;
     }
@@ -95,10 +95,10 @@ public class LjungBoxTest implements IBuilder<StatisticalTest> {
         for (int i = 1; i <= k; i++) {
             double ai = autoCorrelations.applyAsDouble(i * lag);
             if (sign == 0 || (sign == 1 && ai > 0) || (sign == -1 && ai < 0)) {
-                res += ai * ai / (n - i * lag);
+                res += ai * ai ;
             }
         }
-        double val = res * n * (n + 2);
+        double val = res * n ;
         Chi2 chi = new Chi2(lag == 1 ? (k - nhp) : k);
         return new StatisticalTest(chi, val, TestType.Upper, true);
     }
