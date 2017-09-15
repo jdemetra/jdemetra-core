@@ -22,7 +22,6 @@ import demetra.timeseries.simplets.TsData;
 import demetra.data.AggregationType;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
-import static demetra.timeseries.TsUnit.*;
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.IntUnaryOperator;
@@ -39,14 +38,14 @@ import java.util.function.IntUnaryOperator;
 @lombok.experimental.UtilityClass
 class TsDataCollector {
 
-    public TsData makeWithAggregation(ObsList obs, TsUnit unit, AggregationType convMode) {
+    public TsData makeWithAggregation(ObsList obs, TsUnit unit, int offset, AggregationType convMode) {
         int n = obs.size();
         if (n == 0) {
             return null; // NO_DATA
         }
         obs.sortByPeriod();
 
-        IntUnaryOperator toPeriodId = obs.getPeriodIdFunc(unit);
+        IntUnaryOperator toPeriodId = obs.getPeriodIdFunc(unit, offset);
 
         double[] vals = new double[n];
         int[] ids = new int[n];
@@ -171,15 +170,15 @@ class TsDataCollector {
 
         int[] ids = new int[size];
 
-        TsUnit unit = makeIds(obs, ids);
-        if (unit == null) {
+        GuessingUnit guess = makeIds(obs, ids);
+        if (guess == null) {
             return null; // GUESS_DUPLICATION
         }
 
         int firstId = ids[0];
         int lastId = ids[size - 1];
 
-        TsPeriod start = TsPeriod.of(unit, firstId);
+        TsPeriod start = guess.atId(firstId);
 
         // check if the series is continuous and complete.
         int expectedSize = lastId - firstId + 1;
@@ -190,21 +189,20 @@ class TsDataCollector {
         }
     }
 
-    private TsUnit makeIds(ObsList obs, int[] ids) {
-        int i = 0;
-        for (; i < GUESSING_UNITS.length; ++i) {
-            if (makeIdsFromUnit(obs, GUESSING_UNITS[i], ids)) {
-                break;
+    private GuessingUnit makeIds(ObsList obs, int[] ids) {
+        for (GuessingUnit o : GuessingUnit.values()) {
+            if (makeIdsFromUnit(obs, ids, o)) {
+                return o;
             }
         }
-        if (i == GUESSING_UNITS.length) {
-            return null;
-        }
-        return GUESSING_UNITS[i];
+        return null;
     }
 
-    private boolean makeIdsFromUnit(ObsList obs, TsUnit unit, int[] ids) {
-        IntUnaryOperator toPeriodId = obs.getPeriodIdFunc(unit);
+    private boolean makeIdsFromUnit(ObsList obs, int[] ids, GuessingUnit guess) {
+        if (obs.size() < guess.getMinimumObsCount()) {
+            return false;
+        }
+        IntUnaryOperator toPeriodId = obs.getPeriodIdFunc(guess.getTsUnit(), guess.getOffset());
         ids[0] = toPeriodId.applyAsInt(0);
         for (int i = 1; i < ids.length; ++i) {
             ids[i] = toPeriodId.applyAsInt(i);
@@ -215,9 +213,7 @@ class TsDataCollector {
         return true;
     }
 
-    final TsUnit[] GUESSING_UNITS = {YEARLY, QUARTERLY, MONTHLY, DAILY, HOURLY, MINUTELY};
-
-    public TsData makeWithoutAggregation(ObsList obs, TsUnit unit) {
+    public TsData makeWithoutAggregation(ObsList obs, TsUnit unit, int offset) {
         int size = obs.size();
         if (size == 0) {
             return null; // NO_DATA
@@ -225,7 +221,7 @@ class TsDataCollector {
 
         obs.sortByPeriod();
 
-        IntUnaryOperator toPeriodId = obs.getPeriodIdFunc(unit);
+        IntUnaryOperator toPeriodId = obs.getPeriodIdFunc(unit, offset);
 
         int[] ids = new int[size];
         ids[0] = toPeriodId.applyAsInt(0);

@@ -63,6 +63,9 @@ public class ParserTest {
         assertThat(p3.parse("2003-04-26")).isNull();
         assertThat(p1.parse("2003-04-26T03:01:02")).isNull();
         assertThat(p3.parse("03:01:02")).isEqualTo(time);
+
+        Parser<LocalDate> p4 = onDateTimeFormatter(DateTimeFormatter.ISO_WEEK_DATE, LocalDate::from);
+        assertThat(p4.parse("1970-W01-4")).isEqualTo("1970-01-01");
     }
 
     @Test

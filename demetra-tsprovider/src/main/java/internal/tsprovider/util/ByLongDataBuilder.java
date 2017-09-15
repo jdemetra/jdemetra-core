@@ -22,7 +22,6 @@ import demetra.tsprovider.OptionalTsData;
 import demetra.tsprovider.util.ObsCharacteristics;
 import demetra.tsprovider.util.ObsGathering;
 import demetra.tsprovider.util.TsDataBuilder;
-import demetra.utilities.functions.ObjLongToIntFunction;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -92,7 +91,7 @@ public final class ByLongDataBuilder<T> implements TsDataBuilder<T> {
                 TsDataBuilderUtil.getMaker(gathering));
     }
 
-    private static ByLongObsList getLongObsList(boolean preSorted, ObjLongToIntFunction<TsUnit> tsPeriodIdFunc) {
+    private static ByLongObsList getLongObsList(boolean preSorted, ByLongObsList.ToPeriodIdFunc tsPeriodIdFunc) {
         return preSorted
                 ? new ByLongObsList.PreSorted(tsPeriodIdFunc, 32)
                 : new ByLongObsList.Sortable(tsPeriodIdFunc);
@@ -102,7 +101,7 @@ public final class ByLongDataBuilder<T> implements TsDataBuilder<T> {
 
         long valueToLong(T value);
 
-        int longToPeriodId(TsUnit unit, long l);
+        int longToPeriodId(TsUnit unit, int offset, long l);
     }
 
     @lombok.AllArgsConstructor
@@ -116,8 +115,8 @@ public final class ByLongDataBuilder<T> implements TsDataBuilder<T> {
         }
 
         @Override
-        public int longToPeriodId(TsUnit unit, long l) {
-            return (int) TsPeriod.idAt(0, unit, toLocalDateTime(l));
+        public int longToPeriodId(TsUnit unit, int offset, long l) {
+            return (int) TsPeriod.idAt(offset, unit, toLocalDateTime(l));
         }
 
         private LocalDateTime toLocalDateTime(long l) {
@@ -134,8 +133,8 @@ public final class ByLongDataBuilder<T> implements TsDataBuilder<T> {
         }
 
         @Override
-        public int longToPeriodId(TsUnit unit, long l) {
-            return (int) TsPeriod.idAt(0, unit, toLocalDateTime(l));
+        public int longToPeriodId(TsUnit unit, int offset, long l) {
+            return (int) TsPeriod.idAt(offset, unit, toLocalDateTime(l));
         }
 
         private static LocalDateTime toLocalDateTime(long value) {
