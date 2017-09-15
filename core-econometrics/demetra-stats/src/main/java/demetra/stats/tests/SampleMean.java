@@ -23,6 +23,8 @@ import demetra.design.IBuilder;
 import demetra.dstats.F;
 import demetra.dstats.Normal;
 import demetra.dstats.T;
+import demetra.stats.samples.Population;
+import demetra.stats.samples.Sample;
 
 /**
  *
@@ -33,23 +35,16 @@ public class SampleMean implements IBuilder<StatisticalTest> {
 
     public static final double SMALL = 1e-38;
 
-    private final double smean, pmean, svariance, pvariance;
-    private final boolean pnormal;
-    private final int n;
+    private final Sample sample;
 
-    private SampleMean(final double smean, final double svariance, final double pmean, final double pvariance, final int n, final boolean pnormal) {
-        this.smean = smean;
-        this.pmean = pmean;
-        this.svariance = svariance;
-        this.pvariance = pvariance;
-        this.n = n;
-        this.pnormal = pnormal;
+    public SampleMean(final Sample sample) {
+        this.sample=sample;
     }
 
     @Override
     public StatisticalTest build() {
         // case I: pmean and pvariance are known
-        if (Double.isFinite(pvariance)) {
+        if (Double.isFinite(sample.population().getVariance())) {
             return fromKnownPopulation();
         } else {
             return fromKnownMean();
@@ -57,13 +52,15 @@ public class SampleMean implements IBuilder<StatisticalTest> {
     }
 
     private StatisticalTest fromKnownPopulation() {
-        double val = (smean - pmean) / Math.sqrt(pvariance/n);
-        return new StatisticalTest(new Normal(), val, TestType.TwoSided, !pnormal);
+        Population population=sample.population();
+        double val = (sample.mean() - population.getMean()) / Math.sqrt(population.getVariance()/sample.size());
+        return new StatisticalTest(new Normal(), val, TestType.TwoSided, ! population.isNormal());
     }
 
     private StatisticalTest fromKnownMean() {
-        double val = (smean - pmean) / Math.sqrt(svariance/n);
-        return new StatisticalTest(new T(n - 1), val, TestType.TwoSided, !pnormal);
+        Population population=sample.population();
+        double val = (sample.mean() - population.getMean()) / Math.sqrt(sample.variance()/sample.size());
+        return new StatisticalTest(new T(sample.size() - 1), val, TestType.TwoSided, ! population.isNormal());
     }
 
 
@@ -71,81 +68,27 @@ public class SampleMean implements IBuilder<StatisticalTest> {
      *
      * @return
      */
-    public double getSampleMean() {
-        return smean;
+    public Sample getSample() {
+        return sample;
     }
 
-    /**
-     *
-     * @return
-     */
-    public double getPopulationMean() {
-        return pmean;
+   
+    public static StatisticalTest compareVariances(Sample s0, Sample s1) {
+        F f = new F(s1.size()- 1, s0.size()- 1);
+        return new StatisticalTest(f, s1.variance()/ s0.variance(), TestType.TwoSided, false);
     }
 
-    public double getSampleVariance() {
-        return svariance;
-    }
-
-    public double getPopulationVariance() {
-        return pvariance;
-    }
-
-    public int getSampleSize() {
-        return n;
-    }
-
-    public boolean isPopulationNormal() {
-        return pnormal;
-    }
-
-    /**
-     *
-     * @param data
-     * @param populationMean
-     * @param populationVariance
-     * @return
-     */
-    public static SampleMean fromSample(final DoubleSequence data,
-            final double populationMean, final double populationVariance, final boolean normalPopulation) {
-        int sn = data.length();
-        double mean = Doubles.average(data);
-        double variance = (Doubles.ssq(data) - sn * mean * mean) / (sn - 1);
-        if (variance < SMALL) {
-            variance = SMALL;
-        }
-        return new SampleMean(Doubles.average(data), variance, populationMean, populationVariance, data.length(), normalPopulation);
-    }
-
-    // Unknown variance
-    /**
-     *
-     * @param data
-     * @param populationMean
-     * @param normalPopulation
-     * @return
-     */
-    public static SampleMean fromSample(final DoubleSequence data,
-            final double populationMean, final boolean normalPopulation) {
-        return fromSample(data, populationMean, Double.NaN, normalPopulation);
-    }
-    
-    public static StatisticalTest compareVariances(SampleMean m0, SampleMean m1) {
-        F f = new F(m1.getSampleSize() - 1, m0.getSampleSize() - 1);
-        return new StatisticalTest(f, m1.getSampleVariance() / m0.getSampleVariance(), TestType.TwoSided, false);
-    }
-
-    public static StatisticalTest compareMeans(SampleMean m0, SampleMean m1, boolean samevar) {
-        int n0 = m0.getSampleSize(), n1 = m1.getSampleSize();
-        double v0 = m0.getSampleVariance(), v1 = m1.getSampleVariance();
+    public static StatisticalTest compareMeans(Sample s0, Sample s1, boolean samevar) {
+        int n0 = s0.size(), n1 = s1.size();
+        double v0 = s0.variance(), v1 = s1.variance();
         double t;
         int df;
         if (samevar) {
             double v = (v0 * (n0 - 1) + v1 * (n1 - 1)) / (n0 + n1 - 2);
-            t = (m1.getSampleMean() - m0.getSampleMean()) / Math.sqrt(v / n0 + v / n1);
+            t = (s1.mean() - s0.mean()) / Math.sqrt(v / n0 + v / n1);
             df = n0 + n1 - 2;
         } else {
-            t = (m1.getSampleMean() - m0.getSampleMean()) / Math.sqrt(v0 / n0 + v1 / n1);
+            t = (s1.mean() - s0.mean()) / Math.sqrt(v0 / n0 + v1 / n1);
             df = Math.min(n0 - 1, n1 - 1);
 //            double f=v1/v0;
 //            double z=1.0/n0+f/n1;

@@ -74,7 +74,7 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitialize
         if (Math.abs(fi) < State.ZERO) {
             fi = 0;
         }
-        pe.setDiffuseNorm2(fi);
+        pe.setDiffuseVariance(fi);
         double f = measurement.ZVZ(t, state.P());
         if (measurement.hasErrors()) {
             f += measurement.errorVariance(t);
@@ -188,7 +188,7 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitialize
         // calc f0, f1, f2
 //        double f1 = 1 / pe.fi;
 //        double f2 = -pe.f * f1 * f1;
-        double f = pe.getVariance(), e = pe.get(), fi = pe.getDiffuseNorm2();
+        double f = pe.getVariance(), e = pe.get(), fi = pe.getDiffuseVariance();
         DataBlock C = pe.M(), Ci = pe.Mi();
 
         // Pi = Pi - f1* (Ci)(Ci)'

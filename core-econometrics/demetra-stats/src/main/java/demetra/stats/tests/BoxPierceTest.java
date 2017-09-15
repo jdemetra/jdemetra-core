@@ -16,10 +16,11 @@
  */
 package demetra.stats.tests;
 
+import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.design.IBuilder;
 import demetra.dstats.Chi2;
-import demetra.stats.samples.OrderedSample;
+import demetra.stats.AutoCovariances;
 import java.util.function.IntToDoubleFunction;
 
 /**
@@ -37,9 +38,9 @@ public class BoxPierceTest implements IBuilder<StatisticalTest> {
     private final IntToDoubleFunction autoCorrelations;
     private final int n;
 
-    public BoxPierceTest(OrderedSample sample) {
-        this.autoCorrelations = sample.autoCorrelationFunction();
-        this.n = sample.size();
+    public BoxPierceTest(DoubleSequence sample) {
+        this.autoCorrelations = AutoCovariances.autoCorrelationFunction(sample, 0);
+        this.n = sample.length();
     }
 
     /**

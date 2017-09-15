@@ -17,7 +17,6 @@
 package demetra.stats.tests;
 
 import demetra.data.DataBlock;
-import demetra.stats.samples.OrderedSampleWithZeroMean;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -38,8 +37,7 @@ public class LjungBoxTestTest {
         Random rnd=new Random();
         X.set(rnd::nextDouble);
         
-        OrderedSampleWithZeroMean sample=OrderedSampleWithZeroMean.of(X);
-        LjungBoxTest lb=new LjungBoxTest(sample);
+        LjungBoxTest lb=new LjungBoxTest(X);
         
         StatisticalTest test = lb
                 .lag(3)
