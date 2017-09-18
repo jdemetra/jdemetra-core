@@ -19,7 +19,6 @@ package internal.tsprovider.util;
 import demetra.data.DoubleSequence;
 import demetra.design.VisibleForTesting;
 import demetra.timeseries.TsUnit;
-import demetra.utilities.functions.ObjLongToIntFunction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,14 +34,19 @@ interface ByLongObsList extends ObsList {
 
     void add(long period, double value);
 
+    interface ToPeriodIdFunc {
+
+        int apply(TsUnit unit, int offset, long value);
+    }
+
     static final class Sortable implements ByLongObsList {
 
-        private final ObjLongToIntFunction<TsUnit> tsPeriodIdFunc;
+        private final ToPeriodIdFunc tsPeriodIdFunc;
         private final List<LongObs> list;
         private boolean sorted;
         private long latestPeriod;
 
-        Sortable(ObjLongToIntFunction<TsUnit> tsPeriodIdFunc) {
+        Sortable(ToPeriodIdFunc tsPeriodIdFunc) {
             this.tsPeriodIdFunc = tsPeriodIdFunc;
             this.list = new ArrayList<>();
             this.sorted = true;
@@ -79,8 +83,8 @@ interface ByLongObsList extends ObsList {
         }
 
         @Override
-        public IntUnaryOperator getPeriodIdFunc(TsUnit unit) {
-            return o -> tsPeriodIdFunc.applyAsInt(unit, list.get(o).period);
+        public IntUnaryOperator getPeriodIdFunc(TsUnit unit, int offset) {
+            return o -> tsPeriodIdFunc.apply(unit, offset, list.get(o).period);
         }
 
         @Override
@@ -102,12 +106,12 @@ interface ByLongObsList extends ObsList {
 
     static final class PreSorted implements ByLongObsList {
 
-        private final ObjLongToIntFunction<TsUnit> tsPeriodIdFunc;
+        private final ToPeriodIdFunc tsPeriodIdFunc;
         private long[] periods;
         private double[] values;
         private int size;
 
-        PreSorted(ObjLongToIntFunction<TsUnit> tsPeriodIdFunc, int initialCapacity) {
+        PreSorted(ToPeriodIdFunc tsPeriodIdFunc, int initialCapacity) {
             this.tsPeriodIdFunc = tsPeriodIdFunc;
             this.periods = new long[initialCapacity];
             this.values = new double[initialCapacity];
@@ -147,8 +151,8 @@ interface ByLongObsList extends ObsList {
         }
 
         @Override
-        public IntUnaryOperator getPeriodIdFunc(TsUnit unit) {
-            return o -> tsPeriodIdFunc.applyAsInt(unit, periods[o]);
+        public IntUnaryOperator getPeriodIdFunc(TsUnit unit, int offset) {
+            return o -> tsPeriodIdFunc.apply(unit, offset, periods[o]);
         }
 
         @Override

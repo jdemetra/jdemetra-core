@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.IntUnaryOperator;
-import java.util.function.ToIntBiFunction;
 
 /**
  *
@@ -36,14 +35,19 @@ interface ByObjObsList<T> extends ObsList {
 
     void add(T period, double value);
 
+    interface ToPeriodIdFunc<T> {
+
+        int apply(TsUnit unit, int offset, T value);
+    }
+
     static final class PreSorted<T> implements ByObjObsList<T> {
 
-        private final ToIntBiFunction<TsUnit, T> tsPeriodIdFunc;
+        private final ToPeriodIdFunc<T> tsPeriodIdFunc;
         private Object[] periods;
         private double[] values;
         private int size;
 
-        PreSorted(ToIntBiFunction<TsUnit, T> tsPeriodIdFunc, int initialCapacity) {
+        PreSorted(ToPeriodIdFunc<T> tsPeriodIdFunc, int initialCapacity) {
             this.tsPeriodIdFunc = tsPeriodIdFunc;
             this.periods = new Object[initialCapacity];
             this.values = new double[initialCapacity];
@@ -83,8 +87,8 @@ interface ByObjObsList<T> extends ObsList {
         }
 
         @Override
-        public IntUnaryOperator getPeriodIdFunc(TsUnit unit) {
-            return o -> tsPeriodIdFunc.applyAsInt(unit, (T) periods[o]);
+        public IntUnaryOperator getPeriodIdFunc(TsUnit unit, int offset) {
+            return o -> tsPeriodIdFunc.apply(unit, offset, (T) periods[o]);
         }
 
         @Override
@@ -100,13 +104,13 @@ interface ByObjObsList<T> extends ObsList {
 
     static final class Sortable<T> implements ByObjObsList<T> {
 
-        private final ToIntBiFunction<TsUnit, T> tsPeriodIdFunc;
+        private final ToPeriodIdFunc<T> tsPeriodIdFunc;
         private final Comparator<T> comparator;
         private final List<Obs<T>> list;
         private boolean sorted;
         private T latestPeriod;
 
-        Sortable(ToIntBiFunction<TsUnit, T> tsPeriodIdFunc, Comparator<T> comparator) {
+        Sortable(ToPeriodIdFunc<T> tsPeriodIdFunc, Comparator<T> comparator) {
             this.tsPeriodIdFunc = tsPeriodIdFunc;
             this.comparator = comparator;
             this.list = new ArrayList<>();
@@ -144,8 +148,8 @@ interface ByObjObsList<T> extends ObsList {
         }
 
         @Override
-        public IntUnaryOperator getPeriodIdFunc(TsUnit unit) {
-            return o -> tsPeriodIdFunc.applyAsInt(unit, list.get(o).period);
+        public IntUnaryOperator getPeriodIdFunc(TsUnit unit, int offset) {
+            return o -> tsPeriodIdFunc.apply(unit, offset, list.get(o).period);
         }
 
         @Override

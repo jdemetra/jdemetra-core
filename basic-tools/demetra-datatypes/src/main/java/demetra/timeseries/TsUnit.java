@@ -67,7 +67,6 @@ public class TsUnit implements TemporalAmount {
 
     public String toIsoString() {
         switch (chronoUnit) {
-            case HALF_DAYS:
             case MILLIS:
             case MINUTES:
             case HOURS:
@@ -114,6 +113,7 @@ public class TsUnit implements TemporalAmount {
     public static final TsUnit QUARTERLY = new TsUnit(3, ChronoUnit.MONTHS);
     public static final TsUnit BI_MONTHLY = new TsUnit(2, ChronoUnit.MONTHS);
     public static final TsUnit MONTHLY = new TsUnit(1, ChronoUnit.MONTHS);
+    public static final TsUnit WEEKLY = new TsUnit(7, ChronoUnit.DAYS);
     public static final TsUnit DAILY = new TsUnit(1, ChronoUnit.DAYS);
     public static final TsUnit HOURLY = new TsUnit(1, ChronoUnit.HOURS);
     public static final TsUnit MINUTELY = new TsUnit(1, ChronoUnit.MINUTES);
@@ -140,7 +140,13 @@ public class TsUnit implements TemporalAmount {
                 }
                 return new TsUnit(amount, unit);
             case DAYS:
-                return amount == 1 ? DAILY : new TsUnit(amount, unit);
+                if (amount == 1) {
+                    return DAILY;
+                }
+                if (amount == 7) {
+                    return WEEKLY;
+                }
+                return new TsUnit(amount, unit);
             case HOURS:
                 return amount == 1 ? HOURLY : new TsUnit(amount, unit);
             case MINUTES:
@@ -149,15 +155,17 @@ public class TsUnit implements TemporalAmount {
                 return new TsUnit(100 * amount, ChronoUnit.YEARS);
             case DECADES:
                 return new TsUnit(10 * amount, ChronoUnit.YEARS);
+            case WEEKS:
+                return new TsUnit(7 * amount, ChronoUnit.DAYS);
+            case HALF_DAYS:
+                return new TsUnit(12 * amount, ChronoUnit.HOURS);
             case FOREVER:
                 return UNDEFINED;
-            case HALF_DAYS:
             case MICROS:
             case MILLIS:
             case SECONDS:
             case NANOS:
                 return new TsUnit(amount, unit);
-            case WEEKS:
             default:
                 throw new UnsupportedTemporalTypeException(unit.toString());
         }

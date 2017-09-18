@@ -60,9 +60,12 @@ public class TsUnitTest {
         assertThat(parse("P3M")).isEqualTo(QUARTERLY);
         assertThat(parse("P2M")).isEqualTo(BI_MONTHLY);
         assertThat(parse("P1M")).isEqualTo(MONTHLY);
+        assertThat(parse("P7D")).isEqualTo(WEEKLY);
         assertThat(parse("P1D")).isEqualTo(DAILY);
         assertThat(parse("PT1H")).isEqualTo(HOURLY);
         assertThat(parse("PT1M")).isEqualTo(MINUTELY);
+
+        assertThat(parse("P1W")).isEqualTo(WEEKLY);
     }
 
     @Test
@@ -74,6 +77,7 @@ public class TsUnitTest {
         assertThat(QUARTERLY.toIsoString()).isEqualTo("P3M");
         assertThat(BI_MONTHLY.toIsoString()).isEqualTo("P2M");
         assertThat(MONTHLY.toIsoString()).isEqualTo("P1M");
+        assertThat(WEEKLY.toIsoString()).isEqualTo("P7D");
         assertThat(DAILY.toIsoString()).isEqualTo("P1D");
         assertThat(HOURLY.toIsoString()).isEqualTo("PT1H");
         assertThat(MINUTELY.toIsoString()).isEqualTo("PT1M");
@@ -83,7 +87,7 @@ public class TsUnitTest {
     public void testConstants() {
         assertThat(UNDEFINED)
                 .isEqualTo(of(1, ChronoUnit.FOREVER))
-                .extracting("amount", "chronoUnit")
+                .extracting(TsUnit::getAmount, TsUnit::getChronoUnit)
                 .containsExactly(1L, ChronoUnit.FOREVER);
     }
 }

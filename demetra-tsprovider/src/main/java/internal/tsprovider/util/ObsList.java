@@ -29,7 +29,7 @@ interface ObsList {
 
     void sortByPeriod();
 
-    IntUnaryOperator getPeriodIdFunc(TsUnit unit);
+    IntUnaryOperator getPeriodIdFunc(TsUnit unit, int offset);
 
     double getValue(int index) throws IndexOutOfBoundsException;
 

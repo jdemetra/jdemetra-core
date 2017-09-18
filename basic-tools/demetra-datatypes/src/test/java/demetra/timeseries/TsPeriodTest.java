@@ -67,10 +67,10 @@ public class TsPeriodTest {
                 .extracting("offset", "unit", "id")
                 .containsExactly(someOffset, MONTHLY, -10L);
 
-        assertThat(builder().offset(someOffset).unit(of(2, ChronoUnit.DECADES)).plus(2).build())
-                .isEqualTo(new TsPeriod(someOffset, of(2, ChronoUnit.DECADES), -8))
+        assertThat(builder().unit(of(2, ChronoUnit.DECADES)).offset(someOffset).plus(2).build())
+                .isEqualTo(new TsPeriod(someOffset, of(2, ChronoUnit.DECADES), 2))
                 .extracting("offset", "unit", "id")
-                .containsExactly(someOffset, of(2, ChronoUnit.DECADES), -8L);
+                .containsExactly(someOffset, of(2, ChronoUnit.DECADES), 2L);
 
         assertThat(builder()).satisfies(o -> {
             assertThat(o.toShortString()).isEqualTo("P1M#0");
@@ -237,6 +237,10 @@ public class TsPeriodTest {
         assertThat(idAt(DEFAULT_OFFSET, YEARLY, EPOCH.plusYears(1))).isEqualTo(1);
         assertThat(idAt(DEFAULT_OFFSET, YEARLY, EPOCH.minusNanos(1))).isEqualTo(-1);
         assertThat(idAt(DEFAULT_OFFSET, YEARLY, EPOCH.minusYears(1))).isEqualTo(-1);
+
+        assertThat(idAt(DEFAULT_OFFSET, DAILY, EPOCH)).isEqualTo(0);
+        assertThat(idAt(4, DAILY, EPOCH.plusDays(4))).isEqualTo(0);
+        assertThat(idAt(4, DAILY, EPOCH.plusDays(5))).isEqualTo(1);
     }
 
     @Test
@@ -248,6 +252,10 @@ public class TsPeriodTest {
         assertThat(dateAt(DEFAULT_OFFSET, YEARLY, 0)).isEqualTo(EPOCH);
         assertThat(dateAt(DEFAULT_OFFSET, YEARLY, 1)).isEqualTo(EPOCH.plusYears(1));
         assertThat(dateAt(DEFAULT_OFFSET, YEARLY, -1)).isEqualTo(EPOCH.minusYears(1));
+
+        assertThat(dateAt(DEFAULT_OFFSET, DAILY, 0)).isEqualTo(EPOCH);
+        assertThat(dateAt(4, DAILY, 0)).isEqualTo(EPOCH.plusDays(4));
+        assertThat(dateAt(4, DAILY, 1)).isEqualTo(EPOCH.plusDays(5));
     }
 
     @Test

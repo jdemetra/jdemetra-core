@@ -233,15 +233,15 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
 
     public static long idAt(int offset, TsUnit unit, LocalDateTime date) {
         if (date.compareTo(EPOCH) >= 0) {
-            return unit.getChronoUnit().between(EPOCH, date) / unit.getAmount() - offset;
+            return (unit.getChronoUnit().between(EPOCH, date) - offset) / unit.getAmount();
         }
         // FIXME: find something better
-        long result = unit.getChronoUnit().between(EPOCH, date) / unit.getAmount() - offset;
+        long result = (unit.getChronoUnit().between(EPOCH, date) - offset) / unit.getAmount();
         return dateAt(offset, unit, result).compareTo(date) <= 0 ? result : result - 1;
     }
 
     public static LocalDateTime dateAt(int offset, TsUnit unit, long id) {
-        return EPOCH.plus(unit.getAmount() * (id + offset), unit.getChronoUnit());
+        return EPOCH.plus(unit.getAmount() * id + offset, unit.getChronoUnit());
     }
 
     private static int getPosition(int offset, TsUnit high, long id, TsUnit low) {
