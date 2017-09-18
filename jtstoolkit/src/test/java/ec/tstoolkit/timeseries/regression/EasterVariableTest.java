@@ -66,7 +66,21 @@ public class EasterVariableTest {
         // Prints the monthly regression variables for years from 1900 to 2100
         System.out.println(matrix);
     }
+
+//    @Test
+    public void testEaster(){
+        EasterVariable evar=new EasterVariable();
+        evar.setDuration(6);
+        evar.setType(EasterVariable.Correction.Simple);
+        evar.includeEaster(true);
+        DataBlock d=new DataBlock(48);
+        evar.data(new TsPeriod(TsFrequency.Monthly, 2015, 0), d);
+        System.out.println(d);
+        
+    }
 }
+
+
 
 //class JulianEasterVariable extends AbstractSingleTsVariable {
 //
