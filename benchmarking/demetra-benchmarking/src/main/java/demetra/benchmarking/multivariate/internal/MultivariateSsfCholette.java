@@ -16,6 +16,7 @@
  */
 package demetra.benchmarking.multivariate.internal;
 
+import demetra.benchmarking.multivariate.internal.Constraint;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.IBuilder;
@@ -25,7 +26,6 @@ import demetra.ssf.ISsfInitialization;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.multivariate.MultivariateSsf;
-import java.util.Collection;
 
 /**
  *
@@ -39,7 +39,7 @@ public class MultivariateSsfCholette {
         return new Builder(nvars);
     }
 
-    static class Builder implements IBuilder<IMultivariateSsf> {
+    public static class Builder implements IBuilder<IMultivariateSsf> {
 
         private final int nvars;
         private int conversion=4;

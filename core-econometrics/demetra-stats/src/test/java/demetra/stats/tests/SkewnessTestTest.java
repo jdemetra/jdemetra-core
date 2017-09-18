@@ -31,7 +31,7 @@ public class SkewnessTestTest {
     }
 
     @Test
-    public void testSRandom() {
+    public void testLegacy() {
         int N=100;
         double[] data=new double[N];
         DataBlock X=DataBlock.ofInternal(data);

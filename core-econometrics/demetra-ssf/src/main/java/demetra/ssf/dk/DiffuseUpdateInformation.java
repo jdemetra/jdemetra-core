@@ -47,11 +47,11 @@ public class DiffuseUpdateInformation extends UpdateInformation {
         return this.Mi;
     }
     
-    public double getDiffuseNorm2(){
+    public double getDiffuseVariance(){
         return fi;
     }
     
-     public void setDiffuseNorm2(final double n){
+     public void setDiffuseVariance(final double n){
         fi=n;
     }
 

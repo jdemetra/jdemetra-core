@@ -26,8 +26,8 @@ import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.Matrix;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarmaSpecification;
-import demetra.stats.samples.OrderedSampleWithZeroMean;
 import demetra.data.DoubleSequence;
+import demetra.stats.AutoCovariances;
 
 /**
  * The Hannan-Rissanen procedure is performed as in TRAMO. See
@@ -310,12 +310,6 @@ public class HannanRissanen {
             npi = MAXNPI;
         }
         return npi;
-    }
-
-    // step 0 of the process...
-    private double[] initac() {
-        OrderedSampleWithZeroMean sample=new OrderedSampleWithZeroMean(DoubleSequence.ofInternal(m_data), false);
-        return sample.autoCorrelations(npi());
     }
 
     private void initialize() {

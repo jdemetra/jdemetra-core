@@ -14,11 +14,10 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.sa.tests;
+package demetra.maths.linearfilters;
 
-import demetra.data.Data;
-import demetra.timeseries.simplets.TsData;
-import demetra.timeseries.simplets.TsDataToolkit;
+import demetra.data.DataBlock;
+import demetra.maths.functions.RealFunction;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -26,25 +25,19 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate
  */
-public class QsTestTest {
-    
-    public QsTestTest() {
+public class HendersonFiltersTest {
+
+    public HendersonFiltersTest() {
     }
 
     @Test
-    public void testP1() {
-        TsData s=Data.TS_PROD;
-        s=TsDataToolkit.delta(s, 1);
-        QsTest test=new QsTest(s.values(),12);
-        System.out.println(test.build());
+    public void testGain() {
+        RealFunction gain = HendersonFilters.instance.create(23).squaredGainFunction();
+        for (int i = 0; i <= 100; ++i) {
+            System.out.println(gain.apply(i * Math.PI / 100));
+        }
+        System.out.println("");
+        System.out.println(DataBlock.ofInternal(HendersonFilters.instance.create(13).weightsToArray()));
     }
-    
-    @Test
-    public void testP12() {
-        TsData s=Data.TS_PROD;
-        s=TsDataToolkit.delta(s, 12);
-        QsTest test=new QsTest(s.values(),12);
-        System.out.println(test.build());
-        System.out.println(test.useNegativeAutocorrelations().build());
-    }
+
 }

@@ -69,7 +69,7 @@ public class DefaultDiffuseFilteringResults extends DefaultFilteringResults impl
     @Override
     public void save(int t, DiffuseUpdateInformation pe) {
         super.save(t, pe);
-        fi.save(t, pe.getDiffuseNorm2());
+        fi.save(t, pe.getDiffuseVariance());
         Ci.save(t, pe.Mi());
     }
 

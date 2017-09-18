@@ -199,7 +199,7 @@ public class BackFilter extends AbstractFiniteFilter {
      * @param coefficients
      * @return 
      */
-    public static BackFilter of(double[] coefficients) {
+    public static BackFilter of(double... coefficients) {
         if (coefficients.length == 1) {
             if (coefficients[0] == 1.0)
                 return BackFilter.ONE;

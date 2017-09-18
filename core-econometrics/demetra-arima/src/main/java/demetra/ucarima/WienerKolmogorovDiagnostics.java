@@ -24,8 +24,8 @@ import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.dstats.Normal;
 import demetra.maths.matrices.Matrix;
-import demetra.stats.samples.OrderedSampleWithZeroMean;
 import demetra.data.DoubleSequence;
+import demetra.stats.AutoCovariances;
 
 /**
  *
@@ -122,7 +122,7 @@ public final class WienerKolmogorovDiagnostics {
 //                AutoCorrelations ac = new AutoCorrelations(stats);
 //                ac.setCorrectedForMean(true);
 //                double evar = stats.getVar() / (err * err);
-                    double evar = OrderedSampleWithZeroMean.of(DoubleSequence.ofInternal(itmp)).variance() / (err * err);
+                    double evar = AutoCovariances.varianceNoMissing(DoubleSequence.ofInternal(itmp), 0) / (err * err);
                     double var = stmodels[i].getAutoCovarianceFunction().get(0);
                     m_tac.set(i, i, var);
                     m_eac.set(i, i, evar);
@@ -146,9 +146,9 @@ public final class WienerKolmogorovDiagnostics {
                             double sdcov = cbartlett.standardDeviation(0, nc);
                             DoubleSequence di = DoubleSequence.ofInternal(itmp, si, nc);
                             DoubleSequence dj = DoubleSequence.ofInternal(jtmp, sj, nc);
-                            double vi = OrderedSampleWithZeroMean.varianceNoMissing(di);
-                            double vj = OrderedSampleWithZeroMean.varianceNoMissing(dj);
-                            double cvij = OrderedSampleWithZeroMean.covarianceNoMissing(di, dj);
+                            double vi = AutoCovariances.varianceNoMissing(di,0);
+                            double vj = AutoCovariances.varianceNoMissing(dj,0);
+                            double cvij = AutoCovariances.covarianceWithZeroMean(di, dj);
                             double ecov = cvij / Math.sqrt(vi * vj);
                             m_tac.set(i, j, cov);
                             m_tac.set(j, i, cov);

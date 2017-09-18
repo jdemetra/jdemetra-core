@@ -16,8 +16,8 @@
  */
 package demetra.sa.tests;
 
+import demetra.data.DoubleSequence;
 import demetra.design.IBuilder;
-import demetra.stats.samples.OrderedSample;
 import demetra.stats.tests.LjungBoxTest;
 import demetra.stats.tests.StatisticalTest;
 
@@ -30,7 +30,7 @@ public class QsTest  implements IBuilder<StatisticalTest>{
     private final LjungBoxTest lb;
     
     
-    public QsTest(OrderedSample sample, int seasLag){
+    public QsTest(DoubleSequence sample, int seasLag){
         lb=new LjungBoxTest(sample)
                 .lag(seasLag)
                 .autoCorrelationsCount(3)

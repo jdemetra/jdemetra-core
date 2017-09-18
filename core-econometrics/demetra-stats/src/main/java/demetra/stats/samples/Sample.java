@@ -21,5 +21,7 @@ public interface Sample {
     double variance();
     
     int size();
+    
+    Population population();
 
 }
