@@ -37,7 +37,9 @@ public class GlsSarimaMonitorTest {
 
     @Test
     public void testNew() {
-        GlsSarimaMonitor monitor = new GlsSarimaMonitor(new HannanRissanenInitializer(true, true, false));
+        HannanRissanenInitializer initializer = HannanRissanenInitializer.builder().stabilize(true).useDefaultIfFailed(true).build();
+        GlsSarimaMonitor monitor = GlsSarimaMonitor.builder()
+                .initializer(initializer).build();
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline();
         SarimaModel arima = SarimaModel.builder(spec)
@@ -77,7 +79,9 @@ public class GlsSarimaMonitorTest {
     public void stressTestNew() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 5000; ++i) {
-            GlsSarimaMonitor monitor = new GlsSarimaMonitor(new HannanRissanenInitializer(true, true, false));
+            HannanRissanenInitializer initializer = HannanRissanenInitializer.builder().stabilize(true).useDefaultIfFailed(true).build();
+            GlsSarimaMonitor monitor = GlsSarimaMonitor.builder()
+                    .initializer(initializer).build();
             SarimaSpecification spec = new SarimaSpecification(12);
             spec.airline();
             SarimaModel arima = SarimaModel.builder(spec)

@@ -23,7 +23,9 @@ import demetra.arima.regarima.internal.RegArmaEstimation;
 import demetra.arima.regarima.internal.RegArmaModel;
 import demetra.arima.regarima.internal.RegArmaProcessor;
 import demetra.design.Development;
+import demetra.design.IBuilder;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
+import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.sarima.SarimaModel;
 
 /**
@@ -33,21 +35,70 @@ import demetra.sarima.SarimaModel;
 @Development(status = Development.Status.Alpha)
 public class GlsSarimaMonitor {
 
-    private final IarmaInitializer initializer;
+    public static class Builder implements IBuilder<GlsSarimaMonitor> {
 
-    /**
-     *
-     */
-    public GlsSarimaMonitor() {
-        initializer = IarmaInitializer.defaultInitializer();
+        private IarmaInitializer initializer;
+        private double eps = 1e-9;
+        private ISsqFunctionMinimizer min;
+        private boolean ml = true, mt = false;
+
+        public Builder initializer(IarmaInitializer initializer) {
+            this.initializer = initializer;
+            return this;
+        }
+
+        public Builder minimizer(ISsqFunctionMinimizer min) {
+            this.min = min;
+            return this;
+        }
+
+        public Builder precision(double eps) {
+            this.eps = eps;
+            return this;
+        }
+
+        public Builder useMaximumLikelihood(boolean ml) {
+            this.ml = ml;
+            return this;
+        }
+
+        public Builder useParallelProcessing(boolean mt) {
+            this.mt = mt;
+            return this;
+        }
+
+        @Override
+        public GlsSarimaMonitor build() {
+            return new GlsSarimaMonitor(initializer, min, eps, ml, mt);
+        }
+
+    }
+    
+    public static Builder builder(){
+        return new Builder();
     }
 
+    private final IarmaInitializer initializer;
+    private final ISsqFunctionMinimizer min;
+    private final boolean ml, mt;
+
     /**
      *
-     * @param initializer
      */
-    public GlsSarimaMonitor(IarmaInitializer initializer) {
-        this.initializer = initializer;
+    private GlsSarimaMonitor(final IarmaInitializer initializer, final ISsqFunctionMinimizer min, final double eps, final boolean ml, final boolean mt) {
+        if (initializer == null) {
+            this.initializer = IarmaInitializer.defaultInitializer();
+        } else {
+            this.initializer = initializer;
+        }
+        if (min == null) {
+            this.min = new LevenbergMarquardtMinimizer();
+        } else {
+            this.min = min;
+        }
+        this.min.setFunctionPrecision(eps);
+        this.ml = ml;
+        this.mt = mt;
     }
 
     /**
@@ -56,21 +107,19 @@ public class GlsSarimaMonitor {
      * @return
      */
     public RegArimaEstimation<SarimaModel> compute(RegArimaModel<SarimaModel> regs) {
-        RegArmaModel<SarimaModel> dmodel=RegArmaModel.of(regs);
+        RegArmaModel<SarimaModel> dmodel = RegArmaModel.of(regs);
         SarimaModel start = initializer.initialize(dmodel);
         // not used for the time being
-        RegArmaProcessor processor=new RegArmaProcessor(true, false);
-        SarimaMapping mapping=new SarimaMapping(dmodel.getArma().specification(), SarimaMapping.STEP, true);
-        int ndf=dmodel.getY().length()-dmodel.getX().getColumnsCount()-mapping.getDim();
-        LevenbergMarquardtMinimizer min=new LevenbergMarquardtMinimizer();
-        min.setFunctionPrecision(1e-11);
+        RegArmaProcessor processor = new RegArmaProcessor(ml, mt);
+        SarimaMapping mapping = new SarimaMapping(dmodel.getArma().specification(), SarimaMapping.STEP, true);
+        int ndf = dmodel.getY().length() - dmodel.getX().getColumnsCount() - mapping.getDim();
         RegArmaEstimation<SarimaModel> rslt = processor.compute(dmodel, start.parameters(), mapping, min, ndf);
-        
-        SarimaModel arima=SarimaModel.builder(regs.arima().specification())
+
+        SarimaModel arima = SarimaModel.builder(regs.arima().specification())
                 .parameters(rslt.getModel().getArma().parameters())
                 .build();
-        RegArimaModel<SarimaModel> nmodel=RegArimaModel.of(regs, arima);
-                
+        RegArimaModel<SarimaModel> nmodel = RegArimaModel.of(regs, arima);
+
         return RegArimaEstimation.compute(nmodel);
     }
 

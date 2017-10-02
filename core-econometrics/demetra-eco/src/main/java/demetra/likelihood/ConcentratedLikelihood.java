@@ -274,4 +274,14 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
         System.arraycopy(x, nm, nx, 0, nx.length);
         return nx;
     }
+    
+    @Override
+    public String toString(){
+        StringBuilder builder=new StringBuilder();
+        builder.append("log-likelihood: ").append(this.ll)
+                .append(", sigma2: ").append(this.ssqerr/this.n);
+        
+        return builder.toString();
+                
+    }
 }

@@ -21,6 +21,7 @@ import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.design.Development;
+import demetra.design.IBuilder;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
@@ -35,7 +36,49 @@ import demetra.sarima.SarmaSpecification;
 @Development(status = Development.Status.Alpha)
 public class HannanRissanenInitializer implements IarmaInitializer {
 
-    private static double EPS = 1e-9;
+    public static class Builder implements IBuilder<HannanRissanenInitializer> {
+
+        private boolean usedefault, stabilize, failifunstable;
+
+        /**
+         * Returns a default model if HR failed
+         * @param usedefault
+         * @return 
+         */
+        public Builder useDefaultIfFailed(boolean usedefault) {
+            this.usedefault = usedefault;
+            return this;
+        }
+
+        /**
+         * Stabilizes the estimated model (roots >1)
+         * @param stabilize
+         * @return 
+         */
+        public Builder stabilize(boolean stabilize) {
+            this.stabilize = stabilize;
+            return this;
+        }
+
+        /**
+         * Fails if the estimated model is unstable (the stabilize option is automatically activated)
+         * @param failifunstable
+         * @return 
+         */
+        public Builder failIfUnstable(boolean failifunstable) {
+            this.failifunstable = failifunstable;
+            if (failifunstable)
+                stabilize=true;
+            return this;
+        }
+
+        @Override
+        public HannanRissanenInitializer build() {
+            return new HannanRissanenInitializer(stabilize, usedefault, failifunstable);
+        }
+    }
+
+    private static final double EPS = 1e-9;
 
     private final boolean usedefault, stabilize, failifunstable;
     private DoubleSequence dy_;
@@ -47,8 +90,12 @@ public class HannanRissanenInitializer implements IarmaInitializer {
     public boolean isUsingDefaultIfFailed() {
         return usedefault;
     }
+    
+    public static Builder builder(){
+        return new Builder();
+    }
 
-    public HannanRissanenInitializer(boolean stabilize, boolean usedefault, boolean failifunstable) {
+    private HannanRissanenInitializer(boolean stabilize, boolean usedefault, boolean failifunstable) {
         this.stabilize = stabilize;
         this.usedefault = usedefault;
         this.failifunstable = failifunstable;

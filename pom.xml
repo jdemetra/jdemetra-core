@@ -100,6 +100,7 @@
         <module>benchmarking</module>
         <module>demetra-tsprovider</module>
         <module>demetra-bridge</module>
+        <module>jdr</module>
     </modules>
 	
     <dependencyManagement>
