@@ -15,7 +15,7 @@
 * limitations under the Licence.
 */
 
-package demetra.maths.matrices.internal;
+package demetra.maths.matrices;
 
 import demetra.maths.matrices.IVectorTransformation;
 import demetra.data.DataBlock;
@@ -44,10 +44,10 @@ public class HouseholderReflection implements IVectorTransformation {
      * [a 0...0]
      *
      * @param v The vector used to compute the transformation. The vector
-     * is unmodified.
+     * is modified to [a 0...0].
      * @return 
      */
-    public static HouseholderReflection makeOf(DataBlock v) {
+    public static HouseholderReflection of(DataBlock v) {
         HouseholderReflection reflection = new HouseholderReflection();
         reflection.householder(v);
         return reflection;

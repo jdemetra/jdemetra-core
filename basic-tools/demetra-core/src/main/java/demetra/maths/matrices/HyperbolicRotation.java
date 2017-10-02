@@ -14,14 +14,14 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.maths.matrices.internal;
+package demetra.maths.matrices;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.IVectorTransformation;
 import demetra.design.Development;
 
 /**
- * The implementation is the mixed downdating version copyOf the hyperbolic rotation
+ * The implementation is the mixed downdating version of the hyperbolic rotation
  *
  * @author Jean Palate
  */

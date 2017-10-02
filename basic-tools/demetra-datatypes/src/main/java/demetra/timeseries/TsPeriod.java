@@ -96,6 +96,12 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
         return new TsPeriod(offset, unit, id);
     }
 
+    /**
+     * Distance between this period and the given period (exclusive)
+     * @param endExclusive The given period
+     * @return The result is 0 when the two periods are equal, positive if the given
+     * period is after this period or negative otherwise.
+     */
     public int until(TsPeriod endExclusive) {
         checkCompatibility(endExclusive);
         return (int) (getRebasedId(endExclusive) - id);
