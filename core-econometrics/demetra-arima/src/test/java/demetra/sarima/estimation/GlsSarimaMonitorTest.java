@@ -42,6 +42,7 @@ public class GlsSarimaMonitorTest {
                 .initializer(initializer).build();
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline();
+        spec.setP(3);
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()
                 .build();

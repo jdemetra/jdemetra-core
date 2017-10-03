@@ -176,6 +176,17 @@ public class SarimaMapping implements IParametricMapping<SarimaModel> {
             return m;
         }
     }
+    
+    public static SarimaMapping of(SarimaSpecification spec){
+        return new SarimaMapping(spec, STEP, true);
+    }
+
+    public static SarimaMapping stationary(final SarimaSpecification spec){
+         SarimaSpecification nspec = spec.clone();
+         nspec.setD(0);
+         nspec.setBD(0);
+        return new SarimaMapping(nspec, STEP, true);
+    }
 
     public SarimaMapping(SarimaSpecification spec, double eps, boolean all) {
         this.spec = spec;
@@ -289,7 +300,7 @@ public class SarimaMapping implements IParametricMapping<SarimaModel> {
         if (p.length() != spec.getParametersCount()) {
             throw new FunctionException(FunctionException.DIM_ERR);
         }
-        return SarimaModel.builder(spec).parameters(p).build();
+        return SarimaModel.builder(spec).parameters(p).adjustOrders(false).build();
     }
 
     @Override
@@ -365,6 +376,11 @@ public class SarimaMapping implements IParametricMapping<SarimaModel> {
             p[i]=-.2;
         }
         return DoubleSequence.ofInternal(p);
+    }
+    
+     @Override
+    public DoubleSequence map(SarimaModel m){
+        return m.parameters();
     }
 
     @Override

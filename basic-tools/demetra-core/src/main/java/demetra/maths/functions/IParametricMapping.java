@@ -30,12 +30,18 @@ import demetra.data.DoubleSequence;
 @Development(status = Development.Status.Alpha)
 public interface IParametricMapping<T> extends IParametersDomain {
     /**
-     * set the values in p, using information provided by the object t
+     * Generates a new object using the values in p
      * 
      * @param p
-     * @return A new object, which has the same structural form as t, but with
-     *         the parameters provided by p.
+     * @return A new object, based on the parameters provided by p.
      */
     T map(DoubleSequence p);
 
+    /**
+     * Generates the parameters corresponding to the given object
+     * @param t
+     * @return 
+     */
+    DoubleSequence map(T t);
+    
 }

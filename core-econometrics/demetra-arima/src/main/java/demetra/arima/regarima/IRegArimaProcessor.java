@@ -49,10 +49,4 @@ public interface IRegArimaProcessor<S extends IArimaModel> {
      */
     public RegArimaEstimation<S> process(final RegArimaModel<S> regs);
 
-    /**
-     * 
-     * @param value
-     */
-    public void setPrecision(double value);
-
 }

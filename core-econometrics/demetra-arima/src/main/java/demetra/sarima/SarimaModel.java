@@ -51,7 +51,8 @@ public class SarimaModel extends AbstractArimaModel {
         private final int s;
         private int d, bd;
         private double[] phi, bphi, th, bth;
-  
+        private boolean adjust = true;
+
         private Builder(SarimaSpecification spec) {
             s = spec.frequency;
             d = spec.D;
@@ -61,7 +62,7 @@ public class SarimaModel extends AbstractArimaModel {
             th = (spec.Q > 0) ? new double[spec.Q] : E;
             bth = (spec.BQ > 0) ? new double[spec.BQ] : E;
         }
-        
+
         private Builder(SarmaSpecification spec) {
             s = spec.frequency;
             d = 0;
@@ -71,14 +72,15 @@ public class SarimaModel extends AbstractArimaModel {
             th = (spec.Q > 0) ? new double[spec.Q] : E;
             bth = (spec.BQ > 0) ? new double[spec.BQ] : E;
         }
-        
-        private double[] clone(double[] c){
-            if (c.length == 0)
+
+        private double[] clone(double[] c) {
+            if (c.length == 0) {
                 return E;
-            else
+            } else {
                 return c.clone();
+            }
         }
-        
+
         private Builder(SarimaModel model) {
             s = model.s;
             d = model.d;
@@ -89,32 +91,45 @@ public class SarimaModel extends AbstractArimaModel {
             bth = clone(model.bth);
         }
 
+        public Builder adjustOrders(boolean adjust) {
+            this.adjust = adjust;
+            return this;
+        }
+
         public Builder setDefault() {
             return setDefault(-0.1, -0.2);
         }
 
         public Builder setDefault(double ar, double ma) {
-            for (int i=0; i<phi.length; ++i)
-                phi[i]=ar;
-            for (int i=0; i<bphi.length; ++i)
-                bphi[i]=ar;
-            for (int i=0; i<th.length; ++i)
-                th[i]=ma;
-            for (int i=0; i<bth.length; ++i)
-                bth[i]=ma;
+            for (int i = 0; i < phi.length; ++i) {
+                phi[i] = ar;
+            }
+            for (int i = 0; i < bphi.length; ++i) {
+                bphi[i] = ar;
+            }
+            for (int i = 0; i < th.length; ++i) {
+                th[i] = ma;
+            }
+            for (int i = 0; i < bth.length; ++i) {
+                bth[i] = ma;
+            }
             return this;
         }
-        
-        public Builder parameters(DoubleSequence p){
+
+        public Builder parameters(DoubleSequence p) {
             DoubleReader reader = p.reader();
-            for (int i=0; i<phi.length; ++i)
-                phi[i]=reader.next();
-            for (int i=0; i<bphi.length; ++i)
-                bphi[i]=reader.next();
-            for (int i=0; i<th.length; ++i)
-                th[i]=reader.next();
-            for (int i=0; i<bth.length; ++i)
-                bth[i]=reader.next();
+            for (int i = 0; i < phi.length; ++i) {
+                phi[i] = reader.next();
+            }
+            for (int i = 0; i < bphi.length; ++i) {
+                bphi[i] = reader.next();
+            }
+            for (int i = 0; i < th.length; ++i) {
+                th[i] = reader.next();
+            }
+            for (int i = 0; i < bth.length; ++i) {
+                bth[i] = reader.next();
+            }
             return this;
         }
 
@@ -205,16 +220,18 @@ public class SarimaModel extends AbstractArimaModel {
 
         @Override
         public SarimaModel build() {
-            adjust();
+            if (adjust) {
+                adjust();
+            }
             return new SarimaModel(this);
         }
     }
-    
-    public static Builder builder(SarimaSpecification spec){
+
+    public static Builder builder(SarimaSpecification spec) {
         return new Builder(spec);
     }
 
-    public static Builder builder(SarmaSpecification spec){
+    public static Builder builder(SarmaSpecification spec) {
         return new Builder(spec);
     }
 
@@ -284,6 +301,7 @@ public class SarimaModel extends AbstractArimaModel {
     public double theta(final int lag) {
         return th[lag - 1];
     }
+
     /**
      *
      * @param lag
@@ -594,8 +612,8 @@ public class SarimaModel extends AbstractArimaModel {
     public boolean isWhiteNoise() {
         return getParametersCount() == 0 && d == 0 && bd == 0;
     }
-    
-    public Builder toBuilder(){
+
+    public Builder toBuilder() {
         return new Builder(this);
     }
 
@@ -609,17 +627,17 @@ public class SarimaModel extends AbstractArimaModel {
             return new StationaryTransformation(this, BackFilter.ONE);
         } else {
             BackFilter ur = getNonStationaryAR();
-            Builder builder=toBuilder();
+            Builder builder = toBuilder();
             builder.differencing(0, 0);
             return new StationaryTransformation(builder.build(), ur);
         }
     }
 
     public boolean isAirline(boolean seas) {
-        if (seas){
-            return phi.length == 0 && bphi.length == 0 && d == 1 && bd == 1 
+        if (seas) {
+            return phi.length == 0 && bphi.length == 0 && d == 1 && bd == 1
                     && th.length == 1 && bth.length == 1;
-        }else{
+        } else {
             return phi.length == 0 && bphi.length == 0 && bd == 0 && bth.length == 0
                     && d == 1 && th.length == 1;
         }

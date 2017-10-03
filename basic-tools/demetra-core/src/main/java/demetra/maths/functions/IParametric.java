@@ -27,20 +27,7 @@ import demetra.data.DoubleSequence;
  */
 @Development(status = Development.Status.Alpha)
 public interface IParametric extends Cloneable {
-    // / <summary>Number of parameters</summary>
-    // / <value>The number of parameters. 0 if the object can not be
-    // parameterized.</value>
 
-    /**
-     * 
-     * @return
-     */
-    IParametric exemplar();
-
-    // / <summary>Parameter of the object</summary>
-    // / <value>The specified parameter.</value>
-    // / <remarks>The index of each parameter must belong to the range [0,
-    // ParametersCount[</remarks>
     /**
      * 
      * @param idx
@@ -48,9 +35,6 @@ public interface IParametric extends Cloneable {
      */
     double get(int idx);
 
-    // / <value>The full set of the parameters. Null if the object is not
-    // parametriseable.</value>
-    // / <summary>Full set of the (ordered) parameters.</summary>
     /**
      * 
      * @return
