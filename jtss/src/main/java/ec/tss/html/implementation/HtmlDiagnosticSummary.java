@@ -13,13 +13,13 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.html.implementation;
 
 import ec.tss.html.AbstractHtmlElement;
+import ec.tss.html.Bootstrap4;
 import ec.tss.html.HtmlStream;
-import ec.tss.html.HtmlStyle;
+import ec.tss.html.HtmlTag;
 import ec.tss.html.IHtmlElement;
 import ec.tstoolkit.algorithm.ProcDiagnostic;
 import ec.tstoolkit.algorithm.ProcQuality;
@@ -48,7 +48,7 @@ public class HtmlDiagnosticSummary extends AbstractHtmlElement implements IHtmlE
     }
 
     public void writeSummary(HtmlStream stream) throws IOException {
-        stream.write("summary", HtmlStyle.Bold).newLine();
+        stream.write(HtmlTag.IMPORTANT_TEXT, "summary").newLine();
         writeQuality(stream, null, ProcDiagnostic.summary(diags_), Double.NaN);
         stream.newLine().newLine();
         List<Information<InformationSet>> subsets = diags_.select(InformationSet.class);
@@ -58,7 +58,7 @@ public class HtmlDiagnosticSummary extends AbstractHtmlElement implements IHtmlE
     }
 
     private void writeDiagnostic(HtmlStream stream, String name, InformationSet diags) throws IOException {
-        stream.write(name, HtmlStyle.Bold).newLine();
+        stream.write(HtmlTag.IMPORTANT_TEXT, name).newLine();
         List<Information<ProcDiagnostic>> items = diags.select(ProcDiagnostic.class);
         for (Information<ProcDiagnostic> item : items) {
             ProcDiagnostic diag = item.value;
@@ -75,19 +75,19 @@ public class HtmlDiagnosticSummary extends AbstractHtmlElement implements IHtmlE
             }
             switch (q) {
                 case Error:
-                    stream.write("Error" + (!Double.isNaN(val) ? " (" + df3.format(val) + ")" : ""), HtmlStyle.Bold, HtmlStyle.Info);
+                    stream.write(HtmlTag.IMPORTANT_TEXT, "Error" + (!Double.isNaN(val) ? " (" + df3.format(val) + ")" : ""), Bootstrap4.TEXT_INFO);
                     break;
                 case Severe:
-                    stream.write("Severe" + (!Double.isNaN(val) ? " (" + df3.format(val) + ")" : ""), HtmlStyle.Bold, HtmlStyle.Danger);
+                    stream.write(HtmlTag.IMPORTANT_TEXT, "Severe" + (!Double.isNaN(val) ? " (" + df3.format(val) + ")" : ""), Bootstrap4.TEXT_DANGER);
                     break;
                 case Bad:
-                    stream.write("Bad" + (!Double.isNaN(val) ? " (" + df3.format(val) + ")" : ""), HtmlStyle.Danger);
+                    stream.write("Bad" + (!Double.isNaN(val) ? " (" + df3.format(val) + ")" : ""), Bootstrap4.TEXT_DANGER);
                     break;
                 case Uncertain:
-                    stream.write("Uncertain" + (!Double.isNaN(val) ? " (" + df3.format(val) + ")" : ""), HtmlStyle.Warning);
+                    stream.write("Uncertain" + (!Double.isNaN(val) ? " (" + df3.format(val) + ")" : ""), Bootstrap4.TEXT_WARNING);
                     break;
                 case Good:
-                    stream.write("Good" + (!Double.isNaN(val) ? " (" + df3.format(val) + ")" : ""), HtmlStyle.Success);
+                    stream.write("Good" + (!Double.isNaN(val) ? " (" + df3.format(val) + ")" : ""), Bootstrap4.TEXT_SUCCESS);
                     break;
             }
         }

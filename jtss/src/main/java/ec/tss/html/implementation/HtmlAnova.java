@@ -44,26 +44,26 @@ public class HtmlAnova extends AbstractHtmlElement {
 
     @Override
     public void write(HtmlStream stream) throws IOException {
-        stream.open(new HtmlTable(0, 600));
+        stream.open(new HtmlTable().withWidth(600));
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("", 100));
-        stream.write(new HtmlTableCell("Degrees of freedom", 100));
-        stream.write(new HtmlTableCell("Sum of squares", 100));
-        stream.write(new HtmlTableCell("Mean square", 100));
-        stream.write(new HtmlTableCell("F value", 100));
-        stream.write(new HtmlTableCell("Pr(>F)", 100));
+        stream.write(new HtmlTableCell("").withWidth(100));
+        stream.write(new HtmlTableCell("Degrees of freedom").withWidth(100));
+        stream.write(new HtmlTableCell("Sum of squares").withWidth(100));
+        stream.write(new HtmlTableCell("Mean square").withWidth(100));
+        stream.write(new HtmlTableCell("F value").withWidth(100));
+        stream.write(new HtmlTableCell("Pr(>F)").withWidth(100));
         stream.close(HtmlTag.TABLEROW);
         List<Row> rows = anova.getRows();
         int idx = 0;
         for (Row row : rows) {
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell((titles != null && idx < titles.length) ? titles[idx] : "", 100));
-            stream.write(new HtmlTableCell(Integer.toString(row.df), 100));
-            stream.write(new HtmlTableCell(df2.format(row.ssq), 100));
-            stream.write(new HtmlTableCell(df2.format(row.mssq()), 100));
+            stream.write(new HtmlTableCell((titles != null && idx < titles.length) ? titles[idx] : "").withWidth(100));
+            stream.write(new HtmlTableCell(Integer.toString(row.df)).withWidth(100));
+            stream.write(new HtmlTableCell(df2.format(row.ssq)).withWidth(100));
+            stream.write(new HtmlTableCell(df2.format(row.mssq())).withWidth(100));
             StatisticalTest ftest = row.ftest();
-            stream.write(new HtmlTableCell(df2.format(ftest.getValue()), 100));
-            stream.write(new HtmlTableCell(df4.format(ftest.getPValue()), 100));
+            stream.write(new HtmlTableCell(df2.format(ftest.getValue())).withWidth(100));
+            stream.write(new HtmlTableCell(df4.format(ftest.getPValue())).withWidth(100));
             stream.close(HtmlTag.TABLEROW);
             ++idx;
         }

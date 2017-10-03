@@ -13,9 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
-
+ */
 package ec.tss.html.implementation;
 
 import ec.tss.html.AbstractHtmlElement;
@@ -33,11 +31,12 @@ import java.io.IOException;
  * @author Kristof Bayens
  */
 public class HtmlDifference extends AbstractHtmlElement implements IHtmlElement {
+
     private String[] names_ = new String[]{"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
 
     private Differenciation diff_;
     private Differenciation.DifferentiationType type_;
-    private int years_;    
+    private int years_;
     private double limit_;
 
     public HtmlDifference(Differenciation diff, Differenciation.DifferentiationType type, int years, double limit) {
@@ -53,11 +52,11 @@ public class HtmlDifference extends AbstractHtmlElement implements IHtmlElement 
     }
 
     private void writeDifference(HtmlStream stream) throws IOException {
-        stream.open(new HtmlTable(0, 630));
+        stream.open(new HtmlTable().withWidth(630));
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("", 150));
+        stream.write(new HtmlTableCell("").withWidth(150));
         for (String names_1 : names_) {
-            stream.write(new HtmlTableCell(names_1, 40));
+            stream.write(new HtmlTableCell(names_1).withWidth(40));
         }
         stream.close(HtmlTag.TABLEROW);
 
@@ -65,29 +64,31 @@ public class HtmlDifference extends AbstractHtmlElement implements IHtmlElement 
         TsData new_ = diff_.getNew();
         TsData old_ = diff_.getOld();
         int year = data.getDomain().getEnd().getYear() - years_;
-        for (int i=0; i<years_; i++) {
+        for (int i = 0; i < years_; i++) {
             stream.open(HtmlTag.TABLEROW);
             stream.write(new HtmlTableCell(Integer.toString(year + i) + " new"));
-            for (int j=0; j<12; j++)
+            for (int j = 0; j < 12; j++) {
                 stream.write(new HtmlTableCell(Double.toString(new_.get(j + (i * 12)))));
+            }
             stream.close(HtmlTag.TABLEROW);
 
             stream.open(HtmlTag.TABLEROW);
             stream.write(new HtmlTableCell(Integer.toString(year + i) + " old"));
-            for (int j=0; j<12; j++)
+            for (int j = 0; j < 12; j++) {
                 stream.write(new HtmlTableCell(Double.toString(old_.get(j + (i * 12)))));
+            }
             stream.close(HtmlTag.TABLEROW);
 
             stream.open(HtmlTag.TABLEROW);
             stream.write(new HtmlTableCell(Integer.toString(year + i) + " diff"));
-            for (int j=0; j<12; j++) {
+            for (int j = 0; j < 12; j++) {
                 switch (type_) {
                     case Difference: {
-                        stream.write(new HtmlTableCell(dg2.format(data.get(j + (i * 12))), 100));
+                        stream.write(new HtmlTableCell(dg2.format(data.get(j + (i * 12)))).withWidth(100));
                         break;
                     }
                     case Percentage: {
-                        stream.write(new HtmlTableCell(df2.format(data.get(j + (i * 12))) + "%", 100));
+                        stream.write(new HtmlTableCell(df2.format(data.get(j + (i * 12))) + "%").withWidth(100));
                         break;
                     }
                 }

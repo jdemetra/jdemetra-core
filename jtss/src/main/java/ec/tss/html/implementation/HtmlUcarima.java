@@ -17,9 +17,10 @@
 
 package ec.tss.html.implementation;
 
+import ec.tss.html.Bootstrap4;
 import ec.tstoolkit.arima.IArimaModel;
 import ec.tss.html.HtmlStream;
-import ec.tss.html.HtmlStyle;
+import ec.tss.html.HtmlTag;
 import ec.tss.html.IHtmlElement;
 import java.io.IOException;
 
@@ -63,14 +64,14 @@ public class HtmlUcarima implements IHtmlElement {
 	// HTMLFont font=new HTMLFont("arial", null, null, 3, false);
 	// stream.open(font);
 	if (model_ != null)
-	    stream.write("Model", HtmlStyle.Bold, HtmlStyle.Info).newLine()
+	    stream.write(HtmlTag.IMPORTANT_TEXT, "Model", Bootstrap4.TEXT_INFO).newLine()
 		    .write(new HtmlArima(model_)).newLine();
 	for (int i = 0; i < cmps_.length; ++i) {
 	    if (cmps_[i] == null || cmps_[i].isNull())
 		continue;
 	    String name = names_ != null ? names_[i] : "Cmp_"
 		    + Integer.toString(i + 1);
-	    stream.write(name, HtmlStyle.Bold, HtmlStyle.Info).newLine().write(new HtmlArima(cmps_[i]));
+	    stream.write(HtmlTag.IMPORTANT_TEXT, name, Bootstrap4.TEXT_INFO).newLine().write(new HtmlArima(cmps_[i]));
 	}
     }
 

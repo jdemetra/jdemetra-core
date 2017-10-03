@@ -18,8 +18,9 @@
 package ec.tss.html.implementation;
 
 import ec.tss.html.AbstractHtmlElement;
+import ec.tss.html.Bootstrap4;
+import ec.tss.html.HtmlClass;
 import ec.tss.html.HtmlStream;
-import ec.tss.html.HtmlStyle;
 import ec.tss.html.HtmlTable;
 import ec.tss.html.HtmlTableCell;
 import ec.tss.html.HtmlTableHeader;
@@ -28,7 +29,6 @@ import ec.tss.html.IHtmlElement;
 import ec.tstoolkit.arima.estimation.RegArimaEstimation;
 import ec.tstoolkit.arima.special.GeneralizedAirlineModel;
 import java.io.IOException;
-import java.text.DecimalFormat;
 
 /**
  *
@@ -47,37 +47,32 @@ public class HtmlGeneralizedAirline extends AbstractHtmlElement implements IHtml
 
     @Override
     public void write(HtmlStream stream) throws IOException {
-        stream.open(new HtmlTable(0, 500));
+        stream.open(new HtmlTable().withWidth(500));
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableHeader("Model", 100));
-        stream.write(new HtmlTableHeader("LogLikelihood", 80));
+        stream.write(new HtmlTableHeader("Model").withWidth(100));
+        stream.write(new HtmlTableHeader("LogLikelihood").withWidth(80));
         int freq=models[0].model.getArima().getFrequency();
         for (int i = 0; i < 4; ++i) {
             StringBuilder builder = new StringBuilder();
             builder.append("p(").append(i + 1).append(')');
-            stream.write(new HtmlTableHeader(builder.toString(), 80));
+            stream.write(new HtmlTableHeader(builder.toString()).withWidth(80));
         }
         stream.close(HtmlTag.TABLEROW);
         int icur = 0;
         for (int i = 0; i < models.length; ++i) {
             stream.open(HtmlTag.TABLEROW);
-            HtmlStyle[] style;
-            if (icur++ == best) {
-                style = new HtmlStyle[]{HtmlStyle.Bold};
-            } else {
-                style = new HtmlStyle[0];
-            }
-            stream.write(new HtmlTableCell(models[i].model.getArima().getModelType(), 100, style));
-            stream.write(new HtmlTableCell(df4.format(models[i].likelihood.getLogLikelihood()), 80, style));
+            HtmlClass style = icur++ == best ? Bootstrap4.FONT_WEIGHT_BOLD : HtmlClass.NO_CLASS;
+            stream.write(new HtmlTableCell(models[i].model.getArima().getModelType()).withWidth(100).withClass(style));
+            stream.write(new HtmlTableCell(df4.format(models[i].likelihood.getLogLikelihood())).withWidth(80).withClass(style));
             double[] p = models[i].model.getArima().getCoefficients();
             for (int j = 0; j < p.length; ++j) {
-                stream.write(new HtmlTableCell(df4.format(j > 0 ? Math.pow(p[j], freq) : p[j]), 80, style));
+                stream.write(new HtmlTableCell(df4.format(j > 0 ? Math.pow(p[j], freq) : p[j])).withWidth(80).withClass(style));
             }
             stream.close(HtmlTag.TABLEROW);
         }
         stream.close(HtmlTag.TABLE).newLine();
         if (! decomp){
-            stream.write("Non decomposable model", HtmlStyle.Bold, HtmlStyle.Red);
+            stream.write(HtmlTag.IMPORTANT_TEXT, "Non decomposable model", Bootstrap4.TEXT_DANGER);
             stream.newLine();
         }
     }

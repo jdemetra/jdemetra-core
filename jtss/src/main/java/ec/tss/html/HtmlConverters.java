@@ -25,6 +25,7 @@ import java.util.Map;
  */
 public abstract class HtmlConverters {
 
+    @FunctionalInterface
     public static interface IHtmlConverter<T> {
 
         IHtmlElement convert(T obj);
@@ -52,57 +53,20 @@ public abstract class HtmlConverters {
 
         private static HtmlConverters create() {
             DefaultHtmlConverters cv = new DefaultHtmlConverters();
-            cv.register(TsData.class, new IHtmlConverter<TsData>() {
-
-                @Override
-                public IHtmlElement convert(TsData obj) {
-                    return new HtmlSingleTsData(obj, null);
+            cv.register(TsData.class, (TsData obj) -> new HtmlSingleTsData(obj, null));
+            cv.register(Ts.class, (Ts obj) -> {
+                String name = obj.getName();
+                TsData s = obj.getTsData();
+                if (s != null) {
+                    return new HtmlSingleTsData(s, name);
+                } else {
+                    return new HtmlFragment(name + ": no data");
                 }
             });
-            cv.register(Ts.class, new IHtmlConverter<Ts>() {
-
-                @Override
-                public IHtmlElement convert(Ts obj) {
-                    String name = obj.getName();
-                    TsData s = obj.getTsData();
-                    if (s != null) {
-                        return new HtmlSingleTsData(s, name);
-                    } else {
-                        return new HtmlFragment(name + ": no data");
-                    }
-                }
-            });
-            cv.register(IArimaModel.class, new IHtmlConverter<IArimaModel>() {
-
-                @Override
-                public IHtmlElement convert(IArimaModel obj) {
-                    return new HtmlArima(obj);
-                }
-            });
-            cv.register(SarimaModel.class, new IHtmlConverter<SarimaModel>() {
-
-                @Override
-                public IHtmlElement convert(SarimaModel obj) {
-                    return new HtmlSarimaModel(obj);
-
-                }
-            });
-            cv.register(LikelihoodStatistics.class, new IHtmlConverter<LikelihoodStatistics>() {
-
-                @Override
-                public IHtmlElement convert(LikelihoodStatistics obj) {
-                    return new HtmlLikelihood(obj);
-
-                }
-            });
-            cv.register(ModelStatistics.class, new IHtmlConverter<ModelStatistics>() {
-
-                @Override
-                public IHtmlElement convert(ModelStatistics obj) {
-                    return new HtmlModelStatistics(obj);
-
-                }
-            });
+            cv.register(IArimaModel.class, HtmlArima::new);
+            cv.register(SarimaModel.class, HtmlSarimaModel::new);
+            cv.register(LikelihoodStatistics.class, HtmlLikelihood::new);
+            cv.register(ModelStatistics.class, HtmlModelStatistics::new);
             return cv;
         }
 

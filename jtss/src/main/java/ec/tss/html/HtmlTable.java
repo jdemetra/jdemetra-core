@@ -13,34 +13,35 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
-
+ */
 package ec.tss.html;
 
 /**
- * 
+ *
  * @author Kristof Bayens, Jean Palate
  */
 public class HtmlTable {
-    /**
-     *
-     */
+
+    @Deprecated
     public final int border;
 
-    /**
-     *
-     */
-    public final int width;
+    @Deprecated
+    public int width;
 
-    /**
-     * 
-     * @param border
-     * @param width
-     */
-    public HtmlTable(int border, int width)
-    {
-	this.border = border;
-	this.width = width;
+    public HtmlTable() {
+        this.border = 0;
+        this.width = 0;
+    }
+
+    @Deprecated
+    public HtmlTable(int border, int width) {
+        this.border = border;
+        this.width = width;
+    }
+
+    @Deprecated
+    public HtmlTable withWidth(int width) {
+        this.width = width;
+        return this;
     }
 }
