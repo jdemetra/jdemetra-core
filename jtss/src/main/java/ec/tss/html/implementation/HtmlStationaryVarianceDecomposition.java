@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-/*
+ /*
  */
 package ec.tss.html.implementation;
 
@@ -30,44 +30,44 @@ import java.io.IOException;
  *
  * @author Jean Palate
  */
-public class HtmlStationaryVarianceDecomposition extends AbstractHtmlElement{
-    
+public class HtmlStationaryVarianceDecomposition extends AbstractHtmlElement {
+
     private final StationaryVarianceDecomposition vdecomp;
-    
-    public HtmlStationaryVarianceDecomposition(StationaryVarianceDecomposition vdecomp){
-        this.vdecomp=vdecomp;
+
+    public HtmlStationaryVarianceDecomposition(StationaryVarianceDecomposition vdecomp) {
+        this.vdecomp = vdecomp;
     }
-    
+
     @Override
     public void write(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER2, h2, TITLE);
+        stream.write(HtmlTag.HEADER2, TITLE);
         stream.newLine();
         stream.write(vdecomp.getTrendComputer().toString());
         stream.newLine();
-        stream.open(new HtmlTable(0, 200));
+        stream.open(new HtmlTable().withWidth(200));
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("Cycle", 100));
-        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarC()), 100));
+        stream.write(new HtmlTableCell("Cycle").withWidth(100));
+        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarC())).withWidth(100));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("Seasonal", 100));
-        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarS()), 100));
+        stream.write(new HtmlTableCell("Seasonal").withWidth(100));
+        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarS())).withWidth(100));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("Irregular", 100));
-        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarI()), 100));
+        stream.write(new HtmlTableCell("Irregular").withWidth(100));
+        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarI())).withWidth(100));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("TD & Hol.", 100));
-        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarTD()), 100));
+        stream.write(new HtmlTableCell("TD & Hol.").withWidth(100));
+        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarTD())).withWidth(100));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("Others", 100));
-        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarP()), 100));
+        stream.write(new HtmlTableCell("Others").withWidth(100));
+        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarP())).withWidth(100));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("Total", 50));
-        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarTotal()), 50));
+        stream.write(new HtmlTableCell("Total").withWidth(50));
+        stream.write(new HtmlTableCell(df2.format(100 * vdecomp.getVarTotal())).withWidth(50));
         stream.close(HtmlTag.TABLEROW);
         stream.close(HtmlTag.TABLE);
         stream.newLine();

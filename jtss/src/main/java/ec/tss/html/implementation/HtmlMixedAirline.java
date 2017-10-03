@@ -18,8 +18,9 @@
 package ec.tss.html.implementation;
 
 import ec.tss.html.AbstractHtmlElement;
+import ec.tss.html.Bootstrap4;
+import ec.tss.html.HtmlClass;
 import ec.tss.html.HtmlStream;
-import ec.tss.html.HtmlStyle;
 import ec.tss.html.HtmlTable;
 import ec.tss.html.HtmlTableCell;
 import ec.tss.html.HtmlTableHeader;
@@ -45,7 +46,7 @@ public class HtmlMixedAirline extends AbstractHtmlElement implements IHtmlElemen
     private DecimalFormat df4 = new DecimalFormat("0.0000");
 
     public void write(HtmlStream stream) throws IOException {
-        stream.open(new HtmlTable(0, 500));
+        stream.open(new HtmlTable().withWidth(500));
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableHeader("Model"));
         stream.write(new HtmlTableHeader("LogLikelihood"));
@@ -56,17 +57,12 @@ public class HtmlMixedAirline extends AbstractHtmlElement implements IHtmlElemen
         int icur = 0;
         for (MixedAirlineMonitor.MixedEstimation cur : models) {
             stream.open(HtmlTag.TABLEROW);
-            HtmlStyle[] style;
-            if (icur++ == best) {
-                style = new HtmlStyle[]{HtmlStyle.Bold};
-            } else {
-                style = new HtmlStyle[0];
-            }
-            stream.write(new HtmlTableCell(cur.model.toString(), 100, style));
-            stream.write(new HtmlTableCell(df4.format(cur.ll.getLogLikelihood()), 100, style));
-            stream.write(new HtmlTableCell(df4.format(cur.model.getTheta()), 100, style));
-            stream.write(new HtmlTableCell(df4.format(cur.model.getBTheta()), 100, style));
-            stream.write(new HtmlTableCell(df4.format(cur.model.getNoisyPeriodsVariance()), 100, style));
+            HtmlClass style = icur++ == best ? Bootstrap4.FONT_WEIGHT_BOLD : HtmlClass.NO_CLASS;
+            stream.write(new HtmlTableCell(cur.model.toString()).withWidth(100).withClass(style));
+            stream.write(new HtmlTableCell(df4.format(cur.ll.getLogLikelihood())).withWidth(100).withClass(style));
+            stream.write(new HtmlTableCell(df4.format(cur.model.getTheta())).withWidth(100).withClass(style));
+            stream.write(new HtmlTableCell(df4.format(cur.model.getBTheta())).withWidth(100).withClass(style));
+            stream.write(new HtmlTableCell(df4.format(cur.model.getNoisyPeriodsVariance())).withWidth(100).withClass(style));
             stream.close(HtmlTag.TABLEROW);
         }
         stream.close(HtmlTag.TABLE).newLine();

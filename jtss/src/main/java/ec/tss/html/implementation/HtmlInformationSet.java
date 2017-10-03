@@ -13,14 +13,13 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.html.implementation;
 
 import ec.tss.html.AbstractHtmlElement;
+import ec.tss.html.Bootstrap4;
 import ec.tss.html.HtmlFragment;
 import ec.tss.html.HtmlStream;
-import ec.tss.html.HtmlStyle;
 import ec.tss.html.HtmlTable;
 import ec.tss.html.HtmlTableCell;
 import ec.tss.html.HtmlTag;
@@ -135,7 +134,7 @@ public class HtmlInformationSet extends AbstractHtmlElement {
     public void write(HtmlStream stream) throws IOException {
         Map<String, Class> dictionary = new LinkedHashMap<>();
         info_.fillDictionary(null, dictionary);
-        stream.open(new HtmlTable(0, 600));
+        stream.open(new HtmlTable().withWidth(600));
         for (Entry<String, Class> entry : dictionary.entrySet()) {
             IHtmlFormatter fmt = map_.get(entry.getValue());
             if (fmt == null) {
@@ -144,8 +143,8 @@ public class HtmlInformationSet extends AbstractHtmlElement {
             String s = entry.getKey();
             IHtmlElement item = fmt.format(info_.search(s, Object.class));
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell(s, 200, HtmlStyle.Left));
-            stream.write(new HtmlTableCell(item, 400, HtmlStyle.Left));
+            stream.write(new HtmlTableCell(s).withWidth(200).withClass(Bootstrap4.TEXT_LEFT));
+            stream.write(new HtmlTableCell(item).withWidth(400).withClass(Bootstrap4.TEXT_LEFT));
             stream.close(HtmlTag.TABLEROW);
         }
         stream.close(HtmlTag.TABLE).newLine();

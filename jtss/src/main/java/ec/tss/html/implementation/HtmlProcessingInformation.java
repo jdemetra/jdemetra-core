@@ -17,9 +17,9 @@
 package ec.tss.html.implementation;
 
 import ec.tss.html.AbstractHtmlElement;
+import ec.tss.html.Bootstrap4;
 import ec.tss.html.HtmlConverters;
 import ec.tss.html.HtmlStream;
-import ec.tss.html.HtmlStyle;
 import ec.tss.html.HtmlTag;
 import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.ProcessingInformation;
@@ -71,9 +71,9 @@ public class HtmlProcessingInformation extends AbstractHtmlElement {
         if (err) {
             List<String> errs = ProcessingInformation.getErrorMessages(infos_);
             if (!errs.isEmpty()) {
-                stream.write(HtmlTag.HEADER2, h2, "Errors").newLine();
+                stream.write(HtmlTag.HEADER2, "Errors").newLine();
                 for (String err : errs) {
-                    stream.write(err, HtmlStyle.Red, HtmlStyle.Bold).newLine();
+                    stream.write(HtmlTag.IMPORTANT_TEXT, err, Bootstrap4.TEXT_DANGER).newLine();
                 }
                 stream.newLine();
             }
@@ -81,9 +81,9 @@ public class HtmlProcessingInformation extends AbstractHtmlElement {
         if (wrn) {
             List<String> msg = ProcessingInformation.getWarningMessages(infos_);
             if (!msg.isEmpty()) {
-                stream.write(HtmlTag.HEADER2, h2, "Warnings").newLine();
+                stream.write(HtmlTag.HEADER2, "Warnings").newLine();
                 for (String m : msg) {
-                    stream.write(m, HtmlStyle.Blue).newLine();
+                    stream.write(m, Bootstrap4.TEXT_INFO).newLine();
                 }
                 stream.newLine();
             }
@@ -92,7 +92,7 @@ public class HtmlProcessingInformation extends AbstractHtmlElement {
             if (!verbose) {
                 List<String> msg = ProcessingInformation.getMessages(infos_, ProcessingInformation.InformationType.Info);
                 if (!msg.isEmpty()) {
-                    stream.write(HtmlTag.HEADER2, h2, "Log").newLine();
+                    stream.write(HtmlTag.HEADER2, "Log").newLine();
                     for (String m : msg) {
                         stream.write(m).newLine();
                     }
@@ -107,10 +107,10 @@ public class HtmlProcessingInformation extends AbstractHtmlElement {
                             if (prevStep != null) {
                                 stream.write(HtmlTag.LINEBREAK);
                             }
-                            stream.write(curStep, HtmlStyle.Blue, HtmlStyle.Bold).newLines(2);
+                            stream.write(HtmlTag.IMPORTANT_TEXT, curStep, Bootstrap4.TEXT_INFO).newLines(2);
                             prevStep = curStep;
                         }
-                        stream.write(cinfo.msg, HtmlStyle.Italic).newLine();
+                        stream.write(HtmlTag.EMPHASIZED_TEXT, cinfo.msg).newLine();
                         if (cinfo.details != null) {
                             stream.write(HtmlConverters.getDefault().convert(cinfo.details));
                         }

@@ -51,12 +51,12 @@ public class HtmlRegArimaReport extends AbstractHtmlElement implements IHtmlElem
     }
 
     private void writeSummary(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER1, h1, title_).newLine();
+        stream.write(HtmlTag.HEADER1, title_).newLine();
         stream.write("number of series: ").write(report_.Total).newLines(2);
     }
 
     private void writeTransform(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER1, h1, "Transformation").newLine();
+        stream.write(HtmlTag.HEADER1, "Transformation").newLine();
 
         double tot = report_.Total;
         int n = report_.LogCount;
@@ -65,7 +65,7 @@ public class HtmlRegArimaReport extends AbstractHtmlElement implements IHtmlElem
     }
 
     private void writeArima(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER1, h1, "Arima models").newLine();
+        stream.write(HtmlTag.HEADER1, "Arima models").newLine();
 
         double tot = report_.Total;
         SarimaSpecification[] specs = report_.getModels();
@@ -82,7 +82,7 @@ public class HtmlRegArimaReport extends AbstractHtmlElement implements IHtmlElem
     }
 
     private void writeOutliers(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER1, h1, "Outliers").newLine();
+        stream.write(HtmlTag.HEADER1, "Outliers").newLine();
 
         double tot = report_.Total;
         int n = report_.AoCount + report_.LsCount + report_.TcCount + report_.SoCount;
@@ -105,7 +105,7 @@ public class HtmlRegArimaReport extends AbstractHtmlElement implements IHtmlElem
     }
 
     private void writeDetails(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER1, h1, "Calendar effects").newLine();
+        stream.write(HtmlTag.HEADER1, "Calendar effects").newLine();
 
         double tot = report_.Total;
         int n = report_.TdCount;
