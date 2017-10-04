@@ -133,7 +133,7 @@ public class GlsSarimaMonitor {
         RegArmaModel<SarimaModel> dmodel = RegArmaModel.of(regs);
         RegArmaProcessor processor = new RegArmaProcessor(ml, mt);
         IParametricMapping<SarimaModel> mapping = mappingProvider.apply(dmodel.getArma());
-        int ndf = dmodel.getY().length() - dmodel.getX().getColumnsCount() - mapping.getDim();
+        int ndf = dmodel.getY().length() - dmodel.getX().getColumnsCount();// - mapping.getDim();
         RegArmaEstimation<SarimaModel> rslt = processor.compute(dmodel, start, mapping, min, ndf);
 
         SarimaModel arima = SarimaModel.builder(regs.arima().specification())

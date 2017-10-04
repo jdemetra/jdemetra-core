@@ -37,11 +37,11 @@ public class RegArimaEstimation<M extends IArimaModel> {
         return new RegArimaEstimation<>(model, computer.compute(model));
     }
 
-    public static <M extends IArimaModel> RegArimaEstimation<M> compute(RegArmaModel<M> model) {
-        
-        ConcentratedLikelihoodComputer computer = new ConcentratedLikelihoodComputer(null, null, true);
-        return new RegArimaEstimation<>(null, computer.compute(model));
-    }
+//    public static <M extends IArimaModel> RegArimaEstimation<M> compute(RegArmaModel<M> model) {
+//        
+//        ConcentratedLikelihoodComputer computer = new ConcentratedLikelihoodComputer(null, null, true);
+//        return new RegArimaEstimation<>(null, computer.compute(model));
+//    }
     /**
      *
      */
@@ -49,7 +49,7 @@ public class RegArimaEstimation<M extends IArimaModel> {
     /**
      *
      */
-    ConcentratedLikelihoodEstimation<M> estimation;
+    ConcentratedLikelihoodEstimation<M> concentratedLikelihood;
 
     /**
      *
@@ -58,7 +58,7 @@ public class RegArimaEstimation<M extends IArimaModel> {
      * @return
      */
     public LikelihoodStatistics statistics(int nparams, double adj) {
-        ConcentratedLikelihood ll = estimation.getLikelihood();
+        ConcentratedLikelihood ll = concentratedLikelihood.getLikelihood();
         return LikelihoodStatistics.statistics(ll.logLikelihood(), model.getObservationsCount() - model.getMissingValuesCount())
                 .llAdjustment(adj)
                 .differencingOrder(model.arima().getNonStationaryAROrder())

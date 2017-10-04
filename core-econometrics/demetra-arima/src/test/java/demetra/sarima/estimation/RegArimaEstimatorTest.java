@@ -8,6 +8,7 @@ package demetra.sarima.estimation;
 import demetra.arima.regarima.RegArimaEstimation;
 import demetra.arima.regarima.RegArimaModel;
 import demetra.data.Data;
+import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
@@ -26,21 +27,50 @@ public class RegArimaEstimatorTest {
     @Test
     public void testNew() {
         RegArimaEstimator monitor = RegArimaEstimator.builder()
-                .startingPoint(RegArimaEstimator.StartingPoint.Multiple).build();
+                 .precision(1e-12)
+               .startingPoint(RegArimaEstimator.StartingPoint.Multiple).build();
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline();
         spec.setP(3);
+        spec.setQ(0);
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()
                 .build();
-        RegArimaModel<SarimaModel> regs = RegArimaModel.builder(DoubleSequence.of(Data.PROD), arima)
-                .meanCorrection(true)
-                .missing(new int[]{3, 23, 34, 65, 123, 168})
+        RegArimaModel<SarimaModel> regs = RegArimaModel.builder(DoubleSequence.of(Data.RETAIL_FUELDEALERS), arima)
+//                .meanCorrection(true)
+//                .missing(new int[]{3, 23, 34, 65, 123, 168})
+                .build();
+        RegArimaEstimation<SarimaModel> rslt = monitor.process(regs);
+//        System.out.println("New");
+//        System.out.println(rslt.statistics(5, 0));
+//        System.out.println(rslt.getModel().arima());
+//        DataBlock diag=monitor.getParametersCovariance().diagonal();
+//        diag.apply(x->Math.sqrt(x));
+//        System.out.println(diag);
+//        System.out.println(DataBlock.ofInternal(monitor.getScore()));
+    }
+    
+   @Test
+    public void testAirline() {
+        RegArimaEstimator monitor = RegArimaEstimator.builder()
+                .precision(1e-12)
+                .startingPoint(RegArimaEstimator.StartingPoint.Multiple).build();
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.airline();
+        SarimaModel arima = SarimaModel.builder(spec)
+                .setDefault()
+                .build();
+        RegArimaModel<SarimaModel> regs = RegArimaModel.builder(DoubleSequence.of(Data.RETAIL_FUELDEALERS), arima)
+//                .meanCorrection(true)
+//                .missing(new int[]{3, 23, 34, 65, 123, 168})
                 .build();
         RegArimaEstimation<SarimaModel> rslt = monitor.process(regs);
 //        System.out.println("New");
 //        System.out.println(rslt.statistics(2, 0));
 //        System.out.println(rslt.getModel().arima());
+//        DataBlock diag=monitor.getParametersCovariance().diagonal();
+//        diag.apply(x->Math.sqrt(x));
+//        System.out.println(diag);
+//        System.out.println(DataBlock.ofInternal(monitor.getScore()));
     }
-    
 }

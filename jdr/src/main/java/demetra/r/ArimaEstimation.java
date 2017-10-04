@@ -20,9 +20,10 @@ import demetra.arima.regarima.RegArimaEstimation;
 import demetra.arima.regarima.RegArimaModel;
 import demetra.data.DoubleSequence;
 import demetra.likelihood.ConcentratedLikelihood;
+import demetra.maths.matrices.Matrix;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
-import demetra.sarima.estimation.GlsSarimaMonitor;
+import demetra.sarima.estimation.RegArimaEstimator;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,25 +34,26 @@ import java.util.List;
 @lombok.Getter
 @lombok.Setter
 public class ArimaEstimation {
+
     private double[] phi, theta, bphi, btheta;
     private int[] order, seasonalOrder;
     private int frequency;
     private double[] y;
-    private final List<double[]> xreg=new ArrayList<>();
+    private final List<double[]> xreg = new ArrayList<>();
     private boolean mean;
-    
-    public void addX(double[] x){
+
+    public void addX(double[] x) {
         xreg.add(x);
     }
-    
-    public Results process(){
-        SarimaSpecification spec=new SarimaSpecification(frequency);
-        if (order != null){
+
+    public Results process() {
+        SarimaSpecification spec = new SarimaSpecification(frequency);
+        if (order != null) {
             spec.setP(order[0]);
             spec.setD(order[1]);
             spec.setQ(order[2]);
         }
-        if (seasonalOrder != null){
+        if (seasonalOrder != null) {
             spec.setBP(seasonalOrder[0]);
             spec.setBD(seasonalOrder[1]);
             spec.setBQ(seasonalOrder[2]);
@@ -59,20 +61,31 @@ public class ArimaEstimation {
         SarimaModel.Builder builder = SarimaModel.builder(spec);
         //
         SarimaModel arima = builder.setDefault().build();
-        GlsSarimaMonitor monitor=GlsSarimaMonitor.builder().precision(1e-9).build();
-        
-        RegArimaModel.Builder<SarimaModel> rbuilder = RegArimaModel.builder(DoubleSequence.of(y), arima);
-        rbuilder = rbuilder.meanCorrection(mean);
-        for (double[] x : xreg){
-            rbuilder=rbuilder.addX(DoubleSequence.of(x));
+        RegArimaEstimator monitor = RegArimaEstimator.builder()
+                .useParallelProcessing(true)
+                .useMaximumLikelihood(true)
+                .useCorrectedDegreesOfFreedom(false) // compatibility with R
+                .precision(1e-12)
+                .startingPoint(RegArimaEstimator.StartingPoint.Multiple)
+                .build();
+
+        RegArimaModel.Builder<SarimaModel> rbuilder = RegArimaModel.builder(DoubleSequence.of(y), arima)
+                .meanCorrection(mean);
+
+        for (double[] x : xreg) {
+            rbuilder.addX(DoubleSequence.ofInternal(x));
         }
-        RegArimaEstimation<SarimaModel> rslt = monitor.compute(rbuilder.build());
-        return new Results(rslt.getModel().arima(), rslt.getEstimation().getLikelihood());
+
+        RegArimaEstimation<SarimaModel> rslt = monitor.process(rbuilder.build());
+        return new Results(rslt.getModel().arima(), rslt.getConcentratedLikelihood().getLikelihood(), monitor.getParametersCovariance(), monitor.getScore() );
     }
-    
+
     @lombok.Value
-    public static class Results{
+    public static class Results {
+
         SarimaModel arima;
         ConcentratedLikelihood ll;
+        Matrix parameterCovariance;
+        double[] score;
     }
 }

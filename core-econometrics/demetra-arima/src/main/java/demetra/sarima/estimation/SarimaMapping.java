@@ -34,7 +34,7 @@ import demetra.sarima.SarimaSpecification;
 @Development(status = Development.Status.Alpha)
 public class SarimaMapping implements IParametricMapping<SarimaModel> {
 
-     static final double MAX = 0.99999;
+    static final double MAX = 0.99999;
     public static final double STEP = Math.sqrt(2.220446e-16);
 
     /**
@@ -84,20 +84,28 @@ public class SarimaMapping implements IParametricMapping<SarimaModel> {
     private static boolean stabilize(boolean all, SarimaSpecification spec, DataBlock p) {
         boolean rslt = false;
         int start = 0;
-        if (spec.getP() > 0 && stabilize(p.extract(0, spec.getP()))) {
+        if (spec.getP() > 0) {
+            if (stabilize(p.extract(0, spec.getP()))) {
+                rslt = true;
+            }
             start += spec.getP();
-            rslt = true;
         }
-        if (spec.getBP() > 0 && stabilize(p.extract(start, spec.getBP()))) {
+        if (spec.getBP() > 0) {
+            if (stabilize(p.extract(start, spec.getBP()))) {
+                rslt = true;
+            }
             start += spec.getBP();
-            rslt = true;
         }
-        if (all && spec.getQ() > 0
-                && stabilize(p.extract(start, spec.getQ()))) {
+        if (!all) {
+            return rslt;
+        }
+        if (spec.getQ() > 0) {
+            if (stabilize(p.extract(start, spec.getQ()))) {
+                rslt = true;
+            }
             start += spec.getQ();
-            rslt = true;
         }
-        if (all && spec.getBQ() > 0 && stabilize(p.extract(start, spec.getBQ()))) {
+        if (spec.getBQ() > 0 && stabilize(p.extract(start, spec.getBQ()))) {
             rslt = true;
         }
         return rslt;
@@ -176,15 +184,15 @@ public class SarimaMapping implements IParametricMapping<SarimaModel> {
             return m;
         }
     }
-    
-    public static SarimaMapping of(SarimaSpecification spec){
+
+    public static SarimaMapping of(SarimaSpecification spec) {
         return new SarimaMapping(spec, STEP, true);
     }
 
-    public static SarimaMapping stationary(final SarimaSpecification spec){
-         SarimaSpecification nspec = spec.clone();
-         nspec.setD(0);
-         nspec.setBD(0);
+    public static SarimaMapping stationary(final SarimaSpecification spec) {
+        SarimaSpecification nspec = spec.clone();
+        nspec.setD(0);
+        nspec.setBD(0);
         return new SarimaMapping(nspec, STEP, true);
     }
 
@@ -367,19 +375,19 @@ public class SarimaMapping implements IParametricMapping<SarimaModel> {
 
     @Override
     public DoubleSequence getDefault() {
-        double[] p=new double[spec.getParametersCount()];
-        int nar=spec.getP()+spec.getBP();
-        for (int i=0; i<nar; ++i){
-            p[i]=-.1;
+        double[] p = new double[spec.getParametersCount()];
+        int nar = spec.getP() + spec.getBP();
+        for (int i = 0; i < nar; ++i) {
+            p[i] = -.1;
         }
-        for (int i=nar; i<p.length; ++i){
-            p[i]=-.2;
+        for (int i = nar; i < p.length; ++i) {
+            p[i] = -.2;
         }
         return DoubleSequence.ofInternal(p);
     }
-    
-     @Override
-    public DoubleSequence map(SarimaModel m){
+
+    @Override
+    public DoubleSequence map(SarimaModel m) {
         return m.parameters();
     }
 

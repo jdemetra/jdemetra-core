@@ -18,9 +18,13 @@ package demetra.arima.regarima.internal;
 
 import demetra.arima.IArimaModel;
 import demetra.data.DoubleSequence;
+import demetra.maths.functions.IFunctionDerivatives;
 import demetra.maths.functions.IParametricMapping;
+import demetra.maths.functions.NumericalDerivatives;
 import demetra.maths.functions.ssq.ISsqFunctionDerivatives;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
+import demetra.maths.functions.ssq.SsqNumericalDerivatives;
+import demetra.maths.functions.ssq.SsqProxyFunctionPoint;
 import demetra.maths.matrices.Matrix;
 
 /**
@@ -48,7 +52,7 @@ public class RegArmaProcessor {
 
         boolean ok =start == null ? minimizer.minimize(fn) : minimizer.minimize(fn.ssqEvaluate(start));
         RegArmaSsqFunction.Evaluation<S> rslt = (RegArmaSsqFunction.Evaluation<S>) minimizer.getResult();
-        ISsqFunctionDerivatives derivatives = rslt.ssqDerivatives();
+        IFunctionDerivatives derivatives = new NumericalDerivatives(new SsqProxyFunctionPoint(rslt), false);
         double objective = rslt.getSsqE();
         Matrix hessian = derivatives.hessian();
         double[] score = derivatives.gradient().toArray();
