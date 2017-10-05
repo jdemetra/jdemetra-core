@@ -24,6 +24,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.estimation.RegArimaEstimator;
+import demetra.utilities.IntList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,8 +70,11 @@ public class ArimaEstimation {
                 .startingPoint(RegArimaEstimator.StartingPoint.Multiple)
                 .build();
 
+        IntList missings=new IntList();
+        demetra.data.AverageInterpolator.cleanMissings(y, missings);
         RegArimaModel.Builder<SarimaModel> rbuilder = RegArimaModel.builder(DoubleSequence.of(y), arima)
-                .meanCorrection(mean);
+                .meanCorrection(mean)
+                .missing(missings.toArray());
 
         for (double[] x : xreg) {
             rbuilder.addX(DoubleSequence.ofInternal(x));
@@ -84,8 +88,8 @@ public class ArimaEstimation {
     public static class Results {
 
         SarimaModel arima;
-        ConcentratedLikelihood ll;
-        Matrix parameterCovariance;
+        ConcentratedLikelihood concentratedLogLikelihood;
+        Matrix parametersCovariance;
         double[] score;
     }
 }

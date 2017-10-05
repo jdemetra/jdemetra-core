@@ -23,6 +23,10 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-benchmarking-types</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-core</artifactId>
         </dependency>
         <dependency>
@@ -36,6 +40,10 @@
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-arima</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-benchmarking</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
