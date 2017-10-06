@@ -27,6 +27,8 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfBuilder;
 import demetra.ssf.univariate.ISsfData;
 import demetra.data.DoubleSequence;
+import demetra.design.IBuilder;
+import javax.annotation.Nonnull;
 
 /**
  *
@@ -36,34 +38,83 @@ import demetra.data.DoubleSequence;
  */
 public class SsfFunction<S, F extends ISsf> implements IFunction, ISsqFunction {
 
+    public static class Builder<S, F extends ISsf> implements IBuilder< SsfFunction<S, F>> {
+
+        private final IParametricMapping<S> mapping;
+        private final ISsfBuilder<S, F> builder;
+        private final ISsfData data;
+        private Matrix X;
+        private int[] diffuseX;
+        private boolean ml = true, log = false, fast = false, mt = false, sym = false;
+
+        private Builder(final ISsfData data, final IParametricMapping<S> mapping, final ISsfBuilder<S, F> builder) {
+            this.data = data;
+            this.builder = builder;
+            this.mapping = mapping;
+        }
+
+        public Builder regression(final Matrix X, final int[] diffuseX) {
+            this.X = X;
+            this.diffuseX = diffuseX;
+            return this;
+        }
+
+        public Builder useParallelProcessing(boolean mt) {
+            this.mt = mt;
+            return this;
+        }
+
+        public Builder useMaximumLikelihood(boolean ml) {
+            this.ml = ml;
+            return this;
+        }
+
+        public Builder useLog(boolean log) {
+            this.log = log;
+            return this;
+        }
+
+        public Builder useFastAlgorithm(boolean fast) {
+            this.fast = fast;
+            return this;
+        }
+
+        public Builder useSymmetricNumericalDerivatives(boolean sym) {
+            this.sym = sym;
+            return this;
+        }
+
+        @Override
+        public SsfFunction<S, F> build() {
+            return new SsfFunction(data, X, diffuseX, mapping, builder, ml, log, fast, mt, sym);
+        }
+    }
+
+    public static <S, F extends ISsf> Builder builder(ISsfData data, IParametricMapping<S> mapping, ISsfBuilder<S, F> builder) {
+        return new Builder(data, mapping, builder);
+    }
+
     private final IParametricMapping<S> mapping; // mapping from an array of double to an object S
     private final ISsfBuilder<S, F> builder; // mapping from an object S to a given ssf
     private final ISsfData data;
     private final boolean missing;
     private final Matrix X;
     private final int[] diffuseX;
-    private boolean ml = true, log = false, fast = false, mt, sym;
+    private final boolean ml, log, fast, mt, sym;
 
-    /**
-     *
-     * @param ssf
-     * @param data
-     * @param symderivatives
-     * @param mt
-     * @param mapper
-     */
-    public SsfFunction(ISsfData data, IParametricMapping<S> mapper, ISsfBuilder<S, F> builder) {
-        this(data, null, null, mapper, builder);
-    }
-
-    public SsfFunction(ISsfData data, Matrix X, int[] diffuseX, IParametricMapping<S> mapper, ISsfBuilder<S, F> builder) {
+    private SsfFunction(ISsfData data, Matrix X, int[] diffuseX, IParametricMapping<S> mapper, ISsfBuilder<S, F> builder,
+            final boolean ml, final boolean log, final boolean fast, final boolean mt, final boolean sym) {
         this.data = data;
         this.mapping = mapper;
-        this.builder=builder;
-        this.mt = mt;
+        this.builder = builder;
         this.X = X;
         this.diffuseX = diffuseX;
         missing = data.hasMissingValues();
+        this.ml = ml;
+        this.fast = fast;
+        this.log = log;
+        this.mt = mt;
+        this.sym = sym;
     }
 
     public IParametricMapping<S> getMapping() {
@@ -74,29 +125,17 @@ public class SsfFunction<S, F extends ISsf> implements IFunction, ISsqFunction {
         return ml;
     }
 
-    public void setMaximumLikelihood(boolean ml) {
-        this.ml = ml;
-    }
-
     public boolean isLog() {
         return log;
-    }
-
-    public void setLog(boolean log) {
-        this.log = log;
     }
 
     public boolean isFast() {
         return fast;
     }
 
-    public void setFast(boolean fast) {
-        this.fast = fast;
-    }
-
     @Override
     public IFunctionPoint evaluate(DoubleSequence parameters) {
-        return new SsfFunctionInstance<>(this, parameters);
+        return new SsfFunctionPoint<>(this, parameters);
     }
 
     /**
@@ -110,7 +149,7 @@ public class SsfFunction<S, F extends ISsf> implements IFunction, ISsqFunction {
 
     @Override
     public ISsqFunctionPoint ssqEvaluate(DoubleSequence parameters) {
-        return new SsfFunctionInstance<>(this, parameters);
+        return new SsfFunctionPoint<>(this, parameters);
     }
 
     /**
@@ -156,24 +195,10 @@ public class SsfFunction<S, F extends ISsf> implements IFunction, ISsqFunction {
     }
 
     /**
-     * @param ml the ml to set
-     */
-    public void setMl(boolean ml) {
-        this.ml = ml;
-    }
-
-    /**
      * @return the mt
      */
-    public boolean isMtisMultiThtreaded() {
+    public boolean isMultiThreaded() {
         return mt;
-    }
-
-    /**
-     * @param mt the mt to set
-     */
-    public void setMultiThreaded(boolean mt) {
-        this.mt = mt;
     }
 
     /**
@@ -183,10 +208,4 @@ public class SsfFunction<S, F extends ISsf> implements IFunction, ISsqFunction {
         return sym;
     }
 
-    /**
-     * @param sym the sym to set
-     */
-    public void setSymmetric(boolean sym) {
-        this.sym = sym;
-    }
 }

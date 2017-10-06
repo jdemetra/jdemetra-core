@@ -120,10 +120,10 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
         this.lddet = lddet;
         this.res = res;
         this.legacy = legacy;
-        int m = legacy ? nobs : nobs - nd;
+        int m = nobs - nd, nc=legacy ? nobs : m;
         if (m > 0) {
             ll = -.5
-                    * (m * Math.log(2 * Math.PI) + m
+                    * (nc * Math.log(2 * Math.PI) + m
                     * (1 + Math.log(ssqerr / m)) + ldet + lddet);
         } else {
             ll = Double.NaN;
@@ -181,7 +181,7 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
      * @param legacy legacy=true should be used only for testing purposes
      * @return
      */
-    public DkConcentratedLikelihood setLegacy(boolean legacy) {
+    public DkConcentratedLikelihood legacy(boolean legacy) {
         if (this.legacy == legacy) {
             return this;
         } else {
@@ -295,7 +295,7 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
                 bvar.apply(i, i, x -> x * ifactor * ifactor);
             }
         }
-        return new DkConcentratedLikelihood(nobs, nd, ssqerr / yfactor * yfactor, ldet, lddet, nb, nbvar, null, nres, legacy);
+        return new DkConcentratedLikelihood(nobs, nd, ssqerr / (yfactor * yfactor), ldet, lddet, nb, nbvar, null, nres, legacy);
     }
 
     public double getDiffuseCorrection() {

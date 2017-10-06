@@ -73,15 +73,15 @@ public class SsfBsm2 extends Ssf {
         SsfBsm.BsmData data = new SsfBsm.BsmData(model);
         Bsm2Initialization initialization = new Bsm2Initialization(data);
         Bsm2Dynamics dynamics = new Bsm2Dynamics(data);
-        ISsfMeasurement measurement = Measurement.create(idx);
+        ISsfMeasurement measurement = Measurement.create(idx, data.nVar);
         return new SsfBsm2(initialization, dynamics, measurement);
     }
 
-    public static class Bsm2Initialization implements ISsfInitialization {
+    static class Bsm2Initialization implements ISsfInitialization {
 
         private final SsfBsm.BsmData data;
 
-        public Bsm2Initialization(SsfBsm.BsmData data) {
+        Bsm2Initialization(SsfBsm.BsmData data) {
             this.data = data;
         }
 

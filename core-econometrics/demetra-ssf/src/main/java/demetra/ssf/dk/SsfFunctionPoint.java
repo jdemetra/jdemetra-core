@@ -26,13 +26,17 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.IConcentratedLikelihoodComputer;
 import demetra.ssf.univariate.SsfRegressionModel;
 import demetra.data.DoubleSequence;
+import demetra.maths.functions.IFunctionDerivatives;
+import demetra.maths.functions.NumericalDerivatives;
+import demetra.maths.functions.ssq.ISsqFunctionDerivatives;
+import demetra.maths.functions.ssq.SsqNumericalDerivatives;
 
 /**
  *
  * @author Jean Palate
  * @param <S>
  */
-public class SsfFunctionInstance<S, F extends ISsf> implements
+public class SsfFunctionPoint<S, F extends ISsf> implements
         ISsqFunctionPoint, IFunctionPoint {
 
     /**
@@ -54,7 +58,7 @@ public class SsfFunctionInstance<S, F extends ISsf> implements
      * @param fn
      * @param p
      */
-    public SsfFunctionInstance(SsfFunction<S, F> fn, DoubleSequence p) {
+    public SsfFunctionPoint(SsfFunction<S, F> fn, DoubleSequence p) {
         this.fn = fn;
         this.p = DataBlock.of(p);
         current=fn.getMapping().map(p);
@@ -96,7 +100,7 @@ public class SsfFunctionInstance<S, F extends ISsf> implements
      *
      * @return
      */
-    public ILikelihood getLikelihood() {
+    public DkConcentratedLikelihood getLikelihood() {
         return ll;
     }
 
@@ -135,4 +139,14 @@ public class SsfFunctionInstance<S, F extends ISsf> implements
     public IFunction getFunction() {
         return fn;
     }
+    
+    @Override
+     public IFunctionDerivatives derivatives(){
+        return new NumericalDerivatives(this, fn.isSymmetric(), fn.isMultiThreaded());
+    };
+
+    @Override
+     public ISsqFunctionDerivatives ssqDerivatives(){
+        return new SsqNumericalDerivatives(this, fn.isSymmetric(), fn.isMultiThreaded());
+    };
 }

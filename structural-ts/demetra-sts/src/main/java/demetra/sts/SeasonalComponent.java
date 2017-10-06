@@ -245,9 +245,9 @@ public class SeasonalComponent {
     private static Matrix VTS2, VTS3, VTS4, VTS6, VTS12;
     private static Matrix LVTS2, LVTS3, LVTS4, LVTS6, LVTS12, LHS2, LHS3, LHS4, LHS6, LHS12;
 
-    public static ISsf create(final SeasonalModel model, final double seasVar, final int period) {
+    public static ISsf of(final SeasonalModel model, final double seasVar, final int period) {
         Data data = new Data(model, seasVar, period);
-        return new Ssf(new Initialization(data), new Dynamics(data), Measurement.create(period - 1, 1));
+        return new Ssf(new Initialization(data), new Dynamics(data), Measurement.create(0));
     }
 
     public static ISsf harrisonStevens(final int period, final double v) {

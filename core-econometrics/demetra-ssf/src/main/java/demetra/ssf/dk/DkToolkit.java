@@ -75,11 +75,11 @@ public class DkToolkit {
     }
 
     public static <S, F extends ISsf> SsfFunction<S, F> likelihoodFunction(ISsfData data, IParametricMapping<S> mapping, ISsfBuilder<S, F> builder) {
-        return new SsfFunction<>(data, mapping, builder);
+        return SsfFunction.builder(data, mapping, builder).build();
     }
 
     public static <F extends ISsf> SsfFunction<F, F> likelihoodFunction(ISsfData data, IParametricMapping<F> mapping) {
-        return new SsfFunction<>(data, mapping, (F f) -> f);
+        return SsfFunction.builder(data, mapping, (F f) -> f).build();
     }
 
     public static DefaultDiffuseFilteringResults filter(ISsf ssf, ISsfData data, boolean all) {
