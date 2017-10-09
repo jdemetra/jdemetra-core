@@ -39,8 +39,8 @@ public class BsmMonitorTest {
         bspec.getModelSpecification().setSeasonalModel(SeasonalModel.Crude);
         monitor.setSpecification(bspec);
         monitor.process(Data.P, 12);
-        System.out.println("New");
-        System.out.println(monitor.getLikelihood().legacy(true).logLikelihood());
+//        System.out.println("New");
+//        System.out.println(monitor.getLikelihood().legacy(true).logLikelihood());
     }
 
     @Test
@@ -51,12 +51,12 @@ public class BsmMonitorTest {
 //        bspec.setOptimizer(ec.tstoolkit.structural.BsmSpecification.Optimizer.LBFGS);
         monitor.setSpecification(bspec);
         monitor.process(Data.P.toArray(), 12);
-        System.out.println("Legacy");
-        System.out.println(monitor.getLikelihood().getLogLikelihood());
+//        System.out.println("Legacy");
+//        System.out.println(monitor.getLikelihood().getLogLikelihood());
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void stressTestProd() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 1000; ++i) {
@@ -72,7 +72,7 @@ public class BsmMonitorTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void stressTestProdLegacy() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 1000; ++i) {

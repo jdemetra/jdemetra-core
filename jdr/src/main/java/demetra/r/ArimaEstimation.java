@@ -19,14 +19,22 @@ package demetra.r;
 import demetra.arima.regarima.RegArimaEstimation;
 import demetra.arima.regarima.RegArimaModel;
 import demetra.data.DoubleSequence;
+import demetra.information.InformationMapping;
+import demetra.information.InformationSet;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.maths.matrices.Matrix;
+import demetra.processing.IProcResults;
+import demetra.r.mapping.SarimaMapping;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.estimation.RegArimaEstimator;
 import demetra.utilities.IntList;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Function;
 
 /**
  *
@@ -70,7 +78,7 @@ public class ArimaEstimation {
                 .startingPoint(RegArimaEstimator.StartingPoint.Multiple)
                 .build();
 
-        IntList missings=new IntList();
+        IntList missings = new IntList();
         demetra.data.AverageInterpolator.cleanMissings(y, missings);
         RegArimaModel.Builder<SarimaModel> rbuilder = RegArimaModel.builder(DoubleSequence.of(y), arima)
                 .meanCorrection(mean)
@@ -81,15 +89,44 @@ public class ArimaEstimation {
         }
 
         RegArimaEstimation<SarimaModel> rslt = monitor.process(rbuilder.build());
-        return new Results(rslt.getModel().arima(), rslt.getConcentratedLikelihood().getLikelihood(), monitor.getParametersCovariance(), monitor.getScore() );
+        return new Results(rslt.getModel().arima(), rslt.getConcentratedLikelihood().getLikelihood(), monitor.getParametersCovariance(), monitor.getScore());
     }
 
     @lombok.Value
-    public static class Results {
+    public static class Results implements IProcResults {
 
         SarimaModel arima;
         ConcentratedLikelihood concentratedLogLikelihood;
         Matrix parametersCovariance;
         double[] score;
+
+        private static final String ARIMA = "arima", LL = "likelihood";
+        private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
+
+        static {
+            MAPPING.delegate(ARIMA, SarimaMapping.getMapping(), r -> r.arima);
+        }
+
+        @Override
+        public boolean contains(String id) {
+            return MAPPING.contains(id);
+        }
+
+        @Override
+        public Map<String, Class> getDictionary() {
+            Map<String, Class> dic = new LinkedHashMap<>();
+            MAPPING.fillDictionary(null, dic, true);
+            return dic;
+        }
+
+        @Override
+        public <T> T getData(String id, Class<T> tclass) {
+            return MAPPING.getData(this, id, tclass);
+        }
+
+        public static final InformationMapping<Results> getMapping() {
+            return MAPPING;
+        }
+
     }
 }

@@ -49,7 +49,7 @@ public final class InformationSet implements Cloneable {
                 boolean first = true;
                 StringBuilder builder = new StringBuilder();
                 for (int i = 0; i < s.length; ++i) {
-                    if (s[i] != null) {
+                    if (s[i] != null && s.length>0) {
                         if (!first) {
                             builder.append(SEP);
                         } else {

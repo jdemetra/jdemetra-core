@@ -16,9 +16,10 @@
  */
 package demetra.r;
 
-import demetra.data.Data;
-import demetra.data.DoubleSequence;
-import java.util.LinkedHashMap;
+import demetra.benchmarking.univariate.DentonSpecification;
+import demetra.data.DataBlock;
+import demetra.timeseries.TsPeriod;
+import demetra.timeseries.simplets.TsData;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -26,25 +27,26 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate
  */
-public class ArimaEstimationTest {
-    
-    public ArimaEstimationTest() {
+public class BenchmarkingTest {
+
+    public BenchmarkingTest() {
     }
 
     @Test
-    public void testProd() {
-        ArimaEstimation arima=new ArimaEstimation();
-        arima.setOrder(new int[]{3,1,1});
-        arima.setFrequency(12);
-        arima.setSeasonalOrder(new int[]{1,1,1});
-        arima.setY(Data.RETAIL_BOOKSTORES);
-        ArimaEstimation.Results rslt = arima.process();
-        System.out.println(rslt.getArima());
+    public void testSomeMethod() {
+        DataBlock y = DataBlock.make(20);
+        y.set(i -> (1 + i));
+        DataBlock x = DataBlock.make(90);
+        x.set(i -> (1 + i) * (1 + i));
+
+        TsPeriod q = TsPeriod.quarterly(1978, 4);
+        TsPeriod a = TsPeriod.yearly(1980);
+        TsData t = TsData.of(a, y);
+        TsData s = TsData.of(q, x);
+
+        TsData qs = Benchmarking.denton(s, t, 1, true, true, "Sum");
         
-        LinkedHashMap<String, Class> dic=new LinkedHashMap<>();
-        ArimaEstimation.Results.getMapping().fillDictionary(null, dic, true);
-//        dic.keySet().forEach(n->System.out.println(n));
-//        System.out.println(DoubleSequence.of(rslt.getData("arima.rparameters", double[].class)));
+        
     }
-    
+
 }
