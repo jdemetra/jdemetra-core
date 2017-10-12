@@ -25,14 +25,15 @@ import java.util.function.Function;
  *
  * @author Jean Palate
  */
+@lombok.experimental.UtilityClass
 public class SarimaMapping {
 
-    private final static String P = "p", D = "d", Q = "q",
+    final static String P = "p", D = "d", Q = "q",
             BP = "bp", BD = "bd", BQ = "bq",
             PARAMETERS = "parameters", RPARAMETERS = "rparameters",
             PERIOD = "period";
 
-    private static final InformationMapping<SarimaModel> MAPPING = new InformationMapping<>(SarimaModel.class);
+    static final InformationMapping<SarimaModel> MAPPING = new InformationMapping<>(SarimaModel.class);
 
     static {
         MAPPING.set(P, Integer.class, source -> source.getRegularAROrder());
@@ -84,7 +85,7 @@ public class SarimaMapping {
                 });
     }
 
-    public static InformationMapping<SarimaModel> getMapping() {
+    public InformationMapping<SarimaModel> getMapping() {
         return MAPPING;
     }
 

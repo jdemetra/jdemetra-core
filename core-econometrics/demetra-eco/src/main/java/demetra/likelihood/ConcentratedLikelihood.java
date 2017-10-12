@@ -16,7 +16,6 @@
  */
 package demetra.likelihood;
 
-import demetra.data.DoubleMatrix;
 import demetra.design.IBuilder;
 import demetra.design.Immutable;
 import demetra.maths.matrices.Matrix;
@@ -26,6 +25,7 @@ import demetra.data.LogSign;
 import demetra.eco.EcoException;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
+import demetra.maths.MatrixType;
 
 /**
  * This class represents the concentrated likelihood of a linear regression
@@ -179,7 +179,7 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
     }
 
     @Override
-    public DoubleMatrix unscaledCovariance() {
+    public MatrixType unscaledCovariance() {
         Matrix tmp = bvar;
         if (tmp == null && r != null) {
             synchronized (this) {

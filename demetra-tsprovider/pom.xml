@@ -4,13 +4,15 @@
 
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
-        <artifactId>demetra-parent</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <artifactId>demetra-basic-tools-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../basic-tools</relativePath>
     </parent>
 
     <artifactId>demetra-tsprovider</artifactId>
     <packaging>jar</packaging>
     <name>JD3 - TS Provider</name>
+    <version>3.0.0-SNAPSHOT</version>
 
     <dependencies>
         <!-- compile only -->

@@ -8,7 +8,6 @@ package demetra.maths.matrices;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;
-import demetra.data.DoubleMatrix;
 import demetra.data.accumulator.DoubleAccumulator;
 import demetra.design.IBuilder;
 import java.util.Iterator;
@@ -24,12 +23,13 @@ import demetra.data.DoubleSequence;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import demetra.maths.MatrixType;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public class Matrix implements DoubleMatrix {
+public class Matrix implements MatrixType {
 
     public static final Matrix EMPTY = new Matrix(new double[0], 0, 0);
 
@@ -43,7 +43,7 @@ public class Matrix implements DoubleMatrix {
         return new Matrix(data, nrows, ncols);
     }
 
-    public static Matrix of(DoubleMatrix matrix) {
+    public static Matrix of(MatrixType matrix) {
         return new Matrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
     }
 
@@ -557,11 +557,11 @@ public class Matrix implements DoubleMatrix {
         return isSymmetric(0);
     }
 
-    public DoubleMatrix unmodifiable() {
+    public MatrixType unmodifiable() {
         if (isFull()) {
-            return DoubleMatrix.ofInternal(storage, nrows, ncols);
+            return MatrixType.ofInternal(storage, nrows, ncols);
         } else {
-            return DoubleMatrix.super.extract(0, nrows, 0, ncols);
+            return MatrixType.super.extract(0, nrows, 0, ncols);
         }
     }
 

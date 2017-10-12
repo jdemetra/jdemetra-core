@@ -47,6 +47,7 @@
             <scope>provided</scope>
         </dependency>
         <!-- compile and runtime -->
+       
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>spreadsheet-api</artifactId>

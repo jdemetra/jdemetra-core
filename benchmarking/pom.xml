@@ -6,19 +6,93 @@
         <groupId>eu.europa.ec.joinup.sat</groupId>
         <artifactId>demetra-parent</artifactId>
         <version>3.0.0-SNAPSHOT</version>
+       <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>demetra-benchmarking-aggregator</artifactId>
+    <artifactId>demetra-benchmarking-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     
-    <name>JD3 - Benchmarking (aggregator)</name>
+    <name>JD3 - Benchmarking - Parent</name>
     
+    <properties>
+        <demetra.version>3.0.0-SNAPSHOT</demetra.version>
+        <jd3-basic.version>1.0.0-SNAPSHOT</jd3-basic.version>
+        <jd3-econometrics.version>1.0.0-SNAPSHOT</jd3-econometrics.version>
+        <jd3-benchmarking.version>1.0.0-SNAPSHOT</jd3-benchmarking.version>
+    </properties>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-tstoolkit</artifactId>
+                <version>${demetra.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-datatypes</artifactId>
+                <version>${jd3-basic.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-data-tests</artifactId>
+                <version>${jd3-basic.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-core</artifactId>
+                <version>${jd3-basic.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-algorithms</artifactId>
+                <version>${jd3-basic.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-ts</artifactId>
+                <version>${jd3-basic.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-eco-datatypes</artifactId>
+                <version>${jd3-econometrics.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-eco</artifactId>
+                <version>${jd3-econometrics.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-ssf</artifactId>
+                <version>${jd3-econometrics.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-stats</artifactId>
+                <version>${jd3-econometrics.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-arima</artifactId>
+                <version>${jd3-econometrics.version}</version>            
+            </dependency>
+            <dependency>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-benchmarking-datatypes</artifactId>
+                <version>${jd3-benchmarking.version}</version>            
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <modules>
         <module>demetra-benchmarking</module>
-        <module>demetra-benchmarking-types</module>
+        <module>demetra-benchmarking-datatypes</module>
     </modules>
     
-    <build>
+    <!--build>
         <plugins>
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
@@ -27,5 +101,5 @@
                 </configuration>
             </plugin>
         </plugins>
-    </build>
+    </build-->
 </project>

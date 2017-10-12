@@ -18,7 +18,6 @@ package demetra.arima.regarima.internal;
 
 import demetra.arima.IArimaModel;
 import demetra.arima.regarima.ConcentratedLikelihoodComputer;
-import demetra.data.DoubleMatrix;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.design.IBuilder;
@@ -31,6 +30,7 @@ import demetra.maths.functions.ssq.ISsqFunction;
 import demetra.maths.functions.ssq.ISsqFunctionPoint;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
+import demetra.maths.MatrixType;
 
 /**
  *
@@ -48,7 +48,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
         private boolean mt = false;
         // model
         private final DoubleSequence dy;
-        private DoubleMatrix x;
+        private MatrixType x;
         private int nmissing;
         // mapping
         private IParametricMapping<S> mapping;
@@ -57,7 +57,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
             this.dy = dy;
         }
 
-        SsqBuilder variables(DoubleMatrix x) {
+        SsqBuilder variables(MatrixType x) {
             this.x = x;
             return this;
         }
@@ -101,7 +101,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
     
     // model
     final DoubleSequence dy;
-    final DoubleMatrix x;
+    final MatrixType x;
     final int nmissing;
     // mapping
     final IParametricMapping<S> mapping;
@@ -112,7 +112,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
     final boolean mt;
 
     private RegArmaSsqFunction(final DoubleSequence dy,
-            final DoubleMatrix x,
+            final MatrixType x,
             final int nm,
             final IParametricMapping<S> mapping,
             final ConcentratedLikelihoodComputer cll,

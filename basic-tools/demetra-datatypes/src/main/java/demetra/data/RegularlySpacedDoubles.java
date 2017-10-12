@@ -16,6 +16,8 @@
  */
 package demetra.data;
 
+import demetra.data.DoubleReader;
+import demetra.data.DoubleSequence;
 import demetra.design.Immutable;
 
 /**

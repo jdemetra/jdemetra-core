@@ -11,39 +11,57 @@
     <artifactId>demetra-r</artifactId>
     <packaging>jar</packaging>
     <name>JD3 - R</name>
+    <version>1.0.0-SNAPSHOT</version>
     
+    <properties>
+        <demetra.version>3.0.0-SNAPSHOT</demetra.version>
+        <jd3-basic.version>1.0.0-SNAPSHOT</jd3-basic.version>
+        <jd3-econometrics.version>1.0.0-SNAPSHOT</jd3-econometrics.version>
+        <jd3-sts.version>1.0.0-SNAPSHOT</jd3-sts.version>
+        <jd3-benchmarking.version>1.0.0-SNAPSHOT</jd3-benchmarking.version>
+        <jd3-tramoseats.version>1.0.0-SNAPSHOT</jd3-tramoseats.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-datatypes</artifactId>
+            <version>${jd3-basic.version}</version>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-eco-datatypes</artifactId>
+            <version>${jd3-econometrics.version}</version>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-benchmarking-types</artifactId>
+            <artifactId>demetra-benchmarking-datatypes</artifactId>
+            <version>${jd3-benchmarking.version}</version>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-core</artifactId>
+            <version>${jd3-basic.version}</version>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-eco</artifactId>
+            <version>${jd3-econometrics.version}</version>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-ssf</artifactId>
+            <version>${jd3-econometrics.version}</version>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-arima</artifactId>
+            <version>${jd3-econometrics.version}</version>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-benchmarking</artifactId>
+            <version>${jd3-benchmarking.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
@@ -63,11 +81,13 @@
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-tstoolkit</artifactId>
+            <version>${demetra.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-data-tests</artifactId>
+            <version>${jd3-basic.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

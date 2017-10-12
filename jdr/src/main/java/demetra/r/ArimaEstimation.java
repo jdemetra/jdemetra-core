@@ -22,8 +22,10 @@ import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
 import demetra.information.InformationSet;
 import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.LikelihoodStatistics;
 import demetra.maths.matrices.Matrix;
 import demetra.processing.IProcResults;
+import demetra.r.mapping.LikelihoodMapping;
 import demetra.r.mapping.SarimaMapping;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
@@ -89,22 +91,29 @@ public class ArimaEstimation {
         }
 
         RegArimaEstimation<SarimaModel> rslt = monitor.process(rbuilder.build());
-        return new Results(rslt.getModel().arima(), rslt.getConcentratedLikelihood().getLikelihood(), monitor.getParametersCovariance(), monitor.getScore());
+        return new Results(rslt.getModel(), rslt.getConcentratedLikelihood().getLikelihood(), rslt.statistics(spec.getParametersCount(), 0)
+                , monitor.getParametersCovariance(), monitor.getScore());
     }
 
     @lombok.Value
     public static class Results implements IProcResults {
 
-        SarimaModel arima;
+        RegArimaModel<SarimaModel> regarima;
         ConcentratedLikelihood concentratedLogLikelihood;
+        LikelihoodStatistics statistics;
         Matrix parametersCovariance;
         double[] score;
+        
+        public SarimaModel getArima(){
+            return regarima.arima();
+        }
 
         private static final String ARIMA = "arima", LL = "likelihood";
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.delegate(ARIMA, SarimaMapping.getMapping(), r -> r.arima);
+            MAPPING.delegate(ARIMA, SarimaMapping.getMapping(), r -> r.getArima());
+            MAPPING.delegate(LL, LikelihoodMapping.getMapping(), r ->r.statistics);
         }
 
         @Override

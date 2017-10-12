@@ -16,9 +16,9 @@
  */
 package demetra.likelihood;
 
-import demetra.data.DoubleMatrix;
 import demetra.maths.matrices.Matrix;
 import demetra.data.DoubleSequence;
+import demetra.maths.MatrixType;
 
 /**
  * This class represents the concentrated likelihood of a linear regression
@@ -39,7 +39,7 @@ public interface IConcentratedLikelihood extends ILikelihood {
      *
      * @return
      */
-    DoubleMatrix unscaledCovariance();
+    MatrixType unscaledCovariance();
 
 //    /**
 //     *

@@ -22,7 +22,6 @@ import demetra.arima.estimation.IArmaFilter;
 import demetra.arima.internal.KalmanFilter;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleMatrix;
 import demetra.data.DoubleSequence;
 import demetra.design.Immutable;
 import demetra.eco.EcoException;
@@ -30,6 +29,7 @@ import demetra.likelihood.ConcentratedLikelihood;
 import demetra.maths.matrices.IQRDecomposition;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.internal.Householder;
+import demetra.maths.MatrixType;
 
 /**
  *
@@ -71,7 +71,7 @@ public class ConcentratedLikelihoodComputer {
 
     }
 
-    private <M extends IArimaModel> ConcentratedLikelihoodEstimation<M> process(DoubleSequence dy, DoubleMatrix x, int nl, int nm) {
+    private <M extends IArimaModel> ConcentratedLikelihoodEstimation<M> process(DoubleSequence dy, MatrixType x, int nl, int nm) {
 
         ConcentratedLikelihoodEstimation.Builder<M> builder = ConcentratedLikelihoodEstimation.builder();
         DataBlock y = DataBlock.of(dy);
