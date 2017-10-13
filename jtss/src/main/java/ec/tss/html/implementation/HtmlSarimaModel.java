@@ -18,14 +18,9 @@ package ec.tss.html.implementation;
 
 import ec.tss.html.AbstractHtmlElement;
 import ec.tss.html.HtmlStream;
-import ec.tss.html.HtmlStyle;
 import ec.tss.html.IHtmlElement;
-import ec.tstoolkit.data.Periodogram;
-import ec.tstoolkit.maths.Complex;
-import ec.tstoolkit.maths.polynomials.Polynomial;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;
-import ec.tstoolkit.utilities.Arrays2;
 import java.io.IOException;
 
 /**
@@ -52,7 +47,7 @@ public class HtmlSarimaModel extends AbstractHtmlElement implements IHtmlElement
 
         SarimaSpecification spec = model_.getSpecification();
         if (diff_) {
-            stream.write("regular differencing order: " + Integer.toString(model_.getRegularDifferenceOrder()), new HtmlStyle[]{}).newLine();
+            stream.write("regular differencing order: " + Integer.toString(model_.getRegularDifferenceOrder())).newLine();
             stream.write("seasonal differencing order: " + Integer.toString(model_.getSeasonalDifferenceOrder())).newLines(2);
         }
         if (spec.getP() > 0) {

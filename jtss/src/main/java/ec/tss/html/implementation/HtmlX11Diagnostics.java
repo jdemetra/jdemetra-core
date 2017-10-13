@@ -19,8 +19,9 @@ package ec.tss.html.implementation;
 import ec.satoolkit.x11.Mstatistics;
 import ec.satoolkit.x11.SeriesEvolution;
 import ec.tss.html.AbstractHtmlElement;
+import ec.tss.html.Bootstrap4;
+import static ec.tss.html.Bootstrap4.FONT_WEIGHT_BOLD;
 import ec.tss.html.HtmlStream;
-import ec.tss.html.HtmlStyle;
 import ec.tss.html.HtmlTable;
 import ec.tss.html.HtmlTableCell;
 import ec.tss.html.HtmlTag;
@@ -53,7 +54,7 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
     }
 
     private void writeF2A(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER2, h2, stats_.getMode().isMultiplicative() ? F2A_TITLE_MUL : F2A_TITLE_ADD);
+        stream.write(HtmlTag.HEADER2, stats_.getMode().isMultiplicative() ? F2A_TITLE_MUL : F2A_TITLE_ADD);
         double[][] Q = new double[10][];
         Q[0] = stats_.getOcChanges();
         Q[1] = stats_.getCIcChanges();
@@ -68,20 +69,20 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
 
         int len = Q[0].length;
 
-        stream.open(new HtmlTable(0, 50 * F2A_HEADERS.length));
+        stream.open(new HtmlTable().withWidth(50 * F2A_HEADERS.length));
         stream.open(HtmlTag.TABLEROW);
         for (int j = 0; j < F2A_HEADERS.length; ++j) {
-            stream.write(new HtmlTableCell(F2A_HEADERS[j], 50));
+            stream.write(new HtmlTableCell(F2A_HEADERS[j]).withWidth(50));
         }
         stream.close(HtmlTag.TABLEROW);
         for (int i = 1; i <= len; ++i) {
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell(Integer.toString(i), 50));
+            stream.write(new HtmlTableCell(Integer.toString(i)).withWidth(50));
             for (int j = 0; j < Q.length; ++j) {
                 if (Q[j] != null) {
-                    stream.write(new HtmlTableCell(df2.format(Q[j][i - 1]), 50));
+                    stream.write(new HtmlTableCell(df2.format(Q[j][i - 1])).withWidth(50));
                 } else {
-                    stream.write(new HtmlTableCell(".", 50));
+                    stream.write(new HtmlTableCell(".").withWidth(50));
                 }
             }
             stream.close(HtmlTag.TABLEROW);
@@ -91,7 +92,7 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
     }
 
     private void writeF2B(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER2, h2, stats_.getMode().isMultiplicative() ? F2B_TITLE_MUL : F2B_TITLE_ADD);
+        stream.write(HtmlTag.HEADER2, stats_.getMode().isMultiplicative() ? F2B_TITLE_MUL : F2B_TITLE_ADD);
         double[][] Q = new double[5][];
         Q[0] = stats_.getImodChanges();
         Q[1] = stats_.getCcChanges();
@@ -103,15 +104,15 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
 
         int len = Q[0].length;
 
-        stream.open(new HtmlTable(0, 50 * F2B_HEADERS.length));
+        stream.open(new HtmlTable().withWidth(50 * F2B_HEADERS.length));
         stream.open(HtmlTag.TABLEROW);
         for (int j = 0; j < F2B_HEADERS.length; ++j) {
-            stream.write(new HtmlTableCell(F2B_HEADERS[j], 50));
+            stream.write(new HtmlTableCell(F2B_HEADERS[j]).withWidth(50));
         }
         stream.close(HtmlTag.TABLEROW);
         for (int i = 1; i <= len; ++i) {
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell(Integer.toString(i), 50));
+            stream.write(new HtmlTableCell(Integer.toString(i)).withWidth(50));
             double tot = 0;
             for (int j = 0; j < Q.length; ++j) {
                 if (Q[j] != null) {
@@ -123,13 +124,13 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
             for (int j = 0; j < Q.length; ++j) {
                 if (Q[j] != null) {
                     double s = Q[j][i - 1];
-                    stream.write(new HtmlTableCell(df2.format(100 * s * s / tot), 50));
+                    stream.write(new HtmlTableCell(df2.format(100 * s * s / tot)).withWidth(50));
                 } else {
-                    stream.write(new HtmlTableCell(".", 50));
+                    stream.write(new HtmlTableCell(".").withWidth(50));
                 }
             }
-            stream.write(new HtmlTableCell(df2.format(100), 50));
-            stream.write(new HtmlTableCell(df2.format(100 * tot / (O[i - 1] * O[i - 1])), 50));
+            stream.write(new HtmlTableCell(df2.format(100)).withWidth(50));
+            stream.write(new HtmlTableCell(df2.format(100 * tot / (O[i - 1] * O[i - 1]))).withWidth(50));
             stream.close(HtmlTag.TABLEROW);
         }
         stream.close(HtmlTag.TABLE);
@@ -137,20 +138,20 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
     }
 
     private void writeF2C(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER2, h2, stats_.getMode().isMultiplicative() ? F2C_TITLE_MUL : F2C_TITLE_ADD);
-        stream.open(new HtmlTable(0, 50 + 100 * F2C_HEADERS.length));
+        stream.write(HtmlTag.HEADER2, stats_.getMode().isMultiplicative() ? F2C_TITLE_MUL : F2C_TITLE_ADD);
+        stream.open(new HtmlTable().withWidth(50 + 100 * F2C_HEADERS.length));
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("", 50));
+        stream.write(new HtmlTableCell("").withWidth(50));
         for (int j = 0; j < F2C_HEADERS.length; ++j) {
-            stream.write(new HtmlTableCell("", 50));
-            stream.write(new HtmlTableCell(F2C_HEADERS[j], 50, HtmlStyle.Left));
+            stream.write(new HtmlTableCell("").withWidth(50));
+            stream.write(new HtmlTableCell(F2C_HEADERS[j]).withWidth(50).withClass(Bootstrap4.TEXT_LEFT));
         }
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("Span", 50));
+        stream.write(new HtmlTableCell("Span").withWidth(50));
         for (int j = 0; j < F2C_HEADERS.length; ++j) {
-            stream.write(new HtmlTableCell("Avg", 50));
-            stream.write(new HtmlTableCell("S.D.", 50));
+            stream.write(new HtmlTableCell("Avg").withWidth(50));
+            stream.write(new HtmlTableCell("S.D.").withWidth(50));
         }
         stream.close(HtmlTag.TABLEROW);
 
@@ -165,17 +166,17 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
 
         for (int i = 1; i <= len; ++i) {
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell(Integer.toString(i), 50));
-            stream.write(new HtmlTableCell(df2.format(QO[0][i - 1]), 50));
-            stream.write(new HtmlTableCell(df2.format(QO[1][i - 1]), 50));
-            stream.write(new HtmlTableCell(df2.format(QI[0][i - 1]), 50));
-            stream.write(new HtmlTableCell(df2.format(QI[1][i - 1]), 50));
-            stream.write(new HtmlTableCell(df2.format(QC[0][i - 1]), 50));
-            stream.write(new HtmlTableCell(df2.format(QC[1][i - 1]), 50));
-            stream.write(new HtmlTableCell(df2.format(QS[0][i - 1]), 50));
-            stream.write(new HtmlTableCell(df2.format(QS[1][i - 1]), 50));
-            stream.write(new HtmlTableCell(df2.format(QCI[0][i - 1]), 50));
-            stream.write(new HtmlTableCell(df2.format(QCI[1][i - 1]), 50));
+            stream.write(new HtmlTableCell(Integer.toString(i)).withWidth(50));
+            stream.write(new HtmlTableCell(df2.format(QO[0][i - 1])).withWidth(50));
+            stream.write(new HtmlTableCell(df2.format(QO[1][i - 1])).withWidth(50));
+            stream.write(new HtmlTableCell(df2.format(QI[0][i - 1])).withWidth(50));
+            stream.write(new HtmlTableCell(df2.format(QI[1][i - 1])).withWidth(50));
+            stream.write(new HtmlTableCell(df2.format(QC[0][i - 1])).withWidth(50));
+            stream.write(new HtmlTableCell(df2.format(QC[1][i - 1])).withWidth(50));
+            stream.write(new HtmlTableCell(df2.format(QS[0][i - 1])).withWidth(50));
+            stream.write(new HtmlTableCell(df2.format(QS[1][i - 1])).withWidth(50));
+            stream.write(new HtmlTableCell(df2.format(QCI[0][i - 1])).withWidth(50));
+            stream.write(new HtmlTableCell(df2.format(QCI[1][i - 1])).withWidth(50));
             stream.close(HtmlTag.TABLEROW);
         }
         stream.close(HtmlTag.TABLE);
@@ -183,90 +184,90 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
     }
 
     private void writeF2D(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER2, h2, F2D_TITLE);
-        stream.open(new HtmlTable(0, 100));
+        stream.write(HtmlTag.HEADER2, F2D_TITLE);
+        stream.open(new HtmlTable().withWidth(100));
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("CI", 50));
-        stream.write(new HtmlTableCell(df2.format(stats_.getAdrOfCI()), 50));
+        stream.write(new HtmlTableCell("CI").withWidth(50));
+        stream.write(new HtmlTableCell(df2.format(stats_.getAdrOfCI())).withWidth(50));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("I", 50));
-        stream.write(new HtmlTableCell(df2.format(stats_.getAdrOfI()), 50));
+        stream.write(new HtmlTableCell("I").withWidth(50));
+        stream.write(new HtmlTableCell(df2.format(stats_.getAdrOfI())).withWidth(50));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("C", 50));
-        stream.write(new HtmlTableCell(df2.format(stats_.getAdrOfC()), 50));
+        stream.write(new HtmlTableCell("C").withWidth(50));
+        stream.write(new HtmlTableCell(df2.format(stats_.getAdrOfC())).withWidth(50));
         stream.close(HtmlTag.TABLEROW);
         stream.close(HtmlTag.TABLE);
         stream.newLines(2);
     }
 
     private void writeF2E(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER2, h2, F2E_TITLE);
+        stream.write(HtmlTag.HEADER2, F2E_TITLE);
         double[] I = stats_.getIcChanges();
         double[] C = stats_.getCcChanges();
         boolean lt1 = false;
-        stream.open(new HtmlTable(0, 100));
+        stream.open(new HtmlTable().withWidth(100));
         for (int i = 1; i <= I.length; ++i) {
             double r = I[i - 1] / C[i - 1];
             boolean bold = (!lt1 && r < 1) || (r < 1 && i == 1);
             stream.open(HtmlTag.TABLEROW);
             if (bold) {
-                stream.write(new HtmlTableCell(Integer.toString(i), 50, HtmlStyle.Bold));
-                stream.write(new HtmlTableCell(df3.format(r), 50, HtmlStyle.Bold));
+                stream.write(new HtmlTableCell(Integer.toString(i)).withWidth(50).withClass(FONT_WEIGHT_BOLD));
+                stream.write(new HtmlTableCell(df3.format(r)).withWidth(50).withClass(FONT_WEIGHT_BOLD));
                 lt1 = true;
             } else {
-                stream.write(new HtmlTableCell(Integer.toString(i), 50));
-                stream.write(new HtmlTableCell(df3.format(r), 50));
+                stream.write(new HtmlTableCell(Integer.toString(i)).withWidth(50));
+                stream.write(new HtmlTableCell(df3.format(r)).withWidth(50));
             }
 
             stream.close(HtmlTag.TABLEROW);
         }
         stream.close(HtmlTag.TABLE);
         stream.newLine();
-        stream.write(F2E_TITLE2, HtmlStyle.Bold).write(df3.format(stats_.getIcr()));
+        stream.write(HtmlTag.IMPORTANT_TEXT, F2E_TITLE2).write(df3.format(stats_.getIcr()));
         stream.newLines(2);
     }
 
     private void writeF2F(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER2, h2, F2F_TITLE);
-        stream.open(new HtmlTable(0, 100));
+        stream.write(HtmlTag.HEADER2, F2F_TITLE);
+        stream.open(new HtmlTable().withWidth(100));
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("I", 50));
-        stream.write(new HtmlTableCell(df2.format(100 * stats_.getVarI()), 50));
+        stream.write(new HtmlTableCell("I").withWidth(50));
+        stream.write(new HtmlTableCell(df2.format(100 * stats_.getVarI())).withWidth(50));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("C", 50));
-        stream.write(new HtmlTableCell(df2.format(100 * stats_.getVarC()), 50));
+        stream.write(new HtmlTableCell("C").withWidth(50));
+        stream.write(new HtmlTableCell(df2.format(100 * stats_.getVarC())).withWidth(50));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("S", 50));
-        stream.write(new HtmlTableCell(df2.format(100 * stats_.getVarS()), 50));
+        stream.write(new HtmlTableCell("S").withWidth(50));
+        stream.write(new HtmlTableCell(df2.format(100 * stats_.getVarS())).withWidth(50));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("P", 50));
-        stream.write(new HtmlTableCell(df2.format(100 * stats_.getVarP()), 50));
+        stream.write(new HtmlTableCell("P").withWidth(50));
+        stream.write(new HtmlTableCell(df2.format(100 * stats_.getVarP())).withWidth(50));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("TD&H", 50));
-        stream.write(new HtmlTableCell(df2.format(100 * stats_.getVarTD()), 50));
+        stream.write(new HtmlTableCell("TD&H").withWidth(50));
+        stream.write(new HtmlTableCell(df2.format(100 * stats_.getVarTD())).withWidth(50));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("Total", 50));
-        stream.write(new HtmlTableCell(df2.format(100 * stats_.getVarTotal()), 50));
+        stream.write(new HtmlTableCell("Total").withWidth(50));
+        stream.write(new HtmlTableCell(df2.format(100 * stats_.getVarTotal())).withWidth(50));
         stream.close(HtmlTag.TABLEROW);
         stream.close(HtmlTag.TABLE);
         stream.newLines(2);
     }
 
     private void writeF2G(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER2, h2, F2G_TITLE);
+        stream.write(HtmlTag.HEADER2, F2G_TITLE);
         double[] c = stats_.getAutoCorrelationsOfIrregular();
-        stream.open(new HtmlTable(0, 100));
+        stream.open(new HtmlTable().withWidth(100));
         for (int i = 1; i <= c.length; ++i) {
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell(Integer.toString(i), 50));
-            stream.write(new HtmlTableCell(df3.format(c[i - 1]), 50));
+            stream.write(new HtmlTableCell(Integer.toString(i)).withWidth(50));
+            stream.write(new HtmlTableCell(df3.format(c[i - 1])).withWidth(50));
             stream.close(HtmlTag.TABLEROW);
         }
         stream.close(HtmlTag.TABLE);
@@ -274,23 +275,23 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
     }
 
     private void writeF2H(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER2, h2, F2H_TITLE);
+        stream.write(HtmlTag.HEADER2, F2H_TITLE);
         //  stream.write("Cochran Test Result:");
         boolean testResultCochran = stats_.getCochranResult();
-        stream.open(new HtmlTable(0, 30+120  * F2H_HEADERS.length));
+        stream.open(new HtmlTable().withWidth(30 + 120 * F2H_HEADERS.length));
         stream.open(HtmlTag.TABLEROW);
         for (int j = 0; j < F2H_HEADERS.length; ++j) {
-            stream.write(new HtmlTableCell(F2H_HEADERS[j], 120));
+            stream.write(new HtmlTableCell(F2H_HEADERS[j]).withWidth(120));
         }
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell(Double.toString(Math.round(stats_.getTestValue() * 10000d) / 10000d), 120));
-        stream.write(new HtmlTableCell(Double.toString(Math.round(stats_.getCriticalValue() * 10000d) / 10000d), 120));
-  
+        stream.write(new HtmlTableCell(Double.toString(Math.round(stats_.getTestValue() * 10000d) / 10000d)).withWidth(120));
+        stream.write(new HtmlTableCell(Double.toString(Math.round(stats_.getCriticalValue() * 10000d) / 10000d)).withWidth(120));
+
         if (testResultCochran) {
-            stream.write(new HtmlTableCell("Null hypothesis is not rejected.", 150));
+            stream.write(new HtmlTableCell("Null hypothesis is not rejected.").withWidth(150));
         } else {
-            stream.write(new HtmlTableCell("Null hypothesis is rejected.", 150));
+            stream.write(new HtmlTableCell("Null hypothesis is rejected.").withWidth(150));
         }
 
         stream.close(HtmlTag.TABLEROW);
@@ -316,7 +317,6 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
 //            stream.write(stats_.getminNumberOfYears());
 //            stream.write(" observations, has to be rejected at a 95% level of confidence and periode-specific variances should be used. ");
 //        }
-
         stream.newLines(2);
     }
 

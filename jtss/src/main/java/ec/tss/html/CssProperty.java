@@ -22,6 +22,7 @@ package ec.tss.html;
  * 
  * @author Kristof Bayens, Jean Palate
  */
+@Deprecated
 public enum CssProperty {
 
     /**

@@ -68,21 +68,21 @@ public class HtmlTramoSeatsGrowthRates extends AbstractHtmlElement implements IH
 
     private void writeHeader(HtmlStream stream) throws IOException {
         if (mul) {
-            stream.write(HtmlTag.HEADER1, h1, TITLE).newLine();
-            stream.write(HtmlTag.HEADER4, h4, COMMENT1).newLine();
-            stream.write(HtmlTag.HEADER4, h4, COMMENT2).newLine();
+            stream.write(HtmlTag.HEADER1, TITLE).newLine();
+            stream.write(HtmlTag.HEADER4, COMMENT1).newLine();
+            stream.write(HtmlTag.HEADER4, COMMENT2).newLine();
         } else {
-            stream.write(HtmlTag.HEADER1, h1, TITLE_ADD).newLine();
-            stream.write(HtmlTag.HEADER4, h4, COMMENT1_ADD).newLine();
+            stream.write(HtmlTag.HEADER1, TITLE_ADD).newLine();
+            stream.write(HtmlTag.HEADER4, COMMENT1_ADD).newLine();
         }
-        stream.write(HtmlTag.HEADER4, h4, COMMENT3).newLine();
+        stream.write(HtmlTag.HEADER4, COMMENT3).newLine();
     }
 
     private void writePeriodToPeriod(HtmlStream stream) throws IOException {
         if (mul) {
-            stream.write(HtmlTag.HEADER2, h2, "Period to period growth rates").newLine();
+            stream.write(HtmlTag.HEADER2, "Period to period growth rates").newLine();
         } else {
-            stream.write(HtmlTag.HEADER2, h2, "Period to period variations").newLine();
+            stream.write(HtmlTag.HEADER2, "Period to period variations").newLine();
         }
 
         double[] re = new double[np];
@@ -94,7 +94,7 @@ public class HtmlTramoSeatsGrowthRates extends AbstractHtmlElement implements IH
                 re[i] = ser * Math.sqrt(decomposition_.getWienerKolmogorovEstimators().variationPrecision(1, i, 1, false));
                 te[i] = ser * Math.sqrt(decomposition_.getWienerKolmogorovEstimators().variationPrecision(1, i, 1, true));
             }
-            stream.write(HtmlTag.HEADER2, h2, "Seasonally adjusted series").newLine();
+            stream.write(HtmlTag.HEADER2, "Seasonally adjusted series").newLine();
             writePeriodToPeriod(stream, sa, re, te);
         }
         if (!decomposition_.getUcarimaModel().getComponent(0).isNull()) {
@@ -103,35 +103,35 @@ public class HtmlTramoSeatsGrowthRates extends AbstractHtmlElement implements IH
                 re[i] = ser * Math.sqrt(decomposition_.getWienerKolmogorovEstimators().variationPrecision(0, i, 1, false));
                 te[i] = ser * Math.sqrt(decomposition_.getWienerKolmogorovEstimators().variationPrecision(0, i, 1, true));
             }
-            stream.write(HtmlTag.HEADER2, h2, "Trend").newLine();
+            stream.write(HtmlTag.HEADER2, "Trend").newLine();
             writePeriodToPeriod(stream, t, re, te);
         }
     }
 
     private void writePeriodToPeriod(HtmlStream stream, TsData s, double[] re, double[] te) throws IOException {
         TsData gs = mul ? s.pctVariation(1) : s.delta(1);
-        stream.open(new HtmlTable(0, 400));
+        stream.open(new HtmlTable().withWidth(400));
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("Period", 100));
+        stream.write(new HtmlTableCell("Period").withWidth(100));
         if (mul) {
-            stream.write(new HtmlTableCell("Growth", 100));
+            stream.write(new HtmlTableCell("Growth").withWidth(100));
         } else {
-            stream.write(new HtmlTableCell("Changes", 100));
+            stream.write(new HtmlTableCell("Changes").withWidth(100));
         }
-        stream.write(new HtmlTableCell("Std error (revisions)", 100));
-        stream.write(new HtmlTableCell("Std error (total error)", 100));
+        stream.write(new HtmlTableCell("Std error (revisions)").withWidth(100));
+        stream.write(new HtmlTableCell("Std error (total error)").withWidth(100));
         stream.close(HtmlTag.TABLEROW);
         for (int i = gs.getLength() - 1, j = 0; i >= gs.getLength() - np; --i, ++j) {
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell(gs.getDomain().get(i).toString(), 100));
+            stream.write(new HtmlTableCell(gs.getDomain().get(i).toString()).withWidth(100));
             if (mul) {
-                stream.write(new HtmlTableCell(pc2.format(gs.get(i) * .01), 100));
-                stream.write(new HtmlTableCell(pc2.format(Math.exp(re[j]) - 1), 100));
-                stream.write(new HtmlTableCell(pc2.format(Math.exp(te[j]) - 1), 100));
+                stream.write(new HtmlTableCell(pc2.format(gs.get(i) * .01)).withWidth(100));
+                stream.write(new HtmlTableCell(pc2.format(Math.exp(re[j]) - 1)).withWidth(100));
+                stream.write(new HtmlTableCell(pc2.format(Math.exp(te[j]) - 1)).withWidth(100));
             } else {
-                stream.write(new HtmlTableCell(dg6.format(gs.get(i)), 100));
-                stream.write(new HtmlTableCell(dg6.format(re[j]), 100));
-                stream.write(new HtmlTableCell(dg6.format(te[j]), 100));
+                stream.write(new HtmlTableCell(dg6.format(gs.get(i))).withWidth(100));
+                stream.write(new HtmlTableCell(dg6.format(re[j])).withWidth(100));
+                stream.write(new HtmlTableCell(dg6.format(te[j])).withWidth(100));
             }
             stream.close(HtmlTag.TABLEROW);
         }

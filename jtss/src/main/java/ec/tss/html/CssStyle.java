@@ -24,6 +24,7 @@ import java.util.ArrayList;
  * 
  * @author Kristof Bayens, Jean Palate
  */
+@Deprecated
 public class CssStyle implements IHtmlElement {
 
     static class CSSItem {

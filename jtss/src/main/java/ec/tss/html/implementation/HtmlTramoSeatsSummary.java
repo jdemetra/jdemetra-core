@@ -72,7 +72,7 @@ public class HtmlTramoSeatsSummary extends AbstractHtmlElement implements IHtmlE
 
     private void writeTitle(HtmlStream stream) throws IOException {
         if (title_ != null) {
-            stream.write(HtmlTag.HEADER1, h1, title_).newLine();
+            stream.write(HtmlTag.HEADER1, title_).newLine();
         }
     }
 
@@ -83,22 +83,22 @@ public class HtmlTramoSeatsSummary extends AbstractHtmlElement implements IHtmlE
     private void writePreprocessing(HtmlStream stream) throws IOException {
         if (preprocessing_ == null)
             return;
-        stream.write(HtmlTag.HEADER2, h2, "Pre-processing (Tramo)").newLine();
+        stream.write(HtmlTag.HEADER2, "Pre-processing (Tramo)").newLine();
         stream.write(new HtmlRegArima(preprocessing_, true));
     }
 
     private void writeDecomposition(HtmlStream stream) throws IOException {
         if (decomposition_ == null)
             return;
-        stream.write(HtmlTag.HEADER2, h2, "Decomposition (Seats)").newLine();
+        stream.write(HtmlTag.HEADER2, "Decomposition (Seats)").newLine();
         SarimaModel tmodel = preprocessing_.estimation.getArima();
         IArimaModel smodel = decomposition_.getModel().getArima();
         if (tmodel == null || smodel == null) {
-            stream.write("No decomposition", HtmlStyle.Bold, HtmlStyle.Underline).newLine();
+            stream.write(HtmlTag.IMPORTANT_TEXT, "No decomposition").newLine();
         } else {
             boolean changed = !ArimaModel.same(tmodel, smodel, 1e-4);
             if (changed) {
-                stream.write("Model changed by Seats", HtmlStyle.Bold, HtmlStyle.Underline).newLine();
+                stream.write(HtmlTag.IMPORTANT_TEXT, "Model changed by Seats").newLine();
             }
 
             UcarimaModel ucm = decomposition_.getUcarimaModel();
@@ -109,7 +109,7 @@ public class HtmlTramoSeatsSummary extends AbstractHtmlElement implements IHtmlE
     }
 
     private void writeDiagnostics(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER2, h2, "Diagnostics").newLine();
+        stream.write(HtmlTag.HEADER2, "Diagnostics").newLine();
         stream.write(new HtmlDiagnosticSummary(diags_));
     }
 }

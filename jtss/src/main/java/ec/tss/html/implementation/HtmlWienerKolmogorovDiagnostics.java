@@ -17,8 +17,9 @@
 package ec.tss.html.implementation;
 
 import ec.tss.html.AbstractHtmlElement;
+import ec.tss.html.Bootstrap4;
+import ec.tss.html.HtmlClass;
 import ec.tss.html.HtmlStream;
-import ec.tss.html.HtmlStyle;
 import ec.tss.html.HtmlTable;
 import ec.tss.html.HtmlTableCell;
 import ec.tss.html.HtmlTableHeader;
@@ -48,24 +49,24 @@ public class HtmlWienerKolmogorovDiagnostics extends AbstractHtmlElement impleme
     private String[] desc_;
     private boolean[] signals_;
 
-    private HtmlStyle valueStyle(double val) {
+    private HtmlClass valueStyle(double val) {
         if (val < m_badthreshold) {
-            return HtmlStyle.Danger;
+            return Bootstrap4.TEXT_DANGER;
         } else if (val < m_goodthresohold) {
-            return HtmlStyle.Warning;
+            return Bootstrap4.TEXT_WARNING;
         } else {
-            return HtmlStyle.Success;
+            return Bootstrap4.TEXT_SUCCESS;
         }
     }
 
-    private HtmlStyle ccStyle(double val) {
+    private HtmlClass ccStyle(double val) {
         double aval = Math.abs(val);
         if (aval >= m_ccbadthreshold) {
-            return HtmlStyle.Danger;
+            return Bootstrap4.TEXT_DANGER;
         } else if (aval < m_ccgoodthresohold) {
-            return HtmlStyle.Success;
+            return Bootstrap4.TEXT_SUCCESS;
         } else {
-            return HtmlStyle.Warning;
+            return Bootstrap4.TEXT_WARNING;
         }
     }
 
@@ -85,20 +86,20 @@ public class HtmlWienerKolmogorovDiagnostics extends AbstractHtmlElement impleme
     }
 
     private void writeHeader(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER1, h1,
+        stream.write(HtmlTag.HEADER1,
                 "Distribution of component, theoretical estimator and empirical estimate (stationary transformation)").newLine();
     }
 
     private void writeVariance(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER2, h2, "Variance");
+        stream.write(HtmlTag.HEADER2, "Variance");
         stream.newLine();
-        stream.open(new HtmlTable(0, 500));
+        stream.open(new HtmlTable().withWidth(500));
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableHeader("", 100));
-        stream.write(new HtmlTableHeader("Component", 100));
-        stream.write(new HtmlTableHeader("Estimator", 100));
-        stream.write(new HtmlTableHeader("Estimate", 100));
-        stream.write(new HtmlTableHeader("P-Value", 100));
+        stream.write(new HtmlTableHeader("").withWidth(100));
+        stream.write(new HtmlTableHeader("Component").withWidth(100));
+        stream.write(new HtmlTableHeader("Estimator").withWidth(100));
+        stream.write(new HtmlTableHeader("Estimate").withWidth(100));
+        stream.write(new HtmlTableHeader("P-Value").withWidth(100));
         stream.close(HtmlTag.TABLEROW);
 
         for (int i = 0; i < desc_.length; ++i) {
@@ -114,7 +115,7 @@ public class HtmlWienerKolmogorovDiagnostics extends AbstractHtmlElement impleme
                         df4.format(diags_.getEstimateVariance(i))));
                 double pval = diags_.getPValue(i);
                 stream.write(new HtmlTableCell(
-                        df4.format(pval), valueStyle(pval)));
+                        df4.format(pval)).withClass(valueStyle(pval)));
 
                 stream.close(HtmlTag.TABLEROW);
             }
@@ -125,21 +126,21 @@ public class HtmlWienerKolmogorovDiagnostics extends AbstractHtmlElement impleme
 
     private void writeAutoCorrelations(HtmlStream stream) throws IOException {
         stream.write(HtmlTag.LINEBREAK);
-        stream.write(HtmlTag.HEADER2, h2, "Autocorrelation");
+        stream.write(HtmlTag.HEADER2, "Autocorrelation");
         Normal dist = new Normal();
         for (int i = 0; i < desc_.length; ++i) {
             ArimaModel cmodel = diags_.getStationaryComponentModel(i);
             LinearModel emodel = diags_.getStationaryEstimatorModel(i);
             if (cmodel != null && emodel != null) {
                 stream.newLine();
-                stream.write(HtmlTag.HEADER3, h3, desc_[i]);
-                stream.open(new HtmlTable(0, 500));
+                stream.write(HtmlTag.HEADER3, desc_[i]);
+                stream.open(new HtmlTable().withWidth(500));
                 stream.open(HtmlTag.TABLEROW);
-                stream.write(new HtmlTableHeader("Lag", 100));
-                stream.write(new HtmlTableHeader("Component", 100));
-                stream.write(new HtmlTableHeader("Estimator", 100));
-                stream.write(new HtmlTableHeader("Estimate", 100));
-                stream.write(new HtmlTableHeader("P-Value", 100));
+                stream.write(new HtmlTableHeader("Lag").withWidth(100));
+                stream.write(new HtmlTableHeader("Component").withWidth(100));
+                stream.write(new HtmlTableHeader("Estimator").withWidth(100));
+                stream.write(new HtmlTableHeader("Estimate").withWidth(100));
+                stream.write(new HtmlTableHeader("P-Value").withWidth(100));
                 stream.close(HtmlTag.TABLEROW);
 
                 double tvar = cmodel.getAutoCovarianceFunction().get(0);
@@ -164,7 +165,7 @@ public class HtmlWienerKolmogorovDiagnostics extends AbstractHtmlElement impleme
                     stream.write(new HtmlTableCell(
                             df4.format(cor)));
                     stream.write(new HtmlTableCell(
-                            df4.format(pval), valueStyle(pval)));
+                            df4.format(pval)).withClass(valueStyle(pval)));
                     stream.close(HtmlTag.TABLEROW);
                 }
                 stream.close(HtmlTag.TABLE);
@@ -174,13 +175,13 @@ public class HtmlWienerKolmogorovDiagnostics extends AbstractHtmlElement impleme
 
     private void writeCrossCorrelations(HtmlStream stream) throws IOException {
         stream.write(HtmlTag.LINEBREAK);
-        stream.write(HtmlTag.HEADER2, h2, "Cross-correlation");
-        stream.open(new HtmlTable(0, 500));
+        stream.write(HtmlTag.HEADER2, "Cross-correlation");
+        stream.open(new HtmlTable().withWidth(500));
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableHeader("", 200));
-        stream.write(new HtmlTableHeader("Estimator", 100));
-        stream.write(new HtmlTableHeader("Estimate", 100));
-        stream.write(new HtmlTableHeader("P-Value", 100));
+        stream.write(new HtmlTableHeader("").withWidth(200));
+        stream.write(new HtmlTableHeader("Estimator").withWidth(100));
+        stream.write(new HtmlTableHeader("Estimate").withWidth(100));
+        stream.write(new HtmlTableHeader("P-Value").withWidth(100));
         stream.close(HtmlTag.TABLEROW);
 
         for (int i = 1; i < desc_.length; ++i) {
@@ -197,12 +198,12 @@ public class HtmlWienerKolmogorovDiagnostics extends AbstractHtmlElement impleme
                                     stream.write(new HtmlTableCell(builder.toString()));
                                     double cc = diags_.getEstimatorCrossCorrelation(i, j);
                                     stream.write(new HtmlTableCell(
-                                            df4.format(cc), ccStyle(cc)));
+                                            df4.format(cc)).withClass(ccStyle(cc)));
                                     stream.write(new HtmlTableCell(
                                             df4.format(diags_.getEstimateCrossCorrelation(i, j))));
                                     double pval = diags_.getPValue(i, j);
                                     stream.write(new HtmlTableCell(
-                                            df4.format(pval), valueStyle(pval)));
+                                            df4.format(pval)).withClass(valueStyle(pval)));
                                     stream.close(HtmlTag.TABLEROW);
                                 }
                             }

@@ -13,17 +13,16 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.html.implementation;
 
 import ec.tss.html.CssProperty;
 import ec.tss.html.CssStyle;
+import ec.tss.html.HtmlClass;
 import ec.tss.html.HtmlStream;
 import ec.tss.html.HtmlTable;
 import ec.tss.html.HtmlTag;
 import ec.tss.html.IHtmlElement;
-import ec.tstoolkit.data.DescriptiveStatistics;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDataBlock;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
@@ -32,18 +31,22 @@ import java.io.IOException;
 import java.util.Formatter;
 
 /**
- * 
+ *
  * @author Jean Palate
  */
 public class HtmlSingleTsData implements IHtmlElement {
 
+    public static final HtmlClass ROW_HEADERS_CLASS = HtmlClass.of("tsdata-row-header");
+    
     private CssStyle rowHeaders;
     private String fmt = "%.3f";
     private TsData m_ts;
     private String m_name;
+
     /**
      *
      */
+    @Deprecated
     public static final CssStyle defaultrowHeaders = new CssStyle();
 
     static {
@@ -53,7 +56,7 @@ public class HtmlSingleTsData implements IHtmlElement {
     }
 
     /**
-     * 
+     *
      * @param ts
      * @param name
      */
@@ -63,7 +66,7 @@ public class HtmlSingleTsData implements IHtmlElement {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public String getFormat() {
@@ -71,15 +74,16 @@ public class HtmlSingleTsData implements IHtmlElement {
     }
 
     /**
-     * 
+     *
      * @return
      */
+    @Deprecated
     public CssStyle getRowHeadersStyle() {
         return rowHeaders;
     }
 
     /**
-     * 
+     *
      * @param fmt
      */
     public void setFormat(String fmt) {
@@ -87,9 +91,10 @@ public class HtmlSingleTsData implements IHtmlElement {
     }
 
     /**
-     * 
+     *
      * @param rowHeaders
      */
+    @Deprecated
     public void setRowHeadersStyle(final CssStyle rowHeaders) {
         this.rowHeaders = rowHeaders;
     }
@@ -105,7 +110,7 @@ public class HtmlSingleTsData implements IHtmlElement {
             stream.write(HtmlTag.HEADER3, m_name);
         }
         // year x periods
-        stream.open(new HtmlTable(0, 100));
+        stream.open(new HtmlTable().withWidth(100));
         stream.open(HtmlTag.TABLEHEADER);
         for (int i = 0; i < m_ts.getFrequency().intValue(); ++i) {
             stream.write(HtmlTag.TABLECELL, TsPeriod.formatShortPeriod(m_ts.getFrequency(), i));
@@ -117,9 +122,13 @@ public class HtmlSingleTsData implements IHtmlElement {
         while (iter.hasMoreElements()) {
             stream.open(HtmlTag.TABLEROW);
             TsDataBlock block = iter.nextElement();
-            stream.write(HtmlTag.TABLECELL,
-                    rowHeaders == null ? defaultrowHeaders : rowHeaders,
-                    Integer.toString(block.start.getYear()));
+            if (rowHeaders != null) {
+                stream.write(HtmlTag.TABLECELL, rowHeaders, Integer.toString(block.start.getYear()));
+            } else {
+                stream.open(HtmlTag.TABLECELL, ROW_HEADERS_CLASS);
+                stream.write(Integer.toString(block.start.getYear()));
+                stream.close(HtmlTag.TABLECELL);
+            }
             int start = block.start.getPosition();
             int n = block.data.getLength();
             for (int i = 0; i < start; ++i) {

@@ -38,15 +38,12 @@ public class HtmlHeader extends AbstractHtmlElement {
     @Override
     public void write(HtmlStream stream) throws IOException {
         HtmlTag h;
-        CssStyle style = h3;
         switch (level) {
             case 1:
                 h = HtmlTag.HEADER1;
-                style = h1;
                 break;
             case 2:
                 h = HtmlTag.HEADER2;
-                style = h2;
                 break;
             case 3:
                 h = HtmlTag.HEADER3;
@@ -62,7 +59,7 @@ public class HtmlHeader extends AbstractHtmlElement {
                 break;
         }
         if (level <= 3) {
-            stream.write(h, style, txt);
+            stream.write(h, txt);
         }
         else {
             stream.write(h, txt);

@@ -22,8 +22,8 @@ package ec.tss.html.implementation;
 
 import ec.satoolkit.diagnostics.SeasonalityTest;
 import ec.tss.html.AbstractHtmlElement;
+import ec.tss.html.Bootstrap4;
 import ec.tss.html.HtmlStream;
-import ec.tss.html.HtmlStyle;
 import ec.tss.html.HtmlTag;
 import ec.tstoolkit.timeseries.TsPeriodSelector;
 import ec.tstoolkit.timeseries.simplets.TsData;
@@ -44,28 +44,17 @@ public class HtmlResidualSeasonalityTest extends AbstractHtmlElement {
 
     public HtmlResidualSeasonalityTest(TsData sa) {
         m_sa = sa;
-     }
-
-
-    private HtmlStyle PValue(double val) {
-        if (val > m_badthreshold) {
-            return HtmlStyle.Danger;
-        } else if (val > m_goodthresohold) {
-            return HtmlStyle.Warning;
-        } else {
-            return HtmlStyle.Success;
-        }
     }
 
-     /**
+    /**
      *
      * @param stream
      * @throws IOException
      */
     public void ResidualSeasonality(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER1, h1, "Residual seasonality test")
+        stream.write(HtmlTag.HEADER1, "Residual seasonality test")
                 .newLine();
-        if (m_sa == null || m_sa.getFrequency() == TsFrequency.Yearly){
+        if (m_sa == null || m_sa.getFrequency() == TsFrequency.Yearly) {
             stream.write("Series can't be tested");
             return;
         }
@@ -75,12 +64,12 @@ public class HtmlResidualSeasonalityTest extends AbstractHtmlElement {
         SeasonalityTest ftest = SeasonalityTest.stableSeasonality(s);
         double val = ftest.getPValue();
         if (val < m_config.getSASevere()) {
-            stream.write(
+            stream.write(HtmlTag.IMPORTANT_TEXT,
                     "Residual seasonality present in the entire series at the "
                     + (100 * m_config.getSASevere())
                     + " per cent level: F="
                     + df4.format(ftest.getValue()),
-                    HtmlStyle.Bold, HtmlStyle.Danger)
+                    Bootstrap4.TEXT_DANGER)
                     .newLine();
         } else if (val < m_config.getSABad()) {
             stream.write(
@@ -88,21 +77,21 @@ public class HtmlResidualSeasonalityTest extends AbstractHtmlElement {
                     + (100 * m_config.getSABad())
                     + " per cent level: F="
                     + df4.format(ftest.getValue()),
-                    HtmlStyle.Danger).newLine();
+                    Bootstrap4.TEXT_DANGER).newLine();
         } else if (val < m_config.getSAUncertain()) {
             stream.write(
                     "Residual seasonality present in the entire series at the "
                     + (100 * m_config.getSAUncertain())
                     + " per cent level: F="
                     + df4.format(ftest.getValue()),
-                    HtmlStyle.Warning).newLine();
+                    Bootstrap4.TEXT_WARNING).newLine();
         } else {
             stream.write(
                     "No evidence of residual seasonality in the entire series at the "
                     + (100 * m_config.getSAUncertain())
                     + " per cent level: F="
                     + df4.format(ftest.getValue()),
-                    HtmlStyle.Success).newLine();
+                    Bootstrap4.TEXT_SUCCESS).newLine();
         }
 
         TsPeriodSelector sel = new TsPeriodSelector();
@@ -111,12 +100,12 @@ public class HtmlResidualSeasonalityTest extends AbstractHtmlElement {
         ftest = SeasonalityTest.stableSeasonality(s.select(sel));
         val = ftest.getPValue();
         if (val < m_config.getSA3Severe()) {
-            stream.write(
+            stream.write(HtmlTag.IMPORTANT_TEXT,
                     "Residual seasonality present in the last 3 years at the "
                     + (100 * m_config.getSA3Severe())
                     + " per cent level: F="
                     + df4.format(ftest.getValue()),
-                    HtmlStyle.Bold, HtmlStyle.Danger)
+                    Bootstrap4.TEXT_DANGER)
                     .newLine();
         } else if (val < m_config.getSA3Bad()) {
             stream.write(
@@ -124,34 +113,24 @@ public class HtmlResidualSeasonalityTest extends AbstractHtmlElement {
                     + (100 * m_config.getSA3Bad())
                     + " per cent level: F="
                     + df4.format(ftest.getValue()),
-                    HtmlStyle.Danger).newLine();
+                    Bootstrap4.TEXT_DANGER).newLine();
         } else if (val < m_config.getSA3Uncertain()) {
             stream.write(
                     "Residual seasonality present in the last 3 years at the "
                     + (100 * m_config.getSA3Uncertain())
                     + " per cent level: F="
                     + df4.format(ftest.getValue()),
-                    HtmlStyle.Warning).newLine();
+                    Bootstrap4.TEXT_WARNING).newLine();
         } else {
             stream.write(
                     "No evidence of residual seasonality in the last 3 years at the "
                     + (100 * m_config.getSA3Uncertain())
                     + " per cent level: F="
                     + df4.format(ftest.getValue()),
-                    HtmlStyle.Success).newLine();
+                    Bootstrap4.TEXT_SUCCESS).newLine();
         }
 
         stream.newLine();
-    }
-
-    private HtmlStyle RPValue(double val, double lb, double ub) {
-        if (val < ub) {
-            return HtmlStyle.Danger;
-        } else if (val < lb) {
-            return HtmlStyle.Warning;
-        } else {
-            return HtmlStyle.Success;
-        }
     }
 
     /**
