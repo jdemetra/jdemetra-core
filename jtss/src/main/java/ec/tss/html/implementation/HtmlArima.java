@@ -13,20 +13,19 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.html.implementation;
 
 import ec.tss.html.AbstractHtmlElement;
 import ec.tstoolkit.arima.IArimaModel;
 import ec.tss.html.HtmlStream;
-import ec.tss.html.HtmlStyle;
+import ec.tss.html.HtmlTag;
 import ec.tss.html.IHtmlElement;
 import java.io.IOException;
 import java.util.Formatter;
 
 /**
- * 
+ *
  * @author Jean Palate & BAYENSK
  */
 public class HtmlArima extends AbstractHtmlElement implements IHtmlElement {
@@ -36,7 +35,7 @@ public class HtmlArima extends AbstractHtmlElement implements IHtmlElement {
     static final double EPS = 1e-6;
 
     /**
-     * 
+     *
      * @param model
      */
     public HtmlArima(IArimaModel model) {
@@ -44,7 +43,7 @@ public class HtmlArima extends AbstractHtmlElement implements IHtmlElement {
     }
 
     /**
-     * 
+     *
      * @param stream
      * @throws IOException
      */
@@ -66,7 +65,7 @@ public class HtmlArima extends AbstractHtmlElement implements IHtmlElement {
         double var = m_model.getInnovationVariance();
         if (Math.abs(var - 1) > EPS) {
             String val = new Formatter().format("%.5f", var).toString();
-            stream.write(VAR).write(val, HtmlStyle.Bold).newLine();
+            stream.write(VAR).write(HtmlTag.IMPORTANT_TEXT, val).newLine();
         }
     }
 

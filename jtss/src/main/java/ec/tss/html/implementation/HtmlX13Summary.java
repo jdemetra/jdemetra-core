@@ -63,7 +63,7 @@ public class HtmlX13Summary extends AbstractHtmlElement implements IHtmlElement 
 
     private void writeTitle(HtmlStream stream) throws IOException {
         if (title_ != null) {
-            stream.write(HtmlTag.HEADER1, h1, title_).newLine();
+            stream.write(HtmlTag.HEADER1, title_).newLine();
         }
     }
 
@@ -73,9 +73,9 @@ public class HtmlX13Summary extends AbstractHtmlElement implements IHtmlElement 
 
     private void writePreprocessing(HtmlStream stream) throws IOException {
         if (preprocessing_ == null) {
-            stream.write(HtmlTag.HEADER2, h2, "No pre-processing").newLine();
+            stream.write(HtmlTag.HEADER2, "No pre-processing").newLine();
         } else {
-            stream.write(HtmlTag.HEADER2, h2, "Pre-processing (RegArima)").newLine();
+            stream.write(HtmlTag.HEADER2, "Pre-processing (RegArima)").newLine();
             stream.write(new HtmlRegArima(preprocessing_, true));
         }
     }
@@ -84,7 +84,7 @@ public class HtmlX13Summary extends AbstractHtmlElement implements IHtmlElement 
     }
 
     private void writeDiagnostics(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER2, h2, "Diagnostics").newLine();
+        stream.write(HtmlTag.HEADER2, "Diagnostics").newLine();
         stream.write(new HtmlDiagnosticSummary(diags_));
     }
 }

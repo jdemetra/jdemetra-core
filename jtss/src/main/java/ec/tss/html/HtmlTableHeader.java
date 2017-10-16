@@ -13,51 +13,50 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
-
+ */
 package ec.tss.html;
 
 /**
- * 
+ *
  * @author Kristof Bayens
  * @author Mats Maggi
  */
 public class HtmlTableHeader extends HtmlTableCell {
+
     /**
-     * 
+     *
      * @param text
      */
-    public HtmlTableHeader(String text)
-    {
-	super(text);
+    public HtmlTableHeader(String text) {
+        super(text);
     }
-    
+
     /**
      * Constructs a HtmlTableHeader from a text and styles
+     *
      * @author Mats Maggi
      * @param text
-     * @param styles 
+     * @param styles
      */
-    public HtmlTableHeader(String text, HtmlStyle ... styles)
-    {
-	super(text, styles);
+    @Deprecated
+    public HtmlTableHeader(String text, HtmlStyle... styles) {
+        super(text, styles);
     }
-    
-    public HtmlTableHeader(String text, int colspan, int rowspan, HtmlStyle ... styles)
-    {
-	super(text, styles);
+
+    @Deprecated
+    public HtmlTableHeader(String text, int colspan, int rowspan, HtmlStyle... styles) {
+        super(text, styles);
         this.colspan = colspan;
         this.rowspan = rowspan;
     }
 
     /**
-     * 
+     *
      * @param text
      * @param width
      */
-    public HtmlTableHeader(String text, int width)
-    {
-	super(text, width);
+    @Deprecated
+    public HtmlTableHeader(String text, int width) {
+        super(text, width);
     }
 }

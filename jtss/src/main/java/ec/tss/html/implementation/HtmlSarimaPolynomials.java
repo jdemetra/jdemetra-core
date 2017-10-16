@@ -17,8 +17,9 @@
 package ec.tss.html.implementation;
 
 import ec.tss.html.AbstractHtmlElement;
+import ec.tss.html.Bootstrap4;
 import ec.tss.html.HtmlStream;
-import ec.tss.html.HtmlStyle;
+import ec.tss.html.HtmlTag;
 import ec.tss.html.IHtmlElement;
 import ec.tstoolkit.data.Periodogram;
 import ec.tstoolkit.maths.Complex;
@@ -55,7 +56,7 @@ public class HtmlSarimaPolynomials extends AbstractHtmlElement implements IHtmlE
         SarimaSpecification spec = model_.getSpecification();
 //        stream.write("regular differencing order: " + Integer.toString(model_.getRegularDifferenceOrder()), new HtmlStyle[]{}).newLine();
 //        stream.write("seasonal differencing order: " + Integer.toString(model_.getSeasonalDifferenceOrder())).newLines(2);
-        stream.write("Polynomials", HtmlStyle.Bold).newLines(2);
+        stream.write(HtmlTag.IMPORTANT_TEXT, "Polynomials").newLines(2);
         if (spec.getP() > 0) {
             stream.write("regular AR: " + rar.toString('B', true)).newLine();
         }
@@ -80,7 +81,7 @@ public class HtmlSarimaPolynomials extends AbstractHtmlElement implements IHtmlE
                 arg[i] = roots[i].arg();
             }
 
-            stream.newLine().write("Regular AR inverse roots", HtmlStyle.Bold).newLines(2);
+            stream.newLine().write(HtmlTag.IMPORTANT_TEXT, "Regular AR inverse roots").newLines(2);
             double[] td = Periodogram.getTradingDaysFrequencies(model_.getFrequency());
             for (int i = 0; i < arg.length; ++i) {
                 //if (arg[i] >= 0) {
@@ -106,7 +107,7 @@ public class HtmlSarimaPolynomials extends AbstractHtmlElement implements IHtmlE
                 } else if (sf) {
                     freq.append(" (seasonal frequency)");
                 }
-                stream.write(freq.toString(), (tdf || sf ? HtmlStyle.Danger : HtmlStyle.Black)).newLine();
+                stream.write(freq.toString(), (tdf || sf ? Bootstrap4.TEXT_DANGER : Bootstrap4.TEXT_DARK)).newLine();
                 //}
             }
         }

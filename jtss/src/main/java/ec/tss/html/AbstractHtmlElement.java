@@ -24,11 +24,17 @@ import java.text.DecimalFormat;
  */
 public abstract class AbstractHtmlElement implements IHtmlElement {
 
+    @Deprecated
     protected static final CssStyle h1 = new CssStyle();
+    @Deprecated
     protected static final CssStyle h2 = new CssStyle();
+    @Deprecated
     protected static final CssStyle h3 = new CssStyle();
+    @Deprecated
     protected static final CssStyle h4 = new CssStyle();
+    @Deprecated
     protected static final CssStyle d1 = new CssStyle();
+    
     protected static final DecimalFormat df2 = new DecimalFormat("0.00");
     protected static final DecimalFormat df3 = new DecimalFormat("0.000");
     protected static final DecimalFormat df4 = new DecimalFormat("0.0000");
