@@ -48,7 +48,7 @@ public class ArimaEstimation {
 
     private double[] phi, theta, bphi, btheta;
     private int[] order, seasonalOrder;
-    private int frequency;
+    private int period;
     private double[] y;
     private final List<double[]> xreg = new ArrayList<>();
     private boolean mean;
@@ -58,16 +58,17 @@ public class ArimaEstimation {
     }
 
     public Results process() {
-        SarimaSpecification spec = new SarimaSpecification(frequency);
+        SarimaSpecification spec = new SarimaSpecification();
+        spec.setPeriod(period);
         if (order != null) {
             spec.setP(order[0]);
             spec.setD(order[1]);
             spec.setQ(order[2]);
         }
         if (seasonalOrder != null) {
-            spec.setBP(seasonalOrder[0]);
-            spec.setBD(seasonalOrder[1]);
-            spec.setBQ(seasonalOrder[2]);
+            spec.setBp(seasonalOrder[0]);
+            spec.setBd(seasonalOrder[1]);
+            spec.setBq(seasonalOrder[2]);
         }
         SarimaModel.Builder builder = SarimaModel.builder(spec);
         //

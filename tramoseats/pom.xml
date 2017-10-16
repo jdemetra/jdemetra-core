@@ -4,8 +4,9 @@
 
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
-        <artifactId>demetra-parent</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <artifactId>demetra-sa-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+       <relativePath>../sa/pom.xml</relativePath>
     </parent>
 
     <artifactId>demetra-tramoseats-parent</artifactId>
@@ -17,7 +18,7 @@
     <properties>
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
         <jd3-basic.version>1.0.0-SNAPSHOT</jd3-basic.version>
-        <jd3-econometrics.version>1.0.0-SNAPSHOT</jd3-econometrics.version>
+        <jd3-sa.version>1.0.0-SNAPSHOT</jd3-sa.version>
         <jd3-tramoseats.version>1.0.0-SNAPSHOT</jd3-tramoseats.version>
     </properties>
     

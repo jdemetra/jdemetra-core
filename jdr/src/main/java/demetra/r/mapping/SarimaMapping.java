@@ -75,10 +75,10 @@ public class SarimaMapping {
                     for (int i = 1; i <= spec.getQ(); ++i) {
                         all[pos++] = source.theta(i);
                     }
-                    for (int i = 1; i <= spec.getBP(); ++i) {
+                    for (int i = 1; i <= spec.getBp(); ++i) {
                         all[pos++] = -source.bphi(i);
                     }
-                    for (int i = 1; i <= spec.getBQ(); ++i) {
+                    for (int i = 1; i <= spec.getBq(); ++i) {
                         all[pos++] = source.btheta(i);
                     }
                     return all;

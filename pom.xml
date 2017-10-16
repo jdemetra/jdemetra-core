@@ -92,7 +92,6 @@
         <module>jbench</module>
 		
         <!-- JD3 -->
-        <module>jd3</module>
     </modules>
 	
     <dependencyManagement>

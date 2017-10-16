@@ -15,7 +15,6 @@
     <modules>
         <!-- JD3 -->
         <module>../basic-tools</module>
-        <module>../core-econometrics</module>
         <module>../tramoseats</module>
         <module>../structural-ts</module>
         <module>../sa</module>

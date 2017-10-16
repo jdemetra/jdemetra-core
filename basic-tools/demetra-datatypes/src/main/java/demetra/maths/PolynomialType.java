@@ -5,7 +5,6 @@
  */
 package demetra.maths;
 
-import demetra.data.DoubleSequence;
 import java.util.Formatter;
 import javax.annotation.Nonnull;
 
@@ -14,44 +13,43 @@ import javax.annotation.Nonnull;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public interface PolynomialType {
-    
-    public static final PolynomialType ONE=new LightPolynomial(new double[]{1});
-    public static final PolynomialType ZERO=new LightPolynomial(new double[]{0});
-    
-    public static PolynomialType of(@Nonnull double... coefficients){
+
+    public static final PolynomialType ONE = new LightPolynomial(new double[]{1});
+    public static final PolynomialType ZERO = new LightPolynomial(new double[]{0});
+
+    public static PolynomialType of(@Nonnull double[] coefficients) {
         return new LightPolynomial(coefficients.clone());
+    }
+
+    public static PolynomialType of(double c0, double... coefficients) {
+        if (coefficients == null) {
+            return new LightPolynomial(new double[]{c0});
+        } else {
+            double[] p = new double[coefficients.length + 1];
+            p[0] = c0;
+            System.arraycopy(coefficients, 0, p, 1, coefficients.length);
+            return new LightPolynomial(p);
+        }
     }
 
     int getDegree();
 
     double get(int i);
 
-    static class LightPolynomial implements PolynomialType {
-
-        private double[] c;
-
-        private LightPolynomial(double[] c) {
-            this.c = c;
+    public static boolean equals(PolynomialType p1, PolynomialType p2) {
+        int d = p1.getDegree();
+        if (d != p2.getDegree()) {
+            return false;
         }
-
-        @Override
-        public int getDegree() {
-            return c.length - 1;
+        for (int i = 0; i <= d; ++i) {
+            if (p1.get(i) != p2.get(i)) {
+                return false;
+            }
         }
-
-        @Override
-        public double get(int i) {
-            return c[i];
-        }
-        
-        @Override
-        public String toString(){
-            return PolynomialType.toString(this, "%6g", 'X');
-        }
-
+        return true;
     }
-    
-    public static String toString(PolynomialType p, final String fmt, final char var){
+
+    public static String toString(PolynomialType p, final String fmt, final char var) {
         StringBuilder sb = new StringBuilder(512);
         boolean sign = false;
         int n = p.getDegree();

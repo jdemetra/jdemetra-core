@@ -4,9 +4,9 @@
 
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
-        <artifactId>demetra-parent</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
-       <relativePath>../pom.xml</relativePath>
+        <artifactId>demetra-basic-tools-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+       <relativePath>../basic-tools/pom.xml</relativePath>
     </parent>
 
     <artifactId>demetra-sa-parent</artifactId>
@@ -18,66 +18,17 @@
     <properties>
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
         <jd3-basic.version>1.0.0-SNAPSHOT</jd3-basic.version>
-        <jd3-econometrics.version>1.0.0-SNAPSHOT</jd3-econometrics.version>
+        <jd3-sa.version>1.0.0-SNAPSHOT</jd3-sa.version>
         <jd3-sts.version>1.0.0-SNAPSHOT</jd3-sts.version>
+        <jd3-tramoseats.version>1.0.0-SNAPSHOT</jd3-tramoseats.version>
     </properties>
     
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-datatypes</artifactId>
-                <version>${jd3-basic.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-data-tests</artifactId>
-                <version>${jd3-basic.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-core</artifactId>
-                <version>${jd3-basic.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-algorithms</artifactId>
-                <version>${jd3-basic.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-ts</artifactId>
-                <version>${jd3-basic.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-eco-datatypes</artifactId>
-                <version>${jd3-econometrics.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-eco</artifactId>
-                <version>${jd3-econometrics.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-ssf</artifactId>
-                <version>${jd3-econometrics.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-stats</artifactId>
-                <version>${jd3-econometrics.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-arima</artifactId>
-                <version>${jd3-econometrics.version}</version>            
-            </dependency>
-            <dependency>
                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-sts-datatypes</artifactId>
-                <version>${jd3-sts.version}</version>            
+                <artifactId>demetra-sacore</artifactId>
+                <version>${jd3-sa.version}</version>            
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -35,7 +35,7 @@ public class ArimaEstimationTest {
     public void testProd() {
         ArimaEstimation arima=new ArimaEstimation();
         arima.setOrder(new int[]{3,1,1});
-        arima.setFrequency(12);
+        arima.setPeriod(12);
         arima.setSeasonalOrder(new int[]{1,1,1});
         arima.setY(Data.RETAIL_BOOKSTORES);
         ArimaEstimation.Results rslt = arima.process();
@@ -44,7 +44,7 @@ public class ArimaEstimationTest {
         LinkedHashMap<String, Class> dic=new LinkedHashMap<>();
         ArimaEstimation.Results.getMapping().fillDictionary(null, dic, true);
 //        dic.keySet().forEach(n->System.out.println(n));
-//        System.out.println(DoubleSequence.of(rslt.getData("arima.rparameters", double[].class)));
+        System.out.println(DoubleSequence.of(rslt.getData("arima.rparameters", double[].class)));
     }
     
 }

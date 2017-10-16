@@ -6,9 +6,8 @@
         <groupId>eu.europa.ec.joinup.sat</groupId>
         <artifactId>demetra-sts-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
-
+    
     <artifactId>demetra-sts-datatypes</artifactId>
     <packaging>jar</packaging>
     <name>JD3 - STS - DataTypes</name>
