@@ -34,7 +34,7 @@ public class CubicSplineTest {
         RealFunction fn = CubicSpline.of(new double[]{5, 10, 15, 20} , new double[]{-3, 20, -10, 5});
         for (int i=0; i<25; ++i){
             double f=fn.apply(i);
-            System.out.println(f);
+//            System.out.println(f);
         }
     }
     

@@ -44,7 +44,7 @@ public class QsTestTest {
         TsData s=Data.TS_PROD;
         s=TsDataToolkit.delta(s, 12);
         QsTest test=new QsTest(s.values(),12);
-        System.out.println(test.build());
-        System.out.println(test.useNegativeAutocorrelations().build());
+//        System.out.println(test.build());
+//        System.out.println(test.useNegativeAutocorrelations().build());
     }
 }

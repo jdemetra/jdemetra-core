@@ -40,11 +40,11 @@ public class BurmanEstimatesCTest {
         burman.setData(Data.TS_PROD.values());
         burman.setUcarimaModel(ucm);
         double[] estimates = burman.estimates(0, true);
-        System.out.println(DataBlock.ofInternal(estimates));
+//        System.out.println(DataBlock.ofInternal(estimates));
         estimates = burman.estimates(1, true);
-        System.out.println(DataBlock.ofInternal(estimates));
+//        System.out.println(DataBlock.ofInternal(estimates));
         estimates = burman.estimates(2, true);
-        System.out.println(DataBlock.ofInternal(estimates));
+//        System.out.println(DataBlock.ofInternal(estimates));
     }
     
 }
