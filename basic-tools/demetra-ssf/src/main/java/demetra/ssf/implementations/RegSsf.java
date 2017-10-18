@@ -27,15 +27,16 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Ssf;
 import demetra.data.DoubleReader;
+import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfInitialization;
 
 /**
  *
  * @author Jean Palate
  */
-public class RegSsf extends Ssf {
+public class RegSsf {
 
-    public static RegSsf create(ISsf model, Matrix X) {
+    public static ISsf of(ISsf model, Matrix X) {
         if (X.isEmpty()) {
             throw new IllegalArgumentException();
         }
@@ -43,11 +44,18 @@ public class RegSsf extends Ssf {
         Xinitializer xinit = new Xinitializer(mdim, model.getInitialization(), X.getColumnsCount());
         Xdynamics xdyn = new Xdynamics(mdim, model.getDynamics(), X.getColumnsCount());
         Xmeasurement xm = new Xmeasurement(mdim, model.getMeasurement(), X);
-        return new RegSsf(xinit, xdyn, xm);
+        return new Ssf(xinit, xdyn, xm);
     }
 
-    private RegSsf(ISsfInitialization initializer, ISsfDynamics dyn, ISsfMeasurement m) {
-        super(initializer, dyn, m);
+    public static ISsf ofTimeVarying(ISsf model, Matrix X, Matrix cvar) {
+        if (X.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        int mdim = model.getStateDim();
+        Xinitializer xinit = new Xinitializer(mdim, model.getInitialization(), X.getColumnsCount());
+        Xvardynamics xdyn = new Xvardynamics(mdim, model.getDynamics(), cvar);
+        Xmeasurement xm = new Xmeasurement(mdim, model.getMeasurement(), X);
+        return new Ssf(xinit, xdyn, xm);
     }
 
     static class Xdynamics implements ISsfDynamics {
@@ -138,6 +146,108 @@ public class RegSsf extends Ssf {
             return dyn.isTimeInvariant();
         }
 
+    }
+
+    static class Xvardynamics implements ISsfDynamics {
+
+        private final int n, nx;
+        private final ISsfDynamics dyn;
+        private final Matrix xvar, xs;
+
+        Xvardynamics(int n, ISsfDynamics dyn, Matrix xvar) {
+            this.dyn = dyn;
+            this.n = n;
+            this.nx = xvar.getColumnsCount();
+            this.xvar=xvar;
+            this.xs=xvar.deepClone();
+            SymmetricMatrix.lcholesky(xs, 1e-9);
+        }
+
+        @Override
+        public int getInnovationsDim() {
+            return dyn.getInnovationsDim()+nx;
+        }
+
+        @Override
+        public void V(int pos, Matrix qm) {
+            MatrixWindow cur = qm.topLeft(n,n);
+            dyn.V(pos, cur);
+            cur.next(nx, nx);
+            cur.copy(xvar);
+        }
+
+        @Override
+        public void S(int pos, Matrix cm) {
+            MatrixWindow cur = cm.topLeft(n, dyn.getInnovationsDim());
+            dyn.S(pos, cur);
+            cur.next(nx, nx);
+            cur.copy(xs);
+        }
+
+        @Override
+        public boolean hasInnovations(int pos) {
+            return true;
+        }
+
+        @Override
+        public boolean areInnovationsTimeInvariant() {
+            return dyn.areInnovationsTimeInvariant();
+        }
+
+        @Override
+        public void T(int pos, Matrix tr) {
+            dyn.T(pos, tr.topLeft(n, n));
+            tr.diagonal().drop(n, 0).set(1);
+        }
+
+        @Override
+        public void TX(int pos, DataBlock x) {
+            dyn.TX(pos, x.range(0, n));
+        }
+
+        @Override
+        public void TM(int pos, Matrix m) {
+            dyn.TM(pos, m.top(n));
+        }
+
+        @Override
+        public void TVT(int pos, Matrix m) {
+            MatrixWindow z = m.topLeft(n, n);
+            dyn.TVT(pos, z);
+            MatrixWindow zc = z.clone();
+            z.hnext(nx);
+            dyn.TM(pos, z);
+            zc.vnext(nx);
+            zc.copy(z.transpose());
+        }
+
+        @Override
+        public void XS(int pos, DataBlock x, DataBlock xs) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void addSU(int pos, DataBlock x, DataBlock u) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void XT(int pos, DataBlock x) {
+            dyn.XT(pos, x.range(0, n));
+        }
+
+        @Override
+        public void addV(int pos, Matrix p) {
+            MatrixWindow cur = p.topLeft(n, n);
+            dyn.addV(pos, cur);
+            cur.next(nx, nx);
+            cur.add(xvar);
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return dyn.isTimeInvariant();
+        }
     }
 
     static class Xinitializer implements ISsfInitialization {
