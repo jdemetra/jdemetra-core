@@ -72,7 +72,7 @@ public interface IRootsSolver {
 
     /**
      * By default, it returns a robust Muller-Newton solver. This version is significantly more robust
-     * against multiple roots. However, this algorithm is not able to solve any
+     * against multiple roots. However, it is not able to solve any
      * problem of multiple roots.
      * 
      * From a technical point of view, when multiple roots are found, the algorithm

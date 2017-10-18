@@ -20,8 +20,6 @@ import java.util.Iterator;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.design.Development;
-import demetra.maths.matrices.internal.GivensRotation;
-import demetra.maths.matrices.internal.HouseholderReflection;
 
 
 /**
@@ -59,7 +57,7 @@ public class ElementaryTransformations {
 
     public static void rowHouseholder(final DataBlock row, final Matrix X) {
         DataBlockIterator rows = X.rowsIterator();
-        HouseholderReflection reflection = HouseholderReflection.makeOf(row);
+        HouseholderReflection reflection = HouseholderReflection.of(row);
         while (rows.hasNext()) {
             reflection.transform(rows.next());
         } 
@@ -179,7 +177,7 @@ public class ElementaryTransformations {
     }
 
     private static void householder(DataBlockIterator vectors) {
-        HouseholderReflection reflection = HouseholderReflection.makeOf(vectors.next());
+        HouseholderReflection reflection = HouseholderReflection.of(vectors.next());
         while (vectors.hasNext()) {
             reflection.transform(vectors.next());
         }

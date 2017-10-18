@@ -61,6 +61,7 @@
         <assertj.version>3.8.0</assertj.version>
         <netbeans.version>RELEASE82</netbeans.version>
         <lombok.version>1.16.12</lombok.version>
+        <demetra.version>3.0.0-SNAPSHOT</demetra.version>
     </properties>
   
     <modules>
@@ -74,7 +75,6 @@
         <!-- I/O modules -->
         <module>odbcprovider</module>
         <module>jdbcprovider</module>
-        <module>spreadsheetprovider</module>
         <module>sdmxprovider</module>
         <module>commonprovider</module>
 
@@ -82,14 +82,6 @@
         <module>jbench</module>
 		
         <!-- JD3 -->
-        <module>basic-tools</module>
-        <module>core-econometrics</module>
-        <module>tramo-seats</module>
-        <module>structural-ts</module>
-        <module>sa</module>
-        <module>benchmarking</module>
-        <module>demetra-tsprovider</module>
-        <module>demetra-bridge</module>
     </modules>
 	
     <dependencyManagement>
@@ -126,158 +118,64 @@
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-tstoolkit</artifactId>
-                <version>${project.version}</version>            
+                <version>${demetra.version}</version>            
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-tss</artifactId>
-                <version>${project.version}</version>            
+                <version>${demetra.version}</version>            
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-utils</artifactId>
-                <version>${project.version}</version>            
+                <version>${demetra.version}</version>            
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-odbc</artifactId>
-                <version>${project.version}</version>            
+                <version>${demetra.version}</version>            
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-jdbc</artifactId>
-                <version>${project.version}</version>            
+                <version>${demetra.version}</version>            
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-spreadsheet</artifactId>
-                <version>${project.version}</version>            
+                <version>${demetra.version}</version>            
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-sdmx</artifactId>
-                <version>${project.version}</version>            
+                <version>${demetra.version}</version>            
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-common</artifactId>
-                <version>${project.version}</version>            
+                <version>${demetra.version}</version>            
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-workspace</artifactId>
-                <version>${project.version}</version>            
+                <version>${demetra.version}</version>            
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-tck</artifactId>
-                <version>${project.version}</version>            
+                <version>${demetra.version}</version>            
             </dependency>
-            <dependency>
+            <!-- < modules -->
+            <!--dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-tsprovider</artifactId>
-                <version>${project.version}</version>            
+                <version>${demetra.version}</version>            
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-bridge</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-            <!-- < modules -->
-            
-            <!-- modules 3.0 > -->
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-datatypes</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-core</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-algorithms</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-algorithms-ex</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-eco-datatypes</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-eco</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-ssf</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-stats</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-arima</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-benchmarking-types</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-ts</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-benchmarking</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-regarima</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-tramo</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-ucarima</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-seats</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-sacore</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-data-tests</artifactId>
-                <version>${project.version}</version>            
-            </dependency>
-           
-            <!-- < modules 3.0 -->
+                <version>${demetra.version}</version>            
+            </dependency-->
         </dependencies>
     </dependencyManagement>
 

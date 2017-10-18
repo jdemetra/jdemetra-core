@@ -53,8 +53,7 @@ public class ElementaryTransformationsTest {
         qr.decompose(M.extract(0, 20, 0, 4));
         DataBlock b2=DataBlock.make(4);
         qr.leastSquares(M.column(4), b2, null);
-        System.out.println(b2);
-        
+//        System.out.println(b2);
     }
     
 }

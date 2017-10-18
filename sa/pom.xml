@@ -4,21 +4,42 @@
 
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
-        <artifactId>demetra-parent</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <artifactId>demetra-basic-tools-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+       <relativePath>../basic-tools/pom.xml</relativePath>
     </parent>
 
-    <artifactId>demetra-sa-aggregator</artifactId>
+    <artifactId>demetra-sa-parent</artifactId>
     <packaging>pom</packaging>
+    <version>1.0.0-SNAPSHOT</version>
     
-    <name>JD3 - SA (aggregator)</name>
+    <name>JD3 - SA - Parent</name>
+
+    <properties>
+        <demetra.version>3.0.0-SNAPSHOT</demetra.version>
+        <jd3-basic.version>1.0.0-SNAPSHOT</jd3-basic.version>
+        <jd3-sa.version>1.0.0-SNAPSHOT</jd3-sa.version>
+        <jd3-sts.version>1.0.0-SNAPSHOT</jd3-sts.version>
+        <jd3-tramoseats.version>1.0.0-SNAPSHOT</jd3-tramoseats.version>
+    </properties>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-sacore</artifactId>
+                <version>${jd3-sa.version}</version>            
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+ 
     
     <modules>
         <module>demetra-sacore</module>
         <module>demetra-stl</module>
     </modules>
     
-    <build>
+    <!--build>
         <plugins>
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
@@ -27,5 +48,5 @@
                 </configuration>
             </plugin>
         </plugins>
-    </build>
+    </build-->
 </project>

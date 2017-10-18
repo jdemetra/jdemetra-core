@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.ServiceLoader;
 
 /**
@@ -36,110 +37,9 @@ import java.util.ServiceLoader;
  * @author Jean Palate
  */
 @ThreadSafe
-public class InformationMapping<S> {
+public class InformationMapping<S> implements InformationExtractor<S> {
 
-    public static final String LSTART = "(", LEND = ")";
-
-    public static String listKey(String prefix, int item) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(prefix);
-        if (LSTART != null) {
-            builder.append(LSTART);
-        }
-        builder.append(item);
-        if (LEND != null) {
-            builder.append(LEND);
-        }
-        return builder.toString();
-    }
-
-    public static String wcKey(String prefix, char wc) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(prefix);
-        if (LSTART != null) {
-            builder.append(LSTART);
-        }
-        builder.append(wc);
-        if (LEND != null) {
-            builder.append(LEND);
-        }
-        return builder.toString();
-    }
-
-    public static int listItem(String prefix, String key) {
-        if (!key.startsWith(prefix)) {
-            return Integer.MIN_VALUE;
-        }
-        int start = prefix.length();
-        if (LSTART != null) {
-            start += LSTART.length();
-        }
-        int end = key.length();
-        if (LEND != null) {
-            end -= LEND.length();
-        }
-        if (end <= start) {
-            return Integer.MIN_VALUE;
-        }
-        String s = key.substring(start, end);
-        try {
-            return Integer.parseInt(s);
-        } catch (NumberFormatException ex) {
-            return Integer.MIN_VALUE;
-        }
-    }
-
-    public static boolean isIParamItem(String prefix, String key) {
-        if (!key.startsWith(prefix)) {
-            return false;
-        }
-        int start = prefix.length();
-        if (LSTART != null) {
-            start += LSTART.length();
-        }
-        int end = key.length();
-        if (LEND != null) {
-            end -= LEND.length();
-        }
-        if (end <= start) {
-            return false;
-        }
-        String s = key.substring(start, end);
-        try {
-            Integer.parseInt(s);
-            return true;
-        } catch (NumberFormatException ex) {
-            return false;
-        }
-    }
-
-    private static class TListFunction<S, T> {
-
-        final Class<T> targetClass;
-        final BiFunction<S, Integer, T> extractor;
-        final int start, end;
-
-        TListFunction(Class<T> tclass, int start, int end, BiFunction<S, Integer, T> extractor) {
-            this.targetClass = tclass;
-            this.extractor = extractor;
-            this.start = start;
-            this.end = end;
-        }
-    }
-
-    private static class TFunction<S, T> {
-
-        final Class<T> targetClass;
-        final Function<S, T> extractor;
-
-        TFunction(Class<T> tclass, Function<S, T> extractor) {
-            this.targetClass = tclass;
-            this.extractor = extractor;
-        }
-    }
-
-    private final LinkedHashMap<String, TFunction<S, ?>> map = new LinkedHashMap<>();
-    private final LinkedHashMap<String, TListFunction<S, ?>> lmap = new LinkedHashMap<>();
+    private final LinkedHashMap<String, InformationExtractor<S>> map = new LinkedHashMap<>();
     private final Class<S> sourceClass;
 
     public InformationMapping(Class<S> sourceClass) {
@@ -194,143 +94,64 @@ public class InformationMapping<S> {
         }
     }
 
-    public <T> void set(String name, Class<T> tclass, Function<S, T> extractor) {
-        synchronized (this) {
-            map.put(name, new TFunction(tclass, extractor));
-        }
+    public <Q> void set(final String name, final Class<Q> targetClass,
+            final Function<S, Q> fn) {
+        map.put(name, InformationExtractor.extractor(name, targetClass, fn));
     }
 
-     public <T> void setList(String prefix, int start, int end, Class<T> tclass, BiFunction<S, Integer, T> extractor) {
-        synchronized (this) {
-            lmap.put(prefix, new TListFunction(tclass, start, end, extractor));
-        }
+    public <Q> void delegate(final String name, final InformationMapping<Q> mapping, final Function<S, Q> fn) {
+        map.put(name, InformationExtractor.delegate(name, mapping, fn));
     }
 
-    public <T> void set(String prefix, int defparam, Class<T> tclass, BiFunction<S, Integer, T> extractor) {
-        synchronized (this) {
-            lmap.put(prefix, new TListFunction(tclass, defparam, defparam, extractor));
-        }
+    public <Q> void setArray(final String name, final int start, final int end,
+            final Class<Q> targetClass, final BiFunction<S, Integer, Q> fn) {
+        map.put(name, InformationExtractor.array(name, start, end, targetClass, fn));
     }
 
+    public <Q> void setArray(final String name, final int defparam,
+            final Class<Q> targetClass, final BiFunction<S, Integer, Q> fn) {
+        map.put(name, InformationExtractor.array(name, defparam, targetClass, fn));
+    }
+
+    @Override
     public void fillDictionary(String prefix, Map<String, Class> dic, boolean compact) {
         synchronized (this) {
-            for (Entry<String, TFunction<S, ?>> entry : map.entrySet()) {
-                dic.put(InformationSet.item(prefix, entry.getKey()), entry.getValue().targetClass);
-            }
-            if (compact) {
-                for (Entry<String, TListFunction<S, ?>> entry : lmap.entrySet()) {
-                    TListFunction<S, ?> fn = entry.getValue();
-                    if (fn.start == fn.end) {
-                        dic.put(InformationSet.item(prefix, wcKey(entry.getKey(), '?')), fn.targetClass);
-                    } else {
-                        dic.put(InformationSet.item(prefix, wcKey(entry.getKey(), '*')), fn.targetClass);
-                    }
-                }
+            map.forEach((key, extractor) -> extractor.fillDictionary(prefix, dic, compact));
+        }
+    }
+
+    private InformationExtractor<S> search(String id) {
+        // fast search
+        synchronized (this) {
+            InformationExtractor<S> extractor = map.get(id);
+            if (extractor != null) {
+                return extractor;
             } else {
-                for (Entry<String, TListFunction<S, ?>> entry : lmap.entrySet()) {
-                    TListFunction<S, ?> fn = entry.getValue();
-                    if (fn.start == fn.end) {
-                        dic.put(InformationSet.item(prefix, listKey(entry.getKey(), fn.start)), fn.targetClass);
-                    } else {
-                        for (int i = fn.start; i < fn.end; ++i) {
-                            dic.put(InformationSet.item(prefix, listKey(entry.getKey(), i)), fn.targetClass);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private int lmapsize() {
-        return lmap.entrySet().stream().map(x -> 1 + x.getValue().end - x.getValue().start).reduce(0, Integer::sum);
-    }
-
-    public String[] keys() {
-        List<String> k = new ArrayList<>();
-        synchronized (this) {
-            k.addAll(map.keySet());
-            for (Entry<String, TListFunction<S, ?>> entry : lmap.entrySet()) {
-                for (int j = entry.getValue().start; j <= entry.getValue().end; ++j) {
-                    k.add(listKey(entry.getKey(), j));
-                }
-            }
-        }
-        return k.toArray(new String[k.size()]);
-    }
-
-    public boolean contains(String id) {
-        synchronized (this) {
-            if (map.containsKey(id)) {
-                return true;
-            }
-            for (Entry<String, TListFunction<S, ?>> x : lmap.entrySet()) {
-                if (x.getValue().start == x.getValue().end) {
-                    if (isIParamItem(x.getKey(), id)) {
-                        return true;
-                    }
+                // slow search
+                Optional<Entry<String, InformationExtractor<S>>> findFirst = map.entrySet().stream().filter(entry -> entry.getValue().contains(id)).findFirst();
+                if (findFirst.isPresent()) {
+                    return findFirst.get().getValue();
                 } else {
-                    int idx = listItem(x.getKey(), id);
-                    if (idx >= x.getValue().start && idx < x.getValue().end) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-    }
-
-    public <T> T getData(S source, String id, Class<T> tclass) {
-        synchronized (this) {
-            TFunction<S, ?> fn = map.get(id);
-            if (fn != null) {
-                if (!tclass.isAssignableFrom(fn.targetClass)) {
                     return null;
-                } else {
-                    return (T) fn.extractor.apply(source);
-                }
-            }
-            for (Entry<String, TListFunction<S, ?>> x : lmap.entrySet()) {
-                TListFunction<S, ?> value = x.getValue();
-                if (tclass.isAssignableFrom(value.targetClass)) {
-                    int idx = listItem(x.getKey(), id);
-                    if (idx == Integer.MIN_VALUE)
-                        continue;
-                    if (value.start == value.end) {
-                        return (T) value.extractor.apply(source, idx);
-                    } else if (idx >= value.start && idx < value.end) {
-                        return (T) value.extractor.apply(source, idx);
-                    }
                 }
             }
         }
-        return null;
     }
 
-    public <T> Map<String, T> searchAll(S source, String pattern, Class<T> tclass) {
-        LinkedHashMap<String, T> list = new LinkedHashMap<>();
-        WildCards wc = new WildCards(pattern);
-        synchronized (this) {
-            for (Entry<String, TFunction<S, ?>> x : map.entrySet()) {
-                if (wc.match(x.getKey())) {
-                    TFunction<S, ?> fn = x.getValue();
-                    if (tclass.isAssignableFrom(fn.targetClass)) {
-                        list.put(x.getKey(), (T) fn.extractor.apply(source));
-                    }
-                }
-            }
-            for (Entry<String, TListFunction<S, ?>> x : lmap.entrySet()) {
-                TListFunction<S, ?> fn = x.getValue();
-                if (tclass.isAssignableFrom(fn.targetClass)) {
-                    // far to be optimal... TO IMPROVE
-                    for (int i = fn.start; i <= fn.end; ++i) {
-                        String key = listKey(x.getKey(), i);
-                        if (wc.match(key)) {
-                            list.put(key, (T) fn.extractor.apply(source, i));
-                        }
-                    }
-                }
-            }
-        }
-        return list;
+    @Override
+    public boolean contains(String id) {
+        InformationExtractor<S> extractor = search(id);
+        return extractor == null ? false : extractor.contains(id);
+    }
+
+    @Override
+    public <T> T getData(S source, String id, Class<T> tclass) {
+        InformationExtractor<S> extractor = search(id);
+        return extractor == null ? null : extractor.getData(source, id, tclass);
+    }
+
+    @Override
+    public <T> void searchAll(S source, WildCards wc, Class<T> tclass, Map<String, T> all) {
+        map.forEach((name, extractor) -> extractor.searchAll(source, wc, tclass, all));
     }
 }

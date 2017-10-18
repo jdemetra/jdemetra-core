@@ -9,6 +9,7 @@
     </parent>
   
     <artifactId>demetra-spreadsheet</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
     
     <name>Demetra - Spreadsheet</name>
     <description>A TS Provider that handles Excel and OpenDocument spreadsheets.</description>
@@ -47,6 +48,7 @@
             <scope>provided</scope>
         </dependency>
         <!-- compile and runtime -->
+       
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>spreadsheet-api</artifactId>

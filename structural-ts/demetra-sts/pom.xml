@@ -4,11 +4,10 @@
 
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
-        <artifactId>demetra-parent</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+        <artifactId>demetra-sts-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
-
+    
     <artifactId>demetra-sts</artifactId>
     <packaging>jar</packaging>
     <name>JD3 - STS</name>
@@ -31,6 +30,10 @@
             <artifactId>demetra-ssf</artifactId>
         </dependency>
         <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-sts-datatypes</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
@@ -38,6 +41,11 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-tstoolkit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

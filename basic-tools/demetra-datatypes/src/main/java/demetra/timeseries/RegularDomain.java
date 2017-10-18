@@ -95,6 +95,16 @@ public class RegularDomain implements TsDomain<TsPeriod> {
         return index != -1 && index + other.length <= length;
     }
 
+    /**
+     * Returns the position of the given period relative to the starting period 
+     * @param period A period that should be compatible with the starting period of the domain.
+     * @return Could be negative or higher then the length of the domain
+     */
+    public int position(TsPeriod period) {
+        startPeriod.checkCompatibility(period);
+        return distance(startPeriod.getRebasedId(period));
+    }
+
     public RegularDomain move(int count) {
         return count != 0 ? new RegularDomain(startPeriod.plus(count), length) : this;
     }

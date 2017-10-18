@@ -13,7 +13,7 @@ import demetra.leastsquares.IQRSolver;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.UpperTriangularMatrix;
-import demetra.maths.matrices.internal.GivensRotation;
+import demetra.maths.matrices.GivensRotation;
 import org.openide.util.lookup.ServiceProvider;
 
 /**

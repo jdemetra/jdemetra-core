@@ -34,10 +34,11 @@ public class HendersonFiltersTest {
     public void testGain() {
         RealFunction gain = HendersonFilters.instance.create(23).squaredGainFunction();
         for (int i = 0; i <= 100; ++i) {
-            System.out.println(gain.apply(i * Math.PI / 100));
+            double g = gain.apply(i * Math.PI / 100);
+//            System.out.println(gain.apply(i * Math.PI / 100));
         }
-        System.out.println("");
-        System.out.println(DataBlock.ofInternal(HendersonFilters.instance.create(13).weightsToArray()));
+//        System.out.println("");
+//        System.out.println(DataBlock.ofInternal(HendersonFilters.instance.create(13).weightsToArray()));
     }
 
 }

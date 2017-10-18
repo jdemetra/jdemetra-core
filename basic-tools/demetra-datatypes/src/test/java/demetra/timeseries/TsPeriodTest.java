@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
@@ -278,6 +279,14 @@ public class TsPeriodTest {
 
         assertThat(monthly(2010, 1).getPosition(HOURLY)).isEqualTo(0);
         assertThat(monthly(2010, 2).getPosition(HOURLY)).isEqualTo(0);
+    }
+
+    @Test
+    public void testPoint() {
+        LocalDateTime x = d2011_02_01_0000.plus(0, ChronoUnit.SECONDS);
+        assertEquals(x, d2011_02_01_0000);
+        LocalDate y = d2011_02_01.plus(0, ChronoUnit.DAYS);
+        assertEquals(y, d2011_02_01);
     }
 
     private final LocalDate d2011_02_01 = LocalDate.of(2011, 2, 1);

@@ -49,10 +49,32 @@ public interface DoubleSequence extends BaseSequence<Double> {
         return data.length > 0 ? new DoubleArray(data) : EMPTY;
     }
 
+    /**
+     * 
+     * @param data Storage
+     * @param start Position of the first item (non negative)
+     * @param len Number of items (non negative)
+     * @return 
+     */
     @Internal
     @Nonnull
-    public static DoubleSequence ofInternal(@Nonnull double[] data, int start, int end) {
-        return end <= start ? EMPTY : new PartialDoubleArray(data, start, end);
+    public static DoubleSequence ofInternal(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int len) {
+        return len <= 0 ? EMPTY : new PartialDoubleArray(data, start, start+len);
+    }
+
+    /**
+     * Makes a sequence of regularly spaced doubles
+     * @param data
+     * @param data Storage
+     * @param start Position of the first item (non negative)
+     * @param len Number of items (non negative)
+     * @param inc Increment in the underlying storage of two succesive items
+     * @return 
+     */
+    @Internal
+    @Nonnull
+    public static DoubleSequence ofInternal(@Nonnull final double[] data, @Nonnegative int start, @Nonnegative int len, int inc) {
+        return new RegularlySpacedDoubles(data, start, len, inc);
     }
 
     @Nonnull

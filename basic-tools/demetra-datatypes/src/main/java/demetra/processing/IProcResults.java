@@ -22,7 +22,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Generic description of the results of a processing
+ * Generic description of the results of a processing.
+ * All processing should generate results that implements this interface
  *
  * @author Jean Palate
  */
