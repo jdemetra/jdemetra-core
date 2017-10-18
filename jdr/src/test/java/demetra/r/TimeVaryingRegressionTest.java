@@ -6,6 +6,7 @@
 package demetra.r;
 
 import demetra.data.Data;
+import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
 import static demetra.timeseries.simplets.TsDataToolkit.log;
 import org.junit.Test;
@@ -22,8 +23,11 @@ public class TimeVaryingRegressionTest {
 
     @Test
     public void testTD() {
-        Matrix m = TimeVaryingRegression.regarima(log(Data.TS_PROD), "TD3");
+//        long t0=System.currentTimeMillis();
+        MatrixType m = TimeVaryingRegression.regarima(log(Data.TS_ABS_RETAIL), "TD7", "Default").getCoefficients();
         System.out.println(m);
+//        long t1=System.currentTimeMillis();
+//        System.out.println(t1-t0);
     }
     
 }

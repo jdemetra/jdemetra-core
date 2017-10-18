@@ -74,13 +74,18 @@ public class DayClustering {
         return n + 1;
     }
 
-    public DayOfWeek[] group(int idx) {
+    public int getGroupCount(int idx) {
         int n = 0;
         for (int i = 0; i < groups.length; ++i) {
             if (groups[i] == idx) {
                 ++n;
             }
         }
+        return n;
+    }
+    
+    public DayOfWeek[] group(int idx) {
+        int n = getGroupCount(idx);
         DayOfWeek[] dw = new DayOfWeek[n];
         for (int i = 0, j = 0; j < n; ++i) {
             if (groups[i] == idx) {
@@ -180,9 +185,9 @@ public class DayClustering {
 
     private static final int[] TD7_IDX = new int[]{0, 1, 2, 3, 4, 5, 6}, 
             TD2_IDX = new int[]{0, 1, 1, 1, 1, 1, 0}, 
-            TD3_IDX = new int[]{0, 2, 2, 2, 2, 2, 1},
-            TD3C_IDX = new int[]{0, 2, 2, 2, 2, 1, 1},
-            TD4_IDX = new int[]{0, 3, 3, 3, 3, 2, 1}
+            TD3_IDX = new int[]{0, 1, 1, 1, 1, 1, 2},
+            TD3C_IDX = new int[]{0, 1, 1, 1, 1, 2, 2},
+            TD4_IDX = new int[]{0, 1, 1, 1, 1, 2, 3}
             ;
 
     private static final String[] SHORTNAMES = new String[]{"sun", "mon", "tue", "wed", "thu", "fri", "sat"};

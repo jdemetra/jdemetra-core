@@ -14,7 +14,7 @@ import demetra.sarima.SarimaModel;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.experimental.UtilityClass
-public class LikelihoodMapping {
+public class LikelihoodInformationMapping {
 
     private final String LL = "ll", LLC = "adjustedll", SSQ = "ssqerr", AIC = "aic", BIC = "bic", AICC = "aicc", BICC = "bicc", BIC2 = "bic2", HQ = "hannanquinn",
             NPARAMS = "nparams", NOBS = "nobs", NEFFECTIVEOBS = "neffective";

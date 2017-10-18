@@ -25,8 +25,8 @@ import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.maths.matrices.Matrix;
 import demetra.processing.IProcResults;
-import demetra.r.mapping.LikelihoodMapping;
-import demetra.r.mapping.SarimaMapping;
+import demetra.r.mapping.LikelihoodInformationMapping;
+import demetra.r.mapping.SarimaInformationMapping;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.estimation.RegArimaEstimator;
@@ -113,8 +113,8 @@ public class ArimaEstimation {
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.delegate(ARIMA, SarimaMapping.getMapping(), r -> r.getArima());
-            MAPPING.delegate(LL, LikelihoodMapping.getMapping(), r ->r.statistics);
+            MAPPING.delegate(ARIMA, SarimaInformationMapping.getMapping(), r -> r.getArima());
+            MAPPING.delegate(LL, LikelihoodInformationMapping.getMapping(), r ->r.statistics);
         }
 
         @Override

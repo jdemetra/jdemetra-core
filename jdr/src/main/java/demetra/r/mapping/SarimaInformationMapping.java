@@ -26,7 +26,7 @@ import java.util.function.Function;
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
-public class SarimaMapping {
+public class SarimaInformationMapping {
 
     final static String P = "p", D = "d", Q = "q",
             BP = "bp", BD = "bd", BQ = "bq",
