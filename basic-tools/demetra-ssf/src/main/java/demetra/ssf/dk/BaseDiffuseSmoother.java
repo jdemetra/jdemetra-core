@@ -36,7 +36,7 @@ public abstract class BaseDiffuseSmoother {
     protected ISmoothingResults srslts;
 
     protected double e, f, fi;
-    protected DataBlock C, Ci, Rf, Ri, tmp0, tmp1;
+    protected DataBlock C, Ci, Rf, Ri, tmp0, tmp1, Z;
     protected Matrix N0, N1, N2;
     protected boolean missing, hasinfo, calcvar = true;
 
@@ -139,8 +139,21 @@ public abstract class BaseDiffuseSmoother {
         xQi(pos, tmp0);
         xQi(pos, tmp1);
 
-        measurement.VpZdZ(pos, N1, 1 / fi); //
-        measurement.VpZdZ(pos, N2, kn0k - f / (fi * fi));
+        DataBlockIterator n1cols=N1.columnsIterator(), n2cols=N2.columnsIterator();
+        DoubleReader z=Z.reader();
+        double h=kn0k - f / (fi * fi);
+        while (n1cols.hasNext()){
+            double zx=z.next();
+            if (zx != 0){
+                measurement.XpZd(pos, n1cols.next(), zx/fi);
+                measurement.XpZd(pos, n2cols.next(), zx*h);
+            }else{
+                n1cols.next();
+                n2cols.next();
+            }
+        }
+//        measurement.VpZdZ(pos, N1, 1 / fi); 
+//        measurement.VpZdZ(pos, N2, kn0k - f / (fi * fi));
 
         subZ(pos, N1.rowsIterator(), tmp0);
         subZ(pos, N1.columnsIterator(), tmp0);

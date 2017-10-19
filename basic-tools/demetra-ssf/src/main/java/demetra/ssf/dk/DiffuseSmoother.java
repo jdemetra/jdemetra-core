@@ -68,6 +68,7 @@ public class DiffuseSmoother extends BaseDiffuseSmoother{
         if (calcvar) {
             tmp0 = DataBlock.make(dim);
             tmp1 = DataBlock.make(dim);
+            Z = DataBlock.make(dim);
             N0 = Matrix.square(dim);
             N1 = Matrix.square(dim);
             N2 = Matrix.square(dim);
@@ -98,6 +99,7 @@ public class DiffuseSmoother extends BaseDiffuseSmoother{
         if (calcvar) {
             state.P().copy(frslts.P(pos));
             state.Pi().copy(frslts.Pi(pos));
+            measurement.Z(pos, Z);
         }
     }
 

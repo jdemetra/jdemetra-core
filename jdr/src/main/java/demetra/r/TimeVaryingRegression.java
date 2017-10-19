@@ -14,6 +14,7 @@ import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.QuadraticForm;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.processing.IProcResults;
 import demetra.r.mapping.DkLikelihoodInformationMapping;
@@ -55,21 +56,35 @@ public class TimeVaryingRegression {
     }
 
     @lombok.Value
+    @lombok.Builder
     public static class Results implements IProcResults {
 
+        RegularDomain domain;
         MatrixType variables;
         MatrixType coefficients;
+        MatrixType coefficientsStde;
         SarimaModel arima;
         DkConcentratedLikelihood ll;
 
-        private static final String ARIMA = "arima", LL = "likelihood", COEFF = "coefficients", TD = "td";
+        private static final String ARIMA = "arima", LL = "likelihood", STDCOEFF = "coefficients.stde", COEFF = "coefficients.value", TD = "td", TDEFFECT = "tdeffect";
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
             MAPPING.delegate(ARIMA, SarimaInformationMapping.getMapping(), r -> r.getArima());
             MAPPING.delegate(LL, DkLikelihoodInformationMapping.getMapping(), r -> r.getLl());
             MAPPING.set(COEFF, MatrixType.class, r -> r.getCoefficients());
+            MAPPING.set(STDCOEFF, MatrixType.class, r -> r.getCoefficientsStde());
             MAPPING.set(TD, MatrixType.class, r -> r.getVariables());
+            MAPPING.set(TDEFFECT, TsData.class, r
+                    -> {
+                DataBlock tmp = DataBlock.make(r.getDomain().length());
+                DataBlock prod = DataBlock.make(r.getDomain().length());
+                for (int i = 0; i < r.variables.getColumnsCount(); ++i) {
+                    prod.set(r.getCoefficients().column(i), r.getVariables().column(i), (a, b) -> a * b);
+                    tmp.add(prod);
+                }
+                return TsData.ofInternal(r.getDomain().getStartPeriod(), tmp);
+            });
         }
 
         @Override
@@ -97,7 +112,7 @@ public class TimeVaryingRegression {
     public Results regarima(TsData s, String td, String svar) {
         SarimaSpecification spec = new SarimaSpecification();
         spec.airline(12);
-        DayClustering dc=days(td);
+        DayClustering dc = days(td);
         Matrix mtd = generate(s.domain(), dc);
         Matrix nvar = generateVar(dc, svar);
         SsfData data = new SsfData(s.values());
@@ -110,31 +125,51 @@ public class TimeVaryingRegression {
                     .btheta(params.getBtheta())
                     .build();
             SsfArima ssf = SsfArima.of(arima);
-            Matrix v = nvar.deepClone();
-            v.mul(params.getRegVariance());
-            return RegSsf.ofTimeVarying(ssf, mtd, v);
+            double nv = params.getRegVariance();
+            if (nv != 0) {
+                Matrix v = nvar.deepClone();
+                v.mul(nv);
+                return RegSsf.ofTimeVarying(ssf, mtd, v, nvar);
+            } else {
+                return RegSsf.of(ssf, mtd);
+            }
         }).build();
 
         LevenbergMarquardtMinimizer min = new LevenbergMarquardtMinimizer();
         min.minimize(fn.ssqEvaluate(mapping.getDefault()));
         SsfFunctionPoint<Airline, ISsf> rfn = (SsfFunctionPoint<Airline, ISsf>) min.getResult();
-        DefaultSmoothingResults fs = DkToolkit.smooth(rfn.getSsf(), data, false);
+        DefaultSmoothingResults fs = DkToolkit.sqrtSmooth(rfn.getSsf(), data, true);
         Matrix c = Matrix.make(mtd.getRowsCount(), mtd.getColumnsCount() + 1);
+        Matrix ec = Matrix.make(mtd.getRowsCount(), mtd.getColumnsCount() + 1);
 
         int del = 14;
-        double nwe=dc.getGroupCount(0);
-        for (int i = 0; i < dc.getGroupsCount()-1; ++i) {
-            c.column(i).copy(fs.getComponent(del+i));
-            double corr=dc.getGroupCount(i+1)/nwe;
-            c.column(c.getColumnsCount() - 1).addAY(-corr, c.column(i));
+        double nwe = dc.getGroupCount(0);
+        double[] z = new double[c.getColumnsCount() - 1];
+        for (int i = 0; i < z.length; ++i) {
+            c.column(i).copy(fs.getComponent(del + i));
+            ec.column(i).copy(fs.getComponentVariance(del + i));
+            z[i] = dc.getGroupCount(i + 1) / nwe;
+            c.column(z.length).addAY(-z[i], c.column(i));
         }
+        DataBlock Z = DataBlock.ofInternal(z);
+        for (int i = 0; i < c.getRowsCount(); ++i) {
+            Matrix var = fs.P(i).dropTopLeft(del, del);
+            ec.set(i, z.length, QuadraticForm.apply(var, Z));
+        }
+        ec.apply(x -> x <= 0 ? 0 : Math.sqrt(x));
 
         SarimaModel arima = SarimaModel.builder(spec)
                 .theta(rfn.getParameters().get(0))
                 .btheta(rfn.getParameters().get(1))
                 .build();
-
-        return new Results(mtd, c, arima, rfn.getLikelihood());
+        return Results.builder()
+                .domain(s.domain())
+                .arima(arima)
+                .ll(rfn.getLikelihood())
+                .variables(mtd)
+                .coefficients(c)
+                .coefficientsStde(ec)
+                .build();
     }
 
     private DayClustering days(String td) {
