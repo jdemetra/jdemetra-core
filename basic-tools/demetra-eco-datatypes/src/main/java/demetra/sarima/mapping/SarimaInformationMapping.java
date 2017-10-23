@@ -14,10 +14,10 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.r.mapping;
+package demetra.sarima.mapping;
 
 import demetra.information.InformationMapping;
-import demetra.sarima.SarimaModel;
+import demetra.sarima.SarimaType;
 import demetra.sarima.SarimaSpecification;
 import java.util.function.Function;
 
@@ -30,62 +30,50 @@ public class SarimaInformationMapping {
 
     final static String P = "p", D = "d", Q = "q",
             BP = "bp", BD = "bd", BQ = "bq",
-            PARAMETERS = "parameters", RPARAMETERS = "rparameters",
+            PARAMETERS = "parameters",
+            PHI="phi", THETA="theta",BPHI="bphi", BTHETA="btheta",
             PERIOD = "period";
 
-    static final InformationMapping<SarimaModel> MAPPING = new InformationMapping<>(SarimaModel.class);
+    static final InformationMapping<SarimaType> MAPPING = new InformationMapping<>(SarimaType.class);
 
     static {
-        MAPPING.set(P, Integer.class, source -> source.getRegularAROrder());
-    }
-
-    static {
-        MAPPING.set(D, Integer.class, source -> source.getRegularDifferenceOrder());
-    }
-
-    static {
-        MAPPING.set(Q, Integer.class, source -> source.getRegularMAOrder());
-    }
-
-    static {
-        MAPPING.set(BP, Integer.class, source -> source.getSeasonalAROrder());
-    }
-
-    static {
-        MAPPING.set(BD, Integer.class, source -> source.getSeasonalDifferenceOrder());
-    }
-
-    static {
-        MAPPING.set(BQ, Integer.class, source -> source.getSeasonalMAOrder());
-    }
-
-    static {
-        MAPPING.set(PARAMETERS, double[].class, source -> source.parameters().toArray());
-    }
-
-    static {
-        MAPPING.set(RPARAMETERS, double[].class,
+        MAPPING.set(P, Integer.class, source -> source.getPhi().getDegree());
+        MAPPING.set(D, Integer.class, source -> source.getD());
+        MAPPING.set(Q, Integer.class, source -> source.getTheta().getDegree());
+        MAPPING.set(BP, Integer.class, source -> source.getBphi().getDegree());
+        MAPPING.set(BQ, Integer.class, source -> source.getBtheta().getDegree());
+        MAPPING.set(BD, Integer.class, source -> source.getBd());
+        MAPPING.set(PARAMETERS, double[].class,
                 source -> {
                     SarimaSpecification spec = source.specification();
                     double[] all = new double[spec.getParametersCount()];
                     int pos = 0;
                     for (int i = 1; i <= spec.getP(); ++i) {
-                        all[pos++] = -source.phi(i);
+                        all[pos++] = -source.getPhi().get(i);
                     }
                     for (int i = 1; i <= spec.getQ(); ++i) {
-                        all[pos++] = source.theta(i);
+                        all[pos++] = source.getTheta().get(i);
                     }
                     for (int i = 1; i <= spec.getBp(); ++i) {
-                        all[pos++] = -source.bphi(i);
+                        all[pos++] = -source.getBphi().get(i);
                     }
                     for (int i = 1; i <= spec.getBq(); ++i) {
-                        all[pos++] = source.btheta(i);
+                        all[pos++] = source.getBtheta().get(i);
                     }
                     return all;
                 });
+        MAPPING.setArray(PHI, 1, 12, Double.class,
+                (source, i) -> i >source.getPhi().getDegree() ? 0 : source.getPhi().get(i));
+        MAPPING.setArray(BPHI, 1, 12, Double.class,
+                (source, i) -> i >source.getBphi().getDegree() ? 0 : source.getBphi().get(i));
+        MAPPING.setArray(THETA, 1, 12, Double.class,
+                (source, i) -> i >source.getTheta().getDegree() ? 0 : source.getTheta().get(i));
+        MAPPING.setArray(BTHETA, 1, 12, Double.class,
+                (source, i) -> i >source.getBtheta().getDegree() ? 0 : source.getBtheta().get(i));
+
     }
 
-    public InformationMapping<SarimaModel> getMapping() {
+    public InformationMapping<SarimaType> getMapping() {
         return MAPPING;
     }
 

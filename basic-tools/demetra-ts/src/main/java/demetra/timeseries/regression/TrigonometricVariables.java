@@ -20,7 +20,6 @@ import demetra.data.DataBlock;
 import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.List;
 
 /**
