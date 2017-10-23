@@ -26,13 +26,40 @@ import java.time.LocalDate;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public interface IDayInfo {
+public interface IHolidayInfo {
 
     LocalDate getDay();
 
-    TsPeriod getPeriod();
+//    TsPeriod getPeriod();
 
     default DayOfWeek getDayOfWeek() {
         return getDay().getDayOfWeek();
     }
+    
+        /**
+     * Returns the date equal or before the given date
+     * @param date
+     * @return 
+     */
+    static LocalDate getPreviousWorkingDate(LocalDate date){
+        DayOfWeek dw=date.getDayOfWeek();
+        if (dw== DayOfWeek.SUNDAY)
+            return date.minusDays(1);
+        else
+            return date;
+    }
+    
+    /**
+     * Returns the date equal or after the given date
+     * @param date
+     * @return 
+     */
+    static LocalDate getNextWorkingDate(LocalDate date){
+        DayOfWeek dw=date.getDayOfWeek();
+        if (dw== DayOfWeek.SUNDAY)
+            return date.plusDays(1);
+        else
+            return date;
+    }
+
 }

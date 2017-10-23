@@ -31,7 +31,7 @@ import java.util.Objects;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class FixedDay implements ISpecialDay {
+public class FixedDay implements IHoliday {
 
     public final int day;
     public final int month;
@@ -69,7 +69,7 @@ public class FixedDay implements ISpecialDay {
             ALLSAINTSDAY = new FixedDay(11, 1), HALLOWEEN = new FixedDay(10, 31);
 
     @Override
-    public Iterable<IDayInfo> getIterable(TsUnit freq, LocalDate start, LocalDate end) {
+    public Iterable<IHolidayInfo> getIterable(TsUnit freq, LocalDate start, LocalDate end) {
         return new FixedDayIterable(freq, this, start, end);
     }
 
@@ -147,7 +147,7 @@ public class FixedDay implements ISpecialDay {
         }
     }
 
-    static class FixedDayInfo implements IDayInfo {
+    static class FixedDayInfo implements IHolidayInfo {
 
         FixedDayInfo(TsPeriod period, FixedDay fday) {
             m_fday = fday;
@@ -159,16 +159,16 @@ public class FixedDay implements ISpecialDay {
             return LocalDate.of(m_period.start().getYear(), m_fday.month, m_fday.day);
         }
 
-        @Override
-        public TsPeriod getPeriod() {
-            return m_period;
-        }
+//        @Override
+//        public TsPeriod getPeriod() {
+//            return m_period;
+//        }
 
         final TsPeriod m_period;
         final FixedDay m_fday;
     }
 
-    static class FixedDayIterable implements Iterable<IDayInfo> {
+    static class FixedDayIterable implements Iterable<IHolidayInfo> {
 
         FixedDayIterable(TsUnit freq, FixedDay fday, LocalDate fstart, LocalDate fend) {
             this.fday = fday;
@@ -198,8 +198,8 @@ public class FixedDay implements ISpecialDay {
         private final int n;
 
         @Override
-        public Iterator<IDayInfo> iterator() {
-            return new Iterator<IDayInfo>() {
+        public Iterator<IHolidayInfo> iterator() {
+            return new Iterator<IHolidayInfo>() {
                 int cur = 0;
 
                 @Override
@@ -208,7 +208,7 @@ public class FixedDay implements ISpecialDay {
                 }
 
                 @Override
-                public IDayInfo next() {
+                public IHolidayInfo next() {
                     if (cur == 0) {
                         ++cur;
                         return new FixedDayInfo(pstart, fday);

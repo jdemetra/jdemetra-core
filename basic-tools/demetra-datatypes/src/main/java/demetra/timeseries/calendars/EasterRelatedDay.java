@@ -32,7 +32,7 @@ import java.util.Map;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Beta)
-public class EasterRelatedDay implements ISpecialDay {
+public class EasterRelatedDay implements IHoliday {
 
     /*
      * Raw estimation of the probability to get Easter at a specific date is defined below:
@@ -171,7 +171,7 @@ public class EasterRelatedDay implements ISpecialDay {
     }
 
     @Override
-    public Iterable<IDayInfo> getIterable(TsUnit freq, LocalDate start, LocalDate end) {
+    public Iterable<IHolidayInfo> getIterable(TsUnit freq, LocalDate start, LocalDate end) {
         return new EasterDayList(freq, offset, start, end, julian);
     }
 
@@ -274,7 +274,7 @@ public class EasterRelatedDay implements ISpecialDay {
         }
     }
 
-    static class EasterDayInfo implements IDayInfo {
+    static class EasterDayInfo implements IHolidayInfo {
 
         public EasterDayInfo(TsUnit freq, int year, int offset, boolean julian) {
             LocalDate easter = easter(year, julian);
@@ -287,10 +287,10 @@ public class EasterRelatedDay implements ISpecialDay {
             return day;
         }
 
-        @Override
-        public TsPeriod getPeriod() {
-            return TsPeriod.of(freq, day);
-        }
+//        @Override
+//        public TsPeriod getPeriod() {
+//            return TsPeriod.of(freq, day);
+//        }
 
         @Override
         public DayOfWeek getDayOfWeek() {
@@ -300,7 +300,7 @@ public class EasterRelatedDay implements ISpecialDay {
         final TsUnit freq;
     }
 
-    static class EasterDayList extends AbstractList<IDayInfo> {
+    static class EasterDayList extends AbstractList<IHolidayInfo> {
 
         public EasterDayList(TsUnit freq, int offset, LocalDate fstart, LocalDate fend, boolean julian) {
             this.freq = freq;
@@ -327,7 +327,7 @@ public class EasterRelatedDay implements ISpecialDay {
         private final boolean julian;
 
         @Override
-        public IDayInfo get(int index) {
+        public IHolidayInfo get(int index) {
             return new EasterDayInfo(freq, startyear + index, m_offset, julian);
         }
 

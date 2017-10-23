@@ -28,13 +28,21 @@ import java.util.Objects;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class SpecialDayEvent {
+public class Holiday {
 
-    public final ISpecialDay day;
+
+    private final IHoliday day;
     private ValidityPeriod validity;
 
-    public SpecialDayEvent(ISpecialDay day) {
+    public Holiday(IHoliday day) {
         this.day = day;
+    }
+
+    /**
+     * @return the day
+     */
+    public IHoliday getDay() {
+        return day;
     }
 
     public ValidityPeriod getValidityPeriod() {
@@ -63,10 +71,10 @@ public class SpecialDayEvent {
 
     @Override
     public boolean equals(Object obj) {
-        return this == obj || (obj instanceof SpecialDayEvent && equals((SpecialDayEvent) obj));
+        return this == obj || (obj instanceof Holiday && equals((Holiday) obj));
     }
 
-    private boolean equals(SpecialDayEvent other) {
+    private boolean equals(Holiday other) {
         return day.equals(other.day) && Objects.equals(validity, other.validity);
     }
 

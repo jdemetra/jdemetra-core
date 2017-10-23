@@ -47,12 +47,12 @@ public class RegSsf {
         return new Ssf(xinit, xdyn, xm);
     }
 
-    public static ISsf ofTimeVarying(ISsf model, Matrix X, Matrix cvar, Matrix ivar) {
+    public static ISsf ofTimeVarying(ISsf model, Matrix X, Matrix cvar) {
         if (X.isEmpty()) {
             throw new IllegalArgumentException();
         }
         int mdim = model.getStateDim();
-        Xvarinitializer xinit = new Xvarinitializer(model.getInitialization(), ivar);
+        Xinitializer xinit = new Xinitializer(model.getInitialization(), X.getColumnsCount());
         Matrix s = cvar.deepClone();
         SymmetricMatrix.lcholesky(s, 1e-12);
         Xvardynamics xdyn = new Xvardynamics(mdim, model.getDynamics(), cvar, s);
@@ -75,7 +75,7 @@ public class RegSsf {
         }
         int mdim = model.getStateDim();
         Matrix var = SymmetricMatrix.XXt(s);
-        Xvarinitializer xinit = new Xvarinitializer(model.getInitialization(), var);
+        Xinitializer xinit = new Xinitializer(model.getInitialization(), X.getColumnsCount());
         Xvardynamics xdyn = new Xvardynamics(mdim, model.getDynamics(), var, s);
         Xmeasurement xm = new Xmeasurement(mdim, model.getMeasurement(), X);
         return new Ssf(xinit, xdyn, xm);
@@ -327,67 +327,6 @@ public class RegSsf {
             dyn.Pi0(tmp);
             tmp.next(nx, nx);
             tmp.diagonal().set(1);
-        }
-    }
-
-    static class Xvarinitializer implements ISsfInitialization {
-
-        private final int n;
-        private final Matrix var, lvar;
-        private final ISsfInitialization dyn;
-
-        Xvarinitializer(ISsfInitialization init, Matrix var) {
-            this.dyn = init;
-            this.n = init.getStateDim();
-            this.var = var;
-            this.lvar = var.deepClone();
-            SymmetricMatrix.lcholesky(lvar, 1e-9);
-        }
-
-        @Override
-        public int getStateDim() {
-            return n + var.getRowsCount();
-        }
-
-        @Override
-        public boolean isDiffuse() {
-            return true;
-        }
-
-        @Override
-        public int getDiffuseDim() {
-            return var.getRowsCount() + dyn.getDiffuseDim();
-        }
-
-        @Override
-        public void diffuseConstraints(Matrix b) {
-            int nd = dyn.getDiffuseDim();
-            MatrixWindow tmp = b.topLeft(n, nd);
-            if (nd > 0) {
-                dyn.diffuseConstraints(tmp);
-            }
-            int nx = var.getRowsCount();
-            tmp.next(nx, nx);
-            tmp.copy(lvar);
-        }
-
-        @Override
-        public void a0(DataBlock a0) {
-            dyn.a0(a0.range(0, n));
-        }
-
-        @Override
-        public void Pf0(Matrix pf0) {
-            dyn.Pf0(pf0.topLeft(n, n));
-        }
-
-        @Override
-        public void Pi0(Matrix pi0) {
-            MatrixWindow tmp = pi0.topLeft(n, n);
-            dyn.Pi0(tmp);
-            int nx = var.getRowsCount();
-            tmp.next(nx, nx);
-            tmp.copy(var);
         }
     }
 

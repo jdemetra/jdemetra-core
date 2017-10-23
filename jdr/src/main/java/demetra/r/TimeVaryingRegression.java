@@ -129,7 +129,7 @@ public class TimeVaryingRegression {
             if (nv != 0) {
                 Matrix v = nvar.deepClone();
                 v.mul(nv);
-                return RegSsf.ofTimeVarying(ssf, mtd, v, nvar);
+                return RegSsf.ofTimeVarying(ssf, mtd, v);
             } else {
                 return RegSsf.of(ssf, mtd);
             }
