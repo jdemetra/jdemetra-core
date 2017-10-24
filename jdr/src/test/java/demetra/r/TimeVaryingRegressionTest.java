@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
  */
 public class TimeVaryingRegressionTest {
 
-    private static final double[] FURNITURE = {
+    public static final double[] FURNITURE = {
         2397, 2465, 2612, 2530, 2609, 2609, 2632, 2643, 2616, 2670, 2773, 3052, 2557, 2451, 2717, 2650,
         2771, 2749, 2812, 2780, 2756, 2827, 3033, 3253, 2540, 2562, 2921, 2829, 2865, 2895, 2930,
         3082, 3070, 3043, 3277, 3548, 2861, 2667, 3057, 2817, 3029, 3050, 3026, 3183, 3195, 3180,

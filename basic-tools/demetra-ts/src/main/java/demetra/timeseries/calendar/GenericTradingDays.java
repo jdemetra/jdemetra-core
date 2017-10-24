@@ -198,7 +198,7 @@ public class GenericTradingDays {
 
         for (int i = 0; i < n; ++i) {
             int ni = start[i + 1] - start[i];
-            int dw0 = (start[i] - DAY_OF_WEEK_OF_EPOCH) % 7;
+            int dw0 = (start[i] + DAY_OF_WEEK_OF_EPOCH) % 7;
             if (dw0 < 0) {
                 dw0 += 7;
             }

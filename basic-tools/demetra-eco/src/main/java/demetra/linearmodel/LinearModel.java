@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
 import demetra.design.Internal;
+import java.util.Iterator;
 
 /**
  *
@@ -54,6 +55,14 @@ public class LinearModel {
                 throw new RuntimeException("Incompatible dimensions");
             }
             x.add(var);
+            return this;
+        }
+
+        public Builder addX(@Nonnull Matrix X) {
+            if (X.getRowsCount() != y.length) {
+                throw new RuntimeException("Incompatible dimensions");
+            }
+            X.columns().forEach(col->x.add(col));
             return this;
         }
 

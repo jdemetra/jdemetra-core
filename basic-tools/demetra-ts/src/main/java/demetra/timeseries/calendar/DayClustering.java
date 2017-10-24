@@ -183,14 +183,14 @@ public class DayClustering {
         return builder.toString();
     }
 
-    private static final int[] TD7_IDX = new int[]{0, 1, 2, 3, 4, 5, 6}, 
-            TD2_IDX = new int[]{0, 1, 1, 1, 1, 1, 0}, 
-            TD3_IDX = new int[]{0, 1, 1, 1, 1, 1, 2},
-            TD3C_IDX = new int[]{0, 1, 1, 1, 1, 2, 2},
-            TD4_IDX = new int[]{0, 1, 1, 1, 1, 2, 3}
+    private static final int[] TD7_IDX = new int[]{1, 2, 3, 4, 5, 6, 0}, 
+            TD2_IDX = new int[]{1, 1, 1, 1, 1, 0, 0}, 
+            TD3_IDX = new int[]{1, 1, 1, 1, 1, 2, 0},
+            TD3C_IDX = new int[]{1, 1, 1, 1, 2, 2, 0},
+            TD4_IDX = new int[]{1, 1, 1, 1, 2, 3, 0}
             ;
 
-    private static final String[] SHORTNAMES = new String[]{"sun", "mon", "tue", "wed", "thu", "fri", "sat"};
+    private static final String[] SHORTNAMES = new String[]{"mon", "tue", "wed", "thu", "fri", "sat", "sun"};
 
     public static final DayClustering TD2 = new DayClustering(TD2_IDX), TD3 = new DayClustering(TD3_IDX)
             , TD3c = new DayClustering(TD3C_IDX)

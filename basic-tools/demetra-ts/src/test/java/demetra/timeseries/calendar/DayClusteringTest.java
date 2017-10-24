@@ -14,28 +14,24 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.arima;
+package demetra.timeseries.calendar;
+
+import java.time.DayOfWeek;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author Jean Palate
  */
-@lombok.Value
-public class UcarimaType {
-
-    ArimaType sum;
-    @lombok.NonNull ArimaType[] components;
+public class DayClusteringTest {
     
-    public int size(){
-        return components.length;
-    }
-    
-    public ArimaType[] getComponents(){
-        return components.clone();
-    }
-    
-    public ArimaType getComponent(int i){
-        return components[i];
+    public DayClusteringTest() {
     }
 
+    @Test
+    public void testTD2() {
+        assertEquals(DayClustering.TD2.getGroup(DayOfWeek.SATURDAY),0);
+    }
+    
 }

@@ -35,9 +35,9 @@ public class ArimaInfo {
     static final InformationMapping<ArimaType> MAPPING = new InformationMapping<>(ArimaType.class);
 
     static {
-        MAPPING.set(AR, double[].class, source->source.getPhi().toArray());
+        MAPPING.set(AR, double[].class, source->source.getAr().toArray());
         MAPPING.set(DELTA, double[].class, source->source.getDelta().toArray());
-        MAPPING.set(MA, double[].class, source->source.getTheta().toArray());
+        MAPPING.set(MA, double[].class, source->source.getMa().toArray());
         MAPPING.set(VAR, Double.class, source->source.getInnovationVariance());
         MAPPING.set(DESC, String.class, source->source.getName());
     }

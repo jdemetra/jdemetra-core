@@ -15,17 +15,17 @@ import demetra.maths.PolynomialType;
 @lombok.Value
 public class ArimaType {
     double innovationVariance;
-    @lombok.NonNull PolynomialType phi;
+    @lombok.NonNull PolynomialType ar;
     @lombok.NonNull PolynomialType delta;
-    @lombok.NonNull PolynomialType theta;
+    @lombok.NonNull PolynomialType ma;
     String name;
 
     public static ArimaTypeBuilder builder(){
         ArimaTypeBuilder builder= new ArimaTypeBuilder();
         builder.innovationVariance=1;
-        builder.phi=PolynomialType.ONE;
+        builder.ar=PolynomialType.ONE;
         builder.delta=PolynomialType.ONE;
-        builder.theta=PolynomialType.ONE;
+        builder.ma=PolynomialType.ONE;
         return builder;
     }
 }

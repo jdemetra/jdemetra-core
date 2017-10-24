@@ -23,6 +23,7 @@ import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.mapping.LikelihoodInfo;
+import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
 import demetra.processing.IProcResults;
 import demetra.sarima.SarimaModel;
@@ -107,12 +108,14 @@ public class ArimaEstimation {
             return regarima.arima().toType();
         }
 
-        private static final String ARIMA = "arima", LL = "likelihood";
+        private static final String ARIMA = "arima", LL = "likelihood", PCOV="pcov", SCORE="score";
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
             MAPPING.delegate(ARIMA, SarimaInfo.getMapping(), r -> r.getArima());
             MAPPING.delegate(LL, LikelihoodInfo.getMapping(), r ->r.statistics);
+            MAPPING.set(PCOV, MatrixType.class, source->source.getParametersCovariance());
+            MAPPING.set(SCORE, double[].class, source->source.getScore());
         }
 
         @Override

@@ -16,6 +16,7 @@
  */
 package demetra.arima.mapping;
 
+import demetra.arima.ArimaType;
 import demetra.arima.UcarimaType;
 import demetra.information.InformationMapping;
 
@@ -36,6 +37,8 @@ public class UcarimaInfo {
         MAPPING.set(SIZE, Integer.class, source->source.size());
         MAPPING.delegate(SUM, ArimaInfo.getMapping(), source->source.getSum());
         MAPPING.delegateArray(COMPONENT, 1, 10, ArimaInfo.getMapping(), (source, i)
+                -> i>source.size() ? null : source.getComponent(i-1));
+        MAPPING.setArray(COMPONENT, 1, 10, ArimaType.class, (source, i)
                 -> i>source.size() ? null : source.getComponent(i-1));
     }
 

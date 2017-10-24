@@ -62,7 +62,7 @@ public class TsUtility {
         return new int[]{freq, year, 1 + (mon - 1) / c};
     }
 
-    private int fromTsUnit(TsUnit o) {
+    public int fromTsUnit(TsUnit o) {
         if (o.equals(TsUnit.MONTHLY)) {
             return 12;
         }
@@ -84,7 +84,7 @@ public class TsUtility {
         return 0;
     }
 
-    private TsUnit toTsUnit(int freq) {
+    public TsUnit toTsUnit(int freq) {
         switch (freq) {
             case 12:
                 return TsUnit.MONTHLY;

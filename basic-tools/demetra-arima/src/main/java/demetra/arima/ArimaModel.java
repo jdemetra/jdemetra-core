@@ -19,6 +19,7 @@ package demetra.arima;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
+import demetra.maths.PolynomialType;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.polynomials.Polynomial;
@@ -538,6 +539,16 @@ public class ArimaModel extends AbstractArimaModel {
             throw new ArimaException("+ operation failed");
         }
         return plus(m);
+    }
+    
+    public ArimaType toType(String desc){
+        return ArimaType.builder()
+                .ar(PolynomialType.of(getStationaryAR().asPolynomial().toArray()))
+                .delta(PolynomialType.of(getNonStationaryAR().asPolynomial().toArray()))
+                .ma(PolynomialType.of(getMA().asPolynomial().toArray()))
+                .innovationVariance(getInnovationVariance())
+                .name(desc)
+                .build();
     }
 
     @Override

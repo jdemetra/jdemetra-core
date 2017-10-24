@@ -25,7 +25,8 @@ import demetra.stats.TestResult;
  */
 @lombok.experimental.UtilityClass
 public class TestInfo {
-    private final String VALUE = "value", PVALUE = "pvalue", DESC="description";
+
+    private final String VALUE = "value", PVALUE = "pvalue", DESC = "description";
 
     private final InformationMapping<TestResult> MAPPING = new InformationMapping<>(TestResult.class);
 
@@ -34,6 +35,8 @@ public class TestInfo {
         MAPPING.set(PVALUE, Double.class, source -> source.getPvalue());
         MAPPING.set(DESC, String.class, source -> source.getDescription());
     }
-    
-    
+
+    public InformationMapping<TestResult> getMapping() {
+        return MAPPING;
+    }
 }
