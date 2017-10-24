@@ -35,6 +35,8 @@ public interface PolynomialType {
     int getDegree();
 
     double get(int i);
+    
+    double[] toArray();
 
     public static boolean equals(PolynomialType p1, PolynomialType p2) {
         int d = p1.getDegree();

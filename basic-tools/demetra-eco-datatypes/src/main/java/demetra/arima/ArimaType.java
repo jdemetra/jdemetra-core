@@ -15,9 +15,10 @@ import demetra.maths.PolynomialType;
 @lombok.Value
 public class ArimaType {
     double innovationVariance;
-    PolynomialType phi;
-    PolynomialType delta;
-    PolynomialType theta;
+    @lombok.NonNull PolynomialType phi;
+    @lombok.NonNull PolynomialType delta;
+    @lombok.NonNull PolynomialType theta;
+    String name;
 
     public static ArimaTypeBuilder builder(){
         ArimaTypeBuilder builder= new ArimaTypeBuilder();

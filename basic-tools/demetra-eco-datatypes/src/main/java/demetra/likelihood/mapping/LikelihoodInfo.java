@@ -13,7 +13,7 @@ import demetra.likelihood.LikelihoodStatistics;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.experimental.UtilityClass
-public class LikelihoodInformationMapping {
+public class LikelihoodInfo {
 
     private final String LL = "ll", LLC = "adjustedll", SSQ = "ssqerr", AIC = "aic", BIC = "bic", AICC = "aicc", BICC = "bicc", BIC2 = "bic2", HQ = "hannanquinn",
             NPARAMS = "nparams", NOBS = "nobs", NEFFECTIVEOBS = "neffective";

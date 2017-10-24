@@ -18,10 +18,10 @@ import demetra.maths.matrices.QuadraticForm;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.processing.IProcResults;
 import demetra.r.mapping.DkLikelihoodInformationMapping;
-import demetra.r.mapping.SarimaInformationMapping;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.estimation.SarimaMapping;
+import demetra.sarima.mapping.SarimaInfo;
 import demetra.ssf.dk.DkConcentratedLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.dk.SsfFunction;
@@ -70,7 +70,7 @@ public class TimeVaryingRegression {
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.delegate(ARIMA, SarimaInformationMapping.getMapping(), r -> r.getArima());
+            MAPPING.delegate(ARIMA, SarimaInfo.getMapping(), r -> r.getArima().toType());
             MAPPING.delegate(LL, DkLikelihoodInformationMapping.getMapping(), r -> r.getLl());
             MAPPING.set(COEFF, MatrixType.class, r -> r.getCoefficients());
             MAPPING.set(STDCOEFF, MatrixType.class, r -> r.getCoefficientsStde());

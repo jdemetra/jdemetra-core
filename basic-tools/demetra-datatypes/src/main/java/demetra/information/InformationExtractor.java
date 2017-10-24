@@ -28,6 +28,8 @@ import java.util.function.Function;
  */
 public interface InformationExtractor<S> {
 
+    static final String LSTART = "(", LEND = ")";
+
     static <S, Q> InformationExtractor<S> extractor(final String name, final Class<Q> targetClass,
             final Function<S, Q> fn) {
         return new AtomicExtractor<>(name, targetClass, fn);
@@ -35,6 +37,10 @@ public interface InformationExtractor<S> {
 
     static <S, Q> InformationExtractor<S> delegate(final String name, final InformationExtractor<Q> extractor, final Function<S, Q> fn) {
         return new ExtractorDelegate<>(name, extractor, fn);
+    }
+
+    static <S, Q> InformationExtractor<S> delegateArray(final String name, final int start, final int end, final InformationExtractor<Q> extractor, final BiFunction<S, Integer, Q> fn) {
+        return new ArrayExtractorDelegate<>(name, start, end, extractor, fn);
     }
 
     static <S, Q> InformationExtractor<S> array(final String name, final int start, final int end,
@@ -142,31 +148,16 @@ public interface InformationExtractor<S> {
             return null;
         }
 
-        static final String LSTART = "(", LEND = ")";
-
         static String listKey(String prefix, int item) {
             StringBuilder builder = new StringBuilder();
-            builder.append(prefix);
-            if (LSTART != null) {
-                builder.append(LSTART);
-            }
-            builder.append(item);
-            if (LEND != null) {
-                builder.append(LEND);
-            }
+            builder.append(prefix).append(LSTART).append(item).append(LEND);
             return builder.toString();
         }
 
         static String wcKey(String prefix, char wc) {
             StringBuilder builder = new StringBuilder();
-            builder.append(prefix);
-            if (LSTART != null) {
-                builder.append(LSTART);
-            }
-            builder.append(wc);
-            if (LEND != null) {
-                builder.append(LEND);
-            }
+            builder.append(prefix).append(LSTART);
+            builder.append(wc).append(LEND);
             return builder.toString();
         }
 
@@ -174,14 +165,8 @@ public interface InformationExtractor<S> {
             if (!key.startsWith(prefix)) {
                 return Integer.MIN_VALUE;
             }
-            int start = prefix.length();
-            if (LSTART != null) {
-                start += LSTART.length();
-            }
-            int end = key.length();
-            if (LEND != null) {
-                end -= LEND.length();
-            }
+            int start = prefix.length() + LSTART.length();
+            int end = key.length() - LEND.length();
             if (end <= start) {
                 return Integer.MIN_VALUE;
             }
@@ -197,14 +182,8 @@ public interface InformationExtractor<S> {
             if (!key.startsWith(prefix)) {
                 return false;
             }
-            int start = prefix.length();
-            if (LSTART != null) {
-                start += LSTART.length();
-            }
-            int end = key.length();
-            if (LEND != null) {
-                end -= LEND.length();
-            }
+            int start = prefix.length() + LSTART.length();
+            int end = key.length() - LEND.length();
             if (end <= start) {
                 return false;
             }
@@ -277,4 +256,108 @@ public interface InformationExtractor<S> {
         }
 
     }
+
+    static class ArrayExtractorDelegate<S, T> implements InformationExtractor<S> {
+
+        final String name;
+        final BiFunction<S, Integer, T> fn;
+        final InformationExtractor<T> extractor;
+        final int start, end;
+
+        ArrayExtractorDelegate(String name, int start, int end, final InformationExtractor<T> extractor, final BiFunction<S, Integer, T> fn) {
+            this.name = name;
+            this.fn = fn;
+            this.extractor = extractor;
+            this.start = start;
+            this.end = end;
+        }
+
+        @Override
+        public void fillDictionary(String prefix, Map<String, Class> dic, boolean compact) {
+            extractor.fillDictionary(InformationSet.concatenate(prefix, name), dic, compact);
+        }
+
+        @Override
+        public boolean contains(String id) {
+            if (start == end) {
+                return isIParamItem(name, id) && extractor.contains(detail(id));
+            } else {
+                int idx = listItem(name, id);
+                if (idx >= start && idx < end) {
+                    return extractor.contains(detail(id));
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        @Override
+        public <Q> Q getData(S source, String id, Class<Q> qclass) {
+            int idx = listItem(name, id);
+            if (idx == Integer.MIN_VALUE) {
+                return null;
+            }
+            T t = null;
+            if (start == end) {
+                t = (T) fn.apply(source, idx);
+            } else if (idx >= start && idx < end) {
+                t = (T) fn.apply(source, idx);
+            }
+            if (t == null) {
+                return null;
+            }
+            String detail = detail(id);
+            return extractor.getData(t, detail, qclass);
+        }
+
+        static int listItem(String prefix, String key) {
+            if (!key.startsWith(prefix)) {
+                return Integer.MIN_VALUE;
+            }
+            int start = prefix.length() + LSTART.length();
+            int end = key.indexOf(LEND);
+            if (end <= start) {
+                return Integer.MIN_VALUE;
+            }
+            String s = key.substring(start, end);
+            try {
+                return Integer.parseInt(s);
+            } catch (NumberFormatException ex) {
+                return Integer.MIN_VALUE;
+            }
+        }
+
+        static String detail(String key) {
+            int pos = key.indexOf(LEND);
+            if (pos <= 0) {
+                return null;
+            } else {
+                return key.substring(pos + 2);
+            }
+        }
+
+        static boolean isIParamItem(String prefix, String key) {
+            if (!key.startsWith(prefix)) {
+                return false;
+            }
+            int start = prefix.length() + LSTART.length();
+            int end = key.indexOf(LEND);
+            if (end <= start) {
+                return false;
+            }
+            String s = key.substring(start, end);
+            try {
+                Integer.parseInt(s);
+                return true;
+            } catch (NumberFormatException ex) {
+                return false;
+            }
+        }
+
+        @Override
+        public <T> void searchAll(S source, WildCards wc, Class<T> tclass, Map<String, T> map) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    }
+
 }

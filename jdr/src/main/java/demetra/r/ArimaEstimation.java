@@ -20,23 +20,21 @@ import demetra.arima.regarima.RegArimaEstimation;
 import demetra.arima.regarima.RegArimaModel;
 import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
-import demetra.information.InformationSet;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.LikelihoodStatistics;
+import demetra.likelihood.mapping.LikelihoodInfo;
 import demetra.maths.matrices.Matrix;
 import demetra.processing.IProcResults;
-import demetra.r.mapping.LikelihoodInformationMapping;
-import demetra.r.mapping.SarimaInformationMapping;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
+import demetra.sarima.SarimaType;
 import demetra.sarima.estimation.RegArimaEstimator;
+import demetra.sarima.mapping.SarimaInfo;
 import demetra.utilities.IntList;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.Function;
 
 /**
  *
@@ -105,16 +103,16 @@ public class ArimaEstimation {
         Matrix parametersCovariance;
         double[] score;
         
-        public SarimaModel getArima(){
-            return regarima.arima();
+        public SarimaType getArima(){
+            return regarima.arima().toType();
         }
 
         private static final String ARIMA = "arima", LL = "likelihood";
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.delegate(ARIMA, SarimaInformationMapping.getMapping(), r -> r.getArima());
-            MAPPING.delegate(LL, LikelihoodInformationMapping.getMapping(), r ->r.statistics);
+            MAPPING.delegate(ARIMA, SarimaInfo.getMapping(), r -> r.getArima());
+            MAPPING.delegate(LL, LikelihoodInfo.getMapping(), r ->r.statistics);
         }
 
         @Override
