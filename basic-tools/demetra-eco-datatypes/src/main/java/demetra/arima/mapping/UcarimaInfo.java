@@ -27,7 +27,7 @@ import demetra.information.InformationMapping;
 @lombok.experimental.UtilityClass
 public class UcarimaInfo {
 
-    final static String COMPONENT="component", // Component
+    final static String COMPONENT="component", MODEL="model", REDUCEDMODEL="reducedmodel", // Component
             SUM="sum",  // Reduced model
             SIZE="size";  // Number of components
 
@@ -35,10 +35,11 @@ public class UcarimaInfo {
 
     static {
         MAPPING.set(SIZE, Integer.class, source->source.size());
+        MAPPING.set(REDUCEDMODEL, ArimaType.class, source->source.getSum());
         MAPPING.delegate(SUM, ArimaInfo.getMapping(), source->source.getSum());
         MAPPING.delegateArray(COMPONENT, 1, 10, ArimaInfo.getMapping(), (source, i)
                 -> i>source.size() ? null : source.getComponent(i-1));
-        MAPPING.setArray(COMPONENT, 1, 10, ArimaType.class, (source, i)
+        MAPPING.setArray(MODEL, 1, 10, ArimaType.class, (source, i)
                 -> i>source.size() ? null : source.getComponent(i-1));
     }
 

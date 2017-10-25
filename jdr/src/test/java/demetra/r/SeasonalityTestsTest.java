@@ -17,10 +17,7 @@
 package demetra.r;
 
 import demetra.data.Data;
-import demetra.data.DoubleSequence;
-import static demetra.timeseries.simplets.TsDataToolkit.log;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import demetra.stats.TestResult;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -28,22 +25,15 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate
  */
-public class AirlineDecompositionTest {
+public class SeasonalityTestsTest {
     
-    public AirlineDecompositionTest() {
+    public SeasonalityTestsTest() {
     }
 
     @Test
-    public void testABS() {
-        AirlineDecomposition.Results rslt = AirlineDecomposition.process(log(Data.TS_ABS_RETAIL));
-        System.out.println(rslt.getUcarima());
-        
-        Map<String, Class> dictionary=new LinkedHashMap<>();
-        AirlineDecomposition.Results.getMapping().fillDictionary(null, dictionary, true);
-        
-        dictionary.keySet().forEach(s->System.out.println(s));
-        
-        System.out.println(rslt.getData("ucarima.component(2).var", Double.class));
+    public void testFTest() {
+        TestResult ftest = SeasonalityTests.ftest(Data.TS_ABS_RETAIL, true, 0);
+        System.out.println(ftest);
     }
     
 }

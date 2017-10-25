@@ -26,10 +26,17 @@ import demetra.arima.regarima.RegArimaModel;
 import demetra.data.DataBlockStorage;
 import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
+import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.LikelihoodStatistics;
+import demetra.likelihood.mapping.LikelihoodInfo;
+import demetra.maths.MatrixType;
+import demetra.maths.matrices.Matrix;
 import demetra.processing.IProcResults;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
+import demetra.sarima.SarimaType;
 import demetra.sarima.estimation.RegArimaEstimator;
+import demetra.sarima.mapping.SarimaInfo;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.SsfData;
 import demetra.timeseries.TsPeriod;
@@ -49,13 +56,19 @@ import java.util.Map;
  */
 @lombok.experimental.UtilityClass
 public class AirlineDecomposition {
-    
+
     @lombok.Value
     @lombok.Builder
     public static class Results implements IProcResults {
-        
+
         TsData y, t, s, i;
         UcarimaType ucarima;
+        RegArimaModel<SarimaModel> regarima;
+        SarimaType sarima;
+        ConcentratedLikelihood concentratedLogLikelihood;
+        LikelihoodStatistics statistics;
+        Matrix parametersCovariance;
+        double[] score;
 
         @Override
         public boolean contains(String id) {
@@ -74,8 +87,10 @@ public class AirlineDecomposition {
             return MAPPING.getData(this, id, tclass);
         }
 
-        static final String Y="y", T="t", S="s", I="i", SA="sa", UCARIMA="ucarima", ARIMA="arima"; 
-        
+        static final String Y = "y", T = "t", S = "s", I = "i", SA = "sa",
+                UCM = "ucm", UCARIMA = "ucarima", ARIMA = "arima",
+                LL = "likelihood", PCOV = "pcov", SCORE = "score";
+
         public static final InformationMapping<Results> getMapping() {
             return MAPPING;
         }
@@ -83,19 +98,23 @@ public class AirlineDecomposition {
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.set(Y, TsData.class, source->source.getY());
-            MAPPING.set(T, TsData.class, source->source.getT());
-            MAPPING.set(S, TsData.class, source->source.getS());
-            MAPPING.set(I, TsData.class, source->source.getI());
-            MAPPING.set(SA, TsData.class, source->subtract(source.getY(), source.getI()));
-            MAPPING.delegate(ARIMA, ArimaInfo.getMapping(), source->source.getUcarima().getSum());
-            MAPPING.delegate(UCARIMA, UcarimaInfo.getMapping(), source->source.getUcarima());
+            MAPPING.set(Y, TsData.class, source -> source.getY());
+            MAPPING.set(T, TsData.class, source -> source.getT());
+            MAPPING.set(S, TsData.class, source -> source.getS());
+            MAPPING.set(I, TsData.class, source -> source.getI());
+            MAPPING.set(SA, TsData.class, source -> subtract(source.getY(), source.getS()));
+            MAPPING.delegate(ARIMA, ArimaInfo.getMapping(), source -> source.getUcarima().getSum());
+            MAPPING.delegate(UCARIMA, UcarimaInfo.getMapping(), source -> source.getUcarima());
+            MAPPING.set(UCM, UcarimaType.class, source -> source.getUcarima());
+            MAPPING.delegate(ARIMA, SarimaInfo.getMapping(), r -> r.getSarima());
+            MAPPING.delegate(LL, LikelihoodInfo.getMapping(), r -> r.statistics);
+            MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
+            MAPPING.set(SCORE, double[].class, source -> source.getScore());
         }
     }
-    
-    
-    public Results process(TsData s){
-        int period=TsUtility.fromTsUnit(s.getUnit());
+
+    public Results process(TsData s) {
+        int period = TsUtility.fromTsUnit(s.getUnit());
         SarimaSpecification spec = new SarimaSpecification();
         spec.airline(period);
         SarimaModel arima = SarimaModel
@@ -111,34 +130,39 @@ public class AirlineDecomposition {
                 .startingPoint(RegArimaEstimator.StartingPoint.Multiple)
                 .build();
 
-        RegArimaModel<SarimaModel> regarima = 
-                RegArimaModel.builder(DoubleSequence.of(s.values()), arima)
+        RegArimaModel<SarimaModel> regarima
+                = RegArimaModel.builder(DoubleSequence.of(s.values()), arima)
                 .build();
         RegArimaEstimation<SarimaModel> rslt = monitor.process(regarima);
-        UcarimaModel ucm=ucmAirline(rslt.getModel().arima());
-        
+        UcarimaModel ucm = ucmAirline(rslt.getModel().arima());
+
         ucm = ucm.simplify();
         SsfUcarima ssf = SsfUcarima.of(ucm);
         SsfData data = new SsfData(s.values());
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
         TsPeriod start = s.getStart();
-        
-        ArimaType sum=ArimaModel.copyOf(ucm.getModel()).toType(null);
-        ArimaType mt=ArimaModel.copyOf(ucm.getComponent(0)).toType("trend");
-        ArimaType ms=ArimaModel.copyOf(ucm.getComponent(1)).toType("seasonal");
-        ArimaType mi=ArimaModel.copyOf(ucm.getComponent(2)).toType("irregular");
-       
-        
+
+        ArimaType sum = ArimaModel.copyOf(ucm.getModel()).toType(null);
+        ArimaType mt = ArimaModel.copyOf(ucm.getComponent(0)).toType("trend");
+        ArimaType ms = ArimaModel.copyOf(ucm.getComponent(1)).toType("seasonal");
+        ArimaType mi = ArimaModel.copyOf(ucm.getComponent(2)).toType("irregular");
+
         return Results.builder()
                 .y(s)
                 .t(TsData.of(start, ds.item(ssf.getComponentPosition(0))))
                 .s(TsData.of(start, ds.item(ssf.getComponentPosition(1))))
                 .i(TsData.of(start, ds.item(ssf.getComponentPosition(2))))
                 .ucarima(new UcarimaType(sum, new ArimaType[]{mt, ms, mi}))
+                .concentratedLogLikelihood(rslt.getConcentratedLikelihood().getLikelihood())
+                .regarima(rslt.getModel())
+                .sarima(rslt.getModel().arima().toType())
+                .statistics(rslt.statistics(spec.getParametersCount(), 0))
+                .score(monitor.getScore())
+                .parametersCovariance(monitor.getParametersCovariance())
                 .build();
-                
+
     }
-    
+
     public static UcarimaModel ucmAirline(SarimaModel sarima) {
 
         TrendCycleSelector tsel = new TrendCycleSelector();
@@ -152,5 +176,5 @@ public class AirlineDecomposition {
         ucm = ucm.setVarianceMax(-1, false);
         return ucm;
     }
-    
+
 }

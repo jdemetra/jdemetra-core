@@ -42,9 +42,9 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate
  */
-public class TradingDaysTestTest {
+public class TradingDaysTestsTest {
 
-    public TradingDaysTestTest() {
+    public TradingDaysTestsTest() {
     }
 
     @Test
@@ -64,14 +64,14 @@ public class TradingDaysTestTest {
         ds = DkToolkit.fastSmooth(ssf, data);
         TsData i2 = TsData.of(s.getStart(), ds.item(ssf.getComponentPosition(2)));
        
-        System.out.println(TradingDaysTest.test(i1, true, 0));
-        System.out.println(TradingDaysTest.test(i1, false, 0));
-        System.out.println(TradingDaysTest.test(i1, true, 8));
-        System.out.println(TradingDaysTest.test(i1, false, 8));
-        System.out.println(TradingDaysTest.test(i2, true, 0));
-        System.out.println(TradingDaysTest.test(i2, false, 0));
-        System.out.println(TradingDaysTest.test(i2, true, 8));
-        System.out.println(TradingDaysTest.test(i2, false, 8));
+        System.out.println(TradingDaysTests.ftest(i1, true, 0));
+        System.out.println(TradingDaysTests.ftest(i1, false, 0));
+        System.out.println(TradingDaysTests.ftest(i1, true, 8));
+        System.out.println(TradingDaysTests.ftest(i1, false, 8));
+        System.out.println(TradingDaysTests.ftest(i2, true, 0));
+        System.out.println(TradingDaysTests.ftest(i2, false, 0));
+        System.out.println(TradingDaysTests.ftest(i2, true, 8));
+        System.out.println(TradingDaysTests.ftest(i2, false, 8));
     }
 
     public static UcarimaModel ucmAirline(double th, double bth) {

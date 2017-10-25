@@ -34,10 +34,8 @@ import demetra.timeseries.regression.RegressionUtility;
 import demetra.timeseries.simplets.TsData;
 import static demetra.timeseries.simplets.TsDataToolkit.delta;
 import static demetra.timeseries.simplets.TsDataToolkit.drop;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,57 +43,23 @@ import java.util.Map;
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
-public class TradingDaysTest {
+public class TradingDaysTests {
 
 
-    @lombok.Value
-    public static class Results implements IProcResults {
-        
-        TestResult f;
-
-        @Override
-        public boolean contains(String id) {
-            return MAPPING.contains(id);
-        }
-
-        @Override
-        public Map<String, Class> getDictionary() {
-            Map<String, Class> dic = new LinkedHashMap<>();
-            MAPPING.fillDictionary(null, dic, true);
-            return dic;
-        }
-
-        @Override
-        public <T> T getData(String id, Class<T> tclass) {
-            return MAPPING.getData(this, id, tclass);
-        }
-
-        public static final InformationMapping<Results> getMapping() {
-            return MAPPING;
-        }
-
-        private static final String F = "f";
-        private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
-
-        static {
-            MAPPING.delegate(F, TestInfo.getMapping(), source -> source.getF());
-        }
-    }
-
-    public Results test(TsData s, boolean ar, int ny) {
+    public TestResult ftest(TsData s, boolean ar, int ny) {
         int ifreq = TsUtility.fromTsUnit(s.getUnit());
 
         if (ar) {
             if (ny != 0) {
                 s = drop(s, Math.max(0, s.length() - ifreq * ny - 1), 0);
             }
-            return new Results(processAr(s));
+            return processAr(s);
         } else {
             s = delta(s, 1);
             if (ny != 0) {
                 s = drop(s, Math.max(0, s.length() - ifreq * ny), 0);
             }
-            return new Results(process(s));
+            return process(s);
         }
 
     }
@@ -134,7 +98,7 @@ public class TradingDaysTest {
             
             Ols ols = new Ols();
             LeastSquaresResults rslt = ols.compute(reg);
-            StatisticalTest ftest = rslt.Ftest(1, td.getColumnsCount()-1);
+            StatisticalTest ftest = rslt.Ftest(1, td.getColumnsCount());
             return TestResult.builder()
                     .value(ftest.getValue())
                     .pvalue(ftest.getPValue())
