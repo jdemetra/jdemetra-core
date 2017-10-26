@@ -73,13 +73,13 @@ public class BasicStructuralModel implements Cloneable {
      *
      * @return
      */
-    public ModelSpecification getSpecification() {
-        ModelSpecification spec = new ModelSpecification();
+    public BsmSpec specification() {
+        BsmSpec spec = new BsmSpec();
         spec.setSeasonalModel(getSeas());
-        spec.useLevel(getUse(lVar));
-        spec.useSlope(getUse(sVar));
-        spec.useCycle(getUse(cVar));
-        spec.useNoise(nVar <= 0 ? ComponentUse.Unused : ComponentUse.Free);
+        spec.setLevelUse(getUse(lVar));
+        spec.setSlopeUse(getUse(sVar));
+        spec.setCycleUse(getUse(cVar));
+        spec.setNoiseUse(nVar <= 0 ? ComponentUse.Unused : ComponentUse.Free);
         return spec;
     }
 
@@ -115,15 +115,15 @@ public class BasicStructuralModel implements Cloneable {
      * @param spec
      * @param freq
      */
-    public BasicStructuralModel(ModelSpecification spec, int freq) {
+    public BasicStructuralModel(BsmSpec spec, int freq) {
         this.freq = freq;
         seasModel = spec.getSeasonalModel();
         seasVar = getVar(seasModel);
-        lVar = getVar(spec.lUse);
-        sVar = getVar(spec.sUse);
-        cVar = getVar(spec.cUse);
-        nVar = getVar(spec.nUse);
-        if (spec.cUse != ComponentUse.Unused) {
+        lVar = getVar(spec.getLevelUse());
+        sVar = getVar(spec.getSlopeUse());
+        cVar = getVar(spec.getCycleUse());
+        nVar = getVar(spec.getNoiseUse());
+        if (spec.getCycleUse() != ComponentUse.Unused) {
             cycle(.5, freq * 2);
         }
     }

@@ -14,26 +14,20 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.sts.internal;
+package demetra.sts;
 
-import demetra.sts.ModelSpecification;
+import demetra.maths.Optimizer;
 
 /**
  *
  * @author Jean Palate
  */
 @lombok.Data
-public class BsmSpecification {
-      public static enum Optimizer {
-
-        LevenbergMarquardt, MinPack, LBFGS
-    }
-
+public class BsmEstimationSpec {
     public static final double DEF_TOL = 1e-9;
     public static final Optimizer DEF_OPT = Optimizer.LevenbergMarquardt;
     public static final boolean DEF_DREGS = false;
 
-    private ModelSpecification modelSpecification=new ModelSpecification();
     private boolean diffuseRegression = DEF_DREGS;
     private double precision = DEF_TOL;
     private Optimizer optimizer = DEF_OPT;

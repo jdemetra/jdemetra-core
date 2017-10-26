@@ -103,7 +103,6 @@ public class AirlineDecomposition {
             MAPPING.set(S, TsData.class, source -> source.getS());
             MAPPING.set(I, TsData.class, source -> source.getI());
             MAPPING.set(SA, TsData.class, source -> subtract(source.getY(), source.getS()));
-            MAPPING.delegate(ARIMA, ArimaInfo.getMapping(), source -> source.getUcarima().getSum());
             MAPPING.delegate(UCARIMA, UcarimaInfo.getMapping(), source -> source.getUcarima());
             MAPPING.set(UCM, UcarimaType.class, source -> source.getUcarima());
             MAPPING.delegate(ARIMA, SarimaInfo.getMapping(), r -> r.getSarima());

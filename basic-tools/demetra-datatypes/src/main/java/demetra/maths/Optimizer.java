@@ -3,14 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.sts;
+package demetra.maths;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@lombok.Value
-public class SeasonalComponentType {
-    @lombok.NonNull SeasonalModel model;
-    double variance;
+public enum Optimizer {
+    LevenbergMarquardt, MinPack, LBFGS
 }

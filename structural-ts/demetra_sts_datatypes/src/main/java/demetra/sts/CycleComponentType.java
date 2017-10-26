@@ -9,9 +9,9 @@ package demetra.sts;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@lombok.Data
+@lombok.Value
 public class CycleComponentType {
-       double variance=1;
+       double variance;
        double cdump, cyclePeriod;
     
 }

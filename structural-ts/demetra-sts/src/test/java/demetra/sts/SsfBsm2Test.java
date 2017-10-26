@@ -42,7 +42,7 @@ public class SsfBsm2Test {
     final SsfBsm2 bsm;
 
     public SsfBsm2Test() {
-        ModelSpecification mspec = new ModelSpecification();
+        BsmSpec mspec = new BsmSpec();
         //mspec.setSeasonalModel(SeasonalModel.Crude);
         BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
         bsm = SsfBsm2.of(model);
@@ -50,11 +50,11 @@ public class SsfBsm2Test {
 
     @Test
     public void testAggregate() {
-        ModelSpecification mspec = new ModelSpecification();
+        BsmSpec mspec = new BsmSpec();
         //mspec.setSeasonalModel(SeasonalModel.Crude);
         BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
         LocalLinearTrend t = LocalLinearTrend.of(model.getVariance(Component.Level), model.getVariance(Component.Slope), 0);
-        ISsf seas = SeasonalComponent.of(model.getSpecification().getSeasonalModel(), model.getVariance(Component.Seasonal), 12);
+        ISsf seas = SeasonalComponent.of(model.specification().getSeasonalModel(), model.getVariance(Component.Seasonal), 12);
         CompositeSsf composite = CompositeSsf.of(model.getVariance(Component.Noise), t, seas);
 
         SsfData data = new SsfData(Data.X);
@@ -107,11 +107,11 @@ public class SsfBsm2Test {
         System.out.println("ckms filter");
         System.out.println(t1 - t0);
 
-        ModelSpecification mspec = new ModelSpecification();
+        BsmSpec mspec = new BsmSpec();
         //mspec.setSeasonalModel(SeasonalModel.Crude);
         BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
         LocalLinearTrend t = LocalLinearTrend.of(model.getVariance(Component.Level), model.getVariance(Component.Slope), 0);
-        ISsf seas = SeasonalComponent.of(model.getSpecification().getSeasonalModel(), model.getVariance(Component.Seasonal), 12);
+        ISsf seas = SeasonalComponent.of(model.specification().getSeasonalModel(), model.getVariance(Component.Seasonal), 12);
         CompositeSsf composite = CompositeSsf.of(model.getVariance(Component.Noise), t, seas);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < N; ++i) {

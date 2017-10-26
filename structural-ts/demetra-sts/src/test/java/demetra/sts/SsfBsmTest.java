@@ -38,7 +38,7 @@ public class SsfBsmTest {
     final SsfBsm bsm;
 
     public SsfBsmTest() {
-        ModelSpecification mspec = new ModelSpecification();
+        BsmSpec mspec = new BsmSpec();
         mspec.setSeasonalModel(SeasonalModel.Crude);
         BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
         bsm = SsfBsm.of(model);

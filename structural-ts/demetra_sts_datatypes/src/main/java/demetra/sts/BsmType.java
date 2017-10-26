@@ -9,8 +9,9 @@ package demetra.sts;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@lombok.Data
-public class BasicStructuralModelType {
+@lombok.Value
+@lombok.Builder(toBuilder=true)
+public class BsmType {
     TrendComponentType trendComponent;
     SeasonalComponentType seasonalComponent;
     CycleComponentType cycleComponent;

@@ -34,8 +34,9 @@ import demetra.ssf.dk.SsfFunction;
 import demetra.ssf.dk.SsfFunctionPoint;
 import demetra.ssf.univariate.SsfData;
 import demetra.sts.BasicStructuralModel;
+import demetra.sts.BsmEstimationSpec;
 import demetra.sts.Component;
-import demetra.sts.ModelSpecification;
+import demetra.sts.BsmSpec;
 import demetra.sts.SsfBsm2;
 import demetra.sts.internal.BsmMapping.Transformation;
 
@@ -52,7 +53,7 @@ public class BsmMonitor {
     private double[] m_y;
 
     // mapper definition
-    private ModelSpecification m_spec = new ModelSpecification();
+    private BsmSpec m_spec = new BsmSpec();
 
     private int m_freq = 1;
 
@@ -198,7 +199,7 @@ public class BsmMonitor {
         // return false;
         double vmin = m_dsmall;
         int imin = -1;
-        BsmMapping mapper = new BsmMapping(model.getSpecification(), m_freq,
+        BsmMapping mapper = new BsmMapping(model.specification(), m_freq,
                 BsmMapping.Transformation.None);
         mapper.setFixedComponent(m_mapping.getFixedComponent());
         SsfFunction<BasicStructuralModel, SsfBsm2> fn = buildFunction(mapper, true);
@@ -268,7 +269,7 @@ public class BsmMonitor {
      *
      * @return
      */
-    public ModelSpecification getSpecification() {
+    public BsmSpec getSpecification() {
         return m_spec;
     }
 
@@ -411,8 +412,8 @@ public class BsmMonitor {
      *
      * @param spec
      */
-    public void setSpecification(BsmSpecification spec) {
-        m_spec = spec.getModelSpecification().clone();
+    public void setSpecifications(BsmSpec mspec, BsmEstimationSpec spec) {
+        m_spec = mspec.clone();
         m_eps = spec.getPrecision();
         m_dregs = spec.isDiffuseRegression();
         switch (spec.getOptimizer()) {
@@ -431,13 +432,13 @@ public class BsmMonitor {
         m_bsm = null;
     }
 
-    public void setSpecification(ModelSpecification spec) {
+    public void setSpecification(BsmSpec spec) {
         m_spec = spec.clone();
         m_bsm = null;
     }
 
     private void updateSpec(BasicStructuralModel bsm) {
-        m_spec = bsm.getSpecification();
+        m_spec = bsm.specification();
         Component fixed = m_mapping.getFixedComponent();
         m_mapping = new BsmMapping(m_spec, m_freq, m_mapping.transformation);
         m_mapping.setFixedComponent(fixed);
@@ -452,14 +453,14 @@ public class BsmMonitor {
     }
 
     public IFunction likelihoodFunction() {
-        BsmMapping mapper = new BsmMapping(m_bsm.getSpecification(), m_bsm.getFrequency(), Transformation.None);
+        BsmMapping mapper = new BsmMapping(m_bsm.specification(), m_bsm.getFrequency(), Transformation.None);
         SsfFunction<BasicStructuralModel, SsfBsm2> fn = buildFunction(mapper, false);
         double a = (m_ll.dim() - m_ll.getD()) * Math.log(m_factor);
         return new TransformedFunction(fn, TransformedFunction.linearTransformation(-a, 1));
     }
 
     public IFunctionPoint maxLikelihoodFunction() {
-        BsmMapping mapper = new BsmMapping(m_bsm.getSpecification(), m_bsm.getFrequency(), Transformation.None);
+        BsmMapping mapper = new BsmMapping(m_bsm.specification(), m_bsm.getFrequency(), Transformation.None);
         IFunction ll = likelihoodFunction();
         return ll.evaluate(mapper.map(m_bsm));
     }
