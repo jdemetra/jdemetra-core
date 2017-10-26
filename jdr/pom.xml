@@ -64,6 +64,16 @@
             <version>${jd3-benchmarking.version}</version>
         </dependency>
         <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-sts-datatypes</artifactId>
+            <version>${jd3-sts.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-sts</artifactId>
+            <version>${jd3-sts.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <scope>provided</scope>
