@@ -25,7 +25,7 @@ import demetra.maths.matrices.SymmetricMatrix;
  *
  * @author Jean Palate
  */
-public class BasicStructuralModel implements Cloneable {
+public class BasicStructuralModel {
 
     private static ComponentUse getUse(double var) {
         if (var < 0) {
@@ -122,20 +122,13 @@ public class BasicStructuralModel implements Cloneable {
         lVar = getVar(spec.getLevelUse());
         sVar = getVar(spec.getSlopeUse());
         cVar = getVar(spec.getCycleUse());
-        nVar = getVar(spec.getNoiseUse());
+        double nv=getVar(spec.getNoiseUse());
+        nVar = nv > 0 ? nv : 0; 
         if (spec.getCycleUse() != ComponentUse.Unused) {
             cycle(.5, freq * 2);
         }
     }
 
-    @Override
-    public BasicStructuralModel clone() {
-        try {
-            return (BasicStructuralModel) super.clone();
-        } catch (CloneNotSupportedException ex) {
-            throw new AssertionError();
-        }
-    }
 
     /**
      *

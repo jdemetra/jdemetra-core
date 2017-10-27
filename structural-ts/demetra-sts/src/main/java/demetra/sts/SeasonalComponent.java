@@ -403,7 +403,7 @@ public class SeasonalComponent {
                         s.set(data.std());
                         break;
                     case Dummy:
-                        s.set(data.freq - 1, 0, data.std());
+                        s.set(0, 0, data.std());
                         break;
                     default:
                         s.copy(data.lvar);
@@ -420,7 +420,7 @@ public class SeasonalComponent {
                         x.add(data.std() * u.get(0));
                         break;
                     case Dummy:
-                        x.add(data.freq - 1, data.std() * u.get(0));
+                        x.add(0, data.std() * u.get(0));
                         break;
                     default:
                         x.addProduct(data.lvar.rowsIterator(), u);
@@ -437,7 +437,7 @@ public class SeasonalComponent {
                         xs.set(0, data.std() * x.sum());
                         break;
                     case Dummy:
-                        xs.set(0, data.std() * x.get(data.freq - 1));
+                        xs.set(0, data.std() * x.get(0));
                         break;
                     default:
                         xs.product(x, data.lvar.columnsIterator());
@@ -449,24 +449,24 @@ public class SeasonalComponent {
         @Override
         public void T(int pos, Matrix tr) {
             if (data.seasVar >= 0) {
-                tr.row(data.freq - 2).set(-1);
-                tr.subDiagonal(1).set(1);
+                tr.row(0).set(-1);
+                tr.subDiagonal(-1).set(1);
             }
         }
 
         @Override
         public void TX(int pos, DataBlock x) {
-            x.bshiftAndNegSum();
+            x.fshiftAndNegSum();
         }
 
         @Override
         public void XT(int pos, DataBlock x) {
             int imax = data.freq - 2;
-            double xs = x.get(imax);
-            for (int i = imax; i > 0; --i) {
-                x.set(i, x.get(i - 1) - xs);
+            double xs = x.get(0);
+            for (int i = 0; i < imax; ++i) {
+                x.set(i, x.get(i + 1) - xs);
             }
-            x.set(0, -xs);
+            x.set(imax, -xs);
 
         }
 

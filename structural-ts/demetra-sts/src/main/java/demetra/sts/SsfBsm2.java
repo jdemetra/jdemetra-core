@@ -191,7 +191,7 @@ public class SsfBsm2 extends Ssf {
 
         private final SsfBsm.BsmData data;
 
-        public Bsm2Dynamics(SsfBsm.BsmData data) {
+        Bsm2Dynamics(SsfBsm.BsmData data) {
             this.data = data;
         }
 
@@ -389,8 +389,8 @@ public class SsfBsm2 extends Ssf {
             }
             if (data.seasVar >= 0) {
                 Matrix seas = tr.extract(i, data.freq - 1, i, data.freq - 1);
-                seas.row(data.freq - 2).set(-1);
-                seas.subDiagonal(1).set(1);
+                seas.row(0).set(-1);
+                seas.subDiagonal(-1).set(1);
             }
         }
 
@@ -413,7 +413,7 @@ public class SsfBsm2 extends Ssf {
             }
             if (data.seasVar >= 0) {
                 DataBlock ex = x.extract(i0, data.freq - 1, 1);
-                ex.bshiftAndNegSum();
+                ex.fshiftAndNegSum();
             }
         }
 
@@ -437,11 +437,11 @@ public class SsfBsm2 extends Ssf {
             }
             if (data.seasVar >= 0) {
                 int imax = i0 + data.freq - 2;
-                double xs = x.get(imax);
-                for (int i = imax; i > i0; --i) {
-                    x.set(i, x.get(i - 1) - xs);
+                double xs = x.get(i0);
+                for (int i = i0; i <imax; ++i) {
+                    x.set(i, x.get(i + 1) - xs);
                 }
-                x.set(i0, -xs);
+                x.set(imax, -xs);
             }
         }
 
