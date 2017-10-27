@@ -90,11 +90,11 @@ public class StsEstimation {
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.set(LVAR, Double.class, source -> source.getBsm().getVariance(Component.Level));
-            MAPPING.set(SVAR, Double.class, source -> source.getBsm().getVariance(Component.Slope));
-            MAPPING.set(CVAR, Double.class, source -> source.getBsm().getVariance(Component.Cycle));
-            MAPPING.set(SEASVAR, Double.class, source -> source.getBsm().getVariance(Component.Seasonal));
-            MAPPING.set(NVAR, Double.class, source -> source.getBsm().getVariance(Component.Noise));
+            MAPPING.set(LVAR, Double.class, source -> source.variance(Component.Level));
+            MAPPING.set(SVAR, Double.class, source -> source.variance(Component.Slope));
+            MAPPING.set(CVAR, Double.class, source -> source.variance(Component.Cycle));
+            MAPPING.set(SEASVAR, Double.class, source -> source.variance(Component.Seasonal));
+            MAPPING.set(NVAR, Double.class, source -> source.variance(Component.Noise));
             MAPPING.set(CDUMP, Double.class, source -> source.getBsm().getCyclicalDumpingFactor());
             MAPPING.set(CLENGTH, Double.class, source -> source.getBsm().getCyclicalPeriod() / (6 * source.getBsm().getFrequency()));
             MAPPING.set(Y, TsData.class, source -> source.getY());
@@ -106,15 +106,23 @@ public class StsEstimation {
             MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
         }
+
+        private double variance(Component cmp) {
+            double v = bsm.getVariance(cmp);
+            if (v > 0) {
+                v *= likelihood.sigma();
+            }
+            return v;
+        }
     }
 
-    public Results process(TsData y, int level, int slope, int cycle, String seasmodel) {
+    public Results process(TsData y, int level, int slope, int cycle, int noise, String seasmodel) {
         SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
         BsmSpec mspec = new BsmSpec();
         mspec.setLevelUse(of(level));
         mspec.setSlopeUse(of(slope));
         mspec.setCycleUse(of(cycle));
-        mspec.setNoiseUse(ComponentUse.Free);
+        mspec.setNoiseUse(of(noise));
         mspec.setSeasonalModel(sm);
 
         BsmMonitor monitor = new BsmMonitor();
@@ -130,6 +138,7 @@ public class StsEstimation {
 
         TsData t = null, c = null, s = null, seas = null, n = null;
         TsPeriod start = y.getStart();
+        mspec=bsm.specification();
         if (mspec.hasLevel()) {
             int pos = SsfBsm.searchPosition(bsm, Component.Level);
             t = TsData.of(start, sr.getComponent(pos));
@@ -150,10 +159,10 @@ public class StsEstimation {
             int pos = SsfBsm.searchPosition(bsm, Component.Noise);
             n = TsData.of(start, sr.getComponent(pos));
         }
-        
+
         IFunctionPoint ml = monitor.maxLikelihoodFunction();
         IFunctionDerivatives derivatives = new NumericalDerivatives(ml, false);
-        int ndf=y.length();
+        int ndf = y.length();
         double objective = ml.getValue();
         Matrix hessian = derivatives.hessian();
         double[] score = derivatives.gradient().toArray();

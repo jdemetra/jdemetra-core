@@ -35,7 +35,7 @@ public class StsEstimationTest {
 
     @Test
     public void testABS() {
-        StsEstimation.Results rslt = StsEstimation.process(log(Data.TS_ABS_RETAIL), 1, 1, -1, "Crude");
+        StsEstimation.Results rslt = StsEstimation.process(Data.TS_ABS_RETAIL2, 1, 1, -1, 1, "Dummy");
         System.out.println(rslt.getBsm());
 
         Map<String, Class> dictionary = new LinkedHashMap<>();
