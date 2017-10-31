@@ -18,6 +18,7 @@ package demetra.r;
 
 import demetra.arima.ArimaModel;
 import demetra.arima.ArimaType;
+import demetra.arima.IArimaModel;
 import demetra.arima.UcarimaType;
 import demetra.arima.mapping.ArimaInfo;
 import demetra.arima.mapping.UcarimaInfo;
@@ -42,6 +43,7 @@ import demetra.ssf.univariate.SsfData;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.simplets.TsData;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import demetra.ucarima.AllSelector;
 import demetra.ucarima.ModelDecomposer;
 import demetra.ucarima.SeasonalSelector;
 import demetra.ucarima.TrendCycleSelector;
@@ -133,7 +135,7 @@ public class AirlineDecomposition {
                 = RegArimaModel.builder(DoubleSequence.of(s.values()), arima)
                 .build();
         RegArimaEstimation<SarimaModel> rslt = monitor.process(regarima);
-        UcarimaModel ucm = ucmAirline(rslt.getModel().arima());
+        UcarimaModel ucm = ucm(rslt.getModel().arima());
 
         ucm = ucm.simplify();
         SsfUcarima ssf = SsfUcarima.of(ucm);
@@ -162,16 +164,16 @@ public class AirlineDecomposition {
 
     }
 
-    public static UcarimaModel ucmAirline(SarimaModel sarima) {
+    public static UcarimaModel ucm(IArimaModel arima) {
 
         TrendCycleSelector tsel = new TrendCycleSelector();
-        SeasonalSelector ssel = new SeasonalSelector(12);
+        AllSelector ssel = new AllSelector();
 
         ModelDecomposer decomposer = new ModelDecomposer();
         decomposer.add(tsel);
         decomposer.add(ssel);
 
-        UcarimaModel ucm = decomposer.decompose(sarima);
+        UcarimaModel ucm = decomposer.decompose(arima);
         ucm = ucm.setVarianceMax(-1, false);
         return ucm;
     }
