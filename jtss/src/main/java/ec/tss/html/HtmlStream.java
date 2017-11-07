@@ -16,12 +16,20 @@
  */
 package ec.tss.html;
 
+import com.google.common.base.Strings;
+import static ec.tss.html.HtmlTag.TABLE;
+import static ec.tss.html.HtmlTag.TABLECELL;
+import static ec.tss.html.HtmlTag.TABLEHEADER;
 import ec.tstoolkit.utilities.Arrays2;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.annotation.Nullable;
 
 /**
  *
@@ -31,55 +39,26 @@ import java.util.Map.Entry;
  */
 public class HtmlStream implements Closeable {
 
-    /**
-     *
-     */
     public final Writer writer;
 
-    /**
-     *
-     * @param writer
-     */
     public HtmlStream(Writer writer) {
         this.writer = writer;
     }
 
-    /**
-     *
-     * @throws IOException
-     */
+    public void open() throws IOException {
+        this.writer.append("<html><body>");
+    }
+
     @Override
     public void close() throws IOException {
         this.writer.append("</body></html>");
     }
 
-    /**
-     *
-     * @param html
-     * @return
-     * @throws IOException
-     */
-    public HtmlStream close(HtmlTag html) throws IOException {
-        writer.write("</");
-        writer.write(html.tag);
-        writer.write('>');
+    public HtmlStream newLine() throws IOException {
+        writer.write("<br/>");
         return this;
     }
 
-    /**
-     *
-     * @return @throws IOException
-     */
-    public HtmlStream newLine() throws IOException {
-        return write("<br/>");
-    }
-
-    /**
-     *
-     * @param n
-     * @return
-     * @throws IOException
-     */
     public HtmlStream newLines(int n) throws IOException {
         for (int i = 0; i < n; ++i) {
             newLine();
@@ -87,326 +66,248 @@ public class HtmlStream implements Closeable {
         return this;
     }
 
-    /**
-     *
-     * @throws IOException
-     */
-    public void open() throws IOException {
-        this.writer.append("<html><body>");
+    public HtmlStream open(HtmlTag tag) throws IOException {
+        return open(tag, HtmlClass.NO_CLASS);
     }
 
-    /**
-     *
-     * @param table
-     * @return
-     * @throws IOException
-     */
-    public HtmlStream open(HtmlTable table) throws IOException {
-        writer.write("<table");
-        if (table.width != 0) {
-            writer.write(" width=\'");
-            writer.write(Integer.toString(table.width));
-            writer.append('\'');
-        }
-        if (table.border != 0) {
-            writer.write(" border=\'");
-            writer.write(Integer.toString(table.border));
-            writer.append('\'');
-        }
-        writer.write('>');
+    public HtmlStream open(HtmlTag tag, HtmlClass classNames) throws IOException {
+        writeBeg();
+        writeTag(tag);
+        writeAttr(CLASS_ATTR, classNames, HtmlClass::isEmpty);
+        writeEnd();
         return this;
     }
 
-    /**
-     *
-     * @param html
-     * @return
-     * @throws IOException
-     */
-    public HtmlStream open(HtmlTag html) throws IOException {
-        writer.write('<');
-        writer.write(html.tag);
-        writer.write('>');
+    public HtmlStream close(HtmlTag tag) throws IOException {
+        writeBeg();
+        writeSlash();
+        writeTag(tag);
+        writeEnd();
         return this;
     }
 
-    /**
-     *
-     * @param html
-     * @return
-     * @throws IOException
-     */
-    public HtmlStream open(HtmlTag html, String attribute, String val) throws IOException {
-        writer.write('<');
-        writer.write(html.tag);
-        writer.write(' ');
-        writer.write(attribute);
-        writer.write("=\'");
-        writer.write(val);
-        writer.write("\'>");
+    public HtmlStream write(HtmlTag tag) throws IOException {
+        writeBeg();
+        writeTag(tag);
+        writeSlash();
+        writeEnd();
         return this;
     }
 
-    /**
-     *
-     * @param html
-     * @return
-     * @throws IOException
-     */
-    public HtmlStream open(HtmlTag html, Map<String, String> attributes) throws IOException {
-        writer.write('<');
-        writer.write(html.tag);
-        for (Entry<String, String> entry : attributes.entrySet()) {
-            writer.write(' ');
-            writer.write(entry.getKey());
-            writer.write("=\'");
-            writer.write(entry.getValue());
-            writer.append('\'');
-        }
-        writer.write('>');
-        return this;
+    public HtmlStream write(HtmlTag tag, String text) throws IOException {
+        return open(tag).write(text).close(tag);
     }
 
-    /**
-     *
-     * @param html
-     * @param style
-     * @return
-     * @throws IOException
-     */
-    public HtmlStream open(HtmlTag html, CssStyle style) throws IOException {
-        writer.write('<');
-        writer.write(html.tag);
-        style.write(this);
-        writer.write('>');
-        return this;
+    public HtmlStream write(HtmlTag tag, String text, HtmlClass classNames) throws IOException {
+        return open(tag, classNames).write(text).close(tag);
     }
 
-    public HtmlStream open(HtmlTag html, CssStyle style, String attribute, String val) throws IOException {
-        writer.write('<');
-        writer.write(html.tag);
-        style.write(this);
-        writer.write(' ');
-        writer.write(attribute);
-        writer.write("=\'");
-        writer.write(val);
-        writer.write("'\'>");
-        return this;
+    public HtmlStream write(String text, HtmlClass classNames) throws IOException {
+        return classNames.isEmpty() ? write(text) : write(HtmlTag.SPAN, text, classNames);
     }
 
-    /**
-     *
-     * @param c
-     * @return
-     * @throws IOException
-     */
     public HtmlStream write(char c) throws IOException {
         writer.write(c);
         return this;
     }
 
-    /**
-     *
-     * @param d
-     * @return
-     * @throws IOException
-     */
     public HtmlStream write(double d) throws IOException {
-        writer.write(Double.toString(d));
+        writeText(Double.toString(d));
         return this;
     }
 
-    /**
-     *
-     * @param cell
-     * @return
-     * @throws IOException
-     */
+    public HtmlStream write(int i) throws IOException {
+        writeText(Integer.toString(i));
+        return this;
+    }
+
+    public HtmlStream write(String txt) throws IOException {
+        writeText(txt);
+        return this;
+    }
+
+    public HtmlStream open(HtmlTable table) throws IOException {
+        writeBeg();
+        writeTag(TABLE);
+//        writeAttr(WIDTH_ATTR, table.width, o -> o == 0);
+//        writeAttr(BORDER_ATTR, table.border, o -> o == 0);
+        writeEnd();
+        return this;
+    }
+
     public HtmlStream write(HtmlTableCell cell) throws IOException {
-        return write(cell, null);
-    }
+        writeBeg();
+        writeTag(TABLECELL);
+        writeAttr(COLSPAN_ATTR, cell.colspan, HtmlStream::isDefaultSpan);
+        writeAttr(ROWSPAN_ATTR, cell.rowspan, HtmlStream::isDefaultSpan);
+        writeAttr(CLASS_ATTR, cell.getClassnames(), HtmlClass::isEmpty);
+        writeStyleAttribute(cell.styles);
+        writeEnd();
 
-    /**
-     *
-     * @param cell
-     * @param cellBg
-     * @return
-     * @throws IOException
-     */
-    public HtmlStream write(HtmlTableCell cell, String cellBg) throws IOException {
-        writer.write("<td");
-        if (cellBg != null && !cellBg.isEmpty()) {
-            writer.write(" bgcolor=\"" + cellBg + "\"");
-        }
-
-        if (cell.colspan > 1) {
-            writer.write(" colspan=\"" + cell.colspan + "\"");
-        }
-
-        if (cell.rowspan > 1) {
-            writer.write(" rowspan=\"" + cell.rowspan + "\"");
-        }
-
-        if (cellBg != null && !cellBg.isEmpty()) {
-            writer.write(" bgcolor=\"" + cellBg + "\"");
-        }
-
-        if (cell.styles.length > 0) {
-            writer.write(" style=\'");
-            for (int i = 0; i < cell.styles.length; ++i) {
-                writer.write(cell.styles[i].tag);
-                if (i < cell.styles.length - 1) {
-                    writer.write("; ");
-                }
-            }
-
-            writer.write("\'");
-        }
-        writer.write('>');
         cell.core.write(this);
-        writer.write("</td>");
+
+        writeBeg();
+        writeSlash();
+        writeTag(TABLECELL);
+        writeEnd();
         return this;
     }
 
-    /**
-     *
-     * @param header
-     * @return
-     * @throws IOException
-     */
     public HtmlStream write(HtmlTableHeader header) throws IOException {
-        writer.write("<th");
-
-        if (header.colspan > 1) {
-            writer.write(" colspan=\"" + header.colspan + "\"");
-        }
-
-        if (header.rowspan > 1) {
-            writer.write(" rowspan=\"" + header.rowspan + "\"");
-        }
-
-        if (header.styles.length > 0) {
-            writer.write(" style=\'");
-            for (int i = 0; i < header.styles.length; ++i) {
-                writer.write(header.styles[i].tag);
-                if (i < header.styles.length - 1) {
-                    writer.write("; ");
-                }
-            }
-            writer.write("\'");
-        }
-        writer.write('>');
+        writeBeg();
+        writeTag(TABLEHEADER);
+        writeAttr(COLSPAN_ATTR, header.colspan, HtmlStream::isDefaultSpan);
+        writeAttr(ROWSPAN_ATTR, header.rowspan, HtmlStream::isDefaultSpan);
+        writeAttr(CLASS_ATTR, header.getClassnames(), HtmlClass::isEmpty);
+        writeStyleAttribute(header.styles);
+        writeEnd();
 
         header.core.write(this);
 
-        writer.write("</th>");
+        writeBeg();
+        writeSlash();
+        writeTag(TABLEHEADER);
+        writeEnd();
         return this;
     }
 
-    /**
-     *
-     * @param html
-     * @return
-     * @throws IOException
-     */
-    public HtmlStream write(HtmlTag html) throws IOException {
-        writer.write('<');
-        writer.write(html.tag);
-        writer.write(" />");
-        return this;
-    }
-
-    /**
-     *
-     * @param html
-     * @param style
-     * @param text
-     * @return
-     * @throws IOException
-     */
-    public HtmlStream write(HtmlTag html, CssStyle style, String text)
-            throws IOException {
-        open(html, style);
-        writer.write(text);
-        close(html);
-        return this;
-    }
-
-    /**
-     *
-     * @param html
-     * @param text
-     * @return
-     * @throws IOException
-     */
-    public HtmlStream write(HtmlTag html, String text) throws IOException {
-        open(html);
-        writer.write(text);
-        close(html);
-        return this;
-    }
-
-    // public HTMLStream write(Object obj) throws IOException
-    /**
-     *
-     * @param obj
-     * @return
-     * @throws IOException
-     */
     public HtmlStream write(IHtmlElement obj) throws IOException {
         obj.write(this);
-        // if (obj instanceof IHTMLElement)
-        // {
-        // IHTMLElement iobj = (IHTMLElement) obj;
-        // iobj.write(this);
-        // }
-        // else
-        // writer.write(obj.toString());
         return this;
     }
 
-    /**
-     *
-     * @param i
-     * @return
-     * @throws IOException
-     */
-    public HtmlStream write(int i) throws IOException {
-        writer.write(Integer.toString(i));
-        return this;
-    }
-
-    /**
-     *
-     * @param txt
-     * @return
-     * @throws IOException
-     */
-    public HtmlStream write(String txt) throws IOException {
-        writer.write(txt);
-        return this;
-    }
-
-    /**
-     *
-     * @param txt
-     * @param styles
-     * @return
-     * @throws IOException
-     */
-    public HtmlStream write(String txt, HtmlStyle... styles) throws IOException {
+    @Deprecated
+    public HtmlStream write(String text, HtmlStyle... styles) throws IOException {
         if (Arrays2.isNullOrEmpty(styles)) {
-            return write(txt);
+            return write(text);
         }
         writer.write("<span");
-        writer.write(" style=\'");
-        for (int i = 0; i < styles.length; ++i) {
-            writer.write(styles[i].tag);
-            writer.write("; ");
-        }
-        writer.write("\'>");
-        writer.write(txt);
+        writeStyleAttribute(styles);
+        writer.write(">");
+        writeText(text);
         writer.write("</span>");
         return this;
     }
+
+    @Deprecated
+    public HtmlStream open(HtmlTag tag, String attrName, String attrValue) throws IOException {
+        writeBeg();
+        writeTag(tag);
+        writeAttr(attrName, attrValue, String::isEmpty);
+        writeEnd();
+        return this;
+    }
+
+    @Deprecated
+    public HtmlStream open(HtmlTag tag, CssStyle style) throws IOException {
+        writeBeg();
+        writeTag(tag);
+        writeStyle(style);
+        writeEnd();
+        return this;
+    }
+
+    @Deprecated
+    public HtmlStream open(HtmlTag tag, CssStyle style, String attrName, String attrValue) throws IOException {
+        writeBeg();
+        writeTag(tag);
+        writeStyle(style);
+        writeAttr(attrName, attrValue, String::isEmpty);
+        writeEnd();
+        return this;
+    }
+
+    @Deprecated
+    public HtmlStream open(HtmlTag tag, Map<String, String> attributes) throws IOException {
+        writeBeg();
+        writeTag(tag);
+        for (Entry<String, String> entry : attributes.entrySet()) {
+            writeAttr(entry.getKey(), entry.getValue(), String::isEmpty);
+        }
+        writeEnd();
+        return this;
+    }
+
+    @Deprecated
+    public HtmlStream write(HtmlTag tag, CssStyle style, String text) throws IOException {
+        open(tag, style);
+        writeText(text);
+        close(tag);
+        return this;
+    }
+
+    @Deprecated
+    public HtmlStream write(HtmlTableCell cell, String cellBg) throws IOException {
+        writeBeg();
+        writeTag(TABLECELL);
+        writeAttr(COLSPAN_ATTR, cell.colspan, o -> o <= 1);
+        writeAttr(ROWSPAN_ATTR, cell.rowspan, o -> o <= 1);
+        writeAttr(BGCOLOR_ATTR, cellBg, Strings::isNullOrEmpty);
+        writeAttr(CLASS_ATTR, cell.getClassnames(), HtmlClass::isEmpty);
+        writeStyleAttribute(cell.styles);
+        writeEnd();
+
+        cell.core.write(this);
+
+        writeBeg();
+        writeSlash();
+        writeTag(TABLECELL);
+        writeEnd();
+        return this;
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="Internal implementation">
+    private void writeBeg() throws IOException {
+        writer.append('<');
+    }
+
+    private void writeEnd() throws IOException {
+        writer.append('>');
+    }
+
+    private void writeSlash() throws IOException {
+        writer.append('/');
+    }
+
+    private void writeTag(HtmlTag tag) throws IOException {
+        writer.append(tag.tag);
+    }
+
+    private void writeText(String text) throws IOException {
+        writer.append(text);
+    }
+
+    private void writeStyle(CssStyle style) throws IOException {
+        style.write(this);
+    }
+
+    private void writeStyleAttribute(@Nullable HtmlStyle[] styles) throws IOException {
+        if (styles != null && styles.length > 0) {
+            writeAttr(STYLE_ATTR, Stream.of(styles).map(o -> o.tag).collect(Collectors.joining("; ")), String::isEmpty);
+        }
+    }
+
+    private <T> void writeAttr(String name, T value, Predicate<? super T> isDefaultValue) throws IOException {
+        if (isDefaultValue.test(value)) {
+            return;
+        }
+        writer.write(' ');
+        writer.write(name);
+        writer.write("=\"");
+        writer.write(value.toString());
+        writer.write("\"");
+    }
+
+    private static boolean isDefaultSpan(int span) {
+        return span <= 1;
+    }
+
+    private static final String CLASS_ATTR = "class";
+    private static final String STYLE_ATTR = "style";
+    private static final String WIDTH_ATTR = "width";
+    private static final String BORDER_ATTR = "border";
+    private static final String COLSPAN_ATTR = "colspan";
+    private static final String ROWSPAN_ATTR = "rowspan";
+    private static final String BGCOLOR_ATTR = "bgcolor";
+    //</editor-fold>
 }

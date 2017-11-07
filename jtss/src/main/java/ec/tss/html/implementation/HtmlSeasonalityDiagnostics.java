@@ -18,7 +18,6 @@ package ec.tss.html.implementation;
 
 import ec.satoolkit.diagnostics.FTest;
 import ec.satoolkit.diagnostics.KruskalWallisTest;
-import ec.satoolkit.diagnostics.PeriodogramTest;
 import ec.tss.html.*;
 import ec.tstoolkit.modelling.arima.tramo.SeasonalityTests;
 import ec.tstoolkit.modelling.arima.tramo.SpectralPeaks;
@@ -53,7 +52,7 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
             kwTest = new KruskalWallisTest(tests.getDifferencing().getDifferenced());
         } else {
             ftest = null;
-            ftestAMI=null;
+            ftestAMI = null;
             kwTest = null;
         }
 
@@ -77,15 +76,13 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
 
     public void writeTransformation(HtmlStream stream) throws IOException {
         if (tests.getDifferencing().isMean() && tests.getDifferencing().getDifferencingOrder() == 1) {
-            stream.write("Data have been differenced and corrected for mean", HtmlStyle.Italic).newLines(2);
-        } else {
-            if (tests.getDifferencing().getDifferencingOrder() > 0) {
-                stream.write("Data have been differenced " + tests.getDifferencing().getDifferencingOrder() + " times", HtmlStyle.Italic).newLine();
-                if (tests.getDifferencing().isMean()) {
-                    stream.write("Data have been corrected for mean", HtmlStyle.Italic).newLine();
-                }
-                stream.newLine();
+            stream.write(HtmlTag.EMPHASIZED_TEXT, "Data have been differenced and corrected for mean").newLines(2);
+        } else if (tests.getDifferencing().getDifferencingOrder() > 0) {
+            stream.write(HtmlTag.EMPHASIZED_TEXT, "Data have been differenced " + tests.getDifferencing().getDifferencingOrder() + " times").newLine();
+            if (tests.getDifferencing().isMean()) {
+                stream.write(HtmlTag.EMPHASIZED_TEXT, "Data have been corrected for mean").newLine();
             }
+            stream.newLine();
         }
     }
 
@@ -105,7 +102,7 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
 
     public void writeFTest(HtmlStream stream) throws IOException {
         stream.write(HtmlTag.HEADER4, "6. Tests on regression with fixed seasonal dummies ").newLine();
-        stream.write("Regression model (on original series) with (0 1 1)(0 0 0) noises + mean", HtmlStyle.Italic).newLine();
+        stream.write(HtmlTag.EMPHASIZED_TEXT, "Regression model (on original series) with (0 1 1)(0 0 0) noises + mean").newLine();
         writeSummary(stream, ftest.getFTest().getPValue());
         stream.newLines(2);
         stream.write("Distribution: " + ftest.getFTest().getDistribution().getDescription()).newLine();
@@ -116,8 +113,8 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
 
     public void writeFTestAMI(HtmlStream stream) throws IOException {
         stream.write(HtmlTag.HEADER4, "6bis. Tests on regression with fixed seasonal dummies ").newLine();
-        stream.write("Regression model (on original series) with ARIMA automatically identified", HtmlStyle.Italic).newLine();
-        stream.write("model is: "+ftestAMI.getEstimatedModel().model.getArima().toString(), HtmlStyle.Italic).newLine();
+        stream.write(HtmlTag.EMPHASIZED_TEXT, "Regression model (on original series) with ARIMA automatically identified").newLine();
+        stream.write(HtmlTag.EMPHASIZED_TEXT, "model is: " + ftestAMI.getEstimatedModel().model.getArima().toString()).newLine();
         writeSummary(stream, ftestAMI.getFTest().getPValue());
         stream.newLines(2);
         stream.write("Distribution: " + ftestAMI.getFTest().getDistribution().getDescription()).newLine();
@@ -125,9 +122,10 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
         stream.write("PValue: " + df4.format(ftestAMI.getFTest().getPValue()));
         stream.write(HtmlTag.LINEBREAK);
     }
+
     public void writeFriedman(HtmlStream stream) throws IOException {
         stream.write(HtmlTag.HEADER4, "2. Non parametric (Friedman) test");
-        stream.write("Based on the rank of the observations in each year", HtmlStyle.Italic).newLines(2);
+        stream.write(HtmlTag.EMPHASIZED_TEXT, "Based on the rank of the observations in each year").newLines(2);
         writeSummary(stream, tests.getNonParametricTest().getPValue());
         stream.newLine();
         stream.write("Distribution: " + tests.getNonParametricTest().getDistribution().getDescription()).newLine();
@@ -138,7 +136,7 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
 
     public void writeKruskalWallis(HtmlStream stream) throws IOException {
         stream.write(HtmlTag.HEADER4, "3. Non parametric (Kruskal-Wallis) test");
-        stream.write("Based on the rank of the observations", HtmlStyle.Italic).newLines(2);
+        stream.write(HtmlTag.EMPHASIZED_TEXT, "Based on the rank of the observations").newLines(2);
         writeSummary(stream, kwTest.getPValue());
         stream.newLine();
         stream.write("Distribution: " + kwTest.getDistribution().getDescription()).newLine();
@@ -161,7 +159,7 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
         stream.newLine();
         writeSummary(stream, diag);
         stream.newLines(2);
-        stream.write("T or t for Tukey periodogram, A or a for auto-regressive spectrum; 'T' or 'A' for very signficant peaks, 't' or 'a' for signficant peaks, '_' otherwise", HtmlStyle.Italic).newLines(2);
+        stream.write(HtmlTag.EMPHASIZED_TEXT, "T or t for Tukey periodogram, A or a for auto-regressive spectrum; 'T' or 'A' for very signficant peaks, 't' or 'a' for signficant peaks, '_' otherwise").newLines(2);
         stream.newLine();
         stream.write(SpectralPeaks.format(tests.getSpectralPeaks()));
         stream.write(HtmlTag.LINEBREAK);
@@ -169,7 +167,7 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
 
     public void writePeriodogram(HtmlStream stream) throws IOException {
         stream.write(HtmlTag.HEADER4, "5. Periodogram");
-        stream.write("Test on the sum of the values of a periodogram at seasonal frequencies", HtmlStyle.Italic).newLines(2);
+        stream.write(HtmlTag.EMPHASIZED_TEXT, "Test on the sum of the values of a periodogram at seasonal frequencies").newLines(2);
         stream.newLine();
         StatisticalTest test = tests.getPeriodogramTest();
         writeSummary(stream, test.getPValue());
@@ -183,24 +181,24 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
     private void writeSummary(HtmlStream stream) throws IOException {
         stream.write(HtmlTag.HEADER4, "Summary");
         writeTransformation(stream);
-        stream.open(new HtmlTable(0, 300));
+        stream.open(new HtmlTable().withWidth(300));
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("Test", 250));
-        stream.write(new HtmlTableCell("Seasonality", 50));
+        stream.write(new HtmlTableCell("Test").withWidth(250));
+        stream.write(new HtmlTableCell("Seasonality").withWidth(50));
         stream.close(HtmlTag.TABLEROW);
 
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("1. Auto-correlations at seasonal lags", 250));
+        stream.write(new HtmlTableCell("1. Auto-correlations at seasonal lags").withWidth(250));
         stream.write(getCellSummary(tests.getQs().getPValue(), 50));
         stream.close(HtmlTag.TABLEROW);
 
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("2. Friedman (non parametric)", 250));
+        stream.write(new HtmlTableCell("2. Friedman (non parametric)").withWidth(250));
         stream.write(getCellSummary(tests.getNonParametricTest().getPValue(), 50));
         stream.close(HtmlTag.TABLEROW);
 
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("3. Kruskall-Wallis (non parametric)", 250));
+        stream.write(new HtmlTableCell("3. Kruskall-Wallis (non parametric)").withWidth(250));
         stream.write(getCellSummary(kwTest.getPValue(), 50));
         stream.close(HtmlTag.TABLEROW);
 
@@ -212,15 +210,15 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
                 diag = 0;
             }
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell("4. Spectral peaks", 250));
+            stream.write(new HtmlTableCell("4. Spectral peaks").withWidth(250));
             stream.write(getCellSummary(diag, 50));
             stream.close(HtmlTag.TABLEROW);
         }
 
-        TsData ddata=tests.getDifferencing().getDifferenced();
+        TsData ddata = tests.getDifferencing().getDifferenced();
 //        int ifreq = ddata.getFrequency().intValue();
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("5. Periodogram ", 250));
+        stream.write(new HtmlTableCell("5. Periodogram ").withWidth(250));
         stream.write(getCellSummary(tests.getPeriodogramTest().getPValue(), 50));
         stream.close(HtmlTag.TABLEROW);
 //        stream.open(HtmlTag.TABLEROW);
@@ -228,11 +226,11 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
 //        stream.write(getCellSummary(PeriodogramTest.computeMax(ddata, ifreq), 50));
 //        stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("6. Seasonal dummies", 250));
+        stream.write(new HtmlTableCell("6. Seasonal dummies").withWidth(250));
         stream.write(getCellSummary(ftest.getFTest().getPValue(), 50));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("6bis. Seasonal dummies (AMI)", 250));
+        stream.write(new HtmlTableCell("6bis. Seasonal dummies (AMI)").withWidth(250));
         stream.write(getCellSummary(ftestAMI.getFTest().getPValue(), 50));
         stream.close(HtmlTag.TABLEROW);
 
@@ -248,18 +246,18 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
     private void writeSummary(HtmlStream stream, int val) throws IOException {
         if (noSeasControl) {
             if (val < 0) {
-                stream.write("Seasonality present", HtmlStyle.Bold, HtmlStyle.Danger);
+                stream.write(HtmlTag.IMPORTANT_TEXT, "Seasonality present", Bootstrap4.TEXT_DANGER);
             } else if (val == 0) {
-                stream.write("Seasonality perhaps present", HtmlStyle.Warning);
+                stream.write("Seasonality perhaps present", Bootstrap4.TEXT_WARNING);
             } else {
-                stream.write("Seasonality not present", HtmlStyle.Success);
+                stream.write("Seasonality not present", Bootstrap4.TEXT_SUCCESS);
             }
         } else if (val < 0) {
-            stream.write("Seasonality present", HtmlStyle.Success);
+            stream.write("Seasonality present", Bootstrap4.TEXT_SUCCESS);
         } else if (val == 0) {
-            stream.write("Seasonality perhaps present", HtmlStyle.Warning);
+            stream.write("Seasonality perhaps present", Bootstrap4.TEXT_WARNING);
         } else {
-            stream.write("Seasonality not present", HtmlStyle.Bold, HtmlStyle.Danger);
+            stream.write(HtmlTag.IMPORTANT_TEXT, "Seasonality not present", Bootstrap4.TEXT_DANGER);
         }
 
     }
@@ -270,31 +268,29 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements I
     }
 
     private HtmlTableCell getCellSummary(int val, int l) throws IOException {
-        HtmlStyle[] style;
+        HtmlClass style;
         String txt;
         if (noSeasControl) {
             if (val < 0) {
                 txt = "YES";
-                style = new HtmlStyle[]{HtmlStyle.Danger, HtmlStyle.Bold};
+                style = Bootstrap4.TEXT_DANGER;
             } else if (val == 0) {
                 txt = "?";
-                style = new HtmlStyle[]{HtmlStyle.Warning};
+                style = Bootstrap4.TEXT_WARNING;
             } else {
                 txt = "NO";
-                style = new HtmlStyle[]{HtmlStyle.Success};
+                style = Bootstrap4.TEXT_SUCCESS;
             }
+        } else if (val < 0) {
+            txt = "YES";
+            style = Bootstrap4.TEXT_SUCCESS;
+        } else if (val == 0) {
+            txt = "?";
+            style = Bootstrap4.TEXT_WARNING;
         } else {
-            if (val < 0) {
-                txt = "YES";
-                style = new HtmlStyle[]{HtmlStyle.Success};
-            } else if (val == 0) {
-                txt = "?";
-                style = new HtmlStyle[]{HtmlStyle.Warning};
-            } else {
-                txt = "NO";
-                style = new HtmlStyle[]{HtmlStyle.Danger, HtmlStyle.Bold};
-            }
+            txt = "NO";
+            style = Bootstrap4.TEXT_DANGER;
         }
-        return new HtmlTableCell(txt, l, style);
+        return new HtmlTableCell(txt).withWidth(l).withClass(style);
     }
 }

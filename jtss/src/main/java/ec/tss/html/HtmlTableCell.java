@@ -16,6 +16,9 @@
  */
 package ec.tss.html;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  *
  * @author Kristof Bayens
@@ -27,28 +30,42 @@ public class HtmlTableCell {
      */
     public final IHtmlElement core;
 
-    /**
-     *
-     */
+    // this value is never used when generating html
+    @Deprecated
     public int width = 0;
+
     public int colspan = 1;
     public int rowspan = 1;
 
     /**
      *
      */
-    public HtmlStyle[] styles = new HtmlStyle[]{};
+    @Nullable
+    @Deprecated
+    public HtmlStyle[] styles = null;
+
+    private HtmlClass classnames = HtmlClass.NO_CLASS;
+
+    public HtmlTableCell(String text) {
+        this.core = new HtmlFragment(text);
+    }
+
+    public HtmlTableCell(IHtmlElement core) {
+        this.core = core;
+    }
 
     /**
      *
      * @param text
      * @param styles
      */
+    @Deprecated
     public HtmlTableCell(String text, HtmlStyle... styles) {
         this.core = new HtmlFragment(text);
         this.styles = styles;
     }
 
+    @Deprecated
     public HtmlTableCell(IHtmlElement core, HtmlStyle... styles) {
         this.core = core;
         this.styles = styles;
@@ -60,16 +77,43 @@ public class HtmlTableCell {
      * @param width
      * @param styles
      */
+    @Deprecated
     public HtmlTableCell(String text, int width, HtmlStyle... styles) {
         this.core = new HtmlFragment(text);
         this.width = width;
         this.styles = styles;
     }
 
+    @Deprecated
     public HtmlTableCell(IHtmlElement core, int width, HtmlStyle... styles) {
         this.core = core;
         this.width = width;
         this.styles = styles;
     }
 
+    public HtmlTableCell withClass(@Nonnull HtmlClass classname) {
+        this.classnames = this.classnames.with(classname);
+        return this;
+    }
+
+    @Deprecated
+    public HtmlTableCell withWidth(int width) {
+        this.width = width;
+        return this;
+    }
+
+    public HtmlTableCell withColSpan(int colSpan) {
+        this.colspan = colSpan;
+        return this;
+    }
+
+    public HtmlTableCell withRowSpan(int rowSpan) {
+        this.rowspan = rowSpan;
+        return this;
+    }
+
+    @Nonnull
+    HtmlClass getClassnames() {
+        return classnames;
+    }
 }

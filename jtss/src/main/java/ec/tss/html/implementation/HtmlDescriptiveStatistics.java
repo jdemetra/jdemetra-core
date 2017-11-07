@@ -42,7 +42,7 @@ public class HtmlDescriptiveStatistics extends AbstractHtmlElement {
     @Override
     public void write(HtmlStream stream) throws IOException {
         if (header != null) {
-            stream.write(HtmlTag.HEADER1, h1, header).newLine();
+            stream.write(HtmlTag.HEADER1, header).newLine();
         }
         if (summary)
             writeSummary(stream);

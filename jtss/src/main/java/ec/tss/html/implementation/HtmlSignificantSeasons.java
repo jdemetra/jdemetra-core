@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-/*
+ /*
  */
 package ec.tss.html.implementation;
 
@@ -30,50 +30,51 @@ import java.io.IOException;
  *
  * @author Jean Palate
  */
-public class HtmlSignificantSeasons extends AbstractHtmlElement{
+public class HtmlSignificantSeasons extends AbstractHtmlElement {
 
     private final int[] p99, p95;
-    
-    public HtmlSignificantSeasons(int[] p99, int[] p95){
-        this.p99=p99;
-        this.p95=p95;
+
+    public HtmlSignificantSeasons(int[] p99, int[] p95) {
+        this.p99 = p99;
+        this.p95 = p95;
     }
-    
-    private HtmlTableCell cell(int val){
-        if (val<0)
-            return new HtmlTableCell(".", 50);
-        else
-            return new HtmlTableCell(Integer.toString(val), 50);
+
+    private HtmlTableCell cell(int val) {
+        if (val < 0) {
+            return new HtmlTableCell(".").withWidth(50);
+        } else {
+            return new HtmlTableCell(Integer.toString(val)).withWidth(50);
+        }
     }
-    
+
     @Override
     public void write(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER2, h2, TITLE);
+        stream.write(HtmlTag.HEADER2, TITLE);
         stream.newLine();
-        stream.open(new HtmlTable(0, 200));
+        stream.open(new HtmlTable().withWidth(200));
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableHeader(""));
         stream.write(new HtmlTableHeader("95%"));
         stream.write(new HtmlTableHeader("99%"));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("Historical", 100));
+        stream.write(new HtmlTableCell("Historical").withWidth(100));
         stream.write(cell(p95[0]));
         stream.write(cell(p99[0]));
         stream.close(HtmlTag.TABLEROW);
-         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("Current", 100));
+        stream.open(HtmlTag.TABLEROW);
+        stream.write(new HtmlTableCell("Current").withWidth(100));
         stream.write(cell(p95[1]));
         stream.write(cell(p99[1]));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("Forecasts", 100));
+        stream.write(new HtmlTableCell("Forecasts").withWidth(100));
         stream.write(cell(p95[2]));
         stream.write(cell(p99[2]));
         stream.close(HtmlTag.TABLEROW);
         stream.close(HtmlTag.TABLE);
         stream.newLine();
     }
-    
-    private static final String TITLE="Number of periods in a year that have significant seasonality";
+
+    private static final String TITLE = "Number of periods in a year that have significant seasonality";
 }

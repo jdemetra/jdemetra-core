@@ -20,7 +20,7 @@ package ec.tss.html.implementation;
 import ec.tss.Ts;
 import ec.tss.html.AbstractHtmlElement;
 import ec.tss.html.HtmlStream;
-import ec.tss.html.HtmlStyle;
+import ec.tss.html.HtmlTag;
 import ec.tss.html.IHtmlElement;
 import ec.tstoolkit.data.DescriptiveStatistics;
 import ec.tstoolkit.timeseries.simplets.TsData;
@@ -47,7 +47,7 @@ public class HtmlTsDifferenceDocument extends AbstractHtmlElement implements IHt
     @Override
     public void write(HtmlStream stream) throws IOException {
         DescriptiveStatistics stats = new DescriptiveStatistics(diff_);
-        stream.write(mul_ ? "Relative differences" : "Differences", HtmlStyle.Bold, HtmlStyle.Underline).newLines(2);
+        stream.write(HtmlTag.IMPORTANT_TEXT, mul_ ? "Relative differences" : "Differences").newLines(2);
         stream.write("Max :").write(stats.getMax()).newLines(1);
         stream.write("Min :").write(stats.getMin()).newLines(1);
         stream.write("Average :").write(stats.getAverage()).newLines(1);
