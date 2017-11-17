@@ -35,13 +35,14 @@ public class X11KernelTest {
     public X11KernelTest() {
     }
 
-    @Test
-    public void testKernel() {
+    public static void main(String[] cmd) {
         X11Specification spec = new X11Specification();
+        spec.setMode(DecompositionMode.PseudoAdditive);
+        spec.setForecastHorizon(0);
         X11Toolkit toolkit = X11Toolkit.create(spec);
         X11Kernel kernel = new X11Kernel();
         kernel.setToolkit(toolkit);
-        X11Results rslt = kernel.process(Data.X);
+        X11Results rslt = kernel.process(Data.P);
         assertTrue(rslt != null);
 //        System.out.println(rslt.getData("d-tables.d12", TsData.class));
 //        Map<String, Class> dictionary = rslt.getDictionary();

@@ -44,7 +44,7 @@ abstract class BaseX11Algorithm  {
     }
 
     boolean isMultiplicative() {
-	return context.isMultiplicative();
+	return context.isMultiplicative() || context.isPseudoAdditive();
     }
 
     TsData op(TsData l, TsData r) {
