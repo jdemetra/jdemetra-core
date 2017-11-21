@@ -80,6 +80,7 @@
 
         <!-- several apps -->
         <module>jbench</module>
+        <module>jdr</module>
     </modules>
 	
     <dependencyManagement>

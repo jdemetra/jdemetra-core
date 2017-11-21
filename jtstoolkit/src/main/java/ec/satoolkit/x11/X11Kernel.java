@@ -387,7 +387,10 @@ public class X11Kernel implements ISeriesDecomposer {
         if (toolkit.getContext().isMultiplicative()) {
             toolkit.getUtilities().checkPositivity(d7);
         }
-        TsData d8 = toolkit.getContext().op(refSeries, d7);
+        TsData d8a = toolkit.getContext().op(d1, d7);
+        TsData d8 = toolkit.getContext().invOp(d8a, c20); // probably a mistake. To See with Brian
+        
+//        TsData d8 = toolkit.getContext().op(refSeries, d7);
         TsData d9, d10;
         if (ecorr instanceof PeriodSpecificExtremeValuesCorrector) {
             d9 = ecorr.computeCorrections(d8.drop(0, toolkit.getContext().getForecastHorizon()));
