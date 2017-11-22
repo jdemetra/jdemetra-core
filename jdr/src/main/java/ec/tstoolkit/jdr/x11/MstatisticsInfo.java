@@ -13,7 +13,7 @@ import ec.satoolkit.x11.Mstatistics;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.experimental.UtilityClass
-public class MstatisticsMapping {
+public class MstatisticsInfo {
     
     static final InformationMapping<Mstatistics> MAPPING = new InformationMapping<>(Mstatistics.class);
 

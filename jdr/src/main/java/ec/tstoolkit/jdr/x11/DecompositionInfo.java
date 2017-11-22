@@ -14,7 +14,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.experimental.UtilityClass
-public class DecompositionMapping {
+public class DecompositionInfo {
     
     static final InformationMapping<X11Results> MAPPING = new InformationMapping<>(X11Results.class);
 

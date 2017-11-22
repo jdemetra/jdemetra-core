@@ -33,8 +33,8 @@ public class X11Monitor {
         static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.delegate("diagnostics", MstatisticsMapping.getMapping(), source->source.getMstatistics());
-            MAPPING.delegate("decomposition", DecompositionMapping.getMapping(), source->source.getDecomposition());
+            MAPPING.delegate("diagnostics", MstatisticsInfo.getMapping(), source->source.getMstatistics());
+            MAPPING.delegate("decomposition", DecompositionInfo.getMapping(), source->source.getDecomposition());
         }
 
         public InformationMapping<Results> getMapping() {
