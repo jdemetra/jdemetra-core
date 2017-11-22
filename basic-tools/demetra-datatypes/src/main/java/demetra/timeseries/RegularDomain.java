@@ -121,6 +121,14 @@ public class RegularDomain implements TsDomain<TsPeriod> {
                 : new RegularDomain(get(startIndex), Math.min(endIndex, length) - startIndex);
     }
 
+    public RegularDomain drop(int nstart, int nend) {
+        if (isEmpty()) {
+            return this;
+        }
+        int len=length()-nstart-nend;
+        return new RegularDomain(get(nstart), len < 0 ? 0 : len);
+    }
+
     public RegularDomain intersection(RegularDomain other) {
         startPeriod.checkCompatibility(other.startPeriod);
 

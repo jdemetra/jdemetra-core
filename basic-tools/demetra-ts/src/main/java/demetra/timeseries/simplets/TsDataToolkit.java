@@ -102,9 +102,22 @@ public class TsDataToolkit {
         return TsData.ofInternal(s.getStart().plus(lag), DoubleSequence.ofInternal(nvalues));
     }
 
-    public TsData drop(TsData s, int nbeg, int nend) {
-        RegularDomain ndomain = s.domain().select(TsPeriodSelector.excluding(nbeg, nend));
-        return TsData.of(ndomain.getStartPeriod(), s.values().extract(nbeg, ndomain.length()));
+    public TsData drop(TsData s, @Nonnegative int nbeg, @Nonnegative int nend) {
+        int len=s.length()-nbeg-nend;
+        TsPeriod start = s.getStart().plus(nbeg);
+        return TsData.of(start, s.values().extract(nbeg, Math.max(0, len)));
+    }
+
+    public TsData extend(TsData s, @Nonnegative int nbeg, @Nonnegative int nend) {
+        int n=s.length()+nbeg+nend;
+        double[] nvalues=new double[n];
+        for (int i=0; i<nbeg; ++i)
+            nvalues[i]=Double.NaN;
+        s.values().copyTo(nvalues, nbeg);
+        for (int i=n-nend; i<n; ++i)
+            nvalues[i]=Double.NaN;
+        TsPeriod start = s.getStart().plus(-nbeg);
+        return TsData.ofInternal(start, nvalues);
     }
 
     public TsData select(TsData s, TsPeriodSelector selector) {

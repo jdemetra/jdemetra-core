@@ -35,7 +35,7 @@ public final class BsmSpec implements Cloneable {
             cycleUse = ComponentUse.Unused,
             noiseUse = ComponentUse.Free;
     @lombok.NonNull
-    SeasonalModel seasonalModel = SeasonalModel.Crude;
+    SeasonalModel seasonalModel = SeasonalModel.Trigonometric;
     double cycleDumpingFactor, cycleLength;
 
     @Override

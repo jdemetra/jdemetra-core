@@ -5,11 +5,23 @@
  */
 package demetra.r;
 
+import demetra.arima.ssf.SsfArima;
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
 import demetra.maths.MatrixType;
+import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.matrices.Matrix;
+import demetra.sarima.SarimaModel;
+import demetra.sarima.SarimaSpecification;
+import demetra.ssf.dk.DkToolkit;
+import demetra.ssf.dk.SsfFunction;
+import demetra.ssf.dk.SsfFunctionPoint;
+import demetra.ssf.implementations.RegSsf;
+import demetra.ssf.univariate.DefaultSmoothingResults;
+import demetra.ssf.univariate.ISsf;
+import demetra.ssf.univariate.SsfData;
 import demetra.timeseries.TsPeriod;
+import demetra.timeseries.calendar.DayClustering;
 import demetra.timeseries.simplets.TsData;
 import static demetra.timeseries.simplets.TsDataToolkit.log;
 import org.junit.Test;
@@ -44,13 +56,14 @@ public class TimeVaryingRegressionTest {
 
     @Test
     public void testTD() {
-        TsData s=TsData.of(TsPeriod.monthly(1992, 1), DoubleSequence.ofInternal(FURNITURE));
+//        TsData s=TsData.of(TsPeriod.monthly(1992, 1), DoubleSequence.ofInternal(FURNITURE));
+        TsData s=TsData.of(TsPeriod.monthly(1982, 4), DoubleSequence.ofInternal(Data.ABS_RETAIL));
 //        long t0=System.currentTimeMillis();
-        TimeVaryingRegression.Results regarima = TimeVaryingRegression.regarima(log(s), "TD7", "Contrasts");
+        TimeVaryingRegression.Results regarima = TimeVaryingRegression.regarima(log(s), "TD7", "Contrasts", 1e-7);
         System.out.println(regarima.getData("tdeffect", TsData.class));
-        System.out.println(regarima.getData("coefficients.stde", MatrixType.class));
+        System.out.println(regarima.getData("coefficients.value", MatrixType.class));
 //        long t1=System.currentTimeMillis();
 //        System.out.println(t1-t0);
     }
-
-}
+    
+ }

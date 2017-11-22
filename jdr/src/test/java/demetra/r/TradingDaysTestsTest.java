@@ -50,7 +50,7 @@ public class TradingDaysTestsTest {
     @Test
     public void testTD() {
         TsData s = log(TsData.of(TsPeriod.monthly(1992, 1), DoubleSequence.ofInternal(Data.ABS_RETAIL)));
-        TimeVaryingRegression.Results regarima = TimeVaryingRegression.regarima(s, "TD7", "Default");
+        TimeVaryingRegression.Results regarima = TimeVaryingRegression.regarima(s, "TD7", "Default", 1e-7);
         TsData rtd = regarima.getData("tdeffect", TsData.class);
 
         UcarimaModel ucm = ucmAirline(regarima.getArima());

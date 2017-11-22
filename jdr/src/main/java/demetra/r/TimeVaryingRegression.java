@@ -109,14 +109,14 @@ public class TimeVaryingRegression {
         }
     }
 
-    public Results regarima(TsData s, String td, String svar) {
+    public Results regarima(TsData s, String td, String svar, double fixedThreshold) {
         SarimaSpecification spec = new SarimaSpecification();
         spec.airline(12);
         DayClustering dc = days(td);
         Matrix mtd = generate(s.domain(), dc);
         Matrix nvar = generateVar(dc, svar);
         SsfData data = new SsfData(s.values());
-        TDvarMapping mapping = new TDvarMapping(mtd);
+        TDvarMapping mapping = new TDvarMapping(mtd, false);
         SsfFunction<Airline, ISsf> fn = SsfFunction.builder(data, mapping,
                 params
                 -> {
@@ -126,18 +126,32 @@ public class TimeVaryingRegression {
                     .build();
             SsfArima ssf = SsfArima.of(arima);
             double nv = params.getRegVariance();
-            if (nv != 0) {
-                Matrix v = nvar.deepClone();
-                v.mul(nv);
-                return RegSsf.ofTimeVarying(ssf, mtd, v);
-            } else {
-                return RegSsf.of(ssf, mtd);
-            }
+            Matrix v = nvar.deepClone();
+            v.mul(nv);
+            return RegSsf.ofTimeVarying(ssf, mtd, v);
         }).build();
 
         LevenbergMarquardtMinimizer min = new LevenbergMarquardtMinimizer();
         min.minimize(fn.ssqEvaluate(mapping.getDefault()));
         SsfFunctionPoint<Airline, ISsf> rfn = (SsfFunctionPoint<Airline, ISsf>) min.getResult();
+        if (rfn.getParameters().get(2) < fixedThreshold) {
+            // fix the variance of the coefficients to 0
+            mapping = new TDvarMapping(mtd, true);
+            fn = SsfFunction.builder(data, mapping,
+                    params
+                    -> {
+                SarimaModel arima = SarimaModel.builder(spec)
+                        .theta(params.getTheta())
+                        .btheta(params.getBtheta())
+                        .build();
+                SsfArima ssf = SsfArima.of(arima);
+                return RegSsf.of(ssf, mtd);
+            }).build();
+            Airline core = rfn.getCore();
+            core.setRegVariance(0);
+            min.minimize(fn.ssqEvaluate(mapping.map(core)));
+            rfn = (SsfFunctionPoint<Airline, ISsf>) min.getResult();
+        }
         DefaultSmoothingResults fs = DkToolkit.sqrtSmooth(rfn.getSsf(), data, true);
         Matrix c = Matrix.make(mtd.getRowsCount(), mtd.getColumnsCount() + 1);
         Matrix ec = Matrix.make(mtd.getRowsCount(), mtd.getColumnsCount() + 1);
@@ -194,12 +208,12 @@ public class TimeVaryingRegression {
         return dc;
     }
 
-    private Matrix generate(RegularDomain domain, DayClustering dc) {
+    public Matrix generate(RegularDomain domain, DayClustering dc) {
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         return RegressionUtility.data(Collections.singletonList(new GenericTradingDaysVariables(gtd)), domain);
     }
 
-    private Matrix generateVar(DayClustering dc, String var) {
+    public Matrix generateVar(DayClustering dc, String var) {
         int groupsCount = dc.getGroupsCount();
         Matrix full = Matrix.square(7);
         if (!var.equalsIgnoreCase("Contrasts")) {
@@ -221,6 +235,7 @@ public class TimeVaryingRegression {
     private static class TDvarMapping implements IParametricMapping<Airline> {
 
         private final Matrix td;
+        private final boolean fixed;
         private static final SarimaMapping airlineMapping;
 
         static {
@@ -229,8 +244,9 @@ public class TimeVaryingRegression {
             airlineMapping = SarimaMapping.of(spec);
         }
 
-        TDvarMapping(Matrix td) {
+        TDvarMapping(Matrix td, boolean fixed) {
             this.td = td;
+            this.fixed = fixed;
         }
 
         public Matrix getTd() {
@@ -243,22 +259,32 @@ public class TimeVaryingRegression {
             airline.setTd(td);
             airline.setTheta(p.get(0));
             airline.setBtheta(p.get(1));
-            airline.setRegVariance(p.get(2));
+            if (fixed) {
+                airline.setRegVariance(0);
+            } else {
+                airline.setRegVariance(p.get(2));
+            }
             return airline;
         }
 
         @Override
         public DoubleSequence map(Airline t) {
-            double[] p = new double[3];
+            double[] p = new double[fixed ? 2 : 3];
             p[0] = t.getTheta();
             p[1] = t.getBtheta();
-            p[2] = t.getRegVariance();
+            if (!fixed) {
+                p[2] = t.getRegVariance();
+            }
             return DoubleSequence.ofInternal(p);
         }
 
         @Override
         public boolean checkBoundaries(DoubleSequence inparams) {
-            return airlineMapping.checkBoundaries(inparams.extract(0, 2));
+            if (fixed) {
+                return airlineMapping.checkBoundaries(inparams.extract(0, 2));
+            } else {
+                return inparams.get(2) >= 0 && airlineMapping.checkBoundaries(inparams.extract(0, 2));
+            }
         }
 
         @Override
@@ -266,12 +292,12 @@ public class TimeVaryingRegression {
             if (idx < 2) {
                 return airlineMapping.epsilon(inparams, idx);
             }
-            return inparams.get(2) * .0001;
+            return inparams.get(2) * .001;
         }
 
         @Override
         public int getDim() {
-            return 3;
+            return fixed ? 2 : 3;
         }
 
         @Override
@@ -279,7 +305,7 @@ public class TimeVaryingRegression {
             if (idx < 2) {
                 return airlineMapping.lbound(idx);
             } else {
-                return -10;
+                return 0;
             }
         }
 
@@ -295,11 +321,11 @@ public class TimeVaryingRegression {
         @Override
         public ParamValidation validate(DataBlock ioparams) {
             ParamValidation pv = ParamValidation.Valid;
-            if (ioparams.get(2) < -10) {
+            if (!fixed && ioparams.get(2) < 0) {
                 pv = ParamValidation.Changed;
-                ioparams.set(2, -10);
+                ioparams.set(2, Math.min(10, -ioparams.get(2)));
             }
-            if (ioparams.get(2) > 10) {
+            if (!fixed && ioparams.get(2) > 10) {
                 pv = ParamValidation.Changed;
                 ioparams.set(2, 10);
             }
@@ -324,7 +350,7 @@ public class TimeVaryingRegression {
 
         @Override
         public DoubleSequence getDefault() {
-            return DoubleSequence.of(-.6, -.6, 1);
+            return fixed ? DoubleSequence.of(-.6, -.6) : DoubleSequence.of(-.6, -.6, 1);
         }
     }
 
