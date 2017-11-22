@@ -38,7 +38,8 @@ public class X11KernelTest {
     public static void main(String[] cmd) {
         X11Specification spec = new X11Specification();
         spec.setMode(DecompositionMode.PseudoAdditive);
-        spec.setForecastHorizon(0);
+//        spec.setForecastHorizon(-3);
+//        spec.setBackcastHorizon(-3);
         X11Toolkit toolkit = X11Toolkit.create(spec);
         X11Kernel kernel = new X11Kernel();
         kernel.setToolkit(toolkit);

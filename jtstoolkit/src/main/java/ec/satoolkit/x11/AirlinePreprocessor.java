@@ -13,10 +13,10 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.satoolkit.x11;
 
+import ec.satoolkit.DecompositionMode;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.design.Development;
@@ -51,7 +51,7 @@ class AirlinePreprocessor extends DefaultX11Algorithm implements
     public AirlinePreprocessor() {
     }
 
-    private void addfcasts(TsData s, InformationSet info, int nf) {
+    private void addfcasts(TsData s, InformationSet info, int nb, int nf) {
         DataBlock data = new DataBlock(s.internalStorage());
         SarimaSpecification spec = new SarimaSpecification(context.getFrequency());
         spec.airline();
@@ -65,14 +65,25 @@ class AirlinePreprocessor extends DefaultX11Algorithm implements
 
         // FastArimaForecasts fcast = new FastArimaForecasts(model, false);
         UscbForecasts fcast = new UscbForecasts(model);
-        double[] forecasts = fcast.forecasts(data, nf);
-        TsData fs = new TsData(s.getEnd(), forecasts, false);
-        info.subSet(X11Kernel.A).set(X11Kernel.A1a, fs);
-        info.subSet(X11Kernel.B).set(X11Kernel.B1, s.update(fs));
+        TsData xs = s;
+        if (nf > 0) {
+            double[] forecasts = fcast.forecasts(data, nf);
+            TsData fs = new TsData(s.getEnd(), forecasts, false);
+            xs = s.update(fs);
+            info.subSet(X11Kernel.A).set(X11Kernel.A1a, fs);
+        }
+        if (nb > 0) {
+            double[] backcasts = fcast.forecasts(data.reverse(), nb);
+            ec.tstoolkit.utilities.Arrays2.reverse(backcasts);
+            TsData bs = new TsData(s.getStart().minus(backcasts.length), backcasts, false);
+            xs = bs.update(xs);
+        }
+        info.subSet(X11Kernel.B).set(X11Kernel.B1, xs);
     }
 
-    private void mulfcasts(TsData s, InformationSet info, int nf) {
+    private void mulfcasts(TsData s, InformationSet info, int nb, int nf) {
         TsData ls = s.log();
+        TsData xs = s;
         DataBlock data = new DataBlock(ls.internalStorage());
         SarimaSpecification spec = new SarimaSpecification(context.getFrequency());
         spec.airline();
@@ -85,10 +96,21 @@ class AirlinePreprocessor extends DefaultX11Algorithm implements
         SarimaMapping.stabilize(model);
         // FastArimaForecasts fcast = new FastArimaForecasts(model, false);
         UscbForecasts fcast = new UscbForecasts(model);
-        double[] forecasts = fcast.forecasts(data, nf);
-        TsData fs = new TsData(s.getEnd(), forecasts, false);
-        info.subSet(X11Kernel.A).set(X11Kernel.A1a, fs.exp());
-        info.subSet(X11Kernel.B).set(X11Kernel.B1, ls.update(fs).exp());
+        TsData fs = null;
+        if (nf > 0) {
+            double[] forecasts = fcast.forecasts(data, nf);
+            fs = new TsData(s.getEnd(), forecasts, false);
+            fs = fs.exp();
+            xs = s.update(fs);
+            info.subSet(X11Kernel.A).set(X11Kernel.A1a, fs);
+        }
+        if (nb > 0) {
+            double[] backcasts = fcast.forecasts(data.reverse(), nb);
+            ec.tstoolkit.utilities.Arrays2.reverse(backcasts);
+            TsData bs = new TsData(s.getStart().minus(backcasts.length), backcasts, false);
+            xs = bs.exp().update(xs);
+        }
+        info.subSet(X11Kernel.B).set(X11Kernel.B1, xs);
     }
 
     /**
@@ -101,13 +123,19 @@ class AirlinePreprocessor extends DefaultX11Algorithm implements
     @Override
     public void preprocess(InformationSet info) {
         TsData a1 = info.subSet(X11Kernel.A).get(X11Kernel.A1, TsData.class);
-        int nf = context.getForecastHorizon();
-        if (nf == 0) {
+        if (context.isPseudoAdditive()) {
+            // Can't use preprocessing
             info.subSet(X11Kernel.B).set(X11Kernel.B1, a1);
-        } else if (context.isMultiplicative()) {
-            mulfcasts(a1, info, nf);
         } else {
-            addfcasts(a1, info, nf);
+            int nf = context.getForecastHorizon();
+            int nb = context.getBackcastHorizon();
+            if (nf == 0 && nb == 0) {
+                info.subSet(X11Kernel.B).set(X11Kernel.B1, a1);
+            } else if (context.getMode() == DecompositionMode.Additive) {
+                addfcasts(a1, info, nb, nf);
+            } else {
+                mulfcasts(a1, info, nb, nf);
+            }
         }
     }
 }
