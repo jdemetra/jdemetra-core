@@ -131,10 +131,10 @@ class AirlinePreprocessor extends DefaultX11Algorithm implements
             int nb = context.getBackcastHorizon();
             if (nf == 0 && nb == 0) {
                 info.subSet(X11Kernel.B).set(X11Kernel.B1, a1);
-            } else if (context.getMode() == DecompositionMode.Additive) {
-                addfcasts(a1, info, nb, nf);
-            } else {
+            } else if (context.isMultiplicative()){
                 mulfcasts(a1, info, nb, nf);
+            } else {
+                addfcasts(a1, info, nb, nf);
             }
         }
     }

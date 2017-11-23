@@ -60,15 +60,21 @@ public class TimeVaryingRegression {
         Matrix variables;
         Matrix coefficients;
         Matrix coefficientsStde;
-        SarimaModel arima;
-        DiffuseConcentratedLikelihood ll;
+        SarimaModel arima, arima0;
+        double nvar;
+        DiffuseConcentratedLikelihood ll0, ll;
 
         private static final String ARIMA = "arima", LL = "likelihood", STDCOEFF = "coefficients.stde", COEFF = "coefficients.value", TD = "td", TDEFFECT = "tdeffect";
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
             MAPPING.delegate(ARIMA, SarimaInfo.getMapping(), r -> r.getArima());
+            MAPPING.delegate("arima0", SarimaInfo.getMapping(), r -> r.getArima0());
             MAPPING.delegate(LL, DiffuseLikelihoodInfo.getMapping(), r -> r.getLl());
+            MAPPING.delegate("likelihood0", DiffuseLikelihoodInfo.getMapping(), r -> r.getLl0());
+            MAPPING.set("aic0", Double.class, r -> r.ll0.AIC(2));
+            MAPPING.set("aic", Double.class, r -> r.ll.AIC(3));
+            MAPPING.set("tdvar", Double.class, r -> r.getNvar());
             MAPPING.set(COEFF, Matrix.class, r -> r.getCoefficients());
             MAPPING.set(STDCOEFF, Matrix.class, r -> r.getCoefficientsStde());
             MAPPING.set(TD, Matrix.class, r -> r.getVariables());
@@ -106,34 +112,54 @@ public class TimeVaryingRegression {
         }
     }
 
-    public Results regarima(TsData s, String td, String svar, double fixedThreshold) {
+    public Results regarima(TsData s, String td, String svar, double diffAic) {
         DayClustering dc = days(td);
         Matrix mtd = generate(s.getDomain(), dc);
         Matrix nvar = generateVar(dc, svar);
         SsfData data = new SsfData(s, null);
-
-        TDvarMapping mapping = new TDvarMapping(s.getFrequency().intValue(), mtd, nvar);
-        ReadDataBlock p = new ReadDataBlock(new double[]{-.6, -.6, 1});
+        // step 0 fixed model
+        TDvarMapping mapping0 = new TDvarMapping(s.getFrequency().intValue(), mtd, null);
+        ReadDataBlock p0 = new ReadDataBlock(new double[]{-.6, -.6});
         // Create the function
-        SsfModel<ISsf> model = new SsfModel<>(mapping.map(p), new SsfData(s, null), null, null);
-
-        SsfFunction<ISsf> fn = new SsfFunction<>(model, mapping, new SsfAlgorithm());
+        SsfModel<ISsf> model = new SsfModel<>(mapping0.map(p0), new SsfData(s, null), null, null);
+        SsfFunction<ISsf> fn0= new SsfFunction<>(model, mapping0, new SsfAlgorithm());
+        SarimaSpecification spec = new SarimaSpecification(s.getFrequency().intValue());
+        spec.airline();
 
         LevenbergMarquardtMethod min = new LevenbergMarquardtMethod();
         min.setConvergenceCriterion(1e-12);
+        min.minimize(fn0, p0);
+        SsfFunctionInstance<ISsf> rfn0 = (SsfFunctionInstance<ISsf>) min.getResult();
+        DiffuseConcentratedLikelihood ll0 = rfn0.getLikelihood();
+        IReadDataBlock ep0 = rfn0.getParameters();
+        SarimaModel arima0 = new SarimaModel(spec);
+        arima0.setTheta(1, ep0.get(0));
+        arima0.setBTheta(1, ep0.get(1));
+
+        TDvarMapping mapping = new TDvarMapping(s.getFrequency().intValue(), mtd, nvar);
+        ReadDataBlock p = new ReadDataBlock(new double[]{ep0.get(0), ep0.get(1), 0.0001});
+        // Create the function
+        model = new SsfModel<>(mapping.map(p), new SsfData(s, null), null, null);
+        SsfFunction<ISsf> fn = new SsfFunction<>(model, mapping, new SsfAlgorithm());
         min.minimize(fn, p);
         SsfFunctionInstance<ISsf> rfn = (SsfFunctionInstance<ISsf>) min.getResult();
+        DiffuseConcentratedLikelihood ll = rfn.getLikelihood();
+        IReadDataBlock ep = rfn.getParameters();
+        SarimaModel arima = new SarimaModel(spec);
+        arima.setTheta(1, ep.get(0));
+        arima.setBTheta(1, ep.get(1));
+        double tdvar=ep.get(2);
 
-        if (rfn.getParameters().get(2) < fixedThreshold) {
-            mapping = new TDvarMapping(s.getFrequency().intValue(), mtd, null);
-            // Create the function
-            fn = new SsfFunction<>(model, mapping, new SsfAlgorithm());
-            min.minimize(fn, rfn.getParameters().rextract(0, 2));
-            rfn = (SsfFunctionInstance<ISsf>) min.getResult();
+        ISsf ssf;
+        double aic0=ll0.AIC(2), aic=ll.AIC(3);
+        if (aic+diffAic < aic0){
+            ssf=rfn.ssf;
         }
+        else
+            ssf=rfn0.ssf;
 
         Smoother smoother = new Smoother();
-        smoother.setSsf(rfn.ssf);
+        smoother.setSsf(ssf);
         smoother.setCalcVar(true);
         SmoothingResults fs = new SmoothingResults(true, true);
         smoother.process(data, fs);
@@ -164,18 +190,16 @@ public class TimeVaryingRegression {
             sec[i] = sec[i] <= 0 ? 0 : Math.sqrt(sec[i]);
         }
 
-        SarimaSpecification spec = new SarimaSpecification(s.getFrequency().intValue());
-        spec.airline();
-        SarimaModel arima = new SarimaModel(spec);
-        arima.setTheta(1, rfn.getParameters().get(0));
-        arima.setBTheta(1, rfn.getParameters().get(1));
         return Results.builder()
                 .domain(s.getDomain())
+                .arima0(arima0)
+                .ll0(ll0)
                 .arima(arima)
-                .ll(rfn.getLikelihood())
+                .ll(ll)
                 .variables(mtd)
                 .coefficients(c)
                 .coefficientsStde(ec)
+                .nvar(tdvar)
                 .build();
 
     }
@@ -296,7 +320,7 @@ public class TimeVaryingRegression {
             if (idx < 2) {
                 return airlineMapping.epsilon(inparams, idx);
             }
-            return inparams.get(2) * .001;
+            return Math.max(inparams.get(2) * .001, 1e-9);
         }
 
         @Override

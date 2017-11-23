@@ -55,11 +55,12 @@ public class TimeVaryingRegressionTest {
     public void testTD() {
         TsData s=new TsData(new TsPeriod(TsFrequency.Monthly, 1992, 0), FURNITURE, false);
 //        long t0=System.currentTimeMillis();
-        TimeVaryingRegression.Results regarima = TimeVaryingRegression.regarima(s.log(), "TD7", "Contrasts", 1e-7);
-        System.out.println(regarima.getData("tdeffect", TsData.class));
-        System.out.println(regarima.getData("coefficients.stde", Matrix.class));
+        TimeVaryingRegression.Results regarima = TimeVaryingRegression.regarima(s, "TD7", "Default", 0);
+//        System.out.println(regarima.getData("tdeffect", TsData.class));
+//        System.out.println(regarima.getData("coefficients.stde", Matrix.class));
 //        long t1=System.currentTimeMillis();
 //        System.out.println(t1-t0);
+        assertTrue(regarima.getData("tdeffect", TsData.class) != null);
     }
 
 }
