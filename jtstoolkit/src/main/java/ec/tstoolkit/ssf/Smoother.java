@@ -121,16 +121,17 @@ public class Smoother extends BaseDiffuseSmoother {
             if (m_bCalcVar) {
                 // V = Pf - Pf * Nf * Pf - < Pi * N1 * Pf > - Pi * N2 * Pi
                 iterateInitialN();
-                SymmetricMatrix.quadraticForm(m_Nf.subMatrix(), m_Pf, m_V
-                        .subMatrix());
-                SymmetricMatrix.quadraticForm(m_N2.subMatrix(), m_Pi, m_Vtmp0
-                        .subMatrix());
+                SymmetricMatrix.quadraticForm(m_Nf.all(), m_Pf, m_V
+                        .all());
+                SymmetricMatrix.quadraticForm(m_N2.all(), m_Pi, m_Vtmp0
+                        .all());
                 m_V.add(m_Vtmp0);
-                m_Vtmp0.subMatrix().product(m_N1.subMatrix(), m_Pf);
-                m_Vtmp1.subMatrix().product(m_Pi, m_Vtmp0.subMatrix());
-                m_V.add(SymmetricMatrix.XpXt(m_Vtmp1));
+                m_Vtmp0.all().product(m_Pf, m_N1.all());
+                m_Vtmp1.all().product(m_Vtmp0.all(), m_Pi);
+                m_V.add(m_Vtmp1);
+                m_V.add(m_Vtmp1.transpose());
                 m_V.chs();
-                m_V.subMatrix().add(m_Pf);
+                m_V.all().add(m_Pf);
 
             }
 
