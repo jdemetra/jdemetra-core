@@ -99,7 +99,7 @@ public class WienerKolmogorovPreliminaryEstimatorPropertiesTest {
         }
     }
 
-    static UcarimaModel ucmAirline(double th, double bth) {
+    public static UcarimaModel ucmAirline(double th, double bth) {
         SarimaModel sarima = new SarimaModelBuilder().createAirlineModel(12, th, bth);
         TrendCycleSelector tsel = new TrendCycleSelector();
         SeasonalSelector ssel = new SeasonalSelector(12);

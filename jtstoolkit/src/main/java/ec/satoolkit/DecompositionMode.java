@@ -42,7 +42,11 @@ public enum DecompositionMode {
     /**
      * Log(Y) = T + S + I, SA = exp( T + I) = Y / exp(S)
      */
-    LogAdditive;
+    LogAdditive,
+    /**
+     * Y = T * (S + I - 1), SA = T * I 
+     */
+    PseudoAdditive;
 
     public boolean isMultiplicative() {
         return this == Multiplicative || this == LogAdditive;

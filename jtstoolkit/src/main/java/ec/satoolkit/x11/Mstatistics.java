@@ -299,7 +299,7 @@ public final class Mstatistics implements IProcResults {
      */
     public double[] getAutoCorrelationsOfIrregular() {
         TsData irr = Ic;
-        if (mode.isMultiplicative()) {
+        if (mode.isMultiplicative() || mode == DecompositionMode.PseudoAdditive) {
             irr = irr.minus(1);
         }
         AutoCorrelations ac = new AutoCorrelations(irr);
@@ -512,7 +512,7 @@ public final class Mstatistics implements IProcResults {
 
     private void calcM7() {
         CombinedSeasonalityTest test = new CombinedSeasonalityTest(SI,
-                mode == DecompositionMode.Multiplicative);
+                mode == DecompositionMode.Multiplicative || mode == DecompositionMode.PseudoAdditive);
         m[6] = test.mvalue();
     }
 

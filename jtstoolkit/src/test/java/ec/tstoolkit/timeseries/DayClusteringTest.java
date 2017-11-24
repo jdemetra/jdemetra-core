@@ -70,9 +70,9 @@ public class DayClusteringTest {
     
     @Test
     public void testToString() {
-        DayClustering cl0 = DayClustering.create(new int[]{0,1,1,1,1,1,0});
-        DayClustering cl1 = DayClustering.create(new int[]{0,2,2,2,2,2,1});
-        DayClustering cl2 = DayClustering.create(new int[]{0,1,2,3,4,5,6});
+        DayClustering cl0 = DayClustering.create(new int[]{1,1,1,1,1,0,0});
+        DayClustering cl1 = DayClustering.create(new int[]{1,1,1,1,1,2,0});
+        DayClustering cl2 = DayClustering.create(new int[]{1,2,3,4,5,6,0});
         assertTrue(cl0.toString().equalsIgnoreCase("td2"));
         assertTrue(cl1.toString().equalsIgnoreCase("td3"));
         assertTrue(cl2.toString().equalsIgnoreCase("td7"));

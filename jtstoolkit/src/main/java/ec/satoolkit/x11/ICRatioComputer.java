@@ -38,9 +38,9 @@ public class ICRatioComputer {
         int nb = context.getBackcastHorizon();
         TsDomain gdom = (nf == 0 && nb == 0) ? null : sc.getDomain().drop(nb, nf);
         double gc = SeriesEvolution.calcAbsMeanVariations(sc, gdom, 1,
-                context.isMultiplicative());
+                context.isMultiplicative() || context.isPseudoAdditive());
         double gi = SeriesEvolution.calcAbsMeanVariations(si, gdom, 1,
-                context.isMultiplicative());
+                context.isMultiplicative() || context.isPseudoAdditive());
         double icr = gi / gc;
         if (freq == 4) {
             icr *= 3.0;
