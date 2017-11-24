@@ -54,7 +54,7 @@ public class X11Toolkit extends BaseX11Algorithm implements
 
         X11Toolkit toolkit = new X11Toolkit(context);
 
-        if (spec.getForecastHorizon() != 0) {
+        if (spec.getForecastHorizon() != 0 || spec.getBackcastHorizon() != 0) {
             toolkit.setPreprocessor(new AirlinePreprocessor());
         }
 

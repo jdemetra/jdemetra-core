@@ -59,8 +59,6 @@ public class SeasonalityTests {
 
     public ec.tstoolkit.information.StatisticalTest qstest(TsData s, int ny, int diff, boolean mean) {
         int freq = s.getFrequency().intValue();
-
-        s = s.delta(1);
         if (ny != 0) {
             s = s.drop(Math.max(0, s.getLength() - freq * ny), 0);
         }
