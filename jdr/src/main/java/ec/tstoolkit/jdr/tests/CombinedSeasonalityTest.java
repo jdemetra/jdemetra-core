@@ -8,6 +8,7 @@ package ec.tstoolkit.jdr.tests;
 import demetra.algorithm.IProcResults;
 import demetra.information.InformationMapping;
 import ec.tstoolkit.jdr.mapping.TestInfo;
+import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -18,7 +19,6 @@ import java.util.Map;
 @lombok.experimental.UtilityClass
 public class CombinedSeasonalityTest {
     
-    @lombok.Builder
     @lombok.Value
     static public class Results implements IProcResults{
 
@@ -35,6 +35,18 @@ public class CombinedSeasonalityTest {
                     source->ec.tstoolkit.information.StatisticalTest.create(source.getCombinedTest().getEvolutiveSeasonality()));
             MAPPING.set("summary", String.class, 
                     source->source.getCombinedTest().getSummary().name());
+            MAPPING.set("stable.ssm", Double.class, 
+                    source->source.getCombinedTest().getStableSeasonality().getSSM());
+            MAPPING.set("stable.ssr", Double.class, 
+                    source->source.getCombinedTest().getStableSeasonality().getSSR());
+            MAPPING.set("stable.ssq", Double.class, 
+                    source->source.getCombinedTest().getStableSeasonality().getSSQ());
+            MAPPING.set("evolutive.ssm", Double.class, 
+                    source->source.getCombinedTest().getEvolutiveSeasonality().getSSM());
+            MAPPING.set("evolutive.ssr", Double.class, 
+                    source->source.getCombinedTest().getEvolutiveSeasonality().getSSR());
+            MAPPING.set("evolutive.ssq", Double.class, 
+                    source->source.getCombinedTest().getEvolutiveSeasonality().getSSQ());
         }
 
         public InformationMapping<Results> getMapping() {
@@ -59,5 +71,10 @@ public class CombinedSeasonalityTest {
         }
     }
     
-    
+    public static Results test(TsData s, boolean mul) {
+        
+        ec.satoolkit.diagnostics.CombinedSeasonalityTest combinedTest= 
+                new  ec.satoolkit.diagnostics.CombinedSeasonalityTest(s, mul);
+        return new Results(combinedTest);
+    }
 }
