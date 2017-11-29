@@ -37,6 +37,7 @@
     <modules>
         <module>demetra-sacore</module>
         <module>demetra-stl</module>
+        <module>jd3-x11</module>
     </modules>
     
     <!--build>
