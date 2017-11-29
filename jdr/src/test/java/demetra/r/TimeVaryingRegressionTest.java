@@ -56,12 +56,12 @@ public class TimeVaryingRegressionTest {
 
     @Test
     public void testTD() {
-//        TsData s=TsData.of(TsPeriod.monthly(1992, 1), DoubleSequence.ofInternal(FURNITURE));
-        TsData s=TsData.of(TsPeriod.monthly(1982, 4), DoubleSequence.ofInternal(Data.ABS_RETAIL));
+        TsData s=TsData.of(TsPeriod.monthly(1992, 1), DoubleSequence.ofInternal(FURNITURE));
+//        TsData s=TsData.of(TsPeriod.monthly(1982, 4), DoubleSequence.ofInternal(Data.ABS_RETAIL));
 //        long t0=System.currentTimeMillis();
-        TimeVaryingRegression.Results regarima = TimeVaryingRegression.regarima(log(s), "TD7", "Contrasts", 1e-7);
+        TimeVaryingRegression.Results regarima = TimeVaryingRegression.regarima(s, "TD7", "Default", 1e-7);
         System.out.println(regarima.getData("tdeffect", TsData.class));
-        System.out.println(regarima.getData("coefficients.value", MatrixType.class));
+        System.out.println(regarima.getData("coefficients.stde", MatrixType.class));
 //        long t1=System.currentTimeMillis();
 //        System.out.println(t1-t0);
     }

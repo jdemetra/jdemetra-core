@@ -49,7 +49,7 @@ import java.util.Map;
 public class SeasonalityTests {
 
     public TestResult ftest(TsData s, boolean ar, int ny) {
-        int ifreq = TsUtility.fromTsUnit(s.getUnit());
+        int ifreq = TsUtility.periodFromTsUnit(s.getUnit());
 
         if (ar) {
             if (ny != 0) {
@@ -66,7 +66,7 @@ public class SeasonalityTests {
     }
 
     public TestResult qstest(TsData s, int ny) {
-        int freq = TsUtility.fromTsUnit(s.getUnit());
+        int freq = TsUtility.periodFromTsUnit(s.getUnit());
 
         s = delta(s, 1);
         if (ny != 0) {

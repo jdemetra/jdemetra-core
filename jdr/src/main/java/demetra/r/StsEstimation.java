@@ -128,7 +128,7 @@ public class StsEstimation {
         BsmMonitor monitor = new BsmMonitor();
         monitor.setSpecification(mspec);
         BsmEstimationSpec espec = new BsmEstimationSpec();
-        if (!monitor.process(y.values(), TsUtility.fromTsUnit(y.getUnit()))) {
+        if (!monitor.process(y.values(), TsUtility.periodFromTsUnit(y.getUnit()))) {
             return null;
         }
 

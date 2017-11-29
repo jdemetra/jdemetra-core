@@ -98,6 +98,13 @@ public interface IFiniteFilter extends IFilter {
      * @return
      */
     void apply(DataBlock in, DataBlock out);
+    
+    /**
+     * Applies the filter on the input
+     * @param in The input, which must have the same length as the filter
+     * @return The product of the filter and of the input  
+     */
+    double apply(DoubleSequence in);
 
 
 }

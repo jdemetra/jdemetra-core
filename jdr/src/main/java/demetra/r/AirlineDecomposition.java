@@ -115,7 +115,7 @@ public class AirlineDecomposition {
     }
 
     public Results process(TsData s) {
-        int period = TsUtility.fromTsUnit(s.getUnit());
+        int period = TsUtility.periodFromTsUnit(s.getUnit());
         SarimaSpecification spec = new SarimaSpecification();
         spec.airline(period);
         SarimaModel arima = SarimaModel

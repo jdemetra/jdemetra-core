@@ -134,7 +134,7 @@ public class SsfFunction<S, F extends ISsf> implements IFunction, ISsqFunction {
     }
 
     @Override
-    public IFunctionPoint evaluate(DoubleSequence parameters) {
+    public SsfFunctionPoint<S, F> evaluate(DoubleSequence parameters) {
         return new SsfFunctionPoint<>(this, parameters);
     }
 

@@ -55,14 +55,14 @@ public class TsUtility {
     public int[] startPeriod(TsData s) {
         LocalDate start = s.getStart().start().toLocalDate();
 
-        int freq = fromTsUnit(s.getUnit());
+        int freq = periodFromTsUnit(s.getUnit());
         int c = 12 / freq;
         int mon = start.getMonthValue();
         int year = start.getYear();
         return new int[]{freq, year, 1 + (mon - 1) / c};
     }
 
-    public int fromTsUnit(TsUnit o) {
+    public int periodFromTsUnit(TsUnit o) {
         if (o.equals(TsUnit.MONTHLY)) {
             return 12;
         }
