@@ -20,6 +20,7 @@
         <jd3-sts.version>1.0.0-SNAPSHOT</jd3-sts.version>
         <jd3-benchmarking.version>1.0.0-SNAPSHOT</jd3-benchmarking.version>
         <jd3-tramoseats.version>1.0.0-SNAPSHOT</jd3-tramoseats.version>
+        <jd3-sa.version>1.0.0-SNAPSHOT</jd3-sa.version>
     </properties>
 
     <dependencies>
@@ -72,6 +73,21 @@
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-sts</artifactId>
             <version>${jd3-sts.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-sacore</artifactId>
+            <version>${jd3-sa.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-stl</artifactId>
+            <version>${jd3-sa.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-x11</artifactId>
+            <version>${jd3-sa.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>

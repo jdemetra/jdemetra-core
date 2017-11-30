@@ -30,6 +30,16 @@
                 <artifactId>demetra-sacore</artifactId>
                 <version>${jd3-sa.version}</version>            
             </dependency>
+            <dependency>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-x11</artifactId>
+                <version>${jd3-sa.version}</version>            
+            </dependency>
+            <dependency>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-stl</artifactId>
+                <version>${jd3-sa.version}</version>            
+            </dependency>
         </dependencies>
     </dependencyManagement>
  
@@ -37,7 +47,7 @@
     <modules>
         <module>demetra-sacore</module>
         <module>demetra-stl</module>
-        <module>jd3-x11</module>
+        <module>demetra-x11</module>
     </modules>
     
     <!--build>

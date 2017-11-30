@@ -7,8 +7,12 @@ package demetra.r;
 
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
+import demetra.data.MatrixSerializer;
 import demetra.data.WeeklyData;
+import demetra.maths.MatrixType;
 import static demetra.timeseries.simplets.TsDataToolkit.log;
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.junit.Test;
@@ -21,6 +25,11 @@ import static org.junit.Assert.*;
 public class FractionalAirlineDecompositionTest {
     
     public FractionalAirlineDecompositionTest() {
+    }
+    
+    public static void main(String[] cmds) throws IOException{
+        MatrixType M = MatrixSerializer.read(new File("c://highfreq/data/births.txt"));
+        FractionalAirlineDecomposition.process(M.column(0).toArray(), 365.25, true);
     }
 
     @Test

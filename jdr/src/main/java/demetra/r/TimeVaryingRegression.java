@@ -132,31 +132,28 @@ public class TimeVaryingRegression {
             return RegSsf.ofTimeVarying(ssf, mtd, v);
         }).build();
 
-//        LevenbergMarquardtMinimizer min = new LevenbergMarquardtMinimizer();
-//        min.minimize(fn.ssqEvaluate(mapping.getDefault()));
-//        SsfFunctionPoint<Airline, ISsf> rfn = (SsfFunctionPoint<Airline, ISsf>) min.getResult();
-//        if (rfn.getParameters().get(2) < fixedThreshold) {
-//            // fix the variance of the coefficients to 0
-//            mapping = new TDvarMapping(mtd, true);
-//            fn = SsfFunction.builder(data, mapping,
-//                    params
-//                    -> {
-//                SarimaModel arima = SarimaModel.builder(spec)
-//                        .theta(params.getTheta())
-//                        .btheta(params.getBtheta())
-//                        .build();
-//                SsfArima ssf = SsfArima.of(arima);
-//                return RegSsf.of(ssf, mtd);
-//            }).build();
-//            Airline core = rfn.getCore();
-//            core.setRegVariance(0);
-//            min.minimize(fn.ssqEvaluate(mapping.map(core)));
-//            rfn = (SsfFunctionPoint<Airline, ISsf>) min.getResult();
-//        }
-//        DefaultSmoothingResults fs = DkToolkit.sqrtSmooth(rfn.getSsf(), data, true);
-        
-        SsfFunctionPoint<Airline, ISsf> pt=fn.evaluate(mapping.getDefault());
-        DefaultSmoothingResults fs = DkToolkit.smooth(pt.getSsf(), data, true);
+        LevenbergMarquardtMinimizer min = new LevenbergMarquardtMinimizer();
+        min.minimize(fn.ssqEvaluate(mapping.getDefault()));
+        SsfFunctionPoint<Airline, ISsf> rfn = (SsfFunctionPoint<Airline, ISsf>) min.getResult();
+        if (rfn.getParameters().get(2) < fixedThreshold) {
+            // fix the variance of the coefficients to 0
+            mapping = new TDvarMapping(mtd, true);
+            fn = SsfFunction.builder(data, mapping,
+                    params
+                    -> {
+                SarimaModel arima = SarimaModel.builder(spec)
+                        .theta(params.getTheta())
+                        .btheta(params.getBtheta())
+                        .build();
+                SsfArima ssf = SsfArima.of(arima);
+                return RegSsf.of(ssf, mtd);
+            }).build();
+            Airline core = rfn.getCore();
+            core.setRegVariance(0);
+            min.minimize(fn.ssqEvaluate(mapping.map(core)));
+            rfn = (SsfFunctionPoint<Airline, ISsf>) min.getResult();
+        }
+        DefaultSmoothingResults fs = DkToolkit.sqrtSmooth(rfn.getSsf(), data, true);
         Matrix c = Matrix.make(mtd.getRowsCount(), mtd.getColumnsCount() + 1);
         Matrix ec = Matrix.make(mtd.getRowsCount(), mtd.getColumnsCount() + 1);
 
@@ -176,14 +173,14 @@ public class TimeVaryingRegression {
         }
         ec.apply(x -> x <= 0 ? 0 : Math.sqrt(x));
 
-//        SarimaModel arima = SarimaModel.builder(spec)
-//                .theta(rfn.getParameters().get(0))
-//                .btheta(rfn.getParameters().get(1))
-//                .build();
+        SarimaModel arima = SarimaModel.builder(spec)
+                .theta(rfn.getParameters().get(0))
+                .btheta(rfn.getParameters().get(1))
+                .build();
         return Results.builder()
                 .domain(s.domain())
-//                .arima(arima)
-//                .ll(rfn.getLikelihood())
+                .arima(arima)
+                .ll(rfn.getLikelihood())
                 .variables(mtd)
                 .coefficients(c)
                 .coefficientsStde(ec)

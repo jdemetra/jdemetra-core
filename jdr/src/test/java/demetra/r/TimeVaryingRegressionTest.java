@@ -64,6 +64,8 @@ public class TimeVaryingRegressionTest {
         System.out.println(regarima.getData("coefficients.stde", MatrixType.class));
 //        long t1=System.currentTimeMillis();
 //        System.out.println(t1-t0);
+        System.out.println(regarima.getData("arima.parameters", Object.class));
+
     }
     
  }
