@@ -57,6 +57,25 @@ import demetra.data.DoubleSequence;
 public interface ILikelihood {
 
     /**
+     * Aikake Information Criterion for a given number of (hyper-)parameters 
+     * AIC=2*nparams-2*ll
+     * @param nparams The number of parameters
+     * @return The AIC. Models with lower AIC shoud be preferred.
+     */
+    default double AIC(final int nparams) {
+	return -2 * logLikelihood() + 2 * nparams;
+    }
+
+    /**
+     * 
+     * @param nparams
+     * @return
+     */
+    default double BIC(final int nparams) {
+	return -2 * logLikelihood() + nparams * Math.log(dim());
+    }
+
+    /**
      * @return Log of the likelihood
      */
     double logLikelihood();

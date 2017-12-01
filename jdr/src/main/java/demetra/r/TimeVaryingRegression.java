@@ -9,6 +9,7 @@ import demetra.arima.ssf.SsfArima;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
+import demetra.likelihood.ILikelihood;
 import demetra.maths.MatrixType;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
@@ -63,15 +64,23 @@ public class TimeVaryingRegression {
         MatrixType variables;
         MatrixType coefficients;
         MatrixType coefficientsStde;
-        SarimaModel arima;
-        DkConcentratedLikelihood ll;
+        SarimaModel arima0, arima;
+        DkConcentratedLikelihood ll0, ll;
+        double nvar;
 
-        private static final String ARIMA = "arima", LL = "likelihood", STDCOEFF = "coefficients.stde", COEFF = "coefficients.value", TD = "td", TDEFFECT = "tdeffect";
+        private static final String ARIMA0 = "arima0", LL0 = "likelihood0",
+                ARIMA = "arima", LL = "likelihood",
+                STDCOEFF = "coefficients.stde", COEFF = "coefficients.value", TD = "td", TDEFFECT = "tdeffect";
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
+            MAPPING.delegate(ARIMA0, SarimaInfo.getMapping(), r -> r.getArima0().toType());
+            MAPPING.delegate(LL0, DkLikelihoodInfo.getMapping(), r -> r.getLl0());
             MAPPING.delegate(ARIMA, SarimaInfo.getMapping(), r -> r.getArima().toType());
             MAPPING.delegate(LL, DkLikelihoodInfo.getMapping(), r -> r.getLl());
+            MAPPING.set("aic0", Double.class, r -> r.getLl0().AIC(2));
+            MAPPING.set("aic", Double.class, r -> r.getLl().AIC(3));
+            MAPPING.set("tdvar", Double.class, r -> r.getNvar());
             MAPPING.set(COEFF, MatrixType.class, r -> r.getCoefficients());
             MAPPING.set(STDCOEFF, MatrixType.class, r -> r.getCoefficientsStde());
             MAPPING.set(TD, MatrixType.class, r -> r.getVariables());
@@ -109,55 +118,47 @@ public class TimeVaryingRegression {
         }
     }
 
-    public Results regarima(TsData s, String td, String svar, double fixedThreshold) {
-        int freq=TsUtility.periodFromTsUnit(s.getUnit());
+    public Results regarima(TsData s, String td, String svar, double aicdiff) {
+        int freq = TsUtility.periodFromTsUnit(s.getUnit());
         SarimaSpecification spec = new SarimaSpecification();
         spec.airline(freq);
         DayClustering dc = days(td);
         Matrix mtd = generate(s.domain(), dc);
         Matrix nvar = generateVar(dc, svar);
         SsfData data = new SsfData(s.values());
-        TDvarMapping mapping = new TDvarMapping(mtd, false);
-        SsfFunction<Airline, ISsf> fn = SsfFunction.builder(data, mapping,
-                params
-                -> {
-            SarimaModel arima = SarimaModel.builder(spec)
-                    .theta(params.getTheta())
-                    .btheta(params.getBtheta())
-                    .build();
-            SsfArima ssf = SsfArima.of(arima);
-            double nv = params.getRegVariance();
-            Matrix v = nvar.deepClone();
-            v.mul(nv);
-            return RegSsf.ofTimeVarying(ssf, mtd, v);
-        }).build();
 
         LevenbergMarquardtMinimizer min = new LevenbergMarquardtMinimizer();
-        min.minimize(fn.ssqEvaluate(mapping.getDefault()));
+
+        // fixed model
+        TDvarMapping mapping0 = new TDvarMapping(mtd, true);
+        SsfFunction<Airline, ISsf> fn0 = buildFunction(data, spec, mapping0, mtd, nvar);
+        min.minimize(fn0);
+        SsfFunctionPoint<Airline, ISsf> rfn0 = (SsfFunctionPoint<Airline, ISsf>) min.getResult();
+
+        // compute the unconstrained solution
+        TDvarMapping mapping = new TDvarMapping(mtd, false);
+        SsfFunction<Airline, ISsf> fn = buildFunction(data, spec, mapping, mtd, nvar);
+
+        Airline air0 = rfn0.getCore();
+        air0.setRegVariance(.001);
+        min.minimize(fn.ssqEvaluate(mapping.map(air0)));
         SsfFunctionPoint<Airline, ISsf> rfn = (SsfFunctionPoint<Airline, ISsf>) min.getResult();
-        if (rfn.getParameters().get(2) < fixedThreshold) {
-            // fix the variance of the coefficients to 0
-            mapping = new TDvarMapping(mtd, true);
-            fn = SsfFunction.builder(data, mapping,
-                    params
-                    -> {
-                SarimaModel arima = SarimaModel.builder(spec)
-                        .theta(params.getTheta())
-                        .btheta(params.getBtheta())
-                        .build();
-                SsfArima ssf = SsfArima.of(arima);
-                return RegSsf.of(ssf, mtd);
-            }).build();
-            Airline core = rfn.getCore();
-            core.setRegVariance(0);
-            min.minimize(fn.ssqEvaluate(mapping.map(core)));
-            rfn = (SsfFunctionPoint<Airline, ISsf>) min.getResult();
+        
+        // compute AIC
+        double aic0 = rfn0.getLikelihood().AIC(2);
+        double aic = rfn.getLikelihood().AIC(3);
+        ISsf ssf;
+         if (aic+aicdiff < aic0){
+            ssf=rfn.getSsf();
         }
-        DefaultSmoothingResults fs = DkToolkit.sqrtSmooth(rfn.getSsf(), data, true);
+        else
+            ssf=rfn0.getSsf();
+
+        DefaultSmoothingResults fs = DkToolkit.sqrtSmooth(ssf, data, true);
         Matrix c = Matrix.make(mtd.getRowsCount(), mtd.getColumnsCount() + 1);
         Matrix ec = Matrix.make(mtd.getRowsCount(), mtd.getColumnsCount() + 1);
 
-        int del = freq+2;
+        int del = freq + 2;
         double nwe = dc.getGroupCount(0);
         double[] z = new double[c.getColumnsCount() - 1];
         for (int i = 0; i < z.length; ++i) {
@@ -172,19 +173,44 @@ public class TimeVaryingRegression {
             ec.set(i, z.length, QuadraticForm.apply(var, Z));
         }
         ec.apply(x -> x <= 0 ? 0 : Math.sqrt(x));
+        
+        Airline air=rfn.getCore();
 
+        SarimaModel arima0 = SarimaModel.builder(spec)
+                .theta(air0.theta)
+                .btheta(air0.btheta)
+                .build();
         SarimaModel arima = SarimaModel.builder(spec)
-                .theta(rfn.getParameters().get(0))
-                .btheta(rfn.getParameters().get(1))
+                .theta(air.theta)
+                .btheta(air.btheta)
                 .build();
         return Results.builder()
                 .domain(s.domain())
+                .arima0(arima0)
                 .arima(arima)
+                .ll0(rfn0.getLikelihood())
                 .ll(rfn.getLikelihood())
+                .nvar(air.regVariance)
                 .variables(mtd)
                 .coefficients(c)
                 .coefficientsStde(ec)
                 .build();
+    }
+
+    private SsfFunction<Airline, ISsf> buildFunction(SsfData data, SarimaSpecification spec, TDvarMapping mapping, Matrix mtd, Matrix nvar) {
+        return SsfFunction.builder(data, mapping,
+                params
+                -> {
+            SarimaModel arima = SarimaModel.builder(spec)
+                    .theta(params.getTheta())
+                    .btheta(params.getBtheta())
+                    .build();
+            SsfArima ssf = SsfArima.of(arima);
+            double nv = params.getRegVariance();
+            Matrix v = nvar.deepClone();
+            v.mul(nv);
+            return RegSsf.ofTimeVarying(ssf, mtd, v);
+        }).build();
     }
 
     private DayClustering days(String td) {
