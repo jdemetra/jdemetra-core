@@ -33,8 +33,8 @@ import javax.annotation.Nonnull;
 /**
  *
  * @author Jean Palate
- * @param <S>
- * @param <F>
+ * @param <S> Type of the underlying object
+ * @param <F> Ssf representation of objects of type S
  */
 public class SsfFunction<S, F extends ISsf> implements IFunction, ISsqFunction {
 
@@ -134,7 +134,7 @@ public class SsfFunction<S, F extends ISsf> implements IFunction, ISsqFunction {
     }
 
     @Override
-    public IFunctionPoint evaluate(DoubleSequence parameters) {
+    public SsfFunctionPoint<S, F> evaluate(DoubleSequence parameters) {
         return new SsfFunctionPoint<>(this, parameters);
     }
 

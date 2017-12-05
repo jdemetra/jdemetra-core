@@ -79,6 +79,7 @@ public class Spectrum {
         if (Math.abs(d) > EPS2) {
             return n / d;
         } else if (Math.abs(n) < EPS) { // 0/0
+            try{
             for (int i = 1; i <= 10; ++i) {
                 double dd = new dfr(s.denom, i).evaluate(x);
                 double nd = new dfr(s.num, i).evaluate(x);
@@ -88,6 +89,10 @@ public class Spectrum {
                 if (Math.abs(nd) > EPS) {
                     break;
                 }
+            }
+            }
+            catch(Exception err){
+                return Double.NaN;
             }
         }
         return Double.NaN;

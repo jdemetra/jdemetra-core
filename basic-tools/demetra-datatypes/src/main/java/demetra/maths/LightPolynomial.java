@@ -55,7 +55,13 @@ class LightPolynomial implements PolynomialType {
     }
 
     @Override
+    public double[] toArray() {
+        return c.clone();
+    }
+    
+    @Override
     public String toString() {
         return PolynomialType.toString(this, "%6g", 'X');
     }
+
 }

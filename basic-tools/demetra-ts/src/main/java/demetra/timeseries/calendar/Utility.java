@@ -17,15 +17,21 @@
 package demetra.timeseries.calendar;
 
 import demetra.design.Development;
+import demetra.maths.matrices.Matrix;
 import demetra.timeseries.Fixme;
 import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
+import demetra.timeseries.calendars.Holiday;
+import demetra.timeseries.calendars.Holidays;
+import demetra.timeseries.calendars.IHoliday;
+import demetra.timeseries.calendars.IHolidayInfo;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-
+import static java.time.temporal.ChronoUnit.DAYS;
+import java.util.Iterator;
 
 /**
  *
@@ -34,6 +40,64 @@ import java.time.temporal.ChronoUnit;
 @Development(status = Development.Status.Alpha)
 @lombok.experimental.UtilityClass
 class Utility {
+
+    public void fillDays(Holidays hl, final Matrix D, final LocalDate start, int n) {
+        LocalDate end = start.plusDays(n);
+        int col = 0;
+        for (Holiday item : hl.elements()) {
+            Iterator<IHolidayInfo> iter = item.getDay().getIterable(TsUnit.DAILY, start, end).iterator();
+            while (iter.hasNext()) {
+                LocalDate date = iter.next().getDay();
+                if (date.getDayOfWeek() != DayOfWeek.SUNDAY) {
+                    long pos = start.until(date, DAYS);
+                    D.set((int) pos, col, 1);
+                }
+            }
+            if (D.getColumnsCount() > 1) {
+                ++col;
+            }
+        }
+    }
+
+    public void fillPreviousWorkingDays(Holidays hl, final Matrix D, final LocalDate start, int n, final int del) {
+        LocalDate nstart = start.plusDays(del);
+        LocalDate end = start.plusDays(n);
+        int col = 0;
+        for (Holiday item : hl.elements()) {
+            Iterator<IHolidayInfo> iter = item.getDay().getIterable(TsUnit.DAILY, nstart, end).iterator();
+            while (iter.hasNext()) {
+                LocalDate date = iter.next().getDay().minusDays(del);
+                date = IHolidayInfo.getPreviousWorkingDate(date);
+                long pos = start.until(date, DAYS);
+                if (pos >= 0 && pos < n) {
+                    D.set((int) pos, col, 1);
+                }
+            }
+            if (D.getColumnsCount() > 1) {
+                ++col;
+            }
+        }
+    }
+
+    public void fillNextWorkingDays(Holidays hl, final Matrix D, final LocalDate start, int n, final int del) {
+        LocalDate nstart = start.minusDays(del);
+        LocalDate end = nstart.plusDays(n);
+        int col = 0;
+        for (Holiday item : hl.elements()) {
+            Iterator<IHolidayInfo> iter = item.getDay().getIterable(TsUnit.DAILY, nstart, end).iterator();
+            while (iter.hasNext()) {
+                LocalDate date = iter.next().getDay().plusDays(del);
+                date = IHolidayInfo.getNextWorkingDate(date);
+                long pos = start.until(date, DAYS);
+                if (pos >= 0 && pos < n) {
+                    D.set((int) pos, col, 1);
+                }
+            }
+            if (D.getColumnsCount() > 1) {
+                ++col;
+            }
+        }
+    }
 
     /**
      *
@@ -51,11 +115,11 @@ class Utility {
         TsPeriod month = d0.withUnit(TsUnit.MONTHLY);
         for (int i = 0; i < start.length; ++i) {
             start[i] = month.start().toLocalDate();
-            month=month.plus(conv);
+            month = month.plus(conv);
         }
         for (int i = 0; i < n; ++i) {
             // int dw0 = (start[i] - 4) % 7;
-            int ni = (int)start[i].until(start[i+1], ChronoUnit.DAYS);
+            int ni = (int) start[i].until(start[i + 1], ChronoUnit.DAYS);
             rslt[i] = ni;
         }
         return rslt;
@@ -96,7 +160,6 @@ class Utility {
 //        return rslt;
 //    }
 //
- 
     /**
      * Return the first Day in the given month of the given year which is a
      * specified day of week
@@ -107,7 +170,7 @@ class Utility {
      * @return
      */
     LocalDate firstWeekDay(DayOfWeek day, int year, int month) {
-        TsPeriod m =  TsPeriod.monthly(year, month-1);
+        TsPeriod m = TsPeriod.monthly(year, month - 1);
         LocalDate start = m.start().toLocalDate();
         int iday = day.getValue();
         int istart = start.getDayOfWeek().getValue();
@@ -150,12 +213,12 @@ class Utility {
 //    }
 //
     int calc(int year, final int month, final int day) {
-        
+
         boolean bLeapYear = isLeap(year);
 
         // make Jan 1, 1AD be 0
         int nDate = year * 365 + year / 4 - year / 100 + year / 400
-                + Fixme.getCumulatedMonthDays(month-1) + day;
+                + Fixme.getCumulatedMonthDays(month - 1) + day;
 
         // If leap year and it's before March, subtract 1:
         if ((month < 3) && bLeapYear) {
@@ -163,8 +226,9 @@ class Utility {
         }
         return nDate - 719528; // number of days since 0
     }
+
     /**
-     * Number of days from begin 1970. 
+     * Number of days from begin 1970.
      *
      * @param year
      * @param ndays
@@ -197,7 +261,7 @@ class Utility {
             return rslt;
         }
     }
-    
+
     /**
      * true if year is leap
      *

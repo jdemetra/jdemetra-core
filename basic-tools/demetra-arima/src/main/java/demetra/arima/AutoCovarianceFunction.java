@@ -158,7 +158,7 @@ public class AutoCovarianceFunction {
             if (sma == null) {
                 acov = DEF_COMPUTER.get().ac(ma, ar, rank);
                 if (ivar != 1) {
-                    for (int i = 0; i <= acov.length; ++i) {
+                    for (int i = 0; i < acov.length; ++i) {
                         acov[i] *= ivar;
                     }
                 }

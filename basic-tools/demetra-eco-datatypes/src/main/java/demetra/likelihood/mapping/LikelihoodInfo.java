@@ -3,18 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.r.mapping;
+package demetra.likelihood.mapping;
 
 import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.sarima.SarimaModel;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.experimental.UtilityClass
-public class LikelihoodMapping {
+public class LikelihoodInfo {
 
     private final String LL = "ll", LLC = "adjustedll", SSQ = "ssqerr", AIC = "aic", BIC = "bic", AICC = "aicc", BICC = "bicc", BIC2 = "bic2", HQ = "hannanquinn",
             NPARAMS = "nparams", NOBS = "nobs", NEFFECTIVEOBS = "neffective";

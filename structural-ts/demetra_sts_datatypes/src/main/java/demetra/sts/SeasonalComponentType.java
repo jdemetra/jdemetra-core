@@ -9,8 +9,8 @@ package demetra.sts;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@lombok.Data
+@lombok.Value
 public class SeasonalComponentType {
-    SeasonalModel model=SeasonalModel.Trigonometric;
-    double variance=1;
+    @lombok.NonNull SeasonalModel model;
+    double variance;
 }

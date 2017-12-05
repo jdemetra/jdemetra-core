@@ -13,26 +13,42 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
- */
-package demetra.timeseries.calendars;
+*/
+
+package demetra.sa;
 
 import demetra.design.Development;
-import demetra.timeseries.TsPeriod;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
 
 /**
+ * Type of decomposition
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
-public interface IDayInfo {
+@Development(status = Development.Status.Beta)
+public enum DecompositionMode {
 
-    LocalDate getDay();
+    /**
+     * Decomposition that doesn't correspond to the next definitions
+     */
+    Undefined,
+    /**
+     * Y = T + S + I, SA = Y - S = T + I
+     */
+    Additive,
+    /**
+     * Y = T * S * I, SA = Y / S = T * I
+     */
+    Multiplicative,
+    /**
+     * Log(Y) = T + S + I, SA = exp( T + I) = Y / exp(S)
+     */
+    LogAdditive,
+    /**
+     * Y = T * (S + I -1), SA = T * I
+     */
+    PseudoAdditive;
 
-    TsPeriod getPeriod();
-
-    default DayOfWeek getDayOfWeek() {
-        return getDay().getDayOfWeek();
+    public boolean isMultiplicative() {
+        return this == Multiplicative || this == LogAdditive;
     }
 }

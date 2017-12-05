@@ -28,7 +28,7 @@ import java.time.LocalDate;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public interface ISpecialDay {
+public interface IHoliday {
     
     public static class Context{
         private final boolean mean;
@@ -55,7 +55,7 @@ public interface ISpecialDay {
      * @param end
      * @return
      */
-    Iterable<IDayInfo> getIterable(TsUnit freq, LocalDate start, LocalDate end);
+    Iterable<IHolidayInfo> getIterable(TsUnit freq, LocalDate start, LocalDate end);
 
     /**
      * Gives the long term mean effect on each day of week for each period of a

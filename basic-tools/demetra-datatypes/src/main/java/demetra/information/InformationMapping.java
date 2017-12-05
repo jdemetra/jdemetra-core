@@ -103,6 +103,11 @@ public class InformationMapping<S> implements InformationExtractor<S> {
         map.put(name, InformationExtractor.delegate(name, mapping, fn));
     }
 
+    public <Q> void delegateArray(final String name, final int start, final int end, 
+            final InformationMapping<Q> mapping, final BiFunction<S, Integer, Q> fn) {
+        map.put(name, InformationExtractor.delegateArray(name, start, end, mapping, fn));
+    }
+
     public <Q> void setArray(final String name, final int start, final int end,
             final Class<Q> targetClass, final BiFunction<S, Integer, Q> fn) {
         map.put(name, InformationExtractor.array(name, start, end, targetClass, fn));

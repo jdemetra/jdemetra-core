@@ -16,6 +16,7 @@
  */
 package demetra.linearmodel;
 
+import demetra.data.DataBlock;
 import demetra.design.Immutable;
 import demetra.dstats.F;
 import demetra.dstats.T;
@@ -26,6 +27,8 @@ import demetra.stats.tests.TestType;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.design.IBuilder;
+import demetra.maths.matrices.LowerTriangularMatrix;
+import demetra.maths.matrices.SymmetricMatrix;
 import javax.annotation.Nonnull;
 
 /**
@@ -83,8 +86,8 @@ public class LeastSquaresResults {
             return new LeastSquaresResults(y, X, mean, coefficients, ucov, ssq, ldet);
         }
     }
-    
-    public static Builder builder(@Nonnull DoubleSequence Y, Matrix X){
+
+    public static Builder builder(@Nonnull DoubleSequence Y, Matrix X) {
         return new Builder(Y, X);
     }
 
@@ -190,6 +193,24 @@ public class LeastSquaresResults {
     public StatisticalTest Ftest() {
         F f = new F(degreesOfFreedom(), n - nx);
         return new StatisticalTest(f, getRegressionMeanSquare() / getResidualMeanSquare(), TestType.Upper, false);
+    }
+
+    /**
+     * Computes a Joint F-Test on the n variables starting at the given position
+     *
+     * @param v0 Position of the first variable
+     * @param nvars Number of variables
+     * @return
+     */
+    public StatisticalTest Ftest(int v0, int nvars) {
+        Matrix bvar = ucov.extract(v0, nvars, v0, nvars).deepClone();
+        SymmetricMatrix.lcholesky(bvar);
+        DataBlock b = DataBlock.of(coefficients.extract(v0, nvars));
+        LowerTriangularMatrix.rsolve(bvar, b);
+        double fval = b.ssq() / nvars / (ssq / (n - nx));
+        F f = new F(nvars, n - nx);
+        return new StatisticalTest(f, fval, TestType.Upper, false);
+
     }
 
     /**

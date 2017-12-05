@@ -14,28 +14,28 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.sts.internal;
-
-import demetra.sts.ModelSpecification;
+package demetra.arima;
 
 /**
  *
  * @author Jean Palate
  */
-@lombok.Data
-public class BsmSpecification {
-      public static enum Optimizer {
+@lombok.Value
+public class UcarimaType {
 
-        LevenbergMarquardt, MinPack, LBFGS
+    ArimaType sum;
+    @lombok.NonNull ArimaType[] components;
+    
+    public int size(){
+        return components.length;
+    }
+    
+    public ArimaType[] getComponents(){
+        return components.clone();
+    }
+    
+    public ArimaType getComponent(int i){
+        return components[i];
     }
 
-    public static final double DEF_TOL = 1e-9;
-    public static final Optimizer DEF_OPT = Optimizer.LevenbergMarquardt;
-    public static final boolean DEF_DREGS = false;
-
-    private ModelSpecification modelSpecification=new ModelSpecification();
-    private boolean diffuseRegression = DEF_DREGS;
-    private double precision = DEF_TOL;
-    private Optimizer optimizer = DEF_OPT;
-  
 }

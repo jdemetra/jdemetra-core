@@ -235,6 +235,17 @@ public interface DoubleSequence extends BaseSequence<Double> {
     }
 
     /**
+     * Range of a sequence. Other way for extracting information
+     *
+     * @param beg The first item
+     * @param end The last item
+     * @return 
+     */
+    default DoubleSequence range(int beg, int end) {
+        return end <= beg ? DoubleSequence.EMPTY : extract(beg, end-beg);
+    }
+
+    /**
      * Returns a new array of doubles in reverse order
      *
      * @return

@@ -28,6 +28,7 @@ import demetra.maths.polynomials.Polynomial;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
+import demetra.maths.PolynomialType;
 
 /**
  * Box-Jenkins seasonal arima model AR(B)* SAR(B)*D(B)*SD(B) y(t) =
@@ -644,4 +645,15 @@ public class SarimaModel extends AbstractArimaModel {
         }
     }
 
+    public SarimaType toType(){
+        return SarimaType.builder()
+                .period(s)
+                .d(d)
+                .bd(bd)
+                .phi(PolynomialType.of(1, phi))
+                .bphi(PolynomialType.of(1, bphi))
+                .theta(PolynomialType.of(1, th))
+                .btheta(PolynomialType.of(1, bth))
+                .build();
+    }
 }

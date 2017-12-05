@@ -3,16 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.sts;
+package demetra.x11;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@lombok.Data
-public class BasicStructuralModelType {
-    TrendComponentType trendComponent;
-    SeasonalComponentType seasonalComponent;
-    CycleComponentType cycleComponent;
-    double noiseVariance;
+public class X11Toolkit {
+    
 }

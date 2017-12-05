@@ -106,6 +106,17 @@ public abstract class AbstractFiniteFilter implements IFiniteFilter {
     }
 
     @Override
+    public double apply(DoubleSequence in) {
+        IntToDoubleFunction weights = weights();
+        int lb = getLowerBound(), ub = getUpperBound();
+        double s = 0;
+        for (int i=0, j = lb; j <= ub; ++j, ++i) {
+            s += weights.applyAsDouble(j) * in.get(i);
+        }
+        return s;
+    }
+
+    @Override
     public void apply(IntToDoubleFunction in, IFilterOutput out) {
         IntToDoubleFunction weights = weights();
         int lb = getLowerBound(), ub = getUpperBound();

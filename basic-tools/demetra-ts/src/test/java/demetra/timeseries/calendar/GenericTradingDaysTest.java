@@ -50,6 +50,20 @@ public class GenericTradingDaysTest {
     }
 
     @Test
+    public void testWD() {
+        RegularDomain md = RegularDomain.of(TsPeriod.monthly(1980, 1), 360);
+        Matrix M1 = Matrix.make(md.length(), 1);
+        GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD2);
+        gtd.data(md, M1.columnList());
+        ec.tstoolkit.timeseries.simplets.TsDomain omd = new ec.tstoolkit.timeseries.simplets.TsDomain(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1980, 0, 360);
+        ec.tstoolkit.maths.matrices.Matrix oM1 = new ec.tstoolkit.maths.matrices.Matrix(omd.getLength(), 1);
+        DefaultGregorianCalendarProvider.instance.calendarData(TradingDaysType.WorkingDays, omd, oM1.columnList());
+        for (int i = 0; i < 1; ++i) {
+            assertTrue(distance(M1.column(i), oM1.column(i)) < 1e-9);
+        }
+    }
+
+    @Test
     @Ignore
     public void stressTestTD() {
         long t0 = System.currentTimeMillis();

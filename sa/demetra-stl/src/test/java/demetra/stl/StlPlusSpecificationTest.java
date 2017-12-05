@@ -33,9 +33,10 @@ public class StlPlusSpecificationTest {
 
     @Test
     public void testDefault() {
-        DoubleSequence data=DoubleSequence.of(WeeklyData.US_CLAIMS);
+        DoubleSequence data=DoubleSequence.of(WeeklyData.US_CLAIMS2);
         // Creates a default stl specification
         StlPlusSpecification spec = StlPlusSpecification.createDefault(52, true);
+        spec.setMultiplicative(true);
         StlPlus stl = spec.build();
         stl.process(data);
         Matrix m=Matrix.make(data.length(), 4);
@@ -43,7 +44,7 @@ public class StlPlusSpecificationTest {
         m.column(1).copyFrom(stl.getTrend(), 0);
         m.column(2).copyFrom(stl.getSeason(0), 0);
         m.column(3).copyFrom(stl.getIrr(), 0);
-        //System.out.println(m);
+//        System.out.println(m);
     }
     
     @Test

@@ -205,14 +205,15 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
     }
 
     /**
-     * Adjust the likelihood if the toArray have been pre-multiplied by a given
+     * Adjust the likelihood if the data have been pre-multiplied by a given
      * scaling factor
      *
-     * @param yfactor The scaling factor
-     * @param xfactor
+     * @param yfactor The scaling factor of y
+     * @param xfactor The scaling factor of x
      * @return
      */
     public ConcentratedLikelihood rescale(final double yfactor, double[] xfactor) {
+        // rescale the residuals
         double nssqerr = ssqerr / (yfactor * yfactor);
         double[] nres = null;
         if (res != null) {
@@ -223,35 +224,40 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
         }
         double[] nb = null;
         Matrix nbvar = null, nr = null;
-        if (b != null && xfactor != null) {
+        if (b != null) {
             nb = new double[b.length];
-            nr = r.deepClone();
-            for (int i = 0; i < b.length; ++i) {
-                nb[i] = b[i] * xfactor[i];
-            }
-            if (nbvar != null) {
-                nbvar = bvar.deepClone();
+            if (xfactor == null) {
+                // rescale the coefficients (but not the unscaled variances)
                 for (int i = 0; i < b.length; ++i) {
-                    double ifactor = xfactor[i];
-                    for (int j = 0; j < i; ++j) {
-                        double ijfactor = ifactor * xfactor[j];
-                        nbvar.apply(i, j, x -> x * ijfactor);
-                        nbvar.apply(j, i, x -> x * ijfactor);
+                    nb[i] = b[i] / yfactor;
+                }
+                nbvar = bvar;
+                nr = r;
+            } else {
+                // rescale everything
+                for (int i = 0; i < b.length; ++i) {
+                    nb[i] = b[i] * xfactor[i] / yfactor;
+                }
+                if (nbvar != null) {
+                    nbvar = bvar.deepClone();
+                    for (int i = 0; i < b.length; ++i) {
+                        double ifactor = xfactor[i];
+                        for (int j = 0; j < i; ++j) {
+                            double ijfactor = ifactor * xfactor[j];
+                            nbvar.apply(i, j, x -> x * ijfactor);
+                            nbvar.apply(j, i, x -> x * ijfactor);
+                        }
+                        nbvar.apply(i, i, x -> x * ifactor * ifactor);
                     }
-                    nbvar.apply(i, i, x -> x * ifactor * ifactor);
+                }
+                if (r != null) {
+                    nr = r.deepClone();
+                    for (int i = 0; i < b.length; ++i) {
+                        nr.column(i).div(xfactor[i]);
+                    }
                 }
             }
-            if (r != null) {
-                nr = r.deepClone();
-                for (int i = 0; i < b.length; ++i) {
-                    nr.column(i).div(xfactor[i]);
-                }
-            }
-        } else {
-            nb = b;
-            nbvar = bvar;
-            nr = r;
-        }
+        } 
         return new ConcentratedLikelihood(n, nssqerr, ldet, nb, nbvar, nr, nres);
     }
 
@@ -274,14 +280,14 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
         System.arraycopy(x, nm, nx, 0, nx.length);
         return nx;
     }
-    
+
     @Override
-    public String toString(){
-        StringBuilder builder=new StringBuilder();
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
         builder.append("log-likelihood: ").append(this.ll)
-                .append(", sigma2: ").append(this.ssqerr/this.n);
-        
+                .append(", sigma2: ").append(this.ssqerr / this.n);
+
         return builder.toString();
-                
+
     }
 }

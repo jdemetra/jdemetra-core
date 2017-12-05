@@ -27,27 +27,58 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Ssf;
 import demetra.data.DoubleReader;
+import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfInitialization;
 
 /**
  *
  * @author Jean Palate
  */
-public class RegSsf extends Ssf {
+public class RegSsf {
 
-    public static RegSsf create(ISsf model, Matrix X) {
+    public static ISsf of(ISsf model, Matrix X) {
         if (X.isEmpty()) {
             throw new IllegalArgumentException();
         }
         int mdim = model.getStateDim();
-        Xinitializer xinit = new Xinitializer(mdim, model.getInitialization(), X.getColumnsCount());
+        Xinitializer xinit = new Xinitializer(model.getInitialization(), X.getColumnsCount());
         Xdynamics xdyn = new Xdynamics(mdim, model.getDynamics(), X.getColumnsCount());
         Xmeasurement xm = new Xmeasurement(mdim, model.getMeasurement(), X);
-        return new RegSsf(xinit, xdyn, xm);
+        return new Ssf(xinit, xdyn, xm);
     }
 
-    private RegSsf(ISsfInitialization initializer, ISsfDynamics dyn, ISsfMeasurement m) {
-        super(initializer, dyn, m);
+    public static ISsf ofTimeVarying(ISsf model, Matrix X, Matrix cvar) {
+        if (X.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        int mdim = model.getStateDim();
+        Xinitializer xinit = new Xinitializer(model.getInitialization(), X.getColumnsCount());
+        Matrix s = cvar.deepClone();
+        SymmetricMatrix.lcholesky(s, 1e-12);
+        Xvardynamics xdyn = new Xvardynamics(mdim, model.getDynamics(), cvar, s);
+        Xmeasurement xm = new Xmeasurement(mdim, model.getMeasurement(), X);
+        return new Ssf(xinit, xdyn, xm);
+    }
+
+    /**
+     * Creates a ssf with time varying coefficients, such that the innovations
+     * covariance are defined by SS'
+     *
+     * @param model
+     * @param X
+     * @param s The factor of the coefficients covariance
+     * @return
+     */
+    public static ISsf ofTimeVaryingFactor(ISsf model, Matrix X, Matrix s) {
+        if (X.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        int mdim = model.getStateDim();
+        Matrix var = SymmetricMatrix.XXt(s);
+        Xinitializer xinit = new Xinitializer(model.getInitialization(), X.getColumnsCount());
+        Xvardynamics xdyn = new Xvardynamics(mdim, model.getDynamics(), var, s);
+        Xmeasurement xm = new Xmeasurement(mdim, model.getMeasurement(), X);
+        return new Ssf(xinit, xdyn, xm);
     }
 
     static class Xdynamics implements ISsfDynamics {
@@ -140,14 +171,117 @@ public class RegSsf extends Ssf {
 
     }
 
+    static class Xvardynamics implements ISsfDynamics {
+
+        private final int n, nx;
+        private final ISsfDynamics dyn;
+        private final Matrix var, s;
+
+        Xvardynamics(int n, ISsfDynamics dyn, Matrix xvar, Matrix xs) {
+            this.dyn = dyn;
+            this.n = n;
+            this.nx = xvar.getColumnsCount();
+            this.var = xvar;
+            this.s = xs;
+        }
+
+        @Override
+        public int getInnovationsDim() {
+            return dyn.getInnovationsDim() + s.getColumnsCount();
+        }
+
+        @Override
+        public void V(int pos, Matrix qm) {
+            MatrixWindow cur = qm.topLeft(n, n);
+            dyn.V(pos, cur);
+            cur.next(nx, nx);
+            cur.copy(var);
+        }
+
+        @Override
+        public void S(int pos, Matrix cm) {
+            MatrixWindow cur = cm.topLeft(n, dyn.getInnovationsDim());
+            dyn.S(pos, cur);
+            cur.next(nx, s.getColumnsCount());
+            cur.copy(s);
+        }
+
+        @Override
+        public boolean hasInnovations(int pos) {
+            return true;
+        }
+
+        @Override
+        public boolean areInnovationsTimeInvariant() {
+            return dyn.areInnovationsTimeInvariant();
+        }
+
+        @Override
+        public void T(int pos, Matrix tr) {
+            dyn.T(pos, tr.topLeft(n, n));
+            tr.diagonal().drop(n, 0).set(1);
+        }
+
+        @Override
+        public void TX(int pos, DataBlock x) {
+            dyn.TX(pos, x.range(0, n));
+        }
+
+        @Override
+        public void TM(int pos, Matrix m) {
+            dyn.TM(pos, m.top(n));
+        }
+
+        @Override
+        public void TVT(int pos, Matrix m) {
+            MatrixWindow z = m.topLeft(n, n);
+            dyn.TVT(pos, z);
+            MatrixWindow zc = z.clone();
+            z.hnext(nx);
+            dyn.TM(pos, z);
+            zc.vnext(nx);
+            zc.copy(z.transpose());
+        }
+
+        @Override
+        public void XS(int pos, DataBlock x, DataBlock xs) {
+            DataWindow xleft = x.left(), xsleft = xs.left();
+            dyn.XS(pos, xleft.next(n), xsleft.next(dyn.getInnovationsDim()));
+            xsleft.next(s.getColumnsCount()).product(xleft.next(nx), s.columnsIterator());
+        }
+
+        @Override
+        public void addSU(int pos, DataBlock x, DataBlock u) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void XT(int pos, DataBlock x) {
+            dyn.XT(pos, x.range(0, n));
+        }
+
+        @Override
+        public void addV(int pos, Matrix p) {
+            MatrixWindow cur = p.topLeft(n, n);
+            dyn.addV(pos, cur);
+            cur.next(nx, nx);
+            cur.add(var);
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return dyn.isTimeInvariant();
+        }
+    }
+
     static class Xinitializer implements ISsfInitialization {
 
         private final int n, nx;
         private final ISsfInitialization dyn;
 
-        Xinitializer(int n, ISsfInitialization init, int nx) {
+        Xinitializer(ISsfInitialization init, int nx) {
             this.dyn = init;
-            this.n = n;
+            this.n = init.getStateDim();
             this.nx = nx;
         }
 
@@ -283,8 +417,8 @@ public class RegSsf extends Ssf {
 
         @Override
         public void XpZd(int pos, DataBlock x, double d) {
-            DataWindow range = x.window(0, n);
-            m.XpZd(pos, range.get(), d);
+            DataWindow range = x.left();
+            m.XpZd(pos, range.next(n), d);
             range.next(nx).addAY(d, data.row(pos));
         }
 

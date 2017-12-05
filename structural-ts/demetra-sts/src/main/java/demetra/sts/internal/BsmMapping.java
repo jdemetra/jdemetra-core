@@ -25,7 +25,7 @@ import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
 import demetra.sts.BasicStructuralModel;
 import demetra.sts.Component;
-import demetra.sts.ModelSpecification;
+import demetra.sts.BsmSpec;
 
 /**
  *
@@ -39,7 +39,6 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
     private static double PMIN = .25, PMAX = 2.5, PDEF = 1;
 
     private static final Component[] CMPS = {Component.Level, Component.Slope, Component.Seasonal, Component.Noise, Component.Cycle};
-
 
     /**
      *
@@ -70,7 +69,7 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
     /**
      *
      */
-    public final ModelSpecification spec;
+    public final BsmSpec spec;
 
     /**
      *
@@ -82,7 +81,7 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
      * @param spec
      * @param freq
      */
-    public BsmMapping(ModelSpecification spec, int freq) {
+    public BsmMapping(BsmSpec spec, int freq) {
         transformation = Transformation.Square;
         this.spec = spec;
         this.freq = freq;
@@ -94,7 +93,7 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
      * @param freq
      * @param tr
      */
-    public BsmMapping(ModelSpecification spec, int freq, Transformation tr) {
+    public BsmMapping(BsmSpec spec, int freq, Transformation tr) {
         this.transformation = tr;
         this.spec = spec;
         this.freq = freq;
@@ -111,13 +110,11 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
     }
 
     public boolean hasCycleDumpingFactor() {
-        return spec.hasCycle() && (spec.getCyclicalDumpingFactor() == null
-                || !spec.getCyclicalDumpingFactor().isFixed());
+        return spec.hasCycle() && spec.getCycleDumpingFactor() == 0;
     }
 
     public boolean hasCycleLength() {
-        return spec.hasCycle() && (spec.getCyclicalPeriod() == null
-                || !spec.getCyclicalPeriod().isFixed());
+        return spec.hasCycle() && spec.getCycleLength() == 0;
     }
 
     public boolean hasFreeComponent(Component cmp) {
@@ -129,12 +126,10 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
             return 0;
         }
         int n = 0;
-        Parameter p = spec.getCyclicalDumpingFactor();
-        if (p == null || !p.isFixed()) {
+        if (spec.getCycleDumpingFactor() == 0) {
             ++n;
         }
-        p = spec.getCyclicalPeriod();
-        if (p == null || !p.isFixed()) {
+        if (spec.getCycleLength() == 0) {
             ++n;
         }
         return n;
@@ -262,13 +257,12 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
             }
         }
         if (spec.hasCycle()) {
-            double cdump, clen;
-            Parameter pm = spec.getCyclicalDumpingFactor();
-            if (pm == null || !pm.isFixed()) {
+            double pm = spec.getCycleDumpingFactor();
+            if (pm == 0) {
                 p[idx++] = t.getCyclicalDumpingFactor();
             }
-            pm = spec.getCyclicalPeriod();
-            if (pm == null || !pm.isFixed()) {
+            pm = spec.getCycleLength();
+            if (pm == 0) {
                 p[idx++] = t.getCyclicalPeriod() / (6 * freq);
             }
         }
@@ -287,17 +281,17 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
         }
         if (spec.hasCycle()) {
             double cdump, clen;
-            Parameter pm = spec.getCyclicalDumpingFactor();
-            if (pm == null || !pm.isFixed()) {
+            double pm = spec.getCycleDumpingFactor();
+            if (pm == 0) {
                 cdump = reader.next();
             } else {
-                cdump = pm.getValue();
+                cdump = pm;
             }
-            pm = spec.getCyclicalPeriod();
-            if (pm == null || !pm.isFixed()) {
+            pm = spec.getCycleLength();
+            if (pm == 0) {
                 clen = 6 * freq * reader.next();
             } else {
-                clen = freq * pm.getValue();
+                clen = freq * pm;
             }
             t.setCycle(cdump, clen);
         }
@@ -400,9 +394,10 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
 
     @Override
     public DoubleSequence getDefault() {
-        double[] x=new double[getDim()];
-        for (int i=0; i<x.length; ++i)
-            x[i]=outparam(.2);
+        double[] x = new double[getDim()];
+        for (int i = 0; i < x.length; ++i) {
+            x[i] = outparam(.2);
+        }
         return DoubleSequence.ofInternal(x);
     }
 }

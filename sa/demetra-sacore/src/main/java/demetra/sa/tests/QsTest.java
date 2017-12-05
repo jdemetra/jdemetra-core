@@ -29,7 +29,6 @@ public class QsTest  implements IBuilder<StatisticalTest>{
 
     private final LjungBoxTest lb;
     
-    
     public QsTest(DoubleSequence sample, int seasLag){
         lb=new LjungBoxTest(sample)
                 .lag(seasLag)

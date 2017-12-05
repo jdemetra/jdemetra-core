@@ -18,9 +18,13 @@ package demetra.timeseries.calendars;
 
 import demetra.design.Development;
 import demetra.utilities.Comparator;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,30 +33,30 @@ import java.util.Objects;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class NationalCalendar {
+public class Holidays {
 
-    private final List<SpecialDayEvent> specialDays = new ArrayList<>();
-    private final ISpecialDay.Context context;
+    private final List<Holiday> holidays = new ArrayList<>();
+    private final IHoliday.Context context;
 
-    public NationalCalendar() {
+    public Holidays() {
         this(true, false);
     }
 
-    public NationalCalendar(boolean mean, boolean julianeaster) {
-        context = new ISpecialDay.Context(mean, julianeaster);
+    public Holidays(boolean mean, boolean julianeaster) {
+        context = new IHoliday.Context(mean, julianeaster);
     }
 
-    public ISpecialDay.Context getContext() {
+    public IHoliday.Context getContext() {
         return context;
     }
 
-    public boolean add(ISpecialDay fday) {
+    public boolean add(IHoliday fday) {
         if (fday.match(context)) {
-            SpecialDayEvent ev = new SpecialDayEvent(fday);
-            if (specialDays.contains(ev)) {
+            Holiday ev = new Holiday(fday);
+            if (holidays.contains(ev)) {
                 return false;
             } else {
-                specialDays.add(ev);
+                holidays.add(ev);
                 return true;
             }
         } else {
@@ -61,57 +65,58 @@ public class NationalCalendar {
     }
 
     public int getCount() {
-        return specialDays.size();
+        return holidays.size();
     }
 
-    public boolean add(SpecialDayEvent sd) {
-        if (!sd.day.match(context)) {
+    public boolean add(Holiday sd) {
+        if (!sd.getDay().match(context)) {
             return false;
         }
-        for (SpecialDayEvent ev : specialDays) {
+        for (Holiday ev : holidays) {
             if (ev.equals(sd)) {
                 return false;
             }
         }
-        specialDays.add(sd);
+        holidays.add(sd);
         return true;
     }
 
-    public void addAll(Collection<SpecialDayEvent> c) {
-        for (SpecialDayEvent nev : c) {
-            if (!nev.day.match(context)) {
+    public void addAll(Collection<Holiday> c) {
+        for (Holiday nev : c) {
+            if (!nev.getDay().match(context)) {
                 continue;
             }
             boolean used = false;
-            for (SpecialDayEvent ev : specialDays) {
+            for (Holiday ev : holidays) {
                 if (ev.equals(nev)) {
                     used = true;
                     break;
                 }
             }
             if (!used) {
-                specialDays.add(nev);
+                holidays.add(nev);
             }
         }
     }
 
-    public SpecialDayEvent get(int idx) {
-        return specialDays.get(idx);
+    public Holiday get(int idx) {
+        return holidays.get(idx);
     }
 
     public void clear() {
-        specialDays.clear();
+        holidays.clear();
     }
 
-    public SpecialDayEvent[] toArray() {
-        return specialDays.toArray(new SpecialDayEvent[specialDays.size()]);
+    public Holiday[] toArray() {
+        return holidays.toArray(new Holiday[holidays.size()]);
     }
 
-    public Collection<SpecialDayEvent> elements() {
-        return Collections.unmodifiableList(specialDays);
+    public Collection<Holiday> elements() {
+        return Collections.unmodifiableList(holidays);
     }
 
-    public boolean contentEquals(NationalCalendar other) {
-        return Objects.deepEquals(context, other.context) && Comparator.equals(specialDays, other.specialDays);
+    public boolean contentEquals(Holidays other) {
+        return Objects.deepEquals(context, other.context) && Comparator.equals(holidays, other.holidays);
     }
+    
 }

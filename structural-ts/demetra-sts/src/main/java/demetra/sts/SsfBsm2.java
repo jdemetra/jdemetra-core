@@ -163,26 +163,26 @@ public class SsfBsm2 extends Ssf {
                 p.set(i, i, q);
                 ++i;
             }
-            if (data.lVar >= 0) {
-                if (data.lVar != 0) {
-                    p.set(i, i, data.lVar);
-                }
-                ++i;
-            }
-            if (data.sVar >= 0) {
-                if (data.sVar != 0) {
-                    p.set(i, i, data.sVar);
-                }
-                ++i;
-            }
-            if (data.seasVar > 0) {
-                if (data.seasModel == SeasonalModel.Dummy) {
-                    p.set(i, i, data.seasVar);
-                } else {
-                    int j = data.tsvar.getRowsCount();
-                    p.extract(i, j, i, j).copy(data.tsvar);
-                }
-            }
+//            if (data.lVar >= 0) {
+//                if (data.lVar != 0) {
+//                    p.set(i, i, data.lVar);
+//                }
+//                ++i;
+//            }
+//            if (data.sVar >= 0) {
+//                if (data.sVar != 0) {
+//                    p.set(i, i, data.sVar);
+//                }
+//                ++i;
+//            }
+//            if (data.seasVar > 0) {
+//                if (data.seasModel == SeasonalModel.Dummy) {
+//                    p.set(i, i, data.seasVar);
+//                } else {
+//                    int j = data.tsvar.getRowsCount();
+//                    p.extract(i, j, i, j).copy(data.tsvar);
+//                }
+//            }
         }
 
     }
@@ -191,7 +191,7 @@ public class SsfBsm2 extends Ssf {
 
         private final SsfBsm.BsmData data;
 
-        public Bsm2Dynamics(SsfBsm.BsmData data) {
+        Bsm2Dynamics(SsfBsm.BsmData data) {
             this.data = data;
         }
 
@@ -250,7 +250,8 @@ public class SsfBsm2 extends Ssf {
             }
             if (data.seasVar > 0) {
                 if (data.seasModel == SeasonalModel.Dummy) {
-                    v.set(i, i, data.seasVar);
+                    int j = i + data.freq - 2;
+                    v.set(j, j, data.seasVar);
                 } else {
                     int j = data.tsvar.getRowsCount();
                     v.extract(i, j, i, j).copy(data.tsvar);
@@ -286,7 +287,7 @@ public class SsfBsm2 extends Ssf {
             if (data.seasVar > 0) {
                 switch (data.seasModel) {
                     case Dummy:
-                        s.set(i, j, Math.sqrt(data.seasVar));
+                        s.set(i + data.freq - 2, j, Math.sqrt(data.seasVar));
                         break;
                     case Crude:
                         s.extract(i, data.freq - 1, j, 1).set(Math.sqrt(data.seasVar));
@@ -321,7 +322,7 @@ public class SsfBsm2 extends Ssf {
             if (data.seasVar > 0) {
                 switch (data.seasModel) {
                     case Dummy:
-                        x.add(i, u.get(j) * Math.sqrt(data.seasVar));
+                        x.add(i + data.freq - 2, u.get(j) * Math.sqrt(data.seasVar));
                         break;
                     case Crude:
                         x.range(i, i + data.freq - 1).add(Math.sqrt(data.seasVar) * u.get(j));
@@ -437,11 +438,11 @@ public class SsfBsm2 extends Ssf {
             }
             if (data.seasVar >= 0) {
                 int imax = i0 + data.freq - 2;
-                double xs = x.get(imax);
-                for (int i = imax; i > i0; --i) {
-                    x.set(i, x.get(i - 1) - xs);
+                double xs = x.get(i0);
+                for (int i = i0; i < imax; ++i) {
+                    x.set(i, x.get(i + 1) - xs);
                 }
-                x.set(i0, -xs);
+                x.set(imax, -xs);
             }
         }
 
@@ -468,14 +469,17 @@ public class SsfBsm2 extends Ssf {
             }
             if (data.seasVar > 0) {
                 if (data.seasModel == SeasonalModel.Dummy) {
-                    p.add(i, i, data.seasVar);
+                    int j = i + data.freq - 2;
+                    p.add(j, j, data.seasVar);
+                } else if (data.seasModel == SeasonalModel.Crude) {
+                    int j = data.tsvar.getRowsCount();
+                    p.extract(i, j, i, j).add(data.seasVar);
+
                 } else {
                     int j = data.tsvar.getRowsCount();
                     p.extract(i, j, i, j).add(data.tsvar);
                 }
             }
-
         }
-
     }
 }

@@ -394,13 +394,16 @@ public class SsfBsm extends Ssf {
                 ++i;
             }
             if (data.seasVar > 0) {
-                if (data.seasModel == SeasonalModel.Dummy) {
-                    s.set(i, j, Math.sqrt(data.seasVar));
-                } else if (data.seasModel == SeasonalModel.Crude) {
-                    s.extract(i, data.freq - 1, j, 1).set(Math.sqrt(data.seasVar));
-
-                } else {
-                    s.extract(i, data.freq - 1, j, data.freq - 1).copy(data.ltsvar);
+                switch (data.seasModel) {
+                    case Dummy:
+                        s.set(i, j, Math.sqrt(data.seasVar));
+                        break;
+                    case Crude:
+                        s.extract(i, data.freq - 1, j, 1).set(Math.sqrt(data.seasVar));
+                        break;
+                    default:
+                        s.extract(i, data.freq - 1, j, data.freq - 1).copy(data.ltsvar);
+                        break;
                 }
             }
         }
@@ -429,12 +432,16 @@ public class SsfBsm extends Ssf {
                 ++i;
             }
             if (data.seasVar > 0) {
-                if (data.seasModel == SeasonalModel.Dummy) {
-                    x.add(i, u.get(j) * Math.sqrt(data.seasVar));
-                } else if (data.seasModel == SeasonalModel.Crude) {
-                    x.range(i, i + data.freq - 1).add(Math.sqrt(data.seasVar) * u.get(j));
-                } else {
-                    x.range(i, i + data.freq - 1).addProduct(data.ltsvar.rowsIterator(), u.range(j, j + data.freq - 1));
+                switch (data.seasModel) {
+                    case Dummy:
+                        x.add(i, u.get(j) * Math.sqrt(data.seasVar));
+                        break;
+                    case Crude:
+                        x.range(i, i + data.freq - 1).add(Math.sqrt(data.seasVar) * u.get(j));
+                        break;
+                    default:
+                        x.range(i, i + data.freq - 1).addProduct(data.ltsvar.rowsIterator(), u.range(j, j + data.freq - 1));
+                        break;
                 }
             }
         }
@@ -463,12 +470,16 @@ public class SsfBsm extends Ssf {
                 ++i;
             }
             if (data.seasVar > 0) {
-                if (data.seasModel == SeasonalModel.Dummy) {
-                    xs.set(j, x.get(i) * Math.sqrt(data.seasVar));
-                } else if (data.seasModel == SeasonalModel.Crude) {
-                    xs.set(j, x.range(i, i + data.freq - 1).sum() * Math.sqrt(data.seasVar));
-                } else {
-                    xs.range(j, j + data.freq - 1).product(x.range(i, i + data.freq - 1), data.ltsvar.columnsIterator());
+                switch (data.seasModel) {
+                    case Dummy:
+                        xs.set(j, x.get(i) * Math.sqrt(data.seasVar));
+                        break;
+                    case Crude:
+                        xs.set(j, x.range(i, i + data.freq - 1).sum() * Math.sqrt(data.seasVar));
+                        break;
+                    default:
+                        xs.range(j, j + data.freq - 1).product(x.range(i, i + data.freq - 1), data.ltsvar.columnsIterator());
+                        break;
                 }
             }
         }
@@ -497,8 +508,8 @@ public class SsfBsm extends Ssf {
             }
             if (data.seasVar >= 0) {
                 Matrix seas = tr.extract(i, data.freq - 1, i, data.freq - 1);
-                seas.row(data.freq - 2).set(-1);
-                seas.subDiagonal(1).set(1);
+                seas.row(0).set(-1);
+                seas.subDiagonal(-1).set(1);
             }
         }
 
@@ -525,7 +536,7 @@ public class SsfBsm extends Ssf {
             }
             if (data.seasVar >= 0) {
                 DataBlock ex = x.extract(i0, data.freq - 1, 1);
-                ex.bshiftAndNegSum();
+                ex.fshiftAndNegSum();
             }
         }
 
@@ -553,11 +564,11 @@ public class SsfBsm extends Ssf {
             }
             if (data.seasVar >= 0) {
                 int imax = i0 + data.freq - 2;
-                double xs = x.get(imax);
-                for (int i = imax; i > i0; --i) {
-                    x.set(i, x.get(i - 1) - xs);
+                double xs = x.get(i0);
+                for (int i = i0; i < imax; ++i) {
+                    x.set(i, x.get(i + 1) - xs);
                 }
-                x.set(i0, -xs);
+                x.set(imax, -xs);
             }
         }
 

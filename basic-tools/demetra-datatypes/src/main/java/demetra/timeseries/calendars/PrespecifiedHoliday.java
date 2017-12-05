@@ -26,33 +26,33 @@ import java.time.LocalDate;
  *
  * @author Jean Palate
  */
-public class SpecialCalendarDay implements ISpecialDay {
+public class PrespecifiedHoliday implements IHoliday {
 
     public final DayEvent event;
     public final int offset;
     private final double weight;
     private final boolean julian;
 
-    public SpecialCalendarDay(DayEvent ev, int off) {
+    public PrespecifiedHoliday(DayEvent ev, int off) {
         this(ev, off, 1);
     }
 
-    public SpecialCalendarDay(DayEvent ev, int off, double weight) {
+    public PrespecifiedHoliday(DayEvent ev, int off, double weight) {
         this(ev, off, weight, false);
     }
  
-    public SpecialCalendarDay(DayEvent ev, int off, boolean julianeaster) {
+    public PrespecifiedHoliday(DayEvent ev, int off, boolean julianeaster) {
         this(ev, off, 1, julianeaster);
     }
 
-    public SpecialCalendarDay(DayEvent ev, int off, double weight, boolean julianeaster) {
+    public PrespecifiedHoliday(DayEvent ev, int off, double weight, boolean julianeaster) {
         event = ev;
         offset = off;
         this.weight = weight;
         this.julian=julianeaster;
     }
     
-    public ISpecialDay toSpecialDay() {
+    public IHoliday toSpecialDay() {
         switch (event) {
             case ShroveMonday:
                 return julian ? EasterRelatedDay.JULIAN_SHROVEMONDAY.reweight(weight).plus(offset)
@@ -115,8 +115,8 @@ public class SpecialCalendarDay implements ISpecialDay {
     }
     
     @Override
-    public Iterable<IDayInfo> getIterable(TsUnit freq, LocalDate start, LocalDate end) {
-        ISpecialDay sd = toSpecialDay();
+    public Iterable<IHolidayInfo> getIterable(TsUnit freq, LocalDate start, LocalDate end) {
+        IHoliday sd = toSpecialDay();
         if (sd == null) {
             return null;
         } else {
@@ -126,7 +126,7 @@ public class SpecialCalendarDay implements ISpecialDay {
 
     @Override
     public double[][] getLongTermMeanEffect(int freq) {
-        ISpecialDay sd = toSpecialDay();
+        IHoliday sd = toSpecialDay();
         if (sd == null) {
             return null;
         } else {
@@ -136,7 +136,7 @@ public class SpecialCalendarDay implements ISpecialDay {
 
     @Override
     public RegularDomain getSignificantDomain(RegularDomain domain) {
-        ISpecialDay sd = toSpecialDay();
+        IHoliday sd = toSpecialDay();
         if (sd == null) {
             return null;
         } else {

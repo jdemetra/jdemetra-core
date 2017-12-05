@@ -23,11 +23,10 @@ import demetra.timeseries.Fixme;
 import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsPeriodSelector;
-import java.time.temporal.TemporalAdjusters;
 
 /**
  * A TsDataView is a view on equally spaced observations in a time series. Users
- * should use TsDataBlock for going through a time series in an efficient way.
+ * should use TsDataView for going through a time series in an efficient way.
  *
  * @author Jean Palate
  */

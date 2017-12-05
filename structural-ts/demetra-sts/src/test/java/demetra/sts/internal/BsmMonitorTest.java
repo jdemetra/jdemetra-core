@@ -17,7 +17,11 @@
 package demetra.sts.internal;
 
 import data.Data;
+import demetra.maths.Optimizer;
+import demetra.sts.BsmEstimationSpec;
+import demetra.sts.BsmSpec;
 import demetra.sts.SeasonalModel;
+import ec.tstoolkit.structural.ComponentUse;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -34,10 +38,12 @@ public class BsmMonitorTest {
     @Test
     public void testProd() {
         BsmMonitor monitor = new BsmMonitor();
-        BsmSpecification bspec = new BsmSpecification();
+        BsmEstimationSpec bspec = new BsmEstimationSpec();
+        BsmSpec mspec = new BsmSpec();
+        mspec.setCycleUse(demetra.sts.ComponentUse.Free);
 //        bspec.setOptimizer(BsmSpecification.Optimizer.LBFGS);
-        bspec.getModelSpecification().setSeasonalModel(SeasonalModel.Crude);
-        monitor.setSpecification(bspec);
+        mspec.setSeasonalModel(SeasonalModel.Crude);
+        monitor.setSpecifications(mspec, bspec);
         monitor.process(Data.P, 12);
 //        System.out.println("New");
 //        System.out.println(monitor.getLikelihood().legacy(true).logLikelihood());
@@ -48,6 +54,7 @@ public class BsmMonitorTest {
         ec.tstoolkit.structural.BsmMonitor monitor = new ec.tstoolkit.structural.BsmMonitor();
         ec.tstoolkit.structural.BsmSpecification bspec = new ec.tstoolkit.structural.BsmSpecification();
         bspec.getModelSpecification().setSeasonalModel(ec.tstoolkit.structural.SeasonalModel.Crude);
+        bspec.getModelSpecification().useCycle(ComponentUse.Free);
 //        bspec.setOptimizer(ec.tstoolkit.structural.BsmSpecification.Optimizer.LBFGS);
         monitor.setSpecification(bspec);
         monitor.process(Data.P.toArray(), 12);
@@ -61,9 +68,10 @@ public class BsmMonitorTest {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 1000; ++i) {
             BsmMonitor monitor = new BsmMonitor();
-            BsmSpecification bspec = new BsmSpecification();
-            bspec.setOptimizer(BsmSpecification.Optimizer.MinPack);
-            monitor.setSpecification(bspec);
+            BsmEstimationSpec bspec = new BsmEstimationSpec();
+            BsmSpec mspec = new BsmSpec();
+            bspec.setOptimizer(Optimizer.MinPack);
+            monitor.setSpecifications(mspec, bspec);
             monitor.process(Data.P, 12);
         }
         long t1 = System.currentTimeMillis();

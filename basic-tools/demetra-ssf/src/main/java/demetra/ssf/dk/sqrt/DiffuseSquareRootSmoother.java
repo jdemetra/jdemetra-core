@@ -75,7 +75,8 @@ public class DiffuseSquareRootSmoother extends BaseDiffuseSmoother{
             N0 = Matrix.square(dim);
             N1 = Matrix.square(dim);
             N2 = Matrix.square(dim);
-        }
+            Z = DataBlock.make(dim);
+       }
     }
 
     private void loadInfo(int pos) {
@@ -95,6 +96,7 @@ public class DiffuseSquareRootSmoother extends BaseDiffuseSmoother{
         missing = !Double.isFinite(e);
         state.a().copy(frslts.a(pos));
         if (calcvar) {
+            measurement.Z(pos, Z);
             state.P().copy(frslts.P(pos));
             Matrix B = frslts.B(pos);
             state.restoreB(B);

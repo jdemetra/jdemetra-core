@@ -20,23 +20,22 @@ import demetra.arima.regarima.RegArimaEstimation;
 import demetra.arima.regarima.RegArimaModel;
 import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
-import demetra.information.InformationSet;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.LikelihoodStatistics;
+import demetra.likelihood.mapping.LikelihoodInfo;
+import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
 import demetra.processing.IProcResults;
-import demetra.r.mapping.LikelihoodMapping;
-import demetra.r.mapping.SarimaMapping;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
+import demetra.sarima.SarimaType;
 import demetra.sarima.estimation.RegArimaEstimator;
+import demetra.sarima.mapping.SarimaInfo;
 import demetra.utilities.IntList;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.Function;
 
 /**
  *
@@ -92,8 +91,8 @@ public class ArimaEstimation {
         }
 
         RegArimaEstimation<SarimaModel> rslt = monitor.process(rbuilder.build());
-        return new Results(rslt.getModel(), rslt.getConcentratedLikelihood().getLikelihood(), rslt.statistics(spec.getParametersCount(), 0)
-                , monitor.getParametersCovariance(), monitor.getScore());
+        return new Results(rslt.getModel(), rslt.getConcentratedLikelihood().getLikelihood(), rslt.statistics(spec.getParametersCount(), 0),
+                monitor.getParametersCovariance(), monitor.getScore());
     }
 
     @lombok.Value
@@ -104,17 +103,37 @@ public class ArimaEstimation {
         LikelihoodStatistics statistics;
         Matrix parametersCovariance;
         double[] score;
-        
-        public SarimaModel getArima(){
-            return regarima.arima();
+
+        public SarimaType getArima() {
+            return regarima.arima().toType();
         }
 
-        private static final String ARIMA = "arima", LL = "likelihood";
+        private static final String ARIMA = "arima", LL = "likelihood", PCOV = "pcov", SCORE = "score",
+                B = "b", UNSCALEDBVAR = "unscaledbvar", MEAN = "mean";
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.delegate(ARIMA, SarimaMapping.getMapping(), r -> r.getArima());
-            MAPPING.delegate(LL, LikelihoodMapping.getMapping(), r ->r.statistics);
+            MAPPING.delegate(ARIMA, SarimaInfo.getMapping(), r -> r.getArima());
+            MAPPING.delegate(LL, LikelihoodInfo.getMapping(), r -> r.statistics);
+            MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
+            MAPPING.set(SCORE, double[].class, source -> source.getScore());
+            MAPPING.set(SCORE, double[].class, source -> source.getScore());
+            MAPPING.set(B, double[].class, source
+                    -> {
+                DoubleSequence b = source.getConcentratedLogLikelihood().coefficients();
+                return b == null ? null : b.toArray();
+            });
+            MAPPING.set(MEAN, Double.class, source
+                    -> {
+                if (source.getRegarima().isMean()) {
+                    DoubleSequence b = source.getConcentratedLogLikelihood().coefficients();
+                    int mpos = source.getRegarima().getMissingValuesCount();
+                    return b.get(mpos);
+                } else {
+                    return 0.0;
+                }
+            });
+            MAPPING.set(UNSCALEDBVAR, MatrixType.class, source -> source.getConcentratedLogLikelihood().unscaledCovariance());
         }
 
         @Override

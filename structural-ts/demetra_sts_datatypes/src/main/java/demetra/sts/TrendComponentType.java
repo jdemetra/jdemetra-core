@@ -9,9 +9,8 @@ package demetra.sts;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@lombok.Data
+@lombok.Value
 public class TrendComponentType {
-    double levelVariance=1;
-    boolean slope=true;
-    double slopeVariance=1;
+    double levelVariance;
+    double slopeVariance;
 }
