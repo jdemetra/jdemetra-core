@@ -5,13 +5,22 @@
  */
 package demetra.r;
 
+import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
+import demetra.maths.linearfilters.HendersonFilters;
+import demetra.maths.linearfilters.IFilterOutput;
+import demetra.maths.linearfilters.IFiniteFilter;
+import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.processing.IProcResults;
 import demetra.sa.DecompositionMode;
+import demetra.x11.AsymmetricEndPoints;
+import demetra.x11.MusgraveFilterFactory;
 import demetra.x11.SeasonalFilterOption;
+import demetra.x11.SeriesEvolution;
 import demetra.x11.X11Context;
 import demetra.x11.X11Kernel;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -21,7 +30,7 @@ import java.util.Map;
  */
 @lombok.experimental.UtilityClass
 public class X11Decomposition {
-    
+
     @lombok.Value
     @lombok.Builder
     public static class Results implements IProcResults {
@@ -96,25 +105,28 @@ public class X11Decomposition {
             MAPPING.set("d11", double[].class, source -> source.getKernel().getDstep().getD11().toArray());
             MAPPING.set("d12", double[].class, source -> source.getKernel().getDstep().getD12().toArray());
             MAPPING.set("d13", double[].class, source -> source.getKernel().getDstep().getD13().toArray());
+            MAPPING.set("d10bis", double[].class, source -> source.getKernel().getDstep().getD10bis().toArray());
+            MAPPING.set("d11bis", double[].class, source -> source.getKernel().getDstep().getD11bis().toArray());
             MAPPING.set(MUL, Boolean.class, source -> source.isMultiplicative());
         }
     }
 
     public Results process(double[] data, double period, boolean mul, int henderson, String seas0, String seas1) {
-        int iperiod=(int) period;
+        int iperiod = (int) period;
         Number P;
-        if (Math.abs(period-iperiod)<1e-9){
-            P=Integer.valueOf(iperiod);
-        }else
-            P=Double.valueOf(period);
-        X11Context context=X11Context.builder()
+        if (Math.abs(period - iperiod) < 1e-9) {
+            P = Integer.valueOf(iperiod);
+        } else {
+            P = Double.valueOf(period);
+        }
+        X11Context context = X11Context.builder()
                 .mode(mul ? DecompositionMode.Multiplicative : DecompositionMode.Additive)
                 .period(P)
                 .hendersonFilterLength(henderson)
                 .initialSeasonalFilter(SeasonalFilterOption.valueOf(seas0))
                 .finalSeasonalFilter(SeasonalFilterOption.valueOf(seas1))
                 .build();
-        X11Kernel kernel=new X11Kernel();
+        X11Kernel kernel = new X11Kernel();
         DoubleSequence y = DoubleSequence.ofInternal(data);
         kernel.process(y, context);
 
@@ -126,4 +138,41 @@ public class X11Decomposition {
 
     }
 
+    // diagnostics
+    public double icratio(double[] s, double[] sc, boolean mul) {
+        DoubleSequence SC = DoubleSequence.ofInternal(sc);
+        double gc = SeriesEvolution.calcAbsMeanVariation(SC, 1, mul);
+        double gi = SeriesEvolution.calcAbsMeanVariation(mul ? DoubleSequence.of(s.length, i -> s[i] / sc[i])
+                : DoubleSequence.of(s.length, i -> s[i] - sc[i]), 1, mul);
+        return gi / gc;
+    }
+
+    public double[] icratios(double[] s, double[] sc, int n, boolean mul) {
+        DoubleSequence SC = DoubleSequence.ofInternal(sc);
+        double[] gc = SeriesEvolution.calcAbsMeanVariations(SC, n, mul);
+        double[] gi = SeriesEvolution.calcAbsMeanVariations(mul ? DoubleSequence.of(s.length, i -> s[i] / sc[i])
+                : DoubleSequence.of(s.length, i -> s[i] - sc[i]), n, mul);
+        double[] icr = new double[n];
+        for (int i = 0; i < n; ++i) {
+            icr[i] = gi[i] / gc[i];
+        }
+        return icr;
+    }
+
+    public double[] henderson(double[] s, int length, boolean musgrave, double ic) {
+        SymmetricFilter filter = HendersonFilters.instance.create(length);
+        int ndrop = filter.length() / 2;
+
+        double[] x = new double[s.length];
+        Arrays.fill(x, Double.NaN);
+        DataBlock out = DataBlock.ofInternal(x, ndrop, x.length - ndrop);
+        filter.apply(i -> s[i], IFilterOutput.of(out, ndrop));
+        if (musgrave) {
+            // apply the musgrave filters
+            IFiniteFilter[] f = MusgraveFilterFactory.makeFilters(filter, ic);
+            AsymmetricEndPoints aep = new AsymmetricEndPoints(f);
+            aep.process(DoubleSequence.ofInternal(s), DataBlock.ofInternal(x));
+        }
+        return x;
+    }
 }

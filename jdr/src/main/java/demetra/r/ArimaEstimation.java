@@ -91,8 +91,8 @@ public class ArimaEstimation {
         }
 
         RegArimaEstimation<SarimaModel> rslt = monitor.process(rbuilder.build());
-        return new Results(rslt.getModel(), rslt.getConcentratedLikelihood().getLikelihood(), rslt.statistics(spec.getParametersCount(), 0)
-                , monitor.getParametersCovariance(), monitor.getScore());
+        return new Results(rslt.getModel(), rslt.getConcentratedLikelihood().getLikelihood(), rslt.statistics(spec.getParametersCount(), 0),
+                monitor.getParametersCovariance(), monitor.getScore());
     }
 
     @lombok.Value
@@ -103,19 +103,37 @@ public class ArimaEstimation {
         LikelihoodStatistics statistics;
         Matrix parametersCovariance;
         double[] score;
-        
-        public SarimaType getArima(){
+
+        public SarimaType getArima() {
             return regarima.arima().toType();
         }
 
-        private static final String ARIMA = "arima", LL = "likelihood", PCOV="pcov", SCORE="score";
+        private static final String ARIMA = "arima", LL = "likelihood", PCOV = "pcov", SCORE = "score",
+                B = "b", UNSCALEDBVAR = "unscaledbvar", MEAN = "mean";
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
             MAPPING.delegate(ARIMA, SarimaInfo.getMapping(), r -> r.getArima());
-            MAPPING.delegate(LL, LikelihoodInfo.getMapping(), r ->r.statistics);
-            MAPPING.set(PCOV, MatrixType.class, source->source.getParametersCovariance());
-            MAPPING.set(SCORE, double[].class, source->source.getScore());
+            MAPPING.delegate(LL, LikelihoodInfo.getMapping(), r -> r.statistics);
+            MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
+            MAPPING.set(SCORE, double[].class, source -> source.getScore());
+            MAPPING.set(SCORE, double[].class, source -> source.getScore());
+            MAPPING.set(B, double[].class, source
+                    -> {
+                DoubleSequence b = source.getConcentratedLogLikelihood().coefficients();
+                return b == null ? null : b.toArray();
+            });
+            MAPPING.set(MEAN, Double.class, source
+                    -> {
+                if (source.getRegarima().isMean()) {
+                    DoubleSequence b = source.getConcentratedLogLikelihood().coefficients();
+                    int mpos = source.getRegarima().getMissingValuesCount();
+                    return b.get(mpos);
+                } else {
+                    return 0.0;
+                }
+            });
+            MAPPING.set(UNSCALEDBVAR, MatrixType.class, source -> source.getConcentratedLogLikelihood().unscaledCovariance());
         }
 
         @Override

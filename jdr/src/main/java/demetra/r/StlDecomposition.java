@@ -8,6 +8,10 @@ package demetra.r;
 import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
 import demetra.processing.IProcResults;
+import demetra.stl.IDataGetter;
+import demetra.stl.IDataSelector;
+import demetra.stl.LoessFilter;
+import demetra.stl.LoessSpecification;
 import demetra.stl.StlPlus;
 import demetra.stl.StlPlusSpecification;
 import java.util.LinkedHashMap;
@@ -86,6 +90,14 @@ public class StlDecomposition {
                 .multiplicative(mul)
                 .build();
 
+    }
+    
+    public double[] loess(double[] y, int window, int degree, int jump){
+        LoessSpecification spec=LoessSpecification.of(window, degree, jump, null);
+        LoessFilter filter=new LoessFilter(spec);
+        double[] z=new double[y.length];
+        filter.filter(IDataGetter.of(y), null, IDataSelector.of(z));
+        return z;
     }
 
 }
