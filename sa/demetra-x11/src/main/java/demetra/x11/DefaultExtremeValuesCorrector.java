@@ -65,6 +65,8 @@ class DefaultExtremeValuesCorrector {
      * @return The number of extreme values that have been detected (>= 0)
      */
     public void analyse(final DoubleSequence s, X11Context context) {
+        lsigma=context.getLowerSigma();
+        usigma=context.getUpperSigma();
         scur = s;
         sweights = null;
         period = context.getPeriod().intValue();

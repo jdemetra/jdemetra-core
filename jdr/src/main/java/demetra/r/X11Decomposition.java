@@ -111,7 +111,7 @@ public class X11Decomposition {
         }
     }
 
-    public Results process(double[] data, double period, boolean mul, int henderson, String seas0, String seas1) {
+    public Results process(double[] data, double period, boolean mul, int henderson, String seas0, String seas1, double lsig, double usig) {
         int iperiod = (int) period;
         Number P;
         if (Math.abs(period - iperiod) < 1e-9) {
@@ -125,6 +125,8 @@ public class X11Decomposition {
                 .hendersonFilterLength(henderson)
                 .initialSeasonalFilter(SeasonalFilterOption.valueOf(seas0))
                 .finalSeasonalFilter(SeasonalFilterOption.valueOf(seas1))
+                .lowerSigma(lsig)
+                .upperSigma(usig)
                 .build();
         X11Kernel kernel = new X11Kernel();
         DoubleSequence y = DoubleSequence.ofInternal(data);

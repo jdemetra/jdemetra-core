@@ -29,8 +29,8 @@ public class MovingRegressionTest {
         TsData s=TsData.of(TsPeriod.monthly(1982, 4), DoubleSequence.ofInternal(Data.ABS_RETAIL));
 //        long t0=System.currentTimeMillis();
         MovingRegression.Results regarima = MovingRegression.regarima(log(s), "TD7", 10);
-        System.out.println(regarima.getData("tdeffect", TsData.class));
-        System.out.println(regarima.getData("coefficients", MatrixType.class));
+//        System.out.println(regarima.getData("tdeffect", TsData.class));
+//        System.out.println(regarima.getData("coefficients", MatrixType.class));
     }
     
 }

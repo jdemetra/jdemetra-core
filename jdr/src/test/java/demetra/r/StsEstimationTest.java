@@ -36,15 +36,15 @@ public class StsEstimationTest {
     @Test
     public void testABS() {
         StsEstimation.Results rslt = StsEstimation.process(Data.TS_ABS_RETAIL2, 1, 1, -1, 1, "Dummy");
-        System.out.println(rslt.getBsm());
+//        System.out.println(rslt.getBsm());
 
         Map<String, Class> dictionary = new LinkedHashMap<>();
         StsEstimation.Results.getMapping().fillDictionary(null, dictionary, true);
 
-        dictionary.keySet().forEach(s -> System.out.println(s));
+//        dictionary.keySet().forEach(s -> System.out.println(s));
 
-        System.out.println(rslt.getData("levelvar", Double.class));
-        System.out.println(rslt.getData("t", TsData.class));
+//        System.out.println(rslt.getData("levelvar", Double.class));
+//        System.out.println(rslt.getData("t", TsData.class));
     }
 
 }

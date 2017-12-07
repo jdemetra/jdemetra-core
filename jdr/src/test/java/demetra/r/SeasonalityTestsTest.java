@@ -33,7 +33,7 @@ public class SeasonalityTestsTest {
     @Test
     public void testFTest() {
         TestResult ftest = SeasonalityTests.ftest(Data.TS_ABS_RETAIL, true, 0);
-        System.out.println(ftest);
+//        System.out.println(ftest);
     }
     
 }

@@ -35,15 +35,15 @@ public class FractionalAirlineDecompositionTest {
     @Test
     public void testWeekly() {
         FractionalAirlineDecomposition.Results rslt = FractionalAirlineDecomposition.process(WeeklyData.US_CLAIMS, 365.25/7, true);
-        System.out.println(rslt.getUcarima());
-        System.out.println(DoubleSequence.ofInternal(rslt.getData("sa", double[].class)));
-        
+//        System.out.println(rslt.getUcarima());
+//        System.out.println(DoubleSequence.ofInternal(rslt.getData("sa", double[].class)));
+        assertTrue(null != rslt.getData("sa", double[].class));
         Map<String, Class> dictionary=new LinkedHashMap<>();
         FractionalAirlineDecomposition.Results.getMapping().fillDictionary(null, dictionary, true);
         
-        dictionary.keySet().forEach(s->System.out.println(s));
+//        dictionary.keySet().forEach(s->System.out.println(s));
         
-        System.out.println(rslt.getData("ucarima.component(2).var", Double.class));
+//        System.out.println(rslt.getData("ucarima.component(2).var", Double.class));
     }
     
 }

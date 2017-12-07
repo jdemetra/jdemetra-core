@@ -22,6 +22,7 @@ public class X11Context {
     int hendersonFilterLength;
     @lombok.NonNull SeasonalFilterOption initialSeasonalFilter;
     @lombok.NonNull SeasonalFilterOption finalSeasonalFilter;
+    double lowerSigma, upperSigma; 
     
     public static X11ContextBuilder builder(){
         X11ContextBuilder builder=new X11ContextBuilder();
@@ -29,6 +30,8 @@ public class X11Context {
         builder.hendersonFilterLength=13;
         builder.initialSeasonalFilter=SeasonalFilterOption.S3X3;
         builder.finalSeasonalFilter=SeasonalFilterOption.S3X5;
+        builder.lowerSigma=1.5;
+        builder.upperSigma=2.5;
         return builder;
     }
 
