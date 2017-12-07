@@ -17,9 +17,8 @@
 package demetra.tsprovider.cursor;
 
 import internal.tsprovider.cursor.InternalTsCursor;
-import demetra.io.FunctionWithIO;
-import demetra.io.PredicateWithIO;
 import demetra.tsprovider.OptionalTsData;
+import ioutil.IO;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collections;
@@ -121,7 +120,7 @@ public interface TsCursor<ID> extends Closeable {
      * @return a non-null cursor
      */
     @Nonnull
-    default <Z> TsCursor<Z> map(@Nonnull FunctionWithIO<? super ID, ? extends Z> function) {
+    default <Z> TsCursor<Z> map(@Nonnull IO.Function<? super ID, ? extends Z> function) {
         return new InternalTsCursor.MappingCursor<>(this, function);
     }
 
@@ -133,7 +132,7 @@ public interface TsCursor<ID> extends Closeable {
      * @return a non-null cursor
      */
     @Nonnull
-    default TsCursor<ID> filter(@Nonnull PredicateWithIO<? super ID> predicate) {
+    default TsCursor<ID> filter(@Nonnull IO.Predicate<? super ID> predicate) {
         return new InternalTsCursor.FilteringCursor<>(this, predicate);
     }
 
@@ -243,7 +242,7 @@ public interface TsCursor<ID> extends Closeable {
             @Nonnull Function<? super E, OptionalTsData> toData,
             @Nonnull Function<? super E, Map<String, String>> toMeta,
             @Nonnull Function<? super E, String> toLabel) {
-        return new InternalTsCursor.IteratingCursor<>(iterator, FunctionWithIO.identity(), toData, toMeta, toLabel);
+        return new InternalTsCursor.IteratingCursor<>(iterator, IO.Function.identity(), toData, toMeta, toLabel);
     }
 
     /**
@@ -262,7 +261,7 @@ public interface TsCursor<ID> extends Closeable {
             @Nonnull Iterator<E> iterator,
             @Nonnull Function<? super E, OptionalTsData> toData,
             @Nonnull Function<? super E, Map<String, String>> toMeta) {
-        return new InternalTsCursor.IteratingCursor<>(iterator, FunctionWithIO.identity(), toData, toMeta, Object::toString);
+        return new InternalTsCursor.IteratingCursor<>(iterator, IO.Function.identity(), toData, toMeta, Object::toString);
     }
 
     /**
@@ -278,7 +277,7 @@ public interface TsCursor<ID> extends Closeable {
     static <E> TsCursor<E> from(
             @Nonnull Iterator<E> iterator,
             @Nonnull Function<? super E, OptionalTsData> toData) {
-        return new InternalTsCursor.IteratingCursor<>(iterator, FunctionWithIO.identity(), toData, InternalTsCursor.NO_META, Object::toString);
+        return new InternalTsCursor.IteratingCursor<>(iterator, IO.Function.identity(), toData, InternalTsCursor.NO_META, Object::toString);
     }
 
     /**
@@ -290,14 +289,14 @@ public interface TsCursor<ID> extends Closeable {
      */
     @Nonnull
     static <E> TsCursor<E> from(@Nonnull Iterator<E> iterator) {
-        return new InternalTsCursor.IteratingCursor<>(iterator, FunctionWithIO.identity(), InternalTsCursor.NO_DATA, InternalTsCursor.NO_META, Object::toString);
+        return new InternalTsCursor.IteratingCursor<>(iterator, IO.Function.identity(), InternalTsCursor.NO_DATA, InternalTsCursor.NO_META, Object::toString);
     }
 
     @Nonnull
     static <KEY, ID> TsCursor<ID> withCache(
             @Nonnull ConcurrentMap<KEY, Object> cache,
             @Nonnull KEY key,
-            @Nonnull FunctionWithIO<? super KEY, ? extends TsCursor<ID>> loader) throws IOException {
+            @Nonnull IO.Function<? super KEY, ? extends TsCursor<ID>> loader) throws IOException {
         return InternalTsCursor.getOrLoad(cache, key, loader);
     }
 }

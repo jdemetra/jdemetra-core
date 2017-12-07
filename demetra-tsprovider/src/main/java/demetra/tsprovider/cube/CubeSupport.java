@@ -16,7 +16,6 @@
  */
 package demetra.tsprovider.cube;
 
-import demetra.io.FunctionWithIO;
 import demetra.tsprovider.TsInformationType;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
@@ -28,6 +27,7 @@ import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.cursor.TsCursor;
 import demetra.io.IteratorWithIO;
 import internal.util.Strings;
+import ioutil.IO;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -180,7 +180,7 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
         return result;
     }
 
-    private static FunctionWithIO<CubeId, DataSet> toDataSetFunc(DataSet.Builder builder, IParam<DataSet, CubeId> dimValuesParam) {
+    private static IO.Function<CubeId, DataSet> toDataSetFunc(DataSet.Builder builder, IParam<DataSet, CubeId> dimValuesParam) {
         return o -> builder.put(dimValuesParam, o).build();
     }
 

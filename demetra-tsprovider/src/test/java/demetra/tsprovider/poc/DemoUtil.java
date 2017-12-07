@@ -26,9 +26,9 @@ import demetra.tsprovider.TsInformationType;
 import demetra.tsprovider.TsProviders;
 import demetra.tsprovider.util.MultiLineNameUtil;
 import demetra.tsprovider.OptionalTsData;
-import demetra.io.FunctionWithIO;
 import demetra.timeseries.RegularDomain;
 import demetra.utilities.Trees;
+import ioutil.IO;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Duration;
@@ -137,13 +137,13 @@ class DemoUtil {
         CHILDREN {
             @Override
             Optional<Ts> getFirst(DataSourceProvider provider, DataSource dataSource) throws IOException {
-                FunctionWithIO<Object, Stream<? extends Object>> children = o -> {
+                IO.Function<Object, Stream<? extends Object>> children = o -> {
                     return o instanceof DataSource
                             ? provider.children((DataSource) o).stream()
                             : ((DataSet) o).getKind() == DataSet.Kind.COLLECTION ? provider.children((DataSet) o).stream() : Stream.empty();
                 };
 
-                Optional<DataSet> result = Trees.depthFirstStream(dataSource, children.unchecked())
+                Optional<DataSet> result = Trees.depthFirstStream(dataSource, children.asUnchecked())
                         .filter(DataSet.class::isInstance)
                         .map(DataSet.class::cast)
                         .filter(o -> o.getKind().equals(DataSet.Kind.SERIES))

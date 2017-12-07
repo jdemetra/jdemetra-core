@@ -17,6 +17,7 @@
 package demetra.io;
 
 import internal.io.InternalWithIO;
+import ioutil.IO;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Iterator;
@@ -57,15 +58,15 @@ public interface IteratorWithIO<E> extends Closeable {
      * @throws NullPointerException if the specified action is null
      * @throws java.io.IOException
      */
-    default void forEachRemaining(ConsumerWithIO<? super E> action) throws IOException {
+    default void forEachRemaining(IO.Consumer<? super E> action) throws IOException {
         Objects.requireNonNull(action);
         while (hasNext()) {
-            action.accept(next());
+            action.acceptWithIO(next());
         }
     }
 
     @Nonnull
-    default <Z> IteratorWithIO<Z> map(@Nonnull FunctionWithIO<? super E, ? extends Z> function) {
+    default <Z> IteratorWithIO<Z> map(@Nonnull IO.Function<? super E, ? extends Z> function) {
         return new InternalWithIO.MappingIterator<>(this, function);
     }
 

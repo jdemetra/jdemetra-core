@@ -20,7 +20,6 @@ import _util.tsproviders.FailingTsCursorSupport;
 import _util.tsproviders.NoOpTsCursorSupport;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterators;
-import demetra.io.FunctionWithIO;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.simplets.TsData;
 import demetra.tsprovider.DataSet;
@@ -38,6 +37,7 @@ import static demetra.tsprovider.TsInformationType.MetaData;
 import static demetra.tsprovider.TsInformationType.None;
 import demetra.tsprovider.TsMoniker;
 import demetra.tsprovider.TsProvider;
+import ioutil.IO;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
@@ -87,7 +87,7 @@ public class TsCursorAsProviderTest {
             public TsCursor<DataSet> getData(DataSource dataSource, TsInformationType type) throws IllegalArgumentException, IOException {
                 if (dataSource.equals(ds)) {
                     DataSet.Builder b = DataSet.builder(dataSource, SERIES);
-                    FunctionWithIO<Ts, DataSet> toDataSet = o -> {
+                    IO.Function<Ts, DataSet> toDataSet = o -> {
                         b.put("id", o.getName());
                         return b.build();
                     };

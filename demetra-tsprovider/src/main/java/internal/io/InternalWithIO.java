@@ -17,8 +17,8 @@
 package internal.io;
 
 import demetra.io.Closeables;
-import demetra.io.FunctionWithIO;
 import demetra.io.IteratorWithIO;
+import ioutil.IO;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -36,9 +36,9 @@ public class InternalWithIO {
     public static final class MappingIterator<E, Z> implements IteratorWithIO<Z> {
 
         private final IteratorWithIO<E> delegate;
-        private final FunctionWithIO<? super E, ? extends Z> function;
+        private final IO.Function<? super E, ? extends Z> function;
 
-        public MappingIterator(IteratorWithIO<E> delegate, FunctionWithIO<? super E, ? extends Z> function) {
+        public MappingIterator(IteratorWithIO<E> delegate, IO.Function<? super E, ? extends Z> function) {
             this.delegate = Objects.requireNonNull(delegate);
             this.function = Objects.requireNonNull(function);
         }
@@ -50,7 +50,7 @@ public class InternalWithIO {
 
         @Override
         public Z next() throws IOException, NoSuchElementException {
-            return function.apply(delegate.next());
+            return function.applyWithIO(delegate.next());
         }
 
         @Override

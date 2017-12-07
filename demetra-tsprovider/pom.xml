@@ -14,6 +14,10 @@
     <name>JD3 - TS Provider</name>
     <version>3.0.0-SNAPSHOT</version>
 
+    <properties>
+        <java-io-util.version>0.0.1-SNAPSHOT</java-io-util.version>
+    </properties>
+
     <dependencies>
         <!-- compile only -->
         <dependency>
@@ -30,6 +34,11 @@
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-datatypes</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>be.nbb.rd</groupId>
+            <artifactId>java-io-util</artifactId>
+            <version>${java-io-util.version}</version>
         </dependency>
         <!-- test only -->
         <dependency>
