@@ -47,7 +47,7 @@ public class TradingDaysTests {
 
 
     public TestResult ftest(TsData s, boolean ar, int ny) {
-        int ifreq = TsUtility.periodFromTsUnit(s.getUnit());
+        int ifreq = TsUtility.periodFromTsUnit(s.getTsUnit());
 
         if (ar) {
             if (ny != 0) {

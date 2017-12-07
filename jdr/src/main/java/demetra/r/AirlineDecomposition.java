@@ -51,6 +51,7 @@ import demetra.ucarima.UcarimaModel;
 import demetra.ucarima.ssf.SsfUcarima;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 
 /**
  *
@@ -115,7 +116,7 @@ public class AirlineDecomposition {
     }
 
     public Results process(TsData s) {
-        int period = TsUtility.periodFromTsUnit(s.getUnit());
+        int period = TsUtility.periodFromTsUnit(s.getTsUnit());
         SarimaSpecification spec = new SarimaSpecification();
         spec.airline(period);
         SarimaModel arima = SarimaModel

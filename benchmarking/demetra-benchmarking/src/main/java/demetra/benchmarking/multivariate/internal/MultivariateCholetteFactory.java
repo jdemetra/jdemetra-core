@@ -266,7 +266,7 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
                 RegularDomain d = inputs.get(cur).domain();
                 if (idomain == null) {
                     idomain = d;
-                } else if (!idomain.getUnit().equals(d.getUnit())) {
+                } else if (!idomain.getTsUnit().equals(d.getTsUnit())) {
                     throw new TsException(TsException.INCOMPATIBLE_FREQ);
                 } else {
                     idomain = idomain.intersection(d);
@@ -323,12 +323,12 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
                 TsData cur = inputs.get(temporalConstraints.get(rcnt.get(i)));
                 if (cur != null) {
                     if (aggUnit == null) {
-                        aggUnit = cur.getUnit();
-                    } else if (!aggUnit.equals(cur.getUnit())) {
+                        aggUnit = cur.getTsUnit();
+                    } else if (!aggUnit.equals(cur.getTsUnit())) {
                         throw new TsException(TsException.INCOMPATIBLE_FREQ);
                     }
                     TsData origc = TsDataToolkit.fitToDomain(orig, idomain);
-                    TsData a = TsDataConverter.changeTsUnit(origc, cur.getUnit(), AggregationType.Sum, true);
+                    TsData a = TsDataConverter.changeTsUnit(origc, cur.getTsUnit(), AggregationType.Sum, true);
                     a = TsDataToolkit.subtract(cur, a);
                     tcntData.put(n, a);
                 }
@@ -357,7 +357,7 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
         }
 
         private void compute(Map<String, TsData> rslts) {
-            int c = idomain.getUnit().ratio(aggUnit);
+            int c = idomain.getTsUnit().ratio(aggUnit);
             int nvars = rcnt.size(), ncnts = cs.length;
             int len = idomain.getLength();
 

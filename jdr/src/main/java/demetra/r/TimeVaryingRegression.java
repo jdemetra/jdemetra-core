@@ -119,7 +119,7 @@ public class TimeVaryingRegression {
     }
 
     public Results regarima(TsData s, String td, String svar, double aicdiff) {
-        int freq = TsUtility.periodFromTsUnit(s.getUnit());
+        int freq = TsUtility.periodFromTsUnit(s.getTsUnit());
         SarimaSpecification spec = new SarimaSpecification();
         spec.airline(freq);
         DayClustering dc = days(td);

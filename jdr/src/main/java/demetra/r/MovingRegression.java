@@ -98,7 +98,7 @@ public class MovingRegression {
     }
 
     public Results regarima(TsData s, String td, int nyears) {
-        int period = TsUtility.periodFromTsUnit(s.getUnit());
+        int period = TsUtility.periodFromTsUnit(s.getTsUnit());
         SarimaSpecification spec = new SarimaSpecification();
         spec.airline(period);
 

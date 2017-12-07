@@ -37,6 +37,15 @@ import org.openide.util.lookup.ServiceProvider;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.multiply;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.multiply;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.multiply;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.multiply;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 
 /**
  *
@@ -58,7 +67,7 @@ public class CholetteFactory implements CholetteAlgorithm {
                 || (agg != AggregationType.Average && agg != AggregationType.Sum)) {
             return s;
         }
-        TsData sy = TsDataConverter.changeTsUnit(s, target.getUnit(), agg, true);
+        TsData sy = TsDataConverter.changeTsUnit(s, target.getTsUnit(), agg, true);
         sy = TsDataToolkit.fitToDomain(sy, target.domain());
         // TsDataBlock.all(target).data.sum() is the sum of the aggregation constraints
         //  TsDataBlock.all(sy).data.sum() is the sum of the averages or sums of the original series
@@ -68,7 +77,7 @@ public class CholetteFactory implements CholetteAlgorithm {
         } else {
             double b = (Doubles.sum(target.values()) - Doubles.sum(sy.values())) / target.length();
             if (agg == AggregationType.Average) {
-                b *= s.getUnit().ratio(target.getUnit());
+                b *= s.getTsUnit().ratio(target.getTsUnit());
             }
             return TsDataToolkit.add(s, b);
         }
@@ -82,7 +91,7 @@ public class CholetteFactory implements CholetteAlgorithm {
      * @return
      */
     public static double[] expand(RegularDomain d, TsData agg, AggregationType type) {
-        int ratio = d.getUnit().ratio(agg.getUnit());
+        int ratio = d.getTsUnit().ratio(agg.getTsUnit());
         if (ratio == TsUnit.NO_RATIO || ratio == TsUnit.NO_STRICT_RATIO) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
@@ -93,7 +102,7 @@ public class CholetteFactory implements CholetteAlgorithm {
         }
         // search the first non missing value
         TsPeriod aggstart = agg.getStart();
-        TsPeriod first = aggstart.withUnit(d.getUnit());
+        TsPeriod first = aggstart.withUnit(d.getTsUnit());
         if (type != AggregationType.First) {
             first = first.plus(ratio - 1);
         }
@@ -116,12 +125,12 @@ public class CholetteFactory implements CholetteAlgorithm {
      * @return
      */
     private TsData cholette(TsData s, TsData target, CholetteSpecification spec) {
-        int ratio = s.getUnit().ratio(target.getUnit());
+        int ratio = s.getTsUnit().ratio(target.getTsUnit());
         if (ratio == TsUnit.NO_RATIO || ratio == TsUnit.NO_STRICT_RATIO) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
 
-        TsData obj = subtract(target, TsDataConverter.changeTsUnit(s, target.getUnit(), spec.getAggregationType(), true));
+        TsData obj = subtract(target, TsDataConverter.changeTsUnit(s, target.getTsUnit(), spec.getAggregationType(), true));
         if (spec.getAggregationType() == AggregationType.Average) {
             obj = multiply(obj, ratio);
         }
@@ -141,7 +150,7 @@ public class CholetteFactory implements CholetteAlgorithm {
         if (spec.getAggregationType() == AggregationType.Average
                 || spec.getAggregationType() == AggregationType.Sum) {
             ISsf ssf = SsfCholette.builder(ratio)
-                    .start(s.getStart().getPosition(target.getUnit()) % ratio)
+                    .start(s.getStart().getPosition(target.getTsUnit()) % ratio)
                     .rho(spec.getRho())
                     .weights(w == null ? null : DoubleSequence.ofInternal(w))
                     .build();
@@ -158,7 +167,7 @@ public class CholetteFactory implements CholetteAlgorithm {
             return add(s, TsData.ofInternal(s.getStart(), b));
         } else {
             ISsf ssf = SsfCholette.builder(ratio)
-                    .start(s.getStart().getPosition(target.getUnit()) % ratio)
+                    .start(s.getStart().getPosition(target.getTsUnit()) % ratio)
                     .rho(spec.getRho())
                     .weights(w == null ? null : DoubleSequence.ofInternal(w))
                     .build();

@@ -40,7 +40,7 @@ public class TsDataConverter {
      * @return A new time series is returned.
      */
     public TsData changeTsUnit(TsData s, TsUnit newUnit, AggregationType conversion, boolean complete) {
-        int ratio = s.getUnit().ratio(newUnit);
+        int ratio = s.getTsUnit().ratio(newUnit);
         switch (ratio) {
             case TsUnit.NO_STRICT_RATIO:
             case TsUnit.NO_RATIO:
