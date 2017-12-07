@@ -57,6 +57,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 import static java.util.EnumSet.of;
+import static java.util.EnumSet.of;
 
 /**
  *

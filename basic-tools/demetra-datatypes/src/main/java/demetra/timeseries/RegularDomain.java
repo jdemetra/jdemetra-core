@@ -42,7 +42,7 @@ public class RegularDomain implements TsDomain<TsPeriod> {
         return startPeriod.plus(index);
     }
     
-    public TsUnit getUnit(){
+    public TsUnit getTsUnit(){
         return startPeriod.getUnit();
     }
 

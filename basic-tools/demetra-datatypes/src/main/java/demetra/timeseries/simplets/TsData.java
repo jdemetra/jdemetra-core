@@ -109,16 +109,37 @@ public final class TsData implements ITimeSeries.OfDouble<TsPeriod, TsObservatio
     }
 
     /**
-     * Gets the frequency of the series.
+     * Gets the time unit of the series.
      *
-     * @return The frequency.
+     * @return The time unit.
      */
-    public TsUnit getUnit() {
-        return domain.getStartPeriod().getUnit();
+    public TsUnit getTsUnit() {
+        return domain.getTsUnit();
     }
 
     public TsPeriod getStart() {
         return domain.getStartPeriod();
+    }
+    
+    /**
+     * Gets the number of periods in one year.
+     * @return 
+     */
+    public int getAnnualFrequency(){
+        TsUnit unit=domain.getTsUnit();
+            switch (unit.getChronoUnit()) {
+                case YEARS:
+                    if (unit.getAmount() == 1) {
+                        return 1;
+                    }
+                    break;
+                case MONTHS:
+                    int n=(int)unit.getAmount();
+                    if (12%n == 0)
+                        return 12/n;
+                    break;
+            }
+            throw new UnsupportedOperationException(unit.toString());
     }
 
     /**

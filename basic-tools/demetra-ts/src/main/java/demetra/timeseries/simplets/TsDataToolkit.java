@@ -137,7 +137,7 @@ public class TsDataToolkit {
      * hasn't the right frequency.
      */
     public TsData fitToDomain(TsData s, RegularDomain domain) {
-        if (!s.getUnit().equals(domain.getStartPeriod().getUnit())) {
+        if (!s.getTsUnit().equals(domain.getStartPeriod().getUnit())) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
         RegularDomain sdomain = s.domain();

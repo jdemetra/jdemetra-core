@@ -55,7 +55,7 @@ public class TsUtility {
     public int[] startPeriod(TsData s) {
         LocalDate start = s.getStart().start().toLocalDate();
 
-        int freq = periodFromTsUnit(s.getUnit());
+        int freq = periodFromTsUnit(s.getTsUnit());
         int c = 12 / freq;
         int mon = start.getMonthValue();
         int year = start.getYear();
