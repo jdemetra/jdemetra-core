@@ -75,8 +75,11 @@ public class StlDecomposition {
         }
     }
 
-    public Results process(double[] data, int period, boolean mul, int swindow, boolean robust) {
+    public Results process(double[] data, int period, boolean mul, int swindow, int twindow, boolean robust) {
         StlPlusSpecification spec = StlPlusSpecification.createDefault(period, swindow, robust);
+        if (twindow != 0) {
+            spec.setTrendSpec(LoessSpecification.of(twindow, 1));
+        }
         spec.setMultiplicative(mul);
         StlPlus stl = spec.build();
         DoubleSequence y = DoubleSequence.ofInternal(data);
@@ -91,11 +94,11 @@ public class StlDecomposition {
                 .build();
 
     }
-    
-    public double[] loess(double[] y, int window, int degree, int jump){
-        LoessSpecification spec=LoessSpecification.of(window, degree, jump, null);
-        LoessFilter filter=new LoessFilter(spec);
-        double[] z=new double[y.length];
+
+    public double[] loess(double[] y, int window, int degree, int jump) {
+        LoessSpecification spec = LoessSpecification.of(window, degree, jump, null);
+        LoessFilter filter = new LoessFilter(spec);
+        double[] z = new double[y.length];
         filter.filter(IDataGetter.of(y), null, IDataSelector.of(z));
         return z;
     }

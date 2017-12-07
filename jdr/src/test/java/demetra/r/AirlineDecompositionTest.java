@@ -36,14 +36,14 @@ public class AirlineDecompositionTest {
     @Test
     public void testABS() {
         AirlineDecomposition.Results rslt = AirlineDecomposition.process(log(Data.TS_ABS_RETAIL));
-        System.out.println(rslt.getUcarima());
+//        System.out.println(rslt.getUcarima());
         
         Map<String, Class> dictionary=new LinkedHashMap<>();
         AirlineDecomposition.Results.getMapping().fillDictionary(null, dictionary, true);
         
-        dictionary.keySet().forEach(s->System.out.println(s));
+//        dictionary.keySet().forEach(s->System.out.println(s));
         
-        System.out.println(rslt.getData("ucarima.component(2).var", Double.class));
+ //       System.out.println(rslt.getData("ucarima.component(2).var", Double.class));
     }
     
 }
