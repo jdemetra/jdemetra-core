@@ -16,6 +16,8 @@
 
     <properties>
         <spreadsheet4j.version>2.2.0</spreadsheet4j.version>
+        <demetra.version>3.0.0-SNAPSHOT</demetra.version>
+        <jd3-basic.version>1.0.0-SNAPSHOT</jd3-basic.version>
     </properties>
 
     <dependencyManagement>
@@ -56,11 +58,13 @@
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-tsprovider</artifactId>
+            <version>${demetra.version}</version>
         </dependency>
         <!-- test only -->
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-bridge</artifactId>
+            <version>${jd3-basic.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
