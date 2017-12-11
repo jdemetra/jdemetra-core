@@ -16,7 +16,6 @@
  */
 package internal.spreadsheet;
 
-import demetra.io.FunctionWithIO;
 import demetra.tsprovider.DataSet;
 import static demetra.tsprovider.DataSet.Kind.COLLECTION;
 import static demetra.tsprovider.DataSet.Kind.SERIES;
@@ -32,6 +31,7 @@ import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.util.MultiLineNameUtil;
 import internal.spreadsheet.grid.BookData;
 import internal.spreadsheet.grid.SheetData;
+import ioutil.IO;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
@@ -123,7 +123,7 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
         return o -> builder.put(seriesParam, o.getName()).build();
     }
 
-    private FunctionWithIO<TsRecord, DataSet> dataMapper(DataSource dataSource) {
+    private IO.Function<TsRecord, DataSet> dataMapper(DataSource dataSource) {
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
         IParam<DataSet, String> sheetParam = resource.getSheetParam(dataSource);
         IParam<DataSet, String> seriesParam = resource.getSeriesParam(dataSource);

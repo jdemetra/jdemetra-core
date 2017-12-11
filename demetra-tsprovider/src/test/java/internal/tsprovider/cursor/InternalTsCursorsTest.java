@@ -54,12 +54,12 @@ import internal.tsprovider.cursor.InternalTsCursor.OnCloseCursor;
 import internal.tsprovider.cursor.InternalTsCursor.MappingCursor;
 import internal.tsprovider.cursor.InternalTsCursor.WithMetaDataCursor;
 import internal.tsprovider.cursor.InternalTsCursor.CachedCollection;
-import demetra.io.FunctionWithIO;
 import demetra.tsprovider.cursor.TsCursor;
 import internal.tsprovider.cursor.InternalTsCursor.SingletonCursor;
 import static org.assertj.core.api.Assertions.assertThat;
 import static com.google.common.collect.Iterators.forArray;
 import demetra.timeseries.TsUnit;
+import ioutil.IO;
 
 /**
  *
@@ -71,10 +71,10 @@ public class InternalTsCursorsTest {
     private final OptionalTsData someData = OptionalTsData.present(TsData.random(TsUnit.MONTHLY, 1));
     private final Map<String, String> someMeta = ImmutableMap.of("key", "value");
 
-    private final FunctionWithIO<String, String> goodIdFunc = String::toUpperCase;
+    private final IO.Function<String, String> goodIdFunc = String::toUpperCase;
     private final Function<String, OptionalTsData> goodDataFunc = o -> someData;
     private final Function<String, Map<String, String>> goodMetaFunc = o -> someMeta;
-    private final FunctionWithIO<String, String> badIdFunc = o -> null;
+    private final IO.Function<String, String> badIdFunc = o -> null;
     private final Function<String, OptionalTsData> badDataFunc = o -> null;
     private final Function<String, Map<String, String>> badMetaFunc = o -> null;
 
@@ -96,7 +96,7 @@ public class InternalTsCursorsTest {
             assertThat(cursor.nextSeries()).isFalse();
         }
 
-        try (EmptyCursor cursor = new EmptyCursor().map(FunctionWithIO.identity())) {
+        try (EmptyCursor cursor = new EmptyCursor().map(IO.Function.identity())) {
             assertThat(cursor.getMetaData()).isEmpty();
             assertThat(cursor.nextSeries()).isFalse();
         }
@@ -324,7 +324,7 @@ public class InternalTsCursorsTest {
         assertThat(cursor.filter(o -> true)).isNotNull();
         assertThat(cursor.onClose(() -> {
         })).isNotNull();
-        assertThat(cursor.map(FunctionWithIO.identity())).isNotNull();
+        assertThat(cursor.map(IO.Function.identity())).isNotNull();
         assertThat(cursor.withMetaData(Collections.emptyMap())).isNotNull();
     }
 
