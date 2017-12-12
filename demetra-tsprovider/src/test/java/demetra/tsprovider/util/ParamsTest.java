@@ -132,7 +132,7 @@ public class ParamsTest {
     @SuppressWarnings("null")
     public void testOnObsGathering() {
         ObsGathering defaultValue = ObsGathering.DEFAULT;
-        ObsGathering newValue = ObsGathering.builder().unit(TsUnit.YEARLY).aggregationType(AggregationType.Average).skipMissingValues(false).build();
+        ObsGathering newValue = ObsGathering.builder().unit(TsUnit.YEAR).aggregationType(AggregationType.Average).skipMissingValues(false).build();
         assertBehavior(Params.onObsGathering(defaultValue, "f", "a", "s"), defaultValue, newValue, ImmutableMap.of("f", "Yearly", "a", "Average", "s", "false"));
         assertThatThrownBy(() -> Params.onObsGathering(null, "f", "a", "s")).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> Params.onObsGathering(defaultValue, null, "a", "s")).isInstanceOf(NullPointerException.class);

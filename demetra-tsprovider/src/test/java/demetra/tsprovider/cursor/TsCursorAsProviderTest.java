@@ -80,8 +80,8 @@ public class TsCursorAsProviderTest {
         leaf2 = monikers.toMoniker(DataSet.of(ds, SERIES, "id", "node.leaf2"));
         leaf3 = monikers.toMoniker(DataSet.of(ds, SERIES, "id", "leaf3"));
         s1 = Ts.builder().moniker(leaf1).type(All).name("node.leaf1").data(OptionalTsData.absent("No data available")).build();
-        s2 = Ts.builder().moniker(leaf2).type(All).name("node.leaf2").data(OptionalTsData.present(TsData.random(TsUnit.MONTHLY, 2))).build();
-        s3 = Ts.builder().moniker(leaf3).type(All).name("leaf3").data(OptionalTsData.present(TsData.random(TsUnit.MONTHLY, 3))).metaData(customMeta).build();
+        s2 = Ts.builder().moniker(leaf2).type(All).name("node.leaf2").data(OptionalTsData.present(TsData.random(TsUnit.MONTH, 2))).build();
+        s3 = Ts.builder().moniker(leaf3).type(All).name("leaf3").data(OptionalTsData.present(TsData.random(TsUnit.MONTH, 3))).metaData(customMeta).build();
         goodCursor = new HasTsCursor() {
             @Override
             public TsCursor<DataSet> getData(DataSource dataSource, TsInformationType type) throws IllegalArgumentException, IOException {

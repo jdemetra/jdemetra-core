@@ -16,6 +16,7 @@
  */
 package demetra.timeseries;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.annotation.Nonnegative;
 
@@ -25,6 +26,17 @@ import javax.annotation.Nonnegative;
  */
 @lombok.Value(staticConstructor = "of")
 public class RegularDomain implements TsDomain<TsPeriod> {
+
+    public static RegularDomain splitOf(TsPeriod period, TsUnit hUnit, boolean exact) {
+        LocalDateTime start = period.start(), end = period.end();
+        long len = hUnit.getChronoUnit().between(start, end) / hUnit.getAmount();
+        TsPeriod pstart = period.withUnit(hUnit);
+        if (!exact || end.equals(pstart.plus(len).start())) {
+            return of(pstart, (int) len);
+        } else {
+            throw new TsException(TsException.INCOMPATIBLE_FREQ);
+        }
+    }
 
     @lombok.NonNull
     TsPeriod startPeriod;
@@ -41,8 +53,8 @@ public class RegularDomain implements TsDomain<TsPeriod> {
     public TsPeriod get(int index) throws IndexOutOfBoundsException {
         return startPeriod.plus(index);
     }
-    
-    public TsUnit getTsUnit(){
+
+    public TsUnit getTsUnit() {
         return startPeriod.getUnit();
     }
 
@@ -96,7 +108,8 @@ public class RegularDomain implements TsDomain<TsPeriod> {
     }
 
     /**
-     * Returns the position of the given period relative to the starting period 
+     * Returns the position of the given period relative to the starting period
+     *
      * @param period A period that should be compatible with the starting period of the domain.
      * @return Could be negative or higher then the length of the domain
      */
@@ -125,7 +138,7 @@ public class RegularDomain implements TsDomain<TsPeriod> {
         if (isEmpty()) {
             return this;
         }
-        int len=length()-nstart-nend;
+        int len = length() - nstart - nend;
         return new RegularDomain(get(nstart), len < 0 ? 0 : len);
     }
 

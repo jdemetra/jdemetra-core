@@ -22,6 +22,7 @@ import demetra.timeseries.simplets.TsData;
 import demetra.data.AggregationType;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.IntUnaryOperator;
@@ -38,14 +39,14 @@ import java.util.function.IntUnaryOperator;
 @lombok.experimental.UtilityClass
 class TsDataCollector {
 
-    public TsData makeWithAggregation(ObsList obs, TsUnit unit, int offset, AggregationType convMode) {
+    public TsData makeWithAggregation(ObsList obs, TsUnit unit, LocalDateTime reference, AggregationType convMode) {
         int n = obs.size();
         if (n == 0) {
             return null; // NO_DATA
         }
         obs.sortByPeriod();
 
-        IntUnaryOperator toPeriodId = obs.getPeriodIdFunc(unit, offset);
+        IntUnaryOperator toPeriodId = obs.getPeriodIdFunc(unit, reference);
 
         double[] vals = new double[n];
         int[] ids = new int[n];
@@ -202,7 +203,7 @@ class TsDataCollector {
         if (obs.size() < guess.getMinimumObsCount()) {
             return false;
         }
-        IntUnaryOperator toPeriodId = obs.getPeriodIdFunc(guess.getTsUnit(), guess.getOffset());
+        IntUnaryOperator toPeriodId = obs.getPeriodIdFunc(guess.getTsUnit(), guess.getReference());
         ids[0] = toPeriodId.applyAsInt(0);
         for (int i = 1; i < ids.length; ++i) {
             ids[i] = toPeriodId.applyAsInt(i);
@@ -213,7 +214,7 @@ class TsDataCollector {
         return true;
     }
 
-    public TsData makeWithoutAggregation(ObsList obs, TsUnit unit, int offset) {
+    public TsData makeWithoutAggregation(ObsList obs, TsUnit unit, LocalDateTime reference) {
         int size = obs.size();
         if (size == 0) {
             return null; // NO_DATA
@@ -221,7 +222,7 @@ class TsDataCollector {
 
         obs.sortByPeriod();
 
-        IntUnaryOperator toPeriodId = obs.getPeriodIdFunc(unit, offset);
+        IntUnaryOperator toPeriodId = obs.getPeriodIdFunc(unit, reference);
 
         int[] ids = new int[size];
         ids[0] = toPeriodId.applyAsInt(0);

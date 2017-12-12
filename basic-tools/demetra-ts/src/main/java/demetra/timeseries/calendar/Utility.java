@@ -45,7 +45,7 @@ class Utility {
         LocalDate end = start.plusDays(n);
         int col = 0;
         for (Holiday item : hl.elements()) {
-            Iterator<IHolidayInfo> iter = item.getDay().getIterable(TsUnit.DAILY, start, end).iterator();
+            Iterator<IHolidayInfo> iter = item.getDay().getIterable(TsUnit.DAY, start, end).iterator();
             while (iter.hasNext()) {
                 LocalDate date = iter.next().getDay();
                 if (date.getDayOfWeek() != DayOfWeek.SUNDAY) {
@@ -64,7 +64,7 @@ class Utility {
         LocalDate end = start.plusDays(n);
         int col = 0;
         for (Holiday item : hl.elements()) {
-            Iterator<IHolidayInfo> iter = item.getDay().getIterable(TsUnit.DAILY, nstart, end).iterator();
+            Iterator<IHolidayInfo> iter = item.getDay().getIterable(TsUnit.DAY, nstart, end).iterator();
             while (iter.hasNext()) {
                 LocalDate date = iter.next().getDay().minusDays(del);
                 date = IHolidayInfo.getPreviousWorkingDate(date);
@@ -84,7 +84,7 @@ class Utility {
         LocalDate end = nstart.plusDays(n);
         int col = 0;
         for (Holiday item : hl.elements()) {
-            Iterator<IHolidayInfo> iter = item.getDay().getIterable(TsUnit.DAILY, nstart, end).iterator();
+            Iterator<IHolidayInfo> iter = item.getDay().getIterable(TsUnit.DAY, nstart, end).iterator();
             while (iter.hasNext()) {
                 LocalDate date = iter.next().getDay().plusDays(del);
                 date = IHolidayInfo.getNextWorkingDate(date);
@@ -111,8 +111,8 @@ class Utility {
         int[] rslt = new int[n];
         LocalDate[] start = new LocalDate[n + 1]; // id of the first day for each period
         TsPeriod d0 = domain.getStartPeriod();
-        int conv = TsUnit.MONTHLY.ratio(d0.getUnit());
-        TsPeriod month = d0.withUnit(TsUnit.MONTHLY);
+        int conv = TsUnit.MONTH.ratioOf(d0.getUnit());
+        TsPeriod month = d0.withUnit(TsUnit.MONTH);
         for (int i = 0; i < start.length; ++i) {
             start[i] = month.start().toLocalDate();
             month = month.plus(conv);

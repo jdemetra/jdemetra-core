@@ -36,7 +36,7 @@ public class SwitchOutlierTest {
     @Test
     public void testData() {
         DataBlock buffer = DataBlock.make(20);
-        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAILY, LocalDate.now()), buffer.length());
+        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), buffer.length());
         for (int i = -10; i < buffer.length()+10; ++i) {
             SwitchOutlier wo = new SwitchOutlier(days.get(0).plus(i).start());
             wo.data(days.getStartPeriod(), buffer);

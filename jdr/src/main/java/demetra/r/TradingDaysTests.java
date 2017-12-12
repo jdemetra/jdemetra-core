@@ -17,16 +17,14 @@
 package demetra.r;
 
 import demetra.data.DataBlock;
-import demetra.information.InformationMapping;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
 import demetra.maths.matrices.Matrix;
-import demetra.processing.IProcResults;
 import demetra.stats.TestResult;
-import demetra.stats.mapping.TestInfo;
 import demetra.stats.tests.StatisticalTest;
 import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendar.DayClustering;
 import demetra.timeseries.calendar.GenericTradingDays;
 import demetra.timeseries.regression.GenericTradingDaysVariables;
@@ -35,8 +33,6 @@ import demetra.timeseries.simplets.TsData;
 import static demetra.timeseries.simplets.TsDataToolkit.delta;
 import static demetra.timeseries.simplets.TsDataToolkit.drop;
 import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  *
@@ -47,17 +43,17 @@ public class TradingDaysTests {
 
 
     public TestResult ftest(TsData s, boolean ar, int ny) {
-        int ifreq = TsUtility.periodFromTsUnit(s.getTsUnit());
+        int freq = s.getTsUnit().ratioOf(TsUnit.YEAR);
 
         if (ar) {
             if (ny != 0) {
-                s = drop(s, Math.max(0, s.length() - ifreq * ny - 1), 0);
+                s = drop(s, Math.max(0, s.length() - freq * ny - 1), 0);
             }
             return processAr(s);
         } else {
             s = delta(s, 1);
             if (ny != 0) {
-                s = drop(s, Math.max(0, s.length() - ifreq * ny), 0);
+                s = drop(s, Math.max(0, s.length() - freq * ny), 0);
             }
             return process(s);
         }

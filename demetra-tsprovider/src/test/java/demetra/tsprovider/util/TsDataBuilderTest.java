@@ -26,7 +26,7 @@ import static demetra.data.AggregationType.None;
 import static demetra.data.AggregationType.Sum;
 import demetra.data.DoubleSequence;
 import demetra.timeseries.TsPeriod;
-import static demetra.timeseries.TsPeriod.DEFAULT_OFFSET;
+import static demetra.timeseries.TsPeriod.EPOCH;
 import demetra.timeseries.TsUnit;
 import static demetra.timeseries.TsUnit.*;
 import demetra.timeseries.simplets.TsData;
@@ -43,6 +43,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Date;
 import static java.util.EnumSet.complementOf;
@@ -56,7 +57,6 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
-import static java.util.EnumSet.of;
 import static java.util.EnumSet.of;
 
 /**
@@ -143,22 +143,22 @@ public class TsDataBuilderTest {
         Function<Object[], T> dateFunc = o -> (T) o[0];
         Function<Object[], Number> valueFunc = o -> (Number) o[1];
 
-        TsDataBuilder<T> b = x.builder(ObsGathering.DEFAULT.withUnit(MONTHLY).withSkipMissingValues(false));
+        TsDataBuilder<T> b = x.builder(ObsGathering.DEFAULT.withUnit(MONTH).withSkipMissingValues(false));
 
         assertThat(b.clear().add(null, null).build()).isEqualTo(NO_DATA);
         assertThat(b.clear().add(null, v1).build()).isEqualTo(NO_DATA);
-        assertThat(b.clear().add((T) example[0][0], null).build()).isEqualTo(data(MONTHLY, DEFAULT_OFFSET, 2010, NaN));
-        assertThat(b.clear().add((T) example[0][0], v1).build()).isEqualTo(data(MONTHLY, DEFAULT_OFFSET, 2010, v1));
+        assertThat(b.clear().add((T) example[0][0], null).build()).isEqualTo(data(MONTH, EPOCH, 2010, NaN));
+        assertThat(b.clear().add((T) example[0][0], v1).build()).isEqualTo(data(MONTH, EPOCH, 2010, v1));
 
         assertThat(b.clear().add(example[0], o -> null, o -> null).build()).isEqualTo(NO_DATA);
         assertThat(b.clear().add(example[0], o -> null, valueFunc).build()).isEqualTo(NO_DATA);
-        assertThat(b.clear().add(example[0], dateFunc, o -> null).build()).isEqualTo(data(MONTHLY, DEFAULT_OFFSET, 2010, NaN));
-        assertThat(b.clear().add(example[0], dateFunc, valueFunc).build()).isEqualTo(data(MONTHLY, DEFAULT_OFFSET, 2010, v1));
+        assertThat(b.clear().add(example[0], dateFunc, o -> null).build()).isEqualTo(data(MONTH, EPOCH, 2010, NaN));
+        assertThat(b.clear().add(example[0], dateFunc, valueFunc).build()).isEqualTo(data(MONTH, EPOCH, 2010, v1));
 
         assertThat(b.clear().addAll(Stream.of(example), o -> null, o -> null).build()).isEqualTo(NO_DATA);
         assertThat(b.clear().addAll(Stream.of(example), o -> null, valueFunc).build()).isEqualTo(NO_DATA);
-        assertThat(b.clear().addAll(Stream.of(example), dateFunc, o -> null).build()).isEqualTo(data(MONTHLY, DEFAULT_OFFSET, 2010, NaN, NaN));
-        assertThat(b.clear().addAll(Stream.of(example), dateFunc, valueFunc).build()).isEqualTo(data(MONTHLY, DEFAULT_OFFSET, 2010, v1, v2));
+        assertThat(b.clear().addAll(Stream.of(example), dateFunc, o -> null).build()).isEqualTo(data(MONTH, EPOCH, 2010, NaN, NaN));
+        assertThat(b.clear().addAll(Stream.of(example), dateFunc, valueFunc).build()).isEqualTo(data(MONTH, EPOCH, 2010, v1, v2));
     }
 
     @SuppressWarnings("null")
@@ -193,9 +193,9 @@ public class TsDataBuilderTest {
 
     private static <T> void testDefinedUnits(CustomFactory<T> x) {
         DEFINED_UNITS.forEach(unit -> {
-            testDefinedWithSingleValue(x, unit, DEFAULT_OFFSET);
-            testDefinedWithMissingValues(x, unit, DEFAULT_OFFSET);
-            testDefinedWithAggregation(x, unit, DEFAULT_OFFSET);
+            testDefinedWithSingleValue(x, unit, EPOCH);
+            testDefinedWithMissingValues(x, unit, EPOCH);
+            testDefinedWithAggregation(x, unit, EPOCH);
         });
     }
 
@@ -206,39 +206,39 @@ public class TsDataBuilderTest {
         });
     }
 
-    private static <T> void testDefinedWithSingleValue(CustomFactory<T> x, TsUnit unit, int offset) {
+    private static <T> void testDefinedWithSingleValue(CustomFactory<T> x, TsUnit unit, LocalDateTime reference) {
         double single = .1;
         ObsGathering g = ObsGathering.DEFAULT.withUnit(unit);
 
-        forEachDates(unit, offset, start -> {
+        forEachDates(unit, reference, start -> {
             TsDataBuilder<T> b = x.builder(g)
                     .add(x.date(start), single);
 
-            assertBuild(b, data(unit, offset, start, single));
+            assertBuild(b, data(unit, reference, start, single));
         });
     }
 
-    private static <T> void testDefinedWithMissingValues(CustomFactory<T> x, TsUnit unit, int offset) {
+    private static <T> void testDefinedWithMissingValues(CustomFactory<T> x, TsUnit unit, LocalDateTime reference) {
         double first = .1, second = .2;
         ObsGathering g = ObsGathering.DEFAULT.withUnit(unit);
 
-        forEachDates(unit, offset, start -> {
+        forEachDates(unit, reference, start -> {
             TsDataBuilder<T> b = x.builder(g)
                     .add(x.date(start), first)
                     .add(x.date(start.plus(unit).plus(unit)), second);
 
             if (x.supports(unit)) {
-                assertBuild(b, data(unit, offset, start, first, Double.NaN, second));
+                assertBuild(b, data(unit, reference, start, first, Double.NaN, second));
             } else {
                 assertBuild(b, DUPLICATION_WITHOUT_AGGREGATION);
             }
         });
     }
 
-    private static <T> void testDefinedWithAggregation(CustomFactory<T> x, TsUnit unit, int offset) {
+    private static <T> void testDefinedWithAggregation(CustomFactory<T> x, TsUnit unit, LocalDateTime reference) {
         double v1 = .12, v2 = .13, v3 = .10, v4 = .11;
 
-        forEachDates(unit, offset, start -> {
+        forEachDates(unit, reference, start -> {
             BiFunction<TsUnit, AggregationType, TsDataBuilder<T>> b = (f, a) -> {
                 return x.builder(ObsGathering.builder().unit(f).aggregationType(a).build())
                         .add(x.date(start), v1)
@@ -247,12 +247,12 @@ public class TsDataBuilderTest {
                         .add(x.date(start), v4);
             };
 
-            assertBuild(b.apply(unit, First), data(unit, offset, start, v1));
-            assertBuild(b.apply(unit, Last), data(unit, offset, start, v4));
-            assertBuild(b.apply(unit, Min), data(unit, offset, start, v3));
-            assertBuild(b.apply(unit, Max), data(unit, offset, start, v2));
-            assertBuild(b.apply(unit, Average), data(unit, offset, start, (v1 + v2 + v3 + v4) / 4));
-            assertBuild(b.apply(unit, Sum), data(unit, offset, start, (v1 + v2 + v3 + v4)));
+            assertBuild(b.apply(unit, First), data(unit, reference, start, v1));
+            assertBuild(b.apply(unit, Last), data(unit, reference, start, v4));
+            assertBuild(b.apply(unit, Min), data(unit, reference, start, v3));
+            assertBuild(b.apply(unit, Max), data(unit, reference, start, v2));
+            assertBuild(b.apply(unit, Average), data(unit, reference, start, (v1 + v2 + v3 + v4) / 4));
+            assertBuild(b.apply(unit, Sum), data(unit, reference, start, (v1 + v2 + v3 + v4)));
         });
     }
 
@@ -267,7 +267,7 @@ public class TsDataBuilderTest {
         }
 
         if (x.supports(guess.getTsUnit())) {
-            assertBuild(b, data(guess.getTsUnit(), guess.getOffset(), start, values));
+            assertBuild(b, data(guess.getTsUnit(), guess.getReference(), start, values));
         } else {
             assertBuild(b, GUESS_DUPLICATION);
         }
@@ -278,7 +278,7 @@ public class TsDataBuilderTest {
         for (int i = 0; i < values.length; i++) {
             values[i] = i / 10d;
         }
-        forEachDates(guess.getTsUnit(), guess.getOffset(), start -> testUndefined(x, guess, start, values));
+        forEachDates(guess.getTsUnit(), guess.getReference(), start -> testUndefined(x, guess, start, values));
     }
 
     private static <T> void testUndefinedToDefinedWithMissingValues(CustomFactory<T> x, GuessingUnit guess) {
@@ -286,7 +286,7 @@ public class TsDataBuilderTest {
         for (int i = 0; i < values.length; i++) {
             values[i] = i == 1 ? Double.NaN : i / 10d;
         }
-        forEachDates(guess.getTsUnit(), guess.getOffset(), start -> testUndefined(x, guess, start, values));
+        forEachDates(guess.getTsUnit(), guess.getReference(), start -> testUndefined(x, guess, start, values));
     }
 
     private static <T> void testUnorderedDailyToMonthly(CustomFactory<T> x) {
@@ -294,7 +294,7 @@ public class TsDataBuilderTest {
         double v5 = 20;
 
         Function<AggregationType, OptionalTsData> b7 = a -> {
-            return x.builder(ObsGathering.builder().unit(MONTHLY).aggregationType(a).build())
+            return x.builder(ObsGathering.builder().unit(MONTH).aggregationType(a).build())
                     .add(x.date(LocalDate.of(2010, 2, 1).atStartOfDay()), v5)
                     .add(x.date(LocalDate.of(2010, 1, 3).atStartOfDay()), v3)
                     .add(x.date(LocalDate.of(2010, 1, 4).atStartOfDay()), v4)
@@ -303,12 +303,12 @@ public class TsDataBuilderTest {
                     .build();
         };
 
-        assertThat(b7.apply(First)).isEqualTo(data(MONTHLY, DEFAULT_OFFSET, 2010, v1, v5));
-        assertThat(b7.apply(Last)).isEqualTo(data(MONTHLY, DEFAULT_OFFSET, 2010, v4, v5));
-        assertThat(b7.apply(Min)).isEqualTo(data(MONTHLY, DEFAULT_OFFSET, 2010, v3, v5));
-        assertThat(b7.apply(Max)).isEqualTo(data(MONTHLY, DEFAULT_OFFSET, 2010, v2, v5));
-        assertThat(b7.apply(Average)).isEqualTo(data(MONTHLY, DEFAULT_OFFSET, 2010, (v1 + v2 + v3 + v4) / 4, v5));
-        assertThat(b7.apply(Sum)).isEqualTo(data(MONTHLY, DEFAULT_OFFSET, 2010, (v1 + v2 + v3 + v4), v5));
+        assertThat(b7.apply(First)).isEqualTo(data(MONTH, EPOCH, 2010, v1, v5));
+        assertThat(b7.apply(Last)).isEqualTo(data(MONTH, EPOCH, 2010, v4, v5));
+        assertThat(b7.apply(Min)).isEqualTo(data(MONTH, EPOCH, 2010, v3, v5));
+        assertThat(b7.apply(Max)).isEqualTo(data(MONTH, EPOCH, 2010, v2, v5));
+        assertThat(b7.apply(Average)).isEqualTo(data(MONTH, EPOCH, 2010, (v1 + v2 + v3 + v4) / 4, v5));
+        assertThat(b7.apply(Sum)).isEqualTo(data(MONTH, EPOCH, 2010, (v1 + v2 + v3 + v4), v5));
     }
 
     private static <T> void testNoData(CustomFactory<T> o) {
@@ -381,27 +381,27 @@ public class TsDataBuilderTest {
         boolean supports(TsUnit unit);
     }
 
-    private static OptionalTsData data(TsUnit unit, int offset, LocalDateTime date, double... values) {
-        return present(TsData.of(TsPeriod.builder().unit(unit).offset(offset).date(date).build(), DoubleSequence.ofInternal(values)));
+    private static OptionalTsData data(TsUnit unit, LocalDateTime reference, LocalDateTime date, double... values) {
+        return present(TsData.of(TsPeriod.builder().unit(unit).reference(reference).date(date).build(), DoubleSequence.ofInternal(values)));
     }
 
-    private static OptionalTsData data(TsUnit unit, int offset, int year, double... values) {
-        return data(unit, offset, LocalDate.of(year, 1, 1).atStartOfDay(), values);
+    private static OptionalTsData data(TsUnit unit, LocalDateTime reference, int year, double... values) {
+        return data(unit, reference, LocalDate.of(year, 1, 1).atStartOfDay(), values);
     }
 
-    private static List<LocalDateTime> dates(TsUnit unit, int offset) {
-        TsPeriod startPeriod = TsPeriod.builder().unit(unit).offset(offset).date(START).build();
+    private static List<LocalDateTime> dates(TsUnit unit, LocalDateTime reference) {
+        TsPeriod startPeriod = TsPeriod.builder().unit(unit).reference(reference).date(START).build();
         LocalDateTime first = startPeriod.start();
         LocalDateTime middle = first.plus(Duration.between(first, startPeriod.next().start()).dividedBy(2));
         LocalDateTime last = startPeriod.next().start().minusNanos(1);
         return Arrays.asList(first, middle, last);
     }
 
-    private static void forEachDates(TsUnit unit, int offset, Consumer<LocalDateTime> consumer) {
-        dates(unit, offset).forEach(consumer);
+    private static void forEachDates(TsUnit unit, LocalDateTime reference, Consumer<LocalDateTime> consumer) {
+        dates(unit, reference).forEach(consumer);
     }
 
     private static final LocalDateTime START = LocalDateTime.of(2010, 1, 1, 0, 0);
-    private static final List<TsUnit> DEFINED_UNITS = Arrays.asList(YEARLY, HALF_YEARLY, QUADRI_MONTHLY, QUARTERLY, BI_MONTHLY, MONTHLY, WEEKLY, DAILY, HOURLY, MINUTELY);
+    private static final List<TsUnit> DEFINED_UNITS = Arrays.asList(YEAR, HALF_YEAR, TsUnit.of(4, ChronoUnit.MONTHS), QUARTER, TsUnit.of(2, ChronoUnit.MONTHS), MONTH, WEEK, DAY, HOUR, MINUTE);
     private static final List<TsUnit> ALL_UNITS = Stream.concat(Stream.of(UNDEFINED), DEFINED_UNITS.stream()).collect(Collectors.toList());
 }

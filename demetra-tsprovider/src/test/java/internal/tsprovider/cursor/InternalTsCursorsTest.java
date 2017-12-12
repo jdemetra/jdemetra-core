@@ -68,7 +68,7 @@ import demetra.timeseries.TsUnit;
 public class InternalTsCursorsTest {
 
     private final String someKey = "hello";
-    private final OptionalTsData someData = OptionalTsData.present(TsData.random(TsUnit.MONTHLY, 1));
+    private final OptionalTsData someData = OptionalTsData.present(TsData.random(TsUnit.MONTH, 1));
     private final Map<String, String> someMeta = ImmutableMap.of("key", "value");
 
     private final FunctionWithIO<String, String> goodIdFunc = String::toUpperCase;
