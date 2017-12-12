@@ -36,7 +36,7 @@ public class FixedDayTest {
     @Test
     public void test1() {
         FixedDay fd = new FixedDay(7, 21);
-        Iterable<IHolidayInfo> iterable = fd.getIterable(TsUnit.MONTHLY, LocalDate.now(), LocalDate.now().plus(3, ChronoUnit.YEARS));
+        Iterable<IHolidayInfo> iterable = fd.getIterable(TsUnit.MONTH, LocalDate.now(), LocalDate.now().plus(3, ChronoUnit.YEARS));
         Stream<IHolidayInfo> stream = StreamSupport.stream(iterable.spliterator(), false);
         assertTrue(stream.count() == 3);
         stream = StreamSupport.stream(iterable.spliterator(), false);
@@ -46,7 +46,7 @@ public class FixedDayTest {
     @Test
     public void test2() {
         FixedDay fd = new FixedDay(7, 21);
-        Iterable<IHolidayInfo> iterable = fd.getIterable(TsUnit.MONTHLY, LocalDate.of(2017, 7, 21), LocalDate.now().plus(3, ChronoUnit.YEARS));
+        Iterable<IHolidayInfo> iterable = fd.getIterable(TsUnit.MONTH, LocalDate.of(2017, 7, 21), LocalDate.now().plus(3, ChronoUnit.YEARS));
         Stream<IHolidayInfo> stream = StreamSupport.stream(iterable.spliterator(), false);
         assertTrue(stream.count() == 4);
         stream = StreamSupport.stream(iterable.spliterator(), false);
@@ -56,7 +56,7 @@ public class FixedDayTest {
     @Test
     public void test3() {
         FixedDay fd = new FixedDay(7, 21);
-        Iterable<IHolidayInfo> iterable = fd.getIterable(TsUnit.MONTHLY, LocalDate.of(2017, 7, 21), LocalDate.of(2017, 7, 22));
+        Iterable<IHolidayInfo> iterable = fd.getIterable(TsUnit.MONTH, LocalDate.of(2017, 7, 21), LocalDate.of(2017, 7, 22));
         Stream<IHolidayInfo> stream = StreamSupport.stream(iterable.spliterator(), false);
         assertTrue(stream.count() == 1);
         stream = StreamSupport.stream(iterable.spliterator(), false);
@@ -66,7 +66,7 @@ public class FixedDayTest {
    @Test
     public void testEmpty() {
         FixedDay fd = new FixedDay(7, 21);
-        Iterable<IHolidayInfo> iterable = fd.getIterable(TsUnit.MONTHLY, LocalDate.of(2017, 7, 23), LocalDate.of(2018, 6, 22));
+        Iterable<IHolidayInfo> iterable = fd.getIterable(TsUnit.MONTH, LocalDate.of(2017, 7, 23), LocalDate.of(2018, 6, 22));
         Stream<IHolidayInfo> stream = StreamSupport.stream(iterable.spliterator(), false);
         assertTrue(stream.count() == 0);
         stream = StreamSupport.stream(iterable.spliterator(), false);

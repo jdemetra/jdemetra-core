@@ -62,11 +62,11 @@ public class Holiday {
     }
 
     public TsPeriod getStart() {
-        return TsPeriod.of(TsUnit.DAILY, validity == null ? LocalDate.MIN : validity.getStart().toLocalDate());
+        return TsPeriod.of(TsUnit.DAY, validity == null ? LocalDate.MIN : validity.getStart().toLocalDate());
     }
 
     public TsPeriod getEnd() {
-        return TsPeriod.of(TsUnit.DAILY, validity == null ? LocalDate.MAX : validity.getEnd().toLocalDate());
+        return TsPeriod.of(TsUnit.DAY, validity == null ? LocalDate.MAX : validity.getEnd().toLocalDate());
     }
 
     @Override

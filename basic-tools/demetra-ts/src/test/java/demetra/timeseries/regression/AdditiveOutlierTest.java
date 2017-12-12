@@ -63,7 +63,7 @@ public class AdditiveOutlierTest {
     public void testDay() {
         final int pos = 25;
         DataBlock buffer = DataBlock.make(100);
-        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAILY, LocalDate.now()), buffer.length());
+        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), buffer.length());
         AdditiveOutlier ao = new AdditiveOutlier(days.get(pos).start());
         ao.data(days, Collections.singletonList(buffer));
         assertTrue(buffer.indexOf(x -> x != 0) == pos);
@@ -75,7 +75,7 @@ public class AdditiveOutlierTest {
     public void testInside() {
         final int pos = 25;
         DataBlock buffer = DataBlock.make(100);
-        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAILY, LocalDate.now()), buffer.length());
+        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), buffer.length());
         AdditiveOutlier ao = new AdditiveOutlier(days.get(pos).start());
         ao.data(days, Collections.singletonList(buffer));
         assertEquals(1, buffer.sum(), 1e-9);
@@ -84,7 +84,7 @@ public class AdditiveOutlierTest {
     @Test
     public void testBefore() {
         DataBlock buffer = DataBlock.make(100);
-        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAILY, LocalDate.now()), buffer.length());
+        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), buffer.length());
         for (int i = 1; i < 3; ++i) {
             AdditiveOutlier ao = new AdditiveOutlier(days.get(0).plus(-i).start());
             ao.data(days, Collections.singletonList(buffer));
@@ -96,7 +96,7 @@ public class AdditiveOutlierTest {
     @Test
     public void testAfter() {
         DataBlock buffer = DataBlock.make(100);
-        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAILY, LocalDate.now()), buffer.length());
+        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), buffer.length());
         for (int i = 1; i < 3; ++i) {
             AdditiveOutlier ao = new AdditiveOutlier(days.get(99).plus(i).start());
             ao.data(days, Collections.singletonList(buffer));

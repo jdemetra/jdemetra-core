@@ -178,7 +178,7 @@ public class GenericTradingDays {
         int n = domain.length();
         int[] start = new int[n + 1]; // id of the first day for each period
         LocalDate cur = domain.start().toLocalDate();
-        int conv = TsUnit.MONTHLY.ratio(domain.getStartPeriod().getUnit());
+        int conv = TsUnit.MONTH.ratioOf(domain.getStartPeriod().getUnit());
         int year = cur.getYear(), month = cur.getMonthValue();
         for (int i = 0; i < start.length; ++i) {
             start[i] = Utility.calc(year, month, 1);

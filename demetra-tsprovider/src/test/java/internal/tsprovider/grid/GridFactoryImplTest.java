@@ -25,7 +25,6 @@ import demetra.tsprovider.grid.TsCollectionGrid;
 import demetra.tsprovider.grid.TsGrid;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import static demetra.timeseries.TsUnit.MONTHLY;
 import demetra.timeseries.simplets.TsData;
 import demetra.tsprovider.OptionalTsData;
 import static demetra.tsprovider.grid.GridLayout.HORIZONTAL;
@@ -34,6 +33,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
+import static demetra.timeseries.TsUnit.MONTH;
 
 /**
  *
@@ -68,21 +68,21 @@ public class GridFactoryImplTest {
             {"S1", 3.14, 4.56, 7.89}
         };
 
-        assertThat(reader.read(ArrayGridInput.of(basic))).isEqualTo(of(HORIZONTAL, "S1", data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89)));
+        assertThat(reader.read(ArrayGridInput.of(basic))).isEqualTo(of(HORIZONTAL, "S1", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)));
 
         Object[][] withDateHeader = {
             {"Date", jan2010, feb2010, mar2010},
             {"S1", 3.14, 4.56, 7.89}
         };
 
-        assertThat(reader.read(ArrayGridInput.of(withDateHeader))).isEqualTo(of(HORIZONTAL, "S1", data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89)));
+        assertThat(reader.read(ArrayGridInput.of(withDateHeader))).isEqualTo(of(HORIZONTAL, "S1", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)));
 
         Object[][] withoutHeader = {
             {jan2010, feb2010, mar2010},
             {3.14, 4.56, 7.89}
         };
 
-        assertThat(reader.read(ArrayGridInput.of(withoutHeader))).isEqualTo(of(HORIZONTAL, "S1", data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89)));
+        assertThat(reader.read(ArrayGridInput.of(withoutHeader))).isEqualTo(of(HORIZONTAL, "S1", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)));
 
         Object[][] withMultipleHeaders = {
             {null, null, jan2010, feb2010, mar2010},
@@ -94,10 +94,10 @@ public class GridFactoryImplTest {
 
         assertThat(reader.read(ArrayGridInput.of(withMultipleHeaders)))
                 .isEqualTo(TsCollectionGrid.builder().name("").layout(HORIZONTAL)
-                        .item(s("G1\nS1", data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89)))
-                        .item(s("G1\nS2", data(MONTHLY, 2010, 0, 3, 4, 5)))
-                        .item(s("G2\nS1", data(MONTHLY, 2010, 0, 7, 8, 9)))
-                        .item(s("S1", data(MONTHLY, 2010, 0, 0, 1, 2)))
+                        .item(s("G1\nS1", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)))
+                        .item(s("G1\nS2", data(MONTH, 2010, 0, 3, 4, 5)))
+                        .item(s("G2\nS1", data(MONTH, 2010, 0, 7, 8, 9)))
+                        .item(s("S1", data(MONTH, 2010, 0, 0, 1, 2)))
                         .build());
     }
 
@@ -112,7 +112,7 @@ public class GridFactoryImplTest {
             {mar2010, 7.89}
         };
 
-        assertThat(reader.read(ArrayGridInput.of(basic))).isEqualTo(of(VERTICAL, "S1", data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89)));
+        assertThat(reader.read(ArrayGridInput.of(basic))).isEqualTo(of(VERTICAL, "S1", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)));
 
         Object[][] withDateHeader = {
             {"Date", "S1"},
@@ -121,7 +121,7 @@ public class GridFactoryImplTest {
             {mar2010, 7.89}
         };
 
-        assertThat(reader.read(ArrayGridInput.of(withDateHeader))).isEqualTo(of(VERTICAL, "S1", data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89)));
+        assertThat(reader.read(ArrayGridInput.of(withDateHeader))).isEqualTo(of(VERTICAL, "S1", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)));
 
         Object[][] withoutHeader = {
             {jan2010, 3.14},
@@ -129,7 +129,7 @@ public class GridFactoryImplTest {
             {mar2010, 7.89}
         };
 
-        assertThat(reader.read(ArrayGridInput.of(withoutHeader))).isEqualTo(of(VERTICAL, "S1", data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89)));
+        assertThat(reader.read(ArrayGridInput.of(withoutHeader))).isEqualTo(of(VERTICAL, "S1", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)));
 
         Object[][] withMultipleHeaders = {
             {null, "G1", null, "G2", "S1"},
@@ -141,10 +141,10 @@ public class GridFactoryImplTest {
 
         assertThat(reader.read(ArrayGridInput.of(withMultipleHeaders)))
                 .isEqualTo(TsCollectionGrid.builder().name("").layout(VERTICAL)
-                        .item(s("G1\nS1", data(MONTHLY, 2010, 0, 3.14, 4.56, 7.89)))
-                        .item(s("G1\nS2", data(MONTHLY, 2010, 0, 3, 4, 5)))
-                        .item(s("G2\nS1", data(MONTHLY, 2010, 0, 7, 8, 9)))
-                        .item(s("S1", data(MONTHLY, 2010, 0, 0, 1, 2)))
+                        .item(s("G1\nS1", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)))
+                        .item(s("G1\nS2", data(MONTH, 2010, 0, 3, 4, 5)))
+                        .item(s("G2\nS1", data(MONTH, 2010, 0, 7, 8, 9)))
+                        .item(s("S1", data(MONTH, 2010, 0, 0, 1, 2)))
                         .build());
     }
 

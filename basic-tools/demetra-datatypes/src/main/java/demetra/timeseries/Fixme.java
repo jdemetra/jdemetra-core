@@ -35,7 +35,7 @@ public class Fixme {
     }
 
     public int getPosition(TsPeriod p) {
-        if (p.getOffset() != TsPeriod.DEFAULT_OFFSET) {
+        if (p.getReference()!= TsPeriod.EPOCH) {
             throw new UnsupportedOperationException("Unsupported origin");
         }
         OldFreq freq = OldFreq.of(p.getUnit());
@@ -44,12 +44,10 @@ public class Fixme {
 
     private enum OldFreq implements IntSupplier {
         Undefined(0, TsUnit.UNDEFINED),
-        Yearly(1, TsUnit.YEARLY),
-        HalfYearly(2, TsUnit.HALF_YEARLY),
-        QuadriMonthly(3, TsUnit.QUADRI_MONTHLY),
-        Quarterly(4, TsUnit.QUARTERLY),
-        BiMonthly(6, TsUnit.BI_MONTHLY),
-        Monthly(12, TsUnit.MONTHLY);
+        Yearly(1, TsUnit.YEAR),
+        HalfYearly(2, TsUnit.HALF_YEAR),
+        Quarterly(4, TsUnit.QUARTER),
+        Monthly(12, TsUnit.MONTH);
 
         final int val;
         final TsUnit freq;
@@ -75,14 +73,8 @@ public class Fixme {
                     if (freq.getAmount() == 6) {
                         return HalfYearly;
                     }
-                    if (freq.getAmount() == 4) {
-                        return QuadriMonthly;
-                    }
                     if (freq.getAmount() == 3) {
                         return Quarterly;
-                    }
-                    if (freq.getAmount() == 2) {
-                        return BiMonthly;
                     }
                     if (freq.getAmount() == 1) {
                         return Monthly;

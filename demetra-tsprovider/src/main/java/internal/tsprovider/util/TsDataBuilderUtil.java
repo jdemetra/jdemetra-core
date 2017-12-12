@@ -25,6 +25,7 @@ import demetra.tsprovider.OptionalTsData;
 import static demetra.tsprovider.OptionalTsData.present;
 import demetra.tsprovider.util.ObsCharacteristics;
 import demetra.tsprovider.util.ObsGathering;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.function.Function;
 
@@ -55,9 +56,9 @@ public class TsDataBuilderUtil {
             return o -> makeFromUnknownFrequency(o);
         }
         if (gathering.getAggregationType() != AggregationType.None) {
-            return o -> makeWithAggregation(o, gathering.getUnit(), TsPeriod.DEFAULT_OFFSET, gathering.getAggregationType(), gathering.isComplete());
+            return o -> makeWithAggregation(o, gathering.getUnit(), TsPeriod.EPOCH, gathering.getAggregationType(), gathering.isComplete());
         }
-        return o -> makeWithoutAggregation(o, gathering.getUnit(), TsPeriod.DEFAULT_OFFSET);
+        return o -> makeWithoutAggregation(o, gathering.getUnit(), TsPeriod.EPOCH);
     }
 
     private OptionalTsData makeFromUnknownFrequency(ObsList obs) {
@@ -72,17 +73,17 @@ public class TsDataBuilderUtil {
         }
     }
 
-    private OptionalTsData makeWithoutAggregation(ObsList obs, TsUnit unit, int offset) {
+    private OptionalTsData makeWithoutAggregation(ObsList obs, TsUnit unit, LocalDateTime reference) {
         switch (obs.size()) {
             case 0:
                 return NO_DATA;
             default:
-                TsData result = TsDataCollector.makeWithoutAggregation(obs, unit, offset);
+                TsData result = TsDataCollector.makeWithoutAggregation(obs, unit, reference);
                 return result != null ? present(result) : DUPLICATION_WITHOUT_AGGREGATION;
         }
     }
 
-    private OptionalTsData makeWithAggregation(ObsList obs, TsUnit unit, int offset, AggregationType convMode, boolean complete) {
+    private OptionalTsData makeWithAggregation(ObsList obs, TsUnit unit, LocalDateTime reference, AggregationType convMode, boolean complete) {
         switch (obs.size()) {
             case 0:
                 return NO_DATA;
@@ -92,7 +93,7 @@ public class TsDataBuilderUtil {
                     // should succeed
                     result = TsDataConverter.changeTsUnit(result, unit, convMode, complete);
                 } else {
-                    result = TsDataCollector.makeWithAggregation(obs, unit, offset, convMode);
+                    result = TsDataCollector.makeWithAggregation(obs, unit, reference, convMode);
                 }
                 return result != null ? present(result) : UNKNOWN;
         }

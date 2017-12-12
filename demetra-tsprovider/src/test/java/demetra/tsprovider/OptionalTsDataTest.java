@@ -18,7 +18,6 @@ package demetra.tsprovider;
 
 import demetra.data.DoubleSequence;
 import demetra.timeseries.TsUnit;
-import static demetra.timeseries.TsUnit.MONTHLY;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.simplets.TsData;
 import static demetra.tsprovider.OptionalTsData.absent;
@@ -27,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
+import static demetra.timeseries.TsUnit.MONTH;
 
 /**
  *
@@ -40,9 +40,9 @@ public class OptionalTsDataTest {
         TsData example = TsData.of(TsPeriod.monthly(2010, 1), DoubleSequence.ofInternal(10));
 
         assertThat(present(example))
-                .isEqualTo(data(MONTHLY, 2010, 10))
-                .isNotEqualTo(data(MONTHLY, 2010, 10, 20))
-                .isNotEqualTo(data(MONTHLY, 2010, 10, 10))
+                .isEqualTo(data(MONTH, 2010, 10))
+                .isNotEqualTo(data(MONTH, 2010, 10, 20))
+                .isNotEqualTo(data(MONTH, 2010, 10, 10))
                 .extracting(OptionalTsData::isPresent, OptionalTsData::get)
                 .containsExactly(true, example);
 

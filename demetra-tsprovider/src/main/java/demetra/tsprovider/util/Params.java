@@ -28,6 +28,7 @@ import demetra.util.Formatter;
 import internal.util.InternalParser;
 import internal.util.Lists;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -273,17 +274,17 @@ public class Params {
     private TsUnit freqToUnit(String freq) {
         switch (freq) {
             case "Yearly":
-                return TsUnit.YEARLY;
+                return TsUnit.YEAR;
             case "HalfYearly":
-                return TsUnit.HALF_YEARLY;
+                return TsUnit.HALF_YEAR;
             case "QuadriMonthly":
-                return TsUnit.QUADRI_MONTHLY;
+                return TsUnit.of(4, ChronoUnit.MONTHS);
             case "Quarterly":
-                return TsUnit.QUARTERLY;
+                return TsUnit.QUARTER;
             case "BiMonthly":
-                return TsUnit.BI_MONTHLY;
+                return TsUnit.of(2, ChronoUnit.MONTHS);
             case "Monthly":
-                return TsUnit.MONTHLY;
+                return TsUnit.MONTH;
         }
         return null;
     }

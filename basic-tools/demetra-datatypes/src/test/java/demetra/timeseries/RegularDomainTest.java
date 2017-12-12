@@ -17,10 +17,10 @@
 package demetra.timeseries;
 
 import static demetra.timeseries.RegularDomain.of;
-import static demetra.timeseries.TsUnit.HOURLY;
 import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
+import static demetra.timeseries.TsUnit.HOUR;
 
 /**
  *
@@ -32,6 +32,13 @@ public class RegularDomainTest {
     public void testFactories() {
         assertThat(of(feb2010, 2).getStartPeriod()).isEqualTo(feb2010);
         assertThat(of(feb2010, 2).getLength()).isEqualTo(2);
+    }
+
+    @Test
+    public void testSplit() {
+        assertThat(RegularDomain.splitOf(TsPeriod.yearly(2000), TsUnit.MONTH, true).getLength()).isEqualTo(12);
+        assertThat(RegularDomain.splitOf(TsPeriod.yearly(2000), TsUnit.DAY, true).getLength()).isEqualTo(366);
+        assertThatThrownBy(() -> RegularDomain.splitOf(TsPeriod.yearly(2000), TsUnit.WEEK, true)).isInstanceOf(TsException.class);
     }
 
     @Test
@@ -101,11 +108,11 @@ public class RegularDomainTest {
         assertThat(of(feb2010, 1).contains(x.plus(-1))).isFalse();
         assertThat(of(feb2010, 2).contains(x.plus(1))).isTrue();
 
-        assertThatThrownBy(() -> of(feb2010, 1).contains(x.withUnit(HOURLY)))
+        assertThatThrownBy(() -> of(feb2010, 1).contains(x.withUnit(HOUR)))
                 .isInstanceOf(TsException.class)
                 .hasMessage(TsException.INCOMPATIBLE_FREQ);
 
-        assertThat(of(feb2010, 1).contains(x.withOffset(1))).isTrue();
+        assertThat(of(feb2010, 1).contains(x.withReference(TsPeriod.EPOCH.plusMonths(1)))).isTrue();
     }
 
     @Test
@@ -130,11 +137,11 @@ public class RegularDomainTest {
         assertThat(of(feb2010, 1).indexOf(x.plus(-1))).isEqualTo(-1);
         assertThat(of(feb2010, 2).indexOf(x.plus(1))).isEqualTo(1);
 
-        assertThatThrownBy(() -> of(feb2010, 1).indexOf(x.withUnit(HOURLY)))
+        assertThatThrownBy(() -> of(feb2010, 1).indexOf(x.withUnit(HOUR)))
                 .isInstanceOf(TsException.class)
                 .hasMessage(TsException.INCOMPATIBLE_FREQ);
 
-        assertThat(of(feb2010, 1).indexOf(x.withOffset(1))).isEqualTo(0);
+        assertThat(of(feb2010, 1).indexOf(x.withReference(TsPeriod.EPOCH.plusMonths(1)))).isEqualTo(0);
     }
 
     @Test
@@ -168,11 +175,11 @@ public class RegularDomainTest {
         assertThat(of(feb2010, 2).intersection(x.move(-1))).isEqualTo(of(feb2010, 1));
         assertThat(of(feb2010, 2).intersection(x.move(-2))).isEqualTo(of(feb2010, 0));
 
-        assertThatThrownBy(() -> of(feb2010, 2).intersection(of(feb2010.withUnit(HOURLY), 2)))
+        assertThatThrownBy(() -> of(feb2010, 2).intersection(of(feb2010.withUnit(HOUR), 2)))
                 .isInstanceOf(TsException.class)
                 .hasMessage(TsException.INCOMPATIBLE_FREQ);
 
-        assertThat(of(feb2010, 2).intersection(of(feb2010.withOffset(1), 2))).isEqualTo(x);
+        assertThat(of(feb2010, 2).intersection(of(feb2010.withReference(TsPeriod.EPOCH.plusMonths(1)), 2))).isEqualTo(x);
     }
 
     @Test
@@ -185,11 +192,11 @@ public class RegularDomainTest {
         assertThat(of(feb2010, 2).union(x.move(-1))).isEqualTo(of(feb2010.plus(-1), 3));
         assertThat(of(feb2010, 2).union(x.move(-2))).isEqualTo(of(feb2010.plus(-2), 4));
 
-        assertThatThrownBy(() -> of(feb2010, 2).union(of(feb2010.withUnit(HOURLY), 2)))
+        assertThatThrownBy(() -> of(feb2010, 2).union(of(feb2010.withUnit(HOUR), 2)))
                 .isInstanceOf(TsException.class)
                 .hasMessage(TsException.INCOMPATIBLE_FREQ);
 
-        assertThat(of(feb2010, 2).union(of(feb2010.withOffset(1), 2))).isEqualTo(x);
+        assertThat(of(feb2010, 2).union(of(feb2010.withReference(TsPeriod.EPOCH.plusMonths(1)), 2))).isEqualTo(x);
     }
 
     @Test

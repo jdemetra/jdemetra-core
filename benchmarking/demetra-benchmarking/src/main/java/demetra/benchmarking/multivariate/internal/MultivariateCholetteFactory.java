@@ -357,7 +357,7 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
         }
 
         private void compute(Map<String, TsData> rslts) {
-            int c = idomain.getTsUnit().ratio(aggUnit);
+            int c = idomain.getTsUnit().ratioOf(aggUnit);
             int nvars = rcnt.size(), ncnts = cs.length;
             int len = idomain.getLength();
 

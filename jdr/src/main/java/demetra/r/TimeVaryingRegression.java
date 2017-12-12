@@ -32,6 +32,7 @@ import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.SsfData;
 import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendar.DayClustering;
 import demetra.timeseries.calendar.GenericTradingDays;
 import demetra.timeseries.regression.GenericTradingDaysVariables;
@@ -119,7 +120,7 @@ public class TimeVaryingRegression {
     }
 
     public Results regarima(TsData s, String td, String svar, double aicdiff) {
-        int freq = TsUtility.periodFromTsUnit(s.getTsUnit());
+        int freq = s.getTsUnit().ratioOf(TsUnit.YEAR);
         SarimaSpecification spec = new SarimaSpecification();
         spec.airline(freq);
         DayClustering dc = days(td);
