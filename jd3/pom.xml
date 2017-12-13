@@ -21,7 +21,8 @@
         <module>../benchmarking</module>
         <module>../demetra-tsprovider</module>
         <module>../demetra-bridge</module>
-     </modules>
+        <module>../dfm</module>
+    </modules>
      
          <build>
         <plugins>

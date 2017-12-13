@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>eu.europa.ec.joinup.sat</groupId>
+        <artifactId>demetra-basic-tools-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+       <relativePath>../basic-tools/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>demetra-dfm-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0-SNAPSHOT</version>
+    
+    <name>JD3 - DFM - Parent</name>
+
+    <properties>
+        <demetra.version>3.0.0-SNAPSHOT</demetra.version>
+        <jd3-basic.version>1.0.0-SNAPSHOT</jd3-basic.version>
+        <jd3-econometrics.version>1.0.0-SNAPSHOT</jd3-econometrics.version>
+        <jd3-dfm.version>1.0.0-SNAPSHOT</jd3-dfm.version>
+    </properties>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-dfm</artifactId>
+                <version>${jd3-dfm.version}</version>            
+            </dependency>
+            <dependency>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-dfm-datatypes</artifactId>
+                <version>${jd3-dfm.version}</version>            
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+ 
+    <modules>
+        <module>demetra_dfm_datatypes</module>
+        <module>demetra-dfm</module>
+    </modules>
+    
+</project>
