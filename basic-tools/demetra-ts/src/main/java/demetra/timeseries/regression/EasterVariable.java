@@ -126,7 +126,7 @@ public class EasterVariable implements IEasterVariable {
         DataBlock data=ldata.get(0);
         data.set(0);
         TsPeriod start=domain.getStartPeriod();
-        int freq = TsUnit.MONTHLY.ratio(start.getUnit());
+        int freq = TsUnit.MONTH.ratioOf(start.getUnit());
         if ((freq != 12 && freq != 4) || duration < 1 || duration > 25) {
             return;
         }

@@ -35,7 +35,7 @@ public class DentonFactory implements DentonAlgorithm {
 
     @Override
     public TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, DentonSpecification spec) {
-        int ratio = highFreqSeries.getUnit().ratio(aggregationConstraint.getUnit());
+        int ratio = highFreqSeries.getTsUnit().ratioOf(aggregationConstraint.getTsUnit());
         if (ratio == TsUnit.NO_RATIO || ratio == TsUnit.NO_STRICT_RATIO) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
@@ -52,7 +52,7 @@ public class DentonFactory implements DentonAlgorithm {
 
     @Override
     public TsData benchmark(TsUnit highFreq, TsData aggregationConstraint, DentonSpecification spec) {
-        int ratio = highFreq.ratio(aggregationConstraint.getUnit());
+        int ratio = highFreq.ratioOf(aggregationConstraint.getTsUnit());
         if (ratio == TsUnit.NO_RATIO || ratio == TsUnit.NO_STRICT_RATIO) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }

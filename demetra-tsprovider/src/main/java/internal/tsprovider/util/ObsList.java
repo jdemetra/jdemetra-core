@@ -18,6 +18,7 @@ package internal.tsprovider.util;
 
 import demetra.data.DoubleSequence;
 import demetra.timeseries.TsUnit;
+import java.time.LocalDateTime;
 import java.util.function.IntUnaryOperator;
 
 /**
@@ -29,7 +30,7 @@ interface ObsList {
 
     void sortByPeriod();
 
-    IntUnaryOperator getPeriodIdFunc(TsUnit unit, int offset);
+    IntUnaryOperator getPeriodIdFunc(TsUnit unit, LocalDateTime reference);
 
     double getValue(int index) throws IndexOutOfBoundsException;
 

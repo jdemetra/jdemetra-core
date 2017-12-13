@@ -73,7 +73,7 @@ public final class ByObjDataBuilder<T> implements TsDataBuilder<T> {
                 : new ByObjObsList.Sortable<>(ByObjDataBuilder::getPeriodIdFunc, LocalDateTime::compareTo);
     }
 
-    private static int getPeriodIdFunc(TsUnit unit, int offset, LocalDateTime date) {
-        return (int) TsPeriod.idAt(offset, unit, date);
+    private static int getPeriodIdFunc(TsUnit unit, LocalDateTime reference, LocalDateTime date) {
+        return (int) TsPeriod.idAt(reference, unit, date);
     }
 }

@@ -37,10 +37,13 @@ import demetra.sts.SeasonalModel;
 import demetra.sts.SsfBsm;
 import demetra.sts.internal.BsmMonitor;
 import demetra.timeseries.TsPeriod;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.simplets.TsData;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 
 /**
@@ -128,7 +131,7 @@ public class StsEstimation {
         BsmMonitor monitor = new BsmMonitor();
         monitor.setSpecification(mspec);
         BsmEstimationSpec espec = new BsmEstimationSpec();
-        if (!monitor.process(y.values(), TsUtility.periodFromTsUnit(y.getUnit()))) {
+        if (!monitor.process(y.values(), y.getTsUnit().ratioOf(TsUnit.YEAR))) {
             return null;
         }
 

@@ -20,6 +20,7 @@ import demetra.sarima.estimation.RegArimaEstimator;
 import demetra.sarima.mapping.SarimaInfo;
 import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsPeriodSelector;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendar.DayClustering;
 import demetra.timeseries.calendar.GenericTradingDays;
 import demetra.timeseries.regression.GenericTradingDaysVariables;
@@ -98,7 +99,7 @@ public class MovingRegression {
     }
 
     public Results regarima(TsData s, String td, int nyears) {
-        int period = TsUtility.periodFromTsUnit(s.getUnit());
+        int period = s.getTsUnit().ratioOf(TsUnit.YEAR);
         SarimaSpecification spec = new SarimaSpecification();
         spec.airline(period);
 

@@ -19,6 +19,7 @@ package internal.tsprovider.util;
 import demetra.data.DoubleSequence;
 import demetra.design.VisibleForTesting;
 import demetra.timeseries.TsUnit;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -37,7 +38,7 @@ interface ByObjObsList<T> extends ObsList {
 
     interface ToPeriodIdFunc<T> {
 
-        int apply(TsUnit unit, int offset, T value);
+        int apply(TsUnit unit, LocalDateTime reference, T value);
     }
 
     static final class PreSorted<T> implements ByObjObsList<T> {
@@ -87,8 +88,8 @@ interface ByObjObsList<T> extends ObsList {
         }
 
         @Override
-        public IntUnaryOperator getPeriodIdFunc(TsUnit unit, int offset) {
-            return o -> tsPeriodIdFunc.apply(unit, offset, (T) periods[o]);
+        public IntUnaryOperator getPeriodIdFunc(TsUnit unit, LocalDateTime reference) {
+            return o -> tsPeriodIdFunc.apply(unit, reference, (T) periods[o]);
         }
 
         @Override
@@ -148,8 +149,8 @@ interface ByObjObsList<T> extends ObsList {
         }
 
         @Override
-        public IntUnaryOperator getPeriodIdFunc(TsUnit unit, int offset) {
-            return o -> tsPeriodIdFunc.apply(unit, offset, list.get(o).period);
+        public IntUnaryOperator getPeriodIdFunc(TsUnit unit, LocalDateTime reference) {
+            return o -> tsPeriodIdFunc.apply(unit, reference, list.get(o).period);
         }
 
         @Override

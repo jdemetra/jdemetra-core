@@ -84,7 +84,7 @@ public class TsDataTypeTest {
 
     @Test
     public void testRandom() {
-        TsData random = TsData.random(TsUnit.MONTHLY, 0);
+        TsData random = TsData.random(TsUnit.MONTH, 0);
         assertTrue(random.domain().length() == random.values().length());
         assertTrue(random.values().allMatch(x -> x >= 100));
     }

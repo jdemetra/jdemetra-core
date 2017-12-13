@@ -81,8 +81,8 @@ public class Ramp implements ITsVariable<RegularDomain>, IUserTsVariable<Regular
     @Override
     public void data(RegularDomain domain, List<DataBlock> data) {
         DataBlock cur = data.get(0);
-        TsPeriod pstart = TsPeriod.of(domain.getUnit(), start);
-        TsPeriod pend = TsPeriod.of(domain.getUnit(), end);
+        TsPeriod pstart = TsPeriod.of(domain.getTsUnit(), start);
+        TsPeriod pend = TsPeriod.of(domain.getTsUnit(), end);
         int t0 = domain.position(pstart);
         int t1 = domain.position(pend);
         int len = cur.length(); // =domain.length()
@@ -118,8 +118,8 @@ public class Ramp implements ITsVariable<RegularDomain>, IUserTsVariable<Regular
     public String getDescription(RegularDomain context) {
         StringBuilder builder = new StringBuilder();
         if (context != null) {
-            builder.append("rp:").append(TsPeriod.of(context.getUnit(), start).display()).append(" - ")
-                    .append(TsPeriod.of(context.getUnit(), end).display());
+            builder.append("rp:").append(TsPeriod.of(context.getTsUnit(), start).display()).append(" - ")
+                    .append(TsPeriod.of(context.getTsUnit(), end).display());
         } else {
             return defaultName(start, end);
         }

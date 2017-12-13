@@ -31,22 +31,22 @@ public class TsUnitTest {
     @Test
     public void testRatio() {
         // easy ratio
-        assertThat(YEARLY.ratio(YEARLY)).isEqualTo(1);
-        assertThat(HALF_YEARLY.ratio(YEARLY)).isEqualTo(2);
-        assertThat(QUADRI_MONTHLY.ratio(YEARLY)).isEqualTo(3);
-        assertThat(QUARTERLY.ratio(YEARLY)).isEqualTo(4);
-        assertThat(BI_MONTHLY.ratio(YEARLY)).isEqualTo(6);
-        assertThat(MONTHLY.ratio(YEARLY)).isEqualTo(12);
-        assertThat(MONTHLY.ratio(QUARTERLY)).isEqualTo(3);
+        assertThat(YEAR.ratioOf(CENTURY)).isEqualTo(100);
+        assertThat(YEAR.ratioOf(DECADE)).isEqualTo(10);
+        assertThat(YEAR.ratioOf(YEAR)).isEqualTo(1);
+        assertThat(HALF_YEAR.ratioOf(YEAR)).isEqualTo(2);
+        assertThat(QUARTER.ratioOf(YEAR)).isEqualTo(4);
+        assertThat(MONTH.ratioOf(YEAR)).isEqualTo(12);
+        assertThat(MONTH.ratioOf(QUARTER)).isEqualTo(3);
 
         // no ratio
-        assertThat(YEARLY.ratio(MONTHLY)).isEqualTo(NO_RATIO);
-        assertThat(YEARLY.ratio(QUARTERLY)).isEqualTo(NO_RATIO);
-        assertThat(HALF_YEARLY.ratio(QUARTERLY)).isEqualTo(NO_RATIO);
+        assertThat(YEAR.ratioOf(MONTH)).isEqualTo(NO_RATIO);
+        assertThat(YEAR.ratioOf(QUARTER)).isEqualTo(NO_RATIO);
+        assertThat(HALF_YEAR.ratioOf(QUARTER)).isEqualTo(NO_RATIO);
 
         // difficult ratio
-        assertThat(QUARTERLY.ratio(QUADRI_MONTHLY)).isEqualTo(NO_STRICT_RATIO);
-        assertThat(MINUTELY.ratio(YEARLY)).isEqualTo(NO_STRICT_RATIO);
+         assertThat(MINUTE.ratioOf(YEAR)).isEqualTo(NO_STRICT_RATIO);
+         assertThat(DAY.ratioOf(YEAR)).isEqualTo(NO_STRICT_RATIO);
     }
 
     @Test
@@ -54,33 +54,33 @@ public class TsUnitTest {
         assertThatThrownBy(() -> TsUnit.parse("hello")).isInstanceOf(DateTimeParseException.class);
 
         assertThat(parse("")).isEqualTo(UNDEFINED);
-        assertThat(parse("P1Y")).isEqualTo(YEARLY);
-        assertThat(parse("P6M")).isEqualTo(HALF_YEARLY);
-        assertThat(parse("P4M")).isEqualTo(QUADRI_MONTHLY);
-        assertThat(parse("P3M")).isEqualTo(QUARTERLY);
-        assertThat(parse("P2M")).isEqualTo(BI_MONTHLY);
-        assertThat(parse("P1M")).isEqualTo(MONTHLY);
-        assertThat(parse("P7D")).isEqualTo(WEEKLY);
-        assertThat(parse("P1D")).isEqualTo(DAILY);
-        assertThat(parse("PT1H")).isEqualTo(HOURLY);
-        assertThat(parse("PT1M")).isEqualTo(MINUTELY);
-
-        assertThat(parse("P1W")).isEqualTo(WEEKLY);
+        assertThat(parse("P100Y")).isEqualTo(CENTURY);
+        assertThat(parse("P10Y")).isEqualTo(DECADE);
+        assertThat(parse("P1Y")).isEqualTo(YEAR);
+        assertThat(parse("P6M")).isEqualTo(HALF_YEAR);
+        assertThat(parse("P3M")).isEqualTo(QUARTER);
+        assertThat(parse("P1M")).isEqualTo(MONTH);
+        assertThat(parse("P7D")).isEqualTo(WEEK);
+        assertThat(parse("P1D")).isEqualTo(DAY);
+        assertThat(parse("PT1H")).isEqualTo(HOUR);
+        assertThat(parse("PT1M")).isEqualTo(MINUTE);
+        assertThat(parse("PT1S")).isEqualTo(SECOND);
     }
 
     @Test
     public void testToIsoString() {
         assertThat(UNDEFINED.toIsoString()).isEmpty();
-        assertThat(YEARLY.toIsoString()).isEqualTo("P1Y");
-        assertThat(HALF_YEARLY.toIsoString()).isEqualTo("P6M");
-        assertThat(QUADRI_MONTHLY.toIsoString()).isEqualTo("P4M");
-        assertThat(QUARTERLY.toIsoString()).isEqualTo("P3M");
-        assertThat(BI_MONTHLY.toIsoString()).isEqualTo("P2M");
-        assertThat(MONTHLY.toIsoString()).isEqualTo("P1M");
-        assertThat(WEEKLY.toIsoString()).isEqualTo("P7D");
-        assertThat(DAILY.toIsoString()).isEqualTo("P1D");
-        assertThat(HOURLY.toIsoString()).isEqualTo("PT1H");
-        assertThat(MINUTELY.toIsoString()).isEqualTo("PT1M");
+        assertThat(DECADE.toIsoString()).isEqualTo("P10Y");
+        assertThat(CENTURY.toIsoString()).isEqualTo("P100Y");
+        assertThat(YEAR.toIsoString()).isEqualTo("P1Y");
+        assertThat(HALF_YEAR.toIsoString()).isEqualTo("P6M");
+        assertThat(QUARTER.toIsoString()).isEqualTo("P3M");
+        assertThat(MONTH.toIsoString()).isEqualTo("P1M");
+        assertThat(WEEK.toIsoString()).isEqualTo("P7D");
+        assertThat(DAY.toIsoString()).isEqualTo("P1D");
+        assertThat(HOUR.toIsoString()).isEqualTo("PT1H");
+        assertThat(MINUTE.toIsoString()).isEqualTo("PT1M");
+        assertThat(SECOND.toIsoString()).isEqualTo("PT1S");
     }
 
     @Test

@@ -101,7 +101,7 @@ public final class ByLongDataBuilder<T> implements TsDataBuilder<T> {
 
         long valueToLong(T value);
 
-        int longToPeriodId(TsUnit unit, int offset, long l);
+        int longToPeriodId(TsUnit unit, LocalDateTime reference, long l);
     }
 
     @lombok.AllArgsConstructor
@@ -115,8 +115,8 @@ public final class ByLongDataBuilder<T> implements TsDataBuilder<T> {
         }
 
         @Override
-        public int longToPeriodId(TsUnit unit, int offset, long l) {
-            return (int) TsPeriod.idAt(offset, unit, toLocalDateTime(l));
+        public int longToPeriodId(TsUnit unit, LocalDateTime reference, long l) {
+            return (int) TsPeriod.idAt(reference, unit, toLocalDateTime(l));
         }
 
         private LocalDateTime toLocalDateTime(long l) {
@@ -133,8 +133,8 @@ public final class ByLongDataBuilder<T> implements TsDataBuilder<T> {
         }
 
         @Override
-        public int longToPeriodId(TsUnit unit, int offset, long l) {
-            return (int) TsPeriod.idAt(offset, unit, toLocalDateTime(l));
+        public int longToPeriodId(TsUnit unit, LocalDateTime reference, long l) {
+            return (int) TsPeriod.idAt(reference, unit, toLocalDateTime(l));
         }
 
         private static LocalDateTime toLocalDateTime(long value) {

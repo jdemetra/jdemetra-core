@@ -19,6 +19,7 @@ package internal.tsprovider.util;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  *
@@ -28,25 +29,26 @@ import java.time.LocalDateTime;
 @lombok.Getter
 public enum GuessingUnit {
 
-    YEARLY(TsUnit.YEARLY, 0, 2),
-    HALF_YEARLY(TsUnit.HALF_YEARLY, 0, 6),
-    QUADRI_MONTHLY(TsUnit.QUADRI_MONTHLY, 0, 4),
-    QUARTERLY(TsUnit.QUARTERLY, 0, 2),
-    MONTHLY(TsUnit.MONTHLY, 0, 2),
-    WEEKLY_MONDAY(TsUnit.WEEKLY, 4, 3),
-    DAILY(TsUnit.DAILY, 0, 2),
-    HOURLY(TsUnit.HOURLY, 0, 2),
-    MINUTELY(TsUnit.MINUTELY, 0, 2);
+    YEAR(TsUnit.YEAR, TsPeriod.EPOCH, 2),
+    HALF_YEAR(TsUnit.HALF_YEAR, TsPeriod.EPOCH, 6),
+    QUADRI_MONTH(TsUnit.of(4, ChronoUnit.MONTHS), TsPeriod.EPOCH, 4),
+    QUARTER(TsUnit.QUARTER, TsPeriod.EPOCH, 2),
+    MONTH(TsUnit.MONTH, TsPeriod.EPOCH, 2),
+    WEEK_MONDAY(TsUnit.WEEK, TsPeriod.EPOCH.plusDays(4), 3),
+    DAY(TsUnit.DAY, TsPeriod.EPOCH, 2),
+    HOUR(TsUnit.HOUR, TsPeriod.EPOCH, 2),
+    MINUTE(TsUnit.MINUTE, TsPeriod.EPOCH, 2),
+    SECOND(TsUnit.SECOND, TsPeriod.EPOCH, 2);
 
     private final TsUnit tsUnit;
-    private final int offset;
+    private final LocalDateTime reference;
     private final int minimumObsCount;
 
     public TsPeriod atId(long id) {
-        return TsPeriod.builder().unit(tsUnit).offset(offset).id(id).build();
+        return TsPeriod.builder().unit(tsUnit).reference(reference).id(id).build();
     }
 
     public TsPeriod atDate(LocalDateTime start) {
-        return TsPeriod.builder().unit(tsUnit).offset(offset).date(start).build();
+        return TsPeriod.builder().unit(tsUnit).reference(reference).date(start).build();
     }
 }

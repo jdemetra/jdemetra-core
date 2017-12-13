@@ -24,12 +24,12 @@ import demetra.tsprovider.OptionalTsData;
 import static demetra.tsprovider.OptionalTsData.absent;
 import static demetra.tsprovider.OptionalTsData.present;
 import demetra.io.IteratorWithIO;
-import static demetra.timeseries.TsUnit.MONTHLY;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import static demetra.timeseries.TsUnit.MONTH;
 
 /**
  *
@@ -43,9 +43,9 @@ final class FakeDbAccessor implements CubeAccessor {
     public FakeDbAccessor() {
         this.root = CubeId.root("REGION", "SECTOR");
         this.data = new HashMap<>();
-        data.put(root.child("BE", "INDUSTRY"), present(TsData.random(MONTHLY, 1)));
-        data.put(root.child("FR", "INDUSTRY"), present(TsData.random(MONTHLY, 2)));
-        data.put(root.child("BE", "STUFF"), present(TsData.random(MONTHLY, 3)));
+        data.put(root.child("BE", "INDUSTRY"), present(TsData.random(MONTH, 1)));
+        data.put(root.child("FR", "INDUSTRY"), present(TsData.random(MONTH, 2)));
+        data.put(root.child("BE", "STUFF"), present(TsData.random(MONTH, 3)));
         data.put(root.child("FR", "STUFF"), absent("Not enough data"));
     }
 

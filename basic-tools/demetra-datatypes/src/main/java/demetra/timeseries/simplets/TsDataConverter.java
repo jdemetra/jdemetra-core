@@ -18,6 +18,7 @@ package demetra.timeseries.simplets;
 
 import demetra.data.AggregationType;
 import demetra.data.DoubleSequence;
+import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 
@@ -40,7 +41,7 @@ public class TsDataConverter {
      * @return A new time series is returned.
      */
     public TsData changeTsUnit(TsData s, TsUnit newUnit, AggregationType conversion, boolean complete) {
-        int ratio = s.getUnit().ratio(newUnit);
+        int ratio = s.getTsUnit().ratioOf(newUnit);
         switch (ratio) {
             case TsUnit.NO_STRICT_RATIO:
             case TsUnit.NO_RATIO:
@@ -56,14 +57,16 @@ public class TsDataConverter {
 
     private TsData changeUsingRatio(TsData s, TsUnit newUnit, Aggregator aggregator, int ratio, boolean complete) {
         int oldLength = s.length();
-
-        int tail = s.domain().getEndPeriod().getPosition(newUnit);
-        int head = (oldLength - tail) % ratio;
+        TsPeriod start = s.getStart(), nstart = start.withUnit(newUnit);
+        int spos = RegularDomain.splitOf(nstart, start.getUnit(), false).indexOf(start);
+        int head = spos > 0 ? ratio - spos : 0;
+        int tail = (oldLength - head) % ratio;
         int body = oldLength - head - tail;
-
-        TsPeriod newStart = s.getStart().withUnit(newUnit).plus(complete && head > 0 ? 1 : 0);
+        if (complete && head > 0) {
+            nstart = nstart.next();
+        }
         DoubleSequence newValues = aggregate(s.values(), aggregator, complete, ratio, head, body, tail);
-        return TsData.of(newStart, newValues);
+        return TsData.of(nstart, newValues);
     }
 
     private DoubleSequence aggregate(DoubleSequence values, Aggregator aggregator, boolean complete, int ratio, int head, int body, int tail) {

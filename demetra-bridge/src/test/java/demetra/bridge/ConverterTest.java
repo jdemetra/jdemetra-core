@@ -38,10 +38,10 @@ public class ConverterTest {
 
     @Test
     public void testTsUnit() {
-        assertThat(fromTsUnit(TsUnit.MONTHLY)).isEqualTo(TsFrequency.Monthly);
-        assertThatThrownBy(() -> fromTsUnit(TsUnit.DAILY)).isInstanceOf(ConverterException.class);
+        assertThat(fromTsUnit(TsUnit.MONTH)).isEqualTo(TsFrequency.Monthly);
+        assertThatThrownBy(() -> fromTsUnit(TsUnit.DAY)).isInstanceOf(ConverterException.class);
 
-        assertThat(toTsUnit(TsFrequency.Monthly)).isEqualTo(TsUnit.MONTHLY);
+        assertThat(toTsUnit(TsFrequency.Monthly)).isEqualTo(TsUnit.MONTH);
     }
 
     @Test
