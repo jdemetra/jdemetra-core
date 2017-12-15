@@ -16,6 +16,10 @@
  */
 package demetra.dfm;
 
+import demetra.dfm.internal.CumulMeasurement;
+import demetra.dfm.internal.CumulatedVariationsMeasurement;
+import demetra.dfm.internal.LevelMeasurement;
+
 /**
  *
  * @author Jean Palate

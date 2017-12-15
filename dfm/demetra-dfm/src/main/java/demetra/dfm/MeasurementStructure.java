@@ -38,7 +38,7 @@ public class MeasurementStructure implements Comparable<MeasurementStructure> {
         int cmp = type.compareTo(o.type);
         if (cmp != 0) {
             return cmp;
-        } else { // DAVID: if the type is the same
+        } else { 
             if (used.length < o.used.length) {
                 return -1;
             }

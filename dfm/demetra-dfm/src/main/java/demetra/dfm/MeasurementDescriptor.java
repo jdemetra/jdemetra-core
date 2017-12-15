@@ -19,16 +19,15 @@ package demetra.dfm;
 import static demetra.dfm.MeasurementType.getMeasurementType;
 import static demetra.dfm.MeasurementType.measurement;
 
-
 /**
  *
  * @author Jean Palate
  */
 public class MeasurementDescriptor {
 
-public static final double C_DEF = .2;    
+    public static final double C_DEF = .2;
 
-/**
+    /**
      * Type of the measurement equation
      */
     private final IDfmMeasurement type;
@@ -37,7 +36,8 @@ public static final double C_DEF = .2;
     /**
      * Variance of the measurement equation (>=0)
      */
-    private final double var; // DAVID: why not final?
+    private double var;
+
     /**
      * Creates a new measurement descriptor
      *
@@ -64,7 +64,7 @@ public static final double C_DEF = .2;
                 coeff[i] = C_DEF;
             }
         }
-        this.var = var;   // DAVID: why is equal to 1?  I think it must be initialized
+        this.var = var;
     }
 
     public void seDefaultCoefficients() {
@@ -74,16 +74,41 @@ public static final double C_DEF = .2;
             }
         }
     }
-    
-    public double getVar(){
+
+    public final void setDefault() {
+        for (int i = 0; i < coeff.length; ++i) {
+            if (isUsed(i)) {
+                coeff[i] = C_DEF;
+            }
+        }
+        this.var = 1;
+    }
+
+    public void rescaleVariance(double c) {
+        var *= c;
+    }
+
+    public void setVar(double var) {
+        this.var = var;
+    }
+
+    public double getVar() {
         return var;
     }
-    
-    public double getCoefficient(int pos){
+
+    public double getCoefficient(int pos) {
         return coeff[pos];
     }
-    
-    public IDfmMeasurement getType(){
+
+    public void setCoefficient(int pos, double c) {
+        coeff[pos] = c;
+    }
+
+    public void rescaleCoefficient(int pos, double c) {
+        coeff[pos] *= c;
+    }
+
+    public IDfmMeasurement getType() {
         return type;
     }
 
@@ -102,9 +127,12 @@ public static final double C_DEF = .2;
         return builder.toString();
     }
 
-
     public boolean isUsed(int fac) {
         return !Double.isNaN(coeff[fac]);
+    }
+
+    public void unused(int fac) {
+        coeff[fac] = Double.NaN;
     }
 
     public boolean[] getUsedFactors() {
@@ -127,6 +155,15 @@ public static final double C_DEF = .2;
 
     public MeasurementStructure getStructure() {
         return new MeasurementStructure(getMeasurementType(type), getUsedFactors());
+    }
+
+    public double[] getCoefficients() {
+        return coeff.clone();
+    }
+
+    public void copy(MeasurementDescriptor s) {
+            System.arraycopy(s.coeff, 0, coeff, 0, s.coeff.length);
+            var = s.var;
     }
 
 }

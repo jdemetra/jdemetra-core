@@ -14,48 +14,39 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.dfm;
+package demetra.dfm.internal;
 
 import demetra.data.DataBlock;
+import demetra.dfm.IDfmMeasurement;
 
 /**
- * Z = 1 2 3 2 1 [ 0 ... 0] for len = 3 (from monthly growth to quarterly
- * growth) Z = 1 2 1 for len = 2 Z = 1 2 3 4 3 2 1 for len = 4 ...
+ * Z = 1 1 ... 1 (len times)
  *
  * @author Jean Palate
  */
-public class CumulatedVariationsMeasurement implements IDfmMeasurement {
+public class CumulMeasurement implements IDfmMeasurement {
 
-    public static final CumulatedVariationsMeasurement MCD3 = new CumulatedVariationsMeasurement(3);
+    /**
+     */
+    public static final CumulMeasurement MC12 = new CumulMeasurement(12), MC4 = new CumulMeasurement(4);
 
-    public CumulatedVariationsMeasurement(int l) {
+    public CumulMeasurement(int l) {
         len = l;
     }
     private final int len;
 
     @Override
     public int getLength() {
-        return 2 * len - 1;
+        return len;
     }
 
     @Override
     public void fill(DataBlock z) {
-        int n = (len << 1) - 1;
-        for (int i = 1; i < len; ++i) {
-            z.set(i - 1, i);
-            z.set(n - i, i);
-        }
-        z.set(len - 1, len);
+        z.set(1);
     }
 
     @Override
     public double dot(DataBlock x) {
-        double r = 0;
-        int n = (len << 1) - 1;
-        for (int i = 1; i < len; ++i) {
-            r += i * (x.get(i - 1) + x.get(n - i));
-        }
-        r += len * x.get(len - 1);
-        return r;
+        return x.sum();
     }
 }

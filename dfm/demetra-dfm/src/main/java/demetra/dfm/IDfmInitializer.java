@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 National Bank of Belgium
+ * Copyright 2013 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -16,34 +16,11 @@
  */
 package demetra.dfm;
 
-import demetra.data.DataBlock;
 
-
-/**
- * Z = 1 [0 ... 0]
- *
- * @author Jean Palate
- */
-public class LevelMeasurement implements IDfmMeasurement {
-
-    public static final LevelMeasurement ML = new LevelMeasurement();
-
-    private LevelMeasurement() {
-    }
-
-    @Override
-    public int getLength() {
-        return 1;
-    }
-
-    @Override
-    public void fill(DataBlock z) {
-        z.set(0, 1);
-    }
-
-    @Override
-    public double dot(DataBlock x) {
-        return x.get(0);
-    }
-
-}
+///**
+// *
+// * @author Jean Palate
+// */
+//public interface IDfmInitializer {
+//    boolean initialize(DynamicFactorModel dfm, TsInformationSet data);
+//}

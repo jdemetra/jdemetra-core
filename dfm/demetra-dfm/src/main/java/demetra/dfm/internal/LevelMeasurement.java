@@ -14,38 +14,37 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.dfm;
+package demetra.dfm.internal;
 
 import demetra.data.DataBlock;
+import demetra.dfm.IDfmMeasurement;
+
 
 /**
- * Z = 1 1 ... 1 (len times)
+ * Z = 1 [0 ... 0]
  *
  * @author Jean Palate
  */
-public class CumulMeasurement implements IDfmMeasurement {
+public class LevelMeasurement implements IDfmMeasurement {
 
-    /**
-     */
-    public static final CumulMeasurement MC12 = new CumulMeasurement(12), MC4 = new CumulMeasurement(4);
+    public static final LevelMeasurement ML = new LevelMeasurement();
 
-    public CumulMeasurement(int l) {
-        len = l;
+    private LevelMeasurement() {
     }
-    private final int len;
 
     @Override
     public int getLength() {
-        return len;
+        return 1;
     }
 
     @Override
     public void fill(DataBlock z) {
-        z.set(1);
+        z.set(0, 1);
     }
 
     @Override
     public double dot(DataBlock x) {
-        return x.sum();
+        return x.get(0);
     }
+
 }

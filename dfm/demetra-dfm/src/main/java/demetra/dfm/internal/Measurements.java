@@ -1,12 +1,12 @@
 /*
- * Copyright 2013-2014 National Bank of Belgium
+ * Copyright 2017 National Bank of Belgium
  * 
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  * 
- * http://ec.europa.eu/idabc/eupl
+ * https://joinup.ec.europa.eu/software/page/eupl
  * 
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
@@ -14,21 +14,23 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.dfm;
+package demetra.dfm.internal;
 
 import demetra.data.DataBlock;
+import demetra.dfm.IDfmMeasurement;
+import demetra.dfm.MeasurementDescriptor;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.implementations.TimeInvariantMeasurements;
-
+import demetra.ssf.multivariate.ISsfMeasurements;
 
 /**
  *
  * @author Jean Palate
  */
-public class DfmMeasurements extends TimeInvariantMeasurements {
+class Measurements extends TimeInvariantMeasurements {
 
-    public static DfmMeasurements from(int nf, int c, MeasurementDescriptor... mdesc) {
-        return new DfmMeasurements(mdesc, nf, c);
+    static Measurements of(int nf, int c, MeasurementDescriptor... mdesc) {
+        return new Measurements(mdesc, nf, c);
     }
 
     private final MeasurementDescriptor[] mdesc;
@@ -74,7 +76,7 @@ public class DfmMeasurements extends TimeInvariantMeasurements {
         return r;
     }
 
-    private DfmMeasurements(MeasurementDescriptor[] mdesc, int nf, int c) {
+    private Measurements(MeasurementDescriptor[] mdesc, int nf, int c) {
         super(Z(mdesc, nf, c), H(mdesc), R(mdesc));
         this.mdesc = mdesc;
         this.nf = nf;

@@ -14,35 +14,36 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.dfm;
+package demetra.dfm.internal;
 
+import demetra.dfm.MeasurementDescriptor;
+import demetra.maths.matrices.Matrix;
 import demetra.var.VarDescriptor;
-import demetra.var.VarDynamics;
 import demetra.ssf.multivariate.MultivariateSsf;
-import demetra.var.VarInitialization;
 
 /**
  *
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
-public class SsfDfm  {
+public class SsfDfm {
 
-    public MultivariateSsf of(VarDescriptor vdesc, MeasurementDescriptor[] mdesc) {
+    public MultivariateSsf of(VarDescriptor vdesc, MeasurementDescriptor[] mdesc, Matrix v0) {
         int nlx = vdesc.getLagsCount();
-        for (int i=0; i<mdesc.length; ++i){
-            int n=mdesc[i].getType().getLength();
-            if (nlx<n)
-                nlx=n;
+        for (int i = 0; i < mdesc.length; ++i) {
+            int n = mdesc[i].getType().getLength();
+            if (nlx < n) {
+                nlx = n;
+            }
         }
-        return of(vdesc, mdesc, nlx);
+        return of(vdesc, mdesc, nlx, v0);
     }
 
-    public MultivariateSsf of(VarDescriptor vdesc, MeasurementDescriptor[] mdesc, int nlx) {
+    public MultivariateSsf of(VarDescriptor vdesc, MeasurementDescriptor[] mdesc, int nlx, Matrix v0) {
         int nf = vdesc.getVariablesCount();
-        VarInitialization initialization = new VarInitialization(nf*nlx, null);
-        VarDynamics dyn = VarDynamics.of(vdesc, nlx);
-        DfmMeasurements m = DfmMeasurements.from(nf, nlx, mdesc);
+        Initialization initialization = new Initialization(nf * nlx, v0);
+        Dynamics dyn = Dynamics.of(vdesc.getVarMatrix(), vdesc.getInnovationsVariance(), nlx);
+        Measurements m = Measurements.of(nf, nlx, mdesc);
         return new MultivariateSsf(initialization, dyn, m);
     }
 

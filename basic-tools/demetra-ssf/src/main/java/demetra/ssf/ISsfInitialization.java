@@ -25,9 +25,36 @@ import demetra.maths.matrices.SymmetricMatrix;
  * @author Jean Palate
  */
 public interface ISsfInitialization {
-    
+
+    /**
+     * Initialisation of the model. Only the covariance of the state array is
+     * considered in the model (the initial prediction errors are defined with
+     * the data).
+     */
+    public static enum Type {
+        /**
+         * Exact diffuse initialisation
+         */
+        Diffuse,
+        /**
+         * Zero initialisation. [A(-1)=0,] P(-1)=0 -> [A(0|-1)=0,] P(0|-1)=Q
+         * (transition innovations)
+         */
+        Zero,
+        /**
+         * Unconditional initialisation, defined by P0=TP0T'+V
+         * [A(0|-1)=0,] P0
+         */
+        Unconditional,
+        /**
+         * [A(0) and] P(0) are pre-specified
+         */
+        UserDefined
+
+    }
+
     int getStateDim();
-    
+
     //<editor-fold defaultstate="collapsed" desc="initialisation">
     /**
      *
@@ -81,5 +108,4 @@ public interface ISsfInitialization {
     }
 
     //</editor-fold> 
-    
 }

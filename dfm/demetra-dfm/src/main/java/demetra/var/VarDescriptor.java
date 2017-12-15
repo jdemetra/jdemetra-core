@@ -16,8 +16,8 @@
  */
 package demetra.var;
 
+import demetra.dfm.DfmException;
 import demetra.maths.matrices.Matrix;
-
 
 /**
  *
@@ -41,6 +41,7 @@ public class VarDescriptor {
      * Covariance matrix of the innovations
      */
     private final Matrix covar;
+
     /**
      * Creates a new descriptor of the transition equation (VAR).
      *
@@ -51,7 +52,7 @@ public class VarDescriptor {
         varMatrix = Matrix.make(nvars, nvars * nlags);
         covar = Matrix.square(nvars);
         this.nlags = nlags;
-        this.nvars=nvars;
+        this.nvars = nvars;
         setDefault();
     }
 
@@ -64,34 +65,58 @@ public class VarDescriptor {
         varMatrix.set(0);
         varMatrix.diagonal().set(AR_DEF);
     }
-    
-    public int getLagsCount(){
+
+    public int getLagsCount() {
         return nlags;
     }
-    
-    public int getVariablesCount(){
+
+    public int getVariablesCount() {
         return nvars;
     }
-    
-    public Matrix getVarMatrix(){
+
+    public Matrix getVarMatrix() {
         return varMatrix;
     }
-    
-    public Matrix getInnovationsVariance(){
+
+    public Matrix getInnovationsVariance() {
         return covar;
+    }
+
+    public void rescaleVariance(double c) {
+        covar.mul(c);
     }
 
     /**
      * Gets the matrix of the var parameters corresponding to a given lag
      *
      * @param lag The lag in the var equation. Should belong to [1, nlags]
-     * @return The corresponding square sub-matrix is returned. That sub-matrix is a view of the underlying 
+     * @return The corresponding square sub-matrix is returned. That sub-matrix is a view of the underlying
      * parameters
      */
     public Matrix getA(int lag) {
-        int c0=(lag-1)*nvars, c1=c0+nvars;
-        return varMatrix.extract(0, nvars, c0, c1);
+        int c0 = (lag - 1) * nvars;
+        return varMatrix.extract(0, nvars, c0, nvars);
+    }
+
+    /**
+     * Sets the matrix of the var parameters corresponding to a given lag
+     *
+     * @param lag The lag in the var equation. Should belong to [1, nlags]
+     * @param a The matrix
+     */
+    public void setA(int lag, Matrix a) {
+        int n = varMatrix.getRowsCount();
+        for (int i = 0, j = lag - 1; i < n; ++i, j += nlags) {
+            varMatrix.column(j).copy(a.column(i));
+        }
+    }
+
+    public void copy(VarDescriptor vdesc) {
+        if (this.nvars != vdesc.nvars || this.nlags != vdesc.nlags) {
+            throw new DfmException(DfmException.INCOMPATIBLE_DATA);
+        }
+        covar.copy(vdesc.covar);
+        varMatrix.copy(vdesc.varMatrix);
     }
 
 }
-

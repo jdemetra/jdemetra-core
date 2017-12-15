@@ -526,6 +526,32 @@ public class Matrix implements MatrixType {
         return true;
     }
 
+    public boolean isIdentity() {
+        if (ncols != nrows) {
+            return false;
+        }
+        if (nrows == 1) {
+            return storage[start] == 1;
+        }
+        if (diagonal().anyMatch(x -> x != 1)) {
+            return false;
+        }
+
+        int n = Math.min(nrows, ncols), inc = rowInc + colInc;
+        DataBlock diag = diagonal();
+        DataWindow ldiag = diag.window();
+        DataWindow udiag = diag.window();
+        for (int i = 1; i < nrows; ++i) {
+            if (ldiag.slideAndShrink(rowInc).anyMatch(x -> x != 0)) {
+                return false;
+            }
+            if (udiag.slideAndShrink(colInc).anyMatch(x -> x != 0)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public boolean isDiagonal() {
         return isDiagonal(0);
     }
@@ -578,18 +604,19 @@ public class Matrix implements MatrixType {
         return new Matrix(storage, start + r0 * rowInc + c0 * colInc,
                 nr, nc, rowInc, colInc);
     }
-    
-    public Matrix dropTopLeft(int nr, int nc){
+
+    public Matrix dropTopLeft(int nr, int nc) {
         return new Matrix(storage, start + nr * rowInc + nc * colInc,
-                nrows-nr, ncols-nc, rowInc, colInc);
-        
+                nrows - nr, ncols - nc, rowInc, colInc);
+
     }
 
-    public Matrix dropBottomRight(int nr, int nc){
+    public Matrix dropBottomRight(int nr, int nc) {
         return new Matrix(storage, start,
-                nrows-nr, ncols-nc, rowInc, colInc);
-        
+                nrows - nr, ncols - nc, rowInc, colInc);
+
     }
+
     /**
      *
      * @param r0

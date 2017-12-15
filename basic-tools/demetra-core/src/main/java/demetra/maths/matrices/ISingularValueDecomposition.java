@@ -5,10 +5,6 @@
  */
 package demetra.maths.matrices;
 
-import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
 import demetra.data.DoubleSequence;
 
 /**
@@ -23,4 +19,8 @@ public interface ISingularValueDecomposition {
     DoubleSequence S();
     
     Matrix V();
+    
+    boolean isFullRank();
+    
+    int rank();
 }

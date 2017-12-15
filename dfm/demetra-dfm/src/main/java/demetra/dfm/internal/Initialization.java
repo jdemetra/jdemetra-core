@@ -1,12 +1,12 @@
 /*
- * Copyright 2016-2017 National Bank of Belgium
+ * Copyright 2017 National Bank of Belgium
  * 
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  * 
- * http://ec.europa.eu/idabc/eupl
+ * https://joinup.ec.europa.eu/software/page/eupl
  * 
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
@@ -14,30 +14,30 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.var;
+package demetra.dfm.internal;
 
 import demetra.data.DataBlock;
 import demetra.linearsystem.ILinearSystemSolver;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
-import demetra.ssf.multivariate.ISsfMeasurements;
-import demetra.ssf.multivariate.MultivariateSsf;
+import demetra.ssf.ISsfDynamics;
+import demetra.ssf.ISsfInitialization;
 
 /**
  *
  * @author Jean Palate
  */
-@lombok.experimental.UtilityClass
-public class Var {
+@lombok.Value
+class Initialization implements ISsfInitialization {
 
-    public Matrix unconditionalInitialization(VarDescriptor desc) {
-        int nl = desc.getLagsCount();
-        int nvars = desc.getVariablesCount();
+    static Matrix unconditional(Dynamics dynamics) {
+         int nl = dynamics.nl(), nf=dynamics.nf();
         // We have to solve the steady state equation:
         // V = T V T' + Q
-        // We consider the nlag*nb, nlag*nb sub-system
-        Matrix v = desc.getInnovationsVariance(), t = desc.getVarMatrix();
-        int n = nvars * nl;
+        // We consider first the [nl*nf, nl*nf] sub-system
+        Matrix v = dynamics.getV(), t = dynamics.getT();
+
+        int n = nf * nl;
         Matrix cov = Matrix.square(n);
         int np = (n * (n + 1)) / 2;
         Matrix M = Matrix.square(np);
@@ -79,37 +79,59 @@ public class Var {
             j += n - i;
         }
         SymmetricMatrix.fromLower(cov);
-        return cov;
-//            Matrix fullCov = new Matrix(getStateDim(), getStateDim());
-//            for (int r = 0; r < nf_; ++r) {
-//                for (int c = 0; c < nf_; ++c) {
-//                    fullCov.subMatrix(r * c_, r * c_ + nl, c * c_, c * c_ + nl).copy(cov.subMatrix(r * nl, (r + 1) * nl, c * nl, (c + 1) * nl));
-//                }
-//            }
-//            for (int i = nl; i < c_; ++i) {
-//                TVT(0, fullCov.subMatrix());
-//                addV(0, fullCov.subMatrix());
-//            }
-//            return fullCov;
+        int nlx = dynamics.nlx;
+        if (dynamics == null || nl == nlx) {
+            return cov;
+        }
+        int dim = nlx*nf;
+        Matrix fullCov = Matrix.square(dim);
+
+        for (int r = 0; r < nf; ++r) {
+            for (int c = 0; c < nf; ++c) {
+                fullCov.extract(r * nlx, r * nlx + nl, c * nlx, c * nlx + nl).copy(cov.extract(r * nl, (r + 1) * nl, c * nl, (c + 1) * nl));
+            }
+        }
+        for (int i = nl; i < nlx; ++i) {
+            dynamics.TVT(0, fullCov);
+            dynamics.addV(0, fullCov);
+        }
+        return fullCov;
+    }
+
+    int dim;
+    Matrix V0;
+
+    @Override
+    public int getStateDim() {
+        return dim;
+    }
+
+    @Override
+    public boolean isDiffuse() {
+        return false;
+    }
+
+    @Override
+    public int getDiffuseDim() {
+        return 0;
+    }
+
+    @Override
+    public void diffuseConstraints(Matrix b) {
+    }
+
+    @Override
+    public void a0(DataBlock a0) {
+    }
+
+    @Override
+    public void Pf0(Matrix pf0) {
+        if (V0 != null) {
+            pf0.copy(V0);
+        }
     }
 
     private static int pos(int r, int c, int n) {
         return r + c * (2 * n - c - 1) / 2;
     }
-    
-    public MultivariateSsf of(VarDescriptor desc) {
-        VarDynamics dynamics = VarDynamics.of(desc);
-        VarInitialization initialization = new VarInitialization(desc.getVariablesCount() * desc.getLagsCount(), null);
-        ISsfMeasurements measurements = new VarMeasurements(desc.getVariablesCount(), desc.getLagsCount());
-        return new MultivariateSsf(initialization, dynamics, measurements);
-    }
-
-    public static MultivariateSsf of(VarDescriptor desc, int nlags) {
-        int nl = Math.max(nlags, desc.getLagsCount());
-        VarDynamics dynamics = VarDynamics.of(desc);
-        VarInitialization initialization = new VarInitialization(desc.getVariablesCount() * nl, null);
-        ISsfMeasurements measurements = new VarMeasurements(desc.getVariablesCount(), desc.getLagsCount());
-        return new MultivariateSsf(initialization, dynamics, measurements);
-    }
-
 }
