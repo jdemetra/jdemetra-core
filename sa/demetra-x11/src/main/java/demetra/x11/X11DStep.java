@@ -60,7 +60,7 @@ public class X11DStep {
     }
 
     private void d7(X11Context context) {
-        SymmetricFilter filter = HendersonFilters.instance.create(context.getHendersonFilterLength());
+        SymmetricFilter filter = HendersonFilters.withLength(context.getHendersonFilterLength());
         int ndrop = filter.length() / 2;
 
         double[] x = table(d6.length(), Double.NaN);
@@ -92,7 +92,7 @@ public class X11DStep {
         d11bis = context.remove(d1, d10);
         d11 = context.remove(refSeries, d10);
 
-        SymmetricFilter hfilter = HendersonFilters.instance.create(context.getHendersonFilterLength());
+        SymmetricFilter hfilter = HendersonFilters.withLength(context.getHendersonFilterLength());
         int ndrop = hfilter.length() / 2;
 
         double[] x = table(d11bis.length(), Double.NaN);

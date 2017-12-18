@@ -32,8 +32,14 @@ import java.util.Map;
 @Development(status = Development.Status.Alpha)
 public class MusgraveFilterFactory {
 
-    private static final Map<Integer, FiniteFilter[]> MFILTERSTORE = new HashMap<>();
-    private static final Map<Integer, FiniteFilter[]> QFILTERSTORE = new HashMap<>();
+    @lombok.Value
+    private static class Key {
+
+        int length;
+        double D;
+    }
+
+    private static final Map<Key, FiniteFilter[]> FILTERSTORE = new HashMap<>();
     private static final Polynomial X11_H1 = Polynomial.valueOf(-0.073, 0.294, 0.522, 0.257),
             X11_H0 = Polynomial.valueOf(-0.073, 0.403, 0.670);
 
@@ -68,30 +74,13 @@ public class MusgraveFilterFactory {
     private static double findR(final int length, final int frequency) {
         if (frequency == 4) {
             return (length <= 5) ? 0.001 : 4.5;
+        } else if (length <= 9) {
+            return 1;
+        } else if (length <= 13) {
+            return 3.5;
         } else {
-            if (length <= 9) {
-                return 1;
-            } else {
-                if (length <= 13) {
-                    return 3.5;
-                } else {
-                    return 4.5;
-                }
-            }
+            return 4.5;
         }
-    }
-
-    private static Map<Integer, FiniteFilter[]> getFilterStore(int freq) {
-        if (freq == 12) {
-            return MFILTERSTORE;
-        } else {
-            if (freq == 4) {
-                return QFILTERSTORE;
-            } else {
-                return null;
-            }
-        }
-
     }
 
     /**
@@ -125,22 +114,19 @@ public class MusgraveFilterFactory {
      */
     public static synchronized IFiniteFilter[] makeFiltersForHenderson(int len,
             int freq) {
-        Map<Integer, FiniteFilter[]> filterstore = getFilterStore(freq);
-        FiniteFilter[] filters = filterstore != null ? filterstore.get(len)
-                : null;
+        double r = findR(len, freq);
+        double D = 4.0 / (Math.PI * r * r);
+        Key key = new Key(len, D);
+        FiniteFilter[] filters = FILTERSTORE.get(key);
         if (filters == null) {
             filters = new FiniteFilter[len / 2];
-            double r = findR(len, freq);
-            double D = 4.0 / (Math.PI * r * r);
-            double[] h = HendersonFilters.instance.create(len).weightsToArray();
+            double[] h = HendersonFilters.withLength(len).weightsToArray();
             int l2 = len / 2;
             for (int i = 1; i <= l2; ++i) {
                 Polynomial w = computeCoefficients(h, D, len - i);
                 filters[i - 1] = new FiniteFilter(w, -l2);
             }
-            if (filterstore != null) {
-                filterstore.put(len, filters);
-            }
+            FILTERSTORE.put(key, filters);
         }
         return filters.clone();
     }

@@ -32,7 +32,7 @@ public class HendersonFiltersTest {
 
     @Test
     public void testGain() {
-        RealFunction gain = HendersonFilters.instance.create(23).squaredGainFunction();
+        RealFunction gain = HendersonFilters.withLength(23).squaredGainFunction();
         for (int i = 0; i <= 100; ++i) {
             double g = gain.apply(i * Math.PI / 100);
 //            System.out.println(gain.apply(i * Math.PI / 100));

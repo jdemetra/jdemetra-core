@@ -59,7 +59,7 @@ public class X11CStep {
     }
 
     private void c7(X11Context context) {
-        SymmetricFilter filter = HendersonFilters.instance.create(context.getHendersonFilterLength());
+        SymmetricFilter filter = HendersonFilters.withLength(context.getHendersonFilterLength());
         int ndrop = filter.length() / 2;
 
         double[] x = table(c6.length(), Double.NaN);
