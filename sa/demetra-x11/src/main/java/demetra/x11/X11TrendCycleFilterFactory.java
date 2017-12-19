@@ -74,7 +74,7 @@ public final class X11TrendCycleFilterFactory {
 	    down *= n2 * 4 - 25;
 	    c[m - i] = up / down;
 	}
-	return SymmetricFilter.of(c);
+	return SymmetricFilter.ofInternal(c);
     }
 
     /**

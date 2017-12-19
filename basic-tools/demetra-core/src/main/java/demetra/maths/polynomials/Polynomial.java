@@ -328,7 +328,7 @@ public final class Polynomial implements DoubleSequence {
         if (coeff.length != other.coeff.length) {
             return false;
         }
-        for (int i = 0; i <= coeff.length; ++i) {
+        for (int i = 0; i < coeff.length; ++i) {
             if (!DoubleSequence.equals(get(i), other.get(i), epsilon)) {
                 return false;
             }

@@ -14,10 +14,10 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.maths.linearfilters;
+package demetra.r;
 
-import demetra.data.DataBlock;
-import demetra.maths.functions.RealFunction;
+import demetra.data.Data;
+import demetra.data.DoubleSequence;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -25,20 +25,15 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate
  */
-public class HendersonFiltersTest {
-
-    public HendersonFiltersTest() {
+public class LocalPolynomialFiltersTest {
+    
+    public LocalPolynomialFiltersTest() {
     }
 
     @Test
-    public void testGain() {
-        RealFunction gain = HendersonFilters.ofLength(23).squaredGainFunction();
-        for (int i = 0; i <= 100; ++i) {
-            double g = gain.apply(i * Math.PI / 100);
-//            System.out.println(gain.apply(i * Math.PI / 100));
-        }
-//        System.out.println("");
-//        System.out.println(DataBlock.ofInternal(HendersonFilters.instance.create(13).weightsToArray()));
+    public void testHenderson() {
+        double[] rslt = LocalPolynomialFilters.filter(Data.NILE, 6, 3, "Henderson", "LC", .5);
+        System.out.println(DoubleSequence.ofInternal(rslt));
     }
-
+    
 }

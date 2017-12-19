@@ -120,7 +120,7 @@ public class MusgraveFilterFactory {
         FiniteFilter[] filters = FILTERSTORE.get(key);
         if (filters == null) {
             filters = new FiniteFilter[len / 2];
-            double[] h = HendersonFilters.withLength(len).weightsToArray();
+            double[] h = HendersonFilters.ofLength(len).weightsToArray();
             int l2 = len / 2;
             for (int i = 1; i <= l2; ++i) {
                 Polynomial w = computeCoefficients(h, D, len - i);

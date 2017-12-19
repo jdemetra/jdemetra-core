@@ -36,7 +36,7 @@ public final class HendersonFilters {
      * @param length
      * @return
      */
-    public synchronized SymmetricFilter withLength(int length) {
+    public synchronized SymmetricFilter ofLength(int length) {
         SymmetricFilter filter=FILTERSTORE.get(length);
         if (filter != null)
             return filter;
@@ -61,7 +61,7 @@ public final class HendersonFilters {
 	    down *= n2 * 4 - 25;
 	    c[m - i] = up / down;
 	}
-	filter=SymmetricFilter.of(c);
+	filter=SymmetricFilter.ofInternal(c);
         FILTERSTORE.put(length, filter);
         return filter;
     }

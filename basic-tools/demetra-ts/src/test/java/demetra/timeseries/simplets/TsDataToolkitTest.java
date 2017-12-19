@@ -37,6 +37,9 @@ import static demetra.timeseries.simplets.TsDataToolkit.drop;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
 import static demetra.timeseries.simplets.TsDataToolkit.fn;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
+import static demetra.timeseries.simplets.TsDataToolkit.fn;
 
 /**
  *
@@ -128,8 +131,8 @@ public class TsDataToolkitTest {
 
     @Demo
     public static void main(String[] args) {
-        SymmetricFilter h13 = HendersonFilters.withLength(13);
-        SymmetricFilter h25 = HendersonFilters.withLength(25);
+        SymmetricFilter h13 = HendersonFilters.ofLength(13);
+        SymmetricFilter h25 = HendersonFilters.ofLength(25);
         System.out.println("h13");
         System.out.println(TsDataToolkit.apply(h13, series));
         System.out.println("h25");
