@@ -17,12 +17,10 @@
 package demetra.maths.linearfilters;
 
 import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSequence;
 import demetra.linearsystem.ILinearSystemSolver;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.matrices.internal.Householder;
 import java.util.function.IntToDoubleFunction;
 
 /**
@@ -90,44 +88,6 @@ public class LocalPolynomialFilters {
 
     public FiniteFilter directAsymmetricFilter(final int h, final int q, final int d, final IntToDoubleFunction k) {
         return defaultDirectAsymmetricFilter(h, q, d, k);
-    }
-
-    public IntToDoubleFunction constant() {
-        return i -> 1.0;
-    }
-
-    public IntToDoubleFunction fn2(final int h) {
-        final double q = 1.0 / (h + 1);
-        return i -> {
-            double x = i * q;
-            double t = 1 - x * x;
-            return t * t;
-        };
-    }
-
-    public IntToDoubleFunction fn3(final int h) {
-        final double q = 1.0 / (h + 1);
-        return i -> {
-            double x = i >= 0 ? i * q : -i * q;
-            double t = 1 - x * x * x;
-            return t * t * t;
-        };
-    }
-
-    public IntToDoubleFunction hendersonWeights(final int h) {
-        // TODO Optimze the computation...
-        IntToDoubleFunction fn = nonNormalizedHendersonWeights(h);
-        double s = fn.applyAsDouble(0);
-        for (int i = 1; i <= h; ++i) {
-            s += 2 * fn.applyAsDouble(i);
-        }
-        final double d = s;
-        return i -> fn.applyAsDouble(i) / d;
-    }
-
-    private IntToDoubleFunction nonNormalizedHendersonWeights(final int ih) {
-        double h = ih;
-        return i -> ((h + 1) * (h + 1) - i * i) * ((h + 2) * (h + 2) - i * i) * ((h + 3) * (h + 3) - i * i);
     }
 
     private static SymmetricFilter of0_1(int h, IntToDoubleFunction k) {

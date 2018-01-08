@@ -57,10 +57,14 @@ public class LocalPolynomialFilters {
     
     IntToDoubleFunction weights(int horizon, String filter){
         switch (filter){
-            case "None": return demetra.maths.linearfilters.LocalPolynomialFilters.constant();
-            case "Fn2": return demetra.maths.linearfilters.LocalPolynomialFilters.fn2(horizon);
-            case "Fn3": return demetra.maths.linearfilters.LocalPolynomialFilters.fn3(horizon);
-            default: return demetra.maths.linearfilters.LocalPolynomialFilters.hendersonWeights(horizon);
+            case "Uniform": return demetra.maths.linearfilters.DiscreteKernels.uniform();
+            case "Biweight": return demetra.maths.linearfilters.DiscreteKernels.biweight(horizon);
+            case "Triweight": return demetra.maths.linearfilters.DiscreteKernels.triweight(horizon);
+            case "Tricube": return demetra.maths.linearfilters.DiscreteKernels.tricube(horizon);
+            case "Triangular": return demetra.maths.linearfilters.DiscreteKernels.triangular(horizon);
+            case "Parabolic": return demetra.maths.linearfilters.DiscreteKernels.parabolic(horizon);
+            case "Gaussian": return demetra.maths.linearfilters.DiscreteKernels.gaussian(4*horizon);
+            default: return demetra.maths.linearfilters.DiscreteKernels.henderson(horizon);
         }
     }
     

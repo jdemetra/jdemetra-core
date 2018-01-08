@@ -32,7 +32,7 @@ public class LocalPolynomialFiltersTest {
 
     @Test
     public void testHenderson() {
-        double[] rslt = LocalPolynomialFilters.filter(Data.NILE, 6, 3, "Henderson", "LC", .5);
+        double[] rslt = LocalPolynomialFilters.filter(Data.NILE, 11, 3, "Henderson", "DAF", .5);
         System.out.println(DoubleSequence.ofInternal(rslt));
     }
     
