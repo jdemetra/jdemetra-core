@@ -162,7 +162,7 @@ public class X11Decomposition {
     }
 
     public double[] henderson(double[] s, int length, boolean musgrave, double ic) {
-        SymmetricFilter filter = HendersonFilters.instance.create(length);
+        SymmetricFilter filter = HendersonFilters.ofLength(length);
         int ndrop = filter.length() / 2;
 
         double[] x = new double[s.length];

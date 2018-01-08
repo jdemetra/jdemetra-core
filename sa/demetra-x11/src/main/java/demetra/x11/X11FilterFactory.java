@@ -103,7 +103,7 @@ public final class X11FilterFactory {
         for (int i = 0; i < c.length; i++) {
             c[i] = w;
         }
-        return SymmetricFilter.of(c);
+        return SymmetricFilter.ofInternal(c);
     }
 
     /**
@@ -154,7 +154,7 @@ public final class X11FilterFactory {
         }
         double we = (flen / 2) / len;
         c[ilen] = we;
-        return SymmetricFilter.of(c);
+        return SymmetricFilter.ofInternal(c);
     }
 
 }

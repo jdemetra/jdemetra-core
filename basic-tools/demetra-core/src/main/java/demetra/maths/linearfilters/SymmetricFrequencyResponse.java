@@ -347,7 +347,7 @@ public class SymmetricFrequencyResponse {
     public SymmetricFilter toSymmetricFilter() throws MatrixException {
         double[] c = m_p.toArray();
         SFR2D(c);
-        return SymmetricFilter.of(c);
+        return SymmetricFilter.ofInternal(c);
     }
 
     /**

@@ -85,7 +85,7 @@ public class SymmetricFilter extends AbstractFiniteFilter {
                 c[i] *= scaling;
             }
         }
-        return SymmetricFilter.of(c);
+        return SymmetricFilter.ofInternal(c);
 
     }
 
@@ -112,7 +112,7 @@ public class SymmetricFilter extends AbstractFiniteFilter {
             }
             wc[i] = x;
         }
-        return SymmetricFilter.of(wc);
+        return SymmetricFilter.ofInternal(wc);
     }
 
     /**
@@ -141,7 +141,7 @@ public class SymmetricFilter extends AbstractFiniteFilter {
     private final Polynomial polynomial;
 
     // allows us to reuse ONE and ZERO
-    public static SymmetricFilter of(double[] c) {
+    public static SymmetricFilter ofInternal(double[] c) {
         if (c.length == 1) {
             if (c[0] == 1.0) {
                 return SymmetricFilter.ONE;
@@ -397,7 +397,7 @@ public class SymmetricFilter extends AbstractFiniteFilter {
                 }
             }
         }
-        return SymmetricFilter.of(o);
+        return SymmetricFilter.ofInternal(o);
     }
 
     public static class Factorization {

@@ -48,7 +48,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
 	    p[i - lb] = weights.applyAsDouble(i);
 	// p[-lb] corresponds to x^0
 	p[-lb] += d;
-	return FiniteFilter.promote(p, lb);
+	return FiniteFilter.ofInternal(p, lb);
     }
 
     /**
@@ -71,7 +71,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
 	    p[i - lb] = lweights.applyAsDouble(i);
 	for (int i = rlb; i <= rub; ++i)
 	    p[i - lb] += rweights.applyAsDouble(i);
-	return FiniteFilter.promote(p, lb);
+	return FiniteFilter.ofInternal(p, lb);
     }
 
     /**
@@ -85,7 +85,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
 	double[] p = l.weightsToArray();
 	for (int i = 0; i < p.length; ++i)
 	    p[i] *= d;
-	return FiniteFilter.promote(p, lb);
+	return FiniteFilter.ofInternal(p, lb);
     }
 
     /**
@@ -112,7 +112,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
 	double[] p = l.weightsToArray();
 	for (int i = 0; i < p.length; ++i)
 	    p[i] = -p[i];
-	return FiniteFilter.promote(p, lb);
+	return FiniteFilter.ofInternal(p, lb);
     }
 
     /**
@@ -121,7 +121,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
      * @param lb
      * @return
      */
-    public static FiniteFilter promote(final double[] c, final int lb) {
+    public static FiniteFilter ofInternal(final double[] c, final int lb) {
         return new FiniteFilter(Polynomial.ofInternal(c), lb);
     }
 
@@ -157,7 +157,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
 	    p[i - lb] = lweights.applyAsDouble(i);
 	for (int i = rlb; i <= rub; ++i)
 	    p[i - lb] -= rweights.applyAsDouble(i);
-	return FiniteFilter.promote(p, lb);
+	return FiniteFilter.ofInternal(p, lb);
     }
 
     private int m_lb;

@@ -501,6 +501,7 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
         return m_s[0] / m_s[Math.min(m_m, m_n) - 1];
     }
 
+    @Override
     public int rank() {
         double eps = Constants.getEpsilon();
         double tol = Math.max(m_m, m_n) * m_s[0] * eps;
@@ -513,6 +514,7 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
         return r;
     }
 
+    @Override
     public boolean isFullRank() {
         return rank() == m_s.length;
     }

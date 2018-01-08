@@ -154,8 +154,8 @@ public class RootDecomposer extends SimpleModelDecomposer {
 
         rcs[0] *= 2;
         rcn[0] *= 2;
-        SymmetricFilter sma = SymmetricFilter.of(rcs);
-        SymmetricFilter nma = SymmetricFilter.of(rcn);
+        SymmetricFilter sma = SymmetricFilter.ofInternal(rcs);
+        SymmetricFilter nma = SymmetricFilter.ofInternal(rcn);
 
         signal = new ArimaModel(m_sar, m_sur, m_sfcs != null ? m_sfcs.times(sma) : sma);
         noise = new ArimaModel(m_nar, m_nur, m_sfcn != null ? m_sfcn.times(nma) : nma);

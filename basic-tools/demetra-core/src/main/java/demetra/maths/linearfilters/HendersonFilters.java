@@ -18,30 +18,28 @@
 package demetra.maths.linearfilters;
 
 import demetra.design.Development;
-import demetra.design.Singleton;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@Singleton
+@lombok.experimental.UtilityClass
 public final class HendersonFilters {
 
-    /**
-     *
-     */
-    public static final HendersonFilters instance = new HendersonFilters();
-
-    private HendersonFilters() {
-    }
+    private final Map<Integer, SymmetricFilter> FILTERSTORE=new HashMap<>();
 
     /**
      * 
      * @param length
      * @return
      */
-    public SymmetricFilter create(int length) {
+    public synchronized SymmetricFilter ofLength(int length) {
+        SymmetricFilter filter=FILTERSTORE.get(length);
+        if (filter != null)
+            return filter;
 	if (length % 2 == 0)
 	    throw new LinearFilterException(
 		    "Invalid length for Henderson filter. Should be odd");
@@ -63,6 +61,8 @@ public final class HendersonFilters {
 	    down *= n2 * 4 - 25;
 	    c[m - i] = up / down;
 	}
-	return SymmetricFilter.of(c);
+	filter=SymmetricFilter.ofInternal(c);
+        FILTERSTORE.put(length, filter);
+        return filter;
     }
 }
