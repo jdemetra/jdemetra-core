@@ -30,62 +30,69 @@ public class DiscreteKernelsTest {
     @Test
     public void testHenderson() {
         IntToDoubleFunction kernel = henderson(K);
-        System.out.println("Henderson");
+//        System.out.println("Henderson");
         for (int i=-K; i<=K; ++i){
-            System.out.println(kernel.applyAsDouble(i));
+            assertTrue(kernel.applyAsDouble(i)>0);
+//            System.out.println(kernel.applyAsDouble(i));
         }
     }
     
     @Test
     public void testTricube() {
         IntToDoubleFunction kernel = tricube(K);
-        System.out.println("Tricube");
+//        System.out.println("Tricube");
         for (int i=-K; i<=K; ++i){
-            System.out.println(kernel.applyAsDouble(i));
+            assertTrue(kernel.applyAsDouble(i)>0);
+//            System.out.println(kernel.applyAsDouble(i));
         }
     }
 
     @Test
     public void testTriweight() {
         IntToDoubleFunction kernel = triweight(K);
-        System.out.println("Triweight");
+//        System.out.println("Triweight");
         for (int i=-K; i<=K; ++i){
-            System.out.println(kernel.applyAsDouble(i));
+            assertTrue(kernel.applyAsDouble(i)>0);
+//            System.out.println(kernel.applyAsDouble(i));
         }
     }
 
     @Test
     public void testBiweight() {
         IntToDoubleFunction kernel = biweight(K);
-        System.out.println("Biweight");
+//        System.out.println("Biweight");
         for (int i=-K; i<=K; ++i){
-            System.out.println(kernel.applyAsDouble(i));
+            assertTrue(kernel.applyAsDouble(i)>0);
+//            System.out.println(kernel.applyAsDouble(i));
         }
     }
 
     @Test
     public void testParabolic() {
         IntToDoubleFunction kernel = parabolic(K);
-        System.out.println("Parabolic");
+//        System.out.println("Parabolic");
         for (int i=-K; i<=K; ++i){
-            System.out.println(kernel.applyAsDouble(i));
+            assertTrue(kernel.applyAsDouble(i)>0);
+//            System.out.println(kernel.applyAsDouble(i));
         }
     }
 
     @Test
     public void testTriangular() {
         IntToDoubleFunction kernel = triangular(K);
-        System.out.println("Triangular");
+//        System.out.println("Triangular");
         for (int i=-K; i<=K; ++i){
-            System.out.println(kernel.applyAsDouble(i));
+            assertTrue(kernel.applyAsDouble(i)>0);
+//            System.out.println(kernel.applyAsDouble(i));
         }
     }
     
     @Test
     public void testGaussian() {
         IntToDoubleFunction kernel = gaussian(4*K);
-        System.out.println("Gaussian");
+//        System.out.println("Gaussian");
         for (int i=-K; i<=K; ++i){
+            assertTrue(kernel.applyAsDouble(i)>0);
 //            System.out.println(kernel.applyAsDouble(i));
         }
     }

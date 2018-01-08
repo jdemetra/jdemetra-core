@@ -17,6 +17,7 @@
 package demetra.maths.linearfilters;
 
 import demetra.data.DoubleSequence;
+import static demetra.data.Doubles.sum;
 import demetra.maths.matrices.Matrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -50,7 +51,8 @@ public class LocalPolynomialFiltersTest {
         int h = 11;
         for (int i = 0; i <= h; ++i) {
             FiniteFilter f = LocalPolynomialFilters.directAsymmetricFilter(h, i, 3, DiscreteKernels.henderson(h));
-            System.out.println(DoubleSequence.ofInternal(f.weightsToArray()));
+            assertEquals(sum(DoubleSequence.ofInternal(f.weightsToArray())), 1, 1e-9);
+//            System.out.println(DoubleSequence.ofInternal(f.weightsToArray()));
         }
 //        SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 3, DiscreteKernels.henderson(h));
 //        System.out.println(DoubleSequence.ofInternal(lp.weightsToArray()));
@@ -61,7 +63,8 @@ public class LocalPolynomialFiltersTest {
         int h = 11;
         for (int i = 0; i <= h; ++i) {
             FiniteFilter f = LocalPolynomialFilters.directAsymmetricFilter(h, i, 1, DiscreteKernels.tricube(h));
-            System.out.println(DoubleSequence.ofInternal(f.weightsToArray()));
+            assertEquals(sum(DoubleSequence.ofInternal(f.weightsToArray())), 1, 1e-9);
+//            System.out.println(DoubleSequence.ofInternal(f.weightsToArray()));
         }
 //        SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 3, DiscreteKernels.biweight(h));
 //        System.out.println(DoubleSequence.ofInternal(lp.weightsToArray()));
@@ -79,7 +82,8 @@ public class LocalPolynomialFiltersTest {
         SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 3, DiscreteKernels.henderson(h));
         for (int i = 0; i <= h; ++i) {
             FiniteFilter f = LocalPolynomialFilters.asymmetricFilter(lp, i, 0, new double[]{.4}, DiscreteKernels.triweight(h));
-            System.out.println(DoubleSequence.ofInternal(f.weightsToArray()));
+            assertEquals(sum(DoubleSequence.ofInternal(f.weightsToArray())), 1, 1e-9);
+//            System.out.println(DoubleSequence.ofInternal(f.weightsToArray()));
         }
     }
 
