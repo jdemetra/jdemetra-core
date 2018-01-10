@@ -16,7 +16,6 @@
  */
 package ec.tss.tsproviders.common.xml;
 
-import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;
@@ -30,16 +29,13 @@ import ec.tss.tsproviders.utils.IParam;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tss.tsproviders.utils.Params;
 import ec.tss.tsproviders.utils.Parsers;
+import ioutil.Jaxb;
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,15 +48,6 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
     static final IParam<DataSet, Integer> Y_COLLECTIONINDEX = Params.onInteger(-1, "collectionIndex");
     static final IParam<DataSet, Integer> Z_SERIESINDEX = Params.onInteger(-1, "seriesIndex");
     private static final Logger LOGGER = LoggerFactory.getLogger(XmlProvider.class);
-    final static JAXBContext CONTEXT;
-
-    static {
-        try {
-            CONTEXT = JAXBContext.newInstance(wsTsWorkspace.class);
-        } catch (JAXBException ex) {
-            throw Throwables.propagate(ex);
-        }
-    }
 
     protected final Parsers.Parser<DataSource> legacyDataSourceParser;
     protected final Parsers.Parser<DataSet> legacyDataSetParser;
@@ -97,12 +84,7 @@ public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
     protected wsTsWorkspace loadFromBean(XmlBean bean) throws IOException {
         File file = getRealFile(bean.getFile());
         String content = Files.toString(file, bean.getCharset()).replace("eu/tstoolkit:", "ec/tstoolkit.");
-        try {
-            Unmarshaller unmarshaller = CONTEXT.createUnmarshaller();
-            return (wsTsWorkspace) unmarshaller.unmarshal(new StringReader(content));
-        } catch (JAXBException ex) {
-            throw new IOException("Cannot parse xml content from file '" + file.getPath() + "'", ex);
-        }
+        return Jaxb.Parser.of(wsTsWorkspace.class).parseChars(content);
     }
 
     @Override

@@ -16,6 +16,7 @@
  */
 package ec.tstoolkit.utilities;
 
+import ioutil.Jaxb;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -75,7 +76,7 @@ public class HttpPox<S, T> {
             String response = request_.getResponseMessage();
             try (InputStream istream = request_.getInputStream()) {
                 javax.xml.bind.Unmarshaller unmarshaller = tcontext_.createUnmarshaller();
-                return (T) unmarshaller.unmarshal(istream);
+                return Jaxb.Parser.<T>builder().factory(() -> unmarshaller).build().parseStream(istream);
             } catch (JAXBException ex) {
                 LOGGER.error("While processing xml message", ex);
                 return null;

@@ -16,7 +16,6 @@
  */
 package internal.io;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -27,7 +26,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 
@@ -38,15 +36,6 @@ import javax.annotation.Nonnull;
  */
 @lombok.experimental.UtilityClass
 public class PathUtil {
-
-    @Nonnull
-    public Optional<File> toLocalFile(@Nonnull Path file) {
-        try {
-            return Optional.of(file.toFile());
-        } catch (UnsupportedOperationException ex) {
-            return Optional.empty();
-        }
-    }
 
     @Nonnull
     public Path get(URL url) {

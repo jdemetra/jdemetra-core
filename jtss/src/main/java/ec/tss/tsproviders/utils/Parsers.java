@@ -18,11 +18,10 @@ package ec.tss.tsproviders.utils;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import ec.tstoolkit.design.UtilityClass;
+import ioutil.Jaxb;
 import java.io.File;
-import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -105,7 +104,7 @@ public final class Parsers {
         try {
             return onJAXB(JAXBContext.newInstance(classToBeParsed));
         } catch (JAXBException ex) {
-            throw Throwables.propagate(ex);
+            throw new RuntimeException(ex);
         }
     }
 
@@ -114,16 +113,17 @@ public final class Parsers {
         try {
             return onJAXB(context.createUnmarshaller());
         } catch (JAXBException ex) {
-            throw Throwables.propagate(ex);
+            throw new RuntimeException(ex);
         }
     }
 
     @Nonnull
     public static <T> Parser<T> onJAXB(@Nonnull Unmarshaller unmarshaller) {
+        Jaxb.Parser<T> p = Jaxb.Parser.<T>builder().factory(() -> unmarshaller).build();
         return new FailSafeParser<T>() {
             @Override
             protected T doParse(CharSequence input) throws Exception {
-                return (T) unmarshaller.unmarshal(new StringReader(input.toString()));
+                return p.parseChars(input);
             }
         };
     }

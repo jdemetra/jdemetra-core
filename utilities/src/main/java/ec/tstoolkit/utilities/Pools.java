@@ -17,7 +17,6 @@
 
 package ec.tstoolkit.utilities;
 
-import com.google.common.base.Throwables;
 import java.util.Deque;
 import java.util.LinkedList;
 import javax.annotation.Nonnull;
@@ -96,7 +95,7 @@ public final class Pools {
             try {
                 return clazz.newInstance();
             } catch (InstantiationException | IllegalAccessException ex) {
-                throw Throwables.propagate(ex);
+                throw new RuntimeException(ex);
             }
         }
 
