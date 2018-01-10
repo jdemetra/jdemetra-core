@@ -8,29 +8,16 @@
         <version>3.0.0-SNAPSHOT</version>
     </parent>
   
-    <artifactId>demetra-spreadsheet</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <artifactId>demetra-spreadsheet-core</artifactId>
     
     <name>Demetra - Spreadsheet</name>
     <description>A TS Provider that handles Excel and OpenDocument spreadsheets.</description>
 
     <properties>
-        <spreadsheet4j.version>2.2.0</spreadsheet4j.version>
-        <demetra.version>3.0.0-SNAPSHOT</demetra.version>
+        <spreadsheet4j.version>2.2.1-SNAPSHOT</spreadsheet4j.version>
         <jd3-basic.version>1.0.0-SNAPSHOT</jd3-basic.version>
+        <jd2.version>2.2.1-SNAPSHOT</jd2.version>
     </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>spreadsheet-parent</artifactId>
-                <version>${spreadsheet4j.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <!-- compile only -->
@@ -49,29 +36,20 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!-- compile and runtime -->
-       
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>spreadsheet-api</artifactId>
-        </dependency>
+        
+        <!-- compile and runtime -->       
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-tsprovider</artifactId>
             <version>${demetra.version}</version>
         </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>spreadsheet-api</artifactId>
+            <version>${spreadsheet4j.version}</version>
+        </dependency>
+
         <!-- test only -->
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-bridge</artifactId>
-            <version>${jd3-basic.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tck</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -84,17 +62,20 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>spreadsheet-od</artifactId>
+            <artifactId>demetra-bridge</artifactId>
+            <version>${jd3-basic.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>spreadsheet-poi</artifactId>
+            <artifactId>demetra-tck</artifactId>
+            <version>${jd2.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>spreadsheet-xmlss</artifactId>
+            <artifactId>demetra-spreadsheet</artifactId>
+            <version>${jd2.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>  

@@ -57,7 +57,7 @@ public class SpreadSheetParamTest {
         SpreadSheetBean result = new SpreadSheetBean();
         result.setFile(new File("1234"));
         result.setObsFormat(ObsFormat.of(Parser.onLocale().parse("fr_BE"), "yyyy", "#"));
-        result.setObsGathering(demetra.tsprovider.util.ObsGathering.builder().unit(TsUnit.YEARLY).aggregationType(AggregationType.Average).skipMissingValues(false).build());
+        result.setObsGathering(demetra.tsprovider.util.ObsGathering.builder().unit(TsUnit.YEAR).aggregationType(AggregationType.Average).skipMissingValues(false).build());
         return result;
     }
 

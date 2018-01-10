@@ -22,12 +22,12 @@ import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.TsInformationType;
 import demetra.tsprovider.TsMoniker;
-import ec.tss.tsproviders.IFileLoaderAssert;
 import demetra.bridge.FromFileBean;
 import demetra.bridge.FromFileLoader;
+import ec.tss.tsproviders.IFileLoaderAssert;
 import internal.spreadsheet.SpreadSheetSupport;
+import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
@@ -37,17 +37,21 @@ import org.junit.Test;
  */
 public class SpreadSheetProviderTest {
 
-    private static final URL SAMPLE = SpreadSheetProviderTest.class.getResource("/Top5Browsers.xlsx");
+    @Test
+    public void testEquivalence() throws IOException {
+        IFileLoaderAssert
+                .assertThat(new FromFileLoader(new SpreadSheetProvider()))
+                .isEquivalentTo(new ec.tss.tsproviders.spreadsheet.SpreadSheetProvider(), o -> {
+                    ec.tss.tsproviders.IFileBean result = o.newBean();
+                    result.setFile(SAMPLE);
+                    return o.encodeBean(result);
+                });
+    }
 
     @Test
     public void testTspCompliance() {
-        IFileLoaderAssert.assertCompliance(() -> new FromFileLoader(new SpreadSheetProvider()), (FromFileLoader<SpreadSheetProvider> o) -> new FromFileBean(getSampleBean(o.getDelegate())));
-    }
-
-    private SpreadSheetBean getSampleBean(SpreadSheetProvider o) {
-        SpreadSheetBean bean = o.newBean();
-        bean.setFile(IFileLoaderAssert.urlAsFile(SAMPLE));
-        return bean;
+        IFileLoaderAssert.Sampler<FromFileLoader<SpreadSheetProvider>> sampler = o -> new FromFileBean(getSampleBean(o.getDelegate()));
+        IFileLoaderAssert.assertCompliance(() -> new FromFileLoader(new SpreadSheetProvider()), sampler);
     }
 
     @Test
@@ -130,5 +134,13 @@ public class SpreadSheetProviderTest {
             assertThat(p.close(dataSource)).isTrue();
             assertThat(p.getDataSources()).isEmpty();
         }
+    }
+
+    private static final File SAMPLE = IFileLoaderAssert.urlAsFile(SpreadSheetProviderTest.class.getResource("/Top5Browsers.xlsx"));
+
+    private static SpreadSheetBean getSampleBean(SpreadSheetProvider o) {
+        SpreadSheetBean bean = o.newBean();
+        bean.setFile(SAMPLE);
+        return bean;
     }
 }
