@@ -21,8 +21,8 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import ec.tstoolkit.design.UtilityClass;
+import ioutil.Jaxb;
 import java.io.File;
-import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -120,10 +120,11 @@ public final class Parsers {
 
     @Nonnull
     public static <T> Parser<T> onJAXB(@Nonnull Unmarshaller unmarshaller) {
+        Jaxb.Parser<T> p = Jaxb.Parser.<T>builder().factory(() -> unmarshaller).build();
         return new FailSafeParser<T>() {
             @Override
             protected T doParse(CharSequence input) throws Exception {
-                return (T) unmarshaller.unmarshal(new StringReader(input.toString()));
+                return p.parseChars(input);
             }
         };
     }

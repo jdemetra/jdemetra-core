@@ -17,13 +17,13 @@
 package ec.tstoolkit.utilities;
 
 import com.google.common.io.InputSupplier;
+import ioutil.Sax;
 import java.io.IOException;
 import java.io.InputStream;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  *
@@ -35,17 +35,10 @@ public final class XmlReaders {
         // static class
     }
 
-    private static XMLReader createXMLReader() {
-        try {
-            return XMLReaderFactory.createXMLReader();
-        } catch (SAXException ex) {
-            throw new RuntimeException("Cannot instanciate SAX XMLReader", ex);
-        }
-    }
-
     @Deprecated
     public static void parse(ContentHandler handler, InputSupplier<? extends InputStream> supplier) throws IOException {
-        XMLReader reader = createXMLReader();
+        XMLReader reader = Sax.createReader();
+        Sax.preventXXE(reader);
         reader.setContentHandler(handler);
         parse(reader, supplier);
     }
@@ -58,7 +51,8 @@ public final class XmlReaders {
     }
 
     public static void parse(ContentHandler handler, InputStream stream) throws IOException {
-        XMLReader reader = createXMLReader();
+        XMLReader reader = Sax.createReader();
+        Sax.preventXXE(reader);
         reader.setContentHandler(handler);
         parse(reader, stream);
     }

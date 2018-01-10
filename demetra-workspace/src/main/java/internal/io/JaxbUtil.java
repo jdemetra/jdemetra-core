@@ -16,9 +16,11 @@
  */
 package internal.io;
 
+import ioutil.IO;
+import ioutil.Jaxb;
+import ioutil.Xml;
 import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -42,18 +44,27 @@ public class JaxbUtil {
 
     @Nonnull
     public Object unmarshal(@Nonnull Path file, @Nonnull JAXBContext context) throws JAXBException, IOException {
-        return unmarshal(file, context.createUnmarshaller());
+        try {
+            return Jaxb.Parser.of(context).parsePath(file);
+        } catch (Xml.WrappedException ex) {
+            Throwable cause = ex.getCause();
+            if (cause instanceof JAXBException) {
+                throw (JAXBException) cause;
+            }
+            throw ex;
+        }
     }
 
     @Nonnull
     public Object unmarshal(@Nonnull Path file, @Nonnull Unmarshaller unmarshaller) throws JAXBException, IOException {
-        Optional<File> localFile = PathUtil.toLocalFile(file);
-        if (localFile.isPresent()) {
-            return unmarshaller.unmarshal(localFile.get());
-        } else {
-            try (Reader reader = Files.newBufferedReader(file)) {
-                return unmarshaller.unmarshal(reader);
+        try {
+            return Jaxb.Parser.builder().factory(() -> unmarshaller).build().parsePath(file);
+        } catch (Xml.WrappedException ex) {
+            Throwable cause = ex.getCause();
+            if (cause instanceof JAXBException) {
+                throw (JAXBException) cause;
             }
+            throw ex;
         }
     }
 
@@ -64,7 +75,7 @@ public class JaxbUtil {
     }
 
     public void marshal(@Nonnull Path file, @Nonnull Marshaller marshaller, @Nonnull Object jaxbElement) throws JAXBException, IOException {
-        Optional<File> localFile = PathUtil.toLocalFile(file);
+        Optional<File> localFile = IO.getFile(file);
         if (localFile.isPresent()) {
             marshaller.marshal(jaxbElement, localFile.get());
         } else {
