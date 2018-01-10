@@ -18,7 +18,6 @@ package ec.tss.tsproviders.utils;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import ec.tstoolkit.design.UtilityClass;
 import ioutil.Jaxb;
@@ -105,7 +104,7 @@ public final class Parsers {
         try {
             return onJAXB(JAXBContext.newInstance(classToBeParsed));
         } catch (JAXBException ex) {
-            throw Throwables.propagate(ex);
+            throw new RuntimeException(ex);
         }
     }
 
@@ -114,7 +113,7 @@ public final class Parsers {
         try {
             return onJAXB(context.createUnmarshaller());
         } catch (JAXBException ex) {
-            throw Throwables.propagate(ex);
+            throw new RuntimeException(ex);
         }
     }
 

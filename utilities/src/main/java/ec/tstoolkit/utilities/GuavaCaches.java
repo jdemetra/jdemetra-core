@@ -16,7 +16,6 @@
  */
 package ec.tstoolkit.utilities;
 
-import com.google.common.base.Throwables;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
@@ -69,7 +68,7 @@ public final class GuavaCaches {
         } catch (ExecutionException ex) {
             throw unboxToIOException(ex);
         } catch (UncheckedExecutionException ex) {
-            throw Throwables.propagate(ex.getCause());
+            throw new RuntimeException(ex.getCause());
         }
     }
 
@@ -80,7 +79,7 @@ public final class GuavaCaches {
         } catch (ExecutionException ex) {
             throw unboxToIOException(ex);
         } catch (UncheckedExecutionException ex) {
-            throw Throwables.propagate(ex.getCause());
+            throw new RuntimeException(ex.getCause());
         }
     }
 

@@ -19,7 +19,6 @@ package ec.tss.tsproviders.utils;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Streams;
 import ec.tstoolkit.design.IBuilder;
 import ec.tstoolkit.utilities.URLEncoder2;
@@ -113,7 +112,7 @@ public final class UriBuilder implements IBuilder<URI> {
         try {
             return URLDecoder.decode(o, StandardCharsets.UTF_8.name());
         } catch (UnsupportedEncodingException ex) {
-            throw Throwables.propagate(ex);
+            throw new RuntimeException(ex);
         }
     }
 
