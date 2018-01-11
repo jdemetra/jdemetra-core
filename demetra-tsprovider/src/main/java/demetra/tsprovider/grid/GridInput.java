@@ -38,5 +38,5 @@ public interface GridInput {
     int getColumnCount();
 
     @Nullable
-    Object getValue(int i, int j);
+    Object getValue(int row, int column);
 }

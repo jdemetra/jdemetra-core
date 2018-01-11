@@ -14,13 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.spreadsheet.grid;
+package internal.tsprovider.grid;
 
-import ec.util.spreadsheet.helpers.ArraySheet;
 import demetra.tsprovider.grid.GridOutput;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.Iterator;
 
 /**
@@ -28,32 +24,28 @@ import java.util.Iterator;
  * @author Philippe Charles
  */
 @lombok.AllArgsConstructor(staticName = "of")
-public final class SheetGridOutput implements GridOutput {
+public final class InvGridOutput implements GridOutput {
 
-    private final ArraySheet.Builder sheet;
-    private final ZoneId zoneId = ZoneId.systemDefault();
+    @lombok.NonNull
+    private final GridOutput delegate;
 
     @Override
     public void setName(String name) {
-        sheet.name(name);
+        delegate.setName(name);
     }
 
     @Override
     public void setRow(int row, int column, Iterator<?> values) {
-        sheet.row(row, column, values);
+        delegate.setColumn(column, row, values);
     }
 
     @Override
     public void setColumn(int row, int column, Iterator<?> values) {
-        sheet.column(row, column, values);
+        delegate.setRow(column, row, values);
     }
 
     @Override
     public void setValue(int row, int column, Object value) {
-        sheet.value(row, column, value instanceof LocalDateTime ? fromDateTime((LocalDateTime) value) : value);
-    }
-
-    private Date fromDateTime(LocalDateTime o) {
-        return Date.from(o.atZone(zoneId).toInstant());
+        delegate.setValue(column, row, value);
     }
 }

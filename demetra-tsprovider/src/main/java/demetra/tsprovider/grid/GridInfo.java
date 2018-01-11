@@ -16,37 +16,13 @@
  */
 package demetra.tsprovider.grid;
 
-import internal.tsprovider.grid.GridFactoryImpl;
 import javax.annotation.Nonnull;
 
 /**
  *
  * @author Philippe Charles
  */
-public interface GridFactory {
+public interface GridInfo {
 
-    @Nonnull
-    GridReader getReader(@Nonnull GridImport options);
-
-    @Nonnull
-    GridWriter getWriter(@Nonnull GridExport options);
-
-    @Nonnull
-    default TsCollectionGrid read(@Nonnull GridInput input, @Nonnull GridImport options) {
-        try (GridReader o = getReader(options)) {
-            return o.read(input);
-        }
-    }
-
-    @Nonnull
-    default void write(@Nonnull TsCollectionGrid value, @Nonnull GridOutput output, @Nonnull GridExport options) {
-        try (GridWriter o = getWriter(options)) {
-            o.write(value, output);
-        }
-    }
-
-    @Nonnull
-    static GridFactory getDefault() {
-        return GridFactoryImpl.INSTANCE;
-    }
+    boolean isSupportedDataType(@Nonnull Class<?> type);
 }

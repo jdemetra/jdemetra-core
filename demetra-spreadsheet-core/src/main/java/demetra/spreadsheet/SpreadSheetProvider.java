@@ -27,7 +27,6 @@ import demetra.tsprovider.HasFilePaths;
 import demetra.tsprovider.TsProvider;
 import demetra.tsprovider.cursor.HasTsCursor;
 import demetra.tsprovider.cursor.TsCursorAsProvider;
-import demetra.tsprovider.grid.GridFactory;
 import demetra.tsprovider.grid.GridImport;
 import demetra.tsprovider.grid.GridReader;
 import demetra.tsprovider.util.CacheProvider;
@@ -83,14 +82,13 @@ public final class SpreadSheetProvider implements FileLoader {
 
         ConcurrentMap<DataSource, BookData> cache = CacheProvider.getDefault().softValuesCacheAsMap();
         SpreadSheetParam param = new SpreadSheetParam.V1();
-        GridFactory gridFactory = GridFactory.getDefault();
 
         this.mutableListSupport = HasDataSourceMutableList.of(NAME, cache::remove);
         this.monikerSupport = FallbackDataMoniker.of(HasDataMoniker.usingUri(NAME), LegacySpreadSheetMoniker.of(NAME, param));
         this.beanSupport = HasDataSourceBean.of(NAME, param, param.getVersion());
         this.filePathSupport = HasFilePaths.of(cache::clear);
         this.displayNameSupport = SpreadSheetDataDisplayName.of(NAME, param);
-        this.spreadSheetSupport = SpreadSheetSupport.of(NAME, new SpreadSheetResource(cache, filePathSupport, param, bookSupplier, gridFactory));
+        this.spreadSheetSupport = SpreadSheetSupport.of(NAME, new SpreadSheetResource(cache, filePathSupport, param, bookSupplier));
         this.tsSupport = TsCursorAsProvider.of(NAME, spreadSheetSupport, monikerSupport, cache::clear);
     }
 
@@ -116,7 +114,6 @@ public final class SpreadSheetProvider implements FileLoader {
         private final HasFilePaths filePathSupport;
         private final SpreadSheetParam param;
         private final BookSupplier bookSupplier;
-        private final GridFactory gridFactory;
 
         @Override
         public BookData getAccessor(DataSource dataSource) throws IOException {
@@ -144,9 +141,7 @@ public final class SpreadSheetProvider implements FileLoader {
             File file = filePathSupport.resolveFilePath(bean.getFile());
             try (Book book = bookSupplier.open(file)) {
                 GridImport options = GridImport.of(bean.getObsFormat(), bean.getObsGathering());
-                try (GridReader reader = gridFactory.getReader(options)) {
-                    return BookData.of(book, reader);
-                }
+                return BookData.of(book, GridReader.of(options, o -> true));
             }
         }
     }

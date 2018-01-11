@@ -14,23 +14,18 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tsprovider.grid;
+package internal.tsprovider.grid;
 
-import java.util.Iterator;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.junit.Test;
 
 /**
  *
  * @author Philippe Charles
  */
-public interface GridOutput {
+public class InvGridOutputTest {
 
-    void setName(@Nonnull String name);
+    @Test
+    public void test() {
 
-    void setRow(int row, int column, @Nonnull Iterator<?> values);
-
-    void setColumn(int row, int column, @Nonnull Iterator<?> values);
-
-    void setValue(int row, int column, @Nullable Object value);
+    }
 }

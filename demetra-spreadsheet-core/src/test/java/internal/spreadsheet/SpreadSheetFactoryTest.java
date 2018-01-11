@@ -16,7 +16,6 @@
  */
 package internal.spreadsheet;
 
-import demetra.tsprovider.grid.GridFactory;
 import demetra.tsprovider.grid.GridImport;
 import demetra.tsprovider.grid.GridReader;
 import ec.util.spreadsheet.Book;
@@ -42,9 +41,7 @@ public class SpreadSheetFactoryTest {
 
     private static void testFactory(Book.Factory bookFactory, URL url) throws IOException {
         try (Book book = bookFactory.load(url)) {
-            try (GridReader reader = GridFactory.getDefault().getReader(GridImport.DEFAULT)) {
-                testContent(BookData.of(book, reader));
-            }
+            testContent(BookData.of(book, GridReader.of(GridImport.DEFAULT, o -> true)));
         }
     }
 
