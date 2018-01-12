@@ -12,6 +12,8 @@
     <artifactId>demetra-bridge</artifactId>
     <packaging>jar</packaging>
     
+    <name>JD3 - Bridge to JD2</name>
+    
     <dependencies>
         <!-- compile only -->
         <dependency>

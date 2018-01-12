@@ -10,7 +10,7 @@
   
     <artifactId>demetra-spreadsheet-core</artifactId>
     
-    <name>Demetra - Spreadsheet</name>
+    <name>JD3 - Spreadsheet</name>
     <description>A TS Provider that handles Excel and OpenDocument spreadsheets.</description>
 
     <properties>
