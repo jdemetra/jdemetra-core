@@ -23,6 +23,7 @@
         <module>../demetra-tsprovider</module>
         <module>../demetra-bridge</module>
         <module>../demetra-dfm</module>
+        <module>../demetra-benchmarking</module>
     </modules>
      
          <build>

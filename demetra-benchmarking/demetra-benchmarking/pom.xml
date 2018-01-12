@@ -30,15 +30,7 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-ssf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-benchmarking-datatypes</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-ts</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
