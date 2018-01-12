@@ -31,8 +31,8 @@ public class LocalPolynomialFilters {
         // Creates the filters
         IntToDoubleFunction weights = weights(horizon, kernel);
         SymmetricFilter filter = demetra.maths.linearfilters.LocalPolynomialFilters.of(horizon, degree, weights);
-        FiniteFilter[] afilters=null;
-        if (endpoints == "DAF"){
+        FiniteFilter[] afilters;
+        if (endpoints.equals("DAF")){
             afilters=new FiniteFilter[horizon];
             for (int i=0; i<afilters.length; ++i){
                 afilters[i]=demetra.maths.linearfilters.LocalPolynomialFilters.directAsymmetricFilter(horizon, i, degree, weights);

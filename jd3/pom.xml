@@ -14,14 +14,15 @@
     
     <modules>
         <!-- JD3 -->
-        <module>../basic-tools</module>
-        <module>../tramoseats</module>
-        <module>../structural-ts</module>
-        <module>../sa</module>
-        <module>../benchmarking</module>
+        <module>../demetra-basic-tools</module>
+        <module>../demetra-modelling</module>
+        <module>../demetra-sa</module>
+        <module>../demetra-modelling-ext</module>
+        <module>../demetra-sa-ext</module>
+        <module>../jdr</module>
         <module>../demetra-tsprovider</module>
         <module>../demetra-bridge</module>
-        <module>../dfm</module>
+        <module>../demetra-dfm</module>
     </modules>
      
          <build>

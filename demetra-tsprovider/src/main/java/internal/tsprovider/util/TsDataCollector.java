@@ -28,7 +28,7 @@ import java.util.function.IntToDoubleFunction;
 import java.util.function.IntUnaryOperator;
 
 /**
- * A TSDataCollecor collects time observations (identified by pairs of
+ * A TsDataCollector collects time observations (identified by pairs of
  * date-double) to create simple time series. Time series can be created
  * following different aggregation mode or in an automatic way. See the "make"
  * method for further information
