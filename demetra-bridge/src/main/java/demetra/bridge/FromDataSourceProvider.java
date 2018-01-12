@@ -43,6 +43,11 @@ public class FromDataSourceProvider<T extends DataSourceProvider> extends FromTs
     }
 
     @Override
+    public String getDisplayName() {
+        return getDelegate().getDisplayName();
+    }
+
+    @Override
     public List<DataSource> getDataSources() {
         return getDelegate().getDataSources().stream().map(Converter::fromDataSource).collect(Collectors.toList());
     }
@@ -75,6 +80,11 @@ public class FromDataSourceProvider<T extends DataSourceProvider> extends FromTs
     @Override
     public String getDisplayName(DataSet dataSet) throws IllegalArgumentException {
         return getDelegate().getDisplayName(Converter.toDataSet(dataSet));
+    }
+
+    @Override
+    public String getDisplayNodeName(DataSet dataSet) throws IllegalArgumentException {
+        return getDelegate().getDisplayNodeName(Converter.toDataSet(dataSet));
     }
 
     @Override

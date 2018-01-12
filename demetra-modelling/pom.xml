@@ -37,7 +37,7 @@
     </dependencyManagement>
  
     <modules>
-        <module>demetra_modelling_datatypes</module>
+        <module>demetra-modelling-datatypes</module>
         <module>demetra-modelling</module>
     </modules>
     

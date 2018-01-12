@@ -14,23 +14,38 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tsprovider.grid;
+package internal.tsprovider.grid;
 
+import demetra.tsprovider.grid.GridOutput;
 import java.util.Iterator;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  *
  * @author Philippe Charles
  */
-public interface GridOutput {
+@lombok.AllArgsConstructor(staticName = "of")
+public final class InvGridOutput implements GridOutput {
 
-    void setName(@Nonnull String name);
+    @lombok.NonNull
+    private final GridOutput delegate;
 
-    void setRow(int row, int column, @Nonnull Iterator<?> values);
+    @Override
+    public void setName(String name) {
+        delegate.setName(name);
+    }
 
-    void setColumn(int row, int column, @Nonnull Iterator<?> values);
+    @Override
+    public void setRow(int row, int column, Iterator<?> values) {
+        delegate.setColumn(column, row, values);
+    }
 
-    void setValue(int row, int column, @Nullable Object value);
+    @Override
+    public void setColumn(int row, int column, Iterator<?> values) {
+        delegate.setRow(column, row, values);
+    }
+
+    @Override
+    public void setValue(int row, int column, Object value) {
+        delegate.setValue(column, row, value);
+    }
 }

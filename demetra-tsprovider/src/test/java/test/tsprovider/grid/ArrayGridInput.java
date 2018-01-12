@@ -14,23 +14,40 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tsprovider.grid;
+package test.tsprovider.grid;
 
-import java.util.Iterator;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import demetra.tsprovider.grid.GridInput;
 
 /**
  *
  * @author Philippe Charles
  */
-public interface GridOutput {
+@lombok.AllArgsConstructor(staticName = "of")
+public final class ArrayGridInput implements GridInput {
 
-    void setName(@Nonnull String name);
+    @lombok.NonNull
+    private final String name;
 
-    void setRow(int row, int column, @Nonnull Iterator<?> values);
+    @lombok.NonNull
+    private final Object[][] array;
 
-    void setColumn(int row, int column, @Nonnull Iterator<?> values);
+    @Override
+    public String getName() {
+        return name;
+    }
 
-    void setValue(int row, int column, @Nullable Object value);
+    @Override
+    public int getRowCount() {
+        return array.length;
+    }
+
+    @Override
+    public int getColumnCount() {
+        return array.length > 0 ? array[0].length : 0;
+    }
+
+    @Override
+    public Object getValue(int row, int column) {
+        return array[row][column];
+    }
 }

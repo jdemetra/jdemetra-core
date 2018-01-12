@@ -14,23 +14,23 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tsprovider.grid;
+package internal.tsprovider.grid;
 
-import java.util.Iterator;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+import static test.tsprovider.grid.Data.*;
+import test.tsprovider.grid.GridInputs;
 
 /**
  *
  * @author Philippe Charles
  */
-public interface GridOutput {
+public class InvGridInputTest {
 
-    void setName(@Nonnull String name);
-
-    void setRow(int row, int column, @Nonnull Iterator<?> values);
-
-    void setColumn(int row, int column, @Nonnull Iterator<?> values);
-
-    void setValue(int row, int column, @Nullable Object value);
+    @Test
+    public void test() {
+        InvGridInput input = InvGridInput.of(HGRID_WITH_HEADER);
+        assertThat(input.getName()).isEqualTo("hello");
+        assertThat(GridInputs.toArray(input)).containsExactly(GridInputs.toArray(VGRID_WITH_HEADER));
+    }
 }
