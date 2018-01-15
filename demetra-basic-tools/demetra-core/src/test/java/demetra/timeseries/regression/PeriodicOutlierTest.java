@@ -50,6 +50,7 @@ public class PeriodicOutlierTest {
         RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), buffer.length());
         for (int i = -10; i < buffer.length()+10; ++i) {
             PeriodicOutlier po = new PeriodicOutlier(days.get(0).plus(i).start(), 5, false);
+            buffer.set(0);
             po.data(days.getStartPeriod(), buffer);
             assertTrue(buffer.sum() <  1.0001);
         }

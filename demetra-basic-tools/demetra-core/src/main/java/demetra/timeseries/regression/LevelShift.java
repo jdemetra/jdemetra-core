@@ -33,6 +33,53 @@ public class LevelShift<D extends TsDomain<?>> extends BaseOutlier implements IO
 
     public static final String CODE = "LS";
 
+    public static final Factory FACTORY_ZEROENDED = new Factory(true),
+            FACTORY_ZEROSTARTED = new Factory(false);
+
+    public static class Factory implements IOutlierFactory {
+
+        private final boolean zeroEnded;
+
+        Factory(boolean zeroEnded) {
+            this.zeroEnded = zeroEnded;
+        }
+
+        @Override
+        public IOutlier make(LocalDateTime position) {
+            return new LevelShift(position, zeroEnded);
+        }
+
+        @Override
+        public void fill(int xpos, DataBlock buffer) {
+            int n = buffer.length();
+            double Zero = zeroEnded ? -1 : 0, One = zeroEnded ? 0 : 1;
+            buffer.range(0, xpos).set(Zero);
+            buffer.range(xpos, n).set(One);
+        }
+
+        @Override
+        public FilterRepresentation getFilterRepresentation() {
+            return new FilterRepresentation(new RationalBackFilter(
+                    BackFilter.ONE, BackFilter.D1, 0), zeroEnded ? -1 : 0);
+        }
+
+        @Override
+        public int excludingZoneAtStart() {
+            return 1;
+        }
+
+        @Override
+        public int excludingZoneAtEnd() {
+            return 1;
+        }
+
+        @Override
+        public String getCode() {
+            return CODE;
+        }
+
+    }
+
     private final boolean zeroEnded;
 
     public LevelShift(LocalDateTime pos, boolean zeroEnded) {
@@ -53,12 +100,6 @@ public class LevelShift<D extends TsDomain<?>> extends BaseOutlier implements IO
     @Override
     public LocalDateTime getPosition() {
         return position;
-    }
-
-    @Override
-    public FilterRepresentation getFilterRepresentation() {
-        return new FilterRepresentation(new RationalBackFilter(
-                BackFilter.ONE, BackFilter.D1, 0), zeroEnded ? -1 : 0);
     }
 
     @Override

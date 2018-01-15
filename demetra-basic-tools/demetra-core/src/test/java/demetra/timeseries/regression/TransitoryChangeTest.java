@@ -42,6 +42,7 @@ public class TransitoryChangeTest {
         DataBlock buffer = DataBlock.make(20);
         RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), buffer.length());
         for (int i = -10; i < buffer.length() + 10; ++i) {
+            buffer.set(0);
             TransitoryChange tc = new TransitoryChange(days.get(0).plus(i).start(), .7);
             tc.data(days.getStartPeriod(), buffer);
             assertTrue(buffer.sum() <= 1 / (1 - tc.getCoefficient()) + 1e-9);

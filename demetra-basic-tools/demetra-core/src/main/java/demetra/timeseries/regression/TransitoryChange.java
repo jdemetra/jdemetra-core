@@ -31,6 +31,55 @@ public class TransitoryChange extends AbstractOutlier {
     static double ZERO = 1e-15;
     public static final String TC = "TC";
 
+    public static final class Factory implements IOutlierFactory {
+
+        private final double coefficient;
+
+        public Factory(double coefficient) {
+            this.coefficient = coefficient;
+        }
+
+        @Override
+        public IOutlier make(LocalDateTime position) {
+            return new TransitoryChange(position, coefficient);
+        }
+
+        @Override
+        public void fill(int outlierPosition, DataBlock buffer) {
+            double cur = 1;
+            int n = buffer.length();
+            for (int pos = outlierPosition; pos < n; ++pos) {
+                buffer.set(pos, cur);
+                cur *= coefficient;
+                if (Math.abs(cur) < ZERO) {
+                    return;
+                }
+            }
+        }
+
+        @Override
+        public FilterRepresentation getFilterRepresentation() {
+            return new FilterRepresentation(new RationalBackFilter(
+                    BackFilter.ONE, BackFilter.ofInternal(1, -coefficient), 0), 0);
+        }
+
+        @Override
+        public int excludingZoneAtStart() {
+            return 0;
+        }
+
+        @Override
+        public int excludingZoneAtEnd() {
+            return 1;
+        }
+
+        @Override
+        public String getCode() {
+            return TC;
+        }
+
+    }
+
     private final double coefficient;
 
     public TransitoryChange(LocalDateTime pos, double coefficient) {
@@ -53,7 +102,6 @@ public class TransitoryChange extends AbstractOutlier {
 
     @Override
     protected void data(int pos, DataBlock buffer) {
-        buffer.set(0);
         double cur = 1;
         int n = buffer.length();
         for (; pos < 0; ++pos) {
@@ -75,12 +123,6 @@ public class TransitoryChange extends AbstractOutlier {
     @Override
     public String getCode() {
         return TC;
-    }
-
-    @Override
-    public FilterRepresentation getFilterRepresentation() {
-        return new FilterRepresentation(new RationalBackFilter(
-                BackFilter.ONE, BackFilter.ofInternal(1, -coefficient), 0), 0);
     }
 
     @Override
