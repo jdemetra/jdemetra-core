@@ -14,12 +14,13 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.arima.regarima;
+package demetra.regarima.internal;
 
-import demetra.arima.regarima.internal.RegArmaModel;
+import demetra.regarima.internal.RegArmaModel;
 import demetra.arima.IArimaModel;
 import demetra.arima.estimation.IArmaFilter;
 import demetra.arima.internal.KalmanFilter;
+import demetra.regarima.RegArimaModel;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSequence;

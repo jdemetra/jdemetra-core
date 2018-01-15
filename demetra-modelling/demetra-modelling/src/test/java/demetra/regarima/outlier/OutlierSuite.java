@@ -14,32 +14,17 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.sarima.estimation;
+package demetra.regarima.outlier;
 
-import demetra.regarima.RegArimaEstimation;
-import demetra.regarima.RegArimaModel;
-import demetra.sarima.SarimaModel;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  *
  * @author Jean Palate
  */
-public interface IGlsSarimaMonitor {
-
-    /**
-     * Estimate completely the given RegArima model
-     * @param regs
-     * @return 
-     */
-    RegArimaEstimation<SarimaModel> compute(RegArimaModel<SarimaModel> regs);
-
-    /**
-     * Estimate a RegArima model, starting from the given model.
-     * The default implementation ignore the starting point.
-     * @param regs
-     * @return 
-     */
-    default RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs){
-        return compute(regs);
-    }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({demetra.regarima.outlier.CriticalValueComputerTest.class, demetra.regarima.outlier.IRobustStandardDeviationComputerTest.class, demetra.regarima.outlier.AbstractSingleOutlierDetectorTest.class, demetra.regarima.outlier.FastOutlierDetectorTest.class})
+public class OutlierSuite {
+    
 }

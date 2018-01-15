@@ -5,8 +5,8 @@
  */
 package demetra.r;
 
-import demetra.arima.regarima.RegArimaEstimation;
-import demetra.arima.regarima.RegArimaModel;
+import demetra.regarima.RegArimaEstimation;
+import demetra.regarima.RegArimaModel;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;

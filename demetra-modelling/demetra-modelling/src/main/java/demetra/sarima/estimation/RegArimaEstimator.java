@@ -16,12 +16,12 @@
  */
 package demetra.sarima.estimation;
 
-import demetra.arima.regarima.IRegArimaProcessor;
-import demetra.arima.regarima.RegArimaEstimation;
-import demetra.arima.regarima.RegArimaModel;
-import demetra.arima.regarima.internal.RegArmaEstimation;
-import demetra.arima.regarima.internal.RegArmaModel;
-import demetra.arima.regarima.internal.RegArmaProcessor;
+import demetra.regarima.IRegArimaProcessor;
+import demetra.regarima.RegArimaEstimation;
+import demetra.regarima.RegArimaModel;
+import demetra.regarima.internal.RegArmaEstimation;
+import demetra.regarima.internal.RegArmaModel;
+import demetra.regarima.internal.RegArmaProcessor;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;

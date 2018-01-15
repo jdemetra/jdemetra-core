@@ -16,19 +16,21 @@
  */
 package demetra.sarima.estimation;
 
-import demetra.arima.ArimaException;
-import demetra.arima.regarima.RegArimaEstimation;
-import demetra.arima.regarima.RegArimaModel;
-import demetra.arima.regarima.internal.RegArmaEstimation;
-import demetra.arima.regarima.internal.RegArmaModel;
-import demetra.arima.regarima.internal.RegArmaProcessor;
+import demetra.regarima.RegArimaEstimation;
+import demetra.regarima.RegArimaModel;
+import demetra.regarima.internal.RegArmaEstimation;
+import demetra.regarima.internal.RegArmaModel;
+import demetra.regarima.internal.RegArmaProcessor;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.design.IBuilder;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
+import demetra.regarima.IRegArimaProcessor;
 import demetra.sarima.SarimaModel;
+import demetra.sarima.estimation.IArmaInitializer;
+import demetra.sarima.estimation.SarimaMapping;
 import java.util.function.Function;
 
 /**
@@ -36,12 +38,12 @@ import java.util.function.Function;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class GlsSarimaMonitor {
+public class GlsSarimaMonitor implements IRegArimaProcessor<SarimaModel>{
 
     public static class Builder implements IBuilder<GlsSarimaMonitor> {
 
         private Function<SarimaModel, IParametricMapping<SarimaModel>> mappingProvider;
-        private IarmaInitializer initializer;
+        private IArmaInitializer initializer;
         private double eps = 1e-9;
         private ISsqFunctionMinimizer min;
         private boolean ml = true, mt = false;
@@ -51,7 +53,7 @@ public class GlsSarimaMonitor {
             return this;
         }
 
-        public Builder initializer(IarmaInitializer initializer) {
+        public Builder initializer(IArmaInitializer initializer) {
             this.initializer = initializer;
             return this;
         }
@@ -88,7 +90,7 @@ public class GlsSarimaMonitor {
     }
 
     private final Function<SarimaModel, IParametricMapping<SarimaModel>> mappingProvider;
-    private final IarmaInitializer initializer;
+    private final IArmaInitializer initializer;
     private final ISsqFunctionMinimizer min;
     private final boolean ml, mt;
 
@@ -96,14 +98,14 @@ public class GlsSarimaMonitor {
      *
      */
     private GlsSarimaMonitor(Function<SarimaModel, IParametricMapping<SarimaModel>> mappingProvider,
-            final IarmaInitializer initializer, final ISsqFunctionMinimizer min, 
+            final IArmaInitializer initializer, final ISsqFunctionMinimizer min, 
             final double eps, final boolean ml, final boolean mt) {
         if (mappingProvider == null){
             this.mappingProvider=m->SarimaMapping.of(m.specification());
         }else
             this.mappingProvider=mappingProvider;
         if (initializer == null) {
-            this.initializer = IarmaInitializer.defaultInitializer();
+            this.initializer = IArmaInitializer.defaultInitializer();
         } else {
             this.initializer = initializer;
         }
@@ -122,14 +124,23 @@ public class GlsSarimaMonitor {
      * @param regs
      * @return
      */
-    public RegArimaEstimation<SarimaModel> compute(RegArimaModel<SarimaModel> regs) {
+    @Override
+    public RegArimaEstimation<SarimaModel> process(RegArimaModel<SarimaModel> regs) {
         RegArmaModel<SarimaModel> dmodel = RegArmaModel.of(regs);
         SarimaModel start = initializer.initialize(dmodel);
         // not used for the time being
         return optimize(regs, start.parameters());
     }
 
+    @Override
+    public RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs) {
+        return optimize(regs, null);
+    }
+    
     public RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs, DoubleSequence start) {
+        if (start == null){
+            start=regs.arima().parameters();
+        }
         RegArmaModel<SarimaModel> dmodel = RegArmaModel.of(regs);
         RegArmaProcessor processor = new RegArmaProcessor(ml, mt);
         IParametricMapping<SarimaModel> mapping = mappingProvider.apply(dmodel.getArma());
@@ -142,5 +153,10 @@ public class GlsSarimaMonitor {
         RegArimaModel<SarimaModel> nmodel = RegArimaModel.of(regs, arima);
 
         return RegArimaEstimation.compute(nmodel);
+    }
+    
+    @Override
+    public double getPrecision(){
+        return min.getFunctionPrecision();
     }
 }

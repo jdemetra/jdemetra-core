@@ -16,7 +16,7 @@
  */
 package demetra.sarima.estimation;
 
-import demetra.arima.regarima.internal.RegArmaModel;
+import demetra.regarima.internal.RegArmaModel;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
@@ -34,7 +34,7 @@ import demetra.sarima.SarmaSpecification;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class HannanRissanenInitializer implements IarmaInitializer {
+public class HannanRissanenInitializer implements IArmaInitializer {
 
     public static class Builder implements IBuilder<HannanRissanenInitializer> {
 

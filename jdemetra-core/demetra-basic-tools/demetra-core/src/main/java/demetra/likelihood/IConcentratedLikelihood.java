@@ -16,6 +16,7 @@
  */
 package demetra.likelihood;
 
+import demetra.maths.matrices.Matrix;
 import demetra.data.DoubleSequence;
 import demetra.maths.MatrixType;
 
@@ -70,8 +71,6 @@ public interface IConcentratedLikelihood extends ILikelihood {
 
     default double[] tstats(int nhp, boolean unbiased) {
 
-        if (nx() == 0)
-            return null;
         double[] e = unscaledCovariance().diagonal().toArray();
         int ndf = unbiased ? dim() - nx() - nhp : dim();
         double ssq=ssq();

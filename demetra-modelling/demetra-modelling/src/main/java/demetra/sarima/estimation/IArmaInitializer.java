@@ -15,38 +15,32 @@
 * limitations under the Licence.
 */
 
-package demetra.arima.regarima;
 
-import demetra.arima.IArimaModel;
+package demetra.sarima.estimation;
+
+import demetra.regarima.internal.RegArmaModel;
 import demetra.design.Development;
-
+import demetra.sarima.SarimaModel;
 
 /**
- * 
- * @param <S>
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface IRegArimaProcessor<S extends IArimaModel> {
-
+@FunctionalInterface
+public interface IArmaInitializer {
     /**
      * 
+     * @param regarma
      * @return
      */
-    public double getPrecision();
+    SarimaModel initialize(RegArmaModel<SarimaModel> regarma);
 
-    /**
-     * 
-     * @param regs
-     * @return
-     */
-    public RegArimaEstimation<S> optimize(final RegArimaModel<S> regs);
-
-    /**
-     *
-     * @param regs
-     * @return
-     */
-    public RegArimaEstimation<S> process(final RegArimaModel<S> regs);
-
+    public static IArmaInitializer defaultInitializer(){
+        return regarma->SarimaModel.builder(regarma.getArma().specification()).setDefault(-.1, -.2).build();
+    }
+    
+    public static IArmaInitializer defaultInitializer(final double ar, final double ma){
+        return regarma->SarimaModel.builder(regarma.getArma().specification()).setDefault(ar, ma).build();
+    }
 }
