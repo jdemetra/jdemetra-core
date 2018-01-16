@@ -14,7 +14,6 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-
 package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
@@ -30,6 +29,44 @@ public class SwitchOutlier extends AbstractOutlier {
 
     public static final String WO = "WO";
 
+    public static final Factory FACTORY = new Factory();
+
+    public static class Factory implements IOutlierFactory {
+
+        @Override
+        public IOutlier make(LocalDateTime position) {
+            return new SwitchOutlier(position);
+        }
+
+        @Override
+        public void fill(int outlierPosition, DataBlock buffer) {
+            buffer.set(outlierPosition, 1);
+            buffer.set(outlierPosition, -1);
+        }
+
+        @Override
+        public FilterRepresentation getFilterRepresentation() {
+            return new FilterRepresentation(new RationalBackFilter(
+                    BackFilter.D1, BackFilter.ONE, 0), 0);
+        }
+
+        @Override
+        public int excludingZoneAtStart() {
+            return 0;
+        }
+
+        @Override
+        public int excludingZoneAtEnd() {
+            return 1;
+        }
+
+        @Override
+        public String getCode() {
+            return WO;
+        }
+
+    }
+
     public SwitchOutlier(LocalDateTime pos) {
         super(pos, defaultName(WO, pos, null));
     }
@@ -40,11 +77,10 @@ public class SwitchOutlier extends AbstractOutlier {
 
     @Override
     protected void data(int pos, DataBlock buffer) {
-        buffer.set(0);
-        if (pos >= 0 && pos <buffer.length()) {
+        if (pos >= 0 && pos < buffer.length()) {
             buffer.set(pos, 1);
         }
-        int npos=pos+1;
+        int npos = pos + 1;
         if (npos >= 0 && npos < buffer.length()) {
             buffer.set(npos, -1);
         }
@@ -53,12 +89,6 @@ public class SwitchOutlier extends AbstractOutlier {
     @Override
     public String getCode() {
         return WO;
-    }
-
-    @Override
-    public FilterRepresentation getFilterRepresentation() {
-        return new FilterRepresentation(new RationalBackFilter(
-                BackFilter.D1, BackFilter.ONE, 0), 0);
     }
 
     @Override

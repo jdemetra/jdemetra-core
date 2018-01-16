@@ -16,9 +16,9 @@
  */
 package demetra.arima.ssf;
 
-import demetra.arima.regarima.ConcentratedLikelihoodComputer;
-import demetra.arima.regarima.ConcentratedLikelihoodEstimation;
-import demetra.arima.regarima.RegArimaModel;
+import demetra.regarima.internal.ConcentratedLikelihoodComputer;
+import demetra.regarima.internal.ConcentratedLikelihoodEstimation;
+import demetra.regarima.RegArimaModel;
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
 import demetra.sarima.SarimaModel;

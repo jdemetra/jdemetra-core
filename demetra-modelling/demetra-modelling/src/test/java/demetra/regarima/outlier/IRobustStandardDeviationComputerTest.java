@@ -14,13 +14,8 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.regression;
+package demetra.regarima.outlier;
 
-import demetra.data.DataBlock;
-import demetra.timeseries.RegularDomain;
-import demetra.timeseries.TsUnit;
-import demetra.timeseries.TsPeriod;
-import java.time.LocalDate;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -28,25 +23,13 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate
  */
-public class TransitoryChangeTest {
-
-    public TransitoryChangeTest() {
+public class IRobustStandardDeviationComputerTest {
+    
+    public IRobustStandardDeviationComputerTest() {
     }
 
     @Test
     public void testSomeMethod() {
     }
-
-    @Test
-    public void testData() {
-        DataBlock buffer = DataBlock.make(20);
-        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), buffer.length());
-        for (int i = -10; i < buffer.length() + 10; ++i) {
-            buffer.set(0);
-            TransitoryChange tc = new TransitoryChange(days.get(0).plus(i).start(), .7);
-            tc.data(days.getStartPeriod(), buffer);
-            assertTrue(buffer.sum() <= 1 / (1 - tc.getCoefficient()) + 1e-9);
-        }
-    }
-
+    
 }

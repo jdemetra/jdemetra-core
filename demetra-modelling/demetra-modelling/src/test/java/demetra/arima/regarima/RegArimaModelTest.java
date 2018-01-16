@@ -5,6 +5,8 @@
  */
 package demetra.arima.regarima;
 
+import demetra.regarima.RegArimaEstimation;
+import demetra.regarima.RegArimaModel;
 import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;

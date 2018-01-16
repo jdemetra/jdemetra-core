@@ -14,7 +14,6 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-
 package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
@@ -34,6 +33,70 @@ public class PeriodicOutlier extends AbstractOutlier {
     public static final String SO = "SO";
     public static final String PO = "PO";
 
+    public static class Factory implements IOutlierFactory {
+
+        private final boolean zeroEnded;
+        private final int period;
+
+        public Factory(int period, boolean zeroEnded) {
+            this.zeroEnded = zeroEnded;
+            this.period = period;
+        }
+
+        @Override
+        public IOutlier make(LocalDateTime position) {
+            return new PeriodicOutlier(position, period, zeroEnded);
+        }
+
+        @Override
+        public void fill(int xpos, DataBlock buffer) {
+            double z = -1.0 / (period - 1);
+            int len = buffer.length();
+            if (zeroEnded) {
+                int j = 1;
+                do {
+                    for (; j < period && xpos > 0; ++j) {
+                        buffer.set(--xpos, z);
+                    }
+                    if (xpos > 0) {
+                        buffer.set(--xpos, 1);
+                    } else {
+                        break;
+                    }
+                    j = 1;
+                } while (true);
+            } else {
+                for (int i = xpos; i < len;) {
+                    buffer.set(i++, 1);
+                    for (int j = 1; j < period && i < len; ++i, ++j) {
+                        buffer.set(i, z);
+                    }
+                }
+            }
+        }
+
+        @Override
+        public FilterRepresentation getFilterRepresentation() {
+            return new FilterRepresentation(new RationalBackFilter(
+                    BackFilter.ONE, new BackFilter(UnitRoots.D(period)), 0), 0);
+        }
+
+        @Override
+        public int excludingZoneAtStart() {
+            return 2 * period;
+        }
+
+        @Override
+        public int excludingZoneAtEnd() {
+            return 2 * period;
+        }
+
+        @Override
+        public String getCode() {
+            return SO;
+        }
+    }
+
     private final boolean zeroEnded;
     private final int period;
 
@@ -51,7 +114,6 @@ public class PeriodicOutlier extends AbstractOutlier {
 
     @Override
     protected void data(int pos, DataBlock buffer) {
-        buffer.set(0);
         int xpos;
         double z = -1.0 / (period - 1);
         int len = buffer.length();
@@ -104,12 +166,6 @@ public class PeriodicOutlier extends AbstractOutlier {
     @Override
     public String getCode() {
         return SO;
-    }
-
-    @Override
-    public FilterRepresentation getFilterRepresentation() {
-        return new FilterRepresentation(new RationalBackFilter(
-                BackFilter.ONE, new BackFilter(UnitRoots.D(period)), 0), 0);
     }
 
     @Override

@@ -16,8 +16,8 @@
  */
 package demetra.sarima.estimation;
 
-import demetra.arima.regarima.RegArimaEstimation;
-import demetra.arima.regarima.RegArimaModel;
+import demetra.regarima.RegArimaEstimation;
+import demetra.regarima.RegArimaModel;
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
 import demetra.sarima.SarimaModel;
@@ -50,7 +50,7 @@ public class GlsSarimaMonitorTest {
                 .meanCorrection(true)
                 .missing(new int[]{3, 23, 34, 65, 123, 168})
                 .build();
-        RegArimaEstimation<SarimaModel> rslt = monitor.compute(regs);
+        RegArimaEstimation<SarimaModel> rslt = monitor.process(regs);
 //        System.out.println("New");
 //        System.out.println(rslt.statistics(2, 0));
 //        System.out.println(rslt.getModel().arima());
@@ -92,7 +92,7 @@ public class GlsSarimaMonitorTest {
                     .meanCorrection(true)
                     .missing(new int[]{3, 23, 34, 65, 123, 168})
                     .build();
-            RegArimaEstimation<SarimaModel> rslt = monitor.compute(regs);
+            RegArimaEstimation<SarimaModel> rslt = monitor.process(regs);
         }
         long t1 = System.currentTimeMillis();
         System.out.println("New");

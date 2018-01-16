@@ -175,7 +175,7 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
 
     @Override
     public DoubleSequence coefficients() {
-        return DoubleSequence.of(b);
+        return b == null ? DoubleSequence.EMPTY : DoubleSequence.of(b);
     }
 
     @Override

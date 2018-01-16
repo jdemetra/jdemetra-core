@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.arima.regarima;
+package demetra.regarima;
 
 import demetra.arima.IArimaModel;
 import demetra.data.DoubleSequence;
@@ -70,6 +70,11 @@ public class RegArimaModel<M extends IArimaModel> {
             }
             return this;
         }
+        
+        public Builder removeX(int pos){
+            x.remove(pos);
+            return this;
+        }
 
         public Builder missing(int... missingPos) {
             this.missing = missingPos;
@@ -91,8 +96,8 @@ public class RegArimaModel<M extends IArimaModel> {
     public static <M extends IArimaModel> Builder<M> builder(DoubleSequence y, M arima) {
         return new Builder<>(y, arima);
     }
-    
-    public static <M extends IArimaModel> RegArimaModel of(RegArimaModel<M> oldModel, M newArima){
+
+    public static <M extends IArimaModel> RegArimaModel of(RegArimaModel<M> oldModel, M newArima) {
         return new RegArimaModel<>(oldModel.y, newArima, oldModel.mean, oldModel.x, oldModel.missing);
     }
 
@@ -151,6 +156,16 @@ public class RegArimaModel<M extends IArimaModel> {
     @Nonnull
     public int[] missing() {
         return missing.length == 0 ? NOMISSING : missing.clone();
+    }
+
+    public Builder<M> toBuilder() {
+        Builder builder = new Builder(y, arima);
+        builder.meanCorrection(mean);
+        builder.missing(missing);
+        for (DoubleSequence v : x) {
+            builder.addX(v);
+        }
+        return builder;
     }
 
     private static final int[] NOMISSING = new int[0];

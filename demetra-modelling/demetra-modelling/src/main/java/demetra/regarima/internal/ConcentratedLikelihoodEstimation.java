@@ -14,9 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.arima.regarima;
+package demetra.regarima.internal;
 
-import demetra.arima.regarima.internal.RegArmaModel;
+import demetra.regarima.internal.RegArmaModel;
 import demetra.arima.IArimaModel;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
@@ -65,9 +65,9 @@ public class ConcentratedLikelihoodEstimation<M extends IArimaModel> {
         @Override
         public ConcentratedLikelihoodEstimation<M> build() {
             if (bmissing != null) {
-                return new ConcentratedLikelihoodEstimation<>(dmodel, cll, bmissing, vmissing, el);
+                return new ConcentratedLikelihoodEstimation<>(dmodel, cll, el, bmissing, vmissing);
             } else {
-                return new ConcentratedLikelihoodEstimation<>(dmodel, cll, DoubleSequence.EMPTY, DoubleSequence.EMPTY, el);
+                return new ConcentratedLikelihoodEstimation<>(dmodel, cll, el, DoubleSequence.EMPTY, DoubleSequence.EMPTY);
             }
         }
     }

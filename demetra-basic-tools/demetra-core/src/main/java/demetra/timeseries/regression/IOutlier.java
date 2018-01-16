@@ -14,11 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-
 package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
+import demetra.design.ServiceDefinition;
 import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsDomain;
@@ -31,7 +31,7 @@ import java.util.List;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface IOutlier<D extends TsDomain<?> > extends ITsVariable<D> {
+public interface IOutlier<D extends TsDomain<?>> extends ITsVariable<D> {
 
     public static class FilterRepresentation {
 
@@ -45,6 +45,62 @@ public interface IOutlier<D extends TsDomain<?> > extends ITsVariable<D> {
     }
 
     /**
+     * Interface for the creation of outlier variable
+     *
+     * @author Jean Palate
+     */
+    @Development(status = Development.Status.Release)
+    @ServiceDefinition
+    public interface IOutlierFactory {
+
+        /**
+         * Creates an outlier at the given position
+         *
+         * @param position The position of the outlier.
+         * @return A new variable is returned.
+         */
+        IOutlier make(LocalDateTime position);
+
+        /**
+         * Fills the buffer with an outlier positioned at outlierPosition. The
+         * position should be insied the buffer
+         *
+         * @param outlierPosition
+         * @param buffer
+         */
+        void fill(int outlierPosition, DataBlock buffer);
+
+        /**
+         * Filter representation of this type of outlier.
+         * @return
+         */
+        FilterRepresentation getFilterRepresentation();
+
+        /**
+         * Some outliers cannot be identified at the beginning of a series. This
+         * method returns the number of such periods
+         *
+         * @return A positive or zero integer
+         */
+        int excludingZoneAtStart();
+
+        /**
+         * Some outliers cannot be identified at the end of a series. This
+         * method returns the number of such periods
+         *
+         * @return A positive or zero integer
+         */
+        int excludingZoneAtEnd();
+
+        /**
+         * The code that represents the outlier
+         *
+         * @return
+         */
+        String getCode();
+    }
+
+    /**
      *
      * @return
      */
@@ -55,11 +111,5 @@ public interface IOutlier<D extends TsDomain<?> > extends ITsVariable<D> {
      * @return
      */
     LocalDateTime getPosition();
-
-    /**
-     *
-     * @return
-     */
-    FilterRepresentation getFilterRepresentation();
 
 }

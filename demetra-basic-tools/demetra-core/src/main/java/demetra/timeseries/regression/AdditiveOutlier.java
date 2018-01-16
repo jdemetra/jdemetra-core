@@ -28,13 +28,51 @@ import java.util.List;
  * @author Jean Palate
  * @param <D>
  */
-public class AdditiveOutlier <D extends TsDomain<?>> extends BaseOutlier implements IOutlier<D>{
+public class AdditiveOutlier<D extends TsDomain<?>> extends BaseOutlier implements IOutlier<D> {
 
     public static final String CODE = "AO";
+
+    public static final Factory FACTORY = new Factory();
+
+    public static class Factory implements IOutlierFactory {
+
+        @Override
+        public IOutlier make(LocalDateTime position) {
+            return new AdditiveOutlier(position);
+        }
+
+        @Override
+        public void fill(int outlierPosition, DataBlock buffer) {
+            buffer.set(outlierPosition, 1);
+        }
+
+        @Override
+        public FilterRepresentation getFilterRepresentation() {
+            return new FilterRepresentation(new RationalBackFilter(
+                    BackFilter.ONE, BackFilter.ONE, 0), 0);
+        }
+
+        @Override
+        public int excludingZoneAtStart() {
+            return 0;
+        }
+
+        @Override
+        public int excludingZoneAtEnd() {
+            return 0;
+        }
+
+        @Override
+        public String getCode() {
+            return CODE;
+        }
+
+    }
 
     public AdditiveOutlier(LocalDateTime pos) {
         super(pos, defaultName(CODE, pos, null));
     }
+
     public AdditiveOutlier(LocalDateTime pos, String name) {
         super(pos, name);
     }
@@ -50,16 +88,10 @@ public class AdditiveOutlier <D extends TsDomain<?>> extends BaseOutlier impleme
     }
 
     @Override
-    public FilterRepresentation getFilterRepresentation() {
-        return new FilterRepresentation(new RationalBackFilter(
-                BackFilter.ONE, BackFilter.ONE, 0), 0);
-    }
-
-    @Override
     public void data(D domain, List<DataBlock> data) {
-        long pos=domain.indexOf(position);
-        if (pos >= 0){
-            data.get(0).set((int)pos, 1);
+        long pos = domain.indexOf(position);
+        if (pos >= 0) {
+            FACTORY.fill((int) pos, data.get(0));
         }
     }
 
@@ -77,5 +109,5 @@ public class AdditiveOutlier <D extends TsDomain<?>> extends BaseOutlier impleme
     public ITsVariable<D> rename(String nname) {
         return new AdditiveOutlier(position, nname);
     }
-    
+
 }

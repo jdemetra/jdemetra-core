@@ -14,10 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.arima.regarima.internal;
+package demetra.regarima.internal;
 
 import demetra.arima.IArimaModel;
-import demetra.arima.regarima.ConcentratedLikelihoodComputer;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.design.IBuilder;
