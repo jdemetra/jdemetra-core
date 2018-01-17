@@ -18,7 +18,7 @@ package demetra.tsprovider.grid;
 
 import static demetra.tsprovider.grid.GridLayout.VERTICAL;
 import internal.tsprovider.grid.InvGridOutput;
-import demetra.timeseries.simplets.TsDataTable;
+import demetra.timeseries.TsDataTable;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;

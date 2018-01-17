@@ -29,26 +29,26 @@ import java.time.temporal.ChronoUnit;
 @lombok.Getter
 public enum GuessingUnit {
 
-    YEAR(TsUnit.YEAR, TsPeriod.EPOCH, 2),
-    HALF_YEAR(TsUnit.HALF_YEAR, TsPeriod.EPOCH, 6),
-    QUADRI_MONTH(TsUnit.of(4, ChronoUnit.MONTHS), TsPeriod.EPOCH, 4),
-    QUARTER(TsUnit.QUARTER, TsPeriod.EPOCH, 2),
-    MONTH(TsUnit.MONTH, TsPeriod.EPOCH, 2),
-    WEEK_MONDAY(TsUnit.WEEK, TsPeriod.EPOCH.plusDays(4), 3),
-    DAY(TsUnit.DAY, TsPeriod.EPOCH, 2),
-    HOUR(TsUnit.HOUR, TsPeriod.EPOCH, 2),
-    MINUTE(TsUnit.MINUTE, TsPeriod.EPOCH, 2),
-    SECOND(TsUnit.SECOND, TsPeriod.EPOCH, 2);
+    YEAR(TsUnit.YEAR, TsPeriod.DEFAULT_EPOCH, 2),
+    HALF_YEAR(TsUnit.HALF_YEAR, TsPeriod.DEFAULT_EPOCH, 6),
+    QUADRI_MONTH(TsUnit.of(4, ChronoUnit.MONTHS), TsPeriod.DEFAULT_EPOCH, 4),
+    QUARTER(TsUnit.QUARTER, TsPeriod.DEFAULT_EPOCH, 2),
+    MONTH(TsUnit.MONTH, TsPeriod.DEFAULT_EPOCH, 2),
+    WEEK_MONDAY(TsUnit.WEEK, TsPeriod.DEFAULT_EPOCH.plusDays(4), 3),
+    DAY(TsUnit.DAY, TsPeriod.DEFAULT_EPOCH, 2),
+    HOUR(TsUnit.HOUR, TsPeriod.DEFAULT_EPOCH, 2),
+    MINUTE(TsUnit.MINUTE, TsPeriod.DEFAULT_EPOCH, 2),
+    SECOND(TsUnit.SECOND, TsPeriod.DEFAULT_EPOCH, 2);
 
     private final TsUnit tsUnit;
     private final LocalDateTime reference;
     private final int minimumObsCount;
 
     public TsPeriod atId(long id) {
-        return TsPeriod.builder().unit(tsUnit).reference(reference).id(id).build();
+        return TsPeriod.builder().unit(tsUnit).epoch(reference).id(id).build();
     }
 
     public TsPeriod atDate(LocalDateTime start) {
-        return TsPeriod.builder().unit(tsUnit).reference(reference).date(start).build();
+        return TsPeriod.builder().unit(tsUnit).epoch(reference).date(start).build();
     }
 }

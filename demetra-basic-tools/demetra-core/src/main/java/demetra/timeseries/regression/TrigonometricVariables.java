@@ -17,7 +17,7 @@
 package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @author Jean Palate
  */
-public class TrigonometricVariables implements ITsVariable<RegularDomain> {
+public class TrigonometricVariables implements ITsVariable<TsDomain> {
 
     /**
      * to be multiplied by pi
@@ -88,7 +88,7 @@ public class TrigonometricVariables implements ITsVariable<RegularDomain> {
     }
 
     @Override
-    public void data(RegularDomain domain, List<DataBlock> data) {
+    public void data(TsDomain domain, List<DataBlock> data) {
         TsPeriod refPeriod=domain.getStartPeriod().withDate(ref);
         long start=domain.getStartPeriod().getId()-refPeriod.getId();
         int nlast = freq.length - 1;
@@ -109,7 +109,7 @@ public class TrigonometricVariables implements ITsVariable<RegularDomain> {
     }
 
     @Override
-    public String getDescription(RegularDomain context) {
+    public String getDescription(TsDomain context) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -120,7 +120,7 @@ public class TrigonometricVariables implements ITsVariable<RegularDomain> {
     }
 
     @Override
-    public String getItemDescription(int idx, RegularDomain context) {
+    public String getItemDescription(int idx, TsDomain context) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

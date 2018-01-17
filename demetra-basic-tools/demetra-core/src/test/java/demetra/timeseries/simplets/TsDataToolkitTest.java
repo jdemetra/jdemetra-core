@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.simplets;
 
+import demetra.timeseries.TsData;
 import demetra.data.Data;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -29,11 +30,53 @@ import demetra.data.Doubles;
 import static demetra.data.Doubles.average;
 import demetra.maths.linearfilters.HendersonFilters;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import static demetra.timeseries.simplets.TsDataToolkit.fitToDomain;
 import internal.Demo;
 import org.junit.Ignore;
 import static demetra.timeseries.simplets.TsDataToolkit.drop;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
+import static demetra.timeseries.simplets.TsDataToolkit.fn;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
+import static demetra.timeseries.simplets.TsDataToolkit.fn;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
+import static demetra.timeseries.simplets.TsDataToolkit.fn;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
+import static demetra.timeseries.simplets.TsDataToolkit.fn;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
+import static demetra.timeseries.simplets.TsDataToolkit.fn;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
+import static demetra.timeseries.simplets.TsDataToolkit.fn;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
+import static demetra.timeseries.simplets.TsDataToolkit.fn;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
+import static demetra.timeseries.simplets.TsDataToolkit.fn;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
+import static demetra.timeseries.simplets.TsDataToolkit.fn;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
+import static demetra.timeseries.simplets.TsDataToolkit.fn;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
+import static demetra.timeseries.simplets.TsDataToolkit.fn;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
+import static demetra.timeseries.simplets.TsDataToolkit.fn;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
+import static demetra.timeseries.simplets.TsDataToolkit.fn;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
+import static demetra.timeseries.simplets.TsDataToolkit.fn;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.fastFn;
 import static demetra.timeseries.simplets.TsDataToolkit.fn;
@@ -57,7 +100,7 @@ public class TsDataToolkitTest {
     public void testUnaryOperator() {
         TsData t1 = fn(series, x -> Math.log(x));
         TsData t2 = fastFn(series, x -> Math.log(x));
-        assertTrue(Doubles.distance(t1.values(), t2.values()) == 0);
+        assertTrue(Doubles.distance(t1.getValues(), t2.getValues()) == 0);
     }
 
     @Test
@@ -88,7 +131,7 @@ public class TsDataToolkitTest {
         t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             TsData s = delta(normalize(log(add(series, drop(series, 20, 50)))), 12);
-            DoubleSequence values = DoubleSequence.of(s.values());
+            DoubleSequence values = DoubleSequence.of(s.getValues());
             double v = average(values);
             if (k == 0) {
                 System.out.println(v);
@@ -141,14 +184,14 @@ public class TsDataToolkitTest {
 
     public void testFit() {
         TsData P = Data.TS_PROD;
-        RegularDomain d1 = RegularDomain.of(P.getStart().plus(-10), 5);
-        assertTrue(fitToDomain(P, d1).values().allMatch(x -> Double.isNaN(x)));
-        RegularDomain d2 = RegularDomain.of(P.domain().getEndPeriod().plus(10), 5);
-        assertTrue(fitToDomain(P, d1).values().allMatch(x -> Double.isNaN(x)));
+        TsDomain d1 = TsDomain.of(P.getStart().plus(-10), 5);
+        assertTrue(fitToDomain(P, d1).getValues().allMatch(x -> Double.isNaN(x)));
+        TsDomain d2 = TsDomain.of(P.getDomain().getEndPeriod().plus(10), 5);
+        assertTrue(fitToDomain(P, d1).getValues().allMatch(x -> Double.isNaN(x)));
     }
 
     private double distance(TsData s1, ec.tstoolkit.timeseries.simplets.TsData s2) {
-        return Doubles.distance(s1.values(), DoubleSequence.ofInternal(s2.internalStorage()));
+        return Doubles.distance(s1.getValues(), DoubleSequence.ofInternal(s2.internalStorage()));
     }
 
 }

@@ -18,7 +18,7 @@ package internal.spreadsheet;
 
 import demetra.tsprovider.grid.GridLayout;
 import internal.spreadsheet.grid.SheetData;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 

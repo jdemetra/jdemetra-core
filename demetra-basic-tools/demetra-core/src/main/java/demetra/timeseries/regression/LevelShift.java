@@ -19,17 +19,17 @@ package demetra.timeseries.regression;
 import demetra.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
-import demetra.timeseries.TsDomain;
 import static demetra.timeseries.regression.BaseOutlier.defaultName;
 import java.time.LocalDateTime;
 import java.util.List;
+import demetra.timeseries.TimeSeriesDomain;
 
 /**
  *
  * @author Jean Palate
  * @param <D>
  */
-public class LevelShift<D extends TsDomain<?>> extends BaseOutlier implements IOutlier<D> {
+public class LevelShift<D extends TimeSeriesDomain<?>> extends BaseOutlier implements IOutlier<D> {
 
     public static final String CODE = "LS";
 

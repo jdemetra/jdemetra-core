@@ -22,11 +22,10 @@ import demetra.ssf.multivariate.M2uAdapter;
 import demetra.ssf.multivariate.SsfMatrix;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsUnit;
-import demetra.timeseries.simplets.TsData;
-import demetra.timeseries.simplets.TsDataConverter;
+import demetra.timeseries.TsData;
 import demetra.timeseries.simplets.TsDataToolkit;
 import demetra.timeseries.simplets.TsDataView;
 import demetra.utilities.WeightedItem;
@@ -97,7 +96,7 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
         private final HashMap<String, TsData> tcntData = new HashMap<>();
         private Constraint[] cs;
         private double rho, lambda;
-        private RegularDomain idomain;
+        private TsDomain idomain;
         private TsUnit aggUnit;
 
         Map<String, TsData> benchmark(Map<String, TsData> inputs, MultivariateCholetteSpecification spec) {
@@ -209,7 +208,7 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
             for (int i = 0; i < nvars; ++i) {
                 TsData s = inputs.get(rcnt.get(i));
                 TsData sc=TsDataToolkit.fitToDomain(s, idomain);
-                double[] y = sc.values().toArray();
+                double[] y = sc.getValues().toArray();
                 DataBlock t = states.item(i);
                 for (int j = 0; j < y.length; ++j) {
                     y[j] += t.get(j * neq) * weights[i][j];
@@ -253,7 +252,7 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
                 ContemporaneousConstraintDescriptor desc = contemporaneousConstraints.get(i);
                 if (desc.constraint != null) {
                     TsData s = inputs.get(desc.constraint);
-                    lcntData[i] = s.values().toArray();
+                    lcntData[i] = s.getValues().toArray();
                 } else {
                     lcntData[i] = new double[]{desc.constant};
                 }
@@ -263,7 +262,7 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
         private void buildDomain() {
 
             for (String cur : rcnt) {
-                RegularDomain d = inputs.get(cur).domain();
+                TsDomain d = inputs.get(cur).getDomain();
                 if (idomain == null) {
                     idomain = d;
                 } else if (!idomain.getTsUnit().equals(d.getTsUnit())) {
@@ -281,7 +280,7 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
             rcntData = new double[rcnt.size()][];
             for (int i = 0; i < rcnt.size(); ++i) {
                 TsData s = TsDataToolkit.fitToDomain(inputs.get(rcnt.get(i)), idomain);
-                rcntData[i] = s.values().toArray();
+                rcntData[i] = s.getValues().toArray();
             }
         }
 
@@ -328,7 +327,7 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
                         throw new TsException(TsException.INCOMPATIBLE_FREQ);
                     }
                     TsData origc = TsDataToolkit.fitToDomain(orig, idomain);
-                    TsData a = TsDataConverter.changeTsUnit(origc, cur.getTsUnit(), AggregationType.Sum, true);
+                    TsData a = origc.aggregate(cur.getTsUnit(), AggregationType.Sum, true);
                     a = TsDataToolkit.subtract(cur, a);
                     tcntData.put(n, a);
                 }
@@ -376,7 +375,7 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
                 if (temporalConstraints.containsKey(rcnt.get(i))) {
                     TsData a = tcntData.get(rcnt.get(i));
                     DataBlock b = M.column(i).extract(c - 1, a.length(), c);
-                    b.copy(a.values());
+                    b.copy(a.getValues());
                 }
             }
             for (int i = 0; i < ncnts; ++i) {

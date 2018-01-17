@@ -18,7 +18,7 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
 
@@ -72,7 +72,7 @@ public interface IHoliday {
      * @param domain
      * @return The returned domain is included in the given domain. Could be an empty period
      */
-    RegularDomain getSignificantDomain(RegularDomain domain);
+    TsDomain getSignificantDomain(TsDomain domain);
     
     double getWeight();
     

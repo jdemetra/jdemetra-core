@@ -17,10 +17,9 @@
 package demetra.timeseries;
 
 import demetra.design.Development;
-import demetra.design.Immutable;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import javax.annotation.Nonnull;
+import lombok.AccessLevel;
 
 /**
  * Defines selection in a time domain
@@ -28,8 +27,9 @@ import javax.annotation.Nonnull;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-@Immutable
-public class TsPeriodSelector implements Cloneable {
+@lombok.Value
+@lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class TimeSeriesSelector implements Cloneable {
 
     public static enum SelectionType {
         /**
@@ -66,175 +66,119 @@ public class TsPeriodSelector implements Cloneable {
         Excluding;
     }
 
-    public boolean equals(TsPeriodSelector ps) {
-        if (ps == this) {
-            return true;
-        }
-        if (ps == null && type == SelectionType.All) {
-            return true;
-        }
-        if (type != ps.type) {
-            return false;
-        }
-        switch (type) {
-            case Excluding:
-                return n0 == ps.n0 && n1 == ps.n1;
-            case Last:
-                return n1 == ps.n1;
-            case First:
-                return n0 == ps.n0;
-            case Between:
-                return d0.equals(ps.d0) && d1.equals(ps.d1);
-            case From:
-                return d0.equals(ps.d0);
-            case To:
-                return d1.equals(ps.d1);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof TsPeriodSelector && equals((TsPeriodSelector) obj));
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 97 * hash + Objects.hashCode(this.type);
-        hash = 97 * hash + this.n0;
-        hash = 97 * hash + this.n1;
-        return hash;
-    }
-
+    /**
+     * The type of the selector
+     */
+    @lombok.NonNull
     private final SelectionType type;
-    private final LocalDateTime d0, d1;
-    private final int n0, n1;
 
-     private TsPeriodSelector(SelectionType type, LocalDateTime d0, LocalDateTime d1, int n0, int n1) {
-        this.type=type;
-        this.d0=d0;
-        this.d1=d1;
-        this.n0=n0;
-        this.n1=n1;
-    }
+    /**
+     * The starting day of the selector. Its interpretation depends on on the
+     * type of the selector
+     */
+    private final LocalDateTime d0;
+
+    /**
+     * The ending day of the selector. Its interpretation depends on on the type
+     * of the selector. May be unused
+     */
+    private final LocalDateTime d1;
+
+    /**
+     * The number of starting periods defined by the selector. Its
+     * interpretation depends on on the type of the selector. May be unused
+     */
+    private final int n0;
+
+    /**
+     * The number of ending periods defined by the selector. Its interpretation
+     * depends on on the type of the selector. May be unused
+     */
+    private final int n1;
 
     /**
      * Select all the periods
+     *
+     * @return
      */
-    public static TsPeriodSelector all() {
-        return new TsPeriodSelector(SelectionType.All, null, null, 0, 0);
+    public static TimeSeriesSelector all() {
+        return new TimeSeriesSelector(SelectionType.All, null, null, 0, 0);
     }
 
     /**
-     * Select all the periods between two days. The way incomplete periods are considered
-     * is left to the classes that use the selector.
+     * Select all the periods between two days. The way incomplete periods are
+     * considered is left to the classes that use the selector.
      *
-     * @param d0 The starting day
-     * @param d1 The ending day
+     * @param start The starting day
+     * @param end The ending day
+     * @return
      */
-    public static TsPeriodSelector between(@Nonnull final LocalDateTime d0, @Nonnull final LocalDateTime d1) {
-        return new TsPeriodSelector(SelectionType.Between, d0, d1, 0, 0);
-     }
+    public static TimeSeriesSelector between(@Nonnull LocalDateTime start, @Nonnull LocalDateTime end) {
+        return new TimeSeriesSelector(SelectionType.Between, start, end, 0, 0);
+    }
 
     /**
      * Excludes some periods at the beginning and/or at the end of a time domain
      *
-     * @param n0 Number of periods excluded at the beginning of the time domain. Greater or equal to 0.
-     * @param n1 Number of periods excluded at the end of the time domain. Greater or equal to 0.
+     * @param n0 Number of periods excluded at the beginning of the time domain.
+     * Greater or equal to 0.
+     * @param n1 Number of periods excluded at the end of the time domain.
+     * Greater or equal to 0.
+     * @return
      */
-    public static TsPeriodSelector excluding(final int n0, final int n1) {
-         return new TsPeriodSelector(SelectionType.Excluding, null, null, n0, n1);
+    public static TimeSeriesSelector excluding(final int n0, final int n1) {
+        return new TimeSeriesSelector(SelectionType.Excluding, null, null, n0, n1);
     }
 
     /**
      * Select a given number of periods at the beginning of a time domain
      *
      * @param n The number of selected periods
+     * @return
      */
-    public static TsPeriodSelector first(final int n) {
-        return new TsPeriodSelector(SelectionType.First, null, null, n, 0);
+    public static TimeSeriesSelector first(final int n) {
+        return new TimeSeriesSelector(SelectionType.First, null, null, n, 0);
     }
 
     /**
-     * Select the periods after a given date. The way incomplete periods are considered
-     * is left to the classes that use the selector.
+     * Select the periods after a given date. The way incomplete periods are
+     * considered is left to the classes that use the selector.
      *
      * @param d0 The date for the selection
-     */
-    public static TsPeriodSelector from(@Nonnull final LocalDateTime d0) {
-         return new TsPeriodSelector(SelectionType.From, d0, null, 0, 0);
-    }
-
-    /**
-     * The starting day of the selector. Its interpretation depends on on the type of the selector
-     *
      * @return
      */
-    public LocalDateTime getD0() {
-        return d0;
-    }
-
-    /**
-     * The ending day of the selector. Its interpretation depends on on the type of the selector. May be unused
-     *
-     * @return
-     */
-    public LocalDateTime getD1() {
-        return d1;
-    }
-
-    /**
-     * The number of starting periods defined by the selector. Its interpretation depends on on the type of the selector. May be unused
-     *
-     * @return
-     */
-    public int getN0() {
-        return n0;
-    }
-
-    /**
-     * The number of ending periods defined by the selector. Its interpretation depends on on the type of the selector. May be unused
-     *
-     * @return
-     */
-    public int getN1() {
-        return n1;
-    }
-
-    /**
-     * The type of the selector
-     *
-     * @return
-     */
-    public SelectionType getType() {
-        return type;
+    public static TimeSeriesSelector from(@Nonnull final LocalDateTime d0) {
+        return new TimeSeriesSelector(SelectionType.From, d0, null, 0, 0);
     }
 
     /**
      * Select a given number of periods at the end of a time domain
      *
      * @param n The number of selected periods
+     * @return
      */
-    public static TsPeriodSelector last(final int n) {
-        return new TsPeriodSelector(SelectionType.Last, null, null, 0, n);
+    public static TimeSeriesSelector last(final int n) {
+        return new TimeSeriesSelector(SelectionType.Last, null, null, 0, n);
     }
 
     /**
      * Select nothing
+     *
+     * @return
      */
-    public static TsPeriodSelector none() {
-        return new TsPeriodSelector(SelectionType.None, null, null, 0, 0);
+    public static TimeSeriesSelector none() {
+        return new TimeSeriesSelector(SelectionType.None, null, null, 0, 0);
     }
 
     /**
-     * Select the periods up to a given date. The way incomplete periods are considered
-     * is left to the classes that use the selector.
+     * Select the periods up to a given date. The way incomplete periods are
+     * considered is left to the classes that use the selector.
      *
      * @param d1 The date for the selection
+     * @return
      */
-    public static TsPeriodSelector to(final LocalDateTime d1) {
-        return new TsPeriodSelector(SelectionType.To, null, d1, 0, 0);
+    public static TimeSeriesSelector to(final LocalDateTime d1) {
+        return new TimeSeriesSelector(SelectionType.To, null, d1, 0, 0);
     }
 
     @Override

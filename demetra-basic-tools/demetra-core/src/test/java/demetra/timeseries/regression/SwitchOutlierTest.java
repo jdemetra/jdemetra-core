@@ -17,7 +17,7 @@
 package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
@@ -36,7 +36,7 @@ public class SwitchOutlierTest {
     @Test
     public void testData() {
         DataBlock buffer = DataBlock.make(20);
-        RegularDomain days = RegularDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), buffer.length());
+        TsDomain days = TsDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), buffer.length());
         for (int i = -10; i < buffer.length()+10; ++i) {
             buffer.set(0);
             SwitchOutlier wo = new SwitchOutlier(days.get(0).plus(i).start());

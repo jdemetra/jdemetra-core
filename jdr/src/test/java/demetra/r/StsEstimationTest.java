@@ -17,7 +17,7 @@
 package demetra.r;
 
 import demetra.data.Data;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import static demetra.timeseries.simplets.TsDataToolkit.log;
 import java.util.LinkedHashMap;
 import java.util.Map;

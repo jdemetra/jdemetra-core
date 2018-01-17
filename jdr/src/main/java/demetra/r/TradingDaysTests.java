@@ -23,13 +23,13 @@ import demetra.linearmodel.Ols;
 import demetra.maths.matrices.Matrix;
 import demetra.stats.TestResult;
 import demetra.stats.tests.StatisticalTest;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendar.DayClustering;
 import demetra.timeseries.calendar.GenericTradingDays;
 import demetra.timeseries.regression.GenericTradingDaysVariables;
 import demetra.timeseries.regression.RegressionUtility;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import static demetra.timeseries.simplets.TsDataToolkit.delta;
 import static demetra.timeseries.simplets.TsDataToolkit.drop;
 import java.util.Collections;
@@ -62,10 +62,10 @@ public class TradingDaysTests {
 
     private TestResult process(TsData s) {
         try {
-            DataBlock y=DataBlock.of(s.values());
+            DataBlock y=DataBlock.of(s.getValues());
             y.sub(y.average());
             GenericTradingDaysVariables var=new GenericTradingDaysVariables(GenericTradingDays.contrasts(DayClustering.TD7));
-            Matrix td = RegressionUtility.data(Collections.singletonList(var), s.domain());
+            Matrix td = RegressionUtility.data(Collections.singletonList(var), s.getDomain());
             LinearModel reg=new LinearModel(y.getStorage(), false, td);
             Ols ols = new Ols();
             LeastSquaresResults rslt = ols.compute(reg);
@@ -83,8 +83,8 @@ public class TradingDaysTests {
 
     private TestResult processAr(TsData s) {
         try {
-            DataBlock y=DataBlock.of(s.values());
-            RegularDomain domain = s.domain();
+            DataBlock y=DataBlock.of(s.getValues());
+            TsDomain domain = s.getDomain();
             GenericTradingDaysVariables var=new GenericTradingDaysVariables(GenericTradingDays.contrasts(DayClustering.TD7));
             Matrix td = RegressionUtility.data(Collections.singletonList(var), domain.range(1, domain.length()));
             LinearModel reg=LinearModel.of(y.drop(1, 0))

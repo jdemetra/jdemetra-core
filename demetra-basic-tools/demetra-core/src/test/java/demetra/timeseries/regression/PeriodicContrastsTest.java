@@ -17,7 +17,7 @@
 package demetra.timeseries.regression;
 
 import demetra.maths.matrices.Matrix;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,7 +36,7 @@ public class PeriodicContrastsTest {
     @Test
     public void testMonthly() {
         PeriodicContrasts vars = new PeriodicContrasts(12);
-        RegularDomain domain = RegularDomain.of(TsPeriod.monthly(2017, 8), 120);
+        TsDomain domain = TsDomain.of(TsPeriod.monthly(2017, 8), 120);
         Matrix M=Matrix.make(domain.getLength(), vars.getDim());
         vars.data(domain, M.columnList());
         //System.out.println(M);

@@ -8,7 +8,7 @@ package demetra.r;
 import demetra.data.DoubleSequence;
 import demetra.maths.MatrixType;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import org.junit.Test;
 
 /**

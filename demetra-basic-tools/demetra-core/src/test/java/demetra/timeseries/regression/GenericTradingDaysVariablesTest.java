@@ -17,7 +17,7 @@
 package demetra.timeseries.regression;
 
 import demetra.maths.matrices.Matrix;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendar.DayClustering;
 import demetra.timeseries.calendar.GenericTradingDays;
@@ -45,7 +45,7 @@ public class GenericTradingDaysVariablesTest {
 
         GenericTradingDays td = GenericTradingDays.contrasts(DayClustering.TD7);
         Matrix m = Matrix.make(360, 6);
-        RegularDomain dom = RegularDomain.of(TsPeriod.monthly(1980, 5), 360);
+        TsDomain dom = TsDomain.of(TsPeriod.monthly(1980, 5), 360);
         GenericTradingDaysVariables vars = new GenericTradingDaysVariables(td);
         vars.data(dom, m.columnList());
         for (int r = 0; r < m.getRowsCount(); ++r) {
@@ -66,7 +66,7 @@ public class GenericTradingDaysVariablesTest {
 
         GenericTradingDays td = GenericTradingDays.contrasts(DayClustering.TD2);
         Matrix m = Matrix.make(360, 1);
-        RegularDomain dom = RegularDomain.of(TsPeriod.quarterly(1980, 3), 360);
+        TsDomain dom = TsDomain.of(TsPeriod.quarterly(1980, 3), 360);
         GenericTradingDaysVariables vars = new GenericTradingDaysVariables(td);
         vars.data(dom, m.columnList());
         for (int r = 0; r < m.getRowsCount(); ++r) {

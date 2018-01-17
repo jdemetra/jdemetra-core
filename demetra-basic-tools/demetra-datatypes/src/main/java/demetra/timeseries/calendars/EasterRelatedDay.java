@@ -17,9 +17,8 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
-import demetra.timeseries.TsPeriod;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -254,7 +253,7 @@ public class EasterRelatedDay implements IHoliday {
     }
 
     @Override
-    public RegularDomain getSignificantDomain(RegularDomain domain) {
+    public TsDomain getSignificantDomain(TsDomain domain) {
         if (!domain.getStartPeriod().getUnit().getChronoUnit().equals(ChronoUnit.DAYS)) {
             throw new IllegalArgumentException();
         }
@@ -268,9 +267,9 @@ public class EasterRelatedDay implements IHoliday {
             elast = easter(last.getYear() - 1).plusDays(offset);
         }
         if (efirst.isAfter(elast)) {
-            return RegularDomain.of(domain.getStartPeriod().withDate(efirst), 0);
+            return TsDomain.of(domain.getStartPeriod().withDate(efirst.atStartOfDay()), 0);
         } else {
-            return RegularDomain.of(domain.getStartPeriod().withDate(efirst), (int) ChronoUnit.DAYS.between(efirst, elast));
+            return TsDomain.of(domain.getStartPeriod().withDate(efirst.atStartOfDay()), (int) ChronoUnit.DAYS.between(efirst, elast));
         }
     }
 

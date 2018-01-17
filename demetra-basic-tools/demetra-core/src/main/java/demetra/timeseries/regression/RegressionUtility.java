@@ -18,10 +18,10 @@ package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
-import demetra.timeseries.TsDomain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import demetra.timeseries.TimeSeriesDomain;
 
 /**
  *
@@ -30,7 +30,7 @@ import java.util.List;
 @lombok.experimental.UtilityClass
 public class RegressionUtility {
 
-    public <D extends TsDomain<?>> int size(List<ITsVariable<D>> vars) {
+    public <D extends TimeSeriesDomain<?>> int size(List<ITsVariable<D>> vars) {
         int n = 0;
         for (ITsVariable<D> var : vars) {
             n += var.getDim();
@@ -38,7 +38,7 @@ public class RegressionUtility {
         return n;
     }
 
-    public <D extends TsDomain<?>> Matrix data(List<ITsVariable<D>> vars, D domain) {
+    public <D extends TimeSeriesDomain<?>> Matrix data(List<ITsVariable<D>> vars, D domain) {
         Matrix M = Matrix.make(domain.length(), size(vars));
         int col = 0;
         ArrayList<DataBlock> cols = new ArrayList<>();

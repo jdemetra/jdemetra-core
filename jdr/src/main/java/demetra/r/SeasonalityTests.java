@@ -24,11 +24,11 @@ import demetra.maths.matrices.Matrix;
 import demetra.stats.TestResult;
 import demetra.stats.tests.LjungBoxTest;
 import demetra.stats.tests.StatisticalTest;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.regression.PeriodicContrasts;
 import demetra.timeseries.regression.RegressionUtility;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import static demetra.timeseries.simplets.TsDataToolkit.delta;
 import static demetra.timeseries.simplets.TsDataToolkit.drop;
 import java.util.Collections;
@@ -64,7 +64,7 @@ public class SeasonalityTests {
         if (ny != 0) {
             s = drop(s, Math.max(0, s.length() - freq * ny), 0);
         }
-        StatisticalTest test = new LjungBoxTest(s.values())
+        StatisticalTest test = new LjungBoxTest(s.getValues())
                 .lag(freq)
                 .autoCorrelationsCount(2)
                 .usePositiveAutoCorrelations()
@@ -78,9 +78,9 @@ public class SeasonalityTests {
 
     private TestResult process(TsData s, int freq) {
         try {
-            DataBlock y = DataBlock.of(s.values());
+            DataBlock y = DataBlock.of(s.getValues());
             y.sub(y.average());
-            RegularDomain domain = s.domain();
+            TsDomain domain = s.getDomain();
             PeriodicContrasts var = new PeriodicContrasts(freq);
             Matrix sd = RegressionUtility.data(Collections.singletonList(var), domain);
             LinearModel reg = new LinearModel(y.getStorage(), false, sd);
@@ -101,8 +101,8 @@ public class SeasonalityTests {
 
     private TestResult processAr(TsData s, int freq) {
         try {
-            DataBlock y = DataBlock.of(s.values());
-            RegularDomain domain = s.domain();
+            DataBlock y = DataBlock.of(s.getValues());
+            TsDomain domain = s.getDomain();
             PeriodicContrasts var = new PeriodicContrasts(freq);
 
             Matrix sd = RegressionUtility.data(Collections.singletonList(var), domain.range(1, domain.length()));

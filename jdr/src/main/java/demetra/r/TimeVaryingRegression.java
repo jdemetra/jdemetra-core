@@ -31,13 +31,13 @@ import demetra.ssf.implementations.RegSsf;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.SsfData;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendar.DayClustering;
 import demetra.timeseries.calendar.GenericTradingDays;
 import demetra.timeseries.regression.GenericTradingDaysVariables;
 import demetra.timeseries.regression.RegressionUtility;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -61,7 +61,7 @@ public class TimeVaryingRegression {
     @lombok.Builder
     public static class Results implements IProcResults {
 
-        RegularDomain domain;
+        TsDomain domain;
         MatrixType variables;
         MatrixType coefficients;
         MatrixType coefficientsStde;
@@ -124,9 +124,9 @@ public class TimeVaryingRegression {
         SarimaSpecification spec = new SarimaSpecification();
         spec.airline(freq);
         DayClustering dc = days(td);
-        Matrix mtd = generate(s.domain(), dc);
+        Matrix mtd = generate(s.getDomain(), dc);
         Matrix nvar = generateVar(dc, svar);
-        SsfData data = new SsfData(s.values());
+        SsfData data = new SsfData(s.getValues());
 
         LevenbergMarquardtMinimizer min = new LevenbergMarquardtMinimizer();
 
@@ -186,7 +186,7 @@ public class TimeVaryingRegression {
                 .btheta(air.btheta)
                 .build();
         return Results.builder()
-                .domain(s.domain())
+                .domain(s.getDomain())
                 .arima0(arima0)
                 .arima(arima)
                 .ll0(rfn0.getLikelihood())
@@ -236,7 +236,7 @@ public class TimeVaryingRegression {
         return dc;
     }
 
-    public Matrix generate(RegularDomain domain, DayClustering dc) {
+    public Matrix generate(TsDomain domain, DayClustering dc) {
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         return RegressionUtility.data(Collections.singletonList(new GenericTradingDaysVariables(gtd)), domain);
     }

@@ -17,7 +17,7 @@
 package demetra.timeseries.regression;
 
 import demetra.maths.matrices.Matrix;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -34,7 +34,7 @@ public class TrigonometricVariablesTest {
     @Test
     public void testMonthly() {
         TrigonometricVariables vars = TrigonometricVariables.regular(12);
-        RegularDomain domain = RegularDomain.of(TsPeriod.monthly(2017, 8), 180);
+        TsDomain domain = TsDomain.of(TsPeriod.monthly(2017, 8), 180);
         Matrix M=Matrix.make(domain.getLength(), vars.getDim());
         vars.data(domain, M.columnList());
         //System.out.println(M);

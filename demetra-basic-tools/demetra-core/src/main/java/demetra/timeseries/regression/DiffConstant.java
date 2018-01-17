@@ -21,10 +21,10 @@ import demetra.data.Range;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.polynomials.Polynomial;
-import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
 import java.util.List;
+import demetra.timeseries.TimeSeriesDomain;
 
 
 ///**

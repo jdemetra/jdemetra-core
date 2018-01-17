@@ -18,7 +18,7 @@
 
 package demetra.processing;
 
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 
 /**
  *

@@ -16,7 +16,6 @@
  */
 package demetra.timeseries;
 
-import demetra.data.BaseSequence;
 import demetra.data.DoubleSequence;
 import demetra.data.Range;
 import demetra.data.Sequence;
@@ -29,49 +28,44 @@ import javax.annotation.Nonnull;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  * @param <P> period type
- * @param <V> value type
  * @param <O> observation type
  */
-public interface ITimeSeries<P extends Range<LocalDateTime>, V extends Number, O extends TimeObservation<P, V>> extends Sequence<O> {
+public interface TimeSeriesData<P extends Range<LocalDateTime>, O extends TimeSeriesObs<P>> extends Sequence<O> {
 
     /**
      * Retrieves the time domain of this time series
      *
      * @return
      */
-    TsDomain<P> domain();
+    @Nonnull
+    TimeSeriesDomain<P> getDomain();
 
     /**
      * Retrieves the content of this time series
      *
      * @return The content of this time series.
      */
-    BaseSequence<V> values();
+    @Nonnull
+    DoubleSequence getValues();
 
     @Nonnegative
     @Override
     default int length() {
-        return values().length();
+        return getValues().length();
     }
 
     @Nonnull
     default P getPeriod(@Nonnegative int index) throws IndexOutOfBoundsException {
-        return domain().get(index);
+        return getDomain().get(index);
     }
 
-    interface OfDouble<P extends Range<LocalDateTime>, O extends TimeObservation.OfDouble<P>> extends ITimeSeries<P, Double, O> {
+    default double getValue(@Nonnegative int index) throws IndexOutOfBoundsException {
+        return getValues().get(index);
+    }
 
-        @Override
-        DoubleSequence values();
-
-        default double getValue(@Nonnegative int index) throws IndexOutOfBoundsException {
-            return values().get(index);
-        }
-
-        default void forEach(@Nonnull ObjDoubleConsumer<P> consumer) {
-            for (int i = 0; i < length(); i++) {
-                consumer.accept(getPeriod(i), getValue(i));
-            }
+    default void forEach(@Nonnull ObjDoubleConsumer<P> consumer) {
+        for (int i = 0; i < length(); i++) {
+            consumer.accept(getPeriod(i), getValue(i));
         }
     }
 }

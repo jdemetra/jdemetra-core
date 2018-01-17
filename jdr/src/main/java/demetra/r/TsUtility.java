@@ -8,11 +8,8 @@ package demetra.r;
 import demetra.data.AggregationType;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import demetra.timeseries.simplets.TsData;
-import demetra.timeseries.simplets.TsDataConverter;
+import demetra.timeseries.TsData;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 /**
  *
@@ -40,7 +37,7 @@ public class TsUtility {
             return null;
         }
         TsUnit unit = TsUnit.ofAnnualFrequency(nfreq);
-        return TsDataConverter.changeTsUnit(source, unit, agg, fullperiods);
+        return source.aggregate(unit, agg, fullperiods);
     }
     /**
      * Information useful for the conversion of series in R returns [freq, year,

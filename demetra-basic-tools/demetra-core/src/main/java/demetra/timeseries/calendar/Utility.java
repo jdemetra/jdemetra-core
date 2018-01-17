@@ -18,14 +18,13 @@ package demetra.timeseries.calendar;
 
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
-import demetra.timeseries.Fixme;
-import demetra.timeseries.RegularDomain;
+import internal.timeseries.InternalFixme;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.Holiday;
 import demetra.timeseries.calendars.Holidays;
-import demetra.timeseries.calendars.IHoliday;
 import demetra.timeseries.calendars.IHolidayInfo;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -104,7 +103,7 @@ class Utility {
      * @param domain
      * @return
      */
-    int[] daysCount(RegularDomain domain) {
+    int[] daysCount(TsDomain domain) {
         // if (domain == null)
         // throw new ArgumentNullException("domain");
         int n = domain.length();
@@ -218,7 +217,7 @@ class Utility {
 
         // make Jan 1, 1AD be 0
         int nDate = year * 365 + year / 4 - year / 100 + year / 400
-                + Fixme.getCumulatedMonthDays(month - 1) + day;
+                + InternalFixme.getCumulatedMonthDays(month - 1) + day;
 
         // If leap year and it's before March, subtract 1:
         if ((month < 3) && bLeapYear) {

@@ -17,20 +17,38 @@
 package demetra.timeseries;
 
 import demetra.data.Range;
+import demetra.data.Sequence;
 import java.time.LocalDateTime;
 
 /**
  *
  * @author Philippe Charles
- * @param <P> period type
- * @param <V> value type
+ * @param <P>
  */
-public interface TimeObservation<P extends Range<LocalDateTime>, V> {
+public interface TimeSeriesDomain<P extends Range<LocalDateTime>> extends Range<LocalDateTime>, Sequence<P> {
 
-    P getPeriod();
+    /**
+     *
+     * @param period
+     * @return
+     */
+    boolean contains(P period);
 
-    interface OfDouble<P extends Range<LocalDateTime>> extends TimeObservation<P, Double> {
+    /**
+     *
+     * @param date
+     * @return Position of the period that contains the date. -1 if this date is
+     * before the domain, -length() if it is after the domain.
+     */
+    int indexOf(LocalDateTime date);
 
-        double getValue();
-    }
+    /**
+     *
+     * @param period
+     * @return Position of the period. -1 if this period is before the domain,
+     * -length() if it is after the domain.
+     */
+    int indexOf(P period);
+
+    TimeSeriesDomain<P> select(TimeSeriesSelector selector);
 }

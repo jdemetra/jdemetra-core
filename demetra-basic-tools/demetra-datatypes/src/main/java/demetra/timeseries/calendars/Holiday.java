@@ -19,7 +19,6 @@ package demetra.timeseries.calendars;
 import demetra.design.Development;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.ValidityPeriod;
 import java.time.LocalDate;
 import java.util.Objects;
 

@@ -26,14 +26,22 @@ import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.SsfData;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
-import demetra.timeseries.simplets.TsData;
-import demetra.timeseries.simplets.TsDataConverter;
+import demetra.timeseries.TsData;
 import demetra.timeseries.simplets.TsDataToolkit;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import org.openide.util.lookup.ServiceProvider;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.multiply;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.multiply;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.multiply;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.multiply;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
@@ -58,15 +66,15 @@ public class CholetteFactory implements CholetteAlgorithm {
                 || (agg != AggregationType.Average && agg != AggregationType.Sum)) {
             return s;
         }
-        TsData sy = TsDataConverter.changeTsUnit(s, target.getTsUnit(), agg, true);
-        sy = TsDataToolkit.fitToDomain(sy, target.domain());
+        TsData sy = s.aggregate(target.getTsUnit(), agg, true);
+        sy = TsDataToolkit.fitToDomain(sy, target.getDomain());
         // TsDataBlock.all(target).data.sum() is the sum of the aggregation constraints
         //  TsDataBlock.all(sy).data.sum() is the sum of the averages or sums of the original series
         BiasCorrection bias = spec.getBias();
         if (bias == BiasCorrection.Multiplicative) {
-            return multiply(s, Doubles.sum(target.values()) / Doubles.sum(sy.values()));
+            return multiply(s, Doubles.sum(target.getValues()) / Doubles.sum(sy.getValues()));
         } else {
-            double b = (Doubles.sum(target.values()) - Doubles.sum(sy.values())) / target.length();
+            double b = (Doubles.sum(target.getValues()) - Doubles.sum(sy.getValues())) / target.length();
             if (agg == AggregationType.Average) {
                 b *= s.getTsUnit().ratioOf(target.getTsUnit());
             }
@@ -81,7 +89,7 @@ public class CholetteFactory implements CholetteAlgorithm {
      * @param type
      * @return
      */
-    public static double[] expand(RegularDomain d, TsData agg, AggregationType type) {
+    public static double[] expand(TsDomain d, TsData agg, AggregationType type) {
         int ratio = d.getTsUnit().ratioOf(agg.getTsUnit());
         if (ratio == TsUnit.NO_RATIO || ratio == TsUnit.NO_STRICT_RATIO) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
@@ -121,16 +129,16 @@ public class CholetteFactory implements CholetteAlgorithm {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
 
-        TsData obj = subtract(target, TsDataConverter.changeTsUnit(s, target.getTsUnit(), spec.getAggregationType(), true));
+        TsData obj = subtract(target, s.aggregate(target.getTsUnit(), spec.getAggregationType(), true));
         if (spec.getAggregationType() == AggregationType.Average) {
             obj = multiply(obj, ratio);
         }
 
-        double[] y = expand(s.domain(), obj, spec.getAggregationType());
+        double[] y = expand(s.getDomain(), obj, spec.getAggregationType());
 
         double[] w = null;
         if (spec.getLambda() != 0) {
-            w = s.values().toArray();
+            w = s.getValues().toArray();
             if (spec.getLambda() != 1) {
                 for (int i = 0; i < w.length; ++i) {
                     w[i] = Math.pow(Math.abs(w[i]), spec.getLambda());

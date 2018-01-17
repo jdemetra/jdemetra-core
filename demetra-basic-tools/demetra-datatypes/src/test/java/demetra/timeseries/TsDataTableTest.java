@@ -14,14 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.simplets;
+package demetra.timeseries;
 
-import demetra.timeseries.RegularDomain;
-import demetra.timeseries.TsPeriod;
-import demetra.timeseries.TsUnit;
-import static demetra.timeseries.simplets.TsDataTable.DistributionType.*;
-import static demetra.timeseries.simplets.TsDataTable.ValueStatus.*;
-import static demetra.timeseries.simplets.TsDataTable.computeDomain;
+import static demetra.timeseries.TsDataTable.DistributionType.*;
+import static demetra.timeseries.TsDataTable.ValueStatus.*;
+import static demetra.timeseries.TsDataTable.computeDomain;
 import internal.Demo;
 import static java.lang.Double.NaN;
 import static java.util.Arrays.asList;
@@ -150,8 +147,8 @@ public class TsDataTableTest {
                         });
     }
 
-    static RegularDomain dom(String period, int length) {
-        return RegularDomain.of(TsPeriod.parse(period), length);
+    static TsDomain dom(String period, int length) {
+        return TsDomain.of(TsPeriod.parse(period), length);
     }
 
     static double[][] toValues(TsDataTable.Cursor c) {
@@ -167,7 +164,7 @@ public class TsDataTableTest {
     }
 
     static String computeUnit(String... periods) {
-        Iterator<RegularDomain> domains = Stream.of(periods).map(o -> RegularDomain.of(TsPeriod.of(TsUnit.parse(o), 0), 1)).iterator();
+        Iterator<TsDomain> domains = Stream.of(periods).map(o -> TsDomain.of(TsPeriod.of(TsUnit.parse(o), 0), 1)).iterator();
         return computeDomain(domains).getStartPeriod().getUnit().toIsoString();
     }
 

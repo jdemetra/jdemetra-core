@@ -17,7 +17,7 @@
 
 package demetra.timeseries.calendars;
 
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
 
@@ -135,7 +135,7 @@ public class PrespecifiedHoliday implements IHoliday {
     }
 
     @Override
-    public RegularDomain getSignificantDomain(RegularDomain domain) {
+    public TsDomain getSignificantDomain(TsDomain domain) {
         IHoliday sd = toSpecialDay();
         if (sd == null) {
             return null;

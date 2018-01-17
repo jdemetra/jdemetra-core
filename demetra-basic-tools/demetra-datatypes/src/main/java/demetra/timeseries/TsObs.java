@@ -1,7 +1,7 @@
 /*
  * Copyright 2017 National Bank of Belgium
  * 
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
@@ -16,23 +16,15 @@
  */
 package demetra.timeseries;
 
-import java.time.LocalDate;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 /**
  *
- * @author Jean Palate
+ * @author Philippe Charles
  */
-public class GenericTsDataTest {
+@lombok.Value(staticConstructor = "of")
+public class TsObs implements TimeSeriesObs<TsPeriod> {
 
-    @Test
-    public void testFactory() {
-//        LocalDate start = LocalDate.of(2017, 1, 1);
-//        Days d = Days.of(start, 365);
-//        TsDataOfDouble ts = TsDataOfDouble.of(d, i -> i + 1);
-//        //    System.out.println(ts);
-//        assertTrue(ts.domain().isContinuous() && ts.get(ts.getLength() - 1) == ts.domain().length());
-    }
+    @lombok.NonNull
+    TsPeriod period;
 
+    double value;
 }

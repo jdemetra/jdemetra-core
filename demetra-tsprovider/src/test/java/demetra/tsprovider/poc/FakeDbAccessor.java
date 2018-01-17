@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider.poc;
 
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import demetra.tsprovider.cube.CubeAccessor;
 import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cursor.TsCursor;

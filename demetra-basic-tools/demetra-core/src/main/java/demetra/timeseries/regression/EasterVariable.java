@@ -19,7 +19,7 @@ package demetra.timeseries.regression;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.IBuilder;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
@@ -115,14 +115,14 @@ public class EasterVariable implements IEasterVariable {
     }
 
     @Override
-    public String getDescription(RegularDomain context) {
+    public String getDescription(TsDomain context) {
         StringBuilder builder = new StringBuilder();
         builder.append("Easter [").append(duration).append(']');
         return builder.toString();
     }
 
     @Override
-    public void data(RegularDomain domain, List<DataBlock> ldata) {
+    public void data(TsDomain domain, List<DataBlock> ldata) {
         DataBlock data=ldata.get(0);
         data.set(0);
         TsPeriod start=domain.getStartPeriod();

@@ -18,7 +18,7 @@ package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
@@ -30,7 +30,7 @@ import java.util.Objects;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class Ramp implements ITsVariable<RegularDomain>, IUserTsVariable<RegularDomain> {
+public class Ramp implements ITsVariable<TsDomain>, IUserTsVariable<TsDomain> {
 
     private final LocalDateTime start, end;
     private final String name;
@@ -79,7 +79,7 @@ public class Ramp implements ITsVariable<RegularDomain>, IUserTsVariable<Regular
      * @param data
      */
     @Override
-    public void data(RegularDomain domain, List<DataBlock> data) {
+    public void data(TsDomain domain, List<DataBlock> data) {
         DataBlock cur = data.get(0);
         TsPeriod pstart = TsPeriod.of(domain.getTsUnit(), start);
         TsPeriod pend = TsPeriod.of(domain.getTsUnit(), end);
@@ -115,7 +115,7 @@ public class Ramp implements ITsVariable<RegularDomain>, IUserTsVariable<Regular
     }
 
     @Override
-    public String getDescription(RegularDomain context) {
+    public String getDescription(TsDomain context) {
         StringBuilder builder = new StringBuilder();
         if (context != null) {
             builder.append("rp:").append(TsPeriod.of(context.getTsUnit(), start).display()).append(" - ")
@@ -149,7 +149,7 @@ public class Ramp implements ITsVariable<RegularDomain>, IUserTsVariable<Regular
     }
 
     @Override
-    public ITsVariable<RegularDomain> rename(String nname) {
+    public ITsVariable<TsDomain> rename(String nname) {
         return new Ramp(start, end, nname);
     }
 

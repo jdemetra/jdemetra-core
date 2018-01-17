@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import demetra.tsprovider.OptionalTsData;
 import static internal.tsprovider.cursor.InternalTsCursor.CLOSE_HANDLER_NPE;
 import static internal.tsprovider.cursor.InternalTsCursor.CLOSE_ISE;

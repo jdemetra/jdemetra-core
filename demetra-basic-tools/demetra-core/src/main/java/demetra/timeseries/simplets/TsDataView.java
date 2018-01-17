@@ -16,13 +16,14 @@
  */
 package demetra.timeseries.simplets;
 
+import demetra.timeseries.TsData;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.timeseries.Fixme;
-import demetra.timeseries.RegularDomain;
+import internal.timeseries.InternalFixme;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.TsPeriodSelector;
+import demetra.timeseries.TimeSeriesSelector;
 
 /**
  * A TsDataView is a view on equally spaced observations in a time series. Users
@@ -45,14 +46,14 @@ public final class TsDataView {
      * @return
      */
     public static TsDataView fullYears(TsData series) {
-        RegularDomain domain = series.domain();
+        TsDomain domain = series.getDomain();
         TsPeriod start = domain.getStartPeriod(), end = domain.getEndPeriod();
-        int freq = Fixme.getAsInt(domain.getStartPeriod().getUnit());
-        int nbeg = Fixme.getPosition(start);
+        int freq = InternalFixme.getAsInt(domain.getStartPeriod().getUnit());
+        int nbeg = InternalFixme.getPosition(start);
         if (nbeg != 0) {
             nbeg = freq - nbeg;
         }
-        int nend = Fixme.getPosition(end);
+        int nend = InternalFixme.getPosition(end);
         int len = series.length() - nend - nbeg;
         final int beg = nbeg;
         return new TsDataView(start.plus(nbeg), DoubleSequence.of(len, i -> series.getValue(beg + i)), 1);
@@ -67,8 +68,8 @@ public final class TsDataView {
      * @return The corresponding data block. Null is returned if the domain of
      * the series doesn't contain the given domain.
      */
-    public static TsDataView select(TsData series, RegularDomain domain) {
-        if (!series.domain().contains(domain)) {
+    public static TsDataView select(TsData series, TsDomain domain) {
+        if (!series.getDomain().contains(domain)) {
             return null;
         }
         TsPeriod start = series.getStart(), dstart = domain.getStartPeriod();
@@ -84,8 +85,8 @@ public final class TsDataView {
      * @return The corresponding data block. Null is returned if the no data are
      * selected.
      */
-    public static TsDataView select(TsData series, TsPeriodSelector selector) {
-        RegularDomain domain = series.domain().select(selector);
+    public static TsDataView select(TsData series, TimeSeriesSelector selector) {
+        TsDomain domain = series.getDomain().select(selector);
         if (domain == null || domain.isEmpty()) {
             return null;
         }
@@ -111,7 +112,7 @@ public final class TsDataView {
      * @return The new time data block
      */
     public static TsDataView all(TsData series) {
-        return new TsDataView(series.getStart(), series.values(), 1);
+        return new TsDataView(series.getStart(), series.getValues(), 1);
     }
 
     /**

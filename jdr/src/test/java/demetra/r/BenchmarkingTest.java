@@ -19,7 +19,7 @@ package demetra.r;
 import demetra.benchmarking.univariate.DentonSpecification;
 import demetra.data.DataBlock;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

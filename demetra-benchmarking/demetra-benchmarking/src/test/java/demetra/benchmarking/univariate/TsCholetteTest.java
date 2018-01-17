@@ -20,8 +20,7 @@ import demetra.data.AggregationType;
 import demetra.data.DataBlock;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import demetra.timeseries.simplets.TsData;
-import demetra.timeseries.simplets.TsDataConverter;
+import demetra.timeseries.TsData;
 import demetra.timeseries.simplets.TsDataToolkit;
 import java.time.temporal.ChronoUnit;
 import static org.junit.Assert.assertTrue;
@@ -49,9 +48,9 @@ public class TsCholetteTest {
         TsData t = TsData.of(a, y);
         TsData s = TsData.of(q, x);
         TsData b = TsCholette.benchmark(s, t, spec);
-        TsData bc = TsDataConverter.changeTsUnit(b, TsUnit.YEAR, AggregationType.Sum, true);
+        TsData bc = b.aggregate(TsUnit.YEAR, AggregationType.Sum, true);
 //        System.out.println(b);
-        assertTrue(TsDataToolkit.subtract(t, bc).values().allMatch(w -> Math.abs(w) < 1e-9));
+        assertTrue(TsDataToolkit.subtract(t, bc).getValues().allMatch(w -> Math.abs(w) < 1e-9));
     }
 
     @Test
@@ -69,9 +68,9 @@ public class TsCholetteTest {
         TsData t = TsData.of(a, y);
         TsData s = TsData.of(q, x);
         TsData b = TsCholette.benchmark(s, t, spec);
-        TsData bc = TsDataConverter.changeTsUnit(b, TsUnit.YEAR, AggregationType.Sum, true);
+        TsData bc = b.aggregate(TsUnit.YEAR, AggregationType.Sum, true);
 //        System.out.println(b);
-        assertTrue(TsDataToolkit.subtract(t, bc).values().allMatch(w -> Math.abs(w) < 1e-9));
+        assertTrue(TsDataToolkit.subtract(t, bc).getValues().allMatch(w -> Math.abs(w) < 1e-9));
     }
     
     @Test
@@ -89,9 +88,9 @@ public class TsCholetteTest {
         TsData t = TsData.of(a, y);
         TsData s = TsData.of(q, x);
         TsData b = TsCholette.benchmark(s, t, spec);
-        TsData bc = TsDataConverter.changeTsUnit(b, TsUnit.YEAR, AggregationType.Sum, true);
+        TsData bc = b.aggregate(TsUnit.YEAR, AggregationType.Sum, true);
 //        System.out.println(b);
-        assertTrue(TsDataToolkit.subtract(t, bc).values().allMatch(w -> Math.abs(w) < 1e-9));
+        assertTrue(TsDataToolkit.subtract(t, bc).getValues().allMatch(w -> Math.abs(w) < 1e-9));
     }
     
     @Test
@@ -109,9 +108,9 @@ public class TsCholetteTest {
         TsData t = TsData.of(a, y);
         TsData s = TsData.of(q, x);
         TsData b = TsCholette.benchmark(s, t, spec);
-        TsData bc = TsDataConverter.changeTsUnit(b, TsUnit.YEAR, AggregationType.Sum, true);
+        TsData bc = b.aggregate(TsUnit.YEAR, AggregationType.Sum, true);
 //        System.out.println(b);
-        assertTrue(TsDataToolkit.subtract(t, bc).values().allMatch(w -> Math.abs(w) < 1e-9));
+        assertTrue(TsDataToolkit.subtract(t, bc).getValues().allMatch(w -> Math.abs(w) < 1e-9));
     }
     
     @Test
@@ -129,9 +128,9 @@ public class TsCholetteTest {
         TsData t = TsData.of(a, y);
         TsData s = TsData.of(q, x);
         TsData b = TsCholette.benchmark(s, t, spec);
-        TsData bc = TsDataConverter.changeTsUnit(b, TsUnit.YEAR, AggregationType.Sum, true);
+        TsData bc = b.aggregate(TsUnit.YEAR, AggregationType.Sum, true);
 //        System.out.println(b);
-        assertTrue(TsDataToolkit.subtract(t, bc).values().allMatch(w -> Math.abs(w) < 1e-9));
+        assertTrue(TsDataToolkit.subtract(t, bc).getValues().allMatch(w -> Math.abs(w) < 1e-9));
     }
 
     @Test
@@ -166,7 +165,7 @@ public class TsCholetteTest {
         TsPeriod a = TsPeriod.yearly(1980);
         TsData t = TsData.of(a, y);
         TsData b = TsDenton.benchmark(TsUnit.of(4, ChronoUnit.MONTHS), t, spec);
-        TsData bc = TsDataConverter.changeTsUnit(b, TsUnit.YEAR, AggregationType.Sum, true);
-        assertTrue(TsDataToolkit.subtract(t, bc).values().allMatch(x -> Math.abs(x) < 1e-9));
+        TsData bc = b.aggregate(TsUnit.YEAR, AggregationType.Sum, true);
+        assertTrue(TsDataToolkit.subtract(t, bc).getValues().allMatch(x -> Math.abs(x) < 1e-9));
     }
 }

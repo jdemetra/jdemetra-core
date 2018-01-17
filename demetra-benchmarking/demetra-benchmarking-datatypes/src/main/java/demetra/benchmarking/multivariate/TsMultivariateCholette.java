@@ -20,7 +20,7 @@ import demetra.benchmarking.univariate.*;
 import demetra.benchmarking.spi.CholetteAlgorithm;
 import demetra.benchmarking.spi.MultivariateCholetteAlgorithm;
 import demetra.design.Algorithm;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import demetra.utilities.ServiceLookup;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;

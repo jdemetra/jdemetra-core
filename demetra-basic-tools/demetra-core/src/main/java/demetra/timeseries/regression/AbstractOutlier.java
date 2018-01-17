@@ -19,7 +19,7 @@ package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -50,7 +50,7 @@ public abstract class AbstractOutlier extends BaseOutlier implements IRegularOut
     }
 
     @Override
-    public String getDescription(RegularDomain context) {
+    public String getDescription(TsDomain context) {
         return defaultName(getCode(), position, context);
     }
 

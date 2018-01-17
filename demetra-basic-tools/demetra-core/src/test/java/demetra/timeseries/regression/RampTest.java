@@ -6,7 +6,7 @@
 package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
 import java.time.Month;
@@ -29,29 +29,29 @@ public class RampTest {
                 LocalDate.of(2018, Month.MARCH, 31).atStartOfDay());
 
         // just before
-        RegularDomain domain = RegularDomain.of(TsPeriod.monthly(2012, 4), 60);
+        TsDomain domain = TsDomain.of(TsPeriod.monthly(2012, 4), 60);
         DataBlock data = DataBlock.make(domain.getLength());
         ramp.data(domain, Collections.singletonList(data));
         assertTrue(data.allMatch(x->x==-1));
         // just after
-        domain = RegularDomain.of(TsPeriod.monthly(2018, 3), 60);
+        domain = TsDomain.of(TsPeriod.monthly(2018, 3), 60);
         data = DataBlock.make(domain.getLength());
         ramp.data(domain, Collections.singletonList(data));
         assertTrue(data.allMatch(x->x==0));
         
         // inside
-        domain = RegularDomain.of(TsPeriod.monthly(2017, 4), 10);
+        domain = TsDomain.of(TsPeriod.monthly(2017, 4), 10);
         data = DataBlock.make(domain.getLength());
         ramp.data(domain, Collections.singletonList(data));
         assertTrue(data.allMatch(x->x!=0 && x != -1));
 
         // across the beginning
-        domain = RegularDomain.of(TsPeriod.monthly(2017, 1), 10);
+        domain = TsDomain.of(TsPeriod.monthly(2017, 1), 10);
         data = DataBlock.make(domain.getLength());
         ramp.data(domain, Collections.singletonList(data));
         assertTrue(data.count(x->x == -1) == 3);
         // across the beginning
-        domain = RegularDomain.of(TsPeriod.monthly(2017, 10), 10);
+        domain = TsDomain.of(TsPeriod.monthly(2017, 10), 10);
         data = DataBlock.make(domain.getLength());
         ramp.data(domain, Collections.singletonList(data));
         assertTrue(data.count(x->x != 0) == 5);
@@ -63,12 +63,12 @@ public class RampTest {
                 LocalDate.of(2018, Month.MARCH, 30).atStartOfDay());
 
         // just before
-        RegularDomain domain = RegularDomain.of(TsPeriod.monthly(2012, 4), 60);
+        TsDomain domain = TsDomain.of(TsPeriod.monthly(2012, 4), 60);
         DataBlock data = DataBlock.make(domain.getLength());
         ramp.data(domain, Collections.singletonList(data));
         assertTrue(data.allMatch(x->x==-1));
         // just after
-        domain = RegularDomain.of(TsPeriod.monthly(2018, 3), 60);
+        domain = TsDomain.of(TsPeriod.monthly(2018, 3), 60);
         data = DataBlock.make(domain.getLength());
         ramp.data(domain, Collections.singletonList(data));
         assertTrue(data.allMatch(x->x==0));
@@ -80,20 +80,20 @@ public class RampTest {
                 LocalDate.of(2018, Month.MARCH, 31).atStartOfDay());
 
         // just before
-        RegularDomain domain = RegularDomain.of(TsPeriod.daily(2017, 2, 1), 29);
+        TsDomain domain = TsDomain.of(TsPeriod.daily(2017, 2, 1), 29);
         DataBlock data = DataBlock.make(domain.getLength());
         ramp.data(domain, Collections.singletonList(data));
         assertTrue(data.allMatch(x->x==-1));
-        domain = RegularDomain.of(TsPeriod.daily(2017, 2, 1), 30);
+        domain = TsDomain.of(TsPeriod.daily(2017, 2, 1), 30);
         data = DataBlock.make(domain.getLength());
         ramp.data(domain, Collections.singletonList(data));
         assertTrue(data.count(x->x != -1) == 1);
         // just after
-        domain = RegularDomain.of(TsPeriod.daily(2018, 3, 31), 60);
+        domain = TsDomain.of(TsPeriod.daily(2018, 3, 31), 60);
         data = DataBlock.make(domain.getLength());
         ramp.data(domain, Collections.singletonList(data));
         assertTrue(data.allMatch(x->x==0));
-        domain = RegularDomain.of(TsPeriod.daily(2018, 3, 30), 60);
+        domain = TsDomain.of(TsPeriod.daily(2018, 3, 30), 60);
         data = DataBlock.make(domain.getLength());
         ramp.data(domain, Collections.singletonList(data));
         assertTrue(data.count(x->x != 0) == 1);

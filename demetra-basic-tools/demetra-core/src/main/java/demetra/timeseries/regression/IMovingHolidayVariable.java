@@ -18,14 +18,14 @@
 package demetra.timeseries.regression;
 
 import demetra.design.Development;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface IMovingHolidayVariable extends ITsVariable<RegularDomain> {
+public interface IMovingHolidayVariable extends ITsVariable<TsDomain> {
 
     @Override
     default String getName(){

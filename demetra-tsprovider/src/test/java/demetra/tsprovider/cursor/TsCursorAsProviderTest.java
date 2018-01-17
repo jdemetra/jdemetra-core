@@ -21,7 +21,7 @@ import _util.tsproviders.NoOpTsCursorSupport;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterators;
 import demetra.timeseries.TsUnit;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import demetra.tsprovider.DataSet;
 import static demetra.tsprovider.DataSet.Kind.COLLECTION;
 import static demetra.tsprovider.DataSet.Kind.SERIES;

@@ -19,7 +19,7 @@ package demetra.benchmarking.spi;
 import demetra.benchmarking.multivariate.MultivariateCholetteSpecification;
 import demetra.design.Algorithm;
 import demetra.design.ServiceDefinition;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import java.util.Map;
 
 /**

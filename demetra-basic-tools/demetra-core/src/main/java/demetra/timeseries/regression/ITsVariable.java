@@ -18,11 +18,11 @@ package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.timeseries.TsDomain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
+import demetra.timeseries.TimeSeriesDomain;
 
 /**
  * Basic interface for regression variable. The variable may be a single
@@ -33,7 +33,7 @@ import java.util.List;
  * @param <D>
  */
 @Development(status = Development.Status.Release)
-public interface ITsVariable<D extends TsDomain<?>> {
+public interface ITsVariable<D extends TimeSeriesDomain<?>> {
 
     static final LocalDateTime EPOCH = LocalDate.ofEpochDay(0).atStartOfDay();
 

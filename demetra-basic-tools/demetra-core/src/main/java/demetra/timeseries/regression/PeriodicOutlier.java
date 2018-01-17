@@ -20,7 +20,7 @@ import demetra.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.maths.polynomials.UnitRoots;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import java.time.LocalDateTime;
 
 /**

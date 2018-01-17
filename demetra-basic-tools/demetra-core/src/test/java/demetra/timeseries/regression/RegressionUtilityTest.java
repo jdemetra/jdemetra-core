@@ -17,7 +17,7 @@
 package demetra.timeseries.regression;
 
 import demetra.maths.matrices.Matrix;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,13 +36,13 @@ public class RegressionUtilityTest {
 
     @Test
     public void testVarious() {
-        List<ITsVariable<RegularDomain>> vars=new ArrayList<>();
+        List<ITsVariable<TsDomain>> vars=new ArrayList<>();
         vars.add(new LevelShift(LocalDateTime.now(), true));
         vars.add(new LevelShift(LocalDateTime.now(), false));
         vars.add(new Constant());
         vars.add(new PeriodicContrasts(7));
         
-        RegularDomain domain=RegularDomain.of(TsPeriod.daily(2017, 7, 1), 90);
+        TsDomain domain=TsDomain.of(TsPeriod.daily(2017, 7, 1), 90);
         Matrix M=RegressionUtility.data(vars, domain);
         //System.out.println(M);
     }

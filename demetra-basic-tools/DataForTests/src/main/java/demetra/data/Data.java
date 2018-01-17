@@ -6,7 +6,7 @@
 package demetra.data;
 
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 
 /**
  *

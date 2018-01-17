@@ -17,7 +17,7 @@
 package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendar.GenericTradingDays;
 import java.util.List;
 
@@ -41,12 +41,12 @@ public class GenericTradingDaysVariables implements ITradingDaysVariable {
     }
 
     @Override
-    public void data(RegularDomain domain, List<DataBlock> data) {
+    public void data(TsDomain domain, List<DataBlock> data) {
         td.data(domain, data);
     }
 
     @Override
-    public String getDescription(RegularDomain context) {
+    public String getDescription(TsDomain context) {
         return td.toString();
     }
 
@@ -56,7 +56,7 @@ public class GenericTradingDaysVariables implements ITradingDaysVariable {
     }
 
     @Override
-    public String getItemDescription(int idx, RegularDomain context) {
+    public String getItemDescription(int idx, TsDomain context) {
         return td.getDescription(idx);
     }
 
@@ -70,7 +70,7 @@ public class GenericTradingDaysVariables implements ITradingDaysVariable {
     }
 
     @Override
-    public ITsVariable<RegularDomain> rename(String nname) {
+    public ITsVariable<TsDomain> rename(String nname) {
         return new GenericTradingDaysVariables(td, nname);
     }
 
