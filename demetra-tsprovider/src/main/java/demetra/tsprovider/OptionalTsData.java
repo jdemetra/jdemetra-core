@@ -18,7 +18,7 @@ package demetra.tsprovider;
 
 import demetra.design.Immutable;
 import demetra.design.NewObject;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import java.util.Objects;
 import java.util.Optional;
 import javax.annotation.Nonnull;

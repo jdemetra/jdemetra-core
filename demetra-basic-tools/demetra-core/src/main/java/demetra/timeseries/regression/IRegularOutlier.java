@@ -20,7 +20,7 @@ package demetra.timeseries.regression;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.RationalBackFilter;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,10 +30,10 @@ import java.util.List;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface IRegularOutlier extends IOutlier<RegularDomain> {
+public interface IRegularOutlier extends IOutlier<TsDomain> {
 
     @Override
-    default void data(RegularDomain domain, List<DataBlock> buffer) {
+    default void data(TsDomain domain, List<DataBlock> buffer) {
         TsPeriod start = domain.get(0);
         data(start, buffer.get(0));
     }

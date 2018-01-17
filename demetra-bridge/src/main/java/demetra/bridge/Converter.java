@@ -16,10 +16,10 @@
  */
 package demetra.bridge;
 
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.OptionalTsData;
@@ -105,11 +105,11 @@ public class Converter {
         return new ec.tstoolkit.timeseries.simplets.TsPeriod(fromTsUnit(o.getUnit()), fromDateTime(o.start()));
     }
 
-    public RegularDomain toRegularDomain(ec.tstoolkit.timeseries.simplets.TsDomain o) {
-        return RegularDomain.of(toTsPeriod(o.getStart()), o.getLength());
+    public TsDomain toRegularDomain(ec.tstoolkit.timeseries.simplets.TsDomain o) {
+        return TsDomain.of(toTsPeriod(o.getStart()), o.getLength());
     }
 
-    public ec.tstoolkit.timeseries.simplets.TsDomain fromRegularDomain(RegularDomain o) {
+    public ec.tstoolkit.timeseries.simplets.TsDomain fromRegularDomain(TsDomain o) {
         return new ec.tstoolkit.timeseries.simplets.TsDomain(fromTsPeriod(o.getStartPeriod()), o.getLength());
     }
 
@@ -118,7 +118,7 @@ public class Converter {
     }
 
     public ec.tstoolkit.timeseries.simplets.TsData fromTsData(TsData o) {
-        return new ec.tstoolkit.timeseries.simplets.TsData(fromTsPeriod(o.getStart()), o.values().toArray(), false);
+        return new ec.tstoolkit.timeseries.simplets.TsData(fromTsPeriod(o.getStart()), o.getValues().toArray(), false);
     }
 
     public DataSource toDataSource(ec.tss.tsproviders.DataSource o) {

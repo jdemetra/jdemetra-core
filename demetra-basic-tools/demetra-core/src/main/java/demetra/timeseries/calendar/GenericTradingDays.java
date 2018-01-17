@@ -18,7 +18,7 @@ package demetra.timeseries.calendar;
 
 import demetra.data.Cell;
 import demetra.data.DataBlock;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
 import java.util.List;
@@ -61,7 +61,7 @@ public class GenericTradingDays {
         return clustering;
     }
 
-    public void data(RegularDomain domain, List<DataBlock> buffer) {
+    public void data(TsDomain domain, List<DataBlock> buffer) {
         if (contrastGroup >= 0) {
             dataContrasts(domain, buffer);
         } else {
@@ -69,7 +69,7 @@ public class GenericTradingDays {
         }
     }
 
-    private void dataNoContrast(RegularDomain domain, List<DataBlock> buffer) {
+    private void dataNoContrast(TsDomain domain, List<DataBlock> buffer) {
         int n = domain.length();
         int[][] days = tdCount(domain);
 
@@ -96,7 +96,7 @@ public class GenericTradingDays {
         }
     }
 
-    private void dataContrasts(RegularDomain domain, List<DataBlock> buffer) {
+    private void dataContrasts(TsDomain domain, List<DataBlock> buffer) {
         int n = domain.length();
         int[][] days = tdCount(domain);
 
@@ -172,7 +172,7 @@ public class GenericTradingDays {
     private static final LocalDate EPOCH = LocalDate.ofEpochDay(0);
     private static final int DAY_OF_WEEK_OF_EPOCH = EPOCH.getDayOfWeek().getValue() - 1;
 
-    public static int[][] tdCount(RegularDomain domain) {
+    public static int[][] tdCount(TsDomain domain) {
         int[][] rslt = new int[7][];
 
         int n = domain.length();

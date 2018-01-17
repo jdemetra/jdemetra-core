@@ -26,7 +26,7 @@ import java.util.List;
  * @author Philippe Charles
  */
 @lombok.Value(staticConstructor = "of")
-public class IrregularDomain implements TsDomain<TimePoint> {
+public class IrregularDomain implements TimeSeriesDomain<IrregularPeriod> {
 
     @lombok.NonNull
     LocalDateTime[] timestamps;
@@ -37,8 +37,8 @@ public class IrregularDomain implements TsDomain<TimePoint> {
     }
 
     @Override
-    public TimePoint get(int index) throws IndexOutOfBoundsException {
-        return new TimePoint(timestamps[index]);
+    public IrregularPeriod get(int index) throws IndexOutOfBoundsException {
+        return IrregularPeriod.of(timestamps[index]);
     }
 
     @Override
@@ -48,12 +48,12 @@ public class IrregularDomain implements TsDomain<TimePoint> {
 
     @Override
     public LocalDateTime end() {
-        return timestamps[timestamps.length-1].plusNanos(1);
+        return timestamps[timestamps.length - 1].plusNanos(1);
     }
 
     @Override
     public boolean contains(LocalDateTime date) {
-        return Arrays.binarySearch(timestamps, date)>=0;
+        return Arrays.binarySearch(timestamps, date) >= 0;
     }
 
     @Override
@@ -66,17 +66,22 @@ public class IrregularDomain implements TsDomain<TimePoint> {
     }
 
     @Override
-    public int indexOf(TimePoint point) {
+    public int indexOf(IrregularPeriod point) {
         return Arrays.binarySearch(timestamps, point.start());
     }
 
     @Override
-    public boolean contains(TimePoint period) {
-        return Arrays.binarySearch(timestamps, period.start())>=0;
+    public boolean contains(IrregularPeriod period) {
+        return Arrays.binarySearch(timestamps, period.start()) >= 0;
     }
 
     @Override
-    public Iterator<TimePoint> iterator() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Iterator<IrregularPeriod> iterator() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public TimeSeriesDomain<IrregularPeriod> select(TimeSeriesSelector selector) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

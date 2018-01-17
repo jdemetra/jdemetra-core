@@ -14,20 +14,21 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.simplets;
+package demetra.timeseries;
 
-import demetra.design.Immutable;
-import demetra.timeseries.TimeObservation;
-import demetra.timeseries.TsPeriod;
+import demetra.data.Range;
+import java.time.LocalDateTime;
+import javax.annotation.Nonnull;
 
 /**
  *
  * @author Philippe Charles
+ * @param <P> period type
  */
-@Immutable
-@lombok.Value
-public final class TsObservation implements TimeObservation.OfDouble<TsPeriod> {
+public interface TimeSeriesObs<P extends Range<LocalDateTime>> {
 
-    TsPeriod period;
-    double value;
+    @Nonnull
+    P getPeriod();
+
+    double getValue();
 }

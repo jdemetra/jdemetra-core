@@ -18,7 +18,7 @@
 package demetra.timeseries.regression;
 
 import demetra.design.Development;
-import demetra.timeseries.TsDomain;
+import demetra.timeseries.TimeSeriesDomain;
 
 /**
  *
@@ -26,7 +26,7 @@ import demetra.timeseries.TsDomain;
  * @param <D>
  */
 @Development(status = Development.Status.Alpha)
-public interface ITsModifier<D extends TsDomain<?>> extends ITsVariable<D> {
+public interface ITsModifier<D extends TimeSeriesDomain<?>> extends ITsVariable<D> {
 
     /**
      * Gets the internal variable

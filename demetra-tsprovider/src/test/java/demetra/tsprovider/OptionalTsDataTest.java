@@ -19,7 +19,7 @@ package demetra.tsprovider;
 import demetra.data.DoubleSequence;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import static demetra.tsprovider.OptionalTsData.absent;
 import static demetra.tsprovider.OptionalTsData.present;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

@@ -17,8 +17,8 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.timeseries.Fixme;
-import demetra.timeseries.RegularDomain;
+import internal.timeseries.InternalFixme;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
@@ -92,16 +92,16 @@ public class FixedDay implements IHoliday {
         if (offset == 0) {
             return this;
         }
-        int pos = Fixme.getCumulatedMonthDays(month) + day;
+        int pos = InternalFixme.getCumulatedMonthDays(month) + day;
         pos += offset;
         if (pos < 0 || pos >= 365) {
             return null;
         }
         int nmonth = 0;
-        while (pos >= Fixme.getCumulatedMonthDays(nmonth + 1)) {
+        while (pos >= InternalFixme.getCumulatedMonthDays(nmonth + 1)) {
             ++nmonth;
         }
-        int nday = pos - Fixme.getCumulatedMonthDays(nmonth);
+        int nday = pos - InternalFixme.getCumulatedMonthDays(nmonth);
         // avoid leap year
         if (month <= 1 && nmonth >= 2) {
             return null;
@@ -127,7 +127,7 @@ public class FixedDay implements IHoliday {
     }
 
     @Override
-    public RegularDomain getSignificantDomain(RegularDomain domain) {
+    public TsDomain getSignificantDomain(TsDomain domain) {
         if (!domain.getStartPeriod().getUnit().getChronoUnit().equals(ChronoUnit.DAYS)) {
             throw new IllegalArgumentException();
         }
@@ -141,9 +141,9 @@ public class FixedDay implements IHoliday {
             elast = LocalDate.of(last.getYear() - 1, month, day);
         }
         if (efirst.isAfter(elast)) {
-            return RegularDomain.of(domain.getStartPeriod().withDate(efirst), 0);
+            return TsDomain.of(domain.getStartPeriod().withDate(efirst.atStartOfDay()), 0);
         } else {
-            return RegularDomain.of(domain.getStartPeriod().withDate(efirst), (int) ChronoUnit.DAYS.between(efirst, elast));
+            return TsDomain.of(domain.getStartPeriod().withDate(efirst.atStartOfDay()), (int) ChronoUnit.DAYS.between(efirst, elast));
         }
     }
 
@@ -181,7 +181,7 @@ public class FixedDay implements IHoliday {
 
             // pstart is the first valid period
             if (xday.isBefore(fstart)) {
-                start = start.plus(Fixme.getAsInt(freq));
+                start = start.plus(InternalFixme.getAsInt(freq));
                 --nyears;
             }
 
@@ -213,7 +213,7 @@ public class FixedDay implements IHoliday {
                         ++cur;
                         return new FixedDayInfo(pstart, fday);
                     } else {
-                        return new FixedDayInfo(pstart.plus(Fixme.getAsInt(pstart.getUnit()) * (cur++)), fday);
+                        return new FixedDayInfo(pstart.plus(InternalFixme.getAsInt(pstart.getUnit()) * (cur++)), fday);
                     }
                 }
             };

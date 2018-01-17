@@ -14,11 +14,8 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.simplets;
+package demetra.timeseries;
 
-import demetra.timeseries.RegularDomain;
-import demetra.timeseries.TsPeriod;
-import demetra.timeseries.TsUnit;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Iterator;
@@ -45,15 +42,15 @@ public final class TsDataTable {
 
     @Nonnull
     public static TsDataTable of(@Nonnull List<TsData> col) {
-        RegularDomain domain = computeDomain(col.stream().map(TsData::domain).iterator());
+        TsDomain domain = computeDomain(col.stream().map(TsData::getDomain).iterator());
         return new TsDataTable(domain, col.toArray(new TsData[col.size()]));
     }
 
-    private final RegularDomain domain;
+    private final TsDomain domain;
     private final TsData[] col;
 
     @Nonnull
-    public RegularDomain getDomain() {
+    public TsDomain getDomain() {
         return domain;
     }
 
@@ -74,8 +71,8 @@ public final class TsDataTable {
             TsData ts = col[series];
 
             TsPeriod current = domain.getStartPeriod().plus(period);
-            TsPeriod valuePeriod = current.withUnit(ts.domain().getTsUnit());
-            int valueIndex = ts.domain().position(valuePeriod);
+            TsPeriod valuePeriod = current.withUnit(ts.getDomain().getTsUnit());
+            int valueIndex = ts.getDomain().position(valuePeriod);
 
             if (isInBounds(ts, valueIndex)) {
                 TsPeriod start = valuePeriod.withUnit(current.getUnit());
@@ -157,12 +154,12 @@ public final class TsDataTable {
         }
     }
 
-    static RegularDomain computeDomain(Iterator<RegularDomain> domains) {
+    static TsDomain computeDomain(Iterator<TsDomain> domains) {
         if (!domains.hasNext()) {
             throw new IllegalArgumentException();
         }
 
-        RegularDomain o = domains.next();
+        TsDomain o = domains.next();
 
         long lowestAmount = o.getTsUnit().getAmount();
         ChronoUnit lowestChronoUnit = o.getTsUnit().getChronoUnit();
@@ -190,7 +187,7 @@ public final class TsDataTable {
         TsPeriod startPeriod = TsPeriod.of(unit, minDate);
         TsPeriod endPeriod = TsPeriod.of(unit, maxDate);
         // FIXME: default epoch?
-        return RegularDomain.of(startPeriod, startPeriod.until(endPeriod));
+        return TsDomain.of(startPeriod, startPeriod.until(endPeriod));
     }
 
     private static long getLowestAmount(long lowestAmount, ChronoUnit oldUnit, ChronoUnit newUnit) {

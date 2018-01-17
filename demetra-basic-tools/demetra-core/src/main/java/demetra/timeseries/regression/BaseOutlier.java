@@ -19,11 +19,11 @@ package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
 import java.time.Period;
+import demetra.timeseries.TimeSeriesDomain;
 
 /**
  *
@@ -32,13 +32,13 @@ import java.time.Period;
 @Development(status = Development.Status.Alpha)
 public abstract class BaseOutlier{
 
-    public static <D extends TsDomain<?>> String defaultName(String code, LocalDateTime pos, D context) {
+    public static <D extends TimeSeriesDomain<?>> String defaultName(String code, LocalDateTime pos, D context) {
         StringBuilder builder = new StringBuilder();
         builder.append(code).append(" (");
-        if (context == null || ! (context instanceof RegularDomain)) {
+        if (context == null || ! (context instanceof TsDomain)) {
             builder.append(pos);
         } else {
-            TsPeriod p = ((RegularDomain)context).get(0);
+            TsPeriod p = ((TsDomain)context).get(0);
             p.withDate(pos);
             builder.append(p);
         }
@@ -56,7 +56,7 @@ public abstract class BaseOutlier{
     
     public abstract String getCode();
 
-    public String getDescription(RegularDomain context) {
+    public String getDescription(TsDomain context) {
         StringBuilder builder = new StringBuilder();
         builder.append(getCode()).append(" (");
         if (context == null) {

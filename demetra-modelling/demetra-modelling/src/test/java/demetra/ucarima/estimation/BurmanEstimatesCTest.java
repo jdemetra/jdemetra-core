@@ -37,7 +37,7 @@ public class BurmanEstimatesCTest {
         UcarimaModel ucm = ucmAirline(-.6, -.8);
         ucm = ucm.simplify();
         BurmanEstimatesC burman=new BurmanEstimatesC();
-        burman.setData(Data.TS_PROD.values());
+        burman.setData(Data.TS_PROD.getValues());
         burman.setUcarimaModel(ucm);
         double[] estimates = burman.estimates(0, true);
 //        System.out.println(DataBlock.ofInternal(estimates));

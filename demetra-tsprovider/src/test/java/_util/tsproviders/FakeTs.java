@@ -17,7 +17,7 @@
 package _util.tsproviders;
 
 import demetra.timeseries.TsUnit;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import demetra.tsprovider.OptionalTsData;
 import java.util.Collections;
 import java.util.Map;

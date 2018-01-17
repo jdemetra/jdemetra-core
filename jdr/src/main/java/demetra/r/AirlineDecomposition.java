@@ -42,7 +42,7 @@ import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.SsfData;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import demetra.ucarima.AllSelector;
 import demetra.ucarima.ModelDecomposer;
@@ -52,6 +52,12 @@ import demetra.ucarima.UcarimaModel;
 import demetra.ucarima.ssf.SsfUcarima;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 
 /**
@@ -134,14 +140,14 @@ public class AirlineDecomposition {
                 .build();
 
         RegArimaModel<SarimaModel> regarima
-                = RegArimaModel.builder(DoubleSequence.of(s.values()), arima)
+                = RegArimaModel.builder(DoubleSequence.of(s.getValues()), arima)
                 .build();
         RegArimaEstimation<SarimaModel> rslt = monitor.process(regarima);
         UcarimaModel ucm = ucm(rslt.getModel().arima());
 
         ucm = ucm.simplify();
         SsfUcarima ssf = SsfUcarima.of(ucm);
-        SsfData data = new SsfData(s.values());
+        SsfData data = new SsfData(s.getValues());
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
         TsPeriod start = s.getStart();
 

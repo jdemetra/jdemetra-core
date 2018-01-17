@@ -38,10 +38,22 @@ import demetra.sts.SsfBsm;
 import demetra.sts.internal.BsmMonitor;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
@@ -131,13 +143,13 @@ public class StsEstimation {
         BsmMonitor monitor = new BsmMonitor();
         monitor.setSpecification(mspec);
         BsmEstimationSpec espec = new BsmEstimationSpec();
-        if (!monitor.process(y.values(), y.getTsUnit().ratioOf(TsUnit.YEAR))) {
+        if (!monitor.process(y.getValues(), y.getTsUnit().ratioOf(TsUnit.YEAR))) {
             return null;
         }
 
         BasicStructuralModel bsm = monitor.getResult();
         SsfBsm ssf = SsfBsm.of(bsm);
-        DefaultSmoothingResults sr = DkToolkit.sqrtSmooth(ssf, new SsfData(y.values()), true);
+        DefaultSmoothingResults sr = DkToolkit.sqrtSmooth(ssf, new SsfData(y.getValues()), true);
 
         TsData t = null, c = null, s = null, seas = null, n = null;
         TsPeriod start = y.getStart();

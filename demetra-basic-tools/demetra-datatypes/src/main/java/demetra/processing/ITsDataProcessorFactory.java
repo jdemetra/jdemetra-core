@@ -20,7 +20,7 @@ package demetra.processing;
 
 import demetra.algorithms.AlgorithmDescriptor;
 import demetra.design.Development;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import java.util.Map;
 
 /**

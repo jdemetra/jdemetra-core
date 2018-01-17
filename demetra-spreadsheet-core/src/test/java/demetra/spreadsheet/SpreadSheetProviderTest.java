@@ -17,7 +17,7 @@
 package demetra.spreadsheet;
 
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.TsInformationType;

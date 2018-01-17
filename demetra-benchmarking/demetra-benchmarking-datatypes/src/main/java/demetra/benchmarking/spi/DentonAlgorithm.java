@@ -20,7 +20,7 @@ import demetra.benchmarking.univariate.DentonSpecification;
 import demetra.design.Algorithm;
 import demetra.design.ServiceDefinition;
 import demetra.timeseries.TsUnit;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 
 /**
  *

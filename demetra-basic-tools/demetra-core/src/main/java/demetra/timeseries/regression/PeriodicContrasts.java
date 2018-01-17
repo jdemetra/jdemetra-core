@@ -17,7 +17,7 @@
 package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,7 +32,7 @@ import java.util.List;
  *
  * @author Jean Palate
  */
-public class PeriodicContrasts implements ITsVariable<RegularDomain> {
+public class PeriodicContrasts implements ITsVariable<TsDomain> {
     
 
     private final int period;
@@ -58,7 +58,7 @@ public class PeriodicContrasts implements ITsVariable<RegularDomain> {
     }
 
     @Override
-    public void data(RegularDomain domain, List<DataBlock> data) {
+    public void data(TsDomain domain, List<DataBlock> data) {
         TsPeriod refPeriod=domain.getStartPeriod().withDate(ref);
         long del=domain.getStartPeriod().getId()-refPeriod.getId();
         int pstart =(int) del%period;
@@ -84,7 +84,7 @@ public class PeriodicContrasts implements ITsVariable<RegularDomain> {
      * @return
      */
     @Override
-    public String getDescription(RegularDomain context) {
+    public String getDescription(TsDomain context) {
         StringBuilder builder = new StringBuilder();
         builder.append("Periodic contrasts");
         return builder.toString();
@@ -105,7 +105,7 @@ public class PeriodicContrasts implements ITsVariable<RegularDomain> {
      * @return
      */
     @Override
-    public String getItemDescription(int idx, RegularDomain context) {
+    public String getItemDescription(int idx, TsDomain context) {
         StringBuilder builder = new StringBuilder();
         builder.append("Period contrast [").append(idx + 1).append(']');
         return builder.toString();

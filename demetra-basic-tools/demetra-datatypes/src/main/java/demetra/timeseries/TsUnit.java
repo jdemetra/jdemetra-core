@@ -45,32 +45,15 @@ public class TsUnit implements TemporalAmount {
     @lombok.NonNull
     ChronoUnit chronoUnit;
 
-    public static TsUnit ofAnnualFrequency(int freq) {
-        switch (freq) {
-            case 1:
-                return YEAR;
-            case 2:
-                return HALF_YEAR;
-            case 4:
-                return QUARTER;
-            case 12:
-                return MONTH;
-        }
-        if (freq % 12 == 0) {
-            return new TsUnit(freq / 12, ChronoUnit.MONTHS);
-        } else {
-            throw new IllegalArgumentException();
-        }
-    }
-
     public boolean contains(TsUnit other) {
         return other.ratioOf(this) > 0;
     }
 
     /**
      * Returns the number of time this unit is contained in the given unit
+     *
      * @param other
-     * @return 
+     * @return
      */
     public int ratioOf(TsUnit other) {
         double x = 1D * other.chronoUnit.getDuration().getSeconds() / chronoUnit.getDuration().getSeconds() * other.amount / amount;
@@ -90,17 +73,15 @@ public class TsUnit implements TemporalAmount {
 
     public String toIsoString() {
         switch (chronoUnit) {
-            case MILLIS:
-            case MINUTES:
-            case HOURS:
-            case MICROS:
-            case SECONDS:
-            case NANOS:
-                return Duration.of(amount, chronoUnit).toString();
             case FOREVER:
                 return "";
+            case HOURS:
+            case MINUTES:
+            case SECONDS:
+                return Duration.of(amount, chronoUnit).toString();
+            default:
+                return Period.from(this).toString();
         }
-        return Period.from(this).toString();
     }
 
     @Override
@@ -144,55 +125,121 @@ public class TsUnit implements TemporalAmount {
 
     public static TsUnit of(long amount, ChronoUnit unit) {
         switch (unit) {
-            case YEARS:
-                if (amount == 1) {
-                    return YEAR;
-                } else if (amount == 10) {
-                    return DECADE;
-                } else {
-                    return new TsUnit(amount, unit);
-                }
-            case MONTHS:
-                if (amount == 1) {
-                    return MONTH;
-                } else if (amount == 3) {
-                    return QUARTER;
-                } else if (amount == 6) {
-                    return HALF_YEAR;
-                } else {
-                    return new TsUnit(amount, unit);
-                }
-            case DAYS:
-                if (amount == 1) {
-                    return DAY;
-                } else if (amount == 7) {
-                    return WEEK;
-                } else {
-                    return new TsUnit(amount, unit);
-                }
-            case HOURS:
-                return amount == 1 ? HOUR : new TsUnit(amount * 3600, ChronoUnit.SECONDS);
-            case MINUTES:
-                return amount == 1 ? MINUTE : new TsUnit(amount * 60, ChronoUnit.SECONDS);
-            case SECONDS:
-                return amount == 1 ? SECOND : new TsUnit(amount, ChronoUnit.SECONDS);
-            case CENTURIES:
-                return new TsUnit(100 * amount, ChronoUnit.YEARS);
-            case DECADES:
-                return new TsUnit(10 * amount, ChronoUnit.YEARS);
-            case WEEKS:
-                return new TsUnit(7 * amount, ChronoUnit.DAYS);
-            case HALF_DAYS:
-                return new TsUnit(43200 * amount, ChronoUnit.SECONDS);
             case FOREVER:
                 return UNDEFINED;
-//            case MICROS: ??? Not supported for the moment ???
-//            case MILLIS:
-//            case NANOS:
-//                return new TsUnit(amount, unit);
+            case ERAS:
+                throw new UnsupportedTemporalTypeException(unit.toString());
+            case MILLENNIA:
+                return ofMillennia(amount);
+            case CENTURIES:
+                return ofCenturies(amount);
+            case DECADES:
+                return ofDecades(amount);
+            case YEARS:
+                return ofYears(amount);
+            case MONTHS:
+                return ofMonths(amount);
+            case WEEKS:
+                return ofWeeks(amount);
+            case DAYS:
+                return ofDays(amount);
+            case HALF_DAYS:
+                return ofHalfDays(amount);
+            case HOURS:
+                return ofHours(amount);
+            case MINUTES:
+                return ofMinutes(amount);
+            case SECONDS:
+                return ofSeconds(amount);
+            case MILLIS:
+            case MICROS:
+            case NANOS:
             default:
                 throw new UnsupportedTemporalTypeException(unit.toString());
         }
+    }
+
+    public static TsUnit ofAnnualFrequency(int freq) {
+        switch (freq) {
+            case 1:
+                return YEAR;
+            case 2:
+                return HALF_YEAR;
+            case 4:
+                return QUARTER;
+            case 12:
+                return MONTH;
+        }
+        if (freq % 12 == 0) {
+            return new TsUnit(freq / 12, ChronoUnit.MONTHS);
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private static TsUnit ofMillennia(long amount) {
+        return new TsUnit(1000 * amount, ChronoUnit.YEARS);
+    }
+
+    private static TsUnit ofCenturies(long amount) {
+        return new TsUnit(100 * amount, ChronoUnit.YEARS);
+    }
+
+    private static TsUnit ofDecades(long amount) {
+        return new TsUnit(10 * amount, ChronoUnit.YEARS);
+    }
+
+    private static TsUnit ofYears(long amount) {
+        if (amount == 1) {
+            return YEAR;
+        }
+        if (amount == 10) {
+            return DECADE;
+        }
+        return new TsUnit(amount, ChronoUnit.YEARS);
+    }
+
+    private static TsUnit ofMonths(long amount) {
+        if (amount == 1) {
+            return MONTH;
+        }
+        if (amount == 3) {
+            return QUARTER;
+        }
+        if (amount == 6) {
+            return HALF_YEAR;
+        }
+        return new TsUnit(amount, ChronoUnit.MONTHS);
+    }
+
+    private static TsUnit ofWeeks(long amount) {
+        return new TsUnit(7 * amount, ChronoUnit.DAYS);
+    }
+
+    private static TsUnit ofDays(long amount) {
+        if (amount == 1) {
+            return DAY;
+        }
+        if (amount == 7) {
+            return WEEK;
+        }
+        return new TsUnit(amount, ChronoUnit.DAYS);
+    }
+
+    private static TsUnit ofHalfDays(long amount) {
+        return new TsUnit(43200 * amount, ChronoUnit.SECONDS);
+    }
+
+    private static TsUnit ofHours(long amount) {
+        return amount == 1 ? HOUR : new TsUnit(amount * 3600, ChronoUnit.SECONDS);
+    }
+
+    private static TsUnit ofMinutes(long amount) {
+        return amount == 1 ? MINUTE : new TsUnit(amount * 60, ChronoUnit.SECONDS);
+    }
+
+    private static TsUnit ofSeconds(long amount) {
+        return amount == 1 ? SECOND : new TsUnit(amount, ChronoUnit.SECONDS);
     }
 
     public static TsUnit parse(CharSequence text) throws DateTimeParseException {

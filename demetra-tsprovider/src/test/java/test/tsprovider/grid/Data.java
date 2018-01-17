@@ -18,7 +18,7 @@ package test.tsprovider.grid;
 
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import demetra.tsprovider.OptionalTsData;
 import demetra.tsprovider.grid.GridInput;
 import demetra.tsprovider.grid.GridLayout;

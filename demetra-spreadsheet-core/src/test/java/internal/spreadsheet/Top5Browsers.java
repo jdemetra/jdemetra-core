@@ -21,7 +21,7 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import static demetra.timeseries.TsUnit.MONTH;
 import static demetra.timeseries.TsUnit.QUARTER;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import static demetra.tsprovider.grid.GridLayout.HORIZONTAL;
 import static demetra.tsprovider.grid.GridLayout.VERTICAL;
 import ec.util.spreadsheet.Sheet;

@@ -21,8 +21,8 @@ import demetra.benchmarking.univariate.DentonSpecification;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.TsPeriodSelector;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TimeSeriesSelector;
+import demetra.timeseries.TsData;
 import demetra.timeseries.simplets.TsDataToolkit;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -40,13 +40,13 @@ public class DentonFactory implements DentonAlgorithm {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
         // Y is limited to q !
-        TsPeriodSelector qsel = TsPeriodSelector.between(highFreqSeries.getStart().start(), highFreqSeries.getPeriod(highFreqSeries.length()).start());
+        TimeSeriesSelector qsel = TimeSeriesSelector.between(highFreqSeries.getStart().start(), highFreqSeries.getPeriod(highFreqSeries.length()).start());
         TsData naggregationConstraint = TsDataToolkit.select(aggregationConstraint, qsel);
         TsPeriod sh = highFreqSeries.getStart();
         TsPeriod sl = TsPeriod.of(sh.getUnit(), naggregationConstraint.getStart().start());
         int offset = sh.until(sl);
         Denton denton = new Denton(spec, ratio, offset);
-        double[] r = denton.process(highFreqSeries.values(), naggregationConstraint.values());
+        double[] r = denton.process(highFreqSeries.getValues(), naggregationConstraint.getValues());
         return TsData.ofInternal(sh, r);
     }
 
@@ -59,7 +59,7 @@ public class DentonFactory implements DentonAlgorithm {
         // Y is limited to q !
         TsPeriod sh = TsPeriod.of(highFreq, aggregationConstraint.getStart().start());
         Denton denton = new Denton(spec, ratio, 0);
-        double[] r = denton.process(aggregationConstraint.values());
+        double[] r = denton.process(aggregationConstraint.getValues());
         return TsData.ofInternal(sh, r);
     }
 

@@ -20,18 +20,18 @@ import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.ServiceDefinition;
 import demetra.maths.linearfilters.RationalBackFilter;
-import demetra.timeseries.RegularDomain;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
 import java.util.List;
+import demetra.timeseries.TimeSeriesDomain;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface IOutlier<D extends TsDomain<?>> extends ITsVariable<D> {
+public interface IOutlier<D extends TimeSeriesDomain<?>> extends ITsVariable<D> {
 
     public static class FilterRepresentation {
 

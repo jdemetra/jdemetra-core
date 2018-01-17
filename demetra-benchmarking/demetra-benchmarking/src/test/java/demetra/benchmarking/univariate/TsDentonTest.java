@@ -16,14 +16,11 @@
  */
 package demetra.benchmarking.univariate;
 
-import demetra.benchmarking.univariate.DentonSpecification;
-import demetra.benchmarking.univariate.TsDenton;
 import demetra.data.AggregationType;
 import demetra.data.DataBlock;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.simplets.TsData;
-import demetra.timeseries.simplets.TsDataConverter;
+import demetra.timeseries.TsData;
 import demetra.timeseries.simplets.TsDataToolkit;
 import java.time.temporal.ChronoUnit;
 import org.junit.Test;
@@ -54,8 +51,8 @@ public class TsDentonTest {
         TsData t = TsData.of(a, y);
         TsData s = TsData.of(q, x);
         TsData b = TsDenton.benchmark(s, t, spec);
-        TsData bc = TsDataConverter.changeTsUnit(b, TsUnit.YEAR, AggregationType.Sum, true);
-        assertTrue(TsDataToolkit.subtract(t, bc).values().allMatch(w -> Math.abs(w) < 1e-9));
+        TsData bc = b.aggregate(TsUnit.YEAR, AggregationType.Sum, true);
+        assertTrue(TsDataToolkit.subtract(t, bc).getValues().allMatch(w -> Math.abs(w) < 1e-9));
     }
 
     @Test
@@ -69,7 +66,7 @@ public class TsDentonTest {
         TsPeriod a = TsPeriod.yearly(1980);
         TsData t = TsData.of(a, y);
         TsData b = TsDenton.benchmark(TsUnit.of(4, ChronoUnit.MONTHS), t, spec);
-        TsData bc = TsDataConverter.changeTsUnit(b, TsUnit.YEAR, AggregationType.Sum, true);
-        assertTrue(TsDataToolkit.subtract(t, bc).values().allMatch(x -> Math.abs(x) < 1e-9));
+        TsData bc = b.aggregate(TsUnit.YEAR, AggregationType.Sum, true);
+        assertTrue(TsDataToolkit.subtract(t, bc).getValues().allMatch(x -> Math.abs(x) < 1e-9));
     }
 }

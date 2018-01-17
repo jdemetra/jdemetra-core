@@ -18,7 +18,7 @@ package internal.tsprovider.util;
 
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import demetra.data.AggregationType;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;

@@ -27,7 +27,7 @@ import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.SsfData;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import demetra.timeseries.simplets.TsDataToolkit;
 import static demetra.timeseries.simplets.TsDataToolkit.log;
 import demetra.ucarima.ModelDecomposer;
@@ -56,11 +56,11 @@ public class TradingDaysTestsTest {
         UcarimaModel ucm = ucmAirline(regarima.getArima());
         ucm = ucm.simplify();
         SsfUcarima ssf = SsfUcarima.of(ucm);
-        SsfData data = new SsfData(s.values());
+        SsfData data = new SsfData(s.getValues());
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
         TsData i1 = TsData.of(s.getStart(), ds.item(ssf.getComponentPosition(2)));
         
-        data = new SsfData(TsDataToolkit.subtract(s, rtd).values());
+        data = new SsfData(TsDataToolkit.subtract(s, rtd).getValues());
         ds = DkToolkit.fastSmooth(ssf, data);
         TsData i2 = TsData.of(s.getStart(), ds.item(ssf.getComponentPosition(2)));
        

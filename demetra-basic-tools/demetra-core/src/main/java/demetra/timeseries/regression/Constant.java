@@ -18,8 +18,8 @@ package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.timeseries.TsDomain;
 import java.util.List;
+import demetra.timeseries.TimeSeriesDomain;
 
 /**
  *
@@ -27,7 +27,7 @@ import java.util.List;
  * @param <D>
  */
 @Development(status = Development.Status.Alpha)
-public class Constant<D extends TsDomain<?>> implements ITsVariable<D> {
+public class Constant<D extends TimeSeriesDomain<?>> implements ITsVariable<D> {
 
     /**
      *

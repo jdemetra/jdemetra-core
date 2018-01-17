@@ -14,17 +14,16 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.simplets;
+package demetra.timeseries;
 
+import demetra.data.AggregationType;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
-import demetra.design.Immutable;
-import demetra.timeseries.ITimeSeries;
-import demetra.timeseries.RegularDomain;
-import demetra.timeseries.TsUnit;
-import demetra.timeseries.TsPeriod;
+import internal.timeseries.InternalAggregator;
 import java.util.Random;
+import javax.annotation.Nonnull;
+import lombok.AccessLevel;
 
 /**
  * A TsData is a raw time series, containing only the actual data. TsData can
@@ -36,9 +35,9 @@ import java.util.Random;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@Immutable
-@lombok.EqualsAndHashCode
-public final class TsData implements ITimeSeries.OfDouble<TsPeriod, TsObservation> {
+@lombok.Value
+@lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
+public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
 
     /**
      * Creates a random time series
@@ -82,30 +81,15 @@ public final class TsData implements ITimeSeries.OfDouble<TsPeriod, TsObservatio
     }
 
     private static TsData make(TsPeriod start, DoubleSequence values) {
-        return new TsData(RegularDomain.of(start, values.length()), values);
+        return new TsData(TsDomain.of(start, values.length()), values);
     }
 
-    private final RegularDomain domain;
+    private final TsDomain domain;
     private final DoubleSequence values;
 
-    private TsData(RegularDomain domain, DoubleSequence values) {
-        this.domain = domain;
-        this.values = values;
-    }
-
     @Override
-    public RegularDomain domain() {
-        return domain;
-    }
-
-    @Override
-    public DoubleSequence values() {
-        return values;
-    }
-
-    @Override
-    public TsObservation get(int index) throws IndexOutOfBoundsException {
-        return new TsObservation(getPeriod(index), getValue(index));
+    public TsObs get(int index) throws IndexOutOfBoundsException {
+        return TsObs.of(getPeriod(index), getValue(index));
     }
 
     /**
@@ -120,26 +104,28 @@ public final class TsData implements ITimeSeries.OfDouble<TsPeriod, TsObservatio
     public TsPeriod getStart() {
         return domain.getStartPeriod();
     }
-    
+
     /**
      * Gets the number of periods in one year.
-     * @return 
+     *
+     * @return
      */
-    public int getAnnualFrequency(){
-        TsUnit unit=domain.getTsUnit();
-            switch (unit.getChronoUnit()) {
-                case YEARS:
-                    if (unit.getAmount() == 1) {
-                        return 1;
-                    }
-                    break;
-                case MONTHS:
-                    int n=(int)unit.getAmount();
-                    if (12%n == 0)
-                        return 12/n;
-                    break;
-            }
-            throw new UnsupportedOperationException(unit.toString());
+    public int getAnnualFrequency() {
+        TsUnit unit = domain.getTsUnit();
+        switch (unit.getChronoUnit()) {
+            case YEARS:
+                if (unit.getAmount() == 1) {
+                    return 1;
+                }
+                break;
+            case MONTHS:
+                int n = (int) unit.getAmount();
+                if (12 % n == 0) {
+                    return 12 / n;
+                }
+                break;
+        }
+        throw new UnsupportedOperationException(unit.toString());
     }
 
     /**
@@ -167,4 +153,69 @@ public final class TsData implements ITimeSeries.OfDouble<TsPeriod, TsObservatio
         return builder.toString();
     }
 
+    /**
+     * Makes a frequency change of this series.
+     *
+     * @param newUnit The new frequency. Must be la divisor of the present
+     * frequency.
+     * @param conversion Aggregation mode.
+     * @param complete If true, the observation for a given period in the new
+     * series is set to Missing if some data in the original series are Missing.
+     * @return A new time series is returned.
+     */
+    public TsData aggregate(@Nonnull TsUnit newUnit, @Nonnull AggregationType conversion, boolean complete) {
+        int ratio = this.getTsUnit().ratioOf(newUnit);
+        switch (ratio) {
+            case TsUnit.NO_STRICT_RATIO:
+            case TsUnit.NO_RATIO:
+                // FIXME: throw exception?
+                return null;
+            case 1:
+                return TsData.of(this.getStart().withUnit(newUnit), this.getValues());
+        }
+        if (this.isEmpty()) {
+            return TsData.of(this.getStart().withUnit(newUnit), this.getValues());
+        }
+        return changeUsingRatio(this, newUnit, InternalAggregator.of(conversion), ratio, complete);
+    }
+
+    private static TsData changeUsingRatio(TsData s, TsUnit newUnit, InternalAggregator aggregator, int ratio, boolean complete) {
+        int oldLength = s.length();
+        TsPeriod start = s.getStart(), nstart = start.withUnit(newUnit);
+        int spos = TsDomain.splitOf(nstart, start.getUnit(), false).indexOf(start);
+        int head = spos > 0 ? ratio - spos : 0;
+        int tail = (oldLength - head) % ratio;
+        int body = oldLength - head - tail;
+        if (complete && head > 0) {
+            nstart = nstart.next();
+        }
+        DoubleSequence newValues = aggregate(s.getValues(), aggregator, complete, ratio, head, body, tail);
+        return TsData.of(nstart, newValues);
+    }
+
+    private static DoubleSequence aggregate(DoubleSequence values, InternalAggregator aggregator, boolean complete, int ratio, int head, int body, int tail) {
+        boolean appendHead = !complete && head > 0;
+        boolean appendTail = !complete && tail > 0;
+
+        int length = body / ratio + (appendHead ? 1 : 0) + (appendTail ? 1 : 0);
+
+        double[] result = new double[length];
+        int i = 0;
+
+        // head
+        if (appendHead) {
+            result[i++] = aggregator.aggregate(values, 0, head);
+        }
+        // body
+        int tailIndex = body + head;
+        for (int j = head; j < tailIndex; j += ratio) {
+            result[i++] = aggregator.aggregate(values, j, j + ratio);
+        }
+        // tail
+        if (appendTail) {
+            result[i++] = aggregator.aggregate(values, tailIndex, tailIndex + tail);
+        }
+
+        return DoubleSequence.ofInternal(result);
+    }
 }

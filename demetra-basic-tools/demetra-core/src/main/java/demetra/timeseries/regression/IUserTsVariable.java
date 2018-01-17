@@ -18,13 +18,13 @@
 package demetra.timeseries.regression;
 
 import demetra.design.Development;
-import demetra.timeseries.TsDomain;
+import demetra.timeseries.TimeSeriesDomain;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface IUserTsVariable<D extends TsDomain<?>> extends ITsVariable<D> {
+public interface IUserTsVariable<D extends TimeSeriesDomain<?>> extends ITsVariable<D> {
 
 }

@@ -19,8 +19,7 @@ package internal.tsprovider.util;
 import demetra.data.AggregationType;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import demetra.timeseries.simplets.TsData;
-import demetra.timeseries.simplets.TsDataConverter;
+import demetra.timeseries.TsData;
 import demetra.tsprovider.OptionalTsData;
 import static demetra.tsprovider.OptionalTsData.present;
 import demetra.tsprovider.util.ObsCharacteristics;
@@ -56,9 +55,9 @@ public class TsDataBuilderUtil {
             return o -> makeFromUnknownFrequency(o);
         }
         if (gathering.getAggregationType() != AggregationType.None) {
-            return o -> makeWithAggregation(o, gathering.getUnit(), TsPeriod.EPOCH, gathering.getAggregationType(), gathering.isComplete());
+            return o -> makeWithAggregation(o, gathering.getUnit(), TsPeriod.DEFAULT_EPOCH, gathering.getAggregationType(), gathering.isComplete());
         }
-        return o -> makeWithoutAggregation(o, gathering.getUnit(), TsPeriod.EPOCH);
+        return o -> makeWithoutAggregation(o, gathering.getUnit(), TsPeriod.DEFAULT_EPOCH);
     }
 
     private OptionalTsData makeFromUnknownFrequency(ObsList obs) {
@@ -91,7 +90,7 @@ public class TsDataBuilderUtil {
                 TsData result = TsDataCollector.makeFromUnknownUnit(obs);
                 if (result != null && result.getTsUnit().contains(unit)) {
                     // should succeed
-                    result = TsDataConverter.changeTsUnit(result, unit, convMode, complete);
+                    result = result.aggregate(unit, convMode, complete);
                 } else {
                     result = TsDataCollector.makeWithAggregation(obs, unit, reference, convMode);
                 }

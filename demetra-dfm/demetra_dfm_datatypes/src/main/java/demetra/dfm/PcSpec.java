@@ -5,7 +5,7 @@
  */
 package demetra.dfm;
 
-import demetra.timeseries.TsPeriodSelector;
+import demetra.timeseries.TimeSeriesSelector;
 import java.util.Map;
 import java.util.Objects;
 

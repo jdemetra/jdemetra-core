@@ -10,7 +10,7 @@ import demetra.data.DoubleSequence;
 import demetra.maths.MatrixType;
 import static demetra.r.TimeVaryingRegressionTest.FURNITURE;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import static demetra.timeseries.simplets.TsDataToolkit.log;
 import org.junit.Test;
 import static org.junit.Assert.*;

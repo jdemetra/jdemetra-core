@@ -26,10 +26,9 @@ import static demetra.data.AggregationType.None;
 import static demetra.data.AggregationType.Sum;
 import demetra.data.DoubleSequence;
 import demetra.timeseries.TsPeriod;
-import static demetra.timeseries.TsPeriod.EPOCH;
 import demetra.timeseries.TsUnit;
 import static demetra.timeseries.TsUnit.*;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import demetra.tsprovider.OptionalTsData;
 import static demetra.tsprovider.OptionalTsData.present;
 import internal.tsprovider.util.GuessingUnit;
@@ -57,6 +56,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
+import static demetra.timeseries.TsPeriod.DEFAULT_EPOCH;
 import static java.util.EnumSet.of;
 
 /**
@@ -147,18 +147,18 @@ public class TsDataBuilderTest {
 
         assertThat(b.clear().add(null, null).build()).isEqualTo(NO_DATA);
         assertThat(b.clear().add(null, v1).build()).isEqualTo(NO_DATA);
-        assertThat(b.clear().add((T) example[0][0], null).build()).isEqualTo(data(MONTH, EPOCH, 2010, NaN));
-        assertThat(b.clear().add((T) example[0][0], v1).build()).isEqualTo(data(MONTH, EPOCH, 2010, v1));
+        assertThat(b.clear().add((T) example[0][0], null).build()).isEqualTo(data(MONTH, DEFAULT_EPOCH, 2010, NaN));
+        assertThat(b.clear().add((T) example[0][0], v1).build()).isEqualTo(data(MONTH, DEFAULT_EPOCH, 2010, v1));
 
         assertThat(b.clear().add(example[0], o -> null, o -> null).build()).isEqualTo(NO_DATA);
         assertThat(b.clear().add(example[0], o -> null, valueFunc).build()).isEqualTo(NO_DATA);
-        assertThat(b.clear().add(example[0], dateFunc, o -> null).build()).isEqualTo(data(MONTH, EPOCH, 2010, NaN));
-        assertThat(b.clear().add(example[0], dateFunc, valueFunc).build()).isEqualTo(data(MONTH, EPOCH, 2010, v1));
+        assertThat(b.clear().add(example[0], dateFunc, o -> null).build()).isEqualTo(data(MONTH, DEFAULT_EPOCH, 2010, NaN));
+        assertThat(b.clear().add(example[0], dateFunc, valueFunc).build()).isEqualTo(data(MONTH, DEFAULT_EPOCH, 2010, v1));
 
         assertThat(b.clear().addAll(Stream.of(example), o -> null, o -> null).build()).isEqualTo(NO_DATA);
         assertThat(b.clear().addAll(Stream.of(example), o -> null, valueFunc).build()).isEqualTo(NO_DATA);
-        assertThat(b.clear().addAll(Stream.of(example), dateFunc, o -> null).build()).isEqualTo(data(MONTH, EPOCH, 2010, NaN, NaN));
-        assertThat(b.clear().addAll(Stream.of(example), dateFunc, valueFunc).build()).isEqualTo(data(MONTH, EPOCH, 2010, v1, v2));
+        assertThat(b.clear().addAll(Stream.of(example), dateFunc, o -> null).build()).isEqualTo(data(MONTH, DEFAULT_EPOCH, 2010, NaN, NaN));
+        assertThat(b.clear().addAll(Stream.of(example), dateFunc, valueFunc).build()).isEqualTo(data(MONTH, DEFAULT_EPOCH, 2010, v1, v2));
     }
 
     @SuppressWarnings("null")
@@ -193,9 +193,9 @@ public class TsDataBuilderTest {
 
     private static <T> void testDefinedUnits(CustomFactory<T> x) {
         DEFINED_UNITS.forEach(unit -> {
-            testDefinedWithSingleValue(x, unit, EPOCH);
-            testDefinedWithMissingValues(x, unit, EPOCH);
-            testDefinedWithAggregation(x, unit, EPOCH);
+            testDefinedWithSingleValue(x, unit, DEFAULT_EPOCH);
+            testDefinedWithMissingValues(x, unit, DEFAULT_EPOCH);
+            testDefinedWithAggregation(x, unit, DEFAULT_EPOCH);
         });
     }
 
@@ -303,12 +303,12 @@ public class TsDataBuilderTest {
                     .build();
         };
 
-        assertThat(b7.apply(First)).isEqualTo(data(MONTH, EPOCH, 2010, v1, v5));
-        assertThat(b7.apply(Last)).isEqualTo(data(MONTH, EPOCH, 2010, v4, v5));
-        assertThat(b7.apply(Min)).isEqualTo(data(MONTH, EPOCH, 2010, v3, v5));
-        assertThat(b7.apply(Max)).isEqualTo(data(MONTH, EPOCH, 2010, v2, v5));
-        assertThat(b7.apply(Average)).isEqualTo(data(MONTH, EPOCH, 2010, (v1 + v2 + v3 + v4) / 4, v5));
-        assertThat(b7.apply(Sum)).isEqualTo(data(MONTH, EPOCH, 2010, (v1 + v2 + v3 + v4), v5));
+        assertThat(b7.apply(First)).isEqualTo(data(MONTH, DEFAULT_EPOCH, 2010, v1, v5));
+        assertThat(b7.apply(Last)).isEqualTo(data(MONTH, DEFAULT_EPOCH, 2010, v4, v5));
+        assertThat(b7.apply(Min)).isEqualTo(data(MONTH, DEFAULT_EPOCH, 2010, v3, v5));
+        assertThat(b7.apply(Max)).isEqualTo(data(MONTH, DEFAULT_EPOCH, 2010, v2, v5));
+        assertThat(b7.apply(Average)).isEqualTo(data(MONTH, DEFAULT_EPOCH, 2010, (v1 + v2 + v3 + v4) / 4, v5));
+        assertThat(b7.apply(Sum)).isEqualTo(data(MONTH, DEFAULT_EPOCH, 2010, (v1 + v2 + v3 + v4), v5));
     }
 
     private static <T> void testNoData(CustomFactory<T> o) {
@@ -382,7 +382,7 @@ public class TsDataBuilderTest {
     }
 
     private static OptionalTsData data(TsUnit unit, LocalDateTime reference, LocalDateTime date, double... values) {
-        return present(TsData.of(TsPeriod.builder().unit(unit).reference(reference).date(date).build(), DoubleSequence.ofInternal(values)));
+        return present(TsData.of(TsPeriod.builder().unit(unit).epoch(reference).date(date).build(), DoubleSequence.ofInternal(values)));
     }
 
     private static OptionalTsData data(TsUnit unit, LocalDateTime reference, int year, double... values) {
@@ -390,7 +390,7 @@ public class TsDataBuilderTest {
     }
 
     private static List<LocalDateTime> dates(TsUnit unit, LocalDateTime reference) {
-        TsPeriod startPeriod = TsPeriod.builder().unit(unit).reference(reference).date(START).build();
+        TsPeriod startPeriod = TsPeriod.builder().unit(unit).epoch(reference).date(START).build();
         LocalDateTime first = startPeriod.start();
         LocalDateTime middle = first.plus(Duration.between(first, startPeriod.next().start()).dividedBy(2));
         LocalDateTime last = startPeriod.next().start().minusNanos(1);

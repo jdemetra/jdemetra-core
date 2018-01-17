@@ -14,8 +14,10 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries;
+package internal.timeseries;
 
+import demetra.timeseries.TsPeriod;
+import demetra.timeseries.TsUnit;
 import java.util.function.IntSupplier;
 
 /**
@@ -24,7 +26,7 @@ import java.util.function.IntSupplier;
  */
 @lombok.experimental.UtilityClass
 @Deprecated
-public class Fixme {
+public class InternalFixme {
 
     public int getAsInt(TsUnit freq) {
         return OldFreq.of(freq).getAsInt();
@@ -35,7 +37,7 @@ public class Fixme {
     }
 
     public int getPosition(TsPeriod p) {
-        if (p.getReference()!= TsPeriod.EPOCH) {
+        if (p.getEpoch()!= TsPeriod.DEFAULT_EPOCH) {
             throw new UnsupportedOperationException("Unsupported origin");
         }
         OldFreq freq = OldFreq.of(p.getUnit());

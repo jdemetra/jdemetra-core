@@ -2,12 +2,11 @@ package demetra.bridge;
 
 
 import static demetra.bridge.Converter.*;
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 import ec.tstoolkit.timeseries.Day;
-import ec.tstoolkit.timeseries.simplets.TsDomain;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.text.ParseException;
 import java.time.LocalDateTime;
@@ -60,9 +59,9 @@ public class ConverterTest {
 
     @Test
     public void testDomain() {
-        assertThat(fromRegularDomain(RegularDomain.of(TsPeriod.monthly(2010, 1), 4))).isEqualTo(new TsDomain(TsFrequency.Monthly, 2010, 0, 4));
+        assertThat(fromRegularDomain(TsDomain.of(TsPeriod.monthly(2010, 1), 4))).isEqualTo(new ec.tstoolkit.timeseries.simplets.TsDomain(TsFrequency.Monthly, 2010, 0, 4));
 
-        assertThat(toRegularDomain(new TsDomain(TsFrequency.Monthly, 2010, 0, 4))).isEqualTo(RegularDomain.of(TsPeriod.monthly(2010, 1), 4));
+        assertThat(toRegularDomain(new ec.tstoolkit.timeseries.simplets.TsDomain(TsFrequency.Monthly, 2010, 0, 4))).isEqualTo(TsDomain.of(TsPeriod.monthly(2010, 1), 4));
     }
 
     @Test

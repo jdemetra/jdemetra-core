@@ -17,12 +17,12 @@
 
 package demetra.timeseries.regression;
 
-import demetra.timeseries.RegularDomain;
+import demetra.timeseries.TsDomain;
 
 /**
  * 
  * @author Jean Palate
  */
-public interface ICalendarVariable extends ITsVariable<RegularDomain> {
+public interface ICalendarVariable extends ITsVariable<TsDomain> {
 
 }

@@ -23,13 +23,11 @@ import java.time.LocalDateTime;
  *
  * @author Jean Palate
  */
-public class TimePoint implements Range<LocalDateTime> {
+@lombok.Value(staticConstructor = "of")
+public class IrregularPeriod implements Range<LocalDateTime> {
 
-    private final LocalDateTime point;
-
-    public TimePoint(LocalDateTime point) {
-        this.point = point;
-    }
+    @lombok.NonNull
+    LocalDateTime point;
 
     @Override
     public LocalDateTime start() {
@@ -45,5 +43,4 @@ public class TimePoint implements Range<LocalDateTime> {
     public boolean contains(LocalDateTime element) {
         return point.equals(element);
     }
-
 }

@@ -10,7 +10,7 @@ import demetra.benchmarking.univariate.DentonSpecification;
 import demetra.benchmarking.univariate.TsCholette;
 import demetra.benchmarking.univariate.TsDenton;
 import demetra.data.AggregationType;
-import demetra.timeseries.simplets.TsData;
+import demetra.timeseries.TsData;
 
 /**
  *
