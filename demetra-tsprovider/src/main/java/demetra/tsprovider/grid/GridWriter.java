@@ -18,7 +18,8 @@ package demetra.tsprovider.grid;
 
 import static demetra.tsprovider.grid.GridLayout.VERTICAL;
 import internal.tsprovider.grid.InvGridOutput;
-import internal.tsprovider.grid.TsDataTable;
+import demetra.timeseries.simplets.TsDataTable;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -39,10 +40,7 @@ public final class GridWriter {
     public void write(@Nonnull TsCollectionGrid value, @Nonnull GridOutput output) {
         output.setName(value.getName());
 
-        TsDataTable table = new TsDataTable();
-        for (TsGrid o : value.getItems()) {
-            table.insert(-1, o.getData().get());
-        }
+        TsDataTable table = TsDataTable.of(value.getItems().stream().map(o -> o.getData().get()).collect(Collectors.toList()));
 
         if (table.getDomain() != null) {
             if (!options.getLayout().equals(VERTICAL)) {
@@ -59,15 +57,13 @@ public final class GridWriter {
 
             int firstRow = options.isShowTitle() ? 1 : 0;
             int firstColumn = options.isShowDates() ? 1 : 0;
-            int rowCount = table.getDomain().getLength();
-            int columnCount = value.getItems().size();
-            for (int i = 0; i < rowCount; ++i) {
-                for (int j = 0; j < columnCount; ++j) {
-                    if (table.getDataInfo(i, j) == TsDataTable.TsDataTableInfo.Valid) {
-                        output.setValue(firstRow + i, firstColumn + j, table.getData(i, j));
-                    }
+
+            GridOutput grid = output;
+            table.cursor(TsDataTable.DistributionType.FIRST).forEachByPeriod((i, j, s, v) -> {
+                if (s == TsDataTable.ValueStatus.PRESENT) {
+                    grid.setValue(firstRow + i, firstColumn + j, v);
                 }
-            }
+            });
         }
     }
 }
