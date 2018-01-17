@@ -17,7 +17,7 @@
 package demetra.data;
 
 import static demetra.data.DoubleArray.EMPTY;
-import internal.Demo;
+import internal.design.Demo;
 import java.util.stream.DoubleStream;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;

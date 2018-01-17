@@ -19,11 +19,9 @@ package demetra.timeseries;
 import static demetra.timeseries.TsDataTable.DistributionType.*;
 import static demetra.timeseries.TsDataTable.ValueStatus.*;
 import static demetra.timeseries.TsDataTable.computeDomain;
-import internal.Demo;
 import static java.lang.Double.NaN;
 import static java.util.Arrays.asList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.stream.Stream;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.*;
@@ -168,45 +166,6 @@ public class TsDataTableTest {
         return computeDomain(domains).getStartPeriod().getUnit().toIsoString();
     }
 
-    static String toString(TsDataTable table, TsDataTable.DistributionType distribution) {
-        StringBuilder result = new StringBuilder();
-        TsDataTable.Cursor cursor = table.cursor(distribution);
-        for (int i = 0; i < cursor.getPeriodCount(); i++) {
-            result.append(table.getDomain().get(i).display()).append('\t');
-            for (int j = 0; j < cursor.getSeriesCount(); j++) {
-                result.append(valuetoString(cursor.moveTo(i, j))).append('\t');
-            }
-            result.append(System.lineSeparator());
-        }
-        return result.toString();
-    }
-
-    private static String valuetoString(TsDataTable.Cursor cursor) {
-        switch (cursor.getStatus()) {
-            case PRESENT:
-                return Double.toString(cursor.getValue());
-            case MISSING:
-                return "?";
-            case EMPTY:
-                return "x";
-            case OUTSIDE:
-                return "-";
-            default:
-                throw new RuntimeException();
-        }
-    }
-
     static final TsPeriod P1M_JAN2010 = TsPeriod.monthly(2010, 1);
     static final TsPeriod P3M_OCT2009 = TsPeriod.quarterly(2009, 4);
-
-    @Demo
-    public static void main(String[] args) {
-        List<TsData> col = asList(
-                TsData.ofInternal(TsPeriod.daily(2010, 1, 1), new double[]{1.1, Double.NaN, 1.3}),
-                TsData.ofInternal(P3M_OCT2009, new double[]{2.1})
-        );
-
-        TsDataTable table = TsDataTable.of(col);
-        System.out.println(toString(table, FIRST));
-    }
 }

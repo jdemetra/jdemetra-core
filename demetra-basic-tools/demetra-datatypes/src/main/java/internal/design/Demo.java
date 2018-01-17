@@ -1,7 +1,7 @@
 /*
  * Copyright 2017 National Bank of Belgium
  * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
@@ -14,14 +14,19 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal;
+package internal.design;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Specifies that the annotated code might be part of API in the future if
- * proven useful.
  *
- * @author charphi
+ * @author Philippe Charles
  */
-public @interface MightBePromoted {
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.SOURCE)
+public @interface Demo {
 
 }

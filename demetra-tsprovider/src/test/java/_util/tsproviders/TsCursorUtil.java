@@ -19,7 +19,7 @@ package _util.tsproviders;
 import demetra.tsprovider.cursor.TsCursor;
 import java.io.IOException;
 import java.util.function.Consumer;
-import internal.MightBePromoted;
+import internal.design.MightBePromoted;
 
 /**
  *
