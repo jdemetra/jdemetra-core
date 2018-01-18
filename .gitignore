@@ -18,10 +18,9 @@
 /demetra-tsprovider/target/
 /demetra-workspace/target/
 /jbench/target/
-/jdbcprovider/target/
 /jdr/target/
 /jtss/target/
 /jtstoolkit/target/
-/odbcprovider/target/
 /sdmxprovider/target/
 /utilities/target/
+/demetra-sql-core/target/

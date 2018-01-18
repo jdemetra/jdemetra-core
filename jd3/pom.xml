@@ -25,6 +25,7 @@
         <module>../demetra-dfm</module>
         <module>../demetra-benchmarking</module>
         <module>../demetra-spreadsheet-core</module>
+        <module>../demetra-sql-core</module>
     </modules>
      
          <build>

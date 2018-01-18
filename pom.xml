@@ -73,8 +73,6 @@
         <module>demetra-workspace</module>
 	
         <!-- I/O modules -->
-        <module>odbcprovider</module>
-        <module>jdbcprovider</module>
         <module>sdmxprovider</module>
         <module>commonprovider</module>
 
