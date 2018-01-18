@@ -66,16 +66,10 @@
   
     <modules>
         <!-- core modules -->
-        <module>jtstoolkit</module>
-        <module>jtss</module>  
-        <module>utilities</module>
-        <module>demetra-tck</module>
-        <module>demetra-workspace</module>
 	
         <!-- I/O modules -->
 
         <!-- several apps -->
-        <module>jbench</module>
 		
         <!-- JD3 -->
         <module>jd3</module>

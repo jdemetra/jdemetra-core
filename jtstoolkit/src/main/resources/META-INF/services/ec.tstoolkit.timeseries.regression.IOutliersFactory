@@ -1,5 +1,0 @@
-ec.tstoolkit.timeseries.regression.AdditiveOutlierFactory
-ec.tstoolkit.timeseries.regression.LevelShiftFactory
-ec.tstoolkit.timeseries.regression.TransitoryChangeFactory
-ec.tstoolkit.timeseries.regression.SeasonalOutlierFactory
-ec.tstoolkit.timeseries.regression.SwitchOutlierFactory
