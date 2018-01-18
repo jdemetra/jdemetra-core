@@ -31,9 +31,10 @@ import javax.annotation.concurrent.ThreadSafe;
  * </code>
  *
  * @author Philippe Charles
+ * @param <B> bean type
  * @since 1.0.0
  */
 @ThreadSafe
-public interface DataSourceLoader extends DataSourceProvider, HasDataSourceMutableList, HasDataSourceBean {
+public interface DataSourceLoader<B> extends DataSourceProvider, HasDataSourceMutableList, HasDataSourceBean<B> {
 
 }

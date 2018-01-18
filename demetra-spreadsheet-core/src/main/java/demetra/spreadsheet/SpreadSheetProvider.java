@@ -50,7 +50,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Philippe Charles
  */
 @ServiceProvider(service = TsProvider.class)
-public final class SpreadSheetProvider implements FileLoader {
+public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
 
     private static final String NAME = "XCLPRVDR";
 

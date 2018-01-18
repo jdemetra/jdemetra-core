@@ -24,16 +24,17 @@ import javax.annotation.concurrent.ThreadSafe;
  * Defines a specialized provider whose source is a file.
  *
  * @author Philippe Charles
+ * @param <B> bean type
  * @since 1.0.0
  */
 @ThreadSafe
-public interface FileLoader extends DataSourceLoader, FileFilter, HasFilePaths {
+public interface FileLoader<B extends FileBean> extends DataSourceLoader<B>, FileFilter, HasFilePaths {
 
     @Override
-    FileBean newBean();
+    B newBean();
 
     @Override
-    FileBean decodeBean(DataSource dataSource) throws IllegalArgumentException;
+    B decodeBean(DataSource dataSource) throws IllegalArgumentException;
 
     @Nonnull
     String getFileDescription();

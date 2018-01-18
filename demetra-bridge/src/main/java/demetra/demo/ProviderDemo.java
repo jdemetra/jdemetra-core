@@ -28,6 +28,8 @@ import demetra.tsprovider.TsProviders;
 import demetra.tsprovider.util.MultiLineNameUtil;
 import demetra.tsprovider.OptionalTsData;
 import demetra.timeseries.TsDomain;
+import demetra.tsprovider.DataSourceLoader;
+import demetra.tsprovider.TsMoniker;
 import demetra.utilities.Trees;
 import ioutil.IO;
 import java.io.File;
@@ -41,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -182,5 +185,13 @@ public class ProviderDemo {
         List<TsData> data = info.getItems().stream().filter(o -> o.hasData()).map(o -> o.getData().get()).collect(Collectors.toList());
         TsDataTable table = TsDataTable.of(data);
         DataTypesDemo.printDataTable(table, distribution);
+    }
+
+    public <B, P extends DataSourceLoader<B>> TsCollection getAll(P provider, TsInformationType infoType, Consumer<B> configurator) throws IOException {
+        B bean = provider.newBean();
+        configurator.accept(bean);
+        DataSource dataSource = provider.encodeBean(bean);
+        TsMoniker moniker = provider.toMoniker(dataSource);
+        return provider.getTsCollection(moniker, infoType);
     }
 }
