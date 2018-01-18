@@ -73,8 +73,6 @@
         <module>demetra-workspace</module>
 	
         <!-- I/O modules -->
-        <module>sdmxprovider</module>
-        <module>commonprovider</module>
 
         <!-- several apps -->
         <module>jbench</module>

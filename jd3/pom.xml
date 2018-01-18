@@ -26,6 +26,8 @@
         <module>../demetra-benchmarking</module>
         <module>../demetra-spreadsheet-core</module>
         <module>../demetra-sql-core</module>
+        <module>../demetra-text-core</module>
+        <module>../demetra-io-legacy-core</module>
     </modules>
      
          <build>
