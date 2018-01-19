@@ -18,9 +18,14 @@ package demetra.timeseries;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import lombok.AccessLevel;
@@ -37,60 +42,93 @@ public final class TsDataTable {
     }
 
     public enum ValueStatus {
-        PRESENT, MISSING, EMPTY, OUTSIDE;
+        PRESENT, UNUSED, BEFORE, AFTER, EMPTY;
     }
 
     @Nonnull
     public static TsDataTable of(@Nonnull List<TsData> col) {
         TsDomain domain = computeDomain(col.stream().map(TsData::getDomain).iterator());
-        return new TsDataTable(domain, col.toArray(new TsData[col.size()]));
+        return new TsDataTable(domain, Collections.unmodifiableList(new ArrayList<>(col)));
     }
 
+    @lombok.NonNull
+    @lombok.Getter
     private final TsDomain domain;
-    private final TsData[] col;
 
-    @Nonnull
-    public TsDomain getDomain() {
-        return domain;
-    }
+    @lombok.NonNull
+    @lombok.Getter
+    private final List<TsData> data;
 
     @Nonnull
     public Cursor cursor(@Nonnull DistributionType distribution) {
-        return new Cursor(getDistributor(distribution));
+        return cursor(i -> distribution);
+    }
+
+    @Nonnull
+    public Cursor cursor(@Nonnull IntFunction<DistributionType> distribution) {
+        return new Cursor(IntStream
+                .range(0, data.size())
+                .mapToObj(distribution)
+                .map(TsDataTable::getDistributor)
+                .collect(Collectors.toList())
+        );
     }
 
     @lombok.RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public final class Cursor {
 
-        private final Distributor distributor;
+        private final List<Distributor> distributors;
+
+        @lombok.Getter
+        private int index = -1;
+
+        @lombok.Getter
+        private int windowLength = -1;
+
+        @lombok.Getter
+        private int windowIndex = -1;
+
+        @lombok.NonNull
+        @lombok.Getter
         private ValueStatus status = ValueStatus.EMPTY;
+
+        @lombok.Getter
         private double value = Double.NaN;
 
         @Nonnull
         public Cursor moveTo(int period, int series) {
-            TsData ts = col[series];
-
-            TsPeriod current = domain.getStartPeriod().plus(period);
-            TsPeriod valuePeriod = current.withUnit(ts.getDomain().getTsUnit());
-            int valueIndex = ts.getDomain().position(valuePeriod);
-
-            if (isInBounds(ts, valueIndex)) {
-                TsPeriod start = valuePeriod.withUnit(current.getUnit());
-                TsPeriod end = valuePeriod.next().withUnit(current.getUnit());
-
-                int size = start.until(end);
-                int pos = start.until(current);
-
-                if (distributor.test(pos, size)) {
-                    value = ts.getValue(valueIndex);
-                    status = Double.isNaN(value) ? ValueStatus.MISSING : ValueStatus.PRESENT;
-                } else {
-                    value = Double.NaN;
-                    status = ValueStatus.EMPTY;
-                }
-            } else {
+            TsData ts = data.get(series);
+            if (ts.isEmpty()) {
+                index = -1;
+                windowLength = -1;
+                windowIndex = -1;
+                status = ValueStatus.EMPTY;
                 value = Double.NaN;
-                status = ValueStatus.OUTSIDE;
+            } else {
+                TsPeriod current = domain.getStartPeriod().plus(period);
+                TsPeriod valuePeriod = current.withUnit(ts.getDomain().getTsUnit());
+                index = ts.getDomain().position(valuePeriod);
+
+                if (isInBounds(ts, index)) {
+                    TsPeriod start = valuePeriod.withUnit(current.getUnit());
+                    TsPeriod end = valuePeriod.next().withUnit(current.getUnit());
+
+                    windowLength = start.until(end);
+                    windowIndex = start.until(current);
+
+                    if (distributors.get(series).test(windowIndex, windowLength)) {
+                        status = ValueStatus.PRESENT;
+                        value = ts.getValue(index);
+                    } else {
+                        status = ValueStatus.UNUSED;
+                        value = Double.NaN;
+                    }
+                } else {
+                    windowLength = -1;
+                    windowIndex = -1;
+                    status = index < 0 ? ValueStatus.BEFORE : ValueStatus.AFTER;
+                    value = Double.NaN;
+                }
             }
 
             return this;
@@ -100,15 +138,6 @@ public final class TsDataTable {
             return index >= 0 && index < ts.length();
         }
 
-        @Nonnull
-        public ValueStatus getStatus() {
-            return status;
-        }
-
-        public double getValue() {
-            return value;
-        }
-
         @Nonnegative
         public int getPeriodCount() {
             return domain.getLength();
@@ -116,14 +145,14 @@ public final class TsDataTable {
 
         @Nonnegative
         public int getSeriesCount() {
-            return col.length;
+            return data.size();
         }
 
         public void forEachByPeriod(@Nonnull Consumer consumer) {
             for (int i = 0; i < getPeriodCount(); i++) {
                 for (int j = 0; j < getSeriesCount(); j++) {
                     moveTo(i, j);
-                    consumer.accept(i, j, getStatus(), getValue());
+                    consumer.accept(i, j, this);
                 }
             }
         }
@@ -132,7 +161,7 @@ public final class TsDataTable {
     @FunctionalInterface
     public interface Consumer {
 
-        void accept(int period, int series, ValueStatus status, double value);
+        void accept(int period, int series, Cursor cursor);
     }
 
     @FunctionalInterface

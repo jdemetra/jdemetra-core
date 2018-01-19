@@ -41,12 +41,15 @@ public class DataTypesDemo {
     private String valuetoString(TsDataTable.Cursor cursor) {
         switch (cursor.getStatus()) {
             case PRESENT:
-                return Double.toString(cursor.getValue());
-            case MISSING:
-                return "?";
-            case EMPTY:
+                double value = cursor.getValue();
+                return Double.isNaN(value) ? "?" : Double.toString(value);
+            case UNUSED:
                 return "x";
-            case OUTSIDE:
+            case EMPTY:
+                return " ";
+            case BEFORE:
+                return "-";
+            case AFTER:
                 return "-";
             default:
                 throw new RuntimeException();

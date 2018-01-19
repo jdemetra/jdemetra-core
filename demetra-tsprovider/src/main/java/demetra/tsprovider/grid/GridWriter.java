@@ -59,9 +59,9 @@ public final class GridWriter {
             int firstColumn = options.isShowDates() ? 1 : 0;
 
             GridOutput grid = output;
-            table.cursor(TsDataTable.DistributionType.FIRST).forEachByPeriod((i, j, s, v) -> {
-                if (s == TsDataTable.ValueStatus.PRESENT) {
-                    grid.setValue(firstRow + i, firstColumn + j, v);
+            table.cursor(TsDataTable.DistributionType.FIRST).forEachByPeriod((i, j, o) -> {
+                if (o.getStatus() == TsDataTable.ValueStatus.PRESENT) {
+                    grid.setValue(firstRow + i, firstColumn + j, o.getValue());
                 }
             });
         }
