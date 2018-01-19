@@ -10,13 +10,15 @@ import demetra.regarima.RegArimaModel;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
+import demetra.likelihood.ConcentratedLikelihood;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.processing.IProcResults;
+import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
-import demetra.sarima.estimation.RegArimaEstimator;
+import demetra.sarima.RegSarimaProcessor;
 import demetra.sarima.mapping.SarimaInfo;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TimeSeriesSelector;
@@ -111,13 +113,15 @@ public class MovingRegression {
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         Matrix x = RegressionUtility.data(Collections.singletonList(new GenericTradingDaysVariables(gtd)), s.getDomain());
 
-        RegArimaEstimator monitor = RegArimaEstimator.builder()
+        RegSarimaProcessor monitor = RegSarimaProcessor.builder()
                 .useParallelProcessing(true)
                 .useMaximumLikelihood(true)
                 .useCorrectedDegreesOfFreedom(false) // compatibility with R
                 .precision(1e-12)
                 .build();
-        RegArimaModel.Builder<SarimaModel> rbuilder = RegArimaModel.builder(DoubleSequence.of(s.getValues()), arima);
+        RegArimaModel.Builder<SarimaModel> rbuilder = RegArimaModel.builder()
+                .y(DoubleSequence.of(s.getValues()))
+                .arima(arima);
         x.columns().forEach(xx -> rbuilder.addX(xx));
 
         RegArimaEstimation<SarimaModel> rslt = monitor.process(rbuilder.build());
@@ -129,11 +133,12 @@ public class MovingRegression {
         while (dom.end().isBefore(s.getDomain().end())) {
             Matrix mtd = generate(dom, dc);
             TsData yc = fitToDomain(s, dom);
-            RegArimaModel.Builder<SarimaModel> builder = RegArimaModel.builder(DoubleSequence.of(yc.getValues()), arima);
+            RegArimaModel.Builder<SarimaModel> builder = RegArimaModel.builder()
+                    .y(DoubleSequence.of(yc.getValues()))
+                    .arima(arima);
             mtd.columns().forEach(xx -> builder.addX(xx));
-            RegArimaEstimation<SarimaModel> crslts = RegArimaEstimation.compute(builder.build());
-            DoubleSequence coefficients = crslts.getConcentratedLikelihood().getLikelihood().coefficients();
-            coef.add(coefficients.toArray());
+            ConcentratedLikelihood cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(builder.build());
+            coef.add(cll.coefficients().toArray());
             dom = dom.move(period);
         }
 //        double[] xi = new double[coef.size()];

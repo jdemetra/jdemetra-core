@@ -16,36 +16,25 @@
 */
 
 
-package demetra.maths.functions;
+package demetra.regarima;
 
+import demetra.arima.IArimaModel;
 import demetra.design.Development;
-import demetra.data.DoubleSequence;
-
+import demetra.regarima.RegArimaEstimation;
 
 /**
- * 
- * @param <T>
+ *
  * @author Jean Palate
+ * @param <M>
  */
 @Development(status = Development.Status.Alpha)
-public interface IParametricMapping<T> extends IParametersDomain {
+@FunctionalInterface
+public interface IRegArimaFinalizer<M extends IArimaModel>  {
     /**
-     * Generates a new object using the values in p
      * 
-     * @param p
-     * @return A new object, based on the parameters provided by p.
+     * @param regarima
+     * @return
      */
-    T map(DoubleSequence p);
+    RegArimaEstimation<M> finalize(RegArimaEstimation<M> regarima);
 
-    /**
-     * Generates the parameters corresponding to the given object
-     * @param t
-     * @return 
-     */
-    DoubleSequence map(T t);
-    
-    default T getDefault(){
-        return map(getDefaultParameters());
-    }
-    
 }

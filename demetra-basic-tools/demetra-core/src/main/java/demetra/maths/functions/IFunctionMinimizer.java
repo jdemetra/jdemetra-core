@@ -87,7 +87,7 @@ public interface IFunctionMinimizer {
      * @return
      */
     default boolean minimize(IFunction function){
-        DoubleSequence start = function.getDomain().getDefault();
+        DoubleSequence start = function.getDomain().getDefaultParameters();
         return minimize(function.evaluate(start));
     }
     

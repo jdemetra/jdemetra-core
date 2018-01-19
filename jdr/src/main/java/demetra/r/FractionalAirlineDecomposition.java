@@ -19,7 +19,6 @@ package demetra.r;
 import demetra.arima.ArimaModel;
 import demetra.arima.ArimaType;
 import demetra.arima.UcarimaType;
-import demetra.arima.estimation.GlsArimaMonitor;
 import demetra.arima.mapping.UcarimaInfo;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -37,6 +36,7 @@ import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.Matrix;
 import demetra.processing.IProcResults;
 import static demetra.r.AirlineDecomposition.ucm;
+import demetra.regarima.GlsArimaProcessor;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.SsfData;
 import demetra.ucarima.UcarimaModel;
@@ -112,20 +112,23 @@ public class FractionalAirlineDecomposition {
     }
 
     public Results process(double[] s, double period, boolean adjust) {
-        PeriodicMapping stmapping = new PeriodicMapping(period, adjust, true);
         PeriodicMapping mapping = new PeriodicMapping(period, adjust, false);
-        GlsArimaMonitor monitor = GlsArimaMonitor.builder()
-                .mapping(stmapping)
+        
+        GlsArimaProcessor.Builder<ArimaModel> builder=GlsArimaProcessor.builder();
+        builder.mapping(model-> new PeriodicMapping(period, adjust, model.isStationary()))
                 .minimizer(new LevenbergMarquardtMinimizer())
                 .precision(1e-12)
                 .useMaximumLikelihood(true)
                 .useParallelProcessing(true)
                 .build();
-        ArimaModel arima = mapping.map(mapping.getDefault());
+        ArimaModel arima = mapping.getDefault();
         RegArimaModel<ArimaModel> regarima
-                = RegArimaModel.builder(DoubleSequence.of(s), arima)
+                = RegArimaModel.builder()
+                        .y(DoubleSequence.of(s))
+                        .arima(arima)
                         .build();
-        RegArimaEstimation<ArimaModel> rslt = monitor.compute(regarima);
+        GlsArimaProcessor<ArimaModel> monitor = builder.build();
+        RegArimaEstimation<ArimaModel> rslt = monitor.process(regarima);
         arima = rslt.getModel().arima();
         double[] p=mapping.map(arima).toArray();
         UcarimaModel ucm = ucm(rslt.getModel().arima());
@@ -146,10 +149,10 @@ public class FractionalAirlineDecomposition {
                 .s(ds.item(ssf.getComponentPosition(1)).toArray())
                 .i(ds.item(ssf.getComponentPosition(2)).toArray())
                 .ucarima(new UcarimaType(sum, new ArimaType[]{mt, ms, mi}))
-                .concentratedLogLikelihood(rslt.getConcentratedLikelihood().getLikelihood())
+                .concentratedLogLikelihood(rslt.getConcentratedLikelihood())
                 .parameters(p)
                 .arima(arima.toType("arima"))
-                .statistics(rslt.statistics(2, 0))
+                .statistics(rslt.statistics(0))
                 .build();
 
     }
@@ -290,7 +293,7 @@ class PeriodicMapping implements IParametricMapping<ArimaModel> {
     }
 
     @Override
-    public DoubleSequence getDefault() {
+    public DoubleSequence getDefaultParameters() {
         return DoubleSequence.of(.9, .9);
     }
 }

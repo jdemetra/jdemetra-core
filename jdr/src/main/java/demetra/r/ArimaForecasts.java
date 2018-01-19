@@ -5,7 +5,7 @@
  */
 package demetra.r;
 
-import demetra.arima.estimation.IArimaForecasts;
+import demetra.arima.IArimaForecasts;
 import demetra.regarima.RegArimaModel;
 import demetra.arima.ssf.SsfArima;
 import demetra.data.DataBlock;

@@ -17,7 +17,7 @@
 package demetra.arima.internal;
 
 import demetra.arima.IArimaModel;
-import demetra.arima.estimation.IArmaFilter;
+import demetra.arima.IArmaFilter;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.LogSign;

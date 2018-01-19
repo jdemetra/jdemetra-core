@@ -5,6 +5,7 @@
  */
 package demetra.sarima.estimation;
 
+import demetra.sarima.RegSarimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.data.Data;
@@ -26,9 +27,9 @@ public class RegArimaEstimatorTest {
 
     @Test
     public void testNew() {
-        RegArimaEstimator monitor = RegArimaEstimator.builder()
+        RegSarimaProcessor monitor = RegSarimaProcessor.builder()
                  .precision(1e-12)
-               .startingPoint(RegArimaEstimator.StartingPoint.Multiple).build();
+               .startingPoint(RegSarimaProcessor.StartingPoint.Multiple).build();
         SarimaSpecification spec = new SarimaSpecification();
         spec.airline(12);
         spec.setP(3);
@@ -36,7 +37,9 @@ public class RegArimaEstimatorTest {
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()
                 .build();
-        RegArimaModel<SarimaModel> regs = RegArimaModel.builder(DoubleSequence.of(Data.RETAIL_FUELDEALERS), arima)
+        RegArimaModel<SarimaModel> regs = RegArimaModel.builder()
+                        .y(DoubleSequence.of(Data.RETAIL_FUELDEALERS))
+                        .arima(arima)
 //                .meanCorrection(true)
 //                .missing(new int[]{3, 23, 34, 65, 123, 168})
                 .build();
@@ -52,15 +55,17 @@ public class RegArimaEstimatorTest {
     
    @Test
     public void testAirline() {
-        RegArimaEstimator monitor = RegArimaEstimator.builder()
+        RegSarimaProcessor monitor = RegSarimaProcessor.builder()
                 .precision(1e-12)
-                .startingPoint(RegArimaEstimator.StartingPoint.Multiple).build();
+                .startingPoint(RegSarimaProcessor.StartingPoint.Multiple).build();
         SarimaSpecification spec = new SarimaSpecification();
         spec.airline(12);
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()
                 .build();
-        RegArimaModel<SarimaModel> regs = RegArimaModel.builder(DoubleSequence.of(Data.RETAIL_FUELDEALERS), arima)
+        RegArimaModel<SarimaModel> regs = RegArimaModel.builder()
+                .y(DoubleSequence.of(Data.RETAIL_FUELDEALERS))
+                .arima(arima)
 //                .meanCorrection(true)
 //                .missing(new int[]{3, 23, 34, 65, 123, 168})
                 .build();

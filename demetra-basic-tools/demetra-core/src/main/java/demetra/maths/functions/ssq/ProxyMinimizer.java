@@ -110,7 +110,7 @@ public class ProxyMinimizer implements IFunctionMinimizer {
         if (! (function instanceof ISsqFunction))
             return false;
         ISsqFunction fn = (ISsqFunction) function;
-        ISsqFunctionPoint s = fn.ssqEvaluate(function.getDomain().getDefault());
+        ISsqFunctionPoint s = fn.ssqEvaluate(function.getDomain().getDefaultParameters());
         return minimizer.minimize(s);
      }
 

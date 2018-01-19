@@ -17,12 +17,15 @@
 package demetra.regarima;
 
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
-import demetra.regarima.internal.ConcentratedLikelihoodEstimation;
-import demetra.regarima.internal.RegArmaModel;
 import demetra.arima.IArimaModel;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.LikelihoodStatistics;
+import demetra.likelihood.LogLikelihoodFunction;
+import demetra.maths.functions.IParametricMapping;
+import demetra.sarima.SarimaModel;
+import java.util.function.Function;
+import javax.annotation.Nonnull;
 
 /**
  *
@@ -33,40 +36,76 @@ import demetra.likelihood.LikelihoodStatistics;
 @lombok.Value
 public class RegArimaEstimation<M extends IArimaModel> {
 
-    public static <M extends IArimaModel> RegArimaEstimation<M> compute(RegArimaModel<M> model) {
-        
-        ConcentratedLikelihoodComputer computer = new ConcentratedLikelihoodComputer(null, null, true);
-        return new RegArimaEstimation<>(model, computer.compute(model));
+    /**
+     * Estimated model
+     */
+    @lombok.NonNull
+    RegArimaModel<M> model;
+
+    /**
+     * Concentrated likelihood
+     */
+    @lombok.NonNull
+    ConcentratedLikelihood concentratedLikelihood;
+
+    /**
+     *
+     */
+    LogLikelihoodFunction.Point<RegArimaModel<M>, ConcentratedLikelihood> max;
+    
+    int nparams;
+    
+    public RegArimaEstimation(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihood concentratedLikelihood,
+            @Nonnull LogLikelihoodFunction.Point<RegArimaModel<M>, ConcentratedLikelihood> max){
+        this.model=model;
+        this.concentratedLikelihood=concentratedLikelihood;
+        this.max=max;
+        this.nparams=max.getParameters().length;
     }
 
-//    public static <M extends IArimaModel> RegArimaEstimation<M> compute(RegArmaModel<M> model) {
-//        
-//        ConcentratedLikelihoodComputer computer = new ConcentratedLikelihoodComputer(null, null, true);
-//        return new RegArimaEstimation<>(null, computer.compute(model));
-//    }
-    /**
-     *
-     */
-    RegArimaModel<M> model;
-    /**
-     *
-     */
-    ConcentratedLikelihoodEstimation<M> concentratedLikelihood;
+    public RegArimaEstimation(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihood concentratedLikelihood,
+            int nparams){
+        this.model=model;
+        this.concentratedLikelihood=concentratedLikelihood;
+        this.max=null;
+        this.nparams=nparams;
+    }
 
     /**
      *
-     * @param nparams
      * @param adj
      * @return
      */
-    public LikelihoodStatistics statistics(int nparams, double adj) {
-        ConcentratedLikelihood ll = concentratedLikelihood.getLikelihood();
-        return LikelihoodStatistics.statistics(ll.logLikelihood(), model.getObservationsCount() - model.getMissingValuesCount())
+    public LikelihoodStatistics statistics(double adj) {
+        return LikelihoodStatistics.statistics(concentratedLikelihood.logLikelihood(), model.getObservationsCount() - model.getMissingValuesCount())
                 .llAdjustment(adj)
                 .differencingOrder(model.arima().getNonStationaryAROrder())
                 .parametersCount(nparams + model.getVariablesCount() + 1)
-                .ssq(ll.ssq())
+                .ssq(concentratedLikelihood.ssq())
                 .build();
 
     }
+
+    /**
+     * Returns the concentrated log likelihood function associated with a regarima model,
+     * taking into account the mapping between the parameter set and the underlying
+     * parametric ARIMA model
+     *
+     * @param <M>
+     * @param mappingProvider
+     * @param regs
+     * @return
+     */
+    public static <M extends IArimaModel> LogLikelihoodFunction<RegArimaModel<SarimaModel>, ConcentratedLikelihood>
+            concentratedLogLikelihoodFunction(Function<M, IParametricMapping<M>> mappingProvider, RegArimaModel<M> regs) {
+        IParametricMapping<M> mapping = mappingProvider.apply(regs.arima());
+        RegArimaMapping<M> rmapping = new RegArimaMapping<>(mapping, regs);
+        Function<RegArimaModel<M>, ConcentratedLikelihood> fn = model -> ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model);
+        return new LogLikelihoodFunction(rmapping, fn);
+    }
+
+    public static <M extends IArimaModel> RegArimaEstimation<M> of(RegArimaModel<M> model, int nparams) {
+        return new RegArimaEstimation<>(model, ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model), nparams);
+    }
+
 }

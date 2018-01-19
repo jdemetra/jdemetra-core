@@ -624,7 +624,7 @@ public class SarimaModel extends AbstractArimaModel {
      * @return
      */
     @Override
-    public StationaryTransformation stationaryTransformation() {
+    public StationaryTransformation<SarimaModel> stationaryTransformation() {
         if (isStationary()) {
             return new StationaryTransformation(this, BackFilter.ONE);
         } else {

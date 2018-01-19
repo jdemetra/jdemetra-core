@@ -645,7 +645,7 @@ public class ArimaModel extends AbstractArimaModel {
     }
 
     @Override
-    public StationaryTransformation stationaryTransformation() {
+    public StationaryTransformation<ArimaModel> stationaryTransformation() {
         ArimaModel st;
         if (sma == null) {
             st = new ArimaModel(ar, BackFilter.ONE, ma, var);

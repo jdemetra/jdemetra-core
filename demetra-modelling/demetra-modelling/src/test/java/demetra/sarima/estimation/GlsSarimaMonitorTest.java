@@ -16,6 +16,8 @@
  */
 package demetra.sarima.estimation;
 
+import demetra.sarima.GlsSarimaProcessor;
+import demetra.sarima.internal.HannanRissanenInitializer;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.data.Data;
@@ -38,7 +40,7 @@ public class GlsSarimaMonitorTest {
     @Test
     public void testNew() {
         HannanRissanenInitializer initializer = HannanRissanenInitializer.builder().stabilize(true).useDefaultIfFailed(true).build();
-        GlsSarimaMonitor monitor = GlsSarimaMonitor.builder()
+        GlsSarimaProcessor monitor = GlsSarimaProcessor.builder()
                 .initializer(initializer).build();
         SarimaSpecification spec = new SarimaSpecification();
         spec.airline(12);
@@ -46,7 +48,9 @@ public class GlsSarimaMonitorTest {
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()
                 .build();
-        RegArimaModel<SarimaModel> regs = RegArimaModel.builder(DoubleSequence.of(Data.PROD), arima)
+        RegArimaModel<SarimaModel> regs = RegArimaModel.builder()
+                .y(DoubleSequence.of(Data.PROD))
+                .arima(arima)
                 .meanCorrection(true)
                 .missing(new int[]{3, 23, 34, 65, 123, 168})
                 .build();
@@ -81,14 +85,16 @@ public class GlsSarimaMonitorTest {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 5000; ++i) {
             HannanRissanenInitializer initializer = HannanRissanenInitializer.builder().stabilize(true).useDefaultIfFailed(true).build();
-            GlsSarimaMonitor monitor = GlsSarimaMonitor.builder()
+            GlsSarimaProcessor monitor = GlsSarimaProcessor.builder()
                     .initializer(initializer).build();
             SarimaSpecification spec = new SarimaSpecification();
             spec.airline(12);
             SarimaModel arima = SarimaModel.builder(spec)
                     .setDefault()
                     .build();
-            RegArimaModel<SarimaModel> regs = RegArimaModel.builder(DoubleSequence.of(Data.PROD), arima)
+            RegArimaModel<SarimaModel> regs = RegArimaModel.builder()
+                    .y(DoubleSequence.of(Data.PROD))
+                    .arima(arima)
                     .meanCorrection(true)
                     .missing(new int[]{3, 23, 34, 65, 123, 168})
                     .build();

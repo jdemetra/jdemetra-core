@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.arima.estimation;
+package demetra.arima;
 
 import demetra.arima.IArimaModel;
 import demetra.arima.internal.ExactArimaForecasts;

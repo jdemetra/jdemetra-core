@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.sarima.estimation;
+package demetra.sarima;
 
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
@@ -374,7 +374,7 @@ public class SarimaMapping implements IParametricMapping<SarimaModel> {
     }
 
     @Override
-    public DoubleSequence getDefault() {
+    public DoubleSequence getDefaultParameters() {
         double[] p = new double[spec.getParametersCount()];
         int nar = spec.getP() + spec.getBp();
         for (int i = 0; i < nar; ++i) {

@@ -73,10 +73,11 @@ public interface IParametersDomain {
      */
     ParamValidation validate(DataBlock ioparams);
     
-    DoubleSequence getDefault();
+    DoubleSequence getDefaultParameters();
     
     default String getDescription(int idx){
         return "parameter-"+(idx+1);
     };
+    
 
 }

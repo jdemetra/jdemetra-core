@@ -25,7 +25,7 @@ import java.util.Formatter;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@Immutable
+@lombok.Data
 public class LikelihoodStatistics {
 
     public static class Builder implements IBuilder<LikelihoodStatistics> {
@@ -104,8 +104,8 @@ public class LikelihoodStatistics {
         return new Builder(ll, nobs);
     }
 
-    private int observationsCount, effectiveObservationsCount, estimatedParametersCount;
-    private double logLikelihood, transformationAdjustment,
+    private @lombok.Getter int observationsCount, effectiveObservationsCount, estimatedParametersCount;
+    private @lombok.Getter double logLikelihood, transformationAdjustment,
             adjustedLogLikelihood, ssqErr,
             AIC, AICC, BIC, BICC, BIC2, HannanQuinn;
 
@@ -169,94 +169,4 @@ public class LikelihoodStatistics {
 
     }
 
-    /**
-     * @return the observationsCount
-     */
-    public int getObservationsCount() {
-        return observationsCount;
-    }
-
-    /**
-     * @return the effectiveObservationsCount
-     */
-    public int getEffectiveObservationsCount() {
-        return effectiveObservationsCount;
-    }
-
-    /**
-     * @return the estimatedParametersCount
-     */
-    public int getEstimatedParametersCount() {
-        return estimatedParametersCount;
-    }
-
-    /**
-     * @return the logLikelihood
-     */
-    public double getLogLikelihood() {
-        return logLikelihood;
-    }
-
-    /**
-     * @return the transformationAdjustment
-     */
-    public double getTransformationAdjustment() {
-        return transformationAdjustment;
-    }
-
-    /**
-     * @return the adjustedLogLikelihood
-     */
-    public double getAdjustedLogLikelihood() {
-        return adjustedLogLikelihood;
-    }
-
-    /**
-     * @return the ssq
-     */
-    public double getSsqErr() {
-        return ssqErr;
-    }
-
-    /**
-     * @return the AIC
-     */
-    public double getAIC() {
-        return AIC;
-    }
-
-    /**
-     * @return the AICC
-     */
-    public double getAICC() {
-        return AICC;
-    }
-
-    /**
-     * @return the BIC
-     */
-    public double getBIC() {
-        return BIC;
-    }
-
-    /**
-     * @return the BICC
-     */
-    public double getBICC() {
-        return BICC;
-    }
-
-    /**
-     * @return the BIC2
-     */
-    public double getBIC2() {
-        return BIC2;
-    }
-
-    /**
-     * @return the HannanQuinn
-     */
-    public double getHannanQuinn() {
-        return HannanQuinn;
-    }
 }

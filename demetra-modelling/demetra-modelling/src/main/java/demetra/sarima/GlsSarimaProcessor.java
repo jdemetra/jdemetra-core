@@ -14,23 +14,25 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.sarima.estimation;
+package demetra.sarima;
 
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.internal.RegArmaEstimation;
-import demetra.regarima.internal.RegArmaModel;
+import demetra.regarima.RegArmaModel;
 import demetra.regarima.internal.RegArmaProcessor;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.design.IBuilder;
+import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.LogLikelihoodFunction;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.regarima.IRegArimaProcessor;
+import demetra.regarima.RegArimaMapping;
+import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.estimation.IArmaInitializer;
-import demetra.sarima.estimation.SarimaMapping;
 import java.util.function.Function;
 
 /**
@@ -38,9 +40,9 @@ import java.util.function.Function;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class GlsSarimaMonitor implements IRegArimaProcessor<SarimaModel>{
+public class GlsSarimaProcessor implements IRegArimaProcessor<SarimaModel>{
 
-    public static class Builder implements IBuilder<GlsSarimaMonitor> {
+    public static class Builder implements IBuilder<GlsSarimaProcessor> {
 
         private Function<SarimaModel, IParametricMapping<SarimaModel>> mappingProvider;
         private IArmaInitializer initializer;
@@ -79,8 +81,8 @@ public class GlsSarimaMonitor implements IRegArimaProcessor<SarimaModel>{
         }
 
         @Override
-        public GlsSarimaMonitor build() {
-            return new GlsSarimaMonitor(mappingProvider, initializer, min, eps, ml, mt);
+        public GlsSarimaProcessor build() {
+            return new GlsSarimaProcessor(mappingProvider, initializer, min, eps, ml, mt);
         }
 
     }
@@ -97,7 +99,7 @@ public class GlsSarimaMonitor implements IRegArimaProcessor<SarimaModel>{
     /**
      *
      */
-    private GlsSarimaMonitor(Function<SarimaModel, IParametricMapping<SarimaModel>> mappingProvider,
+    private GlsSarimaProcessor(Function<SarimaModel, IParametricMapping<SarimaModel>> mappingProvider,
             final IArmaInitializer initializer, final ISsqFunctionMinimizer min, 
             final double eps, final boolean ml, final boolean mt) {
         if (mappingProvider == null){
@@ -126,10 +128,10 @@ public class GlsSarimaMonitor implements IRegArimaProcessor<SarimaModel>{
      */
     @Override
     public RegArimaEstimation<SarimaModel> process(RegArimaModel<SarimaModel> regs) {
-        RegArmaModel<SarimaModel> dmodel = RegArmaModel.of(regs);
+        RegArmaModel<SarimaModel> dmodel = regs.differencedModel();
         SarimaModel start = initializer.initialize(dmodel);
         // not used for the time being
-        return optimize(regs, start.parameters());
+        return optimize(regs, start);
     }
 
     @Override
@@ -137,22 +139,29 @@ public class GlsSarimaMonitor implements IRegArimaProcessor<SarimaModel>{
         return optimize(regs, null);
     }
     
-    public RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs, DoubleSequence start) {
-        if (start == null){
-            start=regs.arima().parameters();
-        }
-        RegArmaModel<SarimaModel> dmodel = RegArmaModel.of(regs);
+    public LogLikelihoodFunction<RegArimaModel<SarimaModel>, ConcentratedLikelihood> llFunction(RegArimaModel<SarimaModel> regs){
+        IParametricMapping<SarimaModel> mapping = mappingProvider.apply(regs.arima());
+        IParametricMapping<RegArimaModel<SarimaModel>> rmapping=new RegArimaMapping<>(mapping, regs);
+        Function<RegArimaModel<SarimaModel>, ConcentratedLikelihood> fn=model->ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model);
+        return new LogLikelihoodFunction(rmapping, fn);
+    }
+    
+    private RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs, SarimaModel ststart) {
+        RegArmaModel<SarimaModel> dmodel = regs.differencedModel();
+        if (ststart != null)
+            dmodel=RegArmaModel.of(dmodel, ststart);
         RegArmaProcessor processor = new RegArmaProcessor(ml, mt);
         IParametricMapping<SarimaModel> mapping = mappingProvider.apply(dmodel.getArma());
         int ndf = dmodel.getY().length() - dmodel.getX().getColumnsCount();// - mapping.getDim();
-        RegArmaEstimation<SarimaModel> rslt = processor.compute(dmodel, start, mapping, min, ndf);
+        RegArmaEstimation<SarimaModel> rslt = processor.compute(dmodel, null, mapping, min, ndf);
 
         SarimaModel arima = SarimaModel.builder(regs.arima().specification())
                 .parameters(rslt.getModel().getArma().parameters())
                 .build();
         RegArimaModel<SarimaModel> nmodel = RegArimaModel.of(regs, arima);
 
-        return RegArimaEstimation.compute(nmodel);
+        return new RegArimaEstimation(nmodel, ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(nmodel)
+                , new LogLikelihoodFunction.Point(llFunction(regs), rslt.getParameters(), rslt.getGradient(), rslt.getHessian()));
     }
     
     @Override

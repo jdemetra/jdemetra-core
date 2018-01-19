@@ -114,6 +114,6 @@ public interface IArimaModel extends IModel
      * @return The stationary transformation (containing the non-stationary AR polynomial
      * and the stationary model) is returned
      */
-    StationaryTransformation<IArimaModel> stationaryTransformation();
+    StationaryTransformation stationaryTransformation();
 
 }

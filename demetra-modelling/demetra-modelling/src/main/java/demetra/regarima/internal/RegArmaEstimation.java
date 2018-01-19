@@ -16,8 +16,8 @@
  */
 package demetra.regarima.internal;
 
+import demetra.regarima.RegArmaModel;
 import demetra.arima.IArimaModel;
-import demetra.design.Immutable;
 import demetra.maths.matrices.Matrix;
 
 /**
@@ -25,63 +25,14 @@ import demetra.maths.matrices.Matrix;
  * @author Jean Palate
  * @param <S>
  */
-@Immutable
+@lombok.Value
 public class RegArmaEstimation<S extends IArimaModel> {
 
-    private final RegArmaModel<S> model;
-    private final double objective;
-    private final boolean converged;
-    private final double[] score;
-    private final Matrix information;
-    private final int ndf;
-
-    RegArmaEstimation(final RegArmaModel<S> model, final double objective, final boolean converged, final double[] score,
-            final Matrix information, final int ndf) {
-        this.model = model;
-        this.objective = objective;
-        this.converged = converged;
-        this.score = score;
-        this.information=information;
-        this.ndf=ndf;
-    }
-
-    /**
-     * @return the model
-     */
-    public RegArmaModel<S> getModel() {
-        return model;
-    }
-
-    /**
-     * @return the objective
-     */
-    public double getObjective() {
-        return objective;
-    }
-
-    /**
-     * @return the converged
-     */
-    public boolean isConverged() {
-        return converged;
-    }
-    
-    public int getDegreesOfFreedom(){
-        return ndf;
-    }
-
-    /**
-     * @return the curvature
-     */
-    public Matrix information() {
-        return information.deepClone();
-    }
-
-    /**
-     * @return the score
-     */
-    public double[] score() {
-        return score.clone();
-    }
-
+    private RegArmaModel<S> model;
+    private double objective;
+    private boolean converged;
+    private double[] parameters;
+    private double[] gradient;
+    private Matrix hessian;
+    private int degreesOfFreedom;
 }

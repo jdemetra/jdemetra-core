@@ -21,7 +21,7 @@ import demetra.processing.IProcResults;
 import demetra.r.mapping.DkLikelihoodInfo;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
-import demetra.sarima.estimation.SarimaMapping;
+import demetra.sarima.SarimaMapping;
 import demetra.sarima.mapping.SarimaInfo;
 import demetra.ssf.dk.DkConcentratedLikelihood;
 import demetra.ssf.dk.DkToolkit;
@@ -377,7 +377,7 @@ public class TimeVaryingRegression {
         }
 
         @Override
-        public DoubleSequence getDefault() {
+        public DoubleSequence getDefaultParameters() {
             return fixed ? DoubleSequence.of(-.6, -.6) : DoubleSequence.of(-.6, -.6, .001);
         }
     }

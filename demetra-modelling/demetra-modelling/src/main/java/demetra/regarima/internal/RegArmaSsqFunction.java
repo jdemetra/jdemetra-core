@@ -16,6 +16,7 @@
  */
 package demetra.regarima.internal;
 
+import demetra.regarima.RegArmaModel;
 import demetra.arima.IArimaModel;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
@@ -150,7 +151,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
             this.p = p;
             this.arma = fn.mapping.map(p);
             RegArmaModel<S> regarma = new RegArmaModel<>(fn.dy, arma, fn.x, fn.nmissing);
-            ll = fn.cll.compute(regarma).getLikelihood();
+            ll = fn.cll.compute(regarma);
         }
 
         @Override
