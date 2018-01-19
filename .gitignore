@@ -1,5 +1,4 @@
 **/nbproject/
-/commonprovider/target/
 /demetra-basic-tools/DataForTests/target/
 /demetra-basic-tools/demetra-algorithms-ex/target/
 /demetra-basic-tools/demetra-core/target/
@@ -13,15 +12,10 @@
 /demetra-modelling/demetra-modelling/target/
 /demetra-modelling-ext/demetra-sutse/target/
 /demetra-sa/demetra-sacore/target/
-/demetra-spreadsheet-core/target/
-/demetra-tck/target/
+/demetra-io-spreadsheet-core/target/
+/demetra-io-sql-core/target/
+/demetra-io-text-core/target/
+/demetra-io-legacy-core/target/
 /demetra-tsprovider/target/
 /demetra-workspace/target/
-/jbench/target/
-/jdbcprovider/target/
 /jdr/target/
-/jtss/target/
-/jtstoolkit/target/
-/odbcprovider/target/
-/sdmxprovider/target/
-/utilities/target/

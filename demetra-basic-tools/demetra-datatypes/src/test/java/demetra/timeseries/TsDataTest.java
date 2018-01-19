@@ -19,7 +19,7 @@ package demetra.timeseries;
 import static demetra.data.AggregationType.*;
 import demetra.data.DoubleSequence;
 import static demetra.timeseries.TsUnit.*;
-import internal.Demo;
+import internal.design.Demo;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.Test;
