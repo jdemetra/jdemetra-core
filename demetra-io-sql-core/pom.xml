@@ -8,9 +8,9 @@
         <version>3.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>demetra-sql-core</artifactId>
+    <artifactId>demetra-io-sql-core</artifactId>
 
-    <name>JD3 - SQL</name>
+    <name>JD3 - IO - SQL</name>
     <description>A TS Provider that handles JDBC sources.</description>
 
     <properties>

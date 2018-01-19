@@ -8,9 +8,9 @@
         <version>3.0.0-SNAPSHOT</version>
     </parent>
   
-    <artifactId>demetra-spreadsheet-core</artifactId>
+    <artifactId>demetra-io-spreadsheet-core</artifactId>
     
-    <name>JD3 - Spreadsheet</name>
+    <name>JD3 - IO - Spreadsheet</name>
     <description>A TS Provider that handles Excel and OpenDocument spreadsheets.</description>
 
     <properties>

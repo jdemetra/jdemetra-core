@@ -8,9 +8,9 @@
         <version>3.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>demetra-text-core</artifactId>
+    <artifactId>demetra-io-text-core</artifactId>
 
-    <name>JD3 - Text</name>
+    <name>JD3 - IO - Text</name>
     <description>A TS Provider that handles text sources such as CSV.</description>
 
     <properties>

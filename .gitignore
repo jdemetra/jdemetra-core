@@ -12,11 +12,10 @@
 /demetra-modelling/demetra-modelling/target/
 /demetra-modelling-ext/demetra-sutse/target/
 /demetra-sa/demetra-sacore/target/
-/demetra-spreadsheet-core/target/
-/demetra-tck/target/
+/demetra-io-spreadsheet-core/target/
+/demetra-io-sql-core/target/
+/demetra-io-text-core/target/
+/demetra-io-legacy-core/target/
 /demetra-tsprovider/target/
 /demetra-workspace/target/
 /jdr/target/
-/demetra-sql-core/target/
-/demetra-text-core/target/
-/demetra-io-legacy-core/target/

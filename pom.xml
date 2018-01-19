@@ -77,9 +77,9 @@
         <module>demetra-bridge</module>
         <module>demetra-dfm</module>
         <module>demetra-benchmarking</module>
-        <module>demetra-spreadsheet-core</module>
-        <module>demetra-sql-core</module>
-        <module>demetra-text-core</module>
+        <module>demetra-io-spreadsheet-core</module>
+        <module>demetra-io-sql-core</module>
+        <module>demetra-io-text-core</module>
         <module>demetra-io-legacy-core</module>
     </modules>
 	
