@@ -438,7 +438,7 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
     /**
      * @return the regarima
      */
-    public RegArimaModel<T> getRegarima() {
+    public RegArimaModel<T> getRegArima() {
         return regarima;
     }
 }

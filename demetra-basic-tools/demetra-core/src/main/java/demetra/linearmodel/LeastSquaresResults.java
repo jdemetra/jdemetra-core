@@ -250,7 +250,8 @@ public class LeastSquaresResults {
      * @return the likelihood
      */
     public ConcentratedLikelihood getLikelihood() {
-        return ConcentratedLikelihood.likelihood(n)
+        return ConcentratedLikelihood.builder()
+                .ndata(n)
                 .coefficients(coefficients)
                 .unscaledCovariance(ucov)
                 .ssqErr(ssq)

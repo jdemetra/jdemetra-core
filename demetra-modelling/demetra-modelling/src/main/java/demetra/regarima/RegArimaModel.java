@@ -17,6 +17,7 @@
 package demetra.regarima;
 
 import demetra.arima.IArimaModel;
+import demetra.arima.StationaryTransformation;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.design.IBuilder;
@@ -37,15 +38,23 @@ public class RegArimaModel<M extends IArimaModel> {
 
     public static class Builder<M extends IArimaModel> implements IBuilder<RegArimaModel<M>> {
 
-        private final DoubleSequence y;
-        private final M arima;
+        private DoubleSequence y;
+        private M arima;
         private boolean mean;
         private final ArrayList<DoubleSequence> x = new ArrayList<>();
         private int[] missing;
 
-        private Builder(@Nonnull DoubleSequence y, @Nonnull M arima) {
+        private Builder() {
+        }
+
+        public Builder y(DoubleSequence y) {
             this.y = y;
+            return this;
+        }
+
+        public Builder arima(M arima) {
             this.arima = arima;
+            return this;
         }
 
         public Builder meanCorrection(boolean mean) {
@@ -70,8 +79,8 @@ public class RegArimaModel<M extends IArimaModel> {
             }
             return this;
         }
-        
-        public Builder removeX(int pos){
+
+        public Builder removeX(int pos) {
             x.remove(pos);
             return this;
         }
@@ -83,7 +92,10 @@ public class RegArimaModel<M extends IArimaModel> {
 
         @Override
         public RegArimaModel<M> build() {
-            return new RegArimaModel<>(y, arima, mean, Collections.unmodifiableList(x), missing == null ? NOMISSING : missing);
+            if (y == null || arima == null) {
+                throw new RuntimeException("Incomplete REGARIMA");
+            }
+            return new RegArimaModel<>(y, arima, mean, Collections.unmodifiableList(x), missing == null ? NOMISSING : missing, null);
         }
     }
 
@@ -92,24 +104,35 @@ public class RegArimaModel<M extends IArimaModel> {
     private final boolean mean;
     private final List<DoubleSequence> x;
     private final int[] missing;
+    private volatile RegArmaModel<M> dmodel;
 
-    public static <M extends IArimaModel> Builder<M> builder(DoubleSequence y, M arima) {
-        return new Builder<>(y, arima);
+    public static <M extends IArimaModel> Builder<M> builder() {
+        return new Builder<>();
     }
 
     public static <M extends IArimaModel> RegArimaModel of(RegArimaModel<M> oldModel, M newArima) {
-        return new RegArimaModel<>(oldModel.y, newArima, oldModel.mean, oldModel.x, oldModel.missing);
+        RegArmaModel<M> dm = oldModel.dmodel;
+        if (dm != null) {
+            StationaryTransformation st = newArima.stationaryTransformation();
+            if (st.getUnitRoots().equals(oldModel.arima.getNonStationaryAR())) {
+                dm = RegArmaModel.of(dm, (M) st.getStationaryModel());
+            } else {
+                dm = null;
+            }
+        }
+        return new RegArimaModel<>(oldModel.y, newArima, oldModel.mean, oldModel.x, oldModel.missing, dm);
     }
 
     /**
      *
      */
-    private RegArimaModel(DoubleSequence y, final M arima, final boolean mean, final List<DoubleSequence> x, final int[] missing) {
+    private RegArimaModel(DoubleSequence y, final M arima, final boolean mean, final List<DoubleSequence> x, final int[] missing, final RegArmaModel<M> dmodel) {
         this.y = y;
         this.arima = arima;
         this.mean = mean;
         this.x = x;
         this.missing = missing;
+        this.dmodel = dmodel;
     }
 
     public int getMissingValuesCount() {
@@ -159,13 +182,30 @@ public class RegArimaModel<M extends IArimaModel> {
     }
 
     public Builder<M> toBuilder() {
-        Builder builder = new Builder(y, arima);
-        builder.meanCorrection(mean);
-        builder.missing(missing);
+        Builder builder = new Builder();
+        builder.y(y)
+                .arima(arima)
+                .meanCorrection(mean)
+                .missing(missing);
+
         for (DoubleSequence v : x) {
             builder.addX(v);
         }
         return builder;
+    }
+
+    public RegArmaModel<M> differencedModel() {
+        RegArmaModel<M> tmp = dmodel;
+        if (tmp == null) {
+            synchronized (this) {
+                tmp = dmodel;
+                if (tmp == null) {
+                    tmp = RegArmaModel.of(this);
+                    dmodel = tmp;
+                }
+            }
+        }
+        return tmp;
     }
 
     private static final int[] NOMISSING = new int[0];

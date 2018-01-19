@@ -16,7 +16,7 @@
 */
 
 
-package demetra.arima.estimation;
+package demetra.arima;
 
 import demetra.arima.IArimaModel;
 import demetra.arima.internal.AnsleyFilter;

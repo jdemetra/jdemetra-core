@@ -17,10 +17,10 @@
 package demetra.arima.ssf;
 
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
-import demetra.regarima.internal.ConcentratedLikelihoodEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
+import demetra.likelihood.ConcentratedLikelihood;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.ssf.akf.AkfToolkit;
@@ -68,10 +68,12 @@ public class SsfArimaTest {
         DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer().compute(ssf, ssfData);
 //        System.out.println(ll3);
         assertEquals(ll1.logLikelihood(), ll3.logLikelihood(), 1e-6);
-        RegArimaModel<SarimaModel> model = RegArimaModel.builder(DoubleSequence.of(data), arima)
+        RegArimaModel<SarimaModel> model = RegArimaModel.builder()
+                .y(DoubleSequence.of(data))
+                .arima(arima)
                 .build();
-        ConcentratedLikelihoodEstimation cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model);
-        assertEquals(ll1.logLikelihood(), cll.getLikelihood().logLikelihood(), 1e-6);
+        ConcentratedLikelihood cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model);
+        assertEquals(ll1.logLikelihood(), cll.logLikelihood(), 1e-6);
     }
 
     @Test
@@ -92,11 +94,13 @@ public class SsfArimaTest {
         assertEquals(ll1.logLikelihood(), ll2.logLikelihood(), 1e-6);
         DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer().compute(ssf, sdata);
         assertEquals(ll1.logLikelihood(), ll3.logLikelihood(), 1e-6);
-        RegArimaModel<SarimaModel> model = RegArimaModel.builder(DoubleSequence.of(data), arima)
+        RegArimaModel<SarimaModel> model = RegArimaModel.builder()
+                .y(DoubleSequence.of(data))
+                .arima(arima)
                 .missing(2, 11, 119)
                 .build();
-        ConcentratedLikelihoodEstimation cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model);
-        assertEquals(ll1.logLikelihood(), cll.getLikelihood().logLikelihood(), 1e-6);
+        ConcentratedLikelihood cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model);
+        assertEquals(ll1.logLikelihood(), cll.logLikelihood(), 1e-6);
     }
     
     @Ignore

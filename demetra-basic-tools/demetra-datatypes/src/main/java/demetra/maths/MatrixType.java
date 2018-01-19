@@ -28,17 +28,19 @@ import javax.annotation.Nonnull;
  */
 public interface MatrixType extends BaseTable<Double> {
 
-    public static MatrixType ofInternal(@Nonnull double[] data, @Nonnegative int nrows, @Nonnegative int ncolumns){
-        if (data.length < nrows*ncolumns){
+    public static MatrixType EMPTY = new MatrixReader(null, 0, 0);
+
+    public static MatrixType ofInternal(@Nonnull double[] data, @Nonnegative int nrows, @Nonnegative int ncolumns) {
+        if (data.length < nrows * ncolumns) {
             throw new IllegalArgumentException();
         }
         return new MatrixReader(data, nrows, ncolumns);
     }
-    
-    public static MatrixType copyOf(@Nonnull MatrixType matrix){
+
+    public static MatrixType copyOf(@Nonnull MatrixType matrix) {
         return new MatrixReader(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
     }
-    
+
     /**
      * Returns the <code>double</code> value at the specified row/column.
      *
@@ -58,6 +60,7 @@ public interface MatrixType extends BaseTable<Double> {
     public DoubleSequence diagonal();
 
     public DoubleSequence subDiagonal(int pos);
+
     /**
      *
      * @param icolumn

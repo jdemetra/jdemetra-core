@@ -19,7 +19,7 @@ package demetra.ucarima.estimation;
 import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
-import demetra.arima.estimation.IArmaFilter;
+import demetra.arima.IArmaFilter;
 import demetra.arima.internal.AnsleyFilter;
 import demetra.data.DataBlock;
 import demetra.design.Development;
@@ -212,8 +212,8 @@ public class McElroyEstimates {
 
         // differencing matrices
         int n = data_.length;
-        StationaryTransformation<IArimaModel> stS = signal.stationaryTransformation();
-        StationaryTransformation<IArimaModel> stN = noise.stationaryTransformation();
+        StationaryTransformation<ArimaModel> stS = signal.stationaryTransformation();
+        StationaryTransformation<ArimaModel> stN = noise.stationaryTransformation();
 
         Polynomial ds = stS.getUnitRoots().asPolynomial();
         Polynomial dn = stN.getUnitRoots().asPolynomial();

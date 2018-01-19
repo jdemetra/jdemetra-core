@@ -3,19 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.arima.regarima;
+package demetra.regarima;
 
-import demetra.regarima.RegArimaEstimation;
-import demetra.regarima.RegArimaModel;
 import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
-import demetra.maths.matrices.Matrix;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  *
@@ -39,7 +35,9 @@ public class RegArimaModelTest {
             missingPos[i] = y.length() - j;
         }
         SarimaModel arima = SarimaModel.builder(spec).build();
-        RegArimaModel<SarimaModel> model = RegArimaModel.builder(y, arima)
+        RegArimaModel<SarimaModel> model = RegArimaModel.builder()
+                .y(y)
+                .arima(arima)
                 .meanCorrection(true)
                 .missing(missingPos)
                 .build();
@@ -59,14 +57,16 @@ public class RegArimaModelTest {
             missingPos[i] = 2 * i;
         }
         SarimaModel arima = SarimaModel.builder(spec).setDefault().build();
-        RegArimaModel<SarimaModel> model = RegArimaModel.builder(y, arima)
+        RegArimaModel<SarimaModel> model = RegArimaModel.builder()
+                .y(y)
+                .arima(arima)
                 .meanCorrection(true)
                 .missing(missingPos)
                 .build();
-        RegArimaEstimation<SarimaModel> estimation = RegArimaEstimation.compute(model);
-        estimation.statistics(2, 0);
+             RegArimaEstimation<SarimaModel> estimation = RegArimaEstimation.of(model, 2);
+            estimation.statistics(0);
 //        System.out.println("New estimation");
-//        System.out.println(estimation.statistics(2, 0));
+//        System.out.println(estimation.statistics(0));
     }
 
     @Test
@@ -106,12 +106,14 @@ public class RegArimaModelTest {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 100000; ++i) {
             SarimaModel arima = SarimaModel.builder(spec).setDefault().build();
-            RegArimaModel<SarimaModel> model = RegArimaModel.builder(y, arima)
+            RegArimaModel<SarimaModel> model = RegArimaModel.builder()
+                    .y(y)
+                    .arima(arima)
                     .meanCorrection(true)
                     .missing(missingPos)
                     .build();
-            RegArimaEstimation<SarimaModel> estimation = RegArimaEstimation.compute(model);
-            estimation.statistics(2, 0);
+            RegArimaEstimation<SarimaModel> estimation = RegArimaEstimation.of(model, 2);
+            estimation.statistics(0);
         }
         long t1 = System.currentTimeMillis();
         System.out.println("New estimation");

@@ -16,9 +16,9 @@
 */
 
 
-package demetra.sarima.estimation;
+package demetra.sarima;
 
-import demetra.regarima.internal.RegArmaModel;
+import demetra.regarima.RegArmaModel;
 import demetra.design.Development;
 import demetra.sarima.SarimaModel;
 

@@ -16,6 +16,7 @@
  */
 package demetra.regarima.internal;
 
+import demetra.regarima.RegArmaModel;
 import demetra.arima.IArimaModel;
 import demetra.data.DoubleSequence;
 import demetra.design.IBuilder;
@@ -34,7 +35,7 @@ import java.util.function.ToDoubleFunction;
  * @author Jean Palate
  * @param <S>
  */
-public class RegArmaFunction<S extends IArimaModel> implements IFunction {
+class RegArmaFunction<S extends IArimaModel> implements IFunction {
 
     public static class Builder<S extends IArimaModel> implements IBuilder<RegArmaFunction<S>> {
 
@@ -134,7 +135,7 @@ public class RegArmaFunction<S extends IArimaModel> implements IFunction {
             this.p = p;
             this.arma = fn.mapping.map(p);
             RegArmaModel<S> regarma = new RegArmaModel<>(fn.dy, arma, fn.x, fn.nmissing);
-            ll = fn.cll.compute(regarma).getLikelihood();
+            ll = fn.cll.compute(regarma);
         }
 
         public ConcentratedLikelihood getLikelihood() {

@@ -41,7 +41,7 @@ public interface IFunction {
      */
     IParametersDomain getDomain();
     
-    default ToDoubleFunction<DoubleSequence> asRealFunction(){
+    default ToDoubleFunction<DoubleSequence> asDoubleFunction(){
         return (p->this.evaluate(p).getValue());
     }
 }

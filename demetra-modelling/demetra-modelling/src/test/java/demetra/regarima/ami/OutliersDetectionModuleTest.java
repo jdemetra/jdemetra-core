@@ -21,8 +21,8 @@ import demetra.data.DoubleSequence;
 import demetra.regarima.RegArimaModel;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
-import demetra.sarima.estimation.GlsSarimaMonitor;
-import demetra.sarima.estimation.HannanRissanenInitializer;
+import demetra.sarima.GlsSarimaProcessor;
+import demetra.sarima.internal.HannanRissanenInitializer;
 import demetra.timeseries.TsPeriod;
 import java.util.function.Consumer;
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class OutliersDetectionModuleTest {
         TsPeriod start = TsPeriod.monthly(1967, 1);
         OutliersDetectionModule<SarimaModel> od = new OutliersDetectionModule(null);
         HannanRissanenInitializer hr = HannanRissanenInitializer.builder().build();
-        od.setProcessor(GlsSarimaMonitor.builder().initializer(hr).build());
+        od.setProcessor(GlsSarimaProcessor.builder().initializer(hr).build());
         od.setAll();
         od.setCriticalValue(3.0);
         SarimaSpecification spec = new SarimaSpecification();
@@ -51,7 +51,7 @@ public class OutliersDetectionModuleTest {
 
         Consumer<int[]> hook = a -> System.out.println("Add outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
         Consumer<int[]> rhook = a -> System.out.println("Remove outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
-        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(DoubleSequence.of(Data.PROD), sarima).build();
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder().y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
         od.setAddHook(hook);
         od.setRemoveHook(rhook);
 //        long t0 = System.currentTimeMillis();

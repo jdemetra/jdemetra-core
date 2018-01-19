@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
 */
-package demetra.arima.estimation;
+package demetra.arima.internal;
 
 import demetra.arima.ArimaException;
 import demetra.arima.IArimaModel;
@@ -440,7 +440,8 @@ public class FastKalmanFilter {
                 ldet += 2 * Math.log(Math.abs(rdiag.get(ao.get(i))));
             }
         }
-        return ConcentratedLikelihood.likelihood(n)
+        return ConcentratedLikelihood.builder()
+                .ndata(n)
                 .coefficients(solver.coefficients())
                 .ssqErr(ssqerr)
                 .residuals(solver.residuals())

@@ -17,7 +17,7 @@
 package demetra.arima.internal;
 
 import demetra.arima.IArimaModel;
-import demetra.arima.estimation.IArimaForecasts;
+import demetra.arima.IArimaForecasts;
 import demetra.arima.internal.MaLjungBoxFilter;
 import demetra.data.DataBlock;
 import demetra.data.DataWindow;

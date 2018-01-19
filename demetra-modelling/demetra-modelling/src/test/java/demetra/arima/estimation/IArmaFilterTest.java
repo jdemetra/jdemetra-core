@@ -5,6 +5,7 @@
  */
 package demetra.arima.estimation;
 
+import demetra.arima.IArmaFilter;
 import demetra.arima.IArimaModel;
 import demetra.data.Data;
 import demetra.data.DataBlock;

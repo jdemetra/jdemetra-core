@@ -14,9 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.sarima.estimation;
+package demetra.sarima.internal;
 
-import demetra.regarima.internal.RegArmaModel;
+import demetra.regarima.RegArmaModel;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
@@ -28,6 +28,9 @@ import demetra.linearmodel.Ols;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.SarmaSpecification;
+import demetra.sarima.HannanRissanen;
+import demetra.sarima.IArmaInitializer;
+import demetra.sarima.SarimaMapping;
 
 /**
  *

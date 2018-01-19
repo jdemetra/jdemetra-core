@@ -393,7 +393,7 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
     }
 
     @Override
-    public DoubleSequence getDefault() {
+    public DoubleSequence getDefaultParameters() {
         double[] x = new double[getDim()];
         for (int i = 0; i < x.length; ++i) {
             x[i] = outparam(.2);

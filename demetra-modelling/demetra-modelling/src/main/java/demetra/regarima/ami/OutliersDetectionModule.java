@@ -23,7 +23,6 @@ import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
-import demetra.regarima.internal.ConcentratedLikelihoodEstimation;
 import demetra.regarima.outlier.AbstractSingleOutlierDetector;
 import demetra.regarima.outlier.FastOutlierDetector;
 import demetra.regarima.outlier.CriticalValueComputer;
@@ -33,6 +32,7 @@ import demetra.timeseries.regression.LevelShift;
 import demetra.timeseries.regression.PeriodicOutlier;
 import demetra.timeseries.regression.TransitoryChange;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 /**
@@ -188,8 +188,8 @@ public class OutliersDetectionModule<T extends IArimaModel> {
                     break;
                 }
 //                    estimateModel(false);
-                ConcentratedLikelihoodEstimation ce = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima);
-                updateLikelihood(ce.getLikelihood());
+                ConcentratedLikelihood ce = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima);
+                updateLikelihood(ce);
             }
             if (exit || outliers.size() == MAXOUTLIERS) {
                 break;
@@ -205,7 +205,7 @@ public class OutliersDetectionModule<T extends IArimaModel> {
     private boolean estimateModel(boolean full) {
         RegArimaEstimation<T> est = full ? processor.process(regarima) : processor.optimize(regarima);
         regarima = est.getModel();
-        updateLikelihood(est.getConcentratedLikelihood().getLikelihood());
+        updateLikelihood(est.getConcentratedLikelihood());
         return true;
     }
 
@@ -253,7 +253,7 @@ public class OutliersDetectionModule<T extends IArimaModel> {
             removeHook.accept(toremove);
         }
         if (lastremoved != null) {
-            if (toremove.equals(lastremoved)) {
+            if (Arrays.equals(toremove, lastremoved)) {
                 exit = true;
             }
         }

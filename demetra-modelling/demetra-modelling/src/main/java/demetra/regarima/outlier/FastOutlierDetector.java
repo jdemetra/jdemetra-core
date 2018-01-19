@@ -18,11 +18,17 @@ package demetra.regarima.outlier;
 
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
+import demetra.arima.internal.KalmanFilter;
+import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
+import demetra.likelihood.ConcentratedLikelihood;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.maths.polynomials.Polynomial;
 import demetra.regarima.RegArimaEstimation;
+import demetra.regarima.RegArimaModel;
+import demetra.regarima.RegArmaModel;
+import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.IRegularOutlier;
 
@@ -75,11 +81,11 @@ public class FastOutlierDetector<T extends IArimaModel> extends
     }
 
     private boolean initmodel() {
-        StationaryTransformation<IArimaModel> st = getRegarima().arima().stationaryTransformation();
+        StationaryTransformation<IArimaModel> st = getRegArima().arima().stationaryTransformation();
         stmodel = st.getStationaryModel();
         ur = st.getUnitRoots();
-        RegArimaEstimation<T> estimation=RegArimaEstimation.compute(getRegarima());
-        DoubleSequence residuals = estimation.getConcentratedLikelihood().getResiduals();
+        ConcentratedLikelihood cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(getRegArima());
+        DoubleSequence residuals = fullResiduals(getRegArima().differencedModel(), cll);
         el=residuals.toArray();
         getStandardDeviationComputer().compute(residuals);
         return true;
@@ -95,7 +101,7 @@ public class FastOutlierDetector<T extends IArimaModel> extends
         if (representation == null) {
             return;
         }
-        IArimaModel model = getRegarima().arima();
+        IArimaModel model = getRegArima().arima();
         RationalBackFilter pi = model.getPiWeights();
         double[] o = pi.times(representation.filter).getWeights(n);
         double corr = 0;
@@ -150,5 +156,16 @@ public class FastOutlierDetector<T extends IArimaModel> extends
                 setT(pos, idx, val);
             }
         }
+    }
+
+    private DoubleSequence fullResiduals(RegArmaModel<T> differencedModel, ConcentratedLikelihood cll) {
+        if (cll.nx() == 0)
+            return cll.e();
+        DataBlock res = differencedModel.asLineaModel().calcResiduals(cll.coefficients());
+        KalmanFilter filter=new KalmanFilter(false);
+        filter.prepare(stmodel, res.length());
+        DataBlock fres=DataBlock.make(res.length());
+        filter.apply(res, fres);
+        return fres;
     }
 }

@@ -16,14 +16,13 @@
  */
 package demetra.regarima.internal;
 
+import demetra.regarima.RegArmaModel;
 import demetra.arima.IArimaModel;
 import demetra.data.DoubleSequence;
 import demetra.maths.functions.IFunctionDerivatives;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.NumericalDerivatives;
-import demetra.maths.functions.ssq.ISsqFunctionDerivatives;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
-import demetra.maths.functions.ssq.SsqNumericalDerivatives;
 import demetra.maths.functions.ssq.SsqProxyFunctionPoint;
 import demetra.maths.matrices.Matrix;
 
@@ -55,12 +54,12 @@ public class RegArmaProcessor {
         IFunctionDerivatives derivatives = new NumericalDerivatives(new SsqProxyFunctionPoint(rslt), false);
         double objective = rslt.getSsqE();
         Matrix hessian = derivatives.hessian();
-        double[] score = derivatives.gradient().toArray();
+        double[] gradient = derivatives.gradient().toArray();
         hessian.mul((.5 * ndf) / objective);
-        for (int i = 0; i < score.length; ++i) {
-            score[i] *= (-.5 * ndf) / objective;
+        for (int i = 0; i < gradient.length; ++i) {
+            gradient[i] *= (-.5 * ndf) / objective;
         }
-        RegArmaModel<S> nmodel = model.newArma(rslt.arma);
-        return new RegArmaEstimation<>(nmodel, objective, ok, score, hessian, ndf);
+        RegArmaModel<S> nmodel = RegArmaModel.of(model, rslt.arma);
+        return new RegArmaEstimation<>(nmodel, objective, ok, rslt.getParameters().toArray(), gradient, hessian, ndf);
     }
 }

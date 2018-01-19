@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.regarima.internal;
+package demetra.regarima;
 
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
@@ -30,7 +30,18 @@ import demetra.maths.MatrixType;
 @lombok.Value
 public class RegArmaModel<M extends IArimaModel> {
 
-    public static <M extends IArimaModel> RegArmaModel<M> of(RegArimaModel<M> regarima) {
+    /**
+     * Creates a new RegArma model from an existing one, with a new stationary ARMA
+     * @param <M>
+     * @param model
+     * @param newarma
+     * @return 
+     */
+    public static <M extends IArimaModel> RegArmaModel<M> of(RegArmaModel<M> model, M newarma){
+        return new RegArmaModel(model.y, newarma, model.x, model.missingCount);
+    }
+
+    static <M extends IArimaModel> RegArmaModel<M> of(RegArimaModel<M> regarima) {
         StationaryTransformation<M> st = (StationaryTransformation<M>) regarima.arima().stationaryTransformation();
         M arma = st.getStationaryModel();
         BackFilter ur = st.getUnitRoots();
@@ -121,8 +132,4 @@ public class RegArmaModel<M extends IArimaModel> {
         return new LinearModel(y.toArray(), false, Matrix.of(x));
     }
     
-    public RegArmaModel newArma(M m){
-        return new RegArmaModel(y, m, x, missingCount);
-    }
-
 }

@@ -20,7 +20,6 @@ import demetra.arima.ArimaModel;
 import demetra.arima.ArimaType;
 import demetra.arima.IArimaModel;
 import demetra.arima.UcarimaType;
-import demetra.arima.mapping.ArimaInfo;
 import demetra.arima.mapping.UcarimaInfo;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -36,28 +35,20 @@ import demetra.processing.IProcResults;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.SarimaType;
-import demetra.sarima.estimation.RegArimaEstimator;
+import demetra.sarima.RegSarimaProcessor;
 import demetra.sarima.mapping.SarimaInfo;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.SsfData;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import demetra.ucarima.AllSelector;
 import demetra.ucarima.ModelDecomposer;
-import demetra.ucarima.SeasonalSelector;
 import demetra.ucarima.TrendCycleSelector;
 import demetra.ucarima.UcarimaModel;
 import demetra.ucarima.ssf.SsfUcarima;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 
 /**
@@ -131,16 +122,18 @@ public class AirlineDecomposition {
                 .setDefault()
                 .build();
         //
-        RegArimaEstimator monitor = RegArimaEstimator.builder()
+        RegSarimaProcessor monitor = RegSarimaProcessor.builder()
                 .useParallelProcessing(true)
                 .useMaximumLikelihood(true)
                 .useCorrectedDegreesOfFreedom(false) // compatibility with R
                 .precision(1e-12)
-                .startingPoint(RegArimaEstimator.StartingPoint.Multiple)
+                .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
                 .build();
 
         RegArimaModel<SarimaModel> regarima
-                = RegArimaModel.builder(DoubleSequence.of(s.getValues()), arima)
+                = RegArimaModel.builder()
+                .y(DoubleSequence.of(s.getValues()))
+                .arima(arima)
                 .build();
         RegArimaEstimation<SarimaModel> rslt = monitor.process(regarima);
         UcarimaModel ucm = ucm(rslt.getModel().arima());
@@ -162,12 +155,12 @@ public class AirlineDecomposition {
                 .s(TsData.of(start, ds.item(ssf.getComponentPosition(1))))
                 .i(TsData.of(start, ds.item(ssf.getComponentPosition(2))))
                 .ucarima(new UcarimaType(sum, new ArimaType[]{mt, ms, mi}))
-                .concentratedLogLikelihood(rslt.getConcentratedLikelihood().getLikelihood())
+                .concentratedLogLikelihood(rslt.getConcentratedLikelihood())
                 .regarima(rslt.getModel())
                 .sarima(rslt.getModel().arima().toType())
-                .statistics(rslt.statistics(spec.getParametersCount(), 0))
-                .score(monitor.getScore())
-                .parametersCovariance(monitor.getParametersCovariance())
+                .statistics(rslt.statistics( 0))
+                .score(rslt.getMax().getGradient())
+                .parametersCovariance(rslt.getMax().getHessian())
                 .build();
 
     }

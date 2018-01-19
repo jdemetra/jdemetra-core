@@ -14,32 +14,21 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.sarima.estimation;
+package demetra.likelihood;
 
-import demetra.regarima.RegArimaEstimation;
-import demetra.regarima.RegArimaModel;
-import demetra.sarima.SarimaModel;
+import demetra.data.DoubleSequence;
+import demetra.design.Development;
+import demetra.maths.MatrixType;
 
 /**
  *
  * @author Jean Palate
  */
-public interface IGlsSarimaMonitor {
-
-    /**
-     * Estimate completely the given RegArima model
-     * @param regs
-     * @return 
-     */
-    RegArimaEstimation<SarimaModel> compute(RegArimaModel<SarimaModel> regs);
-
-    /**
-     * Estimate a RegArima model, starting from the given model.
-     * The default implementation ignore the starting point.
-     * @param regs
-     * @return 
-     */
-    default RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs){
-        return compute(regs);
-    }
+@lombok.Value
+@Development(status=Development.Status.Alpha)
+public class MaximumLogLikelihood {
+    private double value;
+    private DoubleSequence parameters;
+    private DoubleSequence score;
+    private MatrixType information;
 }

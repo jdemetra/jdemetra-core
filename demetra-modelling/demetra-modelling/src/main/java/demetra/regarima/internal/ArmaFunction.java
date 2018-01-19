@@ -70,7 +70,7 @@ class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
             return this;
         }
 
-        public Builder parallelProcessinf(boolean parallel) {
+        public Builder parallelProcessing(boolean parallel) {
             this.mt = parallel;
             return this;
         }

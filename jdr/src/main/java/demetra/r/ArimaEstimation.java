@@ -29,7 +29,7 @@ import demetra.processing.IProcResults;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.SarimaType;
-import demetra.sarima.estimation.RegArimaEstimator;
+import demetra.sarima.RegSarimaProcessor;
 import demetra.sarima.mapping.SarimaInfo;
 import demetra.utilities.IntList;
 import java.util.ArrayList;
@@ -72,17 +72,19 @@ public class ArimaEstimation {
         SarimaModel.Builder builder = SarimaModel.builder(spec);
         //
         SarimaModel arima = builder.setDefault().build();
-        RegArimaEstimator monitor = RegArimaEstimator.builder()
+        RegSarimaProcessor monitor = RegSarimaProcessor.builder()
                 .useParallelProcessing(true)
                 .useMaximumLikelihood(true)
                 .useCorrectedDegreesOfFreedom(false) // compatibility with R
                 .precision(1e-12)
-                .startingPoint(RegArimaEstimator.StartingPoint.Multiple)
+                .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
                 .build();
 
         IntList missings = new IntList();
         demetra.data.AverageInterpolator.cleanMissings(y, missings);
-        RegArimaModel.Builder<SarimaModel> rbuilder = RegArimaModel.builder(DoubleSequence.of(y), arima)
+        RegArimaModel.Builder<SarimaModel> rbuilder = RegArimaModel.builder()
+                .y(DoubleSequence.of(y))
+                .arima(arima)
                 .meanCorrection(mean)
                 .missing(missings.toArray());
 
@@ -91,8 +93,8 @@ public class ArimaEstimation {
         }
 
         RegArimaEstimation<SarimaModel> rslt = monitor.process(rbuilder.build());
-        return new Results(rslt.getModel(), rslt.getConcentratedLikelihood().getLikelihood(), rslt.statistics(spec.getParametersCount(), 0),
-                monitor.getParametersCovariance(), monitor.getScore());
+        return new Results(rslt.getModel(), rslt.getConcentratedLikelihood(), rslt.statistics(0),
+                rslt.getMax().getHessian(), rslt.getMax().getGradient());
     }
 
     @lombok.Value
