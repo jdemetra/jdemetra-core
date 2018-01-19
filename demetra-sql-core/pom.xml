@@ -17,7 +17,6 @@
         <hsqldb.version>2.3.4</hsqldb.version>
         <jna.version>4.2.1</jna.version>
         <jd3-basic.version>1.0.0-SNAPSHOT</jd3-basic.version>
-        <jd2.version>2.2.1-SNAPSHOT</jd2.version>
     </properties>
 
     <dependencies>

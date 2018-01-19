@@ -16,7 +16,6 @@
     <properties>
         <spreadsheet4j.version>2.2.1-SNAPSHOT</spreadsheet4j.version>
         <jd3-basic.version>1.0.0-SNAPSHOT</jd3-basic.version>
-        <jd2.version>2.2.1-SNAPSHOT</jd2.version>
     </properties>
 
     <dependencies>

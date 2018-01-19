@@ -38,6 +38,7 @@
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-tstoolkit</artifactId>
+            <version>${jd2.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
