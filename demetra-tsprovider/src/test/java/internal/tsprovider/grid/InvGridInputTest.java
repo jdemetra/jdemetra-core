@@ -16,6 +16,7 @@
  */
 package internal.tsprovider.grid;
 
+import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import static test.tsprovider.grid.Data.*;
@@ -28,9 +29,8 @@ import test.tsprovider.grid.GridInputs;
 public class InvGridInputTest {
 
     @Test
-    public void test() {
+    public void test() throws IOException {
         InvGridInput input = InvGridInput.of(HGRID_WITH_HEADER);
-        assertThat(input.getName()).isEqualTo("hello");
         assertThat(GridInputs.toArray(input)).containsExactly(GridInputs.toArray(VGRID_WITH_HEADER));
     }
 }

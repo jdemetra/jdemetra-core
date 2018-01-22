@@ -20,6 +20,7 @@ import ec.util.spreadsheet.Sheet;
 import demetra.tsprovider.grid.GridReader;
 import demetra.tsprovider.grid.TsGrid;
 import demetra.tsprovider.grid.TsCollectionGrid;
+import java.io.IOException;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -51,7 +52,7 @@ public class SheetData {
     }
 
     @Nonnull
-    public static SheetData of(@Nonnull Sheet sheet, @Nonnegative int ordering, @Nonnull GridReader reader) {
+    public static SheetData of(@Nonnull Sheet sheet, @Nonnegative int ordering, @Nonnull GridReader reader) throws IOException {
         TsCollectionGrid data = reader.read(SheetGridInput.of(sheet));
         return SheetData.of(sheet.getName(), ordering, data);
     }

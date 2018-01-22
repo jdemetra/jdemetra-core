@@ -21,7 +21,6 @@ import demetra.tsprovider.grid.GridOutput;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.Iterator;
 
 /**
  *
@@ -32,21 +31,6 @@ public final class SheetGridOutput implements GridOutput {
 
     private final ArraySheet.Builder sheet;
     private final ZoneId zoneId = ZoneId.systemDefault();
-
-    @Override
-    public void setName(String name) {
-        sheet.name(name);
-    }
-
-    @Override
-    public void setRow(int row, int column, Iterator<?> values) {
-        sheet.row(row, column, values);
-    }
-
-    @Override
-    public void setColumn(int row, int column, Iterator<?> values) {
-        sheet.column(row, column, values);
-    }
 
     @Override
     public void setValue(int row, int column, Object value) {

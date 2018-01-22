@@ -30,9 +30,6 @@ import javax.annotation.Nonnull;
 public class TsCollectionGrid {
 
     @lombok.NonNull
-    private String name;
-
-    @lombok.NonNull
     private GridLayout layout;
 
     @lombok.NonNull
@@ -41,18 +38,14 @@ public class TsCollectionGrid {
 
     @Nonnull
     public static TsCollectionGrid fromTsCollection(@Nonnull TsCollection o) {
-        TsCollectionGrid.Builder result = TsCollectionGrid.builder()
-                .name(o.getName())
-                .layout(GridLayout.UNKNOWN);
+        TsCollectionGrid.Builder result = TsCollectionGrid.builder().layout(GridLayout.UNKNOWN);
         o.getItems().forEach(ts -> result.item(TsGrid.fromTs(ts)));
         return result.build();
     }
 
     @Nonnull
     public static TsCollection toTsCollection(@Nonnull TsCollectionGrid o) {
-        TsCollection.Builder result = TsCollection.builder()
-                .name(o.getName())
-                .type(TsInformationType.All);
+        TsCollection.Builder result = TsCollection.builder().type(TsInformationType.All);
         o.getItems().forEach(ts -> result.item(TsGrid.toTs(ts)));
         return result.build();
     }

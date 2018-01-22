@@ -16,14 +16,19 @@
  */
 package demetra.tsprovider.grid;
 
-import java.io.IOException;
-import javax.annotation.Nullable;
-
 /**
  *
  * @author Philippe Charles
  */
-public interface GridOutput {
+public enum GridHeader {
 
-    void setValue(int row, int column, @Nullable Object value) throws IOException;
+    NONE, DATE_ONLY, NAME_ONLY, BOTH;
+
+    public boolean hasName() {
+        return this == NAME_ONLY || this == BOTH;
+    }
+
+    public boolean hasDate() {
+        return this == DATE_ONLY || this == BOTH;
+    }
 }

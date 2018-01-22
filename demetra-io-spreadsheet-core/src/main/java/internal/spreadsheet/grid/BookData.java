@@ -44,10 +44,10 @@ public class BookData {
     public static BookData of(Book book, GridReader reader) throws IOException {
         int sheetCount = book.getSheetCount();
         Map<String, SheetData> result = new HashMap<>(sheetCount);
-        book.forEach((sheet, i) -> {
-            SheetData data = SheetData.of(sheet, i, reader);
+        for (int i = 0; i < book.getSheetCount(); i++) {
+            SheetData data = SheetData.of(book.getSheet(i), i, reader);
             result.put(data.getSheetName(), data);
-        });
+        }
         return BookData.of(result);
     }
 }

@@ -26,15 +26,7 @@ import demetra.tsprovider.grid.GridInput;
 public final class ArrayGridInput implements GridInput {
 
     @lombok.NonNull
-    private final String name;
-
-    @lombok.NonNull
     private final Object[][] array;
-
-    @Override
-    public String getName() {
-        return name;
-    }
 
     @Override
     public int getRowCount() {

@@ -35,8 +35,9 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
 import lombok.AccessLevel;
-import internal.tsprovider.grid.ValueReader;
 import java.util.function.IntFunction;
+import internal.tsprovider.grid.InternalValueReader;
+import java.io.IOException;
 
 /**
  *
@@ -68,11 +69,11 @@ public final class GridReader {
     private final Collector<CharSequence, ?, String> nameJoiner;
 
     @Nonnull
-    public TsCollectionGrid read(@Nonnull GridInput input) {
+    public TsCollectionGrid read(@Nonnull GridInput input) throws IOException {
         DateHeader rowDates = getRowDates(input);
         DateHeader colDates = getColDates(input);
 
-        TsCollectionGrid.Builder result = TsCollectionGrid.builder().name(input.getName());
+        TsCollectionGrid.Builder result = TsCollectionGrid.builder();
 
         if (rowDates.isBetterThan(colDates)) {
             result.layout(VERTICAL);
@@ -87,7 +88,7 @@ public final class GridReader {
         return result.build();
     }
 
-    private DateHeader getRowDates(GridInput grid) {
+    private DateHeader getRowDates(GridInput grid) throws IOException {
         DateHeader result = new DateHeader(grid.getRowCount());
         for (int i = 0; i < grid.getRowCount(); i++) {
             result.set(i, readers.readDateTime(grid, i, 0));
@@ -95,7 +96,7 @@ public final class GridReader {
         return result;
     }
 
-    private DateHeader getColDates(GridInput grid) {
+    private DateHeader getColDates(GridInput grid) throws IOException {
         DateHeader result = new DateHeader(grid.getColumnCount());
         for (int j = 0; j < grid.getColumnCount(); j++) {
             result.set(j, readers.readDateTime(grid, 0, j));
@@ -103,7 +104,7 @@ public final class GridReader {
         return result;
     }
 
-    private void loadVertically(GridInput grid, DateHeader dates, Consumer<TsGrid> consumer) {
+    private void loadVertically(GridInput grid, DateHeader dates, Consumer<TsGrid> consumer) throws IOException {
         List<String> names = new ArrayList<>();
         loadHorizontalNames(grid, dates.minIndex, names::add);
 
@@ -118,7 +119,7 @@ public final class GridReader {
         }
     }
 
-    private void loadHorizontalNames(GridInput grid, int level, Consumer<String> consumer) {
+    private void loadHorizontalNames(GridInput grid, int level, Consumer<String> consumer) throws IOException {
         switch (level) {
             case 0: {
                 loadHorizontalNamesNoheader(grid, consumer);
@@ -135,7 +136,7 @@ public final class GridReader {
         }
     }
 
-    private void loadHorizontalNamesNoheader(GridInput grid, Consumer<String> consumer) {
+    private void loadHorizontalNamesNoheader(GridInput grid, Consumer<String> consumer) throws IOException {
         for (int column = FIRST_DATA_COL_IDX; column < grid.getColumnCount(); column++) {
             if (readers.readNumber(grid, 0, column) == null) {
                 break;
@@ -144,7 +145,7 @@ public final class GridReader {
         }
     }
 
-    private void loadHorizontalNamesSingleheader(GridInput grid, Consumer<String> consumer) {
+    private void loadHorizontalNamesSingleheader(GridInput grid, Consumer<String> consumer) throws IOException {
         for (int column = FIRST_DATA_COL_IDX; column < grid.getColumnCount(); column++) {
             String name = readers.readString(grid, 0, column);
             if (name == null) {
@@ -154,7 +155,7 @@ public final class GridReader {
         }
     }
 
-    private void loadHorizontalNamesMultiHeaders(GridInput grid, int level, Consumer<String> consumer) {
+    private void loadHorizontalNamesMultiHeaders(GridInput grid, int level, Consumer<String> consumer) throws IOException {
         String[] path = new String[level];
         for (int column = FIRST_DATA_COL_IDX; column < grid.getColumnCount(); column++) {
             boolean hasHeader = false;
@@ -183,48 +184,48 @@ public final class GridReader {
     @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static final class ValueReaders {
 
-        static ValueReaders of(GridInfo info, ObsFormat obsFormat) {
-            ValueReader<String> toString;
-            ValueReader<LocalDateTime> toDateTimeFallback;
-            ValueReader<Number> toNumberFallback;
+        static ValueReaders of(GridInfo info, ObsFormat format) {
+            InternalValueReader<String> string;
+            InternalValueReader<LocalDateTime> dateTimeFallback;
+            InternalValueReader<Number> numberFallback;
 
             if (info.isSupportedDataType(String.class)) {
-                toString = ValueReader.onString();
-                toDateTimeFallback = ValueReader.onStringParser(obsFormat.dateTimeParser(LocalDateTime::from));
-                toNumberFallback = ValueReader.onStringParser(obsFormat.numberParser());
+                string = InternalValueReader.onString();
+                dateTimeFallback = InternalValueReader.onStringParser(format.dateTimeParser(LocalDateTime::from));
+                numberFallback = InternalValueReader.onStringParser(format.numberParser());
             } else {
-                toString = ValueReader.onNull();
-                toDateTimeFallback = ValueReader.onNull();
-                toNumberFallback = ValueReader.onNull();
+                string = InternalValueReader.onNull();
+                dateTimeFallback = InternalValueReader.onNull();
+                numberFallback = InternalValueReader.onNull();
             }
 
-            ValueReader<LocalDateTime> toDateTime
+            InternalValueReader<LocalDateTime> dateTime
                     = info.isSupportedDataType(LocalDateTime.class)
-                    ? ValueReader.onDateTime().or(toDateTimeFallback)
-                    : toDateTimeFallback;
+                    ? InternalValueReader.onDateTime().or(dateTimeFallback)
+                    : dateTimeFallback;
 
-            ValueReader<Number> toNumber
+            InternalValueReader<Number> number
                     = info.isSupportedDataType(Number.class)
-                    ? ValueReader.onNumber().or(toNumberFallback)
-                    : toNumberFallback;
+                    ? InternalValueReader.onNumber().or(numberFallback)
+                    : numberFallback;
 
-            return new ValueReaders(toString, toDateTime, toNumber);
+            return new ValueReaders(string, dateTime, number);
         }
 
-        private final ValueReader<String> toString;
-        private final ValueReader<LocalDateTime> toDateTime;
-        private final ValueReader<Number> toNumber;
+        private final InternalValueReader<String> string;
+        private final InternalValueReader<LocalDateTime> dateTime;
+        private final InternalValueReader<Number> number;
 
-        public String readString(GridInput grid, int row, int column) {
-            return toString.read(grid, row, column);
+        public String readString(GridInput grid, int row, int column) throws IOException {
+            return string.read(grid, row, column);
         }
 
-        public LocalDateTime readDateTime(GridInput grid, int row, int column) {
-            return toDateTime.read(grid, row, column);
+        public LocalDateTime readDateTime(GridInput grid, int row, int column) throws IOException {
+            return dateTime.read(grid, row, column);
         }
 
-        public Number readNumber(GridInput grid, int row, int column) {
-            return toNumber.read(grid, row, column);
+        public Number readNumber(GridInput grid, int row, int column) throws IOException {
+            return number.read(grid, row, column);
         }
     }
 
