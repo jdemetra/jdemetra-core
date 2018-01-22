@@ -39,6 +39,7 @@ import internal.spreadsheet.SpreadSheetDataDisplayName;
 import internal.spreadsheet.SpreadSheetParam;
 import internal.spreadsheet.SpreadSheetSupport;
 import internal.spreadsheet.grid.BookData;
+import internal.spreadsheet.grid.SheetGridInfo;
 import internal.spreadsheet.legacy.LegacySpreadSheetMoniker;
 import java.io.File;
 import java.io.IOException;
@@ -139,9 +140,13 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
         private BookData loadAccessor(DataSource key) throws IOException {
             SpreadSheetBean bean = param.get(key);
             File file = filePathSupport.resolveFilePath(bean.getFile());
-            try (Book book = bookSupplier.open(file)) {
+            Book.Factory factory = bookSupplier.getFactory(file);
+            if (factory == null) {
+                throw new IOException("File type not supported");
+            }
+            try (Book book = factory.load(file)) {
                 GridImport options = GridImport.of(bean.getObsFormat(), bean.getObsGathering());
-                return BookData.of(book, GridReader.of(options, o -> true));
+                return BookData.of(book, GridReader.of(options, SheetGridInfo.of(factory)));
             }
         }
     }
