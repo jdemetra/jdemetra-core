@@ -49,7 +49,7 @@ public class InternalCubeAccessor {
         }
 
         @Override
-        public CubeId getRoot() {
+        public CubeId getRoot() throws IOException {
             return delegate.getRoot();
         }
 
@@ -89,7 +89,7 @@ public class InternalCubeAccessor {
         }
 
         @Override
-        public CubeAccessor bulk(int depth, ConcurrentMap<CubeId, Object> cache) {
+        public CubeAccessor bulk(int depth, ConcurrentMap<CubeId, Object> cache) throws IOException {
             return delegate.bulk(depth, cache);
         }
     }
@@ -101,7 +101,7 @@ public class InternalCubeAccessor {
         private final int cacheLevel;
         private final boolean cacheEnabled;
 
-        public BulkCubeAccessor(@Nonnull CubeAccessor delegate, @Nonnegative int depth, @Nonnull ConcurrentMap<CubeId, Object> cache) {
+        public BulkCubeAccessor(@Nonnull CubeAccessor delegate, @Nonnegative int depth, @Nonnull ConcurrentMap<CubeId, Object> cache) throws IOException {
             super(delegate);
             this.cacheLevel = Math.max(0, delegate.getRoot().getMaxLevel() - depth);
             this.cache = cache;

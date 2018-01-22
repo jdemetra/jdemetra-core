@@ -51,8 +51,12 @@ public class CubeAccessorsTest {
     public void testBulkDepth() throws IOException {
         ConcurrentMap<CubeId, Object> cache = new ConcurrentHashMap<>();
         IntFunction<BulkCubeAccessor> factory = o -> {
-            cache.clear();
-            return new BulkCubeAccessor(newSample(), o, cache);
+            try {
+                cache.clear();
+                return new BulkCubeAccessor(newSample(), o, cache);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         };
 
         factory.apply(0).getSeriesWithData(INDUSTRY_BE).close();

@@ -39,7 +39,7 @@ public interface CubeAccessor {
     IOException testConnection();
 
     @Nonnull
-    CubeId getRoot();
+    CubeId getRoot() throws IOException;
 
     @Nonnull
     TsCursor<CubeId> getAllSeries(@Nonnull CubeId id) throws IOException;
@@ -63,7 +63,7 @@ public interface CubeAccessor {
     String getDisplayNodeName(@Nonnull CubeId id) throws IOException;
 
     @Nonnull
-    default CubeAccessor bulk(@Nonnegative int depth, @Nonnull ConcurrentMap<CubeId, Object> cache) {
+    default CubeAccessor bulk(@Nonnegative int depth, @Nonnull ConcurrentMap<CubeId, Object> cache) throws IOException {
         return new InternalCubeAccessor.BulkCubeAccessor(this, depth, Objects.requireNonNull(cache));
     }
 }
