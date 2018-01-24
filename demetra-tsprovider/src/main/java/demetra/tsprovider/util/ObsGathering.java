@@ -18,7 +18,6 @@ package demetra.tsprovider.util;
 
 import demetra.data.AggregationType;
 import demetra.timeseries.TsUnit;
-import javax.annotation.concurrent.Immutable;
 
 /**
  * Parameters used when collecting observations in order to create time series.
@@ -26,30 +25,25 @@ import javax.annotation.concurrent.Immutable;
  * @author Philippe Charles
  * @since 2.2.0
  */
-@Immutable
 @lombok.Value
+@lombok.Builder(builderClassName = "Builder", toBuilder = true)
 @lombok.experimental.Wither
-@lombok.Builder(builderClassName = "Builder")
-public final class ObsGathering {
+public class ObsGathering {
 
-    public static final ObsGathering DEFAULT = new ObsGathering(TsUnit.UNDEFINED, AggregationType.None, true, true);
-
-    @lombok.NonNull
-    TsUnit unit;
+    public static final ObsGathering DEFAULT = builder().build();
 
     @lombok.NonNull
-    AggregationType aggregationType;
+    @lombok.Builder.Default
+    private TsUnit unit = TsUnit.UNDEFINED;
+
+    @lombok.NonNull
+    @lombok.Builder.Default
+    private AggregationType aggregationType = AggregationType.None;
 
     // FIXME: find a better name/description
-    boolean complete;
+    @lombok.Builder.Default
+    private boolean complete = true;
 
-    boolean skipMissingValues;
-
-    public static final class Builder {
-
-        TsUnit unit = TsUnit.UNDEFINED;
-        AggregationType aggregationType = AggregationType.None;
-        boolean complete = true;
-        boolean skipMissingValues = true;
-    }
+    @lombok.Builder.Default
+    private boolean skipMissingValues = true;
 }

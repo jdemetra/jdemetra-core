@@ -28,12 +28,15 @@ public class GridExport {
 
     public static final GridExport DEFAULT = builder().build();
 
+    @lombok.NonNull
     @lombok.Builder.Default
     private ObsFormat format = ObsFormat.DEFAULT;
 
+    @lombok.NonNull
     @lombok.Builder.Default
     private GridLayout layout = GridLayout.VERTICAL;
 
+    @lombok.NonNull
     @lombok.Builder.Default
     private GridHeader header = GridHeader.BOTH;
 }

@@ -26,19 +26,19 @@ import javax.annotation.Nonnull;
  * @author Philippe Charles
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder(builderClassName = "Builder", toBuilder = true)
 public class TsCollectionGrid {
 
     @lombok.NonNull
-    private GridLayout layout;
+    @lombok.Builder.Default
+    private GridLayout layout = GridLayout.UNKNOWN;
 
-    @lombok.NonNull
     @lombok.Singular
     private List<TsGrid> items;
 
     @Nonnull
     public static TsCollectionGrid fromTsCollection(@Nonnull TsCollection o) {
-        TsCollectionGrid.Builder result = TsCollectionGrid.builder().layout(GridLayout.UNKNOWN);
+        TsCollectionGrid.Builder result = TsCollectionGrid.builder();
         o.getItems().forEach(ts -> result.item(TsGrid.fromTs(ts)));
         return result.build();
     }
