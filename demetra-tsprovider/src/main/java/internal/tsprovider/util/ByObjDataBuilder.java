@@ -16,9 +16,9 @@
  */
 package internal.tsprovider.util;
 
+import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import demetra.tsprovider.OptionalTsData;
 import demetra.tsprovider.util.ObsCharacteristics;
 import demetra.tsprovider.util.ObsGathering;
 import demetra.tsprovider.util.TsDataBuilder;
@@ -42,7 +42,7 @@ public final class ByObjDataBuilder<T> implements TsDataBuilder<T> {
 
     private final ByObjObsList<T> obsList;
     private final boolean skipMissingValues;
-    private final Function<ObsList, OptionalTsData> maker;
+    private final Function<ObsList, TsData> maker;
 
     @Override
     public TsDataBuilder clear() {
@@ -63,7 +63,7 @@ public final class ByObjDataBuilder<T> implements TsDataBuilder<T> {
     }
 
     @Override
-    public OptionalTsData build() {
+    public TsData build() {
         return maker.apply(obsList);
     }
 

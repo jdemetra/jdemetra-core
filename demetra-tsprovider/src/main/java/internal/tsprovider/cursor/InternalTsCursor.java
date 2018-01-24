@@ -16,8 +16,8 @@
  */
 package internal.tsprovider.cursor;
 
-import demetra.tsprovider.OptionalTsData;
 import demetra.io.Closeables;
+import demetra.timeseries.TsData;
 import demetra.tsprovider.cursor.TsCursor;
 import internal.util.AbstractIterator;
 import ioutil.IO;
@@ -45,9 +45,9 @@ import static java.util.Objects.requireNonNull;
 @lombok.experimental.UtilityClass
 public class InternalTsCursor {
 
-    public static final OptionalTsData NOT_REQUESTED = OptionalTsData.absent("Not requested");
+    public static final TsData NOT_REQUESTED = TsData.empty("Not requested");
     public static final Function<Object, Map<String, String>> NO_META = o -> Collections.emptyMap();
-    public static final Function<Object, OptionalTsData> NO_DATA = o -> NOT_REQUESTED;
+    public static final Function<Object, TsData> NO_DATA = o -> NOT_REQUESTED;
 
     static final String CLOSE_ISE = "This cursor is closed";
     static final String NEXT_ISE = "This cursor has no more series or has not been started";
@@ -97,7 +97,7 @@ public class InternalTsCursor {
         private final ID id;
         private final String label;
         private final Map<String, String> meta;
-        private final OptionalTsData data;
+        private final TsData data;
     }
 
     @Nonnull
@@ -156,7 +156,7 @@ public class InternalTsCursor {
         }
 
         @Override
-        public OptionalTsData getSeriesData() throws IOException {
+        public TsData getSeriesData() throws IOException {
             return delegate.getSeriesData();
         }
 
@@ -294,7 +294,7 @@ public class InternalTsCursor {
         }
 
         @Override
-        public OptionalTsData getSeriesData() throws IOException {
+        public TsData getSeriesData() throws IOException {
             checkState();
             return current.data;
         }
@@ -355,7 +355,7 @@ public class InternalTsCursor {
         abstract public Map<String, String> getSeriesMetaData();
 
         @Override
-        abstract public OptionalTsData getSeriesData();
+        abstract public TsData getSeriesData();
 
         @Override
         final public void close() throws IOException {
@@ -412,7 +412,7 @@ public class InternalTsCursor {
         }
 
         @Override
-        public OptionalTsData getSeriesData() {
+        public TsData getSeriesData() {
             checkClosedState();
             throw new IllegalStateException(NEXT_ISE);
         }
@@ -434,7 +434,7 @@ public class InternalTsCursor {
 
         public SingletonCursor(
                 @Nonnull ID id,
-                @Nonnull OptionalTsData data,
+                @Nonnull TsData data,
                 @Nonnull Map<String, String> meta,
                 @Nonnull String label) {
             super(Collections.singleton(id).iterator(), IO.Function.identity(), o -> data, o -> meta, o -> label);
@@ -448,7 +448,7 @@ public class InternalTsCursor {
 
         private Iterator<E> iterator;
         private IO.Function<? super E, ? extends ID> toId;
-        private final Function<? super E, OptionalTsData> toData;
+        private final Function<? super E, TsData> toData;
         private final Function<? super E, Map<String, String>> toMeta;
         private final Function<? super E, String> toLabel;
         private E current;
@@ -456,7 +456,7 @@ public class InternalTsCursor {
         public IteratingCursor(
                 @Nonnull Iterator<E> iterator,
                 @Nonnull IO.Function<? super E, ? extends ID> toId,
-                @Nonnull Function<? super E, OptionalTsData> toData,
+                @Nonnull Function<? super E, TsData> toData,
                 @Nonnull Function<? super E, Map<String, String>> toMeta,
                 @Nonnull Function<? super E, String> toLabel) {
             this.iterator = requireNonNull(iterator, "iterator");
@@ -501,7 +501,7 @@ public class InternalTsCursor {
         }
 
         @Override
-        public OptionalTsData getSeriesData() {
+        public TsData getSeriesData() {
             checkClosedState();
             checkSeriesState();
             return applyNotNull("data", toData, current);

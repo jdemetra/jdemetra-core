@@ -16,7 +16,7 @@
  */
 package internal.tsprovider.util;
 
-import demetra.tsprovider.OptionalTsData;
+import demetra.timeseries.TsData;
 import demetra.tsprovider.util.TsDataBuilder;
 
 /**
@@ -26,7 +26,7 @@ import demetra.tsprovider.util.TsDataBuilder;
 @lombok.AllArgsConstructor
 final class NoOpDataBuilder<T> implements TsDataBuilder<T> {
 
-    private final OptionalTsData data;
+    private final TsData data;
 
     @Override
     public TsDataBuilder<T> clear() {
@@ -39,7 +39,7 @@ final class NoOpDataBuilder<T> implements TsDataBuilder<T> {
     }
 
     @Override
-    public OptionalTsData build() {
+    public TsData build() {
         return data;
     }
 }

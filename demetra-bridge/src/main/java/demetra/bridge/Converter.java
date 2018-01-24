@@ -22,7 +22,6 @@ import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
-import demetra.tsprovider.OptionalTsData;
 import demetra.tsprovider.Ts;
 import demetra.tsprovider.TsCollection;
 import demetra.tsprovider.TsInformationType;
@@ -227,7 +226,7 @@ public class Converter {
                 .moniker(toMoniker(o.moniker))
                 .type(toType(o.type))
                 .metaData(toMeta(o.metaData))
-                .data(o.invalidDataCause != null ? OptionalTsData.absent(o.invalidDataCause) : OptionalTsData.present(Converter.toTsData(o.data)))
+                .data(o.invalidDataCause != null ? TsData.empty(o.invalidDataCause) : Converter.toTsData(o.data))
                 .build();
     }
 
@@ -237,8 +236,8 @@ public class Converter {
         result.moniker = fromMoniker(o.getMoniker());
         result.type = fromType(o.getType());
         result.metaData = fromMeta(o.getMetaData());
-        result.data = o.getData().isPresent() ? fromTsData(o.getData().get()) : null;
-        result.invalidDataCause = !o.getData().isPresent() ? o.getData().getCause() : null;
+        result.data = !o.getData().isEmpty() ? fromTsData(o.getData()) : null;
+        result.invalidDataCause = o.getData().isEmpty() ? o.getData().getCause() : null;
         return result;
     }
 

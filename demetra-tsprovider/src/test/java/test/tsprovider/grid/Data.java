@@ -19,7 +19,6 @@ package test.tsprovider.grid;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
-import demetra.tsprovider.OptionalTsData;
 import demetra.tsprovider.grid.GridInput;
 import demetra.tsprovider.grid.GridLayout;
 import demetra.tsprovider.grid.TsCollectionGrid;
@@ -95,7 +94,7 @@ public class Data {
     }
 
     public static TsGrid s(String name, TsData data) {
-        return TsGrid.of(name, OptionalTsData.present(data));
+        return TsGrid.of(name, data);
     }
 
     public static TsCollectionGrid of(GridLayout layout, String seriesName, TsData data) {

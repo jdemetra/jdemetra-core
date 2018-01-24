@@ -16,8 +16,8 @@
  */
 package demetra.tsprovider.cursor;
 
+import demetra.timeseries.TsData;
 import internal.tsprovider.cursor.InternalTsCursor;
-import demetra.tsprovider.OptionalTsData;
 import ioutil.IO;
 import java.io.Closeable;
 import java.io.IOException;
@@ -109,7 +109,7 @@ public interface TsCursor<ID> extends Closeable {
      * if this cursor is closed
      */
     @Nonnull
-    OptionalTsData getSeriesData() throws IOException, IllegalStateException;
+    TsData getSeriesData() throws IOException, IllegalStateException;
 
     /**
      * Returns a cursor consisting of the results of applying the given function
@@ -180,7 +180,7 @@ public interface TsCursor<ID> extends Closeable {
      * @return a new cursor
      */
     @Nonnull
-    static <ID> TsCursor<ID> singleton(@Nonnull ID id, @Nonnull OptionalTsData data, @Nonnull Map<String, String> meta, @Nonnull String label) {
+    static <ID> TsCursor<ID> singleton(@Nonnull ID id, @Nonnull TsData data, @Nonnull Map<String, String> meta, @Nonnull String label) {
         return new InternalTsCursor.SingletonCursor<>(id, data, meta, label);
     }
 
@@ -194,7 +194,7 @@ public interface TsCursor<ID> extends Closeable {
      * @return a new cursor
      */
     @Nonnull
-    static <ID> TsCursor<ID> singleton(@Nonnull ID id, @Nonnull OptionalTsData data, @Nonnull Map<String, String> meta) {
+    static <ID> TsCursor<ID> singleton(@Nonnull ID id, @Nonnull TsData data, @Nonnull Map<String, String> meta) {
         return new InternalTsCursor.SingletonCursor<>(id, data, meta, id.toString());
     }
 
@@ -207,7 +207,7 @@ public interface TsCursor<ID> extends Closeable {
      * @return a new cursor
      */
     @Nonnull
-    static <ID> TsCursor<ID> singleton(@Nonnull ID id, @Nonnull OptionalTsData data) {
+    static <ID> TsCursor<ID> singleton(@Nonnull ID id, @Nonnull TsData data) {
         return new InternalTsCursor.SingletonCursor<>(id, data, Collections.emptyMap(), id.toString());
     }
 
@@ -239,7 +239,7 @@ public interface TsCursor<ID> extends Closeable {
     @Nonnull
     static <E> TsCursor<E> from(
             @Nonnull Iterator<E> iterator,
-            @Nonnull Function<? super E, OptionalTsData> toData,
+            @Nonnull Function<? super E, TsData> toData,
             @Nonnull Function<? super E, Map<String, String>> toMeta,
             @Nonnull Function<? super E, String> toLabel) {
         return new InternalTsCursor.IteratingCursor<>(iterator, IO.Function.identity(), toData, toMeta, toLabel);
@@ -259,7 +259,7 @@ public interface TsCursor<ID> extends Closeable {
     @Nonnull
     static <E> TsCursor<E> from(
             @Nonnull Iterator<E> iterator,
-            @Nonnull Function<? super E, OptionalTsData> toData,
+            @Nonnull Function<? super E, TsData> toData,
             @Nonnull Function<? super E, Map<String, String>> toMeta) {
         return new InternalTsCursor.IteratingCursor<>(iterator, IO.Function.identity(), toData, toMeta, Object::toString);
     }
@@ -276,7 +276,7 @@ public interface TsCursor<ID> extends Closeable {
     @Nonnull
     static <E> TsCursor<E> from(
             @Nonnull Iterator<E> iterator,
-            @Nonnull Function<? super E, OptionalTsData> toData) {
+            @Nonnull Function<? super E, TsData> toData) {
         return new InternalTsCursor.IteratingCursor<>(iterator, IO.Function.identity(), toData, InternalTsCursor.NO_META, Object::toString);
     }
 

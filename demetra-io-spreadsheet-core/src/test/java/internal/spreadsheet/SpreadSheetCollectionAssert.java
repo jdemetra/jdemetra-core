@@ -62,7 +62,7 @@ final class SpreadSheetCollectionAssert extends AbstractAssert<SpreadSheetCollec
 
     public SpreadSheetCollectionAssert containsExactly(TsData... data) {
         Assertions.assertThat(actual.getData().getItems())
-                .extracting(o -> o.getData().get())
+                .extracting(o -> o.getData())
                 .containsExactly(data);
         return this;
     }

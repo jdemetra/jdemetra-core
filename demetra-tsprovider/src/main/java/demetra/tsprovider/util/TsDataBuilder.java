@@ -16,15 +16,14 @@
  */
 package demetra.tsprovider.util;
 
-import demetra.tsprovider.OptionalTsData;
 import demetra.design.IBuilder;
+import demetra.timeseries.TsData;
 import internal.tsprovider.util.ByLongDataBuilder;
 import internal.tsprovider.util.ByObjDataBuilder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
@@ -38,7 +37,7 @@ import javax.annotation.concurrent.NotThreadSafe;
  * @since 2.2.0
  */
 @NotThreadSafe
-public interface TsDataBuilder<T> extends IBuilder<OptionalTsData> {
+public interface TsDataBuilder<T> extends IBuilder<TsData> {
 
     /**
      * Removes all observations.
@@ -103,16 +102,16 @@ public interface TsDataBuilder<T> extends IBuilder<OptionalTsData> {
     }
 
     /**
-     * Creates an OptionalTsData from the collected observations.
+     * Creates an TsData from the collected observations.
      *
      * @return a non-null OptionalTsData
      */
     @Nonnull
     @Override
-    OptionalTsData build();
+    TsData build();
 
     /**
-     * Creates an OptionalTsData builder that collects {@link Date} values.
+     * Creates an TsData builder that collects {@link Date} values.
      *
      * @param resource non-null resource used to handle dates quirks such as
      * time zones
@@ -126,7 +125,7 @@ public interface TsDataBuilder<T> extends IBuilder<OptionalTsData> {
     }
 
     /**
-     * Creates an OptionalTsData builder that collects {@link LocalDate} values.
+     * Creates an TsData builder that collects {@link LocalDate} values.
      *
      * @param gathering non-null observation collection parameters
      * @param characteristics non-null observations characteristics
@@ -138,7 +137,7 @@ public interface TsDataBuilder<T> extends IBuilder<OptionalTsData> {
     }
 
     /**
-     * Creates an OptionalTsData builder that collects {@link LocalDateTime}
+     * Creates an TsData builder that collects {@link LocalDateTime}
      * values.
      *
      * @param gathering non-null observation collection parameters

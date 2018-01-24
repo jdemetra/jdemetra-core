@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider.grid;
 
-import demetra.tsprovider.OptionalTsData;
+import demetra.timeseries.TsData;
 import demetra.tsprovider.Ts;
 import demetra.tsprovider.TsInformationType;
 import javax.annotation.Nonnull;
@@ -32,7 +32,7 @@ public class TsGrid {
     private String name;
 
     @lombok.NonNull
-    private OptionalTsData data;
+    private TsData data;
 
     @Nonnull
     public static TsGrid fromTs(@Nonnull Ts o) {

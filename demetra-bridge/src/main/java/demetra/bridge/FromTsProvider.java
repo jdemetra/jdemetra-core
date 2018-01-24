@@ -73,8 +73,8 @@ public class FromTsProvider<T extends TsProvider> implements ITsProvider {
             Ts result = getDelegate().getTs(Converter.toMoniker(info.moniker), Converter.toType(info.type));
             info.name = result.getName();
             info.metaData = Converter.fromMeta(result.getMetaData());
-            info.data = result.getData().isPresent() ? Converter.fromTsData(result.getData().get()) : null;
-            info.invalidDataCause = !result.getData().isPresent() ? result.getData().getCause() : null;
+            info.data = Converter.fromTsData(result.getData());
+            info.invalidDataCause = result.getData().isEmpty() ? result.getData().getCause() : null;
         } catch (IOException | IllegalArgumentException ex) {
             info.invalidDataCause = ex.getMessage();
             return false;

@@ -38,7 +38,6 @@ import org.junit.Test;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import demetra.timeseries.TsData;
-import demetra.tsprovider.OptionalTsData;
 import static internal.tsprovider.cursor.InternalTsCursor.CLOSE_HANDLER_NPE;
 import static internal.tsprovider.cursor.InternalTsCursor.CLOSE_ISE;
 import internal.tsprovider.cursor.InternalTsCursor.CachingCursor;
@@ -68,14 +67,14 @@ import ioutil.IO;
 public class InternalTsCursorsTest {
 
     private final String someKey = "hello";
-    private final OptionalTsData someData = OptionalTsData.present(TsData.random(TsUnit.MONTH, 1));
+    private final TsData someData = TsData.random(TsUnit.MONTH, 1);
     private final Map<String, String> someMeta = ImmutableMap.of("key", "value");
 
     private final IO.Function<String, String> goodIdFunc = String::toUpperCase;
-    private final Function<String, OptionalTsData> goodDataFunc = o -> someData;
+    private final Function<String, TsData> goodDataFunc = o -> someData;
     private final Function<String, Map<String, String>> goodMetaFunc = o -> someMeta;
     private final IO.Function<String, String> badIdFunc = o -> null;
-    private final Function<String, OptionalTsData> badDataFunc = o -> null;
+    private final Function<String, TsData> badDataFunc = o -> null;
     private final Function<String, Map<String, String>> badMetaFunc = o -> null;
 
     @Test
@@ -278,7 +277,7 @@ public class InternalTsCursorsTest {
         assertThat(cache.get("key")).isInstanceOf(CachedCollection.class);
     }
 
-    private static <ID> void assertNextSeries(TsCursor<ID> cursor, ID id, OptionalTsData data, Map<String, String> meta, String label) throws IOException {
+    private static <ID> void assertNextSeries(TsCursor<ID> cursor, ID id, TsData data, Map<String, String> meta, String label) throws IOException {
         assertThat(cursor.nextSeries()).isTrue();
         assertThat(cursor.getSeriesId()).isEqualTo(id);
         assertThat(cursor.getSeriesData()).isEqualTo(data);

@@ -48,7 +48,7 @@ public final class GridWriter {
     private final boolean hasDate;
 
     public void write(@Nonnull TsCollectionGrid col, @Nonnull GridOutput output) throws IOException {
-        TsDataTable table = TsDataTable.of(col.getItems().stream().map(o -> o.getData().get()).collect(Collectors.toList()));
+        TsDataTable table = TsDataTable.of(col.getItems().stream().map(TsGrid::getData).collect(Collectors.toList()));
 
         if (table.getDomain().isEmpty()) {
             return;

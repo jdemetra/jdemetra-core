@@ -16,12 +16,12 @@
  */
 package internal.spreadsheet;
 
+import demetra.timeseries.TsData;
 import demetra.tsprovider.DataSet;
 import static demetra.tsprovider.DataSet.Kind.COLLECTION;
 import static demetra.tsprovider.DataSet.Kind.SERIES;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.HasDataHierarchy;
-import demetra.tsprovider.OptionalTsData;
 import demetra.tsprovider.TsInformationType;
 import demetra.tsprovider.cursor.HasTsCursor;
 import demetra.tsprovider.cursor.TsCursor;
@@ -188,7 +188,7 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
         private final SheetData sheet;
         private final TsGrid series;
 
-        OptionalTsData getData() {
+        TsData getData() {
             return series.getData();
         }
 

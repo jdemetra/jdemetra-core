@@ -20,9 +20,6 @@ import demetra.timeseries.TsData;
 import demetra.tsprovider.cube.CubeAccessor;
 import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cursor.TsCursor;
-import demetra.tsprovider.OptionalTsData;
-import static demetra.tsprovider.OptionalTsData.absent;
-import static demetra.tsprovider.OptionalTsData.present;
 import demetra.io.IteratorWithIO;
 import java.io.IOException;
 import java.util.Collections;
@@ -38,15 +35,15 @@ import static demetra.timeseries.TsUnit.MONTH;
 final class FakeDbAccessor implements CubeAccessor {
 
     private final CubeId root;
-    private final Map<CubeId, OptionalTsData> data;
+    private final Map<CubeId, TsData> data;
 
     public FakeDbAccessor() {
         this.root = CubeId.root("REGION", "SECTOR");
         this.data = new HashMap<>();
-        data.put(root.child("BE", "INDUSTRY"), present(TsData.random(MONTH, 1)));
-        data.put(root.child("FR", "INDUSTRY"), present(TsData.random(MONTH, 2)));
-        data.put(root.child("BE", "STUFF"), present(TsData.random(MONTH, 3)));
-        data.put(root.child("FR", "STUFF"), absent("Not enough data"));
+        data.put(root.child("BE", "INDUSTRY"), TsData.random(MONTH, 1));
+        data.put(root.child("FR", "INDUSTRY"), TsData.random(MONTH, 2));
+        data.put(root.child("BE", "STUFF"), TsData.random(MONTH, 3));
+        data.put(root.child("FR", "STUFF"), TsData.empty("Not enough data"));
     }
 
     @Override
@@ -98,7 +95,7 @@ final class FakeDbAccessor implements CubeAccessor {
         return id.isVoid() ? "All" : id.getDimensionValue(id.getLevel() - 1);
     }
 
-    private static TsCursor<CubeId> toDataCursor(Map<CubeId, OptionalTsData> data) {
+    private static TsCursor<CubeId> toDataCursor(Map<CubeId, TsData> data) {
         return TsCursor
                 .from(data.entrySet().iterator(), Map.Entry::getValue, o -> Collections.emptyMap(), o -> o.getKey().getDimensionValueStream().collect(Collectors.joining("/")))
                 .map(Map.Entry::getKey);
