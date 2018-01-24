@@ -18,7 +18,6 @@ package internal.spreadsheet;
 
 import ec.util.spreadsheet.Book;
 import java.io.File;
-import java.io.IOException;
 import java.util.ServiceLoader;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,15 +33,6 @@ public interface BookSupplier {
 
     default boolean hasFactory(@Nonnull File file) {
         return getFactory(file) != null;
-    }
-
-    @Nonnull
-    default Book open(@Nonnull File file) throws IOException {
-        Book.Factory factory = getFactory(file);
-        if (factory == null) {
-            throw new IOException("File type not supported");
-        }
-        return factory.load(file);
     }
 
     @Nonnull

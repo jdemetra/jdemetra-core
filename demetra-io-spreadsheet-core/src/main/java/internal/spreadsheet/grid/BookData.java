@@ -16,11 +16,12 @@
  */
 package internal.spreadsheet.grid;
 
+import demetra.tsprovider.TsCollection;
 import ec.util.spreadsheet.Book;
 import demetra.tsprovider.grid.GridReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,21 +34,20 @@ import javax.annotation.Nullable;
 public class BookData {
 
     @lombok.NonNull
-    private Map<String, SheetData> sheets;
+    private List<TsCollection> sheets;
 
     @Nullable
-    public SheetData getSheetByName(@Nonnull String name) {
+    public TsCollection getSheetByName(@Nonnull String name) {
         Objects.requireNonNull(name);
-        return sheets.get(name);
+        return sheets.stream().filter(o -> o.getName().equals(name)).findFirst().orElse(null);
     }
 
     public static BookData of(Book book, GridReader reader) throws IOException {
         int sheetCount = book.getSheetCount();
-        Map<String, SheetData> result = new HashMap<>(sheetCount);
-        book.forEach((sheet, i) -> {
-            SheetData data = SheetData.of(sheet, i, reader);
-            result.put(data.getSheetName(), data);
-        });
-        return BookData.of(result);
+        TsCollection[] result = new TsCollection[sheetCount];
+        for (int i = 0; i < book.getSheetCount(); i++) {
+            result[i] = reader.read(SheetGridInput.of(book.getSheet(i)));
+        }
+        return BookData.of(Arrays.asList(result));
     }
 }

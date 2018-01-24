@@ -14,32 +14,26 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.tsprovider.util;
+package internal.spreadsheet.grid;
 
-import demetra.timeseries.TsData;
-import demetra.tsprovider.util.TsDataBuilder;
+import demetra.tsprovider.grid.GridInfo;
+import ec.util.spreadsheet.Book;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  *
  * @author Philippe Charles
  */
-@lombok.AllArgsConstructor
-final class NoOpDataBuilder<T> implements TsDataBuilder<T> {
+@lombok.AllArgsConstructor(staticName = "of")
+public final class SheetGridInfo implements GridInfo {
 
-    private final TsData data;
-
-    @Override
-    public TsDataBuilder<T> clear() {
-        return this;
-    }
+    @lombok.NonNull
+    private final Book.Factory factory;
 
     @Override
-    public TsDataBuilder<T> add(T date, Number value) {
-        return this;
-    }
-
-    @Override
-    public TsData build() {
-        return data;
+    public boolean isSupportedDataType(Class<?> type) {
+        return (LocalDateTime.class.equals(type) && factory.isSupportedDataType(Date.class))
+                || factory.isSupportedDataType(type);
     }
 }

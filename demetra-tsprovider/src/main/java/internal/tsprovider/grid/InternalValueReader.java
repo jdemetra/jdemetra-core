@@ -18,6 +18,7 @@ package internal.tsprovider.grid;
 
 import demetra.tsprovider.grid.GridInput;
 import demetra.util.Parser;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
@@ -28,49 +29,50 @@ import javax.annotation.Nullable;
  * @author Philippe Charles
  * @param <T>
  */
-public interface ValueReader<T> {
+@FunctionalInterface
+public interface InternalValueReader<T> {
 
     @Nullable
-    T read(@Nonnull GridInput grid, int row, int column);
+    T read(@Nonnull GridInput grid, int row, int column) throws IOException;
 
     @Nonnull
-    default ValueReader<T> or(@Nonnull ValueReader<T> fallback) {
+    default InternalValueReader<T> or(@Nonnull InternalValueReader<T> fallback) {
         return compose(this, fallback);
     }
 
     @Nonnull
-    static <X> ValueReader<X> onStringParser(@Nonnull Parser<X> parser) {
+    static <X> InternalValueReader<X> onStringParser(@Nonnull Parser<X> parser) {
         return FuncReader.onStringParser(parser);
     }
 
     @Nonnull
-    static ValueReader<LocalDateTime> onDateTime() {
+    static InternalValueReader<LocalDateTime> onDateTime() {
         return FuncReader.DATETIME;
     }
 
     @Nonnull
-    static ValueReader<Number> onNumber() {
+    static InternalValueReader<Number> onNumber() {
         return FuncReader.NUMBER;
     }
 
     @Nonnull
-    static ValueReader<String> onString() {
+    static InternalValueReader<String> onString() {
         return FuncReader.STRING;
     }
 
     @Nonnull
-    static <T> ValueReader<T> onNull() {
+    static <T> InternalValueReader<T> onNull() {
         return NullReader.INSTANCE;
     }
 
-    static <T> ValueReader<T> compose(ValueReader<T> main, ValueReader<T> fallback) {
+    static <T> InternalValueReader<T> compose(InternalValueReader<T> main, InternalValueReader<T> fallback) {
         return (g, r, c) -> {
             T result = main.read(g, r, c);
             return result != null ? result : fallback.read(g, r, c);
         };
     }
 
-    enum NullReader implements ValueReader {
+    enum NullReader implements InternalValueReader {
         INSTANCE;
 
         @Override
@@ -79,27 +81,27 @@ public interface ValueReader<T> {
         }
 
         @Override
-        public ValueReader or(ValueReader fallback) {
+        public InternalValueReader or(InternalValueReader fallback) {
             return fallback;
         }
     }
 
-    interface FuncReader<T> extends ValueReader<T>, Function<Object, T> {
+    interface FuncReader<T> extends InternalValueReader<T>, Function<Object, T> {
 
         @Override
-        default public T read(GridInput grid, int row, int column) {
+        default public T read(GridInput grid, int row, int column) throws IOException {
             return apply(grid.getValue(row, column));
         }
 
         @Override
-        default public ValueReader<T> or(ValueReader<T> fallback) {
+        default public InternalValueReader<T> or(InternalValueReader<T> fallback) {
             if (fallback == NullReader.INSTANCE) {
                 return this;
             }
             if (fallback instanceof FuncReader) {
                 return compose(this, (FuncReader<T>) fallback);
             }
-            return ValueReader.super.or(fallback);
+            return InternalValueReader.super.or(fallback);
         }
 
         static final FuncReader<LocalDateTime> DATETIME = o -> o instanceof LocalDateTime ? (LocalDateTime) o : null;

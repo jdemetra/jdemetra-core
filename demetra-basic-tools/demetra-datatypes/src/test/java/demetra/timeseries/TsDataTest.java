@@ -77,7 +77,53 @@ public class TsDataTest {
     }
 
     @Test
+    @SuppressWarnings("null")
+    public void testFactories() {
+        TsPeriod start = TsPeriod.yearly(2001);
+        double[] values = {1, 2, 3};
+        String cause = "some text";
+
+        TsData x;
+
+        x = TsData.empty(start, cause);
+        assertThat(x.getStart()).isEqualTo(start);
+        assertThat(x.getValues().toArray()).isEmpty();
+        assertThat(x.getCause()).isEqualTo(cause);
+
+        assertThatNullPointerException().isThrownBy(() -> TsData.empty(null, cause));
+        assertThatNullPointerException().isThrownBy(() -> TsData.empty(start, null));
+
+        x = TsData.of(start, DoubleSequence.of(values));
+        assertThat(x.getStart()).isEqualTo(start);
+        assertThat(x.getValues().toArray()).containsExactly(values);
+        assertThat(x.getCause()).isNull();
+
+        assertThatNullPointerException().isThrownBy(() -> TsData.of(null, DoubleSequence.of(values)));
+        assertThatNullPointerException().isThrownBy(() -> TsData.of(start, null));
+
+        x = TsData.ofInternal(start, DoubleSequence.of(values));
+        assertThat(x.getStart()).isEqualTo(start);
+        assertThat(x.getValues().toArray()).containsExactly(values);
+        assertThat(x.getCause()).isNull();
+
+        assertThatNullPointerException().isThrownBy(() -> TsData.ofInternal(null, DoubleSequence.of(values)));
+        assertThatNullPointerException().isThrownBy(() -> TsData.ofInternal(start, (DoubleSequence) null));
+
+        x = TsData.ofInternal(start, values);
+        assertThat(x.getStart()).isEqualTo(start);
+        assertThat(x.getValues().toArray()).containsExactly(values);
+        assertThat(x.getCause()).isNull();
+
+        assertThatNullPointerException().isThrownBy(() -> TsData.ofInternal(null, values));
+        assertThatNullPointerException().isThrownBy(() -> TsData.ofInternal(start, (double[]) null));
+    }
+
+    @Test
     public void testEquals() {
+        assertThat(TsData.empty(TsPeriod.yearly(2001), "abc"))
+                .isEqualTo(TsData.empty(TsPeriod.yearly(2001), "abc"))
+                .isNotEqualTo(TsData.empty(TsPeriod.yearly(2001), "xyz"));
+        
         assertThat(TsData.of(TsPeriod.yearly(2001), DoubleSequence.ofInternal(1, 2, 3)))
                 .isEqualTo(TsData.of(TsPeriod.yearly(2001), DoubleSequence.ofInternal(1, 2, 3)));
     }

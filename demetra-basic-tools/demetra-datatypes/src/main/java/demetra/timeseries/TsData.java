@@ -21,6 +21,7 @@ import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import internal.timeseries.InternalAggregator;
+import java.util.Objects;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import lombok.AccessLevel;
@@ -58,7 +59,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
             cur = cur + rnd.nextDouble() - .5;
             data[i] = cur;
         }
-        return make(TsPeriod.of(freq, beg), DoubleSequence.ofInternal(data));
+        return ofInternal(TsPeriod.of(freq, beg), DoubleSequence.ofInternal(data));
     }
 
     /**
@@ -68,24 +69,49 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
      * @param values
      * @return
      */
-    public static TsData of(TsPeriod start, DoubleSequence values) {
-        return make(start, DoubleSequence.ofInternal(values.toArray()));
+    @Nonnull
+    public static TsData of(@Nonnull TsPeriod start, @Nonnull DoubleSequence values) {
+        TsDomain domain = TsDomain.of(start, values.length());
+        return domain.isEmpty()
+                ? new TsData(domain, DoubleSequence.EMPTY, NO_DATA_CAUSE)
+                : new TsData(domain, DoubleSequence.ofInternal(values.toArray()), null);
     }
 
-    public static TsData ofInternal(TsPeriod start, DoubleSequence values) {
-        return make(start, values);
+    @Nonnull
+    public static TsData ofInternal(@Nonnull TsPeriod start, @Nonnull DoubleSequence values) {
+        TsDomain domain = TsDomain.of(start, values.length());
+        return domain.isEmpty()
+                ? new TsData(domain, DoubleSequence.EMPTY, NO_DATA_CAUSE)
+                : new TsData(domain, values, null);
     }
 
-    public static TsData ofInternal(TsPeriod start, double[] values) {
-        return make(start, DoubleSequence.ofInternal(values));
+    @Nonnull
+    public static TsData ofInternal(@Nonnull TsPeriod start, @Nonnull double[] values) {
+        TsDomain domain = TsDomain.of(start, values.length);
+        return domain.isEmpty()
+                ? new TsData(domain, DoubleSequence.EMPTY, NO_DATA_CAUSE)
+                : new TsData(domain, DoubleSequence.ofInternal(values), null);
     }
 
-    private static TsData make(TsPeriod start, DoubleSequence values) {
-        return new TsData(TsDomain.of(start, values.length()), values);
+    @Nonnull
+    public static TsData empty(@Nonnull TsPeriod start, @Nonnull String cause) {
+        return new TsData(TsDomain.of(start, 0), DoubleSequence.EMPTY, Objects.requireNonNull(cause));
     }
+
+    @Nonnull
+    public static TsData empty(@Nonnull String cause) {
+        return new TsData(TsDomain.of(TsPeriod.of(TsUnit.YEAR, 0), 0), DoubleSequence.EMPTY, Objects.requireNonNull(cause));
+    }
+
+    private static final String NO_DATA_CAUSE = "No data available";
 
     private final TsDomain domain;
     private final DoubleSequence values;
+
+    /**
+     * Message explaining why the time series data is empty.
+     */
+    private final String cause;
 
     @Override
     public TsObs get(int index) throws IndexOutOfBoundsException {
@@ -144,6 +170,9 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
 
     @Override
     public String toString() {
+        if (isEmpty()) {
+            return "Empty due to: '" + cause + "'";
+        }
         StringBuilder builder = new StringBuilder();
         DoubleReader reader = values.reader();
         for (int i = 0; i < values.length(); ++i) {

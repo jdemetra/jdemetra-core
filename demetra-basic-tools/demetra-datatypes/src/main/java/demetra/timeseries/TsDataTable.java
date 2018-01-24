@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -43,6 +44,12 @@ public final class TsDataTable {
 
     public enum ValueStatus {
         PRESENT, UNUSED, BEFORE, AFTER, EMPTY;
+    }
+
+    @Nonnull
+    public static <X> TsDataTable of(@Nonnull List<X> col, @Nonnull Function<? super X, TsData> toData) {
+        TsDomain domain = computeDomain(col.stream().map(toData).map(TsData::getDomain).iterator());
+        return new TsDataTable(domain, Collections.unmodifiableList(col.stream().map(toData).collect(Collectors.toList())));
     }
 
     @Nonnull

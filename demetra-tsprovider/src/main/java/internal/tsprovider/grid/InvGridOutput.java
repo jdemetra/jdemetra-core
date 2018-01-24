@@ -17,7 +17,7 @@
 package internal.tsprovider.grid;
 
 import demetra.tsprovider.grid.GridOutput;
-import java.util.Iterator;
+import java.io.IOException;
 
 /**
  *
@@ -35,17 +35,7 @@ public final class InvGridOutput implements GridOutput {
     }
 
     @Override
-    public void setRow(int row, int column, Iterator<?> values) {
-        delegate.setColumn(column, row, values);
-    }
-
-    @Override
-    public void setColumn(int row, int column, Iterator<?> values) {
-        delegate.setRow(column, row, values);
-    }
-
-    @Override
-    public void setValue(int row, int column, Object value) {
+    public void setValue(int row, int column, Object value) throws IOException {
         delegate.setValue(column, row, value);
     }
 }

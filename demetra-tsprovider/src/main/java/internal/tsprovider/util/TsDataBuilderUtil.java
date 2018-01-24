@@ -20,8 +20,6 @@ import demetra.data.AggregationType;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
-import demetra.tsprovider.OptionalTsData;
-import static demetra.tsprovider.OptionalTsData.present;
 import demetra.tsprovider.util.ObsCharacteristics;
 import demetra.tsprovider.util.ObsGathering;
 import java.time.LocalDateTime;
@@ -35,12 +33,12 @@ import java.util.function.Function;
 @lombok.experimental.UtilityClass
 public class TsDataBuilderUtil {
 
-    public final OptionalTsData NO_DATA = OptionalTsData.absent("No data available");
-    public final OptionalTsData INVALID_AGGREGATION = OptionalTsData.absent("Invalid aggregation mode");
-    public final OptionalTsData GUESS_SINGLE = OptionalTsData.absent("Cannot guess frequency with a single observation");
-    public final OptionalTsData GUESS_DUPLICATION = OptionalTsData.absent("Cannot guess frequency with duplicated periods");
-    public final OptionalTsData DUPLICATION_WITHOUT_AGGREGATION = OptionalTsData.absent("Duplicated observations without aggregation");
-    public final OptionalTsData UNKNOWN = OptionalTsData.absent("Unexpected error");
+    public final TsData NO_DATA = TsData.empty("No data available");
+    public final TsData INVALID_AGGREGATION = TsData.empty("Invalid aggregation mode");
+    public final TsData GUESS_SINGLE = TsData.empty("Cannot guess frequency with a single observation");
+    public final TsData GUESS_DUPLICATION = TsData.empty("Cannot guess frequency with duplicated periods");
+    public final TsData DUPLICATION_WITHOUT_AGGREGATION = TsData.empty("Duplicated observations without aggregation");
+    public final TsData UNKNOWN = TsData.empty("Unexpected error");
 
     boolean isOrdered(ObsCharacteristics[] characteristics) {
         return Arrays.binarySearch(characteristics, ObsCharacteristics.ORDERED) != -1;
@@ -50,7 +48,7 @@ public class TsDataBuilderUtil {
         return !(gathering.getUnit().equals(TsUnit.UNDEFINED) && gathering.getAggregationType() != AggregationType.None);
     }
 
-    Function<ObsList, OptionalTsData> getMaker(ObsGathering gathering) {
+    Function<ObsList, TsData> getMaker(ObsGathering gathering) {
         if (gathering.getUnit().equals(TsUnit.UNDEFINED)) {
             return o -> makeFromUnknownFrequency(o);
         }
@@ -60,7 +58,7 @@ public class TsDataBuilderUtil {
         return o -> makeWithoutAggregation(o, gathering.getUnit(), TsPeriod.DEFAULT_EPOCH);
     }
 
-    private OptionalTsData makeFromUnknownFrequency(ObsList obs) {
+    private TsData makeFromUnknownFrequency(ObsList obs) {
         switch (obs.size()) {
             case 0:
                 return NO_DATA;
@@ -68,21 +66,21 @@ public class TsDataBuilderUtil {
                 return GUESS_SINGLE;
             default:
                 TsData result = TsDataCollector.makeFromUnknownUnit(obs);
-                return result != null ? present(result) : GUESS_DUPLICATION;
+                return result != null ? result : GUESS_DUPLICATION;
         }
     }
 
-    private OptionalTsData makeWithoutAggregation(ObsList obs, TsUnit unit, LocalDateTime reference) {
+    private TsData makeWithoutAggregation(ObsList obs, TsUnit unit, LocalDateTime reference) {
         switch (obs.size()) {
             case 0:
                 return NO_DATA;
             default:
                 TsData result = TsDataCollector.makeWithoutAggregation(obs, unit, reference);
-                return result != null ? present(result) : DUPLICATION_WITHOUT_AGGREGATION;
+                return result != null ? result : DUPLICATION_WITHOUT_AGGREGATION;
         }
     }
 
-    private OptionalTsData makeWithAggregation(ObsList obs, TsUnit unit, LocalDateTime reference, AggregationType convMode, boolean complete) {
+    private TsData makeWithAggregation(ObsList obs, TsUnit unit, LocalDateTime reference, AggregationType convMode, boolean complete) {
         switch (obs.size()) {
             case 0:
                 return NO_DATA;
@@ -94,7 +92,7 @@ public class TsDataBuilderUtil {
                 } else {
                     result = TsDataCollector.makeWithAggregation(obs, unit, reference, convMode);
                 }
-                return result != null ? present(result) : UNKNOWN;
+                return result != null ? result : UNKNOWN;
         }
     }
 }

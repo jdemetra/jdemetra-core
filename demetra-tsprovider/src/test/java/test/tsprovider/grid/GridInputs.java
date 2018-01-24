@@ -17,6 +17,7 @@
 package test.tsprovider.grid;
 
 import demetra.tsprovider.grid.GridInput;
+import java.io.IOException;
 
 /**
  *
@@ -25,7 +26,7 @@ import demetra.tsprovider.grid.GridInput;
 @lombok.experimental.UtilityClass
 public class GridInputs {
 
-    public Object[][] toArray(GridInput input) {
+    public Object[][] toArray(GridInput input) throws IOException {
         Object[][] result = new Object[input.getRowCount()][input.getColumnCount()];
         forEach(input, (i, j, o) -> result[i][j] = o);
         return result;
@@ -41,7 +42,7 @@ public class GridInputs {
         void accept(int row, int column);
     }
 
-    public void forEach(GridInput input, ValueConsumer consumer) {
+    public void forEach(GridInput input, ValueConsumer consumer) throws IOException {
         for (int i = 0; i < input.getRowCount(); i++) {
             for (int j = 0; j < input.getColumnCount(); j++) {
                 consumer.accept(i, j, input.getValue(i, j));
@@ -49,7 +50,7 @@ public class GridInputs {
         }
     }
 
-    public void forEach(GridInput input, IndexConsumer consumer) {
+    public void forEach(GridInput input, IndexConsumer consumer) throws IOException {
         for (int i = 0; i < input.getRowCount(); i++) {
             for (int j = 0; j < input.getColumnCount(); j++) {
                 consumer.accept(i, j);

@@ -76,7 +76,7 @@ public final class TsCursorAsProvider implements TsProvider {
     @Override
     public TsCollection getTsCollection(TsMoniker moniker, TsInformationType type) throws IOException, IllegalArgumentException {
         DataSourcePreconditions.checkProvider(getSource(), moniker);
-        TsCollection.Builder result = TsCollection.builder().moniker(moniker).type(type);
+        TsCollection.Builder result = TsCollection.builder().moniker(moniker).type(type).name("");
         fillCollection(result);
         return result.build();
     }

@@ -29,6 +29,7 @@ import static internal.spreadsheet.Top5Browsers.top5ExcelClassic;
 import static internal.spreadsheet.Top5Browsers.top5OpenDocument;
 import static internal.spreadsheet.Top5Browsers.top5Xmlss;
 import internal.spreadsheet.grid.BookData;
+import internal.spreadsheet.grid.SheetGridInfo;
 import java.io.IOException;
 import java.net.URL;
 import org.junit.Test;
@@ -41,7 +42,7 @@ public class SpreadSheetFactoryTest {
 
     private static void testFactory(Book.Factory bookFactory, URL url) throws IOException {
         try (Book book = bookFactory.load(url)) {
-            testContent(BookData.of(book, GridReader.of(GridImport.DEFAULT, o -> true)));
+            testContent(BookData.of(book, GridReader.of(GridImport.DEFAULT, SheetGridInfo.of(bookFactory))));
         }
     }
 

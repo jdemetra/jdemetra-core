@@ -29,8 +29,6 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import static demetra.timeseries.TsUnit.*;
 import demetra.timeseries.TsData;
-import demetra.tsprovider.OptionalTsData;
-import static demetra.tsprovider.OptionalTsData.present;
 import internal.tsprovider.util.GuessingUnit;
 import static internal.tsprovider.util.TsDataBuilderUtil.DUPLICATION_WITHOUT_AGGREGATION;
 import static internal.tsprovider.util.TsDataBuilderUtil.GUESS_DUPLICATION;
@@ -293,7 +291,7 @@ public class TsDataBuilderTest {
         double v1 = .12, v2 = .13, v3 = .10, v4 = .11;
         double v5 = 20;
 
-        Function<AggregationType, OptionalTsData> b7 = a -> {
+        Function<AggregationType, TsData> b7 = a -> {
             return x.builder(ObsGathering.builder().unit(MONTH).aggregationType(a).build())
                     .add(x.date(LocalDate.of(2010, 2, 1).atStartOfDay()), v5)
                     .add(x.date(LocalDate.of(2010, 1, 3).atStartOfDay()), v3)
@@ -366,7 +364,7 @@ public class TsDataBuilderTest {
         });
     }
 
-    private static void assertBuild(TsDataBuilder<?> builder, OptionalTsData data) {
+    private static void assertBuild(TsDataBuilder<?> builder, TsData data) {
         assertThat(builder.build())
                 .isEqualTo(data)
                 .isEqualTo(builder.build());
@@ -381,11 +379,11 @@ public class TsDataBuilderTest {
         boolean supports(TsUnit unit);
     }
 
-    private static OptionalTsData data(TsUnit unit, LocalDateTime reference, LocalDateTime date, double... values) {
-        return present(TsData.of(TsPeriod.builder().unit(unit).epoch(reference).date(date).build(), DoubleSequence.ofInternal(values)));
+    private static TsData data(TsUnit unit, LocalDateTime reference, LocalDateTime date, double... values) {
+        return TsData.of(TsPeriod.builder().unit(unit).epoch(reference).date(date).build(), DoubleSequence.ofInternal(values));
     }
 
-    private static OptionalTsData data(TsUnit unit, LocalDateTime reference, int year, double... values) {
+    private static TsData data(TsUnit unit, LocalDateTime reference, int year, double... values) {
         return data(unit, reference, LocalDate.of(year, 1, 1).atStartOfDay(), values);
     }
 

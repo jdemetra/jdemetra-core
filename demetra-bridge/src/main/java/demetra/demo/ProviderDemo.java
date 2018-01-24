@@ -26,7 +26,6 @@ import demetra.tsprovider.Ts;
 import demetra.tsprovider.TsInformationType;
 import demetra.tsprovider.TsProviders;
 import demetra.tsprovider.util.MultiLineNameUtil;
-import demetra.tsprovider.OptionalTsData;
 import demetra.timeseries.TsDomain;
 import demetra.tsprovider.DataSourceLoader;
 import demetra.tsprovider.TsMoniker;
@@ -39,11 +38,11 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -116,18 +115,14 @@ public class ProviderDemo {
         }
     }
 
-    public void printDataSummary(OptionalTsData data) {
-        if (data.isPresent()) {
-            printDataSummary(data.get());
+    public void printDataSummary(TsData data) {
+        if (!data.isEmpty()) {
+            TsDomain d = data.getDomain();
+            int validValues = (int) data.getValues().reduce(0, (c, o) -> !Double.isNaN(o) ? c + 1 : c);
+            System.out.printf("%9s %s, from %s to %s, %d/%d obs\n", "Data:", d.getTsUnit(), d.start(), d.end(), validValues, d.length());
         } else {
             System.out.printf("%9s %s\n", "Data:", data.getCause());
         }
-    }
-
-    public void printDataSummary(TsData data) {
-        TsDomain d = data.getDomain();
-        int validValues = (int) data.getValues().reduce(0, (c, o) -> !Double.isNaN(o) ? c + 1 : c);
-        System.out.printf("%9s %s, from %s to %s, %d/%d obs\n", "Data:", d.getTsUnit(), d.start(), d.end(), validValues, d.length());
     }
 
     public void printDuration(Duration duration) {
@@ -177,13 +172,12 @@ public class ProviderDemo {
     }
 
     public void printDataTable(DataSourceProvider provider, DataSource dataSource, TsDataTable.DistributionType distribution) throws IOException {
-        TsCollection info = provider.getTsCollection(provider.toMoniker(dataSource), TsInformationType.Data);
+        TsCollection col = provider.getTsCollection(provider.toMoniker(dataSource), TsInformationType.Data);
 
-        List<String> names = info.getItems().stream().filter(o -> o.hasData()).map(o -> provider.getDisplayNodeName(provider.toDataSet(o.getMoniker()))).collect(Collectors.toList());
-        System.out.println("\t" + String.join("\t", names));
+        Function<Ts, String> toDisplayNodeName = o -> provider.getDisplayNodeName(provider.toDataSet(o.getMoniker()));
+        System.out.println("\t" + col.getItems().stream().map(toDisplayNodeName).collect(Collectors.joining("\t")));
 
-        List<TsData> data = info.getItems().stream().filter(o -> o.hasData()).map(o -> o.getData().get()).collect(Collectors.toList());
-        TsDataTable table = TsDataTable.of(data);
+        TsDataTable table = TsDataTable.of(col.getItems(), Ts::getData);
         DataTypesDemo.printDataTable(table, distribution);
     }
 

@@ -27,6 +27,8 @@ import javax.annotation.Nullable;
 @Immutable
 public final class TsMoniker implements Comparable<TsMoniker> {
 
+    public static final TsMoniker NULL = create("", "");
+
     private final String m_source;
     private final String m_id;
 

@@ -16,10 +16,10 @@
  */
 package demetra.tsprovider.cube;
 
-import demetra.tsprovider.OptionalTsData;
 import demetra.tsprovider.cursor.TsCursor;
 import demetra.tsprovider.util.TsDataBuilder;
 import demetra.io.IteratorWithIO;
+import demetra.timeseries.TsData;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -299,7 +299,7 @@ public final class TableAsCubeAccessor implements CubeAccessor {
         }
 
         @Override
-        public OptionalTsData getSeriesData() throws IOException {
+        public TsData getSeriesData() throws IOException {
             throw new IOException("Not requested");
         }
     }
@@ -366,7 +366,7 @@ public final class TableAsCubeAccessor implements CubeAccessor {
         }
 
         @Override
-        public OptionalTsData getSeriesData() throws IOException {
+        public TsData getSeriesData() throws IOException {
             return data.build();
         }
     }
@@ -420,7 +420,7 @@ public final class TableAsCubeAccessor implements CubeAccessor {
         }
 
         @Override
-        public OptionalTsData getSeriesData() throws IOException {
+        public TsData getSeriesData() throws IOException {
             return data.build();
         }
     }

@@ -16,6 +16,8 @@
  */
 package demetra.tsprovider;
 
+import demetra.timeseries.TsData;
+import internal.tsprovider.util.TsDataBuilderUtil;
 import java.util.Map;
 
 /**
@@ -27,28 +29,20 @@ import java.util.Map;
 public final class Ts {
 
     @lombok.NonNull
-    TsMoniker moniker;
+    private TsMoniker moniker;
 
     @lombok.NonNull
-    TsInformationType type;
+    private TsInformationType type;
 
-    String name;
+    private String name;
 
+    @lombok.NonNull
     @lombok.Singular("meta")
-    Map<String, String> metaData;
+    private Map<String, String> metaData;
 
-    OptionalTsData data;
-
-    public boolean hasData() {
-        return type == TsInformationType.All || type == TsInformationType.Data
-                || (type == TsInformationType.UserDefined && data != null);
-    }
-
-    public boolean hasMetaData() {
-        return type == TsInformationType.All
-                || type == TsInformationType.MetaData
-                || (type == TsInformationType.UserDefined && metaData != null);
-    }
+    @lombok.NonNull
+    @lombok.Builder.Default
+    private TsData data = TsDataBuilderUtil.NO_DATA;
 
     public static class Builder {
 

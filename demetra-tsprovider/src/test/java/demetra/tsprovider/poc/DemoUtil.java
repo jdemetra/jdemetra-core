@@ -25,7 +25,6 @@ import demetra.tsprovider.Ts;
 import demetra.tsprovider.TsInformationType;
 import demetra.tsprovider.TsProviders;
 import demetra.tsprovider.util.MultiLineNameUtil;
-import demetra.tsprovider.OptionalTsData;
 import demetra.timeseries.TsDomain;
 import demetra.utilities.Trees;
 import ioutil.IO;
@@ -99,10 +98,8 @@ class DemoUtil {
         }
     }
 
-    void printData(OptionalTsData data) {
-        String value = data.isPresent()
-                ? toString(data.get())
-                : data.getCause();
+    void printData(TsData data) {
+        String value = !data.isEmpty() ? toString(data) : data.getCause();
         System.out.printf("%9s %s\n", "Data:", value);
     }
 

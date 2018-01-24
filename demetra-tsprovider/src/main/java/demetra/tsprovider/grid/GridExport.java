@@ -16,30 +16,29 @@
  */
 package demetra.tsprovider.grid;
 
+import demetra.tsprovider.util.ObsFormat;
+
 /**
  *
  * @author Philippe Charles
  */
-@lombok.Value(staticConstructor = "of")
+@lombok.Value
+@lombok.Builder(builderClassName = "Builder", toBuilder = true)
 public class GridExport {
 
-    public static final GridExport DEFAULT = new GridExport(GridLayout.VERTICAL, true, true, true);
+    public static final GridExport DEFAULT = builder().build();
 
-    /**
-     * true : one series per column, false : one series per line
-     */
-    private GridLayout layout;
-    /**
-     * show or not the dates
-     */
-    private boolean showDates;
-    /**
-     * show or not the titles of the series
-     */
-    private boolean showTitle;
-    /**
-     * true to set the dates at the beginning of the period, false for the end
-     * of the period
-     */
-    private boolean beginPeriod;
+    @lombok.NonNull
+    @lombok.Builder.Default
+    private ObsFormat format = ObsFormat.DEFAULT;
+
+    @lombok.NonNull
+    @lombok.Builder.Default
+    private GridLayout layout = GridLayout.VERTICAL;
+
+    @lombok.Builder.Default
+    private boolean includeNames = true;
+
+    @lombok.Builder.Default
+    private boolean includeDates = true;
 }

@@ -17,28 +17,32 @@
 package internal.tsprovider.grid;
 
 import demetra.tsprovider.grid.GridInput;
-import static org.assertj.core.api.Assertions.assertThat;
+import java.io.IOException;
 import org.junit.Test;
 import test.tsprovider.grid.ArrayGridInput;
 import static test.tsprovider.grid.Data.*;
-import test.tsprovider.grid.GridInputs;
+import static org.assertj.core.api.Assertions.*;
 
 /**
  *
  * @author Philippe Charles
  */
-public class ValueReaderTest {
+public class InternalValueReaderTest {
 
     @Test
-    public void testOnNull() {
-        ValueReader x = ValueReader.onNull();
+    public void testOnNull() throws IOException {
+        InternalValueReader x = InternalValueReader.onNull();
 
-        GridInputs.forEach(grid, (i, j) -> assertThat(x.read(grid, i, j)).isNull());
+        for (int i = 0; i < grid.getRowCount(); i++) {
+            for (int j = 0; j < grid.getColumnCount(); j++) {
+                assertThat(x.read(grid, i, j)).isNull();
+            }
+        }
     }
 
     @Test
-    public void testOnDateTime() {
-        ValueReader x = ValueReader.onDateTime();
+    public void testOnDateTime() throws IOException {
+        InternalValueReader x = InternalValueReader.onDateTime();
 
         assertThat(x.read(grid, 0, 0)).isNull();
         assertThat(x.read(grid, 1, 0)).isNull();
@@ -50,5 +54,5 @@ public class ValueReaderTest {
         {null, JAN_2010, FEB_2010, MAR_2010},
         {"S1", 3.14, 4.56, 7.89}
     };
-    private final GridInput grid = ArrayGridInput.of("", data);
+    private final GridInput grid = ArrayGridInput.of(data);
 }
