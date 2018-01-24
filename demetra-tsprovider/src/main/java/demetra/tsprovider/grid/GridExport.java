@@ -36,7 +36,9 @@ public class GridExport {
     @lombok.Builder.Default
     private GridLayout layout = GridLayout.VERTICAL;
 
-    @lombok.NonNull
     @lombok.Builder.Default
-    private GridHeader header = GridHeader.BOTH;
+    private boolean includeNames = true;
+
+    @lombok.Builder.Default
+    private boolean includeDates = true;
 }

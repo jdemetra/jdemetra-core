@@ -145,7 +145,7 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
                 throw new IOException("File type not supported");
             }
             try (Book book = factory.load(file)) {
-                GridImport options = GridImport.of(bean.getObsFormat(), bean.getObsGathering());
+                GridImport options = GridImport.builder().format(bean.getObsFormat()).gathering(bean.getObsGathering()).build();
                 return BookData.of(book, GridReader.of(options, SheetGridInfo.of(factory)));
             }
         }

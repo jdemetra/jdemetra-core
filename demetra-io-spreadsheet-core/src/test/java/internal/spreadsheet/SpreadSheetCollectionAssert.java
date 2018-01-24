@@ -17,8 +17,8 @@
 package internal.spreadsheet;
 
 import demetra.tsprovider.grid.GridLayout;
-import internal.spreadsheet.grid.SheetData;
 import demetra.timeseries.TsData;
+import demetra.tsprovider.TsCollection;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 
@@ -26,49 +26,41 @@ import org.assertj.core.api.Assertions;
  *
  * @author Philippe Charles
  */
-final class SpreadSheetCollectionAssert extends AbstractAssert<SpreadSheetCollectionAssert, SheetData> {
+final class SpreadSheetCollectionAssert extends AbstractAssert<SpreadSheetCollectionAssert, TsCollection> {
 
-    public static SpreadSheetCollectionAssert assertThat(SheetData actual) {
+    public static SpreadSheetCollectionAssert assertThat(TsCollection actual) {
         return new SpreadSheetCollectionAssert(actual);
     }
 
-    public SpreadSheetCollectionAssert(SheetData actual) {
+    public SpreadSheetCollectionAssert(TsCollection actual) {
         super(actual, SpreadSheetCollectionAssert.class);
     }
 
     public SpreadSheetCollectionAssert hasSheetName(String name) {
         isNotNull();
-        if (!actual.getSheetName().equals(name)) {
-            failWithMessage("Expected sheet's name to be <%s> but was <%s>", name, actual.getSheetName());
-        }
-        return this;
-    }
-
-    public SpreadSheetCollectionAssert hasOrdering(int ordering) {
-        isNotNull();
-        if (actual.getOrdering() != ordering) {
-            failWithMessage("Expected ordering to be <%s> but was <%s>", ordering, actual.getOrdering());
+        if (!actual.getName().equals(name)) {
+            failWithMessage("Expected sheet's name to be <%s> but was <%s>", name, actual.getName());
         }
         return this;
     }
 
     public SpreadSheetCollectionAssert hasLayout(GridLayout layout) {
         isNotNull();
-        if (!actual.getData().getLayout().equals(layout)) {
-            failWithMessage("Expected alignType to be <%s> but was <%s>", layout, actual.getData().getItems());
+        if (!actual.getMetaData().getOrDefault("gridLayout", GridLayout.UNKNOWN.name()).equals(layout.name())) {
+            failWithMessage("Expected alignType to be <%s> but was <%s>", layout, actual.getItems());
         }
         return this;
     }
 
     public SpreadSheetCollectionAssert containsExactly(TsData... data) {
-        Assertions.assertThat(actual.getData().getItems())
+        Assertions.assertThat(actual.getItems())
                 .extracting(o -> o.getData())
                 .containsExactly(data);
         return this;
     }
 
     public SpreadSheetCollectionAssert containsExactly(String... names) {
-        Assertions.assertThat(actual.getData().getItems())
+        Assertions.assertThat(actual.getItems())
                 .extracting(o -> o.getName())
                 .containsExactly(names);
         return this;

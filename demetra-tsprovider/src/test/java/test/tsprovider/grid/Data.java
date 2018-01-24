@@ -19,10 +19,12 @@ package test.tsprovider.grid;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
+import demetra.tsprovider.Ts;
+import demetra.tsprovider.TsCollection;
+import demetra.tsprovider.TsInformationType;
+import demetra.tsprovider.TsMoniker;
 import demetra.tsprovider.grid.GridInput;
 import demetra.tsprovider.grid.GridLayout;
-import demetra.tsprovider.grid.TsCollectionGrid;
-import demetra.tsprovider.grid.TsGrid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -93,11 +95,22 @@ public class Data {
         return TsData.ofInternal(p, values);
     }
 
-    public static TsGrid s(String name, TsData data) {
-        return TsGrid.of(name, data);
+    public static Ts s(String name, TsData data) {
+        return Ts.builder()
+                .moniker(TsMoniker.NULL)
+                .type(TsInformationType.Data)
+                .name(name)
+                .data(data)
+                .build();
     }
 
-    public static TsCollectionGrid of(GridLayout layout, String seriesName, TsData data) {
-        return TsCollectionGrid.builder().layout(layout).item(s(seriesName, data)).build();
+    public static TsCollection of(GridLayout layout, String seriesName, TsData data) {
+        return TsCollection.builder()
+                .moniker(TsMoniker.NULL)
+                .type(TsInformationType.Data)
+                .name("")
+                .meta("gridLayout", layout.name())
+                .item(s(seriesName, data))
+                .build();
     }
 }

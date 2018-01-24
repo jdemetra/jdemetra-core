@@ -18,6 +18,7 @@ package demetra.tsprovider.grid;
 
 import java.io.IOException;
 import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -25,6 +26,9 @@ import javax.annotation.Nullable;
  * @author Philippe Charles
  */
 public interface GridInput {
+
+    @Nonnull
+    String getName();
 
     // FIXME: allow read byRow/byColumn
     @Nonnegative

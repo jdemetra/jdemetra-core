@@ -30,6 +30,11 @@ public final class InvGridInput implements GridInput {
     private final GridInput delegate;
 
     @Override
+    public String getName() {
+        return delegate.getName();
+    }
+
+    @Override
     public int getRowCount() throws IOException {
         return delegate.getColumnCount();
     }

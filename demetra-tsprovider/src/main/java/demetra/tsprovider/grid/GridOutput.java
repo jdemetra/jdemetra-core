@@ -17,6 +17,7 @@
 package demetra.tsprovider.grid;
 
 import java.io.IOException;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -24,6 +25,8 @@ import javax.annotation.Nullable;
  * @author Philippe Charles
  */
 public interface GridOutput {
+
+    void setName(@Nonnull String name);
 
     void setValue(int row, int column, @Nullable Object value) throws IOException;
 }

@@ -33,6 +33,11 @@ public final class SheetGridOutput implements GridOutput {
     private final ZoneId zoneId = ZoneId.systemDefault();
 
     @Override
+    public void setName(String name) {
+        sheet.name(name);
+    }
+
+    @Override
     public void setValue(int row, int column, Object value) {
         sheet.value(row, column, value instanceof LocalDateTime ? fromDateTime((LocalDateTime) value) : value);
     }

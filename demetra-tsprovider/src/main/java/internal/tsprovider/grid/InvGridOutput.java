@@ -30,6 +30,11 @@ public final class InvGridOutput implements GridOutput {
     private final GridOutput delegate;
 
     @Override
+    public void setName(String name) {
+        delegate.setName(name);
+    }
+
+    @Override
     public void setValue(int row, int column, Object value) throws IOException {
         delegate.setValue(column, row, value);
     }

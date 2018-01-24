@@ -33,6 +33,11 @@ public final class SheetGridInput implements GridInput {
     private final ZoneId zoneId = ZoneId.systemDefault();
 
     @Override
+    public String getName() {
+        return sheet.getName();
+    }
+
+    @Override
     public int getRowCount() {
         return sheet.getRowCount();
     }

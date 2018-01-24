@@ -25,37 +25,22 @@ import java.util.Map;
  */
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder")
-public final class TsCollection {
+public class TsCollection {
 
     @lombok.NonNull
-    TsMoniker moniker;
+    private TsMoniker moniker;
 
     @lombok.NonNull
-    TsInformationType type;
+    private TsInformationType type;
 
-    String name;
+    @lombok.NonNull
+    private String name;
 
     @lombok.Singular("meta")
-    Map<String, String> metaData;
+    private Map<String, String> metaData;
 
     @lombok.Singular
-    List<Ts> items;
-
-    public boolean hasData() {
-        return type == TsInformationType.All || type == TsInformationType.Data;
-    }
-
-    public boolean hasDefinition() {
-        return type == TsInformationType.All
-                || type == TsInformationType.Definition
-                || type == TsInformationType.BaseInformation;
-    }
-
-    public boolean hasMetaData() {
-        return type == TsInformationType.All
-                || type == TsInformationType.MetaData
-                || type == TsInformationType.BaseInformation;
-    }
+    private List<Ts> items;
 
     public static class Builder {
 

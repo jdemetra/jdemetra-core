@@ -24,11 +24,17 @@ import demetra.tsprovider.util.ObsGathering;
  * @author Philippe Charles
  * @since 2.1.0
  */
-@lombok.Value(staticConstructor = "of")
+@lombok.Value
+@lombok.Builder(builderClassName = "Builder", toBuilder = true)
 public class GridImport {
 
-    public static final GridImport DEFAULT = new GridImport(ObsFormat.DEFAULT, ObsGathering.DEFAULT);
+    public static final GridImport DEFAULT = builder().build();
 
-    private ObsFormat obsFormat;
-    private ObsGathering obsGathering;
+    @lombok.NonNull
+    @lombok.Builder.Default
+    private ObsFormat format = ObsFormat.DEFAULT;
+
+    @lombok.NonNull
+    @lombok.Builder.Default
+    private ObsGathering gathering = ObsGathering.DEFAULT;
 }

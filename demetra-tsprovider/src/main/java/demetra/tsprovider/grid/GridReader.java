@@ -16,6 +16,10 @@
  */
 package demetra.tsprovider.grid;
 
+import demetra.tsprovider.Ts;
+import demetra.tsprovider.TsCollection;
+import demetra.tsprovider.TsInformationType;
+import demetra.tsprovider.TsMoniker;
 import static demetra.tsprovider.grid.GridLayout.HORIZONTAL;
 import static demetra.tsprovider.grid.GridLayout.UNKNOWN;
 import static demetra.tsprovider.grid.GridLayout.VERTICAL;
@@ -54,8 +58,8 @@ public final class GridReader {
 
     @Nonnull
     public static GridReader of(@Nonnull GridImport options, @Nonnull GridInfo info, @Nonnull IntFunction<String> namer) {
-        ValueReaders readers = ValueReaders.of(info, options.getObsFormat());
-        ObsGathering gathering = options.getObsGathering();
+        ValueReaders readers = ValueReaders.of(info, options.getFormat());
+        ObsGathering gathering = options.getGathering();
         Collector<CharSequence, ?, String> nameJoiner = Collectors.joining(DEFAULT_NAME_SEPARATOR);
         return new GridReader(readers, gathering, namer, nameJoiner);
     }
@@ -69,20 +73,23 @@ public final class GridReader {
     private final Collector<CharSequence, ?, String> nameJoiner;
 
     @Nonnull
-    public TsCollectionGrid read(@Nonnull GridInput input) throws IOException {
+    public TsCollection read(@Nonnull GridInput input) throws IOException {
         DateHeader rowDates = getRowDates(input);
         DateHeader colDates = getColDates(input);
 
-        TsCollectionGrid.Builder result = TsCollectionGrid.builder();
+        TsCollection.Builder result = TsCollection.builder()
+                .moniker(TsMoniker.NULL)
+                .type(TsInformationType.Data)
+                .name(input.getName());
 
         if (rowDates.isBetterThan(colDates)) {
-            result.layout(VERTICAL);
+            result.meta("gridLayout", VERTICAL.name());
             loadVertically(input, rowDates, result::item);
         } else if (colDates.isBetterThan(rowDates)) {
-            result.layout(HORIZONTAL);
+            result.meta("gridLayout", HORIZONTAL.name());
             loadVertically(InvGridInput.of(input), colDates, result::item);
         } else {
-            result.layout(UNKNOWN);
+            result.meta("gridLayout", UNKNOWN.name());
         }
 
         return result.build();
@@ -104,7 +111,7 @@ public final class GridReader {
         return result;
     }
 
-    private void loadVertically(GridInput grid, DateHeader dates, Consumer<TsGrid> consumer) throws IOException {
+    private void loadVertically(GridInput grid, DateHeader dates, Consumer<Ts> consumer) throws IOException {
         List<String> names = new ArrayList<>();
         loadHorizontalNames(grid, dates.minIndex, names::add);
 
@@ -114,7 +121,12 @@ public final class GridReader {
                 Number value = readers.readNumber(grid, row, column + FIRST_DATA_COL_IDX);
                 data.add(dates.get(row), value);
             }
-            consumer.accept(TsGrid.of(names.get(column), data.build()));
+            consumer.accept(Ts.builder()
+                    .moniker(TsMoniker.NULL)
+                    .type(TsInformationType.Data)
+                    .name(names.get(column))
+                    .data(data.build())
+                    .build());
             data.clear();
         }
     }

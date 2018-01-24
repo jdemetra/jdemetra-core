@@ -17,7 +17,9 @@
 package demetra.tsprovider.grid;
 
 import static demetra.timeseries.TsUnit.*;
-import static demetra.tsprovider.grid.GridHeader.*;
+import demetra.tsprovider.TsCollection;
+import demetra.tsprovider.TsInformationType;
+import demetra.tsprovider.TsMoniker;
 import static demetra.tsprovider.grid.GridLayout.*;
 import demetra.tsprovider.util.ObsFormat;
 import java.io.IOException;
@@ -40,7 +42,7 @@ public class GridWriterTest {
         GridExport.Builder opts = GridExport.builder().layout(VERTICAL);
         GridInfo all = Object.class::isAssignableFrom;
 
-        assertThat(toArray(opts.header(BOTH).build(), all, sample))
+        assertThat(toArray(opts.includeNames(true).includeDates(true).build(), all, sample))
                 .containsExactly(
                         new Object[][]{
                             {null, "G1\nS1", "G1\nS2", "G2\nS1", "S1"},
@@ -49,7 +51,7 @@ public class GridWriterTest {
                             {MAR_2010, 1.03, null, null, 4.03}
                         });
 
-        assertThat(toArray(opts.header(DATE_ONLY).build(), all, sample))
+        assertThat(toArray(opts.includeNames(false).includeDates(true).build(), all, sample))
                 .containsExactly(
                         new Object[][]{
                             {JAN_2010, 1.01, 2.01, 3.01, null},
@@ -57,7 +59,7 @@ public class GridWriterTest {
                             {MAR_2010, 1.03, null, null, 4.03}
                         });
 
-        assertThat(toArray(opts.header(NAME_ONLY).build(), all, sample))
+        assertThat(toArray(opts.includeNames(true).includeDates(false).build(), all, sample))
                 .containsExactly(
                         new Object[][]{
                             {"G1\nS1", "G1\nS2", "G2\nS1", "S1"},
@@ -66,7 +68,7 @@ public class GridWriterTest {
                             {1.03, null, null, 4.03}
                         });
 
-        assertThat(toArray(opts.header(NONE).build(), all, sample))
+        assertThat(toArray(opts.includeNames(false).includeDates(false).build(), all, sample))
                 .containsExactly(
                         new Object[][]{
                             {1.01, 2.01, 3.01, null},
@@ -80,7 +82,7 @@ public class GridWriterTest {
         GridExport.Builder opts = GridExport.builder().layout(HORIZONTAL);
         GridInfo all = Object.class::isAssignableFrom;
 
-        assertThat(toArray(opts.header(BOTH).build(), all, sample))
+        assertThat(toArray(opts.includeNames(true).includeDates(true).build(), all, sample))
                 .containsExactly(
                         new Object[][]{
                             {null, JAN_2010, FEB_2010, MAR_2010},
@@ -90,7 +92,7 @@ public class GridWriterTest {
                             {"S1", null, 4.02, 4.03}
                         });
 
-        assertThat(toArray(opts.header(DATE_ONLY).build(), all, sample))
+        assertThat(toArray(opts.includeNames(false).includeDates(true).build(), all, sample))
                 .containsExactly(
                         new Object[][]{
                             {JAN_2010, FEB_2010, MAR_2010},
@@ -100,7 +102,7 @@ public class GridWriterTest {
                             {null, 4.02, 4.03}
                         });
 
-        assertThat(toArray(opts.header(NAME_ONLY).build(), all, sample))
+        assertThat(toArray(opts.includeNames(true).includeDates(false).build(), all, sample))
                 .containsExactly(
                         new Object[][]{
                             {"G1\nS1", 1.01, null, 1.03},
@@ -109,7 +111,7 @@ public class GridWriterTest {
                             {"S1", null, 4.02, 4.03}
                         });
 
-        assertThat(toArray(opts.header(NONE).build(), all, sample))
+        assertThat(toArray(opts.includeNames(false).includeDates(false).build(), all, sample))
                 .containsExactly(
                         new Object[][]{
                             {1.01, null, 1.03},
@@ -169,14 +171,17 @@ public class GridWriterTest {
                         });
     }
 
-    private static Object[][] toArray(GridExport options, GridInfo info, TsCollectionGrid grid) throws IOException {
+    private static Object[][] toArray(GridExport options, GridInfo info, TsCollection grid) throws IOException {
         ArrayGridOutput result = new ArrayGridOutput(VERTICAL);
         GridWriter.of(options, info).write(grid, result);
         return result.build();
     }
 
-    private final TsCollectionGrid sample = TsCollectionGrid.builder()
-            .layout(HORIZONTAL)
+    private final TsCollection sample = TsCollection.builder()
+            .moniker(new TsMoniker())
+            .type(TsInformationType.Data)
+            .name("")
+            .meta("gridLayout", HORIZONTAL.name())
             .item(s("G1\nS1", data(MONTH, 2010, 0, 1.01d, NaN, 1.03d)))
             .item(s("G1\nS2", data(QUARTER, 2010, 0, 2.01d)))
             .item(s("G2\nS1", data(MONTH, 2010, 0, 3.01d, 3.02d)))

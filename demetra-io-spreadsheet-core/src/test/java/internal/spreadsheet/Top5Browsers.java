@@ -43,21 +43,18 @@ class Top5Browsers {
         assertThat(top5Browsers).isNotNull();
         assertThat(top5Browsers.getSheets()).hasSize(3);
 
-        assertThat(top5Browsers.getSheets().get("Top 5 Browsers - Monthly"))
+        assertThat(top5Browsers.getSheetByName("Top 5 Browsers - Monthly"))
                 .hasSheetName("Top 5 Browsers - Monthly")
-                .hasOrdering(0)
                 .hasLayout(VERTICAL)
                 .containsExactly(M_DATA);
 
-        assertThat(top5Browsers.getSheets().get("Top 5 Browsers - Quarterly"))
+        assertThat(top5Browsers.getSheetByName("Top 5 Browsers - Quarterly"))
                 .hasSheetName("Top 5 Browsers - Quarterly")
-                .hasOrdering(1)
                 .hasLayout(HORIZONTAL)
                 .containsExactly(Q_DATA);
 
-        assertThat(top5Browsers.getSheets().get("DataTest"))
+        assertThat(top5Browsers.getSheetByName("DataTest"))
                 .hasSheetName("DataTest")
-                .hasOrdering(2)
                 .hasLayout(VERTICAL)
                 .containsExactly(DT_DATA);
     }

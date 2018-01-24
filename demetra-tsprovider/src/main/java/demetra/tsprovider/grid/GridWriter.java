@@ -18,12 +18,13 @@ package demetra.tsprovider.grid;
 
 import demetra.timeseries.TsDataTable;
 import demetra.timeseries.TsDomain;
+import demetra.tsprovider.Ts;
+import demetra.tsprovider.TsCollection;
 import demetra.tsprovider.util.ObsFormat;
 import internal.tsprovider.grid.InternalValueWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.function.IntFunction;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
 import lombok.AccessLevel;
@@ -39,16 +40,18 @@ public final class GridWriter {
     @Nonnull
     public static GridWriter of(@Nonnull GridExport options, @Nonnull GridInfo info) {
         ValueWriters writers = ValueWriters.of(info, options.getFormat());
-        return new GridWriter(writers, options.getLayout(), options.getHeader().hasName(), options.getHeader().hasDate());
+        return new GridWriter(writers, options.getLayout(), options.isIncludeNames(), options.isIncludeDates());
     }
 
     private final ValueWriters writers;
     private final GridLayout layout;
-    private final boolean hasName;
-    private final boolean hasDate;
+    private final boolean includeNames;
+    private final boolean includeDates;
 
-    public void write(@Nonnull TsCollectionGrid col, @Nonnull GridOutput output) throws IOException {
-        TsDataTable table = TsDataTable.of(col.getItems().stream().map(TsGrid::getData).collect(Collectors.toList()));
+    public void write(@Nonnull TsCollection col, @Nonnull GridOutput output) throws IOException {
+        output.setName(col.getName());
+
+        TsDataTable table = TsDataTable.of(col.getItems(), Ts::getData);
 
         if (table.getDomain().isEmpty()) {
             return;
@@ -72,8 +75,8 @@ public final class GridWriter {
     private void writePeriodByRow(TsDataTable.Cursor c, IntFunction<String> names, IntFunction<LocalDateTime> dates, GridOutput output) throws IOException {
         int row = 0;
 
-        if (hasName) {
-            int column = hasDate ? 1 : 0;
+        if (includeNames) {
+            int column = includeDates ? 1 : 0;
             for (int series = 0; series < c.getSeriesCount(); series++) {
                 writers.writeString(output, row, column, names.apply(series));
                 column++;
@@ -83,7 +86,7 @@ public final class GridWriter {
 
         for (int period = 0; period < c.getPeriodCount(); period++) {
             int column = 0;
-            if (hasDate) {
+            if (includeDates) {
                 writers.writeDateTime(output, row, column, dates.apply(period));
                 column++;
             }
@@ -101,8 +104,8 @@ public final class GridWriter {
     private void writeSeriesByRow(TsDataTable.Cursor c, IntFunction<String> names, IntFunction<LocalDateTime> dates, GridOutput output) throws IOException {
         int row = 0;
 
-        if (hasDate) {
-            int column = hasName ? 1 : 0;
+        if (includeDates) {
+            int column = includeNames ? 1 : 0;
             for (int period = 0; period < c.getPeriodCount(); period++) {
                 writers.writeDateTime(output, row, column, dates.apply(period));
                 column++;
@@ -112,7 +115,7 @@ public final class GridWriter {
 
         for (int series = 0; series < c.getSeriesCount(); series++) {
             int column = 0;
-            if (hasName) {
+            if (includeNames) {
                 writers.writeString(output, row, column, names.apply(series));
                 column++;
             }
@@ -131,7 +134,7 @@ public final class GridWriter {
         return Double.isNaN(value) ? null : value;
     }
 
-    private static IntFunction<String> getNames(TsCollectionGrid col) {
+    private static IntFunction<String> getNames(TsCollection col) {
         return series -> col.getItems().get(series).getName();
     }
 
@@ -139,7 +142,7 @@ public final class GridWriter {
         return series -> domain.get(series).start();
     }
 
-    private static IntFunction<TsDataTable.DistributionType> getDistribution(TsCollectionGrid col) {
+    private static IntFunction<TsDataTable.DistributionType> getDistribution(TsCollection col) {
         return series -> TsDataTable.DistributionType.FIRST;
     }
 

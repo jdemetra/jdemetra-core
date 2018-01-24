@@ -32,6 +32,10 @@ public final class ArrayGridOutput implements GridOutput {
     private final List<Cell> cells = new ArrayList<>();
 
     @Override
+    public void setName(String name) {
+    }
+
+    @Override
     public void setValue(int row, int column, Object value) {
         checkLayout(row, column);
         cells.add(new Cell(row, column, value));

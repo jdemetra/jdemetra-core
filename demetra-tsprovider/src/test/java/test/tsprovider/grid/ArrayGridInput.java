@@ -29,6 +29,11 @@ public final class ArrayGridInput implements GridInput {
     private final Object[][] array;
 
     @Override
+    public String getName() {
+        return "";
+    }
+
+    @Override
     public int getRowCount() {
         return array.length;
     }
