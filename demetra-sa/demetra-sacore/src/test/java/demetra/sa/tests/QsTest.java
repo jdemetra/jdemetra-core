@@ -14,10 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.stats.tests;
+package demetra.sa.tests;
 
-import demetra.data.DataBlock;
-import java.util.Random;
+import demetra.data.Data;
+import demetra.timeseries.TsData;
+import demetra.timeseries.simplets.TsDataToolkit;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -25,31 +26,25 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate
  */
-public class BoxPierceTestTest {
-
-    public BoxPierceTestTest() {
+public class QsTest {
+    
+    public QsTest() {
     }
 
     @Test
-    public void testLegacy() {
-        int N = 100;
-        DataBlock X = DataBlock.make(N);
-        Random rnd = new Random();
-        X.set(rnd::nextDouble);
-
-        BoxPierceTest lb = new BoxPierceTest(X);
-
-        StatisticalTest test = lb
-                .lag(3)
-                .autoCorrelationsCount(10)
-                .build();
-
-        ec.tstoolkit.stats.BoxPierceTest lb2 = new ec.tstoolkit.stats.BoxPierceTest();
-        lb2.setK(10);
-        lb2.setLag(3);
-        lb2.test(new ec.tstoolkit.data.ReadDataBlock(X.getStorage()));
-
-        assertEquals(test.getPValue(), lb2.getPValue(), 1e-9);
+    public void testP1() {
+        TsData s=Data.TS_PROD;
+        s=TsDataToolkit.delta(s, 1);
+        Qs test=new Qs(s.getValues(),12);
+        System.out.println(test.build());
     }
-
+    
+    @Test
+    public void testP12() {
+        TsData s=Data.TS_PROD;
+        s=TsDataToolkit.delta(s, 12);
+        Qs test=new Qs(s.getValues(),12);
+//        System.out.println(test.build());
+//        System.out.println(test.useNegativeAutocorrelations().build());
+    }
 }

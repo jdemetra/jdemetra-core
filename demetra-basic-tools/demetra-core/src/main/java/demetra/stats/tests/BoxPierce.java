@@ -28,7 +28,7 @@ import java.util.function.IntToDoubleFunction;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class BoxPierceTest implements IBuilder<StatisticalTest> {
+public class BoxPierce implements IBuilder<StatisticalTest> {
 
     private int lag = 1;
     private int k = 12;
@@ -38,7 +38,7 @@ public class BoxPierceTest implements IBuilder<StatisticalTest> {
     private final IntToDoubleFunction autoCorrelations;
     private final int n;
 
-    public BoxPierceTest(DoubleSequence sample) {
+    public BoxPierce(DoubleSequence sample) {
         this.autoCorrelations = AutoCovariances.autoCorrelationFunction(sample, 0);
         this.n = sample.length();
     }
@@ -48,7 +48,7 @@ public class BoxPierceTest implements IBuilder<StatisticalTest> {
      * @param nhp
      * @return
      */
-    public BoxPierceTest hyperParametersCount(int nhp) {
+    public BoxPierce hyperParametersCount(int nhp) {
         this.nhp = nhp;
         return this;
     }
@@ -58,7 +58,7 @@ public class BoxPierceTest implements IBuilder<StatisticalTest> {
      * @param lag
      * @return
      */
-    public BoxPierceTest lag(int lag) {
+    public BoxPierce lag(int lag) {
         this.lag = lag;
         return this;
     }
@@ -68,22 +68,22 @@ public class BoxPierceTest implements IBuilder<StatisticalTest> {
      * @param k
      * @return
      */
-    public BoxPierceTest autoCorrelationsCount(int k) {
+    public BoxPierce autoCorrelationsCount(int k) {
         this.k = k;
         return this;
     }
 
-    public BoxPierceTest usePositiveAutoCorrelations() {
+    public BoxPierce usePositiveAutoCorrelations() {
         this.sign = 1;
         return this;
     }
 
-    public BoxPierceTest useNegativeAutoCorrelations() {
+    public BoxPierce useNegativeAutoCorrelations() {
         this.sign = -1;
         return this;
     }
 
-    public BoxPierceTest useAllAutoCorrelations() {
+    public BoxPierce useAllAutoCorrelations() {
         this.sign = 0;
         return this;
     }

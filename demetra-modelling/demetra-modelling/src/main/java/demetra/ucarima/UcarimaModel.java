@@ -41,10 +41,6 @@ public class UcarimaModel implements Cloneable {
      * Creates a new Ucarima model corresponding to a given aggregation model
      * and to a given list of models.
      *
-     * @param model The aggregation model. Can be null. In that case, the
-     * aggregation model will be automatically computed.
-     * @param cmps The list of the components. The constructor doesn't check
-     * that the model and the components are compatible.
      */
     public static class Builder implements IBuilder<UcarimaModel> {
 

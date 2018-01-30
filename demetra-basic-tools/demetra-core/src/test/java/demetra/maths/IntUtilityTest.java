@@ -14,11 +14,8 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.sa.tests;
+package demetra.maths;
 
-import demetra.data.Data;
-import demetra.timeseries.TsData;
-import demetra.timeseries.simplets.TsDataToolkit;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -26,25 +23,28 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate
  */
-public class QsTestTest {
-    
-    public QsTestTest() {
+public class IntUtilityTest {
+
+    public IntUtilityTest() {
     }
 
     @Test
-    public void testP1() {
-        TsData s=Data.TS_PROD;
-        s=TsDataToolkit.delta(s, 1);
-        QsTest test=new QsTest(s.getValues(),12);
-        System.out.println(test.build());
+    public void testSumPowers() {
+        for (int k = 2; k <= 10; ++k) {
+            assertTrue(IntUtility.sumOfPowers(k, 25) == sp(k, 25));
+        }
     }
-    
-    @Test
-    public void testP12() {
-        TsData s=Data.TS_PROD;
-        s=TsDataToolkit.delta(s, 12);
-        QsTest test=new QsTest(s.getValues(),12);
-//        System.out.println(test.build());
-//        System.out.println(test.useNegativeAutocorrelations().build());
+
+    private long sp(int k, int n) {
+        long s = 1;
+        for (int i = 2; i <= n; ++i) {
+            long c = i;
+            for (int j = 2; j <= k; ++j) {
+                c *= i;
+            }
+            s += c;
+        }
+        return s;
     }
+
 }

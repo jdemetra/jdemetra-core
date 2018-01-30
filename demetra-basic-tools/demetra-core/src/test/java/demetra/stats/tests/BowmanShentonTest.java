@@ -14,9 +14,9 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public class BowmanShentonTestTest {
+public class BowmanShentonTest {
     
-    public BowmanShentonTestTest() {
+    public BowmanShentonTest() {
     }
 
     @Test
@@ -26,7 +26,7 @@ public class BowmanShentonTestTest {
         Random rnd = new Random();
         X.set(rnd::nextDouble);
 
-        BowmanShentonTest bs = new BowmanShentonTest(X);
+        BowmanShenton bs = new BowmanShenton(X);
 
         StatisticalTest test = bs.build();
 

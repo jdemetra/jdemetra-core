@@ -28,12 +28,12 @@ import demetra.dstats.T;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class MeanTest implements IBuilder<StatisticalTest> {
+public class Mean implements IBuilder<StatisticalTest> {
 
     private final double mean, emean, var;
     private final int n;
 
-    private MeanTest(final double mean, final double emean, final double var, final int n) {
+    private Mean(final double mean, final double emean, final double var, final int n) {
         this.mean = mean;
         this.emean = emean;
         this.var = var;
@@ -45,11 +45,11 @@ public class MeanTest implements IBuilder<StatisticalTest> {
      * @param data
      * @return
      */
-    public static MeanTest zeroMean(DoubleSequence data) {
+    public static Mean zeroMean(DoubleSequence data) {
         int m = data.length();
         double av = Doubles.sum(data) / m;
         double v = Doubles.ssq(data) / m;
-        return new MeanTest(av, 0, v, m);
+        return new Mean(av, 0, v, m);
     }
 
     /**
@@ -58,11 +58,11 @@ public class MeanTest implements IBuilder<StatisticalTest> {
      * @param mu
      * @return
      */
-    public static MeanTest mean(DoubleSequence data, final double mu) {
+    public static Mean mean(DoubleSequence data, final double mu) {
         int m = data.length();
         double av = Doubles.sum(data) / m;
         double v = Doubles.ssqc(data, mu) / m;
-        return new MeanTest(av, mu, v, m);
+        return new Mean(av, mu, v, m);
     }
 
     @Override

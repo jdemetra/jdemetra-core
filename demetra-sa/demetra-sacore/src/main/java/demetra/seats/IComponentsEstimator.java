@@ -14,38 +14,25 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
 */
-package demetra.stats.tests;
 
-import demetra.design.Development;
-import demetra.design.IBuilder;
-import demetra.dstats.Normal;
-import demetra.stats.DescriptiveStatistics;
+
+package demetra.seats;
+
 import demetra.data.DoubleSequence;
+import demetra.design.Development;
+import demetra.sa.SeriesDecomposition;
+import demetra.ucarima.UcarimaModel;
 
 
 /**
- *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class SkewnessTest implements IBuilder<StatisticalTest>
-{
-    private final DescriptiveStatistics stats;
-    
-    public SkewnessTest(DoubleSequence data)
-    {
-        this.stats=DescriptiveStatistics.of(data);
-    }
-
-    public SkewnessTest(DescriptiveStatistics stats)
-    {
-        this.stats=stats;
-    }
-
-    @Override
-    public StatisticalTest build() {
-	int n = stats.getObservationsCount();
-	Normal dist = new Normal(0, Math.sqrt(6.0 / n));
-        return new StatisticalTest(dist, stats.getSkewness(), TestType.TwoSided, true);
-    }
+public interface IComponentsEstimator {
+    /**
+     *
+     * @param model
+     * @return
+     */
+    SeriesDecomposition decompose(SeatsModel model);
 }

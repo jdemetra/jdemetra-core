@@ -16,6 +16,7 @@
  */
 package demetra.maths.linearfilters;
 
+import demetra.data.DiscreteKernel;
 import demetra.data.DoubleSequence;
 import static demetra.data.Doubles.sum;
 import demetra.maths.matrices.Matrix;
@@ -34,7 +35,7 @@ public class LocalPolynomialFiltersTest {
     @Test
     public void testSomeMethod() {
         for (int len = 1; len < 500; ++len) {
-            SymmetricFilter lpf = LocalPolynomialFilters.of(len, 3, DiscreteKernels.henderson(len));
+            SymmetricFilter lpf = LocalPolynomialFilters.of(len, 3, DiscreteKernel.henderson(len));
             SymmetricFilter hf = HendersonFilters.ofLength(2 * len + 1);
             assertTrue(lpf.coefficientsAsPolynomial().equals(hf.coefficientsAsPolynomial(), 1e-9));
         }
@@ -42,15 +43,15 @@ public class LocalPolynomialFiltersTest {
 
     @Test
     public void testHigh() {
-        SymmetricFilter lpf = LocalPolynomialFilters.ofDefault(25, 3, DiscreteKernels.triweight(25));
-        SymmetricFilter lpf2 = LocalPolynomialFilters.ofDefault(25, 3, DiscreteKernels.biweight(25));
+        SymmetricFilter lpf = LocalPolynomialFilters.ofDefault(25, 3, DiscreteKernel.triweight(25));
+        SymmetricFilter lpf2 = LocalPolynomialFilters.ofDefault(25, 3, DiscreteKernel.biweight(25));
     }
 
     @Test
     public void testAsymmetric() {
         int h = 11;
         for (int i = 0; i <= h; ++i) {
-            FiniteFilter f = LocalPolynomialFilters.directAsymmetricFilter(h, i, 3, DiscreteKernels.henderson(h));
+            FiniteFilter f = LocalPolynomialFilters.directAsymmetricFilter(h, i, 3, DiscreteKernel.henderson(h));
             assertEquals(sum(DoubleSequence.ofInternal(f.weightsToArray())), 1, 1e-9);
 //            System.out.println(DoubleSequence.ofInternal(f.weightsToArray()));
         }
@@ -62,9 +63,9 @@ public class LocalPolynomialFiltersTest {
     public void testAsymmetric2() {
         int h = 11;
         for (int i = 0; i <= h; ++i) {
-            FiniteFilter f = LocalPolynomialFilters.directAsymmetricFilter(h, i, 1, DiscreteKernels.tricube(h));
+            FiniteFilter f = LocalPolynomialFilters.directAsymmetricFilter(h, i, 1, DiscreteKernel.tricube(h));
             assertEquals(sum(DoubleSequence.ofInternal(f.weightsToArray())), 1, 1e-9);
-//            System.out.println(DoubleSequence.ofInternal(f.weightsToArray()));
+//           System.out.println(DoubleSequence.ofInternal(f.weightsToArray()));
         }
 //        SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 3, DiscreteKernels.biweight(h));
 //        System.out.println(DoubleSequence.ofInternal(lp.weightsToArray()));
@@ -79,9 +80,9 @@ public class LocalPolynomialFiltersTest {
     @Test
     public void testAsymmetric3() {
         int h = 11;
-        SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 3, DiscreteKernels.henderson(h));
+        SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 3, DiscreteKernel.henderson(h));
         for (int i = 0; i <= h; ++i) {
-            FiniteFilter f = LocalPolynomialFilters.asymmetricFilter(lp, i, 0, new double[]{.4}, DiscreteKernels.triweight(h));
+            FiniteFilter f = LocalPolynomialFilters.asymmetricFilter(lp, i, 0, new double[]{.4}, DiscreteKernel.triweight(h));
             assertEquals(sum(DoubleSequence.ofInternal(f.weightsToArray())), 1, 1e-9);
 //            System.out.println(DoubleSequence.ofInternal(f.weightsToArray()));
         }

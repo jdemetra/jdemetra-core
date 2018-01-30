@@ -37,7 +37,7 @@ public class RegArimaEstimatorTest {
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()
                 .build();
-        RegArimaModel<SarimaModel> regs = RegArimaModel.builder()
+        RegArimaModel<SarimaModel> regs = RegArimaModel.builder(SarimaModel.class)
                         .y(DoubleSequence.of(Data.RETAIL_FUELDEALERS))
                         .arima(arima)
 //                .meanCorrection(true)
@@ -63,7 +63,7 @@ public class RegArimaEstimatorTest {
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()
                 .build();
-        RegArimaModel<SarimaModel> regs = RegArimaModel.builder()
+        RegArimaModel<SarimaModel> regs = RegArimaModel.builder(SarimaModel.class)
                 .y(DoubleSequence.of(Data.RETAIL_FUELDEALERS))
                 .arima(arima)
 //                .meanCorrection(true)

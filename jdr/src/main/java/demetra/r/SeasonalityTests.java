@@ -22,7 +22,7 @@ import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
 import demetra.maths.matrices.Matrix;
 import demetra.stats.TestResult;
-import demetra.stats.tests.LjungBoxTest;
+import demetra.stats.tests.LjungBox;
 import demetra.stats.tests.StatisticalTest;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
@@ -64,7 +64,7 @@ public class SeasonalityTests {
         if (ny != 0) {
             s = drop(s, Math.max(0, s.length() - freq * ny), 0);
         }
-        StatisticalTest test = new LjungBoxTest(s.getValues())
+        StatisticalTest test = new LjungBox(s.getValues())
                 .lag(freq)
                 .autoCorrelationsCount(2)
                 .usePositiveAutoCorrelations()
