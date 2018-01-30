@@ -16,6 +16,7 @@
  */
 package demetra.timeseries;
 
+import demetra.maths.Math2;
 import java.time.Duration;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
@@ -26,9 +27,11 @@ import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 
 /**
@@ -40,10 +43,10 @@ import lombok.AccessLevel;
 public class TsUnit implements TemporalAmount {
 
     @Nonnegative
-    long amount;
+    private long amount;
 
     @lombok.NonNull
-    ChronoUnit chronoUnit;
+    private ChronoUnit chronoUnit;
 
     public boolean contains(TsUnit other) {
         return other.ratioOf(this) > 0;
@@ -123,7 +126,11 @@ public class TsUnit implements TemporalAmount {
     public static final TsUnit MINUTE = new TsUnit(60, ChronoUnit.SECONDS);
     public static final TsUnit SECOND = new TsUnit(1, ChronoUnit.SECONDS);
 
-    public static TsUnit of(long amount, ChronoUnit unit) {
+    @Nonnull
+    public static TsUnit of(@Nonnegative long amount, @Nonnull ChronoUnit unit) throws UnsupportedTemporalTypeException {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Amount must be non-negative");
+        }
         switch (unit) {
             case FOREVER:
                 return UNDEFINED;
@@ -175,6 +182,44 @@ public class TsUnit implements TemporalAmount {
         } else {
             throw new IllegalArgumentException();
         }
+    }
+
+    public static TsUnit parse(CharSequence text) throws DateTimeParseException {
+        if (text.length() == 0) {
+            return UNDEFINED;
+        }
+        if (text.length() == 1) {
+            throw new DateTimeParseException("Text cannot be parsed to a freq", text, 0);
+        }
+        if (text.charAt(0) != 'P') {
+            throw new DateTimeParseException("Text cannot be parsed to a freq", text, 0);
+        }
+        return text.charAt(1) == 'T' ? parseTimePattern(text) : parseDatePattern(text);
+    }
+
+    /**
+     * Computes the greatest common divisor of two units.
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    @Nonnull
+    public static TsUnit gcd(@Nonnull TsUnit a, @Nonnull TsUnit b) {
+        if (a.equals(b)) {
+            return a;
+        }
+
+        long amount = a.getAmount();
+        ChronoUnit chronoUnit = a.getChronoUnit();
+
+        if (b.getChronoUnit().compareTo(chronoUnit) < 0) {
+            amount = getLowestAmount(amount, chronoUnit, b.getChronoUnit());
+            chronoUnit = b.getChronoUnit();
+        }
+        amount = Math2.gcd(amount, b.getAmount());
+
+        return TsUnit.of(amount, chronoUnit);
     }
 
     private static TsUnit ofMillennia(long amount) {
@@ -242,19 +287,6 @@ public class TsUnit implements TemporalAmount {
         return amount == 1 ? SECOND : new TsUnit(amount, ChronoUnit.SECONDS);
     }
 
-    public static TsUnit parse(CharSequence text) throws DateTimeParseException {
-        if (text.length() == 0) {
-            return UNDEFINED;
-        }
-        if (text.length() == 1) {
-            throw new DateTimeParseException("Text cannot be parsed to a freq", text, 0);
-        }
-        if (text.charAt(0) != 'P') {
-            throw new DateTimeParseException("Text cannot be parsed to a freq", text, 0);
-        }
-        return text.charAt(1) == 'T' ? parseTimePattern(text) : parseDatePattern(text);
-    }
-
     private static TsUnit parseDatePattern(CharSequence text) {
         Matcher m = DATE_PATTERN.matcher(text);
         if (m.matches()) {
@@ -292,4 +324,27 @@ public class TsUnit implements TemporalAmount {
 
     private static final Pattern DATE_PATTERN = Pattern.compile("P(?:([0-9]+)([Y|M|D]))", Pattern.CASE_INSENSITIVE);
     private static final Pattern TIME_PATTERN = Pattern.compile("PT(?:([0-9]+)([H|M|S]))", Pattern.CASE_INSENSITIVE);
+
+    private static long getLowestAmount(long lowestAmount, ChronoUnit oldUnit, ChronoUnit newUnit) {
+        return oldUnit.compareTo(ChronoUnit.DAYS) > 0 && newUnit.compareTo(ChronoUnit.DAYS) <= 0
+                ? 1
+                : lowestAmount * CHRONO_UNIT_RATIOS_ON_SECONDS[oldUnit.ordinal()][newUnit.ordinal()];
+    }
+
+    private static final long[][] CHRONO_UNIT_RATIOS_ON_SECONDS = computeChronoUnitRatiosOnSeconds();
+
+    private static long[][] computeChronoUnitRatiosOnSeconds() {
+        Predicate<ChronoUnit> hasSeconds = o -> o.getDuration().getSeconds() > 0;
+        ChronoUnit[] units = ChronoUnit.values();
+        long[][] result = new long[units.length][units.length];
+        for (ChronoUnit i : units) {
+            for (ChronoUnit j : units) {
+                result[i.ordinal()][j.ordinal()]
+                        = hasSeconds.test(i) && hasSeconds.test(j)
+                        ? i.getDuration().dividedBy(j.getDuration().getSeconds()).getSeconds()
+                        : 0;
+            }
+        }
+        return result;
+    }
 }
