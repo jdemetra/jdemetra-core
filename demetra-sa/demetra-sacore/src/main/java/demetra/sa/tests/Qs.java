@@ -18,19 +18,19 @@ package demetra.sa.tests;
 
 import demetra.data.DoubleSequence;
 import demetra.design.IBuilder;
-import demetra.stats.tests.LjungBoxTest;
+import demetra.stats.tests.LjungBox;
 import demetra.stats.tests.StatisticalTest;
 
 /**
  *
  * @author Jean Palate
  */
-public class QsTest  implements IBuilder<StatisticalTest>{
+public class Qs  implements IBuilder<StatisticalTest>{
 
-    private final LjungBoxTest lb;
+    private final LjungBox lb;
     
-    public QsTest(DoubleSequence sample, int seasLag){
-        lb=new LjungBoxTest(sample)
+    public Qs(DoubleSequence sample, int seasLag){
+        lb=new LjungBox(sample)
                 .lag(seasLag)
                 .autoCorrelationsCount(3)
                 .usePositiveAutoCorrelations();
@@ -41,7 +41,7 @@ public class QsTest  implements IBuilder<StatisticalTest>{
      * @param nhp
      * @return
      */
-    public QsTest hyperParametersCount(int nhp) {
+    public Qs hyperParametersCount(int nhp) {
         lb.hyperParametersCount(nhp);
         return this;
     }
@@ -52,22 +52,22 @@ public class QsTest  implements IBuilder<StatisticalTest>{
      * @param k
      * @return
      */
-    public QsTest autoCorrelationsCount(int k) {
+    public Qs autoCorrelationsCount(int k) {
         lb.autoCorrelationsCount(k);
         return this;
     }
     
-    public QsTest useNegativeAutocorrelations(){
+    public Qs useNegativeAutocorrelations(){
         lb.useNegativeAutoCorrelations();
         return this;
     }
 
-    public QsTest usePositiveAutocorrelations(){
+    public Qs usePositiveAutocorrelations(){
         lb.usePositiveAutoCorrelations();
         return this;
     }
 
-    public QsTest useAllAutocorrelations(){
+    public Qs useAllAutocorrelations(){
         lb.useAllAutoCorrelations();
         return this;
     }

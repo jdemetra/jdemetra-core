@@ -28,12 +28,18 @@
                 <artifactId>demetra-sacore</artifactId>
                 <version>${jd3-sa.version}</version>            
             </dependency>
+            <dependency>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-sa-datatypes</artifactId>
+                <version>${jd3-sa.version}</version>            
+            </dependency>
         </dependencies>
     </dependencyManagement>
  
     
     <modules>
         <module>demetra-sacore</module>
+        <module>demetra-sa-datatypes</module>
     </modules>
     
     <!--build>

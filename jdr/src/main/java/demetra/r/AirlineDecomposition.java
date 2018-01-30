@@ -131,7 +131,7 @@ public class AirlineDecomposition {
                 .build();
 
         RegArimaModel<SarimaModel> regarima
-                = RegArimaModel.builder()
+                = RegArimaModel.builder(SarimaModel.class)
                 .y(DoubleSequence.of(s.getValues()))
                 .arima(arima)
                 .build();

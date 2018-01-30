@@ -14,40 +14,30 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
 */
-package demetra.stats.tests;
 
-import demetra.data.DoubleSequence;
+
+package demetra.seats;
+
 import demetra.design.Development;
-import demetra.design.IBuilder;
-import demetra.dstats.Chi2;
-import demetra.stats.DescriptiveStatistics;
+import demetra.sarima.SarimaModel;
+
 
 /**
- *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class BowmanShentonTest implements IBuilder<StatisticalTest>
-{
-
-    private final DescriptiveStatistics stats;
+public interface IModelValidator {
+    /**
+     *
+     * @return
+     */
+    SarimaModel getNewModel();
 
     /**
-     * 
+     *
+     * @param model
+     * @param info
+     * @return
      */
-    public BowmanShentonTest(DoubleSequence data)
-    {
-        stats=DescriptiveStatistics.of(data);
-    }
-
-    @Override
-    public StatisticalTest build() {
-	int n = stats.getObservationsCount();
-	double m3 = stats.getSkewness();
-	double m4 = stats.getKurtosis() - 3.0;
-	double val = n / 6.0 * m3 * m3 + n / 24.0 * m4 * m4;
-	Chi2 chi = new Chi2(2);
-        return new StatisticalTest(chi, val, TestType.Upper, true);
-    }
-
+    ModelStatus validate(SarimaModel model);
 }

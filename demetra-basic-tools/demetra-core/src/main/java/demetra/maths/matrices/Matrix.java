@@ -296,6 +296,35 @@ public class Matrix implements MatrixType {
         }
     }
 
+    public final double ssq() {
+        if (isEmpty()) {
+            return 0;
+        }
+        if (isFull()) {
+            double s = 0;
+            for (int i = 0; i < storage.length; ++i) {
+                double c=storage[i];
+                s += c*c;
+            }
+            return s;
+        }
+        if (colInc == 1) {
+            double s = 0;
+            DataBlockIterator rows = rowsIterator();
+            while (rows.hasNext()) {
+                s += rows.next().ssq();
+            }
+            return s;
+        } else {
+            double s = 0;
+            DataBlockIterator cols = columnsIterator();
+            while (cols.hasNext()) {
+                s += cols.next().ssq();
+            }
+            return s;
+        }
+    }
+
     public final double frobeniusNorm() {
         double scale = 0;
         double ssq = 1;

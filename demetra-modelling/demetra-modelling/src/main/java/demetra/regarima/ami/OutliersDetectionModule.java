@@ -18,6 +18,7 @@ package demetra.regarima.ami;
 
 import demetra.arima.IArimaModel;
 import demetra.data.DataBlock;
+import demetra.design.IBuilder;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
@@ -33,6 +34,8 @@ import demetra.timeseries.regression.PeriodicOutlier;
 import demetra.timeseries.regression.TransitoryChange;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -40,30 +43,97 @@ import java.util.function.Consumer;
  * @author Jean Palate
  * @param <T>
  */
-public class OutliersDetectionModule<T extends IArimaModel> {
+public class OutliersDetectionModule<T extends IArimaModel>
+        implements IOutliersDetectionModule<T> {
 
-    public static int MAXROUND = 100;
-    public static int MAXOUTLIERS = 50;
+    public static class Builder<T extends IArimaModel> implements IBuilder<OutliersDetectionModule> {
 
-    public static enum Estimation {
+        private AbstractSingleOutlierDetector sod = new FastOutlierDetector(null);
+        private IRegArimaProcessor<T> processor;
+        private int maxOutliers = DEF_MAXOUTLIERS;
+        private int maxRound = DEF_MAXROUND;
 
-        Approximate,
-        ExactIterative,
-        ExactFixed
+        public Builder<T> detector(AbstractSingleOutlierDetector sod) {
+            this.sod = sod;
+            this.sod.clearOutlierFactories();
+            return this;
+        }
+
+        public Builder<T> processor(IRegArimaProcessor<T> processor) {
+            this.processor = processor;
+            return this;
+        }
+
+        public Builder<T> maxOutliers(int max) {
+            this.maxOutliers = max;
+            return this;
+        }
+
+        public Builder<T> maxRound(int max) {
+            this.maxRound = max;
+            return this;
+        }
+
+        public Builder<T> addFactory(IOutlierFactory factory) {
+            this.sod.addOutlierFactory(factory);
+            return this;
+        }
+
+        /**
+         *
+         * @return
+         */
+        public Builder<T> setDefault() {
+            this.sod.clearOutlierFactories();
+            this.sod.addOutlierFactory(AdditiveOutlier.FACTORY);
+            this.sod.addOutlierFactory(LevelShift.FACTORY_ZEROENDED);
+            return this;
+        }
+
+        /**
+         *
+         * @return
+         */
+        public Builder<T> setAll() {
+            setDefault();
+            this.sod.addOutlierFactory(new TransitoryChange.Factory(.7));
+            return this;
+        }
+
+        /**
+         *
+         * @param period
+         * @return
+         */
+        public Builder<T> setAll(int period) {
+            setAll();
+            this.sod.addOutlierFactory(new PeriodicOutlier.Factory(period, true));
+            return this;
+        }
+
+        @Override
+        public OutliersDetectionModule build() {
+            return new OutliersDetectionModule(sod, processor, maxOutliers, maxRound);
+        }
     }
+
+    public static int DEF_MAXROUND = 100;
+    public static int DEF_MAXOUTLIERS = 50;
 
     private RegArimaModel<T> regarima; // current regarima model
     private final ArrayList<int[]> outliers = new ArrayList<>(); // Outliers : (position, type)
     private final AbstractSingleOutlierDetector sod;
+    private final IRegArimaProcessor<T> processor;
+    private final int maxOutliers;
+    private final int maxRound;
+
     private double[] tstats;
     private int nhp;
     private int round;
     // festim = true if the model has to be re-estimated
     private boolean exit;
     private int[] lastremoved;
-    private IRegArimaProcessor<T> processor;
 
-    private Estimation estimation = Estimation.ExactIterative;
     private int selectivity;
     private double cv, curcv;
     private double pc = 0.12;
@@ -71,32 +141,15 @@ public class OutliersDetectionModule<T extends IArimaModel> {
     private Consumer<int[]> addHook;
     private Consumer<int[]> removeHook;
 
-    /**
-     * @return the estimation
-     */
-    public Estimation getEstimation() {
-        return estimation;
+    public static <T extends IArimaModel> Builder<T> build(Class<T> tclass) {
+        return new Builder<>();
     }
 
-    /**
-     * @param estimation the estimation to set
-     */
-    public void setEstimation(Estimation estimation) {
-        this.estimation = estimation;
-    }
-
-    /**
-     * @return the monitor
-     */
-    public IRegArimaProcessor<T> getMonitor() {
-        return processor;
-    }
-
-    /**
-     * @param monitor the monitor to set
-     */
-    public void setProcessor(IRegArimaProcessor<T> monitor) {
-        this.processor = monitor;
+    private OutliersDetectionModule(final AbstractSingleOutlierDetector sod, final IRegArimaProcessor<T> processor, final int maxOutliers, final int maxRound) {
+        this.sod = sod;
+        this.processor = processor;
+        this.maxOutliers = maxOutliers;
+        this.maxRound = maxRound;
     }
 
     /**
@@ -109,6 +162,7 @@ public class OutliersDetectionModule<T extends IArimaModel> {
     /**
      * @return the outliers_
      */
+    @Override
     public int[][] getOutliers() {
         return outliers.toArray(new int[outliers.size()][]);
     }
@@ -141,10 +195,7 @@ public class OutliersDetectionModule<T extends IArimaModel> {
         this.removeHook = removeHook;
     }
 
-    public OutliersDetectionModule(AbstractSingleOutlierDetector sod) {
-        this.sod = sod == null ? new FastOutlierDetector(null) : sod;
-    }
-
+    @Override
     public boolean process(RegArimaModel<T> initialModel) {
         clear();
         int n = initialModel.getY().length();
@@ -164,6 +215,11 @@ public class OutliersDetectionModule<T extends IArimaModel> {
         } catch (RuntimeException err) {
             return false;
         }
+    }
+
+    @Override
+    public void setBounds(int start, int end) {
+        sod.setBounds(start, end);
     }
 
     private void calc() {
@@ -191,10 +247,10 @@ public class OutliersDetectionModule<T extends IArimaModel> {
                 ConcentratedLikelihood ce = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima);
                 updateLikelihood(ce);
             }
-            if (exit || outliers.size() == MAXOUTLIERS) {
+            if (exit || outliers.size() == maxOutliers) {
                 break;
             }
-        } while (round < MAXROUND);
+        } while (round < maxRound);
 
         while (!verifyModel()) {
 //                updateLikelihood(regarima_.computeLikelihood());
@@ -262,7 +318,7 @@ public class OutliersDetectionModule<T extends IArimaModel> {
     }
 
     private void addOutlier(int pos, int type) {
-        int[] o=new int[]{pos, type};
+        int[] o = new int[]{pos, type};
         outliers.add(o);
         double[] xo = new double[regarima.getObservationsCount()];
         DataBlock XO = DataBlock.ofInternal(xo);
@@ -282,58 +338,8 @@ public class OutliersDetectionModule<T extends IArimaModel> {
     private void removeOutlier(int idx) {
         //
         int opos = regarima.getVariablesCount() - outliers.size() + idx;
-        regarima=regarima.toBuilder().removeX(opos).build();
+        regarima = regarima.toBuilder().removeX(opos).build();
         outliers.remove(idx);
-    }
-
-    /**
-     *
-     * @param o
-     */
-    public void addOutlierFactory(IOutlierFactory o) {
-        sod.addOutlierFactory(o);
-    }
-
-    /**
-     *
-     */
-    public void clearOutlierFactories() {
-        sod.clearOutlierFactories();
-    }
-
-    /**
-     *
-     */
-    public void setDefault() {
-        clear();
-        clearOutlierFactories();
-        addOutlierFactory(AdditiveOutlier.FACTORY);
-        addOutlierFactory(LevelShift.FACTORY_ZEROENDED);
-        curcv = 0;
-    }
-    /**
-     *
-     */
-    public void setAll() {
-        setDefault();
-        addOutlierFactory(new TransitoryChange.Factory(.7));
-    }
-
-    /**
-     *
-     * @param period
-     */
-    public void setAll(int period) {
-        setAll();
-        addOutlierFactory(new PeriodicOutlier.Factory(period, true));
-    }
-    
-    /**
-     *
-     * @return
-     */
-    public int getOutlierFactoriesCount() {
-        return sod.getOutlierFactoriesCount();
     }
 
     /**
@@ -341,8 +347,8 @@ public class OutliersDetectionModule<T extends IArimaModel> {
      * @param fac
      * @return
      */
-    public IOutlierFactory getFactory(int fac) {
-        return sod.factory(fac);
+    public List<IOutlierFactory> factories() {
+        return Collections.unmodifiableList(sod.getFactories());
     }
 
     public void setCriticalValue(double value) {
@@ -372,6 +378,7 @@ public class OutliersDetectionModule<T extends IArimaModel> {
         return Math.max(cv, MINCV);
     }
 
+    @Override
     public boolean reduceSelectivity() {
         if (curcv == 0) {
             return false;
@@ -385,6 +392,7 @@ public class OutliersDetectionModule<T extends IArimaModel> {
         return true;
     }
 
+    @Override
     public void setSelectivity(int level) {
         if (selectivity != level) {
             selectivity = level;
@@ -392,8 +400,18 @@ public class OutliersDetectionModule<T extends IArimaModel> {
         }
     }
 
+    @Override
     public int getSelectivity() {
         return selectivity;
+    }
+
+    @Override
+    public void exclude(int pos, int type) {
+        sod.exclude(pos, type);
+    }
+
+    public IOutlierFactory getFactory(int i) {
+        return sod.getOutlierFactory(i);
     }
 
 }

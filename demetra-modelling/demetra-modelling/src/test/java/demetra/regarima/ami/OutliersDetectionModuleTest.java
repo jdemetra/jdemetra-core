@@ -40,10 +40,11 @@ public class OutliersDetectionModuleTest {
     @Test
     public void testMonthly() {
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        OutliersDetectionModule<SarimaModel> od = new OutliersDetectionModule(null);
         HannanRissanenInitializer hr = HannanRissanenInitializer.builder().build();
-        od.setProcessor(GlsSarimaProcessor.builder().initializer(hr).build());
-        od.setAll();
+        OutliersDetectionModule<SarimaModel> od = OutliersDetectionModule.build(SarimaModel.class)
+                .processor(GlsSarimaProcessor.builder().initializer(hr).build())
+                .setAll()
+                .build();
         od.setCriticalValue(3.0);
         SarimaSpecification spec = new SarimaSpecification();
         spec.airline(12);
@@ -51,7 +52,7 @@ public class OutliersDetectionModuleTest {
 
         Consumer<int[]> hook = a -> System.out.println("Add outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
         Consumer<int[]> rhook = a -> System.out.println("Remove outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
-        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder().y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
         od.setAddHook(hook);
         od.setRemoveHook(rhook);
 //        long t0 = System.currentTimeMillis();

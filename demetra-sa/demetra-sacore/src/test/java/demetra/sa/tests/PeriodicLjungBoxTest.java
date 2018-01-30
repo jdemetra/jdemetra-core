@@ -27,15 +27,15 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate
  */
-public class PeriodicLjungBoxTestTest {
+public class PeriodicLjungBoxTest {
 
-    public PeriodicLjungBoxTestTest() {
+    public PeriodicLjungBoxTest() {
     }
 
     @Test
     public void testWeekly() {
         System.out.println("Real");
-        PeriodicLjungBoxTest lb = new PeriodicLjungBoxTest(ldel(WeeklyData.US_PETROLEUM), 5);
+        PeriodicLjungBox lb = new PeriodicLjungBox(ldel(WeeklyData.US_PETROLEUM), 5);
         StatisticalTest test = lb.lags(365.25 / 7, 5).usePositiveAutocorrelations().build();
         System.out.println(test.getValue());
         for (int i = 40; i < 60; ++i) {
@@ -48,7 +48,7 @@ public class PeriodicLjungBoxTestTest {
     public void testRandom() {
         System.out.println("Random");
         Random rnd = new Random();
-        PeriodicLjungBoxTest lb = new PeriodicLjungBoxTest(DoubleSequence.of(1000, i -> rnd.nextGaussian()), 0);
+        PeriodicLjungBox lb = new PeriodicLjungBox(DoubleSequence.of(1000, i -> rnd.nextGaussian()), 0);
         for (int i = 3; i < 20; ++i) {
             StatisticalTest test = lb.lags(365.25 / i, 10).useAllAutocorrelations().build();
             System.out.println(test.getValue());

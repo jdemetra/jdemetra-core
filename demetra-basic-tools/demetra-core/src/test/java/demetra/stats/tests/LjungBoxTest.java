@@ -25,25 +25,31 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate
  */
-public class SkewnessTestTest {
+public class LjungBoxTest {
     
-    public SkewnessTestTest() {
+    public LjungBoxTest() {
     }
 
     @Test
     public void testLegacy() {
         int N=100;
-        double[] data=new double[N];
-        DataBlock X=DataBlock.ofInternal(data);
+        DataBlock X=DataBlock.make(N);
         Random rnd=new Random();
         X.set(rnd::nextDouble);
         
-        StatisticalTest sk = new SkewnessTest(X).build();
+        LjungBox lb=new LjungBox(X);
         
-        ec.tstoolkit.stats.SkewnessTest sk2=new ec.tstoolkit.stats.SkewnessTest();
-        sk2.test(new ec.tstoolkit.data.DescriptiveStatistics(data));
+        StatisticalTest test = lb
+                .lag(3)
+                .autoCorrelationsCount(10)
+                .build();
         
-        assertEquals(sk.getPValue(), sk2.getPValue(), 1e-9);
+        ec.tstoolkit.stats.LjungBoxTest lb2=new ec.tstoolkit.stats.LjungBoxTest();
+        lb2.setK(10);
+        lb2.setLag(3);
+        lb2.test(new ec.tstoolkit.data.ReadDataBlock(X.getStorage()));
+        
+        assertEquals(test.getPValue(), lb2.getPValue(), 1e-9);
     }
     
 }

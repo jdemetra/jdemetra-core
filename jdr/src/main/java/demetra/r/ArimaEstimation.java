@@ -82,7 +82,7 @@ public class ArimaEstimation {
 
         IntList missings = new IntList();
         demetra.data.AverageInterpolator.cleanMissings(y, missings);
-        RegArimaModel.Builder<SarimaModel> rbuilder = RegArimaModel.builder()
+        RegArimaModel.Builder<SarimaModel> rbuilder = RegArimaModel.builder(SarimaModel.class)
                 .y(DoubleSequence.of(y))
                 .arima(arima)
                 .meanCorrection(mean)

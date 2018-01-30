@@ -134,10 +134,12 @@ public final class DataBlock implements DoubleSequence {
 
     public static DataBlock of(int n, @Nonnull IntToDoubleFunction fn) {
         double[] x = new double[n];
-        for (int i=0; i<n; ++i)
-            x[i]=fn.applyAsDouble(i);
+        for (int i = 0; i < n; ++i) {
+            x[i] = fn.applyAsDouble(i);
+        }
         return new DataBlock(x, 0, x.length, 1);
     }
+
     /**
      * Envelope around a copy of an array of doubles.
      *
@@ -1414,6 +1416,41 @@ public final class DataBlock implements DoubleSequence {
             cur = fn.applyAsDouble(cur, data[i]);
         }
         return cur;
+    }
+
+    /**
+     * Computes iteratively y(t) = fn(y(t), y(t+del))
+     * If del is negative, the iteration goes from the end to the beginning;
+     * the first del items are unchanged.
+     * If del is positive, the iteration goes from the beginning to the end;
+     * the last del items are unchanged.
+     *
+     * @param del
+     * @param fn
+     */
+    public void autoApply(final int del, @Nonnull DoubleBinaryOperator fn) {
+        if (del > 0) {
+            if (length() <= del) {
+                return;
+            }
+            int cur = beg, dcur = cur + inc * del;
+            while (dcur != end) {
+                data[cur] = fn.applyAsDouble(data[cur], data[dcur]);
+                cur += inc;
+                dcur += inc;
+            }
+        } else if (del < 0) {
+            if (length() <= -del) {
+                return;
+            }
+            int cur = end - inc, dcur = cur + inc * del;
+            do {
+                data[cur] = fn.applyAsDouble(data[cur], data[dcur]);
+                cur -= inc;
+                dcur -= inc;
+            } while (cur != beg);
+
+        }
     }
 
     public boolean allMatch(DataBlock d, @Nonnull DoubleBiPredicate p) {
