@@ -53,12 +53,12 @@ public class Strings {
 
     @Nonnull
     public Iterator<String> splitToIterator(@Nonnull String separator, @Nonnull CharSequence input) {
-        return asIterator((seq, index) -> match(separator, seq, index), separator.length(), input);
+        return asIterator(CharMatcher.of(separator), separator.length(), input);
     }
 
     @Nonnull
     public Iterator<String> splitToIterator(char separator, @Nonnull CharSequence input) {
-        return asIterator((seq, index) -> match(separator, seq, index), 1, input);
+        return asIterator(CharMatcher.of(separator), 1, input);
     }
 
     private Iterator<String> asIterator(CharMatcher matcher, int inc, CharSequence input) {
@@ -76,7 +76,7 @@ public class Strings {
                 end = end + inc;
                 start = end;
                 for (; end < input.length(); end++) {
-                    if (matcher.match(input, end)) {
+                    if (matcher.matches(input, end)) {
                         return true;
                     }
                 }
@@ -85,21 +85,27 @@ public class Strings {
         };
     }
 
-    private boolean match(char separator, CharSequence seq, int index) {
-        return seq.charAt(index) == separator;
-    }
+    @FunctionalInterface
+    public interface CharMatcher {
 
-    private boolean match(String separator, CharSequence seq, int index) {
-        for (int i = 0; i < separator.length(); i++) {
-            if (seq.charAt(index + i) != separator.charAt(i)) {
-                return false;
-            }
+        boolean matches(CharSequence seq, int index);
+
+        static CharMatcher of(char value) {
+            return (seq, index) -> seq.charAt(index) == value;
         }
-        return true;
-    }
 
-    interface CharMatcher {
-
-        boolean match(CharSequence seq, int index);
+        static CharMatcher of(CharSequence value) {
+            return (seq, index) -> {
+                if (value.length() > seq.length() - index) {
+                    return false;
+                }
+                for (int i = 0; i < value.length(); i++) {
+                    if (seq.charAt(index + i) != value.charAt(i)) {
+                        return false;
+                    }
+                }
+                return true;
+            };
+        }
     }
 }
