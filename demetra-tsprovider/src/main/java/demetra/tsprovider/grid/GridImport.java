@@ -37,4 +37,8 @@ public class GridImport {
     @lombok.NonNull
     @lombok.Builder.Default
     private ObsGathering gathering = ObsGathering.DEFAULT;
+
+    @lombok.NonNull
+    @lombok.Builder.Default
+    private String namePattern = "S${index}";
 }

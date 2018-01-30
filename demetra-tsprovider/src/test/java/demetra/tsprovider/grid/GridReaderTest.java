@@ -35,14 +35,14 @@ public class GridReaderTest {
 
     @Test
     public void testReadHorizontal() throws IOException {
-        GridReader x = GridReader.of(GridImport.DEFAULT, o -> true, i -> "X" + i);
+        GridReader x = GridReader.of(GridImport.DEFAULT.toBuilder().namePattern("Series ${index}").build(), o -> true);
 
         for (GridInput o : new GridInput[]{HGRID_WITH_HEADER, HGRID_WITH_DATE_HEADER}) {
             assertThat(x.read(o)).isEqualTo(of(HORIZONTAL, "S1", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)));
         }
 
         assertThat(x.read(HGRID_WITHOUT_HEADER))
-                .isEqualTo(of(HORIZONTAL, "X1", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)));
+                .isEqualTo(of(HORIZONTAL, "Series 0", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)));
 
         assertThat(x.read(HGRID_WITH_HEADERS))
                 .isEqualTo(TsCollection.builder().meta("gridLayout", HORIZONTAL.name())
@@ -58,14 +58,14 @@ public class GridReaderTest {
 
     @Test
     public void testReadVertical() throws IOException {
-        GridReader x = GridReader.of(GridImport.DEFAULT, o -> true, i -> "X" + i);
+        GridReader x = GridReader.of(GridImport.DEFAULT.toBuilder().namePattern("Series ${index}").build(), o -> true);
 
         for (GridInput o : new GridInput[]{VGRID_WITH_HEADER, VGRID_WITH_DATE_HEADER}) {
             assertThat(x.read(o)).isEqualTo(of(VERTICAL, "S1", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)));
         }
 
         assertThat(x.read(VGRID_WITHOUT_HEADER))
-                .isEqualTo(of(VERTICAL, "X1", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)));
+                .isEqualTo(of(VERTICAL, "Series 0", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)));
 
         assertThat(x.read(VGRID_WITH_HEADERS))
                 .isEqualTo(TsCollection.builder().meta("gridLayout", VERTICAL.name())
