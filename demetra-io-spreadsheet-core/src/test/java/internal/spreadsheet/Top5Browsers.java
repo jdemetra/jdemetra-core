@@ -16,7 +16,7 @@
  */
 package internal.spreadsheet;
 
-import com.google.common.io.Resources;
+import demetra.demo.ProviderDemo;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import static demetra.timeseries.TsUnit.MONTH;
@@ -27,9 +27,10 @@ import static demetra.tsprovider.grid.GridLayout.VERTICAL;
 import ec.util.spreadsheet.Sheet;
 import ec.util.spreadsheet.helpers.ArraySheet;
 import static internal.spreadsheet.SpreadSheetCollectionAssert.assertThat;
-import internal.spreadsheet.grid.BookData;
+import internal.spreadsheet.grid.SheetGrid;
+import java.io.File;
+import java.io.IOException;
 import static java.lang.Double.NaN;
-import java.net.URL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -39,21 +40,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 @lombok.experimental.UtilityClass
 class Top5Browsers {
 
-    public static void testContent(BookData top5Browsers) {
+    public static void testContent(SheetGrid top5Browsers) throws IOException {
         assertThat(top5Browsers).isNotNull();
         assertThat(top5Browsers.getSheets()).hasSize(3);
 
-        assertThat(top5Browsers.getSheetByName("Top 5 Browsers - Monthly"))
+        assertThat(top5Browsers.getSheetByName("Top 5 Browsers - Monthly").get())
                 .hasSheetName("Top 5 Browsers - Monthly")
                 .hasLayout(VERTICAL)
                 .containsExactly(M_DATA);
 
-        assertThat(top5Browsers.getSheetByName("Top 5 Browsers - Quarterly"))
+        assertThat(top5Browsers.getSheetByName("Top 5 Browsers - Quarterly").get())
                 .hasSheetName("Top 5 Browsers - Quarterly")
                 .hasLayout(HORIZONTAL)
                 .containsExactly(Q_DATA);
 
-        assertThat(top5Browsers.getSheetByName("DataTest"))
+        assertThat(top5Browsers.getSheetByName("DataTest").get())
                 .hasSheetName("DataTest")
                 .hasLayout(VERTICAL)
                 .containsExactly(DT_DATA);
@@ -68,20 +69,20 @@ class Top5Browsers {
         return ArraySheet.copyOf("", table);
     }
 
-    static URL top5Excel() {
-        return Resources.getResource("Top5Browsers.xlsx");
+    static File top5Excel() {
+        return ProviderDemo.resourceAsFile(Top5Browsers.class, "/Top5Browsers.xlsx");
     }
 
-    static URL top5ExcelClassic() {
-        return Resources.getResource("Top5Browsers.xls");
+    static File top5ExcelClassic() {
+        return ProviderDemo.resourceAsFile(Top5Browsers.class, "/Top5Browsers.xls");
     }
 
-    static URL top5OpenDocument() {
-        return Resources.getResource("Top5Browsers.ods");
+    static File top5OpenDocument() {
+        return ProviderDemo.resourceAsFile(Top5Browsers.class, "/Top5Browsers.ods");
     }
 
-    static URL top5Xmlss() {
-        return Resources.getResource("Top5Browsers.xml");
+    static File top5Xmlss() {
+        return ProviderDemo.resourceAsFile(Top5Browsers.class, "/Top5Browsers.xml");
     }
 
     private static final TsData[] M_DATA = {
