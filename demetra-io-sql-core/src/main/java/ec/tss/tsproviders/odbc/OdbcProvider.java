@@ -16,7 +16,7 @@
  */
 package ec.tss.tsproviders.odbc;
 
-import adodb.wsh.AdoDriver;
+import internal.sql.adodb.AdoDriver;
 import com.google.common.base.StandardSystemProperty;
 import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;

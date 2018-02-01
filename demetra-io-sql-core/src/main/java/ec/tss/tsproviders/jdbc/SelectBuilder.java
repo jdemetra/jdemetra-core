@@ -19,7 +19,7 @@ package ec.tss.tsproviders.jdbc;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import ec.tstoolkit.design.IBuilder;
-import ec.util.jdbc.SqlIdentifierQuoter;
+import internal.sql.util.SqlIdentifierQuoter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

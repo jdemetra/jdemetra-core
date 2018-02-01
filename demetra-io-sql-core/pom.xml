@@ -34,7 +34,8 @@
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
-                <version>${jna.version}</version>
+            <version>${jna.version}</version>
+            <optional>true</optional>
         </dependency>
         
         <!-- compile only -->
@@ -72,7 +73,7 @@
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-bridge</artifactId>
             <version>${jd3-basic.version}</version>
