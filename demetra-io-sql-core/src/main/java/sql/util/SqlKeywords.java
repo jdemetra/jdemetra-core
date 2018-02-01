@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.sql.util;
+package sql.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -14,11 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package ec.tss.tsproviders.jdbc;
+package demetra.sql;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-import ec.tstoolkit.design.IBuilder;
+import demetra.design.IBuilder;
 import sql.util.SqlIdentifierQuoter;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,63 +30,44 @@ import javax.annotation.Nonnull;
  *
  * @author Philippe Charles
  */
-class SelectBuilder implements IBuilder<String> {
-
-    @Nonnull
-    public static SelectBuilder from(@Nonnull String table) {
-        return new SelectBuilder(table);
-    }
+@lombok.RequiredArgsConstructor(staticName = "from")
+final class SelectBuilder implements IBuilder<String> {
 
     private static final Joiner COMMA_JOINER = Joiner.on(',');
+
+    @lombok.NonNull
     private final String table;
-    private final List<String> select;
-    private final List<String> filter;
-    private final List<String> order;
-    private boolean distinct;
-    private SqlIdentifierQuoter identifierQuoter;
 
-    private SelectBuilder(@Nonnull String table) {
-        this.table = table;
-        this.select = new ArrayList<>();
-        this.filter = new ArrayList<>();
-        this.order = new ArrayList<>();
-        this.distinct = false;
-        this.identifierQuoter = null;
-    }
+    private final List<String> select = new ArrayList<>();
+    private final List<String> filter = new ArrayList<>();
+    private final List<String> order = new ArrayList<>();
+
+    private boolean distinct = false;
+    private SqlIdentifierQuoter identifierQuoter = null;
 
     @Nonnull
-    private SelectBuilder addIfNotNullOrEmpty(@Nonnull List<String> list, @Nonnull String... values) {
-        for (String o : values) {
-            if (!Strings.isNullOrEmpty(o)) {
-                list.add(o);
-            }
-        }
-        return this;
-    }
-
-    @Nonnull
-    SelectBuilder distinct(boolean distinct) {
+    public SelectBuilder distinct(boolean distinct) {
         this.distinct = distinct;
         return this;
     }
 
     @Nonnull
-    SelectBuilder select(@Nonnull String... select) {
+    public SelectBuilder select(@Nonnull String... select) {
         return addIfNotNullOrEmpty(this.select, select);
     }
 
     @Nonnull
-    SelectBuilder filter(@Nonnull String... filter) {
+    public SelectBuilder filter(@Nonnull String... filter) {
         return addIfNotNullOrEmpty(this.filter, filter);
     }
 
     @Nonnull
-    SelectBuilder orderBy(@Nonnull String... order) {
+    public SelectBuilder orderBy(@Nonnull String... order) {
         return addIfNotNullOrEmpty(this.order, order);
     }
 
     @Nonnull
-    SelectBuilder withQuoter(@Nonnull SqlIdentifierQuoter identifierQuoter) {
+    public SelectBuilder withQuoter(@Nonnull SqlIdentifierQuoter identifierQuoter) {
         this.identifierQuoter = identifierQuoter;
         return this;
     }
@@ -120,5 +101,15 @@ class SelectBuilder implements IBuilder<String> {
             COMMA_JOINER.appendTo(result, order.stream().map(toQuotedIdentifier).iterator());
         }
         return result.toString();
+    }
+
+    @Nonnull
+    private SelectBuilder addIfNotNullOrEmpty(@Nonnull List<String> list, @Nonnull String... values) {
+        for (String o : values) {
+            if (!Strings.isNullOrEmpty(o)) {
+                list.add(o);
+            }
+        }
+        return this;
     }
 }

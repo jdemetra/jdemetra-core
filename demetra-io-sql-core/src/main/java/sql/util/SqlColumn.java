@@ -13,11 +13,9 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
+ */
+package sql.util;
 
-package internal.sql.util;
-
-import ec.tstoolkit.design.Immutable;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -28,12 +26,12 @@ import javax.annotation.Nonnull;
  *
  * @author Philippe Charles
  */
-@Immutable
-public final class JdbcColumn {
+@lombok.Value
+public class SqlColumn {
 
     @Nonnull
-    public static List<JdbcColumn> ofAll(@Nonnull ResultSetMetaData md) throws SQLException {
-        JdbcColumn[] result = new JdbcColumn[md.getColumnCount()];
+    public static List<SqlColumn> ofAll(@Nonnull ResultSetMetaData md) throws SQLException {
+        SqlColumn[] result = new SqlColumn[md.getColumnCount()];
         for (int i = 0; i < result.length; i++) {
             result[i] = of(md, i + 1);
         }
@@ -41,8 +39,8 @@ public final class JdbcColumn {
     }
 
     @Nonnull
-    public static JdbcColumn of(@Nonnull ResultSetMetaData md, int columnIndex) throws SQLException {
-        return new JdbcColumn(
+    public static SqlColumn of(@Nonnull ResultSetMetaData md, int columnIndex) throws SQLException {
+        return new SqlColumn(
                 md.getColumnClassName(columnIndex),
                 md.getColumnDisplaySize(columnIndex),
                 md.getColumnLabel(columnIndex),
@@ -50,90 +48,50 @@ public final class JdbcColumn {
                 md.getColumnType(columnIndex),
                 md.getColumnTypeName(columnIndex));
     }
-    //
-    final String className;
-    final int displaySize;
-    final String label;
-    final String name;
-    final int type;
-    final String typeName;
-
-    public JdbcColumn(String className, int displaySize, String label, String name, int type, String typeName) {
-        this.className = className;
-        this.displaySize = displaySize;
-        this.label = label;
-        this.name = name;
-        this.type = type;
-        this.typeName = typeName;
-    }
 
     /**
-     * Gets the column's table's catalog name.
+     * The column's table's catalog name.
      *
      * @see ResultSetMetaData#getColumnClassName(int)
-     * @return
      */
-    public String getClassName() {
-        return className;
-    }
+    private String className;
 
     /**
-     * Gets the column's normal maximum width in characters.
+     * The column's normal maximum width in characters.
      *
      * @see ResultSetMetaData#getColumnDisplaySize(int)
-     * @return
      */
-    public int getDisplaySize() {
-        return displaySize;
-    }
+    private int displaySize;
 
     /**
-     * Gets the column's suggested title for use in printouts and displays. The
-     * suggested title is usually specified by the SQL
-     * <code>AS</code> clause. If a SQL
-     * <code>AS</code> is not specified, the value returned from
+     * The column's suggested title for use in printouts and displays. The
+     * suggested title is usually specified by the SQL <code>AS</code> clause.
+     * If a SQL <code>AS</code> is not specified, the value returned from
      * <code>getColumnLabel</code> will be the same as the value returned by the
      * <code>getColumnName</code> method.
      *
      * @see ResultSetMetaData#getColumnLabel(int)
-     * @return
      */
-    public String getLabel() {
-        return label;
-    }
+    private String label;
 
     /**
-     * Get the column's name.
+     * The column's name.
      *
      * @see ResultSetMetaData#getColumnName(int)
-     * @return
      */
-    public String getName() {
-        return name;
-    }
+    private String name;
 
     /**
-     * Retrieves the column's SQL type.
+     * The column's SQL type.
      *
      * @see ResultSetMetaData#getColumnType(int)
-     * @return
      */
-    public int getType() {
-        return type;
-    }
+    private int type;
 
     /**
-     * Retrieves the column's database-specific type name.
+     * The column's database-specific type name.
      *
      * @see ResultSetMetaData#getColumnTypeName(int)
-     * @return
      */
-    public String getTypeName() {
-        return typeName;
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
+    private String typeName;
 }

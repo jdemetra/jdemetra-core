@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.sql.util;
+package sql.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

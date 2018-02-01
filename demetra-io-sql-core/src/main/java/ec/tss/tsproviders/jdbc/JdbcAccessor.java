@@ -21,8 +21,8 @@ import ec.tss.tsproviders.db.DbSeries;
 import ec.tss.tsproviders.db.DbSetId;
 import ec.tss.tsproviders.db.DbUtil;
 import ec.tstoolkit.utilities.GuavaCaches;
-import internal.sql.util.JdbcTable;
-import internal.sql.util.SqlIdentifierQuoter;
+import sql.util.SqlTable;
+import sql.util.SqlIdentifierQuoter;
 import java.sql.*;
 import java.time.Duration;
 import java.util.*;
@@ -56,7 +56,7 @@ public class JdbcAccessor<BEAN extends JdbcBean> extends DbAccessor.Commander<BE
         try (Connection conn = supplier.getConnection(dbBean)) {
             DatabaseMetaData metaData = conn.getMetaData();
             String tableName = SqlIdentifierQuoter.create(metaData).quote(dbBean.getTableName(), false);
-            if (JdbcTable.allOf(metaData, null, null, tableName, null).isEmpty()) {
+            if (SqlTable.allOf(metaData, null, null, tableName, null).isEmpty()) {
                 return new Exception("Table named '" + dbBean.getTableName() + "' does not exist");
             }
             return null;

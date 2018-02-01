@@ -13,9 +13,8 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
-package internal.sql.util;
+ */
+package sql.util;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -26,25 +25,32 @@ import javax.annotation.Nonnull;
  *
  * @author Philippe Charles
  */
-public final class TypeNames {
-
-    private TypeNames() {
-        // static class
-    }
+@lombok.experimental.UtilityClass
+public class SqlTypes {
 
     // Get all field in java.sql.Types
     @Nonnull
-    public static Map<Integer, String> getTypeNames() {
+    public Map<Integer, String> getTypeNames() {
         Map<Integer, String> result = new HashMap<>();
         for (Field field : java.sql.Types.class.getFields()) {
             try {
                 String name = field.getName();
                 Integer value = (Integer) field.get(null);
                 result.put(value, name);
-            }catch (IllegalAccessException ex) {
+            } catch (IllegalAccessException ex) {
                 // do nothing
             }
         }
         return result;
+    }
+
+    @Nonnull
+    public java.util.Date getJavaDate(@Nonnull java.sql.Date date) {
+        return new java.util.Date(date.getTime());
+    }
+
+    @Nonnull
+    public java.util.Date getJavaDate(@Nonnull java.sql.Timestamp timestamp) {
+        return new java.util.Date(timestamp.getTime() + (timestamp.getNanos() / 1000000));
     }
 }
