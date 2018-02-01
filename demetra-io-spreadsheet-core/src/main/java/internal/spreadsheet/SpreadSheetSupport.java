@@ -30,13 +30,13 @@ import demetra.tsprovider.cursor.TsCursor;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.util.MultiLineNameUtil;
-import internal.spreadsheet.grid.BookData;
 import ioutil.IO;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
@@ -54,7 +54,7 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
     public interface Resource {
 
         @Nonnull
-        BookData getAccessor(@Nonnull DataSource dataSource) throws IOException;
+        SpreadSheetAccessor getAccessor(@Nonnull DataSource dataSource) throws IOException;
 
         @Nonnull
         IParam<DataSet, String> getSheetParam(@Nonnull DataSource dataSource);
@@ -72,138 +72,133 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
     @Override
     public List<DataSet> children(DataSource dataSource) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
-        List<TsCollection> sheets = getBook(dataSource).getSheets();
-        return sheets.stream()
-                .map(childrenMapper(dataSource))
+
+        SpreadSheetAccessor accessor = resource.getAccessor(dataSource);
+        IParam<DataSet, String> sheetParam = resource.getSheetParam(dataSource);
+
+        return accessor
+                .getSheetNames()
+                .stream()
+                .map(childrenMapper(dataSource, sheetParam))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<DataSet> children(DataSet parent) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, parent);
-        TsCollection sheet = lookupSheet(parent);
-        if (sheet == null) {
-            throw dataNotFound(parent);
-        }
-        return sheet.getItems().stream()
-                .map(childrenMapper(parent))
+
+        SpreadSheetAccessor accessor = resource.getAccessor(parent.getDataSource());
+        IParam<DataSet, String> sheetParam = resource.getSheetParam(parent.getDataSource());
+        IParam<DataSet, String> seriesParam = resource.getSeriesParam(parent.getDataSource());
+
+        return accessor
+                .getSheetByName(sheetParam.get(parent))
+                .orElseThrow(() -> sheetNotFound(parent))
+                .getItems()
+                .stream()
+                .map(childrenMapper(parent, seriesParam))
                 .collect(Collectors.toList());
     }
 
     @Override
     public TsCursor<DataSet> getData(DataSource dataSource, TsInformationType type) throws IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
-        Stream<TsRecord> data = getDataStream(dataSource);
-        return cursorOf(data, dataSource);
+
+        SpreadSheetAccessor accessor = resource.getAccessor(dataSource);
+        IParam<DataSet, String> sheetParam = resource.getSheetParam(dataSource);
+        IParam<DataSet, String> seriesParam = resource.getSeriesParam(dataSource);
+
+        Stream<SheetTs> data = accessor
+                .getSheets()
+                .stream()
+                .flatMap(SheetTs::allOf);
+
+        return cursorOf(data, dataSource, sheetParam, seriesParam);
     }
 
     @Override
     public TsCursor<DataSet> getData(DataSet dataSet, TsInformationType type) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSet);
-        Stream<TsRecord> data = getDataStream(dataSet);
-        return cursorOf(data, dataSet.getDataSource());
+
+        SpreadSheetAccessor accessor = resource.getAccessor(dataSet.getDataSource());
+        IParam<DataSet, String> sheetParam = resource.getSheetParam(dataSet.getDataSource());
+        IParam<DataSet, String> seriesParam = resource.getSeriesParam(dataSet.getDataSource());
+
+        Stream<SheetTs> data = accessor
+                .getSheetByName(sheetParam.get(dataSet))
+                .map(SheetTs::allOf)
+                .orElseThrow(() -> sheetNotFound(dataSet))
+                .filter(getSeriesFilter(dataSet, seriesParam));
+
+        return cursorOf(data, dataSet.getDataSource(), sheetParam, seriesParam);
     }
 
-    private static IOException dataNotFound(DataSet dataSet) {
-        return new IOException("Data not found: " + dataSet.toString());
+    private static IOException sheetNotFound(DataSet dataSet) {
+        return new IOException("Sheet not found: " + dataSet.toString());
     }
 
-    private Function<TsCollection, DataSet> childrenMapper(DataSource dataSource) {
+    private static Function<String, DataSet> childrenMapper(DataSource dataSource, IParam<DataSet, String> sheetParam) {
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
-        IParam<DataSet, String> sheetParam = resource.getSheetParam(dataSource);
-        return o -> builder.put(sheetParam, o.getName()).build();
+        return o -> builder.put(sheetParam, o).build();
     }
 
-    private Function<Ts, DataSet> childrenMapper(DataSet parent) {
+    private static Function<Ts, DataSet> childrenMapper(DataSet parent, IParam<DataSet, String> seriesParam) {
         DataSet.Builder builder = parent.toBuilder(DataSet.Kind.SERIES);
-        IParam<DataSet, String> seriesParam = resource.getSeriesParam(parent.getDataSource());
         return o -> builder.put(seriesParam, o.getName()).build();
     }
 
-    private IO.Function<TsRecord, DataSet> dataMapper(DataSource dataSource) {
+    private static Function<SheetTs, DataSet> dataMapper(DataSource dataSource, IParam<DataSet, String> sheetParam, IParam<DataSet, String> seriesParam) {
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
-        IParam<DataSet, String> sheetParam = resource.getSheetParam(dataSource);
-        IParam<DataSet, String> seriesParam = resource.getSeriesParam(dataSource);
-        return o -> builder.put(sheetParam, o.sheet.getName()).put(seriesParam, o.series.getName()).build();
+        return o -> builder.put(sheetParam, o.sheetName).put(seriesParam, o.seriesName).build();
     }
 
-    private Stream<TsRecord> getDataStream(DataSource dataSource) throws IOException {
-        List<TsCollection> sheets = getBook(dataSource).getSheets();
-        return sheets.stream().flatMap(sheet -> sheet.getItems().stream().map(series -> new TsRecord(sheet, series)));
-    }
-
-    private Stream<TsRecord> getDataStream(DataSet dataSet) throws IOException {
+    private Predicate<SheetTs> getSeriesFilter(DataSet dataSet, IParam<DataSet, String> seriesParam) {
         switch (dataSet.getKind()) {
-            case COLLECTION: {
-                TsCollection sheet = lookupSheet(dataSet);
-                if (sheet == null) {
-                    throw dataNotFound(dataSet);
-                }
-                return sheet.getItems().stream().map(series -> new TsRecord(sheet, series));
-            }
-            case SERIES: {
-                TsCollection sheet = lookupSheet(dataSet);
-                if (sheet == null) {
-                    throw dataNotFound(dataSet);
-                }
-                Ts series = lookupSeries(dataSet);
-                if (series == null) {
-                    throw dataNotFound(dataSet);
-                }
-                return Stream.of(new TsRecord(sheet, series));
-            }
+            case COLLECTION:
+                return o -> true;
+            case SERIES:
+                return o -> o.seriesName.equals(seriesParam.get(dataSet));
+            default:
+                throw new IllegalArgumentException(dataSet.getKind().name());
         }
-        throw new IllegalArgumentException(dataSet.getKind().name());
     }
 
-    private TsCursor<DataSet> cursorOf(Stream<TsRecord> data, DataSource dataSource) {
-        return TsCursor.from(data.iterator(), TsRecord::getData, TsRecord::getMeta, TsRecord::getLabel).map(dataMapper(dataSource));
-    }
-
-    private BookData getBook(DataSource dataSource) throws IOException {
-        return resource.getAccessor(dataSource);
-    }
-
-    private TsCollection lookupSheet(DataSet dataSet) throws IOException {
-        BookData book = getBook(dataSet.getDataSource());
-        IParam<DataSet, String> param = resource.getSheetParam(dataSet.getDataSource());
-        return book.getSheetByName(param.get(dataSet));
-    }
-
-    private Ts lookupSeries(DataSet dataSet) throws IOException {
-        TsCollection sheet = lookupSheet(dataSet);
-        if (sheet == null) {
-            return null;
-        }
-        IParam<DataSet, String> param = resource.getSeriesParam(dataSet.getDataSource());
-        return sheet
-                .getItems()
-                .stream()
-                .filter(o -> o.getName().equals(param.get(dataSet)))
-                .findFirst()
-                .orElseThrow(IOException::new);
+    private static TsCursor<DataSet> cursorOf(Stream<SheetTs> data, DataSource dataSource, IParam<DataSet, String> sheetParam, IParam<DataSet, String> seriesParam) {
+        return TsCursor
+                .from(data.iterator(), SheetTs::getData, SheetTs::getMeta, SheetTs::getLabel)
+                .map(IO.Function.checked(dataMapper(dataSource, sheetParam, seriesParam)));
     }
 
     @lombok.AllArgsConstructor
-    private static final class TsRecord {
+    private static final class SheetTs {
 
-        private final TsCollection sheet;
-        private final Ts series;
+        static Stream<SheetTs> allOf(TsCollection sheet) {
+            return sheet.getItems().stream().map(series -> SheetTs.of(sheet, series));
+        }
+
+        static SheetTs of(TsCollection sheet, Ts series) {
+            return new SheetTs(sheet.getName(), sheet.getMetaData().getOrDefault("gridLayout", ""), series.getName(), series.getData());
+        }
+
+        private final String sheetName;
+        private final String sheetLayout;
+        private final String seriesName;
+        private final TsData seriesData;
 
         TsData getData() {
-            return series.getData();
+            return seriesData;
         }
 
         Map<String, String> getMeta() {
             Map<String, String> result = new HashMap<>();
-            result.put(SHEET_NAME_META, sheet.getName());
-            result.put(SHEET_GRID_LAYOUT_META, sheet.getMetaData().getOrDefault("gridLayout", ""));
-            result.put(SERIES_NAME_META, series.getName());
+            result.put(SHEET_NAME_META, sheetName);
+            result.put(SHEET_GRID_LAYOUT_META, sheetLayout);
+            result.put(SERIES_NAME_META, seriesName);
             return result;
         }
 
         String getLabel() {
-            return sheet.getName() + MultiLineNameUtil.SEPARATOR + series.getName();
+            return sheetName + MultiLineNameUtil.SEPARATOR + seriesName;
         }
     }
 

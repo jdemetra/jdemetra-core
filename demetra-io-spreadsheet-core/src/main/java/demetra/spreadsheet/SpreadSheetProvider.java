@@ -28,18 +28,17 @@ import demetra.tsprovider.TsProvider;
 import demetra.tsprovider.cursor.HasTsCursor;
 import demetra.tsprovider.cursor.TsCursorAsProvider;
 import demetra.tsprovider.grid.GridImport;
-import demetra.tsprovider.grid.GridReader;
 import demetra.tsprovider.util.CacheProvider;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import demetra.tsprovider.util.FallbackDataMoniker;
 import demetra.tsprovider.util.IParam;
 import ec.util.spreadsheet.Book;
 import internal.spreadsheet.BookSupplier;
+import internal.spreadsheet.SpreadSheetAccessor;
 import internal.spreadsheet.SpreadSheetDataDisplayName;
 import internal.spreadsheet.SpreadSheetParam;
 import internal.spreadsheet.SpreadSheetSupport;
-import internal.spreadsheet.grid.BookData;
-import internal.spreadsheet.grid.SheetGridInfo;
+import internal.spreadsheet.grid.SheetGrid;
 import internal.spreadsheet.legacy.LegacySpreadSheetMoniker;
 import java.io.File;
 import java.io.IOException;
@@ -81,7 +80,7 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
     public SpreadSheetProvider() {
         this.bookSupplier = BookSupplier.usingServiceLoader();
 
-        ConcurrentMap<DataSource, BookData> cache = CacheProvider.getDefault().softValuesCacheAsMap();
+        ConcurrentMap<DataSource, SpreadSheetAccessor> cache = CacheProvider.getDefault().softValuesCacheAsMap();
         SpreadSheetParam param = new SpreadSheetParam.V1();
 
         this.mutableListSupport = HasDataSourceMutableList.of(NAME, cache::remove);
@@ -111,15 +110,15 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
     @lombok.AllArgsConstructor
     private static final class SpreadSheetResource implements SpreadSheetSupport.Resource {
 
-        private final ConcurrentMap<DataSource, BookData> cache;
+        private final ConcurrentMap<DataSource, SpreadSheetAccessor> cache;
         private final HasFilePaths filePathSupport;
         private final SpreadSheetParam param;
         private final BookSupplier bookSupplier;
 
         @Override
-        public BookData getAccessor(DataSource dataSource) throws IOException {
+        public SpreadSheetAccessor getAccessor(DataSource dataSource) throws IOException {
             DataSourcePreconditions.checkProvider(NAME, dataSource);
-            BookData result = cache.get(dataSource);
+            SpreadSheetAccessor result = cache.get(dataSource);
             if (result == null) {
                 result = loadAccessor(dataSource);
                 cache.put(dataSource, result);
@@ -137,17 +136,24 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
             return param.getSeriesParam(dataSource);
         }
 
-        private BookData loadAccessor(DataSource key) throws IOException {
+        private SpreadSheetAccessor loadAccessor(DataSource key) throws IOException {
             SpreadSheetBean bean = param.get(key);
             File file = filePathSupport.resolveFilePath(bean.getFile());
             Book.Factory factory = bookSupplier.getFactory(file);
             if (factory == null) {
                 throw new IOException("File type not supported");
             }
-            try (Book book = factory.load(file)) {
-                GridImport options = GridImport.builder().format(bean.getObsFormat()).gathering(bean.getObsGathering()).build();
-                return BookData.of(book, GridReader.of(options, SheetGridInfo.of(factory)));
-            }
+            return SheetGrid
+                    .of(factory, file, getOptions(bean))
+                    .withCache(CacheProvider.getDefault().softValuesCacheAsMap());
+        }
+
+        private GridImport getOptions(SpreadSheetBean bean) {
+            return GridImport
+                    .builder()
+                    .format(bean.getObsFormat())
+                    .gathering(bean.getObsGathering())
+                    .build();
         }
     }
 }

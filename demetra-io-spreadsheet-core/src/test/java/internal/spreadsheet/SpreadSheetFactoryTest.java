@@ -17,7 +17,6 @@
 package internal.spreadsheet;
 
 import demetra.tsprovider.grid.GridImport;
-import demetra.tsprovider.grid.GridReader;
 import ec.util.spreadsheet.Book;
 import ec.util.spreadsheet.od.OpenDocumentBookFactory;
 import ec.util.spreadsheet.poi.ExcelBookFactory;
@@ -28,10 +27,9 @@ import static internal.spreadsheet.Top5Browsers.top5Excel;
 import static internal.spreadsheet.Top5Browsers.top5ExcelClassic;
 import static internal.spreadsheet.Top5Browsers.top5OpenDocument;
 import static internal.spreadsheet.Top5Browsers.top5Xmlss;
-import internal.spreadsheet.grid.BookData;
-import internal.spreadsheet.grid.SheetGridInfo;
+import internal.spreadsheet.grid.SheetGrid;
+import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import org.junit.Test;
 
 /**
@@ -40,10 +38,8 @@ import org.junit.Test;
  */
 public class SpreadSheetFactoryTest {
 
-    private static void testFactory(Book.Factory bookFactory, URL url) throws IOException {
-        try (Book book = bookFactory.load(url)) {
-            testContent(BookData.of(book, GridReader.of(GridImport.DEFAULT, SheetGridInfo.of(bookFactory))));
-        }
+    private static void testFactory(Book.Factory bookFactory, File file) throws IOException {
+        testContent(SheetGrid.of(bookFactory, file, GridImport.DEFAULT));
     }
 
     @Test

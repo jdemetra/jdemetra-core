@@ -27,6 +27,7 @@ import demetra.tsprovider.util.MultiLineNameUtil;
 import demetra.tsprovider.util.ObsFormat;
 import demetra.tsprovider.util.ObsGathering;
 import demetra.tsprovider.util.TsDataBuilder;
+import demetra.util.Substitutor;
 import internal.tsprovider.grid.InvGridInput;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,9 +40,10 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
 import lombok.AccessLevel;
-import java.util.function.IntFunction;
 import internal.tsprovider.grid.InternalValueReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -53,23 +55,17 @@ public final class GridReader {
 
     @Nonnull
     public static GridReader of(@Nonnull GridImport options, @Nonnull GridInfo info) {
-        return of(options, info, DEFAULT_NAMER);
-    }
-
-    @Nonnull
-    public static GridReader of(@Nonnull GridImport options, @Nonnull GridInfo info, @Nonnull IntFunction<String> namer) {
         ValueReaders readers = ValueReaders.of(info, options.getFormat());
         ObsGathering gathering = options.getGathering();
         Collector<CharSequence, ?, String> nameJoiner = Collectors.joining(DEFAULT_NAME_SEPARATOR);
-        return new GridReader(readers, gathering, namer, nameJoiner);
+        return new GridReader(readers, gathering, options.getNamePattern(), nameJoiner);
     }
 
-    private static final IntFunction<String> DEFAULT_NAMER = i -> "S" + i;
     private static final String DEFAULT_NAME_SEPARATOR = MultiLineNameUtil.SEPARATOR;
 
     private final ValueReaders readers;
     private final ObsGathering gathering;
-    private final IntFunction<String> namer;
+    private final String namePattern;
     private final Collector<CharSequence, ?, String> nameJoiner;
 
     @Nonnull
@@ -149,11 +145,14 @@ public final class GridReader {
     }
 
     private void loadHorizontalNamesNoheader(GridInput grid, Consumer<String> consumer) throws IOException {
+        Map<String, Object> mapper = new HashMap<>();
+        Substitutor substitutor = Substitutor.of(mapper);
         for (int column = FIRST_DATA_COL_IDX; column < grid.getColumnCount(); column++) {
             if (readers.readNumber(grid, 0, column) == null) {
                 break;
             }
-            consumer.accept(namer.apply(column));
+            mapper.put("index", column - FIRST_DATA_COL_IDX);
+            consumer.accept(substitutor.replace(namePattern));
         }
     }
 

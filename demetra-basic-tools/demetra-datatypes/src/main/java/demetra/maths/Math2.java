@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2018 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,31 +14,28 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tsprovider.grid;
-
-import demetra.tsprovider.util.ObsFormat;
-import demetra.tsprovider.util.ObsGathering;
+package demetra.maths;
 
 /**
  *
  * @author Philippe Charles
- * @since 2.1.0
  */
-@lombok.Value
-@lombok.Builder(builderClassName = "Builder", toBuilder = true)
-public class GridImport {
+@lombok.experimental.UtilityClass
+public class Math2 {
 
-    public static final GridImport DEFAULT = builder().build();
-
-    @lombok.NonNull
-    @lombok.Builder.Default
-    private ObsFormat format = ObsFormat.DEFAULT;
-
-    @lombok.NonNull
-    @lombok.Builder.Default
-    private ObsGathering gathering = ObsGathering.DEFAULT;
-
-    @lombok.NonNull
-    @lombok.Builder.Default
-    private String namePattern = "S${index}";
+    /**
+     * Computes the greatest common divisor of two integers.
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public static long gcd(long a, long b) {
+        while (b > 0) {
+            long temp = b;
+            b = a % b; // % is remainder  
+            a = temp;
+        }
+        return a;
+    }
 }

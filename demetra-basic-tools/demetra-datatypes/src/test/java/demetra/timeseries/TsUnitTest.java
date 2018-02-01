@@ -19,6 +19,9 @@ package demetra.timeseries;
 import static demetra.timeseries.TsUnit.*;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+import static java.time.temporal.ChronoUnit.*;
+import java.time.temporal.UnsupportedTemporalTypeException;
+import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
 
@@ -27,6 +30,19 @@ import org.junit.Test;
  * @author Philippe Charles
  */
 public class TsUnitTest {
+
+    @Test
+    @SuppressWarnings("null")
+    public void testFactories() {
+        assertThatIllegalArgumentException().isThrownBy(() -> TsUnit.of(-1, MONTHS));
+        assertThatNullPointerException().isThrownBy(() -> TsUnit.of(1, null));
+
+        Stream.of(supportedChronoUnits)
+                .forEach(o -> assertThat(TsUnit.of(1, o)).isNotNull());
+
+        Stream.of(unsupportedChronoUnits)
+                .forEach(o -> assertThatThrownBy(() -> TsUnit.of(1, o)).isInstanceOf(UnsupportedTemporalTypeException.class));
+    }
 
     @Test
     public void testRatio() {
@@ -45,8 +61,8 @@ public class TsUnitTest {
         assertThat(HALF_YEAR.ratioOf(QUARTER)).isEqualTo(NO_RATIO);
 
         // difficult ratio
-         assertThat(MINUTE.ratioOf(YEAR)).isEqualTo(NO_STRICT_RATIO);
-         assertThat(DAY.ratioOf(YEAR)).isEqualTo(NO_STRICT_RATIO);
+        assertThat(MINUTE.ratioOf(YEAR)).isEqualTo(NO_STRICT_RATIO);
+        assertThat(DAY.ratioOf(YEAR)).isEqualTo(NO_STRICT_RATIO);
     }
 
     @Test
@@ -54,6 +70,7 @@ public class TsUnitTest {
         assertThatThrownBy(() -> TsUnit.parse("hello")).isInstanceOf(DateTimeParseException.class);
 
         assertThat(parse("")).isEqualTo(UNDEFINED);
+        assertThat(parse("P1000Y")).isEqualTo(TsUnit.of(1, MILLENNIA));
         assertThat(parse("P100Y")).isEqualTo(CENTURY);
         assertThat(parse("P10Y")).isEqualTo(DECADE);
         assertThat(parse("P1Y")).isEqualTo(YEAR);
@@ -70,8 +87,9 @@ public class TsUnitTest {
     @Test
     public void testToIsoString() {
         assertThat(UNDEFINED.toIsoString()).isEmpty();
-        assertThat(DECADE.toIsoString()).isEqualTo("P10Y");
+        assertThat(TsUnit.of(1, MILLENNIA).toIsoString()).isEqualTo("P1000Y");
         assertThat(CENTURY.toIsoString()).isEqualTo("P100Y");
+        assertThat(DECADE.toIsoString()).isEqualTo("P10Y");
         assertThat(YEAR.toIsoString()).isEqualTo("P1Y");
         assertThat(HALF_YEAR.toIsoString()).isEqualTo("P6M");
         assertThat(QUARTER.toIsoString()).isEqualTo("P3M");
@@ -89,5 +107,56 @@ public class TsUnitTest {
                 .isEqualTo(of(1, ChronoUnit.FOREVER))
                 .extracting(TsUnit::getAmount, TsUnit::getChronoUnit)
                 .containsExactly(1L, ChronoUnit.FOREVER);
+    }
+
+    @Test
+    public void testGcd() {
+        assertThat(gcd("P14M", "P14M"))
+                .as("same chrono, same amount")
+                .isEqualTo("P14M");
+
+        assertThat(gcd("P14M", "P7M"))
+                .as("same chrono, compatible amount")
+                .isEqualTo("P7M");
+
+        assertThat(gcd("P14M", "P12M"))
+                .as("same chrono, uncompatible amount")
+                .isEqualTo("P2M");
+
+        assertThat(gcd("P2Y", "P2M"))
+                .as("compatible chrono, same amount")
+                .isEqualTo("P2M");
+
+        assertThat(gcd("P2Y", "P12M"))
+                .as("compatible chrono, compatible amount")
+                .isEqualTo("P12M");
+
+        assertThat(gcd("P2Y", "P26M"))
+                .as("compatible chrono, uncompatible amount")
+                .isEqualTo("P2M");
+
+        assertThat(gcd("P2M", "P2D"))
+                .as("uncompatible chrono, same amount")
+                .isEqualTo("P1D");
+
+        assertThat(gcd("P2M", "P10D"))
+                .as("uncompatible chrono, compatible amount")
+                .isEqualTo("P1D");
+
+        assertThat(gcd("P2M", "P11D"))
+                .as("uncompatible chrono, uncompatible amount")
+                .isEqualTo("P1D");
+    }
+
+    private final ChronoUnit[] supportedChronoUnits = {
+        FOREVER, MILLENNIA, CENTURIES, DECADES, YEARS, MONTHS, WEEKS, DAYS, HALF_DAYS, HOURS, MINUTES, SECONDS
+    };
+
+    private final ChronoUnit[] unsupportedChronoUnits = {
+        ERAS, MILLIS, MICROS, NANOS
+    };
+
+    private static String gcd(String a, String b) {
+        return TsUnit.gcd(TsUnit.parse(a), TsUnit.parse(b)).toIsoString();
     }
 }

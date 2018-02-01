@@ -17,14 +17,12 @@
 package demetra.timeseries;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.IntFunction;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.annotation.Nonnegative;
@@ -197,20 +195,14 @@ public final class TsDataTable {
 
         TsDomain o = domains.next();
 
-        long lowestAmount = o.getTsUnit().getAmount();
-        ChronoUnit lowestChronoUnit = o.getTsUnit().getChronoUnit();
+        TsUnit lowestUnit = o.getTsUnit();
         LocalDateTime minDate = o.start();
         LocalDateTime maxDate = o.end();
 
         while (domains.hasNext()) {
             o = domains.next();
 
-            if (o.getTsUnit().getChronoUnit().compareTo(lowestChronoUnit) < 0) {
-                lowestAmount = getLowestAmount(lowestAmount, lowestChronoUnit, o.getTsUnit().getChronoUnit());
-                lowestChronoUnit = o.getTsUnit().getChronoUnit();
-            }
-            lowestAmount = gcd(lowestAmount, o.getTsUnit().getAmount());
-
+            lowestUnit = TsUnit.gcd(lowestUnit, o.getTsUnit());
             if (minDate.isAfter(o.start())) {
                 minDate = o.start();
             }
@@ -219,49 +211,9 @@ public final class TsDataTable {
             }
         }
 
-        TsUnit unit = TsUnit.of(lowestAmount, lowestChronoUnit);
-        TsPeriod startPeriod = TsPeriod.of(unit, minDate);
-        TsPeriod endPeriod = TsPeriod.of(unit, maxDate);
+        TsPeriod startPeriod = TsPeriod.of(lowestUnit, minDate);
+        TsPeriod endPeriod = TsPeriod.of(lowestUnit, maxDate);
         // FIXME: default epoch?
         return TsDomain.of(startPeriod, startPeriod.until(endPeriod));
-    }
-
-    private static long getLowestAmount(long lowestAmount, ChronoUnit oldUnit, ChronoUnit newUnit) {
-        return oldUnit.compareTo(ChronoUnit.DAYS) > 0 && newUnit.compareTo(ChronoUnit.DAYS) <= 0
-                ? 1
-                : lowestAmount * CHRONO_UNIT_RATIOS_ON_SECONDS[oldUnit.ordinal()][newUnit.ordinal()];
-    }
-
-    private static final long[][] CHRONO_UNIT_RATIOS_ON_SECONDS = computeChronoUnitRatiosOnSeconds();
-
-    private static long[][] computeChronoUnitRatiosOnSeconds() {
-        Predicate<ChronoUnit> hasSeconds = o -> o.getDuration().getSeconds() > 0;
-        ChronoUnit[] units = ChronoUnit.values();
-        long[][] result = new long[units.length][units.length];
-        for (ChronoUnit i : units) {
-            for (ChronoUnit j : units) {
-                result[i.ordinal()][j.ordinal()]
-                        = hasSeconds.test(i) && hasSeconds.test(j)
-                        ? i.getDuration().dividedBy(j.getDuration().getSeconds()).getSeconds()
-                        : 0;
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Computes the greatest common divisor of two integers.
-     *
-     * @param a
-     * @param b
-     * @return
-     */
-    private static long gcd(long a, long b) {
-        while (b > 0) {
-            long temp = b;
-            b = a % b; // % is remainder  
-            a = temp;
-        }
-        return a;
     }
 }
