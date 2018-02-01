@@ -14,11 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demo.sql.jdbc;
+package _demo;
 
 import demetra.demo.ProviderDemo;
-import demetra.sql.jdbc.JdbcBean;
-import demetra.sql.jdbc.JdbcProvider;
+import demetra.sql.odbc.OdbcBean;
+import demetra.sql.odbc.OdbcProvider;
 import demetra.timeseries.TsDataTable;
 import demetra.tsprovider.DataSource;
 import java.io.IOException;
@@ -29,16 +29,16 @@ import java.util.Arrays;
  *
  * @author Philippe Charles
  */
-public class JdbcProviderDemo {
+public class OdbcProviderDemo {
 
     public static void main(String[] args) throws IOException {
         // 1. create and configure the provider
-        try (JdbcProvider provider = new JdbcProvider()) {
+        try (OdbcProvider provider = new OdbcProvider()) {
             provider.setConnectionSupplier(o -> DriverManager.getConnection("jdbc:hsqldb:res:mydb", "sa", ""));
 
             // 2. create and configure a bean
-            JdbcBean bean = provider.newBean();
-            bean.setDatabase("mydb");
+            OdbcBean bean = provider.newBean();
+            bean.setDsn("mydb");
             bean.setTable("Table2");
             bean.setDimColumns(Arrays.asList("Sector", "Region"));
             bean.setPeriodColumn("Table2.Period");
