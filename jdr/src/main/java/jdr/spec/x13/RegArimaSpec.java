@@ -4,14 +4,7 @@
  */
 package jdr.spec.x13;
 
-import ec.tstoolkit.descriptors.EnhancedPropertyDescriptor;
-import ec.tstoolkit.descriptors.IObjectDescriptor;
 import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
-import ec.tstoolkit.timeseries.simplets.TsDomain;
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -20,6 +13,15 @@ import java.util.List;
 public class RegArimaSpec {
 
     final RegArimaSpecification core;
+    
+    public static RegArimaSpec of(String spec){
+        RegArimaSpecification rspec=RegArimaSpecification.fromString(spec);
+        return new RegArimaSpec(rspec);
+    }
+
+    public RegArimaSpec() {
+        core=new RegArimaSpecification();
+    }
 
     public RegArimaSpec(RegArimaSpecification spec) {
         core=spec;
