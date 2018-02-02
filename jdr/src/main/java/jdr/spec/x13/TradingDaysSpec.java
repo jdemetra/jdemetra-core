@@ -81,12 +81,12 @@ public class TradingDaysSpec extends BaseRegArimaSpec {
         }
     }
 
-    public RegressionTestSpec getTest() {
-        return inner().getTest();
+    public String getTest() {
+        return inner().getTest().name();
     }
 
-    public void setTest(RegressionTestSpec value) {
-        inner().setTest(value);
+    public void setTest(String value) {
+        inner().setTest(RegressionTestSpec.valueOf(value));
     }
 
     public boolean isAutoAdjust() {
@@ -97,21 +97,21 @@ public class TradingDaysSpec extends BaseRegArimaSpec {
         inner().setAutoAdjust(value);
     }
 
-    public TradingDaysType getTradingDays() {
+    public String getTradingDays() {
 
-        return inner().getTradingDaysType();
+        return inner().getTradingDaysType().name();
     }
 
-    public void setTradingDays(TradingDaysType value) {
-        inner().setTradingDaysType(value);
+    public void setTradingDays(String value) {
+        inner().setTradingDaysType(TradingDaysType.valueOf(value));
     }
 
-    public LengthOfPeriodType getLengthOfPeriod() {
-        return inner().getLengthOfPeriod();
+    public String getLengthOfPeriod() {
+        return inner().getLengthOfPeriod().name();
     }
 
-    public void setLengthOfPeriod(LengthOfPeriodType value) {
-        inner().setLengthOfPeriod(value);
+    public void setLengthOfPeriod(String value) {
+        inner().setLengthOfPeriod(LengthOfPeriodType.valueOf(value));
     }
 
 //    public Holidays getHolidays() {

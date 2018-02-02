@@ -46,7 +46,7 @@ public class OutlierSpec extends BaseRegArimaSpec {
         return new SpanSelector(inner().getSpan());
     }
 
-    public boolean getAO() {
+    public boolean isAO() {
         return inner().search(OutlierType.AO) != null;
     }
 
@@ -58,7 +58,7 @@ public class OutlierSpec extends BaseRegArimaSpec {
         }
     }
 
-    public boolean getLS() {
+    public boolean isLS() {
         return inner().search(OutlierType.LS) != null;
     }
 
@@ -70,7 +70,7 @@ public class OutlierSpec extends BaseRegArimaSpec {
         }
     }
 
-    public boolean getTC() {
+    public boolean isTC() {
         return inner().search(OutlierType.TC) != null;
     }
 
@@ -82,7 +82,7 @@ public class OutlierSpec extends BaseRegArimaSpec {
         }
     }
 
-    public boolean getSO() {
+    public boolean isSO() {
         return inner().search(OutlierType.SO) != null;
     }
 
