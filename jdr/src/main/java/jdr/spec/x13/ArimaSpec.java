@@ -114,7 +114,6 @@ public class ArimaSpec extends BaseRegArimaSpec {
         arima().setMean(value);
     }
 
-
     public boolean isAmiEnabled() {
         return ami().isEnabled();
     }

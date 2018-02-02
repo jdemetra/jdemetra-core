@@ -5,7 +5,7 @@
 package jdr.spec.x13;
 
 import ec.satoolkit.x13.X13Specification;
-import jdr.spec.sa.SaBenchmarkingSpecUI;
+import jdr.spec.sa.SaBenchmarkingSpec;
 
 /**
  *
@@ -50,8 +50,8 @@ public class X13Spec  {
         return new X11Spec(core.getX11Specification(), 0, true);
     }
 
-    public SaBenchmarkingSpecUI getBenchmarking() {
-        return new SaBenchmarkingSpecUI(core.getBenchmarkingSpecification());
+    public SaBenchmarkingSpec getBenchmarking() {
+        return new SaBenchmarkingSpec(core.getBenchmarkingSpecification());
     }
 
 }

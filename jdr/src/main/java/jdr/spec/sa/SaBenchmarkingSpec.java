@@ -4,17 +4,16 @@
  */
 package jdr.spec.sa;
 
-import ec.satoolkit.benchmarking.SaBenchmarkingSpec;
 
 /**
  *
  * @author Jean Palate
  */
-public class SaBenchmarkingSpecUI{
+public class SaBenchmarkingSpec{
 
-    private final SaBenchmarkingSpec core;
+    private final ec.satoolkit.benchmarking.SaBenchmarkingSpec core;
 
-    public SaBenchmarkingSpecUI(SaBenchmarkingSpec spec) {
+    public SaBenchmarkingSpec(ec.satoolkit.benchmarking.SaBenchmarkingSpec spec) {
         core = spec;
     }
     
@@ -32,7 +31,7 @@ public class SaBenchmarkingSpecUI{
     }
     
     public void setTarget(String target){
-        core.setTarget(SaBenchmarkingSpec.Target.valueOf(target));
+        core.setTarget(ec.satoolkit.benchmarking.SaBenchmarkingSpec.Target.valueOf(target));
     }
     
     public double getRho(){

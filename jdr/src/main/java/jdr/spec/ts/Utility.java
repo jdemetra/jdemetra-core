@@ -5,6 +5,8 @@
  */
 package jdr.spec.ts;
 
+import ec.tstoolkit.Parameter;
+import ec.tstoolkit.ParameterType;
 import ec.tstoolkit.timeseries.Day;
 import java.text.ParseException;
 import java.util.Date;
@@ -40,6 +42,26 @@ public class Utility {
 
     public String toString(Day day) {
         return day == null || day == Day.BEG || day == Day.END ? "" : day.toString();
+    }
+
+    public Parameter[] parameters(double[] values) {
+        return parameters(values, null);
+    }
+
+    public Parameter[] parameters(double[] values, boolean[] fixed) {
+        Parameter[] p = new Parameter[values.length];
+        for (int i = 0; i < p.length; ++i) {
+            if (Double.isFinite(values[i])) {
+                if (fixed != null && fixed[i]) {
+                    p[i] = new Parameter(values[i], ParameterType.Fixed);
+                } else {
+                    p[i] = new Parameter(values[i], ParameterType.Initial);
+                }
+            } else {
+                p[i] = new Parameter();
+            }
+        }
+        return p;
     }
 
 }
