@@ -3,6 +3,8 @@ On Error Resume Next
 
 Const en_US = 1033
 Const adModeRead = 1
+Const adVarChar = 200
+Const adParamInput = 1
 
 SetLocale(en_US)
 
@@ -19,7 +21,7 @@ CheckErr()
 Dim i
 
 For i = 2 to Wscript.Arguments.Count - 1
-  cmd.Parameters.Item(i - 2).Value = Wscript.Arguments(i)
+  cmd.Parameters.Append cmd.CreateParameter("p" & i, adVarChar, adParamInput, Len(Wscript.Arguments(i)), Wscript.Arguments(i))
 Next
 CheckErr()
 
