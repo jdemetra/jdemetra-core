@@ -60,12 +60,12 @@ final class OdbcManager {
 
     private static final String JDBC_ODBC_DRIVER_NAME = "sun.jdbc.odbc.JdbcOdbcDriver";
     private static final String JDBC_ODBC_DRIVER_PREFIX = "jdbc:odbc:";
-    private static final String ADO_DRIVER_NAME = "adodb.wsh.AdoDriver";
+    private static final String ADO_DRIVER_NAME = "internal.sql.adodb.AdoDriver";
     private static final String ADO_DRIVER_PREFIX = "jdbc:adodb:";
 
     private static boolean isDriverAvailable(String className) {
         return isClassLoadable(Driver.class, className)
-                || isDriverRegistered(className);
+                && isDriverRegistered(className);
     }
 
     private static boolean is64bit() {
