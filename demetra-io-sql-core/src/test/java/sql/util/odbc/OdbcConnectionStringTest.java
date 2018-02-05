@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.sql.odbc;
+package sql.util.odbc;
 
 import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;

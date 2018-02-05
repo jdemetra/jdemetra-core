@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2018 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,21 +14,24 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.sql.odbc.registry;
+package sql.util.odbc.spi;
 
-import ec.tstoolkit.design.ServiceDefinition;
-import java.util.List;
+import sql.util.odbc.OdbcRegistry;
+import demetra.design.ServiceDefinition;
+import javax.annotation.Nonnull;
 
 /**
  *
- * @see
- * http://msdn.microsoft.com/en-us/library/windows/desktop/ms715432(v=vs.85).aspx
  * @author Philippe Charles
  */
 @ServiceDefinition
-public interface IOdbcRegistry {
+public interface OdbcFactory {
 
-    List<OdbcDataSource> getDataSources(OdbcDataSource.Type... types) throws Exception;
+    @Nonnull
+    String getName();
 
-    List<OdbcDriver> getDrivers() throws Exception;
+    boolean isAvailable();
+
+    @Nonnull
+    OdbcRegistry getRegistry();
 }
