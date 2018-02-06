@@ -16,9 +16,7 @@
  */
 package sql.util;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.ComparisonChain;
-import com.google.common.collect.Ordering;
+import internal.util.Strings;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -36,7 +34,7 @@ import javax.annotation.Nullable;
  * @author Philippe Charles
  */
 @lombok.Value
-public class SqlTable implements Comparable<SqlTable> {
+public class SqlTable {
 
     /**
      * Creates a complete list of tables in a database.
@@ -182,17 +180,4 @@ public class SqlTable implements Comparable<SqlTable> {
      * "SYSTEM", "USER", "DERIVED". (may be <code>null</code>)
      */
     private String refGeneration;
-
-    // we need an ordering that can handle null values
-    private static final Ordering<String> ORDERING = Ordering.natural().nullsLast();
-
-    @Override
-    public int compareTo(SqlTable that) {
-        return ComparisonChain.start()
-                .compare(this.type, that.type, ORDERING)
-                .compare(this.catalog, that.catalog, ORDERING)
-                .compare(this.schema, that.schema, ORDERING)
-                .compare(this.name, that.name, ORDERING)
-                .result();
-    }
 }

@@ -16,13 +16,15 @@
  */
 package sql.util;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableSet;
-import ec.tstoolkit.design.VisibleForTesting;
+import demetra.design.VisibleForTesting;
+import internal.util.Strings;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -55,13 +57,13 @@ public abstract class SqlIdentifierQuoter {
     @VisibleForTesting
     @Nonnull
     static Set<String> getSqlKeywords(@Nonnull DatabaseMetaData metaData) throws SQLException {
-        return ImmutableSet.<String>builder()
-                .addAll(KEYWORDS_SPLITTER.split(metaData.getSQLKeywords()))
-                .addAll(SqlKeywords.getSql2003ReservedWords())
-                .build();
+        Set<String> result = new HashSet<>();
+        KEYWORDS_SPLITTER.apply(metaData.getSQLKeywords()).forEach(result::add);
+        result.addAll(SqlKeywords.getSql2003ReservedWords());
+        return result;
     }
 
-    private static final Splitter KEYWORDS_SPLITTER = Splitter.on(',').trimResults();
+    private static final Function<CharSequence, Stream<String>> KEYWORDS_SPLITTER = o -> Strings.splitToStream(',', o).map(String::trim);
 
     private static final class SqlIdentifierQuoterImpl extends SqlIdentifierQuoter {
 
@@ -129,23 +131,23 @@ public abstract class SqlIdentifierQuoter {
     private enum StorageRule {
 
         UPPER {
-                    @Override
-                    public boolean isValid(String identifier) {
-                        return identifier.toUpperCase(Locale.ROOT).equals(identifier);
-                    }
-                },
+            @Override
+            public boolean isValid(String identifier) {
+                return identifier.toUpperCase(Locale.ROOT).equals(identifier);
+            }
+        },
         LOWER {
-                    @Override
-                    public boolean isValid(String identifier) {
-                        return identifier.toLowerCase(Locale.ROOT).equals(identifier);
-                    }
-                },
+            @Override
+            public boolean isValid(String identifier) {
+                return identifier.toLowerCase(Locale.ROOT).equals(identifier);
+            }
+        },
         MIXED {
-                    @Override
-                    public boolean isValid(String identifier) {
-                        return true;
-                    }
-                };
+            @Override
+            public boolean isValid(String identifier) {
+                return true;
+            }
+        };
 
         abstract public boolean isValid(String identifier);
 

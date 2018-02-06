@@ -16,7 +16,6 @@
  */
 package internal.sql.util.odbc.win;
 
-import com.google.common.base.StandardSystemProperty;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinReg;
@@ -25,7 +24,6 @@ import sql.util.odbc.spi.OdbcFactory;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.SortedMap;
-import java.util.TreeMap;
 import javax.annotation.Nonnull;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -52,7 +50,8 @@ public final class JnaOdbcFactory implements OdbcFactory {
     }
 
     private static boolean isWindows() {
-        return StandardSystemProperty.OS_NAME.value().startsWith("Windows ");
+        String osName = System.getProperty("os.name");
+        return osName != null && osName.startsWith("Windows ");
     }
 
     private static boolean isClassAvailable(@Nonnull String className) {
@@ -89,7 +88,7 @@ public final class JnaOdbcFactory implements OdbcFactory {
         public SortedMap<String, Object> getValues(Root root, String key) throws IOException {
             try {
                 WinReg.HKEY hkey = convert(root);
-                return Advapi32Util.registryKeyExists(hkey, key) ? Advapi32Util.registryGetValues(hkey, key) : EMPTY_SORTED_MAP;
+                return Advapi32Util.registryKeyExists(hkey, key) ? Advapi32Util.registryGetValues(hkey, key) : Collections.emptySortedMap();
             } catch (Win32Exception | UnsatisfiedLinkError ex) {
                 throw new IOException("While getting values", ex);
             }
@@ -104,7 +103,5 @@ public final class JnaOdbcFactory implements OdbcFactory {
             }
             throw new UnsupportedOperationException("Not supported yet.");
         }
-
-        private static final SortedMap<String, Object> EMPTY_SORTED_MAP = Collections.unmodifiableSortedMap(new TreeMap<String, Object>());
     }
 }

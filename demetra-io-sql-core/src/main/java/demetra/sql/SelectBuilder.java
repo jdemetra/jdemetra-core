@@ -16,14 +16,13 @@
  */
 package demetra.sql;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
 import demetra.design.IBuilder;
 import sql.util.SqlIdentifierQuoter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 
 /**
@@ -32,8 +31,6 @@ import javax.annotation.Nonnull;
  */
 @lombok.RequiredArgsConstructor(staticName = "from")
 final class SelectBuilder implements IBuilder<String> {
-
-    private static final Joiner COMMA_JOINER = Joiner.on(',');
 
     @lombok.NonNull
     private final String table;
@@ -83,22 +80,18 @@ final class SelectBuilder implements IBuilder<String> {
         if (distinct) {
             result.append("DISTINCT ");
         }
-        COMMA_JOINER.appendTo(result, select.stream().map(toQuotedIdentifier).iterator());
+        result.append(select.stream().map(toQuotedIdentifier).collect(COMMA_JOINER));
         // FROM
         result.append(" FROM ").append(toQuotedIdentifier.apply(table));
         // WHERE
         if (!filter.isEmpty()) {
             result.append(" WHERE ");
-            Iterator<String> iter = filter.stream().map(toQuotedIdentifier).iterator();
-            result.append(iter.next()).append("=?");
-            while (iter.hasNext()) {
-                result.append(" AND ").append(iter.next()).append("=?");
-            }
+            result.append(filter.stream().map(toQuotedIdentifier).collect(WHERE_JOINER));
         }
         // ORDER BY
         if (!order.isEmpty()) {
             result.append(" ORDER BY ");
-            COMMA_JOINER.appendTo(result, order.stream().map(toQuotedIdentifier).iterator());
+            result.append(order.stream().map(toQuotedIdentifier).collect(COMMA_JOINER));
         }
         return result.toString();
     }
@@ -106,10 +99,13 @@ final class SelectBuilder implements IBuilder<String> {
     @Nonnull
     private SelectBuilder addIfNotNullOrEmpty(@Nonnull List<String> list, @Nonnull String... values) {
         for (String o : values) {
-            if (!Strings.isNullOrEmpty(o)) {
+            if (o != null && !o.isEmpty()) {
                 list.add(o);
             }
         }
         return this;
     }
+
+    private static final Collector<CharSequence, ?, String> COMMA_JOINER = Collectors.joining(",");
+    private static final Collector<CharSequence, ?, String> WHERE_JOINER = Collectors.joining(" AND ", "", "=?");
 }

@@ -16,7 +16,7 @@
  */
 package internal.sql.adodb;
 
-import ec.tstoolkit.design.VisibleForTesting;
+import demetra.design.VisibleForTesting;
 import static java.lang.String.format;
 import java.sql.Connection;
 import java.sql.Driver;
@@ -25,8 +25,8 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Level;
 import org.openide.util.lookup.ServiceProvider;
-import org.slf4j.LoggerFactory;
 
 /**
  * https://msdn.microsoft.com/en-us/library/aa478977.aspx
@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
  * @author Philippe Charles
  * @since 2.1.0
  */
+@lombok.extern.java.Log
 @ServiceProvider(service = Driver.class)
 public final class AdoDriver extends _Driver {
 
@@ -43,7 +44,7 @@ public final class AdoDriver extends _Driver {
         try {
             DriverManager.registerDriver(new AdoDriver());
         } catch (SQLException ex) {
-            LoggerFactory.getLogger(AdoDriver.class).error("Cannot register AdoDriver", ex);
+            log.log(Level.SEVERE, "Cannot register AdoDriver", ex);
         }
     }
 

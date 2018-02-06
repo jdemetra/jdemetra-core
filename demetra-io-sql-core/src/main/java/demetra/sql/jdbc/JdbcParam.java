@@ -16,9 +16,6 @@
  */
 package demetra.sql.jdbc;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.cube.CubeId;
@@ -33,9 +30,15 @@ import static demetra.tsprovider.util.Params.onObsFormat;
 import static demetra.tsprovider.util.Params.onObsGathering;
 import static demetra.tsprovider.util.Params.onString;
 import static demetra.tsprovider.util.Params.onStringList;
+import internal.util.Strings;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 
 /**
@@ -51,12 +54,14 @@ interface JdbcParam extends IParam<DataSource, JdbcBean> {
 
     static final class V1 implements JdbcParam {
 
-        private final Splitter dimensionSplitter = Splitter.on(',').trimResults().omitEmptyStrings();
-        private final Joiner dimensionJoiner = Joiner.on(',');
+        private static final Collector<CharSequence, ?, String> COMMA_JOINER = Collectors.joining(",");
+
+        private final Function<CharSequence, Stream<String>> dimensionSplitter = o -> Strings.splitToStream(',', o).map(String::trim).filter(Strings::isNotEmpty);
+        private final Function<Stream<CharSequence>, String> dimensionJoiner = o -> o.collect(COMMA_JOINER);
 
         private final IParam<DataSource, String> dbName = onString("", "dbName");
         private final IParam<DataSource, String> tableName = onString("", "tableName");
-        private final IParam<DataSource, List<String>> dimColumns = onStringList(ImmutableList.of(), "dimColumns", o -> dimensionSplitter.splitToList(o).stream(), o -> dimensionJoiner.join(o.iterator()));
+        private final IParam<DataSource, List<String>> dimColumns = onStringList(Collections.emptyList(), "dimColumns", dimensionSplitter, dimensionJoiner);
         private final IParam<DataSource, String> periodColumn = onString("", "periodColumn");
         private final IParam<DataSource, String> valueColumn = onString("", "valueColumn");
         private final IParam<DataSource, ObsFormat> dataFormat = onObsFormat(ObsFormat.DEFAULT, "locale", "datePattern", "numberPattern");

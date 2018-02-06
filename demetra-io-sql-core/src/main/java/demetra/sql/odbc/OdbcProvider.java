@@ -36,7 +36,6 @@ import demetra.tsprovider.util.CacheProvider;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import demetra.tsprovider.util.FallbackDataMoniker;
 import demetra.tsprovider.util.IParam;
-import ec.tstoolkit.utilities.GuavaCaches;
 import internal.sql.odbc.legacy.LegacyOdbcMoniker;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentMap;
@@ -130,7 +129,7 @@ public final class OdbcProvider implements DataSourceLoader<OdbcBean> {
         private CubeAccessor load(DataSource key) throws IOException {
             OdbcBean bean = param.get(key);
             SqlTableAsCubeResource result = SqlTableAsCubeResource.of(supplier.get(), bean.getDsn(), bean.getTable(), CubeId.root(bean.getDimColumns()), toDataParams(bean), bean.getObsGathering(), bean.getLabelColumn());
-            return TableAsCubeAccessor.create(result).bulk(bean.getCacheDepth(), GuavaCaches.ttlCacheAsMap(bean.getCacheTtl()));
+            return TableAsCubeAccessor.create(result).bulk(bean.getCacheDepth(), CacheProvider.getDefault().ttlCacheAsMap(bean.getCacheTtl()));
         }
 
         private static TableDataParams toDataParams(OdbcBean bean) {

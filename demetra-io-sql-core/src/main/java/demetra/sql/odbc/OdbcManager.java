@@ -16,7 +16,6 @@
  */
 package demetra.sql.odbc;
 
-import com.google.common.base.StandardSystemProperty;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -69,7 +68,7 @@ final class OdbcManager {
     }
 
     private static boolean is64bit() {
-        return "amd64".equals(StandardSystemProperty.OS_ARCH.value());
+        return "amd64".equals(System.getProperty("os.arch"));
     }
 
     private static boolean isClassLoadable(Class<?> type, String className) {

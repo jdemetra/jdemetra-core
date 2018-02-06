@@ -16,28 +16,25 @@
  */
 package sql.util;
 
-import com.google.common.base.Preconditions;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.logging.Level;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import org.slf4j.LoggerFactory;
 
 /**
  * Package-private supporting class for {@link SqlConnectionSupplier}.
  *
  * @author Philippe Charles
  */
+@lombok.extern.java.Log
+@lombok.experimental.UtilityClass
 final class SqlConnectionSuppliers {
-
-    private SqlConnectionSuppliers() {
-        // static class
-    }
 
     /**
      * A connection supplier that uses {@link DriverManager}.
@@ -57,14 +54,16 @@ final class SqlConnectionSuppliers {
                 Class.forName(driverClassName);
                 return true;
             } catch (ClassNotFoundException ex) {
-                LoggerFactory.getLogger(DriverBasedSupplier.class).info("Can't load jdbc driver '{}'", driverClassName);
+                log.log(Level.INFO, "Can't load jdbc driver '{}'", driverClassName);
                 return false;
             }
         }
 
         @Override
         public Connection getConnection(String connectionString) throws SQLException {
-            Preconditions.checkState(driverAvailable, "Driver not available");
+            if (!driverAvailable) {
+                throw new IllegalStateException("Driver not available");
+            }
             return DriverManager.getConnection(toUrl.apply(connectionString));
         }
     }
