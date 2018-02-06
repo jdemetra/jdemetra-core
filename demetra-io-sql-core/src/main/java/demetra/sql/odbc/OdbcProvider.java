@@ -16,6 +16,7 @@
  */
 package demetra.sql.odbc;
 
+import internal.sql.odbc.OdbcParam;
 import demetra.sql.SqlTableAsCubeResource;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
@@ -33,8 +34,10 @@ import demetra.tsprovider.cursor.HasTsCursor;
 import demetra.tsprovider.cursor.TsCursorAsProvider;
 import demetra.tsprovider.util.CacheProvider;
 import demetra.tsprovider.util.DataSourcePreconditions;
+import demetra.tsprovider.util.FallbackDataMoniker;
 import demetra.tsprovider.util.IParam;
 import ec.tstoolkit.utilities.GuavaCaches;
+import internal.sql.odbc.legacy.LegacyOdbcMoniker;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -76,7 +79,7 @@ public final class OdbcProvider implements DataSourceLoader<OdbcBean> {
         OdbcParam param = new OdbcParam.V1();
 
         this.mutableListSupport = HasDataSourceMutableList.of(NAME, cache::remove);
-        this.monikerSupport = HasDataMoniker.usingUri(NAME);
+        this.monikerSupport = FallbackDataMoniker.of(HasDataMoniker.usingUri(NAME), LegacyOdbcMoniker.of(NAME, param));
         this.beanSupport = HasDataSourceBean.of(NAME, param, param.getVersion());
         this.cubeSupport = CubeSupport.of(new OdbcCubeResource(cache, connectionSupplier, param));
         this.tsSupport = TsCursorAsProvider.of(NAME, cubeSupport, monikerSupport, cache::clear);

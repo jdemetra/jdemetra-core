@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider.legacy;
 
-import demetra.design.Immutable;
+import demetra.design.DemetraPlusLegacy;
 import demetra.tsprovider.DataSource;
 import java.io.File;
 import demetra.util.Parser;
@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
  *
  * @author Demortier Jeremy
  */
-@Immutable
+@DemetraPlusLegacy
 @lombok.Value
 public final class LegacyFileId implements CharSequence {
 

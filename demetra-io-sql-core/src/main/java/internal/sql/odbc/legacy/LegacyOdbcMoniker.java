@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2018 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,18 +14,17 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.spreadsheet.legacy;
+package internal.sql.odbc.legacy;
 
 import demetra.design.DemetraPlusLegacy;
-import demetra.spreadsheet.SpreadSheetBean;
+import demetra.sql.odbc.OdbcBean;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.HasDataMoniker;
 import demetra.tsprovider.TsMoniker;
-import demetra.tsprovider.legacy.LegacyFileId;
 import demetra.tsprovider.util.DataSourcePreconditions;
-import internal.spreadsheet.SpreadSheetParam;
-import java.io.File;
+import internal.sql.odbc.OdbcParam;
+import java.util.Arrays;
 
 /**
  *
@@ -33,10 +32,10 @@ import java.io.File;
  */
 @DemetraPlusLegacy
 @lombok.AllArgsConstructor(staticName = "of")
-public final class LegacySpreadSheetMoniker implements HasDataMoniker {
+public final class LegacyOdbcMoniker implements HasDataMoniker {
 
     private final String providerName;
-    private final SpreadSheetParam param;
+    private final OdbcParam param;
 
     @Override
     public TsMoniker toMoniker(DataSource dataSource) throws IllegalArgumentException {
@@ -59,8 +58,8 @@ public final class LegacySpreadSheetMoniker implements HasDataMoniker {
             throw new IllegalArgumentException(moniker.toString());
         }
 
-        LegacyFileId id = LegacyFileId.parse(monikerId);
-        return id != null ? toDataSource(new File(id.getFile())) : null;
+        LegacyOdbcId id = LegacyOdbcId.parse(monikerId);
+        return id != null ? toDataSource(id) : null;
     }
 
     @Override
@@ -72,45 +71,42 @@ public final class LegacySpreadSheetMoniker implements HasDataMoniker {
             throw new IllegalArgumentException(moniker.toString());
         }
 
-        LegacySpreadSheetId id = LegacySpreadSheetId.parse(monikerId);
+        LegacyOdbcId id = LegacyOdbcId.parse(monikerId);
         return id != null ? toDataSet(id) : null;
     }
 
-    private DataSet toDataSet(LegacySpreadSheetId id) {
-        DataSource source = toDataSource(new File(id.getFile()));
+    private DataSource toDataSource(LegacyOdbcId id) {
+        return DataSource
+                .builder(providerName, param.getVersion())
+                .put(param, toBean(id))
+                .build();
+    }
+
+    private OdbcBean toBean(LegacyOdbcId id) {
+        OdbcBean result = new OdbcBean();
+        result.setDsn(id.getDbName());
+        result.setTable(id.getTable());
+        result.setDimColumns(Arrays.asList(id.getDomainColumn(), id.getSeriesColumn()));
+        result.setPeriodColumn(id.getPeriodColumn());
+        result.setValueColumn(id.getValueColumn());
+        return result;
+    }
+
+    private DataSet toDataSet(LegacyOdbcId id) {
+        DataSource source = toDataSource(id);
+        if (id.isMultiCollection()) {
+            return DataSet.of(source, DataSet.Kind.COLLECTION);
+        }
         if (id.isCollection()) {
-            return DataSet.builder(source, DataSet.Kind.COLLECTION)
-                    .put(param.getSheetParam(source), cleanSheetName(id.getSheetName()))
+            return DataSet
+                    .builder(source, DataSet.Kind.COLLECTION)
+                    .put(id.getDomainColumn(), id.getDomainName())
                     .build();
         }
-        if (id.isSeriesByIndex()) {
-            // not supported
-            return null;
-        }
-        return DataSet.builder(source, DataSet.Kind.SERIES)
-                .put(param.getSheetParam(source), cleanSheetName(id.getSheetName()))
-                .put(param.getSeriesParam(source), id.getSeriesName())
+        return DataSet
+                .builder(source, DataSet.Kind.SERIES)
+                .put(id.getDomainColumn(), id.getDomainName())
+                .put(id.getSeriesColumn(), id.getSeriesName())
                 .build();
-    }
-
-    private DataSource toDataSource(File file) {
-        SpreadSheetBean bean = new SpreadSheetBean();
-        bean.setFile(file);
-        return DataSource.builder(providerName, param.getVersion())
-                .put(param, bean)
-                .build();
-    }
-
-    private static String cleanSheetName(String name) {
-        // probably we should change the CharSet, but it is not very clear how and which one
-        int l = name.lastIndexOf('$');
-        if (l < 0) {
-            return name;
-        }
-        name = name.substring(0, l);
-        if (name.charAt(0) == '\'') {
-            name = name.substring(1);
-        }
-        return name.replace('#', '.');
     }
 }

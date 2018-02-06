@@ -14,11 +14,12 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.sql.odbc;
+package internal.sql.odbc;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import demetra.sql.odbc.OdbcBean;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.cube.CubeId;
@@ -42,7 +43,7 @@ import javax.annotation.Nonnull;
  *
  * @author Philippe Charles
  */
-interface OdbcParam extends IParam<DataSource, OdbcBean> {
+public interface OdbcParam extends IParam<DataSource, OdbcBean> {
 
     String getVersion();
 

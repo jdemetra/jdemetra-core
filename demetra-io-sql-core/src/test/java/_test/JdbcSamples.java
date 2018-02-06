@@ -43,6 +43,7 @@ public enum JdbcSamples implements ProviderResources.Loader2<JndiJdbcProvider>, 
         bean.setDbName("mydb");
         bean.setTableName("Table2");
         bean.setDimColumns("Sector, Region");
+        // FIXME: "PERIOD" is a keyword in SQL2011 and escaping fails for some raison
         bean.setPeriodColumn("Table2.Period");
         bean.setValueColumn("Rate");
         return bean;
@@ -61,6 +62,7 @@ public enum JdbcSamples implements ProviderResources.Loader2<JndiJdbcProvider>, 
         bean.setDatabase("mydb");
         bean.setTable("Table2");
         bean.setDimColumns(Arrays.asList("Sector", "Region"));
+        // FIXME: "PERIOD" is a keyword in SQL2011 and escaping fails for some raison
         bean.setPeriodColumn("Table2.Period");
         bean.setValueColumn("Rate");
         return bean;
