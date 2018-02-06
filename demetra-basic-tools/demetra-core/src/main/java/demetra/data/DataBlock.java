@@ -691,6 +691,14 @@ public final class DataBlock implements DoubleSequence {
     public int length() {
         return (end - beg) / inc;
     }
+    
+    public double first(){
+        return data[beg];
+    }
+
+    public double last(){
+        return data[end-inc];
+    }
 
     /**
      * Gets the underlying storage The cells of this object are defined by cell
@@ -852,6 +860,11 @@ public final class DataBlock implements DoubleSequence {
             }
         }
         return s;
+    }
+    
+    public void correctForMean(){
+        double s=sum();
+        sub(s);
     }
 
     public double ssq() {
@@ -1446,6 +1459,31 @@ public final class DataBlock implements DoubleSequence {
             int cur = end - inc, dcur = cur + inc * del;
             do {
                 data[cur] = fn.applyAsDouble(data[cur], data[dcur]);
+                cur -= inc;
+                dcur -= inc;
+            } while (cur != beg);
+
+        }
+    }
+
+    public void applyRecursively(final int del, @Nonnull DoubleBinaryOperator fn) {
+        if (del > 0) {
+            if (length() <= del) {
+                return;
+            }
+            int cur = beg, dcur = cur + inc * del;
+            while (dcur != end) {
+                data[dcur] = fn.applyAsDouble(data[cur], data[dcur]);
+                cur += inc;
+                dcur += inc;
+            }
+        } else if (del < 0) {
+            if (length() <= -del) {
+                return;
+            }
+            int cur = end - inc, dcur = cur + inc * del;
+            do {
+                data[dcur] = fn.applyAsDouble(data[cur], data[dcur]);
                 cur -= inc;
                 dcur -= inc;
             } while (cur != beg);
