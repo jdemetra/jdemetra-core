@@ -16,12 +16,15 @@
  */
 package demetra.sql.odbc;
 
+import _test.OdbcSamples;
 import demetra.bridge.FromDataSourceLoader;
+import demetra.tsprovider.DataSet;
+import demetra.tsprovider.DataSource;
+import demetra.tsprovider.DataSourceProvider;
+import demetra.tsprovider.TsMoniker;
 import ec.tss.tsproviders.IDataSourceLoaderAssert;
-import ec.tss.tsproviders.odbc.OdbcProviderX;
 import java.io.IOException;
-import java.sql.DriverManager;
-import java.util.Arrays;
+import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
 
 /**
@@ -33,43 +36,49 @@ public class OdbcProviderTest {
     @Test
     public void testEquivalence() throws IOException {
         IDataSourceLoaderAssert
-                .assertThat(new FromDataSourceLoader(getProvider()))
-                .isEquivalentTo(getPreviousProvider(), o -> o.encodeBean(getPreviousBean(o)));
+                .assertThat(new FromDataSourceLoader(OdbcSamples.TABLE2.getProvider3()))
+                .isEquivalentTo(OdbcSamples.TABLE2.getProvider2(), o -> o.encodeBean(OdbcSamples.TABLE2.getBean2(o)));
     }
 
     @Test
     public void testTspCompliance() {
-        IDataSourceLoaderAssert.Sampler<FromDataSourceLoader<OdbcProvider>> sampler = o -> getBean(o.getDelegate());
-        IDataSourceLoaderAssert.assertCompliance(() -> new FromDataSourceLoader(getProvider()), sampler);
+        IDataSourceLoaderAssert.Sampler<FromDataSourceLoader<OdbcProvider>> sampler = o -> OdbcSamples.TABLE2.getBean3(o.getDelegate());
+        IDataSourceLoaderAssert.assertCompliance(() -> new FromDataSourceLoader(OdbcSamples.TABLE2.getProvider3()), sampler);
     }
 
-    private static OdbcProvider getProvider() {
-        OdbcProvider provider = new OdbcProvider();
-        provider.setConnectionSupplier(o -> DriverManager.getConnection("jdbc:hsqldb:res:mydb", "sa", ""));
-        return provider;
+    @Test
+    public void testMonikerLegacy() {
     }
 
-    private static OdbcBean getBean(OdbcProvider o) {
-        OdbcBean bean = o.newBean();
-        bean.setDsn("mydb");
-        bean.setTable("Table2");
-        bean.setDimColumns(Arrays.asList("Sector", "Region"));
-        bean.setPeriodColumn("Table2.Period");
-        bean.setValueColumn("Rate");
-        return bean;
-    }
+    @Test
+    public void testMonikerUri() {
+        String uri = "demetra://tsprovider/ODBCPRVDR/20111201/SERIES?aggregationType=Last&cacheDepth=2&cacheTtl=1000&cleanMissing=false&datePattern=dd%2FMM%2Fyyyy&dbName=mydb&dimColumns=Sector%2C+Region&frequency=Monthly&labelColumn=Title&locale=fr&numberPattern=%23.%23&periodColumn=Table2.Period&tableName=Table2&valueColumn=Rate&versionColumn=Version#Region=Belgium&Sector=Industry";
 
-    private static ec.tss.tsproviders.odbc.OdbcProvider getPreviousProvider() {
-        return OdbcProviderX.create(o -> DriverManager.getConnection("jdbc:hsqldb:res:mydb", "sa", ""));
-    }
+        DataSource source = DataSource.builder("ODBCPRVDR", "20111201")
+                .put("dbName", "mydb")
+                .put("tableName", "Table2")
+                .put("dimColumns", "Sector, Region")
+                .put("periodColumn", "Table2.Period")
+                .put("valueColumn", "Rate")
+                .put("locale", "fr")
+                .put("datePattern", "dd/MM/yyyy")
+                .put("numberPattern", "#.#")
+                .put("versionColumn", "Version")
+                .put("labelColumn", "Title")
+                .put("frequency", "Monthly")
+                .put("aggregationType", "Last")
+                .put("cleanMissing", "false")
+                .put("cacheTtl", "1000")
+                .put("cacheDepth", "2")
+                .build();
 
-    private static ec.tss.tsproviders.odbc.OdbcBean getPreviousBean(ec.tss.tsproviders.odbc.OdbcProvider o) {
-        ec.tss.tsproviders.odbc.OdbcBean bean = o.newBean();
-        bean.setDbName("mydb");
-        bean.setTableName("Table2");
-        bean.setDimColumns("Sector, Region");
-        bean.setPeriodColumn("Table2.Period");
-        bean.setValueColumn("Rate");
-        return bean;
+        DataSet expected = DataSet.builder(source, DataSet.Kind.SERIES)
+                .put("Sector", "Industry")
+                .put("Region", "Belgium")
+                .build();
+
+        try (DataSourceProvider p = new OdbcProvider()) {
+            assertThat(p.toDataSet(new TsMoniker("ODBCPRVDR", uri))).isEqualTo(expected);
+        }
     }
 }

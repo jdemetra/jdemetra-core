@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
-import test.spreadsheet.DataForTest;
+import _test.DataForTest;
 
 /**
  *

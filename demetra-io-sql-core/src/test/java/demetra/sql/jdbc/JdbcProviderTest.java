@@ -16,11 +16,15 @@
  */
 package demetra.sql.jdbc;
 
+import _test.JdbcSamples;
 import demetra.bridge.FromDataSourceLoader;
+import demetra.tsprovider.DataSet;
+import demetra.tsprovider.DataSource;
+import demetra.tsprovider.DataSourceProvider;
+import demetra.tsprovider.TsMoniker;
 import ec.tss.tsproviders.IDataSourceLoaderAssert;
 import java.io.IOException;
-import java.sql.DriverManager;
-import java.util.Arrays;
+import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
 
 /**
@@ -32,45 +36,49 @@ public class JdbcProviderTest {
     @Test
     public void testEquivalence() throws IOException {
         IDataSourceLoaderAssert
-                .assertThat(new FromDataSourceLoader(getProvider()))
-                .isEquivalentTo(getPreviousProvider(), o -> o.encodeBean(getPreviousBean(o)));
+                .assertThat(new FromDataSourceLoader(JdbcSamples.TABLE2.getProvider3()))
+                .isEquivalentTo(JdbcSamples.TABLE2.getProvider2(), o -> o.encodeBean(JdbcSamples.TABLE2.getBean2(o)));
     }
 
     @Test
     public void testTspCompliance() {
-        IDataSourceLoaderAssert.Sampler<FromDataSourceLoader<JdbcProvider>> sampler = o -> getBean(o.getDelegate());
-        IDataSourceLoaderAssert.assertCompliance(() -> new FromDataSourceLoader(getProvider()), sampler);
+        IDataSourceLoaderAssert.Sampler<FromDataSourceLoader<JdbcProvider>> sampler = o -> JdbcSamples.TABLE2.getBean3(o.getDelegate());
+        IDataSourceLoaderAssert.assertCompliance(() -> new FromDataSourceLoader(JdbcSamples.TABLE2.getProvider3()), sampler);
     }
 
-    private static JdbcProvider getProvider() {
-        JdbcProvider provider = new JdbcProvider();
-        provider.setConnectionSupplier(o -> DriverManager.getConnection("jdbc:hsqldb:res:mydb", "sa", ""));
-        return provider;
+    @Test
+    public void testMonikerLegacy() {
     }
 
-    private static JdbcBean getBean(JdbcProvider o) {
-        JdbcBean bean = o.newBean();
-        bean.setDatabase("mydb");
-        bean.setTable("Table2");
-        bean.setDimColumns(Arrays.asList("Sector", "Region"));
-        bean.setPeriodColumn("Table2.Period");
-        bean.setValueColumn("Rate");
-        return bean;
-    }
+    @Test
+    public void testMonikerUri() {
+        String uri = "demetra://tsprovider/JNDI-JDBC/20111201/SERIES?aggregationType=Last&cacheDepth=2&cacheTtl=1000&cleanMissing=false&datePattern=dd%2FMM%2Fyyyy&dbName=mydb&dimColumns=Sector%2C+Region&frequency=Monthly&labelColumn=Title&locale=fr&numberPattern=%23.%23&periodColumn=Table2.Period&tableName=Table2&valueColumn=Rate&versionColumn=Version#Region=Belgium&Sector=Industry";
 
-    private static ec.tss.tsproviders.jdbc.jndi.JndiJdbcProvider getPreviousProvider() {
-        ec.tss.tsproviders.jdbc.jndi.JndiJdbcProvider provider = new ec.tss.tsproviders.jdbc.jndi.JndiJdbcProvider();
-        provider.setConnectionSupplier(o -> DriverManager.getConnection("jdbc:hsqldb:res:mydb", "sa", ""));
-        return provider;
-    }
+        DataSource source = DataSource.builder("JNDI-JDBC", "20111201")
+                .put("dbName", "mydb")
+                .put("tableName", "Table2")
+                .put("dimColumns", "Sector, Region")
+                .put("periodColumn", "Table2.Period")
+                .put("valueColumn", "Rate")
+                .put("locale", "fr")
+                .put("datePattern", "dd/MM/yyyy")
+                .put("numberPattern", "#.#")
+                .put("versionColumn", "Version")
+                .put("labelColumn", "Title")
+                .put("frequency", "Monthly")
+                .put("aggregationType", "Last")
+                .put("cleanMissing", "false")
+                .put("cacheTtl", "1000")
+                .put("cacheDepth", "2")
+                .build();
 
-    private static ec.tss.tsproviders.jdbc.JdbcBean getPreviousBean(ec.tss.tsproviders.jdbc.jndi.JndiJdbcProvider o) {
-        ec.tss.tsproviders.jdbc.JdbcBean bean = o.newBean();
-        bean.setDbName("mydb");
-        bean.setTableName("Table2");
-        bean.setDimColumns("Sector, Region");
-        bean.setPeriodColumn("Table2.Period");
-        bean.setValueColumn("Rate");
-        return bean;
+        DataSet expected = DataSet.builder(source, DataSet.Kind.SERIES)
+                .put("Sector", "Industry")
+                .put("Region", "Belgium")
+                .build();
+
+        try (DataSourceProvider p = new JdbcProvider()) {
+            assertThat(p.toDataSet(new TsMoniker("JNDI-JDBC", uri))).isEqualTo(expected);
+        }
     }
 }

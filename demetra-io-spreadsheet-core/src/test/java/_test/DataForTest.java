@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package test.spreadsheet;
+package _test;
 
 import ec.util.spreadsheet.Book;
 import ec.util.spreadsheet.helpers.ArrayBook;
