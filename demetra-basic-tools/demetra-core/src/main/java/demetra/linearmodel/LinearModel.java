@@ -37,12 +37,11 @@ public class LinearModel {
 
     public static class Builder {
 
-        private final double[] y;
+        private double[] y;
         private boolean mean;
         private final ArrayList<DoubleSequence> x = new ArrayList<>();
 
-        private Builder(@Nonnull DoubleSequence y) {
-            this.y = y.toArray();
+        private Builder() {
         }
 
         public Builder meanCorrection(boolean mean) {
@@ -50,37 +49,40 @@ public class LinearModel {
             return this;
         }
 
+        public Builder y(@Nonnull DoubleSequence y) {
+            this.y = y.toArray();
+            return this;
+        }
+
         public Builder addX(@Nonnull DoubleSequence var) {
-            if (var.length() != y.length) {
-                throw new RuntimeException("Incompatible dimensions");
-            }
             x.add(var);
             return this;
         }
 
         public Builder addX(@Nonnull Matrix X) {
-            if (X.getRowsCount() != y.length) {
-                throw new RuntimeException("Incompatible dimensions");
-            }
-            X.columns().forEach(col->x.add(col));
+            X.columns().forEach(col -> x.add(col));
             return this;
         }
 
         public Builder addX(@Nonnull DoubleSequence... vars) {
             for (DoubleSequence var : vars) {
-                if (var.length() != y.length) {
-                    throw new RuntimeException("Incompatible dimensions");
-                }
                 x.add(var);
             }
             return this;
         }
 
         public LinearModel build() {
+            if (y == null) {
+                throw new RuntimeException("Missing y");
+            }
+
             Matrix X = Matrix.make(y.length, x.size());
             if (!X.isEmpty()) {
                 DataBlockIterator cols = X.columnsIterator();
                 for (DoubleSequence xcur : x) {
+                    if (xcur.length() != y.length) {
+                        throw new RuntimeException("Incompatible dimensions");
+                    }
                     cols.next().copy(xcur);
                 }
             }
@@ -92,8 +94,8 @@ public class LinearModel {
     private final boolean mean;
     private final Matrix x;
 
-    public static Builder of(DoubleSequence y) {
-        return new Builder(y);
+    public static Builder builder() {
+        return new Builder();
     }
 
     /**

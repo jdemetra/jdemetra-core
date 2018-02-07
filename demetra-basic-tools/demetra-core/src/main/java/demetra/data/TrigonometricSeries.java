@@ -69,9 +69,9 @@ public class TrigonometricSeries {
         return matrix(0, len);
     }
 
-    public Matrix matrix(int start, int len) {
+    public Matrix matrix(int len, int start) {
         int nlast = w.length - 1;
-        int n = w.length * 2 - (w[nlast] == 1 ? 1 : 0);
+        int n = w.length * 2 - (Math.abs(w[nlast]-Math.PI)<1e-9 ? 1 : 0);
         Matrix m = Matrix.make(len, n);
 
         int nq = n / 2;

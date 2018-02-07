@@ -38,7 +38,8 @@ public class LinearModelTest {
 
         DataBlock y = DataBlock.make(10);
         y.set(rnd::nextDouble);
-        LinearModel lm = LinearModel.of(y)
+        LinearModel lm = LinearModel.builder()
+                .y(y)
                 .meanCorrection(true)
                 .build();
         assertTrue(lm != null);
@@ -55,7 +56,8 @@ public class LinearModelTest {
         x1.set(rnd::nextDouble);
         DataBlock x2 = DataBlock.make(10);
         x2.set(rnd::nextDouble);
-        LinearModel lm = LinearModel.of(y)
+        LinearModel lm = LinearModel.builder()
+                .y(y)
                 .meanCorrection(true)
                 .addX(x1, x2)
                 .build();
@@ -73,7 +75,8 @@ public class LinearModelTest {
         x1.set(rnd::nextDouble);
         DataBlock x2 = DataBlock.make(10);
         x2.set(rnd::nextDouble);
-        LinearModel lm = LinearModel.of(DoubleSequence.transformation(y, z->Math.log(z)))
+        LinearModel lm = LinearModel.builder()
+                .y(DoubleSequence.transformation(y, z->Math.log(z)))
                 .addX(x1, x2)
                 .build();
         assertTrue(lm != null);

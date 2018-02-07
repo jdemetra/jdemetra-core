@@ -1456,14 +1456,13 @@ public final class DataBlock implements DoubleSequence {
             if (length() <= -del) {
                 return;
             }
-            int cur = end - inc, dcur = cur + inc * del;
-            do {
-                data[cur] = fn.applyAsDouble(data[cur], data[dcur]);
+            int cur = end, dcur = cur + inc * del;
+            while (dcur != beg) {
                 cur -= inc;
                 dcur -= inc;
-            } while (cur != beg);
-
-        }
+                data[cur] = fn.applyAsDouble(data[cur], data[dcur]);
+            } 
+       }
     }
 
     public void applyRecursively(final int del, @Nonnull DoubleBinaryOperator fn) {
@@ -1481,16 +1480,20 @@ public final class DataBlock implements DoubleSequence {
             if (length() <= -del) {
                 return;
             }
-            int cur = end - inc, dcur = cur + inc * del;
-            do {
-                data[dcur] = fn.applyAsDouble(data[cur], data[dcur]);
+            int cur = end, dcur = cur + inc * del;
+            while (dcur != beg) {
                 cur -= inc;
                 dcur -= inc;
-            } while (cur != beg);
+                data[dcur] = fn.applyAsDouble(data[cur], data[dcur]);
+            }
 
         }
     }
 
+    public void cumul(){
+        applyRecursively(1, (a,b)->a+b);
+    }
+    
     public boolean allMatch(DataBlock d, @Nonnull DoubleBiPredicate p) {
         for (int i = beg, j = d.beg; i != end; i += inc, j += d.inc) {
             if (!p.test(data[i], d.data[j])) {

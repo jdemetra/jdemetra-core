@@ -102,7 +102,8 @@ public class AugmentedDikkeyFullerTestTest {
             }
         }
         for (int i = 0; i < Y.getColumnsCount(); ++i) {
-            LinearModel reg = LinearModel.of(Y.column(i))
+            LinearModel reg = LinearModel.builder()
+                    .y(Y.column(i))
                     .meanCorrection(true)
                     .addX(X)
                     .build();

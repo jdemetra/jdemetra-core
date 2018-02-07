@@ -40,8 +40,8 @@ public class SmoothedPeriodogramTest {
                 .data(DoubleSequence.of(data))
                 .taper(new TukeyHanningTaper(.1))
                 .windowLength(85)
-                .relativeResolution(1)
-                .windowFunction(DiscreteWindowFunction.Tukey)
+                .relativeResolution(.5)
+                .windowFunction(DiscreteWindowFunction.Bartlett)
                 .build();
         
         for (int i = 0; i < 200; ++i) {

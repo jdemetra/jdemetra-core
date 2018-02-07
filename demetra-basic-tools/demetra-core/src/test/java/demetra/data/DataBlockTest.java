@@ -3842,7 +3842,7 @@ public class DataBlockTest {
         DataBlock A=DataBlock.ofInternal(data, 2, 102, 10);
         A.set(i->i+1);
         A.autoApply(-1, (a,b)->(a-b));
-        assertThat(A.allMatch(x->x==1)).isTrue();
+        assertThat(A.drop(1,0).allMatch(x->x==1)).isTrue();
         A.set(i->i+1);
         A.autoApply(1, (a,b)->(b-a));
         assertThat(A.drop(0,1).allMatch(x->x==1)).isTrue();
@@ -3854,6 +3854,18 @@ public class DataBlockTest {
         assertThat(A.drop(0,2).allMatch(x->x==2)).isTrue();
     }
 
+    @Test
+    public void testApplyRecursively(){
+        double[] data=new double[100];
+        DataBlock A=DataBlock.ofInternal(data, 2, 102, 10);
+        A.set(i->1);
+        A.applyRecursively(1, (a,b)->(a+b));
+        assertThat(A.last() == A.length()).isTrue();
+        A.set(i->1);
+        A.applyRecursively(-1, (a,b)->(a+b));
+        assertThat(A.first() == A.length()).isTrue();
+    }
+    
     private double[] getSample(int size) {
         double[] result = new double[size];
         for (int i = 0; i < size; i++) {

@@ -34,7 +34,8 @@ public class OlsTest {
     public void testLongley() {
         double[] y = DataSets.Longley.y;
 
-        LinearModel model = LinearModel.of(DoubleSequence.ofInternal(y))
+        LinearModel model = LinearModel.builder()
+                .y(DoubleSequence.ofInternal(y))
                 .meanCorrection(true)
                 .addX(DoubleSequence.ofInternal(DataSets.Longley.x1))
                 .addX(DoubleSequence.ofInternal(DataSets.Longley.x2))
@@ -57,7 +58,8 @@ public class OlsTest {
     public void testFilip() {
         double[] y = DataSets.Filip.y;
         DoubleSequence x=DoubleSequence.ofInternal(DataSets.Filip.x);
-        LinearModel model = LinearModel.of(DoubleSequence.ofInternal(y))
+        LinearModel model = LinearModel.builder()
+                .y(DoubleSequence.ofInternal(y))
                 .meanCorrection(true)
                 .addX(x)
                 .addX(DoubleSequence.transformation(x, a -> a * a))

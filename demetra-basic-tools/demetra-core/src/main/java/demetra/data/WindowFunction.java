@@ -57,9 +57,15 @@ public enum WindowFunction {
         return null;
     }
     
-    public double[] discreteWindow(int windowLength){
-        double[] win=new double[windowLength];
-        double dlen=windowLength;
+    /**
+     * Return the weights of the half of the window
+     * (the full window length is 2*windowLength-1)
+     * @param length The number of items to be returned 
+     * @return w[0],...,w[(windowLength-1)/windowLength]
+     */
+    public double[] discreteWindow(int length){
+        double[] win=new double[length];
+        double dlen=length;
         DoubleUnaryOperator fn=window();
         for (int i=0; i<win.length; ++i){
             win[i]=fn.applyAsDouble(i/dlen);
@@ -67,7 +73,12 @@ public enum WindowFunction {
         return win;
     }
     
-    
+    /**
+     * Applies the window on a given even function
+     * @param fn
+     * @param windowLength 
+     * @return w[-len]f(-len)+...+w[0]f(0)+...w[len]f(len)
+     */
     public double computeSymmetric(IntToDoubleFunction fn, int windowLength){
         double[] window=discreteWindow(windowLength);
         double v=fn.applyAsDouble(0)*window[0];
