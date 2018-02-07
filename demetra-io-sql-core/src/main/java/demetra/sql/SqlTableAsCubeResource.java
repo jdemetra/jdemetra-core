@@ -16,12 +16,15 @@
  */
 package demetra.sql;
 
+import internal.sql.SqlTableAsCubeUtil;
+import internal.sql.SelectBuilder;
+import internal.sql.ResultSetFunc;
 import demetra.design.VisibleForTesting;
-import static demetra.sql.ResultSetFunc.onDate;
-import static demetra.sql.ResultSetFunc.onGetString;
-import static demetra.sql.ResultSetFunc.onGetStringArray;
-import static demetra.sql.ResultSetFunc.onNull;
-import static demetra.sql.ResultSetFunc.onNumber;
+import static internal.sql.ResultSetFunc.onDate;
+import static internal.sql.ResultSetFunc.onGetString;
+import static internal.sql.ResultSetFunc.onGetStringArray;
+import static internal.sql.ResultSetFunc.onNull;
+import static internal.sql.ResultSetFunc.onNumber;
 import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cube.TableAsCubeAccessor;
 import demetra.tsprovider.cube.TableAsCubeAccessor.AllSeriesCursor;
@@ -33,7 +36,7 @@ import demetra.tsprovider.cube.TableDataParams;
 import demetra.tsprovider.util.ObsCharacteristics;
 import demetra.tsprovider.util.ObsGathering;
 import demetra.tsprovider.util.TsDataBuilder;
-import sql.util.SqlIdentifierQuoter;
+import util.sql.SqlIdentifierQuoter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -44,7 +47,7 @@ import java.util.GregorianCalendar;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
-import sql.util.SqlConnectionSupplier;
+import util.sql.SqlConnectionSupplier;
 
 /**
  *
@@ -230,7 +233,7 @@ public final class SqlTableAsCubeResource implements TableAsCubeAccessor.Resourc
                     .select(toSelect(ref)).select(label)
                     .filter(toFilter(ref))
                     .orderBy(toSelect(ref))
-                    .withQuoter(SqlIdentifierQuoter.create(metaData))
+                    .withQuoter(SqlIdentifierQuoter.of(metaData))
                     .build();
         }
 
@@ -265,7 +268,7 @@ public final class SqlTableAsCubeResource implements TableAsCubeAccessor.Resourc
                     .select(toSelect(ref)).select(tdp.getPeriodColumn(), tdp.getValueColumn()).select(label)
                     .filter(toFilter(ref))
                     .orderBy(toSelect(ref)).orderBy(tdp.getPeriodColumn(), tdp.getVersionColumn())
-                    .withQuoter(SqlIdentifierQuoter.create(metaData))
+                    .withQuoter(SqlIdentifierQuoter.of(metaData))
                     .build();
         }
 
@@ -306,7 +309,7 @@ public final class SqlTableAsCubeResource implements TableAsCubeAccessor.Resourc
                     .select(tdp.getPeriodColumn(), tdp.getValueColumn()).select(label)
                     .filter(toFilter(ref))
                     .orderBy(tdp.getPeriodColumn(), tdp.getVersionColumn())
-                    .withQuoter(SqlIdentifierQuoter.create(metaData))
+                    .withQuoter(SqlIdentifierQuoter.of(metaData))
                     .build();
         }
 
@@ -346,7 +349,7 @@ public final class SqlTableAsCubeResource implements TableAsCubeAccessor.Resourc
                     .select(column)
                     .filter(toFilter(ref))
                     .orderBy(column)
-                    .withQuoter(SqlIdentifierQuoter.create(metaData))
+                    .withQuoter(SqlIdentifierQuoter.of(metaData))
                     .build();
         }
 

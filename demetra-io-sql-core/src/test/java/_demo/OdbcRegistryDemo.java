@@ -16,8 +16,8 @@
  */
 package _demo;
 
-import sql.util.odbc.OdbcDataSource;
-import sql.util.odbc.OdbcRegistry;
+import util.sql.odbc.OdbcDataSource;
+import util.sql.odbc.OdbcRegistry;
 import java.io.IOException;
 
 /**
@@ -27,7 +27,10 @@ import java.io.IOException;
 public class OdbcRegistryDemo {
 
     public static void main(String[] args) throws IOException {
-        OdbcRegistry registry = OdbcRegistry.getDefault();
+        OdbcRegistry registry = OdbcRegistry.ofServiceLoader();
+        
+        System.out.println("Using registry '" + registry.getName() + "'");
+        System.out.println("");
 
         registry
                 .getDataSources(OdbcDataSource.Type.USER)

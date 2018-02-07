@@ -16,6 +16,7 @@
  */
 package demetra.sql.odbc;
 
+import util.sql.odbc.OdbcConnectionSupplier;
 import internal.sql.odbc.OdbcParam;
 import demetra.sql.SqlTableAsCubeResource;
 import demetra.tsprovider.DataSet;
@@ -43,7 +44,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.openide.util.lookup.ServiceProvider;
-import sql.util.SqlConnectionSupplier;
+import util.sql.SqlConnectionSupplier;
 
 /**
  *
@@ -72,7 +73,7 @@ public final class OdbcProvider implements DataSourceLoader<OdbcBean> {
     private final TsProvider tsSupport;
 
     public OdbcProvider() {
-        this.connectionSupplier = new AtomicReference(OdbcManager.getDefault().getConnectionSupplier());
+        this.connectionSupplier = new AtomicReference(OdbcConnectionSupplier.ofServiceLoader());
 
         ConcurrentMap<DataSource, CubeAccessor> cache = CacheProvider.getDefault().softValuesCacheAsMap();
         OdbcParam param = new OdbcParam.V1();
@@ -96,7 +97,7 @@ public final class OdbcProvider implements DataSourceLoader<OdbcBean> {
 
     public void setConnectionSupplier(@Nullable SqlConnectionSupplier connectionSupplier) {
         SqlConnectionSupplier old = this.connectionSupplier.get();
-        if (this.connectionSupplier.compareAndSet(old, connectionSupplier != null ? connectionSupplier : OdbcManager.getDefault().getConnectionSupplier())) {
+        if (this.connectionSupplier.compareAndSet(old, connectionSupplier != null ? connectionSupplier : OdbcConnectionSupplier.ofServiceLoader())) {
             clearCache();
         }
     }

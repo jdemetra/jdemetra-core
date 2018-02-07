@@ -16,6 +16,7 @@
  */
 package demetra.sql.jdbc;
 
+import internal.sql.jdbc.JdbcParam;
 import demetra.sql.SqlTableAsCubeResource;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
@@ -40,7 +41,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.openide.util.lookup.ServiceProvider;
-import sql.util.SqlConnectionSupplier;
+import util.sql.SqlConnectionSupplier;
 
 /**
  *
