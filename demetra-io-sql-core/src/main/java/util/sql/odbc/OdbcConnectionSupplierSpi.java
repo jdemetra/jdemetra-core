@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
  *
  * @author Philippe Charles
  */
-@ServiceDefinition
+@ServiceDefinition(scope = ServiceDefinition.Scope.FRAMEWORK)
 public interface OdbcConnectionSupplierSpi {
 
     @Nonnull
