@@ -39,6 +39,10 @@ public class Strings {
         return o == null || o.isEmpty();
     }
 
+    public boolean isNotEmpty(@Nullable String o) {
+        return !isNullOrEmpty(o);
+    }
+
     @Nonnull
     public Stream<String> splitToStream(@Nonnull String separator, @Nonnull CharSequence input) {
         return separator.length() == 1

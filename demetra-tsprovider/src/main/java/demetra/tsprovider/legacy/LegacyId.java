@@ -16,10 +16,12 @@
  */
 package demetra.tsprovider.legacy;
 
+import demetra.design.DemetraPlusLegacy;
 import demetra.design.Immutable;
 import java.util.Arrays;
 import java.util.Iterator;
 
+@DemetraPlusLegacy
 @Immutable
 final class LegacyId implements Comparable<LegacyId>, Iterable<String> {
 

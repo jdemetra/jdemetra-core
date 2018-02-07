@@ -16,6 +16,7 @@
  */
 package demetra.spreadsheet;
 
+import _test.SpreadSheetSamples;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsData;
 import demetra.tsprovider.DataSet;
@@ -26,10 +27,9 @@ import demetra.bridge.FromFileBean;
 import demetra.bridge.FromFileLoader;
 import ec.tss.tsproviders.IFileLoaderAssert;
 import internal.spreadsheet.SpreadSheetSupport;
-import java.io.File;
 import java.io.IOException;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -40,18 +40,14 @@ public class SpreadSheetProviderTest {
     @Test
     public void testEquivalence() throws IOException {
         IFileLoaderAssert
-                .assertThat(new FromFileLoader(new SpreadSheetProvider()))
-                .isEquivalentTo(new ec.tss.tsproviders.spreadsheet.SpreadSheetProvider(), o -> {
-                    ec.tss.tsproviders.IFileBean result = o.newBean();
-                    result.setFile(SAMPLE);
-                    return o.encodeBean(result);
-                });
+                .assertThat(new FromFileLoader(SpreadSheetSamples.TOP5.getProvider3()))
+                .isEquivalentTo(SpreadSheetSamples.TOP5.getProvider2(), o -> o.encodeBean(SpreadSheetSamples.TOP5.getBean2(o)));
     }
 
     @Test
     public void testTspCompliance() {
-        IFileLoaderAssert.Sampler<FromFileLoader<SpreadSheetProvider>> sampler = o -> new FromFileBean(getSampleBean(o.getDelegate()));
-        IFileLoaderAssert.assertCompliance(() -> new FromFileLoader(new SpreadSheetProvider()), sampler);
+        IFileLoaderAssert.Sampler<FromFileLoader<SpreadSheetProvider>> sampler = o -> new FromFileBean(SpreadSheetSamples.TOP5.getBean3(o.getDelegate()));
+        IFileLoaderAssert.assertCompliance(() -> new FromFileLoader(SpreadSheetSamples.TOP5.getProvider3()), sampler);
     }
 
     @Test
@@ -96,8 +92,8 @@ public class SpreadSheetProviderTest {
 
     @Test
     public void testSample() throws IOException {
-        try (SpreadSheetProvider p = new SpreadSheetProvider()) {
-            SpreadSheetBean bean = getSampleBean(p);
+        try (SpreadSheetProvider p = SpreadSheetSamples.TOP5.getProvider3()) {
+            SpreadSheetBean bean = SpreadSheetSamples.TOP5.getBean3(p);
 
             DataSource dataSource = p.encodeBean(bean);
             assertThat(p.getDataSources()).isEmpty();
@@ -134,13 +130,5 @@ public class SpreadSheetProviderTest {
             assertThat(p.close(dataSource)).isTrue();
             assertThat(p.getDataSources()).isEmpty();
         }
-    }
-
-    private static final File SAMPLE = IFileLoaderAssert.urlAsFile(SpreadSheetProviderTest.class.getResource("/Top5Browsers.xlsx"));
-
-    private static SpreadSheetBean getSampleBean(SpreadSheetProvider o) {
-        SpreadSheetBean bean = o.newBean();
-        bean.setFile(SAMPLE);
-        return bean;
     }
 }
