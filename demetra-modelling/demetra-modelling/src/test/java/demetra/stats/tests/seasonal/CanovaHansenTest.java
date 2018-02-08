@@ -14,8 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.sa.tests;
+package demetra.stats.tests.seasonal;
 
+import demetra.stats.tests.seasonal.CanovaHansen;
 import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
@@ -40,10 +41,10 @@ public class CanovaHansenTest {
                 .truncationLag(4)
                 .build();
 
-        for (int i = 0; i < 4; ++i) {
-            System.out.println(ch.test(i));
-        }
-        System.out.println(ch.testAll());
+//        for (int i = 0; i < 4; ++i) {
+//            System.out.println(ch.test(i));
+//        }
+//        System.out.println(ch.testAll());
     }
 
     @Test
@@ -53,9 +54,9 @@ public class CanovaHansenTest {
                 .variables(CanovaHansen.Variables.Trigonometric)
                 .truncationLag(4)
                 .build();
-        System.out.println(ch.test(0, 2));
-        System.out.println(ch.test(2));
-        System.out.println(ch.testAll());
+//        System.out.println(ch.test(0, 2));
+//        System.out.println(ch.test(2));
+//        System.out.println(ch.testAll());
     }
 
     @Test
@@ -68,10 +69,10 @@ public class CanovaHansenTest {
                 .startPosition(1)
                 .build();
 
-        for (int i = 0; i < 12; ++i) {
-            System.out.println(ch.test(i));
-        }
-        System.out.println(ch.testAll());
+//        for (int i = 0; i < 12; ++i) {
+//            System.out.println(ch.test(i));
+//        }
+//        System.out.println(ch.testAll());
     }
 
     @Test
@@ -84,10 +85,10 @@ public class CanovaHansenTest {
                 .startPosition(1)
                 .variables(CanovaHansen.Variables.Trigonometric)
                 .build();
-        for (int i = 0; i < 5; ++i) {
-            System.out.println(ch.test(2 * i, 2));
-        }
-        System.out.println(ch.testAll());
+//        for (int i = 0; i < 5; ++i) {
+//            System.out.println(ch.test(2 * i, 2));
+//        }
+//        System.out.println(ch.testAll());
     }
 
 }

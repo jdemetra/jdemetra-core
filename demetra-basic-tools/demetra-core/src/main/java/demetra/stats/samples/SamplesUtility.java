@@ -31,10 +31,7 @@ public class SamplesUtility {
      * compute the covariance of x and y
      *
      * @param x
-     * @param sx
      * @param y
-     * @param sy
-     * @param n
      * @return
      */
     public double cov(DoubleSequence x, DoubleSequence y) {

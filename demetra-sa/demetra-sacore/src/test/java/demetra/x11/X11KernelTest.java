@@ -37,7 +37,7 @@ public class X11KernelTest {
                 .finalSeasonalFilter(SeasonalFilterOption.S3X9)
                 .build();
         kernel.process(DoubleSequence.ofInternal(WeeklyData.US_CLAIMS2), context1);
-        System.out.println(kernel.getDstep().getD11());
+//        System.out.println(kernel.getDstep().getD11());
 //        System.out.println("Rounded");
         X11Context context2=X11Context.builder()
                 .period(52)
@@ -46,7 +46,7 @@ public class X11KernelTest {
                 .finalSeasonalFilter(SeasonalFilterOption.S3X9)
                 .build();
         kernel.process(DoubleSequence.ofInternal(WeeklyData.US_CLAIMS2), context2);
-        System.out.println(kernel.getDstep().getD11());
+//        System.out.println(kernel.getDstep().getD11());
     }
     
     @Test
@@ -70,6 +70,6 @@ public class X11KernelTest {
                 new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, Data.PROD, true);
         X11Results x11 = okernel.process(s);
         ec.tstoolkit.timeseries.simplets.TsData b=x11.getData("d-tables.d13", ec.tstoolkit.timeseries.simplets.TsData.class);
-        System.out.println(new ec.tstoolkit.data.DataBlock(b));
+//        System.out.println(new ec.tstoolkit.data.DataBlock(b));
     }
 }

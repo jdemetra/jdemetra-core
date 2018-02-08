@@ -14,8 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.sa.tests;
+package demetra.stats.tests.seasonal;
 
+import demetra.stats.tests.seasonal.Qs;
 import demetra.data.Data;
 import demetra.timeseries.TsData;
 import demetra.timeseries.simplets.TsDataToolkit;

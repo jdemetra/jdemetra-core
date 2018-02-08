@@ -14,44 +14,16 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
 */
-package demetra.stats;
 
-import demetra.design.Development;
 
+package demetra.modelling;
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
-public class StatException extends RuntimeException
-{
-    /**
-     * 
-     */
-    public StatException()
-    {
-    }
-
-    /**
-     * 
-     * @param msg
-     */
-    public StatException(final String msg)
-    {
-	super(msg);
-    }
-
-    /**
-     * 
-     * @param message
-     * @param innerException
-     */
-    public StatException(final String message, final Exception innerException)
-    {
-	super(message, innerException);
-    }
-    
-    public static final String NO_DATA="No data", NOT_ENOUGH_DATA="Not enough data"; 
-
- }
+public enum DataTransformation {
+    None,
+    Auto,
+    Log
+}

@@ -285,4 +285,25 @@ public class Doubles {
         }
         return scale * Math.sqrt(ssq);
     }
+    
+    public DoubleSequence select(DoubleSequence data, DoublePredicate pred){
+        double[] x=data.toArray();
+        int cur=0;
+        for (int i=0; i<x.length; ++i){
+            if (pred.test(x[i])){
+                if (cur <i)
+                    x[cur]=x[i];
+                ++cur;
+            }
+        }
+        if (cur == x.length)
+            return DoubleSequence.ofInternal(x);
+        else{
+            double[] xc=new double[cur];
+            System.arraycopy(x, 0, xc, 0, cur);
+            return DoubleSequence.ofInternal(xc);
+        }
+    }
+    
+    
 }
