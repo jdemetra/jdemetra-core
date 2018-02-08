@@ -33,11 +33,11 @@ import javax.annotation.concurrent.NotThreadSafe;
 /**
  * Builder that collects observations in order to create an OptionalTsData.
  *
- * @param <T>
+ * @param <DATE>
  * @since 2.2.0
  */
 @NotThreadSafe
-public interface TsDataBuilder<T> extends IBuilder<TsData> {
+public interface TsDataBuilder<DATE> extends IBuilder<TsData> {
 
     /**
      * Removes all observations.
@@ -45,7 +45,7 @@ public interface TsDataBuilder<T> extends IBuilder<TsData> {
      * @return this builder
      */
     @Nonnull
-    TsDataBuilder<T> clear();
+    TsDataBuilder<DATE> clear();
 
     /**
      * Adds an observation by using a date. This date belongs to the considered
@@ -59,7 +59,7 @@ public interface TsDataBuilder<T> extends IBuilder<TsData> {
      * @return this builder
      */
     @Nonnull
-    TsDataBuilder<T> add(@Nullable T date, @Nullable Number value);
+    TsDataBuilder<DATE> add(@Nullable DATE date, @Nullable Number value);
 
     /**
      * Adds an observation by using a date.
@@ -73,11 +73,11 @@ public interface TsDataBuilder<T> extends IBuilder<TsData> {
      * @return this builder
      */
     @Nonnull
-    default <X> TsDataBuilder<T> add(
+    default <X> TsDataBuilder<DATE> add(
             @Nullable X obs,
-            @Nonnull Function<? super X, ? extends T> dateFunc,
+            @Nonnull Function<? super X, ? extends DATE> dateFunc,
             @Nonnull Function<? super X, ? extends Number> valueFunc) {
-        T date = dateFunc.apply(obs);
+        DATE date = dateFunc.apply(obs);
         return TsDataBuilder.this.add(date, date != null ? valueFunc.apply(obs) : null);
     }
 
@@ -93,9 +93,9 @@ public interface TsDataBuilder<T> extends IBuilder<TsData> {
      * @return this builder
      */
     @Nonnull
-    default <X> TsDataBuilder<T> addAll(
+    default <X> TsDataBuilder<DATE> addAll(
             @Nonnull Stream<X> stream,
-            @Nonnull Function<? super X, ? extends T> dateFunc,
+            @Nonnull Function<? super X, ? extends DATE> dateFunc,
             @Nonnull Function<? super X, ? extends Number> valueFunc) {
         stream.forEach((o) -> add(o, dateFunc, valueFunc));
         return this;

@@ -50,10 +50,7 @@ public final class XCubeSupportResource implements CubeSupport.Resource {
     }
 
     @Override
-    public IParam<DataSet, CubeId> getIdParam(DataSource dataSource) throws IOException, IllegalArgumentException {
-        if (!dataSource.equals(this.dataSource)) {
-            throw new IllegalArgumentException();
-        }
+    public IParam<DataSet, CubeId> getIdParam(CubeId root) throws IOException, IllegalArgumentException {
         return param;
     }
 }

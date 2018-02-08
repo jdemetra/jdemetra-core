@@ -80,8 +80,8 @@ public final class FakeDbProvider implements DataSourceLoader {
         }
 
         @Override
-        public IParam<DataSet, CubeId> getIdParam(DataSource dataSource) {
-            return fakeDbParam.getCubeIdParam(dataSource);
+        public IParam<DataSet, CubeId> getIdParam(CubeId root) {
+            return fakeDbParam.getCubeIdParam(root);
         }
     }
 }

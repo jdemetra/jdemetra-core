@@ -16,22 +16,10 @@
  */
 package demetra.tsprovider.cube;
 
-import demetra.io.ResourceWatcher;
-import _util.tsproviders.XCubeAccessor;
-import static demetra.tsprovider.cube.CubeIdTest.SECTOR_REGION;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import org.junit.Test;
-
 /**
  *
  * @author Philippe Charles
  */
 public class CubeAccessorTest {
 
-    @Test
-    @SuppressWarnings("null")
-    public void testBulkFactory() {
-        CubeAccessor accessor = new XCubeAccessor(SECTOR_REGION, new ResourceWatcher());
-        assertThatThrownBy(() -> accessor.bulk(0, null)).isInstanceOf(NullPointerException.class);
-    }
 }

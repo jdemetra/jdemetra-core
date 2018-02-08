@@ -31,10 +31,12 @@ import ioutil.IO;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
+import lombok.AllArgsConstructor;
 
 /**
  *
@@ -51,7 +53,7 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
         CubeAccessor getAccessor(@Nonnull DataSource dataSource) throws IOException, IllegalArgumentException;
 
         @Nonnull
-        IParam<DataSet, CubeId> getIdParam(@Nonnull DataSource dataSource) throws IOException, IllegalArgumentException;
+        IParam<DataSet, CubeId> getIdParam(@Nonnull CubeId root) throws IOException, IllegalArgumentException;
     }
 
     @Nonnull
@@ -69,8 +71,6 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
     @Override
     public List<DataSet> children(DataSource dataSource) throws IOException {
         CubeAccessor acc = resource.getAccessor(dataSource);
-        IParam<DataSet, CubeId> idParam = resource.getIdParam(dataSource);
-
         CubeId parentId = acc.getRoot();
 
         // special case: we return a fake dataset if no dimColumns
@@ -83,8 +83,10 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
             return Collections.singletonList(fake);
         }
 
-        DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
-        return children(builder, acc.getChildren(parentId), idParam);
+        try (IteratorWithIO<CubeId> children = acc.getChildren(parentId)) {
+            DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
+            return toList(builder, children, resource.getIdParam(parentId));
+        }
     }
 
     @Override
@@ -94,12 +96,14 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
         }
 
         CubeAccessor acc = resource.getAccessor(parent.getDataSource());
-        IParam<DataSet, CubeId> idParam = resource.getIdParam(parent.getDataSource());
+        IParam<DataSet, CubeId> idParam = resource.getIdParam(acc.getRoot());
 
         CubeId parentId = idParam.get(parent);
 
-        DataSet.Builder builder = parent.toBuilder(parentId.getDepth() > 1 ? DataSet.Kind.COLLECTION : DataSet.Kind.SERIES);
-        return children(builder, acc.getChildren(parentId), idParam);
+        try (IteratorWithIO<CubeId> children = acc.getChildren(parentId)) {
+            DataSet.Builder builder = parent.toBuilder(parentId.getDepth() > 1 ? DataSet.Kind.COLLECTION : DataSet.Kind.SERIES);
+            return toList(builder, children, idParam);
+        }
     }
     //</editor-fold>
 
@@ -107,18 +111,16 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
     @Override
     public TsCursor<DataSet> getData(DataSource dataSource, TsInformationType type) throws IOException {
         CubeAccessor acc = resource.getAccessor(dataSource);
-        IParam<DataSet, CubeId> idParam = resource.getIdParam(dataSource);
-
         CubeId parentId = acc.getRoot();
 
         TsCursor<CubeId> cursor = type.encompass(TsInformationType.Data) ? acc.getAllSeriesWithData(parentId) : acc.getAllSeries(parentId);
-        return cursor.map(toDataSetFunc(DataSet.builder(dataSource, DataSet.Kind.SERIES), idParam));
+        return cursor.map(toDataSetFunc(DataSet.builder(dataSource, DataSet.Kind.SERIES), resource.getIdParam(parentId)));
     }
 
     @Override
     public TsCursor<DataSet> getData(DataSet dataSet, TsInformationType type) throws IOException {
         CubeAccessor acc = resource.getAccessor(dataSet.getDataSource());
-        IParam<DataSet, CubeId> idParam = resource.getIdParam(dataSet.getDataSource());
+        IParam<DataSet, CubeId> idParam = resource.getIdParam(acc.getRoot());
 
         CubeId id = idParam.get(dataSet);
 
@@ -142,9 +144,9 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
     @Override
     public String getDisplayName(DataSet dataSet) throws IllegalArgumentException {
         try {
-            DataSource dataSource = dataSet.getDataSource();
-            CubeId id = resource.getIdParam(dataSource).get(dataSet);
-            return resource.getAccessor(dataSource).getDisplayName(id);
+            CubeAccessor acc = resource.getAccessor(dataSet.getDataSource());
+            CubeId id = resource.getIdParam(acc.getRoot()).get(dataSet);
+            return acc.getDisplayName(id);
         } catch (IOException ex) {
             return ex.getMessage();
         }
@@ -153,9 +155,9 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
     @Override
     public String getDisplayNodeName(DataSet dataSet) throws IllegalArgumentException {
         try {
-            DataSource dataSource = dataSet.getDataSource();
-            CubeId id = resource.getIdParam(dataSource).get(dataSet);
-            return resource.getAccessor(dataSource).getDisplayNodeName(id);
+            CubeAccessor acc = resource.getAccessor(dataSet.getDataSource());
+            CubeId id = resource.getIdParam(acc.getRoot()).get(dataSet);
+            return acc.getDisplayNodeName(id);
         } catch (IOException ex) {
             return ex.getMessage();
         }
@@ -173,10 +175,9 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
-    private static List<DataSet> children(DataSet.Builder builder, IteratorWithIO<CubeId> values, IParam<DataSet, CubeId> idParam) throws IOException {
+    private static List<DataSet> toList(DataSet.Builder builder, IteratorWithIO<CubeId> values, IParam<DataSet, CubeId> idParam) throws IOException {
         List<DataSet> result = new ArrayList<>();
         values.map(toDataSetFunc(builder, idParam)).forEachRemaining(result::add);
-        values.close();
         return result;
     }
 
@@ -184,13 +185,10 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
         return o -> builder.put(dimValuesParam, o).build();
     }
 
+    @AllArgsConstructor
     private static final class ByNameParam implements IParam<DataSet, CubeId> {
 
         private final CubeId root;
-
-        public ByNameParam(CubeId root) {
-            this.root = root;
-        }
 
         @Override
         public CubeId defaultValue() {
@@ -199,15 +197,16 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
 
         @Override
         public CubeId get(DataSet config) {
-            List<String> result = new ArrayList<>(root.getMaxLevel());
-            for (int i = 0; i < root.getMaxLevel(); i++) {
-                String tmp = config.get(root.getDimensionId(i));
-                if (Strings.isNullOrEmpty(tmp)) {
+            String[] dimValues = new String[root.getMaxLevel()];
+            int i = 0;
+            while (i < dimValues.length) {
+                String id = root.getDimensionId(i);
+                if ((dimValues[i] = config.get(id)) == null) {
                     break;
                 }
-                result.add(tmp);
+                i++;
             }
-            return root.child(result.toArray(new String[result.size()]));
+            return root.child(dimValues, i);
         }
 
         @Override
@@ -218,17 +217,12 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
         }
     }
 
+    @lombok.AllArgsConstructor
     private static final class BySeparatorParam implements IParam<DataSet, CubeId> {
 
         private final String separator;
         private final CubeId root;
         private final String name;
-
-        public BySeparatorParam(String separator, CubeId root, String name) {
-            this.separator = separator;
-            this.root = root;
-            this.name = name;
-        }
 
         @Override
         public CubeId defaultValue() {
@@ -237,11 +231,19 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
 
         @Override
         public CubeId get(DataSet config) {
-            String tmp = config.get(name);
-            if (Strings.isNullOrEmpty(tmp)) {
+            String value = config.get(name);
+            if (value == null || value.isEmpty()) {
                 return defaultValue();
             }
-            return root.child(Strings.splitToStream(separator, tmp).map(String::trim).toArray(String[]::new));
+
+            String[] dimValues = new String[root.getMaxLevel()];
+            int i = 0;
+            Iterator<String> iterator = Strings.splitToIterator(separator, value);
+            while (i < dimValues.length && iterator.hasNext()) {
+                dimValues[i] = iterator.next();
+                i++;
+            }
+            return root.child(dimValues, i);
         }
 
         @Override

@@ -18,11 +18,11 @@ package demetra.tsprovider.cube;
 
 import demetra.io.ResourceWatcher;
 import _util.tsproviders.XCubeAccessor;
-import internal.tsprovider.cube.InternalCubeAccessor.BulkCubeAccessor;
 import static demetra.tsprovider.cube.CubeIdTest.INDUSTRY;
 import static demetra.tsprovider.cube.CubeIdTest.INDUSTRY_BE;
 import static demetra.tsprovider.cube.CubeIdTest.SECTOR_REGION;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.IntFunction;
@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Philippe Charles
  */
-public class CubeAccessorsTest {
+public class BulkCubeAccessorTest {
 
     private static CubeAccessor newSample() {
         return new XCubeAccessor(SECTOR_REGION, new ResourceWatcher());
@@ -42,7 +42,7 @@ public class CubeAccessorsTest {
 
     @Test
     public void testBulkApi() throws IOException {
-        BulkCubeAccessor accessor = new BulkCubeAccessor(newSample(), 0, new ConcurrentHashMap<>());
+        CubeAccessor accessor = BulkCubeAccessor.of(newSample(), BulkCubeConfig.of(Duration.ZERO, 0));
         assertThatThrownBy(() -> accessor.getAllSeriesWithData(null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> accessor.getSeriesWithData(null)).isInstanceOf(NullPointerException.class);
     }
@@ -51,12 +51,8 @@ public class CubeAccessorsTest {
     public void testBulkDepth() throws IOException {
         ConcurrentMap<CubeId, Object> cache = new ConcurrentHashMap<>();
         IntFunction<BulkCubeAccessor> factory = o -> {
-            try {
-                cache.clear();
-                return new BulkCubeAccessor(newSample(), o, cache);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
+            cache.clear();
+            return new BulkCubeAccessor(newSample(), o, cache);
         };
 
         factory.apply(0).getSeriesWithData(INDUSTRY_BE).close();

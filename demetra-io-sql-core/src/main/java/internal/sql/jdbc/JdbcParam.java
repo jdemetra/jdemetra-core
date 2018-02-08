@@ -19,14 +19,14 @@ package internal.sql.jdbc;
 import demetra.sql.jdbc.JdbcBean;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
+import demetra.tsprovider.cube.BulkCubeConfig;
 import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cube.CubeSupport;
 import demetra.tsprovider.util.IConfig;
 import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.util.ObsFormat;
 import demetra.tsprovider.util.ObsGathering;
-import static demetra.tsprovider.util.Params.onInteger;
-import static demetra.tsprovider.util.Params.onLong;
+import static demetra.tsprovider.util.Params.onBulkCubeConfig;
 import static demetra.tsprovider.util.Params.onObsFormat;
 import static demetra.tsprovider.util.Params.onObsGathering;
 import static demetra.tsprovider.util.Params.onString;
@@ -35,7 +35,6 @@ import internal.util.Strings;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -51,7 +50,7 @@ public interface JdbcParam extends IParam<DataSource, JdbcBean> {
     String getVersion();
 
     @Nonnull
-    IParam<DataSet, CubeId> getCubeIdParam(@Nonnull DataSource dataSource);
+    IParam<DataSet, CubeId> getCubeIdParam(@Nonnull CubeId root);
 
     static final class V1 implements JdbcParam {
 
@@ -69,8 +68,7 @@ public interface JdbcParam extends IParam<DataSource, JdbcBean> {
         private final IParam<DataSource, String> versionColumn = onString("", "versionColumn");
         private final IParam<DataSource, String> labelColumn = onString("", "labelColumn");
         private final IParam<DataSource, ObsGathering> obsGathering = onObsGathering(ObsGathering.DEFAULT, "frequency", "aggregationType", "cleanMissing");
-        private final IParam<DataSource, Long> cacheTtl = onLong(TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES), "cacheTtl");
-        private final IParam<DataSource, Integer> cacheDepth = onInteger(1, "cacheDepth");
+        private final IParam<DataSource, BulkCubeConfig> cacheConfig = onBulkCubeConfig(BulkCubeConfig.of(Duration.ofMinutes(5), 1), "cacheTtl", "cacheDepth");
 
         @Override
         public String getVersion() {
@@ -89,8 +87,7 @@ public interface JdbcParam extends IParam<DataSource, JdbcBean> {
             result.setVersionColumn(versionColumn.defaultValue());
             result.setLabelColumn(labelColumn.defaultValue());
             result.setObsGathering(obsGathering.defaultValue());
-            result.setCacheTtl(Duration.ofMillis(cacheTtl.defaultValue()));
-            result.setCacheDepth(cacheDepth.defaultValue());
+            result.setCacheConfig(cacheConfig.defaultValue());
             return result;
         }
 
@@ -106,8 +103,7 @@ public interface JdbcParam extends IParam<DataSource, JdbcBean> {
             result.setVersionColumn(versionColumn.get(dataSource));
             result.setLabelColumn(labelColumn.get(dataSource));
             result.setObsGathering(obsGathering.get(dataSource));
-            result.setCacheTtl(Duration.ofMillis(cacheTtl.get(dataSource)));
-            result.setCacheDepth(cacheDepth.get(dataSource));
+            result.setCacheConfig(cacheConfig.get(dataSource));
             return result;
         }
 
@@ -122,13 +118,12 @@ public interface JdbcParam extends IParam<DataSource, JdbcBean> {
             versionColumn.set(builder, value.getVersionColumn());
             labelColumn.set(builder, value.getLabelColumn());
             obsGathering.set(builder, value.getObsGathering());
-            cacheTtl.set(builder, value.getCacheTtl().toMillis());
-            cacheDepth.set(builder, value.getCacheDepth());
+            cacheConfig.set(builder, value.getCacheConfig());
         }
 
         @Override
-        public IParam<DataSet, CubeId> getCubeIdParam(DataSource dataSource) {
-            return CubeSupport.idByName(CubeId.root(dimColumns.get(dataSource)));
+        public IParam<DataSet, CubeId> getCubeIdParam(CubeId root) {
+            return CubeSupport.idByName(root);
         }
     }
 }

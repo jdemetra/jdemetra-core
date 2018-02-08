@@ -25,6 +25,7 @@ import demetra.tsprovider.HasDataMoniker;
 import demetra.tsprovider.HasDataSourceBean;
 import demetra.tsprovider.HasDataSourceMutableList;
 import demetra.tsprovider.TsProvider;
+import demetra.tsprovider.cube.BulkCubeAccessor;
 import demetra.tsprovider.cube.CubeAccessor;
 import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cube.CubeSupport;
@@ -35,7 +36,6 @@ import demetra.tsprovider.cursor.TsCursorAsProvider;
 import demetra.tsprovider.util.CacheProvider;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import demetra.tsprovider.util.IParam;
-import java.io.IOException;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nonnull;
@@ -107,26 +107,27 @@ public final class JdbcProvider implements DataSourceLoader<JdbcBean> {
         private final JdbcParam param;
 
         @Override
-        public CubeAccessor getAccessor(DataSource dataSource) throws IOException {
+        public CubeAccessor getAccessor(DataSource dataSource) {
             DataSourcePreconditions.checkProvider(NAME, dataSource);
-            CubeAccessor result = cache.get(dataSource);
-            if (result == null) {
-                result = load(dataSource);
-                cache.put(dataSource, result);
-            }
-            return result;
+            return cache.computeIfAbsent(dataSource, this::load);
         }
 
         @Override
-        public IParam<DataSet, CubeId> getIdParam(DataSource dataSource) {
-            DataSourcePreconditions.checkProvider(NAME, dataSource);
-            return param.getCubeIdParam(dataSource);
+        public IParam<DataSet, CubeId> getIdParam(CubeId root) {
+            return param.getCubeIdParam(root);
         }
 
-        private CubeAccessor load(DataSource key) throws IOException {
+        private CubeAccessor load(DataSource key) {
             JdbcBean bean = param.get(key);
-            SqlTableAsCubeResource result = SqlTableAsCubeResource.of(supplier.get(), bean.getDatabase(), bean.getTable(), CubeId.root(bean.getDimColumns()), toDataParams(bean), bean.getObsGathering(), bean.getLabelColumn());
-            return TableAsCubeAccessor.create(result).bulk(bean.getCacheDepth(), CacheProvider.getDefault().ttlCacheAsMap(bean.getCacheTtl()));
+
+            SqlTableAsCubeResource sqlResource = SqlTableAsCubeResource.of(supplier.get(), bean.getDatabase(), bean.getTable(), toRoot(bean), toDataParams(bean), bean.getObsGathering(), bean.getLabelColumn());
+
+            CubeAccessor result = TableAsCubeAccessor.of(sqlResource);
+            return BulkCubeAccessor.of(result, bean.getCacheConfig());
+        }
+
+        private static CubeId toRoot(JdbcBean bean) {
+            return CubeId.root(bean.getDimColumns());
         }
 
         private static TableDataParams toDataParams(JdbcBean bean) {

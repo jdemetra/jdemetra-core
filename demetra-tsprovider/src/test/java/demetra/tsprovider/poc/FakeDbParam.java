@@ -34,7 +34,7 @@ interface FakeDbParam extends IParam<DataSource, FakeDbBean> {
     String getVersion();
 
     @Nonnull
-    IParam<DataSet, CubeId> getCubeIdParam(@Nonnull DataSource dataSource);
+    IParam<DataSet, CubeId> getCubeIdParam(@Nonnull CubeId root);
 
     static final class V1 implements FakeDbParam {
 
@@ -71,7 +71,7 @@ interface FakeDbParam extends IParam<DataSource, FakeDbBean> {
         }
 
         @Override
-        public IParam<DataSet, CubeId> getCubeIdParam(DataSource dataSource) {
+        public IParam<DataSet, CubeId> getCubeIdParam(CubeId root) {
             return dimValues;
         }
     }
