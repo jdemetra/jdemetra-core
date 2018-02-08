@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tests;
+package demetra.stats.tests;
 
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;

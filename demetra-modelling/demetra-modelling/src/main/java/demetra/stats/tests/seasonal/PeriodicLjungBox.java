@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.sa.tests;
+package demetra.stats.tests.seasonal;
 
 import demetra.ar.IAutoRegressiveEstimation;
 import demetra.data.DoubleSequence;
@@ -33,7 +33,7 @@ import java.util.function.IntToDoubleFunction;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class PeriodicLjungBoxTest implements IBuilder<StatisticalTest> {
+public class PeriodicLjungBox implements IBuilder<StatisticalTest> {
 
     private int[] lags;
     private int nhp;
@@ -42,7 +42,7 @@ public class PeriodicLjungBoxTest implements IBuilder<StatisticalTest> {
     private final IntToDoubleFunction autoCorrelations;
     private final int n;
 
-    public PeriodicLjungBoxTest(DoubleSequence sample, int nar) {
+    public PeriodicLjungBox(DoubleSequence sample, int nar) {
         if (nar > 0) {
             IAutoRegressiveEstimation burg = IAutoRegressiveEstimation.burg();
             burg.estimate(sample, nar);
@@ -58,32 +58,32 @@ public class PeriodicLjungBoxTest implements IBuilder<StatisticalTest> {
      * @param nhp
      * @return
      */
-    public PeriodicLjungBoxTest hyperParametersCount(int nhp) {
+    public PeriodicLjungBox hyperParametersCount(int nhp) {
         this.nhp = nhp;
         return this;
     }
 
-    public PeriodicLjungBoxTest useNegativeAutocorrelations() {
+    public PeriodicLjungBox useNegativeAutocorrelations() {
         sign = -1;
         return this;
     }
 
-    public PeriodicLjungBoxTest usePositiveAutocorrelations() {
+    public PeriodicLjungBox usePositiveAutocorrelations() {
         sign = 1;
         return this;
     }
 
-    public PeriodicLjungBoxTest useAllAutocorrelations() {
+    public PeriodicLjungBox useAllAutocorrelations() {
         sign = 0;
         return this;
     }
 
-    public PeriodicLjungBoxTest lags(final int[] value) {
+    public PeriodicLjungBox lags(final int[] value) {
         lags = value;
         return this;
     }
 
-    public PeriodicLjungBoxTest lags(final double period, final int nperiods) {
+    public PeriodicLjungBox lags(final double period, final int nperiods) {
         lags = new int[nperiods];
         for (int i = 1; i <= nperiods; ++i) {
             double ip = period * i + .5;

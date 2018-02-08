@@ -14,8 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.sa.tests;
+package demetra.stats.tests.seasonal;
 
+import demetra.stats.tests.seasonal.PeriodicLjungBox;
 import demetra.data.DoubleSequence;
 import demetra.data.WeeklyData;
 import demetra.stats.tests.StatisticalTest;

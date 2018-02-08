@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.sa.tests;
+package demetra.stats.tests.seasonal;
 
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSequence;
