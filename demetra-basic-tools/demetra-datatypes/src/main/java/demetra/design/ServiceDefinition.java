@@ -45,4 +45,10 @@ public @interface ServiceDefinition {
     boolean hasPosition() default false;
 
     boolean isSingleton() default false;
+
+    Scope scope() default Scope.API;
+
+    public enum Scope {
+        API, FRAMEWORK
+    }
 }

@@ -16,6 +16,7 @@
  */
 package demetra.tsprovider.util;
 
+import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import javax.annotation.Nonnull;
@@ -29,6 +30,9 @@ public interface CacheProvider {
     @Nonnull
     <K, V> ConcurrentMap<K, V> softValuesCacheAsMap();
 
+    @Nonnull
+    <K, V> ConcurrentMap<K, V> ttlCacheAsMap(Duration cacheTtl);
+
     static CacheProvider getDefault() {
         // FIXME: create real cache and improved API (JCache?)
         return new CacheProvider() {
@@ -36,6 +40,12 @@ public interface CacheProvider {
             public <K, V> ConcurrentMap<K, V> softValuesCacheAsMap() {
                 return new ConcurrentHashMap<>();
             }
+
+            @Override
+            public <K, V> ConcurrentMap<K, V> ttlCacheAsMap(Duration cacheTtl) {
+                return new ConcurrentHashMap<>();
+            }
         };
     }
+
 }

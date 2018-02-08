@@ -16,12 +16,15 @@
  */
 package internal.spreadsheet.legacy;
 
+import demetra.design.DemetraPlusLegacy;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  *
  * @author Philippe Charles
  */
+@DemetraPlusLegacy
 @lombok.Value
 class LegacySpreadSheetId {
 
@@ -53,39 +56,39 @@ class LegacySpreadSheetId {
         return new LegacySpreadSheetId(file, sheetName, sname, -1);
     }
 
-    @Nonnull
-    public static LegacySpreadSheetId parse(@Nonnull String input) throws IllegalArgumentException {
+    @Nullable
+    public static LegacySpreadSheetId parse(@Nonnull String input) {
         int beg = input.indexOf(BSEP);
         if (beg != 0) {
-            throw new IllegalArgumentException(input);
+            return null;
         }
         beg += BSEP.length();
         int end = input.indexOf(ESEP, beg);
         if (end < 0) {
-            throw new IllegalArgumentException(input);
+            return null;
         }
         String fname = input.substring(beg, end);
         beg = end + ESEP.length();
         beg = input.indexOf(BSEP, beg);
         if (beg < 0) {
-            throw new IllegalArgumentException(input);
+            return null;
         }
         beg += BSEP.length();
         end = input.indexOf(ESEP, beg);
         if (end < 0) {
-            throw new IllegalArgumentException(input);
+            return null;
         }
         String sheetname = input.substring(beg, end);
         beg = end + ESEP.length();
         if (beg < input.length()) {
             beg = input.indexOf(BSEP, beg);
             if (beg < 0) {
-                throw new IllegalArgumentException(input);
+                return null;
             }
             beg += BSEP.length();
             end = input.indexOf(ESEP, beg);
             if (end < 0) {
-                throw new IllegalArgumentException();
+                return null;
             }
             String s = input.substring(beg, end);
             try {
@@ -119,5 +122,9 @@ class LegacySpreadSheetId {
 
     public boolean isSeries() {
         return indexSeries >= 0 || seriesName != null;
+    }
+
+    public boolean isSeriesByIndex() {
+        return indexSeries >= 0;
     }
 }
