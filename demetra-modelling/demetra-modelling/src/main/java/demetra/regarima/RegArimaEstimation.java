@@ -73,7 +73,7 @@ public class RegArimaEstimation<M extends IArimaModel> {
 
     /**
      *
-     * @param adj
+     * @param adj Adjustment factor, defined by the possible transformation of the data
      * @return
      */
     public LikelihoodStatistics statistics(double adj) {
