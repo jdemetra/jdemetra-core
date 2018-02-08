@@ -51,5 +51,7 @@ public class StatException extends RuntimeException
     {
 	super(message, innerException);
     }
+    
+    public static final String NO_DATA="No data", NOT_ENOUGH_DATA="Not enough data"; 
 
  }
