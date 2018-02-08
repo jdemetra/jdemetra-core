@@ -123,7 +123,7 @@ public class FractionalAirlineDecomposition {
                 .build();
         ArimaModel arima = mapping.getDefault();
         RegArimaModel<ArimaModel> regarima
-                = RegArimaModel.builder()
+                = RegArimaModel.builder(ArimaModel.class)
                         .y(DoubleSequence.of(s))
                         .arima(arima)
                         .build();

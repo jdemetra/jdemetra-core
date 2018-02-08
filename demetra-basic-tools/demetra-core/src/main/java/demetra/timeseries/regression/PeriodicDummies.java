@@ -17,50 +17,63 @@
 package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
+import demetra.maths.matrices.Matrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.List;
 
 /**
  * The periodic contrasts are defined as follows:
- * 
- * The contrasting period is by design the last period of the year. 
+ *
+ * The contrasting period is by design the last period of the year.
  * The regression variables generated that way are linearly independent.
  *
  * @author Jean Palate
  */
 public class PeriodicDummies implements ITsVariable<TsDomain> {
-    
+
     private final int period;
     private final LocalDateTime ref;
     private final String name;
 
     public PeriodicDummies(final int period) {
-        this.period=period;
-        this.ref=EPOCH;
-        this.name="seas#" + (period);
+        this.period = period;
+        this.ref = EPOCH;
+        this.name = "seas#" + (period);
     }
 
     public PeriodicDummies(final int period, final LocalDateTime ref) {
-        this.period=period;
-        this.ref=ref;
-        this.name="seas#" + (period);
+        this.period = period;
+        this.ref = ref;
+        this.name = "seas#" + (period);
     }
 
     public PeriodicDummies(final int period, final LocalDateTime ref, final String name) {
-        this.period=period;
-        this.ref=ref;
-        this.name=name;
+        this.period = period;
+        this.ref = ref;
+        this.name = name;
+    }
+
+    public Matrix matrix(int length, int start) {
+        Matrix m = Matrix.make(length, period);
+        int pstart = start % period;
+        for (int i = 0; i < period; i++) {
+            DataBlock x = m.column(i);
+            int jstart = i - pstart;
+            if (jstart < 0) {
+                jstart += period;
+            }
+            x.extract(jstart, -1, period).set(1);
+        }
+        return m;
     }
 
     @Override
     public void data(TsDomain domain, List<DataBlock> data) {
-        TsPeriod refPeriod=domain.getStartPeriod().withDate(ref);
-        long del=domain.getStartPeriod().getId()-refPeriod.getId();
-        int pstart =(int) del%period;
+        TsPeriod refPeriod = domain.getStartPeriod().withDate(ref);
+        long del = domain.getStartPeriod().getId() - refPeriod.getId();
+        int pstart = (int) del % period;
         for (int i = 0; i < period; i++) {
             DataBlock x = data.get(i);
             int jstart = i - pstart;
@@ -108,9 +121,9 @@ public class PeriodicDummies implements ITsVariable<TsDomain> {
     public String getName() {
         return name;
     }
-    
+
     @Override
-    public PeriodicDummies rename(String nname){
+    public PeriodicDummies rename(String nname) {
         return new PeriodicDummies(period, ref, nname);
     }
 

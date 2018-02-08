@@ -68,7 +68,7 @@ public class SsfArimaTest {
         DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer().compute(ssf, ssfData);
 //        System.out.println(ll3);
         assertEquals(ll1.logLikelihood(), ll3.logLikelihood(), 1e-6);
-        RegArimaModel<SarimaModel> model = RegArimaModel.builder()
+        RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class)
                 .y(DoubleSequence.of(data))
                 .arima(arima)
                 .build();
@@ -94,7 +94,7 @@ public class SsfArimaTest {
         assertEquals(ll1.logLikelihood(), ll2.logLikelihood(), 1e-6);
         DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer().compute(ssf, sdata);
         assertEquals(ll1.logLikelihood(), ll3.logLikelihood(), 1e-6);
-        RegArimaModel<SarimaModel> model = RegArimaModel.builder()
+        RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class)
                 .y(DoubleSequence.of(data))
                 .arima(arima)
                 .missing(2, 11, 119)

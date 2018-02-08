@@ -134,10 +134,12 @@ public final class DataBlock implements DoubleSequence {
 
     public static DataBlock of(int n, @Nonnull IntToDoubleFunction fn) {
         double[] x = new double[n];
-        for (int i=0; i<n; ++i)
-            x[i]=fn.applyAsDouble(i);
+        for (int i = 0; i < n; ++i) {
+            x[i] = fn.applyAsDouble(i);
+        }
         return new DataBlock(x, 0, x.length, 1);
     }
+
     /**
      * Envelope around a copy of an array of doubles.
      *
@@ -689,6 +691,14 @@ public final class DataBlock implements DoubleSequence {
     public int length() {
         return (end - beg) / inc;
     }
+    
+    public double first(){
+        return data[beg];
+    }
+
+    public double last(){
+        return data[end-inc];
+    }
 
     /**
      * Gets the underlying storage The cells of this object are defined by cell
@@ -850,6 +860,11 @@ public final class DataBlock implements DoubleSequence {
             }
         }
         return s;
+    }
+    
+    public void correctForMean(){
+        double s=sum();
+        sub(s);
     }
 
     public double ssq() {
@@ -1416,6 +1431,69 @@ public final class DataBlock implements DoubleSequence {
         return cur;
     }
 
+    /**
+     * Computes iteratively y(t) = fn(y(t), y(t+del))
+     * If del is negative, the iteration goes from the end to the beginning;
+     * the first del items are unchanged.
+     * If del is positive, the iteration goes from the beginning to the end;
+     * the last del items are unchanged.
+     *
+     * @param del
+     * @param fn
+     */
+    public void autoApply(final int del, @Nonnull DoubleBinaryOperator fn) {
+        if (del > 0) {
+            if (length() <= del) {
+                return;
+            }
+            int cur = beg, dcur = cur + inc * del;
+            while (dcur != end) {
+                data[cur] = fn.applyAsDouble(data[cur], data[dcur]);
+                cur += inc;
+                dcur += inc;
+            }
+        } else if (del < 0) {
+            if (length() <= -del) {
+                return;
+            }
+            int cur = end, dcur = cur + inc * del;
+            while (dcur != beg) {
+                cur -= inc;
+                dcur -= inc;
+                data[cur] = fn.applyAsDouble(data[cur], data[dcur]);
+            } 
+       }
+    }
+
+    public void applyRecursively(final int del, @Nonnull DoubleBinaryOperator fn) {
+        if (del > 0) {
+            if (length() <= del) {
+                return;
+            }
+            int cur = beg, dcur = cur + inc * del;
+            while (dcur != end) {
+                data[dcur] = fn.applyAsDouble(data[cur], data[dcur]);
+                cur += inc;
+                dcur += inc;
+            }
+        } else if (del < 0) {
+            if (length() <= -del) {
+                return;
+            }
+            int cur = end, dcur = cur + inc * del;
+            while (dcur != beg) {
+                cur -= inc;
+                dcur -= inc;
+                data[dcur] = fn.applyAsDouble(data[cur], data[dcur]);
+            }
+
+        }
+    }
+
+    public void cumul(){
+        applyRecursively(1, (a,b)->a+b);
+    }
+    
     public boolean allMatch(DataBlock d, @Nonnull DoubleBiPredicate p) {
         for (int i = beg, j = d.beg; i != end; i += inc, j += d.inc) {
             if (!p.test(data[i], d.data[j])) {

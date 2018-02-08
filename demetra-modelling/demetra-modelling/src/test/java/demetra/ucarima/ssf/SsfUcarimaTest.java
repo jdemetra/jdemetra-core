@@ -47,7 +47,7 @@ public class SsfUcarimaTest {
 //            System.out.println(sd.getComponent(ssf.getComponentPosition(i)));
             assertTrue(ds.item(ssf.getComponentPosition(i)).distance(sd.getComponent(ssf.getComponentPosition(i))) < 1e-9);
         }
-        System.out.println(sd.getComponentVariance(0));
+//        System.out.println(sd.getComponentVariance(0));
     }
 
 }

@@ -18,6 +18,7 @@ package demetra.data;
 
 import demetra.design.Development;
 import demetra.maths.Complex;
+import demetra.maths.Constants;
 import demetra.utilities.Arrays2;
 
 /**
@@ -34,7 +35,7 @@ public class FFT {
     static {
 	COS_ARRAY = new double[16];
 	SIN_ARRAY = new double[16];
-	double twopi = Math.PI * 2;
+	double twopi = Constants.TWOPI;
 	double n = 2;
 	for (int i = 0; i < 16; ++i) {
 	    COS_ARRAY[i] = Math.cos(twopi / n);

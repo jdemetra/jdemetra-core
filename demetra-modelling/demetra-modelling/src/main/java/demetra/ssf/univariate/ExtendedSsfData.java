@@ -27,40 +27,23 @@ import demetra.data.DoubleSequence;
 @Development(status = Development.Status.Alpha)
 public class ExtendedSsfData implements ISsfData {
 
-    private int m_nbcasts;
+    private final int nbcasts;
+    private final int nfcasts;
+    private final ISsfData data;
 
-    private int m_nfcasts;
-
-    private final ISsfData m_data;
-
-    /**
+     /**
      * 
      * @param data
+     * @param bcasts
+     * @param fcasts
      */
-    public ExtendedSsfData(final ISsfData data)
+    public ExtendedSsfData(final ISsfData data, final int bcasts, final int fcasts)
     {
-	m_data = data;
+	this.data = data;
+        nfcasts=fcasts;
+        nbcasts=bcasts;
     }
 
-    /**
-     * 
-     * @param data
-     */
-    public ExtendedSsfData(final ISsfData data, int fcasts)
-    {
-	m_data = data;
-        m_nfcasts=fcasts;
-    }
-
-    /**
-     * 
-     * @param data
-     */
-    public ExtendedSsfData(final DoubleSequence data, int fcasts)
-    {
-	m_data = new SsfData(data);
-        m_nfcasts=fcasts;
-    }
     /**
      * 
      * @param n
@@ -69,10 +52,10 @@ public class ExtendedSsfData implements ISsfData {
     @Override
     public double get(final int n)
     {
-	if (n < m_nbcasts)
+	if (n < nbcasts)
 	    return Double.NaN;
 	else
-	    return m_data.get(n - m_nbcasts);
+	    return data.get(n - nbcasts);
     }
 
     /**
@@ -81,7 +64,7 @@ public class ExtendedSsfData implements ISsfData {
      */
     public int getBackcastsCount()
     {
-	return m_nbcasts;
+	return nbcasts;
     }
 
     /**
@@ -91,7 +74,7 @@ public class ExtendedSsfData implements ISsfData {
     @Override
     public int length()
     {
-	return m_nbcasts + m_nfcasts + m_data.length();
+	return nbcasts + nfcasts + data.length();
     }
 
     /**
@@ -100,7 +83,7 @@ public class ExtendedSsfData implements ISsfData {
      */
     public int getForecastsCount()
     {
-	return m_nfcasts;
+	return nfcasts;
     }
 
     /**
@@ -110,7 +93,7 @@ public class ExtendedSsfData implements ISsfData {
     @Override
     public boolean hasData()
     {
-	return m_data.hasData();
+	return data.hasData();
     }
 
     /**
@@ -121,27 +104,10 @@ public class ExtendedSsfData implements ISsfData {
     @Override
     public boolean isMissing(final int pos)
     {
-	if (pos < m_nbcasts)
+	if (pos < nbcasts)
 	    return true;
-	return m_data.isMissing(pos - m_nbcasts);
+	return data.isMissing(pos - nbcasts);
     }
 
-    /**
-     * 
-     * @param value
-     */
-    public void setBackcastsCount(final int value)
-    {
-	m_nbcasts = value;
-    }
-
-    /**
-     * 
-     * @param value
-     */
-    public void setForecastsCount(final int value)
-    {
-	m_nfcasts = value;
-    }
 
 }

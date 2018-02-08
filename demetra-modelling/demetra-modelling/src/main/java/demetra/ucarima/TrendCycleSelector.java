@@ -60,7 +60,7 @@ public class TrendCycleSelector extends AbstractRootSelector {
     }
 
     public void setDefaultLowFreqThreshold(int freq) {
-        m_lfreq = Math.PI / freq - 1e-6; // Two years ( we want to exclude roots from seasonam polynomial! )
+        m_lfreq = Math.PI / freq - 1e-6; // Two years ( we want to exclude roots from seasonal polynomial! )
     }
 
     /**

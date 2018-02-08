@@ -332,6 +332,10 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
         }
         return new ConcentratedLikelihood(n, nmissing, nssqerr, ldet, nres, nb, nbvar, nr);
     }
+    
+    public int degreesOfFreedom(){
+        return n-nx();
+    }
 
     @Override
     public String toString() {

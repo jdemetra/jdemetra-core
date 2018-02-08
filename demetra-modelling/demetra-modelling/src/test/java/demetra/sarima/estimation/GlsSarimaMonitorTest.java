@@ -48,7 +48,7 @@ public class GlsSarimaMonitorTest {
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()
                 .build();
-        RegArimaModel<SarimaModel> regs = RegArimaModel.builder()
+        RegArimaModel<SarimaModel> regs = RegArimaModel.builder(SarimaModel.class)
                 .y(DoubleSequence.of(Data.PROD))
                 .arima(arima)
                 .meanCorrection(true)
@@ -92,7 +92,7 @@ public class GlsSarimaMonitorTest {
             SarimaModel arima = SarimaModel.builder(spec)
                     .setDefault()
                     .build();
-            RegArimaModel<SarimaModel> regs = RegArimaModel.builder()
+            RegArimaModel<SarimaModel> regs = RegArimaModel.builder(SarimaModel.class)
                     .y(DoubleSequence.of(Data.PROD))
                     .arima(arima)
                     .meanCorrection(true)

@@ -17,6 +17,7 @@
 package demetra.timeseries.regression;
 
 import demetra.data.DataBlock;
+import demetra.maths.matrices.Matrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
@@ -78,19 +79,39 @@ public class TrigonometricVariables implements ITsVariable<TsDomain> {
     public TrigonometricVariables(double[] freq) {
         this.freq = freq;
         this.name = "trig#" + freq.length;
-        this.ref=EPOCH;
+        this.ref = EPOCH;
     }
 
     public TrigonometricVariables(double[] freq, LocalDateTime ref, String name) {
         this.freq = freq;
-        this.ref=ref;
+        this.ref = ref;
         this.name = name;
+    }
+
+    public Matrix matrix(int length, int start) {
+        Matrix m = Matrix.make(length, getDim());
+        int nlast = freq.length - 1;
+        if (freq[nlast] != 1) {
+            ++nlast;
+        }
+        for (int i = 0; i < nlast; ++i) {
+            double w = freq[i] * Math.PI;
+            DataBlock c = m.column(2 * i);
+            c.set(k -> Math.cos(w * (k + start)));
+            DataBlock s = m.column(2 * i + 1);
+            s.set(k -> Math.sin(w * (k + start)));
+        }
+        if (nlast < freq.length) { // PI
+            DataBlock c = m.column(2 * nlast);
+            c.set(k -> (k + start) % 2 == 0 ? 1 : -1);
+        }
+        return m;
     }
 
     @Override
     public void data(TsDomain domain, List<DataBlock> data) {
-        TsPeriod refPeriod=domain.getStartPeriod().withDate(ref);
-        long start=domain.getStartPeriod().getId()-refPeriod.getId();
+        TsPeriod refPeriod = domain.getStartPeriod().withDate(ref);
+        long start = domain.getStartPeriod().getId() - refPeriod.getId();
         int nlast = freq.length - 1;
         if (freq[nlast] != 1) {
             ++nlast;

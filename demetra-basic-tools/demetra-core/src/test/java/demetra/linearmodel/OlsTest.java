@@ -34,7 +34,8 @@ public class OlsTest {
     public void testLongley() {
         double[] y = DataSets.Longley.y;
 
-        LinearModel model = LinearModel.of(DoubleSequence.ofInternal(y))
+        LinearModel model = LinearModel.builder()
+                .y(DoubleSequence.ofInternal(y))
                 .meanCorrection(true)
                 .addX(DoubleSequence.ofInternal(DataSets.Longley.x1))
                 .addX(DoubleSequence.ofInternal(DataSets.Longley.x2))
@@ -47,7 +48,7 @@ public class OlsTest {
         Ols ols = new Ols();
         LeastSquaresResults rslts = ols.compute(model);
         System.out.println("Longley");
-        System.out.println(rslts);
+//        System.out.println(rslts);
         
         assertEquals(Math.abs(rslts.Ttest(0).getValue()), Math.sqrt(rslts.Ftest(0, 1).getValue()), 1e-9 );
         assertEquals(rslts.Ftest().getValue(), rslts.Ftest(1, model.getVariablesCount()-1).getValue(), 1e-9 );
@@ -57,7 +58,8 @@ public class OlsTest {
     public void testFilip() {
         double[] y = DataSets.Filip.y;
         DoubleSequence x=DoubleSequence.ofInternal(DataSets.Filip.x);
-        LinearModel model = LinearModel.of(DoubleSequence.ofInternal(y))
+        LinearModel model = LinearModel.builder()
+                .y(DoubleSequence.ofInternal(y))
                 .meanCorrection(true)
                 .addX(x)
                 .addX(DoubleSequence.transformation(x, a -> a * a))
@@ -73,8 +75,8 @@ public class OlsTest {
 
         Ols ols = new Ols();
         LeastSquaresResults rslts = ols.compute(model);
-        System.out.println("Filip");
-        System.out.println(rslts);
+//        System.out.println("Filip");
+//        System.out.println(rslts);
         assertEquals(Math.abs(rslts.Ttest(0).getValue()), Math.sqrt(rslts.Ftest(0, 1).getValue()), 1e-9 );
 //        assertEquals(rslts.Ftest().getValue(), rslts.Ftest(1, model.getVariablesCount()-1).getValue(), 1e-9 );
     }

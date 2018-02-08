@@ -36,11 +36,11 @@ public class CriticalValueComputerTest {
         for (int i=40; i<600; i+=20){
             assertTrue(sc.applyAsDouble(i)<=4.3 && sc.applyAsDouble(i)>=3.3);
             assertTrue(ac.applyAsDouble(i)<=4.3 && ac.applyAsDouble(i)>=3.5);
-            System.out.print(i);
-            System.out.print('\t');
-            System.out.print(sc.applyAsDouble(i));
-            System.out.print('\t');
-            System.out.println(ac.applyAsDouble(i));
+//            System.out.print(i);
+//            System.out.print('\t');
+//            System.out.print(sc.applyAsDouble(i));
+//            System.out.print('\t');
+//            System.out.println(ac.applyAsDouble(i));
         }
     }
     

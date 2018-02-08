@@ -35,7 +35,7 @@ public class RegArimaModelTest {
             missingPos[i] = y.length() - j;
         }
         SarimaModel arima = SarimaModel.builder(spec).build();
-        RegArimaModel<SarimaModel> model = RegArimaModel.builder()
+        RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class)
                 .y(y)
                 .arima(arima)
                 .meanCorrection(true)
@@ -57,7 +57,7 @@ public class RegArimaModelTest {
             missingPos[i] = 2 * i;
         }
         SarimaModel arima = SarimaModel.builder(spec).setDefault().build();
-        RegArimaModel<SarimaModel> model = RegArimaModel.builder()
+        RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class)
                 .y(y)
                 .arima(arima)
                 .meanCorrection(true)
@@ -106,7 +106,7 @@ public class RegArimaModelTest {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 100000; ++i) {
             SarimaModel arima = SarimaModel.builder(spec).setDefault().build();
-            RegArimaModel<SarimaModel> model = RegArimaModel.builder()
+            RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class)
                     .y(y)
                     .arima(arima)
                     .meanCorrection(true)
