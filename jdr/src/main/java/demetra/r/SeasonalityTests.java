@@ -106,7 +106,8 @@ public class SeasonalityTests {
             PeriodicContrasts var = new PeriodicContrasts(freq);
 
             Matrix sd = RegressionUtility.data(Collections.singletonList(var), domain.range(1, domain.length()));
-            LinearModel reg = LinearModel.of(y.drop(1, 0))
+            LinearModel reg = LinearModel.builder()
+                    .y(y.drop(1, 0))
                     .addX(y.drop(0, 1))
                     .addX(sd)
                     .meanCorrection(true)

@@ -87,8 +87,7 @@ public class CanovaHansenTest {
         for (int i = 0; i < 5; ++i) {
             System.out.println(ch.test(2 * i, 2));
         }
-        System.out.println(ch.test(10));
-//        System.out.println(ch.testAll());
+        System.out.println(ch.testAll());
     }
 
 }

@@ -87,7 +87,8 @@ public class TradingDaysTests {
             TsDomain domain = s.getDomain();
             GenericTradingDaysVariables var=new GenericTradingDaysVariables(GenericTradingDays.contrasts(DayClustering.TD7));
             Matrix td = RegressionUtility.data(Collections.singletonList(var), domain.range(1, domain.length()));
-            LinearModel reg=LinearModel.of(y.drop(1, 0))
+            LinearModel reg=LinearModel.builder()
+                    .y(y.drop(1, 0))
                     .addX(y.drop(0, 1))
                     .addX(td)
                     .build();

@@ -7,9 +7,8 @@ package demetra.stats;
 
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
-import static demetra.data.Doubles.ssq;
+import demetra.data.Doubles;
 import demetra.data.WindowFunction;
-import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import java.util.function.DoubleUnaryOperator;
@@ -52,7 +51,7 @@ public class RobustCovarianceComputer {
 
     public double covariance(DoubleSequence x, WindowFunction winFunction, int truncationLag) {
         DoubleUnaryOperator w = winFunction.window();
-        double s = ssq(x);
+        double s = Doubles.ssq(x);
         double q = truncationLag;
         for (int l = 1; l < truncationLag; ++l) {
             double wl = w.applyAsDouble(l / q);
