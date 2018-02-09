@@ -40,14 +40,16 @@ public class LocalPolynomialFilters {
             }
         }else{
             int u=0;
+            double[] c=new double[]{ic};
             switch (endpoints){
+                case "CC":c=new double[0];
                 case "LC": u=0;break;
                 case "QL": u=1;break;
                 case "CQ": u=2;break;
             }
             afilters=new FiniteFilter[horizon];
             for (int i=0; i<afilters.length; ++i){
-                afilters[i]=demetra.maths.linearfilters.LocalPolynomialFilters.asymmetricFilter(filter, i, u, new double[]{ic}, null);
+                afilters[i]=demetra.maths.linearfilters.LocalPolynomialFilters.asymmetricFilter(filter, i, u, c, null);
             }
         }
         
@@ -69,6 +71,32 @@ public class LocalPolynomialFilters {
         }
     }
     
-
+    public FiltersToolkit.FiniteFilters filterProperties(int horizon, int degree, String kernel, String endpoints, double ic){
+        // Creates the filters
+        IntToDoubleFunction weights = weights(horizon, kernel);
+        SymmetricFilter filter = demetra.maths.linearfilters.LocalPolynomialFilters.of(horizon, degree, weights);
+        FiniteFilter[] afilters;
+        if (endpoints.equals("DAF")){
+            afilters=new FiniteFilter[horizon];
+            for (int i=0; i<afilters.length; ++i){
+                afilters[i]=demetra.maths.linearfilters.LocalPolynomialFilters.directAsymmetricFilter(horizon, i, degree, weights);
+            }
+        }else{
+            int u=0;
+             double[] c=new double[]{ic};
+            switch (endpoints){
+                case "CC":c=new double[0];
+                case "LC": u=0;break;
+                case "QL": u=1;break;
+                case "CQ": u=2;break;
+            }
+            afilters=new FiniteFilter[horizon];
+            for (int i=0; i<afilters.length; ++i){
+                afilters[i]=demetra.maths.linearfilters.LocalPolynomialFilters.asymmetricFilter(filter, i, u, c, null);
+            }
+        }
+        return new FiltersToolkit.FiniteFilters(filter, afilters);
+        
+    }
     
 }
