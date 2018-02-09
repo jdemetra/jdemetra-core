@@ -46,11 +46,12 @@ public class X11Toolkit extends BaseX11Algorithm implements
      * US-Census Bureau)
      *
      * @param spec The specifications of the processing
+     *
      * @return A default toolkit, to be used by an X11Kernel
      */
     public static X11Toolkit create(X11Specification spec) {
-        X11Context context = new X11Context(spec.getMode(), 
-                spec.getBackcastHorizon(), spec.getForecastHorizon());
+        X11Context context = new X11Context(spec.getMode(),
+                                            spec.getBackcastHorizon(), spec.getForecastHorizon());
 
         X11Toolkit toolkit = new X11Toolkit(context);
 
@@ -76,27 +77,36 @@ public class X11Toolkit extends BaseX11Algorithm implements
         }
 
         /* Define which ExtremeExtremeValuesCorrector has to be used */
-        if (spec.getCalendarSigma().equals(CalendarSigma.Select)) {
-            GroupSpecificExtremeValuesCorrector xcorrector = new GroupSpecificExtremeValuesCorrector();
-            xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
-            xcorrector.setSigmavecOption(spec.getSigmavec());
-            xcorrector.setExcludefcast(spec.isExcludefcst());
-            toolkit.setExtremeValuescorrector(xcorrector);
-        } else if (spec.getCalendarSigma().equals(CalendarSigma.All)) {
-            PeriodSpecificExtremeValuesCorrector xcorrector = new PeriodSpecificExtremeValuesCorrector();
-            xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
-            xcorrector.setExcludefcast(spec.isExcludefcst());
-            toolkit.setExtremeValuescorrector(xcorrector);
-        } else if (spec.getCalendarSigma().equals(CalendarSigma.Signif)) {
-            CochranDependentExtremeValuesCorrector xcorrector = new CochranDependentExtremeValuesCorrector();
-            xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
-            xcorrector.setExcludefcast(spec.isExcludefcst());
-            toolkit.setExtremeValuescorrector(xcorrector);
-        } else {
-            DefaultExtremeValuesCorrector xcorrector = new DefaultExtremeValuesCorrector();
-            xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
-            xcorrector.setExcludefcast(spec.isExcludefcst());
-            toolkit.setExtremeValuescorrector(xcorrector);
+        switch (spec.getCalendarSigma()) {
+            case Select: {
+                GroupSpecificExtremeValuesCorrector xcorrector = new GroupSpecificExtremeValuesCorrector();
+                xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
+                xcorrector.setSigmavecOption(spec.getSigmavec());
+                xcorrector.setExcludefcast(spec.isExcludefcst());
+                toolkit.setExtremeValuescorrector(xcorrector);
+                break;
+            }
+            case All: {
+                PeriodSpecificExtremeValuesCorrector xcorrector = new PeriodSpecificExtremeValuesCorrector();
+                xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
+                xcorrector.setExcludefcast(spec.isExcludefcst());
+                toolkit.setExtremeValuescorrector(xcorrector);
+                break;
+            }
+            case Signif: {
+                CochranDependentExtremeValuesCorrector xcorrector = new CochranDependentExtremeValuesCorrector();
+                xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
+                xcorrector.setExcludefcast(spec.isExcludefcst());
+                toolkit.setExtremeValuescorrector(xcorrector);
+                break;
+            }
+            default: {
+                DefaultExtremeValuesCorrector xcorrector = new DefaultExtremeValuesCorrector();
+                xcorrector.setSigma(spec.getLowerSigma(), spec.getUpperSigma());
+                xcorrector.setExcludefcast(spec.isExcludefcst());
+                toolkit.setExtremeValuescorrector(xcorrector);
+                break;
+            }
         }
 
         /*In Case that one or more and not all of the filters are stable the normalizer needs this information*/
@@ -194,7 +204,7 @@ public class X11Toolkit extends BaseX11Algorithm implements
 
     /**
      *
-     * @param context
+     * @return context
      */
     @Override
     public X11Context getContext() {

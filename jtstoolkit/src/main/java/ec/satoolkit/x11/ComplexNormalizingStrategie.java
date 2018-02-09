@@ -47,7 +47,7 @@ public class ComplexNormalizingStrategie implements INormalizing {
                 SymmetricFilter sf = defaultFilteringStrategy.filter;
                 nf = sf.getUpperBound();
             }
-            if (tempOptions[p] != null && 2 * nf < len && (nf < 9 || len >= 20)) {
+            if (tempOptions[p] != null && 2 * nf < len && (nf < 8 || len >= 20)) {
             } else {
                 tempOptions[p] = SeasonalFilterOption.Stable;
             }

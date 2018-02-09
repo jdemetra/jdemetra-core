@@ -2,15 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    
+
     <groupId>eu.europa.ec.joinup.sat</groupId>
     <artifactId>demetra-parent</artifactId>
-    <version>2.2.1-SNAPSHOT</version>
+    <version>2.2.1-RC1</version>
     <packaging>pom</packaging>
-    
+
     <name>JDemetra+</name>
     <description>Seasonal Adjustment Toolkit</description>
-    
+
     <url>https://github.com/jdemetra/jdemetra-core</url>
     <licenses>
         <license>
@@ -18,7 +18,7 @@
             <url>https://joinup.ec.europa.eu/page/eupl-text-11-12</url>
         </license>
     </licenses>
-    
+
     <repositories>
         <repository>
             <id>netbeans-releases</id>
@@ -42,7 +42,7 @@
             </snapshots>
         </repository>
     </repositories>
-  
+
     <properties>
         <!-- build -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -62,15 +62,15 @@
         <netbeans.version>RELEASE82</netbeans.version>
         <lombok.version>1.16.12</lombok.version>
     </properties>
-  
+
     <modules>
         <!-- core modules -->
         <module>jtstoolkit</module>
-        <module>jtss</module>  
+        <module>jtss</module>
         <module>utilities</module>
         <module>demetra-tck</module>
         <module>demetra-workspace</module>
-	
+
         <!-- I/O modules -->
         <module>odbcprovider</module>
         <module>jdbcprovider</module>
@@ -81,7 +81,7 @@
         <!-- several apps -->
         <module>jbench</module>
     </modules>
-	
+
     <dependencyManagement>
         <dependencies>
             <!-- dev tools > -->
@@ -99,7 +99,7 @@
                 <groupId>com.google.code.findbugs</groupId>
                 <artifactId>jsr305</artifactId>
                 <version>${jsr305.version}</version>
-            </dependency>   
+            </dependency>
             <dependency>
                 <groupId>org.netbeans.api</groupId>
                 <artifactId>org-openide-util-lookup</artifactId>
@@ -111,62 +111,62 @@
                 <version>${lombok.version}</version>
             </dependency>
             <!-- < dev tools -->
-            
+
             <!-- modules > -->
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-tstoolkit</artifactId>
-                <version>${project.version}</version>            
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-tstoolkit2</artifactId>
-                <version>${project.version}</version>            
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-tss</artifactId>
-                <version>${project.version}</version>            
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-utils</artifactId>
-                <version>${project.version}</version>            
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-odbc</artifactId>
-                <version>${project.version}</version>            
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-jdbc</artifactId>
-                <version>${project.version}</version>            
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-spreadsheet</artifactId>
-                <version>${project.version}</version>            
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-sdmx</artifactId>
-                <version>${project.version}</version>            
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-common</artifactId>
-                <version>${project.version}</version>            
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-workspace</artifactId>
-                <version>${project.version}</version>            
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-tck</artifactId>
-                <version>${project.version}</version>            
+                <version>${project.version}</version>
             </dependency>
             <!-- < modules -->
         </dependencies>
@@ -202,7 +202,7 @@
                             </goals>
                         </execution>
                     </executions>
-                </plugin>            
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
@@ -279,7 +279,7 @@
             </plugin>
         </plugins>
     </build>
-  
+
     <profiles>
         <!-- Deploy SNAPSHOTS to jfrog with sources -->
         <profile>

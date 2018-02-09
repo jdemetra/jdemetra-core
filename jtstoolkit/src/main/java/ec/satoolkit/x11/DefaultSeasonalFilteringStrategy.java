@@ -1,20 +1,19 @@
 /*
 * Copyright 2013 National Bank of Belgium
 *
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+* Licensed under the EUPL, Version 1.1 or – as soon they will be approved
 * by the European Commission - subsequent versions of the EUPL (the "Licence");
 * You may not use this work except in compliance with the Licence.
 * You may obtain a copy of the Licence at:
 *
 * http://ec.europa.eu/idabc/eupl
 *
-* Unless required by applicable law or agreed to in writing, software 
+* Unless required by applicable law or agreed to in writing, software
 * distributed under the Licence is distributed on an "AS IS" basis,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
+* See the Licence for the specific language governing permissions and
 * limitations under the Licence.
-*/
-
+ */
 package ec.satoolkit.x11;
 
 import ec.tstoolkit.data.DataBlock;
@@ -50,13 +49,13 @@ public class DefaultSeasonalFilteringStrategy implements IFiltering {
      * @param endPoints
      */
     public DefaultSeasonalFilteringStrategy(SymmetricFilter filter,
-            IEndPointsProcessor endPoints) {
+                                            IEndPointsProcessor endPoints) {
         this.filter = filter;
         this.endPointsProcessor = endPoints;
     }
 
     public DefaultSeasonalFilteringStrategy(SymmetricFilter filter,
-            IEndPointsProcessor endPoints, String desc) {
+                                            IEndPointsProcessor endPoints, String desc) {
         this.filter = filter;
         this.endPointsProcessor = endPoints;
         this.description_ = desc;
@@ -74,8 +73,7 @@ public class DefaultSeasonalFilteringStrategy implements IFiltering {
             if (2 * nf < len) {
                 filter.filter(bin, bout.drop(nf, nf));
                 endPointsProcessor.process(bin, bout);
-            }
-            else {
+            } else {
                 endPointsProcessor.process(bin, bout);
             }
         }
@@ -95,6 +93,7 @@ public class DefaultSeasonalFilteringStrategy implements IFiltering {
      *
      * @param s
      * @param domain
+     *
      * @return
      */
     @Override
@@ -107,8 +106,7 @@ public class DefaultSeasonalFilteringStrategy implements IFiltering {
 
         if (this.endPointsProcessor == null) {
             return simpleProcess(s, rdomain);
-        }
-        else {
+        } else {
             return compositeProcess(s, rdomain);
         }
     }
