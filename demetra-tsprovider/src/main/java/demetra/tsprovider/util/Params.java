@@ -18,6 +18,7 @@ package demetra.tsprovider.util;
 
 import demetra.data.AggregationType;
 import demetra.timeseries.TsUnit;
+import demetra.tsprovider.cube.BulkCubeConfig;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -27,8 +28,10 @@ import demetra.util.Parser;
 import demetra.util.Formatter;
 import internal.util.InternalParser;
 import internal.util.Lists;
+import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -110,6 +113,11 @@ public class Params {
     @Nonnull
     public <S extends IConfig> IParam<S, ObsGathering> onObsGathering(@Nonnull ObsGathering defaultValue, @Nonnull String frequencyKey, @Nonnull String aggregationKey, @Nonnull String skipKey) {
         return new ObsGatheringParam(defaultValue, frequencyKey, aggregationKey, skipKey);
+    }
+
+    @Nonnull
+    public <S extends IConfig> IParam<S, BulkCubeConfig> onBulkCubeConfig(@Nonnull BulkCubeConfig defaultValue, @Nonnull String ttlKey, @Nonnull String depthKey) {
+        return new BulkCubeConfigParam(defaultValue, ttlKey, depthKey);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
@@ -315,6 +323,39 @@ public class Params {
                 break;
         }
         return null;
+    }
+
+    private static final class BulkCubeConfigParam<S extends IConfig> implements IParam<S, BulkCubeConfig> {
+
+        private final BulkCubeConfig defaultValue;
+        private final IParam<S, Long> cacheTtl;
+        private final IParam<S, Integer> cacheDepth;
+
+        private BulkCubeConfigParam(
+                @Nonnull BulkCubeConfig defaultValue,
+                @Nonnull String ttlKey,
+                @Nonnull String depthKey) {
+            this.defaultValue = defaultValue;
+            this.cacheTtl = onLong(TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES), ttlKey);
+            this.cacheDepth = onInteger(1, depthKey);
+        }
+
+        @Override
+        public BulkCubeConfig defaultValue() {
+            return defaultValue;
+        }
+
+        @Override
+        public BulkCubeConfig get(S config) {
+            return BulkCubeConfig.of(Duration.ofMillis(cacheTtl.get(config)), cacheDepth.get(config));
+        }
+
+        @Override
+        public void set(IConfig.Builder<?, S> builder, BulkCubeConfig value) {
+            Objects.requireNonNull(builder);
+            cacheTtl.set(builder, value.getTtl().toMillis());
+            cacheDepth.set(builder, value.getDepth());
+        }
     }
     //</editor-fold>
 }

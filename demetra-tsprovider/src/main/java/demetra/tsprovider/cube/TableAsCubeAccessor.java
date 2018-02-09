@@ -37,25 +37,26 @@ import javax.annotation.concurrent.ThreadSafe;
  * @since 2.2.0
  */
 @ThreadSafe
+@lombok.AllArgsConstructor(staticName = "of")
 public final class TableAsCubeAccessor implements CubeAccessor {
 
     @ThreadSafe
-    public interface Resource<T> {
+    public interface Resource<DATE> {
 
         @Nullable
         Exception testConnection();
 
         @Nonnull
-        CubeId getRoot();
+        CubeId getRoot() throws Exception;
 
         @Nonnull
         AllSeriesCursor getAllSeriesCursor(@Nonnull CubeId id) throws Exception;
 
         @Nonnull
-        AllSeriesWithDataCursor<T> getAllSeriesWithDataCursor(@Nonnull CubeId id) throws Exception;
+        AllSeriesWithDataCursor<DATE> getAllSeriesWithDataCursor(@Nonnull CubeId id) throws Exception;
 
         @Nonnull
-        SeriesWithDataCursor<T> getSeriesWithDataCursor(@Nonnull CubeId id) throws Exception;
+        SeriesWithDataCursor<DATE> getSeriesWithDataCursor(@Nonnull CubeId id) throws Exception;
 
         @Nonnull
         ChildrenCursor getChildrenCursor(@Nonnull CubeId id) throws Exception;
@@ -70,7 +71,7 @@ public final class TableAsCubeAccessor implements CubeAccessor {
         String getDisplayNodeName(@Nonnull CubeId id) throws Exception;
 
         @Nonnull
-        TsDataBuilder<T> newBuilder();
+        TsDataBuilder<DATE> newBuilder();
     }
 
     @NotThreadSafe
@@ -99,23 +100,23 @@ public final class TableAsCubeAccessor implements CubeAccessor {
     }
 
     @NotThreadSafe
-    public interface AllSeriesWithDataCursor<T> extends SeriesCursor {
+    public interface AllSeriesWithDataCursor<DATE> extends SeriesCursor {
 
         @Nonnull
         String[] getDimValues() throws Exception;
 
         @Nullable
-        T getPeriod() throws Exception;
+        DATE getPeriod() throws Exception;
 
         @Nullable
         Number getValue() throws Exception;
     }
 
     @NotThreadSafe
-    public interface SeriesWithDataCursor<T> extends SeriesCursor {
+    public interface SeriesWithDataCursor<DATE> extends SeriesCursor {
 
         @Nullable
-        T getPeriod() throws Exception;
+        DATE getPeriod() throws Exception;
 
         @Nullable
         Number getValue() throws Exception;
@@ -128,16 +129,8 @@ public final class TableAsCubeAccessor implements CubeAccessor {
         String getChild() throws Exception;
     }
 
-    @Nonnull
-    public static TableAsCubeAccessor create(@Nonnull Resource<?> resource) {
-        return new TableAsCubeAccessor(Objects.requireNonNull(resource));
-    }
-
+    @lombok.NonNull
     private final Resource<?> resource;
-
-    private TableAsCubeAccessor(Resource<?> resource) {
-        this.resource = resource;
-    }
 
     @Override
     public IOException testConnection() {
@@ -146,8 +139,12 @@ public final class TableAsCubeAccessor implements CubeAccessor {
     }
 
     @Override
-    public CubeId getRoot() {
-        return resource.getRoot();
+    public CubeId getRoot() throws IOException {
+        try {
+            return resource.getRoot();
+        } catch (Exception ex) {
+            throw propagateIOException(ex);
+        }
     }
 
     @Override
@@ -304,15 +301,15 @@ public final class TableAsCubeAccessor implements CubeAccessor {
         }
     }
 
-    private static final class AllSeriesWithDataAdapter<T> extends TableAsCubeAdapter<AllSeriesWithDataCursor<T>> {
+    private static final class AllSeriesWithDataAdapter<DATE> extends TableAsCubeAdapter<AllSeriesWithDataCursor<DATE>> {
 
-        private final TsDataBuilder<T> data;
+        private final TsDataBuilder<DATE> data;
         private boolean first;
         private boolean t0;
         private String[] currentId;
         private String currentLabel;
 
-        private AllSeriesWithDataAdapter(CubeId parentId, AllSeriesWithDataCursor cursor, TsDataBuilder<T> data) {
+        private AllSeriesWithDataAdapter(CubeId parentId, AllSeriesWithDataCursor<DATE> cursor, TsDataBuilder<DATE> data) {
             super(parentId, cursor);
             this.data = data;
             this.first = true;
@@ -334,7 +331,7 @@ public final class TableAsCubeAccessor implements CubeAccessor {
                     currentLabel = cursor.getLabel();
                     boolean t1 = true;
                     while (t1) {
-                        T period = cursor.getPeriod();
+                        DATE period = cursor.getPeriod();
                         Number value = null;
                         boolean t2 = true;
                         while (t2) {
@@ -371,12 +368,12 @@ public final class TableAsCubeAccessor implements CubeAccessor {
         }
     }
 
-    private static final class SeriesWithDataAdapter<T> extends TableAsCubeAdapter<SeriesWithDataCursor<T>> {
+    private static final class SeriesWithDataAdapter<DATE> extends TableAsCubeAdapter<SeriesWithDataCursor<DATE>> {
 
-        private final TsDataBuilder<T> data;
+        private final TsDataBuilder<DATE> data;
         private String currentLabel;
 
-        private SeriesWithDataAdapter(CubeId parentId, SeriesWithDataCursor cursor, TsDataBuilder<T> data) {
+        private SeriesWithDataAdapter(CubeId parentId, SeriesWithDataCursor<DATE> cursor, TsDataBuilder<DATE> data) {
             super(parentId, cursor);
             this.data = data;
             this.currentLabel = null;
@@ -388,9 +385,9 @@ public final class TableAsCubeAccessor implements CubeAccessor {
                 boolean t0 = cursor.nextRow();
                 if (t0) {
                     currentLabel = cursor.getLabel();
-                    T latestPeriod = cursor.getPeriod();
+                    DATE latestPeriod = cursor.getPeriod();
                     while (t0) {
-                        T period = latestPeriod;
+                        DATE period = latestPeriod;
                         Number value = null;
                         boolean t1 = true;
                         while (t1) {

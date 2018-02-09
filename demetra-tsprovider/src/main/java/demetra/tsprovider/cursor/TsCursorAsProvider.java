@@ -199,6 +199,7 @@ public final class TsCursorAsProvider implements TsProvider {
     }
 
     private void fill(Ts.Builder info, TsCursor<DataSet> cursor) throws IOException {
+        info.clearMetaData();
         if (info.getType().encompass(TsInformationType.MetaData)) {
             info.metaData(cursor.getSeriesMetaData());
         }

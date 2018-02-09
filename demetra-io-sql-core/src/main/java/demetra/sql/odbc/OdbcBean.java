@@ -16,9 +16,9 @@
  */
 package demetra.sql.odbc;
 
+import demetra.tsprovider.cube.BulkCubeConfig;
 import demetra.tsprovider.util.ObsFormat;
 import demetra.tsprovider.util.ObsGathering;
-import java.time.Duration;
 import java.util.List;
 
 /**
@@ -37,14 +37,5 @@ public final class OdbcBean {
     private String versionColumn;
     private String labelColumn;
     private ObsGathering obsGathering;
-    private Duration cacheTtl;
-    private int cacheDepth;
-
-    public void setCacheTtl(Duration cacheTtl) {
-        this.cacheTtl = cacheTtl.isNegative() ? Duration.ZERO : cacheTtl;
-    }
-
-    public void setCacheDepth(int cacheDepth) {
-        this.cacheDepth = cacheDepth >= 0 ? cacheDepth : 0;
-    }
+    private BulkCubeConfig cacheConfig;
 }

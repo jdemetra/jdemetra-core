@@ -124,21 +124,28 @@ public final class CubeId {
     }
 
     @Nonnull
-    public CubeId child(@Nonnull String... dimensionValues) throws IllegalArgumentException {
-        if (this.dimensionsValues.length + dimensionValues.length > dimensionIds.length) {
+    public CubeId child(@Nonnull String[] dimensionValues, @Nonnegative int length) throws IllegalArgumentException {
+        Objects.requireNonNull(dimensionValues);
+        if (length == 0) {
+            return this;
+        }
+        int level = getLevel();
+        if (level + length > getMaxLevel()) {
             throw new IllegalArgumentException("Too much values");
         }
-        for (String o : dimensionValues) {
-            if (o == null) {
+        String[] result = new String[level + length];
+        for (int i = 0; i < length; i++) {
+            if ((result[i + level] = dimensionValues[i]) == null) {
                 throw new IllegalArgumentException("Dimension values cannot be null");
             }
         }
-        if (dimensionValues.length == 0) {
-            return this;
-        }
-        String[] result = Arrays.copyOf(this.dimensionsValues, this.dimensionsValues.length + dimensionValues.length);
-        System.arraycopy(dimensionValues, 0, result, this.dimensionsValues.length, dimensionValues.length);
+        System.arraycopy(this.dimensionsValues, 0, result, 0, level);
         return new CubeId(dimensionIds, result);
+    }
+
+    @Nonnull
+    public CubeId child(@Nonnull String... dimensionValues) throws IllegalArgumentException {
+        return child(dimensionValues, dimensionValues.length);
     }
 
     public boolean isAncestorOf(@Nonnull CubeId input) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 National Bank of Belgium
+ * Copyright 2018 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,28 +14,25 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.sql.jdbc;
+package demetra.tsprovider.cube;
 
-import demetra.tsprovider.cube.BulkCubeConfig;
-import demetra.tsprovider.util.ObsFormat;
-import demetra.tsprovider.util.ObsGathering;
-import java.util.List;
+import java.time.Duration;
+import javax.annotation.Nonnegative;
 
 /**
  *
  * @author Philippe Charles
  */
-@lombok.Data
-public final class JdbcBean {
+@lombok.Value(staticConstructor = "of")
+public class BulkCubeConfig {
 
-    private String database;
-    private String table;
-    private List<String> dimColumns;
-    private String periodColumn;
-    private String valueColumn;
-    private ObsFormat obsFormat;
-    private String versionColumn;
-    private String labelColumn;
-    private ObsGathering obsGathering;
-    private BulkCubeConfig cacheConfig;
+    @lombok.NonNull
+    private Duration ttl;
+
+    @Nonnegative
+    private int depth;
+
+    public boolean isCacheEnabled() {
+        return getDepth() > 0 && !getTtl().isZero();
+    }
 }

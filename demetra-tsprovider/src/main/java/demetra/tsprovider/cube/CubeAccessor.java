@@ -16,13 +16,9 @@
  */
 package demetra.tsprovider.cube;
 
-import internal.tsprovider.cube.InternalCubeAccessor;
 import demetra.tsprovider.cursor.TsCursor;
 import demetra.io.IteratorWithIO;
 import java.io.IOException;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentMap;
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
@@ -61,9 +57,4 @@ public interface CubeAccessor {
 
     @Nonnull
     String getDisplayNodeName(@Nonnull CubeId id) throws IOException;
-
-    @Nonnull
-    default CubeAccessor bulk(@Nonnegative int depth, @Nonnull ConcurrentMap<CubeId, Object> cache) throws IOException {
-        return new InternalCubeAccessor.BulkCubeAccessor(this, depth, Objects.requireNonNull(cache));
-    }
 }

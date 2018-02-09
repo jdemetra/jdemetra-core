@@ -84,7 +84,7 @@ public final class SqlTableAsCubeResource implements TableAsCubeAccessor.Resourc
     }
 
     @Override
-    public CubeId getRoot() {
+    public CubeId getRoot() throws Exception {
         return root;
     }
 
