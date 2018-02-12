@@ -18,7 +18,6 @@ package demetra.tramo;
 
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
-import ec.tstoolkit.modelling.DefaultTransformationType;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -35,18 +34,20 @@ public class DifferencingModuleTest {
     public void testProd() {
         DifferencingModule test = DifferencingModule.builder().build();
         int[] diff = test.process(DoubleSequence.of(Data.PROD), new int[]{1,12}, null);
-        System.out.println(diff[0]);
-        System.out.println(diff[1]);
-        System.out.println(test.isMeanCorrection());
+        assertTrue(diff[0] == 1 && diff[1] == 1);
+//        System.out.println(diff[0]);
+//        System.out.println(diff[1]);
+//        System.out.println(test.isMeanCorrection());
     }
 
     @Test
     public void testX() {
         DifferencingModule test = DifferencingModule.builder().build();
         int[] diff = test.process(DoubleSequence.of(Data.EXPORTS), new int[]{1,12}, null);
-        System.out.println(diff[0]);
-        System.out.println(diff[1]);
-        System.out.println(test.isMeanCorrection());
+        assertTrue(diff[0] == 0 && diff[1] == 1);
+//        System.out.println(diff[0]);
+//        System.out.println(diff[1]);
+//        System.out.println(test.isMeanCorrection());
     }
 
     @Test
@@ -61,8 +62,8 @@ public class DifferencingModuleTest {
         context.description = desc;
         context.hasseas = true;
         diff.process(s, 12);
-        System.out.println(diff.getD());
-        System.out.println(diff.getBD());
-        System.out.println(diff.isMeanCorrection());
+//        System.out.println(diff.getD());
+//        System.out.println(diff.getBD());
+//        System.out.println(diff.isMeanCorrection());
     }
 }

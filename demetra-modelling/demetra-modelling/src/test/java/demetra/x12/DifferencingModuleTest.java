@@ -35,18 +35,20 @@ public class DifferencingModuleTest {
     public void testProd() {
         DifferencingModule test = DifferencingModule.builder().build();
         int[] diff = test.process(DoubleSequence.of(Data.PROD), new int[]{1,12}, null);
-        System.out.println(diff[0]);
-        System.out.println(diff[1]);
-        System.out.println(test.isMeanCorrection());
+        assertTrue(diff[0] == 1 && diff[1] == 1);
+//        System.out.println(diff[0]);
+//        System.out.println(diff[1]);
+//        System.out.println(test.isMeanCorrection());
     }
 
     @Test
     public void testX() {
         DifferencingModule test = DifferencingModule.builder().build();
         int[] diff = test.process(DoubleSequence.of(Data.EXPORTS), new int[]{1,12}, null);
-        System.out.println(diff[0]);
-        System.out.println(diff[1]);
-        System.out.println(test.isMeanCorrection());
+        assertTrue(diff[0] == 0 && diff[1] == 1);
+//        System.out.println(diff[0]);
+//        System.out.println(diff[1]);
+//        System.out.println(test.isMeanCorrection());
     }
 
     //@Test

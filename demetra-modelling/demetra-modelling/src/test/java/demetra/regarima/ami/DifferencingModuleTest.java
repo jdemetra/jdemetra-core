@@ -26,45 +26,47 @@ import static org.junit.Assert.*;
  * @author Jean Palate
  */
 public class DifferencingModuleTest {
-    
+
     public DifferencingModuleTest() {
     }
 
     @Test
     public void testProd() {
         DifferencingModule test = DifferencingModule.builder().build();
-        int[] diff = test.process(DoubleSequence.of(Data.PROD), new int[]{1,12}, null);
-        System.out.println(diff[0]);
-        System.out.println(diff[1]);
-        System.out.println(test.isMeanCorrection());
+        int[] diff = test.process(DoubleSequence.of(Data.PROD), new int[]{1, 12}, null);
+        assertTrue(diff[0] == 1 && diff[1] == 1);
+//        System.out.println(diff[0]);
+//        System.out.println(diff[1]);
+//        System.out.println(test.isMeanCorrection());
     }
-    
+
     @Test
     public void testProd2() {
         DifferencingModule test = DifferencingModule.builder().build();
         int[] diff = test.process(DoubleSequence.of(Data.PROD), new int[]{12, 1}, null);
-        System.out.println(diff[0]);
-        System.out.println(diff[1]);
-        System.out.println(test.isMeanCorrection());
+//        System.out.println(diff[0]);
+//        System.out.println(diff[1]);
+//        System.out.println(test.isMeanCorrection());
     }
-    
+
     @Test
     public void testExports() {
         DifferencingModule test = DifferencingModule.builder()
                 .k(0.9).build();
-        int[] diff = test.process(DoubleSequence.of(Data.EXPORTS), new int[]{1,12}, null);
-        System.out.println(diff[0]);
-        System.out.println(diff[1]);
-        System.out.println(test.isMeanCorrection());
+        int[] diff = test.process(DoubleSequence.of(Data.EXPORTS), new int[]{1, 12}, null);
+//        System.out.println(diff[0]);
+//        System.out.println(diff[1]);
+//        System.out.println(test.isMeanCorrection());
     }
-    
+
     @Test
     public void testExports2() {
         DifferencingModule test = DifferencingModule.builder().k(0.9).build();
         int[] diff = test.process(DoubleSequence.of(Data.EXPORTS), new int[]{12, 1}, null);
-        System.out.println(diff[0]);
-        System.out.println(diff[1]);
-        System.out.println(test.isMeanCorrection());
+//        System.out.println(diff[0]);
+//        System.out.println(diff[1]);
+//        System.out.println(test.isMeanCorrection());
+        assertTrue(diff[0] == 1 && diff[1] == 0);
     }
-    
+
 }
