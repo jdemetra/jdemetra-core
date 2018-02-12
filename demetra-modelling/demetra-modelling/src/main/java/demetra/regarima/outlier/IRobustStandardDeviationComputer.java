@@ -33,18 +33,7 @@ public interface IRobustStandardDeviationComputer {
      * @param data
      * @return
      */
-    boolean compute(DoubleSequence data);
-
-    double get();
-
-    /**
-     *
-     * @param pos
-     * @return
-     */
-    double get(int pos);
-    
-    void reset();
+    double compute(DoubleSequence data);
 
     public static IRobustStandardDeviationComputer mad() {
         return new Mad2(50);
@@ -68,17 +57,8 @@ public interface IRobustStandardDeviationComputer {
         return mediancorrected ? new Mad2(centile) : new Mad(centile);
     }
 
-    /**
-     *
-     * @return
-     */
-    public static IRobustStandardDeviationComputer rmse() {
-        return new Rmse();
-    }
-
     static class Mad implements IRobustStandardDeviationComputer {
 
-        private double mad;
         private final int centile;
 
         Mad(int centile) {
@@ -86,7 +66,7 @@ public interface IRobustStandardDeviationComputer {
         }
 
         @Override
-        public boolean compute(DoubleSequence e) {
+        public double compute(DoubleSequence e) {
             double[] a = e.toArray();
             int n = a.length;
             for (int i = 0; i < n; ++i) {
@@ -105,29 +85,13 @@ public interface IRobustStandardDeviationComputer {
             Normal normal = new Normal();
             double l = normal.getProbabilityInverse(0.5 + .005 * centile,
                     ProbabilityType.Lower);
-            mad = m / l;
-            return true;
+            return m / l;
         }
 
-        @Override
-        public double get(int pos) {
-            return mad;
-        }
-
-        @Override
-        public double get() {
-            return mad;
-        }
-        
-        @Override
-        public void reset(){
-            mad=0;
-        }
     }
 
     static class Mad2 implements IRobustStandardDeviationComputer {
 
-        private double mad;
         private final int centile;
 
         Mad2(int centile) {
@@ -135,7 +99,7 @@ public interface IRobustStandardDeviationComputer {
         }
 
         @Override
-        public boolean compute(DoubleSequence data) {
+        public double compute(DoubleSequence data) {
             double[] e = data.toArray();
             int n = e.length;
             Arrays.sort(e);
@@ -168,59 +132,33 @@ public interface IRobustStandardDeviationComputer {
             Normal normal = new Normal();
             double l = normal.getProbabilityInverse(0.5 + .005 * centile,
                     ProbabilityType.Lower);
-            mad = m / l;
-            return true;
+            return m / l;
         }
 
-        @Override
-        public double get(int pos) {
-            return mad;
-        }
-
-        @Override
-        public double get() {
-            return mad;
-        }
-        
-        @Override
-        public void reset(){
-            mad=0;
-        }
     }
 
-    static class Rmse implements IRobustStandardDeviationComputer {
-
-        private double ss;
-        private DoubleSequence data;
-
-        @Override
-        public boolean compute(DoubleSequence e) {
-            data = e;
-            ss = ssq(e);
-            return true;
-        }
-
-        @Override
-        public double get(int i) {
-            int n = data.length();
-            if (i >= 0 && i < n) {
-                double e = data.get(i);
-                return Math.sqrt((ss - e * e) / (n - 1));
-            } else {
-                return Math.sqrt(ss / (n - 1));
-            }
-        }
-
-        @Override
-        public double get() {
-            int n = data.length();
-            return Math.sqrt(ss / n);
-        }
-        
-        @Override
-        public void reset(){
-            data=null;
-            ss=0;
-        }
-    }
+//    static class Rmse implements IRobustStandardDeviationComputer {
+//
+//        private double ss;
+//        private DoubleSequence data;
+//
+//        @Override
+//        public double compute(DoubleSequence e) {
+//            data = e;
+//            ss = ssq(e);
+//            int n = data.length();
+//            return Math.sqrt(ss / n);
+//        }
+//
+//         public double get(int i) {
+//            int n = data.length();
+//            if (i >= 0 && i < n) {
+//                double e = data.get(i);
+//                return Math.sqrt((ss - e * e) / (n - 1));
+//            } else {
+//                return Math.sqrt(ss / (n - 1));
+//            }
+//        }
+//
+//    }
 }

@@ -28,47 +28,107 @@ import java.util.function.IntToDoubleFunction;
  */
 @lombok.experimental.UtilityClass
 public class LocalPolynomialFilters {
-    public double[] filter(double[] data, int horizon, int degree, String kernel, String endpoints, double ic){
+
+    public double[] filter(double[] data, int horizon, int degree, String kernel, String endpoints, double ic) {
         // Creates the filters
         IntToDoubleFunction weights = weights(horizon, kernel);
         SymmetricFilter filter = demetra.maths.linearfilters.LocalPolynomialFilters.of(horizon, degree, weights);
         FiniteFilter[] afilters;
-        if (endpoints.equals("DAF")){
-            afilters=new FiniteFilter[horizon];
-            for (int i=0; i<afilters.length; ++i){
-                afilters[i]=demetra.maths.linearfilters.LocalPolynomialFilters.directAsymmetricFilter(horizon, i, degree, weights);
+        if (endpoints.equals("DAF")) {
+            afilters = new FiniteFilter[horizon];
+            for (int i = 0; i < afilters.length; ++i) {
+                afilters[i] = demetra.maths.linearfilters.LocalPolynomialFilters.directAsymmetricFilter(horizon, i, degree, weights);
             }
-        }else{
-            int u=0;
-            switch (endpoints){
-                case "LC": u=0;break;
-                case "QL": u=1;break;
-                case "CQ": u=2;break;
+        } else if (endpoints.equals("CN")) {
+            afilters = new FiniteFilter[horizon];
+            for (int i = 0; i < afilters.length; ++i) {
+                afilters[i] = demetra.maths.linearfilters.LocalPolynomialFilters.cutAndNormalizeFilter(filter, i);
             }
-            afilters=new FiniteFilter[horizon];
-            for (int i=0; i<afilters.length; ++i){
-                afilters[i]=demetra.maths.linearfilters.LocalPolynomialFilters.asymmetricFilter(filter, i, u, new double[]{ic}, null);
+        } else {
+            int u = 0;
+            double[] c = new double[]{ic};
+            switch (endpoints) {
+                case "CC":
+                    c = new double[0];
+                case "LC":
+                    u = 0;
+                    break;
+                case "QL":
+                    u = 1;
+                    break;
+                case "CQ":
+                    u = 2;
+                    break;
+            }
+            afilters = new FiniteFilter[horizon];
+            for (int i = 0; i < afilters.length; ++i) {
+                afilters[i] = demetra.maths.linearfilters.LocalPolynomialFilters.asymmetricFilter(filter, i, u, c, null);
             }
         }
-        
-        DoubleSequence rslt = demetra.maths.linearfilters.LocalPolynomialFilters.filter(DoubleSequence.ofInternal(data)
-                , filter, afilters);
+
+        DoubleSequence rslt = demetra.maths.linearfilters.LocalPolynomialFilters.filter(DoubleSequence.ofInternal(data), filter, afilters);
         return rslt.toArray();
     }
-    
-    IntToDoubleFunction weights(int horizon, String filter){
-        switch (filter){
-            case "Uniform": return DiscreteKernel.uniform(horizon);
-            case "Biweight": return DiscreteKernel.biweight(horizon);
-            case "Triweight": return DiscreteKernel.triweight(horizon);
-            case "Tricube": return DiscreteKernel.tricube(horizon);
-            case "Triangular": return DiscreteKernel.triangular(horizon);
-            case "Parabolic": return DiscreteKernel.parabolic(horizon);
-            case "Gaussian": return DiscreteKernel.gaussian(4*horizon);
-            default: return DiscreteKernel.henderson(horizon);
+
+    IntToDoubleFunction weights(int horizon, String filter) {
+        switch (filter) {
+            case "Uniform":
+                return DiscreteKernel.uniform(horizon);
+            case "Biweight":
+                return DiscreteKernel.biweight(horizon);
+            case "Triweight":
+                return DiscreteKernel.triweight(horizon);
+            case "Tricube":
+                return DiscreteKernel.tricube(horizon);
+            case "Triangular":
+                return DiscreteKernel.triangular(horizon);
+            case "Parabolic":
+                return DiscreteKernel.parabolic(horizon);
+            case "Gaussian":
+                return DiscreteKernel.gaussian(4 * horizon);
+            default:
+                return DiscreteKernel.henderson(horizon);
         }
     }
-    
 
-    
+    public FiltersToolkit.FiniteFilters filterProperties(int horizon, int degree, String kernel, String endpoints, double ic) {
+        // Creates the filters
+        IntToDoubleFunction weights = weights(horizon, kernel);
+        SymmetricFilter filter = demetra.maths.linearfilters.LocalPolynomialFilters.of(horizon, degree, weights);
+        FiniteFilter[] afilters;
+        if (endpoints.equals("DAF")) {
+            afilters = new FiniteFilter[horizon];
+            for (int i = 0; i < afilters.length; ++i) {
+                afilters[i] = demetra.maths.linearfilters.LocalPolynomialFilters.directAsymmetricFilter(horizon, i, degree, weights);
+            }
+        } else if (endpoints.equals("CN")) {
+            afilters = new FiniteFilter[horizon];
+            for (int i = 0; i < afilters.length; ++i) {
+                afilters[i] = demetra.maths.linearfilters.LocalPolynomialFilters.cutAndNormalizeFilter(filter, i);
+            }
+        } else {
+            int u = 0;
+            double[] c = new double[]{ic};
+            switch (endpoints) {
+                case "CC":
+                    c = new double[0];
+                case "LC":
+                    u = 0;
+                    break;
+                case "QL":
+                    u = 1;
+                    break;
+                case "CQ":
+                    u = 2;
+                    break;
+            }
+            afilters = new FiniteFilter[horizon];
+            for (int i = 0; i < afilters.length; ++i) {
+                afilters[i] = demetra.maths.linearfilters.LocalPolynomialFilters.asymmetricFilter(filter, i, u, c, null);
+            }
+        }
+        return new FiltersToolkit.FiniteFilters(filter, afilters);
+
+    }
+
 }

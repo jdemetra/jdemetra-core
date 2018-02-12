@@ -59,7 +59,7 @@ public class HannanRissanenTest {
     @Test
     @Ignore
     public void testAirline() {
-        HannanRissanen hr = new HannanRissanen();
+        HannanRissanen hr = HannanRissanen.builder().build();
         SarmaSpecification spec = new SarmaSpecification();
         spec.setPeriod(12);
         spec.setQ(1);
@@ -72,7 +72,7 @@ public class HannanRissanenTest {
     @Test
     @Ignore
     public void test3101() {
-        HannanRissanen hr = new HannanRissanen();
+        HannanRissanen hr = HannanRissanen.builder().build();
         SarmaSpecification spec = new SarmaSpecification();
         spec.setPeriod(12);
         spec.setP(3);
@@ -139,7 +139,7 @@ public class HannanRissanenTest {
             System.out.println(t1 - t0);
             t0 = System.currentTimeMillis();
             for (int i = 0; i < (q == 0 ? 100 : K); ++i) {
-                HannanRissanen hr = new HannanRissanen();
+                HannanRissanen hr = HannanRissanen.builder().build();
                 SarmaSpecification spec = new SarmaSpecification();
                 spec.setPeriod(12);
                 spec.setQ(1);

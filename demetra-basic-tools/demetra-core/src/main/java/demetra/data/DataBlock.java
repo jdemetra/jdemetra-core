@@ -1465,6 +1465,12 @@ public final class DataBlock implements DoubleSequence {
        }
     }
 
+    /**
+     * Apply recursively the function: x(t+del)=f(x(t), x(t+del)) 
+     * (or x(t-|del|)=f(x(t), x(t-|del|)) if del is negative)
+     * @param del
+     * @param fn 
+     */
     public void applyRecursively(final int del, @Nonnull DoubleBinaryOperator fn) {
         if (del > 0) {
             if (length() <= del) {

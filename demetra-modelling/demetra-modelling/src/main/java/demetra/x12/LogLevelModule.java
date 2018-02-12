@@ -26,21 +26,22 @@ import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.ami.AICcComparator;
-import demetra.regarima.ami.ILogLevelTest;
+import demetra.regarima.ami.RegArimaUtility;
 import demetra.sarima.SarimaModel;
+import demetra.regarima.ami.ILogLevelModule;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class LogLevelTest implements ILogLevelTest<SarimaModel> {
+public class LogLevelModule implements ILogLevelModule<SarimaModel> {
 
     public static Builder builder() {
         return new Builder();
     }
 
-    public static class Builder implements IBuilder<LogLevelTest> {
+    public static class Builder implements IBuilder<LogLevelModule> {
 
         private double aiccdiff = -2;
         private double precision = 1e-7;
@@ -56,8 +57,8 @@ public class LogLevelTest implements ILogLevelTest<SarimaModel> {
         }
 
         @Override
-        public LogLevelTest build() {
-            return new LogLevelTest(aiccdiff, precision);
+        public LogLevelModule build() {
+            return new LogLevelModule(aiccdiff, precision);
         }
 
     }
@@ -67,7 +68,7 @@ public class LogLevelTest implements ILogLevelTest<SarimaModel> {
     private RegArimaEstimation<SarimaModel> level, log;
     private double aiccLevel, aiccLog;
 
-    private LogLevelTest(double aiccdiff, final double precision) {
+    private LogLevelModule(double aiccdiff, final double precision) {
         this.aiccDiff = aiccdiff;
         this.precision = precision;
     }
@@ -98,12 +99,12 @@ public class LogLevelTest implements ILogLevelTest<SarimaModel> {
      * @return
      */
     public boolean process(DoubleSequence data, int frequency, boolean seas) {
-        return process(X12Utility.airlineModel(data, false, frequency, seas));
+        return process(RegArimaUtility.airlineModel(data, false, frequency, seas));
     }
     @Override
     public boolean process(RegArimaModel<SarimaModel> levelModel) {
         clear();
-        IRegArimaProcessor processor = X12Utility.processor(true, precision);
+        IRegArimaProcessor processor = RegArimaUtility.processor(true, precision);
         level = processor.process(levelModel);
 
         int d = levelModel.arima().getDifferencingOrder();

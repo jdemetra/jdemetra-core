@@ -43,6 +43,7 @@ public class FastOutlierDetector<T extends IArimaModel> extends
     private double[] el;
     private IArimaModel stmodel;
     private BackFilter ur;
+    private double mad;
 
  
     /**
@@ -87,7 +88,7 @@ public class FastOutlierDetector<T extends IArimaModel> extends
         ConcentratedLikelihood cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(getRegArima());
         DoubleSequence residuals = fullResiduals(getRegArima().differencedModel(), cll);
         el=residuals.toArray();
-        getStandardDeviationComputer().compute(residuals);
+        mad=getStandardDeviationComputer().compute(residuals);
         return true;
     }
 
@@ -124,7 +125,6 @@ public class FastOutlierDetector<T extends IArimaModel> extends
 
         int lb = getLBound(), ub = getUBound();
         for (int ix = 0; ix < n; ++ix) {
-            double rmse = getStandardDeviationComputer().get(n - ix - 1 - d);
             sxx += o[ix] * o[ix];
             if (corr != 0) {
                 sxx -= corr * corr;
@@ -151,7 +151,7 @@ public class FastOutlierDetector<T extends IArimaModel> extends
             int pos = n - 1 - ix;
             if (pos >= lb && pos < ub) {
                 double c = sxy / sxx;
-                double val = c * Math.sqrt(sxx) / rmse;
+                double val = c * Math.sqrt(sxx) / mad;
                 setCoefficient(pos, idx, c);
                 setT(pos, idx, val);
             }
