@@ -88,6 +88,17 @@ public final class ComplexBuilder implements IBuilder<Complex> {
     }
 
     /**
+     * Adds a multiple of a complex number to this object
+     * @param a The multiplier
+     * @param c A complex number
+     * @return This object is returned
+     */
+    public ComplexBuilder addAC(final double a, final Complex c) {
+	re += a*c.getRe();
+	im += a*c.getIm();
+	return this;
+    }
+    /**
      * Adds a real number to this object
      * @param a A real number
      * @return This object is returned

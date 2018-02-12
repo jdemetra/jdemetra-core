@@ -23,21 +23,22 @@ import demetra.modelling.DataTransformation;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
-import demetra.regarima.ami.ILogLevelTest;
+import demetra.regarima.ami.RegArimaUtility;
 import demetra.sarima.SarimaModel;
+import demetra.regarima.ami.ILogLevelModule;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class LogLevelTest implements ILogLevelTest<SarimaModel> {
+public class LogLevelModule implements ILogLevelModule<SarimaModel> {
     
     public static Builder builder(){
         return new Builder();
     }
     
-    public static class Builder implements IBuilder<LogLevelTest>{
+    public static class Builder implements IBuilder<LogLevelModule>{
         
         private double precision=1e-7;
         private double logpreference=0;
@@ -53,8 +54,8 @@ public class LogLevelTest implements ILogLevelTest<SarimaModel> {
         }
 
         @Override
-        public LogLevelTest build() {
-            return new LogLevelTest(logpreference, precision);
+        public LogLevelModule build() {
+            return new LogLevelModule(logpreference, precision);
         }
         
     }
@@ -66,7 +67,7 @@ public class LogLevelTest implements ILogLevelTest<SarimaModel> {
     /**
      *
      */
-    private  LogLevelTest(double logpreference, double precision) {
+    private  LogLevelModule(double logpreference, double precision) {
         this.logpreference=logpreference;
         this.precision=precision;
     }
@@ -155,12 +156,12 @@ public class LogLevelTest implements ILogLevelTest<SarimaModel> {
      * @return
      */
     public boolean process(DoubleSequence data, int frequency, boolean seas) {
-        return process(TramoUtility.airlineModel(data, true, frequency, seas));
+        return process(RegArimaUtility.airlineModel(data, true, frequency, seas));
     }
     
     @Override
     public boolean process(RegArimaModel<SarimaModel> levelModel) {
-        IRegArimaProcessor processor = TramoUtility.processor(true, precision);
+        IRegArimaProcessor processor = RegArimaUtility.processor(true, precision);
         e = processor.process(levelModel);
         if (e != null) {
             level = Math.log(e.getConcentratedLikelihood().ssq()

@@ -96,7 +96,6 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      * @param all
      */
     protected void clear(boolean all) {
-        sdevComputer.reset();
         oMax = -1;
         posMax = -1;
         if (all) {
@@ -200,14 +199,6 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      */
     public int getLBound() {
         return lbound;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public double getMAD() {
-        return sdevComputer.get();
     }
 
     /**
@@ -357,13 +348,6 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      */
     public double T(int pos, int outlier) {
         return T.get(pos, outlier);
-    }
-
-    /**
-     * @return the sdevComputer
-     */
-    public IRobustStandardDeviationComputer getSdevComputer() {
-        return sdevComputer;
     }
 
     /**

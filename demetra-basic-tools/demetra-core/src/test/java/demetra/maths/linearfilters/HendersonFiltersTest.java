@@ -31,6 +31,19 @@ public class HendersonFiltersTest {
     }
 
     @Test
+    public void testWeights() {
+        for (int i = 3; i < 99; i += 2) {
+            SymmetricFilter f = HendersonFilters.ofLength(i);
+            double[] w = f.weightsToArray();
+            double s = 0;
+            for (int j = 0; j < w.length; ++j) {
+                s += w[j];
+            }
+            assertEquals(s, 1, 1e-9);
+        }
+    }
+
+    @Test
     public void testGain() {
         DoubleUnaryOperator gain = HendersonFilters.ofLength(23).squaredGainFunction();
         for (int i = 0; i <= 100; ++i) {

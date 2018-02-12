@@ -17,7 +17,7 @@
 package demetra.regarima.ami;
 
 import demetra.arima.IArimaModel;
-import demetra.regarima.RegArimaModel;
+import demetra.data.DoubleSequence;
 
 /**
  *
@@ -25,9 +25,9 @@ import demetra.regarima.RegArimaModel;
  * @param <M>
  */
 
-public interface ILogLevelTest<M extends IArimaModel> {
+public interface IDifferencingModule<M extends IArimaModel> {
     
-    boolean process(RegArimaModel<M> model);
-    boolean isChoosingLog();
+    int[] process(DoubleSequence data, int[] periods, int[] differencing);
+    boolean isMeanCorrection();
     
 }

@@ -37,33 +37,4 @@ import demetra.sarima.internal.HannanRissanenInitializer;
 @lombok.experimental.UtilityClass
 public class TramoUtility {
 
-    public IRegArimaProcessor processor(boolean ml, double precision) {
-        ISsqFunctionMinimizer minimizer = new LevenbergMarquardtMinimizer();
-        HannanRissanenInitializer initializer = HannanRissanenInitializer.builder()
-                .stabilize(true)
-                .useDefaultIfFailed(true)
-                .build();
-        
-        return GlsSarimaProcessor.builder()
-                .initializer(initializer)
-                .useMaximumLikelihood(ml)
-                .minimizer(minimizer)
-                .precision(precision)
-                .build();
-    }
-
-    public RegArimaModel<SarimaModel> airlineModel(DoubleSequence data, boolean mean, int ifreq, boolean seas) {
-        // use airline model with mean
-        SarimaSpecification spec = new SarimaSpecification();
-        spec.setPeriod(ifreq);
-        spec.airline(seas);
-        SarimaModel arima = SarimaModel.builder(spec)
-                .setDefault()
-                .build();
-        return RegArimaModel.builder(SarimaModel.class)
-                .arima(arima)
-                .y(data)
-                .meanCorrection(mean)
-                .build();
-    }
 }

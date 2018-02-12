@@ -118,13 +118,6 @@ public class HannanRissanen {
     private static final int MAXNPI = 50;
     private static final double OVERFLOW = 1e16, EPS = 1e-6;
 
-    /**
-     *
-     */
-    public HannanRissanen() {
-        this(new Builder());
-    }
-
     private HannanRissanen(Builder builder){
         initialization=builder.initialization;
         this.finalcorrection=builder.finalcorrection;

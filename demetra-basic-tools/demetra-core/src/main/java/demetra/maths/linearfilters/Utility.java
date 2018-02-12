@@ -22,6 +22,7 @@ import demetra.maths.polynomials.Polynomial;
 import demetra.utilities.Ref;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSequence;
+import demetra.maths.ComplexBuilder;
 
 /**
  *
@@ -192,29 +193,31 @@ public class Utility {
     public Complex frequencyResponse(final IntToDoubleFunction c, final int lb, final int ub,
             final double w) {
 
-        double cos = Math.cos(w), sin = Math.sin(w);
+        double cos = Math.cos(w);
         int idx = lb;
-        Complex c0 = Complex.cart(Math.cos(w * idx), Math.sin(w * idx));
-        Complex rslt = c0.times(c.applyAsDouble(idx++));
+        // sum (w(j)e(-i jw)), j: lb->ub
+        Complex c0 = Complex.cart(Math.cos(w * idx), -Math.sin(w * idx));
+        ComplexBuilder rslt = new ComplexBuilder(c0)
+                .mul(c.applyAsDouble(idx++));
 
-        // computed by the iteration procedure : cos (i+1)w + cos (i-1)w= 2*cos
-        // iw *cos w
-        // sin (i+1)w + sin (i-1)w= 2*sin iw *cos w
-        // or equivalentally:
-        // e(i(n+1)w)+e(i(n-1)w)=e(inw)*2cos w.
-        // starting conditions:
-        // e(i0w) = 1 , e(i1w)=eiw
+        // computed by the iteration procedure:
+        // e(-i(n+1)w)+e(-i(n-1)w)=e(-inw)*2cos w.
+        // e(-i(n+1)w)=e(-inw)*2cos w -e(-i(n-1)w)
         if (idx <= ub) {
-            Complex c1 = Complex.cart(Math.cos(w * idx), Math.sin(w * idx));
-            rslt = rslt.plus(c1.times(c.applyAsDouble(idx++)));
+            Complex c1 = Complex.cart(Math.cos(w * idx), -Math.sin(w * idx));
+            rslt.addAC(c.applyAsDouble(idx++), c1);
             while (idx <= ub) {
-                Complex eiw = c1.times(2 * cos).minus(c0);
-                rslt = rslt.plus(eiw.times(c.applyAsDouble(idx++)));
+                Complex eiw=new ComplexBuilder(c1)
+                        .mul(2*cos)
+                        .sub(c0)
+                        .build();
+                rslt.addAC(c.applyAsDouble(idx++), eiw);
                 c0 = c1;
                 c1 = eiw;
             }
         }
-        return rslt;
+        
+        return rslt.build();
     }
 
     /**

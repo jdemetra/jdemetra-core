@@ -87,8 +87,31 @@ public class LocalPolynomialFilters {
         }
     }
 
+    /**
+     * The filter is defined for the lags (-h, q)
+     * @param h Horizon of the (full) filter
+     * @param q Asymmetric horizon (<h)
+     * @param d Degree of the polynomial
+     * @param k Kernel
+     * @return 
+     */
     public FiniteFilter directAsymmetricFilter(final int h, final int q, final int d, final IntToDoubleFunction k) {
         return defaultDirectAsymmetricFilter(h, q, d, k);
+    }
+
+    public FiniteFilter cutAndNormalizeFilter(final SymmetricFilter s, final int q) {
+        IntToDoubleFunction weights = s.weights();
+        int l=s.getLowerBound(), u=q;
+        double[] w=new double[q-l+1];
+        double n=0;
+        for (int i=0; i<w.length; ++i){
+            w[i]=weights.applyAsDouble(l+i);
+            n+=w[i];
+        }
+        for (int i=0; i<w.length; ++i){
+            w[i]/=n;
+        }
+        return FiniteFilter.ofInternal(w, l);
     }
 
     private static SymmetricFilter of0_1(int h, IntToDoubleFunction k) {
@@ -104,8 +127,8 @@ public class LocalPolynomialFilters {
         double[] w = new double[h + 1];
         double s0 = 0, s2 = 0, s4 = 0;
         for (int i = 1; i <= h; ++i) {
-            long j2 = i * i;
-            long j4 = j2 * j2;
+            double j2 = i * i;
+            double j4 = j2 * j2;
             double ki = k.applyAsDouble(i);
             s0 += ki;
             s2 += j2 * ki;
@@ -143,7 +166,7 @@ public class LocalPolynomialFilters {
         double[] w = new double[h + 1];
         for (int i = 0; i <= h; ++i) {
             double s = u[0];
-            long q = 1;
+            double q = 1;
             for (int j = 1; j <= d; ++j) {
                 q *= i;
                 s += q * u[j];
@@ -164,7 +187,7 @@ public class LocalPolynomialFilters {
     private double S_h2(int h, IntToDoubleFunction k) {
         double s = 0;
         for (int i = 1; i <= h; ++i) {
-            int j = i * i;
+            double j = i * i;
             s += j * k.applyAsDouble(i);
         }
         return 2 * s;
@@ -173,7 +196,7 @@ public class LocalPolynomialFilters {
     private double S_h4(int h, IntToDoubleFunction k) {
         double s = 0;
         for (int i = 1; i <= h; ++i) {
-            long j = i * i;
+            double j = i * i;
             j *= j;
             s += j * k.applyAsDouble(i);
         }
@@ -195,8 +218,8 @@ public class LocalPolynomialFilters {
         int hd = d / 2;
         double s = 0;
         for (int i = 1; i <= h; ++i) {
-            long ii = i * i;
-            long j = ii;
+            double ii = i * i;
+            double j = ii;
             for (int l = 2; l <= hd; ++l) {
                 j *= ii;
             }
@@ -212,7 +235,7 @@ public class LocalPolynomialFilters {
         double s = 0;
         if (d % 2 == 0) {
             for (int i = 1; i <= h; ++i) {
-                long j = i;
+                double j = i;
                 for (int l = 1; l < d; ++l) {
                     j *= i;
                 }
@@ -224,7 +247,7 @@ public class LocalPolynomialFilters {
             }
         } else {
             for (int i = q + 1; i <= h; ++i) {
-                long j = i;
+                double j = i;
                 for (int l = 1; l < d; ++l) {
                     j *= i;
                 }
@@ -268,7 +291,7 @@ public class LocalPolynomialFilters {
         w[h] = u[0] * k.applyAsDouble(0);
         for (int i = 1; i <= q; ++i) {
             double s = u[0];
-            long l = 1;
+            double l = 1;
             for (int j = 1; j <= d; ++j) {
                 l *= i;
                 s += l * u[j];
@@ -278,7 +301,7 @@ public class LocalPolynomialFilters {
         }
         for (int i = -1; i >= -h; --i) {
             double s = u[0];
-            long l = 1;
+            double l = 1;
             for (int j = 1; j <= d; ++j) {
                 l *= i;
                 s += l * u[j];

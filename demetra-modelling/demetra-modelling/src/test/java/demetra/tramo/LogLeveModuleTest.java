@@ -26,9 +26,9 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate
  */
-public class LogLevelTestTest {
+public class LogLeveModuleTest {
 
-    public LogLevelTestTest() {
+    public LogLeveModuleTest() {
     }
 
     @Test
@@ -37,7 +37,7 @@ public class LogLevelTestTest {
 //        long t0 = System.currentTimeMillis();
 //        System.out.println("New");
 //        for (int i = 0; i < 1000; ++i) {
-            LogLevelTest ll = LogLevelTest.builder()
+            LogLevelModule ll = LogLevelModule.builder()
                     .estimationPrecision(1e-7)
                     .build();
             ll.process(DoubleSequence.ofInternal(Data.PROD), 12, true);
