@@ -165,7 +165,7 @@ class DefaultSeasonalComputer extends DefaultX11Algorithm implements
             DefaultSeasonalFilteringStrategy[] s0 = new DefaultSeasonalFilteringStrategy[options.length];
             DefaultSeasonalFilteringStrategy[] s1 = new DefaultSeasonalFilteringStrategy[options.length];
             for (int i = 0; i < options.length; ++i) {
-                if (options[i] == SeasonalFilterOption.Msr) {
+                if (options[i] == SeasonalFilterOption.Msr || options[i] == SeasonalFilterOption.X11Default) {
                     s0[i] = SeasonalFilterFactory.getDefaultFilteringStrategy(SeasonalFilterOption.S3X3);
                     s1[i] = SeasonalFilterFactory.getDefaultFilteringStrategy(SeasonalFilterOption.S3X5);
                 } else {

@@ -84,6 +84,9 @@ public class ComplexSeasonalFilteringStrategy implements IFiltering {
     @Override
     public TsData process(TsData s, TsDomain domain) {
         TsDomain rdomain = domain == null ? s.getDomain() : domain;
+        int ny_all = rdomain.getLength() / rdomain.getFrequency().intValue();
+        int nyr_all = rdomain.getLength() % rdomain.getFrequency().intValue() == 0 ? ny_all : ny_all + 1;
+
         TsData out = new TsData(rdomain);
         PeriodIterator pin = new PeriodIterator(s, domain);
         PeriodIterator pout = new PeriodIterator(out);
@@ -91,15 +94,15 @@ public class ComplexSeasonalFilteringStrategy implements IFiltering {
         while (pin.hasMoreElements()) {
             DataBlock bin = pin.nextElement().data;
             DataBlock bout = pout.nextElement().data;
-            int nf = 0, len = bin.getLength();
+            int nf = 0;
             if (filters[p] != null) {
                 nf = filters[p].getUpperBound();
             }
-            if (filters[p] != null && 2 * nf < len && (nf < 8 || len >= 20)) {
+            if (filters[p] != null && ny_all >= 5 && (nf < 8 || nyr_all >= 20)) {
                 filters[p].filter(bin, bout.drop(nf, nf));
                 endPointsProcessors[p].process(bin, bout);
             } else {
-                bout.set(bin.sum() / len);
+                bout.set(bin.average());
             }
             ++p;
         }

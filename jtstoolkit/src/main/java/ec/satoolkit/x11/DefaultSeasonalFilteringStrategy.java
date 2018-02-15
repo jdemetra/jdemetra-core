@@ -100,7 +100,9 @@ public class DefaultSeasonalFilteringStrategy implements IFiltering {
     public TsData process(TsData s, TsDomain domain) {
         TsDomain rdomain = domain == null ? s.getDomain() : domain;
         int ny = rdomain.getLength() / rdomain.getFrequency().intValue();
-        if (ny < 5 || (ny < 20 && filter.getDegree() >= 8)) {
+        int nyr = rdomain.getLength() % rdomain.getFrequency().intValue() == 0 ? ny : ny + 1;
+
+        if (ny < 5 || (nyr < 20 && filter.getDegree() >= 8)) {
             return new StableSeasonalFilteringStrategy().process(s, rdomain);
         }
 
