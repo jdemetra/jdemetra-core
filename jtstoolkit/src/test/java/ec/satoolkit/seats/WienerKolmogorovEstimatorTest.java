@@ -62,9 +62,9 @@ public class WienerKolmogorovEstimatorTest {
                 UcarimaModel ucm = decomposer.decompose(seats, null, null);
                 //System.out.println(arima);
                 if (ucm != null) {
-                    WienerKolmogorovEstimator wk = new WienerKolmogorovEstimator();
+                    WienerKolmogorovEstimator wk = new WienerKolmogorovEstimator(-1);
                     DefaultSeriesDecomposition sa1 = wk.decompose(seats, ucm, null, null);
-                    KalmanEstimator kl = new KalmanEstimator();
+                    KalmanEstimator kl = new KalmanEstimator(-1);
                     DefaultSeriesDecomposition sa2 = kl.decompose(seats, ucm, null, null);
                     TsData t1 = sa1.getSeries(ComponentType.Trend, ComponentInformation.Value);
                     TsData t2 = sa2.getSeries(ComponentType.Trend, ComponentInformation.Value);

@@ -57,13 +57,13 @@ public class SeatsToolkit implements ISeatsToolkit {
         IComponentsEstimator cmpEstimator;
         switch (spec.getMethod()) {
             case KalmanSmoother:
-                cmpEstimator = new KalmanEstimator();
+                cmpEstimator = new KalmanEstimator(spec.getPredictionLength());
                 break;
             case McElroyMatrix:
-                cmpEstimator = new MatrixEstimator();
+                cmpEstimator = new MatrixEstimator(spec.getPredictionLength());
                 break;
             default:
-                cmpEstimator = new WienerKolmogorovEstimator();
+                cmpEstimator = new WienerKolmogorovEstimator(spec.getPredictionLength());
                 break;
         }
         toolkit.componentsEstimator = cmpEstimator;

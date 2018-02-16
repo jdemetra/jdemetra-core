@@ -28,6 +28,7 @@ import ec.tstoolkit.maths.linearfilters.Utilities;
 import ec.tstoolkit.maths.polynomials.Polynomial;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.ucarima.UcarimaModel;
 import ec.tstoolkit.ucarima.estimation.BurmanEstimatesC;
 import ec.tstoolkit.utilities.Ref;
@@ -39,6 +40,18 @@ import java.util.ArrayList;
 @Development(status = Development.Status.Alpha)
 public class WienerKolmogorovEstimator implements IComponentsEstimator {
 
+    private final int npred;
+    
+    private int nf(TsFrequency freq){
+        if (npred>=0)
+            return npred;
+        else
+            return freq.intValue()*(-npred);
+    }
+    
+    public WienerKolmogorovEstimator(int npred){
+        this.npred=npred;
+    }
     /**
      *
      * @param model
@@ -58,8 +71,9 @@ public class WienerKolmogorovEstimator implements IComponentsEstimator {
         ucmc.compact(2, 2);
 
         TsData s = model.getSeries();
-        TsDomain fdomain = new TsDomain(s.getEnd(), s.getFrequency().intValue());
-        burman.setForecastsCount(fdomain.getLength());
+        int nf = nf(s.getFrequency());
+        TsDomain fdomain = new TsDomain(s.getEnd(), nf);
+        burman.setForecastsCount(nf);
 
         // check the ucarima model. 
         // ucm=checkModel(ucm);
