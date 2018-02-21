@@ -1,38 +1,26 @@
 /*
 * Copyright 2013 National Bank of Belgium
 *
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+* Licensed under the EUPL, Version 1.1 or – as soon they will be approved
 * by the European Commission - subsequent versions of the EUPL (the "Licence");
 * You may not use this work except in compliance with the Licence.
 * You may obtain a copy of the Licence at:
 *
 * http://ec.europa.eu/idabc/eupl
 *
-* Unless required by applicable law or agreed to in writing, software 
+* Unless required by applicable law or agreed to in writing, software
 * distributed under the Licence is distributed on an "AS IS" basis,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
+* See the Licence for the specific language governing permissions and
 * limitations under the Licence.
  */
 package ec.tstoolkit.modelling.arima.x13;
 
-import ec.tstoolkit.arima.estimation.RegArimaEstimation;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.Complex;
 import ec.tstoolkit.maths.realfunctions.IParametricMapping;
-import ec.tstoolkit.modelling.arima.IModelBuilder;
-import ec.tstoolkit.modelling.arima.IModelEstimator;
-import ec.tstoolkit.modelling.arima.IOutliersDetectionModule;
-import ec.tstoolkit.modelling.arima.IPreprocessingModule;
-import ec.tstoolkit.modelling.arima.IPreprocessor;
-import ec.tstoolkit.modelling.arima.ISeriesScaling;
-import ec.tstoolkit.modelling.arima.ModelDescription;
-import ec.tstoolkit.modelling.arima.ModelEstimation;
-import ec.tstoolkit.modelling.arima.ModellingContext;
-import ec.tstoolkit.modelling.arima.PreprocessingModel;
-import ec.tstoolkit.modelling.arima.ProcessingResult;
-import ec.tstoolkit.modelling.arima.RegArimaEstimator;
+import ec.tstoolkit.modelling.arima.*;
 import ec.tstoolkit.sarima.SarimaComponent;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;

@@ -1,20 +1,19 @@
 /*
 * Copyright 2013 National Bank of Belgium
 *
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+* Licensed under the EUPL, Version 1.1 or – as soon they will be approved
 * by the European Commission - subsequent versions of the EUPL (the "Licence");
 * You may not use this work except in compliance with the Licence.
 * You may obtain a copy of the Licence at:
 *
 * http://ec.europa.eu/idabc/eupl
 *
-* Unless required by applicable law or agreed to in writing, software 
+* Unless required by applicable law or agreed to in writing, software
 * distributed under the Licence is distributed on an "AS IS" basis,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
+* See the Licence for the specific language governing permissions and
 * limitations under the Licence.
-*/
-
+ */
 package ec.satoolkit.x11;
 
 import ec.tstoolkit.data.DataBlock;
@@ -35,9 +34,10 @@ public class ComplexSeasonalFilteringStrategy implements IFiltering {
     private IEndPointsProcessor[] endPointsProcessors;
 
     @Override
-    public String getDescription(){
+    public String getDescription() {
         return "Composite filter";
     }
+
     /**
      *
      * @param options
@@ -60,7 +60,7 @@ public class ComplexSeasonalFilteringStrategy implements IFiltering {
      * @param endPoints
      */
     public ComplexSeasonalFilteringStrategy(SymmetricFilter[] filters,
-            IEndPointsProcessor[] endPoints) {
+                                            IEndPointsProcessor[] endPoints) {
         this.filters = filters;
         this.endPointsProcessors = endPoints;
     }
@@ -78,11 +78,15 @@ public class ComplexSeasonalFilteringStrategy implements IFiltering {
      *
      * @param s
      * @param domain
+     *
      * @return
      */
     @Override
     public TsData process(TsData s, TsDomain domain) {
         TsDomain rdomain = domain == null ? s.getDomain() : domain;
+        int ny_all = rdomain.getLength() / rdomain.getFrequency().intValue();
+        int nyr_all = rdomain.getLength() % rdomain.getFrequency().intValue() == 0 ? ny_all : ny_all + 1;
+
         TsData out = new TsData(rdomain);
         PeriodIterator pin = new PeriodIterator(s, domain);
         PeriodIterator pout = new PeriodIterator(out);
@@ -90,15 +94,15 @@ public class ComplexSeasonalFilteringStrategy implements IFiltering {
         while (pin.hasMoreElements()) {
             DataBlock bin = pin.nextElement().data;
             DataBlock bout = pout.nextElement().data;
-            int nf = 0, len = bin.getLength();
+            int nf = 0;
             if (filters[p] != null) {
                 nf = filters[p].getUpperBound();
             }
-            if (filters[p] != null && 2 * nf < len && (nf <9 || len>=20)) {
+            if (filters[p] != null && ny_all >= 5 && (nf < 8 || nyr_all >= 20)) {
                 filters[p].filter(bin, bout.drop(nf, nf));
                 endPointsProcessors[p].process(bin, bout);
             } else {
-                bout.set(bin.sum() / len);
+                bout.set(bin.average());
             }
             ++p;
         }

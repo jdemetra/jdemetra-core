@@ -29,9 +29,8 @@ public class DefaultNormalizingStrategie implements INormalizing {
 
         IFiltering n = new DefaultTrendFilteringStrategy(f, iep);
         TsData tmp = n.process(s, s.getDomain());
-        
-        
+
         return tmp;
     }
-;
+
 }

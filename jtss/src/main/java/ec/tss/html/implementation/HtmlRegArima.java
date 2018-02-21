@@ -1,24 +1,25 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.tss.html.implementation;
 
-import ec.tss.html.*;
 import static ec.tss.html.Bootstrap4.FONT_WEIGHT_BOLD;
+import ec.tss.html.*;
 import ec.tstoolkit.Parameter;
+import ec.tstoolkit.algorithm.ProcessingContext;
 import ec.tstoolkit.dstats.T;
 import ec.tstoolkit.eco.ConcentratedLikelihood;
 import ec.tstoolkit.maths.matrices.Matrix;
@@ -30,20 +31,10 @@ import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.sarima.SarimaComponent;
 import ec.tstoolkit.sarima.SarimaSpecification;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
-import ec.tstoolkit.timeseries.regression.GregorianCalendarVariables;
-import ec.tstoolkit.timeseries.regression.ILengthOfPeriodVariable;
-import ec.tstoolkit.timeseries.regression.IMovingHolidayVariable;
-import ec.tstoolkit.timeseries.regression.IOutlierVariable;
-import ec.tstoolkit.timeseries.regression.ITradingDaysVariable;
-import ec.tstoolkit.timeseries.regression.ITsVariable;
-import ec.tstoolkit.timeseries.regression.IUserTsVariable;
-import ec.tstoolkit.timeseries.regression.InterventionVariable;
-import ec.tstoolkit.timeseries.regression.MissingValueEstimation;
-import ec.tstoolkit.timeseries.regression.Ramp;
-import ec.tstoolkit.timeseries.regression.TsVariableList;
-import ec.tstoolkit.timeseries.regression.TsVariableSelection;
+import ec.tstoolkit.timeseries.regression.*;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
+import ec.tstoolkit.utilities.NameManager;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Predicate;
@@ -344,7 +335,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
         writeRegressionItems(stream, "Ramps", true, context, var -> var instanceof Ramp);
         writeRegressionItems(stream, "Intervention variables", true, context, var -> var instanceof InterventionVariable);
         writeRegressionItems(stream, "User variables", true, context, var -> var instanceof IUserTsVariable
-                && !(var instanceof InterventionVariable) && !(var instanceof Ramp));
+                             && !(var instanceof InterventionVariable) && !(var instanceof Ramp));
         writeFixedRegressionItems(stream, "Fixed other regression effects", context, var -> var.isUser());
         writeMissing(stream);
     }
@@ -403,8 +394,8 @@ public class HtmlRegArima extends AbstractHtmlElement {
 
         String header = prespecified ? "Prespecified outliers" : "Outliers";
         writeRegressionItems(stream, header, true, context, var -> var instanceof IOutlierVariable
-                && model_.description.isPrespecified((IOutlierVariable) var) == prespecified);
-//        
+                             && model_.description.isPrespecified((IOutlierVariable) var) == prespecified);
+//
 //        TsVariableSelection<IOutlierVariable> regs = x_.select(IOutlierVariable.class);
 //        boolean found = false;
 //        for (TsVariableSelection.Item<IOutlierVariable> reg : regs.elements()) {
@@ -465,11 +456,12 @@ public class HtmlRegArima extends AbstractHtmlElement {
             int ndim = reg.variable.getDim();
             for (int j = 0; j < reg.variable.getDim(); ++j) {
                 stream.open(HtmlTag.TABLEROW);
-                if (ndim > 1) {
-                    stream.write(new HtmlTableCell(reg.variable.getItemDescription(j, context)).withWidth(100));
-                } else {
-                    stream.write(new HtmlTableCell("").withWidth(100));
-                }
+                //  if (ndim > 1) { // it is possible to have one regression variable where the name is a usefull information to know which variable it is
+                // stream.write(new HtmlTableCell(reg.variable.getItemDescription(j, context)).withWidth(100));
+                stream.write(new HtmlTableCell(reg.variable.getItemDescription(j, context)).withWidth(100));
+//   } else {
+                //       stream.write(new HtmlTableCell("").withWidth(100));
+                //   }
                 stream.write(new HtmlTableCell(df4.format(b[start + j + reg.position])).withWidth(100));
                 double tval = ll_.getTStat(start + j + reg.position, true, nhp_);
                 stream.write(new HtmlTableCell(formatT(tval)).withWidth(100));
@@ -576,7 +568,26 @@ public class HtmlRegArima extends AbstractHtmlElement {
             double[] c = reg.getCoefficients();
             for (int j = 0; j < cur.getDim(); ++j) {
                 stream.open(HtmlTag.TABLEROW);
-                stream.write(new HtmlTableCell(cur.getItemDescription(j, context)).withWidth(100));
+                //         stream.write(new HtmlTableCell(cur.getItemDescription(j, context)).withWidth(100));
+
+                String name = cur.getItemDescription(j, context);
+                if (name.startsWith("td|")) {
+                    name = name.replace("td|", "");
+                    ProcessingContext pc = ProcessingContext.getActiveContext();
+                    NameManager<TsVariables> tsVariableManagers = pc.getTsVariableManagers();
+                    String prefix = name.substring(0, name.indexOf('.'));
+                    if (tsVariableManagers.contains(prefix)) {
+                        TsVariables tss = tsVariableManagers.get(prefix);
+                        String tsname = name.substring(name.indexOf('.') + 1, name.length());
+                        if (tss.contains(tsname)) {
+                            {
+                                stream.write(new HtmlTableCell(tss.get(tsname).getDescription(context)).withWidth(100));
+                            }
+                        }
+                    }
+                } else {
+                    stream.write(new HtmlTableCell(cur.getItemDescription(j, context)).withWidth(100));
+                }
                 stream.write(new HtmlTableCell(df4.format(c[j])).withWidth(100));
                 stream.close(HtmlTag.TABLEROW);
             }
