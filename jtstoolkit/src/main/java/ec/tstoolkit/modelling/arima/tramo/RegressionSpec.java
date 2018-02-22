@@ -1,17 +1,17 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.tstoolkit.modelling.arima.tramo;
@@ -21,28 +21,12 @@ import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.information.InformationSetSerializable;
 import ec.tstoolkit.modelling.TsVariableDescriptor;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
-import ec.tstoolkit.timeseries.regression.IEasterVariable;
-import ec.tstoolkit.timeseries.regression.ILengthOfPeriodVariable;
-import ec.tstoolkit.timeseries.regression.IOutlierVariable;
-import ec.tstoolkit.timeseries.regression.ITradingDaysVariable;
-import ec.tstoolkit.timeseries.regression.ITsVariable;
-import ec.tstoolkit.timeseries.regression.InterventionVariable;
-import ec.tstoolkit.timeseries.regression.OutlierDefinition;
-import ec.tstoolkit.timeseries.regression.Ramp;
+import ec.tstoolkit.timeseries.regression.*;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import ec.tstoolkit.utilities.Comparator;
 import ec.tstoolkit.utilities.Jdk6;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -141,12 +125,7 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     }
 
     public boolean contains(OutlierDefinition outlier) {
-        for (OutlierDefinition def : outliers_) {
-            if (def.equals(outlier)) {
-                return true;
-            }
-        }
-        return false;
+        return outliers_.stream().anyMatch((def) -> (def.equals(outlier)));
     }
 
     public void add(IOutlierVariable outlier) {
@@ -216,10 +195,11 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
                 } else {
                     String[] user = calendar_.getTradingDays().getUserVariables();
                     if (user != null) {
-                        if (shortname || user.length == 1) {
-                            names.add(ITradingDaysVariable.NAME);
-                        } else {
-                            names.add(ITradingDaysVariable.NAME + '#' + user.length);
+                        for (String username : user) {
+                            if (!username.startsWith("td|")) {
+                                username = "td|" + username;
+                            }
+                            names.add(ITsVariable.validName(username));
                         }
                     } else {
                         if (calendar_.getTradingDays().getTradingDaysType() == TradingDaysType.WorkingDays || shortname) {
@@ -257,8 +237,8 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         ramps_.forEach(rp -> names.add(rp.getName()));
 
         // intervention
-        interventions_.forEach(iv
-                -> {
+        interventions_.forEach(iv ->
+        {
             String n = iv.getName();
             if (names.contains(n)) {
                 n += '*';
@@ -267,8 +247,8 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         });
 
         // user
-        users_.forEach(uv
-                -> {
+        users_.forEach(uv ->
+        {
             int n = uv.getLastLag() - uv.getFirstLag() + 1;
             if (n == 1 || shortname) {
                 names.add(validName(uv.getName()));
@@ -363,14 +343,10 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         try {
             RegressionSpec spec = (RegressionSpec) super.clone();
             spec.interventions_ = new ArrayList<>();
-            for (InterventionVariable ii : interventions_) {
-                spec.interventions_.add(ii.clone());
-            }
+            interventions_.forEach(ii -> spec.interventions_.add(ii.clone()));
             spec.outliers_ = Jdk6.newArrayList(outliers_);
             spec.ramps_ = new ArrayList<>();
-            for (Ramp r : ramps_) {
-                spec.ramps_.add(r.clone());
-            }
+            ramps_.forEach(r -> spec.ramps_.add(r.clone()));
             spec.calendar_ = calendar_.clone();
             spec.users_ = new ArrayList<>();
             users_.forEach(var -> spec.users_.add(var.clone()));
@@ -489,25 +465,46 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
             }
         }
         List<Information<InformationSet>> usel = info.select(USERS, InformationSet.class);
-        for (Information<InformationSet> item : usel) {
+        usel.forEach((item) -> {
             TsVariableDescriptor cur = new TsVariableDescriptor();
             if (cur.read(item.value)) {
                 users_.add(cur);
             }
-        }
+        });
         List<Information<InformationSet>> isel = info.select(INTERVENTIONS, InformationSet.class);
-        for (Information<InformationSet> item : isel) {
+        isel.forEach((item) -> {
             InterventionVariable cur = new InterventionVariable();
             if (cur.read(item.value)) {
                 interventions_.add(cur);
             }
-        }
+        });
         InformationSet ifcoeff = info.getSubSet(FCOEFF);
         if (ifcoeff != null) {
+            TradingDaysSpec td = calendar_.getTradingDays();
             List<Information<double[]>> all = ifcoeff.select(double[].class);
-            all.stream().forEach(reg -> fcoeff.put(reg.name, reg.value));
+
+            all.forEach((item) -> {
+                //Version 2.2.0 fixed regressors for user defined calendar
+                if (td != null && td.getUserVariables() != null && "td".equals(item.name) && item.value.length == td.getUserVariables().length) {
+                    for (int j = 0; j < item.value.length; j++) {
+                        fcoeff.put(ITsVariable.validName("td|" + td.getUserVariables()[j]), new double[]{item.value[j]});
+                    }
+                } else {
+                    fcoeff.put(item.name, item.value);
+                }
+
+            });
+
             List<Information<Double>> sall = ifcoeff.select(Double.class);
-            sall.stream().forEach(reg -> fcoeff.put(reg.name, new double[]{reg.value}));
+            sall.forEach((item) -> {
+                //Version 2.2.0 fixed regressors for user defined calendar
+                if (td != null && td.getUserVariables() != null && "td".equals(item.name) && 1 == td.getUserVariables().length) {
+                    fcoeff.put(ITsVariable.validName("td|" + td.getUserVariables()[0]), new double[]{item.value});
+                } else {
+                    fcoeff.put(item.name, new double[]{item.value});
+                }
+            });
+
         }
         InformationSet icoeff = info.getSubSet(COEFF);
         if (icoeff != null) {
@@ -564,6 +561,17 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         String[] names = getRegressionVariableShortNames(TsFrequency.Undefined);
         Arrays.sort(names);
         List<String> toremove = fcoeff.keySet().stream().filter(s -> Arrays.binarySearch(names, s) < 0).collect(Collectors.toList());
+        // if the number of user-defined calender variables nemes is not equal to the number of coefficents fcoeff for "td" td is needed
+        int i = 0;
+        for (String name : names) {
+            if (name.startsWith("td|")) {
+                ++i;
+            }
+        }
+
+        if (toremove.contains("td") && fcoeff.get("td").length != i) {
+            toremove.remove("td");
+        }
         toremove.forEach(s -> fcoeff.remove(s));
     }
 

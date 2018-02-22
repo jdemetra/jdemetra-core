@@ -1,28 +1,24 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.tstoolkit.modelling.arima.tramo;
 
 import ec.tstoolkit.algorithm.ProcessingContext;
 import ec.tstoolkit.design.Development;
-import ec.tstoolkit.modelling.ComponentType;
-import ec.tstoolkit.modelling.PreadjustmentVariable;
-import ec.tstoolkit.modelling.RegStatus;
-import ec.tstoolkit.modelling.TsVariableDescriptor;
-import ec.tstoolkit.modelling.Variable;
+import ec.tstoolkit.modelling.*;
 import ec.tstoolkit.modelling.arima.IModelBuilder;
 import ec.tstoolkit.modelling.arima.ModelDescription;
 import ec.tstoolkit.modelling.arima.ModellingContext;
@@ -30,20 +26,7 @@ import ec.tstoolkit.sarima.SarimaComponent;
 import ec.tstoolkit.timeseries.calendars.IGregorianCalendarProvider;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
-import ec.tstoolkit.timeseries.regression.AbstractTsVariableBox;
-import ec.tstoolkit.timeseries.regression.EasterVariable;
-import ec.tstoolkit.timeseries.regression.GregorianCalendarVariables;
-import ec.tstoolkit.timeseries.regression.IOutlierVariable;
-import ec.tstoolkit.timeseries.regression.ITradingDaysVariable;
-import ec.tstoolkit.timeseries.regression.ITsVariable;
-import ec.tstoolkit.timeseries.regression.InterventionVariable;
-import ec.tstoolkit.timeseries.regression.JulianEasterVariable;
-import ec.tstoolkit.timeseries.regression.LaggedTsVariable;
-import ec.tstoolkit.timeseries.regression.LeapYearVariable;
-import ec.tstoolkit.timeseries.regression.OutlierDefinition;
-import ec.tstoolkit.timeseries.regression.Ramp;
-import ec.tstoolkit.timeseries.regression.StockTradingDaysVariables;
-import ec.tstoolkit.timeseries.regression.TsVariableGroup;
+import ec.tstoolkit.timeseries.regression.*;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -168,7 +151,7 @@ public class TramoModelBuilder implements IModelBuilder {
                 model.addPreadjustment(pvar);
             } else {
                 Variable evar = Variable.movingHolidayVariable(var,
-                        easter.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
+                                                               easter.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
                 model.addVariable(evar);
             }
         } else {
@@ -183,7 +166,7 @@ public class TramoModelBuilder implements IModelBuilder {
                 model.addPreadjustment(pvar);
             } else {
                 Variable evar = Variable.movingHolidayVariable(var,
-                        easter.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
+                                                               easter.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
                 model.addVariable(evar);
             }
         }
@@ -269,7 +252,7 @@ public class TramoModelBuilder implements IModelBuilder {
                 model.addPreadjustment(pvar);
             } else {
                 Variable tvar = Variable.calendarVariable(var,
-                        td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
+                                                          td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
                 model.addVariable(tvar);
             }
         }
@@ -281,7 +264,7 @@ public class TramoModelBuilder implements IModelBuilder {
                 model.addPreadjustment(pvar);
             } else {
                 Variable lvar = Variable.calendarVariable(lp,
-                        td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
+                                                          td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
                 model.addVariable(lvar);
             }
         }
@@ -292,26 +275,40 @@ public class TramoModelBuilder implements IModelBuilder {
         if (userVariables == null || userVariables.length == 0) {
             return;
         }
-        ITsVariable[] vars = new ITsVariable[userVariables.length];
 
-        for (int i = 0; i < vars.length; ++i) {
-            vars[i] = context_.getTsVariable(userVariables[i]);
-            if (vars[i] == null) {
+        ArrayList<ITsVariable> nonUserFixedVariables = new ArrayList<>();
+        for (int i = 0; i < userVariables.length; ++i) {
+            userVariables[i] = userVariables[i].replace("td|", "");
+            String userVariableName = "td|".concat(userVariables[i]);
+            ITsVariable var = context_.getTsVariable(userVariables[i]);
+            if (var == null) {
                 throw new TramoException(userVariables[i] + " not found");
             }
-        }
 
-        TsVariableGroup var = new TsVariableGroup("User-defined calendar variables", vars);
-        var.setName("usertd");
-        ITradingDaysVariable tdvar = AbstractTsVariableBox.tradingDays(var);
-        String sname = ITsVariable.shortName(tdvar.getName());
-        if (preadjustment.containsKey(sname)) {
-            PreadjustmentVariable pvar = PreadjustmentVariable.calendarVariable(tdvar, preadjustment.get(sname));
-            model.addPreadjustment(pvar);
-        } else {
-            Variable tvar = Variable.calendarVariable(tdvar,
-                    td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
-            model.addVariable(tvar);
+            if (preadjustment.containsKey(ITsVariable.validName(userVariableName))) {
+                userVariables[i] = userVariableName;
+
+                DecoratedTsVariable temp = new DecoratedTsVariable(var, userVariableName);
+                PreadjustmentVariable pvar = PreadjustmentVariable.tdVariable(temp, preadjustment.get(ITsVariable.validName(userVariables[i])));
+                model.addPreadjustment(pvar);
+            } else {
+                nonUserFixedVariables.add(var);
+            }
+        }
+        if (!nonUserFixedVariables.isEmpty()) {
+            TsVariableGroup var = new TsVariableGroup("User-defined calendar variables", nonUserFixedVariables.toArray(new ITsVariable[nonUserFixedVariables.size()]));// hiermit ist der Name der Zeitreihe mit drin
+            var.setName("usertd");
+
+            // it has to be checked if td is fixed too. this might be the case if Refresh/Partial Concurrent adjustment/Current adjustment is done
+            if (preadjustment.containsKey("td")) {
+                ITradingDaysVariable tdvar_fixed = AbstractTsVariableBox.tradingDays(var);
+                PreadjustmentVariable pv_td = PreadjustmentVariable.tdVariable(tdvar_fixed, preadjustment.get("td"));
+                model.addPreadjustment(pv_td);
+            } else {
+                ITradingDaysVariable tdvar = AbstractTsVariableBox.tradingDays(var);
+                Variable tvar = Variable.calendarVariable(tdvar, td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
+                model.addVariable(tvar);
+            }
         }
     }
 
@@ -325,7 +322,7 @@ public class TramoModelBuilder implements IModelBuilder {
                 model.addPreadjustment(pvar);
             } else {
                 Variable tvar = Variable.calendarVariable(var,
-                        td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
+                                                          td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
                 model.addVariable(tvar);
             }
         }
@@ -337,7 +334,7 @@ public class TramoModelBuilder implements IModelBuilder {
                 model.addPreadjustment(pvar);
             } else {
                 Variable lvar = Variable.calendarVariable(lp,
-                        td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
+                                                          td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
                 model.addVariable(lvar);
             }
         }
@@ -347,11 +344,11 @@ public class TramoModelBuilder implements IModelBuilder {
         StockTradingDaysVariables var = new StockTradingDaysVariables(td.getStockTradingDays());
         String sname = ITsVariable.shortName(var.getName());
         if (preadjustment.containsKey(sname)) {
-            PreadjustmentVariable pvar =  PreadjustmentVariable.calendarVariable(var, preadjustment.get(sname));
+            PreadjustmentVariable pvar = PreadjustmentVariable.calendarVariable(var, preadjustment.get(sname));
             model.addPreadjustment(pvar);
         } else {
             Variable tvar = Variable.calendarVariable(var,
-                    td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
+                                                      td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
             model.addVariable(tvar);
         }
     }
