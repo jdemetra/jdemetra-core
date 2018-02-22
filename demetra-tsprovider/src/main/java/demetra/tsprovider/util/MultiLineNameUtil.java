@@ -16,9 +16,9 @@
  */
 package demetra.tsprovider.util;
 
-import demetra.utilities.Trees;
+import demetra.utilities.TreeTraverser;
+import java.util.Collections;
 import java.util.function.Function;
-import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 
 /**
@@ -50,9 +50,9 @@ public class MultiLineNameUtil {
     public static String toHtml(@Nonnull String input) {
 //        return "<html>" + input.replace(SEPARATOR, "<br>");
         String[] items = input.split(SEPARATOR, -1);
-        Function<Integer, Stream<Integer>> children = o -> o < items.length - 1 ? Stream.of(o + 1) : Stream.empty();
+        Function<Integer, Iterable<Integer>> children = o -> o < items.length - 1 ? Collections.singletonList(o + 1) : Collections.emptyList();
         Function<Integer, String> toString = o -> (o == 0 ? "" : " ") + items[o] + "<br>";
-        String result = Trees.prettyPrintToString(0, children, Integer.MAX_VALUE, toString);
+        String result = TreeTraverser.of(0, children).prettyPrintToString(Integer.MAX_VALUE, toString);
         return "<html>" + result.replace(" ", "&nbsp;");
     }
 
