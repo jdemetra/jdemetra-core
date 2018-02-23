@@ -128,6 +128,10 @@ public final class SqlTableAsCubeResource implements TableAsCubeAccessor.Resourc
         return TableAsCubeUtil.getDisplayNodeName(id);
     }
 
+    @Override
+    public void close() throws Exception {
+    }
+
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
     private static void closeAll(Exception root, AutoCloseable... items) {
         for (AutoCloseable o : items) {

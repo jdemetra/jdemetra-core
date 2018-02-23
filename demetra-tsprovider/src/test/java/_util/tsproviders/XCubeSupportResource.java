@@ -22,35 +22,27 @@ import demetra.tsprovider.cube.CubeAccessor;
 import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cube.CubeSupport;
 import demetra.tsprovider.util.IParam;
-import java.io.IOException;
-import java.util.Objects;
 
 /**
  *
  * @author Philippe Charles
  */
+@lombok.AllArgsConstructor
 public final class XCubeSupportResource implements CubeSupport.Resource {
 
-    private final DataSource dataSource;
+    @lombok.NonNull
     private final CubeAccessor accessor;
+
+    @lombok.NonNull
     private final IParam<DataSet, CubeId> param;
 
-    public XCubeSupportResource(DataSource dataSource, CubeAccessor accessor, IParam<DataSet, CubeId> param) {
-        this.dataSource = Objects.requireNonNull(dataSource);
-        this.accessor = Objects.requireNonNull(accessor);
-        this.param = Objects.requireNonNull(param);
-    }
-
     @Override
-    public CubeAccessor getAccessor(DataSource dataSource) throws IOException, IllegalArgumentException {
-        if (!dataSource.equals(this.dataSource)) {
-            throw new IllegalArgumentException();
-        }
+    public CubeAccessor getAccessor(DataSource dataSource) {
         return accessor;
     }
 
     @Override
-    public IParam<DataSet, CubeId> getIdParam(CubeId root) throws IOException, IllegalArgumentException {
+    public IParam<DataSet, CubeId> getIdParam(CubeId root) {
         return param;
     }
 }

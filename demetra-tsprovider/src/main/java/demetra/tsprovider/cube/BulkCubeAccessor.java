@@ -116,4 +116,10 @@ public final class BulkCubeAccessor implements CubeAccessor {
     public String getDisplayNodeName(CubeId id) throws IOException {
         return delegate.getDisplayNodeName(id);
     }
+
+    @Override
+    public void close() throws IOException {
+        cache.clear();
+        delegate.close();
+    }
 }

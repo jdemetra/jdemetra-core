@@ -36,7 +36,7 @@ public class SpreadSheetAccessorTest {
     @Test
     public void testWithCache() throws IOException {
         ConcurrentMap cache = new ConcurrentHashMap();
-        SpreadSheetAccessor grid = SheetGrid.of(DataForTest.FACTORY, new File(""), GridImport.DEFAULT).withCache(cache);
+        SpreadSheetAccessor grid = SheetGrid.of(new File(""), DataForTest.FACTORY, GridImport.DEFAULT).withCache(cache);
 
         cache.clear();
         assertThat(grid.getSheetByName("s1")).map(TsCollection::getName).contains("s1");

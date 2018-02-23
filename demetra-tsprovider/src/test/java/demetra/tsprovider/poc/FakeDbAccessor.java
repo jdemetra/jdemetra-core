@@ -100,4 +100,8 @@ final class FakeDbAccessor implements CubeAccessor {
                 .from(data.entrySet().iterator(), Map.Entry::getValue, o -> Collections.emptyMap(), o -> o.getKey().getDimensionValueStream().collect(Collectors.joining("/")))
                 .map(Map.Entry::getKey);
     }
+
+    @Override
+    public void close() throws IOException {
+    }
 }

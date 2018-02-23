@@ -32,7 +32,7 @@ public class SheetGridTest {
 
     @Test
     public void test() throws IOException {
-        SheetGrid grid = SheetGrid.of(DataForTest.FACTORY, new File(""), GridImport.DEFAULT);
+        SheetGrid grid = SheetGrid.of(new File(""), DataForTest.FACTORY, GridImport.DEFAULT);
 
         assertThat(grid.getSheetByName("s1")).map(TsCollection::getName).contains("s1");
         assertThat(grid.getSheetByName("s2")).map(TsCollection::getName).contains("s2");

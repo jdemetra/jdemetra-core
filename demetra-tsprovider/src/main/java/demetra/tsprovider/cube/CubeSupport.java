@@ -26,6 +26,7 @@ import demetra.tsprovider.util.IConfig;
 import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.cursor.TsCursor;
 import demetra.io.IteratorWithIO;
+import demetra.tsprovider.util.DataSourcePreconditions;
 import internal.util.Strings;
 import ioutil.IO;
 import java.io.IOException;
@@ -44,32 +45,30 @@ import lombok.AllArgsConstructor;
  * @since 2.2.0
  */
 @ThreadSafe
+@lombok.AllArgsConstructor(staticName = "of")
 public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasDataDisplayName {
 
     @ThreadSafe
     public interface Resource {
 
         @Nonnull
-        CubeAccessor getAccessor(@Nonnull DataSource dataSource) throws IOException, IllegalArgumentException;
+        CubeAccessor getAccessor(@Nonnull DataSource dataSource) throws IOException;
 
         @Nonnull
-        IParam<DataSet, CubeId> getIdParam(@Nonnull CubeId root) throws IOException, IllegalArgumentException;
+        IParam<DataSet, CubeId> getIdParam(@Nonnull CubeId root) throws IOException;
     }
 
-    @Nonnull
-    public static CubeSupport of(@Nonnull Resource resource) {
-        return new CubeSupport(Objects.requireNonNull(resource));
-    }
+    @lombok.NonNull
+    private final String providerName;
 
+    @lombok.NonNull
     private final Resource resource;
-
-    private CubeSupport(Resource resource) {
-        this.resource = resource;
-    }
 
     //<editor-fold defaultstate="collapsed" desc="HasDataHierarchy">
     @Override
     public List<DataSet> children(DataSource dataSource) throws IOException {
+        DataSourcePreconditions.checkProvider(providerName, dataSource);
+
         CubeAccessor acc = resource.getAccessor(dataSource);
         CubeId parentId = acc.getRoot();
 
@@ -91,6 +90,8 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
 
     @Override
     public List<DataSet> children(DataSet parent) throws IOException {
+        DataSourcePreconditions.checkProvider(providerName, parent);
+
         if (!DataSet.Kind.COLLECTION.equals(parent.getKind())) {
             throw new IllegalArgumentException("Not a collection");
         }
@@ -110,6 +111,8 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
     //<editor-fold defaultstate="collapsed" desc="HasTsCursor">
     @Override
     public TsCursor<DataSet> getData(DataSource dataSource, TsInformationType type) throws IOException {
+        DataSourcePreconditions.checkProvider(providerName, dataSource);
+
         CubeAccessor acc = resource.getAccessor(dataSource);
         CubeId parentId = acc.getRoot();
 
@@ -119,6 +122,8 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
 
     @Override
     public TsCursor<DataSet> getData(DataSet dataSet, TsInformationType type) throws IOException {
+        DataSourcePreconditions.checkProvider(providerName, dataSet);
+
         CubeAccessor acc = resource.getAccessor(dataSet.getDataSource());
         IParam<DataSet, CubeId> idParam = resource.getIdParam(acc.getRoot());
 
@@ -134,6 +139,8 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
     //<editor-fold defaultstate="collapsed" desc="HasDataDisplayName">
     @Override
     public String getDisplayName(DataSource dataSource) throws IllegalArgumentException {
+        DataSourcePreconditions.checkProvider(providerName, dataSource);
+
         try {
             return resource.getAccessor(dataSource).getDisplayName();
         } catch (IOException ex) {
@@ -143,6 +150,8 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
 
     @Override
     public String getDisplayName(DataSet dataSet) throws IllegalArgumentException {
+        DataSourcePreconditions.checkProvider(providerName, dataSet);
+
         try {
             CubeAccessor acc = resource.getAccessor(dataSet.getDataSource());
             CubeId id = resource.getIdParam(acc.getRoot()).get(dataSet);
@@ -154,6 +163,8 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
 
     @Override
     public String getDisplayNodeName(DataSet dataSet) throws IllegalArgumentException {
+        DataSourcePreconditions.checkProvider(providerName, dataSet);
+
         try {
             CubeAccessor acc = resource.getAccessor(dataSet.getDataSource());
             CubeId id = resource.getIdParam(acc.getRoot()).get(dataSet);

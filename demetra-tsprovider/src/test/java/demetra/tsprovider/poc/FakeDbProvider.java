@@ -28,11 +28,9 @@ import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cube.CubeSupport;
 import demetra.tsprovider.cursor.HasTsCursor;
 import demetra.tsprovider.cursor.TsCursorAsProvider;
-import demetra.tsprovider.util.DataSourcePreconditions;
 import demetra.tsprovider.util.IParam;
+import demetra.tsprovider.util.ResourceMap;
 import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  *
@@ -54,29 +52,25 @@ public final class FakeDbProvider implements DataSourceLoader {
     private final TsProvider tsSupport;
 
     public FakeDbProvider() {
-        ConcurrentMap<DataSource, CubeAccessor> cache = new ConcurrentHashMap<>();
-        this.mutableListSupport = HasDataSourceMutableList.of(NAME, cache::remove);
+        ResourceMap<CubeAccessor> accessors = ResourceMap.newInstance();
+
+        this.mutableListSupport = HasDataSourceMutableList.of(NAME, accessors::remove);
         this.monikerSupport = HasDataMoniker.usingUri(NAME);
         FakeDbParam fakeDbParam = new FakeDbParam.V1();
         this.beanSupport = HasDataSourceBean.of(NAME, fakeDbParam, fakeDbParam.getVersion());
-        this.cubeSupport = CubeSupport.of(new FakeDbCubeResource(cache, fakeDbParam));
-        this.tsSupport = TsCursorAsProvider.of(NAME, cubeSupport, monikerSupport, cache::clear);
+        this.cubeSupport = CubeSupport.of(NAME, new FakeDbCubeResource(accessors, fakeDbParam));
+        this.tsSupport = TsCursorAsProvider.of(NAME, cubeSupport, monikerSupport, accessors::clear);
     }
 
+    @lombok.AllArgsConstructor
     private static final class FakeDbCubeResource implements CubeSupport.Resource {
 
-        private final ConcurrentMap<DataSource, CubeAccessor> cache;
+        private final ResourceMap<CubeAccessor> accessors;
         private final FakeDbParam fakeDbParam;
-
-        public FakeDbCubeResource(ConcurrentMap<DataSource, CubeAccessor> cache, FakeDbParam fakeDbParam) {
-            this.cache = cache;
-            this.fakeDbParam = fakeDbParam;
-        }
 
         @Override
         public CubeAccessor getAccessor(DataSource dataSource) throws IOException {
-            DataSourcePreconditions.checkProvider(NAME, dataSource);
-            return cache.computeIfAbsent(dataSource, o -> new FakeDbAccessor());
+            return accessors.computeIfAbsent(dataSource, o -> new FakeDbAccessor());
         }
 
         @Override

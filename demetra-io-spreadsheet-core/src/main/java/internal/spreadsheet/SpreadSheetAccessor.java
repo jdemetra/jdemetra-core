@@ -18,6 +18,7 @@ package internal.spreadsheet;
 
 import demetra.tsprovider.TsCollection;
 import ioutil.IO;
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
@@ -30,7 +31,7 @@ import javax.annotation.Nonnull;
  *
  * @author Philippe Charles
  */
-public interface SpreadSheetAccessor {
+public interface SpreadSheetAccessor extends Closeable {
 
     @Nonnull
     Optional<TsCollection> getSheetByName(@Nonnull String name) throws IOException;
@@ -70,6 +71,11 @@ public interface SpreadSheetAccessor {
             @Override
             public List<TsCollection> getSheets() throws IOException {
                 return load("getSheets", delegate::getSheets);
+            }
+
+            @Override
+            public void close() throws IOException {
+                cache.clear();
             }
 
             private <T> T peek(String key) {

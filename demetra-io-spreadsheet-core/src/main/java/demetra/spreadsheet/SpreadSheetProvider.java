@@ -29,9 +29,9 @@ import demetra.tsprovider.cursor.HasTsCursor;
 import demetra.tsprovider.cursor.TsCursorAsProvider;
 import demetra.tsprovider.grid.GridImport;
 import demetra.tsprovider.util.CacheProvider;
-import demetra.tsprovider.util.DataSourcePreconditions;
 import demetra.tsprovider.util.FallbackDataMoniker;
 import demetra.tsprovider.util.IParam;
+import demetra.tsprovider.util.ResourceMap;
 import ec.util.spreadsheet.Book;
 import internal.spreadsheet.BookSupplier;
 import internal.spreadsheet.SpreadSheetAccessor;
@@ -42,7 +42,6 @@ import internal.spreadsheet.grid.SheetGrid;
 import internal.spreadsheet.legacy.LegacySpreadSheetMoniker;
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ConcurrentMap;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -80,16 +79,16 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
     public SpreadSheetProvider() {
         this.bookSupplier = BookSupplier.usingServiceLoader();
 
-        ConcurrentMap<DataSource, SpreadSheetAccessor> cache = CacheProvider.getDefault().softValuesCacheAsMap();
+        ResourceMap<SpreadSheetAccessor> accessors = ResourceMap.newInstance();
         SpreadSheetParam param = new SpreadSheetParam.V1();
 
-        this.mutableListSupport = HasDataSourceMutableList.of(NAME, cache::remove);
+        this.mutableListSupport = HasDataSourceMutableList.of(NAME, accessors::remove);
         this.monikerSupport = FallbackDataMoniker.of(HasDataMoniker.usingUri(NAME), LegacySpreadSheetMoniker.of(NAME, param));
         this.beanSupport = HasDataSourceBean.of(NAME, param, param.getVersion());
-        this.filePathSupport = HasFilePaths.of(cache::clear);
+        this.filePathSupport = HasFilePaths.of(accessors::clear);
         this.displayNameSupport = SpreadSheetDataDisplayName.of(NAME, param);
-        this.spreadSheetSupport = SpreadSheetSupport.of(NAME, new SpreadSheetResource(cache, filePathSupport, param, bookSupplier));
-        this.tsSupport = TsCursorAsProvider.of(NAME, spreadSheetSupport, monikerSupport, cache::clear);
+        this.spreadSheetSupport = SpreadSheetSupport.of(NAME, new SpreadSheetResource(accessors, filePathSupport, param, bookSupplier));
+        this.tsSupport = TsCursorAsProvider.of(NAME, spreadSheetSupport, monikerSupport, accessors::clear);
     }
 
     @Override
@@ -110,20 +109,14 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
     @lombok.AllArgsConstructor
     private static final class SpreadSheetResource implements SpreadSheetSupport.Resource {
 
-        private final ConcurrentMap<DataSource, SpreadSheetAccessor> cache;
+        private final ResourceMap<SpreadSheetAccessor> accessors;
         private final HasFilePaths filePathSupport;
         private final SpreadSheetParam param;
         private final BookSupplier bookSupplier;
 
         @Override
         public SpreadSheetAccessor getAccessor(DataSource dataSource) throws IOException {
-            DataSourcePreconditions.checkProvider(NAME, dataSource);
-            SpreadSheetAccessor result = cache.get(dataSource);
-            if (result == null) {
-                result = loadAccessor(dataSource);
-                cache.put(dataSource, result);
-            }
-            return result;
+            return accessors.computeIfAbsent(dataSource, this::load);
         }
 
         @Override
@@ -136,7 +129,7 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
             return param.getSeriesParam(dataSource);
         }
 
-        private SpreadSheetAccessor loadAccessor(DataSource key) throws IOException {
+        private SpreadSheetAccessor load(DataSource key) throws IOException {
             SpreadSheetBean bean = param.get(key);
             File file = filePathSupport.resolveFilePath(bean.getFile());
             Book.Factory factory = bookSupplier.getFactory(file);
@@ -144,7 +137,7 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
                 throw new IOException("File type not supported");
             }
             return SheetGrid
-                    .of(factory, file, getOptions(bean))
+                    .of(file, factory, getOptions(bean))
                     .withCache(CacheProvider.getDefault().softValuesCacheAsMap());
         }
 

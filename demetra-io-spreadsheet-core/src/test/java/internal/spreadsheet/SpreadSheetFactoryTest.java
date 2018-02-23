@@ -39,7 +39,7 @@ import org.junit.Test;
 public class SpreadSheetFactoryTest {
 
     private static void testFactory(Book.Factory bookFactory, File file) throws IOException {
-        testContent(SheetGrid.of(bookFactory, file, GridImport.DEFAULT));
+        testContent(SheetGrid.of(file, bookFactory, GridImport.DEFAULT));
     }
 
     @Test

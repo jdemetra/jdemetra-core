@@ -39,7 +39,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class CubeSupportTest {
 
-    private final DataSource dataSource = DataSource.of("provider", "");
+    private final String providerName = "provider";
+    private final DataSource dataSource = DataSource.of(providerName, "");
     private final DataSet col = DataSet.builder(dataSource, DataSet.Kind.COLLECTION).put("sector", "industry").build();
     private final DataSet series = DataSet.builder(dataSource, DataSet.Kind.SERIES).put("sector", "industry").put("region", "be").build();
     private final IParam<DataSet, CubeId> cubeIdParam = CubeSupport.idByName(SECTOR_REGION);
@@ -47,7 +48,8 @@ public class CubeSupportTest {
     @Test
     @SuppressWarnings("null")
     public void testFactories() {
-        assertThatThrownBy(() -> CubeSupport.of(null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> CubeSupport.of(null, null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> CubeSupport.of(providerName, null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> CubeSupport.idByName(null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> CubeSupport.idBySeparator(null, ",", "name")).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> CubeSupport.idBySeparator(EMPTY, null, "name")).isInstanceOf(NullPointerException.class);
@@ -58,7 +60,7 @@ public class CubeSupportTest {
     public void testResourceLeak() throws IOException {
         ResourceWatcher watcher = new ResourceWatcher();
 
-        CubeSupport support = CubeSupport.of(new XCubeSupportResource(dataSource, new XCubeAccessor(SECTOR_REGION, watcher), cubeIdParam));
+        CubeSupport support = CubeSupport.of(providerName, new XCubeSupportResource(new XCubeAccessor(SECTOR_REGION, watcher), cubeIdParam));
         support.children(dataSource);
         support.children(col);
         readAllAndClose(support.getData(dataSource, TsInformationType.All));
