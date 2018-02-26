@@ -16,7 +16,6 @@
  */
 package internal.tsprovider.cursor;
 
-import demetra.io.Closeables;
 import demetra.timeseries.TsData;
 import demetra.tsprovider.cursor.TsCursor;
 import internal.util.AbstractIterator;
@@ -232,7 +231,7 @@ public class InternalTsCursor {
 
         @Override
         public void close() throws IOException {
-            Closeables.closeBoth(delegate, closeHandler);
+            IO.closeBoth(delegate, closeHandler);
         }
     }
 
@@ -301,7 +300,7 @@ public class InternalTsCursor {
 
         @Override
         public void close() throws IOException {
-            Closeables.closeBoth(this::flushToCache, delegate::close);
+            IO.closeBoth(this::flushToCache, delegate::close);
         }
 
         private void flushToCache() throws IOException {
@@ -381,7 +380,7 @@ public class InternalTsCursor {
 
         private Closeable compose(Closeable closeHandler) {
             Closeable first = this.closeable;
-            return () -> Closeables.closeBoth(first, closeHandler);
+            return () -> IO.closeBoth(first, closeHandler);
         }
     }
 

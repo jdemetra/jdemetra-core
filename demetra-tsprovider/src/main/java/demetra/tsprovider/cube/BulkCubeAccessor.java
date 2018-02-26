@@ -16,7 +16,6 @@
  */
 package demetra.tsprovider.cube;
 
-import demetra.io.Closeables;
 import demetra.io.IteratorWithIO;
 import demetra.tsprovider.cursor.TsCursor;
 import java.io.IOException;
@@ -27,6 +26,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import javax.cache.Cache;
 import lombok.AccessLevel;
 import demetra.tsprovider.util.CacheFactory;
+import ioutil.IO;
 
 /**
  *
@@ -121,6 +121,6 @@ public final class BulkCubeAccessor implements CubeAccessor {
 
     @Override
     public void close() throws IOException {
-        Closeables.closeBoth(cache, delegate);
+        IO.closeBoth(cache, delegate);
     }
 }

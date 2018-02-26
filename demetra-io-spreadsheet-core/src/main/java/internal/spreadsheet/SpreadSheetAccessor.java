@@ -16,7 +16,6 @@
  */
 package internal.spreadsheet;
 
-import demetra.io.Closeables;
 import demetra.tsprovider.TsCollection;
 import ioutil.IO;
 import java.io.Closeable;
@@ -76,7 +75,7 @@ public interface SpreadSheetAccessor extends Closeable {
 
             @Override
             public void close() throws IOException {
-                Closeables.closeBoth(cache, delegate);
+                IO.closeBoth(cache, delegate);
             }
 
             private <T> T peek(String key) {

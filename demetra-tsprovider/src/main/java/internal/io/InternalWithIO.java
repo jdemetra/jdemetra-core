@@ -16,7 +16,6 @@
  */
 package internal.io;
 
-import demetra.io.Closeables;
 import demetra.io.IteratorWithIO;
 import ioutil.IO;
 import java.io.Closeable;
@@ -81,7 +80,7 @@ public class InternalWithIO {
 
         @Override
         public void close() throws IOException {
-            Closeables.closeBoth(delegate, closeHandler);
+            IO.closeBoth(delegate, closeHandler);
         }
     }
 
