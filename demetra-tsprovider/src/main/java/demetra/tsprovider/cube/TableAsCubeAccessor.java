@@ -41,7 +41,7 @@ import javax.annotation.concurrent.ThreadSafe;
 public final class TableAsCubeAccessor implements CubeAccessor {
 
     @ThreadSafe
-    public interface Resource<DATE> {
+    public interface Resource<DATE> extends AutoCloseable {
 
         @Nullable
         Exception testConnection();
@@ -209,6 +209,15 @@ public final class TableAsCubeAccessor implements CubeAccessor {
     public String getDisplayNodeName(CubeId id) throws IOException {
         try {
             return resource.getDisplayNodeName(id);
+        } catch (Exception ex) {
+            throw propagateIOException(ex);
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        try {
+            resource.close();
         } catch (Exception ex) {
             throw propagateIOException(ex);
         }

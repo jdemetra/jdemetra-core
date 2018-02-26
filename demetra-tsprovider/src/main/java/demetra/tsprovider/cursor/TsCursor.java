@@ -24,10 +24,10 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
+import javax.cache.Cache;
 
 /**
  * Defines a low-level time series cursor that may retrieve data and metadata.
@@ -294,7 +294,7 @@ public interface TsCursor<ID> extends Closeable {
 
     @Nonnull
     static <KEY, ID> TsCursor<ID> withCache(
-            @Nonnull ConcurrentMap<KEY, Object> cache,
+            @Nonnull Cache<KEY, Object> cache,
             @Nonnull KEY key,
             @Nonnull IO.Function<? super KEY, ? extends TsCursor<ID>> loader) throws IOException {
         return InternalTsCursor.getOrLoad(cache, key, loader);

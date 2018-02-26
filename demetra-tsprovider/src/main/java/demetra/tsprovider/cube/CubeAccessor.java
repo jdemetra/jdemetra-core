@@ -18,6 +18,7 @@ package demetra.tsprovider.cube;
 
 import demetra.tsprovider.cursor.TsCursor;
 import demetra.io.IteratorWithIO;
+import java.io.Closeable;
 import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,7 +30,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * @since 2.2.0
  */
 @ThreadSafe
-public interface CubeAccessor {
+public interface CubeAccessor extends Closeable {
 
     @Nullable
     IOException testConnection();

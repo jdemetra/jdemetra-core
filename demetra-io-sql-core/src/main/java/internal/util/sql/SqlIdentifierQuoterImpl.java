@@ -20,9 +20,9 @@ import demetra.design.VisibleForTesting;
 import internal.util.Strings;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -105,10 +105,7 @@ public final class SqlIdentifierQuoterImpl implements SqlIdentifierQuoter {
     @VisibleForTesting
     @Nonnull
     static Set<String> getSqlKeywords(@Nonnull DatabaseMetaData metaData) throws SQLException {
-        Set<String> result = new HashSet<>();
-        splitKeywords(metaData.getSQLKeywords()).forEach(result::add);
-        result.addAll(SqlKeywords.getSql2003ReservedWords());
-        return result;
+        return Stream.concat(splitKeywords(metaData.getSQLKeywords()), SqlKeywords.getSql2003ReservedWords().stream()).collect(Collectors.toSet());
     }
 
     /**

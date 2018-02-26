@@ -20,12 +20,13 @@ import static internal.tsprovider.cursor.InternalTsCursor.NOT_REQUESTED;
 import static internal.tsprovider.cursor.InternalTsCursor.NO_DATA;
 import static internal.tsprovider.cursor.InternalTsCursor.NO_META;
 import java.io.IOException;
+import java.time.Duration;
 import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import javax.cache.Cache;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
+import demetra.tsprovider.util.CacheFactory;
 
 /**
  *
@@ -62,10 +63,11 @@ public class TsCursorTest {
     @Test
     @SuppressWarnings("null")
     public void testCachingFactory() {
-        ConcurrentMap<String, Object> cache = new ConcurrentHashMap<>();
-        assertThatThrownBy(() -> TsCursor.withCache(null, "", o -> TsCursor.empty())).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> TsCursor.withCache(cache, null, o -> TsCursor.empty())).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> TsCursor.withCache(cache, "", null)).isInstanceOf(NullPointerException.class);
+        try (Cache<String, Object> cache = CacheFactory.getTtlCacheByRef(Duration.ZERO)) {
+            assertThatThrownBy(() -> TsCursor.withCache(null, "", o -> TsCursor.empty())).isInstanceOf(NullPointerException.class);
+            assertThatThrownBy(() -> TsCursor.withCache(cache, null, o -> TsCursor.empty())).isInstanceOf(NullPointerException.class);
+            assertThatThrownBy(() -> TsCursor.withCache(cache, "", null)).isInstanceOf(NullPointerException.class);
+        }
     }
 
     @Test

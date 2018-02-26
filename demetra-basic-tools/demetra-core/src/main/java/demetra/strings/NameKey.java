@@ -13,18 +13,18 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package demetra.strings;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 
 class NameKey implements Comparable<NameKey> {
 
     static String[] sort(Collection<NameKey> nk) {
         NameKey[] array = nk.toArray(new NameKey[nk.size()]);
-        Arrays.sort(array, KeyComparer.INSTANCE);
+        Arrays.sort(array, Comparator.comparingInt(o -> o.key));
         String[] r = new String[array.length];
         for (int i = 0; i < r.length; ++i) {
             r[i] = array[i].name;
@@ -43,15 +43,5 @@ class NameKey implements Comparable<NameKey> {
     @Override
     public int compareTo(NameKey o) {
         return name.compareTo(o.name);
-    }
-
-    private enum KeyComparer implements java.util.Comparator<NameKey> {
-
-        INSTANCE;
-        
-        @Override
-        public int compare(NameKey x, NameKey y) {
-            return Integer.compare(x.key, y.key);
-        }
     }
 }

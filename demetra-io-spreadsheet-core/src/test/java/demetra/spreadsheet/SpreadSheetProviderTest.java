@@ -39,9 +39,11 @@ public class SpreadSheetProviderTest {
 
     @Test
     public void testEquivalence() throws IOException {
-        IFileLoaderAssert
-                .assertThat(new FromFileLoader(SpreadSheetSamples.TOP5.getProvider3()))
-                .isEquivalentTo(SpreadSheetSamples.TOP5.getProvider2(), o -> o.encodeBean(SpreadSheetSamples.TOP5.getBean2(o)));
+        try (SpreadSheetProvider p = SpreadSheetSamples.TOP5.getProvider3()) {
+            IFileLoaderAssert
+                    .assertThat(new FromFileLoader(p))
+                    .isEquivalentTo(SpreadSheetSamples.TOP5.getProvider2(), o -> o.encodeBean(SpreadSheetSamples.TOP5.getBean2(o)));
+        }
     }
 
     @Test

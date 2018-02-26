@@ -86,4 +86,8 @@ public final class XCubeAccessor implements CubeAccessor {
     public String getDisplayNodeName(CubeId id) throws IOException {
         return id.toString();
     }
+
+    @Override
+    public void close() throws IOException {
+    }
 }

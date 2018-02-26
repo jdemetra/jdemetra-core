@@ -35,12 +35,11 @@ import demetra.tsprovider.cube.TableAsCubeAccessor;
 import demetra.tsprovider.cube.TableDataParams;
 import demetra.tsprovider.cursor.HasTsCursor;
 import demetra.tsprovider.cursor.TsCursorAsProvider;
-import demetra.tsprovider.util.CacheProvider;
-import demetra.tsprovider.util.DataSourcePreconditions;
 import demetra.tsprovider.util.FallbackDataMoniker;
 import demetra.tsprovider.util.IParam;
+import demetra.tsprovider.util.ResourceMap;
 import internal.sql.odbc.legacy.LegacyOdbcMoniker;
-import java.util.concurrent.ConcurrentMap;
+import java.io.IOException;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -71,15 +70,15 @@ public final class OdbcProvider implements DataSourceLoader<OdbcBean>, HasSqlPro
     private final TsProvider tsSupport;
 
     public OdbcProvider() {
-        ConcurrentMap<DataSource, CubeAccessor> cache = CacheProvider.getDefault().softValuesCacheAsMap();
+        ResourceMap<CubeAccessor> accessors = ResourceMap.newInstance();
         OdbcParam param = new OdbcParam.V1();
 
-        this.properties = HasSqlProperties.of(OdbcConnectionSupplier::ofServiceLoader, cache::clear);
-        this.mutableListSupport = HasDataSourceMutableList.of(NAME, cache::remove);
+        this.properties = HasSqlProperties.of(OdbcConnectionSupplier::ofServiceLoader, accessors::clear);
+        this.mutableListSupport = HasDataSourceMutableList.of(NAME, accessors::remove);
         this.monikerSupport = FallbackDataMoniker.of(HasDataMoniker.usingUri(NAME), LegacyOdbcMoniker.of(NAME, param));
         this.beanSupport = HasDataSourceBean.of(NAME, param, param.getVersion());
-        this.cubeSupport = CubeSupport.of(new OdbcCubeResource(cache, properties, param));
-        this.tsSupport = TsCursorAsProvider.of(NAME, cubeSupport, monikerSupport, cache::clear);
+        this.cubeSupport = CubeSupport.of(NAME, new OdbcCubeResource(accessors, properties, param));
+        this.tsSupport = TsCursorAsProvider.of(NAME, cubeSupport, monikerSupport, accessors::clear);
     }
 
     @Override
@@ -90,14 +89,13 @@ public final class OdbcProvider implements DataSourceLoader<OdbcBean>, HasSqlPro
     @lombok.AllArgsConstructor
     private static final class OdbcCubeResource implements CubeSupport.Resource {
 
-        private final ConcurrentMap<DataSource, CubeAccessor> cache;
+        private final ResourceMap<CubeAccessor> accessors;
         private final HasSqlProperties properties;
         private final OdbcParam param;
 
         @Override
-        public CubeAccessor getAccessor(DataSource dataSource) {
-            DataSourcePreconditions.checkProvider(NAME, dataSource);
-            return cache.computeIfAbsent(dataSource, this::load);
+        public CubeAccessor getAccessor(DataSource dataSource) throws IOException {
+            return accessors.computeIfAbsent(dataSource, this::load);
         }
 
         @Override
@@ -111,7 +109,7 @@ public final class OdbcProvider implements DataSourceLoader<OdbcBean>, HasSqlPro
             SqlTableAsCubeResource sqlResource = SqlTableAsCubeResource.of(properties.getConnectionSupplier(), bean.getDsn(), bean.getTable(), toRoot(bean), toDataParams(bean), bean.getObsGathering(), bean.getLabelColumn());
 
             CubeAccessor result = TableAsCubeAccessor.of(sqlResource);
-            return BulkCubeAccessor.of(result, bean.getCacheConfig());
+            return BulkCubeAccessor.of(result, bean.getCacheConfig(), key::toString);
         }
 
         private static CubeId toRoot(OdbcBean bean) {

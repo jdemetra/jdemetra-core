@@ -35,8 +35,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import demetra.timeseries.TsData;
 import static internal.tsprovider.cursor.InternalTsCursor.CLOSE_HANDLER_NPE;
 import static internal.tsprovider.cursor.InternalTsCursor.CLOSE_ISE;
@@ -59,6 +57,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static com.google.common.collect.Iterators.forArray;
 import demetra.timeseries.TsUnit;
 import ioutil.IO;
+import java.time.Duration;
+import javax.cache.Cache;
+import demetra.tsprovider.util.CacheFactory;
 
 /**
  *
@@ -269,12 +270,13 @@ public class InternalTsCursorsTest {
     public void testCachingCursor() throws IOException {
         Supplier<TsCursor<String>> delegateFactory = () -> TsCursor.from(forArray("hello", "world"));
 
-        ConcurrentMap<String, Object> cache = new ConcurrentHashMap<>();
-        try (CachingCursor<String, ?> cursor = new CachingCursor<>(delegateFactory.get(), "key", cache)) {
-            assertApi(cursor);
+        try (Cache<String, Object> cache = CacheFactory.getTtlCacheByRef(Duration.ofHours(1))) {
+            try (CachingCursor<String, ?> cursor = new CachingCursor<>(delegateFactory.get(), "key", cache)) {
+                assertApi(cursor);
+            }
+            assertThat(cache).extracting("key").containsOnly("key");
+            assertThat(cache.get("key")).isInstanceOf(CachedCollection.class);
         }
-        assertThat(cache).containsOnlyKeys("key");
-        assertThat(cache.get("key")).isInstanceOf(CachedCollection.class);
     }
 
     private static <ID> void assertNextSeries(TsCursor<ID> cursor, ID id, TsData data, Map<String, String> meta, String label) throws IOException {

@@ -29,7 +29,7 @@ import demetra.tsprovider.util.MultiLineNameUtil;
 import demetra.timeseries.TsDomain;
 import demetra.tsprovider.DataSourceLoader;
 import demetra.tsprovider.TsMoniker;
-import demetra.utilities.Trees;
+import demetra.utilities.TreeTraverser;
 import ioutil.IO;
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +37,7 @@ import java.net.URISyntaxException;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -44,7 +45,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  *
@@ -151,13 +151,15 @@ public class ProviderDemo {
         CHILDREN {
             @Override
             Optional<Ts> getFirst(DataSourceProvider provider, DataSource dataSource) throws IOException {
-                IO.Function<Object, Stream<? extends Object>> children = o -> {
+                IO.Function<Object, Iterable<? extends Object>> children = o -> {
                     return o instanceof DataSource
-                            ? provider.children((DataSource) o).stream()
-                            : ((DataSet) o).getKind() == DataSet.Kind.COLLECTION ? provider.children((DataSet) o).stream() : Stream.empty();
+                            ? provider.children((DataSource) o)
+                            : ((DataSet) o).getKind() == DataSet.Kind.COLLECTION ? provider.children((DataSet) o) : Collections.emptyList();
                 };
 
-                Optional<DataSet> result = Trees.depthFirstStream(dataSource, children.asUnchecked())
+                Optional<DataSet> result = TreeTraverser
+                        .of(dataSource, children.asUnchecked())
+                        .depthFirstStream()
                         .filter(DataSet.class::isInstance)
                         .map(DataSet.class::cast)
                         .filter(o -> o.getKind().equals(DataSet.Kind.SERIES))

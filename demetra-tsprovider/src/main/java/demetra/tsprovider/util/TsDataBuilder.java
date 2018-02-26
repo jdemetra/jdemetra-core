@@ -97,7 +97,7 @@ public interface TsDataBuilder<DATE> extends IBuilder<TsData> {
             @Nonnull Stream<X> stream,
             @Nonnull Function<? super X, ? extends DATE> dateFunc,
             @Nonnull Function<? super X, ? extends Number> valueFunc) {
-        stream.forEach((o) -> add(o, dateFunc, valueFunc));
+        stream.forEach(o -> add(o, dateFunc, valueFunc));
         return this;
     }
 

@@ -36,10 +36,10 @@ import java.util.Optional;
 public class SheetGrid implements SpreadSheetAccessor {
 
     @lombok.NonNull
-    private final Book.Factory factory;
+    private final File file;
 
     @lombok.NonNull
-    private final File file;
+    private final Book.Factory factory;
 
     @lombok.NonNull
     private final GridImport options;
@@ -64,6 +64,10 @@ public class SheetGrid implements SpreadSheetAccessor {
         try (Book book = factory.load(file)) {
             return getSheets(book);
         }
+    }
+
+    @Override
+    public void close() throws IOException {
     }
 
     private Optional<TsCollection> getSheetByName(Book book, String name) throws IOException {

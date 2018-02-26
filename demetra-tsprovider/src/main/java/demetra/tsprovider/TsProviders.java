@@ -16,12 +16,14 @@
  */
 package demetra.tsprovider;
 
-import demetra.utilities.Trees;
+import demetra.tsprovider.util.IConfig;
+import demetra.utilities.TreeTraverser;
+import ioutil.IO;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UncheckedIOException;
+import java.util.Collections;
 import java.util.function.Function;
-import java.util.stream.Stream;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
@@ -41,22 +43,18 @@ public class TsProviders {
             @Nonnull PrintStream printStream,
             boolean displayName) throws IOException {
 
-        Function<Object, String> toString = displayName
+        Function<IConfig, String> formatter = displayName
                 ? o -> o instanceof DataSource ? provider.getDisplayName((DataSource) o) : " " + provider.getDisplayNodeName((DataSet) o)
                 : o -> o instanceof DataSource ? provider.toMoniker((DataSource) o).getId() : " " + provider.toMoniker((DataSet) o).getId();
 
-        Function<Object, Stream<? extends Object>> children = o -> {
-            try {
-                return o instanceof DataSource
-                        ? provider.children((DataSource) o).stream()
-                        : ((DataSet) o).getKind() == DataSet.Kind.COLLECTION ? provider.children((DataSet) o).stream() : Stream.empty();
-            } catch (IOException ex) {
-                throw new UncheckedIOException(ex);
-            }
+        IO.Function<IConfig, Iterable<? extends IConfig>> children = o -> {
+            return o instanceof DataSource
+                    ? provider.children((DataSource) o)
+                    : ((DataSet) o).getKind() == DataSet.Kind.COLLECTION ? provider.children((DataSet) o) : Collections.emptyList();
         };
 
         try {
-            Trees.prettyPrint((Object) dataSource, children, maxLevel, toString, printStream);
+            TreeTraverser.of(dataSource, children.asUnchecked()).prettyPrintTo(printStream, maxLevel, formatter);
         } catch (UncheckedIOException ex) {
             throw ex.getCause();
         }
