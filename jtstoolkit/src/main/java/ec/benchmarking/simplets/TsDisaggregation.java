@@ -592,6 +592,11 @@ public class TsDisaggregation<S extends ISsf> {
         FilteringResults frslts=new FilteringResults();
         filter.process(new SsfData(yc, null), frslts);
         double[]xres=frslts.getFilteredData().data(true, true);
+        if (model_.getAggregationType() == TsAggregationType.Average){
+            for (int i=0; i<xres.length; ++i){
+                xres[i]/=data_.FrequencyRatio;
+            }
+        }
         TsPeriod rend = new TsPeriod(model_.getY().getFrequency());
         rend.set(data_.hEDom.getEnd().firstday());
         rend.move(-xres.length);
@@ -719,6 +724,13 @@ public class TsDisaggregation<S extends ISsf> {
         rescale();
         //reset the original data, to avoid problems
          data_ = model.data(domain, false);
+         // update y in case of averages...
+         if (this.model_.getAggregationType() == TsAggregationType.Average ){
+             for (int i=0; i<data_.hY.length; ++i){
+                 if (Double.isFinite(data_.hY[i]))
+                     data_.hY[i]*=data_.FrequencyRatio;
+             }
+         }
         return true;
     }
 
@@ -821,7 +833,6 @@ public class TsDisaggregation<S extends ISsf> {
                     vyl_[i] *= vyf;
                 }
             }
-
         }
         double[] xf = data_.xfactor != null ? data_.xfactor.clone() : null;
         if (xf != null && model_.getAggregationType() == TsAggregationType.Average) {
