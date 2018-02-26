@@ -16,6 +16,7 @@
  */
 package internal.spreadsheet;
 
+import demetra.io.Closeables;
 import demetra.tsprovider.TsCollection;
 import ioutil.IO;
 import java.io.Closeable;
@@ -23,9 +24,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import javax.cache.Cache;
 
 /**
  *
@@ -43,7 +44,7 @@ public interface SpreadSheetAccessor extends Closeable {
     List<TsCollection> getSheets() throws IOException;
 
     @Nonnull
-    default SpreadSheetAccessor withCache(@Nonnull ConcurrentMap cache) {
+    default SpreadSheetAccessor withCache(@Nonnull Cache cache) {
         SpreadSheetAccessor delegate = this;
         return new SpreadSheetAccessor() {
             @Override
@@ -75,7 +76,7 @@ public interface SpreadSheetAccessor extends Closeable {
 
             @Override
             public void close() throws IOException {
-                cache.clear();
+                Closeables.closeBoth(cache, delegate);
             }
 
             private <T> T peek(String key) {

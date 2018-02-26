@@ -109,7 +109,7 @@ public final class OdbcProvider implements DataSourceLoader<OdbcBean>, HasSqlPro
             SqlTableAsCubeResource sqlResource = SqlTableAsCubeResource.of(properties.getConnectionSupplier(), bean.getDsn(), bean.getTable(), toRoot(bean), toDataParams(bean), bean.getObsGathering(), bean.getLabelColumn());
 
             CubeAccessor result = TableAsCubeAccessor.of(sqlResource);
-            return BulkCubeAccessor.of(result, bean.getCacheConfig());
+            return BulkCubeAccessor.of(result, bean.getCacheConfig(), key::toString);
         }
 
         private static CubeId toRoot(OdbcBean bean) {

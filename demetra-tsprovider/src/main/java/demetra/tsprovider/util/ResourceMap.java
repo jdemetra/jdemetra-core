@@ -20,7 +20,6 @@ import demetra.tsprovider.DataSource;
 import ioutil.IO;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -40,9 +39,8 @@ public final class ResourceMap<T> {
     private final Map<DataSource, T> map = new HashMap<>();
 
     public synchronized void clear() {
-        Collection<T> accessors = map.values();
+        map.forEach((k, v) -> closeSilently(v));
         map.clear();
-        accessors.forEach(this::closeSilently);
     }
 
     public synchronized void remove(DataSource source) {

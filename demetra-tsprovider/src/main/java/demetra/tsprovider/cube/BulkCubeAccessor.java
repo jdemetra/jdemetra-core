@@ -16,15 +16,17 @@
  */
 package demetra.tsprovider.cube;
 
+import demetra.io.Closeables;
 import demetra.io.IteratorWithIO;
 import demetra.tsprovider.cursor.TsCursor;
-import demetra.tsprovider.util.CacheProvider;
 import java.io.IOException;
-import java.util.concurrent.ConcurrentMap;
+import java.util.function.Supplier;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
+import javax.cache.Cache;
 import lombok.AccessLevel;
+import demetra.tsprovider.util.CacheFactory;
 
 /**
  *
@@ -35,9 +37,9 @@ import lombok.AccessLevel;
 public final class BulkCubeAccessor implements CubeAccessor {
 
     @Nonnull
-    public static CubeAccessor of(@Nonnull CubeAccessor delegate, @Nonnull BulkCubeConfig options) {
+    public static CubeAccessor of(@Nonnull CubeAccessor delegate, @Nonnull BulkCubeConfig options, @Nonnull Supplier<String> cacheName) {
         return options.isCacheEnabled()
-                ? new BulkCubeAccessor(delegate, options.getDepth(), CacheProvider.getDefault().ttlCacheAsMap(options.getTtl()))
+                ? new BulkCubeAccessor(delegate, options.getDepth(), CacheFactory.getTtlCacheByRef(cacheName, options.getTtl()))
                 : delegate;
     }
 
@@ -48,7 +50,7 @@ public final class BulkCubeAccessor implements CubeAccessor {
     private final int depth;
 
     @lombok.NonNull
-    private final ConcurrentMap<CubeId, Object> cache;
+    private final Cache<CubeId, Object> cache;
 
     private int getCacheLevel() throws IOException {
         return Math.max(0, delegate.getRoot().getMaxLevel() - depth);
@@ -119,7 +121,6 @@ public final class BulkCubeAccessor implements CubeAccessor {
 
     @Override
     public void close() throws IOException {
-        cache.clear();
-        delegate.close();
+        Closeables.closeBoth(cache, delegate);
     }
 }

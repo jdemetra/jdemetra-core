@@ -16,6 +16,7 @@
  */
 package demetra.io;
 
+import ioutil.IO;
 import java.io.Closeable;
 import java.io.IOException;
 import javax.annotation.Nonnull;
@@ -35,11 +36,7 @@ public class Closeables {
         try {
             first.close();
         } catch (IOException ex) {
-            try {
-                second.close();
-            } catch (IOException suppressed) {
-                ex.addSuppressed(suppressed);
-            }
+            IO.ensureClosed(ex, second);
             throw ex;
         }
         second.close();

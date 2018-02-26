@@ -32,9 +32,9 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
-import java.util.concurrent.ConcurrentMap;
 import javax.annotation.concurrent.Immutable;
 import static java.util.Objects.requireNonNull;
+import javax.cache.Cache;
 
 /**
  * Package-private supporting class for {@link TsCursor}.
@@ -102,7 +102,7 @@ public class InternalTsCursor {
 
     @Nonnull
     public static <KEY, ID> TsCursor<ID> getOrLoad(
-            @Nonnull ConcurrentMap<KEY, Object> cache,
+            @Nonnull Cache<KEY, Object> cache,
             @Nonnull KEY key,
             @Nonnull IO.Function<? super KEY, ? extends TsCursor<ID>> loader) throws IOException {
 
@@ -239,11 +239,11 @@ public class InternalTsCursor {
     public static final class CachingCursor<KEY, ID> extends ForwardingCursor<ID> {
 
         private final KEY key;
-        private final ConcurrentMap<KEY, Object> cache;
+        private final Cache<KEY, Object> cache;
         private final List<CachedSeries<ID>> items;
         private CachedSeries<ID> current;
 
-        public CachingCursor(TsCursor<ID> delegate, KEY key, ConcurrentMap<KEY, Object> cache) {
+        public CachingCursor(TsCursor<ID> delegate, KEY key, Cache<KEY, Object> cache) {
             super(delegate);
             this.key = key;
             this.cache = cache;

@@ -21,11 +21,12 @@ import demetra.tsprovider.grid.GridImport;
 import internal.spreadsheet.grid.SheetGrid;
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
 import _test.DataForTest;
+import java.time.Duration;
+import javax.cache.Cache;
+import demetra.tsprovider.util.CacheFactory;
 
 /**
  *
@@ -35,29 +36,30 @@ public class SpreadSheetAccessorTest {
 
     @Test
     public void testWithCache() throws IOException {
-        ConcurrentMap cache = new ConcurrentHashMap();
-        SpreadSheetAccessor grid = SheetGrid.of(new File(""), DataForTest.FACTORY, GridImport.DEFAULT).withCache(cache);
+        try (Cache<String, Object> cache = CacheFactory.getTtlCacheByRef(Duration.ofHours(1))) {
+            SpreadSheetAccessor grid = SheetGrid.of(new File(""), DataForTest.FACTORY, GridImport.DEFAULT).withCache(cache);
 
-        cache.clear();
-        assertThat(grid.getSheetByName("s1")).map(TsCollection::getName).contains("s1");
-        assertThat(cache).containsOnlyKeys("getSheetByName/s1");
+            cache.clear();
+            assertThat(grid.getSheetByName("s1")).map(TsCollection::getName).contains("s1");
+            assertThat(cache).extracting("key").containsOnly("getSheetByName/s1");
 
-        cache.clear();
-        assertThat(grid.getSheetByName("other")).isEmpty();
-        assertThat(cache).containsOnlyKeys("getSheetByName/other");
+            cache.clear();
+            assertThat(grid.getSheetByName("other")).isEmpty();
+            assertThat(cache).extracting("key").containsOnly("getSheetByName/other");
 
-        cache.clear();
-        assertThat(grid.getSheetNames()).containsExactly("s1", "s2");
-        assertThat(cache).containsOnlyKeys("getSheetNames");
+            cache.clear();
+            assertThat(grid.getSheetNames()).containsExactly("s1", "s2");
+            assertThat(cache).extracting("key").containsOnly("getSheetNames");
 
-        cache.clear();
-        assertThat(grid.getSheets()).extracting(o -> o.getName()).containsExactly("s1", "s2");
-        assertThat(cache).containsOnlyKeys("getSheets");
+            cache.clear();
+            assertThat(grid.getSheets()).extracting(o -> o.getName()).containsExactly("s1", "s2");
+            assertThat(cache).extracting("key").containsOnly("getSheets");
 
-        cache.clear();
-        assertThat(grid.getSheets()).extracting(o -> o.getName()).containsExactly("s1", "s2");
-        assertThat(grid.getSheetByName("s1")).map(TsCollection::getName).contains("s1");
-        assertThat(grid.getSheetNames()).containsExactly("s1", "s2");
-        assertThat(cache).containsOnlyKeys("getSheets");
+            cache.clear();
+            assertThat(grid.getSheets()).extracting(o -> o.getName()).containsExactly("s1", "s2");
+            assertThat(grid.getSheetByName("s1")).map(TsCollection::getName).contains("s1");
+            assertThat(grid.getSheetNames()).containsExactly("s1", "s2");
+            assertThat(cache).extracting("key").containsOnly("getSheets");
+        }
     }
 }

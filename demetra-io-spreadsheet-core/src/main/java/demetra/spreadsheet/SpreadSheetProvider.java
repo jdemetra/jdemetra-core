@@ -28,7 +28,6 @@ import demetra.tsprovider.TsProvider;
 import demetra.tsprovider.cursor.HasTsCursor;
 import demetra.tsprovider.cursor.TsCursorAsProvider;
 import demetra.tsprovider.grid.GridImport;
-import demetra.tsprovider.util.CacheProvider;
 import demetra.tsprovider.util.FallbackDataMoniker;
 import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.util.ResourceMap;
@@ -42,7 +41,9 @@ import internal.spreadsheet.grid.SheetGrid;
 import internal.spreadsheet.legacy.LegacySpreadSheetMoniker;
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import org.openide.util.lookup.ServiceProvider;
+import demetra.tsprovider.util.CacheFactory;
 
 /**
  *
@@ -138,7 +139,7 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
             }
             return SheetGrid
                     .of(file, factory, getOptions(bean))
-                    .withCache(CacheProvider.getDefault().softValuesCacheAsMap());
+                    .withCache(CacheFactory.getTtlCacheByRef(key::toString, Duration.ofMinutes(5)));
         }
 
         private GridImport getOptions(SpreadSheetBean bean) {
