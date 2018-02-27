@@ -75,7 +75,12 @@ public abstract class MultiTsDocument<S extends IProcSpecification, R extends IP
         if (isLocked() || Arrays.equals(getMonikers(getInput()), getMonikers(s))) {
             return;
         }
-        super.setInput(Stream.of(s).map(Ts::freeze).toArray(Ts[]::new));
+        Ts[] frozen=new Ts[s.length];
+        for (int i=0; i<s.length; ++i){
+            if (s[i] != null)
+                frozen[i]=s[i].freeze();
+        }
+        super.setInput(frozen);
     }
 
     @Override
@@ -83,11 +88,6 @@ public abstract class MultiTsDocument<S extends IProcSpecification, R extends IP
         if (input == null) {
             return null;
         }
-//        for (int i = 0; i < input.length; ++i) {
-//            if (input[i] == null) {
-//                return null;
-//            }
-//        }
         TsData[] dinput = new TsData[input.length];
         for (int i = 0; i < input.length; ++i) {
             Ts s = input[i];
@@ -141,7 +141,7 @@ public abstract class MultiTsDocument<S extends IProcSpecification, R extends IP
             return false;
         }
         for (int i = 0; i < ts.length; ++i) {
-            if (ts[i].isFrozen()) {
+            if (ts[i] != null && ts[i].isFrozen()) {
                 return true;
             }
         }
@@ -155,7 +155,7 @@ public abstract class MultiTsDocument<S extends IProcSpecification, R extends IP
         }
         boolean changed = false;
         for (int i = 0; i < ts.length; ++i) {
-            if (!ts[i].isFrozen()) {
+            if (ts[i] != null && !ts[i].isFrozen()) {
                 ts[i] = ts[i].freeze();
                 changed = true;
             }
