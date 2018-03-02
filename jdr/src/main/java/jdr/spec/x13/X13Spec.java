@@ -14,6 +14,11 @@ public class X13Spec  {
 
     final X13Specification core;
 
+   public static X13Spec of(String spec){
+        X13Specification rspec=X13Specification.fromString(spec).clone();
+        return new X13Spec(rspec);
+   }
+   
     public X13Spec(X13Specification spec) {
         core = spec;
     }

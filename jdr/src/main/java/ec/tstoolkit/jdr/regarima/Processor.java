@@ -18,6 +18,7 @@ package ec.tstoolkit.jdr.regarima;
 
 import demetra.algorithm.IProcResults;
 import demetra.information.InformationMapping;
+import ec.tstoolkit.algorithm.ProcessingContext;
 import ec.tstoolkit.jdr.mapping.LikelihoodStatisticsInfo;
 import ec.tstoolkit.jdr.mapping.ResidualsInfo;
 import ec.tstoolkit.jdr.mapping.SarimaInfo;
@@ -27,6 +28,7 @@ import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import jdr.spec.ts.Utility.Dictionary;
 
 /**
  *
@@ -70,13 +72,19 @@ public class Processor {
         }
     }
     
-    public static Results tramo(TsData s, TramoSpecification spec) {
-        PreprocessingModel model = spec.build().process(s, null);
+    public static Results tramo(TsData s, TramoSpecification spec, Dictionary dic)  {
+        ProcessingContext context=null;
+        if (dic != null)
+            context=dic.toContext();
+        PreprocessingModel model = spec.build(context).process(s, null);
         return new Results(model);
     }
 
-    public static Results x12(TsData s, RegArimaSpecification spec) {
-        PreprocessingModel model = spec.build().process(s, null);
+    public static Results x12(TsData s, RegArimaSpecification spec, Dictionary dic) {
+        ProcessingContext context=null;
+        if (dic != null)
+            context=dic.toContext();
+        PreprocessingModel model = spec.build(context).process(s, null);
         return new Results(model);
     }
     

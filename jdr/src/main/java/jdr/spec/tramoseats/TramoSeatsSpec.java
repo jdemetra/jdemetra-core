@@ -15,6 +15,11 @@ public class TramoSeatsSpec {
 
     final TramoSeatsSpecification core;
 
+    public static TramoSeatsSpec of(String spec){
+        TramoSeatsSpecification rspec=TramoSeatsSpecification.fromString(spec).clone();
+        return new TramoSeatsSpec(rspec);
+    }
+
     public TramoSeatsSpec(TramoSeatsSpecification spec) {
         core = spec;
     }
