@@ -7,10 +7,18 @@ package jdr.spec.ts;
 
 import ec.tstoolkit.Parameter;
 import ec.tstoolkit.ParameterType;
+import ec.tstoolkit.algorithm.ProcessingContext;
 import ec.tstoolkit.timeseries.Day;
+import ec.tstoolkit.timeseries.regression.TsVariable;
+import ec.tstoolkit.timeseries.regression.TsVariables;
+import ec.tstoolkit.timeseries.simplets.TsData;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
+import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -64,4 +72,60 @@ public class Utility {
         return p;
     }
 
+    public String outlierName(String code, String date, int frequency) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(code).append(" (");
+        if (frequency == 0) {
+            builder.append(date);
+        } else {
+            TsPeriod p = new TsPeriod(TsFrequency.valueOf(frequency), of(date));
+            builder.append(p);
+        }
+        return builder.append(')').toString();
+    }
+
+    @lombok.Value
+    public static class Outlier {
+
+        private String code;
+        private String position;
+        private double coefficient;
+    }
+
+    @lombok.Value
+    public static class Ramp {
+
+        private String start, end;
+        private double coefficient;
+    }
+
+    @lombok.Value
+    public static class UserDefinedVariable {
+
+        private String name;
+        private String component;
+        private double coefficient;
+    }
+   
+    public static final String R = "r";
+
+    public static class Dictionary {
+
+        private final Map<String, TsData> dictionary = new HashMap<>();
+
+        public void add(String name, TsData s) {
+            dictionary.put(name, s);
+        }
+
+        public ProcessingContext toContext() {
+            if (dictionary.isEmpty()) {
+                return null;
+            }
+            ProcessingContext context = new ProcessingContext();
+            TsVariables vars = new TsVariables();
+            dictionary.forEach((n, s) -> vars.set(n, new TsVariable(n, s)));
+            context.getTsVariableManagers().set(R, vars);
+            return context;
+        }
+    }
 }

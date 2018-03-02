@@ -12,6 +12,11 @@ import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
  */
 public class TramoSpec extends BaseTramoSpec {
 
+    public static TramoSpec of(String spec){
+        TramoSpecification rspec=TramoSpecification.fromString(spec).clone();
+        return new TramoSpec(rspec);
+    }
+
     public TramoSpec(TramoSpecification spec) {
         super(spec);
     }

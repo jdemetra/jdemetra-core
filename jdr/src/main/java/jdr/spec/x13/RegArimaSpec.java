@@ -15,7 +15,7 @@ public class RegArimaSpec {
     final RegArimaSpecification core;
     
     public static RegArimaSpec of(String spec){
-        RegArimaSpecification rspec=RegArimaSpecification.fromString(spec);
+        RegArimaSpecification rspec=RegArimaSpecification.fromString(spec).clone();
         return new RegArimaSpec(rspec);
     }
 
