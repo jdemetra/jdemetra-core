@@ -16,13 +16,12 @@
  */
 package internal.util.sql.adodb;
 
+import internal.util.sql.ProcessReader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,7 +49,7 @@ final class CScript implements Wsh {
     public BufferedReader exec(String scriptName, String... args) throws IOException {
         File script = getScript(scriptName);
         Process process = exec(script, args);
-        return new BufferedReader(new InputStreamReader(new ProcessInputStream(process), Charset.defaultCharset()));
+        return ProcessReader.newReader(process);
     }
 
     private File getScript(String scriptName) throws IOException {
@@ -89,84 +88,6 @@ final class CScript implements Wsh {
             Files.copy(in, result.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
         return result;
-    }
-
-    private static final class ProcessInputStream extends ForwardingInputStream {
-
-        private final Process process;
-
-        public ProcessInputStream(Process process) {
-            super(process.getInputStream());
-            this.process = process;
-        }
-
-        @Override
-        public void close() throws IOException {
-            try {
-                // we need the process to end, else we'll get an illegal Thread State Exception
-                while (read() != -1) {
-                }
-                process.waitFor();
-            } catch (InterruptedException ex) {
-                throw new IOException(ex);
-            } finally {
-                super.close();
-            }
-        }
-    }
-
-    private abstract static class ForwardingInputStream extends InputStream {
-
-        private final InputStream delegate;
-
-        protected ForwardingInputStream(InputStream delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        public int read() throws IOException {
-            return delegate.read();
-        }
-
-        @Override
-        public int read(byte[] b) throws IOException {
-            return delegate.read(b);
-        }
-
-        @Override
-        public int read(byte[] b, int off, int len) throws IOException {
-            return delegate.read(b, off, len);
-        }
-
-        @Override
-        public long skip(long n) throws IOException {
-            return delegate.skip(n);
-        }
-
-        @Override
-        public int available() throws IOException {
-            return delegate.available();
-        }
-
-        @Override
-        public void close() throws IOException {
-            delegate.close();
-        }
-
-        @Override
-        public synchronized void mark(int readlimit) {
-            delegate.mark(readlimit);
-        }
-
-        @Override
-        public synchronized void reset() throws IOException {
-            delegate.reset();
-        }
-
-        @Override
-        public boolean markSupported() {
-            return delegate.markSupported();
-        }
     }
     //</editor-fold>
 }

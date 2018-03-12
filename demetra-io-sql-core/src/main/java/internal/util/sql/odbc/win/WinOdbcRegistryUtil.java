@@ -26,13 +26,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.SortedMap;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  *
@@ -50,18 +49,16 @@ class WinOdbcRegistryUtil {
 
         boolean keyExists(@Nonnull Root root, @Nonnull String key) throws IOException;
 
-        @Nullable
-        Object getValue(@Nonnull Root root, @Nonnull String key, @Nonnull String name) throws IOException;
-
         @Nonnull
-        SortedMap<String, Object> getValues(@Nonnull Root root, @Nonnull String key) throws IOException;
+        Map<String, Object> getValues(@Nonnull Root root, @Nonnull String key) throws IOException;
     }
 
     private static final String DATA_SOURCES_KEY = "SOFTWARE\\ODBC\\ODBC.INI\\ODBC Data Sources";
     private static final String DATA_SOURCE_KEY = "SOFTWARE\\ODBC\\ODBC.INI";
     private static final String DRIVERS_KEY = "SOFTWARE\\ODBC\\Odbcinst.INI\\ODBC Drivers";
     private static final String DRIVER_KEY = "SOFTWARE\\ODBC\\Odbcinst.INI";
-    private static final String KEY_SEPARATOR = "\\";
+    
+    public static final String KEY_SEPARATOR = "\\";
 
     public List<OdbcDataSource> getDataSources(Registry reg, OdbcDataSource.Type... types) throws IOException {
         List<OdbcDataSource> result = new ArrayList<>();
@@ -83,7 +80,7 @@ class WinOdbcRegistryUtil {
         }
     }
 
-    private static OdbcDataSource dataSourceOf(OdbcDataSource.Type type, Entry<String, Object> master, SortedMap<String, Object> details) {
+    private OdbcDataSource dataSourceOf(OdbcDataSource.Type type, Entry<String, Object> master, Map<String, Object> details) {
         return OdbcDataSource
                 .builder()
                 .type(type)
@@ -95,7 +92,7 @@ class WinOdbcRegistryUtil {
                 .build();
     }
 
-    private static Registry.Root getRoot(OdbcDataSource.Type type) {
+    public Registry.Root getRoot(OdbcDataSource.Type type) {
         switch (type) {
             case SYSTEM:
                 return Registry.Root.HKEY_LOCAL_MACHINE;
@@ -119,7 +116,7 @@ class WinOdbcRegistryUtil {
         return result;
     }
 
-    private static OdbcDriver driverOf(String driverName, SortedMap<String, Object> details) {
+    private OdbcDriver driverOf(String driverName, Map<String, Object> details) {
         return OdbcDriver
                 .builder()
                 .name(driverName)
@@ -135,19 +132,19 @@ class WinOdbcRegistryUtil {
                 .build();
     }
 
-    private static String toString(Object obj, String defaultValue) {
+    private String toString(Object obj, String defaultValue) {
         return obj instanceof String ? (String) obj : defaultValue;
     }
 
-    private static File toFile(Object obj, File defaultValue) {
+    private File toFile(Object obj, File defaultValue) {
         return obj instanceof String ? new File((String) obj) : defaultValue;
     }
 
-    private static int toInt(Object obj, int defaultValue) {
+    private int toInt(Object obj, int defaultValue) {
         return obj instanceof Integer ? (Integer) obj : defaultValue;
     }
 
-    private static <Z extends Enum<Z> & IntSupplier> Z toEnum(Object obj, Class<Z> enumType, Z defaultValue) {
+    private <Z extends Enum<Z> & IntSupplier> Z toEnum(Object obj, Class<Z> enumType, Z defaultValue) {
         if (obj == null) {
             return defaultValue;
         }
@@ -168,7 +165,7 @@ class WinOdbcRegistryUtil {
         return defaultValue;
     }
 
-    private static List<String> toFileExtensions(Object obj) {
+    private List<String> toFileExtensions(Object obj) {
         return obj != null
                 ? Strings
                 .splitToStream(",", obj.toString())
@@ -178,14 +175,19 @@ class WinOdbcRegistryUtil {
                 : Collections.emptyList();
     }
 
-    private static String getFileExtension(String input) {
+    private String getFileExtension(String input) {
         int index = input.lastIndexOf('.');
         return index != -1 ? input.substring(index + 1) : "";
     }
 
-    private static OdbcDriver.ConnectFunctions toConnectFunctions(Object obj, OdbcDriver.ConnectFunctions defaultValue) {
+    private OdbcDriver.ConnectFunctions toConnectFunctions(Object obj, OdbcDriver.ConnectFunctions defaultValue) {
         return obj != null
                 ? OdbcDriver.ConnectFunctions.parse(obj.toString(), defaultValue)
                 : defaultValue;
+    }
+
+    public boolean isWindows() {
+        String osName = System.getProperty("os.name");
+        return osName != null && osName.startsWith("Windows ");
     }
 }
