@@ -507,7 +507,7 @@ public class X11Kernel implements ISeriesDecomposer {
         dtables.set(D12, d12c.fittoDomain(sdomain));
         dtables.set(D13, d13c.fittoDomain(sdomain));
         dtables.set(D16, d16);
-        dtables.set(D18, toolkit.getContext().op(d16, d10));
+        dtables.set(D18, toolkit.getContext().op(d16, d10c));
 
         int nf = toolkit.getContext().getForecastHorizon();
         if (nf > 0) {
