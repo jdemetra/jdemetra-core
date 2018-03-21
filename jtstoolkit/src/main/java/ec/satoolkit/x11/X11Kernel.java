@@ -501,8 +501,14 @@ public class X11Kernel implements ISeriesDecomposer {
 
         d11c = toolkit.getContext().invOp(d11c, a9sa);
 
-        TsData d16 = toolkit.getContext().op(a1, d11c);
-
+      //  TsData d16 = toolkit.getContext().op(a1, d11c);
+       TsData d16;
+        if (toolkit.getContext().isPseudoAdditive()) {
+           d16 = a1.div(d12).minus(d13).plus(1);
+        } else {
+            d16 = toolkit.getContext().op(a1, d11c);
+        }
+        
         dtables.set(D11, d11c.fittoDomain(sdomain));
         dtables.set(D12, d12c.fittoDomain(sdomain));
         dtables.set(D13, d13c.fittoDomain(sdomain));
