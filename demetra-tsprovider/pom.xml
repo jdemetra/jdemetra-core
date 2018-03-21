@@ -41,18 +41,25 @@
             <artifactId>java-io-util</artifactId>
             <version>${java-io-util.version}</version>
         </dependency>
-         <dependency> 
+        <dependency> 
             <groupId>javax.cache</groupId> 
             <artifactId>cache-api</artifactId> 
             <version>${jcache.version}</version> 
         </dependency> 
-         <!-- runtime only -->
+        <!-- runtime only -->
         <dependency> 
             <groupId>org.jsr107.ri</groupId> 
             <artifactId>cache-ri-impl</artifactId> 
             <version>${jcache.version}</version> 
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.enterprise</groupId>
+                    <artifactId>cdi-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency> 
-      <!-- test only -->
+        <!-- test only -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
