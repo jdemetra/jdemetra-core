@@ -213,7 +213,7 @@ public final class X11Context {
             throw new X11Exception(X11Exception.ERR_MISSING);
         }
 
-        if (mode != DecompositionMode.Additive) {
+        if (mode != DecompositionMode.Additive && mode != DecompositionMode.PseudoAdditive) {
             double[] vals = s.internalStorage();
             for (int i = 0; i < vals.length; ++i) {
                 if (vals[i] <= 0) {
