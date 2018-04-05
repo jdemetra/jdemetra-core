@@ -93,6 +93,7 @@ public class XmlTramoSeatsRequests {
      * {@link TramoSeatsAtomicRequestType }
      *
      *
+     * @return 
      */
     public List<XmlTramoSeatsAtomicRequest> getItems() {
         if (item == null) {
@@ -175,5 +176,15 @@ public class XmlTramoSeatsRequests {
      */
     public void setParallelProcessing(Boolean parallel) {
         this.parallel = parallel;
+    }
+    
+    public void checkNames(){
+        int n=1;
+        for (XmlTramoSeatsAtomicRequest req : item){
+            if (req.series.getName() == null || req.series.getName().length() == 0){
+                req.series.setName("series"+n);
+            }
+            ++n;
+        }
     }
 }

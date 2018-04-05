@@ -34,6 +34,7 @@ import ec.tstoolkit.information.InformationSetHelper;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
 import ec.tstoolkit.timeseries.simplets.TsData;
+import ec.tstoolkit.utilities.NamedObject;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -113,9 +114,10 @@ public class X13XmlProcessor {
 
     public XmlInformationSet process(final XmlRegArimaRequests request) {
         ProcessingContext ctx = context(request.context);
+        request.checkNames();
         Stream<XmlRegArimaAtomicRequest> stream = request.getParallelProcessing()
                 ? request.getItems().parallelStream() : request.getItems().stream();
-        List<PreprocessingModel> models = stream.map(
+        List<NamedObject<PreprocessingModel>> models = stream.map(
                 o -> {
                     try {
                         RegArimaSpecification spec = specification(o);
@@ -131,7 +133,7 @@ public class X13XmlProcessor {
                         }
                         IProcessing<TsData, PreprocessingModel> processing = RegArimaProcessingFactory.instance.generateProcessing(spec, ctx);
                         PreprocessingModel model = processing.process(s.getTsData());
-                        return model;
+                        return new NamedObject<PreprocessingModel>(s.getRawName(), model);
                     } catch (Exception err) {
                         return null;
                     }
@@ -142,12 +144,10 @@ public class X13XmlProcessor {
         List<String> items = request.getOutputFilter();
         set.addAll(items);
         InformationSet infos = new InformationSet();
-        int icur = 0;
-        for (PreprocessingModel cur : models) {
-            ++icur;
+        for (NamedObject<PreprocessingModel> cur : models) {
             if (cur != null) {
-                InformationSet info = InformationSetHelper.fromProcResults(cur, set);
-                infos.set("series" + icur, info);
+                InformationSet info = InformationSetHelper.fromProcResults(cur.object, set);
+                infos.add(cur.name, info);
             }
         }
         XmlInformationSet xinfo = new XmlInformationSet();
@@ -161,9 +161,10 @@ public class X13XmlProcessor {
 
     public XmlInformationSet process(XmlX13Requests request) {
         ProcessingContext ctx = context(request.context);
+        request.checkNames();
         Stream<XmlX13AtomicRequest> stream = request.getParallelProcessing()
                 ? request.getItems().parallelStream() : request.getItems().stream();
-        List<CompositeResults> models = stream.map(
+        List<NamedObject<CompositeResults>> models = stream.map(
                 o -> {
                     try {
                         X13Specification spec = specification(o);
@@ -179,7 +180,7 @@ public class X13XmlProcessor {
                         }
                         SequentialProcessing<TsData> processing = X13ProcessingFactory.instance.generateProcessing(spec, ctx);
                         CompositeResults rslt = processing.process(s.getTsData());
-                        return rslt;
+                        return new NamedObject<CompositeResults>(s.getRawName(),rslt);
                     } catch (Exception err) {
                         return null;
                     }
@@ -196,12 +197,10 @@ public class X13XmlProcessor {
             }
         }
         InformationSet infos = new InformationSet();
-        int icur = 0;
-        for (CompositeResults cur : models) {
-            ++icur;
+         for (NamedObject<CompositeResults> cur : models) {
             if (cur != null) {
-                InformationSet info = InformationSetHelper.fromProcResults(cur, set);
-                infos.set("series" + icur, info);
+                InformationSet info = InformationSetHelper.fromProcResults(cur.object, set);
+                infos.add(cur.name, info);
             }
         }
         XmlInformationSet xinfo = new XmlInformationSet();

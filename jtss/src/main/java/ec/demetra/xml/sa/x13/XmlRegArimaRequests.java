@@ -17,6 +17,7 @@
 package ec.demetra.xml.sa.x13;
 
 import ec.demetra.xml.processing.XmlProcessingContext;
+import ec.demetra.xml.sa.tramoseats.XmlTramoAtomicRequest;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -178,4 +179,15 @@ public class XmlRegArimaRequests {
     public void setParallelProcessing(Boolean parallel) {
         this.parallel = parallel;
     }
+    
+        public void checkNames() {
+        int n = 1;
+        for (XmlRegArimaAtomicRequest req : item) {
+            if (req.series.getName() == null || req.series.getName().length() == 0) {
+                req.series.setName("series" + n);
+            }
+            ++n;
+        }
+    }
+
 }
