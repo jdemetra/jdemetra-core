@@ -60,63 +60,65 @@ public class SymmetricFrequencyResponseDecomposer3 implements ISymmetricFilterDe
 
     @Override
     public boolean decompose(final SymmetricFilter sf) {
-        double var = sf.getWeight(0);
-        if (var <= 0) {
-            return false;
-        }
-        SymmetricFilter cur=sf;
-        m_bf = null;
-        // first, we try to remove unit roots from SymmetricFilter
-        double[] weights = cur.getWeights();
-        for (int i=0; i<weights.length; ++i){
-            weights[i]/=var;
-        }
-        Polynomial P = Polynomial.of(weights);
-        // normalize the polynomial, for numerical reason
-        
-        UnitRootsSolver urs = new UnitRootsSolver(m_freq);
-        if (urs.factorize(P)) {
-            UnitRoots ur = urs.getUnitRoots();
+        try {
+            double var = sf.getWeight(0);
+            if (var <= 0) {
+                return false;
+            }
+            SymmetricFilter cur = sf;
+            m_bf = null;
+            // first, we try to remove unit roots from SymmetricFilter
+            double[] weights = cur.getWeights();
+            for (int i = 0; i < weights.length; ++i) {
+                weights[i] /= var;
+            }
+            Polynomial P = Polynomial.of(weights);
+            // normalize the polynomial, for numerical reason
 
-            UnitRoots sur = ur.sqrt();
-            if (sur != null) {
-                Polynomial urp = sur.toPolynomial();
-                Polynomial ur2=urp.times(urp);
-                m_bf = new BackFilter(urp);
-             // ensure symmetry
-                LeastSquaresDivision lsd=new LeastSquaresDivision();
-                lsd.divide(P, ur2);
-                P=lsd.getQuotient();
-                double[] c = P.getCoefficients();
-                int d=P.getDegree();
-                int n=d/2;
-                for (int i=0; i<n; ++i){
-                    double q=(c[i]+c[d-i])/2;
-                    c[i]=q;
-                    c[d-i]=q;
+            UnitRootsSolver urs = new UnitRootsSolver(m_freq);
+            if (urs.factorize(P)) {
+                UnitRoots ur = urs.getUnitRoots();
+
+                UnitRoots sur = ur.sqrt();
+                if (sur != null) {
+                    Polynomial urp = sur.toPolynomial();
+                    Polynomial ur2 = urp.times(urp);
+                    m_bf = new BackFilter(urp);
+                    // ensure symmetry
+                    LeastSquaresDivision lsd = new LeastSquaresDivision();
+                    lsd.divide(P, ur2);
+                    P = lsd.getQuotient();
+                    double[] c = P.getCoefficients();
+                    int d = P.getDegree();
+                    int n = d / 2;
+                    for (int i = 0; i < n; ++i) {
+                        double q = (c[i] + c[d - i]) / 2;
+                        c[i] = q;
+                        c[d - i] = q;
+                    }
+                    P = Polynomial.of(c);
                 }
-                P=Polynomial.of(c);
-           }
-            
-            
-        }
-        if (m_bf == null) {
-            m_bf = BackFilter.ONE;
-        }
-        SymmetricMullerNewtonSolver solver = new SymmetricMullerNewtonSolver();
-        if (!solver.factorize(P)) {
+            }
+            if (m_bf == null) {
+                m_bf = BackFilter.ONE;
+            }
+            SymmetricMullerNewtonSolver solver = new SymmetricMullerNewtonSolver();
+            if (!solver.factorize(P)) {
+                return false;
+            }
+            Complex[] sroots = solver.getStableRoots();
+            Polynomial P2 = Polynomial.fromComplexRoots(sroots);
+            BackFilter bf = new BackFilter(P2);
+            double v = bf.get(0);
+            m_bf = bf.times(m_bf);
+            m_bf = m_bf.normalize();
+
+            Polynomial coeff = m_bf.getPolynomial();
+            m_var = var / coeff.ssq();
+            return m_var >= 0;
+        } catch (Exception err) {
             return false;
         }
-        Complex[] sroots = solver.getStableRoots();
-        Polynomial P2 = Polynomial.fromComplexRoots(sroots);
-        BackFilter bf = new BackFilter(P2);
-        double v = bf.get(0);
-        m_bf= bf.times(m_bf);
-        m_bf = m_bf.normalize();
-        
-        Polynomial coeff = m_bf.getPolynomial();
-        m_var=var /coeff.ssq();
-        return m_var>=0;
     }
 
     @Override

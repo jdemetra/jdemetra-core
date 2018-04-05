@@ -636,20 +636,22 @@ public class ArimaModel extends AbstractArimaModel implements IArimaModel {
 
     // conversion between BFilter and SymmetricFilter
     private void ma_stob2() {
-        SymmetricFrequencyResponseDecomposer3 sfr3 = new SymmetricFrequencyResponseDecomposer3();
         //SymmetricFrequencyResponseDecomposer2 sfr2 = new SymmetricFrequencyResponseDecomposer2();
         SymmetricFrequencyResponseDecomposer sfr = new SymmetricFrequencyResponseDecomposer();
-        if (sfr3.decompose(sma_)) {
-            bma_ = sfr3.getBFilter();
-            var_ = sfr3.getFactor();
+        if (sfr.decompose(sma_)) {
+            bma_ = sfr.getBFilter();
+            var_ = sfr.getFactor();
 //        } else if (sfr2.decompose(sma_)) {
 //            bma_ = sfr2.getBFilter();
 //            var_ = sfr2.getFactor();
-        } else if (sfr.decompose(sma_)) {
-            bma_ = sfr.getBFilter();
-            var_ = sfr.getFactor();
         } else {
-            throw new ArimaException(ArimaException.InvalidDecomposition);
+            SymmetricFrequencyResponseDecomposer3 sfr3 = new SymmetricFrequencyResponseDecomposer3();
+            if (sfr3.decompose(sma_)) {
+                bma_ = sfr3.getBFilter();
+                var_ = sfr3.getFactor();
+            } else {
+                throw new ArimaException(ArimaException.InvalidDecomposition);
+            }
         }
     }
 
