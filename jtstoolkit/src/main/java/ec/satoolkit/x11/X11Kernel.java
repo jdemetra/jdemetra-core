@@ -46,7 +46,7 @@ public class X11Kernel implements ISeriesDecomposer {
             B15 = "b15", B16 = "b16", B17 = "b17", B18 = "b18", B19 = "b19",
             B20 = "b20";
     public static final String[] ALL_B = {B1, B2, B3, B4, B5, B6, B7, B8, B9,
-        B10, B11, B12, B13, B14, B15, B16, B17, B18, B19, B20};
+                                          B10, B11, B12, B13, B14, B15, B16, B17, B18, B19, B20};
     public static final String C1 = "c1", C2 = "c2", C3 = "c3",
             C3TEST = "c3-seasonalityTest", C4 = "c4", C5 = "c5", C6 = "c6",
             C7 = "c7", C7_IC = "c7-IC ratio", C8 = "c8", C9 = "c9",
@@ -54,7 +54,7 @@ public class X11Kernel implements ISeriesDecomposer {
             C15 = "c15", C16 = "c16", C17 = "c17", C18 = "c18", C19 = "c19",
             C20 = "c20";
     public static final String[] ALL_C = {C1, C2, C3, C4, C5, C6, C7, C8, C9, C10,
-        C11, C12, C13, C14, C15, C16, C17, C18, C19, C20};
+                                          C11, C12, C13, C14, C15, C16, C17, C18, C19, C20};
     public static final String D1 = "d1", D2 = "d2", D3 = "d3",
             D3TEST = "d3-seasonalityTest", D4 = "d4", D5 = "d5", D6 = "d6",
             D7 = "d7", D7_IC = "d7-IC ratio", D8 = "d8", D9 = "d9",
@@ -66,7 +66,7 @@ public class X11Kernel implements ISeriesDecomposer {
             D10aL = "d10a_lin", D11aL = "d11a_lin", D12aL = "d12a_lin", D13aL = "d13a_lin",
             D9_DEFAULT = "s3x5default", D9_FILTER = "d9filter", D12_FILTER = "d12filter", D12_TLEN = "tlen", D9_FILTER_COMPOSIT = "d9filtercomposit";
     public static final String[] ALL_D = {D1, D2, D3, D4, D5, D6, D7, D8, D9,
-        D10, D10a, D10b, D11, D11a, D12, D12a, D13, D14, D15, D16, D16a, D16b, D18, D19, D20};
+                                          D10, D10a, D10b, D11, D11a, D12, D12a, D13, D14, D15, D16, D16a, D16b, D18, D19, D20};
     public static final String E1 = "e1", E2 = "e2", E3 = "e3", E11 = "e11";
     public static final String[] ALL_E = {E1, E2, E3, E11};
     private IX11Toolkit toolkit;
@@ -78,6 +78,7 @@ public class X11Kernel implements ISeriesDecomposer {
     /**
      *
      * @param s
+     *
      * @return
      */
     @Override
@@ -169,7 +170,7 @@ public class X11Kernel implements ISeriesDecomposer {
         TsData b5a = toolkit.getSeasonalComputer().doInitialFiltering(
                 X11Step.B, b4g, info);
         TsData b5 = toolkit.getSeasonalNormalizer().normalize(b5a,
-                refSeries.getDomain());
+                                                              refSeries.getDomain());
 
         TsData b6;
         if (toolkit.getContext().isPseudoAdditive()) {
@@ -179,14 +180,14 @@ public class X11Kernel implements ISeriesDecomposer {
         }
 
         TsData b7 = toolkit.getTrendCycleComputer().doFinalFiltering(X11Step.B,
-                b6, info);
-        if (toolkit.getContext().isMultiplicative()) {
+                                                                     b6, info);
+        if (toolkit.getContext().isMultiplicative() || toolkit.getContext().isPseudoAdditive()) {
             toolkit.getUtilities().checkPositivity(b7);
         }
         TsData b8 = toolkit.getContext().op(refSeries, b7);
 
         TsData b9a = toolkit.getSeasonalComputer().doFinalFiltering(X11Step.B,
-                b8, info);
+                                                                    b8, info);
         TsData b9c = toolkit.getSeasonalNormalizer().normalize(b9a, null);
         TsData b9d;
         if (toolkit.getContext().isPseudoAdditive()) {
@@ -201,7 +202,7 @@ public class X11Kernel implements ISeriesDecomposer {
         TsData b9g = ecorr.applyCorrections(b8, b9);
 
         TsData b10a = toolkit.getSeasonalComputer().doFinalFiltering(X11Step.B,
-                b9g, info);
+                                                                     b9g, info);
         TsData b10 = toolkit.getSeasonalNormalizer().normalize(b10a, null);
 
         TsData b11;
@@ -279,7 +280,7 @@ public class X11Kernel implements ISeriesDecomposer {
         TsData c5a = toolkit.getSeasonalComputer().doInitialFiltering(
                 X11Step.C, c4, info);
         TsData c5 = toolkit.getSeasonalNormalizer().normalize(c5a,
-                c1.getDomain());
+                                                              c1.getDomain());
         TsData c6;
         if (toolkit.getContext().isPseudoAdditive()) {
             c6 = toolkit.getContext().pseudoOp(c1, c2, c5);
@@ -287,13 +288,13 @@ public class X11Kernel implements ISeriesDecomposer {
             c6 = toolkit.getContext().op(c1, c5);
         }
         TsData c7 = toolkit.getTrendCycleComputer().doFinalFiltering(X11Step.C,
-                c6, info);
-        if (toolkit.getContext().isMultiplicative()) {
+                                                                     c6, info);
+        if (toolkit.getContext().isMultiplicative() || toolkit.getContext().isPseudoAdditive()) {
             toolkit.getUtilities().checkPositivity(c7);
         }
         TsData c9 = toolkit.getContext().op(c1, c7);
         TsData c10a = toolkit.getSeasonalComputer().doFinalFiltering(X11Step.C,
-                c9, info);
+                                                                     c9, info);
         TsData c10 = toolkit.getSeasonalNormalizer().normalize(c10a, null);
         TsData c11;
         if (toolkit.getContext().isPseudoAdditive()) {
@@ -374,7 +375,7 @@ public class X11Kernel implements ISeriesDecomposer {
         TsData d5a = toolkit.getSeasonalComputer().doInitialFiltering(
                 X11Step.D, d4, info);
         TsData d5 = toolkit.getSeasonalNormalizer().normalize(d5a,
-                d1.getDomain());
+                                                              d1.getDomain());
         TsData d6;
         if (toolkit.getContext().isPseudoAdditive()) {
             d6 = toolkit.getContext().pseudoOp(d1, d2, d5);
@@ -383,13 +384,13 @@ public class X11Kernel implements ISeriesDecomposer {
         }
 
         TsData d7 = toolkit.getTrendCycleComputer().doFinalFiltering(X11Step.D,
-                d6, info);
-        if (toolkit.getContext().isMultiplicative()) {
+                                                                     d6, info);
+        if (toolkit.getContext().isMultiplicative() || toolkit.getContext().isPseudoAdditive()) {
             toolkit.getUtilities().checkPositivity(d7);
         }
         TsData d8a = toolkit.getContext().op(d1, d7);
         TsData d8 = toolkit.getContext().invOp(d8a, c20); // probably a mistake. To See with Brian
-        
+
 //        TsData d8 = toolkit.getContext().op(refSeries, d7);
         TsData d9, d10;
         if (ecorr instanceof PeriodSpecificExtremeValuesCorrector) {
@@ -398,7 +399,7 @@ public class X11Kernel implements ISeriesDecomposer {
 
             TsData d9g = ecorr.applyCorrections(d8, d9);
             TsData d10a = toolkit.getSeasonalComputer().doFinalFiltering(X11Step.D,
-                    d9g, info);
+                                                                         d9g, info);
             d10 = toolkit.getSeasonalNormalizer().normalize(d10a, null);
         } else {
             TsData d9bis = toolkit.getContext().op(d1, d7);
@@ -425,11 +426,10 @@ public class X11Kernel implements ISeriesDecomposer {
         ICRatioComputer.writeICR(toolkit.getContext(), d11bis, info);
         TsData d12 = toolkit.getTrendCycleComputer().doFinalFiltering(
                 X11Step.D, d11bis, info);
-        if (toolkit.getContext().isMultiplicative()) {
+        if (toolkit.getContext().isMultiplicative() || toolkit.getContext().isPseudoAdditive()) {
             toolkit.getUtilities().checkPositivity(d12);
         }
 
-        
         TsData d10b, d11;
         if (toolkit.getContext().isPseudoAdditive()) {
             d10b = d12.times(d10.minus(1));
@@ -501,14 +501,14 @@ public class X11Kernel implements ISeriesDecomposer {
 
         d11c = toolkit.getContext().invOp(d11c, a9sa);
 
-      //  TsData d16 = toolkit.getContext().op(a1, d11c);
-       TsData d16;
+        //  TsData d16 = toolkit.getContext().op(a1, d11c);
+        TsData d16;
         if (toolkit.getContext().isPseudoAdditive()) {
-           d16 = a1.div(d12).minus(d13).plus(1);
+            d16 = a1.div(d12).minus(d13).plus(1);
         } else {
             d16 = toolkit.getContext().op(a1, d11c);
         }
-        
+
         dtables.set(D11, d11c.fittoDomain(sdomain));
         dtables.set(D12, d12c.fittoDomain(sdomain));
         dtables.set(D13, d13c.fittoDomain(sdomain));
@@ -580,9 +580,9 @@ public class X11Kernel implements ISeriesDecomposer {
         TsData e1 = toolkit.getUtilities().correctSeries(a1c, c17, tmp);
         TsData e2 = toolkit.getUtilities().correctSeries(d11c, c17, d12);
         TsData e3 = toolkit.getUtilities().correctSeries(d13l, c17,
-                toolkit.getContext().getMean());
+                                                         toolkit.getContext().getMean());
         TsData e11 = toolkit.getUtilities().correctSeries(d11c, c17,
-                TsData.add(d12, TsData.subtract(a1c, e1)));
+                                                          TsData.add(d12, TsData.subtract(a1c, e1)));
 
         InformationSet etables = info.subSet(E);
         etables.set(E1, e1);
