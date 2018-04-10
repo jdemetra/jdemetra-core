@@ -83,6 +83,20 @@ import java.util.function.Predicate;
 @Development(status = Development.Status.Preliminary)
 public class PreprocessingModel implements IProcResults {
 
+    /**
+     * @return the ncasts
+     */
+    public int getNcasts() {
+        return ncasts;
+    }
+
+    /**
+     * @param ncasts the ncasts to set
+     */
+    public void setNcasts(int ncasts) {
+        this.ncasts = ncasts;
+    }
+
     public static ComponentType outlierComponent(OutlierType type) {
         switch (type) {
             case AO:
@@ -820,13 +834,14 @@ public class PreprocessingModel implements IProcResults {
     }
 
     private int getForecastCount() {
-        return FCAST_YEAR * description.getFrequency();
+        int n=ncasts>=0 ? ncasts : -ncasts*description.getFrequency();
+        return n ;
     }
 
     private TsDomain domain(boolean fcast) {
         if (fcast) {
             TsDomain dom = description.getSeriesDomain();
-            return new TsDomain(dom.getEnd(), FCAST_YEAR * dom.getFrequency().intValue());
+            return new TsDomain(dom.getEnd(), getForecastCount());
         } else {
             return description.getSeriesDomain();
         }
@@ -889,7 +904,7 @@ public class PreprocessingModel implements IProcResults {
     private TsVariableList x_;
     private TsData fullres_, lin_, fcast_, bcast_;
     private Forecasts xfcasts_;
-    public static final int FCAST_YEAR = 1;
+    private int ncasts=-2;
     public static final String LOG = "log",
             ADJUST = "adjust",
             SPAN = "span", ESPAN = "espan", START = "start", END = "end", N = "n",
@@ -945,10 +960,10 @@ public class PreprocessingModel implements IProcResults {
             }
         });
         MAPPING.set(ModellingDictionary.Y, source -> source.description.getOriginal());
-        MAPPING.set(ModellingDictionary.Y + SeriesInfo.F_SUFFIX, source -> source.forecast(FCAST_YEAR * source.description.getFrequency(), false));
+        MAPPING.set(ModellingDictionary.Y + SeriesInfo.F_SUFFIX, source -> source.forecast(source.getForecastCount(), false));
         MAPPING.set(ModellingDictionary.Y + SeriesInfo.EF_SUFFIX, source -> source.getForecastError());
         MAPPING.set(ModellingDictionary.YC, source -> source.interpolatedSeries(false));
-        MAPPING.set(ModellingDictionary.YC + SeriesInfo.F_SUFFIX, source -> source.forecast(FCAST_YEAR * source.description.getFrequency(), false));
+        MAPPING.set(ModellingDictionary.YC + SeriesInfo.F_SUFFIX, source -> source.forecast(source.getForecastCount(), false));
         MAPPING.set(ModellingDictionary.YC + SeriesInfo.EF_SUFFIX, source -> source.getForecastError());
         MAPPING.set(ModellingDictionary.L, source -> source.linearizedSeries(false));
         MAPPING.set(ModellingDictionary.Y_LIN, source -> source.linearizedSeries(true));
@@ -957,7 +972,7 @@ public class PreprocessingModel implements IProcResults {
         MAPPING.set(ModellingDictionary.YCAL + SeriesInfo.F_SUFFIX, source -> source.getYcal(true));
         MAPPING.set(ModellingDictionary.DET, source -> source.getDet(false));
         MAPPING.set(ModellingDictionary.DET + SeriesInfo.F_SUFFIX, source -> source.getDet(true));
-        MAPPING.set(ModellingDictionary.L + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(FCAST_YEAR * source.description.getFrequency()));
+        MAPPING.set(ModellingDictionary.L + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(source.getForecastCount()));
         MAPPING.set(ModellingDictionary.L + SeriesInfo.B_SUFFIX, source -> source.linearizedBackcast(source.description.getFrequency()));
         MAPPING.set(ModellingDictionary.CAL, source -> source.getCal(false));
         MAPPING.set(ModellingDictionary.CAL + SeriesInfo.F_SUFFIX, source -> source.getCal(true));

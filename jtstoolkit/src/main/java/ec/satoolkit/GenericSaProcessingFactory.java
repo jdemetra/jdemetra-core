@@ -74,7 +74,7 @@ public class GenericSaProcessingFactory {
         }
     }
 
-    protected static <S extends IProcSpecification> IProcessingNode<TsData> createPreprocessingStep(final IPreprocessor preprocessor, final String name, final String prefix) {
+    protected static <S extends IProcSpecification> IProcessingNode<TsData> createPreprocessingStep(final IPreprocessor preprocessor, final int ncasts, final String name, final String prefix) {
         return new IProcessingNode<TsData>() {
             @Override
             public String getName() {
@@ -100,6 +100,7 @@ public class GenericSaProcessingFactory {
                 if (model == null) {
                     return Status.Invalid;
                 } else {
+                    model.setNcasts(ncasts);
                     results.put(name, model);
                     return Status.Valid;
                 }
@@ -158,8 +159,8 @@ public class GenericSaProcessingFactory {
         sproc.add(createInitialStep(sel, true));
     }
 
-    protected static void addPreprocessingStep(IPreprocessor preprocessor, SequentialProcessing sproc) {
-        sproc.add(createPreprocessingStep(preprocessor, PREPROCESSING, PREPROCESSING));
+    protected static void addPreprocessingStep(IPreprocessor preprocessor, final int ncasts, SequentialProcessing sproc) {
+        sproc.add(createPreprocessingStep(preprocessor, ncasts, PREPROCESSING, PREPROCESSING));
     }
 
     protected static <R extends ISaResults> IProcessingNode<TsData> createDecompositionStep(final IDefaultSeriesDecomposer<R> decomposer, final IPreprocessingFilter filter) {
