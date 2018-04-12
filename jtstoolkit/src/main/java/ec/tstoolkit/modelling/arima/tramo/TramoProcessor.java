@@ -112,6 +112,10 @@ public class TramoProcessor extends AbstractTramoModule implements IPreprocessor
             } else {
                 defaultBuilder.initialize(context);
             }
+            if (!initContext(context)) {
+                return null;
+            }
+
             if (context.description.isFullySpecified() && outliers == null) {
                 // nothing to do
                 IParametricMapping<SarimaModel> mapping = context.description.defaultMapping();
@@ -125,10 +129,6 @@ public class TramoProcessor extends AbstractTramoModule implements IPreprocessor
                 estimation.updateParametersCovariance(monitor.getParametersCovariance());
                 context.estimation=estimation;
                 return context.current(true);
-            }
-
-            if (!initContext(context)) {
-                return null;
             }
 
             checkSeasonality(context);

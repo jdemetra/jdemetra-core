@@ -98,6 +98,18 @@ public class X13Preprocessor implements IPreprocessor {
             clear();
 
             builder.initialize(context);
+            // scaling
+            if (scaling != null) {
+                if (!scaling.process(context)) {
+                    return null;
+                }
+            }
+            // missing value...
+            if (missing != null) {
+                if (!context.description.updateMissing(missing)) {
+                    return null;
+                }
+            }
             if (context.description.isFullySpecified() && outliers == null) {
                 // nothing to do
                 IParametricMapping<SarimaModel> mapping = context.description.defaultMapping();
@@ -247,18 +259,6 @@ public class X13Preprocessor implements IPreprocessor {
     }
 
     protected boolean runTransformations(ModellingContext context) {
-        // scaling
-        if (scaling != null) {
-            if (!scaling.process(context)) {
-                return false;
-            }
-        }
-        // missing value...
-        if (missing != null) {
-            if (!context.description.updateMissing(missing)) {
-                return false;
-            }
-        }
         // log/level...
         if (loglevelTest != null) {
             loglevelTest.process(context);
