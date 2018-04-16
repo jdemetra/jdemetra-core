@@ -5,7 +5,7 @@
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
         <artifactId>demetra-parent</artifactId>
-        <version>2.2.1</version>
+        <version>2.2.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>demetra-spreadsheet</artifactId>
