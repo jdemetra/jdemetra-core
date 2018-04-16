@@ -57,10 +57,10 @@ public class HtmlTramo extends AbstractHtmlElement implements IHtmlElement {
         Double level = tinfo.get("level", Double.class);
         Double log = tinfo.get("log", Double.class);
         if (level != null && log != null) {
-            stream.write(HtmlTag.HEADER1, h1, "Log/level transformation");
+            stream.write(HtmlTag.HEADER1, "Log/level transformation");
             stream.newLine();
-            stream.write(HtmlTag.HEADER2, h2, "Objective function for level: ").write(level.toString()).newLine();
-            stream.write(HtmlTag.HEADER2, h2, "Objective function for log: ").write(log.toString()).newLine();
+            stream.write(HtmlTag.HEADER2, "Objective function for level: ").write(level.toString()).newLine();
+            stream.write(HtmlTag.HEADER2, "Objective function for log: ").write(log.toString()).newLine();
             stream.write(HtmlTag.LINEBREAK);
         }
     }
@@ -75,7 +75,7 @@ public class HtmlTramo extends AbstractHtmlElement implements IHtmlElement {
         if (cinfo == null) {
             return;
         }
-        stream.write(HtmlTag.HEADER1, h1, "Trading days");
+        stream.write(HtmlTag.HEADER1, "Trading days");
         stream.newLine();
         stream.write(HtmlTag.LINEBREAK);
     }
@@ -90,7 +90,7 @@ public class HtmlTramo extends AbstractHtmlElement implements IHtmlElement {
         if (einfo == null) {
             return;
         }
-        stream.write(HtmlTag.HEADER1, h1, "Easter effect");
+        stream.write(HtmlTag.HEADER1, "Easter effect");
         stream.write(HtmlTag.LINEBREAK);
     }
 

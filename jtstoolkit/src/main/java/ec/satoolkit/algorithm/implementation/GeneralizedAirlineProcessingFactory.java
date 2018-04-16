@@ -46,7 +46,7 @@ public class GeneralizedAirlineProcessingFactory extends GenericSaProcessingFact
         SequentialProcessing processing = new SequentialProcessing();
         DefaultPreprocessingFilter filter = new DefaultPreprocessingFilter();
         if (xspec.getPreprocessingSpec().method != Method.None) {
-            addPreprocessingStep(xspec.buildPreprocessor(context), processing);
+            addPreprocessingStep(xspec.buildPreprocessor(context), -2, processing);
         }
         addDecompositionStep(new GeneralizedAirlineDecomposer(xspec.getDecompositionSpec()), filter, processing);
         addFinalStep(filter, processing);

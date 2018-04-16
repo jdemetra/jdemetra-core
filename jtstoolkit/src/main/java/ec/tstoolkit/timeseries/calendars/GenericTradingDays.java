@@ -70,6 +70,7 @@ public class GenericTradingDays {
     private void dataNoContrast(TsDomain domain, List<DataBlock> buffer) {
         int n = domain.getLength();
         int[][] days = Utilities.tdCount(domain);
+        adjust(days);
 
         int[][] groups = clustering.allPositions();
         int ng = groups.length;
@@ -93,6 +94,7 @@ public class GenericTradingDays {
     private void dataContrasts(TsDomain domain, List<DataBlock> buffer) {
         int n = domain.getLength();
         int[][] days = Utilities.tdCount(domain);
+        adjust(days);
 
         int[][] groups = clustering.allPositions();
         rotate(groups);
@@ -156,4 +158,13 @@ public class GenericTradingDays {
         }
     }
 
+    private void adjust(int[][] days) {
+        // adjust the days to meet the definition of DayOfWeek from the java library
+        int[] sun=days[0];
+        for (int i=1; i<days.length; ++i){
+            days[i-1]=days[i];
+        }
+        days[6]=sun;
+
+    }
 }

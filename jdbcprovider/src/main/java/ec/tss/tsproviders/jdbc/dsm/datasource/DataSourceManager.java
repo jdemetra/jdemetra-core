@@ -25,6 +25,7 @@ import ec.tss.tsproviders.jdbc.dsm.identification.AccountManager;
 import ec.tss.tsproviders.jdbc.dsm.identification.aes.AESContentManager;
 import ec.tss.tsproviders.jdbc.dsm.identification.aes.KeyGen;
 import ec.tstoolkit.utilities.*;
+import ioutil.Jaxb;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +36,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -86,9 +86,7 @@ public enum DataSourceManager {
         }
 
         try {
-            JAXBContext context = JAXBContext.newInstance(XmlDataSources.class);
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-            XmlDataSources root = (XmlDataSources) unmarshaller.unmarshal(path2file);
+            XmlDataSources root = Jaxb.Parser.of(XmlDataSources.class).parseFile(path2file);
             for (XmlDataSource xmlProvider : root.dataSources) {
                 IManagedDataSource mds = new DefaultManagedDataSource(xmlProvider.provider, null);
                 mds.setName(xmlProvider.dbName);

@@ -18,7 +18,6 @@ package ec.tss.tsproviders.utils;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import ec.tstoolkit.design.UtilityClass;
 import java.io.File;
@@ -93,7 +92,7 @@ public final class Formatters {
         try {
             return onJAXB(JAXBContext.newInstance(classToBeFormatted), formattedOutput);
         } catch (JAXBException ex) {
-            throw Throwables.propagate(ex);
+            throw new RuntimeException(ex);
         }
     }
 
@@ -104,7 +103,7 @@ public final class Formatters {
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, formattedOutput);
             return onJAXB(marshaller);
         } catch (JAXBException ex) {
-            throw Throwables.propagate(ex);
+            throw new RuntimeException(ex);
         }
     }
 

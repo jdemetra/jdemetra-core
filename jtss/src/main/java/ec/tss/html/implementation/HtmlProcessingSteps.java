@@ -44,15 +44,15 @@ public class HtmlProcessingSteps extends AbstractHtmlElement implements IHtmlEle
         if (history_ == null) {
             return;
         }
-        stream.write(HtmlTag.HEADER1, h1, "Processing steps").newLine();
+        stream.write(HtmlTag.HEADER1, "Processing steps").newLine();
         List<String> hdic = history_.getDictionary();
-        stream.open(new HtmlTable(0, 300));
+        stream.open(new HtmlTable().withWidth(300));
         for (String s : hdic) {
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell(s, 100));
+            stream.write(new HtmlTableCell(s).withWidth(100));
             Object obj = history_.search(s, Object.class);
             if (obj != null) {
-                stream.write(new HtmlTableCell(obj.toString(), 200));
+                stream.write(new HtmlTableCell(obj.toString()).withWidth(200));
             }
             stream.close(HtmlTag.TABLEROW);
         }

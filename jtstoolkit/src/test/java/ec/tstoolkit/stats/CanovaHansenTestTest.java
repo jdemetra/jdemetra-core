@@ -81,12 +81,12 @@ public class CanovaHansenTestTest {
         CanovaHansenTest ch = new CanovaHansenTest();
         ch.setLag1(false);
         ch.setTruncationLag(12);
-        ch.process(y, 12, 0);
         ch.setType(CanovaHansenTest.Variables.Trigonometric);
-//        for (int i = 0; i < 6; ++i) {
+        ch.process(y, 12, 1);
+//        for (int i = 0; i < 5; ++i) {
 //            System.out.println(ch.test(2 * i, 2));
 //        }
-//        System.out.println(ch.test(10));
+////        System.out.println(ch.test(10));
 //        System.out.println(ch.testAll());
     }
 
@@ -136,7 +136,7 @@ public class CanovaHansenTestTest {
         }
         Arrays.sort(t);
         Arrays.sort(u);
-        System.out.println(new ReadDataBlock(t));
-        System.out.println(new ReadDataBlock(u));
+//        System.out.println(new ReadDataBlock(t));
+//        System.out.println(new ReadDataBlock(u));
     }
 }

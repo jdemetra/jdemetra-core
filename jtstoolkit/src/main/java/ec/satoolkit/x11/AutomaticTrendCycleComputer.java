@@ -56,7 +56,7 @@ class AutomaticTrendCycleComputer extends DefaultX11Algorithm implements
         int nb = context.getBackcastHorizon();
         TsDomain gdom = (nf == 0 && nb == 0) ? null : sc.getDomain().drop(nb, nf);
         double gc = SeriesEvolution.calcAbsMeanVariations(sc, gdom, 1,
-                isMultiplicative());
+                (isMultiplicative() ));
         double gi = SeriesEvolution.calcAbsMeanVariations(si, gdom, 1,
                 isMultiplicative());
         double icr = gi / gc;

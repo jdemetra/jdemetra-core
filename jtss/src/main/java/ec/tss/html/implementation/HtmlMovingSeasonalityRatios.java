@@ -30,7 +30,7 @@ public class HtmlMovingSeasonalityRatios extends AbstractHtmlElement {
 
     @Override
     public void write(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER2, h2, TITLE);
+        stream.write(HtmlTag.HEADER2, TITLE);
         double[][] data = new double[3][];
         data[0] = msrTable.getMeanIrregularEvolutions();
         data[1] = msrTable.getMeanSeasonalEvolutions();
@@ -42,20 +42,20 @@ public class HtmlMovingSeasonalityRatios extends AbstractHtmlElement {
             data[2][i] = msrTable.getRMS(i);
         }
 
-        stream.open(new HtmlTable(0, 50 * HEADERS.length));
+        stream.open(new HtmlTable().withWidth(50 * HEADERS.length));
         stream.open(HtmlTag.TABLEROW);
         for (int j = 0; j < HEADERS.length; ++j) {
-            stream.write(new HtmlTableHeader(HEADERS[j], 50));
+            stream.write(new HtmlTableHeader(HEADERS[j]).withWidth(50));
         }
         stream.close(HtmlTag.TABLEROW);
         for (int i = 1; i <= len; ++i) {
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell(Integer.toString(i), 50));
+            stream.write(new HtmlTableCell(Integer.toString(i)).withWidth(50));
             for (int j = 0; j < data.length; ++j) {
                 if (data[j] != null) {
-                    stream.write(new HtmlTableCell(df4.format(data[j][i - 1]), 50));
+                    stream.write(new HtmlTableCell(df4.format(data[j][i - 1])).withWidth(50));
                 } else {
-                    stream.write(new HtmlTableCell(".", 50));
+                    stream.write(new HtmlTableCell(".").withWidth(50));
                 }
             }
             stream.close(HtmlTag.TABLEROW);

@@ -1048,7 +1048,7 @@ public class SubMatrix implements Cloneable {
     }
 
     private boolean isFull() {
-        return m_nrows * m_ncols == m_data.length;
+        return m_nrows * m_ncols == m_data.length && m_row_inc == 1;
     }
 
     @Override

@@ -17,7 +17,6 @@
 package ec.tss.tsproviders;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSortedMap;
 import ec.tss.tsproviders.DataSource.DataSourceBean;
 import ec.tss.tsproviders.utils.*;
@@ -290,7 +289,7 @@ public final class DataSet implements IConfig, Serializable {
             try {
                 BEAN_CONTEXT = JAXBContext.newInstance(DataSetBean.class);
             } catch (JAXBException ex) {
-                throw Throwables.propagate(ex);
+                throw new RuntimeException(ex);
             }
         }
 

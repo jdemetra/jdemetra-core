@@ -19,8 +19,10 @@
 package ec.tss.html.implementation;
 
 import ec.tss.html.AbstractHtmlElement;
+import ec.tss.html.Bootstrap4;
+import static ec.tss.html.Bootstrap4.FONT_ITALIC;
+import ec.tss.html.HtmlClass;
 import ec.tss.html.HtmlStream;
-import ec.tss.html.HtmlStyle;
 import ec.tss.html.HtmlTable;
 import ec.tss.html.HtmlTableCell;
 import ec.tss.html.HtmlTag;
@@ -83,16 +85,16 @@ public class HtmlSlidingSpanDocument extends AbstractHtmlElement implements IHtm
                 title = "Breakdowns of unstable factors and Average Maximum Differences across spans";
             else
                 title = "Breakdowns of unstable factors and Average Maximum Percent Differences across spans";
-            stream.write(title, HtmlStyle.Bold, HtmlStyle.Underline, HtmlStyle.Info).newLines(2);
+            stream.write(HtmlTag.IMPORTANT_TEXT, title, Bootstrap4.TEXT_INFO).newLines(2);
 
             PeriodIterator iter = new PeriodIterator(s);
             int freq = s.getFrequency().intValue();
 
-            stream.open(new HtmlTable(0, 300));
+            stream.open(new HtmlTable().withWidth(300));
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell("Period", HtmlStyle.Italic));
-            stream.write(new HtmlTableCell("Breakdowns", HtmlStyle.Italic));
-            stream.write(new HtmlTableCell("Average", HtmlStyle.Italic));
+            stream.write(new HtmlTableCell("Period").withClass(FONT_ITALIC));
+            stream.write(new HtmlTableCell("Breakdowns").withClass(FONT_ITALIC));
+            stream.write(new HtmlTableCell("Average").withClass(FONT_ITALIC));
             stream.close(HtmlTag.TABLEROW);
 
             double nbold = 2 * nabnormal;
@@ -104,26 +106,26 @@ public class HtmlSlidingSpanDocument extends AbstractHtmlElement implements IHtm
                 int n = desc.countBetween(threshold_, Double.MAX_VALUE);
                 double m = desc.getAverage();
                 boolean bold = n > nbold | m > 2 * mabnormal;
-                HtmlStyle[] styles = (bold ? new HtmlStyle[] { HtmlStyle.Bold } : new HtmlStyle[] {});
+                HtmlClass style = bold ? Bootstrap4.FONT_WEIGHT_BOLD : HtmlClass.NO_CLASS;
 
                 stream.open(HtmlTag.TABLEROW);
-                stream.write(new HtmlTableCell(block.start.getPeriodString(), styles));
-                stream.write(new HtmlTableCell(n + "", styles));
+                stream.write(new HtmlTableCell(block.start.getPeriodString()).withClass(style));
+                stream.write(new HtmlTableCell(n + "").withClass(style));
                 if (info_ == DiagnosticInfo.AbsoluteDifference || info_ == DiagnosticInfo.PeriodToPeriodDifference)
-                    stream.write(new HtmlTableCell(format.format(m), styles));
+                    stream.write(new HtmlTableCell(format.format(m)).withClass(style));
                 else
-                    stream.write(new HtmlTableCell(format.format(100 * m), styles));
+                    stream.write(new HtmlTableCell(format.format(100 * m)).withClass(style));
                 stream.close(HtmlTag.TABLEROW);
             }
             stream.close(HtmlTag.TABLE).newLines(2);
 
             int y0 = s.getDomain().getStart().getYear();
             int y1 = s.getDomain().getLast().getYear();
-            stream.open(new HtmlTable(0, 300));
+            stream.open(new HtmlTable().withWidth(300));
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell("Year", HtmlStyle.Italic));
-            stream.write(new HtmlTableCell("Breakdowns", HtmlStyle.Italic));
-            stream.write(new HtmlTableCell("Average", HtmlStyle.Italic));
+            stream.write(new HtmlTableCell("Year").withClass(FONT_ITALIC));
+            stream.write(new HtmlTableCell("Breakdowns").withClass(FONT_ITALIC));
+            stream.write(new HtmlTableCell("Average").withClass(FONT_ITALIC));
             stream.close(HtmlTag.TABLEROW);
 
             nbold = 2 * nabnormal;
@@ -136,15 +138,15 @@ public class HtmlSlidingSpanDocument extends AbstractHtmlElement implements IHtm
                 int n = desc.countBetween(threshold_, Double.MAX_VALUE);
                 double m = desc.getAverage();
                 boolean bold = n > nbold | m > 2 * mabnormal;
-                HtmlStyle[] styles = (bold ? new HtmlStyle[] { HtmlStyle.Bold } : new HtmlStyle[] {});
+                HtmlClass style = bold ? Bootstrap4.FONT_WEIGHT_BOLD : HtmlClass.NO_CLASS;
 
                 stream.open(HtmlTag.TABLEROW);
-                stream.write(new HtmlTableCell(block.start.getYear() + "", styles));
-                stream.write(new HtmlTableCell(n + "", styles));
+                stream.write(new HtmlTableCell(block.start.getYear() + "").withClass(style));
+                stream.write(new HtmlTableCell(n + "").withClass(style));
                 if (info_ == DiagnosticInfo.AbsoluteDifference || info_ == DiagnosticInfo.PeriodToPeriodDifference)
-                    stream.write(new HtmlTableCell(format.format(m), styles));
+                    stream.write(new HtmlTableCell(format.format(m)).withClass(style));
                 else
-                    stream.write(new HtmlTableCell(format.format(100 * m), styles));
+                    stream.write(new HtmlTableCell(format.format(100 * m)).withClass(style));
                 stream.close(HtmlTag.TABLEROW);
             }
             stream.close(HtmlTag.TABLE);

@@ -266,7 +266,7 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
             double x = sweights.get(i);
             if (x < 1) {
                 double s = scur.get(i);
-                if (context.isMultiplicative()) {
+                if (context.isMultiplicative() || context.isPseudoAdditive()) {
                     ns.set(i, s / (1 + x * (s - 1)));
                 } else {
                     ns.set(i, s * (1 - x));

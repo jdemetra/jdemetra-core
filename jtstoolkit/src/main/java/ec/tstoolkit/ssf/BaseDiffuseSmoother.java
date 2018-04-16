@@ -131,10 +131,10 @@ public class BaseDiffuseSmoother extends BaseSmoother {
      *
      */
     protected void iterateInitialMissing() {
-        SubMatrix t = m_T.subMatrix(), tt = t.transpose();
-        m_N2.subMatrix().xmy(tt, t);
-        m_N1.subMatrix().xmy(tt, t);
-        m_Nf.subMatrix().xmy(tt, t);
+        SubMatrix t = m_T.all(), tt = t.transpose();
+        m_N2.all().xmy(tt, t);
+        m_N1.all().xmy(tt, t);
+        m_Nf.all().xmy(tt, t);
     }
 
     /**
@@ -155,7 +155,7 @@ public class BaseDiffuseSmoother extends BaseSmoother {
      */
     protected void iterateInitialN0() {
         m_L.set(0);
-        m_ssf.L(m_pos, m_Ki, m_L.subMatrix());
+        m_ssf.L(m_pos, m_Ki, m_L.all());
         // Nf = Li'*Nf*Li
         // N1 = Z'Z/Fi + Li'*N1*Li - < Z'Kf'*Nf'*Li >
         // N2 = Z'Z * c + Li'*N2*Li - < Z'Kf'*N1'*Li >, c= Kf'*Nf*Kf-Ff/(Fi*Fi)
@@ -188,7 +188,7 @@ public class BaseDiffuseSmoother extends BaseSmoother {
             }
         }
 
-        m_N1.subMatrix().xmy(m_L.subMatrix().transpose(), m_L.subMatrix());
+        m_N1.all().xmy(m_L.all().transpose(), m_L.all());
         // compute K'* Nf
         m_tmp0.product(m_Kf, m_Nf.columns());
         // compute K'* Nf *Li
@@ -224,14 +224,14 @@ public class BaseDiffuseSmoother extends BaseSmoother {
     protected void iterateInitialN1() {
         // Nf(t-1) = Z'(t)*Z(t)/f(t) + Lf'(t)*Nf(t)*Lf(t)
         m_L.set(0);
-        SubMatrix l = m_L.subMatrix(), t = m_T.subMatrix(), tt = t.transpose(), lt = l.transpose();
+        SubMatrix l = m_L.all(), t = m_T.all(), tt = t.transpose(), lt = l.transpose();
         m_ssf.L(m_pos, m_Kf, l);
-        m_Nf.subMatrix().xmy(lt, l);
-        m_ssf.VpZdZ(m_pos, m_Nf.subMatrix(), 1 / m_ff);
+        m_Nf.all().xmy(lt, l);
+        m_ssf.VpZdZ(m_pos, m_Nf.all(), 1 / m_ff);
         SymmetricMatrix.reinforceSymmetry(m_Nf);
-        m_N2.subMatrix().xmy(tt, t);
+        m_N2.all().xmy(tt, t);
         // compute N1=T'*N1*L
-        m_N1.subMatrix().xmy(tt, l);
+        m_N1.all().xmy(tt, l);
     }
 
     /**

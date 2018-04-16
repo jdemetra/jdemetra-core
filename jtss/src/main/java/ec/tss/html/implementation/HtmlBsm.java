@@ -18,8 +18,9 @@ package ec.tss.html.implementation;
 
 import ec.satoolkit.special.StmEstimation;
 import ec.tss.html.AbstractHtmlElement;
+import ec.tss.html.Bootstrap4;
+import static ec.tss.html.Bootstrap4.FONT_WEIGHT_BOLD;
 import ec.tss.html.HtmlStream;
-import ec.tss.html.HtmlStyle;
 import ec.tss.html.HtmlTable;
 import ec.tss.html.HtmlTableCell;
 import ec.tss.html.HtmlTag;
@@ -92,7 +93,7 @@ public class HtmlBsm extends AbstractHtmlElement implements IHtmlElement {
      */
     public static void writeSpec(HtmlStream stream, ModelSpecification spec)
             throws IOException {
-        stream.write(HtmlTag.HEADER1, h1, "Model");
+        stream.write(HtmlTag.HEADER1, "Model");
         stream.newLine();
         boolean first = true;
         first = !write(stream, first, "level", spec.getLevelUse());
@@ -133,13 +134,13 @@ public class HtmlBsm extends AbstractHtmlElement implements IHtmlElement {
     }
 
     private void writeModel(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER2, h2, "Estimated variance of the components");
+        stream.write(HtmlTag.HEADER2, "Estimated variance of the components");
         Component[] cmp = bsm.getComponents();
-        stream.open(new HtmlTable(0, 300));
+        stream.open(new HtmlTable().withWidth(300));
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("Component", 100, HtmlStyle.Bold));
-        stream.write(new HtmlTableCell("Variance", 100, HtmlStyle.Bold));
-        stream.write(new HtmlTableCell("Q-Ratio", 100, HtmlStyle.Bold));
+        stream.write(new HtmlTableCell("Component").withWidth(100).withClass(FONT_WEIGHT_BOLD));
+        stream.write(new HtmlTableCell("Variance").withWidth(100).withClass(FONT_WEIGHT_BOLD));
+        stream.write(new HtmlTableCell("Q-Ratio").withWidth(100).withClass(FONT_WEIGHT_BOLD));
         stream.close(HtmlTag.TABLEROW);
 
         double sig = rslts.getLikelihood().getSigma();
@@ -166,7 +167,7 @@ public class HtmlBsm extends AbstractHtmlElement implements IHtmlElement {
 
         if (bsm.getSpecification().hasCycle()) {
             stream.newLine();
-            stream.write(HtmlTag.HEADER3, h3, "Cycle");
+            stream.write(HtmlTag.HEADER3, "Cycle");
             stream.write("Average length (in years): ");
             double len = bsm.getCyclicalPeriod() / bsm.freq;
             stream.write(new Formatter().format("%.1f", len).toString());
@@ -178,7 +179,7 @@ public class HtmlBsm extends AbstractHtmlElement implements IHtmlElement {
     }
 
     private void writeLikelihood(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER2, h2, "Diffuse likelihood statistics");
+        stream.write(HtmlTag.HEADER2, "Diffuse likelihood statistics");
         DiffuseConcentratedLikelihood ll = rslts.getLikelihood();
         stream.write("Number of effective observations = ").write(
                 ll.getN() - ll.getD()).newLine();
@@ -195,7 +196,7 @@ public class HtmlBsm extends AbstractHtmlElement implements IHtmlElement {
 
     private void writeRegressionModel(HtmlStream stream) throws IOException {
         if (!x.isEmpty()) {
-            stream.write(HtmlTag.HEADER2, h2, "Regression model");
+            stream.write(HtmlTag.HEADER2, "Regression model");
             stream.newLine();
             writeRegressionItems(stream, "Trading days", ITradingDaysVariable.class);
             writeRegressionItems(stream, "Leap year", ILengthOfPeriodVariable.class);
@@ -228,26 +229,26 @@ public class HtmlBsm extends AbstractHtmlElement implements IHtmlElement {
         }
         if (!simple) {
             for (TsVariableSelection.Item<ITsVariable> reg : regs.elements()) {
-                stream.write(HtmlTag.HEADER3, h3, reg.variable.getDescription(context));
-                stream.open(new HtmlTable(0, 400));
+                stream.write(HtmlTag.HEADER3, reg.variable.getDescription(context));
+                stream.open(new HtmlTable().withWidth(400));
                 stream.open(HtmlTag.TABLEROW);
-                stream.write(new HtmlTableCell("", 100));
-                stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
-                stream.write(new HtmlTableCell("T-Stat", 100, HtmlStyle.Bold));
-                stream.write(new HtmlTableCell("P[|T| &gt t]", 100, HtmlStyle.Bold));
+                stream.write(new HtmlTableCell("").withWidth(100));
+                stream.write(new HtmlTableCell("Coefficients").withWidth(100).withClass(FONT_WEIGHT_BOLD));
+                stream.write(new HtmlTableCell("T-Stat").withWidth(100).withClass(FONT_WEIGHT_BOLD));
+                stream.write(new HtmlTableCell("P[|T| &gt t]").withWidth(100).withClass(FONT_WEIGHT_BOLD));
                 stream.close(HtmlTag.TABLEROW);
                 for (int j = 0; j < reg.variable.getDim(); ++j) {
                     stream.open(HtmlTag.TABLEROW);
                     if (reg.variable.getDim() > 1) {
-                        stream.write(new HtmlTableCell(reg.variable.getItemDescription(j, context), 100));
+                        stream.write(new HtmlTableCell(reg.variable.getItemDescription(j, context)).withWidth(100));
                     } else {
-                        stream.write(new HtmlTableCell("", 100));
+                        stream.write(new HtmlTableCell("").withWidth(100));
                     }
-                    stream.write(new HtmlTableCell(df4.format(b[j + reg.position]), 100));
+                    stream.write(new HtmlTableCell(df4.format(b[j + reg.position])).withWidth(100));
                     double tval = ll.getTStat(j + reg.position, true, nhp);
-                    stream.write(new HtmlTableCell(formatT(tval), 100));
+                    stream.write(new HtmlTableCell(formatT(tval)).withWidth(100));
                     double prob = 1 - t.getProbabilityForInterval(-tval, tval);
-                    stream.write(new HtmlTableCell(df4.format(prob), 100));
+                    stream.write(new HtmlTableCell(df4.format(prob)).withWidth(100));
                     stream.close(HtmlTag.TABLEROW);
                 }
                 stream.close(HtmlTag.TABLE);
@@ -261,30 +262,30 @@ public class HtmlBsm extends AbstractHtmlElement implements IHtmlElement {
                             .append(" (").append(df4.format(jtest.getTest().getPValue())).append(')');
 
                     if (!ok) {
-                        stream.write(builder.toString(), HtmlStyle.Bold, HtmlStyle.Danger);
+                        stream.write(HtmlTag.IMPORTANT_TEXT, builder.toString(), Bootstrap4.TEXT_DANGER);
                     } else {
-                        stream.write(builder.toString(), HtmlStyle.Italic);
+                        stream.write(HtmlTag.EMPHASIZED_TEXT, builder.toString());
                     }
                     stream.newLines(2);
                 }
             }
         } else {
-            stream.write(HtmlTag.HEADER3, h3, title);
-            stream.open(new HtmlTable(0, 400));
+            stream.write(HtmlTag.HEADER3, title);
+            stream.open(new HtmlTable().withWidth(400));
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell("", 100));
-            stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
-            stream.write(new HtmlTableCell("T-Stat", 100, HtmlStyle.Bold));
-            stream.write(new HtmlTableCell("P[|T| &gt t]", 100, HtmlStyle.Bold));
+            stream.write(new HtmlTableCell("").withWidth(100));
+            stream.write(new HtmlTableCell("Coefficients").withWidth(100).withClass(FONT_WEIGHT_BOLD));
+            stream.write(new HtmlTableCell("T-Stat").withWidth(100).withClass(FONT_WEIGHT_BOLD));
+            stream.write(new HtmlTableCell("P[|T| &gt t]").withWidth(100).withClass(FONT_WEIGHT_BOLD));
             stream.close(HtmlTag.TABLEROW);
             for (TsVariableSelection.Item<ITsVariable> reg : regs.elements()) {
                 stream.open(HtmlTag.TABLEROW);
-                stream.write(new HtmlTableCell(reg.variable.getDescription(context), 100));
-                stream.write(new HtmlTableCell(df4.format(b[reg.position]), 100));
+                stream.write(new HtmlTableCell(reg.variable.getDescription(context)).withWidth(100));
+                stream.write(new HtmlTableCell(df4.format(b[reg.position])).withWidth(100));
                 double tval = ll.getTStat(reg.position, true, nhp);
-                stream.write(new HtmlTableCell(formatT(tval), 100));
+                stream.write(new HtmlTableCell(formatT(tval)).withWidth(100));
                 double prob = 1 - t.getProbabilityForInterval(-tval, tval);
-                stream.write(new HtmlTableCell(df4.format(prob), 100));
+                stream.write(new HtmlTableCell(df4.format(prob)).withWidth(100));
                 stream.close(HtmlTag.TABLEROW);
             }
             stream.close(HtmlTag.TABLE);

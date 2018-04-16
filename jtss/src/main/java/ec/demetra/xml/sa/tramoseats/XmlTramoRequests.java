@@ -28,10 +28,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * <p>Java class for TramoRequestsType complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
+ * Java class for TramoRequestsType complex type.
+ *
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
+ *
  * <pre>
  * &lt;complexType name="TramoRequestsType"&gt;
  *   &lt;complexContent&gt;
@@ -45,11 +47,11 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name="TramoRequests")
+@XmlRootElement(name = "TramoRequests")
 @XmlType(name = "TramoRequestsType", propOrder = {
     "item",
     "context",
@@ -64,32 +66,32 @@ public class XmlTramoRequests {
     @XmlList
     @XmlElement(name = "OutputFilter", required = true)
     protected List<String> outputFilter;
-    @XmlAttribute(name="flat")
+    @XmlAttribute(name = "flat")
     protected Boolean flat;
-    @XmlAttribute(name="parallelProcessing")
+    @XmlAttribute(name = "parallelProcessing")
     protected Boolean parallel;
 
     /**
      * Gets the value of the item property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the item property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getItem().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link TramoAtomicRequestType }
-     * 
-     * 
+     *
+     *
      */
     public List<XmlTramoAtomicRequest> getItems() {
         if (item == null) {
@@ -100,11 +102,11 @@ public class XmlTramoRequests {
 
     /**
      * Gets the value of the context property.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link ProcessingContextType }
-     *     
+     * possible object is
+     * {@link ProcessingContextType }
+     *
      */
     public XmlProcessingContext getContext() {
         return context;
@@ -112,11 +114,11 @@ public class XmlTramoRequests {
 
     /**
      * Sets the value of the context property.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link ProcessingContextType }
-     *     
+     * allowed object is
+     * {@link ProcessingContextType }
+     *
      */
     public void setContext(XmlProcessingContext value) {
         this.context = value;
@@ -124,25 +126,25 @@ public class XmlTramoRequests {
 
     /**
      * Gets the value of the outputFilter property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the outputFilter property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getOutputFilter().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getOutputFilter() {
         if (outputFilter == null) {
@@ -164,7 +166,7 @@ public class XmlTramoRequests {
     public void setFlat(Boolean flat) {
         this.flat = flat;
     }
-    
+
     /**
      * @return the flat
      */
@@ -178,4 +180,15 @@ public class XmlTramoRequests {
     public void setParallelProcessing(Boolean parallel) {
         this.parallel = parallel;
     }
+
+    public void checkNames() {
+        int n = 1;
+        for (XmlTramoAtomicRequest req : item) {
+            if (req.series.getName() == null || req.series.getName().length() == 0) {
+                req.series.setName("series" + n);
+            }
+            ++n;
+        }
+    }
+
 }

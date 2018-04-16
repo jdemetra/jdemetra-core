@@ -1,23 +1,25 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.tss.html.implementation;
 
+import static ec.tss.html.Bootstrap4.FONT_WEIGHT_BOLD;
 import ec.tss.html.*;
 import ec.tstoolkit.Parameter;
+import ec.tstoolkit.algorithm.ProcessingContext;
 import ec.tstoolkit.dstats.T;
 import ec.tstoolkit.eco.ConcentratedLikelihood;
 import ec.tstoolkit.maths.matrices.Matrix;
@@ -29,20 +31,10 @@ import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.sarima.SarimaComponent;
 import ec.tstoolkit.sarima.SarimaSpecification;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
-import ec.tstoolkit.timeseries.regression.GregorianCalendarVariables;
-import ec.tstoolkit.timeseries.regression.ILengthOfPeriodVariable;
-import ec.tstoolkit.timeseries.regression.IMovingHolidayVariable;
-import ec.tstoolkit.timeseries.regression.IOutlierVariable;
-import ec.tstoolkit.timeseries.regression.ITradingDaysVariable;
-import ec.tstoolkit.timeseries.regression.ITsVariable;
-import ec.tstoolkit.timeseries.regression.IUserTsVariable;
-import ec.tstoolkit.timeseries.regression.InterventionVariable;
-import ec.tstoolkit.timeseries.regression.MissingValueEstimation;
-import ec.tstoolkit.timeseries.regression.Ramp;
-import ec.tstoolkit.timeseries.regression.TsVariableList;
-import ec.tstoolkit.timeseries.regression.TsVariableSelection;
+import ec.tstoolkit.timeseries.regression.*;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
+import ec.tstoolkit.utilities.NameManager;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Predicate;
@@ -87,7 +79,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
 
     private void writeSummary(HtmlStream stream) throws IOException {
         TsFrequency context = model_.getFrequency();
-        stream.write(HtmlTag.HEADER1, h1, "Summary").newLine();
+        stream.write(HtmlTag.HEADER1, "Summary").newLine();
         stream.write("Estimation span: [").write(model_.description.getEstimationDomain().getStart().toString());
         stream.write(" - ").write(model_.description.getEstimationDomain().getLast().toString()).write(']').newLine();
         int nm = model_.estimation.getRegArima().getMissingsCount();
@@ -156,16 +148,16 @@ public class HtmlRegArima extends AbstractHtmlElement {
 
     public void writeDetails(HtmlStream stream, boolean outliers) throws IOException {
         // write likelihood
-        stream.write(HtmlTag.HEADER1, h1, "Final model");
+        stream.write(HtmlTag.HEADER1, "Final model");
         stream.newLine();
-        stream.write(HtmlTag.HEADER2, h2, "Likelihood statistics");
+        stream.write(HtmlTag.HEADER2, "Likelihood statistics");
         stream.write(new HtmlLikelihood(model_.estimation.getStatistics()));
         writeScore(stream);
         stream.write(HtmlTag.LINEBREAK);
-        stream.write(HtmlTag.HEADER2, h2, "Arima model");
+        stream.write(HtmlTag.HEADER2, "Arima model");
         writeArima(stream);
         stream.write(HtmlTag.LINEBREAK);
-        stream.write(HtmlTag.HEADER2, h2, "Regression model");
+        stream.write(HtmlTag.HEADER2, "Regression model");
         writeRegression(stream, outliers);
         stream.write(HtmlTag.LINEBREAK);
     }
@@ -177,12 +169,12 @@ public class HtmlRegArima extends AbstractHtmlElement {
         if (sspec.getParametersCount() == 0) {
             return;
         }
-        stream.open(new HtmlTable(0, 400));
+        stream.open(new HtmlTable().withWidth(400));
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("", 100));
-        stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
-        stream.write(new HtmlTableCell("T-Stat", 100, HtmlStyle.Bold));
-        stream.write(new HtmlTableCell("P[|T| &gt t]", 100, HtmlStyle.Bold));
+        stream.write(new HtmlTableCell("").withWidth(100));
+        stream.write(new HtmlTableCell("Coefficients").withWidth(100).withClass(FONT_WEIGHT_BOLD));
+        stream.write(new HtmlTableCell("T-Stat").withWidth(100).withClass(FONT_WEIGHT_BOLD));
+        stream.write(new HtmlTableCell("P[|T| &gt t]").withWidth(100).withClass(FONT_WEIGHT_BOLD));
         stream.close(HtmlTag.TABLEROW);
         int P = sspec.getP();
         Parameter[] p = arima.getPhi();
@@ -192,14 +184,14 @@ public class HtmlRegArima extends AbstractHtmlElement {
             stream.open(HtmlTag.TABLEROW);
             StringBuilder header = new StringBuilder();
             header.append("Phi(").append(j + 1).append(')');
-            stream.write(new HtmlTableCell(header.toString(), 100));
+            stream.write(new HtmlTableCell(header.toString()).withWidth(100));
             double val = p[j].getValue(), stde = p[j].getStde();
-            stream.write(new HtmlTableCell(df4.format(val), 100));
+            stream.write(new HtmlTableCell(df4.format(val)).withWidth(100));
             if (stde > 0) {
                 double tval = val / stde;
-                stream.write(new HtmlTableCell(formatT(tval), 100));
+                stream.write(new HtmlTableCell(formatT(tval)).withWidth(100));
                 double prob = 1 - t.getProbabilityForInterval(-tval, tval);
-                stream.write(new HtmlTableCell(df4.format(prob), 100));
+                stream.write(new HtmlTableCell(df4.format(prob)).withWidth(100));
             }
             stream.close(HtmlTag.TABLEROW);
         }
@@ -209,14 +201,14 @@ public class HtmlRegArima extends AbstractHtmlElement {
             stream.open(HtmlTag.TABLEROW);
             StringBuilder header = new StringBuilder();
             header.append("Theta(").append(j + 1).append(')');
-            stream.write(new HtmlTableCell(header.toString(), 100));
+            stream.write(new HtmlTableCell(header.toString()).withWidth(100));
             double val = p[j].getValue(), stde = p[j].getStde();
-            stream.write(new HtmlTableCell(df4.format(val), 100));
+            stream.write(new HtmlTableCell(df4.format(val)).withWidth(100));
             if (stde > 0) {
                 double tval = val / stde;
-                stream.write(new HtmlTableCell(formatT(tval), 100));
+                stream.write(new HtmlTableCell(formatT(tval)).withWidth(100));
                 double prob = 1 - t.getProbabilityForInterval(-tval, tval);
-                stream.write(new HtmlTableCell(df4.format(prob), 100));
+                stream.write(new HtmlTableCell(df4.format(prob)).withWidth(100));
             }
             stream.close(HtmlTag.TABLEROW);
         }
@@ -226,14 +218,14 @@ public class HtmlRegArima extends AbstractHtmlElement {
             stream.open(HtmlTag.TABLEROW);
             StringBuilder header = new StringBuilder();
             header.append("BPhi(").append(j + 1).append(')');
-            stream.write(new HtmlTableCell(header.toString(), 100));
+            stream.write(new HtmlTableCell(header.toString()).withWidth(100));
             double val = p[j].getValue(), stde = p[j].getStde();
-            stream.write(new HtmlTableCell(df4.format(val), 100));
+            stream.write(new HtmlTableCell(df4.format(val)).withWidth(100));
             if (stde > 0) {
                 double tval = val / stde;
-                stream.write(new HtmlTableCell(formatT(tval), 100));
+                stream.write(new HtmlTableCell(formatT(tval)).withWidth(100));
                 double prob = 1 - t.getProbabilityForInterval(-tval, tval);
-                stream.write(new HtmlTableCell(df4.format(prob), 100));
+                stream.write(new HtmlTableCell(df4.format(prob)).withWidth(100));
             }
             stream.close(HtmlTag.TABLEROW);
         }
@@ -243,14 +235,14 @@ public class HtmlRegArima extends AbstractHtmlElement {
             stream.open(HtmlTag.TABLEROW);
             StringBuilder header = new StringBuilder();
             header.append("BTheta(").append(j + 1).append(')');
-            stream.write(new HtmlTableCell(header.toString(), 100));
+            stream.write(new HtmlTableCell(header.toString()).withWidth(100));
             double val = p[j].getValue(), stde = p[j].getStde();
-            stream.write(new HtmlTableCell(df4.format(val), 100));
+            stream.write(new HtmlTableCell(df4.format(val)).withWidth(100));
             if (stde > 0) {
                 double tval = val / stde;
-                stream.write(new HtmlTableCell(formatT(tval), 100));
+                stream.write(new HtmlTableCell(formatT(tval)).withWidth(100));
                 double prob = 1 - t.getProbabilityForInterval(-tval, tval);
-                stream.write(new HtmlTableCell(df4.format(prob), 100));
+                stream.write(new HtmlTableCell(df4.format(prob)).withWidth(100));
             }
             stream.close(HtmlTag.TABLEROW);
         }
@@ -261,34 +253,34 @@ public class HtmlRegArima extends AbstractHtmlElement {
         if (pcov != null && pcov.getRowsCount() > 1) {
             int size = pcov.getColumnsCount();
             stream.newLines(2);
-            stream.write(HtmlTag.HEADER3, h3, "Correlation of the estimates").newLine();
+            stream.write(HtmlTag.HEADER3, "Correlation of the estimates").newLine();
             stream.open(HtmlTag.TABLE);
 
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell("", 100));
+            stream.write(new HtmlTableCell("").withWidth(100));
 
             for (int i = 0; i < P; ++i) {
                 StringBuilder header = new StringBuilder();
                 header.append("Phi(").append(i + 1).append(")");
-                stream.write(new HtmlTableCell(header.toString(), 100));
+                stream.write(new HtmlTableCell(header.toString()).withWidth(100));
             }
 
             for (int i = 0; i < Q; ++i) {
                 StringBuilder header = new StringBuilder();
                 header.append("Theta(").append(i + 1).append(")");
-                stream.write(new HtmlTableCell(header.toString(), 100));
+                stream.write(new HtmlTableCell(header.toString()).withWidth(100));
             }
 
             for (int i = 0; i < BP; ++i) {
                 StringBuilder header = new StringBuilder();
                 header.append("BPhi(").append(i + 1).append(")");
-                stream.write(new HtmlTableCell(header.toString(), 100));
+                stream.write(new HtmlTableCell(header.toString()).withWidth(100));
             }
 
             for (int i = 0; i < BQ; ++i) {
                 StringBuilder header = new StringBuilder();
                 header.append("BTheta(").append(i + 1).append(")");
-                stream.write(new HtmlTableCell(header.toString(), 100));
+                stream.write(new HtmlTableCell(header.toString()).withWidth(100));
             }
             stream.close(HtmlTag.TABLEROW);
 
@@ -305,14 +297,14 @@ public class HtmlRegArima extends AbstractHtmlElement {
                     header.append("BTheta(").append(i - P - Q - BP + 1);
                 }
                 header.append(")");
-                stream.write(new HtmlTableCell(header.toString(), 100));
+                stream.write(new HtmlTableCell(header.toString()).withWidth(100));
                 for (int j = 0; j < size; ++j) {
                     double vi = pcov.get(i, i), vj = pcov.get(j, j);
                     if (vi != 0 && vj != 0) {
                         double val = pcov.get(i, j) / Math.sqrt(vi * vj);
-                        stream.write(new HtmlTableCell(df4.format(val), 100));
+                        stream.write(new HtmlTableCell(df4.format(val)).withWidth(100));
                     } else {
-                        stream.write(new HtmlTableCell("-", 100));
+                        stream.write(new HtmlTableCell("-").withWidth(100));
                     }
                 }
                 stream.close(HtmlTag.TABLEROW);
@@ -343,7 +335,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
         writeRegressionItems(stream, "Ramps", true, context, var -> var instanceof Ramp);
         writeRegressionItems(stream, "Intervention variables", true, context, var -> var instanceof InterventionVariable);
         writeRegressionItems(stream, "User variables", true, context, var -> var instanceof IUserTsVariable
-                && !(var instanceof InterventionVariable) && !(var instanceof Ramp));
+                             && !(var instanceof InterventionVariable) && !(var instanceof Ramp));
         writeFixedRegressionItems(stream, "Fixed other regression effects", context, var -> var.isUser());
         writeMissing(stream);
     }
@@ -361,38 +353,38 @@ public class HtmlRegArima extends AbstractHtmlElement {
 
     private void writeEstimatedMean(HtmlStream stream) throws IOException {
         double[] b = ll_.getB();
-        stream.write(HtmlTag.HEADER3, h3, "Mean");
-        stream.open(new HtmlTable(0, 400));
+        stream.write(HtmlTag.HEADER3, "Mean");
+        stream.open(new HtmlTable().withWidth(400));
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("", 100));
-        stream.write(new HtmlTableCell("Coefficient", 100, HtmlStyle.Bold));
-        stream.write(new HtmlTableCell("T-Stat", 100, HtmlStyle.Bold));
-        stream.write(new HtmlTableCell("P[|T| &gt t]", 100, HtmlStyle.Bold));
+        stream.write(new HtmlTableCell("").withWidth(100));
+        stream.write(new HtmlTableCell("Coefficient").withWidth(100).withClass(FONT_WEIGHT_BOLD));
+        stream.write(new HtmlTableCell("T-Stat").withWidth(100).withClass(FONT_WEIGHT_BOLD));
+        stream.write(new HtmlTableCell("P[|T| &gt t]").withWidth(100).withClass(FONT_WEIGHT_BOLD));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("mu", 100));
-        stream.write(new HtmlTableCell(df4.format(b[0]), 100));
+        stream.write(new HtmlTableCell("mu").withWidth(100));
+        stream.write(new HtmlTableCell(df4.format(b[0])).withWidth(100));
         T t = new T();
         t.setDegreesofFreedom(ll_.getDegreesOfFreedom(true, nhp_));
         double tval = ll_.getTStat(0, true, nhp_);
-        stream.write(new HtmlTableCell(formatT(tval), 100));
+        stream.write(new HtmlTableCell(formatT(tval)).withWidth(100));
         double prob = 1 - t.getProbabilityForInterval(-tval, tval);
-        stream.write(new HtmlTableCell(df4.format(prob), 100));
+        stream.write(new HtmlTableCell(df4.format(prob)).withWidth(100));
         stream.close(HtmlTag.TABLEROW);
         stream.close(HtmlTag.TABLE);
         stream.newLine();
     }
 
     private void writeFixedMean(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER3, h3, "Fixed mean");
-        stream.open(new HtmlTable(0, 200));
+        stream.write(HtmlTag.HEADER3, "Fixed mean");
+        stream.open(new HtmlTable().withWidth(200));
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("", 100));
-        stream.write(new HtmlTableCell("Coefficient", 100, HtmlStyle.Bold));
+        stream.write(new HtmlTableCell("").withWidth(100));
+        stream.write(new HtmlTableCell("Coefficient").withWidth(100).withClass(FONT_WEIGHT_BOLD));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("mu", 100));
-        stream.write(new HtmlTableCell(df4.format(model_.description.getArimaComponent().getMeanCorrection()), 100));
+        stream.write(new HtmlTableCell("mu").withWidth(100));
+        stream.write(new HtmlTableCell(df4.format(model_.description.getArimaComponent().getMeanCorrection())).withWidth(100));
         stream.close(HtmlTag.TABLEROW);
         stream.close(HtmlTag.TABLE);
         stream.newLine();
@@ -402,8 +394,8 @@ public class HtmlRegArima extends AbstractHtmlElement {
 
         String header = prespecified ? "Prespecified outliers" : "Outliers";
         writeRegressionItems(stream, header, true, context, var -> var instanceof IOutlierVariable
-                && model_.description.isPrespecified((IOutlierVariable) var) == prespecified);
-//        
+                             && model_.description.isPrespecified((IOutlierVariable) var) == prespecified);
+//
 //        TsVariableSelection<IOutlierVariable> regs = x_.select(IOutlierVariable.class);
 //        boolean found = false;
 //        for (TsVariableSelection.Item<IOutlierVariable> reg : regs.elements()) {
@@ -419,7 +411,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
 //        t.setDegreesofFreedom(ll_.getDegreesOfFreedom(true, nhp_));
 //        double[] b = ll_.getB();
 //        stream.write(HtmlTag.HEADER3, h3, prespecified ? "Prespecified outliers" : "Outliers");
-//        stream.open(new HtmlTable(0, 400));
+//        stream.open(new HtmlTable().withWidth(400));
 //        stream.open(HtmlTag.TABLEROW);
 //        stream.write(new HtmlTableCell("", 100));
 //        stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
@@ -453,44 +445,45 @@ public class HtmlRegArima extends AbstractHtmlElement {
         double[] b = ll_.getB();
         int start = model_.description.getRegressionVariablesStartingPosition();
         for (TsVariableSelection.Item<ITsVariable> reg : regs.elements()) {
-            stream.write(HtmlTag.HEADER3, h3, reg.variable.getDescription(context));
-            stream.open(new HtmlTable(0, 400));
+            stream.write(HtmlTag.HEADER3, reg.variable.getDescription(context));
+            stream.open(new HtmlTable().withWidth(400));
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell("", 100));
-            stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
-            stream.write(new HtmlTableCell("T-Stat", 100, HtmlStyle.Bold));
-            stream.write(new HtmlTableCell("P[|T| &gt t]", 100, HtmlStyle.Bold));
+            stream.write(new HtmlTableCell("").withWidth(100));
+            stream.write(new HtmlTableCell("Coefficients").withWidth(100).withClass(FONT_WEIGHT_BOLD));
+            stream.write(new HtmlTableCell("T-Stat").withWidth(100).withClass(FONT_WEIGHT_BOLD));
+            stream.write(new HtmlTableCell("P[|T| &gt t]").withWidth(100).withClass(FONT_WEIGHT_BOLD));
             stream.close(HtmlTag.TABLEROW);
             int ndim = reg.variable.getDim();
             for (int j = 0; j < reg.variable.getDim(); ++j) {
                 stream.open(HtmlTag.TABLEROW);
-                if (ndim > 1) {
-                    stream.write(new HtmlTableCell(reg.variable.getItemDescription(j, context), 100));
-                } else {
-                    stream.write(new HtmlTableCell("", 100));
-                }
-                stream.write(new HtmlTableCell(df4.format(b[start + j + reg.position]), 100));
+                //  if (ndim > 1) { // it is possible to have one regression variable where the name is a usefull information to know which variable it is
+                // stream.write(new HtmlTableCell(reg.variable.getItemDescription(j, context)).withWidth(100));
+                stream.write(new HtmlTableCell(reg.variable.getItemDescription(j, context)).withWidth(100));
+//   } else {
+                //       stream.write(new HtmlTableCell("").withWidth(100));
+                //   }
+                stream.write(new HtmlTableCell(df4.format(b[start + j + reg.position])).withWidth(100));
                 double tval = ll_.getTStat(start + j + reg.position, true, nhp_);
-                stream.write(new HtmlTableCell(formatT(tval), 100));
+                stream.write(new HtmlTableCell(formatT(tval)).withWidth(100));
                 double prob = 1 - t.getProbabilityForInterval(-tval, tval);
-                stream.write(new HtmlTableCell(df4.format(prob), 100));
+                stream.write(new HtmlTableCell(df4.format(prob)).withWidth(100));
                 stream.close(HtmlTag.TABLEROW);
             }
             if (ndim > 1 && reg.variable instanceof GregorianCalendarVariables) {
                 // we compute the derived sunday variable
                 stream.open(HtmlTag.TABLEROW);
-                stream.write(new HtmlTableCell("Sunday (derived)", 100));
+                stream.write(new HtmlTableCell("Sunday (derived)").withWidth(100));
                 double bd = 0;
                 int k0 = start + reg.position, k1 = k0 + ndim;
                 for (int k = k0; k < k1; ++k) {
                     bd -= b[k];
                 }
-                stream.write(new HtmlTableCell(df4.format(bd), 100));
+                stream.write(new HtmlTableCell(df4.format(bd)).withWidth(100));
                 double var = ll_.getBVar(true, nhp_).subMatrix(k0, k1, k0, k1).sum();
                 double tval = bd / Math.sqrt(var);
-                stream.write(new HtmlTableCell(formatT(tval), 100));
+                stream.write(new HtmlTableCell(formatT(tval)).withWidth(100));
                 double prob = 1 - t.getProbabilityForInterval(-tval, tval);
-                stream.write(new HtmlTableCell(df4.format(prob), 100));
+                stream.write(new HtmlTableCell(df4.format(prob)).withWidth(100));
                 stream.close(HtmlTag.TABLEROW);
             }
             stream.close(HtmlTag.TABLE);
@@ -506,9 +499,9 @@ public class HtmlRegArima extends AbstractHtmlElement {
                         .append(" (").append(df4.format(jtest.getTest().getPValue())).append(')');
 
                 if (!ok) {
-                    stream.write(builder.toString(), HtmlStyle.Bold, HtmlStyle.Danger);
+                    stream.write(HtmlTag.IMPORTANT_TEXT, builder.toString(), Bootstrap4.TEXT_DANGER);
                 } else {
-                    stream.write(builder.toString(), HtmlStyle.Italic);
+                    stream.write(HtmlTag.EMPHASIZED_TEXT, builder.toString());
                 }
                 stream.newLines(2);
             } catch (Exception ex) {
@@ -522,15 +515,15 @@ public class HtmlRegArima extends AbstractHtmlElement {
             return;
         }
         if (header != null) {
-            stream.write(HtmlTag.HEADER3, h3, header);
+            stream.write(HtmlTag.HEADER3, header);
         }
         T t = new T();
-        stream.open(new HtmlTable(0, 400));
+        stream.open(new HtmlTable().withWidth(400));
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("", 100));
-        stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
-        stream.write(new HtmlTableCell("T-Stat", 100, HtmlStyle.Bold));
-        stream.write(new HtmlTableCell("P[|T| &gt t]", 100, HtmlStyle.Bold));
+        stream.write(new HtmlTableCell("").withWidth(100));
+        stream.write(new HtmlTableCell("Coefficients").withWidth(100).withClass(FONT_WEIGHT_BOLD));
+        stream.write(new HtmlTableCell("T-Stat").withWidth(100).withClass(FONT_WEIGHT_BOLD));
+        stream.write(new HtmlTableCell("P[|T| &gt t]").withWidth(100).withClass(FONT_WEIGHT_BOLD));
         stream.close(HtmlTag.TABLEROW);
         t.setDegreesofFreedom(ll_.getDegreesOfFreedom(true, nhp_));
         double[] b = ll_.getB();
@@ -540,15 +533,15 @@ public class HtmlRegArima extends AbstractHtmlElement {
             for (int j = 0; j < reg.variable.getDim(); ++j) {
                 stream.open(HtmlTag.TABLEROW);
                 if (ndim > 1 || desc) {
-                    stream.write(new HtmlTableCell(reg.variable.getItemDescription(j, context), 100));
+                    stream.write(new HtmlTableCell(reg.variable.getItemDescription(j, context)).withWidth(100));
                 } else {
-                    stream.write(new HtmlTableCell("", 100));
+                    stream.write(new HtmlTableCell("").withWidth(100));
                 }
-                stream.write(new HtmlTableCell(df4.format(b[start + j + reg.position]), 100));
+                stream.write(new HtmlTableCell(df4.format(b[start + j + reg.position])).withWidth(100));
                 double tval = ll_.getTStat(start + j + reg.position, true, nhp_);
-                stream.write(new HtmlTableCell(formatT(tval), 100));
+                stream.write(new HtmlTableCell(formatT(tval)).withWidth(100));
                 double prob = 1 - t.getProbabilityForInterval(-tval, tval);
-                stream.write(new HtmlTableCell(df4.format(prob), 100));
+                stream.write(new HtmlTableCell(df4.format(prob)).withWidth(100));
                 stream.close(HtmlTag.TABLEROW);
             }
         }
@@ -562,12 +555,12 @@ public class HtmlRegArima extends AbstractHtmlElement {
             return;
         }
         if (header != null) {
-            stream.write(HtmlTag.HEADER3, h3, header);
+            stream.write(HtmlTag.HEADER3, header);
         }
-        stream.open(new HtmlTable(0, 200));
+        stream.open(new HtmlTable().withWidth(200));
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("", 100));
-        stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
+        stream.write(new HtmlTableCell("").withWidth(100));
+        stream.write(new HtmlTableCell("Coefficients").withWidth(100).withClass(FONT_WEIGHT_BOLD));
         stream.close(HtmlTag.TABLEROW);
 
         for (PreadjustmentVariable reg : regs) {
@@ -575,8 +568,27 @@ public class HtmlRegArima extends AbstractHtmlElement {
             double[] c = reg.getCoefficients();
             for (int j = 0; j < cur.getDim(); ++j) {
                 stream.open(HtmlTag.TABLEROW);
-                stream.write(new HtmlTableCell(cur.getItemDescription(j, context), 100));
-                stream.write(new HtmlTableCell(df4.format(c[j]), 100));
+                //         stream.write(new HtmlTableCell(cur.getItemDescription(j, context)).withWidth(100));
+
+                String name = cur.getItemDescription(j, context);
+                if (name.startsWith("td|")) {
+                    name = name.replace("td|", "");
+                    ProcessingContext pc = ProcessingContext.getActiveContext();
+                    NameManager<TsVariables> tsVariableManagers = pc.getTsVariableManagers();
+                    String prefix = name.substring(0, name.indexOf('.'));
+                    if (tsVariableManagers.contains(prefix)) {
+                        TsVariables tss = tsVariableManagers.get(prefix);
+                        String tsname = name.substring(name.indexOf('.') + 1, name.length());
+                        if (tss.contains(tsname)) {
+                            {
+                                stream.write(new HtmlTableCell(tss.get(tsname).getDescription(context)).withWidth(100));
+                            }
+                        }
+                    }
+                } else {
+                    stream.write(new HtmlTableCell(cur.getItemDescription(j, context)).withWidth(100));
+                }
+                stream.write(new HtmlTableCell(df4.format(c[j])).withWidth(100));
                 stream.close(HtmlTag.TABLEROW);
             }
         }
@@ -592,18 +604,18 @@ public class HtmlRegArima extends AbstractHtmlElement {
         }
         for (PreadjustmentVariable reg : regs) {
             ITsVariable cur = reg.getVariable();
-            stream.write(HtmlTag.HEADER3, h3, cur.getDescription(context));
-            stream.open(new HtmlTable(0, 200));
+            stream.write(HtmlTag.HEADER3, cur.getDescription(context));
+            stream.open(new HtmlTable().withWidth(200));
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell("", 100));
-            stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
+            stream.write(new HtmlTableCell("").withWidth(100));
+            stream.write(new HtmlTableCell("Coefficients").withWidth(100).withClass(FONT_WEIGHT_BOLD));
             stream.close(HtmlTag.TABLEROW);
 
             double[] c = reg.getCoefficients();
             for (int j = 0; j < cur.getDim(); ++j) {
                 stream.open(HtmlTag.TABLEROW);
-                stream.write(new HtmlTableCell(cur.getItemDescription(j, context), 100));
-                stream.write(new HtmlTableCell(df4.format(c[j]), 100));
+                stream.write(new HtmlTableCell(cur.getItemDescription(j, context)).withWidth(100));
+                stream.write(new HtmlTableCell(df4.format(c[j])).withWidth(100));
                 stream.close(HtmlTag.TABLEROW);
             }
             stream.close(HtmlTag.TABLE);
@@ -623,7 +635,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
 //        int start = model_.description.getRegressionVariablesStartingPosition();
 //        stream.write(HtmlTag.HEADER3, h3, "Intervention variables");
 //
-//        stream.open(new HtmlTable(0, 400));
+//        stream.open(new HtmlTable().withWidth(400));
 //        stream.open(HtmlTag.TABLEROW);
 //        stream.write(new HtmlTableCell("", 100));
 //        stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
@@ -657,7 +669,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
 //        int start = model_.description.getRegressionVariablesStartingPosition();
 //        stream.write(HtmlTag.HEADER3, h3, "User variables");
 //
-//        stream.open(new HtmlTable(0, 400));
+//        stream.open(new HtmlTable().withWidth(400));
 //        stream.open(HtmlTag.TABLEROW);
 //        stream.write(new HtmlTableCell("", 100));
 //        stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
@@ -694,7 +706,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
 //        }
 //        stream.write(HtmlTag.HEADER3, h3, "Fixed user variables");
 //
-//        stream.open(new HtmlTable(0, 200));
+//        stream.open(new HtmlTable().withWidth(200));
 //        stream.open(HtmlTag.TABLEROW);
 //        stream.write(new HtmlTableCell("", 200));
 //        stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
@@ -726,7 +738,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
 //        int start = model_.description.getRegressionVariablesStartingPosition();
 //        stream.write(HtmlTag.HEADER3, h3, "Ramps");
 //
-//        stream.open(new HtmlTable(0, 400));
+//        stream.open(new HtmlTable().withWidth(400));
 //        stream.open(HtmlTag.TABLEROW);
 //        stream.write(new HtmlTableCell("", 100));
 //        stream.write(new HtmlTableCell("Coefficients", 100, HtmlStyle.Bold));
@@ -754,22 +766,22 @@ public class HtmlRegArima extends AbstractHtmlElement {
         if (missings == null) {
             return;
         }
-        stream.write(HtmlTag.HEADER3, h3, "Missing values");
-        stream.open(new HtmlTable(0, 400));
+        stream.write(HtmlTag.HEADER3, "Missing values");
+        stream.open(new HtmlTable().withWidth(400));
         stream.open(HtmlTag.TABLEROW);
-        stream.write(new HtmlTableCell("Periods", 100, HtmlStyle.Bold));
-        stream.write(new HtmlTableCell("Value", 100, HtmlStyle.Bold));
-        stream.write(new HtmlTableCell("Standard error", 100, HtmlStyle.Bold));
-        stream.write(new HtmlTableCell("Untransformed value", 100, HtmlStyle.Bold));
+        stream.write(new HtmlTableCell("Periods").withWidth(100).withClass(FONT_WEIGHT_BOLD));
+        stream.write(new HtmlTableCell("Value").withWidth(100).withClass(FONT_WEIGHT_BOLD));
+        stream.write(new HtmlTableCell("Standard error").withWidth(100).withClass(FONT_WEIGHT_BOLD));
+        stream.write(new HtmlTableCell("Untransformed value").withWidth(100).withClass(FONT_WEIGHT_BOLD));
         stream.close(HtmlTag.TABLEROW);
         for (int i = 0; i < missings.length; ++i) {
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell(missings[i].getPosition().toString(), 100));
-            stream.write(new HtmlTableCell(df4.format(missings[i].getValue()), 100));
-            stream.write(new HtmlTableCell(df4.format(missings[i].getStdev()), 100));
+            stream.write(new HtmlTableCell(missings[i].getPosition().toString()).withWidth(100));
+            stream.write(new HtmlTableCell(df4.format(missings[i].getValue())).withWidth(100));
+            stream.write(new HtmlTableCell(df4.format(missings[i].getStdev())).withWidth(100));
             TsData tmp = new TsData(missings[i].getPosition(), new double[]{missings[i].getValue()}, false);
             model_.backTransform(tmp, true, true);
-            stream.write(new HtmlTableCell(df4.format(tmp.get(0)), 100));
+            stream.write(new HtmlTableCell(df4.format(tmp.get(0))).withWidth(100));
             stream.close(HtmlTag.TABLEROW);
         }
         stream.close(HtmlTag.TABLE);
@@ -787,7 +799,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
             return;
         }
         stream.newLine();
-        stream.write(HtmlTag.HEADER3, h3, "Scores at the solution");
+        stream.write(HtmlTag.HEADER3, "Scores at the solution");
         for (int i = 0; i < score.length; ++i) {
             stream.write(dg6.format(score[i]));
             stream.write("  ");

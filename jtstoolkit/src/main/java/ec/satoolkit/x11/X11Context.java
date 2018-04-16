@@ -110,7 +110,7 @@ public final class X11Context {
      * @return 1 or 0.
      */
     public double getMean() {
-        return mode == DecompositionMode.Multiplicative ? 1 : 0;
+        return (mode == DecompositionMode.Multiplicative || mode == DecompositionMode.PseudoAdditive) ? 1 : 0;
     }
 
     /**
@@ -131,6 +131,13 @@ public final class X11Context {
     }
 
     /**
+     *
+     * @return
+     */
+    public final boolean isPseudoAdditive() {
+        return mode == DecompositionMode.PseudoAdditive;
+    }
+    /**
      * Subtracts/divides two time series, following the decomposition mode.
      * (divides in the case of multiplicative decomposition)
      *
@@ -139,7 +146,7 @@ public final class X11Context {
      * @return A new time series is returned
      */
     public final TsData op(TsData l, TsData r) {
-        if (mode != DecompositionMode.Multiplicative) {
+        if (mode != DecompositionMode.Multiplicative && mode != DecompositionMode.PseudoAdditive) {
             return TsData.subtract(l, r);
         } else {
             return TsData.divide(l, r);
@@ -155,11 +162,32 @@ public final class X11Context {
      * @return A new time series is returned
      */
     public final TsData invOp(TsData l, TsData r) {
-        if (mode != DecompositionMode.Multiplicative) {
+        if (mode != DecompositionMode.Multiplicative && mode != DecompositionMode.PseudoAdditive) {
             return TsData.add(l, r);
         } else {
             return TsData.multiply(l, r);
         }
+    }
+    
+    public final TsData pseudoOp(TsData y, TsData t, TsData s){
+        TsData sa=new TsData(y.getDomain());
+        int beg=t.getStart().minus(y.getStart()), end=t.getLength()+beg;
+        for (int i=0; i<beg; ++i){
+            double cur=s.get(i);
+            if (cur == 0)
+                throw new X11Exception("Unexpected 0 in peudo-additive");
+            sa.set(i, y.get(i)/cur);
+        }
+        for (int i=beg; i<end; ++i){
+            sa.set(i, y.get(i)-t.get(i-beg)*(s.get(i)-1));
+        }        
+        for (int i=end; i<sa.getLength(); ++i){
+            double cur=s.get(i);
+            if (cur == 0)
+                throw new X11Exception("Unexpected 0 in peudo-additive");
+            sa.set(i, y.get(i)/cur);
+        }
+        return sa;
     }
 
     /**
@@ -185,7 +213,7 @@ public final class X11Context {
             throw new X11Exception(X11Exception.ERR_MISSING);
         }
 
-        if (mode != DecompositionMode.Additive) {
+        if (mode != DecompositionMode.Additive && mode != DecompositionMode.PseudoAdditive) {
             double[] vals = s.internalStorage();
             for (int i = 0; i < vals.length; ++i) {
                 if (vals[i] <= 0) {

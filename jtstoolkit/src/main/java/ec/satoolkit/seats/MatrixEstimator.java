@@ -26,6 +26,7 @@ import ec.tstoolkit.modelling.ComponentInformation;
 import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import ec.tstoolkit.ucarima.UcarimaModel;
 import ec.tstoolkit.ucarima.estimation.McElroyEstimates;
@@ -36,6 +37,18 @@ import ec.tstoolkit.ucarima.estimation.McElroyEstimates;
 @Development(status = Development.Status.Alpha)
 public class MatrixEstimator implements IComponentsEstimator {
 
+    private final int npred;
+    
+    private int nf(TsFrequency freq){
+        if (npred>=0)
+            return npred;
+        else
+            return freq.intValue()*(-npred);
+    }
+    
+    public MatrixEstimator(int npred){
+        this.npred=npred;
+    }
     /**
      *
      * @param model
@@ -49,7 +62,7 @@ public class MatrixEstimator implements IComponentsEstimator {
         DefaultSeriesDecomposition decomposition = new DefaultSeriesDecomposition(
                 DecompositionMode.Additive);
         TsData s = model.getSeries();
-        int n = s.getLength(), nf = s.getFrequency().intValue();
+        int nf = nf(s.getFrequency());
         TsPeriod s0 = s.getStart(), f0 = s.getEnd();
         boolean hast = !ucm.getComponent(0).isNull()
                 || model.isMeanCorrection();

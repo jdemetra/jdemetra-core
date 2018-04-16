@@ -57,7 +57,7 @@ public class X13ProcessingFactory extends GenericSaProcessingFactory implements 
         BasicSpec basic = xspec.getRegArimaSpecification().getBasic();
         addInitialStep(basic.getSpan(), basic.isPreliminaryCheck(), processing);
         if (xspec.getRegArimaSpecification().getBasic().isPreprocessing()) {
-            addPreprocessingStep(xspec.getRegArimaSpecification().build(context), processing);
+            addPreprocessingStep(xspec.getRegArimaSpecification().build(context), xspec.getX11Specification().getForecastHorizon(), processing);
         }
         DefaultPreprocessingFilter filter = new DefaultPreprocessingFilter();
         filter.setForecastHorizon(xspec.getX11Specification().getForecastHorizon());

@@ -23,7 +23,6 @@ package ec.tss.html.implementation;
 import ec.satoolkit.ComponentDescriptor;
 import ec.tss.html.AbstractHtmlElement;
 import ec.tss.html.HtmlStream;
-import ec.tss.html.HtmlStyle;
 import ec.tss.html.HtmlTable;
 import ec.tss.html.HtmlTableCell;
 import ec.tss.html.HtmlTableHeader;
@@ -58,10 +57,9 @@ public class HtmlModelBasedRevisionsAnalysis extends AbstractHtmlElement {
     }
 
     private void revisionErrorVariance(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER1, h1, "Revision errors").newLine();
-        stream.write("Percentage reduction in the standard error of the revision after additional years (comparison with concurrent estimators)",
-                HtmlStyle.Italic).newLine();
-        stream.open(new HtmlTable(0, 600));
+        stream.write(HtmlTag.HEADER1, "Revision errors").newLine();
+        stream.write(HtmlTag.EMPHASIZED_TEXT, "Percentage reduction in the standard error of the revision after additional years (comparison with concurrent estimators)").newLine();
+        stream.open(new HtmlTable().withWidth(600));
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableHeader("After..."));
         for (int i = 1; i <= 5; ++i) {
@@ -75,10 +73,10 @@ public class HtmlModelBasedRevisionsAnalysis extends AbstractHtmlElement {
                     double[] v = estimators_.revisionVariance(desc.cmp, desc.signal, 0, freq_ * 5 + 1);
 
                     stream.open(HtmlTag.TABLEROW);
-                    stream.write(new HtmlTableCell(desc.name, 100));
+                    stream.write(new HtmlTableCell(desc.name).withWidth(100));
 
                     for (int j = 1; j <= 5; ++j) {
-                        stream.write(new HtmlTableCell(pc2.format(1 - Math.sqrt(v[freq_ * j] / v[0])), 100));
+                        stream.write(new HtmlTableCell(pc2.format(1 - Math.sqrt(v[freq_ * j] / v[0]))).withWidth(100));
                     }
                     stream.close(HtmlTag.TABLEROW);
                 } catch (ArimaException | MatrixException | IOException err) {
@@ -91,15 +89,15 @@ public class HtmlModelBasedRevisionsAnalysis extends AbstractHtmlElement {
     }
 
     private void errorAutocorrelations(HtmlStream stream) throws IOException {
-        stream.write(HtmlTag.HEADER1, h1, "Auto-correlations of the errors").newLine();
+        stream.write(HtmlTag.HEADER1, "Auto-correlations of the errors").newLine();
         for (int i = 0; i < cmps_.length; ++i) {
             if (cmps_[i].lowFrequency) {
                 if (!estimators_.getUcarimaModel().getComponent(cmps_[i].cmp).isNull()) {
                     try {
-                        stream.write(HtmlTag.HEADER2, h2, cmps_[i].name).newLine();
+                        stream.write(HtmlTag.HEADER2, cmps_[i].name).newLine();
                         ArimaModel finalError = estimators_.finalErrorModel(cmps_[i].cmp);
                         LinearModel revisionModel = estimators_.revisionModel(cmps_[i].cmp, 0);
-                        stream.open(new HtmlTable(0, 500));
+                        stream.open(new HtmlTable().withWidth(500));
                         stream.open(HtmlTag.TABLEROW);
                         stream.write(new HtmlTableHeader("Lag"));
                         stream.write(new HtmlTableHeader("Final error"));
@@ -109,19 +107,19 @@ public class HtmlModelBasedRevisionsAnalysis extends AbstractHtmlElement {
                         double vf = finalError.getAutoCovarianceFunction().get(0);
                         double vr = revisionModel.getAutoCovarianceFunction().get(0);
                         stream.open(HtmlTag.TABLEROW);
-                        stream.write(new HtmlTableCell("Variance", 50));
-                        stream.write(new HtmlTableCell(df4.format(vf), 150));
-                        stream.write(new HtmlTableCell(df4.format(vr), 150));
-                        stream.write(new HtmlTableCell(df4.format(vf + vr), 150));
+                        stream.write(new HtmlTableCell("Variance").withWidth(50));
+                        stream.write(new HtmlTableCell(df4.format(vf)).withWidth(150));
+                        stream.write(new HtmlTableCell(df4.format(vr)).withWidth(150));
+                        stream.write(new HtmlTableCell(df4.format(vf + vr)).withWidth(150));
                         stream.close(HtmlTag.TABLEROW);
                         for (int j = 1; j <= freq_; ++j) {
                             stream.open(HtmlTag.TABLEROW);
-                            stream.write(new HtmlTableCell(Integer.toString(j), 50));
+                            stream.write(new HtmlTableCell(Integer.toString(j)).withWidth(50));
                             double f = finalError.getAutoCovarianceFunction().get(j);
                             double r = revisionModel.getAutoCovarianceFunction().get(j);
-                            stream.write(new HtmlTableCell(df4.format(f / vf), 150));
-                            stream.write(new HtmlTableCell(df4.format(r / vr), 150));
-                            stream.write(new HtmlTableCell(df4.format((f + r) / (vf + vr)), 150));
+                            stream.write(new HtmlTableCell(df4.format(f / vf)).withWidth(150));
+                            stream.write(new HtmlTableCell(df4.format(r / vr)).withWidth(150));
+                            stream.write(new HtmlTableCell(df4.format((f + r) / (vf + vr))).withWidth(150));
                             stream.close(HtmlTag.TABLEROW);
                         }
                     } catch (IOException | ArimaException | MatrixException err) {

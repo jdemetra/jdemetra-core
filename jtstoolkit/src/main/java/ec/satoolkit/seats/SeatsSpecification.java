@@ -31,6 +31,7 @@ import java.util.Objects;
 public class SeatsSpecification implements IProcSpecification, Cloneable {
 
     public static final double DEF_EPSPHI = 2, DEF_RMOD = .5, DEF_SMOD1 = .8, DEF_SMOD = .8, DEF_XL = .95;
+    public static final int DEF_NPRED=-1;
 
     public static final String ADMISS = "admiss",
             METHOD = "method",
@@ -38,7 +39,9 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
             RMOD = "rmod",
             SMOD = "smod",
             SMOD1 = "stsmod",
-            XL = "xl";
+            XL = "xl",
+            NPRED = "npred";
+    
 
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, ADMISS), Boolean.class);
@@ -48,6 +51,7 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
         dic.put(InformationSet.item(prefix, SMOD), Double.class);
         dic.put(InformationSet.item(prefix, SMOD1), Double.class);
         dic.put(InformationSet.item(prefix, XL), Double.class);
+        dic.put(InformationSet.item(prefix, NPRED), Integer.class);
     }
 
     public static enum ApproximationMode {
@@ -65,6 +69,7 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
     private ApproximationMode changeModel_ = ApproximationMode.Legacy;
     private EstimationMethod method_ = EstimationMethod.Burman;
     private boolean log = false;
+    private int npred=DEF_NPRED;
     private SarimaComponent arima;
 
     public double getXlBoundary() {
@@ -121,10 +126,18 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
         }
         smod1_ = value;
     }
+    
+    public int getPredictionLength(){
+        return npred;
+    }
+    
+    public void setPredictionLength(int npred){
+        this.npred=npred;
+    }
 
     public boolean isDefault() {
         return epsPhi_ == DEF_EPSPHI && xl_ == DEF_XL && rmod_ == DEF_RMOD && smod_ == DEF_SMOD && smod1_ == DEF_SMOD1
-                && changeModel_ == ApproximationMode.Legacy && method_ == EstimationMethod.Burman;
+                && changeModel_ == ApproximationMode.Legacy && method_ == EstimationMethod.Burman && npred==DEF_NPRED;
     }
 
     @Override
@@ -151,12 +164,14 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
                 && spec.rmod_ == rmod_
                 && spec.smod_ == smod_
                 && spec.smod1_ == smod1_
-                && spec.xl_ == xl_;
+                && spec.xl_ == xl_
+                && spec.npred == npred;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
+        hash = 23 * hash + Jdk6.Double.hashCode(this.npred);
         hash = 23 * hash + Jdk6.Double.hashCode(this.xl_);
         hash = 23 * hash + Jdk6.Double.hashCode(this.rmod_);
         hash = 23 * hash + Jdk6.Double.hashCode(this.epsPhi_);
@@ -249,6 +264,9 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
         if (verbose || method_ != EstimationMethod.Burman) {
             info.add(METHOD, method_.name());
         }
+        if (verbose || npred != DEF_NPRED) {
+            info.add(NPRED, npred);
+        }
         return info;
     }
 
@@ -274,6 +292,10 @@ public class SeatsSpecification implements IProcSpecification, Cloneable {
             Double xl = info.get(XL, Double.class);
             if (xl != null) {
                 xl_ = xl;
+            }
+            Integer p = info.get(NPRED, Integer.class);
+            if (p != null) {
+                npred = p;
             }
             String admiss = info.get(ADMISS, String.class);
             if (admiss != null) {

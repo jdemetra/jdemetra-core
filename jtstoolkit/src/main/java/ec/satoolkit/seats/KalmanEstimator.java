@@ -29,6 +29,7 @@ import ec.tstoolkit.ssf.*;
 import ec.tstoolkit.ssf.ucarima.SsfUcarima;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.ucarima.UcarimaModel;
 
 /**
@@ -36,6 +37,19 @@ import ec.tstoolkit.ucarima.UcarimaModel;
  */
 @Development(status = Development.Status.Alpha)
 public class KalmanEstimator implements IComponentsEstimator {
+    
+    private final int npred;
+    
+    private int nf(TsFrequency freq){
+        if (npred>=0)
+            return npred;
+        else
+            return freq.intValue()*(-npred);
+    }
+    
+    public KalmanEstimator(int npred){
+        this.npred=npred;
+    }
 
     /**
      *
@@ -51,7 +65,7 @@ public class KalmanEstimator implements IComponentsEstimator {
         DefaultSeriesDecomposition decomposition = new DefaultSeriesDecomposition(
                 DecompositionMode.Additive);
         TsData s = model.getSeries();
-        int n = s.getLength(), nf = s.getFrequency().intValue();
+        int n = s.getLength(), nf = nf(s.getFrequency());
         TsDomain sdomain = s.getDomain(), fdomain = new TsDomain(s.getEnd(), nf);
         boolean hast = !ucm.getComponent(0).isNull()
                 || model.isMeanCorrection();

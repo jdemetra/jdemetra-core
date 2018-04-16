@@ -60,11 +60,11 @@ public class HtmlX13Preprocessing extends AbstractHtmlElement {
         LikelihoodStatistics levelStats = tinfo.get("stats_level", LikelihoodStatistics.class);
         LikelihoodStatistics logStats = tinfo.get("stats_log", LikelihoodStatistics.class);
         if (levelStats != null && logStats != null) {
-            stream.write(HtmlTag.HEADER1, h1, "Log/level transformation");
+            stream.write(HtmlTag.HEADER1, "Log/level transformation");
             stream.newLine();
-            stream.write(HtmlTag.HEADER2, h2, "Likelihood statistics for model fit to untransformed series.");
+            stream.write(HtmlTag.HEADER2, "Likelihood statistics for model fit to untransformed series.");
             stream.write(new HtmlLikelihood(levelStats));
-            stream.write(HtmlTag.HEADER2, h2, "Likelihood statistics for model fit to log transformed series.");
+            stream.write(HtmlTag.HEADER2, "Likelihood statistics for model fit to log transformed series.");
             stream.write(new HtmlLikelihood(logStats));
             stream.write(HtmlTag.LINEBREAK);
         }
@@ -83,11 +83,11 @@ public class HtmlX13Preprocessing extends AbstractHtmlElement {
         LikelihoodStatistics tdStats = cinfo.get("stats_td", LikelihoodStatistics.class);
         LikelihoodStatistics ntdStats = cinfo.get("stats_ntd", LikelihoodStatistics.class);
         if (tdStats != null && ntdStats != null) {
-            stream.write(HtmlTag.HEADER1, h1, "Trading days");
+            stream.write(HtmlTag.HEADER1, "Trading days");
             stream.newLine();
-            stream.write(HtmlTag.HEADER2, h2, "Likelihood statistics for model fit without td.");
+            stream.write(HtmlTag.HEADER2, "Likelihood statistics for model fit without td.");
             stream.write(new HtmlLikelihood(ntdStats));
-            stream.write(HtmlTag.HEADER2, h2, "Likelihood statistics for model fit with td.");
+            stream.write(HtmlTag.HEADER2, "Likelihood statistics for model fit with td.");
             stream.write(new HtmlLikelihood(tdStats));
             stream.write(HtmlTag.LINEBREAK);
         }
@@ -107,10 +107,10 @@ public class HtmlX13Preprocessing extends AbstractHtmlElement {
         if (stats == null || stats.isEmpty()) {
             return;
         }
-        stream.write(HtmlTag.HEADER1, h1, "Easter effect");
+        stream.write(HtmlTag.HEADER1, "Easter effect");
         for (Information<LikelihoodStatistics> linfo : stats) {
             stream.newLine();
-            stream.write(HtmlTag.HEADER2, h2, "Likelihood statistics for model fit with " + linfo.name.substring(6));
+            stream.write(HtmlTag.HEADER2, "Likelihood statistics for model fit with " + linfo.name.substring(6));
             stream.write(new HtmlLikelihood(linfo.value));
         }
         stream.write(HtmlTag.LINEBREAK);
