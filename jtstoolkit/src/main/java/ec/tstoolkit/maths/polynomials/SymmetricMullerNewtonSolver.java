@@ -663,6 +663,7 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
 
         monic();
         /* get monic polynom */
+        /* get monic polynom */
 
         do {
             /* main loop of null() */
@@ -684,19 +685,8 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
                 return false;
             }
         } while (m_p.length - m_idx > 3);
-        /* last one or two roots */
-        quadratic();
-//	if (m_p.length - m_idx == 3) {
-//	    m_roots[m_idx + 1] = newton(m_roots[m_idx + 1], newerr);
-//	    if (newerr.val > m_maxerr)
-//		m_maxerr = newerr.val;
-//	}
-//	m_roots[m_idx] = newton(m_roots[m_idx], newerr);
-//	if (newerr.val > m_maxerr)
-//	    m_maxerr = newerr.val;
+        return m_idx == m_degree || quadratic();
 
-        return true;
-        /* return no error */
     }
 
     /**
@@ -707,20 +697,20 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
             return false;
         }
         /* discr = p1^2-4*p2*p0 */
-        double a = m_pred[m_idx + 2], b = m_pred[m_idx + 1], c = m_pred[m_idx], aa = 2 * a;
-        double rdiscr = b * b - 4 * a * c;
+        double a = m_pred[m_idx + 2], b = m_pred[m_idx + 1] / a, c = m_pred[m_idx] / a;
+        double rdiscr = b * b - 4 * c;
         if (rdiscr >= 0) {
             double z = Math.sqrt(rdiscr);
             if (b < 0) {
-                m_roots[m_idx / 2] = Complex.cart((-b + z) / aa);
+                m_roots[m_idx / 2] = Complex.cart((-b + z) / 2);
             } else {
-                m_roots[m_idx / 2] = Complex.cart((-b - z) / aa);
+                m_roots[m_idx / 2] = Complex.cart((-b - z) / 2);
             }
             return true;
-        } else if (rdiscr < -1e-6) {
+        } else if (rdiscr < -1e-5) {
             return false;
         } else {
-            m_roots[m_idx / 2] = Complex.cart(-b / aa);
+            m_roots[m_idx / 2] = Complex.cart(-b / 2);
             return true;
         }
     }
@@ -1026,25 +1016,19 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
             for (int i = m_degree; i > m_idx; i--) {
                 m_pred[i - 2] -= a * m_pred[i - 1] + b * m_pred[i];
             }
-        } else {
+        } else if (Math.abs(nrm - 1) > 1e-8) {
             double a = -2 * r.getRe(), b = r.absSquare();
             Polynomial num = Polynomial.copyOf(m_pred, m_idx, m_degree + 1);
             Polynomial div1 = Polynomial.of(new double[]{b, a, 1});
-            Complex ir = r.inv();
-            a = -2 * ir.getRe();
-            b = ir.absSquare();
-            Polynomial div2 = Polynomial.of(new double[]{b, a, 1});
+            Polynomial div2 = Polynomial.of(new double[]{1/b, a/b, 1});
             LeastSquaresDivision lq = new LeastSquaresDivision();
             lq.divide(num, div1.times(div2));
-            double e = lq.getError() / (num.getLength() - div2.getLength());
-            if (Math.abs(nrm - 1) > 1e-8 || e < 1e-6) {
-                m_roots[m_idx / 2] = r;
-                m_roots[m_idx / 2 + 1] = r.conj();
-                m_idx += 4;
-                lq.getQuotient().copyTo(m_pred, m_idx);
-            } else if (!optimize(r0)) {
-                return false;
-            }
+            m_roots[m_idx / 2] = r;
+            m_roots[m_idx / 2 + 1] = r.conj();
+            m_idx += 4;
+            lq.getQuotient().copyTo(m_pred, m_idx);
+        } else if (!optimize(r0)) {
+            return false;
         }
 //        }
         reinforceSymmetry();
@@ -1059,8 +1043,8 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
     private boolean update(final double r0) {
         double r = Math.abs(r0) >= 1 ? r0 : 1 / r0;
         double a = -(r0 + 1 / r0);
-        m_roots[m_idx / 2] = Complex.cart(r);
         if (!lqdiv) {
+            m_roots[m_idx / 2] = Complex.cart(r);
             m_idx += 2;
             // we deflate by (x-r0)(x-1/r0)
             // = x^2-x*(r0+1/r0)+1
@@ -1073,6 +1057,7 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
             Polynomial div = Polynomial.of(new double[]{1, a, 1});
             LeastSquaresDivision lq = new LeastSquaresDivision();
             lq.divide(num, div);
+            m_roots[m_idx / 2] = Complex.cart(r);
             m_idx += 2;
             lq.getQuotient().copyTo(m_pred, m_idx);
         }
@@ -1118,6 +1103,7 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
 
     private boolean optimize(Complex r0) {
         GridSearch gs = new GridSearch();
+        gs.setPrecision(1e-12);
         gs.setBounds(Math.max(-1, r0.getRe() - B_EPS), Math.min(1, r0.getRe() + B_EPS));
         Function fn = new Function(m_pred, m_idx);
 
@@ -1127,8 +1113,9 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
         m_roots[m_idx / 2] = nr;
         m_roots[m_idx / 2 + 1] = nr.conj();
         m_idx += 4;
+        double val = rslt.getValue();
         rslt.lq.getQuotient().copyTo(m_pred, m_idx);
-        return gs.getObjective() < OPT_MIN;
+        return val < OPT_MIN;
     }
 
     static final double OPT_MIN = 1e-5;
@@ -1192,5 +1179,4 @@ class Function implements IFunction {
         }
 
     }
-
 }

@@ -176,4 +176,15 @@ public class XmlX13Requests {
     public void setParallelProcessing(Boolean parallel) {
         this.parallel = parallel;
     }
+    
+    public void checkNames() {
+        int n = 1;
+        for (XmlX13AtomicRequest req : item) {
+            if (req.series.getName() == null || req.series.getName().length() == 0) {
+                req.series.setName("series" + n);
+            }
+            ++n;
+        }
+    }
+    
 }

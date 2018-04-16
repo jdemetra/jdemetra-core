@@ -82,6 +82,7 @@ public class TramoSeatsXmlProcessorTest {
             cur.defaultSpecification = "TRfull";
             cur.series = new XmlTs();
             XmlTsData.MARSHALLER.marshal(Data.P, cur.series);
+            cur.series.setName("P"+i);
             requests.getItems().add(cur);
         }
         //requests.getOutputFilter().add("arima.*");
@@ -95,7 +96,7 @@ public class TramoSeatsXmlProcessorTest {
 
         InformationSet all = rslt.create();
         for (int i = 0; i < N; ++i) {
-            assertTrue(null != all.search("series" + (i + 1) + ".likelihood.aic", Double.class));
+            assertTrue(null != all.search("P" + i + ".likelihood.aic", Double.class));
         }
     }
 

@@ -50,7 +50,7 @@ public class TramoSeatsProcessingFactory extends GenericSaProcessingFactory impl
         DefaultPreprocessingFilter filter = new DefaultPreprocessingFilter();
         TransformSpec transform = xspec.getTramoSpecification().getTransform();
         addInitialStep(transform.getSpan(), transform.isPreliminaryCheck(), processing);
-        addPreprocessingStep(xspec.getTramoSpecification().build(context), processing);
+        addPreprocessingStep(xspec.getTramoSpecification().build(context), xspec.getSeatsSpecification().getPredictionLength(), processing);
         addDecompositionStep(new SeatsDecomposer(xspec.getSeatsSpecification()), filter, processing);
         addFinalStep(filter, processing);
         addBenchmarkingStep(xspec.getBenchmarkingSpecification(), processing);
