@@ -57,10 +57,10 @@
         <animal-sniffer-maven-plugin.version>1.14</animal-sniffer-maven-plugin.version>
         <!-- dependencies -->
         <junit.version>4.12</junit.version>
-        <jsr305.version>3.0.1</jsr305.version>
-        <assertj.version>3.6.2</assertj.version>
+        <jsr305.version>3.0.2</jsr305.version>
+        <assertj.version>3.9.1</assertj.version>
         <netbeans.version>RELEASE82</netbeans.version>
-        <lombok.version>1.16.12</lombok.version>
+        <lombok.version>1.16.18</lombok.version>
     </properties>
 
     <modules>
