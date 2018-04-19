@@ -13,12 +13,16 @@
     <name>Demetra - Spreadsheet</name>
     <description>A TS Provider that handles Excel and OpenDocument spreadsheets.</description>
 
+    <properties>
+        <spreadsheet4j.version>${project.version}</spreadsheet4j.version>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>spreadsheet-parent</artifactId>
-                <version>${project.version}</version>
+                <version>${spreadsheet4j.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
