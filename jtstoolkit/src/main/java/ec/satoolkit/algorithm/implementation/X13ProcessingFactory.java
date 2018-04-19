@@ -105,9 +105,13 @@ public class X13ProcessingFactory extends GenericSaProcessingFactory implements 
         return create(xspec, null);
     }
 
-    public static CompositeResults process(TsData s, X13Specification xspec) {
-        SequentialProcessing<TsData> processing = create(xspec, null);
+    public static CompositeResults process(TsData s, X13Specification xspec, ProcessingContext context) {
+        SequentialProcessing<TsData> processing = create(xspec, context);
         return processing.process(s);
+    }
+
+    public static CompositeResults process(TsData s, X13Specification xspec) {
+        return process(s, xspec, null);
     }
 
     @Override
