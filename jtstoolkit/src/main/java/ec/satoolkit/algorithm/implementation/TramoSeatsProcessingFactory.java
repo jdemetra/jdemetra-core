@@ -61,9 +61,13 @@ public class TramoSeatsProcessingFactory extends GenericSaProcessingFactory impl
     protected TramoSeatsProcessingFactory() {
     }
 
-    public static CompositeResults process(TsData s, TramoSeatsSpecification xspec) {
-        SequentialProcessing<TsData> processing = create(xspec, null);
+    public static CompositeResults process(TsData s, TramoSeatsSpecification xspec, ProcessingContext context) {
+        SequentialProcessing<TsData> processing = create(xspec, context);
         return processing.process(s);
+    }
+
+    public static CompositeResults process(TsData s, TramoSeatsSpecification xspec) {
+        return process(s, xspec, null);
     }
 
     @Override
