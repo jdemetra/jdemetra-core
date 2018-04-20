@@ -34,7 +34,7 @@ public class X11Monitor {
 
         static {
             MAPPING.delegate("diagnostics", MstatisticsInfo.getMapping(), source->source.getMstatistics());
-            MAPPING.delegate("decomposition", DecompositionInfo.getMapping(), source->source.getDecomposition());
+            MAPPING.delegate("decomposition", X11DecompositionInfo.getMapping(), source->source.getDecomposition());
         }
 
         public InformationMapping<Results> getMapping() {

@@ -20,7 +20,6 @@ import jdr.spec.ts.Utility;
 @lombok.experimental.UtilityClass
 public class Processor {
 
- 
     public static TramoSeatsResults tramoseats(TsData s, TramoSeatsSpecification spec, Utility.Dictionary dic) {
         ProcessingContext context = null;
         if (dic != null) {
