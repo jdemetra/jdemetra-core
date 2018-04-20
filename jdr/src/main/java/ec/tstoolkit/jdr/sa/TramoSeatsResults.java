@@ -7,7 +7,9 @@ package ec.tstoolkit.jdr.sa;
 
 import demetra.algorithm.IProcResults;
 import demetra.information.InformationMapping;
+import ec.satoolkit.ISeriesDecomposition;
 import ec.satoolkit.algorithm.implementation.TramoSeatsProcessingFactory;
+import ec.satoolkit.seats.SeatsResults;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.jdr.mapping.LikelihoodStatisticsInfo;
 import ec.tstoolkit.jdr.mapping.PreprocessingInfo;
@@ -31,10 +33,19 @@ public class TramoSeatsResults implements IProcResults {
         return results == null ? null : results.get(TramoSeatsProcessingFactory.PREPROCESSING, PreprocessingModel.class);
     }
 
+    ISeriesDecomposition finals() {
+        return results == null ? null : results.get(TramoSeatsProcessingFactory.FINAL, ISeriesDecomposition.class);
+    }
+
+    SeatsResults seats() {
+        return results == null ? null : results.get(TramoSeatsProcessingFactory.DECOMPOSITION, SeatsResults.class);
+    }
+
     static final InformationMapping<TramoSeatsResults> MAPPING = new InformationMapping<>(TramoSeatsResults.class);
 
     static {
-            MAPPING.delegate("preprocessing", PreprocessingInfo.getMapping(), source -> source.model());
+        MAPPING.delegate(null, SaDecompositionInfo.getMapping(), source -> source.finals());
+        MAPPING.delegate("preprocessing", PreprocessingInfo.getMapping(), source -> source.model());
     }
 
     public InformationMapping<TramoSeatsResults> getMapping() {

@@ -23,6 +23,7 @@ import java.util.function.Function;
 
 /**
  * New implementation for JD3
+ *
  * @author Jean Palate
  */
 class InformationExtractors {
@@ -42,7 +43,6 @@ class InformationExtractors {
         return builder.toString();
     }
 
-    
     static class AtomicExtractor<S> implements InformationExtractor<S> {
 
         final String name;
@@ -67,6 +67,9 @@ class InformationExtractors {
 
         @Override
         public <T> T getData(S source, String id, Class<T> tclass) {
+            if (source == null) {
+                return null;
+            }
             if (tclass.isAssignableFrom(targetClass) && id.equals(name)) {
                 return (T) fn.apply(source);
             } else {
@@ -101,7 +104,7 @@ class InformationExtractors {
 
         @Override
         public void fillDictionary(String prefix, Map<String, Class> dic, boolean compact) {
-            String item=wcKey(name, start == end ? '?' : '*');
+            String item = wcKey(name, start == end ? '?' : '*');
             dic.put(InformationExtractor.concatenate(prefix, item), targetClass);
         }
 
@@ -117,6 +120,9 @@ class InformationExtractors {
 
         @Override
         public <T> T getData(S source, String id, Class<T> tclass) {
+            if (source == null) {
+                return null;
+            }
             if (tclass.isAssignableFrom(targetClass)) {
                 int idx = listItem(name, id);
                 if (idx == Integer.MIN_VALUE) {
@@ -194,11 +200,17 @@ class InformationExtractors {
 
         @Override
         public void fillDictionary(String prefix, Map<String, Class> dic, boolean compact) {
-            extractor.fillDictionary(InformationExtractor.concatenate(prefix, name), dic, compact);
+            if (name == null) {
+                extractor.fillDictionary(prefix, dic, compact);
+            } else {
+                extractor.fillDictionary(InformationExtractor.concatenate(prefix, name), dic, compact);
+            }
         }
 
         @Override
         public boolean contains(String id) {
+            if (name == null)
+                return extractor.contains(id);
             if (id.length() <= name.length()) {
                 return false;
             }
@@ -211,7 +223,10 @@ class InformationExtractors {
 
         @Override
         public <Q> Q getData(S source, String id, Class<Q> qclass) {
-            String subitem = id.substring(name.length() + 1);
+            if (source == null) {
+                return null;
+            }
+            String subitem = name == null ? id : id.substring(name.length() + 1);
             T t = fn.apply(source);
             if (t == null) {
                 return null;
@@ -244,7 +259,7 @@ class InformationExtractors {
 
         @Override
         public void fillDictionary(String prefix, Map<String, Class> dic, boolean compact) {
-            String item=wcKey(name, start == end ? '?' : '*');
+            String item = wcKey(name, start == end ? '?' : '*');
             extractor.fillDictionary(InformationExtractor.concatenate(prefix, item), dic, compact);
         }
 
@@ -264,6 +279,9 @@ class InformationExtractors {
 
         @Override
         public <Q> Q getData(S source, String id, Class<Q> qclass) {
+            if (source == null) {
+                return null;
+            }
             int idx = listItem(name, id);
             if (idx == Integer.MIN_VALUE) {
                 return null;

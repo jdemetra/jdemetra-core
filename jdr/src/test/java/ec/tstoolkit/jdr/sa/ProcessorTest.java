@@ -32,7 +32,9 @@ public class ProcessorTest {
     @Test
     public void testX13(){
         X13Results rslts = Processor.x13(Data.P, X13Specification.RSA5, null);
-        System.out.println(new DataBlock(rslts.getData("preprocessing.arima.parameters", double[].class)));
-        System.out.println(rslts.getData("decomposition.d8", TsData.class));
+//        System.out.println(new DataBlock(rslts.getData("preprocessing.arima.parameters", double[].class)));
+//        System.out.println(rslts.getData("decomposition.d8", TsData.class));
+        System.out.println(rslts.getData("t", TsData.class));
     }
+
 }
