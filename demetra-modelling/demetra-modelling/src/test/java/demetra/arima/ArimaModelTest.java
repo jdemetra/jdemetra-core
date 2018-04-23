@@ -28,8 +28,8 @@ public class ArimaModelTest {
 
     @Test
     public void testSumDiff() {
-        SarimaSpecification spec = new SarimaSpecification();
-        spec.airline(12);
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.airline(true);
         SarimaModel sarima = SarimaModel.builder(spec)
                 .theta(1, -.6)
                 .btheta(1, -.8)

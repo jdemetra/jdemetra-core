@@ -32,11 +32,12 @@ import demetra.maths.matrices.Matrix;
  */
 public class RegArmaProcessor {
 
-    private final boolean ml, mt;
+    private final boolean ml, mt, fast;
 
-    public RegArmaProcessor(boolean ml, boolean mt) {
+    public RegArmaProcessor(boolean ml, boolean mt, boolean fastDerivatives) {
         this.ml = ml;
         this.mt = mt;
+        this.fast = fastDerivatives;
     }
 
     public <S extends IArimaModel> RegArmaEstimation<S> compute(RegArmaModel<S> model, DoubleSequence start, IParametricMapping<S> mapping, ISsqFunctionMinimizer minimizer, int ndf) {
@@ -49,12 +50,19 @@ public class RegArmaProcessor {
                 .parallelProcessing(mt)
                 .build();
 
-        boolean ok =start == null ? minimizer.minimize(fn) : minimizer.minimize(fn.ssqEvaluate(start));
+        boolean ok = start == null ? minimizer.minimize(fn) : minimizer.minimize(fn.ssqEvaluate(start));
         RegArmaSsqFunction.Evaluation<S> rslt = (RegArmaSsqFunction.Evaluation<S>) minimizer.getResult();
-        IFunctionDerivatives derivatives = new NumericalDerivatives(new SsqProxyFunctionPoint(rslt), false);
         double objective = rslt.getSsqE();
-        Matrix hessian = derivatives.hessian();
-        double[] gradient = derivatives.gradient().toArray();
+        Matrix hessian;
+        double[] gradient;
+        if (fast) {
+            gradient = minimizer.gradientAtMinimum().toArray();
+            hessian = minimizer.curvatureAtMinimum();
+        } else {
+            IFunctionDerivatives derivatives = new NumericalDerivatives(new SsqProxyFunctionPoint(rslt), false);
+            hessian = derivatives.hessian();
+            gradient = derivatives.gradient().toArray();
+        }
         hessian.mul((.5 * ndf) / objective);
         for (int i = 0; i < gradient.length; ++i) {
             gradient[i] *= (-.5 * ndf) / objective;

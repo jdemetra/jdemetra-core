@@ -45,7 +45,9 @@ public class ArimaEstimationTest {
         ArimaEstimation.Results.getMapping().fillDictionary(null, dic, true);
 //        dic.keySet().forEach(n->System.out.println(n));
         assertTrue(null != rslt.getData("arima.parameters", double[].class));
-//        System.out.println(DoubleSequence.of(rslt.getData("arima.parameters", double[].class)));
+        System.out.println(DoubleSequence.of(rslt.getData("arima.parameters", double[].class)));
+        
+        System.out.println(rslt.getParametersCovariance().diagonal());
     }
     
 }

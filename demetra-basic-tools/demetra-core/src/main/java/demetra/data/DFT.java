@@ -228,33 +228,4 @@ public class DFT {
             // compute next cos, sin
         }
     }
-
-    public void naiveTransform(double[] inr, double[] ini, double[] outcos, double[] outsin) {
-        int T = inr.length;
-        double l = Constants.TWOPI / T;
-
-        for (int i = 0; i < T; ++i) {
-            double a = 0, b = 0;
-            for (int j = 0; j < T; ++j) {
-                double r = inr[j];
-                double im = ini[j];
-                double c = Math.cos(i * j * l), s = Math.sin(i * j * l);
-                // compute next c, s ...
-                if (!Double.isNaN(r)) {
-                    a += c * r + s * im;
-                    b += s * r - c * im;
-                }
-            }
-            outcos[i] = a;
-            outsin[i] = b;
-        }
-    }
-//    public void backTransform2(double[] inr, double[] ini, double[] outcos, double[] outsin) {
-//        int T = inr.length;
-//        transform2(inr, ini, outcos, outsin);
-//        for (int i = 0; i < T; ++i) {
-//            outcos[i] /= T;
-//            outsin[i] /= T;
-//        }
-//    }
 }

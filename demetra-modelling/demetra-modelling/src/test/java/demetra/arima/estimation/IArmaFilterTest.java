@@ -27,8 +27,8 @@ public class IArmaFilterTest {
     private static final DoubleSequence data;
 
     static {
-        SarimaSpecification spec = new SarimaSpecification();
-        spec.airline(12);
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.airline(true);
         airline = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.8).build();
         spec.setP(3);
         arima = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.8).phi(-.2, -.5, -.2).build();

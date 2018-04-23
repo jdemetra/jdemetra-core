@@ -16,6 +16,7 @@
  */
 package demetra.benchmarking.univariate.internal;
 
+import demetra.benchmarking.ssf.SsfCholette;
 import demetra.benchmarking.spi.CholetteAlgorithm;
 import demetra.benchmarking.univariate.CholetteSpecification;
 import demetra.benchmarking.univariate.CholetteSpecification.BiasCorrection;

@@ -18,10 +18,12 @@ package demetra.regarima.outlier;
 
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
+import demetra.arima.internal.FastKalmanFilter;
 import demetra.arima.internal.KalmanFilter;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.Likelihood;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.maths.polynomials.Polynomial;
@@ -29,8 +31,8 @@ import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArmaModel;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
-import demetra.timeseries.regression.IOutlier;
-import demetra.timeseries.regression.IRegularOutlier;
+import demetra.modelling.regression.IOutlier;
+import demetra.modelling.regression.IRegularOutlier;
 
 /**
  *
@@ -94,7 +96,7 @@ public class FastOutlierDetector<T extends IArimaModel> extends
 
     private void processOutlier(int idx) {
         int nl = el.length;
-        int d = ur.length()-1;
+        int d = ur.getDegree();
         int n = nl + d;
 //        double[] o = new double[n];
 //        DataBlock O = new DataBlock(o);
@@ -149,7 +151,7 @@ public class FastOutlierDetector<T extends IArimaModel> extends
                 sxy += cxy * corr;
             }
             int pos = n - 1 - ix;
-            if (pos >= lb && pos < ub) {
+            if (isAllowed(pos, idx) && pos >= lb && pos < ub) {
                 double c = sxy / sxx;
                 double val = c * Math.sqrt(sxx) / mad;
                 setCoefficient(pos, idx, c);
@@ -161,11 +163,9 @@ public class FastOutlierDetector<T extends IArimaModel> extends
     private DoubleSequence fullResiduals(RegArmaModel<T> differencedModel, ConcentratedLikelihood cll) {
         if (cll.nx() == 0)
             return cll.e();
-        DataBlock res = differencedModel.asLineaModel().calcResiduals(cll.coefficients());
-        KalmanFilter filter=new KalmanFilter(false);
-        filter.prepare(stmodel, res.length());
-        DataBlock fres=DataBlock.make(res.length());
-        filter.apply(res, fres);
-        return fres;
+        DataBlock res = differencedModel.asLinearModel().calcResiduals(cll.allCoefficients());
+        FastKalmanFilter filter=new FastKalmanFilter(stmodel);
+        Likelihood ll = filter.process(res);
+        return ll.e();
     }
 }

@@ -13,12 +13,12 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
- */
+*/
 package demetra.stats.tests;
 
 import demetra.data.DoubleSequence;
-import demetra.design.BuilderPattern;
 import demetra.design.Development;
+import demetra.design.IBuilder;
 import demetra.dstats.Chi2;
 import demetra.stats.DescriptiveStatistics;
 
@@ -27,24 +27,26 @@ import demetra.stats.DescriptiveStatistics;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@BuilderPattern(StatisticalTest.class)
-public class BowmanShenton {
+public class BowmanShenton implements IBuilder<StatisticalTest>
+{
 
     private final DescriptiveStatistics stats;
 
     /**
-     *
+     * 
      */
-    public BowmanShenton(DoubleSequence data) {
-        stats = DescriptiveStatistics.of(data);
+    public BowmanShenton(DoubleSequence data)
+    {
+        stats=DescriptiveStatistics.of(data);
     }
 
+    @Override
     public StatisticalTest build() {
-        int n = stats.getObservationsCount();
-        double m3 = stats.getSkewness();
-        double m4 = stats.getKurtosis() - 3.0;
-        double val = n / 6.0 * m3 * m3 + n / 24.0 * m4 * m4;
-        Chi2 chi = new Chi2(2);
+	int n = stats.getObservationsCount();
+	double m3 = stats.getSkewness();
+	double m4 = stats.getKurtosis() - 3.0;
+	double val = n / 6.0 * m3 * m3 + n / 24.0 * m4 * m4;
+	Chi2 chi = new Chi2(2);
         return new StatisticalTest(chi, val, TestType.Upper, true);
     }
 

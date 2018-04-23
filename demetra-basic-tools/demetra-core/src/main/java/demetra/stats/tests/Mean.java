@@ -18,8 +18,9 @@ package demetra.stats.tests;
 
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
-import demetra.design.BuilderPattern;
 import demetra.design.Development;
+import demetra.design.IBuilder;
+import demetra.dstats.Normal;
 import demetra.dstats.T;
 
 /**
@@ -27,8 +28,7 @@ import demetra.dstats.T;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@BuilderPattern(StatisticalTest.class)
-public class Mean {
+public class Mean implements IBuilder<StatisticalTest> {
 
     private final double mean, emean, var;
     private final int n;
@@ -47,9 +47,16 @@ public class Mean {
      */
     public static Mean zeroMean(DoubleSequence data) {
         int m = data.length();
-        double av = Doubles.sum(data) / m;
-        double v = Doubles.ssq(data) / m;
-        return new Mean(av, 0, v, m);
+        boolean missing = data.anyMatch(x -> !Double.isFinite(x));
+        if (missing) {
+            double av = Doubles.sumWithMissing(data) / m;
+            double v = Doubles.ssqWithMissing(data) / m;
+            return new Mean(av, 0, v, m);
+        }else{
+            double av = Doubles.sum(data) / m;
+            double v = Doubles.ssq(data) / m;
+            return new Mean(av, 0, v, m);
+        }
     }
 
     /**
@@ -60,13 +67,22 @@ public class Mean {
      */
     public static Mean mean(DoubleSequence data, final double mu) {
         int m = data.length();
-        double av = Doubles.sum(data) / m;
-        double v = Doubles.ssqc(data, mu) / m;
-        return new Mean(av, mu, v, m);
+        boolean missing = data.anyMatch(x -> !Double.isFinite(x));
+        if (missing) {
+            double av = Doubles.sumWithMissing(data) / m;
+            double v = Doubles.ssqcWithMissing(data, mu) / m;
+            return new Mean(av, mu, v, m);
+        }else{
+            double av = Doubles.sum(data) / m;
+            double v = Doubles.ssqc(data, mu) / m;
+            return new Mean(av, mu, v, m);
+        }
     }
 
+    @Override
     public StatisticalTest build() {
         double val = (mean - emean) / Math.sqrt(var / n);
         return new StatisticalTest(new T(n), val, TestType.TwoSided, false);
     }
+
 }

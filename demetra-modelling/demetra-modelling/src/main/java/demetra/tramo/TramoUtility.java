@@ -28,6 +28,8 @@ import demetra.sarima.GlsSarimaProcessor;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.internal.HannanRissanenInitializer;
+import demetra.stats.tests.LjungBox;
+import demetra.stats.tests.StatisticalTest;
 
 /**
  *
@@ -36,5 +38,62 @@ import demetra.sarima.internal.HannanRissanenInitializer;
 @Development(status = Development.Status.Preliminary)
 @lombok.experimental.UtilityClass
 public class TramoUtility {
+    int autlar(final int n, final SarimaSpecification spec) {
+        int d = spec.getD() + spec.getPeriod() * spec.getBd();
+        int q = spec.getQ() + spec.getPeriod() * spec.getBq();
+        int p = spec.getP() + spec.getPeriod() * spec.getBp();
+        int nd = n - d;
+        int nar = (int) Math.log(nd * nd);
+        int m = Math.max(p, 2 * q);
+        if (m > nar) {
+            nar = m;
+        }
+        if (nar >= nd) {
+            nar = nd - nd / 4;
+        }
+        if (nar > 50) {
+            nar = 50;
+        }
+        int ncol = spec.getP() + (1 + spec.getP()) * spec.getBp() + spec.getQ()
+                + (1 + spec.getQ()) * spec.getBq();
+        return nd - nar - Math.max(p, q) - ncol;
+    }
+
+    boolean meantest(final int n, final double t) {
+        double vct = 2.5;
+        if (n <= 80) {
+            vct = 1.96;
+        } else if (n <= 155) {
+            vct = 1.98;
+        } else if (n <= 230) {
+            vct = 2.1;
+        } else if (n <= 320) {
+            vct = 2.3;
+        }
+        return Math.abs(t) > vct;
+    }
+
+    public int calcLBLength(final int freq) {
+        int n;
+        if (freq == 12) {
+            n = 24;
+        } else if (freq == 1) {
+            n = 8;
+        } else {
+            n = 4 * freq;
+        }
+        return n;
+    }
+
+    double PLjungBox(final int freq, final double[] res,
+            final int hp) {
+        int n = calcLBLength(freq);
+
+        StatisticalTest lb = new LjungBox(DoubleSequence.ofInternal(res))
+                .hyperParametersCount(hp)
+                .lag(n)
+                .build();
+        return 1 - lb.getPValue();
+    }
 
 }

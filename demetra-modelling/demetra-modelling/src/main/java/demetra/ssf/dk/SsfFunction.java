@@ -17,6 +17,7 @@
 package demetra.ssf.dk;
 
 import demetra.maths.functions.IFunction;
+import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ssq.ISsqFunction;
@@ -26,7 +27,8 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfBuilder;
 import demetra.ssf.univariate.ISsfData;
 import demetra.data.DoubleSequence;
-import demetra.design.BuilderPattern;
+import demetra.design.IBuilder;
+import javax.annotation.Nonnull;
 
 /**
  *
@@ -36,8 +38,7 @@ import demetra.design.BuilderPattern;
  */
 public class SsfFunction<S, F extends ISsf> implements IFunction, ISsqFunction {
 
-    @BuilderPattern(SsfFunction.class)
-    public static class Builder<S, F extends ISsf> {
+    public static class Builder<S, F extends ISsf> implements IBuilder< SsfFunction<S, F>> {
 
         private final IParametricMapping<S> mapping;
         private final ISsfBuilder<S, F> builder;
@@ -83,6 +84,7 @@ public class SsfFunction<S, F extends ISsf> implements IFunction, ISsqFunction {
             return this;
         }
 
+        @Override
         public SsfFunction<S, F> build() {
             return new SsfFunction(data, X, diffuseX, mapping, builder, ml, log, fast, mt, sym);
         }

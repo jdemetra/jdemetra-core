@@ -17,6 +17,7 @@
 package demetra.maths.linearfilters;
 
 import demetra.data.DataBlock;
+import demetra.data.DoubleReader;
 import demetra.design.Development;
 import demetra.maths.polynomials.Polynomial;
 import java.util.function.IntToDoubleFunction;
@@ -31,11 +32,14 @@ public interface IFiniteFilter extends IFilter {
 
     /**
      * Length of the filter
+     *
      * @return
      */
-    default int length(){
-        return getUpperBound()-getLowerBound()+1;
-    };
+    default int length() {
+        return getUpperBound() - getLowerBound() + 1;
+    }
+
+    ;
 
     // FiniteFilterDecomposition Decompose();
     /**
@@ -46,30 +50,33 @@ public interface IFiniteFilter extends IFilter {
 
     /**
      * Upper bound of the filter (included)
+     *
      * @return
      */
     int getUpperBound();
 
     /**
      * Weights of the filter; the function is defined for index ranging
- from the lower bound to the upper bound (included)
+     * from the lower bound to the upper bound (included)
+     *
      * @return
      */
     IntToDoubleFunction weights();
-    
+
     /**
      * Returns all the weights, from lbound to ubound
-     * @return 
+     *
+     * @return
      */
-    default double[] weightsToArray(){
-        double[] w=new double[length()];
+    default double[] weightsToArray() {
+        double[] w = new double[length()];
         IntToDoubleFunction weights = weights();
-        for (int i=0, j=getLowerBound(); i<w.length; ++i, ++j){
-            w[i]=weights.applyAsDouble(j);
+        for (int i = 0, j = getLowerBound(); i < w.length; ++i, ++j) {
+            w[i] = weights.applyAsDouble(j);
         }
         return w;
     }
-    
+
     /**
      * If this filter is w(l)B^(-l)+...+w(u)F^u Its mirror is
      * w(-u)B^(u)+...+w(-l)F^(-l)
@@ -84,27 +91,56 @@ public interface IFiniteFilter extends IFilter {
      * If the filter is defined by w{lb)...w(ub) and the filter output is defined for [start, end[,
      * the input should be defined for [start-lb, end+ub[
      *
-     * @param input The input
-     * @param rslt The filter output, defined for the range [getStart(), getEnd()[
+     * @param in
+     * @param out
      */
-    void apply(IntToDoubleFunction input, IFilterOutput rslt);
-    
+    default void apply(IntToDoubleFunction in, IFilterOutput out) {
+        IntToDoubleFunction weights = weights();
+        int lb = getLowerBound(), ub = getUpperBound();
+        for (int i = out.getStart(); i < out.getEnd(); ++i) {
+            double s = 0;
+            for (int j = lb; j <= ub; ++j) {
+                s += weights.applyAsDouble(j) * in.applyAsDouble(i + j);
+            }
+            out.set(i, s);
+        }
+    }
+
     /**
      * Apply the filter on a block of doubles and store the results in the output.
-     * 
+     *
      *
      * @param in
      * @param out
      * @return
      */
     void apply(DataBlock in, DataBlock out);
-    
+
     /**
      * Applies the filter on the input
+     *
      * @param in The input, which must have the same length as the filter
-     * @return The product of the filter and of the input  
+     * @return The product of the filter and of the input
      */
     double apply(DoubleSequence in);
 
-
+    default void apply(DoubleSequence in, DataBlock out) {
+        int lb = getLowerBound(), ub = getUpperBound();
+        int nw = ub - lb + 1;
+        int nin = in.length();
+        int nout = out.length();
+        if (nin < nw || out.length() != nin - nw + 1) {
+            throw new LinearFilterException(LinearFilterException.LENGTH);
+        }
+        int len = in.length() - nw + 1;
+        IntToDoubleFunction weights = weights();
+        double w0 = weights.applyAsDouble(lb);
+        out.set(in.extract(0, len), a -> w0 * a);
+        for (int i = lb + 1; i <= ub; ++i) {
+            double wcur = weights.applyAsDouble(i);
+            if (wcur != 0) {
+                out.apply(in.extract(i - lb, len), (a, b) -> a + wcur * b);
+            }
+        }
+    }
 }

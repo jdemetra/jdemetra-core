@@ -74,10 +74,6 @@ public class KalmanFilter implements IArmaFilter {
         m_multiuse = multiuse;
     }
 
-    public KalmanFilter exemplar() {
-        return new KalmanFilter(m_multiuse);
-    }
-
     private void calcC() {
 
         DeterminantalTerm det = new DeterminantalTerm();

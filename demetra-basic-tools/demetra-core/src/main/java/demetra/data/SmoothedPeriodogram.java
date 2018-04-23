@@ -16,7 +16,7 @@
  */
 package demetra.data;
 
-import demetra.design.BuilderPattern;
+import demetra.design.IBuilder;
 import demetra.maths.Constants;
 import demetra.stats.AutoCovariances;
 
@@ -30,43 +30,74 @@ public class SmoothedPeriodogram {
         return new Builder();
     }
 
-    @BuilderPattern(SmoothedPeriodogram.class)
-    public static class Builder {
+    public static class Builder implements IBuilder<SmoothedPeriodogram> {
 
         private DiscreteWindowFunction win = DiscreteWindowFunction.Tukey;
         private int winLen = 44;
-        private double relativeResolution = .5;
+        private int resolution = 0;
         private ITaper taper = null;
         private DoubleSequence data;
 
         private Builder() {
         }
 
+        /**
+         *
+         * @param data Input data
+         * @return
+         */
         public Builder data(DoubleSequence data) {
             this.data = data;
             return this;
         }
 
+        /**
+         *
+         * @param taper The taper used in a first step. Null by default (no
+         * tapering)
+         * @return
+         */
         public Builder taper(ITaper taper) {
             this.taper = taper;
             return this;
         }
 
+        /**
+         *
+         * @param win The window function used to smooth the autocorrelations
+         * @return
+         */
         public Builder windowFunction(DiscreteWindowFunction win) {
             this.win = win;
             return this;
         }
 
+        /**
+         * Gives the length of the window. Only the autocorrelations belonging
+         * to [-windowLength, +windowLength] will be taken into account.
+         *
+         * @param windowLength The length of the window function.
+         * @return
+         */
         public Builder windowLength(int windowLength) {
             this.winLen = windowLength;
             return this;
         }
 
-        public Builder relativeResolution(double resolution) {
-            this.relativeResolution = resolution;
+        /**
+         * Resolution of the periodogram: the spectrum is computed at the
+         * frequencies 2*pi*k/resolution. If resolution is undefined, we take
+         * half of the window length
+         *
+         * @param resolution Should be smaller than the windowLength
+         * @return
+         */
+        public Builder resolution(int resolution) {
+            this.resolution = resolution;
             return this;
         }
 
+        @Override
         public SmoothedPeriodogram build() {
             if (data == null) {
                 throw new RuntimeException("Uninitialized data");
@@ -87,33 +118,34 @@ public class SmoothedPeriodogram {
             if (taper != null) {
                 taper.process(x);
             }
+
             DoubleSequence datac = DoubleSequence.ofInternal(x);
             double[] ac = AutoCovariances.autoCovariancesWithZeroMean(datac, winLen - 1);
-            int ns = 1 + (int) (winLen * relativeResolution);
-            int len = 2 * ns - 1;
-            double[] p = dft(ac, ns);
-            return new SmoothedPeriodogram(p, len);
-        }
 
-        private double[] dft(double[] ac, int ns) {
-            int len = 2 * ns - 1;
-            double[] cwnd = win.discreteWindow(2 * winLen + 1);
+            double[] cwnd = win.discreteWindow(winLen);
             for (int i = 1; i < winLen; i++) {
                 ac[i] *= cwnd[i] / ac[0];
             }
-            // current resolution
-            double[] s = new double[ns];
-            for (int i = 0; i < ns; i++) {
-                double p = 1;
-                for (int j = 1; j < winLen; j++) {
-                    p += 2 * ac[j] * Math.cos(Constants.TWOPI * i * j / len);
-                }
-                if (p < 0) {
-                    p = 0;
-                }
-                s[i] = p;
+            ac[0] = 1;
+
+            int res=resolution != 0 ? resolution : winLen;
+            int nres = 1+res / 2;
+            double[] p = new double[nres];
+            for (int i = 0; i < nres; ++i) {
+                p[i] = dft(ac, i * Constants.TWOPI / res);
             }
-            return s;
+            return new SmoothedPeriodogram(p, res);
+        }
+
+        private double dft(double[] ac, double freq) {
+            double p = 1;
+            for (int j = 1; j < winLen; j++) {
+                p += 2 * ac[j] * Math.cos(j * freq);
+            }
+            if (p < 0) {
+                p = 0;
+            }
+            return p;
         }
 
     }
@@ -126,7 +158,7 @@ public class SmoothedPeriodogram {
         this.resolution = resolution;
     }
 
-    public double getSpectrumValue(double freq) {
+    public double spectrumValueAtFrequency(double freq) {
         int ipos = (int) Math.round(freq * resolution / Constants.TWOPI);
         if (ipos == p.length) {
             ipos = p.length - 1;
@@ -138,4 +170,7 @@ public class SmoothedPeriodogram {
         }
     }
 
+    public DoubleSequence spectrumValues() {
+        return DoubleSequence.ofInternal(p);
+    }
 }

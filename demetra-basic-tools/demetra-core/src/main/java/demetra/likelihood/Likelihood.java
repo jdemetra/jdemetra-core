@@ -17,10 +17,10 @@
 package demetra.likelihood;
 
 import demetra.design.Development;
+import demetra.design.IBuilder;
 import demetra.design.Immutable;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
-import demetra.design.BuilderPattern;
 
 /**
  * Log-Likelihood of a multi-variate gaussian distribution. For a N(0, sig2*V)
@@ -41,38 +41,38 @@ import demetra.design.BuilderPattern;
 @Development(status = Development.Status.Release)
 @Immutable
 public final class Likelihood implements ILikelihood {
-
-    public static Builder builder(int n) {
+    
+    public static Builder builder(int n){
         return new Builder(n);
     }
 
-    @BuilderPattern(Likelihood.class)
-    public static class Builder {
+    public static class Builder implements IBuilder<Likelihood> {
 
         final int n;
         double ssqerr, ldet;
         double[] res;
 
-        Builder(int n) {
-            this.n = n;
+        Builder (int n){
+            this.n=n;
         }
-
-        public Builder logDeterminant(double ldet) {
-            this.ldet = ldet;
+        
+        public Builder logDeterminant(double ldet){
+            this.ldet=ldet;
+            return this;
+        }
+        
+        public Builder ssqErr(double ssq){
+            this.ssqerr=ssq;
             return this;
         }
 
-        public Builder ssqErr(double ssq) {
-            this.ssqerr = ssq;
+        public Builder residuals(DoubleSequence residuals){
+            this.ssqerr=Doubles.ssq(residuals);
+            this.res=residuals.toArray();
             return this;
         }
-
-        public Builder residuals(DoubleSequence residuals) {
-            this.ssqerr = Doubles.ssq(residuals);
-            this.res = residuals.toArray();
-            return this;
-        }
-
+        
+        @Override
         public Likelihood build() {
             return new Likelihood(n, ssqerr, ldet, res);
         }
@@ -146,6 +146,7 @@ public final class Likelihood implements ILikelihood {
         return DoubleSequence.of(res);
     }
 
+ 
     /**
      * Gets the sum of the squares of the (transformed) observations.
      *
@@ -158,7 +159,7 @@ public final class Likelihood implements ILikelihood {
 
     /**
      * Adjust the likelihood if the toArray have been pre-multiplied by a given
-     * scaling factor
+ scaling factor
      *
      * @param factor The scaling factor
      * @return

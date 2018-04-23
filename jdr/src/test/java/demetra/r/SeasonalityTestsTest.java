@@ -32,8 +32,23 @@ public class SeasonalityTestsTest {
 
     @Test
     public void testFTest() {
-        TestResult ftest = SeasonalityTests.ftest(Data.TS_ABS_RETAIL, true, 0);
-//        System.out.println(ftest);
+        TestResult test = SeasonalityTests.fTest(Data.ABS_RETAIL.clone(), 12, true, 0);
+//        System.out.println(test);
+        assertTrue(test.getPvalue() <.01);
     }
     
+    @Test
+    public void testQsTest() {
+        TestResult test = SeasonalityTests.qsTest(Data.ABS_RETAIL.clone(), 12, 0);
+//        System.out.println(test);
+        assertTrue(test.getPvalue() < .01);
+    }
+    
+    @Test
+    public void testPeriodicQsTest() {
+        TestResult test = SeasonalityTests.periodicQsTest(Data.ABS_RETAIL.clone(), new double[]{17, 1});
+//        System.out.println(test);
+        assertTrue(test.getPvalue() >.01);
+    }
+
 }

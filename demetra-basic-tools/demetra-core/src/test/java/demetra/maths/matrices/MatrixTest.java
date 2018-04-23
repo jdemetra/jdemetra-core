@@ -17,6 +17,7 @@
 package demetra.maths.matrices;
 
 import java.util.Random;
+import static org.junit.Assert.assertEquals;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
@@ -234,5 +235,28 @@ public class MatrixTest {
         }
         t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
+    }
+    
+    
+    @Test
+    public void testDeterminant(){
+        double[] x=new double[]{1, 5, 4, -3};
+        Matrix X=Matrix.builder(x)
+                .nrows(2)
+                .ncolumns(2)
+                .build();
+        double d=Matrix.determinant(X);
+        assertEquals(x[0]*x[3]-x[1]*x[2], d, 1e-9);
+    }
+
+    @Test
+    public void testSingular(){
+        double[] x=new double[]{1, 5, 4, 20};
+        Matrix X=Matrix.builder(x)
+                .nrows(2)
+                .ncolumns(2)
+                .build();
+        double d=Matrix.determinant(X);
+        assertTrue(d==0);
     }
 }

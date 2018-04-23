@@ -171,7 +171,7 @@ public class MullerNewtonSolver implements IRootsSolver {
         f.val = Complex.cart(fr, fi);
     }
     /**
-     * if the imaginary part ofInternal the root is smaller than BOUND5 => real
+     * if the imaginary part ofl the root is smaller than BOUND5 => real
      * root
      */
     private final double NBOUND;

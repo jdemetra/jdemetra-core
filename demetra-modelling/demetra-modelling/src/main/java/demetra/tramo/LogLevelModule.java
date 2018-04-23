@@ -17,9 +17,9 @@
 package demetra.tramo;
 
 import demetra.data.DoubleSequence;
-import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.modelling.DataTransformation;
+import demetra.design.IBuilder;
+import demetra.modelling.TransformationType;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -38,8 +38,7 @@ public class LogLevelModule implements ILogLevelModule<SarimaModel> {
         return new Builder();
     }
     
-    @BuilderPattern(LogLevelModule.class)
-    public static class Builder {
+    public static class Builder implements IBuilder<LogLevelModule>{
         
         private double precision=1e-7;
         private double logpreference=0;
@@ -54,9 +53,11 @@ public class LogLevelModule implements ILogLevelModule<SarimaModel> {
             return this;
         }
 
+        @Override
         public LogLevelModule build() {
             return new LogLevelModule(logpreference, precision);
         }
+        
     }
 
     private final double logpreference, precision;
@@ -193,8 +194,8 @@ public class LogLevelModule implements ILogLevelModule<SarimaModel> {
         return true;
     }
 
-    public DataTransformation getTransformation() {
-        return this.isChoosingLog() ? DataTransformation.Log : DataTransformation.None;
+    public TransformationType getTransformation() {
+        return this.isChoosingLog() ? TransformationType.Log : TransformationType.None;
     }
 
 }

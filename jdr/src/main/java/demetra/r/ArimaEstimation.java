@@ -25,6 +25,7 @@ import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.mapping.LikelihoodInfo;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.SymmetricMatrix;
 import demetra.processing.IProcResults;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
@@ -57,8 +58,7 @@ public class ArimaEstimation {
     }
 
     public Results process() {
-        SarimaSpecification spec = new SarimaSpecification();
-        spec.setPeriod(period);
+        SarimaSpecification spec = new SarimaSpecification(period);
         if (order != null) {
             spec.setP(order[0]);
             spec.setD(order[1]);
@@ -78,6 +78,7 @@ public class ArimaEstimation {
                 .useCorrectedDegreesOfFreedom(false) // compatibility with R
                 .precision(1e-12)
                 .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
+                .computeExactFinalDerivatives(true)
                 .build();
 
         IntList missings = new IntList();
@@ -94,7 +95,7 @@ public class ArimaEstimation {
 
         RegArimaEstimation<SarimaModel> rslt = monitor.process(rbuilder.build());
         return new Results(rslt.getModel(), rslt.getConcentratedLikelihood(), rslt.statistics(0),
-                rslt.getMax().getHessian(), rslt.getMax().getGradient());
+                SymmetricMatrix.inverse(rslt.getMax().getHessian()), rslt.getMax().getGradient());
     }
 
     @lombok.Value
@@ -118,7 +119,6 @@ public class ArimaEstimation {
             MAPPING.delegate(ARIMA, SarimaInfo.getMapping(), r -> r.getArima());
             MAPPING.delegate(LL, LikelihoodInfo.getMapping(), r -> r.statistics);
             MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
-            MAPPING.set(SCORE, double[].class, source -> source.getScore());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
             MAPPING.set(B, double[].class, source
                     -> {

@@ -34,8 +34,7 @@ public class HannanRissanenTest {
     static final DoubleSequence airlineData, data;
 
     static {
-        SarmaSpecification spec = new SarmaSpecification();
-        spec.setPeriod(12);
+        SarmaSpecification spec = new SarmaSpecification(12);
         spec.setQ(1);
         spec.setBq(1);
         SarimaModel arima = SarimaModel.builder(spec)
@@ -60,8 +59,7 @@ public class HannanRissanenTest {
     @Ignore
     public void testAirline() {
         HannanRissanen hr = HannanRissanen.builder().build();
-        SarmaSpecification spec = new SarmaSpecification();
-        spec.setPeriod(12);
+        SarmaSpecification spec = new SarmaSpecification(12);
         spec.setQ(1);
         spec.setBq(1);
         hr.process(airlineData, spec);
@@ -73,8 +71,7 @@ public class HannanRissanenTest {
     @Ignore
     public void test3101() {
         HannanRissanen hr = HannanRissanen.builder().build();
-        SarmaSpecification spec = new SarmaSpecification();
-        spec.setPeriod(12);
+        SarmaSpecification spec = new SarmaSpecification(12);
         spec.setP(3);
         spec.setQ(1);
         spec.setBq(1);
@@ -87,8 +84,7 @@ public class HannanRissanenTest {
     @Ignore
     public void test3101_burg() {
         HannanRissanen hr = HannanRissanen.builder().finalCorrection(false).initialization(HannanRissanen.Initialization.Burg).build();
-        SarmaSpecification spec = new SarmaSpecification();
-        spec.setPeriod(12);
+        SarmaSpecification spec = new SarmaSpecification(12);
         spec.setP(3);
         spec.setQ(1);
         spec.setBq(1);
@@ -140,8 +136,7 @@ public class HannanRissanenTest {
             t0 = System.currentTimeMillis();
             for (int i = 0; i < (q == 0 ? 100 : K); ++i) {
                 HannanRissanen hr = HannanRissanen.builder().build();
-                SarmaSpecification spec = new SarmaSpecification();
-                spec.setPeriod(12);
+                SarmaSpecification spec = new SarmaSpecification(12);
                 spec.setQ(1);
                 spec.setBq(1);
                 hr.process(airlineData, spec);

@@ -18,7 +18,7 @@ package demetra.regarima.ami;
 
 import demetra.arima.IArimaModel;
 import demetra.data.DataBlock;
-import demetra.design.BuilderPattern;
+import demetra.design.IBuilder;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
@@ -27,11 +27,11 @@ import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.regarima.outlier.AbstractSingleOutlierDetector;
 import demetra.regarima.outlier.FastOutlierDetector;
 import demetra.regarima.outlier.CriticalValueComputer;
-import demetra.timeseries.regression.AdditiveOutlier;
-import demetra.timeseries.regression.IOutlier.IOutlierFactory;
-import demetra.timeseries.regression.LevelShift;
-import demetra.timeseries.regression.PeriodicOutlier;
-import demetra.timeseries.regression.TransitoryChange;
+import demetra.modelling.regression.AdditiveOutlier;
+import demetra.modelling.regression.IOutlier.IOutlierFactory;
+import demetra.modelling.regression.LevelShift;
+import demetra.modelling.regression.PeriodicOutlier;
+import demetra.modelling.regression.TransitoryChange;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -46,8 +46,10 @@ import java.util.function.Consumer;
 public class OutliersDetectionModule<T extends IArimaModel>
         implements IOutliersDetectionModule<T> {
 
-    @BuilderPattern(OutliersDetectionModule.class)
-    public static class Builder<T extends IArimaModel> {
+    public static int DEF_MAXROUND = 100;
+    public static int DEF_MAXOUTLIERS = 50;
+
+    public static class Builder<T extends IArimaModel> implements IBuilder<OutliersDetectionModule> {
 
         private AbstractSingleOutlierDetector sod = new FastOutlierDetector(null);
         private IRegArimaProcessor<T> processor;
@@ -112,13 +114,12 @@ public class OutliersDetectionModule<T extends IArimaModel>
             return this;
         }
 
+        @Override
         public OutliersDetectionModule build() {
             return new OutliersDetectionModule(sod, processor, maxOutliers, maxRound);
         }
     }
 
-    public static int DEF_MAXROUND = 100;
-    public static int DEF_MAXOUTLIERS = 50;
 
     private RegArimaModel<T> regarima; // current regarima model
     private final ArrayList<int[]> outliers = new ArrayList<>(); // Outliers : (position, type)
@@ -199,8 +200,8 @@ public class OutliersDetectionModule<T extends IArimaModel>
     public boolean process(RegArimaModel<T> initialModel) {
         clear();
         int n = initialModel.getY().length();
-        sod.prepare(n);
         sod.setBounds(0, n);
+        sod.prepare(n);
         regarima = initialModel;
         if (curcv == 0) {
             curcv = calcCv();
@@ -303,7 +304,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
             return true;
         }
         int[] toremove = outliers.get(imin);
-        sod.allow(toremove[0], toremove[1]);
+        //sod.allow(toremove[0], toremove[1]);
         removeOutlier(imin);
         if (removeHook != null) {
             removeHook.accept(toremove);

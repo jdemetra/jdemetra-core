@@ -16,8 +16,7 @@
  */
 package demetra.data;
 
-import demetra.utilities.PrimitiveEnum;
-import java.util.function.IntFunction;
+import java.util.EnumSet;
 import java.util.function.IntSupplier;
 
 /**
@@ -61,10 +60,13 @@ public enum AggregationType implements IntSupplier {
      * @return Enum representation of the TsAggregationType
      */
     public static AggregationType valueOf(int value) {
-        return FACTORY.apply(value);
+        for (AggregationType option : EnumSet.allOf(AggregationType.class)) {
+            if (option.getAsInt() == value) {
+                return option;
+            }
+        }
+        return null;
     }
-
-    private static final IntFunction<AggregationType> FACTORY = PrimitiveEnum.ofInt(AggregationType.class);
 
     private final int value;
 

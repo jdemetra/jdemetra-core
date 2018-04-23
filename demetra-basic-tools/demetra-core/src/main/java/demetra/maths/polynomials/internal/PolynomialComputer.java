@@ -16,6 +16,7 @@
  */
 package demetra.maths.polynomials.internal;
 
+import demetra.data.DoubleSequence;
 import demetra.maths.Complex;
 import demetra.maths.Constants;
 import demetra.maths.polynomials.Polynomial;
@@ -24,24 +25,28 @@ import demetra.maths.polynomials.Polynomial;
  *
  * @author Jean Palate
  */
-class PolynomialComputer {
+public class PolynomialComputer {
 
-    private static final double EPS = Constants.getEpsilon();
+    private final double[] p;
+    private Complex f, df;
 
-    PolynomialComputer(final double[] p, final int i0) {
-        this.p = p;
-        this.i0 = i0;
+    public PolynomialComputer(Polynomial x) {
+        this.p = x.toArray();
+    }
+    
+    public int getPolynomialDegree(){
+        return p.length-1;
     }
 
-    PolynomialComputer compute(Complex x) {
+    public PolynomialComputer compute(Complex x) {
         final double xr = x.getRe(), xi = x.getIm();
-        if (Math.abs(xi) < EPS) {
+        if (Math.abs(xi) < Constants.getEpsilon()) {
             return compute(xr);
         }
         df = null;
         final int n = p.length - 1;
         double re = p[n], im = 0;
-        for (int i = n - 1; i >= i0; i--) {
+        for (int i = n - 1; i >= 0; i--) {
             double rtmp = xr * re - xi * im + p[i];
             double itmp = xr * im + re * xi;
             re = rtmp;
@@ -51,14 +56,14 @@ class PolynomialComputer {
         return this;
     }
 
-    PolynomialComputer computeAll(Complex x) {
+    public PolynomialComputer computeAll(Complex x) {
         final double xr = x.getRe(), xi = x.getIm();
-        if (Math.abs(xi) < EPS) {
+        if (Math.abs(xi) < Constants.getEpsilon()) {
             return computeAll(xr);
         }
         final int n = p.length - 1;
         double fr = p[n], fi = 0, dfr = 0, dfi = 0;
-        for (int i = n - 1; i >= i0; i--) {
+        for (int i = n - 1; i >= 0; i--) {
             double tr = xr * dfr - xi * dfi + fr;
             double ti = xr * dfi + dfr * xi + fi;
             dfr = tr;
@@ -73,21 +78,21 @@ class PolynomialComputer {
         return this;
     }
 
-    PolynomialComputer compute(double x) {
+    public PolynomialComputer compute(double x) {
         df = null;
         final int n = p.length - 1;
         double r = p[n];
-        for (int i = n - 1; i >= i0; i--) {
+        for (int i = n - 1; i >= 0; i--) {
             r = x * r + p[i];
         }
         f = Complex.cart(r);
         return this;
     }
 
-    PolynomialComputer computeAll(double x) {
+    public PolynomialComputer computeAll(double x) {
         final int n = p.length - 1;
         double fr = p[n], dfr = 0;
-        for (int i = n - 1; i >= i0; i--) {
+        for (int i = n - 1; i >= 0; i--) {
             dfr = x * dfr + fr;
             fr = x * fr + p[i];
         }
@@ -96,22 +101,18 @@ class PolynomialComputer {
         return this;
     }
 
-    final double[] p;
-    final int i0;
 
-    Complex f, df;
-
-    Complex f() {
+    public Complex f() {
         return f;
     }
 
-    Complex df() {
+    public Complex df() {
         return df;
     }
 
     
-    double df(int n, double x) {
-        if (n >= p.length - i0) {
+    public double df(int n, double x) {
+        if (n >= p.length - 0) {
             return 0;
         }
         // Not optimal
@@ -119,8 +120,8 @@ class PolynomialComputer {
         return P.evaluateAt(x);
     }
 
-    Complex df(int n, Complex x) {
-        if (n >= p.length - i0) {
+    public Complex df(int n, Complex x) {
+        if (n >= p.length - 0) {
             return Complex.ZERO;
         }
         // Not optimal
@@ -128,8 +129,8 @@ class PolynomialComputer {
         return P.evaluateAt(x);
     }
 
-    Polynomial D(int n) {
-        Polynomial P = Polynomial.of(p, i0, p.length);
+    public Polynomial D(int n) {
+        Polynomial P = Polynomial.ofInternal(p);
         int d = 0;
         while (d++ < n) {
             P = P.derivate();

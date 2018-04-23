@@ -114,7 +114,7 @@ public class FractionalAirlineDecomposition {
     public Results process(double[] s, double period, boolean adjust) {
         PeriodicMapping mapping = new PeriodicMapping(period, adjust, false);
         
-        GlsArimaProcessor.Builder<ArimaModel> builder=GlsArimaProcessor.builder();
+        GlsArimaProcessor.Builder<ArimaModel> builder=GlsArimaProcessor.builder(ArimaModel.class);
         builder.mapping(model-> new PeriodicMapping(period, adjust, model.isStationary()))
                 .minimizer(new LevenbergMarquardtMinimizer())
                 .precision(1e-12)

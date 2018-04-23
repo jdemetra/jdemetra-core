@@ -35,7 +35,7 @@ public class FractionalAirlineDecompositionTest {
     @Test
     public void testWeekly() {
         FractionalAirlineDecomposition.Results rslt = FractionalAirlineDecomposition.process(WeeklyData.US_CLAIMS, 365.25/7, true);
-//        System.out.println(rslt.getUcarima());
+        System.out.println(rslt.getUcarima());
 //        System.out.println(DoubleSequence.ofInternal(rslt.getData("sa", double[].class)));
         assertTrue(null != rslt.getData("sa", double[].class));
         Map<String, Class> dictionary=new LinkedHashMap<>();

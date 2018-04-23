@@ -134,7 +134,8 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
     /**
      * Gets the number of periods in one year.
      *
-     * @return
+     * @return The number of periods in 1 year or -1 if the unit is not compatible 
+     * with years
      */
     public int getAnnualFrequency() {
         TsUnit unit = domain.getTsUnit();
@@ -151,7 +152,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
                 }
                 break;
         }
-        throw new UnsupportedOperationException(unit.toString());
+        return -1;
     }
 
     /**

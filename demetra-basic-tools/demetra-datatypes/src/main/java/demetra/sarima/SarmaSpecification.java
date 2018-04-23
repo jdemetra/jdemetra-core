@@ -25,7 +25,8 @@ import demetra.design.Development;
 @lombok.Data
 public final class SarmaSpecification implements Cloneable {
 
-    private int period, p, q, bp, bq;
+    private final int period;
+    private int p, q, bp, bq;
 
     @Override
     public SarmaSpecification clone() {

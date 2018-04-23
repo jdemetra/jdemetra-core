@@ -17,8 +17,8 @@
 package demetra.stats.tests;
 
 import demetra.data.DoubleSequence;
-import demetra.design.BuilderPattern;
 import demetra.design.Development;
+import demetra.design.IBuilder;
 import demetra.dstats.Chi2;
 import demetra.stats.AutoCovariances;
 import java.util.function.IntToDoubleFunction;
@@ -28,8 +28,7 @@ import java.util.function.IntToDoubleFunction;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@BuilderPattern(StatisticalTest.class)
-public class LjungBox {
+public class LjungBox implements IBuilder<StatisticalTest> {
 
     private int lag = 1;
     private int k = 12;
@@ -44,6 +43,10 @@ public class LjungBox {
         this.n = sample.length();
     }
 
+    public LjungBox(IntToDoubleFunction autoCorrelations, int sampleSize) {
+        this.autoCorrelations = autoCorrelations;
+        this.n = sampleSize;
+    }
     /**
      *
      * @param nhp
@@ -89,6 +92,7 @@ public class LjungBox {
         return this;
     }
 
+    @Override
     public StatisticalTest build() {
 
         double res = 0.0;

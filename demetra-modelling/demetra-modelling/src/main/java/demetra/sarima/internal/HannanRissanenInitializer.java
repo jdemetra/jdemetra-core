@@ -17,10 +17,11 @@
 package demetra.sarima.internal;
 
 import demetra.regarima.RegArmaModel;
+import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
-import demetra.design.BuilderPattern;
 import demetra.design.Development;
+import demetra.design.IBuilder;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
@@ -38,8 +39,7 @@ import demetra.sarima.SarimaMapping;
 @Development(status = Development.Status.Alpha)
 public class HannanRissanenInitializer implements IArmaInitializer {
 
-    @BuilderPattern(HannanRissanenInitializer.class)
-    public static class Builder {
+    public static class Builder implements IBuilder<HannanRissanenInitializer> {
 
         private boolean usedefault, stabilize, failifunstable;
 
@@ -75,6 +75,7 @@ public class HannanRissanenInitializer implements IArmaInitializer {
             return this;
         }
 
+        @Override
         public HannanRissanenInitializer build() {
             return new HannanRissanenInitializer(stabilize, usedefault, failifunstable);
         }
@@ -123,7 +124,7 @@ public class HannanRissanenInitializer implements IArmaInitializer {
                 return SarimaModel.builder(dspec).build();
             }
             dy_ = null;
-            LinearModel lm = regs.asLineaModel();
+            LinearModel lm = regs.asLinearModel();
             HannanRissanen hr = HannanRissanen.builder().build();
             if (lm.getVariablesCount() > 0) {
                 Ols ols = new Ols();

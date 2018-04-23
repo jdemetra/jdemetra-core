@@ -41,8 +41,8 @@ public class RobustCovarianceComputerTest {
 //        double sxx = s.ssq(), sx = s.sum();
 //        System.out.println((sxx - sx * sx / s.length()) / s.length());
         for (int i = 5; i < 100; ++i) {
-            assertTrue(0.03<RobustCovarianceComputer.covariance(s, WindowFunction.Bartlett, i));
-            assertTrue(0.03<RobustCovarianceComputer.covariance(s, WindowFunction.Tukey, i));
+            assertTrue(0.00001<RobustCovarianceComputer.covariance(s, WindowFunction.Bartlett, i));
+            assertTrue(0.00001<RobustCovarianceComputer.covariance(s, WindowFunction.Tukey, i));
         }
     }
 

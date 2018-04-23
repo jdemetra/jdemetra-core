@@ -53,8 +53,7 @@ public class RegArimaUtility {
 
     public RegArimaModel<SarimaModel> airlineModel(DoubleSequence data, boolean mean, int ifreq, boolean seas) {
         // use airline model with mean
-        SarimaSpecification spec = new SarimaSpecification();
-        spec.setPeriod(ifreq);
+        SarimaSpecification spec = new SarimaSpecification(ifreq);
         spec.airline(seas);
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()

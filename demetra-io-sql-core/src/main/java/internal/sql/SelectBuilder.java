@@ -16,7 +16,7 @@
  */
 package internal.sql;
 
-import demetra.design.BuilderPattern;
+import demetra.design.IBuilder;
 import util.sql.SqlIdentifierQuoter;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +30,7 @@ import javax.annotation.Nonnull;
  * @author Philippe Charles
  */
 @lombok.RequiredArgsConstructor(staticName = "from")
-@BuilderPattern(String.class)
-public final class SelectBuilder {
+public final class SelectBuilder implements IBuilder<String> {
 
     @lombok.NonNull
     private final String table;
@@ -70,6 +69,7 @@ public final class SelectBuilder {
         return this;
     }
 
+    @Override
     public String build() {
         StringBuilder result = new StringBuilder();
         appendSelect(result);

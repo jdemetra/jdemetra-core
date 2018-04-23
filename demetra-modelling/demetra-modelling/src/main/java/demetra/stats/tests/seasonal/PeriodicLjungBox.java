@@ -18,13 +18,14 @@ package demetra.stats.tests.seasonal;
 
 import demetra.ar.IAutoRegressiveEstimation;
 import demetra.data.DoubleSequence;
-import demetra.design.BuilderPattern;
 import demetra.design.Development;
+import demetra.design.IBuilder;
 import demetra.dstats.Chi2;
 import demetra.stats.AutoCovariances;
 import demetra.stats.StatException;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
+import demetra.utilities.IntList;
 import java.util.function.IntToDoubleFunction;
 
 /**
@@ -32,8 +33,7 @@ import java.util.function.IntToDoubleFunction;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@BuilderPattern(StatisticalTest.class)
-public class PeriodicLjungBox {
+public class PeriodicLjungBox implements IBuilder<StatisticalTest> {
 
     private int[] lags;
     private int nhp;
@@ -96,6 +96,7 @@ public class PeriodicLjungBox {
         return lags;
     }
 
+    @Override
     public StatisticalTest build() {
         if (lags == null) {
             throw new StatException("Invalid lags in LjungBox test");
@@ -105,7 +106,7 @@ public class PeriodicLjungBox {
         for (int i = 0; i < lags.length; i++) {
             double ai = autoCorrelations.applyAsDouble(lags[i]);
             if (sign == 0 || (sign == 1 && ai > 0) || (sign == -1 && ai < 0)) {
-                res += ai * ai / (n - i);
+                res += ai * ai / (n - lags[i]);
             }
         }
         double val = res * n * (n + 2);

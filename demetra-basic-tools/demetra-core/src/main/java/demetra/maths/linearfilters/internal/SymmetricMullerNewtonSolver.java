@@ -19,13 +19,6 @@ package demetra.maths.linearfilters.internal;
 import demetra.design.Development;
 import demetra.design.VisibleForTesting;
 import demetra.maths.Complex;
-import demetra.maths.functions.GridSearch;
-import demetra.maths.functions.IFunction;
-import demetra.maths.functions.IFunctionDerivatives;
-import demetra.maths.functions.IFunctionPoint;
-import demetra.maths.functions.IParametersDomain;
-import demetra.maths.functions.NumericalDerivatives;
-import demetra.maths.functions.ParametersRange;
 import demetra.maths.polynomials.IRootsSolver;
 import demetra.maths.polynomials.LeastSquaresDivision;
 import demetra.maths.polynomials.Polynomial;
@@ -33,7 +26,7 @@ import demetra.utilities.Ref;
 import demetra.utilities.Ref.BooleanRef;
 import demetra.utilities.Ref.DoubleRef;
 import demetra.utilities.Ref.IntRef;
-import demetra.data.DoubleSequence;
+import demetra.maths.polynomials.internal.NewtonOptimizer;
 
 /**
  * Mueller-Newton solver for symmetric polynomial. A symmetric polynomial is
@@ -315,12 +308,14 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
             overflow.val = 1;
         }
     }
-    
-    private boolean isSymmetric(Polynomial p){
-        int n=p.length(), d=n-1;
-        for (int i=0; i<=d/2; ++i)
-            if (Math.abs(p.get(i)-p.get(d-i))>1e-9)
+
+    private boolean isSymmetric(Polynomial p) {
+        int n = p.length(), d = n - 1;
+        for (int i = 0; i <= d / 2; ++i) {
+            if (Math.abs(p.get(i) - p.get(d - i)) > 1e-9) {
                 return false;
+            }
+        }
         return true;
     }
 
@@ -336,26 +331,10 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
             m_roots = new Complex[m_degree / 2];
             m_p = new double[m_degree + 1];
             p.copyTo(m_p, 0);
-//        double v=m_p[m_degree];
-//        for (int i=0; i<m_p.length; ++i){
-//            m_p[i]/=v;
-//        }
             m_pred = m_p.clone();
             if (!newtonnull()) {
                 return false;
             }
-//        for (int j = 1; j < m_degree/2; j++) {
-//            // Sort roots by their real parts by straight insertion.
-//            final Complex tmp = m_roots[j];
-//            int i = j - 1;
-//            for (; i >= 0; i--) {
-//                if (m_roots[i].getRe() <= tmp.getRe()) {
-//                    break;
-//                }
-//                m_roots[i + 1] = m_roots[i];
-//            }
-//            m_roots[i + 1] = tmp;
-//        }
             m_remainder = Polynomial.valueOf(p.get(m_degree));
             return true;
         } catch (Exception err) {
@@ -417,16 +396,12 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
         x2 = x2.plus(h2);
     }
 
-    /**
-     * *** monic() computes monic polynomial for original polynomial ****
-     */
-    private void monic() {
-        // factor stores absolute value of the coefficient */
+    private void rescale() {
         /* with highest exponent */
         int n = m_p.length - 1;
         double factor = Math.abs(1 / m_p[n]);
         /* factor = |1/pn| */
-        if (factor != 1) /* get monic pol., when |pn| != 1 */ {
+        if (factor != 1) {
             for (int i = 0; i <= n; i++) {
                 m_p[i] *= factor;
             }
@@ -531,125 +506,9 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
         /* return best x value */
     }
 
-    /**
-     * *** main routine of the Newton method ****
-     */
-    private Complex newton(final Complex ns, final DoubleRef dxabs) /* ns; determined root with Muller method */ /* double *dxabs; dxabs = |P(x0)/P'(x0)| */ {
-        /*
-         * Complex x0, iteration variable for x-value xmin, best x determined in
-         * newton() f, f = P(x0) df, df = P'(x0) dx, dx = P(x0)/P'(x0) dxh; help
-         * variable dxh = P(x0)/P'(x0)
-         */
-        double fabsmin = NFVALUE, /* fabsmin = |P(xmin)| */
-                eps = DBL_EPSILON;
-        /* routine ends, when estimated dist. */
- /* between x0 and root is less or */
- /* equal eps */
-        int noise = 0;
-        /* noisecounter */
-        Complex xcur = ns;
-        /*
-         * initial estimation = root determined
-         */
- /* with Muller method */
-        Complex xmin = xcur;
-        /*
-         * initial estimation for the best x-value
-         */
-        Complex dx = Complex.ONE;
-        /*
-         * initial value: P(xcur)/P'(xcur)=1+j*0
-         */
-        dxabs.val = dx.abs();
-        /*
-         * initial value: |P(xcur)/P'(xcur)|=1
-         */
-
-        for (int i = 0; i < NITERMAX; i++) {
-            /* main loop */
-            final Ref<Complex> f = new Ref<>(Complex.ZERO);
-            final Ref<Complex> df = new Ref<>(Complex.ZERO);
-            fdvalue(m_p, 0, f, df, xcur);
-            /*
-             * f=P(xcur), df=P'(xcur)
-             */
-
-            if (f.val.abs() < fabsmin) {
-                /* the new xcur is a better */
-                xmin = xcur;
-                /* approximation than the old xmin */
-                fabsmin = f.val.abs();
-                /* store new xmin and fabsmin */
-                noise = 0;
-                /* reset noise counter */
-            }
-
-            if (df.val.abs() > eps) {
-                /* calculate new dx */
-                final Complex dxh = f.val.div(df.val);
-                if (dxh.abs() < dxabs.val * NFACTOR) {
-                    /*
-                     * new dx small enough?
-                     */
-                    dx = dxh;
-                    /* store new dx for next */
-                    dxabs.val = dx.abs();
-                    /* iteration */
-                }
-            }
-
-            double axmin = xmin.abs();
-            if (axmin != 0) {
-                if ((dxabs.val / axmin < eps) || (noise == NNOISEMAX)) {
-                    /* routine ends */
-                    if (Math.abs(xmin.getIm()) < NBOUND) /*
-                     * define determined
-                     * root as real,
-                     */ {
-                        xmin = Complex.cart(xmin.getRe(), 0);
-                        /*
-							       * if imag.
-							       * part<BOUND
-                         */
-                    }
-                    dxabs.val /= axmin;
-                    /* return relative error */
-                    return xmin;
-                    /* return best approximation */
-                }
-            }
-
-            xcur = xcur.minus(dx);
-            /*
-             * main iteration: xcur = xcur -
-             * P(xcur)/P'(xcur)
-             */
-
-            noise++;
-            /* increase noise counter */
-        }
-
-        if (Math.abs(xmin.getIm()) < NBOUND) /* define determined root */ {
-            xmin = Complex.cart(xmin.getRe(), 0);
-            /*
-						   * as real, if imag.
-						   * part<BOUND
-             */
-        }
-        double axmin2 = xmin.abs();
-        if (axmin2 != 0) {
-            dxabs.val /= axmin2;
-            /* return relative error */
-        }
-        /* maximum number of iterations exceeded: */
-        return xmin;
-        /* return best xmin until now */
-    }
-
     private boolean newtonnull() {
 
-        final DoubleRef newerr = new DoubleRef(0d);
-        m_maxerr = 0;
+         m_maxerr = 0;
         /* initialize max. error of determined roots */
  /* check input of the polynomial */
 
@@ -665,19 +524,18 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
             /* return no error */
         }
 
-        monic();
+        rescale();
         /* get monic polynom */
 
         do {
-            /* main loop of null() */
- /* Muller method */
+            NewtonOptimizer optimizer = new NewtonOptimizer(Polynomial.of(m_pred, m_idx, m_p.length), true);
             final Complex ns = muller();
             /* Newton method */
-            final Complex nroot = newton(ns, newerr);
-
+            Complex nroot = optimizer.root(ns);
+            double newerr=optimizer.getError();
             /* stores max. error of all roots */
-            if (newerr.val > m_maxerr) {
-                m_maxerr = newerr.val;
+            if (newerr > m_maxerr) {
+                m_maxerr = newerr;
             }
             /* deflate polynomial */
             if (nroot.getIm() == 0) {
@@ -688,19 +546,7 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
                 return false;
             }
         } while (m_p.length - m_idx > 3);
-        /* last one or two roots */
-        quadratic();
-//	if (m_p.length - m_idx == 3) {
-//	    m_roots[m_idx + 1] = newton(m_roots[m_idx + 1], newerr);
-//	    if (newerr.val > m_maxerr)
-//		m_maxerr = newerr.val;
-//	}
-//	m_roots[m_idx] = newton(m_roots[m_idx], newerr);
-//	if (newerr.val > m_maxerr)
-//	    m_maxerr = newerr.val;
-
-        return true;
-        /* return no error */
+        return m_idx == m_degree || quadratic();
     }
 
     /**
@@ -1016,7 +862,7 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
             m_roots[m_idx / 2] = r;
             m_roots[m_idx / 2 + 1] = r.conj();
             m_idx += 2;
-//        // compute the polynomial
+            // compute the polynomial
             double a = -2 * r.getRe(), b = r.absSquare();
             m_pred[m_degree - 1] -= m_pred[m_degree] * a;
             for (int i = m_degree; i > m_idx; i--) {
@@ -1034,23 +880,15 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
             double a = -2 * r.getRe(), b = r.absSquare();
             Polynomial num = Polynomial.of(m_pred, m_idx, m_degree + 1);
             Polynomial div1 = Polynomial.of(new double[]{b, a, 1});
-            Complex ir = r.inv();
-            a = -2 * ir.getRe();
-            b = ir.absSquare();
-            Polynomial div2 = Polynomial.of(new double[]{b, a, 1});
+            Polynomial div2 = Polynomial.of(new double[]{1 / b, a / b, 1});
             LeastSquaresDivision lq = new LeastSquaresDivision();
-            lq.divide(num, div1.times(div2));
-            double e = lq.getError() / (num.length() - div2.length());
-            if (Math.abs(nrm - 1) > 1e-8 || e < 1e-6) {
-                m_roots[m_idx / 2] = r;
-                m_roots[m_idx / 2 + 1] = r.conj();
-                m_idx += 4;
-                lq.getQuotient().copyTo(m_pred, m_idx);
-            } else if (!optimize(r0)) {
-                return false;
-            }
+            Polynomial sdiv = div1.times(div2);
+            lq.divide(num, sdiv);
+            m_roots[m_idx / 2] = r;
+            m_roots[m_idx / 2 + 1] = r.conj();
+            m_idx += 4;
+            lq.getQuotient().copyTo(m_pred, m_idx);
         }
-//        }
         reinforceSymmetry();
         return true;
     }
@@ -1062,9 +900,15 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
      */
     private boolean update(final double r0) {
         double r = Math.abs(r0) >= 1 ? r0 : 1 / r0;
+        if (Math.abs(r - 1) < 1e-8) {
+            r = 1;
+        } else if (Math.abs(r + 1) < 1e-8) {
+            r = -1;
+        }
+
         double a = -(r0 + 1 / r0);
-        m_roots[m_idx / 2] = Complex.cart(r);
         if (!lqdiv) {
+            m_roots[m_idx / 2] = Complex.cart(r);
             m_idx += 2;
             // we deflate by (x-r0)(x-1/r0)
             // = x^2-x*(r0+1/r0)+1
@@ -1074,9 +918,10 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
             }
         } else {
             Polynomial num = Polynomial.of(m_pred, m_idx, m_degree + 1);
-            Polynomial div = Polynomial.of(new double[]{1, a, 1});
+            Polynomial sdiv = Polynomial.of(new double[]{1, a, 1});
             LeastSquaresDivision lq = new LeastSquaresDivision();
-            lq.divide(num, div);
+            lq.divide(num, sdiv);
+            m_roots[m_idx / 2] = Complex.cart(r);
             m_idx += 2;
             lq.getQuotient().copyTo(m_pred, m_idx);
         }
@@ -1117,84 +962,4 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
         }
         return result;
     }
-
-    private static double B_EPS = .1;
-
-    private boolean optimize(Complex r0) {
-        GridSearch gs = new GridSearch();
-        gs.setBounds(Math.max(-1, r0.getRe() - B_EPS), Math.min(1, r0.getRe() + B_EPS));
-        Function fn = new Function(m_pred, m_idx);
-
-        gs.minimize(fn.evaluate(r0.getRe()));
-        Function.FunctionInstance rslt = (Function.FunctionInstance) gs.getResult();
-        Complex nr = Complex.cart(rslt.getX(), Math.sqrt(1 - rslt.getX() * rslt.getX()));
-        m_roots[m_idx / 2] = nr;
-        m_roots[m_idx / 2 + 1] = nr.conj();
-        m_idx += 4;
-        rslt.lq.getQuotient().copyTo(m_pred, m_idx);
-        return gs.getObjective() < OPT_MIN;
-    }
-
-    static final double OPT_MIN = 1e-5;
-}
-
-class Function implements IFunction {
-
-    Function(double[] p, int start) {
-        this.p = p;
-        this.start = start;
-    }
-
-    double[] p;
-    int start;
-
-    @Override
-    public IFunctionPoint evaluate(DoubleSequence parameters) {
-        return new FunctionInstance(parameters.get(0));
-    }
-
-    public IFunctionPoint evaluate(double a) {
-        return new FunctionInstance(a);
-    }
-
-    @Override
-    public IParametersDomain getDomain() {
-        return new ParametersRange(-1, 1, true);
-    }
-
-    class FunctionInstance implements IFunctionPoint {
-
-        FunctionInstance(double x) {
-            this.x = x;
-        }
-        double x;
-        LeastSquaresDivision lq;
-
-        @Override
-        public DoubleSequence getParameters() {
-            return DoubleSequence.of(x);
-        }
-
-        public double getX() {
-            return x;
-        }
-
-        @Override
-        public double getValue() {
-            double a = -2 * x;
-            Polynomial num = Polynomial.of(p, start, p.length);
-            Polynomial div = Polynomial.ofInternal(new double[]{1, a, 1});
-            div = div.times(div);
-            lq = new LeastSquaresDivision();
-            lq.divide(num, div);
-            return lq.getError() / (num.length() - div.length());
-        }
-
-        @Override
-        public IFunction getFunction() {
-            return Function.this;
-        }
-
-    }
-
 }

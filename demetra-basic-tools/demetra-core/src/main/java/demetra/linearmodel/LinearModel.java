@@ -26,7 +26,6 @@ import javax.annotation.Nonnull;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
 import demetra.design.Internal;
-import java.util.Iterator;
 
 /**
  *
@@ -96,6 +95,10 @@ public class LinearModel {
 
     public static Builder builder() {
         return new Builder();
+    }
+    
+    public static LinearModel of(LinearModelType model){
+        return new LinearModel(model.getY().toArray(), model.isMeanCorrection(), Matrix.of(model.getX()));
     }
 
     /**
@@ -214,5 +217,9 @@ public class LinearModel {
             builder.append("+x(").append(x.getColumnsCount()).append(')');
         }
         return builder.toString();
+    }
+    
+    public LinearModelType toType(){
+        return new LinearModelType(DoubleSequence.ofInternal(y), mean, x);
     }
 }

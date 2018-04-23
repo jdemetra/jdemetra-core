@@ -35,8 +35,7 @@ import demetra.data.DoubleSequence;
 @Development(status = Development.Status.Alpha)
 @Immutable
 public class BackFilter extends AbstractFiniteFilter {
-
- 
+    
     /**
      * BackFilter(0)
      */
@@ -166,6 +165,9 @@ public class BackFilter extends AbstractFiniteFilter {
 	return 0;
     }
 
+    public int getDegree(){
+        return polynomial.getDegree();
+    }
 
     /**
      * 
@@ -328,7 +330,7 @@ public class BackFilter extends AbstractFiniteFilter {
 	@Override
 	public boolean simplify(final BackFilter left, final BackFilter right) {
 	    clear();
-	    if (left.length() == 1 || right.length() == 1)
+	    if (left.getDegree() == 0 || right.getDegree() == 0)
 		return false;
 	    Polynomial lp = left.polynomial, rp = right.polynomial, p;
 	    double l0 = lp.get(0), r0 = rp.get(0);
@@ -417,7 +419,7 @@ public class BackFilter extends AbstractFiniteFilter {
 		    : new UnitRootsSolver(freq);
 	    urs.factorize(f.polynomial);
 	    unitRoots = new BackFilter(urs.getUnitRoots().toPolynomial());
-	    if (unitRoots.length() == 1) {
+	    if (unitRoots.getDegree() == 0) {
 		stationaryFilter = f;
 		return false;
 	    } else {

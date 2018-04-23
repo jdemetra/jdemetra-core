@@ -8,6 +8,7 @@ package demetra.maths.matrices;
 import demetra.maths.matrices.spi.LowerTriangularMatrixAlgorithms;
 import java.util.concurrent.atomic.AtomicReference;
 import demetra.data.DataBlock;
+import demetra.data.LogSign;
 import demetra.random.IRandomNumberGenerator;
 import demetra.utilities.ServiceLookup;
 
@@ -147,4 +148,17 @@ public class LowerTriangularMatrix {
     public Matrix inverse(final Matrix L) throws MatrixException {
         return IMPL.get().inverse(L);
     }
+    
+    public LogSign logDeterminant(Matrix L){
+        return LogSign.of(L.diagonal());
+    }
+    
+    public double determinant(Matrix L){
+        LogSign ls=logDeterminant(L);
+        if (ls == null)
+            return 0;
+        double val=Math.exp(ls.getValue());
+        return ls.isPositive() ? val : -val;
+    }
+
 }

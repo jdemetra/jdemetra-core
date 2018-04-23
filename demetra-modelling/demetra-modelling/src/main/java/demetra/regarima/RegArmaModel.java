@@ -7,7 +7,6 @@ package demetra.regarima;
 
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
-import demetra.regarima.RegArimaModel;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSequence;
@@ -15,13 +14,16 @@ import demetra.design.Immutable;
 import demetra.eco.EcoException;
 import demetra.linearmodel.LinearModel;
 import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.linearfilters.IFilterOutput;
 import demetra.maths.matrices.Matrix;
 import java.util.List;
 import demetra.maths.MatrixType;
 
 /**
  * Linear model with stationary ARMA process
+ * The regression variables correspond to 
+ * 1. The missing values (additive outliers approach)
+ * 2. The mean correction
+ * 3. The other regression variables
  *
  * @author Jean Palate <jean.palate@nbb.be>
  * @param <M>
@@ -45,7 +47,7 @@ public class RegArmaModel<M extends IArimaModel> {
         StationaryTransformation<M> st = (StationaryTransformation<M>) regarima.arima().stationaryTransformation();
         M arma = st.getStationaryModel();
         BackFilter ur = st.getUnitRoots();
-        int d = ur.length() - 1;
+        int d = ur.getDegree();
         int n = regarima.getObservationsCount();
         int ndy = n - d;
         if (ndy <= 0) {
@@ -62,7 +64,7 @@ public class RegArmaModel<M extends IArimaModel> {
         // dy
         if (d > 0) {
             dy = new double[y.length() - d];
-            ur.apply(i -> y.get(i), IFilterOutput.of(dy, d));
+            ur.apply(y, DataBlock.ofInternal(dy));
         } else {
             dy = y.toArray();
         }
@@ -87,7 +89,7 @@ public class RegArmaModel<M extends IArimaModel> {
                     cols.next().set(1);
                 }
                 for (DoubleSequence var : x) {
-                    ur.apply(i -> var.get(i), IFilterOutput.of(cols.next(), d));
+                    ur.apply(var, cols.next());
                 }
             } else {
                 for (int i = 0; i < missing.length; ++i) {
@@ -97,7 +99,7 @@ public class RegArmaModel<M extends IArimaModel> {
                     cols.next().set(1);
                 }
                 for (DoubleSequence var : x) {
-                    ur.apply(i -> var.get(i), IFilterOutput.of(cols.next(), d));
+                    ur.apply(var, cols.next());
                 }
             }
         }
@@ -128,7 +130,7 @@ public class RegArmaModel<M extends IArimaModel> {
      */
     int missingCount;
     
-    public LinearModel asLineaModel(){
+    public LinearModel asLinearModel(){
         return new LinearModel(y.toArray(), false, Matrix.of(x));
     }
     

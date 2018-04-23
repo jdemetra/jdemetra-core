@@ -19,8 +19,8 @@ package demetra.regarima.internal;
 import demetra.regarima.RegArmaModel;
 import demetra.arima.IArimaModel;
 import demetra.data.DoubleSequence;
-import demetra.design.BuilderPattern;
 import demetra.design.Development;
+import demetra.design.IBuilder;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.DefaultLikelihoodEvaluation;
 import demetra.likelihood.ILikelihood;
@@ -40,8 +40,7 @@ import demetra.maths.MatrixType;
 @Development(status=Development.Status.Alpha)
 class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
 
-    @BuilderPattern(RegArmaSsqFunction.class)
-    static class SsqBuilder<S extends IArimaModel> {
+    static class SsqBuilder<S extends IArimaModel> implements IBuilder<RegArmaSsqFunction<S>> {
 
         // algorithms
         private boolean ml = true;
@@ -88,6 +87,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
             return this;
         }
 
+        @Override
         public RegArmaSsqFunction<S> build() {
             return new RegArmaSsqFunction<>(dy, x, nmissing, mapping, cll,
                     ml ? DefaultLikelihoodEvaluation.v() : DefaultLikelihoodEvaluation.errors(),

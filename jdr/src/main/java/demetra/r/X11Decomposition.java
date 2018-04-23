@@ -111,18 +111,23 @@ public class X11Decomposition {
         }
     }
 
-    public Results process(double[] data, double period, boolean mul, int henderson, String seas0, String seas1, double lsig, double usig) {
+    public Results process(double[] data, double period, boolean mul, int trendLength, int pdegree, 
+            String pkernel, String leftAsymmetric, String rightAsymmetric, String seas0, String seas1, double lsig, double usig) {
         int iperiod = (int) period;
         Number P;
         if (Math.abs(period - iperiod) < 1e-9) {
-            P = Integer.valueOf(iperiod);
+            P = iperiod;
         } else {
-            P = Double.valueOf(period);
+            P = period;
         }
         X11Context context = X11Context.builder()
                 .mode(mul ? DecompositionMode.Multiplicative : DecompositionMode.Additive)
                 .period(P)
-                .hendersonFilterLength(henderson)
+                .trendFilterLength(trendLength)
+                .localPolynomialDegree(pdegree)
+                .kernel(pkernel)
+                .leftAsymmetricEndPoints(leftAsymmetric)
+                .rightAsymmetricEndPoints(rightAsymmetric)
                 .initialSeasonalFilter(SeasonalFilterOption.valueOf(seas0))
                 .finalSeasonalFilter(SeasonalFilterOption.valueOf(seas1))
                 .lowerSigma(lsig)
@@ -172,7 +177,7 @@ public class X11Decomposition {
         if (musgrave) {
             // apply the musgrave filters
             IFiniteFilter[] f = MusgraveFilterFactory.makeFilters(filter, ic);
-            AsymmetricEndPoints aep = new AsymmetricEndPoints(f);
+            AsymmetricEndPoints aep = new AsymmetricEndPoints(f, 0);
             aep.process(DoubleSequence.ofInternal(s), DataBlock.ofInternal(x));
         }
         return x;

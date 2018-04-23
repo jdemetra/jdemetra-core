@@ -65,7 +65,6 @@ public class LogSign {
             value += Math.log(x);
         }
         return new LogSign(value, chs ? !pos : pos);
-       
     }
     
 }

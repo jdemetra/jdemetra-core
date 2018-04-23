@@ -18,7 +18,7 @@ package demetra.regarima.ami;
 
 import demetra.arima.IArimaModel;
 import demetra.regarima.RegArimaModel;
-import demetra.timeseries.regression.IOutlier;
+import demetra.modelling.regression.IOutlier;
 
 /**
  *

@@ -16,6 +16,7 @@
  */
 package demetra.data;
 
+import demetra.design.IntValue;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 
@@ -68,20 +69,17 @@ public enum DiscreteWindowFunction {
     }
 
     /**
-     * Computes w[i]=f(i/m), where m is (N-1)/2
+     * Computes w[i]=f(i/m)
      *
-     * @param N The window length. Should be odd
+     * @param m The length of the half-window. 
      * @return The returned array contains exactly m elements
+     * they correspond to wnd(0)... f(m-1/m)
      */
-    public double[] discreteWindow(int N) {
-        if (N % 2 == 0) {
-            throw new IllegalArgumentException("Window length should be odd");
-        }
-        int win2 = N / 2;
-        double[] win = new double[win2];
-        double dlen = win2;
+    public double[] discreteWindow(int m) {
+        double[] win = new double[m];
+        double dlen = m;
         DoubleUnaryOperator fn = window();
-        for (int i = 0; i < win2; ++i) {
+        for (int i = 0; i < m; ++i) {
             win[i] = fn.applyAsDouble(i / dlen);
         }
         return win;

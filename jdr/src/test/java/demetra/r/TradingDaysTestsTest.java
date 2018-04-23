@@ -75,8 +75,8 @@ public class TradingDaysTestsTest {
     }
 
     public static UcarimaModel ucmAirline(double th, double bth) {
-        SarimaSpecification spec = new SarimaSpecification();
-        spec.airline(12);
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.airline(true);
         SarimaModel sarima = SarimaModel.builder(spec)
                 .theta(1, th)
                 .btheta(1, bth)

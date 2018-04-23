@@ -16,6 +16,7 @@
  */
 package demetra.maths.polynomials.internal;
 
+import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.design.VisibleForTesting;
 import demetra.maths.Complex;
@@ -100,82 +101,8 @@ public class RobustMullerNewtonSolver implements IRootsSolver {
      * if noise>NOISEMAX: terminate iteration
      */
     private final static double MNOISEMAX = 5;
-    // Newton
-    /**
-     * max. number ofInternal iterations
-     */
-    private final static int NITERMAX = 20;
-    /**
-     * calculate new dx, when change of x0 is smaller than FACTOR*(old change of
-     * x0)
-     */
-    private final static double NFACTOR = 5;
-    /**
-     * initialisation ofInternal |P(xmin)|
-     */
-    private final static double NFVALUE = 1e36;
     private static final double ISQRT2 = 1.0 / Math.sqrt(2.0);
 
-    /**
-     * *** fdvalue computes P(x0) and optional P'(x0) ****
-     */
-    private static void fdvalue(final double[] p, final int i0,
-            final Ref<Complex> f, final Complex x) /* double *p, coefficient vector ofInternal the polynomial P(x) */ // Coefficients are stored for i=i0; i<p.length
-    /* *f, the result f=P(x0) */ /* *df, the result df=P'(x0), if flag=1 */ /* x; polynomial will be computed at x */ /* int n; the highest exponent ofInternal p */ /* unsigned char flag; flag==1 => compute P'(x0) */ {
-        int n = p.length - 1;
-
-        // final ComplexBuilder builder = new ComplexBuilder(p[n]);
-        double re = p[n], im = 0;
-        final double xr = x.getRe(), xi = x.getIm();
-        for (int i = n - 1; i >= i0; i--) // f = p[i] + f * x
-        // builder.mul(x).add(p[i]);
-        {
-            double rtmp = xr * re - xi * im + p[i];
-            double itmp = xr * im + re * xi;
-            re = rtmp;
-            im = itmp;
-        }
-        // f.val = builder.toComplex();
-        f.val = Complex.cart(re, im);
-    }
-
-    private static void fdvalue(final double[] p, final int i0,
-            final Ref<Complex> f, final Ref<Complex> df, final Complex x) /* double *p, coefficient vector ofInternal the polynomial P(x) */ // Coefficients are stored for i=i0; i<p.length
-    /* *f, the result f=P(x0) */ /* *df, the result df=P'(x0), if flag=1 */ /* x; polynomial will be computed at x */ /* int n; the highest exponent ofInternal p */ /* unsigned char flag; flag==1 => compute P'(x0) */ {
-        int n = p.length - 1;
-        // f.val = Complex.cart(p[n]);
-        // df.val = Complex.ZERO;
-        // for (int i = n - 1; i >= i0; i--) {
-        // df.val = f.val.plus(df.val.times(x));
-        // f.val = f.val.times(x).plus(p[i]);
-        // }
-
-        // final ComplexBuilder bdf = new ComplexBuilder(Complex.ZERO);
-        // final ComplexBuilder bf = new ComplexBuilder(p[n]);
-        final double xr = x.getRe(), xi = x.getIm();
-        double fr = p[n], fi = 0, dfr = 0, dfi = 0;
-        for (int i = n - 1; i >= i0; i--) {
-            // bdf.mul(x).add(bf.toComplex());
-            // bf.mul(x).add(p[i]);
-            double tr = xr * dfr - xi * dfi + fr;
-            double ti = xr * dfi + dfr * xi + fi;
-            dfr = tr;
-            dfi = ti;
-            tr = xr * fr - xi * fi + p[i];
-            ti = xr * fi + fr * xi;
-            fr = tr;
-            fi = ti;
-        }
-        // df.val = bdf.toComplex();
-        // f.val = bf.toComplex();
-        df.val = Complex.cart(dfr, dfi);
-        f.val = Complex.cart(fr, fi);
-    }
-    /**
-     * if the imaginary part ofInternal the root is smaller than BOUND5 => real
-     * root
-     */
-    private final double NBOUND;
     /**
      * max. number ofInternal iterations with no better value
      */
@@ -209,7 +136,6 @@ public class RobustMullerNewtonSolver implements IRootsSolver {
         MBOUND4 = Math.sqrt(Double.MAX_VALUE) / 1e4;
         MBOUND6 = Math.log10(MBOUND4) - 4;
         MNOISESTART = DBL_EPSILON * 1e2;
-        NBOUND = Math.sqrt(DBL_EPSILON);
         x0 = Complex.ZERO;
         x1 = Complex.ZERO;
         x2 = Complex.ZERO;
@@ -278,7 +204,7 @@ public class RobustMullerNewtonSolver implements IRootsSolver {
             suppress_overflow();
 
             /* calculate new value => result in f2 */
-            PolynomialComputer fn = new PolynomialComputer(m_pred, m_idx);
+            PolynomialComputer fn = new PolynomialComputer(Polynomial.of(m_pred, m_idx, m_pred.length));
             f2 = fn.compute(x2).f();
 
             /* check ofInternal too big function values */
@@ -477,7 +403,7 @@ public class RobustMullerNewtonSolver implements IRootsSolver {
  /* initializing routine */
         initialize(xb, epsilon);
 
-        PolynomialComputer fn = new PolynomialComputer(m_pred, m_idx);
+        PolynomialComputer fn = new PolynomialComputer(Polynomial.of(m_pred, m_idx, m_pred.length));
         f0 = fn.compute(x0).f();
         f1 = fn.compute(x1).f();
         f2 = fn.compute(x2).f();
@@ -532,13 +458,7 @@ public class RobustMullerNewtonSolver implements IRootsSolver {
         /* return best x value */
     }
 
-    private boolean newtonnull() /* Complex *p, coefficient vector ofInternal the original polynomial */ /* *pred, coefficient vector ofInternal the deflated polynomial */ /* *root; determined roots */ /* int *n; the highest exponent ofInternal the original polynomial */ /* double *maxerr; max. error ofInternal all determined roots */ /* unsigned char flag; flag = 1 => Complex coefficients */ /* flag = 0 => real coefficients */ {
-        // newerr; error ofInternal actual root
-        // ns; root determined by Muller's method
-        // nred, highest exponent ofInternal deflated polynomial
-        // error; indicates an error in poly_check
-        // diff; number ofInternal roots at 0
-
+    private boolean newtonnull() {
         m_maxerr = 0;
         /* initialize max. error ofInternal determined roots */
  /* check input ofInternal the polynomial */
@@ -559,22 +479,19 @@ public class RobustMullerNewtonSolver implements IRootsSolver {
         /* get monic polynom */
 
         do {
-            NewtonOptimizer optimizer = new NewtonOptimizer(m_pred, m_idx, true);
             final Complex ns = muller();
             /* Newton method */
+            NewtonOptimizer optimizer = new NewtonOptimizer(Polynomial.of(m_p, 0, m_p.length), true);
             Complex nroot = optimizer.root(ns);
-            // to be sure
-            NewtonOptimizer optimizer2 = new NewtonOptimizer(m_p, 0, false);
-            nroot=optimizer2.root(nroot);
             /* stores max. error ofInternal all roots */
-            if (optimizer.err > m_maxerr) {
-                m_maxerr = optimizer.err;
+            if (optimizer.getError() > m_maxerr) {
+                m_maxerr = optimizer.getError();
             }
             /* deflate polynomial */
             if (nroot.getIm() == 0) {
-                update(optimizer.multiplicity, nroot.getRe());
+                update(nroot.getRe(), optimizer.getMultiplicity());
             } else {
-                update(optimizer.multiplicity, nroot);
+                update(nroot, optimizer.getMultiplicity());
             }
         } while (m_p.length - m_idx > 3);
         /* last one or two roots */
@@ -627,7 +544,7 @@ public class RobustMullerNewtonSolver implements IRootsSolver {
 
         if ((seconditer.val == 1) && (f2absqb > 0)) {
             // f2=P(x0), df=P'(x0)
-            PolynomialComputer fn = new PolynomialComputer(m_pred, m_idx);
+            PolynomialComputer fn = new PolynomialComputer(Polynomial.of(m_pred, m_idx, m_pred.length));
             fn.computeAll(xb);
             f2 = fn.f();
             df = fn.df();
@@ -882,23 +799,23 @@ public class RobustMullerNewtonSolver implements IRootsSolver {
         lqdiv = lq;
     }
 
-    private void update(int mul, final Complex r0) {
-        double a = 2 * r0.getRe(), b = -r0.absSquare();
+    private void update(final Complex r0, final int mul) {
+        double a = -2 * r0.getRe(), b = r0.absSquare();
         for (int k = 0; k < mul; ++k) {
             m_roots[m_idx++] = r0;
             m_roots[m_idx++] = r0.conj();
 
             if (!lqdiv) {
-                m_pred[m_degree - 1] += m_pred[m_degree] * a;
+                m_pred[m_degree - 1] -= m_pred[m_degree] * a;
                 for (int i = m_degree; i > m_idx; i--) {
-                    m_pred[i - 2] += a * m_pred[i - 1] + b * m_pred[i];
+                    m_pred[i - 2] -= a * m_pred[i - 1] + b * m_pred[i];
                 }
             }
         }
 
         if (lqdiv) {
             Polynomial num = Polynomial.of(m_pred, m_idx - 2 * mul, m_degree + 1);
-            Polynomial c = Polynomial.ofInternal(new double[]{-b, -a, 1});
+            Polynomial c = Polynomial.ofInternal(new double[]{b, a, 1});
             Polynomial div = c;
             for (int i = 1; i < mul; ++i) {
                 div = div.times(c);
@@ -914,7 +831,7 @@ public class RobustMullerNewtonSolver implements IRootsSolver {
      *
      * @param r0
      */
-    private void update(int mul, final double r0) {
+    private void update(final double r0, final int mul) {
         for (int k = 0; k < mul; ++k) {
             m_roots[m_idx++] = Complex.cart(r0);
 

@@ -41,6 +41,7 @@ public class TsException extends RuntimeException {
             INVALID_PERIOD = "Invalid period",
             INVALID_OPERATION ="Invalid operation",
             INVALID_AGGREGATIONMODE = "Invalid aggregation mode",
+            INVALID_DEFINITION="Invalid definition",
             DOMAIN_EMPTY = "Empty domain",
             TS_EMPTY = "Empty series";
 

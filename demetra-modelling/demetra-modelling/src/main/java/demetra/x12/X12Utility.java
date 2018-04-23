@@ -16,19 +16,8 @@
  */
 package demetra.x12;
 
-import demetra.tramo.*;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
-import static demetra.maths.Optimizer.LevenbergMarquardt;
-import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
-import demetra.maths.functions.minpack.MinPackMinimizer;
-import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
-import demetra.regarima.IRegArimaProcessor;
-import demetra.regarima.RegArimaModel;
-import demetra.sarima.GlsSarimaProcessor;
-import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
-import demetra.sarima.internal.HannanRissanenInitializer;
+
 
 /**
  *

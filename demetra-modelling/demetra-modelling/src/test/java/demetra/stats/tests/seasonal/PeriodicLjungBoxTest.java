@@ -35,25 +35,23 @@ public class PeriodicLjungBoxTest {
 
     @Test
     public void testWeekly() {
-        System.out.println("Real");
         PeriodicLjungBox lb = new PeriodicLjungBox(ldel(WeeklyData.US_PETROLEUM), 5);
         StatisticalTest test = lb.lags(365.25 / 7, 5).usePositiveAutocorrelations().build();
-        System.out.println(test.getValue());
-        for (int i = 40; i < 60; ++i) {
-            StatisticalTest ntest = lb.lags(i, 5).usePositiveAutocorrelations().build();
-            System.out.println(ntest.getValue());
-        }
+//        System.out.println(test.getValue());
+//        for (int i = 40; i < 60; ++i) {
+//            StatisticalTest ntest = lb.lags(i, 5).usePositiveAutocorrelations().build();
+//            System.out.println(ntest.getValue());
+//        }
     }
 
     @Test
     public void testRandom() {
-        System.out.println("Random");
         Random rnd = new Random();
         PeriodicLjungBox lb = new PeriodicLjungBox(DoubleSequence.of(1000, i -> rnd.nextGaussian()), 0);
-        for (int i = 3; i < 20; ++i) {
-            StatisticalTest test = lb.lags(365.25 / i, 10).useAllAutocorrelations().build();
-            System.out.println(test.getValue());
-        }
+//        for (int i = 3; i < 20; ++i) {
+//            StatisticalTest test = lb.lags(365.25 / i, 10).useAllAutocorrelations().build();
+//            System.out.println(test.getValue());
+//        }
     }
 
     private DoubleSequence ldel(final double[] x) {

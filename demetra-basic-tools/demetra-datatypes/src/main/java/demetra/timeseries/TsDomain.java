@@ -18,6 +18,7 @@ package demetra.timeseries;
 
 import java.time.LocalDateTime;
 import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 
 /**
  *
@@ -26,7 +27,15 @@ import javax.annotation.Nonnegative;
 @lombok.Value(staticConstructor = "of")
 public class TsDomain implements TimeSeriesDomain<TsPeriod> {
 
-    public static TsDomain splitOf(TsPeriod period, TsUnit hUnit, boolean exact) {
+    /**
+     * Generates a domain which is a splitting of a given period in sub-periods
+     * @param period The period which corresponds to the domain
+     * @param hUnit The time unit of the sub-periods
+     * @param exact Indicates if the domain must be exactly decomposed into its sub-periods 
+     * @return The new domain (never null)
+     * @throws A TsException is thrown when the decomposition is not possible
+     */
+    public static @Nonnull TsDomain splitOf(TsPeriod period, TsUnit hUnit, boolean exact)throws TsException {
         LocalDateTime start = period.start(), end = period.end();
         long len = hUnit.getChronoUnit().between(start, end) / hUnit.getAmount();
         TsPeriod pstart = period.withUnit(hUnit);
@@ -190,7 +199,7 @@ public class TsDomain implements TimeSeriesDomain<TsPeriod> {
     }
 
     @Override
-    public TsDomain select(TimeSeriesSelector ps) {
+    public TsDomain select(TimeSelector ps) {
         if (isEmpty()) {
             return this;
         }

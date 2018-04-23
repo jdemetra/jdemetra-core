@@ -16,6 +16,7 @@
  */
 package demetra.maths.matrices;
 
+import demetra.data.LogSign;
 import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.maths.Constants;
 import demetra.random.IRandomNumberGenerator;
@@ -132,4 +133,16 @@ public class SymmetricMatrixTest {
         SymmetricMatrix.reenforceSymmetry(Q);
         assertTrue(Q.isSymmetric(0));
     }
+    
+    @Test
+    public void testDeterminant(){
+        Matrix X=Matrix.make(30, 50);
+        Random rnd=new Random(0);
+        X.set(rnd::nextDouble);
+        Matrix S=SymmetricMatrix.XXt(X);
+        LogSign d1=Matrix.logDeterminant(S);
+        LogSign d2=SymmetricMatrix.logDeterminant(S);
+        assertEquals(d1.getValue(), d2.getValue(), 1e-6);
+    }
+    
 }
