@@ -16,7 +16,7 @@
  */
 package demetra.util;
 
-import demetra.design.IBuilder;
+import demetra.design.BuilderPattern;
 import internal.util.Strings;
 import internal.util.URLEncoder2;
 import java.io.UnsupportedEncodingException;
@@ -39,7 +39,8 @@ import javax.annotation.Nullable;
  *
  * @author Philippe Charles
  */
-public final class UriBuilder implements IBuilder<URI> {
+@BuilderPattern(URI.class)
+public final class UriBuilder {
 
     // PROPERTIES
     private final String scheme;
@@ -104,7 +105,6 @@ public final class UriBuilder implements IBuilder<URI> {
         return result.toString();
     }
 
-    @Override
     public URI build() {
         return URI.create(buildString());
     }

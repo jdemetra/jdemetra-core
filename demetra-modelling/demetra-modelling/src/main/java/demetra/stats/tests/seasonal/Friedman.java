@@ -19,8 +19,8 @@ package demetra.stats.tests.seasonal;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSequence;
 import static demetra.data.Doubles.sum;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.dstats.Chi2;
 import demetra.dstats.F;
 import demetra.maths.matrices.Matrix;
@@ -31,7 +31,8 @@ import demetra.stats.tests.TestType;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class Friedman implements IBuilder<StatisticalTest> {
+@BuilderPattern(StatisticalTest.class)
+public class Friedman {
 
     private boolean useChi2 = true;
 
@@ -123,7 +124,6 @@ public class Friedman implements IBuilder<StatisticalTest> {
 //    private void process(final DataBlock all, int freq, boolean f) {
 //
 //    }
-    @Override
     public StatisticalTest build() {
         int nk = n * (period - 1);
         if (!useChi2 && t < nk) {

@@ -19,7 +19,7 @@ package demetra.regarima.ami;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
-import demetra.design.IBuilder;
+import demetra.design.BuilderPattern;
 import demetra.regarima.outlier.IRobustStandardDeviationComputer;
 
 /**
@@ -32,7 +32,8 @@ public class DifferencingModule implements IDifferencingModule {
         return new Builder();
     }
 
-    public static class Builder implements IBuilder<DifferencingModule> {
+    @BuilderPattern(DifferencingModule.class)
+    public static class Builder {
 
         public static final int MAXD = 2, MAXBD = 1;
 
@@ -49,7 +50,7 @@ public class DifferencingModule implements IDifferencingModule {
             return this;
         }
 
-         public Builder mad(boolean mad) {
+        public Builder mad(boolean mad) {
             this.mad = mad;
             return this;
         }
@@ -64,7 +65,6 @@ public class DifferencingModule implements IDifferencingModule {
             return this;
         }
 
-        @Override
         public DifferencingModule build() {
             return new DifferencingModule(maxd, mad, k, tstat);
         }

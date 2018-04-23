@@ -17,7 +17,7 @@
 package demetra.arima;
 
 import demetra.data.DataBlock;
-import demetra.design.IBuilder;
+import demetra.design.BuilderPattern;
 import demetra.design.Immutable;
 import demetra.dstats.IDistribution;
 import demetra.dstats.Normal;
@@ -37,63 +37,66 @@ import javax.annotation.Nonnull;
  */
 @Immutable
 public class ArimaSeriesGenerator {
-    
-    public static class Builder implements IBuilder<ArimaSeriesGenerator>{
 
-    private int ndrop = 0;
-    private double startMean = 100;
-    private double startStdev = 10;
-    private final IRandomNumberGenerator rng;
-    private IDistribution dist=new Normal();
-    
-    private Builder(){
-        rng = XorshiftRNG.fromSystemNanoTime();
-    }
-    
-    private Builder(IRandomNumberGenerator rng){
-        this.rng = rng;
-    }
-    /**
-     * Number of initial random numbers that are dropped
-     * @param n
-     * @return 
-     */
-    public Builder initialWarmUp(int n){
-        ndrop=n;
-        return this;
-    }
-    
-    /**
-     * Distribution used for generating the innovations
-     * @param distribution
-     * @return 
-     */
-    public Builder distribution(IDistribution distribution){
-        dist=distribution;
-        return this;
-    }
-    
-    public Builder startMean(double mean){
-        this.startMean=mean;
-        return this;
-    }
+    @BuilderPattern(ArimaSeriesGenerator.class)
+    public static class Builder {
 
-    public Builder startStdev(double stdev){
-        this.startStdev=stdev;
-        return this;
-    }
+        private int ndrop = 0;
+        private double startMean = 100;
+        private double startStdev = 10;
+        private final IRandomNumberGenerator rng;
+        private IDistribution dist = new Normal();
 
-    @Override
+        private Builder() {
+            rng = XorshiftRNG.fromSystemNanoTime();
+        }
+
+        private Builder(IRandomNumberGenerator rng) {
+            this.rng = rng;
+        }
+
+        /**
+         * Number of initial random numbers that are dropped
+         *
+         * @param n
+         * @return
+         */
+        public Builder initialWarmUp(int n) {
+            ndrop = n;
+            return this;
+        }
+
+        /**
+         * Distribution used for generating the innovations
+         *
+         * @param distribution
+         * @return
+         */
+        public Builder distribution(IDistribution distribution) {
+            dist = distribution;
+            return this;
+        }
+
+        public Builder startMean(double mean) {
+            this.startMean = mean;
+            return this;
+        }
+
+        public Builder startStdev(double stdev) {
+            this.startStdev = stdev;
+            return this;
+        }
+
         public ArimaSeriesGenerator build() {
             return new ArimaSeriesGenerator(this);
         }
     }
-    
-    public static Builder builder(){
+
+    public static Builder builder() {
         return new Builder();
     }
-    
-    public static Builder builder(@Nonnull IRandomNumberGenerator rng){
+
+    public static Builder builder(@Nonnull IRandomNumberGenerator rng) {
         return new Builder(rng);
     }
 
@@ -102,29 +105,29 @@ public class ArimaSeriesGenerator {
     private final double startStdev;
     private final IRandomNumberGenerator rng;
     private final IDistribution distribution;
-    
-    public ArimaSeriesGenerator(){
+
+    public ArimaSeriesGenerator() {
         this(new Builder());
     }
 
-    private ArimaSeriesGenerator(final Builder builder){
-        initialdrop=builder.ndrop;
-        startMean=builder.startMean;
-        startStdev=builder.startStdev;
-        this.rng=builder.rng.synchronize();
-        this.distribution=builder.dist;
+    private ArimaSeriesGenerator(final Builder builder) {
+        initialdrop = builder.ndrop;
+        startMean = builder.startMean;
+        startStdev = builder.startStdev;
+        this.rng = builder.rng.synchronize();
+        this.distribution = builder.dist;
     }
-    
-     /**
-     * 
+
+    /**
+     *
      * @param arima
      * @param n
-     * @return 
+     * @return
      */
     public double[] generate(final IArimaModel arima, final int n) {
         return generate(arima, 0, n);
     }
-    
+
     /**
      *
      * @param arima
@@ -133,7 +136,7 @@ public class ArimaSeriesGenerator {
      * @return
      */
     public double[] generate(final IArimaModel arima, final double mean, final int n) {
-         try {
+        try {
             StationaryTransformation stm = arima.stationaryTransformation();
             double[] tmp = generateStationary((IArimaModel) stm.getStationaryModel(), mean, n + initialdrop);
             double[] w;
@@ -149,8 +152,8 @@ public class ArimaSeriesGenerator {
                 Polynomial P = stm.getUnitRoots().asPolynomial();
                 double[] yprev = new double[P.getDegree()];
                 if (startStdev != 0) {
-                    Normal normal=new Normal(startMean, startStdev);
-                    
+                    Normal normal = new Normal(startMean, startStdev);
+
                     for (int i = 0; i < yprev.length; ++i) {
                         yprev[i] = normal.random(rng);
                     }
@@ -183,11 +186,11 @@ public class ArimaSeriesGenerator {
     public double[] generateStationary(final IArimaModel starima, final int n) {
         return generateStationary(starima, 0, n);
     }
-    
+
     public double[] generateStationary(final IArimaModel starima, final double mean, final int n) {
-    
+
         BackFilter ar = starima.getAR(), ma = starima.getMA();
-        int p = ar.length()-1, q = ma.length()-1;
+        int p = ar.length() - 1, q = ma.length() - 1;
         double[] y = new double[p], e = new double[q];
         if (p == 0) {
             for (int i = 0; i < q; ++i) {
@@ -233,7 +236,7 @@ public class ArimaSeriesGenerator {
         double std = Math.sqrt(starima.getInnovationVariance());
         Polynomial theta = ma.asPolynomial(), phi = ar.asPolynomial();
         for (int i = 0; i < n; ++i) {
-            double u = distribution.random(rng)*std;
+            double u = distribution.random(rng) * std;
             double t = mean + u * theta.get(0);
             for (int j = 1; j <= q; ++j) {
                 t += e[j - 1] * theta.get(j);
@@ -260,5 +263,5 @@ public class ArimaSeriesGenerator {
         }
         return z;
     }
-   
+
 }

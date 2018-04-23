@@ -16,7 +16,7 @@
  */
 package demetra.data;
 
-import demetra.design.IBuilder;
+import demetra.design.BuilderPattern;
 import demetra.maths.Constants;
 import demetra.stats.AutoCovariances;
 
@@ -30,7 +30,8 @@ public class SmoothedPeriodogram {
         return new Builder();
     }
 
-    public static class Builder implements IBuilder<SmoothedPeriodogram> {
+    @BuilderPattern(SmoothedPeriodogram.class)
+    public static class Builder {
 
         private DiscreteWindowFunction win = DiscreteWindowFunction.Tukey;
         private int winLen = 44;
@@ -66,7 +67,6 @@ public class SmoothedPeriodogram {
             return this;
         }
 
-        @Override
         public SmoothedPeriodogram build() {
             if (data == null) {
                 throw new RuntimeException("Uninitialized data");
@@ -89,14 +89,14 @@ public class SmoothedPeriodogram {
             }
             DoubleSequence datac = DoubleSequence.ofInternal(x);
             double[] ac = AutoCovariances.autoCovariancesWithZeroMean(datac, winLen - 1);
-            int ns = 1+ (int)(winLen * relativeResolution);
-            int len = 2*ns-1;
+            int ns = 1 + (int) (winLen * relativeResolution);
+            int len = 2 * ns - 1;
             double[] p = dft(ac, ns);
             return new SmoothedPeriodogram(p, len);
         }
 
         private double[] dft(double[] ac, int ns) {
-            int len = 2*ns-1;
+            int len = 2 * ns - 1;
             double[] cwnd = win.discreteWindow(2 * winLen + 1);
             for (int i = 1; i < winLen; i++) {
                 ac[i] *= cwnd[i] / ac[0];
@@ -123,13 +123,14 @@ public class SmoothedPeriodogram {
 
     private SmoothedPeriodogram(double[] p, int resolution) {
         this.p = p;
-        this.resolution=resolution;
+        this.resolution = resolution;
     }
 
     public double getSpectrumValue(double freq) {
         int ipos = (int) Math.round(freq * resolution / Constants.TWOPI);
-        if (ipos == p.length)
-            ipos=p.length-1;
+        if (ipos == p.length) {
+            ipos = p.length - 1;
+        }
         if (ipos < 0 || ipos >= p.length) {
             return Double.NaN;
         } else {

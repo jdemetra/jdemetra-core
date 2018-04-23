@@ -9,7 +9,6 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;
 import demetra.data.accumulator.DoubleAccumulator;
-import demetra.design.IBuilder;
 import java.util.Iterator;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -20,6 +19,7 @@ import java.util.function.DoubleUnaryOperator;
 import javax.annotation.Nonnegative;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
+import demetra.design.BuilderPattern;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,7 +67,8 @@ public class Matrix implements MatrixType {
         return new Matrix(x.getStorage(), x.getStartPosition(), x.length(), 1, x.getIncrement(), 1);
     }
 
-    public static class Builder implements IBuilder<Matrix> {
+    @BuilderPattern(Matrix.class)
+    public static class Builder {
 
         private final double[] storage;
         private int row_inc = 1, col_inc = 0;
@@ -108,7 +109,6 @@ public class Matrix implements MatrixType {
             return this;
         }
 
-        @Override
         public Matrix build() {
             // TODO Add some controls on the state 
             return new Matrix(storage, start, nrows, ncols, row_inc, col_inc == 0 ? nrows : col_inc);
@@ -303,8 +303,8 @@ public class Matrix implements MatrixType {
         if (isFull()) {
             double s = 0;
             for (int i = 0; i < storage.length; ++i) {
-                double c=storage[i];
-                s += c*c;
+                double c = storage[i];
+                s += c * c;
             }
             return s;
         }
@@ -721,7 +721,8 @@ public class Matrix implements MatrixType {
     }
 
     /**
-     * Creates a new matrix which contains the current matrix at given row/col position
+     * Creates a new matrix which contains the current matrix at given row/col
+     * position
      *
      * @param nr
      * @param rowPos
@@ -972,11 +973,11 @@ public class Matrix implements MatrixType {
     }
 
     /**
-     * Computes the kronecker product ofFunction two matrix. This object will contain
-     * the results. The dimensions ofFunction this object must be equal to the product
-     * ofFunction the dimensions ofFunction the operands. For optimisation purpose, the code
-     * consider that the resulting sub-matrix is set to 0 at the entry ofFunction the
-     * code
+     * Computes the kronecker product ofFunction two matrix. This object will
+     * contain the results. The dimensions ofFunction this object must be equal
+     * to the product ofFunction the dimensions ofFunction the operands. For
+     * optimisation purpose, the code consider that the resulting sub-matrix is
+     * set to 0 at the entry ofFunction the code
      *
      * @param m The left operand
      * @param n The right operand
@@ -1135,9 +1136,9 @@ public class Matrix implements MatrixType {
     }
 
     /**
-     * Shifts the matrix to the top-left corner.
-     * a(i,j) = a(i+n, j+n) for i in [0, nrows-n[ and j in [0, ncols-n[
-     * The cells that are not moved are not modified
+     * Shifts the matrix to the top-left corner. a(i,j) = a(i+n, j+n) for i in
+     * [0, nrows-n[ and j in [0, ncols-n[ The cells that are not moved are not
+     * modified
      *
      * @param n The displacement (n cells left and n cells up)
      */
@@ -1151,9 +1152,9 @@ public class Matrix implements MatrixType {
     }
 
     /**
-     * Shifts the matrix to the bottom-right corner
-     * a(i,j) = a(i-n, j-n) for i in [n, nrows[ and j in [n, ncols[
-     * The cells that are not moved are not modified.
+     * Shifts the matrix to the bottom-right corner a(i,j) = a(i-n, j-n) for i
+     * in [n, nrows[ and j in [n, ncols[ The cells that are not moved are not
+     * modified.
      *
      * @param n The displacement (n cells right and n cells down)
      */

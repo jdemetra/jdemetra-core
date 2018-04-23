@@ -20,11 +20,10 @@ import demetra.data.Cell;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.accumulator.NeumaierAccumulator;
-import demetra.design.IBuilder;
+import demetra.design.BuilderPattern;
 import demetra.maths.matrices.decomposition.ILUDecomposition;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
-import demetra.maths.matrices.internal.CroutDoolittle;
 import demetra.linearsystem.ILinearSystemSolver;
 
 /**
@@ -33,7 +32,8 @@ import demetra.linearsystem.ILinearSystemSolver;
  */
 public class LUSolver implements ILinearSystemSolver {
 
-    public static class Builder implements IBuilder<LUSolver> {
+    @BuilderPattern(LUSolver.class)
+    public static class Builder {
 
         private final ILUDecomposition lu;
         private boolean improve, normalize;
@@ -52,7 +52,6 @@ public class LUSolver implements ILinearSystemSolver {
             return this;
         }
 
-        @Override
         public LUSolver build() {
             return new LUSolver(lu, normalize, improve);
         }
@@ -88,7 +87,7 @@ public class LUSolver implements ILinearSystemSolver {
             Cell cells = b.cells();
             while (rows.hasNext()) {
                 DataBlock row = rows.next();
-                double norm = row.norm2()/Math.sqrt(row.length());
+                double norm = row.norm2() / Math.sqrt(row.length());
                 row.div(norm);
                 cells.applyAndNext(x -> x / norm);
             }

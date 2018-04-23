@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider.util;
 
-import demetra.design.IBuilder;
+import demetra.design.BuilderPattern;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -91,8 +91,11 @@ public interface IConfig {
         return getParams().entrySet().stream();
     }
 
-    public interface Builder<THIS, T extends IConfig> extends IBuilder<T> {
+    @BuilderPattern(IConfig.class)
+    public interface Builder<THIS, T extends IConfig> {
 
+        public T build();
+        
         /**
          * Put a key-value pair.
          *

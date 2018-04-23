@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider.util;
 
-import demetra.design.IBuilder;
+import demetra.design.BuilderPattern;
 import demetra.timeseries.TsData;
 import internal.tsprovider.util.ByLongDataBuilder;
 import internal.tsprovider.util.ByObjDataBuilder;
@@ -37,7 +37,8 @@ import javax.annotation.concurrent.NotThreadSafe;
  * @since 2.2.0
  */
 @NotThreadSafe
-public interface TsDataBuilder<DATE> extends IBuilder<TsData> {
+@BuilderPattern(TsData.class)
+public interface TsDataBuilder<DATE> {
 
     /**
      * Removes all observations.
@@ -107,7 +108,6 @@ public interface TsDataBuilder<DATE> extends IBuilder<TsData> {
      * @return a non-null OptionalTsData
      */
     @Nonnull
-    @Override
     TsData build();
 
     /**
@@ -137,8 +137,7 @@ public interface TsDataBuilder<DATE> extends IBuilder<TsData> {
     }
 
     /**
-     * Creates an TsData builder that collects {@link LocalDateTime}
-     * values.
+     * Creates an TsData builder that collects {@link LocalDateTime} values.
      *
      * @param gathering non-null observation collection parameters
      * @param characteristics non-null observations characteristics

@@ -18,8 +18,8 @@ package demetra.x12;
 
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.maths.Complex;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.regarima.IRegArimaProcessor;
@@ -45,7 +45,8 @@ public class DifferencingModule implements IDifferencingModule {
         return new Builder();
     }
 
-    public static class Builder implements IBuilder<DifferencingModule> {
+    @BuilderPattern(DifferencingModule.class)
+    public static class Builder {
 
         private int maxd = MAXD, maxbd = MAXBD;
         private double eps = 1e-5;
@@ -86,7 +87,6 @@ public class DifferencingModule implements IDifferencingModule {
             return this;
         }
 
-        @Override
         public DifferencingModule build() {
             return new DifferencingModule(maxd, maxbd, ub1, ub2, cancel, eps);
         }

@@ -16,12 +16,12 @@
  */
 package demetra.likelihood;
 
-import demetra.design.IBuilder;
 import demetra.design.Immutable;
 import demetra.maths.matrices.Matrix;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.data.LogSign;
+import demetra.design.BuilderPattern;
 import demetra.eco.EcoException;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
@@ -41,7 +41,8 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
         return new Builder();
     }
 
-    public static class Builder implements IBuilder<ConcentratedLikelihood> {
+    @BuilderPattern(ConcentratedLikelihood.class)
+    public static class Builder {
 
         private static double[] B_EMPTY = new double[0];
 
@@ -68,9 +69,9 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
 
         /**
          * Number of missing values, estimated by means of additive outliers.
-         * The regression variables corresponding to the missing values should be put
-         * at the beginning. All information included in the builder contains
-         * the effects of the missing values.
+         * The regression variables corresponding to the missing values should
+         * be put at the beginning. All information included in the builder
+         * contains the effects of the missing values.
          *
          * @param nmissing
          * @return
@@ -130,7 +131,6 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
             return this;
         }
 
-        @Override
         public ConcentratedLikelihood build() {
             if (nmissing > 0) {
                 if (r == null) {
@@ -221,11 +221,12 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
 
     /**
      * Number of coefficients (excluding missing value estimates)
+     *
      * @return
      */
     @Override
     public int nx() {
-        return b.length-nmissing;
+        return b.length - nmissing;
     }
 
     @Override
@@ -332,9 +333,9 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
         }
         return new ConcentratedLikelihood(n, nmissing, nssqerr, ldet, nres, nb, nbvar, nr);
     }
-    
-    public int degreesOfFreedom(){
-        return n-nx();
+
+    public int degreesOfFreedom() {
+        return n - nx();
     }
 
     @Override
