@@ -60,11 +60,11 @@
         <!-- dependencies -->
         <junit.version>4.12</junit.version>
         <jsr305.version>3.0.2</jsr305.version>
-        <assertj.version>3.8.0</assertj.version>
+        <assertj.version>3.9.1</assertj.version>
         <netbeans.version>RELEASE82</netbeans.version>
         <lombok.version>1.16.18</lombok.version>
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
-        <jd2.version>2.2.1-SNAPSHOT</jd2.version>
+        <jd2.version>2.2.2-SNAPSHOT</jd2.version>
     </properties>
   
     <modules>
