@@ -7,6 +7,7 @@ package ec.tstoolkit.jdr.sa;
 
 import demetra.algorithm.IProcResults;
 import demetra.information.InformationMapping;
+import ec.satoolkit.ISeriesDecomposition;
 import ec.satoolkit.algorithm.implementation.X13ProcessingFactory;
 import ec.satoolkit.x11.Mstatistics;
 import ec.satoolkit.x11.X11Results;
@@ -16,7 +17,7 @@ import ec.tstoolkit.jdr.mapping.PreprocessingInfo;
 import ec.tstoolkit.jdr.mapping.ResidualsInfo;
 import ec.tstoolkit.jdr.mapping.SarimaInfo;
 import ec.tstoolkit.jdr.regarima.RegArimaInfo;
-import ec.tstoolkit.jdr.x11.DecompositionInfo;
+import ec.tstoolkit.jdr.x11.X11DecompositionInfo;
 import ec.tstoolkit.jdr.x11.MstatisticsInfo;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import java.util.LinkedHashMap;
@@ -30,10 +31,15 @@ import java.util.Map;
     public class X13Results implements IProcResults {
 
         CompositeResults results;
+        SaDiagnostics diagnostics;
 
         PreprocessingModel model() {
             return results == null ? null : results.get(X13ProcessingFactory.PREPROCESSING, PreprocessingModel.class);
         }
+        ISeriesDecomposition finals() {
+            return results == null ? null : results.get(X13ProcessingFactory.FINAL, ISeriesDecomposition.class);
+        }
+
         X11Results x11() {
             return results == null ? null : results.get(X13ProcessingFactory.DECOMPOSITION, X11Results.class);
         }
@@ -44,9 +50,11 @@ import java.util.Map;
         static final InformationMapping<X13Results> MAPPING = new InformationMapping<>(X13Results.class);
 
         static {
+            MAPPING.delegate(null, SaDecompositionInfo.getMapping(), source -> source.finals());
             MAPPING.delegate("preprocessing", PreprocessingInfo.getMapping(), source -> source.model());
-            MAPPING.delegate("diagnostics", MstatisticsInfo.getMapping(), source->source.mstats());
-            MAPPING.delegate("decomposition", DecompositionInfo.getMapping(), source->source.x11());
+            MAPPING.delegate("mstats", MstatisticsInfo.getMapping(), source->source.mstats());
+            MAPPING.delegate("decomposition", X11DecompositionInfo.getMapping(), source->source.x11());
+            MAPPING.delegate("diagnostics", SaDiagnostics.getMapping(), source->source.diagnostics);
         }
 
         public InformationMapping<X13Results> getMapping() {

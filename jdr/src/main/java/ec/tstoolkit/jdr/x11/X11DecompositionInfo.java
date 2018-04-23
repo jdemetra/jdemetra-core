@@ -15,7 +15,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.experimental.UtilityClass
-public class DecompositionInfo {
+public class X11DecompositionInfo {
 
     final String A = "a-tables", B = "b-tables", C = "c-tables",
             D = "d-tables", E = "e-tables", F = "f-tables";
