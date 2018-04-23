@@ -16,13 +16,13 @@
  */
 package demetra.tsprovider;
 
-import demetra.design.IntValue;
+import java.util.function.IntSupplier;
 
 /**
  *
  * @author Jean Palate
  */
-public enum TsInformationType implements IntValue {
+public enum TsInformationType implements IntSupplier {
 
     /**
      * Information is not provided by a specific provider
@@ -64,7 +64,7 @@ public enum TsInformationType implements IntValue {
      * @return
      */
     @Override
-    public int intValue() {
+    public int getAsInt() {
         return value;
     }
 
