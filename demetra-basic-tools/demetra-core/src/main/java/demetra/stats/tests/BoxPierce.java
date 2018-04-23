@@ -17,8 +17,8 @@
 package demetra.stats.tests;
 
 import demetra.data.DoubleSequence;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.dstats.Chi2;
 import demetra.stats.AutoCovariances;
 import java.util.function.IntToDoubleFunction;
@@ -28,7 +28,8 @@ import java.util.function.IntToDoubleFunction;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class BoxPierce implements IBuilder<StatisticalTest> {
+@BuilderPattern(StatisticalTest.class)
+public class BoxPierce {
 
     private int lag = 1;
     private int k = 12;
@@ -88,17 +89,16 @@ public class BoxPierce implements IBuilder<StatisticalTest> {
         return this;
     }
 
-    @Override
     public StatisticalTest build() {
 
         double res = 0.0;
         for (int i = 1; i <= k; i++) {
             double ai = autoCorrelations.applyAsDouble(i * lag);
             if (sign == 0 || (sign == 1 && ai > 0) || (sign == -1 && ai < 0)) {
-                res += ai * ai ;
+                res += ai * ai;
             }
         }
-        double val = res * n ;
+        double val = res * n;
         Chi2 chi = new Chi2(lag == 1 ? (k - nhp) : k);
         return new StatisticalTest(chi, val, TestType.Upper, true);
     }

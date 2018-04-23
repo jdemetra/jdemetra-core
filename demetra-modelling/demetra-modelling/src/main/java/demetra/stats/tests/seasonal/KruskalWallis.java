@@ -17,8 +17,8 @@
 package demetra.stats.tests.seasonal;
 
 import demetra.data.DoubleSequence;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.dstats.Chi2;
 import demetra.stats.StatException;
 import demetra.stats.tests.StatisticalTest;
@@ -29,7 +29,8 @@ import java.util.Arrays;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class KruskalWallis implements IBuilder<StatisticalTest> {
+@BuilderPattern(StatisticalTest.class)
+public class KruskalWallis {
 
     private double h;
     private int period;
@@ -88,7 +89,6 @@ public class KruskalWallis implements IBuilder<StatisticalTest> {
         h = 12 * h / (N * (N + 1)) - 3 * (N + 1);
     }
 
-    @Override
     public StatisticalTest build() {
         return new StatisticalTest(new Chi2(period - 1), h, TestType.Upper, true);
     }

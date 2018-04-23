@@ -18,9 +18,8 @@ package demetra.stats.tests;
 
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
-import demetra.dstats.Normal;
 import demetra.dstats.T;
 
 /**
@@ -28,7 +27,8 @@ import demetra.dstats.T;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class Mean implements IBuilder<StatisticalTest> {
+@BuilderPattern(StatisticalTest.class)
+public class Mean {
 
     private final double mean, emean, var;
     private final int n;
@@ -65,10 +65,8 @@ public class Mean implements IBuilder<StatisticalTest> {
         return new Mean(av, mu, v, m);
     }
 
-    @Override
     public StatisticalTest build() {
         double val = (mean - emean) / Math.sqrt(var / n);
         return new StatisticalTest(new T(n), val, TestType.TwoSided, false);
     }
-
 }

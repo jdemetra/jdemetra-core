@@ -18,7 +18,7 @@ package demetra.regarima.ami;
 
 import demetra.arima.IArimaModel;
 import demetra.data.DataBlock;
-import demetra.design.IBuilder;
+import demetra.design.BuilderPattern;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
@@ -46,7 +46,8 @@ import java.util.function.Consumer;
 public class OutliersDetectionModule<T extends IArimaModel>
         implements IOutliersDetectionModule<T> {
 
-    public static class Builder<T extends IArimaModel> implements IBuilder<OutliersDetectionModule> {
+    @BuilderPattern(OutliersDetectionModule.class)
+    public static class Builder<T extends IArimaModel> {
 
         private AbstractSingleOutlierDetector sod = new FastOutlierDetector(null);
         private IRegArimaProcessor<T> processor;
@@ -111,7 +112,6 @@ public class OutliersDetectionModule<T extends IArimaModel>
             return this;
         }
 
-        @Override
         public OutliersDetectionModule build() {
             return new OutliersDetectionModule(sod, processor, maxOutliers, maxRound);
         }

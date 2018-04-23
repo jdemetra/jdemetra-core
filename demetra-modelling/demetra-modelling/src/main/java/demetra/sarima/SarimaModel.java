@@ -20,7 +20,6 @@ import demetra.arima.AbstractArimaModel;
 import demetra.arima.StationaryTransformation;
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.design.Immutable;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.Utility;
@@ -28,6 +27,7 @@ import demetra.maths.polynomials.Polynomial;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
+import demetra.design.BuilderPattern;
 import demetra.maths.PolynomialType;
 
 /**
@@ -45,7 +45,8 @@ import demetra.maths.PolynomialType;
 @Immutable
 public class SarimaModel extends AbstractArimaModel {
 
-    public static class Builder implements IBuilder<SarimaModel> {
+    @BuilderPattern(SarimaModel.class)
+    public static class Builder {
 
         private static final double[] E = new double[0];
 
@@ -219,7 +220,6 @@ public class SarimaModel extends AbstractArimaModel {
             }
         }
 
-        @Override
         public SarimaModel build() {
             if (adjust) {
                 adjust();

@@ -1,7 +1,7 @@
 package demetra.maths;
 
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 
 /*
 * Copyright 2017 National Bank of Belgium
@@ -29,7 +29,8 @@ import demetra.design.IBuilder;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public final class ComplexBuilder implements IBuilder<Complex> {
+@BuilderPattern(Complex.class)
+public final class ComplexBuilder  {
 
     /**
      * Real part
@@ -246,7 +247,6 @@ public final class ComplexBuilder implements IBuilder<Complex> {
 	return this;
     }
 
-    @Override
     public Complex build()
     {
 	return Complex.cart(re, im);

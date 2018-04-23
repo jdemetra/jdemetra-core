@@ -3,6 +3,7 @@
 /demetra-basic-tools/demetra-algorithms-ex/target/
 /demetra-basic-tools/demetra-core/target/
 /demetra-basic-tools/demetra-datatypes/target/
+/demetra-basic-tools/demetra-datatypes-proc/target/
 /demetra-benchmarking/demetra-benchmarking/target/
 /demetra-benchmarking/demetra-benchmarking-datatypes/target/
 /demetra-bridge/target/
@@ -13,10 +14,10 @@
 /demetra-modelling-ext/demetra-sutse/target/
 /demetra-sa/demetra-sacore/target/
 /demetra-sa/demetra-sa-datatypes/target/
+/demetra-io-core/target/
 /demetra-io-spreadsheet-core/target/
 /demetra-io-sql-core/target/
 /demetra-io-text-core/target/
 /demetra-io-legacy-core/target/
-/demetra-tsprovider/target/
 /demetra-workspace/target/
 /jdr/target/

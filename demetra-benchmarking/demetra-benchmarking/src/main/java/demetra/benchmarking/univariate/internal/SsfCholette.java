@@ -18,8 +18,8 @@ package demetra.benchmarking.univariate.internal;
 
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
@@ -34,7 +34,8 @@ import demetra.ssf.univariate.Ssf;
 @Development(status = Development.Status.Alpha)
 public class SsfCholette {
 
-    public static class Builder implements IBuilder<ISsf> {
+    @BuilderPattern(ISsf.class)
+    public static class Builder {
 
         private double[] weights = null;
         private double rho = .9;
@@ -45,7 +46,6 @@ public class SsfCholette {
             this.conversion = conversion;
         }
 
-        @Override
         public ISsf build() {
             CholetteDefinition def = new CholetteDefinition(conversion, start, rho, weights);
             return new Ssf(rho == 1 ? new DiffuseInitialization() : new StationaryInitialization(rho)

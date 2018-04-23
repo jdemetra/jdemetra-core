@@ -19,7 +19,7 @@ package demetra.regarima.internal;
 import demetra.regarima.RegArmaModel;
 import demetra.arima.IArimaModel;
 import demetra.data.DoubleSequence;
-import demetra.design.IBuilder;
+import demetra.design.BuilderPattern;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.DefaultLikelihoodEvaluation;
 import demetra.likelihood.ILikelihood;
@@ -37,7 +37,8 @@ import java.util.function.ToDoubleFunction;
  */
 class RegArmaFunction<S extends IArimaModel> implements IFunction {
 
-    public static class Builder<S extends IArimaModel> implements IBuilder<RegArmaFunction<S>> {
+    @BuilderPattern(RegArmaFunction.class)
+    public static class Builder<S extends IArimaModel> {
 
         // algorithms
         private boolean ml = true;
@@ -79,7 +80,6 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
             return this;
         }
 
-        @Override
         public RegArmaFunction<S> build() {
             return new RegArmaFunction<>(dy, x, nmissing, mapping, cll,
                     ml ? DefaultLikelihoodEvaluation.logSsq() : DefaultLikelihoodEvaluation.ml(), mt);

@@ -18,7 +18,9 @@
 package demetra.modelling;
 
 import demetra.design.Development;
-import demetra.design.IntValue;
+import demetra.utilities.PrimitiveEnum;
+import java.util.function.IntFunction;
+import java.util.function.IntSupplier;
 
 
 /**
@@ -26,7 +28,7 @@ import demetra.design.IntValue;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public enum ComponentType implements IntValue {
+public enum ComponentType implements IntSupplier {
 
     // / <summary>
     // / Undefined component
@@ -86,8 +88,10 @@ public enum ComponentType implements IntValue {
      */
     public static ComponentType valueOf(int value)
     {
-        return IntValue.valueOf(ComponentType.class, value).orElse(null);
+        return FACTORY.apply(value);
     }
+    
+    private static final IntFunction<ComponentType> FACTORY = PrimitiveEnum.ofInt(ComponentType.class);
 
     private final int value;
 
@@ -100,7 +104,7 @@ public enum ComponentType implements IntValue {
      * @return
      */
     @Override
-    public int intValue()
+    public int getAsInt()
     {
 	return value;
     }

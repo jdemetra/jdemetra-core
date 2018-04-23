@@ -19,8 +19,8 @@ package demetra.regarima;
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
 import demetra.data.DoubleSequence;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.design.Immutable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +36,8 @@ import javax.annotation.Nonnull;
 @Immutable
 public class RegArimaModel<M extends IArimaModel> {
 
-    public static class Builder<M extends IArimaModel> implements IBuilder<RegArimaModel<M>> {
+    @BuilderPattern(RegArimaModel.class)
+    public static class Builder<M extends IArimaModel> {
 
         private DoubleSequence y;
         private M arima;
@@ -90,7 +91,6 @@ public class RegArimaModel<M extends IArimaModel> {
             return this;
         }
 
-        @Override
         public RegArimaModel<M> build() {
             if (y == null || arima == null) {
                 throw new RuntimeException("Incomplete REGARIMA");

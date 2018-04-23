@@ -9,9 +9,9 @@
         <relativePath>../demetra-basic-tools</relativePath>
     </parent>
 
-    <artifactId>demetra-tsprovider</artifactId>
+    <artifactId>demetra-io-core</artifactId>
     <packaging>jar</packaging>
-    <name>JD3 - TS Provider</name>
+    <name>JD3 - IO</name>
     <version>3.0.0-SNAPSHOT</version>
 
     <properties>
@@ -31,6 +31,12 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-datatypes-proc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- compile and runtime -->
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
