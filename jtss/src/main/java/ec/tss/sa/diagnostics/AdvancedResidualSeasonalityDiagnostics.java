@@ -71,7 +71,7 @@ public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
         return se > E_LIMIT1;
     }
 
-    static IDiagnostics create(CompositeResults rslts, AdvancedResidualSeasonalityDiagnosticsConfiguration config) {
+    public static IDiagnostics create(CompositeResults rslts, AdvancedResidualSeasonalityDiagnosticsConfiguration config) {
         try {
             if (rslts == null || GenericSaResults.getDecomposition(rslts, ISaResults.class) == null) {
                 return null;

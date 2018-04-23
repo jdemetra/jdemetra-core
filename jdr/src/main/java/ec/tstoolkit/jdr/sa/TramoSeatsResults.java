@@ -28,6 +28,7 @@ import java.util.Map;
 public class TramoSeatsResults implements IProcResults {
 
     CompositeResults results;
+    SaDiagnostics diagnostics;
 
     PreprocessingModel model() {
         return results == null ? null : results.get(TramoSeatsProcessingFactory.PREPROCESSING, PreprocessingModel.class);
@@ -46,6 +47,7 @@ public class TramoSeatsResults implements IProcResults {
     static {
         MAPPING.delegate(null, SaDecompositionInfo.getMapping(), source -> source.finals());
         MAPPING.delegate("preprocessing", PreprocessingInfo.getMapping(), source -> source.model());
+        MAPPING.delegate("diagnostics", SaDiagnostics.getMapping(), source -> source.diagnostics);
     }
 
     public InformationMapping<TramoSeatsResults> getMapping() {

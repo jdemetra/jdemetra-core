@@ -31,6 +31,7 @@ import java.util.Map;
     public class X13Results implements IProcResults {
 
         CompositeResults results;
+        SaDiagnostics diagnostics;
 
         PreprocessingModel model() {
             return results == null ? null : results.get(X13ProcessingFactory.PREPROCESSING, PreprocessingModel.class);
@@ -51,8 +52,9 @@ import java.util.Map;
         static {
             MAPPING.delegate(null, SaDecompositionInfo.getMapping(), source -> source.finals());
             MAPPING.delegate("preprocessing", PreprocessingInfo.getMapping(), source -> source.model());
-            MAPPING.delegate("diagnostics", MstatisticsInfo.getMapping(), source->source.mstats());
+            MAPPING.delegate("mstats", MstatisticsInfo.getMapping(), source->source.mstats());
             MAPPING.delegate("decomposition", X11DecompositionInfo.getMapping(), source->source.x11());
+            MAPPING.delegate("diagnostics", SaDiagnostics.getMapping(), source->source.diagnostics);
         }
 
         public InformationMapping<X13Results> getMapping() {
