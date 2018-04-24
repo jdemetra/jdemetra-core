@@ -84,13 +84,13 @@ public class PolynomialTest {
         Polynomial p = p1.times(p1).times(p2).times(p3).times(p3);
         p = p.times(p).times(p3);
         Complex[] roots = p.roots();
-        for (Complex root : roots) {
-            System.out.println(root);
-        }
-        Complex[] rroots = p.roots(IRootsSolver.robustSolver());
-        for (Complex root : rroots) {
-            System.out.println(root);
-        }
+//        for (Complex root : roots) {
+//            System.out.println(root);
+//        }
+//        Complex[] rroots = p.roots(IRootsSolver.robustSolver());
+//        for (Complex root : rroots) {
+//            System.out.println(root);
+//        }
     }
 
     @Test
@@ -119,7 +119,7 @@ public class PolynomialTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void stressTestUnitRoots() {
         int N = 1000;
         double[] p = new double[N + 1];

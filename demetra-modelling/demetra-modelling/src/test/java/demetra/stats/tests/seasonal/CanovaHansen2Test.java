@@ -47,7 +47,7 @@ public class CanovaHansen2Test {
             double z = CanovaHansen2.of(DoubleSequence.ofInternal(x))
                     .periodicity(i)
                     .compute();
-            System.out.println(z);
+//            System.out.println(z);
         }
     }
     

@@ -43,9 +43,9 @@ public class SmoothedPeriodogramTest {
                 .windowFunction(DiscreteWindowFunction.Tukey)
                 .build();
         
-        for (int i = 0; i < 200; ++i) {
-            System.out.println(periodogram.spectrumValueAtFrequency(Math.PI * i / 200));
-        }        
+//        for (int i = 0; i < 200; ++i) {
+//            System.out.println(periodogram.spectrumValueAtFrequency(Math.PI * i / 200));
+//        }        
     }
     
     @Test
@@ -55,9 +55,9 @@ public class SmoothedPeriodogramTest {
         bts.setWindowLength(45);
         bts.setData(data);
         
-        System.out.println("legacy");
-        for (int i = 0; i < 200; ++i) {
-            System.out.println(bts.getSpectrumValue(Math.PI * i / 200));
-        }        
+//        System.out.println("legacy");
+//        for (int i = 0; i < 200; ++i) {
+//            System.out.println(bts.getSpectrumValue(Math.PI * i / 200));
+//        }        
     }
 }

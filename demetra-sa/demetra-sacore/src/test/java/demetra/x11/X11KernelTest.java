@@ -58,7 +58,7 @@ public class X11KernelTest {
                 .trendFilterLength(13)
                 .build();
         kernel.process(DoubleSequence.ofInternal(Data.PROD), context1);
-        System.out.println(kernel.getDstep().getD13());
+//        System.out.println(kernel.getDstep().getD13());
         ec.satoolkit.x11.X11Specification spec=new ec.satoolkit.x11.X11Specification();
         spec.setMode(ec.satoolkit.DecompositionMode.Multiplicative);
         spec.setForecastHorizon(0);
@@ -70,6 +70,6 @@ public class X11KernelTest {
                 new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, Data.PROD, true);
         X11Results x11 = okernel.process(s);
         ec.tstoolkit.timeseries.simplets.TsData b=x11.getData("d-tables.d13", ec.tstoolkit.timeseries.simplets.TsData.class);
-        System.out.println(new ec.tstoolkit.data.DataBlock(b));
+//        System.out.println(new ec.tstoolkit.data.DataBlock(b));
     }
 }

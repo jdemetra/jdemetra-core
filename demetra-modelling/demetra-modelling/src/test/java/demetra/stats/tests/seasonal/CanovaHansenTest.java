@@ -92,7 +92,7 @@ public class CanovaHansenTest {
 //            System.out.println(ch.test(2 * i, 2));
 //        }
         //  System.out.println(ch.robustTestCoefficients());
-        System.out.println(all);
+//        System.out.println(all);
     }
 
     @Test
@@ -134,7 +134,7 @@ DoubleSequence y = DoubleSequence.ofInternal(x);
 //        for (int i = 0; i < 5; ++i) {
 //            System.out.println(ch.test(2 * i, 2));
 //        }
-        System.out.println(ch.testAll());
+//        System.out.println(ch.testAll());
 //            System.out.println(ch.testAll());
         }
     }
