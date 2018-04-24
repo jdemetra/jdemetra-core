@@ -8,12 +8,12 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>demetra-datatypes-proc</artifactId>
+    <artifactId>demetra-design</artifactId>
     <packaging>jar</packaging>
-    <name>JD3 - DataTypes - Processor</name>
+    <name>JD3 - Design</name>
     
     <properties>
-        <javapoet.version>1.4.0</javapoet.version>
+        <javapoet.version>1.10.0</javapoet.version>
     </properties>
 
     <dependencies>
@@ -28,15 +28,12 @@
             <artifactId>org-openide-util-lookup</artifactId>
             <scope>provided</scope>
         </dependency>
+        
         <!-- compile and runtime -->
         <dependency>
             <groupId>com.squareup</groupId>
             <artifactId>javapoet</artifactId>
             <version>${javapoet.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-datatypes</artifactId>
         </dependency>
     </dependencies>
 </project>

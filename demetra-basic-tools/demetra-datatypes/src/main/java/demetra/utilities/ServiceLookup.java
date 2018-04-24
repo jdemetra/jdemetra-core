@@ -16,7 +16,6 @@
  */
 package demetra.utilities;
 
-import demetra.design.ServiceDefinition;
 import demetra.design.ThreadSafe;
 import demetra.design.VisibleForTesting;
 import java.util.Iterator;
@@ -40,36 +39,22 @@ public class ServiceLookup {
 
     @Nonnull
     public <S> S first(@Nonnull Class<S> type) throws ServiceException {
-        checkFirst(type);
         return loadFirst(type, LOADER, LOGGER);
     }
 
     @Nonnull
     public <S> AtomicReference<S> firstMutable(@Nonnull Class<S> type) throws ServiceException {
-        checkFirst(type);
         return new AtomicReference<>(loadFirst(type, LOADER, LOGGER));
     }
 
     @Nonnull
-    public <S> Supplier<S> firstDynamic(@Nonnull Class<S> type) throws ServiceException {
-        checkFirst(type);
+    public <S> Supplier<S> firstDynamic(@lombok.NonNull Class<S> type) throws ServiceException {
         return () -> loadFirst(type, LOADER, LOGGER);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
     private final Loader LOADER = new LoaderWithCache(ServiceLoader::load);
     private final Logger LOGGER = Logger.getLogger(ServiceLookup.class.getName());
-
-    @VisibleForTesting
-    <S> void checkFirst(Class<S> type) throws ServiceException {
-        ServiceDefinition definition = type.getAnnotation(ServiceDefinition.class);
-        if (definition == null) {
-            throw new ServiceException(type, "Missing definition");
-        }
-        if (!definition.isSingleton()) {
-            throw new ServiceException(type, "Not singleton");
-        }
-    }
 
     @VisibleForTesting
     <S> S loadFirst(Class<S> type, Loader loader, Logger logger) throws ServiceException {
