@@ -7,7 +7,6 @@ package demetra.stats.tests.seasonal;
 
 import demetra.data.DoubleSequence;
 import demetra.data.Periodogram;
-import demetra.design.IBuilder;
 import demetra.dstats.Chi2;
 import demetra.dstats.F;
 import demetra.stats.tests.StatisticalTest;

@@ -16,6 +16,7 @@
  */
 package internal.util.sql.odbc.win;
 
+import demetra.design.DirectImpl;
 import internal.util.sql.SqlConnectionSuppliers;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -27,6 +28,7 @@ import util.sql.odbc.OdbcConnectionSupplierSpi;
  *
  * @author Philippe Charles
  */
+@DirectImpl
 @ServiceProvider(service = OdbcConnectionSupplierSpi.class)
 public final class AdodbOdbcConnectionSupplier implements OdbcConnectionSupplierSpi {
 

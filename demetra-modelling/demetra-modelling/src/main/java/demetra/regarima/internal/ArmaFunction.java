@@ -18,8 +18,8 @@ package demetra.regarima.internal;
 
 import demetra.arima.IArimaModel;
 import demetra.data.DoubleSequence;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.likelihood.DefaultLikelihoodEvaluation;
 import demetra.likelihood.ILikelihood;
 import demetra.maths.functions.IFunction;
@@ -37,7 +37,8 @@ import java.util.function.ToDoubleFunction;
 @Development(status = Development.Status.Alpha)
 class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
 
-    public static class Builder<S extends IArimaModel> implements IBuilder<ArmaFunction<S>> {
+    @BuilderPattern(ArmaFunction.class)
+    public static class Builder<S extends IArimaModel> {
 
         public static final ToDoubleFunction<ILikelihood> LL = DefaultLikelihoodEvaluation.ml();
         public static final Function<ILikelihood, DoubleSequence> ERRORS = DefaultLikelihoodEvaluation.v();
@@ -95,7 +96,6 @@ class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
             return this;
         }
 
-        @Override
         public ArmaFunction<S> build() {
             return new ArmaFunction<>(dy, x, nmissing, mapping, cll, ll, ssqll, errors, mt);
         }

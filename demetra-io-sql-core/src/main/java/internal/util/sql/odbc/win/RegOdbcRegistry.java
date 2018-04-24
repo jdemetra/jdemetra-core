@@ -16,6 +16,7 @@
  */
 package internal.util.sql.odbc.win;
 
+import demetra.design.DirectImpl;
 import internal.util.sql.odbc.win.RegCommandWrapper.RegValue;
 import java.io.IOException;
 import java.util.Collections;
@@ -32,6 +33,7 @@ import util.sql.odbc.OdbcRegistrySpi;
  *
  * @author Philippe Charles
  */
+@DirectImpl
 @ServiceProvider(service = OdbcRegistrySpi.class)
 public final class RegOdbcRegistry implements OdbcRegistrySpi {
 

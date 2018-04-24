@@ -16,8 +16,8 @@
  */
 package demetra.tramo;
 
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.regarima.IRegArimaInitializer;
 import demetra.regarima.ami.ILogLevelModule;
 import demetra.regarima.ami.IModelBuilder;
@@ -29,11 +29,6 @@ import demetra.regarima.ami.PreprocessingModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsData;
-import demetra.tramo.TramoException;
-import demetra.tramo.TramoModelBuilder;
-import demetra.tramo.TramoSpec;
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Nonnull;
 
 /**
@@ -47,7 +42,8 @@ public class TramoProcessor implements IPreprocessor {
         return new Builder();
     }
     
-    public static class Builder implements IBuilder<TramoProcessor> {
+    @BuilderPattern(TramoProcessor.class)
+    public static class Builder {
         
         private TimeSelector estimationSpan = TimeSelector.all();
         private IModelBuilder modelBuilder = new TramoModelBuilder(TramoSpec.TRfull);
@@ -80,7 +76,6 @@ public class TramoProcessor implements IPreprocessor {
             return this;
         }
         
-        @Override
         public TramoProcessor build() {
             TramoProcessor processor = new TramoProcessor(estimationSpan, modelBuilder,
                     initializer, transformation, seas
@@ -690,7 +685,7 @@ public class TramoProcessor implements IPreprocessor {
     private void checkSeasonality(ModelDescription model) {
         
             ISeasonalityDetector.Seasonality s = seas.hasSeasonality(model.transformedOriginal());
-            model.setSeasonality(s.intValue() >= 2);
+            model.setSeasonality(s.getAsInt() >= 2);
         int ifreq = model.getAnnualFrequency();
         if ( ifreq > 1) {
             SarimaSpecification nspec = new SarimaSpecification(ifreq);

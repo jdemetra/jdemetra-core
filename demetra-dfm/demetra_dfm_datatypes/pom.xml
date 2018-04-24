@@ -26,9 +26,16 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-datatypes</artifactId>
+            <artifactId>demetra-design</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <!-- compile and runtime -->
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-datatypes</artifactId>
+        </dependency>
+        
         <!-- test only -->
         <dependency>
             <groupId>junit</groupId>

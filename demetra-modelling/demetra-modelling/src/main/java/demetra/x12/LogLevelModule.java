@@ -19,13 +19,12 @@ package demetra.x12;
 import demetra.data.DoubleSequence;
 import demetra.data.IDataTransformation.LogJacobian;
 import demetra.data.LogTransformation;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.modelling.TransformationType;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
-import demetra.regarima.ami.AICcComparator;
 import demetra.regarima.ami.RegArimaUtility;
 import demetra.sarima.SarimaModel;
 import demetra.regarima.ami.ILogLevelModule;
@@ -41,7 +40,8 @@ public class LogLevelModule implements ILogLevelModule<SarimaModel> {
         return new Builder();
     }
 
-    public static class Builder implements IBuilder<LogLevelModule> {
+    @BuilderPattern(LogLevelModule.class)
+    public static class Builder {
 
         private double aiccdiff = -2;
         private double precision = 1e-7;
@@ -56,7 +56,6 @@ public class LogLevelModule implements ILogLevelModule<SarimaModel> {
             return this;
         }
 
-        @Override
         public LogLevelModule build() {
             return new LogLevelModule(aiccdiff, precision);
         }

@@ -9,7 +9,6 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;
 import demetra.data.accumulator.DoubleAccumulator;
-import demetra.design.IBuilder;
 import java.util.Iterator;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -21,6 +20,7 @@ import javax.annotation.Nonnegative;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
 import demetra.data.LogSign;
+import demetra.design.BuilderPattern;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -69,7 +69,8 @@ public class Matrix implements MatrixType {
         return new Matrix(x.getStorage(), x.getStartPosition(), x.length(), 1, x.getIncrement(), 1);
     }
 
-    public static class Builder implements IBuilder<Matrix> {
+    @BuilderPattern(Matrix.class)
+    public static class Builder {
 
         private final double[] storage;
         private int row_inc = 1, col_inc = 0;
@@ -110,7 +111,6 @@ public class Matrix implements MatrixType {
             return this;
         }
 
-        @Override
         public Matrix build() {
             // TODO Add some controls on the state 
             return new Matrix(storage, start, nrows, ncols, row_inc, col_inc == 0 ? nrows : col_inc);

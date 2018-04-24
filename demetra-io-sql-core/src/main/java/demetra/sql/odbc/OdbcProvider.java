@@ -16,6 +16,7 @@
  */
 package demetra.sql.odbc;
 
+import demetra.design.DirectImpl;
 import demetra.sql.HasSqlProperties;
 import util.sql.odbc.OdbcConnectionSupplier;
 import internal.sql.odbc.OdbcParam;
@@ -46,6 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Philippe Charles
  */
+@DirectImpl
 @ServiceProvider(service = TsProvider.class)
 public final class OdbcProvider implements DataSourceLoader<OdbcBean>, HasSqlProperties {
 

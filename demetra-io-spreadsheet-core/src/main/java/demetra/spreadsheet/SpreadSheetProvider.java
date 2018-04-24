@@ -16,6 +16,7 @@
  */
 package demetra.spreadsheet;
 
+import demetra.design.DirectImpl;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.FileLoader;
@@ -49,6 +50,7 @@ import demetra.tsprovider.util.CacheFactory;
  *
  * @author Philippe Charles
  */
+@DirectImpl
 @ServiceProvider(service = TsProvider.class)
 public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
 

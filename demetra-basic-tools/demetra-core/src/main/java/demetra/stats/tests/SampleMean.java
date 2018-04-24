@@ -16,10 +16,8 @@
  */
 package demetra.stats.tests;
 
-import demetra.data.DoubleSequence;
-import demetra.data.Doubles;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.dstats.F;
 import demetra.dstats.Normal;
 import demetra.dstats.T;
@@ -31,7 +29,8 @@ import demetra.stats.samples.Sample;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class SampleMean implements IBuilder<StatisticalTest> {
+@BuilderPattern(StatisticalTest.class)
+public class SampleMean {
 
     public static final double SMALL = 1e-38;
 
@@ -41,7 +40,6 @@ public class SampleMean implements IBuilder<StatisticalTest> {
         this.sample=sample;
     }
 
-    @Override
     public StatisticalTest build() {
         // case I: pmean and pvariance are known
         if (Double.isFinite(sample.population().getVariance())) {

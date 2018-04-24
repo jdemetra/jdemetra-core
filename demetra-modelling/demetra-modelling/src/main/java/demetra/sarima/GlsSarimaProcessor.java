@@ -16,13 +16,13 @@
  */
 package demetra.sarima;
 
+import demetra.design.BuilderPattern;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.internal.RegArmaEstimation;
 import demetra.regarima.RegArmaModel;
 import demetra.regarima.internal.RegArmaProcessor;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.LogLikelihoodFunction;
 import demetra.maths.functions.IParametricMapping;
@@ -31,7 +31,6 @@ import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaMapping;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
-import demetra.sarima.SarimaModel;
 import java.util.function.Function;
 
 /**
@@ -41,7 +40,8 @@ import java.util.function.Function;
 @Development(status = Development.Status.Alpha)
 public class GlsSarimaProcessor implements IRegArimaProcessor<SarimaModel>{
 
-    public static class Builder implements IBuilder<GlsSarimaProcessor> {
+    @BuilderPattern(GlsSarimaProcessor.class)
+    public static class Builder {
 
         private Function<SarimaModel, IParametricMapping<SarimaModel>> mappingProvider;
         private IArmaInitializer initializer;
@@ -84,7 +84,6 @@ public class GlsSarimaProcessor implements IRegArimaProcessor<SarimaModel>{
             return this;
         }
         
-        @Override
         public GlsSarimaProcessor build() {
             return new GlsSarimaProcessor(mappingProvider, initializer, min, eps, ml, mt, fast);
         }

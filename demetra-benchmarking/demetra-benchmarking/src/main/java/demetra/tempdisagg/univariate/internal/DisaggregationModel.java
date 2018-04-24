@@ -20,8 +20,8 @@ import demetra.benchmarking.Cumulator;
 import demetra.data.AggregationType;
 import demetra.data.DataBlockIterator;
 import demetra.data.normalizer.AbsMeanNormalizer;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.modelling.regression.ITsVariable;
 import demetra.modelling.regression.RegressionUtility;
 import demetra.timeseries.TsData;
@@ -29,8 +29,6 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -40,8 +38,8 @@ import javax.annotation.Nonnull;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-
-class DisaggregationModel implements IBuilder<DisaggregationData> {
+@BuilderPattern(DisaggregationData.class)
+class DisaggregationModel {
 
     private TsData y;
     private final List<ITsVariable<TsDomain>> regressors = new ArrayList<>();
@@ -76,7 +74,6 @@ class DisaggregationModel implements IBuilder<DisaggregationData> {
         return this;
     }
 
-    @Override
     public DisaggregationData build() {
         DisaggregationData data = startDataPreparation();
         if (data == null) {

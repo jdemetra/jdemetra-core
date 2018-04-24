@@ -16,7 +16,6 @@
  */
 package demetra.data;
 
-import demetra.design.IntValue;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 

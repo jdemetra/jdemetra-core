@@ -26,7 +26,7 @@ import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
-import demetra.design.IBuilder;
+import demetra.design.BuilderPattern;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import javax.annotation.Nonnull;
@@ -38,7 +38,8 @@ import javax.annotation.Nonnull;
 @Immutable
 public class LeastSquaresResults {
 
-    public static class Builder implements IBuilder<LeastSquaresResults> {
+    @BuilderPattern(LeastSquaresResults.class)
+    public static class Builder {
 
         private Builder(DoubleSequence y, final Matrix X) {
             this.y = y;
@@ -81,7 +82,6 @@ public class LeastSquaresResults {
         private double ssq, ldet;
         private Matrix ucov;
 
-        @Override
         public LeastSquaresResults build() {
             return new LeastSquaresResults(y, X, mean, coefficients, ucov, ssq, ldet);
         }

@@ -32,7 +32,7 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-datatypes-proc</artifactId>
+            <artifactId>demetra-design</artifactId>
             <scope>provided</scope>
         </dependency>
 

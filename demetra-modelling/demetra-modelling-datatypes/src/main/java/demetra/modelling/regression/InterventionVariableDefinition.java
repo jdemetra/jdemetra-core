@@ -17,8 +17,8 @@
 package demetra.modelling.regression;
 
 import demetra.data.Range;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.timeseries.TsException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,7 +39,8 @@ public class InterventionVariableDefinition {
         return new Builder();
     }
     
-    public static class Builder implements IBuilder<InterventionVariableDefinition> {
+    @BuilderPattern(InterventionVariableDefinition.class)
+    public static class Builder {
         
         private String name;
         private double delta, deltaSeasonal;
@@ -71,7 +72,6 @@ public class InterventionVariableDefinition {
             return this;
         }
         
-        @Override
         public InterventionVariableDefinition build() {
             if (sequences.isEmpty()) {
                 throw new TsException(TsException.INVALID_DEFINITION);

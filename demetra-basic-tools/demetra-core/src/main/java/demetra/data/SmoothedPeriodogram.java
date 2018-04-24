@@ -16,7 +16,7 @@
  */
 package demetra.data;
 
-import demetra.design.IBuilder;
+import demetra.design.BuilderPattern;
 import demetra.maths.Constants;
 import demetra.stats.AutoCovariances;
 
@@ -30,7 +30,8 @@ public class SmoothedPeriodogram {
         return new Builder();
     }
 
-    public static class Builder implements IBuilder<SmoothedPeriodogram> {
+    @BuilderPattern(SmoothedPeriodogram.class)
+    public static class Builder {
 
         private DiscreteWindowFunction win = DiscreteWindowFunction.Tukey;
         private int winLen = 44;
@@ -97,7 +98,6 @@ public class SmoothedPeriodogram {
             return this;
         }
 
-        @Override
         public SmoothedPeriodogram build() {
             if (data == null) {
                 throw new RuntimeException("Uninitialized data");

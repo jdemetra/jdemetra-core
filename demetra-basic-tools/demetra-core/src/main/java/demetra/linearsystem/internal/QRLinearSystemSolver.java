@@ -20,7 +20,7 @@ import demetra.data.Cell;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.accumulator.NeumaierAccumulator;
-import demetra.design.IBuilder;
+import demetra.design.BuilderPattern;
 import demetra.maths.matrices.decomposition.IQRDecomposition;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
@@ -32,7 +32,8 @@ import demetra.linearsystem.ILinearSystemSolver;
  */
 public class QRLinearSystemSolver implements ILinearSystemSolver {
 
-    public static class Builder implements IBuilder<QRLinearSystemSolver> {
+    @BuilderPattern(QRLinearSystemSolver.class)
+    public static class Builder {
 
         private final IQRDecomposition qr;
         private boolean improve, normalize;
@@ -51,7 +52,6 @@ public class QRLinearSystemSolver implements ILinearSystemSolver {
             return this;
         }
 
-        @Override
         public QRLinearSystemSolver build() {
             return new QRLinearSystemSolver(qr, normalize, improve);
         }

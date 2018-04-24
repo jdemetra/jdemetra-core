@@ -16,12 +16,12 @@
  */
 package demetra.likelihood;
 
-import demetra.design.IBuilder;
 import demetra.design.Immutable;
 import demetra.maths.matrices.Matrix;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.data.LogSign;
+import demetra.design.BuilderPattern;
 import demetra.eco.EcoException;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
@@ -42,7 +42,8 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
         return new Builder();
     }
 
-    public static class Builder implements IBuilder<ConcentratedLikelihood> {
+    @BuilderPattern(ConcentratedLikelihood.class)
+    public static class Builder {
 
         private static double[] B_EMPTY = new double[0];
 
@@ -131,7 +132,6 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
             return this;
         }
 
-        @Override
         public ConcentratedLikelihood build() {
             if (nmissing > 0) {
                 if (r == null) {

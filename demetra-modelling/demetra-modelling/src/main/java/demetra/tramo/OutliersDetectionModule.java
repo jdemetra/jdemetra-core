@@ -18,8 +18,8 @@ package demetra.tramo;
 
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
@@ -29,7 +29,6 @@ import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArmaModel;
 import demetra.regarima.ami.IOutliersDetectionModule;
-import static demetra.regarima.ami.OutliersDetectionModule.MINCV;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.regarima.outlier.AbstractSingleOutlierDetector;
 import demetra.regarima.outlier.CriticalValueComputer;
@@ -65,7 +64,8 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
         return new Builder();
     }
 
-    public static class Builder implements IBuilder<OutliersDetectionModule> {
+    @BuilderPattern(OutliersDetectionModule.class)
+    public static class Builder {
 
         private double eps = EPS;
         private double cv = 0, pc = 0.12;
@@ -156,7 +156,6 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
             return this;
         }
 
-        @Override
         public OutliersDetectionModule build() {
             IRegArimaProcessor<SarimaModel> p = processor;
             if (p == null) {
