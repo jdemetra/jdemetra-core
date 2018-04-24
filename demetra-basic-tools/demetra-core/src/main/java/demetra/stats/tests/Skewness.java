@@ -17,10 +17,10 @@
 package demetra.stats.tests;
 
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.dstats.Normal;
 import demetra.stats.DescriptiveStatistics;
 import demetra.data.DoubleSequence;
+import demetra.design.BuilderPattern;
 
 
 /**
@@ -28,7 +28,8 @@ import demetra.data.DoubleSequence;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class Skewness implements IBuilder<StatisticalTest>
+@BuilderPattern(StatisticalTest.class)
+public class Skewness 
 {
     private final DescriptiveStatistics stats;
     
@@ -42,7 +43,6 @@ public class Skewness implements IBuilder<StatisticalTest>
         this.stats=stats;
     }
 
-    @Override
     public StatisticalTest build() {
 	int n = stats.getObservationsCount();
 	Normal dist = new Normal(0, Math.sqrt(6.0 / n));

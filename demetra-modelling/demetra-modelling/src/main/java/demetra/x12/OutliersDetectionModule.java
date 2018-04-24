@@ -19,9 +19,8 @@ package demetra.x12;
 import demetra.arima.IResidualsComputer;
 import demetra.arima.internal.AnsleyFilter;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -29,7 +28,6 @@ import demetra.regarima.ami.IOutliersDetectionModule;
 import demetra.regarima.outlier.AbstractSingleOutlierDetector;
 import demetra.regarima.outlier.CriticalValueComputer;
 import demetra.regarima.outlier.ExactSingleOutlierDetector;
-import demetra.regarima.outlier.FastOutlierDetector;
 import demetra.regarima.outlier.IRobustStandardDeviationComputer;
 import demetra.sarima.GlsSarimaProcessor;
 import demetra.sarima.SarimaModel;
@@ -40,7 +38,6 @@ import demetra.modelling.regression.LevelShift;
 import demetra.modelling.regression.PeriodicOutlier;
 import demetra.modelling.regression.TransitoryChange;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  *
@@ -57,7 +54,8 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
         return new Builder();
     }
 
-    public static class Builder implements IBuilder<OutliersDetectionModule> {
+    @BuilderPattern(OutliersDetectionModule.class)
+    public static class Builder {
 
         private double eps = EPS;
         private double cv = 0, pc = 0.14286;
@@ -145,7 +143,6 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
             return this;
         }
 
-        @Override
         public OutliersDetectionModule build() {
             IRegArimaProcessor<SarimaModel> p = processor;
             if (p == null) {

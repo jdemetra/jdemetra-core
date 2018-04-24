@@ -17,8 +17,8 @@
 package demetra.regarima.ami;
 
 import demetra.design.Development;
-import demetra.design.IntValue;
 import demetra.timeseries.TsData;
+import java.util.function.IntSupplier;
 
 /**
  *
@@ -27,7 +27,7 @@ import demetra.timeseries.TsData;
 @Development(status = Development.Status.Exploratory)
 public interface ISeasonalityDetector {
 
-    public static enum Seasonality implements IntValue {
+    public static enum Seasonality implements IntSupplier {
 
         NotApplicable(-1),
         NotObservable(0),
@@ -47,7 +47,7 @@ public interface ISeasonalityDetector {
          * @return
          */
         @Override
-        public int intValue() {
+        public int getAsInt() {
             return value;
         }
     }

@@ -17,10 +17,10 @@
 package demetra.likelihood;
 
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.design.Immutable;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
+import demetra.design.BuilderPattern;
 
 /**
  * Log-Likelihood of a multi-variate gaussian distribution. For a N(0, sig2*V)
@@ -46,7 +46,8 @@ public final class Likelihood implements ILikelihood {
         return new Builder(n);
     }
 
-    public static class Builder implements IBuilder<Likelihood> {
+    @BuilderPattern(Likelihood.class)
+    public static class Builder {
 
         final int n;
         double ssqerr, ldet;
@@ -72,7 +73,6 @@ public final class Likelihood implements ILikelihood {
             return this;
         }
         
-        @Override
         public Likelihood build() {
             return new Likelihood(n, ssqerr, ldet, res);
         }

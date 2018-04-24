@@ -12,14 +12,13 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.decomposition.IQRDecomposition;
 import demetra.data.accumulator.NeumaierAccumulator;
-import demetra.design.IBuilder;
 import demetra.leastsquares.IQRSolver;
-import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
+import demetra.design.BuilderPattern;
 
 /**
  *
@@ -28,7 +27,8 @@ import demetra.data.DoubleSequence;
 @ServiceProvider(service = IQRSolver.class)
 public class QRSolver implements IQRSolver {
 
-    public static class Builder implements IBuilder<QRSolver> {
+    @BuilderPattern(QRSolver.class)
+    public static class Builder {
 
         private final IQRDecomposition qr;
         private int niter = 1;
@@ -53,7 +53,6 @@ public class QRSolver implements IQRSolver {
             return this;
         }
 
-        @Override
         public QRSolver build() {
             return new QRSolver(qr, niter, simple);
         }

@@ -17,9 +17,8 @@
 package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
-import demetra.modelling.ComponentType;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
@@ -56,7 +55,8 @@ public class EasterVariable implements IEasterVariable {
         0.5864E0, 0.6024444E0, 0.618E0, 0.6345714E0, 0.6516667E0,
         0.6696E0, 0.6875E0, 0.7033333E0, 0.719E0, 0.734E0};
 
-    public static class Builder implements IBuilder<EasterVariable> {
+    @BuilderPattern(EasterVariable.class)
+    public static class Builder {
 
     private int duration=6, endPosition=0;
     private Correction meanCorrection = Correction.Simple;
@@ -79,7 +79,6 @@ public class EasterVariable implements IEasterVariable {
         return this;
     }
 
-    @Override
         public EasterVariable build() {
             return new EasterVariable(duration, endPosition, meanCorrection, name != null ? name : defaultName(duration));
         }

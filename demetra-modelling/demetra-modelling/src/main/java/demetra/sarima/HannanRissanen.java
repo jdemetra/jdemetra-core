@@ -20,14 +20,11 @@ import demetra.ar.IAutoRegressiveEstimation;
 import demetra.data.normalizer.AbsMeanNormalizer;
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.leastsquares.IQRSolver;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.Matrix;
-import demetra.sarima.SarimaModel;
-import demetra.sarima.SarmaSpecification;
 import demetra.data.DoubleSequence;
-import demetra.stats.AutoCovariances;
+import demetra.design.BuilderPattern;
 
 /**
  * The Hannan-Rissanen procedure is performed as in TRAMO. See
@@ -38,7 +35,8 @@ import demetra.stats.AutoCovariances;
 @Development(status = Development.Status.Alpha)
 public class HannanRissanen {
     
-    public static class Builder implements IBuilder<HannanRissanen>{
+    @BuilderPattern(HannanRissanen.class)
+    public static class Builder {
         
         private boolean finalcorrection=true, biascorrection=true;
         private Initialization initialization=Initialization.Levinson;
@@ -58,7 +56,6 @@ public class HannanRissanen {
             return this;
         }
 
-        @Override
         public HannanRissanen build() {
             return new HannanRissanen(this);
         }

@@ -17,8 +17,8 @@
 package demetra.stats.tests;
 
 import demetra.data.DoubleSequence;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.dstats.Normal;
 import demetra.stats.DescriptiveStatistics;
 
@@ -28,7 +28,8 @@ import demetra.stats.DescriptiveStatistics;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class Kurtosis implements IBuilder<StatisticalTest>{
+@BuilderPattern(StatisticalTest.class)
+public class Kurtosis {
 
     private final DescriptiveStatistics stats;
     
@@ -42,7 +43,6 @@ public class Kurtosis implements IBuilder<StatisticalTest>{
         this.stats=stats;
     }
 
-    @Override
     public StatisticalTest build() {
 	int n = stats.getObservationsCount();
 	Normal dist = new Normal(3, Math.sqrt(24.0 / n));

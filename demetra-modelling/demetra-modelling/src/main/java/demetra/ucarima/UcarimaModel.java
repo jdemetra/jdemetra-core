@@ -20,12 +20,9 @@ import demetra.arima.ArimaException;
 import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
 import demetra.arima.Spectrum;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import java.util.ArrayList;
-import java.util.List;
-
-import java.util.Collections;
 import javax.annotation.Nonnull;
 
 /**
@@ -42,7 +39,8 @@ public class UcarimaModel implements Cloneable {
      * and to a given list of models.
      *
      */
-    public static class Builder implements IBuilder<UcarimaModel> {
+    @BuilderPattern(UcarimaModel.class)
+    public static class Builder {
 
         private IArimaModel model;
         private ArrayList<ArimaModel> components = new ArrayList<>();
@@ -51,7 +49,6 @@ public class UcarimaModel implements Cloneable {
         private Builder() {
         }
 
-        @Override
         public UcarimaModel build() {
 
             if (verify && model != null) {

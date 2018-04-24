@@ -19,7 +19,7 @@ package demetra.stats.tests;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSequence;
-import demetra.design.IBuilder;
+import demetra.design.BuilderPattern;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.internal.Householder;
 
@@ -34,7 +34,8 @@ public class AugmentedDickeyFuller {
         return new Builder();
     }
 
-    public static class Builder implements IBuilder<AugmentedDickeyFuller> {
+    @BuilderPattern(AugmentedDickeyFuller.class)
+    public static class Builder {
 
         private int k = 1; // number of lags. 
         private boolean cnt, trend;
@@ -63,7 +64,6 @@ public class AugmentedDickeyFuller {
             return this;
         }
 
-        @Override
         public AugmentedDickeyFuller build() {
             //
             int ndata = y.length();

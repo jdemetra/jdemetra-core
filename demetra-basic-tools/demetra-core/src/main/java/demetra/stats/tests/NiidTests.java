@@ -18,8 +18,8 @@ package demetra.stats.tests;
 
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.dstats.DStatException;
 import demetra.stats.AutoCovariances;
 import demetra.stats.DescriptiveStatistics;
@@ -37,7 +37,8 @@ public class NiidTests {
         return new Builder();
     }
 
-    public static class Builder implements IBuilder<NiidTests> {
+    @BuilderPattern(NiidTests.class)
+    public static class Builder {
 
         /**
          *
@@ -101,7 +102,6 @@ public class NiidTests {
             return this;
         }
 
-        @Override
         public NiidTests build() {
             if (period == 0) {
                 throw new IllegalArgumentException();

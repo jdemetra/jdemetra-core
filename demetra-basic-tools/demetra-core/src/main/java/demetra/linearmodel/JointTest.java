@@ -19,7 +19,7 @@ package demetra.linearmodel;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
-import demetra.design.IBuilder;
+import demetra.design.BuilderPattern;
 import demetra.dstats.F;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
@@ -32,7 +32,8 @@ import javax.annotation.Nonnull;
  *
  * @author Jean Palate
  */
-public class JointTest implements IBuilder<StatisticalTest> {
+@BuilderPattern(StatisticalTest.class)
+public class JointTest {
 
     private final DoubleSequence b;
     private final Matrix bvar;
@@ -88,7 +89,6 @@ public class JointTest implements IBuilder<StatisticalTest> {
         return this;
     }
 
-    @Override
     public StatisticalTest build() {
         final double f;
         DataBlock rb = rb();

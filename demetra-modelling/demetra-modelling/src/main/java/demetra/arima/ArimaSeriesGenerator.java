@@ -17,7 +17,7 @@
 package demetra.arima;
 
 import demetra.data.DataBlock;
-import demetra.design.IBuilder;
+import demetra.design.BuilderPattern;
 import demetra.design.Immutable;
 import demetra.dstats.IDistribution;
 import demetra.dstats.Normal;
@@ -38,7 +38,8 @@ import javax.annotation.Nonnull;
 @Immutable
 public class ArimaSeriesGenerator {
     
-    public static class Builder implements IBuilder<ArimaSeriesGenerator>{
+    @BuilderPattern(ArimaSeriesGenerator.class)
+    public static class Builder {
 
     private int ndrop = 0;
     private double startMean = 100;
@@ -83,7 +84,6 @@ public class ArimaSeriesGenerator {
         return this;
     }
 
-    @Override
         public ArimaSeriesGenerator build() {
             return new ArimaSeriesGenerator(this);
         }

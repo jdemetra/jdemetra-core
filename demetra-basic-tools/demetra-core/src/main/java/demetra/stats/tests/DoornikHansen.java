@@ -17,8 +17,8 @@
 package demetra.stats.tests;
 
 import demetra.data.DoubleSequence;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.dstats.Chi2;
 import demetra.stats.DescriptiveStatistics;
 import demetra.stats.StatException;
@@ -29,7 +29,8 @@ import demetra.stats.StatException;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class DoornikHansen implements IBuilder<StatisticalTest>
+@BuilderPattern(StatisticalTest.class)
+public class DoornikHansen 
 {
     private final DescriptiveStatistics stats;
     
@@ -44,7 +45,6 @@ public class DoornikHansen implements IBuilder<StatisticalTest>
     }
 
     // calculate correction for Skewness (D'Agostino)
-    @Override
     public StatisticalTest build() {
 	double sk = stats.getSkewness();
 	double n = stats.getDataCount();

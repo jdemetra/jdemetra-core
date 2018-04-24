@@ -25,20 +25,16 @@ import demetra.regarima.RegArmaModel;
 import demetra.regarima.internal.RegArmaProcessor;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.LogLikelihoodFunction;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.SymmetricMatrix;
 import demetra.regarima.RegArimaMapping;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
-import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
 import java.util.function.Function;
 
 /**
@@ -48,7 +44,8 @@ import java.util.function.Function;
 @Development(status = Development.Status.Preliminary)
 public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
 
-    public static class Builder implements IBuilder<RegSarimaProcessor> {
+    @BuilderPattern(RegSarimaProcessor.class)
+    public static class Builder {
 
         private Function<SarimaModel, IParametricMapping<SarimaModel>> mappingProvider;
         private double eps = DEF_EPS, feps = DEF_INTERNAL_EPS;
@@ -101,7 +98,6 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
             return this;
         }
 
-        @Override
         public RegSarimaProcessor build() {
             return new RegSarimaProcessor(this.mappingProvider, this.min, this.eps, this.feps, this.ml, this.start, this.cdf, this.mt, this.fast);
         }

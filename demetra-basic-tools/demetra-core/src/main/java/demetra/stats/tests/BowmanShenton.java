@@ -17,8 +17,8 @@
 package demetra.stats.tests;
 
 import demetra.data.DoubleSequence;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.dstats.Chi2;
 import demetra.stats.DescriptiveStatistics;
 
@@ -27,7 +27,8 @@ import demetra.stats.DescriptiveStatistics;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class BowmanShenton implements IBuilder<StatisticalTest>
+@BuilderPattern(StatisticalTest.class)
+public class BowmanShenton 
 {
 
     private final DescriptiveStatistics stats;
@@ -40,7 +41,6 @@ public class BowmanShenton implements IBuilder<StatisticalTest>
         stats=DescriptiveStatistics.of(data);
     }
 
-    @Override
     public StatisticalTest build() {
 	int n = stats.getObservationsCount();
 	double m3 = stats.getSkewness();

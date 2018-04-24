@@ -18,8 +18,8 @@ package demetra.regarima;
 
 import demetra.arima.IArimaModel;
 import demetra.data.DoubleSequence;
+import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.design.IBuilder;
 import demetra.likelihood.LogLikelihoodFunction;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
@@ -37,7 +37,8 @@ import java.util.function.Function;
 @Development(status = Development.Status.Alpha)
 public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProcessor<M> {
 
-    public static class Builder<M extends IArimaModel> implements IBuilder<GlsArimaProcessor> {
+    @BuilderPattern(GlsArimaProcessor.class)
+    public static class Builder<M extends IArimaModel> {
 
         private Function<M, IParametricMapping<M>> mappingProvider;
         private IRegArimaInitializer<M> initializer;
@@ -86,7 +87,6 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
             return this;
         }
 
-        @Override
         public GlsArimaProcessor<M> build() {
             return new GlsArimaProcessor(mappingProvider, initializer, finalizer, min, eps, ml, mt, fast);
         }

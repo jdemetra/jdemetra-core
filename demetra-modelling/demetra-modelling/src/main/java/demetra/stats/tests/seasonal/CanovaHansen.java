@@ -8,7 +8,7 @@ package demetra.stats.tests.seasonal;
 import demetra.data.DoubleSequence;
 import demetra.data.TrigonometricSeries;
 import demetra.data.WindowFunction;
-import demetra.design.IBuilder;
+import demetra.design.BuilderPattern;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
@@ -33,7 +33,8 @@ public class CanovaHansen {
         return new Builder(s);
     }
 
-    public static class Builder implements IBuilder<CanovaHansen> {
+    @BuilderPattern(CanovaHansen.class)
+    public static class Builder {
 
         private final DoubleSequence s;
         private double period;
@@ -87,7 +88,6 @@ public class CanovaHansen {
             return this;
         }
 
-        @Override
         public CanovaHansen build() {
             Matrix x = sx();
             LinearModel lm = buildModel(x);
