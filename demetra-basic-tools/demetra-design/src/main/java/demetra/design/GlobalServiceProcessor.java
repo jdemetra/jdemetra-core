@@ -22,18 +22,23 @@ import javax.annotation.processing.Messager;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ExecutableType;
 import javax.tools.Diagnostic;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Philippe Charles
  */
-@SupportedAnnotationTypes("ec.tstoolkit.design.GlobalServiceProvider")
+@ServiceProvider(service = Processor.class)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedAnnotationTypes("demetra.design.GlobalService")
 public final class GlobalServiceProcessor extends AbstractProcessor {
 
     private final Diagnostic.Kind kind = Diagnostic.Kind.ERROR;
@@ -41,7 +46,7 @@ public final class GlobalServiceProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         Messager m = processingEnv.getMessager();
-        for (Element e : roundEnv.getElementsAnnotatedWith(GlobalServiceProvider.class)) {
+        for (Element e : roundEnv.getElementsAnnotatedWith(GlobalService.class)) {
 
             if (e.getModifiers().contains(Modifier.FINAL)) {
                 m.printMessage(kind, "Cannot be final", e);

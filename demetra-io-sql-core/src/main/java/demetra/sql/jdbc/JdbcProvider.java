@@ -16,6 +16,7 @@
  */
 package demetra.sql.jdbc;
 
+import demetra.design.DirectImpl;
 import demetra.sql.HasSqlProperties;
 import internal.sql.jdbc.JdbcParam;
 import demetra.sql.SqlTableAsCubeResource;
@@ -44,6 +45,7 @@ import util.sql.SqlConnectionSupplier;
  *
  * @author Philippe Charles
  */
+@DirectImpl
 @ServiceProvider(service = TsProvider.class)
 public final class JdbcProvider implements DataSourceLoader<JdbcBean>, HasSqlProperties {
 
