@@ -21,7 +21,7 @@ import demetra.design.Development;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
-import demetra.modelling.DataTransformation;
+import demetra.modelling.TransformationType;
 import demetra.regarima.RegArimaModel;
 import demetra.sarima.SarimaModel;
 import java.util.Arrays;
@@ -175,8 +175,8 @@ public class RangeMeanTest {
         }
     }
 
-    public DataTransformation getTransformation() {
-        return log ? DataTransformation.Log : DataTransformation.None;
+    public TransformationType getTransformation() {
+        return log ? TransformationType.Log : TransformationType.None;
     }
 
 }

@@ -16,6 +16,14 @@
  */
 package demetra.regarima.outlier;
 
+import demetra.data.DataBlock;
+import demetra.regarima.RegArimaModel;
+import demetra.sarima.SarimaModel;
+import demetra.sarima.SarmaSpecification;
+import demetra.modelling.regression.AdditiveOutlier;
+import demetra.modelling.regression.LevelShift;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
+import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -25,11 +33,61 @@ import static org.junit.Assert.*;
  */
 public class FastOutlierDetectorTest {
     
+   
+
     public FastOutlierDetectorTest() {
     }
 
-    @Test
-    public void testSomeMethod() {
+    //@Test
+    public void testNew() {
+        DataBlock rnd = DataBlock.make(600);
+        Random gen = new Random(0);
+        rnd.set(gen::nextDouble);
+        FastOutlierDetector sod = new FastOutlierDetector(null);
+        sod.addOutlierFactory(AdditiveOutlier.FACTORY);
+        sod.addOutlierFactory(LevelShift.FACTORY_ZEROENDED);
+        SarmaSpecification spec = new SarmaSpecification(12);
+        spec.setBq(1);
+        spec.setQ(1);
+        SarimaModel model = SarimaModel.builder(spec)
+                .setDefault()
+                .build();
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class)
+                .y(rnd)
+                .meanCorrection(true)
+                .arima(model)
+                .build();
+            sod.process(regarima);
+        long t0 = System.currentTimeMillis();
+        for (int i = 0; i < 10000; ++i) {
+            sod.process(regarima);
+        }
+        long t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
     }
-    
+
+    //@Test
+    public void testLegacy() {
+        ec.tstoolkit.data.DataBlock rnd = new ec.tstoolkit.data.DataBlock(600);
+        Random gen = new Random(0);
+        rnd.set(gen::nextDouble);
+        ec.tstoolkit.modelling.arima.tramo.SingleOutlierDetector sod=new ec.tstoolkit.modelling.arima.tramo.SingleOutlierDetector();
+        ec.tstoolkit.sarima.SarmaSpecification spec=new ec.tstoolkit.sarima.SarmaSpecification(12);
+        sod.addOutlierFactory(new ec.tstoolkit.timeseries.regression.AdditiveOutlierFactory());
+        sod.addOutlierFactory(new ec.tstoolkit.timeseries.regression.LevelShiftFactory());
+        sod.prepare(new ec.tstoolkit.timeseries.simplets.TsDomain(TsFrequency.Monthly, 1980, 0, 600), null);
+        spec.setQ(1);
+        spec.setBQ(1);
+        ec.tstoolkit.sarima.SarimaModel model=new ec.tstoolkit.sarima.SarimaModel(spec);
+        model.setDefault();
+        System.out.println("Legacy");
+        long t0 = System.currentTimeMillis();
+        for (int i = 0; i < 10000; ++i) {
+            sod.process(model, rnd);
+        }
+        long t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
+
+    }
+
 }

@@ -28,8 +28,8 @@ import demetra.design.Development;
 @Development(status = Development.Status.Alpha)
 public class Parameter implements Cloneable, Comparable<Parameter> {
 
-    private double value_, stde_;
-    private ParameterType type_;
+    private double value, stde;
+    private ParameterType type;
 
     private static final String EMPTY="";
     /**
@@ -77,7 +77,7 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
             return false;
         }
         for (int i = 0; i < p.length; ++i) {
-            if (p[i] != null && p[i].type_ == ParameterType.Fixed) {
+            if (p[i] != null && p[i].type == ParameterType.Fixed) {
                 return true;
             }
         }
@@ -94,7 +94,7 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
             return false;
         }
         for (int i = 0; i < p.length; ++i) {
-            if (p[i] == null || p[i].type_ != ParameterType.Fixed) {
+            if (p[i] == null || p[i].type != ParameterType.Fixed) {
                 return true;
             }
         }
@@ -112,7 +112,7 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
         }
         int n = 0;
         for (int i = 0; i < p.length; ++i) {
-            if (p[i] != null && p[i].type_ == ParameterType.Fixed) {
+            if (p[i] != null && p[i].type == ParameterType.Fixed) {
                 ++n;
             }
         }
@@ -130,7 +130,7 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
         }
         int n = 0;
         for (int i = 0; i < p.length; ++i) {
-            if (p[i] == null || p[i].type_ != ParameterType.Fixed) {
+            if (p[i] == null || p[i].type != ParameterType.Fixed) {
                 ++n;
             }
         }
@@ -148,7 +148,7 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
             return true;
         }
         for (int i = 0; i < p.length; ++i) {
-            if (p[i] != null && p[i].type_ != ParameterType.Undefined) {
+            if (p[i] != null && p[i].type != ParameterType.Undefined) {
                 return false;
             }
         }
@@ -159,7 +159,7 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
         if (p == null) {
             return true;
         }
-        return p.type_ == ParameterType.Undefined;
+        return p.type == ParameterType.Undefined;
     }
     /**
      * Checks that all the parameters in an array are defined. Opposite of isDefault
@@ -172,7 +172,7 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
             return true;
         }
         for (int i = 0; i < p.length; ++i) {
-            if (p[i] == null || p[i].type_ == ParameterType.Undefined) {
+            if (p[i] == null || p[i].type == ParameterType.Undefined) {
                 return false;
             }
         }
@@ -186,7 +186,7 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
      * @return 
      */
     public static boolean isDefined(Parameter p) {
-        return p != null && p.type_ != ParameterType.Undefined;
+        return p != null && p.type != ParameterType.Undefined;
     }
     // / <summary></summary>
     // / <returns>
@@ -206,7 +206,7 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
             return true;
         }
         for (int i = 0; i < p.length; ++i) {
-            if (p[i] != null && p[i].value_ != 0) {
+            if (p[i] != null && p[i].value != 0) {
                 return false;
             }
         }
@@ -217,7 +217,7 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
      * Creates a new undefined parameter
      */
     public Parameter() {
-        type_ = ParameterType.Undefined;
+        type = ParameterType.Undefined;
     }
 
     /**
@@ -226,8 +226,8 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
      * @param type The type of the parameter
      */
     public Parameter(double value, ParameterType type) {
-        type_ = type;
-        value_ = value;
+        this.type = type;
+        this.value = value;
     }
 
     @Override
@@ -241,11 +241,11 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
 
     @Override
     public int compareTo(Parameter p) {
-        int r = Double.compare(value_, p.value_);
+        int r = Double.compare(value, p.value);
         if (r != 0) {
             return r;
         } else {
-            return type_.compareTo(p.type_);
+            return type.compareTo(p.type);
         }
     }
 
@@ -255,8 +255,8 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
     }
     
     public boolean equals(Parameter other) {
-        return value_ == other.value_ && type_ == other.type_
-                && stde_ == other.stde_;
+        return value == other.value && type == other.type
+                && stde == other.stde;
     }
 
     // / <summary>
@@ -268,7 +268,7 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
      * @return The standard error (or 0 if unused).
      */
     public double getStde() {
-        return stde_;
+        return stde;
     }
 
     /**
@@ -276,7 +276,7 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
      * @return The type of the parameter
      */
     public ParameterType getType() {
-        return type_;
+        return type;
     }
 
     /**
@@ -284,14 +284,14 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
      * @return Value of the parameter. 0 by default.
      */
     public double getValue() {
-        return value_;
+        return value;
     }
 
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 59 * hash + Double.hashCode(this.value_);
-        hash = 59 * hash + Objects.hashCode(this.type_);
+        hash = 59 * hash + Double.hashCode(this.value);
+        hash = 59 * hash + Objects.hashCode(this.type);
         return hash;
     }
 
@@ -300,7 +300,7 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
      * @param value The standard error.
      */
     public void setStde(double value) {
-        stde_ = value;
+        stde = value;
     }
 
     /**
@@ -310,12 +310,12 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
      * @param value The type of the parameter.
      */
     public void setType(ParameterType value) {
-        type_ = value;
-        if (type_ == ParameterType.Undefined) {
-            value_ = 0;
-            stde_ = 0;
-        } else if (type_ != ParameterType.Estimated && type_ != ParameterType.Derived) {
-            stde_ = 0;
+        type = value;
+        if (type == ParameterType.Undefined) {
+            this.value = 0;
+            stde = 0;
+        } else if (type != ParameterType.Estimated && type != ParameterType.Derived) {
+            stde = 0;
         }
     }
 
@@ -324,7 +324,7 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
      * @param value The value of the parameter.
      */
     public void setValue(double value) {
-        value_ = value;
+        this.value = value;
     }
 
     /**
@@ -332,7 +332,7 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
      * @return True if the type is fixed, false otherwise.
      */
     public boolean isFixed(){
-        return type_ == ParameterType.Fixed;
+        return type == ParameterType.Fixed;
     }
 
     @Override
@@ -351,16 +351,15 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
      * "1.2345 (0.0001) for estimated parameter (with standard deviation)
      */
     public String toString(String fmt) {
-        if (type_ == ParameterType.Undefined)
+        if (type == ParameterType.Undefined)
             return EMPTY;
         StringBuilder builder = new StringBuilder();
 
-        builder.append(new Formatter().format(fmt, value_).toString());
-        if (type_ == ParameterType.Fixed)
+        builder.append(new Formatter().format(fmt, value).toString());
+        if (type == ParameterType.Fixed)
             builder.append('f');
-        else if (stde_ > 0) {
-            builder.append(" (").append(
-                    new Formatter().format(fmt, stde_).toString()).append(')');
+        else if (stde > 0) {
+            builder.append(" (").append(new Formatter().format(fmt, stde).toString()).append(')');
         }
         return builder.toString();
     }

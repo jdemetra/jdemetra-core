@@ -5,14 +5,10 @@
  */
 package demetra.stats.tests.seasonal;
 
-import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.data.TrigonometricSeries;
 import demetra.data.WindowFunction;
-import demetra.design.BuilderPattern;
-import demetra.dstats.F;
-import demetra.dstats.ProbabilityType;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.design.IBuilder;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
@@ -20,7 +16,7 @@ import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.stats.RobustCovarianceComputer;
-import demetra.timeseries.regression.PeriodicDummies;
+import demetra.modelling.regression.PeriodicDummies;
 
 /**
  *
@@ -33,28 +29,41 @@ public class CanovaHansen {
         Dummy, Trigonometric, UserDefined
     }
 
-    public static Builder test(DoubleSequence s, int period) {
-        return new Builder(s, period);
+    public static Builder test(DoubleSequence s) {
+        return new Builder(s);
     }
 
-    @BuilderPattern(CanovaHansen.class)
-    public static class Builder {
+    public static class Builder implements IBuilder<CanovaHansen> {
 
         private final DoubleSequence s;
-        private final int period;
+        private double period;
         private boolean lag1 = true;
         private Variables type = Variables.Dummy;
-        private WindowFunction winFunction=WindowFunction.Bartlett;
-        private int truncationLag=12;
+        private WindowFunction winFunction = WindowFunction.Bartlett;
+        private int truncationLag = 12;
         private int startPosition;
+        private int nh;
 
-        private Builder(DoubleSequence s, int period) {
+        private Builder(DoubleSequence s) {
             this.s = s;
-            this.period = period;
         }
 
-        public Builder variables(Variables variables) {
-            this.type = variables;
+        public Builder dummies(int period) {
+            this.type = Variables.Dummy;
+            this.period = period;
+            return this;
+        }
+
+        public Builder trigonometric(int period) {
+            this.type = Variables.Trigonometric;
+            this.period = period;
+            return this;
+        }
+
+        public Builder specific(double period, int nharmonics) {
+            this.type = Variables.UserDefined;
+            this.period = period;
+            this.nh = nharmonics;
             return this;
         }
 
@@ -78,18 +87,11 @@ public class CanovaHansen {
             return this;
         }
 
+        @Override
         public CanovaHansen build() {
             Matrix x = sx();
             LinearModel lm = buildModel(x);
-            Ols ols = new Ols();
-            LeastSquaresResults olsResults = ols.compute(lm);
-            ConcentratedLikelihood likelihood = olsResults.getLikelihood();
-            DoubleSequence e = lm.calcResiduals(olsResults.getCoefficients());
-            Matrix xe = x.deepClone();
-            // multiply the columns of x by e
-            xe.applyByColumns(c -> c.apply(e, (a, b) -> a * b));
-            Matrix omega = RobustCovarianceComputer.covariance(xe, winFunction, truncationLag);
-            return new CanovaHansen(x, xe, e, likelihood, omega);
+            return new CanovaHansen(x, lm, winFunction, truncationLag);
         }
 
         private Matrix sx() {
@@ -101,15 +103,16 @@ public class CanovaHansen {
             }
             switch (type) {
                 case Dummy: {
-                    PeriodicDummies vars = new PeriodicDummies(period);
+                    PeriodicDummies vars = new PeriodicDummies((int) period);
                     return vars.matrix(len, pos);
                 }
                 case Trigonometric: {
-                    TrigonometricSeries vars = TrigonometricSeries.regular(period);
+                    TrigonometricSeries vars = TrigonometricSeries.regular((int) period);
                     return vars.matrix(len, pos);
                 }
                 default:
-                    return null;
+                    TrigonometricSeries vars = TrigonometricSeries.all(period, nh);
+                    return vars.matrix(len, pos);
             }
 
         }
@@ -134,7 +137,8 @@ public class CanovaHansen {
                     break;
                 }
                 default:
-                    builder.meanCorrection(true);
+                    builder.addX(sx)
+                            .meanCorrection(true);
             }
             return builder.build();
         }
@@ -144,29 +148,24 @@ public class CanovaHansen {
      * @return the e
      */
     public DoubleSequence getE() {
-        return e;
-    }
-
-    /**
-     * @return the ll
-     */
-    public ConcentratedLikelihood getLikelihood() {
-        return ll;
+        return u;
     }
 
     private final Matrix x, xe, cxe, omega;
-    private final DoubleSequence e;
-    private final ConcentratedLikelihood ll;
+    private final DoubleSequence c, u;
 
-    private CanovaHansen(final Matrix x, final Matrix xe,
-            final DoubleSequence e, final ConcentratedLikelihood ll, final Matrix omega) {
+    private CanovaHansen(final Matrix x, final LinearModel lm, final WindowFunction winFunction, int truncationLag) {
         this.x = x;
-        this.xe = xe;
-        this.e = e;
-        this.ll = ll;
+        Ols ols = new Ols();
+        LeastSquaresResults olsResults = ols.compute(lm);
+        c=olsResults.getCoefficients();
+        u = lm.calcResiduals(c);
+        xe = x.deepClone();
+        // multiply the columns of x by e
+        xe.applyByColumns(col -> col.apply(u, (a, b) -> a * b));
+        omega = RobustCovarianceComputer.covariance(xe, winFunction, truncationLag);
         cxe = xe.deepClone();
-        cxe.applyByColumns(c -> c.cumul());
-        this.omega = omega;
+        cxe.applyByColumns(col -> col.cumul());
     }
 
     public double test(int var) {
@@ -181,27 +180,6 @@ public class CanovaHansen {
         return computeStat(omega, cxe);
     }
 
-    public double robustTestCoefficients() {
-        Matrix rcov = robustCovarianceOfCoefficients();
-        SymmetricMatrix.lcholesky(rcov);
-        double[] tmp = ll.coefficients().toArray();
-        DataBlock b = DataBlock.ofInternal(tmp, tmp.length - rcov.getRowsCount(), tmp.length, 1);
-        LowerTriangularMatrix.rsolve(rcov, b);
-        double f = b.ssq() / x.getColumnsCount();
-        F ftest = new F(b.length(), x.getRowsCount());
-        return ftest.getProbability(f, ProbabilityType.Upper);
-    }
-
-//    public double olsTestCoefficients() {
-//        Matrix rcov = ll.getBVar().clone();
-//        SymmetricMatrix.lcholesky(rcov);
-//        double[] tmp = ll.getB().clone();
-//        DataBlock b = DataBlock.ofInternal(tmp, 1, tmp.length, 1);
-//        LowerTriangularMatrix.rsolve(rcov, b);
-//        double f = b.ssq() / x.getColumnsCount();
-//        F ftest = new F(b.length(), x.getRowsCount());
-//        return ftest.getProbability(f, ProbabilityType.Upper);
-//    }
     private double computeStat(Matrix O, Matrix cx) {
         int n = cx.getRowsCount(), nx = cx.getColumnsCount();
         // compute tr( O^-1*xe'*xe)
@@ -224,7 +202,7 @@ public class CanovaHansen {
         Matrix Lo = omega.deepClone();
         SymmetricMatrix.lcholesky(Lo);
 
-        Matrix Lx = SymmetricMatrix.XXt(x);
+        Matrix Lx = SymmetricMatrix.XtX(x);
         SymmetricMatrix.lcholesky(Lx);
         LowerTriangularMatrix.rsolve(Lx, Lo);
         LowerTriangularMatrix.lsolve(Lx, Lo.transpose());

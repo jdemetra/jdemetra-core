@@ -18,7 +18,7 @@
 package demetra.maths.functions;
 
 import demetra.design.Development;
-import java.util.function.IntSupplier;
+import demetra.design.IntValue;
 
 
 /**
@@ -26,7 +26,7 @@ import java.util.function.IntSupplier;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public enum ParamValidation implements IntSupplier {
+public enum ParamValidation implements IntValue {
 
     /**
      *
@@ -51,7 +51,7 @@ public enum ParamValidation implements IntSupplier {
      * @return
      */
     @Override
-    public int getAsInt() {
+    public int intValue() {
 	return value;
     }
 }

@@ -71,7 +71,7 @@ public class MusgraveFilterFactory {
      * @param frequency Annual frequency of the series
      * @return Ratio for Musgrave filters
      */
-    private static double findR(final int length, final int frequency) {
+    public static double findR(final int length, final int frequency) {
         if (frequency == 4) {
             return (length <= 5) ? 0.001 : 4.5;
         } else if (length <= 9) {

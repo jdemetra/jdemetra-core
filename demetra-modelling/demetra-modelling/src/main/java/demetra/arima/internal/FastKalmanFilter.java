@@ -59,8 +59,7 @@ public class FastKalmanFilter {
     /**
      * Creates a new Kalman filter for a given stationary Arima model 
      * @param arma The Arima model. Should be stationary.
-     * @throws An ArimaException is thrown when the model is not stationary. 
-     */
+    */
     public FastKalmanFilter(final IArimaModel arma) {
         initmodel(arma, 0);
     }
@@ -174,7 +173,7 @@ public class FastKalmanFilter {
         this.arma = arma;
         phi = this.arma.getAR().asPolynomial().toArray();
         if (statedim == 0) {
-            statedim = Math.max(arma.getAROrder()-1, arma.getMAOrder()+1);
+            statedim = Math.max(arma.getAROrder(), arma.getMAOrder()+1);
         }
         dim = statedim;
         c0 = this.arma.getAutoCovarianceFunction().values(dim);

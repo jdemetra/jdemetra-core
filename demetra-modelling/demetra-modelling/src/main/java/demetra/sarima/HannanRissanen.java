@@ -20,11 +20,14 @@ import demetra.ar.IAutoRegressiveEstimation;
 import demetra.data.normalizer.AbsMeanNormalizer;
 import demetra.data.DataBlock;
 import demetra.design.Development;
+import demetra.design.IBuilder;
 import demetra.leastsquares.IQRSolver;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.Matrix;
+import demetra.sarima.SarimaModel;
+import demetra.sarima.SarmaSpecification;
 import demetra.data.DoubleSequence;
-import demetra.design.BuilderPattern;
+import demetra.stats.AutoCovariances;
 
 /**
  * The Hannan-Rissanen procedure is performed as in TRAMO. See
@@ -34,34 +37,35 @@ import demetra.design.BuilderPattern;
  */
 @Development(status = Development.Status.Alpha)
 public class HannanRissanen {
-
-    @BuilderPattern(HannanRissanen.class)
-    public static class Builder {
-
-        private boolean finalcorrection = true, biascorrection = true;
-        private Initialization initialization = Initialization.Levinson;
-
-        public Builder finalCorrection(boolean correction) {
-            this.finalcorrection = correction;
+    
+    public static class Builder implements IBuilder<HannanRissanen>{
+        
+        private boolean finalcorrection=true, biascorrection=true;
+        private Initialization initialization=Initialization.Levinson;
+        
+        public Builder finalCorrection(boolean correction){
+            this.finalcorrection=correction;
             return this;
         }
 
-        public Builder biasCorrection(boolean correction) {
-            this.biascorrection = correction;
+        public Builder biasCorrection(boolean correction){
+            this.biascorrection=correction;
             return this;
         }
 
-        public Builder initialization(Initialization initialization) {
-            this.initialization = initialization;
+        public Builder initialization(Initialization initialization){
+            this.initialization=initialization;
             return this;
         }
 
+        @Override
         public HannanRissanen build() {
             return new HannanRissanen(this);
         }
+                
     }
-
-    public static Builder builder() {
+    
+    public static Builder builder(){
         return new Builder();
     }
 
@@ -72,6 +76,7 @@ public class HannanRissanen {
         return biascorrection;
     }
 
+ 
     /**
      * @return the finalcorrection
      */
@@ -101,7 +106,7 @@ public class HannanRissanen {
     }
 
     private SarimaModel m_model;
-    private SarmaSpecification m_spec = new SarmaSpecification();
+    private SarmaSpecification m_spec;
 
     private final boolean biascorrection, finalcorrection;
     private final Initialization initialization;
@@ -113,12 +118,12 @@ public class HannanRissanen {
     private static final int MAXNPI = 50;
     private static final double OVERFLOW = 1e16, EPS = 1e-6;
 
-    private HannanRissanen(Builder builder) {
-        initialization = builder.initialization;
-        this.finalcorrection = builder.finalcorrection;
-        this.biascorrection = builder.biascorrection;
+    private HannanRissanen(Builder builder){
+        initialization=builder.initialization;
+        this.finalcorrection=builder.finalcorrection;
+        this.biascorrection=builder.biascorrection;
     }
-
+    
     private double[] ls(Matrix mat, double[] y, boolean bbic) {
         IQRSolver solver = IQRSolver.fastSolver();
         solver.solve(DataBlock.ofInternal(y), mat);
@@ -237,9 +242,9 @@ public class HannanRissanen {
 
     private void finalcorrection() {
         BackFilter ar = m_model.getAR();
-        DataBlock ndata = DataBlock.make(m_data.length - ar.length() + 1);
+        DataBlock ndata = DataBlock.make(m_data.length - ar.getDegree());
         ar.apply(DataBlock.ofInternal(m_data), ndata);
-        HannanRissanen hr = HannanRissanen.builder()
+        HannanRissanen hr=HannanRissanen.builder()
                 .biasCorrection(biascorrection)
                 .finalCorrection(false)
                 .build();
@@ -304,17 +309,17 @@ public class HannanRissanen {
         IAutoRegressiveEstimation ar;
         switch (initialization) {
             case Ols:
-                ar = IAutoRegressiveEstimation.ols();
+                ar=IAutoRegressiveEstimation.ols();
                 break;
             case Burg:
-                ar = IAutoRegressiveEstimation.burg();
+                ar=IAutoRegressiveEstimation.burg();
                 break;
             default:
-                ar = IAutoRegressiveEstimation.levinson();
+                ar=IAutoRegressiveEstimation.levinson();
                 break;
         }
         ar.estimate(DoubleSequence.of(m_data), npi());
-        m_a = ar.residuals().toArray();
+        m_a=ar.residuals().toArray();
     }
 
     // regression (with lags of y and e)
@@ -330,7 +335,7 @@ public class HannanRissanen {
         int np = m_spec.getP() + m_spec.getBp() * (1 + m_spec.getP());
         int nq = m_spec.getQ() + m_spec.getBq() * (1 + m_spec.getQ());
 
-        Matrix mat = Matrix.make(nc, np + nq);
+        Matrix mat =  Matrix.make(nc, np + nq);
         double[] dmat = mat.getStorage();
         double[] data = new double[nc];
         System.arraycopy(m_data, m, data, 0, nc);
@@ -372,7 +377,7 @@ public class HannanRissanen {
         clear();
         m_spec = spec.clone();
         m_odata = value;
-        m_data = value.toArray();
+        m_data=value.toArray();
         AbsMeanNormalizer normalizer = new AbsMeanNormalizer();
         normalizer.normalize(DataBlock.ofInternal(m_data));
         return calc();
@@ -407,6 +412,6 @@ public class HannanRissanen {
                 ccur += 1 + m_spec.getQ();
             }
         }
-        m_model = builder.build();
+        m_model=builder.build();
     }
 }

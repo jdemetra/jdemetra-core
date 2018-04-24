@@ -19,12 +19,13 @@ package demetra.x12;
 import demetra.data.DoubleSequence;
 import demetra.data.IDataTransformation.LogJacobian;
 import demetra.data.LogTransformation;
-import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.modelling.DataTransformation;
+import demetra.design.IBuilder;
+import demetra.modelling.TransformationType;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
+import demetra.regarima.ami.AICcComparator;
 import demetra.regarima.ami.RegArimaUtility;
 import demetra.sarima.SarimaModel;
 import demetra.regarima.ami.ILogLevelModule;
@@ -40,8 +41,7 @@ public class LogLevelModule implements ILogLevelModule<SarimaModel> {
         return new Builder();
     }
 
-    @BuilderPattern(LogLevelModule.class)
-    public static class Builder {
+    public static class Builder implements IBuilder<LogLevelModule> {
 
         private double aiccdiff = -2;
         private double precision = 1e-7;
@@ -56,9 +56,11 @@ public class LogLevelModule implements ILogLevelModule<SarimaModel> {
             return this;
         }
 
+        @Override
         public LogLevelModule build() {
             return new LogLevelModule(aiccdiff, precision);
         }
+
     }
 
     private final double aiccDiff;
@@ -126,8 +128,8 @@ public class LogLevelModule implements ILogLevelModule<SarimaModel> {
         return true;
     }
 
-    public DataTransformation getTransformation() {
-        return this.isChoosingLog() ? DataTransformation.Log : DataTransformation.None;
+    public TransformationType getTransformation() {
+        return this.isChoosingLog() ? TransformationType.Log : TransformationType.None;
     }
     
     public double getAICcLevel(){

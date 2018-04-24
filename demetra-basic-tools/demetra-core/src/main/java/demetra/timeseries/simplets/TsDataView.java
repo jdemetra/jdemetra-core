@@ -23,7 +23,7 @@ import demetra.design.Immutable;
 import internal.timeseries.InternalFixme;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.TimeSeriesSelector;
+import demetra.timeseries.TimeSelector;
 
 /**
  * A TsDataView is a view on equally spaced observations in a time series. Users
@@ -85,7 +85,7 @@ public final class TsDataView {
      * @return The corresponding data block. Null is returned if the no data are
      * selected.
      */
-    public static TsDataView select(TsData series, TimeSeriesSelector selector) {
+    public static TsDataView select(TsData series, TimeSelector selector) {
         TsDomain domain = series.getDomain().select(selector);
         if (domain == null || domain.isEmpty()) {
             return null;

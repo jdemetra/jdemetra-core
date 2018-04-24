@@ -17,6 +17,7 @@
 package demetra.r;
 
 import demetra.data.DataBlock;
+import demetra.data.DoubleSequence;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
@@ -24,14 +25,10 @@ import demetra.maths.matrices.Matrix;
 import demetra.stats.TestResult;
 import demetra.stats.tests.LjungBox;
 import demetra.stats.tests.StatisticalTest;
-import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsUnit;
-import demetra.timeseries.regression.PeriodicContrasts;
-import demetra.timeseries.regression.RegressionUtility;
-import demetra.timeseries.TsData;
-import static demetra.timeseries.simplets.TsDataToolkit.delta;
-import static demetra.timeseries.simplets.TsDataToolkit.drop;
-import java.util.Collections;
+import demetra.stats.tests.seasonal.CanovaHansen;
+import demetra.stats.tests.seasonal.CanovaHansen2;
+import demetra.stats.tests.seasonal.PeriodicLjungBox;
+import demetra.modelling.regression.PeriodicContrasts;
 
 /**
  *
@@ -40,32 +37,38 @@ import java.util.Collections;
 @lombok.experimental.UtilityClass
 public class SeasonalityTests {
 
-    public TestResult ftest(TsData s, boolean ar, int ny) {
-        int freq = s.getTsUnit().ratioOf(TsUnit.YEAR);
+    public TestResult fTest(double[] s, int period, boolean ar, int ny) {
 
+        DoubleSequence y = DoubleSequence.ofInternal(s);
         if (ar) {
             if (ny != 0) {
-                s = drop(s, Math.max(0, s.length() - freq * ny - 1), 0);
+                y = y.drop(Math.max(0, s.length - period * ny - 1), 0);
             }
-            return processAr(s, freq);
+            return processAr(y, period);
         } else {
-            s = delta(s, 1);
-            if (ny != 0) {
-                s = drop(s, Math.max(0, s.length() - freq * ny), 0);
+            double[] ds = new double[s.length - 1];
+            for (int i = 0; i < ds.length; ++i) {
+                ds[i] = s[i + 1] - s[i];
             }
-            return process(s, freq);
+            y = DoubleSequence.ofInternal(ds);
+            if (ny != 0) {
+                y = y.drop(Math.max(0, s.length - period * ny), 0);
+            }
+            return process(y, period);
         }
     }
 
-    public TestResult qstest(TsData s, int ny) {
-        int freq = s.getTsUnit().ratioOf(TsUnit.YEAR);
+    public TestResult qsTest(double[] s, int period, int ny) {
 
-        s = delta(s, 1);
-        if (ny != 0) {
-            s = drop(s, Math.max(0, s.length() - freq * ny), 0);
+        for (int i = s.length - 1; i > 0; --i) {
+            s[i] -= s[i - 1];
         }
-        StatisticalTest test = new LjungBox(s.getValues())
-                .lag(freq)
+        DoubleSequence y = DoubleSequence.ofInternal(s, 1, s.length - 1);
+        if (ny != 0) {
+            y = y.drop(Math.max(0, y.length() - period * ny), 0);
+        }
+        StatisticalTest test = new LjungBox(y)
+                .lag(period)
                 .autoCorrelationsCount(2)
                 .usePositiveAutoCorrelations()
                 .build();
@@ -76,13 +79,59 @@ public class SeasonalityTests {
                 .build();
     }
 
-    private TestResult process(TsData s, int freq) {
+    public TestResult periodicQsTest(double[] s, double[] periods) {
+        DoubleSequence y;
+        if (periods.length == 1) {
+            for (int j = s.length - 1; j > 0; --j) {
+                s[j] -= s[j - 1];
+            }
+            y = DoubleSequence.ofInternal(s, 1, s.length - 1);
+        } else {
+            int del = 0;
+            for (int i = 1; i < periods.length; ++i) {
+                int p = (int) periods[i];
+                del += p;
+                for (int j = s.length - 1; j >= del; --j) {
+                    s[j] -= s[j - p];
+                }
+            }
+            y = DoubleSequence.ofInternal(s, del, s.length - del);
+        }
+        StatisticalTest test = new PeriodicLjungBox(y, 0)
+                .lags(periods[0], 2)
+                .usePositiveAutocorrelations()
+                .build();
+        return TestResult.builder()
+                .value(test.getValue())
+                .pvalue(test.getPValue())
+                .description(test.getDistribution().toString())
+                .build();
+    }
+
+    public double[] canovaHansenTest(double[] s, int start, int end, boolean original) {
+        double[] rslt = new double[end - start];
+        DoubleSequence x = DoubleSequence.ofInternal(s);
+        for (int i = start; i < end; ++i) {
+            if (original){
+                rslt[i - start] = CanovaHansen.test(x)
+                        .specific(i, 1)
+                        .build()
+                        .testAll();
+            }else{
+                rslt[i - start] = CanovaHansen2.of(x)
+                        .periodicity(i)
+                        .compute();
+            }
+        }
+        return rslt;
+    }
+
+    private TestResult process(DoubleSequence s, int freq) {
         try {
-            DataBlock y = DataBlock.of(s.getValues());
+            DataBlock y = DataBlock.of(s);
             y.sub(y.average());
-            TsDomain domain = s.getDomain();
             PeriodicContrasts var = new PeriodicContrasts(freq);
-            Matrix sd = RegressionUtility.data(Collections.singletonList(var), domain);
+            Matrix sd = var.matrix(s.length(), 0);
             LinearModel reg = new LinearModel(y.getStorage(), false, sd);
             Ols ols = new Ols();
             LeastSquaresResults rslt = ols.compute(reg);
@@ -99,16 +148,15 @@ public class SeasonalityTests {
         }
     }
 
-    private TestResult processAr(TsData s, int freq) {
+    private TestResult processAr(DoubleSequence s, int freq) {
         try {
-            DataBlock y = DataBlock.of(s.getValues());
-            TsDomain domain = s.getDomain();
             PeriodicContrasts var = new PeriodicContrasts(freq);
 
-            Matrix sd = RegressionUtility.data(Collections.singletonList(var), domain.range(1, domain.length()));
+            Matrix sd = var.matrix(s.length() - 1, 0);
+
             LinearModel reg = LinearModel.builder()
-                    .y(y.drop(1, 0))
-                    .addX(y.drop(0, 1))
+                    .y(s.drop(1, 0))
+                    .addX(s.drop(0, 1))
                     .addX(sd)
                     .meanCorrection(true)
                     .build();
@@ -125,4 +173,5 @@ public class SeasonalityTests {
             return null;
         }
     }
+
 }

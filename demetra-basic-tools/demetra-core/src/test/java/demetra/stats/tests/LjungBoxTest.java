@@ -26,30 +26,44 @@ import static org.junit.Assert.*;
  * @author Jean Palate
  */
 public class LjungBoxTest {
-    
+
     public LjungBoxTest() {
     }
 
     @Test
     public void testLegacy() {
-        int N=100;
-        DataBlock X=DataBlock.make(N);
-        Random rnd=new Random();
+        int N = 100;
+        DataBlock X = DataBlock.make(N);
+        Random rnd = new Random();
         X.set(rnd::nextDouble);
-        
-        LjungBox lb=new LjungBox(X);
-        
+
+        LjungBox lb = new LjungBox(X);
+
         StatisticalTest test = lb
                 .lag(3)
                 .autoCorrelationsCount(10)
                 .build();
-        
-        ec.tstoolkit.stats.LjungBoxTest lb2=new ec.tstoolkit.stats.LjungBoxTest();
+
+        ec.tstoolkit.stats.LjungBoxTest lb2 = new ec.tstoolkit.stats.LjungBoxTest();
         lb2.setK(10);
         lb2.setLag(3);
         lb2.test(new ec.tstoolkit.data.ReadDataBlock(X.getStorage()));
-        
+
         assertEquals(test.getPValue(), lb2.getPValue(), 1e-9);
     }
-    
+
+    @Test
+    public void testHuge() {
+        int N = 10000;
+
+        DataBlock X = DataBlock.make(N);
+        Random rnd = new Random(0);
+
+        X.set(rnd::nextGaussian);
+
+        LjungBox lb = new LjungBox(X);
+
+        StatisticalTest test = lb.build();
+        assertTrue(test.getPValue()>.1);
+    }
 }

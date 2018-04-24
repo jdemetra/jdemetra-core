@@ -9,6 +9,7 @@ import demetra.maths.matrices.spi.SymmetricMatrixAlgorithms;
 import java.util.concurrent.atomic.AtomicReference;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
+import demetra.data.LogSign;
 import demetra.data.accumulator.DoubleAccumulator;
 import demetra.random.IRandomNumberGenerator;
 import demetra.utilities.ServiceLookup;
@@ -251,4 +252,25 @@ public class SymmetricMatrix {
             }
         }
     }
+    
+    public LogSign logDeterminant(Matrix S){
+        Matrix s = S.deepClone();
+        try{
+            lcholesky(s);
+            DataBlock diagonal = s.diagonal();
+            LogSign ls = LogSign.of(diagonal);
+            return new LogSign(ls.getValue()*2, true);
+        }catch (MatrixException e){
+            return Matrix.logDeterminant(S);
+        }
+    }
+    
+    public double determinant(Matrix L){
+        LogSign ls=logDeterminant(L);
+        if (ls == null)
+            return 0;
+        double val=Math.exp(ls.getValue());
+        return ls.isPositive() ? val : -val;
+    }
+
 }

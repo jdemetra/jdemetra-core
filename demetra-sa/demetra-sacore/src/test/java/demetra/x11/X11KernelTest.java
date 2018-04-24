@@ -32,7 +32,7 @@ public class X11KernelTest {
 //        System.out.println("Exact");
         X11Context context1=X11Context.builder()
                 .period(365.25/7)
-                .hendersonFilterLength(53)
+                .trendFilterLength(53)
                 .initialSeasonalFilter(SeasonalFilterOption.S3X1)
                 .finalSeasonalFilter(SeasonalFilterOption.S3X9)
                 .build();
@@ -41,7 +41,7 @@ public class X11KernelTest {
 //        System.out.println("Rounded");
         X11Context context2=X11Context.builder()
                 .period(52)
-                .hendersonFilterLength(53)
+                .trendFilterLength(0)
                 .initialSeasonalFilter(SeasonalFilterOption.S3X1)
                 .finalSeasonalFilter(SeasonalFilterOption.S3X9)
                 .build();
@@ -55,10 +55,10 @@ public class X11KernelTest {
         X11Context context1=X11Context.builder()
                 .mode(DecompositionMode.Multiplicative)
                 .period(12)
-                .hendersonFilterLength(13)
+                .trendFilterLength(13)
                 .build();
         kernel.process(DoubleSequence.ofInternal(Data.PROD), context1);
-        System.out.println(kernel.getDstep().getD13());
+//        System.out.println(kernel.getDstep().getD13());
         ec.satoolkit.x11.X11Specification spec=new ec.satoolkit.x11.X11Specification();
         spec.setMode(ec.satoolkit.DecompositionMode.Multiplicative);
         spec.setForecastHorizon(0);

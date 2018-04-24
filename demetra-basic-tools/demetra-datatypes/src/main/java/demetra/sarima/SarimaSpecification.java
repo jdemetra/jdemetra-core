@@ -29,8 +29,20 @@ import demetra.design.Development;
 @lombok.Data
 public final class SarimaSpecification implements Cloneable {
 
-    private int period, p, d, q, bp, bd, bq;
-
+    private final int period;
+    private int p, d, q, bp, bd, bq;
+    
+    public static SarimaSpecification of(SarmaSpecification sspec, int d, int bd){
+        SarimaSpecification spec=new SarimaSpecification(sspec.getPeriod());
+        spec.p=sspec.getP();
+        spec.d=d;
+        spec.q=sspec.getQ();
+        spec.bp=sspec.getBp();
+        spec.bd=bd;
+        spec.bq=sspec.getBq();
+        return spec;
+    }
+    
     /**
      * Generates an airline model (0, 1, 1)(0, 1, 1) or (0, 1, 1), following the
      * parameter.
@@ -50,22 +62,7 @@ public final class SarimaSpecification implements Cloneable {
             bq = 0;
         }
     }
-
-    public void airline(int period) {
-        p = 0;
-        d = 1;
-        q = 1;
-        bp = 0;
-        this.period=period;
-        if (period>1) {
-            bd = 1;
-            bq = 1;
-        } else {
-            bd = 0;
-            bq = 0;
-        }
-    }
-    
+     
     @Override
     public SarimaSpecification clone() {
         try {
@@ -73,17 +70,6 @@ public final class SarimaSpecification implements Cloneable {
         } catch (CloneNotSupportedException err) {
             throw new AssertionError();
         }
-    }
-
-    /**
-     *
-     * @param arma
-     */
-    public void copy(final SarmaSpecification arma) {
-        p = arma.getP();
-        q = arma.getQ();
-        bp = arma.getBp();
-        bq = arma.getBq();
     }
 
     // / <summary>
@@ -95,8 +81,7 @@ public final class SarimaSpecification implements Cloneable {
      * @return
      */
     public SarmaSpecification doStationary() {
-        SarmaSpecification arma = new SarmaSpecification();
-        arma.setPeriod(period);
+        SarmaSpecification arma = new SarmaSpecification(period);
         arma.setP(p);
         arma.setQ(q);
         arma.setBp(bp);

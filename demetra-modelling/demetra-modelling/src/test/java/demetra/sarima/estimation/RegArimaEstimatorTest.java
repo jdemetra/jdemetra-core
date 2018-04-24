@@ -28,10 +28,11 @@ public class RegArimaEstimatorTest {
     @Test
     public void testNew() {
         RegSarimaProcessor monitor = RegSarimaProcessor.builder()
+                .computeExactFinalDerivatives(true)
                  .precision(1e-12)
                .startingPoint(RegSarimaProcessor.StartingPoint.Multiple).build();
-        SarimaSpecification spec = new SarimaSpecification();
-        spec.airline(12);
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.airline(true);
         spec.setP(3);
         spec.setQ(0);
         SarimaModel arima = SarimaModel.builder(spec)
@@ -58,8 +59,8 @@ public class RegArimaEstimatorTest {
         RegSarimaProcessor monitor = RegSarimaProcessor.builder()
                 .precision(1e-12)
                 .startingPoint(RegSarimaProcessor.StartingPoint.Multiple).build();
-        SarimaSpecification spec = new SarimaSpecification();
-        spec.airline(12);
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.airline(true);
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()
                 .build();

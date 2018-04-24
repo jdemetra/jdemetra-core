@@ -21,7 +21,7 @@ import demetra.benchmarking.univariate.DentonSpecification;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.TimeSeriesSelector;
+import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsData;
 import demetra.timeseries.simplets.TsDataToolkit;
 import org.openide.util.lookup.ServiceProvider;
@@ -40,7 +40,7 @@ public class DentonFactory implements DentonAlgorithm {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
         // Y is limited to q !
-        TimeSeriesSelector qsel = TimeSeriesSelector.between(highFreqSeries.getStart().start(), highFreqSeries.getPeriod(highFreqSeries.length()).start());
+        TimeSelector qsel = TimeSelector.between(highFreqSeries.getStart().start(), highFreqSeries.getPeriod(highFreqSeries.length()).start());
         TsData naggregationConstraint = TsDataToolkit.select(aggregationConstraint, qsel);
         TsPeriod sh = highFreqSeries.getStart();
         TsPeriod sl = TsPeriod.of(sh.getUnit(), naggregationConstraint.getStart().start());

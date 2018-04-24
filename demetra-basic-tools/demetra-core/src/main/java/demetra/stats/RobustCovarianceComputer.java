@@ -12,6 +12,7 @@ import demetra.data.WindowFunction;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import java.util.function.DoubleUnaryOperator;
+import java.util.function.IntToDoubleFunction;
 
 /**
  *
@@ -21,8 +22,7 @@ import java.util.function.DoubleUnaryOperator;
 public class RobustCovarianceComputer {
 
     /**
-     * Computes a robust covariance estimate of x, following the Newey-West
-     * method
+     * Computes a robust covariance estimate of X 
      * Cov = 1/n sum(w(k)x(0...n-k-1;)'x(k...n-1;)), k in ]-truncationLag, truncationLag[
      *
      * @param x Input matrix
@@ -45,21 +45,21 @@ public class RobustCovarianceComputer {
             s.addAY(wl, ol);
             s.addAY(wl, ol.transpose());
         }
-        s.mul(1.0 / n);
+        s.div(n);
         return s;
     }
 
     public double covariance(DoubleSequence x, WindowFunction winFunction, int truncationLag) {
         DoubleUnaryOperator w = winFunction.window();
-        double s = Doubles.ssq(x);
-        double q = truncationLag;
-        for (int l = 1; l < truncationLag; ++l) {
+        DoubleSequence y=Doubles.removeMean(x);
+        IntToDoubleFunction acf = AutoCovariances.autoCovarianceFunction(y, 0);
+        double s = acf.applyAsDouble(0);
+        double q = 1+truncationLag;
+        for (int l = 1; l <= truncationLag; ++l) {
             double wl = w.applyAsDouble(l / q);
-            DoubleSequence m = x.drop(0, l);
-            DoubleSequence ml = x.drop(l, 0);
-            s += wl * Doubles.dot(m, ml);
+            s += 2*wl * acf.applyAsDouble(l);
         }
-        return s / x.length();
+        return s;
     }
 
 }

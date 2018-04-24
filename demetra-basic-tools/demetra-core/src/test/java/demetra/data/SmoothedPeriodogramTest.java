@@ -39,13 +39,12 @@ public class SmoothedPeriodogramTest {
         SmoothedPeriodogram periodogram = SmoothedPeriodogram.builder()
                 .data(DoubleSequence.of(data))
                 .taper(new TukeyHanningTaper(.1))
-                .windowLength(85)
-                .relativeResolution(.5)
-                .windowFunction(DiscreteWindowFunction.Bartlett)
+                .windowLength(45)
+                .windowFunction(DiscreteWindowFunction.Tukey)
                 .build();
         
 //        for (int i = 0; i < 200; ++i) {
-//            System.out.println(periodogram.getSpectrumValue(Math.PI * i / 200));
+//            System.out.println(periodogram.spectrumValueAtFrequency(Math.PI * i / 200));
 //        }        
     }
     
@@ -53,7 +52,7 @@ public class SmoothedPeriodogramTest {
     public void testLegacyBlackmanTukey() {
         ec.tstoolkit.data.BlackmanTukeySpectrum bts=new ec.tstoolkit.data.BlackmanTukeySpectrum();
         bts.setTaper(new ec.tstoolkit.data.TukeyHanningTaper());
-        bts.setWindowLength(85);
+        bts.setWindowLength(45);
         bts.setData(data);
         
 //        System.out.println("legacy");

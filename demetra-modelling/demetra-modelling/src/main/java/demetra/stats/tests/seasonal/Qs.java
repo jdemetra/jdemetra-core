@@ -17,7 +17,7 @@
 package demetra.stats.tests.seasonal;
 
 import demetra.data.DoubleSequence;
-import demetra.design.BuilderPattern;
+import demetra.design.IBuilder;
 import demetra.stats.tests.LjungBox;
 import demetra.stats.tests.StatisticalTest;
 
@@ -25,8 +25,7 @@ import demetra.stats.tests.StatisticalTest;
  *
  * @author Jean Palate
  */
-@BuilderPattern(StatisticalTest.class)
-public class Qs {
+public class Qs implements IBuilder<StatisticalTest>{
 
     private final LjungBox lb;
     
@@ -73,7 +72,9 @@ public class Qs {
         return this;
     }
 
+    @Override
     public StatisticalTest build() {
         return lb.build();            
     }
+
  }

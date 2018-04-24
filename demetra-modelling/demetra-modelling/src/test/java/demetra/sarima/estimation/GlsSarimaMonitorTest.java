@@ -42,8 +42,8 @@ public class GlsSarimaMonitorTest {
         HannanRissanenInitializer initializer = HannanRissanenInitializer.builder().stabilize(true).useDefaultIfFailed(true).build();
         GlsSarimaProcessor monitor = GlsSarimaProcessor.builder()
                 .initializer(initializer).build();
-        SarimaSpecification spec = new SarimaSpecification();
-        spec.airline(12);
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.airline(true);
         spec.setP(3);
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()
@@ -87,8 +87,8 @@ public class GlsSarimaMonitorTest {
             HannanRissanenInitializer initializer = HannanRissanenInitializer.builder().stabilize(true).useDefaultIfFailed(true).build();
             GlsSarimaProcessor monitor = GlsSarimaProcessor.builder()
                     .initializer(initializer).build();
-            SarimaSpecification spec = new SarimaSpecification();
-            spec.airline(12);
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.airline(true);
             SarimaModel arima = SarimaModel.builder(spec)
                     .setDefault()
                     .build();

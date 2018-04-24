@@ -18,8 +18,8 @@ package demetra.x12;
 
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
-import demetra.design.BuilderPattern;
 import demetra.design.Development;
+import demetra.design.IBuilder;
 import demetra.maths.Complex;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.regarima.IRegArimaProcessor;
@@ -45,8 +45,7 @@ public class DifferencingModule implements IDifferencingModule {
         return new Builder();
     }
 
-    @BuilderPattern(DifferencingModule.class)
-    public static class Builder {
+    public static class Builder implements IBuilder<DifferencingModule> {
 
         private int maxd = MAXD, maxbd = MAXBD;
         private double eps = 1e-5;
@@ -87,6 +86,7 @@ public class DifferencingModule implements IDifferencingModule {
             return this;
         }
 
+        @Override
         public DifferencingModule build() {
             return new DifferencingModule(maxd, maxbd, ub1, ub2, cancel, eps);
         }
@@ -99,7 +99,7 @@ public class DifferencingModule implements IDifferencingModule {
     }
 
     private double[] x;
-    private SarimaSpecification spec = new SarimaSpecification();
+    private SarimaSpecification spec;
     private SarimaModel lastModel;
     private double rmax, rsmax, c_;
     private int iter;
@@ -177,7 +177,7 @@ public class DifferencingModule implements IDifferencingModule {
      */
     public void clear() {
         lastModel = null;
-        spec = new SarimaSpecification();
+        spec = null;
         bcalc_ = false;
         x = null;
         useml_ = false;
@@ -310,8 +310,8 @@ public class DifferencingModule implements IDifferencingModule {
 
         BackFilter ur = RegArimaUtility.differencingFilter(spec.getPeriod(), spec.getD(), spec.getBd());
         DataBlock data;
-        if (ur.length() > 1) {
-            data = DataBlock.make(x.length - ur.length() + 1);
+        if (ur.getDegree() > 0) {
+            data = DataBlock.make(x.length - ur.getDegree());
             ur.apply(DataBlock.ofInternal(x), data);
         } else {
             data = DataBlock.copyOf(x);
@@ -445,7 +445,7 @@ public class DifferencingModule implements IDifferencingModule {
                 || (start != null && start.length != periods.length)) {
             throw new IllegalArgumentException();
         }
-        spec.setPeriod(periods.length == 2 ? periods[1] : 1);
+        spec=new SarimaSpecification(periods.length == 2 ? periods[1] : 1);
         if (start != null) {
             spec.setD(start[0]);
             if (start.length == 2) {

@@ -39,6 +39,10 @@ public class TestOfRuns
         this.stats=DescriptiveStatistics.of(data);
     }
     
+    public TestOfRuns(final DescriptiveStatistics stats)
+    {
+        this.stats=stats;
+    }
    
     /**
      * Should we use mean or median

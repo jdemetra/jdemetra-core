@@ -88,7 +88,7 @@ public class ExactArimaForecasts implements IArimaForecasts{
 	} else
 	    filter.getFinalState().a().range(0, nf).copyTo(f, 0);
         if (bmean){
-            DataBlock s=DataBlock.make(f.length-bar.length()+1);
+            DataBlock s=DataBlock.make(f.length-bar.getDegree());
             bar.apply(DataBlock.ofInternal(f), s);
             mean=s.get(s.length()-1);
         }

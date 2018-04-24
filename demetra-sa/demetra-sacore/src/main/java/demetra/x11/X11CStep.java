@@ -59,16 +59,20 @@ public class X11CStep {
     }
 
     private void c7(X11Context context) {
-        SymmetricFilter filter = HendersonFilters.ofLength(context.getHendersonFilterLength());
+        SymmetricFilter filter = context.trendFilter();
         int ndrop = filter.length() / 2;
 
         double[] x = table(c6.length(), Double.NaN);
         DataBlock out = DataBlock.ofInternal(x, ndrop, x.length-ndrop);
         filter.apply(i -> c6.get(i), IFilterOutput.of(out, ndrop));
         
-        // apply the musgrave filters
-        IFiniteFilter[] f = MusgraveFilterFactory.makeFiltersForHenderson(context.getHendersonFilterLength(), context.getPeriod().intValue());
-        AsymmetricEndPoints aep=new AsymmetricEndPoints(f);
+       // apply asymmetric filters
+        double r=MusgraveFilterFactory.findR(filter.length(), context.getPeriod().intValue());
+        IFiniteFilter[] lf = context.leftAsymmetricTrendFilters(filter, r); 
+        IFiniteFilter[] rf = context.rightAsymmetricTrendFilters(filter, r); 
+        AsymmetricEndPoints aep=new AsymmetricEndPoints(lf, -1);
+        aep.process(c6, DataBlock.ofInternal(x));
+        aep=new AsymmetricEndPoints(rf, 1);
         aep.process(c6, DataBlock.ofInternal(x));
         c7 = DoubleSequence.ofInternal(x);
         if (c7.anyMatch(z->z <=0))

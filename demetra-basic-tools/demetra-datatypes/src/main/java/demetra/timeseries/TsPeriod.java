@@ -60,6 +60,10 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
         return Long.compare(id, getRebasedId(period));
     }
 
+    /**
+     * Year of the start of this period
+     * @return 
+     */
     public int year() {
         return start().getYear();
     }
@@ -76,6 +80,10 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
 
     public TsPeriod next() {
         return plus(1);
+    }
+
+    public TsPeriod previous() {
+        return plus(-1);
     }
 
     public TsPeriod plus(long count) {

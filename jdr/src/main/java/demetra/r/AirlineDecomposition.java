@@ -115,8 +115,8 @@ public class AirlineDecomposition {
 
     public Results process(TsData s) {
         int period = s.getTsUnit().ratioOf(TsUnit.YEAR);
-        SarimaSpecification spec = new SarimaSpecification();
-        spec.airline(period);
+        SarimaSpecification spec = new SarimaSpecification(period);
+        spec.airline(true);
         SarimaModel arima = SarimaModel
                 .builder(spec)
                 .setDefault()

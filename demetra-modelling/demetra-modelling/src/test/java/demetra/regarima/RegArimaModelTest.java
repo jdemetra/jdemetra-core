@@ -24,8 +24,8 @@ public class RegArimaModelTest {
 
     @Test
     public void testMissing() {
-        SarimaSpecification spec = new SarimaSpecification();
-        spec.airline(12);
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.airline(true);
         DoubleSequence y = DataBlock.ofInternal(Data.PROD);
         int[] missingPos = new int[30];
         for (int i = 0; i < missingPos.length - 15; ++i) {
@@ -49,8 +49,8 @@ public class RegArimaModelTest {
     @Test
     public void testEstimation() {
 
-        SarimaSpecification spec = new SarimaSpecification();
-        spec.airline(12);
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.airline(true);
         DoubleSequence y = DataBlock.ofInternal(Data.PROD);
         int[] missingPos = new int[15];
         for (int i = 0; i < missingPos.length; ++i) {
@@ -96,8 +96,8 @@ public class RegArimaModelTest {
     @Ignore
     public void stressTestEstimation() {
 
-        SarimaSpecification spec = new SarimaSpecification();
-        spec.airline(12);
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.airline(true);
         DoubleSequence y = DataBlock.ofInternal(Data.PROD);
         int[] missingPos = new int[15];
         for (int i = 0; i < missingPos.length; ++i) {

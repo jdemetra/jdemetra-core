@@ -395,7 +395,7 @@ public class ArimaModel extends AbstractArimaModel {
 
     @Override
     public int getNonStationaryAROrder() {
-        return delta.length() - 1;
+        return delta.getDegree();
     }
 
     @Override
@@ -409,7 +409,7 @@ public class ArimaModel extends AbstractArimaModel {
      */
     @Override
     public int getStationaryAROrder() {
-        return ar.length() - 1;
+        return ar.getDegree();
     }
 
     @Override
@@ -435,7 +435,7 @@ public class ArimaModel extends AbstractArimaModel {
         if (this == NULL) {
             return true;
         }
-        return delta.length() == 1
+        return delta.getDegree() == 0
                 && (sma != null ? sma.isNull() : Math.abs(var)<EPS);
     }
 
@@ -444,13 +444,13 @@ public class ArimaModel extends AbstractArimaModel {
      * @return
      */
     public boolean isWhiteNoise() {
-        if (ar.length() > 1) {
+        if (ar.getDegree() > 0) {
             return false;
         }
-        if (delta.length() > 1) {
+        if (delta.getDegree() > 0) {
             return false;
         }
-        if (ma != null && ma.length() > 1) {
+        if (ma != null && ma.getDegree() > 0) {
             return false;
         }
         if (sma != null && sma.length() > 1) {

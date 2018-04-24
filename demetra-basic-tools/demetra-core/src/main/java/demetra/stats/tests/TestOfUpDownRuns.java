@@ -22,7 +22,6 @@ import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.dstats.Chi2;
 import demetra.dstats.Normal;
-import demetra.stats.DescriptiveStatistics;
 import demetra.stats.StatException;
 
 

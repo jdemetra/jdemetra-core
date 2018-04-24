@@ -18,8 +18,8 @@ package demetra.regarima;
 
 import demetra.arima.IArimaModel;
 import demetra.data.DoubleSequence;
-import demetra.design.BuilderPattern;
 import demetra.design.Development;
+import demetra.design.IBuilder;
 import demetra.likelihood.LogLikelihoodFunction;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
@@ -37,15 +37,14 @@ import java.util.function.Function;
 @Development(status = Development.Status.Alpha)
 public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProcessor<M> {
 
-    @BuilderPattern(GlsArimaProcessor.class)
-    public static class Builder<M extends IArimaModel> {
+    public static class Builder<M extends IArimaModel> implements IBuilder<GlsArimaProcessor> {
 
         private Function<M, IParametricMapping<M>> mappingProvider;
         private IRegArimaInitializer<M> initializer;
         private IRegArimaFinalizer<M> finalizer;
         private double eps = 1e-9;
         private ISsqFunctionMinimizer min;
-        private boolean ml = true, mt = false;
+        private boolean ml = true, mt = false, fast = true;
 
         public Builder<M> mapping(Function<M, IParametricMapping<M>> mapping) {
             this.mappingProvider = mapping;
@@ -82,12 +81,19 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
             return this;
         }
 
-        public GlsArimaProcessor<M> build() {
-            return new GlsArimaProcessor(mappingProvider, initializer, finalizer, min, eps, ml, mt);
+        public Builder<M> computeExactFinalDerivatives(boolean exact) {
+            this.fast = !exact;
+            return this;
         }
+
+        @Override
+        public GlsArimaProcessor<M> build() {
+            return new GlsArimaProcessor(mappingProvider, initializer, finalizer, min, eps, ml, mt, fast);
+        }
+
     }
 
-    public static <N extends IArimaModel> Builder<N> builder() {
+    public static <N extends IArimaModel> Builder<N> builder(Class<N> nclass) {
         return new Builder<>();
     }
 
@@ -95,14 +101,14 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
     private final IRegArimaInitializer<M> initializer;
     private final IRegArimaFinalizer<M> finalizer;
     private final ISsqFunctionMinimizer min;
-    private final boolean ml, mt;
+    private final boolean ml, mt, fast;
 
     /**
      *
      */
     private GlsArimaProcessor(Function<M, IParametricMapping<M>> mappingProvider,
             final IRegArimaInitializer<M> initializer, final IRegArimaFinalizer<M> finalizer, final ISsqFunctionMinimizer min,
-            final double eps, final boolean ml, final boolean mt) {
+            final double eps, final boolean ml, final boolean mt, final boolean fast) {
         this.mappingProvider = mappingProvider;
         this.initializer = initializer;
         this.finalizer = finalizer;
@@ -114,6 +120,7 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
         this.min.setFunctionPrecision(eps);
         this.ml = ml;
         this.mt = mt;
+        this.fast = fast;
     }
 
     /**
@@ -157,7 +164,7 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
         M arma = (M) arima.stationaryTransformation().getStationaryModel();
         IParametricMapping<M> stmapping = mappingProvider.apply(arma);
         RegArmaModel<M> dmodel = regs.differencedModel();
-        RegArmaProcessor processor = new RegArmaProcessor(ml, mt);
+        RegArmaProcessor processor = new RegArmaProcessor(ml, mt, fast);
         int ndf = dmodel.getY().length() - dmodel.getX().getColumnsCount();// - mapping.getDim();
         RegArmaEstimation<M> rslt = processor.compute(dmodel, stmapping.map(arma), stmapping, min, ndf);
         IParametricMapping<M> mapping = mappingProvider.apply(arima);

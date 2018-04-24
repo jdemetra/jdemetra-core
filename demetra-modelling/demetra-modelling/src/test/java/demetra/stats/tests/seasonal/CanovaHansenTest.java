@@ -16,14 +16,12 @@
  */
 package demetra.stats.tests.seasonal;
 
-import demetra.stats.tests.seasonal.CanovaHansen;
 import demetra.data.Data;
-import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
+import demetra.data.WeeklyData;
 import static demetra.timeseries.simplets.TsDataToolkit.delta;
 import static demetra.timeseries.simplets.TsDataToolkit.log;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -37,7 +35,8 @@ public class CanovaHansenTest {
     @Test
     public void testUnempl_dummy() {
 //        System.out.println("dummies");
-        CanovaHansen ch = CanovaHansen.test(DoubleSequence.of(Data.US_UNEMPL), 4)
+        CanovaHansen ch = CanovaHansen.test(DoubleSequence.of(Data.US_UNEMPL))
+                .dummies(4)
                 .truncationLag(4)
                 .build();
 
@@ -50,8 +49,8 @@ public class CanovaHansenTest {
     @Test
     public void testUnempl_trig() {
 //        System.out.println("trig");
-        CanovaHansen ch = CanovaHansen.test(DoubleSequence.of(Data.US_UNEMPL), 4)
-                .variables(CanovaHansen.Variables.Trigonometric)
+        CanovaHansen ch = CanovaHansen.test(DoubleSequence.of(Data.US_UNEMPL))
+                .trigonometric(4)
                 .truncationLag(4)
                 .build();
 //        System.out.println(ch.test(0, 2));
@@ -63,11 +62,13 @@ public class CanovaHansenTest {
     public void testP_dummy() {
         DoubleSequence y = delta(log(Data.TS_PROD), 1).getValues();
 //        System.out.println("dummies");
-        CanovaHansen ch = CanovaHansen.test(y, 12)
+        CanovaHansen ch = CanovaHansen.test(y)
+                .dummies(12)
                 .lag1(false)
                 .truncationLag(12)
                 .startPosition(1)
                 .build();
+ //       System.out.println(ch.robustTestCoefficients());
 
 //        for (int i = 0; i < 12; ++i) {
 //            System.out.println(ch.test(i));
@@ -79,16 +80,63 @@ public class CanovaHansenTest {
     public void testP_trig() {
         DoubleSequence y = delta(log(Data.TS_PROD), 1).getValues();
 //        System.out.println("dummies");
-        CanovaHansen ch = CanovaHansen.test(y, 12)
+        CanovaHansen ch = CanovaHansen
+                .test(y)
                 .lag1(false)
-                .truncationLag(12)
+                .truncationLag(15)
                 .startPosition(1)
-                .variables(CanovaHansen.Variables.Trigonometric)
+                .trigonometric(12)
                 .build();
+        double all = ch.testAll();
+//        for (int i = 0; i < 5; ++i) {
+//            System.out.println(ch.test(2 * i, 2));
+//        }
+        //  System.out.println(ch.robustTestCoefficients());
+//        System.out.println(all);
+    }
+
+    @Test
+    public void testW_trig() {
+        double[] x = new double[WeeklyData.US_CLAIMS.length - 1];
+        for (int i = 0; i < x.length; ++i) {
+            x[i] = Math.log(WeeklyData.US_CLAIMS[i + 1]) - Math.log(WeeklyData.US_CLAIMS[i]);
+        }
+         DoubleSequence y = DoubleSequence.ofInternal(x);
+           CanovaHansen ch = CanovaHansen.test(y)
+                    .lag1(false)
+                    .truncationLag(5)
+                    .startPosition(1)
+                    .trigonometric(53)
+                    .build();
+        for (int i = 0; i < 25; ++i) {
+//            System.out.println(ch.test(1+2 * i, 2));
+//        }
+//        System.out.println(ch.testAll());
+//            System.out.println(ch.robustTestCoefficients(i*2, 2).getValue());
+        }
+    }
+    
+        @Test
+    public void testW_trig2() {
+        double[] x = new double[WeeklyData.US_CLAIMS.length - 1];
+        for (int i = 0; i < x.length; ++i) {
+            x[i] = Math.log(WeeklyData.US_CLAIMS[i + 1]) - Math.log(WeeklyData.US_CLAIMS[i]);
+        }
+//        double[] x=WeeklyData.US_CLAIMS;
+DoubleSequence y = DoubleSequence.ofInternal(x);
+          for (int i = 2; i <= 553; ++i) {
+         CanovaHansen ch = CanovaHansen.test(y)
+                    .lag1(false)
+                    .truncationLag(12)
+                    .startPosition(1)
+                    .specific(i, 1)
+                    .build();
 //        for (int i = 0; i < 5; ++i) {
 //            System.out.println(ch.test(2 * i, 2));
 //        }
 //        System.out.println(ch.testAll());
+//            System.out.println(ch.testAll());
+        }
     }
 
 }

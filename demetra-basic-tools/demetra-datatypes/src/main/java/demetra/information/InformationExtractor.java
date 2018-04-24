@@ -22,13 +22,38 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- *
+ * New implementation for JD3
  * @author Jean Palate
  * @param <S>
  */
 public interface InformationExtractor<S> {
 
+    public static final char SEP = '.';
+    public static final String STRSEP = new String(new char[]{SEP});
 
+    public static String concatenate(String... s) {
+        switch (s.length) {
+            case 0:
+                return "";
+            case 1:
+                return s[0];
+            default:
+                boolean first = true;
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < s.length; ++i) {
+                    if (s[i] != null) {
+                        if (!first) {
+                            builder.append(SEP);
+                        } else {
+                            first = false;
+                        }
+                        builder.append(s[i]);
+                    }
+                }
+                return builder.toString();
+        }
+    }
+    
     void fillDictionary(String prefix, Map<String, Class> dic, boolean compact);
 
     boolean contains(String id);

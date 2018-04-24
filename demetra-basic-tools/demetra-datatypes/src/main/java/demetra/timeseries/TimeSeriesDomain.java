@@ -50,5 +50,5 @@ public interface TimeSeriesDomain<P extends Range<LocalDateTime>> extends Range<
      */
     int indexOf(P period);
 
-    TimeSeriesDomain<P> select(TimeSeriesSelector selector);
+    TimeSeriesDomain<P> select(TimeSelector selector);
 }

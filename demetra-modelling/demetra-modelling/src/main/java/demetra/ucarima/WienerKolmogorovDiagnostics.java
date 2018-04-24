@@ -73,7 +73,7 @@ public final class WienerKolmogorovDiagnostics {
                         cur = model.getComplement(icmp);
                     }
                     StationaryTransformation stmodel = cur.stationaryTransformation();
-                    double[] curst = new double[ndata - stmodel.getUnitRoots().length() - 1];
+                    double[] curst = new double[ndata - stmodel.getUnitRoots().getDegree()];
                     DataBlock out = DataBlock.ofInternal(curst);
                     stmodel.getUnitRoots().apply(DataBlock.ofInternal(data[i]), out);
                     out.sub(out.sum() / out.length());

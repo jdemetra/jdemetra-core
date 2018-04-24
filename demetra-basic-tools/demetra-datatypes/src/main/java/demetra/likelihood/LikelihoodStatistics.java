@@ -16,8 +16,9 @@
  */
 package demetra.likelihood;
 
-import demetra.design.BuilderPattern;
 import demetra.design.Development;
+import demetra.design.IBuilder;
+import demetra.design.Immutable;
 import java.util.Formatter;
 
 /**
@@ -27,8 +28,7 @@ import java.util.Formatter;
 @lombok.Data
 public class LikelihoodStatistics {
 
-    @BuilderPattern(LikelihoodStatistics.class)
-    public static class Builder  {
+    public static class Builder implements IBuilder<LikelihoodStatistics> {
 
         private final int nobs;
         private final double ll;
@@ -75,6 +75,7 @@ public class LikelihoodStatistics {
             return this;
         }
 
+        @Override
         public LikelihoodStatistics build() {
             LikelihoodStatistics stats = new LikelihoodStatistics();
             stats.observationsCount = nobs;

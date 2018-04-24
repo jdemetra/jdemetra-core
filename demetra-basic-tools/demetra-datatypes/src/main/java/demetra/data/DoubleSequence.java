@@ -59,7 +59,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
     @Internal
     @Nonnull
     public static DoubleSequence ofInternal(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int len) {
-        return len <= 0 ? EMPTY : new PartialDoubleArray(data, start, start+len);
+        return len <= 0 ? EMPTY : new PartialDoubleArray(data, start, len);
     }
 
     /**

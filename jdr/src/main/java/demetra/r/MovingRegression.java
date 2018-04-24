@@ -21,12 +21,12 @@ import demetra.sarima.SarimaSpecification;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.sarima.mapping.SarimaInfo;
 import demetra.timeseries.TsDomain;
-import demetra.timeseries.TimeSeriesSelector;
+import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsUnit;
-import demetra.timeseries.calendar.DayClustering;
-import demetra.timeseries.calendar.GenericTradingDays;
-import demetra.timeseries.regression.GenericTradingDaysVariables;
-import demetra.timeseries.regression.RegressionUtility;
+import demetra.timeseries.calendars.DayClustering;
+import demetra.timeseries.calendars.GenericTradingDays;
+import demetra.modelling.regression.GenericTradingDaysVariables;
+import demetra.modelling.regression.RegressionUtility;
 import demetra.timeseries.TsData;
 import static demetra.timeseries.simplets.TsDataToolkit.fitToDomain;
 import java.util.ArrayList;
@@ -102,8 +102,8 @@ public class MovingRegression {
 
     public Results regarima(TsData s, String td, int nyears) {
         int period = s.getTsUnit().ratioOf(TsUnit.YEAR);
-        SarimaSpecification spec = new SarimaSpecification();
-        spec.airline(period);
+        SarimaSpecification spec = new SarimaSpecification(period);
+        spec.airline(true);
 
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()
@@ -111,7 +111,7 @@ public class MovingRegression {
 
         DayClustering dc = days(td);
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        Matrix x = RegressionUtility.data(Collections.singletonList(new GenericTradingDaysVariables(gtd)), s.getDomain());
+        Matrix x = RegressionUtility.data(s.getDomain(), new GenericTradingDaysVariables(gtd));
 
         RegSarimaProcessor monitor = RegSarimaProcessor.builder()
                 .useParallelProcessing(true)
@@ -128,7 +128,7 @@ public class MovingRegression {
         arima = rslt.getModel().arima();
 
         List<double[]> coef = new ArrayList<>();
-        TimeSeriesSelector sel = TimeSeriesSelector.first(nyears * period);
+        TimeSelector sel = TimeSelector.first(nyears * period);
         TsDomain dom = s.getDomain().select(sel);
         while (dom.end().isBefore(s.getDomain().end())) {
             Matrix mtd = generate(dom, dc);
@@ -200,7 +200,7 @@ public class MovingRegression {
 
     private Matrix generate(TsDomain domain, DayClustering dc) {
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        return RegressionUtility.data(Collections.singletonList(new GenericTradingDaysVariables(gtd)), domain);
+        return RegressionUtility.data(domain, new GenericTradingDaysVariables(gtd));
     }
 
     private Matrix generateVar(DayClustering dc, String var) {

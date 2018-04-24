@@ -78,19 +78,19 @@ public class PolynomialTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void testRoots() {
         Polynomial p1 = Polynomial.valueOf(1, -.5), p2 = Polynomial.valueOf(1, -1.3, .5), p3 = Polynomial.valueOf(1, -.2);
         Polynomial p = p1.times(p1).times(p2).times(p3).times(p3);
         p = p.times(p).times(p3);
         Complex[] roots = p.roots();
-        for (Complex root : roots) {
-            System.out.println(root);
-        }
-        Complex[] rroots = p.roots(IRootsSolver.robustSolver());
-        for (Complex root : rroots) {
-            System.out.println(root);
-        }
+//        for (Complex root : roots) {
+//            System.out.println(root);
+//        }
+//        Complex[] rroots = p.roots(IRootsSolver.robustSolver());
+//        for (Complex root : rroots) {
+//            System.out.println(root);
+//        }
     }
 
     @Test
@@ -107,22 +107,21 @@ public class PolynomialTest {
         for (Complex root : roots) {
             assertTrue(Math.abs(root.abs() - w) < 1e-9);
             double arg = root.arg() * N / (2 * Math.PI);
-            assertTrue(Math.abs(arg - Math.round(arg)) < 1e-9);
+            assertTrue(Math.abs(arg - Math.round(arg)) < 1e-12);
 
         }
         Complex[] rroots = P.roots(IRootsSolver.robustSolver());
         for (Complex root : rroots) {
             assertTrue(Math.abs(root.abs() - w) < 1e-9);
             double arg = root.arg() * N / (2 * Math.PI);
-            assertTrue(Math.abs(arg - Math.round(arg)) < 1e-9);
-
+            assertTrue(Math.abs(arg - Math.round(arg)) < 1e-12);
         }
     }
 
     @Test
     @Ignore
     public void stressTestUnitRoots() {
-        int N = 500;
+        int N = 1000;
         double[] p = new double[N + 1];
         p[0] = 1;
         p[N] = -1.0/3;
@@ -136,7 +135,7 @@ public class PolynomialTest {
             for (Complex root : roots) {
                 assertEquals(w, root.abs() , 1e-7);
                 double arg = root.arg() * N / (2 * Math.PI);
-                assertEquals(0, arg - Math.round(arg), 1e-7);
+                assertEquals(0, arg - Math.round(arg), 1e-6);
             }
         }
         long t1 = System.currentTimeMillis();

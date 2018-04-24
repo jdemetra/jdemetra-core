@@ -37,7 +37,7 @@ public class QsTest {
         TsData s=Data.TS_PROD;
         s=TsDataToolkit.delta(s, 1);
         Qs test=new Qs(s.getValues(),12);
-        System.out.println(test.build());
+//        System.out.println(test.build());
     }
     
     @Test

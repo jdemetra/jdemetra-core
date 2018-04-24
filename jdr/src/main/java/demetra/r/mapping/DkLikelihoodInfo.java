@@ -18,7 +18,7 @@ import demetra.ssf.dk.DkConcentratedLikelihood;
 @lombok.experimental.UtilityClass
 public class DkLikelihoodInfo {
 
-    private final String LL = "ll", SSQ = "ssqerr", SER = "ser", SIGMA = "sigma", COEF = "coeff", VAR = "cvar";
+    private final String LL = "ll", SSQ = "ssqerr", SER = "ser", SIGMA = "sigma", COEF = "coeff", VAR = "cvar", RES="residuals";
 
     private final InformationMapping<DkConcentratedLikelihood> MAPPING = new InformationMapping<>(DkConcentratedLikelihood.class);
 
@@ -29,7 +29,7 @@ public class DkLikelihoodInfo {
         MAPPING.set(VAR, MatrixType.class, source -> source.unscaledCovariance());
         MAPPING.set(LL, Double.class, source -> source.logLikelihood());
         MAPPING.set(SSQ, Double.class, source -> source.ssq());
-
+        MAPPING.set(RES, double[].class, source -> source.e().toArray());
     }
 
     public InformationMapping<DkConcentratedLikelihood> getMapping() {

@@ -31,11 +31,9 @@ import demetra.data.DoubleSequence;
 @Immutable
 public final class DescriptiveStatistics {
 
-    public static final double DELTA = 3.834e-20;
 
     public static boolean isSmall(double val) {
-        Constants.getEpsilon();
-        return Math.abs(val) < DELTA;
+        return Math.abs(val) < Constants.getEpsilon();
     }
 
     private final double[] data;

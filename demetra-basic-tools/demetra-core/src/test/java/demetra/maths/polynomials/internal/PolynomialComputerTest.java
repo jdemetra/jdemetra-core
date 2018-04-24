@@ -34,15 +34,14 @@ public class PolynomialComputerTest {
     @Test
     public void testDefault() {
         Polynomial P = Polynomial.ofInternal(DoubleSequence.of(20, i -> 1.0 / (i + 1)).toArray());
-        double[] p = P.toArray();
-        PolynomialComputer computer = new PolynomialComputer(p, 0);
+        PolynomialComputer computer = new PolynomialComputer(P);
         Complex c = Complex.cart(.2, -.5);
         computer.computeAll(c);
-        assertTrue(P.evaluateAt(c).equals(computer.f, 1e-9));
-        assertTrue(P.derivate().evaluateAt(c).equals(computer.df, 1e-9));
+        assertTrue(P.evaluateAt(c).equals(computer.f(), 1e-9));
+        assertTrue(P.derivate().evaluateAt(c).equals(computer.df(), 1e-9));
         computer.computeAll(.33);
-        assertEquals(P.evaluateAt(.33), computer.f.getRe(), 1e-9);
-        assertEquals(P.derivate().evaluateAt(.33), computer.df.getRe(), 1e-9);
+        assertEquals(P.evaluateAt(.33), computer.f().getRe(), 1e-9);
+        assertEquals(P.derivate().evaluateAt(.33), computer.df().getRe(), 1e-9);
     }
 
 }

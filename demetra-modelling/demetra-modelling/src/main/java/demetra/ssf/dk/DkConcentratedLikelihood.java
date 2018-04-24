@@ -16,12 +16,12 @@
  */
 package demetra.ssf.dk;
 
+import demetra.design.IBuilder;
 import demetra.likelihood.IConcentratedLikelihood;
 import demetra.maths.matrices.Matrix;
 import java.util.function.Supplier;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
-import demetra.design.BuilderPattern;
 
 /**
  *
@@ -33,8 +33,7 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
         return new Builder(n, nd);
     }
 
-    @BuilderPattern(DkConcentratedLikelihood.class)
-    public static class Builder {
+    public static class Builder implements IBuilder<DkConcentratedLikelihood> {
 
         final int n, nd;
         double ssqerr, ldet, lddet;
@@ -98,6 +97,7 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
             return this;
         }
 
+        @Override
         public DkConcentratedLikelihood build() {
             return new DkConcentratedLikelihood(this);
         }

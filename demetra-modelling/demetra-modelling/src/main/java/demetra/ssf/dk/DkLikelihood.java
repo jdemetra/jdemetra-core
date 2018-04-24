@@ -16,11 +16,13 @@
  */
 package demetra.ssf.dk;
 
+import demetra.data.DataBlock;
+import demetra.design.IBuilder;
 import demetra.likelihood.ILikelihood;
 import demetra.design.Immutable;
+import demetra.likelihood.Likelihood;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
-import demetra.design.BuilderPattern;
 
 /**
  * The diffuse likelihood follows the definition provided in the paper:
@@ -37,8 +39,7 @@ public class DkLikelihood implements ILikelihood {
         return new Builder(n, nd);
     }
 
-    @BuilderPattern(DkLikelihood.class)
-    public static class Builder {
+    public static class Builder implements IBuilder<DkLikelihood> {
 
         final int n, nd;
         double ssqerr, ldet, lddet;
@@ -81,6 +82,7 @@ public class DkLikelihood implements ILikelihood {
             return this;
         }
 
+        @Override
         public DkLikelihood build() {
             if (nd == 0 && lddet != 0) {
                 throw new IllegalArgumentException("Incorrect diffuse initialisation");

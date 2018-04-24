@@ -201,47 +201,47 @@ public class TsDomainTest {
 
     @Test
     public void testSelect() {
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.all())).isEqualTo(of(feb2010, 2));
+        assertThat(of(feb2010, 2).select(TimeSelector.all())).isEqualTo(of(feb2010, 2));
 
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.none())).isEqualTo(of(feb2010, 0));
+        assertThat(of(feb2010, 2).select(TimeSelector.none())).isEqualTo(of(feb2010, 0));
 
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.first(0))).isEqualTo(of(feb2010, 0));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.first(1))).isEqualTo(of(feb2010, 1));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.first(2))).isEqualTo(of(feb2010, 2));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.first(3))).isEqualTo(of(feb2010, 2));
+        assertThat(of(feb2010, 2).select(TimeSelector.first(0))).isEqualTo(of(feb2010, 0));
+        assertThat(of(feb2010, 2).select(TimeSelector.first(1))).isEqualTo(of(feb2010, 1));
+        assertThat(of(feb2010, 2).select(TimeSelector.first(2))).isEqualTo(of(feb2010, 2));
+        assertThat(of(feb2010, 2).select(TimeSelector.first(3))).isEqualTo(of(feb2010, 2));
 
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.last(0))).isEqualTo(of(feb2010.plus(2), 0));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.last(1))).isEqualTo(of(feb2010.plus(1), 1));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.last(2))).isEqualTo(of(feb2010, 2));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.last(3))).isEqualTo(of(feb2010, 2));
+        assertThat(of(feb2010, 2).select(TimeSelector.last(0))).isEqualTo(of(feb2010.plus(2), 0));
+        assertThat(of(feb2010, 2).select(TimeSelector.last(1))).isEqualTo(of(feb2010.plus(1), 1));
+        assertThat(of(feb2010, 2).select(TimeSelector.last(2))).isEqualTo(of(feb2010, 2));
+        assertThat(of(feb2010, 2).select(TimeSelector.last(3))).isEqualTo(of(feb2010, 2));
 
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.excluding(0, 0))).isEqualTo(of(feb2010, 2));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.excluding(1, 0))).isEqualTo(of(feb2010.plus(1), 1));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.excluding(0, 1))).isEqualTo(of(feb2010, 1));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.excluding(1, 1))).isEqualTo(of(feb2010.plus(1), 0));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.excluding(0, 2))).isEqualTo(of(feb2010, 0));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.excluding(2, 0))).isEqualTo(of(feb2010.plus(2), 0));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.excluding(2, 2))).isEqualTo(of(feb2010, 0));
+        assertThat(of(feb2010, 2).select(TimeSelector.excluding(0, 0))).isEqualTo(of(feb2010, 2));
+        assertThat(of(feb2010, 2).select(TimeSelector.excluding(1, 0))).isEqualTo(of(feb2010.plus(1), 1));
+        assertThat(of(feb2010, 2).select(TimeSelector.excluding(0, 1))).isEqualTo(of(feb2010, 1));
+        assertThat(of(feb2010, 2).select(TimeSelector.excluding(1, 1))).isEqualTo(of(feb2010.plus(1), 0));
+        assertThat(of(feb2010, 2).select(TimeSelector.excluding(0, 2))).isEqualTo(of(feb2010, 0));
+        assertThat(of(feb2010, 2).select(TimeSelector.excluding(2, 0))).isEqualTo(of(feb2010.plus(2), 0));
+        assertThat(of(feb2010, 2).select(TimeSelector.excluding(2, 2))).isEqualTo(of(feb2010, 0));
 
         LocalDateTime x = feb2010.start();
 
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.from(x))).isEqualTo(of(feb2010, 2));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.from(x.plusMonths(1)))).isEqualTo(of(feb2010.plus(1), 1));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.from(x.plusMonths(2)))).isEqualTo(of(feb2010.plus(2), 0));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.from(x.plusMonths(-1)))).isEqualTo(of(feb2010, 2));
+        assertThat(of(feb2010, 2).select(TimeSelector.from(x))).isEqualTo(of(feb2010, 2));
+        assertThat(of(feb2010, 2).select(TimeSelector.from(x.plusMonths(1)))).isEqualTo(of(feb2010.plus(1), 1));
+        assertThat(of(feb2010, 2).select(TimeSelector.from(x.plusMonths(2)))).isEqualTo(of(feb2010.plus(2), 0));
+        assertThat(of(feb2010, 2).select(TimeSelector.from(x.plusMonths(-1)))).isEqualTo(of(feb2010, 2));
 
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.to(x))).isEqualTo(of(feb2010, 0));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.to(x.plusMonths(1)))).isEqualTo(of(feb2010, 1));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.to(x.plusMonths(2)))).isEqualTo(of(feb2010, 2));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.to(x.plusMonths(-1)))).isEqualTo(of(feb2010, 0));
+        assertThat(of(feb2010, 2).select(TimeSelector.to(x))).isEqualTo(of(feb2010, 0));
+        assertThat(of(feb2010, 2).select(TimeSelector.to(x.plusMonths(1)))).isEqualTo(of(feb2010, 1));
+        assertThat(of(feb2010, 2).select(TimeSelector.to(x.plusMonths(2)))).isEqualTo(of(feb2010, 2));
+        assertThat(of(feb2010, 2).select(TimeSelector.to(x.plusMonths(-1)))).isEqualTo(of(feb2010, 0));
 
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.between(x, x))).isEqualTo(of(feb2010, 0));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.between(x, x.plusMonths(1)))).isEqualTo(of(feb2010, 1));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.between(x, x.plusMonths(2)))).isEqualTo(of(feb2010, 2));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.between(x.plusMonths(1), x.plusMonths(2)))).isEqualTo(of(feb2010.plus(1), 1));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.between(x.plusMonths(2), x.plusMonths(3)))).isEqualTo(of(feb2010.plus(2), 0));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.between(x.plusMonths(-1), x.plusMonths(1)))).isEqualTo(of(feb2010, 1));
-        assertThat(of(feb2010, 2).select(TimeSeriesSelector.between(x.plusMonths(-2), x))).isEqualTo(of(feb2010, 0));
+        assertThat(of(feb2010, 2).select(TimeSelector.between(x, x))).isEqualTo(of(feb2010, 0));
+        assertThat(of(feb2010, 2).select(TimeSelector.between(x, x.plusMonths(1)))).isEqualTo(of(feb2010, 1));
+        assertThat(of(feb2010, 2).select(TimeSelector.between(x, x.plusMonths(2)))).isEqualTo(of(feb2010, 2));
+        assertThat(of(feb2010, 2).select(TimeSelector.between(x.plusMonths(1), x.plusMonths(2)))).isEqualTo(of(feb2010.plus(1), 1));
+        assertThat(of(feb2010, 2).select(TimeSelector.between(x.plusMonths(2), x.plusMonths(3)))).isEqualTo(of(feb2010.plus(2), 0));
+        assertThat(of(feb2010, 2).select(TimeSelector.between(x.plusMonths(-1), x.plusMonths(1)))).isEqualTo(of(feb2010, 1));
+        assertThat(of(feb2010, 2).select(TimeSelector.between(x.plusMonths(-2), x))).isEqualTo(of(feb2010, 0));
     }
 
     private final TsPeriod feb2010 = TsPeriod.monthly(2010, 2);

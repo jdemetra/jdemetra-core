@@ -46,8 +46,8 @@ public class OutliersDetectionModuleTest {
                 .setAll()
                 .build();
         od.setCriticalValue(3.0);
-        SarimaSpecification spec = new SarimaSpecification();
-        spec.airline(12);
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.airline(true);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
 
         Consumer<int[]> hook = a -> System.out.println("Add outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());

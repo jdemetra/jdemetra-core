@@ -81,7 +81,7 @@ public class IrregularDomain implements TimeSeriesDomain<IrregularPeriod> {
     }
 
     @Override
-    public TimeSeriesDomain<IrregularPeriod> select(TimeSeriesSelector selector) {
+    public TimeSeriesDomain<IrregularPeriod> select(TimeSelector selector) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

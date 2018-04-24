@@ -57,8 +57,7 @@ public class SarimaType  {
      * @return
      */
     public SarimaSpecification specification() {
-        SarimaSpecification spec = new SarimaSpecification();
-        spec.setPeriod(period);
+        SarimaSpecification spec = new SarimaSpecification(period);
         spec.setD(d);
         spec.setBd(bd);
         spec.setP(phi.getDegree());

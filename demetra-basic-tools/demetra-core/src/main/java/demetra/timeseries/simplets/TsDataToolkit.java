@@ -25,7 +25,7 @@ import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.TimeSeriesSelector;
+import demetra.timeseries.TimeSelector;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 import javax.annotation.Nonnegative;
@@ -38,11 +38,7 @@ import javax.annotation.Nonnegative;
 public class TsDataToolkit {
 
     public TsData fn(TsData s, DoubleUnaryOperator fn) {
-        double[] data = s.getValues().toArray();
-        for (int i = 0; i < data.length; ++i) {
-            data[i] = fn.applyAsDouble(data[i]);
-        }
-        return TsData.ofInternal(s.getStart(), data);
+        return TsData.of(s.getStart(), Doubles.fn(s.getValues(), fn));
     }
 
     public TsData fastFn(TsData s, DoubleUnaryOperator fn) {
@@ -87,20 +83,7 @@ public class TsDataToolkit {
     }
 
     public TsData fn(TsData s, int lag, DoubleBinaryOperator fn) {
-        int n = s.length() - lag;
-        if (n <= 0) {
-            return null;
-        }
-        double[] nvalues = new double[n];
-        for (int j = 0; j < lag; ++j) {
-            double prev = s.getValue(j);
-            for (int i = j; i < n; i += lag) {
-                double next = s.getValue(i + lag);
-                nvalues[i] = fn.applyAsDouble(prev, next);
-                prev = next;
-            }
-        }
-        return TsData.ofInternal(s.getStart().plus(lag), DoubleSequence.ofInternal(nvalues));
+        return TsData.of(s.getStart().plus(lag), Doubles.fn(s.getValues(), lag, fn));
     }
 
     public TsData drop(TsData s, @Nonnegative int nbeg, @Nonnegative int nend) {
@@ -110,18 +93,11 @@ public class TsDataToolkit {
     }
 
     public TsData extend(TsData s, @Nonnegative int nbeg, @Nonnegative int nend) {
-        int n=s.length()+nbeg+nend;
-        double[] nvalues=new double[n];
-        for (int i=0; i<nbeg; ++i)
-            nvalues[i]=Double.NaN;
-        s.getValues().copyTo(nvalues, nbeg);
-        for (int i=n-nend; i<n; ++i)
-            nvalues[i]=Double.NaN;
         TsPeriod start = s.getStart().plus(-nbeg);
-        return TsData.ofInternal(start, nvalues);
+        return TsData.ofInternal(start, Doubles.extend(s.getValues(), nbeg, nend));
     }
 
-    public TsData select(TsData s, TimeSeriesSelector selector) {
+    public TsData select(TsData s, TimeSelector selector) {
         TsDomain ndomain = s.getDomain().select(selector);
         final int beg = s.getStart().until(ndomain.getStartPeriod());
         return TsData.of(ndomain.getStartPeriod(), s.getValues().extract(beg, ndomain.length()));
@@ -282,6 +258,13 @@ public class TsDataToolkit {
 
     public TsData delta(TsData s, int lag) {
         return fn(s, lag, (x, y) -> y - x);
+    }
+
+    public TsData delta(TsData s, int lag, int pow) {
+        TsData ns=s;
+        for (int i=0; i<pow; ++i)
+            ns=fn(ns, lag, (x, y) -> y - x);
+        return ns;
     }
 
     public TsData pctVariation(TsData s, int lag) {

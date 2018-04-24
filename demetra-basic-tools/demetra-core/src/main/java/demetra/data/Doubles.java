@@ -17,7 +17,10 @@
 package demetra.data;
 
 import demetra.utilities.IntList;
+import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoublePredicate;
+import java.util.function.DoubleUnaryOperator;
+import javax.annotation.Nonnegative;
 
 /**
  *
@@ -305,5 +308,67 @@ public class Doubles {
         }
     }
     
+    public static DoubleSequence removeMean(DoubleSequence x) {
+        double[] y=x.toArray();
+        double s=0;
+        for (int i=0; i<y.length; ++i){
+            s+=y[i];
+        }
+        s/=y.length;
+        for (int i=0; i<y.length; ++i){
+            y[i]-=s;
+        }
+        return DoubleSequence.ofInternal(y);
+    }
+
+    public DoubleSequence fn(DoubleSequence s, DoubleUnaryOperator fn) {
+        double[] data = s.toArray();
+        for (int i = 0; i < data.length; ++i) {
+            data[i] = fn.applyAsDouble(data[i]);
+        }
+        return DoubleSequence.ofInternal(data);
+    }
+
+    public DoubleSequence fastFn(DoubleSequence s, DoubleUnaryOperator fn) {
+        return DoubleSequence.of(s.length(), i -> fn.applyAsDouble(s.get(i)));
+    }
+
+    public DoubleSequence fn(DoubleSequence s, int lag, DoubleBinaryOperator fn) {
+        int n = s.length() - lag;
+        if (n <= 0) {
+            return null;
+        }
+        double[] nvalues = new double[n];
+        for (int j = 0; j < lag; ++j) {
+            double prev = s.get(j);
+            for (int i = j; i < n; i += lag) {
+                double next = s.get(i + lag);
+                nvalues[i] = fn.applyAsDouble(prev, next);
+                prev = next;
+            }
+        }
+        return DoubleSequence.ofInternal(nvalues);
+    }
+
+    public DoubleSequence extend(DoubleSequence s, @Nonnegative int nbeg, @Nonnegative int nend) {
+        int n=s.length()+nbeg+nend;
+        double[] nvalues=new double[n];
+        for (int i=0; i<nbeg; ++i)
+            nvalues[i]=Double.NaN;
+        s.copyTo(nvalues, nbeg);
+        for (int i=n-nend; i<n; ++i)
+            nvalues[i]=Double.NaN;
+        return DoubleSequence.ofInternal(nvalues);
+    }
     
+    public DoubleSequence delta(DoubleSequence s, int lag) {
+        return fn(s, lag, (x, y) -> y - x);
+    }
+
+    public DoubleSequence delta(DoubleSequence s, int lag, int pow) {
+        DoubleSequence ns=s;
+        for (int i=0; i<pow; ++i)
+            ns=fn(ns, lag, (x, y) -> y - x);
+        return ns;
+    }
 }

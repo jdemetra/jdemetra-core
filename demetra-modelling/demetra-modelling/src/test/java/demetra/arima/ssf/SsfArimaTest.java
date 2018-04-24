@@ -45,8 +45,8 @@ public class SsfArimaTest {
     static final double[] data;
     
     static{
-        SarimaSpecification spec = new SarimaSpecification();
-        spec.airline(12);
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.airline(true);
         arima = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.8).build();
         data = Data.PROD.clone();
     }
@@ -78,8 +78,8 @@ public class SsfArimaTest {
 
     @Test
     public void testArimaWithMissing() {
-        SarimaSpecification spec = new SarimaSpecification();
-        spec.airline(12);
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.airline(true);
         SarimaModel arima = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.8).build();
         SsfArima ssf = SsfArima.of(arima);
         double[] mdata=data.clone();

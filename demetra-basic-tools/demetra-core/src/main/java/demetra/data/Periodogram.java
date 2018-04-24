@@ -17,6 +17,8 @@
 package demetra.data;
 
 import demetra.design.Development;
+import demetra.design.IBuilder;
+import demetra.design.Immutable;
 import demetra.maths.Constants;
 import demetra.utilities.IntList;
 

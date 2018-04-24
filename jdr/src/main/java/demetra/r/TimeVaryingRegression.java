@@ -33,10 +33,10 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.SsfData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
-import demetra.timeseries.calendar.DayClustering;
-import demetra.timeseries.calendar.GenericTradingDays;
-import demetra.timeseries.regression.GenericTradingDaysVariables;
-import demetra.timeseries.regression.RegressionUtility;
+import demetra.timeseries.calendars.DayClustering;
+import demetra.timeseries.calendars.GenericTradingDays;
+import demetra.modelling.regression.GenericTradingDaysVariables;
+import demetra.modelling.regression.RegressionUtility;
 import demetra.timeseries.TsData;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -121,8 +121,8 @@ public class TimeVaryingRegression {
 
     public Results regarima(TsData s, String td, String svar, double aicdiff) {
         int freq = s.getTsUnit().ratioOf(TsUnit.YEAR);
-        SarimaSpecification spec = new SarimaSpecification();
-        spec.airline(freq);
+        SarimaSpecification spec = new SarimaSpecification(freq);
+        spec.airline(true);
         DayClustering dc = days(td);
         Matrix mtd = generate(s.getDomain(), dc);
         Matrix nvar = generateVar(dc, svar);
@@ -238,7 +238,7 @@ public class TimeVaryingRegression {
 
     public Matrix generate(TsDomain domain, DayClustering dc) {
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        return RegressionUtility.data(Collections.singletonList(new GenericTradingDaysVariables(gtd)), domain);
+        return RegressionUtility.data(domain, new GenericTradingDaysVariables(gtd));
     }
 
     public Matrix generateVar(DayClustering dc, String var) {
@@ -267,8 +267,8 @@ public class TimeVaryingRegression {
         private static final SarimaMapping airlineMapping;
 
         static {
-            SarimaSpecification spec = new SarimaSpecification();
-            spec.airline(12);
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.airline(true);
             airlineMapping = SarimaMapping.of(spec);
         }
 

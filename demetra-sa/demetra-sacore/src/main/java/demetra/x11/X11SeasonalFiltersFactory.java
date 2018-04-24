@@ -8,7 +8,6 @@ package demetra.x11;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.FiniteFilter;
-import demetra.maths.linearfilters.IFilterOutput;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 
@@ -48,7 +47,7 @@ public class X11SeasonalFiltersFactory {
         }
 
         if (period instanceof Integer) {
-            return new DefaultFilter(period.intValue(), sfilter, new AsymmetricEndPoints(efilters));
+            return new DefaultFilter(period.intValue(), sfilter, new AsymmetricEndPoints(efilters, 0));
         } else {
             return new AnyFilter(period.doubleValue(), sfilter, efilters);
         }

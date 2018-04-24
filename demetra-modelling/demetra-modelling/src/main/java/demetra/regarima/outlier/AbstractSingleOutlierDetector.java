@@ -20,7 +20,7 @@ import demetra.arima.IArimaModel;
 import demetra.data.DoubleList;
 import demetra.maths.matrices.Matrix;
 import demetra.regarima.RegArimaModel;
-import demetra.timeseries.regression.IOutlier.IOutlierFactory;
+import demetra.modelling.regression.IOutlier.IOutlierFactory;
 import demetra.utilities.TableOfBoolean;
 import java.util.ArrayList;
 
@@ -267,7 +267,7 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      * @param outlier
      * @return
      */
-    public boolean isDefined(int pos, int outlier) {
+    public boolean isAllowed(int pos, int outlier) {
         return allowedTable.get(pos, outlier);
     }
 

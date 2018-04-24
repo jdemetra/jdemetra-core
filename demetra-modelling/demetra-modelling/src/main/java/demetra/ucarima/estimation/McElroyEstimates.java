@@ -272,7 +272,7 @@ public class McElroyEstimates {
         IArimaModel model = ucm_.getModel();
         StationaryTransformation stm = model.stationaryTransformation();
         AnsleyFilter F = new AnsleyFilter();
-        F.prepare((IArimaModel) stm.getStationaryModel(), n - stm.getUnitRoots().length()+1);
+        F.prepare((IArimaModel) stm.getStationaryModel(), n - stm.getUnitRoots().getDegree());
         return F;
     }
 

@@ -42,4 +42,23 @@ public interface Range<E extends Comparable<? super E>> {
     E end();
 
     boolean contains(@Nonnull E element);
+
+    public static <E extends Comparable<? super E>> Range<E> of(final E start, final E end) {
+        return new Range<E>() {
+            @Override
+            public E start() {
+                return start;
+            }
+
+            @Override
+            public E end() {
+                return end;
+            }
+
+            @Override
+            public boolean contains(E element) {
+                return start.compareTo(element) <= 0 && element.compareTo(end) < 0;
+            }
+        };
+    }
 }
