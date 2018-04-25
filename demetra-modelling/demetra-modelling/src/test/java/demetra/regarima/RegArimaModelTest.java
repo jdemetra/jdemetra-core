@@ -10,6 +10,7 @@ import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
+import ec.tstoolkit.data.DescriptiveStatistics;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -63,8 +64,8 @@ public class RegArimaModelTest {
                 .meanCorrection(true)
                 .missing(missingPos)
                 .build();
-             RegArimaEstimation<SarimaModel> estimation = RegArimaEstimation.of(model, 2);
-            estimation.statistics(0);
+        RegArimaEstimation<SarimaModel> estimation = RegArimaEstimation.of(model, 2);
+        estimation.statistics(0);
 //        System.out.println("New estimation");
 //        System.out.println(estimation.statistics(0));
     }
@@ -149,5 +150,98 @@ public class RegArimaModelTest {
         System.out.println(t1 - t0);
 //        System.out.println(estimation.statistics(2, 0));
     }
+
+//    @Test
+//    public void testAO() {
+//        
+//        int POS=47;
+//        SarimaSpecification spec = new SarimaSpecification(12);
+//        spec.airline(true);
+//        double[] ao = new double[Data.PROD.length];
+//        ao[POS] = 1;
+//        double[] y = Data.PROD.clone();
+//        y[POS] -= 10;
+//        for (int i = 1; i <= 60; ++i) {
+//            DoubleSequence Y = DoubleSequence.ofInternal(y, 0, POS + i);
+//            SarimaModel arima = SarimaModel.builder(spec)
+//                    .theta(1, -.6)
+//                    .btheta(1, -.5)
+//                    .build();
+//            RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class)
+//                    .y(Y)
+//                    .arima(arima)
+//                    //.meanCorrection(true)
+//                    .addX(DoubleSequence.ofInternal(ao, 0, POS + i))
+//                    .build();
+//            RegArimaEstimation<SarimaModel> estimation = RegArimaEstimation.of(model, 2);
+//            //System.out.println(estimation.getConcentratedLikelihood().coefficients().get(0));
+//        }
+//    }
+//
+//    @Test
+//    public void testAO2() {
+//        
+//        int POS=47;
+//        SarimaSpecification spec = new SarimaSpecification(12);
+//        spec.setQ(1);
+//        spec.setBq(1);
+//        ec.tstoolkit.sarima.SarimaSpecification ospec = new ec.tstoolkit.sarima.SarimaSpecification(12);
+//        ospec.setQ(1);
+//        ospec.setBQ(1);
+//        ec.tstoolkit.sarima.SarimaModel omodel=new ec.tstoolkit.sarima.SarimaModel(ospec);
+//        omodel.setTheta(1, -.6);
+//        omodel.setBTheta(1, -.6);
+//        double[] y = new ec.tstoolkit.arima.ArimaModelBuilder().generate(omodel, 240);
+//        double[] ao = new double[y.length];
+//        ao[POS] = 1;
+//        y[POS] += 5; //*Math.sqrt(DescriptiveStatistics.var(y, 0, y.length));
+//        for (int i = 1; i <= 60; ++i) {
+//            DoubleSequence Y = DoubleSequence.ofInternal(y, 0, POS + i);
+//            SarimaModel arima = SarimaModel.builder(spec)
+//                    .theta(1, -.6)
+//                    .btheta(1, -.6)
+//                    .build();
+//            RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class)
+//                    .y(Y)
+//                    .arima(arima)
+////                    .meanCorrection(true)
+//                    .addX(DoubleSequence.ofInternal(ao, 0, POS + i))
+//                    .build();
+//            RegArimaEstimation<SarimaModel> estimation = RegArimaEstimation.of(model, 2);
+//            System.out.println(estimation.getConcentratedLikelihood().coefficients().get(0));
+//        }
+//    }
+//    
+//    @Test
+//    public void testAO3() {
+//        System.out.println();
+//        int POS=47;
+//        SarimaSpecification spec = new SarimaSpecification(12);
+//        spec.airline(true);
+//        ec.tstoolkit.sarima.SarimaSpecification ospec = new ec.tstoolkit.sarima.SarimaSpecification(12);
+//        ospec.airline(true);
+//        ec.tstoolkit.sarima.SarimaModel omodel=new ec.tstoolkit.sarima.SarimaModel(ospec);
+//        omodel.setTheta(1, -.6);
+//        omodel.setBTheta(1, -.6);
+//        double[] y = new ec.tstoolkit.arima.ArimaModelBuilder().generate(omodel, 240);
+//        double[] ao = new double[y.length];
+//        ao[POS] = 1;
+//        y[POS] += 5; //*Math.sqrt(DescriptiveStatistics.var(y, 0, y.length));
+//        for (int i = 1; i <= 60; ++i) {
+//            DoubleSequence Y = DoubleSequence.ofInternal(y, 0, POS + i);
+//            SarimaModel arima = SarimaModel.builder(spec)
+//                    .theta(1, -.6)
+//                    .btheta(1, -.6)
+//                    .build();
+//            RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class)
+//                    .y(Y)
+//                    .arima(arima)
+////                    .meanCorrection(true)
+//                    .addX(DoubleSequence.ofInternal(ao, 0, POS + i))
+//                    .build();
+//            RegArimaEstimation<SarimaModel> estimation = RegArimaEstimation.of(model, 2);
+//            System.out.println(estimation.getConcentratedLikelihood().coefficients().get(0));
+//        }
+//    }
 
 }

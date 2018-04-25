@@ -159,6 +159,9 @@ public class TramoProcessor implements IPreprocessor {
         // Complete the model with all the pre-specified regression variables
         // and with any pre-specified arima model (or orders).
         try {
+            if (! builder.build(context))
+                throw new TramoException("Initialization failed");
+//            context.getDescription().
 
 //            if (builder != null) {
 //                builder.initialize(context);

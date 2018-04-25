@@ -18,6 +18,7 @@ package demetra.tramo;
 
 import demetra.tramo.TramoProcessor;
 import demetra.data.Data;
+import ec.tstoolkit.modelling.arima.IPreprocessor;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -35,5 +36,13 @@ public class TramoProcessorTest {
         TramoProcessor processor=TramoProcessor.builder().build();
         processor.process(Data.TS_PROD, null);
     }
+    
+    @Test
+    public void testProdLegacy() {
+        IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
+        ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, Data.PROD, true);
+        processor.process(s, null);
+    }
+    
     
 }

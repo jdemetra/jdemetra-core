@@ -27,16 +27,16 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate
  */
-public class BurmanEstimatesCTest {
+public class BurmanEstimatesTest {
     
-    public BurmanEstimatesCTest() {
+    public BurmanEstimatesTest() {
     }
 
     @Test
     public void testAirline() {
         UcarimaModel ucm = ucmAirline(-.6, -.8);
         ucm = ucm.simplify();
-        BurmanEstimatesC burman=new BurmanEstimatesC();
+        BurmanEstimates burman=new BurmanEstimates();
         burman.setData(Data.TS_PROD.getValues());
         burman.setUcarimaModel(ucm);
         double[] estimates = burman.estimates(0, true);
