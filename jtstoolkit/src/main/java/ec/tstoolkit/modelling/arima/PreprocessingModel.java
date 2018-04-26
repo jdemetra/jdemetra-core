@@ -498,7 +498,7 @@ public class PreprocessingModel implements IProcResults {
             return xfcasts_;
         }
         xfcasts_ = new Forecasts();
-        TsDomain fdomain = new TsDomain(description.getEstimationDomain().getEnd(), nf);
+        TsDomain fdomain = new TsDomain(description.getSeriesDomain().getEnd(), nf);
         RegArimaEstimation<SarimaModel> est
                 = new RegArimaEstimation<>(estimation.getRegArima(),
                         estimation.getLikelihood());
@@ -666,7 +666,7 @@ public class PreprocessingModel implements IProcResults {
         }
     }
 
-    private TsData getForecastError() {
+    public TsData getForecastError() {
         TsDomain fdomain = domain(true);
         Forecasts fcasts = forecasts(fdomain.getLength());
         double[] ef;
@@ -834,8 +834,8 @@ public class PreprocessingModel implements IProcResults {
     }
 
     private int getForecastCount() {
-        int n=ncasts>=0 ? ncasts : -ncasts*description.getFrequency();
-        return n ;
+        int n = ncasts >= 0 ? ncasts : -ncasts * description.getFrequency();
+        return n;
     }
 
     private TsDomain domain(boolean fcast) {
@@ -904,7 +904,7 @@ public class PreprocessingModel implements IProcResults {
     private TsVariableList x_;
     private TsData fullres_, lin_, fcast_, bcast_;
     private Forecasts xfcasts_;
-    private int ncasts=-2;
+    private int ncasts = -2;
     public static final String LOG = "log",
             ADJUST = "adjust",
             SPAN = "span", ESPAN = "espan", START = "start", END = "end", N = "n",
@@ -914,6 +914,7 @@ public class PreprocessingModel implements IProcResults {
             EASTER = "easter",
             FULLRES = "fullresiduals",
             FCASTS = "fcasts",
+            EFCASTS = "efcasts",
             BCASTS = "bcasts",
             LIN_FCASTS = "lin_fcasts",
             LIN_BCASTS = "lin_bcasts",
@@ -1078,6 +1079,20 @@ public class PreprocessingModel implements IProcResults {
         MAPPING.set(BCASTS, -2, TsData.class, (source, i) -> source.backcast(nperiods(source, i), false));
         MAPPING.set(LIN_FCASTS, -2, TsData.class, (source, i) -> source.linearizedForecast(nperiods(source, i)));
         MAPPING.set(LIN_BCASTS, -2, TsData.class, (source, i) -> source.linearizedBackcast(nperiods(source, i)));
+        MAPPING.set(EFCASTS, -2, TsData.class, (source, i)
+                -> {
+            int np = nperiods(source, i);
+            TsDomain fdomain = new TsDomain(source.description.getSeriesDomain().getEnd(), np);
+            Forecasts fcasts = source.forecasts(np);
+            double[] ef;
+            if (source.isMultiplicative()) {
+                LogForecasts lf = new LogForecasts(fcasts);
+                ef = lf.getForecatStdevs();
+            } else {
+                ef = fcasts.getForecastStdevs();
+            }
+            return new TsData(fdomain.getStart(), ef, true);
+        });
 
     }
 
