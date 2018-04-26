@@ -61,6 +61,7 @@ public class RegArimaInfo {
             EASTER = "easter",
             FULLRES = "fullresiduals",
             FCASTS = "fcasts",
+            EFCASTS = "efcasts",
             BCASTS = "bcasts",
             LIN_FCASTS = "lin_fcasts",
             LIN_BCASTS = "lin_bcasts",
@@ -72,10 +73,11 @@ public class RegArimaInfo {
     ;
     
     final InformationMapping<PreprocessingModel> MAPPING = new InformationMapping<>(PreprocessingModel.class);
-    
+
     public InformationMapping<PreprocessingModel> getMapping() {
         return MAPPING;
     }
+
     static {
         MAPPING.set(InformationExtractor.concatenate(SPAN, START), TsPeriod.class, source -> source.description.getSeriesDomain().getStart());
         MAPPING.set(InformationExtractor.concatenate(SPAN, END), TsPeriod.class, source -> source.description.getSeriesDomain().getLast());
@@ -210,6 +212,20 @@ public class RegArimaInfo {
         MAPPING.setArray(BCASTS, -2, TsData.class, (source, i) -> source.backcast(nperiods(source, i), false));
         MAPPING.setArray(LIN_FCASTS, -2, TsData.class, (source, i) -> source.linearizedForecast(nperiods(source, i)));
         MAPPING.setArray(LIN_BCASTS, -2, TsData.class, (source, i) -> source.linearizedBackcast(nperiods(source, i)));
+        MAPPING.setArray(EFCASTS, -2, TsData.class, (source, i)
+                -> {
+            int np = nperiods(source, i);
+            TsDomain fdomain = new TsDomain(source.description.getSeriesDomain().getEnd(), np);
+            Forecasts fcasts = source.forecasts(np);
+            double[] ef;
+            if (source.isMultiplicative()) {
+                LogForecasts lf = new LogForecasts(fcasts);
+                ef = lf.getForecatStdevs();
+            } else {
+                ef = fcasts.getForecastStdevs();
+            }
+            return new TsData(fdomain.getStart(), ef, true);
+        });
 
     }
 
@@ -220,7 +236,7 @@ public class RegArimaInfo {
             return -n * m.getFrequency().intValue();
         }
     }
-    
+
     private TsData reg(PreprocessingModel model, ComponentType componentType, boolean fcast) {
         TsData tmp = model.userEffect(domain(model, fcast), componentType);
         if (tmp == null) {
@@ -247,7 +263,7 @@ public class RegArimaInfo {
             return model.description.getSeriesDomain();
         }
     }
-    
+
     private TsData outlier(PreprocessingModel model, ComponentType componentType, boolean fcast) {
         TsData tmp = model.outliersEffect(domain(model, fcast), componentType);
         if (tmp == null) {
@@ -256,7 +272,7 @@ public class RegArimaInfo {
         model.backTransform(tmp, false, false);
         return tmp;
     }
-    
+
     private TsData tde(PreprocessingModel model, boolean fcast) {
         TsDomain fdom = domain(model, fcast);
         TsData tmp = model.tradingDaysEffect(fdom);
@@ -329,7 +345,7 @@ public class RegArimaInfo {
             return TsData.subtract(l, r);
         }
     }
-    
+
     private TsData forecastError(PreprocessingModel model) {
         TsDomain fdomain = domain(model, true);
         Forecasts fcasts = model.forecasts(fdomain.getLength());
