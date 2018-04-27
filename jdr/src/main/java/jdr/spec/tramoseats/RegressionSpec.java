@@ -78,7 +78,7 @@ public class RegressionSpec extends BaseTramoSpec {
         desc.setEffect(TsVariableDescriptor.UserComponentType.from(effect));
         inner().add(desc);
         if (coef != 0 && Double.isFinite(coef)) {
-            inner().setFixedCoefficients(desc.getName(), new double[]{coef});
+            inner().setFixedCoefficients(Utility.RPREFIX+name, new double[]{coef});
         }
     }
     
