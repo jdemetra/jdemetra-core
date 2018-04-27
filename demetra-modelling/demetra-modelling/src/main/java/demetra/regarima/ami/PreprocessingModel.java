@@ -17,6 +17,7 @@
 package demetra.regarima.ami;
 
 import demetra.design.Development;
+import demetra.information.InformationSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,6 +33,7 @@ import java.util.function.Predicate;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
+@lombok.Value
 public class PreprocessingModel  {
 //
 //    public static ComponentType outlierComponent(OutlierType type) {
@@ -62,10 +64,10 @@ public class PreprocessingModel  {
 //        }
 //    }
 //
-//    public final ModelDescription description;
-//    public final ModelEstimation estimation;
-//    public InformationSet info_;
-//    private List<ProcessingInformation> log_ = new ArrayList<>();
+    private ModelDescription description;
+    private ModelEstimation estimation;
+    private InformationSet information;
+//    private List<ProcessingInformation> log;
 //
 //    public void backTransform(TsData s, boolean T, boolean S) {
 //        if (s == null) {

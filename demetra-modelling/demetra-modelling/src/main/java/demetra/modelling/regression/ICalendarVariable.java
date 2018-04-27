@@ -25,10 +25,4 @@ import demetra.timeseries.TsDomain;
  */
 public interface ICalendarVariable extends ITsVariable<TsDomain> {
     
-    @Override
-    default ComponentType getComponentType(){
-        return ComponentType.CalendarEffect;
-    }
-
-
 }

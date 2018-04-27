@@ -33,7 +33,7 @@ public class TramoProcessorTest {
 
     @Test
     public void testProd() {
-        TramoProcessor processor=TramoProcessor.builder().build();
+        TramoProcessor processor=TramoProcessor.of(TramoSpec.TRfull, null);
         processor.process(Data.TS_PROD, null);
     }
     

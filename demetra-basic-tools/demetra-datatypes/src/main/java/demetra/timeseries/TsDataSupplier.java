@@ -14,30 +14,27 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.calendar;
+package demetra.timeseries;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import demetra.timeseries.TsData;
+import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 
 /**
  *
  * @author Jean Palate
  */
-public class UtilityTest {
-    
-    public UtilityTest() {
-    }
-
-    @Test
-    public void testEpoch() {
-        assertTrue(Utility.calc(1970, 1, 1) == 0);
+@FunctionalInterface
+public interface TsDataSupplier extends Supplier<TsData>{
+    public static TsDataSupplier of(@Nonnull TsData s){
+        return ()->s;
     }
     
-    @Test
-    public void testNow() {
-        LocalDate now = LocalDate.now();
-        assertTrue(Utility.calc(now.getYear(), now.getMonthValue(), now.getDayOfMonth()) == LocalDate.ofEpochDay(0).until(now, ChronoUnit.DAYS));
+    public static TsDataSupplier ofDynamic(@Nonnull TsData initial, @Nonnull Supplier<TsData> supplier){
+        return () -> {
+            TsData ndata = supplier.get();
+            return ndata == null ? initial : ndata;
+        };
     }
+    
 }

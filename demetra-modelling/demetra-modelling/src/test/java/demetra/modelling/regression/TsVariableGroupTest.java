@@ -14,9 +14,8 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.calendar;
+package demetra.modelling.regression;
 
-import java.time.DayOfWeek;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -24,14 +23,13 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate
  */
-public class DayClusteringTest {
+public class TsVariableGroupTest {
     
-    public DayClusteringTest() {
+    public TsVariableGroupTest() {
     }
 
     @Test
-    public void testTD2() {
-        assertEquals(DayClustering.TD2.getGroup(DayOfWeek.SATURDAY),0);
+    public void testSomeMethod() {
     }
     
 }

@@ -19,6 +19,7 @@ package demetra.timeseries.calendars;
 import demetra.data.Cell;
 import demetra.data.DataBlock;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
 import java.util.List;
@@ -163,14 +164,7 @@ public class GenericTradingDays {
         }
     }
 
-    /*
-    *
-     * @param domain
-     * @return Arrays with the number of Sundays, ..., Saturdays. td[0][k] is
-     * the number of Sundays in the period k.
-     */
-    private static final LocalDate EPOCH = LocalDate.ofEpochDay(0);
-    private static final int DAY_OF_WEEK_OF_EPOCH = EPOCH.getDayOfWeek().getValue() - 1;
+    private static final int DAY_OF_WEEK_OF_EPOCH = TsPeriod.DEFAULT_EPOCH.getDayOfWeek().getValue() - 1;
 
     public static int[][] tdCount(TsDomain domain) {
         int[][] rslt = new int[7][];

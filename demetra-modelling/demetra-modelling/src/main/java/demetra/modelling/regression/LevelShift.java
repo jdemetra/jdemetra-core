@@ -20,7 +20,6 @@ import demetra.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.modelling.ComponentType;
-import static demetra.modelling.regression.BaseOutlier.defaultName;
 import java.time.LocalDateTime;
 import java.util.List;
 import demetra.timeseries.TimeSeriesDomain;
@@ -84,7 +83,7 @@ public class LevelShift<D extends TimeSeriesDomain<?>> extends BaseOutlier imple
     private final boolean zeroEnded;
 
     public LevelShift(LocalDateTime pos, boolean zeroEnded) {
-        super(pos, defaultName(CODE, pos, null));
+        super(pos, IOutlier.defaultName(CODE, pos, null));
         this.zeroEnded = zeroEnded;
     }
 
@@ -124,7 +123,7 @@ public class LevelShift<D extends TimeSeriesDomain<?>> extends BaseOutlier imple
 
     @Override
     public String getDescription(D context) {
-        return defaultName(CODE, position, context);
+        return IOutlier.defaultName(CODE, position, context);
     }
 
     @Override

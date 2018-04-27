@@ -16,18 +16,11 @@
  */
 package demetra.regarima.ami;
 
-import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.linearmodel.LeastSquaresResults;
-import demetra.linearmodel.LinearModel;
-import demetra.linearmodel.Ols;
 import demetra.regarima.RegArimaEstimation;
-import demetra.regarima.RegArimaModel;
 import demetra.sarima.SarimaModel;
 import demetra.stats.tests.NiidTests;
-import java.util.List;
 
 /**
  *

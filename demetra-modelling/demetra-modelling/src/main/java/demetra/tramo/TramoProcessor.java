@@ -16,9 +16,12 @@
  */
 package demetra.tramo;
 
+import demetra.data.AverageInterpolator;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
+import demetra.modelling.regression.ModellingContext;
 import demetra.regarima.IRegArimaInitializer;
+import demetra.regarima.RegArimaModel;
 import demetra.regarima.ami.ILogLevelModule;
 import demetra.regarima.ami.IModelBuilder;
 import demetra.regarima.ami.IPreprocessor;
@@ -26,6 +29,7 @@ import demetra.regarima.ami.ISeasonalityDetector;
 import demetra.regarima.ami.ModelDescription;
 import demetra.regarima.ami.RegArimaContext;
 import demetra.regarima.ami.PreprocessingModel;
+import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsData;
@@ -37,59 +41,55 @@ import javax.annotation.Nonnull;
  */
 @Development(status = Development.Status.Preliminary)
 public class TramoProcessor implements IPreprocessor {
-    
+
     public static Builder builder() {
         return new Builder();
     }
-    
+
     @BuilderPattern(TramoProcessor.class)
     public static class Builder {
-        
-        private TimeSelector estimationSpan = TimeSelector.all();
-        private IModelBuilder modelBuilder = new TramoModelBuilder(TramoSpec.TRfull);
-        private IRegArimaInitializer initializer;
-        private ILogLevelModule transformation;
+
+        private IModelBuilder modelBuilder = new DefaultModelBuilder();
+        private ILogLevelModule<SarimaModel> transformation;
         private ISeasonalityDetector seas = new SeasonalityDetector();
-        
-        public Builder estimationSpan(TimeSelector span) {
-            this.estimationSpan = span;
-            return this;
-        }
-        
+
         public Builder modelBuilder(@Nonnull IModelBuilder builder) {
             this.modelBuilder = builder;
             return this;
         }
-        
-        public Builder initializer(IRegArimaInitializer initializer) {
-            this.initializer = initializer;
-            return this;
-        }
-        
-        public Builder logLevel(ILogLevelModule ll) {
+
+        public Builder logLevel(ILogLevelModule<SarimaModel> ll) {
             this.transformation = ll;
             return this;
         }
-        
+
         public Builder seasonalityDetector(@Nonnull ISeasonalityDetector seas) {
             this.seas = seas;
             return this;
         }
-        
+
         public TramoProcessor build() {
-            TramoProcessor processor = new TramoProcessor(estimationSpan, modelBuilder,
-                    initializer, transformation, seas
+            TramoProcessor processor = new TramoProcessor(modelBuilder,
+                    transformation, seas
             );
             return processor;
         }
-        
+
     }
-    
-    private final TimeSelector estimationSpan;
-    private final ISeasonalityDetector seas;
+
+    public static TramoProcessor of(TramoSpec spec, ModellingContext context) {
+        TramoSpecDecoder helper = new TramoSpecDecoder(spec, context);
+        return builder()
+                .modelBuilder(helper.modelBuider())
+                .logLevel(helper.transformation())
+                .seasonalityDetector(helper.seasonality())
+                .build();
+
+    }
+
     private final IModelBuilder builder;
-    private final IRegArimaInitializer initializer;
-    private final ILogLevelModule transformation;
+    private final ISeasonalityDetector seas;
+    private final ILogLevelModule<SarimaModel> transformation;
 
 //    public IPreprocessingModule loglevelTest;
 //    public IPreprocessingModule regressionTest;
@@ -112,24 +112,26 @@ public class TramoProcessor implements IPreprocessor {
 //    private ModelStatistics refstats_;
 //    private boolean needOutliers_;
 //    private boolean needAutoModelling_;
-    private TramoProcessor(TimeSelector span, IModelBuilder builder,
-            final IRegArimaInitializer initializer, final ILogLevelModule transformation,
+    private TramoProcessor(IModelBuilder builder,
+            final ILogLevelModule<SarimaModel> transformation,
             final ISeasonalityDetector seas) {
-        this.estimationSpan = span;
         this.builder = builder;
-        this.initializer = initializer;
         this.transformation = transformation;
         this.seas = seas;
     }
-    
+
     @Override
     public PreprocessingModel process(TsData originalTs, RegArimaContext context) {
 //        clear();
         if (context == null) {
             context = new RegArimaContext();
         }
-        context.setDescription(new ModelDescription(originalTs, estimationSpan == null ? null : originalTs.getDomain().select(estimationSpan)));
-        
+        ModelDescription desc = builder.build(originalTs, context.getLog());
+        if (desc == null) {
+            throw new TramoException("Initialization failed");
+        }
+        context.setDescription(desc);
+
         PreprocessingModel rslt = calc(context);
 //        if (rslt != null) {
 //            rslt.info_ = context.information;
@@ -137,13 +139,21 @@ public class TramoProcessor implements IPreprocessor {
 //        }
         return rslt;
     }
-    
+
     private PreprocessingModel calc(RegArimaContext context) {
+
+        // Test the seasonality
+        if (seas != null) {
+            testSeasonality(context);
+        }
+        if (transformation != null) {
+            testTransformation(context);
+        }
+
         // Step 1.
         // Initial adjustments:
         // - interpolation of the missing values
         // - change of units [should always be done, to avoid "scale" effects]
-
         // Step 2.
         // Creates a "default model", which is an airline model (0 1 1)(0 1 1) with mean,
         // except when no seasonal component is needed; the model is then
@@ -159,8 +169,6 @@ public class TramoProcessor implements IPreprocessor {
         // Complete the model with all the pre-specified regression variables
         // and with any pre-specified arima model (or orders).
         try {
-            if (! builder.build(context))
-                throw new TramoException("Initialization failed");
 //            context.getDescription().
 
 //            if (builder != null) {
@@ -220,7 +228,7 @@ public class TramoProcessor implements IPreprocessor {
 //            return context.current(true);
             return null;
         } catch (Exception err) {
-            
+
             return null;
         } finally {
 //            clear();
@@ -685,18 +693,32 @@ public class TramoProcessor implements IPreprocessor {
 //        return true;
 //    }
 //
-    private void checkSeasonality(ModelDescription model) {
-        
-            ISeasonalityDetector.Seasonality s = seas.hasSeasonality(model.transformedOriginal());
-            model.setSeasonality(s.getAsInt() >= 2);
-        int ifreq = model.getAnnualFrequency();
-        if ( ifreq > 1) {
-            SarimaSpecification nspec = new SarimaSpecification(ifreq);
-            nspec.setD(1);
-            nspec.setQ(1);
-            model.setSpecification(nspec);
+    private void testTransformation(RegArimaContext context) {
+        ModelDescription model = context.getDescription();
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class)
+                .y(model.transformedSeries().getValues())
+                .meanCorrection(true)
+                .arima(model.getArimaComponent().getModel())
+                .build();
+        if (transformation.process(regarima) && transformation.isChoosingLog()) {
+            context.getDescription().setLogTransformation(true);
+            context.setEstimation(null);
         }
-        
+    }
+
+    private void testSeasonality(RegArimaContext context) {
+        ModelDescription model = context.getDescription();
+        int ifreq = model.getAnnualFrequency();
+        if (ifreq > 1) {
+            ISeasonalityDetector.Seasonality s = seas.hasSeasonality(model.transformedSeries());
+//            model.setSeasonality(s.getAsInt() >= 2);
+            if (s.getAsInt() < 2) {
+                SarimaSpecification nspec = new SarimaSpecification(ifreq);
+                nspec.airline(false);
+                model.setSpecification(nspec);
+                context.setEstimation(null);
+            }
+        }
     }
 //
 ////    private boolean finalMeanTest(ModellingContext context) {

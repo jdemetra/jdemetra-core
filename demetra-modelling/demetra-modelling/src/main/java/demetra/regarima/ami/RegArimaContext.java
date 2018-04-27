@@ -17,6 +17,7 @@
 package demetra.regarima.ami;
 
 import demetra.design.Development;
+import demetra.information.InformationSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class RegArimaContext {
     
     private ModelDescription description;
     private ModelEstimation estimation;
+    private final InformationSet log=new InformationSet();
 
 
 //    public ModellingContext() {
@@ -44,12 +46,10 @@ public class RegArimaContext {
 //        }
 //    }
 //
-//    public PreprocessingModel tmpModel() {
-//        PreprocessingModel model = new PreprocessingModel(description, estimation);
-//        model.info_ = information;
-//        return model;
-//    }
-//
+    public PreprocessingModel tmpModel() {
+        return new PreprocessingModel(description, estimation, log);
+    }
+
 //    public PreprocessingModel current(boolean update) {
 //        if (!update) {
 //            PreprocessingModel model = new PreprocessingModel(description.clone(), estimation);

@@ -23,6 +23,7 @@ import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -72,6 +73,16 @@ public class RegArimaModel<M extends IArimaModel> {
         }
 
         public Builder addX(@Nonnull DoubleSequence... vars) {
+            for (DoubleSequence var : vars) {
+                if (var.length() != y.length()) {
+                    throw new RuntimeException("Incompatible dimensions");
+                }
+                x.add(var);
+            }
+            return this;
+        }
+
+        public Builder addX(@Nonnull Collection<DoubleSequence> vars) {
             for (DoubleSequence var : vars) {
                 if (var.length() != y.length()) {
                     throw new RuntimeException("Incompatible dimensions");

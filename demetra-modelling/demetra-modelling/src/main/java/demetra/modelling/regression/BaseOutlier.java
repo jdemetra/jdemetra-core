@@ -32,19 +32,6 @@ import demetra.timeseries.TimeSeriesDomain;
 @Development(status = Development.Status.Alpha)
 public abstract class BaseOutlier{
 
-    public static <D extends TimeSeriesDomain<?>> String defaultName(String code, LocalDateTime pos, D context) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(code).append(" (");
-        if (context == null || ! (context instanceof TsDomain)) {
-            builder.append(pos);
-        } else {
-            TsPeriod p = ((TsDomain)context).get(0);
-            p.withDate(pos);
-            builder.append(p);
-        }
-        builder.append(')');
-        return builder.toString();
-    }
 
     protected final LocalDateTime position;
     protected final String name;

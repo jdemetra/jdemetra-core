@@ -16,19 +16,38 @@
 */
 
 
-package demetra.regarima.ami;
+package demetra.modelling;
 
 import demetra.design.Development;
-import demetra.information.InformationSet;
-import demetra.timeseries.TsData;
 
 /**
- * The model builder will initialize the regression variables of
- * the preprocessing model.
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public interface IModelBuilder {
+public enum VariableStatus {
+    /**
+     * Pre-specified regression variable. Always belongs to the regression model
+     */
+    Prespecified,
 
-     ModelDescription build(TsData series, InformationSet log);
+    /**
+     * Regression variable that is included in the model
+     */
+    Included,
+
+    /**
+     * Regression variable that is excluded from the model
+     */
+    Excluded;
+
+
+   public boolean isSelected(){
+        return this != Excluded;
+   }
+
+   public boolean needTesting(){
+       return this != Prespecified;
+   }
+
 }

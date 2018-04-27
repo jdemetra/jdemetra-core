@@ -80,7 +80,7 @@ public class TrigonometricVariables implements ITsVariable<TsDomain> {
     public TrigonometricVariables(double[] freq) {
         this.freq = freq;
         this.name = "trig#" + freq.length;
-        this.ref = EPOCH;
+        this.ref = TsPeriod.DEFAULT_EPOCH;
     }
 
     public TrigonometricVariables(double[] freq, LocalDateTime ref, String name) {
@@ -144,11 +144,6 @@ public class TrigonometricVariables implements ITsVariable<TsDomain> {
     @Override
     public String getItemDescription(int idx, TsDomain context) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public ComponentType getComponentType(){
-        return ComponentType.Seasonal;
     }
 
     @Override

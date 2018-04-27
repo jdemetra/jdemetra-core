@@ -51,7 +51,7 @@ public abstract class AbstractOutlier extends BaseOutlier implements IRegularOut
 
     @Override
     public String getDescription(TsDomain context) {
-        return defaultName(getCode(), position, context);
+        return IOutlier.defaultName(getCode(), position, context);
     }
 
     // / <summary>Position of the outlier</summary>

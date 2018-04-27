@@ -26,13 +26,13 @@ import demetra.regarima.outlier.IRobustStandardDeviationComputer;
  *
  * @author Jean Palate
  */
-public class DifferencingModule implements IDifferencingModule {
+public class FastDifferencingModule implements IDifferencingModule {
 
     public static Builder builder() {
         return new Builder();
     }
 
-    @BuilderPattern(DifferencingModule.class)
+    @BuilderPattern(FastDifferencingModule.class)
     public static class Builder {
 
         public static final int MAXD = 2, MAXBD = 1;
@@ -65,8 +65,8 @@ public class DifferencingModule implements IDifferencingModule {
             return this;
         }
 
-        public DifferencingModule build() {
-            return new DifferencingModule(maxd, mad, k, tstat);
+        public FastDifferencingModule build() {
+            return new FastDifferencingModule(maxd, mad, k, tstat);
         }
     }
 
@@ -80,7 +80,7 @@ public class DifferencingModule implements IDifferencingModule {
     /**
      *
      */
-    private DifferencingModule(final int[] maxd, final boolean mad,
+    private FastDifferencingModule(final int[] maxd, final boolean mad,
             final double k, final double tstat) {
         this.maxd = maxd;
         this.mad = mad;

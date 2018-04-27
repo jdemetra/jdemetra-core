@@ -42,7 +42,7 @@ public class PeriodicContrasts implements ITsVariable<TsDomain> {
 
     public PeriodicContrasts(final int period) {
         this.period = period;
-        this.ref = EPOCH;
+        this.ref = TsPeriod.DEFAULT_EPOCH;
         this.name = "seas-contrasts#" + (period - 1);
     }
 
@@ -132,11 +132,6 @@ public class PeriodicContrasts implements ITsVariable<TsDomain> {
         return builder.toString();
     }
     
-    @Override
-    public ComponentType getComponentType(){
-        return ComponentType.Seasonal;
-    }
-
     @Override
     public String getName() {
         return name;

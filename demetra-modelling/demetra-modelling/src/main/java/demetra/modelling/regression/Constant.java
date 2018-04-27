@@ -63,11 +63,6 @@ public class Constant<D extends TimeSeriesDomain<?>> implements ITsVariable<D> {
     }
 
     @Override
-    public ComponentType getComponentType(){
-        return ComponentType.Trend;
-    }
-
-    @Override
     public ITsVariable<D> rename(String name) {
         throw new UnsupportedOperationException(); 
     }

@@ -32,7 +32,7 @@ public class GenericTradingDaysVariables implements ITradingDaysVariable {
 
     public GenericTradingDaysVariables(GenericTradingDays td) {
         this.td = td;
-        this.name = ITradingDaysVariable.name(td.getCount());
+        this.name = ITradingDaysVariable.defaultName(td.getCount());
     }
 
     public GenericTradingDaysVariables(GenericTradingDays td, String name) {

@@ -23,6 +23,8 @@ import demetra.modelling.regression.TsVariableDefinition;
 import demetra.utilities.Comparator;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 
@@ -37,7 +39,10 @@ public class RegressionSpec {
     private final ArrayList<RampDefinition> ramps = new ArrayList<>();
     private final ArrayList<InterventionVariableDefinition> interventions = new ArrayList<>();
     private final ArrayList<TsVariableDefinition> users = new ArrayList<>();
-    
+     // the maps with the coefficients use short names...
+    private Map<String, double[]> fcoeff = new LinkedHashMap<>();
+    private Map<String, double[]> coeff = new LinkedHashMap<>();
+   
     public RegressionSpec(){
         calendar = new CalendarSpec();
     }
@@ -55,7 +60,20 @@ public class RegressionSpec {
         ramps.clear();
         interventions.clear();
         users.clear();
+        coeff.clear();
+        fcoeff.clear();
     }
+    
+    
+    public Map<String, double[]> getAllFixedCoefficients() {
+//        checkFixedCoefficients();
+        return Collections.unmodifiableMap(fcoeff);
+    }
+
+    public Map<String, double[]> getAllCoefficients() {
+        return Collections.unmodifiableMap(coeff);
+    }
+
 
     public boolean isUsed() {
         return calendar.isUsed() || !outliers.isEmpty()

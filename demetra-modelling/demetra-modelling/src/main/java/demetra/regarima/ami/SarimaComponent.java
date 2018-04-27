@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package demetra.regarima.ami;
 
 import demetra.arima.IArimaModel;
@@ -43,7 +42,7 @@ public class SarimaComponent extends AbstractArimaComponent implements Cloneable
     }
 
     public SarimaComponent(int freq) {
-        period=freq;
+        period = freq;
     }
 
     @Override
@@ -296,16 +295,16 @@ public class SarimaComponent extends AbstractArimaComponent implements Cloneable
         return new BackFilter(ur.toPolynomial());
     }
 
-    public int getFrequency(){
+    public int getFrequency() {
         return period;
     }
 
-    public void setFrequency(int freq){
-        period=freq;
-        if (freq == 1){
-            bd=0;
-            bphi=null;
-            btheta=null;
+    public void setFrequency(int freq) {
+        period = freq;
+        if (freq == 1) {
+            bd = 0;
+            bphi = null;
+            btheta = null;
         }
     }
 
@@ -324,24 +323,32 @@ public class SarimaComponent extends AbstractArimaComponent implements Cloneable
         for (int i = 0; i < spec.getP(); ++i) {
             if (p[i] != null && p[i].getType() != ParameterType.Undefined) {
                 builder.phi(i + 1, p[i].getValue());
+            } else {
+                builder.phi(i + 1, -.2);
             }
         }
         p = theta;
         for (int i = 0; i < spec.getQ(); ++i) {
             if (p[i] != null && p[i].getType() != ParameterType.Undefined) {
                 builder.theta(i + 1, p[i].getValue());
+            } else {
+                builder.theta(i + 1, -.1);
             }
         }
         p = bphi;
         for (int i = 0; i < spec.getBp(); ++i) {
             if (p[i] != null && p[i].getType() != ParameterType.Undefined) {
                 builder.bphi(i + 1, p[i].getValue());
+            } else {
+                builder.bphi(i + 1, -.2);
             }
         }
         p = btheta;
         for (int i = 0; i < spec.getBq(); ++i) {
             if (p[i] != null && p[i].getType() != ParameterType.Undefined) {
                 builder.btheta(i + 1, p[i].getValue());
+            } else {
+                builder.btheta(i + 1, -.1);
             }
         }
         return builder.build();
@@ -432,8 +439,9 @@ public class SarimaComponent extends AbstractArimaComponent implements Cloneable
     }
 
     /**
-     * Returns the p constraints, using the order defined in Tramo:
-     * regular AR, seasonal AR, regular MA, seasonal MA
+     * Returns the p constraints, using the order defined in Tramo: regular AR,
+     * seasonal AR, regular MA, seasonal MA
+     *
      * @return
      */
     @NewObject
@@ -473,8 +481,9 @@ public class SarimaComponent extends AbstractArimaComponent implements Cloneable
     }
 
     /**
-     * Returns the parameters, using the order defined in Tramo:
-     * regular AR, seasonal AR, regular MA, seasonal MA
+     * Returns the parameters, using the order defined in Tramo: regular AR,
+     * seasonal AR, regular MA, seasonal MA
+     *
      * @return
      */
     @NewObject
@@ -556,7 +565,7 @@ public class SarimaComponent extends AbstractArimaComponent implements Cloneable
         }
         if (btheta != null) {
             for (int i = 0; i < btheta.length; ++i, ++j) {
-                 if (btheta[i] == null) {
+                if (btheta[i] == null) {
                     btheta[i] = new Parameter(p.get(j), type);
                 } else if (!btheta[i].isFixed()) {
                     btheta[i].setValue(p.get(j));
@@ -564,16 +573,16 @@ public class SarimaComponent extends AbstractArimaComponent implements Cloneable
                 }
                 if (stde != null) {
                     btheta[i].setStde(stde.get(j));
-                 }
+                }
             }
         }
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         return this == obj || (obj instanceof SarimaComponent && equals((SarimaComponent) obj));
     }
-    
+
     private boolean equals(SarimaComponent other) {
         return other.bd == bd
                 && other.d == d

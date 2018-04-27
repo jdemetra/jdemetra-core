@@ -40,7 +40,7 @@ public class PeriodicDummies implements ITsVariable<TsDomain> {
 
     public PeriodicDummies(final int period) {
         this.period = period;
-        this.ref = EPOCH;
+        this.ref = TsPeriod.DEFAULT_EPOCH;
         this.name = "seas#" + (period);
     }
 
@@ -116,11 +116,6 @@ public class PeriodicDummies implements ITsVariable<TsDomain> {
         StringBuilder builder = new StringBuilder();
         builder.append("Period dummy [").append(idx + 1).append(']');
         return builder.toString();
-    }
-
-    @Override
-    public ComponentType getComponentType(){
-        return ComponentType.Seasonal;
     }
 
     @Override

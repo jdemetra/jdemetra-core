@@ -57,6 +57,7 @@ public class TsDomain implements TimeSeriesDomain<TsPeriod> {
         return getLength();
     }
 
+
     @Override
     public TsPeriod get(int index) throws IndexOutOfBoundsException {
         return startPeriod.plus(index);
@@ -64,6 +65,10 @@ public class TsDomain implements TimeSeriesDomain<TsPeriod> {
 
     public TsUnit getTsUnit() {
         return startPeriod.getUnit();
+    }
+
+    public int getAnnualFrequency() {
+        return startPeriod.getUnit().getAnnualFrequency();
     }
 
     public TsPeriod getEndPeriod() {

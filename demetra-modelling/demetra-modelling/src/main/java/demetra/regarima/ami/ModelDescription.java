@@ -16,14 +16,14 @@
  */
 package demetra.regarima.ami;
 
+import demetra.modelling.Variable;
 import demetra.data.DataBlock;
+import demetra.data.DoubleSequence;
 import demetra.data.IDataInterpolator;
+import demetra.data.IDataTransformation.LogJacobian;
 import demetra.data.LogTransformation;
 import demetra.design.Development;
-import demetra.modelling.PreadjustmentType;
-import demetra.modelling.TransformationType;
-import demetra.modelling.regression.ICalendarVariable;
-import demetra.modelling.regression.IMovingHolidayVariable;
+import demetra.modelling.PreadjustmentVariable;
 import demetra.modelling.regression.IOutlier;
 import demetra.modelling.regression.ITsTransformation;
 import demetra.modelling.regression.ITsVariable;
@@ -33,18 +33,15 @@ import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.simplets.TsDataToolkit;
 import demetra.utilities.IntList;
 import java.util.ArrayList;
-import static java.util.Arrays.stream;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -54,154 +51,155 @@ import java.util.stream.Stream;
 @Development(status = Development.Status.Preliminary)
 public final class ModelDescription {
 
-    private final TsData originalSeries;
-    private final TsDomain estimationDomain;
+    private final TsData series;
+    private boolean logTransformation;
+    private LengthOfPeriodType lpTransformation = LengthOfPeriodType.None;
+    private final List<PreadjustmentVariable> preadjustmentVariables = new ArrayList<>();
+    private final List<Variable> variables = new ArrayList<>();
     private SarimaComponent arima = new SarimaComponent();
-    private final List<Variable> vars = new ArrayList<>();
 
-    private boolean logTransformation, seasonality;
+    // Caching
+    private ITsVariable<TsDomain>[] regressionVariables;
+    private TransformedSeries transformedSeries;
+    private RegArimaModel<SarimaModel> regarima;
 
-    private final double[] y0; // original data, restricted to the estimation domain
-    private double[] ycur;
-    private int[] missings;
-    private PreadjustmentType preadjustment = PreadjustmentType.None;
-    private LengthOfPeriodType lp = LengthOfPeriodType.None;
-    private int diff;
-    private double logtransform0, logtransform;
-    // caching of the regression variables
-    private final HashMap<ITsVariable, DataBlock[]> xmap
-            = new HashMap<>();
-
-    public ModelDescription(TsData originalTs, TsDomain eDomain) {
-        this.originalSeries = originalTs;
-        if (eDomain == null) {
-            estimationDomain = originalSeries.getDomain();
-        } else {
-            estimationDomain = originalSeries.getDomain().intersection(eDomain);
-        }
-        y0 = TsDataToolkit.fitToDomain(originalSeries, estimationDomain).getValues().toArray();
+    public ModelDescription(TsData series) {
+        this.series = series;
     }
 
     public ModelDescription(ModelDescription desc) {
-        this.originalSeries = desc.originalSeries;
-        this.estimationDomain = desc.estimationDomain;
-        this.y0 = desc.y0.clone();
-        desc.vars.forEach(vars::add);
-        desc.xmap.forEach((v, x) -> xmap.put(v, x));
+        this.series = desc.series;
+        desc.preadjustmentVariables.forEach(preadjustmentVariables::add);
+        desc.variables.forEach(variables::add);
         this.arima = desc.arima.clone();
-        this.ycur = desc.ycur;
         this.logTransformation = desc.logTransformation;
-        this.seasonality = desc.seasonality;
-    }
-
-    private void invalidateData() {
-        logtransform = 0;
-        ycur = null;
-        lp = LengthOfPeriodType.None;
+        this.transformedSeries = desc.transformedSeries;
+        this.regarima = desc.regarima;
+        this.regressionVariables = desc.regressionVariables;
     }
 
     // the regression variables are organized as follows:
-    // [0. Mean correction]
-    // 1. additive outliers_ for missing values
+    // [0. additive outliers_ for missing values]
+    // [1. Mean correction]
     // 2 users
     // 3 calendars
     // 4 moving holidays
     // 5 outliers, 5.1 pre-specified, 5.2 detected 
-    private List<DataBlock> createX() {
-        return vars.stream()
-                .filter(var -> !var.isFixed())
-                .map(var -> getX(var.getVariable()))
-                .collect(ArrayList::new,
-                        (l, array) -> {
-                            for (int i = 0; i < array.length; ++i) {
-                                l.add(array[i]);
-                            }
-                        },
-                        ArrayList::addAll);
+    private ITsVariable<TsDomain>[] buildRegressionVariables() {
+        if (regressionVariables == null && !variables.isEmpty()) {
+            List<ITsVariable<TsDomain>> vars = new ArrayList<>();
+            variables.stream().filter(v -> v.isUser()).forEachOrdered(v -> vars.add(v.getVariable()));
+            variables.stream().filter(v -> v.isCalendar()).forEachOrdered(v -> vars.add(v.getVariable()));
+            variables.stream().filter(v -> v.isMovingHolidays()).forEachOrdered(v -> vars.add(v.getVariable()));
+            variables.stream().filter(v -> v.isOutlier(true)).forEachOrdered(v -> vars.add(v.getVariable()));
+            variables.stream().filter(v -> v.isOutlier(false)).forEachOrdered(v -> vars.add(v.getVariable()));
+            regressionVariables = vars.toArray(new ITsVariable[vars.size()]);
+        }
+        return regressionVariables;
     }
 
-    public Stream<Variable> selectVariables(Predicate<Variable> pred) {
-        return vars.stream().filter(v -> pred.test(v));
+    public Stream<ITsVariable<TsDomain>> regressionVariables() {
+        return Arrays.stream(regressionVariables);
     }
 
-    public Optional<Variable> searchVariable(Predicate<Variable> pred) {
-        return vars.stream().filter(pred).findFirst();
+    public Variable variable(String name) {
+        Optional<Variable> search = variables.stream()
+                .filter(var -> var.getVariable().getName().equals(name))
+                .findFirst();
+        return search.isPresent() ? search.get() : null;
     }
 
-    public Optional<Variable> searchVariable(ITsVariable<TsDomain> var) {
-        return searchVariable(v -> v.getVariable().equals(var));
+    public PreadjustmentVariable preadjustmentVariable(String name) {
+        Optional<PreadjustmentVariable> search = preadjustmentVariables.stream()
+                .filter(var -> var.getVariable().getName().equals(name))
+                .findFirst();
+        return search.isPresent() ? search.get() : null;
+    }
+    
+    public Variable addVariable(Variable var){
+        String name=var.getVariable().getName();
+        while (contains(name)){
+            name=ITsVariable.nextName(name);
+        }
+        Variable nvar=var.rename(name);
+            variables.add(nvar);
+            return nvar;
+     }
+    
+    public PreadjustmentVariable addPreadjustmentVariable(PreadjustmentVariable var){
+        String name=var.getVariable().getName();
+        while (contains(name)){
+            name=ITsVariable.nextName(name);
+        }
+        PreadjustmentVariable nvar=var.rename(name);
+            preadjustmentVariables.add(nvar);
+            return nvar;
+     }
+
+    public boolean contains(String name){
+        return variables.stream()
+                .anyMatch(var->var.getVariable().getName().equals(name))
+                || preadjustmentVariables.stream()
+                .anyMatch(var->var.getVariable().getName().equals(name));
     }
 
-    public boolean findAny(Predicate<Variable> pred) {
-        return vars.stream().anyMatch(pred);
+    /**
+     * Selects/deselects the variable identified by its name
+     *
+     * @param name
+     * @param select True to include the variable in the model, false to exclude
+     * it
+     * @return True if the variable was found, false otherwise
+     */
+    public boolean select(String name, boolean select) {
+        int n = variables.size();
+        for (int i = 0; i < n; ++i) {
+            Variable cur = variables.get(i);
+            if (cur.getVariable().getName().equals(name)) {
+                Variable ncur = cur.select(select);
+                if (cur != ncur) {
+                    variables.set(i, ncur);
+                    regressionVariables = null;
+                    regarima = null;
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
-    public boolean isPrespecified(final ITsVariable<TsDomain> ovar) {
-        Optional<Variable> var = searchVariable(ovar);
-        return var.isPresent() ? var.get().isPrespecified() : false;
+    public void setLogTransformation(boolean log) {
+        this.logTransformation = log;
+    }
+
+    public boolean isLogTransformation() {
+        return this.logTransformation;
     }
 
     private DataBlock[] getX(ITsVariable variable) {
-        DataBlock[] x = xmap.get(variable);
-        if (x != null) {
-            return x;
-        } else {
-            int n = estimationDomain.getLength();
-            x = new DataBlock[variable.getDim()];
-            ArrayList<DataBlock> tmp = new ArrayList<>();
-            for (int i = 0; i < x.length; ++i) {
-                x[i] = DataBlock.make(n);
-                tmp.add(x[i]);
-            }
-            variable.data(estimationDomain, tmp);
-            xmap.put(variable, x);
-            return x;
+        int n = series.length();
+        DataBlock[] x = new DataBlock[variable.getDim()];
+        ArrayList<DataBlock> tmp = new ArrayList<>();
+        for (int i = 0; i < x.length; ++i) {
+            x[i] = DataBlock.make(n);
+            tmp.add(x[i]);
         }
+        variable.data(series.getDomain(), tmp);
+        return x;
     }
 
-    public int getRegressionVariablesStartingPosition() {
-        int start = 0;
-        if (missings != null) {
-            start += missings.length;
-        }
-        if (arima.isEstimatedMean()) {
-            ++start;
-        }
-        return start;
-    }
-
-//    public RegArimaModel<SarimaModel> buildRegArima() {
-//        double[] y = getY();
-//
-//        RegArimaModel.Builder<SarimaModel> builder = RegArimaModel.builder(SarimaModel.class)
-//                .y(DoubleSequence.ofInternal(y))
-//                .arima(arima.getModel())
-//                .meanCorrection(arima.isMean())
-//                .missing(missings);
-//
-//        variables.stream().filter(var -> !var.isFixed())
-//                .forEachOrdered(var -> builder.addX(xmap.get(var.getVariable())));
-//        return builder.build();
-//    }
     /**
      * @return the original_
      */
-    public TsData getOriginal() {
-        return originalSeries;
+    public TsData getSeries() {
+        return series;
     }
 
     /**
      * @return the estimationDomain_
      */
-    public TsDomain getSeriesDomain() {
-        return originalSeries.getDomain();
-    }
-
-    /**
-     * @return the estimationDomain_
-     */
-    public TsDomain getEstimationDomain() {
-        return estimationDomain;
+    public TsDomain getDomain() {
+        return series.getDomain();
     }
 
 //    /**
@@ -217,35 +215,60 @@ public final class ModelDescription {
      * Gets the transformed original series. The original may be transformed for
      * leap year correction or log-transformation and for fixed effects. The
      * fixed effects are always applied additively after the log-transformation.
-     * The transformed original may contain missing values
+     * The transformed original may also be corrected for missing values when an
+     * interpolator is provided
      *
+     * @param interpolator Interpolator for missing values. May be null; in that
+     * case, the returned series will contain the original missing values, if
+     * any.
      * @return
      */
-    public TsData transformedOriginal() {
-        TsData tmp = originalSeries;
-        if (lp != LengthOfPeriodType.None) {
-            tmp = new LengthOfPeriodTransformation(lp).transform(tmp, null);
+    public TransformedSeries transformation(IDataInterpolator interpolator) {
+        int diff = arima.getDifferencingOrder();
+        LogJacobian lj = new LogJacobian(diff, series.length());
+        TsData tmp = series;
+        if (lpTransformation != LengthOfPeriodType.None) {
+            tmp = new LengthOfPeriodTransformation(lpTransformation).transform(tmp, lj);
+        }
+        if (logTransformation) {
+            tmp = ITsTransformation.of(new LogTransformation()).transform(tmp, lj);
+        }
+
+        if (!preadjustmentVariables.isEmpty()) {
+            final DataBlock ndata = DataBlock.of(tmp.getValues());
+            final TsDomain domain = tmp.getDomain();
+            preadjustmentVariables.forEach(v -> {
+                v.removeFrom(ndata, domain);
+            });
+            tmp = TsData.ofInternal(domain.getStartPeriod(), ndata.getStorage());
+        }
+        int[] m;
+        double[] data;
+        if (interpolator != null) {
+            IntList missing = new IntList();
+            data = interpolator.interpolate(tmp.getValues(), missing);
+            m = missing.isEmpty() ? null : missing.toArray();
+        } else {
+            data = tmp.getValues().toArray();
+            m = null;
+        }
+
+        return TransformedSeries.builder()
+                .transformationCorrection(lj.value)
+                .data(data)
+                .missing(m)
+                .build();
+    }
+
+    public TsData transformedSeries() {
+        TsData tmp = series;
+        if (lpTransformation != LengthOfPeriodType.None) {
+            tmp = new LengthOfPeriodTransformation(lpTransformation).transform(tmp, null);
         }
         if (logTransformation) {
             tmp = ITsTransformation.of(new LogTransformation()).transform(tmp, null);
         }
-        Stream<Variable> pv = preadjustmentVariables();
-        if (pv.findAny().isPresent()) {
-            final DataBlock ndata = DataBlock.of(tmp.getValues());
-            final TsDomain domain = tmp.getDomain();
-            pv.forEachOrdered(v->{
-                v.removeEffect(domain, ndata);
-            });
-            tmp = TsData.ofInternal(domain.getStartPeriod(), ndata.getStorage());
-        }
         return tmp;
-    }
-
-    /**
-     * @return the missings
-     */
-    public int[] getMissingValues() {
-        return missings;
     }
 
     /**
@@ -263,6 +286,12 @@ public final class ModelDescription {
         arima.setSpecification(spec);
     }
 
+    public void setAirline(boolean seas) {
+        SarimaSpecification s = new SarimaSpecification(this.getAnnualFrequency());
+        s.airline(seas);
+        arima.setSpecification(s);
+    }
+
     /**
      * @return the mean_
      */
@@ -278,46 +307,27 @@ public final class ModelDescription {
     }
 
     public boolean hasFixedEffects() {
-        return findAny(v -> v.isFixed());
-    }
-
-    public Stream<Variable> allVariables() {
-        return vars.stream();
+        return !preadjustmentVariables.isEmpty();
     }
 
     /**
      * @return the variables
      */
-    public Stream<Variable> preadjustmentVariables() {
-        return selectVariables(v -> v.isFixed());
+    public Stream<PreadjustmentVariable> preadjustmentVariables() {
+        return preadjustmentVariables.stream();
     }
 
     /**
      * @return the variables
      */
     public Stream<Variable> variables() {
-        return selectVariables(v -> !v.isFixed());
-    }
-    /**
-     * @return the calendars_
-     */
-    public Stream<Variable> calendars() {
-        return variables().filter(var -> var.isCalendar());
-    }
-
-    public Stream<Variable> movingHolidays() {
-        return variables().filter(var -> var.isMovingHolidays());
-    }
-
-
-    public int countVariables(Predicate<Variable> pred) {
-        return (int) variables()
-                .filter(pred)
-                .count();
+        return variables.stream();
     }
 
     /**
-     * Counts all the (non fixed) regression variables, which statisfy a given condition
+     * Counts all the (non fixed) regression variables, which statisfy a given
+     * condition
+     *
      * @param pred The condition
      * @return The number of regressors (>= # variables)
      */
@@ -327,54 +337,7 @@ public final class ModelDescription {
                 .mapToInt(var -> var.getVariable().getDim()).sum();
     }
 
-    /**
-     * Gets all outliers (fixed, prespecified and indentified)
-     * @return the outliers
-     */
-    public Stream<IOutlier<TsDomain>> allOutliers() {
-        return vars.stream()
-                .filter(var->var.getVariable() instanceof IOutlier)
-                .map(var->(IOutlier<TsDomain>)var.getVariable());
-    }
-
-    /**
-     * Gets pre-specified but not fixed outliers, 
-     * @return 
-     */
-    public Stream<IOutlier<TsDomain>> prespecifiedOutliers() {
-        return variables()
-                .filter(var->var.isOutlier(true))
-                .map(var->(IOutlier<TsDomain>)var.getVariable());
-    }
-
-    /**
-     * Gets identified outliers (not pre-specified)
-     * @return 
-     */
-    public Stream<IOutlier<TsDomain>> outliers() {
-        return variables()
-                .filter(var->var.isOutlier(false))
-                .map(var->(IOutlier<TsDomain>)var.getVariable());
-    }
-
-    /**
-     * Gets fixed outliers
-     * @return 
-     */
-    public Stream<IOutlier<TsDomain>> getFixedOutliers() {
-        return vars.stream()
-                .filter(var->var.isFixed() && var.isOutlier(true))
-                .map(var->(IOutlier<TsDomain>)var.getVariable());
-    }
-
-    /**
-     * @return the adjust_
-     */
-    public PreadjustmentType getPreadjustmentType() {
-        return preadjustment;
-    }
-
-//    public LengthOfPeriodType getLengthOfPeriodType() {
+    //    public LengthOfPeriodType getLengthOfPeriodType() {
 //        return preadjustment.convert(isUsed(ICalendarVariable.class), transformation == DefaultTransformationType.Log);
 //    }
 //
@@ -435,14 +398,6 @@ public final class ModelDescription {
 //        invalidateData();
 //        return true;
 //    }
-//     public void setTransformation(DefaultTransformationType fn,
-//            PreadjustmentType adjust) {
-//        transformation = fn;
-//        preadjustment = adjust;
-//        checkPreadjustment();
-//        invalidateData();
-//    }
-//
 //    public void setTransformation(PreadjustmentType lengthOfPeriodType) {
 //        if (preadjustment != lengthOfPeriodType) {
 //            preadjustment = lengthOfPeriodType;
@@ -470,78 +425,54 @@ public final class ModelDescription {
 //        invalidateData();
 //    }
 //
-//    public void setArimaComponent(SarimaComponent arima) {
-//        this.arima = arima;
-//
-//    }
-//
-//    public void setMean(boolean mean) {
-//        arima.setMean(mean);
-//    }
-//
-//    public void setSpecification(SarimaSpecification spec) {
-//        arima.setSpecification(spec);
-//    }
-//
-//    public void setAirline(boolean seas) {
-//        SarimaSpecification spec = new SarimaSpecification();
-//        spec.setPeriod(estimationDomain.getTsUnit().ratioOf(TsUnit.YEAR));
-//        spec.airline(seas);
-//        arima.setSpecification(spec);
-//    }
-//
-//    public void addVariable(Variable... var) {
-//        for (Variable v : var) {
-//            variables.add(v);
-//        }
-//    }
-//
-//    public void removeVariable(Predicate<Variable> pred) {
-//        variables.removeIf(pred);
-//    }
-//
-//    public double getLikelihoodCorrection() {
-//        if (!checkY()) {
-//            computeY();
-//        }
-//        return logtransform0_ + logtransform_;
-//    }
-//
-//    private void checkPreadjustment() {
-//        if (preadjustment == PreadjustmentType.Auto && transformation == DefaultTransformationType.Log) {
-//            variables.stream().filter(var -> var.getVariable() instanceof ILengthOfPeriodVariable).forEach(var -> var.status = RegStatus.Excluded);
-//        }
-//    }
-//
-//    private boolean checkY() {
-//        if (ycur == null) {
-//            return false;
-//        }
-//        if (lp != this.getLengthOfPeriodType()) {
-//            this.invalidateData();
-//            return false;
-//        }
-//        if (diff_ != this.arima.getDifferencingOrder()) {
-//            this.invalidateData();
-//            return false;
-//        }
-//        return true;
-//    }
-    /**
-     * @return the seasonality
-     */
-    public boolean isSeasonality() {
-        return seasonality;
+    public void setArimaComponent(SarimaComponent arima) {
+        this.arima = arima;
+
     }
 
-    /**
-     * @param seasonality the seasonality to set
-     */
-    public void setSeasonality(boolean seasonality) {
-        this.seasonality = seasonality;
+    public void setMean(boolean mean) {
+        arima.setMean(mean);
+        if (regarima != null && mean != regarima.isMean()) {
+            regarima = regarima.toBuilder().meanCorrection(mean).build();
+        }
+    }
+
+    public void addPreadjustmentVariable(PreadjustmentVariable... var) {
+        if (var != null) {
+            for (PreadjustmentVariable v : var) {
+                preadjustmentVariables.add(v);
+            }
+        }
+    }
+
+    public void addVariable(Variable... var) {
+        if (var != null) {
+            for (Variable v : var) {
+                variables.add(v);
+            }
+        }
+        regressionVariables = null;
+        regarima = null;
+    }
+
+    public void removeVariable(Predicate<Variable> pred) {
+        variables.removeIf(pred.and(var -> !var.isPrespecified()));
+        regressionVariables = null;
+        regarima = null;
     }
 
     public int getAnnualFrequency() {
-        return originalSeries.getAnnualFrequency();
+        return series.getAnnualFrequency();
     }
+
+//    public RegArimaModel<SarimaModel> buildRegArima(IDataInterpolator interpolator) {
+//        TransformedSeries transformation = this.transformation(interpolator);
+//        List<DoubleSequence> x = createX();
+//        return RegArimaModel.builder(SarimaModel.class)
+//                .y(DoubleSequence.ofInternal(transformation.data))
+//                .arima(arima.getModel())
+//                .meanCorrection(arima.isMean())
+//                .addX(x)
+//                .build();
+//    }
 }

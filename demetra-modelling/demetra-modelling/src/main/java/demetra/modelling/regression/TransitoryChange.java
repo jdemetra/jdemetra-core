@@ -20,7 +20,6 @@ import demetra.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.modelling.ComponentType;
-import demetra.timeseries.TsDomain;
 import java.time.LocalDateTime;
 
 /**
@@ -30,7 +29,7 @@ import java.time.LocalDateTime;
 public class TransitoryChange extends AbstractOutlier {
 
     static double ZERO = 1e-15;
-    public static final String TC = "TC";
+    public static final String CODE = "TC";
 
     public static final class Factory implements IOutlierFactory {
 
@@ -76,7 +75,7 @@ public class TransitoryChange extends AbstractOutlier {
 
         @Override
         public String getCode() {
-            return TC;
+            return CODE;
         }
 
     }
@@ -84,7 +83,7 @@ public class TransitoryChange extends AbstractOutlier {
     private final double coefficient;
 
     public TransitoryChange(LocalDateTime pos, double coefficient) {
-        super(pos, defaultName(TC, pos, null));
+        super(pos, IOutlier.defaultName(CODE, pos, null));
         this.coefficient = coefficient;
     }
 
@@ -123,7 +122,7 @@ public class TransitoryChange extends AbstractOutlier {
 
     @Override
     public String getCode() {
-        return TC;
+        return CODE;
     }
 
     @Override

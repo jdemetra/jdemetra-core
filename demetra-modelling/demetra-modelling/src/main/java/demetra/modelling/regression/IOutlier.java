@@ -23,6 +23,8 @@ import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.modelling.ComponentType;
 import java.time.LocalDateTime;
 import demetra.timeseries.TimeSeriesDomain;
+import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
 
 /**
  *
@@ -43,6 +45,19 @@ public interface IOutlier<D extends TimeSeriesDomain<?>> extends ITsVariable<D> 
         }
     }
 
+    public static <D extends TimeSeriesDomain<?>> String defaultName(String code, LocalDateTime pos, D context) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(code).append(" (");
+        if (context == null || ! (context instanceof TsDomain)) {
+            builder.append(pos);
+        } else {
+            TsPeriod p = ((TsDomain)context).get(0);
+            p.withDate(pos);
+            builder.append(p);
+        }
+        builder.append(')');
+        return builder.toString();
+    }
     /**
      * Interface for the creation of outlier variable
      *

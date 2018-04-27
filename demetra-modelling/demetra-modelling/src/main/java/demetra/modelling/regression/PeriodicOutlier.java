@@ -30,7 +30,7 @@ import java.time.LocalDateTime;
  */
 public class PeriodicOutlier extends AbstractOutlier {
 
-    public static final String SO = "SO";
+    public static final String CODE = "SO";
     public static final String PO = "PO";
 
     public static class Factory implements IOutlierFactory {
@@ -93,7 +93,7 @@ public class PeriodicOutlier extends AbstractOutlier {
 
         @Override
         public String getCode() {
-            return SO;
+            return CODE;
         }
     }
 
@@ -101,7 +101,7 @@ public class PeriodicOutlier extends AbstractOutlier {
     private final int period;
 
     public PeriodicOutlier(LocalDateTime pos, int period, boolean zeroEnded) {
-        super(pos, defaultName(SO, pos, null));
+        super(pos, IOutlier.defaultName(CODE, pos, null));
         this.zeroEnded = zeroEnded;
         this.period = period;
     }
@@ -165,7 +165,7 @@ public class PeriodicOutlier extends AbstractOutlier {
 
     @Override
     public String getCode() {
-        return SO;
+        return CODE;
     }
 
     @Override

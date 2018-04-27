@@ -69,7 +69,7 @@ public class SwitchOutlier extends AbstractOutlier {
     }
 
     public SwitchOutlier(LocalDateTime pos) {
-        super(pos, defaultName(WO, pos, null));
+        super(pos, IOutlier.defaultName(WO, pos, null));
     }
 
     public SwitchOutlier(LocalDateTime pos, String name) {

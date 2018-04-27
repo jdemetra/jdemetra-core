@@ -16,31 +16,30 @@
  */
 package demetra.modelling.regression;
 
+import demetra.timeseries.TsData;
+import demetra.timeseries.TsDataSupplier;
 import demetra.utilities.DefaultNameValidator;
 import demetra.utilities.INameValidator;
 import demetra.utilities.NameManager;
-import java.util.Arrays;
-import java.util.List;
+import java.util.function.Supplier;
 
 /**
  *
  * @author Jean Palate
  */
-public class TsVariables extends NameManager<ITsVariable> {
+public class TsVariables extends NameManager<TsDataSupplier> {
 
     public static final String X = "x_";
 
     public TsVariables() {
-        super(ITsVariable.class, X, new DefaultNameValidator(".+-*/"));
+        super(TsDataSupplier.class, X, new DefaultNameValidator(".+-*/"));
     }
 
     public TsVariables(String prefix, INameValidator validator) {
-        super(ITsVariable.class, prefix, validator);
+        super(TsDataSupplier.class, prefix, validator);
     }
 
     public boolean isEmpty() {
         return getCount() < 1;
     }
-
-
 }

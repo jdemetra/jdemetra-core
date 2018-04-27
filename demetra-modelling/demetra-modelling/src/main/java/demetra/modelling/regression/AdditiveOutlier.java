@@ -71,7 +71,7 @@ public class AdditiveOutlier<D extends TimeSeriesDomain<?>> extends BaseOutlier 
     }
 
     public AdditiveOutlier(LocalDateTime pos) {
-        super(pos, defaultName(CODE, pos, null));
+        super(pos, IOutlier.defaultName(CODE, pos, null));
     }
 
     public AdditiveOutlier(LocalDateTime pos, String name) {
@@ -98,7 +98,7 @@ public class AdditiveOutlier<D extends TimeSeriesDomain<?>> extends BaseOutlier 
 
     @Override
     public String getDescription(D context) {
-        return defaultName(CODE, position, context);
+        return IOutlier.defaultName(CODE, position, context);
     }
     
     @Override

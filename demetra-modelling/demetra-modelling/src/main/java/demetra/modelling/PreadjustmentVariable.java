@@ -14,9 +14,10 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.regarima.ami;
+package demetra.modelling;
 
 import demetra.data.DataBlock;
+import demetra.data.DoubleSequence;
 import demetra.data.Parameter;
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
@@ -37,27 +38,18 @@ import javax.annotation.Nonnull;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public final class Variable {
+public final class PreadjustmentVariable {
 
     private final ITsVariable<TsDomain> variable;
-    private final boolean prespecified;
-    private final Parameter[] coefficients;
+    private final double[] coefficients;
 
-    public static Variable fixedVariable(final @Nonnull ITsVariable<TsDomain> variable, final @Nonnull Parameter[] coefficients) {
-        return new Variable(variable, true, coefficients);
-    }
-
-    public static Variable prespecifiedVariable(final @Nonnull ITsVariable<TsDomain> variable) {
-        return new Variable(variable, true, null);
-    }
-
-    public static Variable newVariable(final @Nonnull ITsVariable<TsDomain> variable) {
-        return new Variable(variable, false, null);
-    }
-
-    private Variable(final ITsVariable<TsDomain> variable, final boolean prespecified, final Parameter[] coefficients) {
+    /**
+     *
+     * @param variable Actual variable
+     * @param coefficients Fixed coefficients
+     */
+    public PreadjustmentVariable(final ITsVariable<TsDomain> variable, final double[] coefficients) {
         this.variable = variable;
-        this.prespecified = prespecified;
         this.coefficients = coefficients;
     }
 
@@ -68,16 +60,8 @@ public final class Variable {
     /**
      * @return the coefficients
      */
-    public Parameter[] getCoefficients() {
-        return coefficients;
-    }
-
-    public boolean isPrespecified() {
-        return prespecified;
-    }
-
-    public boolean isFixed() {
-        return coefficients != null && !Parameter.hasFreeParameters(coefficients);
+    public DoubleSequence getCoefficients() {
+        return DoubleSequence.ofInternal(coefficients);
     }
 
     // main types
@@ -85,8 +69,8 @@ public final class Variable {
         return variable instanceof IUserTsVariable;
     }
 
-    public boolean isOutlier(boolean prespecified) {
-        return variable instanceof IOutlier && this.prespecified == prespecified;
+    public boolean isOutlier() {
+        return variable instanceof IOutlier;
     }
 
     public boolean isCalendar() {
@@ -109,27 +93,35 @@ public final class Variable {
         return variable instanceof IEasterVariable;
     }
 
-    public void addEffect(TsDomain domain, DataBlock buffer) {
-        add(domain, buffer, 1);
+    public void addTo(DataBlock buffer, TsDomain domain) {
+        add(buffer, domain, 1);
     }
 
-    public void removeEffect(TsDomain domain, DataBlock buffer) {
-        add(domain, buffer, -1);
+    public void removeFrom(DataBlock buffer, TsDomain domain) {
+        add(buffer, domain, -1);
     }
 
-    private void add(TsDomain domain, DataBlock buffer, double c) {
+    private void add(DataBlock buffer, TsDomain domain, double c) {
         int dim = variable.getDim();
         int n = domain.length();
         if (dim == 1) {
             DataBlock x = DataBlock.make(n);
             variable.data(domain, Collections.singletonList(x));
-            buffer.addAY(c * coefficients[0].getValue(), x);
+            buffer.addAY(c * coefficients[0], x);
         } else {
             Matrix m = Matrix.make(n, dim);
             variable.data(domain, m.columnList());
             for (int i = 0; i < dim; ++i) {
-                buffer.addAY(c * coefficients[i].getValue(), m.column(i));
+                buffer.addAY(c * coefficients[i], m.column(i));
             }
+        }
+    }
+
+    public PreadjustmentVariable rename(String name) {
+        if (name.equals(variable.getName())) {
+            return this;
+        } else {
+            return new PreadjustmentVariable(variable.rename(name), coefficients);
         }
     }
 
