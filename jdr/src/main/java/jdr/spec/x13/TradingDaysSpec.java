@@ -122,14 +122,14 @@ public class TradingDaysSpec extends BaseRegArimaSpec {
 //        inner().setHolidays(holidays.getName());
 //    }
 //
-//    public UserVariables getUserVariables() {
-//        return new UserVariables(inner().getUserVariables());
-//    }
-//
-//    public void setUserVariables(UserVariables vars) {
-//        inner().setUserVariables(vars.getNames());
-//    }
-//
+    public String[] getUserVariables() {
+        return inner().getUserVariables();
+    }
+
+    public void setUserVariables(String[] vars) {
+        inner().setUserVariables(vars);
+    }
+
     public int getW() {
         return inner().getStockTradingDays();
     }

@@ -8,6 +8,7 @@ package jdr.spec.ts;
 import ec.tstoolkit.Parameter;
 import ec.tstoolkit.ParameterType;
 import ec.tstoolkit.algorithm.ProcessingContext;
+import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.regression.TsVariable;
 import ec.tstoolkit.timeseries.regression.TsVariables;
@@ -107,7 +108,7 @@ public class Utility {
         private double coefficient;
     }
    
-    public static final String R = "r";
+    public static final String R = "r", RPREFIX="r@";
 
     public static class Dictionary {
 
