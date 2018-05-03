@@ -29,10 +29,10 @@ public interface ITradingDaysVariable extends ICalendarVariable {
     public static final String NAME="td";
 
     public static String defaultName(int dim){
-       if (dim == 1)
+//       if (dim == 1)
             return NAME;
-        else 
-            return NAME+'#'+dim;
+//        else 
+//            return NAME+'#'+dim;
     }
 
 }

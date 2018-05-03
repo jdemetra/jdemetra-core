@@ -22,13 +22,14 @@ import demetra.modelling.ComponentType;
 import demetra.timeseries.TimeSeriesDomain;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 
 /**
  *
  * @author Jean Palate
  * @param <D>
  */
-public class TsVariableGroup<D extends TimeSeriesDomain<?>> implements IUserTsVariable<D> {
+public class TsVariableGroup<D extends TimeSeriesDomain<?>> implements ITsVariable<D> {
 
     public static <E extends TimeSeriesDomain<?>> Builder<E> builder(Class<E> eclass) {
         return new Builder<>();
@@ -40,7 +41,6 @@ public class TsVariableGroup<D extends TimeSeriesDomain<?>> implements IUserTsVa
         private String name;
         private String desc;
         private List<ITsVariable> vars = new ArrayList<>();
-        private ComponentType type = ComponentType.Undefined;
 
         public Builder add(ITsVariable<E> var) {
             vars.add(var);
@@ -64,27 +64,20 @@ public class TsVariableGroup<D extends TimeSeriesDomain<?>> implements IUserTsVa
             return this;
         }
 
-        public Builder componentType(ComponentType type) {
-            this.type = type;
-            return this;
-        }
-
         public TsVariableGroup<E> build() {
             if (vars.isEmpty() || name == null) {
                 throw new IllegalArgumentException("Incomplete information");
             }
-            return new TsVariableGroup<>(vars.toArray(new ITsVariable[vars.size()]), name, desc == null ? name : desc, type);
+            return new TsVariableGroup<>(vars.toArray(new ITsVariable[vars.size()]), name, desc == null ? name : desc);
         }
     }
     private final ITsVariable[] vars;
     private final String name, desc;
-    private final ComponentType type;
 
-    public TsVariableGroup(ITsVariable[] vars, String name, String desc, ComponentType type) {
+    public TsVariableGroup(@Nonnull ITsVariable[] vars, @Nonnull String name, @Nonnull String desc) {
         this.vars = vars;
         this.name = name;
         this.desc = desc;
-        this.type = type;
     }
 
     @Override
@@ -129,12 +122,8 @@ public class TsVariableGroup<D extends TimeSeriesDomain<?>> implements IUserTsVa
     }
 
     @Override
-    public ComponentType getComponentType() {
-return type;    }
-
-    @Override
     public TsVariableGroup<D> rename(String newname) {
-        return new TsVariableGroup<>(vars, newname, desc.equals(name) ? newname : desc, type); 
-     }
+        return new TsVariableGroup<>(vars, newname, desc.equals(name) ? newname : desc);
+    }
 
 }

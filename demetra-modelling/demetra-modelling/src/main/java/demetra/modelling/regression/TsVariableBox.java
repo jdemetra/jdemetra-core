@@ -17,6 +17,7 @@
 package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
+import demetra.modelling.ComponentType;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
 import java.util.List;
@@ -67,12 +68,12 @@ public abstract class TsVariableBox<D extends TimeSeriesDomain<?>> implements IT
     }
 
     public static ITradingDaysVariable tradingDays(ITsVariable var) {
-        return new TradingDays(var, null);
+        return new TradingDays(var, ITradingDaysVariable.defaultName(var.getDim()));
     }
 
     static class TradingDays extends TsVariableBox<TsDomain> implements ITradingDaysVariable {
 
-        TradingDays(ITsVariable<TsDomain> var, String name) {
+        TradingDays(@Nonnull ITsVariable<TsDomain> var, @Nonnull String name) {
             super(var, name);
         }
 
@@ -83,12 +84,12 @@ public abstract class TsVariableBox<D extends TimeSeriesDomain<?>> implements IT
     }
 
     public static ILengthOfPeriodVariable leapYear(ITsVariable var) {
-        return new LeapYear(var, null);
+        return new LeapYear(var, ILengthOfPeriodVariable.NAME);
     }
 
     static class LeapYear extends TsVariableBox<TsDomain> implements ILengthOfPeriodVariable {
 
-        LeapYear(ITsVariable var, String name) {
+        LeapYear(@Nonnull ITsVariable var, @Nonnull String name) {
             super(var, name);
         }
 
@@ -113,4 +114,29 @@ public abstract class TsVariableBox<D extends TimeSeriesDomain<?>> implements IT
             return new MovingHoliday(getCore(), newName);
         }
     }
+
+    public static IUserTsVariable<TsDomain> user(@Nonnull ITsVariable var, @Nonnull String name, @Nonnull ComponentType type) {
+        return new User(var, name, type);
+    }
+
+    static class User extends TsVariableBox<TsDomain> implements IUserTsVariable<TsDomain> {
+
+        private final ComponentType type;
+
+        User(@Nonnull ITsVariable var, @Nonnull String name, ComponentType type) {
+            super(var, name);
+            this.type = type;
+        }
+
+        @Override
+        public User rename(String newName) {
+            return new User(getCore(), newName, type);
+        }
+
+        @Override
+        public ComponentType getComponentType() {
+            return type;
+        }
+    }
+
 }

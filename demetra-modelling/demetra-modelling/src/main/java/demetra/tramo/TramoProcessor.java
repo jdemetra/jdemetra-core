@@ -17,14 +17,18 @@
 package demetra.tramo;
 
 import demetra.data.AverageInterpolator;
+import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.modelling.regression.ModellingContext;
 import demetra.regarima.IRegArimaInitializer;
 import demetra.regarima.RegArimaModel;
+import demetra.regarima.ami.IArmaModule;
+import demetra.regarima.ami.IDifferencingModule;
 import demetra.regarima.ami.ILogLevelModule;
 import demetra.regarima.ami.IModelBuilder;
 import demetra.regarima.ami.IPreprocessor;
+import demetra.regarima.ami.IRegressionModule;
 import demetra.regarima.ami.ISeasonalityDetector;
 import demetra.regarima.ami.ModelDescription;
 import demetra.regarima.ami.RegArimaContext;
@@ -52,14 +56,12 @@ public class TramoProcessor implements IPreprocessor {
         private IModelBuilder modelBuilder = new DefaultModelBuilder();
         private ILogLevelModule<SarimaModel> transformation;
         private ISeasonalityDetector seas = new SeasonalityDetector();
+        private IRegressionModule regressionTest;
+        private IDifferencingModule differencing;
+        private IArmaModule arma;
 
         public Builder modelBuilder(@Nonnull IModelBuilder builder) {
             this.modelBuilder = builder;
-            return this;
-        }
-
-        public Builder logLevel(ILogLevelModule<SarimaModel> ll) {
-            this.transformation = ll;
             return this;
         }
 
@@ -68,10 +70,28 @@ public class TramoProcessor implements IPreprocessor {
             return this;
         }
 
+        public Builder logLevel(ILogLevelModule<SarimaModel> ll) {
+            this.transformation = ll;
+            return this;
+        }
+
+        public Builder differencing(IDifferencingModule diff) {
+            this.differencing = diff;
+            return this;
+        }
+
+        public Builder regressionTest(IRegressionModule regressionTest) {
+            this.regressionTest = regressionTest;
+            return this;
+        }
+
+        public Builder arma(IArmaModule arma) {
+            this.arma = arma;
+            return this;
+        }
+
         public TramoProcessor build() {
-            TramoProcessor processor = new TramoProcessor(modelBuilder,
-                    transformation, seas
-            );
+            TramoProcessor processor = new TramoProcessor(this);
             return processor;
         }
 
@@ -79,20 +99,15 @@ public class TramoProcessor implements IPreprocessor {
 
     public static TramoProcessor of(TramoSpec spec, ModellingContext context) {
         TramoSpecDecoder helper = new TramoSpecDecoder(spec, context);
-        return builder()
-                .modelBuilder(helper.modelBuider())
-                .logLevel(helper.transformation())
-                .seasonalityDetector(helper.seasonality())
-                .build();
-
+        return helper.buildProcessor();
     }
 
     private final IModelBuilder builder;
     private final ISeasonalityDetector seas;
     private final ILogLevelModule<SarimaModel> transformation;
+    private final IRegressionModule regressionTest;
 
 //    public IPreprocessingModule loglevelTest;
-//    public IPreprocessingModule regressionTest;
 //    public IOutliersDetectionModule outliers;
 //    public IPreprocessingModule differencing;
 //    public IPreprocessingModule autoModelling;
@@ -112,12 +127,11 @@ public class TramoProcessor implements IPreprocessor {
 //    private ModelStatistics refstats_;
 //    private boolean needOutliers_;
 //    private boolean needAutoModelling_;
-    private TramoProcessor(IModelBuilder builder,
-            final ILogLevelModule<SarimaModel> transformation,
-            final ISeasonalityDetector seas) {
-        this.builder = builder;
-        this.transformation = transformation;
-        this.seas = seas;
+    private TramoProcessor(Builder builder) {
+        this.builder = builder.modelBuilder;
+        this.transformation = builder.transformation;
+        this.seas = builder.seas;
+        this.regressionTest = builder.regressionTest;
     }
 
     @Override
@@ -148,6 +162,10 @@ public class TramoProcessor implements IPreprocessor {
         }
         if (transformation != null) {
             testTransformation(context);
+        }
+        if (regressionTest != null) {
+            regressionTest.test(context);
+//                addRegressionHistory(context);
         }
 
         // Step 1.
@@ -696,7 +714,7 @@ public class TramoProcessor implements IPreprocessor {
     private void testTransformation(RegArimaContext context) {
         ModelDescription model = context.getDescription();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class)
-                .y(model.transformedSeries().getValues())
+                .y(DoubleSequence.ofInternal(model.transformation().data))
                 .meanCorrection(true)
                 .arima(model.getArimaComponent().getModel())
                 .build();
@@ -710,14 +728,19 @@ public class TramoProcessor implements IPreprocessor {
         ModelDescription model = context.getDescription();
         int ifreq = model.getAnnualFrequency();
         if (ifreq > 1) {
-            ISeasonalityDetector.Seasonality s = seas.hasSeasonality(model.transformedSeries());
+            ISeasonalityDetector.Seasonality s = seas.hasSeasonality(model.getTransformedSeries());
 //            model.setSeasonality(s.getAsInt() >= 2);
             if (s.getAsInt() < 2) {
                 SarimaSpecification nspec = new SarimaSpecification(ifreq);
                 nspec.airline(false);
                 model.setSpecification(nspec);
                 context.setEstimation(null);
+                context.setSeasonal(false);
+            } else {
+                context.setSeasonal(true);
             }
+        } else {
+            context.setSeasonal(false);
         }
     }
 //

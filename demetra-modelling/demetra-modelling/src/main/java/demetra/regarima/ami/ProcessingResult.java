@@ -16,7 +16,7 @@
 */
 
 
-package demetra.modelling;
+package demetra.regarima.ami;
 
 import demetra.design.Development;
 
@@ -25,29 +25,14 @@ import demetra.design.Development;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public enum VariableStatus {
-    /**
-     * Pre-specified regression variable. Always belongs to the regression model
-     */
-    Prespecified,
+public enum ProcessingResult {
+    Failed,
+    Unprocessed,
+    Unchanged,
+    Changed;
 
-    /**
-     * Regression variable that is included in the model
-     */
-    Included,
-
-    /**
-     * Regression variable that is excluded from the model
-     */
-    Excluded;
-
-
-   public boolean isSelected(){
-        return this != Excluded;
-   }
-
-   public boolean needTesting(){
-       return this != Prespecified;
-   }
+    public boolean isProcessed(){
+        return this == Unchanged||this == Changed;
+    }
 
 }

@@ -31,6 +31,7 @@ public class RegArimaContext {
     
     private ModelDescription description;
     private ModelEstimation estimation;
+    private boolean seasonal;
     private final InformationSet log=new InformationSet();
 
 

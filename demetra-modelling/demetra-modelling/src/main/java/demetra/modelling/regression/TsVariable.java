@@ -24,13 +24,14 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDataSupplier;
 import demetra.timeseries.TsDomain;
 import java.util.List;
+import javax.annotation.Nonnull;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class TsVariable implements IUserTsVariable<TsDomain> {
+public class TsVariable implements ITsVariable<TsDomain> {
 
     public static Builder builder() {
         return new Builder();
@@ -42,7 +43,6 @@ public class TsVariable implements IUserTsVariable<TsDomain> {
         private String name;
         private String desc;
         private TsDataSupplier supplier;
-        private ComponentType type = ComponentType.Undefined;
         
         public Builder data(TsDataSupplier supplier){
             this.supplier=supplier;
@@ -59,33 +59,27 @@ public class TsVariable implements IUserTsVariable<TsDomain> {
             return this;
         }
 
-        public Builder componentType(ComponentType type){
-            this.type=type;
-            return this;
-        }
-        
         public TsVariable build(){
             if (supplier == null || name == null)
                 throw new IllegalArgumentException("Incomplete information");
-            return new TsVariable(supplier.get(), name, desc == null ? name : desc, type);
+            return new TsVariable(supplier.get(), name, desc == null ? name : desc);
         }
     }
 
     private final String name;
     private final String desc;
     private final TsData tsdata;
-    private ComponentType type = ComponentType.Undefined;
 
     /**
      *
      * @param tsdata
      * @param name
+     * @param desc
      */
-    private TsVariable(TsData tsdata, String name, String desc, ComponentType type) {
+    public TsVariable(@Nonnull TsData tsdata, @Nonnull String name, @Nonnull String desc) {
+        this.tsdata = tsdata;
         this.name = name;
         this.desc = desc;
-        this.tsdata = tsdata;
-        this.type = type;
     }
 
     /**
@@ -131,10 +125,6 @@ public class TsVariable implements IUserTsVariable<TsDomain> {
         return tsdata;
     }
 
-    public void setComponentType(ComponentType type) {
-        this.type = type;
-    }
-
     @Override
     public String getName() {
         return name;
@@ -142,17 +132,12 @@ public class TsVariable implements IUserTsVariable<TsDomain> {
 
     @Override
     public TsVariable rename(String newname) {
-        return new TsVariable(tsdata, newname, desc.equals(name) ? newname : desc, type); 
+        return new TsVariable(tsdata, newname, desc.equals(name) ? newname : desc); 
     }
 
     @Override
     public String getDescription(TsDomain context) {
         return desc;
-    }
-
-    @Override
-    public ComponentType getComponentType() {
-        return type;
     }
 
 }

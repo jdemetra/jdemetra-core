@@ -16,11 +16,7 @@
  */
 package demetra.modelling;
 
-import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
-import demetra.data.Parameter;
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
 import demetra.modelling.regression.ICalendarVariable;
 import demetra.modelling.regression.IEasterVariable;
 import demetra.modelling.regression.ILengthOfPeriodVariable;
@@ -30,8 +26,6 @@ import demetra.modelling.regression.ITradingDaysVariable;
 import demetra.modelling.regression.ITsVariable;
 import demetra.modelling.regression.IUserTsVariable;
 import demetra.timeseries.TsDomain;
-import java.util.Collections;
-import javax.annotation.Nonnull;
 
 /**
  *
@@ -41,16 +35,16 @@ import javax.annotation.Nonnull;
 public final class Variable {
 
     private final ITsVariable<TsDomain> variable;
-    private final VariableStatus status;
+    private final boolean prespecified;
 
     /**
      *
      * @param variable Actual variable
-     * @param status
+     * @param prespecified
      */
-    public Variable(final ITsVariable<TsDomain> variable, final VariableStatus status) {
+    public Variable(final ITsVariable<TsDomain> variable, final boolean prespecified) {
         this.variable = variable;
-        this.status = status;
+        this.prespecified = prespecified;
     }
 
     public ITsVariable<TsDomain> getVariable() {
@@ -58,25 +52,14 @@ public final class Variable {
     }
 
     public boolean isPrespecified() {
-        return status == VariableStatus.Prespecified;
-    }
-
-    public Variable select(boolean select) {
-        switch (status) {
-            case Included:
-                return select ? this : new Variable(variable, VariableStatus.Excluded);
-            case Excluded:
-                return select ? new Variable(variable, VariableStatus.Included) : this;
-            default:
-                return this;
-        }
+        return prespecified;
     }
 
     public Variable rename(String name) {
         if (name.equals(variable.getName())) {
             return this;
         } else {
-            return new Variable(variable.rename(name), status);
+            return new Variable(variable.rename(name), prespecified);
         }
     }
 
@@ -86,8 +69,8 @@ public final class Variable {
     }
 
     public boolean isOutlier(boolean prespecified) {
-        return variable instanceof IOutlier && prespecified
-                == (status == VariableStatus.Prespecified);
+        return variable instanceof IOutlier && 
+                this.prespecified == prespecified;
     }
 
     public boolean isCalendar() {
