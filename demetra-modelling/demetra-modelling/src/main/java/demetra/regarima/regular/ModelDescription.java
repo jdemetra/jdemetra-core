@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.regarima.ami;
+package demetra.regarima.regular;
 
 import demetra.data.AverageInterpolator;
 import demetra.modelling.Variable;
@@ -30,6 +30,8 @@ import demetra.modelling.regression.ITsTransformation;
 import demetra.modelling.regression.ITsVariable;
 import demetra.modelling.regression.LengthOfPeriodTransformation;
 import demetra.regarima.RegArimaModel;
+import demetra.regarima.ami.SarimaComponent;
+import demetra.regarima.ami.TransformedSeries;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.timeseries.TsData;

@@ -5,6 +5,7 @@
  */
 package demetra.regarima.ami;
 
+import demetra.regarima.regular.RegArimaContext;
 import demetra.information.InformationSet;
 
 /**

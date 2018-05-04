@@ -13,22 +13,44 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
-
-package demetra.regarima.ami;
+ */
+package demetra.regarima.regular;
 
 import demetra.design.Development;
 import demetra.timeseries.TsData;
+import java.util.function.IntSupplier;
 
 /**
- * The pre-processing strategy will be in charge of the dynamic of the processing
- * It will call the different modules of the pre-processing in the suitable order.
+ *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
-public interface IPreprocessor {
-    PreprocessingModel process(TsData originalTs, RegArimaContext context);
-    
-    
+@Development(status = Development.Status.Exploratory)
+public interface ISeasonalityDetector {
+
+    public static enum Seasonality implements IntSupplier {
+
+        NotApplicable(-1),
+        NotObservable(0),
+        Weak(1),
+        Moderate(2),
+        Strong(3);
+
+        private final int value;
+
+        Seasonality(final int value) {
+            this.value = value;
+        }
+
+        /**
+         * Returns the value of this ParamValidation as an int.
+         *
+         * @return
+         */
+        @Override
+        public int getAsInt() {
+            return value;
+        }
+    }
+
+    Seasonality hasSeasonality(TsData data);
 }

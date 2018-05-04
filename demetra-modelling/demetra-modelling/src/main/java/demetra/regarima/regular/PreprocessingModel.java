@@ -14,27 +14,42 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
-package demetra.regarima.ami;
+package demetra.regarima.regular;
 
 import demetra.design.Development;
 import demetra.information.InformationSet;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.LikelihoodStatistics;
+import demetra.modelling.PreadjustmentVariable;
+import demetra.modelling.Variable;
+import demetra.sarima.SarimaModel;
+import demetra.timeseries.TsData;
+import demetra.timeseries.TsDomain;
+import demetra.timeseries.calendars.LengthOfPeriodType;
 
 /**
- *
+ * The pre-processing model contains all information on the estimated regarima model
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
 @lombok.Value
+@lombok.Builder
 public class PreprocessingModel  {
+    // Model description
+    private TsData originalSeries;
+    private TsDomain estimationDomain;
+    private boolean logTransformation;
+    private LengthOfPeriodType lpCorrection;
+    
+    private PreadjustmentVariable[] preadjustmentVariables;
+    private Variable[] variables;
+    private boolean meanCorrection;
+    private SarimaModel arima;
+    
+    // Model estimation
+    private ConcentratedLikelihood likelihood;
+    private LikelihoodStatistics likelihoodStatistics;
+    
 //
 //    public static ComponentType outlierComponent(OutlierType type) {
 //        switch (type) {
@@ -64,9 +79,9 @@ public class PreprocessingModel  {
 //        }
 //    }
 //
-    private ModelDescription description;
-    private ModelEstimation estimation;
-    private InformationSet information;
+//    private ModelDescription description;
+//    private ModelEstimation estimation;
+//    private InformationSet information;
 //    private List<ProcessingInformation> log;
 //
 //    public void backTransform(TsData s, boolean T, boolean S) {

@@ -16,19 +16,20 @@
 */
 
 
-package demetra.regarima.ami;
+package demetra.regarima.regular;
 
+import demetra.regarima.regular.PreprocessingModel;
 import demetra.design.Development;
+import demetra.timeseries.TsData;
 
 /**
- * The Initializer will make some preliminary transformation of the initial model
- * return by the model builder. More especially, it should give a first rapid estimation of the
- * missing values and - possibly - detect rapidly the main outliers
- * the preprocessing model.
+ * The pre-processing strategy will be in charge of the dynamic of the processing
+ * It will call the different modules of the pre-processing in the suitable order.
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public interface IRegArimaInitializer {
-
-     boolean initialize(RegArimaContext context);
+public interface IPreprocessor {
+    PreprocessingModel process(TsData originalTs, RegArimaContext context);
+    
+    
 }

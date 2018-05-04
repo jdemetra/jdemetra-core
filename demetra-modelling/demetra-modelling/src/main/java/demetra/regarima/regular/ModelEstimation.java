@@ -13,22 +13,29 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
-
-package demetra.regarima.ami;
+ */
+package demetra.regarima.regular;
 
 import demetra.design.Development;
-import demetra.information.InformationSet;
-import demetra.timeseries.TsData;
+import demetra.likelihood.LikelihoodStatistics;
+import demetra.regarima.RegArimaEstimation;
+import demetra.sarima.SarimaModel;
+import demetra.stats.tests.NiidTests;
 
 /**
- * The model builder will initialize the regression variables of
- * the preprocessing model.
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public interface IModelBuilder {
+@lombok.Value
+@lombok.Builder
+public class ModelEstimation {
 
-     ModelDescription build(TsData series, InformationSet log);
+    private double transformationCorrection;
+    private RegArimaEstimation<SarimaModel> estimation;
+    private LikelihoodStatistics statistics;
+    private NiidTests tests;
+    
+    
+
 }

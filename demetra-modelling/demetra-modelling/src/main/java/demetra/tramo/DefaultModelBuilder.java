@@ -6,8 +6,8 @@
 package demetra.tramo;
 
 import demetra.information.InformationSet;
-import demetra.regarima.ami.IModelBuilder;
-import demetra.regarima.ami.ModelDescription;
+import demetra.regarima.regular.IModelBuilder;
+import demetra.regarima.regular.ModelDescription;
 import demetra.timeseries.TsData;
 
 /**

@@ -14,8 +14,10 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.regarima.ami;
+package demetra.regarima.regular;
 
+import demetra.regarima.regular.ModelEstimation;
+import demetra.regarima.regular.ModelDescription;
 import demetra.design.Development;
 import demetra.information.InformationSet;
 import java.util.ArrayList;
@@ -47,9 +49,9 @@ public class RegArimaContext {
 //        }
 //    }
 //
-    public PreprocessingModel tmpModel() {
-        return new PreprocessingModel(description, estimation, log);
-    }
+//    public PreprocessingModel tmpModel() {
+//        return new PreprocessingModel(description, estimation, log);
+//    }
 
 //    public PreprocessingModel current(boolean update) {
 //        if (!update) {

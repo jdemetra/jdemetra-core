@@ -26,13 +26,14 @@ import demetra.regarima.RegArimaModel;
 import demetra.regarima.ami.IArmaModule;
 import demetra.regarima.ami.IDifferencingModule;
 import demetra.regarima.ami.ILogLevelModule;
-import demetra.regarima.ami.IModelBuilder;
-import demetra.regarima.ami.IPreprocessor;
+import demetra.regarima.regular.IModelBuilder;
+import demetra.regarima.ami.IOutliersDetectionModule;
+import demetra.regarima.regular.IPreprocessor;
 import demetra.regarima.ami.IRegressionModule;
-import demetra.regarima.ami.ISeasonalityDetector;
-import demetra.regarima.ami.ModelDescription;
-import demetra.regarima.ami.RegArimaContext;
-import demetra.regarima.ami.PreprocessingModel;
+import demetra.regarima.regular.ISeasonalityDetector;
+import demetra.regarima.regular.ModelDescription;
+import demetra.regarima.regular.RegArimaContext;
+import demetra.regarima.regular.PreprocessingModel;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.timeseries.TimeSelector;
@@ -59,6 +60,7 @@ public class TramoProcessor implements IPreprocessor {
         private IRegressionModule regressionTest;
         private IDifferencingModule differencing;
         private IArmaModule arma;
+        private IOutliersDetectionModule outliers;
 
         public Builder modelBuilder(@Nonnull IModelBuilder builder) {
             this.modelBuilder = builder;
@@ -90,6 +92,11 @@ public class TramoProcessor implements IPreprocessor {
             return this;
         }
 
+        public Builder outliers(IOutliersDetectionModule outliers) {
+            this.outliers = outliers;
+            return this;
+        }
+
         public TramoProcessor build() {
             TramoProcessor processor = new TramoProcessor(this);
             return processor;
@@ -106,6 +113,7 @@ public class TramoProcessor implements IPreprocessor {
     private final ISeasonalityDetector seas;
     private final ILogLevelModule<SarimaModel> transformation;
     private final IRegressionModule regressionTest;
+    private final IOutliersDetectionModule outliers;
 
 //    public IPreprocessingModule loglevelTest;
 //    public IOutliersDetectionModule outliers;
@@ -122,16 +130,18 @@ public class TramoProcessor implements IPreprocessor {
 //    private double pcr_ = .95, cpcr_;
 //    private boolean fal_ = false;
 //    private double tsig_ = 1;
-//    private int pass_ = 0, round_ = 0;
 //    private PreprocessingModel reference_;
 //    private ModelStatistics refstats_;
-//    private boolean needOutliers_;
-//    private boolean needAutoModelling_;
+    private int pass = 0, round = 0;
+    private boolean needOutliers;
+    private boolean needAutoModelling;
+
     private TramoProcessor(Builder builder) {
         this.builder = builder.modelBuilder;
         this.transformation = builder.transformation;
         this.seas = builder.seas;
         this.regressionTest = builder.regressionTest;
+        this.outliers = builder.outliers;
     }
 
     @Override
@@ -165,8 +175,8 @@ public class TramoProcessor implements IPreprocessor {
         }
         if (regressionTest != null) {
             regressionTest.test(context);
-//                addRegressionHistory(context);
         }
+        initProcessing();
 
         // Step 1.
         // Initial adjustments:
@@ -253,18 +263,11 @@ public class TramoProcessor implements IPreprocessor {
         }
     }
 
-//    private void initProcessing() {
-//        needOutliers_ = outliers != null;
-//        needAutoModelling_ = false;
-//        round_ = 0;
-////        if (!needOutliers_) {
-////            needAutoModelling_ = differencing != null;
-////            round_ = 1;
-////        } else {
-////            needAutoModelling_ = false;
-////            round_ = 0;
-////        }
-//    }
+    private void initProcessing() {
+        needOutliers = outliers != null;
+        needAutoModelling = false;
+        round = 0;
+    }
 //
 //    /**
 //     *
@@ -711,6 +714,7 @@ public class TramoProcessor implements IPreprocessor {
 //        return true;
 //    }
 //
+
     private void testTransformation(RegArimaContext context) {
         ModelDescription model = context.getDescription();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class)

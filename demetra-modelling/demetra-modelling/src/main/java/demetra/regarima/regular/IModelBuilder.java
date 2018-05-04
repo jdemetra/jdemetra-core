@@ -13,44 +13,23 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
- */
-package demetra.regarima.ami;
+*/
 
+
+package demetra.regarima.regular;
+
+import demetra.regarima.regular.ModelDescription;
 import demetra.design.Development;
+import demetra.information.InformationSet;
 import demetra.timeseries.TsData;
-import java.util.function.IntSupplier;
 
 /**
- *
+ * The model builder will initialize the regression variables of
+ * the preprocessing model.
  * @author Jean Palate
  */
-@Development(status = Development.Status.Exploratory)
-public interface ISeasonalityDetector {
+@Development(status = Development.Status.Preliminary)
+public interface IModelBuilder {
 
-    public static enum Seasonality implements IntSupplier {
-
-        NotApplicable(-1),
-        NotObservable(0),
-        Weak(1),
-        Moderate(2),
-        Strong(3);
-
-        private final int value;
-
-        Seasonality(final int value) {
-            this.value = value;
-        }
-
-        /**
-         * Returns the value of this ParamValidation as an int.
-         *
-         * @return
-         */
-        @Override
-        public int getAsInt() {
-            return value;
-        }
-    }
-
-    Seasonality hasSeasonality(TsData data);
+     ModelDescription build(TsData series, InformationSet log);
 }

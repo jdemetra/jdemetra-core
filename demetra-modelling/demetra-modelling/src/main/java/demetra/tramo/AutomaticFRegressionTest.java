@@ -27,9 +27,9 @@ import demetra.modelling.regression.ITradingDaysVariable;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.ami.IRegressionModule;
-import demetra.regarima.ami.ModelDescription;
+import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.ami.ProcessingResult;
-import demetra.regarima.ami.RegArimaContext;
+import demetra.regarima.regular.RegArimaContext;
 import demetra.regarima.ami.RegArimaUtility;
 
 /**
@@ -44,7 +44,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         return new Builder();
     }
 
-    @BuilderPattern(DefaultRegressionTest.class)
+    @BuilderPattern(AutomaticFRegressionTest.class)
     public static class Builder {
 
         private ITradingDaysVariable td, wd;

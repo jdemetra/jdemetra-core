@@ -16,7 +16,7 @@
  */
 package demetra.tramo;
 
-import demetra.regarima.ami.ISeasonalityDetector;
+import demetra.regarima.regular.ISeasonalityDetector;
 import demetra.stats.tests.StatisticalTest;
 import demetra.timeseries.TsData;
 

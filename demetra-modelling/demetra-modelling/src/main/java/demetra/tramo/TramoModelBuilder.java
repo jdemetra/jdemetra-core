@@ -41,8 +41,8 @@ import demetra.modelling.regression.TransitoryChange;
 import demetra.modelling.regression.TsVariable;
 import demetra.modelling.regression.TsVariableBox;
 import demetra.modelling.regression.TsVariableGroup;
-import demetra.regarima.ami.IModelBuilder;
-import demetra.regarima.ami.ModelDescription;
+import demetra.regarima.regular.IModelBuilder;
+import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.ami.SarimaComponent;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDataSupplier;
@@ -59,7 +59,7 @@ import java.util.Map;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class TramoModelBuilder implements IModelBuilder {
+class TramoModelBuilder implements IModelBuilder {
 
     private final TramoSpec spec;
     private final ModellingContext context;
