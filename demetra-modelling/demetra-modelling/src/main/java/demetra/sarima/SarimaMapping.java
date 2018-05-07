@@ -40,7 +40,7 @@ public class SarimaMapping implements IParametricMapping<SarimaModel> {
     /**
      *
      */
-    public final SarimaSpecification spec;
+    private final SarimaSpecification spec;
     private final double eps;
     private final boolean all;
 
@@ -308,7 +308,7 @@ public class SarimaMapping implements IParametricMapping<SarimaModel> {
         if (p.length() != spec.getParametersCount()) {
             throw new FunctionException(FunctionException.DIM_ERR);
         }
-        return SarimaModel.builder(spec).parameters(p).adjustOrders(false).build();
+        return SarimaModel.builder(spec).parameters(p).build();
     }
 
     @Override
@@ -427,5 +427,12 @@ public class SarimaMapping implements IParametricMapping<SarimaModel> {
     }
 
     public static final String PHI = "phi", BPHI = "bphi", TH = "th", BTH = "bth";
+
+    /**
+     * @return the spec
+     */
+    public SarimaSpecification getSpec() {
+        return spec;
+    }
 
 }

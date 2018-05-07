@@ -18,8 +18,10 @@
 
 package demetra.sarima;
 
+import demetra.data.DoubleSequence;
 import demetra.regarima.RegArmaModel;
 import demetra.design.Development;
+import demetra.maths.functions.IParametricMapping;
 import demetra.sarima.SarimaModel;
 
 /**
@@ -43,4 +45,6 @@ public interface IArmaInitializer {
     public static IArmaInitializer defaultInitializer(final double ar, final double ma){
         return regarma->SarimaModel.builder(regarma.getArma().specification()).setDefault(ar, ma).build();
     }
+    
+     
 }

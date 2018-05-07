@@ -49,7 +49,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
 
         private Function<SarimaModel, IParametricMapping<SarimaModel>> mappingProvider;
         private double eps = DEF_EPS, feps = DEF_INTERNAL_EPS;
-        private boolean ml = true, mt = false, cdf = true, fast=true;
+        private boolean ml = true, mt = false, cdf = true, fast = true;
         private StartingPoint start = StartingPoint.Multiple;
         private ISsqFunctionMinimizer min = new LevenbergMarquardtMinimizer();
 
@@ -77,7 +77,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
             this.fast = !exact;
             return this;
         }
-        
+
         public Builder useMaximumLikelihood(boolean ml) {
             this.ml = ml;
             return this;
@@ -103,7 +103,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         }
     }
 
-     public static enum StartingPoint {
+    public static enum StartingPoint {
 
         Zero,
         Default,
@@ -144,12 +144,13 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         this.mt = mt;
         this.cdf = cdf;
         this.start = start;
-        this.fast=fast;
+        this.fast = fast;
     }
 
     @Override
     public RegArimaEstimation<SarimaModel> process(RegArimaModel<SarimaModel> regs) {
-        IParametricMapping<SarimaModel> mapping = this.mappingProvider.apply(regs.arima());
+        SarimaModel current = regs.arima();
+        IParametricMapping<SarimaModel> mapping = this.mappingProvider.apply(current);
         if (mapping.getDim() == 0) {
             return new RegArimaEstimation(regs, ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regs), 0);
         }
@@ -218,14 +219,13 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         return optimize(regs, (SarimaModel) arima.stationaryTransformation().getStationaryModel());
     }
 
-    private RegArimaEstimation<SarimaModel>  optimize(RegArimaModel<SarimaModel> regs, SarimaModel start) {
+    private RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs, SarimaModel start) {
         IParametricMapping<SarimaModel> mapping = this.mappingProvider.apply(regs.arima());
         if (mapping.getDim() == 0) {
-            return new RegArimaEstimation<>(regs, 
-                    ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regs)
-                    , 0);
+            return new RegArimaEstimation<>(regs,
+                    ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regs), 0);
         }
-        RegArimaEstimation<SarimaModel> rslt = optimize(regs, start.parameters(), eps);
+        RegArimaEstimation<SarimaModel> rslt = optimize(regs, mapping.map(start), eps);
         if (rslt != null) {
             return finalProcessing(rslt);
         } else {
@@ -236,11 +236,13 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
     private RegArimaEstimation<SarimaModel> estimate(RegArimaModel<SarimaModel> regs, SarimaModel start) {
         IParametricMapping<SarimaModel> mapping = this.mappingProvider.apply(regs.arima());
         if (mapping.getDim() == 0) {
-            return new RegArimaEstimation<>(regs, 
-                    ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regs)
-                    , 0);
+            return new RegArimaEstimation<>(regs,
+                    ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regs), 0);
         }
-        return optimize(regs, start.parameters(), feps);
+        // we need to validate the parameters
+        DataBlock p = DataBlock.of(mapping.map(start));
+        mapping.validate(p);
+        return optimize(regs, p, feps);
     }
 
     private RegArimaEstimation<SarimaModel> finalProcessing(RegArimaEstimation<SarimaModel> estimation) {
@@ -290,9 +292,13 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
 
         // try the new model
         try {
-            IParametricMapping<SarimaModel> mapping = this.mappingProvider.apply(arima);
-            mapping.validate(parameters);
-            RegArimaEstimation<SarimaModel> nrslts = optimize(estimation.getModel(), parameters, eps);
+            SarimaModel narima = SarimaModel.builder(spec)
+                    .parameters(parameters)
+                    .build();
+            IParametricMapping<SarimaModel> mapping = this.mappingProvider.apply(narima);
+            DataBlock nparameters = DataBlock.of(mapping.map(narima));
+            mapping.validate(nparameters);
+            RegArimaEstimation<SarimaModel> nrslts = optimize(estimation.getModel(), nparameters, eps);
             if (nrslts.getConcentratedLikelihood().logLikelihood() > estimation.getConcentratedLikelihood().logLikelihood()) {
                 return nrslts;
             } else {
@@ -348,11 +354,15 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
 
         // try the new model
         try {
-            IParametricMapping<SarimaModel> mapping = this.mappingProvider.apply(arima);
-            mapping.validate(parameters);
-            RegArimaEstimation<SarimaModel> nestimation = optimize(estimation.getModel(), parameters, eps);
-            if (nestimation.getConcentratedLikelihood().logLikelihood() > estimation.getConcentratedLikelihood().logLikelihood()) {
-                return nestimation;
+            SarimaModel narima = SarimaModel.builder(spec)
+                    .parameters(parameters)
+                    .build();
+            IParametricMapping<SarimaModel> mapping = this.mappingProvider.apply(narima);
+            DataBlock nparameters = DataBlock.of(mapping.map(narima));
+            mapping.validate(nparameters);
+            RegArimaEstimation<SarimaModel> nrslts = optimize(estimation.getModel(), nparameters, eps);
+            if (nrslts.getConcentratedLikelihood().logLikelihood() > estimation.getConcentratedLikelihood().logLikelihood()) {
+                return nrslts;
             } else {
                 return estimation;
             }
@@ -378,15 +388,14 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
                 .parameters(rslt.getModel().getArma().parameters())
                 .build();
         RegArimaModel<SarimaModel> nmodel = RegArimaModel.of(regs, arima);
-        return new RegArimaEstimation(nmodel, ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(nmodel)
-                , new LogLikelihoodFunction.Point(llFunction(regs), rslt.getParameters(), rslt.getGradient(), rslt.getHessian()));
+        return new RegArimaEstimation(nmodel, ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(nmodel), new LogLikelihoodFunction.Point(llFunction(regs), rslt.getParameters(), rslt.getGradient(), rslt.getHessian()));
     }
-    
-    public LogLikelihoodFunction<RegArimaModel<SarimaModel>, ConcentratedLikelihood> llFunction(RegArimaModel<SarimaModel> regs){
+
+    public LogLikelihoodFunction<RegArimaModel<SarimaModel>, ConcentratedLikelihood> llFunction(RegArimaModel<SarimaModel> regs) {
         IParametricMapping<SarimaModel> mapping = mappingProvider.apply(regs.arima());
-        IParametricMapping<RegArimaModel<SarimaModel>> rmapping=new RegArimaMapping<>(mapping, regs);
-        Function<RegArimaModel<SarimaModel>, ConcentratedLikelihood> fn=model->ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model);
+        IParametricMapping<RegArimaModel<SarimaModel>> rmapping = new RegArimaMapping<>(mapping, regs);
+        Function<RegArimaModel<SarimaModel>, ConcentratedLikelihood> fn = model -> ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model);
         return new LogLikelihoodFunction(rmapping, fn);
     }
-    
+
 }

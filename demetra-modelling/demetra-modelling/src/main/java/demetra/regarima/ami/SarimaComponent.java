@@ -22,8 +22,11 @@ import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.design.Development;
 import demetra.design.NewObject;
+import demetra.maths.functions.IParametricMapping;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.polynomials.UnitRoots;
+import demetra.sarima.SarimaFixedMapping;
+import demetra.sarima.SarimaMapping;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import java.util.Arrays;
@@ -444,8 +447,7 @@ public class SarimaComponent extends AbstractArimaComponent implements Cloneable
      *
      * @return
      */
-    @NewObject
-    public boolean[] getFixedConstraints() {
+    private boolean[] fixedConstraints() {
         int n = getParametersCount();
         boolean[] fixed = new boolean[n];
         int j = 0;
@@ -486,8 +488,7 @@ public class SarimaComponent extends AbstractArimaComponent implements Cloneable
      *
      * @return
      */
-    @NewObject
-    public double[] getParameters() {
+    private double[] parameters() {
         int n = getParametersCount();
         double[] p = new double[n];
         int j = 0;
@@ -605,4 +606,14 @@ public class SarimaComponent extends AbstractArimaComponent implements Cloneable
         hash = 97 * hash + Arrays.deepHashCode(this.btheta);
         return hash;
     }
+    
+        public IParametricMapping<SarimaModel> defaultMapping() {
+        if (getFixedParametersCount() == 0) {
+            return SarimaMapping.of(getSpecification());
+        } else {
+            return new SarimaFixedMapping(getSpecification(), DoubleSequence.ofInternal(parameters()), fixedConstraints());
+        }
+    }
+
+
 }

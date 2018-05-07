@@ -39,13 +39,15 @@ import java.util.function.Function;
  */
 @Development(status = Development.Status.Alpha)
 public class GlsSarimaProcessor implements IRegArimaProcessor<SarimaModel>{
+    
+    public static final double DEF_EPS=1e-7;
 
     @BuilderPattern(GlsSarimaProcessor.class)
     public static class Builder {
 
         private Function<SarimaModel, IParametricMapping<SarimaModel>> mappingProvider;
         private IArmaInitializer initializer;
-        private double eps = 1e-9;
+        private double eps = DEF_EPS;
         private ISsqFunctionMinimizer min;
         private boolean ml = true, mt = false, fast=true;
 

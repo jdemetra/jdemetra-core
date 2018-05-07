@@ -23,6 +23,7 @@ import demetra.likelihood.LikelihoodStatistics;
 import demetra.modelling.PreadjustmentVariable;
 import demetra.modelling.Variable;
 import demetra.sarima.SarimaModel;
+import demetra.stats.tests.NiidTests;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.LengthOfPeriodType;

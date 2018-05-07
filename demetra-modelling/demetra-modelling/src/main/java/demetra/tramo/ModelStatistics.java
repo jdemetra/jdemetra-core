@@ -14,49 +14,69 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.regarima.regular;
+package demetra.tramo;
 
+import demetra.data.DoubleSequence;
 import demetra.design.Development;
+import demetra.likelihood.LikelihoodStatistics;
+import demetra.regarima.regular.PreprocessingModel;
+import java.util.Arrays;
 
 
 /**
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
+@lombok.Value
+@lombok.Builder
 public class ModelStatistics {
 
-//    public final int outliers;
-//    public final int nz;
-//    public final int neffective;
-//    public final double bic;
-//    public final double se;
-//    public final double ljungBox;
-//    public final double ljungBoxPvalue;
-//    public final double seasLjungBox;
-//    public final double seasLjungBoxPvalue;
-//    public final double skewnessAbsvalue;
-//    public final double skewnessPvalue;
-//    public final boolean stableMean, stableVar;
-//    
-//    public int getStabilityScore(){
-//        int s=0;
-//        if (! stableMean)
-//            s=1;
-//        if (! stableVar)
-//            s+=2;
-//        return s;
-//    }
-//
-//    public ModelStatistics(PreprocessingModel m) {
-//        outliers = m.description.getOutliers().size();
-//        nz = m.description.getY().length;
+    private int outliersCount;
+    private int observationsCount;
+    private int effectiveObservationsCount;
+    private double bic;
+    private double se;
+    private double ljungBox;
+    private double ljungBoxPvalue;
+    private double seasonalLjungBox;
+    private double seasonalLjungBoxPvalue;
+    private double skewnessAbsvalue;
+    private double skewnessPvalue;
+    private boolean stableMean, stableVariance;
+    
+    private static ModelStatisticsBuilder builder(){
+        return new ModelStatisticsBuilder();
+    }
+    
+    public int getStabilityScore(){
+        int s=0;
+        if (! stableMean)
+            s=1;
+        if (! stableVariance)
+            s+=2;
+        return s;
+    }
+
+    public static ModelStatistics of(PreprocessingModel m) {
+        LikelihoodStatistics stats = m.getLikelihoodStatistics();
+        DoubleSequence e = m.getLikelihood().e();
+        return builder()
+                .outliersCount((int) Arrays.stream(m.getVariables()).filter(var->var.isOutlier(false)).count())
+                .observationsCount(stats.getObservationsCount())
+                .effectiveObservationsCount(stats.getEffectiveObservationsCount())
+                .bic(stats.getBICC())
+                .se(Math.sqrt(stats.getSsqErr() / (stats.getEffectiveObservationsCount() - stats.getEstimatedParametersCount() + 1)))
+                .build();
+        
+//        outliersCount = m.description.getOutliers().size();
+//        observationsCount = m.description.getY().length;
 //        RegArimaEstimation<SarimaModel> est = new RegArimaEstimation<>(m.estimation.getRegArima(),
 //                m.estimation.getLikelihood());
 //        int nhp = m.description.getArimaComponent().getFreeParametersCount();
 //        LikelihoodStatistics stats = est.statistics(nhp, 0);
 //        bic = stats.BICC;
 //        se = Math.sqrt(stats.SsqErr / (stats.effectiveObservationsCount - stats.estimatedParametersCount + 1));
-//        neffective = stats.effectiveObservationsCount;
+//        effectiveObservationsCount = stats.effectiveObservationsCount;
 //        SarimaSpecification spec = est.model.getArima().getSpecification();
 //        int n = TramoProcessor.calcLBLength(spec.getFrequency());
 //
@@ -91,15 +111,15 @@ public class ModelStatistics {
 //            lbs.usePositiveAc(true);
 //            lbs.test(res);
 //            if (lbs.isValid()) {
-//                seasLjungBox = lbs.getValue();
-//                seasLjungBoxPvalue = lbs.getPValue();
+//                seasonalLjungBox = lbs.getValue();
+//                seasonalLjungBoxPvalue = lbs.getPValue();
 //            } else {
-//                seasLjungBox = 0;
-//                seasLjungBoxPvalue = 0;
+//                seasonalLjungBox = 0;
+//                seasonalLjungBoxPvalue = 0;
 //            }
 //        } else {
-//            seasLjungBox = 0;
-//            seasLjungBoxPvalue = 0;
+//            seasonalLjungBox = 0;
+//            seasonalLjungBoxPvalue = 0;
 //        }
 //        // Stability tests
 //        StabilityTest stfull = new StabilityTest();
@@ -118,20 +138,7 @@ public class ModelStatistics {
 //            } 
 //        }
 //        stableMean=samemean;
-//        stableVar=samevar;
-//    }
-//
-//    @Override
-//    public String toString() {
-//        StringBuilder builder = new StringBuilder();
-//        builder.append("nz=").append(nz).append((System.lineSeparator()));
-//        builder.append("effective nobs=").append(neffective).append((System.lineSeparator()));
-//        builder.append("outliers=").append(outliers).append((System.lineSeparator()));
-//        builder.append("bic=").append(bic).append((System.lineSeparator()));
-//        builder.append("se=").append(se).append((System.lineSeparator()));
-//        builder.append("Q=").append(ljungBox).append(" (pvalue=").append(ljungBoxPvalue).append((")\r\n"));
-//        builder.append("Qs=").append(seasLjungBox).append(" (pvalue=").append(seasLjungBoxPvalue);
-//
-//        return builder.toString();
-//    }
-}
+//        stableVariance=samevar;
+    }
+
+ }
