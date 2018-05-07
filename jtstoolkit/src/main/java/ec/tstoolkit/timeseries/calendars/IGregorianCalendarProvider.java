@@ -54,5 +54,12 @@ public interface IGregorianCalendarProvider {
 
     String getDescription(TradingDaysType dtype, int idx);
 
-
+    
+    /**
+     * Creates a copy of this calendar by replacing its manager.
+     *
+     * @param manager a non-null manager
+     * @return a non-null calendar
+     */
+    IGregorianCalendarProvider withCalendarManager(GregorianCalendarManager manager);
 }

@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.timeseries.calendars;
 
 import ec.tstoolkit.algorithm.ProcessingContext;
@@ -42,7 +41,7 @@ public class ChainedGregorianCalendarProvider implements IGregorianCalendarProvi
         this.second = second;
         this.calendarManager = new WeakReference(ProcessingContext.getActiveContext().getGregorianCalendars());
     }
-    
+
     public ChainedGregorianCalendarProvider(GregorianCalendarManager calendarManager, String first, Day breakDay, String second) {
         this.first = first;
         this.breakDay = breakDay;
@@ -64,15 +63,16 @@ public class ChainedGregorianCalendarProvider implements IGregorianCalendarProvi
     @Override
     @Deprecated
     public void calendarData(TradingDaysType dtype, TsDomain domain, List<DataBlock> buffer, int start) {
-        calendarData(dtype, domain, buffer.subList(start, start+count(dtype)));
+        calendarData(dtype, domain, buffer.subList(start, start + count(dtype)));
     }
-    
+
     @Override
     public void calendarData(TradingDaysType dtype, TsDomain domain, List<DataBlock> buffer) {
         int nvars = count(dtype);
-        GregorianCalendarManager mgr=calendarManager.get();
-        if (mgr == null)
+        GregorianCalendarManager mgr = calendarManager.get();
+        if (mgr == null) {
             return;
+        }
         if (nvars == 0 || !mgr.contains(first) || !mgr.contains(second)) {
             return;
         }
@@ -107,10 +107,11 @@ public class ChainedGregorianCalendarProvider implements IGregorianCalendarProvi
 
     @Override
     public List<DataBlock> holidays(TradingDaysType dtype, TsDomain domain) {
-         GregorianCalendarManager mgr=calendarManager.get();
-        if (mgr == null)
+        GregorianCalendarManager mgr = calendarManager.get();
+        if (mgr == null) {
             return null;
-       int nvars = count(dtype);
+        }
+        int nvars = count(dtype);
         if (nvars == 0 || !mgr.contains(first) || !mgr.contains(second)) {
             return null;
         }
@@ -168,5 +169,10 @@ public class ChainedGregorianCalendarProvider implements IGregorianCalendarProvi
         hash = 97 * hash + Objects.hashCode(this.second);
         hash = 97 * hash + Objects.hashCode(this.breakDay);
         return hash;
+    }
+
+    @Override
+    public ChainedGregorianCalendarProvider withCalendarManager(GregorianCalendarManager manager) {
+        return new ChainedGregorianCalendarProvider(manager, first, breakDay, second);
     }
 }
