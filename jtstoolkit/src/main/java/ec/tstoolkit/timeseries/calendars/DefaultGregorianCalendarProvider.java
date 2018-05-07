@@ -153,4 +153,9 @@ public class DefaultGregorianCalendarProvider implements IGregorianCalendarProvi
                 return "";
         }
     }
+
+    @Override
+    public DefaultGregorianCalendarProvider withCalendarManager(GregorianCalendarManager manager) {
+        return this;
+    }
 }
