@@ -23,12 +23,17 @@ import demetra.data.DoubleSequence;
 import demetra.data.IDataInterpolator;
 import demetra.data.IDataTransformation.LogJacobian;
 import demetra.data.LogTransformation;
+import demetra.data.ParameterType;
 import demetra.design.Development;
+import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.SymmetricMatrix;
 import demetra.modelling.PreadjustmentVariable;
 import demetra.modelling.regression.IOutlier;
 import demetra.modelling.regression.ITsTransformation;
 import demetra.modelling.regression.ITsVariable;
 import demetra.modelling.regression.LengthOfPeriodTransformation;
+import demetra.regarima.IRegArimaProcessor;
+import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.ami.SarimaComponent;
 import demetra.regarima.ami.TransformedSeries;
@@ -205,7 +210,7 @@ public final class ModelDescription {
 
     public Variable variable(ITsVariable<TsDomain> v) {
         Optional<Variable> search = variables.stream()
-                .filter(var -> var.getVariable()==v)
+                .filter(var -> var.getVariable() == v)
                 .findFirst();
         return search.isPresent() ? search.get() : null;
     }
@@ -225,7 +230,7 @@ public final class ModelDescription {
 
     public boolean remove(ITsVariable v) {
         Optional<Variable> search = variables.stream()
-                .filter(var -> var.getVariable()==v)
+                .filter(var -> var.getVariable() == v)
                 .findFirst();
         if (search.isPresent()) {
             variables.remove(search.get());
@@ -269,7 +274,7 @@ public final class ModelDescription {
         return variables.stream()
                 .anyMatch(var -> var.getVariable().getName().equals(name))
                 || preadjustmentVariables.stream()
-                .anyMatch(var -> var.getVariable().getName().equals(name));
+                        .anyMatch(var -> var.getVariable().getName().equals(name));
     }
 
     public void setLogTransformation(boolean log) {
@@ -347,6 +352,14 @@ public final class ModelDescription {
 
     public SarimaSpecification getSpecification() {
         return arima.getSpecification();
+    }
+
+    public SarimaModel arima() {
+        if (regarima != null) {
+            return regarima.arima();
+        } else {
+            return arima.getModel();
+        }
     }
 
     public void setSpecification(SarimaSpecification spec) {
@@ -497,16 +510,6 @@ public final class ModelDescription {
         return series.getAnnualFrequency();
     }
 
-//    public RegArimaModel<SarimaModel> buildRegArima(IDataInterpolator interpolator) {
-//        TransformedSeries transformation = this.transformation(interpolator);
-//        List<DoubleSequence> x = createX();
-//        return RegArimaModel.builder(SarimaModel.class)
-//                .y(DoubleSequence.ofInternal(transformation.data))
-//                .arima(arima.getModel())
-//                .meanCorrection(arima.isMean())
-//                .addX(x)
-//                .build();
-//    }
     /**
      * @return the interpolator
      */
@@ -531,4 +534,59 @@ public final class ModelDescription {
         }
         return cur < regressionVariables.length ? pos : -1;
     }
+
+    public ModelEstimation estimate(IRegArimaProcessor<SarimaModel> processor) {
+        
+        RegArimaModel<SarimaModel> model = regarima();
+        int np = arima.getFreeParametersCount();
+        int allp=arima.getParametersCount();
+        RegArimaEstimation<SarimaModel> rslt;
+        if (arima.isDefined()) {
+            rslt = processor.optimize(model);
+        } else {
+            rslt = processor.process(model);
+        }
+        // update current description
+        regarima = rslt.getModel();
+        DoubleSequence score = DoubleSequence.ofInternal(rslt.getMax().getGradient());
+        Matrix hessian = rslt.getMax().getHessian();
+        Matrix J = hessian == null ? null : SymmetricMatrix.inverse(hessian);
+        if (np < allp) {
+            J = expand(J);
+        }
+        DataBlock stde=J.diagonal().deepClone();
+        stde.apply(a->a<=0 ? 0 : Math.sqrt(a));
+        arima.setFreeParameters(regarima.arima().parameters(), stde, ParameterType.Estimated);
+        
+        return ModelEstimation.builder()
+                .concentratedLikelihood(rslt.getConcentratedLikelihood())
+                .statistics(rslt.statistics(transformedSeries.getTransformationCorrection()))
+                .score(score)
+                .parametersCovariance(J)
+                .build();
+    }
+
+    private Matrix expand(Matrix cov) {
+        boolean[] fixedItems = arima.fixedConstraints();
+        int dim = cov.getColumnsCount();
+        int[] idx = new int[dim];
+        for (int i = 0, j = 0; i < fixedItems.length; ++i) {
+            if (!fixedItems[i]) {
+                idx[j++] = i;
+            }
+        }
+        Matrix ecov = Matrix.make(fixedItems.length, fixedItems.length);
+        for (int i = 0; i < dim; ++i) {
+            for (int j = 0; j <= i; ++j) {
+                double s = cov.get(i, j);
+                ecov.set(idx[i], idx[j], s);
+                if (i != j) {
+                    ecov.set(idx[j], idx[i], s);
+                }
+            }
+        }
+        return ecov;
+    }
+
+
 }

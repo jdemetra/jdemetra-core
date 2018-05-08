@@ -58,10 +58,10 @@ public class ModelStatistics {
     }
 
     public static ModelStatistics of(PreprocessingModel m) {
-        LikelihoodStatistics stats = m.getLikelihoodStatistics();
-        DoubleSequence e = m.getLikelihood().e();
+        LikelihoodStatistics stats = m.getEstimation().getStatistics();
+        DoubleSequence e = m.getEstimation().getConcentratedLikelihood().e();
         return builder()
-                .outliersCount((int) Arrays.stream(m.getVariables()).filter(var->var.isOutlier(false)).count())
+                .outliersCount((int) m.getDescription().variables().filter(var->var.isOutlier(false)).count())
                 .observationsCount(stats.getObservationsCount())
                 .effectiveObservationsCount(stats.getEffectiveObservationsCount())
                 .bic(stats.getBICC())

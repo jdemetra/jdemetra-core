@@ -20,6 +20,8 @@ import demetra.regarima.regular.ModelEstimation;
 import demetra.regarima.regular.ModelDescription;
 import demetra.design.Development;
 import demetra.information.InformationSet;
+import demetra.regarima.IRegArimaProcessor;
+import demetra.sarima.SarimaModel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +37,10 @@ public class RegArimaContext {
     private ModelEstimation estimation;
     private boolean seasonal;
     private final InformationSet log=new InformationSet();
+    
+    public void estimate(IRegArimaProcessor<SarimaModel> processor){
+        estimation=description.estimate(processor);
+    }
 
 
 //    public ModellingContext() {

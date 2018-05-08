@@ -447,7 +447,7 @@ public class SarimaComponent extends AbstractArimaComponent implements Cloneable
      *
      * @return
      */
-    private boolean[] fixedConstraints() {
+    public boolean[] fixedConstraints() {
         int n = getParametersCount();
         boolean[] fixed = new boolean[n];
         int j = 0;
@@ -523,7 +523,7 @@ public class SarimaComponent extends AbstractArimaComponent implements Cloneable
         return p;
     }
 
-    public void setParameters(DoubleSequence p, DoubleSequence stde, ParameterType type) {
+    public void setFreeParameters(DoubleSequence p, DoubleSequence stde, ParameterType type) {
         int j = 0;
         if (phi != null) {
             for (int i = 0; i < phi.length; ++i, ++j) {

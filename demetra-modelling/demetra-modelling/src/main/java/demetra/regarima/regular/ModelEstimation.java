@@ -16,8 +16,11 @@
  */
 package demetra.regarima.regular;
 
+import demetra.data.DoubleSequence;
 import demetra.design.Development;
+import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.LikelihoodStatistics;
+import demetra.maths.matrices.Matrix;
 import demetra.regarima.RegArimaEstimation;
 import demetra.sarima.SarimaModel;
 import demetra.stats.tests.NiidTests;
@@ -31,11 +34,9 @@ import demetra.stats.tests.NiidTests;
 @lombok.Builder
 public class ModelEstimation {
 
-    private double transformationCorrection;
-    private RegArimaEstimation<SarimaModel> estimation;
+    private ConcentratedLikelihood concentratedLikelihood;
     private LikelihoodStatistics statistics;
+    private DoubleSequence score;
+    private Matrix parametersCovariance;
     private NiidTests tests;
-    
-    
-
 }

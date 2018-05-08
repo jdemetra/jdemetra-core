@@ -34,22 +34,10 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
  */
 @Development(status = Development.Status.Preliminary)
 @lombok.Value
-@lombok.Builder
 public class PreprocessingModel  {
     // Model description
-    private TsData originalSeries;
-    private TsDomain estimationDomain;
-    private boolean logTransformation;
-    private LengthOfPeriodType lpCorrection;
-    
-    private PreadjustmentVariable[] preadjustmentVariables;
-    private Variable[] variables;
-    private boolean meanCorrection;
-    private SarimaModel arima;
-    
-    // Model estimation
-    private ConcentratedLikelihood likelihood;
-    private LikelihoodStatistics likelihoodStatistics;
+    private ModelDescription description;
+    private ModelEstimation estimation;
     
 //
 //    public static ComponentType outlierComponent(OutlierType type) {
