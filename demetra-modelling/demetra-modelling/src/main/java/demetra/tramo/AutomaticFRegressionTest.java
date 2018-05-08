@@ -136,7 +136,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         double SS0 = ll0.ssq(), SSmc0 = SS0 / (ll0.degreesOfFreedom() - nhp);
 
         if (td == null) {
-            return update(current, test0, ll0, nhp, false);
+            return update(current, test0, null, ll0, nhp);
         }
 
         //      Second case TD=TradindDay only
@@ -168,14 +168,14 @@ public class AutomaticFRegressionTest implements IRegressionModule {
             // add leap year
             ModelDescription all = createTestModel(context, td, lp);
             RegArimaEstimation regarima = processor.process(all.regarima());
-            return update(current, all, regarima.getConcentratedLikelihood(), nhp, true);
+            return update(current, all, td, regarima.getConcentratedLikelihood(), nhp);
         } else if (pFtd1 < 1 - fpvalue) {
-            return update(current, test0, ll0, nhp, false);
+            return update(current, test0, null, ll0, nhp);
         } else {
             // add leap year
             ModelDescription all = createTestModel(context, wd, lp);
             RegArimaEstimation regarima = processor.process(all.regarima());
-            return update(current, all, regarima.getConcentratedLikelihood(), nhp, true);
+            return update(current, all, wd, regarima.getConcentratedLikelihood(), nhp);
         }
     }
 
@@ -195,8 +195,10 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         return tmp;
     }
 
-    private ProcessingResult update(ModelDescription current, ModelDescription test, ConcentratedLikelihood ll, int nhp, boolean td) {
+    private ProcessingResult update(ModelDescription current, ModelDescription test, ITradingDaysVariable aTd, ConcentratedLikelihood ll, int nhp) {
         boolean changed = false;
+        if (aTd != null)
+                current.addVariable(new Variable(aTd, false));
         if (testMean) {
             boolean mean = Math.abs(ll.tstat(0, nhp, true)) > tmean;
             if (mean != current.getArimaComponent().isMean()) {
@@ -211,7 +213,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
                 changed = true;
             }
         }
-        if (td && lp != null) {
+        if (aTd!= null && lp != null) {
             int pos = 1 + test.findPosition(lp);
             if (Math.abs(ll.tstat(pos, nhp, true)) > tlp) {
                 current.addVariable(new Variable(lp, false));
@@ -220,5 +222,4 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         }
         return changed ? ProcessingResult.Changed : ProcessingResult.Unchanged;
     }
-
 }

@@ -14,17 +14,17 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tramo;
+package demetra.x12;
 
-import demetra.tramo.TramoProcessor;
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
 import demetra.regarima.regular.RegArimaContext;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
+import demetra.tramo.TramoProcessor;
+import demetra.tramo.TramoSpec;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
-import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -32,11 +32,11 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate
  */
-public class TramoProcessorTest {
+public class X12PreprocessorTest {
     
     private final double[] data, datamissing;
     
-    public TramoProcessorTest() {
+    public X12PreprocessorTest() {
         data=Data.PROD.clone();
         datamissing=Data.PROD.clone();
         datamissing[2]=Double.NaN;
@@ -47,7 +47,7 @@ public class TramoProcessorTest {
 
     @Test
     public void testProdMissing() {
-        TramoProcessor processor=TramoProcessor.of(TramoSpec.TR5, null);
+        X12Preprocessor processor=X12Preprocessor.of(RegArimaSpec.RG5, null);
         TsPeriod start=TsPeriod.monthly(1967,1);
         TsData s=TsData.of(start, DoubleSequence.ofInternal(datamissing));
         processor.process(s, null);
@@ -55,14 +55,14 @@ public class TramoProcessorTest {
     
     @Test
     public void testProdLegacyMissing() {
-        IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR5.build();
+        IPreprocessor processor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.build();
         ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, datamissing, true);
         processor.process(s, null);
     }
     
     @Test
     public void testProd() {
-        TramoProcessor processor=TramoProcessor.of(TramoSpec.TRfull, null);
+        X12Preprocessor processor=X12Preprocessor.of(RegArimaSpec.RG5, null);
         TsPeriod start=TsPeriod.monthly(1967,1);
         TsData s=TsData.of(start, DoubleSequence.ofInternal(data));
         RegArimaContext context=new RegArimaContext();
@@ -76,26 +76,7 @@ public class TramoProcessorTest {
     
     @Test
     public void testProdLegacy() {
-        IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
-        ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
-        processor.process(s, null);
-    }
-    
-    @Test
-    public void testProdWald() {
-        TramoSpec nspec=new TramoSpec(TramoSpec.TRfull);
-        nspec.getRegression().getCalendar().getTradingDays().setAutomaticMethod(TradingDaysSpec.AutoMethod.WaldTest);
-        TramoProcessor processor=TramoProcessor.of(nspec, null);
-        TsPeriod start=TsPeriod.monthly(1967,1);
-        TsData s=TsData.of(start, DoubleSequence.ofInternal(data));
-        processor.process(s, null);
-    }
-    
-    @Test
-    public void testProdWaldLegacy() {
-        TramoSpecification nspec = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.clone();
-        nspec.getRegression().getCalendar().getTradingDays().setAutomaticMethod(ec.tstoolkit.modelling.arima.tramo.TradingDaysSpec.AutoMethod.WaldTest);
-        IPreprocessor processor = nspec.build();
+        IPreprocessor processor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.build();
         ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
         processor.process(s, null);
     }

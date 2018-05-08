@@ -40,8 +40,8 @@ public class RegressionSpec {
     private final ArrayList<InterventionVariableDefinition> interventions = new ArrayList<>();
     private final ArrayList<TsVariableDefinition> users = new ArrayList<>();
      // the maps with the coefficients use short names...
-    private Map<String, double[]> fcoeff = new LinkedHashMap<>();
-    private Map<String, double[]> coeff = new LinkedHashMap<>();
+    private final Map<String, double[]> fcoeff = new LinkedHashMap<>();
+    private final Map<String, double[]> coeff = new LinkedHashMap<>();
    
     public RegressionSpec(){
         calendar = new CalendarSpec();
@@ -53,6 +53,8 @@ public class RegressionSpec {
         ramps.addAll(other.ramps);
         interventions.addAll(other.interventions);
         users.addAll(other.users);
+        other.coeff.forEach(coeff::put);
+        other.fcoeff.forEach(fcoeff::put);
     }
 
     public void reset() {

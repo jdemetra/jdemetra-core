@@ -14,11 +14,12 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
-package demetra.tramo;
+package demetra.x12;
 
 import demetra.design.Development;
 import demetra.information.InformationSet;
 import demetra.modelling.PreadjustmentVariable;
+import demetra.modelling.RegressionTestSpec;
 import demetra.modelling.TransformationType;
 import demetra.modelling.Variable;
 import demetra.modelling.regression.AdditiveOutlier;
@@ -51,6 +52,7 @@ import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.simplets.TsDataToolkit;
+import demetra.x12.MovingHolidaySpec.Type;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -59,12 +61,12 @@ import java.util.Map;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-class TramoModelBuilder implements IModelBuilder {
+class X12ModelBuilder implements IModelBuilder {
 
-    private final TramoSpec spec;
+    private final RegArimaSpec spec;
     private final ModellingContext context;
 
-    public TramoModelBuilder(TramoSpec spec, ModellingContext context) {
+    public X12ModelBuilder(RegArimaSpec spec, ModellingContext context) {
         this.spec = spec;
         if (context != null) {
             this.context = context;
@@ -104,7 +106,7 @@ class TramoModelBuilder implements IModelBuilder {
             return;
         }
         Map<String, double[]> preadjustment = regSpec.getAllFixedCoefficients();
-        initializeCalendar(model, regSpec.getCalendar(), preadjustment);
+        initializeCalendar(model, regSpec, preadjustment);
         if (regSpec.getOutliersCount() > 0) {
             initializeOutliers(model, regSpec.getOutliers(), preadjustment);
         }
@@ -121,7 +123,7 @@ class TramoModelBuilder implements IModelBuilder {
 
     @Override
     public ModelDescription build(TsData series, InformationSet log) {
-        TsData nseries = TsDataToolkit.select(series, spec.getTransform().getSpan());
+        TsData nseries = TsDataToolkit.select(series, spec.getBasic().getSpan());
         ModelDescription cur = new ModelDescription(TsDataToolkit.select(nseries, spec.getEstimate().getSpan()));
 
         initializeTransformation(cur, spec.getTransform());
@@ -137,13 +139,13 @@ class TramoModelBuilder implements IModelBuilder {
         }
     }
 
-    private void initializeCalendar(ModelDescription model, CalendarSpec calendar, Map<String, double[]> preadjustment) {
+    private void initializeCalendar(ModelDescription model, RegressionSpec calendar, Map<String, double[]> preadjustment) {
         initializeTradingDays(model, calendar.getTradingDays(), preadjustment);
         initializeEaster(model, calendar.getEaster(), preadjustment);
     }
 
     private void initializeTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, double[]> preadjustment) {
-        if (!td.isUsed() || td.isTest()) {
+        if (!td.isUsed() || td.getTest() == RegressionTestSpec.Add) {
             return;
         }
         if (td.isStockTradingDays()) {
@@ -157,8 +159,8 @@ class TramoModelBuilder implements IModelBuilder {
         }
     }
 
-    private void initializeEaster(ModelDescription model, EasterSpec easter, Map<String, double[]> preadjustment) {
-        if (!easter.isUsed() || easter.isTest()) {
+    private void initializeEaster(ModelDescription model, MovingHolidaySpec easter, Map<String, double[]> preadjustment) {
+        if (easter == null || easter.getTest() == RegressionTestSpec.Add) {
             return;
         }
         add(model, easter(spec), preadjustment);
@@ -167,7 +169,7 @@ class TramoModelBuilder implements IModelBuilder {
     private void initializeOutliers(ModelDescription model, OutlierDefinition[] outliers, Map<String, double[]> preadjustment) {
         int freq = model.getAnnualFrequency();
         IOutlier<TsDomain>[] vars = new IOutlier[outliers.length];
-        TransitoryChange.Factory tc = new TransitoryChange.Factory(spec.getOutliers().getDeltaTC());
+        TransitoryChange.Factory tc = new TransitoryChange.Factory(spec.getOutliers().getMonthlyTCRate());
         PeriodicOutlier.Factory so = new PeriodicOutlier.Factory(freq, false);
         for (int i = 0; i < outliers.length; ++i) {
             String code = outliers[i].getCode();
@@ -178,7 +180,7 @@ class TramoModelBuilder implements IModelBuilder {
                     v = AdditiveOutlier.FACTORY.make(pos);
                     break;
                 case LevelShift.CODE:
-                    v = LevelShift.FACTORY_ZEROSTARTED.make(pos);
+                    v = LevelShift.FACTORY_ZEROENDED.make(pos);
                     break;
                 case PeriodicOutlier.CODE:
                     v = so.make(pos);
@@ -313,8 +315,8 @@ class TramoModelBuilder implements IModelBuilder {
 
     }
 
-    public static ITradingDaysVariable tradingDays(TramoSpec spec, ModellingContext context) {
-        TradingDaysSpec tdspec = spec.getRegression().getCalendar().getTradingDays();
+    public static ITradingDaysVariable tradingDays(RegArimaSpec spec, ModellingContext context) {
+        TradingDaysSpec tdspec = spec.getRegression().getTradingDays();
         if (!tdspec.isUsed()) {
             return null;
         }
@@ -329,8 +331,8 @@ class TramoModelBuilder implements IModelBuilder {
         }
     }
 
-    static ITradingDaysVariable td(TramoSpec spec, DayClustering dc, ModellingContext context) {
-        TradingDaysSpec tdspec = spec.getRegression().getCalendar().getTradingDays();
+    static ITradingDaysVariable td(RegArimaSpec spec, DayClustering dc, ModellingContext context) {
+        TradingDaysSpec tdspec = spec.getRegression().getTradingDays();
         if (!tdspec.isUsed()) {
             return null;
         }
@@ -363,11 +365,11 @@ class TramoModelBuilder implements IModelBuilder {
         for (int i = 0; i < vars.length; ++i) {
             TsDataSupplier provider = context.getTsVariable(userVariables[i]);
             if (provider == null) {
-                throw new TramoException(userVariables[i] + " not found");
+                throw new X12Exception(userVariables[i] + " not found");
             }
             TsData s = provider.get();
             if (s == null) {
-                throw new TramoException(userVariables[i] + " not found");
+                throw new X12Exception(userVariables[i] + " not found");
             }
             vars[i] = new TsVariable(s, userVariables[i], userVariables[i]);
         }
@@ -376,39 +378,28 @@ class TramoModelBuilder implements IModelBuilder {
     }
 
     public static ILengthOfPeriodVariable leapYear(TradingDaysSpec tdspec) {
-        if (!tdspec.isLeapYear()) {
+        if (tdspec.getLengthOfPeriod()==LengthOfPeriodType.None) {
             return null;
         } else {
             return new LengthOfPeriodVariable(LengthOfPeriodType.LeapYear);
         }
     }
 
-    public static IEasterVariable easter(TramoSpec spec) {
-        EasterSpec espec = spec.getRegression().getCalendar().getEaster();
-        if (!espec.isUsed()) {
+    public static IEasterVariable easter(RegArimaSpec spec) {
+        MovingHolidaySpec espec = spec.getRegression().getEaster();
+        if (espec==null) {
             return null;
         }
-        if (espec.isJulian()) {
+        if (espec.getType() == Type.JulianEaster) {
             return JulianEasterVariable.builder()
-                    .duration(espec.getDuration())
+                    .duration(espec.getW())
                     .gregorianDates(true)
                     .build();
         } else {
-            int endpos;
-            switch (espec.getOption()) {
-                case IncludeEaster:
-                    endpos = 0;
-                    break;
-                case IncludeEasterMonday:
-                    endpos = 1;
-                    break;
-                default:
-                    endpos = -1;
-            }
             return EasterVariable.builder()
-                    .duration(espec.getDuration())
+                    .duration(espec.getW())
                     .meanCorrection(EasterVariable.Correction.Simple)
-                    .endPosition(endpos)
+                    .endPosition(-1)
                     .build();
         }
     }

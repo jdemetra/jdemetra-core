@@ -193,7 +193,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
                
         ModelDescription model = createTestModel(context, tdsel, lpsel);
         RegArimaEstimation<SarimaModel> regarima = processor.process(model.regarima());
-        return update(current, model, regarima.getConcentratedLikelihood(), nhp, lpsel != null);
+        return update(current, model, tdsel, regarima.getConcentratedLikelihood(), nhp);
     }
 
     private ModelDescription createTestModel(RegArimaContext context, ITradingDaysVariable td, ILengthOfPeriodVariable lp) {
@@ -212,8 +212,10 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
         return tmp;
     }
 
-    private ProcessingResult update(ModelDescription current, ModelDescription test, ConcentratedLikelihood ll, int nhp, boolean td) {
+    private ProcessingResult update(ModelDescription current, ModelDescription test, ITradingDaysVariable aTd, ConcentratedLikelihood ll, int nhp) {
         boolean changed = false;
+        if (aTd != null)
+                current.addVariable(new Variable(aTd, false));
         if (testMean) {
             boolean mean = Math.abs(ll.tstat(0, nhp, true)) > tmean;
             if (mean != current.getArimaComponent().isMean()) {
@@ -228,7 +230,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
                 changed = true;
             }
         }
-        if (td && lp != null) {
+        if (aTd!= null && lp != null) {
             int pos = 1 + test.findPosition(lp);
             if (Math.abs(ll.tstat(pos, nhp, true)) > tlp) {
                 current.addVariable(new Variable(lp, false));
