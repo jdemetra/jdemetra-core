@@ -160,16 +160,16 @@ public class LogLevelModule implements ILogLevelModule<SarimaModel> {
     }
     
     @Override
-    public boolean process(RegArimaModel<SarimaModel> levelModel) {
+    public boolean process(RegArimaModel<SarimaModel> model) {
         IRegArimaProcessor processor = RegArimaUtility.processor(true, precision);
-        e = processor.process(levelModel);
+        e = processor.process(model);
         if (e != null) {
             level = Math.log(e.getConcentratedLikelihood().ssq()
                     * e.getConcentratedLikelihood().factor());
         }
 
         
-        double[] lx = levelModel.getY().toArray();
+        double[] lx = model.getY().toArray();
         slog = 0;
         for (int i = 0; i < lx.length; ++i) {
             if (lx[i] <= 0) {
@@ -181,7 +181,7 @@ public class LogLevelModule implements ILogLevelModule<SarimaModel> {
         slog /= lx.length;
 
         
-        RegArimaModel<SarimaModel> logModel = levelModel.toBuilder()
+        RegArimaModel<SarimaModel> logModel = model.toBuilder()
                 .y(DoubleSequence.ofInternal(lx))
                 .build();
         el = processor.process(logModel);

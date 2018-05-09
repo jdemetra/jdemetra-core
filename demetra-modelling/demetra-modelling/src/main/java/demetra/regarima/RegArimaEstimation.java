@@ -172,8 +172,7 @@ public class RegArimaEstimation<M extends IArimaModel> {
      * @return
      */
     public static <M extends IArimaModel> LogLikelihoodFunction<RegArimaModel<SarimaModel>, ConcentratedLikelihood>
-            concentratedLogLikelihoodFunction(Function<M, IParametricMapping<M>> mappingProvider, RegArimaModel<M> regs) {
-        IParametricMapping<M> mapping = mappingProvider.apply(regs.arima());
+            concentratedLogLikelihoodFunction(IArimaMapping<M> mapping, RegArimaModel<M> regs) {
         RegArimaMapping<M> rmapping = new RegArimaMapping<>(mapping, regs);
         Function<RegArimaModel<M>, ConcentratedLikelihood> fn = model -> ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model);
         return new LogLikelihoodFunction(rmapping, fn);

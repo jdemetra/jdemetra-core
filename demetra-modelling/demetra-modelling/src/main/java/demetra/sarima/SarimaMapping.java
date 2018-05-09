@@ -24,6 +24,7 @@ import demetra.maths.functions.FunctionException;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.polynomials.Polynomial;
+import demetra.regarima.IArimaMapping;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 
@@ -32,7 +33,7 @@ import demetra.sarima.SarimaSpecification;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class SarimaMapping implements IParametricMapping<SarimaModel> {
+public class SarimaMapping implements IArimaMapping<SarimaModel> {
 
     static final double MAX = 0.99999;
     public static final double STEP = Math.sqrt(2.220446e-16);
@@ -189,7 +190,7 @@ public class SarimaMapping implements IParametricMapping<SarimaModel> {
         return new SarimaMapping(spec, STEP, true);
     }
 
-    public static SarimaMapping stationary(final SarimaSpecification spec) {
+    public static SarimaMapping ofStationary(final SarimaSpecification spec) {
         SarimaSpecification nspec = spec.clone();
         nspec.setD(0);
         nspec.setBd(0);
@@ -433,6 +434,13 @@ public class SarimaMapping implements IParametricMapping<SarimaModel> {
      */
     public SarimaSpecification getSpec() {
         return spec;
+    }
+
+    @Override
+    public IArimaMapping<SarimaModel> stationaryMapping() {
+        if (spec.isStationary())
+            return this;
+        return ofStationary(spec);
     }
 
 }

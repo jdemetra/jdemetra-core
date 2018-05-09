@@ -38,7 +38,7 @@ public class SarimaFixedMappingTest {
         spec.airline(true);
         spec.setP(3);
         GlsSarimaProcessor processor = GlsSarimaProcessor.builder()
-                .mapping(model -> new SarimaFixedMapping(model.specification(), DoubleSequence.of(-.6, .2, -.3, -.3, -.6), new boolean[]{false, false, true, true, false}))
+                .mapping(new SarimaFixedMapping(spec, DoubleSequence.of(-.6, .2, -.3, -.3, -.6), new boolean[]{false, false, true, true, false}))
                 .precision(1e-9)
                 .build();
         RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class)
@@ -58,7 +58,7 @@ public class SarimaFixedMappingTest {
         spec.airline(true);
         spec.setP(3);
         RegSarimaProcessor processor = RegSarimaProcessor.builder()
-                .mapping(model -> new SarimaFixedMapping(model.specification(), DoubleSequence.of(-.6, .2, -.3, -.3, -.6), new boolean[]{false, false, true, true, false}))
+                .mapping(new SarimaFixedMapping(spec, DoubleSequence.of(-.6, .2, -.3, -.3, -.6), new boolean[]{false, false, true, true, false}))
                 .precision(1e-9)
                 .startingPoint(RegSarimaProcessor.StartingPoint.Default)
                 .build();

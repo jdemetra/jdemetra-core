@@ -25,6 +25,7 @@ import demetra.maths.functions.NumericalDerivatives;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.maths.functions.ssq.SsqProxyFunctionPoint;
 import demetra.maths.matrices.Matrix;
+import demetra.regarima.IArimaMapping;
 
 /**
  *
@@ -40,7 +41,7 @@ public class RegArmaProcessor {
         this.fast = fastDerivatives;
     }
 
-    public <S extends IArimaModel> RegArmaEstimation<S> compute(RegArmaModel<S> model, DoubleSequence start, IParametricMapping<S> mapping, ISsqFunctionMinimizer minimizer, int ndf) {
+    public <S extends IArimaModel> RegArmaEstimation<S> compute(RegArmaModel<S> model, DoubleSequence start, IArimaMapping<S> mapping, ISsqFunctionMinimizer minimizer, int ndf) {
         // step 1. Build the function
         RegArmaSsqFunction fn = RegArmaSsqFunction.builder(model.getY())
                 .variables(model.getX())

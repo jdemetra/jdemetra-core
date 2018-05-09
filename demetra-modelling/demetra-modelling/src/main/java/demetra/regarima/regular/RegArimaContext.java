@@ -21,6 +21,7 @@ import demetra.regarima.regular.ModelDescription;
 import demetra.design.Development;
 import demetra.information.InformationSet;
 import demetra.regarima.IRegArimaProcessor;
+import demetra.sarima.RegSarimaProcessor;
 import demetra.sarima.SarimaModel;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,17 +33,25 @@ import java.util.List;
 @Development(status = Development.Status.Preliminary)
 @lombok.Data
 public class RegArimaContext {
-    
+
     private ModelDescription description;
     private ModelEstimation estimation;
     private boolean seasonal;
-    private final InformationSet log=new InformationSet();
-    
-    public void estimate(IRegArimaProcessor<SarimaModel> processor){
-        estimation=description.estimate(processor);
+    private final InformationSet log = new InformationSet();
+
+    public void estimate(IRegArimaProcessor<SarimaModel> processor) {
+        estimation = description.estimate(processor);
     }
 
+    public void estimate(double precision) {
+        RegSarimaProcessor processor = RegSarimaProcessor.builder()
+                .precision(precision)
+                .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
+                .mapping(description.getArimaComponent().defaultMapping())
+                .build();
 
+        estimation = description.estimate(processor);
+    }
 //    public ModellingContext() {
 //        processingLog = new ArrayList<>();
 //    }

@@ -137,7 +137,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
     public ProcessingResult test(RegArimaContext context) {
 
         ModelDescription current = context.getDescription();
-        IRegArimaProcessor processor = RegArimaUtility.processor(true, 1e-7);
+        IRegArimaProcessor processor = RegArimaUtility.processor(current.getArimaComponent().defaultMapping(), true, 1e-7);
         // We compute the full model
         ModelDescription test6 = createTestModel(context, td, null);
         RegArimaEstimation<SarimaModel> regarima6 = processor.process(test6.regarima());
@@ -223,17 +223,17 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
                 changed = true;
             }
         }
-        if (easter != null) {
-            int pos = 1 + test.findPosition(easter);
-            if (Math.abs(ll.tstat(pos, nhp, true)) > teaster) {
-                current.addVariable(new Variable(easter, false));
-                changed = true;
-            }
-        }
         if (aTd!= null && lp != null) {
             int pos = 1 + test.findPosition(lp);
             if (Math.abs(ll.tstat(pos, nhp, true)) > tlp) {
                 current.addVariable(new Variable(lp, false));
+                changed = true;
+            }
+        }
+        if (easter != null) {
+            int pos = 1 + test.findPosition(easter);
+            if (Math.abs(ll.tstat(pos, nhp, true)) > teaster) {
+                current.addVariable(new Variable(easter, false));
                 changed = true;
             }
         }

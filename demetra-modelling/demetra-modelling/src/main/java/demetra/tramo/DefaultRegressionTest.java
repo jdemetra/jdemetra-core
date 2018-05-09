@@ -166,7 +166,7 @@ public class DefaultRegressionTest implements IRegressionModule {
         ModelDescription tmpModel = createTestModel(context);
         boolean changed = false;
         RegArimaModel<SarimaModel> regarima = tmpModel.regarima();
-        IRegArimaProcessor processor = RegArimaUtility.processor(true, 1e-5);
+        IRegArimaProcessor<SarimaModel> processor = RegArimaUtility.processor(tmpModel.getArimaComponent().defaultMapping(), true, 1e-5);
         RegArimaEstimation<SarimaModel> rslt = processor.process(regarima);
         ConcentratedLikelihood ll = rslt.getConcentratedLikelihood();
 

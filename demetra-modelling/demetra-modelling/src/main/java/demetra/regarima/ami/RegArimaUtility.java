@@ -22,9 +22,11 @@ import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.UnitRoots;
+import demetra.regarima.IArimaMapping;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaModel;
 import demetra.sarima.GlsSarimaProcessor;
+import demetra.sarima.SarimaMapping;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.internal.HannanRissanenInitializer;
@@ -36,8 +38,7 @@ import demetra.sarima.internal.HannanRissanenInitializer;
 @lombok.experimental.UtilityClass
 public class RegArimaUtility {
 
-    public IRegArimaProcessor processor(boolean ml, double precision) {
-        ISsqFunctionMinimizer minimizer = new LevenbergMarquardtMinimizer();
+    public IRegArimaProcessor<SarimaModel> processor(boolean ml, double precision) {
         HannanRissanenInitializer initializer = HannanRissanenInitializer.builder()
                 .stabilize(true)
                 .useDefaultIfFailed(true)
@@ -46,11 +47,24 @@ public class RegArimaUtility {
         return GlsSarimaProcessor.builder()
                 .initializer(initializer)
                 .useMaximumLikelihood(ml)
-                .minimizer(minimizer)
                 .precision(precision)
                 .build();
     }
 
+    public IRegArimaProcessor<SarimaModel> processor(IArimaMapping<SarimaModel> mapping, boolean ml, double precision) {
+        HannanRissanenInitializer initializer = HannanRissanenInitializer.builder()
+                .stabilize(true)
+                .useDefaultIfFailed(true)
+                .build();
+
+        return GlsSarimaProcessor.builder()
+                .mapping(mapping)
+                .initializer(initializer)
+                .useMaximumLikelihood(ml)
+                .precision(precision)
+                .build();
+    }
+    
     public RegArimaModel<SarimaModel> airlineModel(DoubleSequence data, boolean mean, int ifreq, boolean seas) {
         // use airline model with mean
         SarimaSpecification spec = new SarimaSpecification(ifreq);

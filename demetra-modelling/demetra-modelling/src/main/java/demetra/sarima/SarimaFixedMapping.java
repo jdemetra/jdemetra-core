@@ -25,13 +25,14 @@ import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.polynomials.Polynomial;
+import demetra.regarima.IArimaMapping;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class SarimaFixedMapping implements IParametricMapping<SarimaModel> {
+public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
 
     static final double REPS = 0.01;
     final SarimaMapping mapper;
@@ -377,5 +378,10 @@ public class SarimaFixedMapping implements IParametricMapping<SarimaModel> {
             }
         }
         return DoubleSequence.ofInternal(p);
+    }
+
+    @Override
+    public IArimaMapping<SarimaModel> stationaryMapping() {
+        return new SarimaFixedMapping(SarimaSpecification.stationary(mapper.getSpec()), DoubleSequence.ofInternal(parameters), this.fixedItems);
     }
 }

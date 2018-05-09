@@ -133,7 +133,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         RegArimaEstimation regarima0 = processor.process(test0.regarima());
         ConcentratedLikelihood ll0 = regarima0.getConcentratedLikelihood();
         int nhp = test0.getArimaComponent().getFreeParametersCount();
-        double SS0 = ll0.ssq(), SSmc0 = SS0 / (ll0.degreesOfFreedom() - nhp);
+        double SS0 = ll0.ssq();
 
         if (td == null) {
             return update(current, test0, null, ll0, nhp);
@@ -206,17 +206,17 @@ public class AutomaticFRegressionTest implements IRegressionModule {
                 changed = true;
             }
         }
-        if (easter != null) {
-            int pos = 1 + test.findPosition(easter);
-            if (Math.abs(ll.tstat(pos, nhp, true)) > teaster) {
-                current.addVariable(new Variable(easter, false));
-                changed = true;
-            }
-        }
         if (aTd!= null && lp != null) {
             int pos = 1 + test.findPosition(lp);
             if (Math.abs(ll.tstat(pos, nhp, true)) > tlp) {
                 current.addVariable(new Variable(lp, false));
+                changed = true;
+            }
+        }
+        if (easter != null) {
+            int pos = 1 + test.findPosition(easter);
+            if (Math.abs(ll.tstat(pos, nhp, true)) > teaster) {
+                current.addVariable(new Variable(easter, false));
                 changed = true;
             }
         }

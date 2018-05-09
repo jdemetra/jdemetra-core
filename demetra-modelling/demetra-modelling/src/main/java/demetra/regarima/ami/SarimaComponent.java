@@ -21,10 +21,9 @@ import demetra.data.DoubleSequence;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.design.Development;
-import demetra.design.NewObject;
-import demetra.maths.functions.IParametricMapping;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.polynomials.UnitRoots;
+import demetra.regarima.IArimaMapping;
 import demetra.sarima.SarimaFixedMapping;
 import demetra.sarima.SarimaMapping;
 import demetra.sarima.SarimaModel;
@@ -606,14 +605,13 @@ public class SarimaComponent extends AbstractArimaComponent implements Cloneable
         hash = 97 * hash + Arrays.deepHashCode(this.btheta);
         return hash;
     }
-    
-        public IParametricMapping<SarimaModel> defaultMapping() {
+
+    public IArimaMapping<SarimaModel> defaultMapping() {
         if (getFixedParametersCount() == 0) {
             return SarimaMapping.of(getSpecification());
         } else {
             return new SarimaFixedMapping(getSpecification(), DoubleSequence.ofInternal(parameters()), fixedConstraints());
         }
     }
-
 
 }

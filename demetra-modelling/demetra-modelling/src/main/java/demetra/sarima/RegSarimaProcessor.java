@@ -33,6 +33,7 @@ import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
+import demetra.regarima.IArimaMapping;
 import demetra.regarima.RegArimaMapping;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import java.util.function.Function;
@@ -47,14 +48,14 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
     @BuilderPattern(RegSarimaProcessor.class)
     public static class Builder {
 
-        private Function<SarimaModel, IParametricMapping<SarimaModel>> mappingProvider;
+        private IArimaMapping<SarimaModel> mapping;
         private double eps = DEF_EPS, feps = DEF_INTERNAL_EPS;
         private boolean ml = true, mt = false, cdf = true, fast = true;
         private StartingPoint start = StartingPoint.Multiple;
         private ISsqFunctionMinimizer min = new LevenbergMarquardtMinimizer();
 
-        public Builder mapping(Function<SarimaModel, IParametricMapping<SarimaModel>> mapping) {
-            this.mappingProvider = mapping;
+        public Builder mapping(IArimaMapping<SarimaModel> mapping) {
+            this.mapping = mapping;
             return this;
         }
 
@@ -99,7 +100,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         }
 
         public RegSarimaProcessor build() {
-            return new RegSarimaProcessor(this.mappingProvider, this.min, this.eps, this.feps, this.ml, this.start, this.cdf, this.mt, this.fast);
+            return new RegSarimaProcessor(this.mapping, this.min, this.eps, this.feps, this.ml, this.start, this.cdf, this.mt, this.fast);
         }
     }
 
@@ -116,7 +117,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
     }
 
     public static final double DEF_EPS = 1e-7, DEF_INTERNAL_EPS = 1e-4;
-    private final Function<SarimaModel, IParametricMapping<SarimaModel>> mappingProvider;
+    private final IArimaMapping<SarimaModel> mapping;
     private final double eps, feps;
     private final boolean ml, mt, cdf, fast;
     private final StartingPoint start;
@@ -130,13 +131,9 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         return start;
     }
 
-    public RegSarimaProcessor(Function<SarimaModel, IParametricMapping<SarimaModel>> mappingProvider, ISsqFunctionMinimizer min,
+    public RegSarimaProcessor(IArimaMapping<SarimaModel> mapping, ISsqFunctionMinimizer min,
             final double eps, final double feps, final boolean ml, final StartingPoint start, final boolean cdf, final boolean mt, final boolean fast) {
-        if (mappingProvider == null) {
-            this.mappingProvider = m -> SarimaMapping.stationary(m.specification());
-        } else {
-            this.mappingProvider = mappingProvider;
-        }
+        this.mapping = mapping;
         this.min = min;
         this.eps = eps;
         this.feps = feps;
@@ -150,53 +147,57 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
     @Override
     public RegArimaEstimation<SarimaModel> process(RegArimaModel<SarimaModel> regs) {
         SarimaModel current = regs.arima();
-        IParametricMapping<SarimaModel> mapping = this.mappingProvider.apply(current);
-        if (mapping.getDim() == 0) {
+        SarimaSpecification curSpec = current.specification();
+        if (curSpec.getParametersCount() == 0 || mapping.getDim() == 0) {
             return new RegArimaEstimation(regs, ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regs), 0);
         }
         SarimaModel mstart;
-        if (this.start == StartingPoint.HannanRissanen || this.start == StartingPoint.Multiple) {
-            HannanRissanenInitializer initializer = HannanRissanenInitializer.builder()
-                    .stabilize(true)
-                    .useDefaultIfFailed(true).build();
-            RegArmaModel<SarimaModel> dregs = regs.differencedModel();
+        switch (start) {
+            case HannanRissanen:
+            case Multiple:
+                HannanRissanenInitializer initializer = HannanRissanenInitializer.builder()
+                        .stabilize(true)
+                        .useDefaultIfFailed(true).build();
+                RegArmaModel<SarimaModel> dregs = regs.differencedModel();
+                SarimaModel starthr = initializer.initialize(dregs);
+                SarimaSpecification spec = starthr.specification();
+                mstart = starthr;
+                if (this.start == StartingPoint.Multiple) {
+                    RegArimaEstimation<SarimaModel> mhr = estimate(regs, starthr, feps);
+                    SarimaModel startdef = mhr.getModel().arima();
+                    if (spec.getP() > 0 && spec.getQ() > 0) {
+                        SarimaModel.Builder nstart = startdef.toBuilder();
+                        double p = startdef.theta(1) < 0 ? .9 : -.9;
+                        nstart.theta(1, p);
+                        for (int i = 1; i <= spec.getP(); ++i) {
+                            nstart.phi(i, 0);
+                        }
+                        for (int i = 2; i <= spec.getQ(); ++i) {
+                            nstart.theta(i, 0);
+                        }
+                        startdef = nstart.adjustOrders(false).build();
+                    }
 
-            SarimaModel starthr = initializer.initialize(dregs);
-            SarimaSpecification spec = starthr.specification();
-            mstart = starthr;
-            if (this.start == StartingPoint.Multiple) {
-                RegArimaEstimation<SarimaModel> mhr = estimate(regs, starthr);
-                SarimaModel startdef = mhr.getModel().arima();
-                if (spec.getP() > 0 && spec.getQ() > 0) {
-                    SarimaModel.Builder nstart = startdef.toBuilder();
-                    double p = startdef.theta(1) < 0 ? .9 : -.9;
-                    nstart.theta(1, p);
-                    for (int i = 1; i <= spec.getP(); ++i) {
-                        nstart.phi(i, 0);
-                    }
-                    for (int i = 2; i <= spec.getQ(); ++i) {
-                        nstart.theta(i, 0);
-                    }
-                    startdef = nstart.adjustOrders(false).build();
-                }
-
-                RegArimaEstimation<SarimaModel> mdef = estimate(regs, startdef);
-                if (mdef != null) {
-                    if (mhr.getConcentratedLikelihood().logLikelihood() < mdef.getConcentratedLikelihood().logLikelihood()) {
-                        mstart = (SarimaModel) mdef.getModel().arima().stationaryTransformation().getStationaryModel();
-                    } else {
-                        mstart = (SarimaModel) mhr.getModel().arima().stationaryTransformation().getStationaryModel();
+                    RegArimaEstimation<SarimaModel> mdef = estimate(regs, startdef, feps);
+                    if (mdef != null) {
+                        if (mhr.getConcentratedLikelihood().logLikelihood() < mdef.getConcentratedLikelihood().logLikelihood()) {
+                            mstart = (SarimaModel) mdef.getModel().arima().stationaryTransformation().getStationaryModel();
+                        } else {
+                            mstart = (SarimaModel) mhr.getModel().arima().stationaryTransformation().getStationaryModel();
+                        }
                     }
                 }
-            }
-        } else if (this.start == StartingPoint.Default) {
-            mstart = SarimaModel.builder(regs.arima().specification().doStationary())
-                    .setDefault().build();
-        } else {
-            mstart = SarimaModel.builder(regs.arima().specification().doStationary())
-                    .setDefault(0, 0).build();
+                break;
+            case Default:
+                mstart = SarimaModel.builder(regs.arima().specification().doStationary())
+                        .setDefault().build();
+                break;
+            default:
+                mstart = SarimaModel.builder(regs.arima().specification().doStationary())
+                        .setDefault(0, 0).build();
+                break;
         }
-        return optimize(regs, mstart);
+        return estimate(regs, mstart, eps);
     }
 
     public double getPreliminaryPrecision() {
@@ -210,39 +211,35 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
 
     @Override
     public RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs) {
-        IParametricMapping<SarimaModel> mapping = this.mappingProvider.apply(regs.arima());
         SarimaModel arima = regs.arima();
-        DataBlock p = DataBlock.of(mapping.map(arima));
-        if (mapping.validate(p) == ParamValidation.Changed) {
-            arima = mapping.map(p);
-        }
-        return optimize(regs, (SarimaModel) arima.stationaryTransformation().getStationaryModel());
+        return estimate(regs, (SarimaModel) arima.stationaryTransformation().getStationaryModel(), eps);
     }
 
-    private RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs, SarimaModel start) {
-        IParametricMapping<SarimaModel> mapping = this.mappingProvider.apply(regs.arima());
-        if (mapping.getDim() == 0) {
+//    private RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs, SarimaModel start, IArimaMapping<SarimaModel> curMapping) {
+//        if (curMapping.getDim() == 0) {
+//            return new RegArimaEstimation<>(regs,
+//                    ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regs), 0);
+//        }
+//        RegArimaEstimation<SarimaModel> rslt = optimize(regs, curMapping.map(start), curMapping, eps);
+//        if (rslt != null) {
+//            return finalProcessing(rslt, curMapping);
+//        } else {
+//            return null;
+//        }
+//    }
+    /**
+     *
+     * @param regs
+     * @param start Must be a stationary model !!
+     * @return
+     */
+    private RegArimaEstimation<SarimaModel> estimate(RegArimaModel<SarimaModel> regs, SarimaModel start, double precision) {
+        SarimaSpecification curSpec = regs.arima().specification();
+        if (curSpec.getParametersCount() == 0 || mapping.getDim() == 0) {
             return new RegArimaEstimation<>(regs,
                     ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regs), 0);
         }
-        RegArimaEstimation<SarimaModel> rslt = optimize(regs, mapping.map(start), eps);
-        if (rslt != null) {
-            return finalProcessing(rslt);
-        } else {
-            return null;
-        }
-    }
-
-    private RegArimaEstimation<SarimaModel> estimate(RegArimaModel<SarimaModel> regs, SarimaModel start) {
-        IParametricMapping<SarimaModel> mapping = this.mappingProvider.apply(regs.arima());
-        if (mapping.getDim() == 0) {
-            return new RegArimaEstimation<>(regs,
-                    ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regs), 0);
-        }
-        // we need to validate the parameters
-        DataBlock p = DataBlock.of(mapping.map(start));
-        mapping.validate(p);
-        return optimize(regs, p, feps);
+        return optimize(regs, start, eps, true);
     }
 
     private RegArimaEstimation<SarimaModel> finalProcessing(RegArimaEstimation<SarimaModel> estimation) {
@@ -292,13 +289,10 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
 
         // try the new model
         try {
-            SarimaModel narima = SarimaModel.builder(spec)
+            SarimaModel narima = SarimaModel.builder(SarimaSpecification.stationary(spec))
                     .parameters(parameters)
                     .build();
-            IParametricMapping<SarimaModel> mapping = this.mappingProvider.apply(narima);
-            DataBlock nparameters = DataBlock.of(mapping.map(narima));
-            mapping.validate(nparameters);
-            RegArimaEstimation<SarimaModel> nrslts = optimize(estimation.getModel(), nparameters, eps);
+            RegArimaEstimation<SarimaModel> nrslts = optimize(estimation.getModel(), narima, eps, false);
             if (nrslts.getConcentratedLikelihood().logLikelihood() > estimation.getConcentratedLikelihood().logLikelihood()) {
                 return nrslts;
             } else {
@@ -354,13 +348,10 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
 
         // try the new model
         try {
-            SarimaModel narima = SarimaModel.builder(spec)
+            SarimaModel narima = SarimaModel.builder(SarimaSpecification.stationary(spec))
                     .parameters(parameters)
                     .build();
-            IParametricMapping<SarimaModel> mapping = this.mappingProvider.apply(narima);
-            DataBlock nparameters = DataBlock.of(mapping.map(narima));
-            mapping.validate(nparameters);
-            RegArimaEstimation<SarimaModel> nrslts = optimize(estimation.getModel(), nparameters, eps);
+            RegArimaEstimation<SarimaModel> nrslts = optimize(estimation.getModel(), narima, eps, false);
             if (nrslts.getConcentratedLikelihood().logLikelihood() > estimation.getConcentratedLikelihood().logLikelihood()) {
                 return nrslts;
             } else {
@@ -372,30 +363,43 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
     }
     private static final double UR_LIMIT = .1;
 
-    private RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs, DoubleSequence start, double prec) {
+    /**
+     *
+     * @param regs
+     * @param start
+     * @param curMapping
+     * @param prec
+     * @return
+     */
+    private RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs, SarimaModel start, double precision, boolean finalProcessing) {
         RegArmaModel<SarimaModel> dmodel = regs.differencedModel();
         RegArmaProcessor processor = new RegArmaProcessor(ml, mt, fast);
+        IArimaMapping<SarimaModel> stationaryMapping = stationaryMapping(regs);
+        DataBlock p = DataBlock.of(stationaryMapping.map(start));
+        stationaryMapping.validate(p);
 
-        IParametricMapping<SarimaModel> mapping = mappingProvider.apply(dmodel.getArma());
         int ndf = dmodel.getY().length() - dmodel.getX().getColumnsCount();
         if (cdf) {
-            ndf -= mapping.getDim();
+            ndf -= stationaryMapping.getDim();
         }
-        min.setFunctionPrecision(prec);
-        RegArmaEstimation<SarimaModel> rslt = processor.compute(dmodel, start, mapping, min, ndf);
+        min.setFunctionPrecision(precision);
+        RegArmaEstimation<SarimaModel> rslt = processor.compute(dmodel, p, stationaryMapping, min, ndf);
 
         SarimaModel arima = SarimaModel.builder(regs.arima().specification())
                 .parameters(rslt.getModel().getArma().parameters())
                 .build();
         RegArimaModel<SarimaModel> nmodel = RegArimaModel.of(regs, arima);
-        return new RegArimaEstimation(nmodel, ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(nmodel), new LogLikelihoodFunction.Point(llFunction(regs), rslt.getParameters(), rslt.getGradient(), rslt.getHessian()));
+        RegArimaEstimation finalRslt = new RegArimaEstimation(nmodel, ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(nmodel), new LogLikelihoodFunction.Point(llFunction(regs), rslt.getParameters(), rslt.getGradient(), rslt.getHessian()));
+        return finalProcessing ? finalProcessing(finalRslt) : finalRslt;
     }
 
     public LogLikelihoodFunction<RegArimaModel<SarimaModel>, ConcentratedLikelihood> llFunction(RegArimaModel<SarimaModel> regs) {
-        IParametricMapping<SarimaModel> mapping = mappingProvider.apply(regs.arima());
-        IParametricMapping<RegArimaModel<SarimaModel>> rmapping = new RegArimaMapping<>(mapping, regs);
+        IParametricMapping<RegArimaModel<SarimaModel>> rmapping = new RegArimaMapping<>(stationaryMapping(regs), regs);
         Function<RegArimaModel<SarimaModel>, ConcentratedLikelihood> fn = model -> ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model);
         return new LogLikelihoodFunction(rmapping, fn);
     }
 
+    private IArimaMapping<SarimaModel> stationaryMapping(RegArimaModel<SarimaModel> regs) {
+        return mapping == null ? SarimaMapping.ofStationary(regs.arima().specification()) : mapping.stationaryMapping();
+    }
 }

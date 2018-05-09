@@ -32,6 +32,16 @@ public final class SarimaSpecification implements Cloneable {
     private final int period;
     private int p, d, q, bp, bd, bq;
     
+    public static SarimaSpecification stationary(SarimaSpecification spec){
+        SarimaSpecification sspec=new SarimaSpecification(spec.getPeriod());
+        sspec.p=spec.p;
+        sspec.q=spec.q;
+        sspec.bp=spec.bp;
+        sspec.bq=spec.bq;
+        return sspec;
+        
+    }
+    
     public static SarimaSpecification of(SarmaSpecification sspec, int d, int bd){
         SarimaSpecification spec=new SarimaSpecification(sspec.getPeriod());
         spec.p=sspec.getP();
@@ -122,6 +132,10 @@ public final class SarimaSpecification implements Cloneable {
         return bp == 0 && bq == 1 && bd == 1;
     }
 
+    public boolean isStationary() {
+        return d==0 && bd==0; 
+    }
+
     public boolean hasSeasonalPart() {
         return bp > 0 || bq > 0 || bd == 1;
     }
@@ -146,6 +160,7 @@ public final class SarimaSpecification implements Cloneable {
         }
         return builder.toString();
     }
+
 
 
 }
