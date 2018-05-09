@@ -54,6 +54,7 @@ public class OutliersDetectionModuleTest {
                     .criticalValue(3)
                     .build();
             RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
+            od.prepare(regarima.getObservationsCount());
             od.process(regarima);
             int[][] outliers = od.getOutliers();
         for (int i = 0; i < outliers.length; ++i) {
@@ -82,6 +83,7 @@ public class OutliersDetectionModuleTest {
                     .criticalValue(3)
                     .build();
             RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
+            od.prepare(regarima.getObservationsCount());
             od.process(regarima);
             int[][] outliers = od.getOutliers();
         for (int i = 0; i < outliers.length; ++i) {

@@ -14,10 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.regarima.ami;
+package demetra.regarima.regular;
 
-import demetra.arima.IArimaModel;
-import demetra.regarima.RegArimaModel;
+import demetra.regarima.ami.ProcessingResult;
 
 /**
  *
@@ -25,9 +24,7 @@ import demetra.regarima.RegArimaModel;
  * @param <M>
  */
 
-public interface ILogLevelModule<M extends IArimaModel> {
+public interface ILogLevelModule {
     
-    boolean process(RegArimaModel<M> model);
-    boolean isChoosingLog();
-    
+    ProcessingResult process(RegArimaContext context);
 }

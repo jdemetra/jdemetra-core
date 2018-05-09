@@ -37,6 +37,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.processing.IProcResults;
 import static demetra.r.AirlineDecomposition.ucm;
 import demetra.regarima.GlsArimaProcessor;
+import demetra.regarima.IArimaMapping;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.SsfData;
 import demetra.ucarima.UcarimaModel;
@@ -115,7 +116,7 @@ public class FractionalAirlineDecomposition {
         PeriodicMapping mapping = new PeriodicMapping(period, adjust, false);
         
         GlsArimaProcessor.Builder<ArimaModel> builder=GlsArimaProcessor.builder(ArimaModel.class);
-        builder.mapping(model-> new PeriodicMapping(period, adjust, model.isStationary()))
+        builder.mapping(mapping)
                 .minimizer(new LevenbergMarquardtMinimizer())
                 .precision(1e-12)
                 .useMaximumLikelihood(true)
@@ -159,14 +160,22 @@ public class FractionalAirlineDecomposition {
 
 }
 
-class PeriodicMapping implements IParametricMapping<ArimaModel> {
+class PeriodicMapping implements IArimaMapping<ArimaModel> {
 
     private final double f0, f1;
     private final int p0;
-    private boolean adjust = true;
-    protected boolean stationary;
+    private final boolean adjust;
+    private final boolean stationary;
 
-    PeriodicMapping(double period, boolean adjust, boolean stationary) {
+    private PeriodicMapping(double f0, double f1, int p0, boolean adjust, boolean stationary) {
+        this.f0 = f0;
+        this.f1 = f1;
+        this.p0 = p0;
+        this.adjust = adjust;
+        this.stationary = stationary;
+    }
+
+    public PeriodicMapping(double period, boolean adjust, boolean stationary) {
         this.adjust = adjust;
         this.stationary = stationary;
         if (adjust) {
@@ -278,22 +287,13 @@ class PeriodicMapping implements IParametricMapping<ArimaModel> {
         return "p" + idx;
     }
 
-    /**
-     * @return the adjust
-     */
-    public boolean isAdjust() {
-        return adjust;
-    }
-
-    /**
-     * @param adjust the adjust to set
-     */
-    public void setAdjust(boolean adjust) {
-        this.adjust = adjust;
-    }
-
     @Override
     public DoubleSequence getDefaultParameters() {
         return DoubleSequence.of(.9, .9);
+    }
+
+    @Override
+    public IArimaMapping<ArimaModel> stationaryMapping() {
+        return stationary ? this : new PeriodicMapping(f0, f1, p0, adjust, true);
     }
 }

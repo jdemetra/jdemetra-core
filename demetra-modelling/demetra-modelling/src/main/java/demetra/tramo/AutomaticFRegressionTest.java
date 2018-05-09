@@ -30,7 +30,7 @@ import demetra.regarima.ami.IRegressionModule;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.ami.ProcessingResult;
 import demetra.regarima.regular.RegArimaContext;
-import demetra.regarima.ami.RegArimaUtility;
+import demetra.regarima.RegArimaUtility;
 
 /**
  *
@@ -129,7 +129,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         ModelDescription current = context.getDescription();
 //      First case TD=0 or Just test EE
         ModelDescription test0 = createTestModel(context, null, null);
-        IRegArimaProcessor processor = RegArimaUtility.processor(true, 1e-7);
+        IRegArimaProcessor processor = TramoUtility.processor(true, 1e-7);
         RegArimaEstimation regarima0 = processor.process(test0.regarima());
         ConcentratedLikelihood ll0 = regarima0.getConcentratedLikelihood();
         int nhp = test0.getArimaComponent().getFreeParametersCount();

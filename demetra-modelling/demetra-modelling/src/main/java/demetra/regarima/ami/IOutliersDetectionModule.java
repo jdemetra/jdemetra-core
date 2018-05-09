@@ -27,14 +27,13 @@ import demetra.modelling.regression.IOutlier;
  */
 public interface IOutliersDetectionModule<T extends IArimaModel> {
 
-    /**
-     * Search outliers in the given RegArima model
-     *
-     * @param initialModel
-     * @return
-     */
-    boolean process(RegArimaModel<T> initialModel);
 
+    /**
+     * Set the range where the outliers will be searched for
+     *
+     * @param n Number of observations. Should be called before any other method
+     */
+    void prepare(int n);
     /**
      * Set the range where the outliers will be searched for
      *
@@ -44,29 +43,20 @@ public interface IOutliersDetectionModule<T extends IArimaModel> {
     void setBounds(int start, int end);
     
     /**
-     * Set the selectivity level of the outliers detection module.
-     * The initial ("normal") level is 0.
-     *
-     * @param level Selectivity level. 0 by default. Should be negative
-     */
-    void setSelectivity(int level);
-
-    /**
-     * Reduce the selectivity of the outliers detection module
-     *
-     * @return True if the selectivity has been successfully reduced
-     */
-    boolean reduceSelectivity();
-
-    int getSelectivity();
-
-    /**
      * Exclude the specified outlier (position and type)
      * @param pos
      * @param type 
      */
     void exclude(int pos, int type);
     
+    /**
+     * Search outliers in the given RegArima model
+     *
+     * @param initialModel
+     * @return
+     */
+    boolean process(RegArimaModel<T> initialModel);
+
     /**
      * Returns the detected outliers
      * @return 

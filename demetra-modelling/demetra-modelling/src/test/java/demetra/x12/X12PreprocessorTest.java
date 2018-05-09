@@ -25,6 +25,7 @@ import demetra.timeseries.TsPeriod;
 import demetra.tramo.TramoProcessor;
 import demetra.tramo.TramoSpec;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
+import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -62,21 +63,20 @@ public class X12PreprocessorTest {
     
     @Test
     public void testProd() {
-        X12Preprocessor processor=X12Preprocessor.of(RegArimaSpec.RG5, null);
+        RegArimaSpec spec=new RegArimaSpec(RegArimaSpec.RG5);
+        spec.getOutliers().setDefaultCriticalValue(3);
+        X12Preprocessor processor=X12Preprocessor.of(spec, null);
         TsPeriod start=TsPeriod.monthly(1967,1);
         TsData s=TsData.of(start, DoubleSequence.ofInternal(data));
         RegArimaContext context=new RegArimaContext();
         processor.process(s, context);
-        RegSarimaProcessor fp=RegSarimaProcessor.builder()
-                .precision(1e-9)
-                .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
-                .build();
-        context.estimate(fp);
+        context.estimate(1e-9);
     }
     
     @Test
     public void testProdLegacy() {
-        IPreprocessor processor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.build();
+        RegArimaSpecification spec = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.clone();spec.getOutliers().setDefaultCriticalValue(3);
+        IPreprocessor processor = spec.build();
         ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
         processor.process(s, null);
     }

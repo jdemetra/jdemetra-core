@@ -26,7 +26,7 @@ import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.ami.IArmaModule;
-import demetra.regarima.ami.RegArimaUtility;
+import demetra.regarima.RegArimaUtility;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.SarmaSpecification;
@@ -80,7 +80,7 @@ public class ArmaModule implements IArmaModule {
          * @param eps
          */
         public RegArmaBic(final DoubleSequence data, final SarmaSpecification spec, double eps) {
-            IRegArimaProcessor processor = RegArimaUtility.processor(true, eps);
+            IRegArimaProcessor processor = X12Utility.processor(true, eps);
             RegArimaModel<SarimaModel> model
                     = RegArimaModel.builder(SarimaModel.class)
                     .y(data)

@@ -131,10 +131,20 @@ public final class ModelDescription {
             int diff = arima.getDifferencingOrder();
             LogJacobian lj = new LogJacobian(diff, series.length());
             TsData tmp = series;
-            if (lpTransformation != LengthOfPeriodType.None) {
-                tmp = new LengthOfPeriodTransformation(lpTransformation).transform(tmp, lj);
+            int[] m;
+            if (interpolator != null && tmp.getValues().anyMatch(z -> Double.isNaN(z))) {
+                IntList missing = new IntList();
+                double[] data = interpolator.interpolate(tmp.getValues(), missing);
+                m = missing.isEmpty() ? null : missing.toArray();
+                tmp = TsData.ofInternal(series.getStart(), data);
+            } else {
+                m = null;
             }
+
             if (logTransformation) {
+                if (lpTransformation != LengthOfPeriodType.None) {
+                    tmp = new LengthOfPeriodTransformation(lpTransformation).transform(tmp, lj);
+                }
                 tmp = ITsTransformation.of(new LogTransformation()).transform(tmp, lj);
             }
 
@@ -146,20 +156,10 @@ public final class ModelDescription {
                 });
                 tmp = TsData.ofInternal(domain.getStartPeriod(), ndata.getStorage());
             }
-            int[] m;
-            double[] data;
-            if (interpolator != null) {
-                IntList missing = new IntList();
-                data = interpolator.interpolate(tmp.getValues(), missing);
-                m = missing.isEmpty() ? null : missing.toArray();
-            } else {
-                data = tmp.getValues().toArray();
-                m = null;
-            }
 
             transformedSeries = TransformedSeries.builder()
                     .transformationCorrection(lj.value)
-                    .data(data)
+                    .data(tmp.getValues().toArray())
                     .missing(m)
                     .build();
         }
@@ -287,6 +287,10 @@ public final class ModelDescription {
 
     public boolean isLogTransformation() {
         return this.logTransformation;
+    }
+
+    public boolean isAdjusted() {
+        return logTransformation && lpTransformation != LengthOfPeriodType.None;
     }
 
     private DoubleSequence[] getX(ITsVariable variable) {
@@ -431,6 +435,10 @@ public final class ModelDescription {
         }
     }
 
+    public LengthOfPeriodType getTransformation() {
+        return lpTransformation;
+    }
+
 //    public boolean updateMissing(IDataInterpolator interpolator) {
 //        if (missings != null) {
 //            return false;
@@ -536,10 +544,10 @@ public final class ModelDescription {
     }
 
     public ModelEstimation estimate(IRegArimaProcessor<SarimaModel> processor) {
-        
+
         RegArimaModel<SarimaModel> model = regarima();
         int np = arima.getFreeParametersCount();
-        int allp=arima.getParametersCount();
+        int allp = arima.getParametersCount();
         RegArimaEstimation<SarimaModel> rslt;
         if (arima.isDefined()) {
             rslt = processor.optimize(model);
@@ -554,10 +562,10 @@ public final class ModelDescription {
         if (np < allp) {
             J = expand(J);
         }
-        DataBlock stde=J.diagonal().deepClone();
-        stde.apply(a->a<=0 ? 0 : Math.sqrt(a));
+        DataBlock stde = J.diagonal().deepClone();
+        stde.apply(a -> a <= 0 ? 0 : Math.sqrt(a));
         arima.setFreeParameters(regarima.arima().parameters(), stde, ParameterType.Estimated);
-        
+
         return ModelEstimation.builder()
                 .concentratedLikelihood(rslt.getConcentratedLikelihood())
                 .statistics(rslt.statistics(transformedSeries.getTransformationCorrection()))
@@ -587,6 +595,5 @@ public final class ModelDescription {
         }
         return ecov;
     }
-
 
 }

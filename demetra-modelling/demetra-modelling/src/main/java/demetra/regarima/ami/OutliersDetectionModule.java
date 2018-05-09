@@ -135,9 +135,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
     private boolean exit;
     private int[] lastremoved;
 
-    private int selectivity;
-    private double cv, curcv;
-    private double pc = 0.12;
+    private double cv;
     public static final double MINCV = 2.0;
     private Consumer<int[]> addHook;
     private Consumer<int[]> removeHook;
@@ -200,12 +198,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
     public boolean process(RegArimaModel<T> initialModel) {
         clear();
         int n = initialModel.getY().length();
-        sod.setBounds(0, n);
-        sod.prepare(n);
         regarima = initialModel;
-        if (curcv == 0) {
-            curcv = calcCv();
-        }
         nhp = 0;
         if (!estimateModel(true)) {
             return false;
@@ -216,6 +209,11 @@ public class OutliersDetectionModule<T extends IArimaModel>
         } catch (RuntimeException err) {
             return false;
         }
+    }
+
+    @Override
+    public void prepare(int n) {
+        sod.prepare(n);
     }
 
     @Override
@@ -232,7 +230,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
             }
             round++;
             max = sod.getMaxTStat();
-            if (Math.abs(max) < curcv) {
+            if (Math.abs(max) < cv) {
                 break;
             }
             int type = sod.getMaxOutlierType();
@@ -276,7 +274,6 @@ public class OutliersDetectionModule<T extends IArimaModel>
         round = 0;
         lastremoved = null;
         tstats = null;
-        curcv = 0;
         // festim = true if the model has to be re-estimated
     }
 
@@ -300,7 +297,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
             }
         }
 
-        if (Math.abs(tstats[nx0 + imin]) >= curcv) {
+        if (Math.abs(tstats[nx0 + imin]) >= cv) {
             return true;
         }
         int[] toremove = outliers.get(imin);
@@ -360,50 +357,8 @@ public class OutliersDetectionModule<T extends IArimaModel>
         return cv;
     }
 
-    public double getPc() {
-        return pc;
-    }
-
-    public void setPc(double pc) {
-        this.pc = pc;
-    }
-
-    private double calcCv() {
-        double cv = this.cv;
-        if (cv == 0) {
-            cv = CriticalValueComputer.simpleComputer().applyAsDouble(regarima.getObservationsCount());
-        }
-        for (int i = 0; i < -selectivity; ++i) {
-            cv *= (1 - pc);
-        }
-        return Math.max(cv, MINCV);
-    }
-
-    @Override
-    public boolean reduceSelectivity() {
-        if (curcv == 0) {
-            return false;
-        }
-        --selectivity;
-        if (curcv == MINCV) {
-            return false;
-        }
-        curcv = Math.max(MINCV, curcv * (1 - pc));
-
-        return true;
-    }
-
-    @Override
-    public void setSelectivity(int level) {
-        if (selectivity != level) {
-            selectivity = level;
-            curcv = 0;
-        }
-    }
-
-    @Override
-    public int getSelectivity() {
-        return selectivity;
+    public static double calcCv(int nobs) {
+        return Math.max(CriticalValueComputer.simpleComputer().applyAsDouble(nobs), MINCV);
     }
 
     @Override

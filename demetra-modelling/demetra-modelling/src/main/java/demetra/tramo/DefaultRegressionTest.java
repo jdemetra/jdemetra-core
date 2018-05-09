@@ -30,7 +30,7 @@ import demetra.regarima.ami.IRegressionModule;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.ami.ProcessingResult;
 import demetra.regarima.regular.RegArimaContext;
-import demetra.regarima.ami.RegArimaUtility;
+import demetra.regarima.RegArimaUtility;
 import demetra.sarima.GlsSarimaProcessor;
 import demetra.sarima.SarimaModel;
 

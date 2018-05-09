@@ -27,7 +27,7 @@ import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.ami.IDifferencingModule;
-import demetra.regarima.ami.RegArimaUtility;
+import demetra.regarima.RegArimaUtility;
 import demetra.sarima.HannanRissanen;
 import demetra.sarima.SarimaMapping;
 import demetra.sarima.SarimaModel;
@@ -360,7 +360,7 @@ public class DifferencingModule implements IDifferencingModule {
 
         if (usedefault || ml || useml) {
             SarimaMapping.stabilize(lastModel);
-            IRegArimaProcessor processor = RegArimaUtility.processor(true, eps);
+            IRegArimaProcessor processor = TramoUtility.processor(true, eps);
             RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(data).arima(lastModel).build();
             RegArimaEstimation<SarimaModel> rslt = processor.optimize(regarima);
             if (rslt == null) {

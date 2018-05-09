@@ -33,6 +33,9 @@ import lombok.AccessLevel;
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TimeSelector implements Cloneable {
 
+    private static final TimeSelector ALL = new TimeSelector(SelectionType.All, null, null, 0, 0),
+            NONE = new TimeSelector(SelectionType.None, null, null, 0, 0);
+
     public static enum SelectionType {
         /**
          *
@@ -104,7 +107,7 @@ public class TimeSelector implements Cloneable {
      * @return
      */
     public static TimeSelector all() {
-        return new TimeSelector(SelectionType.All, null, null, 0, 0);
+        return ALL;
     }
 
     /**
@@ -169,7 +172,7 @@ public class TimeSelector implements Cloneable {
      * @return
      */
     public static TimeSelector none() {
-        return new TimeSelector(SelectionType.None, null, null, 0, 0);
+        return NONE;
     }
 
     /**

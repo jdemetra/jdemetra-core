@@ -23,21 +23,24 @@ import demetra.modelling.TransformationType;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
-import demetra.regarima.ami.RegArimaUtility;
+import demetra.regarima.ami.ProcessingResult;
+import demetra.regarima.RegArimaUtility;
 import demetra.sarima.SarimaModel;
-import demetra.regarima.ami.ILogLevelModule;
+import demetra.regarima.regular.ILogLevelModule;
+import demetra.regarima.regular.ModelDescription;
+import demetra.regarima.regular.RegArimaContext;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class LogLevelModule implements ILogLevelModule<SarimaModel> {
+public class LogLevelModule implements ILogLevelModule {
     
     public static Builder builder(){
         return new Builder();
     }
-    
+
     @BuilderPattern(LogLevelModule.class)
     public static class Builder {
         
@@ -134,7 +137,6 @@ public class LogLevelModule implements ILogLevelModule<SarimaModel> {
      *
      * @return
      */
-    @Override
     public boolean isChoosingLog() {
         return el == null ? false : log + logpreference < level;
     }
@@ -159,9 +161,8 @@ public class LogLevelModule implements ILogLevelModule<SarimaModel> {
         return process(RegArimaUtility.airlineModel(data, true, frequency, seas));
     }
     
-    @Override
     public boolean process(RegArimaModel<SarimaModel> model) {
-        IRegArimaProcessor processor = RegArimaUtility.processor(true, precision);
+        IRegArimaProcessor processor = TramoUtility.processor(true, precision);
         e = processor.process(model);
         if (e != null) {
             level = Math.log(e.getConcentratedLikelihood().ssq()
@@ -197,5 +198,24 @@ public class LogLevelModule implements ILogLevelModule<SarimaModel> {
     public TransformationType getTransformation() {
         return this.isChoosingLog() ? TransformationType.Log : TransformationType.None;
     }
+    
+    @Override
+    public ProcessingResult process(RegArimaContext context) {
+        ModelDescription desc = context.getDescription();
+        if (desc.isLogTransformation())
+            return ProcessingResult.Unprocessed;
+        double[] data=desc.transformation().getData();
+        if (! process(DoubleSequence.ofInternal(data), desc.getAnnualFrequency(), context.isSeasonal()))
+            return ProcessingResult.Failed;
+        if (isChoosingLog()){
+            desc.setLogTransformation(true);
+            context.setEstimation(null);
+            return ProcessingResult.Changed;
+        }else{
+            return ProcessingResult.Unchanged;
+        }
+    }
+    
+    
 
 }

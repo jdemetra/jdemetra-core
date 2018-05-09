@@ -80,7 +80,7 @@ class X12ModelBuilder implements IModelBuilder {
         boolean yearly = freq == 1;
         if (spec.isUsingAutoModel()) {
             model.setAirline(!yearly);
-            model.setMean(true);
+//            model.setMean(true);
         } else if (spec.getArima() == null) {
             model.setAirline(!yearly);
         } else {
@@ -163,7 +163,7 @@ class X12ModelBuilder implements IModelBuilder {
         if (easter == null || easter.getTest() == RegressionTestSpec.Add) {
             return;
         }
-        add(model, easter(spec), preadjustment);
+        add(model, easter(easter.getType(), easter.getW()), preadjustment);
     }
 
     private void initializeOutliers(ModelDescription model, OutlierDefinition[] outliers, Map<String, double[]> preadjustment) {
@@ -292,6 +292,11 @@ class X12ModelBuilder implements IModelBuilder {
     private void initializeDefaultTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, double[]> preadjustment) {
         add(model, defaultTradingDays(td), preadjustment);
         add(model, leapYear(td), preadjustment);
+        if (td.isAutoAdjust()) {
+            model.setTransformation(td.getLengthOfPeriod());
+        } else {
+            add(model, leapYear(td), preadjustment);
+        }
     }
 
     private void initializeStockTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, double[]> preadjustment) {
@@ -378,29 +383,28 @@ class X12ModelBuilder implements IModelBuilder {
     }
 
     public static ILengthOfPeriodVariable leapYear(TradingDaysSpec tdspec) {
-        if (tdspec.getLengthOfPeriod()==LengthOfPeriodType.None) {
+        if (tdspec.getLengthOfPeriod() == LengthOfPeriodType.None) {
             return null;
         } else {
-            return new LengthOfPeriodVariable(LengthOfPeriodType.LeapYear);
+            return new LengthOfPeriodVariable(tdspec.getLengthOfPeriod());
         }
     }
 
-    public static IEasterVariable easter(RegArimaSpec spec) {
-        MovingHolidaySpec espec = spec.getRegression().getEaster();
-        if (espec==null) {
-            return null;
-        }
-        if (espec.getType() == Type.JulianEaster) {
-            return JulianEasterVariable.builder()
-                    .duration(espec.getW())
-                    .gregorianDates(true)
-                    .build();
-        } else {
-            return EasterVariable.builder()
-                    .duration(espec.getW())
-                    .meanCorrection(EasterVariable.Correction.Simple)
-                    .endPosition(-1)
-                    .build();
+    public static IEasterVariable easter(Type type, int w) {
+        switch (type) {
+            case JulianEaster:
+                return JulianEasterVariable.builder()
+                        .duration(w)
+                        .gregorianDates(true)
+                        .build();
+            case Easter:
+                return EasterVariable.builder()
+                        .duration(w)
+                        .meanCorrection(EasterVariable.Correction.Simple)
+                        .endPosition(-1)
+                        .build();
+            default:
+                return null;
         }
     }
 }

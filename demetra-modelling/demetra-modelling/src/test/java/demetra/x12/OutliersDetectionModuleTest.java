@@ -5,6 +5,7 @@
  */
 package demetra.x12;
 
+import demetra.x12.internal.RawOutliersDetectionModule;
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
 import demetra.regarima.RegArimaModel;
@@ -34,11 +35,12 @@ public class OutliersDetectionModuleTest {
         spec.airline(true);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
 
-        OutliersDetectionModule od = OutliersDetectionModule.builder()
+        RawOutliersDetectionModule od = RawOutliersDetectionModule.builder()
                 .setAll()
                 .criticalValue(3)
                 .build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
+        od.prepare(regarima.getObservationsCount());
         od.process(regarima);
         int[][] outliers = od.getOutliers();
 //        for (int i = 0; i < outliers.length; ++i) {
@@ -58,7 +60,7 @@ public class OutliersDetectionModuleTest {
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
         System.out.println("WN");
         HannanRissanenInitializer hr = HannanRissanenInitializer.builder().build();
-        OutliersDetectionModule od = OutliersDetectionModule.builder()
+        RawOutliersDetectionModule od = RawOutliersDetectionModule.builder()
                 .setAll()
                 .criticalValue(3)
                 .build();
@@ -102,7 +104,7 @@ public class OutliersDetectionModuleTest {
             spec.airline(true);
             SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
 
-            OutliersDetectionModule od = OutliersDetectionModule.builder()
+            RawOutliersDetectionModule od = RawOutliersDetectionModule.builder()
                     .setAll()
                     .criticalValue(3)
                     .build();

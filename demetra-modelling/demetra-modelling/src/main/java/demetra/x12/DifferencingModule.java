@@ -25,7 +25,7 @@ import demetra.maths.linearfilters.BackFilter;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
-import demetra.regarima.ami.RegArimaUtility;
+import demetra.regarima.RegArimaUtility;
 import demetra.sarima.HannanRissanen;
 import demetra.sarima.SarimaMapping;
 import demetra.sarima.SarimaModel;
@@ -341,7 +341,7 @@ public class DifferencingModule implements IDifferencingModule {
         if (usedefault || ml_ || useml_) {
             SarimaMapping.stabilize(lastModel);
 
-            IRegArimaProcessor processor = RegArimaUtility.processor(true, eps);
+            IRegArimaProcessor processor = X12Utility.processor(true, eps);
             RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(data).arima(lastModel).build();
             RegArimaEstimation<SarimaModel> rslt = processor.optimize(regarima);
             if (rslt == null) {
@@ -545,7 +545,7 @@ public class DifferencingModule implements IDifferencingModule {
                 .arima(SarimaModel.builder(spec).setDefault().build())
                 .build();
 
-        RegArimaEstimation<SarimaModel> est = RegArimaUtility.processor(true, eps).process(model);
+        RegArimaEstimation<SarimaModel> est = X12Utility.processor(true, eps).process(model);
 
         if (est == null) {
             return false;

@@ -23,11 +23,13 @@ import demetra.modelling.regression.ModellingContext;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.ami.IArmaModule;
 import demetra.regarima.ami.IDifferencingModule;
-import demetra.regarima.ami.ILogLevelModule;
+import demetra.regarima.regular.ILogLevelModule;
 import demetra.regarima.ami.IOutliersDetectionModule;
 import demetra.regarima.ami.IRegressionModule;
+import demetra.regarima.ami.ProcessingResult;
 import demetra.regarima.regular.IModelBuilder;
 import demetra.regarima.regular.IPreprocessor;
+import demetra.regarima.regular.IRegularOutliersDetectionModule;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.PreprocessingModel;
 import demetra.regarima.regular.RegArimaContext;
@@ -35,13 +37,23 @@ import demetra.sarima.SarimaModel;
 import demetra.timeseries.TsData;
 import javax.annotation.Nonnull;
 
-
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
 public class X12Preprocessor implements IPreprocessor {
+
+    @lombok.Value
+    @lombok.Builder
+    public static class AmiOptions {
+
+        boolean checkMu;
+        double precision;
+        double va;
+        double reduceVa;
+        double liungBoxLimit;
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -51,18 +63,24 @@ public class X12Preprocessor implements IPreprocessor {
     public static class Builder {
 
         private IModelBuilder modelBuilder = new DefaultModelBuilder();
-        private ILogLevelModule<SarimaModel> transformation;
-        private IRegressionModule regressionTest;
+        private ILogLevelModule transformation;
+        private IRegressionModule calendarTest, easterTest;
         private IDifferencingModule differencing;
         private IArmaModule arma;
-        private IOutliersDetectionModule outliers;
+        private IRegularOutliersDetectionModule outliers;
+        private AmiOptions options = new AmiOptions(true, 1e-7, 0, .14286, .95);
 
         public Builder modelBuilder(@Nonnull IModelBuilder builder) {
             this.modelBuilder = builder;
             return this;
         }
 
-        public Builder logLevel(ILogLevelModule<SarimaModel> ll) {
+        public Builder options(AmiOptions options) {
+            this.options = options;
+            return this;
+        }
+
+        public Builder logLevel(ILogLevelModule ll) {
             this.transformation = ll;
             return this;
         }
@@ -72,8 +90,13 @@ public class X12Preprocessor implements IPreprocessor {
             return this;
         }
 
-        public Builder regressionTest(IRegressionModule regressionTest) {
-            this.regressionTest = regressionTest;
+        public Builder calendarTest(IRegressionModule calendarTest) {
+            this.calendarTest = calendarTest;
+            return this;
+        }
+
+        public Builder easterTest(IRegressionModule easterTest) {
+            this.easterTest = easterTest;
             return this;
         }
 
@@ -82,7 +105,7 @@ public class X12Preprocessor implements IPreprocessor {
             return this;
         }
 
-        public Builder outliers(IOutliersDetectionModule outliers) {
+        public Builder outliers(IRegularOutliersDetectionModule outliers) {
             this.outliers = outliers;
             return this;
         }
@@ -100,18 +123,31 @@ public class X12Preprocessor implements IPreprocessor {
     }
 
     private final IModelBuilder modelBuilder;
-    private final ILogLevelModule<SarimaModel> transformation;
-    private final IRegressionModule regressionTest;
-    private final IOutliersDetectionModule outliers;
-    
-    private X12Preprocessor(Builder builder){
-       this.modelBuilder = builder.modelBuilder;
+    private final ILogLevelModule transformation;
+    private final IRegressionModule calendarTest, easterTest;
+    private final IRegularOutliersDetectionModule outliers;
+    private final AmiOptions options;
+    private final IDifferencingModule differencing;
+    private final IArmaModule arma;
+
+    private double curva = 0;
+    private boolean needOutliers;
+    private boolean needDifferencing;
+    private boolean needArma;
+    private int round;
+
+    private X12Preprocessor(Builder builder) {
+        this.modelBuilder = builder.modelBuilder;
         this.transformation = builder.transformation;
-        this.regressionTest = builder.regressionTest;
+        this.calendarTest = builder.calendarTest;
+        this.easterTest = builder.easterTest;
         this.outliers = builder.outliers;
+        this.options = builder.options;
+        this.differencing=builder.differencing;
+        this.arma=builder.arma;
     }
-    
-        @Override
+
+    @Override
     public PreprocessingModel process(TsData originalTs, RegArimaContext context) {
 //        clear();
         if (context == null) {
@@ -123,6 +159,22 @@ public class X12Preprocessor implements IPreprocessor {
         }
         context.setDescription(desc);
 
+        round=0;
+        // initialize some internal variables
+        if (outliers != null) {
+            curva = options.getVa();
+            if (curva == 0) {
+                curva = X12Utility.calcCv(desc.getSeries().getDomain().getLength());
+            }
+            needOutliers = true;
+        }
+        if (differencing != null) {
+            needDifferencing=true;
+        }
+        if (arma != null) {
+            needArma=true;
+        }
+        
         PreprocessingModel rslt = calc(context);
 //        if (rslt != null) {
 //            rslt.info_ = context.information;
@@ -133,21 +185,35 @@ public class X12Preprocessor implements IPreprocessor {
 
     private PreprocessingModel calc(RegArimaContext context) {
         if (transformation != null) {
-            testTransformation(context);
+            transformation.process(context);
         }
-        if (regressionTest != null) {
-            regressionTest.test(context);
+        if (calendarTest != null) {
+            calendarTest.test(context);
         }
+        if (easterTest != null) {
+            easterTest.test(context);
+        }
+
+        checkMu(context, true);
+        context.estimate(options.getPrecision());
+
+        if (needOutliers) {
+            if (outliers.process(context.getDescription(), curva)) {
+                context.setEstimation(null);
+            }
+        }
+        
+
         return null;
     }
-    
-    private void testTransformation(RegArimaContext context) {
-        ModelDescription model = context.getDescription();
-        RegArimaModel<SarimaModel> regarima = model.regarima();
-        if (transformation.process(regarima) && transformation.isChoosingLog()) {
-            context.getDescription().setLogTransformation(true);
-            context.setEstimation(null);
+
+    private ProcessingResult checkMu(RegArimaContext context, boolean initial) {
+        if (!options.checkMu) {
+            return ProcessingResult.Unchanged;
         }
+        MeanController meanTest = new MeanController(initial
+                ? MeanController.CVAL0 : MeanController.CVAL1);
+        return meanTest.test(context);
     }
 
 //    public static IParametricMapping<SarimaModel> createDefaultMapping(ModelDescription desc) {

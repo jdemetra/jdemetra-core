@@ -281,13 +281,15 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      * @param n
      */
     public void prepare(int n) {
+        lbound=0;
+        ubound=n;
         T = Matrix.make(n, factories.size());
         coef = Matrix.make(n, factories.size());
         allowedTable = new TableOfBoolean(n, factories.size());
         for (int i = 0; i < factories.size(); ++i) {
             IOutlierFactory fac = getOutlierFactory(i);
-            int jstart = Math.max(lbound, fac.excludingZoneAtStart());
-            int jend = Math.min(ubound, n - fac.excludingZoneAtEnd());
+            int jstart = fac.excludingZoneAtStart();
+            int jend = n - fac.excludingZoneAtEnd();
             for (int j = jstart; j < jend; ++j) {
                 allowedTable.set(j, i, true);
             }

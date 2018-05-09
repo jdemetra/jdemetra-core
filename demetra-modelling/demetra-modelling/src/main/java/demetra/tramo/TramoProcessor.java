@@ -25,7 +25,7 @@ import demetra.regarima.IRegArimaInitializer;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.ami.IArmaModule;
 import demetra.regarima.ami.IDifferencingModule;
-import demetra.regarima.ami.ILogLevelModule;
+import demetra.regarima.regular.ILogLevelModule;
 import demetra.regarima.regular.IModelBuilder;
 import demetra.regarima.ami.IOutliersDetectionModule;
 import demetra.regarima.regular.IPreprocessor;
@@ -55,7 +55,7 @@ public class TramoProcessor implements IPreprocessor {
     public static class Builder {
 
         private IModelBuilder modelBuilder = new DefaultModelBuilder();
-        private ILogLevelModule<SarimaModel> transformation;
+        private ILogLevelModule transformation;
         private ISeasonalityDetector seas = new SeasonalityDetector();
         private IRegressionModule regressionTest;
         private IDifferencingModule differencing;
@@ -72,7 +72,7 @@ public class TramoProcessor implements IPreprocessor {
             return this;
         }
 
-        public Builder logLevel(ILogLevelModule<SarimaModel> ll) {
+        public Builder logLevel(ILogLevelModule ll) {
             this.transformation = ll;
             return this;
         }
@@ -111,7 +111,7 @@ public class TramoProcessor implements IPreprocessor {
 
     private final IModelBuilder builder;
     private final ISeasonalityDetector seas;
-    private final ILogLevelModule<SarimaModel> transformation;
+    private final ILogLevelModule transformation;
     private final IRegressionModule regressionTest;
     private final IOutliersDetectionModule outliers;
 
@@ -171,7 +171,7 @@ public class TramoProcessor implements IPreprocessor {
             testSeasonality(context);
         }
         if (transformation != null) {
-            testTransformation(context);
+            transformation.process(context);
         }
         if (regressionTest != null) {
             regressionTest.test(context);
@@ -714,19 +714,6 @@ public class TramoProcessor implements IPreprocessor {
 //        return true;
 //    }
 //
-
-    private void testTransformation(RegArimaContext context) {
-        ModelDescription model = context.getDescription();
-        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class)
-                .y(DoubleSequence.ofInternal(model.transformation().data))
-                .meanCorrection(true)
-                .arima(model.getArimaComponent().getModel())
-                .build();
-        if (transformation.process(regarima) && transformation.isChoosingLog()) {
-            context.getDescription().setLogTransformation(true);
-            context.setEstimation(null);
-        }
-    }
 
     private void testSeasonality(RegArimaContext context) {
         ModelDescription model = context.getDescription();

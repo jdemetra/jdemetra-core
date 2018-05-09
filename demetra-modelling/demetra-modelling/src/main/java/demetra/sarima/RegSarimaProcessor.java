@@ -148,7 +148,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
     public RegArimaEstimation<SarimaModel> process(RegArimaModel<SarimaModel> regs) {
         SarimaModel current = regs.arima();
         SarimaSpecification curSpec = current.specification();
-        if (curSpec.getParametersCount() == 0 || mapping.getDim() == 0) {
+        if (curSpec.getParametersCount() == 0 || (mapping != null && mapping.getDim() == 0)) {
             return new RegArimaEstimation(regs, ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regs), 0);
         }
         SarimaModel mstart;
@@ -235,7 +235,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
      */
     private RegArimaEstimation<SarimaModel> estimate(RegArimaModel<SarimaModel> regs, SarimaModel start, double precision) {
         SarimaSpecification curSpec = regs.arima().specification();
-        if (curSpec.getParametersCount() == 0 || mapping.getDim() == 0) {
+        if (curSpec.getParametersCount() == 0 || (mapping != null && mapping.getDim() == 0)) {
             return new RegArimaEstimation<>(regs,
                     ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regs), 0);
         }

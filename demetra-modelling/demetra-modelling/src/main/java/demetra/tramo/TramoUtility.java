@@ -96,4 +96,16 @@ public class TramoUtility {
         return 1 - lb.getPValue();
     }
 
+    public IRegArimaProcessor<SarimaModel> processor(boolean ml, double precision) {
+        HannanRissanenInitializer initializer = HannanRissanenInitializer.builder()
+                .stabilize(true)
+                .useDefaultIfFailed(true)
+                .build();
+
+        return GlsSarimaProcessor.builder()
+                .initializer(initializer)
+                .useMaximumLikelihood(ml)
+                .precision(precision)
+                .build();
+    }
 }
