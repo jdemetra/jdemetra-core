@@ -11,6 +11,7 @@ import ec.satoolkit.algorithm.implementation.X13ProcessingFactory;
 import ec.satoolkit.diagnostics.CombinedSeasonalityTest;
 import ec.satoolkit.diagnostics.QSTest;
 import ec.satoolkit.diagnostics.SeasonalityTest;
+import ec.satoolkit.diagnostics.StationaryVarianceDecomposition;
 import ec.satoolkit.seats.SeatsResults;
 import ec.satoolkit.tramoseats.TramoSeatsSpecification;
 import ec.satoolkit.x11.X11Results;
@@ -65,6 +66,8 @@ public class Processor {
             sa=sa.log();
         TsData dsa=sa.delta(lag);
         TsData dsac=dsa.select(sel);
+        StationaryVarianceDecomposition var=new StationaryVarianceDecomposition();
+        var.process(rslts);
 
         SaDiagnostics diags = SaDiagnostics.builder()
                 .qs(qs(rslts))
@@ -74,6 +77,7 @@ public class Processor {
                 .residualSeasonality(SeasonalityTest.stableSeasonality(dsa))
                 .residualSeasonalityOnEnd(SeasonalityTest.stableSeasonality(dsac))
                 .residualTradingDays(TradingDaysTests.ftest(sa, true, NY))
+                .varDecomposition(var)
                 .build();
         return new TramoSeatsResults(rslts, diags);
     }
@@ -100,6 +104,8 @@ public class Processor {
             sa=sa.log();
         TsData dsa=sa.delta(lag);
         TsData dsac=dsa.select(sel);
+        StationaryVarianceDecomposition var=new StationaryVarianceDecomposition();
+        var.process(rslts);
 
         SaDiagnostics diags = SaDiagnostics.builder()
                 .qs(qs(rslts))
@@ -109,6 +115,7 @@ public class Processor {
                 .residualSeasonality(SeasonalityTest.stableSeasonality(dsa))
                 .residualSeasonalityOnEnd(SeasonalityTest.stableSeasonality(dsac))
                 .residualTradingDays(TradingDaysTests.ftest(sa, true, NY))
+                .varDecomposition(var)
                 .build();
         return new X13Results(rslts, diags);
 

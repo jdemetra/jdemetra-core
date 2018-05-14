@@ -79,6 +79,10 @@ public class X11DecompositionInfo {
             final String item = concatenate(E, ALL_E[i]);
             MAPPING.set(ALL_E[i], TsData.class, source -> source.getData(item, TsData.class));
         }
+        MAPPING.set(D9_FILTER, String.class, source->source.getData(D9_FILTER, String.class));
+        MAPPING.set(D9_SLEN, Integer.class, source->source.getData(D9_SLEN, Integer.class));
+        MAPPING.set(D12_FILTER, String.class, source->source.getData(D12_FILTER, String.class));
+        MAPPING.set(D12_TLEN, Integer.class, source->source.getData(D12_TLEN, Integer.class));
     }
 
     public InformationMapping<X11Results> getMapping() {
