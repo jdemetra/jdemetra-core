@@ -79,5 +79,7 @@ public interface IProcResults {
         return rslt;
     }
 
-    List<ProcessingInformation> getProcessingInformation();
+    default List<ProcessingInformation> getProcessingInformation(){
+        return Collections.EMPTY_LIST;
+    }
 }

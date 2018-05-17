@@ -107,8 +107,8 @@ public class Utility {
         private String component;
         private double coefficient;
     }
-   
-    public static final String R = "r", RPREFIX="r@";
+
+    public static final String R = "r", RPREFIX = "r@";
 
     public static class Dictionary {
 
@@ -119,13 +119,12 @@ public class Utility {
         }
 
         public ProcessingContext toContext() {
-            if (dictionary.isEmpty()) {
-                return null;
-            }
             ProcessingContext context = new ProcessingContext();
-            TsVariables vars = new TsVariables();
-            dictionary.forEach((n, s) -> vars.set(n, new TsVariable(n, s)));
-            context.getTsVariableManagers().set(R, vars);
+            if (!dictionary.isEmpty()) {
+                TsVariables vars = new TsVariables();
+                dictionary.forEach((n, s) -> vars.set(n, new TsVariable(n, s)));
+                context.getTsVariableManagers().set(R, vars);
+            }
             return context;
         }
     }
