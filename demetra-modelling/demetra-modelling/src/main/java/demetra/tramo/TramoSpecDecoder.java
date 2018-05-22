@@ -6,9 +6,14 @@
 package demetra.tramo;
 
 import demetra.modelling.TransformationType;
+import demetra.modelling.regression.AdditiveOutlier;
+import demetra.modelling.regression.LevelShift;
 import demetra.modelling.regression.ModellingContext;
+import demetra.modelling.regression.PeriodicOutlier;
+import demetra.modelling.regression.TransitoryChange;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.tramo.TradingDaysSpec.AutoMethod;
+import demetra.tramo.TramoProcessor.AmiOptions;
 import javax.annotation.Nonnull;
 
 /**
@@ -33,7 +38,10 @@ final class TramoSpecDecoder {
             readAutoModel(spec);
         }
         builder.modelBuilder(new TramoModelBuilder(spec, context));
+        readOutliers(spec);
         readRegression(spec, context);
+        readAmiOptions(spec);
+       
     }
 
     TramoProcessor buildProcessor() {
@@ -101,4 +109,47 @@ final class TramoSpecDecoder {
         }
     }
 
+    private void readOutliers(final TramoSpec spec) {
+        OutlierSpec outliers = spec.getOutliers();
+        if (!outliers.isUsed()) {
+            return;
+        }
+        RegularOutliersDetectionModule.Builder obuilder = RegularOutliersDetectionModule.builder();
+        String[] types = outliers.getTypes();
+        for (int i = 0; i < types.length; ++i) {
+            switch (types[i]) {
+                case AdditiveOutlier.CODE:
+                    obuilder.ao(true);
+                    break;
+                case LevelShift.CODE:
+                    obuilder.ls(true);
+                    break;
+                case TransitoryChange.CODE:
+                    obuilder.tc(true);
+                    break;
+                case PeriodicOutlier.CODE:
+                    obuilder.so(true);
+                    break;
+            }
+        }
+        builder.outliers(
+                obuilder.span(outliers.getSpan())
+                        .tcrate(outliers.getDeltaTC())
+                        .maximumLikelihood(outliers.isMaximumLikelihood())
+                        .build());
+    }
+
+    private void readAmiOptions(TramoSpec spec) {
+        AutoModelSpec ami = spec.getAutoModel();
+        builder.options(
+                AmiOptions.builder()
+                        .precision(spec.getEstimate().getTol())
+                        .va(spec.getOutliers().getCriticalValue())
+                        .reduceVa(ami.getPc())
+                        .checkMu(spec.isUsingAutoModel())
+                        .ljungBoxLimit(ami.getPcr())
+                        .acceptAirline(ami.isAcceptDefault())
+                        .build());
+
+    }
 }

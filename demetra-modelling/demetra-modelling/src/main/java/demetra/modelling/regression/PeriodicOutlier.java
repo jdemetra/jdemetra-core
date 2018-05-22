@@ -22,11 +22,11 @@ import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.maths.polynomials.UnitRoots;
 import demetra.modelling.ComponentType;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  *
  * @author Jean Palate
- * @param <E>
  */
 public class PeriodicOutlier extends AbstractOutlier {
 
@@ -182,4 +182,25 @@ public class PeriodicOutlier extends AbstractOutlier {
         return period;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other instanceof PeriodicOutlier) {
+            PeriodicOutlier x = (PeriodicOutlier) other;
+            return x.period == period && x.zeroEnded==zeroEnded
+                    && x.position.equals(position);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 71 * hash + Objects.hashCode(position);
+        hash = 71 * hash + (this.zeroEnded ? 1 : 0);
+        hash = 71 * hash + this.period;
+        return hash;
+    }
 }

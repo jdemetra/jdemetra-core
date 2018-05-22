@@ -146,14 +146,32 @@ public class RegArimaModel<M extends IArimaModel> {
         this.dmodel = dmodel;
     }
 
+
+    /**
+     * Gets the number of missing values
+     * @return 
+     */
     public int getMissingValuesCount() {
         return missing.length;
     }
 
+    /**
+     * Gets the number of observations (including missing values)
+     * @return 
+     */
     public int getObservationsCount() {
         return y.length();
     }
 
+    /**
+     * Gets the number of observations, excluding missing values 
+     * (= getObservationsCount()-getMissingValuesCount())
+     * @return 
+     */
+    public int getActualObservationsCount() {
+        return y.length() - missing.length;
+    }
+    
     public int getVariablesCount() {
         int nv = x.size();
         if (mean) {

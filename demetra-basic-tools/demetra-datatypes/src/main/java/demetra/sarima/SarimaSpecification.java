@@ -16,7 +16,6 @@
  */
 package demetra.sarima;
 
-import demetra.arima.ArimaException;
 import demetra.design.Development;
 
 /**

@@ -28,9 +28,10 @@ public interface IRegularOutliersDetectionModule {
     /**
      * Search outliers in the given RegArima model
      *
-     * @param model
-     * @param criticalValue
-     * @return
+     * @param model Model being considered. The model will be augmented with the
+     * new outliers
+     * @param criticalValue Critical value for the detection of outliers
+     * @return True if the model was changed, false otherwise
      */
     boolean process(ModelDescription model, double criticalValue);
 

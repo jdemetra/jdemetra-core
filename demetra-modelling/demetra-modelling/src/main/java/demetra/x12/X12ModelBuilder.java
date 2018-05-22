@@ -44,7 +44,7 @@ import demetra.modelling.regression.TsVariableBox;
 import demetra.modelling.regression.TsVariableGroup;
 import demetra.regarima.regular.IModelBuilder;
 import demetra.regarima.regular.ModelDescription;
-import demetra.regarima.ami.SarimaComponent;
+import demetra.regarima.regular.SarimaComponent;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDataSupplier;
 import demetra.timeseries.TsDomain;
@@ -84,9 +84,9 @@ class X12ModelBuilder implements IModelBuilder {
         } else if (spec.getArima() == null) {
             model.setAirline(!yearly);
         } else {
-            // should be changed...
+            SarimaComponent cmp = model.getArimaComponent();
             ArimaSpec arima = spec.getArima();
-            SarimaComponent cmp = new SarimaComponent(freq);
+            cmp.setPeriod(freq);
             cmp.setMu(arima.getMu());
             cmp.setPhi(arima.getPhi());
             cmp.setTheta(arima.getTheta());
@@ -96,7 +96,6 @@ class X12ModelBuilder implements IModelBuilder {
                 cmp.setBTheta(arima.getBTheta());
                 cmp.setBD(arima.getBd());
             }
-            model.setArimaComponent(cmp);
         }
     }
 

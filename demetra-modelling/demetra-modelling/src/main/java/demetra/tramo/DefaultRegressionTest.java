@@ -61,6 +61,7 @@ public class DefaultRegressionTest implements IRegressionModule {
         private double tmean = CVAL, teaster = CVAL;
         private double twd = T2, t0td = T0, t1td = T1;
         private double fpvalue = 0.05;
+        private double precision=1e-5;
 
         private boolean joinTest = false;
         private boolean testMean = true;
@@ -123,12 +124,19 @@ public class DefaultRegressionTest implements IRegressionModule {
         public DefaultRegressionTest build() {
             return new DefaultRegressionTest(this);
         }
+
+        public Builder estimationPrecision(double eps) {
+            this.precision = eps;
+            return this;
+        }
+
     }
 
     private final ITradingDaysVariable td;
     private final ILengthOfPeriodVariable lp;
     private final IEasterVariable easter;
     private final IRegressionTest tdTest, wdTest, lpTest, mhTest, meanTest;
+    private final double precision;
 
 //    private IRegressionTest tdTest_, wdTest_, lpTest_, mhTest_, meanTest_;
     private DefaultRegressionTest(Builder builder) {
@@ -140,6 +148,7 @@ public class DefaultRegressionTest implements IRegressionModule {
         lpTest = new TRegressionTest(builder.t0td);
         mhTest = new TRegressionTest(builder.teaster);
         meanTest = builder.testMean ? new TRegressionTest(builder.tmean) : null;
+        precision=builder.precision;
     }
 
     private ModelDescription createTestModel(RegArimaContext current) {
@@ -166,7 +175,7 @@ public class DefaultRegressionTest implements IRegressionModule {
         ModelDescription tmpModel = createTestModel(context);
         boolean changed = false;
         RegArimaModel<SarimaModel> regarima = tmpModel.regarima();
-        IRegArimaProcessor<SarimaModel> processor = RegArimaUtility.processor(tmpModel.getArimaComponent().defaultMapping(), true, 1e-5);
+        IRegArimaProcessor<SarimaModel> processor = RegArimaUtility.processor(tmpModel.getArimaComponent().defaultMapping(), true, precision);
         RegArimaEstimation<SarimaModel> rslt = processor.process(regarima);
         ConcentratedLikelihood ll = rslt.getConcentratedLikelihood();
 

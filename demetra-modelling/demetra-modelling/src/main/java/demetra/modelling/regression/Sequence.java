@@ -17,7 +17,6 @@
 package demetra.modelling.regression;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 /**
  *
@@ -28,4 +27,4 @@ public class Sequence {
    
     private LocalDateTime start, end;
 
- }
+}

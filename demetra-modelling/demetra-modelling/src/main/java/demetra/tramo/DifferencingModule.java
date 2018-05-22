@@ -42,6 +42,15 @@ public class DifferencingModule implements IDifferencingModule {
 
     public static final int MAXD = 2, MAXBD = 1;
 
+    static boolean comespd(final int freq, final int nz, final boolean seas) {
+        SarimaSpecification spec = new SarimaSpecification(freq);
+        spec.setD(2);
+        if (seas) {
+            spec.setBd(1);
+        }
+        return TramoUtility.autlar(nz, spec) >= 0;
+    }
+
     public static Builder builder() {
         return new Builder();
     }

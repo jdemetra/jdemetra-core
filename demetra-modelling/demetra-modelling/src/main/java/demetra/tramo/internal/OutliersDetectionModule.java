@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tramo;
+package demetra.tramo.internal;
 
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
@@ -31,19 +31,13 @@ import demetra.regarima.RegArmaModel;
 import demetra.regarima.ami.IOutliersDetectionModule;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.regarima.outlier.AbstractSingleOutlierDetector;
-import demetra.regarima.outlier.CriticalValueComputer;
 import demetra.regarima.outlier.FastOutlierDetector;
-import demetra.sarima.GlsSarimaProcessor;
 import demetra.sarima.HannanRissanen;
 import demetra.sarima.SarimaMapping;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.SarmaSpecification;
-import demetra.modelling.regression.AdditiveOutlier;
 import demetra.modelling.regression.IOutlier;
-import demetra.modelling.regression.LevelShift;
-import demetra.modelling.regression.PeriodicOutlier;
-import demetra.modelling.regression.TransitoryChange;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,7 +52,6 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
 
     public static int DEF_MAXROUND = 100;
     public static int DEF_MAXOUTLIERS = 50;
-    public static final double EPS = 1e-5;
 
     public static Builder builder() {
         return new Builder();
@@ -67,20 +60,14 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
     @BuilderPattern(OutliersDetectionModule.class)
     public static class Builder {
 
-        private double eps = EPS;
         private double cv = 0;
         private boolean mvx;
         private IRegArimaProcessor<SarimaModel> processor;
         private int maxOutliers = DEF_MAXOUTLIERS;
         private int maxRound = DEF_MAXROUND;
-        private AbstractSingleOutlierDetector sod = new FastOutlierDetector(null);
+        private final FastOutlierDetector sod = new FastOutlierDetector(null);
 
         private Builder() {
-        }
-
-        public Builder precision(double eps) {
-            this.eps = eps;
-            return this;
         }
 
         public Builder criticalValue(double cv) {
@@ -90,12 +77,6 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
 
         public Builder maximumLikelihood(boolean mvx) {
             this.mvx = mvx;
-            return this;
-        }
-
-        public Builder detector(AbstractSingleOutlierDetector sod) {
-            this.sod = sod;
-            this.sod.clearOutlierFactories();
             return this;
         }
 
@@ -114,69 +95,33 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
             return this;
         }
 
-        public Builder addFactory(IOutlier.IOutlierFactory factory) {
-            this.sod.addOutlierFactory(factory);
-            return this;
-        }
-
-        /**
-         *
-         * @return
-         */
-        public Builder setDefault() {
-            this.sod.clearOutlierFactories();
-            this.sod.addOutlierFactory(AdditiveOutlier.FACTORY);
-            this.sod.addOutlierFactory(LevelShift.FACTORY_ZEROSTARTED);
-            return this;
-        }
-
-        /**
-         *
-         * @return
-         */
-        public Builder setAll() {
-            setDefault();
-            this.sod.addOutlierFactory(new TransitoryChange.Factory(.7));
-            return this;
-        }
-
-        /**
-         *
-         * @param period
-         * @return
-         */
-        public Builder setAll(int period) {
-            setAll();
-            this.sod.addOutlierFactory(new PeriodicOutlier.Factory(period, true));
+        public Builder addFactories(IOutlier.IOutlierFactory[] factories) {
+            for (int i = 0; i < factories.length; ++i) {
+                this.sod.addOutlierFactory(factories[i]);
+            }
             return this;
         }
 
         public OutliersDetectionModule build() {
-            IRegArimaProcessor<SarimaModel> p = processor;
-            if (p == null) {
-                p = GlsSarimaProcessor.builder().precision(eps).build();
-            }
-            return new OutliersDetectionModule(sod, p, maxRound, maxOutliers, cv, mvx);
+            return new OutliersDetectionModule(sod, processor, maxRound, maxOutliers, cv, mvx);
         }
     }
 
     private final int maxRound, maxOutliers;
-    private RegArimaModel<SarimaModel> regarima;
     private final ArrayList<int[]> outliers = new ArrayList<>(); // Outliers : (position, type)
     private final AbstractSingleOutlierDetector sod;
     private final IRegArimaProcessor<SarimaModel> processor;
     private final double cv;
     private final boolean mvx;
+    
+    private RegArimaModel<SarimaModel> regarima;
     private double[] tstats;
-    private int nhp;
     private int round;
     // festim = true if the model has to be re-estimated
-    private boolean rflag_, backw_, exit_, festim_;
+    private boolean rflag_, backw_, exit_, firstEstimation;
     private int[] lastremoved;
     private DoubleSequence coeff, res;
     //
-    private boolean curMvx;
-    public static final double MINCV = 2.0;
 
     private OutliersDetectionModule(final AbstractSingleOutlierDetector sod, final IRegArimaProcessor<SarimaModel> processor,
             final int maxOutliers, final int maxRound, final double cv, final boolean mvx) {
@@ -215,6 +160,15 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
         return sod.getOutlierFactory(i);
     }
 
+    public String[] outlierTypes() {
+        ArrayList<IOutlier.IOutlierFactory> factories = sod.getFactories();
+        String[] types = new String[factories.size()];
+        for (int i = 0; i < types.length; ++i) {
+            types[i] = factories.get(i).getCode();
+        }
+        return types;
+    }
+
     @Override
     public boolean process(RegArimaModel<SarimaModel> initialModel) {
         clear();
@@ -222,18 +176,6 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
         sod.setBounds(0, n);
         sod.prepare(n);
         regarima = initialModel;
-        nhp = 0;
-        int test = comatip(initialModel.arima().specification(), initialModel.isMean(), n);
-        if (test < 0) {
-            return false;
-        } else if (test > 0) {
-            curMvx = true;
-        } else {
-            curMvx = false;
-        }
-
-        regarima = initialModel;
-         nhp = 0;
         double max;
         try {
             do {
@@ -269,7 +211,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
             if (round == maxRound || outliers.size() == maxOutliers) {
                 estimateModel();
             }
-            festim_ = false;
+            firstEstimation = false;
 
             while (!verifyModel()) {
                 estimateModel();
@@ -307,7 +249,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
         boolean stable = true;
         rflag_ = false;
 
-        if (festim_) {
+        if (firstEstimation) {
             SarmaSpecification dspec = spec.doStationary();
             if (spec.getParametersCount() != 0) {
                 HannanRissanen hr = HannanRissanen.builder().build();
@@ -315,7 +257,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
                     SarimaModel hrmodel = hr.getModel();
                     SarimaModel stmodel = SarimaMapping.stabilize(hrmodel);
                     stable = stmodel == hrmodel;
-                    if (stable || curMvx || round == 0) {
+                    if (stable || mvx || round == 0) {
                         regarima = RegArimaModel.of(regarima,
                                 SarimaModel.builder(spec)
                                 .parameters(stmodel.parameters())
@@ -326,12 +268,12 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
                     }
                 }
             }
-            if ((curMvx || !stable) && festim_) {
+            if ((mvx || !stable) && firstEstimation) {
                 return optimizeModel();
             }
         }
         if (lm.getVariablesCount() > 0) {
-            updateLikelihood(ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima));
+            updateLikelihood(ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima), spec.getParametersCount());
         }
 
         return true;
@@ -340,24 +282,23 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
     private boolean optimizeModel() {
         RegArimaEstimation<SarimaModel> estimation = processor.optimize(regarima);
         regarima = estimation.getModel();
-        updateLikelihood(estimation.getConcentratedLikelihood());
+        updateLikelihood(estimation.getConcentratedLikelihood(), estimation.getNparams());
         return true;
     }
 
-    private void updateLikelihood(ConcentratedLikelihood likelihood) {
+    private void updateLikelihood(ConcentratedLikelihood likelihood, int nhp) {
         coeff = likelihood.coefficients();
         tstats = likelihood.tstats(nhp, true);
     }
 
     private void clear() {
         rflag_ = true;
-        nhp = 0;
         outliers.clear();
         round = 0;
         lastremoved = null;
         coeff = null;
         tstats = null;
-        festim_ = true;
+        firstEstimation = true;
         backw_ = false;
         exit_ = false;
         res = null;
@@ -371,7 +312,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
      * @return True means that the model was not modified
      */
     private boolean verifyModel() {
-        festim_ = true;
+        firstEstimation = true;
         if (outliers.isEmpty()) {
             return true;
         }
@@ -389,7 +330,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
             return true;
         }
         backw_ = false;
-        festim_ = false;
+        firstEstimation = false;
         int[] toremove = outliers.get(imin);
         sod.allow(toremove[0], toremove[1]);
         removeOutlier(imin);
@@ -462,46 +403,8 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
         return Collections.unmodifiableList(sod.getFactories());
     }
 
-    public boolean hasUsedEML() {
-        return curMvx;
-    }
-
     public double getCritivalValue() {
         return cv;
-    }
-
-    private int comatip(SarimaSpecification spec, boolean mean, int n) {
-        // int rslt = ml ? 1 : 0;
-        // first, check if od is possible
-        int nparm = Math.max(spec.getD() + spec.getP() + spec.getPeriod()
-                * (spec.getBd() + spec.getBp()), spec.getQ()
-                + spec.getPeriod() * spec.getBq())
-                + (mean ? 1 : 0)
-                + (15 * n) / 100 + spec.getPeriod();
-        if (n - nparm <= 0) {
-            return -1;
-        }
-        if (mvx) {
-            return 1;
-        }
-        int ndf1 = TramoUtility.autlar(n, spec);
-        int ndf2 = 0;
-        if (spec.getP() + spec.getBp() > 0 && spec.getQ() + spec.getBq() > 0) {
-            n -= spec.getP() + spec.getPeriod() * spec.getBp();
-            spec.setP(0);
-            spec.setBp(0);
-            ndf2 = TramoUtility.autlar(n, spec);
-        }
-        if (ndf1 < 0 || ndf2 < 0) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-
-
-    public static double calcCv(int nobs) {
-        return Math.max(CriticalValueComputer.simpleComputer().applyAsDouble(nobs), MINCV);
     }
 
 }

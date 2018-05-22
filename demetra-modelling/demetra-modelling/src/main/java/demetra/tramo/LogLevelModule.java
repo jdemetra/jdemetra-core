@@ -44,7 +44,7 @@ public class LogLevelModule implements ILogLevelModule {
     @BuilderPattern(LogLevelModule.class)
     public static class Builder {
         
-        private double precision=1e-7;
+        private double precision=1e-5;
         private double logpreference=0;
         
         public Builder logPreference(double lp){

@@ -18,12 +18,8 @@ package demetra.tramo;
 
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
-import static demetra.maths.Optimizer.LevenbergMarquardt;
-import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
-import demetra.maths.functions.minpack.MinPackMinimizer;
-import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.regarima.IRegArimaProcessor;
-import demetra.regarima.RegArimaModel;
+import demetra.regarima.outlier.CriticalValueComputer;
 import demetra.sarima.GlsSarimaProcessor;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
@@ -38,6 +34,9 @@ import demetra.stats.tests.StatisticalTest;
 @Development(status = Development.Status.Preliminary)
 @lombok.experimental.UtilityClass
 public class TramoUtility {
+    
+    public static final double MINCV = 2.0;
+    
     int autlar(final int n, final SarimaSpecification spec) {
         int d = spec.getD() + spec.getPeriod() * spec.getBd();
         int q = spec.getQ() + spec.getPeriod() * spec.getBq();
@@ -107,5 +106,9 @@ public class TramoUtility {
                 .useMaximumLikelihood(ml)
                 .precision(precision)
                 .build();
+    }
+
+    public static double calcCv(int nobs) {
+        return Math.max(CriticalValueComputer.simpleComputer().applyAsDouble(nobs), MINCV);
     }
 }

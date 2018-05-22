@@ -18,9 +18,9 @@ package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
 import demetra.design.BuilderPattern;
-import demetra.modelling.ComponentType;
 import demetra.timeseries.TimeSeriesDomain;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
 
@@ -124,6 +124,26 @@ public class TsVariableGroup<D extends TimeSeriesDomain<?>> implements ITsVariab
     @Override
     public TsVariableGroup<D> rename(String newname) {
         return new TsVariableGroup<>(vars, newname, desc.equals(name) ? newname : desc);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other instanceof TsVariableGroup) {
+            TsVariableGroup x = (TsVariableGroup) other;
+            return Arrays.deepEquals(vars, x.vars);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + Arrays.deepHashCode(this.vars);
+        return hash;
     }
 
 }

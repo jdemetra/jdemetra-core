@@ -28,25 +28,22 @@ import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.modelling.PreadjustmentVariable;
-import demetra.modelling.regression.IOutlier;
 import demetra.modelling.regression.ITsTransformation;
 import demetra.modelling.regression.ITsVariable;
 import demetra.modelling.regression.LengthOfPeriodTransformation;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
-import demetra.regarima.ami.SarimaComponent;
 import demetra.regarima.ami.TransformedSeries;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
+import demetra.stats.tests.NiidTests;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.timeseries.simplets.TsDataToolkit;
 import demetra.utilities.IntList;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -66,7 +63,7 @@ public final class ModelDescription {
     private IDataInterpolator interpolator = new AverageInterpolator();
     private final List<PreadjustmentVariable> preadjustmentVariables = new ArrayList<>();
     private final List<Variable> variables = new ArrayList<>();
-    private SarimaComponent arima = new SarimaComponent();
+    private final SarimaComponent arima = new SarimaComponent();
 
     // Caching
     private ITsVariable<TsDomain>[] regressionVariables;
@@ -81,7 +78,7 @@ public final class ModelDescription {
         ModelDescription nmodel = new ModelDescription(series);
         model.preadjustmentVariables.forEach(nmodel.preadjustmentVariables::add);
         model.variables.forEach(nmodel.variables::add);
-        nmodel.arima = model.arima.clone();
+        nmodel.arima.copy(model.arima);
         nmodel.logTransformation = model.logTransformation;
         nmodel.lpTransformation = model.lpTransformation;
         return nmodel;
@@ -99,7 +96,7 @@ public final class ModelDescription {
         this.series = desc.series;
         desc.preadjustmentVariables.forEach(preadjustmentVariables::add);
         desc.variables.forEach(variables::add);
-        this.arima = desc.arima.clone();
+        this.arima.copy(desc.arima);
         this.logTransformation = desc.logTransformation;
         this.lpTransformation = desc.lpTransformation;
         this.transformedSeries = desc.transformedSeries;
@@ -274,7 +271,7 @@ public final class ModelDescription {
         return variables.stream()
                 .anyMatch(var -> var.getVariable().getName().equals(name))
                 || preadjustmentVariables.stream()
-                        .anyMatch(var -> var.getVariable().getName().equals(name));
+                .anyMatch(var -> var.getVariable().getName().equals(name));
     }
 
     public void setLogTransformation(boolean log) {
@@ -488,11 +485,6 @@ public final class ModelDescription {
 //        invalidateData();
 //    }
 //
-    public void setArimaComponent(SarimaComponent arima) {
-        this.arima = arima;
-
-    }
-
     public void setMean(boolean mean) {
         arima.setMean(mean);
         if (regarima != null && mean != regarima.isMean()) {
@@ -556,6 +548,7 @@ public final class ModelDescription {
         }
         // update current description
         regarima = rslt.getModel();
+        int p = this.getAnnualFrequency();
         DoubleSequence score = DoubleSequence.ofInternal(rslt.getMax().getGradient());
         Matrix hessian = rslt.getMax().getHessian();
         Matrix J = hessian == null ? null : SymmetricMatrix.inverse(hessian);
@@ -566,11 +559,21 @@ public final class ModelDescription {
         stde.apply(a -> a <= 0 ? 0 : Math.sqrt(a));
         arima.setFreeParameters(regarima.arima().parameters(), stde, ParameterType.Estimated);
 
+        NiidTests tests = NiidTests.builder()
+                .data(rslt.getConcentratedLikelihood().e())
+                .period(p)
+                .k(calcLBLength(p))
+                .ks(2)
+                .seasonal(p>1)
+                .hyperParametersCount(np)
+                .build();
+
         return ModelEstimation.builder()
                 .concentratedLikelihood(rslt.getConcentratedLikelihood())
                 .statistics(rslt.statistics(transformedSeries.getTransformationCorrection()))
                 .score(score)
                 .parametersCovariance(J)
+                .tests(tests)
                 .build();
     }
 
@@ -594,6 +597,31 @@ public final class ModelDescription {
             }
         }
         return ecov;
+    }
+
+    public static boolean sameArimaSpecification(ModelDescription desc1, ModelDescription desc2) {
+        if (!desc1.getSpecification().equals(desc2.getSpecification())) {
+            return false;
+        }
+        return desc1.isMean() == desc2.isMean();
+    }
+
+    public static boolean sameVariables(ModelDescription desc1, ModelDescription desc2) {
+        desc1.buildRegressionVariables();
+        desc2.buildRegressionVariables();
+        return Arrays.deepEquals(desc1.regressionVariables, desc2.regressionVariables);
+    }
+
+    private static int calcLBLength(final int freq) {
+        int n;
+        switch (freq) {
+            case 12:
+                return 24;
+            case 1:
+                return 8;
+            default:
+                return 4 * freq;
+        }
     }
 
 }

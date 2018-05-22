@@ -35,6 +35,7 @@ public class AdditiveOutlier<D extends TimeSeriesDomain<?>> extends BaseOutlier 
 
     public static final Factory FACTORY = new Factory();
 
+
     public static class Factory implements IOutlierFactory {
 
         @Override
@@ -115,5 +116,22 @@ public class AdditiveOutlier<D extends TimeSeriesDomain<?>> extends BaseOutlier 
     public ITsVariable<D> rename(String nname) {
         return new AdditiveOutlier(position, nname);
     }
+    
+    @Override
+    public boolean equals(Object other){
+        if (this == other)
+            return true;
+        if (other instanceof AdditiveOutlier){
+            AdditiveOutlier x=(AdditiveOutlier) other;
+            return this.position.equals(x.position);
+        }else
+            return false;
+    }
 
+    @Override
+    public int hashCode() {
+        int hash = 11;
+        hash = 59 * hash + position.hashCode();
+        return hash;
+    }
 }

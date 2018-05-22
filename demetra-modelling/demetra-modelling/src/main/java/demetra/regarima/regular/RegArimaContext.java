@@ -16,15 +16,11 @@
  */
 package demetra.regarima.regular;
 
-import demetra.regarima.regular.ModelEstimation;
-import demetra.regarima.regular.ModelDescription;
 import demetra.design.Development;
 import demetra.information.InformationSet;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.sarima.SarimaModel;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -51,6 +47,14 @@ public class RegArimaContext {
                 .build();
 
         estimation = description.estimate(processor);
+    }
+    
+    public PreprocessingModel build(){
+        return new PreprocessingModel(description, estimation);
+    }
+    
+    public boolean needEstimation(){
+        return estimation == null;
     }
 //    public ModellingContext() {
 //        processingLog = new ArrayList<>();
@@ -89,4 +93,5 @@ public class RegArimaContext {
 //    public boolean outliers = false;
 //    public boolean hasseas;
 //    public int originalSeasonalityTest;
+
 }

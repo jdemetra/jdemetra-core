@@ -18,13 +18,11 @@ package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
-import demetra.modelling.ComponentType;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The periodic contrasts are defined as follows:
@@ -131,7 +129,7 @@ public class PeriodicContrasts implements ITsVariable<TsDomain> {
         builder.append("Period contrast [").append(idx + 1).append(']');
         return builder.toString();
     }
-    
+
     @Override
     public String getName() {
         return name;
@@ -142,4 +140,23 @@ public class PeriodicContrasts implements ITsVariable<TsDomain> {
         return new PeriodicContrasts(period, ref, nname);
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other instanceof PeriodicContrasts) {
+            PeriodicContrasts x = (PeriodicContrasts) other;
+            return x.period == period && x.ref.equals(ref);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + this.period;
+        hash = 97 * hash + Objects.hashCode(this.ref);
+        return hash;
+    }
 }

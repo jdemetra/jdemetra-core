@@ -23,6 +23,7 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The periodic contrasts are defined as follows:
@@ -128,4 +129,23 @@ public class PeriodicDummies implements ITsVariable<TsDomain> {
         return new PeriodicDummies(period, ref, nname);
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other instanceof PeriodicDummies) {
+            PeriodicDummies x = (PeriodicDummies) other;
+            return x.period == period && x.ref.equals(ref);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 47 * hash + this.period;
+        hash = 47 * hash + Objects.hashCode(this.ref);
+        return hash;
+    }
 }

@@ -57,6 +57,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
         private double tmean = DEF_TMEAN, tlp = DEF_TLP, teaster = DEF_TEASTER;
         private double fpvalue = DEF_FPVAL, pconstraint = DEF_PCONSTRAINT;
         private boolean testMean = true;
+        private double precision = 1e-5;
 
         public Builder tradingDays(ITradingDaysVariable td) {
             this.td = td;
@@ -108,6 +109,11 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
             return this;
         }
 
+        public Builder estimationPrecision(double eps) {
+            this.precision = eps;
+            return this;
+        }
+
         public AutomaticWaldRegressionTest build() {
             return new AutomaticWaldRegressionTest(this);
         }
@@ -119,6 +125,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
     private final double tmean, teaster, tlp;
     private final double fpvalue, pconstraint;
     private final boolean testMean;
+    private final double precision;
 
     private AutomaticWaldRegressionTest(Builder builder) {
         this.td = builder.td;
@@ -131,13 +138,14 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
         this.teaster = builder.teaster;
         this.tlp = builder.tlp;
         this.testMean = builder.testMean;
+        this.precision=builder.precision;
     }
 
     @Override
     public ProcessingResult test(RegArimaContext context) {
 
         ModelDescription current = context.getDescription();
-        IRegArimaProcessor processor = RegArimaUtility.processor(current.getArimaComponent().defaultMapping(), true, 1e-7);
+        IRegArimaProcessor processor = RegArimaUtility.processor(current.getArimaComponent().defaultMapping(), true, precision);
         // We compute the full model
         ModelDescription test6 = createTestModel(context, td, null);
         RegArimaEstimation<SarimaModel> regarima6 = processor.process(test6.regarima());

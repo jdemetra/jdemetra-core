@@ -16,15 +16,12 @@
  */
 package demetra.x12;
 
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.modelling.regression.ModellingContext;
-import demetra.regarima.RegArimaModel;
 import demetra.regarima.ami.IArmaModule;
 import demetra.regarima.ami.IDifferencingModule;
 import demetra.regarima.regular.ILogLevelModule;
-import demetra.regarima.ami.IOutliersDetectionModule;
 import demetra.regarima.ami.IRegressionModule;
 import demetra.regarima.ami.ProcessingResult;
 import demetra.regarima.regular.IModelBuilder;
@@ -33,7 +30,6 @@ import demetra.regarima.regular.IRegularOutliersDetectionModule;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.PreprocessingModel;
 import demetra.regarima.regular.RegArimaContext;
-import demetra.sarima.SarimaModel;
 import demetra.timeseries.TsData;
 import javax.annotation.Nonnull;
 
@@ -52,7 +48,7 @@ public class X12Preprocessor implements IPreprocessor {
         double precision;
         double va;
         double reduceVa;
-        double liungBoxLimit;
+        double ljungBoxLimit;
     }
 
     public static Builder builder() {

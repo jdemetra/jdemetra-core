@@ -16,18 +16,15 @@
  */
 package demetra.tramo;
 
-import demetra.tramo.TramoProcessor;
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
 import demetra.regarima.regular.RegArimaContext;
-import demetra.sarima.RegSarimaProcessor;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -46,7 +43,7 @@ public class TramoProcessorTest {
         datamissing[102]=Double.NaN;
     }
 
-    @Test
+    //@Test
     public void testProdMissing() {
         TramoProcessor processor=TramoProcessor.of(TramoSpec.TR5, null);
         TsPeriod start=TsPeriod.monthly(1967,1);
@@ -54,7 +51,7 @@ public class TramoProcessorTest {
         processor.process(s, null);
     }
     
-    @Test
+    //@Test
     public void testProdLegacyMissing() {
         IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR5.build();
         ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, datamissing, true);
@@ -78,7 +75,7 @@ public class TramoProcessorTest {
         PreprocessingModel process = processor.process(s, null);
     }
     
-    @Test
+//    @Test
     public void testProdWald() {
         TramoSpec nspec=new TramoSpec(TramoSpec.TRfull);
         nspec.getRegression().getCalendar().getTradingDays().setAutomaticMethod(TradingDaysSpec.AutoMethod.WaldTest);

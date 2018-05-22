@@ -73,6 +73,10 @@ public final class Variable {
                 this.prespecified == prespecified;
     }
 
+    public boolean isOutlier() {
+        return variable instanceof IOutlier;
+    }
+
     public boolean isCalendar() {
         return variable instanceof ICalendarVariable;
     }

@@ -14,11 +14,8 @@ import demetra.modelling.regression.ModellingContext;
 import demetra.modelling.regression.PeriodicOutlier;
 import demetra.modelling.regression.TransitoryChange;
 import demetra.regarima.regular.AICcComparator;
-import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.tramo.TradingDaysSpec.AutoMethod;
 import demetra.x12.X12Preprocessor.AmiOptions;
-import demetra.x12.internal.RawOutliersDetectionModule;
 import javax.annotation.Nonnull;
 
 /**
@@ -45,7 +42,6 @@ final class X12SpecDecoder {
         readOutliers(spec);
         builder.modelBuilder(new X12ModelBuilder(spec, context));
         readRegression(spec, context);
-
         readAmiOptions(spec);
     }
 
@@ -104,6 +100,7 @@ final class X12SpecDecoder {
         builder.outliers(
                 obuilder.span(outliers.getSpan())
                         .maxRound(outliers.getMaxIter())
+                        .tcrate(outliers.getMonthlyTCRate())
                         .build());
     }
 
@@ -146,7 +143,7 @@ final class X12SpecDecoder {
                         .precision(spec.getEstimate().getTol())
                         .va(spec.getOutliers().getDefaultCriticalValue())
                         .reduceVa(ami.getPercentReductionCV())
-                        .liungBoxLimit(ami.getLjungBoxLimit())
+                        .ljungBoxLimit(ami.getLjungBoxLimit())
                         .checkMu(spec.isUsingAutoModel())
                         .build());
 

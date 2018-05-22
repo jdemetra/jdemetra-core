@@ -141,4 +141,19 @@ public class LevelShift<D extends TimeSeriesDomain<?>> extends BaseOutlier imple
         return new LevelShift(position, zeroEnded, nname);
     }
 
+    @Override
+    public boolean equals(Object other){
+        if (this == other)
+            return true;
+        if (other instanceof LevelShift){
+            LevelShift x=(LevelShift) other;
+            return this.position.equals(x.position) && this.zeroEnded==x.zeroEnded;
+        }else
+            return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return position.hashCode() ;
+    }
 }

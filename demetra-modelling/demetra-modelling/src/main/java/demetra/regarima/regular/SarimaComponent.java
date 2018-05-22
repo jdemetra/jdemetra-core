@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.regarima.ami;
+package demetra.regarima.regular;
 
 import demetra.arima.IArimaModel;
 import demetra.data.DoubleSequence;
@@ -24,6 +24,7 @@ import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.polynomials.UnitRoots;
 import demetra.regarima.IArimaMapping;
+import demetra.regarima.ami.AbstractArimaComponent;
 import demetra.sarima.SarimaFixedMapping;
 import demetra.sarima.SarimaMapping;
 import demetra.sarima.SarimaModel;
@@ -35,9 +36,19 @@ import java.util.Arrays;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class SarimaComponent extends AbstractArimaComponent implements Cloneable {
+public class SarimaComponent extends AbstractArimaComponent<SarimaModel> {
 
     private int d, bd, period;
+
+
+
+
+
+
+
+
+
+
     private Parameter[] phi, theta, bphi, btheta;
 
     public SarimaComponent() {
@@ -46,20 +57,18 @@ public class SarimaComponent extends AbstractArimaComponent implements Cloneable
     public SarimaComponent(int freq) {
         period = freq;
     }
-
-    @Override
-    public SarimaComponent clone() {
-        try {
-            SarimaComponent cmp = (SarimaComponent) super.clone();
-            cmp.phi = Parameter.clone(phi);
-            cmp.bphi = Parameter.clone(bphi);
-            cmp.theta = Parameter.clone(theta);
-            cmp.btheta = Parameter.clone(btheta);
-            return cmp;
-        } catch (CloneNotSupportedException err) {
-            throw new AssertionError();
-        }
-    }
+    
+    
+    public void copy(SarimaComponent other){
+        super.copy(other);
+        d=other.d;
+        bd=other.bd;
+        period=other.period;
+        phi=Parameter.clone(other.phi);
+        bphi=Parameter.clone(other.bphi);
+        theta=Parameter.clone(other.theta);
+        btheta=Parameter.clone(other.btheta);
+   }
 
     public void setParameterType(ParameterType type) {
         if (phi != null) {
@@ -297,11 +306,11 @@ public class SarimaComponent extends AbstractArimaComponent implements Cloneable
         return new BackFilter(ur.toPolynomial());
     }
 
-    public int getFrequency() {
+    public int getPeriod() {
         return period;
     }
 
-    public void setFrequency(int freq) {
+    public void setPeriod(int freq) {
         period = freq;
         if (freq == 1) {
             bd = 0;
@@ -389,10 +398,6 @@ public class SarimaComponent extends AbstractArimaComponent implements Cloneable
     }
 
     @Override
-    public void setModel(IArimaModel value) {
-        setModel((SarimaModel) value);
-    }
-
     public void setModel(SarimaModel value) {
         SarimaSpecification spec = value.specification();
         setP(spec.getP());

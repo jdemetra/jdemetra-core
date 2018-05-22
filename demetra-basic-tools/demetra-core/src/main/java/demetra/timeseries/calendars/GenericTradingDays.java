@@ -23,6 +23,7 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -207,4 +208,24 @@ public class GenericTradingDays {
         return rslt;
     }
 
+    @Override
+    public boolean equals(Object other){
+        if (this == other)
+            return true;
+        if (other instanceof GenericTradingDays){
+           GenericTradingDays x=(GenericTradingDays) other;
+           return x.normalized == normalized && x.contrastGroup == contrastGroup
+                   && x.clustering.equals(clustering);
+        }else
+            return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 53 * hash + Objects.hashCode(this.clustering);
+        hash = 53 * hash + this.contrastGroup;
+        hash = 53 * hash + (this.normalized ? 1 : 0);
+        return hash;
+    }
 }

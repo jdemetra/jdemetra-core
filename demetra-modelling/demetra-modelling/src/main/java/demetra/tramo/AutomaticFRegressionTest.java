@@ -53,6 +53,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         private double tmean = DEF_TMEAN, tlp = DEF_TLP, teaster = DEF_TEASTER;
         private double fpvalue = DEF_FPVAL;
         private boolean testMean = true;
+        private double precision = 1e-5;
 
         public Builder tradingDays(ITradingDaysVariable td) {
             this.td = td;
@@ -99,6 +100,11 @@ public class AutomaticFRegressionTest implements IRegressionModule {
             return this;
         }
 
+        public Builder estimationPrecision(double eps) {
+            this.precision = eps;
+            return this;
+        }
+
         public AutomaticFRegressionTest build() {
             return new AutomaticFRegressionTest(this);
         }
@@ -110,6 +116,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
     private final double tmean, teaster, tlp;
     private final double fpvalue;
     private final boolean testMean;
+    private final double precision;
 
     private AutomaticFRegressionTest(Builder builder) {
         this.td = builder.td;
@@ -121,6 +128,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         this.teaster = builder.teaster;
         this.tlp = builder.tlp;
         this.testMean = builder.testMean;
+        this.precision=builder.precision;
     }
 
     @Override
@@ -129,7 +137,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         ModelDescription current = context.getDescription();
 //      First case TD=0 or Just test EE
         ModelDescription test0 = createTestModel(context, null, null);
-        IRegArimaProcessor processor = TramoUtility.processor(true, 1e-7);
+        IRegArimaProcessor processor = RegArimaUtility.processor(current.getArimaComponent().defaultMapping(), true, precision);
         RegArimaEstimation regarima0 = processor.process(test0.regarima());
         ConcentratedLikelihood ll0 = regarima0.getConcentratedLikelihood();
         int nhp = test0.getArimaComponent().getFreeParametersCount();
@@ -197,8 +205,9 @@ public class AutomaticFRegressionTest implements IRegressionModule {
 
     private ProcessingResult update(ModelDescription current, ModelDescription test, ITradingDaysVariable aTd, ConcentratedLikelihood ll, int nhp) {
         boolean changed = false;
-        if (aTd != null)
-                current.addVariable(new Variable(aTd, false));
+        if (aTd != null) {
+            current.addVariable(new Variable(aTd, false));
+        }
         if (testMean) {
             boolean mean = Math.abs(ll.tstat(0, nhp, true)) > tmean;
             if (mean != current.getArimaComponent().isMean()) {
@@ -206,7 +215,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
                 changed = true;
             }
         }
-        if (aTd!= null && lp != null) {
+        if (aTd != null && lp != null) {
             int pos = 1 + test.findPosition(lp);
             if (Math.abs(ll.tstat(pos, nhp, true)) > tlp) {
                 current.addVariable(new Variable(lp, false));

@@ -21,6 +21,7 @@ import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.modelling.ComponentType;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  *
@@ -126,7 +127,7 @@ public class TransitoryChange extends AbstractOutlier {
     }
 
     @Override
-    public ComponentType getComponentType(){
+    public ComponentType getComponentType() {
         return ComponentType.Irregular;
     }
 
@@ -135,4 +136,24 @@ public class TransitoryChange extends AbstractOutlier {
         return new TransitoryChange(position, coefficient, name);
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other instanceof SwitchOutlier) {
+            TransitoryChange x = (TransitoryChange) other;
+            return this.coefficient == x.coefficient && this.position.equals(x.position);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + (int) (Double.doubleToLongBits(this.coefficient) ^ (Double.doubleToLongBits(this.coefficient) >>> 32));
+        hash = 97 * hash + Objects.hash(position);
+        return hash;
+    }
 }

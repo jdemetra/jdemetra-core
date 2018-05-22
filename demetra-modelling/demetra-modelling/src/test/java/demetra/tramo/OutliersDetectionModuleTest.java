@@ -16,8 +16,13 @@
  */
 package demetra.tramo;
 
+import demetra.tramo.internal.OutliersDetectionModule;
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
+import demetra.modelling.regression.AdditiveOutlier;
+import demetra.modelling.regression.IOutlier;
+import demetra.modelling.regression.LevelShift;
+import demetra.modelling.regression.TransitoryChange;
 import demetra.regarima.RegArimaModel;
 import demetra.sarima.GlsSarimaProcessor;
 import demetra.sarima.SarimaModel;
@@ -36,7 +41,14 @@ import static org.junit.Assert.*;
  */
 public class OutliersDetectionModuleTest {
 
+    private IOutlier.IOutlierFactory[] fac;
+
     public OutliersDetectionModuleTest() {
+        fac = new IOutlier.IOutlierFactory[]{
+            AdditiveOutlier.FACTORY,
+            LevelShift.FACTORY_ZEROSTARTED,
+            new TransitoryChange.Factory(.7)
+        };
     }
 
     @Test
@@ -48,15 +60,15 @@ public class OutliersDetectionModuleTest {
 
 //        long t0 = System.currentTimeMillis();
 //        for (int i = 0; i < 500; ++i) {
-            HannanRissanenInitializer hr = HannanRissanenInitializer.builder().build();
-            OutliersDetectionModule od = OutliersDetectionModule.builder()
-                    .setAll()
-                    .criticalValue(3)
-                    .build();
-            RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
-            od.prepare(regarima.getObservationsCount());
-            od.process(regarima);
-            int[][] outliers = od.getOutliers();
+        HannanRissanenInitializer hr = HannanRissanenInitializer.builder().build();
+        OutliersDetectionModule od = OutliersDetectionModule.builder()
+                .addFactories(fac)
+                .criticalValue(3)
+                .build();
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
+        od.prepare(regarima.getObservationsCount());
+        od.process(regarima);
+        int[][] outliers = od.getOutliers();
         for (int i = 0; i < outliers.length; ++i) {
             int[] cur = outliers[i];
             System.out.println(od.getFactory(cur[1]).getCode() + '-' + start.plus(cur[0]).display());
@@ -77,15 +89,15 @@ public class OutliersDetectionModuleTest {
         System.out.println("WN");
 //        long t0 = System.currentTimeMillis();
 //        for (int i = 0; i < 500; ++i) {
-            HannanRissanenInitializer hr = HannanRissanenInitializer.builder().build();
-            OutliersDetectionModule od = OutliersDetectionModule.builder()
-                    .setAll()
-                    .criticalValue(3)
-                    .build();
-            RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
-            od.prepare(regarima.getObservationsCount());
-            od.process(regarima);
-            int[][] outliers = od.getOutliers();
+        HannanRissanenInitializer hr = HannanRissanenInitializer.builder().build();
+        OutliersDetectionModule od = OutliersDetectionModule.builder()
+                .addFactories(fac)
+                .criticalValue(3)
+                .build();
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
+        od.prepare(regarima.getObservationsCount());
+        od.process(regarima);
+        int[][] outliers = od.getOutliers();
         for (int i = 0; i < outliers.length; ++i) {
             int[] cur = outliers[i];
             System.out.println(od.getFactory(cur[1]).getCode() + '-' + start.plus(cur[0]).display());
@@ -94,25 +106,26 @@ public class OutliersDetectionModuleTest {
 //        long t1 = System.currentTimeMillis();
 //        System.out.println(t1 - t0);
     }
+
     @Test
     public void testProdLegacy() {
 
         System.out.println("Legacy");
 //        long t0 = System.currentTimeMillis();
 //        for (int i = 0; i < 500; ++i) {
-            ec.tstoolkit.modelling.arima.tramo.OutliersDetector od = new ec.tstoolkit.modelling.arima.tramo.OutliersDetector();
-            od.setDefault();
-            od.setCriticalValue(3);
-            ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, Data.PROD, true);
-            ec.tstoolkit.modelling.arima.ModelDescription desc = new ec.tstoolkit.modelling.arima.ModelDescription(s, null);
-            ec.tstoolkit.modelling.arima.ModellingContext context = new ec.tstoolkit.modelling.arima.ModellingContext();
+        ec.tstoolkit.modelling.arima.tramo.OutliersDetector od = new ec.tstoolkit.modelling.arima.tramo.OutliersDetector();
+        od.setDefault();
+        od.setCriticalValue(3);
+        ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, Data.PROD, true);
+        ec.tstoolkit.modelling.arima.ModelDescription desc = new ec.tstoolkit.modelling.arima.ModelDescription(s, null);
+        ec.tstoolkit.modelling.arima.ModellingContext context = new ec.tstoolkit.modelling.arima.ModellingContext();
 
-            desc.setAirline(true);
-            context.description = desc;
-            context.hasseas = true;
-            od.process(context);
-            List<IOutlierVariable> outliers = context.description.getOutliers();
-            int n=outliers.size();
+        desc.setAirline(true);
+        context.description = desc;
+        context.hasseas = true;
+        od.process(context);
+        List<IOutlierVariable> outliers = context.description.getOutliers();
+        int n = outliers.size();
         for (IOutlierVariable o : outliers) {
             System.out.println(o.getName());
         }

@@ -26,6 +26,7 @@ import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.Easter;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -255,6 +256,27 @@ public class EasterVariable implements IEasterVariable {
     @Override
     public EasterVariable rename(String nname) {
         return new EasterVariable(duration, endPosition, meanCorrection, nname);
+    }
+
+    @Override
+    public boolean equals(Object other){
+        if (this == other)
+            return true;
+        if (other instanceof EasterVariable){
+            EasterVariable x=(EasterVariable) other;
+            return x.duration==duration && x.endPosition==endPosition 
+                    && Objects.equals(x.meanCorrection, meanCorrection);
+         }else
+            return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + this.duration;
+        hash = 53 * hash + this.endPosition;
+        hash = 53 * hash + Objects.hashCode(this.meanCorrection);
+        return hash;
     }
 
 }

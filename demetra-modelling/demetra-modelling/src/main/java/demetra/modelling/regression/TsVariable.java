@@ -19,11 +19,11 @@ package demetra.modelling.regression;
 import demetra.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.modelling.ComponentType;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDataSupplier;
 import demetra.timeseries.TsDomain;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 
 /**
@@ -138,6 +138,26 @@ public class TsVariable implements ITsVariable<TsDomain> {
     @Override
     public String getDescription(TsDomain context) {
         return desc;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other instanceof TsVariable) {
+            TsVariable x = (TsVariable) other;
+            return x.tsdata.equals(tsdata);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 37 * hash + Objects.hashCode(this.tsdata);
+        return hash;
     }
 
 }

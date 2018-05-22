@@ -17,13 +17,10 @@
 
 package demetra.modelling.regression;
 
-import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
-import java.time.Period;
-import demetra.timeseries.TimeSeriesDomain;
 
 /**
  *
@@ -31,7 +28,6 @@ import demetra.timeseries.TimeSeriesDomain;
  */
 @Development(status = Development.Status.Alpha)
 public abstract class BaseOutlier{
-
 
     protected final LocalDateTime position;
     protected final String name;

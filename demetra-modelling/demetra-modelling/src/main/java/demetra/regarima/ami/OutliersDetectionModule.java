@@ -52,12 +52,12 @@ public class OutliersDetectionModule<T extends IArimaModel>
     @BuilderPattern(OutliersDetectionModule.class)
     public static class Builder<T extends IArimaModel> {
 
-        private AbstractSingleOutlierDetector sod = new FastOutlierDetector(null);
+        private AbstractSingleOutlierDetector<T> sod = new FastOutlierDetector<>(null);
         private IRegArimaProcessor<T> processor;
         private int maxOutliers = DEF_MAXOUTLIERS;
         private int maxRound = DEF_MAXROUND;
 
-        public Builder<T> detector(AbstractSingleOutlierDetector sod) {
+        public Builder<T> detector(AbstractSingleOutlierDetector<T> sod) {
             this.sod = sod;
             this.sod.clearOutlierFactories();
             return this;
@@ -123,7 +123,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
 
     private RegArimaModel<T> regarima; // current regarima model
     private final ArrayList<int[]> outliers = new ArrayList<>(); // Outliers : (position, type)
-    private final AbstractSingleOutlierDetector sod;
+    private final AbstractSingleOutlierDetector<T> sod;
     private final IRegArimaProcessor<T> processor;
     private final int maxOutliers;
     private final int maxRound;

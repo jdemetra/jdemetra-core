@@ -189,4 +189,23 @@ public class JulianEasterVariable implements IEasterVariable {
         return new JulianEasterVariable(duration, gregorianDates, newname);
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 37 * hash + this.duration;
+        hash = 37 * hash + (this.gregorianDates ? 1 : 0);
+        return hash;
+    }
+    
+    @Override
+    public boolean equals(Object other){
+        if (this == other)
+            return true;
+        if (other instanceof JulianEasterVariable){
+            JulianEasterVariable x=(JulianEasterVariable) other;
+            return x.gregorianDates == gregorianDates && x.duration == duration;
+        }else
+            return false;
+    }
+
 }

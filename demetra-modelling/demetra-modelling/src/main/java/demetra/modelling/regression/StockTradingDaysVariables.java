@@ -19,13 +19,9 @@ package demetra.modelling.regression;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsPeriod;
-import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.Utility;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.List;
 
 /**
@@ -172,4 +168,25 @@ public class StockTradingDaysVariables implements ITradingDaysVariable {
     public StockTradingDaysVariables rename(String newname) {
         return new StockTradingDaysVariables(w, newname);
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other instanceof StockTradingDaysVariables) {
+            StockTradingDaysVariables x = (StockTradingDaysVariables) other;
+            return x.w == w;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + this.w;
+        return hash;
+    }
+
 }
