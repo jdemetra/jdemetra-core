@@ -18,6 +18,7 @@ package demetra.tsprovider;
 
 import demetra.timeseries.TsData;
 import internal.tsprovider.util.TsDataBuilderUtil;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -52,6 +53,22 @@ public final class Ts {
 
         public TsInformationType getType() {
             return type;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Map<String, String> getMetaData() {
+            Map<String, String> result = new HashMap<>();
+            for (int i = 0; i < metaData$key.size(); i++) {
+                result.put(metaData$key.get(i), metaData$value.get(i));
+            }
+            return result;
+        }
+
+        public TsData getData() {
+            return data;
         }
     }
 }

@@ -25,6 +25,7 @@ import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
 import ec.tss.TsInformationType;
 import ec.tss.TsMoniker;
+import ec.tss.tsproviders.utils.OptionalTsData;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -59,7 +60,7 @@ public class FromTsProvider<T extends TsProvider> implements ITsProvider {
             TsCollection result = getDelegate().getTsCollection(Converter.toMoniker(info.moniker), Converter.toType(info.type));
             info.name = result.getName();
             info.metaData = Converter.fromMeta(result.getMetaData());
-            info.items.addAll(result.getItems().stream().map(Converter::fromTs).collect(Collectors.toList()));
+            info.items.addAll(result.getItems().stream().map(o -> Converter.fromTsBuilder(o.toBuilder())).collect(Collectors.toList()));
         } catch (IOException | IllegalArgumentException ex) {
             info.invalidDataCause = ex.getMessage();
             return false;
@@ -73,8 +74,14 @@ public class FromTsProvider<T extends TsProvider> implements ITsProvider {
             Ts result = getDelegate().getTs(Converter.toMoniker(info.moniker), Converter.toType(info.type));
             info.name = result.getName();
             info.metaData = Converter.fromMeta(result.getMetaData());
-            info.data = Converter.fromTsData(result.getData());
-            info.invalidDataCause = result.getData().isEmpty() ? result.getData().getCause() : null;
+            OptionalTsData data = Converter.fromTsData(result.getData());
+            if (data.isPresent()) {
+                info.data = data.get();
+                info.invalidDataCause = null;
+            } else {
+                info.data = null;
+                info.invalidDataCause = data.getCause();
+            }
         } catch (IOException | IllegalArgumentException ex) {
             info.invalidDataCause = ex.getMessage();
             return false;
