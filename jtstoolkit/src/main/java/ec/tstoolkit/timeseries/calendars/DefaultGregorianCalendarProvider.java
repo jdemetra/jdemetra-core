@@ -72,10 +72,15 @@ public class DefaultGregorianCalendarProvider implements IGregorianCalendarProvi
     }
 
     public static String description(TradingDaysType dw, int idx) {
-        if (idx >= 7) {
+        if (idx >= dw.getVariablesCount()) {
             return "";
         }
-        return (DayOfWeek.fromCalendar(idx + 1)).toString();
+        if (dw == TradingDaysType.TradingDays) {
+            return DayOfWeek.valueOf(idx + 1).toString();
+        } else //(dtype == TradingDaysType.WorkingDays)
+        {
+            return "Week days";
+        }
     }
 
     @Override
