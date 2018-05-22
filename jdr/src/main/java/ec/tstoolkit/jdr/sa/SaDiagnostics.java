@@ -9,6 +9,7 @@ import demetra.algorithm.IProcResults;
 import demetra.information.InformationMapping;
 import ec.satoolkit.diagnostics.CombinedSeasonalityTest;
 import ec.satoolkit.diagnostics.SeasonalityTest;
+import ec.satoolkit.diagnostics.StationaryVarianceDecomposition;
 import ec.tstoolkit.information.StatisticalTest;
 import ec.tstoolkit.jdr.tests.CombinedSeasonalityTestInfo;
 import java.util.LinkedHashMap;
@@ -29,7 +30,18 @@ public class SaDiagnostics implements IProcResults {
     private CombinedSeasonalityTest combinedSeasonality, combinedSeasonalityOnEnd;
     private SeasonalityTest residualSeasonality, residualSeasonalityOnEnd;
     private StatisticalTest residualTradingDays;
+    private StationaryVarianceDecomposition varDecomposition;
     
+    double[] allVariances(){
+        return new double[]{
+            varDecomposition.getVarC(),
+            varDecomposition.getVarS(),
+            varDecomposition.getVarI(),
+            varDecomposition.getVarTD(),
+            varDecomposition.getVarP(),
+            varDecomposition.getVarTotal()
+        };
+    }
     
     static {
         MAPPING.set("qs", StatisticalTest.class, source->source.qs);
@@ -39,6 +51,7 @@ public class SaDiagnostics implements IProcResults {
         MAPPING.set("residual.all", StatisticalTest.class, source->StatisticalTest.create(source.residualSeasonality));
         MAPPING.set("residual.end", StatisticalTest.class, source->StatisticalTest.create(source.residualSeasonalityOnEnd));
         MAPPING.set("residualtd", StatisticalTest.class, source->source.residualTradingDays);
+        MAPPING.set("variancedecomposition", double[].class, source->source.allVariances());
     }
 
     public static InformationMapping<SaDiagnostics> getMapping() {
@@ -61,4 +74,6 @@ public class SaDiagnostics implements IProcResults {
     public <T> T getData(String id, Class<T> tclass) {
         return MAPPING.getData(this, id, tclass);
     }
+    
+    
 }

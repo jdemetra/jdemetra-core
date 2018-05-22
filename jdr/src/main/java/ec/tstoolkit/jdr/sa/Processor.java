@@ -11,6 +11,7 @@ import ec.satoolkit.algorithm.implementation.X13ProcessingFactory;
 import ec.satoolkit.diagnostics.CombinedSeasonalityTest;
 import ec.satoolkit.diagnostics.QSTest;
 import ec.satoolkit.diagnostics.SeasonalityTest;
+import ec.satoolkit.diagnostics.StationaryVarianceDecomposition;
 import ec.satoolkit.seats.SeatsResults;
 import ec.satoolkit.tramoseats.TramoSeatsSpecification;
 import ec.satoolkit.x11.X11Results;
@@ -47,6 +48,10 @@ public class Processor {
         if (dic != null) {
             context = dic.toContext();
         }
+        return tramoseatsWithContext(s, spec, context);
+    }
+
+    public static TramoSeatsResults tramoseatsWithContext(TsData s, TramoSeatsSpecification spec, ProcessingContext context) {
         CompositeResults rslts = TramoSeatsProcessingFactory.process(s, spec, context);
         SeatsResults seats = rslts.get(TramoSeatsProcessingFactory.DECOMPOSITION, SeatsResults.class);
 
@@ -57,14 +62,18 @@ public class Processor {
         TsData si = mul ? TsData.multiply(seas, irr) : TsData.add(seas, irr);
         TsPeriodSelector sel = new TsPeriodSelector();
         sel.last(si.getFrequency().intValue() * 3);
-        TsData sic=si.select(sel);
-        int lag=s.getFrequency().intValue()/4;
-        if (lag ==0)
-            lag=1;
-        if (mul)
-            sa=sa.log();
-        TsData dsa=sa.delta(lag);
-        TsData dsac=dsa.select(sel);
+        TsData sic = si.select(sel);
+        int lag = s.getFrequency().intValue() / 4;
+        if (lag == 0) {
+            lag = 1;
+        }
+        if (mul) {
+            sa = sa.log();
+        }
+        TsData dsa = sa.delta(lag);
+        TsData dsac = dsa.select(sel);
+        StationaryVarianceDecomposition var = new StationaryVarianceDecomposition();
+        var.process(rslts);
 
         SaDiagnostics diags = SaDiagnostics.builder()
                 .qs(qs(rslts))
@@ -74,6 +83,7 @@ public class Processor {
                 .residualSeasonality(SeasonalityTest.stableSeasonality(dsa))
                 .residualSeasonalityOnEnd(SeasonalityTest.stableSeasonality(dsac))
                 .residualTradingDays(TradingDaysTests.ftest(sa, true, NY))
+                .varDecomposition(var)
                 .build();
         return new TramoSeatsResults(rslts, diags);
     }
@@ -85,6 +95,10 @@ public class Processor {
         if (dic != null) {
             context = dic.toContext();
         }
+        return x13WithContext(s, spec, context);
+    }
+
+    public static X13Results x13WithContext(TsData s, X13Specification spec, ProcessingContext context) {
         CompositeResults rslts = X13ProcessingFactory.process(s, spec, context);
         X11Results x11 = rslts.get(X13ProcessingFactory.DECOMPOSITION, X11Results.class);
         TsData d8 = x11.getData("d-tables.d8", TsData.class);
@@ -92,14 +106,18 @@ public class Processor {
         boolean mul = isMultiplicative(rslts);
         TsPeriodSelector sel = new TsPeriodSelector();
         sel.last(d8.getFrequency().intValue() * 3);
-        TsData d8c=d8.select(sel);
-        int lag=s.getFrequency().intValue()/4;
-        if (lag ==0)
-            lag=1;
-        if (mul)
-            sa=sa.log();
-        TsData dsa=sa.delta(lag);
-        TsData dsac=dsa.select(sel);
+        TsData d8c = d8.select(sel);
+        int lag = s.getFrequency().intValue() / 4;
+        if (lag == 0) {
+            lag = 1;
+        }
+        if (mul) {
+            sa = sa.log();
+        }
+        TsData dsa = sa.delta(lag);
+        TsData dsac = dsa.select(sel);
+        StationaryVarianceDecomposition var = new StationaryVarianceDecomposition();
+        var.process(rslts);
 
         SaDiagnostics diags = SaDiagnostics.builder()
                 .qs(qs(rslts))
@@ -109,6 +127,7 @@ public class Processor {
                 .residualSeasonality(SeasonalityTest.stableSeasonality(dsa))
                 .residualSeasonalityOnEnd(SeasonalityTest.stableSeasonality(dsac))
                 .residualTradingDays(TradingDaysTests.ftest(sa, true, NY))
+                .varDecomposition(var)
                 .build();
         return new X13Results(rslts, diags);
 

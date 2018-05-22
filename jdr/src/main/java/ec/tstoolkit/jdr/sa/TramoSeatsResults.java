@@ -11,11 +11,8 @@ import ec.satoolkit.ISeriesDecomposition;
 import ec.satoolkit.algorithm.implementation.TramoSeatsProcessingFactory;
 import ec.satoolkit.seats.SeatsResults;
 import ec.tstoolkit.algorithm.CompositeResults;
-import ec.tstoolkit.jdr.mapping.LikelihoodStatisticsInfo;
 import ec.tstoolkit.jdr.mapping.PreprocessingInfo;
-import ec.tstoolkit.jdr.mapping.ResidualsInfo;
-import ec.tstoolkit.jdr.mapping.SarimaInfo;
-import ec.tstoolkit.jdr.regarima.RegArimaInfo;
+import ec.tstoolkit.jdr.seats.SeatsInfo;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -26,9 +23,13 @@ import java.util.Map;
  */
 @lombok.Value
 public class TramoSeatsResults implements IProcResults {
-
+    
     CompositeResults results;
     SaDiagnostics diagnostics;
+    
+    public ec.tstoolkit.jdr.regarima.Processor.Results regarima(){
+        return new ec.tstoolkit.jdr.regarima.Processor.Results(model());
+    }
 
     PreprocessingModel model() {
         return results == null ? null : results.get(TramoSeatsProcessingFactory.PREPROCESSING, PreprocessingModel.class);
@@ -47,6 +48,7 @@ public class TramoSeatsResults implements IProcResults {
     static {
         MAPPING.delegate(null, SaDecompositionInfo.getMapping(), source -> source.finals());
         MAPPING.delegate("preprocessing", PreprocessingInfo.getMapping(), source -> source.model());
+        MAPPING.delegate("decomposition", SeatsInfo.getMapping(), source -> source.seats());
         MAPPING.delegate("diagnostics", SaDiagnostics.getMapping(), source -> source.diagnostics);
     }
 
