@@ -33,12 +33,12 @@ public class FromDataSourceLoader<T extends DataSourceLoader> extends FromDataSo
 
     @Override
     public boolean open(DataSource dataSource) throws IllegalArgumentException {
-        return getDelegate().open(Converter.toDataSource(dataSource));
+        return getDelegate().open(TsConverter.toDataSource(dataSource));
     }
 
     @Override
     public boolean close(DataSource dataSource) throws IllegalArgumentException {
-        return getDelegate().close(Converter.toDataSource(dataSource));
+        return getDelegate().close(TsConverter.toDataSource(dataSource));
     }
 
     @Override
@@ -48,11 +48,11 @@ public class FromDataSourceLoader<T extends DataSourceLoader> extends FromDataSo
 
     @Override
     public DataSource encodeBean(Object bean) throws IllegalArgumentException {
-        return Converter.fromDataSource(getDelegate().encodeBean(bean));
+        return TsConverter.fromDataSource(getDelegate().encodeBean(bean));
     }
 
     @Override
     public Object decodeBean(DataSource dataSource) throws IllegalArgumentException {
-        return getDelegate().decodeBean(Converter.toDataSource(dataSource));
+        return getDelegate().decodeBean(TsConverter.toDataSource(dataSource));
     }
 }

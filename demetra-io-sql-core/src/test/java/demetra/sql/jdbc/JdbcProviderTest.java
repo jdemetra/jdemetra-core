@@ -78,7 +78,7 @@ public class JdbcProviderTest {
                 .build();
 
         try (DataSourceProvider p = new JdbcProvider()) {
-            assertThat(p.toDataSet(new TsMoniker("JNDI-JDBC", uri))).isEqualTo(expected);
+            assertThat(p.toDataSet(TsMoniker.of("JNDI-JDBC", uri))).isEqualTo(expected);
         }
     }
 }

@@ -32,17 +32,17 @@ public class ToDataSourceListener implements DataSourceListener {
 
     @Override
     public void opened(@Nonnull DataSource dataSource) {
-        delegate.opened(Converter.fromDataSource(dataSource));
+        delegate.opened(TsConverter.fromDataSource(dataSource));
     }
 
     @Override
     public void closed(@Nonnull DataSource dataSource) {
-        delegate.closed(Converter.fromDataSource(dataSource));
+        delegate.closed(TsConverter.fromDataSource(dataSource));
     }
 
     @Override
     public void changed(@Nonnull DataSource dataSource) {
-        delegate.changed(Converter.fromDataSource(dataSource));
+        delegate.changed(TsConverter.fromDataSource(dataSource));
     }
 
     @Override

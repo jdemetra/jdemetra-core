@@ -78,7 +78,7 @@ public class OdbcProviderTest {
                 .build();
 
         try (DataSourceProvider p = new OdbcProvider()) {
-            assertThat(p.toDataSet(new TsMoniker("ODBCPRVDR", uri))).isEqualTo(expected);
+            assertThat(p.toDataSet(TsMoniker.of("ODBCPRVDR", uri))).isEqualTo(expected);
         }
     }
 }

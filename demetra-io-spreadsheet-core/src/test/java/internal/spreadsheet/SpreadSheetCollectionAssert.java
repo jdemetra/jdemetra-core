@@ -46,21 +46,21 @@ final class SpreadSheetCollectionAssert extends AbstractAssert<SpreadSheetCollec
 
     public SpreadSheetCollectionAssert hasLayout(GridLayout layout) {
         isNotNull();
-        if (!actual.getMetaData().getOrDefault("gridLayout", GridLayout.UNKNOWN.name()).equals(layout.name())) {
-            failWithMessage("Expected alignType to be <%s> but was <%s>", layout, actual.getItems());
+        if (!actual.getMeta().getOrDefault("gridLayout", GridLayout.UNKNOWN.name()).equals(layout.name())) {
+            failWithMessage("Expected alignType to be <%s> but was <%s>", layout, actual.getData());
         }
         return this;
     }
 
     public SpreadSheetCollectionAssert containsExactly(TsData... data) {
-        Assertions.assertThat(actual.getItems())
+        Assertions.assertThat(actual.getData())
                 .extracting(o -> o.getData())
                 .containsExactly(data);
         return this;
     }
 
     public SpreadSheetCollectionAssert containsExactly(String... names) {
-        Assertions.assertThat(actual.getItems())
+        Assertions.assertThat(actual.getData())
                 .extracting(o -> o.getName())
                 .containsExactly(names);
         return this;

@@ -39,7 +39,7 @@ public class FromDataSourceProvider<T extends DataSourceProvider> extends FromTs
 
     @Override
     public void reload(DataSource dataSource) throws IllegalArgumentException {
-        getDelegate().reload(Converter.toDataSource(dataSource));
+        getDelegate().reload(TsConverter.toDataSource(dataSource));
     }
 
     @Override
@@ -49,7 +49,7 @@ public class FromDataSourceProvider<T extends DataSourceProvider> extends FromTs
 
     @Override
     public List<DataSource> getDataSources() {
-        return getDelegate().getDataSources().stream().map(Converter::fromDataSource).collect(Collectors.toList());
+        return getDelegate().getDataSources().stream().map(TsConverter::fromDataSource).collect(Collectors.toList());
     }
 
     @Override
@@ -64,46 +64,46 @@ public class FromDataSourceProvider<T extends DataSourceProvider> extends FromTs
 
     @Override
     public List<DataSet> children(DataSource dataSource) throws IllegalArgumentException, IOException {
-        return getDelegate().children(Converter.toDataSource(dataSource)).stream().map(Converter::fromDataSet).collect(Collectors.toList());
+        return getDelegate().children(TsConverter.toDataSource(dataSource)).stream().map(TsConverter::fromDataSet).collect(Collectors.toList());
     }
 
     @Override
     public List<DataSet> children(DataSet parent) throws IllegalArgumentException, IOException {
-        return getDelegate().children(Converter.toDataSet(parent)).stream().map(Converter::fromDataSet).collect(Collectors.toList());
+        return getDelegate().children(TsConverter.toDataSet(parent)).stream().map(TsConverter::fromDataSet).collect(Collectors.toList());
     }
 
     @Override
     public String getDisplayName(DataSource dataSource) throws IllegalArgumentException {
-        return getDelegate().getDisplayName(Converter.toDataSource(dataSource));
+        return getDelegate().getDisplayName(TsConverter.toDataSource(dataSource));
     }
 
     @Override
     public String getDisplayName(DataSet dataSet) throws IllegalArgumentException {
-        return getDelegate().getDisplayName(Converter.toDataSet(dataSet));
+        return getDelegate().getDisplayName(TsConverter.toDataSet(dataSet));
     }
 
     @Override
     public String getDisplayNodeName(DataSet dataSet) throws IllegalArgumentException {
-        return getDelegate().getDisplayNodeName(Converter.toDataSet(dataSet));
+        return getDelegate().getDisplayNodeName(TsConverter.toDataSet(dataSet));
     }
 
     @Override
     public TsMoniker toMoniker(DataSource dataSource) throws IllegalArgumentException {
-        return Converter.fromMoniker(getDelegate().toMoniker(Converter.toDataSource(dataSource)));
+        return TsConverter.fromTsMoniker(getDelegate().toMoniker(TsConverter.toDataSource(dataSource)));
     }
 
     @Override
     public TsMoniker toMoniker(DataSet dataSet) throws IllegalArgumentException {
-        return Converter.fromMoniker(getDelegate().toMoniker(Converter.toDataSet(dataSet)));
+        return TsConverter.fromTsMoniker(getDelegate().toMoniker(TsConverter.toDataSet(dataSet)));
     }
 
     @Override
     public DataSource toDataSource(TsMoniker moniker) throws IllegalArgumentException {
-        return Converter.fromDataSource(getDelegate().toDataSource(Converter.toMoniker(moniker)));
+        return TsConverter.fromDataSource(getDelegate().toDataSource(TsConverter.toTsMoniker(moniker)));
     }
 
     @Override
     public DataSet toDataSet(TsMoniker moniker) throws IllegalArgumentException {
-        return Converter.fromDataSet(getDelegate().toDataSet(Converter.toMoniker(moniker)));
+        return TsConverter.fromDataSet(getDelegate().toDataSet(TsConverter.toTsMoniker(moniker)));
     }
 }

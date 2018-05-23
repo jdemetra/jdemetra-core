@@ -64,7 +64,7 @@ public class SpreadSheetProviderTest {
                 .build();
 
         try (SpreadSheetProvider p = new SpreadSheetProvider()) {
-            assertThat(p.toDataSet(new TsMoniker("XCLPRVDR", legacy))).isEqualTo(expected);
+            assertThat(p.toDataSet(TsMoniker.of("XCLPRVDR", legacy))).isEqualTo(expected);
         }
     }
 
@@ -88,7 +88,7 @@ public class SpreadSheetProviderTest {
                 .build();
 
         try (SpreadSheetProvider p = new SpreadSheetProvider()) {
-            assertThat(p.toDataSet(new TsMoniker("XCLPRVDR", uri))).isEqualTo(expected);
+            assertThat(p.toDataSet(TsMoniker.of("XCLPRVDR", uri))).isEqualTo(expected);
         }
     }
 
@@ -110,7 +110,7 @@ public class SpreadSheetProviderTest {
             assertThat(p.getDisplayNodeName(node)).isEqualTo("Top 5 Browsers - Monthly");
             assertThat(p.children(node)).hasSize(6);
 
-            assertThat(p.getTsCollection(p.toMoniker(node), TsInformationType.All).getItems()).hasSize(6);
+            assertThat(p.getTsCollection(p.toMoniker(node), TsInformationType.All).getData()).hasSize(6);
 
             DataSet leaf = p.children(node).get(2);
             assertThat(p.getDisplayName(leaf)).isEqualTo("Top 5 Browsers - Monthly\nChrome");
@@ -120,7 +120,7 @@ public class SpreadSheetProviderTest {
                     .satisfies(o -> {
                         assertThat(o.getMoniker()).isEqualTo(p.toMoniker(leaf));
                         assertThat(o.getName()).isEqualTo("Top 5 Browsers - Monthly\nChrome");
-                        assertThat(o.getMetaData())
+                        assertThat(o.getMeta())
                                 .containsEntry(SpreadSheetSupport.SHEET_GRID_LAYOUT_META, "VERTICAL")
                                 .containsEntry(SpreadSheetSupport.SERIES_NAME_META, "Chrome")
                                 .containsEntry(SpreadSheetSupport.SHEET_NAME_META, "Top 5 Browsers - Monthly")

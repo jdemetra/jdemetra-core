@@ -31,17 +31,17 @@ public final class FromDataSourceListener implements IDataSourceListener {
 
     @Override
     public void opened(DataSource dataSource) {
-        delegate.opened(Converter.toDataSource(dataSource));
+        delegate.opened(TsConverter.toDataSource(dataSource));
     }
 
     @Override
     public void closed(DataSource dataSource) {
-        delegate.closed(Converter.toDataSource(dataSource));
+        delegate.closed(TsConverter.toDataSource(dataSource));
     }
 
     @Override
     public void changed(DataSource dataSource) {
-        delegate.changed(Converter.toDataSource(dataSource));
+        delegate.changed(TsConverter.toDataSource(dataSource));
     }
 
     @Override
