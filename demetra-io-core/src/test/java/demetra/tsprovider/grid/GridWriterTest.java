@@ -18,8 +18,6 @@ package demetra.tsprovider.grid;
 
 import static demetra.timeseries.TsUnit.*;
 import demetra.tsprovider.TsCollection;
-import demetra.tsprovider.TsInformationType;
-import demetra.tsprovider.TsMoniker;
 import static demetra.tsprovider.grid.GridLayout.*;
 import demetra.tsprovider.util.ObsFormat;
 import java.io.IOException;
@@ -178,13 +176,10 @@ public class GridWriterTest {
     }
 
     private final TsCollection sample = TsCollection.builder()
-            .moniker(new TsMoniker())
-            .type(TsInformationType.Data)
-            .name("")
             .meta("gridLayout", HORIZONTAL.name())
-            .item(s("G1\nS1", data(MONTH, 2010, 0, 1.01d, NaN, 1.03d)))
-            .item(s("G1\nS2", data(QUARTER, 2010, 0, 2.01d)))
-            .item(s("G2\nS1", data(MONTH, 2010, 0, 3.01d, 3.02d)))
-            .item(s("S1", data(MONTH, 2010, 1, 4.02d, 4.03d)))
+            .data(s("G1\nS1", data(MONTH, 2010, 0, 1.01d, NaN, 1.03d)))
+            .data(s("G1\nS2", data(QUARTER, 2010, 0, 2.01d)))
+            .data(s("G2\nS1", data(MONTH, 2010, 0, 3.01d, 3.02d)))
+            .data(s("S1", data(MONTH, 2010, 1, 4.02d, 4.03d)))
             .build();
 }

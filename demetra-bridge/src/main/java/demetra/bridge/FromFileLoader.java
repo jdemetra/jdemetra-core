@@ -60,13 +60,13 @@ public class FromFileLoader<T extends FileLoader> extends FromDataSourceLoader<T
 
     @Override
     public IFileBean decodeBean(ec.tss.tsproviders.DataSource dataSource) throws IllegalArgumentException {
-        return new FromFileBean(getDelegate().decodeBean(Converter.toDataSource(dataSource)));
+        return new FromFileBean(getDelegate().decodeBean(TsConverter.toDataSource(dataSource)));
     }
 
     @Override
     public DataSource encodeBean(Object bean) throws IllegalArgumentException {
         try {
-            return Converter.fromDataSource(getDelegate().encodeBean(((FromFileBean) bean).getDelegate()));
+            return TsConverter.fromDataSource(getDelegate().encodeBean(((FromFileBean) bean).getDelegate()));
         } catch (ClassCastException ex) {
             throw new IllegalArgumentException(ex);
         }

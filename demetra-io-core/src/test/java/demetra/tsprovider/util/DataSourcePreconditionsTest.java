@@ -61,7 +61,7 @@ public class DataSourcePreconditionsTest {
     @Test
     @SuppressWarnings("null")
     public void testTsMoniker() {
-        TsMoniker input = new TsMoniker("myprovider", "id");
+        TsMoniker input = TsMoniker.of("myprovider", "id");
         assertThat(checkProvider("myprovider", input))
                 .isSameAs(input);
         assertThatThrownBy(() -> checkProvider("xxx", input))

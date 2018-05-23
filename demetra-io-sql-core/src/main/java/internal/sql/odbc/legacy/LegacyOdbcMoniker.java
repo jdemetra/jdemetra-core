@@ -53,12 +53,7 @@ public final class LegacyOdbcMoniker implements HasDataMoniker {
     public DataSource toDataSource(TsMoniker moniker) throws IllegalArgumentException {
         DataSourcePreconditions.checkProvider(providerName, moniker);
 
-        String monikerId = moniker.getId();
-        if (monikerId == null) {
-            throw new IllegalArgumentException(moniker.toString());
-        }
-
-        LegacyOdbcId id = LegacyOdbcId.parse(monikerId);
+        LegacyOdbcId id = LegacyOdbcId.parse(moniker.getId());
         return id != null ? toDataSource(id) : null;
     }
 
@@ -66,12 +61,7 @@ public final class LegacyOdbcMoniker implements HasDataMoniker {
     public DataSet toDataSet(TsMoniker moniker) throws IllegalArgumentException {
         DataSourcePreconditions.checkProvider(providerName, moniker);
 
-        String monikerId = moniker.getId();
-        if (monikerId == null) {
-            throw new IllegalArgumentException(moniker.toString());
-        }
-
-        LegacyOdbcId id = LegacyOdbcId.parse(monikerId);
+        LegacyOdbcId id = LegacyOdbcId.parse(moniker.getId());
         return id != null ? toDataSet(id) : null;
     }
 

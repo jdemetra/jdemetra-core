@@ -88,7 +88,7 @@ public class ProviderDemo {
     public void printSeries(DataSourceProvider provider, Ts ts) {
         printId(provider, provider.toDataSet(ts.getMoniker()));
         printLabel(ts.getName());
-        printMetaData(ts.getMetaData());
+        printMetaData(ts.getMeta());
         printDataSummary(ts.getData());
     }
 
@@ -134,15 +134,15 @@ public class ProviderDemo {
             @Override
             Optional<Ts> getFirst(DataSourceProvider provider, DataSource dataSource) throws IOException {
                 TsCollection info = provider.getTsCollection(provider.toMoniker(dataSource), TsInformationType.All);
-                return info.getItems().stream().findFirst();
+                return info.getData().stream().findFirst();
             }
         },
         DEFINITION {
             @Override
             Optional<Ts> getFirst(DataSourceProvider provider, DataSource dataSource) throws IOException {
                 TsCollection info = provider.getTsCollection(provider.toMoniker(dataSource), TsInformationType.Definition);
-                if (!info.getItems().isEmpty()) {
-                    Ts ts = info.getItems().get(0);
+                if (!info.getData().isEmpty()) {
+                    Ts ts = info.getData().get(0);
                     return Optional.of(provider.getTs(ts.getMoniker(), TsInformationType.All));
                 }
                 return Optional.empty();
@@ -177,9 +177,9 @@ public class ProviderDemo {
         TsCollection col = provider.getTsCollection(provider.toMoniker(dataSource), TsInformationType.Data);
 
         Function<Ts, String> toDisplayNodeName = o -> provider.getDisplayNodeName(provider.toDataSet(o.getMoniker()));
-        System.out.println("\t" + col.getItems().stream().map(toDisplayNodeName).collect(Collectors.joining("\t")));
+        System.out.println("\t" + col.getData().stream().map(toDisplayNodeName).collect(Collectors.joining("\t")));
 
-        TsDataTable table = TsDataTable.of(col.getItems(), Ts::getData);
+        TsDataTable table = TsDataTable.of(col.getData(), Ts::getData);
         DataTypesDemo.printDataTable(table, distribution);
     }
 

@@ -19,7 +19,6 @@ package demetra.tsprovider.grid;
 import demetra.tsprovider.Ts;
 import demetra.tsprovider.TsCollection;
 import demetra.tsprovider.TsInformationType;
-import demetra.tsprovider.TsMoniker;
 import static demetra.tsprovider.grid.GridLayout.HORIZONTAL;
 import static demetra.tsprovider.grid.GridLayout.UNKNOWN;
 import static demetra.tsprovider.grid.GridLayout.VERTICAL;
@@ -74,16 +73,15 @@ public final class GridReader {
         DateHeader colDates = getColDates(input);
 
         TsCollection.Builder result = TsCollection.builder()
-                .moniker(TsMoniker.NULL)
                 .type(TsInformationType.Data)
                 .name(input.getName());
 
         if (rowDates.isBetterThan(colDates)) {
             result.meta("gridLayout", VERTICAL.name());
-            loadVertically(input, rowDates, result::item);
+            loadVertically(input, rowDates, result::data);
         } else if (colDates.isBetterThan(rowDates)) {
             result.meta("gridLayout", HORIZONTAL.name());
-            loadVertically(InvGridInput.of(input), colDates, result::item);
+            loadVertically(InvGridInput.of(input), colDates, result::data);
         } else {
             result.meta("gridLayout", UNKNOWN.name());
         }
@@ -118,7 +116,6 @@ public final class GridReader {
                 data.add(dates.get(row), value);
             }
             consumer.accept(Ts.builder()
-                    .moniker(TsMoniker.NULL)
                     .type(TsInformationType.Data)
                     .name(names.get(column))
                     .data(data.build())

@@ -16,7 +16,7 @@
  */
 package demetra.bridge;
 
-import static demetra.bridge.Converter.*;
+import static demetra.bridge.TsConverter.*;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
@@ -41,7 +41,7 @@ import org.junit.Test;
  *
  * @author Philippe Charles
  */
-public class ConverterTest {
+public class TsConverterTest {
 
     @Test
     public void testTsUnit() {
@@ -86,6 +86,17 @@ public class ConverterTest {
     }
 
     @Test
+    public void testTsMoniker() {
+        for (TsMoniker o : new TsMoniker[]{TsMoniker.ANONYMOUS, TsMoniker.of("hello", "world")}) {
+            assertThat(toTsMoniker(fromTsMoniker(o))).isEqualTo(o);
+        }
+
+        for (ec.tss.TsMoniker o : new ec.tss.TsMoniker[]{ec.tss.TsMoniker.create(null, null), ec.tss.TsMoniker.create("", ""), ec.tss.TsMoniker.create("hello", "world")}) {
+            assertThat(fromTsMoniker(toTsMoniker(o))).isEqualTo(o);
+        }
+    }
+
+    @Test
     public void testTs() {
         for (String name : names) {
             for (Map meta : metaArray) {
@@ -96,7 +107,7 @@ public class ConverterTest {
                                 .builder()
                                 .name(name)
                                 .moniker(moniker)
-                                .metaData(meta)
+                                .meta(meta)
                                 .data(data)
                                 .type(TsInformationType.UserDefined)
                                 .build();
@@ -118,7 +129,7 @@ public class ConverterTest {
                                     .builder()
                                     .name(name)
                                     .moniker(moniker)
-                                    .metaData(meta)
+                                    .meta(meta)
                                     .data(data)
                                     .type(type);
                             assertThat(toTsBuilder(fromTsBuilder(x))).isEqualToComparingFieldByField(x);
@@ -140,8 +151,8 @@ public class ConverterTest {
                                 .builder()
                                 .name(name)
                                 .moniker(moniker)
-                                .metaData(meta)
-                                .items(items)
+                                .meta(meta)
+                                .data(items)
                                 .type(TsInformationType.UserDefined)
                                 .build();
                         assertThat(toTsCollection(fromTsCollection(x))).isEqualTo(x);
@@ -162,8 +173,8 @@ public class ConverterTest {
                                     .builder()
                                     .name(name)
                                     .moniker(moniker)
-                                    .metaData(meta)
-                                    .items(items)
+                                    .meta(meta)
+                                    .data(items)
                                     .type(type);
                             assertThat(toTsCollectionBuilder(fromTsCollectionBuilder(x))).isEqualToComparingFieldByField(x);
                         }
@@ -177,12 +188,12 @@ public class ConverterTest {
 
     private final TsData emptyTsData = TsData.empty("boom");
     private final TsData montlyTsData = TsData.random(TsUnit.MONTH, 0);
-    private final Ts emptyTs = Ts.builder().name("x").data(emptyTsData).meta("k", "v").moniker(TsMoniker.create("a", "b")).type(TsInformationType.UserDefined).build();
-    private final Ts montlyTs = Ts.builder().name("x").data(montlyTsData).meta("k", "v").moniker(TsMoniker.create("a", "b")).type(TsInformationType.UserDefined).build();
+    private final Ts emptyTs = Ts.builder().name("x").data(emptyTsData).meta("k", "v").moniker(TsMoniker.of("a", "b")).type(TsInformationType.UserDefined).build();
+    private final Ts montlyTs = Ts.builder().name("x").data(montlyTsData).meta("k", "v").moniker(TsMoniker.of("a", "b")).type(TsInformationType.UserDefined).build();
 
     private final String[] names = {"", "not_blank"};
     private final Map<String, String>[] metaArray = new Map[]{Collections.emptyMap(), Collections.singletonMap("hello", "world")};
-    private final TsMoniker[] monikers = new TsMoniker[]{TsMoniker.create("p", "id")};
+    private final TsMoniker[] monikers = new TsMoniker[]{TsMoniker.of("p", "id")};
     private final TsData[] dataArray = new TsData[]{emptyTsData, montlyTsData};
     private final List<Ts>[] tsArray = new List[]{Collections.emptyList(), Arrays.asList(emptyTs, montlyTs)};
 }

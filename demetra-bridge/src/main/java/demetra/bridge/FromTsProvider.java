@@ -25,10 +25,8 @@ import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
 import ec.tss.TsInformationType;
 import ec.tss.TsMoniker;
-import ec.tss.tsproviders.utils.OptionalTsData;
 import java.io.IOException;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -57,10 +55,8 @@ public class FromTsProvider<T extends TsProvider> implements ITsProvider {
     @Override
     public boolean get(TsCollectionInformation info) {
         try {
-            TsCollection result = getDelegate().getTsCollection(Converter.toMoniker(info.moniker), Converter.toType(info.type));
-            info.name = result.getName();
-            info.metaData = Converter.fromMeta(result.getMetaData());
-            info.items.addAll(result.getItems().stream().map(o -> Converter.fromTsBuilder(o.toBuilder())).collect(Collectors.toList()));
+            TsCollection result = getDelegate().getTsCollection(TsConverter.toTsMoniker(info.moniker), TsConverter.toType(info.type));
+            TsConverter.fillTsCollectionInformation(result, info);
         } catch (IOException | IllegalArgumentException ex) {
             info.invalidDataCause = ex.getMessage();
             return false;
@@ -71,17 +67,8 @@ public class FromTsProvider<T extends TsProvider> implements ITsProvider {
     @Override
     public boolean get(TsInformation info) {
         try {
-            Ts result = getDelegate().getTs(Converter.toMoniker(info.moniker), Converter.toType(info.type));
-            info.name = result.getName();
-            info.metaData = Converter.fromMeta(result.getMetaData());
-            OptionalTsData data = Converter.fromTsData(result.getData());
-            if (data.isPresent()) {
-                info.data = data.get();
-                info.invalidDataCause = null;
-            } else {
-                info.data = null;
-                info.invalidDataCause = data.getCause();
-            }
+            Ts result = getDelegate().getTs(TsConverter.toTsMoniker(info.moniker), TsConverter.toType(info.type));
+            TsConverter.fillTsInformation(result, info);
         } catch (IOException | IllegalArgumentException ex) {
             info.invalidDataCause = ex.getMessage();
             return false;

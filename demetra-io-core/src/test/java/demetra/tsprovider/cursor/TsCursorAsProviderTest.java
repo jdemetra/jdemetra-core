@@ -81,7 +81,7 @@ public class TsCursorAsProviderTest {
         leaf3 = monikers.toMoniker(DataSet.of(ds, SERIES, "id", "leaf3"));
         s1 = Ts.builder().moniker(leaf1).type(All).name("node.leaf1").data(TsData.empty("No data available")).build();
         s2 = Ts.builder().moniker(leaf2).type(All).name("node.leaf2").data(TsData.random(TsUnit.MONTH, 2)).build();
-        s3 = Ts.builder().moniker(leaf3).type(All).name("leaf3").data(TsData.random(TsUnit.MONTH, 3)).metaData(customMeta).build();
+        s3 = Ts.builder().moniker(leaf3).type(All).name("leaf3").data(TsData.random(TsUnit.MONTH, 3)).meta(customMeta).build();
         goodCursor = new HasTsCursor() {
             @Override
             public TsCursor<DataSet> getData(DataSource dataSource, TsInformationType type) throws IllegalArgumentException, IOException {
@@ -93,7 +93,7 @@ public class TsCursorAsProviderTest {
                     };
                     return TsCursor.from(Iterators.forArray(s1, s2, s3),
                             o -> type.encompass(Data) ? o.getData() : TsData.empty("Not requested"),
-                            o -> type.encompass(MetaData) ? o.getMetaData() : Collections.emptyMap(),
+                            o -> type.encompass(MetaData) ? o.getMeta() : Collections.emptyMap(),
                             o -> o.getName()
                     )
                             .map(toDataSet)
@@ -139,23 +139,23 @@ public class TsCursorAsProviderTest {
 
         assertThat(p.getTsCollection(goodSource, None)).isEqualTo(TsCollection.builder()
                 .moniker(goodSource).type(None).name("")
-                .item(s1.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMetaData().build())
-                .item(s2.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMetaData().build())
-                .item(s3.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMetaData().build())
+                .data(s1.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
+                .data(s2.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
+                .data(s3.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
                 .build());
 
         assertThat(p.getTsCollection(goodSource, MetaData)).isEqualTo(TsCollection.builder()
                 .moniker(goodSource).type(MetaData).name("").meta("type", "root")
-                .item(s1.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
-                .item(s2.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
-                .item(s3.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
+                .data(s1.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
+                .data(s2.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
+                .data(s3.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
                 .build());
 
         assertThat(p.getTsCollection(goodSource, All)).isEqualTo(TsCollection.builder()
                 .moniker(goodSource).type(All).name("").meta("type", "root")
-                .item(s1)
-                .item(s2)
-                .item(s3)
+                .data(s1)
+                .data(s2)
+                .data(s3)
                 .build());
     }
 
@@ -165,20 +165,20 @@ public class TsCursorAsProviderTest {
 
         assertThat(p.getTsCollection(goodCollection, None)).isEqualTo(TsCollection.builder()
                 .moniker(goodCollection).type(None).name("")
-                .item(s1.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMetaData().build())
-                .item(s2.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMetaData().build())
+                .data(s1.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
+                .data(s2.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
                 .build());
 
         assertThat(p.getTsCollection(goodCollection, MetaData)).isEqualTo(TsCollection.builder()
                 .moniker(goodCollection).type(MetaData).name("").meta("type", "node")
-                .item(s1.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
-                .item(s2.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
+                .data(s1.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
+                .data(s2.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
                 .build());
 
         assertThat(p.getTsCollection(goodCollection, All)).isEqualTo(TsCollection.builder()
                 .moniker(goodCollection).type(All).name("").meta("type", "node")
-                .item(s1)
-                .item(s2)
+                .data(s1)
+                .data(s2)
                 .build());
     }
 
@@ -207,7 +207,7 @@ public class TsCursorAsProviderTest {
     public void testSeriesFill() throws IOException {
         TsProvider p = TsCursorAsProvider.of(provider, goodCursor, monikers, doNothing);
 
-        assertThat(p.getTs(goodSeries, None)).isEqualTo(s3.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMetaData().build());
+        assertThat(p.getTs(goodSeries, None)).isEqualTo(s3.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build());
 
         assertThat(p.getTs(goodSeries, MetaData)).isEqualTo(s3.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build());
 

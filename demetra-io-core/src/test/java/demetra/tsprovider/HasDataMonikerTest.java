@@ -31,10 +31,10 @@ public class HasDataMonikerTest {
     private final DataSource badDataSource = DataSource.of("xxx", "1234");
     private final DataSet goodDataSet = DataSet.of(goodDataSource, DataSet.Kind.SERIES);
     private final DataSet badDataSet = DataSet.of(badDataSource, DataSet.Kind.SERIES);
-    private final TsMoniker goodDataSourceMoniker = new TsMoniker(providerName, DataSource.uriFormatter().formatAsString(goodDataSource));
-    private final TsMoniker badDataSourceMoniker = new TsMoniker("xxx", DataSource.uriFormatter().formatAsString(badDataSource));
-    private final TsMoniker goodDataSetMoniker = new TsMoniker(providerName, DataSet.uriFormatter().formatAsString(goodDataSet));
-    private final TsMoniker badDataSetMoniker = new TsMoniker("xxx", DataSet.uriFormatter().formatAsString(badDataSet));
+    private final TsMoniker goodDataSourceMoniker = TsMoniker.of(providerName, DataSource.uriFormatter().formatValueAsString(goodDataSource).orElseThrow(RuntimeException::new));
+    private final TsMoniker badDataSourceMoniker = TsMoniker.of("xxx", DataSource.uriFormatter().formatValueAsString(badDataSource).orElseThrow(RuntimeException::new));
+    private final TsMoniker goodDataSetMoniker = TsMoniker.of(providerName, DataSet.uriFormatter().formatValueAsString(goodDataSet).orElseThrow(RuntimeException::new));
+    private final TsMoniker badDataSetMoniker = TsMoniker.of("xxx", DataSet.uriFormatter().formatValueAsString(badDataSet).orElseThrow(RuntimeException::new));
 
     @Test
     @SuppressWarnings("null")

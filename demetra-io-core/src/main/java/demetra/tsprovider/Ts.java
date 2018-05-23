@@ -18,7 +18,7 @@ package demetra.tsprovider;
 
 import demetra.timeseries.TsData;
 import internal.tsprovider.util.TsDataBuilderUtil;
-import java.util.HashMap;
+import internal.util.LombokHelper;
 import java.util.Map;
 
 /**
@@ -27,48 +27,53 @@ import java.util.Map;
  */
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder", toBuilder = true)
-public final class Ts {
+public class Ts implements TsResource<TsData> {
 
     @lombok.NonNull
-    private TsMoniker moniker;
+    @lombok.Builder.Default
+    private TsMoniker moniker = TsMoniker.ANONYMOUS;
 
     @lombok.NonNull
-    private TsInformationType type;
+    @lombok.Builder.Default
+    private TsInformationType type = TsInformationType.UserDefined;
 
-    private String name;
+    @lombok.NonNull
+    @lombok.Builder.Default
+    private String name = "";
 
     @lombok.NonNull
     @lombok.Singular("meta")
-    private Map<String, String> metaData;
+    private Map<String, String> meta;
 
     @lombok.NonNull
     @lombok.Builder.Default
     private TsData data = TsDataBuilderUtil.NO_DATA;
 
-    public static class Builder {
+    public static class Builder implements TsResource {
 
+        @Override
         public TsMoniker getMoniker() {
-            return moniker;
+            return LombokHelper.getValue(moniker, moniker$set, Ts::$default$moniker);
         }
 
+        @Override
         public TsInformationType getType() {
-            return type;
+            return LombokHelper.getValue(type, type$set, Ts::$default$type);
         }
 
+        @Override
         public String getName() {
-            return name;
+            return LombokHelper.getValue(name, name$set, Ts::$default$name);
         }
 
-        public Map<String, String> getMetaData() {
-            Map<String, String> result = new HashMap<>();
-            for (int i = 0; i < metaData$key.size(); i++) {
-                result.put(metaData$key.get(i), metaData$value.get(i));
-            }
-            return result;
+        @Override
+        public Map<String, String> getMeta() {
+            return LombokHelper.getMap(meta$key, meta$value);
         }
 
+        @Override
         public TsData getData() {
-            return data;
+            return LombokHelper.getValue(data, data$set, Ts::$default$data);
         }
     }
 }

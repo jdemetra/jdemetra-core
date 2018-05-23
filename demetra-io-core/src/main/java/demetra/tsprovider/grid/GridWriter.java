@@ -51,7 +51,7 @@ public final class GridWriter {
     public void write(@Nonnull TsCollection col, @Nonnull GridOutput output) throws IOException {
         output.setName(col.getName());
 
-        TsDataTable table = TsDataTable.of(col.getItems(), Ts::getData);
+        TsDataTable table = TsDataTable.of(col.getData(), Ts::getData);
 
         if (table.getDomain().isEmpty()) {
             return;
@@ -135,7 +135,7 @@ public final class GridWriter {
     }
 
     private static IntFunction<String> getNames(TsCollection col) {
-        return series -> col.getItems().get(series).getName();
+        return series -> col.getData().get(series).getName();
     }
 
     private static IntFunction<LocalDateTime> getDates(TsDomain domain) {
