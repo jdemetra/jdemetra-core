@@ -18,8 +18,11 @@ package demetra.tramo;
 
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
+import demetra.modelling.regression.AdditiveOutlier;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.outlier.CriticalValueComputer;
+import demetra.regarima.outlier.FastOutlierDetector;
+import demetra.regarima.outlier.SingleOutlierDetector;
 import demetra.sarima.GlsSarimaProcessor;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
@@ -108,7 +111,8 @@ public class TramoUtility {
                 .build();
     }
 
-    public static double calcCv(int nobs) {
+    public double calcCv(int nobs) {
         return Math.max(CriticalValueComputer.simpleComputer().applyAsDouble(nobs), MINCV);
     }
+    
 }

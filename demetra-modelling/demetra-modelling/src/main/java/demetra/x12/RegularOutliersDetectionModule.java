@@ -16,6 +16,8 @@
  */
 package demetra.x12;
 
+import demetra.arima.IResidualsComputer;
+import demetra.arima.internal.AnsleyFilter;
 import demetra.design.BuilderPattern;
 import demetra.modelling.Variable;
 import demetra.modelling.regression.AdditiveOutlier;
@@ -24,8 +26,12 @@ import demetra.modelling.regression.LevelShift;
 import demetra.modelling.regression.PeriodicOutlier;
 import demetra.modelling.regression.TransitoryChange;
 import demetra.regarima.RegArimaUtility;
+import demetra.regarima.outlier.ExactSingleOutlierDetector;
+import demetra.regarima.outlier.IRobustStandardDeviationComputer;
+import demetra.regarima.outlier.SingleOutlierDetector;
 import demetra.regarima.regular.IRegularOutliersDetectionModule;
 import demetra.regarima.regular.ModelDescription;
+import demetra.sarima.SarimaModel;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
@@ -127,27 +133,16 @@ public class RegularOutliersDetectionModule implements IRegularOutliersDetection
         this.span = builder.span;
     }
 
-    private IOutlier.IOutlierFactory[] factories(int freq) {
-        int n = 0;
+
+    private SingleOutlierDetector<SarimaModel> factories(int freq) {
+        SingleOutlierDetector sod = new ExactSingleOutlierDetector(IRobustStandardDeviationComputer.mad(false),
+                IResidualsComputer.mlComputer(),
+                new AnsleyFilter());
         if (ao) {
-            ++n;
+            sod.addOutlierFactory(AdditiveOutlier.FACTORY);
         }
         if (ls) {
-            ++n;
-        }
-        if (tc) {
-            ++n;
-        }
-        if (freq > 1 && so) {
-            ++n;
-        }
-        IOutlier.IOutlierFactory[] fac = new IOutlier.IOutlierFactory[n];
-        int j = 0;
-        if (ao) {
-            fac[j++] = AdditiveOutlier.FACTORY;
-        }
-        if (ls) {
-            fac[j++] = LevelShift.FACTORY_ZEROENDED;
+            sod.addOutlierFactory(LevelShift.FACTORY_ZEROENDED);
         }
         if (tc) {
             double c = tcrate;
@@ -155,19 +150,19 @@ public class RegularOutliersDetectionModule implements IRegularOutliersDetection
             if (r > 1) {
                 c = Math.pow(c, r);
             }
-            fac[j++] = new TransitoryChange.Factory(c);
+            sod.addOutlierFactory(new TransitoryChange.Factory(c));
         }
         if (freq > 1 && so) {
-            fac[j] = new PeriodicOutlier.Factory(freq, true);
+            sod.addOutlierFactory(new PeriodicOutlier.Factory(freq, true));
         }
-        return fac;
+        return sod;
     }
 
     private RawOutliersDetectionModule make(ModelDescription desc, double cv) {
         TsDomain domain=desc.getDomain();
 
         RawOutliersDetectionModule impl = RawOutliersDetectionModule.builder()
-                .addFactories(factories(domain.getAnnualFrequency()))
+                .detector(factories(domain.getAnnualFrequency()))
                 .criticalValue(cv)
                 .maxOutliers(maxOutliers)
                 .maxRound(maxRound)

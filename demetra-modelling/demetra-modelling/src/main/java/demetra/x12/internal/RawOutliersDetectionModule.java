@@ -25,7 +25,7 @@ import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.ami.IOutliersDetectionModule;
-import demetra.regarima.outlier.AbstractSingleOutlierDetector;
+import demetra.regarima.outlier.SingleOutlierDetector;
 import demetra.regarima.outlier.ExactSingleOutlierDetector;
 import demetra.regarima.outlier.IRobustStandardDeviationComputer;
 import demetra.sarima.GlsSarimaProcessor;
@@ -49,6 +49,17 @@ public class RawOutliersDetectionModule implements IOutliersDetectionModule<Sari
     public static int DEF_MAXOUTLIERS = 50;
     public static final double EPS = 1e-5;
 
+    public static SingleOutlierDetector<SarimaModel> defaultOutlierDetector(int period){
+        SingleOutlierDetector sod = new ExactSingleOutlierDetector(IRobustStandardDeviationComputer.mad(false),
+                IResidualsComputer.mlComputer(),
+                new AnsleyFilter());
+        sod.addOutlierFactory(AdditiveOutlier.FACTORY);
+        sod.addOutlierFactory(LevelShift.FACTORY_ZEROENDED);
+        
+        sod.addOutlierFactory(new TransitoryChange.Factory(EPS));
+        return sod;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -56,31 +67,24 @@ public class RawOutliersDetectionModule implements IOutliersDetectionModule<Sari
     @BuilderPattern(RawOutliersDetectionModule.class)
     public static class Builder {
 
-        private double eps = EPS;
         private double cv;
         private IRegArimaProcessor<SarimaModel> processor;
         private int maxOutliers = DEF_MAXOUTLIERS;
         private int maxRound = DEF_MAXROUND;
-        private AbstractSingleOutlierDetector sod = new ExactSingleOutlierDetector(IRobustStandardDeviationComputer.mad(false),
-                IResidualsComputer.mlComputer(),
-                new AnsleyFilter());
+        private SingleOutlierDetector<SarimaModel> sod;
 
         private Builder() {
         }
 
-        public Builder precision(double eps) {
-            this.eps = eps;
+        public Builder detector(SingleOutlierDetector<SarimaModel> sod) {
+            this.sod = sod;
+            this.sod.clearOutlierFactories();
             return this;
         }
+
 
         public Builder criticalValue(double cv) {
             this.cv = cv;
-            return this;
-        }
-
-        public Builder detector(AbstractSingleOutlierDetector sod) {
-            this.sod = sod;
-            this.sod.clearOutlierFactories();
             return this;
         }
 
@@ -99,15 +103,8 @@ public class RawOutliersDetectionModule implements IOutliersDetectionModule<Sari
             return this;
         }
 
-        public Builder addFactory(IOutlier.IOutlierFactory factory) {
+        public Builder factory(IOutlier.IOutlierFactory factory) {
             this.sod.addOutlierFactory(factory);
-            return this;
-        }
-
-        public Builder addFactories(IOutlier.IOutlierFactory[] factories) {
-            for (int i = 0; i < factories.length; ++i) {
-                this.sod.addOutlierFactory(factories[i]);
-            }
             return this;
         }
 
@@ -144,24 +141,20 @@ public class RawOutliersDetectionModule implements IOutliersDetectionModule<Sari
         }
 
         public RawOutliersDetectionModule build() {
-            IRegArimaProcessor<SarimaModel> p = processor;
-            if (p == null) {
-                p = GlsSarimaProcessor.builder().initializer(HannanRissanenInitializer.builder().stabilize(true).build()).precision(eps).build();
-            }
-            return new RawOutliersDetectionModule(sod, cv, p, maxRound, maxOutliers);
+            return new RawOutliersDetectionModule(sod, cv, processor, maxRound, maxOutliers);
         }
     }
 
     private final int maxRound, maxOutliers;
     private RegArimaModel<SarimaModel> regarima;
     private final ArrayList<int[]> outliers = new ArrayList<>(); // Outliers : (position, type)
-    private final AbstractSingleOutlierDetector sod;
+    private final SingleOutlierDetector sod;
     private final IRegArimaProcessor<SarimaModel> processor;
     private final double cv;
     private double[] tstats;
     private int round;
 
-    private RawOutliersDetectionModule(final AbstractSingleOutlierDetector sod, final double cv, final IRegArimaProcessor<SarimaModel> processor,
+    private RawOutliersDetectionModule(final SingleOutlierDetector sod, final double cv, final IRegArimaProcessor<SarimaModel> processor,
             final int maxOutliers, final int maxRound) {
         this.sod = sod;
         this.cv = cv;

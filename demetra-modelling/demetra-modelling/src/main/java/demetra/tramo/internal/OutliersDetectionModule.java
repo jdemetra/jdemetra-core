@@ -24,13 +24,14 @@ import demetra.likelihood.ConcentratedLikelihood;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
+import demetra.modelling.regression.AdditiveOutlier;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArmaModel;
 import demetra.regarima.ami.IOutliersDetectionModule;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
-import demetra.regarima.outlier.AbstractSingleOutlierDetector;
+import demetra.regarima.outlier.SingleOutlierDetector;
 import demetra.regarima.outlier.FastOutlierDetector;
 import demetra.sarima.HannanRissanen;
 import demetra.sarima.SarimaMapping;
@@ -38,10 +39,13 @@ import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.SarmaSpecification;
 import demetra.modelling.regression.IOutlier;
+import demetra.modelling.regression.LevelShift;
+import demetra.modelling.regression.TransitoryChange;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
 
 /**
  *
@@ -49,6 +53,14 @@ import java.util.List;
  */
 @Development(status = Development.Status.Preliminary)
 public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaModel> {
+
+    public static SingleOutlierDetector<SarimaModel> defaultOutlierDetector(){
+        FastOutlierDetector detector=new FastOutlierDetector(null);
+        detector.addOutlierFactory(AdditiveOutlier.FACTORY);
+        detector.addOutlierFactory(LevelShift.FACTORY_ZEROSTARTED);
+        detector.addOutlierFactory(new TransitoryChange.Factory(.7));
+        return detector;
+    }
 
     public static int DEF_MAXROUND = 100;
     public static int DEF_MAXOUTLIERS = 50;
@@ -65,7 +77,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
         private IRegArimaProcessor<SarimaModel> processor;
         private int maxOutliers = DEF_MAXOUTLIERS;
         private int maxRound = DEF_MAXROUND;
-        private final FastOutlierDetector sod = new FastOutlierDetector(null);
+        private SingleOutlierDetector<SarimaModel> sod;
 
         private Builder() {
         }
@@ -95,10 +107,8 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
             return this;
         }
 
-        public Builder addFactories(IOutlier.IOutlierFactory[] factories) {
-            for (int i = 0; i < factories.length; ++i) {
-                this.sod.addOutlierFactory(factories[i]);
-            }
+         public Builder singleOutlierDetector(SingleOutlierDetector<SarimaModel> sod) {
+            this.sod=sod;
             return this;
         }
 
@@ -109,11 +119,11 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
 
     private final int maxRound, maxOutliers;
     private final ArrayList<int[]> outliers = new ArrayList<>(); // Outliers : (position, type)
-    private final AbstractSingleOutlierDetector sod;
+    private final SingleOutlierDetector sod;
     private final IRegArimaProcessor<SarimaModel> processor;
     private final double cv;
     private final boolean mvx;
-    
+
     private RegArimaModel<SarimaModel> regarima;
     private double[] tstats;
     private int round;
@@ -123,7 +133,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
     private DoubleSequence coeff, res;
     //
 
-    private OutliersDetectionModule(final AbstractSingleOutlierDetector sod, final IRegArimaProcessor<SarimaModel> processor,
+    private OutliersDetectionModule(final SingleOutlierDetector sod, final IRegArimaProcessor<SarimaModel> processor,
             final int maxOutliers, final int maxRound, final double cv, final boolean mvx) {
         this.sod = sod;
         this.processor = processor;
@@ -260,8 +270,8 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
                     if (stable || mvx || round == 0) {
                         regarima = RegArimaModel.of(regarima,
                                 SarimaModel.builder(spec)
-                                .parameters(stmodel.parameters())
-                                .build());
+                                        .parameters(stmodel.parameters())
+                                        .build());
                     } else {
                         rflag_ = true;
                         stable = true;

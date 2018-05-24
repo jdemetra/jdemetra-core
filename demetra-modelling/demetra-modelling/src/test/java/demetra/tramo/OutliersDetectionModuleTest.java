@@ -62,7 +62,6 @@ public class OutliersDetectionModuleTest {
 //        for (int i = 0; i < 500; ++i) {
         HannanRissanenInitializer hr = HannanRissanenInitializer.builder().build();
         OutliersDetectionModule od = OutliersDetectionModule.builder()
-                .addFactories(fac)
                 .criticalValue(3)
                 .build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
@@ -91,7 +90,6 @@ public class OutliersDetectionModuleTest {
 //        for (int i = 0; i < 500; ++i) {
         HannanRissanenInitializer hr = HannanRissanenInitializer.builder().build();
         OutliersDetectionModule od = OutliersDetectionModule.builder()
-                .addFactories(fac)
                 .criticalValue(3)
                 .build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();

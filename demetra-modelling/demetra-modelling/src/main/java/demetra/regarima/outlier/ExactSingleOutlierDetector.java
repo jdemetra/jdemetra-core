@@ -40,7 +40,7 @@ import demetra.sarima.SarimaModel;
  * @param <T>
  */
 @Development(status = Development.Status.Preliminary)
-public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractSingleOutlierDetector<T> {
+public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOutlierDetector<T> {
 
     private IArmaFilter filter;
     private final IResidualsComputer resComputer;

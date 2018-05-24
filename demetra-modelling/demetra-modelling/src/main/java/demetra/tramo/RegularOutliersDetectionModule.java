@@ -25,8 +25,11 @@ import demetra.modelling.regression.LevelShift;
 import demetra.modelling.regression.PeriodicOutlier;
 import demetra.modelling.regression.TransitoryChange;
 import demetra.regarima.RegArimaUtility;
+import demetra.regarima.outlier.FastOutlierDetector;
+import demetra.regarima.outlier.SingleOutlierDetector;
 import demetra.regarima.regular.IRegularOutliersDetectionModule;
 import demetra.regarima.regular.ModelDescription;
+import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsDomain;
@@ -136,58 +139,27 @@ public class RegularOutliersDetectionModule implements IRegularOutliersDetection
         this.ml = builder.ml;
     }
 
-    private IOutlier.IOutlierFactory[] factories(int freq) {
-        int n = 0;
-        if (ao) {
-            ++n;
-        }
-        if (ls) {
-            ++n;
-        }
-        if (tc) {
-            ++n;
-        }
-        if (freq > 1 && so) {
-            ++n;
-        }
-        IOutlier.IOutlierFactory[] fac = new IOutlier.IOutlierFactory[n];
-        int j = 0;
-        if (ao) {
-            fac[j++] = AdditiveOutlier.FACTORY;
-        }
-        if (ls) {
-            fac[j++] = LevelShift.FACTORY_ZEROSTARTED;
-        }
-        if (tc) {
-            fac[j++] = new TransitoryChange.Factory(tcrate);
-        }
-        if (freq > 1 && so) {
-            fac[j] = new PeriodicOutlier.Factory(freq, false);
-        }
-        return fac;
-    }
-
     private OutliersDetectionModule make(ModelDescription desc, double cv) {
         TsDomain domain = desc.getDomain();
         int test = comatip(desc);
         boolean cmvx;
         if (test < 0) {
             return null;
-        } 
+        }
         if (test > 0) {
             cmvx = true;
         } else {
             cmvx = false;
         }
 
-        OutliersDetectionModule impl = OutliersDetectionModule.builder()
-                .addFactories(factories(domain.getAnnualFrequency()))
+        OutliersDetectionModule.Builder builder = OutliersDetectionModule.builder()
+                .singleOutlierDetector(factories())
                 .criticalValue(cv)
                 .maximumLikelihood(cmvx)
                 .maxOutliers(maxOutliers)
                 .maxRound(maxRound)
-                .processor(RegArimaUtility.processor(desc.getArimaComponent().defaultMapping(), true, eps))
-                .build();
+                .processor(RegArimaUtility.processor(desc.getArimaComponent().defaultMapping(), true, eps));
+        OutliersDetectionModule impl = builder.build();
         TsDomain odom = domain.select(span);
         int start = domain.indexOf(odom.getStartPeriod()), end = start + odom.getLength();
         impl.prepare(domain.getLength());
@@ -210,12 +182,27 @@ public class RegularOutliersDetectionModule implements IRegularOutliersDetection
         return impl;
     }
 
+    private SingleOutlierDetector<SarimaModel> factories() {
+        FastOutlierDetector detector = new FastOutlierDetector(null);
+        if (ao) {
+            detector.addOutlierFactory(AdditiveOutlier.FACTORY);
+        }
+        if (ls) {
+            detector.addOutlierFactory(LevelShift.FACTORY_ZEROSTARTED);
+        }
+        if (tc) {
+            detector.addOutlierFactory(new TransitoryChange.Factory(tcrate));
+        }
+        return detector;
+    }
+
     @Override
     public boolean process(ModelDescription model, double criticalValue) {
         TsDomain domain = model.getDomain();
         OutliersDetectionModule impl = make(model, criticalValue);
-        if (impl == null)
+        if (impl == null) {
             return false;
+        }
         boolean ok = impl.process(model.regarima());
         if (!ok) {
             return false;

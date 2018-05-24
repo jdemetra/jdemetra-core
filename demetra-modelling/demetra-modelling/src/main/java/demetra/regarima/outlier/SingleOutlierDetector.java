@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * @author Jean Palate
  * @param <T>
  */
-public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
+public abstract class SingleOutlierDetector<T extends IArimaModel> {
 
     private final IRobustStandardDeviationComputer sdevComputer;
     private final ArrayList<IOutlierFactory> factories = new ArrayList<>();
@@ -53,7 +53,7 @@ public abstract class AbstractSingleOutlierDetector<T extends IArimaModel> {
      *
      * @param sdevComputer
      */
-    protected AbstractSingleOutlierDetector(IRobustStandardDeviationComputer sdevComputer) {
+    protected SingleOutlierDetector(IRobustStandardDeviationComputer sdevComputer) {
         this.sdevComputer = sdevComputer;
     }
 

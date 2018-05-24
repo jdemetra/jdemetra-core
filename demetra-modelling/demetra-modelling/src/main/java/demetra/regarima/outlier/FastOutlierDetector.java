@@ -40,7 +40,7 @@ import demetra.modelling.regression.IRegularOutlier;
  * @param <T>
  */
 public class FastOutlierDetector<T extends IArimaModel> extends
-        AbstractSingleOutlierDetector<T> {
+        SingleOutlierDetector<T> {
 
     private double[] el;
     private IArimaModel stmodel;
