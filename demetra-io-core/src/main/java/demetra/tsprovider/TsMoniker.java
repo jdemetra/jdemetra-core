@@ -16,118 +16,27 @@
  */
 package demetra.tsprovider;
 
-import demetra.design.Immutable;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 /**
  *
  * @author Jean Palate
  */
-@Immutable
-public final class TsMoniker implements Comparable<TsMoniker> {
+@lombok.Value(staticConstructor = "of")
+public class TsMoniker {
 
-    public static final TsMoniker NULL = create("", "");
+    public static final TsMoniker ANONYMOUS = new TsMoniker("", "");
 
-    private final String m_source;
-    private final String m_id;
+    @lombok.NonNull
+    private String source;
 
-    @Nonnull
-    public static TsMoniker create(@Nullable String source, @Nullable String id) throws IllegalArgumentException {
-        if (source == null && id == null) {
-            return new TsMoniker();
-        } else if (source != null && id != null) {
-            return new TsMoniker(source, id);
-        } else {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    /**
-     * Creates an anonymous moniker.
-     */
-    public TsMoniker() {
-        m_source = null;
-        m_id = null;
-    }
-
-    private TsMoniker(String source) {
-        m_source = source;
-        m_id = null;
-    }
-
-    /**
-     * Creates a regular moniker.
-     *
-     * @param source
-     * @param id
-     */
-    public TsMoniker(@Nonnull String source, @Nonnull String id) throws IllegalArgumentException {
-        if (source == null || id == null) {
-            throw new IllegalArgumentException("source and id cannot be null");
-        }
-        m_source = source;
-        m_id = id;
-    }
+    @lombok.NonNull
+    private String id;
 
     public boolean isAnonymous() {
-        return m_id == null;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof TsMoniker && equals((TsMoniker) obj));
-    }
-
-    private boolean equals(TsMoniker other) {
-        return !isAnonymous() && (m_source.equals(other.m_source) && m_id.equals(other.m_id));
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Nullable
-    public String getId() {
-        return m_id;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Nullable
-    public String getSource() {
-        return m_source;
-    }
-
-    @Override
-    public int hashCode() {
-        return !isAnonymous()
-                ? (0 ^ m_source.hashCode() ^ m_id.hashCode())
-                : super.hashCode();
+        return id.isEmpty() && source.isEmpty();
     }
 
     @Override
     public String toString() {
-        return !isAnonymous()
-                ? (m_source + "<@>" + m_id)
-                : super.toString();
-    }
-
-    @Override
-    public int compareTo(TsMoniker o) {
-        if (this.isAnonymous()) {
-            if (o.isAnonymous()) {
-                return Integer.compare(this.hashCode(), o.hashCode());
-            } else {
-                return -1;
-            }
-        } else if (o.isAnonymous()) {
-            return 1;
-        } else {
-            int r0 = this.m_source.compareTo(o.m_source);
-            return r0 != 0 ? r0 : this.m_id.compareTo(o.m_id);
-        }
+        return isAnonymous() ? "ANONYMOUS" : (source + "<@>" + id);
     }
 }

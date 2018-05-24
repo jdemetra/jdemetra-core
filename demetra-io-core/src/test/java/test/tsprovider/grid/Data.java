@@ -22,7 +22,6 @@ import demetra.timeseries.TsData;
 import demetra.tsprovider.Ts;
 import demetra.tsprovider.TsCollection;
 import demetra.tsprovider.TsInformationType;
-import demetra.tsprovider.TsMoniker;
 import demetra.tsprovider.grid.GridInput;
 import demetra.tsprovider.grid.GridLayout;
 import java.time.LocalDate;
@@ -97,7 +96,6 @@ public class Data {
 
     public static Ts s(String name, TsData data) {
         return Ts.builder()
-                .moniker(TsMoniker.NULL)
                 .type(TsInformationType.Data)
                 .name(name)
                 .data(data)
@@ -106,11 +104,10 @@ public class Data {
 
     public static TsCollection of(GridLayout layout, String seriesName, TsData data) {
         return TsCollection.builder()
-                .moniker(TsMoniker.NULL)
                 .type(TsInformationType.Data)
                 .name("")
                 .meta("gridLayout", layout.name())
-                .item(s(seriesName, data))
+                .data(s(seriesName, data))
                 .build();
     }
 }

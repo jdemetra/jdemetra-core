@@ -94,7 +94,7 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
         return accessor
                 .getSheetByName(sheetParam.get(parent))
                 .orElseThrow(() -> sheetNotFound(parent))
-                .getItems()
+                .getData()
                 .stream()
                 .map(childrenMapper(parent, seriesParam))
                 .collect(Collectors.toList());
@@ -173,11 +173,11 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
     private static final class SheetTs {
 
         static Stream<SheetTs> allOf(TsCollection sheet) {
-            return sheet.getItems().stream().map(series -> SheetTs.of(sheet, series));
+            return sheet.getData().stream().map(series -> SheetTs.of(sheet, series));
         }
 
         static SheetTs of(TsCollection sheet, Ts series) {
-            return new SheetTs(sheet.getName(), sheet.getMetaData().getOrDefault("gridLayout", ""), series.getName(), series.getData());
+            return new SheetTs(sheet.getName(), sheet.getMeta().getOrDefault("gridLayout", ""), series.getName(), series.getData());
         }
 
         private final String sheetName;

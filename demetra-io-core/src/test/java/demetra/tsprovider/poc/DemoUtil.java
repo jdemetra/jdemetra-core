@@ -71,7 +71,7 @@ class DemoUtil {
     void printSeries(DataSourceProvider provider, Ts ts) {
         printId(provider, provider.toDataSet(ts.getMoniker()));
         printLabel(ts.getName());
-        printMetaData(ts.getMetaData());
+        printMetaData(ts.getMeta());
         printData(ts.getData());
     }
 
@@ -117,15 +117,15 @@ class DemoUtil {
             @Override
             Optional<Ts> getFirst(DataSourceProvider provider, DataSource dataSource) throws IOException {
                 TsCollection info = provider.getTsCollection(provider.toMoniker(dataSource), TsInformationType.All);
-                return info.getItems().stream().findFirst();
+                return info.getData().stream().findFirst();
             }
         },
         DEFINITION {
             @Override
             Optional<Ts> getFirst(DataSourceProvider provider, DataSource dataSource) throws IOException {
                 TsCollection info = provider.getTsCollection(provider.toMoniker(dataSource), TsInformationType.Definition);
-                if (!info.getItems().isEmpty()) {
-                    Ts ts = info.getItems().get(0);
+                if (!info.getData().isEmpty()) {
+                    Ts ts = info.getData().get(0);
                     return Optional.of(provider.getTs(ts.getMoniker(), TsInformationType.All));
                 }
                 return Optional.empty();

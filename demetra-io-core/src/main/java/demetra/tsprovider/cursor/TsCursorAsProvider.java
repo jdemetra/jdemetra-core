@@ -186,7 +186,7 @@ public final class TsCursorAsProvider implements TsProvider {
 
     private void fill(TsCollection.Builder info, TsCursor<DataSet> cursor) throws IOException {
         if (info.getType().encompass(TsInformationType.MetaData)) {
-            info.metaData(cursor.getMetaData());
+            info.meta(cursor.getMetaData());
         }
         Ts.Builder item = Ts.builder();
         while (cursor.nextSeries()) {
@@ -194,14 +194,14 @@ public final class TsCursorAsProvider implements TsProvider {
                     .moniker(hdm.toMoniker(cursor.getSeriesId()))
                     .type(info.getType());
             fill(item, cursor);
-            info.item(item.build());
+            info.data(item.build());
         }
     }
 
     private void fill(Ts.Builder info, TsCursor<DataSet> cursor) throws IOException {
-        info.clearMetaData();
+        info.clearMeta();
         if (info.getType().encompass(TsInformationType.MetaData)) {
-            info.metaData(cursor.getSeriesMetaData());
+            info.meta(cursor.getSeriesMetaData());
         }
         if (info.getType().encompass(TsInformationType.Data)) {
             info.data(cursor.getSeriesData());

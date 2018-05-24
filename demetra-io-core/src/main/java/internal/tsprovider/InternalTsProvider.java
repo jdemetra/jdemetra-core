@@ -143,7 +143,7 @@ public class InternalTsProvider {
             if (id == null) {
                 throw new IllegalArgumentException("Cannot format DataSource");
             }
-            return new TsMoniker(providerName, id);
+            return TsMoniker.of(providerName, id);
         }
 
         @Override
@@ -153,21 +153,19 @@ public class InternalTsProvider {
             if (id == null) {
                 throw new IllegalArgumentException("Cannot format DataSource");
             }
-            return new TsMoniker(providerName, id);
+            return TsMoniker.of(providerName, id);
         }
 
         @Override
         public DataSet toDataSet(TsMoniker moniker) throws IllegalArgumentException {
             checkProvider(moniker);
-            String id = moniker.getId();
-            return id != null ? dataSetParser.parse(id) : null;
+            return dataSetParser.parse(moniker.getId());
         }
 
         @Override
         public DataSource toDataSource(TsMoniker moniker) throws IllegalArgumentException {
             checkProvider(moniker);
-            String id = moniker.getId();
-            return id != null ? dataSourceParser.parse(id) : null;
+            return dataSourceParser.parse(moniker.getId());
         }
     }
 
@@ -369,7 +367,7 @@ public class InternalTsProvider {
          */
         @Nonnull
         public static DataSourceEventSupport create() {
-            Set<DataSourceListener> weakHashSet = Collections.newSetFromMap(new WeakHashMap<DataSourceListener, Boolean>());
+            Set<DataSourceListener> weakHashSet = Collections.newSetFromMap(new WeakHashMap<>());
             return new DataSourceEventSupport(Collections.synchronizedSet(weakHashSet));
         }
 

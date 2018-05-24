@@ -16,6 +16,7 @@
  */
 package demetra.tsprovider;
 
+import internal.util.LombokHelper;
 import java.util.List;
 import java.util.Map;
 
@@ -24,32 +25,52 @@ import java.util.Map;
  * @author Jean Palate
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
-public class TsCollection {
+@lombok.Builder(builderClassName = "Builder", toBuilder = true)
+public class TsCollection implements TsResource<List<Ts>> {
 
     @lombok.NonNull
-    private TsMoniker moniker;
+    @lombok.Builder.Default
+    private TsMoniker moniker = TsMoniker.ANONYMOUS;
 
     @lombok.NonNull
-    private TsInformationType type;
+    @lombok.Builder.Default
+    private TsInformationType type = TsInformationType.UserDefined;
 
     @lombok.NonNull
-    private String name;
+    @lombok.Builder.Default
+    private String name = "";
 
     @lombok.Singular("meta")
-    private Map<String, String> metaData;
+    private Map<String, String> meta;
 
-    @lombok.Singular
-    private List<Ts> items;
+    @lombok.Singular("data")
+    private List<Ts> data;
 
-    public static class Builder {
+    public static class Builder implements TsResource {
 
+        @Override
         public TsMoniker getMoniker() {
-            return moniker;
+            return LombokHelper.getValue(moniker, moniker$set, TsCollection::$default$moniker);
         }
 
+        @Override
         public TsInformationType getType() {
-            return type;
+            return LombokHelper.getValue(type, type$set, TsCollection::$default$type);
+        }
+
+        @Override
+        public String getName() {
+            return LombokHelper.getValue(name, name$set, TsCollection::$default$name);
+        }
+
+        @Override
+        public Map<String, String> getMeta() {
+            return LombokHelper.getMap(meta$key, meta$value);
+        }
+
+        @Override
+        public List<Ts> getData() {
+            return LombokHelper.getList(data);
         }
     }
 }

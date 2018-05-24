@@ -54,12 +54,7 @@ public final class LegacySpreadSheetMoniker implements HasDataMoniker {
     public DataSource toDataSource(TsMoniker moniker) throws IllegalArgumentException {
         DataSourcePreconditions.checkProvider(providerName, moniker);
 
-        String monikerId = moniker.getId();
-        if (monikerId == null) {
-            throw new IllegalArgumentException(moniker.toString());
-        }
-
-        LegacyFileId id = LegacyFileId.parse(monikerId);
+        LegacyFileId id = LegacyFileId.parse(moniker.getId());
         return id != null ? toDataSource(new File(id.getFile())) : null;
     }
 
@@ -67,12 +62,7 @@ public final class LegacySpreadSheetMoniker implements HasDataMoniker {
     public DataSet toDataSet(TsMoniker moniker) throws IllegalArgumentException {
         DataSourcePreconditions.checkProvider(providerName, moniker);
 
-        String monikerId = moniker.getId();
-        if (monikerId == null) {
-            throw new IllegalArgumentException(moniker.toString());
-        }
-
-        LegacySpreadSheetId id = LegacySpreadSheetId.parse(monikerId);
+        LegacySpreadSheetId id = LegacySpreadSheetId.parse(moniker.getId());
         return id != null ? toDataSet(id) : null;
     }
 
